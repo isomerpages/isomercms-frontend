@@ -34,24 +34,24 @@ export default class Pages extends Component {
     const { siteName } = this.props.match.params
     return (
       <div>
-        <Link to={`${process.env.PUBLIC_URL}/sites`}>Back to Sites</Link>
+        <Link to={`/sites`}>Back to Sites</Link>
         <hr />
         <h2>{siteName}</h2>
         <ul>
           <li>
-            <Link to={`${process.env.PUBLIC_URL}/sites/${siteName}/pages`}>Pages</Link>
+            <Link to={`/sites/${siteName}/pages`}>Pages</Link>
           </li>
           <li>
-            <Link to={`${process.env.PUBLIC_URL}/sites/${siteName}/collections`}>Collections</Link>
+            <Link to={`/sites/${siteName}/collections`}>Collections</Link>
           </li>
           <li>
-            <Link to={`${process.env.PUBLIC_URL}/sites/${siteName}/images`}>Images</Link>
+            <Link to={`/sites/${siteName}/images`}>Images</Link>
           </li>
           <li>
-            <Link to={`${process.env.PUBLIC_URL}/sites/${siteName}/files`}>Files</Link>
+            <Link to={`/sites/${siteName}/files`}>Files</Link>
           </li>
           <li>
-            <Link to={`${process.env.PUBLIC_URL}/sites/${siteName}/menus`}>Menus</Link>
+            <Link to={`/sites/${siteName}/menus`}>Menus</Link>
           </li>
         </ul>
         <hr />
@@ -60,7 +60,7 @@ export default class Pages extends Component {
           pages.map(page => {
             return (
               <li>
-                <Link to={`${process.env.PUBLIC_URL}/sites/${siteName}/pages/${page.fileName}`}>{page.fileName}</Link>
+                <Link to={`/sites/${siteName}/pages/${page.fileName}`}>{page.fileName}</Link>
               </li>
             )
           }) :
@@ -68,7 +68,7 @@ export default class Pages extends Component {
         }
         <br />
         <input placeholder="New page name" onChange={this.updateNewPageName} />
-        <Link to={`${process.env.PUBLIC_URL}/sites/${siteName}/pages/${newPageName}`}>Create new page</Link>
+        <Link to={`/sites/${siteName}/pages/${newPageName}`}>Create new page</Link>
       </div>
     )
   }

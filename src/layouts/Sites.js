@@ -30,7 +30,7 @@ export default class Sites extends Component {
         {siteNames.map(siteName => {
           return (
             <li>
-              <Link to={`${process.env.PUBLIC_URL}/sites/${siteName.name}/pages`}>{siteName.name}</Link>
+              <Link to={`/sites/${siteName.name}/pages`}>{siteName.name}</Link>
             </li>
           )
         })}

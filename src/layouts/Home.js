@@ -9,7 +9,7 @@ export default function Home() {
     <div>
       <a href={`https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&state=${UUID}&scope=public_repo`}>Sign in with GitHub</a>
       <br />
-      <Link to={`${process.env.PUBLIC_URL}/sites`}>Sites</Link>
+      <Link to={`/sites`}>Sites</Link>
     </div>
   );
 }
