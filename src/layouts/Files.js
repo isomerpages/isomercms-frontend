@@ -17,7 +17,7 @@ export default class Files extends Component {
           "Access-Control-Allow-Origin": "*"
         }
       })
-      const files = resp.data.files
+      const files = resp.data.documents
       this.setState({ files })
     } catch (err) {
       console.log(err)
