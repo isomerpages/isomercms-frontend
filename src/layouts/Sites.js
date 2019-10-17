@@ -30,7 +30,7 @@ export default class Sites extends Component {
         {siteNames.map(siteName => {
           return (
             <li>
-              <Link to={`/sites/${siteName.name}/pages`}>{siteName.name}</Link>
+              <Link to={`/sites/${siteName}/pages`}>{siteName}</Link>
             </li>
           )
         })}
