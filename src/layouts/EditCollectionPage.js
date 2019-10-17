@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 // import { Link } from "react-router-dom";
 import axios from 'axios';
 import base64 from 'base-64';
-import styles from '../App.module.css';
+import styles from '../styles/App.module.css';
 
 export default class EditCollectionPage extends Component {
   state = {
