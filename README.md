@@ -11,5 +11,5 @@ The frontend is built using React and hosted on Netlify. The frontend interacts 
 ```
 source .env
 npm install
-npm start
+npm run start
 ```
