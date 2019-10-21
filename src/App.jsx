@@ -2,22 +2,22 @@ import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
-  Route
-} from "react-router-dom";
-import Home from './layouts/Home.js';
-import Sites from './layouts/Sites.js';
-import Pages from './layouts/Pages.js';
-import EditPage from './layouts/EditPage.js';
-import Collections from './layouts/Collections.js';
-import CollectionPages from './layouts/CollectionPages.js';
-import EditCollectionPage from './layouts/EditCollectionPage.js';
-import Images from './layouts/Images.js';
-import EditImage from './layouts/EditImage.js';
-import Files from './layouts/Files.js';
-import EditFile from './layouts/EditFile.js';
-// import Menus from './layouts/Menus.js';
-// import EditNav from './layouts/EditNav.js';
-// import EditFooter from './layouts/EditFooter.js';
+  Route,
+} from 'react-router-dom';
+import Home from './layouts/Home';
+import Sites from './layouts/Sites';
+import Pages from './layouts/Pages';
+import EditPage from './layouts/EditPage';
+import Collections from './layouts/Collections';
+import CollectionPages from './layouts/CollectionPages';
+import EditCollectionPage from './layouts/EditCollectionPage';
+import Images from './layouts/Images';
+import EditImage from './layouts/EditImage';
+import Files from './layouts/Files';
+import EditFile from './layouts/EditFile';
+// import Menus from './layouts/Menus';
+// import EditNav from './layouts/EditNav';
+// import EditFooter from './layouts/EditFooter';
 
 function App() {
   return (

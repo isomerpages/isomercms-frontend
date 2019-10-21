@@ -1,8 +1,7 @@
 import React from 'react';
 import uuid from 'uuid';
-import { Link } from "react-router-dom";
 
-const UUID = uuid.v4()
+const UUID = uuid.v4();
 
 export default function Home() {
   return (
