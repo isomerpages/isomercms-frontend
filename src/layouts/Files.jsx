@@ -1,40 +1,46 @@
 import React, { Component } from 'react';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 export default class Files extends Component {
-  state = {
-    files: [],
-    newImageName: null
+  constructor(props) {
+    super(props);
+    this.state = {
+      files: [],
+      newPageName: null,
+    };
   }
 
   async componentDidMount() {
     try {
-      const { siteName } = this.props.match.params
-      const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/documents`, { 
-        withCredentials: true, 
+      const { match } = this.props;
+      const { siteName } = match.params;
+      const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/documents`, {
+        withCredentials: true,
         headers: {
-          "Access-Control-Allow-Origin": "*"
-        }
-      })
-      const files = resp.data.documents
-      this.setState({ files })
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
+      const files = resp.data.documents;
+      this.setState({ files });
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
 
   updateNewPageName = (event) => {
-    event.preventDefault()
-    this.setState({ newPageName: event.target.value})
+    event.preventDefault();
+    this.setState({ newPageName: event.target.value });
   }
 
-  render(){
-    const { files, newPageName } = this.state
-    const { siteName } = this.props.match.params
+  render() {
+    const { files, newPageName } = this.state;
+    const { match } = this.props;
+    const { siteName } = match.params;
     return (
       <div>
-        <Link to={`/sites`}>Back to Sites</Link>
+        <Link to="/sites">Back to Sites</Link>
         <hr />
         <h2>{siteName}</h2>
         <ul>
@@ -56,20 +62,25 @@ export default class Files extends Component {
         </ul>
         <hr />
         <h3>Files</h3>
-        {files.length > 0 ?
-          files.map(file => {
-            return (
-              <li>
-                <Link to={`/sites/${siteName}/files/${file.fileName}`}>{file.fileName}</Link>
-              </li>
-            )
-          }) :
-          'No files'
-        }
+        {files.length > 0
+          ? files.map((file) => (
+            <li>
+              <Link to={`/sites/${siteName}/files/${file.fileName}`}>{file.fileName}</Link>
+            </li>
+          ))
+          : 'No files'}
         <br />
         <input placeholder="New file name" onChange={this.updateNewPageName} />
         <Link to={`/sites/${siteName}/documents/${newPageName}`}>Create new file</Link>
       </div>
-    )
+    );
   }
 }
+
+Files.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      siteName: PropTypes.string,
+    }),
+  }).isRequired,
+};

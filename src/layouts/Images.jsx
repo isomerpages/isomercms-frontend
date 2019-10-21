@@ -1,40 +1,46 @@
 import React, { Component } from 'react';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 export default class Images extends Component {
-  state = {
-    images: [],
-    newPageName: null
+  constructor(props) {
+    super(props);
+    this.state = {
+      images: [],
+      newPageName: null,
+    };
   }
 
   async componentDidMount() {
     try {
-      const { siteName } = this.props.match.params
-      const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, { 
-        withCredentials: true, 
+      const { match } = this.props;
+      const { siteName } = match.params;
+      const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, {
+        withCredentials: true,
         headers: {
-          "Access-Control-Allow-Origin": "*"
-        }
-      })
-      const images = resp.data.images
-      this.setState({ images })
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
+      const { images } = resp.data;
+      this.setState({ images });
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
 
   updateNewPageName = (event) => {
-    event.preventDefault()
-    this.setState({ newPageName: event.target.value})
+    event.preventDefault();
+    this.setState({ newPageName: event.target.value });
   }
 
-  render(){
-    const { images, newPageName } = this.state
-    const { siteName } = this.props.match.params
+  render() {
+    const { images, newPageName } = this.state;
+    const { match } = this.props;
+    const { siteName } = match.params;
     return (
       <div>
-        <Link to={`/sites`}>Back to Sites</Link>
+        <Link to="/sites">Back to Sites</Link>
         <hr />
         <h2>{siteName}</h2>
         <ul>
@@ -56,20 +62,25 @@ export default class Images extends Component {
         </ul>
         <hr />
         <h3>Images</h3>
-        {images.length > 0 ?
-          images.map(image => {
-            return (
-              <li>
-                <Link to={`/sites/${siteName}/images/${image.fileName}`}>{image.fileName}</Link>
-              </li>
-            )
-          }) :
-          'No images'
-        }
+        {images.length > 0
+          ? images.map((image) => (
+            <li>
+              <Link to={`/sites/${siteName}/images/${image.fileName}`}>{image.fileName}</Link>
+            </li>
+          ))
+          : 'No images'}
         <br />
         <input placeholder="New image name" onChange={this.updateNewPageName} />
         <Link to={`/sites/${siteName}/images/${newPageName}`}>Create new image</Link>
       </div>
-    )
+    );
   }
 }
+
+Images.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      siteName: PropTypes.string,
+    }),
+  }).isRequired,
+};

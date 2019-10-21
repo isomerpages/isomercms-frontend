@@ -1,44 +1,50 @@
 import React, { Component } from 'react';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 export default class CollectionPages extends Component {
-  state = {
-    pages: [],
-    newImageName: null
+  constructor(props) {
+    super(props);
+    this.state = {
+      pages: [],
+      newPageName: null,
+    };
   }
 
   async componentDidMount() {
     try {
-      const { siteName, collectionName } = this.props.match.params
-      const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}`, { 
-        withCredentials: true, 
+      const { match } = this.props;
+      const { siteName, collectionName } = match.params;
+      const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}`, {
+        withCredentials: true,
         headers: {
-          "Access-Control-Allow-Origin": "*"
-        }
-      })
-      const pages = resp.data.collectionPages
-      this.setState({ pages })
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
+      const pages = resp.data.collectionPages;
+      this.setState({ pages });
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
 
   updateNewPageName = (event) => {
-    event.preventDefault()
-    this.setState({ newPageName: event.target.value})
+    event.preventDefault();
+    this.setState({ newPageName: event.target.value });
   }
 
-  render(){
-    const { pages, newPageName } = this.state
-    const { siteName, collectionName } = this.props.match.params
+  render() {
+    const { pages, newPageName } = this.state;
+    const { match } = this.props;
+    const { siteName, collectionName } = match.params;
     return (
       <div>
-        <Link to={`/sites`}>Back to Sites</Link>
+        <Link to="/sites">Back to Sites</Link>
         <hr />
         <h2>{siteName}</h2>
         <ul>
-        <li>
+          <li>
             <Link to={`/sites/${siteName}/pages`}>Pages</Link>
           </li>
           <li>
@@ -55,21 +61,30 @@ export default class CollectionPages extends Component {
           </li>
         </ul>
         <hr />
-        <h3>Pages in Collection {collectionName}</h3>
-        {pages.length > 0 ?
-          pages.map(page => {
-            return (
-              <li>
-                <Link to={`/sites/${siteName}/collections/${collectionName}/${page.fileName}`}>{page.fileName}</Link>
-              </li>
-            )
-          }) :
-          'No pages'
-        }
+        <h3>
+Pages in Collection
+          {collectionName}
+        </h3>
+        {pages.length > 0
+          ? pages.map((page) => (
+            <li>
+              <Link to={`/sites/${siteName}/collections/${collectionName}/${page.fileName}`}>{page.fileName}</Link>
+            </li>
+          ))
+          : 'No pages'}
         <br />
         <input placeholder="New page name" onChange={this.updateNewPageName} />
         <Link to={`/sites/${siteName}/collections/${collectionName}/${newPageName}`}>Create new page</Link>
       </div>
-    )
+    );
   }
 }
+
+CollectionPages.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      siteName: PropTypes.string,
+      collectionName: PropTypes.string,
+    }),
+  }).isRequired,
+};
