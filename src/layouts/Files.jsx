@@ -18,9 +18,6 @@ export default class Files extends Component {
       const { siteName } = match.params;
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/documents`, {
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
       const files = resp.data.documents;
       this.setState({ files });

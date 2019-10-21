@@ -20,9 +20,6 @@ export default class EditImage extends Component {
       const { siteName, fileName } = match.params;
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images/${fileName}`, {
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
       const { content, sha } = resp.data;
       this.setState({ content, sha });
@@ -42,9 +39,6 @@ export default class EditImage extends Component {
       };
       const resp = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, params, {
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
       const { content, sha } = resp.data;
       this.setState({ content, sha });
@@ -65,9 +59,6 @@ export default class EditImage extends Component {
       };
       const resp = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images/${fileName}`, params, {
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
       const { content, sha } = resp.data;
       this.setState({ content, sha });
@@ -87,9 +78,6 @@ export default class EditImage extends Component {
       await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images/${fileName}`, {
         data: params,
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
     } catch (err) {
       console.log(err);
@@ -108,9 +96,6 @@ export default class EditImage extends Component {
       };
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images/${fileName}/rename/${newFileName}`, params, {
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
     } catch (err) {
       console.log(err);

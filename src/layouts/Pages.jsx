@@ -18,9 +18,6 @@ export default class Pages extends Component {
       const { siteName } = match.params;
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages`, {
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
       const { pages } = resp.data;
       this.setState({ pages });

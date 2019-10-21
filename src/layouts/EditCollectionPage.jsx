@@ -20,9 +20,6 @@ export default class EditCollectionPage extends Component {
       const { siteName, collectionName, fileName } = match.params;
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/${fileName}`, {
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
       const { content, sha } = resp.data;
       this.setState({ content, sha });
@@ -42,9 +39,6 @@ export default class EditCollectionPage extends Component {
       };
       const resp = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages`, params, {
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
       const { content, sha } = resp.data;
       this.setState({ content, sha });
@@ -62,9 +56,6 @@ export default class EditCollectionPage extends Component {
       const params = { content: base64Content, sha: state.sha };
       const resp = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/${fileName}`, params, {
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
       const { content, sha } = resp.data;
       this.setState({ content, sha });
@@ -82,9 +73,6 @@ export default class EditCollectionPage extends Component {
       await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/${fileName}`, {
         data: params,
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
     } catch (err) {
       console.log(err);
@@ -100,9 +88,6 @@ export default class EditCollectionPage extends Component {
       const params = { content, sha };
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/${fileName}/rename/${newFileName}`, params, {
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
     } catch (err) {
       console.log(err);

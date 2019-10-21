@@ -18,9 +18,6 @@ export default class Images extends Component {
       const { siteName } = match.params;
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, {
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
       const { images } = resp.data;
       this.setState({ images });

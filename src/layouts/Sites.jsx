@@ -14,9 +14,6 @@ export default class Sites extends Component {
     try {
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites`, {
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
       const { siteNames } = resp.data;
       this.setState({ siteNames });

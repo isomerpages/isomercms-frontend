@@ -21,9 +21,6 @@ export default class Collections extends Component {
       const { siteName } = match.params;
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`, {
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
       const { collections } = resp.data;
       this.setState({ collections });
@@ -42,9 +39,6 @@ export default class Collections extends Component {
       };
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`, params, {
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
     } catch (err) {
       console.log(err);
@@ -58,9 +52,6 @@ export default class Collections extends Component {
       const { deleteCollectionName: collectionName } = this.state;
       await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}`, {
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
     } catch (err) {
       console.log(err);
@@ -74,9 +65,6 @@ export default class Collections extends Component {
       const { oldCollectionName, renameCollectionName } = this.state;
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${oldCollectionName}/rename/${renameCollectionName}`, '', {
         withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
       });
     } catch (err) {
       console.log(err);
