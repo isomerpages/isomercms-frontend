@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import base64 from 'base-64';
 import PropTypes from 'prop-types';
-import styles from '../styles/App.module.css';
+import SimpleMDE from 'react-simplemde-editor';
+import 'easymde/dist/easymde.min.css';
 
 export default class EditPage extends Component {
   constructor(props) {
@@ -11,6 +12,7 @@ export default class EditPage extends Component {
     this.state = {
       content: null,
       sha: null,
+      editorValue: '',
     };
   }
 
@@ -22,7 +24,11 @@ export default class EditPage extends Component {
         withCredentials: true,
       });
       const { content, sha } = resp.data;
-      this.setState({ content, sha });
+      this.setState({
+        content,
+        sha,
+        editorValue: base64.decode(content),
+      });
     } catch (err) {
       console.log(err);
     }
@@ -32,7 +38,9 @@ export default class EditPage extends Component {
     try {
       const { match } = this.props;
       const { siteName, fileName } = match.params;
-      const base64Content = base64.encode((this.contentBox).innerHTML);
+      const { editorValue } = this.state;
+
+      const base64Content = base64.encode(editorValue);
       const params = {
         pageName: fileName,
         content: base64Content,
@@ -52,7 +60,7 @@ export default class EditPage extends Component {
       const { match } = this.props;
       const { siteName, fileName } = match.params;
       const { state } = this;
-      const base64Content = base64.encode((this.contentBox).innerHTML);
+      const base64Content = base64.encode(state.editorValue);
       const params = {
         content: base64Content,
         sha: state.sha,
@@ -102,10 +110,14 @@ export default class EditPage extends Component {
     }
   }
 
+  onEditorChange = (value) => {
+    this.setState({ editorValue: value });
+  }
+
   render() {
     const { match } = this.props;
     const { fileName } = match.params;
-    const { content, sha } = this.state;
+    const { sha, editorValue } = this.state;
     return (
       <>
         <h3>
@@ -113,21 +125,13 @@ export default class EditPage extends Component {
           {' '}
           {fileName}
         </h3>
-        { sha
-          ? (
-            <>
-              <div className={styles.edit} contentEditable="true" ref={(node) => { this.contentBox = node; }}>
-                {base64.decode(content)}
-              </div>
-              <button type="button" onClick={this.updatePage}>Save</button>
-            </>
-          )
-          : (
-            <>
-              <div className={styles.edit} contentEditable="true" ref={(node) => { this.contentBox = node; }} />
-              <button type="button" onClick={this.createPage}>Save</button>
-            </>
-          )}
+
+        <SimpleMDE
+          onChange={this.onEditorChange}
+          value={editorValue}
+        />
+        <button type="button" onClick={sha ? this.updatePage : this.createPage}>Save</button>
+
         <br />
         <br />
         <button type="button" onClick={this.deletePage}>Delete</button>
