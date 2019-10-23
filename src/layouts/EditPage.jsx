@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 // import { Link } from "react-router-dom";
 import axios from 'axios';
-import base64 from 'base-64';
 import PropTypes from 'prop-types';
 import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
+import { Base64 } from 'js-base64';
 import SimplePage from './SimplePage/SimplePage';
 import 'easymde/dist/easymde.min.css';
 import styles from '../styles/App.module.css';
@@ -30,7 +30,7 @@ export default class EditPage extends Component {
       this.setState({
         content,
         sha,
-        editorValue: base64.decode(content),
+        editorValue: Base64.decode(content),
       });
     } catch (err) {
       console.log(err);
@@ -43,7 +43,7 @@ export default class EditPage extends Component {
       const { siteName, fileName } = match.params;
       const { editorValue } = this.state;
 
-      const base64Content = base64.encode(editorValue);
+      const base64Content = Base64.encode(editorValue);
       const params = {
         pageName: fileName,
         content: base64Content,
@@ -63,7 +63,7 @@ export default class EditPage extends Component {
       const { match } = this.props;
       const { siteName, fileName } = match.params;
       const { state } = this;
-      const base64Content = base64.encode(state.editorValue);
+      const base64Content = Base64.encode(state.editorValue);
       const params = {
         content: base64Content,
         sha: state.sha,

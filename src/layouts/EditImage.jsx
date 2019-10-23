@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // import { Link } from "react-router-dom";
 import axios from 'axios';
-import base64 from 'base-64';
+import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import styles from '../styles/App.module.css';
 
@@ -32,7 +32,7 @@ export default class EditImage extends Component {
     try {
       const { match } = this.props;
       const { siteName, fileName } = match.params;
-      const base64Content = base64.encode((this.contentBox).innerHTML);
+      const base64Content = Base64.encode((this.contentBox).innerHTML);
       const params = {
         imageName: fileName,
         content: base64Content,
@@ -52,7 +52,7 @@ export default class EditImage extends Component {
       const { match } = this.props;
       const { siteName, fileName } = match.params;
       const { state } = this;
-      const base64Content = base64.encode((this.contentBox).innerHTML);
+      const base64Content = Base64.encode((this.contentBox).innerHTML);
       const params = {
         content: base64Content,
         sha: state.sha,
@@ -117,7 +117,7 @@ export default class EditImage extends Component {
           ? (
             <>
               <div className={styles.edit} contentEditable="true" ref={(node) => { this.contentBox = node; }}>
-                {base64.decode(content)}
+                {Base64.decode(content)}
               </div>
               <button type="button" onClick={this.updatePage}>Save</button>
             </>
