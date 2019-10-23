@@ -4,7 +4,10 @@ import axios from 'axios';
 import base64 from 'base-64';
 import PropTypes from 'prop-types';
 import SimpleMDE from 'react-simplemde-editor';
+import marked from 'marked';
+import SimplePage from './SimplePage/SimplePage';
 import 'easymde/dist/easymde.min.css';
+import styles from '../styles/App.module.css';
 
 export default class EditPage extends Component {
   constructor(props) {
@@ -125,20 +128,29 @@ export default class EditPage extends Component {
           {' '}
           {fileName}
         </h3>
+        <div className="d-flex">
+          <div className="pane p-3">
+            <SimpleMDE
+              onChange={this.onEditorChange}
+              value={editorValue}
+              options={{
+                showIcons: ['code', 'table'],
+              }}
+            />
+            <button type="button" onClick={sha ? this.updatePage : this.createPage}>Save</button>
+            <br />
+            <br />
+            <button type="button" onClick={this.deletePage}>Delete</button>
+            <br />
+            <br />
+            <input placeholder="New file name" ref={(node) => { this.newFileName = node; }} />
+            <button type="button" onClick={this.renamePage}>Rename</button>
+          </div>
+          <div className={styles.pane}>
+            <SimplePage chunk={marked(editorValue)} />
+          </div>
+        </div>
 
-        <SimpleMDE
-          onChange={this.onEditorChange}
-          value={editorValue}
-        />
-        <button type="button" onClick={sha ? this.updatePage : this.createPage}>Save</button>
-
-        <br />
-        <br />
-        <button type="button" onClick={this.deletePage}>Delete</button>
-        <br />
-        <br />
-        <input placeholder="New file name" ref={(node) => { this.newFileName = node; }} />
-        <button type="button" onClick={this.renamePage}>Rename</button>
       </>
     );
   }
