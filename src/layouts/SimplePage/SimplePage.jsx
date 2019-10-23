@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import '../../tests/isomer-template.scss';
 
 export default class SimplePage extends Component {
   componentDidMount() {
