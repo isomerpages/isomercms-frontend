@@ -9,7 +9,6 @@ import yaml from 'js-yaml';
 import SimplePage from './SimplePage/SimplePage';
 import frontMatterParser from '../utils';
 import 'easymde/dist/easymde.min.css';
-import styles from '../styles/App.module.css';
 import '../styles/isomer-template.scss';
 
 export default class EditPage extends Component {

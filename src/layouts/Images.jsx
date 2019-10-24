@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Base64 } from 'js-base64';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
@@ -40,7 +39,7 @@ export default class Images extends Component {
         content: imageContent,
       };
 
-      const resp = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, params, {
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, params, {
         withCredentials: true,
       });
 

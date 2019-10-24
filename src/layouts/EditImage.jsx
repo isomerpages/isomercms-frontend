@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
-import styles from '../styles/App.module.css';
 
 export default class EditImage extends Component {
   constructor(props) {
