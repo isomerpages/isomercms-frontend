@@ -146,7 +146,7 @@ export default class EditPage extends Component {
           {fileName}
         </h3>
         <div className="d-flex">
-          <div className="pane p-3">
+          <div className="left-pane p-3">
             <SimpleMDE
               onChange={this.onEditorChange}
               value={editorValue}
@@ -163,7 +163,7 @@ export default class EditPage extends Component {
             <input placeholder="New file name" ref={(node) => { this.newFileName = node; }} />
             <button type="button" onClick={this.renamePage}>Rename</button>
           </div>
-          <div className={styles.pane}>
+          <div className="right-pane zoom">
             <section className="bp-section is-small bp-section-pagetitle">
               <div className="bp-container ">
                 <div className="row">
@@ -171,7 +171,7 @@ export default class EditPage extends Component {
                     <nav className="bp-breadcrumb" aria-label="breadcrumbs">
                       <ul>
                         <li><a href="/"><small>HOME</small></a></li>
-                        <li><a href="/employer-faq/"><small>FREQUENTLY ASKED QUESTIONS (EMPLOYERS)</small></a></li>
+                        <li><a href="/employer-faq/"><small>GENERIC BREADCRUMB</small></a></li>
                       </ul>
                     </nav>
                   </div>
@@ -180,7 +180,7 @@ export default class EditPage extends Component {
               <div className="bp-container">
                 <div className="row">
                   <div className="col">
-                    <h1 className="has-text-white"><b>Frequently Asked Questions (Employers)</b></h1>
+                    <h1 className="has-text-white"><b>Generic Breadcrumb</b></h1>
                   </div>
                 </div>
               </div>

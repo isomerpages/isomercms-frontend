@@ -11,3 +11,20 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+span[role="presentation"] {
+  font-family: Lato,sans-serif;
+}
+
+
+.zoom {
+  zoom: 90%;
+}
+
+.left-pane {
+  width: 40%;
+} 
+
+.right-pane {
+  width: 60%;
+}
