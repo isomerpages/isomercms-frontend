@@ -31,6 +31,16 @@ export default class Images extends Component {
     this.setState({ newPageName: event.target.value });
   }
 
+  onImageSelect = (event) => {
+    const imgReader = new FileReader();
+    imgReader.onload = () => {
+      const imgData = imgReader.result;
+      // TODO
+    };
+    imgReader.readAsDataURL(event.target.files[0]);
+    console.log(event.target.files[0]);
+  }
+
   render() {
     const { images, newPageName } = this.state;
     const { match } = this.props;
@@ -67,7 +77,13 @@ export default class Images extends Component {
           ))
           : 'No images'}
         <br />
-        <input placeholder="New image name" onChange={this.updateNewPageName} />
+
+        <input
+          type="file"
+          onChange={this.onImageSelect}
+          accept="image/png, image/jpeg"
+        />
+
         <Link to={`/sites/${siteName}/images/${newPageName}`}>Create new image</Link>
       </div>
     );
