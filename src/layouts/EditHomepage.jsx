@@ -429,7 +429,7 @@ export default class EditHomepage extends Component {
             <button type="button" onClick={this.savePage}>Save</button>
           </div>
           <div className={styles.rightPane}>
-            {frontmatter.sections.map((section) => (
+            {frontmatter.sections.map((section, sectionIndex) => (
               <>
                 {/* Hero section */}
                 {section.hero ? 
@@ -439,7 +439,7 @@ export default class EditHomepage extends Component {
                 }
                 {/* Resources section */}
                 {section.resources ? 
-                  <TemplateResourcesSection title={section.resources.title} subtitle={section.resources.subtitle} button={section.resources.button}/>
+                  <TemplateResourcesSection title={section.resources.title} subtitle={section.resources.subtitle} button={section.resources.button} sectionIndex={sectionIndex}/>
                   :
                   null
                 }
@@ -450,7 +450,8 @@ export default class EditHomepage extends Component {
                     subtitle={section.infobar.subtitle}
                     description={section.infobar.description} 
                     url={section.infobar.url} 
-                    button={section.infobar.button} 
+                    button={section.infobar.button}
+                    sectionIndex={sectionIndex}
                   />
                   :
                   null

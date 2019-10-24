@@ -1,7 +1,7 @@
 import React from 'react';
 
-const TemplateInfoBar = ({title, subtitle, description, url, button}) => (
-  <section class="bp-section">
+const TemplateInfoBar = ({title, subtitle, description, url, button, sectionIndex}) => (
+  <section class={`bp-section ${(sectionIndex%2 === 1) ? `bg-newssection`: null}`}>
     <div class="bp-container is-fluid">
       <div class="row">
           <div class="col is-half is-offset-one-quarter has-text-centered padding--top--xl">
