@@ -19,6 +19,7 @@ export default class EditPage extends Component {
       content: null,
       sha: null,
       editorValue: '',
+      frontMatter: '',
     };
   }
 
@@ -47,11 +48,13 @@ export default class EditPage extends Component {
     try {
       const { match } = this.props;
       const { siteName, fileName } = match.params;
-      const { editorValue } = this.state;
+      const { editorValue, frontMatter } = this.state;
 
       // here, we need to add the appropriate front matter before we encode
+      // this part needs to be revised to include permalink and other things depending on page type
+      const upload = ['---\n', yaml.safeDump(frontMatter), '---\n', editorValue].join('');
 
-      const base64Content = Base64.encode(editorValue);
+      const base64Content = Base64.encode(upload);
       const params = {
         pageName: fileName,
         content: base64Content,
