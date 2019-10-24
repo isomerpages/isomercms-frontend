@@ -13,6 +13,7 @@
 =======
     "base-64": "^0.1.0",
     "front-matter": "^3.0.2",
+    "immutability-helper": "^3.0.1",
     "js-yaml": "^3.13.1",
 >>>>>>> allow users to edit existing homepage elements
     "node-sass": "^4.12.0",

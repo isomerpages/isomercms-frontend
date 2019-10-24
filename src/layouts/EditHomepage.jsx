@@ -6,6 +6,49 @@ import PropTypes from 'prop-types';
 import yaml from 'js-yaml';
 import fm from 'front-matter';
 import styles from '../styles/App.module.scss';
+import update from 'immutability-helper';
+
+// Section constructors
+const ResourcesSection = () => {
+  return {
+    resources: {
+      title: 'TITLE',
+      subtitle: 'SUBTITLE',
+      button: 'BUTTON'
+    }
+  }
+}
+
+const InfoBarSection = () => {
+  return {
+    infobar: {
+      title: 'TITLE',
+      subtitle: 'SUBTITLE',
+      description: 'DESCRIPTION',
+      button: 'BUTTON',
+      url: 'URL'
+    }
+  }
+}
+
+const KeyHighlightSection = () => {
+  return {
+    title: 'TITLE',
+    description: 'DESCRIPTION',
+    url: 'URL'
+  }
+}
+
+const enumSection = (type) => {
+  switch(type) {
+    case (type === 'resources'):
+      return ResourcesSection()
+    case (type === 'infobar'):
+      return InfoBarSection()
+    default:
+      return ResourcesSection()
+  }
+}
 
 export default class EditHomepage extends Component {
   constructor(props) {
@@ -41,66 +84,190 @@ export default class EditHomepage extends Component {
   }
 
   onFieldChange = async (event) => {
-    const { state } = this;
-    const { id, value } = event.target;
-    const idArray = id.split('-');
-    if (idArray[0] === 'site') {
-      // The field that changed belongs to a site-wide config
-      const field = idArray[1]; // e.g. "title" or "subtitle"
+    try {
+      const { state } = this;
+      const { id, value } = event.target;
+      const idArray = id.split('-');
+      if (idArray[0] === 'site') {
+        // The field that changed belongs to a site-wide config
+        const field = idArray[1]; // e.g. "title" or "subtitle"
+  
+        this.setState((currState) => ({
+          ...currState,
+          frontmatter: {
+            ...currState.frontmatter,
+            [field]: value,
+          },
+        }));
+      } else if (idArray[0] === 'section') {
+        // The field that changed belongs to a homepage section config
+        const { sections } = state.frontmatter;
+  
+        // sectionIndex is the index of the section array in the frontmatter
+        const sectionIndex = parseInt(idArray[1], 10);
+        const sectionType = idArray[2]; // e.g. "hero" or "infobar" or "resources"
+        const field = idArray[3]; // e.g. "title" or "subtitle"
+  
+        sections[sectionIndex][sectionType][field] = value;
+  
+        this.setState((currState) => ({
+          ...currState,
+          frontmatter: {
+            ...currState.frontmatter,
+            sections,
+          },
+        }));
+      } else {
+        // The field that changed belongs to a hero highlight
+        const { sections } = state.frontmatter;
+        const highlights = state.frontmatter.sections[0].hero.key_highlights;
+  
+        // highlightsIndex is the index of the key_highlights array
+        const highlightsIndex = parseInt(idArray[1], 10);
+        const field = idArray[2]; // e.g. "title" or "url"
 
-      this.setState((currState) => ({
-        ...currState,
-        frontmatter: {
-          ...currState.frontmatter,
-          [field]: value,
-        },
-      }));
-    } else if (idArray[0] === 'section') {
-      // The field that changed belongs to a homepage section config
-      const { sections } = state.frontmatter;
+        highlights[highlightsIndex][field] = value;
+        sections[0].hero.key_highlights = highlights;
 
-      // sectionIndex is the index of the section array in the frontmatter
-      const sectionIndex = parseInt(idArray[1], 10);
-      const sectionType = idArray[2]; // e.g. "hero" or "infobar" or "resources"
-      const field = idArray[3]; // e.g. "title" or "subtitle"
+        this.setState((currState) => ({
+          ...currState,
+          frontmatter: {
+            ...currState.frontmatter,
+            sections,
+          },
+        }), () => console.log(this.state));
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  
+  createHighlight = async (event) => {
+    try {
+      const { id } = event.target
 
-      sections[sectionIndex][sectionType][field] = value;
+      // Verify that the target id is of the format `highlight-${highlightIndex}`
+      const idArray = id.split('-');
+      if (idArray[0] !== 'highlight') throw new Error('')
+      const highlightIndex = parseInt(idArray[1]) + 1
+      const keyHighlight = KeyHighlightSection()
 
-      this.setState((currState) => ({
-        ...currState,
-        frontmatter: {
-          ...currState.frontmatter,
-          sections,
-        },
-      }));
-    } else {
-      // The field that changed belongs to a hero highlight
-      const { sections } = state.frontmatter;
-      const highlights = state.frontmatter.sections[0].hero.key_highlights;
+      const { frontmatter } = this.state
+      const newSections = update(frontmatter.sections, {
+        0: {
+          hero: {
+            key_highlights: {
+              $splice: [[highlightIndex, 0, keyHighlight]]
+            }
+          }
+        }
+      })
 
-      // highlightsIndex is the index of the key_highlights array
-      const highlightsIndex = parseInt(idArray[1], 10);
-      const field = idArray[2]; // e.g. "title" or "url"
+      this.setState((currState) => {
+        return {
+          ...currState,
+          frontmatter: {
+            ...currState.frontmatter,
+            sections: newSections
+          }
+        }
+      })
 
-      highlights[highlightsIndex][field] = value;
-      sections[0].hero.key_highlights = highlights;
-
-      this.setState((currState) => ({
-        ...currState,
-        frontmatter: {
-          ...currState.frontmatter,
-          sections,
-        },
-      }));
+    } catch (err) {
+      console.log(err)
     }
   }
 
-  createSection = async () => {
-    // TO-DO
+  deleteHighlight = async (event) => {
+    try {
+      const { id } = event.target
+
+      // Verify that the target id is of the format `highlight-${highlightIndex}`
+      const idArray = id.split('-');
+      if (idArray[0] !== 'highlight') throw new Error('')
+      const highlightIndex = parseInt(idArray[1])
+
+      const { frontmatter } = this.state
+      const newSections = update(frontmatter.sections, {
+        0: {
+          hero: {
+            key_highlights: {
+              $splice: [[highlightIndex, 1]]
+            }
+          }
+        }
+      })
+  
+      await this.setState((currState) => {
+        return {
+          ...currState,
+          frontmatter: {
+            ...currState.frontmatter,
+            sections: newSections
+          }
+        }
+      })
+
+    } catch (err) {
+      console.log(err)
+    }
   }
 
-  deleteSection = async () => {
-    // TO-DO
+  createSection = async (event) => {
+    try {
+      const { id, value } = event.target
+
+      // Verify that the target id is of the format `section-${sectionIndex}`
+      const idArray = id.split('-');
+      if (idArray[0] !== 'section') throw new Error('')
+      const sectionIndex = parseInt(idArray[1]) + 1
+      const sectionType = enumSection(value)
+
+      const { frontmatter } = this.state
+      const newSections = update(frontmatter.sections, {
+        $splice: [[sectionIndex, 0, sectionType]]
+      })
+
+      this.setState((currState) => {
+        return {
+          ...currState,
+          frontmatter: {
+            ...currState.frontmatter,
+            sections: newSections
+          }
+        }
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  deleteSection = async (event) => {
+    try {
+      const { id } = event.target
+
+      // Verify that the target id is of the format `section-${sectionIndex}`
+      const idArray = id.split('-');
+      if (idArray[0] !== 'section') throw new Error('')
+      const sectionIndex = parseInt(idArray[1])
+
+      const { frontmatter } = this.state
+      const newSections = update(frontmatter.sections, {
+        $splice: [[sectionIndex, 1]]
+      })
+
+      this.setState((currState) => {
+        return {
+          ...currState,
+          frontmatter: {
+            ...currState.frontmatter,
+            sections: newSections
+          }
+        }
+      })
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   savePage = async () => {
@@ -144,15 +311,15 @@ export default class EditHomepage extends Component {
             </b>
           </h4>
           <p>Site Title</p>
-          <input placeholder="Title" defaultValue={frontmatter.title} id="site-title" onChange={this.onFieldChange} />
+          <input placeholder="Title" defaultValue={frontmatter.title} value={frontmatter.title} id="site-title" onChange={this.onFieldChange} />
           <p>Site Subtitle</p>
-          <input placeholder="Subtitle" defaultValue={frontmatter.subtitle} id="site-subtitle" onChange={this.onFieldChange} />
+          <input placeholder="Subtitle" defaultValue={frontmatter.subtitle} value={frontmatter.subtitle} id="site-subtitle" onChange={this.onFieldChange} />
           <p>Site description</p>
-          <input placeholder="Description" defaultValue={frontmatter.description} id="site-description" onChange={this.onFieldChange} />
+          <input placeholder="Description" defaultValue={frontmatter.description} value={frontmatter.description} id="site-description" onChange={this.onFieldChange} />
           <p>Site image</p>
-          <input placeholder="Image" defaultValue={frontmatter.image} id="site-image" onChange={this.onFieldChange} />
+          <input placeholder="Image" defaultValue={frontmatter.image} value={frontmatter.image} id="site-image" onChange={this.onFieldChange} />
           <p>Site notification</p>
-          <input placeholder="Notification" defaultValue={frontmatter.notification} id="site-notification" onChange={this.onFieldChange} />
+          <input placeholder="Notification" defaultValue={frontmatter.notification} value={frontmatter.notification} id="site-notification" onChange={this.onFieldChange} />
         </div>
         {/* Homepage section configurations */}
         <div className={styles.card}>
@@ -163,32 +330,32 @@ export default class EditHomepage extends Component {
                 <>
                   <b>Hero section</b>
                   <p>Hero title</p>
-                  <input placeholder="Hero title" defaultValue={section.hero.title} id={`section-${sectionIndex}-hero-title`} onChange={this.onFieldChange} />
+                  <input placeholder="Hero title" defaultValue={section.hero.title} value={section.hero.title} id={`section-${sectionIndex}-hero-title`} onChange={this.onFieldChange} />
                   <p>Hero subtitle</p>
-                  <input placeholder="Hero subtitle" defaultValue={section.hero.subtitle} id={`section-${sectionIndex}-hero-subtitle`} onChange={this.onFieldChange} />
+                  <input placeholder="Hero subtitle" defaultValue={section.hero.subtitle} value={section.hero.subtitle} id={`section-${sectionIndex}-hero-subtitle`} onChange={this.onFieldChange} />
                   <p>Hero background image</p>
-                  <input placeholder="Hero background image" defaultValue={section.hero.background} id={`section-${sectionIndex}-hero-background`} onChange={this.onFieldChange} />
+                  <input placeholder="Hero background image" defaultValue={section.hero.background} value={section.hero.background} id={`section-${sectionIndex}-hero-background`} onChange={this.onFieldChange} />
                   <p>Hero button</p>
-                  <input placeholder="Hero button name" defaultValue={section.hero.button} id={`section-${sectionIndex}-hero-button`} onChange={this.onFieldChange} />
+                  <input placeholder="Hero button name" defaultValue={section.hero.button} value={section.hero.button} id={`section-${sectionIndex}-hero-button`} onChange={this.onFieldChange} />
                   <p>Hero button URL</p>
-                  <input placeholder="Hero button URL" defaultValue={section.hero.url} id={`section-${sectionIndex}-hero-url`} onChange={this.onFieldChange} />
+                  <input placeholder="Hero button URL" defaultValue={section.hero.url} value={section.hero.url} id={`section-${sectionIndex}-hero-url`} onChange={this.onFieldChange} />
 
                   <div className={styles.card}>
                     {section.hero.key_highlights ? (
                       <>
                         <b>Hero highlights</b>
                         {section.hero.key_highlights.map((highlight, highlightIndex) => (
-                          <div className={styles.card}>
-                            <b>
-Highlight
-                              {highlightIndex}
-                            </b>
+                          <div className={styles.card} key={highlightIndex}>
+                            <b>Highlight {highlightIndex}</b>
                             <p>Highlight title</p>
-                            <input placeholder="Highlight title" defaultValue={highlight.title} id={`highlight-${highlightIndex}-title`} onChange={this.onFieldChange} />
+                            <input placeholder="Highlight title" defaultValue={highlight.title} value={highlight.title} id={`highlight-${highlightIndex}-title`} onChange={this.onFieldChange} key={`${highlightIndex}-title`}/>
                             <p>Highlight description</p>
-                            <input placeholder="Highlight description" defaultValue={highlight.description} id={`highlight-${highlightIndex}-description`} onChange={this.onFieldChange} />
+                            <input placeholder="Highlight description" defaultValue={highlight.description} value={highlight.description} id={`highlight-${highlightIndex}-description`} onChange={this.onFieldChange} key={`${highlightIndex}-description`}/>
                             <p>Highlight URL</p>
-                            <input placeholder="Highlight URL" defaultValue={highlight.url} id={`highlight-${highlightIndex}-url`} onChange={this.onFieldChange} />
+                            <input placeholder="Highlight URL" defaultValue={highlight.url} value={highlight.url} id={`highlight-${highlightIndex}-url`} onChange={this.onFieldChange} key={`${highlightIndex}-url`}/>
+                            {`${highlightIndex}-url`}
+                            <button type="button" id={`highlight-${highlightIndex}-delete`} onClick={this.deleteHighlight} key={`${highlightIndex}-delete`}>Delete highlight</button>
+                            <button type="button" id={`highlight-${highlightIndex}-create`} onClick={this.createHighlight} key={`${highlightIndex}-create`}>Create highlight</button>
                           </div>
                         ))}
                       </>
@@ -206,11 +373,12 @@ Highlight
                 <div className={styles.card}>
                   <b>Resources section</b>
                   <p>Resources section title</p>
-                  <input placeholder="Resource section title" defaultValue={section.resources.title} id={`section-${sectionIndex}-resources-title`} onChange={this.onFieldChange} />
+                  <input placeholder="Resource section title" defaultValue={section.resources.title} value={section.resources.title} id={`section-${sectionIndex}-resources-title`} onChange={this.onFieldChange} />
                   <p>Resources section subtitle</p>
-                  <input placeholder="Resource section subtitle" defaultValue={section.resources.subtitle} id={`section-${sectionIndex}-resources-subtitle`} onChange={this.onFieldChange} />
+                  <input placeholder="Resource section subtitle" defaultValue={section.resources.subtitle} value={section.resources.subtitle} id={`section-${sectionIndex}-resources-subtitle`} onChange={this.onFieldChange} />
                   <p>Resources button name</p>
-                  <input placeholder="Resource button name" defaultValue={section.resources.button} id={`section-${sectionIndex}-resources-button`} onChange={this.onFieldChange} />
+                  <input placeholder="Resource button button" defaultValue={section.resources.button} value={section.resources.button} id={`section-${sectionIndex}-resources-button`} onChange={this.onFieldChange} />
+                  <button type="button" id={`section-${sectionIndex}`} onClick={this.deleteSection}>Delete section</button>
                 </div>
               ) : (
                 null
@@ -221,15 +389,16 @@ Highlight
                 <div className={styles.card}>
                   <b>Infobar section</b>
                   <p>Infobar title</p>
-                  <input placeholder="Infobar title" defaultValue={section.infobar.title} id={`section-${sectionIndex}-infobar-title`} onChange={this.onFieldChange} />
+                  <input placeholder="Infobar title" defaultValue={section.infobar.title} value={section.infobar.title} id={`section-${sectionIndex}-infobar-title`} onChange={this.onFieldChange} />
                   <p>Infobar subtitle</p>
-                  <input placeholder="Infobar subtitle" defaultValue={section.infobar.subtitle} id={`section-${sectionIndex}-infobar-subtitle`} onChange={this.onFieldChange} />
+                  <input placeholder="Infobar subtitle" defaultValue={section.infobar.subtitle} value={section.infobar.subtitle} id={`section-${sectionIndex}-infobar-subtitle`} onChange={this.onFieldChange} />
                   <p>Infobar description</p>
-                  <input placeholder="Infobar description" defaultValue={section.infobar.description} id={`section-${sectionIndex}-infobar-description`} onChange={this.onFieldChange} />
+                  <input placeholder="Infobar description" defaultValue={section.infobar.description} value={section.infobar.description} id={`section-${sectionIndex}-infobar-description`} onChange={this.onFieldChange} />
                   <p>Infobar button name</p>
-                  <input placeholder="Infobar button name" defaultValue={section.infobar.button} id={`section-${sectionIndex}-infobar-button`} onChange={this.onFieldChange} />
+                  <input placeholder="Infobar button name" defaultValue={section.infobar.button} value={section.infobar.button} id={`section-${sectionIndex}-infobar-button`} onChange={this.onFieldChange} />
                   <p>Infobar button URL</p>
-                  <input placeholder="Infobar button URL" defaultValue={section.infobar.url} id={`section-${sectionIndex}-infobar-url`} onChange={this.onFieldChange} />
+                  <input placeholder="Infobar button URL" defaultValue={section.infobar.url} value={section.infobar.url} id={`section-${sectionIndex}-infobar-url`} onChange={this.onFieldChange} />
+                  <button type="button" id={`section-${sectionIndex}`} onClick={this.deleteSection}>Delete section</button>
                 </div>
               ) : (
                 null
@@ -240,6 +409,13 @@ Highlight
 
               {/* Carousel section */}
               {/* TO-DO */}
+
+              Create new section
+              <select name="newSection" id={`section-${sectionIndex}-new`} onChange={this.createSection}>
+                <option value="">--Please choose a new section--</option>
+                <option value="infobar">Infobar</option>
+                <option value="resources">Resources</option>
+            </select>
             </>
           ))}
         </div>
