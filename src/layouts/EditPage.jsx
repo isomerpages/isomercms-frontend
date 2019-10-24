@@ -5,9 +5,8 @@ import PropTypes from 'prop-types';
 import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
 import { Base64 } from 'js-base64';
-import yaml from 'js-yaml';
 import SimplePage from '../templates/SimplePage';
-import frontMatterParser from '../utils';
+import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 
@@ -51,7 +50,7 @@ export default class EditPage extends Component {
 
       // here, we need to add the appropriate front matter before we encode
       // this part needs to be revised to include permalink and other things depending on page type
-      const upload = ['---\n', yaml.safeDump(frontMatter), '---\n', editorValue].join('');
+      const upload = concatFrontMatterMdBody(frontMatter, editorValue);
 
       const base64Content = Base64.encode(upload);
       const params = {
@@ -76,7 +75,7 @@ export default class EditPage extends Component {
       const { editorValue, frontMatter } = state;
 
       // here, we need to re-add the front matter of the markdown file
-      const upload = ['---\n', yaml.safeDump(frontMatter), '---\n', editorValue].join('');
+      const upload = concatFrontMatterMdBody(frontMatter, editorValue);
 
       // encode to Base64 for github
       const base64Content = Base64.encode(upload);
