@@ -31,12 +31,12 @@ export default class EditPage extends Component {
       });
       const { content, sha } = resp.data;
       // split the markdown into front matter and content
-      const { configObj, articleContent } = frontMatterParser(Base64.decode(content));
+      const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
       this.setState({
         content,
         sha,
-        editorValue: articleContent.trim(),
-        frontMatter: configObj,
+        editorValue: mdBody.trim(),
+        frontMatter,
       });
     } catch (err) {
       console.log(err);

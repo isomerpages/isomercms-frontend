@@ -4,14 +4,11 @@ import yaml from 'js-yaml';
 export default function frontMatterParser(content) {
   // format file to extract yaml front matter
   const results = content.split('---');
-  const articleConfig = results[1];
-  const articleContent = results[2];
-
-  // get the configs
-  const configObj = yaml.safeLoad(articleConfig);
+  const frontMatter = yaml.safeLoad(results[1]); // get the front matter as an object
+  const mdBody = results[2];
 
   return {
-    configObj,
-    articleContent,
+    frontMatter,
+    mdBody,
   };
 }
