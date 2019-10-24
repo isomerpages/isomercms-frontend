@@ -11,3 +11,21 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+span[role="presentation"] {
+  font-family: Lato,sans-serif;
+}
+
+.bp-section-pagetitle {
+  padding: 0;
+}
+
+.left-pane {
+  width: 40%;
+} 
+
+.right-pane {
+  width: 60%;
+  transform: scale(0.65);
+  transform-origin: top left;
+}

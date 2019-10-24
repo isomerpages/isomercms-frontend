@@ -17,7 +17,7 @@ export default class CollectionPages extends Component {
       const { match } = this.props;
       const { siteName, collectionName } = match.params;
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}`, {
-        withCredentials: true
+        withCredentials: true,
       });
       const pages = resp.data.collectionPages;
       this.setState({ pages });

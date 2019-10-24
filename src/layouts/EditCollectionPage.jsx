@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // import { Link } from "react-router-dom";
 import axios from 'axios';
-import base64 from 'base-64';
+import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import styles from '../styles/App.module.css';
 
@@ -32,7 +32,7 @@ export default class EditCollectionPage extends Component {
     try {
       const { match } = this.props;
       const { siteName, collectionName, fileName } = match.params;
-      const base64Content = base64.encode(this.contentBox.innerHTML);
+      const base64Content = Base64.encode(this.contentBox.innerHTML);
       const params = {
         pageName: fileName,
         content: base64Content,
@@ -52,7 +52,7 @@ export default class EditCollectionPage extends Component {
       const { match } = this.props;
       const { siteName, collectionName, fileName } = match.params;
       const { state } = this;
-      const base64Content = base64.encode(this.contentBox.innerHTML);
+      const base64Content = Base64.encode(this.contentBox.innerHTML);
       const params = { content: base64Content, sha: state.sha };
       const resp = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/${fileName}`, params, {
         withCredentials: true,
@@ -114,7 +114,7 @@ in collection
           ? (
             <>
               <div className={styles.edit} contentEditable="true" ref={(node) => { this.contentBox = node; }}>
-                {base64.decode(content)}
+                {Base64.decode(content)}
               </div>
               <button type="button" onClick={this.updatePage}>Save</button>
             </>

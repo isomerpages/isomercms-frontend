@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 // import { Link } from "react-router-dom";
 import axios from 'axios';
-import base64 from 'base-64';
 import PropTypes from 'prop-types';
-import styles from '../styles/App.module.css';
+import SimpleMDE from 'react-simplemde-editor';
+import marked from 'marked';
+import { Base64 } from 'js-base64';
+import SimplePage from '../templates/SimplePage';
+import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
+import 'easymde/dist/easymde.min.css';
+import '../styles/isomer-template.scss';
 
 export default class EditPage extends Component {
   constructor(props) {
@@ -11,6 +16,8 @@ export default class EditPage extends Component {
     this.state = {
       content: null,
       sha: null,
+      editorValue: '',
+      frontMatter: '',
     };
   }
 
@@ -22,7 +29,14 @@ export default class EditPage extends Component {
         withCredentials: true,
       });
       const { content, sha } = resp.data;
-      this.setState({ content, sha });
+      // split the markdown into front matter and content
+      const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
+      this.setState({
+        content,
+        sha,
+        editorValue: mdBody.trim(),
+        frontMatter,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -32,7 +46,13 @@ export default class EditPage extends Component {
     try {
       const { match } = this.props;
       const { siteName, fileName } = match.params;
-      const base64Content = base64.encode((this.contentBox).innerHTML);
+      const { editorValue, frontMatter } = this.state;
+
+      // here, we need to add the appropriate front matter before we encode
+      // this part needs to be revised to include permalink and other things depending on page type
+      const upload = concatFrontMatterMdBody(frontMatter, editorValue);
+
+      const base64Content = Base64.encode(upload);
       const params = {
         pageName: fileName,
         content: base64Content,
@@ -52,7 +72,13 @@ export default class EditPage extends Component {
       const { match } = this.props;
       const { siteName, fileName } = match.params;
       const { state } = this;
-      const base64Content = base64.encode((this.contentBox).innerHTML);
+      const { editorValue, frontMatter } = state;
+
+      // here, we need to re-add the front matter of the markdown file
+      const upload = concatFrontMatterMdBody(frontMatter, editorValue);
+
+      // encode to Base64 for github
+      const base64Content = Base64.encode(upload);
       const params = {
         content: base64Content,
         sha: state.sha,
@@ -102,10 +128,14 @@ export default class EditPage extends Component {
     }
   }
 
+  onEditorChange = (value) => {
+    this.setState({ editorValue: value });
+  }
+
   render() {
     const { match } = this.props;
     const { fileName } = match.params;
-    const { content, sha } = this.state;
+    const { sha, editorValue } = this.state;
     return (
       <>
         <h3>
@@ -113,28 +143,30 @@ export default class EditPage extends Component {
           {' '}
           {fileName}
         </h3>
-        { sha
-          ? (
-            <>
-              <div className={styles.edit} contentEditable="true" ref={(node) => { this.contentBox = node; }}>
-                {base64.decode(content)}
-              </div>
-              <button type="button" onClick={this.updatePage}>Save</button>
-            </>
-          )
-          : (
-            <>
-              <div className={styles.edit} contentEditable="true" ref={(node) => { this.contentBox = node; }} />
-              <button type="button" onClick={this.createPage}>Save</button>
-            </>
-          )}
-        <br />
-        <br />
-        <button type="button" onClick={this.deletePage}>Delete</button>
-        <br />
-        <br />
-        <input placeholder="New file name" ref={(node) => { this.newFileName = node; }} />
-        <button type="button" onClick={this.renamePage}>Rename</button>
+        <div className="d-flex">
+          <div className="left-pane p-3">
+            <SimpleMDE
+              onChange={this.onEditorChange}
+              value={editorValue}
+              options={{
+                hideIcons: ['preview', 'side-by-side', 'fullscreen'],
+                showIcons: ['code', 'table'],
+              }}
+            />
+            <button type="button" onClick={sha ? this.updatePage : this.createPage}>Save</button>
+            <br />
+            <br />
+            <button type="button" onClick={this.deletePage}>Delete</button>
+            <br />
+            <br />
+            <input placeholder="New file name" ref={(node) => { this.newFileName = node; }} />
+            <button type="button" onClick={this.renamePage}>Rename</button>
+          </div>
+          <div className="right-pane">
+            <SimplePage chunk={marked(editorValue)} />
+          </div>
+        </div>
+
       </>
     );
   }

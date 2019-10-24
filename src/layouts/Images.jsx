@@ -8,7 +8,7 @@ export default class Images extends Component {
     super(props);
     this.state = {
       images: [],
-      newPageName: null,
+      newImageName: '',
     };
   }
 
@@ -28,11 +28,49 @@ export default class Images extends Component {
 
   updateNewPageName = (event) => {
     event.preventDefault();
-    this.setState({ newPageName: event.target.value });
+  }
+
+  uploadImage = async (imageName, imageContent) => {
+    try {
+      const { match } = this.props;
+      const { siteName } = match.params;
+      const params = {
+        imageName,
+        content: imageContent,
+      };
+
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, params, {
+        withCredentials: true,
+      });
+
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  onImageSelect = async (event) => {
+    const imgReader = new FileReader();
+    imgReader.imgName = event.target.files[0].name;
+    imgReader.onload = () => {
+      /** Github only requires the content of the image
+       * imgReader returns  `data:image/png;base64, {fileContent}`
+       * hence the split
+       */
+
+      const imgData = imgReader.result.split(',')[1];
+      const { imgName } = imgReader;
+
+      this.setState({ newImageName: imgName, newImageContent: imgData });
+
+      // TODO
+      // this.uploadImage(imgName, imgData)
+    };
+    imgReader.readAsDataURL(event.target.files[0]);
   }
 
   render() {
-    const { images, newPageName } = this.state;
+    const { images, newImageName, newImageContent } = this.state;
     const { match } = this.props;
     const { siteName } = match.params;
     return (
@@ -67,8 +105,21 @@ export default class Images extends Component {
           ))
           : 'No images'}
         <br />
-        <input placeholder="New image name" onChange={this.updateNewPageName} />
-        <Link to={`/sites/${siteName}/images/${newPageName}`}>Create new image</Link>
+
+        <div className="d-flex">
+          <input
+            type="file"
+            onChange={this.onImageSelect}
+            accept="image/png, image/jpeg"
+          />
+          {
+            newImageContent
+              ? <img alt="" src={`data:image/jpeg;base64,${newImageContent}`} />
+              : null
+          }
+        </div>
+
+        <button type="button" onClick={this.uploadImage(newImageName, newImageContent)}>Upload new image</button>
       </div>
     );
   }
