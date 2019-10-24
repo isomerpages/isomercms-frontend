@@ -311,7 +311,7 @@ export default class EditHomepage extends Component {
         <div className="d-flex">
           <div className={`p-3 ${styles.leftPane}`}>
             {/* Site-wide configuration */}
-            <div className={styles.card}>
+            {/* <div className={styles.card}>
               <h4>
                 <b>
                 Site-wide configurations
@@ -325,17 +325,19 @@ export default class EditHomepage extends Component {
               <input placeholder="Description" defaultValue={frontmatter.description} value={frontmatter.description} id="site-description" onChange={this.onFieldChange} />
               <p>Site image</p>
               <input placeholder="Image" defaultValue={frontmatter.image} value={frontmatter.image} id="site-image" onChange={this.onFieldChange} />
-              <p>Site notification</p>
+            </div> */}
+            {/* Homepage section configurations */}
+            <div className={styles.card}>
+              <p><b>Site notification</b></p>
               <input placeholder="Notification" defaultValue={frontmatter.notification} value={frontmatter.notification} id="site-notification" onChange={this.onFieldChange} />
             </div>
-            {/* Homepage section configurations */}
             <div className={styles.card}>
               {frontmatter.sections.map((section, sectionIndex) => (
                 <>
                   {/* Hero section */}
                   {section.hero ? (
                     <>
-                      <b>Hero section</b>
+                      <p><b>Hero section</b></p>
                       <p>Hero title</p>
                       <input placeholder="Hero title" defaultValue={section.hero.title} value={section.hero.title} id={`section-${sectionIndex}-hero-title`} onChange={this.onFieldChange} />
                       <p>Hero subtitle</p>
@@ -378,7 +380,7 @@ export default class EditHomepage extends Component {
                   {/* Resources section */}
                   {section.resources ? (
                     <div className={styles.card}>
-                      <b>Resources section</b>
+                      <p><b>Resources section</b></p>
                       <p>Resources section title</p>
                       <input placeholder="Resource section title" defaultValue={section.resources.title} value={section.resources.title} id={`section-${sectionIndex}-resources-title`} onChange={this.onFieldChange} />
                       <p>Resources section subtitle</p>
@@ -394,7 +396,7 @@ export default class EditHomepage extends Component {
                   {/* Infobar section */}
                   {section.infobar ? (
                     <div className={styles.card}>
-                      <b>Infobar section</b>
+                      <p><b>Infobar section</b></p>
                       <p>Infobar title</p>
                       <input placeholder="Infobar title" defaultValue={section.infobar.title} value={section.infobar.title} id={`section-${sectionIndex}-infobar-title`} onChange={this.onFieldChange} />
                       <p>Infobar subtitle</p>
