@@ -8,3 +8,12 @@
 .card {
   padding-top: 40px;
 }
+
+.leftPane {
+  width: 40%;
+} 
+
+.rightPane {
+  transform: scale(0.8);
+  transform-origin: top left;
+}

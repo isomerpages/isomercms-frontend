@@ -1,10 +1,12 @@
+import React from 'react';
+
 const ResourcePost = () => (
     <div class="col">
         <a href="" class="is-media-card">
             <div class="media-card-plain bg-media-color-0 padding--lg">
                 <div>
                     <small class="has-text-white padding--bottom">DEMO CATEGORY</small>
-                    <h4 class="has-text-white padding--bottom--lg" style="line-height: 2.25rem"><b>TITLE</b></h4>
+                    <h4 class="has-text-white padding--bottom--lg"><b>TITLE</b></h4>
                 </div>
                 <div class="is-fluid padding--top--md description">
                     <small class="has-text-white">DATE</small>
@@ -14,7 +16,7 @@ const ResourcePost = () => (
     </div>
 )
 
-const ResourceSection = ({title, subtitle}) => (
+const TemplateResourceSection = ({title, subtitle, button}) => (
   <section class="bp-section {{ gray_container_class }}">
       <div class="bp-container">
           <div class="row">
@@ -64,4 +66,4 @@ const ResourceSection = ({title, subtitle}) => (
   </section>
 )
 
-export default ResourceSection
+export default TemplateResourceSection

@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 // import { Link } from "react-router-dom";
 import axios from 'axios';
-import base64 from 'base-64';
+import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import yaml from 'js-yaml';
-import fm from 'front-matter';
 import styles from '../styles/App.module.scss';
 import update from 'immutability-helper';
+import '../styles/isomer-template.scss';
+import TemplateHero from '../templates/homepage/Hero.jsx'
+import TemplateInfoBar from '../templates/homepage/Infobar.jsx'
+import TemplateResourcesSection from '../templates/homepage/ResourcesSection'
+import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
 
 // Section constructors
 const ResourcesSection = () => {
@@ -74,9 +78,9 @@ export default class EditHomepage extends Component {
         withCredentials: true,
       });
       const { content, sha } = resp.data;
-      const base64DecodedContent = base64.decode(content);
-      const markdownObject = fm(base64DecodedContent);
-      const frontmatter = yaml.safeLoad(markdownObject.frontmatter);
+      const base64DecodedContent = Base64.decode(content);
+      const { frontMatter: frontmatter } = frontMatterParser(base64DecodedContent);
+      console.log(frontmatter, "FRONTMATTER")
       this.setState({ frontmatter, sha });
     } catch (err) {
       console.log(err);
@@ -276,8 +280,8 @@ export default class EditHomepage extends Component {
       const { match } = this.props;
       const { siteName } = match.params;
       const frontmatter = yaml.safeDump(state.frontmatter);
-      const content = `---\n${frontmatter}\n---`;
-      const base64EncodedContent = base64.encode(content);
+      const content = concatFrontMatterMdBody(frontmatter);
+      const base64EncodedContent = Base64.encode(content);
 
       const params = {
         content: base64EncodedContent,
@@ -298,128 +302,163 @@ export default class EditHomepage extends Component {
 
   render() {
     const { frontmatter } = this.state;
+    const { siteName } = this.props.match.params;
     return (
       <>
         <h3>
           Editing homepage
         </h3>
-        {/* Site-wide configuration */}
-        <div className={styles.card}>
-          <h4>
-            <b>
-            Site-wide configurations
-            </b>
-          </h4>
-          <p>Site Title</p>
-          <input placeholder="Title" defaultValue={frontmatter.title} value={frontmatter.title} id="site-title" onChange={this.onFieldChange} />
-          <p>Site Subtitle</p>
-          <input placeholder="Subtitle" defaultValue={frontmatter.subtitle} value={frontmatter.subtitle} id="site-subtitle" onChange={this.onFieldChange} />
-          <p>Site description</p>
-          <input placeholder="Description" defaultValue={frontmatter.description} value={frontmatter.description} id="site-description" onChange={this.onFieldChange} />
-          <p>Site image</p>
-          <input placeholder="Image" defaultValue={frontmatter.image} value={frontmatter.image} id="site-image" onChange={this.onFieldChange} />
-          <p>Site notification</p>
-          <input placeholder="Notification" defaultValue={frontmatter.notification} value={frontmatter.notification} id="site-notification" onChange={this.onFieldChange} />
-        </div>
-        {/* Homepage section configurations */}
-        <div className={styles.card}>
-          {frontmatter.sections.map((section, sectionIndex) => (
-            <>
-              {/* Hero section */}
-              {section.hero ? (
+        <div className="d-flex">
+          <div className={`p-3 ${styles.leftPane}`}>
+            {/* Site-wide configuration */}
+            <div className={styles.card}>
+              <h4>
+                <b>
+                Site-wide configurations
+                </b>
+              </h4>
+              <p>Site Title</p>
+              <input placeholder="Title" defaultValue={frontmatter.title} value={frontmatter.title} id="site-title" onChange={this.onFieldChange} />
+              <p>Site Subtitle</p>
+              <input placeholder="Subtitle" defaultValue={frontmatter.subtitle} value={frontmatter.subtitle} id="site-subtitle" onChange={this.onFieldChange} />
+              <p>Site description</p>
+              <input placeholder="Description" defaultValue={frontmatter.description} value={frontmatter.description} id="site-description" onChange={this.onFieldChange} />
+              <p>Site image</p>
+              <input placeholder="Image" defaultValue={frontmatter.image} value={frontmatter.image} id="site-image" onChange={this.onFieldChange} />
+              <p>Site notification</p>
+              <input placeholder="Notification" defaultValue={frontmatter.notification} value={frontmatter.notification} id="site-notification" onChange={this.onFieldChange} />
+            </div>
+            {/* Homepage section configurations */}
+            <div className={styles.card}>
+              {frontmatter.sections.map((section, sectionIndex) => (
                 <>
-                  <b>Hero section</b>
-                  <p>Hero title</p>
-                  <input placeholder="Hero title" defaultValue={section.hero.title} value={section.hero.title} id={`section-${sectionIndex}-hero-title`} onChange={this.onFieldChange} />
-                  <p>Hero subtitle</p>
-                  <input placeholder="Hero subtitle" defaultValue={section.hero.subtitle} value={section.hero.subtitle} id={`section-${sectionIndex}-hero-subtitle`} onChange={this.onFieldChange} />
-                  <p>Hero background image</p>
-                  <input placeholder="Hero background image" defaultValue={section.hero.background} value={section.hero.background} id={`section-${sectionIndex}-hero-background`} onChange={this.onFieldChange} />
-                  <p>Hero button</p>
-                  <input placeholder="Hero button name" defaultValue={section.hero.button} value={section.hero.button} id={`section-${sectionIndex}-hero-button`} onChange={this.onFieldChange} />
-                  <p>Hero button URL</p>
-                  <input placeholder="Hero button URL" defaultValue={section.hero.url} value={section.hero.url} id={`section-${sectionIndex}-hero-url`} onChange={this.onFieldChange} />
+                  {/* Hero section */}
+                  {section.hero ? (
+                    <>
+                      <b>Hero section</b>
+                      <p>Hero title</p>
+                      <input placeholder="Hero title" defaultValue={section.hero.title} value={section.hero.title} id={`section-${sectionIndex}-hero-title`} onChange={this.onFieldChange} />
+                      <p>Hero subtitle</p>
+                      <input placeholder="Hero subtitle" defaultValue={section.hero.subtitle} value={section.hero.subtitle} id={`section-${sectionIndex}-hero-subtitle`} onChange={this.onFieldChange} />
+                      <p>Hero background image</p>
+                      <input placeholder="Hero background image" defaultValue={section.hero.background} value={section.hero.background} id={`section-${sectionIndex}-hero-background`} onChange={this.onFieldChange} />
+                      <p>Hero button</p>
+                      <input placeholder="Hero button name" defaultValue={section.hero.button} value={section.hero.button} id={`section-${sectionIndex}-hero-button`} onChange={this.onFieldChange} />
+                      <p>Hero button URL</p>
+                      <input placeholder="Hero button URL" defaultValue={section.hero.url} value={section.hero.url} id={`section-${sectionIndex}-hero-url`} onChange={this.onFieldChange} />
 
-                  <div className={styles.card}>
-                    {section.hero.key_highlights ? (
-                      <>
-                        <b>Hero highlights</b>
-                        {section.hero.key_highlights.map((highlight, highlightIndex) => (
-                          <div className={styles.card} key={highlightIndex}>
-                            <b>Highlight {highlightIndex}</b>
-                            <p>Highlight title</p>
-                            <input placeholder="Highlight title" defaultValue={highlight.title} value={highlight.title} id={`highlight-${highlightIndex}-title`} onChange={this.onFieldChange} key={`${highlightIndex}-title`}/>
-                            <p>Highlight description</p>
-                            <input placeholder="Highlight description" defaultValue={highlight.description} value={highlight.description} id={`highlight-${highlightIndex}-description`} onChange={this.onFieldChange} key={`${highlightIndex}-description`}/>
-                            <p>Highlight URL</p>
-                            <input placeholder="Highlight URL" defaultValue={highlight.url} value={highlight.url} id={`highlight-${highlightIndex}-url`} onChange={this.onFieldChange} key={`${highlightIndex}-url`}/>
-                            {`${highlightIndex}-url`}
-                            <button type="button" id={`highlight-${highlightIndex}-delete`} onClick={this.deleteHighlight} key={`${highlightIndex}-delete`}>Delete highlight</button>
-                            <button type="button" id={`highlight-${highlightIndex}-create`} onClick={this.createHighlight} key={`${highlightIndex}-create`}>Create highlight</button>
-                          </div>
-                        ))}
-                      </>
-                    ) : (
-                      null
-                    )}
-                  </div>
+                      <div className={styles.card}>
+                        {section.hero.key_highlights ? (
+                          <>
+                            <b>Hero highlights</b>
+                            {section.hero.key_highlights.map((highlight, highlightIndex) => (
+                              <div className={styles.card} key={highlightIndex}>
+                                <b>Highlight {highlightIndex}</b>
+                                <p>Highlight title</p>
+                                <input placeholder="Highlight title" defaultValue={highlight.title} value={highlight.title} id={`highlight-${highlightIndex}-title`} onChange={this.onFieldChange} key={`${highlightIndex}-title`}/>
+                                <p>Highlight description</p>
+                                <input placeholder="Highlight description" defaultValue={highlight.description} value={highlight.description} id={`highlight-${highlightIndex}-description`} onChange={this.onFieldChange} key={`${highlightIndex}-description`}/>
+                                <p>Highlight URL</p>
+                                <input placeholder="Highlight URL" defaultValue={highlight.url} value={highlight.url} id={`highlight-${highlightIndex}-url`} onChange={this.onFieldChange} key={`${highlightIndex}-url`}/>
+                                {`${highlightIndex}-url`}
+                                <button type="button" id={`highlight-${highlightIndex}-delete`} onClick={this.deleteHighlight} key={`${highlightIndex}-delete`}>Delete highlight</button>
+                                <button type="button" id={`highlight-${highlightIndex}-create`} onClick={this.createHighlight} key={`${highlightIndex}-create`}>Create highlight</button>
+                              </div>
+                            ))}
+                          </>
+                        ) : (
+                          null
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    null
+                  )}
+
+                  {/* Resources section */}
+                  {section.resources ? (
+                    <div className={styles.card}>
+                      <b>Resources section</b>
+                      <p>Resources section title</p>
+                      <input placeholder="Resource section title" defaultValue={section.resources.title} value={section.resources.title} id={`section-${sectionIndex}-resources-title`} onChange={this.onFieldChange} />
+                      <p>Resources section subtitle</p>
+                      <input placeholder="Resource section subtitle" defaultValue={section.resources.subtitle} value={section.resources.subtitle} id={`section-${sectionIndex}-resources-subtitle`} onChange={this.onFieldChange} />
+                      <p>Resources button name</p>
+                      <input placeholder="Resource button button" defaultValue={section.resources.button} value={section.resources.button} id={`section-${sectionIndex}-resources-button`} onChange={this.onFieldChange} />
+                      <button type="button" id={`section-${sectionIndex}`} onClick={this.deleteSection}>Delete section</button>
+                    </div>
+                  ) : (
+                    null
+                  )}
+
+                  {/* Infobar section */}
+                  {section.infobar ? (
+                    <div className={styles.card}>
+                      <b>Infobar section</b>
+                      <p>Infobar title</p>
+                      <input placeholder="Infobar title" defaultValue={section.infobar.title} value={section.infobar.title} id={`section-${sectionIndex}-infobar-title`} onChange={this.onFieldChange} />
+                      <p>Infobar subtitle</p>
+                      <input placeholder="Infobar subtitle" defaultValue={section.infobar.subtitle} value={section.infobar.subtitle} id={`section-${sectionIndex}-infobar-subtitle`} onChange={this.onFieldChange} />
+                      <p>Infobar description</p>
+                      <input placeholder="Infobar description" defaultValue={section.infobar.description} value={section.infobar.description} id={`section-${sectionIndex}-infobar-description`} onChange={this.onFieldChange} />
+                      <p>Infobar button name</p>
+                      <input placeholder="Infobar button name" defaultValue={section.infobar.button} value={section.infobar.button} id={`section-${sectionIndex}-infobar-button`} onChange={this.onFieldChange} />
+                      <p>Infobar button URL</p>
+                      <input placeholder="Infobar button URL" defaultValue={section.infobar.url} value={section.infobar.url} id={`section-${sectionIndex}-infobar-url`} onChange={this.onFieldChange} />
+                      <button type="button" id={`section-${sectionIndex}`} onClick={this.deleteSection}>Delete section</button>
+                    </div>
+                  ) : (
+                    null
+                  )}
+
+                  {/* Infopic section */}
+                  {/* TO-DO */}
+
+                  {/* Carousel section */}
+                  {/* TO-DO */}
+
+                  Create new section
+                  <select name="newSection" id={`section-${sectionIndex}-new`} onChange={this.createSection}>
+                    <option value="">--Please choose a new section--</option>
+                    <option value="infobar">Infobar</option>
+                    <option value="resources">Resources</option>
+                </select>
                 </>
-              ) : (
-                null
-              )}
-
-              {/* Resources section */}
-              {section.resources ? (
-                <div className={styles.card}>
-                  <b>Resources section</b>
-                  <p>Resources section title</p>
-                  <input placeholder="Resource section title" defaultValue={section.resources.title} value={section.resources.title} id={`section-${sectionIndex}-resources-title`} onChange={this.onFieldChange} />
-                  <p>Resources section subtitle</p>
-                  <input placeholder="Resource section subtitle" defaultValue={section.resources.subtitle} value={section.resources.subtitle} id={`section-${sectionIndex}-resources-subtitle`} onChange={this.onFieldChange} />
-                  <p>Resources button name</p>
-                  <input placeholder="Resource button button" defaultValue={section.resources.button} value={section.resources.button} id={`section-${sectionIndex}-resources-button`} onChange={this.onFieldChange} />
-                  <button type="button" id={`section-${sectionIndex}`} onClick={this.deleteSection}>Delete section</button>
-                </div>
-              ) : (
-                null
-              )}
-
-              {/* Infobar section */}
-              {section.infobar ? (
-                <div className={styles.card}>
-                  <b>Infobar section</b>
-                  <p>Infobar title</p>
-                  <input placeholder="Infobar title" defaultValue={section.infobar.title} value={section.infobar.title} id={`section-${sectionIndex}-infobar-title`} onChange={this.onFieldChange} />
-                  <p>Infobar subtitle</p>
-                  <input placeholder="Infobar subtitle" defaultValue={section.infobar.subtitle} value={section.infobar.subtitle} id={`section-${sectionIndex}-infobar-subtitle`} onChange={this.onFieldChange} />
-                  <p>Infobar description</p>
-                  <input placeholder="Infobar description" defaultValue={section.infobar.description} value={section.infobar.description} id={`section-${sectionIndex}-infobar-description`} onChange={this.onFieldChange} />
-                  <p>Infobar button name</p>
-                  <input placeholder="Infobar button name" defaultValue={section.infobar.button} value={section.infobar.button} id={`section-${sectionIndex}-infobar-button`} onChange={this.onFieldChange} />
-                  <p>Infobar button URL</p>
-                  <input placeholder="Infobar button URL" defaultValue={section.infobar.url} value={section.infobar.url} id={`section-${sectionIndex}-infobar-url`} onChange={this.onFieldChange} />
-                  <button type="button" id={`section-${sectionIndex}`} onClick={this.deleteSection}>Delete section</button>
-                </div>
-              ) : (
-                null
-              )}
-
-              {/* Infopic section */}
-              {/* TO-DO */}
-
-              {/* Carousel section */}
-              {/* TO-DO */}
-
-              Create new section
-              <select name="newSection" id={`section-${sectionIndex}-new`} onChange={this.createSection}>
-                <option value="">--Please choose a new section--</option>
-                <option value="infobar">Infobar</option>
-                <option value="resources">Resources</option>
-            </select>
-            </>
-          ))}
+              ))}
+            </div>
+            <button type="button" onClick={this.savePage}>Save</button>
+          </div>
+          <div className={styles.rightPane}>
+            {frontmatter.sections.map((section) => (
+              <>
+                {/* Hero section */}
+                {section.hero ? 
+                  <TemplateHero hero={section.hero} siteName={siteName}/>
+                  :
+                  null
+                }
+                {/* Resources section */}
+                {section.resources ? 
+                  <TemplateResourcesSection title={section.resources.title} subtitle={section.resources.subtitle} button={section.resources.button}/>
+                  :
+                  null
+                }
+                {/* Infobar section */}
+                {section.infobar ? 
+                  <TemplateInfoBar 
+                    title={section.infobar.title} 
+                    subtitle={section.infobar.subtitle}
+                    description={section.infobar.description} 
+                    url={section.infobar.url} 
+                    button={section.infobar.button} 
+                  />
+                  :
+                  null
+                }
+              </>
+            ))}
+          </div>
         </div>
-        <button type="button" onClick={this.savePage}>Save</button>
       </>
     );
   }

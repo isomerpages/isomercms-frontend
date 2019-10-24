@@ -1,4 +1,6 @@
-const InfoBar = ({title, subtitle, url, button}) => (
+import React from 'react';
+
+const TemplateInfoBar = ({title, subtitle, description, url, button}) => (
   <section class="bp-section">
     <div class="bp-container is-fluid">
       <div class="row">
@@ -42,4 +44,4 @@ const InfoBar = ({title, subtitle, url, button}) => (
   </section>
 )
 
-export default InfoBar
+export default TemplateInfoBar

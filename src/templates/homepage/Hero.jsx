@@ -1,3 +1,5 @@
+import React from 'react';
+
 const HeroButton = ({button, url}) => (
   <a href={`{{- site.baseurl -}}${url}`} class="bp-button is-secondary is-uppercase search-button">
     {button}
@@ -76,42 +78,49 @@ const KeyHighlights = ({highlights}) => (
   </section>
 )
 
-const Hero = ({ hero }) => (
-  <>
-    {/* Main hero banner */}
-    <section class="bp-hero bg-hero">
-      <div class="bp-hero-body">
-        <div class="bp-container margin--top--lg">
-          <div class="row is-vcentered is-centered ma">
-            <div class="col is-9 has-text-centered has-text-white">
-              <h1 class="display padding--bottom--lg margin--none">
-                <b class="is-hidden-touch">{hero.title}</b>
-                <b class="is-hidden-desktop">{hero.title}</b>
-              </h1>
-              {/* Hero subtitle */}
-              { hero.subtitle ?
-                <p class="is-hidden-mobile padding--bottom--lg">
-                  {hero.subtitle}
-                </p>
-                : 
-                null
-              }
-              {/* Hero dropdown */}
-              { hero.dropdown ? 
-                <HeroDropdown dropdown={hero.dropdown}/> :
-                <HeroButton url={hero.url} button={hero.button}/>
-              }
+const TemplateHero = ({ hero, siteName }) => {
+  let heroStyle = {
+    background: `url(https://raw.githubusercontent.com/isomerpages/${siteName}/staging${hero.background}) no-repeat top left`,
+    backgroundSize: "cover",
+    backgroundPosition: "center center",
+  }
+  return (
+    <>
+      {/* Main hero banner */}
+      <section class="bp-hero bg-hero" style={heroStyle}>
+        <div class="bp-hero-body">
+          <div class="bp-container margin--top--lg">
+            <div class="row is-vcentered is-centered ma">
+              <div class="col is-9 has-text-centered has-text-white">
+                <h1 class="display padding--bottom--lg margin--none">
+                  <b class="is-hidden-touch">{hero.title}</b>
+                  <b class="is-hidden-desktop">{hero.title}</b>
+                </h1>
+                {/* Hero subtitle */}
+                { hero.subtitle ?
+                  <p class="is-hidden-mobile padding--bottom--lg">
+                    {hero.subtitle}
+                  </p>
+                  : 
+                  null
+                }
+                {/* Hero dropdown */}
+                { hero.dropdown ? 
+                  <HeroDropdown dropdown={hero.dropdown}/> :
+                  <HeroButton url={hero.url} button={hero.button}/>
+                }
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
-    {/* Key highlights */}
-    { hero.key_highlights ? 
-      <KeyHighlights highlights={hero.key_highlights} /> :
-      null
-    }
-  </>
-)
+      </section>
+      {/* Key highlights */}
+      { hero.key_highlights ? 
+        <KeyHighlights highlights={hero.key_highlights} /> :
+        null
+      }
+    </>
+  )
+}
 
-export default Hero
+export default TemplateHero
