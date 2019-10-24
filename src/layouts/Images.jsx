@@ -119,7 +119,7 @@ export default class Images extends Component {
           }
         </div>
 
-        <button type="button" onClick={() => this.uploadImage(newImageName, newImageContent)}>Upload new image</button>
+        <button type="button" onClick={this.uploadImage(newImageName, newImageContent)}>Upload new image</button>
       </div>
     );
   }

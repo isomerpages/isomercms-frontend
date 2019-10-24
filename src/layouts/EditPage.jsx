@@ -6,7 +6,7 @@ import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
 import { Base64 } from 'js-base64';
 import yaml from 'js-yaml';
-import SimplePage from './SimplePage/SimplePage';
+import SimplePage from '../templates/SimplePage';
 import frontMatterParser from '../utils';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
