@@ -163,7 +163,7 @@ export default class EditPage extends Component {
             <button type="button" onClick={this.renamePage}>Rename</button>
           </div>
           <div className="right-pane">
-            <section className="bp-section is-small bp-section-pagetitle" style={{ width: '125%' }}>
+            <section className="bp-section is-small bp-section-pagetitle" style={{ width: `${100 / 0.65}%` }}>
               <div className="bp-container ">
                 <div className="row">
                   <div className="col">
