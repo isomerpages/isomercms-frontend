@@ -150,6 +150,7 @@ export default class EditPage extends Component {
               onChange={this.onEditorChange}
               value={editorValue}
               options={{
+                hideIcons: ['preview', 'side-by-side', 'fullscreen'],
                 showIcons: ['code', 'table'],
               }}
             />
@@ -162,7 +163,7 @@ export default class EditPage extends Component {
             <input placeholder="New file name" ref={(node) => { this.newFileName = node; }} />
             <button type="button" onClick={this.renamePage}>Rename</button>
           </div>
-          <div className="right-pane zoom">
+          <div className="right-pane">
             <section className="bp-section is-small bp-section-pagetitle">
               <div className="bp-container ">
                 <div className="row">

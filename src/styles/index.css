@@ -16,9 +16,8 @@ span[role="presentation"] {
   font-family: Lato,sans-serif;
 }
 
-
-.zoom {
-  zoom: 90%;
+.bp-section-pagetitle {
+  padding: 0;
 }
 
 .left-pane {
@@ -27,4 +26,5 @@ span[role="presentation"] {
 
 .right-pane {
   width: 60%;
+  zoom: 85%;
 }
