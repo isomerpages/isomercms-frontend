@@ -116,18 +116,13 @@ export default class EditImage extends Component {
         { sha
           ? (
             <>
-              <div className={styles.edit} contentEditable="true" ref={(node) => { this.contentBox = node; }}>
-                {Base64.decode(content)}
-              </div>
-              <button type="button" onClick={this.updatePage}>Save</button>
+              <img alt="" src={`data:image/jpeg;base64,${content}`} />
             </>
           )
           : (
-            <>
-              <div className={styles.edit} contentEditable="true" ref={(node) => { this.contentBox = node; }} />
-              <button type="button" onClick={this.createPage}>Save</button>
-            </>
+            <p>No Images loaded</p>
           )}
+        <button type="button" onClick={sha ? this.updatePage : this.createPage}>Save</button>
         <br />
         <br />
         <button type="button" onClick={this.deletePage}>Delete</button>
