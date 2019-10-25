@@ -14,7 +14,7 @@ import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
 import { EditorInfobarSection, EditorResourcesSection, EditorHeroSection } from '../components/editor/Homepage'
 
 // Section constructors
-const ResourcesSection = () => {
+const ResourcesSectionConstructor = () => {
   return {
     resources: {
       title: 'TITLE',
@@ -24,7 +24,7 @@ const ResourcesSection = () => {
   }
 }
 
-const InfoBarSection = () => {
+const InfobarSectionConstructor = () => {
   return {
     infobar: {
       title: 'TITLE',
@@ -36,7 +36,7 @@ const InfoBarSection = () => {
   }
 }
 
-const KeyHighlightSection = () => {
+const KeyHighlightConstructor = () => {
   return {
     title: 'TITLE',
     description: 'DESCRIPTION',
@@ -46,12 +46,12 @@ const KeyHighlightSection = () => {
 
 const enumSection = (type) => {
   switch(type) {
-    case (type === 'resources'):
-      return ResourcesSection()
-    case (type === 'infobar'):
-      return InfoBarSection()
+    case 'resources':
+      return ResourcesSectionConstructor()
+    case 'infobar':
+      return InfobarSectionConstructor()
     default:
-      return InfoBarSection()
+      return InfobarSectionConstructor()
   }
 }
 
@@ -73,6 +73,7 @@ export default class EditHomepage extends Component {
         sections: [],
       },
       sha: null,
+      hasResources: false,
     };
   }
 
@@ -86,8 +87,14 @@ export default class EditHomepage extends Component {
       const { content, sha } = resp.data;
       const base64DecodedContent = Base64.decode(content);
       const { frontMatter: frontmatter } = frontMatterParser(base64DecodedContent);
-      console.log(frontmatter, "FRONTMATTER")
-      this.setState({ frontmatter, sha });
+
+      // Compute hasResources 
+      let hasResources = false
+      frontmatter.sections.forEach(section => {
+        if (section.resources) hasResources = true
+      })
+
+      this.setState({ frontmatter, sha, hasResources });
     } catch (err) {
       console.log(err);
     }
@@ -160,7 +167,7 @@ export default class EditHomepage extends Component {
       const idArray = id.split('-');
       if (idArray[0] !== 'highlight') throw new Error('')
       const highlightIndex = parseInt(idArray[1]) + 1
-      const keyHighlight = KeyHighlightSection()
+      const keyHighlight = KeyHighlightConstructor()
 
       const { frontmatter } = this.state
       const newSections = update(frontmatter.sections, {
@@ -233,6 +240,12 @@ export default class EditHomepage extends Component {
       const sectionIndex = parseInt(idArray[1]) + 1
       const sectionType = enumSection(value)
 
+      // The Isomer site can only have 1 resources section in the homepage
+      // Set hasResources to prevent the creation of more resources sections
+      if (value === 'resources') {
+        this.setState({hasResources: true})
+      }
+
       const { frontmatter } = this.state
       const newSections = update(frontmatter.sections, {
         $splice: [[sectionIndex, 0, sectionType]]
@@ -254,12 +267,17 @@ export default class EditHomepage extends Component {
 
   deleteSection = async (event) => {
     try {
-      const { id } = event.target
+      const { id, value } = event.target
 
       // Verify that the target id is of the format `section-${sectionIndex}`
       const idArray = id.split('-');
       if (idArray[0] !== 'section') throw new Error('')
       const sectionIndex = parseInt(idArray[1])
+
+      // Set hasResources to false to allow users to create a resources section
+      if (this.state.frontmatter.sections[sectionIndex].resources) {
+        this.setState({hasResources: false})
+      }
 
       const { frontmatter } = this.state
       const newSections = update(frontmatter.sections, {
@@ -307,7 +325,7 @@ export default class EditHomepage extends Component {
   }
 
   render() {
-    const { frontmatter } = this.state;
+    const { frontmatter, hasResources } = this.state;
     const { siteName } = this.props.match.params;
     return (
       <>
@@ -395,10 +413,16 @@ export default class EditHomepage extends Component {
                   {/* TO-DO */}
 
                   Create new section
+                  <br />
                   <select name="newSection" id={`section-${sectionIndex}-new`} onChange={this.createSection}>
                     <option value="">--Please choose a new section--</option>
                     <option value="infobar">Infobar</option>
-                    <option value="resources">Resources</option>
+                    {/* If homepage already has a Resources section, don't display the option to create one */}
+                    {this.state.hasResources ?
+                      null
+                      :
+                      <option value="resources">Resources</option>
+                    }
                 </select>
                 </>
               ))}

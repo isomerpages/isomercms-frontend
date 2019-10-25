@@ -1,6 +1,9 @@
 import React from 'react';
 import styles from '../../styles/App.module.scss';
 
+// Constants
+const MAX_NUM_KEY_HIGHLIGHTS = 4
+
 const EditorInfobarSection = ({title, subtitle, description, button, url, sectionIndex, deleteSection, onFieldChange}) => (
   <div className={styles.card}>
     <p><b>Infobar section</b></p>
@@ -14,6 +17,7 @@ const EditorInfobarSection = ({title, subtitle, description, button, url, sectio
     <input placeholder="Infobar button name" defaultValue={button} value={button} id={`section-${sectionIndex}-infobar-button`} onChange={onFieldChange} />
     <p>Infobar button URL</p>
     <input placeholder="Infobar button URL" defaultValue={url} value={url} id={`section-${sectionIndex}-infobar-url`} onChange={onFieldChange} />
+    <br />
     <button type="button" id={`section-${sectionIndex}`} onClick={deleteSection}>Delete section</button>
   </div>
 )
@@ -27,11 +31,12 @@ const EditorResourcesSection = ({title, subtitle, button, sectionIndex, deleteSe
     <input placeholder="Resource section subtitle" defaultValue={subtitle} value={subtitle} id={`section-${sectionIndex}-resources-subtitle`} onChange={onFieldChange} />
     <p>Resources button name</p>
     <input placeholder="Resource button button" defaultValue={button} value={button} id={`section-${sectionIndex}-resources-button`} onChange={onFieldChange} />
+    <br />
     <button type="button" id={`section-${sectionIndex}`} onClick={deleteSection}>Delete section</button>
   </div>
 )
 
-const KeyHighlight = ({title, description, url, highlightIndex, deleteHighlight, createHighlight, onFieldChange}) => (
+const KeyHighlight = ({title, description, url, highlightIndex, deleteHighlight, createHighlight, onFieldChange, allowMoreHighlights}) => (
   <div className={styles.card} key={highlightIndex}>
     <b>Highlight {highlightIndex}</b>
     <p>Highlight title</p>
@@ -40,9 +45,13 @@ const KeyHighlight = ({title, description, url, highlightIndex, deleteHighlight,
     <input placeholder="Highlight description" defaultValue={description} value={description} id={`highlight-${highlightIndex}-description`} onChange={onFieldChange} key={`${highlightIndex}-description`}/>
     <p>Highlight URL</p>
     <input placeholder="Highlight URL" defaultValue={url} value={url} id={`highlight-${highlightIndex}-url`} onChange={onFieldChange} key={`${highlightIndex}-url`}/>
-    {`${highlightIndex}-url`}
+    <br />
     <button type="button" id={`highlight-${highlightIndex}-delete`} onClick={deleteHighlight} key={`${highlightIndex}-delete`}>Delete highlight</button>
-    <button type="button" id={`highlight-${highlightIndex}-create`} onClick={createHighlight} key={`${highlightIndex}-create`}>Create highlight</button>
+    {allowMoreHighlights ?
+      <button type="button" id={`highlight-${highlightIndex}-create`} onClick={createHighlight} key={`${highlightIndex}-create`}>Create highlight</button>
+      :
+      null
+    }
   </div>
 )
 
@@ -68,14 +77,14 @@ const EditorHeroSection = ({title, subtitle, background, button, url, sectionInd
             <div className={styles.card} key={highlightIndex}>
               <KeyHighlight
                 title={highlight.title}
-                subtitle={highlight.subtitle}
+                description={highlight.description}
                 background={highlight.background}
-                button={highlight.button}
-                url={highlight.button}
-                sectionIndex={sectionIndex}
+                url={highlight.url}
+                highlightIndex={highlightIndex}
                 deleteHighlight={deleteHighlight}
                 createHighlight={createHighlight}
                 onFieldChange={onFieldChange}
+                allowMoreHighlights={highlights.length < MAX_NUM_KEY_HIGHLIGHTS}
               />
             </div>
           ))}
