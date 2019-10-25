@@ -1,10 +1,17 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styles from '../../styles/App.module.scss';
 
-// Constants
-const MAX_NUM_KEY_HIGHLIGHTS = 4
+/* eslint
+  react/no-array-index-key: 0
+ */
 
-const EditorInfobarSection = ({title, subtitle, description, button, url, sectionIndex, deleteSection, onFieldChange}) => (
+// Constants
+const MAX_NUM_KEY_HIGHLIGHTS = 4;
+
+const EditorInfobarSection = ({
+  title, subtitle, description, button, url, sectionIndex, deleteSection, onFieldChange,
+}) => (
   <div className={styles.card}>
     <p><b>Infobar section</b></p>
     <p>Infobar title</p>
@@ -20,9 +27,11 @@ const EditorInfobarSection = ({title, subtitle, description, button, url, sectio
     <br />
     <button type="button" id={`section-${sectionIndex}`} onClick={deleteSection}>Delete section</button>
   </div>
-)
+);
 
-const EditorResourcesSection = ({title, subtitle, button, sectionIndex, deleteSection, onFieldChange}) => (
+const EditorResourcesSection = ({
+  title, subtitle, button, sectionIndex, deleteSection, onFieldChange,
+}) => (
   <div className={styles.card}>
     <p><b>Resources section</b></p>
     <p>Resources section title</p>
@@ -34,28 +43,49 @@ const EditorResourcesSection = ({title, subtitle, button, sectionIndex, deleteSe
     <br />
     <button type="button" id={`section-${sectionIndex}`} onClick={deleteSection}>Delete section</button>
   </div>
-)
+);
 
-const KeyHighlight = ({title, description, url, highlightIndex, deleteHighlight, createHighlight, onFieldChange, allowMoreHighlights}) => (
+const KeyHighlight = ({
+  title,
+  description,
+  url,
+  highlightIndex,
+  deleteHighlight,
+  createHighlight,
+  onFieldChange,
+  allowMoreHighlights,
+}) => (
   <div className={styles.card} key={highlightIndex}>
-    <b>Highlight {highlightIndex}</b>
+    <b>
+Highlight
+      {highlightIndex}
+    </b>
     <p>Highlight title</p>
-    <input placeholder="Highlight title" defaultValue={title} value={title} id={`highlight-${highlightIndex}-title`} onChange={onFieldChange} key={`${highlightIndex}-title`}/>
+    <input placeholder="Highlight title" defaultValue={title} value={title} id={`highlight-${highlightIndex}-title`} onChange={onFieldChange} key={`${highlightIndex}-title`} />
     <p>Highlight description</p>
-    <input placeholder="Highlight description" defaultValue={description} value={description} id={`highlight-${highlightIndex}-description`} onChange={onFieldChange} key={`${highlightIndex}-description`}/>
+    <input placeholder="Highlight description" defaultValue={description} value={description} id={`highlight-${highlightIndex}-description`} onChange={onFieldChange} key={`${highlightIndex}-description`} />
     <p>Highlight URL</p>
-    <input placeholder="Highlight URL" defaultValue={url} value={url} id={`highlight-${highlightIndex}-url`} onChange={onFieldChange} key={`${highlightIndex}-url`}/>
+    <input placeholder="Highlight URL" defaultValue={url} value={url} id={`highlight-${highlightIndex}-url`} onChange={onFieldChange} key={`${highlightIndex}-url`} />
     <br />
     <button type="button" id={`highlight-${highlightIndex}-delete`} onClick={deleteHighlight} key={`${highlightIndex}-delete`}>Delete highlight</button>
-    {allowMoreHighlights ?
-      <button type="button" id={`highlight-${highlightIndex}-create`} onClick={createHighlight} key={`${highlightIndex}-create`}>Create highlight</button>
-      :
-      null
-    }
+    {allowMoreHighlights
+      ? <button type="button" id={`highlight-${highlightIndex}-create`} onClick={createHighlight} key={`${highlightIndex}-create`}>Create highlight</button>
+      : null}
   </div>
-)
+);
 
-const EditorHeroSection = ({title, subtitle, background, button, url, sectionIndex, highlights, onFieldChange, createHighlight, deleteHighlight}) => (
+const EditorHeroSection = ({
+  title,
+  subtitle,
+  background,
+  button,
+  url,
+  sectionIndex,
+  highlights,
+  onFieldChange,
+  createHighlight,
+  deleteHighlight,
+}) => (
   <>
     <p><b>Hero section</b></p>
     <p>Hero title</p>
@@ -94,6 +124,65 @@ const EditorHeroSection = ({title, subtitle, background, button, url, sectionInd
       )}
     </div>
   </>
-)
+);
 
-export { EditorInfobarSection, EditorResourcesSection, EditorHeroSection }
+export { EditorInfobarSection, EditorResourcesSection, EditorHeroSection };
+
+EditorInfobarSection.propTypes = {
+  title: PropTypes.string.isRequired,
+  subtitle: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  sectionIndex: PropTypes.number.isRequired,
+  button: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
+  onFieldChange: PropTypes.func.isRequired,
+  deleteSection: PropTypes.func.isRequired,
+};
+
+EditorResourcesSection.propTypes = {
+  title: PropTypes.string.isRequired,
+  subtitle: PropTypes.string.isRequired,
+  sectionIndex: PropTypes.number.isRequired,
+  button: PropTypes.string.isRequired,
+  onFieldChange: PropTypes.func.isRequired,
+  deleteSection: PropTypes.func.isRequired,
+};
+
+KeyHighlight.propTypes = {
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
+  highlightIndex: PropTypes.number.isRequired,
+  deleteHighlight: PropTypes.func.isRequired,
+  createHighlight: PropTypes.func.isRequired,
+  onFieldChange: PropTypes.func.isRequired,
+  allowMoreHighlights: PropTypes.bool.isRequired,
+};
+
+EditorHeroSection.propTypes = {
+  title: PropTypes.string.isRequired,
+  subtitle: PropTypes.string.isRequired,
+  background: PropTypes.string.isRequired,
+  button: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
+  sectionIndex: PropTypes.number.isRequired,
+  highlights: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+      url: PropTypes.string.isRequired,
+      highlightIndex: PropTypes.number.isRequired,
+      deleteHighlight: PropTypes.func.isRequired,
+      createHighlight: PropTypes.func.isRequired,
+      onFieldChange: PropTypes.func.isRequired,
+      allowMoreHighlights: PropTypes.bool.isRequired,
+    }),
+  ),
+  onFieldChange: PropTypes.func.isRequired,
+  createHighlight: PropTypes.func.isRequired,
+  deleteHighlight: PropTypes.func.isRequired,
+};
+
+EditorHeroSection.defaultProps = {
+  highlights: undefined,
+};

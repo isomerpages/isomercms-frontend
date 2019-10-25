@@ -4,65 +4,62 @@ import axios from 'axios';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import yaml from 'js-yaml';
-import styles from '../styles/App.module.scss';
 import update from 'immutability-helper';
+import styles from '../styles/App.module.scss';
 import '../styles/isomer-template.scss';
-import TemplateHeroSection from '../templates/homepage/HeroSection'
-import TemplateInfobarSection from '../templates/homepage/InfobarSection'
-import TemplateResourcesSection from '../templates/homepage/ResourcesSection'
+import TemplateHeroSection from '../templates/homepage/HeroSection';
+import TemplateInfobarSection from '../templates/homepage/InfobarSection';
+import TemplateResourcesSection from '../templates/homepage/ResourcesSection';
 import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
-import { EditorInfobarSection, EditorResourcesSection, EditorHeroSection } from '../components/editor/Homepage'
+import { EditorInfobarSection, EditorResourcesSection, EditorHeroSection } from '../components/editor/Homepage';
+
+// Constants
+const RADIX_PARSE_INT = 10;
 
 // Section constructors
-const ResourcesSectionConstructor = () => {
-  return {
-    resources: {
-      title: 'TITLE',
-      subtitle: 'SUBTITLE',
-      button: 'BUTTON'
-    }
-  }
-}
-
-const InfobarSectionConstructor = () => {
-  return {
-    infobar: {
-      title: 'TITLE',
-      subtitle: 'SUBTITLE',
-      description: 'DESCRIPTION',
-      button: 'BUTTON',
-      url: 'URL'
-    }
-  }
-}
-
-const KeyHighlightConstructor = () => {
-  return {
+const ResourcesSectionConstructor = () => ({
+  resources: {
     title: 'TITLE',
+    subtitle: 'SUBTITLE',
+    button: 'BUTTON',
+  },
+});
+
+const InfobarSectionConstructor = () => ({
+  infobar: {
+    title: 'TITLE',
+    subtitle: 'SUBTITLE',
     description: 'DESCRIPTION',
-    url: 'URL'
-  }
-}
+    button: 'BUTTON',
+    url: 'URL',
+  },
+});
+
+const KeyHighlightConstructor = () => ({
+  title: 'TITLE',
+  description: 'DESCRIPTION',
+  url: 'URL',
+});
 
 const enumSection = (type) => {
-  switch(type) {
+  switch (type) {
     case 'resources':
-      return ResourcesSectionConstructor()
+      return ResourcesSectionConstructor();
     case 'infobar':
-      return InfobarSectionConstructor()
+      return InfobarSectionConstructor();
     default:
-      return InfobarSectionConstructor()
+      return InfobarSectionConstructor();
   }
-}
+};
 
 export default class EditHomepage extends Component {
   constructor(props) {
     super(props);
-    this.createHighlight = this.createHighlight.bind(this)
-    this.deleteHighlight = this.deleteHighlight.bind(this)
-    this.createSection = this.createSection.bind(this)
-    this.deleteSection = this.deleteSection.bind(this)
-    this.onFieldChange = this.onFieldChange.bind(this)
+    this.createHighlight = this.createHighlight.bind(this);
+    this.deleteHighlight = this.deleteHighlight.bind(this);
+    this.createSection = this.createSection.bind(this);
+    this.deleteSection = this.deleteSection.bind(this);
+    this.onFieldChange = this.onFieldChange.bind(this);
     this.state = {
       frontmatter: {
         title: '',
@@ -88,11 +85,11 @@ export default class EditHomepage extends Component {
       const base64DecodedContent = Base64.decode(content);
       const { frontMatter: frontmatter } = frontMatterParser(base64DecodedContent);
 
-      // Compute hasResources 
-      let hasResources = false
-      frontmatter.sections.forEach(section => {
-        if (section.resources) hasResources = true
-      })
+      // Compute hasResources
+      let hasResources = false;
+      frontmatter.sections.forEach((section) => {
+        if (section.resources) hasResources = true;
+      });
 
       this.setState({ frontmatter, sha, hasResources });
     } catch (err) {
@@ -108,7 +105,7 @@ export default class EditHomepage extends Component {
       if (idArray[0] === 'site') {
         // The field that changed belongs to a site-wide config
         const field = idArray[1]; // e.g. "title" or "subtitle"
-  
+
         this.setState((currState) => ({
           ...currState,
           frontmatter: {
@@ -119,14 +116,14 @@ export default class EditHomepage extends Component {
       } else if (idArray[0] === 'section') {
         // The field that changed belongs to a homepage section config
         const { sections } = state.frontmatter;
-  
+
         // sectionIndex is the index of the section array in the frontmatter
-        const sectionIndex = parseInt(idArray[1], 10);
+        const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT);
         const sectionType = idArray[2]; // e.g. "hero" or "infobar" or "resources"
         const field = idArray[3]; // e.g. "title" or "subtitle"
-  
+
         sections[sectionIndex][sectionType][field] = value;
-  
+
         this.setState((currState) => ({
           ...currState,
           frontmatter: {
@@ -138,9 +135,9 @@ export default class EditHomepage extends Component {
         // The field that changed belongs to a hero highlight
         const { sections } = state.frontmatter;
         const highlights = state.frontmatter.sections[0].hero.key_highlights;
-  
+
         // highlightsIndex is the index of the key_highlights array
-        const highlightsIndex = parseInt(idArray[1], 10);
+        const highlightsIndex = parseInt(idArray[1], RADIX_PARSE_INT);
         const field = idArray[2]; // e.g. "title" or "url"
 
         highlights[highlightsIndex][field] = value;
@@ -155,146 +152,136 @@ export default class EditHomepage extends Component {
         }), () => console.log(this.state));
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
-  
+
   createHighlight = async (event) => {
     try {
-      const { id } = event.target
+      const { id } = event.target;
 
       // Verify that the target id is of the format `highlight-${highlightIndex}`
       const idArray = id.split('-');
-      if (idArray[0] !== 'highlight') throw new Error('')
-      const highlightIndex = parseInt(idArray[1]) + 1
-      const keyHighlight = KeyHighlightConstructor()
+      if (idArray[0] !== 'highlight') throw new Error('');
+      const highlightIndex = parseInt(idArray[1], 10) + 1;
+      const keyHighlight = KeyHighlightConstructor();
 
-      const { frontmatter } = this.state
+      const { frontmatter } = this.state;
       const newSections = update(frontmatter.sections, {
         0: {
           hero: {
             key_highlights: {
-              $splice: [[highlightIndex, 0, keyHighlight]]
-            }
-          }
-        }
-      })
+              $splice: [[highlightIndex, 0, keyHighlight]],
+            },
+          },
+        },
+      });
 
-      this.setState((currState) => {
-        return {
-          ...currState,
-          frontmatter: {
-            ...currState.frontmatter,
-            sections: newSections
-          }
-        }
-      })
-
+      this.setState((currState) => ({
+        ...currState,
+        frontmatter: {
+          ...currState.frontmatter,
+          sections: newSections,
+        },
+      }));
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
 
   deleteHighlight = async (event) => {
     try {
-      const { id } = event.target
+      const { id } = event.target;
 
       // Verify that the target id is of the format `highlight-${highlightIndex}`
       const idArray = id.split('-');
-      if (idArray[0] !== 'highlight') throw new Error('')
-      const highlightIndex = parseInt(idArray[1])
+      if (idArray[0] !== 'highlight') throw new Error('');
+      const highlightIndex = parseInt(idArray[1], 10);
 
-      const { frontmatter } = this.state
+      const { frontmatter } = this.state;
       const newSections = update(frontmatter.sections, {
         0: {
           hero: {
             key_highlights: {
-              $splice: [[highlightIndex, 1]]
-            }
-          }
-        }
-      })
-  
-      await this.setState((currState) => {
-        return {
-          ...currState,
-          frontmatter: {
-            ...currState.frontmatter,
-            sections: newSections
-          }
-        }
-      })
+              $splice: [[highlightIndex, 1]],
+            },
+          },
+        },
+      });
 
+      await this.setState((currState) => ({
+        ...currState,
+        frontmatter: {
+          ...currState.frontmatter,
+          sections: newSections,
+        },
+      }));
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
 
   createSection = async (event) => {
     try {
-      const { id, value } = event.target
+      const { id, value } = event.target;
 
       // Verify that the target id is of the format `section-${sectionIndex}`
       const idArray = id.split('-');
-      if (idArray[0] !== 'section') throw new Error('')
-      const sectionIndex = parseInt(idArray[1]) + 1
-      const sectionType = enumSection(value)
+      if (idArray[0] !== 'section') throw new Error('');
+      const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT) + 1;
+      const sectionType = enumSection(value);
 
       // The Isomer site can only have 1 resources section in the homepage
       // Set hasResources to prevent the creation of more resources sections
       if (value === 'resources') {
-        this.setState({hasResources: true})
+        this.setState({ hasResources: true });
       }
 
-      const { frontmatter } = this.state
+      const { frontmatter } = this.state;
       const newSections = update(frontmatter.sections, {
-        $splice: [[sectionIndex, 0, sectionType]]
-      })
+        $splice: [[sectionIndex, 0, sectionType]],
+      });
 
-      this.setState((currState) => {
-        return {
-          ...currState,
-          frontmatter: {
-            ...currState.frontmatter,
-            sections: newSections
-          }
-        }
-      })
+      this.setState((currState) => ({
+        ...currState,
+        frontmatter: {
+          ...currState.frontmatter,
+          sections: newSections,
+        },
+      }));
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
 
   deleteSection = async (event) => {
     try {
-      const { id, value } = event.target
+      const { id } = event.target;
+      const { frontmatter } = this.state;
 
       // Verify that the target id is of the format `section-${sectionIndex}`
       const idArray = id.split('-');
-      if (idArray[0] !== 'section') throw new Error('')
-      const sectionIndex = parseInt(idArray[1])
+      if (idArray[0] !== 'section') throw new Error('');
+      const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT);
 
       // Set hasResources to false to allow users to create a resources section
-      if (this.state.frontmatter.sections[sectionIndex].resources) {
-        this.setState({hasResources: false})
+      if (frontmatter.sections[sectionIndex].resources) {
+        this.setState({ hasResources: false });
       }
 
-      const { frontmatter } = this.state
       const newSections = update(frontmatter.sections, {
-        $splice: [[sectionIndex, 1]]
-      })
+        $splice: [[sectionIndex, 1]],
+      });
 
-      this.setState((currState) => {
-        return {
-          ...currState,
-          frontmatter: {
-            ...currState.frontmatter,
-            sections: newSections
-          }
-        }
-      })
+      this.setState((currState) => ({
+        ...currState,
+        frontmatter: {
+          ...currState.frontmatter,
+          sections: newSections,
+        },
+      }));
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
 
@@ -326,7 +313,8 @@ export default class EditHomepage extends Component {
 
   render() {
     const { frontmatter, hasResources } = this.state;
-    const { siteName } = this.props.match.params;
+    const { match } = this.props;
+    const { siteName } = match.params;
     return (
       <>
         <h3>
@@ -342,13 +330,37 @@ export default class EditHomepage extends Component {
                 </b>
               </h4>
               <p>Site Title</p>
-              <input placeholder="Title" defaultValue={frontmatter.title} value={frontmatter.title} id="site-title" onChange={this.onFieldChange} />
+              <input
+                placeholder="Title"
+                defaultValue={frontmatter.title}
+                value={frontmatter.title}
+                id="site-title"
+                onChange={this.onFieldChange}
+              />
               <p>Site Subtitle</p>
-              <input placeholder="Subtitle" defaultValue={frontmatter.subtitle} value={frontmatter.subtitle} id="site-subtitle" onChange={this.onFieldChange} />
+              <input
+                placeholder="Subtitle"
+                defaultValue={frontmatter.subtitle}
+                value={frontmatter.subtitle}
+                id="site-subtitle"
+                onChange={this.onFieldChange}
+              />
               <p>Site description</p>
-              <input placeholder="Description" defaultValue={frontmatter.description} value={frontmatter.description} id="site-description" onChange={this.onFieldChange} />
+              <input
+                placeholder="Description"
+                defaultValue={frontmatter.description}
+                value={frontmatter.description}
+                id="site-description"
+                onChange={this.onFieldChange}
+              />
               <p>Site image</p>
-              <input placeholder="Image" defaultValue={frontmatter.image} value={frontmatter.image} id="site-image" onChange={this.onFieldChange} />
+              <input
+                placeholder="Image"
+                defaultValue={frontmatter.image}
+                value={frontmatter.image}
+                id="site-image"
+                onChange={this.onFieldChange}
+              />
             </div> */}
             {/* Homepage section configurations */}
             <div className={styles.card}>
@@ -378,7 +390,7 @@ export default class EditHomepage extends Component {
 
                   {/* Resources section */}
                   {section.resources ? (
-                    <EditorResourcesSection 
+                    <EditorResourcesSection
                       title={section.resources.title}
                       subtitle={section.resources.subtitle}
                       button={section.resources.button}
@@ -417,13 +429,12 @@ export default class EditHomepage extends Component {
                   <select name="newSection" id={`section-${sectionIndex}-new`} onChange={this.createSection}>
                     <option value="">--Please choose a new section--</option>
                     <option value="infobar">Infobar</option>
-                    {/* If homepage already has a Resources section, don't display the option to create one */}
-                    {this.state.hasResources ?
-                      null
-                      :
-                      <option value="resources">Resources</option>
-                    }
-                </select>
+                    {/* If homepage already has a Resources section,
+                      don't display the option to create one */}
+                    {hasResources
+                      ? null
+                      : <option value="resources">Resources</option>}
+                  </select>
                 </>
               ))}
             </div>
@@ -434,38 +445,38 @@ export default class EditHomepage extends Component {
             {frontmatter.sections.map((section, sectionIndex) => (
               <>
                 {/* Hero section */}
-                {section.hero ? 
-                  <TemplateHeroSection 
-                    hero={section.hero} 
-                    siteName={siteName}
-                  />
-                  :
-                  null
-                }
+                {section.hero
+                  ? (
+                    <TemplateHeroSection
+                      hero={section.hero}
+                      siteName={siteName}
+                    />
+                  )
+                  : null}
                 {/* Resources section */}
-                {section.resources ? 
-                  <TemplateResourcesSection 
-                    title={section.resources.title} 
-                    subtitle={section.resources.subtitle} 
-                    button={section.resources.button} 
-                    sectionIndex={sectionIndex}
-                  />
-                  :
-                  null
-                }
+                {section.resources
+                  ? (
+                    <TemplateResourcesSection
+                      title={section.resources.title}
+                      subtitle={section.resources.subtitle}
+                      button={section.resources.button}
+                      sectionIndex={sectionIndex}
+                    />
+                  )
+                  : null}
                 {/* Infobar section */}
-                {section.infobar ? 
-                  <TemplateInfobarSection 
-                    title={section.infobar.title} 
-                    subtitle={section.infobar.subtitle}
-                    description={section.infobar.description} 
-                    url={section.infobar.url} 
-                    button={section.infobar.button}
-                    sectionIndex={sectionIndex}
-                  />
-                  :
-                  null
-                }
+                {section.infobar
+                  ? (
+                    <TemplateInfobarSection
+                      title={section.infobar.title}
+                      subtitle={section.infobar.subtitle}
+                      description={section.infobar.description}
+                      url={section.infobar.url}
+                      button={section.infobar.button}
+                      sectionIndex={sectionIndex}
+                    />
+                  )
+                  : null}
               </>
             ))}
           </div>
