@@ -102,6 +102,7 @@ export default class EditHomepage extends Component {
       const { state } = this;
       const { id, value } = event.target;
       const idArray = id.split('-');
+
       if (idArray[0] === 'site') {
         // The field that changed belongs to a site-wide config
         const field = idArray[1]; // e.g. "title" or "subtitle"
@@ -131,10 +132,10 @@ export default class EditHomepage extends Component {
             sections,
           },
         }));
-      } else {
+      } else if (idArray[0] === 'highlight') {
         // The field that changed belongs to a hero highlight
         const { sections } = state.frontmatter;
-        const highlights = state.frontmatter.sections[0].hero.key_highlights;
+        const highlights = sections[0].hero.key_highlights;
 
         // highlightsIndex is the index of the key_highlights array
         const highlightsIndex = parseInt(idArray[1], RADIX_PARSE_INT);
@@ -149,7 +150,29 @@ export default class EditHomepage extends Component {
             ...currState.frontmatter,
             sections,
           },
-        }), () => console.log(this.state));
+        }));
+      } else if (idArray[0] === 'dropdownelem') {
+        // The field that changed is a dropdown element (i.e. dropdownelem)
+        const { sections } = state.frontmatter;
+        const dropdowns = sections[0].hero.dropdown.options;
+
+        // dropdownsIndex is the index of the dropdown.options array
+        const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT);
+        const field = idArray[2]; // e.g. "title" or "url"
+
+        dropdowns[dropdownsIndex][field] = value;
+        sections[0].hero.dropdown.options = dropdowns
+
+        this.setState((currState) => ({
+          ...currState,
+          frontmatter: {
+            ...currState.frontmatter,
+            sections,
+          },
+        }));
+
+      } else {
+        // The field that changed is the dropdown placeholder title
       }
     } catch (err) {
       console.log(err);

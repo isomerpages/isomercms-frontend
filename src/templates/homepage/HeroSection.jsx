@@ -121,7 +121,7 @@ const TemplateHeroSection = ({ hero, siteName }) => {
         </div>
       </section>
       {/* Key highlights */}
-      { hero.key_highlights
+      { (!hero.dropdown && hero.key_highlights)
         ? <KeyHighlights highlights={hero.key_highlights} />
         : null}
     </>

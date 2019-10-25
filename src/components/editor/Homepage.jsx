@@ -56,10 +56,7 @@ const KeyHighlight = ({
   allowMoreHighlights,
 }) => (
   <div className={styles.card} key={highlightIndex}>
-    <b>
-Highlight
-      {highlightIndex}
-    </b>
+    <b>Highlight {highlightIndex}</b>
     <p>Highlight title</p>
     <input placeholder="Highlight title" defaultValue={title} value={title} id={`highlight-${highlightIndex}-title`} onChange={onFieldChange} key={`${highlightIndex}-title`} />
     <p>Highlight description</p>
@@ -74,12 +71,42 @@ Highlight
   </div>
 );
 
+const HeroDropdownElem = ({title, url, dropdownsIndex, onFieldChange}) => (
+  <div className={styles.card}>
+    <p>Dropdown element title</p>
+    <input placeholder="Hero dropdown element title" defaultValue={title} value={title} id={`dropdownelem-${dropdownsIndex}-title`} onChange={onFieldChange} />
+    <p>Dropdown element URL</p>
+    <input placeholder="Hero dropdown element URL" defaultValue={url} value={url} id={`dropdownelem-${dropdownsIndex}-url`} onChange={onFieldChange} />
+  </div>
+)
+
+const HeroDropdown = ({title, options, sectionIndex, onFieldChange}) => (
+  <div className={styles.card}>
+    <p>Hero dropdown</p>
+    <p>Dropdown title</p>
+    <input placeholder="Hero dropdown title" defaultValue={title} value={title} id={`dropdown-${sectionIndex}-title`} onChange={onFieldChange} />
+    {options.map((option, dropdownsIndex) => (
+      <HeroDropdownElem title={option.title} url={option.url} dropdownsIndex={dropdownsIndex} onFieldChange={onFieldChange}/>
+    ))}
+  </div>
+)
+
+const HeroButton = ({button, url, sectionIndex, onFieldChange}) => (
+  <>
+    <p>Hero button</p>
+    <input placeholder="Hero button name" defaultValue={button} value={button} id={`section-${sectionIndex}-hero-button`} onChange={onFieldChange} />
+    <p>Hero button URL</p>
+    <input placeholder="Hero button URL" defaultValue={url} value={url} id={`section-${sectionIndex}-hero-url`} onChange={onFieldChange} />
+  </>
+)
+
 const EditorHeroSection = ({
   title,
   subtitle,
   background,
   button,
   url,
+  dropdown,
   sectionIndex,
   highlights,
   onFieldChange,
@@ -94,35 +121,36 @@ const EditorHeroSection = ({
     <input placeholder="Hero subtitle" defaultValue={subtitle} value={subtitle} id={`section-${sectionIndex}-hero-subtitle`} onChange={onFieldChange} />
     <p>Hero background image</p>
     <input placeholder="Hero background image" defaultValue={background} value={background} id={`section-${sectionIndex}-hero-background`} onChange={onFieldChange} />
-    <p>Hero button</p>
-    <input placeholder="Hero button name" defaultValue={button} value={button} id={`section-${sectionIndex}-hero-button`} onChange={onFieldChange} />
-    <p>Hero button URL</p>
-    <input placeholder="Hero button URL" defaultValue={url} value={url} id={`section-${sectionIndex}-hero-url`} onChange={onFieldChange} />
-
-    <div className={styles.card}>
-      {highlights ? (
-        <>
-          <b>Hero highlights</b>
-          {highlights.map((highlight, highlightIndex) => (
-            <div className={styles.card} key={highlightIndex}>
-              <KeyHighlight
-                title={highlight.title}
-                description={highlight.description}
-                background={highlight.background}
-                url={highlight.url}
-                highlightIndex={highlightIndex}
-                deleteHighlight={deleteHighlight}
-                createHighlight={createHighlight}
-                onFieldChange={onFieldChange}
-                allowMoreHighlights={highlights.length < MAX_NUM_KEY_HIGHLIGHTS}
-              />
-            </div>
-          ))}
-        </>
-      ) : (
-        null
-      )}
-    </div>
+    <p><i>Note: you can only have either Key Highlights and a Hero button or a Hero Dropdown</i></p>
+    {dropdown ? 
+      <HeroDropdown title={dropdown.title} options={dropdown.options} sectionIndex={sectionIndex} onFieldChange={onFieldChange} />
+      :
+      <div className={styles.card}>
+        <HeroButton button={button} url={url} sectionIndex={sectionIndex} onFieldChange={onFieldChange} />
+        {highlights ? 
+          <>
+            <b>Hero highlights</b>
+            {highlights.map((highlight, highlightIndex) => (
+              <div className={styles.card} key={highlightIndex}>
+                <KeyHighlight
+                  title={highlight.title}
+                  description={highlight.description}
+                  background={highlight.background}
+                  url={highlight.url}
+                  highlightIndex={highlightIndex}
+                  deleteHighlight={deleteHighlight}
+                  createHighlight={createHighlight}
+                  onFieldChange={onFieldChange}
+                  allowMoreHighlights={highlights.length < MAX_NUM_KEY_HIGHLIGHTS}
+                />
+              </div>
+            ))}
+          </>
+        :
+          null
+        }
+      </div>
+    }
   </>
 );
 
