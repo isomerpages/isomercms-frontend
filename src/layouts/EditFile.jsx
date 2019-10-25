@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
-import styles from '../styles/App.module.css';
+import styles from '../styles/App.module.scss';
 
 export default class EditFile extends Component {
   constructor(props) {
