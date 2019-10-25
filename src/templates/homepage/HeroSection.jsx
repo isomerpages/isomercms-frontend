@@ -78,7 +78,7 @@ const KeyHighlights = ({highlights}) => (
   </section>
 )
 
-const TemplateHero = ({ hero, siteName }) => {
+const TemplateHeroSection = ({ hero, siteName }) => {
   let heroStyle = {
     background: `url(https://raw.githubusercontent.com/isomerpages/${siteName}/staging${hero.background}) no-repeat top left`,
     backgroundSize: "cover",
@@ -123,4 +123,4 @@ const TemplateHero = ({ hero, siteName }) => {
   )
 }
 
-export default TemplateHero
+export default TemplateHeroSection

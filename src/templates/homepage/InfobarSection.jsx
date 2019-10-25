@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TemplateInfoBar = ({title, subtitle, description, url, button, sectionIndex}) => (
+const TemplateInfobarSection = ({title, subtitle, description, url, button, sectionIndex}) => (
   <section class={`bp-section ${(sectionIndex%2 === 1) ? `bg-newssection`: null}`}>
     <div class="bp-container is-fluid">
       <div class="row">
@@ -44,4 +44,4 @@ const TemplateInfoBar = ({title, subtitle, description, url, button, sectionInde
   </section>
 )
 
-export default TemplateInfoBar
+export default TemplateInfobarSection

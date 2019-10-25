@@ -7,8 +7,8 @@ import yaml from 'js-yaml';
 import styles from '../styles/App.module.scss';
 import update from 'immutability-helper';
 import '../styles/isomer-template.scss';
-import TemplateHero from '../templates/homepage/Hero.jsx'
-import TemplateInfoBar from '../templates/homepage/Infobar.jsx'
+import TemplateHeroSection from '../templates/homepage/HeroSection'
+import TemplateInfobarSection from '../templates/homepage/InfobarSection'
 import TemplateResourcesSection from '../templates/homepage/ResourcesSection'
 import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
 
@@ -50,7 +50,7 @@ const enumSection = (type) => {
     case (type === 'infobar'):
       return InfoBarSection()
     default:
-      return ResourcesSection()
+      return InfoBarSection()
   }
 }
 
@@ -431,11 +431,12 @@ export default class EditHomepage extends Component {
             <button type="button" onClick={this.savePage}>Save</button>
           </div>
           <div className={styles.rightPane}>
+            {/* Isomer Template Pane */}
             {frontmatter.sections.map((section, sectionIndex) => (
               <>
                 {/* Hero section */}
                 {section.hero ? 
-                  <TemplateHero hero={section.hero} siteName={siteName}/>
+                  <TemplateHeroSection hero={section.hero} siteName={siteName}/>
                   :
                   null
                 }
@@ -447,7 +448,7 @@ export default class EditHomepage extends Component {
                 }
                 {/* Infobar section */}
                 {section.infobar ? 
-                  <TemplateInfoBar 
+                  <TemplateInfobarSection 
                     title={section.infobar.title} 
                     subtitle={section.infobar.subtitle}
                     description={section.infobar.description} 
