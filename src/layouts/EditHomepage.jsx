@@ -11,6 +11,7 @@ import TemplateHeroSection from '../templates/homepage/HeroSection'
 import TemplateInfobarSection from '../templates/homepage/InfobarSection'
 import TemplateResourcesSection from '../templates/homepage/ResourcesSection'
 import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
+import { EditorInfobarSection, EditorResourcesSection, EditorHeroSection } from '../components/editor/Homepage'
 
 // Section constructors
 const ResourcesSection = () => {
@@ -57,6 +58,11 @@ const enumSection = (type) => {
 export default class EditHomepage extends Component {
   constructor(props) {
     super(props);
+    this.createHighlight = this.createHighlight.bind(this)
+    this.deleteHighlight = this.deleteHighlight.bind(this)
+    this.createSection = this.createSection.bind(this)
+    this.deleteSection = this.deleteSection.bind(this)
+    this.onFieldChange = this.onFieldChange.bind(this)
     this.state = {
       frontmatter: {
         title: '',
@@ -336,79 +342,48 @@ export default class EditHomepage extends Component {
                 <>
                   {/* Hero section */}
                   {section.hero ? (
-                    <>
-                      <p><b>Hero section</b></p>
-                      <p>Hero title</p>
-                      <input placeholder="Hero title" defaultValue={section.hero.title} value={section.hero.title} id={`section-${sectionIndex}-hero-title`} onChange={this.onFieldChange} />
-                      <p>Hero subtitle</p>
-                      <input placeholder="Hero subtitle" defaultValue={section.hero.subtitle} value={section.hero.subtitle} id={`section-${sectionIndex}-hero-subtitle`} onChange={this.onFieldChange} />
-                      <p>Hero background image</p>
-                      <input placeholder="Hero background image" defaultValue={section.hero.background} value={section.hero.background} id={`section-${sectionIndex}-hero-background`} onChange={this.onFieldChange} />
-                      <p>Hero button</p>
-                      <input placeholder="Hero button name" defaultValue={section.hero.button} value={section.hero.button} id={`section-${sectionIndex}-hero-button`} onChange={this.onFieldChange} />
-                      <p>Hero button URL</p>
-                      <input placeholder="Hero button URL" defaultValue={section.hero.url} value={section.hero.url} id={`section-${sectionIndex}-hero-url`} onChange={this.onFieldChange} />
-
-                      <div className={styles.card}>
-                        {section.hero.key_highlights ? (
-                          <>
-                            <b>Hero highlights</b>
-                            {section.hero.key_highlights.map((highlight, highlightIndex) => (
-                              <div className={styles.card} key={highlightIndex}>
-                                <b>Highlight {highlightIndex}</b>
-                                <p>Highlight title</p>
-                                <input placeholder="Highlight title" defaultValue={highlight.title} value={highlight.title} id={`highlight-${highlightIndex}-title`} onChange={this.onFieldChange} key={`${highlightIndex}-title`}/>
-                                <p>Highlight description</p>
-                                <input placeholder="Highlight description" defaultValue={highlight.description} value={highlight.description} id={`highlight-${highlightIndex}-description`} onChange={this.onFieldChange} key={`${highlightIndex}-description`}/>
-                                <p>Highlight URL</p>
-                                <input placeholder="Highlight URL" defaultValue={highlight.url} value={highlight.url} id={`highlight-${highlightIndex}-url`} onChange={this.onFieldChange} key={`${highlightIndex}-url`}/>
-                                {`${highlightIndex}-url`}
-                                <button type="button" id={`highlight-${highlightIndex}-delete`} onClick={this.deleteHighlight} key={`${highlightIndex}-delete`}>Delete highlight</button>
-                                <button type="button" id={`highlight-${highlightIndex}-create`} onClick={this.createHighlight} key={`${highlightIndex}-create`}>Create highlight</button>
-                              </div>
-                            ))}
-                          </>
-                        ) : (
-                          null
-                        )}
-                      </div>
-                    </>
+                    <EditorHeroSection
+                      title={section.hero.title}
+                      subtitle={section.hero.subtitle}
+                      background={section.hero.background}
+                      button={section.hero.button}
+                      url={section.hero.url}
+                      sectionIndex={sectionIndex}
+                      highlights={section.hero.key_highlights}
+                      deleteHighlight={this.deleteHighlight}
+                      createHighlight={this.createHighlight}
+                      onFieldChange={this.onFieldChange}
+                    />
                   ) : (
                     null
                   )}
 
                   {/* Resources section */}
                   {section.resources ? (
-                    <div className={styles.card}>
-                      <p><b>Resources section</b></p>
-                      <p>Resources section title</p>
-                      <input placeholder="Resource section title" defaultValue={section.resources.title} value={section.resources.title} id={`section-${sectionIndex}-resources-title`} onChange={this.onFieldChange} />
-                      <p>Resources section subtitle</p>
-                      <input placeholder="Resource section subtitle" defaultValue={section.resources.subtitle} value={section.resources.subtitle} id={`section-${sectionIndex}-resources-subtitle`} onChange={this.onFieldChange} />
-                      <p>Resources button name</p>
-                      <input placeholder="Resource button button" defaultValue={section.resources.button} value={section.resources.button} id={`section-${sectionIndex}-resources-button`} onChange={this.onFieldChange} />
-                      <button type="button" id={`section-${sectionIndex}`} onClick={this.deleteSection}>Delete section</button>
-                    </div>
+                    <EditorResourcesSection 
+                      title={section.resources.title}
+                      subtitle={section.resources.subtitle}
+                      button={section.resources.button}
+                      sectionIndex={sectionIndex}
+                      deleteSection={this.deleteSection}
+                      onFieldChange={this.onFieldChange}
+                    />
                   ) : (
                     null
                   )}
 
                   {/* Infobar section */}
                   {section.infobar ? (
-                    <div className={styles.card}>
-                      <p><b>Infobar section</b></p>
-                      <p>Infobar title</p>
-                      <input placeholder="Infobar title" defaultValue={section.infobar.title} value={section.infobar.title} id={`section-${sectionIndex}-infobar-title`} onChange={this.onFieldChange} />
-                      <p>Infobar subtitle</p>
-                      <input placeholder="Infobar subtitle" defaultValue={section.infobar.subtitle} value={section.infobar.subtitle} id={`section-${sectionIndex}-infobar-subtitle`} onChange={this.onFieldChange} />
-                      <p>Infobar description</p>
-                      <input placeholder="Infobar description" defaultValue={section.infobar.description} value={section.infobar.description} id={`section-${sectionIndex}-infobar-description`} onChange={this.onFieldChange} />
-                      <p>Infobar button name</p>
-                      <input placeholder="Infobar button name" defaultValue={section.infobar.button} value={section.infobar.button} id={`section-${sectionIndex}-infobar-button`} onChange={this.onFieldChange} />
-                      <p>Infobar button URL</p>
-                      <input placeholder="Infobar button URL" defaultValue={section.infobar.url} value={section.infobar.url} id={`section-${sectionIndex}-infobar-url`} onChange={this.onFieldChange} />
-                      <button type="button" id={`section-${sectionIndex}`} onClick={this.deleteSection}>Delete section</button>
-                    </div>
+                    <EditorInfobarSection
+                      title={section.infobar.title}
+                      subtitle={section.infobar.subtitle}
+                      description={section.infobar.description}
+                      button={section.infobar.button}
+                      url={section.infobar.url}
+                      sectionIndex={sectionIndex}
+                      deleteSection={this.deleteSection}
+                      onFieldChange={this.onFieldChange}
+                    />
                   ) : (
                     null
                   )}
@@ -436,13 +411,21 @@ export default class EditHomepage extends Component {
               <>
                 {/* Hero section */}
                 {section.hero ? 
-                  <TemplateHeroSection hero={section.hero} siteName={siteName}/>
+                  <TemplateHeroSection 
+                    hero={section.hero} 
+                    siteName={siteName}
+                  />
                   :
                   null
                 }
                 {/* Resources section */}
                 {section.resources ? 
-                  <TemplateResourcesSection title={section.resources.title} subtitle={section.resources.subtitle} button={section.resources.button} sectionIndex={sectionIndex}/>
+                  <TemplateResourcesSection 
+                    title={section.resources.title} 
+                    subtitle={section.resources.subtitle} 
+                    button={section.resources.button} 
+                    sectionIndex={sectionIndex}
+                  />
                   :
                   null
                 }
