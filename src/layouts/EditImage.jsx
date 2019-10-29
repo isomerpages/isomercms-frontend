@@ -115,7 +115,8 @@ export default class EditImage extends Component {
         { sha
           ? (
             <>
-              <img alt="" src={`data:image/jpeg;base64,${content}`} />
+              <img alt="" src={`data:image/svg+xml;base64,${content}`} />
+              <img alt="" src={`data:image/png;base64,${content}`} />
             </>
           )
           : (
