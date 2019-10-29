@@ -321,7 +321,7 @@ export default class EditHomepage extends Component {
           Editing homepage
         </h3>
         <div className="d-flex">
-          <div className={`p-3 ${styles.leftPane}`}>
+          <div className={`p-3 ${styles.leftPaneHomepage}`}>
             {/* Site-wide configuration */}
             {/* <div className={styles.card}>
               <h4>
@@ -440,7 +440,7 @@ export default class EditHomepage extends Component {
             </div>
             <button type="button" onClick={this.savePage}>Save</button>
           </div>
-          <div className={styles.rightPane}>
+          <div className={styles.rightPaneHomepage}>
             {/* Isomer Template Pane */}
             {frontmatter.sections.map((section, sectionIndex) => (
               <>
