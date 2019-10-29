@@ -65,7 +65,15 @@ Pages in Collection
         {pages.length > 0
           ? pages.map((page) => (
             <li>
-              <Link to={`/sites/${siteName}/collections/${collectionName}/${page.fileName}`}>{page.fileName}</Link>
+              <Link to={{
+                pathname: `/sites/${siteName}/collections/${collectionName}/${page.fileName}`,
+                state: {
+                  pages,
+                },
+              }}
+              >
+                {page.fileName}
+              </Link>
             </li>
           ))
           : 'No pages'}
