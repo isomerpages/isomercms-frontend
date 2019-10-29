@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
-import yaml from 'js-yaml';
 import update from 'immutability-helper';
 import styles from '../styles/App.module.scss';
 import '../styles/isomer-template.scss';
@@ -41,6 +40,16 @@ const KeyHighlightConstructor = () => ({
   url: 'URL',
 });
 
+const DropdownElemConstructor = () => ({
+  title: 'TITLE',
+  url: 'URL',
+});
+
+const DropdownConstructor = () => ({
+  title: 'TITLE',
+  options: [],
+});
+
 const enumSection = (type) => {
   switch (type) {
     case 'resources':
@@ -59,9 +68,14 @@ export default class EditHomepage extends Component {
     this.deleteHighlight = this.deleteHighlight.bind(this);
     this.createSection = this.createSection.bind(this);
     this.deleteSection = this.deleteSection.bind(this);
+    this.createHeroDropdown = this.createHeroDropdown.bind(this);
+    this.deleteHeroDropdown = this.deleteHeroDropdown.bind(this);
+    this.createHeroDropdownElem = this.createHeroDropdownElem.bind(this);
+    this.deleteHeroDropdownElem = this.deleteHeroDropdownElem.bind(this);
     this.onFieldChange = this.onFieldChange.bind(this);
+    this.toggleDropdown = this.toggleDropdown.bind(this);
     this.state = {
-      frontmatter: {
+      frontMatter: {
         title: '',
         subtitle: '',
         description: '',
@@ -71,6 +85,7 @@ export default class EditHomepage extends Component {
       },
       sha: null,
       hasResources: false,
+      dropdownIsActive: false,
     };
   }
 
@@ -83,15 +98,15 @@ export default class EditHomepage extends Component {
       });
       const { content, sha } = resp.data;
       const base64DecodedContent = Base64.decode(content);
-      const { frontMatter: frontmatter } = frontMatterParser(base64DecodedContent);
+      const { frontMatter } = frontMatterParser(base64DecodedContent);
 
       // Compute hasResources
       let hasResources = false;
-      frontmatter.sections.forEach((section) => {
+      frontMatter.sections.forEach((section) => {
         if (section.resources) hasResources = true;
       });
 
-      this.setState({ frontmatter, sha, hasResources });
+      this.setState({ frontMatter, sha, hasResources });
     } catch (err) {
       console.log(err);
     }
@@ -102,22 +117,23 @@ export default class EditHomepage extends Component {
       const { state } = this;
       const { id, value } = event.target;
       const idArray = id.split('-');
+
       if (idArray[0] === 'site') {
         // The field that changed belongs to a site-wide config
         const field = idArray[1]; // e.g. "title" or "subtitle"
 
         this.setState((currState) => ({
           ...currState,
-          frontmatter: {
-            ...currState.frontmatter,
+          frontMatter: {
+            ...currState.frontMatter,
             [field]: value,
           },
         }));
       } else if (idArray[0] === 'section') {
         // The field that changed belongs to a homepage section config
-        const { sections } = state.frontmatter;
+        const { sections } = state.frontMatter;
 
-        // sectionIndex is the index of the section array in the frontmatter
+        // sectionIndex is the index of the section array in the frontMatter
         const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT);
         const sectionType = idArray[2]; // e.g. "hero" or "infobar" or "resources"
         const field = idArray[3]; // e.g. "title" or "subtitle"
@@ -126,15 +142,15 @@ export default class EditHomepage extends Component {
 
         this.setState((currState) => ({
           ...currState,
-          frontmatter: {
-            ...currState.frontmatter,
+          frontMatter: {
+            ...currState.frontMatter,
             sections,
           },
         }));
-      } else {
+      } else if (idArray[0] === 'highlight') {
         // The field that changed belongs to a hero highlight
-        const { sections } = state.frontmatter;
-        const highlights = state.frontmatter.sections[0].hero.key_highlights;
+        const { sections } = state.frontMatter;
+        const highlights = sections[0].hero.key_highlights;
 
         // highlightsIndex is the index of the key_highlights array
         const highlightsIndex = parseInt(idArray[1], RADIX_PARSE_INT);
@@ -145,12 +161,184 @@ export default class EditHomepage extends Component {
 
         this.setState((currState) => ({
           ...currState,
-          frontmatter: {
-            ...currState.frontmatter,
+          frontMatter: {
+            ...currState.frontMatter,
             sections,
           },
-        }), () => console.log(this.state));
+        }));
+      } else if (idArray[0] === 'dropdownelem') {
+        // The field that changed is a dropdown element (i.e. dropdownelem)
+        const { sections } = state.frontMatter;
+        const dropdowns = sections[0].hero.dropdown.options;
+
+        // dropdownsIndex is the index of the dropdown.options array
+        const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT);
+        const field = idArray[2]; // e.g. "title" or "url"
+
+        dropdowns[dropdownsIndex][field] = value;
+        sections[0].hero.dropdown.options = dropdowns;
+
+        this.setState((currState) => ({
+          ...currState,
+          frontMatter: {
+            ...currState.frontMatter,
+            sections,
+          },
+        }));
+      } else {
+        // The field that changed is the dropdown placeholder title
+
+        this.setState((currState) => ({
+          ...currState,
+          frontMatter: {
+            ...currState.frontMatter,
+            sections: update(currState.frontMatter.sections, {
+              0: {
+                hero: {
+                  dropdown: {
+                    title: {
+                      $set: value,
+                    },
+                  },
+                },
+              },
+            }),
+          },
+        }));
       }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  deleteHeroDropdown = async () => {
+    try {
+      const { frontMatter } = this.state;
+      const newSections = update(frontMatter.sections, {
+        0: {
+          hero: {
+            dropdown: {
+              $set: undefined,
+            },
+            key_highlights: {
+              $set: [],
+            },
+          },
+        },
+      });
+
+      await this.setState((currState) => ({
+        ...currState,
+        frontMatter: {
+          ...currState.frontMatter,
+          sections: newSections,
+        },
+      }));
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  createHeroDropdown = async () => {
+    try {
+      const dropdownObj = DropdownConstructor();
+
+      const { frontMatter } = this.state;
+      const newSections = update(frontMatter.sections, {
+        0: {
+          hero: {
+            button: {
+              $set: undefined,
+            },
+            url: {
+              $set: undefined,
+            },
+            key_highlights: {
+              $set: undefined,
+            },
+            dropdown: {
+              $set: dropdownObj,
+            },
+          },
+        },
+      });
+
+      this.setState((currState) => ({
+        ...currState,
+        frontMatter: {
+          ...currState.frontMatter,
+          sections: newSections,
+        },
+      }));
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  deleteHeroDropdownElem = async (event) => {
+    try {
+      const { id } = event.target;
+
+      // Verify that the target id is of the format `dropdownelem-${dropdownsIndex}`
+      const idArray = id.split('-');
+      if (idArray[0] !== 'dropdownelem') throw new Error('');
+      const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT);
+
+      const { frontMatter } = this.state;
+      const newSections = update(frontMatter.sections, {
+        0: {
+          hero: {
+            dropdown: {
+              options: {
+                $splice: [[dropdownsIndex, 1]],
+              },
+            },
+          },
+        },
+      });
+
+      this.setState((currState) => ({
+        ...currState,
+        frontMatter: {
+          ...currState.frontMatter,
+          sections: newSections,
+        },
+      }));
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  createHeroDropdownElem = async (event) => {
+    try {
+      const { id } = event.target;
+
+      // Verify that the target id is of the format `dropdownelem-${dropdownsIndex}`
+      const idArray = id.split('-');
+      if (idArray[0] !== 'dropdownelem') throw new Error('');
+      const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT) + 1;
+      const dropdownElem = DropdownElemConstructor();
+
+      const { frontMatter } = this.state;
+      const newSections = update(frontMatter.sections, {
+        0: {
+          hero: {
+            dropdown: {
+              options: {
+                $splice: [[dropdownsIndex, 0, dropdownElem]],
+              },
+            },
+          },
+        },
+      });
+
+      this.setState((currState) => ({
+        ...currState,
+        frontMatter: {
+          ...currState.frontMatter,
+          sections: newSections,
+        },
+      }));
     } catch (err) {
       console.log(err);
     }
@@ -166,8 +354,8 @@ export default class EditHomepage extends Component {
       const highlightIndex = parseInt(idArray[1], 10) + 1;
       const keyHighlight = KeyHighlightConstructor();
 
-      const { frontmatter } = this.state;
-      const newSections = update(frontmatter.sections, {
+      const { frontMatter } = this.state;
+      const newSections = update(frontMatter.sections, {
         0: {
           hero: {
             key_highlights: {
@@ -179,8 +367,8 @@ export default class EditHomepage extends Component {
 
       this.setState((currState) => ({
         ...currState,
-        frontmatter: {
-          ...currState.frontmatter,
+        frontMatter: {
+          ...currState.frontMatter,
           sections: newSections,
         },
       }));
@@ -198,8 +386,8 @@ export default class EditHomepage extends Component {
       if (idArray[0] !== 'highlight') throw new Error('');
       const highlightIndex = parseInt(idArray[1], 10);
 
-      const { frontmatter } = this.state;
-      const newSections = update(frontmatter.sections, {
+      const { frontMatter } = this.state;
+      const newSections = update(frontMatter.sections, {
         0: {
           hero: {
             key_highlights: {
@@ -209,10 +397,10 @@ export default class EditHomepage extends Component {
         },
       });
 
-      await this.setState((currState) => ({
+      this.setState((currState) => ({
         ...currState,
-        frontmatter: {
-          ...currState.frontmatter,
+        frontMatter: {
+          ...currState.frontMatter,
           sections: newSections,
         },
       }));
@@ -237,15 +425,15 @@ export default class EditHomepage extends Component {
         this.setState({ hasResources: true });
       }
 
-      const { frontmatter } = this.state;
-      const newSections = update(frontmatter.sections, {
+      const { frontMatter } = this.state;
+      const newSections = update(frontMatter.sections, {
         $splice: [[sectionIndex, 0, sectionType]],
       });
 
       this.setState((currState) => ({
         ...currState,
-        frontmatter: {
-          ...currState.frontmatter,
+        frontMatter: {
+          ...currState.frontMatter,
           sections: newSections,
         },
       }));
@@ -257,7 +445,7 @@ export default class EditHomepage extends Component {
   deleteSection = async (event) => {
     try {
       const { id } = event.target;
-      const { frontmatter } = this.state;
+      const { frontMatter } = this.state;
 
       // Verify that the target id is of the format `section-${sectionIndex}`
       const idArray = id.split('-');
@@ -265,20 +453,30 @@ export default class EditHomepage extends Component {
       const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT);
 
       // Set hasResources to false to allow users to create a resources section
-      if (frontmatter.sections[sectionIndex].resources) {
+      if (frontMatter.sections[sectionIndex].resources) {
         this.setState({ hasResources: false });
       }
 
-      const newSections = update(frontmatter.sections, {
+      const newSections = update(frontMatter.sections, {
         $splice: [[sectionIndex, 1]],
       });
 
       this.setState((currState) => ({
         ...currState,
-        frontmatter: {
-          ...currState.frontmatter,
+        frontMatter: {
+          ...currState.frontMatter,
           sections: newSections,
         },
+      }));
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  toggleDropdown = async () => {
+    try {
+      this.setState((currState) => ({
+        dropdownIsActive: !currState.dropdownIsActive,
       }));
     } catch (err) {
       console.log(err);
@@ -290,8 +488,7 @@ export default class EditHomepage extends Component {
       const { state } = this;
       const { match } = this.props;
       const { siteName } = match.params;
-      const frontmatter = yaml.safeDump(state.frontmatter);
-      const content = concatFrontMatterMdBody(frontmatter);
+      const content = concatFrontMatterMdBody(state.frontMatter, '');
       const base64EncodedContent = Base64.encode(content);
 
       const params = {
@@ -312,7 +509,7 @@ export default class EditHomepage extends Component {
   }
 
   render() {
-    const { frontmatter, hasResources } = this.state;
+    const { frontMatter, hasResources, dropdownIsActive } = this.state;
     const { match } = this.props;
     const { siteName } = match.params;
     return (
@@ -332,32 +529,32 @@ export default class EditHomepage extends Component {
               <p>Site Title</p>
               <input
                 placeholder="Title"
-                defaultValue={frontmatter.title}
-                value={frontmatter.title}
+                defaultValue={frontMatter.title}
+                value={frontMatter.title}
                 id="site-title"
                 onChange={this.onFieldChange}
               />
               <p>Site Subtitle</p>
               <input
                 placeholder="Subtitle"
-                defaultValue={frontmatter.subtitle}
-                value={frontmatter.subtitle}
+                defaultValue={frontMatter.subtitle}
+                value={frontMatter.subtitle}
                 id="site-subtitle"
                 onChange={this.onFieldChange}
               />
               <p>Site description</p>
               <input
                 placeholder="Description"
-                defaultValue={frontmatter.description}
-                value={frontmatter.description}
+                defaultValue={frontMatter.description}
+                value={frontMatter.description}
                 id="site-description"
                 onChange={this.onFieldChange}
               />
               <p>Site image</p>
               <input
                 placeholder="Image"
-                defaultValue={frontmatter.image}
-                value={frontmatter.image}
+                defaultValue={frontMatter.image}
+                value={frontMatter.image}
                 id="site-image"
                 onChange={this.onFieldChange}
               />
@@ -365,10 +562,10 @@ export default class EditHomepage extends Component {
             {/* Homepage section configurations */}
             <div className={styles.card}>
               <p><b>Site notification</b></p>
-              <input placeholder="Notification" defaultValue={frontmatter.notification} value={frontmatter.notification} id="site-notification" onChange={this.onFieldChange} />
+              <input placeholder="Notification" defaultValue={frontMatter.notification} value={frontMatter.notification} id="site-notification" onChange={this.onFieldChange} />
             </div>
             <div className={styles.card}>
-              {frontmatter.sections.map((section, sectionIndex) => (
+              {frontMatter.sections.map((section, sectionIndex) => (
                 <>
                   {/* Hero section */}
                   {section.hero ? (
@@ -378,10 +575,15 @@ export default class EditHomepage extends Component {
                       background={section.hero.background}
                       button={section.hero.button}
                       url={section.hero.url}
+                      dropdown={section.hero.dropdown}
                       sectionIndex={sectionIndex}
                       highlights={section.hero.key_highlights}
                       deleteHighlight={this.deleteHighlight}
                       createHighlight={this.createHighlight}
+                      createHeroDropdownElem={this.createHeroDropdownElem}
+                      deleteHeroDropdownElem={this.deleteHeroDropdownElem}
+                      createHeroDropdown={this.createHeroDropdown}
+                      deleteHeroDropdown={this.deleteHeroDropdown}
                       onFieldChange={this.onFieldChange}
                     />
                   ) : (
@@ -442,7 +644,7 @@ export default class EditHomepage extends Component {
           </div>
           <div className={styles.rightPane}>
             {/* Isomer Template Pane */}
-            {frontmatter.sections.map((section, sectionIndex) => (
+            {frontMatter.sections.map((section, sectionIndex) => (
               <>
                 {/* Hero section */}
                 {section.hero
@@ -450,6 +652,8 @@ export default class EditHomepage extends Component {
                     <TemplateHeroSection
                       hero={section.hero}
                       siteName={siteName}
+                      dropdownIsActive={dropdownIsActive}
+                      toggleDropdown={this.toggleDropdown}
                     />
                   )
                   : null}
