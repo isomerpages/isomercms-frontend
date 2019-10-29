@@ -220,6 +220,9 @@ export default class EditHomepage extends Component {
           hero: {
             dropdown: {
               $set: undefined
+            },
+            key_highlights: {
+              $set: []
             }
           }
         }

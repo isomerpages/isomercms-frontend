@@ -50,10 +50,7 @@ const KeyHighlight = ({
   description,
   url,
   highlightIndex,
-  deleteHighlight,
-  createHighlight,
-  onFieldChange,
-  allowMoreHighlights,
+  onFieldChange
 }) => (
   <div className={styles.card} key={highlightIndex}>
     <b>Highlight {highlightIndex}</b>
@@ -64,10 +61,6 @@ const KeyHighlight = ({
     <p>Highlight URL</p>
     <input placeholder="Highlight URL" defaultValue={url} value={url} id={`highlight-${highlightIndex}-url`} onChange={onFieldChange} key={`${highlightIndex}-url`} />
     <br />
-    <button type="button" id={`highlight-${highlightIndex}-delete`} onClick={deleteHighlight} key={`${highlightIndex}-delete`}>Delete highlight</button>
-    {allowMoreHighlights
-      ? <button type="button" id={`highlight-${highlightIndex}-create`} onClick={createHighlight} key={`${highlightIndex}-create`}>Create highlight</button>
-      : null}
   </div>
 );
 
@@ -159,7 +152,7 @@ const EditorHeroSection = ({
       <div className={styles.card}>
         <button type="button" onClick={createHeroDropdown}>Create Hero Dropdown</button>
         <HeroButton button={button} url={url} sectionIndex={sectionIndex} onFieldChange={onFieldChange} />
-        {highlights ? 
+        {(highlights && highlights.length > 0) ? 
           <>
             <b>Hero highlights</b>
             {highlights.map((highlight, highlightIndex) => (
@@ -170,16 +163,17 @@ const EditorHeroSection = ({
                   background={highlight.background}
                   url={highlight.url}
                   highlightIndex={highlightIndex}
-                  deleteHighlight={deleteHighlight}
-                  createHighlight={createHighlight}
                   onFieldChange={onFieldChange}
-                  allowMoreHighlights={highlights.length < MAX_NUM_KEY_HIGHLIGHTS}
                 />
+                <button type="button" id={`highlight-${highlightIndex}-delete`} onClick={deleteHighlight} key={`${highlightIndex}-delete`}>Delete highlight</button>
+                {highlights.length < MAX_NUM_KEY_HIGHLIGHTS
+                  ? <button type="button" id={`highlight-${highlightIndex}-create`} onClick={createHighlight} key={`${highlightIndex}-create`}>Create highlight</button>
+                  : null}
               </div>
             ))}
           </>
         :
-          null
+          <button type="button" id={`highlight-0-create`} onClick={createHighlight} key="0-create" >Create highlight</button>
         }
       </div>
     }
