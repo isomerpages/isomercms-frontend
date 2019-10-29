@@ -42,13 +42,13 @@ const KeyHighlightConstructor = () => ({
 
 const DropdownElemConstructor = () => ({
   title: 'TITLE',
-  url: 'URL'
-})
+  url: 'URL',
+});
 
 const DropdownConstructor = () => ({
   title: 'TITLE',
-  options: []
-})
+  options: [],
+});
 
 const enumSection = (type) => {
   switch (type) {
@@ -73,7 +73,7 @@ export default class EditHomepage extends Component {
     this.createHeroDropdownElem = this.createHeroDropdownElem.bind(this);
     this.deleteHeroDropdownElem = this.deleteHeroDropdownElem.bind(this);
     this.onFieldChange = this.onFieldChange.bind(this);
-    this.toggleDropdown = this.toggleDropdown.bind(this)
+    this.toggleDropdown = this.toggleDropdown.bind(this);
     this.state = {
       frontMatter: {
         title: '',
@@ -85,7 +85,7 @@ export default class EditHomepage extends Component {
       },
       sha: null,
       hasResources: false,
-      dropdownIsActive: false
+      dropdownIsActive: false,
     };
   }
 
@@ -176,7 +176,7 @@ export default class EditHomepage extends Component {
         const field = idArray[2]; // e.g. "title" or "url"
 
         dropdowns[dropdownsIndex][field] = value;
-        sections[0].hero.dropdown.options = dropdowns
+        sections[0].hero.dropdown.options = dropdowns;
 
         this.setState((currState) => ({
           ...currState,
@@ -185,7 +185,6 @@ export default class EditHomepage extends Component {
             sections,
           },
         }));
-
       } else {
         // The field that changed is the dropdown placeholder title
 
@@ -198,11 +197,11 @@ export default class EditHomepage extends Component {
                 hero: {
                   dropdown: {
                     title: {
-                      $set: value
-                    }
-                  }
-                }
-              }
+                      $set: value,
+                    },
+                  },
+                },
+              },
             }),
           },
         }));
@@ -212,21 +211,21 @@ export default class EditHomepage extends Component {
     }
   }
 
-  deleteHeroDropdown = async (event) => {
+  deleteHeroDropdown = async () => {
     try {
       const { frontMatter } = this.state;
       const newSections = update(frontMatter.sections, {
         0: {
           hero: {
             dropdown: {
-              $set: undefined
+              $set: undefined,
             },
             key_highlights: {
-              $set: []
-            }
-          }
-        }
-      })
+              $set: [],
+            },
+          },
+        },
+      });
 
       await this.setState((currState) => ({
         ...currState,
@@ -236,44 +235,43 @@ export default class EditHomepage extends Component {
         },
       }));
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
 
-  createHeroDropdown = async (event) => {
+  createHeroDropdown = async () => {
     try {
-      const dropdownObj = DropdownConstructor()
+      const dropdownObj = DropdownConstructor();
 
       const { frontMatter } = this.state;
       const newSections = update(frontMatter.sections, {
         0: {
           hero: {
             button: {
-              $set: undefined
+              $set: undefined,
             },
             url: {
-              $set: undefined
+              $set: undefined,
             },
             key_highlights: {
-              $set: undefined
+              $set: undefined,
             },
             dropdown: {
-              $set: dropdownObj
-            }
-          }
-        }
-      })
+              $set: dropdownObj,
+            },
+          },
+        },
+      });
 
       this.setState((currState) => ({
         ...currState,
         frontMatter: {
           ...currState.frontMatter,
-          sections: newSections
+          sections: newSections,
         },
       }));
-
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
 
@@ -293,7 +291,7 @@ export default class EditHomepage extends Component {
             dropdown: {
               options: {
                 $splice: [[dropdownsIndex, 1]],
-              }
+              },
             },
           },
         },
@@ -306,9 +304,8 @@ export default class EditHomepage extends Component {
           sections: newSections,
         },
       }));
-
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
 
@@ -320,7 +317,7 @@ export default class EditHomepage extends Component {
       const idArray = id.split('-');
       if (idArray[0] !== 'dropdownelem') throw new Error('');
       const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT) + 1;
-      const dropdownElem = DropdownElemConstructor()
+      const dropdownElem = DropdownElemConstructor();
 
       const { frontMatter } = this.state;
       const newSections = update(frontMatter.sections, {
@@ -329,7 +326,7 @@ export default class EditHomepage extends Component {
             dropdown: {
               options: {
                 $splice: [[dropdownsIndex, 0, dropdownElem]],
-              }
+              },
             },
           },
         },
@@ -342,9 +339,8 @@ export default class EditHomepage extends Component {
           sections: newSections,
         },
       }));
-
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
 
@@ -477,13 +473,13 @@ export default class EditHomepage extends Component {
     }
   }
 
-  toggleDropdown = async (event) => {
+  toggleDropdown = async () => {
     try {
-      this.setState({
-        dropdownIsActive: this.state.dropdownIsActive ? false : true
-      })
+      this.setState((currState) => ({
+        dropdownIsActive: !currState.dropdownIsActive,
+      }));
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
 

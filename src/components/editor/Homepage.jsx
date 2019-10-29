@@ -50,10 +50,13 @@ const KeyHighlight = ({
   description,
   url,
   highlightIndex,
-  onFieldChange
+  onFieldChange,
 }) => (
   <div className={styles.card} key={highlightIndex}>
-    <b>Highlight {highlightIndex}</b>
+    <b>
+Highlight
+      {highlightIndex}
+    </b>
     <p>Highlight title</p>
     <input placeholder="Highlight title" defaultValue={title} value={title} id={`highlight-${highlightIndex}-title`} onChange={onFieldChange} key={`${highlightIndex}-title`} />
     <p>Highlight description</p>
@@ -64,52 +67,62 @@ const KeyHighlight = ({
   </div>
 );
 
-const HeroDropdownElem = ({title, url, dropdownsIndex, onFieldChange}) => (
+const HeroDropdownElem = ({
+  title,
+  url,
+  dropdownsIndex,
+  onFieldChange,
+}) => (
   <div className={styles.card}>
     <p>Dropdown element title</p>
     <input placeholder="Hero dropdown element title" defaultValue={title} value={title} id={`dropdownelem-${dropdownsIndex}-title`} onChange={onFieldChange} />
     <p>Dropdown element URL</p>
     <input placeholder="Hero dropdown element URL" defaultValue={url} value={url} id={`dropdownelem-${dropdownsIndex}-url`} onChange={onFieldChange} />
   </div>
-)
+);
 
 const HeroDropdown = ({
-  title, 
-  options, 
-  createHeroDropdownElem, 
+  title,
+  options,
+  createHeroDropdownElem,
   deleteHeroDropdownElem,
-  onFieldChange}) => (
+  onFieldChange,
+}) => (
   <div className={styles.card}>
     <p>Hero dropdown</p>
     <p>Dropdown title</p>
-    <input placeholder="Hero dropdown title" defaultValue={title} value={title} id={`dropdown-title`} onChange={onFieldChange} />
+    <input placeholder="Hero dropdown title" defaultValue={title} value={title} id="dropdown-title" onChange={onFieldChange} />
     {/* Initial button to create dropdown element */}
-    { (options && options.length > 0) ? 
-      options.map((option, dropdownsIndex) => (
+    { (options && options.length > 0)
+      ? options.map((option, dropdownsIndex) => (
         <>
-          <HeroDropdownElem 
-            title={option.title} 
-            url={option.url} 
-            dropdownsIndex={dropdownsIndex} 
-            onFieldChange={onFieldChange}/>
-            <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} onClick={deleteHeroDropdownElem}>Delete dropdown element</button>
-            <button type="button" id={`dropdownelem-${dropdownsIndex}-create`} onClick={createHeroDropdownElem}>Create dropdown element</button>
+          <HeroDropdownElem
+            title={option.title}
+            url={option.url}
+            dropdownsIndex={dropdownsIndex}
+            onFieldChange={onFieldChange}
+          />
+          <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} onClick={deleteHeroDropdownElem}>Delete dropdown element</button>
+          <button type="button" id={`dropdownelem-${dropdownsIndex}-create`} onClick={createHeroDropdownElem}>Create dropdown element</button>
         </>
       ))
-    :
-      <button type="button" id="dropdownelem-0-create" onClick={createHeroDropdownElem}>Create dropdown element</button>
-    }
+      : <button type="button" id="dropdownelem-0-create" onClick={createHeroDropdownElem}>Create dropdown element</button>}
   </div>
-)
+);
 
-const HeroButton = ({button, url, sectionIndex, onFieldChange}) => (
+const HeroButton = ({
+  button,
+  url,
+  sectionIndex,
+  onFieldChange,
+}) => (
   <>
     <p>Hero button</p>
     <input placeholder="Hero button name" defaultValue={button} value={button} id={`section-${sectionIndex}-hero-button`} onChange={onFieldChange} />
     <p>Hero button URL</p>
     <input placeholder="Hero button URL" defaultValue={url} value={url} id={`section-${sectionIndex}-hero-url`} onChange={onFieldChange} />
   </>
-)
+);
 
 const EditorHeroSection = ({
   title,
@@ -126,7 +139,7 @@ const EditorHeroSection = ({
   createHeroDropdownElem,
   deleteHeroDropdownElem,
   createHeroDropdown,
-  deleteHeroDropdown
+  deleteHeroDropdown,
 }) => (
   <>
     <p><b>Hero section</b></p>
@@ -137,50 +150,87 @@ const EditorHeroSection = ({
     <p>Hero background image</p>
     <input placeholder="Hero background image" defaultValue={background} value={background} id={`section-${sectionIndex}-hero-background`} onChange={onFieldChange} />
     <p><i>Note: you can only have either Key Highlights and a Hero button or a Hero Dropdown</i></p>
-    {dropdown ? 
-      <>
-        <button type="button" onClick={deleteHeroDropdown}>Delete Hero Dropdown</button>
-        <HeroDropdown 
-          title={dropdown.title} 
-          options={dropdown.options} 
-          sectionIndex={sectionIndex} 
-          createHeroDropdownElem={createHeroDropdownElem}
-          deleteHeroDropdownElem={deleteHeroDropdownElem}
-          onFieldChange={onFieldChange} />
-      </>
-      :
-      <div className={styles.card}>
-        <button type="button" onClick={createHeroDropdown}>Create Hero Dropdown</button>
-        <HeroButton button={button} url={url} sectionIndex={sectionIndex} onFieldChange={onFieldChange} />
-        {(highlights && highlights.length > 0) ? 
-          <>
-            <b>Hero highlights</b>
-            {highlights.map((highlight, highlightIndex) => (
-              <div className={styles.card} key={highlightIndex}>
-                <KeyHighlight
-                  title={highlight.title}
-                  description={highlight.description}
-                  background={highlight.background}
-                  url={highlight.url}
-                  highlightIndex={highlightIndex}
-                  onFieldChange={onFieldChange}
-                />
-                <button type="button" id={`highlight-${highlightIndex}-delete`} onClick={deleteHighlight} key={`${highlightIndex}-delete`}>Delete highlight</button>
-                {highlights.length < MAX_NUM_KEY_HIGHLIGHTS
-                  ? <button type="button" id={`highlight-${highlightIndex}-create`} onClick={createHighlight} key={`${highlightIndex}-create`}>Create highlight</button>
-                  : null}
-              </div>
-            ))}
-          </>
-        :
-          <button type="button" id={`highlight-0-create`} onClick={createHighlight} key="0-create" >Create highlight</button>
-        }
-      </div>
-    }
+    {dropdown
+      ? (
+        <>
+          <button type="button" onClick={deleteHeroDropdown}>Delete Hero Dropdown</button>
+          <HeroDropdown
+            title={dropdown.title}
+            options={dropdown.options}
+            sectionIndex={sectionIndex}
+            createHeroDropdownElem={createHeroDropdownElem}
+            deleteHeroDropdownElem={deleteHeroDropdownElem}
+            onFieldChange={onFieldChange}
+          />
+        </>
+      )
+      : (
+        <div className={styles.card}>
+          <button type="button" onClick={createHeroDropdown}>Create Hero Dropdown</button>
+          <HeroButton
+            button={button}
+            url={url}
+            sectionIndex={sectionIndex}
+            onFieldChange={onFieldChange}
+          />
+          {(highlights && highlights.length > 0)
+            ? (
+              <>
+                <b>Hero highlights</b>
+                {highlights.map((highlight, highlightIndex) => (
+                  <div className={styles.card} key={highlightIndex}>
+                    <KeyHighlight
+                      title={highlight.title}
+                      description={highlight.description}
+                      background={highlight.background}
+                      url={highlight.url}
+                      highlightIndex={highlightIndex}
+                      onFieldChange={onFieldChange}
+                    />
+                    <button type="button" id={`highlight-${highlightIndex}-delete`} onClick={deleteHighlight} key={`${highlightIndex}-delete`}>Delete highlight</button>
+                    {highlights.length < MAX_NUM_KEY_HIGHLIGHTS
+                      ? <button type="button" id={`highlight-${highlightIndex}-create`} onClick={createHighlight} key={`${highlightIndex}-create`}>Create highlight</button>
+                      : null}
+                  </div>
+                ))}
+              </>
+            )
+            : <button type="button" id="highlight-0-create" onClick={createHighlight} key="0-create">Create highlight</button>}
+        </div>
+      )}
   </>
 );
 
 export { EditorInfobarSection, EditorResourcesSection, EditorHeroSection };
+
+HeroDropdownElem.propTypes = {
+  title: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
+  dropdownsIndex: PropTypes.number.isRequired,
+  onFieldChange: PropTypes.func.isRequired,
+};
+
+HeroDropdown.propTypes = {
+  title: PropTypes.string.isRequired,
+  onFieldChange: PropTypes.func.isRequired,
+  createHeroDropdownElem: PropTypes.func.isRequired,
+  deleteHeroDropdownElem: PropTypes.func.isRequired,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      url: PropTypes.string.isRequired,
+      dropdownsIndex: PropTypes.number.isRequired,
+      onFieldChange: PropTypes.func.isRequired,
+    }),
+  ).isRequired,
+};
+
+HeroButton.propTypes = {
+  button: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
+  sectionIndex: PropTypes.number.isRequired,
+  onFieldChange: PropTypes.func.isRequired,
+};
 
 EditorInfobarSection.propTypes = {
   title: PropTypes.string.isRequired,
@@ -207,10 +257,7 @@ KeyHighlight.propTypes = {
   description: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
   highlightIndex: PropTypes.number.isRequired,
-  deleteHighlight: PropTypes.func.isRequired,
-  createHighlight: PropTypes.func.isRequired,
   onFieldChange: PropTypes.func.isRequired,
-  allowMoreHighlights: PropTypes.bool.isRequired,
 };
 
 EditorHeroSection.propTypes = {
@@ -232,11 +279,27 @@ EditorHeroSection.propTypes = {
       allowMoreHighlights: PropTypes.bool.isRequired,
     }),
   ),
+  dropdown: PropTypes.shape({
+    options: PropTypes.arrayOf(
+      PropTypes.shape({
+        title: PropTypes.string.isRequired,
+        url: PropTypes.string.isRequired,
+        dropdownsIndex: PropTypes.number.isRequired,
+        onFieldChange: PropTypes.func.isRequired,
+      }),
+    ).isRequired,
+    title: PropTypes.string.isRequired,
+  }),
   onFieldChange: PropTypes.func.isRequired,
   createHighlight: PropTypes.func.isRequired,
   deleteHighlight: PropTypes.func.isRequired,
+  createHeroDropdownElem: PropTypes.func.isRequired,
+  deleteHeroDropdownElem: PropTypes.func.isRequired,
+  createHeroDropdown: PropTypes.func.isRequired,
+  deleteHeroDropdown: PropTypes.func.isRequired,
 };
 
 EditorHeroSection.defaultProps = {
   highlights: undefined,
+  dropdown: undefined,
 };

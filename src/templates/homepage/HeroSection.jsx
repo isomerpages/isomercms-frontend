@@ -18,10 +18,12 @@ const HeroDropdownElem = ({ url, title }) => (
   </a>
 );
 
-const HeroDropdown = ({ title, options, isActive, toggleDropdown }) => (
-  <div className={`bp-dropdown margin--top--sm ${isActive ? `is-active` : null}`}>
+const HeroDropdown = ({
+  title, options, isActive, toggleDropdown,
+}) => (
+  <div className={`bp-dropdown margin--top--sm ${isActive ? 'is-active' : null}`}>
     <div className="bp-dropdown-trigger">
-      <a className="bp-button bp-dropdown-button hero-dropdown is-centered" aria-haspopup="true" aria-controls="hero-dropdown-menu" onClick={toggleDropdown}>
+      <a className="bp-button bp-dropdown-button hero-dropdown is-centered" role="button" tabIndex="0" aria-haspopup="true" aria-controls="hero-dropdown-menu" onClick={toggleDropdown} onKeyDown={toggleDropdown}>
         <span>
           <b>
             <p>{ title }</p>
@@ -34,15 +36,13 @@ const HeroDropdown = ({ title, options, isActive, toggleDropdown }) => (
     </div>
     <div className="bp-dropdown-menu has-text-left" id="hero-dropdown-menu" role="menu">
       <div className="bp-dropdown-content is-centered">
-        { options ? 
-          options.map((option, index) => (
+        { options
+          ? options.map((option, index) => (
             (option.url && option.title)
               ? <HeroDropdownElem key={`dropdown-${index}`} title={option.title} url={option.url} />
               : null
           ))
-          :
-          null
-        }
+          : null}
       </div>
     </div>
   </div>
@@ -89,7 +89,12 @@ const KeyHighlights = ({ highlights }) => (
   </section>
 );
 
-const TemplateHeroSection = ({ hero, siteName, dropdownIsActive, toggleDropdown }) => {
+const TemplateHeroSection = ({
+  hero,
+  siteName,
+  dropdownIsActive,
+  toggleDropdown,
+}) => {
   const heroStyle = {
     background: `url(https://raw.githubusercontent.com/isomerpages/${siteName}/staging${hero.background}) no-repeat top left`,
     backgroundSize: 'cover',
@@ -117,7 +122,14 @@ const TemplateHeroSection = ({ hero, siteName, dropdownIsActive, toggleDropdown 
                   : null}
                 {/* Hero dropdown */}
                 { hero.dropdown
-                  ? <HeroDropdown title={hero.dropdown.title} options={hero.dropdown.options} isActive={dropdownIsActive} toggleDropdown={toggleDropdown} />
+                  ? (
+                    <HeroDropdown
+                      title={hero.dropdown.title}
+                      options={hero.dropdown.options}
+                      isActive={dropdownIsActive}
+                      toggleDropdown={toggleDropdown}
+                    />
+                  )
                   : <HeroButton url={hero.url} button={hero.button} />}
               </div>
             </div>
@@ -146,6 +158,8 @@ HeroDropdownElem.propTypes = {
 
 HeroDropdown.propTypes = {
   title: PropTypes.string.isRequired,
+  isActive: PropTypes.bool.isRequired,
+  toggleDropdown: PropTypes.func.isRequired,
   options:
     PropTypes.arrayOf(
       PropTypes.shape({
@@ -202,4 +216,6 @@ TemplateHeroSection.propTypes = {
     ),
   }).isRequired,
   siteName: PropTypes.string.isRequired,
+  dropdownIsActive: PropTypes.bool.isRequired,
+  toggleDropdown: PropTypes.func.isRequired,
 };
