@@ -80,14 +80,32 @@ const HeroDropdownElem = ({title, url, dropdownsIndex, onFieldChange}) => (
   </div>
 )
 
-const HeroDropdown = ({title, options, sectionIndex, onFieldChange}) => (
+const HeroDropdown = ({
+  title, 
+  options, 
+  createHeroDropdownElem, 
+  deleteHeroDropdownElem,
+  onFieldChange}) => (
   <div className={styles.card}>
     <p>Hero dropdown</p>
     <p>Dropdown title</p>
-    <input placeholder="Hero dropdown title" defaultValue={title} value={title} id={`dropdown-${sectionIndex}-title`} onChange={onFieldChange} />
-    {options.map((option, dropdownsIndex) => (
-      <HeroDropdownElem title={option.title} url={option.url} dropdownsIndex={dropdownsIndex} onFieldChange={onFieldChange}/>
-    ))}
+    <input placeholder="Hero dropdown title" defaultValue={title} value={title} id={`dropdown-title`} onChange={onFieldChange} />
+    {/* Initial button to create dropdown element */}
+    { (options && options.length > 0) ? 
+      options.map((option, dropdownsIndex) => (
+        <>
+          <HeroDropdownElem 
+            title={option.title} 
+            url={option.url} 
+            dropdownsIndex={dropdownsIndex} 
+            onFieldChange={onFieldChange}/>
+            <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} onClick={deleteHeroDropdownElem}>Delete dropdown element</button>
+            <button type="button" id={`dropdownelem-${dropdownsIndex}-create`} onClick={createHeroDropdownElem}>Create dropdown element</button>
+        </>
+      ))
+    :
+      <button type="button" id="dropdownelem-0-create" onClick={createHeroDropdownElem}>Create dropdown element</button>
+    }
   </div>
 )
 
@@ -112,6 +130,10 @@ const EditorHeroSection = ({
   onFieldChange,
   createHighlight,
   deleteHighlight,
+  createHeroDropdownElem,
+  deleteHeroDropdownElem,
+  createHeroDropdown,
+  deleteHeroDropdown
 }) => (
   <>
     <p><b>Hero section</b></p>
@@ -123,9 +145,19 @@ const EditorHeroSection = ({
     <input placeholder="Hero background image" defaultValue={background} value={background} id={`section-${sectionIndex}-hero-background`} onChange={onFieldChange} />
     <p><i>Note: you can only have either Key Highlights and a Hero button or a Hero Dropdown</i></p>
     {dropdown ? 
-      <HeroDropdown title={dropdown.title} options={dropdown.options} sectionIndex={sectionIndex} onFieldChange={onFieldChange} />
+      <>
+        <button type="button" onClick={deleteHeroDropdown}>Delete Hero Dropdown</button>
+        <HeroDropdown 
+          title={dropdown.title} 
+          options={dropdown.options} 
+          sectionIndex={sectionIndex} 
+          createHeroDropdownElem={createHeroDropdownElem}
+          deleteHeroDropdownElem={deleteHeroDropdownElem}
+          onFieldChange={onFieldChange} />
+      </>
       :
       <div className={styles.card}>
+        <button type="button" onClick={createHeroDropdown}>Create Hero Dropdown</button>
         <HeroButton button={button} url={url} sectionIndex={sectionIndex} onFieldChange={onFieldChange} />
         {highlights ? 
           <>

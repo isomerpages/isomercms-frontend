@@ -18,13 +18,13 @@ const HeroDropdownElem = ({ url, title }) => (
   </a>
 );
 
-const HeroDropdown = ({ title, options }) => (
-  <div className="bp-dropdown margin--top--sm">
+const HeroDropdown = ({ title, options, isActive, toggleDropdown }) => (
+  <div className={`bp-dropdown margin--top--sm ${isActive ? `is-active` : null}`}>
     <div className="bp-dropdown-trigger">
-      <a className="bp-button bp-dropdown-button hero-dropdown is-centered" aria-haspopup="true" aria-controls="hero-dropdown-menu">
+      <a className="bp-button bp-dropdown-button hero-dropdown is-centered" aria-haspopup="true" aria-controls="hero-dropdown-menu" onClick={toggleDropdown}>
         <span>
           <b>
-            <p>{ title || 'I want to' }</p>
+            <p>{ title }</p>
           </b>
         </span>
         <span className="icon is-small">
@@ -34,11 +34,15 @@ const HeroDropdown = ({ title, options }) => (
     </div>
     <div className="bp-dropdown-menu has-text-left" id="hero-dropdown-menu" role="menu">
       <div className="bp-dropdown-content is-centered">
-        { options.map((option, index) => (
-          (option.url && option.title)
-            ? <HeroDropdownElem key={`dropdown-${index}`} title={option.title} url={option.url} />
-            : null
-        ))}
+        { options ? 
+          options.map((option, index) => (
+            (option.url && option.title)
+              ? <HeroDropdownElem key={`dropdown-${index}`} title={option.title} url={option.url} />
+              : null
+          ))
+          :
+          null
+        }
       </div>
     </div>
   </div>
@@ -85,7 +89,7 @@ const KeyHighlights = ({ highlights }) => (
   </section>
 );
 
-const TemplateHeroSection = ({ hero, siteName }) => {
+const TemplateHeroSection = ({ hero, siteName, dropdownIsActive, toggleDropdown }) => {
   const heroStyle = {
     background: `url(https://raw.githubusercontent.com/isomerpages/${siteName}/staging${hero.background}) no-repeat top left`,
     backgroundSize: 'cover',
@@ -113,7 +117,7 @@ const TemplateHeroSection = ({ hero, siteName }) => {
                   : null}
                 {/* Hero dropdown */}
                 { hero.dropdown
-                  ? <HeroDropdown dropdown={hero.dropdown} />
+                  ? <HeroDropdown title={hero.dropdown.title} options={hero.dropdown.options} isActive={dropdownIsActive} toggleDropdown={toggleDropdown} />
                   : <HeroButton url={hero.url} button={hero.button} />}
               </div>
             </div>
