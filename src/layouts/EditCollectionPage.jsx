@@ -3,6 +3,12 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
+import SimpleMDE from 'react-simplemde-editor';
+import marked from 'marked';
+import LeftNavPage from '../templates/LeftNavPage';
+import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
+import 'easymde/dist/easymde.min.css';
+import '../styles/isomer-template.scss';
 import styles from '../styles/App.module.scss';
 
 export default class EditCollectionPage extends Component {
@@ -11,6 +17,8 @@ export default class EditCollectionPage extends Component {
     this.state = {
       content: null,
       sha: null,
+      editorValue: '',
+      frontMatter: '',
     };
   }
 
@@ -22,7 +30,14 @@ export default class EditCollectionPage extends Component {
         withCredentials: true,
       });
       const { content, sha } = resp.data;
-      this.setState({ content, sha });
+      // split the markdown into front matter and content
+      const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
+      this.setState({
+        content,
+        sha,
+        editorValue: mdBody.trim(),
+        frontMatter,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -32,7 +47,13 @@ export default class EditCollectionPage extends Component {
     try {
       const { match } = this.props;
       const { siteName, collectionName, fileName } = match.params;
-      const base64Content = Base64.encode(this.contentBox.innerHTML);
+      const { editorValue, frontMatter } = this.state;
+
+      // here, we need to add the appropriate front matter before we encode
+      // this part needs to be revised to include permalink and other things depending on page type
+      const upload = concatFrontMatterMdBody(frontMatter, editorValue);
+
+      const base64Content = Base64.encode(upload);
       const params = {
         pageName: fileName,
         content: base64Content,
@@ -52,8 +73,17 @@ export default class EditCollectionPage extends Component {
       const { match } = this.props;
       const { siteName, collectionName, fileName } = match.params;
       const { state } = this;
-      const base64Content = Base64.encode(this.contentBox.innerHTML);
-      const params = { content: base64Content, sha: state.sha };
+      const { editorValue, frontMatter } = state;
+
+      // here, we need to re-add the front matter of the markdown file
+      const upload = concatFrontMatterMdBody(frontMatter, editorValue);
+
+      // encode to Base64 for github
+      const base64Content = Base64.encode(upload);
+      const params = {
+        content: base64Content,
+        sha: state.sha 
+      };
       const resp = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/${fileName}`, params, {
         withCredentials: true,
       });
@@ -82,7 +112,7 @@ export default class EditCollectionPage extends Component {
   renamePage = async () => {
     try {
       const { match } = this.props;
-      const { siteName, fileName, collectionName } = match.params;
+      const { siteName, collectionName, fileName } = match.params;
       const { content, sha } = this.state;
       const newFileName = this.newFileName.value;
       const params = { content, sha };
@@ -94,44 +124,50 @@ export default class EditCollectionPage extends Component {
     }
   }
 
+  onEditorChange = (value) => {
+    this.setState({ editorValue: value });
+  }
+
   render() {
-    const { content, sha } = this.state;
-    const { match } = this.props;
+    const { match, location } = this.props;
     const { collectionName, fileName } = match.params;
+    const { pages } = location.state;
+    const { sha, editorValue } = this.state;
     return (
       <>
         <h3>
+          Editing page
           {' '}
-Editing page
           {fileName}
-          {' '}
-in collection
-          {collectionName}
-          {' '}
-
         </h3>
-        { sha
-          ? (
-            <>
-              <div className={styles.edit} contentEditable="true" ref={(node) => { this.contentBox = node; }}>
-                {Base64.decode(content)}
-              </div>
-              <button type="button" onClick={this.updatePage}>Save</button>
-            </>
-          )
-          : (
-            <>
-              <div className={styles.edit} contentEditable="true" ref={(node) => { this.contentBox = node; }} />
-              <button type="button" onClick={this.createPage}>Save</button>
-            </>
-          )}
-        <br />
-        <br />
-        <button type="button" onClick={this.deletePage}>Delete</button>
-        <br />
-        <br />
-        <input placeholder="New file name" ref={(node) => { this.newFileName = node; }} />
-        <button type="button" onClick={this.renamePage}>Rename</button>
+        <div className="d-flex">
+          <div className={`${styles.leftPane} p-3`}>
+            <SimpleMDE
+              onChange={this.onEditorChange}
+              value={editorValue}
+              options={{
+                hideIcons: ['preview', 'side-by-side', 'fullscreen'],
+                showIcons: ['code', 'table'],
+              }}
+            />
+            <button type="button" onClick={sha ? this.updatePage : this.createPage}>Save</button>
+            <br />
+            <br />
+            <button type="button" onClick={this.deletePage}>Delete</button>
+            <br />
+            <br />
+            <input placeholder="New file name" ref={(node) => { this.newFileName = node; }} />
+            <button type="button" onClick={this.renamePage}>Rename</button>
+          </div>
+          <div className={styles.rightPane}>
+            <LeftNavPage
+              chunk={marked(editorValue)}
+              pages={pages}
+              fileName={fileName}
+            />
+          </div>
+        </div>
+
       </>
     );
   }
@@ -144,6 +180,14 @@ EditCollectionPage.propTypes = {
       collectionName: PropTypes.string,
       fileName: PropTypes.string,
       newFileName: PropTypes.string,
+    }),
+  }).isRequired,
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      pages: PropTypes.shape({
+        path: PropTypes.string,
+        fileName: PropTypes.string,
+      }),
     }),
   }).isRequired,
 };
