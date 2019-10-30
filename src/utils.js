@@ -31,11 +31,23 @@ export function deslugifyCollectionPage(collectionPageName) {
     .join(' '); // join it back together
 }
 
+// takes a string URL and returns true if the link is an internal link
+// only works on browser side
+export function isLinkInternal(url) {
+  const tempLink = document.createElement('a');
+  tempLink.href = url;
+  return tempLink.hostname === window.location.hostname;
+}
+
 // takes in a permalink and returns a URL that links to the image on the staging branch of the repo
 export function prependImageSrc(repoName, chunk) {
   const $ = cheerio.load(chunk);
   $('img').each((i, elem) => {
-    $(elem).attr('src', `https://github.com/isomerpages/${repoName}/blob/staging/${$(elem).attr('src')}?raw=true`);
+    // check for whether the original image source is from within Github or outside of Github
+    // only modify URL if it's a permalink on the website
+    if (isLinkInternal($(elem).attr('src'))) {
+      $(elem).attr('src', `https://github.com/isomerpages/${repoName}/blob/staging${$(elem).attr('src')}?raw=true`);
+    }
   });
   return $.html();
 }
