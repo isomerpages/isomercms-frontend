@@ -59,6 +59,7 @@ export default class Images extends Component {
        */
 
       const imgData = imgReader.result.split(',')[1];
+
       const { imgName } = imgReader;
 
       this.setState({ newImageName: imgName, newImageContent: imgData });
@@ -119,7 +120,7 @@ export default class Images extends Component {
           }
         </div>
 
-        <button type="button" onClick={this.uploadImage(newImageName, newImageContent)}>Upload new image</button>
+        <button type="button" onClick={() => this.uploadImage(newImageName, newImageContent)}>Upload new image</button>
       </div>
     );
   }
