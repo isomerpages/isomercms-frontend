@@ -68,7 +68,7 @@ Pages in Collection
               <Link to={{
                 pathname: `/sites/${siteName}/collections/${collectionName}/${page.fileName}`,
                 state: {
-                  leftNavPages,
+                  leftNavPages: pages,
                 },
               }}
               >

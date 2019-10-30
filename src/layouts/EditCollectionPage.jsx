@@ -72,8 +72,7 @@ export default class EditCollectionPage extends Component {
     try {
       const { match } = this.props;
       const { siteName, collectionName, fileName } = match.params;
-      const { state } = this;
-      const { editorValue, frontMatter } = state;
+      const { editorValue, frontMatter, sha } = this.state;
 
       // here, we need to re-add the front matter of the markdown file
       const upload = concatFrontMatterMdBody(frontMatter, editorValue);
@@ -82,13 +81,13 @@ export default class EditCollectionPage extends Component {
       const base64Content = Base64.encode(upload);
       const params = {
         content: base64Content,
-        sha: state.sha 
+        sha,
       };
       const resp = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/${fileName}`, params, {
         withCredentials: true,
       });
-      const { content, sha } = resp.data;
-      this.setState({ content, sha });
+      const { content, newSha } = resp.data;
+      this.setState({ content, sha: newSha });
     } catch (err) {
       console.log(err);
     }
@@ -184,7 +183,7 @@ EditCollectionPage.propTypes = {
   }).isRequired,
   location: PropTypes.shape({
     state: PropTypes.shape({
-      leftNavpages: PropTypes.shape({
+      leftNavPages: PropTypes.shape({
         path: PropTypes.string,
         fileName: PropTypes.string,
       }),
