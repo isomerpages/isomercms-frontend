@@ -21,13 +21,13 @@ const resizeStyle = {
   'max-width': '100%',
 };
 
-const LeftNav = ({ pages, fileName }) => (
+const LeftNav = ({ leftNavpages, fileName }) => (
   <div className="col is-2 is-position-relative has-side-nav is-hidden-touch">
     <div className="sidenav">
       <aside className="bp-menu is-gt sidebar__inner" style={{ position: 'relative' }}>
         <ul className="bp-menu-list">
           {
-            pages.map((page) => {
+            leftNavpages.map((page) => {
               const filePath = page.path.split('%2').join('/').slice(1);
               return (
                 <li>
@@ -119,7 +119,7 @@ const LeftNav = ({ pages, fileName }) => (
 );
 
 LeftNav.propTypes = {
-  pages: PropTypes.shape({
+  leftNavpages: PropTypes.shape({
     path: PropTypes.string,
     fileName: PropTypes.string,
   }).isRequired,

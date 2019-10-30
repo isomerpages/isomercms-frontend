@@ -131,7 +131,7 @@ export default class EditCollectionPage extends Component {
   render() {
     const { match, location } = this.props;
     const { collectionName, fileName } = match.params;
-    const { pages } = location.state;
+    const { leftNavPages } = location.state;
     const { sha, editorValue } = this.state;
     return (
       <>
@@ -162,7 +162,7 @@ export default class EditCollectionPage extends Component {
           <div className={styles.rightPane}>
             <LeftNavPage
               chunk={marked(editorValue)}
-              pages={pages}
+              leftNavpages={leftNavPages}
               fileName={fileName}
             />
           </div>
@@ -184,7 +184,7 @@ EditCollectionPage.propTypes = {
   }).isRequired,
   location: PropTypes.shape({
     state: PropTypes.shape({
-      pages: PropTypes.shape({
+      leftNavpages: PropTypes.shape({
         path: PropTypes.string,
         fileName: PropTypes.string,
       }),
