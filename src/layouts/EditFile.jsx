@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
+import { changeFileName } from '../utils';
 import styles from '../styles/App.module.scss';
 
 export default class EditFile extends Component {
@@ -11,6 +12,7 @@ export default class EditFile extends Component {
     this.state = {
       content: null,
       sha: null,
+      tempFileName: '',
     };
   }
 
@@ -88,11 +90,11 @@ export default class EditFile extends Component {
     try {
       const { match } = this.props;
       const { siteName, fileName } = match.params;
-      const { state } = this;
-      const newFileName = (this.newFileName).value;
+      const { content, sha, tempFileName } = this.state;
+      const newFileName = tempFileName;
       const params = {
-        content: state.content,
-        sha: state.sha,
+        content,
+        sha,
       };
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/documents/${fileName}/rename/${newFileName}`, params, {
         withCredentials: true,
@@ -134,7 +136,7 @@ export default class EditFile extends Component {
         <button type="button" onClick={this.deletePage}>Delete</button>
         <br />
         <br />
-        <input placeholder="New file name" ref={(node) => { this.newFileName = node; }} />
+        <input placeholder="New file name" onChange={(event) => changeFileName(event, this)} />
         <button type="button" onClick={this.renamePage}>Rename</button>
       </>
     );
