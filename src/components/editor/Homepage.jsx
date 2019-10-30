@@ -201,7 +201,31 @@ const EditorHeroSection = ({
   </>
 );
 
-export { EditorInfobarSection, EditorResourcesSection, EditorHeroSection };
+const NewSectionCreator = ({ createSection, sectionIndex, hasResources }) => (
+  <>
+    Create new section
+    <br />
+    <select name="newSection" id={`section-${sectionIndex}-new`} onChange={createSection}>
+      <option value="">--Please choose a new section--</option>
+      <option value="infobar">Infobar</option>
+      {/* If homepage already has a Resources section,
+        don't display the option to create one */}
+      {hasResources
+        ? null
+        : <option value="resources">Resources</option>}
+    </select>
+  </>
+);
+
+export {
+  EditorInfobarSection, EditorResourcesSection, EditorHeroSection, NewSectionCreator,
+};
+
+NewSectionCreator.propTypes = {
+  createSection: PropTypes.func.isRequired,
+  sectionIndex: PropTypes.number.isRequired,
+  hasResources: PropTypes.bool.isRequired,
+};
 
 HeroDropdownElem.propTypes = {
   title: PropTypes.string.isRequired,

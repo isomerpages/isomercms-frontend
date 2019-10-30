@@ -4,13 +4,16 @@ import axios from 'axios';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '../styles/App.module.scss';
 import '../styles/isomer-template.scss';
 import TemplateHeroSection from '../templates/homepage/HeroSection';
 import TemplateInfobarSection from '../templates/homepage/InfobarSection';
 import TemplateResourcesSection from '../templates/homepage/ResourcesSection';
 import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
-import { EditorInfobarSection, EditorResourcesSection, EditorHeroSection } from '../components/editor/Homepage';
+import {
+  EditorInfobarSection, EditorResourcesSection, EditorHeroSection, NewSectionCreator,
+} from '../components/editor/Homepage';
 
 // Constants
 const RADIX_PARSE_INT = 10;
@@ -508,6 +511,35 @@ export default class EditHomepage extends Component {
     }
   }
 
+  onDragEnd = (result) => {
+    const { source, destination } = result;
+
+    // If the user dropped the draggable to no known droppable
+    if (!destination) return;
+
+    // The draggable elem was returned to its original position
+    if (
+      destination.droppableId === source.droppableId
+      && destination.index === source.index
+    ) return;
+
+    const { frontMatter } = this.state;
+    const draggedElem = frontMatter.sections[source.index];
+
+    this.setState((currState) => ({
+      ...currState,
+      frontMatter: {
+        ...currState.frontMatter,
+        sections: update(currState.frontMatter.sections, {
+          $splice: [
+            [source.index, 1], // Remove elem from its original position
+            [destination.index, 0, draggedElem], // Splice elem into its new position
+          ],
+        }),
+      },
+    }));
+  }
+
   render() {
     const { frontMatter, hasResources, dropdownIsActive } = this.state;
     const { match } = this.props;
@@ -564,82 +596,127 @@ export default class EditHomepage extends Component {
               <p><b>Site notification</b></p>
               <input placeholder="Notification" defaultValue={frontMatter.notification} value={frontMatter.notification} id="site-notification" onChange={this.onFieldChange} />
             </div>
-            <div className={styles.card}>
-              {frontMatter.sections.map((section, sectionIndex) => (
-                <>
-                  {/* Hero section */}
-                  {section.hero ? (
-                    <EditorHeroSection
-                      title={section.hero.title}
-                      subtitle={section.hero.subtitle}
-                      background={section.hero.background}
-                      button={section.hero.button}
-                      url={section.hero.url}
-                      dropdown={section.hero.dropdown}
-                      sectionIndex={sectionIndex}
-                      highlights={section.hero.key_highlights}
-                      deleteHighlight={this.deleteHighlight}
-                      createHighlight={this.createHighlight}
-                      createHeroDropdownElem={this.createHeroDropdownElem}
-                      deleteHeroDropdownElem={this.deleteHeroDropdownElem}
-                      createHeroDropdown={this.createHeroDropdown}
-                      deleteHeroDropdown={this.deleteHeroDropdown}
-                      onFieldChange={this.onFieldChange}
-                    />
-                  ) : (
-                    null
-                  )}
+            <DragDropContext onDragEnd={this.onDragEnd}>
+              <Droppable droppableId="leftPane">
+                {(droppableProvided) => (
+                  /* eslint-disable react/jsx-props-no-spreading */
+                  <div
+                    className={styles.card}
+                    ref={droppableProvided.innerRef}
+                    {...droppableProvided.droppableProps}
+                  >
+                    {frontMatter.sections.map((section, sectionIndex) => (
+                      <>
+                        {/* Hero section */}
+                        {section.hero ? (
+                          <>
+                            <EditorHeroSection
+                              title={section.hero.title}
+                              subtitle={section.hero.subtitle}
+                              background={section.hero.background}
+                              button={section.hero.button}
+                              url={section.hero.url}
+                              dropdown={section.hero.dropdown}
+                              sectionIndex={sectionIndex}
+                              highlights={section.hero.key_highlights}
+                              deleteHighlight={this.deleteHighlight}
+                              createHighlight={this.createHighlight}
+                              createHeroDropdownElem={this.createHeroDropdownElem}
+                              deleteHeroDropdownElem={this.deleteHeroDropdownElem}
+                              createHeroDropdown={this.createHeroDropdown}
+                              deleteHeroDropdown={this.deleteHeroDropdown}
+                              onFieldChange={this.onFieldChange}
+                            />
+                            <NewSectionCreator
+                              sectionIndex={sectionIndex}
+                              hasResources={hasResources}
+                              createSection={this.createSection}
+                            />
+                          </>
+                        ) : (
+                          null
+                        )}
 
-                  {/* Resources section */}
-                  {section.resources ? (
-                    <EditorResourcesSection
-                      title={section.resources.title}
-                      subtitle={section.resources.subtitle}
-                      button={section.resources.button}
-                      sectionIndex={sectionIndex}
-                      deleteSection={this.deleteSection}
-                      onFieldChange={this.onFieldChange}
-                    />
-                  ) : (
-                    null
-                  )}
+                        {/* Resources section */}
+                        {section.resources ? (
+                          <Draggable
+                            draggableId={`resources-${sectionIndex}-draggable`}
+                            index={sectionIndex}
+                          >
+                            {(draggableProvided) => (
+                              <div
+                                {...draggableProvided.draggableProps}
+                                {...draggableProvided.dragHandleProps}
+                                ref={draggableProvided.innerRef}
+                              >
+                                <EditorResourcesSection
+                                  title={section.resources.title}
+                                  subtitle={section.resources.subtitle}
+                                  button={section.resources.button}
+                                  sectionIndex={sectionIndex}
+                                  deleteSection={this.deleteSection}
+                                  onFieldChange={this.onFieldChange}
+                                />
+                                <NewSectionCreator
+                                  sectionIndex={sectionIndex}
+                                  hasResources={hasResources}
+                                  createSection={this.createSection}
+                                />
+                              </div>
+                            )}
+                          </Draggable>
+                        ) : (
+                          null
+                        )}
 
-                  {/* Infobar section */}
-                  {section.infobar ? (
-                    <EditorInfobarSection
-                      title={section.infobar.title}
-                      subtitle={section.infobar.subtitle}
-                      description={section.infobar.description}
-                      button={section.infobar.button}
-                      url={section.infobar.url}
-                      sectionIndex={sectionIndex}
-                      deleteSection={this.deleteSection}
-                      onFieldChange={this.onFieldChange}
-                    />
-                  ) : (
-                    null
-                  )}
+                        {/* Infobar section */}
+                        {section.infobar ? (
+                          <Draggable
+                            draggableId={`infobar-${sectionIndex}-draggable`}
+                            index={sectionIndex}
+                          >
+                            {(draggableProvided) => (
+                              <div
+                                {...draggableProvided.draggableProps}
+                                {...draggableProvided.dragHandleProps}
+                                ref={draggableProvided.innerRef}
+                              >
+                                <EditorInfobarSection
+                                  title={section.infobar.title}
+                                  subtitle={section.infobar.subtitle}
+                                  description={section.infobar.description}
+                                  button={section.infobar.button}
+                                  url={section.infobar.url}
+                                  sectionIndex={sectionIndex}
+                                  deleteSection={this.deleteSection}
+                                  onFieldChange={this.onFieldChange}
+                                />
+                                <NewSectionCreator
+                                  sectionIndex={sectionIndex}
+                                  hasResources={hasResources}
+                                  createSection={this.createSection}
+                                />
+                              </div>
+                            )}
+                          </Draggable>
+                        ) : (
+                          null
+                        )}
 
-                  {/* Infopic section */}
-                  {/* TO-DO */}
+                        {/* Infopic section */}
+                        {/* TO-DO */}
 
-                  {/* Carousel section */}
-                  {/* TO-DO */}
+                        {/* Carousel section */}
+                        {/* TO-DO */}
 
-                  Create new section
-                  <br />
-                  <select name="newSection" id={`section-${sectionIndex}-new`} onChange={this.createSection}>
-                    <option value="">--Please choose a new section--</option>
-                    <option value="infobar">Infobar</option>
-                    {/* If homepage already has a Resources section,
-                      don't display the option to create one */}
-                    {hasResources
-                      ? null
-                      : <option value="resources">Resources</option>}
-                  </select>
-                </>
-              ))}
-            </div>
+                      </>
+                    ))}
+                    {droppableProvided.droppable}
+                  </div>
+                  /* eslint-enable react/jsx-props-no-spreading */
+                )}
+              </Droppable>
+            </DragDropContext>
             <button type="button" onClick={this.savePage}>Save</button>
           </div>
           <div className={styles.rightPane}>
