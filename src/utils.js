@@ -24,3 +24,9 @@ export function deslugifyCollectionPage(collectionPageName) {
     .map((string) => string.charAt(0).toUpperCase() + string.slice(1)) // capitalize first letter
     .join(' '); // join it back together
 }
+
+export function changeFileName(event, context) {
+  context.setState({
+    tempFileName: event.target.value,
+  });
+}

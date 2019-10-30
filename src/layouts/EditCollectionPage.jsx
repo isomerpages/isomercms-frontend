@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
 import LeftNavPage from '../templates/LeftNavPage';
-import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
+import { frontMatterParser, concatFrontMatterMdBody, changeFileName } from '../utils';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 import styles from '../styles/App.module.scss';
@@ -19,6 +19,7 @@ export default class EditCollectionPage extends Component {
       sha: null,
       editorValue: '',
       frontMatter: '',
+      tempFileName: '',
     };
   }
 
@@ -112,8 +113,8 @@ export default class EditCollectionPage extends Component {
     try {
       const { match } = this.props;
       const { siteName, collectionName, fileName } = match.params;
-      const { content, sha } = this.state;
-      const newFileName = this.newFileName.value;
+      const { content, sha, tempFileName } = this.state;
+      const newFileName = tempFileName;
       const params = { content, sha };
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/${fileName}/rename/${newFileName}`, params, {
         withCredentials: true,
@@ -155,7 +156,7 @@ export default class EditCollectionPage extends Component {
             <button type="button" onClick={this.deletePage}>Delete</button>
             <br />
             <br />
-            <input placeholder="New file name" ref={(node) => { this.newFileName = node; }} />
+            <input placeholder="New file name" onChange={(event) => changeFileName(event, this)} />
             <button type="button" onClick={this.renamePage}>Rename</button>
           </div>
           <div className={styles.rightPane}>
@@ -183,10 +184,10 @@ EditCollectionPage.propTypes = {
   }).isRequired,
   location: PropTypes.shape({
     state: PropTypes.shape({
-      leftNavPages: PropTypes.shape({
+      leftNavPages: PropTypes.arrayOf(PropTypes.shape({
         path: PropTypes.string,
         fileName: PropTypes.string,
-      }),
+      })),
     }),
   }).isRequired,
 };
