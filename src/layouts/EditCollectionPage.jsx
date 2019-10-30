@@ -184,10 +184,10 @@ EditCollectionPage.propTypes = {
   }).isRequired,
   location: PropTypes.shape({
     state: PropTypes.shape({
-      leftNavPages: PropTypes.shape({
+      leftNavPages: PropTypes.arrayOf(PropTypes.shape({
         path: PropTypes.string,
         fileName: PropTypes.string,
-      }),
+      })),
     }),
   }).isRequired,
 };
