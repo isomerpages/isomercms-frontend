@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
 import LeftNavPage from '../templates/LeftNavPage';
-import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
+import { frontMatterParser, concatFrontMatterMdBody, prependImageSrc } from '../utils';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 import styles from '../styles/App.module.scss';
@@ -129,7 +129,7 @@ export default class EditCollectionPage extends Component {
 
   render() {
     const { match, location } = this.props;
-    const { collectionName, fileName } = match.params;
+    const { siteName, collectionName, fileName } = match.params;
     const { leftNavPages } = location.state;
     const { sha, editorValue } = this.state;
     return (
@@ -160,7 +160,7 @@ export default class EditCollectionPage extends Component {
           </div>
           <div className={styles.rightPane}>
             <LeftNavPage
-              chunk={marked(editorValue)}
+              chunk={prependImageSrc(siteName, marked(editorValue))}
               leftNavPages={leftNavPages}
               fileName={fileName}
             />
