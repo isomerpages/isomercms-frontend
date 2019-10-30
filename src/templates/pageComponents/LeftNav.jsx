@@ -28,12 +28,13 @@ const LeftNav = ({ pages, fileName }) => (
         <ul className="bp-menu-list">
           {
             pages.map((page) => {
+              const filePath = page.path.split('%2').join('/').slice(1);
               return (
                 <li>
                   {
                     page.fileName === fileName ?
-                      <a className="is-active" href={page.path}>{deslugifyCollectionPage(page.fileName)}</a> :
-                      <a className="" href={page.path}>{deslugifyCollectionPage(page.fileName)}</a>
+                      <a className="is-active" href={filePath}>{deslugifyCollectionPage(page.fileName)}</a> :
+                      <a className="" href={filePath}>{deslugifyCollectionPage(page.fileName)}</a>
                   }
                 </li>
               );
