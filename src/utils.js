@@ -31,12 +31,11 @@ export function deslugifyCollectionPage(collectionPageName) {
     .join(' '); // join it back together
 }
 
-// prepends image src urls so that images are rendered on the right pane
-// of the edit pages
-export function prependImageSrc(repoName, imagePath, chunk) {
+// takes in a permalink and returns a URL that links to the image on the staging branch of the repo
+export function prependImageSrc(repoName, chunk) {
   const $ = cheerio.load(chunk);
   $('img').each((i, elem) => {
     $(elem).attr('src', `https://github.com/isomerpages/${repoName}/blob/staging/${$(elem).attr('src')}?raw=true`);
-    return $.html();
   });
+  return $.html();
 }
