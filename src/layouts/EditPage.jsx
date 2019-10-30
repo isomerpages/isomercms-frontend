@@ -98,10 +98,8 @@ export default class EditPage extends Component {
     try {
       const { match } = this.props;
       const { siteName, fileName } = match.params;
-      const { state } = this;
-      const params = {
-        sha: state.sha,
-      };
+      const { sha } = this.state;
+      const params = { sha };
       await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
         data: params,
         withCredentials: true,
@@ -115,12 +113,9 @@ export default class EditPage extends Component {
     try {
       const { match } = this.props;
       const { siteName, fileName } = match.params;
-      const { state } = this;
+      const { content, sha } = this.state;
       const newFileName = (this.newFileName).value;
-      const params = {
-        content: state.content,
-        sha: state.sha,
-      };
+      const params = { content, sha };
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}/rename/${newFileName}`, params, {
         withCredentials: true,
       });

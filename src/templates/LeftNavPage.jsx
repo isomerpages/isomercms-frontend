@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Breadcrumb from './pageComponents/Breadcrumb';
+import LeftNav from './pageComponents/LeftNav';
 
-// This following template was taken from the 'Simple Page'
-const SimplePage = ({ chunk }) => (
+const LeftNavPage = ({ chunk, leftNavPages, fileName }) => (
   <div>
     <Breadcrumb />
     <section className="bp-section">
-      <div className="bp-container content padding--top--lg padding--bottom--xl">
+      <div className="bp-container padding--top--lg padding--bottom--xl">
         <div className="row">
+          <LeftNav leftNavPages={leftNavPages} fileName={fileName} />
           <div className="col is-8 is-offset-1-desktop is-12-touch print-content">
             <div className="content" dangerouslySetInnerHTML={{ __html: chunk }} />
           </div>
@@ -18,8 +19,13 @@ const SimplePage = ({ chunk }) => (
   </div>
 );
 
-SimplePage.propTypes = {
+LeftNavPage.propTypes = {
   chunk: PropTypes.string.isRequired,
+  leftNavPages: PropTypes.shape({
+    path: PropTypes.string,
+    fileName: PropTypes.string,
+  }).isRequired,
+  fileName: PropTypes.string.isRequired,
 };
 
-export default SimplePage;
+export default LeftNavPage;
