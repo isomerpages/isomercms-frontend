@@ -161,7 +161,7 @@ export default class EditCollectionPage extends Component {
           <div className={styles.rightPane}>
             <LeftNavPage
               chunk={marked(editorValue)}
-              leftNavpages={leftNavPages}
+              leftNavPages={leftNavPages}
               fileName={fileName}
             />
           </div>
