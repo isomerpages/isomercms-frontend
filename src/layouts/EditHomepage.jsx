@@ -711,7 +711,7 @@ export default class EditHomepage extends Component {
 
                       </>
                     ))}
-                    {droppableProvided.droppable}
+                    {droppableProvided.placeholder}
                   </div>
                   /* eslint-enable react/jsx-props-no-spreading */
                 )}
