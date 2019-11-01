@@ -10,7 +10,7 @@ import styles from '../../styles/App.module.scss';
 const MAX_NUM_KEY_HIGHLIGHTS = 4;
 
 const EditorInfobarSection = ({
-  title, subtitle, description, button, url, sectionIndex, deleteSection, onFieldChange,
+  title, subtitle, description, button, url, sectionIndex, deleteHandler, onFieldChange,
 }) => (
   <div className={styles.card}>
     <p><b>Infobar section</b></p>
@@ -25,12 +25,12 @@ const EditorInfobarSection = ({
     <p>Infobar button URL</p>
     <input placeholder="Infobar button URL" defaultValue={url} value={url} id={`section-${sectionIndex}-infobar-url`} onChange={onFieldChange} />
     <br />
-    <button type="button" id={`section-${sectionIndex}`} onClick={deleteSection}>Delete section</button>
+    <button type="button" id={`section-${sectionIndex}`} onClick={deleteHandler}>Delete section</button>
   </div>
 );
 
 const EditorResourcesSection = ({
-  title, subtitle, button, sectionIndex, deleteSection, onFieldChange,
+  title, subtitle, button, sectionIndex, deleteHandler, onFieldChange,
 }) => (
   <div className={styles.card}>
     <p><b>Resources section</b></p>
@@ -41,7 +41,7 @@ const EditorResourcesSection = ({
     <p>Resources button name</p>
     <input placeholder="Resource button button" defaultValue={button} value={button} id={`section-${sectionIndex}-resources-button`} onChange={onFieldChange} />
     <br />
-    <button type="button" id={`section-${sectionIndex}`} onClick={deleteSection}>Delete section</button>
+    <button type="button" id={`section-${sectionIndex}`} onClick={deleteHandler}>Delete section</button>
   </div>
 );
 
@@ -84,8 +84,8 @@ const HeroDropdownElem = ({
 const HeroDropdown = ({
   title,
   options,
-  createHeroDropdownElem,
-  deleteHeroDropdownElem,
+  createHandler,
+  deleteHandler,
   onFieldChange,
 }) => (
   <div className={styles.card}>
@@ -102,11 +102,11 @@ const HeroDropdown = ({
             dropdownsIndex={dropdownsIndex}
             onFieldChange={onFieldChange}
           />
-          <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} onClick={deleteHeroDropdownElem}>Delete dropdown element</button>
-          <button type="button" id={`dropdownelem-${dropdownsIndex}-create`} onClick={createHeroDropdownElem}>Create dropdown element</button>
+          <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} onClick={deleteHandler}>Delete dropdown element</button>
+          <button type="button" id={`dropdownelem-${dropdownsIndex}-create`} onClick={createHandler}>Create dropdown element</button>
         </>
       ))
-      : <button type="button" id="dropdownelem-0-create" onClick={createHeroDropdownElem}>Create dropdown element</button>}
+      : <button type="button" id="dropdownelem-0-create" onClick={createHandler}>Create dropdown element</button>}
   </div>
 );
 
@@ -134,12 +134,8 @@ const EditorHeroSection = ({
   sectionIndex,
   highlights,
   onFieldChange,
-  createHighlight,
-  deleteHighlight,
-  createHeroDropdownElem,
-  deleteHeroDropdownElem,
-  createHeroDropdown,
-  deleteHeroDropdown,
+  createHandler,
+  deleteHandler,
 }) => (
   <>
     <p><b>Hero section</b></p>
@@ -153,20 +149,20 @@ const EditorHeroSection = ({
     {dropdown
       ? (
         <>
-          <button type="button" onClick={deleteHeroDropdown}>Delete Hero Dropdown</button>
+          <button type="button" id="dropdown-delete" onClick={deleteHandler}>Delete Hero Dropdown</button>
           <HeroDropdown
             title={dropdown.title}
             options={dropdown.options}
             sectionIndex={sectionIndex}
-            createHeroDropdownElem={createHeroDropdownElem}
-            deleteHeroDropdownElem={deleteHeroDropdownElem}
+            createHandler={createHandler}
+            deleteHandler={deleteHandler}
             onFieldChange={onFieldChange}
           />
         </>
       )
       : (
         <div className={styles.card}>
-          <button type="button" onClick={createHeroDropdown}>Create Hero Dropdown</button>
+          <button type="button" id="dropdown-create" onClick={createHandler}>Create Hero Dropdown</button>
           <HeroButton
             button={button}
             url={url}
@@ -187,25 +183,25 @@ const EditorHeroSection = ({
                       highlightIndex={highlightIndex}
                       onFieldChange={onFieldChange}
                     />
-                    <button type="button" id={`highlight-${highlightIndex}-delete`} onClick={deleteHighlight} key={`${highlightIndex}-delete`}>Delete highlight</button>
+                    <button type="button" id={`highlight-${highlightIndex}-delete`} onClick={deleteHandler} key={`${highlightIndex}-delete`}>Delete highlight</button>
                     {highlights.length < MAX_NUM_KEY_HIGHLIGHTS
-                      ? <button type="button" id={`highlight-${highlightIndex}-create`} onClick={createHighlight} key={`${highlightIndex}-create`}>Create highlight</button>
+                      ? <button type="button" id={`highlight-${highlightIndex}-create`} onClick={createHandler} key={`${highlightIndex}-create`}>Create highlight</button>
                       : null}
                   </div>
                 ))}
               </>
             )
-            : <button type="button" id="highlight-0-create" onClick={createHighlight} key="0-create">Create highlight</button>}
+            : <button type="button" id="highlight-0-create" onClick={createHandler} key="0-create">Create highlight</button>}
         </div>
       )}
   </>
 );
 
-const NewSectionCreator = ({ createSection, sectionIndex, hasResources }) => (
+const NewSectionCreator = ({ createHandler, sectionIndex, hasResources }) => (
   <>
     Create new section
     <br />
-    <select name="newSection" id={`section-${sectionIndex}-new`} onChange={createSection}>
+    <select name="newSection" id={`section-${sectionIndex}-new`} onChange={createHandler}>
       <option value="">--Please choose a new section--</option>
       <option value="infobar">Infobar</option>
       {/* If homepage already has a Resources section,
@@ -222,7 +218,7 @@ export {
 };
 
 NewSectionCreator.propTypes = {
-  createSection: PropTypes.func.isRequired,
+  createHandler: PropTypes.func.isRequired,
   sectionIndex: PropTypes.number.isRequired,
   hasResources: PropTypes.bool.isRequired,
 };
@@ -237,8 +233,8 @@ HeroDropdownElem.propTypes = {
 HeroDropdown.propTypes = {
   title: PropTypes.string.isRequired,
   onFieldChange: PropTypes.func.isRequired,
-  createHeroDropdownElem: PropTypes.func.isRequired,
-  deleteHeroDropdownElem: PropTypes.func.isRequired,
+  createHandler: PropTypes.func.isRequired,
+  deleteHandler: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
@@ -264,7 +260,7 @@ EditorInfobarSection.propTypes = {
   button: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
   onFieldChange: PropTypes.func.isRequired,
-  deleteSection: PropTypes.func.isRequired,
+  deleteHandler: PropTypes.func.isRequired,
 };
 
 EditorResourcesSection.propTypes = {
@@ -273,7 +269,7 @@ EditorResourcesSection.propTypes = {
   sectionIndex: PropTypes.number.isRequired,
   button: PropTypes.string.isRequired,
   onFieldChange: PropTypes.func.isRequired,
-  deleteSection: PropTypes.func.isRequired,
+  deleteHandler: PropTypes.func.isRequired,
 };
 
 KeyHighlight.propTypes = {
@@ -297,8 +293,8 @@ EditorHeroSection.propTypes = {
       description: PropTypes.string.isRequired,
       url: PropTypes.string.isRequired,
       highlightIndex: PropTypes.number.isRequired,
-      deleteHighlight: PropTypes.func.isRequired,
-      createHighlight: PropTypes.func.isRequired,
+      createHandler: PropTypes.func.isRequired,
+      deleteHandler: PropTypes.func.isRequired,
       onFieldChange: PropTypes.func.isRequired,
       allowMoreHighlights: PropTypes.bool.isRequired,
     }),
@@ -315,12 +311,8 @@ EditorHeroSection.propTypes = {
     title: PropTypes.string.isRequired,
   }),
   onFieldChange: PropTypes.func.isRequired,
-  createHighlight: PropTypes.func.isRequired,
-  deleteHighlight: PropTypes.func.isRequired,
-  createHeroDropdownElem: PropTypes.func.isRequired,
-  deleteHeroDropdownElem: PropTypes.func.isRequired,
-  createHeroDropdown: PropTypes.func.isRequired,
-  deleteHeroDropdown: PropTypes.func.isRequired,
+  createHandler: PropTypes.func.isRequired,
+  deleteHandler: PropTypes.func.isRequired,
 };
 
 EditorHeroSection.defaultProps = {
