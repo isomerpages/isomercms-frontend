@@ -81,6 +81,7 @@ export default class EditHomepage extends Component {
       sha: null,
       hasResources: false,
       dropdownIsActive: false,
+      displaySections: [],
     };
   }
 
@@ -95,13 +96,17 @@ export default class EditHomepage extends Component {
       const base64DecodedContent = Base64.decode(content);
       const { frontMatter } = frontMatterParser(base64DecodedContent);
 
-      // Compute hasResources
+      // Compute hasResources and set displaySections
       let hasResources = false;
+      const displaySections = [];
       frontMatter.sections.forEach((section) => {
+        displaySections.push(false);
         if (section.resources) hasResources = true;
       });
 
-      this.setState({ frontMatter, sha, hasResources });
+      this.setState({
+        frontMatter, sha, hasResources, displaySections,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -228,7 +233,6 @@ export default class EditHomepage extends Component {
 
       switch (elemType) {
         case 'section': {
-          const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT) + 1;
           const sectionType = enumSection(value);
 
           // The Isomer site can only have 1 resources section in the homepage
@@ -238,7 +242,7 @@ export default class EditHomepage extends Component {
           }
 
           newSections = update(frontMatter.sections, {
-            $splice: [[sectionIndex, 0, sectionType]],
+            $push: [sectionType],
           });
           break;
         }
@@ -403,6 +407,37 @@ export default class EditHomepage extends Component {
     }
   }
 
+  displayHandler = async (event) => {
+    try {
+      const { id } = event.target;
+      const idArray = id.split('-');
+      const elemType = idArray[0];
+      switch (elemType) {
+        case 'section': {
+          const { displaySections } = this.state;
+          const sectionId = idArray[1];
+          const newDisplaySections = displaySections;
+          newDisplaySections[sectionId] = !newDisplaySections[sectionId];
+
+          this.setState({
+            displaySections: newDisplaySections,
+          });
+          break;
+        }
+        case 'highlight': {
+          break;
+        }
+        case 'dropdownelem': {
+          break;
+        }
+        default:
+          return;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   savePage = async () => {
     try {
       const { state } = this;
@@ -458,7 +493,9 @@ export default class EditHomepage extends Component {
   }
 
   render() {
-    const { frontMatter, hasResources, dropdownIsActive } = this.state;
+    const {
+      frontMatter, hasResources, dropdownIsActive, displaySections,
+    } = this.state;
     const { match } = this.props;
     const { siteName } = match.params;
     return (
@@ -539,11 +576,8 @@ export default class EditHomepage extends Component {
                               onFieldChange={this.onFieldChange}
                               createHandler={this.createHandler}
                               deleteHandler={this.deleteHandler}
-                            />
-                            <NewSectionCreator
-                              sectionIndex={sectionIndex}
-                              hasResources={hasResources}
-                              createHandler={this.createHandler}
+                              shouldDisplay={displaySections[sectionIndex]}
+                              displayHandler={this.displayHandler}
                             />
                           </>
                         ) : (
@@ -569,11 +603,8 @@ export default class EditHomepage extends Component {
                                   sectionIndex={sectionIndex}
                                   deleteHandler={this.deleteHandler}
                                   onFieldChange={this.onFieldChange}
-                                />
-                                <NewSectionCreator
-                                  sectionIndex={sectionIndex}
-                                  hasResources={hasResources}
-                                  createHandler={this.createHandler}
+                                  shouldDisplay={displaySections[sectionIndex]}
+                                  displayHandler={this.displayHandler}
                                 />
                               </div>
                             )}
@@ -603,11 +634,8 @@ export default class EditHomepage extends Component {
                                   sectionIndex={sectionIndex}
                                   deleteHandler={this.deleteHandler}
                                   onFieldChange={this.onFieldChange}
-                                />
-                                <NewSectionCreator
-                                  sectionIndex={sectionIndex}
-                                  hasResources={hasResources}
-                                  createHandler={this.createHandler}
+                                  shouldDisplay={displaySections[sectionIndex]}
+                                  displayHandler={this.displayHandler}
                                 />
                               </div>
                             )}
@@ -630,6 +658,13 @@ export default class EditHomepage extends Component {
                 )}
               </Droppable>
             </DragDropContext>
+
+            {/* Section creator */}
+            <NewSectionCreator
+              hasResources={hasResources}
+              createHandler={this.createHandler}
+            />
+
             <button type="button" onClick={this.savePage}>Save</button>
           </div>
           <div className={styles.rightPane}>

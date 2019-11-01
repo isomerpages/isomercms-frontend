@@ -10,38 +10,68 @@ import styles from '../../styles/App.module.scss';
 const MAX_NUM_KEY_HIGHLIGHTS = 4;
 
 const EditorInfobarSection = ({
-  title, subtitle, description, button, url, sectionIndex, deleteHandler, onFieldChange,
+  title,
+  subtitle,
+  description,
+  button,
+  url,
+  sectionIndex,
+  deleteHandler,
+  onFieldChange,
+  shouldDisplay,
+  displayHandler,
 }) => (
   <div className={styles.card}>
     <p><b>Infobar section</b></p>
-    <p>Infobar title</p>
-    <input placeholder="Infobar title" defaultValue={title} value={title} id={`section-${sectionIndex}-infobar-title`} onChange={onFieldChange} />
-    <p>Infobar subtitle</p>
-    <input placeholder="Infobar subtitle" defaultValue={subtitle} value={subtitle} id={`section-${sectionIndex}-infobar-subtitle`} onChange={onFieldChange} />
-    <p>Infobar description</p>
-    <input placeholder="Infobar description" defaultValue={description} value={description} id={`section-${sectionIndex}-infobar-description`} onChange={onFieldChange} />
-    <p>Infobar button name</p>
-    <input placeholder="Infobar button name" defaultValue={button} value={button} id={`section-${sectionIndex}-infobar-button`} onChange={onFieldChange} />
-    <p>Infobar button URL</p>
-    <input placeholder="Infobar button URL" defaultValue={url} value={url} id={`section-${sectionIndex}-infobar-url`} onChange={onFieldChange} />
-    <br />
-    <button type="button" id={`section-${sectionIndex}`} onClick={deleteHandler}>Delete section</button>
+    <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>Toggle display</button>
+    {shouldDisplay
+      ? (
+        <>
+          <p>Infobar title</p>
+          <input placeholder="Infobar title" defaultValue={title} value={title} id={`section-${sectionIndex}-infobar-title`} onChange={onFieldChange} />
+          <p>Infobar subtitle</p>
+          <input placeholder="Infobar subtitle" defaultValue={subtitle} value={subtitle} id={`section-${sectionIndex}-infobar-subtitle`} onChange={onFieldChange} />
+          <p>Infobar description</p>
+          <input placeholder="Infobar description" defaultValue={description} value={description} id={`section-${sectionIndex}-infobar-description`} onChange={onFieldChange} />
+          <p>Infobar button name</p>
+          <input placeholder="Infobar button name" defaultValue={button} value={button} id={`section-${sectionIndex}-infobar-button`} onChange={onFieldChange} />
+          <p>Infobar button URL</p>
+          <input placeholder="Infobar button URL" defaultValue={url} value={url} id={`section-${sectionIndex}-infobar-url`} onChange={onFieldChange} />
+          <br />
+          <button type="button" id={`section-${sectionIndex}`} onClick={deleteHandler}>Delete section</button>
+        </>
+      )
+      : null}
   </div>
 );
 
 const EditorResourcesSection = ({
-  title, subtitle, button, sectionIndex, deleteHandler, onFieldChange,
+  title,
+  subtitle,
+  button,
+  sectionIndex,
+  deleteHandler,
+  onFieldChange,
+  shouldDisplay,
+  displayHandler,
 }) => (
   <div className={styles.card}>
     <p><b>Resources section</b></p>
-    <p>Resources section title</p>
-    <input placeholder="Resource section title" defaultValue={title} value={title} id={`section-${sectionIndex}-resources-title`} onChange={onFieldChange} />
-    <p>Resources section subtitle</p>
-    <input placeholder="Resource section subtitle" defaultValue={subtitle} value={subtitle} id={`section-${sectionIndex}-resources-subtitle`} onChange={onFieldChange} />
-    <p>Resources button name</p>
-    <input placeholder="Resource button button" defaultValue={button} value={button} id={`section-${sectionIndex}-resources-button`} onChange={onFieldChange} />
-    <br />
-    <button type="button" id={`section-${sectionIndex}`} onClick={deleteHandler}>Delete section</button>
+    <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>Toggle display</button>
+    {shouldDisplay
+      ? (
+        <>
+          <p>Resources section title</p>
+          <input placeholder="Resource section title" defaultValue={title} value={title} id={`section-${sectionIndex}-resources-title`} onChange={onFieldChange} />
+          <p>Resources section subtitle</p>
+          <input placeholder="Resource section subtitle" defaultValue={subtitle} value={subtitle} id={`section-${sectionIndex}-resources-subtitle`} onChange={onFieldChange} />
+          <p>Resources button name</p>
+          <input placeholder="Resource button button" defaultValue={button} value={button} id={`section-${sectionIndex}-resources-button`} onChange={onFieldChange} />
+          <br />
+          <button type="button" id={`section-${sectionIndex}`} onClick={deleteHandler}>Delete section</button>
+        </>
+      )
+      : null}
   </div>
 );
 
@@ -136,72 +166,83 @@ const EditorHeroSection = ({
   onFieldChange,
   createHandler,
   deleteHandler,
+  shouldDisplay,
+  displayHandler,
 }) => (
   <>
     <p><b>Hero section</b></p>
-    <p>Hero title</p>
-    <input placeholder="Hero title" defaultValue={title} value={title} id={`section-${sectionIndex}-hero-title`} onChange={onFieldChange} />
-    <p>Hero subtitle</p>
-    <input placeholder="Hero subtitle" defaultValue={subtitle} value={subtitle} id={`section-${sectionIndex}-hero-subtitle`} onChange={onFieldChange} />
-    <p>Hero background image</p>
-    <input placeholder="Hero background image" defaultValue={background} value={background} id={`section-${sectionIndex}-hero-background`} onChange={onFieldChange} />
-    <p><i>Note: you can only have either Key Highlights and a Hero button or a Hero Dropdown</i></p>
-    {dropdown
+    <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>Toggle display</button>
+    {shouldDisplay
       ? (
         <>
-          <button type="button" id="dropdown-delete" onClick={deleteHandler}>Delete Hero Dropdown</button>
-          <HeroDropdown
-            title={dropdown.title}
-            options={dropdown.options}
-            sectionIndex={sectionIndex}
-            createHandler={createHandler}
-            deleteHandler={deleteHandler}
-            onFieldChange={onFieldChange}
-          />
-        </>
-      )
-      : (
-        <div className={styles.card}>
-          <button type="button" id="dropdown-create" onClick={createHandler}>Create Hero Dropdown</button>
-          <HeroButton
-            button={button}
-            url={url}
-            sectionIndex={sectionIndex}
-            onFieldChange={onFieldChange}
-          />
-          {(highlights && highlights.length > 0)
+          <p>Hero title</p>
+          <input placeholder="Hero title" defaultValue={title} value={title} id={`section-${sectionIndex}-hero-title`} onChange={onFieldChange} />
+          <p>Hero subtitle</p>
+          <input placeholder="Hero subtitle" defaultValue={subtitle} value={subtitle} id={`section-${sectionIndex}-hero-subtitle`} onChange={onFieldChange} />
+          <p>Hero background image</p>
+          <input placeholder="Hero background image" defaultValue={background} value={background} id={`section-${sectionIndex}-hero-background`} onChange={onFieldChange} />
+          <p>
+            <i>Note: you can only have either Key Highlights+Hero button or a Hero Dropdown</i>
+          </p>
+          {dropdown
             ? (
               <>
-                <b>Hero highlights</b>
-                {highlights.map((highlight, highlightIndex) => (
-                  <div className={styles.card} key={highlightIndex}>
-                    <KeyHighlight
-                      title={highlight.title}
-                      description={highlight.description}
-                      background={highlight.background}
-                      url={highlight.url}
-                      highlightIndex={highlightIndex}
-                      onFieldChange={onFieldChange}
-                    />
-                    <button type="button" id={`highlight-${highlightIndex}-delete`} onClick={deleteHandler} key={`${highlightIndex}-delete`}>Delete highlight</button>
-                    {highlights.length < MAX_NUM_KEY_HIGHLIGHTS
-                      ? <button type="button" id={`highlight-${highlightIndex}-create`} onClick={createHandler} key={`${highlightIndex}-create`}>Create highlight</button>
-                      : null}
-                  </div>
-                ))}
+                <button type="button" id="dropdown-delete" onClick={deleteHandler}>Delete Hero Dropdown</button>
+                <HeroDropdown
+                  title={dropdown.title}
+                  options={dropdown.options}
+                  sectionIndex={sectionIndex}
+                  createHandler={createHandler}
+                  deleteHandler={deleteHandler}
+                  onFieldChange={onFieldChange}
+                />
               </>
             )
-            : <button type="button" id="highlight-0-create" onClick={createHandler} key="0-create">Create highlight</button>}
-        </div>
-      )}
+            : (
+              <div className={styles.card}>
+                <button type="button" id="dropdown-create" onClick={createHandler}>Create Hero Dropdown</button>
+                <HeroButton
+                  button={button}
+                  url={url}
+                  sectionIndex={sectionIndex}
+                  onFieldChange={onFieldChange}
+                />
+                {(highlights && highlights.length > 0)
+                  ? (
+                    <>
+                      <b>Hero highlights</b>
+                      {highlights.map((highlight, highlightIndex) => (
+                        <div className={styles.card} key={highlightIndex}>
+                          <KeyHighlight
+                            title={highlight.title}
+                            description={highlight.description}
+                            background={highlight.background}
+                            url={highlight.url}
+                            highlightIndex={highlightIndex}
+                            onFieldChange={onFieldChange}
+                          />
+                          <button type="button" id={`highlight-${highlightIndex}-delete`} onClick={deleteHandler} key={`${highlightIndex}-delete`}>Delete highlight</button>
+                          {highlights.length < MAX_NUM_KEY_HIGHLIGHTS
+                            ? <button type="button" id={`highlight-${highlightIndex}-create`} onClick={createHandler} key={`${highlightIndex}-create`}>Create highlight</button>
+                            : null}
+                        </div>
+                      ))}
+                    </>
+                  )
+                  : <button type="button" id="highlight-0-create" onClick={createHandler} key="0-create">Create highlight</button>}
+              </div>
+            )}
+        </>
+      )
+      : null}
   </>
 );
 
-const NewSectionCreator = ({ createHandler, sectionIndex, hasResources }) => (
+const NewSectionCreator = ({ createHandler, hasResources }) => (
   <>
     Create new section
     <br />
-    <select name="newSection" id={`section-${sectionIndex}-new`} onChange={createHandler}>
+    <select name="newSection" id="section-new" onChange={createHandler}>
       <option value="">--Please choose a new section--</option>
       <option value="infobar">Infobar</option>
       {/* If homepage already has a Resources section,
@@ -219,7 +260,6 @@ export {
 
 NewSectionCreator.propTypes = {
   createHandler: PropTypes.func.isRequired,
-  sectionIndex: PropTypes.number.isRequired,
   hasResources: PropTypes.bool.isRequired,
 };
 
@@ -261,6 +301,8 @@ EditorInfobarSection.propTypes = {
   url: PropTypes.string.isRequired,
   onFieldChange: PropTypes.func.isRequired,
   deleteHandler: PropTypes.func.isRequired,
+  shouldDisplay: PropTypes.bool.isRequired,
+  displayHandler: PropTypes.func.isRequired,
 };
 
 EditorResourcesSection.propTypes = {
@@ -270,6 +312,8 @@ EditorResourcesSection.propTypes = {
   button: PropTypes.string.isRequired,
   onFieldChange: PropTypes.func.isRequired,
   deleteHandler: PropTypes.func.isRequired,
+  shouldDisplay: PropTypes.bool.isRequired,
+  displayHandler: PropTypes.func.isRequired,
 };
 
 KeyHighlight.propTypes = {
@@ -313,6 +357,8 @@ EditorHeroSection.propTypes = {
   onFieldChange: PropTypes.func.isRequired,
   createHandler: PropTypes.func.isRequired,
   deleteHandler: PropTypes.func.isRequired,
+  shouldDisplay: PropTypes.bool.isRequired,
+  displayHandler: PropTypes.func.isRequired,
 };
 
 EditorHeroSection.defaultProps = {
