@@ -21,10 +21,10 @@ const LeftNavPage = ({ chunk, leftNavPages, fileName }) => (
 
 LeftNavPage.propTypes = {
   chunk: PropTypes.string.isRequired,
-  leftNavPages: PropTypes.shape({
+  leftNavPages: PropTypes.arrayOf(PropTypes.shape({
     path: PropTypes.string,
     fileName: PropTypes.string,
-  }).isRequired,
+  })).isRequired,
   fileName: PropTypes.string.isRequired,
 };
 

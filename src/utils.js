@@ -51,3 +51,9 @@ export function prependImageSrc(repoName, chunk) {
   });
   return $.html();
 }
+
+export function changeFileName(event, context) {
+  context.setState({
+    tempFileName: event.target.value,
+  });
+}
