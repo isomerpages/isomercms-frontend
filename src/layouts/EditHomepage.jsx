@@ -16,6 +16,9 @@ import {
   EditorInfobarSection, EditorResourcesSection, EditorHeroSection, NewSectionCreator,
 } from '../components/editor/Homepage';
 
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable react/no-array-index-key */
+
 // Constants
 const RADIX_PARSE_INT = 10;
 
@@ -500,7 +503,8 @@ export default class EditHomepage extends Component {
   }
 
   onDragEnd = (result) => {
-    const { source, destination } = result;
+    const { source, destination, type } = result;
+    const { frontMatter } = this.state;
 
     // If the user dropped the draggable to no known droppable
     if (!destination) return;
@@ -511,19 +515,61 @@ export default class EditHomepage extends Component {
       && destination.index === source.index
     ) return;
 
-    const { frontMatter } = this.state;
-    const draggedElem = frontMatter.sections[source.index];
+    let newSections = [];
 
-    this.setState((currState) => ({
-      ...currState,
-      frontMatter: {
-        ...currState.frontMatter,
-        sections: update(currState.frontMatter.sections, {
+    switch (type) {
+      case 'editor': {
+        const draggedElem = frontMatter.sections[source.index];
+        newSections = update(frontMatter.sections, {
           $splice: [
             [source.index, 1], // Remove elem from its original position
             [destination.index, 0, draggedElem], // Splice elem into its new position
           ],
-        }),
+        });
+        break;
+      }
+      case 'dropdownelem': {
+        const draggedElem = frontMatter.sections[0].hero.dropdown.options[source.index];
+        newSections = update(frontMatter.sections, {
+          0: {
+            hero: {
+              dropdown: {
+                options: {
+                  $splice: [
+                    [source.index, 1], // Remove elem from its original position
+                    [destination.index, 0, draggedElem], // Splice elem into its new position
+                  ],
+                },
+              },
+            },
+          },
+        });
+        break;
+      }
+      case 'highlight': {
+        const draggedElem = frontMatter.sections[0].hero.key_highlights[source.index];
+        newSections = update(frontMatter.sections, {
+          0: {
+            hero: {
+              key_highlights: {
+                $splice: [
+                  [source.index, 1], // Remove elem from its original position
+                  [destination.index, 0, draggedElem], // Splice elem into its new position
+                ],
+              },
+            },
+          },
+        });
+        break;
+      }
+      default:
+        return;
+    }
+    this.setState((currState) => ({
+      ...currState,
+      frontMatter: {
+        ...currState.frontMatter,
+        sections: newSections,
       },
     }));
   }
@@ -592,9 +638,8 @@ export default class EditHomepage extends Component {
               <input placeholder="Notification" defaultValue={frontMatter.notification} value={frontMatter.notification} id="site-notification" onChange={this.onFieldChange} />
             </div>
             <DragDropContext onDragEnd={this.onDragEnd}>
-              <Droppable droppableId="leftPane">
+              <Droppable droppableId="leftPane" type="editor">
                 {(droppableProvided) => (
-                  /* eslint-disable react/jsx-props-no-spreading */
                   <div
                     className={styles.card}
                     ref={droppableProvided.innerRef}
@@ -606,6 +651,7 @@ export default class EditHomepage extends Component {
                         {section.hero ? (
                           <>
                             <EditorHeroSection
+                              key={`section-${sectionIndex}`}
                               title={section.hero.title}
                               subtitle={section.hero.subtitle}
                               background={section.hero.background}
@@ -621,6 +667,7 @@ export default class EditHomepage extends Component {
                               displayHighlights={displayHighlights}
                               displayDropdownElems={displayDropdownElems}
                               displayHandler={this.displayHandler}
+                              onDragEnd={this.onDragEnd}
                             />
                           </>
                         ) : (
@@ -640,6 +687,7 @@ export default class EditHomepage extends Component {
                                 ref={draggableProvided.innerRef}
                               >
                                 <EditorResourcesSection
+                                  key={`section-${sectionIndex}`}
                                   title={section.resources.title}
                                   subtitle={section.resources.subtitle}
                                   button={section.resources.button}
@@ -669,6 +717,7 @@ export default class EditHomepage extends Component {
                                 ref={draggableProvided.innerRef}
                               >
                                 <EditorInfobarSection
+                                  key={`section-${sectionIndex}`}
                                   title={section.infobar.title}
                                   subtitle={section.infobar.subtitle}
                                   description={section.infobar.description}
@@ -697,7 +746,6 @@ export default class EditHomepage extends Component {
                     ))}
                     {droppableProvided.droppable}
                   </div>
-                  /* eslint-enable react/jsx-props-no-spreading */
                 )}
               </Droppable>
             </DragDropContext>
@@ -718,6 +766,7 @@ export default class EditHomepage extends Component {
                 {section.hero
                   ? (
                     <TemplateHeroSection
+                      key={`section-${sectionIndex}`}
                       hero={section.hero}
                       siteName={siteName}
                       dropdownIsActive={dropdownIsActive}
@@ -729,6 +778,7 @@ export default class EditHomepage extends Component {
                 {section.resources
                   ? (
                     <TemplateResourcesSection
+                      key={`section-${sectionIndex}`}
                       title={section.resources.title}
                       subtitle={section.resources.subtitle}
                       button={section.resources.button}
@@ -740,6 +790,7 @@ export default class EditHomepage extends Component {
                 {section.infobar
                   ? (
                     <TemplateInfobarSection
+                      key={`section-${sectionIndex}`}
                       title={section.infobar.title}
                       subtitle={section.infobar.subtitle}
                       description={section.infobar.description}

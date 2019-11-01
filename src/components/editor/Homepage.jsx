@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '../../styles/App.module.scss';
 
 /* eslint
@@ -163,23 +164,48 @@ const HeroDropdown = ({
     <p>Dropdown title</p>
     <input placeholder="Hero dropdown title" defaultValue={title} value={title} id="dropdown-title" onChange={onFieldChange} />
     <br />
-    {/* Initial button to create dropdown element */}
-    { (options && options.length > 0)
-      ? options.map((option, dropdownsIndex) => (
-        <>
-          <HeroDropdownElem
-            title={option.title}
-            url={option.url}
-            dropdownsIndex={dropdownsIndex}
-            onFieldChange={onFieldChange}
-            deleteHandler={deleteHandler}
-            createHandler={createHandler}
-            displayHandler={displayHandler}
-            shouldDisplay={displayDropdownElems[dropdownsIndex]}
-          />
-        </>
-      ))
-      : <button type="button" id="dropdownelem-0-create" onClick={createHandler}>Create dropdown element</button>}
+    <Droppable droppableId="dropdownelem" type="dropdownelem">
+      {(droppableProvided) => (
+        /* eslint-disable react/jsx-props-no-spreading */
+        <div
+          className={styles.card}
+          ref={droppableProvided.innerRef}
+          {...droppableProvided.droppableProps}
+        >
+          { (options && options.length > 0)
+            ? options.map((option, dropdownsIndex) => (
+              <Draggable
+                draggableId={`dropdownelem-${dropdownsIndex}-draggable`}
+                index={dropdownsIndex}
+              >
+                {(draggableProvided) => (
+                  <div
+                    className={styles.card}
+                    key={dropdownsIndex}
+                    {...draggableProvided.draggableProps}
+                    {...draggableProvided.dragHandleProps}
+                    ref={draggableProvided.innerRef}
+                  >
+                    <HeroDropdownElem
+                      key={`dropdownelem-${dropdownsIndex}`}
+                      title={option.title}
+                      url={option.url}
+                      dropdownsIndex={dropdownsIndex}
+                      onFieldChange={onFieldChange}
+                      deleteHandler={deleteHandler}
+                      createHandler={createHandler}
+                      displayHandler={displayHandler}
+                      shouldDisplay={displayDropdownElems[dropdownsIndex]}
+                    />
+                  </div>
+                )}
+              </Draggable>
+            ))
+            : <button type="button" id="dropdownelem-0-create" onClick={createHandler}>Create dropdown element</button>}
+          {droppableProvided.placeholder}
+        </div>
+      )}
+    </Droppable>
   </div>
 );
 
@@ -217,7 +243,7 @@ const EditorHeroSection = ({
   <>
     <p><b>Hero section</b></p>
     <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>Toggle display</button>
-    {shouldDisplay
+    {!shouldDisplay
       ? (
         <>
           <p>Hero title</p>
@@ -254,30 +280,58 @@ const EditorHeroSection = ({
                   sectionIndex={sectionIndex}
                   onFieldChange={onFieldChange}
                 />
-                {(highlights && highlights.length > 0)
-                  ? (
-                    <>
-                      <b>Hero highlights</b>
-                      {highlights.map((highlight, highlightIndex) => (
-                        <div className={styles.card} key={highlightIndex}>
-                          <KeyHighlight
-                            title={highlight.title}
-                            description={highlight.description}
-                            background={highlight.background}
-                            url={highlight.url}
-                            highlightIndex={highlightIndex}
-                            onFieldChange={onFieldChange}
-                            shouldDisplay={displayHighlights[highlightIndex]}
-                            displayHandler={displayHandler}
-                            shouldAllowMoreHighlights={highlights.length < MAX_NUM_KEY_HIGHLIGHTS}
-                            deleteHandler={deleteHandler}
-                            createHandler={createHandler}
-                          />
-                        </div>
-                      ))}
-                    </>
-                  )
-                  : <button type="button" id="highlight-0-create" onClick={createHandler} key="0-create">Create highlight</button>}
+                <Droppable droppableId="highlight" type="highlight">
+                  {(droppableProvided) => (
+                  /* eslint-disable react/jsx-props-no-spreading */
+                    <div
+                      className={styles.card}
+                      ref={droppableProvided.innerRef}
+                      {...droppableProvided.droppableProps}
+                    >
+                      {(highlights && highlights.length > 0)
+                        ? (
+                          <>
+                            <b>Hero highlights</b>
+                            {highlights.map((highlight, highlightIndex) => (
+                              <Draggable
+                                draggableId={`highlight-${highlightIndex}-draggable`}
+                                index={highlightIndex}
+                              >
+                                {(draggableProvided) => (
+                                  <div
+                                    className={styles.card}
+                                    key={highlightIndex}
+                                    {...draggableProvided.draggableProps}
+                                    {...draggableProvided.dragHandleProps}
+                                    ref={draggableProvided.innerRef}
+                                  >
+                                    <KeyHighlight
+                                      key={`highlight-${highlightIndex}`}
+                                      title={highlight.title}
+                                      description={highlight.description}
+                                      background={highlight.background}
+                                      url={highlight.url}
+                                      highlightIndex={highlightIndex}
+                                      onFieldChange={onFieldChange}
+                                      shouldDisplay={displayHighlights[highlightIndex]}
+                                      displayHandler={displayHandler}
+                                      shouldAllowMoreHighlights={
+                                        highlights.length < MAX_NUM_KEY_HIGHLIGHTS
+                                      }
+                                      deleteHandler={deleteHandler}
+                                      createHandler={createHandler}
+                                    />
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                          </>
+                        )
+                        : <button type="button" id="highlight-0-create" onClick={createHandler} key="0-create">Create highlight</button>}
+                      {droppableProvided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
               </div>
             )}
         </>
@@ -398,7 +452,7 @@ EditorHeroSection.propTypes = {
   shouldDisplay: PropTypes.bool.isRequired,
   displayHandler: PropTypes.func.isRequired,
   displayHighlights: PropTypes.func.isRequired,
-  displayDropdownElems: PropTypes.func.isRequired,
+  displayDropdownElems: PropTypes.arrayOf(PropTypes.bool.isRequired).isRequired,
   highlights: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
