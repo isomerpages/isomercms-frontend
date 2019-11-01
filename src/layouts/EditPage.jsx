@@ -6,7 +6,7 @@ import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
 import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
-import { frontMatterParser, concatFrontMatterMdBody, changeFileName } from '../utils';
+import { frontMatterParser, concatFrontMatterMdBody, prependImageSrc, changeFileName } from '../utils';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 import styles from '../styles/App.module.scss';
@@ -131,7 +131,7 @@ export default class EditPage extends Component {
 
   render() {
     const { match } = this.props;
-    const { fileName } = match.params;
+    const { siteName, fileName } = match.params;
     const { sha, editorValue } = this.state;
     return (
       <>
@@ -160,7 +160,7 @@ export default class EditPage extends Component {
             <button type="button" onClick={this.renamePage}>Rename</button>
           </div>
           <div className={styles.rightPane}>
-            <SimplePage chunk={marked(editorValue)} />
+            <SimplePage chunk={prependImageSrc(siteName, marked(editorValue))} />
           </div>
         </div>
 
