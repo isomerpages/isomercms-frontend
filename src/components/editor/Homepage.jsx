@@ -24,6 +24,7 @@ const EditorInfobarSection = ({
   <div className={styles.card}>
     <p><b>Infobar section</b></p>
     <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>Toggle display</button>
+    <button type="button" id={`section-${sectionIndex}`} onClick={deleteHandler}>Delete section</button>
     {shouldDisplay
       ? (
         <>
@@ -37,8 +38,6 @@ const EditorInfobarSection = ({
           <input placeholder="Infobar button name" defaultValue={button} value={button} id={`section-${sectionIndex}-infobar-button`} onChange={onFieldChange} />
           <p>Infobar button URL</p>
           <input placeholder="Infobar button URL" defaultValue={url} value={url} id={`section-${sectionIndex}-infobar-url`} onChange={onFieldChange} />
-          <br />
-          <button type="button" id={`section-${sectionIndex}`} onClick={deleteHandler}>Delete section</button>
         </>
       )
       : null}
@@ -58,6 +57,7 @@ const EditorResourcesSection = ({
   <div className={styles.card}>
     <p><b>Resources section</b></p>
     <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>Toggle display</button>
+    <button type="button" id={`section-${sectionIndex}`} onClick={deleteHandler}>Delete section</button>
     {shouldDisplay
       ? (
         <>
@@ -67,8 +67,6 @@ const EditorResourcesSection = ({
           <input placeholder="Resource section subtitle" defaultValue={subtitle} value={subtitle} id={`section-${sectionIndex}-resources-subtitle`} onChange={onFieldChange} />
           <p>Resources button name</p>
           <input placeholder="Resource button button" defaultValue={button} value={button} id={`section-${sectionIndex}-resources-button`} onChange={onFieldChange} />
-          <br />
-          <button type="button" id={`section-${sectionIndex}`} onClick={deleteHandler}>Delete section</button>
         </>
       )
       : null}
