@@ -79,19 +79,38 @@ const KeyHighlight = ({
   url,
   highlightIndex,
   onFieldChange,
+  shouldDisplay,
+  displayHandler,
+  deleteHandler,
+  createHandler,
+  shouldAllowMoreHighlights,
 }) => (
   <div className={styles.card} key={highlightIndex}>
     <b>
 Highlight
       {highlightIndex}
     </b>
-    <p>Highlight title</p>
-    <input placeholder="Highlight title" defaultValue={title} value={title} id={`highlight-${highlightIndex}-title`} onChange={onFieldChange} key={`${highlightIndex}-title`} />
-    <p>Highlight description</p>
-    <input placeholder="Highlight description" defaultValue={description} value={description} id={`highlight-${highlightIndex}-description`} onChange={onFieldChange} key={`${highlightIndex}-description`} />
-    <p>Highlight URL</p>
-    <input placeholder="Highlight URL" defaultValue={url} value={url} id={`highlight-${highlightIndex}-url`} onChange={onFieldChange} key={`${highlightIndex}-url`} />
     <br />
+    {/* Create/delete/toggle buttons */}
+    <button type="button" id={`highlight-${highlightIndex}-toggle`} onClick={displayHandler}>Toggle display</button>
+    <button type="button" id={`highlight-${highlightIndex}-delete`} onClick={deleteHandler} key={`${highlightIndex}-delete`}>Delete highlight</button>
+    {shouldAllowMoreHighlights
+      ? <button type="button" id={`highlight-${highlightIndex}-create`} onClick={createHandler} key={`${highlightIndex}-create`}>Create highlight</button>
+      : null}
+
+    {/* Core highlight fields */}
+    {shouldDisplay
+      ? (
+        <>
+          <p>Highlight title</p>
+          <input placeholder="Highlight title" defaultValue={title} value={title} id={`highlight-${highlightIndex}-title`} onChange={onFieldChange} key={`${highlightIndex}-title`} />
+          <p>Highlight description</p>
+          <input placeholder="Highlight description" defaultValue={description} value={description} id={`highlight-${highlightIndex}-description`} onChange={onFieldChange} key={`${highlightIndex}-description`} />
+          <p>Highlight URL</p>
+          <input placeholder="Highlight URL" defaultValue={url} value={url} id={`highlight-${highlightIndex}-url`} onChange={onFieldChange} key={`${highlightIndex}-url`} />
+        </>
+      )
+      : null}
   </div>
 );
 
@@ -100,12 +119,33 @@ const HeroDropdownElem = ({
   url,
   dropdownsIndex,
   onFieldChange,
+  deleteHandler,
+  createHandler,
+  shouldDisplay,
+  displayHandler,
 }) => (
   <div className={styles.card}>
-    <p>Dropdown element title</p>
-    <input placeholder="Hero dropdown element title" defaultValue={title} value={title} id={`dropdownelem-${dropdownsIndex}-title`} onChange={onFieldChange} />
-    <p>Dropdown element URL</p>
-    <input placeholder="Hero dropdown element URL" defaultValue={url} value={url} id={`dropdownelem-${dropdownsIndex}-url`} onChange={onFieldChange} />
+    <p>
+      <b>
+Dropdown Elem
+        {dropdownsIndex}
+      </b>
+    </p>
+    <br />
+    {/* Create/delete/toggle buttons */}
+    <button type="button" id={`dropdownelem-${dropdownsIndex}-toggle`} onClick={displayHandler}>Toggle display</button>
+    <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} onClick={deleteHandler}>Delete dropdown element</button>
+    <button type="button" id={`dropdownelem-${dropdownsIndex}-create`} onClick={createHandler}>Create dropdown element</button>
+    { shouldDisplay
+      ? (
+        <>
+          <p>Dropdown element title</p>
+          <input placeholder="Hero dropdown element title" defaultValue={title} value={title} id={`dropdownelem-${dropdownsIndex}-title`} onChange={onFieldChange} />
+          <p>Dropdown element URL</p>
+          <input placeholder="Hero dropdown element URL" defaultValue={url} value={url} id={`dropdownelem-${dropdownsIndex}-url`} onChange={onFieldChange} />
+        </>
+      )
+      : null}
   </div>
 );
 
@@ -115,11 +155,14 @@ const HeroDropdown = ({
   createHandler,
   deleteHandler,
   onFieldChange,
+  displayHandler,
+  displayDropdownElems,
 }) => (
   <div className={styles.card}>
     <p>Hero dropdown</p>
     <p>Dropdown title</p>
     <input placeholder="Hero dropdown title" defaultValue={title} value={title} id="dropdown-title" onChange={onFieldChange} />
+    <br />
     {/* Initial button to create dropdown element */}
     { (options && options.length > 0)
       ? options.map((option, dropdownsIndex) => (
@@ -129,9 +172,11 @@ const HeroDropdown = ({
             url={option.url}
             dropdownsIndex={dropdownsIndex}
             onFieldChange={onFieldChange}
+            deleteHandler={deleteHandler}
+            createHandler={createHandler}
+            displayHandler={displayHandler}
+            shouldDisplay={displayDropdownElems[dropdownsIndex]}
           />
-          <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} onClick={deleteHandler}>Delete dropdown element</button>
-          <button type="button" id={`dropdownelem-${dropdownsIndex}-create`} onClick={createHandler}>Create dropdown element</button>
         </>
       ))
       : <button type="button" id="dropdownelem-0-create" onClick={createHandler}>Create dropdown element</button>}
@@ -166,6 +211,8 @@ const EditorHeroSection = ({
   deleteHandler,
   shouldDisplay,
   displayHandler,
+  displayDropdownElems,
+  displayHighlights,
 }) => (
   <>
     <p><b>Hero section</b></p>
@@ -193,6 +240,8 @@ const EditorHeroSection = ({
                   createHandler={createHandler}
                   deleteHandler={deleteHandler}
                   onFieldChange={onFieldChange}
+                  displayDropdownElems={displayDropdownElems}
+                  displayHandler={displayHandler}
                 />
               </>
             )
@@ -218,11 +267,12 @@ const EditorHeroSection = ({
                             url={highlight.url}
                             highlightIndex={highlightIndex}
                             onFieldChange={onFieldChange}
+                            shouldDisplay={displayHighlights[highlightIndex]}
+                            displayHandler={displayHandler}
+                            shouldAllowMoreHighlights={highlights.length < MAX_NUM_KEY_HIGHLIGHTS}
+                            deleteHandler={deleteHandler}
+                            createHandler={createHandler}
                           />
-                          <button type="button" id={`highlight-${highlightIndex}-delete`} onClick={deleteHandler} key={`${highlightIndex}-delete`}>Delete highlight</button>
-                          {highlights.length < MAX_NUM_KEY_HIGHLIGHTS
-                            ? <button type="button" id={`highlight-${highlightIndex}-create`} onClick={createHandler} key={`${highlightIndex}-create`}>Create highlight</button>
-                            : null}
                         </div>
                       ))}
                     </>
@@ -266,6 +316,10 @@ HeroDropdownElem.propTypes = {
   url: PropTypes.string.isRequired,
   dropdownsIndex: PropTypes.number.isRequired,
   onFieldChange: PropTypes.func.isRequired,
+  createHandler: PropTypes.func.isRequired,
+  deleteHandler: PropTypes.func.isRequired,
+  shouldDisplay: PropTypes.bool.isRequired,
+  displayHandler: PropTypes.func.isRequired,
 };
 
 HeroDropdown.propTypes = {
@@ -273,12 +327,16 @@ HeroDropdown.propTypes = {
   onFieldChange: PropTypes.func.isRequired,
   createHandler: PropTypes.func.isRequired,
   deleteHandler: PropTypes.func.isRequired,
+  displayHandler: PropTypes.func.isRequired,
+  displayDropdownElems: PropTypes.arrayOf(PropTypes.bool.isRequired).isRequired,
   options: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
       url: PropTypes.string.isRequired,
       dropdownsIndex: PropTypes.number.isRequired,
       onFieldChange: PropTypes.func.isRequired,
+      shouldDisplay: PropTypes.bool.isRequired,
+      displayHandler: PropTypes.func.isRequired,
     }),
   ).isRequired,
 };
@@ -320,6 +378,11 @@ KeyHighlight.propTypes = {
   url: PropTypes.string.isRequired,
   highlightIndex: PropTypes.number.isRequired,
   onFieldChange: PropTypes.func.isRequired,
+  createHandler: PropTypes.func.isRequired,
+  deleteHandler: PropTypes.func.isRequired,
+  shouldDisplay: PropTypes.bool.isRequired,
+  displayHandler: PropTypes.func.isRequired,
+  shouldAllowMoreHighlights: PropTypes.bool.isRequired,
 };
 
 EditorHeroSection.propTypes = {
@@ -329,6 +392,13 @@ EditorHeroSection.propTypes = {
   button: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
   sectionIndex: PropTypes.number.isRequired,
+  onFieldChange: PropTypes.func.isRequired,
+  createHandler: PropTypes.func.isRequired,
+  deleteHandler: PropTypes.func.isRequired,
+  shouldDisplay: PropTypes.bool.isRequired,
+  displayHandler: PropTypes.func.isRequired,
+  displayHighlights: PropTypes.func.isRequired,
+  displayDropdownElems: PropTypes.func.isRequired,
   highlights: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
@@ -352,11 +422,6 @@ EditorHeroSection.propTypes = {
     ).isRequired,
     title: PropTypes.string.isRequired,
   }),
-  onFieldChange: PropTypes.func.isRequired,
-  createHandler: PropTypes.func.isRequired,
-  deleteHandler: PropTypes.func.isRequired,
-  shouldDisplay: PropTypes.bool.isRequired,
-  displayHandler: PropTypes.func.isRequired,
 };
 
 EditorHeroSection.defaultProps = {

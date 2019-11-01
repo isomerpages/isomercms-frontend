@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 // import { Link } from "react-router-dom";
 import axios from 'axios';
+import _ from 'lodash';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
@@ -82,6 +83,8 @@ export default class EditHomepage extends Component {
       hasResources: false,
       dropdownIsActive: false,
       displaySections: [],
+      displayHighlights: [],
+      displayDropdownElems: [],
     };
   }
 
@@ -99,13 +102,30 @@ export default class EditHomepage extends Component {
       // Compute hasResources and set displaySections
       let hasResources = false;
       const displaySections = [];
+      let displayHighlights = [];
+      let displayDropdownElems = [];
       frontMatter.sections.forEach((section) => {
+        // If this is the hero section, hide all highlights/dropdownelems by default
+        if (section.hero) {
+          const { dropdown, key_highlights: keyHighlights } = section.hero;
+          if (dropdown) {
+            // Go through section.hero.dropdown.options
+            displayDropdownElems = _.fill(Array(dropdown.options.length), false);
+          }
+          if (keyHighlights) {
+            displayHighlights = _.fill(Array(keyHighlights.length), false);
+          }
+        }
+
+        // Minimize all sections by default
         displaySections.push(false);
+
+        // Check if there is already a resources section
         if (section.resources) hasResources = true;
       });
 
       this.setState({
-        frontMatter, sha, hasResources, displaySections,
+        frontMatter, sha, hasResources, displaySections, displayDropdownElems, displayHighlights,
       });
     } catch (err) {
       console.log(err);
@@ -425,9 +445,25 @@ export default class EditHomepage extends Component {
           break;
         }
         case 'highlight': {
+          const { displayHighlights } = this.state;
+          const highlightIndex = idArray[1];
+          const newDisplayHighlights = displayHighlights;
+          newDisplayHighlights[highlightIndex] = !newDisplayHighlights[highlightIndex];
+
+          this.setState({
+            displayHighlights: newDisplayHighlights,
+          });
           break;
         }
         case 'dropdownelem': {
+          const { displayDropdownElems } = this.state;
+          const dropdownsIndex = idArray[1];
+          const newDisplayDropdownElems = displayDropdownElems;
+          newDisplayDropdownElems[dropdownsIndex] = !newDisplayDropdownElems[dropdownsIndex];
+
+          this.setState({
+            displayDropdownElems: newDisplayDropdownElems,
+          });
           break;
         }
         default:
@@ -494,7 +530,12 @@ export default class EditHomepage extends Component {
 
   render() {
     const {
-      frontMatter, hasResources, dropdownIsActive, displaySections,
+      frontMatter,
+      hasResources,
+      dropdownIsActive,
+      displaySections,
+      displayHighlights,
+      displayDropdownElems,
     } = this.state;
     const { match } = this.props;
     const { siteName } = match.params;
@@ -577,6 +618,8 @@ export default class EditHomepage extends Component {
                               createHandler={this.createHandler}
                               deleteHandler={this.deleteHandler}
                               shouldDisplay={displaySections[sectionIndex]}
+                              displayHighlights={displayHighlights}
+                              displayDropdownElems={displayDropdownElems}
                               displayHandler={this.displayHandler}
                             />
                           </>
