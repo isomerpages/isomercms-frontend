@@ -1,9 +1,10 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import update from 'immutability-helper';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import cleanedData from './utils';
 import AccordionTitle from './AccordionTitle';
-import AccordionSection from './AccordionSection';
 import './Accordion.css';
 
 const data = cleanedData;
@@ -14,27 +15,37 @@ export default class DragAndDropAccordion extends Component {
     super(props);
     this.state = {
       activeIndex: {},
+      collectionOrder: [],
+      // create an object to maintain second-level collections and
+      // second-level activeIndex
     };
     this.onCollectionClick = this.onCollectionClick.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
   }
 
   async componentDidMount() {
     // const { data } = this.props;
+    const { collectionOrder } = data;
     // sets all collections to be closed in the accordion at first
     const activeIndex = {};
-    data.collectionOrder.forEach((collection) => {
+    collectionOrder.forEach((collection) => {
       Object.assign(activeIndex, {
         [collection]: false,
       });
     });
+    // also set the original collection order - for Drag and Drop purposes
     await this.setState({
       activeIndex,
+      collectionOrder,
     });
   }
 
+  // a function to toggle the accordion
   async onCollectionClick(event) {
     const { id } = event.target;
-    const collectionName = id.split('-').slice(0, -1).join('-'); // get the collection name
+    // get the collection name
+    const collectionName = id.split('-').slice(0, -1).join('-');
+    // update whether a collection is expanded or not
     await this.setState((currState) => ({
       ...currState,
       activeIndex: update(currState.activeIndex, {
@@ -45,20 +56,68 @@ export default class DragAndDropAccordion extends Component {
     }));
   }
 
+  async onDragEnd(result) {
+    const {
+      destination,
+      source,
+      draggableId,
+      type,
+    } = result;
+    const { collectionOrder } = this.state;
+
+    // if no destination, don't do anything
+    if (!destination) {
+      return;
+    }
+
+    // if destination = source, don't do anything
+    if (
+      destination.droppableId === source.droppableId
+      && destination.index === source.index
+    ) {
+      return;
+    }
+
+    if (type === 'collection') {
+      const newCollectionOrder = Array.from(collectionOrder);
+      newCollectionOrder.splice(source.index, 1);
+      newCollectionOrder.splice(destination.index, 0, draggableId);
+      await this.setState({
+        collectionOrder: newCollectionOrder,
+      });
+      return;
+    }
+  }
+
   render() {
-    const { activeIndex } = this.state;
+    const { activeIndex, collectionOrder } = this.state;
     return (
-      <div className="accordion__section">
-        {data.collectionOrder.map((collection) => ([
-          <AccordionTitle
-            collectionName={collection}
-            onCollectionClick={this.onCollectionClick}
-          />,
-          data.collections[collection].pages.map((page) => (
-            <AccordionSection pageName={page} isActive={activeIndex[collection]} />
-          )),
-        ]))}
-      </div>
+      <DragDropContext
+        onDragEnd={this.onDragEnd}
+      >
+        <Droppable droppableId="all-collections" type="collection">
+          {(provided) => (
+            <div
+              className="accordion__section"
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
+              {collectionOrder.map((collection, index) => (
+                <AccordionTitle
+                // these are props for the accordion
+                  collection={collection}
+                  onCollectionClick={this.onCollectionClick}
+                  pages={data.collections[collection].pages}
+                  activeIndex={activeIndex}
+                // these are props for drag and drop
+                  index={index}
+                />
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     );
   }
 }

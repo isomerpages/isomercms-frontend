@@ -1,16 +1,44 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
+import { Draggable } from 'react-beautiful-dnd';
+import AccordionSection from './AccordionSection';
 import Plus from './Plus';
 
 export default class AccordionTitle extends Component {
   render() {
-    const { collectionName, onCollectionClick } = this.props;
+    const {
+      collection,
+      onCollectionClick,
+      index,
+      pages,
+      activeIndex,
+    } = this.props;
     return (
-      <button className="accordion" id={`${collectionName}-button`} type="button" onClick={onCollectionClick}>
-        {collectionName}
-        <Plus className="accordion__icon" width={10} fill="#777" />
-      </button>
+      // we need to disable interactive element blocking to drag our buttons
+      // this is okay - we are only using the onClick prop for buttons, and not other interactions
+      <Draggable draggableId={collection} index={index} disableInteractiveElementBlocking="true">
+        {(provided) => ([
+          <button
+          // these are props for the accordion
+            className="accordion"
+            id={`${collection}-button`}
+            type="button"
+            onClick={onCollectionClick}
+          // these are props for the drag and drop
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            ref={provided.innerRef}
+          >
+            {collection}
+            <Plus className="accordion__icon" width={10} fill="#777" />
+          </button>,
+          pages.map((page) => (
+            <AccordionSection pageName={page} isActive={activeIndex[collection]} />
+          )),
+        ])}
+      </Draggable>
     );
   }
 }
