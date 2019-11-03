@@ -13,7 +13,7 @@ export default class AccordionTitle extends Component {
       onCollectionClick,
       index,
       pages,
-      activeIndex,
+      isActive,
     } = this.props;
     return (
       // we need to disable interactive element blocking to drag our buttons
@@ -21,21 +21,22 @@ export default class AccordionTitle extends Component {
       <Draggable draggableId={collection} index={index} disableInteractiveElementBlocking="true">
         {(provided) => ([
           <button
+            type="button"
           // these are props for the accordion
             className="accordion"
             id={`${collection}-button`}
-            type="button"
             onClick={onCollectionClick}
           // these are props for the drag and drop
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             ref={provided.innerRef}
+            key={`${collection}-button`}
           >
             {collection}
             <Plus className="accordion__icon" width={10} fill="#777" />
           </button>,
           pages.map((page) => (
-            <AccordionSection pageName={page} isActive={activeIndex[collection]} />
+            <AccordionSection pageName={page} isActive={isActive} key={page} />
           )),
         ])}
       </Draggable>

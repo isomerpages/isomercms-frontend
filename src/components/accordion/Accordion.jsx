@@ -14,8 +14,9 @@ export default class DragAndDropAccordion extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeIndex: {},
-      collectionOrder: [],
+      activeIndex: {}, // manages which collections in the accordion are open
+      collectionOrder: [], // order of collections in the accordion
+
       // create an object to maintain second-level collections and
       // second-level activeIndex
     };
@@ -26,6 +27,7 @@ export default class DragAndDropAccordion extends Component {
   async componentDidMount() {
     // const { data } = this.props;
     const { collectionOrder } = data;
+
     // sets all collections to be closed in the accordion at first
     const activeIndex = {};
     collectionOrder.forEach((collection) => {
@@ -33,6 +35,7 @@ export default class DragAndDropAccordion extends Component {
         [collection]: false,
       });
     });
+
     // also set the original collection order - for Drag and Drop purposes
     await this.setState({
       activeIndex,
@@ -42,9 +45,11 @@ export default class DragAndDropAccordion extends Component {
 
   // a function to toggle the accordion
   async onCollectionClick(event) {
-    const { id } = event.target;
+    const { id } = event.target; // button id of the collection being clicked
+
     // get the collection name
     const collectionName = id.split('-').slice(0, -1).join('-');
+
     // update whether a collection is expanded or not
     await this.setState((currState) => ({
       ...currState,
@@ -79,13 +84,13 @@ export default class DragAndDropAccordion extends Component {
     }
 
     if (type === 'collection') {
+      // reorder the collection after drag
       const newCollectionOrder = Array.from(collectionOrder);
       newCollectionOrder.splice(source.index, 1);
       newCollectionOrder.splice(destination.index, 0, draggableId);
       await this.setState({
         collectionOrder: newCollectionOrder,
       });
-      return;
     }
   }
 
@@ -108,9 +113,10 @@ export default class DragAndDropAccordion extends Component {
                   collection={collection}
                   onCollectionClick={this.onCollectionClick}
                   pages={data.collections[collection].pages}
-                  activeIndex={activeIndex}
+                  isActive={activeIndex[collection]}
                 // these are props for drag and drop
                   index={index}
+                  key={collection}
                 />
               ))}
               {provided.placeholder}
