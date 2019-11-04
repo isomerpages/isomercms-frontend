@@ -16,7 +16,7 @@ export default class DragAndDropAccordion extends Component {
     this.state = {
       activeIndex: {}, // manages which collections in the accordion are open
       collectionOrder: [], // order of collections in the accordion
-      pageOrder: {},
+      pageOrder: {}, // order of pages within each collection
 
       // create an object to maintain second-level collections and
       // second-level activeIndex
@@ -80,7 +80,7 @@ export default class DragAndDropAccordion extends Component {
       draggableId,
       type,
     } = result;
-    const { collectionOrder } = this.state;
+    const { collectionOrder, pageOrder } = this.state;
 
     // if no destination, don't do anything
     if (!destination) {
@@ -104,10 +104,57 @@ export default class DragAndDropAccordion extends Component {
         collectionOrder: newCollectionOrder,
       });
     }
+
+    if (type === 'page') {
+      const startCollection = source.droppableId;
+      const endCollection = destination.droppableId;
+
+      // reordering within the same collection
+      if (startCollection === endCollection) {
+        // make a copy of the existing order of pages in the collection
+        const newPageOrder = Array.from(pageOrder[startCollection]);
+
+        // insert the new page and remove it from the old one
+        newPageOrder.splice(source.index, 1);
+        newPageOrder.splice(destination.index, 0, draggableId);
+
+        // update state for pageOrder
+        this.setState((currState) => ({
+          ...currState,
+          pageOrder: update(currState.pageOrder, {
+            [startCollection]: {
+              $set: newPageOrder,
+            },
+          }),
+        }));
+      // reordering between different collections
+      } else if (startCollection !== endCollection) {
+        // make copies of existing source and destination collections' page orders
+        const newSourceOrder = Array.from(pageOrder[startCollection]);
+        const newDestOrder = Array.from(pageOrder[endCollection]);
+
+        // remove from source and insert into destination
+        newSourceOrder.splice(source.index, 1);
+        newDestOrder.splice(destination.index, 0, draggableId);
+
+        // update state for pageOrder
+        this.setState((currState) => ({
+          ...currState,
+          pageOrder: update(currState.pageOrder, {
+            [startCollection]: {
+              $set: newSourceOrder,
+            },
+            [endCollection]: {
+              $set: newDestOrder,
+            },
+          }),
+        }));
+      }
+    }
   }
 
   render() {
-    const { activeIndex, collectionOrder } = this.state;
+    const { activeIndex, collectionOrder, pageOrder } = this.state;
     return (
       <DragDropContext
         onDragEnd={this.onDragEnd}
@@ -124,7 +171,7 @@ export default class DragAndDropAccordion extends Component {
                 // these are props for the accordion
                   collection={collection}
                   onCollectionClick={this.onCollectionClick}
-                  pages={data.collections[collection].pages}
+                  pages={pageOrder[collection]}
                   isActive={activeIndex[collection]}
                 // these are props for drag and drop
                   index={index}
