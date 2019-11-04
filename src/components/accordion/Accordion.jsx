@@ -16,6 +16,7 @@ export default class DragAndDropAccordion extends Component {
     this.state = {
       activeIndex: {}, // manages which collections in the accordion are open
       collectionOrder: [], // order of collections in the accordion
+      pageOrder: {},
 
       // create an object to maintain second-level collections and
       // second-level activeIndex
@@ -26,7 +27,7 @@ export default class DragAndDropAccordion extends Component {
 
   async componentDidMount() {
     // const { data } = this.props;
-    const { collectionOrder } = data;
+    const { collections, collectionOrder } = data;
 
     // sets all collections to be closed in the accordion at first
     const activeIndex = {};
@@ -36,10 +37,21 @@ export default class DragAndDropAccordion extends Component {
       });
     });
 
+    // collectionOrder already tracks the order of the columns
+    // we need a page order to track the order of the pages within the columns
+    const pageOrder = {};
+    Object.keys(collections).forEach((key) => {
+      Object.assign(pageOrder, {
+        [key]: collections[key].pages,
+      });
+    });
+
+
     // also set the original collection order - for Drag and Drop purposes
     await this.setState({
       activeIndex,
       collectionOrder,
+      pageOrder,
     });
   }
 

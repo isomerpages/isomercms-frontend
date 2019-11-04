@@ -19,26 +19,32 @@ export default class AccordionTitle extends Component {
       // we need to disable interactive element blocking to drag our buttons
       // this is okay - we are only using the onClick prop for buttons, and not other interactions
       <Draggable draggableId={collection} index={index} disableInteractiveElementBlocking="true">
-        {(provided) => ([
-          <button
-            type="button"
-          // these are props for the accordion
-            className="accordion"
-            id={`${collection}-button`}
-            onClick={onCollectionClick}
-          // these are props for the drag and drop
+        {(provided) => (
+          <div
+            className="accordion__section"
             {...provided.draggableProps}
-            {...provided.dragHandleProps}
             ref={provided.innerRef}
-            key={`${collection}-button`}
+            {...provided.dragHandleProps}
           >
-            {collection}
-            <Plus className="accordion__icon" width={10} fill="#777" />
-          </button>,
-          pages.map((page) => (
-            <AccordionSection pageName={page} isActive={isActive} key={page} />
-          )),
-        ])}
+            <button
+              className="accordion"
+              type="button"
+            // these are props for the accordion
+              id={`${collection}-button`}
+              onClick={onCollectionClick}
+            // these are props for the drag and drop
+              key={`${collection}-button`}
+            >
+              {collection}
+              <Plus className="accordion__icon" width={10} fill="#777" />
+            </button>
+            {pages.map((page) => (
+              // add a droppable here with type="page"
+              // then add relevant bits to onDragEnd
+              <AccordionSection pageName={page} isActive={isActive} key={page} />
+            ))}
+          </div>
+        )}
       </Draggable>
     );
   }
