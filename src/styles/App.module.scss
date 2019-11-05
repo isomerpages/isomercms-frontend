@@ -9,12 +9,18 @@
   padding-top: 40px;
 }
 
+.twoPanes {
+  height: 90vh;
+}
+
 .leftPane {
-  width: 40%;
+  overflow-y: scroll;
+  width: 35%;
 } 
 
 .rightPane {
-  transform: scale(0.8);
+  overflow-y: scroll;
+  transform: scale(0.65);
   transform-origin: top left;
   width: 60%;
 }
