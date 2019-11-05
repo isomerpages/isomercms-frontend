@@ -73,6 +73,7 @@ export default class EditHomepage extends Component {
     super(props);
     this.onFieldChange = this.onFieldChange.bind(this);
     this.toggleDropdown = this.toggleDropdown.bind(this);
+    this.scrollRefs = [];
     this.state = {
       frontMatter: {
         title: '',
@@ -174,6 +175,8 @@ export default class EditHomepage extends Component {
               sections,
             },
           }));
+
+          this.scrollRefs[sectionIndex].scrollIntoView();
           break;
         }
         case 'highlight': {
@@ -195,6 +198,8 @@ export default class EditHomepage extends Component {
               sections,
             },
           }));
+
+          this.scrollRefs[0].scrollIntoView();
           break;
         }
         case 'dropdownelem': {
@@ -216,6 +221,8 @@ export default class EditHomepage extends Component {
               sections,
             },
           }));
+
+          this.scrollRefs[0].scrollIntoView();
           break;
         }
         default: {
@@ -238,6 +245,8 @@ export default class EditHomepage extends Component {
               }),
             },
           }));
+
+          this.scrollRefs[0].scrollIntoView();
         }
       }
     } catch (err) {
@@ -590,7 +599,7 @@ export default class EditHomepage extends Component {
         <h3>
           Editing homepage
         </h3>
-        <div className="d-flex">
+        <div className={`d-flex ${styles.twoPanes}`}>
           <div className={`p-3 ${styles.leftPane}`}>
             {/* Site-wide configuration */}
             {/* <div className={styles.card}>
@@ -765,39 +774,45 @@ export default class EditHomepage extends Component {
                 {/* Hero section */}
                 {section.hero
                   ? (
-                    <TemplateHeroSection
-                      key={`section-${sectionIndex}`}
-                      hero={section.hero}
-                      siteName={siteName}
-                      dropdownIsActive={dropdownIsActive}
-                      toggleDropdown={this.toggleDropdown}
-                    />
+                    <div ref={(ref) => { this.scrollRefs[sectionIndex] = ref; }}>
+                      <TemplateHeroSection
+                        key={`section-${sectionIndex}`}
+                        hero={section.hero}
+                        siteName={siteName}
+                        dropdownIsActive={dropdownIsActive}
+                        toggleDropdown={this.toggleDropdown}
+                      />
+                    </div>
                   )
                   : null}
                 {/* Resources section */}
                 {section.resources
                   ? (
-                    <TemplateResourcesSection
-                      key={`section-${sectionIndex}`}
-                      title={section.resources.title}
-                      subtitle={section.resources.subtitle}
-                      button={section.resources.button}
-                      sectionIndex={sectionIndex}
-                    />
+                    <div ref={(ref) => { this.scrollRefs[sectionIndex] = ref; }}>
+                      <TemplateResourcesSection
+                        key={`section-${sectionIndex}`}
+                        title={section.resources.title}
+                        subtitle={section.resources.subtitle}
+                        button={section.resources.button}
+                        sectionIndex={sectionIndex}
+                      />
+                    </div>
                   )
                   : null}
                 {/* Infobar section */}
                 {section.infobar
                   ? (
-                    <TemplateInfobarSection
-                      key={`section-${sectionIndex}`}
-                      title={section.infobar.title}
-                      subtitle={section.infobar.subtitle}
-                      description={section.infobar.description}
-                      url={section.infobar.url}
-                      button={section.infobar.button}
-                      sectionIndex={sectionIndex}
-                    />
+                    <div ref={(ref) => { this.scrollRefs[sectionIndex] = ref; }}>
+                      <TemplateInfobarSection
+                        key={`section-${sectionIndex}`}
+                        title={section.infobar.title}
+                        subtitle={section.infobar.subtitle}
+                        description={section.infobar.description}
+                        url={section.infobar.url}
+                        button={section.infobar.button}
+                        sectionIndex={sectionIndex}
+                      />
+                    </div>
                   )
                   : null}
               </>
