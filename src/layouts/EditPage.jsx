@@ -6,7 +6,7 @@ import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
 import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
-import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
+import { frontMatterParser, concatFrontMatterMdBody, prependImageSrc, changeFileName } from '../utils';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 import styles from '../styles/App.module.scss';
@@ -19,6 +19,7 @@ export default class EditPage extends Component {
       sha: null,
       editorValue: '',
       frontMatter: '',
+      tempFileName: '',
     };
   }
 
@@ -98,10 +99,8 @@ export default class EditPage extends Component {
     try {
       const { match } = this.props;
       const { siteName, fileName } = match.params;
-      const { state } = this;
-      const params = {
-        sha: state.sha,
-      };
+      const { sha } = this.state;
+      const params = { sha };
       await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
         data: params,
         withCredentials: true,
@@ -115,12 +114,9 @@ export default class EditPage extends Component {
     try {
       const { match } = this.props;
       const { siteName, fileName } = match.params;
-      const { state } = this;
-      const newFileName = (this.newFileName).value;
-      const params = {
-        content: state.content,
-        sha: state.sha,
-      };
+      const { content, sha, tempFileName } = this.state;
+      const newFileName = tempFileName;
+      const params = { content, sha };
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}/rename/${newFileName}`, params, {
         withCredentials: true,
       });
@@ -135,7 +131,7 @@ export default class EditPage extends Component {
 
   render() {
     const { match } = this.props;
-    const { fileName } = match.params;
+    const { siteName, fileName } = match.params;
     const { sha, editorValue } = this.state;
     return (
       <>
@@ -160,11 +156,11 @@ export default class EditPage extends Component {
             <button type="button" onClick={this.deletePage}>Delete</button>
             <br />
             <br />
-            <input placeholder="New file name" ref={(node) => { this.newFileName = node; }} />
+            <input placeholder="New file name" onChange={(event) => changeFileName(event, this)} />
             <button type="button" onClick={this.renamePage}>Rename</button>
           </div>
           <div className={styles.rightPane}>
-            <SimplePage chunk={marked(editorValue)} />
+            <SimplePage chunk={prependImageSrc(siteName, marked(editorValue))} />
           </div>
         </div>
 

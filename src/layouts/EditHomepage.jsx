@@ -753,7 +753,7 @@ export default class EditHomepage extends Component {
 
                       </>
                     ))}
-                    {droppableProvided.droppable}
+                    {droppableProvided.placeholder}
                   </div>
                 )}
               </Droppable>
@@ -767,7 +767,7 @@ export default class EditHomepage extends Component {
 
             <button type="button" onClick={this.savePage}>Save</button>
           </div>
-          <div className={styles.rightPane}>
+          <div className={styles.rightPaneHomepage}>
             {/* Isomer Template Pane */}
             {frontMatter.sections.map((section, sectionIndex) => (
               <>
