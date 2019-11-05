@@ -71,8 +71,6 @@ const enumSection = (type) => {
 export default class EditHomepage extends Component {
   constructor(props) {
     super(props);
-    this.onFieldChange = this.onFieldChange.bind(this);
-    this.toggleDropdown = this.toggleDropdown.bind(this);
     this.scrollRefs = [];
     this.state = {
       frontMatter: {
