@@ -23,7 +23,12 @@ const EditorInfobarSection = ({
   displayHandler,
 }) => (
   <div className={styles.card}>
-    <p><b>Infobar section: {title}</b></p>
+    <p>
+      <b>
+Infobar section:
+        {title}
+      </b>
+    </p>
     <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>Toggle display</button>
     <button type="button" id={`section-${sectionIndex}`} onClick={deleteHandler}>Delete section</button>
     {shouldDisplay
@@ -89,7 +94,9 @@ const KeyHighlight = ({
   <div className={styles.card} key={highlightIndex}>
     <b>
 Highlight
-      {highlightIndex}: {title}
+      {highlightIndex}
+:
+      {title}
     </b>
     <br />
     {/* Create/delete/toggle buttons */}
@@ -129,7 +136,9 @@ const HeroDropdownElem = ({
     <p>
       <b>
 Dropdown Elem
-        {dropdownsIndex}: {title}
+        {dropdownsIndex}
+:
+        {title}
       </b>
     </p>
     <br />
