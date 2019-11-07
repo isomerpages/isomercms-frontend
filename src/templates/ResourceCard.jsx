@@ -124,6 +124,9 @@ export default class TemplateResourceCard extends Component {
         data: params,
         withCredentials: true,
       })
+
+      // Refresh page
+      window.location.reload();
     } catch (err) {
       console.log(err)
     }
@@ -158,10 +161,6 @@ export default class TemplateResourceCard extends Component {
           pageName: newFileName
         };
 
-        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${category}/pages`, params, {
-          withCredentials: true,
-        })
-
         // If it is an existing post, delete the existing page
         if (!isNewPost) {
           await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${category}/pages/${fileName}`, {
@@ -171,6 +170,10 @@ export default class TemplateResourceCard extends Component {
             withCredentials: true,
           })
         }
+
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${category}/pages`, params, {
+          withCredentials: true,
+        })
       } else {
         // Save to existing .md file
         params = {
@@ -182,6 +185,9 @@ export default class TemplateResourceCard extends Component {
           withCredentials: true,
         })
       }
+
+      // Refresh page
+      window.location.reload();
     } catch (err) {
       console.log(err)
     }
