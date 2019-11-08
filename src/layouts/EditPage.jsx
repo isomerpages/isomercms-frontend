@@ -142,6 +142,7 @@ export default class EditPage extends Component {
         </h3>
         <div className="d-flex">
           <div className={`${styles.leftPane} p-3`}>
+            <input placeholder="Title" />
             <SimpleMDE
               onChange={this.onEditorChange}
               value={editorValue}
