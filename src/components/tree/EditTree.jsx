@@ -34,7 +34,7 @@ ListItem.propTypes = PropTypes.shape({
   onCollapse: PropTypes.func,
 }).isRequired;
 
-export default class EditPage extends Component {
+export default class EditTree extends Component {
   constructor(props) {
     super(props);
     this.state = {
