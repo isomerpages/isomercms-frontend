@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import SiteTree from '../components/site/Tree';
 
 export default class Pages extends Component {
   constructor(props) {
@@ -36,39 +37,44 @@ export default class Pages extends Component {
     const { match } = this.props;
     const { siteName } = match.params;
     return (
-      <div>
-        <Link to="/sites">Back to Sites</Link>
-        <hr />
-        <h2>{siteName}</h2>
-        <ul>
-          <li>
-            <Link to={`/sites/${siteName}/pages`}>Pages</Link>
-          </li>
-          <li>
-            <Link to={`/sites/${siteName}/collections`}>Collections</Link>
-          </li>
-          <li>
-            <Link to={`/sites/${siteName}/images`}>Images</Link>
-          </li>
-          <li>
-            <Link to={`/sites/${siteName}/files`}>Files</Link>
-          </li>
-          <li>
-            <Link to={`/sites/${siteName}/menus`}>Menus</Link>
-          </li>
-        </ul>
-        <hr />
-        <h3>Pages</h3>
-        {pages.length > 0
-          ? pages.map((page) => (
+      <div className="d-flex">
+        <div>
+          <Link to="/sites">Back to Sites</Link>
+          <hr />
+          <h2>{siteName}</h2>
+          <ul>
             <li>
-              <Link to={`/sites/${siteName}/pages/${page.fileName}`}>{page.fileName}</Link>
+              <Link to={`/sites/${siteName}/pages`}>Pages</Link>
             </li>
-          ))
-          : 'No pages'}
-        <br />
-        <input placeholder="New page name" onChange={this.updateNewPageName} />
-        <Link to={`/sites/${siteName}/pages/${newPageName}`}>Create new page</Link>
+            <li>
+              <Link to={`/sites/${siteName}/collections`}>Collections</Link>
+            </li>
+            <li>
+              <Link to={`/sites/${siteName}/images`}>Images</Link>
+            </li>
+            <li>
+              <Link to={`/sites/${siteName}/files`}>Files</Link>
+            </li>
+            <li>
+              <Link to={`/sites/${siteName}/menus`}>Menus</Link>
+            </li>
+          </ul>
+          <hr />
+          <h3>Pages</h3>
+          {pages.length > 0
+            ? pages.map((page) => (
+              <li>
+                <Link to={`/sites/${siteName}/pages/${page.fileName}`}>{page.fileName}</Link>
+              </li>
+            ))
+            : 'No pages'}
+          <br />
+          <input placeholder="New page name" onChange={this.updateNewPageName} />
+          <Link to={`/sites/${siteName}/pages/${newPageName}`}>Create new page</Link>
+        </div>
+        <div>
+          <SiteTree match={match} />
+        </div>
       </div>
     );
   }
