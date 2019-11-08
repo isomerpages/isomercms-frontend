@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import TreeBuilder from './tree-builder';
-import Tree2 from './Tree';
+import Tree, { mutateTree, moveItemOnTree } from '@atlaskit/tree';
 import data from './sampleData';
+import TreeBuilder from './tree-builder';
+import PropTypes from 'prop-types';
 
-const tree = new TreeBuilder('root', 'root', '');
+const rootNode = new TreeBuilder('root', 'root', '');
 
 // data.directories.reduce
 const dataIterator = (acc, item) => {
@@ -14,35 +15,93 @@ const dataIterator = (acc, item) => {
   return acc.withLeaf(item.name, item.type, item.path);
 };
 
-const a = data.directory.reduce(dataIterator, tree);
-console.log(a);
+const formattedTree = data.directory.reduce(dataIterator, rootNode);
+
+const ListItem = ({ item, onExpand, onCollapse }) => {
+  // Nested list
+  if (item.children && item.children.length) {
+    return item.isExpanded
+      ? <button style={{ color: 'green' }} type="button" onClick={() => onCollapse(item.id)}>{ item.data ? item.data.title : 'no' }</button>
+      : <button style={{ color: 'red' }} type="button" onClick={() => onExpand(item.id)}>{ item.data ? item.data.title : 'no' }</button>;
+  }
+
+  return <p>{ item.data ? item.data.title : 'no' }</p>;
+};
+
+ListItem.propTypes = PropTypes.shape({
+  item: PropTypes.object,
+  onExpand: PropTypes.func,
+  onCollapse: PropTypes.func,
+}).isRequired;
 
 export default class EditPage extends Component {
-  
+  constructor(props) {
+    super(props);
+    this.state = {
+      tree: formattedTree,
+    };
+  }
+
+  onExpand = (itemId) => {
+    const { tree } = this.state;
+    this.setState({
+      tree: mutateTree(tree, itemId, { isExpanded: true }),
+    });
+  };
+
+  onCollapse = (itemId) => {
+    const { tree } = this.state;
+    this.setState({
+      tree: mutateTree(tree, itemId, { isExpanded: false }),
+    });
+  };
+
+  onDragEnd = (
+    source,
+    destination,
+  ) => {
+    const { tree } = this.state;
+
+    if (!destination) {
+      return;
+    }
+
+    const newTree = moveItemOnTree(tree, source, destination);
+    this.setState({
+      tree: newTree,
+    });
+  };
+
   renderItem = ({
     item,
     onExpand,
     onCollapse,
     provided,
     snapshot,
-  }) => {
-    console.log(item)
-    return (
-      <div ref={provided.innerRef} {...provided.draggableProps}>
-        <p>
-          {item.data ? item.data.title : ''}
-        </p>        
-      </div>
-    );
-  };
+  }) => (
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+      <ListItem
+        item={item}
+        onExpand={onExpand}
+        onCollapse={onCollapse}
+      />
+    </div>
+  );
 
   // we need to encode all our information into the id, there is no way to retrieve it otherwise
   render() {
+    const { tree } = this.state;
     return (
-      <Tree2
-        tree={a}
+      <Tree
+        tree={tree}
         renderItem={this.renderItem}
+        onExpand={this.onExpand}
+        onCollapse={this.onCollapse}
+        onDragEnd={this.onDragEnd}
+        isNestingEnabled
+        isDragEnabled
       />
-    )
+    );
   }
 }
