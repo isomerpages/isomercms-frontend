@@ -122,3 +122,11 @@ export function dequoteString(str) {
 export function generateResourceFileName(title, type, date) {
   return date + "-" + type + "-" + slugify(title) + ".md"
 }
+
+export function prettifyResourceCategory(category) {
+  return category.replace(/-/g, ' ').toUpperCase()
+}
+
+export function slugifyResourceCategory(category) {
+  return slugify(category).toLowerCase()
+}

@@ -1,6 +1,7 @@
 import React, { Component }from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { prettifyResourceCategory, slugifyResourceCategory } from '../utils';
 import { frontMatterParser, concatFrontMatterMdBody, enquoteString, dequoteString, generateResourceFileName } from '../utils';
 import { Base64 } from 'js-base64';
 
@@ -19,10 +20,10 @@ const ResourceCardModal = ({
 }) => (
   <div>
     <p>Category</p>
-    <select id="category" defaultValue={category} onChange={changeHandler}>
+    <select id="category" defaultValue={slugifyResourceCategory(category)} onChange={changeHandler}>
       {
         resourceCategories.map(resourceCategory => (
-          <option value={resourceCategory.dirName} label={resourceCategory.dirName}/>
+          <option value={slugifyResourceCategory(resourceCategory.dirName)} label={prettifyResourceCategory(resourceCategory.dirName)}/>
         ))
       }
     </select>
@@ -216,7 +217,7 @@ export default class TemplateResourceCard extends Component {
           <button type="button" onClick={this.settingsToggle}>Create New Post</button>
         :
           <>
-            <p>Category: {category}</p>
+            <p>Category: {prettifyResourceCategory(category)}</p>
             <p>Title: {title}</p>
             <p>Date: {date}</p>
             <p>Type: {type}</p>

@@ -4,7 +4,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import * as Bluebird from 'bluebird';
 import * as _ from 'lodash';
-import { prettifyResourceFileName } from '../utils';
+import { prettifyResourceFileName, prettifyResourceCategory, slugifyResourceCategory } from '../utils';
 import TemplateResourceCard from '../templates/ResourceCard';
 import update from 'immutability-helper';
 
@@ -47,13 +47,12 @@ class ResourceCategoryModal extends Component{
   saveHandler = async(event) => {
     try {
       const { siteName } = this.props;
+      const { resourceCategories } = this.state;
       const { id } = event.target
       const idArray = id.split('-')
-      const categoryIndex = idArray[1]
-      const resourceCategory = idArray[2]
-      const newResourceCategory = this.currInputValues[categoryIndex].value
-
-      console.log(resourceCategory, newResourceCategory)
+      const categoryIndex = parseInt(idArray[1])
+      const resourceCategory = slugifyResourceCategory(resourceCategories[categoryIndex])
+      const newResourceCategory = slugifyResourceCategory(this.currInputValues[categoryIndex].value)
 
       // If the category is a new one
       if (resourceCategory === NEW_CATEGORY_STR) {
@@ -71,11 +70,7 @@ class ResourceCategoryModal extends Component{
         });
       }
 
-      this.setState(currState => ({
-        resourceCategories: update(currState.resourceCategories, {
-          $splice: [[categoryIndex, 1, newResourceCategory]]
-        })
-      }))
+      window.location.reload()
     } catch (err) {
       console.log(err)
     }
@@ -84,9 +79,11 @@ class ResourceCategoryModal extends Component{
   deleteHandler = async(event) => {
     try {
       const { siteName } = this.props;
+      const { resourceCategories } = this.state;
       const { id } = event.target
       const idArray = id.split('-')
-      const resourceCategory = idArray[2]
+      const categoryIndex = parseInt(idArray[1])
+      const resourceCategory = slugifyResourceCategory(resourceCategories[categoryIndex])
 
       // Check if there are resourcePages in the category; if there are, do not allow deletion
       const resourcesPagesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceCategory}`, {
@@ -106,9 +103,9 @@ class ResourceCategoryModal extends Component{
         withCredentials: true,
       });
       const { resources } = resourcesResp.data
-      const resourceCategories = resources.map(resource => resource.dirName)
+      const newResourceCategories = resources.map(resource => resource.dirName)
 
-      this.setState({ resourceCategories });
+      this.setState({ resourceCategories: newResourceCategories });
     } catch (err) {
       console.log(err)
     }
@@ -125,7 +122,13 @@ class ResourceCategoryModal extends Component{
             {resourceCategories.length > 0 ?
               resourceCategories.map((resourceCategory, index) => (
                 <div key={resourceCategory}>
-                  <input type="text" id={`input-${index}`} defaultValue={resourceCategory} ref={(node) => { this.currInputValues[index] = node;}} />
+                  <input 
+                    type="text" 
+                    id={`input-${index}`} 
+                    defaultValue={prettifyResourceCategory(resourceCategory)} 
+                    style={{textTransform: 'uppercase'}}
+                    ref={(node) => { this.currInputValues[index] = node;}} 
+                  />
                   <button type="button" key={`save-${resourceCategory}`} id={`save-${index}-${resourceCategory}`} onClick={this.saveHandler}>Save</button>
                   <button type="button" key={`delete-${resourceCategory}`} id={`delete-${index}-${resourceCategory}`} onClick={this.deleteHandler}>Delete</button>
                 </div>
