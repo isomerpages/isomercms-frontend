@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import * as Bluebird from 'bluebird';
 import * as _ from 'lodash';
 import { prettifyResourceFileName, prettifyResourceCategory, slugifyResourceCategory } from '../utils';
-import TemplateResourceCard from '../templates/ResourceCard';
+import ResourceCard from '../components/ResourceCard';
 import update from 'immutability-helper';
 
 const NEW_CATEGORY_STR = "newcategory"
@@ -146,7 +146,6 @@ class ResourceCategoryModal extends Component{
   }
 }
 
-
 export default class Resources extends Component {
   constructor(props) {
     super(props);
@@ -242,7 +241,7 @@ export default class Resources extends Component {
         {resourcePages.length > 0 ?
           <>
           {resourcePages.map(resourcePage => (
-            <TemplateResourceCard 
+            <ResourceCard 
               type={resourcePage.type}
               category={resourcePage.category}
               title={resourcePage.title}
@@ -257,7 +256,7 @@ export default class Resources extends Component {
         :
           null
         }
-        <TemplateResourceCard 
+        <ResourceCard 
           siteName={siteName}
           resourceCategories={resourceCategories}
           isNewPost={true}

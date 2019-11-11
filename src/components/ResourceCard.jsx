@@ -52,7 +52,7 @@ const ResourceCardModal = ({
   </div>
 )
 
-export default class TemplateResourceCard extends Component {
+export default class ResourceCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
