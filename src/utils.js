@@ -69,13 +69,13 @@ const monthMap = {
   '07': 'Jul',
   '08': 'Aug',
   '09': 'Sep',
-  '10': 'Oct',
-  '11': 'Nov',
-  '12': 'Dec'
-}
+  10: 'Oct',
+  11: 'Nov',
+  12: 'Dec',
+};
 
 function monthIntToStr(monthInt) {
-  return monthMap[monthInt]
+  return monthMap[monthInt];
 }
 
 // Takes in a resource file name and prettifies it.
@@ -86,47 +86,47 @@ function monthIntToStr(monthInt) {
 // {type} is either `post` or `download`
 // {title} is a string containing [a-z,A-Z,0-9] and all whitespaces are replaced by hyphens
 export function prettifyResourceFileName(fileName) {
-  const fileNameArray = fileName.split('.md')[0]
-  const tokenArray = fileNameArray.split('-')
-  const day = tokenArray[2]
-  const month = monthIntToStr(tokenArray[1])
-  const year = tokenArray[0]
-  const date = month + ' ' + day + ' ' + year
+  const fileNameArray = fileName.split('.md')[0];
+  const tokenArray = fileNameArray.split('-');
+  const day = tokenArray[2];
+  const month = monthIntToStr(tokenArray[1]);
+  const year = tokenArray[0];
+  const date = `${month} ${day} ${year}`;
 
-  const type = tokenArray[3]
+  const type = tokenArray[3];
 
-  let title = ''
+  let title = '';
   tokenArray.forEach((token, index) => {
     if (index > 3) {
-      title += ' ' + token
+      title += ` ${token}`;
     }
   });
-  return { date, type, title }
+  return { date, type, title };
 }
 
 export function enquoteString(str) {
-  let enquotedString = str
-  if (str[0] !== '"') enquotedString = '"' + enquotedString
-  if (str[str.length-1] !== '"') enquotedString = enquotedString + '"'
-  return enquotedString
+  let enquotedString = str;
+  if (str[0] !== '"') enquotedString = `"${enquotedString}`;
+  if (str[str.length - 1] !== '"') enquotedString += '"';
+  return enquotedString;
 }
 
 
 export function dequoteString(str) {
-  let dequotedString = str
-  if (str[0] === '"') dequotedString = dequotedString.slice(1)
-  if (str[str.length-1] === '"') dequotedString = dequotedString.slice(0,-1)
-  return dequotedString
+  let dequotedString = str;
+  if (str[0] === '"') dequotedString = dequotedString.slice(1);
+  if (str[str.length - 1] === '"') dequotedString = dequotedString.slice(0, -1);
+  return dequotedString;
 }
 
 export function generateResourceFileName(title, type, date) {
-  return date + "-" + type + "-" + slugify(title) + ".md"
+  return `${date}-${type}-${slugify(title)}.md`;
 }
 
 export function prettifyResourceCategory(category) {
-  return category.replace(/-/g, ' ').toUpperCase()
+  return category.replace(/-/g, ' ').toUpperCase();
 }
 
 export function slugifyResourceCategory(category) {
-  return slugify(category).toLowerCase()
+  return slugify(category).toLowerCase();
 }

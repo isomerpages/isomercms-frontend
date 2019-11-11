@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "axios": "^0.19.0",
+    "bluebird": "^3.7.1",
     "bootstrap": "^4.3.1",
     "cheerio": "^1.0.0-rc.3",
     "easymde": "^2.8.0",

@@ -6,7 +6,9 @@ import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
 import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
-import { frontMatterParser, concatFrontMatterMdBody, prependImageSrc, changeFileName } from '../utils';
+import {
+  frontMatterParser, concatFrontMatterMdBody, prependImageSrc,
+} from '../utils';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 import styles from '../styles/App.module.scss';
@@ -15,11 +17,9 @@ export default class EditResourcePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      content: null,
       sha: null,
       editorValue: '',
       frontMatter: '',
-      tempFileName: '',
     };
   }
 
@@ -34,7 +34,6 @@ export default class EditResourcePage extends Component {
       // split the markdown into front matter and content
       const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
       this.setState({
-        content,
         sha,
         editorValue: mdBody.trim(),
         frontMatter,
@@ -62,8 +61,8 @@ export default class EditResourcePage extends Component {
       const resp = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`, params, {
         withCredentials: true,
       });
-      const { content, sha } = resp.data;
-      this.setState({ content, sha });
+      const { sha } = resp.data;
+      this.setState({ sha });
     } catch (err) {
       console.log(err);
     }
@@ -88,8 +87,8 @@ export default class EditResourcePage extends Component {
       const resp = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`, params, {
         withCredentials: true,
       });
-      const { content, sha } = resp.data;
-      this.setState({ content, sha });
+      const { sha } = resp.data;
+      this.setState({ sha });
     } catch (err) {
       console.log(err);
     }
@@ -103,21 +102,6 @@ export default class EditResourcePage extends Component {
       const params = { sha };
       await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`, {
         data: params,
-        withCredentials: true,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  renamePage = async () => {
-    try {
-      const { match } = this.props;
-      const { siteName, resourceName, fileName } = match.params;
-      const { content, sha, tempFileName } = this.state;
-      const newFileName = tempFileName;
-      const params = { content, sha };
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`, params, {
         withCredentials: true,
       });
     } catch (err) {
@@ -154,10 +138,6 @@ export default class EditResourcePage extends Component {
             <br />
             <br />
             <button type="button" onClick={this.deletePage}>Delete</button>
-            <br />
-            <br />
-            <input placeholder="New file name" onChange={(event) => changeFileName(event, this)} />
-            <button type="button" onClick={this.renamePage}>Rename</button>
           </div>
           <div className={styles.rightPane}>
             <SimplePage chunk={prependImageSrc(siteName, marked(editorValue))} />
@@ -174,7 +154,7 @@ EditResourcePage.propTypes = {
     params: PropTypes.shape({
       siteName: PropTypes.string,
       fileName: PropTypes.string,
-      newFileName: PropTypes.string,
+      resourceName: PropTypes.string,
     }),
   }).isRequired,
 };

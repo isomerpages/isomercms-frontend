@@ -19,9 +19,9 @@ const LeftNav = ({ leftNavPages, fileName }) => (
               return (
                 <li>
                   {
-                    page.fileName === fileName ?
-                      <a className="is-active" href={filePath}>{deslugifyCollectionPage(page.fileName)}</a> :
-                      <a className="" href={filePath}>{deslugifyCollectionPage(page.fileName)}</a>
+                    page.fileName === fileName
+                      ? <a className="is-active" href={filePath}>{deslugifyCollectionPage(page.fileName)}</a>
+                      : <a className="" href={filePath}>{deslugifyCollectionPage(page.fileName)}</a>
                   }
                 </li>
               );
