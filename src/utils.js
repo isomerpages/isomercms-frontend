@@ -111,7 +111,6 @@ export function enquoteString(str) {
   return enquotedString;
 }
 
-
 export function dequoteString(str) {
   let dequotedString = str;
   if (str[0] === '"') dequotedString = dequotedString.slice(1);
@@ -120,7 +119,8 @@ export function dequoteString(str) {
 }
 
 export function generateResourceFileName(title, type, date) {
-  return `${date}-${type}-${slugify(title)}.md`;
+  const safeTitle = slugify(title).replace(/[^a-zA-Z-]/g, '')
+  return `${date}-${type}-${safeTitle}.md`;
 }
 
 export function prettifyResourceCategory(category) {
