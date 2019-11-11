@@ -1,6 +1,6 @@
 export default class TreeBuilder {
   constructor(rootId, type, path) {
-    const rootItem = this.createItem(`${rootId}`, type, path);
+    const rootItem = this.createItem(`${rootId}`, rootId, type, path);
     this.rootId = rootItem.id;
     this.items = {
       [rootItem.id]: rootItem,
@@ -8,7 +8,7 @@ export default class TreeBuilder {
   }
 
   withLeaf(id, type, path) {
-    const leafItem = this.createItem(`${this.rootId}-${id}`, type, path);
+    const leafItem = this.createItem(`${this.rootId}-${id}`, id, type, path);
     this.addItemToRoot(leafItem.id);
     this.items[leafItem.id] = leafItem;
     return this;
@@ -46,14 +46,14 @@ export default class TreeBuilder {
     rootItem.hasChildren = true;
   }
 
-  createItem = (id, type, path) => ({
+  createItem = (id, title, type, path) => ({
     id: `${id}`,
     children: [],
     hasChildren: false,
     isExpanded: false,
     isChildrenLoading: false,
     data: {
-      title: `${id}`,
+      title: `${title}`,
       type: `${type}`,
       path: `${path}`,
     },

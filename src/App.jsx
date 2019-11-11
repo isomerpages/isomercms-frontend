@@ -44,7 +44,7 @@ function App() {
           <Route path="/sites/:siteName/pages/:fileName" component={EditPage} />
           <Route path="/sites/:siteName/pages" component={Pages} />
           <Route path="/sites/:siteName/homepage" component={EditHomepage} />
-          <Route path="/test" component={EditTree} />
+          <Route path="/sites/:siteName/test" component={EditTree} />
           {/* <Route path="/sites/:siteName/menus/footer" component={EditFooter} />
           <Route path="/sites/:siteName/menus/navigation" component={EditNav} />
           <Route path="/sites/:siteName/menus" component={Menus} /> */}
