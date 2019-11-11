@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import Tree, { mutateTree, moveItemOnTree } from '@atlaskit/tree';
+import PropTypes from 'prop-types';
 import data from './sampleData';
 import TreeBuilder from './tree-builder';
-import PropTypes from 'prop-types';
 
 const rootNode = new TreeBuilder('root', 'root', '');
 
 // data.directories.reduce
 const dataIterator = (acc, item) => {
   if (item.children) {
-    const newTree = acc.withSubTree(item.children.reduce(dataIterator, new TreeBuilder(item.name, item.type)));
+    const newTree = acc.withSubTree(
+      item.children.reduce(dataIterator, new TreeBuilder(item.name, item.type)),
+    );
     return newTree;
   }
   return acc.withLeaf(item.name, item.type, item.path);
@@ -17,7 +19,13 @@ const dataIterator = (acc, item) => {
 
 const formattedTree = data.directory.reduce(dataIterator, rootNode);
 
-const ListItem = ({ item, onExpand, onCollapse }) => {
+/**
+ * For future uses, dragState currently stores information
+ * that can be used for future purposes but are not needed currently
+ */
+const ListItem = ({
+  item, onExpand, onCollapse, dragState,
+}) => {
   // Nested list
   if (item.children && item.children.length) {
     return item.isExpanded
@@ -56,15 +64,38 @@ export default class EditTree extends Component {
     });
   };
 
+  getItemFromTreePosition = ({ tree, parentId, index }) => {
+    const parent = tree.items[parentId];
+
+    const childId = parent.children[index];
+
+    return tree.items[childId];
+  }
+
   onDragEnd = (
     source,
     destination,
   ) => {
     const { tree } = this.state;
 
-    if (!destination) {
+    /**
+     * `WIP`
+     * In our drag'n'drop rules we need to specify the following:
+     * 1) You can't merge any item into another [ `!(index in destination)` ]
+     */
+    if (!destination || !('index' in destination) || source.parentId !== destination.parentId) {
       return;
     }
+    const sourceItem = this.getItemFromTreePosition({
+      tree, parentId: source.parentId, index: source.index,
+    });
+    const destinationItem = this.getItemFromTreePosition({
+      tree, parentId: destination.parentId, index: destination.index,
+    });
+
+    // console.log(tree.items[source.parentId].data, tree.items[destination.parentId].data);
+    // console.log(source, destination);
+    console.log(sourceItem, destinationItem);
 
     const newTree = moveItemOnTree(tree, source, destination);
     this.setState({
@@ -85,6 +116,7 @@ export default class EditTree extends Component {
         item={item}
         onExpand={onExpand}
         onCollapse={onCollapse}
+        dragState={snapshot}
       />
     </div>
   );
