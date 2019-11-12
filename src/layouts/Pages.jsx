@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import PageCard from '../components/PageCard';
+import '../styles/isomer-cms/header.scss';
+
 
 export default class Pages extends Component {
   constructor(props) {
@@ -38,12 +40,30 @@ export default class Pages extends Component {
     const { siteName } = match.params;
     return (
       <div>
-        <Link to="/sites">Back to Sites</Link>
+        <div className="header">
+          <div className="header-left">
+            <a href="/sites"><button><i className='bx bx-chevron-left'></i>Back to Sites</button></a>
+          </div>
+          <div className="header-center">
+            <div className="logo">
+              <img src={process.env.PUBLIC_URL + '/img/logo.svg'}/>
+            </div>
+          </div>
+          <div className="header-right">
+            <button className="blue">
+              Log Out
+            </button>
+          </div>
+        </div>
+
         <hr />
         <h2>{siteName}</h2>
         <ul>
           <li>
+            <a href={`/sites/${siteName}/pages`}><i className="bx bx-chevron-left"></i>jsadhiasdkahd</a>
             <Link to={`/sites/${siteName}/pages`}>Pages</Link>
+            <i className="bx bx-chevron-left"></i>
+
           </li>
           <li>
             <Link to={`/sites/${siteName}/collections`}>Collections</Link>
