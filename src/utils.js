@@ -135,5 +135,5 @@ export function prettifyPageFileName(fileName) {
 }
 
 export function generatePageFileName(title) {
-  return slugify(title).replace(/[^a-zA-Z-]/g, '');
+  return slugify(title).replace(/[^a-zA-Z-]/g, '') + '.md';
 }
