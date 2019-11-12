@@ -66,14 +66,21 @@ export default class Pages extends Component {
                     <Link to={`/sites/${siteName}/collections`}>Collections</Link>
                   </li>
                   <li>
+                    <Link to={`/sites/${siteName}/menus`}>Menus</Link>
+                  </li>
+                  <li>
+                    <Link to={`/sites/${siteName}/resources`}>Resources</Link>
+                  </li>
+                  <li>
                     <Link to={`/sites/${siteName}/images`}>Images</Link>
                   </li>
                   <li>
                     <Link to={`/sites/${siteName}/files`}>Files</Link>
                   </li>
                   <li>
-                    <Link to={`/sites/${siteName}/menus`}>Menus</Link>
+                    <Link to={`/sites/${siteName}/settings`}>Settings</Link>
                   </li>
+
                 </ul>
               </div>
           </div>
