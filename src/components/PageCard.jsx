@@ -124,7 +124,8 @@ export default class PageCard extends Component {
     return (
       <>
         <Link to={`/sites/${siteName}/pages/${fileName}`}>{prettifyPageFileName(fileName)}</Link>
-        <button type="button" onClick={this.settingsToggle}>Settings</button>
+
+        <button type="button" onClick={this.settingsToggle}><i class='bx bx-cog'></i> Settings</button>
         { settingsIsActive
           ? (
             <>

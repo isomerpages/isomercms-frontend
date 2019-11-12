@@ -1,0 +1,61 @@
+@import '../generic/variable';
+
+
+.admin-sidebar{
+  width: $sidebar-width;
+  background: white;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+  margin: 0;
+  height: 100%;
+
+  .site-intro{
+    margin-top: 20px;
+    box-sizing: border-box;
+    padding: 35px;
+
+    .site-name{
+      color: $body-text;
+      margin-bottom: 5px;
+    }
+
+    .site-date{
+      font-weight: 300;
+      color: $body-grey;
+      font-size: .7em;
+    }
+  }
+
+  .sidebar-navigation{
+    width: 100%;
+    margin-top: 20px;
+
+    ul{
+      width: 100%;
+      box-sizing: border-box;
+      list-style-position: outside;
+      padding: 0;
+      list-style-type: none;
+
+      li{
+        box-sizing: border-box;
+        width: 100%;
+        color: $isomer-blue;
+        border-left: 5px solid transparent;
+        display: block;
+        justify-content: center;
+        padding: 20px 30px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+
+        &:hover{
+            border-left: 5px solid transparent;
+            background: #eee;
+        }
+
+        &.active{
+          border-left: 5px solid $isomer-blue;
+        }
+      }
+    }
+  }
+}

@@ -3,7 +3,10 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import PageCard from '../components/PageCard';
-import '../styles/isomer-cms/header.scss';
+import Header from '../components/Header';
+import '../styles/isomer-cms/style.scss';
+import '../styles/isomer-cms/pages/admin.scss';
+import '../styles/isomer-cms/pages/admin-content.scss';
 
 
 export default class Pages extends Component {
@@ -40,59 +43,70 @@ export default class Pages extends Component {
     const { siteName } = match.params;
     return (
       <div>
-        <div className="header">
-          <div className="header-left">
-            <a href="/sites"><button><i className='bx bx-chevron-left'></i>Back to Sites</button></a>
+
+        {/* header start, to move into header component */}
+        <Header></Header>
+
+        {/* main bottom section */}
+        <div class="wrapper">
+
+          {/* sidebar starts here */}
+          <div class="admin-sidebar">
+              <div class="site-intro">
+                <div class="site-name">{siteName}</div>
+                <div class="site-date">Updated 2 days ago</div>
+              </div>
+              <div class="sidebar-navigation">
+                <ul>
+                  <li className="active" >
+                      <Link to={`/sites/${siteName}/pages`}>Pages</Link>
+                  </li>
+                  <li>
+                    <Link to={`/sites/${siteName}/collections`}>Collections</Link>
+                  </li>
+                  <li>
+                    <Link to={`/sites/${siteName}/images`}>Images</Link>
+                  </li>
+                  <li>
+                    <Link to={`/sites/${siteName}/files`}>Files</Link>
+                  </li>
+                  <li>
+                    <Link to={`/sites/${siteName}/menus`}>Menus</Link>
+                  </li>
+                </ul>
+              </div>
           </div>
-          <div className="header-center">
-            <div className="logo">
-              <img src={process.env.PUBLIC_URL + '/img/logo.svg'}/>
+          {/* sidebar ends here */}
+
+          {/* main section starts here */}
+          <div class="main-section">
+            <div class="section-header">
+              <h1 class="section-title">Pages</h1>
+              <button id="buttonCreatePage" class="blue">Create New Page</button>
+            </div>
+
+            <div class="content-container-bars">
+
+              <ul>
+                {pages.length > 0
+                  ? pages.map((page) => (
+                    <li>
+                      <PageCard
+                        fileName={page.fileName}
+                        siteName={siteName}
+                      />
+                    </li>
+                  ))
+                  : 'Loading Pages...'}
+              </ul>
+              <br />
+              <input placeholder="New page name" onChange={this.updateNewPageName} />
+              <Link to={`/sites/${siteName}/pages/${newPageName}`}>Create new page</Link>
             </div>
           </div>
-          <div className="header-right">
-            <button className="blue">
-              Log Out
-            </button>
-          </div>
+          {/* main section ends here */}
         </div>
 
-        <hr />
-        <h2>{siteName}</h2>
-        <ul>
-          <li>
-            <a href={`/sites/${siteName}/pages`}><i className="bx bx-chevron-left"></i>jsadhiasdkahd</a>
-            <Link to={`/sites/${siteName}/pages`}>Pages</Link>
-            <i className="bx bx-chevron-left"></i>
-
-          </li>
-          <li>
-            <Link to={`/sites/${siteName}/collections`}>Collections</Link>
-          </li>
-          <li>
-            <Link to={`/sites/${siteName}/images`}>Images</Link>
-          </li>
-          <li>
-            <Link to={`/sites/${siteName}/files`}>Files</Link>
-          </li>
-          <li>
-            <Link to={`/sites/${siteName}/menus`}>Menus</Link>
-          </li>
-        </ul>
-        <hr />
-        <h3>Pages</h3>
-        {pages.length > 0
-          ? pages.map((page) => (
-            <li>
-              <PageCard
-                fileName={page.fileName}
-                siteName={siteName}
-              />
-            </li>
-          ))
-          : 'No pages'}
-        <br />
-        <input placeholder="New page name" onChange={this.updateNewPageName} />
-        <Link to={`/sites/${siteName}/pages/${newPageName}`}>Create new page</Link>
       </div>
     );
   }

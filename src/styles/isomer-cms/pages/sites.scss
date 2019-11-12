@@ -1,0 +1,121 @@
+@import '../generic/variable';
+
+
+
+@mixin single-site {
+  margin-left: $site-margin-horizontal;
+  margin-right: $site-margin-horizontal;
+  margin-top: $site-margin-vertical;
+  margin-bottom: $site-margin-vertical;
+  height: $site-height;
+  width: $site-width;
+  border-radius: 5px;
+}
+
+.sites-container{
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 30px;
+
+  .section-header{
+    width: $sites-container-width;
+    margin-left: $site-margin-horizontal*2;
+  }
+
+
+  .sites{
+    display: flex;
+    flex-direction: rows;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    width: $sites-container-width;
+
+    .site-container{
+      // width: 33.33%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: rows;
+      justify-content: center;
+      align-items: center;
+
+
+      .site{
+        @include single-site;
+        background: white;
+        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+        border: none;
+        box-sizing: border-box;
+        transition: transform 0.2s ease-in;
+
+        .site-image{
+          height: 70%;
+          width: 100%;
+          background: grey;
+          border-top-left-radius: 5px;
+          border-top-right-radius: 5px;
+
+        }
+
+        .site-description{
+          height: 30%;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding-left: 15px;
+
+          .site-name{
+            width: 100%;
+            font-size: .9em;
+            color: $body-text;
+            margin-bottom: 5px;
+          }
+
+          .site-date{
+            width: 100%;
+            font-weight: 300;
+            color: $body-grey;
+            font-size: .6em;
+          }
+        }
+
+        &:hover{
+          transform: translateY(-5px);
+        }
+      }
+
+      .create-new{
+        @include single-site;
+        border: 1px dashed $isomer-blue;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: $isomer-blue;
+
+         .bx-plus-circle{
+           font-size: 30px;
+           margin-bottom: 20px;
+         }
+
+         h2{
+           font-size: 18px;
+         }
+
+         &:hover{
+           background-color: white;
+           border: 1px solid $isomer-blue;
+         }
+      }
+
+    }
+  }
+
+}
