@@ -262,7 +262,7 @@ Type:
                 {type}
               </p>
               <button type="button" onClick={this.settingsToggle}>Settings</button>
-              <Link to={`/sites/${siteName}/resources/${category}/pages/${fileName}`}>Edit</Link>
+              <Link to={`/sites/${siteName}/resources/${category}/${fileName}`}>Edit</Link>
             </>
           )}
         {settingsIsActive
