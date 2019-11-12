@@ -50,6 +50,7 @@ export default class Pages extends Component {
         {/* main bottom section */}
         <div class="wrapper">
 
+
           {/* sidebar starts here */}
           <div class="admin-sidebar">
               <div class="site-intro">
