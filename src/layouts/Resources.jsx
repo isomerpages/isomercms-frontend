@@ -133,9 +133,6 @@ export default class Resources extends Component {
           resourceCategories={resourceCategories}
           isNewPost
         />
-        <br />
-        <input placeholder="New page name" onChange={this.updateNewPageName} />
-        <Link to={`/sites/${siteName}/pages/${newPageName}`}>Create new page</Link>
       </div>
     );
   }

@@ -239,7 +239,10 @@ export default class ResourceCard extends Component {
     return (
       <div>
         { isNewPost
-          ? <button type="button" onClick={this.settingsToggle}>Create New Post</button>
+          ? 
+          <>
+            <button type="button" onClick={this.settingsToggle}>Create New Post</button>
+          </>
           : (
             <>
               <p>
@@ -259,6 +262,7 @@ Type:
                 {type}
               </p>
               <button type="button" onClick={this.settingsToggle}>Settings</button>
+              <Link to={`/sites/${siteName}/resources/${category}/${fileName}`}>Edit</Link>
             </>
           )}
         {settingsIsActive
@@ -278,7 +282,6 @@ Type:
             />
           )
           : null}
-        <Link to={`/sites/${siteName}/resources/${category}/pages/${fileName}`}>Edit</Link>
       </div>
     );
   }
