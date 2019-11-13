@@ -27,7 +27,7 @@ export default class PageSettingsModal extends Component {
           withCredentials: true,
         });
         const { sha, content } = resp.data;
-  
+
         // split the markdown into front matter and content
         const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
         const { title, permalink } = frontMatter;
@@ -35,7 +35,7 @@ export default class PageSettingsModal extends Component {
           sha, title, permalink, mdBody,
         });
       } else {
-        this.setState({title: 'TITLE', permalink: 'PERMALINK'})
+        this.setState({ title: 'TITLE', permalink: 'PERMALINK' });
       }
     } catch (err) {
       console.log(err);
@@ -146,10 +146,9 @@ export default class PageSettingsModal extends Component {
           </div>
           <div className={elementStyles.modalFooter}>
             <button type="button" className={elementStyles.blue} onClick={this.saveHandler}>Save</button>
-            {!isNewPage ?
-              <button type="button" className={elementStyles.blue} onClick={this.deleteHandler}>Delete</button>
-              : null
-            }
+            {!isNewPage
+              ? <button type="button" className={elementStyles.blue} onClick={this.deleteHandler}>Delete</button>
+              : null}
           </div>
         </div>
       </div>
@@ -161,4 +160,5 @@ PageSettingsModal.propTypes = {
   settingsToggle: PropTypes.func.isRequired,
   siteName: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
+  isNewPage: PropTypes.func.isRequired,
 };

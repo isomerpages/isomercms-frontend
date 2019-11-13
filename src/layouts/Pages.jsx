@@ -19,7 +19,7 @@ export default class Pages extends Component {
       pages: [],
       settingsIsActive: false,
       selectedFileName: '',
-      createNewPage: false
+      createNewPage: false,
     };
   }
 
@@ -41,13 +41,13 @@ export default class Pages extends Component {
     const { id } = event.target;
     const idArray = id.split('-');
 
-    console.log(id, "BLAH")
+    console.log(id, 'BLAH');
     // Create new page
-    if (idArray[1] === "NEW") {
+    if (idArray[1] === 'NEW') {
       this.setState((currState) => ({
         settingsIsActive: !currState.settingsIsActive,
         selectedFileName: '',
-        createNewPage: true
+        createNewPage: true,
       }));
     } else {
       // Modify existing page frontmatter
@@ -56,13 +56,15 @@ export default class Pages extends Component {
       this.setState((currState) => ({
         settingsIsActive: !currState.settingsIsActive,
         selectedFileName: currState.settingsIsActive ? '' : currState.pages[pageIndex],
-        createNewPage: false
+        createNewPage: false,
       }));
     }
   }
 
   render() {
-    const { pages, selectedFileName, settingsIsActive, createNewPage } = this.state;
+    const {
+      pages, selectedFileName, settingsIsActive, createNewPage,
+    } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
     return (
@@ -88,11 +90,14 @@ export default class Pages extends Component {
           <div className={contentStyles.mainSection}>
             <div className={contentStyles.sectionHeader}>
               <h1 className={contentStyles.sectionTitle}>Pages</h1>
-              <button 
-                type="button" 
-                className={elementStyles.blue} 
+              <button
+                type="button"
+                className={elementStyles.blue}
                 id="settings-NEW"
-                onClick={this.settingsToggle}>Create New Page</button>
+                onClick={this.settingsToggle}
+              >
+Create New Page
+              </button>
             </div>
 
             <div className={contentStyles.contentContainerBars}>
