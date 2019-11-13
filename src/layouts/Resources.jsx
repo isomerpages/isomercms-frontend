@@ -208,12 +208,14 @@ export default class Resources extends Component {
           <div className={contentStyles.mainSection}>
             <div className={contentStyles.sectionHeader}>
               <h1 className={contentStyles.sectionTitle}>Resources</h1>
-              <ResourceCategoryModal
-                siteName={siteName}
-                resourceCategories={resourceCategories}
-                categoryModalToggle={this.categoryModalToggle}
-                categoryModalIsActive={categoryModalIsActive}
-              />
+              { resourceRoomName ?
+                <ResourceCategoryModal
+                  siteName={siteName}
+                  resourceCategories={resourceCategories}
+                  categoryModalToggle={this.categoryModalToggle}
+                  categoryModalIsActive={categoryModalIsActive}
+                />
+                : null }
             </div>
 
             <div className={contentStyles.contentContainerBoxes}>
