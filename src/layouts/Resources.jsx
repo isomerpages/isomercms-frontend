@@ -7,6 +7,10 @@ import * as _ from 'lodash';
 import { prettifyResourceFileName } from '../utils';
 import ResourceCard from '../components/ResourceCard';
 import ResourceCategoryModal from '../components/ResourceCategoryModal';
+import Header from '../components/Header';
+import Sidebar from '../components/Sidebar';
+import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 export default class Resources extends Component {
   constructor(props) {
@@ -76,64 +80,58 @@ export default class Resources extends Component {
     const {
       resourceCategories, resourcePages, newPageName, categoryModalIsActive,
     } = this.state;
-    const { match } = this.props;
+    const { match, location } = this.props;
     const { siteName } = match.params;
     return (
-      <div>
-        <Link to="/sites">Back to Sites</Link>
-        <hr />
-        <h2>{siteName}</h2>
-        <ul>
-          <li>
-            <Link to={`/sites/${siteName}/pages`}>Pages</Link>
-          </li>
-          <li>
-            <Link to={`/sites/${siteName}/collections`}>Collections</Link>
-          </li>
-          <li>
-            <Link to={`/sites/${siteName}/images`}>Images</Link>
-          </li>
-          <li>
-            <Link to={`/sites/${siteName}/files`}>Files</Link>
-          </li>
-          <li>
-            <Link to={`/sites/${siteName}/menus`}>Menus</Link>
-          </li>
-        </ul>
-        <hr />
-        <h3>Resource Pages</h3>
-        {/* Manage resource categories */}
-        <ResourceCategoryModal
-          siteName={siteName}
-          resourceCategories={resourceCategories}
-          categoryModalToggle={this.categoryModalToggle}
-          categoryModalIsActive={categoryModalIsActive}
-        />
-        {/* Display resource cards */}
-        {resourcePages.length > 0
-          ? (
-            <>
-              {resourcePages.map((resourcePage) => (
-                <ResourceCard
-                  type={resourcePage.type}
-                  category={resourcePage.category}
-                  title={resourcePage.title}
-                  date={resourcePage.date}
-                  fileName={resourcePage.fileName}
-                  siteName={siteName}
-                  resourceCategories={resourceCategories}
-                  isNewPost={false}
-                />
-              ))}
-            </>
-          )
-          : null}
-        <ResourceCard
-          siteName={siteName}
-          resourceCategories={resourceCategories}
-          isNewPost
-        />
-      </div>
+      <>
+        <Header />
+        {/* main bottom section */}
+        <div className={elementStyles.wrapper}>
+          <Sidebar siteName={siteName} currPath={location.pathname} />
+
+          {/* main section starts here */}
+          <div className={contentStyles.mainSection}>
+            <div className={contentStyles.sectionHeader}>
+              <h1 className={contentStyles.sectionTitle}>Resources</h1>
+              <button type="button" className={elementStyles.blue}>Create New Page</button>
+            </div>
+
+            <div className={contentStyles.contentContainerBars}>
+              <ResourceCategoryModal
+                siteName={siteName}
+                resourceCategories={resourceCategories}
+                categoryModalToggle={this.categoryModalToggle}
+                categoryModalIsActive={categoryModalIsActive}
+              />
+              {/* Display resource cards */}
+              {resourcePages.length > 0
+                ? (
+                  <>
+                    {resourcePages.map((resourcePage) => (
+                      <ResourceCard
+                        type={resourcePage.type}
+                        category={resourcePage.category}
+                        title={resourcePage.title}
+                        date={resourcePage.date}
+                        fileName={resourcePage.fileName}
+                        siteName={siteName}
+                        resourceCategories={resourceCategories}
+                        isNewPost={false}
+                      />
+                    ))}
+                  </>
+                )
+                : null}
+              <ResourceCard
+                siteName={siteName}
+                resourceCategories={resourceCategories}
+                isNewPost
+              />
+            </div>
+          </div>
+          {/* main section ends here */}
+        </div>
+      </>
     );
   }
 }
@@ -143,5 +141,8 @@ Resources.propTypes = {
     params: PropTypes.shape({
       siteName: PropTypes.string.isRequired,
     }),
+  }).isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired,
   }).isRequired,
 };
