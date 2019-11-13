@@ -1,6 +1,7 @@
 // import dependencies
 import yaml from 'js-yaml';
 import cheerio from 'cheerio';
+import slugify from 'slugify';
 
 // extracts yaml front matter from a markdown file path
 export function frontMatterParser(content) {
@@ -56,4 +57,83 @@ export function changeFileName(event, context) {
   context.setState({
     tempFileName: event.target.value,
   });
+}
+
+const monthMap = {
+  '01': 'Jan',
+  '02': 'Feb',
+  '03': 'Mar',
+  '04': 'Apr',
+  '05': 'May',
+  '06': 'Jun',
+  '07': 'Jul',
+  '08': 'Aug',
+  '09': 'Sep',
+  10: 'Oct',
+  11: 'Nov',
+  12: 'Dec',
+};
+
+function monthIntToStr(monthInt) {
+  return monthMap[monthInt];
+}
+
+// Takes in a resource file name and prettifies it.
+// =================
+// Each fileName comes in the format of `{date}-{type}-{title}.md`
+// A sample fileName is 2019-08-23-post-CEO-made-a-speech.md
+// {date} is YYYY-MM-DD, e.g. 2019-08-23
+// {type} is either `post` or `download`
+// {title} is a string containing [a-z,A-Z,0-9] and all whitespaces are replaced by hyphens
+export function prettifyResourceFileName(fileName) {
+  const fileNameArray = fileName.split('.md')[0];
+  const tokenArray = fileNameArray.split('-');
+  const day = tokenArray[2];
+  const month = monthIntToStr(tokenArray[1]);
+  const year = tokenArray[0];
+  const date = `${month} ${day} ${year}`;
+
+  const type = tokenArray[3];
+
+  let title = tokenArray.slice(4).join(" ")
+  
+  return { date, type, title };
+}
+
+export function enquoteString(str) {
+  let enquotedString = str;
+  if (str[0] !== '"') enquotedString = `"${enquotedString}`;
+  if (str[str.length - 1] !== '"') enquotedString += '"';
+  return enquotedString;
+}
+
+export function dequoteString(str) {
+  let dequotedString = str;
+  if (str[0] === '"') dequotedString = dequotedString.slice(1);
+  if (str[str.length - 1] === '"') dequotedString = dequotedString.slice(0, -1);
+  return dequotedString;
+}
+
+export function generateResourceFileName(title, type, date) {
+  const safeTitle = slugify(title).replace(/[^a-zA-Z-]/g, '');
+  return `${date}-${type}-${safeTitle}.md`;
+}
+
+export function prettifyResourceCategory(category) {
+  return category.replace(/-/g, ' ').toUpperCase();
+}
+
+export function slugifyResourceCategory(category) {
+  return slugify(category).toLowerCase();
+}
+
+export function prettifyPageFileName(fileName) {
+  const fileNameArray = fileName.split('.md')[0];
+  const tokenArray = fileNameArray.split('-');
+
+  return tokenArray.join(" ");
+}
+
+export function generatePageFileName(title) {
+  return slugify(title).replace(/[^a-zA-Z-]/g, '') + '.md';
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import PageCard from '../components/PageCard';
 
 export default class Pages extends Component {
   constructor(props) {
@@ -62,7 +63,10 @@ export default class Pages extends Component {
         {pages.length > 0
           ? pages.map((page) => (
             <li>
-              <Link to={`/sites/${siteName}/pages/${page.fileName}`}>{page.fileName}</Link>
+              <PageCard
+                fileName={page.fileName}
+                siteName={siteName}
+              />
             </li>
           ))
           : 'No pages'}
