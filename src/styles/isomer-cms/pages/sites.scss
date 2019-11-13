@@ -1,6 +1,4 @@
-@import '../generic/variable';
-
-
+@import '../elements/variable';
 
 @mixin single-site {
   margin-left: $site-margin-horizontal;

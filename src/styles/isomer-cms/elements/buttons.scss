@@ -1,5 +1,4 @@
-@import '../generic/variable';
-
+@import './variable';
 
 button{
   font-family: 'Lato', sans-serif;
@@ -70,9 +69,7 @@ button{
   &:last-child{
     margin-right: 0px;
   }
-
 }
-
 
 .button-group-left, .button-group-right{
   display: flex;

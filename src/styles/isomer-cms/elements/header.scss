@@ -1,4 +1,4 @@
-@import '../generic/variable';
+@import './variable';
 
 .header{
   position: fixed;
@@ -45,5 +45,4 @@
     justify-content: flex-end;
     align-content: center;
   }
-
 }

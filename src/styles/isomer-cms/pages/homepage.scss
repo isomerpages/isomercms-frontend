@@ -1,8 +1,4 @@
-@import '../generic/variable';
-
-
-
-
+@import '../elements/variable';
 
 .homepage-editor-sidebar{
   width: $homepage-editor-sidebar-width;
@@ -29,7 +25,6 @@
   padding-top: 40px;
   overflow-y: scroll;
 }
-
 
 .page-editor-sidebar{
   width: $page-editor-sidebar-width;

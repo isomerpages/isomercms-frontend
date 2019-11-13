@@ -1,5 +1,4 @@
-@import '../generic/variable';
-
+@import './variable';
 
 .card{
   width: 100%;
@@ -16,7 +15,6 @@
     justify-content: space-between;
     align-items: center;
 
-
     h2{
       font-size: 20px;
       font-weight: normal;
@@ -27,7 +25,6 @@
         font-size: 30px;
         color: darken($isomer-blue,20%);
     }
-
   }
 
   &.dragging{
