@@ -14,24 +14,29 @@ export default class PageSettingsModal extends Component {
       sha: '',
       title: '',
       permalink: '',
-      mdBody: null,
+      mdBody: '',
     };
   }
 
   async componentDidMount() {
     try {
-      const { siteName, fileName } = this.props;
-      const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
-        withCredentials: true,
-      });
-      const { sha, content } = resp.data;
+      const { siteName, fileName, isNewPage } = this.props;
 
-      // split the markdown into front matter and content
-      const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
-      const { title, permalink } = frontMatter;
-      this.setState({
-        sha, title, permalink, mdBody,
-      });
+      if (!isNewPage) {
+        const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
+          withCredentials: true,
+        });
+        const { sha, content } = resp.data;
+  
+        // split the markdown into front matter and content
+        const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
+        const { title, permalink } = frontMatter;
+        this.setState({
+          sha, title, permalink, mdBody,
+        });
+      } else {
+        this.setState({title: 'TITLE', permalink: 'PERMALINK'})
+      }
     } catch (err) {
       console.log(err);
     }
@@ -39,7 +44,7 @@ export default class PageSettingsModal extends Component {
 
   saveHandler = async () => {
     try {
-      const { siteName, fileName } = this.props;
+      const { siteName, fileName, isNewPage } = this.props;
       const {
         sha, title, permalink, mdBody,
       } = this.state;
@@ -53,8 +58,18 @@ export default class PageSettingsModal extends Component {
       const base64Content = Base64.encode(upload);
       const newFileName = generatePageFileName(title);
 
-      // A new file does not need to be created; the title has not changed
-      if (newFileName === fileName) {
+      if (isNewPage) {
+        // Create new page
+        const params = {
+          pageName: newFileName,
+          content: base64Content,
+        };
+
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages`, params, {
+          withCredentials: true,
+        });
+      } else if (newFileName === fileName) {
+        // A new file does not need to be created; the title has not changed
         const params = {
           content: base64Content,
           sha,
@@ -113,25 +128,28 @@ export default class PageSettingsModal extends Component {
 
   render() {
     const { title, permalink } = this.state;
-    const { settingsToggle } = this.props;
+    const { settingsToggle, isNewPage } = this.props;
     return (
       <div className={elementStyles.overlay}>
         <div className={elementStyles.modal}>
           <div className={elementStyles.modalHeader}>
-            <h1>Modal Header</h1>
+            <h1>{ isNewPage ? 'Create new page' : 'Update page settings'}</h1>
             <button type="button" onClick={settingsToggle}>
               <i className="bx bx-x" />
             </button>
           </div>
           <div className={elementStyles.modalContent}>
             <p>Title</p>
-            <input defaultValue={title} id="title" onChange={this.changeHandler} />
+            <input value={title} id="title" onChange={this.changeHandler} />
             <p>Permalink</p>
-            <input defaultValue={permalink} id="permalink" onChange={this.changeHandler} />
+            <input value={permalink} id="permalink" onChange={this.changeHandler} />
           </div>
           <div className={elementStyles.modalFooter}>
             <button type="button" className={elementStyles.blue} onClick={this.saveHandler}>Save</button>
-            <button type="button" className={elementStyles.blue} onClick={this.deleteHandler}>Delete</button>
+            {!isNewPage ?
+              <button type="button" className={elementStyles.blue} onClick={this.deleteHandler}>Delete</button>
+              : null
+            }
           </div>
         </div>
       </div>

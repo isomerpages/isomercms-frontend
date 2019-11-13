@@ -19,6 +19,7 @@ export default class Pages extends Component {
       pages: [],
       settingsIsActive: false,
       selectedFileName: '',
+      createNewPage: false
     };
   }
 
@@ -39,16 +40,29 @@ export default class Pages extends Component {
   settingsToggle = (event) => {
     const { id } = event.target;
     const idArray = id.split('-');
-    const pageIndex = parseInt(idArray[1], RADIX_PARSE_INT);
 
-    this.setState((currState) => ({
-      settingsIsActive: !currState.settingsIsActive,
-      selectedFileName: currState.settingsIsActive ? '' : currState.pages[pageIndex],
-    }));
+    console.log(id, "BLAH")
+    // Create new page
+    if (idArray[1] === "NEW") {
+      this.setState((currState) => ({
+        settingsIsActive: !currState.settingsIsActive,
+        selectedFileName: '',
+        createNewPage: true
+      }));
+    } else {
+      // Modify existing page frontmatter
+      const pageIndex = parseInt(idArray[1], RADIX_PARSE_INT);
+
+      this.setState((currState) => ({
+        settingsIsActive: !currState.settingsIsActive,
+        selectedFileName: currState.settingsIsActive ? '' : currState.pages[pageIndex],
+        createNewPage: false
+      }));
+    }
   }
 
   render() {
-    const { pages, selectedFileName, settingsIsActive } = this.state;
+    const { pages, selectedFileName, settingsIsActive, createNewPage } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
     return (
@@ -64,6 +78,7 @@ export default class Pages extends Component {
                 settingsToggle={this.settingsToggle}
                 siteName={siteName}
                 fileName={selectedFileName}
+                isNewPage={createNewPage}
               />
             )
             : null}
@@ -73,7 +88,11 @@ export default class Pages extends Component {
           <div className={contentStyles.mainSection}>
             <div className={contentStyles.sectionHeader}>
               <h1 className={contentStyles.sectionTitle}>Pages</h1>
-              <button type="button" className={elementStyles.blue}>Create New Page</button>
+              <button 
+                type="button" 
+                className={elementStyles.blue} 
+                id="settings-NEW"
+                onClick={this.settingsToggle}>Create New Page</button>
             </div>
 
             <div className={contentStyles.contentContainerBars}>
