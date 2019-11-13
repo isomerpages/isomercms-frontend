@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import styles from '../styles/isomer-cms/pages/Admin.module.scss';
 
 const sidebarPathDict = [
   {
@@ -34,12 +35,12 @@ const sidebarPathDict = [
 ];
 
 const Sidebar = ({ siteName, currPath }) => (
-  <div className="admin-sidebar">
-    <div className="site-intro">
-      <div className="site-name">{siteName}</div>
-      <div className="site-date">Updated 2 days ago</div>
+  <div className={styles.adminSidebar}>
+    <div className={styles.siteIntro}>
+      <div className={styles.siteName}>{siteName}</div>
+      <div className={styles.siteDate}>Updated 2 days ago</div>
     </div>
-    <div className="sidebar-navigation">
+    <div className={styles.sidebarNavigation}>
       <ul>
         {sidebarPathDict.map(({ pathname, title }) => (
           <li className={`/sites/${siteName}/${pathname}` === currPath ? 'active' : null}>

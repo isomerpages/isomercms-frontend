@@ -1,31 +1,31 @@
 @import '../generic/variable';
 
 
-.admin-sidebar{
+.adminSidebar{
   width: $sidebar-width;
   background: white;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
   margin: 0;
   height: 100%;
 
-  .site-intro{
+  .siteIntro{
     margin-top: 20px;
     box-sizing: border-box;
     padding: 35px;
 
-    .site-name{
+    .siteName{
       color: $body-text;
       margin-bottom: 5px;
     }
 
-    .site-date{
+    .siteDate{
       font-weight: 300;
       color: $body-grey;
       font-size: .7em;
     }
   }
 
-  .sidebar-navigation{
+  .sidebarNavigation{
     width: 100%;
     margin-top: 20px;
 

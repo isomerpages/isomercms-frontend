@@ -5,8 +5,7 @@ import PageCard from '../components/PageCard';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import '../styles/isomer-cms/style.scss';
-import '../styles/isomer-cms/pages/admin.scss';
-import '../styles/isomer-cms/pages/admin-content.scss';
+// import '../styles/isomer-cms/pages/admin-content.scss';
 
 
 export default class Pages extends Component {
