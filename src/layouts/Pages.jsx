@@ -9,6 +9,9 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import { prettifyPageFileName } from '../utils';
 
+// Constants
+const RADIX_PARSE_INT = 10;
+
 export default class Pages extends Component {
   constructor(props) {
     super(props);
@@ -36,7 +39,7 @@ export default class Pages extends Component {
   settingsToggle = (event) => {
     const { id } = event.target;
     const idArray = id.split('-');
-    const pageIndex = idArray[1];
+    const pageIndex = parseInt(idArray[1], RADIX_PARSE_INT);
 
     this.setState((currState) => ({
       settingsIsActive: !currState.settingsIsActive,
@@ -82,8 +85,7 @@ export default class Pages extends Component {
                     <li>
                       <Link to={`/sites/${siteName}/pages/${pageName}`}>{prettifyPageFileName(pageName)}</Link>
                       <button type="button" onClick={this.settingsToggle} id={`settings-${pageIndex}`}>
-                        <i className="bx bx-cog" />
-                        Settings
+                        <i id={`settingsIcon-${pageIndex}`} className="bx bx-cog" />
                       </button>
                     </li>
                   ))
