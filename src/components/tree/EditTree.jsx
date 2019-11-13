@@ -8,7 +8,7 @@ import flattenTree from './utils/utils';
 
 const rootNode = new TreeBuilder('root', 'root', '');
 
-// data.directories.reduce
+// a reducing function which recursively builds the tree
 const dataIterator = (acc, item) => {
   if (item.children) {
     const newTree = acc.withSubTree(
@@ -30,19 +30,18 @@ const ListItem = ({
 }) => {
   // Nested list
   if (item.children && item.children.length) {
+    // since both the top-level nodes 'navigation' and 'unlinked-pages' always have at least one child
+    if (item.data.type === 'navigation' || item.data.type === 'unlinked-pages') {
+      return <p>{ item.data.title }</p>;
+    }
+
     return item.isExpanded
       ? <button style={{ color: 'green' }} type="button" onClick={() => onCollapse(item.id)}>{ item.data ? item.data.title : 'no' }</button>
       : <button style={{ color: 'red' }} type="button" onClick={() => onExpand(item.id)}>{ item.data ? item.data.title : 'no' }</button>;
   }
 
-  return <p>{ item.data ? item.data.title : 'no' }</p>;
+  return <div>{ item.data ? item.data.title : 'no' }</div>;
 };
-
-ListItem.propTypes = PropTypes.shape({
-  item: PropTypes.object,
-  onExpand: PropTypes.func,
-  onCollapse: PropTypes.func,
-}).isRequired;
 
 export default class EditTree extends Component {
   constructor(props) {
@@ -60,8 +59,8 @@ export default class EditTree extends Component {
         withCredentials: true,
       });
       const { directory } = resp.data;
-      const dabdab = directory.reduce(dataIterator, rootNode);
-      this.setState({ tree: dabdab });
+      const tree = rootNode.withSubTree(directory.reduce(dataIterator, new TreeBuilder('Navigation', 'navigation'))).withSubTree(new TreeBuilder('Unlinked Pages', 'unlinked-pages'));
+      this.setState({ tree });
     } catch (err) {
       console.log(err);
     }
@@ -150,18 +149,26 @@ export default class EditTree extends Component {
     const { tree } = this.state;
     return (
       tree
-      && (<Tree
-          tree={tree}
-          renderItem={this.renderItem}
-          onExpand={this.onExpand}
-          onCollapse={this.onCollapse}
-          onDragEnd={this.onDragEnd}
-          isNestingEnabled
-          isDragEnabled
-        />)
+      && (
+      <Tree
+        tree={tree}
+        renderItem={this.renderItem}
+        onExpand={this.onExpand}
+        onCollapse={this.onCollapse}
+        onDragEnd={this.onDragEnd}
+        isNestingEnabled
+        isDragEnabled
+      />
+      )
     );
   }
 }
+
+ListItem.propTypes = PropTypes.shape({
+  item: PropTypes.object,
+  onExpand: PropTypes.func,
+  onCollapse: PropTypes.func,
+}).isRequired;
 
 EditTree.propTypes = PropTypes.shape({
   history: PropTypes.object,
