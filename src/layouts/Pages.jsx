@@ -4,9 +4,8 @@ import PropTypes from 'prop-types';
 import PageCard from '../components/PageCard';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import '../styles/isomer-cms/style.scss';
-// import '../styles/isomer-cms/pages/admin-content.scss';
-
+import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 export default class Pages extends Component {
   constructor(props) {
@@ -39,17 +38,17 @@ export default class Pages extends Component {
         <Header />
 
         {/* main bottom section */}
-        <div className="wrapper">
+        <div className={elementStyles.wrapper}>
           <Sidebar siteName={siteName} currPath={location.pathname} />
 
           {/* main section starts here */}
-          <div className="main-section">
-            <div className="section-header">
-              <h1 className="section-title">Pages</h1>
-              <button type="button" className="blue">Create New Page</button>
+          <div className={contentStyles.mainSection}>
+            <div className={contentStyles.sectionHeader}>
+              <h1 className={contentStyles.sectionTitle}>Pages</h1>
+              <button type="button" className={elementStyles.blue}>Create New Page</button>
             </div>
 
-            <div className="content-container-bars">
+            <div className={contentStyles.contentContainerBars}>
 
               <ul>
                 {pages.length > 0

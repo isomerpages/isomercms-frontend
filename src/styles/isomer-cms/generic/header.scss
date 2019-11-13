@@ -1,6 +1,5 @@
 @import '../generic/variable';
 
-
 .header{
   position: fixed;
   height: $header-height;
@@ -17,14 +16,13 @@
   padding-right: 30px;
   top: 0;
 
-
   .logo{
     img{
       width: 180px;
     }
   }
 
-  .header-center{
+  .headerCenter{
     margin: 0 auto;
     flex-basis: 60%;
     text-align: center;
@@ -34,16 +32,15 @@
     }
   }
 
-  .header-left{
+  .headerLeft{
     float: left;
     flex-basis: 20%;
   }
 
-  .header-right{
+  .headerRight{
     float: right;
     text-align: right;
     flex-basis: 20%;
-
     display: flex;
     justify-content: flex-end;
     align-content: center;

@@ -1,6 +1,10 @@
 @import '../generic/variable';
 
-.main-section{
+$resource-card-height: 200px;
+$resource-card-margin: 2.5%;
+$resource-card-width: (100% - ($resource-card-margin*2) )/3 ;
+
+.mainSection{
   display: flex;
   width: calc(100vw - #{$sidebar-width});
   flex-direction: column;
@@ -14,7 +18,7 @@
   overflow-y: scroll;
 }
 
-.section-header{
+.sectionHeader{
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -24,7 +28,7 @@
   margin-bottom: 20px;
   margin-top: 10px;
 
-  .section-title{
+  .sectionTitle{
     font-size: 28px;
     color: $isomer-blue;
     text-align: left;
@@ -33,12 +37,9 @@
   button{
     float: right;
   }
-
 }
 
-
-
-.content-container-bars{
+.contentContainerBars{
   width: 100%;
   ul{
     width: 100%;
@@ -76,15 +77,12 @@
       a{
         width: 100%;
         color: $body-text;
-
-
       }
     }
   }
 }
 
-
-.content-container-cards{
+.contentContainerCards{
   //this is used in the setting page
   width: 100%;
   display: flex;
@@ -92,10 +90,10 @@
   flex-direction: row;
   flex-wrap: wrap;
 
-  .card-container{
+  .cardContainer{
     // flex: 1 0 calc(25% - 20px);
     margin: 10px;
-
+    
     .card{
       box-sizing: border-box;
       height: 200px;
@@ -103,48 +101,37 @@
   }
 }
 
-
-$resource-card-height: 200px;
-$resource-card-margin: 2.5%;
-$resource-card-width: (100% - ($resource-card-margin*2) )/3 ;
-
-.content-container-boxes{
+.contentContainerBoxes{
   //this is used in the resources page
   width: 100%;
-
   display: flex;
   box-sizing: border-box;
   flex-direction: row;
   flex-wrap: wrap;
 
-
-  .boxes-container{
+  .boxesContainer{
     width: 100%;
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
 
-      .card{
-        width: $resource-card-width;
-        box-sizing: border-box;
-        height: $resource-card-height;
-        margin-right: $resource-card-margin;
-        margin-bottom: $resource-card-margin;
+    .card{
+      width: $resource-card-width;
+      box-sizing: border-box;
+      height: $resource-card-height;
+      margin-right: $resource-card-margin;
+      margin-bottom: $resource-card-margin;
 
-        &:nth-child(3n){
-           margin-right: 0;
-        }
+      &:nth-child(3n){
+          margin-right: 0;
       }
-
+    }
   }
 }
 
 .card{
-
   &.resource{
-
-
     a{
       height: 100%;
       display: flex;
@@ -152,42 +139,41 @@ $resource-card-width: (100% - ($resource-card-margin*2) )/3 ;
       justify-content: space-between;
       align-content: center;
 
-      .resource-info{
+      .resourceInfo{
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         align-content: center;
 
-        .resource-category{
+        .resourceCategory{
           text-transform: uppercase;
           color: grey;
           font-size: 12px;
           letter-spacing: .5px;
         }
 
-        .resource-title{
+        .resourceTitle{
           font-size: 16px;
         }
 
-
-        .resource-date{
+        .resourceDate{
           color: grey;
           font-size: 12px;
         }
 
-        .resource-type{
+        .resourceType{
           color: grey;
           text-transform: uppercase;
           font-size: 12px;
         }
 
-        .resource-updated{
+        .resourceUpdated{
           color: grey;
           font-size: 12px;
         }
       }
 
-      .resource-icon{
+      .resourceIcon{
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
@@ -197,12 +183,7 @@ $resource-card-width: (100% - ($resource-card-margin*2) )/3 ;
           font-size: 20px;
         }
       }
-
     }
-
-
-
-
 
     &:hover{
       transform: translateY(-5px);
