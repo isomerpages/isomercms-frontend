@@ -6,6 +6,7 @@ import { Base64 } from 'js-base64';
 import {
   prettifyPageFileName, frontMatterParser, concatFrontMatterMdBody, generatePageFileName,
 } from '../utils';
+import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
 const PageSettingsModal = ({
   title,
@@ -15,14 +16,26 @@ const PageSettingsModal = ({
   deleteHandler,
   settingsToggle,
 }) => (
-  <>
-    <p>Title</p>
-    <input defaultValue={title} id="title" onChange={changeHandler} />
-    <p>Permalink</p>
-    <input defaultValue={permalink} id="permalink" onChange={changeHandler} />
-    <button type="button" onClick={saveHandler}>Save</button>
-    <button type="button" onClick={deleteHandler}>Delete</button>
-  </>
+  <div className={elementStyles.overlay}>
+    <div className={elementStyles.modal}>
+      <div className={elementStyles.modalHeader}>
+        <h1>Modal Header</h1>
+        <button type="button" onClick={settingsToggle}>
+          <i className="bx bx-x" />
+        </button>
+      </div>
+      <div className={elementStyles.modalContent}>
+        <p>Title</p>
+        <input defaultValue={title} id="title" onChange={changeHandler} />
+        <p>Permalink</p>
+        <input defaultValue={permalink} id="permalink" onChange={changeHandler} />
+      </div>
+      <div className={elementStyles.modalFooter}>
+        <button type="button" className={elementStyles.blue} onClick={saveHandler}>Save</button>
+        <button type="button" className={elementStyles.blue} onClick={deleteHandler}>Delete</button>
+      </div>
+    </div>
+  </div>
 );
 
 export default class PageCard extends Component {
@@ -177,4 +190,4 @@ PageSettingsModal.propTypes = {
   saveHandler: PropTypes.func.isRequired,
   deleteHandler: PropTypes.func.isRequired,
   settingsToggle: PropTypes.func.isRequired,
-}
+};

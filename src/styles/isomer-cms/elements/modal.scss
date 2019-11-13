@@ -1,7 +1,7 @@
 @import './variable';
 
 .overlay{
-  visibility: hidden;
+  visibility: visible;
   display: flex;
   height: 100vh;
   width: 100vw;
@@ -25,7 +25,7 @@
   justify-content: space-between;
   align-items: flex-start;
 
-  .modal-header{
+  .modalHeader{
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -40,4 +40,12 @@
       font-size: 30px;
     }
   }
+
+  // .modalContent {
+  //  TO-DO
+  // }
+
+  // .modalFooter {
+  //  TO-DO
+  // }
 }
