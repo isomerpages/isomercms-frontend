@@ -118,24 +118,34 @@ export default class ResourceCategoryModal extends Component {
         <button type="button" className={elementStyles.blue} onClick={categoryModalToggle}>Edit Categories</button>
         {categoryModalIsActive
           ? (
-            <>
-              {resourceCategories.length > 0
-                ? resourceCategories.map((resourceCategory, index) => (
-                  <div key={resourceCategory}>
-                    <input
-                      type="text"
-                      id={`input-${index}`}
-                      defaultValue={prettifyResourceCategory(resourceCategory)}
-                      style={{ textTransform: 'uppercase' }}
-                      ref={(node) => { this.currInputValues[index] = node; }}
-                    />
-                    <button type="button" key={`save-${resourceCategory}`} id={`save-${index}-${resourceCategory}`} onClick={this.saveHandler}>Save</button>
-                    <button type="button" key={`delete-${resourceCategory}`} id={`delete-${index}-${resourceCategory}`} onClick={this.deleteHandler}>Delete</button>
-                  </div>
-                ))
-                : null}
-              <button type="button" onClick={this.createHandler}>Create Category</button>
-            </>
+            <div className={elementStyles.overlay}>
+              <div className={elementStyles.modal}>
+                <div className={elementStyles.modalHeader}>
+                  <h1>Edit Resource Categories</h1>
+                  <button id="settings-CLOSE" type="button" onClick={categoryModalToggle}>
+                    <i id="settingsIcon-CLOSE" className="bx bx-x" />
+                  </button>
+                </div>
+                <div className={elementStyles.modalContent}>
+                {resourceCategories.length > 0
+                  ? resourceCategories.map((resourceCategory, index) => (
+                    <div key={resourceCategory}>
+                      <input
+                        type="text"
+                        id={`input-${index}`}
+                        defaultValue={prettifyResourceCategory(resourceCategory)}
+                        style={{ textTransform: 'uppercase' }}
+                        ref={(node) => { this.currInputValues[index] = node; }}
+                      />
+                      <button type="button" className={elementStyles.blue} id={`save-${index}-${resourceCategory}`} onClick={this.saveHandler}>Save</button>
+                      <button type="button" className={elementStyles.blue} id={`delete-${index}-${resourceCategory}`} onClick={this.deleteHandler}>Delete</button>
+                    </div>
+                  ))
+                  : null}
+                <button type="button" onClick={this.createHandler}>Create Category</button>
+                </div>
+              </div>
+            </div>
           )
           : null}
       </div>
