@@ -4,6 +4,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import data from './sampleData';
 import TreeBuilder from './tree-builder';
+import flattenTree from './utils/utils';
 
 const rootNode = new TreeBuilder('root', 'root', '');
 
