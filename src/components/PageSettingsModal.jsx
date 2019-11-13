@@ -1,51 +1,19 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { Base64 } from 'js-base64';
-import {
-  prettifyPageFileName, frontMatterParser, concatFrontMatterMdBody, generatePageFileName,
-} from '../utils';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import {
+  frontMatterParser, concatFrontMatterMdBody, generatePageFileName,
+} from '../utils';
 
-const PageSettingsModal = ({
-  title,
-  permalink,
-  changeHandler,
-  saveHandler,
-  deleteHandler,
-  settingsToggle,
-}) => (
-  <div className={elementStyles.overlay}>
-    <div className={elementStyles.modal}>
-      <div className={elementStyles.modalHeader}>
-        <h1>Modal Header</h1>
-        <button type="button" onClick={settingsToggle}>
-          <i className="bx bx-x" />
-        </button>
-      </div>
-      <div className={elementStyles.modalContent}>
-        <p>Title</p>
-        <input defaultValue={title} id="title" onChange={changeHandler} />
-        <p>Permalink</p>
-        <input defaultValue={permalink} id="permalink" onChange={changeHandler} />
-      </div>
-      <div className={elementStyles.modalFooter}>
-        <button type="button" className={elementStyles.blue} onClick={saveHandler}>Save</button>
-        <button type="button" className={elementStyles.blue} onClick={deleteHandler}>Delete</button>
-      </div>
-    </div>
-  </div>
-);
-
-export default class PageCard extends Component {
+export default class PageSettingsModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
       sha: '',
       title: '',
       permalink: '',
-      settingsIsActive: false,
       mdBody: null,
     };
   }
@@ -143,51 +111,36 @@ export default class PageCard extends Component {
     this.setState({ [id]: value });
   }
 
-  settingsToggle = () => {
-    this.setState((currState) => ({
-      settingsIsActive: !currState.settingsIsActive,
-    }));
-  }
-
   render() {
-    const { siteName, fileName } = this.props;
-    const { settingsIsActive, title, permalink } = this.state;
+    const { title, permalink } = this.state;
+    const { settingsToggle } = this.props;
     return (
-      <li>
-        <Link to={`/sites/${siteName}/pages/${fileName}`}>{prettifyPageFileName(fileName)}</Link>
-
-        <button type="button" onClick={this.settingsToggle}>
-          <i className="bx bx-cog" />
-          {' '}
-Settings
-        </button>
-        { settingsIsActive
-          ? (
-            <PageSettingsModal
-              title={title}
-              permalink={permalink}
-              changeHandler={this.changeHandler}
-              saveHandler={this.saveHandler}
-              deleteHandler={this.deleteHandler}
-              settingsToggle={this.settingsToggle}
-            />
-          )
-          : null}
-      </li>
+      <div className={elementStyles.overlay}>
+        <div className={elementStyles.modal}>
+          <div className={elementStyles.modalHeader}>
+            <h1>Modal Header</h1>
+            <button type="button" onClick={settingsToggle}>
+              <i className="bx bx-x" />
+            </button>
+          </div>
+          <div className={elementStyles.modalContent}>
+            <p>Title</p>
+            <input defaultValue={title} id="title" onChange={this.changeHandler} />
+            <p>Permalink</p>
+            <input defaultValue={permalink} id="permalink" onChange={this.changeHandler} />
+          </div>
+          <div className={elementStyles.modalFooter}>
+            <button type="button" className={elementStyles.blue} onClick={this.saveHandler}>Save</button>
+            <button type="button" className={elementStyles.blue} onClick={this.deleteHandler}>Delete</button>
+          </div>
+        </div>
+      </div>
     );
   }
 }
 
-PageCard.propTypes = {
+PageSettingsModal.propTypes = {
+  settingsToggle: PropTypes.func.isRequired,
   siteName: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
-};
-
-PageSettingsModal.propTypes = {
-  title: PropTypes.string.isRequired,
-  permalink: PropTypes.string.isRequired,
-  changeHandler: PropTypes.func.isRequired,
-  saveHandler: PropTypes.func.isRequired,
-  deleteHandler: PropTypes.func.isRequired,
-  settingsToggle: PropTypes.func.isRequired,
 };
