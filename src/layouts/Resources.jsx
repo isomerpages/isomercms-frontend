@@ -28,7 +28,8 @@ const ResourceCard = ({
           <p className={contentStyles.resourceDate}>{date}</p>
           <p className={contentStyles.resourceType}>{type}</p>
         </div>
-        <button
+      </Link>
+      <button
           type="button"
           id={`settings-${resourceIndex}`}
           onClick={settingsToggle}
@@ -36,7 +37,6 @@ const ResourceCard = ({
         >
           <i id={`settingsIcon-${resourceIndex}`} className="bx bx-cog" />
         </button>
-      </Link>
     </div>
   );
 };
