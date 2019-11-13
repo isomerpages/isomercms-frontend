@@ -7,6 +7,24 @@ import {
   prettifyPageFileName, frontMatterParser, concatFrontMatterMdBody, generatePageFileName,
 } from '../utils';
 
+const PageSettingsModal = ({
+  title,
+  permalink,
+  changeHandler,
+  saveHandler,
+  deleteHandler,
+  settingsToggle,
+}) => (
+  <>
+    <p>Title</p>
+    <input defaultValue={title} id="title" onChange={changeHandler} />
+    <p>Permalink</p>
+    <input defaultValue={permalink} id="permalink" onChange={changeHandler} />
+    <button type="button" onClick={saveHandler}>Save</button>
+    <button type="button" onClick={deleteHandler}>Delete</button>
+  </>
+);
+
 export default class PageCard extends Component {
   constructor(props) {
     super(props);
@@ -132,14 +150,14 @@ Settings
         </button>
         { settingsIsActive
           ? (
-            <>
-              <p>Title</p>
-              <input defaultValue={title} id="title" onChange={this.changeHandler} />
-              <p>Permalink</p>
-              <input defaultValue={permalink} id="permalink" onChange={this.changeHandler} />
-              <button type="button" onClick={this.saveHandler}>Save</button>
-              <button type="button" onClick={this.deleteHandler}>Delete</button>
-            </>
+            <PageSettingsModal
+              title={title}
+              permalink={permalink}
+              changeHandler={this.changeHandler}
+              saveHandler={this.saveHandler}
+              deleteHandler={this.deleteHandler}
+              settingsToggle={this.settingsToggle}
+            />
           )
           : null}
       </li>
@@ -151,3 +169,12 @@ PageCard.propTypes = {
   siteName: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
 };
+
+PageSettingsModal.propTypes = {
+  title: PropTypes.string.isRequired,
+  permalink: PropTypes.string.isRequired,
+  changeHandler: PropTypes.func.isRequired,
+  saveHandler: PropTypes.func.isRequired,
+  deleteHandler: PropTypes.func.isRequired,
+  settingsToggle: PropTypes.func.isRequired,
+}
