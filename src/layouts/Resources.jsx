@@ -62,6 +62,8 @@ export default class Resources extends Component {
       resourcePages: [],
       categoryModalIsActive: false,
       settingsIsActive: false,
+      resourceRoomName: 'resource room',
+      newResourceRoomName: '',
       selectedResourcePage: {
         isNewPost: true,
         category: '',
@@ -79,34 +81,39 @@ export default class Resources extends Component {
       const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`, {
         withCredentials: true,
       });
-      const { resources: resourceCategories } = resourcesResp.data;
+      const { resourceRoomName, resources: resourceCategories } = resourcesResp.data;
 
-      // Obtain the title, date, type, fileName, category for resource pages across all categories
-      const resourcePagesArray = await Bluebird.map(resourceCategories, async (category) => {
-        const resourcePagesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${category.dirName}`, {
-          withCredentials: true,
-        });
-        const { resourcePages } = resourcePagesResp.data;
-
-        if (resourcePages.length > 0) {
-          return resourcePages.map((resourcePage) => {
-            const { title, date, type } = prettifyResourceFileName(resourcePage.fileName);
-            return {
-              title,
-              date,
-              type,
-              fileName: resourcePage.fileName,
-              category: category.dirName,
-            };
+      if (resourceRoomName === undefined) {
+        this.setState({ resourceRoomName })
+      } else {
+        // Obtain the title, date, type, fileName, category for resource pages across all categories
+        const resourcePagesArray = await Bluebird.map(resourceCategories, async (category) => {
+          const resourcePagesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${category.dirName}`, {
+            withCredentials: true,
           });
-        }
+          const { resourcePages } = resourcePagesResp.data;
 
-        return undefined;
-      }, { concurrency: 10 });
+          if (resourcePages.length > 0) {
+            return resourcePages.map((resourcePage) => {
+              const { title, date, type } = prettifyResourceFileName(resourcePage.fileName);
+              return {
+                title,
+                date,
+                type,
+                fileName: resourcePage.fileName,
+                category: category.dirName,
+              };
+            });
+          }
 
-      const resourcePages = _.compact(_.flattenDeep(resourcePagesArray));
+          return undefined;
+        }, { concurrency: 10 });
 
-      this.setState({ resourceCategories, resourcePages });
+        const resourcePages = _.compact(_.flattenDeep(resourcePagesArray));
+
+        this.setState({ resourceRoomName, resourceCategories, resourcePages });  
+      }
+
     } catch (err) {
       console.log(err);
     }
@@ -149,6 +156,24 @@ export default class Resources extends Component {
     }
   }
 
+  changeHandler = (event) => {
+    const {value} = event.target
+    this.setState({newResourceRoomName: value})
+  }
+
+  createResourceRoom = async () => {
+    try {
+      const { match } = this.props;
+      const {siteName} = match.params;
+      const {newResourceRoomName} = this.state
+      const params = {resourceRoom: newResourceRoomName}
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resource-room`, params, {
+        withCredentials: true,
+      });
+    } catch (err) {
+      console.log(err)
+    }
+  }
   render() {
     const {
       resourceCategories,
@@ -156,11 +181,14 @@ export default class Resources extends Component {
       categoryModalIsActive,
       settingsIsActive,
       selectedResourcePage,
+      resourceRoomName,
+      newResourceRoomName
     } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
     return (
       <>
+        {/* Resource Room exists */}
         <Header />
         {/* main bottom section */}
         <div className={elementStyles.wrapper}>
@@ -191,6 +219,15 @@ export default class Resources extends Component {
 
             <div className={contentStyles.contentContainerBoxes}>
               <div className={contentStyles.boxesContainer}>
+              { !resourceRoomName ?
+                <>
+                  {/* Resource Room does not exist */}
+                  <p>Create Resource Room</p>
+                  <input value={newResourceRoomName} onChange={this.changeHandler}/>
+                  <button type="button" onClick={this.createResourceRoom} className={elementStyles.blue}>Create Resource Room</button>
+                </>
+              :
+                <>
                 {/* Display resource cards */}
                 {resourcePages.length > 0
                   ? (
@@ -207,12 +244,14 @@ export default class Resources extends Component {
                       <CreateResourceCard settingsToggle={this.settingsToggle} />
                     </>
                   )
-                  : 'Loading Resources...'}
+                  : 'There are no resources'}
+                </>
+              }
               </div>
             </div>
           </div>
           {/* main section ends here */}
-        </div>
+        </div> 
       </>
     );
   }
