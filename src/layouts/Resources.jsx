@@ -27,17 +27,16 @@ const ResourceCard = ({
           <h1 className={contentStyles.resourceTitle}>{title}</h1>
           <p className={contentStyles.resourceDate}>{date}</p>
           <p className={contentStyles.resourceType}>{type}</p>
-          <p className={contentStyles.resourceUpdated}>Updated 2 days ago</p>
         </div>
+        <button
+          type="button"
+          id={`settings-${resourceIndex}`}
+          onClick={settingsToggle}
+          className={contentStyles.resourceIcon}
+        >
+          <i id={`settingsIcon-${resourceIndex}`} className="bx bx-cog" />
+        </button>
       </Link>
-      <button
-        type="button"
-        id={`settings-${resourceIndex}`}
-        onClick={settingsToggle}
-        className={contentStyles.resourceIcon}
-      >
-        <i id={`settingsIcon-${resourceIndex}`} className="bx bx-cog" />
-      </button>
     </div>
   );
 };
