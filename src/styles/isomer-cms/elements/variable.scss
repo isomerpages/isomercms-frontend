@@ -22,3 +22,7 @@ $site-height: 220px;
 $site-margin-horizontal: 20px;
 $site-margin-vertical: 15px;
 $sites-container-width: ($site-width*3) + ($site-margin-horizontal*6);
+
+$resource-card-height: 200px;
+$resource-card-margin: 2.5%;
+$resource-card-width: (100% - ($resource-card-margin*2) )/3 ;

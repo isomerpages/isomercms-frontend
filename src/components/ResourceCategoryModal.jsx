@@ -3,6 +3,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { prettifyResourceCategory, slugifyResourceCategory } from '../utils';
+import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
 // Constants
 const RADIX_PARSE_INT = 10;
@@ -114,7 +115,7 @@ export default class ResourceCategoryModal extends Component {
     const { categoryModalToggle, categoryModalIsActive } = this.props;
     return (
       <div>
-        <button type="button" onClick={categoryModalToggle}>Edit Categories</button>
+        <button type="button" className={elementStyles.blue} onClick={categoryModalToggle}>Edit Categories</button>
         {categoryModalIsActive
           ? (
             <>

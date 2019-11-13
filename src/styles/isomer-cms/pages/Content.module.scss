@@ -1,9 +1,5 @@
 @import '../elements/variable';
 
-$resource-card-height: 200px;
-$resource-card-margin: 2.5%;
-$resource-card-width: (100% - ($resource-card-margin*2) )/3 ;
-
 .mainSection{
   display: flex;
   width: calc(100vw - #{$sidebar-width});

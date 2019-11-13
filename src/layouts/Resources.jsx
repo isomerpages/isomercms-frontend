@@ -93,40 +93,60 @@ export default class Resources extends Component {
           <div className={contentStyles.mainSection}>
             <div className={contentStyles.sectionHeader}>
               <h1 className={contentStyles.sectionTitle}>Resources</h1>
-              <button type="button" className={elementStyles.blue}>Create New Page</button>
-            </div>
-
-            <div className={contentStyles.contentContainerBars}>
               <ResourceCategoryModal
                 siteName={siteName}
                 resourceCategories={resourceCategories}
                 categoryModalToggle={this.categoryModalToggle}
                 categoryModalIsActive={categoryModalIsActive}
               />
+            </div>
+
+            <div className={contentStyles.contentContainerBoxes}>
+            <div className={contentStyles.boxesContainer}>
               {/* Display resource cards */}
               {resourcePages.length > 0
                 ? (
                   <>
                     {resourcePages.map((resourcePage) => (
-                      <ResourceCard
-                        type={resourcePage.type}
-                        category={resourcePage.category}
-                        title={resourcePage.title}
-                        date={resourcePage.date}
-                        fileName={resourcePage.fileName}
-                        siteName={siteName}
-                        resourceCategories={resourceCategories}
-                        isNewPost={false}
-                      />
+
+                      <div className={`${contentStyles.resource} ${contentStyles.card} ${elementStyles.card}`}>
+                        <a href={`/sites/${siteName}/resources/${resourcePage.category}/${resourcePage.fileName}`}>
+                        <div className={contentStyles.resourceInfo}>
+                          <div className={contentStyles.resourceCategory}>Press Releases</div>
+                          <h1 className={contentStyles.resourceTitle}>Resource Title</h1>
+                          <p className={contentStyles.resourceDate}>20 Oct 2019</p>
+                          <p className={contentStyles.resourceType}>Post</p>
+                          <p className={contentStyles.resourceUpdated}>Updated 2 days ago</p>
+                        </div>
+                        <button type="button" onClick={this.settingsToggle} className={contentStyles.resourceIcon}>
+                          <i className='bx bx-cog'></i>
+                        </button>
+                        </a>
+                      </div>
+                      // <ResourceCard
+                      //   type={resourcePage.type}
+                      //   category={resourcePage.category}
+                      //   title={resourcePage.title}
+                      //   date={resourcePage.date}
+                      //   fileName={resourcePage.fileName}
+                      //   siteName={siteName}
+                      //   resourceCategories={resourceCategories}
+                      //   isNewPost={false}
+                      // />
                     ))}
                   </>
                 )
-                : null}
+                : 'Resources loading...'}
+              <div className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.addNew}`}>
+                <i className={`bx bx-plus-circle ${elementStyles.bxPlusCircle}`}></i>
+                <h2>Add a new resource</h2>
+              </div>
               <ResourceCard
                 siteName={siteName}
                 resourceCategories={resourceCategories}
                 isNewPost
               />
+            </div>
             </div>
           </div>
           {/* main section ends here */}
