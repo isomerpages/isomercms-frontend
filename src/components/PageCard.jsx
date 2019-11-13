@@ -122,10 +122,14 @@ export default class PageCard extends Component {
     const { siteName, fileName } = this.props;
     const { settingsIsActive, title, permalink } = this.state;
     return (
-      <>
+      <li>
         <Link to={`/sites/${siteName}/pages/${fileName}`}>{prettifyPageFileName(fileName)}</Link>
 
-        <button type="button" onClick={this.settingsToggle}><i class='bx bx-cog'></i> Settings</button>
+        <button type="button" onClick={this.settingsToggle}>
+          <i className="bx bx-cog" />
+          {' '}
+Settings
+        </button>
         { settingsIsActive
           ? (
             <>
@@ -138,7 +142,7 @@ export default class PageCard extends Component {
             </>
           )
           : null}
-      </>
+      </li>
     );
   }
 }

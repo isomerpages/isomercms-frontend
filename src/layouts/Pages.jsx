@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import PageCard from '../components/PageCard';
@@ -15,7 +14,6 @@ export default class Pages extends Component {
     super(props);
     this.state = {
       pages: [],
-      newPageName: null,
     };
   }
 
@@ -33,13 +31,8 @@ export default class Pages extends Component {
     }
   }
 
-  updateNewPageName = (event) => {
-    event.preventDefault();
-    this.setState({ newPageName: event.target.value });
-  }
-
   render() {
-    const { pages, newPageName } = this.state;
+    const { pages } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
     return (
@@ -54,7 +47,7 @@ export default class Pages extends Component {
           <div className="main-section">
             <div className="section-header">
               <h1 className="section-title">Pages</h1>
-              <button id="buttonCreatePage" className="blue">Create New Page</button>
+              <button type="button" className="blue">Create New Page</button>
             </div>
 
             <div className="content-container-bars">
@@ -62,12 +55,10 @@ export default class Pages extends Component {
               <ul>
                 {pages.length > 0
                   ? pages.map((page) => (
-                    <li>
-                      <PageCard
-                        fileName={page.fileName}
-                        siteName={siteName}
-                      />
-                    </li>
+                    <PageCard
+                      fileName={page.fileName}
+                      siteName={siteName}
+                    />
                   ))
                   : 'Loading Pages...'}
               </ul>
@@ -85,5 +76,8 @@ Pages.propTypes = {
     params: PropTypes.shape({
       siteName: PropTypes.string,
     }),
+  }).isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired,
   }).isRequired,
 };
