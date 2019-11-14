@@ -150,10 +150,8 @@ export default class PageSettingsModal extends Component {
         // Permalink fails regex
         if (!permalinkRegexTest.test(value)) {
           errorMessage = 
-            `The permalink should start and end with a / and contain 
-            words separated by hyphens only. Each word must be at least two characters long.
-
-            /foo/, /foo-bar/, and /foo/bar/ are valid permalinks.
+            `The permalink should start and end with slashes and contain 
+            lowercase words separated by hyphens only.
             `
         }
 
@@ -212,7 +210,7 @@ export default class PageSettingsModal extends Component {
                 onChange={this.changeHandler}
                 className={errors.title ? `${elementStyles.error}` : null} />
               <span className={elementStyles.error}> {errors.title} </span>
-              <p className={elementStyles.formLabel}>Permalink</p>
+              <p className={elementStyles.formLabel}>Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)</p>
               <input value={permalink} 
                 id="permalink" 
                 required 
