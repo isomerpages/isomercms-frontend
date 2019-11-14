@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import Tree, { mutateTree, moveItemOnTree } from '@atlaskit/tree';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import data from './sampleData';
 import TreeBuilder from './tree-builder';
-import flattenTree from './utils/utils';
+// import flattenTree from '../utils/tree-utils';
 
 const rootNode = new TreeBuilder('root', 'root', '');
 
@@ -19,18 +18,16 @@ const dataIterator = (acc, item) => {
   return acc.withLeaf(item.title, item.type);
 };
 
-// const formattedTree = data.directory.reduce(dataIterator, rootNode);
-
 /**
  * For future uses, dragState currently stores information
  * that can be used for future purposes but are not needed currently
  */
 const ListItem = ({
-  item, onExpand, onCollapse, dragState,
+  item, onExpand, onCollapse,
 }) => {
   // Nested list
   if (item.children && item.children.length) {
-    // since both the top-level nodes 'navigation' and 'unlinked-pages' always have at least one child
+    // since both the top-level nodes 'navigation' and 'unlinked-pages' should always have at least one child
     if (item.data.type === 'navigation' || item.data.type === 'unlinked-pages') {
       return <p>{ item.data.title }</p>;
     }
@@ -131,7 +128,6 @@ export default class EditTree extends Component {
     onExpand,
     onCollapse,
     provided,
-    snapshot,
   }) => (
     // eslint-disable-next-line react/jsx-props-no-spreading
     <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
@@ -139,7 +135,6 @@ export default class EditTree extends Component {
         item={item}
         onExpand={onExpand}
         onCollapse={onCollapse}
-        dragState={snapshot}
       />
     </div>
   );
