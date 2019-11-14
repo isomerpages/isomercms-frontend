@@ -4,9 +4,11 @@
     margin-bottom: 20px;
 }
 
-.form-label{
+.formLabel{
   font-size: 14px;
   margin-bottom: 8px;
+  line-height: 14px;
+  padding-top: 20px;
 }
 
 input,textarea{
@@ -22,6 +24,11 @@ input,textarea{
   &:focus{
     border: 1px solid $isomer-blue;
     outline:none;
+  }
 
+  &.error{
+    color: $body-text;
+    border: 1px solid $error-red;
+    outline:none;
   }
 }

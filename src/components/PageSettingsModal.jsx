@@ -6,6 +6,15 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import {
   frontMatterParser, concatFrontMatterMdBody, generatePageFileName,
 } from '../utils';
+import * as _ from 'lodash';
+
+// Constants
+const PERMALINK_REGEX = "^(\/([a-z]+([-][a-z]+)*\/)+)$"
+const permalinkRegexTest = RegExp(PERMALINK_REGEX, "g")
+const PERMALINK_MIN_LENGTH = 4
+const PERMALINK_MAX_LENGTH = 50
+const TITLE_MIN_LENGTH = 4
+const TITLE_MAX_LENGTH = 100
 
 export default class PageSettingsModal extends Component {
   constructor(props) {
@@ -15,6 +24,10 @@ export default class PageSettingsModal extends Component {
       title: '',
       permalink: '',
       mdBody: '',
+      errors: {
+        title: '',
+        permalink: ''
+      }
     };
   }
 
@@ -42,7 +55,7 @@ export default class PageSettingsModal extends Component {
     }
   }
 
-  saveHandler = async () => {
+  saveHandler = async (event) => {
     try {
       const { siteName, fileName, isNewPage } = this.props;
       const {
@@ -123,12 +136,62 @@ export default class PageSettingsModal extends Component {
 
   changeHandler = (event) => {
     const { id, value } = event.target;
-    this.setState({ [id]: value });
+    let errorMessage = ''
+    switch (id) {
+      case "permalink": {
+        // Permalink is too short
+        if (value.length < PERMALINK_MIN_LENGTH) {
+          errorMessage = `The permalink should be longer than ${PERMALINK_MIN_LENGTH} characters.`
+        }
+        // Permalink is too long
+        if (value.length > PERMALINK_MAX_LENGTH) {
+          errorMessage = `The permalink should be shorter than ${PERMALINK_MAX_LENGTH} characters.`
+        }
+        // Permalink fails regex
+        if (!permalinkRegexTest.test(value)) {
+          errorMessage = 
+            `The permalink should start and end with a / and contain 
+            words separated by hyphens only. Each word must be at least two characters long.
+
+            /foo/, /foo-bar/, and /foo/bar/ are valid permalinks.
+            `
+        }
+
+        console.log(value, "fail regex", !permalinkRegexTest.test(value))
+
+        break
+      }
+      case "title": {
+
+        // Title is too short
+        if (value.length < TITLE_MIN_LENGTH) {
+          errorMessage = `The title should be longer than ${TITLE_MIN_LENGTH} characters.`
+        }
+        // Title is too long
+        if (value.length > TITLE_MAX_LENGTH) {
+          errorMessage = `The title should be shorter than ${TITLE_MAX_LENGTH} characters.`
+        }
+
+        break
+      }
+      default:
+        break
+    }
+    this.setState({ 
+      errors: {
+        [id]: errorMessage
+      },
+      [id]: value 
+    })
   }
 
   render() {
-    const { title, permalink } = this.state;
+    const { title, permalink, errors } = this.state;
     const { settingsToggle, isNewPage } = this.props;
+
+    // Page settings form has errors - disable save button
+    const hasErrors = _.some(errors, field => field.length > 0)
+
     return (
       <div className={elementStyles.overlay}>
         <div className={elementStyles.modal}>
@@ -138,18 +201,36 @@ export default class PageSettingsModal extends Component {
               <i className="bx bx-x" />
             </button>
           </div>
-          <div className={elementStyles.modalContent}>
-            <p>Title</p>
-            <input value={title} id="title" onChange={this.changeHandler} />
-            <p>Permalink</p>
-            <input value={permalink} id="permalink" onChange={this.changeHandler} />
-          </div>
-          <div className={elementStyles.modalFooter}>
-            <button type="button" className={elementStyles.blue} onClick={this.saveHandler}>Save</button>
-            {!isNewPage
-              ? <button type="button" className={elementStyles.blue} onClick={this.deleteHandler}>Delete</button>
-              : null}
-          </div>
+          <form onSubmit={this.saveHandler}>
+            <div className={elementStyles.modalContent}>
+              <p className={elementStyles.formLabel}>Title</p>
+              <input 
+                value={title}
+                id="title" 
+                required 
+                autocomplete="off"
+                onChange={this.changeHandler}
+                className={errors.title ? `${elementStyles.error}` : null} />
+              <span className={elementStyles.error}> {errors.title} </span>
+              <p className={elementStyles.formLabel}>Permalink</p>
+              <input value={permalink} 
+                id="permalink" 
+                required 
+                onChange={this.changeHandler}
+                pattern={PERMALINK_REGEX}
+                minLength={PERMALINK_MIN_LENGTH}
+                maxLength={PERMALINK_MAX_LENGTH}
+                autocomplete="off"
+                className={errors.permalink ? `${elementStyles.error}` : null}/>
+              <span className={elementStyles.error}>{errors.permalink}</span>
+            </div>
+            <div className={elementStyles.modalFooter}>
+              <button type="submit" className={elementStyles.blue} disabled={hasErrors} value="submit">Save</button>
+              {!isNewPage
+                ? <button type="button" className={elementStyles.blue} onClick={this.deleteHandler}>Delete</button>
+                : null}
+            </div>
+          </form>
         </div>
       </div>
     );
