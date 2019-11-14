@@ -126,24 +126,28 @@ export default class ResourceCategoryModal extends Component {
                     <i id="settingsIcon-CLOSE" className="bx bx-x" />
                   </button>
                 </div>
-                <div className={elementStyles.modalContent}>
-                  {resourceCategories.length > 0
-                    ? resourceCategories.map((resourceCategory, index) => (
-                      <div key={resourceCategory}>
-                        <input
-                          type="text"
-                          id={`input-${index}`}
-                          defaultValue={prettifyResourceCategory(resourceCategory)}
-                          style={{ textTransform: 'uppercase' }}
-                          ref={(node) => { this.currInputValues[index] = node; }}
-                        />
-                        <button type="button" className={elementStyles.blue} id={`save-${index}-${resourceCategory}`} onClick={this.saveHandler}>Save</button>
-                        <button type="button" className={elementStyles.blue} id={`delete-${index}-${resourceCategory}`} onClick={this.deleteHandler}>Delete</button>
-                      </div>
-                    ))
-                    : null}
-                  <button type="button" onClick={this.createHandler}>Create Category</button>
-                </div>
+                <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
+                  <div className={elementStyles.modalFormFields}>
+                    {resourceCategories.length > 0
+                      ? resourceCategories.map((resourceCategory, index) => (
+                        <div key={resourceCategory}>
+                          <input
+                            type="text"
+                            id={`input-${index}`}
+                            defaultValue={prettifyResourceCategory(resourceCategory)}
+                            style={{ textTransform: 'uppercase' }}
+                            ref={(node) => { this.currInputValues[index] = node; }}
+                          />
+                          <button type="submit" className={elementStyles.blue} id={`save-${index}-${resourceCategory}`} value="submit">Save</button>
+                          <button type="button" className={elementStyles.warning} id={`delete-${index}-${resourceCategory}`} onClick={this.deleteHandler}>Delete</button>
+                        </div>
+                      ))
+                      : null}
+                  </div>
+                  <div className={elementStyles.modalButtons}>
+                    <button type="button" className={elementStyles.blue} onClick={this.createHandler}>Create Category</button>
+                  </div>
+                </form>
               </div>
             </div>
           )
