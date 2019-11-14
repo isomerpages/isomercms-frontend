@@ -30,13 +30,13 @@ const ResourceCard = ({
         </div>
       </Link>
       <button
-          type="button"
-          id={`settings-${resourceIndex}`}
-          onClick={settingsToggle}
-          className={contentStyles.resourceIcon}
-        >
-          <i id={`settingsIcon-${resourceIndex}`} className="bx bx-cog" />
-        </button>
+        type="button"
+        id={`settings-${resourceIndex}`}
+        onClick={settingsToggle}
+        className={contentStyles.resourceIcon}
+      >
+        <i id={`settingsIcon-${resourceIndex}`} className="bx bx-cog" />
+      </button>
     </div>
   );
 };
@@ -208,13 +208,15 @@ export default class Resources extends Component {
           <div className={contentStyles.mainSection}>
             <div className={contentStyles.sectionHeader}>
               <h1 className={contentStyles.sectionTitle}>Resources</h1>
-              { resourceRoomName ?
-                <ResourceCategoryModal
-                  siteName={siteName}
-                  resourceCategories={resourceCategories}
-                  categoryModalToggle={this.categoryModalToggle}
-                  categoryModalIsActive={categoryModalIsActive}
-                />
+              { resourceRoomName
+                ? (
+                  <ResourceCategoryModal
+                    siteName={siteName}
+                    resourceCategories={resourceCategories}
+                    categoryModalToggle={this.categoryModalToggle}
+                    categoryModalIsActive={categoryModalIsActive}
+                  />
+                )
                 : null }
             </div>
 

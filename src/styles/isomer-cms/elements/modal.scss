@@ -15,15 +15,15 @@
 }
 .modal{
   width: 50%;
-  height: 50%;
+  height: 70%;
   background: white;
   padding: 30px;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: flex-start;
+  overflow-y: scroll;
 
   .modalHeader{
     width: 100%;
@@ -41,11 +41,19 @@
     }
   }
 
-  // .modalContent {
-  //  TO-DO
-  // }
-
-  // .modalFooter {
-  //  TO-DO
-  // }
+  .modalContent {
+    padding: 20px 0px 10px 0px;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  
+    .modalButtons {
+      padding-top: 20px;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+    }
+  }
 }
