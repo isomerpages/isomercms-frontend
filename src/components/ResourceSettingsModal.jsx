@@ -395,7 +395,7 @@ export default class ResourceSettingsModal extends Component {
             <div className={elementStyles.modalButtons}>
               <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>
               { !isNewPost
-                ? <button type="button" className={elementStyles.blue} onClick={this.deleteHandler}>Delete</button>
+                ? <button type="button" className={elementStyles.warning} onClick={this.deleteHandler}>Delete</button>
                 : null}
             </div>
           </form>

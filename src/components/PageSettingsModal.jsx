@@ -230,7 +230,7 @@ Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)
             <div className={elementStyles.modalButtons}>
               <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>
               {!isNewPage
-                ? <button type="button" className={elementStyles.blue} onClick={this.deleteHandler}>Delete</button>
+                ? <button type="button" className={elementStyles.warning} onClick={this.deleteHandler}>Delete</button>
                 : null}
             </div>
           </form>
