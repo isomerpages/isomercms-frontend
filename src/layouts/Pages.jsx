@@ -41,7 +41,6 @@ export default class Pages extends Component {
     const { id } = event.target;
     const idArray = id.split('-');
 
-    console.log(id, 'BLAH');
     // Create new page
     if (idArray[1] === 'NEW') {
       this.setState((currState) => ({

@@ -10,7 +10,7 @@ import {
 
 // Constants
 const PERMALINK_REGEX = '^(/([a-z]+([-][a-z]+)*/)+)$';
-const permalinkRegexTest = RegExp(PERMALINK_REGEX, 'g');
+const permalinkRegexTest = RegExp(PERMALINK_REGEX);
 const PERMALINK_MIN_LENGTH = 4;
 const PERMALINK_MAX_LENGTH = 50;
 const TITLE_MIN_LENGTH = 4;
@@ -48,7 +48,7 @@ export default class PageSettingsModal extends Component {
           sha, title, permalink, mdBody,
         });
       } else {
-        this.setState({ title: 'TITLE', permalink: 'PERMALINK' });
+        this.setState({ title: 'Title', permalink: '/permalink/' });
       }
     } catch (err) {
       console.log(err);
@@ -143,19 +143,19 @@ export default class PageSettingsModal extends Component {
         if (value.length < PERMALINK_MIN_LENGTH) {
           errorMessage = `The permalink should be longer than ${PERMALINK_MIN_LENGTH} characters.`;
         }
+
         // Permalink is too long
         if (value.length > PERMALINK_MAX_LENGTH) {
           errorMessage = `The permalink should be shorter than ${PERMALINK_MAX_LENGTH} characters.`;
         }
+
         // Permalink fails regex
         if (!permalinkRegexTest.test(value)) {
+          console.log('IN REGEX FAIL', value);
           errorMessage = `The permalink should start and end with slashes and contain 
             lowercase words separated by hyphens only.
             `;
         }
-
-        console.log(value, 'fail regex', !permalinkRegexTest.test(value));
-
         break;
       }
       case 'title': {
@@ -167,7 +167,6 @@ export default class PageSettingsModal extends Component {
         if (value.length > TITLE_MAX_LENGTH) {
           errorMessage = `The title should be shorter than ${TITLE_MAX_LENGTH} characters.`;
         }
-
         break;
       }
       default:
@@ -223,9 +222,6 @@ Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)
                 id="permalink"
                 required
                 onChange={this.changeHandler}
-                pattern={PERMALINK_REGEX}
-                minLength={PERMALINK_MIN_LENGTH}
-                maxLength={PERMALINK_MAX_LENGTH}
                 autoComplete="off"
                 className={errors.permalink ? `${elementStyles.error}` : null}
               />
