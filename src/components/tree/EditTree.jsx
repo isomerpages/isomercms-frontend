@@ -2,43 +2,10 @@ import React, { Component } from 'react';
 import Tree, { mutateTree, moveItemOnTree } from '@atlaskit/tree';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import TreeBuilder from './tree-builder';
-// import flattenTree from '../utils/tree-utils';
+import TreeBuilder from '../utils/tree-builder';
+import { dataIterator, ListItem, draggableWrapper } from '../utils/tree-utils';
 
 const rootNode = new TreeBuilder('root', 'root', '');
-
-// a reducing function which recursively builds the tree
-const dataIterator = (acc, item) => {
-  if (item.children) {
-    const newTree = acc.withSubTree(
-      item.children.reduce(dataIterator, new TreeBuilder(item.title, item.type)),
-    );
-    return newTree;
-  }
-  return acc.withLeaf(item.title, item.type);
-};
-
-/**
- * For future uses, dragState currently stores information
- * that can be used for future purposes but are not needed currently
- */
-const ListItem = ({
-  item, onExpand, onCollapse,
-}) => {
-  // Nested list
-  if (item.children && item.children.length) {
-    // since both the top-level nodes 'navigation' and 'unlinked-pages' should always have at least one child
-    if (item.data.type === 'navigation' || item.data.type === 'unlinked-pages') {
-      return <p>{ item.data.title }</p>;
-    }
-
-    return item.isExpanded
-      ? <button style={{ color: 'green' }} type="button" onClick={() => onCollapse(item.id)}>{ item.data ? item.data.title : 'no' }</button>
-      : <button style={{ color: 'red' }} type="button" onClick={() => onExpand(item.id)}>{ item.data ? item.data.title : 'no' }</button>;
-  }
-
-  return <div>{ item.data ? item.data.title : 'no' }</div>;
-};
 
 export default class EditTree extends Component {
   constructor(props) {
@@ -129,14 +96,7 @@ export default class EditTree extends Component {
     onCollapse,
     provided,
   }) => (
-    // eslint-disable-next-line react/jsx-props-no-spreading
-    <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-      <ListItem
-        item={item}
-        onExpand={onExpand}
-        onCollapse={onCollapse}
-      />
-    </div>
+    draggableWrapper(ListItem, item, onExpand, onCollapse, provided)
   );
 
   // we need to encode all our information into the id, there is no way to retrieve it otherwise
@@ -158,12 +118,6 @@ export default class EditTree extends Component {
     );
   }
 }
-
-ListItem.propTypes = PropTypes.shape({
-  item: PropTypes.object,
-  onExpand: PropTypes.func,
-  onCollapse: PropTypes.func,
-}).isRequired;
 
 EditTree.propTypes = PropTypes.shape({
   history: PropTypes.object,

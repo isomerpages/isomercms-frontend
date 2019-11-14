@@ -1,12 +1,16 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import TreeBuilder from './tree-builder';
+
 /*
   Constructs a new FlattenedItem
  */
-const createFlattenedItem = (item, currentPath) => {
-  return {
+const createFlattenedItem = (item, currentPath) => (
+  {
     item,
     path: currentPath,
-  };
-};
+  }
+);
 
 /*
   Flatten the children of the given subtree
@@ -40,4 +44,61 @@ const flattenTree = (tree, path = []) => (
     : []
 );
 
-export default flattenTree;
+/**
+ * A reducing function which recursively builds the tree
+*/
+const dataIterator = (acc, item) => {
+  if (item.children) {
+    const newTree = acc.withSubTree(
+      item.children.reduce(dataIterator, new TreeBuilder(item.title, item.type)),
+    );
+    return newTree;
+  }
+  return acc.withLeaf(item.title, item.type);
+};
+
+/**
+ * For future uses, dragState currently stores information
+ * that can be used for future purposes but are not needed currently
+ */
+const ListItem = ({
+  item, onExpand, onCollapse,
+}) => {
+  // Nested list
+  if (item.children && item.children.length) {
+    // since the top-level nodes 'navigation' and 'unlinked-pages' always have at least one child
+    if (item.data.type === 'navigation' || item.data.type === 'unlinked-pages') {
+      return <p>{ item.data.title }</p>;
+    }
+
+    return item.isExpanded
+      ? <button style={{ color: 'green' }} type="button" onClick={() => onCollapse(item.id)}>{ item.data ? item.data.title : 'no' }</button>
+      : <button style={{ color: 'red' }} type="button" onClick={() => onExpand(item.id)}>{ item.data ? item.data.title : 'no' }</button>;
+  }
+
+  return <div>{ item.data ? item.data.title : 'no' }</div>;
+};
+
+const draggableWrapper = (WrappedComponent, item, onExpand, onCollapse, provided) => (
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+    <WrappedComponent
+      item={item}
+      onExpand={onExpand}
+      onCollapse={onCollapse}
+    />
+  </div>
+);
+
+export {
+  flattenTree,
+  dataIterator,
+  ListItem,
+  draggableWrapper,
+};
+
+ListItem.propTypes = PropTypes.shape({
+  item: PropTypes.object,
+  onExpand: PropTypes.func,
+  onCollapse: PropTypes.func,
+}).isRequired;
