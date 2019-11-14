@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
+import * as _ from 'lodash';
 import {
   prettifyResourceCategory,
   slugifyResourceCategory,
@@ -25,6 +26,13 @@ export default class ResourceSettingsModal extends Component {
       category: '',
       sha: '',
       resourceCategories: null,
+      errors: {
+        title: '',
+        permalink: '',
+        fileUrl: '',
+        date: '',
+        category: ''
+      }
     };
   }
 
@@ -171,8 +179,13 @@ export default class ResourceSettingsModal extends Component {
       isNewPost,
       permalink,
       fileUrl,
+      errors
     } = this.state;
     const { settingsToggle } = this.props;
+
+    // Resource settings form has errors - disable save button
+    const hasErrors = _.some(errors, (field) => field.length > 0);
+
     return (
       <div className={elementStyles.overlay}>
         <div className={elementStyles.modal}>
@@ -182,45 +195,54 @@ export default class ResourceSettingsModal extends Component {
               <i id="settingsIcon-CLOSE" className="bx bx-x" />
             </button>
           </div>
-          <div className={elementStyles.modalContent}>
-            <select id="category" value={slugifyResourceCategory(category)} onChange={this.changeHandler}>
-              {
-              resourceCategories
-                ? resourceCategories.map((resourceCategory) => (
-                  <option
-                    value={slugifyResourceCategory(resourceCategory.dirName)}
-                    label={prettifyResourceCategory(resourceCategory.dirName)}
-                  />
-                ))
-                : null
-            }
-            </select>
-            <p>Title</p>
-            <input value={dequoteString(title)} id="title" onChange={this.changeHandler} />
-            <p>Date</p>
-            <input value={date} id="date" onChange={this.changeHandler} />
-            <button type="button" onClick={this.permalinkFileUrlToggle}>{permalink ? 'Switch to download' : 'Switch to post'}</button>
-            {permalink
-              ? (
-                <>
-                  <p>Permalink</p>
-                  <input value={permalink} id="permalink" onChange={this.changeHandler} />
-                </>
-              )
-              : (
-                <>
-                  <p>File URL</p>
-                  <input value={fileUrl} id="fileUrl" onChange={this.changeHandler} />
-                </>
-              )}
-          </div>
-          <div className={elementStyles.modalFooter}>
-            <button type="button" className={elementStyles.blue} onClick={this.saveHandler}>Save</button>
-            { !isNewPost
-              ? <button type="button" className={elementStyles.blue} onClick={this.deleteHandler}>Delete</button>
-              : null}
-          </div>
-        </div>
+          <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
+            <div className={elementStyles.modalFormFields}>
+              {/* Title */}
+              <p className={elementStyles.formLabel}>Title</p>
+              <input value={dequoteString(title)} id="title" onChange={this.changeHandler} />
+              {/* Date */}
+              <p className={elementStyles.formLabel}>Date (YYYY-MM-DD, e.g. 2019-12-23)</p>
+              <input value={date} id="date" onChange={this.changeHandler} />
+              {/* Resource Category */}
+              <p className={elementStyles.formLabel}>Resource Category</p>
+              <select id="category" value={slugifyResourceCategory(category)} onChange={this.changeHandler}>
+                {
+                resourceCategories
+                  ? resourceCategories.map((resourceCategory) => (
+                    <option
+                      value={slugifyResourceCategory(resourceCategory.dirName)}
+                      label={prettifyResourceCategory(resourceCategory.dirName)}
+                    />
+                  ))
+                  : null
+              }
+              </select>
+              {/* Resource Type */}
+              <p className={elementStyles.formLabel}>Resource Type</p>
+              {/* Permalink or File URL */}
+              <button type="button" onClick={this.permalinkFileUrlToggle}>{permalink ? 'Switch to download' : 'Switch to post'}</button>
+              {permalink
+                ? (
+                  <>
+                    <p className={elementStyles.formLabel}>Permalink</p>
+                    <input value={permalink} id="permalink" onChange={this.changeHandler} />
+                  </>
+                )
+                : (
+                  <>
+                    <p className={elementStyles.formLabel}>File URL</p>
+                    <input value={fileUrl} id="fileUrl" onChange={this.changeHandler} />
+                  </>
+                )}
+            </div>
+            <div className={elementStyles.modalButtons}>
+              <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>
+              { !isNewPost
+                ? <button type="button" className={elementStyles.blue} onClick={this.deleteHandler}>Delete</button>
+                : null}
+            </div>
+        </form>
+      </div>
       </div>
     );
   }
