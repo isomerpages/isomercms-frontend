@@ -246,10 +246,12 @@ export default class Resources extends Component {
                                 resourceIndex={resourceIndex}
                               />
                             ))}
-                            <CreateResourceCard settingsToggle={this.settingsToggle} />
                           </>
                         )
-                        : 'There are no resources'}
+                      : 
+                        null
+                      }
+                      <CreateResourceCard settingsToggle={this.settingsToggle} />
                     </>
                   )}
               </div>

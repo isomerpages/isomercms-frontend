@@ -296,12 +296,11 @@ export default class ResourceSettingsModal extends Component {
       title,
       date,
       resourceCategories,
-      isNewPost,
       permalink,
       fileUrl,
       errors,
     } = this.state;
-    const { settingsToggle } = this.props;
+    const { settingsToggle, isNewPost } = this.props;
 
     // Resource settings form has errors - disable save button
     const hasErrors = _.some(errors, (field) => field.length > 0);
