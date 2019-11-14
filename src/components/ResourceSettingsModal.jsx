@@ -18,7 +18,7 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 const TITLE_MIN_LENGTH = 4;
 const TITLE_MAX_LENGTH = 100;
 const DATE_REGEX = '^([0-9]{4}-[0-9]{2}-[0-9]{2})$';
-const dateRegexTest = RegExp(DATE_REGEX, 'g');
+const dateRegexTest = RegExp(DATE_REGEX);
 const PERMALINK_REGEX = '^(/([a-z]+([-][a-z]+)*/)+)$';
 const permalinkRegexTest = RegExp(PERMALINK_REGEX);
 const PERMALINK_MIN_LENGTH = 4;
