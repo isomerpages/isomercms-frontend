@@ -22,19 +22,19 @@ export default class EditTree extends Component {
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/tree`, {
         withCredentials: true,
       });
-      const { directory, unlinked } = resp.data;
+      const { directory, unlinkedPages } = resp.data;
 
       // add a root node for the navigation bar
       const tree = rootNode.withSubTree(
         directory.reduce(
           dataIterator,
-          new TreeBuilder('Navigation', 'navigation'),
+          new TreeBuilder('Navigation', 'section'),
         ),
       // add a root node for the unlinked pages
       ).withSubTree(
-        unlinked.reduce(
+        unlinkedPages.reduce(
           dataIterator,
-          new TreeBuilder('Unlinked Pages', 'unlinked-pages'),
+          new TreeBuilder('Unlinked Pages', 'section'),
         ),
       );
 
@@ -91,7 +91,7 @@ export default class EditTree extends Component {
     }).data.type;
 
     // Rule 2) From above
-    if (sourceItemType === 'collection' && destinationParentType !== 'root') return;
+    if (sourceItemType === 'collection' && destinationParentType !== 'section') return;
     if (sourceItemType === 'thirdnav' && destinationParentType !== 'collection') return;
 
     // console.log(tree.items[source.parentId].data, tree.items[destination.parentId].data);
