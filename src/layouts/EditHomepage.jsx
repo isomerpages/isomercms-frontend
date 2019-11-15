@@ -6,7 +6,6 @@ import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import styles from '../styles/App.module.scss';
 import '../styles/isomer-template.scss';
 import TemplateHeroSection from '../templates/homepage/HeroSection';
 import TemplateInfobarSection from '../templates/homepage/InfobarSection';
@@ -15,6 +14,9 @@ import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
 import {
   EditorInfobarSection, EditorResourcesSection, EditorHeroSection, NewSectionCreator,
 } from '../components/editor/Homepage';
+import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
+import Header from '../components/Header';
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -594,178 +596,186 @@ export default class EditHomepage extends Component {
     const { siteName } = match.params;
     return (
       <>
-        <h3>
-          Editing homepage
-        </h3>
-        <div className={`d-flex ${styles.twoPanes}`}>
-          <div className={`p-3 ${styles.leftPane}`}>
-            {/* Site-wide configuration */}
-            {/* <div className={styles.card}>
-              <h4>
-                <b>
-                Site-wide configurations
-                </b>
-              </h4>
-              <p>Site Title</p>
-              <input
-                placeholder="Title"
-                defaultValue={frontMatter.title}
-                value={frontMatter.title}
-                id="site-title"
-                onChange={this.onFieldChange}
-              />
-              <p>Site Subtitle</p>
-              <input
-                placeholder="Subtitle"
-                defaultValue={frontMatter.subtitle}
-                value={frontMatter.subtitle}
-                id="site-subtitle"
-                onChange={this.onFieldChange}
-              />
-              <p>Site description</p>
-              <input
-                placeholder="Description"
-                defaultValue={frontMatter.description}
-                value={frontMatter.description}
-                id="site-description"
-                onChange={this.onFieldChange}
-              />
-              <p>Site image</p>
-              <input
-                placeholder="Image"
-                defaultValue={frontMatter.image}
-                value={frontMatter.image}
-                id="site-image"
-                onChange={this.onFieldChange}
-              />
-            </div> */}
-            {/* Homepage section configurations */}
-            <div className={styles.card}>
-              <p><b>Site notification</b></p>
-              <input placeholder="Notification" defaultValue={frontMatter.notification} value={frontMatter.notification} id="site-notification" onChange={this.onFieldChange} />
-            </div>
-            <DragDropContext onDragEnd={this.onDragEnd}>
-              <Droppable droppableId="leftPane" type="editor">
-                {(droppableProvided) => (
-                  <div
-                    className={styles.card}
-                    ref={droppableProvided.innerRef}
-                    {...droppableProvided.droppableProps}
-                  >
-                    {frontMatter.sections.map((section, sectionIndex) => (
-                      <>
-                        {/* Hero section */}
-                        {section.hero ? (
+        <Header />
+        <div className={elementStyles.wrapper}>
+          <div className={editorStyles.homepageEditorSidebar}>
+            <h3>
+                Editing homepage
+            </h3>
+            <div>
+              <div>
+                {/* Site-wide configuration */}
+                {/* <div className={styles.card}>
+                    <h4>
+                      <b>
+                      Site-wide configurations
+                      </b>
+                    </h4>
+                    <p>Site Title</p>
+                    <input
+                      placeholder="Title"
+                      defaultValue={frontMatter.title}
+                      value={frontMatter.title}
+                      id="site-title"
+                      onChange={this.onFieldChange}
+                    />
+                    <p>Site Subtitle</p>
+                    <input
+                      placeholder="Subtitle"
+                      defaultValue={frontMatter.subtitle}
+                      value={frontMatter.subtitle}
+                      id="site-subtitle"
+                      onChange={this.onFieldChange}
+                    />
+                    <p>Site description</p>
+                    <input
+                      placeholder="Description"
+                      defaultValue={frontMatter.description}
+                      value={frontMatter.description}
+                      id="site-description"
+                      onChange={this.onFieldChange}
+                    />
+                    <p>Site image</p>
+                    <input
+                      placeholder="Image"
+                      defaultValue={frontMatter.image}
+                      value={frontMatter.image}
+                      id="site-image"
+                      onChange={this.onFieldChange}
+                    />
+                  </div> */}
+                {/* <div>
+                    <p><b>Site notification</b></p>
+                    <input 
+                      placeholder="Notification" 
+                      defaultValue={frontMatter.notification} 
+                      value={frontMatter.notification} 
+                      id="site-notification" 
+                      onChange={this.onFieldChange} />
+                  </div> */}
+
+                {/* Homepage section configurations */}
+                <DragDropContext onDragEnd={this.onDragEnd}>
+                  <Droppable droppableId="leftPane" type="editor">
+                    {(droppableProvided) => (
+                      <div
+                        ref={droppableProvided.innerRef}
+                        {...droppableProvided.droppableProps}
+                      >
+                        {frontMatter.sections.map((section, sectionIndex) => (
                           <>
-                            <EditorHeroSection
-                              key={`section-${sectionIndex}`}
-                              title={section.hero.title}
-                              subtitle={section.hero.subtitle}
-                              background={section.hero.background}
-                              button={section.hero.button}
-                              url={section.hero.url}
-                              dropdown={section.hero.dropdown}
-                              sectionIndex={sectionIndex}
-                              highlights={section.hero.key_highlights}
-                              onFieldChange={this.onFieldChange}
-                              createHandler={this.createHandler}
-                              deleteHandler={this.deleteHandler}
-                              shouldDisplay={displaySections[sectionIndex]}
-                              displayHighlights={displayHighlights}
-                              displayDropdownElems={displayDropdownElems}
-                              displayHandler={this.displayHandler}
-                              onDragEnd={this.onDragEnd}
-                            />
+                            {/* Hero section */}
+                            {section.hero ? (
+                              <>
+                                <EditorHeroSection
+                                  key={`section-${sectionIndex}`}
+                                  title={section.hero.title}
+                                  subtitle={section.hero.subtitle}
+                                  background={section.hero.background}
+                                  button={section.hero.button}
+                                  url={section.hero.url}
+                                  dropdown={section.hero.dropdown}
+                                  sectionIndex={sectionIndex}
+                                  highlights={section.hero.key_highlights}
+                                  onFieldChange={this.onFieldChange}
+                                  createHandler={this.createHandler}
+                                  deleteHandler={this.deleteHandler}
+                                  shouldDisplay={displaySections[sectionIndex]}
+                                  displayHighlights={displayHighlights}
+                                  displayDropdownElems={displayDropdownElems}
+                                  displayHandler={this.displayHandler}
+                                  onDragEnd={this.onDragEnd}
+                                />
+                              </>
+                            ) : (
+                              null
+                            )}
+
+                            {/* Resources section */}
+                            {section.resources ? (
+                              <Draggable
+                                draggableId={`resources-${sectionIndex}-draggable`}
+                                index={sectionIndex}
+                              >
+                                {(draggableProvided) => (
+                                  <div
+                                    {...draggableProvided.draggableProps}
+                                    {...draggableProvided.dragHandleProps}
+                                    ref={draggableProvided.innerRef}
+                                  >
+                                    <EditorResourcesSection
+                                      key={`section-${sectionIndex}`}
+                                      title={section.resources.title}
+                                      subtitle={section.resources.subtitle}
+                                      button={section.resources.button}
+                                      sectionIndex={sectionIndex}
+                                      deleteHandler={this.deleteHandler}
+                                      onFieldChange={this.onFieldChange}
+                                      shouldDisplay={displaySections[sectionIndex]}
+                                      displayHandler={this.displayHandler}
+                                    />
+                                  </div>
+                                )}
+                              </Draggable>
+                            ) : (
+                              null
+                            )}
+
+                            {/* Infobar section */}
+                            {section.infobar ? (
+                              <Draggable
+                                draggableId={`infobar-${sectionIndex}-draggable`}
+                                index={sectionIndex}
+                              >
+                                {(draggableProvided) => (
+                                  <div
+                                    {...draggableProvided.draggableProps}
+                                    {...draggableProvided.dragHandleProps}
+                                    ref={draggableProvided.innerRef}
+                                  >
+                                    <EditorInfobarSection
+                                      key={`section-${sectionIndex}`}
+                                      title={section.infobar.title}
+                                      subtitle={section.infobar.subtitle}
+                                      description={section.infobar.description}
+                                      button={section.infobar.button}
+                                      url={section.infobar.url}
+                                      sectionIndex={sectionIndex}
+                                      deleteHandler={this.deleteHandler}
+                                      onFieldChange={this.onFieldChange}
+                                      shouldDisplay={displaySections[sectionIndex]}
+                                      displayHandler={this.displayHandler}
+                                    />
+                                  </div>
+                                )}
+                              </Draggable>
+                            ) : (
+                              null
+                            )}
+
+                            {/* Infopic section */}
+                            {/* TO-DO */}
+
+                            {/* Carousel section */}
+                            {/* TO-DO */}
+
                           </>
-                        ) : (
-                          null
-                        )}
+                        ))}
+                        {droppableProvided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
 
-                        {/* Resources section */}
-                        {section.resources ? (
-                          <Draggable
-                            draggableId={`resources-${sectionIndex}-draggable`}
-                            index={sectionIndex}
-                          >
-                            {(draggableProvided) => (
-                              <div
-                                {...draggableProvided.draggableProps}
-                                {...draggableProvided.dragHandleProps}
-                                ref={draggableProvided.innerRef}
-                              >
-                                <EditorResourcesSection
-                                  key={`section-${sectionIndex}`}
-                                  title={section.resources.title}
-                                  subtitle={section.resources.subtitle}
-                                  button={section.resources.button}
-                                  sectionIndex={sectionIndex}
-                                  deleteHandler={this.deleteHandler}
-                                  onFieldChange={this.onFieldChange}
-                                  shouldDisplay={displaySections[sectionIndex]}
-                                  displayHandler={this.displayHandler}
-                                />
-                              </div>
-                            )}
-                          </Draggable>
-                        ) : (
-                          null
-                        )}
-
-                        {/* Infobar section */}
-                        {section.infobar ? (
-                          <Draggable
-                            draggableId={`infobar-${sectionIndex}-draggable`}
-                            index={sectionIndex}
-                          >
-                            {(draggableProvided) => (
-                              <div
-                                {...draggableProvided.draggableProps}
-                                {...draggableProvided.dragHandleProps}
-                                ref={draggableProvided.innerRef}
-                              >
-                                <EditorInfobarSection
-                                  key={`section-${sectionIndex}`}
-                                  title={section.infobar.title}
-                                  subtitle={section.infobar.subtitle}
-                                  description={section.infobar.description}
-                                  button={section.infobar.button}
-                                  url={section.infobar.url}
-                                  sectionIndex={sectionIndex}
-                                  deleteHandler={this.deleteHandler}
-                                  onFieldChange={this.onFieldChange}
-                                  shouldDisplay={displaySections[sectionIndex]}
-                                  displayHandler={this.displayHandler}
-                                />
-                              </div>
-                            )}
-                          </Draggable>
-                        ) : (
-                          null
-                        )}
-
-                        {/* Infopic section */}
-                        {/* TO-DO */}
-
-                        {/* Carousel section */}
-                        {/* TO-DO */}
-
-                      </>
-                    ))}
-                    {droppableProvided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
-
-            {/* Section creator */}
-            <NewSectionCreator
-              hasResources={hasResources}
-              createHandler={this.createHandler}
-            />
-
-            <button type="button" onClick={this.savePage}>Save</button>
+                {/* Section creator */}
+                <NewSectionCreator
+                  hasResources={hasResources}
+                  createHandler={this.createHandler}
+                />
+              </div>
+            </div>
           </div>
-          <div className={styles.rightPaneHomepage}>
+          <div className={editorStyles.homepageEditorMain}>
             {/* Isomer Template Pane */}
             {frontMatter.sections.map((section, sectionIndex) => (
               <>
@@ -815,6 +825,9 @@ export default class EditHomepage extends Component {
                   : null}
               </>
             ))}
+          </div>
+          <div className={editorStyles.pageEditorFooter}>
+            <button type="button" className={elementStyles.blue} onClick={this.savePage}>Save</button>
           </div>
         </div>
       </>

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '../../styles/App.module.scss';
+import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 
 /* eslint
   react/no-array-index-key: 0
@@ -22,28 +23,67 @@ const EditorInfobarSection = ({
   shouldDisplay,
   displayHandler,
 }) => (
-  <div className={styles.card}>
-    <p>
-      <b>
+  <div className={elementStyles.card}>
+    <div className={elementStyles.cardHeader}>
+      <h2>
 Infobar section:
         {title}
-      </b>
-    </p>
+      </h2>
+    </div>
     <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>Toggle display</button>
-    <button type="button" id={`section-${sectionIndex}`} onClick={deleteHandler}>Delete section</button>
     {shouldDisplay
       ? (
         <>
-          <p>Infobar title</p>
-          <input placeholder="Infobar title" defaultValue={title} value={title} id={`section-${sectionIndex}-infobar-title`} onChange={onFieldChange} />
-          <p>Infobar subtitle</p>
-          <input placeholder="Infobar subtitle" defaultValue={subtitle} value={subtitle} id={`section-${sectionIndex}-infobar-subtitle`} onChange={onFieldChange} />
-          <p>Infobar description</p>
-          <input placeholder="Infobar description" defaultValue={description} value={description} id={`section-${sectionIndex}-infobar-description`} onChange={onFieldChange} />
-          <p>Infobar button name</p>
-          <input placeholder="Infobar button name" defaultValue={button} value={button} id={`section-${sectionIndex}-infobar-button`} onChange={onFieldChange} />
-          <p>Infobar button URL</p>
-          <input placeholder="Infobar button URL" defaultValue={url} value={url} id={`section-${sectionIndex}-infobar-url`} onChange={onFieldChange} />
+          <div className={elementStyles.cardContent}>
+            <p className={elementStyles.formLabel}>Infobar title</p>
+            <input
+              placeholder="Infobar title"
+              autoComplete="off"
+              defaultValue={title}
+              value={title}
+              id={`section-${sectionIndex}-infobar-title`}
+              onChange={onFieldChange}
+            />
+            <p className={elementStyles.formLabel}>Infobar subtitle</p>
+            <input
+              placeholder="Infobar subtitle"
+              autoComplete="off"
+              defaultValue={subtitle}
+              value={subtitle}
+              id={`section-${sectionIndex}-infobar-subtitle`}
+              onChange={onFieldChange}
+            />
+            <p className={elementStyles.formLabel}>Infobar description</p>
+            <input
+              placeholder="Infobar description"
+              defaultValue={description}
+              autoComplete="off"
+              value={description}
+              id={`section-${sectionIndex}-infobar-description`}
+              onChange={onFieldChange}
+            />
+            <p className={elementStyles.formLabel}>Infobar button name</p>
+            <input
+              placeholder="Infobar button name"
+              autoComplete="off"
+              defaultValue={button}
+              value={button}
+              id={`section-${sectionIndex}-infobar-button`}
+              onChange={onFieldChange}
+            />
+            <p className={elementStyles.formLabel}>Infobar button URL</p>
+            <input
+              placeholder="Infobar button URL"
+              autoComplete="off"
+              defaultValue={url}
+              value={url}
+              id={`section-${sectionIndex}-infobar-url`}
+              onChange={onFieldChange}
+            />
+          </div>
+          <div className={elementStyles.inputGroup}>
+            <button type="button" id={`section-${sectionIndex}`} className={elementStyles.warning} onClick={deleteHandler}>Delete section</button>
+          </div>
         </>
       )
       : null}
@@ -60,19 +100,28 @@ const EditorResourcesSection = ({
   shouldDisplay,
   displayHandler,
 }) => (
-  <div className={styles.card}>
-    <p><b>Resources section</b></p>
+  <div className={elementStyles.card}>
+    <div className={elementStyles.cardHeader}>
+      <h2>
+Resources section:
+        {title}
+      </h2>
+    </div>
     <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>Toggle display</button>
-    <button type="button" id={`section-${sectionIndex}`} onClick={deleteHandler}>Delete section</button>
     {shouldDisplay
       ? (
         <>
-          <p>Resources section title</p>
-          <input placeholder="Resource section title" defaultValue={title} value={title} id={`section-${sectionIndex}-resources-title`} onChange={onFieldChange} />
-          <p>Resources section subtitle</p>
-          <input placeholder="Resource section subtitle" defaultValue={subtitle} value={subtitle} id={`section-${sectionIndex}-resources-subtitle`} onChange={onFieldChange} />
-          <p>Resources button name</p>
-          <input placeholder="Resource button button" defaultValue={button} value={button} id={`section-${sectionIndex}-resources-button`} onChange={onFieldChange} />
+          <div className={elementStyles.cardContent}>
+            <p className={elementStyles.formLabel}>Resources section title</p>
+            <input placeholder="Resource section title" defaultValue={title} value={title} id={`section-${sectionIndex}-resources-title`} onChange={onFieldChange} />
+            <p className={elementStyles.formLabel}>Resources section subtitle</p>
+            <input placeholder="Resource section subtitle" defaultValue={subtitle} value={subtitle} id={`section-${sectionIndex}-resources-subtitle`} onChange={onFieldChange} />
+            <p className={elementStyles.formLabel}>Resources button name</p>
+            <input placeholder="Resource button button" defaultValue={button} value={button} id={`section-${sectionIndex}-resources-button`} onChange={onFieldChange} />
+          </div>
+          <div className={elementStyles.inputGroup}>
+            <button type="button" id={`section-${sectionIndex}`} className={elementStyles.warning} onClick={deleteHandler}>Delete section</button>
+          </div>
         </>
       )
       : null}
@@ -101,20 +150,20 @@ Highlight
     <br />
     {/* Create/delete/toggle buttons */}
     <button type="button" id={`highlight-${highlightIndex}-toggle`} onClick={displayHandler}>Toggle display</button>
-    <button type="button" id={`highlight-${highlightIndex}-delete`} onClick={deleteHandler} key={`${highlightIndex}-delete`}>Delete highlight</button>
+    <button type="button" id={`highlight-${highlightIndex}-delete`} className={elementStyles.warning} onClick={deleteHandler} key={`${highlightIndex}-delete`}>Delete highlight</button>
     {shouldAllowMoreHighlights
-      ? <button type="button" id={`highlight-${highlightIndex}-create`} onClick={createHandler} key={`${highlightIndex}-create`}>Create highlight</button>
+      ? <button type="button" id={`highlight-${highlightIndex}-create`} className={elementStyles.blue} onClick={createHandler} key={`${highlightIndex}-create`}>Create highlight</button>
       : null}
 
     {/* Core highlight fields */}
     {shouldDisplay
       ? (
         <>
-          <p>Highlight title</p>
+          <p className={elementStyles.formLabel}>Highlight title</p>
           <input placeholder="Highlight title" defaultValue={title} value={title} id={`highlight-${highlightIndex}-title`} onChange={onFieldChange} key={`${highlightIndex}-title`} />
-          <p>Highlight description</p>
+          <p className={elementStyles.formLabel}>Highlight description</p>
           <input placeholder="Highlight description" defaultValue={description} value={description} id={`highlight-${highlightIndex}-description`} onChange={onFieldChange} key={`${highlightIndex}-description`} />
-          <p>Highlight URL</p>
+          <p className={elementStyles.formLabel}>Highlight URL</p>
           <input placeholder="Highlight URL" defaultValue={url} value={url} id={`highlight-${highlightIndex}-url`} onChange={onFieldChange} key={`${highlightIndex}-url`} />
         </>
       )
@@ -144,14 +193,14 @@ Dropdown Elem
     <br />
     {/* Create/delete/toggle buttons */}
     <button type="button" id={`dropdownelem-${dropdownsIndex}-toggle`} onClick={displayHandler}>Toggle display</button>
-    <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} onClick={deleteHandler}>Delete dropdown element</button>
-    <button type="button" id={`dropdownelem-${dropdownsIndex}-create`} onClick={createHandler}>Create dropdown element</button>
+    <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} className={elementStyles.warning} onClick={deleteHandler}>Delete dropdown element</button>
+    <button type="button" id={`dropdownelem-${dropdownsIndex}-create`} className={elementStyles.blue} onClick={createHandler}>Create dropdown element</button>
     { shouldDisplay
       ? (
         <>
-          <p>Dropdown element title</p>
+          <p className={elementStyles.formLabel}>Dropdown element title</p>
           <input placeholder="Hero dropdown element title" defaultValue={title} value={title} id={`dropdownelem-${dropdownsIndex}-title`} onChange={onFieldChange} />
-          <p>Dropdown element URL</p>
+          <p className={elementStyles.formLabel}>Dropdown element URL</p>
           <input placeholder="Hero dropdown element URL" defaultValue={url} value={url} id={`dropdownelem-${dropdownsIndex}-url`} onChange={onFieldChange} />
         </>
       )
@@ -169,8 +218,8 @@ const HeroDropdown = ({
   displayDropdownElems,
 }) => (
   <div className={styles.card}>
-    <p>Hero dropdown</p>
-    <p>Dropdown title</p>
+    <p className={elementStyles.formLabel}>Hero dropdown</p>
+    <p className={elementStyles.formLabel}>Dropdown title</p>
     <input placeholder="Hero dropdown title" defaultValue={title} value={title} id="dropdown-title" onChange={onFieldChange} />
     <br />
     <Droppable droppableId="dropdownelem" type="dropdownelem">
@@ -210,7 +259,7 @@ const HeroDropdown = ({
                 )}
               </Draggable>
             ))
-            : <button type="button" id="dropdownelem-0-create" onClick={createHandler}>Create dropdown element</button>}
+            : <button type="button" id="dropdownelem-0-create" className={elementStyles.blue} onClick={createHandler}>Create dropdown element</button>}
           {droppableProvided.placeholder}
         </div>
       )}
@@ -225,9 +274,9 @@ const HeroButton = ({
   onFieldChange,
 }) => (
   <>
-    <p>Hero button</p>
+    <p className={elementStyles.formLabel}>Hero button</p>
     <input placeholder="Hero button name" defaultValue={button} value={button} id={`section-${sectionIndex}-hero-button`} onChange={onFieldChange} />
-    <p>Hero button URL</p>
+    <p className={elementStyles.formLabel}>Hero button URL</p>
     <input placeholder="Hero button URL" defaultValue={url} value={url} id={`section-${sectionIndex}-hero-url`} onChange={onFieldChange} />
   </>
 );
@@ -249,25 +298,27 @@ const EditorHeroSection = ({
   displayDropdownElems,
   displayHighlights,
 }) => (
-  <>
-    <p><b>Hero section</b></p>
+  <div className={elementStyles.card}>
+    <div className={elementStyles.cardHeader}>
+      <h2>Hero section</h2>
+    </div>
     <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>Toggle display</button>
     {!shouldDisplay
       ? (
         <>
-          <p>Hero title</p>
+          <p className={elementStyles.formLabel}>Hero title</p>
           <input placeholder="Hero title" defaultValue={title} value={title} id={`section-${sectionIndex}-hero-title`} onChange={onFieldChange} />
-          <p>Hero subtitle</p>
+          <p className={elementStyles.formLabel}>Hero subtitle</p>
           <input placeholder="Hero subtitle" defaultValue={subtitle} value={subtitle} id={`section-${sectionIndex}-hero-subtitle`} onChange={onFieldChange} />
-          <p>Hero background image</p>
+          <p className={elementStyles.formLabel}>Hero background image</p>
           <input placeholder="Hero background image" defaultValue={background} value={background} id={`section-${sectionIndex}-hero-background`} onChange={onFieldChange} />
-          <p>
+          <span>
             <i>Note: you can only have either Key Highlights+Hero button or a Hero Dropdown</i>
-          </p>
+          </span>
           {dropdown
             ? (
               <>
-                <button type="button" id="dropdown-delete" onClick={deleteHandler}>Delete Hero Dropdown</button>
+                <button type="button" id="dropdown-delete" className={elementStyles.warning} onClick={deleteHandler}>Delete Hero Dropdown</button>
                 <HeroDropdown
                   title={dropdown.title}
                   options={dropdown.options}
@@ -282,7 +333,7 @@ const EditorHeroSection = ({
             )
             : (
               <div className={styles.card}>
-                <button type="button" id="dropdown-create" onClick={createHandler}>Create Hero Dropdown</button>
+                <button type="button" id="dropdown-create" className={elementStyles.blue} onClick={createHandler}>Create Hero Dropdown</button>
                 <HeroButton
                   button={button}
                   url={url}
@@ -336,7 +387,7 @@ const EditorHeroSection = ({
                             ))}
                           </>
                         )
-                        : <button type="button" id="highlight-0-create" onClick={createHandler} key="0-create">Create highlight</button>}
+                        : <button type="button" id="highlight-0-create" className={elementStyles.blue} onClick={createHandler} key="0-create">Create highlight</button>}
                       {droppableProvided.placeholder}
                     </div>
                   )}
@@ -346,7 +397,7 @@ const EditorHeroSection = ({
         </>
       )
       : null}
-  </>
+  </div>
 );
 
 const NewSectionCreator = ({ createHandler, hasResources }) => (
