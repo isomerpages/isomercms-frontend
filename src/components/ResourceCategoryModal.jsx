@@ -13,7 +13,8 @@ export default class ResourceCategoryModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      resourceCategories: [],
+      prevResourceCategories: [],
+      currResourceCategories: []
     };
     this.currInputValues = {};
   }
@@ -27,7 +28,7 @@ export default class ResourceCategoryModal extends Component {
       const { resources } = resourcesResp.data;
       const resourceCategories = resources.map((resource) => resource.dirName);
 
-      this.setState({ resourceCategories });
+      this.setState({ prevResourceCategories: resourceCategories, currResourceCategories: resourceCategories });
     } catch (err) {
       console.log(err);
     }
@@ -36,25 +37,42 @@ export default class ResourceCategoryModal extends Component {
   // Create new category
   createHandler = () => {
     this.setState((currState) => ({
-      resourceCategories: update(currState.resourceCategories, {
+      prevResourceCategories: update(currState.prevResourceCategories, {
         $push: [NEW_CATEGORY_STR],
       }),
+      // currResourceCategories: update(currState.currResourceCategories, {
+      //   $push: [NEW_CATEGORY_STR],
+      // }),
     }));
+  }
+
+  changeHandler = (event) => {
+    const { id, value } = event.target;
+    const idArray = id.split('-');
+    const categoryIndex = parseInt(idArray[1], RADIX_PARSE_INT);
+
+    this.setState((currState) => ({
+      currResourceCategories: update(currState.currResourceCategories, {
+        $splice: [[categoryIndex, 1, slugifyResourceCategory(value)]]
+      })
+    }))
   }
 
   // Save changes to the resource category
   saveHandler = async (event) => {
     try {
       const { siteName } = this.props;
-      const { resourceCategories } = this.state;
+      const { prevResourceCategories, currResourceCategories } = this.state;
       const { id } = event.target;
       const idArray = id.split('-');
       const categoryIndex = parseInt(idArray[1], RADIX_PARSE_INT);
-      const resourceCategory = slugifyResourceCategory(resourceCategories[categoryIndex]);
-      const newResourceCategory = slugifyResourceCategory(this.currInputValues[categoryIndex].value); // eslint-disable-line max-len
+      const prevResourceCategory = slugifyResourceCategory(prevResourceCategories[categoryIndex]);
+      const newResourceCategory = slugifyResourceCategory(currResourceCategories[categoryIndex]); // eslint-disable-line max-len
 
+      console.log(categoryIndex, prevResourceCategory, newResourceCategory, 'here')
       // If the category is a new one
-      if (resourceCategory === NEW_CATEGORY_STR) {
+      if (prevResourceCategory === NEW_CATEGORY_STR) {
+        console.log('newcategory', prevResourceCategory)
         const params = {
           resourceName: newResourceCategory,
         };
@@ -64,7 +82,7 @@ export default class ResourceCategoryModal extends Component {
       } else {
         // Rename resource category
         const params = {};
-        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceCategory}/rename/${newResourceCategory}`, params, {
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${prevResourceCategory}/rename/${newResourceCategory}`, params, {
           withCredentials: true,
         });
       }
@@ -78,11 +96,11 @@ export default class ResourceCategoryModal extends Component {
   deleteHandler = async (event) => {
     try {
       const { siteName } = this.props;
-      const { resourceCategories } = this.state;
+      const { prevResourceCategories } = this.state;
       const { id } = event.target;
       const idArray = id.split('-');
       const categoryIndex = parseInt(idArray[1], RADIX_PARSE_INT);
-      const resourceCategory = slugifyResourceCategory(resourceCategories[categoryIndex]);
+      const resourceCategory = slugifyResourceCategory(prevResourceCategories[categoryIndex]);
 
       // Check if there are resourcePages in the category; if there are, do not allow deletion
       const resourcesPagesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceCategory}`, {
@@ -104,14 +122,14 @@ export default class ResourceCategoryModal extends Component {
       const { resources } = resourcesResp.data;
       const newResourceCategories = resources.map((resource) => resource.dirName);
 
-      this.setState({ resourceCategories: newResourceCategories });
+      this.setState({ prevResourceCategories: newResourceCategories, currResourceCategories: newResourceCategories });
     } catch (err) {
       console.log(err);
     }
   }
 
   render() {
-    const { resourceCategories } = this.state;
+    const { prevResourceCategories } = this.state;
     const { categoryModalToggle, categoryModalIsActive } = this.props;
     return (
       <div>
@@ -126,20 +144,20 @@ export default class ResourceCategoryModal extends Component {
                     <i id="settingsIcon-CLOSE" className="bx bx-x" />
                   </button>
                 </div>
-                <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
+                <div className={elementStyles.modalContent}>
                   <div className={elementStyles.modalFormFields}>
-                    {resourceCategories.length > 0
-                      ? resourceCategories.map((resourceCategory, index) => (
-                        <div key={resourceCategory}>
+                    {prevResourceCategories.length > 0
+                      ? prevResourceCategories.map((prevResourceCategory, index) => (
+                        <div key={prevResourceCategory}>
                           <input
                             type="text"
                             id={`input-${index}`}
-                            defaultValue={prettifyResourceCategory(resourceCategory)}
+                            defaultValue={prettifyResourceCategory(prevResourceCategory)}
                             style={{ textTransform: 'uppercase' }}
-                            ref={(node) => { this.currInputValues[index] = node; }}
+                            onChange={this.changeHandler}
                           />
-                          <button type="submit" className={elementStyles.blue} id={`save-${index}-${resourceCategory}`} value="submit">Save</button>
-                          <button type="button" className={elementStyles.warning} id={`delete-${index}-${resourceCategory}`} onClick={this.deleteHandler}>Delete</button>
+                          <button type="button" className={elementStyles.blue} id={`save-${index}`} onClick={this.saveHandler}>Save</button>
+                          <button type="button" className={elementStyles.warning} id={`delete-${index}`} onClick={this.deleteHandler}>Delete</button>
                         </div>
                       ))
                       : null}
@@ -147,7 +165,7 @@ export default class ResourceCategoryModal extends Component {
                   <div className={elementStyles.modalButtons}>
                     <button type="button" className={elementStyles.blue} onClick={this.createHandler}>Create Category</button>
                   </div>
-                </form>
+                </div>
               </div>
             </div>
           )
