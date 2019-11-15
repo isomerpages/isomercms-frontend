@@ -150,7 +150,6 @@ Highlight
     <br />
     {/* Create/delete/toggle buttons */}
     <button type="button" id={`highlight-${highlightIndex}-toggle`} onClick={displayHandler}>Toggle display</button>
-    <button type="button" id={`highlight-${highlightIndex}-delete`} className={elementStyles.warning} onClick={deleteHandler} key={`${highlightIndex}-delete`}>Delete highlight</button>
     {shouldAllowMoreHighlights
       ? <button type="button" id={`highlight-${highlightIndex}-create`} className={elementStyles.blue} onClick={createHandler} key={`${highlightIndex}-create`}>Create highlight</button>
       : null}
@@ -165,6 +164,7 @@ Highlight
           <input placeholder="Highlight description" defaultValue={description} value={description} id={`highlight-${highlightIndex}-description`} onChange={onFieldChange} key={`${highlightIndex}-description`} />
           <p className={elementStyles.formLabel}>Highlight URL</p>
           <input placeholder="Highlight URL" defaultValue={url} value={url} id={`highlight-${highlightIndex}-url`} onChange={onFieldChange} key={`${highlightIndex}-url`} />
+          <button type="button" id={`highlight-${highlightIndex}-delete`} className={elementStyles.warning} onClick={deleteHandler} key={`${highlightIndex}-delete`}>Delete highlight</button>
         </>
       )
       : null}
