@@ -189,6 +189,7 @@ export default class ResourceCategoryModal extends Component {
                           <input
                             type="text"
                             id={`input-${index}`}
+                            autoComplete="off"
                             defaultValue={prettifyResourceCategory(prevResourceCategory)}
                             style={{ textTransform: 'uppercase' }}
                             onChange={this.changeHandler}
