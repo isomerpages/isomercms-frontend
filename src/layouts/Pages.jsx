@@ -103,6 +103,9 @@ Create New Page
 
               {/* Page cards */}
               <ul>
+                <li>
+                  <Link to={`/sites/${siteName}/homepage`}>Homepage</Link>
+                </li>
                 {pages.length > 0
                   ? pages.map((pageName, pageIndex) => (
                     <li>
