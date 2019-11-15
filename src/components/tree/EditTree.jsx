@@ -132,15 +132,17 @@ export default class EditTree extends Component {
     return (
       tree
       && (
-      <Tree
-        tree={tree}
-        renderItem={this.renderItem}
-        onExpand={this.onExpand}
-        onCollapse={this.onCollapse}
-        onDragEnd={this.onDragEnd}
-        isNestingEnabled
-        isDragEnabled
-      />
+      <div style={{ height: '100vw', overflow: 'scroll' }}>
+        <Tree
+          tree={tree}
+          renderItem={this.renderItem}
+          onExpand={this.onExpand}
+          onCollapse={this.onCollapse}
+          onDragEnd={this.onDragEnd}
+          isNestingEnabled
+          isDragEnabled
+        />
+      </div>
       )
     );
   }
