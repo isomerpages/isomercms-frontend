@@ -19,11 +19,9 @@ export default class EditPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      content: null,
       sha: null,
       editorValue: '',
       frontMatter: '',
-      tempFileName: '',
     };
   }
 
@@ -38,36 +36,10 @@ export default class EditPage extends Component {
       // split the markdown into front matter and content
       const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
       this.setState({
-        content,
         sha,
         editorValue: mdBody.trim(),
         frontMatter,
       });
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  createPage = async () => {
-    try {
-      const { match } = this.props;
-      const { siteName, fileName } = match.params;
-      const { editorValue, frontMatter } = this.state;
-
-      // here, we need to add the appropriate front matter before we encode
-      // this part needs to be revised to include permalink and other things depending on page type
-      const upload = concatFrontMatterMdBody(frontMatter, editorValue);
-
-      const base64Content = Base64.encode(upload);
-      const params = {
-        pageName: fileName,
-        content: base64Content,
-      };
-      const resp = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages`, params, {
-        withCredentials: true,
-      });
-      const { content, sha } = resp.data;
-      this.setState({ content, sha });
     } catch (err) {
       console.log(err);
     }
@@ -92,8 +64,8 @@ export default class EditPage extends Component {
       const resp = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, params, {
         withCredentials: true,
       });
-      const { content, sha } = resp.data;
-      this.setState({ content, sha });
+      const { sha } = resp.data;
+      this.setState({ sha });
     } catch (err) {
       console.log(err);
     }
@@ -114,21 +86,6 @@ export default class EditPage extends Component {
     }
   }
 
-  renamePage = async () => {
-    try {
-      const { match } = this.props;
-      const { siteName, fileName } = match.params;
-      const { content, sha, tempFileName } = this.state;
-      const newFileName = tempFileName;
-      const params = { content, sha };
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}/rename/${newFileName}`, params, {
-        withCredentials: true,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   onEditorChange = (value) => {
     this.setState({ editorValue: value });
   }
@@ -136,7 +93,7 @@ export default class EditPage extends Component {
   render() {
     const { match } = this.props;
     const { siteName, fileName } = match.params;
-    const { sha, editorValue } = this.state;
+    const { editorValue } = this.state;
     return (
       <>
         <Header />
@@ -161,7 +118,7 @@ export default class EditPage extends Component {
           </div>
         </div>
         <div className={editorStyles.pageEditorFooter}>
-          <button type="button" className={elementStyles.blue} onClick={sha ? this.updatePage : this.createPage}>Save</button>
+          <button type="button" className={elementStyles.blue} onClick={this.updatePage}>Save</button>
           <button type="button" className={elementStyles.warning} onClick={this.deletePage}>Delete</button>
         </div>
       </>

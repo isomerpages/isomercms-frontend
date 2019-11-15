@@ -45,31 +45,6 @@ export default class EditResourcePage extends Component {
     }
   }
 
-  createPage = async () => {
-    try {
-      const { match } = this.props;
-      const { siteName, resourceName, fileName } = match.params;
-      const { editorValue, frontMatter } = this.state;
-
-      // here, we need to add the appropriate front matter before we encode
-      // this part needs to be revised to include permalink and other things depending on page type
-      const upload = concatFrontMatterMdBody(frontMatter, editorValue);
-
-      const base64Content = Base64.encode(upload);
-      const params = {
-        pageName: fileName,
-        content: base64Content,
-      };
-      const resp = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`, params, {
-        withCredentials: true,
-      });
-      const { sha } = resp.data;
-      this.setState({ sha });
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   updatePage = async () => {
     try {
       const { match } = this.props;
@@ -118,7 +93,7 @@ export default class EditResourcePage extends Component {
   render() {
     const { match } = this.props;
     const { siteName, fileName, resourceName } = match.params;
-    const { sha, editorValue } = this.state;
+    const { editorValue } = this.state;
     return (
       <>
         <Header />
@@ -147,7 +122,7 @@ in Resource
           </div>
         </div>
         <div className={editorStyles.pageEditorFooter}>
-          <button type="button" className={elementStyles.blue} onClick={sha ? this.updatePage : this.createPage}>Save</button>
+          <button type="button" className={elementStyles.blue} onClick={this.updatePage}>Save</button>
           <button type="button" className={elementStyles.warning} onClick={this.deletePage}>Delete</button>
         </div>
       </>
