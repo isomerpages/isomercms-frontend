@@ -109,9 +109,22 @@ export default class EditTree extends Component {
     onExpand,
     onCollapse,
     provided,
-  }) => (
-    draggableWrapper(ListItem, item, onExpand, onCollapse, provided)
-  );
+  }) => {
+    if (item.data.type !== 'section') {
+      return draggableWrapper(ListItem, item, onExpand, onCollapse, provided);
+    }
+    return (
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      <div ref={provided.innerRef} {...provided.draggableProps}>
+        <div {...provided.dragHandleProps}/>
+        <ListItem
+          item={item}
+          onExpand={onExpand}
+          onCollapse={onCollapse}
+        />
+      </div>
+    );
+  };
 
   // we need to encode all our information into the id, there is no way to retrieve it otherwise
   render() {

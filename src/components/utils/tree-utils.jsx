@@ -67,7 +67,7 @@ const ListItem = ({
   // Nested list
   if (item.children && item.children.length) {
     // since the top-level nodes 'navigation' and 'unlinked-pages' always have at least one child
-    if (item.data.type === 'navigation' || item.data.type === 'unlinked-pages') {
+    if (item.data.type === 'section') {
       return <p>{ item.data.title }</p>;
     }
 
