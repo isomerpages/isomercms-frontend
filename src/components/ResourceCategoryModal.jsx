@@ -20,8 +20,8 @@ export default class ResourceCategoryModal extends Component {
       prevResourceCategories: [],
       currResourceCategories: [],
       errors: {
-        resourceCategories: []
-      }
+        resourceCategories: [],
+      },
     };
     this.currInputValues = {};
   }
@@ -35,13 +35,13 @@ export default class ResourceCategoryModal extends Component {
       const { resources } = resourcesResp.data;
       const resourceCategories = resources.map((resource) => resource.dirName);
 
-      this.setState({ 
-        prevResourceCategories: resourceCategories, 
+      this.setState({
+        prevResourceCategories: resourceCategories,
         currResourceCategories: resourceCategories,
         errors: {
-          resourceCategories: Array(resources.length).fill('')
-        }
-       });
+          resourceCategories: Array(resources.length).fill(''),
+        },
+      });
     } catch (err) {
       console.log(err);
     }
@@ -56,8 +56,8 @@ export default class ResourceCategoryModal extends Component {
       errors: {
         resourceCategories: update(currState.errors.resourceCategories, {
           $push: [''],
-        })
-      }
+        }),
+      },
     }));
   }
 
@@ -66,7 +66,7 @@ export default class ResourceCategoryModal extends Component {
     const idArray = id.split('-');
     const categoryIndex = parseInt(idArray[1], RADIX_PARSE_INT);
 
-    let errorMessage = ''
+    let errorMessage = '';
     // Resource category is too short
     if (value.length < CATEGORY_MIN_LENGTH) {
       errorMessage = `The resource category should be longer than ${CATEGORY_MIN_LENGTH} characters.`;
@@ -77,19 +77,19 @@ export default class ResourceCategoryModal extends Component {
     }
     // Resource category fails regex
     if (!categoryRegexTest.test(value)) {
-      errorMessage = `The resource category should only have alphanumeric characters separated by whitespace.`;
+      errorMessage = 'The resource category should only have alphanumeric characters separated by whitespace.';
     }
-    
+
     this.setState((currState) => ({
       currResourceCategories: update(currState.currResourceCategories, {
-        $splice: [[categoryIndex, 1, slugifyResourceCategory(value)]]
+        $splice: [[categoryIndex, 1, slugifyResourceCategory(value)]],
       }),
       errors: {
         resourceCategories: update(currState.errors.resourceCategories, {
-          $splice: [[categoryIndex, 1, errorMessage]]
-        })
-      }
-    }))
+          $splice: [[categoryIndex, 1, errorMessage]],
+        }),
+      },
+    }));
   }
 
   // Save changes to the resource category
@@ -103,10 +103,10 @@ export default class ResourceCategoryModal extends Component {
       const prevResourceCategory = slugifyResourceCategory(prevResourceCategories[categoryIndex]);
       const newResourceCategory = slugifyResourceCategory(currResourceCategories[categoryIndex]); // eslint-disable-line max-len
 
-      console.log(categoryIndex, prevResourceCategory, newResourceCategory, 'here')
+      console.log(categoryIndex, prevResourceCategory, newResourceCategory, 'here');
       // If the category is a new one
       if (prevResourceCategory === NEW_CATEGORY_STR) {
-        console.log('newcategory', prevResourceCategory)
+        console.log('newcategory', prevResourceCategory);
         const params = {
           resourceName: newResourceCategory,
         };
@@ -156,7 +156,10 @@ export default class ResourceCategoryModal extends Component {
       const { resources } = resourcesResp.data;
       const newResourceCategories = resources.map((resource) => resource.dirName);
 
-      this.setState({ prevResourceCategories: newResourceCategories, currResourceCategories: newResourceCategories });
+      this.setState({
+        prevResourceCategories: newResourceCategories,
+        currResourceCategories: newResourceCategories,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -190,7 +193,11 @@ export default class ResourceCategoryModal extends Component {
                             style={{ textTransform: 'uppercase' }}
                             onChange={this.changeHandler}
                           />
-                          <span className={elementStyles.error}>{errors.resourceCategories[index]}</span>
+                          <span
+                            className={elementStyles.error}
+                          >
+                            {errors.resourceCategories[index]}
+                          </span>
                           <button type="button" className={elementStyles.blue} id={`save-${index}`} onClick={this.saveHandler}>Save</button>
                           <button type="button" className={elementStyles.warning} id={`delete-${index}`} onClick={this.deleteHandler}>Delete</button>
                         </div>

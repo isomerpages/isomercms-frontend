@@ -248,9 +248,7 @@ export default class Resources extends Component {
                             ))}
                           </>
                         )
-                      : 
-                        null
-                      }
+                        : null}
                       <CreateResourceCard settingsToggle={this.settingsToggle} />
                     </>
                   )}
