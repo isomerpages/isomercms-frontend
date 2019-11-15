@@ -26,7 +26,7 @@
   overflow-y: scroll;
 }
 
-.page-editor-sidebar{
+.pageEditorSidebar{
   width: $page-editor-sidebar-width;
   background: $base-background-light;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
@@ -37,7 +37,7 @@
   height: calc(100vh - #{$header-height} - #{$footer-height});
 }
 
-.page-editor-main{
+.pageEditorMain{
   display: flex;
   width: calc(100vw - #{$page-editor-sidebar-width});
   flex-direction: column;
@@ -49,4 +49,20 @@
   padding-right: 50px;
   padding-top: 40px;
   overflow-y: scroll;
+}
+
+.pageEditorFooter{
+  height: $footer-height;
+  background: white;
+  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.5);
+  position: absolute;
+  bottom: 0;
+  z-index: 10;
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
 }

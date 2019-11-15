@@ -46,23 +46,6 @@ i {
   color: $isomer-blue;
 }
 
-.page-editor-footer{
-  height: $footer-height;
-  background: white;
-  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.5);
-  position: absolute;
-  bottom: 0;
-  z-index: 10;
-  width: 100%;
-  box-sizing: border-box;
-  padding-right: 30px;
-
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-}
-
 .error {
   color: $error-red;
 }

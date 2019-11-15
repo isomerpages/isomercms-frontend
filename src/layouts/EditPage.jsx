@@ -7,11 +7,13 @@ import marked from 'marked';
 import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
 import {
-  frontMatterParser, concatFrontMatterMdBody, prependImageSrc, changeFileName,
+  frontMatterParser, concatFrontMatterMdBody, prependImageSrc, prettifyPageFileName,
 } from '../utils';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
-import styles from '../styles/App.module.scss';
+import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
+import Header from '../components/Header';
 
 export default class EditPage extends Component {
   constructor(props) {
@@ -137,13 +139,14 @@ export default class EditPage extends Component {
     const { sha, editorValue } = this.state;
     return (
       <>
-        <h3>
-          Editing page
-          {' '}
-          {fileName}
-        </h3>
-        <div className="d-flex">
-          <div className={`${styles.leftPane} p-3`}>
+        <Header />
+        <div className={elementStyles.wrapper}>
+          <div className={editorStyles.pageEditorSidebar}>
+            <h3>
+              Editing
+              {' '}
+              {prettifyPageFileName(fileName)}
+            </h3>
             <SimpleMDE
               onChange={this.onEditorChange}
               value={editorValue}
@@ -152,20 +155,15 @@ export default class EditPage extends Component {
                 showIcons: ['code', 'table'],
               }}
             />
-            <button type="button" onClick={sha ? this.updatePage : this.createPage}>Save</button>
-            <br />
-            <br />
-            <button type="button" onClick={this.deletePage}>Delete</button>
-            <br />
-            <br />
-            <input placeholder="New file name" onChange={(event) => changeFileName(event, this)} />
-            <button type="button" onClick={this.renamePage}>Rename</button>
           </div>
-          <div className={styles.rightPane}>
+          <div className={editorStyles.pageEditorMain}>
             <SimplePage chunk={prependImageSrc(siteName, marked(editorValue))} />
           </div>
         </div>
-
+        <div className={editorStyles.pageEditorFooter}>
+          <button type="button" className={elementStyles.blue} onClick={sha ? this.updatePage : this.createPage}>Save</button>
+          <button type="button" className={elementStyles.warning} onClick={this.deletePage}>Delete</button>
+        </div>
       </>
     );
   }
