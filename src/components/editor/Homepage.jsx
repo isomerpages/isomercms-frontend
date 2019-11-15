@@ -193,7 +193,6 @@ Dropdown Elem
     <br />
     {/* Create/delete/toggle buttons */}
     <button type="button" id={`dropdownelem-${dropdownsIndex}-toggle`} onClick={displayHandler}>Toggle display</button>
-    <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} className={elementStyles.warning} onClick={deleteHandler}>Delete dropdown element</button>
     <button type="button" id={`dropdownelem-${dropdownsIndex}-create`} className={elementStyles.blue} onClick={createHandler}>Create dropdown element</button>
     { shouldDisplay
       ? (
@@ -202,6 +201,7 @@ Dropdown Elem
           <input placeholder="Hero dropdown element title" defaultValue={title} value={title} id={`dropdownelem-${dropdownsIndex}-title`} onChange={onFieldChange} />
           <p className={elementStyles.formLabel}>Dropdown element URL</p>
           <input placeholder="Hero dropdown element URL" defaultValue={url} value={url} id={`dropdownelem-${dropdownsIndex}-url`} onChange={onFieldChange} />
+          <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} className={elementStyles.warning} onClick={deleteHandler}>Delete dropdown element</button>
         </>
       )
       : null}
