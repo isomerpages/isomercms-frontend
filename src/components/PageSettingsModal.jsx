@@ -71,41 +71,31 @@ export default class PageSettingsModal extends Component {
       const base64Content = Base64.encode(upload);
       const newFileName = generatePageFileName(title);
 
-      if (isNewPage) {
-        // Create new page
-        const params = {
-          pageName: newFileName,
-          content: base64Content,
-        };
-
-        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages`, params, {
-          withCredentials: true,
-        });
-      } else if (newFileName === fileName) {
-        // A new file does not need to be created; the title has not changed
+      if (newFileName === fileName && !isNewPage) {
+        // Update existing file
         const params = {
           content: base64Content,
           sha,
         };
 
-        // Update existing file
         await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, params, {
           withCredentials: true,
         });
       } else {
         // A new file needs to be created
-        // Delete existing page
-        await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
-          data: { sha },
-          withCredentials: true,
-        });
+        if (newFileName !== fileName) {
+          // Delete existing page
+          await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
+            data: { sha },
+            withCredentials: true,
+          });
+        }
 
         // Create new page
         const params = {
           pageName: newFileName,
           content: base64Content,
         };
-
         await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages`, params, {
           withCredentials: true,
         });
