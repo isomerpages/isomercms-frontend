@@ -95,8 +95,8 @@ export function prettifyResourceFileName(fileName) {
 
   const type = tokenArray[3];
 
-  let title = tokenArray.slice(4).join(" ")
-  
+  const title = tokenArray.slice(4).join(' ');
+
   return { date, type, title };
 }
 
@@ -131,9 +131,9 @@ export function prettifyPageFileName(fileName) {
   const fileNameArray = fileName.split('.md')[0];
   const tokenArray = fileNameArray.split('-');
 
-  return tokenArray.join(" ");
+  return tokenArray.join(' ');
 }
 
 export function generatePageFileName(title) {
-  return slugify(title).replace(/[^a-zA-Z-]/g, '') + '.md';
+  return `${slugify(title).replace(/[^a-zA-Z-]/g, '')}.md`;
 }

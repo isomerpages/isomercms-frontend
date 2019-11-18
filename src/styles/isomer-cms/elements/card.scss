@@ -1,0 +1,75 @@
+@import './variable';
+
+.card{
+  width: 100%;
+  background: white;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  box-sizing: border-box;
+  padding: 30px;
+  margin-bottom: 30px;
+
+  .card-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    h2{
+      font-size: 20px;
+      font-weight: normal;
+      color: darken($isomer-blue,20%);
+    }
+
+    .bx{
+        font-size: 30px;
+        color: darken($isomer-blue,20%);
+    }
+  }
+
+  &.dragging{
+    background: white;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  &.placeable{
+    background: none;
+    box-shadow: none;
+    border: 1px dashed darken($base-background-light, 10%);
+    opacity: .8;
+  }
+
+  &.addNew{
+    background: none;
+    box-shadow: none;
+
+    border: 1px dashed $isomer-blue;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: $isomer-blue;
+
+    .bxPlusCircle{
+      font-size: 30px;
+      margin-bottom: 20px;
+    }
+
+    h2{
+      font-size: 18px;
+      width: 100%;
+      text-align: center;
+    }
+
+    &:hover{
+      background-color: rgba(255,255,255,0.5);
+      border: 1px dashed $isomer-blue;
+    }
+  }
+
+  .card-content{
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+}

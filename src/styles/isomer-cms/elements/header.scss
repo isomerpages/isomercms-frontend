@@ -1,0 +1,48 @@
+@import './variable';
+
+.header{
+  position: fixed;
+  height: $header-height;
+  background: $header-background;
+  width: 100%;
+  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding-left: 30px;
+  padding-right: 30px;
+  top: 0;
+
+  .logo{
+    img{
+      width: 180px;
+    }
+  }
+
+  .headerCenter{
+    margin: 0 auto;
+    flex-basis: 60%;
+    text-align: center;
+
+    h1{
+      font-size: 20px;
+    }
+  }
+
+  .headerLeft{
+    float: left;
+    flex-basis: 20%;
+  }
+
+  .headerRight{
+    float: right;
+    text-align: right;
+    flex-basis: 20%;
+    display: flex;
+    justify-content: flex-end;
+    align-content: center;
+  }
+}

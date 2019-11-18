@@ -1,0 +1,108 @@
+@import './variable';
+
+button{
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  border: none;
+  flex-wrap: nowrap;
+  padding: 0;
+  padding-right: 14px;
+
+  &:focus {
+    outline: 0;
+  }
+
+  .bx{
+    height: 100%;
+    margin-top: 2px;
+  }
+
+  a{
+    text-decoration: none;
+    color: $isomer-blue;
+
+    &:hover{
+      text-decoration: none;
+      color: $isomer-blue;
+    }
+  }
+  &.warning{
+    background: $error-red;
+    color: white;
+    padding: 10px 30px;
+    margin-right: 20px;
+    a{
+      text-decoration: none;
+      color: white;
+
+      &:hover{
+        text-decoration: none;
+        color: white;
+      }
+    }
+
+    &:hover{
+      background: lighten($error-red, 5%);
+      transform: translateY(-4px);
+      box-shadow: 0px 4px darken($error-red, 10%);
+    }
+
+    &:active{
+      background: $error-red;
+      transform: translateY(0px);
+      box-shadow: none;
+    }
+  }
+
+  &.blue{
+    background: $isomer-blue;
+    color: white;
+    padding: 10px 30px;
+    margin-right: 20px;
+    a{
+      text-decoration: none;
+      color: white;
+
+      &:hover{
+        text-decoration: none;
+        color: white;
+      }
+    }
+
+    &:hover{
+      background: lighten($isomer-blue, 5%);
+      transform: translateY(-4px);
+      box-shadow: 0px 4px darken($isomer-blue, 10%);
+    }
+
+    &:active{
+      background: $isomer-blue;
+      transform: translateY(0px);
+      box-shadow: none;
+    }
+  }
+
+  &.disabled{
+    background: $isomer-grey;
+    color: darken($isomer-grey, 25%);
+    padding: 10px 30px;
+    margin-right: 20px;
+  }
+
+  &:last-child{
+    margin-right: 0px;
+  }
+}
+
+.button-group-left, .button-group-right{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
