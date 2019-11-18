@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '../../styles/App.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
+import FormField from '../FormField';
 
 /* eslint
   react/no-array-index-key: 0
@@ -37,45 +38,45 @@ Infobar section:
       ? (
         <>
           <div className={elementStyles.cardContent}>
-            <p className={elementStyles.formLabel}>Infobar title</p>
-            <input
-              placeholder="Infobar title"
-              autoComplete="off"
-              value={title}
+            <FormField
+              title="Infobar title"
               id={`section-${sectionIndex}-infobar-title`}
-              onChange={onFieldChange}
+              value={title}
+              errorMessage=''
+              isRequired
+              onFieldChange={onFieldChange}
             />
-            <p className={elementStyles.formLabel}>Infobar subtitle</p>
-            <input
-              placeholder="Infobar subtitle"
-              autoComplete="off"
-              value={subtitle}
+            <FormField
+              title="Infobar subtitle"
               id={`section-${sectionIndex}-infobar-subtitle`}
-              onChange={onFieldChange}
+              value={subtitle}
+              errorMessage=''
+              isRequired
+              onFieldChange={onFieldChange}
             />
-            <p className={elementStyles.formLabel}>Infobar description</p>
-            <input
-              placeholder="Infobar description"
-              autoComplete="off"
-              value={description}
+            <FormField
+              title="Infobar description"
               id={`section-${sectionIndex}-infobar-description`}
-              onChange={onFieldChange}
+              value={description}
+              errorMessage=''
+              isRequired
+              onFieldChange={onFieldChange}
             />
-            <p className={elementStyles.formLabel}>Infobar button name</p>
-            <input
-              placeholder="Infobar button name"
-              autoComplete="off"
-              value={button}
+            <FormField
+              title="Infobar button name"
               id={`section-${sectionIndex}-infobar-button`}
-              onChange={onFieldChange}
+              value={button}
+              errorMessage=''
+              isRequired
+              onFieldChange={onFieldChange}
             />
-            <p className={elementStyles.formLabel}>Infobar button URL</p>
-            <input
-              placeholder="Infobar button URL"
-              autoComplete="off"
-              value={url}
+            <FormField
+              title="Infobar button URL"
               id={`section-${sectionIndex}-infobar-url`}
-              onChange={onFieldChange}
+              value={url}
+              errorMessage=''
+              isRequired
+              onFieldChange={onFieldChange}
             />
           </div>
           <div className={elementStyles.inputGroup}>
@@ -111,29 +112,29 @@ Resources section:
       ? (
         <>
           <div className={elementStyles.cardContent}>
-            <p className={elementStyles.formLabel}>Resources section title</p>
-            <input
-              placeholder="Resource section title"
-              value={title}
+            <FormField
+              title="Resources section title"
               id={`section-${sectionIndex}-resources-title`}
-              autoComplete="off"
-              onChange={onFieldChange}
+              value={title}
+              errorMessage=''
+              isRequired
+              onFieldChange={onFieldChange}
             />
-            <p className={elementStyles.formLabel}>Resources section subtitle</p>
-            <input
-              placeholder="Resource section subtitle"
-              value={subtitle}
+            <FormField
+              title="Resources section subtitle"
               id={`section-${sectionIndex}-resources-subtitle`}
-              autoComplete="off"
-              onChange={onFieldChange}
+              value={subtitle}
+              errorMessage=''
+              isRequired
+              onFieldChange={onFieldChange}
             />
-            <p className={elementStyles.formLabel}>Resources button name</p>
-            <input
-              placeholder="Resource button button"
-              value={button}
+            <FormField
+              title="Resources button name"
               id={`section-${sectionIndex}-resources-button`}
-              autoComplete="off"
-              onChange={onFieldChange}
+              value={button}
+              errorMessage=''
+              isRequired
+              onFieldChange={onFieldChange}
             />
           </div>
           <div className={elementStyles.inputGroup}>
@@ -173,32 +174,29 @@ Highlight
       ? (
         <>
           <div className={elementStyles.cardContent}>
-            <p className={elementStyles.formLabel}>Highlight title</p>
-            <input
-              placeholder="Highlight title"
-              value={title}
+            <FormField
+              title="Highlight title"
               id={`highlight-${highlightIndex}-title`}
-              onChange={onFieldChange}
-              autoComplete="off"
-              key={`${highlightIndex}-title`}
+              value={title}
+              errorMessage=''
+              isRequired
+              onFieldChange={onFieldChange}
             />
-            <p className={elementStyles.formLabel}>Highlight description</p>
-            <input
-              placeholder="Highlight description"
-              value={description}
+            <FormField
+              title="Highlight description"
               id={`highlight-${highlightIndex}-description`}
-              onChange={onFieldChange}
-              autoComplete="off"
-              key={`${highlightIndex}-description`}
+              value={description}
+              errorMessage=''
+              isRequired
+              onFieldChange={onFieldChange}
             />
-            <p className={elementStyles.formLabel}>Highlight URL</p>
-            <input
-              placeholder="Highlight URL"
-              value={url}
+            <FormField
+              title="Highlight URL"
               id={`highlight-${highlightIndex}-url`}
-              onChange={onFieldChange}
-              autoComplete="off"
-              key={`${highlightIndex}-url`}
+              value={url}
+              errorMessage=''
+              isRequired
+              onFieldChange={onFieldChange}
             />
           </div>
           <div className={elementStyles.inputGroup}>
@@ -235,21 +233,21 @@ Dropdown Elem
       ? (
         <>
           <div className={elementStyles.cardContent}>
-            <p className={elementStyles.formLabel}>Dropdown element title</p>
-            <input
-              placeholder="Hero dropdown element title"
-              value={title}
+            <FormField
+              title="Dropdown element title"
               id={`dropdownelem-${dropdownsIndex}-title`}
-              autoComplete="off"
-              onChange={onFieldChange}
+              value={title}
+              errorMessage=''
+              isRequired
+              onFieldChange={onFieldChange}
             />
-            <p className={elementStyles.formLabel}>Dropdown element URL</p>
-            <input
-              placeholder="Hero dropdown element URL"
-              value={url}
+            <FormField
+              title="Dropdown element URL"
               id={`dropdownelem-${dropdownsIndex}-url`}
-              autoComplete="off"
-              onChange={onFieldChange}
+              value={url}
+              errorMessage=''
+              isRequired
+              onFieldChange={onFieldChange}
             />
           </div>
           <div className={elementStyles.inputGroup}>
@@ -334,21 +332,21 @@ const HeroButton = ({
   onFieldChange,
 }) => (
   <>
-    <p className={elementStyles.formLabel}>Hero button</p>
-    <input
-      placeholder="Hero button name"
-      value={button}
+    <FormField
+      title="Hero button"
       id={`section-${sectionIndex}-hero-button`}
-      autoComplete="off"
-      onChange={onFieldChange}
+      value={button}
+      errorMessage=''
+      isRequired
+      onFieldChange={onFieldChange}
     />
-    <p className={elementStyles.formLabel}>Hero button URL</p>
-    <input
-      placeholder="Hero button URL"
-      value={url}
+    <FormField
+      title="Hero button URL"
       id={`section-${sectionIndex}-hero-url`}
-      autoComplete="off"
-      onChange={onFieldChange}
+      value={url}
+      errorMessage=''
+      isRequired
+      onFieldChange={onFieldChange}
     />
   </>
 );
@@ -380,29 +378,29 @@ const EditorHeroSection = ({
     {shouldDisplay
       ? (
         <>
-          <p className={elementStyles.formLabel}>Hero title</p>
-          <input
-            placeholder="Hero title"
-            value={title}
+          <FormField
+            title="Hero title"
             id={`section-${sectionIndex}-hero-title`}
-            autoComplete="off"
-            onChange={onFieldChange}
+            value={title}
+            errorMessage=''
+            isRequired
+            onFieldChange={onFieldChange}
           />
-          <p className={elementStyles.formLabel}>Hero subtitle</p>
-          <input
-            placeholder="Hero subtitle"
-            value={subtitle}
+          <FormField
+            title="Hero subtitle"
             id={`section-${sectionIndex}-hero-subtitle`}
-            autoComplete="off"
-            onChange={onFieldChange}
+            value={subtitle}
+            errorMessage=''
+            isRequired
+            onFieldChange={onFieldChange}
           />
-          <p className={elementStyles.formLabel}>Hero background image</p>
-          <input
-            placeholder="Hero background image"
-            value={background}
+          <FormField
+            title="Hero background image"
             id={`section-${sectionIndex}-hero-background`}
-            autoComplete="off"
-            onChange={onFieldChange}
+            value={background}
+            errorMessage=''
+            isRequired
+            onFieldChange={onFieldChange}
           />
           <span>
             <i>Note: you can only have either Key Highlights+Hero button or a Hero Dropdown</i>
