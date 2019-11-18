@@ -270,14 +270,13 @@ const HeroDropdown = ({
 }) => (
   <div className={styles.card}>
     <p className={elementStyles.formLabel}>Hero dropdown</p>
-    <p className={elementStyles.formLabel}>Dropdown title</p>
-    <input
-      placeholder="Hero dropdown title"
-      defaultValue={title}
+    <FormField
+      title="Hero dropdown title"
+      id={`dropdown-title`}
       value={title}
-      id="dropdown-title"
-      autoComplete="off"
-      onChange={onFieldChange}
+      errorMessage=''
+      isRequired
+      onFieldChange={onFieldChange}
     />
     <Droppable droppableId="dropdownelem" type="dropdownelem">
       {(droppableProvided) => (
