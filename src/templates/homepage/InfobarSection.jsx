@@ -10,7 +10,7 @@ const TemplateInfobarSection = ({
   title, subtitle, description, url, button, sectionIndex,
 }) => (
   <section className={`bp-section ${(sectionIndex % 2 === 1) ? 'bg-newssection' : null}`}>
-    <div className="bp-container is-fluid">
+    <div className="bp-container">
       <div className="row">
         <div className="col is-half is-offset-one-quarter has-text-centered padding--top--xl">
           {/* Subtitle */}
