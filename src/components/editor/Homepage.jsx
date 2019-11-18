@@ -117,11 +117,29 @@ Resources section:
         <>
           <div className={elementStyles.cardContent}>
             <p className={elementStyles.formLabel}>Resources section title</p>
-            <input placeholder="Resource section title" defaultValue={title} value={title} id={`section-${sectionIndex}-resources-title`} onChange={onFieldChange} />
+            <input 
+              placeholder="Resource section title" 
+              defaultValue={title} 
+              value={title} 
+              id={`section-${sectionIndex}-resources-title`} 
+              autoComplete="off"
+              onChange={onFieldChange} />
             <p className={elementStyles.formLabel}>Resources section subtitle</p>
-            <input placeholder="Resource section subtitle" defaultValue={subtitle} value={subtitle} id={`section-${sectionIndex}-resources-subtitle`} onChange={onFieldChange} />
+            <input 
+              placeholder="Resource section subtitle" 
+              defaultValue={subtitle} 
+              value={subtitle} 
+              id={`section-${sectionIndex}-resources-subtitle`} 
+              autoComplete="off"
+              onChange={onFieldChange} />
             <p className={elementStyles.formLabel}>Resources button name</p>
-            <input placeholder="Resource button button" defaultValue={button} value={button} id={`section-${sectionIndex}-resources-button`} onChange={onFieldChange} />
+            <input 
+              placeholder="Resource button button" 
+              defaultValue={button} 
+              value={button} 
+              id={`section-${sectionIndex}-resources-button`} 
+              autoComplete="off"
+              onChange={onFieldChange} />
           </div>
           <div className={elementStyles.inputGroup}>
             <button type="button" id={`section-${sectionIndex}`} className={elementStyles.warning} onClick={deleteHandler}>Delete section</button>
@@ -156,11 +174,32 @@ const KeyHighlight = ({
           <>
             <div className={elementStyles.cardContent}>
               <p className={elementStyles.formLabel}>Highlight title</p>
-              <input placeholder="Highlight title" defaultValue={title} value={title} id={`highlight-${highlightIndex}-title`} onChange={onFieldChange} key={`${highlightIndex}-title`} />
+              <input 
+                placeholder="Highlight title" 
+                defaultValue={title} 
+                value={title} 
+                id={`highlight-${highlightIndex}-title`} 
+                onChange={onFieldChange} 
+                autoComplete="off"
+                key={`${highlightIndex}-title`} />
               <p className={elementStyles.formLabel}>Highlight description</p>
-              <input placeholder="Highlight description" defaultValue={description} value={description} id={`highlight-${highlightIndex}-description`} onChange={onFieldChange} key={`${highlightIndex}-description`} />
+              <input 
+                placeholder="Highlight description" 
+                defaultValue={description} 
+                value={description} 
+                id={`highlight-${highlightIndex}-description`} 
+                onChange={onFieldChange} 
+                autoComplete="off"
+                key={`${highlightIndex}-description`} />
               <p className={elementStyles.formLabel}>Highlight URL</p>
-              <input placeholder="Highlight URL" defaultValue={url} value={url} id={`highlight-${highlightIndex}-url`} onChange={onFieldChange} key={`${highlightIndex}-url`} />
+              <input 
+                placeholder="Highlight URL" 
+                defaultValue={url} 
+                value={url} 
+                id={`highlight-${highlightIndex}-url`} 
+                onChange={onFieldChange} 
+                autoComplete="off"
+                key={`${highlightIndex}-url`} />
             </div>
             <div className={elementStyles.inputGroup}>
               <button type="button" id={`highlight-${highlightIndex}-delete`} className={elementStyles.warning} onClick={deleteHandler} key={`${highlightIndex}-delete`}>Delete highlight</button>
@@ -192,9 +231,20 @@ const HeroDropdownElem = ({
         <>
           <div className={elementStyles.cardContent}>
             <p className={elementStyles.formLabel}>Dropdown element title</p>
-            <input placeholder="Hero dropdown element title" defaultValue={title} value={title} id={`dropdownelem-${dropdownsIndex}-title`} onChange={onFieldChange} />
+            <input 
+              placeholder="Hero dropdown element title" 
+              defaultValue={title} 
+              value={title} 
+              id={`dropdownelem-${dropdownsIndex}-title`} 
+              autoComplete="off"
+              onChange={onFieldChange} />
             <p className={elementStyles.formLabel}>Dropdown element URL</p>
-            <input placeholder="Hero dropdown element URL" defaultValue={url} value={url} id={`dropdownelem-${dropdownsIndex}-url`} onChange={onFieldChange} />
+            <input 
+              placeholder="Hero dropdown element URL" 
+              defaultValue={url} value={url} 
+              id={`dropdownelem-${dropdownsIndex}-url`} 
+              autoComplete="off"
+              onChange={onFieldChange} />
           </div>
           <div className={elementStyles.inputGroup}>
             <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} className={elementStyles.warning} onClick={deleteHandler}>Delete dropdown element</button>
@@ -217,7 +267,13 @@ const HeroDropdown = ({
   <div className={styles.card}>
     <p className={elementStyles.formLabel}>Hero dropdown</p>
     <p className={elementStyles.formLabel}>Dropdown title</p>
-    <input placeholder="Hero dropdown title" defaultValue={title} value={title} id="dropdown-title" onChange={onFieldChange} />
+    <input 
+      placeholder="Hero dropdown title" 
+      defaultValue={title} 
+      value={title} 
+      id="dropdown-title" 
+      autoComplete="off"
+      onChange={onFieldChange} />
     <br />
     <Droppable droppableId="dropdownelem" type="dropdownelem">
       {(droppableProvided) => (
@@ -273,9 +329,20 @@ const HeroButton = ({
 }) => (
   <>
     <p className={elementStyles.formLabel}>Hero button</p>
-    <input placeholder="Hero button name" defaultValue={button} value={button} id={`section-${sectionIndex}-hero-button`} onChange={onFieldChange} />
+    <input 
+      placeholder="Hero button name" 
+      defaultValue={button} value={button} 
+      id={`section-${sectionIndex}-hero-button`} 
+      autoComplete="off"
+      onChange={onFieldChange} />
     <p className={elementStyles.formLabel}>Hero button URL</p>
-    <input placeholder="Hero button URL" defaultValue={url} value={url} id={`section-${sectionIndex}-hero-url`} onChange={onFieldChange} />
+    <input 
+      placeholder="Hero button URL" 
+      defaultValue={url} 
+      value={url} 
+      id={`section-${sectionIndex}-hero-url`} 
+      autoComplete="off"
+      onChange={onFieldChange} />
   </>
 );
 
@@ -307,11 +374,29 @@ const EditorHeroSection = ({
       ? (
         <>
           <p className={elementStyles.formLabel}>Hero title</p>
-          <input placeholder="Hero title" defaultValue={title} value={title} id={`section-${sectionIndex}-hero-title`} onChange={onFieldChange} />
+          <input 
+            placeholder="Hero title" 
+            defaultValue={title} 
+            value={title} 
+            id={`section-${sectionIndex}-hero-title`} 
+            autoComplete="off"
+            onChange={onFieldChange} />
           <p className={elementStyles.formLabel}>Hero subtitle</p>
-          <input placeholder="Hero subtitle" defaultValue={subtitle} value={subtitle} id={`section-${sectionIndex}-hero-subtitle`} onChange={onFieldChange} />
+          <input 
+            placeholder="Hero subtitle" 
+            defaultValue={subtitle} 
+            value={subtitle} 
+            id={`section-${sectionIndex}-hero-subtitle`} 
+            autoComplete="off"
+            onChange={onFieldChange} />
           <p className={elementStyles.formLabel}>Hero background image</p>
-          <input placeholder="Hero background image" defaultValue={background} value={background} id={`section-${sectionIndex}-hero-background`} onChange={onFieldChange} />
+          <input 
+            placeholder="Hero background image" 
+            defaultValue={background} 
+            value={background} 
+            id={`section-${sectionIndex}-hero-background`} 
+            autoComplete="off"
+            onChange={onFieldChange} />
           <span>
             <i>Note: you can only have either Key Highlights+Hero button or a Hero Dropdown</i>
           </span>
