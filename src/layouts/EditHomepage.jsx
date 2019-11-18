@@ -646,11 +646,11 @@ export default class EditHomepage extends Component {
                   </div> */}
                 {/* <div>
                     <p><b>Site notification</b></p>
-                    <input 
-                      placeholder="Notification" 
-                      defaultValue={frontMatter.notification} 
-                      value={frontMatter.notification} 
-                      id="site-notification" 
+                    <input
+                      placeholder="Notification"
+                      defaultValue={frontMatter.notification}
+                      value={frontMatter.notification}
+                      id="site-notification"
                       onChange={this.onFieldChange} />
                   </div> */}
 
