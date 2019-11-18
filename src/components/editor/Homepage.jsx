@@ -168,7 +168,7 @@ const KeyHighlight = ({
     <div className={elementStyles.cardHeader}>
       <h2>
 Highlight
-        {highlightIndex}
+        {highlightIndex + 1}
 :
         {title}
       </h2>
@@ -234,7 +234,7 @@ const HeroDropdownElem = ({
     <div className={elementStyles.cardHeader}>
       <h2>
 Dropdown Elem
-        {dropdownsIndex}
+        {dropdownsIndex + 1}
 :
         {title}
       </h2>
