@@ -12,6 +12,17 @@ import { prettifyPageFileName } from '../utils';
 // Constants
 const RADIX_PARSE_INT = 10;
 
+const PageCard = ({
+  siteName, pageName, pageIndex, settingsToggle,
+}) => (
+  <li>
+    <Link to={`/sites/${siteName}/pages/${pageName}`}>{prettifyPageFileName(pageName)}</Link>
+    <button type="button" onClick={settingsToggle} id={`settings-${pageIndex}`}>
+      <i id={`settingsIcon-${pageIndex}`} className="bx bx-cog" />
+    </button>
+  </li>
+);
+
 export default class Pages extends Component {
   constructor(props) {
     super(props);
@@ -108,12 +119,12 @@ Create New Page
                 </li>
                 {pages.length > 0
                   ? pages.map((pageName, pageIndex) => (
-                    <li>
-                      <Link to={`/sites/${siteName}/pages/${pageName}`}>{prettifyPageFileName(pageName)}</Link>
-                      <button type="button" onClick={this.settingsToggle} id={`settings-${pageIndex}`}>
-                        <i id={`settingsIcon-${pageIndex}`} className="bx bx-cog" />
-                      </button>
-                    </li>
+                    <PageCard
+                      siteName={siteName}
+                      pageName={pageName}
+                      pageIndex={pageIndex}
+                      settingsToggle={this.settingsToggle}
+                    />
                   ))
                   : 'Loading Pages...'}
               </ul>
@@ -126,6 +137,13 @@ Create New Page
     );
   }
 }
+
+PageCard.propTypes = {
+  siteName: PropTypes.string.isRequired,
+  pageName: PropTypes.string.isRequired,
+  pageIndex: PropTypes.number.isRequired,
+  settingsToggle: PropTypes.func.isRequired,
+};
 
 Pages.propTypes = {
   match: PropTypes.shape({
