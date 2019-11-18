@@ -3,6 +3,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { Base64 } from 'js-base64';
 import * as _ from 'lodash';
+import FormField from './FormField'
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import {
   frontMatterParser, concatFrontMatterMdBody, generatePageFileName,
@@ -198,34 +199,24 @@ export default class PageSettingsModal extends Component {
           </div>
           <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
             <div className={elementStyles.modalFormFields}>
-              <p className={elementStyles.formLabel}>Title</p>
-              <input
+              <FormField 
+                title={`Title`}
+                id={`title`}
                 value={title}
-                id="title"
-                required
-                autoComplete="off"
-                onChange={this.changeHandler}
-                className={errors.title ? `${elementStyles.error}` : null}
+                hasError
+                errorMessage={errors.title}
+                isRequired={true}
+                onFieldChange={this.changeHandler}
               />
-              <span className={elementStyles.error}>
-                {' '}
-                {errors.title}
-                {' '}
-              </span>
-              <p
-                className={elementStyles.formLabel}
-              >
-Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)
-              </p>
-              <input
-                value={permalink}
+              <FormField 
+                title={`Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)`}
                 id="permalink"
-                required
-                onChange={this.changeHandler}
-                autoComplete="off"
-                className={errors.permalink ? `${elementStyles.error}` : null}
+                value={permalink}
+                hasError
+                errorMessage={errors.permalink}
+                isRequired={true}
+                onFieldChange={this.changeHandler}
               />
-              <span className={elementStyles.error}>{errors.permalink}</span>
             </div>
             <div className={elementStyles.modalButtons}>
               <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>

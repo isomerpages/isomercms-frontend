@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
+import FormField from './FormField'
 import {
   prettifyResourceCategory,
   slugifyResourceCategory,
@@ -318,26 +319,26 @@ export default class ResourceSettingsModal extends Component {
             <div className={elementStyles.modalFormFields}>
 
               {/* Title */}
-              <p className={elementStyles.formLabel}>Title</p>
-              <input
+              <FormField 
+                title={`Title`}
+                id={`title`}
                 value={dequoteString(title)}
-                id="title"
-                autoComplete="off"
-                onChange={this.changeHandler}
-                className={errors.title ? `${elementStyles.error}` : null}
+                hasError
+                errorMessage={errors.title}
+                isRequired={true}
+                onFieldChange={this.changeHandler}
               />
-              <span className={elementStyles.error}>{errors.title}</span>
 
               {/* Date */}
-              <p className={elementStyles.formLabel}>Date (YYYY-MM-DD, e.g. 2019-12-23)</p>
-              <input
+              <FormField 
+                title={`Date (YYYY-MM-DD, e.g. 2019-12-23)`}
+                id={`date`}
                 value={date}
-                id="date"
-                autoComplete="off"
-                onChange={this.changeHandler}
-                className={errors.date ? `${elementStyles.error}` : null}
+                hasError
+                errorMessage={errors.date}
+                isRequired={true}
+                onFieldChange={this.changeHandler}
               />
-              <span className={elementStyles.error}>{errors.date}</span>
 
               {/* Resource Category */}
               <p className={elementStyles.formLabel}>Resource Category</p>
@@ -363,29 +364,29 @@ export default class ResourceSettingsModal extends Component {
                 ? (
                   <>
                     {/* Permalink */}
-                    <p className={elementStyles.formLabel}>Permalink</p>
-                    <input
+                    <FormField 
+                      title={`Permalink`}
+                      id={`permalink`}
                       value={permalink}
-                      id="permalink"
-                      autoComplete="off"
-                      onChange={this.changeHandler}
-                      className={errors.permalink ? `${elementStyles.error}` : null}
+                      hasError
+                      errorMessage={errors.permalink}
+                      isRequired={true}
+                      onFieldChange={this.changeHandler}
                     />
-                    <span className={elementStyles.error}>{errors.permalink}</span>
                   </>
                 )
                 : (
                   <>
                     {/* File URL */}
-                    <p className={elementStyles.formLabel}>File URL</p>
-                    <input
+                    <FormField 
+                      title={`File URL`}
+                      id={`fileUrl`}
                       value={fileUrl}
-                      id="fileUrl"
-                      autoComplete="off"
-                      onChange={this.changeHandler}
-                      className={errors.fileUrl ? `${elementStyles.error}` : null}
+                      hasError
+                      errorMessage={errors.fileUrl}
+                      isRequired={true}
+                      onFieldChange={this.changeHandler}
                     />
-                    <span className={elementStyles.error}>{errors.fileUrl}</span>
                   </>
                 )}
             </div>
