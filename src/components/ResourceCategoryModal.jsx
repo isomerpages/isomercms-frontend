@@ -109,10 +109,8 @@ export default class ResourceCategoryModal extends Component {
       const prevResourceCategory = slugifyResourceCategory(prevResourceCategories[categoryIndex]);
       const newResourceCategory = slugifyResourceCategory(currResourceCategories[categoryIndex]); // eslint-disable-line max-len
 
-      console.log(categoryIndex, prevResourceCategory, newResourceCategory, 'here');
       // If the category is a new one
       if (prevResourceCategory === NEW_CATEGORY_STR) {
-        console.log('newcategory', prevResourceCategory);
         const params = {
           resourceName: newResourceCategory,
         };
