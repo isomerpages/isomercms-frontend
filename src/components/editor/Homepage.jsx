@@ -274,7 +274,6 @@ const HeroDropdown = ({
       id="dropdown-title" 
       autoComplete="off"
       onChange={onFieldChange} />
-    <br />
     <Droppable droppableId="dropdownelem" type="dropdownelem">
       {(droppableProvided) => (
         /* eslint-disable react/jsx-props-no-spreading */
@@ -474,7 +473,7 @@ const EditorHeroSection = ({
                         : null }
                         {highlights.length < MAX_NUM_KEY_HIGHLIGHTS
                           ? <button type="button" id={`highlight-${highlights.length}-create`} className={elementStyles.blue} onClick={createHandler}>Create highlight</button>
-                          : null}
+                          : <button type="button" disabled className={elementStyles.disabled}>Create highlight</button>}
                       {droppableProvided.placeholder}
                     </div>
                   )}
