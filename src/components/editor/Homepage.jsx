@@ -41,7 +41,6 @@ Infobar section:
             <input
               placeholder="Infobar title"
               autoComplete="off"
-              defaultValue={title}
               value={title}
               id={`section-${sectionIndex}-infobar-title`}
               onChange={onFieldChange}
@@ -50,7 +49,6 @@ Infobar section:
             <input
               placeholder="Infobar subtitle"
               autoComplete="off"
-              defaultValue={subtitle}
               value={subtitle}
               id={`section-${sectionIndex}-infobar-subtitle`}
               onChange={onFieldChange}
@@ -58,7 +56,6 @@ Infobar section:
             <p className={elementStyles.formLabel}>Infobar description</p>
             <input
               placeholder="Infobar description"
-              defaultValue={description}
               autoComplete="off"
               value={description}
               id={`section-${sectionIndex}-infobar-description`}
@@ -68,7 +65,6 @@ Infobar section:
             <input
               placeholder="Infobar button name"
               autoComplete="off"
-              defaultValue={button}
               value={button}
               id={`section-${sectionIndex}-infobar-button`}
               onChange={onFieldChange}
@@ -77,7 +73,6 @@ Infobar section:
             <input
               placeholder="Infobar button URL"
               autoComplete="off"
-              defaultValue={url}
               value={url}
               id={`section-${sectionIndex}-infobar-url`}
               onChange={onFieldChange}
@@ -119,7 +114,6 @@ Resources section:
             <p className={elementStyles.formLabel}>Resources section title</p>
             <input
               placeholder="Resource section title"
-              defaultValue={title}
               value={title}
               id={`section-${sectionIndex}-resources-title`}
               autoComplete="off"
@@ -128,7 +122,6 @@ Resources section:
             <p className={elementStyles.formLabel}>Resources section subtitle</p>
             <input
               placeholder="Resource section subtitle"
-              defaultValue={subtitle}
               value={subtitle}
               id={`section-${sectionIndex}-resources-subtitle`}
               autoComplete="off"
@@ -137,7 +130,6 @@ Resources section:
             <p className={elementStyles.formLabel}>Resources button name</p>
             <input
               placeholder="Resource button button"
-              defaultValue={button}
               value={button}
               id={`section-${sectionIndex}-resources-button`}
               autoComplete="off"
@@ -184,7 +176,6 @@ Highlight
             <p className={elementStyles.formLabel}>Highlight title</p>
             <input
               placeholder="Highlight title"
-              defaultValue={title}
               value={title}
               id={`highlight-${highlightIndex}-title`}
               onChange={onFieldChange}
@@ -194,7 +185,6 @@ Highlight
             <p className={elementStyles.formLabel}>Highlight description</p>
             <input
               placeholder="Highlight description"
-              defaultValue={description}
               value={description}
               id={`highlight-${highlightIndex}-description`}
               onChange={onFieldChange}
@@ -204,7 +194,6 @@ Highlight
             <p className={elementStyles.formLabel}>Highlight URL</p>
             <input
               placeholder="Highlight URL"
-              defaultValue={url}
               value={url}
               id={`highlight-${highlightIndex}-url`}
               onChange={onFieldChange}
@@ -249,7 +238,6 @@ Dropdown Elem
             <p className={elementStyles.formLabel}>Dropdown element title</p>
             <input
               placeholder="Hero dropdown element title"
-              defaultValue={title}
               value={title}
               id={`dropdownelem-${dropdownsIndex}-title`}
               autoComplete="off"
@@ -258,7 +246,6 @@ Dropdown Elem
             <p className={elementStyles.formLabel}>Dropdown element URL</p>
             <input
               placeholder="Hero dropdown element URL"
-              defaultValue={url}
               value={url}
               id={`dropdownelem-${dropdownsIndex}-url`}
               autoComplete="off"
@@ -350,7 +337,6 @@ const HeroButton = ({
     <p className={elementStyles.formLabel}>Hero button</p>
     <input
       placeholder="Hero button name"
-      defaultValue={button}
       value={button}
       id={`section-${sectionIndex}-hero-button`}
       autoComplete="off"
@@ -359,7 +345,6 @@ const HeroButton = ({
     <p className={elementStyles.formLabel}>Hero button URL</p>
     <input
       placeholder="Hero button URL"
-      defaultValue={url}
       value={url}
       id={`section-${sectionIndex}-hero-url`}
       autoComplete="off"
@@ -398,7 +383,6 @@ const EditorHeroSection = ({
           <p className={elementStyles.formLabel}>Hero title</p>
           <input
             placeholder="Hero title"
-            defaultValue={title}
             value={title}
             id={`section-${sectionIndex}-hero-title`}
             autoComplete="off"
@@ -407,7 +391,6 @@ const EditorHeroSection = ({
           <p className={elementStyles.formLabel}>Hero subtitle</p>
           <input
             placeholder="Hero subtitle"
-            defaultValue={subtitle}
             value={subtitle}
             id={`section-${sectionIndex}-hero-subtitle`}
             autoComplete="off"
@@ -416,7 +399,6 @@ const EditorHeroSection = ({
           <p className={elementStyles.formLabel}>Hero background image</p>
           <input
             placeholder="Hero background image"
-            defaultValue={background}
             value={background}
             id={`section-${sectionIndex}-hero-background`}
             autoComplete="off"
