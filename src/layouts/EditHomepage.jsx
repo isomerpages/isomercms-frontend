@@ -384,8 +384,9 @@ export default class EditHomepage extends Component {
       const idArray = id.split('-');
       const elemType = idArray[0];
 
-      const { frontMatter } = this.state;
+      const { frontMatter, errors } = this.state;
       let newSections = [];
+      let newErrors = {}
 
       switch (elemType) {
         case 'section': {
@@ -399,6 +400,12 @@ export default class EditHomepage extends Component {
           newSections = update(frontMatter.sections, {
             $splice: [[sectionIndex, 1]],
           });
+
+          newErrors = update(errors, {
+            sections: {
+              $splice: [[sectionIndex, 1]],
+            }
+          })
           break;
         }
         case 'dropdown': {
@@ -414,6 +421,24 @@ export default class EditHomepage extends Component {
               },
             },
           });
+
+          newErrors = update(errors, {
+            dropdownElems: {
+              $set: []
+            },
+            highlights: {
+              $set: []
+            },
+            sections: {
+              0: {
+                hero: {
+                  dropdownTitle: {
+                    $set: ''
+                  }
+                }
+              }
+            }
+          })
           break;
         }
         case 'dropdownelem': {
@@ -429,6 +454,12 @@ export default class EditHomepage extends Component {
               },
             },
           });
+
+          newErrors = update(errors, {
+            dropdownElems: {
+              $splice: [[dropdownsIndex, 1]],
+            },
+          });
           break;
         }
         case 'highlight': {
@@ -442,6 +473,12 @@ export default class EditHomepage extends Component {
               },
             },
           });
+
+          newErrors = update(errors, {
+            highlights: {
+              $splice: [[highlightIndex, 1]],
+            },
+          });
           break;
         }
         default:
@@ -453,6 +490,7 @@ export default class EditHomepage extends Component {
           ...currState.frontMatter,
           sections: newSections,
         },
+        errors: newErrors
       }));
     } catch (err) {
       console.log(err);
