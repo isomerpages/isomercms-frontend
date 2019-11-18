@@ -369,7 +369,7 @@ const EditorHeroSection = ({
         <i className={`bx ${shouldDisplay ? `bx-chevron-down` : `bx-chevron-right` }`} id={`section-${sectionIndex}`} onClick={displayHandler}></i>
       </button>
     </div>
-    {!shouldDisplay
+    {shouldDisplay
       ? (
         <>
           <p className={elementStyles.formLabel}>Hero title</p>
