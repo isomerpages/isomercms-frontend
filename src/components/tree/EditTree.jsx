@@ -22,7 +22,7 @@ export default class EditTree extends Component {
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/tree`, {
         withCredentials: true,
       });
-      const { directory, unlinkedPages } = resp.data;
+      const { directory, unlinked } = resp.data;
 
       // add a root node for the navigation bar
       const tree = rootNode.withSubTree(
@@ -32,7 +32,7 @@ export default class EditTree extends Component {
         ),
       // add a root node for the unlinked pages
       ).withSubTree(
-        unlinkedPages.reduce(
+        unlinked.reduce(
           dataIterator,
           new TreeBuilder('Unlinked Pages', 'section'),
         ),
