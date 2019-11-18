@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
-import FormField from './FormField'
+import FormField from './FormField';
 import {
   prettifyResourceCategory,
   slugifyResourceCategory,
@@ -319,24 +319,22 @@ export default class ResourceSettingsModal extends Component {
             <div className={elementStyles.modalFormFields}>
 
               {/* Title */}
-              <FormField 
-                title={`Title`}
-                id={`title`}
+              <FormField
+                title="Title"
+                id="title"
                 value={dequoteString(title)}
-                hasError
                 errorMessage={errors.title}
-                isRequired={true}
+                isRequired
                 onFieldChange={this.changeHandler}
               />
 
               {/* Date */}
-              <FormField 
-                title={`Date (YYYY-MM-DD, e.g. 2019-12-23)`}
-                id={`date`}
+              <FormField
+                title="Date (YYYY-MM-DD, e.g. 2019-12-23)"
+                id="date"
                 value={date}
-                hasError
                 errorMessage={errors.date}
-                isRequired={true}
+                isRequired
                 onFieldChange={this.changeHandler}
               />
 
@@ -364,13 +362,12 @@ export default class ResourceSettingsModal extends Component {
                 ? (
                   <>
                     {/* Permalink */}
-                    <FormField 
-                      title={`Permalink`}
-                      id={`permalink`}
+                    <FormField
+                      title="Permalink"
+                      id="permalink"
                       value={permalink}
-                      hasError
                       errorMessage={errors.permalink}
-                      isRequired={true}
+                      isRequired
                       onFieldChange={this.changeHandler}
                     />
                   </>
@@ -378,13 +375,12 @@ export default class ResourceSettingsModal extends Component {
                 : (
                   <>
                     {/* File URL */}
-                    <FormField 
-                      title={`File URL`}
-                      id={`fileUrl`}
+                    <FormField
+                      title="File URL"
+                      id="fileUrl"
                       value={fileUrl}
-                      hasError
                       errorMessage={errors.fileUrl}
-                      isRequired={true}
+                      isRequired
                       onFieldChange={this.changeHandler}
                     />
                   </>

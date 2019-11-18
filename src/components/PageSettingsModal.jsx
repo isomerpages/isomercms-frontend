@@ -3,7 +3,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { Base64 } from 'js-base64';
 import * as _ from 'lodash';
-import FormField from './FormField'
+import FormField from './FormField';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import {
   frontMatterParser, concatFrontMatterMdBody, generatePageFileName,
@@ -199,22 +199,20 @@ export default class PageSettingsModal extends Component {
           </div>
           <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
             <div className={elementStyles.modalFormFields}>
-              <FormField 
-                title={`Title`}
-                id={`title`}
+              <FormField
+                title="Title"
+                id="title"
                 value={title}
-                hasError
                 errorMessage={errors.title}
-                isRequired={true}
+                isRequired
                 onFieldChange={this.changeHandler}
               />
-              <FormField 
-                title={`Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)`}
+              <FormField
+                title="Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)"
                 id="permalink"
                 value={permalink}
-                hasError
                 errorMessage={errors.permalink}
-                isRequired={true}
+                isRequired
                 onFieldChange={this.changeHandler}
               />
             </div>

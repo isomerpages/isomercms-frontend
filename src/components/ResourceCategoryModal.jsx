@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import * as _ from 'lodash';
 import update from 'immutability-helper';
 import { prettifyResourceCategory, slugifyResourceCategory } from '../utils';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import FormField from './FormField';
 
 // Constants
 const RADIX_PARSE_INT = 10;
@@ -103,10 +105,8 @@ export default class ResourceCategoryModal extends Component {
       const prevResourceCategory = slugifyResourceCategory(prevResourceCategories[categoryIndex]);
       const newResourceCategory = slugifyResourceCategory(currResourceCategories[categoryIndex]); // eslint-disable-line max-len
 
-      console.log(categoryIndex, prevResourceCategory, newResourceCategory, 'here');
       // If the category is a new one
       if (prevResourceCategory === NEW_CATEGORY_STR) {
-        console.log('newcategory', prevResourceCategory);
         const params = {
           resourceName: newResourceCategory,
         };
@@ -168,6 +168,9 @@ export default class ResourceCategoryModal extends Component {
   render() {
     const { prevResourceCategories, errors } = this.state;
     const { categoryModalToggle, categoryModalIsActive } = this.props;
+
+    // Page settings form has errors - disable save button
+    const hasErrors = _.some(errors.resourceCategories, (categoryError) => categoryError.length > 0);
     return (
       <div>
         <button type="button" className={elementStyles.blue} onClick={categoryModalToggle}>Edit Categories</button>
@@ -186,20 +189,16 @@ export default class ResourceCategoryModal extends Component {
                     {prevResourceCategories.length > 0
                       ? prevResourceCategories.map((prevResourceCategory, index) => (
                         <div key={prevResourceCategory}>
-                          <input
-                            type="text"
+                          <FormField
+                            title={`Category ${index + 1}`}
                             id={`input-${index}`}
-                            autoComplete="off"
                             defaultValue={prettifyResourceCategory(prevResourceCategory)}
+                            errorMessage={errors.resourceCategories[index]}
                             style={{ textTransform: 'uppercase' }}
-                            onChange={this.changeHandler}
+                            isRequired
+                            onFieldChange={this.changeHandler}
                           />
-                          <span
-                            className={elementStyles.error}
-                          >
-                            {errors.resourceCategories[index]}
-                          </span>
-                          <button type="button" className={elementStyles.blue} id={`save-${index}`} onClick={this.saveHandler}>Save</button>
+                          <button type="button" className={hasErrors ? elementStyles.disabled : elementStyles.blue} id={`save-${index}`} disabled={hasErrors} onClick={this.saveHandler}>Save</button>
                           <button type="button" className={elementStyles.warning} id={`delete-${index}`} onClick={this.deleteHandler}>Delete</button>
                         </div>
                       ))
