@@ -27,35 +27,35 @@ const RADIX_PARSE_INT = 10;
 // Section constructors
 const ResourcesSectionConstructor = () => ({
   resources: {
-    title: 'TITLE',
-    subtitle: 'SUBTITLE',
-    button: 'BUTTON',
+    title: '',
+    subtitle: '',
+    button: '',
   },
 });
 
 const InfobarSectionConstructor = () => ({
   infobar: {
-    title: 'TITLE',
-    subtitle: 'SUBTITLE',
-    description: 'DESCRIPTION',
-    button: 'BUTTON',
-    url: 'URL',
+    title: '',
+    subtitle: '',
+    description: '',
+    button: '',
+    url: '',
   },
 });
 
 const KeyHighlightConstructor = () => ({
-  title: 'TITLE',
-  description: 'DESCRIPTION',
-  url: 'URL',
+  title: '',
+  description: '',
+  url: '',
 });
 
 const DropdownElemConstructor = () => ({
-  title: 'TITLE',
-  url: 'URL',
+  title: '',
+  url: '',
 });
 
 const DropdownConstructor = () => ({
-  title: 'TITLE',
+  title: '',
   options: [],
 });
 
@@ -89,6 +89,11 @@ export default class EditHomepage extends Component {
       displaySections: [],
       displayHighlights: [],
       displayDropdownElems: [],
+      errors: {
+        sections: [],
+        highlights: [],
+        dropdownElems: []
+      }
     };
   }
 
@@ -108,6 +113,9 @@ export default class EditHomepage extends Component {
       const displaySections = [];
       let displayHighlights = [];
       let displayDropdownElems = [];
+      let sectionsErrors = []
+      let dropdownElemsErrors = []
+      let highlightsErrors = []
       frontMatter.sections.forEach((section) => {
         // If this is the hero section, hide all highlights/dropdownelems by default
         if (section.hero) {
@@ -115,21 +123,43 @@ export default class EditHomepage extends Component {
           if (dropdown) {
             // Go through section.hero.dropdown.options
             displayDropdownElems = _.fill(Array(dropdown.options.length), false);
+            // Fill in dropdown elem errors array
+            dropdownElemsErrors = _.fill(Array(dropdown.options.length), DropdownElemConstructor())
+            // Fill in sectionErrors for hero with dropdown
+            sectionsErrors.push({ hero: { title: '', subtitle: '', background: '', button: '', url: '', dropdownTitle: ''}})
           }
           if (keyHighlights) {
             displayHighlights = _.fill(Array(keyHighlights.length), false);
+            // Fill in highlights errors array
+            highlightsErrors = _.fill(Array(keyHighlights.length), KeyHighlightConstructor())
+            // Fill in sectionErrors for hero with key highlights
+            sectionsErrors.push({ hero: { title: '', subtitle: '', background: '', button: '', url: ''}})
           }
+        }
+
+        // Check if there is already a resources section
+        if (section.resources) { 
+          sectionsErrors.push(ResourcesSectionConstructor())
+          hasResources = true;
+        }
+
+        if (section.infobar) {
+          sectionsErrors.push(InfobarSectionConstructor())
         }
 
         // Minimize all sections by default
         displaySections.push(false);
-
-        // Check if there is already a resources section
-        if (section.resources) hasResources = true;
       });
 
+      // Initialize errors object
+      const errors = {
+        sections: sectionsErrors,
+        highlights: highlightsErrors,
+        dropdownElems: dropdownElemsErrors
+      }
+      
       this.setState({
-        frontMatter, sha, hasResources, displaySections, displayDropdownElems, displayHighlights,
+        frontMatter, sha, hasResources, displaySections, displayDropdownElems, displayHighlights, errors
       });
     } catch (err) {
       console.log(err);
