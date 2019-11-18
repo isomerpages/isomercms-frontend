@@ -77,22 +77,34 @@ export default class EditTree extends Component {
     /**
      * `WIP`
      * In our drag'n'drop rules we need to specify the following:
-     * 1) You can't merge any item into another [ `!(index in destination)` ]
-     * 2) `collection` & `thirdnav` can only be reordered at its current depth
+     * 1) You can't drop items outside of the tree
+     * 2) You can't merge any item into another unless they are under the same parent
+     * 3) `collection` & `thirdnav` can only be reordered at its current depth
      */
-    if (!destination || !('index' in destination)) {
+    // Rule 1)
+    if (!destination) {
       return;
     }
+
     const sourceItemType = this.getItemFromTreePosition({
       tree, parentId: source.parentId, index: source.index,
     }).data.type;
+
+    const sourceParentType = this.getParentFromTreeposition({
+      tree, parentId: source.parentId, index: source.index,
+    }).data.type;
+
     const destinationParentType = this.getParentFromTreeposition({
       tree, parentId: destination.parentId,
     }).data.type;
 
-    // Rule 2) From above
+    // Rule 2)
+    if (!('index' in destination) && sourceParentType !== destinationParentType) return;
+
+    // Rule 3)
     if (sourceItemType === 'collection' && destinationParentType !== 'section') return;
     if (sourceItemType === 'thirdnav' && destinationParentType !== 'collection') return;
+
 
     // console.log(tree.items[source.parentId].data, tree.items[destination.parentId].data);
     // console.log(source, destination);
