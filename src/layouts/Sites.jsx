@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../components/Header';
-import siteStyles from '../styles/isomer-cms/pages/sites.scss';
+import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import siteStyles from '../styles/isomer-cms/pages/Sites.module.scss';
 
 
 export default class Sites extends Component {
@@ -30,13 +30,27 @@ export default class Sites extends Component {
     return (
       <>
         <Header showButton={false} />
-        <div>
-          <h1>Sites</h1>
-          {siteNames.map((siteName) => (
-            <li>
-              <Link to={`/sites/${siteName}/pages`}>{siteName}</Link>
-            </li>
-          ))}
+        <div className={elementStyles.wrapper}>
+          <div className={siteStyles.sitesContainer}>
+            <div className={siteStyles.sectionHeader}>
+              <h1>Sites</h1>
+            </div>
+            <div className={siteStyles.sites}>
+              {siteNames.map((siteName) => (
+                <div className={siteStyles.siteContainer}>
+                  <div className={siteStyles.site}>
+                    <a href={`/sites/${siteName}/pages`}>
+                      <div className={siteStyles.siteImage} />
+                      <div className={siteStyles.siteDescription}>
+                        <div className={siteStyles.siteName}>{siteName}</div>
+                        <div className={siteStyles.siteDate}>Updated 2 days ago</div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </>
     );

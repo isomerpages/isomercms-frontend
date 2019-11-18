@@ -10,7 +10,7 @@
   border-radius: 5px;
 }
 
-.sites-container{
+.sitesContainer{
   width: 100%;
   box-sizing: border-box;
   display: flex;
@@ -19,7 +19,7 @@
   align-items: center;
   margin-top: 30px;
 
-  .section-header{
+  .sectionHeader{
     width: $sites-container-width;
     margin-left: $site-margin-horizontal*2;
   }
@@ -33,7 +33,7 @@
     flex-wrap: wrap;
     width: $sites-container-width;
 
-    .site-container{
+    .siteContainer{
       // width: 33.33%;
       box-sizing: border-box;
       display: flex;
@@ -50,7 +50,7 @@
         box-sizing: border-box;
         transition: transform 0.2s ease-in;
 
-        .site-image{
+        .siteImage{
           height: 70%;
           width: 100%;
           background: grey;
@@ -59,7 +59,7 @@
 
         }
 
-        .site-description{
+        .siteDescription{
           height: 30%;
           width: 100%;
           display: flex;
@@ -68,14 +68,14 @@
           align-items: center;
           padding-left: 15px;
 
-          .site-name{
+          .siteName{
             width: 100%;
             font-size: .9em;
             color: $body-text;
             margin-bottom: 5px;
           }
 
-          .site-date{
+          .siteDate{
             width: 100%;
             font-weight: 300;
             color: $body-grey;
@@ -88,7 +88,7 @@
         }
       }
 
-      .create-new{
+      .createNew{
         @include single-site;
         border: 1px dashed $isomer-blue;
         box-sizing: border-box;
@@ -98,7 +98,7 @@
         align-items: center;
         color: $isomer-blue;
 
-         .bx-plus-circle{
+         .bxPlusCircle{
            font-size: 30px;
            margin-bottom: 20px;
          }
