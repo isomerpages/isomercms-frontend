@@ -29,8 +29,10 @@ const EditorInfobarSection = ({
 Infobar section:
         {title}
       </h2>
+      <button type="button">
+        <i className={`bx ${shouldDisplay ? `bx-chevron-down` : `bx-chevron-right` }`} id={`section-${sectionIndex}`} onClick={displayHandler}></i>
+      </button>
     </div>
-    <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>Toggle display</button>
     {shouldDisplay
       ? (
         <>
@@ -106,8 +108,10 @@ const EditorResourcesSection = ({
 Resources section:
         {title}
       </h2>
+      <button type="button">
+        <i className={`bx ${shouldDisplay ? `bx-chevron-down` : `bx-chevron-right` }`} id={`section-${sectionIndex}`} onClick={displayHandler}></i>
+      </button>
     </div>
-    <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>Toggle display</button>
     {shouldDisplay
       ? (
         <>
@@ -301,8 +305,10 @@ const EditorHeroSection = ({
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
       <h2>Hero section</h2>
+      <button type="button">
+        <i className={`bx ${shouldDisplay ? `bx-chevron-down` : `bx-chevron-right` }`} id={`section-${sectionIndex}`} onClick={displayHandler}></i>
+      </button>
     </div>
-    <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>Toggle display</button>
     {!shouldDisplay
       ? (
         <>
