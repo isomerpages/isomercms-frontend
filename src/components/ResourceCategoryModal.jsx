@@ -65,6 +65,8 @@ export default class ResourceCategoryModal extends Component {
     const { id, value } = event.target;
     const idArray = id.split('-');
     const categoryIndex = parseInt(idArray[1], RADIX_PARSE_INT);
+    const slugifiedResourceCategory = slugifyResourceCategory(value)
+    const { prevResourceCategories } = this.state
 
     let errorMessage = '';
     // Resource category is too short
@@ -75,6 +77,10 @@ export default class ResourceCategoryModal extends Component {
     if (value.length > CATEGORY_MAX_LENGTH) {
       errorMessage = `The resource category should be shorter than ${CATEGORY_MAX_LENGTH} characters.`;
     }
+    // Resource category already exists
+    if (prevResourceCategories.includes(slugifiedResourceCategory)) {
+      errorMessage = `The resource category already exists.`
+    }
     // Resource category fails regex
     if (!categoryRegexTest.test(value)) {
       errorMessage = 'The resource category should only have alphanumeric characters separated by whitespace.';
@@ -82,7 +88,7 @@ export default class ResourceCategoryModal extends Component {
 
     this.setState((currState) => ({
       currResourceCategories: update(currState.currResourceCategories, {
-        $splice: [[categoryIndex, 1, slugifyResourceCategory(value)]],
+        $splice: [[categoryIndex, 1, slugifiedResourceCategory]],
       }),
       errors: {
         resourceCategories: update(currState.errors.resourceCategories, {
