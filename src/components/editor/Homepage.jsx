@@ -141,37 +141,33 @@ const KeyHighlight = ({
   shouldDisplay,
   displayHandler,
   deleteHandler,
-  createHandler,
-  shouldAllowMoreHighlights,
 }) => (
-  <div className={styles.card} key={highlightIndex}>
-    <b>
-Highlight
-      {highlightIndex}
-:
-      {title}
-    </b>
-    <br />
-    {/* Create/delete/toggle buttons */}
-    <button type="button" id={`highlight-${highlightIndex}-toggle`} onClick={displayHandler}>Toggle display</button>
-    {shouldAllowMoreHighlights
-      ? <button type="button" id={`highlight-${highlightIndex}-create`} className={elementStyles.blue} onClick={createHandler} key={`${highlightIndex}-create`}>Create highlight</button>
-      : null}
 
-    {/* Core highlight fields */}
-    {shouldDisplay
-      ? (
-        <>
-          <p className={elementStyles.formLabel}>Highlight title</p>
-          <input placeholder="Highlight title" defaultValue={title} value={title} id={`highlight-${highlightIndex}-title`} onChange={onFieldChange} key={`${highlightIndex}-title`} />
-          <p className={elementStyles.formLabel}>Highlight description</p>
-          <input placeholder="Highlight description" defaultValue={description} value={description} id={`highlight-${highlightIndex}-description`} onChange={onFieldChange} key={`${highlightIndex}-description`} />
-          <p className={elementStyles.formLabel}>Highlight URL</p>
-          <input placeholder="Highlight URL" defaultValue={url} value={url} id={`highlight-${highlightIndex}-url`} onChange={onFieldChange} key={`${highlightIndex}-url`} />
-          <button type="button" id={`highlight-${highlightIndex}-delete`} className={elementStyles.warning} onClick={deleteHandler} key={`${highlightIndex}-delete`}>Delete highlight</button>
-        </>
-      )
-      : null}
+  <div className={elementStyles.card}>
+    <div className={elementStyles.cardHeader}>
+      <h2>Highlight {highlightIndex}: {title}</h2>
+      <button type="button">
+        <i className={`bx ${shouldDisplay ? `bx-chevron-down` : `bx-chevron-right` }`} id={`highlight-${highlightIndex}-toggle`} onClick={displayHandler}></i>
+      </button>
+    </div>
+      {/* Core highlight fields */}
+      {shouldDisplay
+        ? (
+          <>
+            <div className={elementStyles.cardContent}>
+              <p className={elementStyles.formLabel}>Highlight title</p>
+              <input placeholder="Highlight title" defaultValue={title} value={title} id={`highlight-${highlightIndex}-title`} onChange={onFieldChange} key={`${highlightIndex}-title`} />
+              <p className={elementStyles.formLabel}>Highlight description</p>
+              <input placeholder="Highlight description" defaultValue={description} value={description} id={`highlight-${highlightIndex}-description`} onChange={onFieldChange} key={`${highlightIndex}-description`} />
+              <p className={elementStyles.formLabel}>Highlight URL</p>
+              <input placeholder="Highlight URL" defaultValue={url} value={url} id={`highlight-${highlightIndex}-url`} onChange={onFieldChange} key={`${highlightIndex}-url`} />
+            </div>
+            <div className={elementStyles.inputGroup}>
+              <button type="button" id={`highlight-${highlightIndex}-delete`} className={elementStyles.warning} onClick={deleteHandler} key={`${highlightIndex}-delete`}>Delete highlight</button>
+            </div>
+             </>
+        )
+        : null}
   </div>
 );
 
@@ -385,7 +381,6 @@ const EditorHeroSection = ({
                                         highlights.length < MAX_NUM_KEY_HIGHLIGHTS
                                       }
                                       deleteHandler={deleteHandler}
-                                      createHandler={createHandler}
                                     />
                                   </div>
                                 )}
@@ -393,7 +388,10 @@ const EditorHeroSection = ({
                             ))}
                           </>
                         )
-                        : <button type="button" id="highlight-0-create" className={elementStyles.blue} onClick={createHandler} key="0-create">Create highlight</button>}
+                        : null }
+                        {highlights.length < MAX_NUM_KEY_HIGHLIGHTS
+                          ? <button type="button" id={`highlight-${highlights.length}-create`} className={elementStyles.blue} onClick={createHandler}>Create highlight</button>
+                          : null}
                       {droppableProvided.placeholder}
                     </div>
                   )}
