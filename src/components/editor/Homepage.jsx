@@ -407,9 +407,8 @@ const EditorHeroSection = ({
 );
 
 const NewSectionCreator = ({ createHandler, hasResources }) => (
-  <>
-    Create new section
-    <br />
+  <div className={`${elementStyles.card} ${elementStyles.addNew}`}>
+    <h2>Add a new section <i className={`bx bx-plus`}></i></h2>
     <select name="newSection" id="section-new" onChange={createHandler}>
       <option value="">--Please choose a new section--</option>
       <option value="infobar">Infobar</option>
@@ -419,7 +418,7 @@ const NewSectionCreator = ({ createHandler, hasResources }) => (
         ? null
         : <option value="resources">Resources</option>}
     </select>
-  </>
+  </div>
 );
 
 export {
