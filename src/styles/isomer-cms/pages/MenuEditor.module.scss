@@ -1,0 +1,13 @@
+@import '../elements/variable';
+
+.menuEditorSidebar{
+  height: 100vh - #{$header-height};
+  overflow: auto;
+  padding: 30px;
+  padding-top: 100px
+}
+
+.treeTitle{
+  font-size: 20px;
+  font-weight: bold;
+}

@@ -4,6 +4,8 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import TreeBuilder from '../utils/tree-builder';
 import { dataIterator, ListItem, draggableWrapper } from '../utils/tree-utils';
+import Header from '../../components/Header';
+import styles from '../../styles/isomer-cms/pages/MenuEditor.module.scss';
 
 const rootNode = new TreeBuilder('root', 'root', '');
 
@@ -144,16 +146,19 @@ export default class EditTree extends Component {
     return (
       tree
       && (
-      <div style={{ height: '100vw', overflow: 'scroll' }}>
-        <Tree
-          tree={tree}
-          renderItem={this.renderItem}
-          onExpand={this.onExpand}
-          onCollapse={this.onCollapse}
-          onDragEnd={this.onDragEnd}
-          isNestingEnabled
-          isDragEnabled
-        />
+      <div>
+        <Header/>
+        <div className={styles.menuEditorSidebar}>
+          <Tree
+            tree={tree}
+            renderItem={this.renderItem}
+            onExpand={this.onExpand}
+            onCollapse={this.onCollapse}
+            onDragEnd={this.onDragEnd}
+            isNestingEnabled
+            isDragEnabled
+          />
+        </div>
       </div>
       )
     );

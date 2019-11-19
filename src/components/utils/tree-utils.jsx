@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TreeBuilder from './tree-builder';
+import styles from '../../styles/isomer-cms/pages/MenuEditor.module.scss';
 
 /*
   Constructs a new FlattenedItem
@@ -68,7 +69,7 @@ const ListItem = ({
   if (item.children && item.children.length) {
     // since the top-level nodes 'navigation' and 'unlinked-pages' always have at least one child
     if (item.data.type === 'section') {
-      return <p>{ item.data.title }</p>;
+      return <p className={styles.treeTitle} >{ item.data.title }</p>;
     }
 
     return item.isExpanded
