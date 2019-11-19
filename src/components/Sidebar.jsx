@@ -9,10 +9,6 @@ const sidebarPathDict = [
     title: 'Pages',
   },
   {
-    pathname: 'collections',
-    title: 'Collections',
-  },
-  {
     pathname: 'menus',
     title: 'Menus',
   },

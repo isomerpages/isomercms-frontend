@@ -38,7 +38,7 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route path="/sites/:siteName/collections/:collectionName/:fileName" component={EditCollectionPage} />
           <Route path="/sites/:siteName/collections/:collectionName" component={CollectionPages} />
-          <Route path="/sites/:siteName/collections" component={Collections} />
+          {/* <Route path="/sites/:siteName/collections" component={Collections} /> */}
           <Route path="/sites/:siteName/files/:fileName" component={EditFile} />
           <Route path="/sites/:siteName/files" component={Files} />
           <Route path="/sites/:siteName/images/:fileName" component={EditImage} />
