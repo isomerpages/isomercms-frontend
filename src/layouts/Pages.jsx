@@ -14,10 +14,12 @@ import { prettifyPageFileName } from '../utils';
 const RADIX_PARSE_INT = 10;
 
 const PageCard = ({
-  siteName, pageName, pageIndex, settingsToggle,
+  siteName, pageName, pageIndex, settingsToggle, collectionName,
 }) => (
   <li>
-    <Link to={`/sites/${siteName}/pages/${pageName}`}>{prettifyPageFileName(pageName)}</Link>
+    { collectionName
+      ? <Link to={`/sites/${siteName}/collections/${collectionName}/${pageName}`}>{prettifyPageFileName(pageName)}</Link>
+      : <Link to={`/sites/${siteName}/pages/${pageName}`}>{prettifyPageFileName(pageName)}</Link>}
     <button type="button" onClick={settingsToggle} id={`settings-${pageIndex}`}>
       <i id={`settingsIcon-${pageIndex}`} className="bx bx-cog" />
     </button>
@@ -142,6 +144,7 @@ Create New Page
                       pageName={page.fileName}
                       pageIndex={pageIndex}
                       settingsToggle={this.settingsToggle}
+                      collectionName={page.collectionName ? page.collectionName : ''}
                     />
                   ))
                   : 'Loading Pages...'}
@@ -161,6 +164,7 @@ PageCard.propTypes = {
   pageName: PropTypes.string.isRequired,
   pageIndex: PropTypes.number.isRequired,
   settingsToggle: PropTypes.func.isRequired,
+  collectionName: PropTypes.string.isRequired,
 };
 
 Pages.propTypes = {
