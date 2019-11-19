@@ -23,6 +23,7 @@ const EditorInfobarSection = ({
   onFieldChange,
   shouldDisplay,
   displayHandler,
+  errors,
 }) => (
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
@@ -42,7 +43,7 @@ Infobar section:
               title="Infobar title"
               id={`section-${sectionIndex}-infobar-title`}
               value={title}
-              errorMessage=""
+              errorMessage={errors.title}
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -50,7 +51,7 @@ Infobar section:
               title="Infobar subtitle"
               id={`section-${sectionIndex}-infobar-subtitle`}
               value={subtitle}
-              errorMessage=""
+              errorMessage={errors.subtitle}
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -58,7 +59,7 @@ Infobar section:
               title="Infobar description"
               id={`section-${sectionIndex}-infobar-description`}
               value={description}
-              errorMessage=""
+              errorMessage={errors.description}
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -66,7 +67,7 @@ Infobar section:
               title="Infobar button name"
               id={`section-${sectionIndex}-infobar-button`}
               value={button}
-              errorMessage=""
+              errorMessage={errors.button}
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -74,7 +75,7 @@ Infobar section:
               title="Infobar button URL"
               id={`section-${sectionIndex}-infobar-url`}
               value={url}
-              errorMessage=""
+              errorMessage={errors.url}
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -97,6 +98,7 @@ const EditorResourcesSection = ({
   onFieldChange,
   shouldDisplay,
   displayHandler,
+  errors,
 }) => (
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
@@ -116,7 +118,7 @@ Resources section:
               title="Resources section title"
               id={`section-${sectionIndex}-resources-title`}
               value={title}
-              errorMessage=""
+              errorMessage={errors.title}
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -124,7 +126,7 @@ Resources section:
               title="Resources section subtitle"
               id={`section-${sectionIndex}-resources-subtitle`}
               value={subtitle}
-              errorMessage=""
+              errorMessage={errors.subtitle}
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -132,7 +134,7 @@ Resources section:
               title="Resources button name"
               id={`section-${sectionIndex}-resources-button`}
               value={button}
-              errorMessage=""
+              errorMessage={errors.button}
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -155,6 +157,7 @@ const KeyHighlight = ({
   shouldDisplay,
   displayHandler,
   deleteHandler,
+  errors,
 }) => (
 
   <div className={elementStyles.card}>
@@ -178,7 +181,7 @@ Highlight
               title="Highlight title"
               id={`highlight-${highlightIndex}-title`}
               value={title}
-              errorMessage=""
+              errorMessage={errors.title}
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -186,7 +189,7 @@ Highlight
               title="Highlight description"
               id={`highlight-${highlightIndex}-description`}
               value={description}
-              errorMessage=""
+              errorMessage={errors.description}
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -194,7 +197,7 @@ Highlight
               title="Highlight URL"
               id={`highlight-${highlightIndex}-url`}
               value={url}
-              errorMessage=""
+              errorMessage={errors.url}
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -216,6 +219,7 @@ const HeroDropdownElem = ({
   deleteHandler,
   shouldDisplay,
   displayHandler,
+  errors,
 }) => (
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
@@ -237,7 +241,7 @@ Dropdown Elem
               title="Dropdown element title"
               id={`dropdownelem-${dropdownsIndex}-title`}
               value={title}
-              errorMessage=""
+              errorMessage={errors.title}
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -245,7 +249,7 @@ Dropdown Elem
               title="Dropdown element URL"
               id={`dropdownelem-${dropdownsIndex}-url`}
               value={url}
-              errorMessage=""
+              errorMessage={errors.url}
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -267,6 +271,7 @@ const HeroDropdown = ({
   onFieldChange,
   displayHandler,
   displayDropdownElems,
+  errors,
 }) => (
   <div className={styles.card}>
     <p className={elementStyles.formLabel}>Hero dropdown</p>
@@ -274,7 +279,7 @@ const HeroDropdown = ({
       title="Hero dropdown title"
       id="dropdown-title"
       value={title}
-      errorMessage=""
+      errorMessage={errors.sections[0].hero.dropdown}
       isRequired
       onFieldChange={onFieldChange}
     />
@@ -310,6 +315,7 @@ const HeroDropdown = ({
                       createHandler={createHandler}
                       displayHandler={displayHandler}
                       shouldDisplay={displayDropdownElems[dropdownsIndex]}
+                      errors={errors.dropdownElems[dropdownsIndex]}
                     />
                   </div>
                 )}
@@ -329,13 +335,14 @@ const HeroButton = ({
   url,
   sectionIndex,
   onFieldChange,
+  errors,
 }) => (
   <>
     <FormField
       title="Hero button"
       id={`section-${sectionIndex}-hero-button`}
       value={button}
-      errorMessage=""
+      errorMessage={errors.button}
       isRequired
       onFieldChange={onFieldChange}
     />
@@ -343,7 +350,7 @@ const HeroButton = ({
       title="Hero button URL"
       id={`section-${sectionIndex}-hero-url`}
       value={url}
-      errorMessage=""
+      errorMessage={errors.url}
       isRequired
       onFieldChange={onFieldChange}
     />
@@ -366,6 +373,7 @@ const EditorHeroSection = ({
   displayHandler,
   displayDropdownElems,
   displayHighlights,
+  errors,
 }) => (
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
@@ -381,7 +389,7 @@ const EditorHeroSection = ({
             title="Hero title"
             id={`section-${sectionIndex}-hero-title`}
             value={title}
-            errorMessage=""
+            errorMessage={errors.sections[0].hero.title}
             isRequired
             onFieldChange={onFieldChange}
           />
@@ -389,7 +397,7 @@ const EditorHeroSection = ({
             title="Hero subtitle"
             id={`section-${sectionIndex}-hero-subtitle`}
             value={subtitle}
-            errorMessage=""
+            errorMessage={errors.sections[0].hero.subtitle}
             isRequired
             onFieldChange={onFieldChange}
           />
@@ -397,7 +405,7 @@ const EditorHeroSection = ({
             title="Hero background image"
             id={`section-${sectionIndex}-hero-background`}
             value={background}
-            errorMessage=""
+            errorMessage={errors.sections[0].hero.background}
             isRequired
             onFieldChange={onFieldChange}
           />
@@ -417,6 +425,7 @@ const EditorHeroSection = ({
                   onFieldChange={onFieldChange}
                   displayDropdownElems={displayDropdownElems}
                   displayHandler={displayHandler}
+                  errors={errors}
                 />
               </>
             )
@@ -428,6 +437,7 @@ const EditorHeroSection = ({
                   url={url}
                   sectionIndex={sectionIndex}
                   onFieldChange={onFieldChange}
+                  errors={errors.sections[0].hero}
                 />
                 <Droppable droppableId="highlight" type="highlight">
                   {(droppableProvided) => (
@@ -468,6 +478,7 @@ const EditorHeroSection = ({
                                         highlights.length < MAX_NUM_KEY_HIGHLIGHTS
                                       }
                                       deleteHandler={deleteHandler}
+                                      errors={errors.highlights[highlightIndex]}
                                     />
                                   </div>
                                 )}
@@ -526,6 +537,10 @@ HeroDropdownElem.propTypes = {
   deleteHandler: PropTypes.func.isRequired,
   shouldDisplay: PropTypes.bool.isRequired,
   displayHandler: PropTypes.func.isRequired,
+  errors: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 HeroDropdown.propTypes = {
@@ -545,6 +560,21 @@ HeroDropdown.propTypes = {
       displayHandler: PropTypes.func.isRequired,
     }),
   ).isRequired,
+  errors: PropTypes.shape({
+    sections: PropTypes.arrayOf(
+      PropTypes.shape({
+        hero: PropTypes.shape({
+          dropdown: PropTypes.string.isRequired,
+        }).isRequired,
+      }).isRequired,
+    ).isRequired,
+    dropdownElems: PropTypes.arrayOf(
+      PropTypes.shape({
+        title: PropTypes.string.isRequired,
+        url: PropTypes.string.isRequired,
+      }),
+    ),
+  }).isRequired,
 };
 
 HeroButton.propTypes = {
@@ -552,6 +582,10 @@ HeroButton.propTypes = {
   url: PropTypes.string.isRequired,
   sectionIndex: PropTypes.number.isRequired,
   onFieldChange: PropTypes.func.isRequired,
+  errors: PropTypes.shape({
+    button: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 EditorInfobarSection.propTypes = {
@@ -565,6 +599,13 @@ EditorInfobarSection.propTypes = {
   deleteHandler: PropTypes.func.isRequired,
   shouldDisplay: PropTypes.bool.isRequired,
   displayHandler: PropTypes.func.isRequired,
+  errors: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    subtitle: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    button: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 EditorResourcesSection.propTypes = {
@@ -576,6 +617,11 @@ EditorResourcesSection.propTypes = {
   deleteHandler: PropTypes.func.isRequired,
   shouldDisplay: PropTypes.bool.isRequired,
   displayHandler: PropTypes.func.isRequired,
+  errors: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    subtitle: PropTypes.string.isRequired,
+    button: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 KeyHighlight.propTypes = {
@@ -587,6 +633,11 @@ KeyHighlight.propTypes = {
   deleteHandler: PropTypes.func.isRequired,
   shouldDisplay: PropTypes.bool.isRequired,
   displayHandler: PropTypes.func.isRequired,
+  errors: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 EditorHeroSection.propTypes = {
@@ -626,6 +677,27 @@ EditorHeroSection.propTypes = {
     ).isRequired,
     title: PropTypes.string.isRequired,
   }),
+  errors: PropTypes.shape({
+    sections: PropTypes.arrayOf(
+      PropTypes.shape({
+        hero: PropTypes.shape({
+          title: PropTypes.string.isRequired,
+          subtitle: PropTypes.string.isRequired,
+          background: PropTypes.string.isRequired,
+          button: PropTypes.string.isRequired,
+          url: PropTypes.string.isRequired,
+          dropdown: PropTypes.string.isRequired,
+        }),
+      }),
+    ),
+    highlights: PropTypes.arrayOf(
+      PropTypes.shape({
+        title: PropTypes.string.isRequired,
+        description: PropTypes.string.isRequired,
+        url: PropTypes.string.isRequired,
+      }),
+    ),
+  }).isRequired,
 };
 
 EditorHeroSection.defaultProps = {

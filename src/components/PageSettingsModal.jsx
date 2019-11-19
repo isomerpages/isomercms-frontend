@@ -152,7 +152,6 @@ export default class PageSettingsModal extends Component {
 
         // Permalink fails regex
         if (!permalinkRegexTest.test(value)) {
-          console.log('IN REGEX FAIL', value);
           errorMessage = `The permalink should start and end with slashes and contain 
             lowercase words separated by hyphens only.
             `;
