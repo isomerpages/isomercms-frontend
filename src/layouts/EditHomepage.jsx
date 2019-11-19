@@ -633,7 +633,7 @@ export default class EditHomepage extends Component {
 
   onDragEnd = (result) => {
     const { source, destination, type } = result;
-    const { frontMatter } = this.state;
+    const { frontMatter, errors } = this.state;
 
     // If the user dropped the draggable to no known droppable
     if (!destination) return;
@@ -645,6 +645,7 @@ export default class EditHomepage extends Component {
     ) return;
 
     let newSections = [];
+    let newErrors = [];
 
     switch (type) {
       case 'editor': {
@@ -654,6 +655,16 @@ export default class EditHomepage extends Component {
             [source.index, 1], // Remove elem from its original position
             [destination.index, 0, draggedElem], // Splice elem into its new position
           ],
+        });
+
+        const draggedError = errors.sections[source.index];
+        newErrors = update(errors, {
+          sections: {
+            $splice: [
+              [source.index, 1], // Remove error from its original position
+              [destination.index, 0, draggedError], // Splice error into its new position
+            ],
+          },
         });
         break;
       }
@@ -673,6 +684,16 @@ export default class EditHomepage extends Component {
             },
           },
         });
+
+        const draggedError = errors.dropdownElems[source.index];
+        newErrors = update(errors, {
+          dropdownElems: {
+            $splice: [
+              [source.index, 1], // Remove error from its original position
+              [destination.index, 0, draggedError], // Splice error into its new position
+            ],
+          },
+        });
         break;
       }
       case 'highlight': {
@@ -689,6 +710,16 @@ export default class EditHomepage extends Component {
             },
           },
         });
+
+        const draggedError = errors.highlights[source.index];
+        newErrors = update(errors, {
+          highlights: {
+            $splice: [
+              [source.index, 1], // Remove error from its original position
+              [destination.index, 0, draggedError], // Splice error into its new position
+            ],
+          },
+        });
         break;
       }
       default:
@@ -700,6 +731,7 @@ export default class EditHomepage extends Component {
         ...currState.frontMatter,
         sections: newSections,
       },
+      errors: newErrors,
     }));
   }
 
