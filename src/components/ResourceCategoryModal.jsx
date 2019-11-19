@@ -170,7 +170,8 @@ export default class ResourceCategoryModal extends Component {
     const { categoryModalToggle, categoryModalIsActive } = this.props;
 
     // Page settings form has errors - disable save button
-    const hasErrors = _.some(errors.resourceCategories, (categoryError) => categoryError.length > 0);
+    const hasErrors = _.some(errors.resourceCategories,
+      (categoryError) => categoryError.length > 0);
     return (
       <div>
         <button type="button" className={elementStyles.blue} onClick={categoryModalToggle}>Edit Categories</button>

@@ -92,8 +92,8 @@ export default class EditHomepage extends Component {
       errors: {
         sections: [],
         highlights: [],
-        dropdownElems: []
-      }
+        dropdownElems: [],
+      },
     };
   }
 
@@ -113,9 +113,9 @@ export default class EditHomepage extends Component {
       const displaySections = [];
       let displayHighlights = [];
       let displayDropdownElems = [];
-      let sectionsErrors = []
-      let dropdownElemsErrors = []
-      let highlightsErrors = []
+      const sectionsErrors = [];
+      let dropdownElemsErrors = [];
+      let highlightsErrors = [];
       frontMatter.sections.forEach((section) => {
         // If this is the hero section, hide all highlights/dropdownelems by default
         if (section.hero) {
@@ -124,27 +124,35 @@ export default class EditHomepage extends Component {
             // Go through section.hero.dropdown.options
             displayDropdownElems = _.fill(Array(dropdown.options.length), false);
             // Fill in dropdown elem errors array
-            dropdownElemsErrors = _.fill(Array(dropdown.options.length), DropdownElemConstructor())
+            dropdownElemsErrors = _.fill(Array(dropdown.options.length), DropdownElemConstructor());
             // Fill in sectionErrors for hero with dropdown
-            sectionsErrors.push({ hero: { title: '', subtitle: '', background: '', button: '', url: '', dropdownTitle: ''}})
+            sectionsErrors.push({
+              hero: {
+                title: '', subtitle: '', background: '', button: '', url: '', dropdown: '',
+              },
+            });
           }
           if (keyHighlights) {
             displayHighlights = _.fill(Array(keyHighlights.length), false);
             // Fill in highlights errors array
-            highlightsErrors = _.fill(Array(keyHighlights.length), KeyHighlightConstructor())
+            highlightsErrors = _.fill(Array(keyHighlights.length), KeyHighlightConstructor());
             // Fill in sectionErrors for hero with key highlights
-            sectionsErrors.push({ hero: { title: '', subtitle: '', background: '', button: '', url: ''}})
+            sectionsErrors.push({
+              hero: {
+                title: '', subtitle: '', background: '', button: '', url: '',
+              },
+            });
           }
         }
 
         // Check if there is already a resources section
-        if (section.resources) { 
-          sectionsErrors.push(ResourcesSectionConstructor())
+        if (section.resources) {
+          sectionsErrors.push(ResourcesSectionConstructor());
           hasResources = true;
         }
 
         if (section.infobar) {
-          sectionsErrors.push(InfobarSectionConstructor())
+          sectionsErrors.push(InfobarSectionConstructor());
         }
 
         // Minimize all sections by default
@@ -155,11 +163,17 @@ export default class EditHomepage extends Component {
       const errors = {
         sections: sectionsErrors,
         highlights: highlightsErrors,
-        dropdownElems: dropdownElemsErrors
-      }
-      
+        dropdownElems: dropdownElemsErrors,
+      };
+
       this.setState({
-        frontMatter, sha, hasResources, displaySections, displayDropdownElems, displayHighlights, errors
+        frontMatter,
+        sha,
+        hasResources,
+        displaySections,
+        displayDropdownElems,
+        displayHighlights,
+        errors,
       });
     } catch (err) {
       console.log(err);
@@ -290,8 +304,9 @@ export default class EditHomepage extends Component {
       const idArray = id.split('-');
       const elemType = idArray[0];
 
-      const { frontMatter } = this.state;
+      const { frontMatter, errors } = this.state;
       let newSections = [];
+      let newErrors = [];
 
       switch (elemType) {
         case 'section': {
@@ -304,6 +319,9 @@ export default class EditHomepage extends Component {
           }
 
           newSections = update(frontMatter.sections, {
+            $push: [sectionType],
+          });
+          newErrors = update(errors, {
             $push: [sectionType],
           });
           break;
@@ -329,6 +347,27 @@ export default class EditHomepage extends Component {
               },
             },
           });
+
+          newErrors = update(errors, {
+            sections: {
+              0: {
+                hero: {
+                  button: {
+                    $set: undefined,
+                  },
+                  url: {
+                    $set: undefined,
+                  },
+                  dropdown: {
+                    $set: '',
+                  },
+                },
+              },
+            },
+            highlights: {
+              $set: undefined,
+            },
+          });
           break;
         }
         case 'dropdownelem': {
@@ -346,6 +385,12 @@ export default class EditHomepage extends Component {
               },
             },
           });
+
+          newErrors = update(errors, {
+            dropdownElems: {
+              $splice: [[dropdownsIndex, 0, dropdownElem]],
+            },
+          });
           break;
         }
         case 'highlight': {
@@ -361,6 +406,12 @@ export default class EditHomepage extends Component {
               },
             },
           });
+
+          newErrors = update(errors, {
+            highlights: {
+              $splice: [[highlightIndex, 0, keyHighlight]],
+            },
+          });
           break;
         }
         default:
@@ -372,6 +423,7 @@ export default class EditHomepage extends Component {
           ...currState.frontMatter,
           sections: newSections,
         },
+        errors: newErrors,
       }));
     } catch (err) {
       console.log(err);
@@ -386,7 +438,7 @@ export default class EditHomepage extends Component {
 
       const { frontMatter, errors } = this.state;
       let newSections = [];
-      let newErrors = {}
+      let newErrors = {};
 
       switch (elemType) {
         case 'section': {
@@ -404,8 +456,8 @@ export default class EditHomepage extends Component {
           newErrors = update(errors, {
             sections: {
               $splice: [[sectionIndex, 1]],
-            }
-          })
+            },
+          });
           break;
         }
         case 'dropdown': {
@@ -424,21 +476,21 @@ export default class EditHomepage extends Component {
 
           newErrors = update(errors, {
             dropdownElems: {
-              $set: []
+              $set: [],
             },
             highlights: {
-              $set: []
+              $set: [],
             },
             sections: {
               0: {
                 hero: {
-                  dropdownTitle: {
-                    $set: ''
-                  }
-                }
-              }
-            }
-          })
+                  dropdown: {
+                    $set: '',
+                  },
+                },
+              },
+            },
+          });
           break;
         }
         case 'dropdownelem': {
@@ -490,7 +542,7 @@ export default class EditHomepage extends Component {
           ...currState.frontMatter,
           sections: newSections,
         },
-        errors: newErrors
+        errors: newErrors,
       }));
     } catch (err) {
       console.log(err);

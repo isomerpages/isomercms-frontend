@@ -42,7 +42,7 @@ Infobar section:
               title="Infobar title"
               id={`section-${sectionIndex}-infobar-title`}
               value={title}
-              errorMessage=''
+              errorMessage=""
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -50,7 +50,7 @@ Infobar section:
               title="Infobar subtitle"
               id={`section-${sectionIndex}-infobar-subtitle`}
               value={subtitle}
-              errorMessage=''
+              errorMessage=""
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -58,7 +58,7 @@ Infobar section:
               title="Infobar description"
               id={`section-${sectionIndex}-infobar-description`}
               value={description}
-              errorMessage=''
+              errorMessage=""
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -66,7 +66,7 @@ Infobar section:
               title="Infobar button name"
               id={`section-${sectionIndex}-infobar-button`}
               value={button}
-              errorMessage=''
+              errorMessage=""
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -74,7 +74,7 @@ Infobar section:
               title="Infobar button URL"
               id={`section-${sectionIndex}-infobar-url`}
               value={url}
-              errorMessage=''
+              errorMessage=""
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -116,7 +116,7 @@ Resources section:
               title="Resources section title"
               id={`section-${sectionIndex}-resources-title`}
               value={title}
-              errorMessage=''
+              errorMessage=""
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -124,7 +124,7 @@ Resources section:
               title="Resources section subtitle"
               id={`section-${sectionIndex}-resources-subtitle`}
               value={subtitle}
-              errorMessage=''
+              errorMessage=""
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -132,7 +132,7 @@ Resources section:
               title="Resources button name"
               id={`section-${sectionIndex}-resources-button`}
               value={button}
-              errorMessage=''
+              errorMessage=""
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -178,7 +178,7 @@ Highlight
               title="Highlight title"
               id={`highlight-${highlightIndex}-title`}
               value={title}
-              errorMessage=''
+              errorMessage=""
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -186,7 +186,7 @@ Highlight
               title="Highlight description"
               id={`highlight-${highlightIndex}-description`}
               value={description}
-              errorMessage=''
+              errorMessage=""
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -194,7 +194,7 @@ Highlight
               title="Highlight URL"
               id={`highlight-${highlightIndex}-url`}
               value={url}
-              errorMessage=''
+              errorMessage=""
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -237,7 +237,7 @@ Dropdown Elem
               title="Dropdown element title"
               id={`dropdownelem-${dropdownsIndex}-title`}
               value={title}
-              errorMessage=''
+              errorMessage=""
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -245,7 +245,7 @@ Dropdown Elem
               title="Dropdown element URL"
               id={`dropdownelem-${dropdownsIndex}-url`}
               value={url}
-              errorMessage=''
+              errorMessage=""
               isRequired
               onFieldChange={onFieldChange}
             />
@@ -272,9 +272,9 @@ const HeroDropdown = ({
     <p className={elementStyles.formLabel}>Hero dropdown</p>
     <FormField
       title="Hero dropdown title"
-      id={`dropdown-title`}
+      id="dropdown-title"
       value={title}
-      errorMessage=''
+      errorMessage=""
       isRequired
       onFieldChange={onFieldChange}
     />
@@ -335,7 +335,7 @@ const HeroButton = ({
       title="Hero button"
       id={`section-${sectionIndex}-hero-button`}
       value={button}
-      errorMessage=''
+      errorMessage=""
       isRequired
       onFieldChange={onFieldChange}
     />
@@ -343,7 +343,7 @@ const HeroButton = ({
       title="Hero button URL"
       id={`section-${sectionIndex}-hero-url`}
       value={url}
-      errorMessage=''
+      errorMessage=""
       isRequired
       onFieldChange={onFieldChange}
     />
@@ -381,7 +381,7 @@ const EditorHeroSection = ({
             title="Hero title"
             id={`section-${sectionIndex}-hero-title`}
             value={title}
-            errorMessage=''
+            errorMessage=""
             isRequired
             onFieldChange={onFieldChange}
           />
@@ -389,7 +389,7 @@ const EditorHeroSection = ({
             title="Hero subtitle"
             id={`section-${sectionIndex}-hero-subtitle`}
             value={subtitle}
-            errorMessage=''
+            errorMessage=""
             isRequired
             onFieldChange={onFieldChange}
           />
@@ -397,7 +397,7 @@ const EditorHeroSection = ({
             title="Hero background image"
             id={`section-${sectionIndex}-hero-background`}
             value={background}
-            errorMessage=''
+            errorMessage=""
             isRequired
             onFieldChange={onFieldChange}
           />
