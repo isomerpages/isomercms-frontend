@@ -37,13 +37,13 @@ export default class Sites extends Component {
             </div>
             <div className={siteStyles.sites}>
               {siteNames.map((siteName) => (
-                <div className={siteStyles.siteContainer} key={siteName}>
+                <div className={siteStyles.siteContainer} key={siteName.repoName}>
                   <div className={siteStyles.site}>
-                    <a href={`/sites/${siteName}/pages`}>
+                    <a href={`/sites/${siteName.repoName}/pages`}>
                       <div className={siteStyles.siteImage} />
                       <div className={siteStyles.siteDescription}>
-                        <div className={siteStyles.siteName}>{siteName}</div>
-                        <div className={siteStyles.siteDate}>Updated 2 days ago</div>
+                        <div className={siteStyles.siteName}>{siteName.repoName}</div>
+                        <div className={siteStyles.siteDate}>{siteName.lastUpdated}</div>
                       </div>
                     </a>
                   </div>
