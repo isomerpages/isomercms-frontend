@@ -17,7 +17,7 @@ import {
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
-import { validateSections, validateHighlights, validateDropdownElems } from '../utils/validators.js'
+import { validateSections, validateHighlights, validateDropdownElems } from '../utils/validators';
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */

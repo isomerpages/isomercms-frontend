@@ -8,14 +8,7 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import {
   frontMatterParser, concatFrontMatterMdBody, generatePageFileName,
 } from '../utils';
-
-// Constants
-const PERMALINK_REGEX = '^(/([a-z]+([-][a-z]+)*/)+)$';
-const permalinkRegexTest = RegExp(PERMALINK_REGEX);
-const PERMALINK_MIN_LENGTH = 4;
-const PERMALINK_MAX_LENGTH = 50;
-const TITLE_MIN_LENGTH = 4;
-const TITLE_MAX_LENGTH = 100;
+import { validatePageSettings } from '../utils/validators';
 
 export default class PageSettingsModal extends Component {
   constructor(props) {
@@ -137,41 +130,8 @@ export default class PageSettingsModal extends Component {
 
   changeHandler = (event) => {
     const { id, value } = event.target;
-    let errorMessage = '';
-    switch (id) {
-      case 'permalink': {
-        // Permalink is too short
-        if (value.length < PERMALINK_MIN_LENGTH) {
-          errorMessage = `The permalink should be longer than ${PERMALINK_MIN_LENGTH} characters.`;
-        }
+    const errorMessage = validatePageSettings(id, value);
 
-        // Permalink is too long
-        if (value.length > PERMALINK_MAX_LENGTH) {
-          errorMessage = `The permalink should be shorter than ${PERMALINK_MAX_LENGTH} characters.`;
-        }
-
-        // Permalink fails regex
-        if (!permalinkRegexTest.test(value)) {
-          errorMessage = `The permalink should start and end with slashes and contain 
-            lowercase words separated by hyphens only.
-            `;
-        }
-        break;
-      }
-      case 'title': {
-        // Title is too short
-        if (value.length < TITLE_MIN_LENGTH) {
-          errorMessage = `The title should be longer than ${TITLE_MIN_LENGTH} characters.`;
-        }
-        // Title is too long
-        if (value.length > TITLE_MAX_LENGTH) {
-          errorMessage = `The title should be shorter than ${TITLE_MAX_LENGTH} characters.`;
-        }
-        break;
-      }
-      default:
-        break;
-    }
     this.setState({
       errors: {
         [id]: errorMessage,

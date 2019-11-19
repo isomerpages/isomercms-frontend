@@ -14,45 +14,7 @@ import {
   generateResourceFileName,
 } from '../utils';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-
-// Constants
-const TITLE_MIN_LENGTH = 4;
-const TITLE_MAX_LENGTH = 100;
-const DATE_REGEX = '^([0-9]{4}-[0-9]{2}-[0-9]{2})$';
-const dateRegexTest = RegExp(DATE_REGEX);
-const PERMALINK_REGEX = '^(/([a-z]+([-][a-z]+)*/)+)$';
-const permalinkRegexTest = RegExp(PERMALINK_REGEX);
-const PERMALINK_MIN_LENGTH = 4;
-const PERMALINK_MAX_LENGTH = 50;
-const RADIX_PARSE_INT = 10;
-
-const validateDayOfMonth = (month, day) => {
-  switch (month) {
-    case 1:
-    case 3:
-    case 5:
-    case 7:
-    case 8:
-    case 10:
-    case 12:
-    {
-      return day > 0 && day < 32;
-    }
-    case 4:
-    case 6:
-    case 9:
-    case 11:
-    {
-      return day > 0 && day < 31;
-    }
-    case 2:
-    {
-      return day > 0 && day < 29;
-    }
-    default:
-      return false;
-  }
-};
+import { validateResourceSettings } from '../utils/validators';
 
 export default class ResourceSettingsModal extends Component {
   constructor(props) {
@@ -207,82 +169,8 @@ export default class ResourceSettingsModal extends Component {
 
   changeHandler = (event) => {
     const { id, value } = event.target;
-    let errorMessage = '';
+    const errorMessage = validateResourceSettings(id, value);
 
-    switch (id) {
-      case 'title': {
-        // Title is too short
-        if (value.length < TITLE_MIN_LENGTH) {
-          errorMessage = `The title should be longer than ${TITLE_MIN_LENGTH} characters.`;
-        }
-        // Title is too long
-        if (value.length > TITLE_MAX_LENGTH) {
-          errorMessage = `The title should be shorter than ${TITLE_MAX_LENGTH} characters.`;
-        }
-        break;
-      }
-      case 'date': {
-        // Date is in wrong format
-        if (!dateRegexTest.test(value)) {
-          errorMessage = 'The date should be in the format YYYY-MM-DD.';
-        } else {
-          const dateTokens = value.split('-');
-          const month = parseInt(dateTokens[1], RADIX_PARSE_INT);
-          const day = parseInt(dateTokens[2], RADIX_PARSE_INT);
-
-          // Day value is invalid for the given month
-          if (!validateDayOfMonth(month, day)) {
-            errorMessage = 'The day value is invalid for the given month.';
-          }
-
-          // Month value is invalid
-          if (month < 0 || month > 12) {
-            errorMessage = 'The month value should be from 01 to 12.';
-          }
-        }
-        break;
-      }
-      case 'permalink': {
-        // Permalink is too short
-        if (value.length < PERMALINK_MIN_LENGTH) {
-          errorMessage = `The permalink should be longer than ${PERMALINK_MIN_LENGTH} characters.`;
-        }
-        // Permalink is too long
-        if (value.length > PERMALINK_MAX_LENGTH) {
-          errorMessage = `The permalink should be shorter than ${PERMALINK_MAX_LENGTH} characters.`;
-        }
-        // Permalink fails regex
-        if (!permalinkRegexTest.test(value)) {
-          errorMessage = `The permalink should start and end with slashes and contain 
-            lowercase words separated by hyphens only.
-            `;
-        }
-        break;
-      }
-      case 'fileUrl': {
-        // File URL is too short
-        if (value.length < PERMALINK_MIN_LENGTH) {
-          errorMessage = `The permalink should be longer than ${PERMALINK_MIN_LENGTH} characters.`;
-        }
-        // File URL is too long
-        if (value.length > PERMALINK_MAX_LENGTH) {
-          errorMessage = `The permalink should be shorter than ${PERMALINK_MAX_LENGTH} characters.`;
-        }
-        // File URL fails regex
-        if (!permalinkRegexTest.test(value)) {
-          console.log('FAILED');
-          errorMessage = `The permalink should start and end with slashes and contain 
-            lowercase words separated by hyphens only.
-            `;
-        }
-        // TO-DO
-        // Check if file exists
-        break;
-      }
-      default: {
-        break;
-      }
-    }
     this.setState({
       errors: {
         [id]: errorMessage,

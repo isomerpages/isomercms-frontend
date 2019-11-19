@@ -6,14 +6,11 @@ import update from 'immutability-helper';
 import { prettifyResourceCategory, slugifyResourceCategory } from '../utils';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import FormField from './FormField';
+import { validateResourceCategory } from '../utils/validators';
 
 // Constants
 const RADIX_PARSE_INT = 10;
 const NEW_CATEGORY_STR = 'newcategory';
-const CATEGORY_MIN_LENGTH = 2;
-const CATEGORY_MAX_LENGTH = 30;
-const CATEGORY_REGEX = '^(([a-zA-Z0-9]+([\\s][a-zA-Z0-9]+)*)+)$';
-const categoryRegexTest = RegExp(CATEGORY_REGEX);
 
 export default class ResourceCategoryModal extends Component {
   constructor(props) {
@@ -68,19 +65,7 @@ export default class ResourceCategoryModal extends Component {
     const idArray = id.split('-');
     const categoryIndex = parseInt(idArray[1], RADIX_PARSE_INT);
 
-    let errorMessage = '';
-    // Resource category is too short
-    if (value.length < CATEGORY_MIN_LENGTH) {
-      errorMessage = `The resource category should be longer than ${CATEGORY_MIN_LENGTH} characters.`;
-    }
-    // Resource category is too long
-    if (value.length > CATEGORY_MAX_LENGTH) {
-      errorMessage = `The resource category should be shorter than ${CATEGORY_MAX_LENGTH} characters.`;
-    }
-    // Resource category fails regex
-    if (!categoryRegexTest.test(value)) {
-      errorMessage = 'The resource category should only have alphanumeric characters separated by whitespace.';
-    }
+    const errorMessage = validateResourceCategory(value);
 
     this.setState((currState) => ({
       currResourceCategories: update(currState.currResourceCategories, {
