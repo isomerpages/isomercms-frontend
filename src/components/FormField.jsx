@@ -40,4 +40,10 @@ FormField.propTypes = {
   errorMessage: PropTypes.string.isRequired,
   onFieldChange: PropTypes.func.isRequired,
   isRequired: PropTypes.bool.isRequired,
+  style: PropTypes.string,
+};
+
+FormField.defaultProps = {
+  defaultValue: undefined,
+  style: undefined,
 };
