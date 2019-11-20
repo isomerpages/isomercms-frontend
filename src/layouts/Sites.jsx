@@ -4,7 +4,6 @@ import Header from '../components/Header';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import siteStyles from '../styles/isomer-cms/pages/Sites.module.scss';
 
-
 export default class Sites extends Component {
   constructor(props) {
     super(props);
@@ -33,7 +32,9 @@ export default class Sites extends Component {
         <div className={elementStyles.wrapper}>
           <div className={siteStyles.sitesContainer}>
             <div className={siteStyles.sectionHeader}>
-              <h1>Sites</h1>
+              <div className={siteStyles.sectionTitle}>
+                <b>Sites</b>
+              </div>
             </div>
             <div className={siteStyles.sites}>
               {siteNames.map((siteName) => (
