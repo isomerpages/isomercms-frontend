@@ -12612,3 +12612,8 @@ a.navbar-item {
     visibility: hidden;
     max-width: 100%;
 }
+
+.CodeMirror {
+    height: 400px;
+    overflow-y: scroll;
+  }
