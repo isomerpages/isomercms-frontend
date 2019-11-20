@@ -2,6 +2,18 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import Header from '../components/Header';
+import Sidebar from '../components/Sidebar';
+import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
+
+const ImageCard = ({
+  siteName, image,
+}) => (
+  <li>
+    <Link to={`/sites/${siteName}/images/${image.fileName}`}>{image.fileName}</Link>
+  </li>
+);
 
 export default class Images extends Component {
   constructor(props) {
@@ -9,6 +21,7 @@ export default class Images extends Component {
     this.state = {
       images: [],
       newImageName: '',
+      settingsIsActive: false,
     };
   }
 
@@ -24,6 +37,16 @@ export default class Images extends Component {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  settingsToggle = (event) => {
+    const { id } = event.target;
+    const idArray = id.split('-');
+
+    // Upload a new image
+    this.setState((currState) => ({
+      settingsIsActive: !currState.settingsIsActive,
+    }));
   }
 
   updateNewPageName = (event) => {
@@ -72,56 +95,43 @@ export default class Images extends Component {
 
   render() {
     const { images, newImageName, newImageContent } = this.state;
-    const { match } = this.props;
+    const { match, location } = this.props;
     const { siteName } = match.params;
     return (
-      <div>
-        <Link to="/sites">Back to Sites</Link>
-        <hr />
-        <h2>{siteName}</h2>
-        <ul>
-          <li>
-            <Link to={`/sites/${siteName}/pages`}>Pages</Link>
-          </li>
-          <li>
-            <Link to={`/sites/${siteName}/collections`}>Collections</Link>
-          </li>
-          <li>
-            <Link to={`/sites/${siteName}/images`}>Images</Link>
-          </li>
-          <li>
-            <Link to={`/sites/${siteName}/files`}>Files</Link>
-          </li>
-          <li>
-            <Link to={`/sites/${siteName}/menus`}>Menus</Link>
-          </li>
-        </ul>
-        <hr />
-        <h3>Images</h3>
-        {images.length > 0
-          ? images.map((image) => (
-            <li>
-              <Link to={`/sites/${siteName}/images/${image.fileName}`}>{image.fileName}</Link>
-            </li>
-          ))
-          : 'No images'}
-        <br />
-
-        <div className="d-flex">
-          <input
-            type="file"
-            onChange={this.onImageSelect}
-            accept="image/png, image/jpeg"
-          />
-          {
-            newImageContent
-              ? <img alt="" src={`data:image/jpeg;base64,${newImageContent}`} />
-              : null
-          }
+      <>
+        <Header />
+        {/* main bottom section */}
+        <div className={elementStyles.wrapper}>
+          <Sidebar siteName={siteName} currPath={location.pathname} />
+          {/* main section starts here */}
+          <div className={contentStyles.mainSection}>
+            <div className={contentStyles.sectionHeader}>
+              <h1 className={contentStyles.sectionTitle}>Images</h1>
+              <button
+                type="button"
+                className={elementStyles.blue}
+              >
+                Upload new image
+              </button>
+            </div>
+            <div className={contentStyles.contentContainerBars}>
+              {/* Image cards */}
+              <ul>
+                {images.length > 0
+                  ? images.map((image) => (
+                    <ImageCard
+                      siteName={siteName}
+                      image={image}
+                    />
+                  ))
+                  : 'There are no images in this repository'}
+              </ul>
+              {/* End of image cards */}
+            </div>
+          </div>
+          {/* main section ends here */}
         </div>
-
-        <button type="button" onClick={() => this.uploadImage(newImageName, newImageContent)}>Upload new image</button>
-      </div>
+      </>
     );
   }
 }
@@ -132,4 +142,14 @@ Images.propTypes = {
       siteName: PropTypes.string,
     }),
   }).isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired,
+  }).isRequired,
+};
+
+ImageCard.propTypes = {
+  image: PropTypes.shape({
+    fileName: PropTypes.string,
+  }).isRequired,
+  siteName: PropTypes.string.isRequired,
 };

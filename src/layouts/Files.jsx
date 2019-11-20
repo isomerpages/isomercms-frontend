@@ -38,6 +38,8 @@ export default class Files extends Component {
     }
   }
 
+  // TODO - a modal which allows for the creation/upload of a new file
+  // and this.newPageName is updated onChange
   updateNewPageName = (event) => {
     event.preventDefault();
     this.setState({ newPageName: event.target.value });
@@ -74,7 +76,7 @@ export default class Files extends Component {
                       file={file}
                     />
                   ))
-                  : ''}
+                  : 'There are no files in this repository'}
               </ul>
               {/* End of file cards */}
             </div>
@@ -85,9 +87,6 @@ export default class Files extends Component {
     );
   }
 }
-//         <input placeholder="New file name" onChange={this.updateNewPageName} />
-//         <Link to={`/sites/${siteName}/documents/${newPageName}`}>Create new file</Link>
-//       </div> */}
 
 Files.propTypes = {
   match: PropTypes.shape({
