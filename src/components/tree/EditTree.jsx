@@ -153,7 +153,7 @@ export default class EditTree extends Component {
       <>
         <Header/>
         <div className={styles.menuEditorSidebar}>
-          <p>Drag and drop pages to edit the menu</p>
+          <p className={styles.instructions}>Drag and drop pages to edit the menu</p>
             <Tree
               tree={tree}
               renderItem={this.renderItem}
