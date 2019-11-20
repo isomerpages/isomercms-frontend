@@ -792,6 +792,7 @@ export default class EditHomepage extends Component {
             <h3>
                 Editing homepage
             </h3>
+            <br />
             <div>
               <div>
                 {/* Site-wide configuration */}
