@@ -360,7 +360,7 @@ export default class EditHomepage extends Component {
           newSections = update(frontMatter.sections, {
             $push: [sectionType],
           });
-          newErrors = update(errors, {
+          newErrors = update(errors.sections, {
             $push: [sectionType],
           });
           break;
