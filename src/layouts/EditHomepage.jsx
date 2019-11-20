@@ -351,8 +351,6 @@ export default class EditHomepage extends Component {
 
       switch (elemType) {
         case 'section': {
-          const sectionType = enumSection(value);
-
           // The Isomer site can only have 1 resources section in the homepage
           // Set hasResources to prevent the creation of more resources sections
           if (value === 'resources') {
@@ -360,11 +358,11 @@ export default class EditHomepage extends Component {
           }
 
           newSections = update(frontMatter.sections, {
-            $push: [sectionType],
+            $push: [enumSection(value)],
           });
           newErrors = update(errors, {
             sections: {
-              $push: [sectionType],
+              $push: [enumSection(value)],
             },
           });
 
