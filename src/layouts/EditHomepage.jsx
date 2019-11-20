@@ -11,9 +11,10 @@ import TemplateHeroSection from '../templates/homepage/HeroSection';
 import TemplateInfobarSection from '../templates/homepage/InfobarSection';
 import TemplateResourcesSection from '../templates/homepage/ResourcesSection';
 import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
-import {
-  EditorInfobarSection, EditorResourcesSection, EditorHeroSection, NewSectionCreator,
-} from '../components/editor/Homepage';
+import EditorInfobarSection from '../components/homepage/InfobarSection';
+import EditorResourcesSection from '../components/homepage/ResourcesSection';
+import EditorHeroSection from '../components/homepage/HeroSection';
+import NewSectionCreator from '../components/homepage/NewSectionCreator';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
