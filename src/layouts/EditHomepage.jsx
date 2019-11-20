@@ -403,10 +403,10 @@ export default class EditHomepage extends Component {
               0: {
                 hero: {
                   button: {
-                    $set: undefined,
+                    $set: '',
                   },
                   url: {
-                    $set: undefined,
+                    $set: '',
                   },
                   dropdown: {
                     $set: '',
@@ -415,7 +415,7 @@ export default class EditHomepage extends Component {
               },
             },
             highlights: {
-              $set: undefined,
+              $set: '',
             },
           });
           break;
