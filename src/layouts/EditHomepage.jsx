@@ -127,7 +127,7 @@ export default class EditHomepage extends Component {
             // Go through section.hero.dropdown.options
             displayDropdownElems = _.fill(Array(dropdown.options.length), false);
             // Fill in dropdown elem errors array
-            dropdownElemsErrors = _.fill(Array(dropdown.options.length), DropdownElemConstructor());
+            dropdownElemsErrors = _.map(dropdown.options, () => DropdownElemConstructor());
             // Fill in sectionErrors for hero with dropdown
             sectionsErrors.push({
               hero: {
@@ -138,7 +138,7 @@ export default class EditHomepage extends Component {
           if (keyHighlights) {
             displayHighlights = _.fill(Array(keyHighlights.length), false);
             // Fill in highlights errors array
-            highlightsErrors = _.fill(Array(keyHighlights.length), KeyHighlightConstructor());
+            highlightsErrors = _.map(keyHighlights, () => KeyHighlightConstructor());
             // Fill in sectionErrors for hero with key highlights
             sectionsErrors.push({
               hero: {
@@ -873,6 +873,24 @@ export default class EditHomepage extends Component {
     } = this.state;
     const { match } = this.props;
     const { siteName } = match.params;
+
+    const hasSectionErrors = _.some(errors.sections, section => {
+      // Section is an object, e.g. { hero: {} }
+      // _.keys(section) produces an array with length 1
+      // The 0th element of the array contains the sectionType
+      const sectionType = _.keys(section)[0]
+      return _.some(section[sectionType], errorMessage => errorMessage.length > 0) === true
+    })
+
+    const hasHighlightErrors = _.some(errors.highlights, highlight => {
+      return _.some(highlight, errorMessage => errorMessage.length > 0) === true
+    })
+
+    const hasDropdownElemErrors = _.some(errors.dropdownElems, dropdownElem => {
+      return _.some(dropdownElem, errorMessage => errorMessage.length > 0) === true
+    })
+
+    const hasErrors = hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors
     return (
       <>
         <Header />
@@ -1110,7 +1128,7 @@ export default class EditHomepage extends Component {
             ))}
           </div>
           <div className={editorStyles.pageEditorFooter}>
-            <button type="button" className={elementStyles.blue} onClick={this.savePage}>Save</button>
+            <button type="button" className={hasErrors ? elementStyles.disabled : elementStyles.blue} disabled={hasErrors} onClick={this.savePage}>Save</button>
           </div>
         </div>
       </>
