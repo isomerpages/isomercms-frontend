@@ -6,7 +6,7 @@ import Breadcrumb from './pageComponents/Breadcrumb';
 const SimplePage = ({ chunk }) => (
   <div>
     <Breadcrumb />
-    <section className="bp-section">
+    <section className="bp-section" style={{ transform: 'scale(0.75)', transformOrigin: 'top right'}}>
       <div className="bp-container content padding--top--lg padding--bottom--xl">
         <div className="row">
           <div className="col is-8 is-offset-1-desktop is-12-touch print-content">

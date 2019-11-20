@@ -38,8 +38,6 @@
 }
 
 .pageEditorMain{
-  transform: scale(0.95);
-  transform-origin: top left;
   width: calc(100vw - #{$page-editor-sidebar-width});
   left: $page-editor-sidebar-width;;
   box-sizing: border-box;
