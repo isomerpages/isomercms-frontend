@@ -67,11 +67,9 @@ export default class Media extends Component {
               <ul>
                 <li>
                   <Link to={`/sites/${siteName}/images`}>Images</Link>
-                  {`${numImages} images`}
                 </li>
                 <li>
                   <Link to={`/sites/${siteName}/files`}>Files</Link>
-                  {`${numFiles} files`}
                 </li>
               </ul>
             </div>
