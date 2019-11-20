@@ -79,3 +79,17 @@
     padding-right: 5px;
   }
 }
+
+.isDragging{
+  border: 1px solid $isomer-blue;
+  border-radius: 3px;
+  padding: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.isDraggingPlaceholderBox{
+  border: 1px dashed lighten($isomer-blue, 10%);
+  background: $base-background-dark;
+  border-radius: 3px;
+  padding: 5px;
+}

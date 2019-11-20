@@ -131,7 +131,7 @@ export default class EditTree extends Component {
     }
     return (
       // eslint-disable-next-line react/jsx-props-no-spreading
-      <div>
+      <>
         <div ref={provided.innerRef} {...provided.draggableProps}>
           <div {...provided.dragHandleProps}/>
           <ListItem
@@ -141,7 +141,7 @@ export default class EditTree extends Component {
           />
         </div>
         <button className={styles.createFolder}><i class='bx bx-folder-plus' ></i>Create a new folder</button>
-      </div>
+      </>
     );
   };
 
@@ -163,6 +163,7 @@ export default class EditTree extends Component {
             onDragEnd={this.onDragEnd}
             isNestingEnabled
             isDragEnabled
+            offsetPerLevel={35}
           />
 
         </div>
