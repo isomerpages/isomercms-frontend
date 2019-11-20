@@ -19,6 +19,9 @@
 
   h2{
     margin: 0;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    line-height: 1rem;
   }
 }
 
@@ -43,7 +46,7 @@
   align-items: center;
   margin-top: 4px;
   margin-bottom: 4px;
-  margin-left: -35px;
+  margin-left: -30px;
 
   i{
     color: $isomer-blue;
