@@ -36,7 +36,7 @@ export default class EditTree extends Component {
       ).withSubTree(
         unlinked.reduce(
           dataIterator,
-          new TreeBuilder('Unlinked Pages', 'section'),
+          new TreeBuilder('Unlinked', 'section'),
         ),
       );
 
