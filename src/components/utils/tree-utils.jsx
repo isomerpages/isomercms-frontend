@@ -63,8 +63,9 @@ const dataIterator = (acc, item) => {
  * that can be used for future purposes but are not needed currently
  */
 const ListItem = ({
-  item, onExpand, onCollapse,
+  item, onExpand, onCollapse, isDragging
 }) => {
+
   // Nested list
   if (item.children && item.children.length) {
     // since the top-level nodes 'navigation' and 'unlinked-pages' always have at least one child
@@ -73,20 +74,22 @@ const ListItem = ({
     }
 
     return item.isExpanded
-      ? <div className={styles.navGroup} onClick={() => onCollapse(item.id)}><i class='bx bx-minus-circle'></i> { item.data ? item.data.title : 'no' }</div>
-      : <div className={styles.navGroup} onClick={() => onExpand(item.id)}><i class='bx bx-plus-circle'></i>{ item.data ? item.data.title : 'no' }</div>;
+      ? <div className={styles.navGroup} onClick={() => onCollapse(item.id)}><i class='bx bx-chevron-down' ></i><div className={styles.pageType}><i class='bx bx-folder-open' ></i>{ item.data ? item.data.title : 'no' }</div></div>
+      : <div className={styles.navGroup} onClick={() => onExpand(item.id)}><i class='bx bx-chevron-right' ></i><div className={styles.pageType}><i class='bx bx-folder' ></i>{ item.data ? item.data.title : 'no' }</div></div>;
+
   }
 
-  return <div className={styles.navGroup}>{ item.data ? item.data.title : 'no' }</div>;
+  return <div className={styles.navGroup}><i class='bx bx-box' style={{opacity: 0}}></i><div className={styles.pageType}><i class='bx bx-file-blank' ></i>{ item.data ? item.data.title : 'no' }</div></div>;
 };
 
-const draggableWrapper = (WrappedComponent, item, onExpand, onCollapse, provided) => (
+const draggableWrapper = (WrappedComponent, item, onExpand, onCollapse, provided, snapshot) => (
   // eslint-disable-next-line react/jsx-props-no-spreading
   <div className={styles.draggable} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
     <WrappedComponent
       item={item}
       onExpand={onExpand}
       onCollapse={onCollapse}
+      isDragging={snapshot.isDragging}
     />
   </div>
 );

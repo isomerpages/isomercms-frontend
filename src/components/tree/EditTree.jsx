@@ -123,19 +123,24 @@ export default class EditTree extends Component {
     onExpand,
     onCollapse,
     provided,
+    snapshot,
   }) => {
+  console.log(snapshot)
     if (item.data.type !== 'section') {
-      return draggableWrapper(ListItem, item, onExpand, onCollapse, provided);
+      return draggableWrapper(ListItem, item, onExpand, onCollapse, provided, snapshot);
     }
     return (
       // eslint-disable-next-line react/jsx-props-no-spreading
-      <div ref={provided.innerRef} {...provided.draggableProps}>
-        <div {...provided.dragHandleProps}/>
-        <ListItem
-          item={item}
-          onExpand={onExpand}
-          onCollapse={onCollapse}
-        />
+      <div>
+        <div ref={provided.innerRef} {...provided.draggableProps}>
+          <div {...provided.dragHandleProps}/>
+          <ListItem
+            item={item}
+            onExpand={onExpand}
+            onCollapse={onCollapse}
+          />
+        </div>
+        <button className={styles.createFolder}><i class='bx bx-folder-plus' ></i>Create a new folder</button>
       </div>
     );
   };
@@ -149,6 +154,7 @@ export default class EditTree extends Component {
       <div>
         <Header/>
         <div className={styles.menuEditorSidebar}>
+        <p>Drag and drop pages to edit the menu</p>
           <Tree
             tree={tree}
             renderItem={this.renderItem}
@@ -158,6 +164,7 @@ export default class EditTree extends Component {
             isNestingEnabled
             isDragEnabled
           />
+
         </div>
       </div>
       )

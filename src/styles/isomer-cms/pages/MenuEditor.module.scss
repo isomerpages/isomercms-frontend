@@ -6,13 +6,19 @@
   margin-top: $header-height;
   padding-left: 20px;
   padding-right: 20px;
-  width: 480px;
+  padding-top: 30px;
   padding-bottom: 100px;
+  width: 480px;
+
+
+  p{
+    font-size: 14px;
+  }
 
 
   h2{
     margin: 0;
-    margin-top: 20px;
+    margin-top: 10px;
   }
 }
 
@@ -22,6 +28,7 @@
 }
 
 .navGroup{
+  width: 320px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -30,11 +37,45 @@
   margin-bottom: 2px;
 
   i{
-    padding-right: 3px;
     color: $isomer-blue;
+    font-size: 20px;
+    padding-right: 5px;
+  }
+
+  .transparent{
+    opacity: 0 !important;
+  }
+
+  .pageType{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    i{
+      font-size: 18px;
+      color: lighten($body-text,.5);
+      padding-right: 5px;
+    }
   }
 }
 
-.draggable{
-  border: 1px solid lightgrey;
+.createFolder{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  border: 1px solid $isomer-blue;
+  color: $isomer-blue;
+  border-radius: 5px;
+  padding: 10px 20px;
+  background: transparent;
+  font-size: 14px;
+
+  margin-bottom: 10px;
+
+  i{
+    padding-right: 5px;
+  }
 }
