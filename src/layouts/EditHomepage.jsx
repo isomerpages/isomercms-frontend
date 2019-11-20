@@ -343,7 +343,9 @@ export default class EditHomepage extends Component {
       const idArray = id.split('-');
       const elemType = idArray[0];
 
-      const { frontMatter, errors } = this.state;
+      const {
+        frontMatter, errors, displaySections, displayDropdownElems, displayHighlights,
+      } = this.state;
       let newSections = [];
       let newErrors = [];
 
@@ -363,8 +365,16 @@ export default class EditHomepage extends Component {
           newErrors = update(errors, {
             sections: {
               $push: [sectionType],
-            }
-          })
+            },
+          });
+
+          const newDisplaySections = update(displaySections, {
+            $push: [true],
+          });
+
+          this.setState({
+            displaySections: newDisplaySections,
+          });
           break;
         }
         case 'dropdown': {
@@ -431,6 +441,14 @@ export default class EditHomepage extends Component {
               $splice: [[dropdownsIndex, 0, DropdownElemConstructor()]],
             },
           });
+
+          const newDisplayDropdownElems = update(displayDropdownElems, {
+            $splice: [[dropdownsIndex, 0, true]],
+          });
+
+          this.setState({
+            displayDropdownElems: newDisplayDropdownElems,
+          });
           break;
         }
         case 'highlight': {
@@ -450,6 +468,14 @@ export default class EditHomepage extends Component {
             highlights: {
               $splice: [[highlightIndex, 0, KeyHighlightConstructor()]],
             },
+          });
+
+          const newDisplayHighlights = update(displayHighlights, {
+            $splice: [[highlightIndex, 0, true]],
+          });
+
+          this.setState({
+            displayHighlights: newDisplayHighlights,
           });
           break;
         }
@@ -475,7 +501,9 @@ export default class EditHomepage extends Component {
       const idArray = id.split('-');
       const elemType = idArray[0];
 
-      const { frontMatter, errors } = this.state;
+      const {
+        frontMatter, errors, displaySections, displayDropdownElems, displayHighlights,
+      } = this.state;
       let newSections = [];
       let newErrors = {};
 
@@ -496,6 +524,14 @@ export default class EditHomepage extends Component {
             sections: {
               $splice: [[sectionIndex, 1]],
             },
+          });
+
+          const newDisplaySections = update(displaySections, {
+            $splice: [[sectionIndex, 1]],
+          });
+
+          this.setState({
+            displaySections: newDisplaySections,
           });
           break;
         }
@@ -551,6 +587,14 @@ export default class EditHomepage extends Component {
               $splice: [[dropdownsIndex, 1]],
             },
           });
+
+          const newDisplayDropdownElems = update(displayDropdownElems, {
+            $splice: [[dropdownsIndex, 1]],
+          });
+
+          this.setState({
+            displayDropdownElems: newDisplayDropdownElems,
+          });
           break;
         }
         case 'highlight': {
@@ -569,6 +613,14 @@ export default class EditHomepage extends Component {
             highlights: {
               $splice: [[highlightIndex, 1]],
             },
+          });
+
+          const newDisplayHighlights = update(displayHighlights, {
+            $splice: [[highlightIndex, 1]],
+          });
+
+          this.setState({
+            displayHighlights: newDisplayHighlights,
           });
           break;
         }
@@ -672,7 +724,9 @@ export default class EditHomepage extends Component {
 
   onDragEnd = (result) => {
     const { source, destination, type } = result;
-    const { frontMatter, errors } = this.state;
+    const {
+      frontMatter, errors, displaySections, displayDropdownElems, displayHighlights,
+    } = this.state;
 
     // If the user dropped the draggable to no known droppable
     if (!destination) return;
@@ -705,6 +759,18 @@ export default class EditHomepage extends Component {
             ],
           },
         });
+
+        const displayBool = displaySections[source.index];
+        const newDisplaySections = update(displaySections, {
+          $splice: [
+            [source.index, 1],
+            [destination.index, 0, displayBool],
+          ],
+        });
+
+        this.setState({
+          displaySections: newDisplaySections,
+        });
         break;
       }
       case 'dropdownelem': {
@@ -733,6 +799,18 @@ export default class EditHomepage extends Component {
             ],
           },
         });
+
+        const displayBool = displayDropdownElems[source.index];
+        const newDisplayDropdownElems = update(displayDropdownElems, {
+          $splice: [
+            [source.index, 1],
+            [destination.index, 0, displayBool],
+          ],
+        });
+
+        this.setState({
+          displayDropdownElems: newDisplayDropdownElems,
+        });
         break;
       }
       case 'highlight': {
@@ -758,6 +836,18 @@ export default class EditHomepage extends Component {
               [destination.index, 0, draggedError], // Splice error into its new position
             ],
           },
+        });
+
+        const displayBool = displayHighlights[source.index];
+        const newDisplayHighlights = update(displayHighlights, {
+          $splice: [
+            [source.index, 1],
+            [destination.index, 0, displayBool],
+          ],
+        });
+
+        this.setState({
+          displayHighlights: newDisplayHighlights,
         });
         break;
       }
