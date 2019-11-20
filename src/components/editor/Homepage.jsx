@@ -412,90 +412,92 @@ const EditorHeroSection = ({
           <span>
             <i>Note: you can only have either Key Highlights+Hero button or a Hero Dropdown</i>
           </span>
-          {dropdown
-            ? (
-              <>
-                <button type="button" id="dropdown-delete" className={elementStyles.warning} onClick={deleteHandler}>Delete Hero Dropdown</button>
-                <HeroDropdown
-                  title={dropdown.title}
-                  options={dropdown.options}
-                  sectionIndex={sectionIndex}
-                  createHandler={createHandler}
-                  deleteHandler={deleteHandler}
-                  onFieldChange={onFieldChange}
-                  displayDropdownElems={displayDropdownElems}
-                  displayHandler={displayHandler}
-                  errors={errors}
-                />
-              </>
-            )
-            : (
-              <div className={styles.card}>
-                <button type="button" id="dropdown-create" className={elementStyles.blue} onClick={createHandler}>Create Hero Dropdown</button>
-                <HeroButton
-                  button={button}
-                  url={url}
-                  sectionIndex={sectionIndex}
-                  onFieldChange={onFieldChange}
-                  errors={errors.sections[0].hero}
-                />
-                <Droppable droppableId="highlight" type="highlight">
-                  {(droppableProvided) => (
-                  /* eslint-disable react/jsx-props-no-spreading */
-                    <div
-                      className={styles.card}
-                      ref={droppableProvided.innerRef}
-                      {...droppableProvided.droppableProps}
-                    >
-                      {(highlights && highlights.length > 0)
-                        ? (
-                          <>
-                            <b>Hero highlights</b>
-                            {highlights.map((highlight, highlightIndex) => (
-                              <Draggable
-                                draggableId={`highlight-${highlightIndex}-draggable`}
-                                index={highlightIndex}
-                              >
-                                {(draggableProvided) => (
-                                  <div
-                                    className={styles.card}
-                                    key={highlightIndex}
-                                    {...draggableProvided.draggableProps}
-                                    {...draggableProvided.dragHandleProps}
-                                    ref={draggableProvided.innerRef}
-                                  >
-                                    <KeyHighlight
-                                      key={`highlight-${highlightIndex}`}
-                                      title={highlight.title}
-                                      description={highlight.description}
-                                      background={highlight.background}
-                                      url={highlight.url}
-                                      highlightIndex={highlightIndex}
-                                      onFieldChange={onFieldChange}
-                                      shouldDisplay={displayHighlights[highlightIndex]}
-                                      displayHandler={displayHandler}
-                                      shouldAllowMoreHighlights={
-                                        highlights.length < MAX_NUM_KEY_HIGHLIGHTS
-                                      }
-                                      deleteHandler={deleteHandler}
-                                      errors={errors.highlights[highlightIndex]}
-                                    />
-                                  </div>
-                                )}
-                              </Draggable>
-                            ))}
-                          </>
-                        )
-                        : null }
-                      {highlights.length < MAX_NUM_KEY_HIGHLIGHTS
-                        ? <button type="button" id={`highlight-${highlights.length}-create`} className={elementStyles.blue} onClick={createHandler}>Create highlight</button>
-                        : <button type="button" disabled className={elementStyles.disabled}>Create highlight</button>}
-                      {droppableProvided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </div>
-            )}
+          <div className={styles.card}>
+            {dropdown
+              ? (
+                <>
+                  <button type="button" id="dropdown-delete" className={elementStyles.warning} onClick={deleteHandler}>Delete Hero Dropdown</button>
+                  <HeroDropdown
+                    title={dropdown.title}
+                    options={dropdown.options}
+                    sectionIndex={sectionIndex}
+                    createHandler={createHandler}
+                    deleteHandler={deleteHandler}
+                    onFieldChange={onFieldChange}
+                    displayDropdownElems={displayDropdownElems}
+                    displayHandler={displayHandler}
+                    errors={errors}
+                  />
+                </>
+              )
+              : (
+                <>
+                  <button type="button" id="dropdown-create" className={elementStyles.blue} onClick={createHandler}>Create Hero Dropdown</button>
+                  <HeroButton
+                    button={button}
+                    url={url}
+                    sectionIndex={sectionIndex}
+                    onFieldChange={onFieldChange}
+                    errors={errors.sections[0].hero}
+                  />
+                  <Droppable droppableId="highlight" type="highlight">
+                    {(droppableProvided) => (
+                    /* eslint-disable react/jsx-props-no-spreading */
+                      <div
+                        className={styles.card}
+                        ref={droppableProvided.innerRef}
+                        {...droppableProvided.droppableProps}
+                      >
+                        {(highlights && highlights.length > 0)
+                          ? (
+                            <>
+                              <b>Hero highlights</b>
+                              {highlights.map((highlight, highlightIndex) => (
+                                <Draggable
+                                  draggableId={`highlight-${highlightIndex}-draggable`}
+                                  index={highlightIndex}
+                                >
+                                  {(draggableProvided) => (
+                                    <div
+                                      className={styles.card}
+                                      key={highlightIndex}
+                                      {...draggableProvided.draggableProps}
+                                      {...draggableProvided.dragHandleProps}
+                                      ref={draggableProvided.innerRef}
+                                    >
+                                      <KeyHighlight
+                                        key={`highlight-${highlightIndex}`}
+                                        title={highlight.title}
+                                        description={highlight.description}
+                                        background={highlight.background}
+                                        url={highlight.url}
+                                        highlightIndex={highlightIndex}
+                                        onFieldChange={onFieldChange}
+                                        shouldDisplay={displayHighlights[highlightIndex]}
+                                        displayHandler={displayHandler}
+                                        shouldAllowMoreHighlights={
+                                          highlights.length < MAX_NUM_KEY_HIGHLIGHTS
+                                        }
+                                        deleteHandler={deleteHandler}
+                                        errors={errors.highlights[highlightIndex]}
+                                      />
+                                    </div>
+                                  )}
+                                </Draggable>
+                              ))}
+                            </>
+                          )
+                          : null }
+                        {highlights.length < MAX_NUM_KEY_HIGHLIGHTS
+                          ? <button type="button" id={`highlight-${highlights.length}-create`} className={elementStyles.blue} onClick={createHandler}>Create highlight</button>
+                          : <button type="button" disabled className={elementStyles.disabled}>Create highlight</button>}
+                        {droppableProvided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </>
+              )}
+          </div>
         </>
       )
       : null}
