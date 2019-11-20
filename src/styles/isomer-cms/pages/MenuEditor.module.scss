@@ -8,7 +8,8 @@
   padding-right: 20px;
   padding-top: 30px;
   padding-bottom: 100px;
-  width: 480px;
+  font-size: 14px;
+  background: $base-background;
 
 
   p{
@@ -18,23 +19,31 @@
 
   h2{
     margin: 0;
-    margin-top: 10px;
   }
 }
 
 .treeTitle{
-  font-size: 20px;
-  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  h2{
+    font-size: 16px;
+    font-weight: bold;
+  }
+
 }
 
 .navGroup{
-  width: 320px;
+  width: 280px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  margin-top: 2px;
-  margin-bottom: 2px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  margin-left: -35px;
 
   i{
     color: $isomer-blue;
@@ -53,7 +62,7 @@
     align-items: center;
 
     i{
-      font-size: 18px;
+      font-size: 16px;
       color: lighten($body-text,.5);
       padding-right: 5px;
     }
@@ -66,30 +75,30 @@
   justify-content: center;
   align-items: center;
 
-  border: 1px solid $isomer-blue;
   color: $isomer-blue;
   border-radius: 5px;
-  padding: 10px 20px;
   background: transparent;
   font-size: 14px;
+  font-weight: normal;
 
   margin-bottom: 10px;
 
   i{
     padding-right: 5px;
+    font-size: 16px;
   }
 }
 
 .isDragging{
-  border: 1px solid $isomer-blue;
   border-radius: 3px;
   padding: 5px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  border: 1px solid $isomer-blue;
 }
 
 .isDraggingPlaceholderBox{
-  border: 1px dashed lighten($isomer-blue, 10%);
   background: $base-background-dark;
   border-radius: 3px;
   padding: 5px;
+  border: 1px dashed lighten($isomer-blue, 20%);
 }

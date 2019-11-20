@@ -70,7 +70,7 @@ const ListItem = ({
   if (item.children && item.children.length) {
     // since the top-level nodes 'navigation' and 'unlinked-pages' always have at least one child
     if (item.data.type === 'section') {
-      return <h2 className={styles.treeTitle} >{ item.data.title }</h2>;
+      return <div className={styles.treeTitle}><h2>{ item.data.title }</h2></div>;
     }
 
     return item.isExpanded
@@ -84,14 +84,17 @@ const ListItem = ({
 
 const draggableWrapper = (WrappedComponent, item, onExpand, onCollapse, provided, snapshot) => (
   // eslint-disable-next-line react/jsx-props-no-spreading
-  <div className={styles.draggable} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-    <WrappedComponent
-      item={item}
-      onExpand={onExpand}
-      onCollapse={onCollapse}
-      isDragging={snapshot.isDragging}
-    />
-  </div>
+  <>
+    <div className={styles.draggable} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+      <WrappedComponent
+        item={item}
+        onExpand={onExpand}
+        onCollapse={onCollapse}
+        isDragging={snapshot.isDragging}
+      />
+    </div>
+
+    </>
 );
 
 export {

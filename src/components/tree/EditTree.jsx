@@ -140,7 +140,6 @@ export default class EditTree extends Component {
             onCollapse={onCollapse}
           />
         </div>
-        <button className={styles.createFolder}><i class='bx bx-folder-plus' ></i>Create a new folder</button>
       </>
     );
   };
@@ -151,23 +150,25 @@ export default class EditTree extends Component {
     return (
       tree
       && (
-      <div>
+      <>
         <Header/>
         <div className={styles.menuEditorSidebar}>
-        <p>Drag and drop pages to edit the menu</p>
-          <Tree
-            tree={tree}
-            renderItem={this.renderItem}
-            onExpand={this.onExpand}
-            onCollapse={this.onCollapse}
-            onDragEnd={this.onDragEnd}
-            isNestingEnabled
-            isDragEnabled
-            offsetPerLevel={35}
-          />
-
+          <p>Drag and drop pages to edit the menu</p>
+            <Tree
+              tree={tree}
+              renderItem={this.renderItem}
+              onExpand={this.onExpand}
+              onCollapse={this.onCollapse}
+              onDragEnd={this.onDragEnd}
+              isNestingEnabled
+              isDragEnabled
+              offsetPerLevel={35}
+            />
+          <button className={styles.createFolder}><i class='bx bx-folder-plus' ></i>Create a new folder</button>
+          <div className={styles.isDragging}>Item.isDragging</div>
+          <div className={styles.isDraggingPlaceholderBox}>Item can drop in this box</div>
         </div>
-      </div>
+      </>
       )
     );
   }
