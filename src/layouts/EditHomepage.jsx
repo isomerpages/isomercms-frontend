@@ -894,7 +894,7 @@ export default class EditHomepage extends Component {
     return (
       <>
         <Header />
-        <div className={elementStyles.wrapper}>
+        <form onSubmit={this.savePage} className={elementStyles.wrapper}>
           <div className={editorStyles.homepageEditorSidebar}>
             <h3>
                 Editing homepage
@@ -1128,9 +1128,9 @@ export default class EditHomepage extends Component {
             ))}
           </div>
           <div className={editorStyles.pageEditorFooter}>
-            <button type="button" className={hasErrors ? elementStyles.disabled : elementStyles.blue} disabled={hasErrors} onClick={this.savePage}>Save</button>
+            <button type="submit" className={hasErrors ? elementStyles.disabled : elementStyles.blue} disabled={hasErrors}>Save</button>
           </div>
-        </div>
+        </form>
       </>
     );
   }
