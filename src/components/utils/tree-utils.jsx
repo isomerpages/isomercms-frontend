@@ -69,20 +69,20 @@ const ListItem = ({
   if (item.children && item.children.length) {
     // since the top-level nodes 'navigation' and 'unlinked-pages' always have at least one child
     if (item.data.type === 'section') {
-      return <p className={styles.treeTitle} >{ item.data.title }</p>;
+      return <h2 className={styles.treeTitle} >{ item.data.title }</h2>;
     }
 
     return item.isExpanded
-      ? <button style={{ color: 'green' }} type="button" onClick={() => onCollapse(item.id)}>{ item.data ? item.data.title : 'no' }</button>
-      : <button style={{ color: 'red' }} type="button" onClick={() => onExpand(item.id)}>{ item.data ? item.data.title : 'no' }</button>;
+      ? <div className={styles.navGroup} onClick={() => onCollapse(item.id)}><i class='bx bx-minus-circle'></i> { item.data ? item.data.title : 'no' }</div>
+      : <div className={styles.navGroup} onClick={() => onExpand(item.id)}><i class='bx bx-plus-circle'></i>{ item.data ? item.data.title : 'no' }</div>;
   }
 
-  return <div>{ item.data ? item.data.title : 'no' }</div>;
+  return <div className={styles.navGroup}>{ item.data ? item.data.title : 'no' }</div>;
 };
 
 const draggableWrapper = (WrappedComponent, item, onExpand, onCollapse, provided) => (
   // eslint-disable-next-line react/jsx-props-no-spreading
-  <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+  <div className={styles.draggable} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
     <WrappedComponent
       item={item}
       onExpand={onExpand}

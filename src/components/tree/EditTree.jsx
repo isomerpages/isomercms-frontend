@@ -30,7 +30,7 @@ export default class EditTree extends Component {
       const tree = rootNode.withSubTree(
         directory.reduce(
           dataIterator,
-          new TreeBuilder('Navigation', 'section'),
+          new TreeBuilder('Main Menu', 'section'),
         ),
       // add a root node for the unlinked pages
       ).withSubTree(
