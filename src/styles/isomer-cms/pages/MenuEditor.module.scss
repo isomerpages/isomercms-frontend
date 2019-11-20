@@ -7,10 +7,10 @@
   padding-left: 20px;
   padding-right: 20px;
   padding-top: 30px;
-  padding-bottom: 120px;
+  padding-bottom: 50px;
   font-size: 14px;
   background: $base-background;
-  height: 100vh;
+  height: calc(100vh - #{$header-height});
   width: 400px;
 
 
