@@ -35,11 +35,18 @@ export default class EditCollectionPage extends Component {
       const { content, sha } = resp.data;
       // split the markdown into front matter and content
       const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
+
+      const collectionPagesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}`, {
+        withCredentials: true,
+      });
+      const { collectionPages: leftNavPages } = collectionPagesResp.data;
+
       this.setState({
         content,
         sha,
         editorValue: mdBody.trim(),
         frontMatter,
+        leftNavPages,
       });
     } catch (err) {
       console.log(err);
@@ -133,7 +140,7 @@ export default class EditCollectionPage extends Component {
   render() {
     const { match, location } = this.props;
     const { siteName, collectionName, fileName } = match.params;
-    const { leftNavPages } = location.state;
+    const { leftNavPages } = this.state;
     const { sha, editorValue } = this.state;
     return (
       <>
@@ -162,11 +169,13 @@ export default class EditCollectionPage extends Component {
             <button type="button" onClick={this.renamePage}>Rename</button>
           </div>
           <div className={styles.rightPane}>
+            { leftNavPages && (
             <LeftNavPage
               chunk={prependImageSrc(siteName, marked(editorValue))}
               leftNavPages={leftNavPages}
               fileName={fileName}
             />
+            )}
           </div>
         </div>
 

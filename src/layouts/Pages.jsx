@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import PageSettingsModal from '../components/PageSettingsModal';
+import CollectionPageSettingsModal from '../components/CollectionPageSettingsModal';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import { prettifyPageFileName } from '../utils';
@@ -13,10 +14,12 @@ import { prettifyPageFileName } from '../utils';
 const RADIX_PARSE_INT = 10;
 
 const PageCard = ({
-  siteName, pageName, pageIndex, settingsToggle,
+  siteName, pageName, pageIndex, settingsToggle, collectionName,
 }) => (
   <li>
-    <Link to={`/sites/${siteName}/pages/${pageName}`}>{prettifyPageFileName(pageName)}</Link>
+    { collectionName
+      ? <Link to={`/sites/${siteName}/collections/${collectionName}/${pageName}`}>{prettifyPageFileName(pageName)}</Link>
+      : <Link to={`/sites/${siteName}/pages/${pageName}`}>{prettifyPageFileName(pageName)}</Link>}
     <button type="button" onClick={settingsToggle} id={`settings-${pageIndex}`}>
       <i id={`settingsIcon-${pageIndex}`} className="bx bx-cog" />
     </button>
@@ -29,7 +32,7 @@ export default class Pages extends Component {
     this.state = {
       pages: [],
       settingsIsActive: false,
-      selectedFileName: '',
+      selectedFile: {},
       createNewPage: false,
     };
   }
@@ -42,7 +45,7 @@ export default class Pages extends Component {
         withCredentials: true,
       });
       const { pages } = resp.data;
-      this.setState({ pages: pages.map((page) => page.fileName) });
+      this.setState({ pages });
     } catch (err) {
       console.log(err);
     }
@@ -56,7 +59,7 @@ export default class Pages extends Component {
     if (idArray[1] === 'NEW') {
       this.setState((currState) => ({
         settingsIsActive: !currState.settingsIsActive,
-        selectedFileName: '',
+        selectedFile: null,
         createNewPage: true,
       }));
     } else {
@@ -65,7 +68,7 @@ export default class Pages extends Component {
 
       this.setState((currState) => ({
         settingsIsActive: !currState.settingsIsActive,
-        selectedFileName: currState.settingsIsActive ? '' : currState.pages[pageIndex],
+        selectedFile: currState.settingsIsActive ? null : currState.pages[pageIndex],
         createNewPage: false,
       }));
     }
@@ -73,10 +76,13 @@ export default class Pages extends Component {
 
   render() {
     const {
-      pages, selectedFileName, settingsIsActive, createNewPage,
+      pages, selectedFile, settingsIsActive, createNewPage,
     } = this.state;
+
     const { match, location } = this.props;
     const { siteName } = match.params;
+    const isCollectionPage = selectedFile && selectedFile.type === 'collection';
+
     return (
       <>
         <Header />
@@ -84,16 +90,30 @@ export default class Pages extends Component {
         {/* main bottom section */}
         <div className={elementStyles.wrapper}>
           {/* Page settings modal */}
-          { settingsIsActive
-            ? (
+          { settingsIsActive && !isCollectionPage
+            && (
               <PageSettingsModal
                 settingsToggle={this.settingsToggle}
                 siteName={siteName}
-                fileName={selectedFileName}
+                fileName={selectedFile ? selectedFile.fileName : ''}
                 isNewPage={createNewPage}
               />
-            )
-            : null}
+            )}
+          {/**
+           * Collection page settings modal
+           * This modal only aims to alter the settings for existing collection pages
+           * It should not be shown for creation of new pages as
+           * that is what `PageSettingsModal` is for
+           */}
+          { settingsIsActive && isCollectionPage
+            && (
+              <CollectionPageSettingsModal
+                settingsToggle={this.settingsToggle}
+                siteName={siteName}
+                fileName={selectedFile.fileName}
+                collectionName={selectedFile.collectionName}
+              />
+            )}
           <Sidebar siteName={siteName} currPath={location.pathname} />
 
           {/* main section starts here */}
@@ -118,12 +138,13 @@ Create New Page
                   <Link to={`/sites/${siteName}/homepage`}>Homepage</Link>
                 </li>
                 {pages.length > 0
-                  ? pages.map((pageName, pageIndex) => (
+                  ? pages.map((page, pageIndex) => (
                     <PageCard
                       siteName={siteName}
-                      pageName={pageName}
+                      pageName={page.fileName}
                       pageIndex={pageIndex}
                       settingsToggle={this.settingsToggle}
+                      collectionName={page.collectionName ? page.collectionName : ''}
                     />
                   ))
                   : 'Loading Pages...'}
@@ -143,6 +164,7 @@ PageCard.propTypes = {
   pageName: PropTypes.string.isRequired,
   pageIndex: PropTypes.number.isRequired,
   settingsToggle: PropTypes.func.isRequired,
+  collectionName: PropTypes.string.isRequired,
 };
 
 Pages.propTypes = {
