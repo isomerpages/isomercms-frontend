@@ -710,13 +710,11 @@ export default class EditHomepage extends Component {
         sha: state.sha,
       };
 
-      const resp = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/homepage`, params, {
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/homepage`, params, {
         withCredentials: true,
       });
 
-      const { sha } = resp.data;
-
-      this.setState({ sha });
+      window.location.reload();
     } catch (err) {
       console.log(err);
     }
