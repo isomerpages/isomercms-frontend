@@ -164,7 +164,8 @@ export default class EditTree extends Component {
               isDragEnabled
               offsetPerLevel={35}
             />
-          <button className={styles.createFolder}><i class='bx bx-folder-plus' ></i>Create a new folder</button>
+          <button className={styles.createNew}><i class='bx bx-folder-plus' ></i>Create a new folder</button>
+          <button className={styles.createNew}><i class='bx bx-link' ></i>Create an external link</button>
           <div className={styles.isDragging}>Item.isDragging</div>
           <div className={styles.isDraggingPlaceholderBox}>Item can drop in this box</div>
         </div>
