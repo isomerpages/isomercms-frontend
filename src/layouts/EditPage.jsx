@@ -96,14 +96,13 @@ export default class EditPage extends Component {
     const { editorValue } = this.state;
     return (
       <>
-        <Header />
+        <Header
+          title={prettifyPageFileName(fileName)}
+          backButtonText="Back to Pages"
+          backButtonUrl={`/sites/${siteName}/pages`}
+        />
         <div className={elementStyles.wrapper}>
           <div className={editorStyles.pageEditorSidebar}>
-            <h3>
-              Editing
-              {' '}
-              {prettifyPageFileName(fileName)}
-            </h3>
             <SimpleMDE
               onChange={this.onEditorChange}
               value={editorValue}
