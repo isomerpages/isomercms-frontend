@@ -57,6 +57,12 @@ export default class Files extends Component {
           <div className={contentStyles.mainSection}>
             <div className={contentStyles.sectionHeader}>
               <h1 className={contentStyles.sectionTitle}>Files</h1>
+              <button
+                type="button"
+                className={elementStyles.blue}
+              >
+                Upload file
+              </button>
             </div>
             <div className={contentStyles.contentContainerBars}>
               {/* File cards */}
