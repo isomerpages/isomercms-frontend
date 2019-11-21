@@ -259,7 +259,7 @@ export default class Resources extends Component {
                     <>
                       { resourcePages
                         ? (
-                          <ResourcePages 
+                          <ResourcePages
                             resourcePages={resourcePages}
                             siteName={siteName}
                             settingsToggle={this.settingsToggle}
@@ -296,10 +296,10 @@ ResourcePages.propTypes = {
       siteName: PropTypes.string.isRequired,
       category: PropTypes.string.isRequired,
       fileName: PropTypes.string.isRequired,
-    })
-  ),
+    }),
+  ).isRequired,
   siteName: PropTypes.string.isRequired,
-}
+};
 
 ResourceCard.propTypes = {
   fileName: PropTypes.string.isRequired,
