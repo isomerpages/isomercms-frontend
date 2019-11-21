@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import Tree, { mutateTree, moveItemOnTree } from '@atlaskit/tree';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import TreeBuilder from '../utils/tree-builder';
-import { dataIterator, ListItem, draggableWrapper } from '../utils/tree-utils';
-import Header from '../../components/Header';
-import styles from '../../styles/isomer-cms/pages/MenuEditor.module.scss';
+import TreeBuilder from '../components/utils/tree-builder';
+import { dataIterator, ListItem, draggableWrapper } from '../components/utils/tree-utils';
+import Header from '../components/Header';
+import styles from '../styles/isomer-cms/pages/MenuEditor.module.scss';
 
 const rootNode = new TreeBuilder('root', 'root', '');
 
-export default class EditTree extends Component {
+export default class EditNav extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -40,6 +40,7 @@ export default class EditTree extends Component {
         ),
       );
 
+      console.log(tree);
       this.setState({ tree });
     } catch (err) {
       console.log(err);
@@ -125,15 +126,15 @@ export default class EditTree extends Component {
     provided,
     snapshot,
   }) => {
-  console.log(snapshot)
-    if (item.data.type !== 'section') {
+    // Nodes of type `section` and the `Unlinked Pages` folder can't be dragged
+    if (item.data.type !== 'section' && item.data.title !== 'Unlinked Pages') {
       return draggableWrapper(ListItem, item, onExpand, onCollapse, provided, snapshot);
     }
     return (
       // eslint-disable-next-line react/jsx-props-no-spreading
       <>
         <div ref={provided.innerRef} {...provided.draggableProps}>
-          <div {...provided.dragHandleProps}/>
+          <div {...provided.dragHandleProps} />
           <ListItem
             item={item}
             onExpand={onExpand}
@@ -150,10 +151,10 @@ export default class EditTree extends Component {
     return (
       tree
       && (
-      <>
-        <Header/>
-        <div className={styles.menuEditorSidebar}>
-          <p className={styles.instructions}>Drag and drop pages to edit the menu</p>
+        <>
+          <Header />
+          <div className={styles.menuEditorSidebar}>
+            <p className={styles.instructions}>Drag and drop pages to edit the menu</p>
             <Tree
               tree={tree}
               renderItem={this.renderItem}
@@ -164,18 +165,24 @@ export default class EditTree extends Component {
               isDragEnabled
               offsetPerLevel={35}
             />
-          <button className={styles.createNew}><i class='bx bx-folder-plus' ></i>Create a new folder</button>
-          <button className={styles.createNew}><i class='bx bx-link' ></i>Create an external link</button>
-          <div className={styles.isDragging}>Item.isDragging</div>
-          <div className={styles.isDraggingPlaceholderBox}>Item can drop in this box</div>
-        </div>
-      </>
+            <button type="button" className={styles.createNew}>
+              <i className="bx bx-folder-plus" />
+              Create a new folder
+            </button>
+            <button type="button" className={styles.createNew}>
+              <i className="bx bx-link" />
+              Create an external link
+            </button>
+            <div className={styles.isDragging}>Item.isDragging</div>
+            <div className={styles.isDraggingPlaceholderBox}>Item can drop in this box</div>
+          </div>
+        </>
       )
     );
   }
 }
 
-EditTree.propTypes = PropTypes.shape({
+EditNav.propTypes = PropTypes.shape({
   history: PropTypes.object,
   location: PropTypes.object,
   match: {
