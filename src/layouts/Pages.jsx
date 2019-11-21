@@ -145,6 +145,7 @@ Create New Page
                       pageIndex={pageIndex}
                       settingsToggle={this.settingsToggle}
                       collectionName={page.collectionName ? page.collectionName : ''}
+                      key={page.fileName}
                     />
                   ))
                   : 'Loading Pages...'}
