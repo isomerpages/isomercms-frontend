@@ -30,7 +30,7 @@ export default class Pages extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pages: [],
+      pages: undefined,
       settingsIsActive: false,
       selectedFile: {},
       createNewPage: false,
@@ -133,22 +133,27 @@ Create New Page
             <div className={contentStyles.contentContainerBars}>
 
               {/* Page cards */}
-              <ul>
-                <li>
-                  <Link to={`/sites/${siteName}/homepage`}>Homepage</Link>
-                </li>
-                {pages.length > 0
-                  ? pages.map((page, pageIndex) => (
-                    <PageCard
-                      siteName={siteName}
-                      pageName={page.fileName}
-                      pageIndex={pageIndex}
-                      settingsToggle={this.settingsToggle}
-                      collectionName={page.collectionName ? page.collectionName : ''}
-                    />
-                  ))
-                  : 'Loading Pages...'}
-              </ul>
+              {/* Display loader if pages have not been retrieved from API call */}
+              { pages
+                ? (
+                  <ul>
+                    <li>
+                      <Link to={`/sites/${siteName}/homepage`}>Homepage</Link>
+                    </li>
+                    {pages.length > 0
+                      ? pages.map((page, pageIndex) => (
+                        <PageCard
+                          siteName={siteName}
+                          pageName={page.fileName}
+                          pageIndex={pageIndex}
+                          settingsToggle={this.settingsToggle}
+                          collectionName={page.collectionName ? page.collectionName : ''}
+                        />
+                      ))
+                      : null}
+                  </ul>
+                )
+                : 'Loading Pages...'}
               {/* End of page cards */}
             </div>
           </div>
