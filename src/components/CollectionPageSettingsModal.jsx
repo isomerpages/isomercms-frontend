@@ -179,6 +179,7 @@ export default class CollectionPageSettingsModal extends Component {
       <div className={elementStyles.overlay}>
         <div className={elementStyles.modal}>
           <div className={elementStyles.modalHeader}>
+            <h1>Update page settings</h1>
             <button type="button" onClick={settingsToggle}>
               <i className="bx bx-x" />
             </button>
