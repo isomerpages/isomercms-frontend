@@ -19,7 +19,7 @@ import EditHomepage from './layouts/EditHomepage';
 import EditTree from './components/tree/EditTree';
 import Resources from './layouts/Resources';
 import EditResourcePage from './layouts/EditResourcePage';
-// import Menus from './layouts/Menus';
+import Menus from './layouts/Menus';
 // import EditNav from './layouts/EditNav';
 // import EditFooter from './layouts/EditFooter';
 
@@ -50,8 +50,8 @@ function App() {
           <Route path="/sites/:siteName/resources/:resourceName/:fileName" component={EditResourcePage} />
           <Route path="/sites/:siteName/resources" component={Resources} />
           {/* <Route path="/sites/:siteName/menus/footer" component={EditFooter} />
-          <Route path="/sites/:siteName/menus/navigation" component={EditNav} />
-          <Route path="/sites/:siteName/menus" component={Menus} /> */}
+          <Route path="/sites/:siteName/menus/navigation" component={EditNav} />  */}
+          <Route path="/sites/:siteName/menus" component={Menus} />
           <Route path="/sites" component={Sites} />
         </Switch>
       </div>
