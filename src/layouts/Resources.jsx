@@ -41,6 +41,30 @@ const ResourceCard = ({
   );
 };
 
+const ResourcePages = ({
+  resourcePages, settingsToggle, siteName
+}) => (
+  <>
+  {/* Display resource cards */}
+  {resourcePages.length > 0
+    ? (
+      <>
+        {resourcePages.map((resourcePage, resourceIndex) => (
+          <ResourceCard
+            category={resourcePage.category}
+            fileName={resourcePage.fileName}
+            siteName={siteName}
+            settingsToggle={settingsToggle}
+            resourceIndex={resourceIndex}
+          />
+        ))}
+      </>
+    )
+    : null}
+  <CreateResourceCard settingsToggle={settingsToggle} />
+</>
+)
+
 const CreateResourceCard = ({ settingsToggle }) => (
   <button
     type="button"
@@ -235,25 +259,11 @@ export default class Resources extends Component {
                     <>
                       { resourcePages
                         ? (
-                          <>
-                            {/* Display resource cards */}
-                            {resourcePages.length > 0
-                              ? (
-                                <>
-                                  {resourcePages.map((resourcePage, resourceIndex) => (
-                                    <ResourceCard
-                                      category={resourcePage.category}
-                                      fileName={resourcePage.fileName}
-                                      siteName={siteName}
-                                      settingsToggle={this.settingsToggle}
-                                      resourceIndex={resourceIndex}
-                                    />
-                                  ))}
-                                </>
-                              )
-                              : null}
-                            <CreateResourceCard settingsToggle={this.settingsToggle} />
-                          </>
+                          <ResourcePages 
+                            resourcePages={resourcePages}
+                            siteName={siteName}
+                            settingsToggle={this.settingsToggle}
+                          />
                         )
                         : 'Loading resources...'}
                     </>
@@ -278,6 +288,17 @@ Resources.propTypes = {
     pathname: PropTypes.string.isRequired,
   }).isRequired,
 };
+
+ResourcePages.propTypes = {
+  settingsToggle: PropTypes.func.isRequired,
+  resourcePages: PropTypes.arrayOf(
+    PropTypes.shape({
+      siteName: PropTypes.string.isRequired,
+      category: PropTypes.string.isRequired,
+      fileName: PropTypes.string.isRequired,
+    })
+  )
+}
 
 ResourceCard.propTypes = {
   fileName: PropTypes.string.isRequired,
