@@ -1,5 +1,5 @@
-//Test
 @charset "UTF-8";
+@import './isomer-cms/elements/variable';
 .bg-media-color-0 {
     background-color: #4b268e;
 }
@@ -12614,6 +12614,6 @@ a.navbar-item {
 }
 
 .CodeMirror {
-    height: 400px;
+    height: calc(85vh - #{$header-height} - #{$footer-height});
     overflow-y: scroll;
-  }
+}
