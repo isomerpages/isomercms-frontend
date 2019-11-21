@@ -21,7 +21,7 @@ const Breadcrumb = ({ title, collection }) => (
     <div className="bp-container" style={{ right: '50px' }}>
       <div className="row">
         <div className="col">
-          <h1 className="has-text-white"><b>{ title }</b></h1>
+          <h1 className="has-text-white"><b>{ title.split(' ').map((string) => string.charAt(0).toUpperCase() + string.slice(1)).join(' ') }</b></h1>
         </div>
       </div>
     </div>
