@@ -15,11 +15,12 @@ import Images from './layouts/Images';
 import EditImage from './layouts/EditImage';
 import Files from './layouts/Files';
 import EditFile from './layouts/EditFile';
+import Media from './layouts/Media';
 import EditHomepage from './layouts/EditHomepage';
 import EditTree from './components/tree/EditTree';
 import Resources from './layouts/Resources';
 import EditResourcePage from './layouts/EditResourcePage';
-// import Menus from './layouts/Menus';
+import Menus from './layouts/Menus';
 // import EditNav from './layouts/EditNav';
 // import EditFooter from './layouts/EditFooter';
 
@@ -38,11 +39,12 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route path="/sites/:siteName/collections/:collectionName/:fileName" component={EditCollectionPage} />
           <Route path="/sites/:siteName/collections/:collectionName" component={CollectionPages} />
-          <Route path="/sites/:siteName/collections" component={Collections} />
+          {/* <Route path="/sites/:siteName/collections" component={Collections} /> */}
           <Route path="/sites/:siteName/files/:fileName" component={EditFile} />
           <Route path="/sites/:siteName/files" component={Files} />
           <Route path="/sites/:siteName/images/:fileName" component={EditImage} />
           <Route path="/sites/:siteName/images" component={Images} />
+          <Route path="/sites/:siteName/media" component={Media} />
           <Route path="/sites/:siteName/pages/:fileName" component={EditPage} />
           <Route path="/sites/:siteName/pages" component={Pages} />
           <Route path="/sites/:siteName/homepage" component={EditHomepage} />
@@ -50,8 +52,8 @@ function App() {
           <Route path="/sites/:siteName/resources/:resourceName/:fileName" component={EditResourcePage} />
           <Route path="/sites/:siteName/resources" component={Resources} />
           {/* <Route path="/sites/:siteName/menus/footer" component={EditFooter} />
-          <Route path="/sites/:siteName/menus/navigation" component={EditNav} />
-          <Route path="/sites/:siteName/menus" component={Menus} /> */}
+          <Route path="/sites/:siteName/menus/navigation" component={EditNav} />  */}
+          <Route path="/sites/:siteName/menus" component={Menus} />
           <Route path="/sites" component={Sites} />
         </Switch>
       </div>

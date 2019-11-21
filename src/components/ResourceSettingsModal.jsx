@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
+import FormField from './FormField';
 import {
   prettifyResourceCategory,
   slugifyResourceCategory,
@@ -13,45 +14,7 @@ import {
   generateResourceFileName,
 } from '../utils';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-
-// Constants
-const TITLE_MIN_LENGTH = 4;
-const TITLE_MAX_LENGTH = 100;
-const DATE_REGEX = '^([0-9]{4}-[0-9]{2}-[0-9]{2})$';
-const dateRegexTest = RegExp(DATE_REGEX);
-const PERMALINK_REGEX = '^(/([a-z]+([-][a-z]+)*/)+)$';
-const permalinkRegexTest = RegExp(PERMALINK_REGEX);
-const PERMALINK_MIN_LENGTH = 4;
-const PERMALINK_MAX_LENGTH = 50;
-const RADIX_PARSE_INT = 10;
-
-const validateDayOfMonth = (month, day) => {
-  switch (month) {
-    case 1:
-    case 3:
-    case 5:
-    case 7:
-    case 8:
-    case 10:
-    case 12:
-    {
-      return day > 0 && day < 32;
-    }
-    case 4:
-    case 6:
-    case 9:
-    case 11:
-    {
-      return day > 0 && day < 31;
-    }
-    case 2:
-    {
-      return day > 0 && day < 29;
-    }
-    default:
-      return false;
-  }
-};
+import { validateResourceSettings } from '../utils/validators';
 
 export default class ResourceSettingsModal extends Component {
   constructor(props) {
@@ -206,82 +169,8 @@ export default class ResourceSettingsModal extends Component {
 
   changeHandler = (event) => {
     const { id, value } = event.target;
-    let errorMessage = '';
+    const errorMessage = validateResourceSettings(id, value);
 
-    switch (id) {
-      case 'title': {
-        // Title is too short
-        if (value.length < TITLE_MIN_LENGTH) {
-          errorMessage = `The title should be longer than ${TITLE_MIN_LENGTH} characters.`;
-        }
-        // Title is too long
-        if (value.length > TITLE_MAX_LENGTH) {
-          errorMessage = `The title should be shorter than ${TITLE_MAX_LENGTH} characters.`;
-        }
-        break;
-      }
-      case 'date': {
-        // Date is in wrong format
-        if (!dateRegexTest.test(value)) {
-          errorMessage = 'The date should be in the format YYYY-MM-DD.';
-        } else {
-          const dateTokens = value.split('-');
-          const month = parseInt(dateTokens[1], RADIX_PARSE_INT);
-          const day = parseInt(dateTokens[2], RADIX_PARSE_INT);
-
-          // Day value is invalid for the given month
-          if (!validateDayOfMonth(month, day)) {
-            errorMessage = 'The day value is invalid for the given month.';
-          }
-
-          // Month value is invalid
-          if (month < 0 || month > 12) {
-            errorMessage = 'The month value should be from 01 to 12.';
-          }
-        }
-        break;
-      }
-      case 'permalink': {
-        // Permalink is too short
-        if (value.length < PERMALINK_MIN_LENGTH) {
-          errorMessage = `The permalink should be longer than ${PERMALINK_MIN_LENGTH} characters.`;
-        }
-        // Permalink is too long
-        if (value.length > PERMALINK_MAX_LENGTH) {
-          errorMessage = `The permalink should be shorter than ${PERMALINK_MAX_LENGTH} characters.`;
-        }
-        // Permalink fails regex
-        if (!permalinkRegexTest.test(value)) {
-          errorMessage = `The permalink should start and end with slashes and contain 
-            lowercase words separated by hyphens only.
-            `;
-        }
-        break;
-      }
-      case 'fileUrl': {
-        // File URL is too short
-        if (value.length < PERMALINK_MIN_LENGTH) {
-          errorMessage = `The permalink should be longer than ${PERMALINK_MIN_LENGTH} characters.`;
-        }
-        // File URL is too long
-        if (value.length > PERMALINK_MAX_LENGTH) {
-          errorMessage = `The permalink should be shorter than ${PERMALINK_MAX_LENGTH} characters.`;
-        }
-        // File URL fails regex
-        if (!permalinkRegexTest.test(value)) {
-          console.log('FAILED');
-          errorMessage = `The permalink should start and end with slashes and contain 
-            lowercase words separated by hyphens only.
-            `;
-        }
-        // TO-DO
-        // Check if file exists
-        break;
-      }
-      default: {
-        break;
-      }
-    }
     this.setState({
       errors: {
         [id]: errorMessage,
@@ -318,26 +207,24 @@ export default class ResourceSettingsModal extends Component {
             <div className={elementStyles.modalFormFields}>
 
               {/* Title */}
-              <p className={elementStyles.formLabel}>Title</p>
-              <input
-                value={dequoteString(title)}
+              <FormField
+                title="Title"
                 id="title"
-                autoComplete="off"
-                onChange={this.changeHandler}
-                className={errors.title ? `${elementStyles.error}` : null}
+                value={dequoteString(title)}
+                errorMessage={errors.title}
+                isRequired
+                onFieldChange={this.changeHandler}
               />
-              <span className={elementStyles.error}>{errors.title}</span>
 
               {/* Date */}
-              <p className={elementStyles.formLabel}>Date (YYYY-MM-DD, e.g. 2019-12-23)</p>
-              <input
-                value={date}
+              <FormField
+                title="Date (YYYY-MM-DD, e.g. 2019-12-23)"
                 id="date"
-                autoComplete="off"
-                onChange={this.changeHandler}
-                className={errors.date ? `${elementStyles.error}` : null}
+                value={date}
+                errorMessage={errors.date}
+                isRequired
+                onFieldChange={this.changeHandler}
               />
-              <span className={elementStyles.error}>{errors.date}</span>
 
               {/* Resource Category */}
               <p className={elementStyles.formLabel}>Resource Category</p>
@@ -363,29 +250,27 @@ export default class ResourceSettingsModal extends Component {
                 ? (
                   <>
                     {/* Permalink */}
-                    <p className={elementStyles.formLabel}>Permalink</p>
-                    <input
-                      value={permalink}
+                    <FormField
+                      title="Permalink"
                       id="permalink"
-                      autoComplete="off"
-                      onChange={this.changeHandler}
-                      className={errors.permalink ? `${elementStyles.error}` : null}
+                      value={permalink}
+                      errorMessage={errors.permalink}
+                      isRequired
+                      onFieldChange={this.changeHandler}
                     />
-                    <span className={elementStyles.error}>{errors.permalink}</span>
                   </>
                 )
                 : (
                   <>
                     {/* File URL */}
-                    <p className={elementStyles.formLabel}>File URL</p>
-                    <input
-                      value={fileUrl}
+                    <FormField
+                      title="File URL"
                       id="fileUrl"
-                      autoComplete="off"
-                      onChange={this.changeHandler}
-                      className={errors.fileUrl ? `${elementStyles.error}` : null}
+                      value={fileUrl}
+                      errorMessage={errors.fileUrl}
+                      isRequired
+                      onFieldChange={this.changeHandler}
                     />
-                    <span className={elementStyles.error}>{errors.fileUrl}</span>
                   </>
                 )}
             </div>

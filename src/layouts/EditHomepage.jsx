@@ -6,54 +6,59 @@ import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import styles from '../styles/App.module.scss';
 import '../styles/isomer-template.scss';
 import TemplateHeroSection from '../templates/homepage/HeroSection';
 import TemplateInfobarSection from '../templates/homepage/InfobarSection';
 import TemplateResourcesSection from '../templates/homepage/ResourcesSection';
 import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
-import {
-  EditorInfobarSection, EditorResourcesSection, EditorHeroSection, NewSectionCreator,
-} from '../components/editor/Homepage';
+import EditorInfobarSection from '../components/homepage/InfobarSection';
+import EditorResourcesSection from '../components/homepage/ResourcesSection';
+import EditorHeroSection from '../components/homepage/HeroSection';
+import NewSectionCreator from '../components/homepage/NewSectionCreator';
+import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
+import Header from '../components/Header';
+import { validateSections, validateHighlights, validateDropdownElems } from '../utils/validators';
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
 
 // Constants
+// ==========
 const RADIX_PARSE_INT = 10;
 
 // Section constructors
 const ResourcesSectionConstructor = () => ({
   resources: {
-    title: 'TITLE',
-    subtitle: 'SUBTITLE',
-    button: 'BUTTON',
+    title: '',
+    subtitle: '',
+    button: '',
   },
 });
 
 const InfobarSectionConstructor = () => ({
   infobar: {
-    title: 'TITLE',
-    subtitle: 'SUBTITLE',
-    description: 'DESCRIPTION',
-    button: 'BUTTON',
-    url: 'URL',
+    title: '',
+    subtitle: '',
+    description: '',
+    button: '',
+    url: '',
   },
 });
 
 const KeyHighlightConstructor = () => ({
-  title: 'TITLE',
-  description: 'DESCRIPTION',
-  url: 'URL',
+  title: '',
+  description: '',
+  url: '',
 });
 
 const DropdownElemConstructor = () => ({
-  title: 'TITLE',
-  url: 'URL',
+  title: '',
+  url: '',
 });
 
 const DropdownConstructor = () => ({
-  title: 'TITLE',
+  title: '',
   options: [],
 });
 
@@ -87,6 +92,11 @@ export default class EditHomepage extends Component {
       displaySections: [],
       displayHighlights: [],
       displayDropdownElems: [],
+      errors: {
+        sections: [],
+        highlights: [],
+        dropdownElems: [],
+      },
     };
   }
 
@@ -106,6 +116,9 @@ export default class EditHomepage extends Component {
       const displaySections = [];
       let displayHighlights = [];
       let displayDropdownElems = [];
+      const sectionsErrors = [];
+      let dropdownElemsErrors = [];
+      let highlightsErrors = [];
       frontMatter.sections.forEach((section) => {
         // If this is the hero section, hide all highlights/dropdownelems by default
         if (section.hero) {
@@ -113,21 +126,57 @@ export default class EditHomepage extends Component {
           if (dropdown) {
             // Go through section.hero.dropdown.options
             displayDropdownElems = _.fill(Array(dropdown.options.length), false);
+            // Fill in dropdown elem errors array
+            dropdownElemsErrors = _.map(dropdown.options, () => DropdownElemConstructor());
+            // Fill in sectionErrors for hero with dropdown
+            sectionsErrors.push({
+              hero: {
+                title: '', subtitle: '', background: '', button: '', url: '', dropdown: '',
+              },
+            });
           }
           if (keyHighlights) {
             displayHighlights = _.fill(Array(keyHighlights.length), false);
+            // Fill in highlights errors array
+            highlightsErrors = _.map(keyHighlights, () => KeyHighlightConstructor());
+            // Fill in sectionErrors for hero with key highlights
+            sectionsErrors.push({
+              hero: {
+                title: '', subtitle: '', background: '', button: '', url: '',
+              },
+            });
           }
+        }
+
+        // Check if there is already a resources section
+        if (section.resources) {
+          sectionsErrors.push(ResourcesSectionConstructor());
+          hasResources = true;
+        }
+
+        if (section.infobar) {
+          sectionsErrors.push(InfobarSectionConstructor());
         }
 
         // Minimize all sections by default
         displaySections.push(false);
-
-        // Check if there is already a resources section
-        if (section.resources) hasResources = true;
       });
 
+      // Initialize errors object
+      const errors = {
+        sections: sectionsErrors,
+        highlights: highlightsErrors,
+        dropdownElems: dropdownElemsErrors,
+      };
+
       this.setState({
-        frontMatter, sha, hasResources, displaySections, displayDropdownElems, displayHighlights,
+        frontMatter,
+        sha,
+        hasResources,
+        displaySections,
+        displayDropdownElems,
+        displayHighlights,
+        errors,
       });
     } catch (err) {
       console.log(err);
@@ -137,6 +186,7 @@ export default class EditHomepage extends Component {
   onFieldChange = async (event) => {
     try {
       const { state } = this;
+      const { errors } = state;
       const { id, value } = event.target;
       const idArray = id.split('-');
       const elemType = idArray[0];
@@ -166,12 +216,21 @@ export default class EditHomepage extends Component {
 
           sections[sectionIndex][sectionType][field] = value;
 
+          const newErrors = update(errors, {
+            sections: {
+              [sectionIndex]: {
+                $set: validateSections(errors.sections[sectionIndex], sectionType, field, value),
+              },
+            },
+          });
+
           this.setState((currState) => ({
             ...currState,
             frontMatter: {
               ...currState.frontMatter,
               sections,
             },
+            errors: newErrors,
           }));
 
           this.scrollRefs[sectionIndex].scrollIntoView();
@@ -189,12 +248,21 @@ export default class EditHomepage extends Component {
           highlights[highlightsIndex][field] = value;
           sections[0].hero.key_highlights = highlights;
 
+          const newErrors = update(errors, {
+            highlights: {
+              [highlightsIndex]: {
+                $set: validateHighlights(errors.highlights[highlightsIndex], field, value),
+              },
+            },
+          });
+
           this.setState((currState) => ({
             ...currState,
             frontMatter: {
               ...currState.frontMatter,
               sections,
             },
+            errors: newErrors,
           }));
 
           this.scrollRefs[0].scrollIntoView();
@@ -212,12 +280,21 @@ export default class EditHomepage extends Component {
           dropdowns[dropdownsIndex][field] = value;
           sections[0].hero.dropdown.options = dropdowns;
 
+          const newErrors = update(errors, {
+            dropdownElems: {
+              [dropdownsIndex]: {
+                $set: validateDropdownElems(errors.dropdownElems[dropdownsIndex], field, value),
+              },
+            },
+          });
+
           this.setState((currState) => ({
             ...currState,
             frontMatter: {
               ...currState.frontMatter,
               sections,
             },
+            errors: newErrors,
           }));
 
           this.scrollRefs[0].scrollIntoView();
@@ -225,6 +302,14 @@ export default class EditHomepage extends Component {
         }
         default: {
           // The field that changed is the dropdown placeholder title
+
+          const newErrors = update(errors, {
+            sections: {
+              0: {
+                $set: validateSections(errors.sections[0], 'hero', 'dropdown', value),
+              },
+            },
+          });
 
           this.setState((currState) => ({
             ...currState,
@@ -242,6 +327,7 @@ export default class EditHomepage extends Component {
                 },
               }),
             },
+            errors: newErrors,
           }));
 
           this.scrollRefs[0].scrollIntoView();
@@ -258,13 +344,14 @@ export default class EditHomepage extends Component {
       const idArray = id.split('-');
       const elemType = idArray[0];
 
-      const { frontMatter } = this.state;
+      const {
+        frontMatter, errors, displaySections, displayDropdownElems, displayHighlights,
+      } = this.state;
       let newSections = [];
+      let newErrors = [];
 
       switch (elemType) {
         case 'section': {
-          const sectionType = enumSection(value);
-
           // The Isomer site can only have 1 resources section in the homepage
           // Set hasResources to prevent the creation of more resources sections
           if (value === 'resources') {
@@ -272,7 +359,20 @@ export default class EditHomepage extends Component {
           }
 
           newSections = update(frontMatter.sections, {
-            $push: [sectionType],
+            $push: [enumSection(value)],
+          });
+          newErrors = update(errors, {
+            sections: {
+              $push: [enumSection(value)],
+            },
+          });
+
+          const newDisplaySections = update(displaySections, {
+            $push: [true],
+          });
+
+          this.setState({
+            displaySections: newDisplaySections,
           });
           break;
         }
@@ -297,37 +397,84 @@ export default class EditHomepage extends Component {
               },
             },
           });
+
+          newErrors = update(errors, {
+            sections: {
+              0: {
+                hero: {
+                  button: {
+                    $set: '',
+                  },
+                  url: {
+                    $set: '',
+                  },
+                  dropdown: {
+                    $set: '',
+                  },
+                },
+              },
+            },
+            highlights: {
+              $set: '',
+            },
+          });
           break;
         }
         case 'dropdownelem': {
           const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT) + 1;
-          const dropdownElem = DropdownElemConstructor();
 
           newSections = update(frontMatter.sections, {
             0: {
               hero: {
                 dropdown: {
                   options: {
-                    $splice: [[dropdownsIndex, 0, dropdownElem]],
+                    $splice: [[dropdownsIndex, 0, DropdownElemConstructor()]],
                   },
                 },
               },
             },
           });
+
+          newErrors = update(errors, {
+            dropdownElems: {
+              $splice: [[dropdownsIndex, 0, DropdownElemConstructor()]],
+            },
+          });
+
+          const newDisplayDropdownElems = update(displayDropdownElems, {
+            $splice: [[dropdownsIndex, 0, true]],
+          });
+
+          this.setState({
+            displayDropdownElems: newDisplayDropdownElems,
+          });
           break;
         }
         case 'highlight': {
           const highlightIndex = parseInt(idArray[1], 10) + 1;
-          const keyHighlight = KeyHighlightConstructor();
 
           newSections = update(frontMatter.sections, {
             0: {
               hero: {
                 key_highlights: {
-                  $splice: [[highlightIndex, 0, keyHighlight]],
+                  $splice: [[highlightIndex, 0, KeyHighlightConstructor()]],
                 },
               },
             },
+          });
+
+          newErrors = update(errors, {
+            highlights: {
+              $splice: [[highlightIndex, 0, KeyHighlightConstructor()]],
+            },
+          });
+
+          const newDisplayHighlights = update(displayHighlights, {
+            $splice: [[highlightIndex, 0, true]],
+          });
+
+          this.setState({
+            displayHighlights: newDisplayHighlights,
           });
           break;
         }
@@ -340,6 +487,7 @@ export default class EditHomepage extends Component {
           ...currState.frontMatter,
           sections: newSections,
         },
+        errors: newErrors,
       }));
     } catch (err) {
       console.log(err);
@@ -352,8 +500,11 @@ export default class EditHomepage extends Component {
       const idArray = id.split('-');
       const elemType = idArray[0];
 
-      const { frontMatter } = this.state;
+      const {
+        frontMatter, errors, displaySections, displayDropdownElems, displayHighlights,
+      } = this.state;
       let newSections = [];
+      let newErrors = {};
 
       switch (elemType) {
         case 'section': {
@@ -367,6 +518,20 @@ export default class EditHomepage extends Component {
           newSections = update(frontMatter.sections, {
             $splice: [[sectionIndex, 1]],
           });
+
+          newErrors = update(errors, {
+            sections: {
+              $splice: [[sectionIndex, 1]],
+            },
+          });
+
+          const newDisplaySections = update(displaySections, {
+            $splice: [[sectionIndex, 1]],
+          });
+
+          this.setState({
+            displaySections: newDisplaySections,
+          });
           break;
         }
         case 'dropdown': {
@@ -378,6 +543,24 @@ export default class EditHomepage extends Component {
                 },
                 key_highlights: {
                   $set: [],
+                },
+              },
+            },
+          });
+
+          newErrors = update(errors, {
+            dropdownElems: {
+              $set: [],
+            },
+            highlights: {
+              $set: [],
+            },
+            sections: {
+              0: {
+                hero: {
+                  dropdown: {
+                    $set: '',
+                  },
                 },
               },
             },
@@ -397,6 +580,20 @@ export default class EditHomepage extends Component {
               },
             },
           });
+
+          newErrors = update(errors, {
+            dropdownElems: {
+              $splice: [[dropdownsIndex, 1]],
+            },
+          });
+
+          const newDisplayDropdownElems = update(displayDropdownElems, {
+            $splice: [[dropdownsIndex, 1]],
+          });
+
+          this.setState({
+            displayDropdownElems: newDisplayDropdownElems,
+          });
           break;
         }
         case 'highlight': {
@@ -410,6 +607,20 @@ export default class EditHomepage extends Component {
               },
             },
           });
+
+          newErrors = update(errors, {
+            highlights: {
+              $splice: [[highlightIndex, 1]],
+            },
+          });
+
+          const newDisplayHighlights = update(displayHighlights, {
+            $splice: [[highlightIndex, 1]],
+          });
+
+          this.setState({
+            displayHighlights: newDisplayHighlights,
+          });
           break;
         }
         default:
@@ -421,6 +632,7 @@ export default class EditHomepage extends Component {
           ...currState.frontMatter,
           sections: newSections,
         },
+        errors: newErrors,
       }));
     } catch (err) {
       console.log(err);
@@ -497,13 +709,11 @@ export default class EditHomepage extends Component {
         sha: state.sha,
       };
 
-      const resp = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/homepage`, params, {
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/homepage`, params, {
         withCredentials: true,
       });
 
-      const { sha } = resp.data;
-
-      this.setState({ sha });
+      window.location.reload();
     } catch (err) {
       console.log(err);
     }
@@ -511,7 +721,9 @@ export default class EditHomepage extends Component {
 
   onDragEnd = (result) => {
     const { source, destination, type } = result;
-    const { frontMatter } = this.state;
+    const {
+      frontMatter, errors, displaySections, displayDropdownElems, displayHighlights,
+    } = this.state;
 
     // If the user dropped the draggable to no known droppable
     if (!destination) return;
@@ -523,6 +735,7 @@ export default class EditHomepage extends Component {
     ) return;
 
     let newSections = [];
+    let newErrors = [];
 
     switch (type) {
       case 'editor': {
@@ -532,6 +745,28 @@ export default class EditHomepage extends Component {
             [source.index, 1], // Remove elem from its original position
             [destination.index, 0, draggedElem], // Splice elem into its new position
           ],
+        });
+
+        const draggedError = errors.sections[source.index];
+        newErrors = update(errors, {
+          sections: {
+            $splice: [
+              [source.index, 1], // Remove error from its original position
+              [destination.index, 0, draggedError], // Splice error into its new position
+            ],
+          },
+        });
+
+        const displayBool = displaySections[source.index];
+        const newDisplaySections = update(displaySections, {
+          $splice: [
+            [source.index, 1],
+            [destination.index, 0, displayBool],
+          ],
+        });
+
+        this.setState({
+          displaySections: newDisplaySections,
         });
         break;
       }
@@ -551,6 +786,28 @@ export default class EditHomepage extends Component {
             },
           },
         });
+
+        const draggedError = errors.dropdownElems[source.index];
+        newErrors = update(errors, {
+          dropdownElems: {
+            $splice: [
+              [source.index, 1], // Remove error from its original position
+              [destination.index, 0, draggedError], // Splice error into its new position
+            ],
+          },
+        });
+
+        const displayBool = displayDropdownElems[source.index];
+        const newDisplayDropdownElems = update(displayDropdownElems, {
+          $splice: [
+            [source.index, 1],
+            [destination.index, 0, displayBool],
+          ],
+        });
+
+        this.setState({
+          displayDropdownElems: newDisplayDropdownElems,
+        });
         break;
       }
       case 'highlight': {
@@ -567,6 +824,28 @@ export default class EditHomepage extends Component {
             },
           },
         });
+
+        const draggedError = errors.highlights[source.index];
+        newErrors = update(errors, {
+          highlights: {
+            $splice: [
+              [source.index, 1], // Remove error from its original position
+              [destination.index, 0, draggedError], // Splice error into its new position
+            ],
+          },
+        });
+
+        const displayBool = displayHighlights[source.index];
+        const newDisplayHighlights = update(displayHighlights, {
+          $splice: [
+            [source.index, 1],
+            [destination.index, 0, displayBool],
+          ],
+        });
+
+        this.setState({
+          displayHighlights: newDisplayHighlights,
+        });
         break;
       }
       default:
@@ -578,6 +857,7 @@ export default class EditHomepage extends Component {
         ...currState.frontMatter,
         sections: newSections,
       },
+      errors: newErrors,
     }));
   }
 
@@ -589,183 +869,214 @@ export default class EditHomepage extends Component {
       displaySections,
       displayHighlights,
       displayDropdownElems,
+      errors,
     } = this.state;
     const { match } = this.props;
     const { siteName } = match.params;
+
+    const hasSectionErrors = _.some(errors.sections, section => {
+      // Section is an object, e.g. { hero: {} }
+      // _.keys(section) produces an array with length 1
+      // The 0th element of the array contains the sectionType
+      const sectionType = _.keys(section)[0]
+      return _.some(section[sectionType], errorMessage => errorMessage.length > 0) === true
+    })
+
+    const hasHighlightErrors = _.some(errors.highlights, highlight => {
+      return _.some(highlight, errorMessage => errorMessage.length > 0) === true
+    })
+
+    const hasDropdownElemErrors = _.some(errors.dropdownElems, dropdownElem => {
+      return _.some(dropdownElem, errorMessage => errorMessage.length > 0) === true
+    })
+
+    const hasErrors = hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors
     return (
       <>
-        <h3>
-          Editing homepage
-        </h3>
-        <div className={`d-flex ${styles.twoPanes}`}>
-          <div className={`p-3 ${styles.leftPane}`}>
-            {/* Site-wide configuration */}
-            {/* <div className={styles.card}>
-              <h4>
-                <b>
-                Site-wide configurations
-                </b>
-              </h4>
-              <p>Site Title</p>
-              <input
-                placeholder="Title"
-                defaultValue={frontMatter.title}
-                value={frontMatter.title}
-                id="site-title"
-                onChange={this.onFieldChange}
-              />
-              <p>Site Subtitle</p>
-              <input
-                placeholder="Subtitle"
-                defaultValue={frontMatter.subtitle}
-                value={frontMatter.subtitle}
-                id="site-subtitle"
-                onChange={this.onFieldChange}
-              />
-              <p>Site description</p>
-              <input
-                placeholder="Description"
-                defaultValue={frontMatter.description}
-                value={frontMatter.description}
-                id="site-description"
-                onChange={this.onFieldChange}
-              />
-              <p>Site image</p>
-              <input
-                placeholder="Image"
-                defaultValue={frontMatter.image}
-                value={frontMatter.image}
-                id="site-image"
-                onChange={this.onFieldChange}
-              />
-            </div> */}
-            {/* Homepage section configurations */}
-            <div className={styles.card}>
-              <p><b>Site notification</b></p>
-              <input placeholder="Notification" defaultValue={frontMatter.notification} value={frontMatter.notification} id="site-notification" onChange={this.onFieldChange} />
-            </div>
-            <DragDropContext onDragEnd={this.onDragEnd}>
-              <Droppable droppableId="leftPane" type="editor">
-                {(droppableProvided) => (
-                  <div
-                    className={styles.card}
-                    ref={droppableProvided.innerRef}
-                    {...droppableProvided.droppableProps}
-                  >
-                    {frontMatter.sections.map((section, sectionIndex) => (
-                      <>
-                        {/* Hero section */}
-                        {section.hero ? (
+        <Header />
+        <form onSubmit={this.savePage} className={elementStyles.wrapper}>
+          <div className={editorStyles.homepageEditorSidebar}>
+            <h3>
+                Editing homepage
+            </h3>
+            <br />
+            <div>
+              <div>
+                {/* Site-wide configuration */}
+                {/* <div className={styles.card}>
+                    <h4>
+                      <b>
+                      Site-wide configurations
+                      </b>
+                    </h4>
+                    <p>Site Title</p>
+                    <input
+                      placeholder="Title"
+                      defaultValue={frontMatter.title}
+                      value={frontMatter.title}
+                      id="site-title"
+                      onChange={this.onFieldChange}
+                    />
+                    <p>Site Subtitle</p>
+                    <input
+                      placeholder="Subtitle"
+                      defaultValue={frontMatter.subtitle}
+                      value={frontMatter.subtitle}
+                      id="site-subtitle"
+                      onChange={this.onFieldChange}
+                    />
+                    <p>Site description</p>
+                    <input
+                      placeholder="Description"
+                      defaultValue={frontMatter.description}
+                      value={frontMatter.description}
+                      id="site-description"
+                      onChange={this.onFieldChange}
+                    />
+                    <p>Site image</p>
+                    <input
+                      placeholder="Image"
+                      defaultValue={frontMatter.image}
+                      value={frontMatter.image}
+                      id="site-image"
+                      onChange={this.onFieldChange}
+                    />
+                  </div> */}
+                {/* <div>
+                    <p><b>Site notification</b></p>
+                    <input
+                      placeholder="Notification"
+                      defaultValue={frontMatter.notification}
+                      value={frontMatter.notification}
+                      id="site-notification"
+                      onChange={this.onFieldChange} />
+                  </div> */}
+
+                {/* Homepage section configurations */}
+                <DragDropContext onDragEnd={this.onDragEnd}>
+                  <Droppable droppableId="leftPane" type="editor">
+                    {(droppableProvided) => (
+                      <div
+                        ref={droppableProvided.innerRef}
+                        {...droppableProvided.droppableProps}
+                      >
+                        {frontMatter.sections.map((section, sectionIndex) => (
                           <>
-                            <EditorHeroSection
-                              key={`section-${sectionIndex}`}
-                              title={section.hero.title}
-                              subtitle={section.hero.subtitle}
-                              background={section.hero.background}
-                              button={section.hero.button}
-                              url={section.hero.url}
-                              dropdown={section.hero.dropdown}
-                              sectionIndex={sectionIndex}
-                              highlights={section.hero.key_highlights}
-                              onFieldChange={this.onFieldChange}
-                              createHandler={this.createHandler}
-                              deleteHandler={this.deleteHandler}
-                              shouldDisplay={displaySections[sectionIndex]}
-                              displayHighlights={displayHighlights}
-                              displayDropdownElems={displayDropdownElems}
-                              displayHandler={this.displayHandler}
-                              onDragEnd={this.onDragEnd}
-                            />
+                            {/* Hero section */}
+                            {section.hero ? (
+                              <>
+                                <EditorHeroSection
+                                  key={`section-${sectionIndex}`}
+                                  title={section.hero.title}
+                                  subtitle={section.hero.subtitle}
+                                  background={section.hero.background}
+                                  button={section.hero.button}
+                                  url={section.hero.url}
+                                  dropdown={section.hero.dropdown}
+                                  sectionIndex={sectionIndex}
+                                  highlights={section.hero.key_highlights}
+                                  onFieldChange={this.onFieldChange}
+                                  createHandler={this.createHandler}
+                                  deleteHandler={this.deleteHandler}
+                                  shouldDisplay={displaySections[sectionIndex]}
+                                  displayHighlights={displayHighlights}
+                                  displayDropdownElems={displayDropdownElems}
+                                  displayHandler={this.displayHandler}
+                                  onDragEnd={this.onDragEnd}
+                                  errors={errors}
+                                />
+                              </>
+                            ) : (
+                              null
+                            )}
+
+                            {/* Resources section */}
+                            {section.resources ? (
+                              <Draggable
+                                draggableId={`resources-${sectionIndex}-draggable`}
+                                index={sectionIndex}
+                              >
+                                {(draggableProvided) => (
+                                  <div
+                                    {...draggableProvided.draggableProps}
+                                    {...draggableProvided.dragHandleProps}
+                                    ref={draggableProvided.innerRef}
+                                  >
+                                    <EditorResourcesSection
+                                      key={`section-${sectionIndex}`}
+                                      title={section.resources.title}
+                                      subtitle={section.resources.subtitle}
+                                      button={section.resources.button}
+                                      sectionIndex={sectionIndex}
+                                      deleteHandler={this.deleteHandler}
+                                      onFieldChange={this.onFieldChange}
+                                      shouldDisplay={displaySections[sectionIndex]}
+                                      displayHandler={this.displayHandler}
+                                      errors={errors.sections[sectionIndex].resources}
+                                    />
+                                  </div>
+                                )}
+                              </Draggable>
+                            ) : (
+                              null
+                            )}
+
+                            {/* Infobar section */}
+                            {section.infobar ? (
+                              <Draggable
+                                draggableId={`infobar-${sectionIndex}-draggable`}
+                                index={sectionIndex}
+                              >
+                                {(draggableProvided) => (
+                                  <div
+                                    {...draggableProvided.draggableProps}
+                                    {...draggableProvided.dragHandleProps}
+                                    ref={draggableProvided.innerRef}
+                                  >
+                                    <EditorInfobarSection
+                                      key={`section-${sectionIndex}`}
+                                      title={section.infobar.title}
+                                      subtitle={section.infobar.subtitle}
+                                      description={section.infobar.description}
+                                      button={section.infobar.button}
+                                      url={section.infobar.url}
+                                      sectionIndex={sectionIndex}
+                                      deleteHandler={this.deleteHandler}
+                                      onFieldChange={this.onFieldChange}
+                                      shouldDisplay={displaySections[sectionIndex]}
+                                      displayHandler={this.displayHandler}
+                                      errors={errors.sections[sectionIndex].infobar}
+                                    />
+                                  </div>
+                                )}
+                              </Draggable>
+                            ) : (
+                              null
+                            )}
+
+                            {/* Infopic section */}
+                            {/* TO-DO */}
+
+                            {/* Carousel section */}
+                            {/* TO-DO */}
+
                           </>
-                        ) : (
-                          null
-                        )}
+                        ))}
+                        {droppableProvided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
 
-                        {/* Resources section */}
-                        {section.resources ? (
-                          <Draggable
-                            draggableId={`resources-${sectionIndex}-draggable`}
-                            index={sectionIndex}
-                          >
-                            {(draggableProvided) => (
-                              <div
-                                {...draggableProvided.draggableProps}
-                                {...draggableProvided.dragHandleProps}
-                                ref={draggableProvided.innerRef}
-                              >
-                                <EditorResourcesSection
-                                  key={`section-${sectionIndex}`}
-                                  title={section.resources.title}
-                                  subtitle={section.resources.subtitle}
-                                  button={section.resources.button}
-                                  sectionIndex={sectionIndex}
-                                  deleteHandler={this.deleteHandler}
-                                  onFieldChange={this.onFieldChange}
-                                  shouldDisplay={displaySections[sectionIndex]}
-                                  displayHandler={this.displayHandler}
-                                />
-                              </div>
-                            )}
-                          </Draggable>
-                        ) : (
-                          null
-                        )}
-
-                        {/* Infobar section */}
-                        {section.infobar ? (
-                          <Draggable
-                            draggableId={`infobar-${sectionIndex}-draggable`}
-                            index={sectionIndex}
-                          >
-                            {(draggableProvided) => (
-                              <div
-                                {...draggableProvided.draggableProps}
-                                {...draggableProvided.dragHandleProps}
-                                ref={draggableProvided.innerRef}
-                              >
-                                <EditorInfobarSection
-                                  key={`section-${sectionIndex}`}
-                                  title={section.infobar.title}
-                                  subtitle={section.infobar.subtitle}
-                                  description={section.infobar.description}
-                                  button={section.infobar.button}
-                                  url={section.infobar.url}
-                                  sectionIndex={sectionIndex}
-                                  deleteHandler={this.deleteHandler}
-                                  onFieldChange={this.onFieldChange}
-                                  shouldDisplay={displaySections[sectionIndex]}
-                                  displayHandler={this.displayHandler}
-                                />
-                              </div>
-                            )}
-                          </Draggable>
-                        ) : (
-                          null
-                        )}
-
-                        {/* Infopic section */}
-                        {/* TO-DO */}
-
-                        {/* Carousel section */}
-                        {/* TO-DO */}
-
-                      </>
-                    ))}
-                    {droppableProvided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
-
-            {/* Section creator */}
-            <NewSectionCreator
-              hasResources={hasResources}
-              createHandler={this.createHandler}
-            />
-
-            <button type="button" onClick={this.savePage}>Save</button>
+                {/* Section creator */}
+                <NewSectionCreator
+                  hasResources={hasResources}
+                  createHandler={this.createHandler}
+                />
+              </div>
+            </div>
           </div>
-          <div className={styles.rightPaneHomepage}>
+          <div className={editorStyles.homepageEditorMain}>
             {/* Isomer Template Pane */}
             {frontMatter.sections.map((section, sectionIndex) => (
               <>
@@ -816,7 +1127,10 @@ export default class EditHomepage extends Component {
               </>
             ))}
           </div>
-        </div>
+          <div className={editorStyles.pageEditorFooter}>
+            <button type="submit" className={hasErrors ? elementStyles.disabled : elementStyles.blue} disabled={hasErrors}>Save</button>
+          </div>
+        </form>
       </>
     );
   }

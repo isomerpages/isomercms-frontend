@@ -96,18 +96,13 @@ export default class EditResourcePage extends Component {
     const { editorValue } = this.state;
     return (
       <>
-        <Header />
+        <Header
+          title={`${prettifyResourceFileName(fileName).title} in ${resourceName}`}
+          backButtonText="Back to Resources"
+          backButtonUrl={`/sites/${siteName}/resources`}
+        />
         <div className={elementStyles.wrapper}>
           <div className={editorStyles.pageEditorSidebar}>
-            <h3>
-              Editing
-              {' '}
-              {prettifyResourceFileName(fileName).title}
-              {' '}
-in Resource
-              {' '}
-              {resourceName}
-            </h3>
             <SimpleMDE
               onChange={this.onEditorChange}
               value={editorValue}

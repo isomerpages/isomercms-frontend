@@ -1,6 +1,6 @@
 @import '../elements/variable';
 
-.homepage-editor-sidebar{
+.homepageEditorSidebar{
   width: $homepage-editor-sidebar-width;
   background: $base-background-light;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
@@ -12,7 +12,7 @@
 
 }
 
-.homepage-editor-main{
+.homepageEditorMain{
   display: flex;
   width: calc(100vw - #{$homepage-editor-sidebar-width});
   flex-direction: column;

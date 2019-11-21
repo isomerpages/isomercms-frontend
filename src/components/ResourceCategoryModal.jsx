@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import * as _ from 'lodash';
 import update from 'immutability-helper';
 import { prettifyResourceCategory, slugifyResourceCategory } from '../utils';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import FormField from './FormField';
+import { validateResourceCategory } from '../utils/validators';
 
 // Constants
 const RADIX_PARSE_INT = 10;
 const NEW_CATEGORY_STR = 'newcategory';
-const CATEGORY_MIN_LENGTH = 2;
-const CATEGORY_MAX_LENGTH = 30;
-const CATEGORY_REGEX = '^(([a-zA-Z0-9]+([\\s][a-zA-Z0-9]+)*)+)$';
-const categoryRegexTest = RegExp(CATEGORY_REGEX);
 
 export default class ResourceCategoryModal extends Component {
   constructor(props) {
@@ -65,30 +64,12 @@ export default class ResourceCategoryModal extends Component {
     const { id, value } = event.target;
     const idArray = id.split('-');
     const categoryIndex = parseInt(idArray[1], RADIX_PARSE_INT);
-    const slugifiedResourceCategory = slugifyResourceCategory(value)
-    const { prevResourceCategories } = this.state
 
-    let errorMessage = '';
-    // Resource category is too short
-    if (value.length < CATEGORY_MIN_LENGTH) {
-      errorMessage = `The resource category should be longer than ${CATEGORY_MIN_LENGTH} characters.`;
-    }
-    // Resource category is too long
-    if (value.length > CATEGORY_MAX_LENGTH) {
-      errorMessage = `The resource category should be shorter than ${CATEGORY_MAX_LENGTH} characters.`;
-    }
-    // Resource category already exists
-    if (prevResourceCategories.includes(slugifiedResourceCategory)) {
-      errorMessage = `The resource category already exists.`
-    }
-    // Resource category fails regex
-    if (!categoryRegexTest.test(value)) {
-      errorMessage = 'The resource category should only have alphanumeric characters separated by whitespace.';
-    }
+    const errorMessage = validateResourceCategory(value);
 
     this.setState((currState) => ({
       currResourceCategories: update(currState.currResourceCategories, {
-        $splice: [[categoryIndex, 1, slugifiedResourceCategory]],
+        $splice: [[categoryIndex, 1, slugifyResourceCategory(value)]],
       }),
       errors: {
         resourceCategories: update(currState.errors.resourceCategories, {
@@ -172,6 +153,10 @@ export default class ResourceCategoryModal extends Component {
   render() {
     const { prevResourceCategories, errors } = this.state;
     const { categoryModalToggle, categoryModalIsActive } = this.props;
+
+    // Page settings form has errors - disable save button
+    const hasErrors = _.some(errors.resourceCategories,
+      (categoryError) => categoryError.length > 0);
     return (
       <div>
         <button type="button" className={elementStyles.blue} onClick={categoryModalToggle}>Edit Categories</button>
@@ -190,20 +175,16 @@ export default class ResourceCategoryModal extends Component {
                     {prevResourceCategories.length > 0
                       ? prevResourceCategories.map((prevResourceCategory, index) => (
                         <div key={prevResourceCategory}>
-                          <input
-                            type="text"
+                          <FormField
+                            title={`Category ${index + 1}`}
                             id={`input-${index}`}
-                            autoComplete="off"
                             defaultValue={prettifyResourceCategory(prevResourceCategory)}
+                            errorMessage={errors.resourceCategories[index]}
                             style={{ textTransform: 'uppercase' }}
-                            onChange={this.changeHandler}
+                            isRequired
+                            onFieldChange={this.changeHandler}
                           />
-                          <span
-                            className={elementStyles.error}
-                          >
-                            {errors.resourceCategories[index]}
-                          </span>
-                          <button type="button" className={elementStyles.blue} id={`save-${index}`} onClick={this.saveHandler}>Save</button>
+                          <button type="button" className={hasErrors ? elementStyles.disabled : elementStyles.blue} id={`save-${index}`} disabled={hasErrors} onClick={this.saveHandler}>Save</button>
                           <button type="button" className={elementStyles.warning} id={`delete-${index}`} onClick={this.deleteHandler}>Delete</button>
                         </div>
                       ))
