@@ -122,6 +122,7 @@ export default class Images extends Component {
                     <ImageCard
                       siteName={siteName}
                       image={image}
+                      key={image.fileName}
                     />
                   ))
                   : 'There are no images in this repository'}
