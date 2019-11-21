@@ -62,8 +62,16 @@
       margin-bottom: 20px;
       padding: 30px;
 
-      .bx{
+      i{
         font-size: 20px;
+      }
+
+      .fileType{
+        margin-right: 20px;
+        i{
+          color: $body-text;
+          font-size: 24px;
+        }
       }
 
       &:hover{
@@ -90,7 +98,7 @@
   .cardContainer{
     // flex: 1 0 calc(25% - 20px);
     margin: 10px;
-    
+
     .card{
       box-sizing: border-box;
       height: 200px;

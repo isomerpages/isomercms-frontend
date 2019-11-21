@@ -66,17 +66,17 @@ export default class Media extends Component {
             <div className={contentStyles.contentContainerBars}>
               <ul>
                 <li>
-                  <Link to={`/sites/${siteName}/images`}>Images</Link>
+                  <div className={contentStyles.fileType}><i class='bx bx-images'></i></div><Link to={`/sites/${siteName}/images`}>Images</Link>
                 </li>
                 <li>
-                  <Link to={`/sites/${siteName}/files`}>Files</Link>
+                  <div className={contentStyles.fileType}><i class='bx bx-file'></i></div><Link to={`/sites/${siteName}/files`}>Files</Link>
                 </li>
               </ul>
             </div>
           </div>
         </div>
       </>
-    )  
+    )
   }
 }
 
