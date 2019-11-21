@@ -9,20 +9,12 @@
   padding: 30px;
   padding-bottom: 100px;
   height: calc(100vh - #{$header-height} - #{$footer-height});
-
 }
 
 .homepageEditorMain{
-  display: flex;
   width: calc(100vw - #{$homepage-editor-sidebar-width});
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  left: $homepage-editor-sidebar-width;
+  height: calc(100vh - #{$header-height} - #{$footer-height});
   box-sizing: border-box;
-  padding-left: 50px;
-  padding-right: 50px;
-  padding-top: 40px;
   overflow-y: scroll;
 }
 
