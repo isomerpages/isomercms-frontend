@@ -76,13 +76,14 @@ export default class EditNav extends Component {
     destination,
   ) => {
     const { tree } = this.state;
+    
 
     /**
      * `WIP`
      * In our drag'n'drop rules we need to specify the following:
      * 1) You can't drop items outside of the tree
-     * 2) You can't merge any item into another unless they are under the same parent
-     * 3) `collection` & `thirdnav` can only be reordered at its current depth
+     * 2) pages can be dropped anywhere but can't be merged into one another
+     * 3) `collection`, `thirdnav` and `resource-room` can only be reordered at its current depth
      */
     // Rule 1)
     if (!destination) {
@@ -97,21 +98,27 @@ export default class EditNav extends Component {
       tree, parentId: source.parentId, index: source.index,
     }).data.type;
 
-    const destinationParentType = this.getParentFromTreeposition({
+    const destinationParent = this.getParentFromTreeposition({
       tree, parentId: destination.parentId,
-    }).data.type;
+    });
 
-    // Rule 2)
-    if (!('index' in destination) && sourceParentType !== destinationParentType) return;
+    const destinationParentType = destinationParent.data.type;
 
-    // Rule 3)
-    if (sourceItemType === 'collection' && destinationParentType !== 'section') return;
-    if (sourceItemType === 'thirdnav' && destinationParentType !== 'collection') return;
-
-
-    // console.log(tree.items[source.parentId].data, tree.items[destination.parentId].data);
-    // console.log(source, destination);
-    console.log(sourceItemType, destinationParentType);
+    switch (sourceItemType) {
+      case 'page':
+      case 'collection-page':
+      case 'thirdnav-page':
+        // Rule 2)
+        if (!('index' in destination) && ['page', 'collection-page', 'thirdnav-page'].includes(destinationParentType)) return;
+        break;
+      case 'collection':
+      case 'thirdnav':
+      case 'resource room':
+        // Rule 3)
+        if (sourceParentType !== destinationParentType) return;
+        break;
+      default:
+    }
 
     const newTree = moveItemOnTree(tree, source, destination);
     this.setState({
@@ -169,12 +176,12 @@ export default class EditNav extends Component {
               <i className="bx bx-folder-plus" />
               Create a new folder
             </button>
-            <button type="button" className={styles.createNew}>
+            {/* <button type="button" className={styles.createNew}>
               <i className="bx bx-link" />
               Create an external link
             </button>
             <div className={styles.isDragging}>Item.isDragging</div>
-            <div className={styles.isDraggingPlaceholderBox}>Item can drop in this box</div>
+            <div className={styles.isDraggingPlaceholderBox}>Item can drop in this box</div> */}
           </div>
         </>
       )
