@@ -58,7 +58,7 @@ export default class Resources extends Component {
     super(props);
     this.state = {
       resourceCategories: [],
-      resourcePages: [],
+      resourcePages: undefined,
       categoryModalIsActive: false,
       settingsIsActive: false,
       resourceRoomName: 'resource room',
@@ -233,23 +233,29 @@ export default class Resources extends Component {
                   )
                   : (
                     <>
-                      {/* Display resource cards */}
-                      {resourcePages.length > 0
+                      { resourcePages
                         ? (
                           <>
-                            {resourcePages.map((resourcePage, resourceIndex) => (
-                              <ResourceCard
-                                category={resourcePage.category}
-                                fileName={resourcePage.fileName}
-                                siteName={siteName}
-                                settingsToggle={this.settingsToggle}
-                                resourceIndex={resourceIndex}
-                              />
-                            ))}
+                            {/* Display resource cards */}
+                            {resourcePages.length > 0
+                              ? (
+                                <>
+                                  {resourcePages.map((resourcePage, resourceIndex) => (
+                                    <ResourceCard
+                                      category={resourcePage.category}
+                                      fileName={resourcePage.fileName}
+                                      siteName={siteName}
+                                      settingsToggle={this.settingsToggle}
+                                      resourceIndex={resourceIndex}
+                                    />
+                                  ))}
+                                </>
+                              )
+                              : null}
+                            <CreateResourceCard settingsToggle={this.settingsToggle} />
                           </>
                         )
-                        : null}
-                      <CreateResourceCard settingsToggle={this.settingsToggle} />
+                        : 'Loading resources...'}
                     </>
                   )}
               </div>
