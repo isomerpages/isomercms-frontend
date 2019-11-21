@@ -63,23 +63,57 @@ const dataIterator = (acc, item) => {
  * that can be used for future purposes but are not needed currently
  */
 const ListItem = ({
-  item, onExpand, onCollapse, isDragging
+  item, onExpand, onCollapse, isDragging,
 }) => {
-
   // Nested list
-  if (item.children && item.children.length) {
-    // since the top-level nodes 'navigation' and 'unlinked-pages' always have at least one child
-    if (item.data.type === 'section') {
+  // if (item.children && item.children.length) {
+  // since the top-level nodes 'navigation' and 'unlinked-pages' always have at least one child
+  switch (item.data.type) {
+    case 'section':
       return <div className={styles.treeTitle}><h2>{ item.data.title }</h2></div>;
-    }
-
-    return item.isExpanded
-      ? <div className={styles.navGroup} onClick={() => onCollapse(item.id)}><i class='bx bx-chevron-down' ></i><div className={styles.pageType}><i class='bx bx-folder-open' ></i>{ item.data ? item.data.title : 'no' }</div></div>
-      : <div className={styles.navGroup} onClick={() => onExpand(item.id)}><i class='bx bx-chevron-right' ></i><div className={styles.pageType}><i class='bx bx-folder' ></i>{ item.data ? item.data.title : 'no' }</div></div>;
-
+    case 'thirdnav-page':
+    case 'page':
+    case 'collection-page':
+    case 'resource room':
+      return (
+        <div className={styles.navGroup}>
+          <i className="bx bx-box" style={{ opacity: 0 }} />
+          <div className={styles.pageType}>
+            <i className="bx bx-file-blank" />
+            { item.data ? item.data.title : 'no' }
+          </div>
+        </div>
+      );
+    case 'collection':
+    case 'thirdnav':
+      return item.isExpanded
+        ? (
+          <div className={styles.navGroup} onClick={() => onCollapse(item.id)}>
+            <i className="bx bx-chevron-down" />
+            <div className={styles.pageType}>
+              <i className="bx bx-folder-open" />
+              { item.data ? item.data.title : 'no' }
+            </div>
+          </div>
+        )
+        : (
+          <div className={styles.navGroup} onClick={() => onExpand(item.id)}>
+            <i className="bx bx-chevron-right" />
+            <div className={styles.pageType}>
+              <i className="bx bx-folder" />
+              { item.data ? item.data.title : 'no' }
+            </div>
+          </div>
+        );
+    default:
+      return (
+        <p>
+          Unaccounted for!
+          {' '}
+          { item.data ? item.data.type : 'no' }
+        </p>
+      );
   }
-
-  return <div className={styles.navGroup}><i class='bx bx-box' style={{opacity: 0}}></i><div className={styles.pageType}><i class='bx bx-file-blank' ></i>{ item.data ? item.data.title : 'no' }</div></div>;
 };
 
 const draggableWrapper = (WrappedComponent, item, onExpand, onCollapse, provided, snapshot) => (
@@ -94,7 +128,7 @@ const draggableWrapper = (WrappedComponent, item, onExpand, onCollapse, provided
       />
     </div>
 
-    </>
+  </>
 );
 
 export {
