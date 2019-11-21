@@ -42,27 +42,27 @@ const ResourceCard = ({
 };
 
 const ResourcePages = ({
-  resourcePages, settingsToggle, siteName
+  resourcePages, settingsToggle, siteName,
 }) => (
   <>
-  {/* Display resource cards */}
-  {resourcePages.length > 0
-    ? (
-      <>
-        {resourcePages.map((resourcePage, resourceIndex) => (
-          <ResourceCard
-            category={resourcePage.category}
-            fileName={resourcePage.fileName}
-            siteName={siteName}
-            settingsToggle={settingsToggle}
-            resourceIndex={resourceIndex}
-          />
-        ))}
-      </>
-    )
-    : null}
-  <CreateResourceCard settingsToggle={settingsToggle} />
-</>
+    {/* Display resource cards */}
+    {resourcePages.length > 0
+      ? (
+        <>
+          {resourcePages.map((resourcePage, resourceIndex) => (
+            <ResourceCard
+              category={resourcePage.category}
+              fileName={resourcePage.fileName}
+              siteName={siteName}
+              settingsToggle={settingsToggle}
+              resourceIndex={resourceIndex}
+            />
+          ))}
+        </>
+      )
+      : null}
+    <CreateResourceCard settingsToggle={settingsToggle} />
+  </>
 )
 
 const CreateResourceCard = ({ settingsToggle }) => (
@@ -297,7 +297,8 @@ ResourcePages.propTypes = {
       category: PropTypes.string.isRequired,
       fileName: PropTypes.string.isRequired,
     })
-  )
+  ),
+  siteName: PropTypes.string.isRequired,
 }
 
 ResourceCard.propTypes = {
