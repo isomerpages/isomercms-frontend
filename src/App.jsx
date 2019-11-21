@@ -15,6 +15,7 @@ import Images from './layouts/Images';
 import EditImage from './layouts/EditImage';
 import Files from './layouts/Files';
 import EditFile from './layouts/EditFile';
+import Media from './layouts/Media';
 import EditHomepage from './layouts/EditHomepage';
 import EditTree from './components/tree/EditTree';
 import Resources from './layouts/Resources';
@@ -43,6 +44,7 @@ function App() {
           <Route path="/sites/:siteName/files" component={Files} />
           <Route path="/sites/:siteName/images/:fileName" component={EditImage} />
           <Route path="/sites/:siteName/images" component={Images} />
+          <Route path="/sites/:siteName/media" component={Media} />
           <Route path="/sites/:siteName/pages/:fileName" component={EditPage} />
           <Route path="/sites/:siteName/pages" component={Pages} />
           <Route path="/sites/:siteName/homepage" component={EditHomepage} />
