@@ -24,10 +24,10 @@ const Menus = ({ match, location }) => {
             {/* Page cards */}
             <ul>
               <li>
-                <Link to={`/sites/${siteName}/main-menu`}>Main Menu</Link>
+                <Link to={`/sites/${siteName}/menus/main-menu`}>Main Menu</Link>
               </li>
               <li>
-                <Link to={`/sites/${siteName}/footer`}>Footer</Link>
+                <Link to={`/sites/${siteName}/menus/footer`}>Footer</Link>
               </li>
             </ul>
           </div>
