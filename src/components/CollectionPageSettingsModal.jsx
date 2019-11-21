@@ -53,7 +53,8 @@ export default class CollectionPageSettingsModal extends Component {
     }
   }
 
-  saveHandler = async () => {
+  saveHandler = async (event) => {
+    event.preventDefault();
     try {
       const { siteName, fileName, collectionName } = this.props;
       const {
@@ -98,6 +99,7 @@ export default class CollectionPageSettingsModal extends Component {
         });
       }
 
+      window.location.reload();
       // Refresh page
     } catch (err) {
       console.log(err);
