@@ -61,7 +61,7 @@ export default class Files extends Component {
         <h3>Files</h3>
         {files.length > 0
           ? files.map((file) => (
-            <li>
+            <li key={file.fileName}>
               <Link to={`/sites/${siteName}/files/${file.fileName}`}>{file.fileName}</Link>
             </li>
           ))

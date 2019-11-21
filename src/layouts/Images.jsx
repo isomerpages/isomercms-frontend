@@ -100,7 +100,7 @@ export default class Images extends Component {
         <h3>Images</h3>
         {images.length > 0
           ? images.map((image) => (
-            <li>
+            <li key={image.fileName}>
               <Link to={`/sites/${siteName}/images/${image.fileName}`}>{image.fileName}</Link>
             </li>
           ))

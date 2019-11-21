@@ -244,6 +244,7 @@ export default class Resources extends Component {
                                 siteName={siteName}
                                 settingsToggle={this.settingsToggle}
                                 resourceIndex={resourceIndex}
+                                key={resourcePage.fileName}
                               />
                             ))}
                           </>

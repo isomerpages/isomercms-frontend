@@ -39,7 +39,7 @@ const Sidebar = ({ siteName, currPath }) => (
     <div className={styles.sidebarNavigation}>
       <ul>
         {sidebarPathDict.map(({ pathname, title }) => (
-          <li className={`/sites/${siteName}/${pathname}` === currPath ? styles.active : null}>
+          <li className={`/sites/${siteName}/${pathname}` === currPath ? styles.active : null} key={title}>
             <Link to={`/sites/${siteName}/${pathname}`}>{title}</Link>
           </li>
         ))}
