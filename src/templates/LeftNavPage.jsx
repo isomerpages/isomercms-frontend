@@ -10,7 +10,7 @@ const LeftNavPage = ({ chunk, leftNavPages, fileName }) => (
       <div className="bp-container padding--top--lg padding--bottom--xl">
         <div className="row">
           <LeftNav leftNavPages={leftNavPages} fileName={fileName} />
-          <div className="col is-8 is-offset-1-desktop is-12-touch print-content">
+          <div className="col is-8 is-offset-1-desktop is-12-touch print-content" style={{ left: '80px' }}>
             <div className="content" dangerouslySetInnerHTML={{ __html: chunk }} />
           </div>
         </div>

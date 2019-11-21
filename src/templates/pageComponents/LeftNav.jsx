@@ -11,7 +11,7 @@ import '../../styles/isomer-template.scss';
 const LeftNav = ({ leftNavPages, fileName }) => (
   <div className="col is-2 is-position-relative has-side-nav is-hidden-touch">
     <div className="sidenav">
-      <aside className="bp-menu is-gt sidebar__inner" style={{ position: 'relative' }}>
+      <aside className="bp-menu is-gt sidebar__inner" style={{ position: 'relative', left: '110px' }}>
         <ul className="bp-menu-list">
           {
             leftNavPages.map((page) => {
