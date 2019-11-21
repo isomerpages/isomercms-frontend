@@ -3,7 +3,13 @@ import Tree, { mutateTree, moveItemOnTree } from '@atlaskit/tree';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import TreeBuilder from '../utils/tree-builder';
-import { dataIterator, ListItem, draggableWrapper } from '../utils/tree-utils';
+import {
+  dataIterator,
+  ListItem,
+  draggableWrapper,
+  // flattenTree,
+  // treeReader,
+} from '../utils/tree-utils';
 
 const rootNode = new TreeBuilder('root', 'root', '');
 
@@ -37,7 +43,6 @@ export default class EditTree extends Component {
           new TreeBuilder('Unlinked Pages', 'section'),
         ),
       );
-
       this.setState({ tree });
     } catch (err) {
       console.log(err);
