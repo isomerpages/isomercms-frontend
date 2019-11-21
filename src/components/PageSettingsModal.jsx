@@ -3,18 +3,12 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { Base64 } from 'js-base64';
 import * as _ from 'lodash';
+import FormField from './FormField';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import {
   frontMatterParser, concatFrontMatterMdBody, generatePageFileName,
 } from '../utils';
-
-// Constants
-const PERMALINK_REGEX = '^(/([a-z]+([-][a-z]+)*/)+)$';
-const permalinkRegexTest = RegExp(PERMALINK_REGEX);
-const PERMALINK_MIN_LENGTH = 4;
-const PERMALINK_MAX_LENGTH = 50;
-const TITLE_MIN_LENGTH = 4;
-const TITLE_MAX_LENGTH = 100;
+import { validatePageSettings } from '../utils/validators';
 
 export default class PageSettingsModal extends Component {
   constructor(props) {
@@ -126,42 +120,8 @@ export default class PageSettingsModal extends Component {
 
   changeHandler = (event) => {
     const { id, value } = event.target;
-    let errorMessage = '';
-    switch (id) {
-      case 'permalink': {
-        // Permalink is too short
-        if (value.length < PERMALINK_MIN_LENGTH) {
-          errorMessage = `The permalink should be longer than ${PERMALINK_MIN_LENGTH} characters.`;
-        }
+    const errorMessage = validatePageSettings(id, value);
 
-        // Permalink is too long
-        if (value.length > PERMALINK_MAX_LENGTH) {
-          errorMessage = `The permalink should be shorter than ${PERMALINK_MAX_LENGTH} characters.`;
-        }
-
-        // Permalink fails regex
-        if (!permalinkRegexTest.test(value)) {
-          console.log('IN REGEX FAIL', value);
-          errorMessage = `The permalink should start and end with slashes and contain 
-            lowercase words separated by hyphens only.
-            `;
-        }
-        break;
-      }
-      case 'title': {
-        // Title is too short
-        if (value.length < TITLE_MIN_LENGTH) {
-          errorMessage = `The title should be longer than ${TITLE_MIN_LENGTH} characters.`;
-        }
-        // Title is too long
-        if (value.length > TITLE_MAX_LENGTH) {
-          errorMessage = `The title should be shorter than ${TITLE_MAX_LENGTH} characters.`;
-        }
-        break;
-      }
-      default:
-        break;
-    }
     this.setState({
       errors: {
         [id]: errorMessage,
@@ -188,34 +148,22 @@ export default class PageSettingsModal extends Component {
           </div>
           <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
             <div className={elementStyles.modalFormFields}>
-              <p className={elementStyles.formLabel}>Title</p>
-              <input
-                value={title}
+              <FormField
+                title="Title"
                 id="title"
-                required
-                autoComplete="off"
-                onChange={this.changeHandler}
-                className={errors.title ? `${elementStyles.error}` : null}
+                value={title}
+                errorMessage={errors.title}
+                isRequired
+                onFieldChange={this.changeHandler}
               />
-              <span className={elementStyles.error}>
-                {' '}
-                {errors.title}
-                {' '}
-              </span>
-              <p
-                className={elementStyles.formLabel}
-              >
-Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)
-              </p>
-              <input
-                value={permalink}
+              <FormField
+                title="Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)"
                 id="permalink"
-                required
-                onChange={this.changeHandler}
-                autoComplete="off"
-                className={errors.permalink ? `${elementStyles.error}` : null}
+                value={permalink}
+                errorMessage={errors.permalink}
+                isRequired
+                onFieldChange={this.changeHandler}
               />
-              <span className={elementStyles.error}>{errors.permalink}</span>
             </div>
             <div className={elementStyles.modalButtons}>
               <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>
