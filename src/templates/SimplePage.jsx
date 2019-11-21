@@ -6,10 +6,10 @@ import Breadcrumb from './pageComponents/Breadcrumb';
 const SimplePage = ({ chunk }) => (
   <div>
     <Breadcrumb />
-    <section className="bp-section" style={{ transform: 'scale(0.75)', transformOrigin: 'top right'}}>
+    <section className="bp-section">
       <div className="bp-container content padding--top--lg padding--bottom--xl">
         <div className="row">
-          <div className="col is-8 is-offset-1-desktop is-12-touch print-content">
+          <div className="col is-8 is-offset-1-desktop is-12-touch print-content" style={{ left: '80px' }}>
             <div className="content" dangerouslySetInnerHTML={{ __html: chunk }} />
           </div>
         </div>
