@@ -104,8 +104,7 @@ export default class ResourceSettingsModal extends Component {
     }
   }
 
-  saveHandler = async (event) => {
-    event.preventDefault();
+  saveHandler = async () => {
     try {
       const {
         title, permalink, fileUrl, date, mdBody, sha, category,

@@ -696,8 +696,7 @@ export default class EditHomepage extends Component {
     }
   }
 
-  savePage = async (event) => {
-    event.preventDefault();
+  savePage = async () => {
     try {
       const { state } = this;
       const { match } = this.props;

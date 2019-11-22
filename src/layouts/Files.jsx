@@ -74,7 +74,6 @@ export default class Files extends Component {
                     <FileCard
                       siteName={siteName}
                       file={file}
-                      key={file.fileName}
                     />
                   ))
                   : 'There are no files in this repository'}
