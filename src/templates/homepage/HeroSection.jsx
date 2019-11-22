@@ -7,9 +7,13 @@ import PropTypes from 'prop-types';
  */
 
 const HeroButton = ({ button, url }) => (
-  <a href={`{{- site.baseurl -}}${url}`} className="bp-button is-secondary is-uppercase search-button">
-    {button}
-  </a>
+  <>
+    { button ? 
+      <a href={`{{- site.baseurl -}}${url}`} className="bp-button is-secondary is-uppercase search-button">
+        {button}
+      </a>
+    : null}
+  </>
 );
 
 const HeroDropdownElem = ({ url, title }) => (

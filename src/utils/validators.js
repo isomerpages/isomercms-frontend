@@ -176,14 +176,14 @@ const validateHeroSection = (sectionError, sectionType, field, value) => {
       break;
     }
     case 'button': {
-      // Button text is too short
-      if (value.length < HERO_BUTTON_TEXT_MIN_LENGTH) {
-        errorMessage = `The button text should be longer than ${HERO_BUTTON_TEXT_MIN_LENGTH} characters.`;
-      }
-      // Button text is too long
-      if (value.length > HERO_BUTTON_TEXT_MAX_LENGTH) {
-        errorMessage = `The button text should be shorter than ${HERO_BUTTON_TEXT_MAX_LENGTH} characters.`;
-      }
+      // // Button text is too short
+      // if (value.length < HERO_BUTTON_TEXT_MIN_LENGTH) {
+      //   errorMessage = `The button text should be longer than ${HERO_BUTTON_TEXT_MIN_LENGTH} characters.`;
+      // }
+      // // Button text is too long
+      // if (value.length > HERO_BUTTON_TEXT_MAX_LENGTH) {
+      //   errorMessage = `The button text should be shorter than ${HERO_BUTTON_TEXT_MAX_LENGTH} characters.`;
+      // }
       break;
     }
     case 'dropdown': {
@@ -198,11 +198,11 @@ const validateHeroSection = (sectionError, sectionType, field, value) => {
       break;
     }
     case 'url': {
-      if (!permalinkRegexTest.test(value)) {
-        errorMessage = `The url should start and end with slashes and contain 
-          lowercase words separated by hyphens only.
-          `;
-      }
+      // if (!permalinkRegexTest.test(value)) {
+      //   errorMessage = `The url should start and end with slashes and contain 
+      //     lowercase words separated by hyphens only.
+      //     `;
+      // }
       // TO-DO: Allow external URLs
       break;
     }
