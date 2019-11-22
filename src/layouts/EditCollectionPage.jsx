@@ -168,7 +168,6 @@ export default class EditCollectionPage extends Component {
                 chunk={prependImageSrc(siteName, marked(editorValue))}
                 leftNavPages={leftNavPages}
                 fileName={fileName}
-                title={prettifyPageFileName(fileName)}
               />
             )}
           </div>

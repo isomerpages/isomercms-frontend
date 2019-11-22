@@ -49,8 +49,7 @@ export default class PageSettingsModal extends Component {
     }
   }
 
-  saveHandler = async (event) => {
-    event.preventDefault();
+  saveHandler = async () => {
     try {
       const { siteName, fileName, isNewPage } = this.props;
       const {
