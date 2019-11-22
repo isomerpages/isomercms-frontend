@@ -19,7 +19,7 @@ const HeroButton = ({
       id={`section-${sectionIndex}-hero-button`}
       value={button}
       errorMessage={errors.button}
-      isRequired
+      isRequired={false}
       onFieldChange={onFieldChange}
     />
     <FormField
@@ -27,7 +27,7 @@ const HeroButton = ({
       id={`section-${sectionIndex}-hero-url`}
       value={url}
       errorMessage={errors.url}
-      isRequired
+      isRequired={false}
       onFieldChange={onFieldChange}
     />
   </>
