@@ -42,6 +42,7 @@ export default class EditNav extends Component {
       
       const testTree = flattenTree(tree);
       const testTree2 = readTree(testTree)
+
       this.setState({ tree });
     } catch (err) {
       console.log(err);
@@ -63,21 +64,21 @@ export default class EditNav extends Component {
   };
 
   getItemFromTreePosition = ({ tree, parentId, index }) => {
-    const parent = this.getParentFromTreeposition({ tree, parentId });
+    const parent = this.getParentFromTreePosition({ tree, parentId });
 
     const childId = parent.children[index];
 
     return tree.items[childId];
   }
 
-  getParentFromTreeposition = ({ tree, parentId }) => tree.items[parentId]
+  getParentFromTreePosition = ({ tree, parentId }) => tree.items[parentId]
 
   onDragEnd = (
     source,
     destination,
   ) => {
     const { tree } = this.state;
-    
+   
 
     /**
      * `WIP`
@@ -95,11 +96,11 @@ export default class EditNav extends Component {
       tree, parentId: source.parentId, index: source.index,
     }).data.type;
 
-    const sourceParentType = this.getParentFromTreeposition({
-      tree, parentId: source.parentId, index: source.index,
+    const sourceParentType = this.getParentFromTreePosition({
+      tree, parentId: source.parentId,
     }).data.type;
 
-    const destinationParent = this.getParentFromTreeposition({
+    const destinationParent = this.getParentFromTreePosition({
       tree, parentId: destination.parentId,
     });
 
