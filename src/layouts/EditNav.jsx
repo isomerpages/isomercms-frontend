@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import Tree, { mutateTree, moveItemOnTree } from '@atlaskit/tree';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import TreeBuilder from '../components/utils/tree-builder';
-import { dataIterator, ListItem, draggableWrapper } from '../components/utils/tree-utils';
+import TreeBuilder from '../utils/tree-builder';
+import { dataIterator, ListItem, draggableWrapper, flattenTree, readTree } from '../utils/tree-utils';
 import Header from '../components/Header';
 import styles from '../styles/isomer-cms/pages/MenuEditor.module.scss';
 
@@ -39,8 +39,9 @@ export default class EditNav extends Component {
           new TreeBuilder('Unlinked', 'section'),
         ),
       );
-
-      console.log(tree);
+      
+      const testTree = flattenTree(tree);
+      const testTree2 = readTree(testTree)
       this.setState({ tree });
     } catch (err) {
       console.log(err);

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TreeBuilder from './tree-builder';
-import styles from '../../styles/isomer-cms/pages/MenuEditor.module.scss';
+import styles from '../styles/isomer-cms/pages/MenuEditor.module.scss';
 
 /*
   Constructs a new FlattenedItem
@@ -132,7 +132,7 @@ const draggableWrapper = (WrappedComponent, item, onExpand, onCollapse, provided
 );
 
 // Function which reads the flattened tree array and returns the navigation elements
-const treeReader = (flattenedTree) => {
+const readTree = (flattenedTree) => {
   // Create a tree object to store the tree data
   const treeObject = [];
 
@@ -217,7 +217,7 @@ export {
   dataIterator,
   ListItem,
   draggableWrapper,
-  treeReader,
+  readTree,
 };
 
 ListItem.propTypes = PropTypes.shape({
