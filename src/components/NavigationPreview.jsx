@@ -34,7 +34,7 @@ const NavPreview = ({ navItems }) => (
                     case 'collection':
                       return (
                         <div className="navbar-item has-dropdown is-hoverable">
-                          <a className="navbar-link is-uppercase" href="/">
+                          <a className="navbar-link is-uppercase" href="/" onClick={(event) => event.preventDefault()}>
                             { navItem.title }
                           </a>
                           <div className="navbar-dropdown">
@@ -52,7 +52,7 @@ const NavPreview = ({ navItems }) => (
                     case 'thirdnav-page':
                       return (
                         <li className="navbar-item">
-                          <a className="navbar-item is-uppercase" href="/">
+                          <a className="navbar-item is-uppercase" href="/" onClick={(event) => event.preventDefault()}>
                             { navItem.title }
                           </a>
                         </li>
