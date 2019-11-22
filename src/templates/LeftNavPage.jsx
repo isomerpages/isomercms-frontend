@@ -11,11 +11,11 @@ const LeftNavPage = ({
 }) => {
   const currentPage = leftNavPages.filter((page) => page.fileName === fileName);
   const collection = currentPage[0]
-                      .path.split('%2')[0]
-                      .slice(1) // remove the underscore at the start of the collection folder name
-                      .split('-')
-                      .map((string) => string.charAt(0).toUpperCase() + string.slice(1)) // capitalize first letter
-                      .join(' '); // join it back together
+    .path.split('%2')[0]
+    .slice(1) // remove the underscore at the start of the collection folder name
+    .split('-')
+    .map((string) => string.charAt(0).toUpperCase() + string.slice(1)) // capitalize first letter
+    .join(' '); // join it back together
   return (
     <div>
       <Breadcrumb title={title} collection={collection} />

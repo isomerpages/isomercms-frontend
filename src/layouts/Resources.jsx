@@ -64,7 +64,7 @@ const ResourcePages = ({
       : null}
     <CreateResourceCard settingsToggle={settingsToggle} />
   </>
-)
+);
 
 const CreateResourceCard = ({ settingsToggle }) => (
   <button

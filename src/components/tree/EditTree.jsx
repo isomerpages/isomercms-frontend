@@ -128,7 +128,7 @@ export default class EditTree extends Component {
     return (
       // eslint-disable-next-line react/jsx-props-no-spreading
       <div ref={provided.innerRef} {...provided.draggableProps}>
-        <div {...provided.dragHandleProps}/>
+        <div {...provided.dragHandleProps} />
         <ListItem
           item={item}
           onExpand={onExpand}
