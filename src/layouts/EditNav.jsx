@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import Tree, { mutateTree, moveItemOnTree } from '@atlaskit/tree';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import TreeBuilder from '../components/utils/tree-builder';
-import { dataIterator, ListItem, draggableWrapper } from '../components/utils/tree-utils';
+import TreeBuilder from '../utils/tree-builder';
+import {
+  dataIterator, ListItem, draggableWrapper, flattenTree, readTree,
+} from '../utils/tree-utils';
 import Header from '../components/Header';
 import styles from '../styles/isomer-cms/pages/MenuEditor.module.scss';
+import NavPreview from '../components/NavigationPreview';
 
 const rootNode = new TreeBuilder('root', 'root', '');
 
@@ -40,7 +43,10 @@ export default class EditNav extends Component {
         ),
       );
 
-      this.setState({ tree });
+      const flattenedTree = flattenTree(tree);
+      const navItems = readTree(flattenedTree);
+
+      this.setState({ tree, navItems });
     } catch (err) {
       console.log(err);
     }
@@ -55,6 +61,7 @@ export default class EditNav extends Component {
 
   onCollapse = (itemId) => {
     const { tree } = this.state;
+
     this.setState({
       tree: mutateTree(tree, itemId, { isExpanded: false }),
     });
@@ -75,7 +82,6 @@ export default class EditNav extends Component {
     destination,
   ) => {
     const { tree } = this.state;
-   
 
     /**
      * `WIP`
@@ -120,8 +126,11 @@ export default class EditNav extends Component {
     }
 
     const newTree = moveItemOnTree(tree, source, destination);
+    const flattenedNewTree = flattenTree(newTree);
+    const newNavItems = readTree(flattenedNewTree);
     this.setState({
       tree: newTree,
+      navItems: newNavItems,
     });
   };
 
@@ -153,37 +162,47 @@ export default class EditNav extends Component {
 
   // we need to encode all our information into the id, there is no way to retrieve it otherwise
   render() {
-    const { tree } = this.state;
+    const { tree, navItems } = this.state;
     return (
-      tree
-      && (
-        <>
-          <Header />
+      <>
+        <Header />
+        <div className="d-flex flex-row">
           <div className={styles.menuEditorSidebar}>
             <p className={styles.instructions}>Drag and drop pages to edit the menu</p>
-            <Tree
-              tree={tree}
-              renderItem={this.renderItem}
-              onExpand={this.onExpand}
-              onCollapse={this.onCollapse}
-              onDragEnd={this.onDragEnd}
-              isNestingEnabled
-              isDragEnabled
-              offsetPerLevel={35}
-            />
-            <button type="button" className={styles.createNew}>
-              <i className="bx bx-folder-plus" />
+            { tree
+          && (
+            <>
+              <Tree
+                tree={tree}
+                renderItem={this.renderItem}
+                onExpand={this.onExpand}
+                onCollapse={this.onCollapse}
+                onDragEnd={this.onDragEnd}
+                isNestingEnabled
+                isDragEnabled
+                offsetPerLevel={35}
+              />
+              <button type="button" className={styles.createNew}>
+                <i className="bx bx-folder-plus" />
               Create a new folder
-            </button>
+              </button>
+            </>
+          )}
+
             {/* <button type="button" className={styles.createNew}>
-              <i className="bx bx-link" />
-              Create an external link
-            </button>
-            <div className={styles.isDragging}>Item.isDragging</div>
-            <div className={styles.isDraggingPlaceholderBox}>Item can drop in this box</div> */}
+            <i className="bx bx-link" />
+            Create an external link
+          </button>
+          <div className={styles.isDragging}>Item.isDragging</div>
+          <div className={styles.isDraggingPlaceholderBox}>Item can drop in this box</div> */}
           </div>
-        </>
-      )
+          { navItems && (
+          <NavPreview
+            navItems={navItems}
+          />
+          )}
+        </div>
+      </>
     );
   }
 }
