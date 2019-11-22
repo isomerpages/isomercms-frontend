@@ -4,14 +4,15 @@ const NavPreview = ({ navItems }) => (
   <nav className="navbar is-transparent flex-fill">
     <div className="bp-container">
       <div className="navbar-brand">
-        <a className="navbar-item" href="/">
-          {/* <img src="{{- site.data.navigation.logo -}}" alt="Homepage" style="max-height:75px;max-width:200px;height:auto;width:auto;" /> */}
+        {/* <a className="navbar-item" href="/">
+          {/* <img src="{{- site.data.navigation.logo -}}" alt="Homepage" style="max-height:75px;max-width:200px;height:auto;width:auto;" />
         </a>
+
         <div className="navbar-burger burger" data-target="navbarExampleTransparentExample">
           <span />
           <span />
           <span />
-        </div>
+        </div> */}
       </div>
       <div id="navbarExampleTransparentExample" className="bp-container is-fluid margin--none navbar-menu">
         <div className="navbar-start">
@@ -33,13 +34,12 @@ const NavPreview = ({ navItems }) => (
                     case 'collection':
                       return (
                         <div className="navbar-item has-dropdown is-hoverable">
-                          <a className="navbar-link is-uppercase" href="{{site[navitem.collection].first.url}}">
+                          <a className="navbar-link is-uppercase" href="/">
                             { navItem.title }
                           </a>
-                          <div className="selector is-hidden-touch is-hidden-desktop-only{{active}}" />
                           <div className="navbar-dropdown">
                             {navItem.leftNavPages && navItem.leftNavPages.map((leftNavPage) => (
-                              <a className="navbar-item sub-link" href="{{leftnavpage.url}}">
+                              <a className="navbar-item sub-link" href="/">
                                 { leftNavPage.title }
                               </a>
                             ))}
@@ -52,10 +52,9 @@ const NavPreview = ({ navItems }) => (
                     case 'thirdnav-page':
                       return (
                         <li className="navbar-item">
-                          <a className="navbar-item is-uppercase">
+                          <a className="navbar-item is-uppercase" href="/">
                             { navItem.title }
                           </a>
-                          <div className="selector is-hidden-touch is-hidden-desktop-only{{active}}" />
                         </li>
                       );
                     default:
