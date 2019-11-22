@@ -56,6 +56,7 @@ const ResourcePages = ({
               siteName={siteName}
               settingsToggle={settingsToggle}
               resourceIndex={resourceIndex}
+              key={resourcePage.fileName}
             />
           ))}
         </>
