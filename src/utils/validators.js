@@ -40,8 +40,8 @@ const HERO_TITLE_MIN_LENGTH = 2;
 const HERO_TITLE_MAX_LENGTH = 30;
 const HERO_SUBTITLE_MIN_LENGTH = 2;
 const HERO_SUBTITLE_MAX_LENGTH = 30;
-const HERO_BUTTON_TEXT_MIN_LENGTH = 2;
-const HERO_BUTTON_TEXT_MAX_LENGTH = 30;
+// const HERO_BUTTON_TEXT_MIN_LENGTH = 2;
+// const HERO_BUTTON_TEXT_MAX_LENGTH = 30;
 const HERO_DROPDOWN_MIN_LENGTH = 2;
 const HERO_DROPDOWN_MAX_LENGTH = 30;
 
@@ -199,7 +199,7 @@ const validateHeroSection = (sectionError, sectionType, field, value) => {
     }
     case 'url': {
       // if (!permalinkRegexTest.test(value)) {
-      //   errorMessage = `The url should start and end with slashes and contain 
+      //   errorMessage = `The url should start and end with slashes and contain
       //     lowercase words separated by hyphens only.
       //     `;
       // }
