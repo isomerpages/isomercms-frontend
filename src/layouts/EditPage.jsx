@@ -113,7 +113,7 @@ export default class EditPage extends Component {
             />
           </div>
           <div className={editorStyles.pageEditorMain}>
-            <SimplePage chunk={prependImageSrc(siteName, marked(editorValue))} />
+            <SimplePage chunk={prependImageSrc(siteName, marked(editorValue))} title={prettifyPageFileName(fileName)} />
           </div>
         </div>
         <div className={editorStyles.pageEditorFooter}>
