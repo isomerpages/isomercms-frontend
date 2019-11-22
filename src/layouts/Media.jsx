@@ -76,7 +76,7 @@ export default class Media extends Component {
           </div>
         </div>
       </>
-    )  
+    );
   }
 }
 
