@@ -95,11 +95,11 @@ const validateHighlights = (highlightError, field, value) => {
     }
     case 'url': {
       // Permalink fails regex
-      if (!permalinkRegexTest.test(value)) {
-        errorMessage = `The url should start and end with slashes and contain 
-          lowercase words separated by hyphens only.
-          `;
-      }
+      // if (!permalinkRegexTest.test(value)) {
+      //   errorMessage = `The url should start and end with slashes and contain
+      //     lowercase words separated by hyphens only.
+      //     `;
+      // }
       // TO-DO: allow external links
       // TO-DO: Validate that link actually links to a page?
       break;
@@ -129,11 +129,11 @@ const validateDropdownElems = (dropdownElemError, field, value) => {
     }
     case 'url': {
       // Permalink fails regex
-      if (!permalinkRegexTest.test(value)) {
-        errorMessage = `The url should start and end with slashes and contain 
-          lowercase words separated by hyphens only.
-          `;
-      }
+      // if (!permalinkRegexTest.test(value)) {
+      //   errorMessage = `The url should start and end with slashes and contain
+      //     lowercase words separated by hyphens only.
+      //     `;
+      // }
       // TO-DO: allow external links
       // TO-DO: Validate that link actually links to a page?
       break;
@@ -306,11 +306,11 @@ const validateInfobarSection = (sectionError, sectionType, field, value) => {
       break;
     }
     case 'url': {
-      if (!permalinkRegexTest.test(value)) {
-        errorMessage = `The url should start and end with slashes and contain 
-          lowercase words separated by hyphens only.
-          `;
-      }
+      // if (!permalinkRegexTest.test(value)) {
+      //   errorMessage = `The url should start and end with slashes and contain
+      //     lowercase words separated by hyphens only.
+      //     `;
+      // }
       // TO-DO: Allow external URLs
       break;
     }
