@@ -32,6 +32,7 @@ const NavPreview = ({ navItems }) => (
                 navItems.map((navItem) => {
                   switch (navItem.type) {
                     case 'collection':
+                    case 'falseCollection':
                       return (
                         <div className="navbar-item has-dropdown is-hoverable">
                           <a className="navbar-link is-uppercase" href="/" onClick={(event) => event.preventDefault()}>

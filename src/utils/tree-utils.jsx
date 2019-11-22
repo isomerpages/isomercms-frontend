@@ -84,6 +84,7 @@ const ListItem = ({
       );
     case 'collection':
     case 'thirdnav':
+    case 'falseCollection':
       return item.isExpanded
         ? (
           <div className={styles.navGroup} onClick={() => onCollapse(item.id)}>
