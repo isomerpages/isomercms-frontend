@@ -1,0 +1,110 @@
+@import '../elements/variable';
+
+
+.menuEditorSidebar{
+  overflow-y: scroll;
+  margin-top: $header-height;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 30px;
+  padding-bottom: 50px;
+  font-size: 14px;
+  background: $base-background;
+  height: calc(100vh - #{$header-height});
+  width: 400px;
+
+
+  .instructions{
+    font-size: 14px;
+    margin-bottom: -10px;
+  }
+
+
+  h2{
+    margin: 0;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    line-height: 1rem;
+  }
+}
+
+.treeTitle{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  h2{
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+}
+
+.navGroup{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  margin-left: -30px;
+
+  i{
+    color: $isomer-blue;
+    font-size: 20px;
+    padding-right: 5px;
+  }
+
+  .transparent{
+    opacity: 0 !important;
+  }
+
+  .pageType{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    i{
+      font-size: 16px;
+      color: lighten($body-text,.5);
+      padding-right: 5px;
+    }
+  }
+}
+
+.createNew{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  color: $isomer-blue;
+  border-radius: 5px;
+  background: transparent;
+  font-size: 14px;
+  font-weight: normal;
+
+  margin-top: 4px;
+  margin-bottom: 4px;
+
+  i{
+    padding-right: 5px;
+    font-size: 16px;
+  }
+}
+
+.isDragging{
+  border-radius: 3px;
+  padding: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  border: 1px solid $isomer-blue;
+}
+
+.isDraggingPlaceholderBox{
+  background: $base-background-dark;
+  border-radius: 3px;
+  padding: 5px;
+  border: 1px dashed lighten($isomer-blue, 20%);
+}
