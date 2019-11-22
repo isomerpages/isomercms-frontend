@@ -61,6 +61,7 @@ export default class EditNav extends Component {
 
   onCollapse = (itemId) => {
     const { tree } = this.state;
+
     this.setState({
       tree: mutateTree(tree, itemId, { isExpanded: false }),
     });
@@ -126,12 +127,10 @@ export default class EditNav extends Component {
 
     const newTree = moveItemOnTree(tree, source, destination);
     const flattenedNewTree = flattenTree(newTree);
-    const newNavItems = readTree(newTree);
-    console.log(...flattenedNewTree);
-    console.log(newNavItems);
+    const newNavItems = readTree(flattenedNewTree);
     this.setState({
       tree: newTree,
-      // navItems: newNavItems,
+      navItems: newNavItems,
     });
   };
 

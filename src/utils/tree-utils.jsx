@@ -17,9 +17,7 @@ const createFlattenedItem = (item, currentPath) => (
   Flatten the children of the given subtree
 */
 const flattenChildren = (tree, item, currentPath) => (
-  item.isExpanded
-    ? flattenTree({ rootId: item.id, items: tree.items }, currentPath)
-    : []
+  flattenTree({ rootId: item.id, items: tree.items }, currentPath)
 );
 
 /*

@@ -38,7 +38,7 @@ const NavPreview = ({ navItems }) => (
                           </a>
                           <div className="selector is-hidden-touch is-hidden-desktop-only{{active}}" />
                           <div className="navbar-dropdown">
-                            {navItem.leftNavPages.map((leftNavPage) => (
+                            {navItem.leftNavPages && navItem.leftNavPages.map((leftNavPage) => (
                               <a className="navbar-item sub-link" href="{{leftnavpage.url}}">
                                 { leftNavPage.title }
                               </a>
@@ -48,6 +48,8 @@ const NavPreview = ({ navItems }) => (
                       );
                     case 'page':
                     case 'resource room':
+                    case 'collection-page':
+                    case 'thirdnav-page':
                       return (
                         <li className="navbar-item">
                           <a className="navbar-item is-uppercase">
