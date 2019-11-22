@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TreeBuilder from './tree-builder';
-import styles from '../../styles/isomer-cms/pages/MenuEditor.module.scss';
+import styles from '../styles/isomer-cms/pages/MenuEditor.module.scss';
 
 /*
   Constructs a new FlattenedItem
@@ -131,11 +131,93 @@ const draggableWrapper = (WrappedComponent, item, onExpand, onCollapse, provided
   </>
 );
 
+// Function which reads the flattened tree array and returns the navigation elements
+const readTree = (flattenedTree) => {
+  // Create a tree object to store the tree data
+  const treeObject = [];
+
+  // Counters to keep track of tree depth level
+  let prevDepth = 1;
+  let currDepth = 1;
+
+  // Counters to keep track of collection level
+  let collectionIdx = -1;
+  let leftNavIdx = -1;
+
+
+  for (let i = 1; i < flattenedTree.length; ++i) {
+    const { item: { data }, path } = flattenedTree[i];
+    const { title, type } = data;
+
+    // Break the for loop once we reach Unlinked Pages
+    if (path[0] === 1) {
+      break;
+    }
+
+    // Set the current depth
+    currDepth = path.length;
+
+    switch (currDepth) {
+      case 2:
+        // Add the collection to the tree object
+        treeObject.push({
+          title,
+          type,
+        });
+        // Increment collection counter
+        collectionIdx += 1;
+
+        if (currDepth < prevDepth) {
+          leftNavIdx = -1;
+        }
+        break;
+      case 3:
+        // Add the collection page or thirdnav to the tree
+        if (currDepth > prevDepth) {
+          treeObject[collectionIdx].leftNavPages = [{
+            title,
+            type,
+          }];
+        } else {
+          treeObject[collectionIdx].leftNavPages.push({
+            title,
+            type,
+          });
+        }
+        // Increment leftnav counter
+        leftNavIdx += 1;
+        break;
+      case 4:
+        // Add the thirdnav page to the tree
+        if (currDepth > prevDepth) {
+          treeObject[collectionIdx].leftNavPages[leftNavIdx].children = [{
+            title,
+            type,
+          }];
+        } else {
+          treeObject[collectionIdx].leftNavPages[leftNavIdx].children.push({
+            title,
+            type,
+          });
+        }
+        break;
+      default:
+        throw Error('Tree contains invalid data - Isomer does not support items greater than depth level 4');
+    }
+
+    // Set the prev depth = current depth
+    prevDepth = currDepth;
+  }
+
+  return treeObject;
+};
+
 export {
   flattenTree,
   dataIterator,
   ListItem,
   draggableWrapper,
+  readTree,
 };
 
 ListItem.propTypes = PropTypes.shape({
