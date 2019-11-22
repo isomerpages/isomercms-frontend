@@ -46,7 +46,8 @@ const NavPreview = ({ navItems }) => (
                           </div>
                         </div>
                       );
-                    case 'simple-page':
+                    case 'page':
+                    case 'resource room':
                       return (
                         <li className="navbar-item">
                           <a className="navbar-item is-uppercase">
@@ -56,7 +57,13 @@ const NavPreview = ({ navItems }) => (
                         </li>
                       );
                     default:
-                      return <p>Unaccounted for</p>;
+                      return (
+                        <p>
+                          Unaccounted for
+                          {' '}
+                          {navItem.type}
+                        </p>
+                      );
                   }
                 })
               }
