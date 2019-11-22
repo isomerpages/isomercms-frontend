@@ -148,6 +148,8 @@ Create New Page
                           pageIndex={pageIndex}
                           settingsToggle={this.settingsToggle}
                           collectionName={page.collectionName ? page.collectionName : ''}
+                          // eslint-disable-next-line react/no-array-index-key
+                          key={`${page.fileName}-${pageIndex}
                         />
                       ))
                       : null}

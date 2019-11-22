@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import Breadcrumb from './pageComponents/Breadcrumb';
 
 // This following template was taken from the 'Simple Page'
-const SimplePage = ({ chunk }) => (
+const SimplePage = ({ chunk, title }) => (
   <div>
-    <Breadcrumb />
+    <Breadcrumb title={title} />
     <section className="bp-section">
       <div className="bp-container content padding--top--lg padding--bottom--xl">
         <div className="row">
@@ -20,6 +20,7 @@ const SimplePage = ({ chunk }) => (
 
 SimplePage.propTypes = {
   chunk: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
 };
 
 export default SimplePage;
