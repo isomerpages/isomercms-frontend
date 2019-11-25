@@ -78,7 +78,7 @@ export default class PageSettingsModal extends Component {
         });
       } else {
         // A new file needs to be created
-        if (newFileName !== fileName) {
+        if (newFileName !== fileName && !isNewPage) {
           // Delete existing page
           await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
             data: { sha },
