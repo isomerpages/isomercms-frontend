@@ -9,20 +9,12 @@
   padding: 30px;
   padding-bottom: 100px;
   height: calc(100vh - #{$header-height} - #{$footer-height});
-
 }
 
 .homepageEditorMain{
-  display: flex;
   width: calc(100vw - #{$homepage-editor-sidebar-width});
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  left: $homepage-editor-sidebar-width;
+  height: calc(100vh - #{$header-height} - #{$footer-height});
   box-sizing: border-box;
-  padding-left: 50px;
-  padding-right: 50px;
-  padding-top: 40px;
   overflow-y: scroll;
 }
 
@@ -30,7 +22,6 @@
   width: $page-editor-sidebar-width;
   background: $base-background-light;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
-  overflow-y: scroll;
   box-sizing: border-box;
   padding: 30px;
   padding-bottom: 100px;
@@ -38,17 +29,15 @@
 }
 
 .pageEditorMain{
-  display: flex;
+  transform: scale(0.95);
+  transform-origin: center;
   width: calc(100vw - #{$page-editor-sidebar-width});
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
   left: $page-editor-sidebar-width;;
   box-sizing: border-box;
-  padding-left: 50px;
   padding-right: 50px;
-  padding-top: 40px;
   overflow-y: scroll;
+  height: calc(100vh - #{$header-height} - #{$footer-height});
+  background-color: white;
 }
 
 .pageEditorFooter{

@@ -1,5 +1,5 @@
-//Test
 @charset "UTF-8";
+@import './isomer-cms/elements/variable';
 .bg-media-color-0 {
     background-color: #4b268e;
 }
@@ -3137,7 +3137,7 @@ a.has-text-danger:focus,a.has-text-danger:hover {
 @media screen and (min-width: 1024px) {
     .bp-container {
         max-width:960px;
-        width: 960px
+        width: auto
     }
 
     .bp-container.is-fluid {
@@ -3165,14 +3165,14 @@ a.has-text-danger:focus,a.has-text-danger:hover {
 @media screen and (min-width: 1280px) {
     .bp-container {
         max-width:1216px;
-        width: 1216px
+        width: auto
     }
 }
 
 @media screen and (min-width: 1408px) {
     .bp-container {
         max-width:1280px;
-        width: 1280px
+        width: auto
     }
 }
 
@@ -6566,7 +6566,6 @@ a[href$=".pdf"][target="_blank"]:after {
 
 .navbar>.bp-container {
     align-items: stretch;
-    display: flex;
     min-height: 6.25rem;
     width: 100%
 }
@@ -12611,4 +12610,9 @@ a.navbar-item {
     z-index: -1;
     visibility: hidden;
     max-width: 100%;
+}
+
+.CodeMirror {
+    height: calc(85vh - #{$header-height} - #{$footer-height});
+    overflow-y: scroll;
 }
