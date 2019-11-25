@@ -40,7 +40,7 @@ const NavPreview = ({ navItems }) => (
                           </a>
                           <div className="navbar-dropdown">
                             {navItem.leftNavPages && navItem.leftNavPages.map((leftNavPage) => (
-                              <a className="navbar-item sub-link" href="/">
+                              <a className="navbar-item sub-link" href="/" onClick={(event) => event.preventDefault()}>
                                 { leftNavPage.title }
                               </a>
                             ))}
