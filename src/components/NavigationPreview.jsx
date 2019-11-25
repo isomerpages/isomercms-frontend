@@ -16,7 +16,7 @@ const NavPreview = ({ navItems }) => (
       </div>
       <div id="navbarExampleTransparentExample" className="bp-container is-fluid margin--none navbar-menu">
         <div className="navbar-start">
-          <div className="navbar-item is-hidden-widescreen is-search-bar">
+          {/* <div className="navbar-item is-hidden-widescreen is-search-bar">
             <form action="/search/" method="get">
               <div className="field has-addons">
                 <div className="control has-icons-left is-expanded">
@@ -27,7 +27,7 @@ const NavPreview = ({ navItems }) => (
                 </div>
               </div>
             </form>
-          </div>
+          </div> */}
           {
                 navItems.map((navItem) => {
                   switch (navItem.type) {
