@@ -8,7 +8,7 @@ export function frontMatterParser(content) {
   // format file to extract yaml front matter
   const results = content.split('---');
   const frontMatter = yaml.safeLoad(results[1]); // get the front matter as an object
-  const mdBody = results[2];
+  const mdBody = results.slice(2).join('---');
 
   return {
     frontMatter,
