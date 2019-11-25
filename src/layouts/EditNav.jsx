@@ -162,10 +162,16 @@ export default class EditNav extends Component {
 
   // we need to encode all our information into the id, there is no way to retrieve it otherwise
   render() {
+    const { match } = this.props;
+    const { siteName } = match.params;
     const { tree, navItems } = this.state;
     return (
       <>
-        <Header />
+        <Header
+          title="Main Menu"
+          backButtonText="Back to Menus"
+          backButtonUrl={`/sites/${siteName}/menus`}
+        />
         <div className="d-flex flex-row">
           <div className={styles.menuEditorSidebar}>
             <p className={styles.instructions}>Drag and drop pages to edit the menu</p>
