@@ -17,6 +17,7 @@ export default class EditNav extends Component {
     super(props);
     this.state = {
       tree: null,
+      originalTree: null,
     };
   }
 
@@ -46,7 +47,7 @@ export default class EditNav extends Component {
       const flattenedTree = flattenTree(tree);
       const navItems = readTree(flattenedTree);
 
-      this.setState({ tree, navItems });
+      this.setState({ tree, navItems, originalTree: tree });
     } catch (err) {
       console.log(err);
     }
