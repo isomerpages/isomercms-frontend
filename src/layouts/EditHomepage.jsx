@@ -46,6 +46,28 @@ const InfobarSectionConstructor = () => ({
   },
 });
 
+const CarouselSectionConstructor = () => ({
+  carousel: {
+    title: '',
+    subtitle: '',
+    description: '',
+    image: '',
+    alt: '',
+  },
+});
+
+const InfopicSectionConstructor = () => ({
+  infopic: {
+    title: '',
+    subtitle: '',
+    description: '',
+    image: '',
+    alt: '',
+    button: '',
+    url: '',
+  },
+});
+
 const KeyHighlightConstructor = () => ({
   title: '',
   description: '',
@@ -68,6 +90,10 @@ const enumSection = (type) => {
       return ResourcesSectionConstructor();
     case 'infobar':
       return InfobarSectionConstructor();
+    case 'infopic':
+      return InfopicSectionConstructor();
+    case 'carousel':
+      return CarouselSectionConstructor();
     default:
       return InfobarSectionConstructor();
   }
@@ -156,6 +182,14 @@ export default class EditHomepage extends Component {
 
         if (section.infobar) {
           sectionsErrors.push(InfobarSectionConstructor());
+        }
+
+        if (section.infopic) {
+          sectionsErrors.push(InfopicSectionConstructor());
+        }
+
+        if (section.carousel) {
+          sectionsErrors.push(CarouselSectionConstructor());
         }
 
         // Minimize all sections by default
