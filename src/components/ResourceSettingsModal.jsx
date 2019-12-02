@@ -78,9 +78,10 @@ export default class ResourceSettingsModal extends Component {
     }
   }
 
-  permalinkFileUrlToggle = () => {
+  handlePermalinkFileUrlToggle = (event) => {
     const { permalink } = this.state;
-    if (permalink) {
+    const { target: { value } } = event;
+    if (value === 'file') {
       this.setState({ permalink: null, fileUrl: '/file/url/' });
     } else {
       this.setState({ permalink: '/permalink/', fileUrl: null });
@@ -246,7 +247,16 @@ export default class ResourceSettingsModal extends Component {
               <p className={elementStyles.formLabel}>Resource Type</p>
 
               {/* Permalink or File URL */}
-              <button type="button" onClick={this.permalinkFileUrlToggle}>{permalink ? 'Switch to download' : 'Switch to post'}</button>
+              <div className="d-flex">
+                <label htmlFor="radio-post" className="flex-fill">
+                  <input type="radio" id="radio-post" name="resource-type" value="post" onClick={this.handlePermalinkFileUrlToggle} checked={!!permalink} />
+                  Post Content
+                </label>
+                <label htmlFor="radio-post" className="flex-fill">
+                  <input type="radio" id="radio-file" name="resource-type" value="file" onClick={this.handlePermalinkFileUrlToggle} checked={!permalink} />
+                  Downloadable File
+                </label>
+              </div>
               {permalink
                 ? (
                   <>
