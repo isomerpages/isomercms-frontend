@@ -914,14 +914,14 @@ export default class EditHomepage extends Component {
 
     const hasErrors = hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors;
 
-    const isLeftInfoPic = sectionIndex => {
+    const isLeftInfoPic = (sectionIndex) => {
       // If the previous section in the list was not an infopic section
       // or if the previous section was a right infopic section, return true
-      if (!frontMatter.sections[sectionIndex - 1].infopic || 
-        !isLeftInfoPic(sectionIndex - 1)) return true
-        
-      return false
-    }
+      if (!frontMatter.sections[sectionIndex - 1].infopic
+        || !isLeftInfoPic(sectionIndex - 1)) return true;
+
+      return false;
+    };
 
     return (
       <>
@@ -1190,33 +1190,35 @@ export default class EditHomepage extends Component {
                 {section.infopic
                   ? (
                     <div ref={(ref) => { this.scrollRefs[sectionIndex] = ref; }}>
-                      { isLeftInfoPic(sectionIndex) ?
-                        <TemplateInfopicLeftSection
-                          key={`section-${sectionIndex}`}
-                          title={section.infopic.title}
-                          subtitle={section.infopic.subtitle}
-                          description={section.infopic.description}
-                          url={section.infopic.url}
-                          imageUrl={section.infopic.imageUrl}
-                          imageAlt={section.infopic.imageAlt}
-                          button={section.infopic.button}
-                          sectionIndex={sectionIndex}
-                          siteName={siteName}
-                        />
-                      :
-                        <TemplateInfopicRightSection
-                          key={`section-${sectionIndex}`}
-                          title={section.infopic.title}
-                          subtitle={section.infopic.subtitle}
-                          description={section.infopic.description}
-                          url={section.infopic.url}
-                          imageUrl={section.infopic.imageUrl}
-                          imageAlt={section.infopic.imageAlt}
-                          button={section.infopic.button}
-                          sectionIndex={sectionIndex}
-                          siteName={siteName}
-                        />
-                      }
+                      { isLeftInfoPic(sectionIndex)
+                        ? (
+                          <TemplateInfopicLeftSection
+                            key={`section-${sectionIndex}`}
+                            title={section.infopic.title}
+                            subtitle={section.infopic.subtitle}
+                            description={section.infopic.description}
+                            url={section.infopic.url}
+                            imageUrl={section.infopic.imageUrl}
+                            imageAlt={section.infopic.imageAlt}
+                            button={section.infopic.button}
+                            sectionIndex={sectionIndex}
+                            siteName={siteName}
+                          />
+                        )
+                        : (
+                          <TemplateInfopicRightSection
+                            key={`section-${sectionIndex}`}
+                            title={section.infopic.title}
+                            subtitle={section.infopic.subtitle}
+                            description={section.infopic.description}
+                            url={section.infopic.url}
+                            imageUrl={section.infopic.imageUrl}
+                            imageAlt={section.infopic.imageAlt}
+                            button={section.infopic.button}
+                            sectionIndex={sectionIndex}
+                            siteName={siteName}
+                          />
+                        )}
                     </div>
                   )
                   : null}
