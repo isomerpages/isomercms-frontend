@@ -41,7 +41,6 @@ Infopic section:
               id={`section-${sectionIndex}-infopic-title`}
               value={title}
               errorMessage={errors.title}
-              isRequired
               onFieldChange={onFieldChange}
             />
             <FormField
@@ -49,7 +48,6 @@ Infopic section:
               id={`section-${sectionIndex}-infopic-subtitle`}
               value={subtitle}
               errorMessage={errors.subtitle}
-              isRequired
               onFieldChange={onFieldChange}
             />
             <FormField
@@ -57,7 +55,6 @@ Infopic section:
               id={`section-${sectionIndex}-infopic-description`}
               value={description}
               errorMessage={errors.description}
-              isRequired
               onFieldChange={onFieldChange}
             />
             <FormField
