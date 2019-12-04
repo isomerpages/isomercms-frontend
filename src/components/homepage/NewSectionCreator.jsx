@@ -11,6 +11,7 @@ Add a new section
     <select name="newSection" id="section-new" onChange={createHandler}>
       <option value="">--Please choose a new section--</option>
       <option value="infobar">Infobar</option>
+      <option value="infopic">Infopic</option>
       {/* If homepage already has a Resources section,
         don't display the option to create one */}
       {hasResources

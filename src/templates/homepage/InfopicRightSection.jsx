@@ -1,0 +1,119 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+
+/* eslint
+  react/no-array-index-key: 0
+  jsx-a11y/anchor-is-valid: 0
+ */
+
+const TemplateInfopicRightSection = ({
+  title,
+  subtitle,
+  description,
+  button,
+  url,
+  sectionIndex,
+  imageUrl,
+  imageAlt,
+  siteName,
+}) => (
+  <section className={`bp-section ${(sectionIndex % 2 === 1) ? 'bg-newssection' : null}`}>
+    <div className="bp-container">
+      {/* For mobile */}
+      <div className="row is-hidden-desktop is-hidden-tablet-only">
+        <div className="col is-half padding--bottom">
+          <p className="padding--bottom eyebrow is-uppercase">
+            { title }
+          </p>
+          <h1 className="has-text-secondary padding--bottom">
+            <b>{ subtitle }</b>
+          </h1>
+          <p>{ description }</p>
+          <a href={url} className="bp-sec-button margin--top padding--bottom">
+            {button
+              ? (
+                <div>
+                  <span>{ button }</span>
+                  <i className="sgds-icon sgds-icon-arrow-right is-size-4" aria-hidden="true" />
+                </div>
+              )
+              : null}
+          </a>
+        </div>
+        <div className="col is-half">
+          <img src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
+        </div>
+      </div>
+      {/* For tablet */}
+      <div className="row is-hidden-mobile is-hidden-desktop">
+        <div className="col is-half is-half padding--top--xl padding--bottom--xl">
+          <img src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
+        </div>
+        <div className="col is-half">
+          <p className="padding--bottom eyebrow is-uppercase">
+            { title }
+          </p>
+          <h1 className="has-text-secondary padding--bottom">
+            <b>{ subtitle }</b>
+          </h1>
+          <p>{ description }</p>
+          <a href={url} className="bp-sec-button margin--top padding--bottom">
+            { button
+              ? (
+                <div>
+                  <span>{ button }</span>
+                  <i className="sgds-icon sgds-icon-arrow-right is-size-4" aria-hidden="true" />
+                </div>
+              )
+              : null}
+          </a>
+        </div>
+      </div>
+      {/* For desktop */}
+      <div className="row is-hidden-mobile is-hidden-tablet-only">
+        <div className="col is-half is-half padding--top--xl padding--bottom--xl">
+          <img src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
+        </div>
+        <div className="col is-half padding--top--xl padding--bottom--xl padding--left--xl padding--right--xl">
+          <p className="padding--bottom eyebrow is-uppercase">
+            { title }
+          </p>
+          <h1 className="has-text-secondary padding--bottom">
+            <b>{ subtitle }</b>
+          </h1>
+          <p>{ description }</p>
+          <a href={url} className="bp-sec-button margin--top padding--bottom">
+            { button
+              ? (
+                <div>
+                  <span>{ button }</span>
+                  <i className="sgds-icon sgds-icon-arrow-right is-size-4" aria-hidden="true" />
+                </div>
+              )
+              : null }
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+export default TemplateInfopicRightSection;
+
+TemplateInfopicRightSection.propTypes = {
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
+  description: PropTypes.string,
+  url: PropTypes.string.isRequired,
+  button: PropTypes.string.isRequired,
+  imageUrl: PropTypes.string.isRequired,
+  imageAlt: PropTypes.string.isRequired,
+  sectionIndex: PropTypes.number.isRequired,
+  siteName: PropTypes.string.isRequired,
+};
+
+TemplateInfopicRightSection.defaultProps = {
+  title: undefined,
+  subtitle: undefined,
+  description: undefined,
+};
