@@ -1,0 +1,142 @@
+@import '../elements/variable';
+
+@mixin single-site {
+  margin-left: $site-margin-horizontal;
+  margin-right: $site-margin-horizontal;
+  margin-top: $site-margin-vertical;
+  margin-bottom: $site-margin-vertical;
+  height: $site-height;
+  width: $site-width;
+  border-radius: 5px;
+}
+
+.sitesContainer{
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 30px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  height: 75%;
+
+  .sectionHeader{
+    width: $sites-container-width;
+    margin-left: $site-margin-horizontal*2;
+
+    .sectionTitle{
+      font-size: 28px;
+      color: $isomer-blue;
+      text-align: left;
+    }
+  }
+
+
+  .sites{
+    display: flex;
+    flex-direction: rows;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    overflow-y: scroll;
+
+    .siteContainer{
+      // width: 33.33%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: rows;
+      justify-content: center;
+      align-items: center;
+
+      .site{
+        @include single-site;
+        background: white;
+        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+        border: none;
+        box-sizing: border-box;
+        transition: transform 0.2s ease-in;
+
+        .siteImageContainer{
+          height: 70%;
+          width: 100%;
+          background: grey;
+          border-top-left-radius: 5px;
+          border-top-right-radius: 5px;
+          overflow: hidden;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          .siteImage {
+            max-height: 100%;
+          }
+
+        }
+
+        .siteDescription{
+          height: 30%;
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          padding-left: 15px;
+
+          i {
+            color: black;
+            margin-right: 16px;
+            font-size: x-large;
+          }
+
+          .siteName{
+            width: 100%;
+            font-size: .9em;
+            color: $body-text;
+            margin-bottom: 5px;
+          }
+
+          .siteDate{
+            width: 100%;
+            font-weight: 300;
+            color: $body-grey;
+            font-size: .6em;
+          }
+        }
+
+        &:hover{
+          transform: translateY(-5px);
+        }
+      }
+
+      .createNew{
+        @include single-site;
+        border: 1px dashed $isomer-blue;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: $isomer-blue;
+
+         .bxPlusCircle{
+           font-size: 30px;
+           margin-bottom: 20px;
+         }
+
+         h2{
+           font-size: 18px;
+         }
+
+         &:hover{
+           background-color: white;
+           border: 1px solid $isomer-blue;
+         }
+      }
+
+    }
+  }
+
+}

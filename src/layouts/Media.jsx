@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
+import ImagesModal from '../components/ImagesModal';
 
 // Counts the number of objects in an array
 // If the submitted object is an object, then the length of the list is 0
@@ -20,6 +21,7 @@ export default class Media extends Component {
     this.state = {
       numImages: '',
       numFiles: '',
+      canShowImagesModal: false,
     };
   }
 
@@ -47,8 +49,16 @@ export default class Media extends Component {
     }
   }
 
+  onImagesCardClick = () => {
+    this.setState({ canShowImagesModal: true });
+  }
+
+  toggleImages = () => {
+    this.setState((state) => ({ canShowImagesModal: !state.canShowImagesModal }));
+  }
+
   render() {
-    const { numImages, numFiles } = this.state;
+    const { numImages, numFiles, canShowImagesModal } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
     return (
@@ -66,7 +76,7 @@ export default class Media extends Component {
             <div className={contentStyles.contentContainerBars}>
               <ul>
                 <li>
-                  <Link to={`/sites/${siteName}/images`}>Images</Link>
+                  <button type="button" onClick={this.onImagesCardClick}>Images</button>
                 </li>
                 <li>
                   <Link to={`/sites/${siteName}/files`}>Files</Link>
@@ -75,6 +85,10 @@ export default class Media extends Component {
             </div>
           </div>
         </div>
+        {
+          canShowImagesModal
+          && <ImagesModal match={match} toggleImages={this.toggleImages} />
+        }
       </>
     );
   }
