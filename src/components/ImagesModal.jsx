@@ -3,10 +3,10 @@ import axios from 'axios';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
-const ImageCard = ({ click, image, siteName }) => (
+const ImageCard = ({ onClick, image, siteName }) => (
   <div className={mediaStyles.siteContainer} key={image.path}>
     <div className={mediaStyles.site}>
-      <a href="/" onClick={(e) => { e.preventDefault(); click(image); }}>
+      <a href="/" onClick={(e) => { e.preventDefault(); onClick(image); }}>
         <div className={mediaStyles.siteImageContainer}>
           <img
             className={mediaStyles.siteImage}
@@ -50,10 +50,9 @@ export default class ImagesModal extends Component {
   }
 
   render() {
-    const { match, toggleImages } = this.props;
+    const { match, onClose, onImageSelect } = this.props;
     const { siteName } = match.params;
     const { images } = this.state;
-    console.log(images);
     return (images.length
       && (
         <div className={elementStyles.overlay}>
@@ -68,12 +67,12 @@ export default class ImagesModal extends Component {
                 <ImageCard
                   image={image}
                   siteName={siteName}
-                  click={this.onImageCardClick}
+                  onClick={onImageSelect}
                 />
               ))}
             </div>
             <div className={elementStyles.modalButtons}>
-              <button type="button" className={elementStyles.blue} onClick={toggleImages}>Close</button>
+              <button type="button" className={elementStyles.blue} onClick={onClose}>Close</button>
             </div>
           </div>
         </div>

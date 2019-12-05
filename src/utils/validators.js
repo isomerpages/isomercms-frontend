@@ -7,6 +7,7 @@ const DATE_REGEX = '^([0-9]{4}-[0-9]{2}-[0-9]{2})$';
 const dateRegexTest = RegExp(DATE_REGEX);
 const RESOURCE_CATEGORY_REGEX = '^(([a-zA-Z0-9]+([\\s][a-zA-Z0-9]+)*)+)$';
 const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX);
+const fileNameRegexTest = /^[\w,\s-]+\.[A-Za-z]{3}$/;
 const RADIX_PARSE_INT = 10;
 
 // Homepage Editor
@@ -514,6 +515,16 @@ const validateResourceCategory = (value) => {
   return errorMessage;
 };
 
+const validateFileName = (value) => {
+  if (!value.length) {
+    return 'Please input the file name';
+  }
+  if (!fileNameRegexTest.test(value)) {
+    return 'Invalid filename';
+  }
+  return '';
+};
+
 export {
   validateHighlights,
   validateDropdownElems,
@@ -521,4 +532,5 @@ export {
   validatePageSettings,
   validateResourceSettings,
   validateResourceCategory,
+  validateFileName,
 };

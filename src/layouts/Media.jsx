@@ -8,6 +8,7 @@ import Sidebar from '../components/Sidebar';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import ImagesModal from '../components/ImagesModal';
+import EditImageModal from '../components/EditImageModal';
 
 // Counts the number of objects in an array
 // If the submitted object is an object, then the length of the list is 0
@@ -22,6 +23,7 @@ export default class Media extends Component {
       numImages: '',
       numFiles: '',
       canShowImagesModal: false,
+      chosenImage: null,
     };
   }
 
@@ -49,16 +51,18 @@ export default class Media extends Component {
     }
   }
 
-  onImagesCardClick = () => {
+  showImagesModal = () => {
     this.setState({ canShowImagesModal: true });
   }
 
-  toggleImages = () => {
-    this.setState((state) => ({ canShowImagesModal: !state.canShowImagesModal }));
+  hideImagesModal = () => {
+    this.setState({ canShowImagesModal: false });
   }
 
   render() {
-    const { numImages, numFiles, canShowImagesModal } = this.state;
+    const {
+      numImages, numFiles, canShowImagesModal, chosenImage,
+    } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
     return (
@@ -76,7 +80,7 @@ export default class Media extends Component {
             <div className={contentStyles.contentContainerBars}>
               <ul>
                 <li>
-                  <button type="button" onClick={this.onImagesCardClick}>Images</button>
+                  <button type="button" onClick={this.showImagesModal}>Images</button>
                 </li>
                 <li>
                   <Link to={`/sites/${siteName}/files`}>Files</Link>
@@ -87,7 +91,23 @@ export default class Media extends Component {
         </div>
         {
           canShowImagesModal
-          && <ImagesModal match={match} toggleImages={this.toggleImages} />
+          && (
+          <ImagesModal
+            match={match}
+            onClose={this.hideImagesModal}
+            onImageSelect={(image) => this.setState({ chosenImage: image, canShowImagesModal: false })}
+          />
+          )
+        }
+        {
+          chosenImage
+          && (
+            <EditImageModal
+              image={chosenImage}
+              onClose={() => this.setState({ chosenImage: null })}
+              match={match}
+            />
+          )
         }
       </>
     );
