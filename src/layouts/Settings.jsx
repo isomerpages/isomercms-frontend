@@ -222,6 +222,7 @@ export default class Settings extends Component {
                 />
                 {/* Social media fields */}
                 <div id="social-media-fields">
+                  <p className={elementStyles.formLabel}>Social Media</p>
                   {Object.keys(socialMediaContent).map((socialMediaPage) => (
                     <FormFieldHorizontal
                       title={socialMediaPage.charAt(0).toUpperCase() + socialMediaPage.slice(1)}
