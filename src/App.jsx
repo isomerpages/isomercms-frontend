@@ -8,7 +8,7 @@ import Home from './layouts/Home';
 import Sites from './layouts/Sites';
 import Pages from './layouts/Pages';
 import EditPage from './layouts/EditPage';
-import Collections from './layouts/Collections';
+// import Collections from './layouts/Collections';
 import CollectionPages from './layouts/CollectionPages';
 import EditCollectionPage from './layouts/EditCollectionPage';
 import Images from './layouts/Images';
@@ -21,6 +21,7 @@ import Resources from './layouts/Resources';
 import EditResourcePage from './layouts/EditResourcePage';
 import Menus from './layouts/Menus';
 import EditNav from './layouts/EditNav';
+import Settings from './layouts/Settings';
 // import EditFooter from './layouts/EditFooter';
 
 function App() {
@@ -52,6 +53,7 @@ function App() {
           {/* <Route path="/sites/:siteName/menus/footer" component={EditFooter} />  */}
           <Route path="/sites/:siteName/menus/main-menu" component={EditNav} />
           <Route path="/sites/:siteName/menus" component={Menus} />
+          <Route path="/sites/:siteName/settings" component={Settings} />
           <Route path="/sites" component={Sites} />
         </Switch>
       </div>
