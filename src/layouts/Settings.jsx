@@ -6,6 +6,7 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import FormField from '../components/FormField';
 import FormFieldImage from '../components/FormFieldImage';
+import FormFieldColor from '../components/FormFieldColor';
 import FormFieldHorizontal from '../components/FormFieldHorizontal';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
@@ -179,7 +180,7 @@ export default class Settings extends Component {
                 {/* Color fields */}
                 <div id="color-fields">
                   <p className={elementStyles.formLabel}>Colors</p>
-                  <FormField
+                  <FormFieldColor
                     title="Primary"
                     id="primary-color"
                     value={primaryColor}
@@ -187,7 +188,7 @@ export default class Settings extends Component {
                     isRequired
                     onFieldChange={this.changeHandler}
                   />
-                  <FormField
+                  <FormFieldColor
                     title="Secondary Color"
                     id="secondary-color"
                     value={secondaryColor}
@@ -199,7 +200,7 @@ export default class Settings extends Component {
                     {Object.keys(mediaColors).map((category, index) => {
                       const { title: categoryId, color } = mediaColors[index];
                       return (
-                        <FormField
+                        <FormFieldColor
                           title={`Resource ${index + 1}`}
                           id={`media-color@${index}`}
                           value={color}
