@@ -13,7 +13,7 @@ const FormFieldHorizontal = ({
   style,
 }) => (
   <>
-    <div className={elementStyles.formHorizontal}>
+    <div className={elementStyles.formColor}>
       <p className={elementStyles.formLabel} style={{ 'grid-column': '1' }}>{title}</p>
       <input
         type="text"
@@ -27,6 +27,7 @@ const FormFieldHorizontal = ({
         style={{ ...style, 'grid-column': '2' }}
         onChange={onFieldChange}
       />
+      <div className={elementStyles.formColorBox} style={{ background: value }} />
     </div>
     <span className={elementStyles.error}>{errorMessage}</span>
   </>
