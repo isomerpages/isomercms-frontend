@@ -14,18 +14,21 @@
 .formHorizontal{
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: 5% 95%; 
+  grid-template-columns: 10% 90%; 
+  grid-column-gap: 17.5%;
 }
 
 .formColor{
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: 5% 85% 10%; 
+  grid-template-columns: 25% 55% 20%;
+  margin: 2.5px;
 }
 
 .formColorBox{
   float: left;
-  width: 20px;
+  width: 50px;
+  border: 0.5px solid black;
 }
 
 input,textarea{

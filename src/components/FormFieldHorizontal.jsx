@@ -14,7 +14,7 @@ const FormFieldHorizontal = ({
 }) => (
   <>
     <div className={elementStyles.formHorizontal}>
-      <p className={elementStyles.formLabel} style={{ 'grid-column': '1' }}>{title}</p>
+      <p className={elementStyles.formLabel} style={{ 'grid-column': '1' }}>{`${title}:`}</p>
       <input
         type="text"
         placeholder={title}
@@ -23,7 +23,7 @@ const FormFieldHorizontal = ({
         id={id}
         autoComplete="off"
         required={isRequired}
-        className={`form-control ${errorMessage ? `${elementStyles.error}` : null}`}
+        className={errorMessage ? `${elementStyles.error}` : null}
         style={{ ...style, 'grid-column': '2' }}
         onChange={onFieldChange}
       />

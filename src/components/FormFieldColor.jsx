@@ -2,13 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
-const FormFieldHorizontal = ({
+const FormFieldColor = ({
   title,
   defaultValue,
   value,
   id,
   errorMessage,
   onFieldChange,
+  onColorClick,
   isRequired,
   style,
 }) => (
@@ -23,30 +24,35 @@ const FormFieldHorizontal = ({
         id={id}
         autoComplete="off"
         required={isRequired}
-        className={`form-control ${errorMessage ? `${elementStyles.error}` : null}`}
+        className={errorMessage ? `${elementStyles.error}` : null}
         style={{ ...style, 'grid-column': '2' }}
         onChange={onFieldChange}
       />
-      <div className={elementStyles.formColorBox} style={{ background: value }} />
+      <div
+        className={elementStyles.formColorBox}
+        style={{ background: value }}
+        onClick={onColorClick}
+      />
     </div>
     <span className={elementStyles.error}>{errorMessage}</span>
   </>
 );
 
-export default FormFieldHorizontal;
+export default FormFieldColor;
 
-FormFieldHorizontal.propTypes = {
+FormFieldColor.propTypes = {
   title: PropTypes.string.isRequired,
   defaultValue: PropTypes.string,
   value: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   errorMessage: PropTypes.string.isRequired,
   onFieldChange: PropTypes.func.isRequired,
+  onColorClick: PropTypes.func.isRequired,
   isRequired: PropTypes.bool.isRequired,
   style: PropTypes.string,
 };
 
-FormFieldHorizontal.defaultProps = {
+FormFieldColor.defaultProps = {
   defaultValue: undefined,
   style: undefined,
 };
