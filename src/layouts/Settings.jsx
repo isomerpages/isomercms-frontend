@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import update from 'immutability-helper';
+import { Base64 } from 'js-base64';
+import yaml from 'js-yaml';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import FormField from '../components/FormField';
@@ -69,14 +70,16 @@ export default class Settings extends Component {
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, {
         withCredentials: true,
       });
+      const { settings } = resp.data;
       const {
-        settings: {
-          configContent,
-          socialMediaContent,
-          configSha,
-          socialMediaSha,
-        },
-      } = resp.data;
+        configResp,
+        socialMediaResp,
+        configSha,
+        socialMediaSha,
+      } = settings;
+
+      const configContent = yaml.safeLoad(Base64.decode(configResp));
+      const socialMediaContent = yaml.safeLoad(Base64.decode(socialMediaResp));
       // set state properly
       this.setState((currState) => ({
         ...currState,
@@ -89,45 +92,75 @@ export default class Settings extends Component {
         configSha,
         socialMediaSha,
       }));
-      console.log('abc');
     } catch (err) {
       console.log(err);
     }
   }
 
   changeHandler = (event) => {
-    const { id, value, parentElement: { id: parentElementID } } = event.target;
+    const {
+      id,
+      value,
+      parentElement: {
+        parentElement: {
+          id: grandparentElementId,
+          // parentElement: {
+          //   id: greatGrandparentElementId,
+          // },
+        },
+      },
+    } = event.target;
     // const errorMessage = validateSettings(id, value);
 
-    if (parentElementID === 'social-media-fields') {
+    if (grandparentElementId === 'social-media-fields') {
+      // errors: {
+      //  socialMediaContent: {
+      //    [id]: {
+      //      $set: errorMessage,
+      //     },
+      //   },
+      // },
       this.setState((currState) => ({
-        // errors: {
-        //  socialMediaContent:
-        //    [id]: errorMessage,
-        // },
+        ...currState,
         socialMediaContent: {
           ...currState.socialMediaContent,
           [id]: value,
         },
       }));
-    } else if (parentElementID === 'color-fields') {
-      console.log('a');
-    } else if (parentElementID === 'media-color-fields') {
-      const index = id.split('@')[id.split('@').length - 1];
+    } else if (grandparentElementId === 'color-fields') {
+      // errors: {
+      //  colors: {
+      //   'media-colors': {
+      //      [id]: {
+      //        $set: errorMessage,
+      //      },
+      //    }
+      //  }
       this.setState((currState) => ({
-        // errors: {
-        //  socialMediaContent:
-        //    [id]: errorMessage,
-        // },
+        ...currState,
         colors: {
           ...currState.colors,
-          'media-colors': update(currState.colors['media-colors'], {
-            [index]: {
-              color: {
-                $set: value,
-              },
-            },
-          }),
+          [id]: value,
+        },
+      }));
+    } else if (grandparentElementId === 'media-color-fields') {
+      // errors: {
+      //  colors: {
+      //   'media-colors': {
+      //      [id]: {
+      //        $set: errorMessage,
+      //      },
+      //    }
+      //  }
+      const index = id.split('@')[id.split('@').length - 1];
+      const { colors } = this.state;
+      const newMediaColors = [...colors['media-colors']];
+      newMediaColors[index].color = value;
+      this.setState((currState) => ({
+        ...currState,
+        colors: {
+          ...currState.colors,
+          'media-colors': newMediaColors,
         },
       }));
     } else {
@@ -169,15 +202,9 @@ export default class Settings extends Component {
         configSha,
       };
 
-      const { newConfigSha, newSocialMediaSha } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, params, {
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, params, {
         withCredentials: true,
       });
-
-      this.setState((currState) => ({
-        ...currState,
-        configSha: newConfigSha,
-        socialMediaSha: newSocialMediaSha,
-      }));
 
       window.location.reload();
     } catch (err) {
