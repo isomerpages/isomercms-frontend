@@ -69,7 +69,14 @@ export default class Settings extends Component {
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, {
         withCredentials: true,
       });
-      const { settings: { configContent, socialMediaContent } } = resp.data;
+      const {
+        settings: {
+          configContent,
+          socialMediaContent,
+          configSha,
+          socialMediaSha,
+        },
+      } = resp.data;
       // set state properly
       this.setState((currState) => ({
         ...currState,
@@ -79,6 +86,8 @@ export default class Settings extends Component {
           ...currState.socialMediaContent,
           ...socialMediaContent,
         },
+        configSha,
+        socialMediaSha,
       }));
       console.log('abc');
     } catch (err) {
@@ -132,6 +141,54 @@ export default class Settings extends Component {
     }
   };
 
+  saveSettings = async (event) => {
+    event.preventDefault();
+    try {
+      const { state } = this;
+      const { match } = this.props;
+      const { siteName } = match.params;
+
+      // settings is obtained from _config.yml and social-media.yml
+      const socialMediaSettings = state.socialMediaContent;
+
+      // obtain config settings object
+      const configSettings = { ...state };
+      delete configSettings.socialMediaContent;
+      delete configSettings.configSha;
+      delete configSettings.socialMediaSha;
+      delete configSettings.siteName;
+
+      // obtain sha values
+      const { socialMediaSha, configSha } = state;
+
+
+      const params = {
+        socialMediaSettings,
+        configSettings,
+        socialMediaSha,
+        configSha,
+      };
+
+      const { newConfigSha, newSocialMediaSha } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, params, {
+        withCredentials: true,
+      });
+
+      this.setState((currState) => ({
+        ...currState,
+        configSha: newConfigSha,
+        socialMediaSha: newSocialMediaSha,
+      }));
+
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  colorPickerToggle = () => {
+    alert('Hi!!');
+  }
+
   render() {
     const {
       siteName,
@@ -176,6 +233,7 @@ export default class Settings extends Component {
                   errorMessage={errors.favicon}
                   isRequired
                   onFieldChange={this.changeHandler}
+                  onColorClick={this.colorPickerToggle}
                 />
                 {/* Color fields */}
                 <div id="color-fields">
@@ -187,14 +245,16 @@ export default class Settings extends Component {
                     errorMessage={errors.colors['primary-color']}
                     isRequired
                     onFieldChange={this.changeHandler}
+                    onColorClick={this.colorPickerToggle}
                   />
                   <FormFieldColor
-                    title="Secondary Color"
+                    title="Secondary"
                     id="secondary-color"
                     value={secondaryColor}
                     errorMessage={errors.colors['secondary-color']}
                     isRequired
                     onFieldChange={this.changeHandler}
+                    onColorClick={this.colorPickerToggle}
                   />
                   <div id="media-color-fields">
                     {Object.keys(mediaColors).map((category, index) => {
@@ -230,7 +290,7 @@ export default class Settings extends Component {
                       id={socialMediaPage}
                       value={socialMediaContent[socialMediaPage]}
                       errorMessage={errors.socialMediaContent[socialMediaPage]}
-                      isRequired
+                      isRequired={false}
                       onFieldChange={this.changeHandler}
                     />
                   ))}
@@ -238,6 +298,7 @@ export default class Settings extends Component {
               </div>
             </div>
           </div>
+          <button type="submit" className={elementStyles.blue}>Save</button>
         </form>
       </>
     );
