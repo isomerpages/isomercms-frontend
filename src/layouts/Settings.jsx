@@ -14,8 +14,11 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 const stateFields = {
-  colorPickerToggle: false,
-  currentColor: '',
+  colorPicker: {
+    colorPickerToggle: false,
+    colorPickerPosition: [0, 0],
+    currentColor: '',
+  },
   title: '',
   favicon: '',
   resources_name: '',
@@ -193,7 +196,7 @@ export default class Settings extends Component {
       delete configSettings.configSha;
       delete configSettings.socialMediaSha;
       delete configSettings.siteName;
-      delete configSettings.colorPickerToggle;
+      delete configSettings.colorPicker;
 
       // obtain sha values
       const { socialMediaSha, configSha } = state;
@@ -219,12 +222,30 @@ export default class Settings extends Component {
   // toggles color picker modal
   colorPickerToggle = (event) => {
     alert('Hi!!');
-    const { target: { style: { background } } } = event;
-    const currentColor = rgbHex(background);
-    this.setState({
-      colorPickerToggle: true,
-      currentColor: '',
-    });
+    const { colorPicker: { colorPickerToggle } } = this.state;
+    // if ColorPicker modal is active, disable it
+    if (colorPickerToggle) {
+      this.setState((currState) => ({
+        ...currState,
+        colorPicker: {
+          colorPickerToggle: false,
+          currentColor: '',
+          colorPickerPosition: [0, 0],
+        },
+      }));
+    // if ColorPickerModal isn't active, activate it
+    } else {
+      const { target: { style: { background } }, pageX, pageY } = event;
+      const currentColor = rgbHex(background);
+      this.setState((currState) => ({
+        ...currState,
+        colorPicker: {
+          colorPickerToggle: true,
+          currentColor,
+          colorPickerPosition: [pageX, pageY],
+        },
+      }));
+    }
   }
 
   render() {
