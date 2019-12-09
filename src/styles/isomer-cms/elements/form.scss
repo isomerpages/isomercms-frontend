@@ -23,16 +23,27 @@
   .formHorizontalInput{
     width: 75%;
   }
+}
+
+.formColor{
+  display: flex;
+  width: 50%;
+
+  .formColorLabel{
+    @extend .formLabel;
+    width: 40%;
+    margin: 1px;
+  }
 
   .formColorInput{
-    width: 65%;
+    width: 40%;
   }
 
   .formColorBox{
     float: left;
     width: 50px;
     border: 0.5px solid black;
-    width: 10%;
+    width: 20%;
   }
 }
 

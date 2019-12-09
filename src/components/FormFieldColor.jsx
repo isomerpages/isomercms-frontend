@@ -15,8 +15,8 @@ const FormFieldColor = ({
   style,
 }) => (
   <>
-    <div className={elementStyles.formHorizontal}>
-      <p className={elementStyles.formHorizontalLabel}>{title}</p>
+    <div className={elementStyles.formColor}>
+      <p className={elementStyles.formColorLabel}>{title}</p>
       <input
         type="text"
         placeholder={title}
@@ -29,9 +29,10 @@ const FormFieldColor = ({
         style={style}
         onChange={onFieldChange}
       />
-      <ColorPicker
-        value={value}
-        onColorClick={onColorClick}
+      <div
+        className={elementStyles.formColorBox}
+        style={{ background: value }}
+        onClick={onColorClick}
       />
     </div>
     <span className={elementStyles.error}>{errorMessage}</span>
