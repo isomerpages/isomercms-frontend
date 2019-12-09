@@ -63,7 +63,11 @@
           display: flex;
           justify-content: center;
           align-items: center;
+          background-image: url('/img/transbg.jpg');
+          background-size: 20px 20px;
+          background-repeat: repeat;
           .siteImage {
+            max-height: 100%;
           }
 
         }
@@ -137,6 +141,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background-image: url('/img/transbg.jpg');
+  background-size: 20px 20px;
+  background-repeat: repeat
   img {
     max-width: 100%;
     max-height: 100%;
