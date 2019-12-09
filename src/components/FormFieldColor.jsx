@@ -14,8 +14,8 @@ const FormFieldColor = ({
   style,
 }) => (
   <>
-    <div className={elementStyles.formColor}>
-      <p className={elementStyles.formLabel} style={{ 'grid-column': '1' }}>{title}</p>
+    <div className={elementStyles.formHorizontal}>
+      <p className={elementStyles.formHorizontalLabel}>{title}</p>
       <input
         type="text"
         placeholder={title}
@@ -24,8 +24,8 @@ const FormFieldColor = ({
         id={id}
         autoComplete="off"
         required={isRequired}
-        className={errorMessage ? `${elementStyles.error}` : null}
-        style={{ ...style, 'grid-column': '2' }}
+        className={`${elementStyles.formColorInput} ${errorMessage ? `${elementStyles.error}` : null}`}
+        style={style}
         onChange={onFieldChange}
       />
       <div

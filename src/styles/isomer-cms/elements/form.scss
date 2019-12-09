@@ -16,23 +16,24 @@
 
   .formHorizontalLabel{
     @extend .formLabel;
-    flex-grow: 2;
-    width: 20%;
+    width: 25%;
+    margin: 1px;
   }
 
   .formHorizontalInput{
-    flex-grow: 14;
+    width: 75%;
   }
-}
 
-.formColor{
-  display: flex;
-}
+  .formColorInput{
+    width: 65%;
+  }
 
-.formColorBox{
-  float: left;
-  width: 50px;
-  border: 0.5px solid black;
+  .formColorBox{
+    float: left;
+    width: 50px;
+    border: 0.5px solid black;
+    width: 10%;
+  }
 }
 
 input,textarea{
