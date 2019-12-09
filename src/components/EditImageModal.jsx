@@ -4,7 +4,6 @@ import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import FormField from './FormField';
 import { validateFileName } from '../utils/validators';
-import { file } from '@babel/types';
 
 
 export default class EditImagesModal extends Component {
@@ -86,12 +85,12 @@ export default class EditImagesModal extends Component {
               <i className="bx bx-x" />
             </button>
           </div>
-          <div className={mediaStyles.sites} />
-          <img
-            className={mediaStyles.siteImage}
-            alt={`${image.fileName}`}
-            src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}`}
-          />
+          <div className={mediaStyles.editMediaPreview}>
+            <img
+              alt={`${image.fileName}`}
+              src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}`}
+            />
+          </div>
           <form className={elementStyles.modalContent}>
             <div className={elementStyles.modalFormFields}>
               <FormField

@@ -44,13 +44,6 @@
     flex-wrap: wrap;
     overflow-y: scroll;
 
-    .siteContainer{
-      // width: 33.33%;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: rows;
-      justify-content: center;
-      align-items: center;
 
       .site{
         @include single-site;
@@ -71,7 +64,6 @@
           justify-content: center;
           align-items: center;
           .siteImage {
-            max-height: 100%;
           }
 
         }
@@ -139,4 +131,14 @@
     }
   }
 
+.editMediaPreview {
+  width: 100%;
+  height: 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  img {
+    max-width: 100%;
+    max-height: 100%;
+  }
 }
