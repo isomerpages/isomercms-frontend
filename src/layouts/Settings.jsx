@@ -3,9 +3,9 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { Base64 } from 'js-base64';
 import yaml from 'js-yaml';
-import rgbHex from 'rgb-hex';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
+import ColorPicker from '../components/ColorPicker';
 import FormField from '../components/FormField';
 import FormFieldImage from '../components/FormFieldImage';
 import FormFieldColor from '../components/FormFieldColor';
@@ -16,8 +16,8 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 const stateFields = {
   colorPicker: {
     colorPickerToggle: false,
-    colorPickerPosition: [0, 0],
     currentColor: '',
+    elementId: '',
   },
   title: '',
   favicon: '',
@@ -73,6 +73,8 @@ export default class Settings extends Component {
     try {
       const { match } = this.props;
       const { siteName } = match.params;
+
+      // get settings data from backend
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, {
         withCredentials: true,
       });
@@ -86,6 +88,7 @@ export default class Settings extends Component {
 
       const configContent = yaml.safeLoad(Base64.decode(configResp));
       const socialMediaContent = yaml.safeLoad(Base64.decode(socialMediaResp));
+
       // set state properly
       this.setState((currState) => ({
         ...currState,
@@ -103,6 +106,30 @@ export default class Settings extends Component {
     }
   }
 
+  // event listener callback function that resets ColorPicker modal
+  // when escape key is pressed while modal is active
+  escFunction = (event) => {
+    if (event.key === 'Escape') {
+      this.disableColorPicker();
+    }
+  }
+
+  // event listener callback function that resets ColorPicker modal
+  // when mouse clicks on area outside of modal while modal is active
+  clickFunction = (event) => {
+    let { target } = event;
+    let { tagName } = target;
+    // keep checking parent element until you hit a tagName of FORM
+    while (tagName !== 'FORM') {
+      target = target.parentElement;
+      tagName = target.tagName;
+    }
+    // disableColorPicker only if descendant of colorModal
+    if (target.id !== 'colorModal') {
+      this.disableColorPicker();
+    }
+  }
+
   changeHandler = (event) => {
     const {
       id,
@@ -110,9 +137,6 @@ export default class Settings extends Component {
       parentElement: {
         parentElement: {
           id: grandparentElementId,
-          // parentElement: {
-          //   id: greatGrandparentElementId,
-          // },
         },
       },
     } = event.target;
@@ -220,36 +244,89 @@ export default class Settings extends Component {
   }
 
   // toggles color picker modal
-  colorPickerToggle = (event) => {
-    alert('Hi!!');
+  activateColorPicker = (event) => {
     const { colorPicker: { colorPickerToggle } } = this.state;
-    // if ColorPicker modal is active, disable it
+
+    // setup escape key event listener to exit from ColorPicker modal
+    document.addEventListener('keydown', this.escFunction);
+    document.addEventListener('click', this.clickFunction);
+
+    // if ColorPickerModal isn't active, activate it
+    if (!colorPickerToggle) {
+      const { target: { previousSibling: { id, value } } } = event;
+      const currentColor = value.slice(1);
+      this.setState((currState) => ({
+        ...currState,
+        colorPicker: {
+          colorPickerToggle: true,
+          currentColor,
+          elementId: id,
+        },
+      }));
+    }
+  }
+
+  disableColorPicker = () => {
+    const { colorPicker: { colorPickerToggle } } = this.state;
+    // if ColorPicker is active, disable it
     if (colorPickerToggle) {
       this.setState((currState) => ({
         ...currState,
         colorPicker: {
           colorPickerToggle: false,
           currentColor: '',
-          colorPickerPosition: [0, 0],
-        },
-      }));
-    // if ColorPickerModal isn't active, activate it
-    } else {
-      const { target: { style: { background } }, pageX, pageY } = event;
-      const currentColor = rgbHex(background);
-      this.setState((currState) => ({
-        ...currState,
-        colorPicker: {
-          colorPickerToggle: true,
-          currentColor,
-          colorPickerPosition: [pageX, pageY],
+          elementId: '',
         },
       }));
     }
+
+    // remove event listeners
+    document.removeEventListener('keydown', this.escFunction);
+    document.removeEventListener('click', this.clickFunction);
+  }
+
+  // onColorSelect sets value of appropriate color field
+  onColorSelect = (event, color) => {
+    // prevent event from reloading
+    // prevent parent form from being submitted
+    event.preventDefault();
+    event.stopPropagation();
+
+    const { colorPicker: { elementId }, colors } = this.state;
+    // there is no hex property if the color submitted is the
+    // same as the original color
+    const hex = color.hex ? color.hex : `#${color}`;
+
+    // set state of color fields
+    if (elementId === 'primary-color' || elementId === 'secondary-color') {
+      this.setState((currState) => ({
+        ...currState,
+        colors: {
+          ...currState.colors,
+          [elementId]: hex,
+        },
+      }));
+    } else {
+      // set state of resource colors
+      const index = elementId.split('@')[elementId.split('@').length - 1];
+      const newMediaColors = [...colors['media-colors']];
+      newMediaColors[index].color = hex;
+      this.setState((currState) => ({
+        ...currState,
+        colors: {
+          ...currState.colors,
+          'media-colors': newMediaColors,
+        },
+      }));
+    }
+
+    // reset color picker
+    this.disableColorPicker();
   }
 
   render() {
     const {
+      colorPicker,
       siteName,
       title,
       favicon,
@@ -259,12 +336,31 @@ export default class Settings extends Component {
       errors,
     } = this.state;
     const { 'primary-color': primaryColor, 'secondary-color': secondaryColor, 'media-colors': mediaColors } = colors;
+    const {
+      colorPickerToggle,
+      currentColor,
+      elementId,
+    } = colorPicker;
     const { match, location } = this.props;
     return (
       <>
         <Header showButton={false} />
         {/* main bottom section */}
-        <form onSubmit={this.saveSettings} className={elementStyles.wrapper}>
+        <form
+          onSubmit={this.saveSettings}
+          className={elementStyles.wrapper}
+          tabIndex="0"
+          // onKeyDown={'q'}
+        >
+          {/* Color picker modal */}
+          { colorPickerToggle
+            && (
+              <ColorPicker
+                value={currentColor}
+                onColorSelect={this.onColorSelect}
+                elementId={elementId}
+              />
+            )}
           <Sidebar siteName={siteName} currPath={location.pathname} />
 
           {/* main section starts here */}
@@ -304,7 +400,7 @@ export default class Settings extends Component {
                     errorMessage={errors.colors['primary-color']}
                     isRequired
                     onFieldChange={this.changeHandler}
-                    onColorClick={this.colorPickerToggle}
+                    onColorClick={this.activateColorPicker}
                   />
                   <FormFieldColor
                     title="Secondary"
@@ -313,7 +409,7 @@ export default class Settings extends Component {
                     errorMessage={errors.colors['secondary-color']}
                     isRequired
                     onFieldChange={this.changeHandler}
-                    onColorClick={this.colorPickerToggle}
+                    onColorClick={this.activateColorPicker}
                   />
                   <div id="media-color-fields">
                     {Object.keys(mediaColors).map((category, index) => {
@@ -326,6 +422,7 @@ export default class Settings extends Component {
                           errorMessage={errors.colors['media-colors'][categoryId]}
                           isRequired
                           onFieldChange={this.changeHandler}
+                          onColorClick={this.activateColorPicker}
                         />
                       );
                     })}
