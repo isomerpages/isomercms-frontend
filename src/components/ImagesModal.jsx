@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import PropTypes from 'prop-types';
 
 const ImageCard = ({ onClick, image, siteName }) => (
   <div className={mediaStyles.mediaCard} key={image.path}>
@@ -10,7 +11,7 @@ const ImageCard = ({ onClick, image, siteName }) => (
         <img
           className={mediaStyles.mediaCardImage}
           alt={`${image.fileName}`}
-          src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}`}
+          src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}${image.path.endsWith('.svg') ? '?sanitize=true' : ''}`}
         />
       </div>
       <div className={mediaStyles.mediaCardDescription}>
@@ -20,6 +21,7 @@ const ImageCard = ({ onClick, image, siteName }) => (
     </a>
   </div>
 );
+
 
 export default class ImagesModal extends Component {
   constructor(props) {

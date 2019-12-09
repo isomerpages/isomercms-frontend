@@ -104,7 +104,7 @@ export default class Media extends Component {
           && (
             <EditImageModal
               image={chosenImage}
-              onClose={() => this.setState({ chosenImage: null })}
+              onClose={() => this.setState({ chosenImage: null, canShowImagesModal: true })}
               match={match}
             />
           )

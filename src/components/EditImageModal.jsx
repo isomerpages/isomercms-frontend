@@ -88,7 +88,7 @@ export default class EditImagesModal extends Component {
           <div className={mediaStyles.editMediaPreview}>
             <img
               alt={`${image.fileName}`}
-              src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}`}
+              src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}${image.path.endsWith('.svg') ? '?sanitize=true' : ''}`}
             />
           </div>
           <form className={elementStyles.modalContent}>
