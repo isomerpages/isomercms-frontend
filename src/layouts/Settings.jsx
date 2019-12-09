@@ -3,6 +3,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { Base64 } from 'js-base64';
 import yaml from 'js-yaml';
+import rgbHex from 'rgb-hex';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import FormField from '../components/FormField';
@@ -13,6 +14,8 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 const stateFields = {
+  colorPickerToggle: false,
+  currentColor: '',
   title: '',
   favicon: '',
   resources_name: '',
@@ -190,6 +193,7 @@ export default class Settings extends Component {
       delete configSettings.configSha;
       delete configSettings.socialMediaSha;
       delete configSettings.siteName;
+      delete configSettings.colorPickerToggle;
 
       // obtain sha values
       const { socialMediaSha, configSha } = state;
@@ -212,8 +216,15 @@ export default class Settings extends Component {
     }
   }
 
-  colorPickerToggle = () => {
+  // toggles color picker modal
+  colorPickerToggle = (event) => {
     alert('Hi!!');
+    const { target: { style: { background } } } = event;
+    const currentColor = rgbHex(background);
+    this.setState({
+      colorPickerToggle: true,
+      currentColor: '',
+    });
   }
 
   render() {

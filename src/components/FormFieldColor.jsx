@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import ColorPicker from './ColorPicker';
 
 const FormFieldColor = ({
   title,
@@ -28,10 +29,9 @@ const FormFieldColor = ({
         style={style}
         onChange={onFieldChange}
       />
-      <div
-        className={elementStyles.formColorBox}
-        style={{ background: value }}
-        onClick={onColorClick}
+      <ColorPicker
+        value={value}
+        onColorClick={onColorClick}
       />
     </div>
     <span className={elementStyles.error}>{errorMessage}</span>
