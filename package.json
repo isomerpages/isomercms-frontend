@@ -18,11 +18,11 @@
     "prop-types": "^15.7.2",
     "react": "^16.10.2",
     "react-beautiful-dnd": "^12.0.0",
+    "react-color": "^2.17.3",
     "react-dom": "^16.10.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
     "react-simplemde-editor": "^4.1.0",
-    "rgb-hex": "^3.0.0",
     "slugify": "^1.3.6",
     "uuid": "^3.3.3"
   },
