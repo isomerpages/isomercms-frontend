@@ -4,22 +4,20 @@ import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
 const ImageCard = ({ onClick, image, siteName }) => (
-  <div className={mediaStyles.siteContainer} key={image.path}>
-    <div className={mediaStyles.site}>
-      <a href="/" onClick={(e) => { e.preventDefault(); onClick(image); }}>
-        <div className={mediaStyles.siteImageContainer}>
-          <img
-            className={mediaStyles.siteImage}
-            alt={`${image.fileName}`}
-            src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}`}
-          />
-        </div>
-        <div className={mediaStyles.siteDescription}>
-          <div className={mediaStyles.siteName}>{image.fileName}</div>
-          <i className="bx bxs-edit" />
-        </div>
-      </a>
-    </div>
+  <div className={mediaStyles.mediaCard} key={image.path}>
+    <a href="/" onClick={(e) => { e.preventDefault(); onClick(image); }}>
+      <div className={mediaStyles.mediaCardImageContainer}>
+        <img
+          className={mediaStyles.mediaCardImage}
+          alt={`${image.fileName}`}
+          src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}`}
+        />
+      </div>
+      <div className={mediaStyles.mediaCardDescription}>
+        <div className={mediaStyles.mediaCardName}>{image.fileName}</div>
+        <i className="bx bxs-edit" />
+      </div>
+    </a>
   </div>
 );
 
@@ -56,13 +54,13 @@ export default class ImagesModal extends Component {
     return (images.length
       && (
         <div className={elementStyles.overlay}>
-          <div className={mediaStyles.sitesContainer}>
+          <div className={mediaStyles.mediaContainer}>
             <div className={mediaStyles.sectionHeader}>
               <div className={mediaStyles.sectionTitle}>
                 <b>Manage Images</b>
               </div>
             </div>
-            <div className={mediaStyles.sites}>
+            <div className={mediaStyles.mediaCards}>
               {images.map((image) => (
                 <ImageCard
                   image={image}

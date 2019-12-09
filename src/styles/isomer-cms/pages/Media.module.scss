@@ -10,7 +10,7 @@
   border-radius: 5px;
 }
 
-.sitesContainer{
+.mediaContainer{
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -36,7 +36,7 @@
   }
 
 
-  .sites{
+  .mediaCards{
     display: flex;
     flex-direction: rows;
     justify-content: flex-start;
@@ -45,7 +45,7 @@
     overflow-y: scroll;
 
 
-      .site{
+      .mediaCard{
         @include single-site;
         background: white;
         box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
@@ -53,7 +53,7 @@
         box-sizing: border-box;
         transition: transform 0.2s ease-in;
 
-        .siteImageContainer{
+        .mediaCardImageContainer {
           height: 70%;
           width: 100%;
           background: grey;
@@ -66,13 +66,13 @@
           background-image: url('/img/transbg.jpg');
           background-size: 20px 20px;
           background-repeat: repeat;
-          .siteImage {
+          .mediaCardImage {
             max-height: 100%;
           }
 
         }
 
-        .siteDescription{
+        .mediaCardDescription{
           height: 30%;
           width: 100%;
           display: flex;
@@ -87,14 +87,14 @@
             font-size: x-large;
           }
 
-          .siteName{
+          .mediaCardName{
             width: 100%;
             font-size: .9em;
             color: $body-text;
             margin-bottom: 5px;
           }
 
-          .siteDate{
+          .mediaCardDate{
             width: 100%;
             font-weight: 300;
             color: $body-grey;
@@ -106,32 +106,6 @@
           transform: translateY(-5px);
         }
       }
-
-      .createNew{
-        @include single-site;
-        border: 1px dashed $isomer-blue;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        color: $isomer-blue;
-
-         .bxPlusCircle{
-           font-size: 30px;
-           margin-bottom: 20px;
-         }
-
-         h2{
-           font-size: 18px;
-         }
-
-         &:hover{
-           background-color: white;
-           border: 1px solid $isomer-blue;
-         }
-      }
-
     }
   }
 
@@ -143,7 +117,8 @@
   align-items: center;
   background-image: url('/img/transbg.jpg');
   background-size: 20px 20px;
-  background-repeat: repeat
+  background-repeat: repeat;
+
   img {
     max-width: 100%;
     max-height: 100%;
