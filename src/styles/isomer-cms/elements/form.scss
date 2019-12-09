@@ -12,18 +12,21 @@
 }
 
 .formHorizontal{
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: 10% 90%; 
-  grid-column-gap: 17.5%;
-  margin: 2.5px;
+  display: flex;
+
+  .formHorizontalLabel{
+    @extend .formLabel;
+    flex-grow: 2;
+    width: 20%;
+  }
+
+  .formHorizontalInput{
+    flex-grow: 14;
+  }
 }
 
 .formColor{
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: 25% 55% 20%;
-  margin: 2.5px;
+  display: flex;
 }
 
 .formColorBox{
