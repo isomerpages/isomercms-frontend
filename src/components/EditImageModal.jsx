@@ -98,6 +98,7 @@ export default class EditImageModal extends Component {
                 title="Image name"
                 value={newFileName}
                 errorMessage={errorMessage}
+                id="file-name"
                 isRequired
                 onFieldChange={this.setFileName}
               />
@@ -119,9 +120,9 @@ EditImageModal.propTypes = {
     path: PropTypes.string.isRequired,
   }).isRequired,
   match: PropTypes.shape({
-    params: {
-      siteName: PropTypes.string.isRequired,
-    },
+    params: PropTypes.shape({
+      siteName: PropTypes.string,
+    }).isRequired,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
 };

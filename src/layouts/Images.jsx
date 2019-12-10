@@ -27,6 +27,21 @@ const ImageCard = ({ image, siteName, onClick }) => (
   </div>
 );
 
+const UploadImageCard = ({ onClick }) => (
+  <button
+    type="button"
+    id="settings-NEW"
+    onClick={onClick}
+    className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.addNew} ${mediaStyles.mediaCardDimensions}`}
+  >
+    <i id="settingsIcon-NEW" className={`bx bx-plus-circle ${elementStyles.bxPlusCircle}`} />
+    <h2 id="settingsText-NEW">Upload new image</h2>
+  </button>
+);
+
+UploadImageCard.propTypes = {
+  onClick: PropTypes.func.isRequired,
+};
 
 export default class Images extends Component {
   constructor(props) {
@@ -89,21 +104,18 @@ export default class Images extends Component {
   onImageSelect = async (event) => {
     const imgReader = new FileReader();
     imgReader.imgName = event.target.files[0].name;
-    imgReader.onload = () => {
+    imgReader.onload = (() => {
       /** Github only requires the content of the image
        * imgReader returns  `data:image/png;base64, {fileContent}`
        * hence the split
        */
 
       const imgData = imgReader.result.split(',')[1];
-
       const { imgName } = imgReader;
 
-      this.setState({ newImageName: imgName, newImageContent: imgData });
-
       // TODO
-      // this.uploadImage(imgName, imgData)
-    };
+      this.uploadImage(imgName, imgData);
+    });
     imgReader.readAsDataURL(event.target.files[0]);
   }
 
@@ -121,22 +133,31 @@ export default class Images extends Component {
           <div className={contentStyles.mainSection}>
             <div className={contentStyles.sectionHeader}>
               <h1 className={contentStyles.sectionTitle}>Images</h1>
-              <button
-                type="button"
-                className={elementStyles.blue}
-              >
-                Upload new image
-              </button>
             </div>
             <div className={contentStyles.contentContainerBars}>
-              <div className={mediaStyles.mediaCards}>
-                {images.map((image) => (
-                  <ImageCard
-                    image={image}
-                    siteName={siteName}
-                    onClick={() => this.setState({ chosenImage: image })}
+              <div className={contentStyles.boxesContainer}>
+                <div className={mediaStyles.mediaCards}>
+                  {/* Upload Image */}
+                  <UploadImageCard
+                    onClick={() => document.getElementById('file-upload').click()}
                   />
-                ))}
+                  <input
+                    onChange={this.onImageSelect}
+                    type="file"
+                    id="file-upload"
+                    accept="image/png, image/jpeg, image/gif"
+                    hidden
+                  />
+                  {/* Images */}
+                  {images.map((image) => (
+                    <ImageCard
+                      image={image}
+                      siteName={siteName}
+                      onClick={() => this.setState({ chosenImage: image })}
+                      key={image.fileName}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
             {/* End of image cards */}

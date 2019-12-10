@@ -10,6 +10,10 @@
   border-radius: 5px;
 }
 
+.mediaCardDimensions {
+  @include single-site;
+}
+
 .mediaCards{
   display: flex;
   justify-content: flex-start;
