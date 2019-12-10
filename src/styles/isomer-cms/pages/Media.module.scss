@@ -1,0 +1,128 @@
+@import '../elements/variable';
+
+@mixin single-site {
+  margin-left: $site-margin-horizontal;
+  margin-right: $site-margin-horizontal;
+  margin-top: $site-margin-vertical;
+  margin-bottom: $site-margin-vertical;
+  height: $site-height;
+  width: $site-width;
+  border-radius: 5px;
+}
+
+.mediaContainer{
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 30px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  height: 75%;
+  padding: 50px;
+  border-radius: 10px;
+
+  .sectionHeader{
+    width: $sites-container-width;
+    margin-left: 20px;
+
+    .sectionTitle{
+      font-size: 28px;
+      color: $isomer-blue;
+      text-align: left;
+    }
+  }
+
+
+  .mediaCards{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    overflow-y: scroll;
+    padding-bottom: 50px;
+
+
+      .mediaCard{
+        @include single-site;
+        background: white;
+        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+        border: none;
+        box-sizing: border-box;
+        transition: transform 0.2s ease-in;
+
+        .mediaCardImageContainer {
+          height: 70%;
+          width: 100%;
+          background: grey;
+          border-top-left-radius: 5px;
+          border-top-right-radius: 5px;
+          overflow: hidden;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-image: url('/img/transbg.jpg');
+          background-size: 20px 20px;
+          background-repeat: repeat;
+          .mediaCardImage {
+            max-height: 100%;
+          }
+
+        }
+
+        .mediaCardDescription{
+          height: 30%;
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          padding-left: 15px;
+
+          i {
+            color: black;
+            margin-right: 16px;
+            font-size: x-large;
+          }
+
+          .mediaCardName{
+            width: 100%;
+            font-size: .9em;
+            color: $body-text;
+            margin-bottom: 5px;
+          }
+
+          .mediaCardDate{
+            width: 100%;
+            font-weight: 300;
+            color: $body-grey;
+            font-size: .6em;
+          }
+        }
+
+        &:hover{
+          transform: translateY(-5px);
+        }
+      }
+    }
+  }
+
+.editMediaPreview {
+  width: 100%;
+  height: 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('/img/transbg.jpg');
+  background-size: 20px 20px;
+  background-repeat: repeat;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
