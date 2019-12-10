@@ -3,6 +3,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { Base64 } from 'js-base64';
 import yaml from 'js-yaml';
+import * as _ from 'lodash';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import ColorPicker from '../components/ColorPicker';
@@ -18,6 +19,7 @@ const stateFields = {
     colorPickerToggle: false,
     currentColor: '',
     elementId: '',
+    oldColors: {},
   },
   title: '',
   favicon: '',
@@ -110,7 +112,7 @@ export default class Settings extends Component {
   // when escape key is pressed while modal is active
   escFunction = (event) => {
     if (event.key === 'Escape') {
-      this.disableColorPicker();
+      this.disableColorPicker(true);
     }
   }
 
@@ -126,7 +128,7 @@ export default class Settings extends Component {
     }
     // disableColorPicker only if descendant of colorModal
     if (target.id !== 'colorModal') {
-      this.disableColorPicker();
+      this.disableColorPicker(true);
     }
   }
 
@@ -245,7 +247,7 @@ export default class Settings extends Component {
 
   // toggles color picker modal
   activateColorPicker = (event) => {
-    const { colorPicker: { colorPickerToggle } } = this.state;
+    const { colorPicker: { colorPickerToggle }, colors } = this.state;
 
     // setup escape key event listener to exit from ColorPicker modal
     document.addEventListener('keydown', this.escFunction);
@@ -261,21 +263,30 @@ export default class Settings extends Component {
           colorPickerToggle: true,
           currentColor,
           elementId: id,
+          oldColors: { ...colors },
         },
       }));
     }
   }
 
-  disableColorPicker = () => {
-    const { colorPicker: { colorPickerToggle } } = this.state;
+  disableColorPicker = (resetOldColors) => {
+    const { colorPicker: { colorPickerToggle, oldColors } } = this.state;
     // if ColorPicker is active, disable it
     if (colorPickerToggle) {
+      if (resetOldColors) {
+        this.setState((currState) => ({
+          ...currState,
+          colors: oldColors,
+        }));
+      }
+
       this.setState((currState) => ({
         ...currState,
         colorPicker: {
           colorPickerToggle: false,
           currentColor: '',
           elementId: '',
+          oldColors: {},
         },
       }));
     }
@@ -292,6 +303,14 @@ export default class Settings extends Component {
     event.preventDefault();
     event.stopPropagation();
 
+    // reflect color changes
+    this.realTimeColor(color);
+
+    // reset color picker
+    this.disableColorPicker(false);
+  }
+
+  realTimeColor = (color) => {
     const { colorPicker: { elementId }, colors } = this.state;
     // there is no hex property if the color submitted is the
     // same as the original color
@@ -309,7 +328,7 @@ export default class Settings extends Component {
     } else {
       // set state of resource colors
       const index = elementId.split('@')[elementId.split('@').length - 1];
-      const newMediaColors = [...colors['media-colors']];
+      const newMediaColors = _.cloneDeep(colors['media-colors']);
       newMediaColors[index].color = hex;
       this.setState((currState) => ({
         ...currState,
@@ -319,9 +338,6 @@ export default class Settings extends Component {
         },
       }));
     }
-
-    // reset color picker
-    this.disableColorPicker();
   }
 
   render() {
@@ -349,8 +365,6 @@ export default class Settings extends Component {
         <form
           onSubmit={this.saveSettings}
           className={elementStyles.wrapper}
-          tabIndex="0"
-          // onKeyDown={'q'}
         >
           {/* Color picker modal */}
           { colorPickerToggle
@@ -358,6 +372,7 @@ export default class Settings extends Component {
               <ColorPicker
                 value={currentColor}
                 onColorSelect={this.onColorSelect}
+                realTimeColor={this.realTimeColor}
                 elementId={elementId}
               />
             )}

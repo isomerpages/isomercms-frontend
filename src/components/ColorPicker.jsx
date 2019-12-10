@@ -6,10 +6,14 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 const ColorPicker = ({
   value,
   onColorSelect,
+  realTimeColor,
 }) => {
   // initiate selectedColor as color passed in as props
   const [selectedColor, setSelectedColor] = useState(value);
-  const handleColorSelect = (color, event) => (setSelectedColor(color));
+  const handleColorSelect = (color, event) => {
+    setSelectedColor(color);
+    realTimeColor(color);
+  };
 
   return (
     <>
@@ -18,8 +22,13 @@ const ColorPicker = ({
         id="colorModal"
         onSubmit={(event) => (onColorSelect(event, selectedColor))}
       >
-        <SketchPicker width={250} color={selectedColor} onChangeComplete={handleColorSelect} />
-        {/* Select color */}
+        <SketchPicker
+          width={250}
+          color={selectedColor}
+          disableAlpha="true"
+          onChange={handleColorSelect}
+        />
+        {/* Confirm color selection with button */}
         <div className={elementStyles.modalButtons}>
           <button type="submit">Select</button>
         </div>
@@ -33,4 +42,5 @@ export default ColorPicker;
 ColorPicker.propTypes = {
   value: PropTypes.string.isRequired,
   onColorSelect: PropTypes.func.isRequired,
+  realTimeColor: PropTypes.func.isRequired,
 };
