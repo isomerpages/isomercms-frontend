@@ -13,6 +13,7 @@ import FormFieldColor from '../components/FormFieldColor';
 import FormFieldHorizontal from '../components/FormFieldHorizontal';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
+import { validateSocialMedia } from '../utils/validators';
 
 const stateFields = {
   colorPicker: {
@@ -65,9 +66,7 @@ export default class Settings extends Component {
     this.state = {
       siteName: '',
       ...stateFields,
-      errors: {
-        ...stateFields,
-      },
+      errors: _.cloneDeep(stateFields),
     };
   }
 
@@ -145,6 +144,7 @@ export default class Settings extends Component {
     // const errorMessage = validateSettings(id, value);
 
     if (grandparentElementId === 'social-media-fields') {
+      const errorMessage = validateSocialMedia(value, id);
       // errors: {
       //  socialMediaContent: {
       //    [id]: {
@@ -157,6 +157,13 @@ export default class Settings extends Component {
         socialMediaContent: {
           ...currState.socialMediaContent,
           [id]: value,
+        },
+        errors: {
+          ...currState.errors,
+          socialMediaContent: {
+            ...currState.errors.socialMediaContent,
+            [id]: errorMessage,
+          },
         },
       }));
     } else if (grandparentElementId === 'color-fields') {

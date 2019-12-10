@@ -14,6 +14,8 @@
 
 .formHorizontal{
   display: flex;
+  margin-bottom: 5px;
+  margin-top: 5px;
 
   .formHorizontalLabel{
     @extend .formLabel;
@@ -29,6 +31,8 @@
 .formColor{
   display: flex;
   width: 50%;
+  margin-bottom: 5px;
+  margin-top: 5px;
 
   .formColorLabel{
     @extend .formLabel;
