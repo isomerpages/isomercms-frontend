@@ -6,10 +6,11 @@ import Sidebar from '../components/Sidebar';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
+import EditImageModal from '../components/EditImageModal';
 
-const ImageCard = ({ image, siteName }) => (
+const ImageCard = ({ image, siteName, onClick }) => (
   <div className={mediaStyles.mediaCard} key={image.path}>
-    <a href="/" onClick={(e) => { e.preventDefault(); }}>
+    <a href="/" onClick={(e) => { e.preventDefault(); onClick(); }}>
       <div className={mediaStyles.mediaCardImageContainer}>
         <img
           className={mediaStyles.mediaCardImage}
@@ -34,6 +35,7 @@ export default class Images extends Component {
       images: [],
       newImageName: '',
       settingsIsActive: false,
+      chosenImage: null,
     };
   }
 
@@ -106,7 +108,7 @@ export default class Images extends Component {
   }
 
   render() {
-    const { images, newImageName, newImageContent } = this.state;
+    const { images, chosenImage } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
     return (
@@ -132,6 +134,7 @@ export default class Images extends Component {
                   <ImageCard
                     image={image}
                     siteName={siteName}
+                    onClick={() => this.setState({ chosenImage: image })}
                   />
                 ))}
               </div>
@@ -140,6 +143,16 @@ export default class Images extends Component {
           </div>
           {/* main section ends here */}
         </div>
+        {
+          chosenImage
+          && (
+          <EditImageModal
+            image={chosenImage}
+            match={match}
+            onClose={() => this.setState({ chosenImage: null })}
+          />
+          )
+        }
       </>
     );
   }
@@ -162,4 +175,5 @@ ImageCard.propTypes = {
     path: PropTypes.string,
   }).isRequired,
   siteName: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
