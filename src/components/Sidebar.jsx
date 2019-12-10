@@ -17,8 +17,12 @@ const sidebarPathDict = [
     title: 'Resources',
   },
   {
-    pathname: 'media',
-    title: 'Media',
+    pathname: 'images',
+    title: 'Images',
+  },
+  {
+    pathname: 'files',
+    title: 'Files',
   },
   {
     pathname: 'settings',
