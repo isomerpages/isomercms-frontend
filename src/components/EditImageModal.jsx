@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import FormField from './FormField';
@@ -111,3 +112,16 @@ export default class EditImagesModal extends Component {
     );
   }
 }
+
+EditImagesModal.propTypes = {
+  image: PropTypes.shape({
+    fileName: PropTypes.string.isRequired,
+    path: PropTypes.string.isRequired,
+  }).isRequired,
+  match: PropTypes.shape({
+    params: {
+      siteName: PropTypes.string.isRequired,
+    },
+  }).isRequired,
+  onClose: PropTypes.func.isRequired,
+};

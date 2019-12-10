@@ -23,10 +23,12 @@
   transform: translate(-50%, -50%);
   background-color: white;
   height: 75%;
+  padding: 50px;
+  border-radius: 10px;
 
   .sectionHeader{
     width: $sites-container-width;
-    margin-left: $site-margin-horizontal*2;
+    margin-left: 20px;
 
     .sectionTitle{
       font-size: 28px;
@@ -38,11 +40,11 @@
 
   .mediaCards{
     display: flex;
-    flex-direction: rows;
     justify-content: flex-start;
     align-items: flex-start;
     flex-wrap: wrap;
     overflow-y: scroll;
+    padding-bottom: 50px;
 
 
       .mediaCard{

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import PropTypes from 'prop-types';
 
 const ImageCard = ({ onClick, image, siteName }) => (
   <div className={mediaStyles.mediaCard} key={image.path}>
@@ -22,13 +22,20 @@ const ImageCard = ({ onClick, image, siteName }) => (
   </div>
 );
 
+ImageCard.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  image: PropTypes.shape({
+    fileName: PropTypes.string.isRequired,
+    path: PropTypes.string.isRequired,
+  }).isRequired,
+  siteName: PropTypes.string.isRequired,
+};
 
 export default class ImagesModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
       images: [],
-      chosenImage: null,
     };
   }
 
@@ -43,10 +50,6 @@ export default class ImagesModal extends Component {
     } catch (e) {
       console.log(e);
     }
-  }
-
-  onImageCardClick = (image) => {
-    this.setState({ chosenImage: image });
   }
 
   render() {
@@ -81,3 +84,17 @@ export default class ImagesModal extends Component {
     );
   }
 }
+
+ImagesModal.propTypes = {
+  chosenImage: PropTypes.shape({
+    fileName: PropTypes.string.isRequired,
+    path: PropTypes.string.isRequired,
+  }).isRequired,
+  onClose: PropTypes.func.isRequired,
+  match: PropTypes.shape({
+    params: {
+      siteName: PropTypes.string.isRequired,
+    },
+  }).isRequired,
+  onImageSelect: PropTypes.func.isRequired,
+};
