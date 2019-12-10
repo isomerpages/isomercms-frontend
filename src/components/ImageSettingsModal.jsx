@@ -7,7 +7,7 @@ import FormField from './FormField';
 import { validateFileName } from '../utils/validators';
 
 
-export default class EditImageModal extends Component {
+export default class ImageSettingsModal extends Component {
   constructor(props) {
     super(props);
     const { image: { fileName } } = props;
@@ -114,7 +114,7 @@ export default class EditImageModal extends Component {
   }
 }
 
-EditImageModal.propTypes = {
+ImageSettingsModal.propTypes = {
   image: PropTypes.shape({
     fileName: PropTypes.string.isRequired,
     path: PropTypes.string.isRequired,

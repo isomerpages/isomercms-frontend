@@ -6,7 +6,7 @@ import Sidebar from '../components/Sidebar';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
-import EditImageModal from '../components/EditImageModal';
+import ImageSettingsModal from '../components/ImageSettingsModal';
 
 const ImageCard = ({ image, siteName, onClick }) => (
   <div className={mediaStyles.mediaCard} key={image.path}>
@@ -167,7 +167,7 @@ export default class Images extends Component {
         {
           chosenImage
           && (
-          <EditImageModal
+          <ImageSettingsModal
             image={chosenImage}
             match={match}
             onClose={() => this.setState({ chosenImage: null })}
