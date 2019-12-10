@@ -1,4 +1,5 @@
 @import './variable';
+@import './buttons';
 
 .inputGroup{
     margin-bottom: 20px;
@@ -44,6 +45,19 @@
     width: 50px;
     border: 0.5px solid black;
     width: 20%;
+  }
+}
+
+.formSave{
+  position: relative;
+  width: 50%;
+
+  .formSaveButton{
+    @extend .blue;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    margin-bottom: 20px;
   }
 }
 

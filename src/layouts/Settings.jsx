@@ -466,10 +466,14 @@ export default class Settings extends Component {
                     />
                   ))}
                 </div>
+                <br />
+                <br />
+              </div>
+              <div className={elementStyles.formSave}>
+                <button type="submit" className={elementStyles.formSaveButton}>Save</button>
               </div>
             </div>
           </div>
-          <button type="submit" className={elementStyles.blue}>Save</button>
         </form>
       </>
     );
