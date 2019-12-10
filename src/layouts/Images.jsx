@@ -1,19 +1,31 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
+import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 
-const ImageCard = ({
-  siteName, image,
-}) => (
-  <li>
-    <Link to={`/sites/${siteName}/images/${image.fileName}`}>{image.fileName}</Link>
-  </li>
+const ImageCard = ({ image, siteName }) => (
+  <div className={mediaStyles.mediaCard} key={image.path}>
+    <a href="/" onClick={(e) => { e.preventDefault(); }}>
+      <div className={mediaStyles.mediaCardImageContainer}>
+        <img
+          className={mediaStyles.mediaCardImage}
+          alt={`${image.fileName}`}
+          // The sanitise parameter is for SVGs. It converts the raw svg data into an image
+          src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}${image.path.endsWith('.svg') ? '?sanitize=true' : ''}`}
+        />
+      </div>
+      <div className={mediaStyles.mediaCardDescription}>
+        <div className={mediaStyles.mediaCardName}>{image.fileName}</div>
+        <i className="bx bxs-edit" />
+      </div>
+    </a>
+  </div>
 );
+
 
 export default class Images extends Component {
   constructor(props) {
@@ -115,20 +127,16 @@ export default class Images extends Component {
               </button>
             </div>
             <div className={contentStyles.contentContainerBars}>
-              {/* Image cards */}
-              <ul>
-                {images.length > 0
-                  ? images.map((image) => (
-                    <ImageCard
-                      siteName={siteName}
-                      image={image}
-                      key={image.fileName}
-                    />
-                  ))
-                  : 'There are no images in this repository'}
-              </ul>
-              {/* End of image cards */}
+              <div className={mediaStyles.mediaCards}>
+                {images.map((image) => (
+                  <ImageCard
+                    image={image}
+                    siteName={siteName}
+                  />
+                ))}
+              </div>
             </div>
+            {/* End of image cards */}
           </div>
           {/* main section ends here */}
         </div>
@@ -151,6 +159,7 @@ Images.propTypes = {
 ImageCard.propTypes = {
   image: PropTypes.shape({
     fileName: PropTypes.string,
+    path: PropTypes.string,
   }).isRequired,
   siteName: PropTypes.string.isRequired,
 };
