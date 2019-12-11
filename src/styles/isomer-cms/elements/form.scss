@@ -57,12 +57,21 @@
   width: 50%;
 
   .formSaveButton{
-    @extend .blue;
     position: absolute;
     right: 0px;
     bottom: 0px;
     margin-bottom: 20px;
   }
+
+  .formSaveButtonActive{
+    @extend .blue;
+    @extend .formSaveButton;
+  }
+
+  .formSaveButtonDisabled{
+    @extend .disabled;
+    @extend .formSaveButton;
+  }    
 }
 
 input,textarea{

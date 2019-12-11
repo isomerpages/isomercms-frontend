@@ -348,6 +348,19 @@ export default class Settings extends Component {
     }
   }
 
+  // a recursive function to retrieve all values in the nested error object
+  retrieveErrors = (errors) => {
+    const flattenedErrors = Object.values(errors).reduce(this.retrieveErrorsCallback, []);
+    return _.some(flattenedErrors);
+  }
+
+  retrieveErrorsCallback = (acc, curr) => {
+    if (typeof curr === 'object') {
+      return acc.concat(this.retrieveErrors(curr));
+    }
+    return acc.concat(curr);
+  }
+
   render() {
     const {
       colorPicker,
@@ -366,6 +379,7 @@ export default class Settings extends Component {
       elementId,
     } = colorPicker;
     const { location } = this.props;
+    const hasErrors = this.retrieveErrors(errors);
     return (
       <>
         <Header showButton={false} />
@@ -478,7 +492,13 @@ export default class Settings extends Component {
                 <br />
               </div>
               <div className={elementStyles.formSave}>
-                <button type="submit" className={elementStyles.formSaveButton}>Save</button>
+                <button
+                  type="submit"
+                  className={hasErrors ? elementStyles.formSaveButtonDisabled : elementStyles.formSaveButtonActive}
+                  disabled={hasErrors}
+                >
+                  Save
+                </button>
               </div>
             </div>
           </div>
