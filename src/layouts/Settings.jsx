@@ -16,12 +16,6 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import { validateSocialMedia } from '../utils/validators';
 
 const stateFields = {
-  colorPicker: {
-    colorPickerToggle: false,
-    currentColor: '',
-    elementId: '',
-    oldColors: {},
-  },
   title: '',
   favicon: '',
   resources_name: '',
@@ -64,6 +58,12 @@ export default class Settings extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      colorPicker: {
+        colorPickerToggle: false,
+        currentColor: '',
+        elementId: '',
+        oldColors: {},
+      },
       siteName: '',
       ...stateFields,
       errors: _.cloneDeep(stateFields),
@@ -145,13 +145,6 @@ export default class Settings extends Component {
 
     if (grandparentElementId === 'social-media-fields') {
       const errorMessage = validateSocialMedia(value, id);
-      // errors: {
-      //  socialMediaContent: {
-      //    [id]: {
-      //      $set: errorMessage,
-      //     },
-      //   },
-      // },
       this.setState((currState) => ({
         ...currState,
         socialMediaContent: {
@@ -167,14 +160,6 @@ export default class Settings extends Component {
         },
       }));
     } else if (grandparentElementId === 'color-fields') {
-      // errors: {
-      //  colors: {
-      //   'media-colors': {
-      //      [id]: {
-      //        $set: errorMessage,
-      //      },
-      //    }
-      //  }
       this.setState((currState) => ({
         ...currState,
         colors: {
@@ -183,18 +168,14 @@ export default class Settings extends Component {
         },
       }));
     } else if (grandparentElementId === 'media-color-fields') {
-      // errors: {
-      //  colors: {
-      //   'media-colors': {
-      //      [id]: {
-      //        $set: errorMessage,
-      //      },
-      //    }
-      //  }
       const index = id.split('@')[id.split('@').length - 1];
       const { colors } = this.state;
+
+      // set value to be used to set state for media colors
       const newMediaColors = [...colors['media-colors']];
       newMediaColors[index].color = value;
+
+      // set state
       this.setState((currState) => ({
         ...currState,
         colors: {
@@ -434,7 +415,6 @@ export default class Settings extends Component {
                     title="Primary"
                     id="primary-color"
                     value={primaryColor}
-                    errorMessage={errors.colors['primary-color']}
                     isRequired
                     onFieldChange={this.changeHandler}
                     onColorClick={this.activateColorPicker}
@@ -443,20 +423,18 @@ export default class Settings extends Component {
                     title="Secondary"
                     id="secondary-color"
                     value={secondaryColor}
-                    errorMessage={errors.colors['secondary-color']}
                     isRequired
                     onFieldChange={this.changeHandler}
                     onColorClick={this.activateColorPicker}
                   />
                   <div id="media-color-fields">
                     {Object.keys(mediaColors).map((category, index) => {
-                      const { title: categoryId, color } = mediaColors[index];
+                      const { color } = mediaColors[index];
                       return (
                         <FormFieldColor
                           title={`Resource ${index + 1}`}
                           id={`media-color@${index}`}
                           value={color}
-                          errorMessage={errors.colors['media-colors'][categoryId]}
                           isRequired
                           onFieldChange={this.changeHandler}
                           onColorClick={this.activateColorPicker}
