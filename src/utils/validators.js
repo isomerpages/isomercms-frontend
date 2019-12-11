@@ -524,7 +524,7 @@ const validateSocialMedia = (value, id) => {
 
   // conduct regex tests for each social media platform
   if (!socialMediaRegexTest.test(value)) {
-    errorMessage = `The URL you have entered is not a valid ${id[0].toUpperCase()}${id.slice(1)} URL.`;
+    if (value !== '') errorMessage = `The URL you have entered is not a valid ${id[0].toUpperCase()}${id.slice(1)} URL.`;
   }
 
   return errorMessage;
