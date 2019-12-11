@@ -3,32 +3,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-
-const ImageCard = ({ onClick, image, siteName }) => (
-  <div className={mediaStyles.mediaCard} key={image.path}>
-    <a href="/" onClick={(e) => { e.preventDefault(); onClick(image); }}>
-      <div className={mediaStyles.mediaCardImageContainer}>
-        <img
-          className={mediaStyles.mediaCardImage}
-          alt={`${image.fileName}`}
-          src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}${image.path.endsWith('.svg') ? '?sanitize=true' : ''}`}
-        />
-      </div>
-      <div className={mediaStyles.mediaCardDescription}>
-        <div className={mediaStyles.mediaCardName}>{image.fileName}</div>
-      </div>
-    </a>
-  </div>
-);
-
-ImageCard.propTypes = {
-  onClick: PropTypes.func.isRequired,
-  image: PropTypes.shape({
-    fileName: PropTypes.string.isRequired,
-    path: PropTypes.string.isRequired,
-  }).isRequired,
-  siteName: PropTypes.string.isRequired,
-};
+import { ImageCard, UploadImageCard } from './layouts/Image.jsx';
 
 export default class ImagesModal extends Component {
   constructor(props) {
@@ -51,6 +26,41 @@ export default class ImagesModal extends Component {
     }
   }
 
+  uploadImage = async (imageName, imageContent) => {
+    try {
+      const { match } = this.props;
+      const { siteName } = match.params;
+      const params = {
+        imageName,
+        content: imageContent,
+      };
+
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, params, {
+        withCredentials: true,
+      });
+
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  onImageSelect = async (event) => {
+    const imgReader = new FileReader();
+    const imgName = event.target.files[0].name;
+    imgReader.onload = (() => {
+      /** Github only requires the content of the image
+       * imgReader returns  `data:image/png;base64, {fileContent}`
+       * hence the split
+       */
+
+      const imgData = imgReader.result.split(',')[1];
+
+      this.uploadImage(imgName, imgData);
+    });
+    imgReader.readAsDataURL(event.target.files[0]);
+  }
+
   render() {
     const { match, onClose, onImageSelect } = this.props;
     const { siteName } = match.params;
@@ -66,6 +76,18 @@ export default class ImagesModal extends Component {
               </button>
             </div>
             <div className={mediaStyles.mediaCards}>
+              {/* Upload image */}
+              <UploadImageCard
+                onClick={() => document.getElementById('file-upload').click()}
+              />
+              <input
+                onChange={this.onImageSelect}
+                type="file"
+                id="file-upload"
+                accept="image/png, image/jpeg, image/gif"
+                hidden
+              />
+              {/* Render images */}
               {images.map((image) => (
                 <ImageCard
                   image={image}
