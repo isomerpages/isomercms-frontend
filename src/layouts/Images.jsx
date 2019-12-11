@@ -1,27 +1,54 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
+import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
+import ImageSettingsModal from '../components/ImageSettingsModal';
 
-const ImageCard = ({
-  siteName, image,
-}) => (
-  <li>
-    <Link to={`/sites/${siteName}/images/${image.fileName}`}>{image.fileName}</Link>
-  </li>
+const ImageCard = ({ image, siteName, onClick }) => (
+  <div className={mediaStyles.mediaCard} key={image.path}>
+    <a href="/" onClick={(e) => { e.preventDefault(); onClick(); }}>
+      <div className={mediaStyles.mediaCardImageContainer}>
+        <img
+          className={mediaStyles.mediaCardImage}
+          alt={`${image.fileName}`}
+          // The sanitise parameter is for SVGs. It converts the raw svg data into an image
+          src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}${image.path.endsWith('.svg') ? '?sanitize=true' : ''}`}
+        />
+      </div>
+      <div className={mediaStyles.mediaCardDescription}>
+        <div className={mediaStyles.mediaCardName}>{image.fileName}</div>
+        <i className="bx bxs-edit" />
+      </div>
+    </a>
+  </div>
 );
+
+const UploadImageCard = ({ onClick }) => (
+  <button
+    type="button"
+    id="settings-NEW"
+    onClick={onClick}
+    className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.addNew} ${mediaStyles.mediaCardDimensions}`}
+  >
+    <i id="settingsIcon-NEW" className={`bx bx-plus-circle ${elementStyles.bxPlusCircle}`} />
+    <h2 id="settingsText-NEW">Upload new image</h2>
+  </button>
+);
+
+UploadImageCard.propTypes = {
+  onClick: PropTypes.func.isRequired,
+};
 
 export default class Images extends Component {
   constructor(props) {
     super(props);
     this.state = {
       images: [],
-      newImageName: '',
-      settingsIsActive: false,
+      chosenImage: null,
     };
   }
 
@@ -37,20 +64,6 @@ export default class Images extends Component {
     } catch (err) {
       console.log(err);
     }
-  }
-
-  settingsToggle = (event) => {
-    const { id } = event.target;
-    const idArray = id.split('-');
-
-    // Upload a new image
-    this.setState((currState) => ({
-      settingsIsActive: !currState.settingsIsActive,
-    }));
-  }
-
-  updateNewPageName = (event) => {
-    event.preventDefault();
   }
 
   uploadImage = async (imageName, imageContent) => {
@@ -74,8 +87,8 @@ export default class Images extends Component {
 
   onImageSelect = async (event) => {
     const imgReader = new FileReader();
-    imgReader.imgName = event.target.files[0].name;
-    imgReader.onload = () => {
+    const imgName = event.target.files[0].name;
+    imgReader.onload = (() => {
       /** Github only requires the content of the image
        * imgReader returns  `data:image/png;base64, {fileContent}`
        * hence the split
@@ -83,18 +96,13 @@ export default class Images extends Component {
 
       const imgData = imgReader.result.split(',')[1];
 
-      const { imgName } = imgReader;
-
-      this.setState({ newImageName: imgName, newImageContent: imgData });
-
-      // TODO
-      // this.uploadImage(imgName, imgData)
-    };
+      this.uploadImage(imgName, imgData);
+    });
     imgReader.readAsDataURL(event.target.files[0]);
   }
 
   render() {
-    const { images, newImageName, newImageContent } = this.state;
+    const { images, chosenImage } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
     return (
@@ -107,31 +115,47 @@ export default class Images extends Component {
           <div className={contentStyles.mainSection}>
             <div className={contentStyles.sectionHeader}>
               <h1 className={contentStyles.sectionTitle}>Images</h1>
-              <button
-                type="button"
-                className={elementStyles.blue}
-              >
-                Upload new image
-              </button>
             </div>
             <div className={contentStyles.contentContainerBars}>
-              {/* Image cards */}
-              <ul>
-                {images.length > 0
-                  ? images.map((image) => (
+              <div className={contentStyles.boxesContainer}>
+                <div className={mediaStyles.mediaCards}>
+                  {/* Upload Image */}
+                  <UploadImageCard
+                    onClick={() => document.getElementById('file-upload').click()}
+                  />
+                  <input
+                    onChange={this.onImageSelect}
+                    type="file"
+                    id="file-upload"
+                    accept="image/png, image/jpeg, image/gif"
+                    hidden
+                  />
+                  {/* Images */}
+                  {images.map((image) => (
                     <ImageCard
-                      siteName={siteName}
                       image={image}
+                      siteName={siteName}
+                      onClick={() => this.setState({ chosenImage: image })}
                       key={image.fileName}
                     />
-                  ))
-                  : 'There are no images in this repository'}
-              </ul>
-              {/* End of image cards */}
+                  ))}
+                </div>
+              </div>
             </div>
+            {/* End of image cards */}
           </div>
           {/* main section ends here */}
         </div>
+        {
+          chosenImage
+          && (
+          <ImageSettingsModal
+            image={chosenImage}
+            match={match}
+            onClose={() => this.setState({ chosenImage: null })}
+          />
+          )
+        }
       </>
     );
   }
@@ -151,6 +175,8 @@ Images.propTypes = {
 ImageCard.propTypes = {
   image: PropTypes.shape({
     fileName: PropTypes.string,
+    path: PropTypes.string,
   }).isRequired,
   siteName: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
