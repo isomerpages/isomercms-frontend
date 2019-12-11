@@ -48,8 +48,6 @@ export default class Images extends Component {
     super(props);
     this.state = {
       images: [],
-      newImageName: '',
-      settingsIsActive: false,
       chosenImage: null,
     };
   }
@@ -66,20 +64,6 @@ export default class Images extends Component {
     } catch (err) {
       console.log(err);
     }
-  }
-
-  settingsToggle = (event) => {
-    const { id } = event.target;
-    const idArray = id.split('-');
-
-    // Upload a new image
-    this.setState((currState) => ({
-      settingsIsActive: !currState.settingsIsActive,
-    }));
-  }
-
-  updateNewPageName = (event) => {
-    event.preventDefault();
   }
 
   uploadImage = async (imageName, imageContent) => {
@@ -103,7 +87,7 @@ export default class Images extends Component {
 
   onImageSelect = async (event) => {
     const imgReader = new FileReader();
-    imgReader.imgName = event.target.files[0].name;
+    const imgName = event.target.files[0].name;
     imgReader.onload = (() => {
       /** Github only requires the content of the image
        * imgReader returns  `data:image/png;base64, {fileContent}`
@@ -111,9 +95,7 @@ export default class Images extends Component {
        */
 
       const imgData = imgReader.result.split(',')[1];
-      const { imgName } = imgReader;
 
-      // TODO
       this.uploadImage(imgName, imgData);
     });
     imgReader.readAsDataURL(event.target.files[0]);

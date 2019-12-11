@@ -39,7 +39,6 @@ export default class ImageSettingsModal extends Component {
       sha,
       content,
     };
-    console.log(newFileName, fileName);
 
     if (newFileName === fileName) {
       return;
