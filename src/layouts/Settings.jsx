@@ -230,6 +230,7 @@ export default class Settings extends Component {
       delete configSettings.socialMediaSha;
       delete configSettings.siteName;
       delete configSettings.colorPicker;
+      delete configSettings.errors;
 
       // obtain sha values
       const { socialMediaSha, configSha } = state;
@@ -364,7 +365,7 @@ export default class Settings extends Component {
       currentColor,
       elementId,
     } = colorPicker;
-    const { match, location } = this.props;
+    const { location } = this.props;
     return (
       <>
         <Header showButton={false} />
