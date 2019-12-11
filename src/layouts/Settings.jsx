@@ -24,23 +24,23 @@ const stateFields = {
     "secondary-color": '',
     "media-colors": [
       {
-        title: '',
+        title: 'media-color-one',
         color: '',
       },
       {
-        title: '',
+        title: 'media-color-two',
         color: '',
       },
       {
-        title: '',
+        title: 'media-color-three',
         color: '',
       },
       {
-        title: '',
+        title: 'media-color-four',
         color: '',
       },
       {
-        title: '',
+        title: 'media-color-five',
         color: '',
       },
     ],
@@ -428,13 +428,14 @@ export default class Settings extends Component {
                     onColorClick={this.activateColorPicker}
                   />
                   <div id="media-color-fields">
-                    {Object.keys(mediaColors).map((category, index) => {
-                      const { color } = mediaColors[index];
+                    {mediaColors.map((category, index) => {
+                      const { title: mediaColorName, color } = category;
                       return (
                         <FormFieldColor
                           title={`Resource ${index + 1}`}
                           id={`media-color@${index}`}
                           value={color}
+                          key={mediaColorName}
                           isRequired
                           onFieldChange={this.changeHandler}
                           onColorClick={this.activateColorPicker}
@@ -460,6 +461,7 @@ export default class Settings extends Component {
                       title={socialMediaPage.charAt(0).toUpperCase() + socialMediaPage.slice(1)}
                       id={socialMediaPage}
                       value={socialMediaContent[socialMediaPage]}
+                      key={`${socialMediaPage}-form`}
                       errorMessage={errors.socialMediaContent[socialMediaPage]}
                       isRequired={false}
                       onFieldChange={this.changeHandler}
