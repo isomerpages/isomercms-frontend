@@ -205,7 +205,7 @@ export default class ResourceSettingsModal extends Component {
               <i id="settingsIcon-CLOSE" className="bx bx-x" />
             </button>
           </div>
-          <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
+          <form className={elementStyles.modalContent}>
             <div className={elementStyles.modalFormFields}>
 
               {/* Title */}
@@ -288,10 +288,9 @@ export default class ResourceSettingsModal extends Component {
 
             {/* Save or Delete buttons */}
             <div className={elementStyles.modalButtons}>
-              <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>
+              <button type="button" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} onClick={_.throttle(this.saveHandler)}>Save</button>
               { !isNewPost
-                ? <button type="button" className={elementStyles.warning} onClick={this.deleteHandler}>Delete</button>
-                : null}
+                && <button type="button" className={elementStyles.warning} onClick={_.throttle(this.deleteHandler)}>Delete</button>}
             </div>
           </form>
         </div>

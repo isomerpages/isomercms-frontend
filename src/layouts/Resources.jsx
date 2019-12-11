@@ -253,7 +253,7 @@ export default class Resources extends Component {
                       {/* Resource Room does not exist */}
                       <p>Create Resource Room</p>
                       <input value={newResourceRoomName} onChange={this.changeHandler} />
-                      <button type="button" onClick={this.createResourceRoom} className={elementStyles.blue}>Create Resource Room</button>
+                      <button type="button" onClick={_.throttle(this.createResourceRoom, 2000)} className={elementStyles.blue}>Create Resource Room</button>
                     </>
                   )
                   : (

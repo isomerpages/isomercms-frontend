@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
 
@@ -62,7 +63,7 @@ Highlight
             />
           </div>
           <div className={elementStyles.inputGroup}>
-            <button type="button" id={`highlight-${highlightIndex}-delete`} className={elementStyles.warning} onClick={deleteHandler} key={`${highlightIndex}-delete`}>Delete highlight</button>
+            <button type="button" id={`highlight-${highlightIndex}-delete`} className={elementStyles.warning} onClick={_.throttle(deleteHandler, 2000)} key={`${highlightIndex}-delete`}>Delete highlight</button>
           </div>
         </>
       )

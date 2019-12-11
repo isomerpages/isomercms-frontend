@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -103,8 +104,8 @@ export default class ImageSettingsModal extends Component {
               />
             </div>
             <div className={elementStyles.modalButtons}>
-              <button type="button" className={errorMessage ? elementStyles.disabled : elementStyles.blue} disabled={!!errorMessage} onClick={this.renameImage}>Save</button>
-              <button type="button" className={sha ? elementStyles.warning : elementStyles.disabled} onClick={this.deleteImage} disabled={!sha}>Delete</button>
+              <button type="button" className={errorMessage ? elementStyles.disabled : elementStyles.blue} disabled={!!errorMessage} onClick={_.throttle(this.renameImage, 2000)}>Save</button>
+              <button type="button" className={sha ? elementStyles.warning : elementStyles.disabled} onClick={_.throttle(this.deleteImage, 2000)} disabled={!sha}>Delete</button>
             </div>
           </form>
         </div>

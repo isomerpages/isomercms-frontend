@@ -184,14 +184,14 @@ export default class ResourceCategoryModal extends Component {
                             isRequired
                             onFieldChange={this.changeHandler}
                           />
-                          <button type="button" className={hasErrors ? elementStyles.disabled : elementStyles.blue} id={`save-${index}`} disabled={hasErrors} onClick={this.saveHandler}>Save</button>
-                          <button type="button" className={elementStyles.warning} id={`delete-${index}`} onClick={this.deleteHandler}>Delete</button>
+                          <button type="button" className={hasErrors ? elementStyles.disabled : elementStyles.blue} id={`save-${index}`} disabled={hasErrors} onClick={_.throttle(this.saveHandler, 2000)}>Save</button>
+                          <button type="button" className={elementStyles.warning} id={`delete-${index}`} onClick={_.throttle(this.deleteHandler, 2000)}>Delete</button>
                         </div>
                       ))
                       : null}
                   </div>
                   <div className={elementStyles.modalButtons}>
-                    <button type="button" className={elementStyles.blue} onClick={this.createHandler}>Create Category</button>
+                    <button type="button" className={elementStyles.blue} onClick={_.throttle(this.createHandler, 2000)}>Create Category</button>
                   </div>
                 </div>
               </div>

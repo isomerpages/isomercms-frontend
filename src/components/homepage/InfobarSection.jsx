@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
 
@@ -76,7 +77,7 @@ Infobar section:
             />
           </div>
           <div className={elementStyles.inputGroup}>
-            <button type="button" id={`section-${sectionIndex}`} className={elementStyles.warning} onClick={deleteHandler}>Delete section</button>
+            <button type="button" id={`section-${sectionIndex}`} className={elementStyles.warning} onClick={_.throttle(deleteHandler, 2000)}>Delete section</button>
           </div>
         </>
       )

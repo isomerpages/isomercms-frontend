@@ -53,8 +53,7 @@ export default class CollectionPageSettingsModal extends Component {
     }
   }
 
-  saveHandler = async (event) => {
-    event.preventDefault();
+  saveHandler = async () => {
     try {
       const { siteName, fileName, collectionName } = this.props;
       const {
@@ -184,7 +183,7 @@ export default class CollectionPageSettingsModal extends Component {
               <i className="bx bx-x" />
             </button>
           </div>
-          <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
+          <form className={elementStyles.modalContent}>
             <div className={elementStyles.modalFormFields}>
               <p className={elementStyles.formLabel}>Title</p>
               <input
@@ -216,8 +215,22 @@ Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)
               <span className={elementStyles.error}>{errors.permalink}</span>
             </div>
             <div className={elementStyles.modalButtons}>
-              <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>
-              <button type="button" className={elementStyles.warning} onClick={this.deleteHandler}>Delete</button>
+              <button
+                type="button"
+                className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`}
+                disabled={hasErrors}
+                value="button"
+                onClick={_.throttle(this.saveHandler, 2000)}
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                className={elementStyles.warning}
+                onClick={_.throttle(this.deleteHandler, 2000)}
+              >
+                Delete
+              </button>
             </div>
           </form>
         </div>

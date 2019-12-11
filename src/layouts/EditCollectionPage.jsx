@@ -5,6 +5,7 @@ import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
+import _ from 'lodash';
 import LeftNavPage from '../templates/LeftNavPage';
 import {
   frontMatterParser, concatFrontMatterMdBody, prependImageSrc, prettifyPageFileName,
@@ -174,8 +175,8 @@ export default class EditCollectionPage extends Component {
           </div>
         </div>
         <div className={editorStyles.pageEditorFooter}>
-          <button type="button" className={elementStyles.blue} onClick={this.updatePage}>Save</button>
-          <button type="button" className={elementStyles.warning} onClick={this.deletePage}>Delete</button>
+          <button type="button" className={elementStyles.blue} onClick={_.throttle(this.updatePage, 2000)}>Save</button>
+          <button type="button" className={elementStyles.warning} onClick={_.throttle(this.deletePage, 2000)}>Delete</button>
         </div>
       </>
     );

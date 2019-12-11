@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
+import _ from 'lodash';
 import styles from '../../styles/App.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
@@ -74,7 +75,7 @@ const EditorHeroSection = ({
             {dropdown
               ? (
                 <>
-                  <button type="button" id="dropdown-delete" className={elementStyles.warning} onClick={deleteHandler}>Delete Hero Dropdown</button>
+                  <button type="button" id="dropdown-delete" className={elementStyles.warning} onClick={_.throttle(deleteHandler, 2000)}>Delete Hero Dropdown</button>
                   <HeroDropdown
                     title={dropdown.title}
                     options={dropdown.options}
@@ -90,7 +91,7 @@ const EditorHeroSection = ({
               )
               : (
                 <>
-                  <button type="button" id="dropdown-create" className={elementStyles.blue} onClick={createHandler}>Create Hero Dropdown</button>
+                  <button type="button" id="dropdown-create" className={elementStyles.blue} onClick={_.throttle(createHandler, 2000)}>Create Hero Dropdown</button>
                   <HeroButton
                     button={button}
                     url={url}
@@ -147,7 +148,7 @@ const EditorHeroSection = ({
                           )
                           : null }
                         {highlights.length < MAX_NUM_KEY_HIGHLIGHTS
-                          ? <button type="button" id={`highlight-${highlights.length}-create`} className={elementStyles.blue} onClick={createHandler}>Create highlight</button>
+                          ? <button type="button" id={`highlight-${highlights.length}-create`} className={elementStyles.blue} onClick={_.throttle(createHandler, 2000)}>Create highlight</button>
                           : <button type="button" disabled className={elementStyles.disabled}>Create highlight</button>}
                         {droppableProvided.placeholder}
                       </div>

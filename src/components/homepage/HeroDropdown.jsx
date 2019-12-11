@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
+import _ from 'lodash';
 import styles from '../../styles/App.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
@@ -53,7 +54,7 @@ Dropdown Elem
             />
           </div>
           <div className={elementStyles.inputGroup}>
-            <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} className={elementStyles.warning} onClick={deleteHandler}>Delete dropdown element</button>
+            <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} className={elementStyles.warning} onClick={_.throttle(deleteHandler, 2000)}>Delete dropdown element</button>
           </div>
         </>
       )
@@ -120,7 +121,7 @@ const HeroDropdown = ({
               </Draggable>
             ))
             : null}
-          <button type="button" id={`dropdownelem-${options.length}-create`} className={elementStyles.blue} onClick={createHandler}>Create dropdown element</button>
+          <button type="button" id={`dropdownelem-${options.length}-create`} className={elementStyles.blue} onClick={_.throttle(createHandler, 2000)}>Create dropdown element</button>
           {droppableProvided.placeholder}
         </div>
       )}

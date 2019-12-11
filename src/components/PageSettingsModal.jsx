@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { Base64 } from 'js-base64';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import FormField from './FormField';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import {
@@ -49,8 +49,7 @@ export default class PageSettingsModal extends Component {
     }
   }
 
-  saveHandler = async (event) => {
-    event.preventDefault();
+  saveHandler = async () => {
     try {
       const { siteName, fileName, isNewPage } = this.props;
       const {
@@ -147,7 +146,7 @@ export default class PageSettingsModal extends Component {
               <i className="bx bx-x" />
             </button>
           </div>
-          <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
+          <form className={elementStyles.modalContent}>
             <div className={elementStyles.modalFormFields}>
               <FormField
                 title="Title"
@@ -167,10 +166,25 @@ export default class PageSettingsModal extends Component {
               />
             </div>
             <div className={elementStyles.modalButtons}>
-              <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>
+              <button
+                type="button"
+                className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`}
+                disabled={hasErrors}
+                value="button"
+                onClick={_.throttle(this.saveHandler, 2000)}
+              >
+                Save
+              </button>
               {!isNewPage
-                ? <button type="button" className={elementStyles.warning} onClick={this.deleteHandler}>Delete</button>
-                : null}
+                && (
+                <button
+                  type="button"
+                  className={elementStyles.warning}
+                  onClick={_.throttle(this.deleteHandler, 2000)}
+                >
+                  Delete
+                </button>
+                )}
             </div>
           </form>
         </div>

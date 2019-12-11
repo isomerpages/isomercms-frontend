@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 // import { Link } from "react-router-dom";
 import axios from 'axios';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
@@ -117,8 +118,8 @@ export default class EditPage extends Component {
           </div>
         </div>
         <div className={editorStyles.pageEditorFooter}>
-          <button type="button" className={elementStyles.blue} onClick={this.updatePage}>Save</button>
-          <button type="button" className={elementStyles.warning} onClick={this.deletePage}>Delete</button>
+          <button type="button" className={elementStyles.blue} onClick={_.throttle(this.updatePage, 2000)}>Save</button>
+          <button type="button" className={elementStyles.warning} onClick={_.throttle(this.deletePage, 2000)}>Delete</button>
         </div>
       </>
     );
