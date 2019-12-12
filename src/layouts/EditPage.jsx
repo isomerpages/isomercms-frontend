@@ -9,6 +9,7 @@ import SimplePage from '../templates/SimplePage';
 import {
   frontMatterParser, concatFrontMatterMdBody, prependImageSrc, prettifyPageFileName,
 } from '../utils';
+import { easyMdeToolbar } from '../utils/markdownUtils';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -104,11 +105,11 @@ export default class EditPage extends Component {
         <div className={elementStyles.wrapper}>
           <div className={editorStyles.pageEditorSidebar}>
             <SimpleMDE
+              id="simplemde-editor"
               onChange={this.onEditorChange}
               value={editorValue}
               options={{
-                hideIcons: ['preview', 'side-by-side', 'fullscreen'],
-                showIcons: ['code', 'table'],
+                toolbar: easyMdeToolbar,
               }}
             />
           </div>
