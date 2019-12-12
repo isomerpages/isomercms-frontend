@@ -135,29 +135,15 @@ export default class EditPage extends Component {
   }
 
   toggleImageModal = (stateImage, optionsInsertText) => {
-    const { imageUploadIsActive } = this.state;
-    if (imageUploadIsActive) {
-      this.setState((currState) => ({
-        ...currState,
-        imageUploadIsActive: !currState.imageUploadIsActive,
-        imageUpload: {
-          ...currState.imageUpload,
-          stateImage,
-          optionsInsertText,
-          selectedImage: '',
-        },
-      }));
-    } else {
-      this.setState((currState) => ({
-        ...currState,
-        imageUploadIsActive: !currState.imageUploadIsActive,
-        imageUpload: {
-          ...currState.imageUpload,
-          stateImage,
-          optionsInsertText,
-        },
-      }));
-    }
+    this.setState((currState) => ({
+      ...currState,
+      imageUploadIsActive: !currState.imageUploadIsActive,
+      imageUpload: {
+        ...currState.imageUpload,
+        stateImage,
+        optionsInsertText,
+      },
+    }));
   }
 
   onImageClick = (filePath) => {
@@ -165,6 +151,11 @@ export default class EditPage extends Component {
     const path = `/${filePath}`;
     _replaceSelection(this.mdeRef.codemirror, stateImage, optionsInsertText, path);
     this.toggleImageModal('', '');
+    // set state so that rerender is triggered and image is shown
+    this.setState((currState) => ({
+      ...currState,
+      editorValue: `${this.mdeRef.codemirror.getValue()}`,
+    }));
   }
 
   render() {
