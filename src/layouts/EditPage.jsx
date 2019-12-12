@@ -67,18 +67,6 @@ export default class EditPage extends Component {
     }
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   const { imageUpload: { stateImage, optionsInsertText, selectedImage } } = this.state;
-  //   if (prevState.imageUpload.optionsInsertText !== optionsInsertText) {
-  //     if (optionsInsertText) {
-  //       if (selectedImage) {
-  //         // put this inside onClick callback
-  //         _replaceSelection(this.mdeRef.codemirror, stateImage, optionsInsertText, 'def.com');
-  //       }
-  //     }
-  //   }
-  // }
-
   updatePage = async () => {
     try {
       const { match } = this.props;
@@ -100,6 +88,8 @@ export default class EditPage extends Component {
       });
       const { sha } = resp.data;
       this.setState({ sha });
+
+      window.location.reload();
     } catch (err) {
       console.log(err);
     }
