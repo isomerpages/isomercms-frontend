@@ -162,8 +162,9 @@ export default class EditPage extends Component {
 
   onImageClick = (filePath) => {
     const { imageUpload: { stateImage, optionsInsertText } } = this.state;
-    // put this inside onClick callback
-    _replaceSelection(this.mdeRef.codemirror, stateImage, optionsInsertText, filePath);
+    const path = `/${filePath}`;
+    _replaceSelection(this.mdeRef.codemirror, stateImage, optionsInsertText, path);
+    this.toggleImageModal('', '');
   }
 
   render() {
