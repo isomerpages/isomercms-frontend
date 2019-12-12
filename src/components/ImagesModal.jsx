@@ -3,7 +3,27 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import { ImageCard, UploadImageCard } from './layouts/Image.jsx';
+import { UploadImageCard } from '../layouts/Images';
+
+export const ImageCard = ({ image, siteName, onClick }) => (
+  <div className={mediaStyles.mediaCard} key={image.path}>
+    <a href="/" onClick={(e) => { e.preventDefault(); onClick(image.path); }}>
+      <div className={mediaStyles.mediaCardImageContainer}>
+        <img
+          className={mediaStyles.mediaCardImage}
+          alt={`${image.fileName}`}
+          // The sanitise parameter is for SVGs. It converts the raw svg data into an image
+          src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}${image.path.endsWith('.svg') ? '?sanitize=true' : ''}`}
+        />
+      </div>
+      <div className={mediaStyles.mediaCardDescription}>
+        <div className={mediaStyles.mediaCardName}>{image.fileName}</div>
+        <i className="bx bxs-edit" />
+      </div>
+    </a>
+  </div>
+);
+
 
 export default class ImagesModal extends Component {
   constructor(props) {
@@ -14,8 +34,7 @@ export default class ImagesModal extends Component {
   }
 
   async componentDidMount() {
-    const { match } = this.props;
-    const { siteName } = match.params;
+    const { siteName } = this.props;
     try {
       const { data: { images } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, {
         withCredentials: true,
@@ -28,8 +47,7 @@ export default class ImagesModal extends Component {
 
   uploadImage = async (imageName, imageContent) => {
     try {
-      const { match } = this.props;
-      const { siteName } = match.params;
+      const { siteName } = this.props;
       const params = {
         imageName,
         content: imageContent,
@@ -62,8 +80,7 @@ export default class ImagesModal extends Component {
   }
 
   render() {
-    const { match, onClose, onImageSelect } = this.props;
-    const { siteName } = match.params;
+    const { siteName, onClose, onImageSelect } = this.props;
     const { images } = this.state;
     return (images.length
       && (
@@ -105,12 +122,17 @@ export default class ImagesModal extends Component {
   }
 }
 
+ImageCard.propTypes = {
+  image: PropTypes.shape({
+    fileName: PropTypes.string,
+    path: PropTypes.string,
+  }).isRequired,
+  siteName: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+};
+
 ImagesModal.propTypes = {
   onClose: PropTypes.func.isRequired,
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      siteName: PropTypes.string.isRequired,
-    }),
-  }).isRequired,
+  siteName: PropTypes.string.isRequired,
   onImageSelect: PropTypes.func.isRequired,
 };
