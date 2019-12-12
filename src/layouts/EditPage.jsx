@@ -6,6 +6,7 @@ import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
 import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
+import ImagesModal from '../components/ImagesModal';
 import {
   frontMatterParser, concatFrontMatterMdBody, prependImageSrc, prettifyPageFileName,
 } from '../utils';
@@ -29,16 +30,6 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
 
-/**
- * Action for drawing an img.
- */
-// eslint-disable-next-line consistent-return
-export function drawImage(editor) {
-  const { codemirror: cm, options } = editor;
-  const stat = getState(cm);
-  _replaceSelection(cm, stat.image, options.insertTexts.image, 'abc.com');
-}
-
 export default class EditPage extends Component {
   constructor(props) {
     super(props);
@@ -46,7 +37,14 @@ export default class EditPage extends Component {
       sha: null,
       editorValue: '',
       frontMatter: '',
+      imageUploadIsActive: false,
+      imageUpload: {
+        stateImage: '',
+        optionsInsertText: '',
+        selectedImage: '',
+      },
     };
+    this.mdeRef = React.createRef();
   }
 
   async componentDidMount() {
@@ -68,6 +66,18 @@ export default class EditPage extends Component {
       console.log(err);
     }
   }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //   const { imageUpload: { stateImage, optionsInsertText, selectedImage } } = this.state;
+  //   if (prevState.imageUpload.optionsInsertText !== optionsInsertText) {
+  //     if (optionsInsertText) {
+  //       if (selectedImage) {
+  //         // put this inside onClick callback
+  //         _replaceSelection(this.mdeRef.codemirror, stateImage, optionsInsertText, 'def.com');
+  //       }
+  //     }
+  //   }
+  // }
 
   updatePage = async () => {
     try {
@@ -114,10 +124,52 @@ export default class EditPage extends Component {
     this.setState({ editorValue: value });
   }
 
+  /**
+   * Action for drawing an img.
+   */
+  // eslint-disable-next-line consistent-return
+  drawImage = (editor) => {
+    const { codemirror: cm, options } = editor;
+    const stat = getState(cm);
+    this.toggleImageModal(stat.image, options.insertTexts.image);
+  }
+
+  toggleImageModal = (stateImage, optionsInsertText) => {
+    const { imageUploadIsActive } = this.state;
+    if (imageUploadIsActive) {
+      this.setState((currState) => ({
+        ...currState,
+        imageUploadIsActive: !currState.imageUploadIsActive,
+        imageUpload: {
+          ...currState.imageUpload,
+          stateImage,
+          optionsInsertText,
+          selectedImage: '',
+        },
+      }));
+    } else {
+      this.setState((currState) => ({
+        ...currState,
+        imageUploadIsActive: !currState.imageUploadIsActive,
+        imageUpload: {
+          ...currState.imageUpload,
+          stateImage,
+          optionsInsertText,
+        },
+      }));
+    }
+  }
+
+  onImageClick = (filePath) => {
+    const { imageUpload: { stateImage, optionsInsertText } } = this.state;
+    // put this inside onClick callback
+    _replaceSelection(this.mdeRef.codemirror, stateImage, optionsInsertText, filePath);
+  }
+
   render() {
     const { match } = this.props;
     const { siteName, fileName } = match.params;
-    const { editorValue } = this.state;
+    const { editorValue, imageUploadIsActive } = this.state;
     return (
       <>
         <Header
@@ -126,10 +178,18 @@ export default class EditPage extends Component {
           backButtonUrl={`/sites/${siteName}/pages`}
         />
         <div className={elementStyles.wrapper}>
+          { imageUploadIsActive && (
+            <ImagesModal
+              siteName={siteName}
+              onClose={() => this.toggleImageModal('', '')}
+              onImageSelect={this.onImageClick}
+            />
+          )}
           <div className={editorStyles.pageEditorSidebar}>
             <SimpleMDE
               id="simplemde-editor"
               onChange={this.onEditorChange}
+              getMdeInstance={(mdeInstance) => { this.mdeRef = mdeInstance; }}
               value={editorValue}
               options={{
                 toolbar: [
@@ -145,7 +205,7 @@ export default class EditPage extends Component {
                   '|',
                   {
                     name: 'image',
-                    action: drawImage,
+                    action: this.drawImage,
                     className: 'fa fa-picture-o',
                     title: 'Insert Image',
                     default: true,
