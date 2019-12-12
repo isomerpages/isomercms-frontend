@@ -36,13 +36,17 @@ export default class ImagesModal extends Component {
   async componentDidMount() {
     const { siteName } = this.props;
     try {
-      const { data: { images } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, {
-        withCredentials: true,
-      });
-      this.setState({ images });
+      this.getImage(siteName);
     } catch (e) {
       console.log(e);
     }
+  }
+
+  getImage = async (siteName) => {
+    const { data: { images } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, {
+      withCredentials: true,
+    });
+    this.setState({ images });
   }
 
   uploadImage = async (imageName, imageContent) => {
@@ -53,11 +57,16 @@ export default class ImagesModal extends Component {
         content: imageContent,
       };
 
+      // add a loading screen while file is being uploaded
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, params, {
         withCredentials: true,
       });
 
-      window.location.reload();
+      // trigger a re-render of the modal
+      const { data: { images } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, {
+        withCredentials: true,
+      });
+      this.setState({ images });
     } catch (err) {
       console.log(err);
     }
