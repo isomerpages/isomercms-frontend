@@ -9,12 +9,35 @@ import SimplePage from '../templates/SimplePage';
 import {
   frontMatterParser, concatFrontMatterMdBody, prependImageSrc, prettifyPageFileName,
 } from '../utils';
-import { easyMdeToolbar } from '../utils/markdownUtils';
+import {
+  boldButton,
+  italicButton,
+  strikethroughButton,
+  headingButton,
+  codeButton,
+  quoteButton,
+  unorderedListButton,
+  orderedListButton,
+  linkButton,
+  tableButton,
+  guideButton,
+} from '../utils/markdownToolbar';
+import { getState, _replaceSelection } from '../utils/markdownUtils';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
+
+/**
+ * Action for drawing an img.
+ */
+// eslint-disable-next-line consistent-return
+export function drawImage(editor) {
+  const { codemirror: cm, options } = editor;
+  const stat = getState(cm);
+  _replaceSelection(cm, stat.image, options.insertTexts.image, 'abc.com');
+}
 
 export default class EditPage extends Component {
   constructor(props) {
@@ -109,7 +132,28 @@ export default class EditPage extends Component {
               onChange={this.onEditorChange}
               value={editorValue}
               options={{
-                toolbar: easyMdeToolbar,
+                toolbar: [
+                  boldButton,
+                  italicButton,
+                  strikethroughButton,
+                  headingButton,
+                  '|',
+                  codeButton,
+                  quoteButton,
+                  unorderedListButton,
+                  orderedListButton,
+                  '|',
+                  {
+                    name: 'image',
+                    action: drawImage,
+                    className: 'fa fa-picture-o',
+                    title: 'Insert Image',
+                    default: true,
+                  },
+                  linkButton,
+                  tableButton,
+                  guideButton,
+                ],
               }}
             />
           </div>
