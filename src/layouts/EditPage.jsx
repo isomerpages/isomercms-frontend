@@ -121,7 +121,8 @@ export default class EditPage extends Component {
   drawImage = (editor) => {
     const { codemirror: cm, options } = editor;
     const stat = getState(cm);
-    this.toggleImageModal(stat.image, options.insertTexts.image);
+    console.log(editor);
+    this.toggleImageModal(stat.image, options.insertTexts.image.slice(0, 2));
   }
 
   toggleImageModal = (stateImage, optionsInsertText) => {
@@ -174,6 +175,9 @@ export default class EditPage extends Component {
               getMdeInstance={(mdeInstance) => { this.mdeRef = mdeInstance; }}
               value={editorValue}
               options={{
+                insertTexts: {
+                  image: ['![](', '#url#)\n'],
+                },
                 toolbar: [
                   boldButton,
                   italicButton,
