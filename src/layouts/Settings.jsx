@@ -331,6 +331,12 @@ export default class Settings extends Component {
 
   // a recursive function to retrieve all values in the nested error object
   retrieveErrors = (errors) => {
+    if (errors.colors) {
+      errors.colors['media-colors'].forEach((curr) => {
+        // eslint-disable-next-line no-param-reassign
+        delete curr.title;
+      });
+    }
     const flattenedErrors = Object.values(errors).reduce(this.retrieveErrorsCallback, []);
     return _.some(flattenedErrors);
   }
@@ -360,7 +366,7 @@ export default class Settings extends Component {
       elementId,
     } = colorPicker;
     const { location } = this.props;
-    const hasErrors = this.retrieveErrors(errors);
+    const hasErrors = this.retrieveErrors(_.cloneDeep(errors));
     return (
       <>
         <Header showButton={false} />
