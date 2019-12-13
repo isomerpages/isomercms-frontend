@@ -140,12 +140,12 @@ export default class EditPage extends Component {
   onImageClick = (filePath) => {
     const { imageUpload: { stateImage, optionsInsertText } } = this.state;
     const path = `/${filePath}`;
-    _replaceSelection(this.mdeRef.codemirror, stateImage, optionsInsertText, path);
+    _replaceSelection(this.mdeRef.current.simpleMde.codemirror, stateImage, optionsInsertText, path);
     this.toggleImageModal('', '');
     // set state so that rerender is triggered and image is shown
     this.setState((currState) => ({
       ...currState,
-      editorValue: `${this.mdeRef.codemirror.getValue()}`,
+      editorValue: `${this.mdeRef.current.simpleMde.codemirror.getValue()}`,
     }));
   }
 
@@ -172,7 +172,7 @@ export default class EditPage extends Component {
             <SimpleMDE
               id="simplemde-editor"
               onChange={this.onEditorChange}
-              getMdeInstance={(mdeInstance) => { this.mdeRef = mdeInstance; }}
+              ref={this.mdeRef}
               value={editorValue}
               options={{
                 insertTexts: {
