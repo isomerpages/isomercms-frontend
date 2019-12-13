@@ -121,7 +121,6 @@ export default class EditPage extends Component {
   drawImage = (editor) => {
     const { codemirror: cm, options } = editor;
     const stat = getState(cm);
-    console.log(editor);
     this.toggleImageModal(stat.image, options.insertTexts.image.slice(0, 2));
   }
 
