@@ -414,9 +414,18 @@ export default class Settings extends Component {
                   onFieldChange={this.changeHandler}
                   onColorClick={this.colorPickerToggle}
                 />
+                {/* Resource room name field */}
+                <FormField
+                  title="Resource Room Name"
+                  id="resources_name"
+                  value={resourcesName}
+                  errorMessage={errors.resources_name}
+                  isRequired
+                  onFieldChange={this.changeHandler}
+                />
                 {/* Color fields */}
                 <div id="color-fields">
-                  <p className={elementStyles.formLabel}>Colors</p>
+                  <p className={elementStyles.formSectionHeader}>Colors</p>
                   <FormFieldColor
                     title="Primary"
                     id="primary-color"
@@ -450,18 +459,9 @@ export default class Settings extends Component {
                     })}
                   </div>
                 </div>
-                {/* Resource room name field */}
-                <FormField
-                  title="Resource Room Name"
-                  id="resources_name"
-                  value={resourcesName}
-                  errorMessage={errors.resources_name}
-                  isRequired
-                  onFieldChange={this.changeHandler}
-                />
                 {/* Social media fields */}
                 <div id="social-media-fields">
-                  <p className={elementStyles.formLabel}>Social Media</p>
+                  <p className={elementStyles.formSectionHeader}>Social Media</p>
                   {Object.keys(socialMediaContent).map((socialMediaPage) => (
                     <FormFieldHorizontal
                       title={socialMediaPage.charAt(0).toUpperCase() + socialMediaPage.slice(1)}
