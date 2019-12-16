@@ -14,6 +14,7 @@ import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
+import DeleteWarningModal from '../components/DeleteWarningModal';
 
 export default class EditCollectionPage extends Component {
   constructor(props) {
@@ -24,6 +25,7 @@ export default class EditCollectionPage extends Component {
       editorValue: '',
       frontMatter: '',
       tempFileName: '',
+      canShowDeleteWarningModal: false,
     };
   }
 
@@ -140,10 +142,10 @@ export default class EditCollectionPage extends Component {
   }
 
   render() {
-    const { match, location } = this.props;
-    const { siteName, collectionName, fileName } = match.params;
+    const { match } = this.props;
+    const { siteName, fileName } = match.params;
     const { leftNavPages } = this.state;
-    const { sha, editorValue } = this.state;
+    const { editorValue, canShowDeleteWarningModal } = this.state;
     return (
       <>
         <Header
@@ -175,8 +177,18 @@ export default class EditCollectionPage extends Component {
         </div>
         <div className={editorStyles.pageEditorFooter}>
           <button type="button" className={elementStyles.blue} onClick={this.updatePage}>Save</button>
-          <button type="button" className={elementStyles.warning} onClick={this.deletePage}>Delete</button>
+          <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
         </div>
+        {
+          canShowDeleteWarningModal
+          && (
+          <DeleteWarningModal
+            onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
+            onDelete={this.deletePage}
+            type="page"
+          />
+          )
+        }
       </>
     );
   }

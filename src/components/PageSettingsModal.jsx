@@ -9,6 +9,7 @@ import {
   frontMatterParser, concatFrontMatterMdBody, generatePageFileName,
 } from '../utils';
 import { validatePageSettings } from '../utils/validators';
+import DeleteWarningModal from './DeleteWarningModal';
 
 export default class PageSettingsModal extends Component {
   constructor(props) {
@@ -22,6 +23,7 @@ export default class PageSettingsModal extends Component {
         title: '',
         permalink: '',
       },
+      canShowDeleteWarningModal: false,
     };
   }
 
@@ -132,49 +134,63 @@ export default class PageSettingsModal extends Component {
   }
 
   render() {
-    const { title, permalink, errors } = this.state;
+    const {
+      title, permalink, errors, canShowDeleteWarningModal,
+    } = this.state;
     const { settingsToggle, isNewPage } = this.props;
 
     // Page settings form has errors - disable save button
     const hasErrors = _.some(errors, (field) => field.length > 0);
 
     return (
-      <div className={elementStyles.overlay}>
-        <div className={elementStyles.modal}>
-          <div className={elementStyles.modalHeader}>
-            <h1>{ isNewPage ? 'Create new page' : 'Update page settings'}</h1>
-            <button type="button" onClick={settingsToggle}>
-              <i className="bx bx-x" />
-            </button>
+      <>
+        <div className={elementStyles.overlay}>
+          <div className={elementStyles.modal}>
+            <div className={elementStyles.modalHeader}>
+              <h1>{ isNewPage ? 'Create new page' : 'Update page settings'}</h1>
+              <button type="button" onClick={settingsToggle}>
+                <i className="bx bx-x" />
+              </button>
+            </div>
+            <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
+              <div className={elementStyles.modalFormFields}>
+                <FormField
+                  title="Title"
+                  id="title"
+                  value={title}
+                  errorMessage={errors.title}
+                  isRequired
+                  onFieldChange={this.changeHandler}
+                />
+                <FormField
+                  title="Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)"
+                  id="permalink"
+                  value={permalink}
+                  errorMessage={errors.permalink}
+                  isRequired
+                  onFieldChange={this.changeHandler}
+                />
+              </div>
+              <div className={elementStyles.modalButtons}>
+                <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>
+                {!isNewPage
+                  ? <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
+                  : null}
+              </div>
+            </form>
           </div>
-          <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
-            <div className={elementStyles.modalFormFields}>
-              <FormField
-                title="Title"
-                id="title"
-                value={title}
-                errorMessage={errors.title}
-                isRequired
-                onFieldChange={this.changeHandler}
-              />
-              <FormField
-                title="Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)"
-                id="permalink"
-                value={permalink}
-                errorMessage={errors.permalink}
-                isRequired
-                onFieldChange={this.changeHandler}
-              />
-            </div>
-            <div className={elementStyles.modalButtons}>
-              <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>
-              {!isNewPage
-                ? <button type="button" className={elementStyles.warning} onClick={this.deleteHandler}>Delete</button>
-                : null}
-            </div>
-          </form>
         </div>
-      </div>
+        {
+            canShowDeleteWarningModal
+            && (
+            <DeleteWarningModal
+              onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
+              onDelete={this.deleteHandler}
+              type="page"
+            />
+            )
+        }
+      </>
     );
   }
 }

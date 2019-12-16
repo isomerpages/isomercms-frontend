@@ -14,6 +14,7 @@ import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
+import DeleteWarningModal from '../components/DeleteWarningModal';
 
 export default class EditPage extends Component {
   constructor(props) {
@@ -22,6 +23,7 @@ export default class EditPage extends Component {
       sha: null,
       editorValue: '',
       frontMatter: '',
+      canShowDeleteWarningModal: false,
     };
   }
 
@@ -93,7 +95,7 @@ export default class EditPage extends Component {
   render() {
     const { match } = this.props;
     const { siteName, fileName } = match.params;
-    const { editorValue } = this.state;
+    const { editorValue, canShowDeleteWarningModal } = this.state;
     return (
       <>
         <Header
@@ -118,8 +120,18 @@ export default class EditPage extends Component {
         </div>
         <div className={editorStyles.pageEditorFooter}>
           <button type="button" className={elementStyles.blue} onClick={this.updatePage}>Save</button>
-          <button type="button" className={elementStyles.warning} onClick={this.deletePage}>Delete</button>
+          <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
         </div>
+        {
+          canShowDeleteWarningModal
+          && (
+          <DeleteWarningModal
+            onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
+            onDelete={this.deletePage}
+            type="page"
+          />
+          )
+        }
       </>
     );
   }
