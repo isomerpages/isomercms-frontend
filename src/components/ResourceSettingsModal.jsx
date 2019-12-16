@@ -71,7 +71,15 @@ export default class ResourceSettingsModal extends Component {
         } = frontMatter;
 
         this.setState({
-          title, permalink, fileUrl, date, sha, mdBody, prevCategory: category, category, resourceCategories,
+          title, 
+          permalink, 
+          fileUrl, 
+          date, 
+          sha, 
+          mdBody, 
+          prevCategory: category, 
+          category, 
+          resourceCategories,
         });
       }
     } catch (err) {
@@ -80,7 +88,6 @@ export default class ResourceSettingsModal extends Component {
   }
 
   handlePermalinkFileUrlToggle = (event) => {
-    const { permalink } = this.state;
     const { target: { value } } = event;
     if (value === 'file') {
       this.setState({ permalink: null, fileUrl: '/file/url/' });
