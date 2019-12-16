@@ -29,9 +29,7 @@ const ColorPicker = ({
           onChange={handleColorSelect}
         />
         {/* Confirm color selection with button */}
-        <div className={elementStyles.modalButtons}>
-          <button type="submit">Select</button>
-        </div>
+        <button className={elementStyles.modalButtons} type="submit">Select</button>
       </form>
     </>
   );
