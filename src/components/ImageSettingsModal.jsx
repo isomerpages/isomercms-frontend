@@ -5,6 +5,7 @@ import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import FormField from './FormField';
 import { validateFileName } from '../utils/validators';
+import DeleteWarningModal from './DeleteWarningModal';
 
 
 export default class ImageSettingsModal extends Component {
@@ -15,6 +16,7 @@ export default class ImageSettingsModal extends Component {
       newFileName: fileName,
       sha: '',
       content: null,
+      canShowDeleteWarningModal: false,
     };
   }
 
@@ -73,42 +75,54 @@ export default class ImageSettingsModal extends Component {
   render() {
     const { match, onClose, image } = this.props;
     const { siteName } = match.params;
-    const { newFileName, sha } = this.state;
+    const { newFileName, sha, canShowDeleteWarningModal } = this.state;
     const errorMessage = validateFileName(newFileName);
 
     return (
-      <div className={elementStyles.overlay}>
-        <div className={elementStyles.modal}>
-          <div className={elementStyles.modalHeader}>
-            <h1>Edit Image</h1>
-            <button type="button" onClick={onClose}>
-              <i className="bx bx-x" />
-            </button>
-          </div>
-          <div className={mediaStyles.editMediaPreview}>
-            <img
-              alt={`${image.fileName}`}
-              src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}${image.path.endsWith('.svg') ? '?sanitize=true' : ''}`}
-            />
-          </div>
-          <form className={elementStyles.modalContent}>
-            <div className={elementStyles.modalFormFields}>
-              <FormField
-                title="Image name"
-                value={newFileName}
-                errorMessage={errorMessage}
-                id="file-name"
-                isRequired
-                onFieldChange={this.setFileName}
+      <>
+        <div className={elementStyles.overlay}>
+          <div className={elementStyles.modal}>
+            <div className={elementStyles.modalHeader}>
+              <h1>Edit Image</h1>
+              <button type="button" onClick={onClose}>
+                <i className="bx bx-x" />
+              </button>
+            </div>
+            <div className={mediaStyles.editMediaPreview}>
+              <img
+                alt={`${image.fileName}`}
+                src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}${image.path.endsWith('.svg') ? '?sanitize=true' : ''}`}
               />
             </div>
-            <div className={elementStyles.modalButtons}>
-              <button type="button" className={errorMessage ? elementStyles.disabled : elementStyles.blue} disabled={!!errorMessage} onClick={this.renameImage}>Save</button>
-              <button type="button" className={sha ? elementStyles.warning : elementStyles.disabled} onClick={this.deleteImage} disabled={!sha}>Delete</button>
-            </div>
-          </form>
+            <form className={elementStyles.modalContent}>
+              <div className={elementStyles.modalFormFields}>
+                <FormField
+                  title="Image name"
+                  value={newFileName}
+                  errorMessage={errorMessage}
+                  id="file-name"
+                  isRequired
+                  onFieldChange={this.setFileName}
+                />
+              </div>
+              <div className={elementStyles.modalButtons}>
+                <button type="button" className={errorMessage ? elementStyles.disabled : elementStyles.blue} disabled={!!errorMessage} onClick={this.renameImage}>Save</button>
+                <button type="button" className={sha ? elementStyles.warning : elementStyles.disabled} onClick={() => this.setState({ canShowDeleteWarningModal: true })} disabled={!sha}>Delete</button>
+              </div>
+            </form>
+          </div>
+          {
+          canShowDeleteWarningModal
+          && (
+            <DeleteWarningModal
+              onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
+              onDelete={this.deleteImage}
+              type="image"
+            />
+          )
+        }
         </div>
-      </div>
+      </>
     );
   }
 }
