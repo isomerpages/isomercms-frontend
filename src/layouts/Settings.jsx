@@ -320,25 +320,6 @@ export default class Settings extends Component {
     }
   }
 
-  // a recursive function to retrieve all values in the nested error object
-  retrieveErrors = (errors) => {
-    if (errors.colors) {
-      errors.colors['media-colors'].forEach((curr) => {
-        // eslint-disable-next-line no-param-reassign
-        delete curr.title;
-      });
-    }
-    const flattenedErrors = Object.values(errors).reduce(this.retrieveErrorsCallback, []);
-    return _.some(flattenedErrors);
-  }
-
-  retrieveErrorsCallback = (acc, curr) => {
-    if (typeof curr === 'object') {
-      return acc.concat(this.retrieveErrors(curr));
-    }
-    return acc.concat(curr);
-  }
-
   render() {
     const {
       colorPicker,
@@ -357,7 +338,13 @@ export default class Settings extends Component {
       elementId,
     } = colorPicker;
     const { location } = this.props;
-    const hasErrors = this.retrieveErrors(_.cloneDeep(errors));
+
+    // retrieve errors
+    const hasConfigErrors = _.some([errors.title, errors.favicon, errors.resources_name]);
+    const hasColorErrors = _.some([errors.colors.primaryColor, errors.colors.secondaryColor]);
+    const hasMediaColorErrors = _.some(errors.colors['media-colors'].map((mediaColor) => mediaColor.color));
+    const hasSocialMediaErrors = _.some(Object.values(errors.socialMediaContent));
+    const hasErrors = hasConfigErrors || hasColorErrors || hasMediaColorErrors || hasSocialMediaErrors;
     return (
       <>
         <Header showButton={false} />
