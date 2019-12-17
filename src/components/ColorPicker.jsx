@@ -6,13 +6,13 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 const ColorPicker = ({
   value,
   onColorSelect,
-  realTimeColor,
+  setRealTimeColor,
 }) => {
   // initiate selectedColor as color passed in as props
   const [selectedColor, setSelectedColor] = useState(value);
   const handleColorSelect = (color, event) => {
     setSelectedColor(color);
-    realTimeColor(color);
+    setRealTimeColor(color);
   };
 
   return (
@@ -40,5 +40,5 @@ export default ColorPicker;
 ColorPicker.propTypes = {
   value: PropTypes.string.isRequired,
   onColorSelect: PropTypes.func.isRequired,
-  realTimeColor: PropTypes.func.isRequired,
+  setRealTimeColor: PropTypes.func.isRequired,
 };

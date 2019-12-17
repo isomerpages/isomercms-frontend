@@ -178,9 +178,6 @@ export default class Settings extends Component {
       }));
     } else {
       this.setState((currState) => ({
-        // errors: {
-        //   [id]: errorMessage,
-        // },
         ...currState,
         [id]: value,
       }));
@@ -260,10 +257,7 @@ export default class Settings extends Component {
     // if ColorPicker is active, disable it
     if (colorPickerToggle) {
       if (resetOldColors) {
-        this.setState((currState) => ({
-          ...currState,
-          colors: oldColors,
-        }));
+        this.setState({ colors: oldColors });
       }
 
       this.setState((currState) => ({
@@ -290,13 +284,13 @@ export default class Settings extends Component {
     event.stopPropagation();
 
     // reflect color changes
-    this.realTimeColor(color);
+    this.setRealTimeColor(color);
 
     // reset color picker
     this.disableColorPicker(false);
   }
 
-  realTimeColor = (color) => {
+  setRealTimeColor = (color) => {
     const { colorPicker: { elementId }, colors } = this.state;
     // there is no hex property if the color submitted is the
     // same as the original color
@@ -378,7 +372,7 @@ export default class Settings extends Component {
               <ColorPicker
                 value={currentColor}
                 onColorSelect={this.onColorSelect}
-                realTimeColor={this.realTimeColor}
+                setRealTimeColor={this.setRealTimeColor}
                 elementId={elementId}
               />
             )}
@@ -409,7 +403,6 @@ export default class Settings extends Component {
                   errorMessage={errors.favicon}
                   isRequired
                   onFieldChange={this.changeHandler}
-                  onColorClick={this.colorPickerToggle}
                 />
                 {/* Resource room name field */}
                 <FormField
