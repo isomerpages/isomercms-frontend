@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import { Base64 } from 'js-base64';
-import yaml from 'js-yaml';
 import * as _ from 'lodash';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
@@ -20,9 +18,9 @@ const stateFields = {
   favicon: '',
   resources_name: '',
   colors: {
-    "primary-color": '',
-    "secondary-color": '',
-    "media-colors": [
+    'primary-color': '',
+    'secondary-color': '',
+    'media-colors': [
       {
         title: 'media-color-one',
         color: '',
@@ -81,25 +79,20 @@ export default class Settings extends Component {
       });
       const { settings } = resp.data;
       const {
-        configResp,
-        socialMediaResp,
-        configSha,
+        configFieldsRequired,
+        socialMediaContent,
         socialMediaSha,
       } = settings;
-
-      const configContent = yaml.safeLoad(Base64.decode(configResp));
-      const socialMediaContent = yaml.safeLoad(Base64.decode(socialMediaResp));
 
       // set state properly
       this.setState((currState) => ({
         ...currState,
         siteName,
-        ...configContent,
+        ...configFieldsRequired,
         socialMediaContent: {
           ...currState.socialMediaContent,
           ...socialMediaContent,
         },
-        configSha,
         socialMediaSha,
       }));
     } catch (err) {
@@ -205,23 +198,27 @@ export default class Settings extends Component {
       const socialMediaSettings = state.socialMediaContent;
 
       // obtain config settings object
-      const configSettings = { ...state };
-      delete configSettings.socialMediaContent;
-      delete configSettings.configSha;
-      delete configSettings.socialMediaSha;
-      delete configSettings.siteName;
-      delete configSettings.colorPicker;
-      delete configSettings.errors;
+      const {
+        title,
+        favicon,
+        // eslint-disable-next-line camelcase
+        resources_name,
+        colors,
+      } = this.state;
+      const configSettings = {
+        title,
+        favicon,
+        resources_name,
+        colors,
+      };
 
-      // obtain sha values
-      const { socialMediaSha, configSha } = state;
-
+      // obtain sha value
+      const { socialMediaSha } = state;
 
       const params = {
         socialMediaSettings,
         configSettings,
         socialMediaSha,
-        configSha,
       };
 
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, params, {
