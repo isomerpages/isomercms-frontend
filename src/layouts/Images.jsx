@@ -7,7 +7,6 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import ImageSettingsModal from '../components/ImageSettingsModal';
-import ImageUploadModal from '../components/ImageUploadModal';
 
 const ImageCard = ({ image, siteName, onClick }) => (
   <div className={mediaStyles.mediaCard} key={image.path}>
@@ -167,7 +166,7 @@ export default class Images extends Component {
         {
           uploadedImage
           && (
-          <ImageUploadModal
+          <ImageSettingsModal
             image={uploadedImage}
             match={match}
             onClose={() => this.setState({ uploadedImage: null })}
