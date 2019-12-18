@@ -7,6 +7,7 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import ImageSettingsModal from '../components/ImageSettingsModal';
+import ImageUploadModal from '../components/ImageUploadModal';
 
 const ImageCard = ({ image, siteName, onClick }) => (
   <div className={mediaStyles.mediaCard} key={image.path}>
@@ -49,6 +50,7 @@ export default class Images extends Component {
     this.state = {
       images: [],
       chosenImage: null,
+      uploadedImage: null,
     };
   }
 
@@ -79,7 +81,13 @@ export default class Images extends Component {
         withCredentials: true,
       });
 
-      window.location.reload();
+      // toggle state so that image renaming modal appears
+      this.setState({
+        uploadedImage: {
+          fileName: imageName,
+          path: `images%2F${imageName}`,
+        },
+      });
     } catch (err) {
       console.log(err);
     }
@@ -102,7 +110,7 @@ export default class Images extends Component {
   }
 
   render() {
-    const { images, chosenImage } = this.state;
+    const { images, chosenImage, uploadedImage } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
     return (
@@ -153,6 +161,16 @@ export default class Images extends Component {
             image={chosenImage}
             match={match}
             onClose={() => this.setState({ chosenImage: null })}
+          />
+          )
+        }
+        {
+          uploadedImage
+          && (
+          <ImageUploadModal
+            image={uploadedImage}
+            match={match}
+            onClose={() => this.setState({ uploadedImage: null })}
           />
           )
         }
