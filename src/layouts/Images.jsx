@@ -69,22 +69,12 @@ export default class Images extends Component {
 
   uploadImage = async (imageName, imageContent) => {
     try {
-      const { match } = this.props;
-      const { siteName } = match.params;
-      const params = {
-        imageName,
-        content: imageContent,
-      };
-
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, params, {
-        withCredentials: true,
-      });
-
       // toggle state so that image renaming modal appears
       this.setState({
         uploadedImage: {
           fileName: imageName,
           path: `images%2F${imageName}`,
+          content: imageContent,
         },
       });
     } catch (err) {
@@ -159,6 +149,7 @@ export default class Images extends Component {
           <ImageSettingsModal
             image={chosenImage}
             match={match}
+            isUpload={false}
             onClose={() => this.setState({ chosenImage: null })}
           />
           )
@@ -169,6 +160,8 @@ export default class Images extends Component {
           <ImageSettingsModal
             image={uploadedImage}
             match={match}
+            // eslint-disable-next-line react/jsx-boolean-value
+            isUpload={true}
             onClose={() => this.setState({ uploadedImage: null })}
           />
           )
