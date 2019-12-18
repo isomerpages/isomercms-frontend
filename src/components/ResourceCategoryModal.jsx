@@ -7,6 +7,7 @@ import { prettifyResourceCategory, slugifyResourceCategory } from '../utils';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import FormField from './FormField';
 import { validateResourceCategory } from '../utils/validators';
+import DeleteWarningModal from './DeleteWarningModal';
 
 // Constants
 const RADIX_PARSE_INT = 10;
@@ -21,6 +22,7 @@ export default class ResourceCategoryModal extends Component {
       errors: {
         resourceCategories: [],
       },
+      itemPendingForDeleteId: '',
     };
     this.currInputValues = {};
   }
@@ -112,11 +114,10 @@ export default class ResourceCategoryModal extends Component {
     }
   }
 
-  deleteHandler = async (event) => {
+  deleteHandler = async (id) => {
     try {
       const { siteName } = this.props;
       const { prevResourceCategories } = this.state;
-      const { id } = event.target;
       const idArray = id.split('-');
       const categoryIndex = parseInt(idArray[1], RADIX_PARSE_INT);
       const resourceCategory = slugifyResourceCategory(prevResourceCategories[categoryIndex]);
@@ -144,6 +145,7 @@ export default class ResourceCategoryModal extends Component {
       this.setState({
         prevResourceCategories: newResourceCategories,
         currResourceCategories: newResourceCategories,
+        itemPendingForDeleteId: '',
       });
     } catch (err) {
       console.log(err);
@@ -151,54 +153,66 @@ export default class ResourceCategoryModal extends Component {
   }
 
   render() {
-    const { prevResourceCategories, errors } = this.state;
+    const { prevResourceCategories, errors, itemPendingForDeleteId } = this.state;
     const { categoryModalToggle, categoryModalIsActive } = this.props;
 
     // Page settings form has errors - disable save button
     const hasErrors = _.some(errors.resourceCategories,
       (categoryError) => categoryError.length > 0);
     return (
-      <div>
-        <button type="button" className={elementStyles.blue} onClick={categoryModalToggle}>Edit Categories</button>
-        {categoryModalIsActive
-          ? (
-            <div className={elementStyles.overlay}>
-              <div className={elementStyles.modal}>
-                <div className={elementStyles.modalHeader}>
-                  <h1>Edit Resource Categories</h1>
-                  <button id="settings-CLOSE" type="button" onClick={categoryModalToggle}>
-                    <i id="settingsIcon-CLOSE" className="bx bx-x" />
-                  </button>
-                </div>
-                <div className={elementStyles.modalContent}>
-                  <div className={elementStyles.modalFormFields}>
-                    {prevResourceCategories.length > 0
-                      ? prevResourceCategories.map((prevResourceCategory, index) => (
-                        <div key={prevResourceCategory}>
-                          <FormField
-                            title={`Category ${index + 1}`}
-                            id={`input-${index}`}
-                            defaultValue={prettifyResourceCategory(prevResourceCategory)}
-                            errorMessage={errors.resourceCategories[index]}
-                            style={{ textTransform: 'uppercase' }}
-                            isRequired
-                            onFieldChange={this.changeHandler}
-                          />
-                          <button type="button" className={hasErrors ? elementStyles.disabled : elementStyles.blue} id={`save-${index}`} disabled={hasErrors} onClick={this.saveHandler}>Save</button>
-                          <button type="button" className={elementStyles.warning} id={`delete-${index}`} onClick={this.deleteHandler}>Delete</button>
-                        </div>
-                      ))
-                      : null}
+      <>
+        <div>
+          <button type="button" className={elementStyles.blue} onClick={categoryModalToggle}>Edit Categories</button>
+          {categoryModalIsActive
+            ? (
+              <div className={elementStyles.overlay}>
+                <div className={elementStyles.modal}>
+                  <div className={elementStyles.modalHeader}>
+                    <h1>Edit Resource Categories</h1>
+                    <button id="settings-CLOSE" type="button" onClick={categoryModalToggle}>
+                      <i id="settingsIcon-CLOSE" className="bx bx-x" />
+                    </button>
                   </div>
-                  <div className={elementStyles.modalButtons}>
-                    <button type="button" className={elementStyles.blue} onClick={this.createHandler}>Create Category</button>
+                  <div className={elementStyles.modalContent}>
+                    <div className={elementStyles.modalFormFields}>
+                      {prevResourceCategories.length > 0
+                        ? prevResourceCategories.map((prevResourceCategory, index) => (
+                          <div key={prevResourceCategory}>
+                            <FormField
+                              title={`Category ${index + 1}`}
+                              id={`input-${index}`}
+                              defaultValue={prettifyResourceCategory(prevResourceCategory)}
+                              errorMessage={errors.resourceCategories[index]}
+                              style={{ textTransform: 'uppercase' }}
+                              isRequired
+                              onFieldChange={this.changeHandler}
+                            />
+                            <button type="button" className={hasErrors ? elementStyles.disabled : elementStyles.blue} id={`save-${index}`} disabled={hasErrors} onClick={this.saveHandler}>Save</button>
+                            <button type="button" className={elementStyles.warning} id={`delete-${index}`} onClick={(event) => this.setState({ itemPendingForDeleteId: event.target.id })}>Delete</button>
+                          </div>
+                        ))
+                        : null}
+                    </div>
+                    <div className={elementStyles.modalButtons}>
+                      <button type="button" className={elementStyles.blue} onClick={this.createHandler}>Create Category</button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )
+            : null}
+        </div>
+        {
+          itemPendingForDeleteId
+          && (
+            <DeleteWarningModal
+              onCancel={() => this.setState({ itemPendingForDeleteId: '' })}
+              onDelete={() => this.deleteHandler(itemPendingForDeleteId)}
+              type="Resource Catgeory"
+            />
           )
-          : null}
-      </div>
+        }
+      </>
     );
   }
 }

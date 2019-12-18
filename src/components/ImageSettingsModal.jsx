@@ -120,7 +120,7 @@ export default class ImageSettingsModal extends Component {
               type="image"
             />
           )
-        }
+          }
         </div>
       </>
     );

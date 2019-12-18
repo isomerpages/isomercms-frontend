@@ -15,6 +15,7 @@ import {
 } from '../utils';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import { validateResourceSettings } from '../utils/validators';
+import DeleteWarningModal from './DeleteWarningModal';
 
 export default class ResourceSettingsModal extends Component {
   constructor(props) {
@@ -35,6 +36,7 @@ export default class ResourceSettingsModal extends Component {
         date: '',
         category: '',
       },
+      canShowDeleteWarningModal: false,
     };
   }
 
@@ -190,6 +192,7 @@ export default class ResourceSettingsModal extends Component {
       permalink,
       fileUrl,
       errors,
+      canShowDeleteWarningModal,
     } = this.state;
     const { settingsToggle, isNewPost } = this.props;
 
@@ -197,105 +200,116 @@ export default class ResourceSettingsModal extends Component {
     const hasErrors = _.some(errors, (field) => field.length > 0);
 
     return (
-      <div className={elementStyles.overlay}>
-        <div className={elementStyles.modal}>
-          <div className={elementStyles.modalHeader}>
-            <h1>Resource Settings</h1>
-            <button id="settings-CLOSE" type="button" onClick={settingsToggle}>
-              <i id="settingsIcon-CLOSE" className="bx bx-x" />
-            </button>
-          </div>
-          <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
-            <div className={elementStyles.modalFormFields}>
+      <>
+        <div className={elementStyles.overlay}>
+          <div className={elementStyles.modal}>
+            <div className={elementStyles.modalHeader}>
+              <h1>Resource Settings</h1>
+              <button id="settings-CLOSE" type="button" onClick={settingsToggle}>
+                <i id="settingsIcon-CLOSE" className="bx bx-x" />
+              </button>
+            </div>
+            <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
+              <div className={elementStyles.modalFormFields}>
 
-              {/* Title */}
-              <FormField
-                title="Title"
-                id="title"
-                value={dequoteString(title)}
-                errorMessage={errors.title}
-                isRequired
-                onFieldChange={this.changeHandler}
-              />
+                {/* Title */}
+                <FormField
+                  title="Title"
+                  id="title"
+                  value={dequoteString(title)}
+                  errorMessage={errors.title}
+                  isRequired
+                  onFieldChange={this.changeHandler}
+                />
 
-              {/* Date */}
-              <FormField
-                title="Date (YYYY-MM-DD, e.g. 2019-12-23)"
-                id="date"
-                value={date}
-                errorMessage={errors.date}
-                isRequired
-                onFieldChange={this.changeHandler}
-              />
+                {/* Date */}
+                <FormField
+                  title="Date (YYYY-MM-DD, e.g. 2019-12-23)"
+                  id="date"
+                  value={date}
+                  errorMessage={errors.date}
+                  isRequired
+                  onFieldChange={this.changeHandler}
+                />
 
-              {/* Resource Category */}
-              <p className={elementStyles.formLabel}>Resource Category</p>
-              <select id="category" value={slugifyResourceCategory(category)} onChange={this.changeHandler}>
-                {
-                resourceCategories
-                  ? resourceCategories.map((resourceCategory) => (
-                    <option
-                      value={slugifyResourceCategory(resourceCategory.dirName)}
-                      label={prettifyResourceCategory(resourceCategory.dirName)}
-                    />
-                  ))
-                  : null
-              }
-              </select>
+                {/* Resource Category */}
+                <p className={elementStyles.formLabel}>Resource Category</p>
+                <select id="category" value={slugifyResourceCategory(category)} onChange={this.changeHandler}>
+                  {
+                  resourceCategories
+                    ? resourceCategories.map((resourceCategory) => (
+                      <option
+                        value={slugifyResourceCategory(resourceCategory.dirName)}
+                        label={prettifyResourceCategory(resourceCategory.dirName)}
+                      />
+                    ))
+                    : null
+                }
+                </select>
 
-              {/* Resource Type */}
-              <p className={elementStyles.formLabel}>Resource Type</p>
+                {/* Resource Type */}
+                <p className={elementStyles.formLabel}>Resource Type</p>
 
-              {/* Permalink or File URL */}
-              <div className="d-flex">
-                <label htmlFor="radio-post" className="flex-fill">
-                  <input type="radio" id="radio-post" name="resource-type" value="post" onClick={this.handlePermalinkFileUrlToggle} checked={!!permalink} />
-                  Post Content
-                </label>
-                <label htmlFor="radio-post" className="flex-fill">
-                  <input type="radio" id="radio-file" name="resource-type" value="file" onClick={this.handlePermalinkFileUrlToggle} checked={!permalink} />
-                  Downloadable File
-                </label>
+                {/* Permalink or File URL */}
+                <div className="d-flex">
+                  <label htmlFor="radio-post" className="flex-fill">
+                    <input type="radio" id="radio-post" name="resource-type" value="post" onClick={this.handlePermalinkFileUrlToggle} checked={!!permalink} />
+                    Post Content
+                  </label>
+                  <label htmlFor="radio-post" className="flex-fill">
+                    <input type="radio" id="radio-file" name="resource-type" value="file" onClick={this.handlePermalinkFileUrlToggle} checked={!permalink} />
+                    Downloadable File
+                  </label>
+                </div>
+                {permalink
+                  ? (
+                    <>
+                      {/* Permalink */}
+                      <FormField
+                        title="Permalink"
+                        id="permalink"
+                        value={permalink}
+                        errorMessage={errors.permalink}
+                        isRequired
+                        onFieldChange={this.changeHandler}
+                      />
+                    </>
+                  )
+                  : (
+                    <>
+                      {/* File URL */}
+                      <FormField
+                        title="File URL"
+                        id="fileUrl"
+                        value={fileUrl}
+                        errorMessage={errors.fileUrl}
+                        isRequired
+                        onFieldChange={this.changeHandler}
+                      />
+                    </>
+                  )}
               </div>
-              {permalink
-                ? (
-                  <>
-                    {/* Permalink */}
-                    <FormField
-                      title="Permalink"
-                      id="permalink"
-                      value={permalink}
-                      errorMessage={errors.permalink}
-                      isRequired
-                      onFieldChange={this.changeHandler}
-                    />
-                  </>
-                )
-                : (
-                  <>
-                    {/* File URL */}
-                    <FormField
-                      title="File URL"
-                      id="fileUrl"
-                      value={fileUrl}
-                      errorMessage={errors.fileUrl}
-                      isRequired
-                      onFieldChange={this.changeHandler}
-                    />
-                  </>
-                )}
-            </div>
 
-            {/* Save or Delete buttons */}
-            <div className={elementStyles.modalButtons}>
-              <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>
-              { !isNewPost
-                ? <button type="button" className={elementStyles.warning} onClick={this.deleteHandler}>Delete</button>
-                : null}
-            </div>
-          </form>
+              {/* Save or Delete buttons */}
+              <div className={elementStyles.modalButtons}>
+                <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>
+                { !isNewPost
+                  && <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>}
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
+        {
+          canShowDeleteWarningModal
+          && (
+            <DeleteWarningModal
+              onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
+              onDelete={this.deleteHandler}
+              type="resource"
+            />
+          )
+        }
+      </>
     );
   }
 }
