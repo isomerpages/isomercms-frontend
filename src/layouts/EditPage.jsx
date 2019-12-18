@@ -75,7 +75,7 @@ export default class EditPage extends Component {
 
   deletePage = async () => {
     try {
-      const { match } = this.props;
+      const { match, history } = this.props;
       const { siteName, fileName } = match.params;
       const { sha } = this.state;
       const params = { sha };
@@ -83,6 +83,7 @@ export default class EditPage extends Component {
         data: params,
         withCredentials: true,
       });
+      history.goBack();
     } catch (err) {
       console.log(err);
     }
@@ -144,5 +145,8 @@ EditPage.propTypes = {
       fileName: PropTypes.string,
       newFileName: PropTypes.string,
     }),
+  }).isRequired,
+  history: PropTypes.shape({
+    goBack: PropTypes.func,
   }).isRequired,
 };

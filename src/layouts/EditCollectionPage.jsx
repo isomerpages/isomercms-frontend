@@ -109,7 +109,7 @@ export default class EditCollectionPage extends Component {
 
   deletePage = async () => {
     try {
-      const { match } = this.props;
+      const { match, history } = this.props;
       const { siteName, collectionName, fileName } = match.params;
       const { sha } = this.state;
       const params = { sha };
@@ -117,6 +117,7 @@ export default class EditCollectionPage extends Component {
         data: params,
         withCredentials: true,
       });
+      history.goBack();
     } catch (err) {
       console.log(err);
     }
@@ -210,5 +211,8 @@ EditCollectionPage.propTypes = {
         fileName: PropTypes.string,
       })),
     }),
+  }).isRequired,
+  history: PropTypes.shape({
+    goBack: PropTypes.func,
   }).isRequired,
 };
