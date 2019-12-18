@@ -2,6 +2,8 @@
 // Common regexes and constants
 // ==============
 const PERMALINK_REGEX = '^(/([a-z]+([-][a-z]+)*/)+)$';
+const SOCIAL_MEDIA_REGEX_PART_1 = '^(https://)?(www.)?(';
+const SOCIAL_MEDIA_REGEX_PART_2 = '.com/)([a-zA-Z0-9_-]+(/)?)+$';
 const permalinkRegexTest = RegExp(PERMALINK_REGEX);
 const DATE_REGEX = '^([0-9]{4}-[0-9]{2}-[0-9]{2})$';
 const dateRegexTest = RegExp(DATE_REGEX);
@@ -515,6 +517,20 @@ const validateResourceCategory = (value) => {
   return errorMessage;
 };
 
+// Settings page
+// ===================
+const validateSocialMedia = (value, id) => {
+  let errorMessage = '';
+  const socialMediaRegexTest = RegExp(`${SOCIAL_MEDIA_REGEX_PART_1}${id}${SOCIAL_MEDIA_REGEX_PART_2}`);
+
+  // conduct regex tests for each social media platform
+  if (!socialMediaRegexTest.test(value)) {
+    if (value !== '') errorMessage = `The URL you have entered is not a valid ${id[0].toUpperCase()}${id.slice(1)} URL.`;
+  }
+
+  return errorMessage;
+}
+
 const validateFileName = (value) => {
   if (!value.length) {
     return 'Please input the file name';
@@ -532,5 +548,6 @@ export {
   validatePageSettings,
   validateResourceSettings,
   validateResourceCategory,
+  validateSocialMedia,
   validateFileName,
 };

@@ -1,4 +1,5 @@
 @import './variable';
+@import './buttons';
 
 .inputGroup{
     margin-bottom: 20px;
@@ -9,6 +10,77 @@
   margin-bottom: 8px;
   line-height: 14px;
   padding-top: 20px;
+}
+
+.formSectionHeader{
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  margin-top: 20px;
+  line-height: 14px;
+  padding-top: 20px;
+}
+
+.formHorizontal{
+  display: flex;
+  margin-bottom: 5px;
+  margin-top: 5px;
+
+  .formHorizontalLabel{
+    @extend .formLabel;
+    width: 25%;
+    margin: 1px;
+  }
+
+  .formHorizontalInput{
+    width: 75%;
+  }
+}
+
+.formColor{
+  display: flex;
+  width: 50%;
+  margin-bottom: 5px;
+  margin-top: 5px;
+
+  .formColorLabel{
+    @extend .formLabel;
+    width: 40%;
+    margin: 1px;
+  }
+
+  .formColorInput{
+    width: 40%;
+  }
+
+  .formColorBox{
+    float: left;
+    width: 50px;
+    border: 0.5px solid black;
+    width: 20%;
+  }
+}
+
+.formSave{
+  position: relative;
+  width: 50%;
+
+  .formSaveButton{
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    margin-bottom: 20px;
+  }
+
+  .formSaveButtonActive{
+    @extend .blue;
+    @extend .formSaveButton;
+  }
+
+  .formSaveButtonDisabled{
+    @extend .disabled;
+    @extend .formSaveButton;
+  }    
 }
 
 input,textarea{
