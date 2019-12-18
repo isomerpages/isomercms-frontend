@@ -43,7 +43,6 @@ function App() {
           <Route path="/sites/:siteName/files" component={Files} />
           <Route path="/sites/:siteName/images/:fileName" component={EditImage} />
           <Route path="/sites/:siteName/images" component={Images} />
-          <Route path="/sites/:siteName/media" component={Media} />
           <Route path="/sites/:siteName/pages/:fileName" component={EditPage} />
           <Route path="/sites/:siteName/pages" component={Pages} />
           <Route path="/sites/:siteName/homepage" component={EditHomepage} />
