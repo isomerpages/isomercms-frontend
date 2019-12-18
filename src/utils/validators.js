@@ -7,6 +7,7 @@ const SOCIAL_MEDIA_REGEX_PART_2 = '.com/)([a-zA-Z0-9_-]+(/)?)+$';
 const permalinkRegexTest = RegExp(PERMALINK_REGEX);
 const DATE_REGEX = '^([0-9]{4}-[0-9]{2}-[0-9]{2})$';
 const dateRegexTest = RegExp(DATE_REGEX);
+const fileNameRegexTest = /^[^<>:;,?"*|/]+\.[a-zA-z]{3}$/;
 const RESOURCE_CATEGORY_REGEX = '^(([a-zA-Z0-9]+([\\s][a-zA-Z0-9]+)*)+)$';
 const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX);
 const RADIX_PARSE_INT = 10;
@@ -470,20 +471,20 @@ const validateResourceSettings = (id, value) => {
     }
     case 'fileUrl': {
       // File URL is too short
-      if (value.length < RESOURCE_SETTINGS_PERMALINK_MIN_LENGTH) {
-        errorMessage = `The permalink should be longer than ${RESOURCE_SETTINGS_PERMALINK_MIN_LENGTH} characters.`;
-      }
-      // File URL is too long
-      if (value.length > RESOURCE_SETTINGS_PERMALINK_MAX_LENGTH) {
-        errorMessage = `The permalink should be shorter than ${RESOURCE_SETTINGS_PERMALINK_MAX_LENGTH} characters.`;
-      }
+      // if (value.length < RESOURCE_SETTINGS_PERMALINK_MIN_LENGTH) {
+      //   errorMessage = `The file URL should be longer than ${RESOURCE_SETTINGS_PERMALINK_MIN_LENGTH} characters.`;
+      // }
+      // // File URL is too long
+      // if (value.length > RESOURCE_SETTINGS_PERMALINK_MAX_LENGTH) {
+      //   errorMessage = `The file URL should be shorter than ${RESOURCE_SETTINGS_PERMALINK_MAX_LENGTH} characters.`;
+      // }
       // File URL fails regex
-      if (!permalinkRegexTest.test(value)) {
-        console.log('FAILED');
-        errorMessage = `The permalink should start and end with slashes and contain 
-          lowercase words separated by hyphens only.
-          `;
-      }
+      // if (!permalinkRegexTest.test(value)) {
+      //   console.log('FAILED');
+      //   errorMessage = `The permalink should start and end with slashes and contain 
+      //     lowercase words separated by hyphens only.
+      //     `;
+      // }
       // TO-DO
       // Check if file exists
       break;
@@ -528,6 +529,16 @@ const validateSocialMedia = (value, id) => {
   }
 
   return errorMessage;
+}
+
+const validateFileName = (value) => {
+  if (!value.length) {
+    return 'Please input the file name';
+  }
+  if (!fileNameRegexTest.test(value)) {
+    return 'Invalid filename';
+  }
+  return '';
 };
 
 export {
@@ -538,4 +549,5 @@ export {
   validateResourceSettings,
   validateResourceCategory,
   validateSocialMedia,
+  validateFileName,
 };

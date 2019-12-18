@@ -104,3 +104,8 @@ input,textarea{
     outline:none;
   }
 }
+
+input[type=radio] {
+  width: auto;
+  margin-right: 8px;
+}

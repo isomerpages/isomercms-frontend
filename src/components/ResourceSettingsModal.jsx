@@ -34,6 +34,7 @@ export default class ResourceSettingsModal extends Component {
         fileUrl: '',
         date: '',
         category: '',
+        prevCategory: '',
       },
     };
   }
@@ -70,7 +71,15 @@ export default class ResourceSettingsModal extends Component {
         } = frontMatter;
 
         this.setState({
-          title, permalink, fileUrl, date, sha, mdBody, category, resourceCategories,
+          title, 
+          permalink, 
+          fileUrl, 
+          date, 
+          sha, 
+          mdBody, 
+          prevCategory: category, 
+          category, 
+          resourceCategories,
         });
       }
     } catch (err) {
@@ -78,9 +87,9 @@ export default class ResourceSettingsModal extends Component {
     }
   }
 
-  permalinkFileUrlToggle = () => {
-    const { permalink } = this.state;
-    if (permalink) {
+  handlePermalinkFileUrlToggle = (event) => {
+    const { target: { value } } = event;
+    if (value === 'file') {
       this.setState({ permalink: null, fileUrl: '/file/url/' });
     } else {
       this.setState({ permalink: '/permalink/', fileUrl: null });
@@ -108,7 +117,7 @@ export default class ResourceSettingsModal extends Component {
     event.preventDefault();
     try {
       const {
-        title, permalink, fileUrl, date, mdBody, sha, category,
+        title, permalink, fileUrl, date, mdBody, sha, category, prevCategory,
       } = this.state;
       const { fileName, siteName, isNewPost } = this.props;
 
@@ -129,7 +138,7 @@ export default class ResourceSettingsModal extends Component {
       const newFileName = generateResourceFileName(dequoteString(title), type, date);
       let params = {};
 
-      if (newFileName !== fileName) {
+      if (newFileName !== fileName || prevCategory !== category) {
         // We'll need to create a new .md file with a new filename
         params = {
           content: base64EncodedContent,
@@ -138,7 +147,7 @@ export default class ResourceSettingsModal extends Component {
 
         // If it is an existing post, delete the existing page
         if (!isNewPost) {
-          await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${category}/pages/${fileName}`, {
+          await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${prevCategory}/pages/${fileName}`, {
             data: {
               sha,
             },
@@ -246,7 +255,16 @@ export default class ResourceSettingsModal extends Component {
               <p className={elementStyles.formLabel}>Resource Type</p>
 
               {/* Permalink or File URL */}
-              <button type="button" onClick={this.permalinkFileUrlToggle}>{permalink ? 'Switch to download' : 'Switch to post'}</button>
+              <div className="d-flex">
+                <label htmlFor="radio-post" className="flex-fill">
+                  <input type="radio" id="radio-post" name="resource-type" value="post" onClick={this.handlePermalinkFileUrlToggle} checked={!!permalink} />
+                  Post Content
+                </label>
+                <label htmlFor="radio-post" className="flex-fill">
+                  <input type="radio" id="radio-file" name="resource-type" value="file" onClick={this.handlePermalinkFileUrlToggle} checked={!permalink} />
+                  Downloadable File
+                </label>
+              </div>
               {permalink
                 ? (
                   <>

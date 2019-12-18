@@ -9,9 +9,12 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import '../styles/isomer-template.scss';
 import TemplateHeroSection from '../templates/homepage/HeroSection';
 import TemplateInfobarSection from '../templates/homepage/InfobarSection';
+import TemplateInfopicLeftSection from '../templates/homepage/InfopicLeftSection';
+import TemplateInfopicRightSection from '../templates/homepage/InfopicRightSection';
 import TemplateResourcesSection from '../templates/homepage/ResourcesSection';
 import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
 import EditorInfobarSection from '../components/homepage/InfobarSection';
+import EditorInfopicSection from '../components/homepage/InfopicSection';
 import EditorResourcesSection from '../components/homepage/ResourcesSection';
 import EditorHeroSection from '../components/homepage/HeroSection';
 import NewSectionCreator from '../components/homepage/NewSectionCreator';
@@ -46,6 +49,18 @@ const InfobarSectionConstructor = () => ({
   },
 });
 
+const InfopicSectionConstructor = () => ({
+  infopic: {
+    title: '',
+    subtitle: '',
+    description: '',
+    button: '',
+    url: '',
+    imageUrl: '',
+    imageAlt: '',
+  },
+});
+
 const KeyHighlightConstructor = () => ({
   title: '',
   description: '',
@@ -68,6 +83,8 @@ const enumSection = (type) => {
       return ResourcesSectionConstructor();
     case 'infobar':
       return InfobarSectionConstructor();
+    case 'infopic':
+      return InfopicSectionConstructor();
     default:
       return InfobarSectionConstructor();
   }
@@ -156,6 +173,10 @@ export default class EditHomepage extends Component {
 
         if (section.infobar) {
           sectionsErrors.push(InfobarSectionConstructor());
+        }
+
+        if (section.infopic) {
+          sectionsErrors.push(InfopicSectionConstructor());
         }
 
         // Minimize all sections by default
@@ -892,6 +913,16 @@ export default class EditHomepage extends Component {
         (errorMessage) => errorMessage.length > 0) === true);
 
     const hasErrors = hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors;
+
+    const isLeftInfoPic = (sectionIndex) => {
+      // If the previous section in the list was not an infopic section
+      // or if the previous section was a right infopic section, return true
+      if (!frontMatter.sections[sectionIndex - 1].infopic
+        || !isLeftInfoPic(sectionIndex - 1)) return true;
+
+      return false;
+    };
+
     return (
       <>
         <Header
@@ -1055,7 +1086,39 @@ export default class EditHomepage extends Component {
                           )}
 
                           {/* Infopic section */}
-                          {/* TO-DO */}
+                          {section.infopic ? (
+                            <Draggable
+                              draggableId={`infopic-${sectionIndex}-draggable`}
+                              index={sectionIndex}
+                            >
+                              {(draggableProvided) => (
+                                <div
+                                  {...draggableProvided.draggableProps}
+                                  {...draggableProvided.dragHandleProps}
+                                  ref={draggableProvided.innerRef}
+                                >
+                                  <EditorInfopicSection
+                                    key={`section-${sectionIndex}`}
+                                    title={section.infopic.title}
+                                    subtitle={section.infopic.subtitle}
+                                    description={section.infopic.description}
+                                    button={section.infopic.button}
+                                    url={section.infopic.url}
+                                    imageUrl={section.infopic.imageUrl}
+                                    imageAlt={section.infopic.imageAlt}
+                                    sectionIndex={sectionIndex}
+                                    deleteHandler={this.deleteHandler}
+                                    onFieldChange={this.onFieldChange}
+                                    shouldDisplay={displaySections[sectionIndex]}
+                                    displayHandler={this.displayHandler}
+                                    errors={errors.sections[sectionIndex].infopic}
+                                  />
+                                </div>
+                              )}
+                            </Draggable>
+                          ) : (
+                            null
+                          )}
 
                           {/* Carousel section */}
                           {/* TO-DO */}
@@ -1120,6 +1183,42 @@ export default class EditHomepage extends Component {
                         button={section.infobar.button}
                         sectionIndex={sectionIndex}
                       />
+                    </div>
+                  )
+                  : null}
+                {/* Infopic section */}
+                {section.infopic
+                  ? (
+                    <div ref={(ref) => { this.scrollRefs[sectionIndex] = ref; }}>
+                      { isLeftInfoPic(sectionIndex)
+                        ? (
+                          <TemplateInfopicLeftSection
+                            key={`section-${sectionIndex}`}
+                            title={section.infopic.title}
+                            subtitle={section.infopic.subtitle}
+                            description={section.infopic.description}
+                            url={section.infopic.url}
+                            imageUrl={section.infopic.imageUrl}
+                            imageAlt={section.infopic.imageAlt}
+                            button={section.infopic.button}
+                            sectionIndex={sectionIndex}
+                            siteName={siteName}
+                          />
+                        )
+                        : (
+                          <TemplateInfopicRightSection
+                            key={`section-${sectionIndex}`}
+                            title={section.infopic.title}
+                            subtitle={section.infopic.subtitle}
+                            description={section.infopic.description}
+                            url={section.infopic.url}
+                            imageUrl={section.infopic.imageUrl}
+                            imageAlt={section.infopic.imageAlt}
+                            button={section.infopic.button}
+                            sectionIndex={sectionIndex}
+                            siteName={siteName}
+                          />
+                        )}
                     </div>
                   )
                   : null}
