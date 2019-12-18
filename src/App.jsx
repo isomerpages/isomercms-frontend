@@ -15,7 +15,6 @@ import Images from './layouts/Images';
 import EditImage from './layouts/EditImage';
 import Files from './layouts/Files';
 import EditFile from './layouts/EditFile';
-import Media from './layouts/Media';
 import EditHomepage from './layouts/EditHomepage';
 import Resources from './layouts/Resources';
 import EditResourcePage from './layouts/EditResourcePage';
