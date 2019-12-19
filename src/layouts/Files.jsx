@@ -7,6 +7,7 @@ import Sidebar from '../components/Sidebar';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
+import FileSettingsModal from '../components/FileSettingsModal';
 
 // const FileCard = ({
 //   siteName, file,
@@ -41,12 +42,16 @@ const UploadFileCard = ({ onClick }) => (
   </button>
 );
 
+UploadFileCard.propTypes = {
+  onClick: PropTypes.func.isRequired,
+};
+
 export default class Files extends Component {
   constructor(props) {
     super(props);
     this.state = {
       files: [],
-      newPageName: null,
+      chosenFile: null,
     };
   }
 
@@ -108,7 +113,7 @@ export default class Files extends Component {
   }
 
   render() {
-    const { files } = this.state;
+    const { files, chosenFile } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
     return (
@@ -142,6 +147,7 @@ export default class Files extends Component {
                       siteName={siteName}
                       file={file}
                       key={file.fileName}
+                      onClick={() => this.setState({ chosenFile: file })}
                     />
                   ))}
               </div>
@@ -150,6 +156,16 @@ export default class Files extends Component {
           </div>
           {/* main section ends here */}
         </div>
+        {
+          chosenFile
+          && (
+          <FileSettingsModal
+            file={chosenFile}
+            siteName={siteName}
+            onClose={() => this.setState({ chosenFile: null })}
+          />
+          )
+        }
       </>
     );
   }
