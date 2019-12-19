@@ -9,6 +9,7 @@ export default function LoadingButton(props) {
     disabled,
     className,
     callback,
+    ...remainingProps
   } = props;
 
   // track whether button is loading or not
@@ -22,6 +23,8 @@ export default function LoadingButton(props) {
         setButtonLoading(true);
         callback().then(() => setButtonLoading(false));
       }}
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...remainingProps}
     >
       {isLoading
         ? (
