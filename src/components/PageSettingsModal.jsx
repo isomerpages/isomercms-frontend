@@ -8,6 +8,7 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import {
   frontMatterParser, concatFrontMatterMdBody, generatePageFileName,
 } from '../utils';
+import LoadingButton from './LoadingButton';
 import { validatePageSettings } from '../utils/validators';
 
 export default class PageSettingsModal extends Component {
@@ -49,8 +50,7 @@ export default class PageSettingsModal extends Component {
     }
   }
 
-  saveHandler = async (event) => {
-    event.preventDefault();
+  saveHandler = async () => {
     try {
       const { siteName, fileName, isNewPage } = this.props;
       const {
@@ -132,7 +132,12 @@ export default class PageSettingsModal extends Component {
   }
 
   render() {
-    const { title, permalink, errors } = this.state;
+    const {
+      title,
+      permalink,
+      errors,
+      sha,
+    } = this.state;
     const { settingsToggle, isNewPage } = this.props;
 
     // Page settings form has errors - disable save button
@@ -147,7 +152,7 @@ export default class PageSettingsModal extends Component {
               <i className="bx bx-x" />
             </button>
           </div>
-          <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
+          <div className={elementStyles.modalContent}>
             <div className={elementStyles.modalFormFields}>
               <FormField
                 title="Title"
@@ -167,12 +172,23 @@ export default class PageSettingsModal extends Component {
               />
             </div>
             <div className={elementStyles.modalButtons}>
-              <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>
+              <LoadingButton
+                label="Save"
+                disabled={hasErrors}
+                className={(hasErrors || !sha) ? elementStyles.disabled : elementStyles.blue}
+                callback={this.saveHandler}
+              />
               {!isNewPage
-                ? <button type="button" className={elementStyles.warning} onClick={this.deleteHandler}>Delete</button>
-                : null}
+                ? (
+                  <LoadingButton
+                    label="Delete"
+                    disabled={!sha}
+                    className={elementStyles.warning}
+                    callback={this.deleteHandler}
+                  />
+                ) : null}
             </div>
-          </form>
+          </div>
         </div>
       </div>
     );

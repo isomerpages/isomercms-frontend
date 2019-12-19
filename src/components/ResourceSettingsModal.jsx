@@ -4,6 +4,7 @@ import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import FormField from './FormField';
+import LoadingButton from './LoadingButton';
 import {
   prettifyResourceCategory,
   slugifyResourceCategory,
@@ -113,8 +114,7 @@ export default class ResourceSettingsModal extends Component {
     }
   }
 
-  saveHandler = async (event) => {
-    event.preventDefault();
+  saveHandler = async () => {
     try {
       const {
         title, permalink, fileUrl, date, mdBody, sha, category, prevCategory,
@@ -198,6 +198,7 @@ export default class ResourceSettingsModal extends Component {
       permalink,
       fileUrl,
       errors,
+      sha,
     } = this.state;
     const { settingsToggle, isNewPost } = this.props;
 
@@ -213,7 +214,7 @@ export default class ResourceSettingsModal extends Component {
               <i id="settingsIcon-CLOSE" className="bx bx-x" />
             </button>
           </div>
-          <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
+          <div className={elementStyles.modalContent}>
             <div className={elementStyles.modalFormFields}>
 
               {/* Title */}
@@ -296,12 +297,23 @@ export default class ResourceSettingsModal extends Component {
 
             {/* Save or Delete buttons */}
             <div className={elementStyles.modalButtons}>
-              <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>
+              <LoadingButton
+                label="Save"
+                disabled={hasErrors}
+                className={(isNewPost ? hasErrors : (hasErrors || !sha)) ? elementStyles.disabled : elementStyles.blue}
+                callback={this.saveHandler}
+              />
               { !isNewPost
-                ? <button type="button" className={elementStyles.warning} onClick={this.deleteHandler}>Delete</button>
-                : null}
+                ? (
+                  <LoadingButton
+                    label="Delete"
+                    disabled={!sha}
+                    className={!sha ? elementStyles.disabled : elementStyles.warning}
+                    callback={this.deleteHandler}
+                  />
+                ) : null}
             </div>
-          </form>
+          </div>
         </div>
       </div>
     );
