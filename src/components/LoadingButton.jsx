@@ -25,9 +25,7 @@ export default function LoadingButton(props) {
     >
       {isLoading
         ? (
-          <div className="spinner-border text-primary" role="status">
-            <span className="sr-only">Loading...</span>
-          </div>
+          <div className="spinner-border text-primary" role="status" />
         ) : label}
     </button>
   );
