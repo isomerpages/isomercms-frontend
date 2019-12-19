@@ -14,6 +14,7 @@ import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
+import LoadingButton from '../components/LoadingButton';
 
 export default class EditPage extends Component {
   constructor(props) {
@@ -117,8 +118,16 @@ export default class EditPage extends Component {
           </div>
         </div>
         <div className={editorStyles.pageEditorFooter}>
-          <button type="button" className={elementStyles.blue} onClick={this.updatePage}>Save</button>
-          <button type="button" className={elementStyles.warning} onClick={this.deletePage}>Delete</button>
+          <LoadingButton
+            label="Save"
+            className={elementStyles.blue}
+            callback={this.updatePage}
+          />
+          <LoadingButton
+            label="Delete"
+            className={elementStyles.warning}
+            callback={this.deletePage}
+          />
         </div>
       </>
     );
