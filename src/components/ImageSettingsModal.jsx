@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import FormField from './FormField';
+import LoadingButton from '../components/LoadingButton';
 import { validateFileName } from '../utils/validators';
 
 
@@ -103,8 +104,18 @@ export default class ImageSettingsModal extends Component {
               />
             </div>
             <div className={elementStyles.modalButtons}>
-              <button type="button" className={errorMessage ? elementStyles.disabled : elementStyles.blue} disabled={!!errorMessage} onClick={this.renameImage}>Save</button>
-              <button type="button" className={sha ? elementStyles.warning : elementStyles.disabled} onClick={this.deleteImage} disabled={!sha}>Delete</button>
+              <LoadingButton
+                label="Save"
+                disabled={!!errorMessage}
+                className={errorMessage ? elementStyles.disabled : elementStyles.blue}
+                callback={this.renameImage}
+              />
+              <LoadingButton
+                label="Delete"
+                disabled={!sha}
+                className={sha ? elementStyles.warning : elementStyles.disabled}
+                callback={this.deleteImage}
+              />
             </div>
           </form>
         </div>
