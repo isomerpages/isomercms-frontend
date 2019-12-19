@@ -50,6 +50,25 @@
 
       }
 
+      .mediaCardFileContainer {
+        height: 70%;
+        width: 100%;
+        background: rgb(216, 216, 216);
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        p {
+          color: rgb(102, 102, 102);
+          font-weight: bold;
+          font-size: 30px;
+          margin-top: 10%;
+        }
+      }
+
       .mediaCardDescription{
         height: 30%;
         width: 100%;
