@@ -17,7 +17,7 @@ export default function LoadingButton(props) {
     <button
       type="button"
       className={isLoading ? elementStyles.disabled : className}
-      disabled={disabled}
+      disabled={isLoading ? true : disabled}
       onClick={() => {
         setButtonLoading(true);
         callback().then(() => setButtonLoading(false));
@@ -33,7 +33,11 @@ export default function LoadingButton(props) {
 
 LoadingButton.propTypes = {
   label: PropTypes.string.isRequired,
-  disabled: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
   className: PropTypes.string.isRequired,
   callback: PropTypes.func.isRequired,
+};
+
+LoadingButton.defaultProps = {
+  disabled: false,
 };

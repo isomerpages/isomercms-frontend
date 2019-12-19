@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import FormField from './FormField';
-import LoadingButton from '../components/LoadingButton';
+import LoadingButton from './LoadingButton';
 import { validateFileName } from '../utils/validators';
 
 
