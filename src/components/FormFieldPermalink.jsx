@@ -17,16 +17,7 @@ const FormFieldPermalink = ({
   <>
     <p className={elementStyles.formLabel}>{title}</p>
     <div style={{ display: 'flex' }}>
-      <p
-        style={{
-          paddingTop: '0px',
-          paddingLeft: '10px',
-          marginBottom: '0px',
-          lineHeight: '31px',
-          marginRight: '20px',
-        }}
-        className={elementStyles.formLabel}
-      >
+      <p className={`${elementStyles.formLabel} ${elementStyles.permalink}`}>
         {urlPrefix}
         { !isActive
           ? <b>{value}</b>
@@ -38,13 +29,7 @@ const FormFieldPermalink = ({
               id={id}
               autoComplete="off"
               required={isRequired}
-              className={errorMessage ? `${elementStyles.error}` : null}
-              style={{
-                marginLeft: '2px',
-                marginRight: '2px',
-                width: '50%',
-                lineHeight: '21px',
-              }}
+              className={`${elementStyles.permalinkSetter} ${errorMessage ? `${elementStyles.error}` : null}`}
               onChange={onFieldChange}
             />
           )}
