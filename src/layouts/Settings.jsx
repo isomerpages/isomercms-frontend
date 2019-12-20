@@ -351,7 +351,7 @@ export default class Settings extends Component {
       <>
         <Header showButton={false} />
         {/* main bottom section */}
-        <div
+        <form
           className={elementStyles.wrapper}
         >
           {/* Color picker modal */}
@@ -468,7 +468,7 @@ export default class Settings extends Component {
               </div>
             </div>
           </div>
-        </div>
+        </form>
       </>
     );
   }
