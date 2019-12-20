@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Base64 } from 'js-base64';
 import * as _ from 'lodash';
 import FormField from './FormField';
+import FormFieldPermalink from './FormFieldPermalink';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import {
   frontMatterParser, concatFrontMatterMdBody, generatePageFileName,
@@ -22,12 +23,23 @@ export default class PageSettingsModal extends Component {
         title: '',
         permalink: '',
       },
+      permalinkSetterIsActive: false,
+      baseUrl: '',
     };
   }
 
   async componentDidMount() {
     try {
       const { siteName, fileName, isNewPage } = this.props;
+
+      // get settings data from backend
+      const settingsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, {
+        withCredentials: true,
+      });
+      const { settings } = settingsResp.data;
+      const { configFieldsRequired } = settings;
+      const baseUrl = configFieldsRequired.url;
+      this.setState({ baseUrl });
 
       if (!isNewPage) {
         const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
@@ -120,8 +132,18 @@ export default class PageSettingsModal extends Component {
   }
 
   changeHandler = (event) => {
-    const { id, value } = event.target;
-    const errorMessage = validatePageSettings(id, value);
+    const { id } = event.target;
+    let { value } = event.target;
+    let errorMessage = '';
+
+    // If the permalink changed, append '/' before and after the permalink
+    if (id === 'permalink') {
+      const permalinkValue = `/${value}/`;
+      value = permalinkValue;
+      errorMessage = validatePageSettings(id, permalinkValue);
+    } else {
+      errorMessage = validatePageSettings(id, value);
+    }
 
     this.setState({
       errors: {
@@ -131,9 +153,24 @@ export default class PageSettingsModal extends Component {
     });
   }
 
+  togglePermalinkSetter = () => {
+    this.setState((currState) => ({
+      permalinkSetterIsActive: !currState.permalinkSetterIsActive,
+    }));
+  }
+
   render() {
-    const { title, permalink, errors } = this.state;
+    const {
+      title,
+      permalink,
+      errors,
+      permalinkSetterIsActive,
+      baseUrl,
+    } = this.state;
     const { settingsToggle, isNewPage } = this.props;
+
+    // Delete the '/' at the start and end of the permalink string
+    const processedPermalink = permalink.slice(1, -1);
 
     // Page settings form has errors - disable save button
     const hasErrors = _.some(errors, (field) => field.length > 0);
@@ -157,13 +194,16 @@ export default class PageSettingsModal extends Component {
                 isRequired
                 onFieldChange={this.changeHandler}
               />
-              <FormField
-                title="Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)"
+              <FormFieldPermalink
+                title="URL"
                 id="permalink"
-                value={permalink}
+                urlPrefix={`${baseUrl}/`}
+                value={processedPermalink}
                 errorMessage={errors.permalink}
                 isRequired
                 onFieldChange={this.changeHandler}
+                isActive={permalinkSetterIsActive}
+                togglePermalinkSetter={this.togglePermalinkSetter}
               />
             </div>
             <div className={elementStyles.modalButtons}>
