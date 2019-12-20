@@ -91,7 +91,7 @@ export default class ImagesModal extends Component {
   render() {
     const { siteName, onClose, onImageSelect } = this.props;
     const { images } = this.state;
-    return (images.length
+    return (!!images.length
       && (
         <div className={elementStyles.overlay}>
           <div className={mediaStyles.mediaModal}>
