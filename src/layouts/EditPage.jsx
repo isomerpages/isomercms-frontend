@@ -23,7 +23,6 @@ import {
   tableButton,
   guideButton,
 } from '../utils/markdownToolbar';
-import { getState, _replaceSelection } from '../utils/markdownUtils';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -37,12 +36,7 @@ export default class EditPage extends Component {
       sha: null,
       editorValue: '',
       frontMatter: '',
-      imageUploadIsActive: false,
-      imageUpload: {
-        stateImage: '',
-        optionsInsertText: '',
-        selectedImage: '',
-      },
+      isSelectingImage: false,
     };
     this.mdeRef = React.createRef();
   }
@@ -114,44 +108,27 @@ export default class EditPage extends Component {
     this.setState({ editorValue: value });
   }
 
-  /**
-   * Action for drawing an img.
-   */
-  // eslint-disable-next-line consistent-return
-  drawImage = (editor) => {
-    const { codemirror: cm, options } = editor;
-    const stat = getState(cm);
-    this.toggleImageModal(stat.image, options.insertTexts.image.slice(0, 2));
-  }
-
-  toggleImageModal = (stateImage, optionsInsertText) => {
+  toggleImageModal = () => {
     this.setState((currState) => ({
-      ...currState,
-      imageUploadIsActive: !currState.imageUploadIsActive,
-      imageUpload: {
-        ...currState.imageUpload,
-        stateImage,
-        optionsInsertText,
-      },
+      isSelectingImage: !currState.isSelectingImage,
     }));
   }
 
   onImageClick = (filePath) => {
-    const { imageUpload: { stateImage, optionsInsertText } } = this.state;
     const path = `/${filePath}`;
-    _replaceSelection(this.mdeRef.current.simpleMde.codemirror, stateImage, optionsInsertText, path);
-    this.toggleImageModal('', '');
+    const cm = this.mdeRef.current.simpleMde.codemirror;
+    cm.replaceSelection(`![](${path})`);
     // set state so that rerender is triggered and image is shown
-    this.setState((currState) => ({
-      ...currState,
-      editorValue: `${this.mdeRef.current.simpleMde.codemirror.getValue()}`,
-    }));
+    this.setState({
+      editorValue: this.mdeRef.current.simpleMde.codemirror.getValue(),
+      isSelectingImage: false,
+    });
   }
 
   render() {
     const { match } = this.props;
     const { siteName, fileName } = match.params;
-    const { editorValue, imageUploadIsActive } = this.state;
+    const { editorValue, isSelectingImage } = this.state;
     return (
       <>
         <Header
@@ -160,10 +137,10 @@ export default class EditPage extends Component {
           backButtonUrl={`/sites/${siteName}/pages`}
         />
         <div className={elementStyles.wrapper}>
-          { imageUploadIsActive && (
+          { isSelectingImage && (
             <ImagesModal
               siteName={siteName}
-              onClose={() => this.toggleImageModal('', '')}
+              onClose={() => this.setState({ isSelectingImage: false })}
               onImageSelect={this.onImageClick}
             />
           )}
@@ -174,9 +151,6 @@ export default class EditPage extends Component {
               ref={this.mdeRef}
               value={editorValue}
               options={{
-                insertTexts: {
-                  image: ['![](', '#url#)\n'],
-                },
                 toolbar: [
                   boldButton,
                   italicButton,
@@ -190,7 +164,7 @@ export default class EditPage extends Component {
                   '|',
                   {
                     name: 'image',
-                    action: this.drawImage,
+                    action: () => this.setState({ isSelectingImage: true }),
                     className: 'fa fa-picture-o',
                     title: 'Insert Image',
                     default: true,
