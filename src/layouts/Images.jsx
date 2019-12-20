@@ -49,7 +49,7 @@ export default class Images extends Component {
     this.state = {
       images: [],
       chosenImage: null,
-      uploadedImage: null,
+      pendingImageUpload: null,
     };
   }
 
@@ -71,7 +71,7 @@ export default class Images extends Component {
     try {
       // toggle state so that image renaming modal appears
       this.setState({
-        uploadedImage: {
+        pendingImageUpload: {
           fileName: imageName,
           path: `images%2F${imageName}`,
           content: imageContent,
@@ -99,7 +99,7 @@ export default class Images extends Component {
   }
 
   render() {
-    const { images, chosenImage, uploadedImage } = this.state;
+    const { images, chosenImage, pendingImageUpload } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
     return (
@@ -149,20 +149,20 @@ export default class Images extends Component {
           <ImageSettingsModal
             image={chosenImage}
             match={match}
-            isUpload={false}
+            isPendingUpload={false}
             onClose={() => this.setState({ chosenImage: null })}
           />
           )
         }
         {
-          uploadedImage
+          pendingImageUpload
           && (
           <ImageSettingsModal
-            image={uploadedImage}
+            image={pendingImageUpload}
             match={match}
             // eslint-disable-next-line react/jsx-boolean-value
-            isUpload={true}
-            onClose={() => this.setState({ uploadedImage: null })}
+            isPendingUpload={true}
+            onClose={() => this.setState({ pendingImageUpload: null })}
           />
           )
         }

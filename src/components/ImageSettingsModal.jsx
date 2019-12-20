@@ -15,22 +15,22 @@ export default class ImageSettingsModal extends Component {
       newFileName: fileName,
       sha: '',
       content: null,
-      isUpload: null,
+      isPendingUpload: null,
     };
   }
 
   async componentDidMount() {
-    const { match, image, isUpload } = this.props;
+    const { match, image, isPendingUpload } = this.props;
     const { siteName } = match.params;
-    if (isUpload) {
+    if (isPendingUpload) {
       const { content } = image;
-      this.setState({ content, isUpload });
+      this.setState({ content, isPendingUpload });
     } else {
       const { fileName } = image;
       const { data: { sha, content } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images/${fileName}`, {
         withCredentials: true,
       });
-      this.setState({ sha, content, isUpload });
+      this.setState({ sha, content, isPendingUpload });
     }
   }
 
@@ -39,17 +39,16 @@ export default class ImageSettingsModal extends Component {
   }
 
   renameImage = async () => {
-    const { match, image } = this.props;
+    const { match, image, isPendingUpload } = this.props;
     const { siteName } = match.params;
     const {
       newFileName,
       sha,
       content,
-      isUpload,
     } = this.state;
 
     // upload the image with the desired file name if the request comes from the upload image button
-    if (isUpload) {
+    if (isPendingUpload) {
       const params = {
         imageName: newFileName,
         content,
@@ -100,7 +99,7 @@ export default class ImageSettingsModal extends Component {
       match,
       onClose,
       image,
-      isUpload,
+      isPendingUpload,
     } = this.props;
     const { siteName } = match.params;
     const { newFileName, sha, content } = this.state;
@@ -118,7 +117,7 @@ export default class ImageSettingsModal extends Component {
           <div className={mediaStyles.editMediaPreview}>
             <img
               alt={`${image.fileName}`}
-              src={isUpload ? `data:image/png;base64,${content}`
+              src={isPendingUpload ? `data:image/png;base64,${content}`
                 : (
                   `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}${image.path.endsWith('.svg')
                     ? '?sanitize=true'
@@ -159,6 +158,6 @@ ImageSettingsModal.propTypes = {
       siteName: PropTypes.string,
     }).isRequired,
   }).isRequired,
-  isUpload: PropTypes.bool.isRequired,
+  isPendingUpload: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 };
