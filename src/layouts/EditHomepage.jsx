@@ -1230,6 +1230,7 @@ export default class EditHomepage extends Component {
             <LoadingButton
               label="Save"
               disabled={hasErrors}
+              disabledStyle={elementStyles.disabled}
               className={(hasErrors || !sha) ? elementStyles.disabled : elementStyles.blue}
               callback={this.savePage}
             />

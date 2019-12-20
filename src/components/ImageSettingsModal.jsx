@@ -107,12 +107,14 @@ export default class ImageSettingsModal extends Component {
               <LoadingButton
                 label="Save"
                 disabled={!!errorMessage}
+                disabledStyle={elementStyles.disabled}
                 className={(errorMessage || !sha) ? elementStyles.disabled : elementStyles.blue}
                 callback={this.renameImage}
               />
               <LoadingButton
                 label="Delete"
                 disabled={!sha}
+                disabledStyle={elementStyles.disabled}
                 className={sha ? elementStyles.warning : elementStyles.disabled}
                 callback={this.deleteImage}
               />

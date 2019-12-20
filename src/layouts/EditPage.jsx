@@ -120,11 +120,13 @@ export default class EditPage extends Component {
         <div className={editorStyles.pageEditorFooter}>
           <LoadingButton
             label="Save"
+            disabledStyle={elementStyles.disabled}
             className={elementStyles.blue}
             callback={this.updatePage}
           />
           <LoadingButton
             label="Delete"
+            disabledStyle={elementStyles.disabled}
             className={elementStyles.warning}
             callback={this.deletePage}
           />

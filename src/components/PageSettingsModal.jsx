@@ -175,6 +175,7 @@ export default class PageSettingsModal extends Component {
               <LoadingButton
                 label="Save"
                 disabled={hasErrors}
+                disabledStyle={elementStyles.disabled}
                 className={(hasErrors || !sha) ? elementStyles.disabled : elementStyles.blue}
                 callback={this.saveHandler}
               />
@@ -183,6 +184,7 @@ export default class PageSettingsModal extends Component {
                   <LoadingButton
                     label="Delete"
                     disabled={!sha}
+                    disabledStyle={elementStyles.disabled}
                     className={elementStyles.warning}
                     callback={this.deleteHandler}
                   />

@@ -300,6 +300,7 @@ export default class ResourceSettingsModal extends Component {
               <LoadingButton
                 label="Save"
                 disabled={hasErrors}
+                disabledStyle={elementStyles.disabled}
                 className={(isNewPost ? hasErrors : (hasErrors || !sha)) ? elementStyles.disabled : elementStyles.blue}
                 callback={this.saveHandler}
               />
@@ -308,6 +309,7 @@ export default class ResourceSettingsModal extends Component {
                   <LoadingButton
                     label="Delete"
                     disabled={!sha}
+                    disabledStyle={elementStyles.disabled}
                     className={!sha ? elementStyles.disabled : elementStyles.warning}
                     callback={this.deleteHandler}
                   />

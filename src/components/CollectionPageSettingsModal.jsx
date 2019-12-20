@@ -219,12 +219,14 @@ Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)
               <LoadingButton
                 label="Save"
                 disabled={hasErrors}
+                disabledStyle={elementStyles.disabled}
                 className={(hasErrors || !sha) ? elementStyles.disabled : elementStyles.blue}
                 callback={this.saveHandler}
               />
               <LoadingButton
                 label="Delete"
                 disabled={!sha}
+                disabledStyle={elementStyles.disabled}
                 className={elementStyles.warning}
                 callback={this.deleteHandler}
               />
