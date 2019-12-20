@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
 export default function LoadingButton(props) {
   // extract props
   const {
     label,
     disabled,
+    disabledStyle,
     className,
     callback,
     ...remainingProps
@@ -17,7 +17,7 @@ export default function LoadingButton(props) {
   return (
     <button
       type="button"
-      className={isLoading ? elementStyles.disabled : className}
+      className={isLoading ? disabledStyle : className}
       disabled={isLoading ? true : disabled}
       onClick={() => {
         setButtonLoading(true);
@@ -37,6 +37,7 @@ export default function LoadingButton(props) {
 LoadingButton.propTypes = {
   label: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
+  disabledStyle: PropTypes.string.isRequired,
   className: PropTypes.string.isRequired,
   callback: PropTypes.func.isRequired,
 };
