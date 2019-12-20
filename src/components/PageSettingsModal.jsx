@@ -172,23 +172,33 @@ export default class PageSettingsModal extends Component {
               />
             </div>
             <div className={elementStyles.modalButtons}>
-              <LoadingButton
-                label="Save"
-                disabled={hasErrors}
-                disabledStyle={elementStyles.disabled}
-                className={(hasErrors || !sha) ? elementStyles.disabled : elementStyles.blue}
-                callback={this.saveHandler}
-              />
               {!isNewPage
                 ? (
+                  <>
+                    <LoadingButton
+                      label="Save"
+                      disabled={hasErrors}
+                      disabledStyle={elementStyles.disabled}
+                      className={(hasErrors || !sha) ? elementStyles.disabled : elementStyles.blue}
+                      callback={this.saveHandler}
+                    />
+                    <LoadingButton
+                      label="Delete"
+                      disabled={!sha}
+                      disabledStyle={elementStyles.disabled}
+                      className={elementStyles.warning}
+                      callback={this.deleteHandler}
+                    />
+                  </>
+                ) : (
                   <LoadingButton
-                    label="Delete"
-                    disabled={!sha}
+                    label="Save"
+                    disabled={hasErrors}
                     disabledStyle={elementStyles.disabled}
-                    className={elementStyles.warning}
-                    callback={this.deleteHandler}
+                    className={(hasErrors) ? elementStyles.disabled : elementStyles.blue}
+                    callback={this.saveHandler}
                   />
-                ) : null}
+                )}
             </div>
           </div>
         </div>
