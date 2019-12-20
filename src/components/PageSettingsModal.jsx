@@ -233,7 +233,7 @@ export default class PageSettingsModal extends Component {
                 errorMessage={errors.permalink}
                 isRequired
                 onFieldChange={this.changeHandler}
-                isActive={permalinkSetterIsActive}
+                isActive={permalinkSetterIsActive || isNewPage}
                 togglePermalinkSetter={this.togglePermalinkSetter}
               />
             </div>
