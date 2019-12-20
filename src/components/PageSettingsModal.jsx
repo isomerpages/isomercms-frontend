@@ -3,6 +3,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { Base64 } from 'js-base64';
 import * as _ from 'lodash';
+import Bluebird from 'bluebird';
 import FormField from './FormField';
 import FormFieldPermalink from './FormFieldPermalink';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -30,7 +31,9 @@ export default class PageSettingsModal extends Component {
 
   async componentDidMount() {
     try {
-      const { siteName, fileName, isNewPage } = this.props;
+      const {
+        siteName, fileName, isNewPage, pageFilenames,
+      } = this.props;
 
       // get settings data from backend
       const settingsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, {
@@ -40,6 +43,18 @@ export default class PageSettingsModal extends Component {
       const { configFieldsRequired } = settings;
       const baseUrl = configFieldsRequired.url;
       this.setState({ baseUrl });
+
+      // Get the list of permalinks of other Pages (simple-pages)
+      const pagePermalinks = await Bluebird.map(pageFilenames, async (pageFileName) => {
+        const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${pageFileName}`, {
+          withCredentials: true,
+        });
+        const { content } = resp.data;
+        const { frontMatter } = frontMatterParser(Base64.decode(content));
+        const { permalink } = frontMatter;
+
+        return permalink;
+      });
 
       if (!isNewPage) {
         const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
@@ -51,10 +66,20 @@ export default class PageSettingsModal extends Component {
         const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
         const { title, permalink } = frontMatter;
         this.setState({
-          sha, title, permalink, mdBody,
+          sha,
+          title,
+          permalink,
+          mdBody,
+          baseUrl,
+          pagePermalinks,
         });
       } else {
-        this.setState({ title: 'Title', permalink: '/permalink/' });
+        this.setState({
+          title: 'Title',
+          permalink: '/permalink/',
+          baseUrl,
+          pagePermalinks,
+        });
       }
     } catch (err) {
       console.log(err);
@@ -134,6 +159,7 @@ export default class PageSettingsModal extends Component {
   changeHandler = (event) => {
     const { id } = event.target;
     let { value } = event.target;
+    const { pagePermalinks } = this.state;
     let errorMessage = '';
 
     // If the permalink changed, append '/' before and after the permalink
@@ -141,6 +167,11 @@ export default class PageSettingsModal extends Component {
       const permalinkValue = `/${value}/`;
       value = permalinkValue;
       errorMessage = validatePageSettings(id, permalinkValue);
+
+      // Check if permalink is already in use
+      if (errorMessage === '' && pagePermalinks.includes(permalinkValue)) {
+        errorMessage = 'This URL is already in use. Please choose a different one.';
+      }
     } else {
       errorMessage = validatePageSettings(id, value);
     }
@@ -223,5 +254,8 @@ PageSettingsModal.propTypes = {
   settingsToggle: PropTypes.func.isRequired,
   siteName: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
-  isNewPage: PropTypes.func.isRequired,
+  isNewPage: PropTypes.bool.isRequired,
+  pageFilenames: PropTypes.arrayOf(
+    PropTypes.string,
+  ).isRequired,
 };
