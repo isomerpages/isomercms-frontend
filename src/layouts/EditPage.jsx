@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { renderToString } from 'react-dom/server'
 // import { Link } from "react-router-dom";
 import axios from 'axios';
 import PropTypes from 'prop-types';
@@ -14,6 +15,7 @@ import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
+import { testHtml } from './testHtml';
 
 export default class EditPage extends Component {
   constructor(props) {
@@ -94,6 +96,8 @@ export default class EditPage extends Component {
     const { match } = this.props;
     const { siteName, fileName } = match.params;
     const { editorValue } = this.state;
+    const toRender = renderToString(<SimplePage chunk={prependImageSrc(siteName, marked(editorValue))} title={prettifyPageFileName(fileName)} />)
+    console.log(toRender)
     return (
       <>
         <Header
@@ -112,9 +116,10 @@ export default class EditPage extends Component {
               }}
             />
           </div>
-          <div className={editorStyles.pageEditorMain}>
-            <SimplePage chunk={prependImageSrc(siteName, marked(editorValue))} title={prettifyPageFileName(fileName)} />
-          </div>
+          {/* <div className={editorStyles.pageEditorMain}> */}
+            <iframe srcDoc={toRender} />
+            {/* <SimplePage chunk={prependImageSrc(siteName, marked(editorValue))} title={prettifyPageFileName(fileName)} /> */}
+          {/* </div> */}
         </div>
         <div className={editorStyles.pageEditorFooter}>
           <button type="button" className={elementStyles.blue} onClick={this.updatePage}>Save</button>
