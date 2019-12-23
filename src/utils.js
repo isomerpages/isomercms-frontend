@@ -142,3 +142,7 @@ export function generateCollectionPageFileName(title, groupIdentifier) {
   console.log(slugify(title));
   return `${groupIdentifier}-${slugify(title).replace(/[^a-zA-Z-]/g, '')}.md`;
 }
+
+export function generatePermalink(title) {
+  return slugify(title).replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
+}
