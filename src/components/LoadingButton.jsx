@@ -19,9 +19,10 @@ export default function LoadingButton(props) {
       type="button"
       className={isLoading ? disabledStyle : className}
       disabled={isLoading ? true : disabled}
-      onClick={() => {
+      onClick={async () => {
         setButtonLoading(true);
-        callback().then(() => setButtonLoading(false));
+        await callback();
+        setButtonLoading(false);
       }}
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...remainingProps}
