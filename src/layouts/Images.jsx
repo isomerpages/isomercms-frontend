@@ -49,6 +49,7 @@ export default class Images extends Component {
     this.state = {
       images: [],
       chosenImage: null,
+      pendingImageUpload: null,
     };
   }
 
@@ -68,18 +69,14 @@ export default class Images extends Component {
 
   uploadImage = async (imageName, imageContent) => {
     try {
-      const { match } = this.props;
-      const { siteName } = match.params;
-      const params = {
-        imageName,
-        content: imageContent,
-      };
-
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, params, {
-        withCredentials: true,
+      // toggle state so that image renaming modal appears
+      this.setState({
+        pendingImageUpload: {
+          fileName: imageName,
+          path: `images%2F${imageName}`,
+          content: imageContent,
+        },
       });
-
-      window.location.reload();
     } catch (err) {
       console.log(err);
     }
@@ -102,7 +99,7 @@ export default class Images extends Component {
   }
 
   render() {
-    const { images, chosenImage } = this.state;
+    const { images, chosenImage, pendingImageUpload } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
     return (
@@ -152,7 +149,20 @@ export default class Images extends Component {
           <ImageSettingsModal
             image={chosenImage}
             match={match}
+            isPendingUpload={false}
             onClose={() => this.setState({ chosenImage: null })}
+          />
+          )
+        }
+        {
+          pendingImageUpload
+          && (
+          <ImageSettingsModal
+            image={pendingImageUpload}
+            match={match}
+            // eslint-disable-next-line react/jsx-boolean-value
+            isPendingUpload={true}
+            onClose={() => this.setState({ pendingImageUpload: null })}
           />
           )
         }
