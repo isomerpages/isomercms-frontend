@@ -6,6 +6,7 @@ import update from 'immutability-helper';
 import { prettifyResourceCategory, slugifyResourceCategory } from '../utils';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import FormField from './FormField';
+import LoadingButton from './LoadingButton';
 import { validateResourceCategory } from '../utils/validators';
 
 // Constants
@@ -184,6 +185,19 @@ export default class ResourceCategoryModal extends Component {
                             isRequired
                             onFieldChange={this.changeHandler}
                           />
+                          {/* <LoadingButton
+                            label="Save"
+                            disabled={hasErrors}
+                            className={hasErrors ? elementStyles.disabled : elementStyles.blue}
+                            id={`save-${index}`}
+                            callback={this.saveHandler}
+                          />
+                          <LoadingButton
+                            label="Delete"
+                            className={elementStyles.warning}
+                            id={`delete-${index}`}
+                            callback={this.deleteHandler}
+                          /> */}
                           <button type="button" className={hasErrors ? elementStyles.disabled : elementStyles.blue} id={`save-${index}`} disabled={hasErrors} onClick={this.saveHandler}>Save</button>
                           <button type="button" className={elementStyles.warning} id={`delete-${index}`} onClick={this.deleteHandler}>Delete</button>
                         </div>
