@@ -15,7 +15,6 @@ export default class ImageSettingsModal extends Component {
       newFileName: fileName,
       sha: '',
       content: null,
-      isPendingUpload: null,
     };
   }
 
@@ -24,13 +23,13 @@ export default class ImageSettingsModal extends Component {
     const { siteName } = match.params;
     if (isPendingUpload) {
       const { content } = image;
-      this.setState({ content, isPendingUpload });
+      this.setState({ content });
     } else {
       const { fileName } = image;
       const { data: { sha, content } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images/${fileName}`, {
         withCredentials: true,
       });
-      this.setState({ sha, content, isPendingUpload });
+      this.setState({ sha, content });
     }
   }
 
