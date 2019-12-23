@@ -45,6 +45,7 @@ export default class Files extends Component {
     this.state = {
       files: [],
       chosenFile: null,
+      pendingFileUpload: null,
     };
   }
 
@@ -62,13 +63,6 @@ export default class Files extends Component {
     }
   }
 
-  // TODO - a modal which allows for the creation/upload of a new file
-  // and this.newPageName is updated onChange
-  updateNewPageName = (event) => {
-    event.preventDefault();
-    this.setState({ newPageName: event.target.value });
-  }
-
   onFileSelect = async (event) => {
     const fileReader = new FileReader();
     const fileName = event.target.files[0].name;
@@ -79,8 +73,13 @@ export default class Files extends Component {
        */
 
       const fileContent = fileReader.result.split(',')[1];
-
-      this.uploadFile(fileName, fileContent);
+      // For modal to pop up
+      this.setState({
+        pendingFileUpload: {
+          fileName,
+          content: fileContent,
+        },
+      });
     });
     fileReader.readAsDataURL(event.target.files[0]);
   }
@@ -105,7 +104,7 @@ export default class Files extends Component {
   }
 
   render() {
-    const { files, chosenFile } = this.state;
+    const { files, chosenFile, pendingFileUpload } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
     return (
@@ -149,12 +148,26 @@ export default class Files extends Component {
           {/* main section ends here */}
         </div>
         {
+          // Modal to show when user selects an already uploaded file
           chosenFile
           && (
           <FileSettingsModal
             file={chosenFile}
+            isPendingUpload={false}
             siteName={siteName}
             onClose={() => this.setState({ chosenFile: null })}
+          />
+          )
+        }
+        {
+          // Modal to show when user uploads a local file
+          pendingFileUpload
+          && (
+          <FileSettingsModal
+            file={pendingFileUpload}
+            isPendingUpload
+            siteName={siteName}
+            onClose={() => this.setState({ pendingFileUpload: null })}
           />
           )
         }

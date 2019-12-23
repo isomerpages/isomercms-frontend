@@ -19,7 +19,12 @@ export default class FileSettingsModal extends Component {
   }
 
   async componentDidMount() {
-    const { siteName, file: { fileName } } = this.props;
+    const { siteName, file, isPendingUpload } = this.props;
+    const { fileName } = file;
+    if (isPendingUpload) {
+      const { content } = file;
+      this.setState({ content });
+    }
     const { data: { sha, content } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/documents/${fileName}`, {
       withCredentials: true,
     });
@@ -30,20 +35,32 @@ export default class FileSettingsModal extends Component {
     this.setState({ newFileName: e.target.value });
   }
 
-  renameFile = async () => {
-    const { siteName, file: { fileName } } = this.props;
+  saveFile = async () => {
+    const { siteName, file: { fileName }, isPendingUpload } = this.props;
     const { newFileName, sha, content } = this.state;
-    const params = {
-      sha,
-      content,
-    };
 
-    if (newFileName === fileName) {
-      return;
+    if (isPendingUpload) {
+      const params = {
+        documentName: newFileName,
+        content,
+      };
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/documents`, params, {
+        withCredentials: true,
+      });
+    } else {
+      const params = {
+        sha,
+        content,
+      };
+
+      // rename the image if the request comes from an already uploaded image
+      if (newFileName === fileName) {
+        return;
+      }
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/documents/${fileName}/rename/${newFileName}`, params, {
+        withCredentials: true,
+      });
     }
-    await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/documents/${fileName}/rename/${newFileName}`, params, {
-      withCredentials: true,
-    });
 
     window.location.reload();
   }
@@ -68,7 +85,7 @@ export default class FileSettingsModal extends Component {
   }
 
   render() {
-    const { siteName, onClose, file } = this.props;
+    const { onClose, file } = this.props;
     const { newFileName, sha } = this.state;
     const errorMessage = validateFileName(newFileName);
 
@@ -96,7 +113,7 @@ export default class FileSettingsModal extends Component {
               />
             </div>
             <div className={elementStyles.modalButtons}>
-              <button type="button" className={errorMessage ? elementStyles.disabled : elementStyles.blue} disabled={!!errorMessage} onClick={this.renameFile}>Save</button>
+              <button type="button" className={errorMessage ? elementStyles.disabled : elementStyles.blue} disabled={!!errorMessage} onClick={this.saveFile}>Save</button>
               <button type="button" className={sha ? elementStyles.warning : elementStyles.disabled} onClick={this.deleteFile} disabled={!sha}>Delete</button>
             </div>
           </form>
@@ -108,9 +125,11 @@ export default class FileSettingsModal extends Component {
 
 FileSettingsModal.propTypes = {
   file: PropTypes.shape({
-    fileName: PropTypes.string.isRequired,
-    path: PropTypes.string.isRequired,
+    fileName: PropTypes.string,
+    path: PropTypes.string,
+    content: PropTypes.string,
   }).isRequired,
   siteName: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
+  isPendingUpload: PropTypes.bool.isRequired,
 };
