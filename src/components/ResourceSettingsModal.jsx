@@ -35,6 +35,7 @@ export default class ResourceSettingsModal extends Component {
         fileUrl: '',
         date: '',
         category: '',
+        prevCategory: '',
       },
       canShowDeleteWarningModal: false,
     };
@@ -72,7 +73,15 @@ export default class ResourceSettingsModal extends Component {
         } = frontMatter;
 
         this.setState({
-          title, permalink, fileUrl, date, sha, mdBody, category, resourceCategories,
+          title, 
+          permalink, 
+          fileUrl, 
+          date, 
+          sha, 
+          mdBody, 
+          prevCategory: category, 
+          category, 
+          resourceCategories,
         });
       }
     } catch (err) {
@@ -81,7 +90,6 @@ export default class ResourceSettingsModal extends Component {
   }
 
   handlePermalinkFileUrlToggle = (event) => {
-    const { permalink } = this.state;
     const { target: { value } } = event;
     if (value === 'file') {
       this.setState({ permalink: null, fileUrl: '/file/url/' });
@@ -111,7 +119,7 @@ export default class ResourceSettingsModal extends Component {
     event.preventDefault();
     try {
       const {
-        title, permalink, fileUrl, date, mdBody, sha, category,
+        title, permalink, fileUrl, date, mdBody, sha, category, prevCategory,
       } = this.state;
       const { fileName, siteName, isNewPost } = this.props;
 
@@ -132,7 +140,7 @@ export default class ResourceSettingsModal extends Component {
       const newFileName = generateResourceFileName(dequoteString(title), type, date);
       let params = {};
 
-      if (newFileName !== fileName) {
+      if (newFileName !== fileName || prevCategory !== category) {
         // We'll need to create a new .md file with a new filename
         params = {
           content: base64EncodedContent,
@@ -141,7 +149,7 @@ export default class ResourceSettingsModal extends Component {
 
         // If it is an existing post, delete the existing page
         if (!isNewPost) {
-          await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${category}/pages/${fileName}`, {
+          await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${prevCategory}/pages/${fileName}`, {
             data: {
               sha,
             },
