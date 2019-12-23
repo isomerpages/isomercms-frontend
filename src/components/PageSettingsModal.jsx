@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Base64 } from 'js-base64';
 import * as _ from 'lodash';
 import Bluebird from 'bluebird';
+import update from 'immutability-helper';
 import FormField from './FormField';
 import FormFieldPermalink from './FormFieldPermalink';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -29,6 +30,7 @@ export default class PageSettingsModal extends Component {
       },
       permalinkSetterIsActive: false,
       baseUrl: '',
+      pagePermalinks: [],
     };
   }
 
@@ -79,7 +81,7 @@ export default class PageSettingsModal extends Component {
       } else {
         this.setState({
           title: 'Title',
-          permalink: '/permalink/',
+          permalink: '/title/',
           baseUrl,
           pagePermalinks,
         });
@@ -92,10 +94,35 @@ export default class PageSettingsModal extends Component {
   saveHandler = async (event) => {
     event.preventDefault();
     try {
-      const { siteName, fileName, isNewPage } = this.props;
+      const {
+        siteName, fileName, isNewPage, errors,
+      } = this.props;
       const {
         sha, title, permalink, mdBody,
       } = this.state;
+
+      // Run error checks across all form fields if creating new page
+      if (isNewPage) {
+        const formFields = [
+          {
+            target: {
+              id: 'permalink',
+              value: permalink,
+            },
+          },
+          {
+            target: {
+              id: 'title',
+              value: title,
+            },
+          },
+        ];
+        formFields.forEach((formField) => this.changeHandler(formField));
+
+        // If there are any errors, prevent form submission
+        const hasErrors = _.some(errors, (field) => field.length > 0);
+        if (hasErrors) return;
+      }
 
       const frontMatter = { title, permalink };
 
@@ -170,10 +197,10 @@ export default class PageSettingsModal extends Component {
     if (id === 'permalink') {
       const permalinkValue = `/${value}/`;
       value = permalinkValue;
-      errorMessage = validatePageSettings(id, permalinkValue);
+      errorMessage = validatePageSettings(id, value);
 
       // Check if permalink is already in use
-      if (errorMessage === '' && pagePermalinks.includes(permalinkValue)) {
+      if (errorMessage === '' && pagePermalinks.includes(value)) {
         errorMessage = 'This URL is already in use. Please choose a different one.';
       }
     } else { // id === 'title'
@@ -185,18 +212,23 @@ export default class PageSettingsModal extends Component {
       }
 
       if (isNewPage) {
-        this.setState({
-          permalink: generatePermalink(value),
+        this.changeHandler({
+          target: {
+            id: 'permalink',
+            value: generatePermalink(value),
+          },
         });
       }
     }
 
-    this.setState({
-      errors: {
-        [id]: errorMessage,
-      },
+    this.setState((currState) => ({
+      errors: update(currState.errors, {
+        [id]: {
+          $set: errorMessage,
+        },
+      }),
       [id]: value,
-    });
+    }));
   }
 
   togglePermalinkSetter = () => {
