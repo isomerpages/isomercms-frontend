@@ -160,6 +160,7 @@ export default class PageSettingsModal extends Component {
     const { id } = event.target;
     let { value } = event.target;
     const { pagePermalinks } = this.state;
+    const { pageFilenames } = this.props;
     let errorMessage = '';
 
     // If the permalink changed, append '/' before and after the permalink
@@ -172,8 +173,13 @@ export default class PageSettingsModal extends Component {
       if (errorMessage === '' && pagePermalinks.includes(permalinkValue)) {
         errorMessage = 'This URL is already in use. Please choose a different one.';
       }
-    } else {
+    } else { // id === 'title'
       errorMessage = validatePageSettings(id, value);
+
+      const newFileName = generatePageFileName(value);
+      if (errorMessage === '' && pageFilenames.includes(newFileName)) {
+        errorMessage = 'This title is already in use. Please choose a different one.';
+      }
     }
 
     this.setState({
