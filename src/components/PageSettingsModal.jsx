@@ -8,7 +8,10 @@ import FormField from './FormField';
 import FormFieldPermalink from './FormFieldPermalink';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import {
-  frontMatterParser, concatFrontMatterMdBody, generatePageFileName,
+  frontMatterParser,
+  concatFrontMatterMdBody,
+  generatePageFileName,
+  generatePermalink,
 } from '../utils';
 import { validatePageSettings } from '../utils/validators';
 
@@ -160,7 +163,7 @@ export default class PageSettingsModal extends Component {
     const { id } = event.target;
     let { value } = event.target;
     const { pagePermalinks } = this.state;
-    const { pageFilenames } = this.props;
+    const { pageFilenames, isNewPage } = this.props;
     let errorMessage = '';
 
     // If the permalink changed, append '/' before and after the permalink
@@ -179,6 +182,12 @@ export default class PageSettingsModal extends Component {
       const newFileName = generatePageFileName(value);
       if (errorMessage === '' && pageFilenames.includes(newFileName)) {
         errorMessage = 'This title is already in use. Please choose a different one.';
+      }
+
+      if (isNewPage) {
+        this.setState({
+          permalink: generatePermalink(value),
+        });
       }
     }
 
