@@ -9,13 +9,6 @@ import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import FileSettingsModal from '../components/FileSettingsModal';
 
-// const FileCard = ({
-//   siteName, file,
-// }) => (
-//   <li>
-//     <Link to={`/sites/${siteName}/files/${file.fileName}`}>{file.fileName}</Link>
-//   </li>
-// );
 const FileCard = ({ file, onClick }) => (
   <div className={mediaStyles.mediaCard} key={file.path}>
     <a href="/" onClick={(e) => { e.preventDefault(); onClick(); }}>
@@ -86,7 +79,6 @@ export default class Files extends Component {
        */
 
       const fileContent = fileReader.result.split(',')[1];
-      console.log(fileReader.result);
 
       this.uploadFile(fileName, fileContent);
     });
@@ -185,6 +177,7 @@ Files.propTypes = {
 FileCard.propTypes = {
   file: PropTypes.shape({
     fileName: PropTypes.string,
+    path: PropTypes.string,
   }).isRequired,
-  siteName: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
