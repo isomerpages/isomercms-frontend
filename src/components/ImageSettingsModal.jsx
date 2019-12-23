@@ -19,12 +19,18 @@ export default class ImageSettingsModal extends Component {
   }
 
   async componentDidMount() {
-    const { match, image: { fileName } } = this.props;
+    const { match, image, isPendingUpload } = this.props;
     const { siteName } = match.params;
-    const { data: { sha, content } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images/${fileName}`, {
-      withCredentials: true,
-    });
-    this.setState({ sha, content });
+    if (isPendingUpload) {
+      const { content } = image;
+      this.setState({ content });
+    } else {
+      const { fileName } = image;
+      const { data: { sha, content } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images/${fileName}`, {
+        withCredentials: true,
+      });
+      this.setState({ sha, content });
+    }
   }
 
   setFileName = (e) => {
@@ -32,21 +38,38 @@ export default class ImageSettingsModal extends Component {
   }
 
   renameImage = async () => {
-    const { match, image: { fileName } } = this.props;
+    const { match, image, isPendingUpload } = this.props;
     const { siteName } = match.params;
-    const { newFileName, sha, content } = this.state;
-    const params = {
+    const {
+      newFileName,
       sha,
       content,
-    };
+    } = this.state;
 
-    if (newFileName === fileName) {
-      return;
+    // upload the image with the desired file name if the request comes from the upload image button
+    if (isPendingUpload) {
+      const params = {
+        imageName: newFileName,
+        content,
+      };
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, params, {
+        withCredentials: true,
+      });
+    // rename the image if the request comes from an already uploaded image
+    } else {
+      const params = {
+        sha,
+        content,
+      };
+      const { fileName } = image;
+      if (newFileName === fileName) {
+        return;
+      }
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images/${fileName}/rename/${newFileName}`, params, {
+        withCredentials: true,
+      });
     }
-    await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images/${fileName}/rename/${newFileName}`, params, {
-      withCredentials: true,
-    });
-
+    // reload after action
     window.location.reload();
   }
 
@@ -71,9 +94,14 @@ export default class ImageSettingsModal extends Component {
   }
 
   render() {
-    const { match, onClose, image } = this.props;
+    const {
+      match,
+      onClose,
+      image,
+      isPendingUpload,
+    } = this.props;
     const { siteName } = match.params;
-    const { newFileName, sha } = this.state;
+    const { newFileName, sha, content } = this.state;
     const errorMessage = validateFileName(newFileName);
 
     return (
@@ -88,7 +116,12 @@ export default class ImageSettingsModal extends Component {
           <div className={mediaStyles.editMediaPreview}>
             <img
               alt={`${image.fileName}`}
-              src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}${image.path.endsWith('.svg') ? '?sanitize=true' : ''}`}
+              src={isPendingUpload ? `data:image/png;base64,${content}`
+                : (
+                  `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}${image.path.endsWith('.svg')
+                    ? '?sanitize=true'
+                    : ''}`
+                )}
             />
           </div>
           <form className={elementStyles.modalContent}>
@@ -117,11 +150,13 @@ ImageSettingsModal.propTypes = {
   image: PropTypes.shape({
     fileName: PropTypes.string.isRequired,
     path: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
   }).isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       siteName: PropTypes.string,
     }).isRequired,
   }).isRequired,
+  isPendingUpload: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 };
