@@ -7,6 +7,7 @@ import marked from 'marked';
 import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
 import ImagesModal from '../components/ImagesModal';
+import ImageSettingsModal from '../components/ImageSettingsModal';
 import {
   frontMatterParser, concatFrontMatterMdBody, prependImageSrc, prettifyPageFileName,
 } from '../utils';
@@ -37,7 +38,9 @@ export default class EditPage extends Component {
       sha: null,
       editorValue: '',
       frontMatter: '',
+      images: [],
       isSelectingImage: false,
+      pendingImageUpload: null
     };
     this.mdeRef = React.createRef();
   }
@@ -50,6 +53,7 @@ export default class EditPage extends Component {
         withCredentials: true,
       });
       const { content, sha } = resp.data;
+
       // split the markdown into front matter and content
       const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
       this.setState({
@@ -60,6 +64,13 @@ export default class EditPage extends Component {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  getImages = async (siteName) => {
+    const { data: { images } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, {
+      withCredentials: true,
+    });
+    this.setState({ images });
   }
 
   updatePage = async () => {
@@ -126,10 +137,40 @@ export default class EditPage extends Component {
     });
   }
 
+  uploadImage = async (imageName, imageContent) => {
+    try {
+      // toggle state so that image renaming modal appears
+      this.setState({
+        pendingImageUpload: {
+          fileName: imageName,
+          path: `images%2F${imageName}`,
+          content: imageContent,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  readImageToUpload = async (event) => {
+    const imgReader = new FileReader();
+    const imgName = event.target.files[0].name;
+    imgReader.onload = (() => {
+      /** Github only requires the content of the image
+       * imgReader returns  `data:image/png;base64, {fileContent}`
+       * hence the split
+       */
+
+      const imgData = imgReader.result.split(',')[1];
+      this.uploadImage(imgName, imgData);
+    });
+    imgReader.readAsDataURL(event.target.files[0]);
+  }
+
   render() {
     const { match } = this.props;
     const { siteName, fileName } = match.params;
-    const { editorValue, isSelectingImage } = this.state;
+    const { editorValue, images, isSelectingImage, pendingImageUpload } = this.state;
     return (
       <>
         <Header
@@ -142,7 +183,9 @@ export default class EditPage extends Component {
             <ImagesModal
               siteName={siteName}
               onClose={() => this.setState({ isSelectingImage: false })}
+              images={images}
               onImageSelect={this.onImageClick}
+              readImageToUpload={this.readImageToUpload}
             />
           )}
           <div className={editorStyles.pageEditorSidebar}>
@@ -165,7 +208,10 @@ export default class EditPage extends Component {
                   '|',
                   {
                     name: 'image',
-                    action: () => this.setState({ isSelectingImage: true }),
+                    action: async () => {
+                      await this.getImages(siteName);
+                      this.setState({ isSelectingImage: true })
+                    },
                     className: 'fa fa-picture-o',
                     title: 'Insert Image',
                     default: true,
@@ -195,6 +241,22 @@ export default class EditPage extends Component {
             callback={this.deletePage}
           />
         </div>
+        {
+          pendingImageUpload
+          && (
+          <ImageSettingsModal
+            image={pendingImageUpload}
+            match={match}
+            // eslint-disable-next-line react/jsx-boolean-value
+            isPendingUpload={true}
+            onClose={() => {
+              this.getImages(siteName);
+              this.setState({ pendingImageUpload: null });
+            }}
+            toReload={false}
+          />
+          )
+        }
       </>
     );
   }

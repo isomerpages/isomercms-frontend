@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
@@ -25,72 +25,9 @@ export const ImageCard = ({ image, siteName, onClick }) => (
 );
 
 
-export default class ImagesModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      images: [],
-    };
-  }
-
-  async componentDidMount() {
-    const { siteName } = this.props;
-    try {
-      this.getImage(siteName);
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  getImage = async (siteName) => {
-    const { data: { images } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, {
-      withCredentials: true,
-    });
-    this.setState({ images });
-  }
-
-  uploadImage = async (imageName, imageContent) => {
-    try {
-      const { siteName } = this.props;
-      const params = {
-        imageName,
-        content: imageContent,
-      };
-
-      // add a loading screen while file is being uploaded
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, params, {
-        withCredentials: true,
-      });
-
-      // trigger a re-render of the modal
-      const { data: { images } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, {
-        withCredentials: true,
-      });
-      this.setState({ images });
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  onImageSelect = async (event) => {
-    const imgReader = new FileReader();
-    const imgName = event.target.files[0].name;
-    imgReader.onload = (() => {
-      /** Github only requires the content of the image
-       * imgReader returns  `data:image/png;base64, {fileContent}`
-       * hence the split
-       */
-
-      const imgData = imgReader.result.split(',')[1];
-
-      this.uploadImage(imgName, imgData);
-    });
-    imgReader.readAsDataURL(event.target.files[0]);
-  }
-
+export default class ImagesModal extends PureComponent {
   render() {
-    const { siteName, onClose, onImageSelect } = this.props;
-    const { images } = this.state;
+    const { siteName, images, onClose, onImageSelect, readImageToUpload } = this.props;
     return (!!images.length
       && (
         <div className={elementStyles.overlay}>
@@ -107,7 +44,7 @@ export default class ImagesModal extends Component {
                 onClick={() => document.getElementById('file-upload').click()}
               />
               <input
-                onChange={this.onImageSelect}
+                onChange={readImageToUpload}
                 type="file"
                 id="file-upload"
                 accept="image/png, image/jpeg, image/gif"
@@ -125,10 +62,9 @@ export default class ImagesModal extends Component {
             </div>
           </div>
         </div>
-
       )
     );
-  }
+  };
 }
 
 ImageCard.propTypes = {
