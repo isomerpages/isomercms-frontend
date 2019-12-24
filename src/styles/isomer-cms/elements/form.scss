@@ -5,6 +5,16 @@
     margin-bottom: 20px;
 }
 
+p {
+  &.permalink {
+    padding-top: 0px;
+    padding-left: 10px;
+    margin-bottom: 0px;
+    line-height: 31px;
+    margin-right: 20px;
+  }
+}
+
 .formLabel{
   font-size: 14px;
   margin-bottom: 8px;
@@ -92,6 +102,13 @@ input,textarea{
   border:1px solid #cccccc;
   padding: 10px;
   box-sizing: border-box;
+
+  &.permalinkSetter {
+    margin-left: 2px;
+    margin-right: 2px;
+    width: 50%;
+    line-height: 21px;
+  }
 
   &:focus{
     border: 1px solid $isomer-blue;

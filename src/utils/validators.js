@@ -1,7 +1,7 @@
 
 // Common regexes and constants
 // ==============
-const PERMALINK_REGEX = '^(/([a-z]+([-][a-z]+)*/)+)$';
+const PERMALINK_REGEX = '^(/([a-z0-9]+([-][a-z0-9]+)*)+/)$';
 const SOCIAL_MEDIA_REGEX_PART_1 = '^(https://)?(www.)?(';
 const SOCIAL_MEDIA_REGEX_PART_2 = '.com/)([a-zA-Z0-9_-]+(/)?)+$';
 const permalinkRegexTest = RegExp(PERMALINK_REGEX);
@@ -481,7 +481,7 @@ const validateResourceSettings = (id, value) => {
       // File URL fails regex
       // if (!permalinkRegexTest.test(value)) {
       //   console.log('FAILED');
-      //   errorMessage = `The permalink should start and end with slashes and contain 
+      //   errorMessage = `The permalink should start and end with slashes and contain
       //     lowercase words separated by hyphens only.
       //     `;
       // }
@@ -529,7 +529,7 @@ const validateSocialMedia = (value, id) => {
   }
 
   return errorMessage;
-}
+};
 
 const validateFileName = (value) => {
   if (!value.length) {

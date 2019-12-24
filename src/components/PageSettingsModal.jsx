@@ -3,10 +3,16 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { Base64 } from 'js-base64';
 import * as _ from 'lodash';
+import Bluebird from 'bluebird';
+import update from 'immutability-helper';
 import FormField from './FormField';
+import FormFieldPermalink from './FormFieldPermalink';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import {
-  frontMatterParser, concatFrontMatterMdBody, generatePageFileName,
+  frontMatterParser,
+  concatFrontMatterMdBody,
+  generatePageFileName,
+  generatePermalink,
 } from '../utils';
 import LoadingButton from './LoadingButton';
 import { validatePageSettings } from '../utils/validators';
@@ -23,12 +29,37 @@ export default class PageSettingsModal extends Component {
         title: '',
         permalink: '',
       },
+      permalinkSetterIsActive: false,
+      baseUrl: '',
+      pagePermalinks: [],
     };
   }
 
   async componentDidMount() {
     try {
-      const { siteName, fileName, isNewPage } = this.props;
+      const {
+        siteName, fileName, isNewPage, pageFilenames,
+      } = this.props;
+
+      // get settings data from backend
+      const settingsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, {
+        withCredentials: true,
+      });
+      const { settings } = settingsResp.data;
+      const { configFieldsRequired } = settings;
+      const baseUrl = configFieldsRequired.url;
+
+      // Get the list of permalinks of other Pages (simple-pages)
+      const pagePermalinks = await Bluebird.map(pageFilenames, async (pageFileName) => {
+        const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${pageFileName}`, {
+          withCredentials: true,
+        });
+        const { content } = resp.data;
+        const { frontMatter } = frontMatterParser(Base64.decode(content));
+        const { permalink } = frontMatter;
+
+        return permalink;
+      });
 
       if (!isNewPage) {
         const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
@@ -40,10 +71,20 @@ export default class PageSettingsModal extends Component {
         const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
         const { title, permalink } = frontMatter;
         this.setState({
-          sha, title, permalink, mdBody,
+          sha,
+          title,
+          permalink,
+          mdBody,
+          baseUrl,
+          pagePermalinks,
         });
       } else {
-        this.setState({ title: 'Title', permalink: '/permalink/' });
+        this.setState({
+          title: 'Title',
+          permalink: '/title/',
+          baseUrl,
+          pagePermalinks,
+        });
       }
     } catch (err) {
       console.log(err);
@@ -52,10 +93,35 @@ export default class PageSettingsModal extends Component {
 
   saveHandler = async () => {
     try {
-      const { siteName, fileName, isNewPage } = this.props;
       const {
-        sha, title, permalink, mdBody,
+        siteName, fileName, isNewPage,
+      } = this.props;
+      const {
+        sha, title, permalink, mdBody, errors,
       } = this.state;
+
+      // Run error checks across all form fields if creating new page
+      if (isNewPage) {
+        const formFields = [
+          {
+            target: {
+              id: 'permalink',
+              value: permalink,
+            },
+          },
+          {
+            target: {
+              id: 'title',
+              value: title,
+            },
+          },
+        ];
+        formFields.forEach((formField) => this.changeHandler(formField));
+
+        // If there are any errors, prevent form submission
+        const hasErrors = _.some(errors, (field) => field.length > 0);
+        if (hasErrors) return;
+      }
 
       const frontMatter = { title, permalink };
 
@@ -120,15 +186,54 @@ export default class PageSettingsModal extends Component {
   }
 
   changeHandler = (event) => {
-    const { id, value } = event.target;
-    const errorMessage = validatePageSettings(id, value);
+    const { id } = event.target;
+    let { value } = event.target;
+    const { pagePermalinks } = this.state;
+    const { pageFilenames, isNewPage } = this.props;
+    let errorMessage = '';
 
-    this.setState({
-      errors: {
-        [id]: errorMessage,
-      },
+    // If the permalink changed, append '/' before and after the permalink
+    if (id === 'permalink') {
+      const permalinkValue = `/${value}/`;
+      value = permalinkValue;
+      errorMessage = validatePageSettings(id, value);
+
+      // Check if permalink is already in use
+      if (errorMessage === '' && pagePermalinks.includes(value)) {
+        errorMessage = 'This URL is already in use. Please choose a different one.';
+      }
+    } else { // id === 'title'
+      errorMessage = validatePageSettings(id, value);
+
+      const newFileName = generatePageFileName(value);
+      if (errorMessage === '' && pageFilenames.includes(newFileName)) {
+        errorMessage = 'This title is already in use. Please choose a different one.';
+      }
+
+      if (isNewPage) {
+        this.changeHandler({
+          target: {
+            id: 'permalink',
+            value: generatePermalink(value),
+          },
+        });
+      }
+    }
+
+    this.setState((currState) => ({
+      errors: update(currState.errors, {
+        [id]: {
+          $set: errorMessage,
+        },
+      }),
       [id]: value,
-    });
+    }));
+  }
+
+  togglePermalinkSetter = () => {
+    this.setState((currState) => ({
+      permalinkSetterIsActive: !currState.permalinkSetterIsActive,
+    }));
   }
 
   render() {
@@ -136,9 +241,14 @@ export default class PageSettingsModal extends Component {
       title,
       permalink,
       errors,
+      permalinkSetterIsActive,
+      baseUrl,
       sha,
     } = this.state;
     const { settingsToggle, isNewPage } = this.props;
+
+    // Delete the '/' at the start and end of the permalink string
+    const processedPermalink = permalink.slice(1, -1);
 
     // Page settings form has errors - disable save button
     const hasErrors = _.some(errors, (field) => field.length > 0);
@@ -162,13 +272,16 @@ export default class PageSettingsModal extends Component {
                 isRequired
                 onFieldChange={this.changeHandler}
               />
-              <FormField
-                title="Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)"
+              <FormFieldPermalink
+                title="URL"
                 id="permalink"
-                value={permalink}
+                urlPrefix={`${baseUrl}/`}
+                value={processedPermalink}
                 errorMessage={errors.permalink}
                 isRequired
                 onFieldChange={this.changeHandler}
+                isActive={permalinkSetterIsActive || isNewPage}
+                togglePermalinkSetter={this.togglePermalinkSetter}
               />
             </div>
             <div className={elementStyles.modalButtons}>
@@ -211,5 +324,8 @@ PageSettingsModal.propTypes = {
   settingsToggle: PropTypes.func.isRequired,
   siteName: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
-  isNewPage: PropTypes.func.isRequired,
+  isNewPage: PropTypes.bool.isRequired,
+  pageFilenames: PropTypes.arrayOf(
+    PropTypes.string,
+  ).isRequired,
 };
