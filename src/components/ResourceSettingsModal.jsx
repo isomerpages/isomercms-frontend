@@ -71,14 +71,14 @@ export default class ResourceSettingsModal extends Component {
         } = frontMatter;
 
         this.setState({
-          title, 
-          permalink, 
-          fileUrl, 
-          date, 
-          sha, 
-          mdBody, 
-          prevCategory: category, 
-          category, 
+          title,
+          permalink,
+          fileUrl,
+          date,
+          sha,
+          mdBody,
+          prevCategory: category,
+          category,
           resourceCategories,
         });
       }

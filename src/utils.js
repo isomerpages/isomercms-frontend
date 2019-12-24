@@ -135,12 +135,11 @@ export function prettifyPageFileName(fileName) {
 }
 
 export function generatePageFileName(title) {
-  return `${slugify(title).replace(/[^a-zA-Z-]/g, '')}.md`;
+  return `${slugify(title).replace(/[^a-zA-Z0-9-]/g, '')}.md`;
 }
 
 export function generateCollectionPageFileName(title, groupIdentifier) {
-  console.log(slugify(title));
-  return `${groupIdentifier}-${slugify(title).replace(/[^a-zA-Z-]/g, '')}.md`;
+  return `${groupIdentifier}-${slugify(title).replace(/[^a-zA-Z0-9-]/g, '')}.md`;
 }
 
 export function generatePermalink(title) {

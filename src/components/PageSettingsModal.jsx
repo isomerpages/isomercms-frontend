@@ -47,7 +47,6 @@ export default class PageSettingsModal extends Component {
       const { settings } = settingsResp.data;
       const { configFieldsRequired } = settings;
       const baseUrl = configFieldsRequired.url;
-      this.setState({ baseUrl });
 
       // Get the list of permalinks of other Pages (simple-pages)
       const pagePermalinks = await Bluebird.map(pageFilenames, async (pageFileName) => {
@@ -95,10 +94,10 @@ export default class PageSettingsModal extends Component {
     event.preventDefault();
     try {
       const {
-        siteName, fileName, isNewPage, errors,
+        siteName, fileName, isNewPage,
       } = this.props;
       const {
-        sha, title, permalink, mdBody,
+        sha, title, permalink, mdBody, errors,
       } = this.state;
 
       // Run error checks across all form fields if creating new page
