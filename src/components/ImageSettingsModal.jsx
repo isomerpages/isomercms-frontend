@@ -39,7 +39,7 @@ export default class ImageSettingsModal extends Component {
   }
 
   renameImage = async () => {
-    const { match, image, isPendingUpload } = this.props;
+    const { match, image, isPendingUpload, toReload, onClose } = this.props;
     const { siteName } = match.params;
     const {
       newFileName,
@@ -70,8 +70,13 @@ export default class ImageSettingsModal extends Component {
         withCredentials: true,
       });
     }
+
     // reload after action
-    window.location.reload();
+    if (toReload) {
+      window.location.reload();
+    } else {
+      onClose();
+    }
   }
 
   deleteImage = async () => {
@@ -137,20 +142,32 @@ export default class ImageSettingsModal extends Component {
               />
             </div>
             <div className={elementStyles.modalButtons}>
-              <LoadingButton
-                label="Save"
-                disabled={!!errorMessage}
-                disabledStyle={elementStyles.disabled}
-                className={(errorMessage || !sha) ? elementStyles.disabled : elementStyles.blue}
-                callback={this.renameImage}
-              />
-              <LoadingButton
-                label="Delete"
-                disabled={!sha}
-                disabledStyle={elementStyles.disabled}
-                className={sha ? elementStyles.warning : elementStyles.disabled}
-                callback={this.deleteImage}
-              />
+              {isPendingUpload
+              ? (
+                <LoadingButton
+                  label="Save"
+                  disabledStyle={elementStyles.disabled}
+                  className={elementStyles.blue}
+                  callback={this.renameImage}
+                />
+              ) : (
+                <>
+                  <LoadingButton
+                    label="Save"
+                    disabled={(errorMessage || !sha)}
+                    disabledStyle={elementStyles.disabled}
+                    className={(errorMessage || !sha) ? elementStyles.disabled : elementStyles.blue}
+                    callback={this.renameImage}
+                  />
+                  <LoadingButton
+                    label="Delete"
+                    disabled={!sha}
+                    disabledStyle={elementStyles.disabled}
+                    className={sha ? elementStyles.warning : elementStyles.disabled}
+                    callback={this.deleteImage}
+                  />
+                </>
+              )}
             </div>
           </form>
         </div>
@@ -172,4 +189,9 @@ ImageSettingsModal.propTypes = {
   }).isRequired,
   isPendingUpload: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  toReload: PropTypes.bool,
 };
+
+ImageSettingsModal.defaultProps = {
+  toReload: true,
+}
