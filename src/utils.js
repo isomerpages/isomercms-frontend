@@ -47,7 +47,7 @@ export function prependImageSrc(repoName, chunk) {
     // check for whether the original image source is from within Github or outside of Github
     // only modify URL if it's a permalink on the website
     if (isLinkInternal($(elem).attr('src'))) {
-      $(elem).attr('src', `https://github.com/isomerpages/${repoName}/blob/staging${$(elem).attr('src')}?raw=true`);
+      $(elem).attr('src', `https://raw.githubusercontent.com/isomerpages/${repoName}/staging${$(elem).attr('src')}?raw=true`);
     }
   });
   return $.html();

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
+import LoadingButton from '../components/LoadingButton';
 import ColorPicker from '../components/ColorPicker';
 import FormField from '../components/FormField';
 import FormFieldImage from '../components/FormFieldImage';
@@ -50,6 +51,7 @@ const stateFields = {
     youtube: '',
     instagram: '',
   },
+  socialMediaSha: '',
 };
 
 export default class Settings extends Component {
@@ -184,8 +186,7 @@ export default class Settings extends Component {
     }
   };
 
-  saveSettings = async (event) => {
-    event.preventDefault();
+  saveSettings = async () => {
     try {
       const { state } = this;
       const { match } = this.props;
@@ -329,6 +330,7 @@ export default class Settings extends Component {
       resources_name: resourcesName,
       colors,
       socialMediaContent,
+      socialMediaSha,
       errors,
     } = this.state;
     const { 'primary-color': primaryColor, 'secondary-color': secondaryColor, 'media-colors': mediaColors } = colors;
@@ -350,7 +352,6 @@ export default class Settings extends Component {
         <Header showButton={false} />
         {/* main bottom section */}
         <form
-          onSubmit={this.saveSettings}
           className={elementStyles.wrapper}
         >
           {/* Color picker modal */}
@@ -455,13 +456,15 @@ export default class Settings extends Component {
                 <br />
               </div>
               <div className={elementStyles.formSave}>
-                <button
-                  type="submit"
-                  className={hasErrors ? elementStyles.formSaveButtonDisabled : elementStyles.formSaveButtonActive}
+                <LoadingButton
+                  label="Save"
                   disabled={hasErrors}
-                >
-                  Save
-                </button>
+                  disabledStyle={elementStyles.formSaveButtonDisabled}
+                  className={(hasErrors || !socialMediaSha)
+                    ? elementStyles.formSaveButtonDisabled
+                    : elementStyles.formSaveButtonActive}
+                  callback={this.saveSettings}
+                />
               </div>
             </div>
           </div>
