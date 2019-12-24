@@ -6,9 +6,23 @@ import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
 import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
+import ImagesModal from '../components/ImagesModal';
 import {
   frontMatterParser, concatFrontMatterMdBody, prependImageSrc, prettifyPageFileName,
 } from '../utils';
+import {
+  boldButton,
+  italicButton,
+  strikethroughButton,
+  headingButton,
+  codeButton,
+  quoteButton,
+  unorderedListButton,
+  orderedListButton,
+  linkButton,
+  tableButton,
+  guideButton,
+} from '../utils/markdownToolbar';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -23,7 +37,9 @@ export default class EditPage extends Component {
       sha: null,
       editorValue: '',
       frontMatter: '',
+      isSelectingImage: false,
     };
+    this.mdeRef = React.createRef();
   }
 
   async componentDidMount() {
@@ -67,6 +83,8 @@ export default class EditPage extends Component {
       });
       const { sha } = resp.data;
       this.setState({ sha });
+
+      window.location.reload();
     } catch (err) {
       console.log(err);
     }
@@ -91,10 +109,27 @@ export default class EditPage extends Component {
     this.setState({ editorValue: value });
   }
 
+  toggleImageModal = () => {
+    this.setState((currState) => ({
+      isSelectingImage: !currState.isSelectingImage,
+    }));
+  }
+
+  onImageClick = (filePath) => {
+    const path = `/${filePath}`;
+    const cm = this.mdeRef.current.simpleMde.codemirror;
+    cm.replaceSelection(`![](${path})`);
+    // set state so that rerender is triggered and image is shown
+    this.setState({
+      editorValue: this.mdeRef.current.simpleMde.codemirror.getValue(),
+      isSelectingImage: false,
+    });
+  }
+
   render() {
     const { match } = this.props;
     const { siteName, fileName } = match.params;
-    const { editorValue } = this.state;
+    const { editorValue, isSelectingImage } = this.state;
     return (
       <>
         <Header
@@ -103,13 +138,42 @@ export default class EditPage extends Component {
           backButtonUrl={`/sites/${siteName}/pages`}
         />
         <div className={elementStyles.wrapper}>
+          { isSelectingImage && (
+            <ImagesModal
+              siteName={siteName}
+              onClose={() => this.setState({ isSelectingImage: false })}
+              onImageSelect={this.onImageClick}
+            />
+          )}
           <div className={editorStyles.pageEditorSidebar}>
             <SimpleMDE
+              id="simplemde-editor"
               onChange={this.onEditorChange}
+              ref={this.mdeRef}
               value={editorValue}
               options={{
-                hideIcons: ['preview', 'side-by-side', 'fullscreen'],
-                showIcons: ['code', 'table'],
+                toolbar: [
+                  boldButton,
+                  italicButton,
+                  strikethroughButton,
+                  headingButton,
+                  '|',
+                  codeButton,
+                  quoteButton,
+                  unorderedListButton,
+                  orderedListButton,
+                  '|',
+                  {
+                    name: 'image',
+                    action: () => this.setState({ isSelectingImage: true }),
+                    className: 'fa fa-picture-o',
+                    title: 'Insert Image',
+                    default: true,
+                  },
+                  linkButton,
+                  tableButton,
+                  guideButton,
+                ],
               }}
             />
           </div>
