@@ -11,14 +11,6 @@ import { validatePageSettings } from '../utils/validators';
 import DeleteWarningModal from './DeleteWarningModal';
 import LoadingButton from './LoadingButton';
 
-// Constants
-const PERMALINK_REGEX = '^(/([a-z]+([-][a-z]+)*/)+)$';
-const permalinkRegexTest = RegExp(PERMALINK_REGEX);
-const PERMALINK_MIN_LENGTH = 4;
-const PERMALINK_MAX_LENGTH = 50;
-const TITLE_MIN_LENGTH = 4;
-const TITLE_MAX_LENGTH = 100;
-
 export default class CollectionPageSettingsModal extends Component {
   constructor(props) {
     super(props);
