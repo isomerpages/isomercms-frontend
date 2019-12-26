@@ -14,6 +14,19 @@
   @include single-site;
 }
 
+.mediaModal {
+  width: 85%;
+  height: 70%;
+  background: white;
+  padding: 30px;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow-y: scroll
+}
+
 .mediaCards{
   display: flex;
   justify-content: flex-start;

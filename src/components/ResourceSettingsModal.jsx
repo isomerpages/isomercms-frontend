@@ -4,6 +4,7 @@ import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import FormField from './FormField';
+import LoadingButton from './LoadingButton';
 import {
   prettifyResourceCategory,
   slugifyResourceCategory,
@@ -73,14 +74,14 @@ export default class ResourceSettingsModal extends Component {
         } = frontMatter;
 
         this.setState({
-          title, 
-          permalink, 
-          fileUrl, 
-          date, 
-          sha, 
-          mdBody, 
-          prevCategory: category, 
-          category, 
+          title,
+          permalink,
+          fileUrl,
+          date,
+          sha,
+          mdBody,
+          prevCategory: category,
+          category,
           resourceCategories,
         });
       }
@@ -115,8 +116,7 @@ export default class ResourceSettingsModal extends Component {
     }
   }
 
-  saveHandler = async (event) => {
-    event.preventDefault();
+  saveHandler = async () => {
     try {
       const {
         title, permalink, fileUrl, date, mdBody, sha, category, prevCategory,
@@ -201,6 +201,7 @@ export default class ResourceSettingsModal extends Component {
       fileUrl,
       errors,
       canShowDeleteWarningModal,
+      sha,
     } = this.state;
     const { settingsToggle, isNewPost } = this.props;
 
@@ -217,9 +218,8 @@ export default class ResourceSettingsModal extends Component {
                 <i id="settingsIcon-CLOSE" className="bx bx-x" />
               </button>
             </div>
-            <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
+            <div className={elementStyles.modalContent}>
               <div className={elementStyles.modalFormFields}>
-
                 {/* Title */}
                 <FormField
                   title="Title"
@@ -297,14 +297,21 @@ export default class ResourceSettingsModal extends Component {
                     </>
                   )}
               </div>
-
-              {/* Save or Delete buttons */}
-              <div className={elementStyles.modalButtons}>
-                <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>
-                { !isNewPost
-                  && <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>}
-              </div>
-            </form>
+            </div>
+            {/* Save or Delete buttons */}
+            <div className={elementStyles.modalButtons}>
+              <LoadingButton
+                label="Save"
+                disabled={hasErrors}
+                disabledStyle={elementStyles.disabled}
+                className={(isNewPost ? hasErrors : (hasErrors || !sha)) ? elementStyles.disabled : elementStyles.blue}
+                callback={this.saveHandler}
+              />
+              { !isNewPost
+                ? (
+                  <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
+                ) : null}
+            </div>
           </div>
         </div>
         {

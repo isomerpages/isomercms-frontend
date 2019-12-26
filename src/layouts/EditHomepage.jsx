@@ -21,6 +21,7 @@ import NewSectionCreator from '../components/homepage/NewSectionCreator';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
+import LoadingButton from '../components/LoadingButton';
 import { validateSections, validateHighlights, validateDropdownElems } from '../utils/validators';
 import DeleteWarningModal from '../components/DeleteWarningModal';
 
@@ -721,8 +722,7 @@ export default class EditHomepage extends Component {
     }
   }
 
-  savePage = async (event) => {
-    event.preventDefault();
+  savePage = async () => {
     try {
       const { state } = this;
       const { match } = this.props;
@@ -897,6 +897,7 @@ export default class EditHomepage extends Component {
       displayDropdownElems,
       errors,
       itemPendingForDelete,
+      sha,
     } = this.state;
     const { match } = this.props;
     const { siteName } = match.params;
@@ -945,7 +946,7 @@ export default class EditHomepage extends Component {
           backButtonText="Back to Pages"
           backButtonUrl={`/sites/${siteName}/pages`}
         />
-        <form onSubmit={this.savePage} className={elementStyles.wrapper}>
+        <div className={elementStyles.wrapper}>
           <div className={editorStyles.homepageEditorSidebar}>
             <div>
               {/* Site-wide configuration */}
@@ -1241,9 +1242,15 @@ export default class EditHomepage extends Component {
             ))}
           </div>
           <div className={editorStyles.pageEditorFooter}>
-            <button type="submit" className={hasErrors ? elementStyles.disabled : elementStyles.blue} disabled={hasErrors}>Save</button>
+            <LoadingButton
+              label="Save"
+              disabled={hasErrors}
+              disabledStyle={elementStyles.disabled}
+              className={(hasErrors || !sha) ? elementStyles.disabled : elementStyles.blue}
+              callback={this.savePage}
+            />
           </div>
-        </form>
+        </div>
       </>
     );
   }

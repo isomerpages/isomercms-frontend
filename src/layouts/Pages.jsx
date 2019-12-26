@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import _ from 'lodash';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import PageSettingsModal from '../components/PageSettingsModal';
@@ -97,6 +98,10 @@ export default class Pages extends Component {
                 siteName={siteName}
                 fileName={selectedFile ? selectedFile.fileName : ''}
                 isNewPage={createNewPage}
+                pageFilenames={_.chain(pages)
+                  .filter({ type: 'simple-page' })
+                  .map((page) => page.fileName)
+                  .value()}
               />
             )}
           {/**

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import FormField from './FormField';
+import LoadingButton from './LoadingButton';
 import { validateFileName } from '../utils/validators';
 import DeleteWarningModal from './DeleteWarningModal';
 
@@ -40,7 +41,9 @@ export default class ImageSettingsModal extends Component {
   }
 
   renameImage = async () => {
-    const { match, image, isPendingUpload } = this.props;
+    const {
+      match, image, isPendingUpload, toReload, onClose,
+    } = this.props;
     const { siteName } = match.params;
     const {
       newFileName,
@@ -71,8 +74,13 @@ export default class ImageSettingsModal extends Component {
         withCredentials: true,
       });
     }
+
     // reload after action
-    window.location.reload();
+    if (toReload) {
+      window.location.reload();
+    } else {
+      onClose();
+    }
   }
 
   deleteImage = async () => {
@@ -132,6 +140,7 @@ export default class ImageSettingsModal extends Component {
                   )}
               />
             </div>
+
             <form className={elementStyles.modalContent}>
               <div className={elementStyles.modalFormFields}>
                 <FormField
@@ -144,12 +153,31 @@ export default class ImageSettingsModal extends Component {
                 />
               </div>
               <div className={elementStyles.modalButtons}>
-                <button type="button" className={errorMessage ? elementStyles.disabled : elementStyles.blue} disabled={!!errorMessage} onClick={this.renameImage}>Save</button>
-                <button type="button" className={sha ? elementStyles.warning : elementStyles.disabled} onClick={() => this.setState({ canShowDeleteWarningModal: true })} disabled={!sha}>Delete</button>
+                {isPendingUpload
+                  ? (
+                    <LoadingButton
+                      label="Save"
+                      disabledStyle={elementStyles.disabled}
+                      className={elementStyles.blue}
+                      callback={this.renameImage}
+                    />
+                  ) : (
+                    <>
+                      <LoadingButton
+                        label="Save"
+                        disabled={(errorMessage || !sha)}
+                        disabledStyle={elementStyles.disabled}
+                        className={(errorMessage || !sha) ? elementStyles.disabled : elementStyles.blue}
+                        callback={this.renameImage}
+                      />
+                      <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
+                    </>
+                  )}
               </div>
             </form>
           </div>
-          {
+        </div>
+        {
           canShowDeleteWarningModal
           && (
             <DeleteWarningModal
@@ -158,8 +186,7 @@ export default class ImageSettingsModal extends Component {
               type="image"
             />
           )
-          }
-        </div>
+        }
       </>
     );
   }
@@ -178,4 +205,9 @@ ImageSettingsModal.propTypes = {
   }).isRequired,
   isPendingUpload: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  toReload: PropTypes.bool,
+};
+
+ImageSettingsModal.defaultProps = {
+  toReload: true,
 };

@@ -9,6 +9,15 @@ import {
 } from '../utils';
 import { validatePageSettings } from '../utils/validators';
 import DeleteWarningModal from './DeleteWarningModal';
+import LoadingButton from './LoadingButton';
+
+// Constants
+const PERMALINK_REGEX = '^(/([a-z]+([-][a-z]+)*/)+)$';
+const permalinkRegexTest = RegExp(PERMALINK_REGEX);
+const PERMALINK_MIN_LENGTH = 4;
+const PERMALINK_MAX_LENGTH = 50;
+const TITLE_MIN_LENGTH = 4;
+const TITLE_MAX_LENGTH = 100;
 
 export default class CollectionPageSettingsModal extends Component {
   constructor(props) {
@@ -24,6 +33,7 @@ export default class CollectionPageSettingsModal extends Component {
       },
       canShowDeleteWarningModal: false,
     };
+    this.deleteButton = React.createRef();
   }
 
   async componentDidMount() {
@@ -48,8 +58,7 @@ export default class CollectionPageSettingsModal extends Component {
     }
   }
 
-  saveHandler = async (event) => {
-    event.preventDefault();
+  saveHandler = async () => {
     try {
       const { siteName, fileName, collectionName } = this.props;
       const {
@@ -131,7 +140,11 @@ export default class CollectionPageSettingsModal extends Component {
 
   render() {
     const {
-      title, permalink, errors, canShowDeleteWarningModal,
+      title,
+      permalink,
+      errors,
+      canShowDeleteWarningModal,
+      sha,
     } = this.state;
     const { settingsToggle } = this.props;
 
@@ -148,7 +161,7 @@ export default class CollectionPageSettingsModal extends Component {
                 <i className="bx bx-x" />
               </button>
             </div>
-            <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
+            <div className={elementStyles.modalContent}>
               <div className={elementStyles.modalFormFields}>
                 <p className={elementStyles.formLabel}>Title</p>
                 <input
@@ -167,7 +180,7 @@ export default class CollectionPageSettingsModal extends Component {
                 <p
                   className={elementStyles.formLabel}
                 >
-  Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)
+Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)
                 </p>
                 <input
                   value={permalink}
@@ -180,22 +193,28 @@ export default class CollectionPageSettingsModal extends Component {
                 <span className={elementStyles.error}>{errors.permalink}</span>
               </div>
               <div className={elementStyles.modalButtons}>
-                <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>
+                <LoadingButton
+                  label="Save"
+                  disabled={hasErrors}
+                  disabledStyle={elementStyles.disabled}
+                  className={(hasErrors || !sha) ? elementStyles.disabled : elementStyles.blue}
+                  callback={this.saveHandler}
+                />
                 <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
         {
-          canShowDeleteWarningModal
-          && (
-          <DeleteWarningModal
-            onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
-            onDelete={this.deleteHandler}
-            type="page"
-          />
-          )
-        }
+        canShowDeleteWarningModal
+        && (
+        <DeleteWarningModal
+          onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
+          onDelete={this.deleteHandler}
+          type="page"
+        />
+        )
+      }
       </>
     );
   }

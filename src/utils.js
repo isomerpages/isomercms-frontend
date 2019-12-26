@@ -47,7 +47,7 @@ export function prependImageSrc(repoName, chunk) {
     // check for whether the original image source is from within Github or outside of Github
     // only modify URL if it's a permalink on the website
     if (isLinkInternal($(elem).attr('src'))) {
-      $(elem).attr('src', `https://github.com/isomerpages/${repoName}/blob/staging${$(elem).attr('src')}?raw=true`);
+      $(elem).attr('src', `https://raw.githubusercontent.com/isomerpages/${repoName}/staging${$(elem).attr('src')}?raw=true`);
     }
   });
   return $.html();
@@ -135,10 +135,13 @@ export function prettifyPageFileName(fileName) {
 }
 
 export function generatePageFileName(title) {
-  return `${slugify(title).replace(/[^a-zA-Z-]/g, '')}.md`;
+  return `${slugify(title).replace(/[^a-zA-Z0-9-]/g, '')}.md`;
 }
 
 export function generateCollectionPageFileName(title, groupIdentifier) {
-  console.log(slugify(title));
-  return `${groupIdentifier}-${slugify(title).replace(/[^a-zA-Z-]/g, '')}.md`;
+  return `${groupIdentifier}-${slugify(title).replace(/[^a-zA-Z0-9-]/g, '')}.md`;
+}
+
+export function generatePermalink(title) {
+  return slugify(title).replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
 }

@@ -15,6 +15,7 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
 import DeleteWarningModal from '../components/DeleteWarningModal';
+import LoadingButton from '../components/LoadingButton';
 
 export default class EditCollectionPage extends Component {
   constructor(props) {
@@ -177,7 +178,12 @@ export default class EditCollectionPage extends Component {
           </div>
         </div>
         <div className={editorStyles.pageEditorFooter}>
-          <button type="button" className={elementStyles.blue} onClick={this.updatePage}>Save</button>
+          <LoadingButton
+            label="Save"
+            disabledStyle={elementStyles.disabled}
+            className={elementStyles.blue}
+            callback={this.updatePage}
+          />
           <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
         </div>
         {

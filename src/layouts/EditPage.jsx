@@ -6,15 +6,31 @@ import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
 import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
+import ImagesModal from '../components/ImagesModal';
+import ImageSettingsModal from '../components/ImageSettingsModal';
 import {
   frontMatterParser, concatFrontMatterMdBody, prependImageSrc, prettifyPageFileName,
 } from '../utils';
+import {
+  boldButton,
+  italicButton,
+  strikethroughButton,
+  headingButton,
+  codeButton,
+  quoteButton,
+  unorderedListButton,
+  orderedListButton,
+  linkButton,
+  tableButton,
+  guideButton,
+} from '../utils/markdownToolbar';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
 import DeleteWarningModal from '../components/DeleteWarningModal';
+import LoadingButton from '../components/LoadingButton';
 
 export default class EditPage extends Component {
   constructor(props) {
@@ -24,7 +40,11 @@ export default class EditPage extends Component {
       editorValue: '',
       frontMatter: '',
       canShowDeleteWarningModal: false,
+      images: [],
+      isSelectingImage: false,
+      pendingImageUpload: null
     };
+    this.mdeRef = React.createRef();
   }
 
   async componentDidMount() {
@@ -35,6 +55,7 @@ export default class EditPage extends Component {
         withCredentials: true,
       });
       const { content, sha } = resp.data;
+
       // split the markdown into front matter and content
       const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
       this.setState({
@@ -45,6 +66,13 @@ export default class EditPage extends Component {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  getImages = async (siteName) => {
+    const { data: { images } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, {
+      withCredentials: true,
+    });
+    this.setState({ images });
   }
 
   updatePage = async () => {
@@ -68,6 +96,8 @@ export default class EditPage extends Component {
       });
       const { sha } = resp.data;
       this.setState({ sha });
+
+      window.location.reload();
     } catch (err) {
       console.log(err);
     }
@@ -93,10 +123,57 @@ export default class EditPage extends Component {
     this.setState({ editorValue: value });
   }
 
+  toggleImageModal = () => {
+    this.setState((currState) => ({
+      isSelectingImage: !currState.isSelectingImage,
+    }));
+  }
+
+  onImageClick = (filePath) => {
+    const path = `/${filePath}`;
+    const cm = this.mdeRef.current.simpleMde.codemirror;
+    cm.replaceSelection(`![](${path})`);
+    // set state so that rerender is triggered and image is shown
+    this.setState({
+      editorValue: this.mdeRef.current.simpleMde.codemirror.getValue(),
+      isSelectingImage: false,
+    });
+  }
+
+  uploadImage = async (imageName, imageContent) => {
+    try {
+      // toggle state so that image renaming modal appears
+      this.setState({
+        pendingImageUpload: {
+          fileName: imageName,
+          path: `images%2F${imageName}`,
+          content: imageContent,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  readImageToUpload = async (event) => {
+    const imgReader = new FileReader();
+    const imgName = event.target.files[0].name;
+    imgReader.onload = (() => {
+      /** Github only requires the content of the image
+       * imgReader returns  `data:image/png;base64, {fileContent}`
+       * hence the split
+       */
+
+      const imgData = imgReader.result.split(',')[1];
+      this.uploadImage(imgName, imgData);
+    });
+    imgReader.readAsDataURL(event.target.files[0]);
+  }
+
   render() {
     const { match } = this.props;
     const { siteName, fileName } = match.params;
-    const { editorValue, canShowDeleteWarningModal } = this.state;
+    const { editorValue, canShowDeleteWarningModal, images, isSelectingImage, pendingImageUpload } = this.state;
     return (
       <>
         <Header
@@ -105,13 +182,47 @@ export default class EditPage extends Component {
           backButtonUrl={`/sites/${siteName}/pages`}
         />
         <div className={elementStyles.wrapper}>
+          { isSelectingImage && (
+            <ImagesModal
+              siteName={siteName}
+              onClose={() => this.setState({ isSelectingImage: false })}
+              images={images}
+              onImageSelect={this.onImageClick}
+              readImageToUpload={this.readImageToUpload}
+            />
+          )}
           <div className={editorStyles.pageEditorSidebar}>
             <SimpleMDE
+              id="simplemde-editor"
               onChange={this.onEditorChange}
+              ref={this.mdeRef}
               value={editorValue}
               options={{
-                hideIcons: ['preview', 'side-by-side', 'fullscreen'],
-                showIcons: ['code', 'table'],
+                toolbar: [
+                  boldButton,
+                  italicButton,
+                  strikethroughButton,
+                  headingButton,
+                  '|',
+                  codeButton,
+                  quoteButton,
+                  unorderedListButton,
+                  orderedListButton,
+                  '|',
+                  {
+                    name: 'image',
+                    action: async () => {
+                      await this.getImages(siteName);
+                      this.setState({ isSelectingImage: true })
+                    },
+                    className: 'fa fa-picture-o',
+                    title: 'Insert Image',
+                    default: true,
+                  },
+                  linkButton,
+                  tableButton,
+                  guideButton,
+                ],
               }}
             />
           </div>
@@ -120,9 +231,30 @@ export default class EditPage extends Component {
           </div>
         </div>
         <div className={editorStyles.pageEditorFooter}>
-          <button type="button" className={elementStyles.blue} onClick={this.updatePage}>Save</button>
+          <LoadingButton
+            label="Save"
+            disabledStyle={elementStyles.disabled}
+            className={elementStyles.blue}
+            callback={this.updatePage}
+          />
           <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
         </div>
+        {
+          pendingImageUpload
+          && (
+          <ImageSettingsModal
+            image={pendingImageUpload}
+            match={match}
+            // eslint-disable-next-line react/jsx-boolean-value
+            isPendingUpload={true}
+            onClose={() => {
+              this.getImages(siteName);
+              this.setState({ pendingImageUpload: null });
+            }}
+            toReload={false}
+          />
+          )
+        }
         {
           canShowDeleteWarningModal
           && (

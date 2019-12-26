@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import LoadingButton from './LoadingButton';
 
 
 const DeleteWarningModal = ({ onDelete, onCancel, type }) => (
@@ -17,7 +18,12 @@ const DeleteWarningModal = ({ onDelete, onCancel, type }) => (
         <p>Are you sure you want to delete this?</p>
         <div className={elementStyles.modalButtons}>
           <button className={elementStyles.blue} type="button" onClick={onCancel}>Cancel</button>
-          <button className={elementStyles.warning} type="button" onClick={onDelete}>Delete</button>
+          <LoadingButton
+            label="Delete"
+            disabledStyle={elementStyles.disabled}
+            className={elementStyles.warning}
+            callback={onDelete}
+          />
         </div>
       </form>
     </div>

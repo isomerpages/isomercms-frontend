@@ -8,7 +8,7 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import ImageSettingsModal from '../components/ImageSettingsModal';
 
-const ImageCard = ({ image, siteName, onClick }) => (
+export const ImageCard = ({ image, siteName, onClick }) => (
   <div className={mediaStyles.mediaCard} key={image.path}>
     <a href="/" onClick={(e) => { e.preventDefault(); onClick(); }}>
       <div className={mediaStyles.mediaCardImageContainer}>
@@ -27,7 +27,7 @@ const ImageCard = ({ image, siteName, onClick }) => (
   </div>
 );
 
-const UploadImageCard = ({ onClick }) => (
+export const UploadImageCard = ({ onClick }) => (
   <button
     type="button"
     id="settings-NEW"
@@ -190,3 +190,5 @@ ImageCard.propTypes = {
   siteName: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
 };
+
+
