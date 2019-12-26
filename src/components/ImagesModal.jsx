@@ -1,12 +1,20 @@
 import React, { PureComponent } from 'react';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import { UploadImageCard } from '../layouts/Images';
+import LoadingButton from './LoadingButton';
 
-export const ImageCard = ({ image, siteName, onClick }) => (
-  <div className={mediaStyles.mediaCard} key={image.path}>
+export const ImageCard = ({
+  image,
+  siteName,
+  onClick,
+  isSelected,
+}) => (
+  <div
+    className={isSelected ? mediaStyles.selectedMediaCard : mediaStyles.mediaCard}
+    key={image.path}
+  >
     <a href="/" onClick={(e) => { e.preventDefault(); onClick(image.path); }}>
       <div className={mediaStyles.mediaCardImageContainer}>
         <img
@@ -32,6 +40,8 @@ export default class ImagesModal extends PureComponent {
       onClose,
       onImageSelect,
       readImageToUpload,
+      selectedImage,
+      setSelectedImage,
     } = this.props;
     return (!!images.length
       && (
@@ -39,6 +49,12 @@ export default class ImagesModal extends PureComponent {
           <div className={mediaStyles.mediaModal}>
             <div className={elementStyles.modalHeader}>
               <h1>Select Image</h1>
+              <LoadingButton
+                label="Select image"
+                disabledStyle={elementStyles.disabled}
+                className={elementStyles.blue}
+                callback={onImageSelect}
+              />
               <button type="button" onClick={onClose}>
                 <i className="bx bx-x" />
               </button>
@@ -64,8 +80,9 @@ export default class ImagesModal extends PureComponent {
                 <ImageCard
                   image={image}
                   siteName={siteName}
-                  onClick={onImageSelect}
+                  onClick={setSelectedImage}
                   key={image.fileName}
+                  isSelected={image.path === selectedImage}
                 />
               ))}
             </div>
@@ -83,6 +100,7 @@ ImageCard.propTypes = {
   }).isRequired,
   siteName: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
+  isSelected: PropTypes.bool.isRequired,
 };
 
 ImagesModal.propTypes = {
@@ -94,4 +112,6 @@ ImagesModal.propTypes = {
   siteName: PropTypes.string.isRequired,
   onImageSelect: PropTypes.func.isRequired,
   readImageToUpload: PropTypes.func.isRequired,
+  selectedImage: PropTypes.string.isRequired,
+  setSelectedImage: PropTypes.func.isRequired,
 };

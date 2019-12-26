@@ -40,7 +40,8 @@ export default class EditPage extends Component {
       frontMatter: '',
       images: [],
       isSelectingImage: false,
-      pendingImageUpload: null
+      pendingImageUpload: null,
+      selectedImage: '',
     };
     this.mdeRef = React.createRef();
   }
@@ -126,8 +127,9 @@ export default class EditPage extends Component {
     }));
   }
 
-  onImageClick = (filePath) => {
-    const path = `/${filePath}`;
+  onImageClick = () => {
+    const { selectedImage } = this.state;
+    const path = `/${selectedImage}`;
     const cm = this.mdeRef.current.simpleMde.codemirror;
     cm.replaceSelection(`![](${path})`);
     // set state so that rerender is triggered and image is shown
@@ -167,10 +169,20 @@ export default class EditPage extends Component {
     imgReader.readAsDataURL(event.target.files[0]);
   }
 
+  setSelectedImage = async (filePath) => {
+    this.setState({ selectedImage: filePath });
+  }
+
   render() {
     const { match } = this.props;
     const { siteName, fileName } = match.params;
-    const { editorValue, images, isSelectingImage, pendingImageUpload } = this.state;
+    const {
+      editorValue,
+      images,
+      isSelectingImage,
+      pendingImageUpload,
+      selectedImage,
+    } = this.state;
     return (
       <>
         <Header
@@ -182,10 +194,15 @@ export default class EditPage extends Component {
           { isSelectingImage && (
             <ImagesModal
               siteName={siteName}
-              onClose={() => this.setState({ isSelectingImage: false })}
+              onClose={() => this.setState({ isSelectingImage: false, selectedImage: '' })}
               images={images}
-              onImageSelect={this.onImageClick}
+              onImageSelect={() => {
+                this.onImageClick();
+                this.setState({ selectedImage: '' });
+              }}
               readImageToUpload={this.readImageToUpload}
+              selectedImage={selectedImage}
+              setSelectedImage={this.setSelectedImage}
             />
           )}
           <div className={editorStyles.pageEditorSidebar}>
