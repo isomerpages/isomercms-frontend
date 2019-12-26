@@ -51,6 +51,10 @@ export default class ImagesModal extends PureComponent {
               />
               <input
                 onChange={readImageToUpload}
+                onClick={(event) => {
+                  // eslint-disable-next-line no-param-reassign
+                  event.target.value = '';
+                }}
                 type="file"
                 id="file-upload"
                 accept="image/png, image/jpeg, image/gif"
