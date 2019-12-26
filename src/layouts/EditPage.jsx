@@ -210,7 +210,7 @@ export default class EditPage extends Component {
                     name: 'image',
                     action: async () => {
                       await this.getImages(siteName);
-                      this.setState({ isSelectingImage: true })
+                      this.setState({ isSelectingImage: true });
                     },
                     className: 'fa fa-picture-o',
                     title: 'Insert Image',
@@ -224,7 +224,10 @@ export default class EditPage extends Component {
             />
           </div>
           <div className={editorStyles.pageEditorMain}>
-            <SimplePage chunk={prependImageSrc(siteName, marked(editorValue))} title={prettifyPageFileName(fileName)} />
+            <SimplePage
+              chunk={prependImageSrc(siteName, marked(editorValue))}
+              title={prettifyPageFileName(fileName)}
+            />
           </div>
         </div>
         <div className={editorStyles.pageEditorFooter}>
