@@ -48,7 +48,7 @@ export default class ImagesModal extends PureComponent {
         <div className={elementStyles.overlay}>
           <div className={mediaStyles.mediaModal}>
             <div className={elementStyles.modalHeader}>
-              <h1>Select Image</h1>
+              <h1 style={{ flexGrow: 1 }}>Select Image</h1>
               <LoadingButton
                 label="Select image"
                 disabledStyle={elementStyles.disabled}
