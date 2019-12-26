@@ -27,7 +27,13 @@ export const ImageCard = ({ image, siteName, onClick }) => (
 
 export default class ImagesModal extends PureComponent {
   render() {
-    const { siteName, images, onClose, onImageSelect, readImageToUpload } = this.props;
+    const {
+      siteName,
+      images,
+      onClose,
+      onImageSelect,
+      readImageToUpload,
+    } = this.props;
     return (!!images.length
       && (
         <div className={elementStyles.overlay}>
@@ -64,7 +70,7 @@ export default class ImagesModal extends PureComponent {
         </div>
       )
     );
-  };
+  }
 }
 
 ImageCard.propTypes = {
@@ -77,7 +83,12 @@ ImageCard.propTypes = {
 };
 
 ImagesModal.propTypes = {
+  images: PropTypes.arrayOf(PropTypes.shape({
+    fileName: PropTypes.string,
+    path: PropTypes.string,
+  })).isRequired,
   onClose: PropTypes.func.isRequired,
   siteName: PropTypes.string.isRequired,
   onImageSelect: PropTypes.func.isRequired,
+  readImageToUpload: PropTypes.func.isRequired,
 };
