@@ -92,6 +92,34 @@ button{
     }
   }
 
+  &.green {
+    background: $login-green;
+    color: white;
+    padding: 10px 30px;
+    margin-right: 20px;
+    a{
+      text-decoration: none;
+      color: white;
+
+      &:hover{
+        text-decoration: none;
+        color: white;
+      }
+    }
+
+    &:hover{
+      background: lighten($login-green, 5%);
+      transform: translateY(-4px);
+      box-shadow: 0px 4px darken($login-green, 10%);
+    }
+
+    &:active{
+      background: $login-green;
+      transform: translateY(0px);
+      box-shadow: none;
+    }
+  }
+
   &.disabled{
     background: $isomer-grey;
     color: darken($isomer-grey, 25%);
