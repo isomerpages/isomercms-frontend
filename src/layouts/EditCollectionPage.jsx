@@ -14,6 +14,7 @@ import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
+import DeleteWarningModal from '../components/DeleteWarningModal';
 import LoadingButton from '../components/LoadingButton';
 
 export default class EditCollectionPage extends Component {
@@ -25,6 +26,7 @@ export default class EditCollectionPage extends Component {
       editorValue: '',
       frontMatter: '',
       tempFileName: '',
+      canShowDeleteWarningModal: false,
     };
   }
 
@@ -108,7 +110,7 @@ export default class EditCollectionPage extends Component {
 
   deletePage = async () => {
     try {
-      const { match } = this.props;
+      const { match, history } = this.props;
       const { siteName, collectionName, fileName } = match.params;
       const { sha } = this.state;
       const params = { sha };
@@ -116,6 +118,7 @@ export default class EditCollectionPage extends Component {
         data: params,
         withCredentials: true,
       });
+      history.goBack();
     } catch (err) {
       console.log(err);
     }
@@ -141,10 +144,10 @@ export default class EditCollectionPage extends Component {
   }
 
   render() {
-    const { match, location } = this.props;
-    const { siteName, collectionName, fileName } = match.params;
+    const { match } = this.props;
+    const { siteName, fileName } = match.params;
     const { leftNavPages } = this.state;
-    const { sha, editorValue } = this.state;
+    const { editorValue, canShowDeleteWarningModal } = this.state;
     return (
       <>
         <Header
@@ -181,13 +184,18 @@ export default class EditCollectionPage extends Component {
             className={elementStyles.blue}
             callback={this.updatePage}
           />
-          <LoadingButton
-            label="Delete"
-            disabledStyle={elementStyles.disabled}
-            className={elementStyles.warning}
-            callback={this.deletePage}
-          />
+          <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
         </div>
+        {
+          canShowDeleteWarningModal
+          && (
+          <DeleteWarningModal
+            onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
+            onDelete={this.deletePage}
+            type="page"
+          />
+          )
+        }
       </>
     );
   }
@@ -209,5 +217,8 @@ EditCollectionPage.propTypes = {
         fileName: PropTypes.string,
       })),
     }),
+  }).isRequired,
+  history: PropTypes.shape({
+    goBack: PropTypes.func,
   }).isRequired,
 };

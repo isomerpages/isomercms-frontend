@@ -74,13 +74,13 @@ const EditorHeroSection = ({
             {dropdown
               ? (
                 <>
-                  <button type="button" id="dropdown-delete" className={elementStyles.warning} onClick={deleteHandler}>Delete Hero Dropdown</button>
+                  <button type="button" id="dropdown-delete" className={elementStyles.warning} onClick={(event) => deleteHandler(event, 'Hero Dropdown')}>Delete Hero Dropdown</button>
                   <HeroDropdown
                     title={dropdown.title}
                     options={dropdown.options}
                     sectionIndex={sectionIndex}
                     createHandler={createHandler}
-                    deleteHandler={deleteHandler}
+                    deleteHandler={(event) => deleteHandler(event, 'Dropdown Element')}
                     onFieldChange={onFieldChange}
                     displayDropdownElems={displayDropdownElems}
                     displayHandler={displayHandler}
@@ -136,7 +136,7 @@ const EditorHeroSection = ({
                                         shouldAllowMoreHighlights={
                                           highlights.length < MAX_NUM_KEY_HIGHLIGHTS
                                         }
-                                        deleteHandler={deleteHandler}
+                                        deleteHandler={(event) => deleteHandler(event, 'Highlight')}
                                         errors={errors.highlights[highlightIndex]}
                                       />
                                     </div>
