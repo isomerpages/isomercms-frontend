@@ -18,7 +18,6 @@ export const ImageCard = ({ image, siteName, onClick }) => (
       </div>
       <div className={mediaStyles.mediaCardDescription}>
         <div className={mediaStyles.mediaCardName}>{image.fileName}</div>
-        <i className="bx bxs-edit" />
       </div>
     </a>
   </div>
