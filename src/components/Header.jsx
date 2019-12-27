@@ -29,9 +29,11 @@ const Header = ({
     </div>
     {/* Right section */}
     <div className={elementStyles.headerRight}>
-      <button type="button" className={elementStyles.blue}>
-        Log Out
-      </button>
+      <a href={`${process.env.REACT_APP_BACKEND_URL}/auth/logout`}>
+        <button type="button" className={elementStyles.blue}>
+          Log Out
+        </button>
+      </a>
     </div>
   </div>
 );
