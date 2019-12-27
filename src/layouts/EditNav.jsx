@@ -9,6 +9,7 @@ import {
 import Header from '../components/Header';
 import styles from '../styles/isomer-cms/pages/MenuEditor.module.scss';
 import NavPreview from '../components/NavigationPreview';
+import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
 const rootNode = new TreeBuilder('root', 'root', '');
 
@@ -128,6 +129,7 @@ export default class EditNav extends Component {
     const newTree = moveItemOnTree(tree, source, destination);
     const flattenedNewTree = flattenTree(newTree);
     const newNavItems = readTree(flattenedNewTree);
+
     this.setState({
       tree: newTree,
       navItems: newNavItems,
@@ -160,6 +162,15 @@ export default class EditNav extends Component {
     );
   };
 
+  saveTree = () => {
+    const { tree } = this.state;
+    const { match } = this.props;
+    const { siteName } = match.params;
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/tree`, { tree }, {
+      withCredentials: true,
+    });
+  }
+
   // we need to encode all our information into the id, there is no way to retrieve it otherwise
   render() {
     const { match } = this.props;
@@ -190,8 +201,9 @@ export default class EditNav extends Component {
               />
               <button type="button" className={styles.createNew}>
                 <i className="bx bx-folder-plus" />
-              Create a new folder
+                Create a new folder
               </button>
+              <button type="button" className={elementStyles.blue} onClick={this.saveTree}>Save</button>
             </>
           )}
 
