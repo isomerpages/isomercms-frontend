@@ -1,29 +1,8 @@
 import React, { PureComponent } from 'react';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import { UploadImageCard } from '../layouts/Images';
-
-export const ImageCard = ({ image, siteName, onClick }) => (
-  <div className={mediaStyles.mediaCard} key={image.path}>
-    <a href="/" onClick={(e) => { e.preventDefault(); onClick(image.path); }}>
-      <div className={mediaStyles.mediaCardImageContainer}>
-        <img
-          className={mediaStyles.mediaCardImage}
-          alt={`${image.fileName}`}
-          // The sanitise parameter is for SVGs. It converts the raw svg data into an image
-          src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}${image.path.endsWith('.svg') ? '?sanitize=true' : ''}`}
-        />
-      </div>
-      <div className={mediaStyles.mediaCardDescription}>
-        <div className={mediaStyles.mediaCardName}>{image.fileName}</div>
-        <i className="bx bxs-edit" />
-      </div>
-    </a>
-  </div>
-);
-
+import { ImageUploadCard, ImageCard } from '../layouts/Images';
 
 export default class ImagesModal extends PureComponent {
   render() {
@@ -40,7 +19,7 @@ export default class ImagesModal extends PureComponent {
             </div>
             <div className={mediaStyles.mediaCards}>
               {/* Upload image */}
-              <UploadImageCard
+              <ImageUploadCard
                 onClick={() => document.getElementById('file-upload').click()}
               />
               <input
@@ -55,7 +34,7 @@ export default class ImagesModal extends PureComponent {
                 <ImageCard
                   image={image}
                   siteName={siteName}
-                  onClick={onImageSelect}
+                  onClick={() => onImageSelect(image.path)}
                   key={image.fileName}
                 />
               ))}
