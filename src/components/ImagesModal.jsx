@@ -6,7 +6,9 @@ import { ImageUploadCard, ImageCard } from '../layouts/Images';
 
 export default class ImagesModal extends PureComponent {
   render() {
-    const { siteName, images, onClose, onImageSelect, readImageToUpload } = this.props;
+    const {
+      siteName, images, onClose, onImageSelect, readImageToUpload
+    } = this.props;
     return (!!images.length
       && (
         <div className={elementStyles.overlay}>
@@ -43,20 +45,16 @@ export default class ImagesModal extends PureComponent {
         </div>
       )
     );
-  };
+  }
 }
-
-ImageCard.propTypes = {
-  image: PropTypes.shape({
-    fileName: PropTypes.string,
-    path: PropTypes.string,
-  }).isRequired,
-  siteName: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
-};
 
 ImagesModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   siteName: PropTypes.string.isRequired,
   onImageSelect: PropTypes.func.isRequired,
+  images: PropTypes.arrayOf(PropTypes.shape({
+    path: PropTypes.string,
+    fileName: PropTypes.string,
+  })).isRequired,
+  readImageToUpload: PropTypes.func.isRequired,
 };
