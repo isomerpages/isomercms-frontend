@@ -4,6 +4,7 @@ import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import FormField from './FormField';
+import LoadingButton from './LoadingButton';
 import {
   prettifyResourceCategory,
   slugifyResourceCategory,
@@ -15,6 +16,7 @@ import {
 } from '../utils';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import { validateResourceSettings } from '../utils/validators';
+import DeleteWarningModal from './DeleteWarningModal';
 
 export default class ResourceSettingsModal extends Component {
   constructor(props) {
@@ -36,6 +38,7 @@ export default class ResourceSettingsModal extends Component {
         category: '',
         prevCategory: '',
       },
+      canShowDeleteWarningModal: false,
     };
   }
 
@@ -71,14 +74,14 @@ export default class ResourceSettingsModal extends Component {
         } = frontMatter;
 
         this.setState({
-          title, 
-          permalink, 
-          fileUrl, 
-          date, 
-          sha, 
-          mdBody, 
-          prevCategory: category, 
-          category, 
+          title,
+          permalink,
+          fileUrl,
+          date,
+          sha,
+          mdBody,
+          prevCategory: category,
+          category,
           resourceCategories,
         });
       }
@@ -113,8 +116,7 @@ export default class ResourceSettingsModal extends Component {
     }
   }
 
-  saveHandler = async (event) => {
-    event.preventDefault();
+  saveHandler = async () => {
     try {
       const {
         title, permalink, fileUrl, date, mdBody, sha, category, prevCategory,
@@ -198,6 +200,8 @@ export default class ResourceSettingsModal extends Component {
       permalink,
       fileUrl,
       errors,
+      canShowDeleteWarningModal,
+      sha,
     } = this.state;
     const { settingsToggle, isNewPost } = this.props;
 
@@ -205,105 +209,122 @@ export default class ResourceSettingsModal extends Component {
     const hasErrors = _.some(errors, (field) => field.length > 0);
 
     return (
-      <div className={elementStyles.overlay}>
-        <div className={elementStyles.modal}>
-          <div className={elementStyles.modalHeader}>
-            <h1>Resource Settings</h1>
-            <button id="settings-CLOSE" type="button" onClick={settingsToggle}>
-              <i id="settingsIcon-CLOSE" className="bx bx-x" />
-            </button>
-          </div>
-          <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
-            <div className={elementStyles.modalFormFields}>
-
-              {/* Title */}
-              <FormField
-                title="Title"
-                id="title"
-                value={dequoteString(title)}
-                errorMessage={errors.title}
-                isRequired
-                onFieldChange={this.changeHandler}
-              />
-
-              {/* Date */}
-              <FormField
-                title="Date (YYYY-MM-DD, e.g. 2019-12-23)"
-                id="date"
-                value={date}
-                errorMessage={errors.date}
-                isRequired
-                onFieldChange={this.changeHandler}
-              />
-
-              {/* Resource Category */}
-              <p className={elementStyles.formLabel}>Resource Category</p>
-              <select id="category" value={slugifyResourceCategory(category)} onChange={this.changeHandler}>
-                {
-                resourceCategories
-                  ? resourceCategories.map((resourceCategory) => (
-                    <option
-                      value={slugifyResourceCategory(resourceCategory.dirName)}
-                      label={prettifyResourceCategory(resourceCategory.dirName)}
-                    />
-                  ))
-                  : null
-              }
-              </select>
-
-              {/* Resource Type */}
-              <p className={elementStyles.formLabel}>Resource Type</p>
-
-              {/* Permalink or File URL */}
-              <div className="d-flex">
-                <label htmlFor="radio-post" className="flex-fill">
-                  <input type="radio" id="radio-post" name="resource-type" value="post" onClick={this.handlePermalinkFileUrlToggle} checked={!!permalink} />
-                  Post Content
-                </label>
-                <label htmlFor="radio-post" className="flex-fill">
-                  <input type="radio" id="radio-file" name="resource-type" value="file" onClick={this.handlePermalinkFileUrlToggle} checked={!permalink} />
-                  Downloadable File
-                </label>
-              </div>
-              {permalink
-                ? (
-                  <>
-                    {/* Permalink */}
-                    <FormField
-                      title="Permalink"
-                      id="permalink"
-                      value={permalink}
-                      errorMessage={errors.permalink}
-                      isRequired
-                      onFieldChange={this.changeHandler}
-                    />
-                  </>
-                )
-                : (
-                  <>
-                    {/* File URL */}
-                    <FormField
-                      title="File URL"
-                      id="fileUrl"
-                      value={fileUrl}
-                      errorMessage={errors.fileUrl}
-                      isRequired
-                      onFieldChange={this.changeHandler}
-                    />
-                  </>
-                )}
+      <>
+        <div className={elementStyles.overlay}>
+          <div className={elementStyles.modal}>
+            <div className={elementStyles.modalHeader}>
+              <h1>Resource Settings</h1>
+              <button id="settings-CLOSE" type="button" onClick={settingsToggle}>
+                <i id="settingsIcon-CLOSE" className="bx bx-x" />
+              </button>
             </div>
+            <div className={elementStyles.modalContent}>
+              <div className={elementStyles.modalFormFields}>
+                {/* Title */}
+                <FormField
+                  title="Title"
+                  id="title"
+                  value={dequoteString(title)}
+                  errorMessage={errors.title}
+                  isRequired
+                  onFieldChange={this.changeHandler}
+                />
 
+                {/* Date */}
+                <FormField
+                  title="Date (YYYY-MM-DD, e.g. 2019-12-23)"
+                  id="date"
+                  value={date}
+                  errorMessage={errors.date}
+                  isRequired
+                  onFieldChange={this.changeHandler}
+                />
+
+                {/* Resource Category */}
+                <p className={elementStyles.formLabel}>Resource Category</p>
+                <select id="category" value={slugifyResourceCategory(category)} onChange={this.changeHandler}>
+                  {
+                  resourceCategories
+                    ? resourceCategories.map((resourceCategory) => (
+                      <option
+                        value={slugifyResourceCategory(resourceCategory.dirName)}
+                        label={prettifyResourceCategory(resourceCategory.dirName)}
+                      />
+                    ))
+                    : null
+                }
+                </select>
+
+                {/* Resource Type */}
+                <p className={elementStyles.formLabel}>Resource Type</p>
+
+                {/* Permalink or File URL */}
+                <div className="d-flex">
+                  <label htmlFor="radio-post" className="flex-fill">
+                    <input type="radio" id="radio-post" name="resource-type" value="post" onClick={this.handlePermalinkFileUrlToggle} checked={!!permalink} />
+                    Post Content
+                  </label>
+                  <label htmlFor="radio-post" className="flex-fill">
+                    <input type="radio" id="radio-file" name="resource-type" value="file" onClick={this.handlePermalinkFileUrlToggle} checked={!permalink} />
+                    Downloadable File
+                  </label>
+                </div>
+                {permalink
+                  ? (
+                    <>
+                      {/* Permalink */}
+                      <FormField
+                        title="Permalink"
+                        id="permalink"
+                        value={permalink}
+                        errorMessage={errors.permalink}
+                        isRequired
+                        onFieldChange={this.changeHandler}
+                      />
+                    </>
+                  )
+                  : (
+                    <>
+                      {/* File URL */}
+                      <FormField
+                        title="File URL"
+                        id="fileUrl"
+                        value={fileUrl}
+                        errorMessage={errors.fileUrl}
+                        isRequired
+                        onFieldChange={this.changeHandler}
+                      />
+                    </>
+                  )}
+              </div>
+            </div>
             {/* Save or Delete buttons */}
             <div className={elementStyles.modalButtons}>
-              <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>
+              <LoadingButton
+                label="Save"
+                disabled={hasErrors}
+                disabledStyle={elementStyles.disabled}
+                className={(isNewPost ? hasErrors : (hasErrors || !sha)) ? elementStyles.disabled : elementStyles.blue}
+                callback={this.saveHandler}
+              />
               { !isNewPost
-                ? <button type="button" className={elementStyles.warning} onClick={this.deleteHandler}>Delete</button>
-                : null}
+                ? (
+                  <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
+                ) : null}
             </div>
-          </form>
+          </div>
         </div>
-      </div>
+        {
+          canShowDeleteWarningModal
+          && (
+            <DeleteWarningModal
+              onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
+              onDelete={this.deleteHandler}
+              type="resource"
+            />
+          )
+        }
+      </>
     );
   }
 }

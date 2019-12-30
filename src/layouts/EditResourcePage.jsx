@@ -14,6 +14,8 @@ import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
+import DeleteWarningModal from '../components/DeleteWarningModal';
+import LoadingButton from '../components/LoadingButton';
 
 export default class EditResourcePage extends Component {
   constructor(props) {
@@ -22,6 +24,7 @@ export default class EditResourcePage extends Component {
       sha: null,
       editorValue: '',
       frontMatter: '',
+      canShowDeleteWarningModal: false,
     };
   }
 
@@ -73,7 +76,7 @@ export default class EditResourcePage extends Component {
 
   deletePage = async () => {
     try {
-      const { match } = this.props;
+      const { match, history } = this.props;
       const { siteName, resourceName, fileName } = match.params;
       const { sha } = this.state;
       const params = { sha };
@@ -81,6 +84,7 @@ export default class EditResourcePage extends Component {
         data: params,
         withCredentials: true,
       });
+      history.goBack();
     } catch (err) {
       console.log(err);
     }
@@ -93,7 +97,7 @@ export default class EditResourcePage extends Component {
   render() {
     const { match } = this.props;
     const { siteName, fileName, resourceName } = match.params;
-    const { editorValue } = this.state;
+    const { editorValue, canShowDeleteWarningModal } = this.state;
     return (
       <>
         <Header
@@ -117,9 +121,24 @@ export default class EditResourcePage extends Component {
           </div>
         </div>
         <div className={editorStyles.pageEditorFooter}>
-          <button type="button" className={elementStyles.blue} onClick={this.updatePage}>Save</button>
-          <button type="button" className={elementStyles.warning} onClick={this.deletePage}>Delete</button>
+          <LoadingButton
+            label="Save"
+            disabledStyle={elementStyles.disabled}
+            className={elementStyles.blue}
+            callback={this.updatePage}
+          />
+          <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
         </div>
+        {
+          canShowDeleteWarningModal
+          && (
+            <DeleteWarningModal
+              onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
+              onDelete={this.deletePage}
+              type="resource"
+            />
+          )
+        }
       </>
     );
   }
@@ -132,5 +151,8 @@ EditResourcePage.propTypes = {
       fileName: PropTypes.string,
       resourceName: PropTypes.string,
     }),
+  }).isRequired,
+  history: PropTypes.shape({
+    goBack: PropTypes.func,
   }).isRequired,
 };

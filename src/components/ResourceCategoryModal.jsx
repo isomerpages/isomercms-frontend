@@ -6,7 +6,9 @@ import update from 'immutability-helper';
 import { prettifyResourceCategory, slugifyResourceCategory } from '../utils';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import FormField from './FormField';
+import LoadingButton from './LoadingButton';
 import { validateResourceCategory } from '../utils/validators';
+import DeleteWarningModal from './DeleteWarningModal';
 
 // Constants
 const RADIX_PARSE_INT = 10;
@@ -21,6 +23,7 @@ export default class ResourceCategoryModal extends Component {
       errors: {
         resourceCategories: [],
       },
+      itemPendingForDeleteId: '',
     };
     this.currInputValues = {};
   }
@@ -112,11 +115,10 @@ export default class ResourceCategoryModal extends Component {
     }
   }
 
-  deleteHandler = async (event) => {
+  deleteHandler = async (id) => {
     try {
       const { siteName } = this.props;
       const { prevResourceCategories } = this.state;
-      const { id } = event.target;
       const idArray = id.split('-');
       const categoryIndex = parseInt(idArray[1], RADIX_PARSE_INT);
       const resourceCategory = slugifyResourceCategory(prevResourceCategories[categoryIndex]);
@@ -144,6 +146,7 @@ export default class ResourceCategoryModal extends Component {
       this.setState({
         prevResourceCategories: newResourceCategories,
         currResourceCategories: newResourceCategories,
+        itemPendingForDeleteId: '',
       });
     } catch (err) {
       console.log(err);
@@ -151,14 +154,14 @@ export default class ResourceCategoryModal extends Component {
   }
 
   render() {
-    const { prevResourceCategories, errors } = this.state;
+    const { prevResourceCategories, errors, itemPendingForDeleteId } = this.state;
     const { categoryModalToggle, categoryModalIsActive } = this.props;
 
     // Page settings form has errors - disable save button
     const hasErrors = _.some(errors.resourceCategories,
       (categoryError) => categoryError.length > 0);
     return (
-      <div>
+      <>
         <button type="button" className={elementStyles.blue} onClick={categoryModalToggle}>Edit Categories</button>
         {categoryModalIsActive
           ? (
@@ -184,8 +187,21 @@ export default class ResourceCategoryModal extends Component {
                             isRequired
                             onFieldChange={this.changeHandler}
                           />
+                          {/* <LoadingButton
+                            label="Save"
+                            disabled={hasErrors}
+                            className={hasErrors ? elementStyles.disabled : elementStyles.blue}
+                            id={`save-${index}`}
+                            callback={this.saveHandler}
+                          />
+                          <LoadingButton
+                            label="Delete"
+                            className={elementStyles.warning}
+                            id={`delete-${index}`}
+                            callback={this.deleteHandler}
+                          /> */}
                           <button type="button" className={hasErrors ? elementStyles.disabled : elementStyles.blue} id={`save-${index}`} disabled={hasErrors} onClick={this.saveHandler}>Save</button>
-                          <button type="button" className={elementStyles.warning} id={`delete-${index}`} onClick={this.deleteHandler}>Delete</button>
+                          <button type="button" className={elementStyles.warning} id={`delete-${index}`} onClick={(event) => this.setState({ itemPendingForDeleteId: event.target.id })}>Delete</button>
                         </div>
                       ))
                       : null}
@@ -198,7 +214,17 @@ export default class ResourceCategoryModal extends Component {
             </div>
           )
           : null}
-      </div>
+        {
+          itemPendingForDeleteId
+          && (
+            <DeleteWarningModal
+              onCancel={() => this.setState({ itemPendingForDeleteId: '' })}
+              onDelete={() => this.deleteHandler(itemPendingForDeleteId)}
+              type="Resource Catgeory"
+            />
+          )
+        }
+      </>
     );
   }
 }

@@ -7,14 +7,9 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import {
   frontMatterParser, concatFrontMatterMdBody, generateCollectionPageFileName,
 } from '../utils';
-
-// Constants
-const PERMALINK_REGEX = '^(/([a-z]+([-][a-z]+)*/)+)$';
-const permalinkRegexTest = RegExp(PERMALINK_REGEX);
-const PERMALINK_MIN_LENGTH = 4;
-const PERMALINK_MAX_LENGTH = 50;
-const TITLE_MIN_LENGTH = 4;
-const TITLE_MAX_LENGTH = 100;
+import { validatePageSettings } from '../utils/validators';
+import DeleteWarningModal from './DeleteWarningModal';
+import LoadingButton from './LoadingButton';
 
 export default class CollectionPageSettingsModal extends Component {
   constructor(props) {
@@ -28,7 +23,9 @@ export default class CollectionPageSettingsModal extends Component {
         title: '',
         permalink: '',
       },
+      canShowDeleteWarningModal: false,
     };
+    this.deleteButton = React.createRef();
   }
 
   async componentDidMount() {
@@ -53,8 +50,7 @@ export default class CollectionPageSettingsModal extends Component {
     }
   }
 
-  saveHandler = async (event) => {
-    event.preventDefault();
+  saveHandler = async () => {
     try {
       const { siteName, fileName, collectionName } = this.props;
       const {
@@ -124,42 +120,8 @@ export default class CollectionPageSettingsModal extends Component {
 
   changeHandler = (event) => {
     const { id, value } = event.target;
-    let errorMessage = '';
-    switch (id) {
-      case 'permalink': {
-        // Permalink is too short
-        if (value.length < PERMALINK_MIN_LENGTH) {
-          errorMessage = `The permalink should be longer than ${PERMALINK_MIN_LENGTH} characters.`;
-        }
+    const errorMessage = validatePageSettings(id, value);
 
-        // Permalink is too long
-        if (value.length > PERMALINK_MAX_LENGTH) {
-          errorMessage = `The permalink should be shorter than ${PERMALINK_MAX_LENGTH} characters.`;
-        }
-
-        // Permalink fails regex
-        if (!permalinkRegexTest.test(value)) {
-          console.log('IN REGEX FAIL', value);
-          errorMessage = `The permalink should start and end with slashes and contain 
-            lowercase words separated by hyphens only.
-            `;
-        }
-        break;
-      }
-      case 'title': {
-        // Title is too short
-        if (value.length < TITLE_MIN_LENGTH) {
-          errorMessage = `The title should be longer than ${TITLE_MIN_LENGTH} characters.`;
-        }
-        // Title is too long
-        if (value.length > TITLE_MAX_LENGTH) {
-          errorMessage = `The title should be shorter than ${TITLE_MAX_LENGTH} characters.`;
-        }
-        break;
-      }
-      default:
-        break;
-    }
     this.setState({
       errors: {
         [id]: errorMessage,
@@ -169,59 +131,83 @@ export default class CollectionPageSettingsModal extends Component {
   }
 
   render() {
-    const { title, permalink, errors } = this.state;
+    const {
+      title,
+      permalink,
+      errors,
+      canShowDeleteWarningModal,
+      sha,
+    } = this.state;
     const { settingsToggle } = this.props;
 
     // Page settings form has errors - disable save button
     const hasErrors = _.some(errors, (field) => field.length > 0);
 
     return (
-      <div className={elementStyles.overlay}>
-        <div className={elementStyles.modal}>
-          <div className={elementStyles.modalHeader}>
-            <h1>Update page settings</h1>
-            <button type="button" onClick={settingsToggle}>
-              <i className="bx bx-x" />
-            </button>
-          </div>
-          <form className={elementStyles.modalContent} onSubmit={this.saveHandler}>
-            <div className={elementStyles.modalFormFields}>
-              <p className={elementStyles.formLabel}>Title</p>
-              <input
-                value={title}
-                id="title"
-                required
-                autoComplete="off"
-                onChange={this.changeHandler}
-                className={errors.title ? `${elementStyles.error}` : null}
-              />
-              <span className={elementStyles.error}>
-                {' '}
-                {errors.title}
-                {' '}
-              </span>
-              <p
-                className={elementStyles.formLabel}
-              >
+      <>
+        <div className={elementStyles.overlay}>
+          <div className={elementStyles.modal}>
+            <div className={elementStyles.modalHeader}>
+              <h1>Update page settings</h1>
+              <button type="button" onClick={settingsToggle}>
+                <i className="bx bx-x" />
+              </button>
+            </div>
+            <div className={elementStyles.modalContent}>
+              <div className={elementStyles.modalFormFields}>
+                <p className={elementStyles.formLabel}>Title</p>
+                <input
+                  value={title}
+                  id="title"
+                  required
+                  autoComplete="off"
+                  onChange={this.changeHandler}
+                  className={errors.title ? `${elementStyles.error}` : null}
+                />
+                <span className={elementStyles.error}>
+                  {' '}
+                  {errors.title}
+                  {' '}
+                </span>
+                <p
+                  className={elementStyles.formLabel}
+                >
 Permalink (e.g. /foo/, /foo-bar/, or /foo/bar/)
-              </p>
-              <input
-                value={permalink}
-                id="permalink"
-                required
-                onChange={this.changeHandler}
-                autoComplete="off"
-                className={errors.permalink ? `${elementStyles.error}` : null}
-              />
-              <span className={elementStyles.error}>{errors.permalink}</span>
+                </p>
+                <input
+                  value={permalink}
+                  id="permalink"
+                  required
+                  onChange={this.changeHandler}
+                  autoComplete="off"
+                  className={errors.permalink ? `${elementStyles.error}` : null}
+                />
+                <span className={elementStyles.error}>{errors.permalink}</span>
+              </div>
+              <div className={elementStyles.modalButtons}>
+                <LoadingButton
+                  label="Save"
+                  disabled={hasErrors}
+                  disabledStyle={elementStyles.disabled}
+                  className={(hasErrors || !sha) ? elementStyles.disabled : elementStyles.blue}
+                  callback={this.saveHandler}
+                />
+                <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
+              </div>
             </div>
-            <div className={elementStyles.modalButtons}>
-              <button type="submit" className={`${hasErrors ? elementStyles.disabled : elementStyles.blue}`} disabled={hasErrors} value="submit">Save</button>
-              <button type="button" className={elementStyles.warning} onClick={this.deleteHandler}>Delete</button>
-            </div>
-          </form>
+          </div>
         </div>
-      </div>
+        {
+        canShowDeleteWarningModal
+        && (
+        <DeleteWarningModal
+          onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
+          onDelete={this.deleteHandler}
+          type="page"
+        />
+        )
+      }
+      </>
     );
   }
 }
