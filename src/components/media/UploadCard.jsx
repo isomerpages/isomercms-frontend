@@ -22,7 +22,7 @@ const MediaUploadCard = ({ onClick, type }) => (
 
 MediaUploadCard.propTypes = {
   onClick: PropTypes.func.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(['image', 'file']).isRequired,
 };
 
 export default MediaUploadCard;

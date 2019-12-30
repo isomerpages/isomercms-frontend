@@ -35,7 +35,7 @@ const MediaCard = ({
 );
 
 MediaCard.propTypes = {
-  type: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(['image', 'file']).isRequired,
   siteName: PropTypes.string,
   onClick: PropTypes.func.isRequired,
   media: PropTypes.shape({
