@@ -12,7 +12,7 @@ import FileSettingsModal from '../components/FileSettingsModal';
 const FileCard = ({ file, onClick }) => (
   <div className={mediaStyles.mediaCard} key={file.path}>
     <a href="/" onClick={(e) => { e.preventDefault(); onClick(); }}>
-      <div className={mediaStyles.mediaCardFileContainer}>
+      <div className={mediaStyles.mediaCardFilePreviewContainer}>
         <p>{file.fileName.split('.').pop().toUpperCase()}</p>
       </div>
       <div className={mediaStyles.mediaCardDescription}>

@@ -113,7 +113,7 @@ export default class ImageSettingsModal extends Component {
               <i className="bx bx-x" />
             </button>
           </div>
-          <div className={mediaStyles.editMediaPreview}>
+          <div className={mediaStyles.editImagePreview}>
             <img
               alt={`${image.fileName}`}
               src={isPendingUpload ? `data:image/png;base64,${content}`

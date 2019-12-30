@@ -11,7 +11,7 @@ import ImageSettingsModal from '../components/ImageSettingsModal';
 const ImageCard = ({ image, siteName, onClick }) => (
   <div className={mediaStyles.mediaCard} key={image.path}>
     <a href="/" onClick={(e) => { e.preventDefault(); onClick(); }}>
-      <div className={mediaStyles.mediaCardImageContainer}>
+      <div className={mediaStyles.mediaCardImagePreviewContainer}>
         <img
           className={mediaStyles.mediaCardImage}
           alt={`${image.fileName}`}
