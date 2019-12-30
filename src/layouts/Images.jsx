@@ -7,41 +7,14 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import ImageSettingsModal from '../components/ImageSettingsModal';
+import MediaUploadCard from '../components/media/UploadCard';
+import MediaCard from '../components/media/Card';
 
-const ImageCard = ({ image, siteName, onClick }) => (
-  <div className={mediaStyles.mediaCard} key={image.path}>
-    <a href="/" onClick={(e) => { e.preventDefault(); onClick(); }}>
-      <div className={mediaStyles.mediaCardImagePreviewContainer}>
-        <img
-          className={mediaStyles.mediaCardImage}
-          alt={`${image.fileName}`}
-          // The sanitise parameter is for SVGs. It converts the raw svg data into an image
-          src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}${image.path.endsWith('.svg') ? '?sanitize=true' : ''}`}
-        />
-      </div>
-      <div className={mediaStyles.mediaCardDescription}>
-        <div className={mediaStyles.mediaCardName}>{image.fileName}</div>
-        <i className="bx bxs-edit" />
-      </div>
-    </a>
-  </div>
-);
+const ImageCard = ({ image, siteName, onClick }) => MediaCard({
+  type: 'image', siteName, onClick, media: image,
+});
 
-const UploadImageCard = ({ onClick }) => (
-  <button
-    type="button"
-    id="settings-NEW"
-    onClick={onClick}
-    className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.addNew} ${mediaStyles.mediaCardDimensions}`}
-  >
-    <i id="settingsIcon-NEW" className={`bx bx-plus-circle ${elementStyles.bxPlusCircle}`} />
-    <h2 id="settingsText-NEW">Upload new image</h2>
-  </button>
-);
-
-UploadImageCard.propTypes = {
-  onClick: PropTypes.func.isRequired,
-};
+const ImageUploadCard = ({ onClick }) => MediaUploadCard({ onClick, type: 'image' });
 
 export default class Images extends Component {
   constructor(props) {
@@ -117,7 +90,7 @@ export default class Images extends Component {
               <div className={contentStyles.boxesContainer}>
                 <div className={mediaStyles.mediaCards}>
                   {/* Upload Image */}
-                  <UploadImageCard
+                  <ImageUploadCard
                     onClick={() => document.getElementById('file-upload').click()}
                   />
                   <input

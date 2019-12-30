@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
@@ -8,36 +7,12 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import FileSettingsModal from '../components/FileSettingsModal';
+import MediaUploadCard from '../components/media/UploadCard';
+import MediaCard from '../components/media/Card';
 
-const FileCard = ({ file, onClick }) => (
-  <div className={mediaStyles.mediaCard} key={file.path}>
-    <a href="/" onClick={(e) => { e.preventDefault(); onClick(); }}>
-      <div className={mediaStyles.mediaCardFilePreviewContainer}>
-        <p>{file.fileName.split('.').pop().toUpperCase()}</p>
-      </div>
-      <div className={mediaStyles.mediaCardDescription}>
-        <div className={mediaStyles.mediaCardName}>{file.fileName}</div>
-        <i className="bx bxs-edit" />
-      </div>
-    </a>
-  </div>
-);
+const FileCard = ({ file, onClick }) => MediaCard({ type: 'file', onClick, media: file });
 
-const UploadFileCard = ({ onClick }) => (
-  <button
-    type="button"
-    id="settings-NEW"
-    onClick={onClick}
-    className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.addNew} ${mediaStyles.mediaCardDimensions}`}
-  >
-    <i id="settingsIcon-NEW" className={`bx bx-plus-circle ${elementStyles.bxPlusCircle}`} />
-    <h2 id="settingsText-NEW">Upload file</h2>
-  </button>
-);
-
-UploadFileCard.propTypes = {
-  onClick: PropTypes.func.isRequired,
-};
+const FileUploadCard = ({ onClick }) => MediaUploadCard({ onClick, type: 'file' });
 
 export default class Files extends Component {
   constructor(props) {
@@ -121,7 +96,7 @@ export default class Files extends Component {
             <div className={contentStyles.contentContainerBars}>
               {/* File cards */}
               <div className={mediaStyles.mediaCards}>
-                <UploadFileCard
+                <FileUploadCard
                   onClick={() => document.getElementById('file-upload').click()}
                 />
                 <input
