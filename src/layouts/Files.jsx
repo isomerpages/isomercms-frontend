@@ -6,9 +6,9 @@ import Sidebar from '../components/Sidebar';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
-import FileSettingsModal from '../components/FileSettingsModal';
 import MediaUploadCard from '../components/media/UploadCard';
 import MediaCard from '../components/media/Card';
+import MediaSettingsModal from '../components/media/SettingsModal';
 
 const FileCard = ({ file, onClick }) => MediaCard({ type: 'file', onClick, media: file });
 
@@ -126,8 +126,9 @@ export default class Files extends Component {
           // Modal to show when user selects an already uploaded file
           chosenFile
           && (
-          <FileSettingsModal
-            file={chosenFile}
+          <MediaSettingsModal
+            type="file"
+            media={chosenFile}
             isPendingUpload={false}
             siteName={siteName}
             onClose={() => this.setState({ chosenFile: null })}
@@ -138,8 +139,9 @@ export default class Files extends Component {
           // Modal to show when user uploads a local file
           pendingFileUpload
           && (
-          <FileSettingsModal
-            file={pendingFileUpload}
+          <MediaSettingsModal
+            type="file"
+            media={pendingFileUpload}
             isPendingUpload
             siteName={siteName}
             onClose={() => this.setState({ pendingFileUpload: null })}

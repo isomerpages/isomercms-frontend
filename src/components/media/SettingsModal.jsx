@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import FormField from './FormField';
-import { validateFileName } from '../utils/validators';
+import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
+import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
+import FormField from '../FormField';
+import { validateFileName } from '../../utils/validators';
 
-
-export default class FileSettingsModal extends Component {
+export default class MediaSettingsModal extends Component {
   constructor(props) {
     super(props);
-    const { file: { fileName } } = props;
+    const { media: { fileName } } = props;
     this.state = {
       newFileName: fileName,
       sha: '',
@@ -19,13 +18,18 @@ export default class FileSettingsModal extends Component {
   }
 
   async componentDidMount() {
-    const { siteName, file, isPendingUpload } = this.props;
-    const { fileName } = file;
+    const {
+      siteName, media, isPendingUpload, type,
+    } = this.props;
+    const { fileName } = media;
+
     if (isPendingUpload) {
-      const { content } = file;
+      const { content } = media;
       this.setState({ content });
+      return;
     }
-    const { data: { sha, content } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/documents/${fileName}`, {
+
+    const { data: { sha, content } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${fileName}`, {
       withCredentials: true,
     });
     this.setState({ sha, content });
@@ -36,15 +40,23 @@ export default class FileSettingsModal extends Component {
   }
 
   saveFile = async () => {
-    const { siteName, file: { fileName }, isPendingUpload } = this.props;
+    const {
+      siteName, media: { fileName }, isPendingUpload, type,
+    } = this.props;
     const { newFileName, sha, content } = this.state;
 
     if (isPendingUpload) {
       const params = {
-        documentName: newFileName,
         content,
       };
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/documents`, params, {
+
+      if (type === 'image') {
+        params.imageName = newFileName;
+      } else {
+        params.documentName = newFileName;
+      }
+
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}`, params, {
         withCredentials: true,
       });
     } else {
@@ -57,7 +69,7 @@ export default class FileSettingsModal extends Component {
       if (newFileName === fileName) {
         return;
       }
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/documents/${fileName}/rename/${newFileName}`, params, {
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${fileName}/rename/${newFileName}`, params, {
         withCredentials: true,
       });
     }
@@ -67,13 +79,13 @@ export default class FileSettingsModal extends Component {
 
   deleteFile = async () => {
     try {
-      const { siteName, file: { fileName } } = this.props;
+      const { siteName, media: { fileName }, type } = this.props;
       const { sha } = this.state;
       const params = {
         sha,
       };
 
-      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/documents/${fileName}`, {
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${fileName}`, {
         data: params,
         withCredentials: true,
       });
@@ -85,23 +97,45 @@ export default class FileSettingsModal extends Component {
   }
 
   render() {
-    const { onClose, file } = this.props;
-    const { newFileName, sha } = this.state;
+    const {
+      onClose, media, type, isPendingUpload, siteName,
+    } = this.props;
+    const { newFileName, sha, content } = this.state;
     const errorMessage = validateFileName(newFileName);
 
     return (
       <div className={elementStyles.overlay}>
         <div className={elementStyles.modal}>
           <div className={elementStyles.modalHeader}>
-            <h1>Edit file</h1>
+            <h1>
+              Edit
+              { ' ' }
+              { type }
+            </h1>
             <button type="button" onClick={onClose}>
               <i className="bx bx-x" />
             </button>
           </div>
+          { type === 'image'
+            ? (
+              <div className={mediaStyles.editImagePreview}>
+                <img
+                  alt={`${media.fileName}`}
+                  src={isPendingUpload ? `data:image/png;base64,${content}`
+                    : (
+                      `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${media.path}${media.path.endsWith('.svg')
+                        ? '?sanitize=true'
+                        : ''}`
+                    )}
+                />
+              </div>
+            )
+            : (
+              <div className={mediaStyles.editFilePreview}>
+                <p>{media.fileName.split('.').pop().toUpperCase()}</p>
+              </div>
+            )}
           <form className={elementStyles.modalContent}>
-            <div className={mediaStyles.editFilePreview}>
-              <p>{file.fileName.split('.').pop().toUpperCase()}</p>
-            </div>
             <div className={elementStyles.modalFormFields}>
               <FormField
                 title="File name"
@@ -123,12 +157,13 @@ export default class FileSettingsModal extends Component {
   }
 }
 
-FileSettingsModal.propTypes = {
-  file: PropTypes.shape({
+MediaSettingsModal.propTypes = {
+  media: PropTypes.shape({
     fileName: PropTypes.string,
     path: PropTypes.string,
     content: PropTypes.string,
   }).isRequired,
+  type: PropTypes.string.isRequired,
   siteName: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   isPendingUpload: PropTypes.bool.isRequired,

@@ -6,9 +6,9 @@ import Sidebar from '../components/Sidebar';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
-import ImageSettingsModal from '../components/ImageSettingsModal';
 import MediaUploadCard from '../components/media/UploadCard';
 import MediaCard from '../components/media/Card';
+import MediaSettingsModal from '../components/media/SettingsModal';
 
 const ImageCard = ({ image, siteName, onClick }) => MediaCard({
   type: 'image', siteName, onClick, media: image,
@@ -119,9 +119,10 @@ export default class Images extends Component {
         {
           chosenImage
           && (
-          <ImageSettingsModal
-            image={chosenImage}
-            match={match}
+          <MediaSettingsModal
+            type="image"
+            media={chosenImage}
+            siteName={siteName}
             isPendingUpload={false}
             onClose={() => this.setState({ chosenImage: null })}
           />
@@ -130,9 +131,10 @@ export default class Images extends Component {
         {
           pendingImageUpload
           && (
-          <ImageSettingsModal
-            image={pendingImageUpload}
-            match={match}
+          <MediaSettingsModal
+            type="image"
+            media={pendingImageUpload}
+            siteName={siteName}
             // eslint-disable-next-line react/jsx-boolean-value
             isPendingUpload={true}
             onClose={() => this.setState({ pendingImageUpload: null })}
