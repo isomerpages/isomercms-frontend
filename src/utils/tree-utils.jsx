@@ -1,7 +1,16 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import PropTypes from 'prop-types';
 import TreeBuilder from './tree-builder';
 import styles from '../styles/isomer-cms/pages/MenuEditor.module.scss';
+
+/*
+ Parses the Git tree so that it can be read by the Tree rendering library
+*/
+const parseGitTree = (gitTree) => {
+
+}
 
 /*
   Constructs a new FlattenedItem
@@ -212,6 +221,7 @@ const readTree = (flattenedTree) => {
 };
 
 export {
+  parseGitTree,
   flattenTree,
   dataIterator,
   ListItem,

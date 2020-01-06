@@ -4,7 +4,12 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import TreeBuilder from '../utils/tree-builder';
 import {
-  dataIterator, ListItem, draggableWrapper, flattenTree, readTree,
+  parseGitTree,
+  dataIterator,
+  ListItem,
+  draggableWrapper,
+  flattenTree,
+  readTree,
 } from '../utils/tree-utils';
 import Header from '../components/Header';
 import styles from '../styles/isomer-cms/pages/MenuEditor.module.scss';
@@ -18,6 +23,8 @@ export default class EditNav extends Component {
     super(props);
     this.state = {
       tree: null,
+      gitTree: [],
+      currentCommitSha: '',
     };
   }
 
@@ -28,26 +35,29 @@ export default class EditNav extends Component {
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/tree`, {
         withCredentials: true,
       });
-      const { directory, unlinked } = resp.data;
+      const { currentCommitSha, gitTree } = resp.data;
+      const { directory, unlinked } = parseGitTree(gitTree);
+
+      // this.setState({ currentCommitSha, gitTree });
 
       // add a root node for the navigation bar
-      const tree = rootNode.withSubTree(
-        directory.reduce(
-          dataIterator,
-          new TreeBuilder('Main Menu', 'section'),
-        ),
-      // add a root node for the unlinked pages
-      ).withSubTree(
-        unlinked.reduce(
-          dataIterator,
-          new TreeBuilder('Unlinked', 'section'),
-        ),
-      );
+      // const tree = rootNode.withSubTree(
+      //   directory.reduce(
+      //     dataIterator,
+      //     new TreeBuilder('Main Menu', 'section'),
+      //   ),
+      // // add a root node for the unlinked pages
+      // ).withSubTree(
+      //   unlinked.reduce(
+      //     dataIterator,
+      //     new TreeBuilder('Unlinked', 'section'),
+      //   ),
+      // );
 
-      const flattenedTree = flattenTree(tree);
-      const navItems = readTree(flattenedTree);
+      // const flattenedTree = flattenTree(tree);
+      // const navItems = readTree(flattenedTree);
 
-      this.setState({ tree, navItems });
+      // this.setState({ tree, navItems });
     } catch (err) {
       console.log(err);
     }
