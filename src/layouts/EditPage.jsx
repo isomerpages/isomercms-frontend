@@ -42,7 +42,7 @@ export default class EditPage extends Component {
       canShowDeleteWarningModal: false,
       images: [],
       isSelectingImage: false,
-      pendingImageUpload: null
+      pendingImageUpload: null,
     };
     this.mdeRef = React.createRef();
   }

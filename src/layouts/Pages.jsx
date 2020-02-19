@@ -21,7 +21,7 @@ const PageCard = ({
     { collectionName
       ? <Link to={`/sites/${siteName}/collections/${collectionName}/${pageName}`}>{prettifyPageFileName(pageName)}</Link>
       : <Link to={`/sites/${siteName}/pages/${pageName}`}>{prettifyPageFileName(pageName)}</Link>}
-    <button type="button" onClick={settingsToggle} id={`settings-${pageIndex}`}>
+    <button type="button" className="d-flex flex-column pr-0" onClick={settingsToggle} id={`settings-${pageIndex}`}>
       <i id={`settingsIcon-${pageIndex}`} className="bx bx-cog" />
     </button>
   </li>
