@@ -46,6 +46,7 @@ const ResourcePages = ({
 }) => (
   <>
     {/* Display resource cards */}
+    <CreateResourceCard settingsToggle={settingsToggle} />
     {resourcePages.length > 0
       ? (
         <>
@@ -62,7 +63,6 @@ const ResourcePages = ({
         </>
       )
       : null}
-    <CreateResourceCard settingsToggle={settingsToggle} />
   </>
 );
 

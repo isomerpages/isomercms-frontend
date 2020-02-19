@@ -29,6 +29,7 @@ import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
+import DeleteWarningModal from '../components/DeleteWarningModal';
 import LoadingButton from '../components/LoadingButton';
 
 export default class EditPage extends Component {
@@ -38,6 +39,7 @@ export default class EditPage extends Component {
       sha: null,
       editorValue: '',
       frontMatter: '',
+      canShowDeleteWarningModal: false,
       images: [],
       isSelectingImage: false,
       pendingImageUpload: null,
@@ -104,7 +106,7 @@ export default class EditPage extends Component {
 
   deletePage = async () => {
     try {
-      const { match } = this.props;
+      const { match, history } = this.props;
       const { siteName, fileName } = match.params;
       const { sha } = this.state;
       const params = { sha };
@@ -112,6 +114,7 @@ export default class EditPage extends Component {
         data: params,
         withCredentials: true,
       });
+      history.goBack();
     } catch (err) {
       console.log(err);
     }
@@ -178,6 +181,7 @@ export default class EditPage extends Component {
     const { siteName, fileName } = match.params;
     const {
       editorValue,
+      canShowDeleteWarningModal,
       images,
       isSelectingImage,
       pendingImageUpload,
@@ -254,12 +258,7 @@ export default class EditPage extends Component {
             className={elementStyles.blue}
             callback={this.updatePage}
           />
-          <LoadingButton
-            label="Delete"
-            disabledStyle={elementStyles.disabled}
-            className={elementStyles.warning}
-            callback={this.deletePage}
-          />
+          <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
         </div>
         {
           pendingImageUpload
@@ -277,6 +276,16 @@ export default class EditPage extends Component {
           />
           )
         }
+        {
+          canShowDeleteWarningModal
+          && (
+          <DeleteWarningModal
+            onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
+            onDelete={this.deletePage}
+            type="page"
+          />
+          )
+        }
       </>
     );
   }
@@ -289,5 +298,8 @@ EditPage.propTypes = {
       fileName: PropTypes.string,
       newFileName: PropTypes.string,
     }),
+  }).isRequired,
+  history: PropTypes.shape({
+    goBack: PropTypes.func,
   }).isRequired,
 };

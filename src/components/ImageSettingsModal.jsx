@@ -6,6 +6,7 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import FormField from './FormField';
 import LoadingButton from './LoadingButton';
 import { validateFileName } from '../utils/validators';
+import DeleteWarningModal from './DeleteWarningModal';
 
 
 export default class ImageSettingsModal extends Component {
@@ -16,6 +17,7 @@ export default class ImageSettingsModal extends Component {
       newFileName: fileName,
       sha: '',
       content: null,
+      canShowDeleteWarningModal: false,
     };
   }
 
@@ -113,71 +115,88 @@ export default class ImageSettingsModal extends Component {
       isPendingUpload,
     } = this.props;
     const { siteName } = match.params;
-    const { newFileName, sha, content } = this.state;
+    const {
+      newFileName,
+      sha,
+      content,
+      canShowDeleteWarningModal,
+    } = this.state;
     const errorMessage = validateFileName(newFileName);
 
     return (
-      <div className={elementStyles.overlay}>
-        <div className={elementStyles.modal}>
-          <div className={elementStyles.modalHeader}>
-            <h1>Edit Image</h1>
-            <button type="button" onClick={onClose}>
-              <i className="bx bx-x" />
-            </button>
-          </div>
-          <div className={mediaStyles.editMediaPreview}>
-            <img
-              alt={`${image.fileName}`}
-              src={isPendingUpload ? `data:image/png;base64,${content}`
-                : (
-                  `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}${image.path.endsWith('.svg')
-                    ? '?sanitize=true'
-                    : ''}`
-                )}
-            />
-          </div>
-          <form className={elementStyles.modalContent}>
-            <div className={elementStyles.modalFormFields}>
-              <FormField
-                title="Image name"
-                value={newFileName}
-                errorMessage={errorMessage}
-                id="file-name"
-                isRequired
-                onFieldChange={this.setFileName}
+      <>
+        <div className={elementStyles.overlay}>
+          <div className={elementStyles.modal}>
+            <div className={elementStyles.modalHeader}>
+              <h1>Edit Image</h1>
+              <button type="button" onClick={onClose}>
+                <i className="bx bx-x" />
+              </button>
+            </div>
+            <div className={mediaStyles.editMediaPreview}>
+              <img
+                alt={`${image.fileName}`}
+                src={isPendingUpload ? `data:image/png;base64,${content}`
+                  : (
+                    `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}${image.path.endsWith('.svg')
+                      ? '?sanitize=true'
+                      : ''}`
+                  )}
               />
             </div>
-            <div className={elementStyles.modalButtons}>
-              {isPendingUpload
-                ? (
-                  <LoadingButton
-                    label="Save"
-                    disabledStyle={elementStyles.disabled}
-                    className={elementStyles.blue}
-                    callback={this.renameImage}
-                  />
-                ) : (
-                  <>
+            <form className={elementStyles.modalContent}>
+              <div className={elementStyles.modalFormFields}>
+                <FormField
+                  title="Image name"
+                  value={newFileName}
+                  errorMessage={errorMessage}
+                  id="file-name"
+                  isRequired
+                  onFieldChange={this.setFileName}
+                />
+              </div>
+              <div className={elementStyles.modalButtons}>
+                {isPendingUpload
+                  ? (
                     <LoadingButton
                       label="Save"
-                      disabled={(errorMessage || !sha)}
                       disabledStyle={elementStyles.disabled}
-                      className={(errorMessage || !sha) ? elementStyles.disabled : elementStyles.blue}
+                      className={elementStyles.blue}
                       callback={this.renameImage}
                     />
-                    <LoadingButton
-                      label="Delete"
-                      disabled={!sha}
-                      disabledStyle={elementStyles.disabled}
-                      className={sha ? elementStyles.warning : elementStyles.disabled}
-                      callback={this.deleteImage}
-                    />
-                  </>
-                )}
-            </div>
-          </form>
+                  ) : (
+                    <>
+                      <LoadingButton
+                        label="Save"
+                        disabled={(errorMessage || !sha)}
+                        disabledStyle={elementStyles.disabled}
+                        className={(errorMessage || !sha) ? elementStyles.disabled : elementStyles.blue}
+                        callback={this.renameImage}
+                      />
+                      <button
+                        type="button"
+                        className={elementStyles.warning}
+                        onClick={() => this.setState({ canShowDeleteWarningModal: true })}
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
+        {
+          canShowDeleteWarningModal
+          && (
+            <DeleteWarningModal
+              onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
+              onDelete={this.deleteImage}
+              type="image"
+            />
+          )
+        }
+      </>
     );
   }
 }

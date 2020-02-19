@@ -16,6 +16,7 @@ import {
 } from '../utils';
 import LoadingButton from './LoadingButton';
 import { validatePageSettings } from '../utils/validators';
+import DeleteWarningModal from './DeleteWarningModal';
 
 export default class PageSettingsModal extends Component {
   constructor(props) {
@@ -29,6 +30,7 @@ export default class PageSettingsModal extends Component {
         title: '',
         permalink: '',
       },
+      canShowDeleteWarningModal: false,
       permalinkSetterIsActive: false,
       baseUrl: '',
       pagePermalinks: [],
@@ -244,6 +246,7 @@ export default class PageSettingsModal extends Component {
       permalinkSetterIsActive,
       baseUrl,
       sha,
+      canShowDeleteWarningModal,
     } = this.state;
     const { settingsToggle, isNewPage } = this.props;
 
@@ -254,68 +257,74 @@ export default class PageSettingsModal extends Component {
     const hasErrors = _.some(errors, (field) => field.length > 0);
 
     return (
-      <div className={elementStyles.overlay}>
-        <div className={elementStyles.modal}>
-          <div className={elementStyles.modalHeader}>
-            <h1>{ isNewPage ? 'Create new page' : 'Update page settings'}</h1>
-            <button type="button" onClick={settingsToggle}>
-              <i className="bx bx-x" />
-            </button>
-          </div>
-          <div className={elementStyles.modalContent}>
-            <div className={elementStyles.modalFormFields}>
-              <FormField
-                title="Title"
-                id="title"
-                value={title}
-                errorMessage={errors.title}
-                isRequired
-                onFieldChange={this.changeHandler}
-              />
-              <FormFieldPermalink
-                title="URL"
-                id="permalink"
-                urlPrefix={`${baseUrl}/`}
-                value={processedPermalink}
-                errorMessage={errors.permalink}
-                isRequired
-                onFieldChange={this.changeHandler}
-                isActive={permalinkSetterIsActive || isNewPage}
-                togglePermalinkSetter={this.togglePermalinkSetter}
-              />
+      <>
+        <div className={elementStyles.overlay}>
+          <div className={elementStyles.modal}>
+            <div className={elementStyles.modalHeader}>
+              <h1>{ isNewPage ? 'Create new page' : 'Update page settings'}</h1>
+              <button type="button" onClick={settingsToggle}>
+                <i className="bx bx-x" />
+              </button>
             </div>
-            <div className={elementStyles.modalButtons}>
-              {!isNewPage
-                ? (
-                  <>
+            <div className={elementStyles.modalContent}>
+              <div className={elementStyles.modalFormFields}>
+                <FormField
+                  title="Title"
+                  id="title"
+                  value={title}
+                  errorMessage={errors.title}
+                  isRequired
+                  onFieldChange={this.changeHandler}
+                />
+                <FormFieldPermalink
+                  title="URL"
+                  id="permalink"
+                  urlPrefix={`${baseUrl}/`}
+                  value={processedPermalink}
+                  errorMessage={errors.permalink}
+                  isRequired
+                  onFieldChange={this.changeHandler}
+                  isActive={permalinkSetterIsActive || isNewPage}
+                  togglePermalinkSetter={this.togglePermalinkSetter}
+                />
+              </div>
+              <div className={elementStyles.modalButtons}>
+                {!isNewPage
+                  ? (
+                    <>
+                      <LoadingButton
+                        label="Save"
+                        disabled={hasErrors}
+                        disabledStyle={elementStyles.disabled}
+                        className={(hasErrors || !sha) ? elementStyles.disabled : elementStyles.blue}
+                        callback={this.saveHandler}
+                      />
+                      <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
+                    </>
+                  ) : (
                     <LoadingButton
                       label="Save"
                       disabled={hasErrors}
                       disabledStyle={elementStyles.disabled}
-                      className={(hasErrors || !sha) ? elementStyles.disabled : elementStyles.blue}
+                      className={(hasErrors) ? elementStyles.disabled : elementStyles.blue}
                       callback={this.saveHandler}
                     />
-                    <LoadingButton
-                      label="Delete"
-                      disabled={!sha}
-                      disabledStyle={elementStyles.disabled}
-                      className={elementStyles.warning}
-                      callback={this.deleteHandler}
-                    />
-                  </>
-                ) : (
-                  <LoadingButton
-                    label="Save"
-                    disabled={hasErrors}
-                    disabledStyle={elementStyles.disabled}
-                    className={(hasErrors) ? elementStyles.disabled : elementStyles.blue}
-                    callback={this.saveHandler}
-                  />
-                )}
+                  )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+        {
+            canShowDeleteWarningModal
+            && (
+            <DeleteWarningModal
+              onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
+              onDelete={this.deleteHandler}
+              type="page"
+            />
+            )
+        }
+      </>
     );
   }
 }

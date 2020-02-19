@@ -23,6 +23,7 @@ import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
 import LoadingButton from '../components/LoadingButton';
 import { validateSections, validateHighlights, validateDropdownElems } from '../utils/validators';
+import DeleteWarningModal from '../components/DeleteWarningModal';
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -114,6 +115,10 @@ export default class EditHomepage extends Component {
         sections: [],
         highlights: [],
         dropdownElems: [],
+      },
+      itemPendingForDelete: {
+        id: '',
+        type: '',
       },
     };
   }
@@ -516,9 +521,8 @@ export default class EditHomepage extends Component {
     }
   }
 
-  deleteHandler = async (event) => {
+  deleteHandler = async (id) => {
     try {
-      const { id } = event.target;
       const idArray = id.split('-');
       const elemType = idArray[0];
 
@@ -892,6 +896,7 @@ export default class EditHomepage extends Component {
       displayHighlights,
       displayDropdownElems,
       errors,
+      itemPendingForDelete,
       sha,
     } = this.state;
     const { match } = this.props;
@@ -926,6 +931,16 @@ export default class EditHomepage extends Component {
 
     return (
       <>
+        {
+          itemPendingForDelete.id
+          && (
+          <DeleteWarningModal
+            onCancel={() => this.setState({ itemPendingForDelete: { id: null, type: '' } })}
+            onDelete={() => { this.deleteHandler(itemPendingForDelete.id); this.setState({ itemPendingForDelete: { id: null, type: '' } }); }}
+            type={itemPendingForDelete.type}
+          />
+          )
+        }
         <Header
           title="Homepage"
           backButtonText="Back to Pages"
@@ -1009,7 +1024,7 @@ export default class EditHomepage extends Component {
                                 highlights={section.hero.key_highlights}
                                 onFieldChange={this.onFieldChange}
                                 createHandler={this.createHandler}
-                                deleteHandler={this.deleteHandler}
+                                deleteHandler={(event, type) => this.setState({ itemPendingForDelete: { id: event.target.id, type } })}
                                 shouldDisplay={displaySections[sectionIndex]}
                                 displayHighlights={displayHighlights}
                                 displayDropdownElems={displayDropdownElems}
@@ -1040,7 +1055,7 @@ export default class EditHomepage extends Component {
                                     subtitle={section.resources.subtitle}
                                     button={section.resources.button}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={this.deleteHandler}
+                                    deleteHandler={(event) => this.setState({ itemPendingForDelete: { id: event.target.id, type: 'Resources Section' } })}
                                     onFieldChange={this.onFieldChange}
                                     shouldDisplay={displaySections[sectionIndex]}
                                     displayHandler={this.displayHandler}
@@ -1073,7 +1088,7 @@ export default class EditHomepage extends Component {
                                     button={section.infobar.button}
                                     url={section.infobar.url}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={this.deleteHandler}
+                                    deleteHandler={(event) => this.setState({ itemPendingForDelete: { id: event.target.id, type: 'Infobar Section' } })}
                                     onFieldChange={this.onFieldChange}
                                     shouldDisplay={displaySections[sectionIndex]}
                                     displayHandler={this.displayHandler}
@@ -1108,7 +1123,7 @@ export default class EditHomepage extends Component {
                                     imageUrl={section.infopic.imageUrl}
                                     imageAlt={section.infopic.imageAlt}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={this.deleteHandler}
+                                    deleteHandler={(event) => this.setState({ itemPendingForDelete: { id: event.target.id, type: 'Infopic Section' } })}
                                     onFieldChange={this.onFieldChange}
                                     shouldDisplay={displaySections[sectionIndex]}
                                     displayHandler={this.displayHandler}
