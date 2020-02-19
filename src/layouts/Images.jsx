@@ -122,6 +122,10 @@ export default class Images extends Component {
                   />
                   <input
                     onChange={this.onImageSelect}
+                    onClick={(event) => {
+                      // eslint-disable-next-line no-param-reassign
+                      event.target.value = '';
+                    }}
                     type="file"
                     id="file-upload"
                     accept="image/png, image/jpeg, image/gif"
