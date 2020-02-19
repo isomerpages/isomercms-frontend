@@ -42,7 +42,11 @@ export default class ImageSettingsModal extends Component {
 
   renameImage = async () => {
     const {
-      match, image, isPendingUpload, toReload, onClose,
+      match,
+      image,
+      isPendingUpload,
+      toReload,
+      onClose,
     } = this.props;
     const { siteName } = match.params;
     const {
@@ -140,7 +144,6 @@ export default class ImageSettingsModal extends Component {
                   )}
               />
             </div>
-
             <form className={elementStyles.modalContent}>
               <div className={elementStyles.modalFormFields}>
                 <FormField
@@ -170,7 +173,13 @@ export default class ImageSettingsModal extends Component {
                         className={(errorMessage || !sha) ? elementStyles.disabled : elementStyles.blue}
                         callback={this.renameImage}
                       />
-                      <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
+                      <button
+                        type="button"
+                        className={elementStyles.warning}
+                        onClick={() => this.setState({ canShowDeleteWarningModal: true })}
+                      >
+                        Delete
+                      </button>
                     </>
                   )}
               </div>

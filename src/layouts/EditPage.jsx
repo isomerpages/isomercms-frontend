@@ -43,6 +43,7 @@ export default class EditPage extends Component {
       images: [],
       isSelectingImage: false,
       pendingImageUpload: null,
+      selectedImage: '',
     };
     this.mdeRef = React.createRef();
   }
@@ -129,8 +130,9 @@ export default class EditPage extends Component {
     }));
   }
 
-  onImageClick = (filePath) => {
-    const path = `/${filePath}`;
+  onImageClick = () => {
+    const { selectedImage } = this.state;
+    const path = `/${selectedImage}`;
     const cm = this.mdeRef.current.simpleMde.codemirror;
     cm.replaceSelection(`![](${path})`);
     // set state so that rerender is triggered and image is shown
@@ -170,10 +172,21 @@ export default class EditPage extends Component {
     imgReader.readAsDataURL(event.target.files[0]);
   }
 
+  setSelectedImage = async (filePath) => {
+    this.setState({ selectedImage: filePath });
+  }
+
   render() {
     const { match } = this.props;
     const { siteName, fileName } = match.params;
-    const { editorValue, canShowDeleteWarningModal, images, isSelectingImage, pendingImageUpload } = this.state;
+    const {
+      editorValue,
+      canShowDeleteWarningModal,
+      images,
+      isSelectingImage,
+      pendingImageUpload,
+      selectedImage,
+    } = this.state;
     return (
       <>
         <Header
@@ -185,10 +198,15 @@ export default class EditPage extends Component {
           { isSelectingImage && (
             <ImagesModal
               siteName={siteName}
-              onClose={() => this.setState({ isSelectingImage: false })}
+              onClose={() => this.setState({ isSelectingImage: false, selectedImage: '' })}
               images={images}
-              onImageSelect={this.onImageClick}
+              onImageSelect={() => {
+                this.onImageClick();
+                this.setState({ selectedImage: '' });
+              }}
               readImageToUpload={this.readImageToUpload}
+              selectedImage={selectedImage}
+              setSelectedImage={this.setSelectedImage}
             />
           )}
           <div className={editorStyles.pageEditorSidebar}>
@@ -213,7 +231,7 @@ export default class EditPage extends Component {
                     name: 'image',
                     action: async () => {
                       await this.getImages(siteName);
-                      this.setState({ isSelectingImage: true })
+                      this.setState({ isSelectingImage: true });
                     },
                     className: 'fa fa-picture-o',
                     title: 'Insert Image',
@@ -227,7 +245,10 @@ export default class EditPage extends Component {
             />
           </div>
           <div className={editorStyles.pageEditorMain}>
-            <SimplePage chunk={prependImageSrc(siteName, marked(editorValue))} title={prettifyPageFileName(fileName)} />
+            <SimplePage
+              chunk={prependImageSrc(siteName, marked(editorValue))}
+              title={prettifyPageFileName(fileName)}
+            />
           </div>
         </div>
         <div className={editorStyles.pageEditorFooter}>

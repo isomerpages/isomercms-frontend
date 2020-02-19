@@ -35,6 +35,10 @@
   overflow-y: scroll;
   padding-bottom: 50px;
 
+    .selectedMediaCard{
+      outline: 2px solid $isomer-blue;
+      @extend .mediaCard;
+    }
 
     .mediaCard{
       @include single-site;

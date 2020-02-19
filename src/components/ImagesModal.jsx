@@ -1,12 +1,20 @@
 import React, { PureComponent } from 'react';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import { UploadImageCard } from '../layouts/Images';
+import LoadingButton from './LoadingButton';
 
-export const ImageCard = ({ image, siteName, onClick }) => (
-  <div className={mediaStyles.mediaCard} key={image.path}>
+export const ImageCard = ({
+  image,
+  siteName,
+  onClick,
+  isSelected,
+}) => (
+  <div
+    className={isSelected ? mediaStyles.selectedMediaCard : mediaStyles.mediaCard}
+    key={image.path}
+  >
     <a href="/" onClick={(e) => { e.preventDefault(); onClick(image.path); }}>
       <div className={mediaStyles.mediaCardImageContainer}>
         <img
@@ -18,7 +26,6 @@ export const ImageCard = ({ image, siteName, onClick }) => (
       </div>
       <div className={mediaStyles.mediaCardDescription}>
         <div className={mediaStyles.mediaCardName}>{image.fileName}</div>
-        <i className="bx bxs-edit" />
       </div>
     </a>
   </div>
@@ -27,13 +34,27 @@ export const ImageCard = ({ image, siteName, onClick }) => (
 
 export default class ImagesModal extends PureComponent {
   render() {
-    const { siteName, images, onClose, onImageSelect, readImageToUpload } = this.props;
+    const {
+      siteName,
+      images,
+      onClose,
+      onImageSelect,
+      readImageToUpload,
+      selectedImage,
+      setSelectedImage,
+    } = this.props;
     return (!!images.length
       && (
         <div className={elementStyles.overlay}>
           <div className={mediaStyles.mediaModal}>
             <div className={elementStyles.modalHeader}>
-              <h1>Select Image</h1>
+              <h1 style={{ flexGrow: 1 }}>Select Image</h1>
+              <LoadingButton
+                label="Select image"
+                disabledStyle={elementStyles.disabled}
+                className={elementStyles.blue}
+                callback={onImageSelect}
+              />
               <button type="button" onClick={onClose}>
                 <i className="bx bx-x" />
               </button>
@@ -45,6 +66,10 @@ export default class ImagesModal extends PureComponent {
               />
               <input
                 onChange={readImageToUpload}
+                onClick={(event) => {
+                  // eslint-disable-next-line no-param-reassign
+                  event.target.value = '';
+                }}
                 type="file"
                 id="file-upload"
                 accept="image/png, image/jpeg, image/gif"
@@ -55,8 +80,9 @@ export default class ImagesModal extends PureComponent {
                 <ImageCard
                   image={image}
                   siteName={siteName}
-                  onClick={onImageSelect}
+                  onClick={setSelectedImage}
                   key={image.fileName}
+                  isSelected={image.path === selectedImage}
                 />
               ))}
             </div>
@@ -64,7 +90,7 @@ export default class ImagesModal extends PureComponent {
         </div>
       )
     );
-  };
+  }
 }
 
 ImageCard.propTypes = {
@@ -74,10 +100,18 @@ ImageCard.propTypes = {
   }).isRequired,
   siteName: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
+  isSelected: PropTypes.bool.isRequired,
 };
 
 ImagesModal.propTypes = {
+  images: PropTypes.arrayOf(PropTypes.shape({
+    fileName: PropTypes.string,
+    path: PropTypes.string,
+  })).isRequired,
   onClose: PropTypes.func.isRequired,
   siteName: PropTypes.string.isRequired,
   onImageSelect: PropTypes.func.isRequired,
+  readImageToUpload: PropTypes.func.isRequired,
+  selectedImage: PropTypes.string.isRequired,
+  setSelectedImage: PropTypes.func.isRequired,
 };
