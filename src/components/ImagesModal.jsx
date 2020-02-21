@@ -16,7 +16,7 @@ export const ImageCard = ({
     key={image.path}
   >
     <a href="/" onClick={(e) => { e.preventDefault(); onClick(image.path); }}>
-      <div className={mediaStyles.mediaCardImageContainer}>
+      <div className={mediaStyles.mediaCardImagePreviewContainer}>
         <img
           className={mediaStyles.mediaCardImage}
           alt={`${image.fileName}`}
