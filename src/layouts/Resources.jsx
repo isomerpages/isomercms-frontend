@@ -29,14 +29,15 @@ const ResourceCard = ({
           <p className={contentStyles.resourceType}>{type}</p>
         </div>
       </Link>
-      <button
-        type="button"
-        id={`settings-${resourceIndex}`}
-        onClick={settingsToggle}
-        className={contentStyles.resourceIcon}
-      >
-        <i id={`settingsIcon-${resourceIndex}`} className="bx bx-cog" />
-      </button>
+      <div className={contentStyles.resourceIcon}>
+        <button
+          type="button"
+          id={`settings-${resourceIndex}`}
+          onClick={settingsToggle}
+        >
+          <i id={`settingsIcon-${resourceIndex}`} className="bx bx-cog" />
+        </button>
+      </div>
     </div>
   );
 };
