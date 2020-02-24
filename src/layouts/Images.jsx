@@ -23,6 +23,7 @@ export default class Images extends Component {
       images: [],
       chosenImage: null,
       pendingImageUpload: null,
+      showingUploadSizeError: false,
     };
   }
 
@@ -58,6 +59,11 @@ export default class Images extends Component {
   onImageSelect = async (event) => {
     const imgReader = new FileReader();
     const imgName = event.target.files[0].name;
+    const imgSize = event.target.files[0].size / 1024 / 1024; // Gives size in MB
+    if (imgSize > 1) {
+      this.setState({ showingUploadSizeError: true }, () => setTimeout(() => { this.setState({ showingUploadSizeError: false }); }, 3000));
+      return;
+    }
     imgReader.onload = (() => {
       /** Github only requires the content of the image
        * imgReader returns  `data:image/png;base64, {fileContent}`
@@ -72,7 +78,12 @@ export default class Images extends Component {
   }
 
   render() {
-    const { images, chosenImage, pendingImageUpload } = this.state;
+    const {
+      images,
+      chosenImage,
+      pendingImageUpload,
+      showingUploadSizeError,
+    } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
     return (
@@ -143,6 +154,16 @@ export default class Images extends Component {
             isPendingUpload={true}
             onClose={() => this.setState({ pendingImageUpload: null })}
           />
+          )
+        }
+        {
+          showingUploadSizeError
+          && (
+          <div className="d-flex justify-content-center fixed-bottom mt-3">
+            <div className="alert alert-danger" role="alert">
+              {'Image size must be < 1MB!'}
+            </div>
+          </div>
           )
         }
       </>
