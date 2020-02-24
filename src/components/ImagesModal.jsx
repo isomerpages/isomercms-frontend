@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -32,17 +32,39 @@ export const ImageCard = ({
 );
 
 
-export default class ImagesModal extends PureComponent {
+export default class ImagesModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      canShowUploadSizeError: false,
+    };
+  }
+
+  onImageUploadSelect = (event) => {
+    const { readImageToUpload } = this.props;
+    const imgSize = event.target.files[0].size / 1024 / 1024; // Gives size in MB
+    if (imgSize > 1) {
+      this.setState(
+        { canShowUploadSizeError: true },
+        () => setTimeout(() => { this.setState({ canShowUploadSizeError: false }); }, 3000),
+      );
+      return;
+    }
+
+    readImageToUpload(event);
+  }
+
   render() {
     const {
       siteName,
       images,
       onClose,
       onImageSelect,
-      readImageToUpload,
       selectedImage,
       setSelectedImage,
     } = this.props;
+
+    const { canShowUploadSizeError } = this.state;
     return (!!images.length
       && (
         <div className={elementStyles.overlay}>
@@ -65,7 +87,7 @@ export default class ImagesModal extends PureComponent {
                 onClick={() => document.getElementById('file-upload').click()}
               />
               <input
-                onChange={readImageToUpload}
+                onChange={this.onImageUploadSelect}
                 onClick={(event) => {
                   // eslint-disable-next-line no-param-reassign
                   event.target.value = '';
@@ -87,6 +109,16 @@ export default class ImagesModal extends PureComponent {
               ))}
             </div>
           </div>
+          {
+            canShowUploadSizeError
+            && (
+            <div className="d-flex justify-content-center fixed-bottom mt-3">
+              <div className="alert alert-danger" role="alert">
+                {'Image size must be < 1MB!'}
+              </div>
+            </div>
+            )
+          }
         </div>
       )
     );

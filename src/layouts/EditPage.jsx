@@ -45,7 +45,6 @@ export default class EditPage extends Component {
       isSelectingImage: false,
       pendingImageUpload: null,
       selectedImage: '',
-      canShowUploadSizeError: false,
     };
     this.mdeRef = React.createRef();
   }
@@ -162,14 +161,6 @@ export default class EditPage extends Component {
   readImageToUpload = async (event) => {
     const imgReader = new FileReader();
     const imgName = event.target.files[0].name;
-    const imgSize = event.target.files[0].size / 1024 / 1024; // Gives size in MB
-    if (imgSize > 1) {
-      this.setState(
-        { canShowUploadSizeError: true },
-        () => setTimeout(() => { this.setState({ canShowUploadSizeError: false }); }, 3000),
-      );
-      return;
-    }
     imgReader.onload = (() => {
       /** Github only requires the content of the image
        * imgReader returns  `data:image/png;base64, {fileContent}`
@@ -196,7 +187,6 @@ export default class EditPage extends Component {
       isSelectingImage,
       pendingImageUpload,
       selectedImage,
-      canShowUploadSizeError,
     } = this.state;
     return (
       <>
@@ -296,16 +286,6 @@ export default class EditPage extends Component {
             onDelete={this.deletePage}
             type="page"
           />
-          )
-        }
-        {
-          canShowUploadSizeError
-          && (
-          <div className="d-flex justify-content-center fixed-bottom mt-3">
-            <div className="alert alert-danger" role="alert">
-              {'Image size must be < 1MB!'}
-            </div>
-          </div>
           )
         }
       </>
