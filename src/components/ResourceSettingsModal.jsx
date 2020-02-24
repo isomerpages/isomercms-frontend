@@ -4,6 +4,7 @@ import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import FormField from './FormField';
+import FormFieldFile from './FormFieldFile';
 import LoadingButton from './LoadingButton';
 import {
   prettifyResourceCategory,
@@ -286,13 +287,14 @@ export default class ResourceSettingsModal extends Component {
                   : (
                     <>
                       {/* File URL */}
-                      <FormField
-                        title="File URL"
+                      <FormFieldFile
+                        title="Select File"
                         id="fileUrl"
-                        value={fileUrl}
+                        value={fileUrl.split('/').pop()}
                         errorMessage={errors.fileUrl}
                         isRequired
                         onFieldChange={this.changeHandler}
+                        inlineButtonText="Select File"
                       />
                     </>
                   )}

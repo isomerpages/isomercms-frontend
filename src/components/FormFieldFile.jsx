@@ -2,19 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
-const FormField = ({
+const FormFieldFile = ({
   title,
   defaultValue,
   value,
   id,
   errorMessage,
-  onFieldChange,
   isRequired,
   style,
+  onFileSelect,
+  inlineButtonText,
 }) => (
   <>
     <p className={elementStyles.formLabel}>{title}</p>
-    <div className="d-flex">
+    <div className="d-flex border">
       <input
         type="text"
         placeholder={title}
@@ -23,18 +24,30 @@ const FormField = ({
         id={id}
         autoComplete="off"
         required={isRequired}
-        className={errorMessage ? `${elementStyles.error}` : null}
+        className={errorMessage ? `${elementStyles.error}` : 'border-0'}
         style={style}
-        onChange={onFieldChange}
+        disabled
       />
+      {
+        inlineButtonText
+        && (
+        <button
+          type="button"
+          className={`${elementStyles.blue} text-nowrap`}
+          onClick={onFileSelect}
+        >
+          { inlineButtonText }
+        </button>
+        )
+      }
     </div>
     <span className={elementStyles.error}>{errorMessage}</span>
   </>
 );
 
-export default FormField;
+export default FormFieldFile;
 
-FormField.propTypes = {
+FormFieldFile.propTypes = {
   title: PropTypes.string.isRequired,
   defaultValue: PropTypes.string,
   value: PropTypes.string.isRequired,
@@ -43,9 +56,11 @@ FormField.propTypes = {
   onFieldChange: PropTypes.func.isRequired,
   isRequired: PropTypes.bool.isRequired,
   style: PropTypes.string,
+  inlineButtonText: PropTypes.string,
 };
 
-FormField.defaultProps = {
+FormFieldFile.defaultProps = {
   defaultValue: undefined,
   style: undefined,
+  inlineButtonText: '',
 };
