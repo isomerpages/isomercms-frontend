@@ -23,7 +23,7 @@ export default class Images extends Component {
       images: [],
       chosenImage: null,
       pendingImageUpload: null,
-      showingUploadSizeError: false,
+      canShowUploadSizeError: false,
     };
   }
 
@@ -61,7 +61,10 @@ export default class Images extends Component {
     const imgName = event.target.files[0].name;
     const imgSize = event.target.files[0].size / 1024 / 1024; // Gives size in MB
     if (imgSize > 1) {
-      this.setState({ showingUploadSizeError: true }, () => setTimeout(() => { this.setState({ showingUploadSizeError: false }); }, 3000));
+      this.setState(
+        { canShowUploadSizeError: true },
+        () => setTimeout(() => { this.setState({ canShowUploadSizeError: false }); }, 3000),
+      );
       return;
     }
     imgReader.onload = (() => {
@@ -82,7 +85,7 @@ export default class Images extends Component {
       images,
       chosenImage,
       pendingImageUpload,
-      showingUploadSizeError,
+      canShowUploadSizeError,
     } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
@@ -157,7 +160,7 @@ export default class Images extends Component {
           )
         }
         {
-          showingUploadSizeError
+          canShowUploadSizeError
           && (
           <div className="d-flex justify-content-center fixed-bottom mt-3">
             <div className="alert alert-danger" role="alert">
