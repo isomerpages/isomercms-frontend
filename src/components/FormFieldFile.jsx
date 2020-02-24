@@ -10,7 +10,7 @@ const FormFieldFile = ({
   errorMessage,
   isRequired,
   style,
-  onFileSelect,
+  onInlineButtonClick,
   inlineButtonText,
 }) => (
   <>
@@ -34,7 +34,7 @@ const FormFieldFile = ({
         <button
           type="button"
           className={`${elementStyles.blue} text-nowrap`}
-          onClick={onFileSelect}
+          onClick={onInlineButtonClick}
         >
           { inlineButtonText }
         </button>
@@ -53,10 +53,10 @@ FormFieldFile.propTypes = {
   value: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   errorMessage: PropTypes.string.isRequired,
-  onFieldChange: PropTypes.func.isRequired,
   isRequired: PropTypes.bool.isRequired,
   style: PropTypes.string,
   inlineButtonText: PropTypes.string,
+  onInlineButtonClick: PropTypes.func.isRequired,
 };
 
 FormFieldFile.defaultProps = {
