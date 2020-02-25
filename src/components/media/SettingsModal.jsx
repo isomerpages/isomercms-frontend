@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
+import LoadingButton from '../LoadingButton';
+import DeleteWarningModal from '../DeleteWarningModal';
 import { validateFileName } from '../../utils/validators';
 
 export default class MediaSettingsModal extends Component {
@@ -14,6 +16,7 @@ export default class MediaSettingsModal extends Component {
       newFileName: fileName,
       sha: '',
       content: null,
+      canShowDeleteWarningModal: false,
     };
   }
 
@@ -100,7 +103,12 @@ export default class MediaSettingsModal extends Component {
     const {
       onClose, media, type, isPendingUpload, siteName,
     } = this.props;
-    const { newFileName, sha, content } = this.state;
+    const {
+      newFileName,
+      sha,
+      content,
+      canShowDeleteWarningModal,
+    } = this.state;
     const errorMessage = validateFileName(newFileName);
 
     return (
@@ -147,11 +155,39 @@ export default class MediaSettingsModal extends Component {
               />
             </div>
             <div className={elementStyles.modalButtons}>
-              <button type="button" className={errorMessage ? elementStyles.disabled : elementStyles.blue} disabled={!!errorMessage} onClick={this.saveFile}>Save</button>
-              <button type="button" className={sha ? elementStyles.warning : elementStyles.disabled} onClick={this.deleteFile} disabled={!sha}>Delete</button>
+              {isPendingUpload
+                ? (
+                  <LoadingButton
+                    label="Save"
+                    disabledStyle={elementStyles.disabled}
+                    className={elementStyles.blue}
+                    callback={this.saveFile}
+                  />
+                ) : (
+                  <>
+                    <LoadingButton
+                      label="Save"
+                      disabled={(errorMessage || !sha)}
+                      disabledStyle={elementStyles.disabled}
+                      className={(errorMessage || !sha) ? elementStyles.disabled : elementStyles.blue}
+                      callback={this.saveFile}
+                    />
+                    <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
+                  </>
+                )}
             </div>
           </form>
         </div>
+        {
+          canShowDeleteWarningModal
+          && (
+            <DeleteWarningModal
+              onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
+              onDelete={this.deleteFile}
+              type="image"
+            />
+          )
+        }
       </div>
     );
   }
