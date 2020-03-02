@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import { UploadImageCard } from '../layouts/Images';
+import { ImageUploadCard } from '../layouts/Images';
 import LoadingButton from './LoadingButton';
 
 export const ImageCard = ({
@@ -16,7 +16,7 @@ export const ImageCard = ({
     key={image.path}
   >
     <a href="/" onClick={(e) => { e.preventDefault(); onClick(image.path); }}>
-      <div className={mediaStyles.mediaCardImageContainer}>
+      <div className={mediaStyles.mediaCardImagePreviewContainer}>
         <img
           className={mediaStyles.mediaCardImage}
           alt={`${image.fileName}`}
@@ -61,7 +61,7 @@ export default class ImagesModal extends PureComponent {
             </div>
             <div className={mediaStyles.mediaCards}>
               {/* Upload image */}
-              <UploadImageCard
+              <ImageUploadCard
                 onClick={() => document.getElementById('file-upload').click()}
               />
               <input

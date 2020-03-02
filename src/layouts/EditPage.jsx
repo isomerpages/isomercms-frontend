@@ -7,7 +7,8 @@ import marked from 'marked';
 import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
 import ImagesModal from '../components/ImagesModal';
-import ImageSettingsModal from '../components/ImageSettingsModal';
+import MediaSettingsModal from '../components/media/MediaSettingsModal';
+
 import {
   frontMatterParser, concatFrontMatterMdBody, prependImageSrc, prettifyPageFileName,
 } from '../utils';
@@ -263,9 +264,10 @@ export default class EditPage extends Component {
         {
           pendingImageUpload
           && (
-          <ImageSettingsModal
-            image={pendingImageUpload}
-            match={match}
+          <MediaSettingsModal
+            type="image"
+            media={pendingImageUpload}
+            siteName={siteName}
             // eslint-disable-next-line react/jsx-boolean-value
             isPendingUpload={true}
             onClose={() => {

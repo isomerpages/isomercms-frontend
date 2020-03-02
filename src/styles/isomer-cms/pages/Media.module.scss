@@ -10,6 +10,12 @@
   border-radius: 5px;
 }
 
+@mixin checkered-background-grid {
+  background-image: url('/img/transparent_bg.jpg');
+  background-size: 20px 20px;
+  background-repeat: repeat;
+}
+
 .mediaCardDimensions {
   @include single-site;
 }
@@ -48,23 +54,36 @@
       box-sizing: border-box;
       transition: transform 0.2s ease-in;
 
-      .mediaCardImageContainer {
+      .mediaCardPreviewContainer {
         height: 70%;
         width: 100%;
-        background: grey;
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
         overflow: hidden;
         display: flex;
         justify-content: center;
         align-items: center;
-        background-image: url('/img/transparent_bg.jpg');
-        background-size: 20px 20px;
-        background-repeat: repeat;
+      }
+      .mediaCardImagePreviewContainer {
+        @extend .mediaCardPreviewContainer;
+        @include checkered-background-grid;
+
         .mediaCardImage {
           max-height: 100%;
         }
 
+      }
+
+      .mediaCardFilePreviewContainer {
+        @extend .mediaCardPreviewContainer;
+        background: rgb(216, 216, 216);
+
+        p {
+          color: rgb(102, 102, 102);
+          font-weight: bold;
+          font-size: 30px;
+          margin-top: 10%;
+        }
       }
 
       .mediaCardDescription{
@@ -109,12 +128,25 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url('/img/transparent_bg.jpg');
-  background-size: 20px 20px;
-  background-repeat: repeat;
+}
+
+.editImagePreview {
+  @extend .editMediaPreview;
+  @include checkered-background-grid;
 
   img {
     max-width: 100%;
     max-height: 100%;
+  }
+}
+
+.editFilePreview {
+  @extend .editMediaPreview;
+  background-color: rgb(216, 216, 216);
+
+  p {
+    color: rgb(102, 102, 102);
+    font-weight: bold;
+    font-size: 40px;
   }
 }
