@@ -6,9 +6,9 @@ import Sidebar from '../components/Sidebar';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
-import MediaUploadCard from '../components/media/UploadCard';
-import MediaCard from '../components/media/Card';
-import MediaSettingsModal from '../components/media/SettingsModal';
+import MediaUploadCard from '../components/media/MediaUploadCard';
+import MediaCard from '../components/media/MediaCard';
+import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
 const FileCard = ({ file, onClick }) => MediaCard({ type: 'file', onClick, media: file });
 

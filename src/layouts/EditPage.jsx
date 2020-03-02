@@ -7,7 +7,7 @@ import marked from 'marked';
 import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
 import ImagesModal from '../components/ImagesModal';
-import MediaSettingsModal from '../components/media/SettingsModal';
+import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
 import {
   frontMatterParser, concatFrontMatterMdBody, prependImageSrc, prettifyPageFileName,
