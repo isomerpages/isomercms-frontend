@@ -18,6 +18,7 @@ import {
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import { validateResourceSettings } from '../utils/validators';
 import DeleteWarningModal from './DeleteWarningModal';
+import FilesModal from './FilesModal';
 
 export default class ResourceSettingsModal extends Component {
   constructor(props) {
@@ -40,6 +41,7 @@ export default class ResourceSettingsModal extends Component {
         prevCategory: '',
       },
       canShowDeleteWarningModal: false,
+      canShowFilesModal: false,
     };
   }
 
@@ -203,8 +205,9 @@ export default class ResourceSettingsModal extends Component {
       errors,
       canShowDeleteWarningModal,
       sha,
+      canShowFilesModal,
     } = this.state;
-    const { settingsToggle, isNewPost } = this.props;
+    const { settingsToggle, isNewPost, siteName } = this.props;
 
     // Resource settings form has errors - disable save button
     const hasErrors = _.some(errors, (field) => field.length > 0);
@@ -293,8 +296,8 @@ export default class ResourceSettingsModal extends Component {
                         value={fileUrl.split('/').pop()}
                         errorMessage={errors.fileUrl}
                         isRequired
-                        onFieldChange={this.changeHandler}
                         inlineButtonText="Select File"
+                        onInlineButtonClick={() => this.setState({ canShowFilesModal: true })}
                       />
                     </>
                   )}
@@ -323,6 +326,16 @@ export default class ResourceSettingsModal extends Component {
               onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
               onDelete={this.deleteHandler}
               type="resource"
+            />
+          )
+        }
+        {
+          canShowFilesModal
+          && (
+            <FilesModal
+              siteName={siteName}
+              onClose={() => this.setState({ canShowFilesModal: false })}
+              onFileSelect={(filePath) => this.setState({ fileUrl: filePath, canShowFilesModal: false })}
             />
           )
         }
