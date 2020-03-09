@@ -302,20 +302,20 @@ export default class ResourceSettingsModal extends Component {
                     </>
                   )}
               </div>
-            </div>
-            {/* Save or Delete buttons */}
-            <div className={elementStyles.modalButtons}>
-              <LoadingButton
-                label="Save"
-                disabled={hasErrors}
-                disabledStyle={elementStyles.disabled}
-                className={(isNewPost ? hasErrors : (hasErrors || !sha)) ? elementStyles.disabled : elementStyles.blue}
-                callback={this.saveHandler}
-              />
-              { !isNewPost
-                ? (
-                  <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
-                ) : null}
+              {/* Save or Delete buttons */}
+              <div className={elementStyles.modalButtons}>
+                <LoadingButton
+                  label="Save"
+                  disabled={hasErrors}
+                  disabledStyle={elementStyles.disabled}
+                  className={(isNewPost ? hasErrors : (hasErrors || !sha)) ? elementStyles.disabled : elementStyles.blue}
+                  callback={this.saveHandler}
+                />
+                { !isNewPost
+                  ? (
+                    <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
+                  ) : null}
+              </div>
             </div>
           </div>
         </div>
