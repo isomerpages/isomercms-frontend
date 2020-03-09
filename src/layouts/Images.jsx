@@ -90,7 +90,8 @@ export default class Images extends Component {
               <div className={contentStyles.boxesContainer}>
                 <div className={mediaStyles.mediaCards}>
                   {/* Upload Image */}
-                  <ImageUploadCard
+                  <MediaUploadCard
+                    type="image"
                     onClick={() => document.getElementById('file-upload').click()}
                   />
                   <input
@@ -106,8 +107,9 @@ export default class Images extends Component {
                   />
                   {/* Images */}
                   {images.map((image) => (
-                    <ImageCard
-                      image={image}
+                    <MediaCard
+                      type="image"
+                      media={image}
                       siteName={siteName}
                       onClick={() => this.setState({ chosenImage: image })}
                       key={image.fileName}
