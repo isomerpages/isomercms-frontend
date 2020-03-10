@@ -470,23 +470,9 @@ const validateResourceSettings = (id, value) => {
       break;
     }
     case 'fileUrl': {
-      // File URL is too short
-      // if (value.length < RESOURCE_SETTINGS_PERMALINK_MIN_LENGTH) {
-      //   errorMessage = `The file URL should be longer than ${RESOURCE_SETTINGS_PERMALINK_MIN_LENGTH} characters.`;
-      // }
-      // // File URL is too long
-      // if (value.length > RESOURCE_SETTINGS_PERMALINK_MAX_LENGTH) {
-      //   errorMessage = `The file URL should be shorter than ${RESOURCE_SETTINGS_PERMALINK_MAX_LENGTH} characters.`;
-      // }
-      // File URL fails regex
-      // if (!permalinkRegexTest.test(value)) {
-      //   console.log('FAILED');
-      //   errorMessage = `The permalink should start and end with slashes and contain
-      //     lowercase words separated by hyphens only.
-      //     `;
-      // }
-      // TO-DO
-      // Check if file exists
+      if (value.length === 0) {
+        errorMessage = 'Please choose a file';
+      }
       break;
     }
     default: {

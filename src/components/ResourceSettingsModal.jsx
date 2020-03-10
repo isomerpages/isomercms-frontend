@@ -96,7 +96,13 @@ export default class ResourceSettingsModal extends Component {
   handlePermalinkFileUrlToggle = (event) => {
     const { target: { value } } = event;
     if (value === 'file') {
-      this.setState({ permalink: null, fileUrl: '/file/url/' });
+      this.setState({
+        permalink: null,
+        fileUrl: '',
+        errors: {
+          fileUrl: '',
+        },
+      });
     } else {
       this.setState({ permalink: '/permalink/', fileUrl: null });
     }
@@ -265,15 +271,29 @@ export default class ResourceSettingsModal extends Component {
                 {/* Permalink or File URL */}
                 <div className="d-flex">
                   <label htmlFor="radio-post" className="flex-fill">
-                    <input type="radio" id="radio-post" name="resource-type" value="post" onClick={this.handlePermalinkFileUrlToggle} checked={!!permalink} />
+                    <input
+                      type="radio"
+                      id="radio-post"
+                      name="resource-type"
+                      value="post"
+                      onClick={this.handlePermalinkFileUrlToggle}
+                      checked={permalink || fileUrl === null}
+                    />
                     Post Content
                   </label>
                   <label htmlFor="radio-post" className="flex-fill">
-                    <input type="radio" id="radio-file" name="resource-type" value="file" onClick={this.handlePermalinkFileUrlToggle} checked={!permalink} />
+                    <input
+                      type="radio"
+                      id="radio-file"
+                      name="resource-type"
+                      value="file"
+                      onClick={this.handlePermalinkFileUrlToggle}
+                      checked={!permalink && fileUrl !== null}
+                    />
                     Downloadable File
                   </label>
                 </div>
-                {permalink
+                {permalink || fileUrl === null
                   ? (
                     <>
                       {/* Permalink */}
@@ -293,9 +313,10 @@ export default class ResourceSettingsModal extends Component {
                       <FormFieldFile
                         title="Select File"
                         id="fileUrl"
-                        value={fileUrl.split('/').pop()}
+                        value={fileUrl?.split('/').pop()}
                         errorMessage={errors.fileUrl}
                         isRequired
+                        onFieldChange={this.changeHandler}
                         inlineButtonText="Select File"
                         onInlineButtonClick={() => this.setState({ canShowFilesModal: true })}
                       />

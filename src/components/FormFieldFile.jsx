@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
 const FormFieldFile = ({
@@ -12,23 +13,36 @@ const FormFieldFile = ({
   style,
   onInlineButtonClick,
   inlineButtonText,
-}) => (
-  <>
-    <p className={elementStyles.formLabel}>{title}</p>
-    <div className="d-flex border">
-      <input
-        type="text"
-        placeholder={title}
-        value={value}
-        defaultValue={defaultValue}
-        id={id}
-        autoComplete="off"
-        required={isRequired}
-        className={errorMessage ? `${elementStyles.error}` : 'border-0'}
-        style={style}
-        disabled
-      />
-      {
+  onFieldChange,
+}) => {
+  useEffect(() => {
+    if (_.isString(value)) {
+      const event = {
+        target: {
+          id: 'fileUrl',
+          value,
+        },
+      };
+      onFieldChange(event);
+    }
+  }, [value]);
+  return (
+    <>
+      <p className={elementStyles.formLabel}>{title}</p>
+      <div className="d-flex border">
+        <input
+          type="text"
+          placeholder={title}
+          value={value}
+          defaultValue={defaultValue}
+          id={id}
+          autoComplete="off"
+          required={isRequired}
+          className={errorMessage ? `${elementStyles.error}` : 'border-0'}
+          style={style}
+          disabled
+        />
+        {
         inlineButtonText
         && (
         <button
@@ -40,10 +54,11 @@ const FormFieldFile = ({
         </button>
         )
       }
-    </div>
-    <span className={elementStyles.error}>{errorMessage}</span>
-  </>
-);
+      </div>
+      <span className={elementStyles.error}>{errorMessage}</span>
+    </>
+  );
+};
 
 export default FormFieldFile;
 
@@ -57,6 +72,7 @@ FormFieldFile.propTypes = {
   style: PropTypes.string,
   inlineButtonText: PropTypes.string,
   onInlineButtonClick: PropTypes.func.isRequired,
+  onFieldChange: PropTypes.func.isRequired,
 };
 
 FormFieldFile.defaultProps = {
