@@ -99,12 +99,15 @@ export default class ResourceSettingsModal extends Component {
       this.setState({
         permalink: null,
         fileUrl: '',
+      });
+    } else {
+      this.setState({
+        permalink: '/permalink/',
+        fileUrl: null,
         errors: {
           fileUrl: '',
         },
       });
-    } else {
-      this.setState({ permalink: '/permalink/', fileUrl: null });
     }
   }
 
