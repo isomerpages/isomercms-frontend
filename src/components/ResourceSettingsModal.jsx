@@ -18,7 +18,7 @@ import {
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import { validateResourceSettings } from '../utils/validators';
 import DeleteWarningModal from './DeleteWarningModal';
-import FilesModal from './FilesModal';
+import MediasModal from './media/MediaModal';
 
 export default class ResourceSettingsModal extends Component {
   constructor(props) {
@@ -359,10 +359,11 @@ export default class ResourceSettingsModal extends Component {
         {
           canShowFilesModal
           && (
-            <FilesModal
+            <MediasModal
+              type="file"
               siteName={siteName}
               onClose={() => this.setState({ canShowFilesModal: false })}
-              onFileSelect={(filePath) => this.setState({ fileUrl: filePath, canShowFilesModal: false })}
+              onMediaSelect={(filePath) => this.setState({ fileUrl: filePath, canShowFilesModal: false })}
             />
           )
         }
