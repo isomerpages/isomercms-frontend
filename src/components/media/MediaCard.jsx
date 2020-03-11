@@ -51,7 +51,7 @@ MediaCard.propTypes = {
 
 MediaCard.defaultProps = {
   siteName: '',
-  isSelected: true,
+  isSelected: false,
   canShowEditIcon: false,
 };
 
