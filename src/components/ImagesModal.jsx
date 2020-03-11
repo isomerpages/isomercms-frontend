@@ -2,35 +2,9 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import { ImageUploadCard } from '../layouts/Images';
+import MediaUploadCard from './media/MediaUploadCard';
+import MediaCard from './media/MediaCard';
 import LoadingButton from './LoadingButton';
-
-export const ImageCard = ({
-  image,
-  siteName,
-  onClick,
-  isSelected,
-}) => (
-  <div
-    className={isSelected ? mediaStyles.selectedMediaCard : mediaStyles.mediaCard}
-    key={image.path}
-  >
-    <a href="/" onClick={(e) => { e.preventDefault(); onClick(image.path); }}>
-      <div className={mediaStyles.mediaCardImagePreviewContainer}>
-        <img
-          className={mediaStyles.mediaCardImage}
-          alt={`${image.fileName}`}
-          // The sanitise parameter is for SVGs. It converts the raw svg data into an image
-          src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${image.path}${image.path.endsWith('.svg') ? '?sanitize=true' : ''}`}
-        />
-      </div>
-      <div className={mediaStyles.mediaCardDescription}>
-        <div className={mediaStyles.mediaCardName}>{image.fileName}</div>
-      </div>
-    </a>
-  </div>
-);
-
 
 export default class ImagesModal extends PureComponent {
   render() {
@@ -61,7 +35,8 @@ export default class ImagesModal extends PureComponent {
             </div>
             <div className={mediaStyles.mediaCards}>
               {/* Upload image */}
-              <ImageUploadCard
+              <MediaUploadCard
+                type="image"
                 onClick={() => document.getElementById('file-upload').click()}
               />
               <input
@@ -77,10 +52,11 @@ export default class ImagesModal extends PureComponent {
               />
               {/* Render images */}
               {images.map((image) => (
-                <ImageCard
-                  image={image}
+                <MediaCard
+                  type="image"
+                  media={image}
                   siteName={siteName}
-                  onClick={setSelectedImage}
+                  onClick={() => setSelectedImage(image.path)}
                   key={image.fileName}
                   isSelected={image.path === selectedImage}
                 />
@@ -92,16 +68,6 @@ export default class ImagesModal extends PureComponent {
     );
   }
 }
-
-ImageCard.propTypes = {
-  image: PropTypes.shape({
-    fileName: PropTypes.string,
-    path: PropTypes.string,
-  }).isRequired,
-  siteName: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
-  isSelected: PropTypes.bool.isRequired,
-};
 
 ImagesModal.propTypes = {
   images: PropTypes.arrayOf(PropTypes.shape({

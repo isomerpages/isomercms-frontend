@@ -10,12 +10,6 @@ import MediaUploadCard from '../components/media/MediaUploadCard';
 import MediaCard from '../components/media/MediaCard';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
-const ImageCard = ({ image, siteName, onClick }) => MediaCard({
-  type: 'image', siteName, onClick, media: image,
-});
-
-const ImageUploadCard = ({ onClick }) => MediaUploadCard({ onClick, type: 'image' });
-
 export default class Images extends Component {
   constructor(props) {
     super(props);
@@ -162,14 +156,3 @@ Images.propTypes = {
     pathname: PropTypes.string.isRequired,
   }).isRequired,
 };
-
-ImageCard.propTypes = {
-  image: PropTypes.shape({
-    fileName: PropTypes.string,
-    path: PropTypes.string,
-  }).isRequired,
-  siteName: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
-};
-
-export { ImageUploadCard, ImageCard };

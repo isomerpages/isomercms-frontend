@@ -10,10 +10,6 @@ import MediaUploadCard from '../components/media/MediaUploadCard';
 import MediaCard from '../components/media/MediaCard';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
-const FileCard = ({ file, onClick }) => MediaCard({ type: 'file', onClick, media: file });
-
-const FileUploadCard = ({ onClick }) => MediaUploadCard({ onClick, type: 'file' });
-
 export default class Files extends Component {
   constructor(props) {
     super(props);
@@ -96,7 +92,8 @@ export default class Files extends Component {
             <div className={contentStyles.contentContainerBars}>
               {/* File cards */}
               <div className={mediaStyles.mediaCards}>
-                <FileUploadCard
+                <MediaUploadCard
+                  type="file"
                   onClick={() => document.getElementById('file-upload').click()}
                 />
                 <input
@@ -109,9 +106,10 @@ export default class Files extends Component {
                 />
                 {files.length > 0
                   && files.map((file) => (
-                    <FileCard
+                    <MediaCard
+                      type="file"
+                      media={file}
                       siteName={siteName}
-                      file={file}
                       key={file.fileName}
                       onClick={() => this.setState({ chosenFile: file })}
                     />
@@ -162,12 +160,4 @@ Files.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
-};
-
-FileCard.propTypes = {
-  file: PropTypes.shape({
-    fileName: PropTypes.string,
-    path: PropTypes.string,
-  }).isRequired,
-  onClick: PropTypes.func.isRequired,
 };
