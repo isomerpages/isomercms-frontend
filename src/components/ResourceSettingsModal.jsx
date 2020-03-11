@@ -224,6 +224,8 @@ export default class ResourceSettingsModal extends Component {
     return (
       <>
         <div className={elementStyles.overlay}>
+          { sha
+          && (
           <div className={elementStyles.modal}>
             <div className={elementStyles.modalHeader}>
               <h1>Resource Settings</h1>
@@ -342,6 +344,7 @@ export default class ResourceSettingsModal extends Component {
               </div>
             </div>
           </div>
+          )}
         </div>
         {
           canShowDeleteWarningModal
