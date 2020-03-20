@@ -224,7 +224,7 @@ export default class ResourceSettingsModal extends Component {
     return (
       <>
         <div className={elementStyles.overlay}>
-          { sha
+          { (sha || isNewPost)
           && (
           <div className={elementStyles.modal}>
             <div className={elementStyles.modalHeader}>
