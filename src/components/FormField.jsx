@@ -14,18 +14,20 @@ const FormField = ({
 }) => (
   <>
     <p className={elementStyles.formLabel}>{title}</p>
-    <input
-      type="text"
-      placeholder={title}
-      value={value}
-      defaultValue={defaultValue}
-      id={id}
-      autoComplete="off"
-      required={isRequired}
-      className={errorMessage ? `${elementStyles.error}` : null}
-      style={style}
-      onChange={onFieldChange}
-    />
+    <div className="d-flex">
+      <input
+        type="text"
+        placeholder={title}
+        value={value}
+        defaultValue={defaultValue}
+        id={id}
+        autoComplete="off"
+        required={isRequired}
+        className={errorMessage ? `${elementStyles.error}` : null}
+        style={style}
+        onChange={onFieldChange}
+      />
+    </div>
     <span className={elementStyles.error}>{errorMessage}</span>
   </>
 );
@@ -37,7 +39,7 @@ FormField.propTypes = {
   defaultValue: PropTypes.string,
   value: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
-  errorMessage: PropTypes.string.isRequired,
+  errorMessage: PropTypes.string,
   onFieldChange: PropTypes.func.isRequired,
   isRequired: PropTypes.bool.isRequired,
   style: PropTypes.string,
@@ -46,4 +48,5 @@ FormField.propTypes = {
 FormField.defaultProps = {
   defaultValue: undefined,
   style: undefined,
+  errorMessage: null,
 };

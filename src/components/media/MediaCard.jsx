@@ -3,9 +3,12 @@ import PropTypes from 'prop-types';
 import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
 
 const MediaCard = ({
-  type, siteName, onClick, media,
+  type, siteName, onClick, media, isSelected, canShowEditIcon,
 }) => (
-  <div className={mediaStyles.mediaCard} key={media.path}>
+  <div
+    className={isSelected ? mediaStyles.selectedMediaCard : mediaStyles.mediaCard}
+    key={media.path}
+  >
     <a href="/" onClick={(e) => { e.preventDefault(); onClick(); }}>
       {
         type === 'image' && (
@@ -28,7 +31,7 @@ const MediaCard = ({
       }
       <div className={mediaStyles.mediaCardDescription}>
         <div className={mediaStyles.mediaCardName}>{media.fileName}</div>
-        <i className="bx bxs-edit" />
+        { canShowEditIcon && <i className="bx bxs-edit" /> }
       </div>
     </a>
   </div>
@@ -42,10 +45,14 @@ MediaCard.propTypes = {
     fileName: PropTypes.string,
     path: PropTypes.string,
   }).isRequired,
+  isSelected: PropTypes.bool,
+  canShowEditIcon: PropTypes.string,
 };
 
 MediaCard.defaultProps = {
   siteName: '',
+  isSelected: false,
+  canShowEditIcon: false,
 };
 
 export default MediaCard;

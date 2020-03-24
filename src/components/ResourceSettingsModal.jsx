@@ -4,6 +4,7 @@ import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import FormField from './FormField';
+import FormFieldFile from './FormFieldFile';
 import LoadingButton from './LoadingButton';
 import {
   prettifyResourceCategory,
@@ -17,6 +18,7 @@ import {
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import { validateResourceSettings } from '../utils/validators';
 import DeleteWarningModal from './DeleteWarningModal';
+import FilesModal from './FilesModal';
 
 export default class ResourceSettingsModal extends Component {
   constructor(props) {
@@ -39,6 +41,7 @@ export default class ResourceSettingsModal extends Component {
         prevCategory: '',
       },
       canShowDeleteWarningModal: false,
+      canShowFilesModal: false,
     };
   }
 
@@ -93,9 +96,18 @@ export default class ResourceSettingsModal extends Component {
   handlePermalinkFileUrlToggle = (event) => {
     const { target: { value } } = event;
     if (value === 'file') {
-      this.setState({ permalink: null, fileUrl: '/file/url/' });
+      this.setState({
+        permalink: null,
+        fileUrl: '',
+      });
     } else {
-      this.setState({ permalink: '/permalink/', fileUrl: null });
+      this.setState({
+        permalink: '/permalink/',
+        fileUrl: null,
+        errors: {
+          fileUrl: '',
+        },
+      });
     }
   }
 
@@ -202,8 +214,9 @@ export default class ResourceSettingsModal extends Component {
       errors,
       canShowDeleteWarningModal,
       sha,
+      canShowFilesModal,
     } = this.state;
-    const { settingsToggle, isNewPost } = this.props;
+    const { settingsToggle, isNewPost, siteName } = this.props;
 
     // Resource settings form has errors - disable save button
     const hasErrors = _.some(errors, (field) => field.length > 0);
@@ -211,6 +224,8 @@ export default class ResourceSettingsModal extends Component {
     return (
       <>
         <div className={elementStyles.overlay}>
+          { (sha || isNewPost)
+          && (
           <div className={elementStyles.modal}>
             <div className={elementStyles.modalHeader}>
               <h1>Resource Settings</h1>
@@ -261,15 +276,29 @@ export default class ResourceSettingsModal extends Component {
                 {/* Permalink or File URL */}
                 <div className="d-flex">
                   <label htmlFor="radio-post" className="flex-fill">
-                    <input type="radio" id="radio-post" name="resource-type" value="post" onClick={this.handlePermalinkFileUrlToggle} checked={!!permalink} />
+                    <input
+                      type="radio"
+                      id="radio-post"
+                      name="resource-type"
+                      value="post"
+                      onClick={this.handlePermalinkFileUrlToggle}
+                      checked={permalink || fileUrl === null}
+                    />
                     Post Content
                   </label>
                   <label htmlFor="radio-post" className="flex-fill">
-                    <input type="radio" id="radio-file" name="resource-type" value="file" onClick={this.handlePermalinkFileUrlToggle} checked={!permalink} />
+                    <input
+                      type="radio"
+                      id="radio-file"
+                      name="resource-type"
+                      value="file"
+                      onClick={this.handlePermalinkFileUrlToggle}
+                      checked={!permalink && fileUrl !== null}
+                    />
                     Downloadable File
                   </label>
                 </div>
-                {permalink
+                {permalink || fileUrl === null
                   ? (
                     <>
                       {/* Permalink */}
@@ -286,33 +315,36 @@ export default class ResourceSettingsModal extends Component {
                   : (
                     <>
                       {/* File URL */}
-                      <FormField
-                        title="File URL"
+                      <FormFieldFile
+                        title="Select File"
                         id="fileUrl"
-                        value={fileUrl}
+                        value={fileUrl?.split('/').pop()}
                         errorMessage={errors.fileUrl}
                         isRequired
                         onFieldChange={this.changeHandler}
+                        inlineButtonText="Select File"
+                        onInlineButtonClick={() => this.setState({ canShowFilesModal: true })}
                       />
                     </>
                   )}
               </div>
-            </div>
-            {/* Save or Delete buttons */}
-            <div className={elementStyles.modalButtons}>
-              <LoadingButton
-                label="Save"
-                disabled={hasErrors}
-                disabledStyle={elementStyles.disabled}
-                className={(isNewPost ? hasErrors : (hasErrors || !sha)) ? elementStyles.disabled : elementStyles.blue}
-                callback={this.saveHandler}
-              />
-              { !isNewPost
-                ? (
-                  <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
-                ) : null}
+              {/* Save or Delete buttons */}
+              <div className={elementStyles.modalButtons}>
+                <LoadingButton
+                  label="Save"
+                  disabled={hasErrors}
+                  disabledStyle={elementStyles.disabled}
+                  className={(isNewPost ? hasErrors : (hasErrors || !sha)) ? elementStyles.disabled : elementStyles.blue}
+                  callback={this.saveHandler}
+                />
+                { !isNewPost
+                  ? (
+                    <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
+                  ) : null}
+              </div>
             </div>
           </div>
+          )}
         </div>
         {
           canShowDeleteWarningModal
@@ -321,6 +353,16 @@ export default class ResourceSettingsModal extends Component {
               onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
               onDelete={this.deleteHandler}
               type="resource"
+            />
+          )
+        }
+        {
+          canShowFilesModal
+          && (
+            <FilesModal
+              siteName={siteName}
+              onClose={() => this.setState({ canShowFilesModal: false })}
+              onFileSelect={(filePath) => this.setState({ fileUrl: filePath, canShowFilesModal: false })}
             />
           )
         }
