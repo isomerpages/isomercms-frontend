@@ -4,6 +4,7 @@ import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import { ImageUploadCard } from '../layouts/Images';
 import LoadingButton from './LoadingButton';
+import Alert from './Alert';
 
 export const ImageCard = ({
   image,
@@ -112,11 +113,10 @@ export default class ImagesModal extends Component {
           {
             canShowUploadSizeError
             && (
-            <div className="d-flex justify-content-center fixed-bottom mt-3">
-              <div className="alert alert-danger" role="alert">
-                {'Image size must be < 1MB!'}
-              </div>
-            </div>
+              <Alert
+                message="Image size must be < 1MB!"
+                type="danger"
+              />
             )
           }
         </div>

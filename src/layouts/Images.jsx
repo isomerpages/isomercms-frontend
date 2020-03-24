@@ -9,6 +9,7 @@ import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 import MediaUploadCard from '../components/media/MediaUploadCard';
 import MediaCard from '../components/media/MediaCard';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
+import Alert from '../components/Alert';
 
 const ImageCard = ({ image, siteName, onClick }) => MediaCard({
   type: 'image', siteName, onClick, media: image,
@@ -162,11 +163,10 @@ export default class Images extends Component {
         {
           canShowUploadSizeError
           && (
-          <div className="d-flex justify-content-center fixed-bottom mt-3">
-            <div className="alert alert-danger" role="alert">
-              {'Image size must be < 1MB!'}
-            </div>
-          </div>
+            <Alert
+              type="danger"
+              message="Image size must be < 1MB!"
+            />
           )
         }
       </>
