@@ -11,7 +11,6 @@ const TemplateInfopicRightSection = ({
   subtitle,
   description,
   button,
-  url,
   sectionIndex,
   imageUrl,
   imageAlt,
@@ -29,7 +28,7 @@ const TemplateInfopicRightSection = ({
             <b>{ subtitle }</b>
           </h1>
           <p>{ description }</p>
-          <a href={url} className="bp-sec-button margin--top padding--bottom">
+          <div className="bp-sec-button margin--top padding--bottom">
             {button
               ? (
                 <div>
@@ -38,7 +37,7 @@ const TemplateInfopicRightSection = ({
                 </div>
               )
               : null}
-          </a>
+          </div>
         </div>
         <div className="col is-half">
           <img src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
@@ -57,7 +56,7 @@ const TemplateInfopicRightSection = ({
             <b>{ subtitle }</b>
           </h1>
           <p>{ description }</p>
-          <a href={url} className="bp-sec-button margin--top padding--bottom">
+          <div className="bp-sec-button margin--top padding--bottom">
             { button
               ? (
                 <div>
@@ -66,7 +65,7 @@ const TemplateInfopicRightSection = ({
                 </div>
               )
               : null}
-          </a>
+          </div>
         </div>
       </div>
       {/* For desktop */}
@@ -82,7 +81,7 @@ const TemplateInfopicRightSection = ({
             <b>{ subtitle }</b>
           </h1>
           <p>{ description }</p>
-          <a href={url} className="bp-sec-button margin--top padding--bottom">
+          <div className="bp-sec-button margin--top padding--bottom">
             { button
               ? (
                 <div>
@@ -91,7 +90,7 @@ const TemplateInfopicRightSection = ({
                 </div>
               )
               : null }
-          </a>
+          </div>
         </div>
       </div>
     </div>
@@ -104,7 +103,6 @@ TemplateInfopicRightSection.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
   description: PropTypes.string,
-  url: PropTypes.string.isRequired,
   button: PropTypes.string.isRequired,
   imageUrl: PropTypes.string.isRequired,
   imageAlt: PropTypes.string.isRequired,

@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
  */
 
 const TemplateInfobarSection = ({
-  title, subtitle, description, url, button, sectionIndex,
+  title, subtitle, description, button, sectionIndex,
 }) => (
   <section className={`bp-section ${(sectionIndex % 2 === 1) ? 'bg-newssection' : null}`}>
     <div className="bp-container">
@@ -29,16 +29,16 @@ const TemplateInfobarSection = ({
       </div>
     </div>
     {/* Button */}
-    {(url && button)
+    {button
       ? (
         <div className="row has-text-centered margin--top padding--bottom">
           <div className="col is-offset-one-third is-one-third">
-            <a href={url} className="bp-sec-button">
+            <div className="bp-sec-button">
               <div>
                 <span>{button}</span>
                 <i className="sgds-icon sgds-icon-arrow-right is-size-4" aria-hidden="true" />
               </div>
-            </a>
+            </div>
           </div>
         </div>
       )
@@ -50,7 +50,6 @@ TemplateInfobarSection.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
   description: PropTypes.string,
-  url: PropTypes.string.isRequired,
   button: PropTypes.string.isRequired,
   sectionIndex: PropTypes.number.isRequired,
 };
