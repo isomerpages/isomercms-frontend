@@ -10,7 +10,7 @@ const Header = ({
     <div className={elementStyles.headerLeft}>
       { !showButton ? null : (
         <a href={backButtonUrl}>
-          <button type="button">
+          <button className={elementStyles.default} type="button">
             <i className="bx bx-chevron-left" />
             {backButtonText}
           </button>
