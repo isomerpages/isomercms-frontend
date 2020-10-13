@@ -17,13 +17,20 @@ const RADIX_PARSE_INT = 10;
 const PageCard = ({
   siteName, pageName, pageIndex, settingsToggle, collectionName,
 }) => (
-  <li>
-    { collectionName
-      ? <Link to={`/sites/${siteName}/collections/${collectionName}/${pageName}`}>{prettifyPageFileName(pageName)}</Link>
-      : <Link to={`/sites/${siteName}/pages/${pageName}`}>{prettifyPageFileName(pageName)}</Link>}
-    <button type="button" className="d-flex flex-column pr-0" onClick={settingsToggle} id={`settings-${pageIndex}`}>
-      <i id={`settingsIcon-${pageIndex}`} className="bx bx-cog" />
-    </button>
+  // Set padding to 0 so that Link component takes up the entire element
+  // and entire element is clickable
+  <li className="p-0">
+    <Link
+      className="d-flex align-items-center px-5 py-3"
+      to={collectionName
+        ? `/sites/${siteName}/collections/${collectionName}/${pageName}`
+        : `/sites/${siteName}/pages/${pageName}`}
+    >
+      <div className="mr-auto">{prettifyPageFileName(pageName)}</div>
+      <button type="button" onClick={settingsToggle} id={`settings-${pageIndex}`}>
+        <i id={`settingsIcon-${pageIndex}`} className="bx bx-cog" />
+      </button>
+    </Link>
   </li>
 );
 
@@ -142,8 +149,17 @@ Create New Page
               { pages
                 ? (
                   <ul>
-                    <li>
-                      <Link to={`/sites/${siteName}/homepage`}>Homepage</Link>
+                    {
+                    // Set padding of li element to 0 to be compatible with other PageCard
+                    // components
+                    }
+                    <li className="p-0">
+                      <Link
+                        className="d-flex align-items-center px-5 py-3"
+                        to={`/sites/${siteName}/homepage`}
+                      >
+                        Homepage
+                      </Link>
                     </li>
                     {pages.length > 0
                       ? pages.map((page, pageIndex) => (
