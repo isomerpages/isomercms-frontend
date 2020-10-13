@@ -57,7 +57,7 @@ const TemplateResourceSection = ({
       <div className="row has-text-centered margin--top padding--bottom--lg">
         <div className="col is-offset-one-third is-one-third">
           <div className="bp-sec-button">
-            <div>
+            <div className="d-flex align-items-center justify-content-center">
               <span>
                 {button || 'MORE'}
               </span>
