@@ -51,7 +51,7 @@ const stateFields = {
     youtube: '',
     instagram: '',
   },
-  socialMediaSha: '',
+  footerSha: '',
 };
 
 export default class Settings extends Component {
@@ -82,8 +82,8 @@ export default class Settings extends Component {
       const { settings } = resp.data;
       const {
         configFieldsRequired,
-        socialMediaContent,
-        socialMediaSha,
+        footerContent,
+        footerSha,
       } = settings;
 
       // set state properly
@@ -93,9 +93,9 @@ export default class Settings extends Component {
         ...configFieldsRequired,
         socialMediaContent: {
           ...currState.socialMediaContent,
-          ...socialMediaContent,
+          ...footerContent.social_media,
         },
-        socialMediaSha,
+        footerSha,
       }));
     } catch (err) {
       console.log(err);
@@ -211,12 +211,12 @@ export default class Settings extends Component {
       };
 
       // obtain sha value
-      const { socialMediaSha } = state;
+      const { footerSha } = state;
 
       const params = {
         socialMediaSettings,
         configSettings,
-        socialMediaSha,
+        footerSha,
       };
 
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, params, {
@@ -330,7 +330,7 @@ export default class Settings extends Component {
       resources_name: resourcesName,
       colors,
       socialMediaContent,
-      socialMediaSha,
+      footerSha,
       errors,
     } = this.state;
     const { 'primary-color': primaryColor, 'secondary-color': secondaryColor, 'media-colors': mediaColors } = colors;
@@ -460,7 +460,7 @@ export default class Settings extends Component {
                   label="Save"
                   disabled={hasErrors}
                   disabledStyle={elementStyles.formSaveButtonDisabled}
-                  className={(hasErrors || !socialMediaSha)
+                  className={(hasErrors || !footerSha)
                     ? elementStyles.formSaveButtonDisabled
                     : elementStyles.formSaveButtonActive}
                   callback={this.saveSettings}
