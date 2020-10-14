@@ -44,6 +44,12 @@ const stateFields = {
       },
     ],
   },
+  otherFooterSettings: {
+    contact_us: '',
+    show_reach: true, // true by default
+    feedback: '',
+    faq: '',
+  },
   socialMediaContent: {
     facebook: '',
     linkedin: '',
@@ -91,6 +97,13 @@ export default class Settings extends Component {
         ...currState,
         siteName,
         ...configFieldsRequired,
+        otherFooterSettings: {
+          ...currState.socialMediaContent,
+          contact_us: footerContent.contact_us,
+          show_reach: footerContent.show_reach,
+          feedback: footerContent.feedback,
+          faq: footerContent.faq,
+        },
         socialMediaContent: {
           ...currState.socialMediaContent,
           ...footerContent.social_media,
@@ -192,8 +205,9 @@ export default class Settings extends Component {
       const { match } = this.props;
       const { siteName } = match.params;
 
-      // settings is obtained from _config.yml and social-media.yml
+      // settings is obtained from _config.yml and footer.yml
       const socialMediaSettings = state.socialMediaContent;
+      const { otherFooterSettings } = state;
 
       // obtain config settings object
       const {
@@ -214,7 +228,10 @@ export default class Settings extends Component {
       const { footerSha } = state;
 
       const params = {
-        socialMediaSettings,
+        footerSettings: {
+          ...otherFooterSettings,
+          social_media: socialMediaSettings,
+        },
         configSettings,
         footerSha,
       };
