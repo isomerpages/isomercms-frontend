@@ -46,7 +46,7 @@ MediaCard.propTypes = {
     path: PropTypes.string,
   }).isRequired,
   isSelected: PropTypes.bool,
-  canShowEditIcon: PropTypes.string,
+  canShowEditIcon: PropTypes.bool,
 };
 
 MediaCard.defaultProps = {

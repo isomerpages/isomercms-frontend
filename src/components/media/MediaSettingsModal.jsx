@@ -172,7 +172,13 @@ export default class MediaSettingsModal extends Component {
                       className={(errorMessage || !sha) ? elementStyles.disabled : elementStyles.blue}
                       callback={this.saveFile}
                     />
-                    <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
+                    <LoadingButton
+                      label="Delete"
+                      disabled={(errorMessage || !sha)}
+                      disabledStyle={elementStyles.disabled}
+                      className={(errorMessage || !sha) ? elementStyles.disabled : elementStyles.warning}
+                      callback={() => this.setState({ canShowDeleteWarningModal: true })}
+                    />
                   </>
                 )}
             </div>

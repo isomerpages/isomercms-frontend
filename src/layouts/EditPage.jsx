@@ -6,8 +6,6 @@ import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
 import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
-import ImagesModal from '../components/ImagesModal';
-import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
 import {
   frontMatterParser, concatFrontMatterMdBody, prependImageSrc, prettifyPageFileName,
@@ -32,6 +30,7 @@ import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
 import DeleteWarningModal from '../components/DeleteWarningModal';
 import LoadingButton from '../components/LoadingButton';
+import MediasModal from '../components/media/MediaModal';
 
 export default class EditPage extends Component {
   constructor(props) {
@@ -68,13 +67,6 @@ export default class EditPage extends Component {
     } catch (err) {
       console.log(err);
     }
-  }
-
-  getImages = async (siteName) => {
-    const { data: { images } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, {
-      withCredentials: true,
-    });
-    this.setState({ images });
   }
 
   updatePage = async () => {
@@ -131,9 +123,7 @@ export default class EditPage extends Component {
     }));
   }
 
-  onImageClick = () => {
-    const { selectedImage } = this.state;
-    const path = `/${selectedImage}`;
+  onImageClick = (path) => {
     const cm = this.mdeRef.current.simpleMde.codemirror;
     cm.replaceSelection(`![](${path})`);
     // set state so that rerender is triggered and image is shown
@@ -143,50 +133,13 @@ export default class EditPage extends Component {
     });
   }
 
-  uploadImage = async (imageName, imageContent) => {
-    try {
-      // toggle state so that image renaming modal appears
-      this.setState({
-        pendingImageUpload: {
-          fileName: imageName,
-          path: `images%2F${imageName}`,
-          content: imageContent,
-        },
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  readImageToUpload = async (event) => {
-    const imgReader = new FileReader();
-    const imgName = event.target.files[0].name;
-    imgReader.onload = (() => {
-      /** Github only requires the content of the image
-       * imgReader returns  `data:image/png;base64, {fileContent}`
-       * hence the split
-       */
-
-      const imgData = imgReader.result.split(',')[1];
-      this.uploadImage(imgName, imgData);
-    });
-    imgReader.readAsDataURL(event.target.files[0]);
-  }
-
-  setSelectedImage = async (filePath) => {
-    this.setState({ selectedImage: filePath });
-  }
-
   render() {
     const { match } = this.props;
     const { siteName, fileName } = match.params;
     const {
       editorValue,
       canShowDeleteWarningModal,
-      images,
       isSelectingImage,
-      pendingImageUpload,
-      selectedImage,
     } = this.state;
     return (
       <>
@@ -196,20 +149,16 @@ export default class EditPage extends Component {
           backButtonUrl={`/sites/${siteName}/pages`}
         />
         <div className={elementStyles.wrapper}>
-          { isSelectingImage && (
-            <ImagesModal
+          {
+            isSelectingImage && (
+            <MediasModal
+              type="image"
               siteName={siteName}
-              onClose={() => this.setState({ isSelectingImage: false, selectedImage: '' })}
-              images={images}
-              onImageSelect={() => {
-                this.onImageClick();
-                this.setState({ selectedImage: '' });
-              }}
-              readImageToUpload={this.readImageToUpload}
-              selectedImage={selectedImage}
-              setSelectedImage={this.setSelectedImage}
+              onMediaSelect={this.onImageClick}
+              onClose={() => this.setState({ isSelectingImage: false })}
             />
-          )}
+            )
+          }
           <div className={editorStyles.pageEditorSidebar}>
             <SimpleMDE
               id="simplemde-editor"
@@ -231,7 +180,6 @@ export default class EditPage extends Component {
                   {
                     name: 'image',
                     action: async () => {
-                      await this.getImages(siteName);
                       this.setState({ isSelectingImage: true });
                     },
                     className: 'fa fa-picture-o',
@@ -261,23 +209,6 @@ export default class EditPage extends Component {
           />
           <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
         </div>
-        {
-          pendingImageUpload
-          && (
-          <MediaSettingsModal
-            type="image"
-            media={pendingImageUpload}
-            siteName={siteName}
-            // eslint-disable-next-line react/jsx-boolean-value
-            isPendingUpload={true}
-            onClose={() => {
-              this.getImages(siteName);
-              this.setState({ pendingImageUpload: null });
-            }}
-            toReload={false}
-          />
-          )
-        }
         {
           canShowDeleteWarningModal
           && (

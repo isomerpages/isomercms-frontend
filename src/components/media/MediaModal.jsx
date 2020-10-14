@@ -1,38 +1,41 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import MediaCard from './media/MediaCard';
-import MediaUploadCard from './media/MediaUploadCard';
-import LoadingButton from './LoadingButton';
-import MediaSettingsModal from './media/MediaSettingsModal';
+import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
+import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
+import MediaCard from './MediaCard';
+import MediaUploadCard from './MediaUploadCard';
+import LoadingButton from '../LoadingButton';
+import MediaSettingsModal from './MediaSettingsModal';
 
-export default class FilesModal extends Component {
+export default class MediasModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      files: [],
+      medias: [],
       selectedFile: null,
     };
   }
 
   async componentDidMount() {
-    const { siteName } = this.props;
+    const { siteName, type } = this.props;
+    const mediaRoute = type === 'file' ? 'documents' : 'images';
     try {
-      const { data: { documents } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/documents`, {
+      const { data: { documents, images } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${mediaRoute}`, {
         withCredentials: true,
       });
-      this.setState({ files: documents });
+      this.setState({ medias: documents || images });
     } catch (err) {
       console.error(err);
     }
   }
 
   stageFileForUpload = (fileName, fileData) => {
+    const { type } = this.props;
+    const baseFolder = type === 'file' ? 'files' : 'images';
     this.setState({
       stagedFileForUpload: {
-        path: `files%2F${fileName}`,
+        path: `${baseFolder}%2F${fileName}`,
         content: fileData,
         fileName,
       },
@@ -58,10 +61,11 @@ export default class FilesModal extends Component {
     const {
       siteName,
       onClose,
-      onFileSelect,
+      onMediaSelect,
+      type,
     } = this.props;
-    const { files, selectedFile, stagedFileForUpload } = this.state;
-    return (!!files.length
+    const { medias, selectedFile, stagedFileForUpload } = this.state;
+    return (!!medias.length
       && (
         <>
           <div className={elementStyles.overlay}>
@@ -69,10 +73,10 @@ export default class FilesModal extends Component {
               <div className={elementStyles.modalHeader}>
                 <h1 style={{ flexGrow: 1 }}>Select File</h1>
                 <LoadingButton
-                  label="Select file"
+                  label={`Select ${type}`}
                   disabledStyle={elementStyles.disabled}
                   className={elementStyles.blue}
-                  callback={() => onFileSelect(`/${decodeURIComponent(selectedFile.path)}`)}
+                  callback={() => onMediaSelect(`/${decodeURIComponent(selectedFile.path)}`)}
                 />
                 <button type="button" onClick={onClose}>
                   <i className="bx bx-x" />
@@ -81,7 +85,7 @@ export default class FilesModal extends Component {
               <div className={mediaStyles.mediaCards}>
                 {/* Upload image */}
                 <MediaUploadCard
-                  type="file"
+                  type={type}
                   onClick={() => document.getElementById('file-upload').click()}
                 />
                 <input
@@ -92,19 +96,19 @@ export default class FilesModal extends Component {
                   }}
                   type="file"
                   id="file-upload"
-                  accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
-                  text/plain, application/pdf"
+                  accept={type === 'file' ? `application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
+                  text/plain, application/pdf` : 'image*'}
                   hidden
                 />
-                {/* Render files */}
-                {files.map((file) => (
+                {/* Render medias */}
+                {medias.map((media) => (
                   <MediaCard
-                    type="file"
-                    media={file}
+                    type={type}
+                    media={media}
                     siteName={siteName}
-                    onClick={() => this.setState({ selectedFile: file })}
-                    key={file.path}
-                    isSelected={file.path === selectedFile?.path}
+                    onClick={() => this.setState({ selectedFile: media })}
+                    key={media.path}
+                    isSelected={media.path === selectedFile?.path}
                   />
                 ))}
               </div>
@@ -113,7 +117,7 @@ export default class FilesModal extends Component {
           {
             stagedFileForUpload && (
               <MediaSettingsModal
-                type="file"
+                type={type}
                 siteName={siteName}
                 onClose={() => this.setState({ selectedFile: null })}
                 media={stagedFileForUpload}
@@ -127,8 +131,9 @@ export default class FilesModal extends Component {
   }
 }
 
-FilesModal.propTypes = {
+MediasModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   siteName: PropTypes.string.isRequired,
-  onFileSelect: PropTypes.func.isRequired,
+  onMediaSelect: PropTypes.func.isRequired,
+  type: PropTypes.oneOf(['file', 'image']).isRequired,
 };
