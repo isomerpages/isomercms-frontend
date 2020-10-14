@@ -46,7 +46,7 @@ const stateFields = {
   },
   otherFooterSettings: {
     contact_us: '',
-    show_reach: true, // true by default
+    show_reach: '',
     feedback: '',
     faq: '',
   },
@@ -98,7 +98,7 @@ export default class Settings extends Component {
         siteName,
         ...configFieldsRequired,
         otherFooterSettings: {
-          ...currState.socialMediaContent,
+          ...currState.otherFooterSettings,
           contact_us: footerContent.contact_us,
           show_reach: footerContent.show_reach,
           feedback: footerContent.feedback,
@@ -151,7 +151,15 @@ export default class Settings extends Component {
     } = event.target;
     // const errorMessage = validateSettings(id, value);
 
-    if (grandparentElementId === 'social-media-fields') {
+    if (grandparentElementId === 'footer-fields') {
+      this.setState((currState) => ({
+        ...currState,
+        otherFooterSettings: {
+          ...currState.otherFooterSettings,
+          [id]: value,
+        },
+      }));
+    } else if (grandparentElementId === 'social-media-fields') {
       const errorMessage = validateSocialMedia(value, id);
       this.setState((currState) => ({
         ...currState,
@@ -347,6 +355,7 @@ export default class Settings extends Component {
       resources_name: resourcesName,
       colors,
       socialMediaContent,
+      otherFooterSettings,
       footerSha,
       errors,
     } = this.state;
@@ -464,6 +473,21 @@ export default class Settings extends Component {
                       value={socialMediaContent[socialMediaPage]}
                       key={`${socialMediaPage}-form`}
                       errorMessage={errors.socialMediaContent[socialMediaPage]}
+                      isRequired={false}
+                      onFieldChange={this.changeHandler}
+                    />
+                  ))}
+                </div>
+                {/* Footer fields */}
+                <div id="footer-fields">
+                  <p className={elementStyles.formSectionHeader}>Footer</p>
+                  {Object.keys(otherFooterSettings).map((footerSetting) => (
+                    <FormFieldHorizontal
+                      title={footerSetting.split('_').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                      id={footerSetting}
+                      value={otherFooterSettings[footerSetting]}
+                      key={`${footerSetting}-form`}
+                      errorMessage={errors.otherFooterSettings[footerSetting]}
                       isRequired={false}
                       onFieldChange={this.changeHandler}
                     />
