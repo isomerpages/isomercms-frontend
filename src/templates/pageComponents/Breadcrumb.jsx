@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const Breadcrumb = ({ title, collection }) => (
   <section className="bp-section is-small bp-section-pagetitle" style={{ width: `${100 / 0.65}%` }}>
-    <div className="bp-container" style={{ right: '50px' }}>
+    <div className="bp-container" style={{ left: '50px' }}>
       <div className="row">
         <div className="col">
           <nav className="bp-breadcrumb" aria-label="breadcrumbs">
@@ -18,7 +18,7 @@ const Breadcrumb = ({ title, collection }) => (
         </div>
       </div>
     </div>
-    <div className="bp-container" style={{ right: '50px' }}>
+    <div className="bp-container" style={{ left: '50px' }}>
       <div className="row">
         <div className="col">
           <h1 className="has-text-white"><b>{ title.split(' ').map((string) => string.charAt(0).toUpperCase() + string.slice(1)).join(' ') }</b></h1>
