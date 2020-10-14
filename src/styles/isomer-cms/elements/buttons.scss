@@ -29,6 +29,8 @@
 }
 
 button{
+  background: $default-background;
+  text-align: center;
   font-family: 'Lato', sans-serif;
   font-size: 14px;
   font-weight: 700;
@@ -40,7 +42,6 @@ button{
   border: none;
   flex-wrap: nowrap;
   padding: 0;
-  padding-right: 14px;
 
   &:focus {
     outline: 0;
@@ -64,6 +65,7 @@ button{
       color: $isomer-blue;
     }
   }
+
   &.warning{
     @include buttonColor($error-red);
   }

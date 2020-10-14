@@ -349,7 +349,7 @@ export default class Settings extends Component {
     const hasErrors = hasConfigErrors || hasColorErrors || hasMediaColorErrors || hasSocialMediaErrors;
     return (
       <>
-        <Header showButton={false} />
+        <Header />
         {/* main bottom section */}
         <form
           className={elementStyles.wrapper}

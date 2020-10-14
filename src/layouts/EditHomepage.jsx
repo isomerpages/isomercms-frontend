@@ -1195,7 +1195,6 @@ export default class EditHomepage extends Component {
                         title={section.infobar.title}
                         subtitle={section.infobar.subtitle}
                         description={section.infobar.description}
-                        url={section.infobar.url}
                         button={section.infobar.button}
                         sectionIndex={sectionIndex}
                       />
@@ -1213,7 +1212,6 @@ export default class EditHomepage extends Component {
                             title={section.infopic.title}
                             subtitle={section.infopic.subtitle}
                             description={section.infopic.description}
-                            url={section.infopic.url}
                             imageUrl={section.infopic.imageUrl}
                             imageAlt={section.infopic.imageAlt}
                             button={section.infopic.button}
@@ -1227,7 +1225,6 @@ export default class EditHomepage extends Component {
                             title={section.infopic.title}
                             subtitle={section.infopic.subtitle}
                             description={section.infopic.description}
-                            url={section.infopic.url}
                             imageUrl={section.infopic.imageUrl}
                             imageAlt={section.infopic.imageAlt}
                             button={section.infopic.button}

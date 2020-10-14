@@ -6,22 +6,22 @@ import PropTypes from 'prop-types';
   jsx-a11y/anchor-is-valid: 0
  */
 
-const HeroButton = ({ button, url }) => (
+const HeroButton = ({ button }) => (
   <>
     { button
       ? (
-        <a href={`{{- site.baseurl -}}${url}`} className="bp-button is-secondary is-uppercase search-button">
+        <div className="bp-button is-secondary is-uppercase search-button">
           {button}
-        </a>
+        </div>
       )
       : null}
   </>
 );
 
-const HeroDropdownElem = ({ url, title }) => (
-  <a className="bp-dropdown-item" href={`{{- site.baseurl -}}${url}`}>
+const HeroDropdownElem = ({ title }) => (
+  <div className="bp-dropdown-item">
     <h5>{title}</h5>
-  </a>
+  </div>
 );
 
 const HeroDropdown = ({
@@ -44,8 +44,8 @@ const HeroDropdown = ({
       <div className="bp-dropdown-content is-centered">
         { options
           ? options.map((option, index) => (
-            (option.url && option.title)
-              ? <HeroDropdownElem key={`dropdown-${index}`} title={option.title} url={option.url} />
+            (option.title)
+              ? <HeroDropdownElem key={`dropdown-${index}`} title={option.title} />
               : null
           ))
           : null}
@@ -54,12 +54,12 @@ const HeroDropdown = ({
   </div>
 );
 
-const KeyHighlightElem = ({ title, description, url }) => (
+const KeyHighlightElem = ({ title, description }) => (
   <>
     {(title || description)
       ? (
         <div className="col">
-          <a href={url} className="is-highlight">
+          <div className="is-highlight">
             {/* Title */}
             {title
               ? (
@@ -76,7 +76,7 @@ const KeyHighlightElem = ({ title, description, url }) => (
                 </p>
               )
               : null}
-          </a>
+          </div>
         </div>
       )
       : null}
@@ -87,8 +87,8 @@ const KeyHighlights = ({ highlights }) => (
   <section id="key-highlights" className="bp-section is-paddingless">
     <div className="bp-container">
       <div className="row is-gapless has-text-centered">
-        {highlights.map(({ title, description, url }) => (
-          <KeyHighlightElem title={title} description={description} url={url} />
+        {highlights.map(({ title, description }) => (
+          <KeyHighlightElem title={title} description={description} />
         ))}
       </div>
     </div>
@@ -136,7 +136,7 @@ const TemplateHeroSection = ({
                       toggleDropdown={toggleDropdown}
                     />
                   )
-                  : <HeroButton url={hero.url} button={hero.button} />}
+                  : <HeroButton button={hero.button} />}
               </div>
             </div>
           </div>
@@ -154,12 +154,10 @@ export default TemplateHeroSection;
 
 HeroButton.propTypes = {
   button: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired,
 };
 
 HeroDropdownElem.propTypes = {
   title: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired,
 };
 
 HeroDropdown.propTypes = {
@@ -170,7 +168,6 @@ HeroDropdown.propTypes = {
     PropTypes.arrayOf(
       PropTypes.shape({
         title: PropTypes.string.isRequired,
-        url: PropTypes.string.isRequired,
       }),
     ).isRequired,
 };
@@ -178,7 +175,6 @@ HeroDropdown.propTypes = {
 KeyHighlightElem.propTypes = {
   title: PropTypes.string,
   description: PropTypes.string,
-  url: PropTypes.string.isRequired,
 };
 
 KeyHighlightElem.defaultProps = {
@@ -191,7 +187,6 @@ KeyHighlights.propTypes = {
     PropTypes.shape({
       title: PropTypes.string,
       description: PropTypes.string,
-      url: PropTypes.string.isRequired,
     }),
   ).isRequired,
 };
@@ -202,14 +197,12 @@ TemplateHeroSection.propTypes = {
     title: PropTypes.string.isRequired,
     subtitle: PropTypes.string,
     button: PropTypes.string,
-    url: PropTypes.string,
     dropdown: PropTypes.shape({
       title: PropTypes.string.isRequired,
       options:
         PropTypes.arrayOf(
           PropTypes.shape({
             title: PropTypes.string.isRequired,
-            url: PropTypes.string.isRequired,
           }),
         ).isRequired,
     }),
@@ -217,7 +210,6 @@ TemplateHeroSection.propTypes = {
       PropTypes.shape({
         title: PropTypes.string,
         description: PropTypes.string,
-        url: PropTypes.string.isRequired,
       }),
     ),
   }).isRequired,

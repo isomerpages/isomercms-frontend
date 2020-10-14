@@ -11,7 +11,6 @@ const TemplateInfopicLeftSection = ({
   subtitle,
   description,
   button,
-  url,
   sectionIndex,
   imageUrl,
   imageAlt,
@@ -29,7 +28,7 @@ const TemplateInfopicLeftSection = ({
             <b>{ subtitle }</b>
           </h1>
           <p>{ description }</p>
-          <a href={url} className="bp-sec-button margin--top padding--bottom">
+          <div className="bp-sec-button margin--top padding--bottom">
             {button
               ? (
                 <div>
@@ -38,7 +37,7 @@ const TemplateInfopicLeftSection = ({
                 </div>
               )
               : null}
-          </a>
+          </div>
         </div>
         <div className="col is-half">
           <img src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
@@ -54,7 +53,7 @@ const TemplateInfopicLeftSection = ({
             <b>{ subtitle }</b>
           </h1>
           <p>{ description }</p>
-          <a href={url} className="bp-sec-button margin--top padding--bottom">
+          <div className="bp-sec-button margin--top padding--bottom">
             { button
               ? (
                 <div>
@@ -63,7 +62,7 @@ const TemplateInfopicLeftSection = ({
                 </div>
               )
               : null}
-          </a>
+          </div>
         </div>
         <div className="col is-half is-half padding--top--xl padding--bottom--xl">
           <img src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
@@ -79,7 +78,7 @@ const TemplateInfopicLeftSection = ({
             <b>{ subtitle }</b>
           </h1>
           <p>{ description }</p>
-          <a href={url} className="bp-sec-button margin--top padding--bottom">
+          <div className="bp-sec-button margin--top padding--bottom">
             { button
               ? (
                 <div>
@@ -88,7 +87,7 @@ const TemplateInfopicLeftSection = ({
                 </div>
               )
               : null }
-          </a>
+          </div>
         </div>
         <div className="col is-half is-half padding--top--xl padding--bottom--xl">
           <img src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
@@ -104,7 +103,6 @@ TemplateInfopicLeftSection.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
   description: PropTypes.string,
-  url: PropTypes.string.isRequired,
   button: PropTypes.string.isRequired,
   imageUrl: PropTypes.string.isRequired,
   imageAlt: PropTypes.string.isRequired,

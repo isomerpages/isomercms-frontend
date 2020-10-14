@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 
 const ResourcePost = () => (
   <div className="col">
-    <a href="" className="is-media-card">
+    <div className="is-media-card">
       <div className="media-card-plain bg-media-color-0 padding--lg">
         <div>
           <small className="has-text-white padding--bottom">DEMO CATEGORY</small>
@@ -18,7 +18,7 @@ const ResourcePost = () => (
           <small className="has-text-white">DATE</small>
         </div>
       </div>
-    </a>
+    </div>
   </div>
 );
 
@@ -56,14 +56,14 @@ const TemplateResourceSection = ({
       </div>
       <div className="row has-text-centered margin--top padding--bottom--lg">
         <div className="col is-offset-one-third is-one-third">
-          <a href="{{- site.baseurl -}}/{{- site.resources_name -}}/" className="bp-sec-button">
-            <div>
+          <div className="bp-sec-button">
+            <div className="d-flex align-items-center justify-content-center">
               <span>
                 {button || 'MORE'}
               </span>
               <i className="sgds-icon sgds-icon-arrow-right is-size-4" aria-hidden="true" />
             </div>
-          </a>
+          </div>
         </div>
       </div>
     </div>
