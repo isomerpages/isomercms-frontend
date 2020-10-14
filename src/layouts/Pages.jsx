@@ -20,17 +20,21 @@ const PageCard = ({
   // Set padding to 0 so that Link component takes up the entire element
   // and entire element is clickable
   <li className="p-0">
-    <Link
-      className="d-flex align-items-center px-5 py-3"
-      to={collectionName
-        ? `/sites/${siteName}/collections/${collectionName}/${pageName}`
-        : `/sites/${siteName}/pages/${pageName}`}
+    <div
+      className="d-flex w-100 h-100"
     >
-      <div className="mr-auto">{prettifyPageFileName(pageName)}</div>
-      <button type="button" onClick={settingsToggle} id={`settings-${pageIndex}`}>
+      <Link
+        className="d-flex align-items-center px-5 py-3 mr-auto h-100"
+        to={collectionName
+          ? `/sites/${siteName}/collections/${collectionName}/${pageName}`
+          : `/sites/${siteName}/pages/${pageName}`}
+      >
+        {prettifyPageFileName(pageName)}
+      </Link>
+      <button className="px-5 py-3 h-100" type="button" onClick={settingsToggle} id={`settings-${pageIndex}`}>
         <i id={`settingsIcon-${pageIndex}`} className="bx bx-cog" />
       </button>
-    </Link>
+    </div>
   </li>
 );
 
