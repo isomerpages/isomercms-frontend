@@ -9,7 +9,7 @@ const SimplePage = ({ chunk, title }) => (
     <section className="bp-section">
       <div className="bp-container content padding--top--lg padding--bottom--xl">
         <div className="row">
-          <div className="col is-8 is-offset-1-desktop is-12-touch print-content" style={{ left: '80px' }}>
+          <div className="col is-8 is-offset-1-desktop is-12-touch print-content page-content-body">
             <div className="content" dangerouslySetInnerHTML={{ __html: chunk }} />
           </div>
         </div>

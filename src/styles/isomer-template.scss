@@ -12096,3 +12096,13 @@ a.navbar-item {
     height: calc(85vh - #{$header-height} - #{$footer-height});
     overflow-y: scroll;
 }
+
+.breadcrumb-container {
+    left: 50px;
+    margin: 0 0 !important;
+}
+
+.page-content-body {
+    left: 80px;
+    margin: 0 0 !important;
+}
