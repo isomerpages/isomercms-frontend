@@ -35,8 +35,16 @@ const Sidebar = ({ siteName, currPath }) => (
     <div className={styles.sidebarNavigation}>
       <ul>
         {sidebarPathDict.map(({ pathname, title }) => (
-          <li className={`/sites/${siteName}/${pathname}` === currPath ? styles.active : null} key={title}>
-            <Link to={`/sites/${siteName}/${pathname}`}>{title}</Link>
+          <li
+            className={`d-flex p-0 ${`/sites/${siteName}/${pathname}` === currPath ? styles.active : null}`}
+            key={title}
+          >
+            <Link
+              className="px-4 py-4 h-100 w-100"
+              to={`/sites/${siteName}/${pathname}`}
+            >
+              {title}
+            </Link>
           </li>
         ))}
       </ul>
