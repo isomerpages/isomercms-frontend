@@ -91,7 +91,7 @@ export function prettifyResourceFileName(fileName) {
   const day = tokenArray[2];
   const month = monthIntToStr(tokenArray[1]);
   const year = tokenArray[0];
-  const date = `${month} ${day} ${year}`;
+  const date = `${day} ${month} ${year}`;
 
   const type = tokenArray[3];
 
