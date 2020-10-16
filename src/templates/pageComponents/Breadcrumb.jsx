@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Breadcrumb = ({ title, collection }) => (
+const Breadcrumb = ({ title, date, collection }) => (
   <section className="bp-section is-small bp-section-pagetitle">
     <div className="bp-container breadcrumb-container">
       <div className="row">
@@ -25,6 +25,15 @@ const Breadcrumb = ({ title, collection }) => (
         </div>
       </div>
     </div>
+    {date &&
+      <div className="bp-container breadcrumb-container">
+        <div className="row">
+          <div className="col">
+            <p className="has-text-white">{ date }</p>
+          </div>
+        </div>
+      </div>
+    }
   </section>
 );
 
