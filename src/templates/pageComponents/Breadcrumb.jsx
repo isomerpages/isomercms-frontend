@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Breadcrumb = ({ title, collection }) => (
-  <section className="bp-section is-small bp-section-pagetitle" style={{ width: `${100 / 0.65}%` }}>
+  <section className="bp-section is-small bp-section-pagetitle">
     <div className="bp-container breadcrumb-container">
       <div className="row">
         <div className="col">
