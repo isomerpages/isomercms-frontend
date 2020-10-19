@@ -17,7 +17,6 @@ import Files from './layouts/Files';
 import EditFile from './layouts/EditFile';
 import EditHomepage from './layouts/EditHomepage';
 import Resources from './layouts/Resources';
-import EditResourcePage from './layouts/EditResourcePage';
 import Menus from './layouts/Menus';
 import EditNav from './layouts/EditNav';
 import Settings from './layouts/Settings';
@@ -43,10 +42,14 @@ function App() {
           <Route path="/sites/:siteName/files" component={Files} />
           <Route path="/sites/:siteName/images/:fileName" component={EditImage} />
           <Route path="/sites/:siteName/images" component={Images} />
-          <Route path="/sites/:siteName/pages/:fileName" component={EditPage} />
+          <Route path="/sites/:siteName/pages/:fileName" render={(props) => (
+            <EditPage {...props} isResourcePage={false} />
+          )} />
           <Route path="/sites/:siteName/pages" component={Pages} />
           <Route path="/sites/:siteName/homepage" component={EditHomepage} />
-          <Route path="/sites/:siteName/resources/:resourceName/:fileName" component={EditResourcePage} />
+          <Route path="/sites/:siteName/resources/:resourceName/:fileName" render={(props) => (
+            <EditPage {...props} isResourcePage={true} />
+          )} />
           <Route path="/sites/:siteName/resources" component={Resources} />
           {/* <Route path="/sites/:siteName/menus/footer" component={EditFooter} />  */}
           <Route path="/sites/:siteName/menus/main-menu" component={EditNav} />

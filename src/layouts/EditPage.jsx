@@ -8,7 +8,11 @@ import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
 
 import {
-  frontMatterParser, concatFrontMatterMdBody, prependImageSrc, prettifyPageFileName,
+  frontMatterParser,
+  concatFrontMatterMdBody,
+  prependImageSrc,
+  prettifyPageFileName,
+  prettifyResourceFileName,
 } from '../utils';
 import {
   boldButton,
@@ -36,6 +40,8 @@ import MediaSettingsModal from '../components/media/MediaSettingsModal';
 export default class EditPage extends Component {
   constructor(props) {
     super(props);
+    const { match, isResourcePage } = this.props;
+    const { siteName, fileName, resourceName } = match.params;
     this.state = {
       sha: null,
       editorValue: '',
@@ -49,13 +55,14 @@ export default class EditPage extends Component {
       stagedFileDetails: {},
     };
     this.mdeRef = React.createRef();
+    this.apiEndpoint = isResourcePage
+    ? `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`
+    : `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`
   }
 
   async componentDidMount() {
     try {
-      const { match } = this.props;
-      const { siteName, fileName } = match.params;
-      const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
+      const resp = await axios.get(this.apiEndpoint, {
         withCredentials: true,
       });
       const { content, sha } = resp.data;
@@ -74,8 +81,6 @@ export default class EditPage extends Component {
 
   updatePage = async () => {
     try {
-      const { match } = this.props;
-      const { siteName, fileName } = match.params;
       const { state } = this;
       const { editorValue, frontMatter } = state;
 
@@ -88,7 +93,7 @@ export default class EditPage extends Component {
         content: base64Content,
         sha: state.sha,
       };
-      const resp = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, params, {
+      const resp = await axios.post(this.apiEndpoint, params, {
         withCredentials: true,
       });
       const { sha } = resp.data;
@@ -102,11 +107,10 @@ export default class EditPage extends Component {
 
   deletePage = async () => {
     try {
-      const { match, history } = this.props;
-      const { siteName, fileName } = match.params;
+      const { history } = this.props;
       const { sha } = this.state;
       const params = { sha };
-      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
+      await axios.delete(this.apiEndpoint, {
         data: params,
         withCredentials: true,
       });
@@ -174,8 +178,8 @@ export default class EditPage extends Component {
 
 
   render() {
-    const { match } = this.props;
-    const { siteName, fileName } = match.params;
+    const { match, isResourcePage } = this.props;
+    const { siteName, fileName, resourceName } = match.params;
     const {
       editorValue,
       canShowDeleteWarningModal,
@@ -186,9 +190,9 @@ export default class EditPage extends Component {
     return (
       <>
         <Header
-          title={prettifyPageFileName(fileName)}
-          backButtonText="Back to Pages"
-          backButtonUrl={`/sites/${siteName}/pages`}
+          title={isResourcePage ? `${prettifyResourceFileName(fileName).title} in ${resourceName}` : prettifyPageFileName(fileName)}
+          backButtonText={`Back to ${isResourcePage ? 'Resources' : 'Pages'}`}
+          backButtonUrl={isResourcePage ?`/sites/${siteName}/resources` : `/sites/${siteName}/pages`}
         />
         <div className={elementStyles.wrapper}>
           {
@@ -252,7 +256,7 @@ export default class EditPage extends Component {
           <div className={editorStyles.pageEditorMain}>
             <SimplePage
               chunk={prependImageSrc(siteName, marked(editorValue))}
-              title={prettifyPageFileName(fileName)}
+              title={isResourcePage ? `${prettifyResourceFileName(fileName).title} in ${resourceName}` : prettifyPageFileName(fileName)}
             />
           </div>
         </div>
@@ -271,7 +275,7 @@ export default class EditPage extends Component {
           <DeleteWarningModal
             onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
             onDelete={this.deletePage}
-            type="page"
+            type={isResourcePage ? 'resource' : 'page'}
           />
           )
         }
