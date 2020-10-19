@@ -223,10 +223,10 @@ export default class EditPage extends Component {
               value={editorValue}
               options={{
                 toolbar: [
+                  headingButton,
                   boldButton,
                   italicButton,
                   strikethroughButton,
-                  headingButton,
                   '|',
                   codeButton,
                   quoteButton,
