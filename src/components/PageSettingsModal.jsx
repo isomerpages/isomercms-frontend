@@ -3,7 +3,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { Base64 } from 'js-base64';
 import * as _ from 'lodash';
-import Bluebird from 'bluebird';
+import { Redirect } from 'react-router-dom';
 import update from 'immutability-helper';
 import FormField from './FormField';
 import FormFieldPermalink from './FormFieldPermalink';
@@ -17,6 +17,9 @@ import {
 import LoadingButton from './LoadingButton';
 import { validatePageSettings } from '../utils/validators';
 import DeleteWarningModal from './DeleteWarningModal';
+
+// axios settings
+axios.defaults.withCredentials = true
 
 export default class PageSettingsModal extends Component {
   constructor(props) {
@@ -32,7 +35,8 @@ export default class PageSettingsModal extends Component {
       },
       canShowDeleteWarningModal: false,
       baseUrl: '',
-      pagePermalinks: [],
+      redirectToNewPage: false,
+      newPageName: '',
     };
   }
 
@@ -43,29 +47,13 @@ export default class PageSettingsModal extends Component {
       } = this.props;
 
       // get settings data from backend
-      const settingsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, {
-        withCredentials: true,
-      });
+      const settingsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`);
       const { settings } = settingsResp.data;
       const { configFieldsRequired } = settings;
       const baseUrl = configFieldsRequired.url;
 
-      // Get the list of permalinks of other Pages (simple-pages)
-      const pagePermalinks = await Bluebird.map(pageFilenames, async (pageFileName) => {
-        const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${pageFileName}`, {
-          withCredentials: true,
-        });
-        const { content } = resp.data;
-        const { frontMatter } = frontMatterParser(Base64.decode(content));
-        const { permalink } = frontMatter;
-
-        return permalink;
-      });
-
       if (!isNewPage) {
-        const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
-          withCredentials: true,
-        });
+        const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`);
         const { sha, content } = resp.data;
 
         // split the markdown into front matter and content
@@ -77,14 +65,12 @@ export default class PageSettingsModal extends Component {
           permalink,
           mdBody,
           baseUrl,
-          pagePermalinks,
         });
       } else {
         this.setState({
           title: 'Title',
           permalink: '/title/',
           baseUrl,
-          pagePermalinks,
         });
       }
     } catch (err) {
@@ -140,16 +126,16 @@ export default class PageSettingsModal extends Component {
           sha,
         };
 
-        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, params, {
-          withCredentials: true,
-        });
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, params);
+
+        // Refresh page
+        window.location.reload();
       } else {
         // A new file needs to be created
         if (newFileName !== fileName && !isNewPage) {
           // Delete existing page
           await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
             data: { sha },
-            withCredentials: true,
           });
         }
 
@@ -158,13 +144,10 @@ export default class PageSettingsModal extends Component {
           pageName: newFileName,
           content: base64Content,
         };
-        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages`, params, {
-          withCredentials: true,
-        });
-      }
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages`, params);
 
-      // Refresh page
-      window.location.reload();
+        this.setState({ redirectToNewPage: true, newPageName: newFileName })
+      }
     } catch (err) {
       console.log(err);
     }
@@ -177,7 +160,6 @@ export default class PageSettingsModal extends Component {
       const params = { sha };
       await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
         data: params,
-        withCredentials: true,
       });
 
       window.location.reload();
@@ -189,7 +171,6 @@ export default class PageSettingsModal extends Component {
   changeHandler = (event) => {
     const { id } = event.target;
     let { value } = event.target;
-    const { pagePermalinks } = this.state;
     const { pageFilenames, isNewPage } = this.props;
     let errorMessage = '';
 
@@ -199,10 +180,6 @@ export default class PageSettingsModal extends Component {
       value = permalinkValue;
       errorMessage = validatePageSettings(id, value);
 
-      // Check if permalink is already in use
-      if (errorMessage === '' && pagePermalinks.includes(value)) {
-        errorMessage = 'This URL is already in use. Please choose a different one.';
-      }
     } else { // id === 'title'
       errorMessage = validatePageSettings(id, value);
 
@@ -239,8 +216,14 @@ export default class PageSettingsModal extends Component {
       baseUrl,
       sha,
       canShowDeleteWarningModal,
+      redirectToNewPage,
+      newPageName,
     } = this.state;
-    const { settingsToggle, isNewPage } = this.props;
+    const {
+      siteName,
+      settingsToggle,
+      isNewPage,
+    } = this.props;
 
     // Delete the '/' at the start and end of the permalink string
     const processedPermalink = permalink.slice(1, -1);
@@ -311,14 +294,24 @@ export default class PageSettingsModal extends Component {
           </div>
         </div>
         {
-            canShowDeleteWarningModal
-            && (
-            <DeleteWarningModal
-              onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
-              onDelete={this.deleteHandler}
-              type="page"
+          canShowDeleteWarningModal
+          && (
+          <DeleteWarningModal
+            onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
+            onDelete={this.deleteHandler}
+            type="page"
+          />
+          )
+        }
+        {
+          redirectToNewPage
+          && (
+            <Redirect
+              to={{
+                pathname:  `/sites/${siteName}/pages/${newPageName}`
+              }}
             />
-            )
+          )
         }
       </>
     );
