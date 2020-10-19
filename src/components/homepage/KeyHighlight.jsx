@@ -22,9 +22,6 @@ const KeyHighlight = ({
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
       <h2>
-Highlight
-        {highlightIndex + 1}
-:
         {title}
       </h2>
       <button type="button" id={`highlight-${highlightIndex}-toggle`} onClick={displayHandler}>
