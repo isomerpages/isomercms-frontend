@@ -44,7 +44,11 @@ export default class MediaSettingsModal extends Component {
 
   saveFile = async () => {
     const {
-      siteName, media: { fileName }, isPendingUpload, type,
+      siteName,
+      media: { fileName },
+      isPendingUpload,
+      type,
+      onSave,
     } = this.props;
     const { newFileName, sha, content } = this.state;
 
@@ -77,7 +81,7 @@ export default class MediaSettingsModal extends Component {
       });
     }
 
-    window.location.reload();
+    onSave()
   }
 
   deleteFile = async () => {

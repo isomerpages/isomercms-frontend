@@ -6,7 +6,6 @@ import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import MediaCard from './MediaCard';
 import MediaUploadCard from './MediaUploadCard';
 import LoadingButton from '../LoadingButton';
-import MediaSettingsModal from './MediaSettingsModal';
 
 export default class MediasModal extends Component {
   constructor(props) {
@@ -14,7 +13,6 @@ export default class MediasModal extends Component {
     this.state = {
       medias: [],
       selectedFile: null,
-      isFileStagedForUpload: false,
     };
   }
 
@@ -31,42 +29,15 @@ export default class MediasModal extends Component {
     }
   }
 
-  stageFileForUpload = (fileName, fileData) => {
-    const { type } = this.props;
-    const baseFolder = type === 'file' ? 'files' : 'images';
-    this.setState({
-      isFileStagedForUpload: true,
-      stagedFileDetails: {
-        path: `${baseFolder}%2F${fileName}`,
-        content: fileData,
-        fileName,
-      },
-    });
-  }
-
-  readFileToStageUpload = async (event) => {
-    const fileReader = new FileReader();
-    const fileName = event.target.files[0].name;
-    fileReader.onload = (() => {
-      /** Github only requires the content of the image
-         * imgReader returns  `data:application/pdf;base64, {fileContent}`
-         * hence the split
-         */
-
-      const fileData = fileReader.result.split(',')[1];
-      this.stageFileForUpload(fileName, fileData);
-    });
-    fileReader.readAsDataURL(event.target.files[0]);
-  }
-
   render() {
     const {
       siteName,
       onClose,
       onMediaSelect,
       type,
+      readFileToStageUpload,
     } = this.props;
-    const { medias, selectedFile, isFileStagedForUpload, stagedFileDetails } = this.state;
+    const { medias, selectedFile } = this.state;
     return (!!medias.length
       && (
         <>
@@ -85,7 +56,7 @@ export default class MediasModal extends Component {
                   onClick={() => document.getElementById('file-upload').click()}
                 />
                 <input
-                  onChange={this.readFileToStageUpload}
+                  onChange={readFileToStageUpload}
                   onClick={(event) => {
                     // eslint-disable-next-line no-param-reassign
                     event.target.value = '';
@@ -123,17 +94,6 @@ export default class MediasModal extends Component {
               </div>
             </div>
           </div>
-          {
-            isFileStagedForUpload && (
-              <MediaSettingsModal
-                type={type}
-                siteName={siteName}
-                onClose={() => this.setState({ selectedFile: null, isFileStagedForUpload: false })}
-                media={stagedFileDetails}
-                isPendingUpload={true}
-              />
-            )
-          }
         </>
       )
     );

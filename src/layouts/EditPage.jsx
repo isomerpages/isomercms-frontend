@@ -31,6 +31,7 @@ import Header from '../components/Header';
 import DeleteWarningModal from '../components/DeleteWarningModal';
 import LoadingButton from '../components/LoadingButton';
 import MediasModal from '../components/media/MediaModal';
+import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
 export default class EditPage extends Component {
   constructor(props) {
@@ -44,6 +45,8 @@ export default class EditPage extends Component {
       isSelectingImage: false,
       pendingImageUpload: null,
       selectedImage: '',
+      isFileStagedForUpload: false,
+      stagedFileDetails: {},
     };
     this.mdeRef = React.createRef();
   }
@@ -123,6 +126,13 @@ export default class EditPage extends Component {
     }));
   }
 
+  toggleImageAndSettingsModal = () => {
+    this.setState((currState) => ({
+      isSelectingImage: !currState.isSelectingImage,
+      isFileStagedForUpload: !currState.isFileStagedForUpload,
+    }));
+  }
+
   onImageClick = (path) => {
     const cm = this.mdeRef.current.simpleMde.codemirror;
     cm.replaceSelection(`![](${path})`);
@@ -133,6 +143,36 @@ export default class EditPage extends Component {
     });
   }
 
+  stageFileForUpload = (fileName, fileData) => {
+    const { type } = this.props;
+    const baseFolder = type === 'file' ? 'files' : 'images';
+    this.setState({
+      isFileStagedForUpload: true,
+      stagedFileDetails: {
+        path: `${baseFolder}%2F${fileName}`,
+        content: fileData,
+        fileName,
+      },
+    });
+  }
+
+  readFileToStageUpload = async (event) => {
+    const fileReader = new FileReader();
+    const fileName = event.target.files[0].name;
+    fileReader.onload = (() => {
+      /** Github only requires the content of the image
+         * imgReader returns  `data:application/pdf;base64, {fileContent}`
+         * hence the split
+         */
+
+      const fileData = fileReader.result.split(',')[1];
+      this.stageFileForUpload(fileName, fileData);
+    });
+    fileReader.readAsDataURL(event.target.files[0]);
+    this.toggleImageModal()
+  }
+
+
   render() {
     const { match } = this.props;
     const { siteName, fileName } = match.params;
@@ -140,6 +180,8 @@ export default class EditPage extends Component {
       editorValue,
       canShowDeleteWarningModal,
       isSelectingImage,
+      isFileStagedForUpload,
+      stagedFileDetails,
     } = this.state;
     return (
       <>
@@ -155,8 +197,22 @@ export default class EditPage extends Component {
               type="image"
               siteName={siteName}
               onMediaSelect={this.onImageClick}
+              toggleImageModal={this.toggleImageModal}
+              readFileToStageUpload={this.readFileToStageUpload}
               onClose={() => this.setState({ isSelectingImage: false })}
             />
+            )
+          }
+          {
+            isFileStagedForUpload && (
+              <MediaSettingsModal
+                type="image"
+                siteName={siteName}
+                onClose={() => this.setState({ isFileStagedForUpload: false })}
+                onSave={this.toggleImageAndSettingsModal}
+                media={stagedFileDetails}
+                isPendingUpload="true"
+              />
             )
           }
           <div className={editorStyles.pageEditorSidebar}>
