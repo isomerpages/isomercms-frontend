@@ -68,6 +68,22 @@
     }
   }
 
+  &.addNewHomepageSection{
+    background: none;
+    box-shadow: none;
+
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    color: $isomer-blue;
+
+    h2{
+      font-size: 18px;
+      width: 100%;
+      text-align: left;
+    }
+  }
+
   .cardContent{
     margin-top: 20px;
     margin-bottom: 20px;

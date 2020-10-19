@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 
 const NewSectionCreator = ({ createHandler, hasResources }) => (
-  <div className={`${elementStyles.card} ${elementStyles.addNew}`}>
+  <div className={`${elementStyles.card} ${elementStyles.addNewHomepageSection}`}>
     <h2>
-Add a new section
+      Add a new section
       <i className="bx bx-plus" />
     </h2>
     <select name="newSection" id="section-new" onChange={createHandler}>
