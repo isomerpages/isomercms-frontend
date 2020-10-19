@@ -31,7 +31,6 @@ export default class PageSettingsModal extends Component {
         permalink: '',
       },
       canShowDeleteWarningModal: false,
-      permalinkSetterIsActive: false,
       baseUrl: '',
       pagePermalinks: [],
     };
@@ -232,18 +231,11 @@ export default class PageSettingsModal extends Component {
     }));
   }
 
-  togglePermalinkSetter = () => {
-    this.setState((currState) => ({
-      permalinkSetterIsActive: !currState.permalinkSetterIsActive,
-    }));
-  }
-
   render() {
     const {
       title,
       permalink,
       errors,
-      permalinkSetterIsActive,
       baseUrl,
       sha,
       canShowDeleteWarningModal,
@@ -284,8 +276,6 @@ export default class PageSettingsModal extends Component {
                   errorMessage={errors.permalink}
                   isRequired
                   onFieldChange={this.changeHandler}
-                  isActive={permalinkSetterIsActive || isNewPage}
-                  togglePermalinkSetter={this.togglePermalinkSetter}
                 />
               </div>
               <div className={elementStyles.modalButtons}>
@@ -294,12 +284,18 @@ export default class PageSettingsModal extends Component {
                     <>
                       <LoadingButton
                         label="Save"
-                        disabled={hasErrors}
+                        disabled={(hasErrors || !sha)}
                         disabledStyle={elementStyles.disabled}
                         className={(hasErrors || !sha) ? elementStyles.disabled : elementStyles.blue}
                         callback={this.saveHandler}
                       />
-                      <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
+                      <LoadingButton
+                        label="Delete"
+                        disabled={(hasErrors || !sha)}
+                        disabledStyle={elementStyles.disabled}
+                        className={(hasErrors || !sha) ? elementStyles.disabled : elementStyles.warning}
+                        callback={() => this.setState({ canShowDeleteWarningModal: true })}
+                      />
                     </>
                   ) : (
                     <LoadingButton

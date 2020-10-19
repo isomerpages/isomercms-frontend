@@ -11,17 +11,12 @@ const FormFieldPermalink = ({
   errorMessage,
   onFieldChange,
   isRequired,
-  isActive,
-  togglePermalinkSetter,
 }) => (
   <>
     <p className={elementStyles.formLabel}>{title}</p>
     <div style={{ display: 'flex' }}>
       <p className={`${elementStyles.formLabel} ${elementStyles.permalink}`}>
         {urlPrefix}
-        { !isActive
-          ? <b>{value}</b>
-          : (
             <input
               type="text"
               value={value}
@@ -32,12 +27,8 @@ const FormFieldPermalink = ({
               className={`${elementStyles.permalinkSetter} ${errorMessage ? `${elementStyles.error}` : null}`}
               onChange={onFieldChange}
             />
-          )}
           /
       </p>
-      { !isActive
-        ? <button type="button" onClick={togglePermalinkSetter}>EDIT</button>
-        : null}
     </div>
     <span className={elementStyles.error}>{errorMessage}</span>
   </>
@@ -55,8 +46,6 @@ FormFieldPermalink.propTypes = {
   errorMessage: PropTypes.string.isRequired,
   onFieldChange: PropTypes.func.isRequired,
   isRequired: PropTypes.bool.isRequired,
-  isActive: PropTypes.bool.isRequired,
-  togglePermalinkSetter: PropTypes.func.isRequired,
 };
 
 FormFieldPermalink.defaultProps = {
