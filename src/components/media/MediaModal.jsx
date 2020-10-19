@@ -72,12 +72,6 @@ export default class MediasModal extends Component {
             <div className={mediaStyles.mediaModal}>
               <div className={elementStyles.modalHeader}>
                 <h1 style={{ flexGrow: 1 }}>Select File</h1>
-                <LoadingButton
-                  label={`Select ${type}`}
-                  disabledStyle={elementStyles.disabled}
-                  className={elementStyles.blue}
-                  callback={() => onMediaSelect(`/${decodeURIComponent(selectedFile.path)}`)}
-                />
                 <button type="button" onClick={onClose}>
                   <i className="bx bx-x" />
                 </button>
@@ -111,6 +105,19 @@ export default class MediasModal extends Component {
                     isSelected={media.path === selectedFile?.path}
                   />
                 ))}
+              </div>
+              {/* Flexbox parent needs to be full-width - https://stackoverflow.com/a/49029061 */}
+              <div className="w-100">
+                <div className={`d-flex ${elementStyles.modalFooter}`}>
+                  <div className="ml-auto">
+                    <LoadingButton
+                        label={`Select ${type}`}
+                        disabledStyle={elementStyles.disabled}
+                        className={elementStyles.blue}
+                        callback={() => onMediaSelect(`/${decodeURIComponent(selectedFile.path)}`)}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
