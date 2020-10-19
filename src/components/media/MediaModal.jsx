@@ -14,6 +14,7 @@ export default class MediasModal extends Component {
     this.state = {
       medias: [],
       selectedFile: null,
+      isFileStagedForUpload: false,
     };
   }
 
@@ -34,7 +35,8 @@ export default class MediasModal extends Component {
     const { type } = this.props;
     const baseFolder = type === 'file' ? 'files' : 'images';
     this.setState({
-      stagedFileForUpload: {
+      isFileStagedForUpload: true,
+      stagedFileDetails: {
         path: `${baseFolder}%2F${fileName}`,
         content: fileData,
         fileName,
@@ -64,7 +66,7 @@ export default class MediasModal extends Component {
       onMediaSelect,
       type,
     } = this.props;
-    const { medias, selectedFile, stagedFileForUpload } = this.state;
+    const { medias, selectedFile, isFileStagedForUpload, stagedFileDetails } = this.state;
     return (!!medias.length
       && (
         <>
@@ -122,13 +124,13 @@ export default class MediasModal extends Component {
             </div>
           </div>
           {
-            stagedFileForUpload && (
+            isFileStagedForUpload && (
               <MediaSettingsModal
                 type={type}
                 siteName={siteName}
-                onClose={() => this.setState({ selectedFile: null })}
-                media={stagedFileForUpload}
-                isPendingUpload
+                onClose={() => this.setState({ selectedFile: null, isFileStagedForUpload: false })}
+                media={stagedFileDetails}
+                isPendingUpload={true}
               />
             )
           }
