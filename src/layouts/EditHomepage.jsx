@@ -950,45 +950,45 @@ export default class EditHomepage extends Component {
           <div className={editorStyles.homepageEditorSidebar}>
             <div>
               {/* Site-wide configuration */}
-              {/* <div className={styles.card}>
-                    <h4>
-                      <b>
-                      Site-wide configurations
-                      </b>
-                    </h4>
-                    <p>Site Title</p>
-                    <input
-                      placeholder="Title"
-                      defaultValue={frontMatter.title}
-                      value={frontMatter.title}
-                      id="site-title"
-                      onChange={this.onFieldChange}
-                    />
-                    <p>Site Subtitle</p>
-                    <input
-                      placeholder="Subtitle"
-                      defaultValue={frontMatter.subtitle}
-                      value={frontMatter.subtitle}
-                      id="site-subtitle"
-                      onChange={this.onFieldChange}
-                    />
-                    <p>Site description</p>
-                    <input
-                      placeholder="Description"
-                      defaultValue={frontMatter.description}
-                      value={frontMatter.description}
-                      id="site-description"
-                      onChange={this.onFieldChange}
-                    />
-                    <p>Site image</p>
-                    <input
-                      placeholder="Image"
-                      defaultValue={frontMatter.image}
-                      value={frontMatter.image}
-                      id="site-image"
-                      onChange={this.onFieldChange}
-                    />
-                  </div> */}
+              <div className={`${elementStyles.card}`}>
+                <h4>
+                  <b>
+                  Site-wide configurations
+                  </b>
+                </h4>
+                <p>Site Title</p>
+                <input
+                  placeholder="Title"
+                  defaultValue={frontMatter.title}
+                  value={frontMatter.title}
+                  id="site-title"
+                  onChange={this.onFieldChange}
+                />
+                <p>Site Subtitle</p>
+                <input
+                  placeholder="Subtitle"
+                  defaultValue={frontMatter.subtitle}
+                  value={frontMatter.subtitle}
+                  id="site-subtitle"
+                  onChange={this.onFieldChange}
+                />
+                <p>Site description</p>
+                <input
+                  placeholder="Description"
+                  defaultValue={frontMatter.description}
+                  value={frontMatter.description}
+                  id="site-description"
+                  onChange={this.onFieldChange}
+                />
+                <p>Site image</p>
+                <input
+                  placeholder="Image"
+                  defaultValue={frontMatter.image}
+                  value={frontMatter.image}
+                  id="site-image"
+                  onChange={this.onFieldChange}
+                />
+              </div>
               {/* <div>
                     <p><b>Site notification</b></p>
                     <input
