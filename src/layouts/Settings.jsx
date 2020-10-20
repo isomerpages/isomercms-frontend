@@ -44,6 +44,12 @@ const stateFields = {
       },
     ],
   },
+  otherFooterSettings: {
+    contact_us: '',
+    show_reach: '',
+    feedback: '',
+    faq: '',
+  },
   socialMediaContent: {
     facebook: '',
     linkedin: '',
@@ -51,7 +57,7 @@ const stateFields = {
     youtube: '',
     instagram: '',
   },
-  socialMediaSha: '',
+  footerSha: '',
 };
 
 export default class Settings extends Component {
@@ -82,8 +88,8 @@ export default class Settings extends Component {
       const { settings } = resp.data;
       const {
         configFieldsRequired,
-        socialMediaContent,
-        socialMediaSha,
+        footerContent,
+        footerSha,
       } = settings;
 
       // set state properly
@@ -91,11 +97,18 @@ export default class Settings extends Component {
         ...currState,
         siteName,
         ...configFieldsRequired,
+        otherFooterSettings: {
+          ...currState.otherFooterSettings,
+          contact_us: footerContent.contact_us,
+          show_reach: footerContent.show_reach,
+          feedback: footerContent.feedback,
+          faq: footerContent.faq,
+        },
         socialMediaContent: {
           ...currState.socialMediaContent,
-          ...socialMediaContent,
+          ...footerContent.social_media,
         },
-        socialMediaSha,
+        footerSha,
       }));
     } catch (err) {
       console.log(err);
@@ -138,7 +151,15 @@ export default class Settings extends Component {
     } = event.target;
     // const errorMessage = validateSettings(id, value);
 
-    if (grandparentElementId === 'social-media-fields') {
+    if (grandparentElementId === 'footer-fields') {
+      this.setState((currState) => ({
+        ...currState,
+        otherFooterSettings: {
+          ...currState.otherFooterSettings,
+          [id]: value,
+        },
+      }));
+    } else if (grandparentElementId === 'social-media-fields') {
       const errorMessage = validateSocialMedia(value, id);
       this.setState((currState) => ({
         ...currState,
@@ -192,8 +213,9 @@ export default class Settings extends Component {
       const { match } = this.props;
       const { siteName } = match.params;
 
-      // settings is obtained from _config.yml and social-media.yml
+      // settings is obtained from _config.yml and footer.yml
       const socialMediaSettings = state.socialMediaContent;
+      const { otherFooterSettings } = state;
 
       // obtain config settings object
       const {
@@ -211,12 +233,15 @@ export default class Settings extends Component {
       };
 
       // obtain sha value
-      const { socialMediaSha } = state;
+      const { footerSha } = state;
 
       const params = {
-        socialMediaSettings,
+        footerSettings: {
+          ...otherFooterSettings,
+          social_media: socialMediaSettings,
+        },
         configSettings,
-        socialMediaSha,
+        footerSha,
       };
 
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, params, {
@@ -330,7 +355,8 @@ export default class Settings extends Component {
       resources_name: resourcesName,
       colors,
       socialMediaContent,
-      socialMediaSha,
+      otherFooterSettings,
+      footerSha,
       errors,
     } = this.state;
     const { 'primary-color': primaryColor, 'secondary-color': secondaryColor, 'media-colors': mediaColors } = colors;
@@ -452,6 +478,21 @@ export default class Settings extends Component {
                     />
                   ))}
                 </div>
+                {/* Footer fields */}
+                <div id="footer-fields">
+                  <p className={elementStyles.formSectionHeader}>Footer</p>
+                  {Object.keys(otherFooterSettings).map((footerSetting) => (
+                    <FormFieldHorizontal
+                      title={footerSetting.split('_').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                      id={footerSetting}
+                      value={otherFooterSettings[footerSetting]}
+                      key={`${footerSetting}-form`}
+                      errorMessage={errors.otherFooterSettings[footerSetting]}
+                      isRequired={false}
+                      onFieldChange={this.changeHandler}
+                    />
+                  ))}
+                </div>
                 <br />
                 <br />
               </div>
@@ -460,7 +501,7 @@ export default class Settings extends Component {
                   label="Save"
                   disabled={hasErrors}
                   disabledStyle={elementStyles.formSaveButtonDisabled}
-                  className={(hasErrors || !socialMediaSha)
+                  className={(hasErrors || !footerSha)
                     ? elementStyles.formSaveButtonDisabled
                     : elementStyles.formSaveButtonActive}
                   callback={this.saveSettings}
