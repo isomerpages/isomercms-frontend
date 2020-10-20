@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import GenericWarningModal from './GenericWarningModal'
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
 // axios settings
@@ -10,10 +11,11 @@ axios.defaults.withCredentials = true
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
 const Header = ({
-  showButton, title, backButtonText, backButtonUrl,
+  showButton, title, isEditPage, backButtonText, backButtonUrl,
 }) => {
   const [shouldRedirect, setShouldRedirect] = useState(false)
   const [shouldPerformBackNav, setShouldPerformBackNav] = useState(false)
+  const [showBackNavWarningModal, setShowBackNavWarningModal] = useState(false)
 
   const clearCookie = async () => {
     try {
@@ -30,13 +32,18 @@ const Header = ({
     setShouldPerformBackNav(!shouldPerformBackNav)
   }
 
+  const handleBackNav = () => {
+    if (isEditPage) setShowBackNavWarningModal(true)
+    else toggleBackNav()
+  }
+
   return (
     <div className={elementStyles.header}>
       {/* Back button section */}
       <div className={elementStyles.headerLeft}>
         { !showButton ? null : (
           <div>
-            <button className={elementStyles.default} onClick={toggleBackNav} type="button">
+            <button className={elementStyles.default} onClick={handleBackNav} type="button">
               <i className="bx bx-chevron-left" />
               {backButtonText}
             </button>
@@ -71,6 +78,15 @@ const Header = ({
           to={{
             pathname: '/'
           }}
+        />
+      }
+      {
+        showBackNavWarningModal &&
+        <GenericWarningModal
+          displayTitle="Warning"
+          displayText="You have unsaved changes. Are you sure you want to navigate away from this page?"
+          onProceed={toggleBackNav}
+          onCancel={() => setShowBackNavWarningModal(false)}
         />
       }
     </div>
