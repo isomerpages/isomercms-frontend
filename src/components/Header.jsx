@@ -13,6 +13,7 @@ const Header = ({
   showButton, title, backButtonText, backButtonUrl,
 }) => {
   const [shouldRedirect, setShouldRedirect] = useState(false)
+  const [shouldPerformBackNav, setShouldPerformBackNav] = useState(false)
 
   const clearCookie = async () => {
     try {
@@ -25,17 +26,21 @@ const Header = ({
     }
   }
 
+  const toggleBackNav = () => {
+    setShouldPerformBackNav(!shouldPerformBackNav)
+  }
+
   return (
     <div className={elementStyles.header}>
       {/* Back button section */}
       <div className={elementStyles.headerLeft}>
         { !showButton ? null : (
-          <a href={backButtonUrl}>
-            <button className={elementStyles.default} type="button">
+          <div>
+            <button className={elementStyles.default} onClick={toggleBackNav} type="button">
               <i className="bx bx-chevron-left" />
               {backButtonText}
             </button>
-          </a>
+          </div>
         )}
       </div>
       {/* Middle section */}
@@ -54,6 +59,13 @@ const Header = ({
           Log Out
         </button>
       </div>
+      { shouldPerformBackNav && 
+        <Redirect
+          to={{
+            pathname: backButtonUrl
+          }}
+        />
+      }
       { shouldRedirect && 
         <Redirect
           to={{
