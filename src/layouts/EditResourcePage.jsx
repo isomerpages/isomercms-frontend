@@ -99,7 +99,6 @@ export default class EditResourcePage extends Component {
     const { siteName, fileName, resourceName } = match.params;
     const { title, date, type } = prettifyResourceFileName(fileName);
     const { editorValue, canShowDeleteWarningModal } = this.state;
-    console.log(match)
     return (
       <>
         <Header
