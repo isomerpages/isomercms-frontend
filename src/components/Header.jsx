@@ -11,7 +11,7 @@ axios.defaults.withCredentials = true
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
 const Header = ({
-  showButton, title, isEditPage, backButtonText, backButtonUrl,
+  showButton, title, isEditPage, shouldAllowEditPageBackNav, backButtonText, backButtonUrl,
 }) => {
   const [shouldRedirect, setShouldRedirect] = useState(false)
   const [shouldPerformBackNav, setShouldPerformBackNav] = useState(false)
@@ -33,7 +33,7 @@ const Header = ({
   }
 
   const handleBackNav = () => {
-    if (isEditPage) setShowBackNavWarningModal(true)
+    if (isEditPage && !shouldAllowEditPageBackNav) setShowBackNavWarningModal(true)
     else toggleBackNav()
   }
 
