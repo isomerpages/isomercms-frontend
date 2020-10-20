@@ -18,7 +18,7 @@ const RADIX_PARSE_INT = 10;
 const ResourceCard = ({
   fileName, siteName, category, settingsToggle, resourceIndex,
 }) => {
-  const { title, date, type } = retrieveResourceFileMetadata(fileName);
+  const { title, date } = retrieveResourceFileMetadata(fileName);
   return (
     <div className={`${contentStyles.resource} ${contentStyles.card} ${elementStyles.card}`}>
       <Link to={`/sites/${siteName}/resources/${category}/${fileName}`}>
@@ -26,7 +26,6 @@ const ResourceCard = ({
           <div className={contentStyles.resourceCategory}>{prettifyResourceCategory(category)}</div>
           <h1 className={contentStyles.resourceTitle}>{title}</h1>
           <p className={contentStyles.resourceDate}>{date}</p>
-          <p className={contentStyles.resourceType}>{type}</p>
         </div>
       </Link>
       <div className={contentStyles.resourceIcon}>
@@ -111,7 +110,7 @@ export default class Resources extends Component {
       if (resourceRoomName === undefined) {
         this.setState({ resourceRoomName });
       } else {
-        // Obtain the title, date, type, fileName, category for resource pages across all categories
+        // Obtain the title, date, fileName, category for resource pages across all categories
         const resourcePagesArray = await Bluebird.map(resourceCategories, async (category) => {
           const resourcePagesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${category.dirName}`, {
             withCredentials: true,
@@ -120,11 +119,10 @@ export default class Resources extends Component {
 
           if (resourcePages.length > 0) {
             return resourcePages.map((resourcePage) => {
-              const { title, date, type } = retrieveResourceFileMetadata(resourcePage.fileName);
+              const { title, date } = retrieveResourceFileMetadata(resourcePage.fileName);
               return {
                 title,
                 date,
-                type,
                 fileName: resourcePage.fileName,
                 category: category.dirName,
               };

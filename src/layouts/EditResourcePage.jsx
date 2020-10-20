@@ -97,7 +97,7 @@ export default class EditResourcePage extends Component {
   render() {
     const { match } = this.props;
     const { siteName, fileName, resourceName } = match.params;
-    const { title, date, type } = retrieveResourceFileMetadata(fileName);
+    const { title, date } = retrieveResourceFileMetadata(fileName);
     const { editorValue, canShowDeleteWarningModal } = this.state;
     return (
       <>

@@ -93,11 +93,9 @@ export function retrieveResourceFileMetadata(fileName) {
   const year = tokenArray[0];
   const date = `${day} ${month} ${year}`;
 
-  const type = tokenArray[3];
+  const title = tokenArray.slice(3).join(' ');
 
-  const title = tokenArray.slice(4).join(' ');
-
-  return { date, type, title };
+  return { date, title };
 }
 
 export function enquoteString(str) {
