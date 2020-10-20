@@ -5375,7 +5375,6 @@ a[href$=".pdf"][target="_blank"]:after {
     display: flex;
     font-size: .9375rem;
     overflow: hidden;
-    overflow-x: auto;
     white-space: nowrap;
     margin-bottom: .625rem
 }
@@ -5384,12 +5383,15 @@ a[href$=".pdf"][target="_blank"]:after {
     margin-bottom: 1.5rem
 }
 
-.bp-breadcrumb a {
+.bp-breadcrumb small {
     align-items: center;
     color: #fff;
-    display: flex;
+    display: block;
     justify-content: center;
-    padding: .5em .75em
+    padding: .5em .75em;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width:15rem;
 }
 
 .bp-breadcrumb a:hover {
@@ -5406,10 +5408,10 @@ a[href$=".pdf"][target="_blank"]:after {
 
 .bp-breadcrumb li {
     align-items: center;
-    display: flex
+    display: flex;
 }
 
-.bp-breadcrumb li:first-child a {
+.bp-breadcrumb li:first-child small {
     padding-left: 0
 }
 

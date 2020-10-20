@@ -8,11 +8,11 @@ const Breadcrumb = ({ title, date, collection }) => (
         <div className="col">
           <nav className="bp-breadcrumb" aria-label="breadcrumbs">
             <ul>
-              <li><a href="/"><small>HOME</small></a></li>
+              <li><small>HOME</small></li>
               { collection ? (
-                <li><a href="/"><small>{ collection.toUpperCase() }</small></a></li>
+                <li><small>{ collection.toUpperCase() }</small></li>
               ) : null}
-              <li><a href="/"><small>{ title.toUpperCase() }</small></a></li>
+              <li><small>{ title.toUpperCase() }</small></li>
             </ul>
           </nav>
         </div>
