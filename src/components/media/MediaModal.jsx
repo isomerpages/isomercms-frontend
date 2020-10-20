@@ -44,7 +44,7 @@ export default class MediasModal extends Component {
           <div className={elementStyles.overlay}>
             <div className={mediaStyles.mediaModal}>
               <div className={elementStyles.modalHeader}>
-                <h1 style={{ flexGrow: 1 }}>Select File</h1>
+                <h1 className="pl-5" style={{ flexGrow: 1 }}>Select File</h1>
                 <button type="button" onClick={onClose}>
                   <i className="bx bx-x" />
                 </button>
