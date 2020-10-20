@@ -49,10 +49,13 @@ const TemplateResourceSection = ({
             : null}
         </div>
       </div>
-      <div className="row padding--bottom">
-        <ResourcePost />
-        <ResourcePost />
-        <ResourcePost />
+      <div className="watermark-container">
+        <div className="row padding--bottom">
+          <ResourcePost />
+          <ResourcePost />
+          <ResourcePost />
+        </div>
+        <p className="watermark-text">Placeholder Media</p>
       </div>
       <div className="row has-text-centered margin--top padding--bottom--lg">
         <div className="col is-offset-one-third is-one-third">

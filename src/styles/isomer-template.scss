@@ -12108,3 +12108,24 @@ a.navbar-item {
     padding-left: 5rem;
     margin: 0 0 !important;
 }
+
+.watermark-container {
+    position:relative;
+    overflow: hidden;
+}
+
+.watermark-text {
+    position: absolute;
+    top:0;
+    right:0;
+    width: 100%;
+    height: 100%;
+    color: #ffffff;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    font-size: 5vw;
+    transform: rotate(-30deg);
+}
