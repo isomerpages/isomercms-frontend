@@ -7,7 +7,7 @@ import marked from 'marked';
 import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
 import {
-  frontMatterParser, concatFrontMatterMdBody, prependImageSrc, prettifyResourceFileName,
+  frontMatterParser, concatFrontMatterMdBody, prependImageSrc, retrieveResourceFileMetadata,
 } from '../utils';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
@@ -97,7 +97,7 @@ export default class EditResourcePage extends Component {
   render() {
     const { match } = this.props;
     const { siteName, fileName, resourceName } = match.params;
-    const { title, date, type } = prettifyResourceFileName(fileName);
+    const { title, date, type } = retrieveResourceFileMetadata(fileName);
     const { editorValue, canShowDeleteWarningModal } = this.state;
     return (
       <>

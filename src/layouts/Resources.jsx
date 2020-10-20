@@ -4,7 +4,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import * as Bluebird from 'bluebird';
 import * as _ from 'lodash';
-import { prettifyResourceFileName, prettifyResourceCategory } from '../utils';
+import { retrieveResourceFileMetadata, prettifyResourceCategory } from '../utils';
 import ResourceSettingsModal from '../components/ResourceSettingsModal';
 import ResourceCategoryModal from '../components/ResourceCategoryModal';
 import Header from '../components/Header';
@@ -18,7 +18,7 @@ const RADIX_PARSE_INT = 10;
 const ResourceCard = ({
   fileName, siteName, category, settingsToggle, resourceIndex,
 }) => {
-  const { title, date, type } = prettifyResourceFileName(fileName);
+  const { title, date, type } = retrieveResourceFileMetadata(fileName);
   return (
     <div className={`${contentStyles.resource} ${contentStyles.card} ${elementStyles.card}`}>
       <Link to={`/sites/${siteName}/resources/${category}/${fileName}`}>
@@ -120,7 +120,7 @@ export default class Resources extends Component {
 
           if (resourcePages.length > 0) {
             return resourcePages.map((resourcePage) => {
-              const { title, date, type } = prettifyResourceFileName(resourcePage.fileName);
+              const { title, date, type } = retrieveResourceFileMetadata(resourcePage.fileName);
               return {
                 title,
                 date,
