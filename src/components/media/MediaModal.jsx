@@ -87,7 +87,9 @@ export default class MediasModal extends Component {
                         label={`Select ${type}`}
                         disabledStyle={elementStyles.disabled}
                         className={elementStyles.blue}
-                        callback={() => onMediaSelect(`/${decodeURIComponent(selectedFile.path)}`)}
+                        callback={() => {
+                          if (selectedFile) onMediaSelect(`/${decodeURIComponent(selectedFile.path)}`)
+                        }}
                     />
                   </div>
                 </div>
