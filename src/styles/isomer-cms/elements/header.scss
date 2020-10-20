@@ -26,9 +26,14 @@
     margin: 0 auto;
     flex-basis: 60%;
     text-align: center;
+    overflow:hidden;
 
     h1{
       font-size: 20px;
+      min-width:0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 
