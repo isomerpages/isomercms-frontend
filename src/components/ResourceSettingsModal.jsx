@@ -334,12 +334,18 @@ export default class ResourceSettingsModal extends Component {
                   label="Save"
                   disabled={hasErrors}
                   disabledStyle={elementStyles.disabled}
-                  className={(isNewPost ? hasErrors : (hasErrors || !sha)) ? elementStyles.disabled : elementStyles.blue}
+                  className={`ml-auto ${(isNewPost ? hasErrors : (hasErrors || !sha)) ? elementStyles.disabled : elementStyles.blue}`}
                   callback={this.saveHandler}
                 />
                 { !isNewPost
                   ? (
-                    <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
+                    <LoadingButton
+                      label="Delete"
+                      disabled={(hasErrors)}
+                      disabledStyle={elementStyles.disabled}
+                      className={hasErrors ? elementStyles.disabled : elementStyles.warning}
+                      callback={() => this.setState({ canShowDeleteWarningModal: true })}
+                    />
                   ) : null}
               </div>
             </div>

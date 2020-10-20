@@ -164,7 +164,7 @@ export default class MediaSettingsModal extends Component {
                   <LoadingButton
                     label="Save"
                     disabledStyle={elementStyles.disabled}
-                    className={elementStyles.blue}
+                    className={`ml-auto ${elementStyles.blue}`}
                     callback={this.saveFile}
                   />
                 ) : (
@@ -173,7 +173,7 @@ export default class MediaSettingsModal extends Component {
                       label="Save"
                       disabled={(errorMessage || !sha)}
                       disabledStyle={elementStyles.disabled}
-                      className={(errorMessage || !sha) ? elementStyles.disabled : elementStyles.blue}
+                      className={`ml-auto ${(errorMessage || !sha) ? elementStyles.disabled : elementStyles.blue}`}
                       callback={this.saveFile}
                     />
                     <LoadingButton
