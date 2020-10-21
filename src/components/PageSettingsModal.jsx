@@ -36,24 +36,29 @@ export default class PageSettingsModal extends Component {
       canShowDeleteWarningModal: false,
       baseUrl: '',
       redirectToNewPage: false,
+      fileName: '',
       newPageName: '',
     };
+    this.baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${props.siteName}`
   }
 
   async componentDidMount() {
     try {
       const {
-        siteName, fileName, isNewPage, pageFilenames,
+        fileName, isNewPage,
       } = this.props;
 
       // get settings data from backend
-      const settingsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`);
+      const settingsResp = await axios.get(`${this.baseApiUrl}/settings`);
       const { settings } = settingsResp.data;
       const { configFieldsRequired } = settings;
       const baseUrl = configFieldsRequired.url;
 
+      // set file name
+      this.setState({ fileName })
+
       if (!isNewPage) {
-        const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`);
+        const resp = await axios.get(`${this.baseApiUrl}/pages/${fileName}`);
         const { sha, content } = resp.data;
 
         // split the markdown into front matter and content
@@ -126,7 +131,7 @@ export default class PageSettingsModal extends Component {
           sha,
         };
 
-        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, params);
+        await axios.post(`${this.baseApiUrl}/pages/${fileName}`, params);
 
         // Refresh page
         window.location.reload();
@@ -134,7 +139,7 @@ export default class PageSettingsModal extends Component {
         // A new file needs to be created
         if (newFileName !== fileName && !isNewPage) {
           // Delete existing page
-          await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
+          await axios.delete(`${this.baseApiUrl}/pages/${fileName}`, {
             data: { sha },
           });
         }
@@ -144,7 +149,7 @@ export default class PageSettingsModal extends Component {
           pageName: newFileName,
           content: base64Content,
         };
-        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages`, params);
+        await axios.post(`${this.baseApiUrl}/pages`, params);
 
         this.setState({ redirectToNewPage: true, newPageName: newFileName })
       }
@@ -158,7 +163,7 @@ export default class PageSettingsModal extends Component {
       const { siteName, fileName } = this.props;
       const { sha } = this.state;
       const params = { sha };
-      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
+      await axios.delete(`${this.baseApiUrl}/pages/${fileName}`, {
         data: params,
       });
 
@@ -172,6 +177,7 @@ export default class PageSettingsModal extends Component {
     const { id } = event.target;
     let { value } = event.target;
     const { pageFilenames, isNewPage } = this.props;
+    const pageFilenamesExc = pageFilenames.filter((filename) => filename !== this.state.fileName)
     let errorMessage = '';
 
     // If the permalink changed, append '/' before and after the permalink
@@ -184,7 +190,7 @@ export default class PageSettingsModal extends Component {
       errorMessage = validatePageSettings(id, value);
 
       const newFileName = generatePageFileName(value);
-      if (errorMessage === '' && pageFilenames.includes(newFileName)) {
+      if (errorMessage === '' && pageFilenamesExc.includes(newFileName)) {
         errorMessage = 'This title is already in use. Please choose a different one.';
       }
 
