@@ -949,14 +949,8 @@ export default class EditHomepage extends Component {
         <div className={elementStyles.wrapper}>
           <div className={editorStyles.homepageEditorSidebar}>
             <div>
-              {/* Site-wide configuration */}
               <div className={`${elementStyles.card}`}>
-                <h4>
-                  <b>
-                  Site-wide configurations
-                  </b>
-                </h4>
-                <p>Site Title</p>
+                <p>Page Title</p>
                 <input
                   placeholder="Title"
                   defaultValue={frontMatter.title}
@@ -964,14 +958,7 @@ export default class EditHomepage extends Component {
                   id="site-title"
                   onChange={this.onFieldChange}
                 />
-                <p>Site Subtitle</p>
-                <input
-                  placeholder="Subtitle"
-                  defaultValue={frontMatter.subtitle}
-                  value={frontMatter.subtitle}
-                  id="site-subtitle"
-                  onChange={this.onFieldChange}
-                />
+                {/* Removing site description for now, since it only shows up as metadata
                 <p>Site description</p>
                 <input
                   placeholder="Description"
@@ -979,15 +966,7 @@ export default class EditHomepage extends Component {
                   value={frontMatter.description}
                   id="site-description"
                   onChange={this.onFieldChange}
-                />
-                <p>Site image</p>
-                <input
-                  placeholder="Image"
-                  defaultValue={frontMatter.image}
-                  value={frontMatter.image}
-                  id="site-image"
-                  onChange={this.onFieldChange}
-                />
+                /> */}
               </div>
               {/* <div>
                     <p><b>Site notification</b></p>
