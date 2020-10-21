@@ -410,13 +410,13 @@ export default class EditHomepage extends Component {
             0: {
               hero: {
                 button: {
-                  $set: undefined,
+                  $set: '',
                 },
                 url: {
-                  $set: undefined,
+                  $set: '',
                 },
                 key_highlights: {
-                  $set: undefined,
+                  $set: '',
                 },
                 dropdown: {
                   $set: dropdownObj,
@@ -565,7 +565,7 @@ export default class EditHomepage extends Component {
             0: {
               hero: {
                 dropdown: {
-                  $set: undefined,
+                  $set: '',
                 },
                 key_highlights: {
                   $set: [],
