@@ -12,7 +12,7 @@ import {
   concatFrontMatterMdBody,
   prependImageSrc,
   prettifyPageFileName,
-  prettifyResourceFileName,
+  retrieveResourceFileMetadata,
 } from '../utils';
 import {
   boldButton,
@@ -179,7 +179,8 @@ export default class EditPage extends Component {
 
   render() {
     const { match, isResourcePage } = this.props;
-    const { siteName, fileName, resourceName } = match.params;
+    const { siteName, fileName } = match.params;
+    const { title, date } = isResourcePage ? retrieveResourceFileMetadata(fileName) : { title: prettifyPageFileName(fileName), date: '' }
     const {
       editorValue,
       canShowDeleteWarningModal,
@@ -190,7 +191,7 @@ export default class EditPage extends Component {
     return (
       <>
         <Header
-          title={isResourcePage ? `${prettifyResourceFileName(fileName).title} in ${resourceName}` : prettifyPageFileName(fileName)}
+          title={title}
           backButtonText={`Back to ${isResourcePage ? 'Resources' : 'Pages'}`}
           backButtonUrl={isResourcePage ?`/sites/${siteName}/resources` : `/sites/${siteName}/pages`}
         />
@@ -256,7 +257,8 @@ export default class EditPage extends Component {
           <div className={editorStyles.pageEditorMain}>
             <SimplePage
               chunk={prependImageSrc(siteName, marked(editorValue))}
-              title={isResourcePage ? `${prettifyResourceFileName(fileName).title} in ${resourceName}` : prettifyPageFileName(fileName)}
+              title={title}
+              date={date}
             />
           </div>
         </div>
