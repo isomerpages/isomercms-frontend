@@ -18,7 +18,7 @@ const EditorResourcesSection = ({
   displayHandler,
   errors,
 }) => (
-  <div className={elementStyles.card}>
+  <div className={`${elementStyles.card} move`}>
     <div className={elementStyles.cardHeader}>
       <h2>
 Resources section:
