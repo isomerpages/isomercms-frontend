@@ -33,62 +33,62 @@ import DeleteWarningModal from '../components/DeleteWarningModal';
 const RADIX_PARSE_INT = 10;
 
 // Section constructors
-const ResourcesSectionConstructor = () => ({
+const ResourcesSectionConstructor = (isErrorConstructor) => ({
   resources: {
-    title: '',
-    subtitle: '',
-    button: '',
+    title: isErrorConstructor ? '' : 'Resources Section Title',
+    subtitle: isErrorConstructor ? '' : 'Resources Section Subtitle',
+    button: isErrorConstructor ? '' : 'Resources Button Name',
   },
 });
 
-const InfobarSectionConstructor = () => ({
+const InfobarSectionConstructor = (isErrorConstructor) => ({
   infobar: {
-    title: '',
-    subtitle: '',
-    description: '',
-    button: '',
-    url: '',
+    title: isErrorConstructor ? '' : 'Infobar Title',
+    subtitle: isErrorConstructor ? '' : 'Infobar Subtitle',
+    description: isErrorConstructor ? '' : 'Infobar description',
+    button: isErrorConstructor ? '' : 'Button Text',
+    url: isErrorConstructor ? '' : '/faq/',
   },
 });
 
-const InfopicSectionConstructor = () => ({
+const InfopicSectionConstructor = (isErrorConstructor) => ({
   infopic: {
-    title: '',
-    subtitle: '',
-    description: '',
-    button: '',
-    url: '',
-    imageUrl: '',
-    imageAlt: '',
+    title: isErrorConstructor ? '' : 'Infopic Title',
+    subtitle: isErrorConstructor ? '' : 'Infopic Subtitle',
+    description: isErrorConstructor ? '' : 'Infopic description',
+    button: isErrorConstructor ? '' : 'Button Text',
+    url: isErrorConstructor ? '' : '/faq/',
+    imageUrl: isErrorConstructor ? '' : '/image/',
+    imageAlt: isErrorConstructor ? '' : 'Image alt text',
   },
 });
 
-const KeyHighlightConstructor = () => ({
-  title: '',
-  description: '',
-  url: '',
+const KeyHighlightConstructor = (isErrorConstructor) => ({
+  title: isErrorConstructor ? '' : 'Key Highlight Title',
+  description: isErrorConstructor ? '' : 'Key Highlight description',
+  url: isErrorConstructor ? '' : '/faq/',
 });
 
-const DropdownElemConstructor = () => ({
-  title: '',
-  url: '',
+const DropdownElemConstructor = (isErrorConstructor) => ({
+  title: isErrorConstructor ? '' : 'Hero Dropdown Element Title',
+  url: isErrorConstructor ? '' : '/faq/',
 });
 
 const DropdownConstructor = () => ({
-  title: '',
+  title: 'Hero Dropdown Title',
   options: [],
 });
 
-const enumSection = (type) => {
+const enumSection = (type, isErrorConstructor) => {
   switch (type) {
     case 'resources':
-      return ResourcesSectionConstructor();
+      return ResourcesSectionConstructor(isErrorConstructor);
     case 'infobar':
-      return InfobarSectionConstructor();
+      return InfobarSectionConstructor(isErrorConstructor);
     case 'infopic':
-      return InfopicSectionConstructor();
+      return InfopicSectionConstructor(isErrorConstructor);
     default:
-      return InfobarSectionConstructor();
+      return InfobarSectionConstructor(isErrorConstructor);
   }
 };
 
@@ -150,7 +150,7 @@ export default class EditHomepage extends Component {
             // Go through section.hero.dropdown.options
             displayDropdownElems = _.fill(Array(dropdown.options.length), false);
             // Fill in dropdown elem errors array
-            dropdownElemsErrors = _.map(dropdown.options, () => DropdownElemConstructor());
+            dropdownElemsErrors = _.map(dropdown.options, () => DropdownElemConstructor(true));
             // Fill in sectionErrors for hero with dropdown
             sectionsErrors.push({
               hero: {
@@ -161,7 +161,7 @@ export default class EditHomepage extends Component {
           if (keyHighlights) {
             displayHighlights = _.fill(Array(keyHighlights.length), false);
             // Fill in highlights errors array
-            highlightsErrors = _.map(keyHighlights, () => KeyHighlightConstructor());
+            highlightsErrors = _.map(keyHighlights, () => KeyHighlightConstructor(true));
             // Fill in sectionErrors for hero with key highlights
             sectionsErrors.push({
               hero: {
@@ -173,16 +173,16 @@ export default class EditHomepage extends Component {
 
         // Check if there is already a resources section
         if (section.resources) {
-          sectionsErrors.push(ResourcesSectionConstructor());
+          sectionsErrors.push(ResourcesSectionConstructor(true));
           hasResources = true;
         }
 
         if (section.infobar) {
-          sectionsErrors.push(InfobarSectionConstructor());
+          sectionsErrors.push(InfobarSectionConstructor(true));
         }
 
         if (section.infopic) {
-          sectionsErrors.push(InfopicSectionConstructor());
+          sectionsErrors.push(InfopicSectionConstructor(true));
         }
 
         // Minimize all sections by default
@@ -386,11 +386,11 @@ export default class EditHomepage extends Component {
           }
 
           newSections = update(frontMatter.sections, {
-            $push: [enumSection(value)],
+            $push: [enumSection(value, false)],
           });
           newErrors = update(errors, {
             sections: {
-              $push: [enumSection(value)],
+              $push: [enumSection(value, true)],
             },
           });
 
@@ -455,7 +455,7 @@ export default class EditHomepage extends Component {
               hero: {
                 dropdown: {
                   options: {
-                    $splice: [[dropdownsIndex, 0, DropdownElemConstructor()]],
+                    $splice: [[dropdownsIndex, 0, DropdownElemConstructor(false)]],
                   },
                 },
               },
@@ -464,7 +464,7 @@ export default class EditHomepage extends Component {
 
           newErrors = update(errors, {
             dropdownElems: {
-              $splice: [[dropdownsIndex, 0, DropdownElemConstructor()]],
+              $splice: [[dropdownsIndex, 0, DropdownElemConstructor(true)]],
             },
           });
 
@@ -484,7 +484,7 @@ export default class EditHomepage extends Component {
             0: {
               hero: {
                 key_highlights: {
-                  $splice: [[highlightIndex, 0, KeyHighlightConstructor()]],
+                  $splice: [[highlightIndex, 0, KeyHighlightConstructor(false)]],
                 },
               },
             },
@@ -492,7 +492,7 @@ export default class EditHomepage extends Component {
 
           newErrors = update(errors, {
             highlights: {
-              $splice: [[highlightIndex, 0, KeyHighlightConstructor()]],
+              $splice: [[highlightIndex, 0, KeyHighlightConstructor(true)]],
             },
           });
 
