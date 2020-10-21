@@ -959,7 +959,7 @@ export default class EditHomepage extends Component {
           <div className={editorStyles.homepageEditorSidebar}>
             <div>
               <div className={`${elementStyles.card}`}>
-                <p>Page Title</p>
+                <p><b>Page Title</b></p>
                 <input
                   placeholder="Title"
                   defaultValue={frontMatter.title}
@@ -977,15 +977,15 @@ export default class EditHomepage extends Component {
                   onChange={this.onFieldChange}
                 /> */}
               </div>
-              {/* <div>
-                    <p><b>Site notification</b></p>
-                    <input
-                      placeholder="Notification"
-                      defaultValue={frontMatter.notification}
-                      value={frontMatter.notification}
-                      id="site-notification"
-                      onChange={this.onFieldChange} />
-                  </div> */}
+              <div className={`${elementStyles.card}`}>
+                <p><b>Site notification</b></p>
+                <input
+                  placeholder="Notification"
+                  defaultValue={frontMatter.notification}
+                  value={frontMatter.notification}
+                  id="site-notification"
+                  onChange={this.onFieldChange} />
+              </div>
 
               {/* Homepage section configurations */}
               <DragDropContext onDragEnd={this.onDragEnd}>
@@ -1144,6 +1144,24 @@ export default class EditHomepage extends Component {
           </div>
           <div className={editorStyles.homepageEditorMain}>
             {/* Isomer Template Pane */}
+            {/* Notification */}
+            { frontMatter.notification && 
+            <div className="bp-notification bg-secondary is-marginless">
+              <div className="bp-container">
+                <div className="row">
+                  <div className="col">
+                    <div className="field has-addons bp-notification-flex">
+                      <div className="control has-text-centered has-text-white">
+                        <h6>{ frontMatter.notification }</h6>
+                      </div>
+                      <div className="button has-text-white">
+                        <span className="delete sgds-icon sgds-icon-cross is-size-4"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>}
             {frontMatter.sections.map((section, sectionIndex) => (
               <>
                 {/* Hero section */}

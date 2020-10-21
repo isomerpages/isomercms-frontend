@@ -16,6 +16,7 @@
   height: calc(100vh - #{$header-height} - #{$footer-height});
   box-sizing: border-box;
   overflow-y: scroll;
+  position: relative;
 }
 
 .pageEditorSidebar{
