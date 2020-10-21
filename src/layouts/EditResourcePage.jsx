@@ -7,7 +7,7 @@ import marked from 'marked';
 import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
 import {
-  frontMatterParser, concatFrontMatterMdBody, prependImageSrc, prettifyResourceFileName,
+  frontMatterParser, concatFrontMatterMdBody, prependImageSrc, retrieveResourceFileMetadata,
 } from '../utils';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
@@ -97,11 +97,12 @@ export default class EditResourcePage extends Component {
   render() {
     const { match } = this.props;
     const { siteName, fileName, resourceName } = match.params;
+    const { title, date } = retrieveResourceFileMetadata(fileName);
     const { editorValue, canShowDeleteWarningModal } = this.state;
     return (
       <>
         <Header
-          title={`${prettifyResourceFileName(fileName).title} in ${resourceName}`}
+          title={`${title} in ${resourceName}`}
           backButtonText="Back to Resources"
           backButtonUrl={`/sites/${siteName}/resources`}
         />
@@ -117,7 +118,7 @@ export default class EditResourcePage extends Component {
             />
           </div>
           <div className={editorStyles.pageEditorMain}>
-            <SimplePage chunk={prependImageSrc(siteName, marked(editorValue))} title={`${prettifyResourceFileName(fileName).title} in ${resourceName}`} />
+            <SimplePage chunk={prependImageSrc(siteName, marked(editorValue))} title={`${title} in ${resourceName}`} date={date}/>
           </div>
         </div>
         <div className={editorStyles.pageEditorFooter}>

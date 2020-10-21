@@ -34,8 +34,7 @@
   width: calc(100vw - #{$page-editor-sidebar-width});
   left: $page-editor-sidebar-width;;
   box-sizing: border-box;
-  padding-right: 50px;
-  overflow-y: scroll;
+  overflow-y: auto;
   height: calc(100vh - #{$header-height} - #{$footer-height});
   background-color: white;
 }

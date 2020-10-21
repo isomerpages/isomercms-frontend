@@ -78,26 +78,24 @@ function monthIntToStr(monthInt) {
   return monthMap[monthInt];
 }
 
-// Takes in a resource file name and prettifies it.
+// Takes in a resource file name and retrieves the date, type, and title of the resource.
 // =================
 // Each fileName comes in the format of `{date}-{type}-{title}.md`
 // A sample fileName is 2019-08-23-post-CEO-made-a-speech.md
 // {date} is YYYY-MM-DD, e.g. 2019-08-23
 // {type} is either `post` or `download`
 // {title} is a string containing [a-z,A-Z,0-9] and all whitespaces are replaced by hyphens
-export function prettifyResourceFileName(fileName) {
+export function retrieveResourceFileMetadata(fileName) {
   const fileNameArray = fileName.split('.md')[0];
   const tokenArray = fileNameArray.split('-');
   const day = tokenArray[2];
   const month = monthIntToStr(tokenArray[1]);
   const year = tokenArray[0];
-  const date = `${month} ${day} ${year}`;
+  const date = `${day} ${month} ${year}`;
 
-  const type = tokenArray[3];
+  const title = tokenArray.slice(3).join(' ');
 
-  const title = tokenArray.slice(4).join(' ');
-
-  return { date, type, title };
+  return { date, title };
 }
 
 export function enquoteString(str) {
