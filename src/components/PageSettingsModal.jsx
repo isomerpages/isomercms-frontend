@@ -86,7 +86,7 @@ export default class PageSettingsModal extends Component {
   saveHandler = async () => {
     try {
       const {
-        siteName, fileName, isNewPage,
+        fileName, isNewPage,
       } = this.props;
       const {
         sha, title, permalink, mdBody, errors,
@@ -131,7 +131,7 @@ export default class PageSettingsModal extends Component {
           sha,
         };
 
-        await axios.post(`${this.baseApiUrl}/pages/${fileName}`, params);
+        const res = await axios.post(`${this.baseApiUrl}/pages/${fileName}`, params);
 
         // Refresh page
         window.location.reload();
@@ -151,6 +151,10 @@ export default class PageSettingsModal extends Component {
         };
         await axios.post(`${this.baseApiUrl}/pages`, params);
 
+        if (newFileName !== fileName && !isNewPage) {
+          // Refresh page
+          window.location.reload()
+        }
         this.setState({ redirectToNewPage: true, newPageName: newFileName })
       }
     } catch (err) {
@@ -160,7 +164,7 @@ export default class PageSettingsModal extends Component {
 
   deleteHandler = async () => {
     try {
-      const { siteName, fileName } = this.props;
+      const { fileName } = this.props;
       const { sha } = this.state;
       const params = { sha };
       await axios.delete(`${this.baseApiUrl}/pages/${fileName}`, {
@@ -310,7 +314,8 @@ export default class PageSettingsModal extends Component {
           )
         }
         {
-          redirectToNewPage
+          isNewPage
+          && redirectToNewPage
           && (
             <Redirect
               to={{
