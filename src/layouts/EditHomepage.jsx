@@ -727,7 +727,16 @@ export default class EditHomepage extends Component {
       const { state } = this;
       const { match } = this.props;
       const { siteName } = match.params;
-      const content = concatFrontMatterMdBody(state.frontMatter, '');
+      let filteredFrontMatter = _.cloneDeep(state.frontMatter)
+      // Filter out components which have no input
+      filteredFrontMatter.sections = state.frontMatter.sections.map((section) => {
+        let newSection = {}
+        for (const sectionName in section) {
+          newSection[sectionName] = _.cloneDeep(_.omitBy(section[sectionName], _.isEmpty))
+        }
+        return newSection
+      })
+      const content = concatFrontMatterMdBody(filteredFrontMatter, '');
       const base64EncodedContent = Base64.encode(content);
 
       const params = {
