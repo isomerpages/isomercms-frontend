@@ -58,8 +58,8 @@ const InfopicSectionConstructor = (isErrorConstructor) => ({
     description: isErrorConstructor ? '' : 'Infopic description',
     button: isErrorConstructor ? '' : 'Button Text',
     url: isErrorConstructor ? '' : '/faq/',
-    imageUrl: isErrorConstructor ? '' : '/image/',
-    imageAlt: isErrorConstructor ? '' : 'Image alt text',
+    image: isErrorConstructor ? '' : '/image/',
+    alt: isErrorConstructor ? '' : 'Image alt text',
   },
 });
 
@@ -133,7 +133,6 @@ export default class EditHomepage extends Component {
       const { content, sha } = resp.data;
       const base64DecodedContent = Base64.decode(content);
       const { frontMatter } = frontMatterParser(base64DecodedContent);
-
       // Compute hasResources and set displaySections
       let hasResources = false;
       const displaySections = [];
@@ -235,7 +234,6 @@ export default class EditHomepage extends Component {
         case 'section': {
           // The field that changed belongs to a homepage section config
           const { sections } = state.frontMatter;
-
           // sectionIndex is the index of the section array in the frontMatter
           const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT);
           const sectionType = idArray[2]; // e.g. "hero" or "infobar" or "resources"
@@ -1109,8 +1107,8 @@ export default class EditHomepage extends Component {
                                     description={section.infopic.description}
                                     button={section.infopic.button}
                                     url={section.infopic.url}
-                                    imageUrl={section.infopic.imageUrl}
-                                    imageAlt={section.infopic.imageAlt}
+                                    imageUrl={section.infopic.image}
+                                    imageAlt={section.infopic.alt}
                                     sectionIndex={sectionIndex}
                                     deleteHandler={(event) => this.setState({ itemPendingForDelete: { id: event.target.id, type: 'Infopic Section' } })}
                                     onFieldChange={this.onFieldChange}
@@ -1220,8 +1218,8 @@ export default class EditHomepage extends Component {
                             title={section.infopic.title}
                             subtitle={section.infopic.subtitle}
                             description={section.infopic.description}
-                            imageUrl={section.infopic.imageUrl}
-                            imageAlt={section.infopic.imageAlt}
+                            imageUrl={section.infopic.image}
+                            imageAlt={section.infopic.alt}
                             button={section.infopic.button}
                             sectionIndex={sectionIndex}
                             siteName={siteName}
@@ -1233,8 +1231,8 @@ export default class EditHomepage extends Component {
                             title={section.infopic.title}
                             subtitle={section.infopic.subtitle}
                             description={section.infopic.description}
-                            imageUrl={section.infopic.imageUrl}
-                            imageAlt={section.infopic.imageAlt}
+                            imageUrl={section.infopic.image}
+                            imageAlt={section.infopic.alt}
                             button={section.infopic.button}
                             sectionIndex={sectionIndex}
                             siteName={siteName}

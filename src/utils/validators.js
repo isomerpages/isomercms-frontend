@@ -39,6 +39,17 @@ const INFOBAR_BUTTON_TEXT_MIN_LENGTH = 2;
 const INFOBAR_BUTTON_TEXT_MAX_LENGTH = 30;
 const INFOBAR_DESCRIPTION_MIN_LENGTH = 2;
 const INFOBAR_DESCRIPTION_MAX_LENGTH = 30;
+// Infopic
+const INFOPIC_TITLE_MIN_LENGTH = 2;
+const INFOPIC_TITLE_MAX_LENGTH = 30;
+const INFOPIC_SUBTITLE_MIN_LENGTH = 2;
+const INFOPIC_SUBTITLE_MAX_LENGTH = 30;
+const INFOPIC_BUTTON_TEXT_MIN_LENGTH = 2;
+const INFOPIC_BUTTON_TEXT_MAX_LENGTH = 30;
+const INFOPIC_DESCRIPTION_MIN_LENGTH = 2;
+const INFOPIC_DESCRIPTION_MAX_LENGTH = 30;
+const INFOPIC_ALT_TEXT_MIN_LENGTH = 2;
+const INFOPIC_ALT_TEXT_MAX_LENGTH = 30;
 // Hero
 const HERO_TITLE_MIN_LENGTH = 2;
 const HERO_TITLE_MAX_LENGTH = 30;
@@ -325,6 +336,72 @@ const validateInfobarSection = (sectionError, sectionType, field, value) => {
   return newSectionError;
 };
 
+const validateInfopicSection = (sectionError, sectionType, field, value) => {
+  const newSectionError = sectionError;
+  let errorMessage = '';
+  switch (field) {
+    case 'title': {
+      // Title is too short
+      if (value.length < INFOPIC_TITLE_MIN_LENGTH) {
+        errorMessage = `The title should be longer than ${INFOPIC_TITLE_MIN_LENGTH} characters.`;
+      }
+      // Title is too long
+      if (value.length > INFOPIC_TITLE_MAX_LENGTH) {
+        errorMessage = `The title should be shorter than ${INFOPIC_TITLE_MAX_LENGTH} characters.`;
+      }
+      break;
+    }
+    case 'subtitle': {
+      // Subtitle is too short
+      if (value.length < INFOPIC_SUBTITLE_MIN_LENGTH) {
+        errorMessage = `The subtitle should be longer than ${INFOPIC_SUBTITLE_MIN_LENGTH} characters.`;
+      }
+      // Subtitle is too long
+      if (value.length > INFOPIC_SUBTITLE_MAX_LENGTH) {
+        errorMessage = `The subtitle should be shorter than ${INFOPIC_SUBTITLE_MAX_LENGTH} characters.`;
+      }
+      break;
+    }
+    case 'description': {
+      // Description is too short
+      if (value.length < INFOPIC_DESCRIPTION_MIN_LENGTH) {
+        errorMessage = `The description should be longer than ${INFOPIC_DESCRIPTION_MIN_LENGTH} characters.`;
+      }
+      // Description is too long
+      if (value.length > INFOPIC_DESCRIPTION_MAX_LENGTH) {
+        errorMessage = `The description should be shorter than ${INFOPIC_DESCRIPTION_MAX_LENGTH} characters.`;
+      }
+      break;
+    }
+    case 'button': {
+      // Button text is too short
+      if (value.length < INFOPIC_BUTTON_TEXT_MIN_LENGTH) {
+        errorMessage = `The button text should be longer than ${INFOPIC_BUTTON_TEXT_MIN_LENGTH} characters.`;
+      }
+      // Button text is too long
+      if (value.length > INFOPIC_BUTTON_TEXT_MAX_LENGTH) {
+        errorMessage = `The button text should be shorter than ${INFOPIC_BUTTON_TEXT_MAX_LENGTH} characters.`;
+      }
+      break;
+    }
+    case 'alt': {
+      // Alt text is too short
+      if (value.length < INFOPIC_ALT_TEXT_MIN_LENGTH) {
+        errorMessage = `The image alt text should be longer than ${INFOPIC_ALT_TEXT_MIN_LENGTH} characters.`;
+      }
+      // Alt text is too long
+      if (value.length > INFOPIC_ALT_TEXT_MAX_LENGTH) {
+        errorMessage = `The image alt text should be shorter than ${INFOPIC_ALT_TEXT_MAX_LENGTH} characters.`;
+      }
+      break;
+    }
+    default:
+      break;
+  }
+  newSectionError[sectionType][field] = errorMessage;
+  return newSectionError;
+};
+
 const validateSections = (sectionError, sectionType, field, value) => {
   let newSectionError = sectionError;
   switch (sectionType) {
@@ -338,6 +415,10 @@ const validateSections = (sectionError, sectionType, field, value) => {
     }
     case 'infobar': {
       newSectionError = validateInfobarSection(sectionError, sectionType, field, value);
+      break;
+    }
+    case 'infopic': {
+      newSectionError = validateInfopicSection(sectionError, sectionType, field, value);
       break;
     }
     default:

@@ -77,9 +77,9 @@ Infopic section:
             />
             <FormFieldImage
               title="Infopic image URL"
-              id={`section-${sectionIndex}-infopic-imageUrl`}
+              id={`section-${sectionIndex}-infopic-image`}
               value={imageUrl}
-              errorMessage={errors.imageUrl}
+              errorMessage={errors.image}
               isRequired
               onFieldChange={onFieldChange}
               inlineButtonText="Choose Image"
@@ -87,9 +87,9 @@ Infopic section:
             />
             <FormField
               title="Infopic image alt text"
-              id={`section-${sectionIndex}-infopic-imageAlt`}
+              id={`section-${sectionIndex}-infopic-alt`}
               value={imageAlt}
-              errorMessage={errors.imageAlt}
+              errorMessage={errors.alt}
               isRequired
               onFieldChange={onFieldChange}
             />
