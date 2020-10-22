@@ -417,6 +417,8 @@ export default class Settings extends Component {
                   errorMessage={errors.favicon}
                   isRequired
                   onFieldChange={this.changeHandler}
+                  inlineButtonText={"Choose Image"}
+                  siteName={siteName}
                 />
                 {/* Resource room name field */}
                 <FormField

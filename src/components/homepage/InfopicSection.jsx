@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
+import FormFieldImage from '../FormFieldImage';
 
 /* eslint
   react/no-array-index-key: 0
@@ -21,6 +22,7 @@ const EditorInfopicSection = ({
   shouldDisplay,
   displayHandler,
   errors,
+  siteName,
 }) => (
   <div className={`${elementStyles.card} move`}>
     <div className={elementStyles.cardHeader}>
@@ -73,13 +75,15 @@ Infopic section:
               isRequired
               onFieldChange={onFieldChange}
             />
-            <FormField
+            <FormFieldImage
               title="Infopic image URL"
               id={`section-${sectionIndex}-infopic-imageUrl`}
               value={imageUrl}
               errorMessage={errors.imageUrl}
               isRequired
               onFieldChange={onFieldChange}
+              inlineButtonText="Choose Image"
+              siteName={siteName}
             />
             <FormField
               title="Infopic image alt text"

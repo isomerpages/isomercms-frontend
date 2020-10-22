@@ -1019,6 +1019,7 @@ export default class EditHomepage extends Component {
                                 displayHandler={this.displayHandler}
                                 onDragEnd={this.onDragEnd}
                                 errors={errors}
+                                siteName={siteName}
                               />
                             </>
                           ) : (
@@ -1116,6 +1117,7 @@ export default class EditHomepage extends Component {
                                     shouldDisplay={displaySections[sectionIndex]}
                                     displayHandler={this.displayHandler}
                                     errors={errors.sections[sectionIndex].infopic}
+                                    siteName={siteName}
                                   />
                                 </div>
                               )}

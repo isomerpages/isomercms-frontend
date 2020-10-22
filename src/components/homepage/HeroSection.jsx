@@ -4,6 +4,7 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '../../styles/App.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
+import FormFieldImage from '../FormFieldImage';
 import HeroButton from './HeroButton';
 import HeroDropdown from './HeroDropdown';
 import KeyHighlight from './KeyHighlight';
@@ -32,6 +33,7 @@ const EditorHeroSection = ({
   displayDropdownElems,
   displayHighlights,
   errors,
+  siteName,
 }) => (
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
@@ -59,13 +61,15 @@ const EditorHeroSection = ({
             isRequired
             onFieldChange={onFieldChange}
           />
-          <FormField
+          <FormFieldImage
             title="Hero background image"
             id={`section-${sectionIndex}-hero-background`}
             value={background}
             errorMessage={errors.sections[0].hero.background}
             isRequired
             onFieldChange={onFieldChange}
+            inlineButtonText="Choose Image"
+            siteName={siteName}
           />
           <span>
             <i>Note: you can only have either Key Highlights+Hero button or a Hero Dropdown</i>
