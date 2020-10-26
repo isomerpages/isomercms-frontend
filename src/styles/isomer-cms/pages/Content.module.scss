@@ -137,11 +137,16 @@
       align-content: center;
       min-width: 250px;
 
+      .resourceInfoContainer{
+        overflow: hidden;
+      }
+
       .resourceInfo{
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         align-content: center;
+        height:100%;
 
         .resourceCategory{
           text-transform: uppercase;

@@ -21,7 +21,7 @@ const ResourceCard = ({
   const { title, date } = retrieveResourceFileMetadata(fileName);
   return (
     <div className={`${contentStyles.resource} ${contentStyles.card} ${elementStyles.card}`}>
-      <Link to={`/sites/${siteName}/resources/${category}/${fileName}`}>
+      <Link className={contentStyles.resourceInfoContainer} to={`/sites/${siteName}/resources/${category}/${fileName}`}>
         <div id={resourceIndex} className={contentStyles.resourceInfo}>
           <div className={contentStyles.resourceCategory}>{prettifyResourceCategory(category)}</div>
           <h1 className={contentStyles.resourceTitle}>{title}</h1>
