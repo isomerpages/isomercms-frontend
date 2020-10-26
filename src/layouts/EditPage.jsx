@@ -44,6 +44,7 @@ export default class EditPage extends Component {
     const { siteName, fileName, resourceName } = match.params;
     this.state = {
       sha: null,
+      originalMdValue: '',
       editorValue: '',
       frontMatter: '',
       canShowDeleteWarningModal: false,
@@ -71,6 +72,7 @@ export default class EditPage extends Component {
       const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
       this.setState({
         sha,
+        originalMdValue: mdBody.trim(),
         editorValue: mdBody.trim(),
         frontMatter,
       });
@@ -182,6 +184,7 @@ export default class EditPage extends Component {
     const { siteName, fileName } = match.params;
     const { title, date } = isResourcePage ? retrieveResourceFileMetadata(fileName) : { title: prettifyPageFileName(fileName), date: '' }
     const {
+      originalMdValue,
       editorValue,
       canShowDeleteWarningModal,
       isSelectingImage,
@@ -191,7 +194,9 @@ export default class EditPage extends Component {
     return (
       <>
         <Header
-          title={title}
+          title={prettifyPageFileName(fileName)}
+          shouldAllowEditPageBackNav={originalMdValue === editorValue}
+          isEditPage="true"
           backButtonText={`Back to ${isResourcePage ? 'Resources' : 'Pages'}`}
           backButtonUrl={isResourcePage ?`/sites/${siteName}/resources` : `/sites/${siteName}/pages`}
         />
