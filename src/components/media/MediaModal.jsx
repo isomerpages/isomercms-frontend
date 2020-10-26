@@ -6,7 +6,6 @@ import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import MediaCard from './MediaCard';
 import MediaUploadCard from './MediaUploadCard';
 import LoadingButton from '../LoadingButton';
-import MediaSettingsModal from './MediaSettingsModal';
 
 export default class MediasModal extends Component {
   constructor(props) {
@@ -30,54 +29,22 @@ export default class MediasModal extends Component {
     }
   }
 
-  stageFileForUpload = (fileName, fileData) => {
-    const { type } = this.props;
-    const baseFolder = type === 'file' ? 'files' : 'images';
-    this.setState({
-      stagedFileForUpload: {
-        path: `${baseFolder}%2F${fileName}`,
-        content: fileData,
-        fileName,
-      },
-    });
-  }
-
-  readFileToStageUpload = async (event) => {
-    const fileReader = new FileReader();
-    const fileName = event.target.files[0].name;
-    fileReader.onload = (() => {
-      /** Github only requires the content of the image
-         * imgReader returns  `data:application/pdf;base64, {fileContent}`
-         * hence the split
-         */
-
-      const fileData = fileReader.result.split(',')[1];
-      this.stageFileForUpload(fileName, fileData);
-    });
-    fileReader.readAsDataURL(event.target.files[0]);
-  }
-
   render() {
     const {
       siteName,
       onClose,
       onMediaSelect,
       type,
+      readFileToStageUpload,
     } = this.props;
-    const { medias, selectedFile, stagedFileForUpload } = this.state;
+    const { medias, selectedFile } = this.state;
     return (!!medias.length
       && (
         <>
           <div className={elementStyles.overlay}>
             <div className={mediaStyles.mediaModal}>
               <div className={elementStyles.modalHeader}>
-                <h1 style={{ flexGrow: 1 }}>Select File</h1>
-                <LoadingButton
-                  label={`Select ${type}`}
-                  disabledStyle={elementStyles.disabled}
-                  className={elementStyles.blue}
-                  callback={() => onMediaSelect(`/${decodeURIComponent(selectedFile.path)}`)}
-                />
+                <h1 className="pl-5" style={{ flexGrow: 1 }}>Select File</h1>
                 <button type="button" onClick={onClose}>
                   <i className="bx bx-x" />
                 </button>
@@ -89,7 +56,7 @@ export default class MediasModal extends Component {
                   onClick={() => document.getElementById('file-upload').click()}
                 />
                 <input
-                  onChange={this.readFileToStageUpload}
+                  onChange={readFileToStageUpload}
                   onClick={(event) => {
                     // eslint-disable-next-line no-param-reassign
                     event.target.value = '';
@@ -112,19 +79,23 @@ export default class MediasModal extends Component {
                   />
                 ))}
               </div>
+              {/* Flexbox parent needs to be full-width - https://stackoverflow.com/a/49029061 */}
+              <div className="w-100">
+                <div className={`d-flex ${elementStyles.modalFooter}`}>
+                  <div className="ml-auto">
+                    <LoadingButton
+                        label={`Select ${type}`}
+                        disabledStyle={elementStyles.disabled}
+                        className={elementStyles.blue}
+                        callback={() => {
+                          if (selectedFile) onMediaSelect(`/${decodeURIComponent(selectedFile.path)}`)
+                        }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          {
-            stagedFileForUpload && (
-              <MediaSettingsModal
-                type={type}
-                siteName={siteName}
-                onClose={() => this.setState({ selectedFile: null })}
-                media={stagedFileForUpload}
-                isPendingUpload
-              />
-            )
-          }
         </>
       )
     );

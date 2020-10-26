@@ -21,10 +21,11 @@
 }
 
 .mediaModal {
-  width: 85%;
+  width: 75%;
+  max-width: 75rem;
   height: 70%;
   background: white;
-  padding: 30px;
+  padding: 1.5rem 2rem 1rem;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   display: flex;
@@ -40,6 +41,11 @@
   flex-wrap: wrap;
   overflow-y: scroll;
   padding-bottom: 50px;
+
+    &:after {
+      content: '';
+      flex: auto;
+    }
 
     .selectedMediaCard{
       outline: 2px solid $isomer-blue;

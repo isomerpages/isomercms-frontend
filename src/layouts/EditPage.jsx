@@ -8,7 +8,11 @@ import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
 
 import {
-  frontMatterParser, concatFrontMatterMdBody, prependImageSrc, prettifyPageFileName,
+  frontMatterParser,
+  concatFrontMatterMdBody,
+  prependImageSrc,
+  prettifyPageFileName,
+  retrieveResourceFileMetadata,
 } from '../utils';
 import {
   boldButton,
@@ -31,10 +35,13 @@ import Header from '../components/Header';
 import DeleteWarningModal from '../components/DeleteWarningModal';
 import LoadingButton from '../components/LoadingButton';
 import MediasModal from '../components/media/MediaModal';
+import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
 export default class EditPage extends Component {
   constructor(props) {
     super(props);
+    const { match, isResourcePage } = this.props;
+    const { siteName, fileName, resourceName } = match.params;
     this.state = {
       sha: null,
       editorValue: '',
@@ -44,15 +51,18 @@ export default class EditPage extends Component {
       isSelectingImage: false,
       pendingImageUpload: null,
       selectedImage: '',
+      isFileStagedForUpload: false,
+      stagedFileDetails: {},
     };
     this.mdeRef = React.createRef();
+    this.apiEndpoint = isResourcePage
+    ? `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`
+    : `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`
   }
 
   async componentDidMount() {
     try {
-      const { match } = this.props;
-      const { siteName, fileName } = match.params;
-      const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
+      const resp = await axios.get(this.apiEndpoint, {
         withCredentials: true,
       });
       const { content, sha } = resp.data;
@@ -71,8 +81,6 @@ export default class EditPage extends Component {
 
   updatePage = async () => {
     try {
-      const { match } = this.props;
-      const { siteName, fileName } = match.params;
       const { state } = this;
       const { editorValue, frontMatter } = state;
 
@@ -85,7 +93,7 @@ export default class EditPage extends Component {
         content: base64Content,
         sha: state.sha,
       };
-      const resp = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, params, {
+      const resp = await axios.post(this.apiEndpoint, params, {
         withCredentials: true,
       });
       const { sha } = resp.data;
@@ -99,11 +107,10 @@ export default class EditPage extends Component {
 
   deletePage = async () => {
     try {
-      const { match, history } = this.props;
-      const { siteName, fileName } = match.params;
+      const { history } = this.props;
       const { sha } = this.state;
       const params = { sha };
-      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`, {
+      await axios.delete(this.apiEndpoint, {
         data: params,
         withCredentials: true,
       });
@@ -123,6 +130,13 @@ export default class EditPage extends Component {
     }));
   }
 
+  toggleImageAndSettingsModal = () => {
+    this.setState((currState) => ({
+      isSelectingImage: !currState.isSelectingImage,
+      isFileStagedForUpload: !currState.isFileStagedForUpload,
+    }));
+  }
+
   onImageClick = (path) => {
     const cm = this.mdeRef.current.simpleMde.codemirror;
     cm.replaceSelection(`![](${path})`);
@@ -133,20 +147,53 @@ export default class EditPage extends Component {
     });
   }
 
+  stageFileForUpload = (fileName, fileData) => {
+    const { type } = this.props;
+    const baseFolder = type === 'file' ? 'files' : 'images';
+    this.setState({
+      isFileStagedForUpload: true,
+      stagedFileDetails: {
+        path: `${baseFolder}%2F${fileName}`,
+        content: fileData,
+        fileName,
+      },
+    });
+  }
+
+  readFileToStageUpload = async (event) => {
+    const fileReader = new FileReader();
+    const fileName = event.target.files[0].name;
+    fileReader.onload = (() => {
+      /** Github only requires the content of the image
+         * fileReader returns  `data:application/pdf;base64, {fileContent}`
+         * hence the split
+         */
+
+      const fileData = fileReader.result.split(',')[1];
+      this.stageFileForUpload(fileName, fileData);
+    });
+    fileReader.readAsDataURL(event.target.files[0]);
+    this.toggleImageModal()
+  }
+
+
   render() {
-    const { match } = this.props;
+    const { match, isResourcePage } = this.props;
     const { siteName, fileName } = match.params;
+    const { title, date } = isResourcePage ? retrieveResourceFileMetadata(fileName) : { title: prettifyPageFileName(fileName), date: '' }
     const {
       editorValue,
       canShowDeleteWarningModal,
       isSelectingImage,
+      isFileStagedForUpload,
+      stagedFileDetails,
     } = this.state;
     return (
       <>
         <Header
-          title={prettifyPageFileName(fileName)}
-          backButtonText="Back to Pages"
-          backButtonUrl={`/sites/${siteName}/pages`}
+          title={title}
+          backButtonText={`Back to ${isResourcePage ? 'Resources' : 'Pages'}`}
+          backButtonUrl={isResourcePage ?`/sites/${siteName}/resources` : `/sites/${siteName}/pages`}
         />
         <div className={elementStyles.wrapper}>
           {
@@ -155,8 +202,22 @@ export default class EditPage extends Component {
               type="image"
               siteName={siteName}
               onMediaSelect={this.onImageClick}
+              toggleImageModal={this.toggleImageModal}
+              readFileToStageUpload={this.readFileToStageUpload}
               onClose={() => this.setState({ isSelectingImage: false })}
             />
+            )
+          }
+          {
+            isFileStagedForUpload && (
+              <MediaSettingsModal
+                type="image"
+                siteName={siteName}
+                onClose={() => this.setState({ isFileStagedForUpload: false })}
+                onSave={this.toggleImageAndSettingsModal}
+                media={stagedFileDetails}
+                isPendingUpload="true"
+              />
             )
           }
           <div className={editorStyles.pageEditorSidebar}>
@@ -167,10 +228,10 @@ export default class EditPage extends Component {
               value={editorValue}
               options={{
                 toolbar: [
+                  headingButton,
                   boldButton,
                   italicButton,
                   strikethroughButton,
-                  headingButton,
                   '|',
                   codeButton,
                   quoteButton,
@@ -196,7 +257,8 @@ export default class EditPage extends Component {
           <div className={editorStyles.pageEditorMain}>
             <SimplePage
               chunk={prependImageSrc(siteName, marked(editorValue))}
-              title={prettifyPageFileName(fileName)}
+              title={title}
+              date={date}
             />
           </div>
         </div>
@@ -215,7 +277,7 @@ export default class EditPage extends Component {
           <DeleteWarningModal
             onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
             onDelete={this.deletePage}
-            type="page"
+            type={isResourcePage ? 'resource' : 'page'}
           />
           )
         }
