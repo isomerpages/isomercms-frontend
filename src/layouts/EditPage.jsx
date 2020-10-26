@@ -165,7 +165,7 @@ export default class EditPage extends Component {
     const fileName = event.target.files[0].name;
     fileReader.onload = (() => {
       /** Github only requires the content of the image
-         * imgReader returns  `data:application/pdf;base64, {fileContent}`
+         * fileReader returns  `data:application/pdf;base64, {fileContent}`
          * hence the split
          */
 
