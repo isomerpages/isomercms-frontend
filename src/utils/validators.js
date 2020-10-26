@@ -7,7 +7,8 @@ const SOCIAL_MEDIA_REGEX_PART_2 = '.com/)([a-zA-Z0-9_-]+(/)?)+$';
 const permalinkRegexTest = RegExp(PERMALINK_REGEX);
 const DATE_REGEX = '^([0-9]{4}-[0-9]{2}-[0-9]{2})$';
 const dateRegexTest = RegExp(DATE_REGEX);
-const fileNameRegexTest = /^[^<>:;,?"*|/]+\.[a-zA-z]{3,4}$/;
+const fileNameRegexTest = /^[a-zA-Z0-9" "_-]+$/;
+const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/;
 const RESOURCE_CATEGORY_REGEX = '^(([a-zA-Z0-9]+([\\s][a-zA-Z0-9]+)*)+)$';
 const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX);
 const RADIX_PARSE_INT = 10;
@@ -521,8 +522,14 @@ const validateFileName = (value) => {
   if (!value.length) {
     return 'Please input the file name';
   }
-  if (!fileNameRegexTest.test(value)) {
-    return 'Invalid filename';
+
+  const fileNameArr = value.split('.')
+  if (fileNameArr.length !== 2 || !fileNameExtensionRegexTest.test(fileNameArr[1])) {
+    return 'Invalid filename: filename must end with a valid file extension (.JPG, .png, .pdf, etc.)'
+  }
+  if (fileNameArr[0] === '') return 'Invalid filename: please specify a filename'
+  if (!fileNameRegexTest.test(fileNameArr[0])) {
+    return 'Invalid filename: filename must not contain any special characters';
   }
   return '';
 };
