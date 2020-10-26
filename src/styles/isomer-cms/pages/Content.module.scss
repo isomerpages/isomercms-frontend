@@ -124,10 +124,6 @@
       margin-right: $resource-card-margin;
       margin-bottom: $resource-card-margin;
       min-width: 250px;
-
-      &:nth-child(3n){
-          margin-right: 0;
-      }
     }
   }
 }
