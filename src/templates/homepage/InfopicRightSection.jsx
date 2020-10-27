@@ -17,7 +17,6 @@ const TemplateInfopicRightSection = ({
   siteName,
 }) => {
   const addDefaultSrc = (e) => {
-    console.log('help')
     e.target.src = '/no_image.png'
   }
   return (

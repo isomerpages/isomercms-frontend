@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 
-const NewSectionCreator = ({ createHandler, hasResources }) => (
-  <div className={`${elementStyles.card} ${elementStyles.addNewHomepageSection}`}>
+const NewSectionCreator = ({ createHandler, hasResources }) => {
+  const [newSectionType, setNewSectionType] = useState()
+  const onFormSubmit = () => {
+    const event = {
+      target: {
+        id: "section-new",
+        value: newSectionType
+      }
+    }
+    createHandler(event)
+  }
+  return (
+  <div className={`d-flex flex-column ${elementStyles.card} ${elementStyles.addNewHomepageSection}`}>
     <h2>
       Add a new section
-      <i className="bx bx-plus" />
     </h2>
-    <select name="newSection" id="section-new" onChange={createHandler}>
+    <select className={`${elementStyles.form} ${elementStyles.formHorizontal} ${elementStyles.formHorizontalInput}`} name="newSection" id="section-new" onChange={(e) => setNewSectionType(e.target.value)}>
       <option value="">--Please choose a new section--</option>
       <option value="infobar">Infobar</option>
       <option value="infopic">Infopic</option>
@@ -18,8 +28,11 @@ const NewSectionCreator = ({ createHandler, hasResources }) => (
         ? null
         : <option value="resources">Resources</option>}
     </select>
+    <div>
+      <button type="button" className={newSectionType ? elementStyles.blue: elementStyles.disabled} onClick={onFormSubmit} disabled={!newSectionType}>Create section</button>
+    </div>
   </div>
-);
+)};
 
 export default NewSectionCreator;
 
