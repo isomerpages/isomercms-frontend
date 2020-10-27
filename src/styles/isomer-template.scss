@@ -12095,7 +12095,7 @@ a.navbar-item {
 }
 
 .CodeMirror {
-    height: calc(85vh - #{$header-height} - #{$footer-height});
+    height: 100% !important;
     overflow-y: scroll;
 }
 

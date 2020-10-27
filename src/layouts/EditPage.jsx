@@ -6,6 +6,7 @@ import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
 import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
+import LeftNavPage from '../templates/LeftNavPage';
 
 import {
   frontMatterParser,
@@ -37,11 +38,34 @@ import LoadingButton from '../components/LoadingButton';
 import MediasModal from '../components/media/MediaModal';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
+const getApiEndpoint = (isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName }) => {
+  if (isCollectionPage) {
+    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/${fileName}`
+  }
+  if (isResourcePage) {
+    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`
+  }
+  return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`
+}
+
+const extractMetadataFromFilename = (isResourcePage, fileName) => {
+  if (isResourcePage) {
+    return retrieveResourceFileMetadata(fileName)
+   }
+   return { title: prettifyPageFileName(fileName), date: '' }
+}
+
+// Remove `/pages/${fileName}' from api endpoint
+const getCollectionsApiEndpoint = (endpoint) => {
+  const endpointArr = endpoint.split('/')
+  return endpointArr.slice(0, endpointArr.length - 2).join('/')
+}
+
 export default class EditPage extends Component {
   constructor(props) {
     super(props);
-    const { match, isResourcePage } = this.props;
-    const { siteName, fileName, resourceName } = match.params;
+    const { match, isResourcePage, isCollectionPage } = this.props;
+    const { collectionName, fileName, siteName, resourceName } = match.params;
     this.state = {
       sha: null,
       originalMdValue: '',
@@ -56,9 +80,7 @@ export default class EditPage extends Component {
       stagedFileDetails: {},
     };
     this.mdeRef = React.createRef();
-    this.apiEndpoint = isResourcePage
-    ? `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`
-    : `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`
+    this.apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName })
   }
 
   async componentDidMount() {
@@ -70,11 +92,21 @@ export default class EditPage extends Component {
 
       // split the markdown into front matter and content
       const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
+
+      let leftNavPages
+      if (this.props.isCollectionPage) {
+        const collectionPagesResp = await axios.get(getCollectionsApiEndpoint(this.apiEndpoint), {
+          withCredentials: true,
+        });
+        leftNavPages = collectionPagesResp.data?.collectionPages;
+      }
+
       this.setState({
         sha,
         originalMdValue: mdBody.trim(),
         editorValue: mdBody.trim(),
         frontMatter,
+        leftNavPages,
       });
     } catch (err) {
       console.log(err);
@@ -180,9 +212,9 @@ export default class EditPage extends Component {
 
 
   render() {
-    const { match, isResourcePage } = this.props;
+    const { match, isCollectionPage, isResourcePage } = this.props;
     const { siteName, fileName } = match.params;
-    const { title, date } = isResourcePage ? retrieveResourceFileMetadata(fileName) : { title: prettifyPageFileName(fileName), date: '' }
+    const { title, date } = extractMetadataFromFilename(isResourcePage, fileName)
     const {
       originalMdValue,
       editorValue,
@@ -190,6 +222,7 @@ export default class EditPage extends Component {
       isSelectingImage,
       isFileStagedForUpload,
       stagedFileDetails,
+      leftNavPages,
     } = this.state;
     return (
       <>
@@ -228,6 +261,7 @@ export default class EditPage extends Component {
           <div className={editorStyles.pageEditorSidebar}>
             <SimpleMDE
               id="simplemde-editor"
+              className="h-100"
               onChange={this.onEditorChange}
               ref={this.mdeRef}
               value={editorValue}
@@ -260,11 +294,23 @@ export default class EditPage extends Component {
             />
           </div>
           <div className={editorStyles.pageEditorMain}>
-            <SimplePage
-              chunk={prependImageSrc(siteName, marked(editorValue))}
-              title={title}
-              date={date}
-            />
+            {
+              isCollectionPage && leftNavPages
+              ? (
+                <LeftNavPage
+                  chunk={prependImageSrc(siteName, marked(editorValue))}
+                  leftNavPages={leftNavPages}
+                  fileName={fileName}
+                  title={prettifyPageFileName(fileName)}
+                />
+              ) : (
+                <SimplePage
+                  chunk={prependImageSrc(siteName, marked(editorValue))}
+                  title={title}
+                  date={date}
+                />
+              )
+            }
           </div>
         </div>
         <div className={editorStyles.pageEditorFooter}>
@@ -302,4 +348,6 @@ EditPage.propTypes = {
   history: PropTypes.shape({
     goBack: PropTypes.func,
   }).isRequired,
+  isCollectionPage: PropTypes.bool.isRequired,
+  isResourcePage: PropTypes.bool.isRequired,
 };
