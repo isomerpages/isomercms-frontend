@@ -39,7 +39,7 @@ const Breadcrumb = ({ title, date, collection }) => (
 
 Breadcrumb.propTypes = {
   title: PropTypes.string.isRequired,
-  collection: PropTypes.string.isRequired,
+  collection: PropTypes.string,
 };
 
 export default Breadcrumb;
