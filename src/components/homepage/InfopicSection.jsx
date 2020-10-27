@@ -83,6 +83,7 @@ const EditorInfopicSection = ({
               isRequired
               onFieldChange={onFieldChange}
               inlineButtonText="Choose Image"
+              placeholder=" "
               siteName={siteName}
             />
             <FormField
@@ -95,7 +96,7 @@ const EditorInfopicSection = ({
             />
           </div>
           <div className={elementStyles.inputGroup}>
-            <button type="button" id={`section-${sectionIndex}`} className={elementStyles.warning} onClick={deleteHandler}>Delete section</button>
+            <button type="button" id={`section-${sectionIndex}`} className={`ml-auto ${elementStyles.warning}`} onClick={deleteHandler}>Delete section</button>
           </div>
         </>
       )

@@ -60,7 +60,7 @@ const KeyHighlight = ({
             />
           </div>
           <div className={elementStyles.inputGroup}>
-            <button type="button" id={`highlight-${highlightIndex}-delete`} className={elementStyles.warning} onClick={deleteHandler} key={`${highlightIndex}-delete`}>Delete highlight</button>
+            <button type="button" id={`highlight-${highlightIndex}-delete`} className={`ml-auto ${elementStyles.warning}`} onClick={deleteHandler} key={`${highlightIndex}-delete`}>Delete highlight</button>
           </div>
         </>
       )

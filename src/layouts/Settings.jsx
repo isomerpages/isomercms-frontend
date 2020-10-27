@@ -419,6 +419,7 @@ export default class Settings extends Component {
                   onFieldChange={this.changeHandler}
                   inlineButtonText={"Choose Image"}
                   siteName={siteName}
+                  placeholder=" "
                 />
                 {/* Resource room name field */}
                 <FormField

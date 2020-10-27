@@ -69,6 +69,7 @@ const EditorHeroSection = ({
             isRequired
             onFieldChange={onFieldChange}
             inlineButtonText="Choose Image"
+            placeholder=" "
             siteName={siteName}
           />
           <span>
@@ -78,7 +79,7 @@ const EditorHeroSection = ({
             {dropdown
               ? (
                 <>
-                  <button type="button" id="dropdown-delete" className={elementStyles.warning} onClick={(event) => deleteHandler(event, 'Hero Dropdown')}>Delete Hero Dropdown</button>
+                  <button type="button" id="dropdown-delete" className={`ml-auto ${elementStyles.warning}`} onClick={(event) => deleteHandler(event, 'Hero Dropdown')}>Delete Hero Dropdown</button>
                   <HeroDropdown
                     title={dropdown.title}
                     options={dropdown.options}
@@ -94,7 +95,7 @@ const EditorHeroSection = ({
               )
               : (
                 <>
-                  <button type="button" id="dropdown-create" className={elementStyles.blue} onClick={createHandler}>Create Hero Dropdown</button>
+                  <button type="button" id="dropdown-create" className={`ml-auto ${elementStyles.blue}`} onClick={createHandler}>Create Hero Dropdown</button>
                   <HeroButton
                     button={button}
                     url={url}
@@ -151,8 +152,8 @@ const EditorHeroSection = ({
                           )
                           : null }
                         {highlights.length < MAX_NUM_KEY_HIGHLIGHTS
-                          ? <button type="button" id={`highlight-${highlights.length}-create`} className={elementStyles.blue} onClick={createHandler}>Create highlight</button>
-                          : <button type="button" disabled className={elementStyles.disabled}>Create highlight</button>}
+                          ? <button type="button" id={`highlight-${highlights.length}-create`} className={`ml-auto ${elementStyles.blue}`} onClick={createHandler}>Create highlight</button>
+                          : <button type="button" disabled className={`ml-auto ${elementStyles.disabled}`}>Create highlight</button>}
                         {droppableProvided.placeholder}
                       </div>
                     )}

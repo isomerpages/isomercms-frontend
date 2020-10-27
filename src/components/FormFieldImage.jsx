@@ -13,7 +13,8 @@ const FormFieldImage = ({
   isRequired,
   style,
   inlineButtonText = "Choose Image",
-  siteName
+  siteName,
+  placeholder,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -39,7 +40,7 @@ const FormFieldImage = ({
       <div className="d-flex border">
         <input
           type="text"
-          placeholder={title}
+          placeholder={placeholder ? placeholder : title}
           value={value}
           defaultValue={defaultValue}
           id={id}

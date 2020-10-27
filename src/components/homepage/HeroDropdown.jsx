@@ -50,7 +50,7 @@ const HeroDropdownElem = ({
             />
           </div>
           <div className={elementStyles.inputGroup}>
-            <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} className={elementStyles.warning} onClick={deleteHandler}>Delete dropdown element</button>
+            <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} className={`ml-auto ${elementStyles.warning}`} onClick={deleteHandler}>Delete dropdown element</button>
           </div>
         </>
       )
@@ -117,7 +117,7 @@ const HeroDropdown = ({
               </Draggable>
             ))
             : null}
-          <button type="button" id={`dropdownelem-${options.length}-create`} className={elementStyles.blue} onClick={createHandler}>Create dropdown element</button>
+          <button type="button" id={`dropdownelem-${options.length}-create`} className={`ml-auto ${elementStyles.blue}`} onClick={createHandler}>Create dropdown element</button>
           {droppableProvided.placeholder}
         </div>
       )}
