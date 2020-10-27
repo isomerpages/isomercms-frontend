@@ -14,18 +14,15 @@ const LeftNav = ({ leftNavPages, fileName }) => (
       <aside className="bp-menu is-gt sidebar__inner">
         <ul className="bp-menu-list">
           {
-            leftNavPages.map((page) => {
-              const filePath = page.path.split('%2').join('/').slice(1);
-              return (
+            leftNavPages.map((page) => (
                 <li>
                   {
                     page.fileName === fileName
-                      ? <a className="is-active" href={filePath}>{deslugifyCollectionPage(page.fileName)}</a>
-                      : <a className="" href={filePath}>{deslugifyCollectionPage(page.fileName)}</a>
+                      ? <a className="is-active">{deslugifyCollectionPage(page.fileName)}</a>
+                      : <a>{deslugifyCollectionPage(page.fileName)}</a>
                   }
                 </li>
-              );
-            })
+            ))
           }
         </ul>
         <div
