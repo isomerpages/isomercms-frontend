@@ -13,6 +13,7 @@ import {
   concatFrontMatterMdBody,
   prependImageSrc,
   prettifyPageFileName,
+  prettifyCollectionPageFileName,
   retrieveResourceFileMetadata,
 } from '../utils';
 import {
@@ -48,11 +49,14 @@ const getApiEndpoint = (isResourcePage, isCollectionPage, { collectionName, file
   return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`
 }
 
-const extractMetadataFromFilename = (isResourcePage, fileName) => {
+const extractMetadataFromFilename = (isResourcePage, isCollectionPage, fileName) => {
   if (isResourcePage) {
     return retrieveResourceFileMetadata(fileName)
-   }
-   return { title: prettifyPageFileName(fileName), date: '' }
+  }
+  if (isCollectionPage) {
+    return { title: prettifyCollectionPageFileName(fileName), date: '' }
+  }
+  return { title: prettifyPageFileName(fileName), date: '' }
 }
 
 // Remove `/pages/${fileName}' from api endpoint
@@ -214,7 +218,7 @@ export default class EditPage extends Component {
   render() {
     const { match, isCollectionPage, isResourcePage } = this.props;
     const { siteName, fileName } = match.params;
-    const { title, date } = extractMetadataFromFilename(isResourcePage, fileName)
+    const { title, date } = extractMetadataFromFilename(isResourcePage, isCollectionPage, fileName)
     const {
       originalMdValue,
       editorValue,
@@ -227,7 +231,7 @@ export default class EditPage extends Component {
     return (
       <>
         <Header
-          title={prettifyPageFileName(fileName)}
+          title={title}
           shouldAllowEditPageBackNav={originalMdValue === editorValue}
           isEditPage="true"
           backButtonText={`Back to ${isResourcePage ? 'Resources' : 'Pages'}`}
@@ -301,7 +305,7 @@ export default class EditPage extends Component {
                   chunk={prependImageSrc(siteName, marked(editorValue))}
                   leftNavPages={leftNavPages}
                   fileName={fileName}
-                  title={prettifyPageFileName(fileName)}
+                  title={title}
                 />
               ) : (
                 <SimplePage

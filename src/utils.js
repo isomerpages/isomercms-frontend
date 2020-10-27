@@ -132,6 +132,12 @@ export function prettifyPageFileName(fileName) {
   return tokenArray.join(' ');
 }
 
+export function prettifyCollectionPageFileName(fileName) {
+  const fileNameArray = fileName.split('.md')[0];
+  const tokenArray = fileNameArray.split('-');
+  return tokenArray.slice(1).join(' ');
+}
+
 export function generatePageFileName(title) {
   return `${slugify(title).replace(/[^a-zA-Z0-9-]/g, '')}.md`;
 }
