@@ -1155,7 +1155,7 @@ export default class EditHomepage extends Component {
                         <h6>{ frontMatter.notification }</h6>
                       </div>
                       <div className="button has-text-white">
-                        <span className="delete sgds-icon sgds-icon-cross is-size-4"/>
+                        <span className="sgds-icon sgds-icon-cross"/>
                       </div>
                     </div>
                   </div>
