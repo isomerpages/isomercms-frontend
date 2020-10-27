@@ -23,8 +23,7 @@ const EditorInfobarSection = ({
   <div className={`${elementStyles.card} move`}>
     <div className={elementStyles.cardHeader}>
       <h2>
-Infobar section:
-        {title}
+        Infobar section: {title}
       </h2>
       <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>
         <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`section-${sectionIndex}-icon`} />
