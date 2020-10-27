@@ -51,6 +51,7 @@ const KeyHighlight = ({
             />
             <FormField
               title="Highlight URL"
+              placeholder="Insert permalink or external URL"
               id={`highlight-${highlightIndex}-url`}
               value={url}
               errorMessage={errors.url}

@@ -47,7 +47,7 @@ const InfobarSectionConstructor = (isErrorConstructor) => ({
     subtitle: isErrorConstructor ? '' : 'Infobar Subtitle',
     description: isErrorConstructor ? '' : 'Infobar description',
     button: isErrorConstructor ? '' : 'Button Text',
-    url: isErrorConstructor ? '' : '/faq/',
+    url: '', // No default value so that no broken link is created
   },
 });
 
@@ -57,8 +57,8 @@ const InfopicSectionConstructor = (isErrorConstructor) => ({
     subtitle: isErrorConstructor ? '' : 'Infopic Subtitle',
     description: isErrorConstructor ? '' : 'Infopic description',
     button: isErrorConstructor ? '' : 'Button Text',
-    url: isErrorConstructor ? '' : '/faq/',
-    image: isErrorConstructor ? '' : '/image/',
+    url: '', // No default value so that no broken link is created
+    image: '', // Always blank since the image modal handles this
     alt: isErrorConstructor ? '' : 'Image alt text',
   },
 });
@@ -66,12 +66,12 @@ const InfopicSectionConstructor = (isErrorConstructor) => ({
 const KeyHighlightConstructor = (isErrorConstructor) => ({
   title: isErrorConstructor ? '' : 'Key Highlight Title',
   description: isErrorConstructor ? '' : 'Key Highlight description',
-  url: isErrorConstructor ? '' : '/faq/',
+  url: '', // No default value so that no broken link is created
 });
 
 const DropdownElemConstructor = (isErrorConstructor) => ({
   title: isErrorConstructor ? '' : 'Hero Dropdown Element Title',
-  url: isErrorConstructor ? '' : '/faq/',
+  url: '', // No default value so that no broken link is created
 });
 
 const DropdownConstructor = () => ({

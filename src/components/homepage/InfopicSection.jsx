@@ -68,6 +68,7 @@ const EditorInfopicSection = ({
             />
             <FormField
               title="Infopic button URL"
+              placeholder="Insert permalink or external URL"
               id={`section-${sectionIndex}-infopic-url`}
               value={url}
               errorMessage={errors.url}

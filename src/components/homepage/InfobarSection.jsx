@@ -67,6 +67,7 @@ const EditorInfobarSection = ({
             />
             <FormField
               title="Infobar button URL"
+              placeholder="Insert permalink or external URL"
               id={`section-${sectionIndex}-infobar-url`}
               value={url}
               errorMessage={errors.url}

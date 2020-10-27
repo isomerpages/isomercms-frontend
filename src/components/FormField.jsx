@@ -11,13 +11,14 @@ const FormField = ({
   onFieldChange,
   isRequired,
   style,
+  placeholder,
 }) => (
   <>
     <p className={elementStyles.formLabel}>{title}</p>
     <div className="d-flex">
       <input
         type="text"
-        placeholder={title}
+        placeholder={placeholder ? placeholder : title}
         value={value}
         defaultValue={defaultValue}
         id={id}
