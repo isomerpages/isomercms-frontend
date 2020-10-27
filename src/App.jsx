@@ -35,7 +35,9 @@ function App() {
         */}
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route path="/sites/:siteName/collections/:collectionName/:fileName" component={EditCollectionPage} />
+          <Route path="/sites/:siteName/collections/:collectionName/:fileName" render={(props) => (
+            <EditPage {...props} isCollectionPage={true} isResourcePage={false} />
+          )}/>
           <Route path="/sites/:siteName/collections/:collectionName" component={CollectionPages} />
           {/* <Route path="/sites/:siteName/collections" component={Collections} /> */}
           <Route path="/sites/:siteName/files/:fileName" component={EditFile} />
@@ -43,12 +45,12 @@ function App() {
           <Route path="/sites/:siteName/images/:fileName" component={EditImage} />
           <Route path="/sites/:siteName/images" component={Images} />
           <Route path="/sites/:siteName/pages/:fileName" render={(props) => (
-            <EditPage {...props} isResourcePage={false} />
+            <EditPage {...props} isCollectionPage={false} isResourcePage={false} />
           )} />
           <Route path="/sites/:siteName/pages" component={Pages} />
           <Route path="/sites/:siteName/homepage" component={EditHomepage} />
           <Route path="/sites/:siteName/resources/:resourceName/:fileName" render={(props) => (
-            <EditPage {...props} isResourcePage={true} />
+            <EditPage {...props} isCollectionPage={false} isResourcePage={true} />
           )} />
           <Route path="/sites/:siteName/resources" component={Resources} />
           {/* <Route path="/sites/:siteName/menus/footer" component={EditFooter} />  */}
