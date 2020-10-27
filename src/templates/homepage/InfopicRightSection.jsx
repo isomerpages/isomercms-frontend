@@ -15,87 +15,92 @@ const TemplateInfopicRightSection = ({
   imageUrl,
   imageAlt,
   siteName,
-}) => (
-  <section className={`bp-section ${(sectionIndex % 2 === 1) ? 'bg-newssection' : null}`}>
-    <div className="bp-container">
-      {/* For mobile */}
-      <div className="row is-hidden-desktop is-hidden-tablet-only">
-        <div className="col is-half padding--bottom">
-          <p className="padding--bottom eyebrow is-uppercase">
-            { title }
-          </p>
-          <h1 className="has-text-secondary padding--bottom">
-            <b>{ subtitle }</b>
-          </h1>
-          <p>{ description }</p>
-          <div className="bp-sec-button margin--top padding--bottom">
-            {button
-              ? (
-                <div>
-                  <span>{ button }</span>
-                  <i className="sgds-icon sgds-icon-arrow-right is-size-4" aria-hidden="true" />
-                </div>
-              )
-              : null}
+}) => {
+  const addDefaultSrc = (e) => {
+    console.log('help')
+    e.target.src = '/no_image.png'
+  }
+  return (
+    <section className={`bp-section ${(sectionIndex % 2 === 1) ? 'bg-newssection' : null}`}>
+      <div className="bp-container">
+        {/* For mobile */}
+        <div className="row is-hidden-desktop is-hidden-tablet-only">
+          <div className="col is-half padding--bottom">
+            <p className="padding--bottom eyebrow is-uppercase">
+              { title }
+            </p>
+            <h1 className="has-text-secondary padding--bottom">
+              <b>{ subtitle }</b>
+            </h1>
+            <p>{ description }</p>
+            <div className="bp-sec-button margin--top padding--bottom">
+              {button
+                ? (
+                  <div>
+                    <span>{ button }</span>
+                    <i className="sgds-icon sgds-icon-arrow-right is-size-4" aria-hidden="true" />
+                  </div>
+                )
+                : null}
+            </div>
+          </div>
+          <div className="col is-half">
+            <img onError={addDefaultSrc} src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
           </div>
         </div>
-        <div className="col is-half">
-          <img src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
+        {/* For tablet */}
+        <div className="row is-hidden-mobile is-hidden-desktop">
+          <div className="col is-half is-half padding--top--xl padding--bottom--xl">
+            <img onError={addDefaultSrc} src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
+          </div>
+          <div className="col is-half">
+            <p className="padding--bottom eyebrow is-uppercase">
+              { title }
+            </p>
+            <h1 className="has-text-secondary padding--bottom">
+              <b>{ subtitle }</b>
+            </h1>
+            <p>{ description }</p>
+            <div className="bp-sec-button margin--top padding--bottom">
+              { button
+                ? (
+                  <div>
+                    <span>{ button }</span>
+                    <i className="sgds-icon sgds-icon-arrow-right is-size-4" aria-hidden="true" />
+                  </div>
+                )
+                : null}
+            </div>
+          </div>
         </div>
-      </div>
-      {/* For tablet */}
-      <div className="row is-hidden-mobile is-hidden-desktop">
-        <div className="col is-half is-half padding--top--xl padding--bottom--xl">
-          <img src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
-        </div>
-        <div className="col is-half">
-          <p className="padding--bottom eyebrow is-uppercase">
-            { title }
-          </p>
-          <h1 className="has-text-secondary padding--bottom">
-            <b>{ subtitle }</b>
-          </h1>
-          <p>{ description }</p>
-          <div className="bp-sec-button margin--top padding--bottom">
-            { button
-              ? (
-                <div>
-                  <span>{ button }</span>
-                  <i className="sgds-icon sgds-icon-arrow-right is-size-4" aria-hidden="true" />
-                </div>
-              )
-              : null}
+        {/* For desktop */}
+        <div className="row is-hidden-mobile is-hidden-tablet-only">
+          <div className="col is-half is-half padding--top--xl padding--bottom--xl">
+            <img onError={addDefaultSrc} src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
+          </div>
+          <div className="col is-half padding--top--xl padding--bottom--xl padding--left--xl padding--right--xl">
+            <p className="padding--bottom eyebrow is-uppercase">
+              { title }
+            </p>
+            <h1 className="has-text-secondary padding--bottom">
+              <b>{ subtitle }</b>
+            </h1>
+            <p>{ description }</p>
+            <div className="bp-sec-button margin--top padding--bottom">
+              { button
+                ? (
+                  <div>
+                    <span>{ button }</span>
+                    <i className="sgds-icon sgds-icon-arrow-right is-size-4" aria-hidden="true" />
+                  </div>
+                )
+                : null }
+            </div>
           </div>
         </div>
       </div>
-      {/* For desktop */}
-      <div className="row is-hidden-mobile is-hidden-tablet-only">
-        <div className="col is-half is-half padding--top--xl padding--bottom--xl">
-          <img src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
-        </div>
-        <div className="col is-half padding--top--xl padding--bottom--xl padding--left--xl padding--right--xl">
-          <p className="padding--bottom eyebrow is-uppercase">
-            { title }
-          </p>
-          <h1 className="has-text-secondary padding--bottom">
-            <b>{ subtitle }</b>
-          </h1>
-          <p>{ description }</p>
-          <div className="bp-sec-button margin--top padding--bottom">
-            { button
-              ? (
-                <div>
-                  <span>{ button }</span>
-                  <i className="sgds-icon sgds-icon-arrow-right is-size-4" aria-hidden="true" />
-                </div>
-              )
-              : null }
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-);
+    </section>
+)};
 
 export default TemplateInfopicRightSection;
 
