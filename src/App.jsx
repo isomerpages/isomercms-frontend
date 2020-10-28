@@ -63,6 +63,9 @@ function App() {
     return false
   })
   const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false)
+  const [primaryColors, setPrimaryColors] = useState({})
+  const [secondaryColors, setSecondaryColors] = useState({})
+
 
   axios.interceptors.response.use(
     function (response) {

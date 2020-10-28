@@ -94,6 +94,37 @@ const getBackButtonInfo = (resourceCategory, collectionName, siteName) => {
     backButtonUrl: `/sites/${siteName}/workspace`,
   }
 }
+const defaultIsomerPrimaryColor = '#6031b6';
+const defaultIsomerSecondaryColor = '#4372d6';
+
+function getStyleSheet(unique_title) {
+  for(let i=0; i<document.styleSheets.length; i++) {
+    const sheet = document.styleSheets[i];
+    if(sheet.title == unique_title) {
+      return sheet;
+    }
+  }
+}
+const createPageStyleSheet = (repoName) => {
+  const styleElement = document.createElement('style')
+  const styleTitle = `${repoName}-style`
+  styleElement.setAttribute('id', styleTitle)
+  styleElement.setAttribute('title', styleTitle)
+  document.head.appendChild(styleElement);
+
+  const customStyleSheet = getStyleSheet(styleTitle)
+  customStyleSheet.insertRule(".bp-section.bp-section-pagetitle { background-color: red !important;}", 0);
+  customStyleSheet.insertRule(".content h1 strong { color: red !important;}", 0);
+  customStyleSheet.insertRule(".content h2 strong { color: red !important;}", 0);
+  customStyleSheet.insertRule(".content h3 strong { color: red !important;}", 0);
+  customStyleSheet.insertRule(".content h4 strong { color: red !important;}", 0);
+  customStyleSheet.insertRule(".content h5 strong { color: red !important;}", 0);
+  customStyleSheet.insertRule(".has-text-secondary { color: red !important;}", 0);
+  customStyleSheet.insertRule(".bp-menu-list a.is-active { color: red !important;}", 0);
+  customStyleSheet.insertRule(".sgds-icon-chevron-up:before { color: red !important;}", 0);
+  customStyleSheet.insertRule(".sgds-icon-chevron-down:before { color: red !important;}", 0);
+
+}
 
 export default class EditPage extends Component {
   _isMounted = true 
@@ -125,6 +156,45 @@ export default class EditPage extends Component {
   }
 
   async componentDidMount() {
+    const {
+      primaryColors,
+      secondaryColors,
+      setPrimaryColors,
+      setSecondaryColors,
+    } = this.props;
+
+    const { match } = this.props;
+    const { siteName } = match.params;
+
+    // Set page colors
+    const primaryColor = defaultIsomerPrimaryColor
+    const secondaryColor = defaultIsomerSecondaryColor
+    createPageStyleSheet(siteName)
+
+    // // If no color data, retrieve color data
+    // if (!primaryColors[this.siteName]) {
+    //   try {
+    //     // get settings data from backend
+    //     const settingsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${this.siteName}/settings`, {
+    //       withCredentials: true,
+    //     });
+    //     const { settings } = settingsResp.data;
+    //     const { configFieldsRequired: { colors } } = settings;
+
+    //     console.log(colors)
+    //     setPrimaryColors({
+    //       ...primaryColors,
+    //       [this.siteName]: colors?.['primary-color'],
+    //     });
+    //     setSecondaryColors({
+    //       ...secondaryColors,
+    //       [this.siteName]: colors?.['secondary-color'],
+    //     });
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // }
+
     this._isMounted = true
     let content, sha
     try {
@@ -149,9 +219,6 @@ export default class EditPage extends Component {
     try {
       // split the markdown into front matter and content
       const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
-      
-      const { match } = this.props;
-      const { siteName } = match.params;
       
       // retrieve CSP
       const cspResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`);
@@ -327,7 +394,7 @@ export default class EditPage extends Component {
   }
 
   render() {
-    const { match, isCollectionPage, isResourcePage } = this.props;
+    const { match, isCollectionPage, isResourcePage, primaryColors, secondaryColors } = this.props;
     const { siteName, fileName, collectionName, resourceName } = match.params;
     const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, isCollectionPage, fileName)
     const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, collectionName, siteName)
