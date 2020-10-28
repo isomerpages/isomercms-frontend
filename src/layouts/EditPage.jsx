@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 // import { Link } from "react-router-dom";
 import axios from 'axios';
+import Bluebird from 'bluebird';
 import PropTypes from 'prop-types';
 import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
@@ -38,6 +39,9 @@ import DeleteWarningModal from '../components/DeleteWarningModal';
 import LoadingButton from '../components/LoadingButton';
 import MediasModal from '../components/media/MediaModal';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
+
+// axios settings
+axios.defaults.withCredentials = true
 
 const getApiEndpoint = (isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName }) => {
   if (isCollectionPage) {
@@ -89,9 +93,7 @@ export default class EditPage extends Component {
 
   async componentDidMount() {
     try {
-      const resp = await axios.get(this.apiEndpoint, {
-        withCredentials: true,
-      });
+      const resp = await axios.get(this.apiEndpoint);
       const { content, sha } = resp.data;
 
       // split the markdown into front matter and content
@@ -99,10 +101,20 @@ export default class EditPage extends Component {
 
       let leftNavPages
       if (this.props.isCollectionPage) {
-        const collectionPagesResp = await axios.get(getCollectionsApiEndpoint(this.apiEndpoint), {
-          withCredentials: true,
+        const collectionsApiEndpoint = getCollectionsApiEndpoint(this.apiEndpoint)
+        const collectionPagesResp = await axios.get(collectionsApiEndpoint);
+        const collectionResp = collectionPagesResp.data?.collectionPages;
+
+        // Retrieve third_nav_title from collection pages
+        leftNavPages = await Bluebird.map(collectionResp, async (collectionPage) => {
+          const collectionPageResp = await axios.get(`${collectionsApiEndpoint}/pages/${collectionPage.fileName}`)
+          const { content } = collectionPageResp.data;
+          const { frontMatter } = frontMatterParser(Base64.decode(content));
+          return {
+            ...collectionPage,
+            third_nav_title: frontMatter.third_nav_title,
+          }
         });
-        leftNavPages = collectionPagesResp.data?.collectionPages;
       }
 
       this.setState({
@@ -131,9 +143,7 @@ export default class EditPage extends Component {
         content: base64Content,
         sha: state.sha,
       };
-      const resp = await axios.post(this.apiEndpoint, params, {
-        withCredentials: true,
-      });
+      const resp = await axios.post(this.apiEndpoint, params);
       const { sha } = resp.data;
       this.setState({ sha });
 
@@ -150,7 +160,6 @@ export default class EditPage extends Component {
       const params = { sha };
       await axios.delete(this.apiEndpoint, {
         data: params,
-        withCredentials: true,
       });
       history.goBack();
     } catch (err) {
