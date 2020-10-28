@@ -18,10 +18,11 @@ const accordionIconToggle = (accordionIconClass) => {
 }
 
 const accordionElementToggle = (accordionElementClass) => {
-  if (accordionElementClass.includes(' is-hidden')) {
-    return accordionElementClass.replace(' is-hidden', '')
+  const hiddenState = ' is-hidden'
+  if (accordionElementClass.includes(hiddenState)) {
+    return accordionElementClass.replace(hiddenState, '')
   }
-  return accordionElementClass + ' is-hidden'
+  return accordionElementClass + hiddenState
 }
 
 const accordionHandler = (e) => {
@@ -52,7 +53,7 @@ const generateThirdNavDiv = (thirdNavElements) => (
     : ''
 )
 
-const generateLeftNav = (leftNavPages) => {
+const generateLeftNav = (leftNavPages, fileName) => {
   let isPartOfThirdNav = false;
   let thirdNavElements = [];
   const leftNavBar = leftNavPages.map((page) => {
@@ -64,14 +65,14 @@ const generateLeftNav = (leftNavPages) => {
         // Add to third nav array
         thirdNavElements.push(
           <li key={page.fileName}>
-            <a className="third-level-nav-item padding--top--none ">
+            <a className={`third-level-nav-item padding--top--none ${fileName === page.fileName ? 'has-text-secondary has-text-weight-bold' : ''}`}>
               {deslugifyCollectionPage(page.fileName)}
             </a>
           </li>
         )
         return (
           <li className="third-level-nav-header" key={page.fileName} onClick={accordionHandler}>
-            <a className="third-level-nav-header">
+            <a className={`third-level-nav-header ${fileName === page.fileName ? 'is-active': ''}`}>
               {page.third_nav_title}
               <i className="sgds-icon is-pulled-right is-size-4 sgds-icon-chevron-up" aria-hidden="true"></i>
             </a>
@@ -81,7 +82,7 @@ const generateLeftNav = (leftNavPages) => {
         // Add to third nav array
         thirdNavElements.push(
           <li key={page.fileName}>
-            <a className="third-level-nav-item padding--top--none ">
+            <a className={`third-level-nav-item padding--top--none ${fileName === page.fileName ? 'has-text-secondary has-text-weight-bold' : ''}`}>
               {deslugifyCollectionPage(page.fileName)}
             </a>
           </li>
@@ -100,7 +101,7 @@ const generateLeftNav = (leftNavPages) => {
           generateThirdNavDiv(prevThirdNavElements)
         }
         <li>
-          <a>
+          <a className={`${fileName === page.fileName ? 'is-active': ''}`}>
             {deslugifyCollectionPage(page.fileName)}
           </a>
         </li>
@@ -118,7 +119,7 @@ const LeftNav = ({ leftNavPages, fileName }) => (
       <aside className="bp-menu is-gt sidebar__inner">
         <ul className="bp-menu-list">
           {
-            generateLeftNav(leftNavPages)
+            generateLeftNav(leftNavPages, fileName)
           }
         </ul>
         <div
