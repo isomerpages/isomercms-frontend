@@ -18,18 +18,20 @@ const NewSectionCreator = ({ createHandler, hasResources }) => {
     <h2>
       Add a new section
     </h2>
-    <select className={`${elementStyles.form} ${elementStyles.formHorizontal} ${elementStyles.formHorizontalInput}`} name="newSection" id="section-new" onChange={(e) => setNewSectionType(e.target.value)}>
-      <option value="">--Please choose a new section--</option>
-      <option value="infobar">Infobar</option>
-      <option value="infopic">Infopic</option>
-      {/* If homepage already has a Resources section,
-        don't display the option to create one */}
-      {hasResources
-        ? null
-        : <option value="resources">Resources</option>}
-    </select>
-    <div>
-      <button type="button" className={newSectionType ? elementStyles.blue: elementStyles.disabled} onClick={onFormSubmit} disabled={!newSectionType}>Create section</button>
+    <div className='d-flex justify-content-between'>
+      <select className={`${elementStyles.form} ${elementStyles.formHorizontal} ${elementStyles.formHorizontalInput}`} name="newSection" id="section-new" onChange={(e) => setNewSectionType(e.target.value)}>
+        <option value="">--Choose a new section--</option>
+        <option value="infobar">Infobar</option>
+        <option value="infopic">Infopic</option>
+        {/* If homepage already has a Resources section,
+          don't display the option to create one */}
+        {hasResources
+          ? null
+          : <option value="resources">Resources</option>}
+      </select>
+      <div>
+        <button type="button" className={newSectionType ? elementStyles.blue: elementStyles.disabled} onClick={onFormSubmit} disabled={!newSectionType}>Select</button>
+      </div>
     </div>
   </div>
 )};
