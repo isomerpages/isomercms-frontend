@@ -103,7 +103,7 @@
 }
 
 .contentContainerBoxes{
-  //this is used in the resources page
+  //this is used in the ComponentCard page
   width: 100%;
   display: flex;
   box-sizing: border-box;
@@ -118,18 +118,18 @@
     flex-wrap: wrap;
 
     .card{
-      width: $resource-card-width;
+      width: $component-card-width;
       box-sizing: border-box;
-      height: $resource-card-height;
-      margin-right: $resource-card-margin;
-      margin-bottom: $resource-card-margin;
+      height: $component-card-height;
+      margin-right: $component-card-margin;
+      margin-bottom: $component-card-margin;
       min-width: 250px;
     }
   }
 }
 
 .card{
-  &.resource{
+  &.component{
       height: 100%;
       display: flex;
       flex-direction: row;
@@ -137,25 +137,22 @@
       align-content: center;
       min-width: 250px;
 
-      .resourceInfoContainer{
-        overflow: hidden;
-      }
-
-      .resourceInfo{
+      .componentInfo{
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         align-content: center;
         height:100%;
+        overflow: hidden;
 
-        .resourceCategory{
+        .componentCategory{
           text-transform: uppercase;
           color: grey;
           font-size: 12px;
           letter-spacing: .5px;
         }
 
-        .resourceTitle{
+        .componentTitle{
           font-size: 16px;
           line-height: 24px;
           padding-top: 16px;
@@ -163,28 +160,30 @@
           height: 115px;
           max-height: 115px;
           overflow-y: scroll;
+          overflow-x: hidden;
+          text-overflow: ellipsis;
         }
 
-        .resourceDate{
+        .componentDate{
           color: grey;
           font-size: 12px;
           line-height: 20px;
         }
 
-        .resourceType{
+        .componentType{
           color: grey;
           text-transform: uppercase;
           font-size: 12px;
           line-height: 20px;
         }
 
-        .resourceUpdated{
+        .componentUpdated{
           color: grey;
           font-size: 12px;
         }
       }
 
-      .resourceIcon{
+      .componentIcon{
         display: flex;
         flex-direction: column;
         justify-content: flex-end;

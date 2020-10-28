@@ -27,6 +27,6 @@ $site-margin-horizontal: 20px;
 $site-margin-vertical: 15px;
 $sites-container-width: ($site-width*3) + ($site-margin-horizontal*6);
 
-$resource-card-height: 240px;
-$resource-card-margin: 2.5%;
-$resource-card-width: (100% - ($resource-card-margin*3) )/3 ;
+$component-card-height: 240px;
+$component-card-margin: 2.5%;
+$component-card-width: (100% - ($component-card-margin*3) )/3 ;

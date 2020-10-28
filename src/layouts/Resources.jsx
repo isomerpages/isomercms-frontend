@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import * as Bluebird from 'bluebird';
@@ -9,37 +8,12 @@ import ResourceSettingsModal from '../components/ResourceSettingsModal';
 import ResourceCategoryModal from '../components/ResourceCategoryModal';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
+import ComponentCard from '../components/ComponentCard';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 // Constants
 const RADIX_PARSE_INT = 10;
-
-const ResourceCard = ({
-  fileName, siteName, category, settingsToggle, resourceIndex,
-}) => {
-  const { title, date } = retrieveResourceFileMetadata(fileName);
-  return (
-    <div className={`${contentStyles.resource} ${contentStyles.card} ${elementStyles.card}`}>
-      <Link className={contentStyles.resourceInfoContainer} to={`/sites/${siteName}/resources/${category}/${fileName}`}>
-        <div id={resourceIndex} className={contentStyles.resourceInfo}>
-          <div className={contentStyles.resourceCategory}>{prettifyResourceCategory(category)}</div>
-          <h1 className={contentStyles.resourceTitle}>{title}</h1>
-          <p className={contentStyles.resourceDate}>{date}</p>
-        </div>
-      </Link>
-      <div className={contentStyles.resourceIcon}>
-        <button
-          type="button"
-          id={`settings-${resourceIndex}`}
-          onClick={settingsToggle}
-        >
-          <i id={`settingsIcon-${resourceIndex}`} className="bx bx-cog" />
-        </button>
-      </div>
-    </div>
-  );
-};
 
 const ResourcePages = ({
   resourcePages, settingsToggle, siteName,
@@ -50,16 +24,19 @@ const ResourcePages = ({
     {resourcePages.length > 0
       ? (
         <>
-          {resourcePages.map((resourcePage, resourceIndex) => (
-            <ResourceCard
-              category={resourcePage.category}
-              fileName={resourcePage.fileName}
-              siteName={siteName}
+          {resourcePages.map((resourcePage, resourceIndex) => {
+            const { fileName, category }= resourcePage
+            const { title, date } = retrieveResourceFileMetadata(fileName);
+            return (
+            <ComponentCard
+              category={category}
               settingsToggle={settingsToggle}
-              resourceIndex={resourceIndex}
-              key={resourcePage.fileName}
-            />
-          ))}
+              itemIndex={resourceIndex}
+              title={title}
+              date={date}
+              link={`/sites/${siteName}/resources/${category}/${fileName}`}
+            />)
+          })}
         </>
       )
       : null}
@@ -299,14 +276,6 @@ ResourcePages.propTypes = {
     }),
   ).isRequired,
   siteName: PropTypes.string.isRequired,
-};
-
-ResourceCard.propTypes = {
-  fileName: PropTypes.string.isRequired,
-  siteName: PropTypes.string.isRequired,
-  category: PropTypes.string.isRequired,
-  settingsToggle: PropTypes.func.isRequired,
-  resourceIndex: PropTypes.number.isRequired,
 };
 
 CreateResourceCard.propTypes = {
