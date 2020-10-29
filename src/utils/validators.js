@@ -605,7 +605,10 @@ const validateFileName = (value) => {
   }
 
   const fileNameArr = value.split('.')
-  if (fileNameArr.length !== 2 || !fileNameExtensionRegexTest.test(fileNameArr[1])) {
+  if (fileNameArr.length !== 2 ) {
+    return 'Invalid filename: filename can only contain one full stop and must follow the structure {name}.{extension}'
+  }
+  if (!fileNameExtensionRegexTest.test(fileNameArr[1])) {
     return 'Invalid filename: filename must end with a valid file extension (.JPG, .png, .pdf, etc.)'
   }
   if (fileNameArr[0] === '') return 'Invalid filename: please specify a filename'
