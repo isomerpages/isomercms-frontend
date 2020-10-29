@@ -4,6 +4,7 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '../../styles/App.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
+import FormFieldImage from '../FormFieldImage';
 import HeroButton from './HeroButton';
 import HeroDropdown from './HeroDropdown';
 import KeyHighlight from './KeyHighlight';
@@ -32,6 +33,7 @@ const EditorHeroSection = ({
   displayDropdownElems,
   displayHighlights,
   errors,
+  siteName,
 }) => (
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
@@ -59,13 +61,16 @@ const EditorHeroSection = ({
             isRequired
             onFieldChange={onFieldChange}
           />
-          <FormField
+          <FormFieldImage
             title="Hero background image"
             id={`section-${sectionIndex}-hero-background`}
             value={background}
             errorMessage={errors.sections[0].hero.background}
             isRequired
             onFieldChange={onFieldChange}
+            inlineButtonText="Choose Image"
+            placeholder=" "
+            siteName={siteName}
           />
           <span>
             <i>Note: you can only have either Key Highlights+Hero button or a Hero Dropdown</i>
@@ -74,7 +79,7 @@ const EditorHeroSection = ({
             {dropdown
               ? (
                 <>
-                  <button type="button" id="dropdown-delete" className={elementStyles.warning} onClick={(event) => deleteHandler(event, 'Hero Dropdown')}>Delete Hero Dropdown</button>
+                  <button type="button" id="dropdown-delete" className={`ml-auto ${elementStyles.warning}`} onClick={(event) => deleteHandler(event, 'Hero Dropdown')}>Delete Hero Dropdown</button>
                   <HeroDropdown
                     title={dropdown.title}
                     options={dropdown.options}
@@ -90,7 +95,7 @@ const EditorHeroSection = ({
               )
               : (
                 <>
-                  <button type="button" id="dropdown-create" className={elementStyles.blue} onClick={createHandler}>Create Hero Dropdown</button>
+                  <button type="button" id="dropdown-create" className={`ml-auto ${elementStyles.blue}`} onClick={createHandler}>Create Hero Dropdown</button>
                   <HeroButton
                     button={button}
                     url={url}
@@ -147,8 +152,8 @@ const EditorHeroSection = ({
                           )
                           : null }
                         {highlights.length < MAX_NUM_KEY_HIGHLIGHTS
-                          ? <button type="button" id={`highlight-${highlights.length}-create`} className={elementStyles.blue} onClick={createHandler}>Create highlight</button>
-                          : <button type="button" disabled className={elementStyles.disabled}>Create highlight</button>}
+                          ? <button type="button" id={`highlight-${highlights.length}-create`} className={`ml-auto ${elementStyles.blue}`} onClick={createHandler}>Create highlight</button>
+                          : <button type="button" disabled className={`ml-auto ${elementStyles.disabled}`}>Create highlight</button>}
                         {droppableProvided.placeholder}
                       </div>
                     )}

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
+import FormFieldImage from '../FormFieldImage';
 
 /* eslint
   react/no-array-index-key: 0
@@ -21,12 +22,12 @@ const EditorInfopicSection = ({
   shouldDisplay,
   displayHandler,
   errors,
+  siteName,
 }) => (
-  <div className={elementStyles.card}>
+  <div className={`${elementStyles.card} move`}>
     <div className={elementStyles.cardHeader}>
       <h2>
-Infopic section:
-        {title}
+        Infopic section: {title}
       </h2>
       <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>
         <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`section-${sectionIndex}-icon`} />
@@ -67,31 +68,35 @@ Infopic section:
             />
             <FormField
               title="Infopic button URL"
+              placeholder="Insert permalink or external URL"
               id={`section-${sectionIndex}-infopic-url`}
               value={url}
               errorMessage={errors.url}
               isRequired
               onFieldChange={onFieldChange}
             />
-            <FormField
+            <FormFieldImage
               title="Infopic image URL"
-              id={`section-${sectionIndex}-infopic-imageUrl`}
+              id={`section-${sectionIndex}-infopic-image`}
               value={imageUrl}
-              errorMessage={errors.imageUrl}
+              errorMessage={errors.image}
               isRequired
               onFieldChange={onFieldChange}
+              inlineButtonText="Choose Image"
+              placeholder=" "
+              siteName={siteName}
             />
             <FormField
               title="Infopic image alt text"
-              id={`section-${sectionIndex}-infopic-imageAlt`}
+              id={`section-${sectionIndex}-infopic-alt`}
               value={imageAlt}
-              errorMessage={errors.imageAlt}
+              errorMessage={errors.alt}
               isRequired
               onFieldChange={onFieldChange}
             />
           </div>
           <div className={elementStyles.inputGroup}>
-            <button type="button" id={`section-${sectionIndex}`} className={elementStyles.warning} onClick={deleteHandler}>Delete section</button>
+            <button type="button" id={`section-${sectionIndex}`} className={`ml-auto ${elementStyles.warning}`} onClick={deleteHandler}>Delete section</button>
           </div>
         </>
       )

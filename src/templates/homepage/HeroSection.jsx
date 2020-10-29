@@ -10,7 +10,7 @@ const HeroButton = ({ button }) => (
   <>
     { button
       ? (
-        <div className="bp-button is-secondary is-uppercase search-button">
+        <div className="bp-button is-secondary is-uppercase search-button default">
           {button}
         </div>
       )

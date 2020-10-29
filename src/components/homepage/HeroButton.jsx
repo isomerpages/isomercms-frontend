@@ -24,6 +24,7 @@ const HeroButton = ({
     />
     <FormField
       title="Hero button URL"
+      placeholder="Insert permalink or external URL"
       id={`section-${sectionIndex}-hero-url`}
       value={url}
       errorMessage={errors.url}

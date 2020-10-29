@@ -33,62 +33,62 @@ import DeleteWarningModal from '../components/DeleteWarningModal';
 const RADIX_PARSE_INT = 10;
 
 // Section constructors
-const ResourcesSectionConstructor = () => ({
+const ResourcesSectionConstructor = (isErrorConstructor) => ({
   resources: {
-    title: '',
-    subtitle: '',
-    button: '',
+    title: isErrorConstructor ? '' : 'Resources Section Title',
+    subtitle: isErrorConstructor ? '' : 'Resources Section Subtitle',
+    button: isErrorConstructor ? '' : 'Resources Button Name',
   },
 });
 
-const InfobarSectionConstructor = () => ({
+const InfobarSectionConstructor = (isErrorConstructor) => ({
   infobar: {
-    title: '',
-    subtitle: '',
-    description: '',
-    button: '',
-    url: '',
+    title: isErrorConstructor ? '' : 'Infobar Title',
+    subtitle: isErrorConstructor ? '' : 'Infobar Subtitle',
+    description: isErrorConstructor ? '' : 'Infobar description',
+    button: isErrorConstructor ? '' : 'Button Text',
+    url: '', // No default value so that no broken link is created
   },
 });
 
-const InfopicSectionConstructor = () => ({
+const InfopicSectionConstructor = (isErrorConstructor) => ({
   infopic: {
-    title: '',
-    subtitle: '',
-    description: '',
-    button: '',
-    url: '',
-    imageUrl: '',
-    imageAlt: '',
+    title: isErrorConstructor ? '' : 'Infopic Title',
+    subtitle: isErrorConstructor ? '' : 'Infopic Subtitle',
+    description: isErrorConstructor ? '' : 'Infopic description',
+    button: isErrorConstructor ? '' : 'Button Text',
+    url: '', // No default value so that no broken link is created
+    image: '', // Always blank since the image modal handles this
+    alt: isErrorConstructor ? '' : 'Image alt text',
   },
 });
 
-const KeyHighlightConstructor = () => ({
-  title: '',
-  description: '',
-  url: '',
+const KeyHighlightConstructor = (isErrorConstructor) => ({
+  title: isErrorConstructor ? '' : 'Key Highlight Title',
+  description: isErrorConstructor ? '' : 'Key Highlight description',
+  url: '', // No default value so that no broken link is created
 });
 
-const DropdownElemConstructor = () => ({
-  title: '',
-  url: '',
+const DropdownElemConstructor = (isErrorConstructor) => ({
+  title: isErrorConstructor ? '' : 'Hero Dropdown Element Title',
+  url: '', // No default value so that no broken link is created
 });
 
 const DropdownConstructor = () => ({
-  title: '',
+  title: 'Hero Dropdown Title',
   options: [],
 });
 
-const enumSection = (type) => {
+const enumSection = (type, isErrorConstructor) => {
   switch (type) {
     case 'resources':
-      return ResourcesSectionConstructor();
+      return ResourcesSectionConstructor(isErrorConstructor);
     case 'infobar':
-      return InfobarSectionConstructor();
+      return InfobarSectionConstructor(isErrorConstructor);
     case 'infopic':
-      return InfopicSectionConstructor();
+      return InfopicSectionConstructor(isErrorConstructor);
     default:
-      return InfobarSectionConstructor();
+      return InfobarSectionConstructor(isErrorConstructor);
   }
 };
 
@@ -133,7 +133,6 @@ export default class EditHomepage extends Component {
       const { content, sha } = resp.data;
       const base64DecodedContent = Base64.decode(content);
       const { frontMatter } = frontMatterParser(base64DecodedContent);
-
       // Compute hasResources and set displaySections
       let hasResources = false;
       const displaySections = [];
@@ -150,7 +149,7 @@ export default class EditHomepage extends Component {
             // Go through section.hero.dropdown.options
             displayDropdownElems = _.fill(Array(dropdown.options.length), false);
             // Fill in dropdown elem errors array
-            dropdownElemsErrors = _.map(dropdown.options, () => DropdownElemConstructor());
+            dropdownElemsErrors = _.map(dropdown.options, () => DropdownElemConstructor(true));
             // Fill in sectionErrors for hero with dropdown
             sectionsErrors.push({
               hero: {
@@ -161,7 +160,7 @@ export default class EditHomepage extends Component {
           if (keyHighlights) {
             displayHighlights = _.fill(Array(keyHighlights.length), false);
             // Fill in highlights errors array
-            highlightsErrors = _.map(keyHighlights, () => KeyHighlightConstructor());
+            highlightsErrors = _.map(keyHighlights, () => KeyHighlightConstructor(true));
             // Fill in sectionErrors for hero with key highlights
             sectionsErrors.push({
               hero: {
@@ -173,16 +172,16 @@ export default class EditHomepage extends Component {
 
         // Check if there is already a resources section
         if (section.resources) {
-          sectionsErrors.push(ResourcesSectionConstructor());
+          sectionsErrors.push(ResourcesSectionConstructor(true));
           hasResources = true;
         }
 
         if (section.infobar) {
-          sectionsErrors.push(InfobarSectionConstructor());
+          sectionsErrors.push(InfobarSectionConstructor(true));
         }
 
         if (section.infopic) {
-          sectionsErrors.push(InfopicSectionConstructor());
+          sectionsErrors.push(InfopicSectionConstructor(true));
         }
 
         // Minimize all sections by default
@@ -235,7 +234,6 @@ export default class EditHomepage extends Component {
         case 'section': {
           // The field that changed belongs to a homepage section config
           const { sections } = state.frontMatter;
-
           // sectionIndex is the index of the section array in the frontMatter
           const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT);
           const sectionType = idArray[2]; // e.g. "hero" or "infobar" or "resources"
@@ -386,11 +384,11 @@ export default class EditHomepage extends Component {
           }
 
           newSections = update(frontMatter.sections, {
-            $push: [enumSection(value)],
+            $push: [enumSection(value, false)],
           });
           newErrors = update(errors, {
             sections: {
-              $push: [enumSection(value)],
+              $push: [enumSection(value, true)],
             },
           });
 
@@ -410,13 +408,13 @@ export default class EditHomepage extends Component {
             0: {
               hero: {
                 button: {
-                  $set: undefined,
+                  $set: '',
                 },
                 url: {
-                  $set: undefined,
+                  $set: '',
                 },
                 key_highlights: {
-                  $set: undefined,
+                  $set: '',
                 },
                 dropdown: {
                   $set: dropdownObj,
@@ -455,7 +453,7 @@ export default class EditHomepage extends Component {
               hero: {
                 dropdown: {
                   options: {
-                    $splice: [[dropdownsIndex, 0, DropdownElemConstructor()]],
+                    $splice: [[dropdownsIndex, 0, DropdownElemConstructor(false)]],
                   },
                 },
               },
@@ -464,7 +462,7 @@ export default class EditHomepage extends Component {
 
           newErrors = update(errors, {
             dropdownElems: {
-              $splice: [[dropdownsIndex, 0, DropdownElemConstructor()]],
+              $splice: [[dropdownsIndex, 0, DropdownElemConstructor(true)]],
             },
           });
 
@@ -484,7 +482,7 @@ export default class EditHomepage extends Component {
             0: {
               hero: {
                 key_highlights: {
-                  $splice: [[highlightIndex, 0, KeyHighlightConstructor()]],
+                  $splice: [[highlightIndex, 0, KeyHighlightConstructor(false)]],
                 },
               },
             },
@@ -492,7 +490,7 @@ export default class EditHomepage extends Component {
 
           newErrors = update(errors, {
             highlights: {
-              $splice: [[highlightIndex, 0, KeyHighlightConstructor()]],
+              $splice: [[highlightIndex, 0, KeyHighlightConstructor(true)]],
             },
           });
 
@@ -565,7 +563,7 @@ export default class EditHomepage extends Component {
             0: {
               hero: {
                 dropdown: {
-                  $set: undefined,
+                  $set: '',
                 },
                 key_highlights: {
                   $set: [],
@@ -727,7 +725,16 @@ export default class EditHomepage extends Component {
       const { state } = this;
       const { match } = this.props;
       const { siteName } = match.params;
-      const content = concatFrontMatterMdBody(state.frontMatter, '');
+      let filteredFrontMatter = _.cloneDeep(state.frontMatter)
+      // Filter out components which have no input
+      filteredFrontMatter.sections = state.frontMatter.sections.map((section) => {
+        let newSection = {}
+        for (const sectionName in section) {
+          newSection[sectionName] = _.cloneDeep(_.omitBy(section[sectionName], _.isEmpty))
+        }
+        return newSection
+      })
+      const content = concatFrontMatterMdBody(filteredFrontMatter, '');
       const base64EncodedContent = Base64.encode(content);
 
       const params = {
@@ -949,55 +956,34 @@ export default class EditHomepage extends Component {
         <div className={elementStyles.wrapper}>
           <div className={editorStyles.homepageEditorSidebar}>
             <div>
-              {/* Site-wide configuration */}
-              {/* <div className={styles.card}>
-                    <h4>
-                      <b>
-                      Site-wide configurations
-                      </b>
-                    </h4>
-                    <p>Site Title</p>
-                    <input
-                      placeholder="Title"
-                      defaultValue={frontMatter.title}
-                      value={frontMatter.title}
-                      id="site-title"
-                      onChange={this.onFieldChange}
-                    />
-                    <p>Site Subtitle</p>
-                    <input
-                      placeholder="Subtitle"
-                      defaultValue={frontMatter.subtitle}
-                      value={frontMatter.subtitle}
-                      id="site-subtitle"
-                      onChange={this.onFieldChange}
-                    />
-                    <p>Site description</p>
-                    <input
-                      placeholder="Description"
-                      defaultValue={frontMatter.description}
-                      value={frontMatter.description}
-                      id="site-description"
-                      onChange={this.onFieldChange}
-                    />
-                    <p>Site image</p>
-                    <input
-                      placeholder="Image"
-                      defaultValue={frontMatter.image}
-                      value={frontMatter.image}
-                      id="site-image"
-                      onChange={this.onFieldChange}
-                    />
-                  </div> */}
-              {/* <div>
-                    <p><b>Site notification</b></p>
-                    <input
-                      placeholder="Notification"
-                      defaultValue={frontMatter.notification}
-                      value={frontMatter.notification}
-                      id="site-notification"
-                      onChange={this.onFieldChange} />
-                  </div> */}
+              <div className={`${elementStyles.card}`}>
+                <p><b>Page Title</b></p>
+                <input
+                  placeholder="Title"
+                  defaultValue={frontMatter.title}
+                  value={frontMatter.title}
+                  id="site-title"
+                  onChange={this.onFieldChange}
+                />
+                {/* Removing site description for now, since it only shows up as metadata
+                <p>Site description</p>
+                <input
+                  placeholder="Description"
+                  defaultValue={frontMatter.description}
+                  value={frontMatter.description}
+                  id="site-description"
+                  onChange={this.onFieldChange}
+                /> */}
+              </div>
+              <div className={`${elementStyles.card}`}>
+                <p><b>Site notification</b></p>
+                <input
+                  placeholder="Notification"
+                  defaultValue={frontMatter.notification}
+                  value={frontMatter.notification}
+                  id="site-notification"
+                  onChange={this.onFieldChange} />
+              </div>
 
               {/* Homepage section configurations */}
               <DragDropContext onDragEnd={this.onDragEnd}>
@@ -1031,6 +1017,7 @@ export default class EditHomepage extends Component {
                                 displayHandler={this.displayHandler}
                                 onDragEnd={this.onDragEnd}
                                 errors={errors}
+                                siteName={siteName}
                               />
                             </>
                           ) : (
@@ -1120,14 +1107,15 @@ export default class EditHomepage extends Component {
                                     description={section.infopic.description}
                                     button={section.infopic.button}
                                     url={section.infopic.url}
-                                    imageUrl={section.infopic.imageUrl}
-                                    imageAlt={section.infopic.imageAlt}
+                                    imageUrl={section.infopic.image}
+                                    imageAlt={section.infopic.alt}
                                     sectionIndex={sectionIndex}
                                     deleteHandler={(event) => this.setState({ itemPendingForDelete: { id: event.target.id, type: 'Infopic Section' } })}
                                     onFieldChange={this.onFieldChange}
                                     shouldDisplay={displaySections[sectionIndex]}
                                     displayHandler={this.displayHandler}
                                     errors={errors.sections[sectionIndex].infopic}
+                                    siteName={siteName}
                                   />
                                 </div>
                               )}
@@ -1156,6 +1144,24 @@ export default class EditHomepage extends Component {
           </div>
           <div className={editorStyles.homepageEditorMain}>
             {/* Isomer Template Pane */}
+            {/* Notification */}
+            { frontMatter.notification && 
+            <div className="bp-notification bg-secondary is-marginless">
+              <div className="bp-container">
+                <div className="row">
+                  <div className="col">
+                    <div className="field has-addons bp-notification-flex">
+                      <div className="control has-text-centered has-text-white">
+                        <h6>{ frontMatter.notification }</h6>
+                      </div>
+                      <div className="button has-text-white">
+                        <span className="sgds-icon sgds-icon-cross"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>}
             {frontMatter.sections.map((section, sectionIndex) => (
               <>
                 {/* Hero section */}
@@ -1212,8 +1218,8 @@ export default class EditHomepage extends Component {
                             title={section.infopic.title}
                             subtitle={section.infopic.subtitle}
                             description={section.infopic.description}
-                            imageUrl={section.infopic.imageUrl}
-                            imageAlt={section.infopic.imageAlt}
+                            imageUrl={section.infopic.image}
+                            imageAlt={section.infopic.alt}
                             button={section.infopic.button}
                             sectionIndex={sectionIndex}
                             siteName={siteName}
@@ -1225,8 +1231,8 @@ export default class EditHomepage extends Component {
                             title={section.infopic.title}
                             subtitle={section.infopic.subtitle}
                             description={section.infopic.description}
-                            imageUrl={section.infopic.imageUrl}
-                            imageAlt={section.infopic.imageAlt}
+                            imageUrl={section.infopic.image}
+                            imageAlt={section.infopic.alt}
                             button={section.infopic.button}
                             sectionIndex={sectionIndex}
                             siteName={siteName}

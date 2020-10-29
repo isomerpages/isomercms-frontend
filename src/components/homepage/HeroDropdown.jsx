@@ -22,10 +22,7 @@ const HeroDropdownElem = ({
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
       <h2>
-Dropdown Elem
-        {dropdownsIndex + 1}
-:
-        {title}
+        Dropdown Elem {dropdownsIndex + 1}: {title}
       </h2>
       <button type="button" id={`dropdownelem-${dropdownsIndex}-toggle`} onClick={displayHandler}>
         <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`dropdownelem-${dropdownsIndex}-icon`} />
@@ -53,7 +50,7 @@ Dropdown Elem
             />
           </div>
           <div className={elementStyles.inputGroup}>
-            <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} className={elementStyles.warning} onClick={deleteHandler}>Delete dropdown element</button>
+            <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} className={`ml-auto ${elementStyles.warning}`} onClick={deleteHandler}>Delete dropdown element</button>
           </div>
         </>
       )
@@ -120,7 +117,7 @@ const HeroDropdown = ({
               </Draggable>
             ))
             : null}
-          <button type="button" id={`dropdownelem-${options.length}-create`} className={elementStyles.blue} onClick={createHandler}>Create dropdown element</button>
+          <button type="button" id={`dropdownelem-${options.length}-create`} className={`ml-auto ${elementStyles.blue}`} onClick={createHandler}>Create dropdown element</button>
           {droppableProvided.placeholder}
         </div>
       )}

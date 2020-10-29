@@ -18,11 +18,10 @@ const EditorResourcesSection = ({
   displayHandler,
   errors,
 }) => (
-  <div className={elementStyles.card}>
+  <div className={`${elementStyles.card} move`}>
     <div className={elementStyles.cardHeader}>
       <h2>
-Resources section:
-        {title}
+        Resources section: {title}
       </h2>
       <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>
         <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`section-${sectionIndex}-icon`} />
@@ -58,7 +57,7 @@ Resources section:
             />
           </div>
           <div className={elementStyles.inputGroup}>
-            <button type="button" id={`section-${sectionIndex}`} className={elementStyles.warning} onClick={deleteHandler}>Delete section</button>
+            <button type="button" id={`section-${sectionIndex}`} className={`ml-auto ${elementStyles.warning}`} onClick={deleteHandler}>Delete section</button>
           </div>
         </>
       )

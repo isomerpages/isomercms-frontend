@@ -9831,12 +9831,11 @@ a.navbar-item.is-active,a.navbar-item:hover,a.navbar-link.is-active,a.navbar-lin
     background: rgba(0,0,0,.25);
     flex-grow: 1;
     flex-shrink: 0;
-    padding: 3rem 1.5rem
+    padding: 3rem 1.5rem;
 }
 
 @media screen and (min-width: 1024px) {
     .bp-hero-body .row {
-        height:391px;
         min-height: 360px
     }
 }
@@ -10949,6 +10948,7 @@ h6,h6 center {
 }
 
 #key-highlights .col {
+    cursor: default;
     transition: all .5s;
     border-left: 1px solid #03648d
 }
@@ -12107,4 +12107,25 @@ a.navbar-item {
 .page-content-body {
     padding-left: 5rem;
     margin: 0 0 !important;
+}
+
+.watermark-container {
+    position:relative;
+    overflow: hidden;
+}
+
+.watermark-text {
+    position: absolute;
+    top:0;
+    right:0;
+    width: 100%;
+    height: 100%;
+    color: #ffffff;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    font-size: 5vw;
+    transform: rotate(-30deg);
 }

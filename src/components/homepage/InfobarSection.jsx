@@ -20,11 +20,10 @@ const EditorInfobarSection = ({
   displayHandler,
   errors,
 }) => (
-  <div className={elementStyles.card}>
+  <div className={`${elementStyles.card} move`}>
     <div className={elementStyles.cardHeader}>
       <h2>
-Infobar section:
-        {title}
+        Infobar section: {title}
       </h2>
       <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>
         <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`section-${sectionIndex}-icon`} />
@@ -68,6 +67,7 @@ Infobar section:
             />
             <FormField
               title="Infobar button URL"
+              placeholder="Insert permalink or external URL"
               id={`section-${sectionIndex}-infobar-url`}
               value={url}
               errorMessage={errors.url}
@@ -76,7 +76,7 @@ Infobar section:
             />
           </div>
           <div className={elementStyles.inputGroup}>
-            <button type="button" id={`section-${sectionIndex}`} className={elementStyles.warning} onClick={deleteHandler}>Delete section</button>
+            <button type="button" id={`section-${sectionIndex}`} className={`ml-auto ${elementStyles.warning}`} onClick={deleteHandler}>Delete section</button>
           </div>
         </>
       )
