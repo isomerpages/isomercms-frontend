@@ -49,8 +49,6 @@ function App() {
     },
     async function (error) {
       if (error.response && error.response.status === 401) {
-        // await axios.get(`${BACKEND_URL}/auth/logout`)
-        // setIsLoggedIn(false)
         setShouldBlockNavigation(true)
         console.log('User token has expired or does not exist')
       } else {
@@ -78,8 +76,17 @@ function App() {
     }
   }, [shouldLogout])
 
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setShouldBlockNavigation(false)
+      setShouldLogout(false)
+    }
+  }, [isLoggedIn])
+
   const setLogoutState = () => {
     setIsLoggedIn(false)
+    setShouldBlockNavigation(false)
+    setShouldLogout(false)
   }
 
   const ProtectedRouteWithProps = (props) => {
