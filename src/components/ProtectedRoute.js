@@ -1,7 +1,7 @@
 import React from 'react'
 import { Redirect, Route } from 'react-router-dom'
 
-const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, setIsLoggedIn, ...rest }) => {
+const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) => {
     return (
       <Route {...rest} render={
         props => {
@@ -15,7 +15,7 @@ const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, setIsLoggedIn
                 console.log('Logging out using sign out button')
 
                 // Logging out using sign out button
-                return <WrappedComponent {...rest} {...props} setIsLoggedIn={setIsLoggedIn} />
+                return <WrappedComponent {...rest} {...props} />
               }
   
               console.log('Trying to log out using URL')
@@ -29,13 +29,18 @@ const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, setIsLoggedIn
               )
             }
   
-            return <WrappedComponent {...rest} {...props} />
+            // Add a modal that informs users that they are being logged out
+            return (
+                <>
+                    <WrappedComponent {...rest} {...props} />
+                </>
+            )
           }
   
           console.log('User is not logged in at', rest.location.pathname)
           // Render login component when not logged in
           if (rest.location.pathname === '/') {
-            return <WrappedComponent {...rest} {...props} setIsLoggedIn={setIsLoggedIn} />
+            return <WrappedComponent {...rest} {...props} />
           }
   
           // Redirect all URLs to Login component when not logged in
