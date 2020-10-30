@@ -22,6 +22,7 @@ import Resources from './layouts/Resources';
 import Menus from './layouts/Menus';
 import EditNav from './layouts/EditNav';
 import Settings from './layouts/Settings';
+import ProtectedRoute from './components/ProtectedRoute'
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -74,7 +75,13 @@ function App() {
           of them to render at a time
         */}
         <Switch>
-          <Route exact path="/" component={Home} />
+          <ProtectedRoute
+            exact
+            path="/"
+            component={Home}
+            isLoggedIn={isLoggedIn}
+            setIsLoggedIn={setIsLoggedIn}
+          />
           <Route path="/sites/:siteName/collections/:collectionName/:fileName" component={EditCollectionPage} />
           <Route path="/sites/:siteName/collections/:collectionName" component={CollectionPages} />
           {/* <Route path="/sites/:siteName/collections" component={Collections} /> */}
