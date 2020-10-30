@@ -30,3 +30,7 @@ $sites-container-width: ($site-width*3) + ($site-margin-horizontal*6);
 $component-card-height: 240px;
 $component-card-margin: 2.5%;
 $component-card-width: (100% - ($component-card-margin*3) )/3 ;
+
+$component-folder-height: 80px;
+$component-folder-margin: 2.5%;
+$component-folder-width: (100% - ($component-card-margin*3) )/3 ;
