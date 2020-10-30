@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -40,6 +40,8 @@ const COOKIE_NAME = 'isomercms'
 function App() {
   // Keep track of whether user is logged in
   const [isLoggedIn, setIsLoggedIn] = useState(doesHttpOnlyCookieExist(COOKIE_NAME))
+  const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false)
+  const [shouldLogout, setShouldLogout] = useState(false)
 
   axios.interceptors.response.use(
     function (response) {
@@ -47,8 +49,9 @@ function App() {
     },
     async function (error) {
       if (error.response && error.response.status === 401) {
-        await axios.get(`${BACKEND_URL}/auth/logout`)
-        setIsLoggedIn(false)
+        // await axios.get(`${BACKEND_URL}/auth/logout`)
+        // setIsLoggedIn(false)
+        setShouldBlockNavigation(true)
         console.log('User token has expired or does not exist')
       } else {
         console.log('An unknown error occurred: ')
@@ -57,6 +60,23 @@ function App() {
       return Promise.reject(error)
     }
   )
+
+  useEffect(() => {
+    if (shouldBlockNavigation) {
+      alert('Warning: your token has expired. Isomer will log you out now.')
+      setShouldLogout(true)
+    }
+  }, [shouldBlockNavigation])
+
+  useEffect(() => {
+    if (shouldLogout) {
+      const logout = async () =>  {
+        await axios.get(`${BACKEND_URL}/auth/logout`)
+        setIsLoggedIn(false)
+      }
+      logout()
+    }
+  }, [shouldLogout])
 
   const setLogoutState = () => {
     setIsLoggedIn(false)
