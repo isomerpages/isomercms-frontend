@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
+  Redirect,
 } from 'react-router-dom';
 import axios from 'axios'
 
@@ -32,19 +33,24 @@ const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 
 function App() {
   // Keep track of whether user is logged in
-  const [isLoggedIn, setIsLoggedIn] = useState(async () => {
-    try {
-      console.log('Validating cookie...')
-      await axios.get(`${BACKEND_URL}/validate-cookie`)
-      console.log('Successfully validated cookie!')
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-      // If response is received, set logged in state to be true
-      return true
-    } catch {
-      console.log('Cookie invalid/does not exist.')
-      return false
+  useLayoutEffect(() => {
+    const cookieValidation = async () => {
+      try {
+        console.log('Validating cookie...')
+        await axios.get(`${BACKEND_URL}/validate-cookie`)
+        console.log('Successfully validated cookie!')
+
+        // If response is received, set logged in state to be true
+        setIsLoggedIn(true)
+      } catch {
+        console.log('Cookie invalid/does not exist.')
+        setIsLoggedIn(false)
+      }
     }
-  })
+    cookieValidation()
+  }, [])
 
   useEffect(() => {
     axios.interceptors.response.use(
@@ -103,6 +109,9 @@ function App() {
           <Route path="/sites/:siteName/menus" component={Menus} />
           <Route path="/sites/:siteName/settings" component={Settings} />
           <Route path="/sites" component={Sites} />
+          <Route>
+            <Redirect to="/" />
+          </Route>
         </Switch>
       </div>
     </Router>

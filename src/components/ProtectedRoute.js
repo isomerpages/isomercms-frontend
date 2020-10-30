@@ -13,6 +13,7 @@ const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, setIsLoggedIn
             if (rest.location.pathname === '/') {
               if (rest.location.state?.isFromSignOutButton) {
                 console.log('Logging out using sign out button')
+                setIsLoggedIn(false)
                 // Logging out using sign out button
                 return <WrappedComponent {...rest} {...props} setIsLoggedIn={setIsLoggedIn} />
               }
@@ -31,7 +32,7 @@ const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, setIsLoggedIn
             return <WrappedComponent {...rest} {...props} />
           }
   
-          console.log('User is not logged in', rest.location.pathname)
+          console.log('User is not logged in at', rest.location.pathname)
           // Render login component when not logged in
           if (rest.location.pathname === '/') {
             return <WrappedComponent {...rest} {...props} setIsLoggedIn={setIsLoggedIn} />
