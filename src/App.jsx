@@ -5,6 +5,7 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
+import axios from 'axios';
 
 // Layouts
 import Home from './layouts/Home';
@@ -26,12 +27,33 @@ import ProtectedRoute from './components/ProtectedRoute'
 // Utils
 const { doesHttpOnlyCookieExist } = require('./utils/cookieChecker')
 
+// axios settings
+axios.defaults.withCredentials = true
+
 // Constants
+const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 const COOKIE_NAME = 'isomercms'
 
 function App() {
   // Keep track of whether user is logged in
   const [isLoggedIn, setIsLoggedIn] = useState(doesHttpOnlyCookieExist(COOKIE_NAME))
+
+  axios.interceptors.response.use(
+    function (response) {
+      return response
+    },
+    async function (error) {
+      if (error.response && error.response.status === 401) {
+        await axios.get(`${BACKEND_URL}/auth/logout`)
+        setIsLoggedIn(false)
+        console.log('User token has expired or does not exist')
+      } else {
+        console.log('An unknown error occurred: ')
+        console.error(error)
+      }
+      return Promise.reject(error)
+    }
+  )
 
   return (
     <Router basename={process.env.PUBLIC_URL}>
