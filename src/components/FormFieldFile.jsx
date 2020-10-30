@@ -14,6 +14,7 @@ const FormFieldFile = ({
   onInlineButtonClick,
   inlineButtonText,
   onFieldChange,
+  disabled,
 }) => {
   useEffect(() => {
     if (_.isString(value)) {
@@ -47,8 +48,9 @@ const FormFieldFile = ({
         && (
         <button
           type="button"
-          className={`${elementStyles.blue} text-nowrap`}
+          className={`${disabled ? elementStyles.disabled : elementStyles.blue} text-nowrap`}
           onClick={onInlineButtonClick}
+          disabled
         >
           { inlineButtonText }
         </button>
