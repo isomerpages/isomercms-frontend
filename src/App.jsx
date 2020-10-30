@@ -62,6 +62,10 @@ function App() {
     setIsLoggedIn(false)
   }
 
+  const ProtectedRouteWithProps = (props) => {
+    return <ProtectedRoute {...props} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+  }
+
   return (
     <Router basename={process.env.PUBLIC_URL}>
         <div>
@@ -74,22 +78,22 @@ function App() {
           */}
             <LoginContext.Provider value={setLogoutState}>
               <Switch>
-                  <ProtectedRoute exact path="/" component={Home} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-                  <ProtectedRoute path="/sites/:siteName/collections/:collectionName/:fileName" component={EditCollectionPage} isLoggedIn={isLoggedIn} />
-                  <ProtectedRoute path="/sites/:siteName/collections/:collectionName" component={CollectionPages} isLoggedIn={isLoggedIn} />
-                  <ProtectedRoute path="/sites/:siteName/files/:fileName" component={EditFile} isLoggedIn={isLoggedIn} />
-                  <ProtectedRoute path="/sites/:siteName/files" component={Files} isLoggedIn={isLoggedIn}/>
-                  <ProtectedRoute path="/sites/:siteName/images/:fileName" component={EditImage} isLoggedIn={isLoggedIn} />
-                  <ProtectedRoute path="/sites/:siteName/images" component={Images} isLoggedIn={isLoggedIn} />
-                  <ProtectedRoute path="/sites/:siteName/pages/:fileName" component={EditPage} isResourcePage={false} isLoggedIn={isLoggedIn} />
-                  <ProtectedRoute path="/sites/:siteName/pages" component={Pages} isLoggedIn={isLoggedIn} />
-                  <ProtectedRoute path="/sites/:siteName/homepage" component={EditHomepage} isLoggedIn={isLoggedIn} />
-                  <ProtectedRoute path="/sites/:siteName/resources/:resourceName/:fileName" component={EditPage} isResourcePage={true} isLoggedIn={isLoggedIn} />
-                  <ProtectedRoute path="/sites/:siteName/resources" component={Resources} isLoggedIn={isLoggedIn} />
-                  <ProtectedRoute path="/sites/:siteName/menus/main-menu" component={EditNav} isLoggedIn={isLoggedIn} />
-                  <ProtectedRoute path="/sites/:siteName/menus" component={Menus} isLoggedIn={isLoggedIn} />
-                  <ProtectedRoute path="/sites/:siteName/settings" component={Settings} isLoggedIn={isLoggedIn} />
-                  <ProtectedRoute exact path="/sites" component={Sites} isLoggedIn={isLoggedIn} />
+                  <ProtectedRouteWithProps exact path="/" component={Home} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName/:fileName" component={EditCollectionPage} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName" component={CollectionPages} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/files/:fileName" component={EditFile} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/files" component={Files} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/images/:fileName" component={EditImage} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/images" component={Images} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/pages/:fileName" component={EditPage} isResourcePage={false} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/pages" component={Pages} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/homepage" component={EditHomepage} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/resources/:resourceName/:fileName" component={EditPage} isResourcePage={true} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/resources" component={Resources} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/menus/main-menu" component={EditNav} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/menus" component={Menus} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/settings" component={Settings} />
+                  <ProtectedRouteWithProps exact path="/sites" component={Sites} />
                   <Route>
                     <Redirect to="/" />
                   </Route>
