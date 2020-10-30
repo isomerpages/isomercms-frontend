@@ -39,42 +39,35 @@ function App() {
   // Keep track of whether user is logged in
   const [isLoggedIn, setIsLoggedIn] = useState(doesHttpOnlyCookieExist(COOKIE_NAME))
 
+  axios.interceptors.response.use(
+    function (response) {
+      return response
+    },
+    async function (error) {
+      console.error(error.toJSON(), 'test')
+      if (error.response && error.response.status === 401) {
+        await axios.get(`${BACKEND_URL}/auth/logout`)
+        setIsLoggedIn(false)
+        console.log('User token has expired or does not exist')
+      } else {
+        console.log('An unknown error occurred: ')
+        console.error(error)
+      }
+      return Promise.reject(error)
+    }
+  )
+
   useLayoutEffect(() => {
     const cookieValidation = async () => {
-      try {
         console.log('Validating cookie...')
         await axios.get(`${BACKEND_URL}/validate-cookie`)
         console.log('Successfully validated cookie!')
 
         // If response is received, set logged in state to be true
         setIsLoggedIn(true)
-      } catch {
-        console.log('Cookie invalid/does not exist.')
-        await axios.get(`${BACKEND_URL}/auth/logout`)
-        setIsLoggedIn(false)
-      }
     }
     cookieValidation()
   }, [])
-
-  useEffect(() => {
-    axios.interceptors.response.use(
-      function (response) {
-        return response
-      },
-      async function (error) {
-        if (error.response && error.response.status === 401) {
-          await axios.get(`${BACKEND_URL}/auth/logout`)
-          setIsLoggedIn(false)
-          console.log('User token has expired or does not exist')
-        } else {
-          console.log('An unknown error occurred: ')
-          console.error(error)
-        }
-        return Promise.reject(error)
-      }
-    )
-  })
 
   return (
     <Router basename={process.env.PUBLIC_URL}>
