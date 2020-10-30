@@ -5,14 +5,18 @@ import { Redirect, Route } from 'react-router-dom'
 import Home from '../layouts/Home';
 
 // Constants
-const authContextString = '?isomercms-backend'
+const authContextString = '#isomercms'
 
 const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) => {
     return (
         <Route {...rest} render={
             props => {
                 if (rest.location.pathname === '/auth') {
-                    if (rest.location.search === authContextString) return <WrappedComponent {...rest} {...props} />
+                    if (rest.location.search === authContextString) {
+                        console.log('Redirecting to sites...')
+                        window.history.pushState({}, document.title, '/auth')
+                        return <WrappedComponent {...rest} {...props} />
+                    }
                     return <Redirect to="/" />
                 }
 
