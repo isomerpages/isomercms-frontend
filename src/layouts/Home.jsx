@@ -7,7 +7,7 @@ const UUID = uuid.v4();
 export default function Home({ setIsLoggedIn }) {
   return (
     <>
-      <div className={elementStyles.loginDiv}>
+      <div className={elementStyles.loginDiv} onLoad={() => setIsLoggedIn(false)}>
         <div>
           <img className={elementStyles.loginImage} src={`${process.env.PUBLIC_URL}/img/logo.svg`} alt="Isomer CMS logo" />
           <button
