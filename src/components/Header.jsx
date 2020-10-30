@@ -76,7 +76,8 @@ const Header = ({
       { shouldRedirect && 
         <Redirect
           to={{
-            pathname: '/'
+            pathname: '/',
+            state: { isFromSignOutButton: true },
           }}
         />
       }

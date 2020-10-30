@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
 } from 'react-router-dom';
+import axios from 'axios'
+
+// Layouts
 import Home from './layouts/Home';
 import Sites from './layouts/Sites';
 import Pages from './layouts/Pages';
 import EditPage from './layouts/EditPage';
-// import Collections from './layouts/Collections';
 import CollectionPages from './layouts/CollectionPages';
 import EditCollectionPage from './layouts/EditCollectionPage';
 import Images from './layouts/Images';
@@ -20,9 +22,47 @@ import Resources from './layouts/Resources';
 import Menus from './layouts/Menus';
 import EditNav from './layouts/EditNav';
 import Settings from './layouts/Settings';
-// import EditFooter from './layouts/EditFooter';
+
+// axios settings
+axios.defaults.withCredentials = true
+
+// Constants
+const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 
 function App() {
+  // Keep track of whether user is logged in
+  const [isLoggedIn, setIsLoggedIn] = useState(async () => {
+    try {
+      console.log('Validating cookie...')
+      await axios.get(`${BACKEND_URL}/validate-cookie`)
+      console.log('Successfully validated cookie!')
+
+      // If response is received, set logged in state to be true
+      return true
+    } catch {
+      console.log('Cookie invalid/does not exist.')
+      return false
+    }
+  })
+
+  useEffect(() => {
+    axios.interceptors.response.use(
+      function (response) {
+        return response
+      },
+      async function (error) {
+        if (error.response && error.response.status === 401) {
+          setIsLoggedIn(false)
+          console.log('User token has expired or does not exist')
+        } else {
+          console.log('An unknown error occurred: ')
+          console.error(error)
+        }
+        return Promise.reject(error)
+      }
+    )
+  })
+
   return (
     <Router basename={process.env.PUBLIC_URL}>
       <div>
