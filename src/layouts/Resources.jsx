@@ -3,9 +3,11 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import * as Bluebird from 'bluebird';
 import * as _ from 'lodash';
-import { retrieveResourceFileMetadata, prettifyResourceCategory } from '../utils';
-import ResourceSettingsModal from '../components/ResourceSettingsModal';
+import { retrieveResourceFileMetadata } from '../utils';
+import ComponentSettingsModal from '../components/ComponentSettingsModal';
 import ResourceCategoryModal from '../components/ResourceCategoryModal';
+import MediasModal from '../components/media/MediaModal';
+import MediaSettingsModal from '../components/media/MediaSettingsModal';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import ComponentCard from '../components/ComponentCard';
@@ -70,6 +72,8 @@ export default class Resources extends Component {
         category: '',
         fileName: '',
       },
+      isSelectingFile: false,
+      isFileStagedForUpload: false,
     };
   }
 
@@ -124,6 +128,55 @@ export default class Resources extends Component {
     }));
   }
 
+  toggleFileModal = () => {
+    this.setState((currState) => ({
+      isSelectingFile: !currState.isSelectingFile,
+    }));
+  }
+
+  toggleFileAndSettingsModal = () => {
+    this.setState((currState) => ({
+      isSelectingFile: !currState.isSelectingFile,
+      isFileStagedForUpload: !currState.isFileStagedForUpload,
+    }));
+  }
+
+  onFileClick = (path) => {
+    this.setState({
+      filePath: path,
+      isSelectingFile: false,
+    });
+  }
+
+  stageFileForUpload = (fileName, fileData) => {
+    const { type } = this.props;
+    const baseFolder = type === 'file' ? 'files' : 'images';
+    this.setState({
+      isFileStagedForUpload: true,
+      stagedFileDetails: {
+        path: `${baseFolder}%2F${fileName}`,
+        content: fileData,
+        fileName,
+      },
+    });
+  }
+
+  readFileToStageUpload = async (event) => {
+    const fileReader = new FileReader();
+    const fileName = event.target.files[0].name;
+    fileReader.onload = (() => {
+      /** Github only requires the content of the file
+         * fileReader returns  `data:application/pdf;base64, {fileContent}`
+         * hence the split
+         */
+
+      const fileData = fileReader.result.split(',')[1];
+      this.stageFileForUpload(fileName, fileData);
+    });
+    fileReader.readAsDataURL(event.target.files[0]);
+    this.toggleFileModal()
+  }
+
   settingsToggle = (event) => {
     const { id } = event.target;
     const idArray = id.split('-');
@@ -140,6 +193,12 @@ export default class Resources extends Component {
     } else if (resourcePageIndex === 'CLOSE') {
       // User clicked on the close button in the settings modal
       this.setState({ settingsIsActive: false });
+    } else if (resourcePageIndex === '') {
+      // User clicked on the file upload button
+      this.setState({
+        settingsIsActive: false,
+        isSelectingFile: true
+       });
     } else {
       // User clicked on the settings icon on an existing resource
       resourcePageIndex = parseInt(resourcePageIndex, RADIX_PARSE_INT);
@@ -183,6 +242,9 @@ export default class Resources extends Component {
       selectedResourcePage,
       resourceRoomName,
       newResourceRoomName,
+      isSelectingFile,
+      isFileStagedForUpload,
+      stagedFileDetails,
     } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
@@ -195,12 +257,14 @@ export default class Resources extends Component {
           <Sidebar siteName={siteName} currPath={location.pathname} />
           { settingsIsActive
             ? (
-              <ResourceSettingsModal
+              <ComponentSettingsModal
+                modalTitle={"Resource Settings"}
                 siteName={siteName}
-                isNewPost={selectedResourcePage.isNewPost}
+                isNewFile={selectedResourcePage.isNewPost}
                 category={selectedResourcePage.category}
                 fileName={selectedResourcePage.fileName}
                 settingsToggle={this.settingsToggle}
+                type="resource"
               />
             )
             : null}
@@ -250,6 +314,29 @@ export default class Resources extends Component {
           </div>
           {/* main section ends here */}
         </div>
+        {
+          isSelectingFile && (
+          <MediasModal
+            type="file"
+            siteName={siteName}
+            onMediaSelect={this.onFileClick}
+            readFileToStageUpload={this.readFileToStageUpload}
+            onClose={() => this.setState({ isSelectingFile: false, settingsIsActive: true })}
+          />
+          )
+        }
+        {
+          isFileStagedForUpload && (
+            <MediaSettingsModal
+              type="file"
+              siteName={siteName}
+              onClose={() => this.setState({ isFileStagedForUpload: false })}
+              onSave={this.toggleFileAndSettingsModal}
+              media={stagedFileDetails}
+              isPendingUpload="true"
+            />
+          )
+        }
       </>
     );
   }

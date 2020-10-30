@@ -112,9 +112,9 @@ export function dequoteString(str) {
   return dequotedString;
 }
 
-export function generateResourceFileName(title, type, date) {
+export function generateResourceFileName(title, date) {
   const safeTitle = slugify(title).replace(/[^a-zA-Z-]/g, '');
-  return `${date}-${type}-${safeTitle}.md`;
+  return `${date}-${safeTitle}.md`;
 }
 
 export function prettifyResourceCategory(category) {
@@ -148,4 +148,18 @@ export function generateCollectionPageFileName(title, groupIdentifier) {
 
 export function generatePermalink(title) {
   return slugify(title).replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
+}
+
+export function retrieveCollectionAndLinkFromPermalink(permalink) {
+  const permalinkArray = permalink.split('/')
+  let collectionName, editableLink
+  if (permalinkArray.length < 2 || permalinkArray[2] === '') {
+    // Item has no collection
+    collectionName = ''
+    editableLink = permalinkArray[1]
+  } else {
+    collectionName = permalinkArray[1]
+    editableLink = permalinkArray.slice(2).join('/')
+  }
+  return {collectionName, editableLink}
 }

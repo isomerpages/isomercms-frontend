@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import PageSettingsModal from '../components/PageSettingsModal';
-import CollectionPageSettingsModal from '../components/CollectionPageSettingsModal';
+import ComponentSettingsModal from '../components/ComponentSettingsModal';
 import ComponentCard from '../components/ComponentCard';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
@@ -80,11 +79,13 @@ export default class Pages extends Component {
           {/* Page settings modal */}
           { settingsIsActive && !isCollectionPage
             && (
-              <PageSettingsModal
+              <ComponentSettingsModal
+                modalTitle={"Page Settings"}
                 settingsToggle={this.settingsToggle}
                 siteName={siteName}
                 fileName={selectedFile ? selectedFile.fileName : ''}
-                isNewPage={createNewPage}
+                isNewFile={createNewPage}
+                type="page"
                 pageFilenames={_.chain(pages)
                   .filter({ type: 'simple-page' })
                   .map((page) => page.fileName)
@@ -99,11 +100,14 @@ export default class Pages extends Component {
            */}
           { settingsIsActive && isCollectionPage
             && (
-              <CollectionPageSettingsModal
+              <ComponentSettingsModal
+                modalTitle={"Page Settings"}
                 settingsToggle={this.settingsToggle}
                 siteName={siteName}
                 fileName={selectedFile.fileName}
-                collectionName={selectedFile.collectionName}
+                category={selectedFile.collectionName}
+                type="page"
+                isNewFile={false}
               />
             )}
           <Sidebar siteName={siteName} currPath={location.pathname} />
