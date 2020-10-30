@@ -4,11 +4,17 @@ import { Redirect, Route } from 'react-router-dom'
 // Import layouts
 import Home from '../layouts/Home';
 
+// Constants
+const authContextString = '?isomercms-backend'
+
 const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) => {
     return (
         <Route {...rest} render={
             props => {
-                if (rest.location.pathname === '/auth') return <WrappedComponent {...rest} {...props} />
+                if (rest.location.pathname === '/auth') {
+                    if (rest.location.search === authContextString) return <WrappedComponent {...rest} {...props} />
+                    return <Redirect to="/" />
+                }
 
                 if (isLoggedIn) {
                     console.log('User is logged in', rest.location.pathname)
