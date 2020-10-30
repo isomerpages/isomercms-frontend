@@ -8,6 +8,8 @@ const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) =>
     return (
         <Route {...rest} render={
             props => {
+                if (rest.location.pathname === '/auth') return <WrappedComponent {...rest} {...props} />
+
                 if (isLoggedIn) {
                     console.log('User is logged in', rest.location.pathname)
                     // If logged in, and user attempts to navigate to the login page through the URL instead of the sign out button
@@ -15,15 +17,14 @@ const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) =>
                     // it clears the cookie
                     if (rest.location.pathname === '/') {
                         if (rest.location.state?.isFromSignOutButton) {
-                            console.log('Logging out using log out button')
+                            console.log('Accessing the / path using the log out button')
 
                             // Logging out using sign out button
                             return <Home {...rest} {...props} />
                         }
 
-                        console.log('Accessing the / path using the URL bar')
-                        // Preventing logout since the log out button was not used
-                        return <Redirect to={{ pathname: '/sites' }} />
+                        // According to route logic in App.jsx, WrappedComponent is a redirect to /sites
+                        // when a user is logged in and searches for the '/' path
                     }
 
                     return <WrappedComponent {...rest} {...props} />

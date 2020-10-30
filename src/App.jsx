@@ -8,6 +8,7 @@ import {
 import axios from 'axios';
 
 // Layouts
+import AuthCallback from './layouts/AuthCallback'
 import Home from './layouts/Home';
 import Sites from './layouts/Sites';
 import Pages from './layouts/Pages';
@@ -83,6 +84,10 @@ function App() {
     }
   }, [isLoggedIn])
 
+  const setLogin = () => {
+    setIsLoggedIn(true)
+  }
+
   const setLogoutState = () => {
     setIsLoggedIn(false)
     setShouldBlockNavigation(false)
@@ -90,7 +95,7 @@ function App() {
   }
 
   const ProtectedRouteWithProps = (props) => {
-    return <ProtectedRoute {...props} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+    return <ProtectedRoute {...props} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
   }
 
   return (
@@ -105,7 +110,11 @@ function App() {
           */}
             <LoginContext.Provider value={setLogoutState}>
               <Switch>
-                  <ProtectedRouteWithProps exact path="/" component={Home} />
+                  <ProtectedRouteWithProps exact path='/auth' component={AuthCallback} setLogin={setLogin} />
+                  <ProtectedRouteWithProps exact path="/" component={() => {
+                    if (isLoggedIn) return <Redirect to="/sites" />
+                    return <Home setIsLoggedIn={setIsLoggedIn} />
+                  }} />
                   <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName/:fileName" component={EditCollectionPage} />
                   <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName" component={CollectionPages} />
                   <ProtectedRouteWithProps path="/sites/:siteName/files/:fileName" component={EditFile} />
@@ -122,7 +131,7 @@ function App() {
                   <ProtectedRouteWithProps path="/sites/:siteName/settings" component={Settings} />
                   <ProtectedRouteWithProps exact path="/sites" component={Sites} />
                   <Route>
-                    <Redirect to="/" />
+                    <Redirect to={ isLoggedIn ? '/sites' : '/' } />
                   </Route>
               </Switch>
             </LoginContext.Provider>

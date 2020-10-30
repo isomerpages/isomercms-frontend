@@ -4,7 +4,7 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
 const UUID = uuid.v4();
 
-export default function Home({ setIsLoggedIn }) {
+export default function Home() {
   return (
     <>
       <div className={elementStyles.loginDiv}>
@@ -14,7 +14,6 @@ export default function Home({ setIsLoggedIn }) {
             type="button"
             onClick={() => {
               window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&state=${UUID}&scope=public_repo`
-              setIsLoggedIn(true)
             }}
             className={`${elementStyles.green} ${elementStyles.loginButton}`}
           >
