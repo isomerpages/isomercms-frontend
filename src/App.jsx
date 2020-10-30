@@ -42,7 +42,6 @@ function App() {
   // Keep track of whether user is logged in
   const [isLoggedIn, setIsLoggedIn] = useState(doesHttpOnlyCookieExist(COOKIE_NAME))
   const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false)
-  const [shouldLogout, setShouldLogout] = useState(false)
 
   axios.interceptors.response.use(
     function (response) {
@@ -63,24 +62,18 @@ function App() {
   useEffect(() => {
     if (shouldBlockNavigation) {
       alert('Warning: your token has expired. Isomer will log you out now.')
-      setShouldLogout(true)
-    }
-  }, [shouldBlockNavigation])
-
-  useEffect(() => {
-    if (shouldLogout) {
       const logout = async () =>  {
+        console.log('Logging out...')
         await axios.get(`${BACKEND_URL}/auth/logout`)
         setIsLoggedIn(false)
       }
       logout()
     }
-  }, [shouldLogout])
+  }, [shouldBlockNavigation])
 
   useEffect(() => {
     if (!isLoggedIn) {
       setShouldBlockNavigation(false)
-      setShouldLogout(false)
     }
   }, [isLoggedIn])
 
@@ -91,7 +84,6 @@ function App() {
   const setLogoutState = () => {
     setIsLoggedIn(false)
     setShouldBlockNavigation(false)
-    setShouldLogout(false)
   }
 
   const ProtectedRouteWithProps = (props) => {
