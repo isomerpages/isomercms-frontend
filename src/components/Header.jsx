@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import GenericWarningModal from './GenericWarningModal'
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+
+// Import context
+const { LoginContext } = require('../contexts/LoginContext')
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -13,6 +16,8 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 const Header = ({
   showButton, title, isEditPage, shouldAllowEditPageBackNav, backButtonText, backButtonUrl,
 }) => {
+  const setLogoutState = useContext(LoginContext)
+
   const [shouldRedirect, setShouldRedirect] = useState(false)
   const [shouldPerformBackNav, setShouldPerformBackNav] = useState(false)
   const [showBackNavWarningModal, setShowBackNavWarningModal] = useState(false)
@@ -22,6 +27,7 @@ const Header = ({
       // Call the logout endpoint in the API server to clear the browser cookie
       await axios.get(`${BACKEND_URL}/auth/logout`)
       setShouldRedirect(true)
+      setLogoutState()
     } catch (err) {
       console.error(err)
       setShouldRedirect(false)
