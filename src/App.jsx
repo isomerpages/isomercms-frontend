@@ -44,7 +44,6 @@ function App() {
       return response
     },
     async function (error) {
-      console.error(error.toJSON(), 'test')
       if (error.response && error.response.status === 401) {
         await axios.get(`${BACKEND_URL}/auth/logout`)
         setIsLoggedIn(false)
@@ -56,18 +55,6 @@ function App() {
       return Promise.reject(error)
     }
   )
-
-  useLayoutEffect(() => {
-    const cookieValidation = async () => {
-        console.log('Validating cookie...')
-        await axios.get(`${BACKEND_URL}/validate-cookie`)
-        console.log('Successfully validated cookie!')
-
-        // If response is received, set logged in state to be true
-        setIsLoggedIn(true)
-    }
-    cookieValidation()
-  }, [])
 
   return (
     <Router basename={process.env.PUBLIC_URL}>
