@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
+  Redirect,
 } from 'react-router-dom';
+
+// Layouts
 import Home from './layouts/Home';
 import Sites from './layouts/Sites';
 import Pages from './layouts/Pages';
@@ -18,8 +21,12 @@ import Resources from './layouts/Resources';
 import Menus from './layouts/Menus';
 import EditNav from './layouts/EditNav';
 import Settings from './layouts/Settings';
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
+  // Keep track of whether user is logged in
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
   return (
     <Router basename={process.env.PUBLIC_URL}>
       <div>
@@ -31,30 +38,25 @@ function App() {
           of them to render at a time
         */}
         <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path="/sites/:siteName/collections/:collectionName/:fileName" render={(props) => (
-            <EditPage {...props} isCollectionPage={true} isResourcePage={false} />
-          )}/>
-          <Route path="/sites/:siteName/collections/:collectionName" component={CollectionPages} />
-          {/* <Route path="/sites/:siteName/collections" component={Collections} /> */}
-          <Route path="/sites/:siteName/files/:fileName" component={EditFile} />
-          <Route path="/sites/:siteName/files" component={Files} />
-          <Route path="/sites/:siteName/images/:fileName" component={EditImage} />
-          <Route path="/sites/:siteName/images" component={Images} />
-          <Route path="/sites/:siteName/pages/:fileName" render={(props) => (
-            <EditPage {...props} isCollectionPage={false} isResourcePage={false} />
-          )} />
-          <Route path="/sites/:siteName/pages" component={Pages} />
-          <Route path="/sites/:siteName/homepage" component={EditHomepage} />
-          <Route path="/sites/:siteName/resources/:resourceName/:fileName" render={(props) => (
-            <EditPage {...props} isCollectionPage={false} isResourcePage={true} />
-          )} />
-          <Route path="/sites/:siteName/resources" component={Resources} />
-          {/* <Route path="/sites/:siteName/menus/footer" component={EditFooter} />  */}
-          <Route path="/sites/:siteName/menus/main-menu" component={EditNav} />
-          <Route path="/sites/:siteName/menus" component={Menus} />
-          <Route path="/sites/:siteName/settings" component={Settings} />
-          <Route path="/sites" component={Sites} />
+          <ProtectedRoute exact path="/" component={Home} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+          <ProtectedRoute path="/sites/:siteName/collections/:collectionName/:fileName" component={EditCollectionPage} isLoggedIn={isLoggedIn} />
+          <ProtectedRoute path="/sites/:siteName/collections/:collectionName" component={CollectionPages} isLoggedIn={isLoggedIn} />
+          <ProtectedRoute path="/sites/:siteName/files/:fileName" component={EditFile} isLoggedIn={isLoggedIn} />
+          <ProtectedRoute path="/sites/:siteName/files" component={Files} isLoggedIn={isLoggedIn}/>
+          <ProtectedRoute path="/sites/:siteName/images/:fileName" component={EditImage} isLoggedIn={isLoggedIn} />
+          <ProtectedRoute path="/sites/:siteName/images" component={Images} isLoggedIn={isLoggedIn} />
+          <ProtectedRoute path="/sites/:siteName/pages/:fileName" component={EditPage} isResourcePage={false} isLoggedIn={isLoggedIn} />
+          <ProtectedRoute path="/sites/:siteName/pages" component={Pages} isLoggedIn={isLoggedIn} />
+          <ProtectedRoute path="/sites/:siteName/homepage" component={EditHomepage} isLoggedIn={isLoggedIn} />
+          <ProtectedRoute path="/sites/:siteName/resources/:resourceName/:fileName" component={EditPage} isResourcePage={true} isLoggedIn={isLoggedIn} />
+          <ProtectedRoute path="/sites/:siteName/resources" component={Resources} isLoggedIn={isLoggedIn} />
+          <ProtectedRoute path="/sites/:siteName/menus/main-menu" component={EditNav} isLoggedIn={isLoggedIn} />
+          <ProtectedRoute path="/sites/:siteName/menus" component={Menus} isLoggedIn={isLoggedIn} />
+          <ProtectedRoute path="/sites/:siteName/settings" component={Settings} isLoggedIn={isLoggedIn} />
+          <ProtectedRoute exact path="/sites" component={Sites} isLoggedIn={isLoggedIn} />
+          <Route>
+            <Redirect to="/" />
+          </Route>
         </Switch>
       </div>
     </Router>
