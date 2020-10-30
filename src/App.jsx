@@ -50,6 +50,7 @@ function App() {
         setIsLoggedIn(true)
       } catch {
         console.log('Cookie invalid/does not exist.')
+        await axios.get(`${BACKEND_URL}/auth/logout`)
         setIsLoggedIn(false)
       }
     }
@@ -63,6 +64,7 @@ function App() {
       },
       async function (error) {
         if (error.response && error.response.status === 401) {
+          await axios.get(`${BACKEND_URL}/auth/logout`)
           setIsLoggedIn(false)
           console.log('User token has expired or does not exist')
         } else {
