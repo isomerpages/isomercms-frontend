@@ -23,9 +23,15 @@ import EditNav from './layouts/EditNav';
 import Settings from './layouts/Settings';
 import ProtectedRoute from './components/ProtectedRoute'
 
+// Utils
+const { doesHttpOnlyCookieExist } = require('./utils/cookieChecker')
+
+// Constants
+const COOKIE_NAME = 'isomercms'
+
 function App() {
   // Keep track of whether user is logged in
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(doesHttpOnlyCookieExist(COOKIE_NAME))
 
   return (
     <Router basename={process.env.PUBLIC_URL}>
