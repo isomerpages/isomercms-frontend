@@ -27,44 +27,33 @@ export const generateLeftNav = (leftNavPages, fileName) => {
                 </li>
                 )
 
-                return (
-                <li className="third-level-nav-header" key={elementFileName} onClick={accordionHandler}>
-                    <a className={`third-level-nav-header ${calculateThirdNavHeaderState(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)}`}>
-                    {currentThirdNavTitle}
-                    <i
-                        className={`sgds-icon is-pulled-right is-size-4 ${calculateThirdNavHeaderChevronState(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)}`}
-                        aria-hidden="true"
-                    ></i>
-                    </a>
-                </li>
-                )
+                return generateThirdNavHeader(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)
 
             // Already part of third nav
             } else {
                 // Consecutive third nav sections
                 if (currentThirdNavTitle !== elementThirdNavTitle) {
+                    const prevThirdNavTitle = currentThirdNavTitle;
                     const prevThirdNavElements = _.cloneDeep(thirdNavElements);
+                    currentThirdNavTitle = elementThirdNavTitle
 
-                    // Reset counters to start a new third nav
-                    isPartOfThirdNav = false;
+                    // Reset accumulation of third nav elements to start a new third nav
                     thirdNavElements = [];
 
                     thirdNavElements.push(
                         <li key={elementFileName}>
-                        <a className={`third-level-nav-item padding--top--none ${fileName === elementFileName? 'has-text-secondary has-text-weight-bold': ''}`}>
-                            {deslugifyCollectionPage(elementFileName)}
-                        </a>
+                            <a className={`third-level-nav-item padding--top--none ${fileName === elementFileName? 'has-text-secondary has-text-weight-bold': ''}`}>
+                                {deslugifyCollectionPage(elementFileName)}
+                            </a>
                         </li>
                     )
 
                     // Generate third nav elements for third nav right before the current third nav
-                    return generateThirdNavDiv(
-                        currentFileThirdNavTitle,
-                        prevThirdNavElements,
-                        currentThirdNavTitle,
-                        elementThirdNavTitle,
-                        fileName,
-                        elementFileName,
+                    return (
+                        <>
+                            {generateThirdNavDiv(currentFileThirdNavTitle, prevThirdNavElements, prevThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)}
+                            {generateThirdNavHeader(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)}
+                        </>
                     )
                 }
 
@@ -138,6 +127,7 @@ const retrieveCurrentFileThirdNavTitle = (leftNavPages, fileName) => {
 const calculateThirdNavHeaderState = (currentFileThirdNavTitle, currentThirdNavTitle, currentElementThirdNavTitle, fileName, elementFileName) => {
     if (currentFileThirdNavTitle !== currentThirdNavTitle) {
       return ''
+    // The second condition is for elements in the same third nav as the current file
     } else if (fileName === elementFileName || currentThirdNavTitle === currentElementThirdNavTitle) {
       return 'is-active'
     }
@@ -207,5 +197,17 @@ const generateThirdNavDiv = (currentFileThirdNavTitle, thirdNavElements, current
         </div>
     )
     : ''
+)
+
+const generateThirdNavHeader = (currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName) => (
+    <li className="third-level-nav-header" key={elementFileName} onClick={accordionHandler}>
+        <a className={`third-level-nav-header ${calculateThirdNavHeaderState(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)}`}>
+        {currentThirdNavTitle}
+        <i
+            className={`sgds-icon is-pulled-right is-size-4 ${calculateThirdNavHeaderChevronState(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)}`}
+            aria-hidden="true"
+        ></i>
+        </a>
+    </li>
 )
   
