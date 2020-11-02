@@ -130,6 +130,7 @@ export default class Files extends Component {
             isPendingUpload={false}
             siteName={siteName}
             onClose={() => this.setState({ chosenFile: null })}
+            onSave={() => window.location.reload()}
           />
           )
         }
@@ -143,6 +144,7 @@ export default class Files extends Component {
             isPendingUpload
             siteName={siteName}
             onClose={() => this.setState({ pendingFileUpload: null })}
+            onSave={() => window.location.reload()}
           />
           )
         }
