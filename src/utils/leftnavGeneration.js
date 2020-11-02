@@ -156,9 +156,8 @@ const calculateThirdNavElementState = (currentFileThirdNavTitle, currentThirdNav
         if (fileName === elementFileName) {
             return ''
         }
-}
-
-if (currentFileThirdNavTitle === currentThirdNavTitle) return ''
+    }
+    if (currentFileThirdNavTitle === currentThirdNavTitle) return ''
     return 'is-hidden';
 }
 
@@ -202,11 +201,11 @@ const accordionHandler = (e) => {
 
 const generateThirdNavDiv = (currentFileThirdNavTitle, thirdNavElements, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName) => (
     thirdNavElements.length > 0
-        ? (
+    ? (
         <div className={`third-level-nav-div ${calculateThirdNavElementState(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)}`}>
             {thirdNavElements.map((thirdNav) => thirdNav)}
         </div>
-        )
-        : ''
+    )
+    : ''
 )
   
