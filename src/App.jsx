@@ -8,9 +8,7 @@ import Home from './layouts/Home';
 import Sites from './layouts/Sites';
 import Pages from './layouts/Pages';
 import EditPage from './layouts/EditPage';
-// import Collections from './layouts/Collections';
 import CollectionPages from './layouts/CollectionPages';
-import EditCollectionPage from './layouts/EditCollectionPage';
 import Images from './layouts/Images';
 import EditImage from './layouts/EditImage';
 import Files from './layouts/Files';
@@ -20,7 +18,6 @@ import Resources from './layouts/Resources';
 import Menus from './layouts/Menus';
 import EditNav from './layouts/EditNav';
 import Settings from './layouts/Settings';
-// import EditFooter from './layouts/EditFooter';
 
 function App() {
   return (
