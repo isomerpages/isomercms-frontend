@@ -103,10 +103,7 @@ function App() {
             <LoginContext.Provider value={setLogoutState}>
               <Switch>
                   <ProtectedRouteWithProps exact path='/auth' component={AuthCallback} setLogin={setLogin} />
-                  <ProtectedRouteWithProps exact path="/" component={() => {
-                    if (isLoggedIn) return <Redirect to="/sites" />
-                    return <Home setIsLoggedIn={setIsLoggedIn} />
-                  }} />
+                  <ProtectedRouteWithProps exact path="/" component={Home} />
                   <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName/:fileName" component={EditCollectionPage} />
                   <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName" component={CollectionPages} />
                   <ProtectedRouteWithProps path="/sites/:siteName/files/:fileName" component={EditFile} />

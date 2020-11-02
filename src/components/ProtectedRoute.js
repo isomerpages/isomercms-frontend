@@ -33,8 +33,8 @@ const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) =>
                             return <Home {...rest} {...props} />
                         }
 
-                        // According to route logic in App.jsx, WrappedComponent is a redirect to /sites
-                        // when a user is logged in and searches for the '/' path
+                        // If logged in, and requesting `/`, but not from logout button
+                        return <Redirect to="/sites" />
                     }
 
                     return <WrappedComponent {...rest} {...props} />
