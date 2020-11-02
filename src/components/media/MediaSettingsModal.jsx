@@ -212,5 +212,6 @@ MediaSettingsModal.propTypes = {
   type: PropTypes.oneOf(['image', 'file']).isRequired,
   siteName: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
   isPendingUpload: PropTypes.bool.isRequired,
 };

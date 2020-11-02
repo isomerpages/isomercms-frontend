@@ -125,6 +125,7 @@ export default class Images extends Component {
             siteName={siteName}
             isPendingUpload={false}
             onClose={() => this.setState({ chosenImage: null })}
+            onSave={() => window.location.reload()}
           />
           )
         }
@@ -138,6 +139,7 @@ export default class Images extends Component {
             // eslint-disable-next-line react/jsx-boolean-value
             isPendingUpload={true}
             onClose={() => this.setState({ pendingImageUpload: null })}
+            onSave={() => window.location.reload()}
           />
           )
         }
