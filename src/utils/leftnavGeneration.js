@@ -5,12 +5,15 @@ import { deslugifyCollectionPage } from '../utils';
 export const generateLeftNav = (leftNavPages, fileName) => {
     const currentFileThirdNavTitle = retrieveCurrentFileThirdNavTitle(leftNavPages, fileName)
 
+    // Store accordion elements
+    let accordionElements = []
+
     // Counters to keep track of accordion state
     let isPartOfThirdNav = false;
     let currentThirdNavTitle = '';
     let thirdNavElements = [];
 
-    const leftNavBar = leftNavPages.map((page) => {
+    leftNavPages.forEach((page) => {
         const { third_nav_title: elementThirdNavTitle, fileName: elementFileName } = page
 
         // Element is part of third nav
@@ -19,6 +22,7 @@ export const generateLeftNav = (leftNavPages, fileName) => {
             if (!isPartOfThirdNav) {
                 isPartOfThirdNav = true;
                 currentThirdNavTitle = elementThirdNavTitle;
+                accordionElements.push(generateThirdNavHeader(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName))
                 thirdNavElements.push(
                     <li key={elementFileName}>
                         <a className={`third-level-nav-item padding--top--none ${fileName === elementFileName? 'has-text-secondary has-text-weight-bold': ''}`}>
@@ -26,9 +30,7 @@ export const generateLeftNav = (leftNavPages, fileName) => {
                         </a>
                     </li>
                 )
-
-                return generateThirdNavHeader(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)
-
+                return
             // Already part of third nav
             } else {
                 // Consecutive third nav sections
@@ -37,9 +39,14 @@ export const generateLeftNav = (leftNavPages, fileName) => {
                     const prevThirdNavElements = _.cloneDeep(thirdNavElements);
                     currentThirdNavTitle = elementThirdNavTitle
 
+                    // Generate third nav elements for third nav right before the current third nav
+                    accordionElements.push(
+                        generateThirdNavDiv(currentFileThirdNavTitle, prevThirdNavElements, prevThirdNavTitle, elementThirdNavTitle, fileName, elementFileName),
+                        generateThirdNavHeader(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName),
+                    )
+
                     // Reset accumulation of third nav elements to start a new third nav
                     thirdNavElements = [];
-
                     thirdNavElements.push(
                         <li key={elementFileName}>
                             <a className={`third-level-nav-item padding--top--none ${fileName === elementFileName? 'has-text-secondary has-text-weight-bold': ''}`}>
@@ -47,14 +54,7 @@ export const generateLeftNav = (leftNavPages, fileName) => {
                             </a>
                         </li>
                     )
-
-                    // Generate third nav elements for third nav right before the current third nav
-                    return (
-                        <>
-                            {generateThirdNavDiv(currentFileThirdNavTitle, prevThirdNavElements, prevThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)}
-                            {generateThirdNavHeader(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)}
-                        </>
-                    )
+                    return
                 }
 
                 // Add to third nav array
@@ -75,32 +75,32 @@ export const generateLeftNav = (leftNavPages, fileName) => {
         isPartOfThirdNav = false;
         thirdNavElements = [];
 
-        return (
-        <>
-            {
-            // Generate left nav entries for previous third nav section's third nav elements
-            generateThirdNavDiv(
-                currentFileThirdNavTitle,
-                prevThirdNavElements,
-                currentThirdNavTitle,
-                elementThirdNavTitle,
-                fileName,
-                elementFileName,
-            )
-            }
-            {/* Current on-third-nav section */}
-            <li key={elementFileName}>
-                <a className={`${fileName === elementFileName ? 'is-active': ''}`}>
-                    {deslugifyCollectionPage(elementFileName)}
-                </a>
-            </li>
-        </>
+        accordionElements.push(
+            <>
+                {
+                // Generate left nav entries for previous third nav section's third nav elements
+                generateThirdNavDiv(
+                    currentFileThirdNavTitle,
+                    prevThirdNavElements,
+                    currentThirdNavTitle,
+                    elementThirdNavTitle,
+                    fileName,
+                    elementFileName,
+                )
+                }
+                {/* Current on-third-nav section */}
+                <li key={elementFileName}>
+                    <a className={`${fileName === elementFileName ? 'is-active': ''}`}>
+                        {deslugifyCollectionPage(elementFileName)}
+                    </a>
+                </li>
+            </>
         )
     })
 
     // If final accordion element is a third nav element, they are stuck in the thirdNavElements array
     const finalLeftNavElement = leftNavPages[leftNavPages.length -1]
-    if (thirdNavElements.length > 0) leftNavBar.push(
+    if (thirdNavElements.length > 0) accordionElements.push(
         generateThirdNavDiv(
             currentFileThirdNavTitle,
             thirdNavElements,
@@ -111,7 +111,7 @@ export const generateLeftNav = (leftNavPages, fileName) => {
         )
     )
 
-    return leftNavBar
+    return accordionElements
 }
 
 const retrieveCurrentFileThirdNavTitle = (leftNavPages, fileName) => {
@@ -189,18 +189,19 @@ const accordionHandler = (e) => {
     accordionElement.nextSibling.className = accordionElementToggle(accordionElement.nextSibling.className)
 }
 
-const generateThirdNavDiv = (currentFileThirdNavTitle, thirdNavElements, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName) => (
+const generateThirdNavDiv = (currentFileThirdNavTitle, thirdNavElements, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName) => {
+    return (
     thirdNavElements.length > 0
     ? (
-        <div key={`${elementThirdNavTitle}-div`} className={`third-level-nav-div ${calculateThirdNavElementState(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)}`}>
+        <div key={`${currentThirdNavTitle}-div`} className={`third-level-nav-div ${calculateThirdNavElementState(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)}`}>
             {thirdNavElements.map((thirdNav) => thirdNav)}
         </div>
     )
     : ''
-)
+)}
 
 const generateThirdNavHeader = (currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName) => (
-    <li className="third-level-nav-header" key={`${elementThirdNavTitle}-header`} onClick={accordionHandler}>
+    <li className="third-level-nav-header" key={`${currentThirdNavTitle}-header`} onClick={accordionHandler}>
         <a className={`third-level-nav-header ${calculateThirdNavHeaderState(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)}`}>
         {currentThirdNavTitle}
         <i
