@@ -122,7 +122,7 @@ export function prettifyResourceCategory(category) {
 }
 
 export function slugifyResourceCategory(category) {
-  return slugify(category).toLowerCase();
+  return slugify(category);
 }
 
 export function prettifyPageFileName(fileName) {
