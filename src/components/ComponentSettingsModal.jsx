@@ -263,7 +263,6 @@ export default class ComponentSettingsModal extends Component {
   render() {
     const {
       category,
-      prevCategory,
       title,
       date,
       allCategories,
@@ -273,7 +272,8 @@ export default class ComponentSettingsModal extends Component {
       canShowDeleteWarningModal,
       sha,
       redirectToNewPage,
-      newPageUrl
+      newPageUrl,
+      thirdNavTitle,
     } = this.state;
     const { settingsToggle, isNewFile, type, modalTitle } = this.props;
 
@@ -319,6 +319,16 @@ export default class ComponentSettingsModal extends Component {
                   isRequired
                   onFieldChange={this.changeHandler}
                 />
+                {/* Third Nav */}
+                { 
+                  thirdNavTitle &&
+                  <FormField
+                    title="3rd Nav Title"
+                    id="third-nav"
+                    value={thirdNavTitle}
+                    onFieldChange={this.changeHandler}
+                  />
+                }
                 {/* Permalink */}
                 <FormField
                   title="Permalink"
