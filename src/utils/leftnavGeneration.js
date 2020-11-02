@@ -20,11 +20,11 @@ export const generateLeftNav = (leftNavPages, fileName) => {
                 isPartOfThirdNav = true;
                 currentThirdNavTitle = elementThirdNavTitle;
                 thirdNavElements.push(
-                <li key={page.fileName}>
-                    <a className={`third-level-nav-item padding--top--none ${fileName === elementFileName? 'has-text-secondary has-text-weight-bold': ''}`}>
-                    {deslugifyCollectionPage(elementFileName)}
-                    </a>
-                </li>
+                    <li key={elementFileName}>
+                        <a className={`third-level-nav-item padding--top--none ${fileName === elementFileName? 'has-text-secondary has-text-weight-bold': ''}`}>
+                        {deslugifyCollectionPage(elementFileName)}
+                        </a>
+                    </li>
                 )
 
                 return generateThirdNavHeader(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)
@@ -59,11 +59,11 @@ export const generateLeftNav = (leftNavPages, fileName) => {
 
                 // Add to third nav array
                 thirdNavElements.push(
-                <li key={elementFileName}>
-                    <a className={`third-level-nav-item padding--top--none ${fileName === elementFileName? 'has-text-secondary has-text-weight-bold': ''}`}>
-                    {deslugifyCollectionPage(elementFileName)}
-                    </a>
-                </li>
+                    <li key={elementFileName}>
+                        <a className={`third-level-nav-item padding--top--none ${fileName === elementFileName? 'has-text-secondary has-text-weight-bold': ''}`}>
+                        {deslugifyCollectionPage(elementFileName)}
+                        </a>
+                    </li>
                 )
                 return
             }
@@ -89,7 +89,7 @@ export const generateLeftNav = (leftNavPages, fileName) => {
             )
             }
             {/* Current on-third-nav section */}
-            <li>
+            <li key={elementFileName}>
                 <a className={`${fileName === elementFileName ? 'is-active': ''}`}>
                     {deslugifyCollectionPage(elementFileName)}
                 </a>
@@ -192,7 +192,7 @@ const accordionHandler = (e) => {
 const generateThirdNavDiv = (currentFileThirdNavTitle, thirdNavElements, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName) => (
     thirdNavElements.length > 0
     ? (
-        <div className={`third-level-nav-div ${calculateThirdNavElementState(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)}`}>
+        <div key={`${elementThirdNavTitle}-div`} className={`third-level-nav-div ${calculateThirdNavElementState(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)}`}>
             {thirdNavElements.map((thirdNav) => thirdNav)}
         </div>
     )
@@ -200,7 +200,7 @@ const generateThirdNavDiv = (currentFileThirdNavTitle, thirdNavElements, current
 )
 
 const generateThirdNavHeader = (currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName) => (
-    <li className="third-level-nav-header" key={elementFileName} onClick={accordionHandler}>
+    <li className="third-level-nav-header" key={`${elementThirdNavTitle}-header`} onClick={accordionHandler}>
         <a className={`third-level-nav-header ${calculateThirdNavHeaderState(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)}`}>
         {currentThirdNavTitle}
         <i
