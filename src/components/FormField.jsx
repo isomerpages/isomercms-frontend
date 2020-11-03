@@ -17,7 +17,7 @@ const FormField = ({
 }) => (
   <>
     <p className={elementStyles.formLabel}>{title}</p>
-    <div className="d-flex">
+    <div className="d-flex text-nowrap">
       {fixedMessage
         ? <p className={elementStyles.formFixedText}>{fixedMessage}</p>
         : null

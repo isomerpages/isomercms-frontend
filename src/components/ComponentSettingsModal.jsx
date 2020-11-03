@@ -51,6 +51,7 @@ export default class ComponentSettingsModal extends Component {
       thirdNavTitle: '',
       redirectToNewPage: false,
       newPageUrl: '',
+      isPost: true,
     };
   }
 
@@ -97,11 +98,15 @@ export default class ComponentSettingsModal extends Component {
           title, permalink, file_url: fileUrl, date, third_nav_title: thirdNavTitle,
         } = frontMatter;
 
-        const { editableLink } = retrieveCollectionAndLinkFromPermalink(permalink)
+        let existingLink
+        if (permalink) {
+          const { editableLink } = retrieveCollectionAndLinkFromPermalink(permalink)
+          existingLink = editableLink
+        }
 
         this.setState({
           title: dequoteString(title),
-          permalink: editableLink,
+          permalink: existingLink,
           fileUrl,
           date,
           sha,
@@ -110,6 +115,7 @@ export default class ComponentSettingsModal extends Component {
           baseApiUrl,
           type,
           thirdNavTitle,
+          isPost: !fileUrl
         });
       }
     } catch (err) {
@@ -123,11 +129,13 @@ export default class ComponentSettingsModal extends Component {
       this.setState({
         permalink: null,
         fileUrl: '',
+        isPost: false,
       });
     } else {
       this.setState({
         permalink: 'permalink',
         fileUrl: null,
+        isPost: true,
         errors: {
           fileUrl: '',
         },
@@ -274,6 +282,7 @@ export default class ComponentSettingsModal extends Component {
       redirectToNewPage,
       newPageUrl,
       thirdNavTitle,
+      isPost,
     } = this.state;
     const { settingsToggle, isNewFile, type, modalTitle } = this.props;
 
@@ -337,8 +346,9 @@ export default class ComponentSettingsModal extends Component {
                   errorMessage={errors.permalink}
                   isRequired
                   onFieldChange={this.changeHandler}
-                  disabled={!(permalink || fileUrl === null)}
+                  disabled={!isPost}
                   fixedMessage={category ? `/${category}/` : '/'}
+                  placeholder=' '
                 />
                 { type === "resource" && 
                 // Resource Type
@@ -367,7 +377,7 @@ export default class ComponentSettingsModal extends Component {
                             name="resource-type"
                             value="post"
                             onClick={this.handlePermalinkFileUrlToggle}
-                            checked={permalink || fileUrl === null}
+                            checked={isPost}
                           />
                           Post Content
                         </label>
@@ -378,7 +388,7 @@ export default class ComponentSettingsModal extends Component {
                             name="resource-type"
                             value="file"
                             onClick={this.handlePermalinkFileUrlToggle}
-                            checked={!permalink && fileUrl !== null}
+                            checked={!isPost}
                           />
                           Downloadable File
                         </label>
@@ -393,7 +403,7 @@ export default class ComponentSettingsModal extends Component {
                     errorMessage={errors.fileUrl}
                     onFieldChange={this.changeHandler}
                     inlineButtonText="Select File"
-                    disabled={permalink || fileUrl === null}
+                    disabled={isPost}
                     onInlineButtonClick={() => this.setState({ canShowFilesModal: true })}
                   />
                 </>}

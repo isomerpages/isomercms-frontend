@@ -34,7 +34,7 @@ const FormFieldFile = ({
         <input
           type="text"
           placeholder={title}
-          value={value}
+          value={value ? value : ''}
           defaultValue={defaultValue}
           id={id}
           autoComplete="off"
