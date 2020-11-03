@@ -12,7 +12,9 @@ export default function Home() {
           <img className={elementStyles.loginImage} src={`${process.env.PUBLIC_URL}/img/logo.svg`} alt="Isomer CMS logo" />
           <button
             type="button"
-            onClick={() => window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&state=${UUID}&scope=public_repo`}
+            onClick={() => {
+              window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&state=${UUID}&scope=public_repo`
+            }}
             className={`${elementStyles.green} ${elementStyles.loginButton}`}
           >
             Login with GitHub
