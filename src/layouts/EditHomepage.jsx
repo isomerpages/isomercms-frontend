@@ -957,25 +957,6 @@ export default class EditHomepage extends Component {
           <div className={editorStyles.homepageEditorSidebar}>
             <div>
               <div className={`${elementStyles.card}`}>
-                <p><b>Page Title</b></p>
-                <input
-                  placeholder="Title"
-                  defaultValue={frontMatter.title}
-                  value={frontMatter.title}
-                  id="site-title"
-                  onChange={this.onFieldChange}
-                />
-                {/* Removing site description for now, since it only shows up as metadata
-                <p>Site description</p>
-                <input
-                  placeholder="Description"
-                  defaultValue={frontMatter.description}
-                  value={frontMatter.description}
-                  id="site-description"
-                  onChange={this.onFieldChange}
-                /> */}
-              </div>
-              <div className={`${elementStyles.card}`}>
                 <p><b>Site notification</b></p>
                 <input
                   placeholder="Notification"

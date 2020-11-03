@@ -400,15 +400,6 @@ export default class Settings extends Component {
             {/* container for settings fields */}
             <div className={contentStyles.contentContainerCards}>
               <div className={contentStyles.cardContainer}>
-                {/* Title field */}
-                <FormField
-                  title="Title"
-                  id="title"
-                  value={title}
-                  errorMessage={errors.title}
-                  isRequired
-                  onFieldChange={this.changeHandler}
-                />
                 {/* Favicon field */}
                 <FormFieldImage
                   title="Favicon"
