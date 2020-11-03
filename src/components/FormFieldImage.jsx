@@ -27,11 +27,6 @@ const FormFieldImage = ({
         target: {
           id: id,
           value: path,
-          parentElement: {
-            parentElement: {
-              id: '',
-            },
-          },
         },
       };
     onFieldChange(event);

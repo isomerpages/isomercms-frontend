@@ -143,12 +143,9 @@ export default class Settings extends Component {
     const {
       id,
       value,
-      parentElement: {
-        parentElement: {
-          id: grandparentElementId,
-        },
-      },
+      parentElement,
     } = event.target;
+    const grandparentElementId = parentElement?.parentElement?.id
     // const errorMessage = validateSettings(id, value);
 
     if (grandparentElementId === 'footer-fields') {
