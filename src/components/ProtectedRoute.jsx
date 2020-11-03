@@ -12,9 +12,7 @@ const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) =>
         <Route {...rest} render={
             props => {
                 if (rest.location.pathname === '/auth') {
-                    if (rest.location.search === authContextString) {
-                        console.log('Redirecting to sites...')
-                        window.history.pushState({}, document.title, '/auth')
+                    if (rest.location.hash === authContextString) {
                         return <WrappedComponent {...rest} {...props} />
                     }
                     return <Redirect to="/" />
