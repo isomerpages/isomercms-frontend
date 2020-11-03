@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Redirect } from 'react-router-dom';
 
-const AuthCallback = ({ setLogin }) => {
-    const [shouldRedirectToSites, setShouldRedirectToSites] = useState(false)
+const AuthCallback = ({ setLogin, isLoggedIn }) => {
     useEffect(() => {
         setLogin()
-        setShouldRedirectToSites(true)
     })
 
-    if (shouldRedirectToSites) return <Redirect to="/sites" />
+    if (isLoggedIn) return <Redirect to="/sites" />
     return ''
 }
 
