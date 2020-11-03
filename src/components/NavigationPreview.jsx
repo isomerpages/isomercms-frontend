@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 const NavPreview = ({ navItems }) => (
   <nav className="navbar is-transparent flex-fill">

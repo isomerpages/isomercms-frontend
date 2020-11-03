@@ -19,7 +19,7 @@ const LeftNavPage = ({
   return (
     <div>
       <Breadcrumb title={title} collection={collection} />
-      <section className="bp-section">
+      <section className="bp-section page-content-body">
         <div className="bp-container padding--top--lg padding--bottom--xl">
           <div className="row">
             <LeftNav leftNavPages={leftNavPages} fileName={fileName} />

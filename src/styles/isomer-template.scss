@@ -5828,7 +5828,7 @@ a[href$=".pdf"][target="_blank"]:after {
     padding: .75rem 0;
     border-bottom: 1px solid #767676;
     justify-content: space-between;
-    display: flex
+    display: flex;
 }
 
 .bp-menu-list a:hover {
@@ -12095,7 +12095,7 @@ a.navbar-item {
 }
 
 .CodeMirror {
-    height: calc(85vh - #{$header-height} - #{$footer-height});
+    height: 100% !important;
     overflow-y: scroll;
 }
 

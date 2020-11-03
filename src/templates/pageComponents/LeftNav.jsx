@@ -1,31 +1,16 @@
 /* eslint-disable arrow-body-style */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { deslugifyCollectionPage } from '../../utils';
+import { generateLeftNav } from '../../utils/leftnavGeneration'
 import '../../styles/isomer-template.scss';
-
-// to-do
-// generate the bp-menu-list dynamically
-// detect which one is the active bar
 
 const LeftNav = ({ leftNavPages, fileName }) => (
   <div className="col is-2 is-position-relative has-side-nav is-hidden-touch">
     <div className="sidenav">
-      <aside className="bp-menu is-gt sidebar__inner" style={{ position: 'relative', left: '110px' }}>
+      <aside className="bp-menu is-gt sidebar__inner">
         <ul className="bp-menu-list">
           {
-            leftNavPages.map((page) => {
-              const filePath = page.path.split('%2').join('/').slice(1);
-              return (
-                <li>
-                  {
-                    page.fileName === fileName
-                      ? <a className="is-active" href={filePath}>{deslugifyCollectionPage(page.fileName)}</a>
-                      : <a className="" href={filePath}>{deslugifyCollectionPage(page.fileName)}</a>
-                  }
-                </li>
-              );
-            })
+            generateLeftNav(leftNavPages, fileName)
           }
         </ul>
         <div
