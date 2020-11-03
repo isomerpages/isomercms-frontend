@@ -13,7 +13,7 @@ const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) =>
             props => {
                 if (rest.location.pathname === '/auth') {
                     if (rest.location.hash === authContextString) {
-                        return <WrappedComponent {...rest} {...props} />
+                        return <WrappedComponent {...rest} {...props} isLoggedIn={isLoggedIn} />
                     }
                     return <Redirect to="/" />
                 }
