@@ -29,6 +29,9 @@ const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) =>
                         if (rest.location.state?.isFromSignOutButton) {
                             console.log('Accessing the / path using the log out button')
 
+                            // Clear state
+                            window.history.pushState({}, document.title)
+
                             // Logging out using sign out button
                             return <Home {...rest} {...props} />
                         }
