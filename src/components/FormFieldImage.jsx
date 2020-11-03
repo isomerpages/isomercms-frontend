@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import MediasModal from '../components/media/MediaModal';
+import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
 const FormFieldImage = ({
   title,
@@ -16,10 +17,12 @@ const FormFieldImage = ({
   siteName,
   placeholder,
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isSelectingImage, setIsSelectingImage] = useState(false)
+  const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
+  const [stagedFileDetails, setStagedFileDetails] = useState()
 
   const onImageClick = (path) => {
-    setIsModalOpen(false)
+    setIsSelectingImage(false)
       const event = {
         target: {
           id: id,
@@ -31,7 +34,42 @@ const FormFieldImage = ({
           },
         },
       };
-      onFieldChange(event);
+    onFieldChange(event);
+  }
+
+  const toggleImageModal = () => {
+    setIsSelectingImage(!isSelectingImage)
+  }
+  
+  const toggleImageAndSettingsModal = () => {
+    setIsSelectingImage(!isSelectingImage)
+    setIsFileStagedForUpload(!isFileStagedForUpload)
+  }
+
+  const stageFileForUpload = (fileName, fileData) => {
+    const baseFolder = 'images';
+    setStagedFileDetails({
+      path: `${baseFolder}%2F${fileName}`,
+      content: fileData,
+      fileName,
+    })
+    setIsFileStagedForUpload(true)
+  }
+
+  const readFileToStageUpload = async (event) => {
+    const fileReader = new FileReader();
+    const fileName = event.target.files[0].name;
+    fileReader.onload = (() => {
+      /** Github only requires the content of the image
+       * fileReader returns  `data:application/pdf;base64, {fileContent}`
+       * hence the split
+       */
+
+      const fileData = fileReader.result.split(',')[1];
+      stageFileForUpload(fileName, fileData);
+    });
+    fileReader.readAsDataURL(event.target.files[0]);
+    toggleImageModal()
   }
 
   return (
@@ -56,19 +94,33 @@ const FormFieldImage = ({
           <button
             type="button"
             className={`${elementStyles.blue} text-nowrap`}
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => setIsSelectingImage(true)}
           >
             { inlineButtonText }
           </button>
           )
         }
         {
-          isModalOpen && (
+          isSelectingImage && (
             <MediasModal
               type="image"
               siteName={siteName}
               onMediaSelect={onImageClick}
-              onClose={() => setIsModalOpen(false)}
+              toggleImageModal={toggleImageModal}
+              readFileToStageUpload={readFileToStageUpload}
+              onClose={() => setIsSelectingImage(false)}
+            />
+          )
+        }
+        {
+          isFileStagedForUpload && (
+            <MediaSettingsModal
+              type="image"
+              siteName={siteName}
+              onClose={() => setIsFileStagedForUpload(false)}
+              onSave={toggleImageAndSettingsModal}
+              media={stagedFileDetails}
+              isPendingUpload="true"
             />
           )
         }
