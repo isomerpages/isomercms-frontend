@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
-const ComponentCard = ({
+const OverviewCard = ({
   title, date, category, settingsToggle, itemIndex, link, 
 }) => {
   return (
@@ -33,7 +33,7 @@ const ComponentCard = ({
 };
 
 
-ComponentCard.propTypes = {
+OverviewCard.propTypes = {
   title: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
   settingsToggle: PropTypes.func,
@@ -41,4 +41,4 @@ ComponentCard.propTypes = {
   link: PropTypes.string.isRequired,
 };
 
-export default ComponentCard
+export default OverviewCard

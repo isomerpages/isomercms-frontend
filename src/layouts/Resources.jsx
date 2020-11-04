@@ -10,7 +10,7 @@ import MediasModal from '../components/media/MediaModal';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import ComponentCard from '../components/ComponentCard';
+import OverviewCard from '../components/OverviewCard';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
@@ -30,7 +30,7 @@ const ResourcePages = ({
             const { fileName, category }= resourcePage
             const { title, date } = retrieveResourceFileMetadata(fileName);
             return (
-            <ComponentCard
+            <OverviewCard
               category={category}
               settingsToggle={settingsToggle}
               itemIndex={resourceIndex}

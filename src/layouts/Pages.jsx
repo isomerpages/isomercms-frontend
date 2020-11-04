@@ -5,7 +5,7 @@ import _ from 'lodash';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import ComponentSettingsModal from '../components/ComponentSettingsModal';
-import ComponentCard from '../components/ComponentCard';
+import OverviewCard from '../components/OverviewCard';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import { prettifyPageFileName } from '../utils';
@@ -132,14 +132,14 @@ export default class Pages extends Component {
               { pages
                 ? (
                   <div className={contentStyles.boxesContainer}>
-                    <ComponentCard
+                    <OverviewCard
                       itemIndex={0}
                       title={"Homepage"}
                       link={`/sites/${siteName}/homepage`}
                     />
                     {pages.length > 0
                       ? pages.map((page, pageIndex) => (
-                        <ComponentCard
+                        <OverviewCard
                           title={prettifyPageFileName(page.fileName)}
                           itemIndex={pageIndex}
                           settingsToggle={this.settingsToggle}
