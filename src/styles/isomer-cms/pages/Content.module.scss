@@ -1,5 +1,13 @@
 @import '../elements/variable';
 
+@mixin cardFormat {
+  width: 100%;
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
 .mainSection{
   display: flex;
   width: calc(100vw - #{$sidebar-width});
@@ -104,18 +112,10 @@
 
 .contentContainerBoxes{
   //this is used in the OverviewCard page
-  width: 100%;
-  display: flex;
-  box-sizing: border-box;
-  flex-direction: row;
-  flex-wrap: wrap;
+  @include cardFormat;
 
   .boxesContainer{
-    width: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    @include cardFormat;
 
     .card{
       width: $component-card-width;
@@ -130,18 +130,10 @@
 
 .folderContainerBoxes{
   //this is used in the FolderCard page
-  width: 100%;
-  display: flex;
-  box-sizing: border-box;
-  flex-direction: row;
-  flex-wrap: wrap;
+  @include cardFormat;
 
   .boxesContainer{
-    width: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    @include cardFormat;
 
     .card{
       align-items:center;
