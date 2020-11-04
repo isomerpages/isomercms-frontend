@@ -52,6 +52,8 @@ export default class ComponentSettingsModal extends Component {
       redirectToNewPage: false,
       newPageUrl: '',
       isPost: true,
+      originalPermalink: '',
+      originalFileUrl: '',
     };
   }
 
@@ -107,7 +109,9 @@ export default class ComponentSettingsModal extends Component {
         this.setState({
           title: dequoteString(title),
           permalink: existingLink,
+          originalPermalink: existingLink,
           fileUrl,
+          originalFileUrl: fileUrl,
           date,
           sha,
           mdBody,
@@ -125,15 +129,16 @@ export default class ComponentSettingsModal extends Component {
 
   handlePermalinkFileUrlToggle = (event) => {
     const { target: { value } } = event;
+    const { originalFileUrl, originalPermalink} = this.state
     if (value === 'file') {
       this.setState({
         permalink: null,
-        fileUrl: '',
+        fileUrl: originalFileUrl ? originalFileUrl : '',
         isPost: false,
       });
     } else {
       this.setState({
-        permalink: 'permalink',
+        permalink: originalPermalink ? originalPermalink : 'permalink',
         fileUrl: null,
         isPost: true,
         errors: {
