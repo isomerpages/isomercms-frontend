@@ -13,7 +13,7 @@ const FolderCard = ({
   <div className={contentStyles.folderContainerBoxes}>
     <div className={contentStyles.boxesContainer}>
       <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`} to={link}>
-        <i className="bx bxs-folder" />
+        <i className="bx bx-md bxs-folder text-dark" />
         <div id={itemIndex} className={contentStyles.componentInfo}>
           <h1 className={contentStyles.componentFolderName}>{displayText}</h1>
         </div>
