@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import { Redirect } from 'react-router-dom';
 import FormField from './FormField';
-import LoadingButton from './LoadingButton';
 import {
   frontMatterParser,
   concatFrontMatterMdBody,
@@ -20,6 +19,7 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import { validatePageSettings, validateResourceSettings } from '../utils/validators';
 import DeleteWarningModal from './DeleteWarningModal';
 import ResourceFormFields from './ResourceFormFields';
+import SaveDeleteButtons from './SaveDeleteButtons';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -373,26 +373,12 @@ export default class ComponentSettingsModal extends Component {
                 />
                 }
               </div>
-              {/* Save or Delete buttons */}
-              <div className={elementStyles.modalButtons}>
-                <LoadingButton
-                  label="Save"
-                  disabled={hasErrors}
-                  disabledStyle={elementStyles.disabled}
-                  className={`ml-auto ${(isNewFile ? hasErrors : (hasErrors || !sha)) ? elementStyles.disabled : elementStyles.blue}`}
-                  callback={this.saveHandler}
-                />
-                { !isNewFile
-                  ? (
-                    <LoadingButton
-                      label="Delete"
-                      disabled={(hasErrors)}
-                      disabledStyle={elementStyles.disabled}
-                      className={`${hasErrors ? elementStyles.disabled : elementStyles.warning}`}
-                      callback={() => this.setState({ canShowDeleteWarningModal: true })}
-                    />
-                  ) : null}
-              </div>
+              <SaveDeleteButtons 
+                isDisabled={isNewFile ? hasErrors : (hasErrors || !sha)}
+                hasDeleteButton={!isNewFile}
+                saveCallback={this.saveHandler}
+                deleteCallback={() => this.setState({ canShowDeleteWarningModal: true })}
+              />
             </div>
           </div>
           )}
