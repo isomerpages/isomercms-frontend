@@ -59,13 +59,22 @@ function App() {
     }
   )
 
+  const setLogin = () => {
+    setIsLoggedIn(true)
+  }
+
+  const setLogoutState = () => {
+    setIsLoggedIn(false)
+    setShouldBlockNavigation(false)
+  }
+
   useEffect(() => {
     if (shouldBlockNavigation) {
       alert('Warning: your token has expired. Isomer will log you out now.')
       const logout = async () =>  {
         console.log('Logging out...')
         await axios.get(`${BACKEND_URL}/auth/logout`)
-        setIsLoggedIn(false)
+        setLogoutState()
       }
       logout()
     }
@@ -76,15 +85,6 @@ function App() {
       setShouldBlockNavigation(false)
     }
   }, [isLoggedIn])
-
-  const setLogin = () => {
-    setIsLoggedIn(true)
-  }
-
-  const setLogoutState = () => {
-    setIsLoggedIn(false)
-    setShouldBlockNavigation(false)
-  }
 
   const ProtectedRouteWithProps = (props) => {
     return <ProtectedRoute {...props} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
