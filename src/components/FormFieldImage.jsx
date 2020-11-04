@@ -23,12 +23,12 @@ const FormFieldImage = ({
 
   const onImageClick = (path) => {
     setIsSelectingImage(false)
-      const event = {
-        target: {
-          id: id,
-          value: path,
-        },
-      };
+    const event = {
+      target: {
+        id: id,
+        value: path,
+      },
+    };
     onFieldChange(event);
   }
 
