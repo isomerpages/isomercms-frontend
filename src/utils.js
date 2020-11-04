@@ -157,8 +157,9 @@ export function generatePermalink(title) {
 
 export function retrieveCollectionAndLinkFromPermalink(permalink) {
   const permalinkArray = permalink.split('/')
+  console.log(permalinkArray)
   let collectionName, editableLink
-  if (permalinkArray.length < 2 || permalinkArray[2] === '') {
+  if (permalinkArray.length <= 2 || permalinkArray[2] === '') {
     // Item has no collection
     collectionName = ''
     editableLink = permalinkArray[1]
