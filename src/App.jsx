@@ -28,19 +28,20 @@ import ProtectedRoute from './components/ProtectedRoute'
 // Import contexts
 const { LoginContext } = require('./contexts/LoginContext')
 
-// Utils
-const { doesHttpOnlyCookieExist } = require('./utils/cookieChecker')
-
 // axios settings
 axios.defaults.withCredentials = true
 
 // Constants
 const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
-const COOKIE_NAME = 'isomercms'
+const LOCAL_STORAGE_AUTH_STATE = 'isomercms_auth'
 
 function App() {
   // Keep track of whether user is logged in
-  const [isLoggedIn, setIsLoggedIn] = useState(doesHttpOnlyCookieExist(COOKIE_NAME))
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    const authState = localStorage.getItem(LOCAL_STORAGE_AUTH_STATE)
+    if (authState) return true
+    return false
+  })
   const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false)
 
   axios.interceptors.response.use(
@@ -61,9 +62,11 @@ function App() {
 
   const setLogin = () => {
     setIsLoggedIn(true)
+    localStorage.setItem(LOCAL_STORAGE_AUTH_STATE, true)
   }
 
   const setLogoutState = () => {
+    localStorage.removeItem(LOCAL_STORAGE_AUTH_STATE)
     setIsLoggedIn(false)
     setShouldBlockNavigation(false)
   }
