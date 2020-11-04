@@ -35,7 +35,8 @@ const OverviewCard = ({
 
 OverviewCard.propTypes = {
   title: PropTypes.string.isRequired,
-  category: PropTypes.string.isRequired,
+  date: PropTypes.string,
+  category: PropTypes.string,
   settingsToggle: PropTypes.func,
   itemIndex: PropTypes.number.isRequired,
   link: PropTypes.string.isRequired,
