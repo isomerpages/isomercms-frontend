@@ -5,8 +5,12 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 const OverviewCard = ({
-  title, date, category, settingsToggle, itemIndex, link, 
+  title, date, category, settingsToggle, itemIndex, siteName, collectionName, fileName, isHomepage = false
 }) => {
+  const link = isHomepage ? `/sites/${siteName}/homepage` :
+    collectionName
+    ? `/sites/${siteName}/collections/${collectionName}/${fileName}`
+    : `/sites/${siteName}/pages/${fileName}`
   return (
     <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`} to={link}>
       <div id={itemIndex} className={contentStyles.componentInfo}>
@@ -39,7 +43,9 @@ OverviewCard.propTypes = {
   category: PropTypes.string,
   settingsToggle: PropTypes.func,
   itemIndex: PropTypes.number.isRequired,
-  link: PropTypes.string.isRequired,
+  siteName: PropTypes.string.isRequired,
+  collectionName: PropTypes.string,
+  fileName: PropTypes.string,
 };
 
 export default OverviewCard

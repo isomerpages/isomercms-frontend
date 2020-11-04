@@ -135,7 +135,8 @@ export default class Pages extends Component {
                     <OverviewCard
                       itemIndex={0}
                       title={"Homepage"}
-                      link={`/sites/${siteName}/homepage`}
+                      siteName={siteName}
+                      isHomepage={true}
                     />
                     {pages.length > 0
                       ? pages.map((page, pageIndex) => (
@@ -145,9 +146,9 @@ export default class Pages extends Component {
                           itemIndex={pageIndex}
                           settingsToggle={this.settingsToggle}
                           category={page.collectionName ? page.collectionName : ''}
-                          link={page.collectionName
-                            ? `/sites/${siteName}/collections/${page.collectionName}/${page.fileName}`
-                            : `/sites/${siteName}/pages/${page.fileName}`}
+                          siteName={siteName}
+                          fileName={page.fileName}
+                          collectionName={page.collectionName}
                         />
                       ))
                       : null}
