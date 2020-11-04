@@ -157,15 +157,18 @@ export function generatePermalink(title) {
 
 export function retrieveCollectionAndLinkFromPermalink(permalink) {
   const permalinkArray = permalink.split('/')
-  console.log(permalinkArray)
   let collectionName, editableLink
   if (permalinkArray.length <= 2 || permalinkArray[2] === '') {
     // Item has no collection
     collectionName = ''
     editableLink = permalinkArray[1]
+  } else if (permalinkArray.length >= 4 && permalinkArray[3] !== '') {
+    // Item is a 3rd nav
+    collectionName = permalinkArray.slice(1,3).join('/')
+    editableLink = permalinkArray[3]
   } else {
     collectionName = permalinkArray[1]
-    editableLink = permalinkArray.slice(2).join('/')
+    editableLink = permalinkArray[2]
   }
   return {collectionName, editableLink}
 }
@@ -205,7 +208,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   }
 
   if (permalink) {
-    frontMatter.permalink = `/${category ? `${category}/` : ''}${permalink}`;
+    frontMatter.permalink = `/${category ? `${category}/${thirdNavTitle ? `${thirdNavTitle}/` : ''}` : ''}${permalink}`;
   }
   if (fileUrl) {
     frontMatter.file_url = fileUrl;

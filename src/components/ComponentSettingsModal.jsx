@@ -289,7 +289,7 @@ export default class ComponentSettingsModal extends Component {
                   thirdNavTitle &&
                   <FormField
                     title="3rd Nav Title"
-                    id="third-nav"
+                    id="thirdNavTitle"
                     value={thirdNavTitle}
                     onFieldChange={this.changeHandler}
                   />
@@ -303,7 +303,7 @@ export default class ComponentSettingsModal extends Component {
                   isRequired
                   onFieldChange={this.changeHandler}
                   disabled={!isPost}
-                  fixedMessage={category ? `/${category}/` : '/'}
+                  fixedMessage={category ? `/${category}/${thirdNavTitle ? `${thirdNavTitle}/` : ''}` : '/'}
                   placeholder=' '
                 />
                 { type === "resource" && 
