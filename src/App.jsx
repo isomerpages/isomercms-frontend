@@ -87,7 +87,7 @@ function App() {
   }, [isLoggedIn])
 
   const ProtectedRouteWithProps = (props) => {
-    return <ProtectedRoute {...props} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
+    return <ProtectedRoute {...props} isLoggedIn={isLoggedIn} />
   }
 
   return (
