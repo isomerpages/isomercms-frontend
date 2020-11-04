@@ -4,7 +4,7 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '../../styles/App.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
-import FormFieldImage from '../FormFieldImage';
+import FormFieldItem from '../FormFieldItem';
 import HeroButton from './HeroButton';
 import HeroDropdown from './HeroDropdown';
 import KeyHighlight from './KeyHighlight';
@@ -61,7 +61,7 @@ const EditorHeroSection = ({
             isRequired
             onFieldChange={onFieldChange}
           />
-          <FormFieldImage
+          <FormFieldItem
             title="Hero background image"
             id={`section-${sectionIndex}-hero-background`}
             value={background}
@@ -71,6 +71,7 @@ const EditorHeroSection = ({
             inlineButtonText="Choose Image"
             placeholder=" "
             siteName={siteName}
+            type="image"
           />
           <span>
             <i>Note: you can only have either Key Highlights+Hero button or a Hero Dropdown</i>
