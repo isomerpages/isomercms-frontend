@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import { Redirect } from 'react-router-dom';
 import FormField from './FormField';
-import FormFieldFile from './FormFieldFile';
+import FormFieldItem from './FormFieldItem';
 import LoadingButton from './LoadingButton';
 import {
   frontMatterParser,
@@ -289,7 +289,7 @@ export default class ComponentSettingsModal extends Component {
       thirdNavTitle,
       isPost,
     } = this.state;
-    const { settingsToggle, isNewFile, type, modalTitle } = this.props;
+    const { settingsToggle, isNewFile, type, modalTitle, siteName } = this.props;
 
     // Settings form has errors - disable save button
     const hasErrors = _.some(errors, (field) => field.length > 0);
@@ -401,15 +401,16 @@ export default class ComponentSettingsModal extends Component {
                     </div>
                   </div>
                   {/* File URL */}
-                  <FormFieldFile
+                  <FormFieldItem
                     title="Select File"
                     id="fileUrl"
                     value={fileUrl?.split('/').pop()}
                     errorMessage={errors.fileUrl}
                     onFieldChange={this.changeHandler}
-                    inlineButtonText="Select File"
-                    disabled={isPost}
-                    onInlineButtonClick={() => this.setState({ canShowFilesModal: true })}
+                    inlineButtonText={"Select File"}
+                    siteName={siteName}
+                    placeholder=" "
+                    type="file"
                   />
                 </>}
               </div>
