@@ -89,7 +89,7 @@ export default class ComponentSettingsModal extends Component {
           type,
           prevCategory: category,
         });
-        if (type === "resource") this.setState({date:'2019-01-31'})
+        if (type === "resource") this.setState({date:new Date().toISOString().split("T")[0]})
       } else {
         const resp = await axios.get(`${baseApiUrl}/pages/${fileName}`);
 
