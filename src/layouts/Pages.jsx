@@ -141,6 +141,7 @@ export default class Pages extends Component {
                       ? pages.map((page, pageIndex) => (
                         <OverviewCard
                           title={prettifyPageFileName(page.fileName)}
+                          key={page.fileName}
                           itemIndex={pageIndex}
                           settingsToggle={this.settingsToggle}
                           category={page.collectionName ? page.collectionName : ''}
