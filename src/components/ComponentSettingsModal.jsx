@@ -299,7 +299,7 @@ export default class ComponentSettingsModal extends Component {
         <div className={elementStyles.overlay}>
           { (sha || isNewFile)
           && (
-          <div className={elementStyles.modal}>
+          <div className={elementStyles['modal-settings']}>
             <div className={elementStyles.modalHeader}>
               <h1>{modalTitle}</h1>
               <button id="settings-CLOSE" type="button" onClick={settingsToggle}>
