@@ -62,6 +62,8 @@ export default class ComponentSettingsModal extends Component {
       const {
         category, siteName, fileName, isNewFile, type
       } = this.props;
+      
+      // Retrieve the list of all page/resource categories for use in the dropdown options. Also sets the default category if none is specified.
       if (type === "resource") {
         const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`);
         const { resources: allCategories } = resourcesResp.data;
@@ -81,6 +83,7 @@ export default class ComponentSettingsModal extends Component {
 
       const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? type === "resource" ? `/resources/${category}` : `/collections/${category}` : ''}`
       if (isNewFile) {
+        // Set default values for a new file
         this.setState({
           title: 'Title',
           permalink: 'permalink',
@@ -89,8 +92,10 @@ export default class ComponentSettingsModal extends Component {
           type,
           prevCategory: category,
         });
+        // Only resources have a date field
         if (type === "resource") this.setState({date:new Date().toISOString().split("T")[0]})
       } else {
+        // Retrieve data from existing page/resource
         const resp = await axios.get(`${baseApiUrl}/pages/${fileName}`);
 
         const { content, sha } = resp.data;
@@ -102,6 +107,7 @@ export default class ComponentSettingsModal extends Component {
 
         let existingLink
         if (permalink) {
+          // We want to set parts of the link by default, and only leave a portion editable by the user
           const { editableLink } = retrieveCollectionAndLinkFromPermalink(permalink)
           existingLink = editableLink
         }
