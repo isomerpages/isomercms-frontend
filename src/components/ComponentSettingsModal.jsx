@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import { Redirect } from 'react-router-dom';
 import FormField from './FormField';
-import FormFieldItem from './FormFieldItem';
 import LoadingButton from './LoadingButton';
 import {
   frontMatterParser,
@@ -20,6 +19,7 @@ import {
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import { validatePageSettings, validateResourceSettings } from '../utils/validators';
 import DeleteWarningModal from './DeleteWarningModal';
+import ResourceFormFields from './ResourceFormFields';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -362,63 +362,16 @@ export default class ComponentSettingsModal extends Component {
                   placeholder=' '
                 />
                 { type === "resource" && 
-                // Resource Type
-                <>
-                  <div className="d-flex row m-0">
-                    <div className="col-4 m-0 p-0">
-                      {/* Date */}
-                      <FormField
-                        title="Date (YYYY-MM-DD)"
-                        id="date"
-                        value={date}
-                        errorMessage={errors.date}
-                        isRequired
-                        onFieldChange={this.changeHandler}
-                      />
-                    </div>
-                    
-                    <div className="col-8">
-                      <p className={elementStyles.formLabel}>Resource Type</p>
-                      {/* Permalink or File URL */}
-                      <div className="d-flex">
-                        <label htmlFor="radio-post" className="flex-fill">
-                          <input
-                            type="radio"
-                            id="radio-post"
-                            name="resource-type"
-                            value="post"
-                            onClick={this.handlePermalinkFileUrlToggle}
-                            checked={isPost}
-                          />
-                          Post Content
-                        </label>
-                        <label htmlFor="radio-post" className="flex-fill">
-                          <input
-                            type="radio"
-                            id="radio-file"
-                            name="resource-type"
-                            value="file"
-                            onClick={this.handlePermalinkFileUrlToggle}
-                            checked={!isPost}
-                          />
-                          Downloadable File
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  {/* File URL */}
-                  <FormFieldItem
-                    title="Select File"
-                    id="fileUrl"
-                    value={fileUrl?.split('/').pop()}
-                    errorMessage={errors.fileUrl}
-                    onFieldChange={this.changeHandler}
-                    inlineButtonText={"Select File"}
-                    siteName={siteName}
-                    placeholder=" "
-                    type="file"
-                  />
-                </>}
+                <ResourceFormFields 
+                  date={date}
+                  errors={errors}
+                  changeHandler={this.changeHandler}
+                  onToggle={this.handlePermalinkFileUrlToggle}
+                  isPost={isPost}
+                  siteName={siteName}
+                  fileUrl={fileUrl ? fileUrl : ''}
+                />
+                }
               </div>
               {/* Save or Delete buttons */}
               <div className={elementStyles.modalButtons}>

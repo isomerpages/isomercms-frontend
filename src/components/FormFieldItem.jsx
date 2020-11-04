@@ -17,6 +17,7 @@ const FormFieldItem = ({
   siteName,
   placeholder,
   type,
+  isDisabled = false,
 }) => {
   const [isSelectingItem, setIsSelectingItem] = useState(false)
   const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
@@ -89,8 +90,9 @@ const FormFieldItem = ({
           && (
           <button
             type="button"
-            className={`${elementStyles.blue} text-nowrap`}
+            className={`${isDisabled ? elementStyles.disabled : elementStyles.blue} text-nowrap`}
             onClick={() => setIsSelectingItem(true)}
+            disabled={isDisabled}
           >
             { inlineButtonText }
           </button>
