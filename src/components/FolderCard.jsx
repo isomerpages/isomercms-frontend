@@ -35,9 +35,9 @@ const FolderCard = ({
 )
 
 FolderCard.propTypes = {
-  type: PropTypes.string.isRequired,
   displayText: PropTypes.string.isRequired,
   link: PropTypes.string.isRequired,
+  settingsToggle: PropTypes.func.isRequired,
   itemIndex: PropTypes.number.isRequired,
 };
 
