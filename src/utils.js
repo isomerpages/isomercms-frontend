@@ -2,6 +2,11 @@
 import yaml from 'js-yaml';
 import cheerio from 'cheerio';
 import slugify from 'slugify';
+import axios from 'axios';
+import { Base64 } from 'js-base64';
+
+// axios settings
+axios.defaults.withCredentials = true
 
 // extracts yaml front matter from a markdown file path
 export function frontMatterParser(content) {
@@ -112,9 +117,9 @@ export function dequoteString(str) {
   return dequotedString;
 }
 
-export function generateResourceFileName(title, type, date) {
+export function generateResourceFileName(title, date) {
   const safeTitle = slugify(title).replace(/[^a-zA-Z-]/g, '');
-  return `${date}-${type}-${safeTitle}.md`;
+  return `${date}-${safeTitle}.md`;
 }
 
 export function prettifyResourceCategory(category) {
@@ -122,7 +127,7 @@ export function prettifyResourceCategory(category) {
 }
 
 export function slugifyResourceCategory(category) {
-  return slugify(category).toLowerCase();
+  return slugify(category);
 }
 
 export function prettifyPageFileName(fileName) {
@@ -148,4 +153,113 @@ export function generateCollectionPageFileName(title, groupIdentifier) {
 
 export function generatePermalink(title) {
   return slugify(title).replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
+}
+
+export function retrieveCollectionAndLinkFromPermalink(permalink) {
+  const permalinkArray = permalink.split('/')
+  let collectionName, editableLink
+  if (permalinkArray.length <= 2 || permalinkArray[2] === '') {
+    // Item has no collection
+    collectionName = ''
+    editableLink = permalinkArray[1]
+  } else if (permalinkArray.length >= 4 && permalinkArray[3] !== '') {
+    // Item is a 3rd nav
+    collectionName = permalinkArray.slice(1,3).join('/')
+    editableLink = permalinkArray[3]
+  } else {
+    collectionName = permalinkArray[1]
+    editableLink = permalinkArray[2]
+  }
+  return {collectionName, editableLink}
+}
+
+export async function saveFileAndRetrieveUrl(fileInfo) {
+  const {
+    title,
+    permalink,
+    fileUrl,
+    date,
+    mdBody,
+    sha,
+    category,
+    prevCategory,
+    baseApiUrl,
+    type,
+    thirdNavTitle,
+    fileName,
+    isNewFile,
+    siteName
+  } = fileInfo
+
+  let newFileName, frontMatter
+  if (type === "resource") {
+    newFileName = generateResourceFileName(title, date);
+    frontMatter = { title: enquoteString(title), date };
+  } else if (type === "page") {
+    frontMatter = thirdNavTitle
+      ? { title, permalink, third_nav_title: thirdNavTitle }
+      : { title, permalink };
+    if (category) {
+      const groupIdentifier = fileName.split('-')[0];
+      newFileName = generateCollectionPageFileName(title, groupIdentifier);
+    } else {
+      newFileName = generatePageFileName(title);
+    }
+  }
+
+  if (permalink) {
+    frontMatter.permalink = `/${category ? `${category}/${thirdNavTitle ? `${thirdNavTitle}/` : ''}` : ''}${permalink}`;
+  }
+  if (fileUrl) {
+    frontMatter.file_url = fileUrl;
+  }
+  let newBaseApiUrl
+  if (prevCategory) {
+    // baseApiUrl can be used as is because user cannot change categories
+    newBaseApiUrl = baseApiUrl
+  } else {
+    if (category) {
+      // User is adding file to category from main page
+      newBaseApiUrl = `${baseApiUrl}/${type === "resource" ? `resources/${category}` : `collections/${category}`}`
+    } else {
+      // User is adding file with no collections, only occurs for pages
+      newBaseApiUrl = baseApiUrl
+    }
+  }
+
+  const content = concatFrontMatterMdBody(frontMatter, mdBody);
+  const base64EncodedContent = Base64.encode(content);
+
+  let params = {};
+  if (newFileName !== fileName || prevCategory !== category) {
+    // We'll need to create a new .md file with a new filename
+    params = {
+      content: base64EncodedContent,
+      pageName: newFileName,
+    };
+
+    // If it is an existing file, delete the existing page
+    if (!isNewFile) {
+      await axios.delete(`${newBaseApiUrl}/pages/${fileName}`, {
+        data: {
+          sha,
+        },
+      });
+    }
+    await axios.post(`${newBaseApiUrl}/pages`, params);
+  } else {
+    // Save to existing .md file
+    params = {
+      content: base64EncodedContent,
+      sha,
+    };
+    await axios.post(`${newBaseApiUrl}/pages/${fileName}`, params);
+  }
+  let newPageUrl
+  if (type === 'resource') {
+    newPageUrl = `/sites/${siteName}/resources/${category}/${newFileName}`
+  } else if (type === 'page') {
+    newPageUrl = category ? `/sites/${siteName}/collections/${category}/${newFileName}` : `/sites/${siteName}/pages/${newFileName}`
+  }
+  return newPageUrl
 }

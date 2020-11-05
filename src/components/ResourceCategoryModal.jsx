@@ -184,7 +184,7 @@ export default class ResourceCategoryModal extends Component {
                             defaultValue={prettifyResourceCategory(prevResourceCategory)}
                             errorMessage={errors.resourceCategories[index]}
                             style={{ textTransform: 'uppercase' }}
-                            isRequired
+                            isRequired={true}
                             onFieldChange={this.changeHandler}
                           />
                           {/* <LoadingButton

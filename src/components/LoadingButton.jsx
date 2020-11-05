@@ -17,7 +17,7 @@ export default function LoadingButton(props) {
   return (
     <button
       type="button"
-      className={isLoading ? disabledStyle : className}
+      className={isLoading ? `${className} ${disabledStyle}` : className}
       disabled={isLoading ? true : disabled}
       onClick={async () => {
         setButtonLoading(true);

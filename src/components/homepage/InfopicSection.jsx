@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
-import FormFieldImage from '../FormFieldImage';
+import FormFieldMedia from '../FormFieldMedia';
 
 /* eslint
   react/no-array-index-key: 0
@@ -75,7 +75,7 @@ const EditorInfopicSection = ({
               isRequired
               onFieldChange={onFieldChange}
             />
-            <FormFieldImage
+            <FormFieldMedia
               title="Infopic image URL"
               id={`section-${sectionIndex}-infopic-image`}
               value={imageUrl}
@@ -85,6 +85,7 @@ const EditorInfopicSection = ({
               inlineButtonText="Choose Image"
               placeholder=" "
               siteName={siteName}
+              type="image"
             />
             <FormField
               title="Infopic image alt text"

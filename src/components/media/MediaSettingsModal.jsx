@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
-import LoadingButton from '../LoadingButton';
 import DeleteWarningModal from '../DeleteWarningModal';
+import SaveDeleteButtons from '../SaveDeleteButtons';
 import { validateFileName } from '../../utils/validators';
 
 export default class MediaSettingsModal extends Component {
@@ -158,34 +158,12 @@ export default class MediaSettingsModal extends Component {
                 onFieldChange={this.setFileName}
               />
             </div>
-            <div className={elementStyles.modalButtons}>
-              {isPendingUpload
-                ? (
-                  <LoadingButton
-                    label="Save"
-                    disabledStyle={elementStyles.disabled}
-                    className={`ml-auto ${elementStyles.blue}`}
-                    callback={this.saveFile}
-                  />
-                ) : (
-                  <>
-                    <LoadingButton
-                      label="Save"
-                      disabled={(errorMessage || !sha)}
-                      disabledStyle={elementStyles.disabled}
-                      className={`ml-auto ${(errorMessage || !sha) ? elementStyles.disabled : elementStyles.blue}`}
-                      callback={this.saveFile}
-                    />
-                    <LoadingButton
-                      label="Delete"
-                      disabled={(errorMessage || !sha)}
-                      disabledStyle={elementStyles.disabled}
-                      className={(errorMessage || !sha) ? elementStyles.disabled : elementStyles.warning}
-                      callback={() => this.setState({ canShowDeleteWarningModal: true })}
-                    />
-                  </>
-                )}
-            </div>
+            <SaveDeleteButtons 
+              isDisabled={isPendingUpload ? false : (errorMessage || !sha)}
+              hasDeleteButton={!isPendingUpload}
+              saveCallback={this.saveFile}
+              deleteCallback={() => this.setState({ canShowDeleteWarningModal: true })}
+            />
           </form>
         </div>
         {

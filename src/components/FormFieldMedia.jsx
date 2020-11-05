@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import MediasModal from '../components/media/MediaModal';
-import MediaSettingsModal from '../components/media/MediaSettingsModal';
+import MediasModal from './media/MediaModal';
+import MediaSettingsModal from './media/MediaSettingsModal';
 
-const FormFieldImage = ({
+const FormFieldMedia = ({
   title,
   defaultValue,
   value,
@@ -13,16 +13,18 @@ const FormFieldImage = ({
   onFieldChange,
   isRequired,
   style,
-  inlineButtonText = "Choose Image",
+  inlineButtonText = "Choose Item",
   siteName,
   placeholder,
+  type,
+  isDisabled = false,
 }) => {
-  const [isSelectingImage, setIsSelectingImage] = useState(false)
+  const [isSelectingItem, setIsSelectingItem] = useState(false)
   const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
   const [stagedFileDetails, setStagedFileDetails] = useState()
 
-  const onImageClick = (path) => {
-    setIsSelectingImage(false)
+  const onItemClick = (path) => {
+    setIsSelectingItem(false)
     const event = {
       target: {
         id: id,
@@ -32,17 +34,17 @@ const FormFieldImage = ({
     onFieldChange(event);
   }
 
-  const toggleImageModal = () => {
-    setIsSelectingImage(!isSelectingImage)
+  const toggleItemModal = () => {
+    setIsSelectingItem(!isSelectingItem)
   }
   
-  const toggleImageAndSettingsModal = () => {
-    setIsSelectingImage(!isSelectingImage)
+  const toggleItemAndSettingsModal = () => {
+    setIsSelectingItem(!isSelectingItem)
     setIsFileStagedForUpload(!isFileStagedForUpload)
   }
 
   const stageFileForUpload = (fileName, fileData) => {
-    const baseFolder = 'images';
+    const baseFolder = type === 'image' ? 'images' : 'files';
     setStagedFileDetails({
       path: `${baseFolder}%2F${fileName}`,
       content: fileData,
@@ -64,7 +66,7 @@ const FormFieldImage = ({
       stageFileForUpload(fileName, fileData);
     });
     fileReader.readAsDataURL(event.target.files[0]);
-    toggleImageModal()
+    toggleItemModal()
   }
 
   return (
@@ -88,32 +90,33 @@ const FormFieldImage = ({
           && (
           <button
             type="button"
-            className={`${elementStyles.blue} text-nowrap`}
-            onClick={() => setIsSelectingImage(true)}
+            className={`${isDisabled ? elementStyles.disabled : elementStyles.blue} text-nowrap`}
+            onClick={() => setIsSelectingItem(true)}
+            disabled={isDisabled}
           >
             { inlineButtonText }
           </button>
           )
         }
         {
-          isSelectingImage && (
+          isSelectingItem && (
             <MediasModal
-              type="image"
+              type={type}
               siteName={siteName}
-              onMediaSelect={onImageClick}
-              toggleImageModal={toggleImageModal}
+              onMediaSelect={onItemClick}
+              toggleItemModal={toggleItemModal}
               readFileToStageUpload={readFileToStageUpload}
-              onClose={() => setIsSelectingImage(false)}
+              onClose={() => setIsSelectingItem(false)}
             />
           )
         }
         {
           isFileStagedForUpload && (
             <MediaSettingsModal
-              type="image"
+              type={type}
               siteName={siteName}
               onClose={() => setIsFileStagedForUpload(false)}
-              onSave={toggleImageAndSettingsModal}
+              onSave={toggleItemAndSettingsModal}
               media={stagedFileDetails}
               isPendingUpload="true"
             />
@@ -125,20 +128,20 @@ const FormFieldImage = ({
   );
 };
 
-export default FormFieldImage;
+export default FormFieldMedia;
 
-FormFieldImage.propTypes = {
+FormFieldMedia.propTypes = {
   title: PropTypes.string.isRequired,
   defaultValue: PropTypes.string,
   value: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   errorMessage: PropTypes.string.isRequired,
   onFieldChange: PropTypes.func.isRequired,
-  isRequired: PropTypes.bool.isRequired,
+  isRequired: PropTypes.bool,
   style: PropTypes.string,
 };
 
-FormFieldImage.defaultProps = {
+FormFieldMedia.defaultProps = {
   defaultValue: undefined,
   style: undefined,
 };

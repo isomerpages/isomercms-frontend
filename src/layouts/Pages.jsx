@@ -1,42 +1,17 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import PageSettingsModal from '../components/PageSettingsModal';
-import CollectionPageSettingsModal from '../components/CollectionPageSettingsModal';
+import ComponentSettingsModal from '../components/ComponentSettingsModal';
+import OverviewCard from '../components/OverviewCard';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import { prettifyPageFileName } from '../utils';
 
 // Constants
 const RADIX_PARSE_INT = 10;
-
-const PageCard = ({
-  siteName, pageName, pageIndex, settingsToggle, collectionName,
-}) => (
-  // Set padding to 0 so that Link component takes up the entire element
-  // and entire element is clickable
-  <li className="p-0">
-    <div
-      className="d-flex w-100 h-100"
-    >
-      <Link
-        className="d-flex align-items-center px-5 py-3 mr-auto h-100"
-        to={collectionName
-          ? `/sites/${siteName}/collections/${collectionName}/${pageName}`
-          : `/sites/${siteName}/pages/${pageName}`}
-      >
-        {prettifyPageFileName(pageName)}
-      </Link>
-      <button className="px-5 py-3 h-100" type="button" onClick={settingsToggle} id={`settings-${pageIndex}`}>
-        <i id={`settingsIcon-${pageIndex}`} className="bx bx-cog" />
-      </button>
-    </div>
-  </li>
-);
 
 export default class Pages extends Component {
   constructor(props) {
@@ -104,11 +79,13 @@ export default class Pages extends Component {
           {/* Page settings modal */}
           { settingsIsActive && !isCollectionPage
             && (
-              <PageSettingsModal
+              <ComponentSettingsModal
+                modalTitle={"Page Settings"}
                 settingsToggle={this.settingsToggle}
                 siteName={siteName}
                 fileName={selectedFile ? selectedFile.fileName : ''}
-                isNewPage={createNewPage}
+                isNewFile={createNewPage}
+                type="page"
                 pageFilenames={_.chain(pages)
                   .filter({ type: 'simple-page' })
                   .map((page) => page.fileName)
@@ -123,11 +100,14 @@ export default class Pages extends Component {
            */}
           { settingsIsActive && isCollectionPage
             && (
-              <CollectionPageSettingsModal
+              <ComponentSettingsModal
+                modalTitle={"Page Settings"}
                 settingsToggle={this.settingsToggle}
                 siteName={siteName}
                 fileName={selectedFile.fileName}
-                collectionName={selectedFile.collectionName}
+                category={selectedFile.collectionName}
+                type="page"
+                isNewFile={false}
               />
             )}
           <Sidebar siteName={siteName} currPath={location.pathname} />
@@ -142,43 +122,38 @@ export default class Pages extends Component {
                 id="settings-NEW"
                 onClick={this.settingsToggle}
               >
-Create New Page
+                Create New Page
               </button>
             </div>
 
-            <div className={contentStyles.contentContainerBars}>
-
+            <div className={contentStyles.contentContainerBoxes}>
               {/* Page cards */}
               {/* Display loader if pages have not been retrieved from API call */}
               { pages
                 ? (
-                  <ul>
-                    {
-                    // Set padding of li element to 0 to be compatible with other PageCard
-                    // components
-                    }
-                    <li className="p-0">
-                      <Link
-                        className="d-flex align-items-center px-5 py-3"
-                        to={`/sites/${siteName}/homepage`}
-                      >
-                        Homepage
-                      </Link>
-                    </li>
+                  <div className={contentStyles.boxesContainer}>
+                    <OverviewCard
+                      itemIndex={0}
+                      title={"Homepage"}
+                      key={"homepage"}
+                      siteName={siteName}
+                      isHomepage={true}
+                    />
                     {pages.length > 0
                       ? pages.map((page, pageIndex) => (
-                        <PageCard
-                          siteName={siteName}
-                          pageName={page.fileName}
-                          pageIndex={pageIndex}
+                        <OverviewCard
+                          title={prettifyPageFileName(page.fileName)}
+                          key={page.fileName}
+                          itemIndex={pageIndex}
                           settingsToggle={this.settingsToggle}
-                          collectionName={page.collectionName ? page.collectionName : ''}
-                          // eslint-disable-next-line react/no-array-index-key
-                          key={`${page.fileName}-${pageIndex}`}
+                          category={page.collectionName ? page.collectionName : ''}
+                          siteName={siteName}
+                          fileName={page.fileName}
+                          collectionName={page.collectionName}
                         />
                       ))
                       : null}
-                  </ul>
+                    </div>
                 )
                 : 'Loading Pages...'}
               {/* End of page cards */}
@@ -190,14 +165,6 @@ Create New Page
     );
   }
 }
-
-PageCard.propTypes = {
-  siteName: PropTypes.string.isRequired,
-  pageName: PropTypes.string.isRequired,
-  pageIndex: PropTypes.number.isRequired,
-  settingsToggle: PropTypes.func.isRequired,
-  collectionName: PropTypes.string.isRequired,
-};
 
 Pages.propTypes = {
   match: PropTypes.shape({

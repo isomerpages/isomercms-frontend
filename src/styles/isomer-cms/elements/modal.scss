@@ -87,3 +87,10 @@
   @extend .modal;
   height: auto;
 }
+
+.modal-settings {
+  @extend .modal;
+  height: initial;
+  width: initial;
+  min-width: 40%;
+}

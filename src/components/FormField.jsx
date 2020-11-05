@@ -12,10 +12,16 @@ const FormField = ({
   isRequired,
   style,
   placeholder,
+  disabled,
+  fixedMessage,
 }) => (
   <>
     <p className={elementStyles.formLabel}>{title}</p>
-    <div className="d-flex">
+    <div className="d-flex text-nowrap">
+      {fixedMessage
+        ? <p className={elementStyles.formFixedText}>{fixedMessage}</p>
+        : null
+      }
       <input
         type="text"
         placeholder={placeholder ? placeholder : title}
@@ -27,6 +33,7 @@ const FormField = ({
         className={errorMessage ? `${elementStyles.error}` : null}
         style={style}
         onChange={onFieldChange}
+        disabled={disabled}
       />
     </div>
     <span className={elementStyles.error}>{errorMessage}</span>
@@ -42,7 +49,7 @@ FormField.propTypes = {
   id: PropTypes.string.isRequired,
   errorMessage: PropTypes.string,
   onFieldChange: PropTypes.func.isRequired,
-  isRequired: PropTypes.bool.isRequired,
+  isRequired: PropTypes.bool,
   style: PropTypes.string,
 };
 

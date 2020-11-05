@@ -1,45 +1,21 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import * as Bluebird from 'bluebird';
 import * as _ from 'lodash';
-import { retrieveResourceFileMetadata, prettifyResourceCategory } from '../utils';
-import ResourceSettingsModal from '../components/ResourceSettingsModal';
+import { retrieveResourceFileMetadata } from '../utils';
+import ComponentSettingsModal from '../components/ComponentSettingsModal';
 import ResourceCategoryModal from '../components/ResourceCategoryModal';
+import MediasModal from '../components/media/MediaModal';
+import MediaSettingsModal from '../components/media/MediaSettingsModal';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
+import OverviewCard from '../components/OverviewCard';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 // Constants
 const RADIX_PARSE_INT = 10;
-
-const ResourceCard = ({
-  fileName, siteName, category, settingsToggle, resourceIndex,
-}) => {
-  const { title, date } = retrieveResourceFileMetadata(fileName);
-  return (
-    <div className={`${contentStyles.resource} ${contentStyles.card} ${elementStyles.card}`}>
-      <Link to={`/sites/${siteName}/resources/${category}/${fileName}`}>
-        <div id={resourceIndex} className={contentStyles.resourceInfo}>
-          <div className={contentStyles.resourceCategory}>{prettifyResourceCategory(category)}</div>
-          <h1 className={contentStyles.resourceTitle}>{title}</h1>
-          <p className={contentStyles.resourceDate}>{date}</p>
-        </div>
-      </Link>
-      <div className={contentStyles.resourceIcon}>
-        <button
-          type="button"
-          id={`settings-${resourceIndex}`}
-          onClick={settingsToggle}
-        >
-          <i id={`settingsIcon-${resourceIndex}`} className="bx bx-cog" />
-        </button>
-      </div>
-    </div>
-  );
-};
 
 const ResourcePages = ({
   resourcePages, settingsToggle, siteName,
@@ -50,16 +26,23 @@ const ResourcePages = ({
     {resourcePages.length > 0
       ? (
         <>
-          {resourcePages.map((resourcePage, resourceIndex) => (
-            <ResourceCard
-              category={resourcePage.category}
-              fileName={resourcePage.fileName}
-              siteName={siteName}
+          {resourcePages.map((resourcePage, resourceIndex) => {
+            const { fileName, category } = resourcePage
+            const { title, date } = retrieveResourceFileMetadata(fileName);
+            return (
+            <OverviewCard
+              key={title}
+              category={category}
               settingsToggle={settingsToggle}
-              resourceIndex={resourceIndex}
-              key={resourcePage.fileName}
-            />
-          ))}
+              itemIndex={resourceIndex}
+              title={title}
+              date={date}
+              siteName={siteName}
+              collectionName={category}
+              fileName={fileName}
+              isResource={true}
+            />)
+          })}
         </>
       )
       : null}
@@ -93,6 +76,8 @@ export default class Resources extends Component {
         category: '',
         fileName: '',
       },
+      isSelectingFile: false,
+      isFileStagedForUpload: false,
     };
   }
 
@@ -147,6 +132,55 @@ export default class Resources extends Component {
     }));
   }
 
+  toggleFileModal = () => {
+    this.setState((currState) => ({
+      isSelectingFile: !currState.isSelectingFile,
+    }));
+  }
+
+  toggleFileAndSettingsModal = () => {
+    this.setState((currState) => ({
+      isSelectingFile: !currState.isSelectingFile,
+      isFileStagedForUpload: !currState.isFileStagedForUpload,
+    }));
+  }
+
+  onFileClick = (path) => {
+    this.setState({
+      filePath: path,
+      isSelectingFile: false,
+    });
+  }
+
+  stageFileForUpload = (fileName, fileData) => {
+    const { type } = this.props;
+    const baseFolder = type === 'file' ? 'files' : 'images';
+    this.setState({
+      isFileStagedForUpload: true,
+      stagedFileDetails: {
+        path: `${baseFolder}%2F${fileName}`,
+        content: fileData,
+        fileName,
+      },
+    });
+  }
+
+  readFileToStageUpload = async (event) => {
+    const fileReader = new FileReader();
+    const fileName = event.target.files[0].name;
+    fileReader.onload = (() => {
+      /** Github only requires the content of the file
+         * fileReader returns  `data:application/pdf;base64, {fileContent}`
+         * hence the split
+         */
+
+      const fileData = fileReader.result.split(',')[1];
+      this.stageFileForUpload(fileName, fileData);
+    });
+    fileReader.readAsDataURL(event.target.files[0]);
+    this.toggleFileModal()
+  }
+
   settingsToggle = (event) => {
     const { id } = event.target;
     const idArray = id.split('-');
@@ -163,6 +197,12 @@ export default class Resources extends Component {
     } else if (resourcePageIndex === 'CLOSE') {
       // User clicked on the close button in the settings modal
       this.setState({ settingsIsActive: false });
+    } else if (resourcePageIndex === '') {
+      // User clicked on the file upload button
+      this.setState({
+        settingsIsActive: false,
+        isSelectingFile: true
+       });
     } else {
       // User clicked on the settings icon on an existing resource
       resourcePageIndex = parseInt(resourcePageIndex, RADIX_PARSE_INT);
@@ -206,6 +246,9 @@ export default class Resources extends Component {
       selectedResourcePage,
       resourceRoomName,
       newResourceRoomName,
+      isSelectingFile,
+      isFileStagedForUpload,
+      stagedFileDetails,
     } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
@@ -218,12 +261,18 @@ export default class Resources extends Component {
           <Sidebar siteName={siteName} currPath={location.pathname} />
           { settingsIsActive
             ? (
-              <ResourceSettingsModal
+              <ComponentSettingsModal
+                modalTitle={"Resource Settings"}
                 siteName={siteName}
-                isNewPost={selectedResourcePage.isNewPost}
+                isNewFile={selectedResourcePage.isNewPost}
                 category={selectedResourcePage.category}
                 fileName={selectedResourcePage.fileName}
                 settingsToggle={this.settingsToggle}
+                type="resource"
+                pageFilenames={_.chain(resourcePages)
+                  .filter({ category: selectedResourcePage.category })
+                  .map((file) => file.fileName)
+                  .value()}
               />
             )
             : null}
@@ -273,6 +322,29 @@ export default class Resources extends Component {
           </div>
           {/* main section ends here */}
         </div>
+        {
+          isSelectingFile && (
+          <MediasModal
+            type="file"
+            siteName={siteName}
+            onMediaSelect={this.onFileClick}
+            readFileToStageUpload={this.readFileToStageUpload}
+            onClose={() => this.setState({ isSelectingFile: false, settingsIsActive: true })}
+          />
+          )
+        }
+        {
+          isFileStagedForUpload && (
+            <MediaSettingsModal
+              type="file"
+              siteName={siteName}
+              onClose={() => this.setState({ isFileStagedForUpload: false })}
+              onSave={this.toggleFileAndSettingsModal}
+              media={stagedFileDetails}
+              isPendingUpload="true"
+            />
+          )
+        }
       </>
     );
   }
@@ -299,14 +371,6 @@ ResourcePages.propTypes = {
     }),
   ).isRequired,
   siteName: PropTypes.string.isRequired,
-};
-
-ResourceCard.propTypes = {
-  fileName: PropTypes.string.isRequired,
-  siteName: PropTypes.string.isRequired,
-  category: PropTypes.string.isRequired,
-  settingsToggle: PropTypes.func.isRequired,
-  resourceIndex: PropTypes.number.isRequired,
 };
 
 CreateResourceCard.propTypes = {
