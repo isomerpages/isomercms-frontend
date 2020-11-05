@@ -213,8 +213,9 @@ export default class ComponentSettingsModal extends Component {
   changeHandler = (event) => {
     const { id, value } = event.target;
     const { title, date } = this.state
-    const { pageFilenames, type } = this.props;
-    const pageFilenamesExc = pageFilenames ? pageFilenames.filter((filename) => filename !== this.state.fileName) : null
+    const { pageFilenames, type, fileName: currentFileName } = this.props;
+
+    const pageFilenamesExc = pageFilenames ? pageFilenames.filter((filename) => filename !== currentFileName) : null
     let errorMessage, newFileName
     if (type === 'resource') {
       errorMessage = validateResourceSettings(id, value);
@@ -376,7 +377,7 @@ export default class ComponentSettingsModal extends Component {
 ComponentSettingsModal.propTypes = {
   siteName: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
-  category: PropTypes.string.isRequired,
+  category: PropTypes.string,
   isNewFile: PropTypes.bool.isRequired,
   settingsToggle: PropTypes.func.isRequired,
 };
