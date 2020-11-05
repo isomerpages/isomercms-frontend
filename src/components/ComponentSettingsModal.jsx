@@ -285,6 +285,7 @@ export default class ComponentSettingsModal extends Component {
                     allCategories
                       ? allCategories.map((category) => (
                         <option
+                          key={category}
                           value={category}
                           label={category}
                         />
