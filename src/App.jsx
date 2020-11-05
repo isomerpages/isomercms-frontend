@@ -51,8 +51,10 @@ function App() {
     },
     async function (error) {
       if (error.response && error.response.status === 401) {
-        setShouldBlockNavigation(true)
-        console.log('User token has expired or does not exist')
+        if (isLoggedIn) {
+          setShouldBlockNavigation(true)
+          console.log('User token has expired or does not exist')
+        }
       } else {
         console.log('An unknown error occurred: ')
         console.error(error)

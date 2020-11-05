@@ -50,7 +50,6 @@ const FolderCard = ({
 
 FolderCard.propTypes = {
   displayText: PropTypes.string.isRequired,
-  link: PropTypes.string.isRequired,
   settingsToggle: PropTypes.func.isRequired,
   itemIndex: PropTypes.number,
   isHomePage: PropTypes.bool.isRequired,
