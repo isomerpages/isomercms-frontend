@@ -291,6 +291,11 @@ export default class EditPage extends Component {
       leftNavPages,
       selectionText,
     } = this.state;
+
+    const html = marked(editorValue)
+    const { isCspViolation, sanitisedHtml } = checkCSP(csp, html)
+    const chunk = prependImageSrc(siteName, sanitisedHtml)
+
     return (
       <>
         <Header
@@ -382,14 +387,14 @@ export default class EditPage extends Component {
               isCollectionPage && leftNavPages
               ? (
                 <LeftNavPage
-                  chunk={prependImageSrc(siteName, checkCSP(csp, marked(editorValue)))}
+                  chunk={chunk}
                   leftNavPages={leftNavPages}
                   fileName={fileName}
                   title={title}
                 />
               ) : (
                 <SimplePage
-                  chunk={prependImageSrc(siteName, checkCSP(csp, marked(editorValue)))}
+                  chunk={chunk}
                   title={title}
                   date={date}
                 />
@@ -401,7 +406,8 @@ export default class EditPage extends Component {
           <LoadingButton
             label="Save"
             disabledStyle={elementStyles.disabled}
-            className={elementStyles.blue}
+            disabled={isCspViolation}
+            className={isCspViolation ? elementStyles.disabled : elementStyles.blue}
             callback={this.updatePage}
           />
           <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
