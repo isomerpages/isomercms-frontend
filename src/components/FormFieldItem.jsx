@@ -137,7 +137,7 @@ FormFieldItem.propTypes = {
   id: PropTypes.string.isRequired,
   errorMessage: PropTypes.string.isRequired,
   onFieldChange: PropTypes.func.isRequired,
-  isRequired: PropTypes.bool.isRequired,
+  isRequired: PropTypes.bool,
   style: PropTypes.string,
 };
 

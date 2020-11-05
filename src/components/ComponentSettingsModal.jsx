@@ -281,7 +281,7 @@ export default class ComponentSettingsModal extends Component {
                   id="title"
                   value={title}
                   errorMessage={errors.title}
-                  isRequired
+                  isRequired={true}
                   onFieldChange={this.changeHandler}
                 />
                 {/* Third Nav */}
@@ -300,7 +300,7 @@ export default class ComponentSettingsModal extends Component {
                   id="permalink"
                   value={permalink ? permalink : ''}
                   errorMessage={errors.permalink}
-                  isRequired
+                  isRequired={true}
                   onFieldChange={this.changeHandler}
                   disabled={!isPost}
                   fixedMessage={category ? `/${category}/${thirdNavTitle ? `${thirdNavTitle}/` : ''}` : '/'}

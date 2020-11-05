@@ -64,6 +64,7 @@ const ResourceFormFields = ({date, errors, changeHandler, onToggle, isPost, site
         siteName={siteName}
         placeholder=" "
         type="file"
+        errorMessage={errors.fileUrl}
         isDisabled={isPostChecked}
       />
     </>

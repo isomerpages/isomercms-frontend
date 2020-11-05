@@ -49,7 +49,7 @@ FormField.propTypes = {
   id: PropTypes.string.isRequired,
   errorMessage: PropTypes.string,
   onFieldChange: PropTypes.func.isRequired,
-  isRequired: PropTypes.bool.isRequired,
+  isRequired: PropTypes.bool,
   style: PropTypes.string,
 };
 
