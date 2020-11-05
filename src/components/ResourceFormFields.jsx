@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import FormField from './FormField'
-import FormFieldItem from './FormFieldItem';
+import FormFieldMedia from './FormFieldMedia';
 
 const ResourceFormFields = ({date, errors, changeHandler, onToggle, isPost, siteName, fileUrl}) => {
   const [isPostChecked, setIsPostChecked] = useState(isPost)
@@ -54,7 +54,7 @@ const ResourceFormFields = ({date, errors, changeHandler, onToggle, isPost, site
         </div>
       </div>
       {/* File URL */}
-      <FormFieldItem
+      <FormFieldMedia
         title="Select File"
         id="fileUrl"
         value={fileUrl?.split('/').pop()}

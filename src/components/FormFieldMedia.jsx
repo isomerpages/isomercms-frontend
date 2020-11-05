@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import MediasModal from '../components/media/MediaModal';
-import MediaSettingsModal from '../components/media/MediaSettingsModal';
+import MediasModal from './media/MediaModal';
+import MediaSettingsModal from './media/MediaSettingsModal';
 
-const FormFieldItem = ({
+const FormFieldMedia = ({
   title,
   defaultValue,
   value,
@@ -128,9 +128,9 @@ const FormFieldItem = ({
   );
 };
 
-export default FormFieldItem;
+export default FormFieldMedia;
 
-FormFieldItem.propTypes = {
+FormFieldMedia.propTypes = {
   title: PropTypes.string.isRequired,
   defaultValue: PropTypes.string,
   value: PropTypes.string.isRequired,
@@ -141,7 +141,7 @@ FormFieldItem.propTypes = {
   style: PropTypes.string,
 };
 
-FormFieldItem.defaultProps = {
+FormFieldMedia.defaultProps = {
   defaultValue: undefined,
   style: undefined,
 };

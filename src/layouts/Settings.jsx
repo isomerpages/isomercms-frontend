@@ -7,7 +7,7 @@ import Sidebar from '../components/Sidebar';
 import LoadingButton from '../components/LoadingButton';
 import ColorPicker from '../components/ColorPicker';
 import FormField from '../components/FormField';
-import FormFieldItem from '../components/FormFieldItem';
+import FormFieldMedia from '../components/FormFieldMedia';
 import FormFieldColor from '../components/FormFieldColor';
 import FormFieldHorizontal from '../components/FormFieldHorizontal';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -398,7 +398,7 @@ export default class Settings extends Component {
             <div className={contentStyles.contentContainerCards}>
               <div className={contentStyles.cardContainer}>
                 {/* Favicon field */}
-                <FormFieldItem
+                <FormFieldMedia
                   title="Favicon"
                   id="favicon"
                   value={favicon}
