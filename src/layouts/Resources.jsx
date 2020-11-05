@@ -255,7 +255,10 @@ export default class Resources extends Component {
     return (
       <>
         {/* Resource Room exists */}
-        <Header />
+        <Header
+          backButtonText="Back to My Workspace"
+          backButtonUrl={`/sites/${siteName}/workspace`}
+        />
         {/* main bottom section */}
         <div className={elementStyles.wrapper}>
           <Sidebar siteName={siteName} currPath={location.pathname} />
