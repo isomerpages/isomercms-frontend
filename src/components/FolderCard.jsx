@@ -52,7 +52,7 @@ FolderCard.propTypes = {
   displayText: PropTypes.string.isRequired,
   settingsToggle: PropTypes.func.isRequired,
   itemIndex: PropTypes.number,
-  isHomePage: PropTypes.bool.isRequired,
+  isHomepage: PropTypes.bool.isRequired,
   isCollection: PropTypes.bool.isRequired,
   siteName: PropTypes.string.isRequired,
 };

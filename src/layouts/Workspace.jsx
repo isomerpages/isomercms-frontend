@@ -4,7 +4,7 @@ import axios from 'axios';
 // Import components
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import OverviewCard from '../components/OverviewCard';
+import CollectionPagesSection from '../components/CollectionPagesSection'
 import FolderCard from '../components/FolderCard'
 
 // Import styles
@@ -104,32 +104,10 @@ const Workspace = ({ match, location }) => {
                     Pages
                 </div>
                 {/* Pages */}
-                <div className={contentStyles.contentContainerBoxes}>
-                    {/* Display loader if pages have not been retrieved from API call */}
-                    { unlinkedPages
-                        ? (
-                        <div className={contentStyles.boxesContainer}>
-                            {
-                                unlinkedPages.length > 0
-                                ? unlinkedPages.map((page, pageIdx) => (
-                                    <OverviewCard
-                                        title={prettifyPageFileName(page.fileName)}
-                                        key={page.fileName}
-                                        itemIndex={pageIdx}
-                                        settingsToggle={() => {}}
-                                        category={page.collectionName ? page.collectionName : ''}
-                                        siteName={siteName}
-                                        fileName={page.fileName}
-                                        collectionName={page.collectionName}
-                                    />
-                                ))
-                                : null
-                            }
-                        </div>
-                        )
-                        : 'Loading Pages...'
-                    }
-                </div>
+                <CollectionPagesSection
+                    pages={unlinkedPages}
+                    siteName={siteName}
+                />
             </div>
             {/* main section ends here */}
           </div>
