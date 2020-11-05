@@ -25,15 +25,14 @@ const resourcePolicyMapping = {
 /* Helper function to retrieve the netlify.toml from repo */
 async function _parseNetlifyToml(repoName) {
   // axios get withCredentials false is required https://stackoverflow.com/questions/34078676/access-control-allow-origin-not-allowed-when-credentials-flag-is-true-but/34099399 
-  return toml.parse(tomlFile.data);
   const tomlUrl = `https://raw.githubusercontent.com/isomerpages/${repoName}/staging/netlify.toml`;
   const tomlFile = await axios.get(tomlUrl, { withCredentials: false } ); 
+  return toml.parse(tomlFile.data);
 };
 
 export async function getCSP(repoName) {
   const tomlData = await _parseNetlifyToml(repoName);
-  // const csp = tomlData.headers[0].values['Content-Security-Policy'];
-  const csp = "default-src 'self'; object-src https://not-example.com/flash; script-src 'self' blob: https://assets.dcube.cloud https://*.wogaa.sg https://assets.adobedtm.com https://www.google-analytics.com https://cdnjs.cloudflare.com https://va.ecitizen.gov.sg https://*.cloudfront.net https://printjs-4de6.kxcdn.com https://unpkg.com https://wogadobeanalytics.sc.omtrdc.net 'unsafe-eval'; img-src data: http:; style-src 'self' https://fonts.googleapis.com/ https://*.cloudfront.net https://va.ecitizen.gov.sg https://*.wogaa.sg https://cdnjs.cloudflare.com https://datagovsg.github.io 'unsafe-inline'; media-src *; frame-src https://wogaa.demdex.net/ https://*.youtube.com https://*.youtube-nocookie.com https://*.vimeo.com; frame-ancestors 'none'; font-src * data:; connect-src 'self' https://dpm.demdex.net https://www.google-analytics.com https://stats.g.doubleclick.net https://*.wogaa.sg https://va.ecitizen.gov.sg https://ifaqs.flexanswer.com https://*.cloudfront.net https://fonts.googleapis.com https://cdnjs.cloudflare.com https://wogadobeanalytics.sc.omtrdc.net;"
+  const csp = tomlData.headers[0].values['Content-Security-Policy'];
   return csp;
 };
 
@@ -57,8 +56,6 @@ function _checkHostsourcePolicy (elemSrc, policy) {
 
   const specialValues = ['http:', 'https:', 'data:', 'mediastream:', 'blob:', 'filesystem:', "'self'", "'none'", '*'];
   const hostsources = policy.split(' ').filter(value => (!specialValues.includes(value)));
-  console.log('HOSTSOURCES', hostsources);
-  
   const hostsourcesSatisfied = hostsources.some(hostsource => (_toRegExp(hostsource).test(elemSrc)));
   return hostsourcesSatisfied;
 };
@@ -77,29 +74,28 @@ function  _checkSelfPolicy (elemSrc, policy) {
 };
 
 /* Helper function to check if elemAttr satisfies CSP source specifications */
-function _checkAllPolicies (elemAttr, policy) {
-  if (_stringContainsValue(policy, "'none'")) return true; // do something 
+function _elemAttrSatisfiesPolicies (elemAttr, policy) {
+  if (_stringContainsValue(policy, "'none'")) return false; 
   
   const selfSatisfied = _checkSelfPolicy(elemAttr, policy);
   const schemasourceSatisfied = _checkSchemasourcePolicy(elemAttr, policy);
   const hostsourceSatisfied = _checkHostsourcePolicy(elemAttr, policy);
-  
-  console.log( selfSatisfied, schemasourceSatisfied , hostsourceSatisfied);
   return selfSatisfied || schemasourceSatisfied || hostsourceSatisfied;
 };
 
-/* Helper function to check if resources for a specific resourceType satisfies CSP source specifications */
-function _checkPolicyTypeCSP(resourcePolicyElems, policy, $) {
+/* Helper function to check if resourcePolicyElems for a specific policyType satisfies CSP source specifications */
+function _checkResourcePolicyElems(resourcePolicyElems, policy, $) {
+  let policyViolation = false;
   resourcePolicyElems.forEach(elemType => { 
-    console.log(elemType);
     $(elemType).each((i, elem) => {
       const checkAttr = elemType === 'object' ? 'data' : 'src' // exception for object html: <object data='abc.html'></object>
-      if (!_checkAllPolicies($(elem).attr(checkAttr), policy)) {
+      if (!_elemAttrSatisfiesPolicies($(elem).attr(checkAttr), policy)) {
         $(elem).replaceWith(`<p style="color:red"><small> Intended &lt${elemType}&gt content violates Content Security Policy and therefore could not be displayed. Isomer does not support display of any forbidden resources. </small></p>`);
+        policyViolation = true;
       }
     });
   });
-  return $;
+  return { $, policyViolation };
 };
 
 export function checkCSP(
@@ -108,15 +104,21 @@ export function checkCSP(
   policyTypes = ['img-src', 'media-src', 'frame-src', 'object-src', 'script-src'],
   ) {
 
-  let $;
-  $ = cheerio.load(chunk);
-
+  let $ = cheerio.load(chunk);
+  let isCspViolation = false;
   const cspPolicy = new Policy(csp);
+
   policyTypes.forEach(policyType => {
+    let policyViolation;
     const resourcePolicy = cspPolicy.get(policyType) === '' ? cspPolicy.get('default-src') : cspPolicy.get(policyType);
     const resourcePolicyElems = resourcePolicyMapping[policyType];
     console.log(`checking resource policy for ${policyType}, for elements ${resourcePolicyElems}: ${resourcePolicy}`);
-    $ = _checkPolicyTypeCSP(resourcePolicyElems, resourcePolicy, $);
+    ({ $, policyViolation } = _checkResourcePolicyElems(resourcePolicyElems, resourcePolicy, $));
+    isCspViolation = policyViolation || isCspViolation;
   })
-  return $.html();
+
+  return {
+    sanitisedHtml: $.html(),
+    isCspViolation,
+  };
 };
