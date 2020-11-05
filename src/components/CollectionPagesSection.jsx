@@ -10,9 +10,6 @@ import ComponentSettingsModal from '../components/ComponentSettingsModal'
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
-// Import utils
-import { prettifyPageFileName } from '../utils';
-
 // Constants
 const RADIX_PARSE_INT = 10;
 
@@ -81,14 +78,12 @@ const CollectionPagesSection = ({ collectionName, pages, siteName }) => {
                             pages.length > 0
                             ? pages.map((page, pageIdx) => (
                                 <OverviewCard
-                                    title={prettifyPageFileName(page.fileName)}
                                     key={page.fileName}
                                     itemIndex={pageIdx}
                                     settingsToggle={settingsToggle}
-                                    category={page.collectionName ? page.collectionName : ''}
+                                    category={collectionName}
                                     siteName={siteName}
                                     fileName={page.fileName}
-                                    collectionName={collectionName}
                                 />
                             ))
                             : null
