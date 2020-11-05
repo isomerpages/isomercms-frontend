@@ -43,6 +43,13 @@
   }
 }
 
+.segment {
+  @extend .sectionHeader;
+  margin-top: 0;
+}
+
+
+
 .contentContainerBars{
   width: 100%;
   ul{
@@ -162,7 +169,6 @@
         flex-direction: column;
         justify-content: space-between;
         align-content: center;
-        height:100%;
         overflow: hidden;
 
         .componentCategory{
@@ -208,17 +214,23 @@
           color: grey;
           font-size: 12px;
         }
+
+        .componentIcon{
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          align-content: flex-end;
+
+          .bx{
+            font-size: 20px;
+          }
+        }
       }
 
-      .componentIcon{
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        align-content: flex-end;
-
-        .bx{
-          font-size: 20px;
-        }
+      .folderInfo{
+        @extend .componentInfo;
+        flex-direction: row;
+        width: 100%;
       }
     }
 
