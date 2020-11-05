@@ -29,7 +29,10 @@ const Collections = ({ match, location }) => {
 
     return (
         <>
-          <Header />
+          <Header
+            backButtonText="Back to My Workspace"
+            backButtonUrl={`/sites/${siteName}/workspace`}
+          />
           {/* main bottom section */}
           <div className={elementStyles.wrapper}>
             <Sidebar siteName={siteName} currPath={location.pathname} />
@@ -41,6 +44,7 @@ const Collections = ({ match, location }) => {
                 </div>
                 {/* Collection pages */}
                 <CollectionPagesSection
+                    collectionName={collectionName}
                     pages={collectionPages}
                     siteName={siteName}
                 />

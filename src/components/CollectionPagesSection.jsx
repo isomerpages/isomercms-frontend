@@ -10,7 +10,7 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 // Import utils
 import { prettifyPageFileName } from '../utils';
 
-const CollectionPagesSection = ({ pages, siteName }) => {
+const CollectionPagesSection = ({ collectionName, pages, siteName }) => {
     return (
         <div className={contentStyles.contentContainerBoxes}>
             {/* Display loader if pages have not been retrieved from API call */}
@@ -28,7 +28,7 @@ const CollectionPagesSection = ({ pages, siteName }) => {
                                 category={page.collectionName ? page.collectionName : ''}
                                 siteName={siteName}
                                 fileName={page.fileName}
-                                collectionName={page.collectionName}
+                                collectionName={collectionName}
                             />
                         ))
                         : null
