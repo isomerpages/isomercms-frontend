@@ -5,14 +5,23 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 const OverviewCard = ({
-  title, date, category, settingsToggle, itemIndex, siteName, collectionName, fileName, isHomepage = false
+  title, date, category, settingsToggle, itemIndex, siteName, collectionName, fileName, isResource, isHomepage
 }) => {
-  const link = isHomepage ? `/sites/${siteName}/homepage` :
-    collectionName
-    ? `/sites/${siteName}/collections/${collectionName}/${fileName}`
-    : `/sites/${siteName}/pages/${fileName}`
+  const generateLink = () => {
+    if (isResource) {
+      return `/sites/${siteName}/resources/${category}/${fileName}`
+    } else if (isHomepage) {
+      return `/sites/${siteName}/homepage`
+    } else {
+      if (collectionName) {
+        return `/sites/${siteName}/collections/${collectionName}/${fileName}`
+      } else {
+        return `/sites/${siteName}/pages/${fileName}`
+      }
+    }
+  }
   return (
-    <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`} to={link}>
+    <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`} to={generateLink()}>
       <div id={itemIndex} className={contentStyles.componentInfo}>
         <div className={contentStyles.componentCategory}>{category ? category : ''}</div>
         <h1 className={contentStyles.componentTitle}>{title}</h1>

@@ -27,16 +27,20 @@ const ResourcePages = ({
       ? (
         <>
           {resourcePages.map((resourcePage, resourceIndex) => {
-            const { fileName, category }= resourcePage
+            const { fileName, category } = resourcePage
             const { title, date } = retrieveResourceFileMetadata(fileName);
             return (
             <OverviewCard
+              key={title}
               category={category}
               settingsToggle={settingsToggle}
               itemIndex={resourceIndex}
               title={title}
               date={date}
-              link={`/sites/${siteName}/resources/${category}/${fileName}`}
+              siteName={siteName}
+              collectionName={category}
+              fileName={fileName}
+              isResource={true}
             />)
           })}
         </>

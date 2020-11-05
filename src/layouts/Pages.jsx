@@ -135,6 +135,7 @@ export default class Pages extends Component {
                     <OverviewCard
                       itemIndex={0}
                       title={"Homepage"}
+                      key={"homepage"}
                       siteName={siteName}
                       isHomepage={true}
                     />
