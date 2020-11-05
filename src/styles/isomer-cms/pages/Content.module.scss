@@ -29,8 +29,8 @@
   align-items: center;
   justify-content: space-between;
 
-  margin-bottom: 20px;
-  margin-top: 10px;
+  margin-bottom: 1.5rem;
+  margin-top: 1rem;
 
   .sectionTitle{
     font-size: 28px;
@@ -46,6 +46,16 @@
 .segment {
   @extend .sectionHeader;
   margin-top: 0;
+  justify-content: flex-start;
+  margin-bottom: 1.5rem;
+
+  span {
+    font-size: 16px;
+  }
+
+  strong {
+    font-size: 16px;
+  }
 }
 
 

@@ -950,8 +950,8 @@ export default class EditHomepage extends Component {
         }
         <Header
           title="Homepage"
-          backButtonText="Back to Pages"
-          backButtonUrl={`/sites/${siteName}/pages`}
+          backButtonText="Back to Workspace"
+          backButtonUrl={`/sites/${siteName}/workspace`}
         />
         <div className={elementStyles.wrapper}>
           <div className={editorStyles.homepageEditorSidebar}>

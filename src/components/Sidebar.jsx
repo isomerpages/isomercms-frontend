@@ -5,8 +5,8 @@ import styles from '../styles/isomer-cms/pages/Admin.module.scss';
 
 const sidebarPathDict = [
   {
-    pathname: 'pages',
-    title: 'Pages',
+    pathname: 'workspace',
+    title: 'My Workspace',
   },
   {
     pathname: 'resources',
