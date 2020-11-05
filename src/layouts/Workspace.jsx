@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 // Import components
 import Header from '../components/Header';
@@ -112,7 +113,19 @@ const Workspace = ({ match, location }) => {
             {/* main section ends here */}
           </div>
         </>
-      );
+    );
 }
 
 export default Workspace
+
+Workspace.propTypes = {
+    match: PropTypes.shape({
+      params: PropTypes.shape({
+        siteName: PropTypes.string,
+      }),
+    }).isRequired,
+    location: PropTypes.shape({
+      pathname: PropTypes.string.isRequired,
+    }).isRequired,
+  };
+  
