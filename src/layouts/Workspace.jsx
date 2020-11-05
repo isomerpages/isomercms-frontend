@@ -19,6 +19,8 @@ import { prettifyPageFileName } from '../utils';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
 const Workspace = ({ match, location }) => {
+    const { siteName } = match.params;
+
     const [collections, setCollections] = useState([])
     const [unlinkedPages, setUnlinkedPages] = useState([])
 
@@ -33,7 +35,6 @@ const Workspace = ({ match, location }) => {
         fetchData()
     }, [])
 
-    const { siteName } = match.params;
     return (
         <>
           <Header />
@@ -90,6 +91,7 @@ const Workspace = ({ match, location }) => {
                                     isHomepage={false}
                                     isCollection={true}
                                     siteName={siteName}
+                                    category={collection}
                                     itemIndex={collectionIdx}
                                 />
                             ))
@@ -127,5 +129,5 @@ Workspace.propTypes = {
     location: PropTypes.shape({
       pathname: PropTypes.string.isRequired,
     }).isRequired,
-  };
+};
   
