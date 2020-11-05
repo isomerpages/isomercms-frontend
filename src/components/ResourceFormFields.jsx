@@ -34,7 +34,7 @@ const ResourceFormFields = ({date, errors, changeHandler, onToggle, isPost, site
                 id="radio-post"
                 name="resource-type"
                 value="post"
-                onClick={onToggleType}
+                onChange={onToggleType}
                 checked={isPostChecked}
               />
               Post Content
@@ -45,7 +45,7 @@ const ResourceFormFields = ({date, errors, changeHandler, onToggle, isPost, site
                 id="radio-file"
                 name="resource-type"
                 value="file"
-                onClick={onToggleType}
+                onChange={onToggleType}
                 checked={!isPostChecked}
               />
               Downloadable File
