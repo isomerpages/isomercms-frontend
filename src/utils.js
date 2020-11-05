@@ -132,7 +132,10 @@ export function slugifyResourceCategory(category) {
 
 export function prettifyPageFileName(fileName) {
   const fileNameArray = fileName.split('.md')[0];
-  const tokenArray = fileNameArray.split('-');
+  const tokenArray = fileNameArray.split('-').map((token) => {
+    if (token.length < 2) return token.toUpperCase()
+    return token.slice(0,1).toUpperCase() + token.slice(1)
+  });
 
   return tokenArray.join(' ');
 }
