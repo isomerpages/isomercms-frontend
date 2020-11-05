@@ -9,6 +9,7 @@ import {
   frontMatterParser,
   dequoteString,
   generatePageFileName,
+  generateResourceFileName,
   retrieveCollectionAndLinkFromPermalink,
   saveFileAndRetrieveUrl,
 } from '../utils';
@@ -203,25 +204,34 @@ export default class ComponentSettingsModal extends Component {
 
   changeHandler = (event) => {
     const { id, value } = event.target;
+    const { title, date } = this.state
     const { pageFilenames, type } = this.props;
     const pageFilenamesExc = pageFilenames ? pageFilenames.filter((filename) => filename !== this.state.fileName) : null
-    let errorMessage
+    let errorMessage, newFileName
     if (type === 'resource') {
       errorMessage = validateResourceSettings(id, value);
+      newFileName = generateResourceFileName(id==="title" ? value : title, id==="date" ? value : date)
     } else if (type === 'page') {
       errorMessage = validatePageSettings(id, value);
-      const newFileName = generatePageFileName(value);
-      if (errorMessage === '' && pageFilenamesExc && pageFilenamesExc.includes(newFileName)) {
-        errorMessage = 'This title is already in use. Please choose a different one.';
-      }
+      newFileName = generatePageFileName(value);
     }
 
-    this.setState({
-      errors: {
-        [id]: errorMessage,
-      },
-      [id]: value,
-    });
+    if (errorMessage === '' && pageFilenamesExc && pageFilenamesExc.includes(newFileName)) {
+      this.setState({
+        errors: {
+          title: 'This title is already in use. Please choose a different one.',
+        },
+        [id]: value,
+      })
+    } else {
+      this.setState({
+        errors: {
+          [id]: errorMessage,
+        },
+        [id]: value,
+      });
+    }
+    
   }
 
   render() {

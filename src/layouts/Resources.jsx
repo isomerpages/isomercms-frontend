@@ -269,6 +269,10 @@ export default class Resources extends Component {
                 fileName={selectedResourcePage.fileName}
                 settingsToggle={this.settingsToggle}
                 type="resource"
+                pageFilenames={_.chain(resourcePages)
+                  .filter({ category: selectedResourcePage.category })
+                  .map((file) => file.fileName)
+                  .value()}
               />
             )
             : null}
