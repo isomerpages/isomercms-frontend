@@ -22,6 +22,14 @@ import SaveDeleteButtons from './SaveDeleteButtons';
 // axios settings
 axios.defaults.withCredentials = true
 
+const isCategoryDropdownDisabled = (isNewFile, category) => {
+  if (category) {
+    return true
+  }
+  if (isNewFile) return false
+  return true
+}
+
 export default class ComponentSettingsModal extends Component {
   constructor(props) {
     super(props);
@@ -272,8 +280,8 @@ export default class ComponentSettingsModal extends Component {
                 {/* Category */}
                 <p className={elementStyles.formLabel}>Category Folder Name</p>
                 <div className="d-flex">
-                  <select className="w-100" id="category" value={category} onChange={this.changeHandler} disabled={!isNewFile}>
-                    {
+                  <select className="w-100" id="category" value={category} onChange={this.changeHandler} disabled={isCategoryDropdownDisabled(isNewFile, category)} >
+                  {
                     allCategories
                       ? allCategories.map((category) => (
                         <option
