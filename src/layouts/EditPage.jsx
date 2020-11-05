@@ -8,6 +8,7 @@ import marked from 'marked';
 import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
 import LeftNavPage from '../templates/LeftNavPage';
+import { getCSP, checkCSP } from '../utils/cspUtils';
 
 import {
   frontMatterParser,
@@ -91,6 +92,7 @@ export default class EditPage extends Component {
     const { match, isResourcePage, isCollectionPage } = this.props;
     const { collectionName, fileName, siteName, resourceName } = match.params;
     this.state = {
+      csp: '',
       sha: null,
       originalMdValue: '',
       editorValue: '',
@@ -116,6 +118,10 @@ export default class EditPage extends Component {
 
       // split the markdown into front matter and content
       const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
+     
+      const { match } = this.props;
+      const { siteName } = match.params;
+      const csp = await getCSP(siteName);
 
       let leftNavPages
       if (this.props.isCollectionPage) {
@@ -136,6 +142,7 @@ export default class EditPage extends Component {
       }
 
       this.setState({
+        csp,
         sha,
         originalMdValue: mdBody.trim(),
         editorValue: mdBody.trim(),
@@ -273,6 +280,7 @@ export default class EditPage extends Component {
     const { title, date } = extractMetadataFromFilename(isResourcePage, isCollectionPage, fileName)
     const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, collectionName, siteName)
     const {
+      csp,
       originalMdValue,
       editorValue,
       canShowDeleteWarningModal,
@@ -374,14 +382,14 @@ export default class EditPage extends Component {
               isCollectionPage && leftNavPages
               ? (
                 <LeftNavPage
-                  chunk={prependImageSrc(siteName, marked(editorValue))}
+                  chunk={prependImageSrc(siteName, checkCSP(csp, marked(editorValue)))}
                   leftNavPages={leftNavPages}
                   fileName={fileName}
                   title={title}
                 />
               ) : (
                 <SimplePage
-                  chunk={prependImageSrc(siteName, marked(editorValue))}
+                  chunk={prependImageSrc(siteName, checkCSP(csp, marked(editorValue)))}
                   title={title}
                   date={date}
                 />
