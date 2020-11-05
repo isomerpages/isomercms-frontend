@@ -64,7 +64,9 @@ const Workspace = ({ match, location }) => {
                     </div>
                 </div>
                 {/* Segment divider  */}
-                <hr className="w-100 mt-3 mb-5" />
+                <div className={contentStyles.segmentDividerContainer}>
+                    <hr className="w-100 mt-3 mb-5" />
+                </div>
                 {/* Collections title */}
                 <div className={contentStyles.segment}>
                     Collections
@@ -95,8 +97,9 @@ const Workspace = ({ match, location }) => {
                     </div>
                 </div>
                 {/* Segment divider  */}
-                <hr className="invisible w-100 mt-3 mb-5" />
-                {/* Pages title */}
+                <div className={contentStyles.segmentDividerContainer}>
+                    <hr className="invisible w-100 mt-3 mb-5" />
+                </div>                {/* Pages title */}
                 <div className={contentStyles.segment}>
                     Pages
                 </div>
