@@ -14,45 +14,59 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 // Constants
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
+// Determine whether the back button in the header should point to Workspace or Resources
+const getBackButtonInfo = (pathname) => {
+  const pathnameArr = pathname.split('/')
+  if (pathnameArr[3] === 'collections') return {
+    backButtonLabel: 'My Workspace',
+    backButtonUrl: 'workspace',
+  }
+  if (pathnameArr[3] === 'resources') return {
+    backButtonLabel: 'Resources',
+    backButtonUrl: 'resources',
+  }
+}
+
 const Collections = ({ match, location }) => {
-    const { collectionName, siteName } = match.params;
+  const { backButtonLabel, backButtonUrl } = getBackButtonInfo(location.pathname)
+  const { collectionName, siteName } = match.params;
 
-    const [collectionPages, setCollectionPages] = useState([])
+  const [collectionPages, setCollectionPages] = useState([])
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${collectionName}`);
-            setCollectionPages(collectionsResp.data?.collectionPages)
-        }
-        fetchData()
-    }, [])
+  useEffect(() => {
+      const fetchData = async () => {
+          const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${collectionName}`);
+          setCollectionPages(collectionsResp.data?.collectionPages)
+      }
+      fetchData()
+  }, [])
 
-    return (
-        <>
-          <Header
-            backButtonText="Back to My Workspace"
-            backButtonUrl={`/sites/${siteName}/workspace`}
-          />
-          {/* main bottom section */}
-          <div className={elementStyles.wrapper}>
-            <Sidebar siteName={siteName} currPath={location.pathname} />
-            {/* main section starts here */}
-            <div className={contentStyles.mainSection}>
-                {/* Collection title */}
-                <div className={contentStyles.sectionHeader}>
-                    <h1 className={contentStyles.sectionTitle}>{collectionName}</h1>
-                </div>
-                {/* Collection pages */}
-                <CollectionPagesSection
-                    collectionName={collectionName}
-                    pages={collectionPages}
-                    siteName={siteName}
-                />
-            </div>
-            {/* main section ends here */}
+  return (
+      <>
+        <Header
+          backButtonText={`Back to ${backButtonLabel}`}
+          backButtonUrl={`/sites/${siteName}/${backButtonUrl}`}
+        />
+        {/* main bottom section */}
+        <div className={elementStyles.wrapper}>
+          <Sidebar siteName={siteName} currPath={location.pathname} />
+          {/* main section starts here */}
+          <div className={contentStyles.mainSection}>
+              {/* Collection title */}
+              <div className={contentStyles.sectionHeader}>
+                  <h1 className={contentStyles.sectionTitle}>{collectionName}</h1>
+              </div>
+              {/* Collection pages */}
+              <CollectionPagesSection
+                  collectionName={collectionName}
+                  pages={collectionPages}
+                  siteName={siteName}
+              />
           </div>
-        </>
-    );
+          {/* main section ends here */}
+        </div>
+      </>
+  );
 }
 
 export default Collections
