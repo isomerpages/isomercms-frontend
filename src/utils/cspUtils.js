@@ -1,8 +1,5 @@
 // Supported CSP checks are img-src, frame-src, media-src, object-src script-src
-
 // TODO: child-src script-src-elem
-// TODO: figure out disable button
-// TODO: figure out display for leading paragraph and color
 
 import toml from 'toml';
 import axios from 'axios';
@@ -56,6 +53,7 @@ function _checkHostsourcePolicy (elemSrc, policy) {
 
   const specialValues = ['http:', 'https:', 'data:', 'mediastream:', 'blob:', 'filesystem:', "'self'", "'none'", '*'];
   const hostsources = policy.split(' ').filter(value => (!specialValues.includes(value)));
+  
   const hostsourcesSatisfied = hostsources.some(hostsource => (_toRegExp(hostsource).test(elemSrc)));
   return hostsourcesSatisfied;
 };
@@ -90,7 +88,7 @@ function _checkResourcePolicyElems(resourcePolicyElems, policy, $) {
     $(elemType).each((i, elem) => {
       const checkAttr = elemType === 'object' ? 'data' : 'src' // exception for object html: <object data='abc.html'></object>
       if (!_elemAttrSatisfiesPolicies($(elem).attr(checkAttr), policy)) {
-        $(elem).replaceWith(`<p style="color:red"><small> Intended &lt${elemType}&gt content violates Content Security Policy and therefore could not be displayed. Isomer does not support display of any forbidden resources. </small></p>`);
+        $(elem).replaceWith(`<span style="color:#c91508> Intended &lt${elemType}&gt content violates Content Security Policy and therefore could not be displayed. Isomer does not support display of any forbidden resources. </span>`);
         policyViolation = true;
       }
     });
