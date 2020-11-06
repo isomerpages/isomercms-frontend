@@ -246,6 +246,7 @@ export default class ComponentSettingsModal extends Component {
   render() {
     const {
       category,
+      prevCategory,
       title,
       date,
       allCategories,
@@ -281,7 +282,7 @@ export default class ComponentSettingsModal extends Component {
                 {/* Category */}
                 <p className={elementStyles.formLabel}>Category Folder Name</p>
                 <div className="d-flex">
-                  <select className="w-100" id="category" value={category} onChange={this.changeHandler} disabled={isCategoryDropdownDisabled(isNewFile, category)} >
+                  <select className="w-100" id="category" value={category} onChange={this.changeHandler} disabled={isCategoryDropdownDisabled(isNewFile, prevCategory)} >
                   {
                     allCategories
                       ? allCategories.map((category) => (
