@@ -13,7 +13,7 @@ import Home from './layouts/Home';
 import Sites from './layouts/Sites';
 import Workspace from './layouts/Workspace';
 import EditPage from './layouts/EditPage';
-import CollectionPages from './layouts/NewCollectionPages';
+import CollectionPages from './layouts/CategoryPages';
 import Images from './layouts/Images';
 import EditImage from './layouts/EditImage';
 import Files from './layouts/Files';
