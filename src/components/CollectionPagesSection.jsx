@@ -62,7 +62,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName }) => {
             }
             <div className={contentStyles.contentContainerBoxes}>
                 {/* Display loader if pages have not been retrieved from API call */}
-                { pages
+                { pages && pages.length > 0
                     ? (
                     <div className={contentStyles.boxesContainer}>
                         <button
@@ -75,8 +75,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName }) => {
                             <h2 id="settingsText-NEW">Add a new {collectionName ? 'collection' : ''} page</h2>
                         </button>
                         {
-                            pages.length > 0
-                            ? pages.map((page, pageIdx) => (
+                            pages.map((page, pageIdx) => (
                                 <OverviewCard
                                     key={page.fileName}
                                     itemIndex={pageIdx}
@@ -86,7 +85,6 @@ const CollectionPagesSection = ({ collectionName, pages, siteName }) => {
                                     fileName={page.fileName}
                                 />
                             ))
-                            : null
                         }
                     </div>
                     )
