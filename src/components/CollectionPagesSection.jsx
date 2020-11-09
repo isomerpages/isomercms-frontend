@@ -13,10 +13,18 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 // Constants
 const RADIX_PARSE_INT = 10;
 
-const CollectionPagesSection = ({ collectionName, pages, siteName }) => {
+const CollectionPagesSection = ({ collectionName, pages, siteName, isResource }) => {
     const [isComponentSettingsActive, setIsComponentSettingsActive] = useState(false)
     const [selectedFile, setSelectedFile] = useState('')
     const [createNewPage, setCreateNewPage] = useState(false)
+
+    const generateNewPageText = () => {
+        if (isResource) {
+            return `Add a new resource`
+        } else {
+            return `Add a new ${collectionName ? 'collection ' : ''}page`
+        }
+    }
 
     const settingsToggle = (event) => {
         const { id } = event.target;
@@ -45,13 +53,13 @@ const CollectionPagesSection = ({ collectionName, pages, siteName }) => {
                 isComponentSettingsActive
                 && (
                     <ComponentSettingsModal
-                        modalTitle={"Page Settings"}
+                        modalTitle={isResource ? "Resource Settings" : "Page Settings"}
                         settingsToggle={settingsToggle}
                         category={collectionName}
                         siteName={siteName}
                         fileName={selectedFile ? selectedFile.fileName : ''}
                         isNewFile={createNewPage}
-                        type="page"
+                        type={isResource ? "resource" : "page"}
                         pageFilenames={
                             _.chain(pages)
                                 .map((page) => page.fileName)
@@ -72,7 +80,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName }) => {
                             className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.addNew}`}
                         >
                             <i id="settingsIcon-NEW" className={`bx bx-plus-circle ${elementStyles.bxPlusCircle}`} />
-                            <h2 id="settingsText-NEW">Add a new {collectionName ? 'collection' : ''} page</h2>
+                            <h2 id="settingsText-NEW">{generateNewPageText()}</h2>
                         </button>
                         {
                             pages.map((page, pageIdx) => (
@@ -83,6 +91,9 @@ const CollectionPagesSection = ({ collectionName, pages, siteName }) => {
                                     category={collectionName}
                                     siteName={siteName}
                                     fileName={page.fileName}
+                                    title={page.title}
+                                    date={page.date}
+                                    isResource={isResource}
                                 />
                             ))
                         }
