@@ -21,8 +21,8 @@ export default class HyperlinkModal extends Component {
 		const { id, value } = event.target;
 		this.setState({
 			[id]: value,
-		})
-  }
+		});
+  };
 
   render() {
 		const {
