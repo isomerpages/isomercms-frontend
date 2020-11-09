@@ -22,6 +22,14 @@ import SaveDeleteButtons from './SaveDeleteButtons';
 // axios settings
 axios.defaults.withCredentials = true
 
+const isCategoryDropdownDisabled = (isNewFile, category) => {
+  if (category) {
+    return true
+  }
+  if (isNewFile) return false
+  return true
+}
+
 export default class ComponentSettingsModal extends Component {
   constructor(props) {
     super(props);
@@ -205,8 +213,9 @@ export default class ComponentSettingsModal extends Component {
   changeHandler = (event) => {
     const { id, value } = event.target;
     const { title, date } = this.state
-    const { pageFilenames, type } = this.props;
-    const pageFilenamesExc = pageFilenames ? pageFilenames.filter((filename) => filename !== this.state.fileName) : null
+    const { pageFilenames, type, fileName: currentFileName } = this.props;
+
+    const pageFilenamesExc = pageFilenames ? pageFilenames.filter((filename) => filename !== currentFileName) : null
     let errorMessage, newFileName
     if (type === 'resource') {
       errorMessage = validateResourceSettings(id, value);
@@ -237,6 +246,7 @@ export default class ComponentSettingsModal extends Component {
   render() {
     const {
       category,
+      prevCategory,
       title,
       date,
       allCategories,
@@ -272,11 +282,12 @@ export default class ComponentSettingsModal extends Component {
                 {/* Category */}
                 <p className={elementStyles.formLabel}>Category Folder Name</p>
                 <div className="d-flex">
-                  <select className="w-100" id="category" value={category} onChange={this.changeHandler} disabled={!isNewFile}>
-                    {
+                  <select className="w-100" id="category" value={category} onChange={this.changeHandler} disabled={isCategoryDropdownDisabled(isNewFile, prevCategory)} >
+                  {
                     allCategories
                       ? allCategories.map((category) => (
                         <option
+                          key={category}
                           value={category}
                           label={category}
                         />
@@ -367,7 +378,7 @@ export default class ComponentSettingsModal extends Component {
 ComponentSettingsModal.propTypes = {
   siteName: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
-  category: PropTypes.string.isRequired,
+  category: PropTypes.string,
   isNewFile: PropTypes.bool.isRequired,
   settingsToggle: PropTypes.func.isRequired,
 };

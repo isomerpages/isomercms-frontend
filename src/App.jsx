@@ -11,9 +11,9 @@ import axios from 'axios';
 import AuthCallback from './layouts/AuthCallback'
 import Home from './layouts/Home';
 import Sites from './layouts/Sites';
-import Pages from './layouts/Pages';
+import Workspace from './layouts/Workspace';
 import EditPage from './layouts/EditPage';
-import CollectionPages from './layouts/CollectionPages';
+import CollectionPages from './layouts/CategoryPages';
 import Images from './layouts/Images';
 import EditImage from './layouts/EditImage';
 import Files from './layouts/Files';
@@ -50,8 +50,10 @@ function App() {
     },
     async function (error) {
       if (error.response && error.response.status === 401) {
-        setShouldBlockNavigation(true)
-        console.log('User token has expired or does not exist')
+        if (isLoggedIn) {
+          setShouldBlockNavigation(true)
+          console.log('User token has expired or does not exist')
+        }
       } else {
         console.log('An unknown error occurred: ')
         console.error(error)
@@ -114,7 +116,7 @@ function App() {
                   <ProtectedRouteWithProps path="/sites/:siteName/images/:fileName" component={EditImage} />
                   <ProtectedRouteWithProps path="/sites/:siteName/images" component={Images} />
                   <ProtectedRouteWithProps path="/sites/:siteName/pages/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={false} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/pages" component={Pages} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/workspace" component={Workspace} />
                   <ProtectedRouteWithProps path="/sites/:siteName/homepage" component={EditHomepage} />
                   <ProtectedRouteWithProps path="/sites/:siteName/resources/:resourceName/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={true} />
                   <ProtectedRouteWithProps path="/sites/:siteName/resources" component={Resources} />

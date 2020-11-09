@@ -5,8 +5,8 @@ import styles from '../styles/isomer-cms/pages/Admin.module.scss';
 
 const sidebarPathDict = [
   {
-    pathname: 'pages',
-    title: 'Pages',
+    pathname: 'workspace',
+    title: 'My Workspace',
   },
   {
     pathname: 'resources',
@@ -26,6 +26,19 @@ const sidebarPathDict = [
   },
 ];
 
+// Highlight workspace sidebar tab when in collections layout
+const convertCollectionsPathToWorkspace = (currPath, siteName) => {
+  const currPathArr = currPath.split('/')
+
+  // example path: /sites/demo-v2/collections/left-nav-one
+  if (currPathArr.length === 5 && currPathArr[3] === 'collections') return `/sites/${siteName}/workspace`
+  
+  // example path: /sites/demo-v2/resources/news
+  if (currPathArr.length === 5 && currPathArr[3] === 'resources') return `/sites/${siteName}/resources`
+  
+  return currPath
+}
+
 const Sidebar = ({ siteName, currPath }) => (
   <div className={styles.adminSidebar}>
     <div className={styles.siteIntro}>
@@ -36,7 +49,7 @@ const Sidebar = ({ siteName, currPath }) => (
       <ul>
         {sidebarPathDict.map(({ pathname, title }) => (
           <li
-            className={`d-flex p-0 ${`/sites/${siteName}/${pathname}` === currPath ? styles.active : null}`}
+            className={`d-flex p-0 ${`/sites/${siteName}/${pathname}` === convertCollectionsPathToWorkspace(currPath, siteName) ? styles.active : null}`}
             key={title}
           >
             <Link

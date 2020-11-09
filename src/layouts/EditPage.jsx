@@ -69,6 +69,21 @@ const getCollectionsApiEndpoint = (endpoint) => {
   return endpointArr.slice(0, endpointArr.length - 2).join('/')
 }
 
+const getBackButtonInfo = (resourceCategory, collectionName, siteName) => {
+  if (resourceCategory) return {
+    backButtonLabel: resourceCategory,
+    backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
+  }
+  if (collectionName) return {
+    backButtonLabel: collectionName,
+    backButtonUrl: `/sites/${siteName}/collections/${collectionName}`,
+  }
+  return {
+    backButtonLabel: 'My Workspace',
+    backButtonUrl: `/sites/${siteName}/workspace`,
+  }
+}
+
 export default class EditPage extends Component {
   constructor(props) {
     super(props);
@@ -223,11 +238,11 @@ export default class EditPage extends Component {
     this.toggleImageModal()
   }
 
-
   render() {
     const { match, isCollectionPage, isResourcePage } = this.props;
-    const { siteName, fileName } = match.params;
+    const { siteName, fileName, collectionName, resourceName } = match.params;
     const { title, date } = extractMetadataFromFilename(isResourcePage, isCollectionPage, fileName)
+    const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, collectionName, siteName)
     const {
       originalMdValue,
       editorValue,
@@ -243,8 +258,8 @@ export default class EditPage extends Component {
           title={title}
           shouldAllowEditPageBackNav={originalMdValue === editorValue}
           isEditPage="true"
-          backButtonText={`Back to ${isResourcePage ? 'Resources' : 'Pages'}`}
-          backButtonUrl={isResourcePage ?`/sites/${siteName}/resources` : `/sites/${siteName}/pages`}
+          backButtonText={backButtonLabel}
+          backButtonUrl={backButtonUrl}
         />
         <div className={elementStyles.wrapper}>
           {
