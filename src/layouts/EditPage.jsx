@@ -356,8 +356,10 @@ export default class EditPage extends Component {
                   },
                   {
                     name: 'link',
-                    action: () => { this.onHyperlinkOpen() },
-                    className: 'fa fa-link-o',
+                    action: async () => { 
+                      this.onHyperlinkOpen() 
+                    },
+                    className: 'fa fa-link',
                     title: 'Insert Link',
                     default: true,
                   },
