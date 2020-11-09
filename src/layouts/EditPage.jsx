@@ -121,6 +121,8 @@ export default class EditPage extends Component {
      
       const { match } = this.props;
       const { siteName } = match.params;
+      
+      // retrieve CSP from repo
       const csp = await getCSP(siteName);
 
       let leftNavPages
