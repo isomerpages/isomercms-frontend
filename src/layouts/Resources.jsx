@@ -123,7 +123,7 @@ const Resources = ({ match, location }) => {
                   <CollectionPagesSection
                     pages={[]}
                     siteName={siteName}
-                    type='resource'
+                    isResource={true}
                   />
                 </>
               : <>
