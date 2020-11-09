@@ -60,6 +60,8 @@ const Resources = ({ match, location }) => {
       const { siteName } = match.params;
       const params = { resourceRoom: newResourceRoomName };
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resource-room`, params);
+      // Refresh page
+      window.location.reload();
     } catch (err) {
       console.log(err);
     }
