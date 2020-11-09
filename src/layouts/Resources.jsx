@@ -38,7 +38,7 @@ const Resources = ({ match, location }) => {
         const { resourceRoomName, resources: resourceCategories } = resourcesResp.data;
 
         if (resourceRoomName) {
-          const uniqueResourceFolderNames = _.uniq(resourceCategories.map((file) => file.dirName))
+          const uniqueResourceFolderNames = resourceCategories ? _.uniq(resourceCategories.map((file) => file.dirName)) : []
           setResourceFolderNames(uniqueResourceFolderNames)
           setResourceRoomName(resourceRoomName)
         }
