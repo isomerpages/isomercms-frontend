@@ -1,5 +1,5 @@
-// Supported CSP checks are img-src, frame-src, media-src, object-src script-src
-// TODO: child-src script-src-elem
+// Supported CSP checks are img-src, frame-src, media-src, object-src script-src-elem 
+// Supported fallbacks are child-src, script-src, and default-src
 
 import toml from 'toml';
 import axios from 'axios';
@@ -74,16 +74,22 @@ function _elemAttrSatisfiesPolicies (elemAttr, policy) {
 /* Helper function to get resource policy from csp for given policyType*/
 function _getResourcePolicy(csp, policyType) {
   const resourcePolicyMapping = { 
-    // 'child-src': ['frame', 'iframe'],
     'frame-src': ['frame', 'iframe'],
     'img-src': ['img'],
     'media-src': ['audio', 'video', 'track'],
     'object-src': ['object', 'embed', 'applet'],
-    'script-src': ['script'], 
-    // 'script-src-elem': ['script'],
+    'script-src-elem': ['script'],
   };
   const cspPolicy = new Policy(csp);
-  const resourcePolicy = cspPolicy.get(policyType) === '' ? cspPolicy.get('default-src') : cspPolicy.get(policyType);
+
+  let resourcePolicy
+  if (policyType === 'frame-src') { // from http://csplite.com/csp/test121/, fallback chain: frame-src -> child-src -> default-src
+    resourcePolicy = cspPolicy.get(policyType) ||  cspPolicy.get('child-src') || cspPolicy.get('default-src')
+  } else if (policyType === 'script-src-elem') { // fallback chain: script-src-elem -> script-src -> default-src
+    resourcePolicy = cspPolicy.get(policyType) ||  cspPolicy.get('script-src') || cspPolicy.get('default-src')
+  } else {
+    resourcePolicy = cspPolicy.get(policyType) === '' ? cspPolicy.get('default-src') : cspPolicy.get(policyType);
+  }
   const resourcePolicyElems = resourcePolicyMapping[policyType];
   return { resourcePolicy, resourcePolicyElems } 
 }
@@ -106,7 +112,7 @@ function _checkResourcePolicyElems(resourcePolicyElems, policy, $) {
 export function checkCSP(
   csp,
   chunk,
-  policyTypes = ['img-src', 'media-src', 'frame-src', 'object-src', 'script-src'],
+  policyTypes = ['img-src', 'media-src', 'frame-src', 'object-src', 'script-src-elem'],
   ) {
 
   let $ = cheerio.load(chunk);
