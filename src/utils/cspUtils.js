@@ -9,16 +9,6 @@ import { isLinkInternal } from '../utils';
 import cheerio from 'cheerio';
 import escapeStringRegexp from 'escape-string-regexp';
 
-const resourcePolicyMapping = { 
-    // 'child-src': ['frame', 'iframe'],
-    'frame-src': ['frame', 'iframe'],
-    'img-src': ['img'],
-    'media-src': ['audio', 'video', 'track'],
-    'object-src': ['object', 'embed', 'applet'],
-    'script-src': ['script'], 
-    // 'script-src-elem': ['script'],
-  };
-
 /* Helper function to retrieve the netlify.toml from repo */
 async function _parseNetlifyToml(repoName) {
   // axios get withCredentials false is required https://stackoverflow.com/questions/34078676/access-control-allow-origin-not-allowed-when-credentials-flag-is-true-but/34099399 
@@ -81,6 +71,23 @@ function _elemAttrSatisfiesPolicies (elemAttr, policy) {
   return selfSatisfied || schemasourceSatisfied || hostsourceSatisfied;
 };
 
+/* Helper function to get resource policy from csp for given policyType*/
+function _getResourcePolicy(csp, policyType) {
+  const resourcePolicyMapping = { 
+    // 'child-src': ['frame', 'iframe'],
+    'frame-src': ['frame', 'iframe'],
+    'img-src': ['img'],
+    'media-src': ['audio', 'video', 'track'],
+    'object-src': ['object', 'embed', 'applet'],
+    'script-src': ['script'], 
+    // 'script-src-elem': ['script'],
+  };
+  const cspPolicy = new Policy(csp);
+  const resourcePolicy = cspPolicy.get(policyType) === '' ? cspPolicy.get('default-src') : cspPolicy.get(policyType);
+  const resourcePolicyElems = resourcePolicyMapping[policyType];
+  return { resourcePolicy, resourcePolicyElems } 
+}
+
 /* Helper function to check if resourcePolicyElems for a specific policyType satisfies CSP source specifications */
 function _checkResourcePolicyElems(resourcePolicyElems, policy, $) {
   let policyViolation = false;
@@ -104,12 +111,10 @@ export function checkCSP(
 
   let $ = cheerio.load(chunk);
   let isCspViolation = false;
-  const cspPolicy = new Policy(csp);
 
   policyTypes.forEach(policyType => {
     let policyViolation;
-    const resourcePolicy = cspPolicy.get(policyType) === '' ? cspPolicy.get('default-src') : cspPolicy.get(policyType);
-    const resourcePolicyElems = resourcePolicyMapping[policyType];
+    const { resourcePolicy, resourcePolicyElems } = _getResourcePolicy(csp, policyType)
     console.log(`checking resource policy for ${policyType}, for elements ${resourcePolicyElems}: ${resourcePolicy}`);
     ({ $, policyViolation } = _checkResourcePolicyElems(resourcePolicyElems, resourcePolicy, $));
     isCspViolation = policyViolation || isCspViolation;
