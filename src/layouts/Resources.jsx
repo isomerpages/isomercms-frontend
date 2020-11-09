@@ -156,7 +156,7 @@ export default Resources
 Resources.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
-      siteName: PropTypes.string,
+      siteName: PropTypes.string.isRequired,
     }),
   }).isRequired,
   location: PropTypes.shape({
