@@ -30,11 +30,11 @@ const getBackButtonInfo = (pathname) => {
   }
 }
 
-const Collections = ({ match, location, isResource }) => {
+const CategoryPages = ({ match, location, isResource }) => {
   const { backButtonLabel, backButtonUrl } = getBackButtonInfo(location.pathname)
   const { collectionName, siteName } = match.params;
 
-  const [collectionPages, setCollectionPages] = useState()
+  const [categoryPages, setCategoryPages] = useState()
 
   useEffect(() => {
       const fetchData = async () => {
@@ -51,11 +51,11 @@ const Collections = ({ match, location, isResource }) => {
                 fileName: resourcePage.fileName,
               };
             });
-            setCollectionPages(retrievedResourcePages)
+            setCategoryPages(retrievedResourcePages)
           }
         } else {
           const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${collectionName}`);
-          setCollectionPages(collectionsResp.data?.collectionPages)
+          setCategoryPages(collectionsResp.data?.collectionPages)
         }
       }
       fetchData()
@@ -79,7 +79,7 @@ const Collections = ({ match, location, isResource }) => {
               {/* Collection pages */}
               <CollectionPagesSection
                   collectionName={collectionName}
-                  pages={collectionPages}
+                  pages={categoryPages}
                   siteName={siteName}
                   isResource={isResource}
               />
@@ -90,9 +90,9 @@ const Collections = ({ match, location, isResource }) => {
   );
 }
 
-export default Collections
+export default CategoryPages
 
-Collections.propTypes = {
+CategoryPages.propTypes = {
     match: PropTypes.shape({
       params: PropTypes.shape({
         siteName: PropTypes.string,
