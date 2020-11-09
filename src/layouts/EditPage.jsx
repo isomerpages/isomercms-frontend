@@ -37,6 +37,7 @@ import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
 import DeleteWarningModal from '../components/DeleteWarningModal';
 import LoadingButton from '../components/LoadingButton';
+import HyperlinkModal from '../components/HyperlinkModal';
 import MediasModal from '../components/media/MediaModal';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
@@ -97,8 +98,10 @@ export default class EditPage extends Component {
       canShowDeleteWarningModal: false,
       images: [],
       isSelectingImage: false,
+      isInsertingHyperlink: false,
       pendingImageUpload: null,
       selectedImage: '',
+      selectionText: '',
       isFileStagedForUpload: false,
       stagedFileDetails: {},
     };
@@ -199,6 +202,32 @@ export default class EditPage extends Component {
     }));
   }
 
+  onHyperlinkOpen = () => {
+    const cm = this.mdeRef.current.simpleMde.codemirror;
+    this.setState({
+      selectionText: cm.getSelection() || '', 
+      isInsertingHyperlink: true,
+    });
+  }
+
+  onHyperlinkSave = (text, link) => {
+    const cm = this.mdeRef.current.simpleMde.codemirror;
+    cm.replaceSelection(`[${text}](${link})`);
+    // set state so that rerender is triggered and path is shown
+    this.setState({
+      editorValue: this.mdeRef.current.simpleMde.codemirror.getValue(),
+      isInsertingHyperlink: false,
+      selectionText: '',
+    });
+  }
+
+  onHyperlinkClose = () => {
+    this.setState({
+      isInsertingHyperlink: false,
+      selectionText: '',
+    });
+  }
+
   onImageClick = (path) => {
     const cm = this.mdeRef.current.simpleMde.codemirror;
     cm.replaceSelection(`![](${path})`);
@@ -248,9 +277,11 @@ export default class EditPage extends Component {
       editorValue,
       canShowDeleteWarningModal,
       isSelectingImage,
+      isInsertingHyperlink,
       isFileStagedForUpload,
       stagedFileDetails,
       leftNavPages,
+      selectionText,
     } = this.state;
     return (
       <>
@@ -286,6 +317,15 @@ export default class EditPage extends Component {
               />
             )
           }
+          {
+            isInsertingHyperlink && (
+            <HyperlinkModal
+              text={selectionText}
+              onSave={this.onHyperlinkSave}
+              onClose={this.onHyperlinkClose}
+            />
+            )
+          }
           <div className={editorStyles.pageEditorSidebar}>
             <SimpleMDE
               id="simplemde-editor"
@@ -314,7 +354,13 @@ export default class EditPage extends Component {
                     title: 'Insert Image',
                     default: true,
                   },
-                  linkButton,
+                  {
+                    name: 'link',
+                    action: () => { this.onHyperlinkOpen() },
+                    className: 'fa fa-link-o',
+                    title: 'Insert Link',
+                    default: true,
+                  },
                   tableButton,
                   guideButton,
                 ],
