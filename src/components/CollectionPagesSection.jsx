@@ -70,7 +70,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
             }
             <div className={contentStyles.contentContainerBoxes}>
                 {/* Display loader if pages have not been retrieved from API call */}
-                { pages && pages.length > 0
+                { pages
                     ? (
                     <div className={contentStyles.boxesContainer}>
                         <button

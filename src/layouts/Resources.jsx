@@ -25,8 +25,10 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 const Resources = ({ match, location }) => {
   const { siteName } = match.params;
 
+  const [isLoading, setIsLoading] = useState(true)
+  const [resourceRoomName, setResourceRoomName] = useState()
   const [newResourceRoomName, setNewResourceRoomName] = useState('')
-  const [resourceFolderNames, setResourceFolderNames] = useState([])
+  const [resourceFolderNames, setResourceFolderNames] = useState()
 
   useEffect(() => {
     try {
@@ -38,9 +40,9 @@ const Resources = ({ match, location }) => {
         if (resourceRoomName) {
           const uniqueResourceFolderNames = _.uniq(resourceCategories.map((file) => file.dirName))
           setResourceFolderNames(uniqueResourceFolderNames)
-        } else {
-          setResourceFolderNames(null)
+          setResourceRoomName(resourceRoomName)
         }
+        setIsLoading(false)
       }
       fetchData()
     } catch (err) {
@@ -76,66 +78,71 @@ const Resources = ({ match, location }) => {
             <h1 className={contentStyles.sectionTitle}>Resources</h1>
           </div>
           {
-            resourceFolderNames
-            ? <>
-                {/* Category title */}
-                <div className={contentStyles.segment}>
-                  Resource Categories
-                </div>
-                {/* Info segment */}
-                <div className={contentStyles.segment}>
-                  <i className="bx bx-sm bx-info-circle text-dark" />
-                  <span><strong className="ml-1">Note:</strong> Categories cannot be empty, create a resource first to create a Category.</span>
-                </div>
-                {/* Categories */}
-                <div className={contentStyles.folderContainerBoxes}>
-                  <div className={contentStyles.boxesContainer}>
-                    {
-                      resourceFolderNames && resourceFolderNames.length > 0
-                      ? resourceFolderNames.map((resourceCategory, collectionIdx) => (
-                        <FolderCard
-                          displayText={prettifyResourceCategory(resourceCategory)}
-                          settingsToggle={() => {}}
-                          key={resourceCategory}
-                          isHomepage={false}
-                          isCollection={false}
-                          siteName={siteName}
-                          category={resourceCategory}
-                          itemIndex={collectionIdx}
-                        />
-                      ))
-                      : 'Loading Resource Categories...'
-                    }
+            isLoading ? 'Loading Resources...'
+            :
+              resourceRoomName
+              ? <>
+                  {/* Category title */}
+                  <div className={contentStyles.segment}>
+                    Resource Categories
                   </div>
-                </div>
-                {/* Segment divider  */}
-                <div className={contentStyles.segmentDividerContainer}>
-                  <hr className="invisible w-100 mt-3 mb-5" />
-                </div>
-                {/* Pages */}
-                <CollectionPagesSection
-                  pages={[]}
-                  siteName={siteName}
-                  type='resource'
-                />
-              </>
-            : <>
-                {/* Resource Room does not exist */}
-                <div className={contentStyles.segment}>
-                  Create Resource Room
-                </div>
-                {/* Info segment */}
-                <div className={contentStyles.segment}>
-                  <i className="bx bx-sm bx-info-circle text-dark" />
-                  <span><strong className="ml-1">Note:</strong> You must create a Resource Room before you can create Resources.</span>
-                </div>
-                <input value={newResourceRoomName} onChange={changeHandler} />
-                {/* Segment divider  */}
-                <div className={contentStyles.segmentDividerContainer}>
-                  <hr className="invisible w-100 mt-3 mb-5" />
-                </div>
-                <button type="button" onClick={createResourceRoom} className={elementStyles.blue}>Create Resource Room</button>
-              </>
+                  {/* Info segment */}
+                  <div className={contentStyles.segment}>
+                    <i className="bx bx-sm bx-info-circle text-dark" />
+                    <span><strong className="ml-1">Note:</strong> Categories cannot be empty, create a resource first to create a Category.</span>
+                  </div>
+                  {/* Categories */}
+                  <div className={contentStyles.folderContainerBoxes}>
+                    <div className={contentStyles.boxesContainer}>
+                      {
+                        resourceFolderNames 
+                        ? 
+                          resourceFolderNames.length > 0
+                          ? resourceFolderNames.map((resourceCategory, collectionIdx) => (
+                              <FolderCard
+                                displayText={prettifyResourceCategory(resourceCategory)}
+                                settingsToggle={() => {}}
+                                key={resourceCategory}
+                                isHomepage={false}
+                                isCollection={false}
+                                siteName={siteName}
+                                category={resourceCategory}
+                                itemIndex={collectionIdx}
+                              />
+                            ))
+                          : 'No Resource Categories. Create a resource to add a Category.'
+                        : 'Loading Resource Categories...'
+                      }
+                    </div>
+                  </div>
+                  {/* Segment divider  */}
+                  <div className={contentStyles.segmentDividerContainer}>
+                    <hr className="invisible w-100 mt-3 mb-5" />
+                  </div>
+                  {/* Pages */}
+                  <CollectionPagesSection
+                    pages={[]}
+                    siteName={siteName}
+                    type='resource'
+                  />
+                </>
+              : <>
+                  {/* Resource Room does not exist */}
+                  <div className={contentStyles.segment}>
+                    Create Resource Room
+                  </div>
+                  {/* Info segment */}
+                  <div className={contentStyles.segment}>
+                    <i className="bx bx-sm bx-info-circle text-dark" />
+                    <span><strong className="ml-1">Note:</strong> You must create a Resource Room before you can create Resources.</span>
+                  </div>
+                  <input value={newResourceRoomName} onChange={changeHandler} />
+                  {/* Segment divider  */}
+                  <div className={contentStyles.segmentDividerContainer}>
+                    <hr className="invisible w-100 mt-3 mb-5" />
+                  </div>
+                  <button type="button" onClick={createResourceRoom} className={elementStyles.blue}>Create Resource Room</button>
+                </>
           }
         </div>
         {/* main section ends here */}

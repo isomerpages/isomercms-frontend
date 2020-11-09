@@ -34,7 +34,7 @@ const Collections = ({ match, location, isResource }) => {
   const { backButtonLabel, backButtonUrl } = getBackButtonInfo(location.pathname)
   const { collectionName, siteName } = match.params;
 
-  const [collectionPages, setCollectionPages] = useState([])
+  const [collectionPages, setCollectionPages] = useState()
 
   useEffect(() => {
       const fetchData = async () => {
