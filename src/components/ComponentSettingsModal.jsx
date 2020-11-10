@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import CreatableSelect from 'react-select/creatable'
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
@@ -74,7 +75,7 @@ export default class ComponentSettingsModal extends Component {
         const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`);
         const { resources: allCategories } = resourcesResp.data;
         this.setState({
-          category: category ? category : allCategories[0].dirName,
+          category: category ? category : '',
           allCategories: allCategories.map((category) => category.dirName),
         })
       } else if (type === "page") {
@@ -82,7 +83,7 @@ export default class ComponentSettingsModal extends Component {
         const { collections: collectionCategories } = collectionsResp.data;
         const allCategories = [''].concat(collectionCategories)
         this.setState({
-          category: category ? category : allCategories[0],
+          category: category ? category : '',
           allCategories,
         })
       }
@@ -201,7 +202,6 @@ export default class ComponentSettingsModal extends Component {
       }
       
       const newPageUrl = await saveFileAndRetrieveUrl(fileInfo)
-      console.log(newPageUrl)
       // Refresh page
       !isNewFile && window.location.reload();
       this.setState({ redirectToNewPage: true, newPageUrl })
@@ -240,8 +240,31 @@ export default class ComponentSettingsModal extends Component {
         [id]: value,
       });
     }
-    
   }
+
+  selectChangeHandler = (newValue) => {
+    let event
+    if (!newValue) {
+      // Field was cleared
+      event = {
+        target: {
+          id: 'category',
+          value: ''
+        }
+      }
+    } else {
+      const { value } = newValue
+      event = {
+        target: {
+          id: 'category',
+          value: value
+        }
+      }
+    }
+    
+    this.changeHandler(event)
+  };
+
 
   render() {
     const {
@@ -281,21 +304,26 @@ export default class ComponentSettingsModal extends Component {
               <div className={elementStyles.modalFormFields}>
                 {/* Category */}
                 <p className={elementStyles.formLabel}>Category Folder Name</p>
-                <div className="d-flex">
-                  <select className="w-100" id="category" value={category} onChange={this.changeHandler} disabled={isCategoryDropdownDisabled(isNewFile, prevCategory)} >
-                  {
-                    allCategories
+                <div className="d-flex text-nowrap">
+                  <CreatableSelect
+                    isClearable
+                    className="w-100"
+                    onChange={this.selectChangeHandler}
+                    isDisabled={isCategoryDropdownDisabled(isNewFile, prevCategory)}
+                    defaultValue={{value:category,label:category ? category : "Select a category or create a new category..."}}
+                    options={
+                      allCategories
                       ? allCategories.map((category) => (
-                        <option
-                          key={category}
-                          value={category}
-                          label={category}
-                        />
+                        {
+                          value:category,
+                          label:category ? category : 'Unlinked Page'
+                        }
                       ))
                       : null
-                  }
-                  </select>
+                    }
+                  />
                 </div>
+                <span className={elementStyles.error}>{errors.category}</span>
                 {/* Title */}
                 <FormField
                   title="Title"
@@ -340,7 +368,7 @@ export default class ComponentSettingsModal extends Component {
                 }
               </div>
               <SaveDeleteButtons 
-                isDisabled={isNewFile ? hasErrors : (hasErrors || !sha)}
+                isDisabled={isNewFile ? hasErrors || (type==='resource' && category==='') : (hasErrors || !sha)}
                 hasDeleteButton={!isNewFile}
                 saveCallback={this.saveHandler}
                 deleteCallback={() => this.setState({ canShowDeleteWarningModal: true })}
