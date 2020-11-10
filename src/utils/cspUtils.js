@@ -95,18 +95,19 @@ function _getResourcePolicy(cspPolicy, policyType) {
 }
 
 /* Helper function to check if resourcePolicyElems for a specific policyType satisfies CSP source specifications */
-function _checkResourcePolicyElems(resourcePolicyElems, policy, $) {
-  let policyViolation = false;
+function _checkResourcePolicyElems(resourcePolicyElems, policy, { $ , cspViolationArr }) {
+  let cspViolation = false;
   resourcePolicyElems.forEach(elemType => { 
     $(elemType).each((i, elem) => {
       const checkAttr = elemType === 'object' ? 'data' : 'src' // exception for object html: <object data='abc.html'></object>
       if (!_elemAttrSatisfiesPolicies($(elem).attr(checkAttr), policy)) {
         $(elem).replaceWith(`<span style="color:#c91508"><br> Intended &lt${elemType}&gt content violates Content Security Policy and therefore could not be displayed. Isomer does not support display of any forbidden resources. </span>`);
-        policyViolation = true;
+        cspViolation = true;
       }
     });
   });
-  return { $, policyViolation };
+  cspViolationArr.push(cspViolation)
+  return { $, cspViolationArr };
 };
 
 export function checkCSP(
@@ -115,18 +116,17 @@ export function checkCSP(
   policyTypes = ['img-src', 'media-src', 'frame-src', 'object-src', 'script-src-elem'],
   ) {
 
-  let $ = cheerio.load(chunk);
-  let isCspViolation = false;
-
-  policyTypes.forEach(policyType => {
-    let policyViolation;
+  const reducer = ({ $, cspViolationArr } , policyType) => {
     const { resourcePolicy, resourcePolicyElems } = _getResourcePolicy(cspPolicy, policyType);
-    ({ $, policyViolation } = _checkResourcePolicyElems(resourcePolicyElems, resourcePolicy, $));
-    isCspViolation = policyViolation || isCspViolation;
-  })
+    return _checkResourcePolicyElems(resourcePolicyElems, resourcePolicy, { $, cspViolationArr } );
+  }
+
+  let $ = cheerio.load(chunk);
+  let cspViolationArr = [];
+  ({ $, cspViolationArr } = policyTypes.reduce( reducer, { $, cspViolationArr } ));
 
   return {
     sanitisedHtml: $.html(),
-    isCspViolation,
+    isCspViolation: _.some(cspViolationArr),
   };
 };
