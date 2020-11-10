@@ -17,7 +17,7 @@ const TemplateInfopicLeftSection = ({
   siteName,
 }) => {
   const addDefaultSrc = (e) => {
-    e.target.src = '/no_image.png'
+    e.target.src = '/placeholder_no_image.png'
   }
   return (
     <section className={`bp-section ${(sectionIndex % 2 === 1) ? 'bg-newssection' : null}`}>
