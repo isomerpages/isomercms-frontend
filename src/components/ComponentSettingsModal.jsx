@@ -245,7 +245,7 @@ export default class ComponentSettingsModal extends Component {
     }
   }
 
-  selectChangeHandler = (newValue) => {
+  categoryDropdownHandler = (newValue) => {
     let event
     if (!newValue) {
       // Field was cleared
@@ -311,7 +311,7 @@ export default class ComponentSettingsModal extends Component {
                   <CreatableSelect
                     isClearable
                     className="w-100"
-                    onChange={this.selectChangeHandler}
+                    onChange={this.categoryDropdownHandler}
                     isDisabled={isCategoryDropdownDisabled(isNewFile, prevCategory)}
                     defaultValue={{value:category,label:category ? category : "Select a category or create a new category..."}}
                     options={
