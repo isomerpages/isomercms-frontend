@@ -77,6 +77,6 @@ export default class HyperlinkModal extends Component {
 }
 
 HyperlinkModal.propTypes = {
-	onSave: PropTypes.func.isRequired,
-	onClose: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
