@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 // Import components
 import OverviewCard from '../components/OverviewCard';
-import ComponentSettingsModal from '../components/ComponentSettingsModal'
+import ComponentSettingsModal from '../components/NewComponentSettingsModal'
 
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
