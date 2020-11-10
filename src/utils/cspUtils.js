@@ -50,11 +50,11 @@ function _checkHostsourcePolicy (elemSrc, policy) {
 
 function _checkSchemasourcePolicy (elemSrc, policy) {
   const schemes = ['http:', 'https:'];
-  const dataschemes = ['data:', 'mediastream:', 'blob:', 'filesystem:'];
+  const dataSchemes = ['data:', 'mediastream:', 'blob:', 'filesystem:'];
 
   const schemesSatisfied = schemes.some(scheme => (_stringContainsValue(policy, scheme) && _.startsWith(elemSrc, scheme)) );
-  const dataschemesSatisfied = dataschemes.some(datascheme => (_stringContainsValue(policy, datascheme) && _.startsWith(elemSrc, datascheme)) );
-  return schemesSatisfied || dataschemesSatisfied;
+  const dataSchemesSatisfied = dataSchemes.some(dataScheme => (_stringContainsValue(policy, dataScheme) && _.startsWith(elemSrc, dataScheme)) );
+  return schemesSatisfied || dataSchemesSatisfied;
 };
 
 function  _checkSelfPolicy (elemSrc, policy) {
