@@ -11,6 +11,9 @@ import CollectionPagesSection from '../components/CollectionPagesSection'
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
+//Import utils
+import { retrieveResourceFileMetadata } from '../utils.js'
+
 // Constants
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
@@ -27,16 +30,33 @@ const getBackButtonInfo = (pathname) => {
   }
 }
 
-const Collections = ({ match, location }) => {
+const CategoryPages = ({ match, location, isResource }) => {
   const { backButtonLabel, backButtonUrl } = getBackButtonInfo(location.pathname)
   const { collectionName, siteName } = match.params;
 
-  const [collectionPages, setCollectionPages] = useState([])
+  const [categoryPages, setCategoryPages] = useState()
 
   useEffect(() => {
       const fetchData = async () => {
+        if (isResource) {
+          const resourcePagesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${collectionName}`);
+          const { resourcePages } = resourcePagesResp.data;
+
+          if (resourcePages.length > 0) {
+            const retrievedResourcePages = resourcePages.map((resourcePage) => {
+              const { title, date } = retrieveResourceFileMetadata(resourcePage.fileName);
+              return {
+                title,
+                date,
+                fileName: resourcePage.fileName,
+              };
+            });
+            setCategoryPages(retrievedResourcePages)
+          }
+        } else {
           const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${collectionName}`);
-          setCollectionPages(collectionsResp.data?.collectionPages)
+          setCategoryPages(collectionsResp.data?.collectionPages)
+        }
       }
       fetchData()
   }, [])
@@ -59,8 +79,9 @@ const Collections = ({ match, location }) => {
               {/* Collection pages */}
               <CollectionPagesSection
                   collectionName={collectionName}
-                  pages={collectionPages}
+                  pages={categoryPages}
                   siteName={siteName}
+                  isResource={isResource}
               />
           </div>
           {/* main section ends here */}
@@ -69,9 +90,9 @@ const Collections = ({ match, location }) => {
   );
 }
 
-export default Collections
+export default CategoryPages
 
-Collections.propTypes = {
+CategoryPages.propTypes = {
     match: PropTypes.shape({
       params: PropTypes.shape({
         siteName: PropTypes.string,

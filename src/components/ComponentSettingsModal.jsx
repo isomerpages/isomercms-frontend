@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import CreatableSelect from 'react-select/creatable'
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
@@ -22,14 +23,6 @@ import SaveDeleteButtons from './SaveDeleteButtons';
 // axios settings
 axios.defaults.withCredentials = true
 
-const isCategoryDropdownDisabled = (isNewFile, category) => {
-  if (category) {
-    return true
-  }
-  if (isNewFile) return false
-  return true
-}
-
 export default class ComponentSettingsModal extends Component {
   constructor(props) {
     super(props);
@@ -49,11 +42,11 @@ export default class ComponentSettingsModal extends Component {
         fileUrl: '',
         date: '',
         category: '',
-        prevCategory: '',
+        originalCategory: '',
       },
       canShowDeleteWarningModal: false,
       baseApiUrl: '',
-      prevCategory: '',
+      originalCategory: '',
       thirdNavTitle: '',
       redirectToNewPage: false,
       newPageUrl: '',
@@ -74,7 +67,7 @@ export default class ComponentSettingsModal extends Component {
         const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`);
         const { resources: allCategories } = resourcesResp.data;
         this.setState({
-          category: category ? category : allCategories[0].dirName,
+          category: category ? category : '',
           allCategories: allCategories.map((category) => category.dirName),
         })
       } else if (type === "page") {
@@ -82,7 +75,7 @@ export default class ComponentSettingsModal extends Component {
         const { collections: collectionCategories } = collectionsResp.data;
         const allCategories = [''].concat(collectionCategories)
         this.setState({
-          category: category ? category : allCategories[0],
+          category: category ? category : '',
           allCategories,
         })
       }
@@ -96,7 +89,7 @@ export default class ComponentSettingsModal extends Component {
           mdBody: '',
           baseApiUrl,
           type,
-          prevCategory: category,
+          originalCategory: category,
         });
         // Only resources have a date field
         if (type === "resource") this.setState({date:new Date().toISOString().split("T")[0]})
@@ -127,7 +120,7 @@ export default class ComponentSettingsModal extends Component {
           date,
           sha,
           mdBody,
-          prevCategory: category,
+          originalCategory: category,
           baseApiUrl,
           type,
           thirdNavTitle,
@@ -139,6 +132,12 @@ export default class ComponentSettingsModal extends Component {
     }
   }
 
+  generateInitialCategoryLabel = (originalCategory, isCategoryDisabled) => {
+    if (originalCategory) return originalCategory
+    // If category is disabled and no original category exists, it is an unlinked page
+    return isCategoryDisabled ? "Unlinked Page" : "Select a category or create a new category..."
+  }
+
   handlePermalinkFileUrlToggle = (event) => {
     const { target: { value } } = event;
     const { originalFileUrl, originalPermalink} = this.state
@@ -147,6 +146,9 @@ export default class ComponentSettingsModal extends Component {
         permalink: null,
         fileUrl: originalFileUrl ? originalFileUrl : '',
         isPost: false,
+        errors: {
+          permalink: '',
+        },
       });
     } else {
       this.setState({
@@ -179,7 +181,7 @@ export default class ComponentSettingsModal extends Component {
   saveHandler = async () => {
     try {
       const {
-        title, permalink, fileUrl, date, mdBody, sha, category, prevCategory, baseApiUrl, type, thirdNavTitle,
+        title, permalink, fileUrl, date, mdBody, sha, category, originalCategory, baseApiUrl, type, thirdNavTitle,
       } = this.state;
       const { fileName, isNewFile, siteName } = this.props;
 
@@ -191,7 +193,7 @@ export default class ComponentSettingsModal extends Component {
         mdBody,
         sha,
         category,
-        prevCategory,
+        originalCategory,
         baseApiUrl,
         type,
         thirdNavTitle,
@@ -201,7 +203,6 @@ export default class ComponentSettingsModal extends Component {
       }
       
       const newPageUrl = await saveFileAndRetrieveUrl(fileInfo)
-      console.log(newPageUrl)
       // Refresh page
       !isNewFile && window.location.reload();
       this.setState({ redirectToNewPage: true, newPageUrl })
@@ -240,13 +241,35 @@ export default class ComponentSettingsModal extends Component {
         [id]: value,
       });
     }
-    
   }
+
+  categoryDropdownHandler = (newValue) => {
+    let event
+    if (!newValue) {
+      // Field was cleared
+      event = {
+        target: {
+          id: 'category',
+          value: ''
+        }
+      }
+    } else {
+      const { value } = newValue
+      event = {
+        target: {
+          id: 'category',
+          value: value
+        }
+      }
+    }
+    
+    this.changeHandler(event)
+  };
+
 
   render() {
     const {
       category,
-      prevCategory,
       title,
       date,
       allCategories,
@@ -260,7 +283,7 @@ export default class ComponentSettingsModal extends Component {
       thirdNavTitle,
       isPost,
     } = this.state;
-    const { settingsToggle, isNewFile, type, modalTitle, siteName } = this.props;
+    const { settingsToggle, isNewFile, type, modalTitle, siteName, isCategoryDisabled, category:originalCategory } = this.props;
 
     // Settings form has errors - disable save button
     const hasErrors = _.some(errors, (field) => field.length > 0);
@@ -281,21 +304,26 @@ export default class ComponentSettingsModal extends Component {
               <div className={elementStyles.modalFormFields}>
                 {/* Category */}
                 <p className={elementStyles.formLabel}>Category Folder Name</p>
-                <div className="d-flex">
-                  <select className="w-100" id="category" value={category} onChange={this.changeHandler} disabled={isCategoryDropdownDisabled(isNewFile, prevCategory)} >
-                  {
-                    allCategories
+                <div className="d-flex text-nowrap">
+                  <CreatableSelect
+                    isClearable
+                    className="w-100"
+                    onChange={this.categoryDropdownHandler}
+                    isDisabled={isCategoryDisabled}
+                    defaultValue={{value:originalCategory,label:this.generateInitialCategoryLabel(originalCategory,isCategoryDisabled)}}
+                    options={
+                      allCategories
                       ? allCategories.map((category) => (
-                        <option
-                          key={category}
-                          value={category}
-                          label={category}
-                        />
+                        {
+                          value:category,
+                          label:category ? category : 'Unlinked Page'
+                        }
                       ))
                       : null
-                  }
-                  </select>
+                    }
+                  />
                 </div>
+                <span className={elementStyles.error}>{errors.category}</span>
                 {/* Title */}
                 <FormField
                   title="Title"
@@ -340,7 +368,7 @@ export default class ComponentSettingsModal extends Component {
                 }
               </div>
               <SaveDeleteButtons 
-                isDisabled={isNewFile ? hasErrors : (hasErrors || !sha)}
+                isDisabled={isNewFile ? hasErrors || (type==='resource' && category==='') : (hasErrors || !sha)}
                 hasDeleteButton={!isNewFile}
                 saveCallback={this.saveHandler}
                 deleteCallback={() => this.setState({ canShowDeleteWarningModal: true })}

@@ -22,7 +22,7 @@ const Workspace = ({ match, location }) => {
     const { siteName } = match.params;
 
     const [collections, setCollections] = useState([])
-    const [unlinkedPages, setUnlinkedPages] = useState([])
+    const [unlinkedPages, setUnlinkedPages] = useState()
 
     useEffect(() => {
         const fetchData = async () => {

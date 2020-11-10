@@ -9,7 +9,7 @@ const DATE_REGEX = '^([0-9]{4}-[0-9]{2}-[0-9]{2})$';
 const dateRegexTest = RegExp(DATE_REGEX);
 const fileNameRegexTest = /^[a-zA-Z0-9" "_-]+$/;
 const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/;
-const RESOURCE_CATEGORY_REGEX = '^(([a-zA-Z0-9]+([\\s][a-zA-Z0-9]+)*)+)$';
+const RESOURCE_CATEGORY_REGEX = '^(([a-zA-Z0-9_-]+([\\s][a-zA-Z0-9_-]+)*)+)$';
 const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX);
 const RADIX_PARSE_INT = 10;
 
@@ -463,6 +463,12 @@ const validatePageSettings = (id, value) => {
       }
       break;
     }
+    case 'category': {
+      if (value !== '') {
+        errorMessage = validateCategoryName(value, 'resource')
+      }
+      break;
+    }
     default:
       break;
   }
@@ -551,6 +557,13 @@ const validateResourceSettings = (id, value) => {
       }
       break;
     }
+    case 'category': {
+      errorMessage = validateCategoryName(value, 'resource')
+      if (value === '') {
+        errorMessage = `The resource category cannot be empty.`;
+      }
+      break;
+    }
     case 'fileUrl': {
       if (value.length === 0) {
         errorMessage = 'Please choose a file';
@@ -566,20 +579,20 @@ const validateResourceSettings = (id, value) => {
 
 // Resource Category Modal
 // ===================
-const validateResourceCategory = (value) => {
+const validateCategoryName = (value, componentName) => {
   let errorMessage = '';
 
   // Resource category is too short
   if (value.length < RESOURCE_CATEGORY_MIN_LENGTH) {
-    errorMessage = `The resource category should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`;
+    errorMessage = `The ${componentName} category should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`;
   }
   // Resource category is too long
   if (value.length > RESOURCE_CATEGORY_MAX_LENGTH) {
-    errorMessage = `The resource category should be shorter than ${RESOURCE_CATEGORY_MAX_LENGTH} characters.`;
+    errorMessage = `The ${componentName} category should be shorter than ${RESOURCE_CATEGORY_MAX_LENGTH} characters.`;
   }
   // Resource category fails regex
   if (!resourceCategoryRegexTest.test(value)) {
-    errorMessage = 'The resource category should only have alphanumeric characters separated by whitespace.';
+    errorMessage = `The ${componentName} category should only have alphanumeric characters separated by whitespace.`;
   }
 
   return errorMessage;
@@ -624,7 +637,7 @@ export {
   validateSections,
   validatePageSettings,
   validateResourceSettings,
-  validateResourceCategory,
+  validateCategoryName,
   validateSocialMedia,
   validateFileName,
 };
