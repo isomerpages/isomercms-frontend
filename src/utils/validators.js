@@ -562,7 +562,6 @@ const validateResourceSettings = (id, value) => {
       if (value === '') {
         errorMessage = `The resource category cannot be empty.`;
       }
-      console.log(errorMessage)
       break;
     }
     case 'fileUrl': {
