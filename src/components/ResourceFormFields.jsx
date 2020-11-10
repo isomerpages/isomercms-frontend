@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import FormField from './FormField'
 import FormFieldMedia from './FormFieldMedia';
 
-const ResourceFormFields = ({date, errors, changeHandler, onToggle, isPost, siteName, fileUrl}) => {
-  const [isPostChecked, setIsPostChecked] = useState(isPost)
+const ResourceFormFields = ({date, errors, changeHandler, onToggle, isPost, setIsPost, siteName, fileUrl}) => {
   const onToggleType = (e) => {
     onToggle(e)
-    setIsPostChecked(!isPostChecked)
+    setIsPost(!isPost)
   }
+
   return (
     <>
       <div className="d-flex row m-0">
@@ -35,7 +35,7 @@ const ResourceFormFields = ({date, errors, changeHandler, onToggle, isPost, site
                 name="resource-type"
                 value="post"
                 onChange={onToggleType}
-                checked={isPostChecked}
+                checked={isPost}
               />
               Post Content
             </label>
@@ -46,7 +46,7 @@ const ResourceFormFields = ({date, errors, changeHandler, onToggle, isPost, site
                 name="resource-type"
                 value="file"
                 onChange={onToggleType}
-                checked={!isPostChecked}
+                checked={!isPost}
               />
               Downloadable File
             </label>
@@ -65,7 +65,7 @@ const ResourceFormFields = ({date, errors, changeHandler, onToggle, isPost, site
         placeholder=" "
         type="file"
         errorMessage={errors.fileUrl}
-        isDisabled={isPostChecked}
+        isDisabled={isPost}
       />
     </>
   )

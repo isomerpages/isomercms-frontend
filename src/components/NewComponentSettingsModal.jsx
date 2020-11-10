@@ -356,6 +356,7 @@ const ComponentSettingsModal = ({
                     changeHandler={changeHandler}
                     onToggle={handlePermalinkFileUrlToggle}
                     isPost={isPost}
+                    setIsPost={setIsPost}
                     siteName={siteName}
                     fileUrl={fileUrl ? fileUrl : ''}
                   />
