@@ -83,14 +83,6 @@ export const orderedListButton = {
   default: true,
 };
 
-export const linkButton = {
-  name: 'link',
-  action: drawLink,
-  className: 'fa fa-link',
-  title: 'Create Link',
-  default: true,
-};
-
 export const tableButton = {
   name: 'table',
   action: drawTable,
