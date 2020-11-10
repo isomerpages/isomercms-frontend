@@ -10,25 +10,25 @@ axios.defaults.withCredentials = true
 
 export default class HyperlinkModal extends Component {
   constructor(props) {
-		super(props);
+    super(props);
     this.state = {
-			text: props.text,
+      text: props.text,
       link: '',
     };
   }
 
   changeHandler = (event) => {
-		const { id, value } = event.target;
-		this.setState({
-			[id]: value,
-		});
+    const { id, value } = event.target;
+    this.setState({
+      [id]: value,
+    });
   };
 
   render() {
-		const {
-			onSave,
-			onClose,
-		} = this.props;
+    const {
+      onSave,
+      onClose,
+    } = this.props;
 		
     const {
       text,
