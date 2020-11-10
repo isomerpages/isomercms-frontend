@@ -101,7 +101,7 @@ function _checkResourcePolicyElems(resourcePolicyElems, policy, $) {
     $(elemType).each((i, elem) => {
       const checkAttr = elemType === 'object' ? 'data' : 'src' // exception for object html: <object data='abc.html'></object>
       if (!_elemAttrSatisfiesPolicies($(elem).attr(checkAttr), policy)) {
-        $(elem).replaceWith(`<span style="color:#c91508"> Intended &lt${elemType}&gt content violates Content Security Policy and therefore could not be displayed. Isomer does not support display of any forbidden resources. </span>`);
+        $(elem).replaceWith(`<span style="color:#c91508"><br> Intended &lt${elemType}&gt content violates Content Security Policy and therefore could not be displayed. Isomer does not support display of any forbidden resources. </span>`);
         policyViolation = true;
       }
     });
