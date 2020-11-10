@@ -120,8 +120,7 @@ export function checkCSP(
 
   policyTypes.forEach(policyType => {
     let policyViolation;
-    const { resourcePolicy, resourcePolicyElems } = _getResourcePolicy(csp, policyType)
-    console.log(`checking resource policy for ${policyType}, for elements ${resourcePolicyElems}: ${resourcePolicy}`);
+    const { resourcePolicy, resourcePolicyElems } = _getResourcePolicy(csp, policyType);
     ({ $, policyViolation } = _checkResourcePolicyElems(resourcePolicyElems, resourcePolicy, $));
     isCspViolation = policyViolation || isCspViolation;
   })
