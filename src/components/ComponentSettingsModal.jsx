@@ -50,11 +50,11 @@ export default class ComponentSettingsModal extends Component {
         fileUrl: '',
         date: '',
         category: '',
-        prevCategory: '',
+        originalCategory: '',
       },
       canShowDeleteWarningModal: false,
       baseApiUrl: '',
-      prevCategory: '',
+      originalCategory: '',
       thirdNavTitle: '',
       redirectToNewPage: false,
       newPageUrl: '',
@@ -97,7 +97,7 @@ export default class ComponentSettingsModal extends Component {
           mdBody: '',
           baseApiUrl,
           type,
-          prevCategory: category,
+          originalCategory: category,
         });
         // Only resources have a date field
         if (type === "resource") this.setState({date:new Date().toISOString().split("T")[0]})
@@ -128,7 +128,7 @@ export default class ComponentSettingsModal extends Component {
           date,
           sha,
           mdBody,
-          prevCategory: category,
+          originalCategory: category,
           baseApiUrl,
           type,
           thirdNavTitle,
@@ -183,7 +183,7 @@ export default class ComponentSettingsModal extends Component {
   saveHandler = async () => {
     try {
       const {
-        title, permalink, fileUrl, date, mdBody, sha, category, prevCategory, baseApiUrl, type, thirdNavTitle,
+        title, permalink, fileUrl, date, mdBody, sha, category, originalCategory, baseApiUrl, type, thirdNavTitle,
       } = this.state;
       const { fileName, isNewFile, siteName } = this.props;
 
@@ -195,7 +195,7 @@ export default class ComponentSettingsModal extends Component {
         mdBody,
         sha,
         category,
-        prevCategory,
+        originalCategory,
         baseApiUrl,
         type,
         thirdNavTitle,
@@ -272,7 +272,7 @@ export default class ComponentSettingsModal extends Component {
   render() {
     const {
       category,
-      prevCategory,
+      originalCategory,
       title,
       date,
       allCategories,
@@ -312,7 +312,7 @@ export default class ComponentSettingsModal extends Component {
                     isClearable
                     className="w-100"
                     onChange={this.categoryDropdownHandler}
-                    isDisabled={isCategoryDropdownDisabled(isNewFile, prevCategory)}
+                    isDisabled={isCategoryDropdownDisabled(isNewFile, originalCategory)}
                     defaultValue={{value:category,label:category ? category : "Select a category or create a new category..."}}
                     options={
                       allCategories
