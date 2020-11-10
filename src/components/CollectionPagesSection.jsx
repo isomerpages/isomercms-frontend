@@ -18,6 +18,12 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
     const [selectedFile, setSelectedFile] = useState('')
     const [createNewPage, setCreateNewPage] = useState(false)
 
+    const isCategoryDropdownDisabled = (isNewFile, category) => {
+        if (category) return true
+        if (isNewFile) return false
+        return true
+    }
+
     const generateNewPageText = () => {
         if (isResource) {
             return `Add a new resource`
@@ -56,6 +62,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                         modalTitle={isResource ? "Resource Settings" : "Page Settings"}
                         settingsToggle={settingsToggle}
                         category={collectionName}
+                        isCategoryDisabled={isCategoryDropdownDisabled(createNewPage, collectionName)}
                         siteName={siteName}
                         fileName={selectedFile ? selectedFile.fileName : ''}
                         isNewFile={createNewPage}

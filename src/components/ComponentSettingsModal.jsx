@@ -23,14 +23,6 @@ import SaveDeleteButtons from './SaveDeleteButtons';
 // axios settings
 axios.defaults.withCredentials = true
 
-const isCategoryDropdownDisabled = (isNewFile, category) => {
-  if (category) {
-    return true
-  }
-  if (isNewFile) return false
-  return true
-}
-
 export default class ComponentSettingsModal extends Component {
   constructor(props) {
     super(props);
@@ -138,6 +130,12 @@ export default class ComponentSettingsModal extends Component {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  generateInitialCategoryLabel = (originalCategory, isCategoryDisabled) => {
+    if (originalCategory) return originalCategory
+    // If category is disabled and no original category exists, it is an unlinked page
+    return isCategoryDisabled ? "Unlinked Page" : "Select a category or create a new category..."
   }
 
   handlePermalinkFileUrlToggle = (event) => {
@@ -272,7 +270,6 @@ export default class ComponentSettingsModal extends Component {
   render() {
     const {
       category,
-      originalCategory,
       title,
       date,
       allCategories,
@@ -286,7 +283,7 @@ export default class ComponentSettingsModal extends Component {
       thirdNavTitle,
       isPost,
     } = this.state;
-    const { settingsToggle, isNewFile, type, modalTitle, siteName } = this.props;
+    const { settingsToggle, isNewFile, type, modalTitle, siteName, isCategoryDisabled, category:originalCategory } = this.props;
 
     // Settings form has errors - disable save button
     const hasErrors = _.some(errors, (field) => field.length > 0);
@@ -312,8 +309,8 @@ export default class ComponentSettingsModal extends Component {
                     isClearable
                     className="w-100"
                     onChange={this.categoryDropdownHandler}
-                    isDisabled={isCategoryDropdownDisabled(isNewFile, originalCategory)}
-                    defaultValue={{value:category,label:category ? category : "Select a category or create a new category..."}}
+                    isDisabled={isCategoryDisabled}
+                    defaultValue={{value:originalCategory,label:this.generateInitialCategoryLabel(originalCategory,isCategoryDisabled)}}
                     options={
                       allCategories
                       ? allCategories.map((category) => (
