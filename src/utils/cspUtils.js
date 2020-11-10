@@ -20,7 +20,8 @@ async function _parseNetlifyToml(repoName) {
 export async function getCSP(repoName) {
   const tomlData = await _parseNetlifyToml(repoName);
   const csp = tomlData.headers[0].values['Content-Security-Policy'];
-  return csp;
+  const cspPolicy = new Policy(csp);
+  return cspPolicy;
 };
 
 function _stringContainsValue(string, value) {
@@ -72,7 +73,7 @@ function _elemAttrSatisfiesPolicies (elemAttr, policy) {
 };
 
 /* Helper function to get resource policy from csp for given policyType*/
-function _getResourcePolicy(csp, policyType) {
+function _getResourcePolicy(cspPolicy, policyType) {
   const resourcePolicyMapping = { 
     'frame-src': ['frame', 'iframe'],
     'img-src': ['img'],
@@ -80,7 +81,6 @@ function _getResourcePolicy(csp, policyType) {
     'object-src': ['object', 'embed', 'applet'],
     'script-src-elem': ['script'],
   };
-  const cspPolicy = new Policy(csp);
 
   let resourcePolicy
   if (policyType === 'frame-src') { // from http://csplite.com/csp/test121/, fallback chain: frame-src -> child-src -> default-src
@@ -110,7 +110,7 @@ function _checkResourcePolicyElems(resourcePolicyElems, policy, $) {
 };
 
 export function checkCSP(
-  csp,
+  cspPolicy,
   chunk,
   policyTypes = ['img-src', 'media-src', 'frame-src', 'object-src', 'script-src-elem'],
   ) {
@@ -120,7 +120,7 @@ export function checkCSP(
 
   policyTypes.forEach(policyType => {
     let policyViolation;
-    const { resourcePolicy, resourcePolicyElems } = _getResourcePolicy(csp, policyType);
+    const { resourcePolicy, resourcePolicyElems } = _getResourcePolicy(cspPolicy, policyType);
     ({ $, policyViolation } = _checkResourcePolicyElems(resourcePolicyElems, resourcePolicy, $));
     isCspViolation = policyViolation || isCspViolation;
   })

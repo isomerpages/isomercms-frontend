@@ -9,6 +9,7 @@ import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
 import LeftNavPage from '../templates/LeftNavPage';
 import { getCSP, checkCSP } from '../utils/cspUtils';
+import Policy from 'csp-parse';
 
 import {
   frontMatterParser,
@@ -92,7 +93,7 @@ export default class EditPage extends Component {
     const { match, isResourcePage, isCollectionPage } = this.props;
     const { collectionName, fileName, siteName, resourceName } = match.params;
     this.state = {
-      csp: '',
+      csp: new Policy(),
       sha: null,
       originalMdValue: '',
       editorValue: '',
