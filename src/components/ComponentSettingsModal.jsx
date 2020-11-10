@@ -148,6 +148,9 @@ export default class ComponentSettingsModal extends Component {
         permalink: null,
         fileUrl: originalFileUrl ? originalFileUrl : '',
         isPost: false,
+        errors: {
+          permalink: '',
+        },
       });
     } else {
       this.setState({
