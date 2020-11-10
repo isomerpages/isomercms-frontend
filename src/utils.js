@@ -54,7 +54,7 @@ export function prependImageSrc(repoName, chunk) {
     if (isLinkInternal($(elem).attr('src'))) {
       $(elem).attr('src', `https://raw.githubusercontent.com/isomerpages/${repoName}/staging${$(elem).attr('src')}?raw=true`);
     }
-    // add placeholder image for images not found
+    // change src to placeholder image if images not found
     $(elem).attr('onerror', "this.onerror=null; this.src='/placeholder_no_image.png';") 
   });
   return $.html();
