@@ -135,7 +135,7 @@ FormFieldMedia.propTypes = {
   defaultValue: PropTypes.string,
   value: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
-  errorMessage: PropTypes.string.isRequired,
+  errorMessage: PropTypes.string,
   onFieldChange: PropTypes.func.isRequired,
   isRequired: PropTypes.bool,
   style: PropTypes.string,
