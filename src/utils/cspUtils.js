@@ -84,11 +84,11 @@ function _getResourcePolicy(cspPolicy, policyType) {
 
   let resourcePolicy
   if (policyType === 'frame-src') { // from http://csplite.com/csp/test121/, fallback chain: frame-src -> child-src -> default-src
-    resourcePolicy = cspPolicy.get(policyType) ||  cspPolicy.get('child-src') || cspPolicy.get('default-src')
+    resourcePolicy = cspPolicy.get(policyType) || cspPolicy.get('child-src') || cspPolicy.get('default-src');
   } else if (policyType === 'script-src-elem') { // fallback chain: script-src-elem -> script-src -> default-src
-    resourcePolicy = cspPolicy.get(policyType) ||  cspPolicy.get('script-src') || cspPolicy.get('default-src')
+    resourcePolicy = cspPolicy.get(policyType) || cspPolicy.get('script-src') || cspPolicy.get('default-src');
   } else {
-    resourcePolicy = cspPolicy.get(policyType) === '' ? cspPolicy.get('default-src') : cspPolicy.get(policyType);
+    resourcePolicy = cspPolicy.get(policyType) || cspPolicy.get('default-src');
   }
   const resourcePolicyElems = resourcePolicyMapping[policyType];
   return { resourcePolicy, resourcePolicyElems } 
