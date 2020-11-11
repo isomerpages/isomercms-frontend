@@ -1,0 +1,42 @@
+.dropdown {
+  width: 20rem;
+  background: white;
+  box-shadow: 2px 2px 12px 0 rgba(43, 95, 206, 0.1);
+  border-radius: 5px;
+  z-index: 2;
+  color: black;
+
+  .dropdownItem {
+    width: 100%;
+    height: 3.5rem;
+    padding: 1rem 2rem 1rem 2rem;
+    
+    
+    &:hover {
+      background: rgba(43, 95, 206, 0.1);
+    }
+  }
+
+  .dropdownItemWarning {
+    @extend .dropdownItem;
+    height: auto;
+    cursor: default;
+
+    &:hover {
+      background: white;
+    }
+  }
+
+  hr {
+    margin: 0;
+  }
+
+  i {
+    margin-right: 0.5rem;
+  }
+
+  button {
+    padding: 0.5rem;
+    margin-left: 0.5rem;
+  }
+}
