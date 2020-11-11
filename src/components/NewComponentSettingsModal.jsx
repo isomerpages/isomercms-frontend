@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import AsyncCreatableSelect from "react-select/async-creatable";
 import CreatableSelect from 'react-select/creatable'
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
@@ -30,9 +31,9 @@ const generateInitialCategoryLabel = (originalCategory, isCategoryDisabled) => {
     return isCategoryDisabled ? "Unlinked Page" : "Select a category or create a new category..."
 }
 
-const generateInitialThirdNavLabel = (thirdNavTitle) => {
+const generateInitialThirdNavLabel = (thirdNavTitle, originalCategory) => {
     if (thirdNavTitle) return thirdNavTitle
-
+    if (originalCategory && !thirdNavTitle) return 'None'
     return "Select a third nav section..."
 }
 
@@ -46,7 +47,7 @@ const ComponentSettingsModal = ({
     settingsToggle,
     siteName,
     type,
-    thirdNavSections,
+    loadThirdNavOptions,
 }) => {
     // Errors
     const [errors, setErrors] = useState({
@@ -96,12 +97,12 @@ const ComponentSettingsModal = ({
     }
 
     useEffect(() => {
+        if (originalCategory) setCategory(originalCategory);
+
+        const baseUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${originalCategory ? type === "resource" ? `/resources/${originalCategory}` : `/collections/${originalCategory}` : ''}`
+        setBaseApiUrl(baseUrl)
+
         const fetchData = async () => {
-            if (originalCategory) setCategory(originalCategory);
-
-            const baseUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${originalCategory ? type === "resource" ? `/resources/${originalCategory}` : `/collections/${originalCategory}` : ''}`
-            setBaseApiUrl(baseUrl)
-
             // Retrieve the list of all page/resource categories for use in the dropdown options. Also sets the default category if none is specified.
             if (type === 'resource') {
                 const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`);
@@ -111,7 +112,12 @@ const ComponentSettingsModal = ({
                 const collectionsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`);
                 const { collections } = collectionsResp.data;
                 const collectionCategories = [''].concat(collections) // allow for selection of "Unlinked Page" category
-                setAllCategories(collectionCategories)
+                setAllCategories(collectionCategories.map((category) => (
+                    {
+                      value:category,
+                      label:category ? category : 'Unlinked Page'
+                    }
+                )))
             }
 
             // Set component form values
@@ -331,20 +337,11 @@ const ComponentSettingsModal = ({
                       className="w-100"
                       onChange={categoryDropdownHandler}
                       isDisabled={isCategoryDisabled}
-                      defaultValue={{
+                      value={{
                           value: originalCategory,
                           label: generateInitialCategoryLabel(originalCategory, isCategoryDisabled),
                         }}
-                      options={
-                        allCategories
-                        ? allCategories.map((category) => (
-                          {
-                            value:category,
-                            label:category ? category : 'Unlinked Page'
-                          }
-                        ))
-                        : null
-                      }
+                      options={allCategories}
                     />
                   </div>
                   <span className={elementStyles.error}>{errors.category}</span>
@@ -364,25 +361,17 @@ const ComponentSettingsModal = ({
                     <>
                         <p className={elementStyles.formLabel}>Third Nav Section</p>
                         <div className="d-flex text-nowrap">
-                            <CreatableSelect
+                            <AsyncCreatableSelect
                                 isClearable
+                                cacheOptions
+                                defaultOptions
                                 className="w-100"
                                 onChange={thirdNavDropdownHandler}
-                                defaultValue={{
+                                value={{
                                     value: thirdNavTitle,
-                                    label: generateInitialThirdNavLabel(thirdNavTitle),
+                                    label: generateInitialThirdNavLabel(thirdNavTitle, originalCategory),
                                 }}
-                                options={
-                                    thirdNavSections
-                                    // allow for selection of no third nav
-                                    ? [''].concat(thirdNavSections).map((thirdNav) => (
-                                        {
-                                            value:thirdNav,
-                                            label:thirdNav ? thirdNav : 'None',
-                                        }
-                                    ))
-                                    : null
-                                }
+                                loadOptions={loadThirdNavOptions}
                             />
                         </div>
                     </>

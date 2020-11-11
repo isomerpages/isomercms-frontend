@@ -17,26 +17,32 @@ const RADIX_PARSE_INT = 10;
 // axios settings
 axios.defaults.withCredentials = true
 
-const getThirdNavSections = (collectionPages) => {
-    const thirdNavArr = collectionPages.filter((elem) => elem.type === 'third-nav')
-    return thirdNavArr.map((thirdNav) => thirdNav.title)
-} 
-
 const CollectionPagesSection = ({ collectionName, pages, siteName, isResource }) => {
     const [isComponentSettingsActive, setIsComponentSettingsActive] = useState(false)
     const [selectedFile, setSelectedFile] = useState('')
     const [createNewPage, setCreateNewPage] = useState(false)
-    const [leftNavData, setLeftNavData] = useState([])
+    const [thirdNavData, setThirdNavData] = useState(null)
 
-    useEffect(() => {
-        const getLeftNavData = async () => {
-            const endpoint = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages`
-            const { data : { collectionPages } } = await axios.get(endpoint)
-            setLeftNavData(collectionPages)
+    const loadThirdNavOptions = async () => {
+        if (thirdNavData) {
+            return new Promise((resolve) => {
+                resolve(thirdNavData)
+              });
         }
 
-        if (collectionName && !isResource) getLeftNavData()
-    }, [])
+        const endpoint = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages`
+        const { data : { collectionPages } } = await axios.get(endpoint)
+        const thirdNavArr = collectionPages.filter((elem) => elem.type === 'third-nav')
+        const thirdNavOptions = [''].concat(thirdNavArr).map((thirdNav) => (
+            {
+                value:thirdNav.title,
+                label:thirdNav.title ? thirdNav.title : 'None',
+            }
+        ))
+        setThirdNavData(thirdNavOptions)
+        return thirdNavOptions
+    }
+
 
     const isCategoryDropdownDisabled = (isNewFile, category) => {
         if (category) return true
@@ -92,7 +98,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                                 .map((page) => page.fileName)
                                 .value()
                         }
-                        thirdNavSections={getThirdNavSections(leftNavData)}
+                        loadThirdNavOptions={loadThirdNavOptions}
                     />
                 )
             }
