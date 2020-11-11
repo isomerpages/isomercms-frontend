@@ -208,7 +208,8 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
       ? { title, permalink, third_nav_title: thirdNavTitle }
       : { title, permalink };
     if (category) {
-      const groupIdentifier = fileName.split('-')[0];
+      const fileNameArr = fileName.split('-')
+      const groupIdentifier = fileNameArr.length > 1 ? fileNameArr[0] : '99';
       newFileName = generateCollectionPageFileName(title, groupIdentifier);
     } else {
       newFileName = generatePageFileName(title);
