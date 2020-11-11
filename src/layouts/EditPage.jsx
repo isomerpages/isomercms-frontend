@@ -8,7 +8,7 @@ import marked from 'marked';
 import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
 import LeftNavPage from '../templates/LeftNavPage';
-import { getCSP, checkCSP } from '../utils/cspUtils';
+import { checkCSP } from '../utils/cspUtils';
 import Policy from 'csp-parse';
 
 import {
@@ -123,8 +123,10 @@ export default class EditPage extends Component {
       const { match } = this.props;
       const { siteName } = match.params;
       
-      // retrieve CSP from repo
-      const csp = await getCSP(siteName);
+      // retrieve CSP
+      const cspResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`);
+      const { netlifyTomlHeaderValues } = cspResp.data;
+      const csp = new Policy(netlifyTomlHeaderValues['Content-Security-Policy']);
 
       let leftNavPages
       if (this.props.isCollectionPage) {
