@@ -25,6 +25,7 @@ export async function getCSP(repoName) {
 };
 
 function _stringContainsValue(string, value) {
+  // regex checks specifically if value is preceded by whitespace or is at the start/ end of the string
   const VALUE_REGEX = `(\\s|^)${value}(\\s|$)`;
   const ValueRegexTest = new RegExp(VALUE_REGEX);
   return ValueRegexTest.test(string);
