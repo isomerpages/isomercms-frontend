@@ -44,6 +44,7 @@ const ComponentSettingsModal = ({
     isCategoryDisabled,
     isNewFile,
     modalTitle,
+    collectionPageData,
     pageFileNames,
     settingsToggle,
     siteName,
@@ -76,6 +77,7 @@ const ComponentSettingsModal = ({
     const [originalFileUrl, setOriginalFileUrl] = useState('')
 
     // Collections-related
+    const [originalThirdNavTitle, setOriginalThirdNavTitle] = useState('') // this state is required for comparison purposes
     const [thirdNavTitle, setThirdNavTitle] = useState('')
 
     // Resource-related
@@ -156,6 +158,7 @@ const ComponentSettingsModal = ({
                 setOriginalFileUrl(frontMatter.file_url)
 
                 setResourceDate(frontMatter.date)
+                setOriginalThirdNavTitle(frontMatter.third_nav_title)
                 setThirdNavTitle(frontMatter.third_nav_title)
             }
         }
@@ -204,9 +207,11 @@ const ComponentSettingsModal = ({
                 sha,
                 category,
                 baseApiUrl,
+                originalThirdNavTitle,
                 thirdNavTitle,
                 // props
                 originalCategory,
+                collectionPageData,
                 type,
                 fileName,
                 isNewFile,
