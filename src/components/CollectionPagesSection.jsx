@@ -21,6 +21,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
     const [isComponentSettingsActive, setIsComponentSettingsActive] = useState(false)
     const [selectedFile, setSelectedFile] = useState('')
     const [createNewPage, setCreateNewPage] = useState(false)
+    const [collectionPageData, setCollectionPageData] = useState(null)
     const [thirdNavData, setThirdNavData] = useState(null)
 
     const loadThirdNavOptions = async () => {
@@ -39,6 +40,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                 label:thirdNav.title ? thirdNav.title : 'None',
             }
         ))
+        setCollectionPageData(collectionPages)
         setThirdNavData(thirdNavOptions)
         return thirdNavOptions
     }
@@ -98,6 +100,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                                 .map((page) => page.fileName)
                                 .value()
                         }
+                        collectionPageData={collectionPageData}
                         loadThirdNavOptions={loadThirdNavOptions}
                     />
                 )
