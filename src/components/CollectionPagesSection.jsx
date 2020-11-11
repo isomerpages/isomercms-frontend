@@ -26,7 +26,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
     const [isComponentSettingsActive, setIsComponentSettingsActive] = useState(false)
     const [selectedFile, setSelectedFile] = useState('')
     const [createNewPage, setCreateNewPage] = useState(false)
-    const [leftNavData, setLeftNavData] = useState(null)
+    const [leftNavData, setLeftNavData] = useState([])
 
     useEffect(() => {
         const getLeftNavData = async () => {
@@ -92,7 +92,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                                 .map((page) => page.fileName)
                                 .value()
                         }
-                        thirdNavSections={leftNav ? getThirdNavSections(leftNavData) : []}
+                        thirdNavSections={getThirdNavSections(leftNavData)}
                     />
                 )
             }

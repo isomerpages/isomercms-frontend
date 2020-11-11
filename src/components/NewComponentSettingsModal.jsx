@@ -30,6 +30,12 @@ const generateInitialCategoryLabel = (originalCategory, isCategoryDisabled) => {
     return isCategoryDisabled ? "Unlinked Page" : "Select a category or create a new category..."
 }
 
+const generateInitialThirdNavLabel = (thirdNavTitle) => {
+    if (thirdNavTitle) return thirdNavTitle
+
+    return "Select a third nav section..."
+}
+
 const ComponentSettingsModal = ({
     category: originalCategory,
     fileName,
@@ -40,6 +46,7 @@ const ComponentSettingsModal = ({
     settingsToggle,
     siteName,
     type,
+    thirdNavSections,
 }) => {
     // Errors
     const [errors, setErrors] = useState({
@@ -90,7 +97,7 @@ const ComponentSettingsModal = ({
 
     useEffect(() => {
         const fetchData = async () => {
-            if (category) setCategory(originalCategory);
+            if (originalCategory) setCategory(originalCategory);
 
             const baseUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${originalCategory ? type === "resource" ? `/resources/${originalCategory}` : `/collections/${originalCategory}` : ''}`
             setBaseApiUrl(baseUrl)
@@ -103,7 +110,7 @@ const ComponentSettingsModal = ({
             } else if (type === 'page') {
                 const collectionsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`);
                 const { collections } = collectionsResp.data;
-                const collectionCategories = [''].concat(collections)
+                const collectionCategories = [''].concat(collections) // allow for selection of "Unlinked Page" category
                 setAllCategories(collectionCategories)
             }
 
@@ -143,7 +150,6 @@ const ComponentSettingsModal = ({
 
                 setResourceDate(frontMatter.date)
                 setThirdNavTitle(frontMatter.third_nav_title)
-
             }
         }
 
@@ -271,13 +277,37 @@ const ComponentSettingsModal = ({
           event = {
             target: {
               id: 'category',
-              value: value,
+              value,
             }
           }
         }
         
         changeHandler(event);
     };
+
+    // Artificially create event from dropdown action
+    const thirdNavDropdownHandler = (newValue) => {
+        let event;
+        if (!newValue) {
+            // Field was cleared
+            event = {
+                target: {
+                    id: 'thirdNavTitle',
+                    value: '',
+                },
+            }
+        } else {
+            const { value } = newValue
+            event = {
+                target: {
+                    id: 'thirdNavTitle',
+                    value,
+                },
+            }
+        }
+
+        changeHandler(event)
+    }
 
     return (
         <>
@@ -303,7 +333,7 @@ const ComponentSettingsModal = ({
                       isDisabled={isCategoryDisabled}
                       defaultValue={{
                           value: originalCategory,
-                          label: generateInitialCategoryLabel(originalCategory,isCategoryDisabled),
+                          label: generateInitialCategoryLabel(originalCategory, isCategoryDisabled),
                         }}
                       options={
                         allCategories
@@ -329,13 +359,33 @@ const ComponentSettingsModal = ({
                   />
                   {/* Third Nav */}
                   { 
-                    thirdNavTitle &&
-                    <FormField
-                      title="3rd Nav Title"
-                      id="thirdNavTitle"
-                      value={thirdNavTitle}
-                      onFieldChange={changeHandler}
-                    />
+                    type === "page" &&
+                    originalCategory &&
+                    <>
+                        <p className={elementStyles.formLabel}>Third Nav Section</p>
+                        <div className="d-flex text-nowrap">
+                            <CreatableSelect
+                                isClearable
+                                className="w-100"
+                                onChange={thirdNavDropdownHandler}
+                                defaultValue={{
+                                    value: thirdNavTitle,
+                                    label: generateInitialThirdNavLabel(thirdNavTitle),
+                                }}
+                                options={
+                                    thirdNavSections
+                                    // allow for selection of no third nav
+                                    ? [''].concat(thirdNavSections).map((thirdNav) => (
+                                        {
+                                            value:thirdNav,
+                                            label:thirdNav ? thirdNav : 'None',
+                                        }
+                                    ))
+                                    : null
+                                }
+                            />
+                        </div>
+                    </>
                   }
                   {/* Permalink */}
                   <FormField
@@ -346,7 +396,7 @@ const ComponentSettingsModal = ({
                     isRequired={true}
                     onFieldChange={changeHandler}
                     disabled={!isPost}
-                    fixedMessage={category ? `/${category}/${thirdNavTitle ? `${thirdNavTitle}/` : ''}` : '/'}
+                    fixedMessage={originalCategory ? `/${originalCategory}/${thirdNavTitle ? `${thirdNavTitle}/` : ''}` : '/'}
                     placeholder=' '
                   />
                   { type === "resource" && 
