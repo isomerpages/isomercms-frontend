@@ -11,6 +11,7 @@ import {
   frontMatterParser,
   dequoteString,
   generatePageFileName,
+  generateCollectionPageFileName,
   generateResourceFileName,
   retrieveCollectionAndLinkFromPermalink,
   saveFileAndRetrieveUrl,
@@ -250,7 +251,13 @@ const ComponentSettingsModal = ({
             newFileName = generateResourceFileName(id === "title" ? value : title, id==="date" ? value : resourceDate)
         } else if (type === 'page') {
             errorMessage = validatePageSettings(id, value);
-            newFileName = generatePageFileName(value);
+            let groupIdentifier
+            if (originalCategory) {
+                groupIdentifier = fileName.split('-')[0]
+                newFileName = generateCollectionPageFileName(value, groupIdentifier)
+            } else {
+                newFileName = generatePageFileName(value);
+            }
         }
     
         if (errorMessage === '' && pageFileNamesExc && pageFileNamesExc.includes(newFileName)) {
@@ -266,6 +273,11 @@ const ComponentSettingsModal = ({
             }));
             idToSetterFuncMap[id](value);
         }
+    }
+
+    const dropdownChangeHandler = (event) => {
+        const { id, value } = event.target;
+        idToSetterFuncMap[id](value);
     }
 
     const categoryDropdownHandler = (newValue) => {
@@ -288,7 +300,7 @@ const ComponentSettingsModal = ({
           }
         }
         
-        changeHandler(event);
+        dropdownChangeHandler(event);
     };
 
     // Artificially create event from dropdown action
@@ -312,7 +324,7 @@ const ComponentSettingsModal = ({
             }
         }
 
-        changeHandler(event)
+        dropdownChangeHandler(event)
     }
 
     return (
