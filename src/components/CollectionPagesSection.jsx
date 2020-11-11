@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -13,10 +14,29 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 // Constants
 const RADIX_PARSE_INT = 10;
 
+// axios settings
+axios.defaults.withCredentials = true
+
+const getThirdNavSections = (collectionPages) => {
+    const thirdNavArr = collectionPages.filter((elem) => elem.type === 'third-nav')
+    return thirdNavArr.map((thirdNav) => thirdNav.title)
+} 
+
 const CollectionPagesSection = ({ collectionName, pages, siteName, isResource }) => {
     const [isComponentSettingsActive, setIsComponentSettingsActive] = useState(false)
     const [selectedFile, setSelectedFile] = useState('')
     const [createNewPage, setCreateNewPage] = useState(false)
+    const [leftNavData, setLeftNavData] = useState(null)
+
+    useEffect(() => {
+        const getLeftNavData = async () => {
+            const endpoint = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages`
+            const { data : { collectionPages } } = await axios.get(endpoint)
+            setLeftNavData(collectionPages)
+        }
+
+        if (collectionName && !isResource) getLeftNavData()
+    }, [])
 
     const isCategoryDropdownDisabled = (isNewFile, category) => {
         if (category) return true
@@ -72,6 +92,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                                 .map((page) => page.fileName)
                                 .value()
                         }
+                        thirdNavSections={leftNav ? getThirdNavSections(leftNavData) : []}
                     />
                 )
             }
