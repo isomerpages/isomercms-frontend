@@ -93,7 +93,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                         fileName={selectedFile ? selectedFile.fileName : ''}
                         isNewFile={createNewPage}
                         type={isResource ? "resource" : "page"}
-                        pageFilenames={
+                        pageFileNames={
                             _.chain(pages)
                                 .map((page) => page.fileName)
                                 .value()
