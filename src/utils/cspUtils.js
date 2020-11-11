@@ -9,21 +9,6 @@ import { isLinkInternal } from '../utils';
 import cheerio from 'cheerio';
 import escapeStringRegexp from 'escape-string-regexp';
 
-/* Helper function to retrieve the netlify.toml from repo */
-async function _parseNetlifyToml(repoName) {
-  // axios get withCredentials false is required https://stackoverflow.com/questions/34078676/access-control-allow-origin-not-allowed-when-credentials-flag-is-true-but/34099399 
-  const tomlUrl = `https://raw.githubusercontent.com/isomerpages/${repoName}/staging/netlify.toml`;
-  const tomlFile = await axios.get(tomlUrl, { withCredentials: false } ); 
-  return toml.parse(tomlFile.data);
-};
-
-export async function getCSP(repoName) {
-  const tomlData = await _parseNetlifyToml(repoName);
-  const csp = tomlData.headers[0].values['Content-Security-Policy'];
-  const cspPolicy = new Policy(csp);
-  return cspPolicy;
-};
-
 function _stringContainsValue(string, value) {
   // regex checks specifically if value is preceded by whitespace or is at the start/ end of the string
   const VALUE_REGEX = `(\\s|^)${value}(\\s|$)`;
