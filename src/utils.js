@@ -355,7 +355,7 @@ const generateGroupIdentifier = async (pageArray, shouldAddToThirdNav, baseApiUr
 
   // When creating a page from Workspace and assigning to a collection
   const { data: {collectionPages } } = await axios.get(baseApiUrl)
-  return incrementGroupIdentifier(collectionPages, shouldAddToThirdNav)
+  return incrementGroupIdentifier(collectionPages, false)
 }
 
 const incrementAlphabetString = (alphaString) => {
@@ -372,7 +372,7 @@ const nextChar = (c) => {
 
 const incrementGroupIdentifier = (pageArray, shouldAddToThirdNav, shouldCreateThirdNav) => {
   const lastElem = pageArray[pageArray.length - 1]
-  const lastFileName = (lastElem.type === 'page' || lastElem.type === 'third-nav-page')
+  const lastFileName = (lastElem.type !== 'third-nav')
     ? lastElem.fileName
     : lastElem.contents[lastElem.contents.length - 1].fileName
   const lastFileNameArr = lastFileName.split('-')

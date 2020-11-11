@@ -354,7 +354,7 @@ const ComponentSettingsModal = ({
                       className="w-100"
                       onChange={categoryDropdownHandler}
                       isDisabled={isCategoryDisabled}
-                      value={{
+                      defaultValue={{
                           value: originalCategory,
                           label: generateInitialCategoryLabel(originalCategory, isCategoryDisabled),
                         }}
