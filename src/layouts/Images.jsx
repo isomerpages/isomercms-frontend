@@ -80,6 +80,11 @@ export default class Images extends Component {
             <div className={contentStyles.sectionHeader}>
               <h1 className={contentStyles.sectionTitle}>Images</h1>
             </div>
+            {/* Info segment */}
+            <div className={contentStyles.segment}>
+              <i className="bx bx-sm bx-info-circle text-dark" />
+              <span><strong className="ml-1">Note:</strong> Upload images here to link to them in pages and resources</span>
+            </div>
             <div className={contentStyles.contentContainerBars}>
               <div className={contentStyles.boxesContainer}>
                 <div className={mediaStyles.mediaCards}>

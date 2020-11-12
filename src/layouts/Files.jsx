@@ -89,6 +89,11 @@ export default class Files extends Component {
             <div className={contentStyles.sectionHeader}>
               <h1 className={contentStyles.sectionTitle}>Files</h1>
             </div>
+            {/* Info segment */}
+            <div className={contentStyles.segment}>
+              <i className="bx bx-sm bx-info-circle text-dark" />
+              <span><strong className="ml-1">Note:</strong> Upload files here to link to them in pages and resources</span>
+            </div>
             <div className={contentStyles.contentContainerBars}>
               {/* File cards */}
               <div className={mediaStyles.mediaCards}>
