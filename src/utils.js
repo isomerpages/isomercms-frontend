@@ -312,22 +312,23 @@ const generateNewCollectionFileName = async ({
   let newFileName
 
   // New file name is also dependent on whether the file has been moved into or out of a third nav
-  if (originalThirdNavTitle !== thirdNavTitle) {
-    // Move from within a third nav section to outside of it within the collection
+  if (originalThirdNavTitle !== thirdNavTitle && collectionPageData) {
+    // Case: Move from within a third nav section to outside of it within the collection
     if (!thirdNavTitle) {
       const groupIdentifier = await generateGroupIdentifier(collectionPageData, false, baseApiUrl)
       newFileName = generateCollectionPageFileName(title, groupIdentifier);
 
     } else {
+      // Assumption: third nav titles are unique
       const thirdNavSection = collectionPageData.filter((section) => section.type === 'third-nav' && section.title === thirdNavTitle)
 
       let groupIdentifier
-      // Create a new third nav section
+      // Case: Create a new third nav section
       if (thirdNavSection.length === 0) {
         groupIdentifier = await generateGroupIdentifier(collectionPageData, true, baseApiUrl, true)
 
-      // Move from outside of third nav into a third nav OR
-      // Move from one third nav section into another third nav section
+      // Case: Move from outside of third nav into a third nav OR
+      // Case: Move from one third nav section into another third nav section
       } else {
         // Move the file to be the last file in the third nav
         groupIdentifier = await generateGroupIdentifier(thirdNavSection[0].contents, true, baseApiUrl)
@@ -335,26 +336,41 @@ const generateNewCollectionFileName = async ({
 
       newFileName = generateCollectionPageFileName(title, groupIdentifier);
     }
+  } else {
+    // Case: Creating a new page from the workspace and assigning to collection BUT not third nav
+    // Case: Creating a new page from within a collection
+    if (!originalThirdNavTitle && !thirdNavTitle) {
+      const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${category}`
+      const groupIdentifier = await generateGroupIdentifier(null, false, apiUrl)
+      newFileName = generateCollectionPageFileName(title, groupIdentifier);
 
-  // Creating a new page from the workspace and assigning to collection OR
-  // Creating a new page from within a collection
-  } else if (!originalThirdNavTitle && !thirdNavTitle) {
-    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${category}`
-    const groupIdentifier = await generateGroupIdentifier(null, false, apiUrl)
-    newFileName = generateCollectionPageFileName(title, groupIdentifier);
+    // Case: Creating a new page from the workspace and assigning to collection AND third nav
+    } else if (!collectionPageData && thirdNavTitle) {
+      const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${category}/pages`
+      const groupIdentifier = await generateGroupIdentifier(null, true, apiUrl, false, thirdNavTitle)
+      newFileName = generateCollectionPageFileName(title, groupIdentifier);
+    }
   }
 
   return newFileName
 }
 
 // Accepts an array of objects (pageArray) with attribute `fileName` and returns an incremented file identifier
-const generateGroupIdentifier = async (pageArray, shouldAddToThirdNav, baseApiUrl, shouldCreateThirdNav) => {
+const generateGroupIdentifier = async (pageArray, shouldAddToThirdNav, baseApiUrl, shouldCreateThirdNav, thirdNavTitle) => {
   if (pageArray) {
     return incrementGroupIdentifier(pageArray, shouldAddToThirdNav, shouldCreateThirdNav)
   }
 
-  // When creating a page from Workspace and assigning to a collection
-  const { data: {collectionPages } } = await axios.get(baseApiUrl)
+  const { data: { collectionPages } } = await axios.get(baseApiUrl)
+
+  // Case: when creating a page from Workspace and assigning to a collection + third nav
+  if (shouldAddToThirdNav && thirdNavTitle) {
+    // Assumption: third nav titles are unique
+    const thirdNavSection = collectionPages.filter((section) => section.type === 'third-nav' && section.title === thirdNavTitle)
+    return incrementGroupIdentifier(thirdNavSection[0].contents, true)
+  }
+
+  // Case: when creating a page from Workspace and assigning to a collection BUT not third nav
   return incrementGroupIdentifier(collectionPages, false)
 }
 
