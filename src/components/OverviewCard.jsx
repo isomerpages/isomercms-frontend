@@ -153,6 +153,15 @@ const OverviewCard = ({
     return title
   }
 
+  const handleBlur = (event) => {
+    // if the blur was because of outside focus
+    // currentTarget is the parent element, relatedTarget is the clicked element
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      setCanShowFileMoveDropdown(false)
+    }
+}
+
+
   const toggleDropdownModals = () => {
     setCanShowFileMoveDropdown(!canShowFileMoveDropdown)
     setCanShowDropdown(!canShowDropdown)
@@ -187,7 +196,7 @@ const OverviewCard = ({
               </MenuItem>
           </div>}
           {canShowFileMoveDropdown &&
-            <div className={`position-absolute ${elementStyles.dropdown}`} ref={fileMoveDropdownRef} tabIndex={1} onBlur={()=>{console.log(document.activeElement); console.log(categoryInputRef.current); }}>
+            <div className={`position-absolute ${elementStyles.dropdown}`} ref={fileMoveDropdownRef} tabIndex={1} onBlur={handleBlur}>
               <div className={`d-flex text-nowrap ${elementStyles.dropdownItem}`} onClick={(e)=>{e.preventDefault();e.stopPropagation()}}>
                 <i className="bx bx-sm bx-arrow-back" onClick={toggleDropdownModals}/>
                 Move to
@@ -228,7 +237,7 @@ const OverviewCard = ({
                   `Loading Categories...`
               }
               <hr/>
-              <div className={`d-flex text-nowrap ${elementStyles.dropdownItem}`} onClick={(e)=>{e.preventDefault();e.stopPropagation()}} ref={categoryInputRef}>
+              <div className={`d-flex text-nowrap ${elementStyles.dropdownItem}`} onClick={(e)=>{e.preventDefault();e.stopPropagation()}}>
                 <i className="bx bx-sm bx-folder-plus" />
                 <input
                   type="text"
