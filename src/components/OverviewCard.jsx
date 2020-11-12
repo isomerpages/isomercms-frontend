@@ -114,7 +114,7 @@ const OverviewCard = ({
   const changeHandler = (event) => {
     const { value } = event.target;
 
-    const errorMessage = validateCategoryName(value)
+    const errorMessage = validateCategoryName(value, isResource ? 'resource' : 'page')
 
     if (errorMessage === '' && allCategories && allCategories.includes(value)) {
       setErrorMessage('This category name is already in use. Please choose a different one.')
@@ -248,7 +248,7 @@ const OverviewCard = ({
                   onChange={changeHandler}
                   ref={categoryInputRef}
                 />
-                <button disabled={errorMessage} className={errorMessage ? elementStyles.disabled : elementStyles.blue} onClick={()=>{
+                <button disabled={errorMessage || !newCategory} className={errorMessage || !newCategory ? elementStyles.disabled : elementStyles.blue} onClick={()=>{
                   const event = {
                     target: {
                       value: newCategory,

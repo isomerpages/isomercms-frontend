@@ -587,11 +587,11 @@ const validateCategoryName = (value, componentName) => {
     errorMessage = `The ${componentName} category should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`;
   }
   // Resource category is too long
-  if (value.length > RESOURCE_CATEGORY_MAX_LENGTH) {
+  else if (value.length > RESOURCE_CATEGORY_MAX_LENGTH) {
     errorMessage = `The ${componentName} category should be shorter than ${RESOURCE_CATEGORY_MAX_LENGTH} characters.`;
   }
   // Resource category fails regex
-  if (!resourceCategoryRegexTest.test(value)) {
+  else if (!resourceCategoryRegexTest.test(value)) {
     errorMessage = `The ${componentName} category should only have alphanumeric characters separated by whitespace.`;
   }
 
