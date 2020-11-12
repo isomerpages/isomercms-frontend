@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import DeleteWarningModal from './DeleteWarningModal'
+import LoadingButton from './LoadingButton'
 import {
   frontMatterParser,
   saveFileAndRetrieveUrl,
@@ -59,7 +60,7 @@ const OverviewCard = ({
     if (canShowDropdown) dropdownRef.current.focus()
   }, [canShowFileMoveDropdown, canShowDropdown])
 
-  const moveFile = async (newCategory) => {
+  const moveFile = async (chosenCategory) => {
     try {
       // Retrieve data from existing page/resource
       const resp = await axios.get(`${baseApiUrl}/pages/${fileName}`);
@@ -78,7 +79,7 @@ const OverviewCard = ({
         date,
         mdBody,
         sha,
-        category: newCategory,
+        category: chosenCategory ? chosenCategory : newCategory,
         prevCategory: category,
         baseApiUrl,
         type: isResource ? 'resource' : 'page',
@@ -262,13 +263,13 @@ const OverviewCard = ({
                   onChange={changeHandler}
                   ref={categoryInputRef}
                 />
-                <button 
-                  disabled={errorMessage || !newCategory} 
-                  className={errorMessage || !newCategory ? elementStyles.disabled : elementStyles.blue} 
-                  onClick={()=>{moveFile(newCategory)}}
-                >
-                  Submit
-                </button>
+                <LoadingButton
+                  label="Submit"
+                  disabled={errorMessage || !newCategory}
+                  disabledStyle={elementStyles.disabled}
+                  className={(errorMessage || !newCategory) ? elementStyles.disabled : elementStyles.blue}
+                  callback={moveFile}
+                />
               </div>
               { errorMessage &&
                 <div className={`d-flex ${elementStyles.dropdownItemWarning}`} onClick={(e)=>{e.preventDefault();e.stopPropagation()}}>
