@@ -184,21 +184,25 @@ const OverviewCard = ({
               }}
             className={`${contentStyles.componentIcon}`}
           >
-            <i id={`settingsIcon-${itemIndex}`} className="bx bx-cog" />
+            <i id={`settingsIcon-${itemIndex}`} className="bx bx-dots-vertical-rounded" />
           </button>
           {canShowDropdown &&
             <div className={`position-absolute ${elementStyles.dropdown}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
-              <MenuItem handler={settingsToggle} id={`settings-${itemIndex}`}>Edit details</MenuItem>
+              <MenuItem handler={settingsToggle} id={`settings-${itemIndex}`}>
+                <i className="bx bx-sm bx-edit"/>
+                Edit details
+              </MenuItem>
               <MenuItem handler={toggleDropdownModals}>
+                <i className="bx bx-sm bx-folder"/>
                 Move to
               </MenuItem>
           </div>}
           {canShowFileMoveDropdown &&
             <div className={`position-absolute ${elementStyles.dropdown}`} ref={fileMoveDropdownRef} tabIndex={1} onBlur={handleBlur}>
-              <div className={`d-flex text-nowrap ${elementStyles.dropdownItem}`} onClick={(e)=>{e.preventDefault();e.stopPropagation()}}>
+              <MenuItem className={`d-flex`}>
                 <i className="bx bx-sm bx-arrow-back" onClick={toggleDropdownModals}/>
                 Move to
-              </div>
+              </MenuItem>
               <hr/>
               {category && !isResource &&
                 <MenuItem handler={() => moveFile('')}>
