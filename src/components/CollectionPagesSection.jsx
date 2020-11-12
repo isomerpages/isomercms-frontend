@@ -11,6 +11,9 @@ import ComponentSettingsModal from './ComponentSettingsModal'
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
+// Import utils
+import { retrieveThirdNavOptions } from '../utils/dropdownUtils'
+
 // Constants
 const RADIX_PARSE_INT = 10;
 
@@ -31,15 +34,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
               });
         }
 
-        const endpoint = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages`
-        const { data : { collectionPages } } = await axios.get(endpoint)
-        const thirdNavArr = collectionPages.filter((elem) => elem.type === 'third-nav')
-        const thirdNavOptions = [''].concat(thirdNavArr).map((thirdNav) => (
-            {
-                value:thirdNav.title,
-                label:thirdNav.title ? thirdNav.title : 'None',
-            }
-        ))
+        const { collectionPages, thirdNavOptions } = await retrieveThirdNavOptions(siteName, collectionName)
         setCollectionPageData(collectionPages)
         setThirdNavData(thirdNavOptions)
         return thirdNavOptions
