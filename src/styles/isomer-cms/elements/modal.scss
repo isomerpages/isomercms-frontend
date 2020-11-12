@@ -91,6 +91,5 @@
 .modal-settings {
   @extend .modal;
   height: initial;
-  width: initial;
-  min-width: 40%;
+  width: 40%;
 }
