@@ -216,6 +216,7 @@ const OverviewCard = ({
               <MenuItem handler={toggleDropdownModals}>
                 <i className="bx bx-sm bx-folder"/>
                 Move to
+                <i className="bx bx-sm bx-chevron-right ml-auto"/>
               </MenuItem>
               <MenuItem handler={() => setCanShowDeleteWarningModal(true)}>
                 <i className="bx bx-sm bx-trash text-danger"/>
