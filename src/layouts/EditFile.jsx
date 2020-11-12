@@ -116,6 +116,9 @@ export default class EditFile extends Component {
           {' '}
           {fileName}
         </h3>
+        <button type="button" className='ml-auto' onClick={this.deletePage}>Delete</button>
+        <br />
+        <br />
         { sha
           ? (
             <>
@@ -131,9 +134,6 @@ export default class EditFile extends Component {
               <button type="button" onClick={this.createPage}>Save</button>
             </>
           )}
-        <br />
-        <br />
-        <button type="button" onClick={this.deletePage}>Delete</button>
         <br />
         <br />
         <input placeholder="New file name" onChange={(event) => changeFileName(event, this)} />
