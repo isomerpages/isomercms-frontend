@@ -22,6 +22,9 @@ import DeleteWarningModal from './DeleteWarningModal';
 import ResourceFormFields from './ResourceFormFields';
 import SaveDeleteButtons from './SaveDeleteButtons';
 
+// Import utils
+import { retrieveThirdNavOptions } from '../utils/dropdownUtils'
+
 // axios settings
 axios.defaults.withCredentials = true
 
@@ -88,6 +91,12 @@ const ComponentSettingsModal = ({
     const [newPageUrl, setNewPageUrl] = useState('')
     const [redirectToNewPage, setRedirectToNewPage] = useState(false)
     const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
+
+    // Backup third nav option loader
+    const backupLoadThirdNavOptions = async () => {
+      const { thirdNavOptions } = await retrieveThirdNavOptions(siteName, category)
+      return thirdNavOptions
+    }
 
     // Map element ID to setter functions
     const idToSetterFuncMap = {
@@ -373,22 +382,21 @@ const ComponentSettingsModal = ({
                   />
                   {/* Third Nav */}
                   { 
-                    type === "page" &&
-                    originalCategory &&
+                    ((type === "page" && originalCategory) || (!originalCategory && category)) &&
                     <>
                         <p className={elementStyles.formLabel}>Third Nav Section</p>
                         <div className="d-flex text-nowrap">
                             <AsyncCreatableSelect
-                                isClearable
-                                cacheOptions
-                                defaultOptions
-                                className="w-100"
-                                onChange={thirdNavDropdownHandler}
-                                value={{
-                                    value: thirdNavTitle,
-                                    label: generateInitialThirdNavLabel(thirdNavTitle, originalCategory),
-                                }}
-                                loadOptions={loadThirdNavOptions}
+                              isClearable
+                              cacheOptions={false}
+                              defaultOptions
+                              className="w-100"
+                              onChange={thirdNavDropdownHandler}
+                              value={{
+                                  value: thirdNavTitle,
+                                  label: generateInitialThirdNavLabel(thirdNavTitle, originalCategory),
+                              }}
+                              loadOptions={(!originalCategory && category) ? backupLoadThirdNavOptions : loadThirdNavOptions}
                             />
                         </div>
                     </>
