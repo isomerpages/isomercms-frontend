@@ -52,6 +52,8 @@ const CategoryPages = ({ match, location, isResource }) => {
               };
             });
             setCategoryPages(retrievedResourcePages)
+          } else {
+            setCategoryPages([])
           }
         } else {
           const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${collectionName}`);
