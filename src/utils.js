@@ -188,7 +188,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
     mdBody,
     sha,
     category,
-    prevCategory,
+    originalCategory,
     baseApiUrl,
     type,
     thirdNavTitle,
@@ -220,7 +220,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
     frontMatter.file_url = fileUrl;
   }
   let newBaseApiUrl
-  if (prevCategory) {
+  if (originalCategory) {
     // baseApiUrl can be used as is because user cannot change categories
     newBaseApiUrl = baseApiUrl
   } else {
@@ -237,7 +237,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   const base64EncodedContent = Base64.encode(content);
 
   let params = {};
-  if (newFileName !== fileName || prevCategory !== category) {
+  if (newFileName !== fileName || originalCategory !== category) {
     // We'll need to create a new .md file with a new filename
     params = {
       content: base64EncodedContent,
