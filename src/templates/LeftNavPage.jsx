@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Breadcrumb from './pageComponents/Breadcrumb';
+import PageHeader from './pageComponents/PageHeader';
 import LeftNav from './pageComponents/LeftNav';
 
 const LeftNavPage = ({
@@ -18,7 +18,7 @@ const LeftNavPage = ({
     .join(' '); // join it back together
   return (
     <div>
-      <Breadcrumb title={title} collection={collection} />
+      <PageHeader title={title} collection={collection} />
       <section className="bp-section page-content-body">
         <div className="bp-container padding--top--lg padding--bottom--xl">
           <div className="row">
