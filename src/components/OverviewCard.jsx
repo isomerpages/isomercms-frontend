@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import DeleteWarningModal from './DeleteWarningModal'
 import {
   frontMatterParser,
   saveFileAndRetrieveUrl,
@@ -34,6 +35,8 @@ const OverviewCard = ({
   const [errorMessage, setErrorMessage] = useState('')
   const [canShowDropdown, setCanShowDropdown] = useState(false)
   const [canShowFileMoveDropdown, setCanShowFileMoveDropdown] = useState(false)
+  const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
+  const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? isResource ? `/resources/${category}` : `/collections/${category}` : ''}`
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,7 +61,6 @@ const OverviewCard = ({
 
   const moveFile = async (newCategory) => {
     try {
-      const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? isResource ? `/resources/${category}` : `/collections/${category}` : ''}`
       // Retrieve data from existing page/resource
       const resp = await axios.get(`${baseApiUrl}/pages/${fileName}`);
 
@@ -94,6 +96,24 @@ const OverviewCard = ({
     }
   }
 
+  const deleteHandler = async () => {
+    try {
+      // Retrieve data from existing page/resource
+      const resp = await axios.get(`${baseApiUrl}/pages/${fileName}`);
+
+      const { sha } = resp.data;
+      const params = { sha };
+      await axios.delete(`${baseApiUrl}/pages/${fileName}`, {
+        data: params,
+      });
+
+      // Refresh page
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  
   const MenuItem = ({handler, id, children}) => {
     return (
       <div
@@ -166,6 +186,7 @@ const OverviewCard = ({
   }
   
   return (
+    <>
     <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`} to={generateLink()}>
       <div id={itemIndex} className={contentStyles.componentInfo}>
         <div className={contentStyles.componentCategory}>{category ? category : ''}</div>
@@ -195,6 +216,10 @@ const OverviewCard = ({
               <MenuItem handler={toggleDropdownModals}>
                 <i className="bx bx-sm bx-folder"/>
                 Move to
+              </MenuItem>
+              <MenuItem handler={() => setCanShowDeleteWarningModal(true)}>
+                <i className="bx bx-sm bx-trash text-danger"/>
+                Delete item
               </MenuItem>
           </div>}
           {canShowFileMoveDropdown &&
@@ -253,6 +278,17 @@ const OverviewCard = ({
         </div>
       }
     </Link>
+    {
+      canShowDeleteWarningModal
+      && (
+        <DeleteWarningModal
+          onCancel={() => setCanShowDeleteWarningModal(false)}
+          onDelete={deleteHandler}
+          type="resource"
+        />
+      )
+    }
+    </>
   );
 };
 
