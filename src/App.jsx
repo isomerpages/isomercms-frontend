@@ -19,6 +19,7 @@ import EditImage from './layouts/EditImage';
 import Files from './layouts/Files';
 import EditFile from './layouts/EditFile';
 import EditHomepage from './layouts/EditHomepage';
+import EditContactUs from './layouts/EditContactUs';
 import Resources from './layouts/Resources';
 import Menus from './layouts/Menus';
 import EditNav from './layouts/EditNav';
@@ -118,6 +119,7 @@ function App() {
                   <ProtectedRouteWithProps path="/sites/:siteName/pages/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={false} />
                   <ProtectedRouteWithProps path="/sites/:siteName/workspace" component={Workspace} />
                   <ProtectedRouteWithProps path="/sites/:siteName/homepage" component={EditHomepage} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/contact-us" component={EditContactUs} />
                   <ProtectedRouteWithProps path="/sites/:siteName/resources/:resourceName/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={true} />
                   <ProtectedRouteWithProps path="/sites/:siteName/resources/:collectionName" component={CategoryPages} isResource={true}/>
                   <ProtectedRouteWithProps path="/sites/:siteName/resources" component={Resources} />
