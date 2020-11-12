@@ -56,9 +56,8 @@ const OverviewCard = ({
     if (canShowDropdown) dropdownRef.current.focus()
   }, [canShowFileMoveDropdown, canShowDropdown])
 
-  const moveFile = async (event) => {
+  const moveFile = async (newCategory) => {
     try {
-      const { value: newCategory } = event.target;
       const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? isResource ? `/resources/${category}` : `/collections/${category}` : ''}`
       // Retrieve data from existing page/resource
       const resp = await axios.get(`${baseApiUrl}/pages/${fileName}`);
@@ -159,8 +158,7 @@ const OverviewCard = ({
     if (!event.currentTarget.contains(event.relatedTarget)) {
       setCanShowFileMoveDropdown(false)
     }
-}
-
+  }
 
   const toggleDropdownModals = () => {
     setCanShowFileMoveDropdown(!canShowFileMoveDropdown)
@@ -203,14 +201,7 @@ const OverviewCard = ({
               </div>
               <hr/>
               {category && !isResource &&
-                <MenuItem handler={() => {
-                    const event = {
-                      target: {
-                        value: '',
-                      },
-                    };
-                    moveFile(event)
-                  }}>
+                <MenuItem handler={() => moveFile('')}>
                   Unlinked Page
                 </MenuItem>
               }
@@ -219,14 +210,7 @@ const OverviewCard = ({
                 allCategories.map((categoryName) => {
                   if (categoryName !== category) {
                     return (
-                      <MenuItem handler={() => {
-                          const event = {
-                            target: {
-                              value: categoryName,
-                            },
-                          };
-                          moveFile(event)
-                        }}>
+                      <MenuItem handler={() => moveFile(categoryName)}>
                         {categoryName}
                       </MenuItem>
                     )
@@ -248,13 +232,11 @@ const OverviewCard = ({
                   onChange={changeHandler}
                   ref={categoryInputRef}
                 />
-                <button disabled={errorMessage || !newCategory} className={errorMessage || !newCategory ? elementStyles.disabled : elementStyles.blue} onClick={()=>{
-                  const event = {
-                    target: {
-                      value: newCategory,
-                    },
-                  };
-                  moveFile(event)}}>
+                <button 
+                  disabled={errorMessage || !newCategory} 
+                  className={errorMessage || !newCategory ? elementStyles.disabled : elementStyles.blue} 
+                  onClick={()=>{moveFile(newCategory)}}
+                >
                   Submit
                 </button>
               </div>
