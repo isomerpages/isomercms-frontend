@@ -4,6 +4,7 @@ import LoadingButton from './LoadingButton'
 import {
   frontMatterParser,
   saveFileAndRetrieveUrl,
+  retrieveCollectionAndLinkFromPermalink,
 } from '../utils';
 import {
   validateCategoryName,
@@ -72,9 +73,11 @@ const OverviewCard = ({
         title, permalink, file_url: fileUrl, date, third_nav_title: thirdNavTitle,
       } = frontMatter;
 
+      const { editableLink } = retrieveCollectionAndLinkFromPermalink(permalink)
+
       const fileInfo = {
         title,
-        permalink,
+        permalink: editableLink,
         fileUrl,
         date,
         mdBody,
