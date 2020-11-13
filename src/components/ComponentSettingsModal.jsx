@@ -119,7 +119,10 @@ const ComponentSettingsModal = ({
             if (type === 'resource') {
                 const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`);
                 const { resources } = resourcesResp.data;
-                setAllCategories(resources.map((category) => category.dirName))
+                setAllCategories(resources.map((category) => ({
+                  value: category.dirName,
+                  label: category.dirName,
+                })))
             } else if (type === 'page') {
                 const collectionsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`);
                 const { collections } = collectionsResp.data;
