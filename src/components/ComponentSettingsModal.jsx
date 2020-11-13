@@ -410,7 +410,7 @@ const ComponentSettingsModal = ({
                     isRequired={true}
                     onFieldChange={changeHandler}
                     disabled={!isPost}
-                    fixedMessage={originalCategory ? `/${originalCategory}/${thirdNavTitle ? `${thirdNavTitle}/` : ''}` : '/'}
+                    fixedMessage={(category || originalCategory) ? `/${category || originalCategory}/${thirdNavTitle ? `${thirdNavTitle}/` : ''}` : '/'}
                     placeholder=' '
                   />
                   { type === "resource" && 
