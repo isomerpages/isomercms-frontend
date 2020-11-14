@@ -41,6 +41,9 @@ const generateInitialThirdNavLabel = (thirdNavTitle, originalCategory) => {
     return "Select a third nav section..."
 }
 
+// Global state
+let thirdNavData = {}
+
 const ComponentSettingsModal = ({
     category: originalCategory,
     fileName,
@@ -94,7 +97,14 @@ const ComponentSettingsModal = ({
 
     // Backup third nav option loader
     const backupLoadThirdNavOptions = async () => {
+      if (thirdNavData[category]) {
+        return new Promise((resolve) => {
+            resolve(thirdNavData[category])
+          });
+      }
+
       const { thirdNavOptions } = await retrieveThirdNavOptions(siteName, category)
+      thirdNavData[category] = thirdNavOptions
       return thirdNavOptions
     }
 
@@ -390,8 +400,8 @@ const ComponentSettingsModal = ({
                         <p className={elementStyles.formLabel}>Third Nav Section</p>
                         <div className="d-flex text-nowrap">
                             <AsyncCreatableSelect
+                              key={category}
                               isClearable
-                              cacheOptions={false}
                               defaultOptions
                               className="w-100"
                               onChange={thirdNavDropdownHandler}
@@ -399,6 +409,7 @@ const ComponentSettingsModal = ({
                                   value: thirdNavTitle,
                                   label: generateInitialThirdNavLabel(thirdNavTitle, originalCategory),
                               }}
+                              // When displaying third nav from workspace, use backupLoadThirdNavOptions
                               loadOptions={(!originalCategory && category) ? backupLoadThirdNavOptions : loadThirdNavOptions}
                             />
                         </div>
