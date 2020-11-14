@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AsyncCreatableSelect from "react-select/async-creatable";
-import CreatableSelect from 'react-select/creatable'
+import CreatableSelect from 'react-select/creatable';
+import { createFilter } from 'react-select';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
@@ -411,6 +412,7 @@ const ComponentSettingsModal = ({
                               }}
                               // When displaying third nav from workspace, use backupLoadThirdNavOptions
                               loadOptions={(!originalCategory && category) ? backupLoadThirdNavOptions : loadThirdNavOptions}
+                              filterOption={createFilter()}
                             />
                         </div>
                     </>
