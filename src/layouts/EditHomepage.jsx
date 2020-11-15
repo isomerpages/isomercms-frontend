@@ -197,6 +197,7 @@ export default class EditHomepage extends Component {
 
       this.setState({
         frontMatter,
+        originalFrontMatter: _.cloneDeep(frontMatter),
         sha,
         hasResources,
         displaySections,
@@ -897,6 +898,7 @@ export default class EditHomepage extends Component {
   render() {
     const {
       frontMatter,
+      originalFrontMatter,
       hasResources,
       dropdownIsActive,
       displaySections,
@@ -950,6 +952,8 @@ export default class EditHomepage extends Component {
         }
         <Header
           title="Homepage"
+          shouldAllowEditPageBackNav={JSON.stringify(originalFrontMatter) === JSON.stringify(frontMatter)}
+          isEditPage="true"
           backButtonText="Back to My Workspace"
           backButtonUrl={`/sites/${siteName}/workspace`}
         />
