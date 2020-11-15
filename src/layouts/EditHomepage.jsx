@@ -242,6 +242,34 @@ export default class EditHomepage extends Component {
 
           sections[sectionIndex][sectionType][field] = value;
 
+          // Set special error message if hero button has text but hero url is empty
+          // This needs to be done separately because it relies on the state of another field
+          if (sectionIndex === 0 && sectionType === 'hero' && field === 'url' && !value && this.state.frontMatter.sections[0].hero.button) {
+            const errorMessage = 'Please specify a URL for your button'
+            const newSectionError = _.cloneDeep(errors.sections[sectionIndex])
+            newSectionError[sectionType][field] = errorMessage
+
+            const newErrors = update(errors, {
+              sections: {
+                [sectionIndex]: {
+                  $set: newSectionError,
+                },
+              },
+            });
+
+            this.setState((currState) => ({
+              ...currState,
+              frontMatter: {
+                ...currState.frontMatter,
+                sections,
+              },
+              errors: newErrors,
+            }));
+
+            this.scrollRefs[sectionIndex].scrollIntoView();
+            break;
+          }
+
           const newErrors = update(errors, {
             sections: {
               [sectionIndex]: {
