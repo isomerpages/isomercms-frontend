@@ -38,7 +38,7 @@ const EditorHeroSection = ({
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
       <h2>Hero section</h2>
-      <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>
+      <button class="pl-3" type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>
         <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`section-${sectionIndex}-icon`} />
       </button>
     </div>

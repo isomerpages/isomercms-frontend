@@ -24,7 +24,7 @@ const KeyHighlight = ({
       <h2>
         {title}
       </h2>
-      <button type="button" id={`highlight-${highlightIndex}-toggle`} onClick={displayHandler}>
+      <button class="pl-3" type="button" id={`highlight-${highlightIndex}-toggle`} onClick={displayHandler}>
         <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`highlight-${highlightIndex}-icon`} />
       </button>
     </div>
