@@ -244,7 +244,7 @@ const OverviewCard = ({
                 allCategories.map((categoryName) => {
                   if (categoryName !== category) {
                     return (
-                      <MenuItem handler={() => moveFile(categoryName)}>
+                      <MenuItem key={categoryName} handler={() => moveFile(categoryName)}>
                         {categoryName}
                       </MenuItem>
                     )
