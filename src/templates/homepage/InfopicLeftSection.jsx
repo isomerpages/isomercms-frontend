@@ -109,7 +109,7 @@ TemplateInfopicLeftSection.propTypes = {
   description: PropTypes.string,
   button: PropTypes.string.isRequired,
   imageUrl: PropTypes.string.isRequired,
-  imageAlt: PropTypes.string.isRequired,
+  imageAlt: PropTypes.string,
   sectionIndex: PropTypes.number.isRequired,
   siteName: PropTypes.string.isRequired,
 };

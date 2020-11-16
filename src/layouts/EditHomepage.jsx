@@ -992,7 +992,6 @@ export default class EditHomepage extends Component {
                 <p><b>Site notification</b></p>
                 <input
                   placeholder="Notification"
-                  defaultValue={frontMatter.notification}
                   value={frontMatter.notification}
                   id="site-notification"
                   onChange={this.onFieldChange} />
