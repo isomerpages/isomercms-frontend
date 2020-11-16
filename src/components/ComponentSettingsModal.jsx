@@ -232,6 +232,7 @@ const ComponentSettingsModal = ({
                 baseApiUrl,
                 originalThirdNavTitle,
                 thirdNavTitle,
+                thirdNavOptions: thirdNavData[category] ? thirdNavData[category].map((thirdNavObj) => thirdNavObj.label): null,
                 // props
                 originalCategory,
                 collectionPageData,

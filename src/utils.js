@@ -199,6 +199,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
     baseApiUrl,
     originalThirdNavTitle,
     thirdNavTitle,
+    thirdNavOptions,
     // props
     originalCategory,
     collectionPageData,
@@ -223,6 +224,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
         fileName,
         originalThirdNavTitle,
         thirdNavTitle,
+        thirdNavOptions,
         collectionPageData,
         baseApiUrl,
         title,
@@ -303,6 +305,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
 const generateNewCollectionFileName = async ({
   originalThirdNavTitle,
   thirdNavTitle,
+  thirdNavOptions,
   collectionPageData,
   baseApiUrl,
   title,
@@ -347,7 +350,16 @@ const generateNewCollectionFileName = async ({
     // Case: Creating a new page from the workspace and assigning to collection AND third nav
     } else if (!collectionPageData && thirdNavTitle) {
       const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${category}/pages`
-      const groupIdentifier = await generateGroupIdentifier(null, true, apiUrl, false, thirdNavTitle)
+
+      let groupIdentifier
+      // Assigning to existing third nav
+      if (thirdNavOptions.includes(thirdNavTitle)) {
+        groupIdentifier = await generateGroupIdentifier(null, true, apiUrl, false, thirdNavTitle)
+
+      // Create new third nav and assign to it
+      } else {
+        groupIdentifier = await generateGroupIdentifier(null, false, apiUrl, true, thirdNavTitle)
+      }
       newFileName = generateCollectionPageFileName(title, groupIdentifier);
     }
   }
@@ -368,6 +380,11 @@ const generateGroupIdentifier = async (pageArray, shouldAddToThirdNav, baseApiUr
     // Assumption: third nav titles are unique
     const thirdNavSection = collectionPages.filter((section) => section.type === 'third-nav' && section.title === thirdNavTitle)
     return incrementGroupIdentifier(thirdNavSection[0].contents, true)
+  }
+
+  // Case: when creating a page from Workspace and assigning to a collection + creating a new third nav
+  if (shouldCreateThirdNav && thirdNavTitle) {
+    return incrementGroupIdentifier(collectionPages, false, true)
   }
 
   // Case: when creating a page from Workspace and assigning to a collection BUT not third nav
