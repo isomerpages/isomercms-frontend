@@ -8,6 +8,8 @@ import marked from 'marked';
 import { Base64 } from 'js-base64';
 import SimplePage from '../templates/SimplePage';
 import LeftNavPage from '../templates/LeftNavPage';
+import { checkCSP } from '../utils/cspUtils';
+import Policy from 'csp-parse';
 
 import {
   frontMatterParser,
@@ -91,6 +93,7 @@ export default class EditPage extends Component {
     const { match, isResourcePage, isCollectionPage } = this.props;
     const { collectionName, fileName, siteName, resourceName } = match.params;
     this.state = {
+      csp: new Policy(),
       sha: null,
       originalMdValue: '',
       editorValue: '',
@@ -116,6 +119,14 @@ export default class EditPage extends Component {
 
       // split the markdown into front matter and content
       const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
+     
+      const { match } = this.props;
+      const { siteName } = match.params;
+      
+      // retrieve CSP
+      const cspResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`);
+      const { netlifyTomlHeaderValues } = cspResp.data;
+      const csp = new Policy(netlifyTomlHeaderValues['Content-Security-Policy']);
 
       let leftNavPages
       if (this.props.isCollectionPage) {
@@ -136,6 +147,7 @@ export default class EditPage extends Component {
       }
 
       this.setState({
+        csp,
         sha,
         originalMdValue: mdBody.trim(),
         editorValue: mdBody.trim(),
@@ -273,6 +285,7 @@ export default class EditPage extends Component {
     const { title, date } = extractMetadataFromFilename(isResourcePage, isCollectionPage, fileName)
     const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, collectionName, siteName)
     const {
+      csp,
       originalMdValue,
       editorValue,
       canShowDeleteWarningModal,
@@ -283,6 +296,11 @@ export default class EditPage extends Component {
       leftNavPages,
       selectionText,
     } = this.state;
+
+    const html = marked(editorValue)
+    const { isCspViolation, sanitisedHtml } = checkCSP(csp, html)
+    const chunk = prependImageSrc(siteName, sanitisedHtml)
+
     return (
       <>
         <Header
@@ -374,14 +392,14 @@ export default class EditPage extends Component {
               isCollectionPage && leftNavPages
               ? (
                 <LeftNavPage
-                  chunk={prependImageSrc(siteName, marked(editorValue))}
+                  chunk={chunk}
                   leftNavPages={leftNavPages}
                   fileName={fileName}
                   title={title}
                 />
               ) : (
                 <SimplePage
-                  chunk={prependImageSrc(siteName, marked(editorValue))}
+                  chunk={chunk}
                   title={title}
                   date={date}
                 />
@@ -393,7 +411,8 @@ export default class EditPage extends Component {
           <LoadingButton
             label="Save"
             disabledStyle={elementStyles.disabled}
-            className={elementStyles.blue}
+            disabled={isCspViolation}
+            className={isCspViolation ? elementStyles.disabled : elementStyles.blue}
             callback={this.updatePage}
           />
           <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
