@@ -1,22 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 // Import components
 import OverviewCard from '../components/OverviewCard';
-import ComponentSettingsModal from '../components/ComponentSettingsModal'
+import ComponentSettingsModal from './ComponentSettingsModal'
 
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
+// Import utils
+import { retrieveThirdNavOptions } from '../utils/dropdownUtils'
+
 // Constants
 const RADIX_PARSE_INT = 10;
+
+// axios settings
+axios.defaults.withCredentials = true
 
 const CollectionPagesSection = ({ collectionName, pages, siteName, isResource }) => {
     const [isComponentSettingsActive, setIsComponentSettingsActive] = useState(false)
     const [selectedFile, setSelectedFile] = useState('')
     const [createNewPage, setCreateNewPage] = useState(false)
+    const [collectionPageData, setCollectionPageData] = useState(null)
+    const [thirdNavData, setThirdNavData] = useState(null)
+
+    const loadThirdNavOptions = async () => {
+        if (thirdNavData) {
+            return new Promise((resolve) => {
+                resolve(thirdNavData)
+              });
+        }
+
+        const { collectionPages, thirdNavOptions } = await retrieveThirdNavOptions(siteName, collectionName)
+        setCollectionPageData(collectionPages)
+        setThirdNavData(thirdNavOptions)
+        return thirdNavOptions
+    }
+
 
     const isCategoryDropdownDisabled = (isNewFile, category) => {
         if (category) return true
@@ -67,11 +90,13 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                         fileName={selectedFile ? selectedFile.fileName : ''}
                         isNewFile={createNewPage}
                         type={isResource ? "resource" : "page"}
-                        pageFilenames={
+                        pageFileNames={
                             _.chain(pages)
                                 .map((page) => page.fileName)
                                 .value()
                         }
+                        collectionPageData={collectionPageData}
+                        loadThirdNavOptions={loadThirdNavOptions}
                     />
                 )
             }
