@@ -397,7 +397,7 @@ const ComponentSettingsModal = ({
                   />
                   {/* Third Nav */}
                   { 
-                    ((type === "page" && originalCategory) || (!originalCategory && category)) &&
+                    ((type === "page" && originalCategory) || (type === 'page' && !originalCategory && category)) &&
                     <>
                         <p className={elementStyles.formLabel}>Third Nav Section</p>
                         <div className="d-flex text-nowrap">
