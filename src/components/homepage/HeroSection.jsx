@@ -38,7 +38,7 @@ const EditorHeroSection = ({
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
       <h2>Hero section</h2>
-      <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>
+      <button className="pl-3" type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>
         <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`section-${sectionIndex}-icon`} />
       </button>
     </div>
@@ -137,7 +137,7 @@ const EditorHeroSection = ({
                                         url={highlight.url}
                                         highlightIndex={highlightIndex}
                                         onFieldChange={onFieldChange}
-                                        shouldDisplay={displayHighlights[highlightIndex]}
+                                        shouldDisplay={displayHighlights[highlightIndex] ? displayHighlights[highlightIndex] : false}
                                         displayHandler={displayHandler}
                                         shouldAllowMoreHighlights={
                                           highlights.length < MAX_NUM_KEY_HIGHLIGHTS
@@ -182,18 +182,18 @@ EditorHeroSection.propTypes = {
   deleteHandler: PropTypes.func.isRequired,
   shouldDisplay: PropTypes.bool.isRequired,
   displayHandler: PropTypes.func.isRequired,
-  displayHighlights: PropTypes.func.isRequired,
+  displayHighlights: PropTypes.arrayOf(PropTypes.bool).isRequired,
   displayDropdownElems: PropTypes.arrayOf(PropTypes.bool.isRequired).isRequired,
   highlights: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,
       url: PropTypes.string.isRequired,
-      highlightIndex: PropTypes.number.isRequired,
-      createHandler: PropTypes.func.isRequired,
-      deleteHandler: PropTypes.func.isRequired,
-      onFieldChange: PropTypes.func.isRequired,
-      allowMoreHighlights: PropTypes.bool.isRequired,
+      highlightIndex: PropTypes.number,
+      createHandler: PropTypes.func,
+      deleteHandler: PropTypes.func,
+      onFieldChange: PropTypes.func,
+      allowMoreHighlights: PropTypes.bool,
     }),
   ),
   dropdown: PropTypes.shape({
@@ -216,7 +216,7 @@ EditorHeroSection.propTypes = {
           background: PropTypes.string.isRequired,
           button: PropTypes.string.isRequired,
           url: PropTypes.string.isRequired,
-          dropdown: PropTypes.string.isRequired,
+          dropdown: PropTypes.string,
         }),
       }),
     ),

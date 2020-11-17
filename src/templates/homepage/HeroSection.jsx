@@ -87,8 +87,8 @@ const KeyHighlights = ({ highlights }) => (
   <section id="key-highlights" className="bp-section is-paddingless">
     <div className="bp-container">
       <div className="row is-gapless has-text-centered">
-        {highlights.map(({ title, description }) => (
-          <KeyHighlightElem title={title} description={description} />
+        {highlights.map(({ title, description }, idx) => (
+          <KeyHighlightElem title={title} description={description} key={`${title}-${idx}`} />
         ))}
       </div>
     </div>

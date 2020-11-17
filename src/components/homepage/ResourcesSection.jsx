@@ -23,7 +23,7 @@ const EditorResourcesSection = ({
       <h2>
         Resources section: {title}
       </h2>
-      <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>
+      <button className="pl-3" type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>
         <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`section-${sectionIndex}-icon`} />
       </button>
     </div>

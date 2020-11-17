@@ -29,7 +29,7 @@ const EditorInfopicSection = ({
       <h2>
         Infopic section: {title}
       </h2>
-      <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>
+      <button className="pl-3" type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>
         <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`section-${sectionIndex}-icon`} />
       </button>
     </div>
@@ -113,9 +113,9 @@ EditorInfopicSection.propTypes = {
   description: PropTypes.string.isRequired,
   sectionIndex: PropTypes.number.isRequired,
   button: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired,
-  imageUrl: PropTypes.string.isRequired,
-  imageAlt: PropTypes.string.isRequired,
+  url: PropTypes.string,
+  imageUrl: PropTypes.string,
+  imageAlt: PropTypes.string,
   onFieldChange: PropTypes.func.isRequired,
   deleteHandler: PropTypes.func.isRequired,
   shouldDisplay: PropTypes.bool.isRequired,
@@ -126,7 +126,7 @@ EditorInfopicSection.propTypes = {
     description: PropTypes.string.isRequired,
     button: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired,
-    imageUrl: PropTypes.string.isRequired,
-    imageAlt: PropTypes.string.isRequired,
+    imageUrl: PropTypes.string,
+    imageAlt: PropTypes.string,
   }).isRequired,
 };

@@ -197,6 +197,7 @@ export default class EditHomepage extends Component {
 
       this.setState({
         frontMatter,
+        originalFrontMatter: _.cloneDeep(frontMatter),
         sha,
         hasResources,
         displaySections,
@@ -238,13 +239,39 @@ export default class EditHomepage extends Component {
           const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT);
           const sectionType = idArray[2]; // e.g. "hero" or "infobar" or "resources"
           const field = idArray[3]; // e.g. "title" or "subtitle"
-
           sections[sectionIndex][sectionType][field] = value;
+
+          let newSectionError
+
+          // Set special error message if hero button has text but hero url is empty
+          // This needs to be done separately because it relies on the state of another field
+          if (
+            field === 'url' && !value && this.state.frontMatter.sections[sectionIndex][sectionType].button
+            && (this.state.frontMatter.sections[sectionIndex][sectionType].button || this.state.frontMatter.sections[sectionIndex][sectionType].url)
+          ) {
+            const errorMessage = 'Please specify a URL for your button'
+            newSectionError = _.cloneDeep(errors.sections[sectionIndex])
+            newSectionError[sectionType][field] = errorMessage
+          } else if (
+            field === 'button' && !this.state.frontMatter.sections[sectionIndex][sectionType].url
+            && (this.state.frontMatter.sections[sectionIndex][sectionType].button || this.state.frontMatter.sections[sectionIndex][sectionType].url)
+          ) {
+            const errorMessage = 'Please specify a URL for your button'
+            newSectionError = _.cloneDeep(errors.sections[sectionIndex])
+            newSectionError[sectionType]['url'] = errorMessage
+          } else {
+            newSectionError = validateSections(errors.sections[sectionIndex], sectionType, field, value)
+
+            if (!this.state.frontMatter.sections[sectionIndex][sectionType].button && !this.state.frontMatter.sections[sectionIndex][sectionType].url) {
+              newSectionError[sectionType]['button'] = ''
+              newSectionError[sectionType]['url'] = ''
+            }
+          }
 
           const newErrors = update(errors, {
             sections: {
               [sectionIndex]: {
-                $set: validateSections(errors.sections[sectionIndex], sectionType, field, value),
+                $set: newSectionError,
               },
             },
           });
@@ -897,6 +924,7 @@ export default class EditHomepage extends Component {
   render() {
     const {
       frontMatter,
+      originalFrontMatter,
       hasResources,
       dropdownIsActive,
       displaySections,
@@ -950,6 +978,8 @@ export default class EditHomepage extends Component {
         }
         <Header
           title="Homepage"
+          shouldAllowEditPageBackNav={JSON.stringify(originalFrontMatter) === JSON.stringify(frontMatter)}
+          isEditPage="true"
           backButtonText="Back to My Workspace"
           backButtonUrl={`/sites/${siteName}/workspace`}
         />
@@ -960,7 +990,6 @@ export default class EditHomepage extends Component {
                 <p><b>Site notification</b></p>
                 <input
                   placeholder="Notification"
-                  defaultValue={frontMatter.notification}
                   value={frontMatter.notification}
                   id="site-notification"
                   onChange={this.onFieldChange} />
