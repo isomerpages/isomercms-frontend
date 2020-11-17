@@ -21,6 +21,7 @@ export default class Pages extends Component {
       settingsIsActive: false,
       selectedFile: {},
       createNewPage: false,
+      collectionCategories
     };
   }
 
@@ -33,11 +34,13 @@ export default class Pages extends Component {
       });
       const { pages } = resp.data;
       this.setState({ pages });
+      const collectionsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`);
+      const { collections: collectionCategories } = collectionsResp.data;
+      this.setState({collectionCategories})
     } catch (err) {
       console.log(err);
     }
   }
-
   settingsToggle = (event) => {
     const { id } = event.target;
     const idArray = id.split('-');
@@ -138,6 +141,7 @@ export default class Pages extends Component {
                       key={"homepage"}
                       siteName={siteName}
                       isHomepage={true}
+                      allCategories={collectionCategories}
                     />
                     {pages.length > 0
                       ? pages.map((page, pageIndex) => (
@@ -150,6 +154,7 @@ export default class Pages extends Component {
                           siteName={siteName}
                           fileName={page.fileName}
                           collectionName={page.collectionName}
+                          allCategories={collectionCategories}
                         />
                       ))
                       : null}

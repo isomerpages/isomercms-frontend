@@ -27,34 +27,17 @@ import {
 axios.defaults.withCredentials = true
 
 const OverviewCard = ({
-  date, category, settingsToggle, itemIndex, siteName, fileName, isResource, isHomepage
+  date, category, settingsToggle, itemIndex, siteName, fileName, isResource, isHomepage, allCategories
 }) => {
   const dropdownRef = useRef(null)
   const fileMoveDropdownRef = useRef(null)
   const categoryInputRef = useRef(null)
-  const [allCategories, setAllCategories] = useState()
   const [newCategory, setNewCategory] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [canShowDropdown, setCanShowDropdown] = useState(false)
   const [canShowFileMoveDropdown, setCanShowFileMoveDropdown] = useState(false)
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
   const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? isResource ? `/resources/${category}` : `/collections/${category}` : ''}`
-
-  useEffect(() => {
-    const fetchData = async () => {
-      // Retrieve the list of all page/resource categories for use in the dropdown options.
-      if (isResource) {
-        const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`);
-        const { resources: allCategories } = resourcesResp.data;
-        setAllCategories(allCategories.map((category) => category.dirName))
-      } else {
-        const collectionsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`);
-        const { collections: collectionCategories } = collectionsResp.data;
-        setAllCategories(collectionCategories)
-      }
-    }
-    fetchData()
-  }, [])
 
   useEffect(() => {
     if (canShowFileMoveDropdown) fileMoveDropdownRef.current.focus()
