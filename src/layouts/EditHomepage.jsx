@@ -242,38 +242,37 @@ export default class EditHomepage extends Component {
 
           sections[sectionIndex][sectionType][field] = value;
 
+          let newSectionError
+
           // Set special error message if hero button has text but hero url is empty
           // This needs to be done separately because it relies on the state of another field
-          if (sectionIndex === 0 && sectionType === 'hero' && field === 'url' && !value && this.state.frontMatter.sections[0].hero.button) {
+          if (
+            field === 'url' && !value && this.state.frontMatter.sections[sectionIndex].hero.button
+            && !(!this.state.frontMatter.sections[sectionIndex].hero.button && !this.state.frontMatter.sections[sectionIndex].hero.url)
+          ) {
             const errorMessage = 'Please specify a URL for your button'
-            const newSectionError = _.cloneDeep(errors.sections[sectionIndex])
+            newSectionError = _.cloneDeep(errors.sections[sectionIndex])
             newSectionError[sectionType][field] = errorMessage
+          } else if (
+            field === 'button' && !this.state.frontMatter.sections[sectionIndex].hero.url
+            && !(!this.state.frontMatter.sections[sectionIndex].hero.button && !this.state.frontMatter.sections[sectionIndex].hero.url)
+          ) {
+            const errorMessage = 'Please specify a URL for your button'
+            newSectionError = _.cloneDeep(errors.sections[sectionIndex])
+            newSectionError[sectionType]['url'] = errorMessage
+          } else {
+            newSectionError = validateSections(errors.sections[sectionIndex], sectionType, field, value)
 
-            const newErrors = update(errors, {
-              sections: {
-                [sectionIndex]: {
-                  $set: newSectionError,
-                },
-              },
-            });
-
-            this.setState((currState) => ({
-              ...currState,
-              frontMatter: {
-                ...currState.frontMatter,
-                sections,
-              },
-              errors: newErrors,
-            }));
-
-            this.scrollRefs[sectionIndex].scrollIntoView();
-            break;
+            if (!this.state.frontMatter.sections[0].hero.button && !this.state.frontMatter.sections[0].hero.url) {
+              newSectionError[sectionType]['button'] = ''
+              newSectionError[sectionType]['url'] = ''
+            }
           }
 
           const newErrors = update(errors, {
             sections: {
               [sectionIndex]: {
-                $set: validateSections(errors.sections[sectionIndex], sectionType, field, value),
+                $set: newSectionError,
               },
             },
           });
