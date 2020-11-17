@@ -59,8 +59,7 @@ const Workspace = ({ match, location }) => {
                             displayText={"Homepage"}
                             settingsToggle={() => {}}
                             key={"homepage"}
-                            isHomepage={true}
-                            isCollection={false}
+                            pageType={"homepage"}
                             siteName={siteName}
                         />
                     </div>
@@ -88,8 +87,7 @@ const Workspace = ({ match, location }) => {
                                     displayText={prettifyPageFileName(collection)}
                                     settingsToggle={() => {}}
                                     key={collection}
-                                    isHomepage={false}
-                                    isCollection={true}
+                                    pageType={"collection"}
                                     siteName={siteName}
                                     category={collection}
                                     itemIndex={collectionIdx}

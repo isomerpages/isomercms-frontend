@@ -105,8 +105,7 @@ const Resources = ({ match, location }) => {
                                 displayText={prettifyResourceCategory(resourceCategory)}
                                 settingsToggle={() => {}}
                                 key={resourceCategory}
-                                isHomepage={false}
-                                isCollection={false}
+                                pageType={"resources"}
                                 siteName={siteName}
                                 category={resourceCategory}
                                 itemIndex={collectionIdx}

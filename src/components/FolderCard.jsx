@@ -8,24 +8,32 @@ const FolderCard = ({
   displayText,
   settingsToggle,
   itemIndex,
-  isHomepage,
-  isCollection,
+  pageType,
   siteName,
   category,
 }) => {
   const generateLink = () => {
-    if (isHomepage) return `/sites/${siteName}/homepage`
-    if (isCollection) return `/sites/${siteName}/collections/${category}`
-    return `/sites/${siteName}/resources/${category}`
+    switch(pageType) {
+      case 'homepage': 
+        return `/sites/${siteName}/homepage`
+      case 'collection':
+        return `/sites/${siteName}/collections/${category}`
+      case 'resources':
+        return `/sites/${siteName}/resources/${category}`
+      case 'contact-us':
+        return `/sites/${siteName}/contact-us`
+      default:
+        return ''
+    }
   }
 
   return (
     <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard}`} to={generateLink()}>
       <div id={itemIndex} className={contentStyles.folderInfo}>
-        <i className={`bx bx-md text-dark ${isHomepage ? 'bxs-home-circle' : 'bxs-folder'}`} />
+        <i className={`bx bx-md text-dark ${pageType === 'homepage' ? 'bxs-home-circle' : 'bxs-folder'}`} />
         <span className={`${contentStyles.componentFolderName} align-self-center ml-4 mr-auto`}>{displayText}</span>
         {
-          isHomepage
+          pageType === 'homepage'
           ? ''
           : (
             <div className={contentStyles.componentIcon}>
