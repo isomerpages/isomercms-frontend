@@ -239,7 +239,6 @@ export default class EditHomepage extends Component {
           const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT);
           const sectionType = idArray[2]; // e.g. "hero" or "infobar" or "resources"
           const field = idArray[3]; // e.g. "title" or "subtitle"
-
           sections[sectionIndex][sectionType][field] = value;
 
           let newSectionError
@@ -247,15 +246,15 @@ export default class EditHomepage extends Component {
           // Set special error message if hero button has text but hero url is empty
           // This needs to be done separately because it relies on the state of another field
           if (
-            field === 'url' && !value && this.state.frontMatter.sections[sectionIndex].hero.button
-            && !(!this.state.frontMatter.sections[sectionIndex].hero.button && !this.state.frontMatter.sections[sectionIndex].hero.url)
+            field === 'url' && !value && this.state.frontMatter.sections[sectionIndex][sectionType].button
+            && !(!this.state.frontMatter.sections[sectionIndex][sectionType].button && !this.state.frontMatter.sections[sectionIndex][sectionType].url)
           ) {
             const errorMessage = 'Please specify a URL for your button'
             newSectionError = _.cloneDeep(errors.sections[sectionIndex])
             newSectionError[sectionType][field] = errorMessage
           } else if (
-            field === 'button' && !this.state.frontMatter.sections[sectionIndex].hero.url
-            && !(!this.state.frontMatter.sections[sectionIndex].hero.button && !this.state.frontMatter.sections[sectionIndex].hero.url)
+            field === 'button' && !this.state.frontMatter.sections[sectionIndex][sectionType].url
+            && !(!this.state.frontMatter.sections[sectionIndex][sectionType].button && !this.state.frontMatter.sections[sectionIndex][sectionType].url)
           ) {
             const errorMessage = 'Please specify a URL for your button'
             newSectionError = _.cloneDeep(errors.sections[sectionIndex])
@@ -263,7 +262,7 @@ export default class EditHomepage extends Component {
           } else {
             newSectionError = validateSections(errors.sections[sectionIndex], sectionType, field, value)
 
-            if (!this.state.frontMatter.sections[0].hero.button && !this.state.frontMatter.sections[0].hero.url) {
+            if (!this.state.frontMatter.sections[sectionIndex][sectionType].button && !this.state.frontMatter.sections[sectionIndex][sectionType].url) {
               newSectionError[sectionType]['button'] = ''
               newSectionError[sectionType]['url'] = ''
             }
