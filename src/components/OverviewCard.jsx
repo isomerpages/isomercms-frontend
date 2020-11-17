@@ -213,7 +213,7 @@ const OverviewCard = ({
           </button>
           {canShowDropdown &&
             <div className={`position-absolute ${elementStyles.dropdown}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
-              <MenuItem handler={settingsToggle} id={`settings-${itemIndex}`}>
+              <MenuItem handler={(e) => {dropdownRef.current.blur(); settingsToggle(e)}} id={`settings-${itemIndex}`}>
                 <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
                 Edit details
               </MenuItem>
