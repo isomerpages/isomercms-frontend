@@ -247,14 +247,14 @@ export default class EditHomepage extends Component {
           // This needs to be done separately because it relies on the state of another field
           if (
             field === 'url' && !value && this.state.frontMatter.sections[sectionIndex][sectionType].button
-            && !(!this.state.frontMatter.sections[sectionIndex][sectionType].button && !this.state.frontMatter.sections[sectionIndex][sectionType].url)
+            && (this.state.frontMatter.sections[sectionIndex][sectionType].button || this.state.frontMatter.sections[sectionIndex][sectionType].url)
           ) {
             const errorMessage = 'Please specify a URL for your button'
             newSectionError = _.cloneDeep(errors.sections[sectionIndex])
             newSectionError[sectionType][field] = errorMessage
           } else if (
             field === 'button' && !this.state.frontMatter.sections[sectionIndex][sectionType].url
-            && !(!this.state.frontMatter.sections[sectionIndex][sectionType].button && !this.state.frontMatter.sections[sectionIndex][sectionType].url)
+            && (this.state.frontMatter.sections[sectionIndex][sectionType].button || this.state.frontMatter.sections[sectionIndex][sectionType].url)
           ) {
             const errorMessage = 'Please specify a URL for your button'
             newSectionError = _.cloneDeep(errors.sections[sectionIndex])
