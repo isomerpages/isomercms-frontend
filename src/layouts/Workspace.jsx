@@ -62,6 +62,13 @@ const Workspace = ({ match, location }) => {
                             pageType={"homepage"}
                             siteName={siteName}
                         />
+                        <FolderCard
+                            displayText={"Contact Us"}
+                            settingsToggle={() => {}}
+                            key={"contact-us"}
+                            pageType={"contact-us"}
+                            siteName={siteName}
+                        />
                     </div>
                 </div>
                 {/* Segment divider  */}
