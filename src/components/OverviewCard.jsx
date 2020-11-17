@@ -212,8 +212,8 @@ const OverviewCard = ({
           </div>}
           {canShowFileMoveDropdown &&
             <div className={`position-absolute ${elementStyles.dropdown}`} ref={fileMoveDropdownRef} tabIndex={1} onBlur={handleBlur}>
-              <MenuItem className={`d-flex`}>
-                <i className="bx bx-sm bx-arrow-back" onClick={toggleDropdownModals}/>
+              <MenuItem className={`d-flex`} handler={toggleDropdownModals}>
+                <i className="bx bx-sm bx-arrow-back"/>
                 Move to
               </MenuItem>
               <hr/>
