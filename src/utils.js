@@ -4,6 +4,7 @@ import cheerio from 'cheerio';
 import slugify from 'slugify';
 import axios from 'axios';
 import { Base64 } from 'js-base64';
+import _ from 'lodash';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -207,6 +208,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
     fileName,
     isNewFile,
     siteName,
+    isNewCollection,
   } = fileInfo
 
   let newFileName, frontMatter
@@ -230,6 +232,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
         title,
         siteName,
         category,
+        isNewCollection,
       })
 
     // Creating a simple page
@@ -311,11 +314,15 @@ const generateNewCollectionFileName = async ({
   title,
   siteName,
   category,
+  isNewCollection,
 }) => {
   let newFileName
-
+  if (isNewCollection) {
+    const groupIdentifier = await generateGroupIdentifier(null, false, null, thirdNavTitle ? true : false, thirdNavTitle, true)
+    newFileName = generateCollectionPageFileName(title, groupIdentifier);
+  }
   // New file name is also dependent on whether the file has been moved into or out of a third nav
-  if (originalThirdNavTitle !== thirdNavTitle && collectionPageData) {
+  else if (originalThirdNavTitle !== thirdNavTitle && collectionPageData) {
     // Case: Move from within a third nav section to outside of it within the collection
     if (!thirdNavTitle) {
       const groupIdentifier = await generateGroupIdentifier(collectionPageData, false, baseApiUrl)
@@ -368,7 +375,11 @@ const generateNewCollectionFileName = async ({
 }
 
 // Accepts an array of objects (pageArray) with attribute `fileName` and returns an incremented file identifier
-const generateGroupIdentifier = async (pageArray, shouldAddToThirdNav, baseApiUrl, shouldCreateThirdNav, thirdNavTitle) => {
+const generateGroupIdentifier = async (pageArray, shouldAddToThirdNav, baseApiUrl, shouldCreateThirdNav, thirdNavTitle, isNewCollection) => {
+  if (isNewCollection) {
+    return incrementGroupIdentifier(null, false, shouldCreateThirdNav)
+  }
+
   if (pageArray) {
     return incrementGroupIdentifier(pageArray, shouldAddToThirdNav, shouldCreateThirdNav)
   }
@@ -404,6 +415,12 @@ const nextChar = (c) => {
 }
 
 const incrementGroupIdentifier = (pageArray, shouldAddToThirdNav, shouldCreateThirdNav) => {
+  // New collection being created
+  if (_.isEmpty(pageArray)) {
+    if (shouldCreateThirdNav) return '0a'
+    return '0'
+  }
+
   const lastElem = pageArray[pageArray.length - 1]
   const lastFileName = (lastElem.type !== 'third-nav')
     ? lastElem.fileName

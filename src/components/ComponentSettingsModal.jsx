@@ -104,7 +104,7 @@ const ComponentSettingsModal = ({
           });
       }
 
-      const { thirdNavOptions } = await retrieveThirdNavOptions(siteName, category)
+      const { thirdNavOptions } = await retrieveThirdNavOptions(siteName, category, allCategories.map(category => category.value).includes(category))
       thirdNavData[category] = thirdNavOptions
       return thirdNavOptions
     }
@@ -240,6 +240,7 @@ const ComponentSettingsModal = ({
                 fileName,
                 isNewFile,
                 siteName,
+                isNewCollection: !allCategories.map(category => category.value).includes(category)
             }
 
             const redirectUrl = await saveFileAndRetrieveUrl(fileInfo)

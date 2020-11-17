@@ -3,10 +3,14 @@ import axios from 'axios';
 // axios settings
 axios.defaults.withCredentials = true
 
-export const retrieveThirdNavOptions = async (siteName, collectionName) => {
-    const endpoint = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages`
-    const { data : { collectionPages } } = await axios.get(endpoint)
-    const thirdNavArr = collectionPages.filter((elem) => elem.type === 'third-nav')
+export const retrieveThirdNavOptions = async (siteName, collectionName, isExistingCollection) => {
+    let thirdNavArr = [], allCollectionPages = []
+    if (isExistingCollection) {
+        const endpoint = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages`
+        const { data : { collectionPages } } = await axios.get(endpoint)
+        thirdNavArr = collectionPages.filter((elem) => elem.type === 'third-nav')
+        allCollectionPages = collectionPages
+    }
     const thirdNavOptions = [''].concat(thirdNavArr).map((thirdNav) => (
         {
             value:thirdNav.title,
@@ -14,7 +18,7 @@ export const retrieveThirdNavOptions = async (siteName, collectionName) => {
         }
     ))
     return {
-        collectionPages,
+        collectionPages: allCollectionPages,
         thirdNavOptions,
     }
 }
