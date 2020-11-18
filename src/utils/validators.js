@@ -11,7 +11,7 @@ const fileNameRegexTest = /^[a-zA-Z0-9" "_-]+$/;
 const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/;
 const RESOURCE_CATEGORY_REGEX = '^(([a-zA-Z0-9_-]+([\\s][a-zA-Z0-9_-]+)*)+)$';
 const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX);
-const resourceRoomNameRegexTest = /^[a-zA-Z-]+$/;
+const resourceRoomNameRegexTest = /([a-zA-Z]+([-][a-zA-Z]+)?)+$/
 const RADIX_PARSE_INT = 10;
 
 // Homepage Editor
