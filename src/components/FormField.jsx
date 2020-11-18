@@ -14,10 +14,11 @@ const FormField = ({
   placeholder,
   disabled,
   fixedMessage,
+  maxWidth,
 }) => (
   <>
     <p className={elementStyles.formLabel}>{title}</p>
-    <div className="d-flex text-nowrap">
+    <div className={`d-flex text-nowrap ${maxWidth ? 'w-100' : ''}`}>
       {fixedMessage
         ? <p className={elementStyles.formFixedText}>{fixedMessage}</p>
         : null
@@ -51,6 +52,7 @@ FormField.propTypes = {
   onFieldChange: PropTypes.func.isRequired,
   isRequired: PropTypes.bool,
   style: PropTypes.string,
+  maxWidth: PropTypes.bool,
 };
 
 FormField.defaultProps = {
