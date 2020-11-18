@@ -15,6 +15,8 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 // Import utils
 import { prettifyResourceCategory } from '../utils';
+import { validateResourceRoomName } from '../utils/validators'
+import FormField from '../components/FormField';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -29,6 +31,7 @@ const Resources = ({ match, location }) => {
   const [resourceRoomName, setResourceRoomName] = useState()
   const [newResourceRoomName, setNewResourceRoomName] = useState('')
   const [resourceFolderNames, setResourceFolderNames] = useState()
+  const [resourceRoomNameError, setResourceRoomNameError] = useState('')
 
   useEffect(() => {
     try {
@@ -50,9 +53,11 @@ const Resources = ({ match, location }) => {
     }
   }, [])
 
-  const changeHandler = (event) => {
+  const resourceRoomNameHandler = (event) => {
     const { value } = event.target;
+    const errorMessage = validateResourceRoomName(value)
     setNewResourceRoomName(value)
+    if (errorMessage) setResourceRoomNameError(errorMessage)
   }
 
   const createResourceRoom = async () => {
@@ -138,10 +143,18 @@ const Resources = ({ match, location }) => {
                     <i className="bx bx-sm bx-info-circle text-dark" />
                     <span><strong className="ml-1">Note:</strong> You must create a Resource Room before you can create Resources.</span>
                   </div>
-                  <input value={newResourceRoomName} onChange={changeHandler} />
+                  <FormField
+                    className="w-100"
+                    value={newResourceRoomName}
+                    placeholder="Resource room title"
+                    errorMessage={resourceRoomNameError}
+                    isRequired={true}
+                    onFieldChange={resourceRoomNameHandler}
+                    maxWidth={true}
+                  />
                   {/* Segment divider  */}
                   <div className={contentStyles.segmentDividerContainer}>
-                    <hr className="invisible w-100 mt-3 mb-5" />
+                    <hr className="invisible w-100 mt-3 mb-3" />
                   </div>
                   <button type="button" onClick={createResourceRoom} className={elementStyles.blue}>Create Resource Room</button>
                 </>
