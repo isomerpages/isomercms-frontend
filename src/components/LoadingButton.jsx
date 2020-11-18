@@ -15,15 +15,19 @@ export default function LoadingButton(props) {
   // track whether button is loading or not
   const [isLoading, setButtonLoading] = React.useState(false);
 
-  const runCallback = async () => {
-    await callback();
-    setButtonLoading(false);
-  }
-
   useEffect(() => {
+    let _isMounted = true
+
+    const runCallback = async () => {
+      await callback();
+      if (_isMounted) setButtonLoading(false);
+    }
+
     if (isLoading) {
       runCallback()
     }
+
+    return () => { _isMounted = false }
   }, [isLoading])
 
   return (
