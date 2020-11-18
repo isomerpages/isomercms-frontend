@@ -17,6 +17,7 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import { prettifyResourceCategory } from '../utils';
 import { validateResourceRoomName } from '../utils/validators'
 import FormField from '../components/FormField';
+import LoadingButton from '../components/LoadingButton';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -57,7 +58,7 @@ const Resources = ({ match, location }) => {
     const { value } = event.target;
     const errorMessage = validateResourceRoomName(value)
     setNewResourceRoomName(value)
-    if (errorMessage) setResourceRoomNameError(errorMessage)
+    setResourceRoomNameError(errorMessage)
   }
 
   const createResourceRoom = async () => {
@@ -156,7 +157,13 @@ const Resources = ({ match, location }) => {
                   <div className={contentStyles.segmentDividerContainer}>
                     <hr className="invisible w-100 mt-3 mb-3" />
                   </div>
-                  <button type="button" onClick={createResourceRoom} className={elementStyles.blue}>Create Resource Room</button>
+                  <LoadingButton
+                    label="Create Resource Room"
+                    disabled={!!resourceRoomNameError}
+                    disabledStyle={elementStyles.disabled}
+                    className={!!resourceRoomNameError ? elementStyles.disabled : elementStyles.blue}
+                    callback={createResourceRoom}
+                  />
                 </>
           }
         </div>
