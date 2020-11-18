@@ -22,7 +22,7 @@ const FolderCard = ({
   return (
     <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard}`} to={generateLink()}>
       <div id={itemIndex} className={contentStyles.folderInfo}>
-        <i className={`bx bx-md text-dark ${isHomepage ? 'bxs-home-circle' : 'bxs-folder'}`} />
+        <i className={`bx bx-md text-dark ${isHomepage ? 'bxs-home-circle' : 'bxs-folder'} ${contentStyles.componentIcon}`} />
         <span className={`${contentStyles.componentFolderName} align-self-center ml-4 mr-auto`}>{displayText}</span>
         {
           isHomepage
