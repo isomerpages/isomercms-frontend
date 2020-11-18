@@ -11,6 +11,8 @@ import MediaCard from '../components/media/MediaCard';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
 export default class Images extends Component {
+  _isMounted = false
+
   constructor(props) {
     super(props);
     this.state = {
@@ -21,6 +23,7 @@ export default class Images extends Component {
   }
 
   async componentDidMount() {
+    this._isMounted = true
     try {
       const { match } = this.props;
       const { siteName } = match.params;
@@ -28,10 +31,14 @@ export default class Images extends Component {
         withCredentials: true,
       });
       const { images } = resp.data;
-      this.setState({ images });
+      if (this._isMounted) this.setState({ images });
     } catch (err) {
       console.log(err);
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   uploadImage = async (imageName, imageContent) => {

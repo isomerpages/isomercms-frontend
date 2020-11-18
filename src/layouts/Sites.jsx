@@ -5,6 +5,8 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import siteStyles from '../styles/isomer-cms/pages/Sites.module.scss';
 
 export default class Sites extends Component {
+  _isMounted = false
+
   constructor(props) {
     super(props);
     this.state = {
@@ -13,15 +15,20 @@ export default class Sites extends Component {
   }
 
   async componentDidMount() {
+    this._isMounted = true
     try {
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites`, {
         withCredentials: true,
       });
       const { siteNames } = resp.data;
-      this.setState({ siteNames });
+      if (this._isMounted) this.setState({ siteNames });
     } catch (err) {
       console.log(err);
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {

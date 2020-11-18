@@ -120,53 +120,58 @@ const ComponentSettingsModal = ({
     }
 
     useEffect(() => {
-        if (originalCategory) setCategory(originalCategory);
+      let _isMounted = true
 
-        const baseUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${originalCategory ? type === "resource" ? `/resources/${originalCategory}` : `/collections/${originalCategory}` : ''}`
-        setBaseApiUrl(baseUrl)
+      if (originalCategory) setCategory(originalCategory);
 
-        const fetchData = async () => {
-            // Retrieve the list of all page/resource categories for use in the dropdown options. Also sets the default category if none is specified.
-            if (type === 'resource') {
-                const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`);
-                const { resources } = resourcesResp.data;
-                setAllCategories(resources.map((category) => ({
-                  value: category.dirName,
-                  label: category.dirName,
-                })))
-            } else if (type === 'page') {
-                const collectionsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`);
-                const { collections } = collectionsResp.data;
-                const collectionCategories = [''].concat(collections) // allow for selection of "Unlinked Page" category
-                setAllCategories(collectionCategories.map((category) => (
-                    {
-                      value:category,
-                      label:category ? category : 'Unlinked Page'
-                    }
-                )))
-            }
+      const baseUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${originalCategory ? type === "resource" ? `/resources/${originalCategory}` : `/collections/${originalCategory}` : ''}`
+      setBaseApiUrl(baseUrl)
 
-            // Set component form values
-            if (isNewFile) {
-                // Set default values for new file
+      const fetchData = async () => {
+          // Retrieve the list of all page/resource categories for use in the dropdown options. Also sets the default category if none is specified.
+          if (type === 'resource') {
+              const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`);
+              const { resources } = resourcesResp.data;
+              if (_isMounted) setAllCategories(resources.map((category) => ({
+                value: category.dirName,
+                label: category.dirName,
+              })))
+          } else if (type === 'page') {
+              const collectionsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`);
+              const { collections } = collectionsResp.data;
+              const collectionCategories = [''].concat(collections) // allow for selection of "Unlinked Page" category
+              if (_isMounted) setAllCategories(collectionCategories.map((category) => (
+                  {
+                    value:category,
+                    label:category ? category : 'Unlinked Page'
+                  }
+              )))
+          }
+
+          // Set component form values
+          if (isNewFile) {
+              // Set default values for new file
+              if (_isMounted) {
                 setTitle('Title')
                 setPermalink('permalink')
                 if (type === 'resource') setResourceDate(new Date().toISOString().split("T")[0])
+              }
 
-            } else {
-                // Retrieve data from an existing page/resource
-                const resp = await axios.get(`${baseUrl}/pages/${fileName}`);
-                const { content, sha: fileSha } = resp.data;
-                const base64DecodedContent = Base64.decode(content);
-                const { frontMatter, mdBody } = frontMatterParser(base64DecodedContent);
+          } else {
+              // Retrieve data from an existing page/resource
+              const resp = await axios.get(`${baseUrl}/pages/${fileName}`);
+              const { content, sha: fileSha } = resp.data;
+              const base64DecodedContent = Base64.decode(content);
+              const { frontMatter, mdBody } = frontMatterParser(base64DecodedContent);
 
-                let existingLink
-                if (frontMatter.permalink) {
-                  // We want to set parts of the link by default, and only leave a portion editable by the user
-                  const { editableLink } = retrieveCollectionAndLinkFromPermalink(frontMatter.permalink)
-                  existingLink = editableLink
-                }
+              let existingLink
+              if (frontMatter.permalink) {
+                // We want to set parts of the link by default, and only leave a portion editable by the user
+                const { editableLink } = retrieveCollectionAndLinkFromPermalink(frontMatter.permalink)
+                existingLink = editableLink
+              }
 
+              if (_isMounted) {
                 // File properties
                 setSha(fileSha)
                 setMdBody(mdBody)
@@ -183,14 +188,12 @@ const ComponentSettingsModal = ({
                 setResourceDate(frontMatter.date)
                 setOriginalThirdNavTitle(frontMatter.third_nav_title)
                 setThirdNavTitle(frontMatter.third_nav_title)
-            }
-        }
+              }
+          }
+      }
 
-        try {
-            fetchData()
-        } catch (err) {
-            console.log(err)
-        }
+      fetchData().catch((err) => console.log(err))
+      return () => { _isMounted = false }
     }, [])
 
     useEffect(() => {

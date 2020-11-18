@@ -93,6 +93,8 @@ const enumSection = (type, isErrorConstructor) => {
 };
 
 export default class EditHomepage extends Component {
+  _isMounted = false 
+
   constructor(props) {
     super(props);
     this.scrollRefs = [];
@@ -124,6 +126,7 @@ export default class EditHomepage extends Component {
   }
 
   async componentDidMount() {
+    this._isMounted = true
     try {
       const { match } = this.props;
       const { siteName } = match.params;
@@ -195,7 +198,7 @@ export default class EditHomepage extends Component {
         dropdownElems: dropdownElemsErrors,
       };
 
-      this.setState({
+      if (this._isMounted) this.setState({
         frontMatter,
         originalFrontMatter: _.cloneDeep(frontMatter),
         sha,
@@ -208,6 +211,10 @@ export default class EditHomepage extends Component {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   onFieldChange = async (event) => {

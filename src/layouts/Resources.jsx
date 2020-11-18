@@ -31,6 +31,7 @@ const Resources = ({ match, location }) => {
   const [resourceFolderNames, setResourceFolderNames] = useState()
 
   useEffect(() => {
+    let _isMounted = true
     try {
       const fetchData = async () => {
         // Get the resource categories in the resource room
@@ -39,12 +40,15 @@ const Resources = ({ match, location }) => {
 
         if (resourceRoomName) {
           const uniqueResourceFolderNames = resourceCategories ? _.uniq(resourceCategories.map((file) => file.dirName)) : []
-          setResourceFolderNames(uniqueResourceFolderNames)
-          setResourceRoomName(resourceRoomName)
+          if (_isMounted) {
+            setResourceFolderNames(uniqueResourceFolderNames)
+            setResourceRoomName(resourceRoomName)
+          }
         }
-        setIsLoading(false)
+        if (_isMounted) setIsLoading(false)
       }
       fetchData()
+      return () => { _isMounted = false }
     } catch (err) {
       console.log(err);
     }
