@@ -107,6 +107,7 @@ export default class EditPage extends Component {
       selectionText: '',
       isFileStagedForUpload: false,
       stagedFileDetails: {},
+      isLoadingPageContent: true,
     };
     this.mdeRef = React.createRef();
     this.apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName })
@@ -153,6 +154,7 @@ export default class EditPage extends Component {
         editorValue: mdBody.trim(),
         frontMatter,
         leftNavPages,
+        isLoadingPageContent: false,
       });
     } catch (err) {
       console.log(err);
@@ -295,6 +297,7 @@ export default class EditPage extends Component {
       stagedFileDetails,
       leftNavPages,
       selectionText,
+      isLoadingPageContent,
     } = this.state;
 
     const html = marked(editorValue)
@@ -344,7 +347,13 @@ export default class EditPage extends Component {
             />
             )
           }
-          <div className={editorStyles.pageEditorSidebar}>
+          <div className={`${editorStyles.pageEditorSidebar} ${isLoadingPageContent ? editorStyles.pageEditorSidebarLoading : null}`} >
+            {
+              isLoadingPageContent
+              ? (
+                <div className={`spinner-border text-primary ${editorStyles.sidebarLoadingIcon}`} />
+              ) : ''
+            }
             <SimpleMDE
               id="simplemde-editor"
               className="h-100"
