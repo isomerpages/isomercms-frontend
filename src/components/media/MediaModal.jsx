@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import _ from 'lodash';
 import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import MediaCard from './MediaCard';
@@ -11,7 +12,7 @@ export default class MediasModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      medias: [],
+      medias: '',
       selectedFile: null,
     };
   }
@@ -23,7 +24,11 @@ export default class MediasModal extends Component {
       const { data: { documents, images } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${mediaRoute}`, {
         withCredentials: true,
       });
-      this.setState({ medias: documents || images });
+      if (_.isEmpty(documents || images)) {
+        this.setState({ medias: [] });
+      } else {
+        this.setState({ medias: documents || images });
+      }
     } catch (err) {
       console.error(err);
     }
@@ -38,13 +43,13 @@ export default class MediasModal extends Component {
       readFileToStageUpload,
     } = this.props;
     const { medias, selectedFile } = this.state;
-    return (!!medias.length
+    return (medias 
       && (
         <>
           <div className={elementStyles.overlay}>
             <div className={mediaStyles.mediaModal}>
               <div className={elementStyles.modalHeader}>
-                <h1 className="pl-5" style={{ flexGrow: 1 }}>Select File</h1>
+                <h1 className="pl-5" style={{ flexGrow: 1 }}>{`Select ${type === 'file' ? 'File' : 'Image'}`}</h1>
                 <button type="button" onClick={onClose}>
                   <i className="bx bx-x" />
                 </button>

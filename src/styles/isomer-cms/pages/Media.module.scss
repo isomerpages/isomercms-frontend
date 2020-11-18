@@ -1,7 +1,6 @@
 @import '../elements/variable';
 
 @mixin single-site {
-  margin-left: $site-margin-horizontal;
   margin-right: $site-margin-horizontal;
   margin-top: $site-margin-vertical;
   margin-bottom: $site-margin-vertical;

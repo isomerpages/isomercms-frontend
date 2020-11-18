@@ -408,6 +408,7 @@ export default class EditPage extends Component {
           </div>
         </div>
         <div className={editorStyles.pageEditorFooter}>
+          <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
           <LoadingButton
             label="Save"
             disabledStyle={elementStyles.disabled}
@@ -415,7 +416,6 @@ export default class EditPage extends Component {
             className={isCspViolation ? elementStyles.disabled : elementStyles.blue}
             callback={this.updatePage}
           />
-          <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
         </div>
         {
           canShowDeleteWarningModal

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -115,7 +116,13 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                             <h2 id="settingsText-NEW">{generateNewPageText()}</h2>
                         </button>
                         {
-                            pages.map((page, pageIdx) => (
+                            _.isEmpty(pages)
+                            ?   <Redirect
+                                    to={{
+                                    pathname: isResource ? `/sites/${siteName}/resources` : `/sites/${siteName}/workspace`
+                                    }}
+                                />
+                            : pages.map((page, pageIdx) => (
                                 <OverviewCard
                                     key={page.fileName}
                                     itemIndex={pageIdx}
