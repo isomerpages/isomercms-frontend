@@ -209,28 +209,28 @@ const OverviewCard = ({
             <div className={`position-absolute ${elementStyles.dropdown}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
               <MenuItem handler={(e) => {dropdownRef.current.blur(); settingsToggle(e)}} id={`settings-${itemIndex}`}>
                 <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
-                Edit details
+                <div className={elementStyles.dropdownText}>Edit details</div>
               </MenuItem>
               <MenuItem handler={toggleDropdownModals}>
                 <i className="bx bx-sm bx-folder"/>
-                Move to
+                <div className={elementStyles.dropdownText}>Move to</div>
                 <i className="bx bx-sm bx-chevron-right ml-auto"/>
               </MenuItem>
               <MenuItem handler={() => setCanShowDeleteWarningModal(true)}>
                 <i className="bx bx-sm bx-trash text-danger"/>
-                Delete item
+                <div className={elementStyles.dropdownText}>Delete item</div>
               </MenuItem>
           </div>}
           {canShowFileMoveDropdown &&
-            <div className={`position-absolute ${elementStyles.dropdown}`} ref={fileMoveDropdownRef} tabIndex={1} onBlur={handleBlur}>
+            <div className={`position-absolute ${elementStyles.dropdown}`} ref={fileMoveDropdownRef} tabIndex={1} >
               <MenuItem className={`d-flex`} handler={toggleDropdownModals}>
                 <i className="bx bx-sm bx-arrow-back"/>
-                Move to
+                <div className={elementStyles.dropdownText}>Move to</div>
               </MenuItem>
               <hr/>
               {category && !isResource &&
                 <MenuItem handler={() => moveFile('')}>
-                  Unlinked Page
+                  <div className={elementStyles.dropdownText}>Unlinked Page</div>
                 </MenuItem>
               }
               {allCategories
@@ -239,7 +239,7 @@ const OverviewCard = ({
                   if (categoryName !== category) {
                     return (
                       <MenuItem key={categoryName} handler={() => moveFile(categoryName)}>
-                        {categoryName}
+                        <div className={elementStyles.dropdownText}>{categoryName}</div>
                       </MenuItem>
                     )
                   }

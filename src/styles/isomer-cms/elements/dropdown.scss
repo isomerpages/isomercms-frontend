@@ -17,6 +17,13 @@
     padding: 0.75rem 2rem 0.75rem 2rem;
     display:flex;
     align-items: center;
+
+    .dropdownText {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display:block;
+    }
     
     &:hover {
       background: rgba(43, 95, 206, 0.1);
