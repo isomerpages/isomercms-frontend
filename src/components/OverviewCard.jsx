@@ -251,9 +251,9 @@ const OverviewCard = ({
                 />
                 <LoadingButton
                   label="Submit"
-                  disabled={errorMessage || !newCategory}
+                  disabled={!!errorMessage || !newCategory}
                   disabledStyle={elementStyles.disabled}
-                  className={(errorMessage || !newCategory) ? elementStyles.disabled : elementStyles.blue}
+                  className={(!!errorMessage || !newCategory) ? elementStyles.disabled : elementStyles.blue}
                   callback={moveFile}
                 />
               </div>
