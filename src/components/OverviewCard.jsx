@@ -76,7 +76,6 @@ const OverviewCard = ({
         sha,
         category: chosenCategory ? chosenCategory : newCategory,
         originalCategory: category,
-        baseApiUrl,
         type: isResource ? 'resource' : 'page',
         originalThirdNavTitle: thirdNavTitle,
         fileName,

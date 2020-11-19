@@ -229,7 +229,6 @@ const ComponentSettingsModal = ({
                 mdBody,
                 sha,
                 category,
-                baseApiUrl,
                 originalThirdNavTitle,
                 thirdNavTitle,
                 thirdNavOptions: thirdNavData[category] ? thirdNavData[category].map((thirdNavObj) => thirdNavObj.label): null,

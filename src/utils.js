@@ -197,7 +197,6 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
     mdBody,
     sha,
     category,
-    baseApiUrl,
     originalThirdNavTitle,
     thirdNavTitle,
     thirdNavOptions,
@@ -211,6 +210,8 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
     isNewCollection,
   } = fileInfo
 
+  const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${originalCategory ? type === "resource" ? `/resources/${originalCategory}` : `/collections/${originalCategory}` : ''}`
+  const newBaseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? type === "resource" ? `/resources/${category}` : `/collections/${category}` : ''}`
   let newFileName, frontMatter
   if (type === "resource") {
     newFileName = generateResourceFileName(title, date);
@@ -228,7 +229,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
         thirdNavTitle,
         thirdNavOptions,
         collectionPageData,
-        baseApiUrl,
+        newBaseApiUrl,
         title,
         siteName,
         category,
@@ -248,7 +249,6 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   if (fileUrl) {
     frontMatter.file_url = fileUrl;
   }
-  const newBaseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? type === "resource" ? `/resources/${category}` : `/collections/${category}` : ''}`
 
   const content = concatFrontMatterMdBody(frontMatter, mdBody);
   const base64EncodedContent = Base64.encode(content);
