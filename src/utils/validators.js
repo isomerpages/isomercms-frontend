@@ -9,7 +9,7 @@ const DATE_REGEX = '^([0-9]{4}-[0-9]{2}-[0-9]{2})$';
 const dateRegexTest = RegExp(DATE_REGEX);
 const fileNameRegexTest = /^[a-zA-Z0-9" "_-]+$/;
 const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/;
-const RESOURCE_CATEGORY_REGEX = '^(([a-zA-Z0-9_-]+([\\s][a-zA-Z0-9_-]+)*)+)$';
+const RESOURCE_CATEGORY_REGEX = '^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$';
 const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX);
 const RADIX_PARSE_INT = 10;
 
@@ -592,7 +592,7 @@ const validateCategoryName = (value, componentName) => {
   }
   // Resource category fails regex
   else if (!resourceCategoryRegexTest.test(value)) {
-    errorMessage = `The ${componentName} category should only have alphanumeric characters separated by whitespace.`;
+    errorMessage = `The ${componentName} category should only have alphanumeric characters separated by hypens.`;
   }
 
   return errorMessage;
