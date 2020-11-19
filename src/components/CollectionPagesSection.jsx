@@ -51,7 +51,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
               });
         }
 
-        const { collectionPages, thirdNavOptions } = await retrieveThirdNavOptions(siteName, collectionName)
+        const { collectionPages, thirdNavOptions } = await retrieveThirdNavOptions(siteName, collectionName, true)
         setCollectionPageData(collectionPages)
         setThirdNavData(thirdNavOptions)
         return thirdNavOptions
