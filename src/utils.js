@@ -4,6 +4,7 @@ import cheerio from 'cheerio';
 import slugify from 'slugify';
 import axios from 'axios';
 import { Base64 } from 'js-base64';
+import _ from 'lodash';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -196,7 +197,6 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
     mdBody,
     sha,
     category,
-    baseApiUrl,
     originalThirdNavTitle,
     thirdNavTitle,
     thirdNavOptions,
@@ -207,8 +207,11 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
     fileName,
     isNewFile,
     siteName,
+    isNewCollection,
   } = fileInfo
 
+  const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${originalCategory ? type === "resource" ? `/resources/${originalCategory}` : `/collections/${originalCategory}` : ''}`
+  const newBaseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? type === "resource" ? `/resources/${category}` : `/collections/${category}` : ''}`
   let newFileName, frontMatter
   if (type === "resource") {
     newFileName = generateResourceFileName(title, date);
@@ -226,10 +229,11 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
         thirdNavTitle,
         thirdNavOptions,
         collectionPageData,
-        baseApiUrl,
+        newBaseApiUrl,
         title,
         siteName,
         category,
+        isNewCollection,
       })
 
     // Creating a simple page
@@ -237,7 +241,6 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
       newFileName = generatePageFileName(title);
     }
   }
-
   console.log('This is the new file name', newFileName)
 
   if (permalink) {
@@ -245,19 +248,6 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   }
   if (fileUrl) {
     frontMatter.file_url = fileUrl;
-  }
-  let newBaseApiUrl
-  if (originalCategory) {
-    // baseApiUrl can be used as is because user cannot change categories
-    newBaseApiUrl = baseApiUrl
-  } else {
-    if (category) {
-      // User is adding file to category from main page
-      newBaseApiUrl = `${baseApiUrl}/${type === "resource" ? `resources/${category}` : `collections/${category}`}`
-    } else {
-      // User is adding file with no collections, only occurs for pages
-      newBaseApiUrl = baseApiUrl
-    }
   }
 
   const content = concatFrontMatterMdBody(frontMatter, mdBody);
@@ -273,7 +263,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
 
     // If it is an existing file, delete the existing page
     if (!isNewFile) {
-      await axios.delete(`${newBaseApiUrl}/pages/${fileName}`, {
+      await axios.delete(`${baseApiUrl}/pages/${fileName}`, {
         data: {
           sha,
         },
@@ -311,11 +301,15 @@ const generateNewCollectionFileName = async ({
   title,
   siteName,
   category,
+  isNewCollection,
 }) => {
   let newFileName
-
+  if (isNewCollection) {
+    const groupIdentifier = await generateGroupIdentifier(null, false, null, thirdNavTitle ? true : false, thirdNavTitle, true)
+    newFileName = generateCollectionPageFileName(title, groupIdentifier);
+  }
   // New file name is also dependent on whether the file has been moved into or out of a third nav
-  if (originalThirdNavTitle !== thirdNavTitle && collectionPageData) {
+  else if (originalThirdNavTitle !== thirdNavTitle && collectionPageData) {
     // Case: Move from within a third nav section to outside of it within the collection
     if (!thirdNavTitle) {
       const groupIdentifier = await generateGroupIdentifier(collectionPageData, false, baseApiUrl)
@@ -368,7 +362,11 @@ const generateNewCollectionFileName = async ({
 }
 
 // Accepts an array of objects (pageArray) with attribute `fileName` and returns an incremented file identifier
-const generateGroupIdentifier = async (pageArray, shouldAddToThirdNav, baseApiUrl, shouldCreateThirdNav, thirdNavTitle) => {
+const generateGroupIdentifier = async (pageArray, shouldAddToThirdNav, baseApiUrl, shouldCreateThirdNav, thirdNavTitle, isNewCollection) => {
+  if (isNewCollection) {
+    return incrementGroupIdentifier(null, false, shouldCreateThirdNav)
+  }
+
   if (pageArray) {
     return incrementGroupIdentifier(pageArray, shouldAddToThirdNav, shouldCreateThirdNav)
   }
@@ -404,6 +402,12 @@ const nextChar = (c) => {
 }
 
 const incrementGroupIdentifier = (pageArray, shouldAddToThirdNav, shouldCreateThirdNav) => {
+  // New collection being created
+  if (_.isEmpty(pageArray)) {
+    if (shouldCreateThirdNav) return '0a'
+    return '0'
+  }
+
   const lastElem = pageArray[pageArray.length - 1]
   const lastFileName = (lastElem.type !== 'third-nav')
     ? lastElem.fileName

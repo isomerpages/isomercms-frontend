@@ -27,6 +27,23 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
     const [createNewPage, setCreateNewPage] = useState(false)
     const [collectionPageData, setCollectionPageData] = useState(null)
     const [thirdNavData, setThirdNavData] = useState(null)
+    const [allCategories, setAllCategories] = useState()
+
+    useEffect(() => {
+        const fetchData = async () => {
+          // Retrieve the list of all page/resource categories for use in the dropdown options.
+          if (isResource) {
+            const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`);
+            const { resources: allCategories } = resourcesResp.data;
+            setAllCategories(allCategories.map((category) => category.dirName))
+          } else {
+            const collectionsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`);
+            const { collections: collectionCategories } = collectionsResp.data;
+            setAllCategories(collectionCategories)
+          }
+        }
+        fetchData()
+      }, [])
 
     const loadThirdNavOptions = async () => {
         if (thirdNavData) {
@@ -35,7 +52,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
               });
         }
 
-        const { collectionPages, thirdNavOptions } = await retrieveThirdNavOptions(siteName, collectionName)
+        const { collectionPages, thirdNavOptions } = await retrieveThirdNavOptions(siteName, collectionName, true)
         setCollectionPageData(collectionPages)
         setThirdNavData(thirdNavOptions)
         return thirdNavOptions
@@ -133,6 +150,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                                     title={page.title}
                                     date={page.date}
                                     isResource={isResource}
+                                    allCategories={allCategories}
                                 />
                             ))
                         }

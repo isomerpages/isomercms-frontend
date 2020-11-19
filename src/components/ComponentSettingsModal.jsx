@@ -104,7 +104,7 @@ const ComponentSettingsModal = ({
           });
       }
 
-      const { thirdNavOptions } = await retrieveThirdNavOptions(siteName, category)
+      const { thirdNavOptions } = await retrieveThirdNavOptions(siteName, category, allCategories.map(category => category.value).includes(category))
       thirdNavData[category] = thirdNavOptions
       return thirdNavOptions
     }
@@ -229,7 +229,6 @@ const ComponentSettingsModal = ({
                 mdBody,
                 sha,
                 category,
-                baseApiUrl,
                 originalThirdNavTitle,
                 thirdNavTitle,
                 thirdNavOptions: thirdNavData[category] ? thirdNavData[category].map((thirdNavObj) => thirdNavObj.label): null,
@@ -240,6 +239,7 @@ const ComponentSettingsModal = ({
                 fileName,
                 isNewFile,
                 siteName,
+                isNewCollection: !allCategories.map(category => category.value).includes(category)
             }
 
             const redirectUrl = await saveFileAndRetrieveUrl(fileInfo)
@@ -306,6 +306,16 @@ const ComponentSettingsModal = ({
 
     const dropdownChangeHandler = (event) => {
         const { id, value } = event.target;
+        let errorMessage
+        if (type === 'resource') {
+            errorMessage = validateResourceSettings(id, value);
+        } else if (type === 'page') {
+            errorMessage = validatePageSettings(id, value);
+        }
+        setErrors((prevState) => ({
+            ...prevState,
+            [id]: errorMessage,
+        }));
         idToSetterFuncMap[id](value);
     }
 

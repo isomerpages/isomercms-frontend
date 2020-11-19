@@ -9,7 +9,7 @@ const DATE_REGEX = '^([0-9]{4}-[0-9]{2}-[0-9]{2})$';
 const dateRegexTest = RegExp(DATE_REGEX);
 const fileNameRegexTest = /^[a-zA-Z0-9" "_-]+$/;
 const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/;
-const RESOURCE_CATEGORY_REGEX = '^(([a-zA-Z0-9_-]+([\\s][a-zA-Z0-9_-]+)*)+)$';
+const RESOURCE_CATEGORY_REGEX = '^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$';
 const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX);
 const RADIX_PARSE_INT = 10;
 
@@ -465,7 +465,7 @@ const validatePageSettings = (id, value) => {
     }
     case 'category': {
       if (value !== '') {
-        errorMessage = validateCategoryName(value, 'resource')
+        errorMessage = validateCategoryName(value, 'page')
       }
       break;
     }
@@ -587,12 +587,12 @@ const validateCategoryName = (value, componentName) => {
     errorMessage = `The ${componentName} category should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`;
   }
   // Resource category is too long
-  if (value.length > RESOURCE_CATEGORY_MAX_LENGTH) {
+  else if (value.length > RESOURCE_CATEGORY_MAX_LENGTH) {
     errorMessage = `The ${componentName} category should be shorter than ${RESOURCE_CATEGORY_MAX_LENGTH} characters.`;
   }
   // Resource category fails regex
-  if (!resourceCategoryRegexTest.test(value)) {
-    errorMessage = `The ${componentName} category should only have alphanumeric characters separated by whitespace.`;
+  else if (!resourceCategoryRegexTest.test(value)) {
+    errorMessage = `The ${componentName} category should only have alphanumeric characters separated by hypens.`;
   }
 
   return errorMessage;
