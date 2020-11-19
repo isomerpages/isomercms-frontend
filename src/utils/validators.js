@@ -465,7 +465,7 @@ const validatePageSettings = (id, value) => {
     }
     case 'category': {
       if (value !== '') {
-        errorMessage = validateCategoryName(value, 'resource')
+        errorMessage = validateCategoryName(value, 'page')
       }
       break;
     }

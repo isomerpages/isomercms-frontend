@@ -307,6 +307,16 @@ const ComponentSettingsModal = ({
 
     const dropdownChangeHandler = (event) => {
         const { id, value } = event.target;
+        let errorMessage
+        if (type === 'resource') {
+            errorMessage = validateResourceSettings(id, value);
+        } else if (type === 'page') {
+            errorMessage = validatePageSettings(id, value);
+        }
+        setErrors((prevState) => ({
+            ...prevState,
+            [id]: errorMessage,
+        }));
         idToSetterFuncMap[id](value);
     }
 
