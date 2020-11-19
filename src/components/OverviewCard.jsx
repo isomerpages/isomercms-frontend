@@ -215,7 +215,7 @@ const OverviewCard = ({
                 <div className={elementStyles.dropdownText}>Move to</div>
                 <i className="bx bx-sm bx-chevron-right ml-auto"/>
               </MenuItem>
-              <MenuItem handler={() => setCanShowDeleteWarningModal(true)}>
+              <MenuItem handler={() => {dropdownRef.current.blur(); setCanShowDeleteWarningModal(true)}}>
                 <i className="bx bx-sm bx-trash text-danger"/>
                 <div className={elementStyles.dropdownText}>Delete item</div>
               </MenuItem>
