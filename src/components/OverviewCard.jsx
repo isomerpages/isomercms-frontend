@@ -7,6 +7,9 @@ import {
   retrieveCollectionAndLinkFromPermalink,
 } from '../utils';
 import {
+  retrieveThirdNavOptions,
+} from '../utils/dropdownUtils'
+import {
   validateCategoryName,
 } from '../utils/validators'
 import { Link } from 'react-router-dom';
@@ -58,6 +61,12 @@ const OverviewCard = ({
 
       const { editableLink } = retrieveCollectionAndLinkFromPermalink(permalink)
 
+      let collectionPageData
+      if (!isResource && chosenCategory) {
+        // User selected an existing page collection
+        const { collectionPages } = await retrieveThirdNavOptions(siteName, chosenCategory, true)
+        collectionPageData = collectionPages
+      }
       const fileInfo = {
         title,
         permalink: editableLink,
@@ -66,13 +75,15 @@ const OverviewCard = ({
         mdBody,
         sha,
         category: chosenCategory ? chosenCategory : newCategory,
-        prevCategory: category,
+        originalCategory: category,
         baseApiUrl,
         type: isResource ? 'resource' : 'page',
-        thirdNavTitle,
+        originalThirdNavTitle: thirdNavTitle,
         fileName,
         isNewFile: false,
         siteName,
+        collectionPageData,
+        isNewCollection: !chosenCategory,
       }
       await saveFileAndRetrieveUrl(fileInfo)
 

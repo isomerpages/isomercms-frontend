@@ -240,7 +240,6 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
       newFileName = generatePageFileName(title);
     }
   }
-
   console.log('This is the new file name', newFileName)
 
   if (permalink) {
@@ -249,19 +248,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   if (fileUrl) {
     frontMatter.file_url = fileUrl;
   }
-  let newBaseApiUrl
-  if (originalCategory) {
-    // baseApiUrl can be used as is because user cannot change categories
-    newBaseApiUrl = baseApiUrl
-  } else {
-    if (category) {
-      // User is adding file to category from main page
-      newBaseApiUrl = `${baseApiUrl}/${type === "resource" ? `resources/${category}` : `collections/${category}`}`
-    } else {
-      // User is adding file with no collections, only occurs for pages
-      newBaseApiUrl = baseApiUrl
-    }
-  }
+  const newBaseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? type === "resource" ? `/resources/${category}` : `/collections/${category}` : ''}`
 
   const content = concatFrontMatterMdBody(frontMatter, mdBody);
   const base64EncodedContent = Base64.encode(content);
@@ -276,7 +263,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
 
     // If it is an existing file, delete the existing page
     if (!isNewFile) {
-      await axios.delete(`${newBaseApiUrl}/pages/${fileName}`, {
+      await axios.delete(`${baseApiUrl}/pages/${fileName}`, {
         data: {
           sha,
         },
