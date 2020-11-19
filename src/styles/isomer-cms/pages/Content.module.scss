@@ -191,7 +191,6 @@
         flex-direction: column;
         justify-content: space-between;
         align-content: center;
-        overflow: hidden;
 
         .componentCategory{
           text-transform: uppercase;
@@ -256,6 +255,10 @@
         height: 100%;
         white-space: nowrap;
         text-overflow: ellipsis;
+        i {
+          vertical-align: middle;
+          line-height:inherit;
+        }
       }
     }
 
