@@ -44,13 +44,11 @@ const FolderModal = ({ displayTitle, displayText, onClose, category, siteName, i
             value={newCategoryName}
             onFieldChange={folderNameChangeHandler}
           />
-          <div className={elementStyles.modalButtons}>
-            <SaveDeleteButtons
-              isDisabled={false}
-              hasDeleteButton={false}
-              saveCallback={saveHandler}
-            />
-          </div>
+          <SaveDeleteButtons
+            isDisabled={false}
+            hasDeleteButton={false}
+            saveCallback={saveHandler}
+          />
         </form>
       </div>
     </div>
@@ -60,8 +58,10 @@ const FolderModal = ({ displayTitle, displayText, onClose, category, siteName, i
 FolderModal.propTypes = {
   displayTitle: PropTypes.string.isRequired,
   displayText: PropTypes.string.isRequired,
-  onProceed: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  category: PropTypes.string.isRequired,
+  siteName: PropTypes.string.isRequired,
+  isCollection: PropTypes.bool,
 };
 
 export default FolderModal;
