@@ -34,18 +34,18 @@ const EditorInfobarSection = ({
         <>
           <div className={elementStyles.cardContent}>
             <FormField
-              title="Infobar title"
-              id={`section-${sectionIndex}-infobar-title`}
-              value={title}
-              errorMessage={errors.title}
-              isRequired
-              onFieldChange={onFieldChange}
-            />
-            <FormField
               title="Infobar subtitle"
               id={`section-${sectionIndex}-infobar-subtitle`}
               value={subtitle}
               errorMessage={errors.subtitle}
+              isRequired
+              onFieldChange={onFieldChange}
+            />
+            <FormField
+              title="Infobar title"
+              id={`section-${sectionIndex}-infobar-title`}
+              value={title}
+              errorMessage={errors.title}
               isRequired
               onFieldChange={onFieldChange}
             />
