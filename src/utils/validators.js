@@ -11,6 +11,7 @@ const fileNameRegexTest = /^[a-zA-Z0-9" "_-]+$/;
 const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/;
 const RESOURCE_CATEGORY_REGEX = '^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$';
 const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX);
+const resourceRoomNameRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
 const RADIX_PARSE_INT = 10;
 
 // Homepage Editor
@@ -577,6 +578,18 @@ const validateResourceSettings = (id, value) => {
   return errorMessage;
 };
 
+// Resource room creation
+// ===================
+const validateResourceRoomName = (value) => {
+  let errorMessage = '';
+
+  if (!resourceRoomNameRegexTest.test(value)) {
+    errorMessage = 'The resource room name should only contain alphanumeric characters or dashes.'
+  }
+
+  return errorMessage
+}
+
 // Resource Category Modal
 // ===================
 const validateCategoryName = (value, componentName) => {
@@ -640,4 +653,5 @@ export {
   validateCategoryName,
   validateSocialMedia,
   validateFileName,
+  validateResourceRoomName,
 };
