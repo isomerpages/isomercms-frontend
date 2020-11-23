@@ -224,6 +224,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
     // Creating a collection page
     if (category) {
       newFileName = await generateNewCollectionFileName({
+        fileName,
         originalThirdNavTitle,
         thirdNavTitle,
         thirdNavOptions,
@@ -291,6 +292,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
 
 // Generate new filename when creating page in a collection
 const generateNewCollectionFileName = async ({
+  fileName,
   originalThirdNavTitle,
   thirdNavTitle,
   thirdNavOptions,
@@ -333,7 +335,8 @@ const generateNewCollectionFileName = async ({
     }
   } else if (originalThirdNavTitle === thirdNavTitle && collectionPageData) {
     // Case: renaming/changing details of existing file in collection
-    const groupIdentifier = await generateGroupIdentifier(collectionPageData, thirdNavTitle ? true : false, baseApiUrl, false, thirdNavTitle)
+    // We can resuse the existing identifier
+    const groupIdentifier = fileName.split('-')[0]
     newFileName = generateCollectionPageFileName(title, groupIdentifier);
   } else {
     // Case: Creating a new page from the workspace and assigning to collection BUT not third nav
