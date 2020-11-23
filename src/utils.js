@@ -234,6 +234,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
         siteName,
         category,
         isNewCollection,
+        isNewFile,
       })
     // Creating a simple page
     } else {
@@ -302,6 +303,7 @@ const generateNewCollectionFileName = async ({
   siteName,
   category,
   isNewCollection,
+  isNewFile,
 }) => {
   let newFileName
   if (isNewCollection) {
@@ -334,13 +336,18 @@ const generateNewCollectionFileName = async ({
       newFileName = generateCollectionPageFileName(title, groupIdentifier);
     }
   } else if (originalThirdNavTitle === thirdNavTitle && collectionPageData) {
-    // Case: renaming/changing details of existing file in collection
-    // We can resuse the existing identifier
-    const groupIdentifier = fileName.split('-')[0]
-    newFileName = generateCollectionPageFileName(title, groupIdentifier);
+    if (isNewFile) {
+      // Case: Creating a new page from within a collection
+      const groupIdentifier = await generateGroupIdentifier(collectionPageData, false, baseApiUrl)
+      newFileName = generateCollectionPageFileName(title, groupIdentifier);
+    } else {
+      // Case: renaming/changing details of existing file in collection
+      // We can resuse the existing identifier
+      const groupIdentifier = fileName.split('-')[0]
+      newFileName = generateCollectionPageFileName(title, groupIdentifier);
+    }
   } else {
     // Case: Creating a new page from the workspace and assigning to collection BUT not third nav
-    // Case: Creating a new page from within a collection
     if (!originalThirdNavTitle && !thirdNavTitle) {
       const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${category}`
       const groupIdentifier = await generateGroupIdentifier(null, false, apiUrl)
