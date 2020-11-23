@@ -26,10 +26,10 @@ const TemplateInfopicRightSection = ({
         <div className="row is-hidden-desktop is-hidden-tablet-only">
           <div className="col is-half padding--bottom">
             <p className="padding--bottom eyebrow is-uppercase">
-              { title }
+              { subtitle }
             </p>
             <h1 className="has-text-secondary padding--bottom">
-              <b>{ subtitle }</b>
+              <b>{ title }</b>
             </h1>
             <p>{ description }</p>
             <div className="bp-sec-button margin--top padding--bottom">
@@ -54,10 +54,10 @@ const TemplateInfopicRightSection = ({
           </div>
           <div className="col is-half">
             <p className="padding--bottom eyebrow is-uppercase">
-              { title }
+              { subtitle }
             </p>
             <h1 className="has-text-secondary padding--bottom">
-              <b>{ subtitle }</b>
+              <b>{ title }</b>
             </h1>
             <p>{ description }</p>
             <div className="bp-sec-button margin--top padding--bottom">
@@ -79,10 +79,10 @@ const TemplateInfopicRightSection = ({
           </div>
           <div className="col is-half padding--top--xl padding--bottom--xl padding--left--xl padding--right--xl">
             <p className="padding--bottom eyebrow is-uppercase">
-              { title }
+              { subtitle }
             </p>
             <h1 className="has-text-secondary padding--bottom">
-              <b>{ subtitle }</b>
+              <b>{ title }</b>
             </h1>
             <p>{ description }</p>
             <div className="bp-sec-button margin--top padding--bottom">

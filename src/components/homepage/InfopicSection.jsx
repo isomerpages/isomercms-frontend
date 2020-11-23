@@ -38,17 +38,17 @@ const EditorInfopicSection = ({
         <>
           <div className={elementStyles.cardContent}>
             <FormField
-              title="Infopic title"
-              id={`section-${sectionIndex}-infopic-title`}
-              value={title}
-              errorMessage={errors.title}
-              onFieldChange={onFieldChange}
-            />
-            <FormField
               title="Infopic subtitle"
               id={`section-${sectionIndex}-infopic-subtitle`}
               value={subtitle}
               errorMessage={errors.subtitle}
+              onFieldChange={onFieldChange}
+            />
+            <FormField
+              title="Infopic title"
+              id={`section-${sectionIndex}-infopic-title`}
+              value={title}
+              errorMessage={errors.title}
               onFieldChange={onFieldChange}
             />
             <FormField
