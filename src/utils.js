@@ -266,7 +266,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
       content: base64EncodedContent,
       pageName: newFileName,
     };
-
+    await axios.post(`${newBaseApiUrl}/pages`, params);
     // If it is an existing file, delete the existing page
     if (!isNewFile) {
       await axios.delete(`${baseApiUrl}/pages/${fileName}`, {
@@ -275,7 +275,6 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
         },
       });
     }
-    await axios.post(`${newBaseApiUrl}/pages`, params);
   } else {
     // Save to existing .md file
     params = {
