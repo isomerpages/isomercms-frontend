@@ -39,7 +39,7 @@ const ResourceFormFields = ({date, errors, changeHandler, onToggle, isPost, setI
               />
               Post Content
             </label>
-            <label htmlFor="radio-post" className="flex-fill">
+            <label htmlFor="radio-file" className="flex-fill">
               <input
                 type="radio"
                 id="radio-file"
