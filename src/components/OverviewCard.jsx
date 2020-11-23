@@ -90,6 +90,7 @@ const OverviewCard = ({
     } catch (err) {
       if (err.response.status === 409) {
         // Error due to conflict in name
+        fileMoveDropdownRef.current.blur()
         setCanShowAlertModal(true)
       }
       console.log(err);
