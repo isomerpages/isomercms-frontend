@@ -1,5 +1,13 @@
 @import '../elements/variable';
 
+@mixin cardFormat {
+  width: 100%;
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
 .mainSection{
   display: flex;
   width: calc(100vw - #{$sidebar-width});
@@ -21,8 +29,8 @@
   align-items: center;
   justify-content: space-between;
 
-  margin-bottom: 20px;
-  margin-top: 10px;
+  margin-bottom: 1.5rem;
+  margin-top: 1rem;
 
   .sectionTitle{
     font-size: 28px;
@@ -34,6 +42,23 @@
     float: right;
   }
 }
+
+.segment {
+  @extend .sectionHeader;
+  margin-top: 0;
+  justify-content: flex-start;
+  margin-bottom: 2.5rem;
+
+  span {
+    font-size: 16px;
+  }
+
+  strong {
+    font-size: 16px;
+  }
+}
+
+
 
 .contentContainerBars{
   width: 100%;
@@ -86,10 +111,14 @@
   box-sizing: border-box;
   flex-direction: row;
   flex-wrap: wrap;
+  background: white;
+  margin-bottom: 50px;
 
   .cardContainer{
     // flex: 1 0 calc(25% - 20px);
     margin: 10px;
+    padding: 10px;
+    width: 45%;
     
     .card{
       box-sizing: border-box;
@@ -99,77 +128,116 @@
 }
 
 .contentContainerBoxes{
-  //this is used in the resources page
-  width: 100%;
-  display: flex;
-  box-sizing: border-box;
-  flex-direction: row;
-  flex-wrap: wrap;
+  //this is used in the OverviewCard page
+  @include cardFormat;
 
   .boxesContainer{
-    width: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    @include cardFormat;
+    overflow: hidden;
 
     .card{
-      width: $resource-card-width;
+      width: $component-card-width;
       box-sizing: border-box;
-      height: $resource-card-height;
-      margin-right: $resource-card-margin;
-      margin-bottom: $resource-card-margin;
+      height: $component-card-height;
+      margin-right: $component-card-margin;
+      margin-bottom: $component-card-margin;
+      min-width: 250px;
+    }
+  }
+}
 
-      &:nth-child(3n){
-          margin-right: 0;
+.folderContainerBoxes{
+  //this is used in the FolderCard page
+  @include cardFormat;
+
+  .boxesContainer{
+    @include cardFormat;
+
+    .card{
+      align-items:center;
+      width: $component-folder-width;
+      box-sizing: border-box;
+      height: $component-folder-height;
+      margin-right: $component-folder-margin;
+      margin-bottom: $component-folder-margin;
+      min-width: 250px;
+      color:black;
+      text-overflow: ellipsis;
+      .componentIcon{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-content: flex-end;
+
+        .bx{
+          font-size: 20px;
+        }
       }
     }
   }
 }
 
 .card{
-  &.resource{
+  &.component{
       height: 100%;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       align-content: center;
+      min-width: 250px;
 
-      .resourceInfo{
+      .componentInfo{
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         align-content: center;
 
-        .resourceCategory{
+        .componentCategory{
           text-transform: uppercase;
           color: grey;
           font-size: 12px;
           letter-spacing: .5px;
         }
 
-        .resourceTitle{
+        .componentTitle{
           font-size: 16px;
+          line-height: 24px;
+          padding-top: 16px;
+          padding-bottom: 8px;
+          height: 115px;
+          max-height: 115px;
+          overflow-y: scroll;
+          overflow-x: hidden;
+          text-overflow: ellipsis;
         }
 
-        .resourceDate{
+        .componentFolderName{
+          font-size: 16px;
+          line-height: 24px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .componentDate{
           color: grey;
           font-size: 12px;
+          line-height: 20px;
         }
 
-        .resourceType{
+        .componentType{
           color: grey;
           text-transform: uppercase;
           font-size: 12px;
+          line-height: 20px;
         }
 
-        .resourceUpdated{
+        .componentUpdated{
           color: grey;
           font-size: 12px;
         }
       }
 
-      .resourceIcon{
+      .componentIcon{
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
@@ -179,9 +247,26 @@
           font-size: 20px;
         }
       }
+
+      .folderInfo{
+        @extend .componentInfo;
+        flex-direction: row;
+        width: 100%;
+        height: 100%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        i {
+          vertical-align: middle;
+          line-height:inherit;
+        }
+      }
     }
 
-    &:hover{
-      transform: translateY(-5px);
-    }
+    // &:hover{
+    //   transform: translateY(-5px);
+    // }
+}
+
+.segmentDividerContainer{
+  width: 100%;
 }

@@ -26,9 +26,6 @@ const Menus = ({ match, location }) => {
               <li>
                 <Link to={`/sites/${siteName}/menus/main-menu`}>Main Menu</Link>
               </li>
-              <li>
-                <Link to={`/sites/${siteName}/menus/footer`}>Footer</Link>
-              </li>
             </ul>
           </div>
         </div>

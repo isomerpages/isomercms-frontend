@@ -5375,7 +5375,6 @@ a[href$=".pdf"][target="_blank"]:after {
     display: flex;
     font-size: .9375rem;
     overflow: hidden;
-    overflow-x: auto;
     white-space: nowrap;
     margin-bottom: .625rem
 }
@@ -5384,12 +5383,15 @@ a[href$=".pdf"][target="_blank"]:after {
     margin-bottom: 1.5rem
 }
 
-.bp-breadcrumb a {
+.bp-breadcrumb small {
     align-items: center;
     color: #fff;
-    display: flex;
+    display: block;
     justify-content: center;
-    padding: .5em .75em
+    padding: .5em .75em;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width:15rem;
 }
 
 .bp-breadcrumb a:hover {
@@ -5406,10 +5408,10 @@ a[href$=".pdf"][target="_blank"]:after {
 
 .bp-breadcrumb li {
     align-items: center;
-    display: flex
+    display: flex;
 }
 
-.bp-breadcrumb li:first-child a {
+.bp-breadcrumb li:first-child small {
     padding-left: 0
 }
 
@@ -5826,7 +5828,7 @@ a[href$=".pdf"][target="_blank"]:after {
     padding: .75rem 0;
     border-bottom: 1px solid #767676;
     justify-content: space-between;
-    display: flex
+    display: flex;
 }
 
 .bp-menu-list a:hover {
@@ -9829,12 +9831,11 @@ a.navbar-item.is-active,a.navbar-item:hover,a.navbar-link.is-active,a.navbar-lin
     background: rgba(0,0,0,.25);
     flex-grow: 1;
     flex-shrink: 0;
-    padding: 3rem 1.5rem
+    padding: 3rem 1.5rem;
 }
 
 @media screen and (min-width: 1024px) {
     .bp-hero-body .row {
-        height:391px;
         min-height: 360px
     }
 }
@@ -10123,526 +10124,6 @@ li .highlight {
 
 * {
     font-family: Lato,sans-serif
-}
-
-@font-face {
-    font-family: sgds-icons;
-    src: url(/b499878413ae391d623ae38b6c2d5e930dd37b7a/b385f/assets/css/fonts/sgds-icons.eot#iefix) format("embedded-opentype"),url(/b9a830da3a89eb3eef563de6cf3ae5fc2c4441b0/30d0e/assets/css/fonts/sgds-icons.ttf) format("truetype"),url(/875c12db8ee785c34f1e97d127b74605d90dd675/a4cd0/assets/css/fonts/sgds-icons.woff) format("woff"),url(/859a3ccb64dad305441460944be994f0f6485107/f2f81/assets/css/fonts/sgds-icons.svg#sgds-icons) format("svg");
-    font-weight: 400;
-    font-style: normal
-}
-
-.sgds-icon {
-    font-family: sgds-icons!important;
-    speak: none;
-    font-style: normal;
-    font-weight: 400;
-    font-variant: normal;
-    text-transform: none;
-    line-height: 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale
-}
-
-.sgds-icon-add-image:before {
-    content: ""
-}
-
-.sgds-icon-attachment:before {
-    content: ""
-}
-
-.sgds-icon-cloud:before {
-    content: ""
-}
-
-.sgds-icon-contact:before {
-    content: ""
-}
-
-.sgds-icon-create-folder:before {
-    content: ""
-}
-
-.sgds-icon-delay:before {
-    content: ""
-}
-
-.sgds-icon-file-copy:before {
-    content: ""
-}
-
-.sgds-icon-file-pdf:before {
-    content: ""
-}
-
-.sgds-icon-folder:before {
-    content: ""
-}
-
-.sgds-icon-telephone:before {
-    content: ""
-}
-
-.sgds-icon-add-photo:before {
-    content: ""
-}
-
-.sgds-icon-browser:before {
-    content: ""
-}
-
-.sgds-icon-calculator:before {
-    content: ""
-}
-
-.sgds-icon-camera:before {
-    content: ""
-}
-
-.sgds-icon-clock:before {
-    content: ""
-}
-
-.sgds-icon-cloud-download:before {
-    content: ""
-}
-
-.sgds-icon-cloud-success:before {
-    content: ""
-}
-
-.sgds-icon-cloud-upload:before {
-    content: ""
-}
-
-.sgds-icon-database:before {
-    content: ""
-}
-
-.sgds-icon-download:before {
-    content: ""
-}
-
-.sgds-icon-file-add:before {
-    content: ""
-}
-
-.sgds-icon-file-alt:before {
-    content: ""
-}
-
-.sgds-icon-file:before {
-    content: ""
-}
-
-.sgds-icon-hdd:before {
-    content: ""
-}
-
-.sgds-icon-image:before {
-    content: ""
-}
-
-.sgds-icon-link:before {
-    content: ""
-}
-
-.sgds-icon-lock:before {
-    content: ""
-}
-
-.sgds-icon-mail:before {
-    content: ""
-}
-
-.sgds-icon-print:before {
-    content: ""
-}
-
-.sgds-icon-radar:before {
-    content: ""
-}
-
-.sgds-icon-save:before {
-    content: ""
-}
-
-.sgds-icon-share:before {
-    content: ""
-}
-
-.sgds-icon-unlock:before {
-    content: ""
-}
-
-.sgds-icon-upload:before {
-    content: ""
-}
-
-.sgds-icon-volume-mute:before {
-    content: ""
-}
-
-.sgds-icon-volume:before {
-    content: ""
-}
-
-.sgds-icon-docker:before {
-    content: ""
-}
-
-.sgds-icon-facebook-alt:before {
-    content: ""
-}
-
-.sgds-icon-facebook:before {
-    content: ""
-}
-
-.sgds-icon-google:before {
-    content: ""
-}
-
-.sgds-icon-instagram:before {
-    content: ""
-}
-
-.sgds-icon-linkedin-alt:before {
-    content: ""
-}
-
-.sgds-icon-linkedin:before {
-    content: ""
-}
-
-.sgds-icon-person-add:before {
-    content: ""
-}
-
-.sgds-icon-person-cancel:before {
-    content: ""
-}
-
-.sgds-icon-person-remove:before {
-    content: ""
-}
-
-.sgds-icon-person:before {
-    content: ""
-}
-
-.sgds-icon-rss:before {
-    content: ""
-}
-
-.sgds-icon-thumbs-down:before {
-    content: ""
-}
-
-.sgds-icon-thumbs-up:before {
-    content: ""
-}
-
-.sgds-icon-twitter:before {
-    content: ""
-}
-
-.sgds-icon-youtube:before {
-    content: ""
-}
-
-.sgds-icon-add-place:before {
-    content: ""
-}
-
-.sgds-icon-boat:before {
-    content: ""
-}
-
-.sgds-icon-bus:before {
-    content: ""
-}
-
-.sgds-icon-car:before {
-    content: ""
-}
-
-.sgds-icon-layers:before {
-    content: ""
-}
-
-.sgds-icon-map:before {
-    content: ""
-}
-
-.sgds-icon-my-location:before {
-    content: ""
-}
-
-.sgds-icon-place:before {
-    content: ""
-}
-
-.sgds-icon-taxi:before {
-    content: ""
-}
-
-.sgds-icon-traffic:before {
-    content: ""
-}
-
-.sgds-icon-train:before {
-    content: ""
-}
-
-.sgds-icon-arrow-down:before {
-    content: ""
-}
-
-.sgds-icon-arrow-left:before {
-    content: ""
-}
-
-.sgds-icon-arrow-right:before {
-    content: ""
-}
-
-.sgds-icon-arrow-top-left:before {
-    content: ""
-}
-
-.sgds-icon-arrow-top-right:before {
-    content: ""
-}
-
-.sgds-icon-arrow-up:before {
-    content: ""
-}
-
-.sgds-icon-check:before {
-    content: ""
-}
-
-.sgds-icon-chevron-down:before {
-    content: ""
-}
-
-.sgds-icon-chevron-left:before {
-    content: ""
-}
-
-.sgds-icon-chevron-right:before {
-    content: ""
-}
-
-.sgds-icon-chevron-up:before {
-    content: ""
-}
-
-.sgds-icon-cog:before {
-    content: ""
-}
-
-.sgds-icon-cross:before {
-    content: ""
-}
-
-.sgds-icon-ellipsis:before {
-    content: ""
-}
-
-.sgds-icon-home:before {
-    content: ""
-}
-
-.sgds-icon-menu:before {
-    content: ""
-}
-
-.sgds-icon-minus:before {
-    content: ""
-}
-
-.sgds-icon-notification:before {
-    content: ""
-}
-
-.sgds-icon-plus:before {
-    content: ""
-}
-
-.sgds-icon-sg-crest:before {
-    content: "";
-    color: #db0000
-}
-
-.sgds-icon-text-center:before {
-    content: ""
-}
-
-.sgds-icon-text-justify:before {
-    content: ""
-}
-
-.sgds-icon-text-left:before {
-    content: ""
-}
-
-.sgds-icon-text-right:before {
-    content: ""
-}
-
-.sgds-icon-add-comment:before {
-    content: ""
-}
-
-.sgds-icon-ban:before {
-    content: ""
-}
-
-.sgds-icon-bookmark:before {
-    content: ""
-}
-
-.sgds-icon-calendar:before {
-    content: ""
-}
-
-.sgds-icon-chat:before {
-    content: ""
-}
-
-.sgds-icon-circle-info:before {
-    content: ""
-}
-
-.sgds-icon-circle-minus:before {
-    content: ""
-}
-
-.sgds-icon-circle-plus:before {
-    content: ""
-}
-
-.sgds-icon-circle-question:before {
-    content: ""
-}
-
-.sgds-icon-circle-warning:before {
-    content: ""
-}
-
-.sgds-icon-compress-alt:before {
-    content: ""
-}
-
-.sgds-icon-compress:before {
-    content: ""
-}
-
-.sgds-icon-edit:before {
-    content: ""
-}
-
-.sgds-icon-expand-alt:before {
-    content: ""
-}
-
-.sgds-icon-expand:before {
-    content: ""
-}
-
-.sgds-icon-external:before {
-    content: ""
-}
-
-.sgds-icon-feedback:before {
-    content: ""
-}
-
-.sgds-icon-filter:before {
-    content: ""
-}
-
-.sgds-icon-info:before {
-    content: ""
-}
-
-.sgds-icon-list:before {
-    content: ""
-}
-
-.sgds-icon-pin:before {
-    content: ""
-}
-
-.sgds-icon-question:before {
-    content: ""
-}
-
-.sgds-icon-refresh:before {
-    content: ""
-}
-
-.sgds-icon-rsvp-no:before {
-    content: ""
-}
-
-.sgds-icon-rsvp-yes:before {
-    content: ""
-}
-
-.sgds-icon-search:before {
-    content: ""
-}
-
-.sgds-icon-slider-horizontal:before {
-    content: ""
-}
-
-.sgds-icon-slider-vertical:before {
-    content: ""
-}
-
-.sgds-icon-star:before {
-    content: ""
-}
-
-.sgds-icon-sync:before {
-    content: ""
-}
-
-.sgds-icon-toggle-minus:before {
-    content: ""
-}
-
-.sgds-icon-toggle-off:before {
-    content: ""
-}
-
-.sgds-icon-toggle-on:before {
-    content: ""
-}
-
-.sgds-icon-toggle-plus:before {
-    content: ""
-}
-
-.sgds-icon-triangle-warning:before {
-    content: ""
-}
-
-.sgds-icon-warning:before {
-    content: ""
-}
-
-.sgds-icon-zoom-in:before {
-    content: ""
-}
-
-.sgds-icon-zoom-out:before {
-    content: ""
 }
 
 html.has-navbar-fixed-top-widescreen {
@@ -11467,6 +10948,7 @@ h6,h6 center {
 }
 
 #key-highlights .col {
+    cursor: default;
     transition: all .5s;
     border-left: 1px solid #03648d
 }
@@ -12590,10 +12072,6 @@ h6,h6 center {
     opacity: 1
 }
 
-.bp-hero-body {
-    background: 0 0
-}
-
 a.navbar-item {
     margin-right: 0;
     padding-right: 12px!important
@@ -12613,6 +12091,37 @@ a.navbar-item {
 }
 
 .CodeMirror {
-    height: calc(85vh - #{$header-height} - #{$footer-height});
+    height: 100% !important;
     overflow-y: scroll;
+}
+
+.breadcrumb-container {
+    padding-left: 3.125rem;
+    margin: 0 0 !important;
+}
+
+.page-content-body {
+    padding-left: 5rem;
+    margin: 0 0 !important;
+}
+
+.watermark-container {
+    position:relative;
+    overflow: hidden;
+}
+
+.watermark-text {
+    position: absolute;
+    top:0;
+    right:0;
+    width: 100%;
+    height: 100%;
+    color: #ffffff;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    font-size: 5vw;
+    transform: rotate(-30deg);
 }

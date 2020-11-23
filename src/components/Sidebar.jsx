@@ -5,26 +5,39 @@ import styles from '../styles/isomer-cms/pages/Admin.module.scss';
 
 const sidebarPathDict = [
   {
-    pathname: 'pages',
-    title: 'Pages',
-  },
-  {
-    pathname: 'menus',
-    title: 'Menus',
+    pathname: 'workspace',
+    title: 'My Workspace',
   },
   {
     pathname: 'resources',
     title: 'Resources',
   },
   {
-    pathname: 'media',
-    title: 'Media',
+    pathname: 'images',
+    title: 'Images',
+  },
+  {
+    pathname: 'files',
+    title: 'Files',
   },
   {
     pathname: 'settings',
     title: 'Settings',
   },
 ];
+
+// Highlight workspace sidebar tab when in collections layout
+const convertCollectionsPathToWorkspace = (currPath, siteName) => {
+  const currPathArr = currPath.split('/')
+
+  // example path: /sites/demo-v2/collections/left-nav-one
+  if (currPathArr.length === 5 && currPathArr[3] === 'collections') return `/sites/${siteName}/workspace`
+  
+  // example path: /sites/demo-v2/resources/news
+  if (currPathArr.length === 5 && currPathArr[3] === 'resources') return `/sites/${siteName}/resources`
+  
+  return currPath
+}
 
 const Sidebar = ({ siteName, currPath }) => (
   <div className={styles.adminSidebar}>
@@ -35,8 +48,16 @@ const Sidebar = ({ siteName, currPath }) => (
     <div className={styles.sidebarNavigation}>
       <ul>
         {sidebarPathDict.map(({ pathname, title }) => (
-          <li className={`/sites/${siteName}/${pathname}` === currPath ? styles.active : null} key={title}>
-            <Link to={`/sites/${siteName}/${pathname}`}>{title}</Link>
+          <li
+            className={`d-flex p-0 ${`/sites/${siteName}/${pathname}` === convertCollectionsPathToWorkspace(currPath, siteName) ? styles.active : null}`}
+            key={title}
+          >
+            <Link
+              className="px-4 py-4 h-100 w-100"
+              to={`/sites/${siteName}/${pathname}`}
+            >
+              {title}
+            </Link>
           </li>
         ))}
       </ul>

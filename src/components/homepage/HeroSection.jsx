@@ -4,6 +4,7 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '../../styles/App.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
+import FormFieldMedia from '../FormFieldMedia';
 import HeroButton from './HeroButton';
 import HeroDropdown from './HeroDropdown';
 import KeyHighlight from './KeyHighlight';
@@ -32,11 +33,12 @@ const EditorHeroSection = ({
   displayDropdownElems,
   displayHighlights,
   errors,
+  siteName,
 }) => (
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
       <h2>Hero section</h2>
-      <button type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>
+      <button className="pl-3" type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>
         <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`section-${sectionIndex}-icon`} />
       </button>
     </div>
@@ -59,13 +61,17 @@ const EditorHeroSection = ({
             isRequired
             onFieldChange={onFieldChange}
           />
-          <FormField
+          <FormFieldMedia
             title="Hero background image"
             id={`section-${sectionIndex}-hero-background`}
             value={background}
             errorMessage={errors.sections[0].hero.background}
             isRequired
             onFieldChange={onFieldChange}
+            inlineButtonText="Choose Image"
+            placeholder=" "
+            siteName={siteName}
+            type="image"
           />
           <span>
             <i>Note: you can only have either Key Highlights+Hero button or a Hero Dropdown</i>
@@ -74,13 +80,13 @@ const EditorHeroSection = ({
             {dropdown
               ? (
                 <>
-                  <button type="button" id="dropdown-delete" className={elementStyles.warning} onClick={deleteHandler}>Delete Hero Dropdown</button>
+                  <button type="button" id="dropdown-delete" className={`ml-auto ${elementStyles.warning}`} onClick={(event) => deleteHandler(event, 'Hero Dropdown')}>Delete Hero Dropdown</button>
                   <HeroDropdown
                     title={dropdown.title}
                     options={dropdown.options}
                     sectionIndex={sectionIndex}
                     createHandler={createHandler}
-                    deleteHandler={deleteHandler}
+                    deleteHandler={(event) => deleteHandler(event, 'Dropdown Element')}
                     onFieldChange={onFieldChange}
                     displayDropdownElems={displayDropdownElems}
                     displayHandler={displayHandler}
@@ -90,7 +96,7 @@ const EditorHeroSection = ({
               )
               : (
                 <>
-                  <button type="button" id="dropdown-create" className={elementStyles.blue} onClick={createHandler}>Create Hero Dropdown</button>
+                  <button type="button" id="dropdown-create" className={`ml-auto ${elementStyles.blue}`} onClick={createHandler}>Create Hero Dropdown</button>
                   <HeroButton
                     button={button}
                     url={url}
@@ -131,12 +137,12 @@ const EditorHeroSection = ({
                                         url={highlight.url}
                                         highlightIndex={highlightIndex}
                                         onFieldChange={onFieldChange}
-                                        shouldDisplay={displayHighlights[highlightIndex]}
+                                        shouldDisplay={displayHighlights[highlightIndex] ? displayHighlights[highlightIndex] : false}
                                         displayHandler={displayHandler}
                                         shouldAllowMoreHighlights={
                                           highlights.length < MAX_NUM_KEY_HIGHLIGHTS
                                         }
-                                        deleteHandler={deleteHandler}
+                                        deleteHandler={(event) => deleteHandler(event, 'Highlight')}
                                         errors={errors.highlights[highlightIndex]}
                                       />
                                     </div>
@@ -147,8 +153,8 @@ const EditorHeroSection = ({
                           )
                           : null }
                         {highlights.length < MAX_NUM_KEY_HIGHLIGHTS
-                          ? <button type="button" id={`highlight-${highlights.length}-create`} className={elementStyles.blue} onClick={createHandler}>Create highlight</button>
-                          : <button type="button" disabled className={elementStyles.disabled}>Create highlight</button>}
+                          ? <button type="button" id={`highlight-${highlights.length}-create`} className={`ml-auto ${elementStyles.blue}`} onClick={createHandler}>Create highlight</button>
+                          : <button type="button" disabled className={`ml-auto ${elementStyles.disabled}`}>Create highlight</button>}
                         {droppableProvided.placeholder}
                       </div>
                     )}
@@ -176,18 +182,18 @@ EditorHeroSection.propTypes = {
   deleteHandler: PropTypes.func.isRequired,
   shouldDisplay: PropTypes.bool.isRequired,
   displayHandler: PropTypes.func.isRequired,
-  displayHighlights: PropTypes.func.isRequired,
+  displayHighlights: PropTypes.arrayOf(PropTypes.bool).isRequired,
   displayDropdownElems: PropTypes.arrayOf(PropTypes.bool.isRequired).isRequired,
   highlights: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,
       url: PropTypes.string.isRequired,
-      highlightIndex: PropTypes.number.isRequired,
-      createHandler: PropTypes.func.isRequired,
-      deleteHandler: PropTypes.func.isRequired,
-      onFieldChange: PropTypes.func.isRequired,
-      allowMoreHighlights: PropTypes.bool.isRequired,
+      highlightIndex: PropTypes.number,
+      createHandler: PropTypes.func,
+      deleteHandler: PropTypes.func,
+      onFieldChange: PropTypes.func,
+      allowMoreHighlights: PropTypes.bool,
     }),
   ),
   dropdown: PropTypes.shape({
@@ -210,7 +216,7 @@ EditorHeroSection.propTypes = {
           background: PropTypes.string.isRequired,
           button: PropTypes.string.isRequired,
           url: PropTypes.string.isRequired,
-          dropdown: PropTypes.string.isRequired,
+          dropdown: PropTypes.string,
         }),
       }),
     ),

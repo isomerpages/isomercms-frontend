@@ -5,7 +5,9 @@ $error-red: #c91508;
 $dark-greyish-blue: #1B2E56;
 $body-text: #333;
 $body-grey: #878787;
+$login-green: #259a36;
 
+$default-background: white;
 $base-background: #E5E9F1;
 $base-background-light: #F2F4F8;
 $base-background-dark: #BBC4D5;
@@ -25,6 +27,10 @@ $site-margin-horizontal: 20px;
 $site-margin-vertical: 15px;
 $sites-container-width: ($site-width*3) + ($site-margin-horizontal*6);
 
-$resource-card-height: 200px;
-$resource-card-margin: 2.5%;
-$resource-card-width: (100% - ($resource-card-margin*2) )/3 ;
+$component-card-height: 12.5rem;
+$component-card-margin: 2.5%;
+$component-card-width: (100% - ($component-card-margin*3) )/3 ;
+
+$component-folder-height: 5rem;
+$component-folder-margin: 2.5%;
+$component-folder-width: (100% - ($component-card-margin*3) )/3 ;

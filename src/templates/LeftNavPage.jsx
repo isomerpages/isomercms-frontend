@@ -19,11 +19,11 @@ const LeftNavPage = ({
   return (
     <div>
       <Breadcrumb title={title} collection={collection} />
-      <section className="bp-section">
+      <section className="bp-section page-content-body">
         <div className="bp-container padding--top--lg padding--bottom--xl">
           <div className="row">
             <LeftNav leftNavPages={leftNavPages} fileName={fileName} />
-            <div className="col is-8 is-offset-1-desktop is-12-touch print-content" style={{ left: '80px' }}>
+            <div className="col is-8 is-offset-1-desktop is-12-touch print-content page-content-body">
               <div className="content" dangerouslySetInnerHTML={{ __html: chunk }} />
             </div>
           </div>

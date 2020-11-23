@@ -1,27 +1,22 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
-
-const ImageCard = ({
-  siteName, image,
-}) => (
-  <li>
-    <Link to={`/sites/${siteName}/images/${image.fileName}`}>{image.fileName}</Link>
-  </li>
-);
+import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
+import MediaUploadCard from '../components/media/MediaUploadCard';
+import MediaCard from '../components/media/MediaCard';
+import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
 export default class Images extends Component {
   constructor(props) {
     super(props);
     this.state = {
       images: [],
-      newImageName: '',
-      settingsIsActive: false,
+      chosenImage: null,
+      pendingImageUpload: null,
     };
   }
 
@@ -39,34 +34,16 @@ export default class Images extends Component {
     }
   }
 
-  settingsToggle = (event) => {
-    const { id } = event.target;
-    const idArray = id.split('-');
-
-    // Upload a new image
-    this.setState((currState) => ({
-      settingsIsActive: !currState.settingsIsActive,
-    }));
-  }
-
-  updateNewPageName = (event) => {
-    event.preventDefault();
-  }
-
   uploadImage = async (imageName, imageContent) => {
     try {
-      const { match } = this.props;
-      const { siteName } = match.params;
-      const params = {
-        imageName,
-        content: imageContent,
-      };
-
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, params, {
-        withCredentials: true,
+      // toggle state so that image renaming modal appears
+      this.setState({
+        pendingImageUpload: {
+          fileName: imageName,
+          path: `images%2F${imageName}`,
+          content: imageContent,
+        },
       });
-
-      window.location.reload();
     } catch (err) {
       console.log(err);
     }
@@ -74,8 +51,8 @@ export default class Images extends Component {
 
   onImageSelect = async (event) => {
     const imgReader = new FileReader();
-    imgReader.imgName = event.target.files[0].name;
-    imgReader.onload = () => {
+    const imgName = event.target.files[0].name;
+    imgReader.onload = (() => {
       /** Github only requires the content of the image
        * imgReader returns  `data:image/png;base64, {fileContent}`
        * hence the split
@@ -83,18 +60,13 @@ export default class Images extends Component {
 
       const imgData = imgReader.result.split(',')[1];
 
-      const { imgName } = imgReader;
-
-      this.setState({ newImageName: imgName, newImageContent: imgData });
-
-      // TODO
-      // this.uploadImage(imgName, imgData)
-    };
+      this.uploadImage(imgName, imgData);
+    });
     imgReader.readAsDataURL(event.target.files[0]);
   }
 
   render() {
-    const { images, newImageName, newImageContent } = this.state;
+    const { images, chosenImage, pendingImageUpload } = this.state;
     const { match, location } = this.props;
     const { siteName } = match.params;
     return (
@@ -107,31 +79,75 @@ export default class Images extends Component {
           <div className={contentStyles.mainSection}>
             <div className={contentStyles.sectionHeader}>
               <h1 className={contentStyles.sectionTitle}>Images</h1>
-              <button
-                type="button"
-                className={elementStyles.blue}
-              >
-                Upload new image
-              </button>
+            </div>
+            {/* Info segment */}
+            <div className={contentStyles.segment}>
+              <i className="bx bx-sm bx-info-circle text-dark" />
+              <span><strong className="ml-1">Note:</strong> Upload images here to link to them in pages and resources</span>
             </div>
             <div className={contentStyles.contentContainerBars}>
-              {/* Image cards */}
-              <ul>
-                {images.length > 0
-                  ? images.map((image) => (
-                    <ImageCard
+              <div className={contentStyles.boxesContainer}>
+                <div className={mediaStyles.mediaCards}>
+                  {/* Upload Image */}
+                  <MediaUploadCard
+                    type="image"
+                    onClick={() => document.getElementById('file-upload').click()}
+                  />
+                  <input
+                    onChange={this.onImageSelect}
+                    onClick={(event) => {
+                      // eslint-disable-next-line no-param-reassign
+                      event.target.value = '';
+                    }}
+                    type="file"
+                    id="file-upload"
+                    accept="image/png, image/jpeg, image/gif"
+                    hidden
+                  />
+                  {/* Images */}
+                  {images.map((image) => (
+                    <MediaCard
+                      type="image"
+                      media={image}
                       siteName={siteName}
-                      image={image}
+                      onClick={() => this.setState({ chosenImage: image })}
                       key={image.fileName}
                     />
-                  ))
-                  : 'There are no images in this repository'}
-              </ul>
-              {/* End of image cards */}
+                  ))}
+                </div>
+              </div>
             </div>
+            {/* End of image cards */}
           </div>
           {/* main section ends here */}
         </div>
+        {
+          chosenImage
+          && (
+          <MediaSettingsModal
+            type="image"
+            media={chosenImage}
+            siteName={siteName}
+            isPendingUpload={false}
+            onClose={() => this.setState({ chosenImage: null })}
+            onSave={() => window.location.reload()}
+          />
+          )
+        }
+        {
+          pendingImageUpload
+          && (
+          <MediaSettingsModal
+            type="image"
+            media={pendingImageUpload}
+            siteName={siteName}
+            // eslint-disable-next-line react/jsx-boolean-value
+            isPendingUpload={true}
+            onClose={() => this.setState({ pendingImageUpload: null })}
+            onSave={() => window.location.reload()}
+          />
+          )
+        }
       </>
     );
   }
@@ -146,11 +162,4 @@ Images.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
-};
-
-ImageCard.propTypes = {
-  image: PropTypes.shape({
-    fileName: PropTypes.string,
-  }).isRequired,
-  siteName: PropTypes.string.isRequired,
 };

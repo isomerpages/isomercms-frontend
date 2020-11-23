@@ -11,21 +11,32 @@ const FormField = ({
   onFieldChange,
   isRequired,
   style,
+  placeholder,
+  disabled,
+  fixedMessage,
+  maxWidth,
 }) => (
   <>
     <p className={elementStyles.formLabel}>{title}</p>
-    <input
-      type="text"
-      placeholder={title}
-      value={value}
-      defaultValue={defaultValue}
-      id={id}
-      autoComplete="off"
-      required={isRequired}
-      className={errorMessage ? `${elementStyles.error}` : null}
-      style={style}
-      onChange={onFieldChange}
-    />
+    <div className={`d-flex text-nowrap ${maxWidth ? 'w-100' : ''}`}>
+      {fixedMessage
+        ? <p className={elementStyles.formFixedText}>{fixedMessage}</p>
+        : null
+      }
+      <input
+        type="text"
+        placeholder={placeholder ? placeholder : title}
+        value={value}
+        defaultValue={defaultValue}
+        id={id}
+        autoComplete="off"
+        required={isRequired}
+        className={errorMessage ? `${elementStyles.error}` : null}
+        style={style}
+        onChange={onFieldChange}
+        disabled={disabled}
+      />
+    </div>
     <span className={elementStyles.error}>{errorMessage}</span>
   </>
 );
@@ -37,13 +48,15 @@ FormField.propTypes = {
   defaultValue: PropTypes.string,
   value: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
-  errorMessage: PropTypes.string.isRequired,
+  errorMessage: PropTypes.string,
   onFieldChange: PropTypes.func.isRequired,
-  isRequired: PropTypes.bool.isRequired,
+  isRequired: PropTypes.bool,
   style: PropTypes.string,
+  maxWidth: PropTypes.bool,
 };
 
 FormField.defaultProps = {
   defaultValue: undefined,
   style: undefined,
+  errorMessage: null,
 };

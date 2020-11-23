@@ -16,6 +16,7 @@
   height: calc(100vh - #{$header-height} - #{$footer-height});
   box-sizing: border-box;
   overflow-y: scroll;
+  position: relative;
 }
 
 .pageEditorSidebar{
@@ -26,6 +27,23 @@
   padding: 30px;
   padding-bottom: 100px;
   height: calc(100vh - #{$header-height} - #{$footer-height});
+  position: relative;
+}
+
+.pageEditorSidebarLoading{
+  opacity: 0.5;
+  pointer-events: none;
+
+  .sidebarLoadingIcon{
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+  }
+
+  .hideSidebarLoadingIcon{
+    visibility: hidden;
+  }
 }
 
 .pageEditorMain{
@@ -34,8 +52,7 @@
   width: calc(100vw - #{$page-editor-sidebar-width});
   left: $page-editor-sidebar-width;;
   box-sizing: border-box;
-  padding-right: 50px;
-  overflow-y: scroll;
+  overflow-y: auto;
   height: calc(100vh - #{$header-height} - #{$footer-height});
   background-color: white;
 }

@@ -125,10 +125,10 @@ export default class EditImage extends Component {
           : (
             <p>No Images loaded</p>
           )}
+        <button type="button" onClick={this.deletePage} className='ml-auto' >Delete</button>
+        <br />
+        <br />
         <button type="button" onClick={sha ? this.updatePage : this.createPage}>Save</button>
-        <br />
-        <br />
-        <button type="button" onClick={this.deletePage}>Delete</button>
         <br />
         <br />
         <input placeholder="New file name" onChange={(event) => changeFileName(event, this)} />

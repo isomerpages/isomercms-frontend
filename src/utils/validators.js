@@ -1,48 +1,64 @@
 
 // Common regexes and constants
 // ==============
-const PERMALINK_REGEX = '^(/([a-z]+([-][a-z]+)*/)+)$';
+const PERMALINK_REGEX = '^(([a-z0-9]+([-][a-z0-9]+)*)+)$';
+const SOCIAL_MEDIA_REGEX_PART_1 = '^(https://)?(www.)?(';
+const SOCIAL_MEDIA_REGEX_PART_2 = '.com/)([a-zA-Z0-9_-]+(/)?)+$';
 const permalinkRegexTest = RegExp(PERMALINK_REGEX);
 const DATE_REGEX = '^([0-9]{4}-[0-9]{2}-[0-9]{2})$';
 const dateRegexTest = RegExp(DATE_REGEX);
-const RESOURCE_CATEGORY_REGEX = '^(([a-zA-Z0-9]+([\\s][a-zA-Z0-9]+)*)+)$';
+const fileNameRegexTest = /^[a-zA-Z0-9" "_-]+$/;
+const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/;
+const RESOURCE_CATEGORY_REGEX = '^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$';
 const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX);
+const resourceRoomNameRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
 const RADIX_PARSE_INT = 10;
 
 // Homepage Editor
 // ===============
 // Highlights
-const HIGHLIGHTS_TITLE_MIN_LENGTH = 2;
+const HIGHLIGHTS_TITLE_MIN_LENGTH = 0;
 const HIGHLIGHTS_TITLE_MAX_LENGTH = 30;
-const HIGHLIGHTS_DESCRIPTION_MIN_LENGTH = 2;
+const HIGHLIGHTS_DESCRIPTION_MIN_LENGTH = 0;
 const HIGHLIGHTS_DESCRIPTION_MAX_LENGTH = 30;
 // Dropdown Elems
-const DROPDOWNELEM_TITLE_MIN_LENGTH = 2;
+const DROPDOWNELEM_TITLE_MIN_LENGTH = 0;
 const DROPDOWNELEM_TITLE_MAX_LENGTH = 30;
 // Resources
-const RESOURCES_TITLE_MIN_LENGTH = 2;
+const RESOURCES_TITLE_MIN_LENGTH = 0;
 const RESOURCES_TITLE_MAX_LENGTH = 30;
-const RESOURCES_SUBTITLE_MIN_LENGTH = 2;
+const RESOURCES_SUBTITLE_MIN_LENGTH = 0;
 const RESOURCES_SUBTITLE_MAX_LENGTH = 30;
-const RESOURCES_BUTTON_TEXT_MIN_LENGTH = 2;
+const RESOURCES_BUTTON_TEXT_MIN_LENGTH = 0;
 const RESOURCES_BUTTON_TEXT_MAX_LENGTH = 30;
 // Infobar
-const INFOBAR_TITLE_MIN_LENGTH = 2;
+const INFOBAR_TITLE_MIN_LENGTH = 0;
 const INFOBAR_TITLE_MAX_LENGTH = 30;
-const INFOBAR_SUBTITLE_MIN_LENGTH = 2;
+const INFOBAR_SUBTITLE_MIN_LENGTH = 0;
 const INFOBAR_SUBTITLE_MAX_LENGTH = 30;
-const INFOBAR_BUTTON_TEXT_MIN_LENGTH = 2;
+const INFOBAR_BUTTON_TEXT_MIN_LENGTH = 0;
 const INFOBAR_BUTTON_TEXT_MAX_LENGTH = 30;
-const INFOBAR_DESCRIPTION_MIN_LENGTH = 2;
+const INFOBAR_DESCRIPTION_MIN_LENGTH = 0;
 const INFOBAR_DESCRIPTION_MAX_LENGTH = 30;
+// Infopic
+const INFOPIC_TITLE_MIN_LENGTH = 0;
+const INFOPIC_TITLE_MAX_LENGTH = 30;
+const INFOPIC_SUBTITLE_MIN_LENGTH = 0;
+const INFOPIC_SUBTITLE_MAX_LENGTH = 30;
+const INFOPIC_BUTTON_TEXT_MIN_LENGTH = 0;
+const INFOPIC_BUTTON_TEXT_MAX_LENGTH = 30;
+const INFOPIC_DESCRIPTION_MIN_LENGTH = 0;
+const INFOPIC_DESCRIPTION_MAX_LENGTH = 30;
+const INFOPIC_ALT_TEXT_MIN_LENGTH = 0;
+const INFOPIC_ALT_TEXT_MAX_LENGTH = 30;
 // Hero
-const HERO_TITLE_MIN_LENGTH = 2;
+const HERO_TITLE_MIN_LENGTH = 0;
 const HERO_TITLE_MAX_LENGTH = 30;
-const HERO_SUBTITLE_MIN_LENGTH = 2;
-const HERO_SUBTITLE_MAX_LENGTH = 30;
+const HERO_SUBTITLE_MIN_LENGTH = 0;
+const HERO_SUBTITLE_MAX_LENGTH = 160;
 // const HERO_BUTTON_TEXT_MIN_LENGTH = 2;
 // const HERO_BUTTON_TEXT_MAX_LENGTH = 30;
-const HERO_DROPDOWN_MIN_LENGTH = 2;
+const HERO_DROPDOWN_MIN_LENGTH = 0;
 const HERO_DROPDOWN_MAX_LENGTH = 30;
 
 // Page Settings Modal
@@ -321,6 +337,72 @@ const validateInfobarSection = (sectionError, sectionType, field, value) => {
   return newSectionError;
 };
 
+const validateInfopicSection = (sectionError, sectionType, field, value) => {
+  const newSectionError = sectionError;
+  let errorMessage = '';
+  switch (field) {
+    case 'title': {
+      // Title is too short
+      if (value.length < INFOPIC_TITLE_MIN_LENGTH) {
+        errorMessage = `The title should be longer than ${INFOPIC_TITLE_MIN_LENGTH} characters.`;
+      }
+      // Title is too long
+      if (value.length > INFOPIC_TITLE_MAX_LENGTH) {
+        errorMessage = `The title should be shorter than ${INFOPIC_TITLE_MAX_LENGTH} characters.`;
+      }
+      break;
+    }
+    case 'subtitle': {
+      // Subtitle is too short
+      if (value.length < INFOPIC_SUBTITLE_MIN_LENGTH) {
+        errorMessage = `The subtitle should be longer than ${INFOPIC_SUBTITLE_MIN_LENGTH} characters.`;
+      }
+      // Subtitle is too long
+      if (value.length > INFOPIC_SUBTITLE_MAX_LENGTH) {
+        errorMessage = `The subtitle should be shorter than ${INFOPIC_SUBTITLE_MAX_LENGTH} characters.`;
+      }
+      break;
+    }
+    case 'description': {
+      // Description is too short
+      if (value.length < INFOPIC_DESCRIPTION_MIN_LENGTH) {
+        errorMessage = `The description should be longer than ${INFOPIC_DESCRIPTION_MIN_LENGTH} characters.`;
+      }
+      // Description is too long
+      if (value.length > INFOPIC_DESCRIPTION_MAX_LENGTH) {
+        errorMessage = `The description should be shorter than ${INFOPIC_DESCRIPTION_MAX_LENGTH} characters.`;
+      }
+      break;
+    }
+    case 'button': {
+      // Button text is too short
+      if (value.length < INFOPIC_BUTTON_TEXT_MIN_LENGTH) {
+        errorMessage = `The button text should be longer than ${INFOPIC_BUTTON_TEXT_MIN_LENGTH} characters.`;
+      }
+      // Button text is too long
+      if (value.length > INFOPIC_BUTTON_TEXT_MAX_LENGTH) {
+        errorMessage = `The button text should be shorter than ${INFOPIC_BUTTON_TEXT_MAX_LENGTH} characters.`;
+      }
+      break;
+    }
+    case 'alt': {
+      // Alt text is too short
+      if (value.length < INFOPIC_ALT_TEXT_MIN_LENGTH) {
+        errorMessage = `The image alt text should be longer than ${INFOPIC_ALT_TEXT_MIN_LENGTH} characters.`;
+      }
+      // Alt text is too long
+      if (value.length > INFOPIC_ALT_TEXT_MAX_LENGTH) {
+        errorMessage = `The image alt text should be shorter than ${INFOPIC_ALT_TEXT_MAX_LENGTH} characters.`;
+      }
+      break;
+    }
+    default:
+      break;
+  }
+  newSectionError[sectionType][field] = errorMessage;
+  return newSectionError;
+};
+
 const validateSections = (sectionError, sectionType, field, value) => {
   let newSectionError = sectionError;
   switch (sectionType) {
@@ -334,6 +416,10 @@ const validateSections = (sectionError, sectionType, field, value) => {
     }
     case 'infobar': {
       newSectionError = validateInfobarSection(sectionError, sectionType, field, value);
+      break;
+    }
+    case 'infopic': {
+      newSectionError = validateInfopicSection(sectionError, sectionType, field, value);
       break;
     }
     default:
@@ -361,7 +447,7 @@ const validatePageSettings = (id, value) => {
 
       // Permalink fails regex
       if (!permalinkRegexTest.test(value)) {
-        errorMessage = `The permalink should start and end with slashes and contain 
+        errorMessage = `The permalink should contain 
           lowercase words separated by hyphens only.
           `;
       }
@@ -375,6 +461,12 @@ const validatePageSettings = (id, value) => {
       // Title is too long
       if (value.length > PAGE_SETTINGS_TITLE_MAX_LENGTH) {
         errorMessage = `The title should be shorter than ${PAGE_SETTINGS_TITLE_MAX_LENGTH} characters.`;
+      }
+      break;
+    }
+    case 'category': {
+      if (value !== '') {
+        errorMessage = validateCategoryName(value, 'page')
       }
       break;
     }
@@ -460,30 +552,23 @@ const validateResourceSettings = (id, value) => {
       }
       // Permalink fails regex
       if (!permalinkRegexTest.test(value)) {
-        errorMessage = `The permalink should start and end with slashes and contain 
+        errorMessage = `The permalink should contain 
           lowercase words separated by hyphens only.
           `;
       }
       break;
     }
+    case 'category': {
+      errorMessage = validateCategoryName(value, 'resource')
+      if (value === '') {
+        errorMessage = `The resource category cannot be empty.`;
+      }
+      break;
+    }
     case 'fileUrl': {
-      // File URL is too short
-      if (value.length < RESOURCE_SETTINGS_PERMALINK_MIN_LENGTH) {
-        errorMessage = `The permalink should be longer than ${RESOURCE_SETTINGS_PERMALINK_MIN_LENGTH} characters.`;
+      if (value.length === 0) {
+        errorMessage = 'Please choose a file';
       }
-      // File URL is too long
-      if (value.length > RESOURCE_SETTINGS_PERMALINK_MAX_LENGTH) {
-        errorMessage = `The permalink should be shorter than ${RESOURCE_SETTINGS_PERMALINK_MAX_LENGTH} characters.`;
-      }
-      // File URL fails regex
-      if (!permalinkRegexTest.test(value)) {
-        console.log('FAILED');
-        errorMessage = `The permalink should start and end with slashes and contain 
-          lowercase words separated by hyphens only.
-          `;
-      }
-      // TO-DO
-      // Check if file exists
       break;
     }
     default: {
@@ -493,25 +578,70 @@ const validateResourceSettings = (id, value) => {
   return errorMessage;
 };
 
+// Resource room creation
+// ===================
+const validateResourceRoomName = (value) => {
+  let errorMessage = '';
+
+  if (!resourceRoomNameRegexTest.test(value)) {
+    errorMessage = 'The resource room name should only contain alphanumeric characters or dashes.'
+  }
+
+  return errorMessage
+}
+
 // Resource Category Modal
 // ===================
-const validateResourceCategory = (value) => {
+const validateCategoryName = (value, componentName) => {
   let errorMessage = '';
 
   // Resource category is too short
   if (value.length < RESOURCE_CATEGORY_MIN_LENGTH) {
-    errorMessage = `The resource category should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`;
+    errorMessage = `The ${componentName} category should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`;
   }
   // Resource category is too long
-  if (value.length > RESOURCE_CATEGORY_MAX_LENGTH) {
-    errorMessage = `The resource category should be shorter than ${RESOURCE_CATEGORY_MAX_LENGTH} characters.`;
+  else if (value.length > RESOURCE_CATEGORY_MAX_LENGTH) {
+    errorMessage = `The ${componentName} category should be shorter than ${RESOURCE_CATEGORY_MAX_LENGTH} characters.`;
   }
   // Resource category fails regex
-  if (!resourceCategoryRegexTest.test(value)) {
-    errorMessage = 'The resource category should only have alphanumeric characters separated by whitespace.';
+  else if (!resourceCategoryRegexTest.test(value)) {
+    errorMessage = `The ${componentName} category should only have alphanumeric characters separated by hypens.`;
   }
 
   return errorMessage;
+};
+
+// Settings page
+// ===================
+const validateSocialMedia = (value, id) => {
+  let errorMessage = '';
+  const socialMediaRegexTest = RegExp(`${SOCIAL_MEDIA_REGEX_PART_1}${id}${SOCIAL_MEDIA_REGEX_PART_2}`);
+
+  // conduct regex tests for each social media platform
+  if (!socialMediaRegexTest.test(value)) {
+    if (value !== '') errorMessage = `The URL you have entered is not a valid ${id[0].toUpperCase()}${id.slice(1)} URL.`;
+  }
+
+  return errorMessage;
+};
+
+const validateFileName = (value) => {
+  if (!value.length) {
+    return 'Please input the file name';
+  }
+
+  const fileNameArr = value.split('.')
+  if (fileNameArr.length !== 2 ) {
+    return 'Invalid filename: filename can only contain one full stop and must follow the structure {name}.{extension}'
+  }
+  if (!fileNameExtensionRegexTest.test(fileNameArr[1])) {
+    return 'Invalid filename: filename must end with a valid file extension (.JPG, .png, .pdf, etc.)'
+  }
+  if (fileNameArr[0] === '') return 'Invalid filename: please specify a filename'
+  if (!fileNameRegexTest.test(fileNameArr[0])) {
+    return 'Invalid filename: filename must not contain any special characters';
+  }
+  return '';
 };
 
 export {
@@ -520,5 +650,8 @@ export {
   validateSections,
   validatePageSettings,
   validateResourceSettings,
-  validateResourceCategory,
+  validateCategoryName,
+  validateSocialMedia,
+  validateFileName,
+  validateResourceRoomName,
 };

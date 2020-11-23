@@ -22,12 +22,9 @@ const KeyHighlight = ({
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
       <h2>
-Highlight
-        {highlightIndex + 1}
-:
         {title}
       </h2>
-      <button type="button" id={`highlight-${highlightIndex}-toggle`} onClick={displayHandler}>
+      <button className="pl-3" type="button" id={`highlight-${highlightIndex}-toggle`} onClick={displayHandler}>
         <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`highlight-${highlightIndex}-icon`} />
       </button>
     </div>
@@ -54,6 +51,7 @@ Highlight
             />
             <FormField
               title="Highlight URL"
+              placeholder="Insert permalink or external URL"
               id={`highlight-${highlightIndex}-url`}
               value={url}
               errorMessage={errors.url}
@@ -62,7 +60,7 @@ Highlight
             />
           </div>
           <div className={elementStyles.inputGroup}>
-            <button type="button" id={`highlight-${highlightIndex}-delete`} className={elementStyles.warning} onClick={deleteHandler} key={`${highlightIndex}-delete`}>Delete highlight</button>
+            <button type="button" id={`highlight-${highlightIndex}-delete`} className={`ml-auto ${elementStyles.warning}`} onClick={deleteHandler} key={`${highlightIndex}-delete`}>Delete highlight</button>
           </div>
         </>
       )

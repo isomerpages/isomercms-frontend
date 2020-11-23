@@ -1,7 +1,18 @@
 @import './variable';
+@import './buttons';
 
 .inputGroup{
     margin-bottom: 20px;
+}
+
+p {
+  &.permalink {
+    padding-top: 0px;
+    padding-left: 10px;
+    margin-bottom: 0px;
+    line-height: 31px;
+    margin-right: 20px;
+  }
 }
 
 .formLabel{
@@ -9,6 +20,77 @@
   margin-bottom: 8px;
   line-height: 14px;
   padding-top: 20px;
+}
+
+.formSectionHeader{
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  margin-top: 20px;
+  line-height: 14px;
+  padding-top: 20px;
+}
+
+.formHorizontal{
+  display: flex;
+  margin-bottom: 5px;
+  margin-top: 5px;
+
+  .formHorizontalLabel{
+    @extend .formLabel;
+    width: 25%;
+    margin: 1px;
+  }
+
+  .formHorizontalInput{
+    width: 75%;
+  }
+}
+
+.formColor{
+  display: flex;
+  width: 50%;
+  margin-bottom: 5px;
+  margin-top: 5px;
+
+  .formColorLabel{
+    @extend .formLabel;
+    width: 40%;
+    margin: 1px;
+  }
+
+  .formColorInput{
+    width: 40%;
+  }
+
+  .formColorBox{
+    float: left;
+    width: 50px;
+    border: 0.5px solid black;
+    width: 20%;
+  }
+}
+
+.formSave{
+  position: relative;
+  width: 50%;
+
+  .formSaveButton{
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    margin-bottom: 20px;
+  }
+
+  .formSaveButtonActive{
+    @extend .blue;
+    @extend .formSaveButton;
+  }
+
+  .formSaveButtonDisabled{
+    @extend .disabled;
+    @extend .formSaveButton;
+  }    
 }
 
 input,textarea{
@@ -21,6 +103,13 @@ input,textarea{
   padding: 10px;
   box-sizing: border-box;
 
+  &.permalinkSetter {
+    margin-left: 2px;
+    margin-right: 2px;
+    width: 50%;
+    line-height: 21px;
+  }
+
   &:focus{
     border: 1px solid $isomer-blue;
     outline:none;
@@ -31,4 +120,17 @@ input,textarea{
     border: 1px solid $error-red;
     outline:none;
   }
+}
+
+input[type=radio] {
+  width: auto;
+  margin-right: 8px;
+}
+
+.formFixedText{
+  font-size: 14px;
+  font-family: 'Lato', sans-serif;
+  margin: 0;
+  padding: 10px;
+  box-sizing: border-box;
 }

@@ -6,7 +6,7 @@
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   box-sizing: border-box;
-  padding: 30px;
+  padding: 1.875rem;
   margin-bottom: 30px;
 
   .cardHeader{
@@ -68,8 +68,29 @@
     }
   }
 
+  &.addNewHomepageSection{
+    background: none;
+    box-shadow: none;
+
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    color: $isomer-blue;
+
+    h2{
+      font-size: 18px;
+      width: 100%;
+      text-align: left;
+    }
+  }
+
   .cardContent{
     margin-top: 20px;
     margin-bottom: 20px;
   }
+}
+
+.folderCard {
+  @extend .card;
+  padding: 1rem;
 }

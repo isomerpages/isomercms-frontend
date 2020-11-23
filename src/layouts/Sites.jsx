@@ -40,7 +40,7 @@ export default class Sites extends Component {
               {siteNames.map((siteName) => (
                 <div className={siteStyles.siteContainer} key={siteName.repoName}>
                   <div className={siteStyles.site}>
-                    <a href={`/sites/${siteName.repoName}/pages`}>
+                    <a href={`/sites/${siteName.repoName}/workspace`}>
                       <div className={siteStyles.siteImage} />
                       <div className={siteStyles.siteDescription}>
                         <div className={siteStyles.siteName}>{siteName.repoName}</div>

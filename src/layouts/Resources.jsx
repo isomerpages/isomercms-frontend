@@ -1,283 +1,179 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import * as Bluebird from 'bluebird';
 import * as _ from 'lodash';
-import { prettifyResourceFileName, prettifyResourceCategory } from '../utils';
-import ResourceSettingsModal from '../components/ResourceSettingsModal';
-import ResourceCategoryModal from '../components/ResourceCategoryModal';
+
+// Import components
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
+import CollectionPagesSection from '../components/CollectionPagesSection'
+import FolderCard from '../components/FolderCard'
+
+// Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
+// Import utils
+import { prettifyResourceCategory } from '../utils';
+import { validateResourceRoomName } from '../utils/validators'
+import FormField from '../components/FormField';
+import LoadingButton from '../components/LoadingButton';
+
+// axios settings
+axios.defaults.withCredentials = true
+
 // Constants
-const RADIX_PARSE_INT = 10;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
-const ResourceCard = ({
-  fileName, siteName, category, settingsToggle, resourceIndex,
-}) => {
-  const { title, date, type } = prettifyResourceFileName(fileName);
-  return (
-    <div className={`${contentStyles.resource} ${contentStyles.card} ${elementStyles.card}`}>
-      <Link to={`/sites/${siteName}/resources/${category}/${fileName}`}>
-        <div id={resourceIndex} className={contentStyles.resourceInfo}>
-          <div className={contentStyles.resourceCategory}>{prettifyResourceCategory(category)}</div>
-          <h1 className={contentStyles.resourceTitle}>{title}</h1>
-          <p className={contentStyles.resourceDate}>{date}</p>
-          <p className={contentStyles.resourceType}>{type}</p>
-        </div>
-      </Link>
-      <button
-        type="button"
-        id={`settings-${resourceIndex}`}
-        onClick={settingsToggle}
-        className={contentStyles.resourceIcon}
-      >
-        <i id={`settingsIcon-${resourceIndex}`} className="bx bx-cog" />
-      </button>
-    </div>
-  );
-};
+const Resources = ({ match, location }) => {
+  const { siteName } = match.params;
 
-const ResourcePages = ({
-  resourcePages, settingsToggle, siteName,
-}) => (
-  <>
-    {/* Display resource cards */}
-    {resourcePages.length > 0
-      ? (
-        <>
-          {resourcePages.map((resourcePage, resourceIndex) => (
-            <ResourceCard
-              category={resourcePage.category}
-              fileName={resourcePage.fileName}
-              siteName={siteName}
-              settingsToggle={settingsToggle}
-              resourceIndex={resourceIndex}
-              key={resourcePage.fileName}
-            />
-          ))}
-        </>
-      )
-      : null}
-    <CreateResourceCard settingsToggle={settingsToggle} />
-  </>
-);
+  const [isLoading, setIsLoading] = useState(true)
+  const [resourceRoomName, setResourceRoomName] = useState()
+  const [newResourceRoomName, setNewResourceRoomName] = useState('')
+  const [resourceFolderNames, setResourceFolderNames] = useState()
+  const [resourceRoomNameError, setResourceRoomNameError] = useState('')
 
-const CreateResourceCard = ({ settingsToggle }) => (
-  <button
-    type="button"
-    id="settings-NEW"
-    onClick={settingsToggle}
-    className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.addNew}`}
-  >
-    <i id="settingsIcon-NEW" className={`bx bx-plus-circle ${elementStyles.bxPlusCircle}`} />
-    <h2 id="settingsText-NEW">Add a new resource</h2>
-  </button>
-);
-
-export default class Resources extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      resourceCategories: [],
-      resourcePages: undefined,
-      categoryModalIsActive: false,
-      settingsIsActive: false,
-      resourceRoomName: 'resource room',
-      newResourceRoomName: '',
-      selectedResourcePage: {
-        isNewPost: true,
-        category: '',
-        fileName: '',
-      },
-    };
-  }
-
-  async componentDidMount() {
+  useEffect(() => {
     try {
-      const { match } = this.props;
-      const { siteName } = match.params;
+      const fetchData = async () => {
+        // Get the resource categories in the resource room
+        const resourcesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/resources`);
+        const { resourceRoomName, resources: resourceCategories } = resourcesResp.data;
 
-      // Get the resource categories in the resource room
-      const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`, {
-        withCredentials: true,
-      });
-      const { resourceRoomName, resources: resourceCategories } = resourcesResp.data;
-
-      if (resourceRoomName === undefined) {
-        this.setState({ resourceRoomName });
-      } else {
-        // Obtain the title, date, type, fileName, category for resource pages across all categories
-        const resourcePagesArray = await Bluebird.map(resourceCategories, async (category) => {
-          const resourcePagesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${category.dirName}`, {
-            withCredentials: true,
-          });
-          const { resourcePages } = resourcePagesResp.data;
-
-          if (resourcePages.length > 0) {
-            return resourcePages.map((resourcePage) => {
-              const { title, date, type } = prettifyResourceFileName(resourcePage.fileName);
-              return {
-                title,
-                date,
-                type,
-                fileName: resourcePage.fileName,
-                category: category.dirName,
-              };
-            });
-          }
-
-          return undefined;
-        }, { concurrency: 10 });
-
-        const resourcePages = _.compact(_.flattenDeep(resourcePagesArray));
-
-        this.setState({ resourceRoomName, resourceCategories, resourcePages });
+        if (resourceRoomName) {
+          const uniqueResourceFolderNames = resourceCategories ? _.uniq(resourceCategories.map((file) => file.dirName)) : []
+          setResourceFolderNames(uniqueResourceFolderNames)
+          setResourceRoomName(resourceRoomName)
+        }
+        setIsLoading(false)
       }
+      fetchData()
     } catch (err) {
       console.log(err);
     }
-  }
+  }, [])
 
-  categoryModalToggle = () => {
-    this.setState((currState) => ({
-      categoryModalIsActive: !currState.categoryModalIsActive,
-    }));
-  }
-
-  settingsToggle = (event) => {
-    const { id } = event.target;
-    const idArray = id.split('-');
-    let resourcePageIndex = idArray[1];
-
-    // User clicked on the "Create New Resource" button
-    if (resourcePageIndex === 'NEW') {
-      this.setState({
-        settingsIsActive: true,
-        selectedResourcePage: {
-          isNewPost: true,
-        },
-      });
-    } else if (resourcePageIndex === 'CLOSE') {
-      // User clicked on the close button in the settings modal
-      this.setState({ settingsIsActive: false });
-    } else {
-      // User clicked on the settings icon on an existing resource
-      resourcePageIndex = parseInt(resourcePageIndex, RADIX_PARSE_INT);
-
-      this.setState((currState) => ({
-        settingsIsActive: true,
-        selectedResourcePage: {
-          isNewPost: false,
-          category: currState.resourcePages[resourcePageIndex].category,
-          fileName: currState.resourcePages[resourcePageIndex].fileName,
-        },
-      }));
-    }
-  }
-
-  changeHandler = (event) => {
+  const resourceRoomNameHandler = (event) => {
     const { value } = event.target;
-    this.setState({ newResourceRoomName: value });
+    const errorMessage = validateResourceRoomName(value)
+    setNewResourceRoomName(value)
+    setResourceRoomNameError(errorMessage)
   }
 
-  createResourceRoom = async () => {
+  const createResourceRoom = async () => {
     try {
-      const { match } = this.props;
       const { siteName } = match.params;
-      const { newResourceRoomName } = this.state;
       const params = { resourceRoom: newResourceRoomName };
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resource-room`, params, {
-        withCredentials: true,
-      });
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resource-room`, params);
+      // Refresh page
+      window.location.reload();
     } catch (err) {
       console.log(err);
     }
   }
 
-  render() {
-    const {
-      resourceCategories,
-      resourcePages,
-      categoryModalIsActive,
-      settingsIsActive,
-      selectedResourcePage,
-      resourceRoomName,
-      newResourceRoomName,
-    } = this.state;
-    const { match, location } = this.props;
-    const { siteName } = match.params;
-    return (
-      <>
-        {/* Resource Room exists */}
-        <Header />
-        {/* main bottom section */}
-        <div className={elementStyles.wrapper}>
-          <Sidebar siteName={siteName} currPath={location.pathname} />
-          { settingsIsActive
-            ? (
-              <ResourceSettingsModal
-                siteName={siteName}
-                isNewPost={selectedResourcePage.isNewPost}
-                category={selectedResourcePage.category}
-                fileName={selectedResourcePage.fileName}
-                settingsToggle={this.settingsToggle}
-              />
-            )
-            : null}
-
-          {/* main section starts here */}
-          <div className={contentStyles.mainSection}>
-            <div className={contentStyles.sectionHeader}>
-              <h1 className={contentStyles.sectionTitle}>Resources</h1>
-              { resourceRoomName
-                ? (
-                  <ResourceCategoryModal
-                    siteName={siteName}
-                    resourceCategories={resourceCategories}
-                    categoryModalToggle={this.categoryModalToggle}
-                    categoryModalIsActive={categoryModalIsActive}
-                  />
-                )
-                : null }
-            </div>
-
-            <div className={contentStyles.contentContainerBoxes}>
-              <div className={contentStyles.boxesContainer}>
-                { !resourceRoomName
-                  ? (
-                    <>
-                      {/* Resource Room does not exist */}
-                      <p>Create Resource Room</p>
-                      <input value={newResourceRoomName} onChange={this.changeHandler} />
-                      <button type="button" onClick={this.createResourceRoom} className={elementStyles.blue}>Create Resource Room</button>
-                    </>
-                  )
-                  : (
-                    <>
-                      { resourcePages
-                        ? (
-                          <ResourcePages
-                            resourcePages={resourcePages}
-                            siteName={siteName}
-                            settingsToggle={this.settingsToggle}
-                          />
-                        )
-                        : 'Loading resources...'}
-                    </>
-                  )}
-              </div>
-            </div>
+  return (
+    <>
+      <Header />
+      {/* main bottom section */}
+      <div className={elementStyles.wrapper}>
+        <Sidebar siteName={siteName} currPath={location.pathname} />
+        {/* main section starts here */}
+        <div className={contentStyles.mainSection}>
+          {/* Page title */}
+          <div className={contentStyles.sectionHeader}>
+            <h1 className={contentStyles.sectionTitle}>Resources</h1>
           </div>
-          {/* main section ends here */}
+          {
+            isLoading ? 'Loading Resources...'
+            :
+              resourceRoomName
+              ? <>
+                  {/* Category title */}
+                  <div className={contentStyles.segment}>
+                    Resource Categories
+                  </div>
+                  {/* Info segment */}
+                  <div className={contentStyles.segment}>
+                    <i className="bx bx-sm bx-info-circle text-dark" />
+                    <span><strong className="ml-1">Note:</strong> Categories cannot be empty, create a resource first to create a Category.</span>
+                  </div>
+                  {/* Categories */}
+                  <div className={contentStyles.folderContainerBoxes}>
+                    <div className={contentStyles.boxesContainer}>
+                      {
+                        resourceFolderNames 
+                        ? 
+                          resourceFolderNames.length > 0
+                          ? resourceFolderNames.map((resourceCategory, collectionIdx) => (
+                              <FolderCard
+                                displayText={prettifyResourceCategory(resourceCategory)}
+                                settingsToggle={() => {}}
+                                key={resourceCategory}
+                                isHomepage={false}
+                                isCollection={false}
+                                siteName={siteName}
+                                category={resourceCategory}
+                                itemIndex={collectionIdx}
+                              />
+                            ))
+                          : 'No Resource Categories. Create a resource to add a Category.'
+                        : 'Loading Resource Categories...'
+                      }
+                    </div>
+                  </div>
+                  {/* Segment divider  */}
+                  <div className={contentStyles.segmentDividerContainer}>
+                    <hr className="invisible w-100 mt-3 mb-5" />
+                  </div>
+                  {/* Pages */}
+                  <CollectionPagesSection
+                    pages={[]}
+                    siteName={siteName}
+                    isResource={true}
+                  />
+                </>
+              : <>
+                  {/* Resource Room does not exist */}
+                  <div className={contentStyles.segment}>
+                    Create Resource Room
+                  </div>
+                  {/* Info segment */}
+                  <div className={contentStyles.segment}>
+                    <i className="bx bx-sm bx-info-circle text-dark" />
+                    <span><strong className="ml-1">Note:</strong> You must create a Resource Room before you can create Resources.</span>
+                  </div>
+                  <FormField
+                    className="w-100"
+                    value={newResourceRoomName}
+                    placeholder="Resource room title"
+                    errorMessage={resourceRoomNameError}
+                    isRequired={true}
+                    onFieldChange={resourceRoomNameHandler}
+                    maxWidth={true}
+                  />
+                  {/* Segment divider  */}
+                  <div className={contentStyles.segmentDividerContainer}>
+                    <hr className="invisible w-100 mt-3 mb-3" />
+                  </div>
+                  <LoadingButton
+                    label="Create Resource Room"
+                    disabled={!!resourceRoomNameError}
+                    disabledStyle={elementStyles.disabled}
+                    className={!!resourceRoomNameError ? elementStyles.disabled : elementStyles.blue}
+                    callback={createResourceRoom}
+                  />
+                </>
+          }
         </div>
-      </>
-    );
-  }
+        {/* main section ends here */}
+      </div>
+    </>
+  );
 }
+
+export default Resources
 
 Resources.propTypes = {
   match: PropTypes.shape({
@@ -289,27 +185,4 @@ Resources.propTypes = {
     pathname: PropTypes.string.isRequired,
   }).isRequired,
 };
-
-ResourcePages.propTypes = {
-  settingsToggle: PropTypes.func.isRequired,
-  resourcePages: PropTypes.arrayOf(
-    PropTypes.shape({
-      siteName: PropTypes.string.isRequired,
-      category: PropTypes.string.isRequired,
-      fileName: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
-  siteName: PropTypes.string.isRequired,
-};
-
-ResourceCard.propTypes = {
-  fileName: PropTypes.string.isRequired,
-  siteName: PropTypes.string.isRequired,
-  category: PropTypes.string.isRequired,
-  settingsToggle: PropTypes.func.isRequired,
-  resourceIndex: PropTypes.number.isRequired,
-};
-
-CreateResourceCard.propTypes = {
-  settingsToggle: PropTypes.func.isRequired,
-};
+  

@@ -1,4 +1,5 @@
 @import './variable';
+@import './buttons';
 
 .overlay{
   visibility: visible;
@@ -13,6 +14,45 @@
   top: 0;
   left: 0;
 }
+
+.colorModal{
+  z-index: 100;
+  position: absolute;
+  background: white;
+  border-radius: 5px;
+  padding: 10px;
+  left: 650px;
+  top: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .modalButtons {
+    @extend .blue;
+    margin: 10px;
+  }
+}
+
+.modalHeader{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  h1{
+    font-size: 24px;
+  }
+
+  .bx{
+    font-size: 30px;
+  }
+}
+
+.modalFooter{
+  margin: 1rem 0;
+}
+
 .modal{
   width: 50%;
   height: 70%;
@@ -25,35 +65,32 @@
   align-items: flex-start;
   overflow-y: scroll;
 
-  .modalHeader{
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-
-    h1{
-      font-size: 24px;
-    }
-
-    .bx{
-      font-size: 30px;
-    }
-  }
-
   .modalContent {
-    padding: 20px 0px 10px 0px;
-    height: 100%;
+    padding: 10px 0px 10px 0px;
+    height: auto;
     width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    flex: 1;
   
     .modalButtons {
       padding-top: 20px;
       display: flex;
       flex-direction: row;
       justify-content: flex-start;
+      margin-left: auto;
     }
   }
+}
+
+.modal-warning {
+  @extend .modal;
+  height: auto;
+}
+
+.modal-settings {
+  @extend .modal;
+  height: initial;
+  width: 40%;
 }
