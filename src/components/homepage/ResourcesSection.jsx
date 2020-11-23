@@ -32,18 +32,18 @@ const EditorResourcesSection = ({
         <>
           <div className={elementStyles.cardContent}>
             <FormField
-              title="Resources section title"
-              id={`section-${sectionIndex}-resources-title`}
-              value={title}
-              errorMessage={errors.title}
-              isRequired
-              onFieldChange={onFieldChange}
-            />
-            <FormField
               title="Resources section subtitle"
               id={`section-${sectionIndex}-resources-subtitle`}
               value={subtitle}
               errorMessage={errors.subtitle}
+              isRequired
+              onFieldChange={onFieldChange}
+            />
+            <FormField
+              title="Resources section title"
+              id={`section-${sectionIndex}-resources-title`}
+              value={title}
+              errorMessage={errors.title}
               isRequired
               onFieldChange={onFieldChange}
             />
