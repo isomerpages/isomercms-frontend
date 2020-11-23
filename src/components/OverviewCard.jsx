@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import DeleteWarningModal from './DeleteWarningModal'
 import LoadingButton from './LoadingButton'
+import AlertModal from './AlertModal'
 import {
   frontMatterParser,
   saveFileAndRetrieveUrl,
@@ -39,6 +40,7 @@ const OverviewCard = ({
   const [canShowDropdown, setCanShowDropdown] = useState(false)
   const [canShowFileMoveDropdown, setCanShowFileMoveDropdown] = useState(false)
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
+  const [canShowAlertModal, setCanShowAlertModal] = useState(false)
   const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? isResource ? `/resources/${category}` : `/collections/${category}` : ''}`
 
   useEffect(() => {
@@ -86,6 +88,10 @@ const OverviewCard = ({
       // Refresh page
       window.location.reload();
     } catch (err) {
+      if (err.response.status === 409) {
+        // Error due to conflict in name
+        setCanShowAlertModal(true)
+      }
       console.log(err);
     }
   }
@@ -181,6 +187,14 @@ const OverviewCard = ({
   
   return (
     <>
+    {
+      canShowAlertModal &&
+      <AlertModal
+        displayTitle="Alert"
+        displayText="This file name already exists in the category you are trying to move to. Please rename the file before proceeding."
+        onClose={() => setCanShowAlertModal(false)}
+      />
+    }
     <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`} to={generateLink()}>
       <div id={itemIndex} className={contentStyles.componentInfo}>
         <div className={contentStyles.componentCategory}>{category ? category : ''}</div>

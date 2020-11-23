@@ -245,6 +245,13 @@ const ComponentSettingsModal = ({
             setNewPageUrl(redirectUrl)
             setRedirectToNewPage(true)
         } catch (err) {
+            if (err.response.status === 409) {
+                // Error due to conflict in name
+                setErrors((prevState) => ({
+                    ...prevState,
+                    title: 'This title is already in use. Please choose a different one.',
+                }));
+            }
             console.log(err);
         }
     }
