@@ -215,13 +215,13 @@ const OverviewCard = ({
                 <div className={elementStyles.dropdownText}>Move to</div>
                 <i className="bx bx-sm bx-chevron-right ml-auto"/>
               </MenuItem>
-              <MenuItem handler={() => setCanShowDeleteWarningModal(true)}>
+              <MenuItem handler={() => {dropdownRef.current.blur(); setCanShowDeleteWarningModal(true)}}>
                 <i className="bx bx-sm bx-trash text-danger"/>
                 <div className={elementStyles.dropdownText}>Delete item</div>
               </MenuItem>
           </div>}
           {canShowFileMoveDropdown &&
-            <div className={`position-absolute ${elementStyles.dropdown}`} ref={fileMoveDropdownRef} tabIndex={1} >
+            <div className={`position-absolute ${elementStyles.dropdown}`} ref={fileMoveDropdownRef} tabIndex={1} onBlur={handleBlur}>
               <MenuItem className={`d-flex`} handler={toggleDropdownModals}>
                 <i className="bx bx-sm bx-arrow-back"/>
                 <div className={elementStyles.dropdownText}>Move to</div>

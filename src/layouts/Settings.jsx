@@ -17,7 +17,6 @@ import { validateSocialMedia } from '../utils/validators';
 const stateFields = {
   title: '',
   favicon: '',
-  resources_name: '',
   colors: {
     'primary-color': '',
     'secondary-color': '',
@@ -218,14 +217,11 @@ export default class Settings extends Component {
       const {
         title,
         favicon,
-        // eslint-disable-next-line camelcase
-        resources_name,
         colors,
       } = this.state;
       const configSettings = {
         title,
         favicon,
-        resources_name,
         colors,
       };
 
@@ -349,7 +345,6 @@ export default class Settings extends Component {
       siteName,
       title,
       favicon,
-      resources_name: resourcesName,
       colors,
       socialMediaContent,
       otherFooterSettings,
@@ -365,7 +360,7 @@ export default class Settings extends Component {
     const { location } = this.props;
 
     // retrieve errors
-    const hasConfigErrors = _.some([errors.title, errors.favicon, errors.resources_name]);
+    const hasConfigErrors = _.some([errors.favicon]);
     const hasColorErrors = _.some([errors.colors.primaryColor, errors.colors.secondaryColor]);
     const hasMediaColorErrors = _.some(errors.colors['media-colors'].map((mediaColor) => mediaColor.color));
     const hasSocialMediaErrors = _.some(Object.values(errors.socialMediaContent));
@@ -409,15 +404,6 @@ export default class Settings extends Component {
                   siteName={siteName}
                   placeholder=" "
                   type="image"
-                />
-                {/* Resource room name field */}
-                <FormField
-                  title="Resource Room Name"
-                  id="resources_name"
-                  value={resourcesName}
-                  errorMessage={errors.resources_name}
-                  isRequired
-                  onFieldChange={this.changeHandler}
                 />
                 {/* Color fields */}
                 <div id="color-fields">

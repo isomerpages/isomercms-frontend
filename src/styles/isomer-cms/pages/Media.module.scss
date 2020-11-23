@@ -111,6 +111,9 @@
           font-size: .9em;
           color: $body-text;
           margin-bottom: 5px;
+          overflow:hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
 
         .mediaCardDate{
