@@ -66,14 +66,21 @@ const Workspace = ({ match, location }) => {
                 {/* Homepage */}
                 <div className={contentStyles.folderContainerBoxes}>
                     <div className={contentStyles.boxesContainer}>
-                        <FolderCard
-                            displayText={"Homepage"}
-                            settingsToggle={() => {}}
-                            key={"homepage"}
-                            isHomepage={true}
-                            isCollection={false}
-                            siteName={siteName}
-                        />
+                      <FolderCard
+                        displayText={"Homepage"}
+                        settingsToggle={() => {}}
+                        key={"homepage"}
+                        isHomepage={true}
+                        isCollection={false}
+                        siteName={siteName}
+                      />
+                      <FolderCard
+                        displayText={"Contact Us"}
+                        settingsToggle={() => {}}
+                        key={"contact-us"}
+                        pageType={"contact-us"}
+                        siteName={siteName}
+                      />
                     </div>
                 </div>
                 {/* Segment divider  */}
@@ -114,21 +121,54 @@ const Workspace = ({ match, location }) => {
                         }
                     </div>
                 </div>
-                {/* Segment divider  */}
-                <div className={contentStyles.segmentDividerContainer}>
-                    <hr className="invisible w-100 mt-3 mb-5" />
-                </div>                {/* Pages title */}
-                <div className={contentStyles.segment}>
-                    Pages
+              </div>
+              {/* Segment divider  */}
+              <div className={contentStyles.segmentDividerContainer}>
+                <hr className="w-100 mt-3 mb-5" />
+              </div>
+              {/* Collections title */}
+              <div className={contentStyles.segment}>
+                Collections
+              </div>
+              {/* Info segment */}
+              <div className={contentStyles.segment}>
+                <i className="bx bx-sm bx-info-circle text-dark" />
+                <span><strong className="ml-1">Note:</strong> Collections cannot be empty, create a page first to create a collection.</span>
+              </div>
+              {/* Collections */}
+              <div className={contentStyles.folderContainerBoxes}>
+                <div className={contentStyles.boxesContainer}>
+                  {
+                    collections && collections.length > 0
+                    ? collections.map((collection, collectionIdx) => (
+                      <FolderCard
+                        displayText={prettifyPageFileName(collection)}
+                        settingsToggle={() => {}}
+                        key={collection}
+                        pageType={"collection"}
+                        siteName={siteName}
+                        category={collection}
+                        itemIndex={collectionIdx}
+                      />
+                    ))
+                    : 'Loading Collections...'
+                  }
                 </div>
-                {/* Pages */}
-                <CollectionPagesSection
-                    pages={unlinkedPages}
-                    siteName={siteName}
-                />
+              </div>
+              {/* Segment divider  */}
+              <div className={contentStyles.segmentDividerContainer}>
+                <hr className="invisible w-100 mt-3 mb-5" />
+              </div>                {/* Pages title */}
+              <div className={contentStyles.segment}>
+                Pages
+              </div>
+              {/* Pages */}
+              <CollectionPagesSection
+                pages={unlinkedPages}
+                siteName={siteName}
+              />
             </div>
             {/* main section ends here */}
-          </div>
         </>
     );
 }
