@@ -68,7 +68,7 @@ const HeroDropdown = ({
   displayDropdownElems,
   errors,
 }) => (
-  <div className={styles.card}>
+  <div>
     <p className={elementStyles.formLabel}>Hero dropdown</p>
     <FormField
       title="Hero dropdown title"
