@@ -27,11 +27,20 @@ const Workspace = ({ match, location }) => {
     useEffect(() => {
         let _isMounted = true
         const fetchData = async () => {
-            const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`);
-            if (_isMounted) setCollections(collectionsResp.data?.collections)
+            try {
+                const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`);
+                if (_isMounted) setCollections(collectionsResp.data?.collections)
+            } catch (err) {
+                setCollections(undefined)
+                console.log(err)
+            }
 
-            const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`);
-            if (_isMounted) setUnlinkedPages(unlinkedPagesResp.data?.pages)
+            try {
+                const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`);
+                if (_isMounted) setUnlinkedPages(unlinkedPagesResp.data?.pages)
+            } catch (err) {
+                console.log(err)
+            }
         }
         fetchData()
         return () => { _isMounted = false }
@@ -97,7 +106,11 @@ const Workspace = ({ match, location }) => {
                                     itemIndex={collectionIdx}
                                 />
                             ))
-                            : 'Loading Collections...'
+                            : (
+                                !collections
+                                    ? 'There are no collections in this repository'
+                                    : 'Loading Collections...'
+                            )
                         }
                     </div>
                 </div>
