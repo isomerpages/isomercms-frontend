@@ -16,8 +16,7 @@ const FolderCard = ({
   displayText,
   settingsToggle,
   itemIndex,
-  isHomepage,
-  isCollection,
+  pageType,
   siteName,
   category,
 }) => {
@@ -31,9 +30,29 @@ const FolderCard = ({
   }, [canShowDropdown])
   
   const generateLink = () => {
-    if (isHomepage) return `/sites/${siteName}/homepage`
-    if (isCollection) return `/sites/${siteName}/collections/${category}`
-    return `/sites/${siteName}/resources/${category}`
+    switch(pageType) {
+      case 'homepage': 
+        return `/sites/${siteName}/homepage`
+      case 'collection':
+        return `/sites/${siteName}/collections/${category}`
+      case 'resources':
+        return `/sites/${siteName}/resources/${category}`
+      case 'contact-us':
+        return `/sites/${siteName}/contact-us`
+      default:
+        return ''
+    }
+  }
+
+  const generateImage = (pageType) => {
+    switch(pageType) {
+      case 'homepage':
+        return 'bxs-home-circle'
+      case 'contact-us':
+        return 'bxs-phone'
+      default: 
+        return 'bxs-folder'
+    }
   }
 
   const MenuItem = ({handler, id, children}) => {
@@ -54,7 +73,7 @@ const FolderCard = ({
 
   const deleteHandler = async () => {
     try {
-      const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${isCollection ? `/collections/${category}` : `/resources/${category}`}`
+      const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${pageType === 'collection' ? `/collections/${category}` : `/resources/${category}`}`
       await axios.delete(apiUrl);
 
       // Refresh page
@@ -68,12 +87,12 @@ const FolderCard = ({
     <>
       { isFolderModalOpen &&
         <FolderModal
-          displayTitle={isCollection ? 'Rename Collection' : 'Rename Resource Category'}
-          displayText={isCollection ? 'Collection name' : "Resource category name"}
+          displayTitle={pageType === 'collection' ? 'Rename Collection' : 'Rename Resource Category'}
+          displayText={pageType === 'collection' ? 'Collection name' : "Resource category name"}
           onClose={() => setIsFolderModalOpen(false)}
           category={category}
           siteName={siteName}
-          isCollection={isCollection}
+          isCollection={pageType === 'collection'}
         />
       }
       { canShowDeleteWarningModal &&
@@ -85,10 +104,10 @@ const FolderCard = ({
       }
       <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard}`} to={generateLink()}>
         <div id={itemIndex} className={`${contentStyles.folderInfo}`}>
-          <i className={`bx bx-md text-dark ${isHomepage ? 'bxs-home-circle' : 'bxs-folder'} ${contentStyles.componentIcon}`} />
+          <i className={`bx bx-md text-dark ${generateImage(pageType)} ${contentStyles.componentIcon}`} />
           <span className={`${contentStyles.componentFolderName} align-self-center ml-4 mr-auto`}>{displayText}</span>
           {
-            isHomepage
+            pageType === 'homepage'
             ? ''
             : (
               <div className={`position-relative`}>
@@ -101,7 +120,6 @@ const FolderCard = ({
                     settingsToggle(e);
                     setCanShowDropdown(true)
                   }}
-                  className={contentStyles.componentIcon}
                 >
                   <i id={`settingsIcon-${itemIndex}`} className="bx bx-dots-vertical-rounded" />
                 </button>
@@ -130,8 +148,7 @@ FolderCard.propTypes = {
   displayText: PropTypes.string.isRequired,
   settingsToggle: PropTypes.func.isRequired,
   itemIndex: PropTypes.number,
-  isHomepage: PropTypes.bool.isRequired,
-  isCollection: PropTypes.bool.isRequired,
+  pageType: PropTypes.string.isRequired,
   siteName: PropTypes.string.isRequired,
 };
 
