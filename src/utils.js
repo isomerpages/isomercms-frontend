@@ -248,7 +248,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   console.log('This is the new file name', newFileName)
 
   if (permalink) {
-    frontMatter.permalink = `/${slugifiedCategory ? `${slugifiedCategory}/${thirdNavTitle ? `${thirdNavTitle}/` : ''}` : ''}${permalink}`;
+    frontMatter.permalink = permalink;
   }
   if (fileUrl) {
     frontMatter.file_url = fileUrl;

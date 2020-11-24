@@ -14,7 +14,6 @@ import {
   generatePageFileName,
   generateCollectionPageFileName,
   generateResourceFileName,
-  retrieveCollectionAndLinkFromPermalink,
   saveFileAndRetrieveUrl,
 } from '../utils';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -153,7 +152,7 @@ const ComponentSettingsModal = ({
               // Set default values for new file
               if (_isMounted) {
                 setTitle('Title')
-                setPermalink('permalink')
+                setPermalink(`${originalCategory ? `/${originalCategory}` : ''}/permalink`)
                 if (type === 'resource') setResourceDate(new Date().toISOString().split("T")[0])
               }
 
@@ -164,13 +163,6 @@ const ComponentSettingsModal = ({
               const base64DecodedContent = Base64.decode(content);
               const { frontMatter, mdBody } = frontMatterParser(base64DecodedContent);
 
-              let existingLink
-              if (frontMatter.permalink) {
-                // We want to set parts of the link by default, and only leave a portion editable by the user
-                const { editableLink } = retrieveCollectionAndLinkFromPermalink(frontMatter.permalink)
-                existingLink = editableLink
-              }
-
               if (_isMounted) {
                 // File properties
                 setSha(fileSha)
@@ -180,8 +172,8 @@ const ComponentSettingsModal = ({
                 // Front matter properties
                 setTitle(dequoteString(frontMatter.title))
 
-                setPermalink(existingLink)
-                setOriginalPermalink(existingLink)
+                setPermalink(frontMatter.permalink)
+                setOriginalPermalink(frontMatter.permalink)
                 setFileUrl(frontMatter.file_url)
                 setOriginalFileUrl(frontMatter.file_url)
 
@@ -440,7 +432,6 @@ const ComponentSettingsModal = ({
                     isRequired={true}
                     onFieldChange={changeHandler}
                     disabled={!isPost}
-                    fixedMessage={(category || originalCategory) ? `/${category || originalCategory}/${thirdNavTitle ? `${thirdNavTitle}/` : ''}` : '/'}
                     placeholder=' '
                   />
                   { type === "resource" && 
