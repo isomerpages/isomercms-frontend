@@ -34,6 +34,7 @@ const EditorHeroSection = ({
   displayHighlights,
   errors,
   siteName,
+  handleHighlightDropdownToggle,
 }) => (
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
@@ -73,14 +74,41 @@ const EditorHeroSection = ({
             siteName={siteName}
             type="image"
           />
-          <span>
-            <i>Note: you can only have either Key Highlights+Hero button or a Hero Dropdown</i>
-          </span>
           <div className={styles.card}>
+            <p className={elementStyles.formLabel}>Hero Section Type</p>
+            {/* Permalink or File URL */}
+            <div className="d-flex">
+              <label htmlFor="radio-highlights" className="flex-fill">
+                <input
+                  type="radio"
+                  id="radio-highlights"
+                  name="resource-type"
+                  value="highlights"
+                  onChange={handleHighlightDropdownToggle}
+                  checked={!dropdown}
+                />
+                Highlights + Button
+              </label>
+              <label htmlFor="radio-dropdown" className="flex-fill">
+                <input
+                  type="radio"
+                  id="radio-dropdown"
+                  name="resource-type"
+                  value="dropdown"
+                  onChange={handleHighlightDropdownToggle}
+                  checked={dropdown}
+                />
+                Dropdown
+              </label>
+            </div>
+            <span>
+              <i>Note: you can only have either Key Highlights+Hero button or a Hero Dropdown</i>
+            </span>
+          </div>
+          <div >
             {dropdown
               ? (
                 <>
-                  <button type="button" id="dropdown-delete" className={`ml-auto ${elementStyles.warning}`} onClick={(event) => deleteHandler(event, 'Hero Dropdown')}>Delete Hero Dropdown</button>
                   <HeroDropdown
                     title={dropdown.title}
                     options={dropdown.options}
@@ -96,7 +124,6 @@ const EditorHeroSection = ({
               )
               : (
                 <>
-                  <button type="button" id="dropdown-create" className={`ml-auto ${elementStyles.blue}`} onClick={createHandler}>Create Hero Dropdown</button>
                   <HeroButton
                     button={button}
                     url={url}
