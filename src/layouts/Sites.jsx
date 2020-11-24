@@ -60,8 +60,8 @@ export default class Sites extends Component {
                   </div>
                 )) : (
                   siteNames && siteNames.length === 0
-                    ? <text>You do not have access to any sites at the moment. Please contact your system administrator.</text>
-                    : <text>Loading sites...</text>
+                    ? <div className={siteStyles.infoText}>You do not have access to any sites at the moment. Please contact your system administrator.</div>
+                    : <div className={siteStyles.infoText}>Loading sites...</div>
                 )
               }
             </div>
