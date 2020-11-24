@@ -134,8 +134,8 @@ export function prettifyResourceCategory(category) {
   return category.replace(/-/g, ' ').toUpperCase();
 }
 
-export function slugifyResourceCategory(category) {
-  return slugify(category);
+export function slugifyCategory(category) {
+  return slugify(category).replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
 }
 
 export function prettifyPageFileName(fileName) {
@@ -210,6 +210,10 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
     isNewCollection,
   } = fileInfo
 
+  let slugifiedCategory
+  if (isNewCollection) slugifiedCategory = slugifyCategory(category)
+  else slugifiedCategory = category
+
   const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${originalCategory ? type === "resource" ? `/resources/${originalCategory}` : `/collections/${originalCategory}` : ''}`
   const newBaseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? type === "resource" ? `/resources/${category}` : `/collections/${category}` : ''}`
   let newFileName, frontMatter
@@ -222,7 +226,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
       : { title, permalink };
 
     // Creating a collection page
-    if (category) {
+    if (slugifiedCategory) {
       newFileName = await generateNewCollectionFileName({
         fileName,
         originalThirdNavTitle,
@@ -232,7 +236,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
         baseApiUrl: newBaseApiUrl,
         title,
         siteName,
-        category,
+        category: slugifiedCategory,
         isNewCollection,
         isNewFile,
       })
@@ -244,7 +248,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   console.log('This is the new file name', newFileName)
 
   if (permalink) {
-    frontMatter.permalink = `/${category ? `${category}/${thirdNavTitle ? `${thirdNavTitle}/` : ''}` : ''}${permalink}`;
+    frontMatter.permalink = `/${slugifiedCategory ? `${slugifiedCategory}/${thirdNavTitle ? `${thirdNavTitle}/` : ''}` : ''}${permalink}`;
   }
   if (fileUrl) {
     frontMatter.file_url = fileUrl;
@@ -280,9 +284,9 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   }
   let newPageUrl
   if (type === 'resource') {
-    newPageUrl = `/sites/${siteName}/resources/${category}/${newFileName}`
+    newPageUrl = `/sites/${siteName}/resources/${slugifiedCategory}/${newFileName}`
   } else if (type === 'page') {
-    newPageUrl = category ? `/sites/${siteName}/collections/${category}/${newFileName}` : `/sites/${siteName}/pages/${newFileName}`
+    newPageUrl = slugifiedCategory ? `/sites/${siteName}/collections/${slugifiedCategory}/${newFileName}` : `/sites/${siteName}/pages/${newFileName}`
   }
   return newPageUrl
 }
