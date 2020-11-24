@@ -88,6 +88,8 @@ const getBackButtonInfo = (resourceCategory, collectionName, siteName) => {
 }
 
 export default class EditPage extends Component {
+  _isMounted = true 
+
   constructor(props) {
     super(props);
     const { match, isResourcePage, isCollectionPage } = this.props;
@@ -114,6 +116,7 @@ export default class EditPage extends Component {
   }
 
   async componentDidMount() {
+    this._isMounted = true
     try {
       const resp = await axios.get(this.apiEndpoint);
       const { content, sha } = resp.data;
@@ -147,7 +150,7 @@ export default class EditPage extends Component {
         });
       }
 
-      this.setState({
+      if (this._isMounted) this.setState({
         csp,
         sha,
         originalMdValue: mdBody.trim(),
@@ -159,6 +162,10 @@ export default class EditPage extends Component {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   updatePage = async () => {

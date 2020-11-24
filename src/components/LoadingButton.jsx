@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 export default function LoadingButton(props) {
@@ -14,16 +14,28 @@ export default function LoadingButton(props) {
 
   // track whether button is loading or not
   const [isLoading, setButtonLoading] = React.useState(false);
+
+  useEffect(() => {
+    let _isMounted = true
+
+    const runCallback = async () => {
+      await callback();
+      if (_isMounted) setButtonLoading(false);
+    }
+
+    if (isLoading) {
+      runCallback()
+    }
+
+    return () => { _isMounted = false }
+  }, [isLoading])
+
   return (
     <button
       type="button"
       className={isLoading ? `${className} ${disabledStyle}` : className}
       disabled={isLoading ? true : disabled}
-      onClick={async () => {
-        setButtonLoading(true);
-        await callback();
-        setButtonLoading(false);
-      }}
+      onClick={() => setButtonLoading(true)}
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...remainingProps}
     >

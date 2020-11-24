@@ -60,6 +60,8 @@ const stateFields = {
 };
 
 export default class Settings extends Component {
+  _isMounted = false
+
   constructor(props) {
     super(props);
     this.state = {
@@ -76,6 +78,7 @@ export default class Settings extends Component {
   }
 
   async componentDidMount() {
+    this._isMounted = true
     try {
       const { match } = this.props;
       const { siteName } = match.params;
@@ -92,7 +95,7 @@ export default class Settings extends Component {
       } = settings;
 
       // set state properly
-      this.setState((currState) => ({
+      if (this._isMounted) this.setState((currState) => ({
         ...currState,
         siteName,
         ...configFieldsRequired,
@@ -112,6 +115,10 @@ export default class Settings extends Component {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   // event listener callback function that resets ColorPicker modal

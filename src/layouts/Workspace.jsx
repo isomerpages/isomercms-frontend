@@ -25,14 +25,16 @@ const Workspace = ({ match, location }) => {
     const [unlinkedPages, setUnlinkedPages] = useState()
 
     useEffect(() => {
+        let _isMounted = true
         const fetchData = async () => {
             const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`);
-            setCollections(collectionsResp.data?.collections)
+            if (_isMounted) setCollections(collectionsResp.data?.collections)
 
             const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`);
-            setUnlinkedPages(unlinkedPagesResp.data?.pages)
+            if (_isMounted) setUnlinkedPages(unlinkedPagesResp.data?.pages)
         }
         fetchData()
+        return () => { _isMounted = false }
     }, [])
 
     return (

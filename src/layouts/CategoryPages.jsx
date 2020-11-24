@@ -37,30 +37,32 @@ const CategoryPages = ({ match, location, isResource }) => {
   const [categoryPages, setCategoryPages] = useState()
 
   useEffect(() => {
-      const fetchData = async () => {
-        if (isResource) {
-          const resourcePagesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${collectionName}`);
-          const { resourcePages } = resourcePagesResp.data;
+    let _isMounted = true
+    const fetchData = async () => {
+      if (isResource) {
+        const resourcePagesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${collectionName}`);
+        const { resourcePages } = resourcePagesResp.data;
 
-          if (resourcePages.length > 0) {
-            const retrievedResourcePages = resourcePages.map((resourcePage) => {
-              const { title, date } = retrieveResourceFileMetadata(resourcePage.fileName);
-              return {
-                title,
-                date,
-                fileName: resourcePage.fileName,
-              };
-            });
-            setCategoryPages(retrievedResourcePages)
-          } else {
-            setCategoryPages([])
-          }
+        if (resourcePages.length > 0) {
+          const retrievedResourcePages = resourcePages.map((resourcePage) => {
+            const { title, date } = retrieveResourceFileMetadata(resourcePage.fileName);
+            return {
+              title,
+              date,
+              fileName: resourcePage.fileName,
+            };
+          });
+          if (_isMounted) setCategoryPages(retrievedResourcePages)
         } else {
-          const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${collectionName}`);
-          setCategoryPages(collectionsResp.data?.collectionPages)
+          if (_isMounted) setCategoryPages([])
         }
+      } else {
+        const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${collectionName}`);
+        if (_isMounted) setCategoryPages(collectionsResp.data?.collectionPages)
       }
-      fetchData()
+    }
+    fetchData()
+    return () => { _isMounted = false }
   }, [])
 
   return (
