@@ -39,7 +39,7 @@ export function deslugifyCollectionPage(collectionPageName) {
   return collectionPageName
     .split('.')[0] // remove the file extension
     .split('-').slice(1) // remove the number at the start
-    .map((string) => string.charAt(0).toUpperCase() + string.slice(1)) // capitalize first letter
+    .map(string => _.upperFirst(string)) // capitalize first letter
     .join(' '); // join it back together
 }
 
@@ -111,6 +111,22 @@ export function retrieveResourceFileMetadata(fileName) {
   return { date, title };
 }
 
+// function recursively checks if all child object values are empty
+// note that {a: '', b: {c: ''}, d: [ {e: ''}, {f: [ {g: ''} ]} ]} returns true
+export function isEmpty(obj) {
+  let isEmptyVal = true;
+  for (var key in obj) {
+    if (typeof obj[key] === "object" && obj.hasOwnProperty(key)) {
+      isEmptyVal = isEmptyVal && isEmpty(obj[key]);
+    } else {
+      if (obj[key] !== "" && obj[key] !== null) {
+        isEmptyVal = false;
+      }
+    }
+  }
+  return isEmptyVal
+}
+
 export function enquoteString(str) {
   let enquotedString = str;
   if (str[0] !== '"') enquotedString = `"${enquotedString}`;
@@ -167,6 +183,10 @@ export function generateCollectionPageFileName(title, groupIdentifier) {
 
 export function generatePermalink(title) {
   return slugify(title).replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
+}
+
+export function slugifyLower(str) {
+  return slugify(str, {lower: true})
 }
 
 export function retrieveCollectionAndLinkFromPermalink(permalink) {
