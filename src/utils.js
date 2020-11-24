@@ -239,6 +239,8 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
         category: slugifiedCategory,
         isNewCollection,
         isNewFile,
+        originalCategory,
+        newBaseApiUrl,
       })
     // Creating a simple page
     } else {
@@ -308,10 +310,16 @@ const generateNewCollectionFileName = async ({
   category,
   isNewCollection,
   isNewFile,
+  originalCategory,
+  newBaseApiUrl
 }) => {
   let newFileName
   if (isNewCollection) {
     const groupIdentifier = await generateGroupIdentifier(null, false, null, thirdNavTitle ? true : false, thirdNavTitle, true)
+    newFileName = generateCollectionPageFileName(title, groupIdentifier);
+  } else if (originalCategory !== category) {
+    // Page is being moved
+    const groupIdentifier = await generateGroupIdentifier(collectionPageData, false, newBaseApiUrl)
     newFileName = generateCollectionPageFileName(title, groupIdentifier);
   }
   // New file name is also dependent on whether the file has been moved into or out of a third nav
