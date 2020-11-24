@@ -126,7 +126,7 @@ export function dequoteString(str) {
 }
 
 export function generateResourceFileName(title, date) {
-  const safeTitle = slugify(title).replace(/[^a-zA-Z-]/g, '');
+  const safeTitle = slugify(title).replace(/[^a-zA-Z0-9-]/g, '');
   return `${date}-${safeTitle}.md`;
 }
 
