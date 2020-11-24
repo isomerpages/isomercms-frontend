@@ -10,7 +10,7 @@ export default class Sites extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      siteNames: [],
+      siteNames: null,
     };
   }
 
@@ -44,19 +44,26 @@ export default class Sites extends Component {
               </div>
             </div>
             <div className={siteStyles.sites}>
-              {siteNames.map((siteName) => (
-                <div className={siteStyles.siteContainer} key={siteName.repoName}>
-                  <div className={siteStyles.site}>
-                    <a href={`/sites/${siteName.repoName}/workspace`}>
-                      <div className={siteStyles.siteImage} />
-                      <div className={siteStyles.siteDescription}>
-                        <div className={siteStyles.siteName}>{siteName.repoName}</div>
-                        <div className={siteStyles.siteDate}>{siteName.lastUpdated}</div>
-                      </div>
-                    </a>
+              {
+                siteNames && siteNames.length > 0
+                ? siteNames.map((siteName) => (
+                  <div className={siteStyles.siteContainer} key={siteName.repoName}>
+                    <div className={siteStyles.site}>
+                      <a href={`/sites/${siteName.repoName}/workspace`}>
+                        <div className={siteStyles.siteImage} />
+                        <div className={siteStyles.siteDescription}>
+                          <div className={siteStyles.siteName}>{siteName.repoName}</div>
+                          <div className={siteStyles.siteDate}>{siteName.lastUpdated}</div>
+                        </div>
+                      </a>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )) : (
+                  siteNames && siteNames.length === 0
+                    ? <text>You do not have access to any sites at the moment. Please contact your system administrator.</text>
+                    : <text>Loading sites...</text>
+                )
+              }
             </div>
           </div>
         </div>

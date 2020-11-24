@@ -30,7 +30,6 @@
     }
   }
 
-
   .sites{
     display: flex;
     flex-direction: rows;
@@ -38,6 +37,11 @@
     align-items: flex-start;
     flex-wrap: wrap;
     width: $sites-container-width;
+
+    text {
+      margin-top: $site-margin-vertical;
+      margin-left: $site-margin-horizontal;
+    }
 
     .siteContainer{
       // width: 33.33%;
