@@ -31,17 +31,16 @@ const Resources = ({ match, location }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [resourceRoomName, setResourceRoomName] = useState()
   const [newResourceRoomName, setNewResourceRoomName] = useState('')
-  const [resourceFolderNames, setResourceFolderNames] = useState()
+  const [resourceFolderNames, setResourceFolderNames] = useState([])
   const [resourceRoomNameError, setResourceRoomNameError] = useState('')
 
   useEffect(() => {
     let _isMounted = true
-    try {
-      const fetchData = async () => {
+    const fetchData = async () => {
+      try {
         // Get the resource categories in the resource room
         const resourcesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/resources`);
         const { resourceRoomName, resources: resourceCategories } = resourcesResp.data;
-
         if (resourceRoomName) {
           const uniqueResourceFolderNames = resourceCategories ? _.uniq(resourceCategories.map((file) => file.dirName)) : []
           if (_isMounted) {
@@ -50,12 +49,14 @@ const Resources = ({ match, location }) => {
           }
         }
         if (_isMounted) setIsLoading(false)
+      } catch (err) {
+        setIsLoading(false)
+        console.log(err)
       }
-      fetchData()
-      return () => { _isMounted = false }
-    } catch (err) {
-      console.log(err);
     }
+
+    fetchData()
+    return () => { _isMounted = false }
   }, [])
 
   const resourceRoomNameHandler = (event) => {
