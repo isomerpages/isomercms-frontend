@@ -122,6 +122,8 @@ export default class EditHomepage extends Component {
         id: '',
         type: '',
       },
+      savedHeroElems: '',
+      savedHeroErrors: '',
     };
   }
 
@@ -442,50 +444,6 @@ export default class EditHomepage extends Component {
           });
           break;
         }
-        case 'dropdown': {
-          const dropdownObj = DropdownConstructor();
-
-          newSections = update(frontMatter.sections, {
-            0: {
-              hero: {
-                button: {
-                  $set: '',
-                },
-                url: {
-                  $set: '',
-                },
-                key_highlights: {
-                  $set: '',
-                },
-                dropdown: {
-                  $set: dropdownObj,
-                },
-              },
-            },
-          });
-
-          newErrors = update(errors, {
-            sections: {
-              0: {
-                hero: {
-                  button: {
-                    $set: '',
-                  },
-                  url: {
-                    $set: '',
-                  },
-                  dropdown: {
-                    $set: '',
-                  },
-                },
-              },
-            },
-            highlights: {
-              $set: '',
-            },
-          });
-          break;
-        }
         case 'dropdownelem': {
           const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT) + 1;
 
@@ -599,39 +557,6 @@ export default class EditHomepage extends Component {
           });
           break;
         }
-        case 'dropdown': {
-          newSections = update(frontMatter.sections, {
-            0: {
-              hero: {
-                dropdown: {
-                  $set: '',
-                },
-                key_highlights: {
-                  $set: [],
-                },
-              },
-            },
-          });
-
-          newErrors = update(errors, {
-            dropdownElems: {
-              $set: [],
-            },
-            highlights: {
-              $set: [],
-            },
-            sections: {
-              0: {
-                hero: {
-                  dropdown: {
-                    $set: '',
-                  },
-                },
-              },
-            },
-          });
-          break;
-        }
         case 'dropdownelem': {
           const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT);
           newSections = update(frontMatter.sections, {
@@ -702,6 +627,155 @@ export default class EditHomepage extends Component {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  handleHighlightDropdownToggle = (event) => {
+    const {
+      frontMatter, errors,
+    } = this.state;
+    let newSections = [];
+    let newErrors = {};
+    const { target: { value } } = event;
+    if (value === 'highlights') {
+      let highlightObj, highlightErrors, buttonObj, buttonErrors, urlObj, urlErrors
+      if (this.state.savedHeroElems) {
+        highlightObj = this.state.savedHeroElems.key_highlights || []
+        highlightErrors = this.state.savedHeroErrors.highlights || []
+        buttonObj = this.state.savedHeroElems.button || ''
+        buttonErrors = this.state.savedHeroErrors.button || ''
+        urlObj = this.state.savedHeroElems.url || ''
+        urlErrors = this.state.savedHeroErrors.url || ''
+      } else {
+        highlightObj = [];
+        highlightErrors = [];
+        buttonObj = ''
+        buttonErrors = ''
+        urlObj = ''
+        urlErrors = ''
+      }
+      
+      this.setState({
+        savedHeroElems: this.state.frontMatter.sections[0].hero,
+        savedHeroErrors: {
+          dropdown: this.state.errors.sections[0].hero.dropdown,
+          dropdownElems: this.state.errors.dropdownElems
+        },
+      });
+
+      newSections = update(frontMatter.sections, {
+        0: {
+          hero: {
+            dropdown: {
+              $set: '',
+            },
+            key_highlights: {
+              $set: highlightObj,
+            },
+            button: {
+              $set: buttonObj,
+            },
+            url: {
+              $set: urlObj,
+            },
+          },
+        },
+      });
+
+      newErrors = update(errors, {
+        dropdownElems: {
+          $set: [],
+        },
+        highlights: {
+          $set: highlightErrors,
+        },
+        sections: {
+          0: {
+            hero: {
+              dropdown: {
+                $set: '',
+              },
+              button: {
+                $set: buttonErrors,
+              },
+              url: {
+                $set: urlErrors,
+              },
+            },
+          },
+        },
+      });
+    } else {
+      let dropdownObj, dropdownErrors, dropdownElemErrors
+      if (this.state.savedHeroElems) {
+        dropdownObj = this.state.savedHeroElems.dropdown || DropdownConstructor();
+        dropdownErrors = this.state.savedHeroErrors.dropdown || ''
+        dropdownElemErrors = this.state.savedHeroErrors.dropdownElems || ''
+      } else {
+        dropdownObj = DropdownConstructor();
+        dropdownErrors = ''
+        dropdownElemErrors = ''
+      }
+
+      this.setState({
+        savedHeroElems: this.state.frontMatter.sections[0].hero,
+        savedHeroErrors: {
+          highlights: this.state.errors.highlights,
+          button: this.state.errors.sections[0].hero.button,
+          url: this.state.errors.sections[0].hero.url,
+        },
+      });
+
+      newSections = update(frontMatter.sections, {
+        0: {
+          hero: {
+            button: {
+              $set: '',
+            },
+            url: {
+              $set: '',
+            },
+            key_highlights: {
+              $set: '',
+            },
+            dropdown: {
+              $set: dropdownObj,
+            },
+          },
+        },
+      });
+
+      newErrors = update(errors, {
+        sections: {
+          0: {
+            hero: {
+              button: {
+                $set: '',
+              },
+              url: {
+                $set: '',
+              },
+              dropdown: {
+                $set: dropdownErrors,
+              },
+            },
+          },
+        },
+        highlights: {
+          $set: '',
+        },
+        dropdown_elems: {
+          $set: dropdownElemErrors
+        }
+      });
+    }
+    this.setState((currState) => ({
+      ...currState,
+      frontMatter: {
+        ...currState.frontMatter,
+        sections: newSections,
+      },
+      errors: newErrors,
+    }));
   }
 
   toggleDropdown = async () => {
@@ -1045,6 +1119,7 @@ export default class EditHomepage extends Component {
                                 onDragEnd={this.onDragEnd}
                                 errors={errors}
                                 siteName={siteName}
+                                handleHighlightDropdownToggle={this.handleHighlightDropdownToggle}
                               />
                             </>
                           ) : (
