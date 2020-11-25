@@ -82,7 +82,7 @@ const EditorHeroSection = ({
                 <input
                   type="radio"
                   id="radio-highlights"
-                  name="resource-type"
+                  name="hero-type"
                   value="highlights"
                   onChange={handleHighlightDropdownToggle}
                   checked={!dropdown}
@@ -93,7 +93,7 @@ const EditorHeroSection = ({
                 <input
                   type="radio"
                   id="radio-dropdown"
-                  name="resource-type"
+                  name="hero-type"
                   value="dropdown"
                   onChange={handleHighlightDropdownToggle}
                   checked={dropdown}

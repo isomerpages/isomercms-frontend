@@ -637,6 +637,7 @@ export default class EditHomepage extends Component {
     let newErrors = {};
     const { target: { value } } = event;
     if (value === 'highlights') {
+      if (!frontMatter.sections[0].hero.dropdown) return
       let highlightObj, highlightErrors, buttonObj, buttonErrors, urlObj, urlErrors
       if (this.state.savedHeroElems) {
         highlightObj = this.state.savedHeroElems.key_highlights || []
@@ -704,6 +705,7 @@ export default class EditHomepage extends Component {
         },
       });
     } else {
+      if (frontMatter.sections[0].hero.dropdown) return
       let dropdownObj, dropdownErrors, dropdownElemErrors
       if (this.state.savedHeroElems) {
         dropdownObj = this.state.savedHeroElems.dropdown || DropdownConstructor();
