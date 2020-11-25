@@ -16,16 +16,16 @@ const GenericWarningModal = ({ displayTitle, displayText, onProceed, onCancel })
         <p>{displayText}</p>
         <div className={elementStyles.modalButtons}>
             <LoadingButton
-                label="Yes"
-                disabledStyle={elementStyles.disabled}
-                className={`ml-auto ${elementStyles.blue}`}
-                callback={onProceed}
-            />
-            <LoadingButton
                 label="No"
                 disabledStyle={elementStyles.disabled}
-                className={elementStyles.warning}
+                className={`ml-auto ${elementStyles.warning}`}
                 callback={onCancel}
+            />
+            <LoadingButton
+                label="Yes"
+                disabledStyle={elementStyles.disabled}
+                className={`${elementStyles.blue}`}
+                callback={onProceed}
             />
         </div>
       </form>
