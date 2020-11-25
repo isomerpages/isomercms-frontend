@@ -22,6 +22,7 @@ const EditorSection = ({
   shouldDisplay,
   displayCards,
   displayHandler,
+  errors,
 }) => (
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
@@ -66,6 +67,7 @@ const EditorSection = ({
                                 onFieldChange={onFieldChange}
                                 shouldDisplay={displayCards[cardIndex]}
                                 displayHandler={displayHandler}
+                                cardErrors={errors[cardIndex]}
                               />
                               : 
                               <EditorLocationCard
@@ -78,6 +80,7 @@ const EditorSection = ({
                                 onFieldChange={onFieldChange}
                                 shouldDisplay={displayCards[cardIndex]}
                                 displayHandler={displayHandler}
+                                cardErrors={errors[cardIndex]}
                               />
                             }
                           </div>

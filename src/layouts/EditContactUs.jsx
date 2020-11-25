@@ -1,26 +1,30 @@
 // TODO: Error handling and validation (csp check) 
 // TODO: Clean up formatting, semi-colons, PropTypes etc
-
 import React, { Component } from 'react';
-// import { Link } from "react-router-dom";
 import axios from 'axios';
 import _ from 'lodash';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { DragDropContext } from 'react-beautiful-dnd';
-import '../styles/isomer-template.scss';
+
 import { frontMatterParser, concatFrontMatterMdBody, isEmpty } from '../utils';
-import { sanitiseFrontMatter } from '../utils/dataSanitisers'
+import { sanitiseFrontMatter } from '../utils/dataSanitisers';
+import { validateContact, validateLocation } from '../utils/validators';
+
 import EditorSection from '../components/contact-us/Section';
+
+import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
+
 import Header from '../components/Header';
 import LoadingButton from '../components/LoadingButton';
+import FormField from '../components/FormField';
+
 import TemplateContactUsHeader from '../templates/contact-us/ContactUsHeader';
 import TemplateLocationsSection from '../templates/contact-us/LocationsSection'
 import TemplateContactsSection from '../templates/contact-us/ContactsSection'
-import FormField from '../components/FormField';
 import TemplateFeedbackSection from '../templates/contact-us/FeedbackSection';
 
 
@@ -32,9 +36,9 @@ import TemplateFeedbackSection from '../templates/contact-us/FeedbackSection';
 const RADIX_PARSE_INT = 10; 
 
 // Constructors
-const ContactFieldConstructor = () => ([
+const ContactFieldConstructor = () => ([ 
   {phone: ''}, 
-  {email: ''},
+  {email: ''}, 
   {other: ''},
 ]);
 
@@ -44,23 +48,24 @@ const LocationHoursFieldConstructor = () => ({
   description: ''
 });
 
-const ContactSectionConstructor = (isErrorConstructor) => ({
+const ContactSectionConstructor = () => ({
   content: ContactFieldConstructor(),
   title: '',
 });
 
-const LocationSectionConstructor = (isErrorConstructor) => ({
+const LocationSectionConstructor = (operatingHoursLength) => ({
   address: ['','',''],
   title: '',
-  operating_hours: [],
+  operating_hours: operatingHoursLength ? Array(operatingHoursLength).fill(LocationHoursFieldConstructor()) : [],
+  maps_link: '',
 });
 
-const enumSection = (type, isErrorConstructor) => {
+const enumSection = (type, args) => {
   switch (type) {
     case 'contact':
-      return ContactSectionConstructor(isErrorConstructor);
+      return ContactSectionConstructor();
     case 'location':
-      return LocationSectionConstructor(isErrorConstructor);
+      return LocationSectionConstructor(args?.operatingHoursLength);
     case 'contact_field':
       return ContactFieldConstructor();
     case 'location_hours_field':
@@ -90,6 +95,10 @@ export default class EditContactUs extends Component {
         contactCardsDisplay: [],
         locationCardsDisplay: [],
       },
+      errors: {
+        contacts: [],
+        locations: [],
+      }
     };
   }
 
@@ -111,6 +120,9 @@ export default class EditContactUs extends Component {
       const sanitisedFrontMatter = sanitiseFrontMatter(frontMatter)
 
       const { contacts, locations } = sanitisedFrontMatter
+
+      const contactsErrors = []
+      const locationsErrors = []
       const contactCardsDisplay = []
       const locationCardsDisplay = []
       const sectionsDisplay = {
@@ -118,8 +130,18 @@ export default class EditContactUs extends Component {
         location:false
       }
       
-      contacts.forEach(_ => contactCardsDisplay.push(false))
-      locations.forEach(_ => locationCardsDisplay.push(false))
+      contacts.forEach(_ => {
+        contactsErrors.push(enumSection('contact'))
+        contactCardsDisplay.push(false)
+      })
+
+      locations.forEach(location => {
+        const args = { 
+          operatingHoursLength: location.operating_hours.length 
+        }
+        locationsErrors.push(enumSection('location', args))
+        locationCardsDisplay.push(false)
+      })
       
       this.setState({
         footerContent,
@@ -130,6 +152,10 @@ export default class EditContactUs extends Component {
           sectionsDisplay,
           contactCardsDisplay,
           locationCardsDisplay,
+        },
+        errors: {
+          contacts: contactsErrors,
+          locations: locationsErrors,
         }
       });
     } catch (err) {
@@ -139,7 +165,7 @@ export default class EditContactUs extends Component {
 
   onDragEnd = (result) => {
     const { source, destination, type } = result;
-    const { frontMatter, displaySections } = this.state;
+    const { frontMatter, displaySections, errors } = this.state;
 
     // If the user dropped the draggable to no known droppable
     if (!destination) return;
@@ -150,47 +176,64 @@ export default class EditContactUs extends Component {
       && destination.index === source.index
     ) return;
 
-    let newFrontMatter = [];
-    let newDisplaySections = [];
+    let newFrontMatter, newErrors, newDisplaySections;
     
     switch (type) {
       case 'contact': {
-        const draggedElem = frontMatter.contacts[source.index];
+        const elem = frontMatter.contacts[source.index];
         newFrontMatter = update(frontMatter, {
           contacts: {
             $splice: [
               [source.index, 1], // Remove elem from its original position
-              [destination.index, 0, draggedElem], // Splice elem into its new position
+              [destination.index, 0, elem], // Splice elem into its new position
             ],
           },
         });
-        const displayBool = displaySections.contactCardsDisplay[source.index];
+        const elemError = errors.contacts[source.index];
+        newErrors = update(errors, {
+          contacts: {
+            $splice: [
+              [source.index, 1], // Remove elem from its original position
+              [destination.index, 0, elemError], // Splice elem into its new position
+            ],
+          },
+        });
+        const elemDisplay = displaySections.contactCardsDisplay[source.index];
         newDisplaySections = update(displaySections, {
           contactCardsDisplay: {
             $splice: [
               [source.index, 1],
-              [destination.index, 0, displayBool],
+              [destination.index, 0, elemDisplay],
             ],
           },
         });
         break;
       }
       case 'location': {
-        const draggedElem = frontMatter.locations[source.index];
+        const elem = frontMatter.locations[source.index];
         newFrontMatter = update(frontMatter, {
           locations: {
             $splice: [
               [source.index, 1], // Remove elem from its original position
-              [destination.index, 0, draggedElem], // Splice elem into its new position
+              [destination.index, 0, elem], // Splice elem into its new position
             ],
           },
         });
-        const displayBool = displaySections.locationCardsDisplay[source.index];
+        const elemError = errors.locations[source.index];
+        newErrors = update(errors, {
+          locations: {
+            $splice: [
+              [source.index, 1], // Remove elem from its original position
+              [destination.index, 0, elemError], // Splice elem into its new position
+            ],
+          },
+        });
+        const elemDisplay = displaySections.locationCardsDisplay[source.index];
         newDisplaySections = update(displaySections, {
           locationCardsDisplay: {
             $splice: [
               [source.index, 1],
-              [destination.index, 0, displayBool],
+              [destination.index, 0, elemDisplay],
             ],
           },
         });
@@ -202,6 +245,7 @@ export default class EditContactUs extends Component {
 
     this.setState({
       frontMatter: newFrontMatter,
+      errors: newErrors,
       displaySections: newDisplaySections,
     });
   }
@@ -215,7 +259,7 @@ export default class EditContactUs extends Component {
       const idArray = id.split('-');
       const elemType = idArray[0];
 
-      let newFrontMatter, newFooterContent;
+      let newFrontMatter, newFooterContent, newErrors;
       switch (elemType) {
         case 'feedback': {
           newFooterContent = update(footerContent, {
@@ -241,10 +285,16 @@ export default class EditContactUs extends Component {
               newFrontMatter = update(frontMatter, {
                 contacts: {[contactIndex]: {[contactType]: {$set: value }}},
               });
+              newErrors = update(errors, {
+                contacts: {[contactIndex]: {[contactType]: {$set: validateContact(contactType, value)}}}
+              })
               break;
             default: // 'phone', 'email', 'other'
               newFrontMatter = update(frontMatter, {
                 contacts: {[contactIndex]: {content : {[contentIndex]: {[contactType]:  {$set: value } }}}},
+              });
+              newErrors = update(errors, {
+                contacts: {[contactIndex]: {content : {[contentIndex]: {[contactType]:  {$set: validateContact(contactType, value) } }}}},
               });
               break;
           }
@@ -262,20 +312,23 @@ export default class EditContactUs extends Component {
               newFrontMatter = update(frontMatter, {
                 locations: {[locationIndex]: {[locationType]: {[fieldIndex] : {[fieldType]: { $set: value }}}}},
               });
+              newErrors = update(errors, {
+                locations: {[locationIndex]: {[locationType]: {[fieldIndex] : {[fieldType]: { $set: validateLocation(fieldType, value) }}}}},
+              });
               break;
             case 'add_operating_hours': 
-              if ('operating_hours' in locations[locationIndex]) {
-                newFrontMatter = update(frontMatter, {
-                  locations: {[locationIndex]: {operating_hours : {$push: [enumSection('location_hours_field')]}}},
-                });
-              } else {
-                newFrontMatter = update(frontMatter, {
-                  locations: {[locationIndex]: {operating_hours : {$set: [enumSection('location_hours_field')]}}},
-                });
-              }
+              newFrontMatter = update(frontMatter, {
+                locations: {[locationIndex]: {operating_hours : {$push: [enumSection('location_hours_field')]}}},
+              });
+              newErrors = update(errors, {
+                locations: {[locationIndex]: {operating_hours : {$push: [enumSection('location_hours_field')]}}},
+              });
               break;
             case 'remove_operating_hours':
               newFrontMatter = update(frontMatter, {
+                locations: {[locationIndex]: {operating_hours : {$splice: [[fieldIndex,1]]}}}
+              });
+              newErrors = update(errors, {
                 locations: {[locationIndex]: {operating_hours : {$splice: [[fieldIndex,1]]}}}
               });
               break;
@@ -283,10 +336,18 @@ export default class EditContactUs extends Component {
               newFrontMatter = update(frontMatter, {
                 locations: {[locationIndex]: {[locationType]: {[fieldIndex] : { $set: value }}}},
               });
+              // for address, we validate all address fields together, not the single field
+              const addressFields = newFrontMatter.locations[locationIndex][locationType]
+              newErrors = update(errors, {
+                locations: {[locationIndex]: {[locationType]: { $set: validateLocation(locationType, addressFields) }}},
+              });
               break;
             default:
               newFrontMatter = update(frontMatter, {
                 locations: {[locationIndex]: {[locationType]: { $set: value }}},
+              });
+              newErrors = update(errors, {
+                locations: {[locationIndex]: {[locationType]: { $set: validateLocation(locationType, value) }}},
               });
               break;
           }
@@ -295,7 +356,8 @@ export default class EditContactUs extends Component {
       }
       this.setState((currState) => ({ // we check explicitly for undefined
         frontMatter: _.isUndefined(newFrontMatter) ? currState.frontMatter : newFrontMatter,
-        footerContent: _.isUndefined(newFooterContent) ? currState.footerContent : newFooterContent
+        footerContent: _.isUndefined(newFooterContent) ? currState.footerContent : newFooterContent,
+        errors: _.isUndefined(newErrors) ? currState.errors : newErrors,
       }));
       this.scrollRefs[elemType].scrollIntoView()
       
@@ -308,15 +370,17 @@ export default class EditContactUs extends Component {
     const { id } = event.target;
     try {
 
-      const { frontMatter, displaySections } = this.state;
-      let newFrontMatter;
-      let newDisplaySections;
-
+      const { frontMatter, displaySections, errors } = this.state;
+      
+      let newFrontMatter, newDisplaySections, newErrors;
       switch (id) {
         case 'contact': { 
           newFrontMatter = update(frontMatter, {
             contacts: {$push: [enumSection('contact')]},
           });
+          newErrors = update(errors, {
+            contacts: {$push: [enumSection('contact')]},
+          })
           newDisplaySections = update(displaySections, {
             contactCardsDisplay: {$push: [true]},
           });
@@ -326,6 +390,9 @@ export default class EditContactUs extends Component {
           newFrontMatter = update(frontMatter, {
             locations: {$push: [enumSection('location')]},
           });
+          newErrors = update(errors, {
+            locations: {$push: [enumSection('location')]},
+          })
           newDisplaySections = update(displaySections, {
             locationCardsDisplay: {$push: [true]},
           });
@@ -334,6 +401,7 @@ export default class EditContactUs extends Component {
       }
       this.setState({
         frontMatter: newFrontMatter,
+        errors: newErrors,
         displaySections: newDisplaySections,
       });
       this.scrollRefs[id].scrollIntoView()
@@ -349,14 +417,15 @@ export default class EditContactUs extends Component {
       const elemType = idArray[0];
       const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT);
 
-      const { frontMatter, displaySections } = this.state;
-      let newFrontMatter;
-      let newDisplaySections
-      let newErrors;
+      const { frontMatter, displaySections, errors } = this.state;
+      let newFrontMatter, newDisplaySections, newErrors;
 
       switch (elemType) {
         case 'contact': { // fix
           newFrontMatter = update(frontMatter, {
+            contacts: {$splice: [[sectionIndex, 1]]},
+          });
+          newErrors = update(errors, {
             contacts: {$splice: [[sectionIndex, 1]]},
           });
           newDisplaySections = update(displaySections, {
@@ -368,6 +437,9 @@ export default class EditContactUs extends Component {
           newFrontMatter = update(frontMatter, {
             locations: {$splice: [[sectionIndex, 1]]},
           });
+          newErrors = update(errors, {
+            locations: {$splice: [[sectionIndex, 1]]},
+          });
           newDisplaySections = update(displaySections, {
             locationCardsDisplay: {$splice: [[sectionIndex, 1]]},
           });
@@ -376,6 +448,7 @@ export default class EditContactUs extends Component {
       }
       this.setState({
         frontMatter: newFrontMatter,
+        errors: newErrors,
         displaySections: newDisplaySections,
       });
       this.scrollRefs[elemType].scrollIntoView()
@@ -506,6 +579,7 @@ export default class EditContactUs extends Component {
       displaySections,
       frontMatterSha,
       footerSha,
+      errors,
     } = this.state;
     const { match } = this.props;
     const { siteName } = match.params;
@@ -513,6 +587,11 @@ export default class EditContactUs extends Component {
     const { agency_name: agencyName, contacts, locations } = frontMatter
     const { feedback } = footerContent
     const { sectionsDisplay, contactCardsDisplay, locationCardsDisplay } = displaySections
+
+    const hasContactErrors = !isEmpty(errors.contacts)
+    const hasLocationErrors = !isEmpty(errors.locations)
+
+    const hasErrors = hasContactErrors || hasLocationErrors;
 
     return (
       <>
@@ -553,7 +632,7 @@ export default class EditContactUs extends Component {
                   displayCards={locationCardsDisplay}
                   sectionType={'location'}
                   displayHandler={this.displayHandler}
-                  errors={null}
+                  errors={errors.locations}
                 />
 
                 <EditorSection 
@@ -565,7 +644,7 @@ export default class EditContactUs extends Component {
                   displayCards={contactCardsDisplay}
                   sectionType={'contact'}
                   displayHandler={this.displayHandler}
-                  errors={null}
+                  errors={errors.contacts}
                 />
               </DragDropContext>  
 
@@ -603,9 +682,9 @@ export default class EditContactUs extends Component {
           <div className={editorStyles.pageEditorFooter}>
             <LoadingButton
               label="Save"
-              disabled={false} //TODO: validation
+              disabled={hasErrors} //TODO: validation
               disabledStyle={elementStyles.disabled}
-              className={(false|| !(frontMatterSha && footerSha)) ? elementStyles.disabled : elementStyles.blue} //TODO: validation
+              className={(hasErrors|| !(frontMatterSha && footerSha)) ? elementStyles.disabled : elementStyles.blue} //TODO: validation
               callback={this.savePage}
             />
           </div>

@@ -6,6 +6,7 @@ const ContactFields = ({
   cardIndex, 
   content, 
   onFieldChange,  
+  errors,
 }) => {  
   return (
     <div className={`d-flex flex-column`}>
@@ -14,18 +15,21 @@ const ContactFields = ({
         id={`contact-${cardIndex}-phone-0`}
         value={content[0].phone}
         onFieldChange={onFieldChange}
+        errorMessage={errors[0].phone}
       />
       <FormField
         title="Email"
         id={`contact-${cardIndex}-email-1`}
         value={content[1].email}
         onFieldChange={onFieldChange}
+        errorMessage={errors[1].email}
       />
       <FormField
         title="Others"
         id={`contact-${cardIndex}-other-2`}
         value={content[2].other}
         onFieldChange={onFieldChange}
+        errorMessage={errors[2].other}
       />
     </div>
   )
@@ -47,4 +51,15 @@ ContactFields.propTypes = {
     }),
   ),
   onFieldChange: PropTypes.func.isRequired, 
+  errors: PropTypes.arrayOf(
+    PropTypes.shape({
+      phone: PropTypes.string,
+    }),
+    PropTypes.shape({
+      email: PropTypes.string,
+    }),
+    PropTypes.shape({
+      other: PropTypes.string,
+    }),
+  ),
 };

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import FormField from '../FormField';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import _ from 'lodash';
+import { isEmpty } from '../../utils'
 
 const DEFAULT_NUM_OPERATING_FIELDS = 5;
 
@@ -10,21 +11,22 @@ const LocationHoursFields = ({
   operatingHours,
   cardIndex,
   onFieldChange,
+  errors,
 }) => {
   
   return (
     <div className= "mt-4">
       <h6> Operating Hours </h6>
       { operatingHours && operatingHours.map( (operations, operationsIndex) => ( 
-        <div className= "mb-1">
+        <div className= "mb-1" key={operationsIndex}>
             <div className="d-flex flex-row">
-              {/* containers used for custom padding around FormField */}
               <div className="flex-fill pr-1"> 
                 <FormField
                   title="Days"
                   id={`location-${cardIndex}-operating_hours-${operationsIndex}-days`}
                   value={operations.days}
                   onFieldChange={onFieldChange}
+                  errorMessage={errors[operationsIndex].days}
                 />
               </div>
               <div className="flex-fill pl-1">
@@ -33,6 +35,7 @@ const LocationHoursFields = ({
                   id={`location-${cardIndex}-operating_hours-${operationsIndex}-time`}
                   value={operations.time}
                   onFieldChange={onFieldChange}
+                  errorMessage={errors[operationsIndex].time}
                 />
               </div>
             </div>
@@ -42,6 +45,7 @@ const LocationHoursFields = ({
                 id={`location-${cardIndex}-operating_hours-${operationsIndex}-description`}
                 value={operations.description}
                 onFieldChange={onFieldChange}
+                errorMessage={errors[operationsIndex].description}
               />
             </div>
           <a className={elementStyles.formFixedText} id={`location-${cardIndex}-remove_operating_hours-${operationsIndex}`} href="#" onClick={onFieldChange}>
@@ -66,18 +70,35 @@ const LocationAddressFields = ({
   address,
   cardIndex,
   onFieldChange,
+  errors,
 }) => {
-  
+
+  const [ errorMessage, setErrorMessage ] = useState('')
+
+  useEffect(() => { 
+    let newErrorMessage = '';
+    if (!isEmpty(errors)) {
+      if (errors.length === 1) {
+        newErrorMessage = errors[0]
+      } else {
+        errors.forEach((error, i) => {
+          newErrorMessage += error ? `Line ${i+1}: ${error} ` : ''
+        })
+      }
+    } 
+    setErrorMessage(newErrorMessage)
+  }, [errors])
   return (
     <>
       { address.map( (addressValue, addressIndex) => ( // sets default address length
-        // div used for custom padding around FormField
         <div className="py-1" key={addressIndex}> 
           <FormField 
-            title={ addressIndex === 0 ? title : null }
+            title={ addressIndex === 0 ? title : null } // title appears above first field
             id={`location-${cardIndex}-address-${addressIndex}`}
             value={addressValue}
             onFieldChange={onFieldChange}
+            hasError={errorMessage} 
+            errorMessage={ errorMessage && addressIndex === 2 ? errorMessage : null } // error appears below last field
           />
         </div>
       ))}
@@ -100,6 +121,13 @@ LocationHoursFields.propTypes = {
   ),
   cardIndex: PropTypes.number.isRequired,
   onFieldChange: PropTypes.func.isRequired,
+  errors: PropTypes.arrayOf(
+    PropTypes.shape({
+      days: PropTypes.string,
+      time: PropTypes.string,
+      description: PropTypes.string,
+    }),
+  )
 };
 
 LocationAddressFields.propTypes = {
@@ -107,4 +135,5 @@ LocationAddressFields.propTypes = {
   address: PropTypes.arrayOf(PropTypes.string),
   cardIndex: PropTypes.number.isRequired,
   onFieldChange: PropTypes.func.isRequired,
+  errors: PropTypes.arrayOf(PropTypes.string),
 };
