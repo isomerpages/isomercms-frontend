@@ -6,7 +6,7 @@ import './styles/index.scss';
 import 'sgds-govtech/css/sgds.css';
 import App from './App';
 
-if (process.env.ENV !== 'dev') {
+if (process.env.ENV !== 'staging' || process.env.ENV !== 'production') {
     Sentry.init({
         dsn: process.env.SENTRY_DSN,
         integrations: [
