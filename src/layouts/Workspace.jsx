@@ -23,16 +23,26 @@ const Workspace = ({ match, location }) => {
 
     const [collections, setCollections] = useState([])
     const [unlinkedPages, setUnlinkedPages] = useState()
+    const [contactUsCard, setContactUsCard] = useState(false)
 
     useEffect(() => {
-        const fetchData = async () => {
-            const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`);
-            setCollections(collectionsResp.data?.collections)
-
-            const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`);
-            setUnlinkedPages(unlinkedPagesResp.data?.pages)
+      const fetchData = async () => {
+        try { 
+          await axios.get(`${BACKEND_URL}/sites/${siteName}/pages/contact-us.md`);
+          setContactUsCard(true) 
+        } catch (e) {
+          if (e.response.status === 500) {
+            // create option for contact-us page
+          }
         }
-        fetchData()
+
+        const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`);
+        setCollections(collectionsResp.data?.collections)
+
+        const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`);
+        setUnlinkedPages(unlinkedPagesResp.data?.pages)
+        }
+      fetchData()
     }, [])
 
     return (
@@ -62,13 +72,15 @@ const Workspace = ({ match, location }) => {
                     pageType={"homepage"}
                     siteName={siteName}
                   />
-                  <FolderCard
-                    displayText={"Contact Us"}
-                    settingsToggle={() => {}}
-                    key={"contact-us"}
-                    pageType={"contact-us"}
-                    siteName={siteName}
-                  />
+                  { contactUsCard && 
+                    <FolderCard
+                      displayText={"Contact Us"}
+                      settingsToggle={() => {}}
+                      key={"contact-us"}
+                      pageType={"contact-us"}
+                      siteName={siteName}
+                    />
+                  }
                 </div>
               </div>
               {/* Segment divider  */}
