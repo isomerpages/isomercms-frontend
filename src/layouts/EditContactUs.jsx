@@ -455,8 +455,16 @@ export default class EditContactUs extends Component {
       
       let newLocations = [];
       state.frontMatter.locations.forEach((location) => {
-        if ( !isEmpty(location) ) { // TODO: should remove empty operatingHours objects
-          newLocations.push(_.cloneDeep(location))
+        if ( !isEmpty(location) ) { 
+          let newLocation = _.cloneDeep(location);
+          let newOperatingHours = [];
+          location.operating_hours.forEach((operatingHour) => { //remove empty operatingHours objects
+            if ( !isEmpty(operatingHour)) {
+              newOperatingHours.push(_.cloneDeep(operatingHour))
+            }
+          })
+          newLocation.operating_hours = newOperatingHours;
+          newLocations.push(newLocation);
         } 
       })
       filteredFrontMatter.locations = newLocations;
