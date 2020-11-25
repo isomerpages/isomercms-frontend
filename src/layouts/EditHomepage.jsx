@@ -653,7 +653,6 @@ export default class EditHomepage extends Component {
         urlObj = ''
         urlErrors = ''
       }
-      
       this.setState({
         savedHeroElems: this.state.frontMatter.sections[0].hero,
         savedHeroErrors: {
@@ -763,7 +762,7 @@ export default class EditHomepage extends Component {
         highlights: {
           $set: '',
         },
-        dropdown_elems: {
+        dropdownElems: {
           $set: dropdownElemErrors
         }
       });
