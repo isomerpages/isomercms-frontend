@@ -6,6 +6,7 @@ import {
   Redirect,
 } from 'react-router-dom';
 import axios from 'axios';
+import * as Sentry from "@sentry/react";
 
 // Layouts
 import AuthCallback from './layouts/AuthCallback'
@@ -24,6 +25,7 @@ import Menus from './layouts/Menus';
 import EditNav from './layouts/EditNav';
 import Settings from './layouts/Settings';
 import ProtectedRoute from './components/ProtectedRoute'
+import FallbackComponent from './components/FallbackComponent'
 
 // Import contexts
 const { LoginContext } = require('./contexts/LoginContext')
@@ -92,7 +94,11 @@ function App() {
   }, [isLoggedIn])
 
   const ProtectedRouteWithProps = (props) => {
-    return <ProtectedRoute {...props} isLoggedIn={isLoggedIn} />
+    return (
+      <Sentry.ErrorBoundary fallback={FallbackComponent}>
+        <ProtectedRoute {...props} isLoggedIn={isLoggedIn} />
+      </Sentry.ErrorBoundary>
+    )
   }
 
   return (
