@@ -60,12 +60,16 @@ export function sanitiseFrontMatter(frontMatter) {
   let sanitisedContacts = [];
   let sanitisedLocations = [];
 
-  contacts.forEach(contact => 
-    sanitisedContacts.push(sanitiseContact(contact))
-  )
-  locations.forEach(location => 
-    sanitisedLocations.push(sanitiseLocation(location))
-  )
+  if (!_.isUndefined(contacts)) {
+    contacts.forEach(contact => 
+      sanitisedContacts.push(sanitiseContact(contact))
+    )
+  }
+  if (!_.isUndefined(locations)) {
+    locations.forEach(location => 
+      sanitisedLocations.push(sanitiseLocation(location))
+    )
+  }
   return { 
     ...frontMatter,
     contacts: sanitisedContacts, 
