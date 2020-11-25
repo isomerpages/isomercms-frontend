@@ -4,7 +4,6 @@ import LoadingButton from './LoadingButton'
 import {
   frontMatterParser,
   saveFileAndRetrieveUrl,
-  retrieveCollectionAndLinkFromPermalink,
 } from '../utils';
 import {
   retrieveThirdNavOptions,
@@ -59,8 +58,6 @@ const OverviewCard = ({
         title, permalink, file_url: fileUrl, date, third_nav_title: thirdNavTitle,
       } = frontMatter;
 
-      const { editableLink } = retrieveCollectionAndLinkFromPermalink(permalink)
-
       let collectionPageData
       if (!isResource && chosenCategory) {
         // User selected an existing page collection
@@ -69,7 +66,7 @@ const OverviewCard = ({
       }
       const fileInfo = {
         title,
-        permalink: editableLink,
+        permalink,
         fileUrl,
         date,
         mdBody,

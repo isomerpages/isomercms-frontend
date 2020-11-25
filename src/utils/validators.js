@@ -1,7 +1,7 @@
 
 // Common regexes and constants
 // ==============
-const PERMALINK_REGEX = '^(([a-z0-9]+([-][a-z0-9]+)*)+)$';
+const PERMALINK_REGEX = '^((\/([a-z0-9]+-)*[a-z0-9]+)+)\/?$';
 const SOCIAL_MEDIA_REGEX_PART_1 = '^(https://)?(www.)?(';
 const SOCIAL_MEDIA_REGEX_PART_2 = '.com/)([a-zA-Z0-9_-]+(/)?)+$';
 const permalinkRegexTest = RegExp(PERMALINK_REGEX);
@@ -447,9 +447,7 @@ const validatePageSettings = (id, value) => {
 
       // Permalink fails regex
       if (!permalinkRegexTest.test(value)) {
-        errorMessage = `The permalink should contain 
-          lowercase words separated by hyphens only.
-          `;
+        errorMessage = `The url should start with a slash, and contain lowercase words separated by hyphens and slashes only.`;
       }
       break;
     }
@@ -552,9 +550,7 @@ const validateResourceSettings = (id, value) => {
       }
       // Permalink fails regex
       if (!permalinkRegexTest.test(value)) {
-        errorMessage = `The permalink should contain 
-          lowercase words separated by hyphens only.
-          `;
+        errorMessage = `The url should start with a slash, and contain lowercase words separated by hyphens and slashes only.`;
       }
       break;
     }
