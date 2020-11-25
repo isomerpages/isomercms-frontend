@@ -17,11 +17,11 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
 import LoadingButton from '../components/LoadingButton';
-import ContactUsHeader from '../templates/contact-us/ContactUsHeader';
-import LocationsSection from '../templates/contact-us/LocationsSection'
-import ContactsSection from '../templates/contact-us/ContactsSection'
+import TemplateContactUsHeader from '../templates/contact-us/ContactUsHeader';
+import TemplateLocationsSection from '../templates/contact-us/LocationsSection'
+import TemplateContactsSection from '../templates/contact-us/ContactsSection'
 import FormField from '../components/FormField';
-import FeedbackSection from '../templates/contact-us/FeedbackSection';
+import TemplateFeedbackSection from '../templates/contact-us/FeedbackSection';
 
 
 /* eslint-disable react/jsx-props-no-spreading */
@@ -574,7 +574,7 @@ export default class EditContactUs extends Component {
           <div className={editorStyles.homepageEditorMain}>
             {/* contact-us header */}
             <div ref={(ref) => this.scrollRefs.header = ref}>
-              <ContactUsHeader agencyName={agencyName} />
+              <TemplateContactUsHeader agencyName={agencyName} />
             </div>
             {/* contact-us content */}
             <section className="bp-section is-small padding--bottom--lg">
@@ -583,17 +583,17 @@ export default class EditContactUs extends Component {
                   <div className="col is-8 is-offset-2">
                     
                     <div ref={(ref) => { this.scrollRefs.location = ref;} }>
-                      <LocationsSection locations={locations}/> 
+                      <TemplateLocationsSection locations={locations}/> 
                     </div>
 
                     {/* contacts section */}
                     <div ref={(ref) => { this.scrollRefs.contact = ref;} }>
-                      <ContactsSection contacts={contacts}/>
+                      <TemplateContactsSection contacts={contacts}/>
                     </div>
 
                     {/* feedback url section */}
                     <div ref={(ref) => { this.scrollRefs.feedback = ref;} }>
-                      <FeedbackSection feedback={feedback}/>
+                      <TemplateFeedbackSection feedback={feedback}/>
                     </div>
                   </div>
                 </div>

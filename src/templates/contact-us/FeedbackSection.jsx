@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const FeedbackSection = ({ feedback }) => (
+const TemplateFeedbackSection = ({ feedback }) => (
   <>
   { feedback &&
     <div className="row is-multiline margin--bottom--lg">
@@ -20,11 +20,11 @@ const FeedbackSection = ({ feedback }) => (
   </>
 );
 
-FeedbackSection.propTypes = {
+TemplateFeedbackSection.propTypes = {
   feedback: PropTypes.string,
 };
 
-export default FeedbackSection;
+export default TemplateFeedbackSection;
 
 
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Breadcrumb from '../pageComponents/Breadcrumb';
 
 
-const ContactUsHeader = ({ 
+const TemplateContactUsHeader = ({ 
   agencyName, 
 }) => (
   <section className="bp-section">
@@ -25,8 +25,8 @@ const ContactUsHeader = ({
 );
 
 
-ContactUsHeader.propTypes = {
+TemplateContactUsHeader.propTypes = {
   agencyName: PropTypes.string,
 };
 
-export default ContactUsHeader;
+export default TemplateContactUsHeader;
