@@ -23,27 +23,37 @@ const Workspace = ({ match, location }) => {
 
     const [collections, setCollections] = useState([])
     const [unlinkedPages, setUnlinkedPages] = useState()
+    const [contactUsCard, setContactUsCard] = useState(false)
 
     useEffect(() => {
-        let _isMounted = true
-        const fetchData = async () => {
-            try {
-                const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`);
-                if (_isMounted) setCollections(collectionsResp.data?.collections)
-            } catch (err) {
-                setCollections(undefined)
-                console.log(err)
-            }
-
-            try {
-                const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`);
-                if (_isMounted) setUnlinkedPages(unlinkedPagesResp.data?.pages)
-            } catch (err) {
-                console.log(err)
-            }
+      let _isMounted = true
+      const fetchData = async () => {
+        try { 
+          await axios.get(`${BACKEND_URL}/sites/${siteName}/pages/contact-us.md`);
+          if (_isMounted) setContactUsCard(true) 
+        } catch (e) {
+          if (e.response.status === 500) {
+            // create option for contact-us page
+          }
         }
-        fetchData()
-        return () => { _isMounted = false }
+
+        try { 
+          const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`);
+          if (_isMounted) setCollections(collectionsResp.data?.collections)
+        } catch (e) {
+          setCollections(undefined)
+          console.log(e)
+        }
+        
+        try { 
+          const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`);
+          if (_isMounted) setUnlinkedPages(unlinkedPagesResp.data?.pages)
+        } catch (e) {
+          console.log(e)
+        }
+      }
+      fetchData()
+      return () => { _isMounted = false }
     }, [])
 
     return (
@@ -74,13 +84,15 @@ const Workspace = ({ match, location }) => {
                         isCollection={false}
                         siteName={siteName}
                       />
-                      <FolderCard
-                        displayText={"Contact Us"}
-                        settingsToggle={() => {}}
-                        key={"contact-us"}
-                        pageType={"contact-us"}
-                        siteName={siteName}
-                      />
+                      { contactUsCard && 
+                        <FolderCard
+                          displayText={"Contact Us"}
+                          settingsToggle={() => {}}
+                          key={"contact-us"}
+                          pageType={"contact-us"}
+                          siteName={siteName}
+                        />
+                      }
                     </div>
                 </div>
                 {/* Segment divider  */}
