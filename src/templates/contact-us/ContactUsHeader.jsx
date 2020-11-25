@@ -15,8 +15,8 @@ const ContactUsHeader = ({
       </div>
       <div className="row">
         <div className="col is-8 is-offset-2">
-          <h1 class="display has-text-weight-semibold">Get in touch with<br/>
-            <span class="display has-text-secondary">{agencyName}</span>
+          <h1 className="display has-text-weight-semibold">Get in touch with<br/>
+            <span className="display has-text-secondary">{agencyName}</span>
           </h1>
         </div>
       </div>
