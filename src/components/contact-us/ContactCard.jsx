@@ -16,7 +16,7 @@ const EditorContactCard = ({
   onFieldChange,
   shouldDisplay,
   displayHandler,
-  errors,
+  cardErrors,
 }) => {
   return (
   <div className={`${elementStyles.card} move`}>
@@ -37,11 +37,13 @@ const EditorContactCard = ({
               id={`contact-${cardIndex}-title`}
               value={title}
               onFieldChange={onFieldChange}
+              errorMessage={cardErrors.title}
             />
             <ContactFields
               cardIndex={cardIndex} 
               content={content}
               onFieldChange={onFieldChange}
+              errors={cardErrors.content}
             />
           </div>
           <div className={`${elementStyles.inputGroup} pt-5`}>
@@ -73,4 +75,18 @@ EditorContactCard.propTypes = {
   onFieldChange: PropTypes.func.isRequired,
   shouldDisplay: PropTypes.bool.isRequired,
   displayHandler: PropTypes.func.isRequired,
+  cardErrors: PropTypes.shape({
+    title: PropTypes.string,
+    content: PropTypes.arrayOf(
+      PropTypes.shape({
+        phone: PropTypes.string,
+      }),
+      PropTypes.shape({
+        email: PropTypes.string,
+      }),
+      PropTypes.shape({
+        other: PropTypes.string,
+      }),
+    ),
+  })
 };

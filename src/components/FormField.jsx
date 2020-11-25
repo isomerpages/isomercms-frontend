@@ -7,6 +7,7 @@ const FormField = ({
   defaultValue,
   value,
   id,
+  hasError, 
   errorMessage,
   onFieldChange,
   isRequired,
@@ -28,7 +29,7 @@ const FormField = ({
         id={id}
         autoComplete="off"
         required={isRequired}
-        className={errorMessage ? `${elementStyles.error}` : null}
+        className={hasError || errorMessage ? `${elementStyles.error}` : null}
         style={style}
         onChange={onFieldChange}
         disabled={disabled}

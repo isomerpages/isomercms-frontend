@@ -17,6 +17,7 @@ const EditorLocationSection = ({
   onFieldChange,
   shouldDisplay,
   displayHandler,
+  cardErrors,
 }) => (
   <div className={`${elementStyles.card} move`}>
     <div className={elementStyles.cardHeader}>
@@ -36,23 +37,27 @@ const EditorLocationSection = ({
               id={`location-${cardIndex}-title`}
               value={title}
               onFieldChange={onFieldChange}
+              errorMessage={cardErrors.title}
             />
             <LocationAddressFields
               title="Address"
               cardIndex={cardIndex}
               address={address}
               onFieldChange={onFieldChange}
+              errors={cardErrors.address}
             />
             <FormField
               title="Map url"
               id={`location-${cardIndex}-maps_link`}
               value={mapUrl}
               onFieldChange={onFieldChange}
+              errorMessage={cardErrors.maps_link}
             />
             <LocationHoursFields
               operatingHours={operatingHours}
               onFieldChange={onFieldChange}
               cardIndex={cardIndex}
+              errors={cardErrors.operating_hours}
             />
           </div>
           <div className={`${elementStyles.inputGroup} pt-5`}>
@@ -82,4 +87,16 @@ EditorLocationSection.propTypes = {
   onFieldChange: PropTypes.func.isRequired,
   shouldDisplay: PropTypes.bool.isRequired,
   displayHandler: PropTypes.func.isRequired,
+  cardErrors: PropTypes.shape({
+    title: PropTypes.string,
+    address: PropTypes.arrayOf(PropTypes.string),
+    operatingHours: PropTypes.arrayOf(
+      PropTypes.shape({
+        days: PropTypes.string,
+        time: PropTypes.string,
+        description: PropTypes.string,
+      }),
+    ),
+    mapUrl: PropTypes.string,
+  })
 };
