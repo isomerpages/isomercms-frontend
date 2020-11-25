@@ -24,6 +24,10 @@ const sidebarPathDict = [
     pathname: 'settings',
     title: 'Settings',
   },
+  {
+    pathname: 'help',
+    title: 'Help',
+  }
 ];
 
 // Highlight workspace sidebar tab when in collections layout
@@ -39,6 +43,29 @@ const convertCollectionsPathToWorkspace = (currPath, siteName) => {
   return currPath
 }
 
+const generateLink = (title, siteName, pathname) => {
+  if (title === 'Help') {
+    return (
+      <a
+        className="px-4 py-4 h-100 w-100"
+        href="https://go.gov.sg/isomer-cms-help"
+        target="_blank"
+      >
+        {title}
+      </a>
+    )
+  }
+
+  return (
+    <Link
+      className="px-4 py-4 h-100 w-100"
+      to={`/sites/${siteName}/${pathname}`}
+    >
+      {title}
+    </Link>
+  )
+}
+
 const Sidebar = ({ siteName, currPath }) => (
   <div className={styles.adminSidebar}>
     <div className={styles.siteIntro}>
@@ -52,12 +79,7 @@ const Sidebar = ({ siteName, currPath }) => (
             className={`d-flex p-0 ${`/sites/${siteName}/${pathname}` === convertCollectionsPathToWorkspace(currPath, siteName) ? styles.active : null}`}
             key={title}
           >
-            <Link
-              className="px-4 py-4 h-100 w-100"
-              to={`/sites/${siteName}/${pathname}`}
-            >
-              {title}
-            </Link>
+            {generateLink(title, siteName, pathname)}
           </li>
         ))}
       </ul>
