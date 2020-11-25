@@ -22,7 +22,7 @@ const HeroDropdownElem = ({
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
       <h2>
-        Dropdown Option {dropdownsIndex + 1}: {title}
+        {title}
       </h2>
       <button type="button" id={`dropdownelem-${dropdownsIndex}-toggle`} onClick={displayHandler}>
         <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`dropdownelem-${dropdownsIndex}-icon`} />
@@ -69,7 +69,6 @@ const HeroDropdown = ({
   errors,
 }) => (
   <div>
-    <p className={elementStyles.formLabel}>Hero dropdown</p>
     <FormField
       title="Hero dropdown title"
       id="dropdown-title"
@@ -87,35 +86,38 @@ const HeroDropdown = ({
           {...droppableProvided.droppableProps}
         >
           { (options && options.length > 0)
-            ? options.map((option, dropdownsIndex) => (
-              <Draggable
-                draggableId={`dropdownelem-${dropdownsIndex}-draggable`}
-                index={dropdownsIndex}
-              >
-                {(draggableProvided) => (
-                  <div
-                    className={styles.card}
-                    key={dropdownsIndex}
-                    {...draggableProvided.draggableProps}
-                    {...draggableProvided.dragHandleProps}
-                    ref={draggableProvided.innerRef}
-                  >
-                    <HeroDropdownElem
-                      key={`dropdownelem-${dropdownsIndex}`}
-                      title={option.title}
-                      url={option.url}
-                      dropdownsIndex={dropdownsIndex}
-                      onFieldChange={onFieldChange}
-                      deleteHandler={deleteHandler}
-                      createHandler={createHandler}
-                      displayHandler={displayHandler}
-                      shouldDisplay={displayDropdownElems[dropdownsIndex]}
-                      errors={errors.dropdownElems[dropdownsIndex]}
-                    />
-                  </div>
-                )}
-              </Draggable>
-            ))
+            ? <>
+              <b>Hero dropdown options</b>
+              {options.map((option, dropdownsIndex) => (
+                <Draggable
+                  draggableId={`dropdownelem-${dropdownsIndex}-draggable`}
+                  index={dropdownsIndex}
+                >
+                  {(draggableProvided) => (
+                    <div
+                      className={styles.card}
+                      key={dropdownsIndex}
+                      {...draggableProvided.draggableProps}
+                      {...draggableProvided.dragHandleProps}
+                      ref={draggableProvided.innerRef}
+                    >
+                      <HeroDropdownElem
+                        key={`dropdownelem-${dropdownsIndex}`}
+                        title={option.title}
+                        url={option.url}
+                        dropdownsIndex={dropdownsIndex}
+                        onFieldChange={onFieldChange}
+                        deleteHandler={deleteHandler}
+                        createHandler={createHandler}
+                        displayHandler={displayHandler}
+                        shouldDisplay={displayDropdownElems[dropdownsIndex]}
+                        errors={errors.dropdownElems[dropdownsIndex]}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+            </>
             : null}
           <button type="button" id={`dropdownelem-${options.length}-create`} className={`ml-auto ${elementStyles.blue}`} onClick={createHandler}>Create dropdown element</button>
           {droppableProvided.placeholder}
