@@ -13,13 +13,13 @@ const LocationHoursFields = ({
 }) => {
   
   return (
-    <div class = "mt-4">
+    <div className= "mt-4">
       <h6> Operating Hours </h6>
       { operatingHours && operatingHours.map( (operations, operationsIndex) => ( 
-        <div class = "mb-1">
-            <div class="d-flex flex-row">
+        <div className= "mb-1">
+            <div className="d-flex flex-row">
               {/* containers used for custom padding around FormField */}
-              <div class="flex-fill pr-1"> 
+              <div className="flex-fill pr-1"> 
                 <FormField
                   title="Days"
                   id={`location-${cardIndex}-operating_hours-${operationsIndex}-days`}
@@ -27,7 +27,7 @@ const LocationHoursFields = ({
                   onFieldChange={onFieldChange}
                 />
               </div>
-              <div class="flex-fill pl-1">
+              <div className="flex-fill pl-1">
                 <FormField
                   title="Hours"
                   id={`location-${cardIndex}-operating_hours-${operationsIndex}-time`}
@@ -44,17 +44,17 @@ const LocationHoursFields = ({
                 onFieldChange={onFieldChange}
               />
             </div>
-          <a class={elementStyles.formFixedText} id={`location-${cardIndex}-remove_operating_hours-${operationsIndex}`} href="#" onClick={onFieldChange}>
+          <a className={elementStyles.formFixedText} id={`location-${cardIndex}-remove_operating_hours-${operationsIndex}`} href="#" onClick={onFieldChange}>
             Remove
           </a> 
         </div>
       ))} 
       <div className = "mt-3">
         { operatingHours.length < DEFAULT_NUM_OPERATING_FIELDS  
-          ? <a class={elementStyles.formLabel}  id={`location-${cardIndex}-add_operating_hours`} href="#" onClick={onFieldChange}>
+          ? <a className={elementStyles.formLabel}  id={`location-${cardIndex}-add_operating_hours`} href="#" onClick={onFieldChange}>
               Add operating hours
             </a>
-          : <p class={elementStyles.formLabel}> Maximum 5 operating hours fields</p>
+          : <p className={elementStyles.formLabel}> Maximum 5 operating hours fields</p>
         }
       </div>
   </div>
