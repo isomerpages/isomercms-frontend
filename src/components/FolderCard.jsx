@@ -54,7 +54,7 @@ const FolderCard = ({
 
   const deleteHandler = async () => {
     try {
-      const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${isCollection ? `/collections/${category}` : `/resources/${category}`}`
+      const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${isCollection ? `collections/${category}` : `resources/${category}`}`
       await axios.delete(apiUrl);
 
       // Refresh page
