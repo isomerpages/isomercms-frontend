@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import DeleteWarningModal from './DeleteWarningModal'
+import GenericWarningModal from './GenericWarningModal'
 import LoadingButton from './LoadingButton'
 import AlertModal from './AlertModal'
 import {
@@ -41,6 +42,8 @@ const OverviewCard = ({
   const [canShowFileMoveDropdown, setCanShowFileMoveDropdown] = useState(false)
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
   const [canShowAlertModal, setCanShowAlertModal] = useState(false)
+  const [canShowWarningModal, setCanShowWarningModal] = useState(false)
+  const [chosenCategory, setChosenCategory] = useState()
   const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? isResource ? `/resources/${category}` : `/collections/${category}` : ''}`
 
   useEffect(() => {
@@ -48,7 +51,7 @@ const OverviewCard = ({
     if (canShowDropdown) dropdownRef.current.focus()
   }, [canShowFileMoveDropdown, canShowDropdown])
 
-  const moveFile = async (chosenCategory) => {
+  const moveFile = async () => {
     try {
       // Retrieve data from existing page/resource
       const resp = await axios.get(`${baseApiUrl}/pages/${fileName}`);
@@ -91,6 +94,7 @@ const OverviewCard = ({
       if (err.response.status === 409) {
         // Error due to conflict in name
         fileMoveDropdownRef.current.blur()
+        setChosenCategory()
         setCanShowAlertModal(true)
       }
       console.log(err);
@@ -196,6 +200,18 @@ const OverviewCard = ({
         onClose={() => setCanShowAlertModal(false)}
       />
     }
+    {
+      canShowWarningModal &&
+      <GenericWarningModal
+        displayTitle="Warning"
+        displayText="Moving a page to a different collection might lead to user confusion. You may wish to change the permalink for this page afterwards."
+        onProceed={moveFile}
+        onCancel={() => {
+          setChosenCategory()
+          setCanShowWarningModal(false)
+        }}
+      />
+    }
     <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`} to={generateLink()}>
       <div id={itemIndex} className={contentStyles.componentInfo}>
         <div className={contentStyles.componentCategory}>{category ? category : ''}</div>
@@ -249,7 +265,10 @@ const OverviewCard = ({
                 allCategories.map((categoryName) => {
                   if (categoryName !== category) {
                     return (
-                      <MenuItem key={categoryName} handler={() => moveFile(categoryName)}>
+                      <MenuItem key={categoryName} handler={() => {
+                        setChosenCategory(categoryName)
+                        setCanShowWarningModal(true)
+                      }}>
                         <div className={elementStyles.dropdownText}>{categoryName}</div>
                       </MenuItem>
                     )
