@@ -34,7 +34,7 @@
     "uuid": "^3.3.3"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "source .env.development.local && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "lint": "eslint --ext .js --ext .jsx --ignore-path .gitignore .",
