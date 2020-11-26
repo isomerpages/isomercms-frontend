@@ -714,7 +714,7 @@ export default class EditHomepage extends Component {
       } else {
         dropdownObj = DropdownConstructor();
         dropdownErrors = ''
-        dropdownElemErrors = ''
+        dropdownElemErrors = []
       }
 
       this.setState({
