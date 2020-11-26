@@ -17,6 +17,7 @@ const EditorContactCard = ({
   shouldDisplay,
   displayHandler,
   cardErrors,
+  sectionId,
 }) => {
   return (
   <div className={`${elementStyles.card} move`}>
@@ -24,8 +25,8 @@ const EditorContactCard = ({
       <h2>
         {title}
       </h2>
-      <button type="button" id={`contact-${cardIndex}`} onClick={displayHandler}>
-        <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`contact-${cardIndex}-icon`} />
+      <button type="button" id={`${sectionId}-${cardIndex}`} onClick={displayHandler}>
+        <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`${sectionId}-${cardIndex}-icon`} />
       </button>
     </div>
     { shouldDisplay
@@ -34,7 +35,7 @@ const EditorContactCard = ({
           <div className={elementStyles.cardContent}>
             <FormField
               title="Title"
-              id={`contact-${cardIndex}-title`}
+              id={`${sectionId}-${cardIndex}-title`}
               value={title}
               onFieldChange={onFieldChange}
               errorMessage={cardErrors.title}
@@ -44,10 +45,11 @@ const EditorContactCard = ({
               content={content}
               onFieldChange={onFieldChange}
               errors={cardErrors.content}
+              sectionId={sectionId}
             />
           </div>
           <div className={`${elementStyles.inputGroup} pt-5`}>
-            <button type="button" id={`contact-${cardIndex}`} className={`btn-block ${elementStyles.warning}`} onClick={deleteHandler}>Delete section</button>
+            <button type="button" id={`${sectionId}-${cardIndex}`} className={`btn-block ${elementStyles.warning}`} onClick={deleteHandler}>Delete section</button>
           </div>
         </>
       )
@@ -88,5 +90,6 @@ EditorContactCard.propTypes = {
         other: PropTypes.string,
       }),
     ),
-  })
+  }),
+  sectionId: PropTypes.string,
 };

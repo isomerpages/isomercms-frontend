@@ -6,7 +6,6 @@ import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import EditorContactCard from './ContactCard';
 import EditorLocationCard from './LocationCard';
 import _ from 'lodash';
-import EditorLocationSection from './LocationCard';
 
 /* eslint
   react/no-array-index-key: 0
@@ -18,23 +17,23 @@ const EditorSection = ({
   onFieldChange,
   createHandler,
   deleteHandler,
-  sectionType,
   shouldDisplay,
   displayCards,
   displayHandler,
   errors,
+  sectionId,
 }) => (
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
-      <h2>{`${_.upperFirst(sectionType)} section`}</h2>
-      <button type="button" id={`section-${sectionType}`} onClick={displayHandler}>
-        <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`section-${sectionType}-icon`} />
+      <h2>{`${_.upperFirst(sectionId)} section`}</h2>
+      <button type="button" id={`section-${sectionId}`} onClick={displayHandler}>
+        <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`section-${sectionId}-icon`} />
       </button>
     </div>
     {shouldDisplay
       ? (
         <>
-          <Droppable droppableId={sectionType} type={sectionType}>
+          <Droppable droppableId={sectionId} type={sectionId}>
             {(droppableProvided) => (
               /* eslint-disable react/jsx-props-no-spreading */
               <div
@@ -46,7 +45,7 @@ const EditorSection = ({
                   <>
                     { cards.map((card, cardIndex) => (
                       <Draggable
-                        draggableId={`${sectionType}-${cardIndex}-draggable`}
+                        draggableId={`${sectionId}-${cardIndex}-draggable`}
                         index={cardIndex}
                       >
                         {(draggableProvided) => (
@@ -57,7 +56,7 @@ const EditorSection = ({
                             {...draggableProvided.dragHandleProps}
                             ref={draggableProvided.innerRef}
                           >
-                            { sectionType === 'contact' 
+                            { sectionId=== 'contacts' 
                               ? 
                               <EditorContactCard
                                 title={card.title}
@@ -68,6 +67,7 @@ const EditorSection = ({
                                 shouldDisplay={displayCards[cardIndex]}
                                 displayHandler={displayHandler}
                                 cardErrors={errors[cardIndex]}
+                                sectionId={sectionId}
                               />
                               : 
                               <EditorLocationCard
@@ -81,6 +81,7 @@ const EditorSection = ({
                                 shouldDisplay={displayCards[cardIndex]}
                                 displayHandler={displayHandler}
                                 cardErrors={errors[cardIndex]}
+                                sectionId={sectionId}
                               />
                             }
                           </div>
@@ -94,7 +95,7 @@ const EditorSection = ({
             )}
           </Droppable>
           <div className={`${elementStyles.inputGroup} pt-5`}>
-            <button type="button" id={`${sectionType}`} className={`btn-block ${elementStyles.blue}`} onClick={createHandler}>{`Add ${sectionType}`}</button>
+            <button type="button" id={`${sectionId}`} className={`btn-block ${elementStyles.blue}`} onClick={createHandler}>{`Add ${sectionId}`}</button>
           </div>
         </>
       )
@@ -138,7 +139,7 @@ EditorSection.propTypes = {
   onFieldChange: PropTypes.func.isRequired,
   createHandler: PropTypes.func.isRequired,
   deleteHandler: PropTypes.func.isRequired,
-  sectionType: PropTypes.string.isRequired,
+  sectionId: PropTypes.string.isRequired,
   shouldDisplay: PropTypes.bool.isRequired,
   displayCards: PropTypes.arrayOf(PropTypes.bool.isRequired).isRequired,
   displayHandler: PropTypes.func.isRequired,
