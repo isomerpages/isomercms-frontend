@@ -1107,7 +1107,7 @@ export default class EditHomepage extends Component {
                                 background={section.hero.background}
                                 button={section.hero.button}
                                 url={section.hero.url}
-                                dropdown={section.hero.dropdown}
+                                dropdown={section.hero.dropdown ? section.hero.dropdown : null}
                                 sectionIndex={sectionIndex}
                                 highlights={section.hero.key_highlights ? section.hero.key_highlights : []}
                                 onFieldChange={this.onFieldChange}
