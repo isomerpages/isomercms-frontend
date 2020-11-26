@@ -508,6 +508,9 @@ const validateLocation = (locationType, value) => {
         errorMessage = `Title should be shorter than ${LOCATION_TITLE_MAX_LENGTH} characters.`;
       };
       break;
+    case 'maps_link': {
+      break;
+    }
     case 'address':
       let errors = [];
       // check if in-between fields are empty e.g. field 3 is filled but field 2 is empty
@@ -544,10 +547,10 @@ const validateLocation = (locationType, value) => {
       if (value && !alphanumericRegexTest.test(value)) {
         errorMessage += `Field should only contain alphanumeric characters. `
       }
-      if (value && !value.length < LOCATION_OPERATING_HOURS_MIN_LENGTH) {
+      if (value && value.length < LOCATION_OPERATING_HOURS_MIN_LENGTH) {
         errorMessage += `Field should be longer than ${LOCATION_OPERATING_HOURS_MIN_LENGTH} characters.`
       }
-      if (value && !value.length > LOCATION_OPERATING_HOURS_MAX_LENGTH) {
+      if (value && value.length > LOCATION_OPERATING_HOURS_MAX_LENGTH) {
         errorMessage += `Field should be shorter than ${LOCATION_OPERATING_HOURS_MAX_LENGTH} characters.`
       }
       break;
