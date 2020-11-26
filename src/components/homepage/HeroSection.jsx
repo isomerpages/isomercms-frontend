@@ -198,24 +198,24 @@ const EditorHeroSection = ({
 export default EditorHeroSection;
 
 EditorHeroSection.propTypes = {
-  title: PropTypes.string.isRequired,
-  subtitle: PropTypes.string.isRequired,
-  background: PropTypes.string.isRequired,
-  button: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired,
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
+  background: PropTypes.string,
+  button: PropTypes.string,
+  url: PropTypes.string,
   sectionIndex: PropTypes.number.isRequired,
   onFieldChange: PropTypes.func.isRequired,
   createHandler: PropTypes.func.isRequired,
   deleteHandler: PropTypes.func.isRequired,
   shouldDisplay: PropTypes.bool.isRequired,
   displayHandler: PropTypes.func.isRequired,
-  displayHighlights: PropTypes.arrayOf(PropTypes.bool).isRequired,
-  displayDropdownElems: PropTypes.arrayOf(PropTypes.bool.isRequired).isRequired,
+  displayHighlights: PropTypes.arrayOf(PropTypes.bool),
+  displayDropdownElems: PropTypes.arrayOf(PropTypes.bool),
   highlights: PropTypes.arrayOf(
     PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
-      url: PropTypes.string.isRequired,
+      title: PropTypes.string,
+      description: PropTypes.string,
+      url: PropTypes.string,
       highlightIndex: PropTypes.number,
       createHandler: PropTypes.func,
       deleteHandler: PropTypes.func,
@@ -226,32 +226,32 @@ EditorHeroSection.propTypes = {
   dropdown: PropTypes.shape({
     options: PropTypes.arrayOf(
       PropTypes.shape({
-        title: PropTypes.string.isRequired,
-        url: PropTypes.string.isRequired,
-        dropdownsIndex: PropTypes.number.isRequired,
-        onFieldChange: PropTypes.func.isRequired,
+        title: PropTypes.string,
+        url: PropTypes.string,
+        dropdownsIndex: PropTypes.number,
+        onFieldChange: PropTypes.func,
       }),
-    ).isRequired,
+    ),
     title: PropTypes.string.isRequired,
   }),
   errors: PropTypes.shape({
     sections: PropTypes.arrayOf(
       PropTypes.shape({
         hero: PropTypes.shape({
-          title: PropTypes.string.isRequired,
-          subtitle: PropTypes.string.isRequired,
-          background: PropTypes.string.isRequired,
-          button: PropTypes.string.isRequired,
-          url: PropTypes.string.isRequired,
+          title: PropTypes.string,
+          subtitle: PropTypes.string,
+          background: PropTypes.string,
+          button: PropTypes.string,
+          url: PropTypes.string,
           dropdown: PropTypes.string,
         }),
       }),
     ),
     highlights: PropTypes.arrayOf(
       PropTypes.shape({
-        title: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired,
-        url: PropTypes.string.isRequired,
+        title: PropTypes.string,
+        description: PropTypes.string,
+        url: PropTypes.string,
       }),
     ),
   }).isRequired,

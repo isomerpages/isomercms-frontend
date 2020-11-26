@@ -50,7 +50,7 @@ TemplateInfobarSection.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
   description: PropTypes.string,
-  button: PropTypes.string.isRequired,
+  button: PropTypes.string,
   sectionIndex: PropTypes.number.isRequired,
 };
 

@@ -107,9 +107,9 @@ TemplateInfopicRightSection.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
   description: PropTypes.string,
-  button: PropTypes.string.isRequired,
-  imageUrl: PropTypes.string.isRequired,
-  imageAlt: PropTypes.string.isRequired,
+  button: PropTypes.string,
+  imageUrl: PropTypes.string,
+  imageAlt: PropTypes.string,
   sectionIndex: PropTypes.number.isRequired,
   siteName: PropTypes.string.isRequired,
 };
