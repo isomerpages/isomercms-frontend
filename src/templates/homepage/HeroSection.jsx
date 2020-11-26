@@ -173,8 +173,8 @@ HeroDropdown.propTypes = {
 };
 
 KeyHighlightElem.propTypes = {
-  title: PropTypes,
-  description: PropTypes,
+  title: PropTypes.string,
+  description: PropTypes.string,
 };
 
 KeyHighlightElem.defaultProps = {
@@ -185,8 +185,8 @@ KeyHighlightElem.defaultProps = {
 KeyHighlights.propTypes = {
   highlights: PropTypes.arrayOf(
     PropTypes.shape({
-      title: PropTypes,
-      description: PropTypes,
+      title: PropTypes.string,
+      description: PropTypes.string,
     }),
   ).isRequired,
 };
