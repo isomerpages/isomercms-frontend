@@ -28,8 +28,8 @@ const LocationAddress = ({ location } ) => (
   </div>
 );
 
-const Location = ({ location }) => (
-  <div className="row is-multiline margin--bottom">
+const Location = React.forwardRef( ( { location }, ref ) => (
+  <div className="row is-multiline margin--bottom" ref={ref}>
     { location.address && location.title &&
       <div className="col is-6 padding--bottom--none">
         <h5 className="has-text-secondary"><b>{location.title}</b></h5>
@@ -45,17 +45,17 @@ const Location = ({ location }) => (
     <LocationAddress location={location}/>
     <LocationHours operatingHours={location.operating_hours}/>
   </div>
-);
+));
 
-const TemplateLocationsSection = ({ locations }) => (
-  <>
+const TemplateLocationsSection = React.forwardRef(( { locations, scrollRefs }, ref) => (
+  <div ref={ref}>
     { locations &&
       <> 
-        { locations.map( (location, i) => <Location location={location} key={i}/> ) }
+        { locations.map( (location, i) => <Location location={location} key={i} ref={scrollRefs[i]}/> )}
       </>
     }
-  </>
-);
+  </div>
+));
 
 LocationAddress.propTypes = {
   location: PropTypes.shape({

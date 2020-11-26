@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Contact = ({ contact } ) => (
-  <div className="col is-6">
+const Contact = React.forwardRef(( { contact }, ref ) => (  
+  <div className="col is-6" ref={ref}>
     <p className="has-text-weight-semibold margin--top--none margin--bottom--none">{contact.title}</p>
     { 
       contact.content.map( (d, i) => {
@@ -37,21 +37,21 @@ const Contact = ({ contact } ) => (
       })
     }
   </div>
-);
+));
 
-const TemplateContactsSection = ({ contacts }) => (
-  <>
+const TemplateContactsSection = React.forwardRef(( { contacts, scrollRefs }, ref ) => (
+  <div ref={ref}>
     { contacts && contacts.length  
       ? <div className="row is-multiline margin--bottom--xl">
           <div className="col is-12 padding--bottom--none">
             <h5 className="has-text-secondary"><b>Contact Us</b></h5>
           </div>
-          { contacts.map( (contact, i) => <Contact contact={contact} key={i}/> ) }
+          { contacts.map((contact, i) =>  <Contact contact={contact} key={i} ref={scrollRefs[i]}/> )}
         </div>
       : null
     }
-  </>
-);
+  </div>
+));
 
 Contact.propTypes = {
   title: PropTypes.string,
