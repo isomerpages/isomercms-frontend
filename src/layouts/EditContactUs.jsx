@@ -382,9 +382,8 @@ export default class EditContactUs extends Component {
       const newScrollRefs = update(scrollRefs, {
         [id]: {$push: [React.createRef()]},
       });
-      
-      // scroll to bottom of current last reference
-      if (scrollRefs[id].length) { //TODO: fix what happens if empty array
+
+      if (scrollRefs[id].length) { 
         _.last(scrollRefs[id]).current.scrollIntoView() //TODO: check out options
       } else {
         scrollRefs.sectionsScrollRefs[id].current.scrollIntoView()
@@ -650,20 +649,16 @@ export default class EditContactUs extends Component {
               <div className="bp-container">
                 <div className="row">
                   <div className="col is-8 is-offset-2">
-                    
                     <TemplateLocationsSection 
                       locations={locations}
                       scrollRefs={scrollRefs.locations} 
                       ref={sectionsScrollRefs.locations}
                     /> 
-
                     <TemplateContactsSection 
                       contacts={contacts}
                       scrollRefs={scrollRefs.contacts}
                       ref={sectionsScrollRefs.contacts}
                     />
-
-                    {/* feedback url section */}
                     <TemplateFeedbackSection 
                       feedback={feedback} 
                       ref={sectionsScrollRefs.feedback}
