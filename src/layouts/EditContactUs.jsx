@@ -77,10 +77,14 @@ export default class EditContactUs extends Component {
   constructor(props) {
     super(props);
     this.scrollRefs = {
-      header: null,
-      feedback: null,
-      contacts: null,
-      locations: null,
+      sectionsScrollRefs: {
+        locations: null,
+        contacts: null,
+        header: null,
+        feedback: null,
+      },
+      contacts: [],
+      locations: [],
     };
     this.state = {
       frontMatter: {},
@@ -123,14 +127,24 @@ export default class EditContactUs extends Component {
 
       const contactsErrors = [], locationsErrors = []
       const contactsDisplay = [], locationsDisplay = []
+      const contactsScrollRefs = [], locationsScrollRefs = []
+
       const sectionsDisplay = {
         contacts: false, 
         locations: false
       }
       
+      const sectionsScrollRefs = {
+        header: React.createRef(),
+        feedback: React.createRef(),
+        contacts: React.createRef(),
+        locations: React.createRef(),
+      }
+
       contacts.forEach(_ => {
         contactsErrors.push(enumSection('contacts'))
         contactsDisplay.push(false)
+        contactsScrollRefs.push(React.createRef())
       })
 
       locations.forEach(location => {
@@ -139,8 +153,15 @@ export default class EditContactUs extends Component {
         }
         locationsErrors.push(enumSection('locations', args))
         locationsDisplay.push(false)
+        locationsScrollRefs.push(React.createRef())
       })
       
+      this.scrollRefs = {
+        sectionsScrollRefs,
+        contacts: contactsScrollRefs,
+        locations: locationsScrollRefs,
+      }
+
       this.setState({
         footerContent,
         footerSha,
@@ -162,8 +183,9 @@ export default class EditContactUs extends Component {
   }
 
   onDragEnd = (result) => {
+    const { scrollRefs, state } = this;
     const { source, destination, type } = result;
-    const { frontMatter, displaySections, errors } = this.state;
+    const { frontMatter, displaySections, errors } = state;
 
     // If the user dropped the draggable to no known droppable
     if (!destination) return;
@@ -177,6 +199,7 @@ export default class EditContactUs extends Component {
     const elem = frontMatter[type][source.index];
     const elemError = errors[type][source.index];
     const elemDisplay = displaySections[type][source.index];
+    const elemScrollRef = scrollRefs[type][source.index];
     
     const newFrontMatter = update(frontMatter, {
       [type]: {
@@ -202,6 +225,18 @@ export default class EditContactUs extends Component {
         ],
       },
     });
+    const newScrollRefs = update(scrollRefs, {
+      [type]: {
+        $splice: [
+          [source.index, 1],
+          [destination.index, 0, elemScrollRef],
+        ],
+      },
+    })
+
+    // scroll to new location of dragged element
+    this.scrollRefs[type][destination.index].current.scrollIntoView() 
+    this.scrollRefs = newScrollRefs
 
     this.setState({
       frontMatter: newFrontMatter,
@@ -212,7 +247,7 @@ export default class EditContactUs extends Component {
 
   onFieldChange = async (event) => { 
     try {
-      const { state } = this;
+      const { scrollRefs, state } = this;
       const { frontMatter, footerContent } = state
       const { errors } = state;
       const { id, value } = event.target;
@@ -225,6 +260,7 @@ export default class EditContactUs extends Component {
           newFooterContent = update(footerContent, {
             [elemType]: {$set: value},
           });
+          scrollRefs.sectionsScrollRefs[elemType].current.scrollIntoView()
           break;
         }
         case 'header': {
@@ -233,6 +269,8 @@ export default class EditContactUs extends Component {
           newFrontMatter = update(frontMatter, {
             [field]: {$set: value},
           });
+
+          scrollRefs.sectionsScrollRefs[elemType].current.scrollIntoView()
           break;
         }
         case 'contacts': {
@@ -258,6 +296,7 @@ export default class EditContactUs extends Component {
               });
               break;
           }
+          scrollRefs[elemType][contactIndex].current.scrollIntoView()
           break;
         }
         case 'locations': { 
@@ -310,6 +349,7 @@ export default class EditContactUs extends Component {
               });
               break;
           }
+          scrollRefs[elemType][locationIndex].current.scrollIntoView()
           break;
         }
       }
@@ -318,7 +358,6 @@ export default class EditContactUs extends Component {
         footerContent: _.isUndefined(newFooterContent) ? currState.footerContent : newFooterContent,
         errors: _.isUndefined(newErrors) ? currState.errors : newErrors,
       }));
-      this.scrollRefs[elemType].scrollIntoView()
       
     } catch (err) {
       console.log(err);
@@ -328,8 +367,9 @@ export default class EditContactUs extends Component {
   createHandler = async (event) => {
     const { id } = event.target;
     try {
-      const { frontMatter, displaySections, errors } = this.state;
-      
+      const { scrollRefs, state } = this;
+      const { frontMatter, displaySections, errors } = state;
+
       const newFrontMatter = update(frontMatter, {
         [id]: {$push: [enumSection(id)]},
       });
@@ -339,14 +379,24 @@ export default class EditContactUs extends Component {
       const newDisplaySections = update(displaySections, {
         [id]: {$push: [true]},
       });
+      const newScrollRefs = update(scrollRefs, {
+        [id]: {$push: [React.createRef()]},
+      });
       
+      // scroll to bottom of current last reference
+      if (scrollRefs[id].length) { //TODO: fix what happens if empty array
+        _.last(scrollRefs[id]).current.scrollIntoView() //TODO: check out options
+      } else {
+        scrollRefs.sectionsScrollRefs[id].current.scrollIntoView()
+      }
+
+      this.scrollRefs = newScrollRefs;      
+
       this.setState({
         frontMatter: newFrontMatter,
         errors: newErrors,
         displaySections: newDisplaySections,
       });
-
-      this.scrollRefs[id].scrollIntoView()
 
     } catch (err) {
       console.log(err);
@@ -357,12 +407,13 @@ export default class EditContactUs extends Component {
     const { id } = event.target
 
     try {
+      const { scrollRefs, state } = this;
+      const { frontMatter, displaySections, errors } = state;
+
       const idArray = id.split('-');
       const elemType = idArray[0];
       const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT);
 
-      const { frontMatter, displaySections, errors } = this.state;
-      
       const newFrontMatter = update(frontMatter, {
         [elemType]: {$splice: [[sectionIndex, 1]]},
       });
@@ -372,14 +423,17 @@ export default class EditContactUs extends Component {
       const newDisplaySections = update(displaySections, {
         [elemType]: {$splice: [[sectionIndex, 1]]},
       });
+      const newScrollRefs = update(scrollRefs, {
+        [elemType]: {$splice: [[sectionIndex, 1]]},
+      });
+
+      this.scrollRefs = newScrollRefs;
 
       this.setState({
         frontMatter: newFrontMatter,
         errors: newErrors,
         displaySections: newDisplaySections,
       });
-
-      this.scrollRefs[elemType].scrollIntoView()
 
     } catch (err) {
       console.log(err);
@@ -388,7 +442,8 @@ export default class EditContactUs extends Component {
 
   displayHandler = async (event) => {
     try {
-      const { displaySections } = this.state;
+      const { state, scrollRefs } = this;
+      const { displaySections } = state;
       const { contacts: contactsDisplay, locations: locationsDisplay } = displaySections;
 
       const { id } = event.target;
@@ -413,6 +468,7 @@ export default class EditContactUs extends Component {
           newDisplaySections = update(displaySections, {
             $set : resetDisplaySections,
           });
+          scrollRefs.sectionsScrollRefs[sectionIndex].current.scrollIntoView()
           break;
         }
         default: {
@@ -421,6 +477,7 @@ export default class EditContactUs extends Component {
           newDisplaySections = update(displaySections, {
             [elemType]: {$set: resetDisplaySections[elemType]},
           });
+          this.scrollRefs[elemType][sectionIndex].current.scrollIntoView()
           break;  
         }
       }
@@ -503,6 +560,7 @@ export default class EditContactUs extends Component {
   }
 
   render() {
+    const { state, scrollRefs } = this
     const {
       footerContent,
       frontMatter,
@@ -510,13 +568,14 @@ export default class EditContactUs extends Component {
       frontMatterSha,
       footerSha,
       errors,
-    } = this.state;
+    } = state;
     const { match } = this.props;
     const { siteName } = match.params;
 
     const { agency_name: agencyName, contacts, locations } = frontMatter
     const { feedback } = footerContent
     const { sectionsDisplay } = displaySections
+    const { sectionsScrollRefs } = scrollRefs
 
     const hasContactErrors = !isEmpty(errors.contacts)
     const hasLocationErrors = !isEmpty(errors.locations)
@@ -582,28 +641,33 @@ export default class EditContactUs extends Component {
           </div>
           <div className={editorStyles.homepageEditorMain}>
             {/* contact-us header */}
-            <div ref={(ref) => this.scrollRefs.header = ref}>
-              <TemplateContactUsHeader agencyName={agencyName} />
-            </div>
+            <TemplateContactUsHeader 
+              agencyName={agencyName} 
+              ref={sectionsScrollRefs.header}
+            />
             {/* contact-us content */}
             <section className="bp-section is-small padding--bottom--lg">
               <div className="bp-container">
                 <div className="row">
                   <div className="col is-8 is-offset-2">
                     
-                    <div ref={(ref) => { this.scrollRefs.locations = ref;} }>
-                      <TemplateLocationsSection locations={locations}/> 
-                    </div>
+                    <TemplateLocationsSection 
+                      locations={locations}
+                      scrollRefs={scrollRefs.locations} 
+                      ref={sectionsScrollRefs.locations}
+                    /> 
 
-                    {/* contacts section */}
-                    <div ref={(ref) => { this.scrollRefs.contacts = ref;} }>
-                      <TemplateContactsSection contacts={contacts}/>
-                    </div>
+                    <TemplateContactsSection 
+                      contacts={contacts}
+                      scrollRefs={scrollRefs.contacts}
+                      ref={sectionsScrollRefs.contacts}
+                    />
 
                     {/* feedback url section */}
-                    <div ref={(ref) => { this.scrollRefs.feedback = ref;} }>
-                      <TemplateFeedbackSection feedback={feedback}/>
-                    </div>
+                    <TemplateFeedbackSection 
+                      feedback={feedback} 
+                      ref={sectionsScrollRefs.feedback}
+                    />
                   </div>
                 </div>
               </div>
