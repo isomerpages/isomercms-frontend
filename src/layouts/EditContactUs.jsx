@@ -62,9 +62,9 @@ const LocationSectionConstructor = (operatingHoursLength) => ({
 
 const enumSection = (type, args) => {
   switch (type) {
-    case 'contact':
+    case 'contacts':
       return ContactSectionConstructor();
-    case 'location':
+    case 'locations':
       return LocationSectionConstructor(args?.operatingHoursLength);
     case 'contact_field':
       return ContactFieldConstructor();
@@ -79,8 +79,8 @@ export default class EditContactUs extends Component {
     this.scrollRefs = {
       header: null,
       feedback: null,
-      contact: null,
-      location: null,
+      contacts: null,
+      locations: null,
     };
     this.state = {
       frontMatter: {},
@@ -89,11 +89,11 @@ export default class EditContactUs extends Component {
       footerSha: null,
       displaySections: {
         sectionsDisplay: {
-          location: false,
-          contact: false,
+          locations: false,
+          contacts: false,
         },
-        contactCardsDisplay: [],
-        locationCardsDisplay: [],
+        contacts: [],
+        locations: [],
       },
       errors: {
         contacts: [],
@@ -121,26 +121,24 @@ export default class EditContactUs extends Component {
 
       const { contacts, locations } = sanitisedFrontMatter
 
-      const contactsErrors = []
-      const locationsErrors = []
-      const contactCardsDisplay = []
-      const locationCardsDisplay = []
+      const contactsErrors = [], locationsErrors = []
+      const contactsDisplay = [], locationsDisplay = []
       const sectionsDisplay = {
-        contact: false, 
-        location:false
+        contacts: false, 
+        locations: false
       }
       
       contacts.forEach(_ => {
-        contactsErrors.push(enumSection('contact'))
-        contactCardsDisplay.push(false)
+        contactsErrors.push(enumSection('contacts'))
+        contactsDisplay.push(false)
       })
 
       locations.forEach(location => {
         const args = { 
           operatingHoursLength: location.operating_hours.length 
         }
-        locationsErrors.push(enumSection('location', args))
-        locationCardsDisplay.push(false)
+        locationsErrors.push(enumSection('locations', args))
+        locationsDisplay.push(false)
       })
       
       this.setState({
@@ -150,8 +148,8 @@ export default class EditContactUs extends Component {
         frontMatterSha: sha,
         displaySections: {
           sectionsDisplay,
-          contactCardsDisplay,
-          locationCardsDisplay,
+          contacts: contactsDisplay,
+          locations: locationsDisplay,
         },
         errors: {
           contacts: contactsErrors,
@@ -176,72 +174,34 @@ export default class EditContactUs extends Component {
       && destination.index === source.index
     ) return;
 
-    let newFrontMatter, newErrors, newDisplaySections;
+    const elem = frontMatter[type][source.index];
+    const elemError = errors[type][source.index];
+    const elemDisplay = displaySections[type][source.index];
     
-    switch (type) {
-      case 'contact': {
-        const elem = frontMatter.contacts[source.index];
-        newFrontMatter = update(frontMatter, {
-          contacts: {
-            $splice: [
-              [source.index, 1], // Remove elem from its original position
-              [destination.index, 0, elem], // Splice elem into its new position
-            ],
-          },
-        });
-        const elemError = errors.contacts[source.index];
-        newErrors = update(errors, {
-          contacts: {
-            $splice: [
-              [source.index, 1], // Remove elem from its original position
-              [destination.index, 0, elemError], // Splice elem into its new position
-            ],
-          },
-        });
-        const elemDisplay = displaySections.contactCardsDisplay[source.index];
-        newDisplaySections = update(displaySections, {
-          contactCardsDisplay: {
-            $splice: [
-              [source.index, 1],
-              [destination.index, 0, elemDisplay],
-            ],
-          },
-        });
-        break;
-      }
-      case 'location': {
-        const elem = frontMatter.locations[source.index];
-        newFrontMatter = update(frontMatter, {
-          locations: {
-            $splice: [
-              [source.index, 1], // Remove elem from its original position
-              [destination.index, 0, elem], // Splice elem into its new position
-            ],
-          },
-        });
-        const elemError = errors.locations[source.index];
-        newErrors = update(errors, {
-          locations: {
-            $splice: [
-              [source.index, 1], // Remove elem from its original position
-              [destination.index, 0, elemError], // Splice elem into its new position
-            ],
-          },
-        });
-        const elemDisplay = displaySections.locationCardsDisplay[source.index];
-        newDisplaySections = update(displaySections, {
-          locationCardsDisplay: {
-            $splice: [
-              [source.index, 1],
-              [destination.index, 0, elemDisplay],
-            ],
-          },
-        });
-        break;
-      }
-      default: {
-      }
-    }
+    const newFrontMatter = update(frontMatter, {
+      [type]: {
+        $splice: [
+          [source.index, 1], // Remove elem from its original position
+          [destination.index, 0, elem], // Splice elem into its new position
+        ],
+      },
+    });
+    const newErrors = update(errors, {
+      [type]: {
+        $splice: [
+          [source.index, 1], // Remove elem from its original position
+          [destination.index, 0, elemError], // Splice elem into its new position
+        ],
+      },
+    });
+    const newDisplaySections = update(displaySections, {
+      [type]: {
+        $splice: [
+          [source.index, 1],
+          [destination.index, 0, elemDisplay],
+        ],
+      },
+    });
 
     this.setState({
       frontMatter: newFrontMatter,
@@ -275,7 +235,7 @@ export default class EditContactUs extends Component {
           });
           break;
         }
-        case 'contact': {
+        case 'contacts': {
           const contactIndex = parseInt(idArray[1], RADIX_PARSE_INT);
           const contactType = idArray[2]; 
           const contentIndex = parseInt(idArray[3], RADIX_PARSE_INT);
@@ -283,25 +243,24 @@ export default class EditContactUs extends Component {
           switch (contactType) {
             case 'title':
               newFrontMatter = update(frontMatter, {
-                contacts: {[contactIndex]: {[contactType]: {$set: value }}},
+                [elemType]: {[contactIndex]: {[contactType]: {$set: value }}},
               });
               newErrors = update(errors, {
-                contacts: {[contactIndex]: {[contactType]: {$set: validateContact(contactType, value)}}}
+                [elemType]: {[contactIndex]: {[contactType]: {$set: validateContact(contactType, value)}}}
               })
               break;
             default: // 'phone', 'email', 'other'
               newFrontMatter = update(frontMatter, {
-                contacts: {[contactIndex]: {content : {[contentIndex]: {[contactType]:  {$set: value } }}}},
+                [elemType]: {[contactIndex]: {content : {[contentIndex]: {[contactType]:  {$set: value } }}}},
               });
               newErrors = update(errors, {
-                contacts: {[contactIndex]: {content : {[contentIndex]: {[contactType]:  {$set: validateContact(contactType, value) } }}}},
+                [elemType]: {[contactIndex]: {content : {[contentIndex]: {[contactType]:  {$set: validateContact(contactType, value) } }}}},
               });
               break;
           }
           break;
         }
-        case 'location': { 
-          const { locations } = state.frontMatter;
+        case 'locations': { 
           const locationIndex = parseInt(idArray[1], RADIX_PARSE_INT);
           const locationType = idArray[2]; // e.g. "title" or "address"
           const fieldIndex = parseInt(idArray[3], RADIX_PARSE_INT);
@@ -310,7 +269,7 @@ export default class EditContactUs extends Component {
           switch (locationType) {
             case 'operating_hours':
               newFrontMatter = update(frontMatter, {
-                locations: {[locationIndex]: {[locationType]: {[fieldIndex] : {[fieldType]: { $set: value }}}}},
+                [elemType]: {[locationIndex]: {[locationType]: {[fieldIndex] : {[fieldType]: { $set: value }}}}},
               });
               newErrors = update(errors, {
                 locations: {[locationIndex]: {[locationType]: {[fieldIndex] : {[fieldType]: { $set: validateLocation(fieldType, value) }}}}},
@@ -318,36 +277,36 @@ export default class EditContactUs extends Component {
               break;
             case 'add_operating_hours': 
               newFrontMatter = update(frontMatter, {
-                locations: {[locationIndex]: {operating_hours : {$push: [enumSection('location_hours_field')]}}},
+                [elemType]: {[locationIndex]: {operating_hours : {$push: [enumSection('location_hours_field')]}}},
               });
               newErrors = update(errors, {
-                locations: {[locationIndex]: {operating_hours : {$push: [enumSection('location_hours_field')]}}},
+                [elemType]: {[locationIndex]: {operating_hours : {$push: [enumSection('location_hours_field')]}}},
               });
               break;
             case 'remove_operating_hours':
               newFrontMatter = update(frontMatter, {
-                locations: {[locationIndex]: {operating_hours : {$splice: [[fieldIndex,1]]}}}
+                [elemType]: {[locationIndex]: {operating_hours : {$splice: [[fieldIndex,1]]}}}
               });
               newErrors = update(errors, {
-                locations: {[locationIndex]: {operating_hours : {$splice: [[fieldIndex,1]]}}}
+                [elemType]: {[locationIndex]: {operating_hours : {$splice: [[fieldIndex,1]]}}}
               });
               break;
             case 'address':
               newFrontMatter = update(frontMatter, {
-                locations: {[locationIndex]: {[locationType]: {[fieldIndex] : { $set: value }}}},
+                [elemType]: {[locationIndex]: {[locationType]: {[fieldIndex] : { $set: value }}}},
               });
               // for address, we validate all address fields together, not the single field
               const addressFields = newFrontMatter.locations[locationIndex][locationType]
               newErrors = update(errors, {
-                locations: {[locationIndex]: {[locationType]: { $set: validateLocation(locationType, addressFields) }}},
+                [elemType]: {[locationIndex]: {[locationType]: { $set: validateLocation(locationType, addressFields) }}},
               });
               break;
             default:
               newFrontMatter = update(frontMatter, {
-                locations: {[locationIndex]: {[locationType]: { $set: value }}},
+                [elemType]: {[locationIndex]: {[locationType]: { $set: value }}},
               });
               newErrors = update(errors, {
-                locations: {[locationIndex]: {[locationType]: { $set: validateLocation(locationType, value) }}},
+                [elemType]: {[locationIndex]: {[locationType]: { $set: validateLocation(locationType, value) }}},
               });
               break;
           }
@@ -369,42 +328,26 @@ export default class EditContactUs extends Component {
   createHandler = async (event) => {
     const { id } = event.target;
     try {
-
       const { frontMatter, displaySections, errors } = this.state;
       
-      let newFrontMatter, newDisplaySections, newErrors;
-      switch (id) {
-        case 'contact': { 
-          newFrontMatter = update(frontMatter, {
-            contacts: {$push: [enumSection('contact')]},
-          });
-          newErrors = update(errors, {
-            contacts: {$push: [enumSection('contact')]},
-          })
-          newDisplaySections = update(displaySections, {
-            contactCardsDisplay: {$push: [true]},
-          });
-          break;
-        }
-        case 'location': {
-          newFrontMatter = update(frontMatter, {
-            locations: {$push: [enumSection('location')]},
-          });
-          newErrors = update(errors, {
-            locations: {$push: [enumSection('location')]},
-          })
-          newDisplaySections = update(displaySections, {
-            locationCardsDisplay: {$push: [true]},
-          });
-          break;
-        }
-      }
+      const newFrontMatter = update(frontMatter, {
+        [id]: {$push: [enumSection(id)]},
+      });
+      const newErrors = update(errors, {
+        [id]: {$push: [enumSection(id)]},
+      })
+      const newDisplaySections = update(displaySections, {
+        [id]: {$push: [true]},
+      });
+      
       this.setState({
         frontMatter: newFrontMatter,
         errors: newErrors,
         displaySections: newDisplaySections,
       });
+
       this.scrollRefs[id].scrollIntoView()
+
     } catch (err) {
       console.log(err);
     }
@@ -412,46 +355,32 @@ export default class EditContactUs extends Component {
 
   deleteHandler = async (event) => {
     const { id } = event.target
+
     try {
       const idArray = id.split('-');
       const elemType = idArray[0];
       const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT);
 
       const { frontMatter, displaySections, errors } = this.state;
-      let newFrontMatter, newDisplaySections, newErrors;
+      
+      const newFrontMatter = update(frontMatter, {
+        [elemType]: {$splice: [[sectionIndex, 1]]},
+      });
+      const newErrors = update(errors, {
+        [elemType]: {$splice: [[sectionIndex, 1]]},
+      });
+      const newDisplaySections = update(displaySections, {
+        [elemType]: {$splice: [[sectionIndex, 1]]},
+      });
 
-      switch (elemType) {
-        case 'contact': { // fix
-          newFrontMatter = update(frontMatter, {
-            contacts: {$splice: [[sectionIndex, 1]]},
-          });
-          newErrors = update(errors, {
-            contacts: {$splice: [[sectionIndex, 1]]},
-          });
-          newDisplaySections = update(displaySections, {
-            contactCardsDisplay: {$splice: [[sectionIndex, 1]]},
-          });
-          break;
-        }
-        case 'location': {
-          newFrontMatter = update(frontMatter, {
-            locations: {$splice: [[sectionIndex, 1]]},
-          });
-          newErrors = update(errors, {
-            locations: {$splice: [[sectionIndex, 1]]},
-          });
-          newDisplaySections = update(displaySections, {
-            locationCardsDisplay: {$splice: [[sectionIndex, 1]]},
-          });
-          break;
-        }
-      }
       this.setState({
         frontMatter: newFrontMatter,
         errors: newErrors,
         displaySections: newDisplaySections,
       });
+
       this.scrollRefs[elemType].scrollIntoView()
+
     } catch (err) {
       console.log(err);
     }
@@ -459,50 +388,47 @@ export default class EditContactUs extends Component {
 
   displayHandler = async (event) => {
     try {
+      const { displaySections } = this.state;
+      const { contacts: contactsDisplay, locations: locationsDisplay } = displaySections;
+
       const { id } = event.target;
       const idArray = id.split('-');
       const elemType = idArray[0];
-      const { displaySections } = this.state;
-      const { sectionsDisplay, contactCardsDisplay, locationCardsDisplay } = displaySections;
       const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT) || idArray[1];
 
-      let newSectionDisplay = { contact: false, location: false }
-      let newContactCardsDisplay = _.fill(Array(contactCardsDisplay.length), false);
-      let newLocationCardsDisplay = _.fill(Array(locationCardsDisplay.length), false);
+      let resetDisplaySections = {
+        sectionsDisplay: {
+          contacts: false,
+          locations: false,
+        },
+        contacts: _.fill(Array(contactsDisplay.length), false),
+        locations: _.fill(Array(locationsDisplay.length), false),
+      }
 
       let newDisplaySections;
       switch (elemType) {
         case 'section': {
-          const currDisplayValue = sectionsDisplay[sectionIndex];
-          newSectionDisplay[sectionIndex] = !currDisplayValue;
+          const currDisplayValue = displaySections.sectionsDisplay[sectionIndex];
+          resetDisplaySections.sectionsDisplay[sectionIndex] = !currDisplayValue;
           newDisplaySections = update(displaySections, {
-            sectionsDisplay: {$set: newSectionDisplay},
-            contactCardsDisplay: {$set: newContactCardsDisplay},
-            locationCardsDisplay: {$set: newLocationCardsDisplay},
+            $set : resetDisplaySections,
           });
-          this.scrollRefs[sectionIndex].scrollIntoView()
           break;
         }
-        case 'contact': {
-          const currDisplayValue = contactCardsDisplay[sectionIndex];
-          newContactCardsDisplay[sectionIndex] = !currDisplayValue;
+        default: {
+          const currDisplayValue = displaySections[elemType][sectionIndex];
+          resetDisplaySections[elemType][sectionIndex] = !currDisplayValue;
           newDisplaySections = update(displaySections, {
-            contactCardsDisplay: {$set: newContactCardsDisplay},
+            [elemType]: {$set: resetDisplaySections[elemType]},
           });
           break;  
         }
-        case 'location': {
-          const currDisplayValue = locationCardsDisplay[sectionIndex]
-          newLocationCardsDisplay[sectionIndex] = !currDisplayValue;
-          newDisplaySections = update(displaySections, {
-            locationCardsDisplay: {$set: newLocationCardsDisplay},
-          });
-          break;  
-        } 
       }
+
       this.setState({
         displaySections: newDisplaySections,
       });
+      
     } catch (err) {
       console.log(err);
     }
@@ -586,7 +512,7 @@ export default class EditContactUs extends Component {
 
     const { agency_name: agencyName, contacts, locations } = frontMatter
     const { feedback } = footerContent
-    const { sectionsDisplay, contactCardsDisplay, locationCardsDisplay } = displaySections
+    const { sectionsDisplay } = displaySections
 
     const hasContactErrors = !isEmpty(errors.contacts)
     const hasLocationErrors = !isEmpty(errors.locations)
@@ -628,11 +554,11 @@ export default class EditContactUs extends Component {
                   onFieldChange={this.onFieldChange}
                   createHandler={this.createHandler}
                   deleteHandler={this.deleteHandler}
-                  shouldDisplay={sectionsDisplay.location}
-                  displayCards={locationCardsDisplay}
-                  sectionType={'location'}
+                  shouldDisplay={sectionsDisplay.locations}
+                  displayCards={displaySections.locations}
                   displayHandler={this.displayHandler}
                   errors={errors.locations}
+                  sectionId={'locations'}
                 />
 
                 <EditorSection 
@@ -640,11 +566,11 @@ export default class EditContactUs extends Component {
                   onFieldChange={this.onFieldChange}
                   createHandler={this.createHandler}
                   deleteHandler={this.deleteHandler}
-                  shouldDisplay={sectionsDisplay.contact}
-                  displayCards={contactCardsDisplay}
-                  sectionType={'contact'}
+                  shouldDisplay={sectionsDisplay.contacts}
+                  displayCards={displaySections.contacts}
                   displayHandler={this.displayHandler}
                   errors={errors.contacts}
+                  sectionId={'contacts'}
                 />
               </DragDropContext>  
 
@@ -661,12 +587,12 @@ export default class EditContactUs extends Component {
                 <div className="row">
                   <div className="col is-8 is-offset-2">
                     
-                    <div ref={(ref) => { this.scrollRefs.location = ref;} }>
+                    <div ref={(ref) => { this.scrollRefs.locations = ref;} }>
                       <TemplateLocationsSection locations={locations}/> 
                     </div>
 
                     {/* contacts section */}
-                    <div ref={(ref) => { this.scrollRefs.contact = ref;} }>
+                    <div ref={(ref) => { this.scrollRefs.contacts = ref;} }>
                       <TemplateContactsSection contacts={contacts}/>
                     </div>
 
