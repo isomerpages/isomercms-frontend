@@ -130,31 +130,31 @@ const HeroDropdown = ({
 export default HeroDropdown;
 
 HeroDropdownElem.propTypes = {
-  title: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired,
-  dropdownsIndex: PropTypes.number.isRequired,
+  title: PropTypes.string,
+  url: PropTypes.string,
+  dropdownsIndex: PropTypes.number,
   onFieldChange: PropTypes.func.isRequired,
   deleteHandler: PropTypes.func.isRequired,
   shouldDisplay: PropTypes.bool.isRequired,
   displayHandler: PropTypes.func.isRequired,
   errors: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    url: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    url: PropTypes.string,
   }).isRequired,
 };
 
 HeroDropdown.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   onFieldChange: PropTypes.func.isRequired,
   createHandler: PropTypes.func.isRequired,
   deleteHandler: PropTypes.func.isRequired,
   displayHandler: PropTypes.func.isRequired,
-  displayDropdownElems: PropTypes.arrayOf(PropTypes.bool.isRequired).isRequired,
+  displayDropdownElems: PropTypes.arrayOf(PropTypes.bool),
   options: PropTypes.arrayOf(
     PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      url: PropTypes.string.isRequired,
-      dropdownsIndex: PropTypes.number.isRequired,
+      title: PropTypes.string,
+      url: PropTypes.string,
+      dropdownsIndex: PropTypes.number,
       onFieldChange: PropTypes.func.isRequired,
       shouldDisplay: PropTypes.bool.isRequired,
       displayHandler: PropTypes.func.isRequired,
@@ -164,14 +164,14 @@ HeroDropdown.propTypes = {
     sections: PropTypes.arrayOf(
       PropTypes.shape({
         hero: PropTypes.shape({
-          dropdown: PropTypes.string.isRequired,
-        }).isRequired,
-      }).isRequired,
-    ).isRequired,
+          dropdown: PropTypes.string,
+        }),
+      }),
+    ),
     dropdownElems: PropTypes.arrayOf(
       PropTypes.shape({
-        title: PropTypes.string.isRequired,
-        url: PropTypes.string.isRequired,
+        title: PropTypes.string,
+        url: PropTypes.string,
       }),
     ),
   }).isRequired,
