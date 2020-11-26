@@ -41,13 +41,14 @@ const Contact = ({ contact } ) => (
 
 const TemplateContactsSection = ({ contacts }) => (
   <>
-    { contacts && 
-      <div className="row is-multiline margin--bottom--xl">
-        <div className="col is-12 padding--bottom--none">
-          <h5 className="has-text-secondary"><b>Contact Us</b></h5>
+    { contacts && contacts.length  
+      ? <div className="row is-multiline margin--bottom--xl">
+          <div className="col is-12 padding--bottom--none">
+            <h5 className="has-text-secondary"><b>Contact Us</b></h5>
+          </div>
+          { contacts.map( (contact, i) => <Contact contact={contact} key={i}/> ) }
         </div>
-        { contacts.map( (contact, i) => <Contact contact={contact} key={i}/> ) }
-      </div>
+      : null
     }
   </>
 );

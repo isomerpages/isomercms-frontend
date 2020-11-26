@@ -450,8 +450,6 @@ export default class EditContactUs extends Component {
           newContacts.push(_.cloneDeep(contact))
         }
       })
-      filteredFrontMatter.contacts = newContacts;
-      
       let newLocations = [];
       state.frontMatter.locations.forEach((location) => {
         if ( !isEmpty(location) ) { 
@@ -466,7 +464,13 @@ export default class EditContactUs extends Component {
           newLocations.push(newLocation);
         } 
       })
+      
+      filteredFrontMatter.contacts = newContacts;
       filteredFrontMatter.locations = newLocations;
+      
+      // If array is empty, delete the object
+      if (!filteredFrontMatter.contacts.length) delete filteredFrontMatter.contacts
+      if (!filteredFrontMatter.locations.length) delete filteredFrontMatter.locations
 
       const content = concatFrontMatterMdBody(filteredFrontMatter, '');
       const base64EncodedContent = Base64.encode(content);
@@ -480,7 +484,7 @@ export default class EditContactUs extends Component {
         withCredentials: true,
       });
       
-      // Update settings
+      // // Update settings
       let updatedFooterContents = _.cloneDeep(state.footerContent)
     
       const footerParams = {
