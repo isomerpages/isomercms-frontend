@@ -4,21 +4,29 @@ import _ from 'lodash';
 const DEFAULT_ADDRESS_FIELD_LENGTH = 3;
 const DEFAULT_NUM_OPERATING_FIELDS = 5;
 
+function getContentDataField(content, dataType) {
+  const dataObj = _.find(content, (obj) => {
+    return dataType in obj && _.isString(obj[dataType])
+  })
+  return _.cloneDeep(dataObj) || {[dataType]: ''}
+}
+
 function sanitiseContent(content) {
   let sanitisedContent = [];
   // sanitisedContent should be an array of 3 objects, [{phone: }, {email: }, {other: }]
-  // we find the first object of each of type (phone, email, other) and push it 
-  sanitisedContent.push( _.find(content, obj => 'phone' in obj)  || {phone: ''});
-  sanitisedContent.push( _.find(content, obj => 'email' in obj)  || {email: ''});
-  sanitisedContent.push( _.find(content, obj => 'other' in obj)  || {other: ''});
+  // we find the first object of each of type (phone, email, other) and push a deep clone, else return initialized objects
+  sanitisedContent.push( getContentDataField(content, 'phone') );
+  sanitisedContent.push( getContentDataField(content, 'email') );
+  sanitisedContent.push( getContentDataField(content, 'other') );
   return sanitisedContent;
 }
 
 function sanitiseAddress(address) {
   let sanitisedAddress = [];
   // sanitisedAddress should be an array of strings of length DEFAULT_ADDRESS_FIELD_LENGTH
+  // we find the first DEFAULT_ADDRESS_FIELD_LENGTH strings and push a deep clone if they exist, else return empty strings
   _.range(DEFAULT_ADDRESS_FIELD_LENGTH).forEach( (index) => {
-    sanitisedAddress.push( (address && address[index] ) ? address[index] : '')
+    sanitisedAddress.push( (address && address[index] ) ? _.cloneDeep(address[index]) : '')
   })
   return sanitisedAddress;
 }
@@ -26,37 +34,36 @@ function sanitiseAddress(address) {
 function sanitiseOperatingHours(operatingHours) {
   let sanitisedOperatingHours = [];
   // sanitisedOperatingHours should be an array of objects of maximum length DEFAULT_NUM_OPERATING_FIELDS
+  // we find the first DEFAULT_NUM_OPERATING_FIELDS objects and push a deep clone if they exist
   _.range(DEFAULT_NUM_OPERATING_FIELDS).forEach( (index) => {
-    if (operatingHours && operatingHours[index]) {
-      sanitisedOperatingHours.push(operatingHours[index])
-    }
+    sanitisedOperatingHours.push( (operatingHours && operatingHours[index]) ? _.cloneDeep(operatingHours[index]) : undefined)
   })
-  return sanitisedOperatingHours;
+  return sanitisedOperatingHours.filter(elem => elem);
 }
 
 function sanitiseContact(contact) { // rearrange 
   const { content } = contact
-  const sanitisedContent = sanitiseContent(content)
-  return {
-    ...contact,
-    content: sanitisedContent,
-  }
+  
+  let sanitisedContact = _.cloneDeep(contact)
+  sanitisedContact.content = sanitiseContent(content)
+  
+  return sanitisedContact
 }
 
 function sanitiseLocation(location) {
   const { address, operating_hours: operatingHours } = location
-  const sanitisedAddress = sanitiseAddress(address)
-  const sanitisedOperatingHours = sanitiseOperatingHours(operatingHours)
+
+  let sanitisedLocation = _.cloneDeep(location)
+  sanitisedLocation.address = sanitiseAddress(address)
+  sanitisedLocation.operating_hours = sanitiseOperatingHours(operatingHours)
   
-  return {
-    ...location,
-    address: sanitisedAddress,
-    operating_hours: sanitisedOperatingHours,
-  }
+  return sanitisedLocation
 }
 
 export function sanitiseFrontMatter(frontMatter) {
   const { contacts, locations } = frontMatter;
+
+  let sanitisedFrontMatter = _.cloneDeep(frontMatter)
   let sanitisedContacts = [];
   let sanitisedLocations = [];
 
@@ -70,9 +77,8 @@ export function sanitiseFrontMatter(frontMatter) {
       sanitisedLocations.push(sanitiseLocation(location))
     )
   }
-  return { 
-    ...frontMatter,
-    contacts: sanitisedContacts, 
-    locations: sanitisedLocations,
-  }
+
+  sanitisedFrontMatter.contacts = sanitisedContacts
+  sanitisedFrontMatter.locations = sanitisedLocations
+  return sanitisedFrontMatter
 }
