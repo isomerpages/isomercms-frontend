@@ -641,7 +641,7 @@ export default class EditContactUs extends Component {
 
             </div>
           </div>
-          <div className={editorStyles.homepageEditorMain}>
+          <div className={`${editorStyles.contactUsEditorMain} ` }>
             {/* contact-us header */}
             <TemplateContactUsHeader 
               agencyName={agencyName} 
