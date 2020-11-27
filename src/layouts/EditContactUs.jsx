@@ -88,8 +88,10 @@ export default class EditContactUs extends Component {
     };
     this.state = {
       frontMatter: {},
+      originalFrontMatter: {},
       frontMatterSha: null,
       footerContent: {},
+      originalFooterContent: {},
       footerSha: null,
       displaySections: {
         sectionsDisplay: {
@@ -148,10 +150,7 @@ export default class EditContactUs extends Component {
       })
 
       locations.forEach(location => {
-        const args = { 
-          operatingHoursLength: location.operating_hours.length 
-        }
-        locationsErrors.push(enumSection('locations', args))
+        locationsErrors.push(enumSection('locations', { operatingHoursLength: location.operating_hours.length }))
         locationsDisplay.push(false)
         locationsScrollRefs.push(React.createRef())
       })
@@ -163,8 +162,10 @@ export default class EditContactUs extends Component {
       }
 
       this.setState({
+        originalFooterContent: _.cloneDeep(footerContent),
         footerContent,
         footerSha,
+        originalFrontMatter:  _.cloneDeep(frontMatter),
         frontMatter: sanitisedFrontMatter,
         frontMatterSha: sha,
         displaySections: {
@@ -562,7 +563,9 @@ export default class EditContactUs extends Component {
     const { state, scrollRefs } = this
     const {
       footerContent,
+      originalFooterContent,
       frontMatter,
+      originalFrontMatter,
       displaySections,
       frontMatterSha,
       footerSha,
@@ -576,15 +579,15 @@ export default class EditContactUs extends Component {
     const { sectionsDisplay } = displaySections
     const { sectionsScrollRefs } = scrollRefs
 
-    const hasContactErrors = !isEmpty(errors.contacts)
-    const hasLocationErrors = !isEmpty(errors.locations)
-
-    const hasErrors = hasContactErrors || hasLocationErrors;
+    const hasErrors = !isEmpty(errors.contacts) || !isEmpty(errors.locations);
+    const hasChanges = JSON.stringify(originalFrontMatter) === JSON.stringify(frontMatter) && JSON.stringify(footerContent) === JSON.stringify(originalFooterContent);
 
     return (
       <>
         <Header
           title={"Contact Us"}
+          shouldAllowEditPageBackNav={hasChanges}
+          isEditPage="true"
           backButtonText="Back to My Workspace"
           backButtonUrl={`/sites/${siteName}/workspace`}
         />
