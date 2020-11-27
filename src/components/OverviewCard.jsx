@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { toast } from 'react-toastify';
 import DeleteWarningModal from './DeleteWarningModal'
 import GenericWarningModal from './GenericWarningModal'
 import LoadingButton from './LoadingButton'
-import AlertModal from './AlertModal'
+import Toast from './Toast';
 import {
   frontMatterParser,
   saveFileAndRetrieveUrl,
@@ -41,7 +42,6 @@ const OverviewCard = ({
   const [canShowDropdown, setCanShowDropdown] = useState(false)
   const [canShowFileMoveDropdown, setCanShowFileMoveDropdown] = useState(false)
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
-  const [canShowAlertModal, setCanShowAlertModal] = useState(false)
   const [canShowWarningModal, setCanShowWarningModal] = useState(false)
   const [chosenCategory, setChosenCategory] = useState()
   const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? isResource ? `/resources/${category}` : `/collections/${category}` : ''}`
@@ -76,7 +76,7 @@ const OverviewCard = ({
         date,
         mdBody,
         sha,
-        category: chosenCategory ? chosenCategory : newCategory,
+        category: chosenCategory,
         originalCategory: category,
         type: isResource ? 'resource' : 'page',
         originalThirdNavTitle: thirdNavTitle,
@@ -93,10 +93,12 @@ const OverviewCard = ({
     } catch (err) {
       if (err.response.status === 409) {
         // Error due to conflict in name
-        fileMoveDropdownRef.current.blur()
-        setChosenCategory()
-        setCanShowAlertModal(true)
+        toast(
+          <Toast notificationType='error' text='This file name already exists in the category you are trying to move to. Please rename the file before proceeding.'/>, 
+          {className: elementStyles.toastError}
+        );
       }
+      setCanShowWarningModal(false)
       console.log(err);
     }
   }
@@ -189,17 +191,9 @@ const OverviewCard = ({
     setCanShowFileMoveDropdown(!canShowFileMoveDropdown)
     setCanShowDropdown(!canShowDropdown)
   }
-  
+
   return (
     <>
-    {
-      canShowAlertModal &&
-      <AlertModal
-        displayTitle="Alert"
-        displayText="This file name already exists in the category you are trying to move to. Please rename the file before proceeding."
-        onClose={() => setCanShowAlertModal(false)}
-      />
-    }
     {
       canShowWarningModal &&
       <GenericWarningModal
@@ -210,6 +204,8 @@ const OverviewCard = ({
           setChosenCategory()
           setCanShowWarningModal(false)
         }}
+        proceedText="Continue"
+        cancelText="Cancel"
       />
     }
     <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`} to={generateLink()}>
@@ -256,7 +252,11 @@ const OverviewCard = ({
               </MenuItem>
               <hr/>
               {category && !isResource &&
-                <MenuItem handler={() => moveFile('')}>
+                <MenuItem handler={() => {
+                  setChosenCategory('')
+                  fileMoveDropdownRef.current.blur()
+                  setCanShowWarningModal(true)
+                }}>
                   <div className={elementStyles.dropdownText}>Unlinked Page</div>
                 </MenuItem>
               }
@@ -267,6 +267,7 @@ const OverviewCard = ({
                     return (
                       <MenuItem key={categoryName} handler={() => {
                         setChosenCategory(categoryName)
+                        fileMoveDropdownRef.current.blur()
                         setCanShowWarningModal(true)
                       }}>
                         <div className={elementStyles.dropdownText}>{categoryName}</div>
@@ -295,7 +296,11 @@ const OverviewCard = ({
                   disabled={!!errorMessage || !newCategory}
                   disabledStyle={elementStyles.disabled}
                   className={(!!errorMessage || !newCategory) ? elementStyles.disabled : elementStyles.blue}
-                  callback={moveFile}
+                  callback={() => {
+                    setChosenCategory(newCategory)
+                    fileMoveDropdownRef.current.blur()
+                    setCanShowWarningModal(true)
+                  }}
                 />
               </div>
               { errorMessage &&
