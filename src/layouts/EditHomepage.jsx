@@ -171,6 +171,13 @@ export default class EditHomepage extends Component {
               },
             });
           }
+          if (!dropdown && !keyHighlights) {
+            sectionsErrors.push({
+              hero: {
+                title: '', subtitle: '', background: '', button: '', url: '',
+              },
+            });
+          }
         }
 
         // Check if there is already a resources section
@@ -1027,7 +1034,7 @@ export default class EditHomepage extends Component {
                                 url={section.hero.url}
                                 dropdown={section.hero.dropdown}
                                 sectionIndex={sectionIndex}
-                                highlights={section.hero.key_highlights}
+                                highlights={section.hero.key_highlights ? section.hero.key_highlights : []}
                                 onFieldChange={this.onFieldChange}
                                 createHandler={this.createHandler}
                                 deleteHandler={(event, type) => this.setState({ itemPendingForDelete: { id: event.target.id, type } })}
