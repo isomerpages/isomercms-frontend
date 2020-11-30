@@ -1,4 +1,6 @@
 
+const _ = require('lodash');
+
 // Common regexes and constants
 // ==============
 const PERMALINK_REGEX = '^(([a-z0-9]+([-][a-z0-9]+)*)+)$';
@@ -475,8 +477,14 @@ const validateContact = (contactType, value) => {
       };
       break;
     case 'phone':
-      if ( value && ! (phoneRegexTest.test(value) || tollfreePhoneRegexTest.test(value)) ) {
-        errorMessage = `Local numbers should start with +65 followed by 8 digits starting with 6, 8 or 9. Toll free numbers should start with 1800 followed by 7 digits.`
+      const strippedValue = value.replace(/\s/g, '')
+      if ( strippedValue.includes('_')) {
+        errorMessage = `Field not completed`
+      }
+      if (_.startsWith(strippedValue, '+65')) {
+        if (! strippedValue.includes('_') && !phoneRegexTest.test(strippedValue) ) {
+          errorMessage = `Local numbers should start with 6, 8 or 9.`
+        }
       }
       break;
     case 'email':
