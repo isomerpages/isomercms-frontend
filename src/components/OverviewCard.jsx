@@ -7,6 +7,7 @@ import Toast from './Toast';
 import {
   frontMatterParser,
   saveFileAndRetrieveUrl,
+  checkIsOutOfViewport,
 } from '../utils';
 import {
   retrieveThirdNavOptions,
@@ -44,11 +45,19 @@ const OverviewCard = ({
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
   const [canShowWarningModal, setCanShowWarningModal] = useState(false)
   const [chosenCategory, setChosenCategory] = useState()
+  const [isOutOfViewport, setIsOutOfViewport] = useState()
   const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? isResource ? `/resources/${category}` : `/collections/${category}` : ''}`
 
   useEffect(() => {
     if (canShowFileMoveDropdown) fileMoveDropdownRef.current.focus()
-    if (canShowDropdown) dropdownRef.current.focus()
+    if (canShowDropdown) {
+      dropdownRef.current.focus()
+      if (isOutOfViewport === undefined) {
+        // We only want to run this once
+        const bounding = dropdownRef.current.getBoundingClientRect()
+        setIsOutOfViewport(checkIsOutOfViewport(bounding, ['right']))
+      }
+    }
   }, [canShowFileMoveDropdown, canShowDropdown])
 
   const moveFile = async () => {
@@ -229,7 +238,7 @@ const OverviewCard = ({
             <i id={`settingsIcon-${itemIndex}`} className="bx bx-dots-vertical-rounded" />
           </button>
           {canShowDropdown &&
-            <div className={`${elementStyles.dropdown}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
+            <div className={`${elementStyles.dropdown} ${isOutOfViewport && elementStyles.right}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
               <MenuItem handler={(e) => {dropdownRef.current.blur(); settingsToggle(e)}} id={`settings-${itemIndex}`}>
                 <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
                 <div id={`settingsText-${itemIndex}`} className={elementStyles.dropdownText}>Edit details</div>
@@ -245,7 +254,7 @@ const OverviewCard = ({
               </MenuItem>
           </div>}
           {canShowFileMoveDropdown &&
-            <div className={`${elementStyles.dropdown}`} ref={fileMoveDropdownRef} tabIndex={1} onBlur={handleBlur}>
+            <div className={`${elementStyles.dropdown} ${isOutOfViewport && elementStyles.right}`} ref={fileMoveDropdownRef} tabIndex={1} onBlur={handleBlur}>
               <MenuItem className={`d-flex`} handler={toggleDropdownModals}>
                 <i className="bx bx-sm bx-arrow-back"/>
                 <div className={elementStyles.dropdownText}>Move to</div>

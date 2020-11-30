@@ -469,3 +469,14 @@ const incrementGroupIdentifier = (pageArray, shouldAddToThirdNav, shouldCreateTh
   // When not adding to a third nav
   return (parseInt(lastFileNameIdentifierNum) + 1).toString()
 }
+
+export const checkIsOutOfViewport = (bounding, posArr) => {
+  // Checks if the element exceeds viewport in any of the dimensions given in posArr
+  let out = {};
+	out.top = bounding.top < 0;
+	out.left = bounding.left < 0;
+	out.bottom = bounding.bottom > (window.innerHeight || document.documentElement.clientHeight);
+  out.right = bounding.right > (window.innerWidth || document.documentElement.clientWidth);
+  
+  return posArr.some((pos) => {return out[pos]})
+}
