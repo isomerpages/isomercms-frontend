@@ -44,7 +44,6 @@ const FolderCard = ({
           e.stopPropagation();
           e.preventDefault(); 
           if (handler) handler(e);
-          throw new Error('test')
         }}
         className={`${elementStyles.dropdownItem}`}
       >
