@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import FormField from '../FormField';
+import InputMaskFormField from './PhoneFormField';
+import Dropdown from '../Dropdown';
 
 const ContactFields = ({ 
   cardIndex, 
@@ -9,14 +11,25 @@ const ContactFields = ({
   errors,
   sectionId,
 }) => {  
+  const [phoneFieldType, setPhoneFieldType] = useState('Local')
+
   return (
     <div className={`d-flex flex-column`}>
-      <FormField
+      <InputMaskFormField
         title="Phone"
+        mask={phoneFieldType === 'local' ? '+65 9999 9999': '1 800 999 9999'}
+        maskChar="_"
+        alwaysShowMask={true}
         id={`${sectionId}-${cardIndex}-phone-0`}
         value={content[0].phone}
         onFieldChange={onFieldChange}
         errorMessage={errors[0].phone}
+      />
+      <Dropdown
+        options={["Local", "Tollfree"]}
+        defaultOption={"Local"} 
+        id={"phone-field-type"}
+        onFieldChange={e => setPhoneFieldType(e.target.value)}
       />
       <FormField
         title="Email"
