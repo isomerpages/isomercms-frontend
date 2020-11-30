@@ -229,7 +229,7 @@ const OverviewCard = ({
             <i id={`settingsIcon-${itemIndex}`} className="bx bx-dots-vertical-rounded" />
           </button>
           {canShowDropdown &&
-            <div className={`position-absolute ${elementStyles.dropdown}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
+            <div className={`${elementStyles.dropdown}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
               <MenuItem handler={(e) => {dropdownRef.current.blur(); settingsToggle(e)}} id={`settings-${itemIndex}`}>
                 <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
                 <div id={`settingsText-${itemIndex}`} className={elementStyles.dropdownText}>Edit details</div>
@@ -245,7 +245,7 @@ const OverviewCard = ({
               </MenuItem>
           </div>}
           {canShowFileMoveDropdown &&
-            <div className={`position-absolute ${elementStyles.dropdown}`} ref={fileMoveDropdownRef} tabIndex={1} onBlur={handleBlur}>
+            <div className={`${elementStyles.dropdown}`} ref={fileMoveDropdownRef} tabIndex={1} onBlur={handleBlur}>
               <MenuItem className={`d-flex`} handler={toggleDropdownModals}>
                 <i className="bx bx-sm bx-arrow-back"/>
                 <div className={elementStyles.dropdownText}>Move to</div>

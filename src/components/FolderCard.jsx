@@ -106,7 +106,7 @@ const FolderCard = ({
                   <i id={`settingsIcon-${itemIndex}`} className="bx bx-dots-vertical-rounded" />
                 </button>
               { canShowDropdown &&
-                <div className={`position-absolute ${elementStyles.dropdown}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
+                <div className={`${elementStyles.dropdown}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
                   <MenuItem handler={(e) => {dropdownRef.current.blur(); setIsFolderModalOpen(true)}} id={`folderSettings-${itemIndex}`}>
                     <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
                     <div className={elementStyles.dropdownText}>Rename</div>
