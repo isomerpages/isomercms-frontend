@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
@@ -24,5 +25,10 @@ const Toast = ({ notificationType, text }) => {
     </div>
   )
 }
+
+Toast.propTypes = {
+  notificationType: PropTypes.string,
+  text: PropTypes.string.isRequired,
+};
 
 export default Toast
