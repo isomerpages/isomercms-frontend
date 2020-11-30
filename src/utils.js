@@ -218,7 +218,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   const newBaseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? type === "resource" ? `/resources/${category}` : `/collections/${category}` : ''}`
   let newFileName, frontMatter
   if (type === "resource") {
-    newFileName = generateResourceFileName(title, date);
+    newFileName = generateResourceFileName(title.toLowerCase(), date);
     frontMatter = { title: enquoteString(title), date };
   } else if (type === "page") {
     frontMatter = thirdNavTitle
@@ -234,7 +234,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
         thirdNavOptions,
         collectionPageData,
         baseApiUrl: newBaseApiUrl,
-        title,
+        title: title.toLowerCase(),
         siteName,
         category: slugifiedCategory,
         isNewCollection,
@@ -244,7 +244,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
       })
     // Creating a simple page
     } else {
-      newFileName = generatePageFileName(title);
+      newFileName = generatePageFileName(title.toLowerCase());
     }
   }
   console.log('This is the new file name', newFileName)
