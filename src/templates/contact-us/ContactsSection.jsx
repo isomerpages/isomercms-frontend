@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import DOMPurify from 'dompurify';
 
 const Contact = React.forwardRef(( { contact }, ref ) => (  
   <div className="col is-6" ref={ref}>
@@ -30,7 +31,7 @@ const Contact = React.forwardRef(( { contact }, ref ) => (
           default: { // others  
             return (
               /* TODO: CSP validation should be done on html elements before rendering */
-              <div dangerouslySetInnerHTML={{__html: d[key]}} key={i}/>
+              <div dangerouslySetInnerHTML={{__html: `${DOMPurify.sanitize(d[key])}` }} key={i}/>
             )
           }
         }
