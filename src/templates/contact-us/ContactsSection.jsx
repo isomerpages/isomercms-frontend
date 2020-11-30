@@ -31,7 +31,7 @@ const Contact = React.forwardRef(( { contact }, ref ) => (
           default: { // others  
             return (
               /* TODO: CSP validation should be done on html elements before rendering */
-              <div dangerouslySetInnerHTML={{__html: `${DOMPurify.sanitize(d[key])}` }} key={i}/>
+              <div dangerouslySetInnerHTML={{__html: `<p>${DOMPurify.sanitize(d[key])}</p>` }} key={i}/>
             )
           }
         }
