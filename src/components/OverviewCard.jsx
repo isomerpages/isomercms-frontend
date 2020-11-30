@@ -43,7 +43,7 @@ const OverviewCard = ({
   const [canShowDropdown, setCanShowDropdown] = useState(false)
   const [canShowFileMoveDropdown, setCanShowFileMoveDropdown] = useState(false)
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
-  const [canShowWarningModal, setCanShowWarningModal] = useState(false)
+  const [canShowGenericWarningModal, setCanShowGenericWarningModal] = useState(false)
   const [chosenCategory, setChosenCategory] = useState()
   const [isOutOfViewport, setIsOutOfViewport] = useState()
   const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? isResource ? `/resources/${category}` : `/collections/${category}` : ''}`
@@ -107,7 +107,7 @@ const OverviewCard = ({
           {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
         );
       }
-      setCanShowWarningModal(false)
+      setCanShowGenericWarningModal(false)
       console.log(err);
     }
   }
@@ -204,14 +204,14 @@ const OverviewCard = ({
   return (
     <>
     {
-      canShowWarningModal &&
+      canShowGenericWarningModal &&
       <GenericWarningModal
         displayTitle="Warning"
         displayText="Moving a page to a different collection might lead to user confusion. You may wish to change the permalink for this page afterwards."
         onProceed={moveFile}
         onCancel={() => {
           setChosenCategory()
-          setCanShowWarningModal(false)
+          setCanShowGenericWarningModal(false)
         }}
         proceedText="Continue"
         cancelText="Cancel"
@@ -264,7 +264,7 @@ const OverviewCard = ({
                 <MenuItem handler={() => {
                   setChosenCategory('')
                   fileMoveDropdownRef.current.blur()
-                  setCanShowWarningModal(true)
+                  setCanShowGenericWarningModal(true)
                 }}>
                   <div className={elementStyles.dropdownText}>Unlinked Page</div>
                 </MenuItem>
@@ -277,7 +277,7 @@ const OverviewCard = ({
                       <MenuItem key={categoryName} handler={() => {
                         setChosenCategory(categoryName)
                         fileMoveDropdownRef.current.blur()
-                        setCanShowWarningModal(true)
+                        setCanShowGenericWarningModal(true)
                       }}>
                         <div className={elementStyles.dropdownText}>{categoryName}</div>
                       </MenuItem>
@@ -308,7 +308,7 @@ const OverviewCard = ({
                   callback={() => {
                     setChosenCategory(newCategory)
                     fileMoveDropdownRef.current.blur()
-                    setCanShowWarningModal(true)
+                    setCanShowGenericWarningModal(true)
                   }}
                 />
               </div>
