@@ -11,7 +11,7 @@ const ContactFields = ({
   errors,
   sectionId,
 }) => {  
-  const [phoneFieldType, setPhoneFieldType] = useState('Local')
+  const [phoneFieldType, setPhoneFieldType] = useState(content[0].phone[0] === '1' ? 'tollfree' : 'local')
 
   return (
     <div className={`d-flex flex-column`}>
@@ -27,7 +27,7 @@ const ContactFields = ({
       />
       <Dropdown
         options={["Local", "Tollfree"]}
-        defaultOption={"Local"} 
+        defaultOption={content[0].phone[0] === '1' ? 'Tollfree' : 'Local'} 
         id={"phone-field-type"}
         onFieldChange={e => setPhoneFieldType(e.target.value)}
       />
