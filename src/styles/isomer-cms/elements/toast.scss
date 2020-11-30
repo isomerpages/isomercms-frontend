@@ -1,3 +1,8 @@
+.toastContainer {
+  height: auto;
+  width: auto;
+}
+
 .toast {
   width: 33rem;
   height: 3.5rem;
@@ -8,6 +13,7 @@
   border-radius: 5px;
   padding-left: 1rem;
   padding-right: 1rem;
+  top: 1em;
   i {
     color: white;
   }
@@ -38,5 +44,17 @@
   border: 1px solid #D6B02C;
   i {
     color: $toast-warning-text;
+  }
+}
+
+.toastLong {
+  width: 67.5rem;
+}
+
+.toastContent {
+  display: flex;
+  align-items: center;
+  i {
+    padding-right: 1rem;
   }
 }

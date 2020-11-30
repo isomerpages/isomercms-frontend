@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import PropTypes from 'prop-types';
-import { ToastContainer, toast } from 'react-toastify';
+import React from 'react';
+
+import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
 const Toast = ({ notificationType, text }) => {
   const toastImg = () => {
@@ -19,7 +18,7 @@ const Toast = ({ notificationType, text }) => {
     }
   }
   return (
-    <div>
+    <div className={elementStyles.toastContent}>
       <i className={`bx bx-sm ${toastImg()}`}/>
       {text}
     </div>

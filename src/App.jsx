@@ -29,6 +29,8 @@ import Settings from './layouts/Settings';
 import ProtectedRoute from './components/ProtectedRoute'
 import FallbackComponent from './components/FallbackComponent'
 
+import elementStyles from './styles/isomer-cms/Elements.module.scss';
+
 // Import contexts
 const { LoginContext } = require('./contexts/LoginContext')
 
@@ -117,7 +119,7 @@ function App() {
 
   return (
     <Router basename={process.env.PUBLIC_URL}>
-        <ToastContainer hideProgressBar={true} position={"top-center"} closeButton={ToastCloseButton}/>
+        <ToastContainer hideProgressBar={true} position='top-center' closeButton={ToastCloseButton} className={elementStyles.toastContainer}/>
         <div>
           {/*
             A <Switch> looks through all its children <Route>

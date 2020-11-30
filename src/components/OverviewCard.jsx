@@ -95,7 +95,7 @@ const OverviewCard = ({
         // Error due to conflict in name
         toast(
           <Toast notificationType='error' text='This file name already exists in the category you are trying to move to. Please rename the file before proceeding.'/>, 
-          {className: elementStyles.toastError}
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
         );
       }
       setCanShowWarningModal(false)
