@@ -239,19 +239,23 @@ const OverviewCard = ({
           </button>
           {canShowDropdown &&
             <div className={`${elementStyles.dropdown} ${isOutOfViewport && elementStyles.right}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
-              <MenuItem handler={(e) => {dropdownRef.current.blur(); settingsToggle(e)}} id={`settings-${itemIndex}`}>
-                <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
-                <div id={`settingsText-${itemIndex}`} className={elementStyles.dropdownText}>Edit details</div>
-              </MenuItem>
-              <MenuItem handler={toggleDropdownModals}>
-                <i className="bx bx-sm bx-folder"/>
-                <div className={elementStyles.dropdownText}>Move to</div>
-                <i className="bx bx-sm bx-chevron-right ml-auto"/>
-              </MenuItem>
-              <MenuItem handler={() => {dropdownRef.current.blur(); setCanShowDeleteWarningModal(true)}}>
-                <i className="bx bx-sm bx-trash text-danger"/>
-                <div className={elementStyles.dropdownText}>Delete item</div>
-              </MenuItem>
+              { isOutOfViewport !== undefined &&
+                <>
+                  <MenuItem handler={(e) => {dropdownRef.current.blur(); settingsToggle(e)}} id={`settings-${itemIndex}`}>
+                    <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
+                    <div id={`settingsText-${itemIndex}`} className={elementStyles.dropdownText}>Edit details</div>
+                  </MenuItem>
+                  <MenuItem handler={toggleDropdownModals}>
+                    <i className="bx bx-sm bx-folder"/>
+                    <div className={elementStyles.dropdownText}>Move to</div>
+                    <i className="bx bx-sm bx-chevron-right ml-auto"/>
+                  </MenuItem>
+                  <MenuItem handler={() => {dropdownRef.current.blur(); setCanShowDeleteWarningModal(true)}}>
+                    <i className="bx bx-sm bx-trash text-danger"/>
+                    <div className={elementStyles.dropdownText}>Delete item</div>
+                  </MenuItem>
+                </>
+              }
           </div>}
           {canShowFileMoveDropdown &&
             <div className={`${elementStyles.dropdown} ${isOutOfViewport && elementStyles.right}`} ref={fileMoveDropdownRef} tabIndex={1} onBlur={handleBlur}>

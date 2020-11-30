@@ -119,14 +119,18 @@ const FolderCard = ({
                 </button>
               { canShowDropdown &&
                 <div className={`${elementStyles.dropdown} ${isOutOfViewport && elementStyles.right}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
-                  <MenuItem handler={(e) => {dropdownRef.current.blur(); setIsFolderModalOpen(true)}} id={`folderSettings-${itemIndex}`}>
-                    <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
-                    <div className={elementStyles.dropdownText}>Rename</div>
-                  </MenuItem>
-                  <MenuItem handler={() => {dropdownRef.current.blur(); setCanShowDeleteWarningModal(true)}} id={`folderDelete-${itemIndex}`}>
-                    <i className="bx bx-sm bx-trash text-danger"/>
-                    <div className={elementStyles.dropdownText}>Delete folder</div>
-                  </MenuItem>
+                  { isOutOfViewport !== undefined && 
+                    <>
+                      <MenuItem handler={(e) => {dropdownRef.current.blur(); setIsFolderModalOpen(true)}} id={`folderSettings-${itemIndex}`}>
+                        <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
+                        <div className={elementStyles.dropdownText}>Rename</div>
+                      </MenuItem>
+                      <MenuItem handler={() => {dropdownRef.current.blur(); setCanShowDeleteWarningModal(true)}} id={`folderDelete-${itemIndex}`}>
+                        <i className="bx bx-sm bx-trash text-danger"/>
+                        <div className={elementStyles.dropdownText}>Delete folder</div>
+                      </MenuItem>
+                    </>
+                  }
                 </div>
               }
               </div>
