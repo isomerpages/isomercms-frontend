@@ -1,4 +1,3 @@
-// TODO: Error handling and validation (csp check) 
 // TODO: Clean up formatting, semi-colons, PropTypes etc
 import React, { Component } from 'react';
 import axios from 'axios';
@@ -261,7 +260,7 @@ export default class EditContactUs extends Component {
           newFooterContent = update(footerContent, {
             [elemType]: {$set: value},
           });
-          scrollRefs.sectionsScrollRefs[elemType].current.scrollIntoView()
+          scrollRefs.sectionsScrollRefs[elemType].current.scrollIntoView();
           break;
         }
         case 'header': {
@@ -270,8 +269,7 @@ export default class EditContactUs extends Component {
           newFrontMatter = update(frontMatter, {
             [field]: {$set: value},
           });
-
-          scrollRefs.sectionsScrollRefs[elemType].current.scrollIntoView()
+          scrollRefs.sectionsScrollRefs[elemType].current.scrollIntoView();
           break;
         }
         case 'contacts': {
@@ -297,7 +295,7 @@ export default class EditContactUs extends Component {
               });
               break;
           }
-          scrollRefs[elemType][contactIndex].current.scrollIntoView()
+          scrollRefs[elemType][contactIndex].current.scrollIntoView();
           break;
         }
         case 'locations': { 
@@ -350,7 +348,7 @@ export default class EditContactUs extends Component {
               });
               break;
           }
-          scrollRefs[elemType][locationIndex].current.scrollIntoView()
+          scrollRefs[elemType][locationIndex].current.scrollIntoView();
           break;
         }
       }
@@ -385,7 +383,8 @@ export default class EditContactUs extends Component {
       });
 
       if (scrollRefs[id].length) { 
-        _.last(scrollRefs[id]).current.scrollIntoView() //TODO: check out options
+        // Scroll to an approximation of where the new field will be based on the current last field, calibrated from the bottom of page
+        _.last(scrollRefs[id]).current.scrollIntoView() 
       } else {
         scrollRefs.sectionsScrollRefs[id].current.scrollIntoView()
       }
@@ -468,7 +467,7 @@ export default class EditContactUs extends Component {
           newDisplaySections = update(displaySections, {
             $set : resetDisplaySections,
           });
-          scrollRefs.sectionsScrollRefs[sectionIndex].current.scrollIntoView()
+          scrollRefs.sectionsScrollRefs[sectionIndex].current.scrollIntoView();
           break;
         }
         default: {
@@ -477,7 +476,7 @@ export default class EditContactUs extends Component {
           newDisplaySections = update(displaySections, {
             [elemType]: {$set: resetDisplaySections[elemType]},
           });
-          this.scrollRefs[elemType][sectionIndex].current.scrollIntoView()
+          scrollRefs[elemType][sectionIndex].current.scrollIntoView();
           break;  
         }
       }
@@ -674,9 +673,9 @@ export default class EditContactUs extends Component {
           <div className={editorStyles.pageEditorFooter}>
             <LoadingButton
               label="Save"
-              disabled={hasErrors} //TODO: validation
+              disabled={hasErrors} 
               disabledStyle={elementStyles.disabled}
-              className={(hasErrors|| !(frontMatterSha && footerSha)) ? elementStyles.disabled : elementStyles.blue} //TODO: validation
+              className={(hasErrors|| !(frontMatterSha && footerSha)) ? elementStyles.disabled : elementStyles.blue} 
               callback={this.savePage}
             />
           </div>
