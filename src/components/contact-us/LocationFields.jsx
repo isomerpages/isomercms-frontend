@@ -21,7 +21,7 @@ const LocationHoursFields = ({
       { operatingHours && operatingHours.map( (operations, operationsIndex) => ( 
         <div className= "mb-1" key={operationsIndex}>
             <div className="d-flex flex-row">
-              <div className="flex-fill pr-1"> 
+              <div className="w-50 pr-1"> 
                 <FormField
                   title="Days"
                   id={`${sectionId}-${cardIndex}-operating_hours-${operationsIndex}-days`}
@@ -30,7 +30,7 @@ const LocationHoursFields = ({
                   errorMessage={errors[operationsIndex].days}
                 />
               </div>
-              <div className="flex-fill pl-1">
+              <div className="w-50 pl-1">
                 <FormField
                   title="Hours"
                   id={`${sectionId}-${cardIndex}-operating_hours-${operationsIndex}-time`}
