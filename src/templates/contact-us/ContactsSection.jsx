@@ -12,26 +12,27 @@ const Contact = React.forwardRef(( { contact }, ref ) => (
         switch (key) {
           case 'phone': {
             return (
-              <a href={`tel:${d[key].replace(/\s/g, '')}`} key={i}>
-                <p className="margin--top--none margin--bottom--none">
+              <p className="margin--top--none margin--bottom--none"  key={i}>
+                <a href={`tel:${d[key].replace(/\s/g, '')}`}>
                   <u>{d[key]}</u>
-                </p>
-              </a>
+                </a>
+              </p>
+
             )
           }
           case 'email': {
             return (
-              <a href={`mailto:${d[key]}`}  key={i}>              
-                <p className="margin--top--none margin--bottom--none">
+              <p className="margin--top--none margin--bottom--none"   key={i}>
+                <a href={`mailto:${d[key]}`}>              
                   <u>{d[key]}</u>
-                </p>
-              </a>
+                </a>
+              </p>
             )
           }
           default: { // others  
             return (
               /* TODO: CSP validation should be done on html elements before rendering */
-              <div dangerouslySetInnerHTML={{__html: `<p>${DOMPurify.sanitize(d[key])}</p>` }} key={i}/>
+              <div dangerouslySetInnerHTML={{__html: `<p className="margin--top--none margin--bottom--none">${DOMPurify.sanitize(d[key])}</p>` }} key={i}/>
             )
           }
         }
