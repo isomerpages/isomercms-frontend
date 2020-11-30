@@ -21,10 +21,10 @@ const Dropdown = ({
       { defaultOption &&
         <option value={ emptyDefault ? '' : slugifyLower(defaultOption) } key={slugifyLower(defaultOption)}>{ defaultOption }</option>
       }
-      { options.map((option) => {
-        if (option === defaultOption) return // skip option if already included in default option
-        return <option value={ slugifyLower(option) } key={slugifyLower(option)}>{ option }</option>
-      })}
+      { options
+        .filter((option) => option !== defaultOption)
+        .map((option) => ( <option value={ slugifyLower(option) } key={slugifyLower(option)}>{ option }</option> ))
+      }
     </select>
   </>
 );
