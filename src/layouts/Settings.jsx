@@ -52,6 +52,9 @@ const stateFields = {
     feedback: '',
     faq: '',
   },
+  navigationSettings: {
+    logo: '',
+  },
   socialMediaContent: {
     facebook: '',
     linkedin: '',
@@ -94,6 +97,7 @@ export default class Settings extends Component {
       const {
         configFieldsRequired,
         footerContent,
+        navigationContent,
         footerSha,
       } = settings;
 
@@ -112,6 +116,10 @@ export default class Settings extends Component {
         socialMediaContent: {
           ...currState.socialMediaContent,
           ...footerContent.social_media,
+        },
+        navigationSettings: {
+          ...currState.navigationSettings,
+          ...navigationContent,
         },
         footerSha,
       }));
@@ -206,10 +214,20 @@ export default class Settings extends Component {
         },
       }));
     } else {
-      this.setState((currState) => ({
-        ...currState,
-        [id]: value,
-      }));
+      if (id === 'logo') {
+        this.setState((currState) => ({
+          ...currState,
+          navigationSettings: {
+            ...currState.navigationSettings,
+            [id]: value,
+          },
+        }));
+      } else {
+        this.setState((currState) => ({
+          ...currState,
+          [id]: value,
+        }));
+      }
     }
   };
 
@@ -231,6 +249,7 @@ export default class Settings extends Component {
         facebook_pixel,
         google_analytics,
         colors,
+        navigationSettings,
       } = this.state;
       const configSettings = {
         title,
@@ -250,6 +269,7 @@ export default class Settings extends Component {
           social_media: socialMediaSettings,
         },
         configSettings,
+        navigationSettings,
         footerSha,
       };
 
@@ -367,6 +387,7 @@ export default class Settings extends Component {
       colors,
       socialMediaContent,
       otherFooterSettings,
+      navigationSettings: { logo },
       footerSha,
       errors,
     } = this.state;
@@ -380,10 +401,11 @@ export default class Settings extends Component {
 
     // retrieve errors
     const hasConfigErrors = _.some([errors.favicon, errors.shareicon, errors.facebook_pixel, errors.google_analytics]);
+    const hasNavigationErrors = _.some([errors.navigationSettings.logo])
     const hasColorErrors = _.some([errors.colors.primaryColor, errors.colors.secondaryColor]);
     const hasMediaColorErrors = _.some(errors.colors['media-colors'].map((mediaColor) => mediaColor.color));
     const hasSocialMediaErrors = _.some(Object.values(errors.socialMediaContent));
-    const hasErrors = hasConfigErrors || hasColorErrors || hasMediaColorErrors || hasSocialMediaErrors;
+    const hasErrors = hasConfigErrors || hasNavigationErrors || hasColorErrors || hasMediaColorErrors || hasSocialMediaErrors;
     return (
       <>
         <Header />
@@ -411,7 +433,19 @@ export default class Settings extends Component {
             {/* container for settings fields */}
             <div className={contentStyles.contentContainerCards}>
               <div className={contentStyles.cardContainer}>
-                {/* Favicon field */}
+                {/* Logo fields */}
+                <FormFieldMedia
+                  title="Agency logo"
+                  id="logo"
+                  value={logo}
+                  errorMessage={errors.navigationSettings.logo}
+                  isRequired
+                  onFieldChange={this.changeHandler}
+                  inlineButtonText={"Choose Image"}
+                  siteName={siteName}
+                  placeholder=" "
+                  type="image"
+                />
                 <FormFieldMedia
                   title="Favicon"
                   id="favicon"
