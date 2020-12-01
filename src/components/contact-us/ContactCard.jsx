@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
 import ContactFields from './ContactFields';
+import { isEmpty } from '../../utils';
 
 /* eslint
   react/no-array-index-key: 0
@@ -20,7 +21,7 @@ const EditorContactCard = ({
   sectionId,
 }) => {
   return (
-  <div className={`${elementStyles.card} move`}>
+  <div className={`${elementStyles.card} ${!shouldDisplay && !isEmpty(cardErrors) ? elementStyles.error : ''} move`}>
     <div className={elementStyles.cardHeader}>
       <h2>
         {title}

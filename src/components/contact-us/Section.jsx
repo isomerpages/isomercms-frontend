@@ -6,6 +6,7 @@ import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import EditorContactCard from './ContactCard';
 import EditorLocationCard from './LocationCard';
 import _ from 'lodash';
+import { isEmpty } from '../../utils';
 
 /* eslint
   react/no-array-index-key: 0
@@ -23,7 +24,7 @@ const EditorSection = ({
   errors,
   sectionId,
 }) => (
-  <div className={elementStyles.card}>
+  <div className={`${elementStyles.card} ${!shouldDisplay && !isEmpty(errors) ? elementStyles.error : ''}`}>
     <div className={elementStyles.cardHeader}>
       <h2>{`${_.upperFirst(sectionId)} section`}</h2>
       <button type="button" id={`section-${sectionId}`} onClick={displayHandler}>
