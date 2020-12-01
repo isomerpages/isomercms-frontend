@@ -215,24 +215,8 @@ const OverviewCard = ({
     setCanShowDropdown(!canShowDropdown)
   }
 
-  return (
+  const CardContent = (
     <>
-    {
-      canShowGenericWarningModal &&
-      <GenericWarningModal
-        displayTitle="Warning"
-        displayText="Moving a page to a different collection might lead to user confusion. You may wish to change the permalink for this page afterwards."
-        onProceed={moveFile}
-        onCancel={() => {
-          setChosenCategory()
-          setIsNewCollection(false)
-          setCanShowGenericWarningModal(false)
-        }}
-        proceedText="Continue"
-        cancelText="Cancel"
-      />
-    }
-    <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`} to={generateLink()}>
       <div id={itemIndex} className={contentStyles.componentInfo}>
         <div className={contentStyles.componentCategory}>{category ? category : ''}</div>
         <h1 className={contentStyles.componentTitle}>{generateTitle()}</h1>
@@ -340,7 +324,36 @@ const OverviewCard = ({
           </div>}
         </div>
       }
-    </Link>
+    </>
+  )
+  
+  return (
+    <>
+    {
+      resourceType !== 'file'
+      ?
+        <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`} to={generateLink()}>
+          {CardContent}
+        </Link>
+      : <div className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`}>
+          {CardContent}
+        </div>
+    }
+    {
+      canShowGenericWarningModal &&
+      <GenericWarningModal
+        displayTitle="Warning"
+        displayText="Moving a page to a different collection might lead to user confusion. You may wish to change the permalink for this page afterwards."
+        onProceed={moveFile}
+        onCancel={() => {
+          setChosenCategory()
+          setIsNewCollection(false)
+          setCanShowGenericWarningModal(false)
+        }}
+        proceedText="Continue"
+        cancelText="Cancel"
+      />
+    }
     {
       canShowDeleteWarningModal
       && (
