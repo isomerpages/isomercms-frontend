@@ -993,8 +993,8 @@ export default class EditHomepage extends Component {
                   value={frontMatter.notification}
                   id="site-notification"
                   onChange={this.onFieldChange} />
-                <span>
-                  <i>Note: Leave text field empty if you don’t need this notification bar</i>
+                <span className={elementStyles.info}>
+                  Note: Leave text field empty if you don’t need this notification bar
                 </span>
               </div>
 

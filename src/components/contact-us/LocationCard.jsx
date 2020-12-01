@@ -55,6 +55,9 @@ const EditorLocationSection = ({
               onFieldChange={onFieldChange}
               errorMessage={cardErrors.maps_link}
             />
+            <span className={elementStyles.info}>
+              Note: If left blank, map url is automatically generated from Address fields
+            </span>
             <LocationHoursFields
               operatingHours={operatingHours}
               onFieldChange={onFieldChange}

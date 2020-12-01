@@ -73,8 +73,8 @@ const EditorHeroSection = ({
             siteName={siteName}
             type="image"
           />
-          <span>
-            <i>Note: you can only have either Key Highlights+Hero button or a Hero Dropdown</i>
+          <span className={elementStyles.info}>
+            Note: you can only have either Key Highlights+Hero button or a Hero Dropdown
           </span>
           <div className={styles.card}>
             {dropdown
