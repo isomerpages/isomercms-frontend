@@ -9,6 +9,10 @@ import DeleteWarningModal from './DeleteWarningModal'
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
+import {
+  checkIsOutOfViewport,
+} from '../utils'
+
 // axios settings
 axios.defaults.withCredentials = true
 
@@ -24,10 +28,18 @@ const FolderCard = ({
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
   const [canShowDropdown, setCanShowDropdown] = useState(false)
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
+  const [isOutOfViewport, setIsOutOfViewport] = useState()
   const dropdownRef = useRef(null)
 
   useEffect(() => {
-    if (canShowDropdown) dropdownRef.current.focus()
+    if (canShowDropdown) {
+      dropdownRef.current.focus()
+      if (isOutOfViewport === undefined) {
+        // We only want to run this once
+        const bounding = dropdownRef.current.getBoundingClientRect()
+        setIsOutOfViewport(checkIsOutOfViewport(bounding, ['right']))
+      }
+    }
   }, [canShowDropdown])
   
   const generateLink = () => {
@@ -106,15 +118,19 @@ const FolderCard = ({
                   <i id={`settingsIcon-${itemIndex}`} className="bx bx-dots-vertical-rounded" />
                 </button>
               { canShowDropdown &&
-                <div className={`position-absolute ${elementStyles.dropdown}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
-                  <MenuItem handler={(e) => {dropdownRef.current.blur(); setIsFolderModalOpen(true)}} id={`folderSettings-${itemIndex}`}>
-                    <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
-                    <div className={elementStyles.dropdownText}>Rename</div>
-                  </MenuItem>
-                  <MenuItem handler={() => {dropdownRef.current.blur(); setCanShowDeleteWarningModal(true)}} id={`folderDelete-${itemIndex}`}>
-                    <i className="bx bx-sm bx-trash text-danger"/>
-                    <div className={elementStyles.dropdownText}>Delete folder</div>
-                  </MenuItem>
+                <div className={`${elementStyles.dropdown} ${isOutOfViewport && elementStyles.right}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
+                  { isOutOfViewport !== undefined && 
+                    <>
+                      <MenuItem handler={(e) => {dropdownRef.current.blur(); setIsFolderModalOpen(true)}} id={`folderSettings-${itemIndex}`}>
+                        <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
+                        <div className={elementStyles.dropdownText}>Rename</div>
+                      </MenuItem>
+                      <MenuItem handler={() => {dropdownRef.current.blur(); setCanShowDeleteWarningModal(true)}} id={`folderDelete-${itemIndex}`}>
+                        <i className="bx bx-sm bx-trash text-danger"/>
+                        <div className={elementStyles.dropdownText}>Delete folder</div>
+                      </MenuItem>
+                    </>
+                  }
                 </div>
               }
               </div>

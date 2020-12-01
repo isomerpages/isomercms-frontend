@@ -218,7 +218,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   const newBaseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? type === "resource" ? `/resources/${category}` : `/collections/${category}` : ''}`
   let newFileName, frontMatter
   if (type === "resource") {
-    newFileName = generateResourceFileName(title, date);
+    newFileName = generateResourceFileName(title.toLowerCase(), date);
     frontMatter = { title: enquoteString(title), date };
   } else if (type === "page") {
     frontMatter = thirdNavTitle
@@ -234,7 +234,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
         thirdNavOptions,
         collectionPageData,
         baseApiUrl: newBaseApiUrl,
-        title,
+        title: title.toLowerCase(),
         siteName,
         category: slugifiedCategory,
         isNewCollection,
@@ -244,7 +244,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
       })
     // Creating a simple page
     } else {
-      newFileName = generatePageFileName(title);
+      newFileName = generatePageFileName(title.toLowerCase());
     }
   }
   console.log('This is the new file name', newFileName)
@@ -266,7 +266,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
       content: base64EncodedContent,
       pageName: newFileName,
     };
-
+    await axios.post(`${newBaseApiUrl}/pages`, params);
     // If it is an existing file, delete the existing page
     if (!isNewFile) {
       await axios.delete(`${baseApiUrl}/pages/${fileName}`, {
@@ -275,7 +275,6 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
         },
       });
     }
-    await axios.post(`${newBaseApiUrl}/pages`, params);
   } else {
     // Save to existing .md file
     params = {
@@ -469,4 +468,15 @@ const incrementGroupIdentifier = (pageArray, shouldAddToThirdNav, shouldCreateTh
   // If identifier is alphanumeric, but you want to increment to just a number (for example, from 2b to 3)
   // When not adding to a third nav
   return (parseInt(lastFileNameIdentifierNum) + 1).toString()
+}
+
+export const checkIsOutOfViewport = (bounding, posArr) => {
+  // Checks if the element exceeds viewport in any of the dimensions given in posArr
+  let out = {};
+	out.top = bounding.top < 0;
+	out.left = bounding.left < 0;
+	out.bottom = bounding.bottom > (window.innerHeight || document.documentElement.clientHeight);
+  out.right = bounding.right > (window.innerWidth || document.documentElement.clientWidth);
+  
+  return posArr.some((pos) => {return out[pos]})
 }

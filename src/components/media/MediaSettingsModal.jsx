@@ -7,6 +7,8 @@ import FormField from '../FormField';
 import DeleteWarningModal from '../DeleteWarningModal';
 import SaveDeleteButtons from '../SaveDeleteButtons';
 import { validateFileName } from '../../utils/validators';
+import { toast } from 'react-toastify';
+import Toast from '../Toast';
 
 export default class MediaSettingsModal extends Component {
   constructor(props) {
@@ -52,36 +54,46 @@ export default class MediaSettingsModal extends Component {
     } = this.props;
     const { newFileName, sha, content } = this.state;
 
-    if (isPendingUpload) {
-      const params = {
-        content,
-      };
+    try {
+      if (isPendingUpload) {
+        const params = {
+          content,
+        };
 
-      if (type === 'image') {
-        params.imageName = newFileName;
+        if (type === 'image') {
+          params.imageName = newFileName;
+        } else {
+          params.documentName = newFileName;
+        }
+
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}`, params, {
+          withCredentials: true,
+        });
       } else {
-        params.documentName = newFileName;
-      }
+        const params = {
+          sha,
+          content,
+        };
 
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}`, params, {
-        withCredentials: true,
-      });
-    } else {
-      const params = {
-        sha,
-        content,
-      };
-
-      // rename the image if the request comes from an already uploaded image
-      if (newFileName === fileName) {
-        return;
+        // rename the image if the request comes from an already uploaded image
+        if (newFileName === fileName) {
+          return;
+        }
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${fileName}/rename/${newFileName}`, params, {
+          withCredentials: true,
+        });
       }
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${fileName}/rename/${newFileName}`, params, {
-        withCredentials: true,
-      });
+      onSave()
+    } catch (err) {
+      if (err.response.status === 409) {
+        // Error due to conflict in name
+        toast(
+          <Toast notificationType='error' text={`Another ${type === 'image' ? 'image' : 'file'} with the same name exists. Please choose a different name.`}/>, 
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+        );
+      }
+      console.log(err);
     }
-
-    onSave()
   }
 
   deleteFile = async () => {

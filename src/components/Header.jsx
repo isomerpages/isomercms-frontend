@@ -94,6 +94,8 @@ const Header = ({
           displayText="You have unsaved changes. Are you sure you want to navigate away from this page?"
           onProceed={toggleBackNav}
           onCancel={() => setShowBackNavWarningModal(false)}
+          proceedText="Yes"
+          cancelText="No"
         />
       }
     </div>

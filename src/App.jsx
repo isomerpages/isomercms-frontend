@@ -7,7 +7,9 @@ import {
 } from 'react-router-dom';
 import axios from 'axios';
 import * as Sentry from "@sentry/react";
+import { ToastContainer } from 'react-toastify';
 
+import 'react-toastify/dist/ReactToastify.css';
 // Layouts
 import AuthCallback from './layouts/AuthCallback'
 import Home from './layouts/Home';
@@ -27,6 +29,8 @@ import Settings from './layouts/Settings';
 import ProtectedRoute from './components/ProtectedRoute'
 import FallbackComponent from './components/FallbackComponent'
 
+import elementStyles from './styles/isomer-cms/Elements.module.scss';
+
 // Import contexts
 const { LoginContext } = require('./contexts/LoginContext')
 
@@ -36,6 +40,18 @@ axios.defaults.withCredentials = true
 // Constants
 const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 const LOCAL_STORAGE_AUTH_STATE = 'isomercms_auth'
+
+const ToastCloseButton = ({ closeToast }) => (
+  <span style={{
+    display: "inline-flex",
+    alignItems: "center"
+  }}>
+    <i
+      className="bx bx-x bx-sm"
+      onClick={closeToast}
+    />
+  </span>
+);
 
 function App() {
   // Keep track of whether user is logged in
@@ -103,6 +119,7 @@ function App() {
 
   return (
     <Router basename={process.env.PUBLIC_URL}>
+        <ToastContainer hideProgressBar={true} position='top-center' closeButton={ToastCloseButton} className={elementStyles.toastContainer}/>
         <div>
           {/*
             A <Switch> looks through all its children <Route>

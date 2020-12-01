@@ -133,7 +133,6 @@
 
   .boxesContainer{
     @include cardFormat;
-    overflow: hidden;
 
     .card{
       width: $component-card-width;
