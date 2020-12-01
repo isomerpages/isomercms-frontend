@@ -17,6 +17,9 @@ import { validateSocialMedia } from '../utils/validators';
 const stateFields = {
   title: '',
   favicon: '',
+  shareicon: '',
+  facebook_pixel: '',
+  google_analytics: '',
   colors: {
     'primary-color': '',
     'secondary-color': '',
@@ -224,11 +227,17 @@ export default class Settings extends Component {
       const {
         title,
         favicon,
+        shareicon,
+        facebook_pixel,
+        google_analytics,
         colors,
       } = this.state;
       const configSettings = {
         title,
         favicon,
+        shareicon,
+        'facebook-pixel': facebook_pixel, // rename due to quirks on isomer template
+        google_analytics,
         colors,
       };
 
@@ -352,6 +361,9 @@ export default class Settings extends Component {
       siteName,
       title,
       favicon,
+      shareicon,
+      facebook_pixel,
+      google_analytics,
       colors,
       socialMediaContent,
       otherFooterSettings,
@@ -367,7 +379,7 @@ export default class Settings extends Component {
     const { location } = this.props;
 
     // retrieve errors
-    const hasConfigErrors = _.some([errors.favicon]);
+    const hasConfigErrors = _.some([errors.favicon, errors.shareicon, errors.facebook_pixel, errors.google_analytics]);
     const hasColorErrors = _.some([errors.colors.primaryColor, errors.colors.secondaryColor]);
     const hasMediaColorErrors = _.some(errors.colors['media-colors'].map((mediaColor) => mediaColor.color));
     const hasSocialMediaErrors = _.some(Object.values(errors.socialMediaContent));
@@ -412,6 +424,38 @@ export default class Settings extends Component {
                   placeholder=" "
                   type="image"
                 />
+                <FormFieldMedia
+                  title="Shareicon"
+                  id="shareicon"
+                  value={shareicon}
+                  errorMessage={errors.shareicon}
+                  isRequired
+                  onFieldChange={this.changeHandler}
+                  inlineButtonText={"Choose Image"}
+                  siteName={siteName}
+                  placeholder=" "
+                  type="image"
+                />
+                {/* Analytics fields */}
+                <div id="analytics-fields">
+                  <p className={elementStyles.formSectionHeader}>Analytics</p>
+                  <FormFieldHorizontal
+                    title="Facebook Pixel"
+                    id="facebook_pixel"
+                    value={facebook_pixel}
+                    errorMessage={errors.facebook_pixel}
+                    isRequired={false}
+                    onFieldChange={this.changeHandler}
+                  />
+                  <FormFieldHorizontal
+                    title="Google Analytics"
+                    id="google_analytics"
+                    value={google_analytics}
+                    errorMessage={errors.google_analytics}
+                    isRequired={false}
+                    onFieldChange={this.changeHandler}
+                  />
+                </div>
                 {/* Color fields */}
                 <div id="color-fields">
                   <p className={elementStyles.formSectionHeader}>Colors</p>
