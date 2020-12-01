@@ -18,7 +18,12 @@ const LocationAddress = ({ location } ) => (
   <div className="col is-6">
     <div>
       { location.address.map((value, i) => <p className="content margin--top--none margin--bottom--none" key={i}>{value}</p>) }
-      <a href={location.maps_link || `https://maps.google.com/?q=term${location.address.join('+').replace(/\s/g, '+')}`} className="bp-sec-button has-text-secondary margin--top">
+      <a 
+        href={location.maps_link || `https://maps.google.com/?q=${location.address.join('+').replace(/\s/g, '+')}`} 
+        className="bp-sec-button has-text-secondary margin--top"
+        rel="noopener noreferrer" 
+        target="_blank"
+      >
         <div>
           <span>VIEW MAP</span>
           <i className="sgds-icon sgds-icon-arrow-right" aria-hidden="true"></i>
