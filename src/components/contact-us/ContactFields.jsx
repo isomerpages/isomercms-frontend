@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import FormField from '../FormField';
 import InputMaskFormField from '../InputMaskFormField';
 import Dropdown from '../Dropdown';
+import _ from 'lodash';
 
 const ContactFields = ({ 
   cardIndex, 
@@ -19,7 +20,7 @@ const ContactFields = ({
         title="Phone"
         mask={phoneFieldType === 'local' ? '+65 9999 9999': '1 800 999 9999'}
         maskChar="_"
-        alwaysShowMask={true}
+        alwaysShowMask={false}
         id={`${sectionId}-${cardIndex}-phone-0`}
         value={content[0].phone}
         onFieldChange={onFieldChange}
@@ -27,7 +28,7 @@ const ContactFields = ({
       />
       <Dropdown
         options={["Local", "Tollfree"]}
-        defaultOption={content[0].phone[0] === '1' ? 'Tollfree' : 'Local'} 
+        defaultOption={_.upperFirst(phoneFieldType)} 
         id={"phone-field-type"}
         onFieldChange={e => setPhoneFieldType(e.target.value)}
       />
