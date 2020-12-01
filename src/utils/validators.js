@@ -76,12 +76,12 @@ const HERO_DROPDOWN_MAX_LENGTH = 30;
 // Contact Us Editor
 // ===============
 // Contacts
-const CONTACT_TITLE_MIN_LENGTH = 2;
+const CONTACT_TITLE_MIN_LENGTH = 0;
 const CONTACT_TITLE_MAX_LENGTH = 30;
 const CONTACT_DESCRIPTION_MAX_LENGTH = 400;
 
 // Locations
-const LOCATION_TITLE_MIN_LENGTH = 2;
+const LOCATION_TITLE_MIN_LENGTH = 0;
 const LOCATION_TITLE_MAX_LENGTH = 30;
 const LOCATION_ADDRESS_MIN_LENGTH = 2;
 const LOCATION_ADDRESS_MAX_LENGTH = 30;
@@ -467,8 +467,8 @@ const validateContact = (contactType, value) => {
   let errorMessage = '';
   switch (contactType) {
     case 'title':
-      if (value.length < CONTACT_TITLE_MIN_LENGTH) {
-        errorMessage = `Title should be longer than ${CONTACT_TITLE_MIN_LENGTH} characters.`;
+      if (value.length <= CONTACT_TITLE_MIN_LENGTH) {
+        errorMessage = `Title cannot be empty.`;
       };
       if (value.length > CONTACT_TITLE_MAX_LENGTH) {
         errorMessage = `Title should be shorter than ${CONTACT_TITLE_MAX_LENGTH} characters.`;
@@ -508,8 +508,8 @@ const validateLocation = (locationType, value) => {
   switch (locationType) {
     case 'title':
       // Title is too short
-      if (value.length < LOCATION_TITLE_MIN_LENGTH) {
-        errorMessage = `Title should be longer than ${LOCATION_TITLE_MIN_LENGTH} characters.`;
+      if (value.length <= LOCATION_TITLE_MIN_LENGTH) {
+        errorMessage = `Title cannot be empty.`;
       };
       // Title is too long
       if (value.length > LOCATION_TITLE_MAX_LENGTH) {
