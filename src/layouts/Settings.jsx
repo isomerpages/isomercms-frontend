@@ -433,6 +433,14 @@ export default class Settings extends Component {
             {/* container for settings fields */}
             <div className={contentStyles.contentContainerCards}>
               <div className={contentStyles.cardContainer}>
+                <FormFieldHorizontal
+                  title="Title"
+                  id="title"
+                  value={title}
+                  errorMessage={errors.title}
+                  isRequired={false}
+                  onFieldChange={this.changeHandler}
+                />
                 {/* Logo fields */}
                 <FormFieldMedia
                   title="Agency logo"
