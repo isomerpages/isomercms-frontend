@@ -16,6 +16,7 @@ import {
   generateCollectionPageFileName,
   generateResourceFileName,
   saveFileAndRetrieveUrl,
+  retrieveResourceFileMetadata,
 } from '../utils';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import { validatePageSettings, validateResourceSettings } from '../utils/validators';
@@ -181,7 +182,7 @@ const ComponentSettingsModal = ({
                 setFileUrl(frontMatter.file_url)
                 setOriginalFileUrl(frontMatter.file_url)
 
-                setResourceDate(frontMatter.date)
+                setResourceDate(type === 'resource' ? retrieveResourceFileMetadata(fileName).date : frontMatter.date)
                 setOriginalThirdNavTitle(frontMatter.third_nav_title)
                 setThirdNavTitle(frontMatter.third_nav_title)
               }
@@ -242,6 +243,7 @@ const ComponentSettingsModal = ({
                 originalCategory,
                 collectionPageData,
                 type,
+                resourceType: isPost ? 'post' : 'file',
                 fileName,
                 isNewFile,
                 siteName,

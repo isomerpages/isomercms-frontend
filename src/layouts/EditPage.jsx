@@ -21,6 +21,7 @@ import {
   prettifyPageFileName,
   prettifyCollectionPageFileName,
   retrieveResourceFileMetadata,
+  prettifyDate,
 } from '../utils';
 import {
   boldButton,
@@ -61,7 +62,11 @@ const getApiEndpoint = (isResourcePage, isCollectionPage, { collectionName, file
 
 const extractMetadataFromFilename = (isResourcePage, isCollectionPage, fileName) => {
   if (isResourcePage) {
-    return retrieveResourceFileMetadata(fileName)
+    const resourceMetadata = retrieveResourceFileMetadata(fileName)
+    return {
+      ...resourceMetadata,
+      date: prettifyDate(resourceMetadata.date)
+    }
   }
   if (isCollectionPage) {
     return { title: prettifyCollectionPageFileName(fileName), date: '' }

@@ -27,6 +27,7 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import {
   prettifyCollectionPageFileName,
   prettifyPageFileName,
+  prettifyDate,
   retrieveResourceFileMetadata,
 } from '../utils';
 
@@ -34,7 +35,7 @@ import {
 axios.defaults.withCredentials = true
 
 const OverviewCard = ({
-  date, category, settingsToggle, itemIndex, siteName, fileName, isResource, isHomepage, allCategories
+  date, category, settingsToggle, itemIndex, siteName, fileName, isResource, isHomepage, allCategories, resourceType
 }) => {
   const dropdownRef = useRef(null)
   const fileMoveDropdownRef = useRef(null)
@@ -71,7 +72,7 @@ const OverviewCard = ({
       const base64DecodedContent = Base64.decode(content);
       const { frontMatter, mdBody } = frontMatterParser(base64DecodedContent);
       const {
-        title, permalink, file_url: fileUrl, date, third_nav_title: thirdNavTitle,
+        title, permalink, file_url: fileUrl, third_nav_title: thirdNavTitle,
       } = frontMatter;
 
       let collectionPageData
@@ -90,6 +91,7 @@ const OverviewCard = ({
         category: chosenCategory,
         originalCategory: category,
         type: isResource ? 'resource' : 'page',
+        resourceType,
         originalThirdNavTitle: thirdNavTitle,
         fileName,
         isNewFile: false,
@@ -234,7 +236,7 @@ const OverviewCard = ({
       <div id={itemIndex} className={contentStyles.componentInfo}>
         <div className={contentStyles.componentCategory}>{category ? category : ''}</div>
         <h1 className={contentStyles.componentTitle}>{generateTitle()}</h1>
-        <p className={contentStyles.componentDate}>{date ? date : ''}</p>
+        <p className={contentStyles.componentDate}>{`${date ? prettifyDate(date) : ''}${resourceType ? `/${resourceType.toUpperCase()}` : ''}`}</p>
       </div>
       {settingsToggle &&
         <div className="position-relative mt-auto">

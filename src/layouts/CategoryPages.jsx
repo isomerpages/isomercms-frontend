@@ -45,9 +45,10 @@ const CategoryPages = ({ match, location, isResource }) => {
 
         if (resourcePages.length > 0) {
           const retrievedResourcePages = resourcePages.map((resourcePage) => {
-            const { title, date } = retrieveResourceFileMetadata(resourcePage.fileName);
+            const { title, type, date } = retrieveResourceFileMetadata(resourcePage.fileName);
             return {
               title,
+              type,
               date,
               fileName: resourcePage.fileName,
             };
