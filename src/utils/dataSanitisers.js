@@ -32,31 +32,41 @@ function sanitiseAddress(address) {
 }
 
 function sanitiseOperatingHours(operatingHours) {
-  let sanitisedOperatingHours = [];
+  let sanitisedOperatingHours = {};
+  sanitisedOperatingHours.days = _.cloneDeep(operatingHours.days) || '';
+  sanitisedOperatingHours.time = _.cloneDeep(operatingHours.time) || '';
+  sanitisedOperatingHours.description = _.cloneDeep(operatingHours.description) || '';
+  return sanitisedOperatingHours
+}
+
+function sanitiseOperatingHoursArr(operatingHoursArr) {
+  let sanitisedOperatingHoursArr = [];
   // sanitisedOperatingHours should be an array of objects of maximum length DEFAULT_NUM_OPERATING_FIELDS
   // we find the first DEFAULT_NUM_OPERATING_FIELDS objects and push a deep clone if they exist
   _.range(DEFAULT_NUM_OPERATING_FIELDS).forEach( (index) => {
-    sanitisedOperatingHours.push( (operatingHours && operatingHours[index]) ? _.cloneDeep(operatingHours[index]) : undefined)
+    sanitisedOperatingHoursArr.push( (operatingHoursArr && operatingHoursArr[index]) ? sanitiseOperatingHours(operatingHoursArr[index]) : undefined)
   })
-  return sanitisedOperatingHours.filter(elem => elem);
+  return sanitisedOperatingHoursArr.filter(elem => elem);
 }
 
 function sanitiseContact(contact) { // rearrange 
-  const { content } = contact
+  const { title, content } = contact
   
-  let sanitisedContact = _.cloneDeep(contact)
+  let sanitisedContact = {}
   sanitisedContact.content = sanitiseContent(content)
+  sanitisedContact.title = _.cloneDeep(title) || ''
   
   return sanitisedContact
 }
 
 function sanitiseLocation(location) {
-  const { address, operating_hours: operatingHours } = location
+  const { title, address, operating_hours: operatingHours, maps_link: mapUrl } = location
 
-  let sanitisedLocation = _.cloneDeep(location)
+  let sanitisedLocation = {}
   sanitisedLocation.address = sanitiseAddress(address)
-  sanitisedLocation.operating_hours = sanitiseOperatingHours(operatingHours)
-  
+  sanitisedLocation.operating_hours = sanitiseOperatingHoursArr(operatingHours)
+  sanitisedLocation.maps_link = _.cloneDeep(mapUrl) || ''
+  sanitisedLocation.title = _.cloneDeep(title) || ''
   return sanitisedLocation
 }
 
