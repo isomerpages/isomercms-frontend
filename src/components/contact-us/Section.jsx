@@ -62,7 +62,7 @@ const EditorSection = ({
                                 title={card.title}
                                 content={card.content}
                                 cardIndex={cardIndex}
-                                deleteHandler={deleteHandler}
+                                deleteHandler={(event)=>deleteHandler(event, sectionId)}
                                 onFieldChange={onFieldChange}
                                 shouldDisplay={displayCards[cardIndex]}
                                 displayHandler={displayHandler}
@@ -76,7 +76,7 @@ const EditorSection = ({
                                 operatingHours={card.operating_hours}
                                 mapUrl={card.maps_link}
                                 cardIndex={cardIndex}
-                                deleteHandler={deleteHandler}
+                                deleteHandler={(event)=>deleteHandler(event, sectionId)}
                                 onFieldChange={onFieldChange}
                                 shouldDisplay={displayCards[cardIndex]}
                                 displayHandler={displayHandler}

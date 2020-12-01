@@ -26,6 +26,7 @@ import TemplateLocationsSection from '../templates/contact-us/LocationsSection'
 import TemplateContactsSection from '../templates/contact-us/ContactsSection'
 import TemplateFeedbackSection from '../templates/contact-us/FeedbackSection';
 
+import DeleteWarningModal from '../components/DeleteWarningModal';
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -103,7 +104,11 @@ export default class EditContactUs extends Component {
       errors: {
         contacts: [],
         locations: [],
-      }
+      },
+      itemPendingForDelete: {
+        id: null,
+        type: '',
+      },
     };
   }
 
@@ -402,9 +407,7 @@ export default class EditContactUs extends Component {
     }
   }
 
-  deleteHandler = async (event) => {
-    const { id } = event.target
-
+  deleteHandler = async (id) => {
     try {
       const { scrollRefs, state } = this;
       const { frontMatter, displaySections, errors } = state;
@@ -569,6 +572,7 @@ export default class EditContactUs extends Component {
       frontMatterSha,
       footerSha,
       errors,
+      itemPendingForDelete,
     } = state;
     const { match } = this.props;
     const { siteName } = match.params;
@@ -583,6 +587,16 @@ export default class EditContactUs extends Component {
 
     return (
       <>
+        {
+          itemPendingForDelete.id
+          && (
+          <DeleteWarningModal
+            onCancel={() => this.setState({ itemPendingForDelete: { id: null, type: '' } })}
+            onDelete={() => { this.deleteHandler(itemPendingForDelete.id); this.setState({ itemPendingForDelete: { id: null, type: '' } }); }}
+            type={itemPendingForDelete.type}
+          />
+          )
+        }
         <Header
           title={"Contact Us"}
           shouldAllowEditPageBackNav={hasChanges}
@@ -617,7 +631,7 @@ export default class EditContactUs extends Component {
                   cards={locations}
                   onFieldChange={this.onFieldChange}
                   createHandler={this.createHandler}
-                  deleteHandler={this.deleteHandler}
+                  deleteHandler={(event, type) => this.setState({ itemPendingForDelete: { id: event.target.id, type } })}
                   shouldDisplay={sectionsDisplay.locations}
                   displayCards={displaySections.locations}
                   displayHandler={this.displayHandler}
@@ -629,7 +643,7 @@ export default class EditContactUs extends Component {
                   cards={contacts}
                   onFieldChange={this.onFieldChange}
                   createHandler={this.createHandler}
-                  deleteHandler={this.deleteHandler}
+                  deleteHandler={(event, type) => this.setState({ itemPendingForDelete: { id: event.target.id, type } })}
                   shouldDisplay={sectionsDisplay.contacts}
                   displayCards={displaySections.contacts}
                   displayHandler={this.displayHandler}
