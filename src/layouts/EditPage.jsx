@@ -329,7 +329,7 @@ export default class EditPage extends Component {
   render() {
     const { match, isCollectionPage, isResourcePage } = this.props;
     const { siteName, fileName, collectionName, resourceName } = match.params;
-    const { title, date } = extractMetadataFromFilename(isResourcePage, isCollectionPage, fileName)
+    const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, isCollectionPage, fileName)
     const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, collectionName, siteName)
     const {
       csp,
@@ -392,55 +392,65 @@ export default class EditPage extends Component {
             />
             )
           }
-          <div className={`${editorStyles.pageEditorSidebar} ${isLoadingPageContent ? editorStyles.pageEditorSidebarLoading : null}`} >
-            {
-              isLoadingPageContent
-              ? (
-                <div className={`spinner-border text-primary ${editorStyles.sidebarLoadingIcon}`} />
-              ) : ''
-            }
-            <SimpleMDE
-              id="simplemde-editor"
-              className="h-100"
-              onChange={this.onEditorChange}
-              ref={this.mdeRef}
-              value={editorValue}
-              options={{
-                toolbar: [
-                  headingButton,
-                  boldButton,
-                  italicButton,
-                  strikethroughButton,
-                  '|',
-                  codeButton,
-                  quoteButton,
-                  unorderedListButton,
-                  orderedListButton,
-                  '|',
-                  {
-                    name: 'image',
-                    action: async () => {
-                      this.setState({ isSelectingImage: true });
-                    },
-                    className: 'fa fa-picture-o',
-                    title: 'Insert Image',
-                    default: true,
-                  },
-                  {
-                    name: 'link',
-                    action: async () => { 
-                      this.onHyperlinkOpen() 
-                    },
-                    className: 'fa fa-link',
-                    title: 'Insert Link',
-                    default: true,
-                  },
-                  tableButton,
-                  guideButton,
-                ],
-              }}
-            />
-          </div>
+          {
+            resourceType !== 'file'
+            ?
+              <div className={`${editorStyles.pageEditorSidebar} ${isLoadingPageContent ? editorStyles.pageEditorSidebarLoading : null}`} >
+                {
+                  isLoadingPageContent
+                  ? (
+                    <div className={`spinner-border text-primary ${editorStyles.sidebarLoadingIcon}`} />
+                  ) : ''
+                }
+                <SimpleMDE
+                  id="simplemde-editor"
+                  className="h-100"
+                  onChange={this.onEditorChange}
+                  ref={this.mdeRef}
+                  value={editorValue}
+                  options={{
+                    toolbar: [
+                      headingButton,
+                      boldButton,
+                      italicButton,
+                      strikethroughButton,
+                      '|',
+                      codeButton,
+                      quoteButton,
+                      unorderedListButton,
+                      orderedListButton,
+                      '|',
+                      {
+                        name: 'image',
+                        action: async () => {
+                          this.setState({ isSelectingImage: true });
+                        },
+                        className: 'fa fa-picture-o',
+                        title: 'Insert Image',
+                        default: true,
+                      },
+                      {
+                        name: 'link',
+                        action: async () => { 
+                          this.onHyperlinkOpen() 
+                        },
+                        className: 'fa fa-link',
+                        title: 'Insert Link',
+                        default: true,
+                      },
+                      tableButton,
+                      guideButton,
+                    ],
+                  }}
+                />
+              </div>
+            :
+              <div className={`${editorStyles.pageEditorSidebar}`}>
+                <div className={`text-center`}>
+                  Editing is disabled for downloadable files.
+                </div>
+              </div>
+          }
           <div className={editorStyles.pageEditorMain}>
             {
               isCollectionPage && leftNavPages
