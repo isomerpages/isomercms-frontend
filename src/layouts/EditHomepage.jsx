@@ -475,31 +475,47 @@ export default class EditHomepage extends Component {
           break;
         }
         case 'highlight': {
-          const highlightIndex = parseInt(idArray[1], 10) + 1;
+          // If key highlights section exists
+          if (!_.isEmpty(frontMatter.sections[0].hero.key_highlights)) {
+            const highlightIndex = parseInt(idArray[1], 10) + 1;
 
-          newSections = update(frontMatter.sections, {
-            0: {
-              hero: {
-                key_highlights: {
-                  $splice: [[highlightIndex, 0, KeyHighlightConstructor(false)]],
+            newSections = update(frontMatter.sections, {
+              0: {
+                hero: {
+                  key_highlights: {
+                    $splice: [[highlightIndex, 0, KeyHighlightConstructor(false)]],
+                  },
                 },
               },
-            },
-          });
+            });
 
-          newErrors = update(errors, {
-            highlights: {
-              $splice: [[highlightIndex, 0, KeyHighlightConstructor(true)]],
-            },
-          });
+            newErrors = update(errors, {
+              highlights: {
+                $splice: [[highlightIndex, 0, KeyHighlightConstructor(true)]],
+              },
+            });
 
-          const newDisplayHighlights = update(displayHighlights, {
-            $splice: [[highlightIndex, 0, true]],
-          });
+            const newDisplayHighlights = update(displayHighlights, {
+              $splice: [[highlightIndex, 0, true]],
+            });
 
-          this.setState({
-            displayHighlights: newDisplayHighlights,
-          });
+            this.setState({
+              displayHighlights: newDisplayHighlights,
+            });
+          // If neither key highlights nor dropdown section exists, create new key highlights array
+          } else {
+            newSections = _.cloneDeep(frontMatter.sections)
+            newSections[0].hero.key_highlights = [KeyHighlightConstructor(false)];
+
+            newErrors = _.cloneDeep(errors)
+            newErrors.highlights = [KeyHighlightConstructor(true)]
+
+            const newDisplayHighlights = [true]
+
+            this.setState({
+              displayHighlights: newDisplayHighlights,
+            });
+          }
           break;
         }
         default:
