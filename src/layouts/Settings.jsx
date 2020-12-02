@@ -462,8 +462,6 @@ export default class Settings extends Component {
                     title="Display government masthead"
                     id="is_government"
                     value={is_government}
-                    errorMessage={errors.is_government}
-                    isRequired={false}
                     onFieldChange={this.changeHandler}
                   />
                 </div>

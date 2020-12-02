@@ -21,13 +21,9 @@ const creatableSelectHandler = (callback, dropdownEvent, id) => {
 
 const FormFieldDropdown = ({
     title,
-    defaultValue,
     value,
     id,
-    errorMessage,
     onFieldChange,
-    isRequired,
-    style,
 }) => (
     <>
       <div className={elementStyles.formDropdown}>
@@ -35,7 +31,6 @@ const FormFieldDropdown = ({
             <span>{`${title}:`}</span>
         </div>
         <CreatableSelect
-            isClearable
             className={elementStyles.formDropdownInput}
             onChange={(event) => creatableSelectHandler(onFieldChange, event, id)}
             value={{
@@ -62,10 +57,7 @@ FormFieldDropdown.propTypes = {
     defaultValue: PropTypes.string,
     value: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
-    errorMessage: PropTypes.string.isRequired,
     onFieldChange: PropTypes.func.isRequired,
-    isRequired: PropTypes.bool.isRequired,
-    style: PropTypes.string,
 };
   
 FormFieldDropdown.defaultProps = {
