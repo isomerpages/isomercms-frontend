@@ -251,13 +251,21 @@ export default class EditHomepage extends Component {
         case 'section': {
           // The field that changed belongs to a homepage section config
           const { sections } = state.frontMatter;
-          const copiedSections = _.cloneDeep(sections);
 
           // sectionIndex is the index of the section array in the frontMatter
           const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT);
           const sectionType = idArray[2]; // e.g. "hero" or "infobar" or "resources"
           const field = idArray[3]; // e.g. "title" or "subtitle"
-          copiedSections[sectionIndex][sectionType][field] = value;
+
+          const newSections = update(sections, {
+            [sectionIndex]: {
+              [sectionType]: {
+                [field]: {
+                  $set: value,
+                },
+              },
+            },
+          });
 
           let newSectionError
 
@@ -298,7 +306,7 @@ export default class EditHomepage extends Component {
             ...currState,
             frontMatter: {
               ...currState.frontMatter,
-              sections: copiedSections,
+              sections: newSections,
             },
             errors: newErrors,
           }));
@@ -309,16 +317,24 @@ export default class EditHomepage extends Component {
         case 'highlight': {
           // The field that changed belongs to a hero highlight
           const { sections } = state.frontMatter;
-          const copiedSections = _.cloneDeep(sections);
-
-          const highlights = copiedSections[0].hero.key_highlights;
 
           // highlightsIndex is the index of the key_highlights array
           const highlightsIndex = parseInt(idArray[1], RADIX_PARSE_INT);
           const field = idArray[2]; // e.g. "title" or "url"
 
-          highlights[highlightsIndex][field] = value;
-          copiedSections[0].hero.key_highlights = highlights;
+          const newSections = update(sections, {
+            [0]: {
+              hero: {
+                key_highlights: {
+                  [highlightsIndex]: {
+                    [field]: {
+                      $set: value,
+                    },
+                  },
+                },
+              },
+            },
+          });
 
           const newErrors = update(errors, {
             highlights: {
@@ -332,7 +348,7 @@ export default class EditHomepage extends Component {
             ...currState,
             frontMatter: {
               ...currState.frontMatter,
-              sections: copiedSections,
+              sections: newSections,
             },
             errors: newErrors,
           }));
@@ -343,16 +359,26 @@ export default class EditHomepage extends Component {
         case 'dropdownelem': {
           // The field that changed is a dropdown element (i.e. dropdownelem)
           const { sections } = state.frontMatter;
-          const copiedSections = _.cloneDeep(sections);
-
-          const dropdowns = copiedSections[0].hero.dropdown.options;
 
           // dropdownsIndex is the index of the dropdown.options array
           const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT);
           const field = idArray[2]; // e.g. "title" or "url"
 
-          dropdowns[dropdownsIndex][field] = value;
-          copiedSections[0].hero.dropdown.options = dropdowns;
+          const newSections = update(sections, {
+            [0]: {
+              hero: {
+                dropdown: {
+                  options: {
+                    [dropdownsIndex]: {
+                      [field]: {
+                        $set: value,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          });
 
           const newErrors = update(errors, {
             dropdownElems: {
@@ -366,7 +392,7 @@ export default class EditHomepage extends Component {
             ...currState,
             frontMatter: {
               ...currState.frontMatter,
-              sections: copiedSections,
+              sections: newSections,
             },
             errors: newErrors,
           }));
@@ -804,8 +830,11 @@ export default class EditHomepage extends Component {
         case 'section': {
           const { displaySections } = this.state;
           const sectionId = idArray[1];
-          const newDisplaySections = _.cloneDeep(displaySections);
-          newDisplaySections[sectionId] = !newDisplaySections[sectionId];
+          const newDisplaySections = update(displaySections, {
+            [sectionId]: {
+              $set: !displaySections[sectionId],
+            },
+          });
 
           this.setState({
             displaySections: newDisplaySections,
@@ -815,8 +844,11 @@ export default class EditHomepage extends Component {
         case 'highlight': {
           const { displayHighlights } = this.state;
           const highlightIndex = idArray[1];
-          const newDisplayHighlights = _.cloneDeep(displayHighlights);
-          newDisplayHighlights[highlightIndex] = !newDisplayHighlights[highlightIndex];
+          const newDisplayHighlights = update(displayHighlights, {
+            [highlightIndex]: {
+              $set: !displayHighlights[highlightIndex],
+            },
+          });
 
           this.setState({
             displayHighlights: newDisplayHighlights,
@@ -826,8 +858,11 @@ export default class EditHomepage extends Component {
         case 'dropdownelem': {
           const { displayDropdownElems } = this.state;
           const dropdownsIndex = idArray[1];
-          const newDisplayDropdownElems = _.cloneDeep(displayDropdownElems);
-          newDisplayDropdownElems[dropdownsIndex] = !newDisplayDropdownElems[dropdownsIndex];
+          const newDisplayDropdownElems = update(displayDropdownElems, {
+            [dropdownsIndex]: {
+              $set: !displayDropdownElems[dropdownsIndex],
+            },
+          });
 
           this.setState({
             displayDropdownElems: newDisplayDropdownElems,
