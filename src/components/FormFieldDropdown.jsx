@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
 const calculateBoolean = (booleanVal) => {
@@ -30,7 +30,7 @@ const FormFieldDropdown = ({
         <div className={`d-flex align-items-center ${elementStyles.formDropdownLabel}`}>
             <span>{`${title}:`}</span>
         </div>
-        <CreatableSelect
+        <Select
             className={elementStyles.formDropdownInput}
             onChange={(event) => creatableSelectHandler(onFieldChange, event, id)}
             value={{
@@ -54,13 +54,7 @@ export default FormFieldDropdown;
   
 FormFieldDropdown.propTypes = {
     title: PropTypes.string.isRequired,
-    defaultValue: PropTypes.string,
     value: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
     onFieldChange: PropTypes.func.isRequired,
-};
-  
-FormFieldDropdown.defaultProps = {
-    defaultValue: 'false',
-    style: undefined,
 };
