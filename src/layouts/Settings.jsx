@@ -20,6 +20,7 @@ const stateFields = {
   shareicon: '',
   facebook_pixel: '',
   google_analytics: '',
+  is_government: '',
   colors: {
     'primary-color': '',
     'secondary-color': '',
@@ -248,6 +249,7 @@ export default class Settings extends Component {
         shareicon,
         facebook_pixel,
         google_analytics,
+        is_government,
         colors,
         navigationSettings,
       } = this.state;
@@ -257,6 +259,7 @@ export default class Settings extends Component {
         shareicon,
         'facebook-pixel': facebook_pixel, // rename due to quirks on isomer template
         google_analytics,
+        is_government,
         colors,
       };
 
@@ -384,6 +387,7 @@ export default class Settings extends Component {
       shareicon,
       facebook_pixel,
       google_analytics,
+      is_government,
       colors,
       socialMediaContent,
       otherFooterSettings,
@@ -400,7 +404,7 @@ export default class Settings extends Component {
     const { location } = this.props;
 
     // retrieve errors
-    const hasConfigErrors = _.some([errors.favicon, errors.shareicon, errors.facebook_pixel, errors.google_analytics]);
+    const hasConfigErrors = _.some([errors.favicon, errors.shareicon, errors.is_government, errors.facebook_pixel, errors.google_analytics]);
     const hasNavigationErrors = _.some([errors.navigationSettings.logo])
     const hasColorErrors = _.some([errors.colors.primaryColor, errors.colors.secondaryColor]);
     const hasMediaColorErrors = _.some(errors.colors['media-colors'].map((mediaColor) => mediaColor.color));
@@ -433,51 +437,66 @@ export default class Settings extends Component {
             {/* container for settings fields */}
             <div className={contentStyles.contentContainerCards}>
               <div className={contentStyles.cardContainer}>
-                <FormFieldHorizontal
-                  title="Title"
-                  id="title"
-                  value={title}
-                  errorMessage={errors.title}
-                  isRequired={false}
-                  onFieldChange={this.changeHandler}
-                />
+                {/* General fields */}
+                <div id="general-fields">
+                  <p className={elementStyles.formSectionHeader}>General</p>
+                  <FormFieldHorizontal
+                    title="Title"
+                    id="title"
+                    value={title}
+                    errorMessage={errors.title}
+                    isRequired={false}
+                    onFieldChange={this.changeHandler}
+                  />
+                  <FormFieldHorizontal
+                    title="Display government masthead"
+                    id="is_government"
+                    value={is_government}
+                    errorMessage={errors.is_government}
+                    isRequired={false}
+                    onFieldChange={this.changeHandler}
+                  />
+                </div>
                 {/* Logo fields */}
-                <FormFieldMedia
-                  title="Agency logo"
-                  id="logo"
-                  value={logo}
-                  errorMessage={errors.navigationSettings.logo}
-                  isRequired
-                  onFieldChange={this.changeHandler}
-                  inlineButtonText={"Choose Image"}
-                  siteName={siteName}
-                  placeholder=" "
-                  type="image"
-                />
-                <FormFieldMedia
-                  title="Favicon"
-                  id="favicon"
-                  value={favicon}
-                  errorMessage={errors.favicon}
-                  isRequired
-                  onFieldChange={this.changeHandler}
-                  inlineButtonText={"Choose Image"}
-                  siteName={siteName}
-                  placeholder=" "
-                  type="image"
-                />
-                <FormFieldMedia
-                  title="Shareicon"
-                  id="shareicon"
-                  value={shareicon}
-                  errorMessage={errors.shareicon}
-                  isRequired
-                  onFieldChange={this.changeHandler}
-                  inlineButtonText={"Choose Image"}
-                  siteName={siteName}
-                  placeholder=" "
-                  type="image"
-                />
+                <div id="logo-fields">
+                  <p className={elementStyles.formSectionHeader}>Logos</p>
+                  <FormFieldMedia
+                    title="Agency logo"
+                    id="logo"
+                    value={logo}
+                    errorMessage={errors.navigationSettings.logo}
+                    isRequired
+                    onFieldChange={this.changeHandler}
+                    inlineButtonText={"Choose Image"}
+                    siteName={siteName}
+                    placeholder=" "
+                    type="image"
+                  />
+                  <FormFieldMedia
+                    title="Favicon"
+                    id="favicon"
+                    value={favicon}
+                    errorMessage={errors.favicon}
+                    isRequired
+                    onFieldChange={this.changeHandler}
+                    inlineButtonText={"Choose Image"}
+                    siteName={siteName}
+                    placeholder=" "
+                    type="image"
+                  />
+                  <FormFieldMedia
+                    title="Shareicon"
+                    id="shareicon"
+                    value={shareicon}
+                    errorMessage={errors.shareicon}
+                    isRequired
+                    onFieldChange={this.changeHandler}
+                    inlineButtonText={"Choose Image"}
+                    siteName={siteName}
+                    placeholder=" "
+                    type="image"
+                  />
+                </div>
                 {/* Analytics fields */}
                 <div id="analytics-fields">
                   <p className={elementStyles.formSectionHeader}>Analytics</p>
