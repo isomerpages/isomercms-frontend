@@ -5,6 +5,7 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 const FormFieldHorizontal = ({
   title,
   defaultValue,
+  placeholder,
   value,
   id,
   errorMessage,
@@ -17,7 +18,7 @@ const FormFieldHorizontal = ({
       <p className={elementStyles.formHorizontalLabel}>{`${title}:`}</p>
       <input
         type="text"
-        placeholder={title}
+        placeholder={placeholder ? placeholder : title}
         value={value}
         defaultValue={defaultValue}
         id={id}
@@ -36,6 +37,7 @@ export default FormFieldHorizontal;
 
 FormFieldHorizontal.propTypes = {
   title: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
   defaultValue: PropTypes.string,
   value: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,

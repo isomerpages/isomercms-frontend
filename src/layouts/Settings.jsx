@@ -510,6 +510,7 @@ export default class Settings extends Component {
                   <p className={elementStyles.formSectionHeader}>Analytics</p>
                   <FormFieldHorizontal
                     title="Facebook Pixel"
+                    placeholder="Facebook Pixel ID"
                     id="facebook_pixel"
                     value={facebook_pixel}
                     errorMessage={errors.facebook_pixel}
@@ -518,6 +519,7 @@ export default class Settings extends Component {
                   />
                   <FormFieldHorizontal
                     title="Google Analytics"
+                    placeholder="Google Analytics ID"
                     id="google_analytics"
                     value={google_analytics}
                     errorMessage={errors.google_analytics}
