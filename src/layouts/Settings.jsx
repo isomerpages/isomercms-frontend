@@ -6,7 +6,7 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import LoadingButton from '../components/LoadingButton';
 import ColorPicker from '../components/ColorPicker';
-import FormField from '../components/FormField';
+import FormFieldDropdown from '../components/FormFieldDropdown';
 import FormFieldMedia from '../components/FormFieldMedia';
 import FormFieldColor from '../components/FormFieldColor';
 import FormFieldHorizontal from '../components/FormFieldHorizontal';
@@ -166,7 +166,17 @@ export default class Settings extends Component {
     const grandparentElementId = parentElement?.parentElement?.id
     // const errorMessage = validateSettings(id, value);
 
-    if (grandparentElementId === 'footer-fields') {
+    // although show_reach is a part of footer-fields, the CreatableSelect dropdown handler does not
+    // return a normal event, so we need to handle the case separately
+    if (id === 'show_reach') {
+      this.setState((currState) => ({
+        ...currState,
+        otherFooterSettings: {
+          ...currState.otherFooterSettings,
+          [id]: value,
+        },
+      }));
+    } else if (grandparentElementId === 'footer-fields') {
       this.setState((currState) => ({
         ...currState,
         otherFooterSettings: {
@@ -448,7 +458,7 @@ export default class Settings extends Component {
                     isRequired={false}
                     onFieldChange={this.changeHandler}
                   />
-                  <FormFieldHorizontal
+                  <FormFieldDropdown
                     title="Display government masthead"
                     id="is_government"
                     value={is_government}
@@ -571,9 +581,26 @@ export default class Settings extends Component {
                 {/* Footer fields */}
                 <div id="footer-fields">
                   <p className={elementStyles.formSectionHeader}>Footer</p>
-                  {Object.keys(otherFooterSettings).map((footerSetting) => (
-                    <FormFieldHorizontal
-                      title={footerSetting.split('_').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                  {Object.keys(otherFooterSettings).map((footerSetting) => {
+                    const title = footerSetting.split('_').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+
+                    if (footerSetting === 'show_reach') {
+                      return (
+                        <FormFieldDropdown
+                          title={title}
+                          id={footerSetting}
+                          value={otherFooterSettings[footerSetting]}
+                          key={`${footerSetting}-form`}
+                          errorMessage={errors.otherFooterSettings[footerSetting]}
+                          isRequired={false}
+                          onFieldChange={this.changeHandler}
+                        />
+                      )
+                    }
+
+                    return (
+                      <FormFieldHorizontal
+                      title={title}
                       id={footerSetting}
                       value={otherFooterSettings[footerSetting]}
                       key={`${footerSetting}-form`}
@@ -581,7 +608,8 @@ export default class Settings extends Component {
                       isRequired={false}
                       onFieldChange={this.changeHandler}
                     />
-                  ))}
+                    )
+                  })}
                 </div>
                 <br />
                 <br />
