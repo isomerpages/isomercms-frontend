@@ -96,7 +96,7 @@ const EditorSection = ({
             )}
           </Droppable>
           <div className={`${elementStyles.inputGroup} pt-5`}>
-            <button type="button" id={`${sectionId}`} className={`btn-block ${elementStyles.blue}`} onClick={createHandler}>{`Add ${sectionId}`}</button>
+            <button type="button" id={`${sectionId}`} className={`btn-block ${elementStyles.blue}`} onClick={createHandler}>{`Add ${sectionId === 'contacts' ? 'Contact' : 'Location'}`}</button>
           </div>
         </>
       )
