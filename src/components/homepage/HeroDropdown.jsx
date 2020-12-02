@@ -119,8 +119,8 @@ const HeroDropdown = ({
               ))}
             </>
             : null}
-          <button type="button" id={`dropdownelem-${options.length}-create`} className={`ml-auto ${elementStyles.blue}`} onClick={createHandler}>Create dropdown element</button>
           {droppableProvided.placeholder}
+          <button type="button" id={`dropdownelem-${options.length}-create`} className={`ml-auto ${elementStyles.blue}`} onClick={createHandler}>Create dropdown element</button>
         </div>
       )}
     </Droppable>

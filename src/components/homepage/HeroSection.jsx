@@ -179,10 +179,10 @@ const EditorHeroSection = ({
                             </>
                           )
                           : null }
+                        {droppableProvided.placeholder}
                         {highlights.length < MAX_NUM_KEY_HIGHLIGHTS
                           ? <button type="button" id={`highlight-${highlights.length}-create`} className={`ml-auto ${elementStyles.blue}`} onClick={createHandler}>Create highlight</button>
                           : <button type="button" disabled className={`ml-auto ${elementStyles.disabled}`}>Create highlight</button>}
-                        {droppableProvided.placeholder}
                       </div>
                     )}
                   </Droppable>
