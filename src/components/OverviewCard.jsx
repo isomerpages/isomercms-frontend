@@ -106,6 +106,11 @@ const OverviewCard = ({
           <Toast notificationType='error' text='This file name already exists in the category you are trying to move to. Please rename the file before proceeding.'/>, 
           {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
         );
+      } else {
+        toast(
+          <Toast notificationType='error' text="There was a problem trying to move this file. Please try again or check your internet connection."/>, 
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+        );
       }
       setCanShowGenericWarningModal(false)
       console.log(err);
@@ -126,6 +131,10 @@ const OverviewCard = ({
       // Refresh page
       window.location.reload();
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text="There was a problem trying to delete this file. Please try again or check your internet connection."/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }
