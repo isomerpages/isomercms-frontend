@@ -267,7 +267,7 @@ const ComponentSettingsModal = ({
                 );
             } else {
               toast(
-                <Toast notificationType='error' text={`There was a problem retrieving data from your repo. Please reload the page or check your internet connection.`}/>,
+                <Toast notificationType='error' text={`There was a problem saving your page settings. Please reload the page or check your internet connection.`}/>,
                 {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
               );
             }
