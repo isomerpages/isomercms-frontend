@@ -100,7 +100,7 @@ const OverviewCard = ({
       // Refresh page
       window.location.reload();
     } catch (err) {
-      if (err.response.status === 409) {
+      if (err?.response?.status === 409) {
         // Error due to conflict in name
         toast(
           <Toast notificationType='error' text='This file name already exists in the category you are trying to move to. Please rename the file before proceeding.'/>, 

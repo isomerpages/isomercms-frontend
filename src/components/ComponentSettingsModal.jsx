@@ -255,7 +255,7 @@ const ComponentSettingsModal = ({
             setNewPageUrl(redirectUrl)
             setRedirectToNewPage(true)
         } catch (err) {
-            if (err.response.status === 409) {
+            if (err?.response?.status === 409) {
                 // Error due to conflict in name
                 setErrors((prevState) => ({
                     ...prevState,

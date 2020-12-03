@@ -85,7 +85,7 @@ export default class MediaSettingsModal extends Component {
       }
       onSave()
     } catch (err) {
-      if (err.response.status === 409) {
+      if (err?.response?.status === 409) {
         // Error due to conflict in name
         toast(
           <Toast notificationType='error' text={`Another ${type === 'image' ? 'image' : 'file'} with the same name exists. Please choose a different name.`}/>, 
