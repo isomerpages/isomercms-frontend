@@ -5,6 +5,7 @@ import GenericWarningModal from './GenericWarningModal'
 import LoadingButton from './LoadingButton'
 import Toast from './Toast';
 import {
+  DEFAULT_ERROR_TOAST_MSG,
   frontMatterParser,
   saveFileAndRetrieveUrl,
   checkIsOutOfViewport,
@@ -108,7 +109,7 @@ const OverviewCard = ({
         );
       } else {
         toast(
-          <Toast notificationType='error' text="There was a problem trying to move this file. Please try again or check your internet connection."/>, 
+          <Toast notificationType='error' text={`There was a problem trying to move this file. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
           {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
         );
       }

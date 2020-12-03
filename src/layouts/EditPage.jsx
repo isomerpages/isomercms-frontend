@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 import Toast from '../components/Toast';
 
 import {
+  DEFAULT_ERROR_TOAST_MSG,
   frontMatterParser,
   concatFrontMatterMdBody,
   prependImageSrc,
@@ -191,7 +192,7 @@ export default class EditPage extends Component {
       window.location.reload();
     } catch (err) {
       toast(
-        <Toast notificationType='error' text={`There was a problem saving your page. Please try again or check your internet connection.`}/>, 
+        <Toast notificationType='error' text={`There was a problem saving your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
         {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
       );
       console.log(err);
@@ -209,7 +210,7 @@ export default class EditPage extends Component {
       history.goBack();
     } catch (err) {
       toast(
-        <Toast notificationType='error' text={`There was a problem deleting your page. Please try again or check your internet connection.`}/>, 
+        <Toast notificationType='error' text={`There was a problem deleting your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
         {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
       );
       console.log(err);

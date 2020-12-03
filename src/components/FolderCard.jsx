@@ -12,6 +12,7 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 import {
+  DEFAULT_ERROR_TOAST_MSG,
   checkIsOutOfViewport,
 } from '../utils'
 
@@ -75,7 +76,7 @@ const FolderCard = ({
       window.location.reload();
     } catch (err) {
       toast(
-        <Toast notificationType='error' text="There was a problem trying to delete this folder. Please try again or check your internet connection."/>, 
+        <Toast notificationType='error' text={`There was a problem trying to delete this folder. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
         {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
       );
       console.log(err);

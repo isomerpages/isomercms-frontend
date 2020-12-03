@@ -3,6 +3,7 @@ import React from 'react';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import { toast } from 'react-toastify';
 import Toast from '../components/Toast';
+import { DEFAULT_ERROR_TOAST_MSG } from '../utils'
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -28,7 +29,7 @@ export const retrieveThirdNavOptions = async (siteName, collectionName, isExisti
         }
     } catch (err) {
         toast(
-            <Toast notificationType='error' text={`There was a problem trying to retrieve data from your repo. Please try again or check your internet connection.`}/>,
+            <Toast notificationType='error' text={`There was a problem trying to retrieve data from your repo. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
             {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
           );
         console.log(err);

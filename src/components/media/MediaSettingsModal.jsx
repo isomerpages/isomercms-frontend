@@ -9,6 +9,9 @@ import SaveDeleteButtons from '../SaveDeleteButtons';
 import { validateFileName } from '../../utils/validators';
 import { toast } from 'react-toastify';
 import Toast from '../Toast';
+import {
+  DEFAULT_ERROR_TOAST_MSG,
+} from '../../utils'
 
 export default class MediaSettingsModal extends Component {
   constructor(props) {
@@ -93,7 +96,7 @@ export default class MediaSettingsModal extends Component {
         );
       } else {
         toast(
-          <Toast notificationType='error' text={`There was a problem trying to save this ${type === 'image' ? 'image' : 'file'}. Please try again or check your internet connection.`}/>, 
+          <Toast notificationType='error' text={`There was a problem trying to save this ${type === 'image' ? 'image' : 'file'}. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
           {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
         );
       }
@@ -117,7 +120,7 @@ export default class MediaSettingsModal extends Component {
       window.location.reload();
     } catch (err) {
       toast(
-        <Toast notificationType='error' text={`There was a problem trying to delete this ${type === 'image' ? 'image' : 'file'}. Please try again or check your internet connection.`}/>, 
+        <Toast notificationType='error' text={`There was a problem trying to delete this ${type === 'image' ? 'image' : 'file'}. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
         {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
       );
       console.log(err);

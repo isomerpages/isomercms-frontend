@@ -9,6 +9,7 @@ import * as _ from 'lodash';
 import { Redirect } from 'react-router-dom';
 import FormField from './FormField';
 import {
+  DEFAULT_ERROR_TOAST_MSG,
   frontMatterParser,
   dequoteString,
   generatePageFileName,
@@ -190,7 +191,7 @@ const ComponentSettingsModal = ({
       fetchData().catch((err) => {
         setIsComponentSettingsActive((prevState) => !prevState)
         toast(
-          <Toast notificationType='error' text={`There was a problem retrieving data from your repo. Please reload the page or check your internet connection.`}/>,
+          <Toast notificationType='error' text={`There was a problem retrieving data from your repo. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
           {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
         );
         console.log(err)
@@ -267,7 +268,7 @@ const ComponentSettingsModal = ({
                 );
             } else {
               toast(
-                <Toast notificationType='error' text={`There was a problem saving your page settings. Please reload the page or check your internet connection.`}/>,
+                <Toast notificationType='error' text={`There was a problem saving your page settings. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
                 {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
               );
             }
@@ -286,7 +287,7 @@ const ComponentSettingsModal = ({
             window.location.reload();
         } catch (err) {
           toast(
-            <Toast notificationType='error' text={`There was a problem trying to delete this file. Please reload the page or check your internet connection.`}/>,
+            <Toast notificationType='error' text={`There was a problem trying to delete this file. ${DEFAULT_ERROR_TOAST_MSG}.`}/>,
             {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
           );
           console.log(err);

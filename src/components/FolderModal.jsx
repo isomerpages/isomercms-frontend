@@ -6,6 +6,9 @@ import SaveDeleteButtons from './SaveDeleteButtons';
 import FormField from './FormField';
 import { toast } from 'react-toastify';
 import Toast from './Toast';
+import {
+  DEFAULT_ERROR_TOAST_MSG,
+} from '../utils'
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -25,7 +28,7 @@ const FolderModal = ({ displayTitle, displayText, onClose, category, siteName, i
       window.location.reload();
     } catch (err) {
       toast(
-        <Toast notificationType='error' text="There was a problem trying to rename this folder. Please try again or check your internet connection."/>, 
+        <Toast notificationType='error' text={`There was a problem trying to rename this folder. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
         {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
       );
       console.log(err);

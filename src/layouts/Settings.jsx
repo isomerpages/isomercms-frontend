@@ -15,6 +15,9 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import { validateSocialMedia } from '../utils/validators';
 import { toast } from 'react-toastify';
 import Toast from '../components/Toast';
+import {
+  DEFAULT_ERROR_TOAST_MSG,
+} from '../utils'
 
 const stateFields = {
   title: '',
@@ -295,7 +298,7 @@ export default class Settings extends Component {
       window.location.reload();
     } catch (err) {
       toast(
-        <Toast notificationType='error' text="There was a problem trying to save your settings. Please try again or check your internet connection."/>, 
+        <Toast notificationType='error' text={`There was a problem trying to save your settings. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
         {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
       );
       console.log(err);
