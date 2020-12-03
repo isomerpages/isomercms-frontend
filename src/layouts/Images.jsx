@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
@@ -19,6 +20,7 @@ export default class Images extends Component {
       images: [],
       chosenImage: null,
       pendingImageUpload: null,
+      shouldRedirect:false,
     };
   }
 
@@ -34,6 +36,7 @@ export default class Images extends Component {
       if (this._isMounted) this.setState({ images });
     } catch (err) {
       console.log(err);
+      this.setState({ shouldRedirect: true })
     }
   }
 
@@ -154,6 +157,14 @@ export default class Images extends Component {
             onSave={() => window.location.reload()}
           />
           )
+        }
+        {
+          this.state.shouldRedirect &&
+          <Redirect
+            to={{
+                pathname: '/not-found'
+            }}
+          />
         }
       </>
     );

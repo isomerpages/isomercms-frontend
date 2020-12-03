@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
@@ -23,6 +24,7 @@ const Workspace = ({ match, location }) => {
 
     const [collections, setCollections] = useState([])
     const [unlinkedPages, setUnlinkedPages] = useState()
+    const [shouldRedirect, setShouldRedirect] = useState(false)
     const [contactUsCard, setContactUsCard] = useState(false)
 
     useEffect(() => {
@@ -43,6 +45,7 @@ const Workspace = ({ match, location }) => {
         } catch (e) {
           setCollections(undefined)
           console.log(e)
+          setShouldRedirect(true)
         }
         
         try { 
@@ -146,6 +149,14 @@ const Workspace = ({ match, location }) => {
             </div>
             {/* main section ends here */}
           </div>
+          {
+            shouldRedirect &&
+            <Redirect
+                to={{
+                    pathname: '/error'
+                }}
+            />
+          }
         </>
     );
 }

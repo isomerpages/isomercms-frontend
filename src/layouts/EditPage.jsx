@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import { Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import axios from 'axios';
 import Bluebird from 'bluebird';
 import PropTypes from 'prop-types';
@@ -113,6 +113,7 @@ export default class EditPage extends Component {
       isFileStagedForUpload: false,
       stagedFileDetails: {},
       isLoadingPageContent: true,
+      shouldRedirect: false,
     };
     this.mdeRef = React.createRef();
     this.apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName })
@@ -164,6 +165,7 @@ export default class EditPage extends Component {
       });
     } catch (err) {
       console.log(err);
+      this.setState({ shouldRedirect: true })
     }
   }
 
@@ -196,6 +198,7 @@ export default class EditPage extends Component {
         {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
       );
       console.log(err);
+      this.setState({ shouldRedirect: true })
     }
   }
 
@@ -214,6 +217,7 @@ export default class EditPage extends Component {
         {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
       );
       console.log(err);
+      this.setState({ shouldRedirect: true })
     }
   }
 
@@ -453,6 +457,14 @@ export default class EditPage extends Component {
             type={isResourcePage ? 'resource' : 'page'}
           />
           )
+        }
+        {
+          this.state.shouldRedirect &&
+          <Redirect
+            to={{
+                pathname: '/not-found'
+            }}
+          />
         }
       </>
     );

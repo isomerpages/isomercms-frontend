@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
+import { Redirect } from 'react-router-dom';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import LoadingButton from '../components/LoadingButton';
@@ -82,6 +83,7 @@ export default class Settings extends Component {
         currentColor: '',
         elementId: '',
         oldColors: {},
+        shouldRedirect: false,
       },
       siteName: '',
       ...stateFields,
@@ -131,6 +133,7 @@ export default class Settings extends Component {
       }));
     } catch (err) {
       console.log(err);
+      this.setState({ shouldRedirect: true })
     }
   }
 
@@ -637,6 +640,14 @@ export default class Settings extends Component {
             </div>
           </div>
         </form>
+        {
+          this.state.shouldRedirect &&
+          <Redirect
+            to={{
+                pathname: '/not-found'
+            }}
+          />
+        }
       </>
     );
   }

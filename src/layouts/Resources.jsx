@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
+import { Redirect } from 'react-router-dom';
 
 // Import components
 import Header from '../components/Header';
@@ -33,6 +34,7 @@ const Resources = ({ match, location }) => {
   const [newResourceRoomName, setNewResourceRoomName] = useState('')
   const [resourceFolderNames, setResourceFolderNames] = useState([])
   const [resourceRoomNameError, setResourceRoomNameError] = useState('')
+  const [shouldRedirect, setShouldRedirect] = useState(false)
 
   useEffect(() => {
     let _isMounted = true
@@ -52,6 +54,8 @@ const Resources = ({ match, location }) => {
       } catch (err) {
         setIsLoading(false)
         console.log(err)
+        shouldRedirect(true)
+
       }
     }
 
@@ -173,6 +177,14 @@ const Resources = ({ match, location }) => {
         </div>
         {/* main section ends here */}
       </div>
+      {
+        shouldRedirect &&
+        <Redirect
+          to={{
+              pathname: '/not-found'
+          }}
+        />
+      }
     </>
   );
 }
