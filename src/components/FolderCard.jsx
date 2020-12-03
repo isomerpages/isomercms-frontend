@@ -5,6 +5,8 @@ import axios from 'axios';
 
 import FolderModal from './FolderModal';
 import DeleteWarningModal from './DeleteWarningModal'
+import { toast } from 'react-toastify';
+import Toast from './Toast';
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
@@ -72,6 +74,10 @@ const FolderCard = ({
       // Refresh page
       window.location.reload();
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text="There was a problem trying to delete this folder. Please try again or check your internet connection."/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }

@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import SaveDeleteButtons from './SaveDeleteButtons';
 import FormField from './FormField';
+import { toast } from 'react-toastify';
+import Toast from './Toast';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -22,6 +24,10 @@ const FolderModal = ({ displayTitle, displayText, onClose, category, siteName, i
       // Refresh page
       window.location.reload();
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text="There was a problem trying to rename this folder. Please try again or check your internet connection."/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }
