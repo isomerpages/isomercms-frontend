@@ -1,0 +1,22 @@
+.errorPageMain {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 11rem;
+
+  .errorImage {
+    height: 18.75rem;
+  }
+
+  .errorText {
+    padding-top: 4.25rem;
+    font-size: 1.125rem;
+  }
+
+  .errorButton {
+    margin-top: 2rem;
+  }
+}
