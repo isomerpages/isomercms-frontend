@@ -12,6 +12,7 @@ const LocationHoursFields = ({
   cardIndex,
   onFieldChange,
   errors,
+  sectionId,
 }) => {
   
   return (
@@ -20,19 +21,19 @@ const LocationHoursFields = ({
       { operatingHours && operatingHours.map( (operations, operationsIndex) => ( 
         <div className= "mb-1" key={operationsIndex}>
             <div className="d-flex flex-row">
-              <div className="flex-fill pr-1"> 
+              <div className="w-50 pr-1"> 
                 <FormField
                   title="Days"
-                  id={`location-${cardIndex}-operating_hours-${operationsIndex}-days`}
+                  id={`${sectionId}-${cardIndex}-operating_hours-${operationsIndex}-days`}
                   value={operations.days}
                   onFieldChange={onFieldChange}
                   errorMessage={errors[operationsIndex].days}
                 />
               </div>
-              <div className="flex-fill pl-1">
+              <div className="w-50 pl-1">
                 <FormField
                   title="Hours"
-                  id={`location-${cardIndex}-operating_hours-${operationsIndex}-time`}
+                  id={`${sectionId}-${cardIndex}-operating_hours-${operationsIndex}-time`}
                   value={operations.time}
                   onFieldChange={onFieldChange}
                   errorMessage={errors[operationsIndex].time}
@@ -42,20 +43,20 @@ const LocationHoursFields = ({
             <div>
               <FormField
                 title="Description"
-                id={`location-${cardIndex}-operating_hours-${operationsIndex}-description`}
+                id={`${sectionId}-${cardIndex}-operating_hours-${operationsIndex}-description`}
                 value={operations.description}
                 onFieldChange={onFieldChange}
                 errorMessage={errors[operationsIndex].description}
               />
             </div>
-          <a className={elementStyles.formFixedText} id={`location-${cardIndex}-remove_operating_hours-${operationsIndex}`} href="#" onClick={onFieldChange}>
+          <a className={elementStyles.formFixedText} id={`${sectionId}-${cardIndex}-remove_operating_hours-${operationsIndex}`} href="#" onClick={onFieldChange}>
             Remove
           </a> 
         </div>
       ))} 
       <div className = "mt-3">
         { operatingHours.length < DEFAULT_NUM_OPERATING_FIELDS  
-          ? <a className={elementStyles.formLabel}  id={`location-${cardIndex}-add_operating_hours`} href="#" onClick={onFieldChange}>
+          ? <a className={elementStyles.formLabel}  id={`${sectionId}-${cardIndex}-add_operating_hours`} href="#" onClick={onFieldChange}>
               Add operating hours
             </a>
           : <p className={elementStyles.formLabel}> Maximum 5 operating hours fields</p>
@@ -71,6 +72,7 @@ const LocationAddressFields = ({
   cardIndex,
   onFieldChange,
   errors,
+  sectionId,
 }) => {
 
   const [ errorMessage, setErrorMessage ] = useState('')
@@ -94,7 +96,7 @@ const LocationAddressFields = ({
         <div className="py-1" key={addressIndex}> 
           <FormField 
             title={ addressIndex === 0 ? title : null } // title appears above first field
-            id={`location-${cardIndex}-address-${addressIndex}`}
+            id={`${sectionId}-${cardIndex}-address-${addressIndex}`}
             value={addressValue}
             onFieldChange={onFieldChange}
             hasError={errorMessage} 
@@ -127,7 +129,8 @@ LocationHoursFields.propTypes = {
       time: PropTypes.string,
       description: PropTypes.string,
     }),
-  )
+  ),
+  sectionId: PropTypes.string,
 };
 
 LocationAddressFields.propTypes = {
@@ -136,4 +139,5 @@ LocationAddressFields.propTypes = {
   cardIndex: PropTypes.number.isRequired,
   onFieldChange: PropTypes.func.isRequired,
   errors: PropTypes.arrayOf(PropTypes.string),
+  sectionId: PropTypes.string,
 };

@@ -18,6 +18,7 @@
     h2{
       font-size: 20px;
       font-weight: normal;
+      overflow-wrap: anywhere;
       color: darken($isomer-blue,20%);
     }
 
@@ -25,6 +26,10 @@
         font-size: 30px;
         color: darken($isomer-blue,20%);
     }
+  }
+
+  &.error{
+    border: 1px solid $error-red;
   }
 
   &.dragging{

@@ -19,6 +19,15 @@
   position: relative;
 }
 
+.contactUsEditorMain{
+  width: calc(100vw - #{$homepage-editor-sidebar-width});
+  height: calc(100vh - #{$header-height} - #{$footer-height});
+  box-sizing: border-box;
+  overflow-y: scroll;
+  position: relative;
+  background-color: white;
+}
+
 .pageEditorSidebar{
   width: $page-editor-sidebar-width;
   background: $base-background-light;

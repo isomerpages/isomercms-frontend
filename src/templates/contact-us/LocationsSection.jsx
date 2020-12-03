@@ -18,7 +18,12 @@ const LocationAddress = ({ location } ) => (
   <div className="col is-6">
     <div>
       { location.address.map((value, i) => <p className="content margin--top--none margin--bottom--none" key={i}>{value}</p>) }
-      <a href={location.maps_link || `https://maps.google.com/?q=term${location.address.join('+').replace(/\s/g, '+')}`} className="bp-sec-button has-text-secondary margin--top">
+      <a 
+        href={location.maps_link || `https://maps.google.com/?q=${location.address.join('+').replace(/\s/g, '+')}`} 
+        className="bp-sec-button has-text-secondary margin--top"
+        rel="noopener noreferrer" 
+        target="_blank"
+      >
         <div>
           <span>VIEW MAP</span>
           <i className="sgds-icon sgds-icon-arrow-right" aria-hidden="true"></i>
@@ -28,8 +33,8 @@ const LocationAddress = ({ location } ) => (
   </div>
 );
 
-const Location = ({ location }) => (
-  <div className="row is-multiline margin--bottom">
+const Location = React.forwardRef( ( { location }, ref ) => (
+  <div className="row is-multiline margin--bottom" ref={ref}>
     { location.address && location.title &&
       <div className="col is-6 padding--bottom--none">
         <h5 className="has-text-secondary"><b>{location.title}</b></h5>
@@ -45,17 +50,17 @@ const Location = ({ location }) => (
     <LocationAddress location={location}/>
     <LocationHours operatingHours={location.operating_hours}/>
   </div>
-);
+));
 
-const TemplateLocationsSection = ({ locations }) => (
-  <>
+const TemplateLocationsSection = React.forwardRef(( { locations, scrollRefs }, ref) => (
+  <div ref={ref}>
     { locations &&
       <> 
-        { locations.map( (location, i) => <Location location={location} key={i}/> ) }
+        { locations.map( (location, i) => <Location location={location} key={i} ref={scrollRefs[i]}/> )}
       </>
     }
-  </>
-);
+  </div>
+));
 
 LocationAddress.propTypes = {
   location: PropTypes.shape({

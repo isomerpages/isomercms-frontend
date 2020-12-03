@@ -356,7 +356,8 @@ body {
 a {
     color: #4372d6;
     cursor: pointer;
-    text-decoration: none
+    text-decoration: none;
+    font-size: inherit;
 }
 
 a strong {
@@ -400,7 +401,8 @@ small {
 
 span {
     font-style: inherit;
-    font-weight: inherit
+    font-weight: inherit;
+    font-size: inherit;
 }
 
 strong {

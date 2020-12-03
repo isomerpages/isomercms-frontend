@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
 import { LocationHoursFields, LocationAddressFields } from './LocationFields'
+import { isEmpty } from '../../utils';
+
 /* eslint
   react/no-array-index-key: 0
  */
@@ -18,14 +20,15 @@ const EditorLocationSection = ({
   shouldDisplay,
   displayHandler,
   cardErrors,
+  sectionId,
 }) => (
-  <div className={`${elementStyles.card} move`}>
+  <div className={`${elementStyles.card} ${!shouldDisplay && !isEmpty(cardErrors) ? elementStyles.error : ''} move`}>
     <div className={elementStyles.cardHeader}>
       <h2>
         {title}
       </h2>
-      <button type="button" id={`location-${cardIndex}`} onClick={displayHandler}>
-        <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`location-${cardIndex}-icon`} />
+      <button type="button" id={`${sectionId}-${cardIndex}`} onClick={displayHandler}>
+        <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`${sectionId}-${cardIndex}-icon`} />
       </button>
     </div>
     { shouldDisplay
@@ -34,7 +37,7 @@ const EditorLocationSection = ({
           <div className={elementStyles.cardContent}>
             <FormField
               title="Title"
-              id={`location-${cardIndex}-title`}
+              id={`${sectionId}-${cardIndex}-title`}
               value={title}
               onFieldChange={onFieldChange}
               errorMessage={cardErrors.title}
@@ -45,23 +48,28 @@ const EditorLocationSection = ({
               address={address}
               onFieldChange={onFieldChange}
               errors={cardErrors.address}
+              sectionId={sectionId}
             />
             <FormField
               title="Map url"
-              id={`location-${cardIndex}-maps_link`}
+              id={`${sectionId}-${cardIndex}-maps_link`}
               value={mapUrl}
               onFieldChange={onFieldChange}
               errorMessage={cardErrors.maps_link}
             />
+            <span className={elementStyles.info}>
+              Note: If left blank, map url is automatically generated from Address fields
+            </span>
             <LocationHoursFields
               operatingHours={operatingHours}
               onFieldChange={onFieldChange}
               cardIndex={cardIndex}
               errors={cardErrors.operating_hours}
+              sectionId={sectionId}
             />
           </div>
           <div className={`${elementStyles.inputGroup} pt-5`}>
-            <button type="button" id={`location-${cardIndex}`} className={`btn-block ${elementStyles.warning}`} onClick={deleteHandler}>Delete section</button>
+            <button type="button" id={`${sectionId}-${cardIndex}`} className={`btn-block ${elementStyles.warning}`} onClick={deleteHandler}>Delete section</button>
           </div>
         </>
       )
@@ -98,5 +106,6 @@ EditorLocationSection.propTypes = {
       }),
     ),
     mapUrl: PropTypes.string,
-  })
+  }),
+  sectionId: PropTypes.string,
 };

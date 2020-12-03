@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const TemplateFeedbackSection = ({ feedback }) => (
-  <>
+const TemplateFeedbackSection = React.forwardRef(( { feedback }, ref ) => (
+  <div ref={ref}>
   { feedback &&
     <div className="row is-multiline margin--bottom--lg">
       <div className="col is-12 padding--bottom--none">
@@ -17,8 +17,8 @@ const TemplateFeedbackSection = ({ feedback }) => (
       </div>
     </div>  
   }
-  </>
-);
+  </div>
+));
 
 TemplateFeedbackSection.propTypes = {
   feedback: PropTypes.string,

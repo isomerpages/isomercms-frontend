@@ -64,74 +64,34 @@ const Workspace = ({ match, location }) => {
             <Sidebar siteName={siteName} currPath={location.pathname} />
             {/* main section starts here */}
             <div className={contentStyles.mainSection}>
-                {/* Page title */}
-                <div className={contentStyles.sectionHeader}>
-                    <h1 className={contentStyles.sectionTitle}>My Workspace</h1>
-                </div>
-                {/* Info segment */}
-                <div className={contentStyles.segment}>
-                    <i className="bx bx-sm bx-bulb text-dark" />
-                    <span><strong className="ml-1">Pro tip:</strong> Organise this workspace by moving pages into folders</span>
-                </div>
-                {/* Homepage */}
-                <div className={contentStyles.folderContainerBoxes}>
-                    <div className={contentStyles.boxesContainer}>
-                      <FolderCard
-                        displayText={"Homepage"}
-                        settingsToggle={() => {}}
-                        key={"homepage"}
-                        isHomepage={true}
-                        isCollection={false}
-                        siteName={siteName}
-                      />
-                      { contactUsCard && 
-                        <FolderCard
-                          displayText={"Contact Us"}
-                          settingsToggle={() => {}}
-                          key={"contact-us"}
-                          pageType={"contact-us"}
-                          siteName={siteName}
-                        />
-                      }
-                    </div>
-                </div>
-                {/* Segment divider  */}
-                <div className={contentStyles.segmentDividerContainer}>
-                    <hr className="w-100 mt-3 mb-5" />
-                </div>
-                {/* Collections title */}
-                <div className={contentStyles.segment}>
-                    Collections
-                </div>
-                {/* Info segment */}
-                <div className={contentStyles.segment}>
-                    <i className="bx bx-sm bx-info-circle text-dark" />
-                    <span><strong className="ml-1">Note:</strong> Collections cannot be empty, create a page first to create a collection.</span>
-                </div>
-                {/* Collections */}
-                <div className={contentStyles.folderContainerBoxes}>
-                    <div className={contentStyles.boxesContainer}>
-                        {
-                            collections && collections.length > 0
-                            ? collections.map((collection, collectionIdx) => (
-                                <FolderCard
-                                    displayText={prettifyPageFileName(collection)}
-                                    settingsToggle={() => {}}
-                                    key={collection}
-                                    isHomepage={false}
-                                    isCollection={true}
-                                    siteName={siteName}
-                                    category={collection}
-                                    itemIndex={collectionIdx}
-                                />
-                            ))
-                            : (
-                                !collections
-                                    ? 'There are no collections in this repository'
-                                    : 'Loading Collections...'
-                            )
-                        }
-                    </div>
+              {/* Page title */}
+              <div className={contentStyles.sectionHeader}>
+                <h1 className={contentStyles.sectionTitle}>My Workspace</h1>
+              </div>
+              {/* Info segment */}
+              <div className={contentStyles.segment}>
+                <i className="bx bx-sm bx-bulb text-dark" />
+                <span><strong className="ml-1">Pro tip:</strong> Organise this workspace by moving pages into folders</span>
+              </div>
+              {/* Homepage and Contact Us */}
+              <div className={contentStyles.folderContainerBoxes}>
+                <div className={contentStyles.boxesContainer}>
+                  <FolderCard
+                    displayText={"Homepage"}
+                    settingsToggle={() => {}}
+                    key={"homepage"}
+                    pageType={"homepage"}
+                    siteName={siteName}
+                  />
+                  { contactUsCard && 
+                    <FolderCard
+                      displayText={"Contact Us"}
+                      settingsToggle={() => {}}
+                      key={"contact-us"}
+                      pageType={"contact-us"}
+                      siteName={siteName}
+                    />
+                  }
                 </div>
               </div>
               {/* Segment divider  */}
@@ -153,17 +113,22 @@ const Workspace = ({ match, location }) => {
                   {
                     collections && collections.length > 0
                     ? collections.map((collection, collectionIdx) => (
-                      <FolderCard
-                        displayText={prettifyPageFileName(collection)}
-                        settingsToggle={() => {}}
-                        key={collection}
-                        pageType={"collection"}
-                        siteName={siteName}
-                        category={collection}
-                        itemIndex={collectionIdx}
-                      />
+                        <FolderCard
+                            displayText={prettifyPageFileName(collection)}
+                            settingsToggle={() => {}}
+                            key={collection}
+                            isHomepage={false}
+                            isCollection={true}
+                            siteName={siteName}
+                            category={collection}
+                            itemIndex={collectionIdx}
+                        />
                     ))
-                    : 'Loading Collections...'
+                    : (
+                        !collections
+                            ? 'There are no collections in this repository'
+                            : 'Loading Collections...'
+                    )
                   }
                 </div>
               </div>
@@ -181,6 +146,7 @@ const Workspace = ({ match, location }) => {
               />
             </div>
             {/* main section ends here */}
+          </div>
         </>
     );
 }
