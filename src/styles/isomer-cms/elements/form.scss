@@ -47,6 +47,21 @@ p {
   }
 }
 
+.formDropdown{
+  @extend .formHorizontal;
+
+  .formDropdownLabel{
+    @extend .formLabel;
+    width: 25%;
+    margin: 0px;
+    padding: 0px;
+  }
+
+  .formDropdownInput{
+    width: 75%;
+  }
+}
+
 .formColor{
   display: flex;
   width: 50%;
