@@ -13,6 +13,8 @@ import FormFieldHorizontal from '../components/FormFieldHorizontal';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import { validateSocialMedia } from '../utils/validators';
+import { toast } from 'react-toastify';
+import Toast from '../components/Toast';
 
 const stateFields = {
   title: '',
@@ -292,6 +294,10 @@ export default class Settings extends Component {
 
       window.location.reload();
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text="There was a problem trying to save your settings. Please try again or check your internet connection."/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }
