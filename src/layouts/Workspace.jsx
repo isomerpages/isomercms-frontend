@@ -38,16 +38,14 @@ const Workspace = ({ match, location }) => {
             // create option for contact-us page
           }
         }
-
-        try { 
-          const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`);
-          if (_isMounted) setCollections(collectionsResp.data?.collections)
-        } catch (e) {
-          setCollections(undefined)
-          console.log(e)
-          setShouldRedirect(true)
+        try {
+            const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`);
+            if (_isMounted) setCollections(collectionsResp.data?.collections)
+        } catch (err) {
+            setCollections(undefined)
+            console.log(err)
+            if (err?.response?.status === 404) setShouldRedirect(true)
         }
-        
         try { 
           const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`);
           if (_isMounted) setUnlinkedPages(unlinkedPagesResp.data?.pages)
@@ -153,7 +151,7 @@ const Workspace = ({ match, location }) => {
             shouldRedirect &&
             <Redirect
                 to={{
-                    pathname: '/error'
+                    pathname: '/not-found'
                 }}
             />
           }

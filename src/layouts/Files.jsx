@@ -36,7 +36,7 @@ export default class Files extends Component {
       if (this._isMounted) this.setState({ files });
     } catch (err) {
       console.log(err);
-      this.setState({ shouldRedirect: true })
+      if (err?.response?.status === 404) this.setState({ shouldRedirect: true })
     }
   }
 

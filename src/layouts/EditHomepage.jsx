@@ -222,7 +222,7 @@ export default class EditHomepage extends Component {
       });
     } catch (err) {
       console.log(err);
-      this.setState({ shouldRedirect: true })
+      if (err?.response?.status === 404) this.setState({ shouldRedirect: true })
     }
   }
 
