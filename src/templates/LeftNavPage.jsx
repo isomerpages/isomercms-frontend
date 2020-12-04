@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Breadcrumb from './pageComponents/Breadcrumb';
+import PageHeader from './pageComponents/PageHeader';
 import LeftNav from './pageComponents/LeftNav';
+import _ from 'lodash';
 
 const LeftNavPage = ({
   chunk,
@@ -14,11 +15,11 @@ const LeftNavPage = ({
     .path.split('%2')[0]
     .slice(1) // remove the underscore at the start of the collection folder name
     .split('-')
-    .map((string) => string.charAt(0).toUpperCase() + string.slice(1)) // capitalize first letter
+    .map((string) => _.upperFirst(string)) // capitalize first letter
     .join(' '); // join it back together
   return (
     <div>
-      <Breadcrumb title={title} collection={collection} />
+      <PageHeader title={title} collection={collection} />
       <section className="bp-section page-content-body">
         <div className="bp-container padding--top--lg padding--bottom--xl">
           <div className="row">

@@ -1,18 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import InputMask from 'react-input-mask';
 
-const FormField = ({
+const InputMaskFormField = ({
   title,
-  defaultValue,
   value,
+  mask,
+  maskChar,
+  alwaysShowMask,
   id,
   hasError, 
   errorMessage,
   onFieldChange,
-  isRequired,
   style,
-  placeholder,
   disabled,
   fixedMessage,
   maxWidth,
@@ -21,17 +22,15 @@ const FormField = ({
     { title && <label className={elementStyles.formLabel}>{title}</label> }
     <div className={`d-flex text-nowrap ${maxWidth ? 'w-100' : ''}`}>
       { fixedMessage && <p className={elementStyles.formFixedText}>{fixedMessage}</p> }
-      <input
-        type="text"
-        placeholder={placeholder ? placeholder : title}
-        value={value}
-        defaultValue={defaultValue}
+      <InputMask
+        mask={mask}
+        maskChar={maskChar}
+        alwaysShowMask={alwaysShowMask}
         id={id}
-        autoComplete="off"
-        required={isRequired}
-        className={hasError || errorMessage ? `${elementStyles.error}` : null}
+        value={value} 
         style={style}
         onChange={onFieldChange}
+        className={hasError || errorMessage ? `${elementStyles.error}` : null}
         disabled={disabled}
       />
     </div>
@@ -39,13 +38,16 @@ const FormField = ({
   </>
 );
 
-export default FormField;
+export default InputMaskFormField;
 
-FormField.propTypes = {
+InputMaskFormField.propTypes = {
   title: PropTypes.string,
-  defaultValue: PropTypes.string,
   value: PropTypes.string.isRequired,
+  mask: PropTypes.string.isRequired,
+  maskChar: PropTypes.string,
+  alwaysShowMask: PropTypes.bool,
   id: PropTypes.string.isRequired,
+  hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onFieldChange: PropTypes.func.isRequired,
   isRequired: PropTypes.bool,
@@ -53,8 +55,7 @@ FormField.propTypes = {
   maxWidth: PropTypes.bool,
 };
 
-FormField.defaultProps = {
-  defaultValue: undefined,
+InputMaskFormField.defaultProps = {
   style: undefined,
   errorMessage: null,
 };
