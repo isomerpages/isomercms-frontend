@@ -54,7 +54,7 @@ const Resources = ({ match, location }) => {
       } catch (err) {
         setIsLoading(false)
         console.log(err)
-        if (err?.response?.status === 404) shouldRedirect(true)
+        if (err?.response?.status === 404) setShouldRedirect(true)
       }
     }
 
