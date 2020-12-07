@@ -9,6 +9,9 @@ import SaveDeleteButtons from '../SaveDeleteButtons';
 import { validateFileName } from '../../utils/validators';
 import { toast } from 'react-toastify';
 import Toast from '../Toast';
+import {
+  DEFAULT_ERROR_TOAST_MSG,
+} from '../../utils'
 
 export default class MediaSettingsModal extends Component {
   constructor(props) {
@@ -85,10 +88,15 @@ export default class MediaSettingsModal extends Component {
       }
       onSave()
     } catch (err) {
-      if (err.response.status === 409) {
+      if (err?.response?.status === 409) {
         // Error due to conflict in name
         toast(
           <Toast notificationType='error' text={`Another ${type === 'image' ? 'image' : 'file'} with the same name exists. Please choose a different name.`}/>, 
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+        );
+      } else {
+        toast(
+          <Toast notificationType='error' text={`There was a problem trying to save this ${type === 'image' ? 'image' : 'file'}. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
           {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
         );
       }
@@ -97,8 +105,8 @@ export default class MediaSettingsModal extends Component {
   }
 
   deleteFile = async () => {
+    const { siteName, media: { fileName }, type } = this.props;
     try {
-      const { siteName, media: { fileName }, type } = this.props;
       const { sha } = this.state;
       const params = {
         sha,
@@ -111,6 +119,10 @@ export default class MediaSettingsModal extends Component {
 
       window.location.reload();
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text={`There was a problem trying to delete this ${type === 'image' ? 'image' : 'file'}. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }

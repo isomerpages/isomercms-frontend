@@ -5,11 +5,14 @@ import axios from 'axios';
 
 import FolderModal from './FolderModal';
 import DeleteWarningModal from './DeleteWarningModal'
+import { toast } from 'react-toastify';
+import Toast from './Toast';
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 import {
+  DEFAULT_ERROR_TOAST_MSG,
   checkIsOutOfViewport,
 } from '../utils'
 
@@ -91,6 +94,10 @@ const FolderCard = ({
       // Refresh page
       window.location.reload();
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text={`There was a problem trying to delete this folder. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }

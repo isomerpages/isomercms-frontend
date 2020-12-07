@@ -9,6 +9,7 @@ import * as _ from 'lodash';
 import { Redirect } from 'react-router-dom';
 import FormField from './FormField';
 import {
+  DEFAULT_ERROR_TOAST_MSG,
   frontMatterParser,
   dequoteString,
   generatePageFileName,
@@ -21,6 +22,8 @@ import { validatePageSettings, validateResourceSettings } from '../utils/validat
 import DeleteWarningModal from './DeleteWarningModal';
 import ResourceFormFields from './ResourceFormFields';
 import SaveDeleteButtons from './SaveDeleteButtons';
+import { toast } from 'react-toastify';
+import Toast from './Toast';
 
 // Import utils
 import { retrieveThirdNavOptions } from '../utils/dropdownUtils'
@@ -56,6 +59,7 @@ const ComponentSettingsModal = ({
     siteName,
     type,
     loadThirdNavOptions,
+    setIsComponentSettingsActive,
 }) => {
     // Errors
     const [errors, setErrors] = useState({
@@ -184,7 +188,14 @@ const ComponentSettingsModal = ({
           }
       }
 
-      fetchData().catch((err) => console.log(err))
+      fetchData().catch((err) => {
+        setIsComponentSettingsActive((prevState) => !prevState)
+        toast(
+          <Toast notificationType='error' text={`There was a problem retrieving data from your repo. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
+        );
+        console.log(err)
+      })
       return () => { _isMounted = false }
     }, [])
 
@@ -245,12 +256,21 @@ const ComponentSettingsModal = ({
             setNewPageUrl(redirectUrl)
             setRedirectToNewPage(true)
         } catch (err) {
-            if (err.response.status === 409) {
+            if (err?.response?.status === 409) {
                 // Error due to conflict in name
                 setErrors((prevState) => ({
                     ...prevState,
                     title: 'This title is already in use. Please choose a different one.',
                 }));
+                toast(
+                  <Toast notificationType='error' text={`Another ${type === 'image' ? 'image' : 'file'} with the same name exists. Please choose a different name.`}/>,
+                  {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
+                );
+            } else {
+              toast(
+                <Toast notificationType='error' text={`There was a problem saving your page settings. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
+                {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
+              );
             }
             console.log(err);
         }
@@ -266,7 +286,11 @@ const ComponentSettingsModal = ({
             // Refresh page
             window.location.reload();
         } catch (err) {
-            console.log(err);
+          toast(
+            <Toast notificationType='error' text={`There was a problem trying to delete this file. ${DEFAULT_ERROR_TOAST_MSG}.`}/>,
+            {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
+          );
+          console.log(err);
         }
     }
 

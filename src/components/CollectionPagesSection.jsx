@@ -115,6 +115,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                         }
                         collectionPageData={collectionPageData}
                         loadThirdNavOptions={loadThirdNavOptions}
+                        setIsComponentSettingsActive={setIsComponentSettingsActive}
                     />
                 )
             }

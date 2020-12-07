@@ -5,6 +5,7 @@ import GenericWarningModal from './GenericWarningModal'
 import LoadingButton from './LoadingButton'
 import Toast from './Toast';
 import {
+  DEFAULT_ERROR_TOAST_MSG,
   frontMatterParser,
   saveFileAndRetrieveUrl,
   checkIsOutOfViewport,
@@ -100,10 +101,15 @@ const OverviewCard = ({
       // Refresh page
       window.location.reload();
     } catch (err) {
-      if (err.response.status === 409) {
+      if (err?.response?.status === 409) {
         // Error due to conflict in name
         toast(
           <Toast notificationType='error' text='This file name already exists in the category you are trying to move to. Please rename the file before proceeding.'/>, 
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+        );
+      } else {
+        toast(
+          <Toast notificationType='error' text={`There was a problem trying to move this file. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
           {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
         );
       }
@@ -126,6 +132,10 @@ const OverviewCard = ({
       // Refresh page
       window.location.reload();
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text="There was a problem trying to delete this file. Please try again or check your internet connection."/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }

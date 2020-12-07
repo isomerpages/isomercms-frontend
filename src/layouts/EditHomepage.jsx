@@ -12,7 +12,7 @@ import TemplateInfobarSection from '../templates/homepage/InfobarSection';
 import TemplateInfopicLeftSection from '../templates/homepage/InfopicLeftSection';
 import TemplateInfopicRightSection from '../templates/homepage/InfopicRightSection';
 import TemplateResourcesSection from '../templates/homepage/ResourcesSection';
-import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
+import { DEFAULT_ERROR_TOAST_MSG, frontMatterParser, concatFrontMatterMdBody } from '../utils';
 import EditorInfobarSection from '../components/homepage/InfobarSection';
 import EditorInfopicSection from '../components/homepage/InfopicSection';
 import EditorResourcesSection from '../components/homepage/ResourcesSection';
@@ -24,6 +24,8 @@ import Header from '../components/Header';
 import LoadingButton from '../components/LoadingButton';
 import { validateSections, validateHighlights, validateDropdownElems } from '../utils/validators';
 import DeleteWarningModal from '../components/DeleteWarningModal';
+import { toast } from 'react-toastify';
+import Toast from '../components/Toast';
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -921,6 +923,10 @@ export default class EditHomepage extends Component {
 
       window.location.reload();
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text={`There was a problem trying to save your homepage. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }
