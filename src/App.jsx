@@ -27,6 +27,7 @@ import Resources from './layouts/Resources';
 import Menus from './layouts/Menus';
 import EditNav from './layouts/EditNav';
 import Settings from './layouts/Settings';
+import NotFoundPage from './components/NotFoundPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import FallbackComponent from './components/FallbackComponent'
 
@@ -150,6 +151,7 @@ function App() {
                   <ProtectedRouteWithProps path="/sites/:siteName/menus" component={Menus} />
                   <ProtectedRouteWithProps path="/sites/:siteName/settings" component={Settings} />
                   <ProtectedRouteWithProps exact path="/sites" component={Sites} />
+                  <ProtectedRouteWithProps path="/" component={NotFoundPage}/>
                   <Route>
                     <Redirect to={ isLoggedIn ? '/sites' : '/' } />
                   </Route>
