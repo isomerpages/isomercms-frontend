@@ -113,7 +113,7 @@ export default class EditPage extends Component {
       isFileStagedForUpload: false,
       stagedFileDetails: {},
       isLoadingPageContent: true,
-      shouldRedirect: false,
+      shouldRedirectToNotFound: false,
     };
     this.mdeRef = React.createRef();
     this.apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName })
@@ -165,7 +165,7 @@ export default class EditPage extends Component {
       });
     } catch (err) {
       console.log(err);
-      this.setState({ shouldRedirect: true })
+      this.setState({ shouldRedirectToNotFound: true })
     }
   }
 
@@ -198,7 +198,7 @@ export default class EditPage extends Component {
         {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
       );
       console.log(err);
-      if (err?.response?.status === 404) this.setState({ shouldRedirect: true })
+      if (err?.response?.status === 404) this.setState({ shouldRedirectToNotFound: true })
     }
   }
 
@@ -217,7 +217,7 @@ export default class EditPage extends Component {
         {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
       );
       console.log(err);
-      this.setState({ shouldRedirect: true })
+      this.setState({ shouldRedirectToNotFound: true })
     }
   }
 
@@ -459,7 +459,7 @@ export default class EditPage extends Component {
           )
         }
         {
-          this.state.shouldRedirect &&
+          this.state.shouldRedirectToNotFound &&
           <Redirect
             to={{
                 pathname: '/not-found'
