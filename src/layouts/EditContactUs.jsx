@@ -6,6 +6,7 @@ import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { DragDropContext } from 'react-beautiful-dnd';
+import { Redirect } from 'react-router-dom'
 
 import { frontMatterParser, concatFrontMatterMdBody, isEmpty } from '../utils';
 import { sanitiseFrontMatter } from '../utils/dataSanitisers';
@@ -109,6 +110,7 @@ export default class EditContactUs extends Component {
         id: null,
         type: '',
       },
+      shouldRedirectToNotFound: false,
     };
   }
 
@@ -180,10 +182,11 @@ export default class EditContactUs extends Component {
         errors: {
           contacts: contactsErrors,
           locations: locationsErrors,
-        }
+        },
       });
     } catch (err) {
       console.log(err);
+      this.setState({ shouldRedirectToNotFound: true })
     }
   }
 
@@ -694,6 +697,15 @@ export default class EditContactUs extends Component {
             />
           </div>
         </div> 
+        {
+          this.state.shouldRedirectToNotFound &&
+          <Redirect
+            to={{
+                pathname: '/not-found',
+                state: {siteName: siteName}
+            }}
+          />
+        }
       </>
     );
   }
