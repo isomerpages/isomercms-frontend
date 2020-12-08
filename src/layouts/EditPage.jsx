@@ -198,7 +198,6 @@ export default class EditPage extends Component {
         {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
       );
       console.log(err);
-      if (err?.response?.status === 404) this.setState({ shouldRedirectToNotFound: true })
     }
   }
 
@@ -217,7 +216,6 @@ export default class EditPage extends Component {
         {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
       );
       console.log(err);
-      this.setState({ shouldRedirectToNotFound: true })
     }
   }
 
