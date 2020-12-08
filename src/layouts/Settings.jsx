@@ -68,7 +68,6 @@ const stateFields = {
     youtube: '',
     instagram: '',
   },
-  footerSha: '',
 };
 
 export default class Settings extends Component {
@@ -104,30 +103,30 @@ export default class Settings extends Component {
         configFieldsRequired,
         footerContent,
         navigationContent,
-        footerSha,
       } = settings;
 
-      // set state properly
-      if (this._isMounted) this.setState((currState) => ({
-        ...currState,
-        siteName,
+      const originalState = {
         ...configFieldsRequired,
         otherFooterSettings: {
-          ...currState.otherFooterSettings,
           contact_us: footerContent.contact_us,
           show_reach: footerContent.show_reach,
           feedback: footerContent.feedback,
           faq: footerContent.faq,
         },
         socialMediaContent: {
-          ...currState.socialMediaContent,
           ...footerContent.social_media,
         },
         navigationSettings: {
-          ...currState.navigationSettings,
           ...navigationContent,
         },
-        footerSha,
+      }
+
+      // set state properly
+      if (this._isMounted) this.setState((currState) => ({
+        ...currState,
+        siteName,
+        originalState: _.cloneDeep(originalState),
+        ...originalState,
       }));
     } catch (err) {
       console.log(err);
@@ -278,9 +277,6 @@ export default class Settings extends Component {
         colors,
       };
 
-      // obtain sha value
-      const { footerSha } = state;
-
       const params = {
         footerSettings: {
           ...otherFooterSettings,
@@ -288,7 +284,6 @@ export default class Settings extends Component {
         },
         configSettings,
         navigationSettings,
-        footerSha,
       };
 
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, params, {
@@ -411,7 +406,6 @@ export default class Settings extends Component {
       socialMediaContent,
       otherFooterSettings,
       navigationSettings: { logo },
-      footerSha,
       errors,
     } = this.state;
     const { 'primary-color': primaryColor, 'secondary-color': secondaryColor, 'media-colors': mediaColors } = colors;
@@ -628,7 +622,7 @@ export default class Settings extends Component {
                   label="Save"
                   disabled={hasErrors}
                   disabledStyle={elementStyles.formSaveButtonDisabled}
-                  className={(hasErrors || !footerSha)
+                  className={(hasErrors)
                     ? elementStyles.formSaveButtonDisabled
                     : elementStyles.formSaveButtonActive}
                   callback={this.saveSettings}
