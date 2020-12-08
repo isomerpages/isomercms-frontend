@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Redirect } from "react-router-dom";
 import axios from 'axios';
 import _ from 'lodash';
 import { Base64 } from 'js-base64';
@@ -126,7 +125,6 @@ export default class EditHomepage extends Component {
       },
       savedHeroElems: '',
       savedHeroErrors: '',
-      shouldRedirect: false
     };
   }
 
@@ -222,7 +220,6 @@ export default class EditHomepage extends Component {
       });
     } catch (err) {
       console.log(err);
-      if (err?.response?.status === 404) this.setState({ shouldRedirect: true })
     }
   }
 
@@ -930,7 +927,6 @@ export default class EditHomepage extends Component {
         {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
       );
       console.log(err);
-      this.setState({shouldRedirect: true})
     }
   }
 
@@ -1423,14 +1419,6 @@ export default class EditHomepage extends Component {
             />
           </div>
         </div>
-        {
-          this.state.shouldRedirect &&
-          <Redirect
-            to={{
-                pathname: '/not-found'
-            }}
-          />
-        }
       </>
     );
   }

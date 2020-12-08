@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
@@ -20,7 +19,6 @@ export default class Files extends Component {
       files: [],
       chosenFile: null,
       pendingFileUpload: null,
-      shouldRedirect: false,
     };
   }
 
@@ -36,7 +34,6 @@ export default class Files extends Component {
       if (this._isMounted) this.setState({ files });
     } catch (err) {
       console.log(err);
-      if (err?.response?.status === 404) this.setState({ shouldRedirect: true })
     }
   }
 
@@ -162,14 +159,6 @@ export default class Files extends Component {
             onSave={() => window.location.reload()}
           />
           )
-        }
-        {
-          this.state.shouldRedirect &&
-          <Redirect
-            to={{
-                pathname: '/not-found'
-            }}
-          />
         }
       </>
     );

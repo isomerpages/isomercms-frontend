@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
@@ -24,7 +23,6 @@ const Workspace = ({ match, location }) => {
 
     const [collections, setCollections] = useState([])
     const [unlinkedPages, setUnlinkedPages] = useState()
-    const [shouldRedirect, setShouldRedirect] = useState(false)
     const [contactUsCard, setContactUsCard] = useState(false)
 
     useEffect(() => {
@@ -38,14 +36,15 @@ const Workspace = ({ match, location }) => {
             // create option for contact-us page
           }
         }
-        try {
-            const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`);
-            if (_isMounted) setCollections(collectionsResp.data?.collections)
-        } catch (err) {
-            setCollections(undefined)
-            console.log(err)
-            if (err?.response?.status === 404) setShouldRedirect(true)
+
+        try { 
+          const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`);
+          if (_isMounted) setCollections(collectionsResp.data?.collections)
+        } catch (e) {
+          setCollections(undefined)
+          console.log(e)
         }
+        
         try { 
           const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`);
           if (_isMounted) setUnlinkedPages(unlinkedPagesResp.data?.pages)
@@ -147,14 +146,6 @@ const Workspace = ({ match, location }) => {
             </div>
             {/* main section ends here */}
           </div>
-          {
-            shouldRedirect &&
-            <Redirect
-                to={{
-                    pathname: '/not-found'
-                }}
-            />
-          }
         </>
     );
 }
