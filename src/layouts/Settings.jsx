@@ -106,7 +106,17 @@ export default class Settings extends Component {
       } = settings;
 
       const originalState = {
-        ...configFieldsRequired,
+        // config fields
+        colors: configFieldsRequired.colors,
+        favicon: configFieldsRequired.favicon,
+        google_analytics: configFieldsRequired.google_analytics,
+        facebook_pixel: configFieldsRequired.facebook_pixel,
+        is_government: configFieldsRequired.is_government,
+        resources_name: configFieldsRequired.resources_name,
+        shareicon: configFieldsRequired.shareicon,
+        title: configFieldsRequired.title,
+        url: configFieldsRequired.url,
+        // footer fields
         otherFooterSettings: {
           contact_us: footerContent.contact_us,
           show_reach: footerContent.show_reach,
@@ -116,6 +126,7 @@ export default class Settings extends Component {
         socialMediaContent: {
           ...footerContent.social_media,
         },
+        // navigation fields
         navigationSettings: {
           ...navigationContent,
         },
