@@ -71,6 +71,10 @@ const stateFields = {
   },
 };
 
+const CONFIG_FIELDS = ['colors', 'favicon', 'facebook_pixel', 'google_analytics', 'is_government', 'shareicon', 'title']
+const FOOTER_FIELDS = ['otherFooterSettings', 'socialMediaContent']
+const NAVIGATION_FIELDS = ['navigationSettings']
+
 export default class Settings extends Component {
   _isMounted = false
 
@@ -264,37 +268,69 @@ export default class Settings extends Component {
       const { match } = this.props;
       const { siteName } = match.params;
 
-      // settings is obtained from _config.yml and footer.yml
-      const socialMediaSettings = state.socialMediaContent;
-      const { otherFooterSettings } = state;
-
-      // obtain config settings object
       const {
-        title,
+        colors,
         favicon,
-        shareicon,
         facebook_pixel,
         google_analytics,
         is_government,
-        colors,
-        navigationSettings,
-      } = this.state;
-      const configSettings = {
-        title,
-        favicon,
         shareicon,
-        'facebook-pixel': facebook_pixel, // rename due to quirks on isomer template
+        title,
+        otherFooterSettings,
+        socialMediaContent,
+        navigationSettings: navigationSettingsState,
+        originalState,
+      } = state;
+
+      // Compare settings and extract only fields which have changed
+      const currentSettings = {
+        colors,
+        favicon,
+        facebook_pixel,
         google_analytics,
         is_government,
-        colors,
-      };
+        shareicon,
+        title,
+        otherFooterSettings,
+        socialMediaContent,
+        navigationSettings: navigationSettingsState,
+      }
+
+      let settingsStateDiff
+      if (originalState) {
+        settingsStateDiff = getObjectDiff(currentSettings, originalState)
+      }
+
+      // Construct payload
+      let configSettings = {}
+      let footerSettings = {}
+      let navigationSettings = {}
+      Object.keys(settingsStateDiff).forEach((field) => {
+        if (CONFIG_FIELDS.includes(field)) {
+          if (field === 'facebook_pixel') {
+            configSettings['facebook-pixel'] = settingsStateDiff[field].obj1 // rename due to quirks on isomer template
+          } else {
+            configSettings[field] = settingsStateDiff[field].obj1
+          }
+        }
+
+        if (FOOTER_FIELDS.includes(field)) {
+          if (field === 'otherFooterSettings') footerSettings = {
+            ...footerSettings,
+            ...settingsStateDiff[field].obj1
+          }
+
+          if (field === 'socialMediaContent') footerSettings['social_media'] = settingsStateDiff[field].obj1
+        }
+
+        if (NAVIGATION_FIELDS.includes(field)) {
+          navigationSettings = settingsStateDiff[field].obj1
+        }
+      })
 
       const params = {
-        footerSettings: {
-          ...otherFooterSettings,
-          social_media: socialMediaSettings,
-        },
         configSettings,
+        footerSettings,
         navigationSettings,
       };
 
