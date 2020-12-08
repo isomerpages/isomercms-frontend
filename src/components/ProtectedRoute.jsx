@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Redirect, Route } from 'react-router-dom'
+import axios from 'axios'
 
 // Import layouts
 import Home from '../layouts/Home';
@@ -7,8 +8,31 @@ import Home from '../layouts/Home';
 // Constants
 const authContextString = '#isomercms'
 
+// axios settings
+axios.defaults.withCredentials = true
+
 const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) => {
+    const [pageNotFound, setPageNotFound] = useState()
+    const { siteName } = rest.computedMatch?.params
+    
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}`)
+                setPageNotFound(false)
+            } catch (e) {
+                setPageNotFound(true)
+            }
+        }
+        if (siteName) {
+            fetchData()
+        } else {
+            setPageNotFound(false)
+        }
+    }, [siteName])
+
     return (
+        (pageNotFound !== undefined) &&
         <Route {...rest} render={
             props => {
                 if (rest.location.pathname === '/auth') {
@@ -38,6 +62,10 @@ const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) =>
                         return <Redirect to="/sites" />
                     }
 
+                    if (pageNotFound) {
+                        // User attempting to access a site that doesn't exist
+                        return <Redirect to="/not-found" />
+                    }
                     return <WrappedComponent {...rest} {...props} />
                 }
 
