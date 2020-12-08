@@ -460,7 +460,8 @@ export default class EditPage extends Component {
           this.state.shouldRedirectToNotFound &&
           <Redirect
             to={{
-                pathname: '/not-found'
+                pathname: '/not-found',
+                state: {siteName: siteName}
             }}
           />
         }
