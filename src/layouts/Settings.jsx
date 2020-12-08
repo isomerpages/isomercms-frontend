@@ -17,6 +17,7 @@ import { toast } from 'react-toastify';
 import Toast from '../components/Toast';
 import {
   DEFAULT_ERROR_TOAST_MSG,
+  getObjectDiff,
 } from '../utils'
 
 const stateFields = {
@@ -107,15 +108,15 @@ export default class Settings extends Component {
 
       const originalState = {
         // config fields
+        // resources_name: configFieldsRequired.resources_name,
+        // url: configFieldsRequired.url,
         colors: configFieldsRequired.colors,
         favicon: configFieldsRequired.favicon,
         google_analytics: configFieldsRequired.google_analytics,
         facebook_pixel: configFieldsRequired.facebook_pixel,
         is_government: configFieldsRequired.is_government,
-        resources_name: configFieldsRequired.resources_name,
         shareicon: configFieldsRequired.shareicon,
         title: configFieldsRequired.title,
-        url: configFieldsRequired.url,
         // footer fields
         otherFooterSettings: {
           contact_us: footerContent.contact_us,
@@ -416,7 +417,8 @@ export default class Settings extends Component {
       colors,
       socialMediaContent,
       otherFooterSettings,
-      navigationSettings: { logo },
+      navigationSettings,
+      originalState,
       errors,
     } = this.state;
     const { 'primary-color': primaryColor, 'secondary-color': secondaryColor, 'media-colors': mediaColors } = colors;
@@ -427,6 +429,25 @@ export default class Settings extends Component {
     } = colorPicker;
     const { location } = this.props;
 
+    // construct settings object for comparison with original state
+    const currentSettings = {
+      colors,
+      favicon,
+      facebook_pixel,
+      google_analytics,
+      is_government,
+      shareicon,
+      title,
+      otherFooterSettings,
+      socialMediaContent,
+      navigationSettings,
+    }
+
+    let settingsStateDiff
+    if (originalState) {
+      settingsStateDiff = getObjectDiff(currentSettings, originalState)
+    }
+
     // retrieve errors
     const hasConfigErrors = _.some([errors.favicon, errors.shareicon, errors.is_government, errors.facebook_pixel, errors.google_analytics]);
     const hasNavigationErrors = _.some([errors.navigationSettings.logo])
@@ -436,7 +457,10 @@ export default class Settings extends Component {
     const hasErrors = hasConfigErrors || hasNavigationErrors || hasColorErrors || hasMediaColorErrors || hasSocialMediaErrors;
     return (
       <>
-        <Header />
+        <Header
+          isEditPage={true}
+          shouldAllowEditPageBackNav={_.isEmpty(settingsStateDiff)}
+        />
         {/* main bottom section */}
         <form
           className={elementStyles.wrapper}
@@ -485,7 +509,7 @@ export default class Settings extends Component {
                   <FormFieldMedia
                     title="Agency logo"
                     id="logo"
-                    value={logo}
+                    value={navigationSettings.logo}
                     errorMessage={errors.navigationSettings.logo}
                     isRequired
                     onFieldChange={this.changeHandler}
