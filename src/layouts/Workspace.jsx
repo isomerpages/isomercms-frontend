@@ -21,7 +21,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 const Workspace = ({ match, location }) => {
     const { siteName } = match.params;
 
-    const [collections, setCollections] = useState([])
+    const [collections, setCollections] = useState()
     const [unlinkedPages, setUnlinkedPages] = useState()
     const [contactUsCard, setContactUsCard] = useState(false)
 
@@ -128,8 +128,8 @@ const Workspace = ({ match, location }) => {
                     ))
                     : (
                         !collections
-                            ? 'There are no collections in this repository'
-                            : 'Loading Collections...'
+                            ? 'Loading Collections...'
+                            : 'There are no collections in this repository'
                     )
                   }
                 </div>
