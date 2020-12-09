@@ -501,3 +501,14 @@ export const checkIsOutOfViewport = (bounding, posArr) => {
   
   return posArr.some((pos) => {return out[pos]})
 }
+
+export const getObjectDiff = (obj1, obj2) => {
+  const allkeys = _.union(_.keys(obj1), _.keys(obj2));
+  const difference = _.reduce(allkeys, function (result, key) {
+    if ( !_.isEqual(obj1[key], obj2[key]) ) {
+      result[key] = {obj1: obj1[key], obj2: obj2[key]}
+    }
+    return result;
+  }, {});
+  return difference
+}

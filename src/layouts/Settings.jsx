@@ -17,6 +17,7 @@ import { toast } from 'react-toastify';
 import Toast from '../components/Toast';
 import {
   DEFAULT_ERROR_TOAST_MSG,
+  getObjectDiff,
 } from '../utils'
 
 const stateFields = {
@@ -68,8 +69,11 @@ const stateFields = {
     youtube: '',
     instagram: '',
   },
-  footerSha: '',
 };
+
+const CONFIG_FIELDS = ['colors', 'favicon', 'facebook_pixel', 'google_analytics', 'is_government', 'shareicon', 'title']
+const FOOTER_FIELDS = ['otherFooterSettings', 'socialMediaContent']
+const NAVIGATION_FIELDS = ['navigationSettings']
 
 export default class Settings extends Component {
   _isMounted = false
@@ -104,30 +108,42 @@ export default class Settings extends Component {
         configFieldsRequired,
         footerContent,
         navigationContent,
-        footerSha,
       } = settings;
 
-      // set state properly
-      if (this._isMounted) this.setState((currState) => ({
-        ...currState,
-        siteName,
-        ...configFieldsRequired,
+      const originalState = {
+        // config fields
+        // note: config fields are listed out one-by-one since we do not use all config fields
+        colors: configFieldsRequired.colors,
+        favicon: configFieldsRequired.favicon,
+        google_analytics: configFieldsRequired.google_analytics,
+        facebook_pixel: configFieldsRequired.facebook_pixel,
+        is_government: configFieldsRequired.is_government,
+        // resources_name: configFieldsRequired.resources_name,
+        // url: configFieldsRequired.url,
+        shareicon: configFieldsRequired.shareicon,
+        title: configFieldsRequired.title,
+        // footer fields
         otherFooterSettings: {
-          ...currState.otherFooterSettings,
           contact_us: footerContent.contact_us,
           show_reach: footerContent.show_reach,
           feedback: footerContent.feedback,
           faq: footerContent.faq,
         },
         socialMediaContent: {
-          ...currState.socialMediaContent,
           ...footerContent.social_media,
         },
+        // navigation fields
         navigationSettings: {
-          ...currState.navigationSettings,
           ...navigationContent,
         },
-        footerSha,
+      }
+
+      // set state properly
+      if (this._isMounted) this.setState((currState) => ({
+        ...currState,
+        siteName,
+        originalState: _.cloneDeep(originalState),
+        ...originalState,
       }));
     } catch (err) {
       console.log(err);
@@ -253,42 +269,70 @@ export default class Settings extends Component {
       const { match } = this.props;
       const { siteName } = match.params;
 
-      // settings is obtained from _config.yml and footer.yml
-      const socialMediaSettings = state.socialMediaContent;
-      const { otherFooterSettings } = state;
-
-      // obtain config settings object
       const {
-        title,
+        colors,
         favicon,
-        shareicon,
         facebook_pixel,
         google_analytics,
         is_government,
-        colors,
-        navigationSettings,
-      } = this.state;
-      const configSettings = {
-        title,
-        favicon,
         shareicon,
-        'facebook-pixel': facebook_pixel, // rename due to quirks on isomer template
+        title,
+        otherFooterSettings,
+        socialMediaContent,
+        navigationSettings: navigationSettingsState,
+        originalState,
+      } = state;
+
+      // Compare settings and extract only fields which have changed
+      const currentSettings = {
+        colors,
+        favicon,
+        facebook_pixel,
         google_analytics,
         is_government,
-        colors,
-      };
+        shareicon,
+        title,
+        otherFooterSettings,
+        socialMediaContent,
+        navigationSettings: navigationSettingsState,
+      }
 
-      // obtain sha value
-      const { footerSha } = state;
+      let settingsStateDiff
+      if (originalState) {
+        settingsStateDiff = getObjectDiff(currentSettings, originalState)
+      }
+
+      // Construct payload
+      let configSettings = {}
+      let footerSettings = {}
+      let navigationSettings = {}
+      Object.keys(settingsStateDiff).forEach((field) => {
+        if (CONFIG_FIELDS.includes(field)) {
+          if (field === 'facebook_pixel') {
+            configSettings['facebook-pixel'] = settingsStateDiff[field].obj1 // rename due to quirks on isomer template
+          } else {
+            configSettings[field] = settingsStateDiff[field].obj1
+          }
+        }
+
+        if (FOOTER_FIELDS.includes(field)) {
+          if (field === 'otherFooterSettings') footerSettings = {
+            ...footerSettings,
+            ...settingsStateDiff[field].obj1
+          }
+
+          if (field === 'socialMediaContent') footerSettings['social_media'] = settingsStateDiff[field].obj1
+        }
+
+        if (NAVIGATION_FIELDS.includes(field)) {
+          navigationSettings = settingsStateDiff[field].obj1
+        }
+      })
 
       const params = {
-        footerSettings: {
-          ...otherFooterSettings,
-          social_media: socialMediaSettings,
-        },
         configSettings,
+        footerSettings,
         navigationSettings,
-        footerSha,
       };
 
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, params, {
@@ -410,8 +454,8 @@ export default class Settings extends Component {
       colors,
       socialMediaContent,
       otherFooterSettings,
-      navigationSettings: { logo },
-      footerSha,
+      navigationSettings,
+      originalState,
       errors,
     } = this.state;
     const { 'primary-color': primaryColor, 'secondary-color': secondaryColor, 'media-colors': mediaColors } = colors;
@@ -422,6 +466,25 @@ export default class Settings extends Component {
     } = colorPicker;
     const { location } = this.props;
 
+    // construct settings object for comparison with original state
+    const currentSettings = {
+      colors,
+      favicon,
+      facebook_pixel,
+      google_analytics,
+      is_government,
+      shareicon,
+      title,
+      otherFooterSettings,
+      socialMediaContent,
+      navigationSettings,
+    }
+
+    let settingsStateDiff
+    if (originalState) {
+      settingsStateDiff = getObjectDiff(currentSettings, originalState)
+    }
+
     // retrieve errors
     const hasConfigErrors = _.some([errors.favicon, errors.shareicon, errors.is_government, errors.facebook_pixel, errors.google_analytics]);
     const hasNavigationErrors = _.some([errors.navigationSettings.logo])
@@ -431,7 +494,10 @@ export default class Settings extends Component {
     const hasErrors = hasConfigErrors || hasNavigationErrors || hasColorErrors || hasMediaColorErrors || hasSocialMediaErrors;
     return (
       <>
-        <Header />
+        <Header
+          isEditPage={true}
+          shouldAllowEditPageBackNav={_.isEmpty(settingsStateDiff)}
+        />
         {/* main bottom section */}
         <form
           className={elementStyles.wrapper}
@@ -480,7 +546,7 @@ export default class Settings extends Component {
                   <FormFieldMedia
                     title="Agency logo"
                     id="logo"
-                    value={logo}
+                    value={navigationSettings.logo}
                     errorMessage={errors.navigationSettings.logo}
                     isRequired
                     onFieldChange={this.changeHandler}
@@ -628,7 +694,7 @@ export default class Settings extends Component {
                   label="Save"
                   disabled={hasErrors}
                   disabledStyle={elementStyles.formSaveButtonDisabled}
-                  className={(hasErrors || !footerSha)
+                  className={(hasErrors)
                     ? elementStyles.formSaveButtonDisabled
                     : elementStyles.formSaveButtonActive}
                   callback={this.saveSettings}
