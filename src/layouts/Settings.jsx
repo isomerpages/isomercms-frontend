@@ -112,13 +112,14 @@ export default class Settings extends Component {
 
       const originalState = {
         // config fields
-        // resources_name: configFieldsRequired.resources_name,
-        // url: configFieldsRequired.url,
+        // note: config fields are listed out one-by-one since we do not use all config fields
         colors: configFieldsRequired.colors,
         favicon: configFieldsRequired.favicon,
         google_analytics: configFieldsRequired.google_analytics,
         facebook_pixel: configFieldsRequired.facebook_pixel,
         is_government: configFieldsRequired.is_government,
+        // resources_name: configFieldsRequired.resources_name,
+        // url: configFieldsRequired.url,
         shareicon: configFieldsRequired.shareicon,
         title: configFieldsRequired.title,
         // footer fields
