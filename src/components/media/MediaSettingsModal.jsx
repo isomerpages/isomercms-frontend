@@ -94,6 +94,12 @@ export default class MediaSettingsModal extends Component {
           <Toast notificationType='error' text={`Another ${type === 'image' ? 'image' : 'file'} with the same name exists. Please choose a different name.`}/>, 
           {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
         );
+      } else if (err?.response?.status === 413) {
+        // Error due to file size too large
+        toast(
+          <Toast notificationType='error' text={`The ${type === 'image' ? 'image' : 'file'} is too large. Please choose a smaller ${type === 'image' ? 'image' : 'file'}.`}/>, 
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+        );
       } else {
         toast(
           <Toast notificationType='error' text={`There was a problem trying to save this ${type === 'image' ? 'image' : 'file'}. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
