@@ -594,7 +594,7 @@ const validatePageSettings = (id, value) => {
 
       // Permalink fails regex
       if (!permalinkRegexTest.test(value)) {
-        errorMessage = `The url should start with a slash, and contain lowercase words separated by hyphens and slashes only.`;
+        errorMessage = `The url should start with a slash, and contain alphanumeric characters separated by hyphens and slashes only.`;
       }
       break;
     }
@@ -697,7 +697,7 @@ const validateResourceSettings = (id, value) => {
       }
       // Permalink fails regex
       if (!permalinkRegexTest.test(value)) {
-        errorMessage = `The url should start with a slash, and contain lowercase words separated by hyphens and slashes only.`;
+        errorMessage = `The url should start with a slash, and contain alphanumeric characters separated by hyphens and slashes only.`;
       }
       break;
     }
