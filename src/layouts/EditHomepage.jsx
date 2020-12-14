@@ -532,7 +532,7 @@ export default class EditHomepage extends Component {
 
             newErrors = update(errors, {
               highlights: {
-                $push: [true],
+                $splice: [[highlightIndex, 0, KeyHighlightConstructor(true)]],
               },
             });
 
