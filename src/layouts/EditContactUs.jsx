@@ -558,9 +558,12 @@ export default class EditContactUs extends Component {
         sha: state.frontMatterSha,
       };
 
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/contact-us.md`, frontMatterParams, {
-        withCredentials: true,
-      });
+      if (JSON.stringify(state.originalFrontMatter) !== JSON.stringify(state.frontMatter)) {
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/contact-us.md`, frontMatterParams, {
+          withCredentials: true,
+        });
+      }
+      
       
       // // Update settings
       let updatedFooterContents = _.cloneDeep(state.footerContent)
@@ -570,9 +573,11 @@ export default class EditContactUs extends Component {
         footerSha: state.footerSha,
       };
     
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, footerParams, {
-        withCredentials: true,
-      });
+      if (JSON.stringify(state.footerContent) !== JSON.stringify(state.originalFooterContent)) {
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, footerParams, {
+          withCredentials: true,
+        });
+      }
 
       window.location.reload();
     } catch (err) {
