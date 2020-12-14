@@ -392,6 +392,16 @@ export default class EditContactUs extends Component {
     try {
       const { scrollRefs, state } = this;
       const { frontMatter, displaySections, errors } = state;
+      const { contacts: contactsDisplay, locations: locationsDisplay } = displaySections
+
+      const resetDisplaySections = {
+        sectionsDisplay: displaySections.sectionsDisplay,
+        contacts: _.fill(Array(contactsDisplay.length), false),
+        locations: _.fill(Array(locationsDisplay.length), false),
+      }
+      const modifiedDisplaySections = update(resetDisplaySections, {
+        [id]: {$push: [true]},
+      });
 
       const newFrontMatter = update(frontMatter, {
         [id]: {$push: [enumSection(id)]},
@@ -400,7 +410,7 @@ export default class EditContactUs extends Component {
         [id]: {$push: [enumSection(id)]},
       })
       const newDisplaySections = update(displaySections, {
-        [id]: {$push: [true]},
+        $set: modifiedDisplaySections,
       });
       const newScrollRefs = update(scrollRefs, {
         [id]: {$push: [React.createRef()]},
