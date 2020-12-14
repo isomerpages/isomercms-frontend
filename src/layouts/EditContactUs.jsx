@@ -7,12 +7,14 @@ import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { Redirect } from 'react-router-dom'
+import { toast } from 'react-toastify';
 
-import { frontMatterParser, concatFrontMatterMdBody, isEmpty } from '../utils';
+import { DEFAULT_ERROR_TOAST_MSG, frontMatterParser, concatFrontMatterMdBody, isEmpty } from '../utils';
 import { sanitiseFrontMatter } from '../utils/dataSanitisers';
 import { validateContact, validateLocation } from '../utils/validators';
 
 import EditorSection from '../components/contact-us/Section';
+import Toast from '../components/Toast';
 
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -119,11 +121,20 @@ export default class EditContactUs extends Component {
       const { match } = this.props;
       const { siteName } = match.params;
 
+      let content, sha
+      try {
+        const contactUsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/contact-us.md`);
+        const { content: contactUsContent, sha:contactUsSha } = contactUsResp.data;
+        content = contactUsContent
+        sha = contactUsSha
+      } catch (error) {
+        if (error?.response?.status === 404) {
+          this.setState({ shouldRedirectToNotFound: true })
+        }
+        throw error
+      }
       const settingsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`)
       const { footerContent, footerSha } = settingsResp.data.settings;
-      
-      const contactUsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/contact-us.md`);
-      const { content, sha } = contactUsResp.data;
 
       // split the markdown into front matter and content
       const { frontMatter } = frontMatterParser(Base64.decode(content));
@@ -185,8 +196,13 @@ export default class EditContactUs extends Component {
         },
       });
     } catch (err) {
+      if (!this.state.shouldRedirectToNotFound) {
+        toast(
+          <Toast notificationType='error' text={`There was a problem trying to load your contact us page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+        );
+      }
       console.log(err);
-      this.setState({ shouldRedirectToNotFound: true })
     }
   }
 
@@ -560,6 +576,10 @@ export default class EditContactUs extends Component {
 
       window.location.reload();
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text={`There was a problem trying to save your contact us page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }
