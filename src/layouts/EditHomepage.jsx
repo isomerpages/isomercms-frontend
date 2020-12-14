@@ -219,6 +219,12 @@ export default class EditHomepage extends Component {
         errors,
       });
     } catch (err) {
+      // Set frontMatter to be same to prevent warning message when navigating away
+      this.setState( {frontMatter: this.state.originalFrontMatter} )
+      toast(
+        <Toast notificationType='error' text={`There was a problem trying to load your homepage. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }
