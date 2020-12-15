@@ -90,7 +90,7 @@ export default class Images extends Component {
             {/* Info segment */}
             <div className={contentStyles.segment}>
               <i className="bx bx-sm bx-info-circle text-dark" />
-              <span><strong className="ml-1">Note:</strong> Upload images here to link to them in pages and resources</span>
+              <span><strong className="ml-1">Note:</strong> Upload images here to link to them in pages and resources. The maximum image size allowed is 5MB.</span>
             </div>
             <div className={contentStyles.contentContainerBars}>
               <div className={contentStyles.boxesContainer}>
