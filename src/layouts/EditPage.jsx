@@ -13,6 +13,7 @@ import Policy from 'csp-parse';
 import { toast } from 'react-toastify';
 import Toast from '../components/Toast';
 
+// Isomer components
 import {
   DEFAULT_ERROR_TOAST_MSG,
   frontMatterParser,
@@ -36,6 +37,10 @@ import {
   tableButton,
   guideButton,
 } from '../utils/markdownToolbar';
+import {
+  createPageStyleSheet,
+  getSiteColors,
+} from '../utils/siteColorUtils';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -94,37 +99,6 @@ const getBackButtonInfo = (resourceCategory, collectionName, siteName) => {
     backButtonUrl: `/sites/${siteName}/workspace`,
   }
 }
-const defaultIsomerPrimaryColor = '#6031b6';
-const defaultIsomerSecondaryColor = '#4372d6';
-
-function getStyleSheet(unique_title) {
-  for(let i=0; i<document.styleSheets.length; i++) {
-    const sheet = document.styleSheets[i];
-    if(sheet.title == unique_title) {
-      return sheet;
-    }
-  }
-}
-const createPageStyleSheet = (repoName) => {
-  const styleElement = document.createElement('style')
-  const styleTitle = `${repoName}-style`
-  styleElement.setAttribute('id', styleTitle)
-  styleElement.setAttribute('title', styleTitle)
-  document.head.appendChild(styleElement);
-
-  const customStyleSheet = getStyleSheet(styleTitle)
-  customStyleSheet.insertRule(".bp-section.bp-section-pagetitle { background-color: red !important;}", 0);
-  customStyleSheet.insertRule(".content h1 strong { color: red !important;}", 0);
-  customStyleSheet.insertRule(".content h2 strong { color: red !important;}", 0);
-  customStyleSheet.insertRule(".content h3 strong { color: red !important;}", 0);
-  customStyleSheet.insertRule(".content h4 strong { color: red !important;}", 0);
-  customStyleSheet.insertRule(".content h5 strong { color: red !important;}", 0);
-  customStyleSheet.insertRule(".has-text-secondary { color: red !important;}", 0);
-  customStyleSheet.insertRule(".bp-menu-list a.is-active { color: red !important;}", 0);
-  customStyleSheet.insertRule(".sgds-icon-chevron-up:before { color: red !important;}", 0);
-  customStyleSheet.insertRule(".sgds-icon-chevron-down:before { color: red !important;}", 0);
-
-}
 
 export default class EditPage extends Component {
   _isMounted = true 
@@ -156,46 +130,43 @@ export default class EditPage extends Component {
   }
 
   async componentDidMount() {
-    const {
-      primaryColors,
-      secondaryColors,
-      setPrimaryColors,
-      setSecondaryColors,
-    } = this.props;
-
-    const { match } = this.props;
+    const { match, siteColors, setSiteColors } = this.props;
     const { siteName } = match.params;
 
-    // Set page colors
-    const primaryColor = defaultIsomerPrimaryColor
-    const secondaryColor = defaultIsomerSecondaryColor
-    createPageStyleSheet(siteName)
-
-    // // If no color data, retrieve color data
-    // if (!primaryColors[this.siteName]) {
-    //   try {
-    //     // get settings data from backend
-    //     const settingsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${this.siteName}/settings`, {
-    //       withCredentials: true,
-    //     });
-    //     const { settings } = settingsResp.data;
-    //     const { configFieldsRequired: { colors } } = settings;
-
-    //     console.log(colors)
-    //     setPrimaryColors({
-    //       ...primaryColors,
-    //       [this.siteName]: colors?.['primary-color'],
-    //     });
-    //     setSecondaryColors({
-    //       ...secondaryColors,
-    //       [this.siteName]: colors?.['secondary-color'],
-    //     });
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    // }
-
     this._isMounted = true
+
+    // Set page colors
+    try {
+      let primaryColor
+      let secondaryColor
+
+      if (!siteColors[siteName]) {
+        const {
+          primaryColor: sitePrimaryColor,
+          secondaryColor: siteSecondaryColor,
+        } = await getSiteColors(siteName)
+
+        primaryColor = sitePrimaryColor
+        secondaryColor = siteSecondaryColor
+
+        if (this._isMounted) setSiteColors((prevState) => ({
+          ...prevState,
+          [siteName]: {
+            primaryColor,
+            secondaryColor,
+          }
+        }))
+      } else {
+        primaryColor = siteColors[siteName].primaryColor
+        secondaryColor = siteColors[siteName].secondaryColor
+      }
+
+      createPageStyleSheet(siteName, primaryColor, secondaryColor)
+
+    } catch (err) {
+      console.log(err);
+    }
+
     let content, sha
     try {
       const resp = await axios.get(this.apiEndpoint);
