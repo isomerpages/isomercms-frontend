@@ -8,8 +8,8 @@ import {
 import axios from 'axios';
 import * as Sentry from "@sentry/react";
 import { ToastContainer } from 'react-toastify';
-
 import 'react-toastify/dist/ReactToastify.css';
+
 // Layouts
 import AuthCallback from './layouts/AuthCallback'
 import Home from './layouts/Home';
@@ -31,7 +31,11 @@ import NotFoundPage from './components/NotFoundPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import FallbackComponent from './components/FallbackComponent'
 
+// Styles
 import elementStyles from './styles/isomer-cms/Elements.module.scss';
+
+// Utils
+import { defaultSiteColors } from './utils/siteColorUtils';
 
 // Import contexts
 const { LoginContext } = require('./contexts/LoginContext')
@@ -63,9 +67,7 @@ function App() {
     return false
   })
   const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false)
-  const [primaryColors, setPrimaryColors] = useState({})
-  const [secondaryColors, setSecondaryColors] = useState({})
-
+  const [siteColors, setSiteColors] = useState({})
 
   axios.interceptors.response.use(
     function (response) {
@@ -117,7 +119,7 @@ function App() {
   const ProtectedRouteWithProps = (props) => {
     return (
       <Sentry.ErrorBoundary fallback={FallbackComponent}>
-        <ProtectedRoute {...props} isLoggedIn={isLoggedIn} />
+        <ProtectedRoute {...props} isLoggedIn={isLoggedIn} siteColors={siteColors} setSiteColors={setSiteColors} />
       </Sentry.ErrorBoundary>
     )
   }
