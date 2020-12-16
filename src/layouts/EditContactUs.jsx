@@ -77,6 +77,8 @@ const enumSection = (type, args) => {
 };
 
 export default class EditContactUs extends Component {
+  _isMounted = false
+
   constructor(props) {
     super(props);
     this.scrollRefs = {
@@ -119,6 +121,7 @@ export default class EditContactUs extends Component {
   async componentDidMount() {  
     const { match } = this.props;
     const { siteName } = match.params;
+    this._isMounted = true
 
     let content, sha, footerContent, footerSha
     try {
@@ -197,7 +200,7 @@ export default class EditContactUs extends Component {
       locations: locationsScrollRefs,
     }
 
-    this.setState({
+    if (this._isMounted) this.setState({
       originalFooterContent: _.cloneDeep(footerContent),
       footerContent,
       footerSha,
@@ -214,6 +217,10 @@ export default class EditContactUs extends Component {
         locations: locationsErrors,
       },
     });
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   onDragEnd = (result) => {
