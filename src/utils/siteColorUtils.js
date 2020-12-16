@@ -33,8 +33,23 @@ const createPageStyleSheet = (repoName, primaryColor, secondaryColor) => {
   
     // breadcrumb - primary color
     customStyleSheet.insertRule(`.bp-section.bp-section-pagetitle { background-color: ${primaryColor} !important;}`, 0);
+
+    // EditHomepage: key highlights - primary color
+    customStyleSheet.insertRule(`#key-highlights { background-color: ${primaryColor} !important;}`, 0);
+
+    // EditHomepage: site notifications - secondary color
+    customStyleSheet.insertRule(`.bg-secondary { background-color: ${secondaryColor} !important;}`, 0);
+
+    // EditHomepage: hero button - secondary color
+    customStyleSheet.insertRule(`.is-secondary { background-color: ${secondaryColor} !important;}`, 0);
+
+    // EditHomepage: info section button text - secondary color
+    customStyleSheet.insertRule(`.bp-sec-button span { color: ${secondaryColor} !important; border-bottom: 2px solid ${secondaryColor} !important}`, 0);
+    customStyleSheet.insertRule(`.bp-sec-button:hover span { color: ${secondaryColor} !important; border-bottom: 2px solid ${secondaryColor} !important}`, 0);
+    customStyleSheet.insertRule(`.bp-sec-button .sgds-icon { color: ${secondaryColor} !important;}`, 0);
+    customStyleSheet.insertRule(`.bp-sec-button .sgds-icon:before { color: ${secondaryColor} !important;}`, 0);
   
-    // headings
+    // EditPage: headings - secondary color
     customStyleSheet.insertRule(`.content h1 strong { color: ${secondaryColor} !important;}`, 0);
     customStyleSheet.insertRule(`.content h2 strong { color: ${secondaryColor} !important;}`, 0);
     customStyleSheet.insertRule(`.content h3 strong { color: ${secondaryColor} !important;}`, 0);
@@ -42,7 +57,7 @@ const createPageStyleSheet = (repoName, primaryColor, secondaryColor) => {
     customStyleSheet.insertRule(`.content h5 strong { color: ${secondaryColor} !important;}`, 0);
     customStyleSheet.insertRule(`.has-text-secondary { color: ${secondaryColor} !important;}`, 0);
   
-    // left nav
+    // EditPage: left nav - secondary color
     customStyleSheet.insertRule(`.bp-menu-list a.is-active { color: ${secondaryColor} !important; border-bottom: 2px solid ${secondaryColor} !important}`, 0);
     customStyleSheet.insertRule(`.bp-menu-list a.is-active:hover { color: ${secondaryColor} !important; border-bottom: 2px solid ${secondaryColor} !important}`, 0);
     customStyleSheet.insertRule(`.bp-menu-list a:hover { color: ${secondaryColor} !important; border-bottom: 2px solid ${secondaryColor} !important}`, 0);
