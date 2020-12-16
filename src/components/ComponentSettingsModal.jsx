@@ -182,7 +182,7 @@ const ComponentSettingsModal = ({
                 setFileUrl(frontMatter.file_url)
                 setOriginalFileUrl(frontMatter.file_url)
 
-                setResourceDate(type === 'resource' ? retrieveResourceFileMetadata(fileName).date : frontMatter.date)
+                setResourceDate(type === 'resource' ? retrieveResourceFileMetadata(fileName).date : '')
                 setOriginalThirdNavTitle(frontMatter.third_nav_title)
                 setThirdNavTitle(frontMatter.third_nav_title)
               }
