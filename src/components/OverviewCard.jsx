@@ -75,7 +75,7 @@ const OverviewCard = ({
       } = frontMatter;
 
       let collectionPageData
-      if (!isResource && !isNewCollection) {
+      if (!isResource && !isNewCollection && chosenCategory) {
         // User selected an existing page collection
         const { collectionPages } = await retrieveThirdNavOptions(siteName, chosenCategory, true)
         collectionPageData = collectionPages
