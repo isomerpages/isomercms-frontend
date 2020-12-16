@@ -345,7 +345,7 @@ const OverviewCard = ({
         <DeleteWarningModal
           onCancel={() => setCanShowDeleteWarningModal(false)}
           onDelete={deleteHandler}
-          type="resource"
+          type={isResource ? "resource" : "page"}
         />
       )
     }
