@@ -47,6 +47,7 @@ const OverviewCard = ({
   const [canShowGenericWarningModal, setCanShowGenericWarningModal] = useState(false)
   const [chosenCategory, setChosenCategory] = useState()
   const [isOutOfViewport, setIsOutOfViewport] = useState()
+  const [isNewCollection, setIsNewCollection] = useState(false)
   const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? isResource ? `/resources/${category}` : `/collections/${category}` : ''}`
 
   useEffect(() => {
@@ -74,7 +75,7 @@ const OverviewCard = ({
       } = frontMatter;
 
       let collectionPageData
-      if (!isResource && chosenCategory) {
+      if (!isResource && !isNewCollection && chosenCategory) {
         // User selected an existing page collection
         const { collectionPages } = await retrieveThirdNavOptions(siteName, chosenCategory, true)
         collectionPageData = collectionPages
@@ -94,7 +95,7 @@ const OverviewCard = ({
         isNewFile: false,
         siteName,
         collectionPageData,
-        isNewCollection: !chosenCategory,
+        isNewCollection,
       }
       await saveFileAndRetrieveUrl(fileInfo)
 
@@ -113,6 +114,7 @@ const OverviewCard = ({
           {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
         );
       }
+      setIsNewCollection(false)
       setCanShowGenericWarningModal(false)
       console.log(err);
     }
@@ -221,6 +223,7 @@ const OverviewCard = ({
         onProceed={moveFile}
         onCancel={() => {
           setChosenCategory()
+          setIsNewCollection(false)
           setCanShowGenericWarningModal(false)
         }}
         proceedText="Continue"
@@ -320,6 +323,7 @@ const OverviewCard = ({
                   disabledStyle={elementStyles.disabled}
                   className={(!!errorMessage || !newCategory) ? elementStyles.disabled : elementStyles.blue}
                   callback={() => {
+                    setIsNewCollection(true)
                     setChosenCategory(newCategory)
                     fileMoveDropdownRef.current.blur()
                     setCanShowGenericWarningModal(true)
@@ -341,7 +345,7 @@ const OverviewCard = ({
         <DeleteWarningModal
           onCancel={() => setCanShowDeleteWarningModal(false)}
           onDelete={deleteHandler}
-          type="resource"
+          type={isResource ? "resource" : "page"}
         />
       )
     }
