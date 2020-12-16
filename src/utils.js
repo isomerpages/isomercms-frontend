@@ -109,14 +109,13 @@ export function retrieveResourceFileMetadata(fileName) {
 
   const titleTokenArray = tokenArray.slice(3);
   const prettifiedTitleTokenArray = titleTokenArray.map((token) => {
-    if (token.length < 2) return token.toUpperCase()
-    return token.slice(0,1).toUpperCase() + token.slice(1)
+    // We search for special characters which were converted to text
+    // Convert dollar back to $ if it is followed by any alphanumeric character
+    const convertedToken = token.replaceAll(/dollar(?=([0-9]))/g, '$')
+    if (convertedToken.length < 2) return convertedToken.toUpperCase()
+    return convertedToken.slice(0,1).toUpperCase() + convertedToken.slice(1)
   });
-  const prettifiedTitle = prettifiedTitleTokenArray.join(' ')
-
-  // We search for special characters which were converted to text
-  // Convert dollar back to $ if it is followed by any alphanumeric character
-  const title = prettifiedTitle.replaceAll(/dollar(?=([a-zA-Z0-9]))/gi, '$')
+  const title = prettifiedTitleTokenArray.join(' ')
 
   return { date, title };
 }
