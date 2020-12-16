@@ -47,7 +47,10 @@ const Workspace = ({ match, location }) => {
         
         try { 
           const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`);
-          if (_isMounted) setUnlinkedPages(unlinkedPagesResp.data?.pages)
+          if (_isMounted) {
+            console.log(unlinkedPagesResp.data?.pages)
+            setUnlinkedPages(unlinkedPagesResp.data?.pages.filter(page => page.fileName !== 'contact-us.md'))
+          }
         } catch (e) {
           console.log(e)
         }

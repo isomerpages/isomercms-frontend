@@ -51,7 +51,7 @@ const INFOBAR_SUBTITLE_MAX_LENGTH = 30;
 const INFOBAR_BUTTON_TEXT_MIN_LENGTH = 0;
 const INFOBAR_BUTTON_TEXT_MAX_LENGTH = 30;
 const INFOBAR_DESCRIPTION_MIN_LENGTH = 0;
-const INFOBAR_DESCRIPTION_MAX_LENGTH = 30;
+const INFOBAR_DESCRIPTION_MAX_LENGTH = 160;
 // Infopic
 const INFOPIC_TITLE_MIN_LENGTH = 0;
 const INFOPIC_TITLE_MAX_LENGTH = 30;
@@ -60,7 +60,7 @@ const INFOPIC_SUBTITLE_MAX_LENGTH = 30;
 const INFOPIC_BUTTON_TEXT_MIN_LENGTH = 0;
 const INFOPIC_BUTTON_TEXT_MAX_LENGTH = 30;
 const INFOPIC_DESCRIPTION_MIN_LENGTH = 0;
-const INFOPIC_DESCRIPTION_MAX_LENGTH = 30;
+const INFOPIC_DESCRIPTION_MAX_LENGTH = 160;
 const INFOPIC_ALT_TEXT_MIN_LENGTH = 0;
 const INFOPIC_ALT_TEXT_MAX_LENGTH = 30;
 // Hero
@@ -594,7 +594,7 @@ const validatePageSettings = (id, value) => {
 
       // Permalink fails regex
       if (!permalinkRegexTest.test(value)) {
-        errorMessage = `The url should start with a slash, and contain lowercase words separated by hyphens and slashes only.`;
+        errorMessage = `The url should start with a slash, and contain alphanumeric characters separated by hyphens and slashes only.`;
       }
       break;
     }
@@ -697,7 +697,7 @@ const validateResourceSettings = (id, value) => {
       }
       // Permalink fails regex
       if (!permalinkRegexTest.test(value)) {
-        errorMessage = `The url should start with a slash, and contain lowercase words separated by hyphens and slashes only.`;
+        errorMessage = `The url should start with a slash, and contain alphanumeric characters separated by hyphens and slashes only.`;
       }
       break;
     }

@@ -7,12 +7,14 @@ import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { Redirect } from 'react-router-dom'
+import { toast } from 'react-toastify';
 
-import { frontMatterParser, concatFrontMatterMdBody, isEmpty } from '../utils';
+import { DEFAULT_ERROR_TOAST_MSG, frontMatterParser, concatFrontMatterMdBody, isEmpty, retrieveResourceFileMetadata } from '../utils';
 import { sanitiseFrontMatter } from '../utils/dataSanitisers';
 import { validateContact, validateLocation } from '../utils/validators';
 
 import EditorSection from '../components/contact-us/Section';
+import Toast from '../components/Toast';
 
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -115,79 +117,103 @@ export default class EditContactUs extends Component {
   }
 
   async componentDidMount() {  
+    const { match } = this.props;
+    const { siteName } = match.params;
+
+    let content, sha, footerContent, footerSha
     try {
-      const { match } = this.props;
-      const { siteName } = match.params;
-
-      const settingsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`)
-      const { footerContent, footerSha } = settingsResp.data.settings;
-      
       const contactUsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/contact-us.md`);
-      const { content, sha } = contactUsResp.data;
-
-      // split the markdown into front matter and content
-      const { frontMatter } = frontMatterParser(Base64.decode(content));
-
-      // data cleaning for non-comforming data
-      const sanitisedFrontMatter = sanitiseFrontMatter(frontMatter)
-
-      const { contacts, locations } = sanitisedFrontMatter
-
-      const contactsErrors = [], locationsErrors = []
-      const contactsDisplay = [], locationsDisplay = []
-      const contactsScrollRefs = [], locationsScrollRefs = []
-
-      const sectionsDisplay = {
-        contacts: false, 
-        locations: false
+      const { content:pageContent , sha:pageSha } = contactUsResp.data;
+      content = pageContent
+      sha = pageSha
+    } catch (error) {
+      if (error?.response?.status === 404) {
+        this.setState({ shouldRedirectToNotFound: true })
+      } else {
+        toast(
+          <Toast notificationType='error' text={`There was a problem trying to load your contact us page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+        );
       }
-      
-      const sectionsScrollRefs = {
-        header: React.createRef(),
-        feedback: React.createRef(),
-        contacts: React.createRef(),
-        locations: React.createRef(),
-      }
-
-      contacts.forEach(_ => {
-        contactsErrors.push(enumSection('contacts'))
-        contactsDisplay.push(false)
-        contactsScrollRefs.push(React.createRef())
-      })
-
-      locations.forEach(location => {
-        locationsErrors.push(enumSection('locations', { operatingHoursLength: location.operating_hours.length }))
-        locationsDisplay.push(false)
-        locationsScrollRefs.push(React.createRef())
-      })
-      
-      this.scrollRefs = {
-        sectionsScrollRefs,
-        contacts: contactsScrollRefs,
-        locations: locationsScrollRefs,
-      }
-
-      this.setState({
-        originalFooterContent: _.cloneDeep(footerContent),
-        footerContent,
-        footerSha,
-        originalFrontMatter:  _.cloneDeep(frontMatter),
-        frontMatter: sanitisedFrontMatter,
-        frontMatterSha: sha,
-        displaySections: {
-          sectionsDisplay,
-          contacts: contactsDisplay,
-          locations: locationsDisplay,
-        },
-        errors: {
-          contacts: contactsErrors,
-          locations: locationsErrors,
-        },
-      });
-    } catch (err) {
-      console.log(err);
-      this.setState({ shouldRedirectToNotFound: true })
+      console.log(error)
     }
+
+    if (!content) return
+
+    try {
+      const settingsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`)
+      const { footerContent:retrievedContent, footerSha:retrievedSha } = settingsResp.data.settings;
+      footerContent = retrievedContent
+      footerSha = retrievedSha
+    } catch (err) {
+      toast(
+        <Toast notificationType='error' text={`There was a problem trying to load your contact us page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
+      console.log(err);
+    }
+
+    if (!footerContent) return
+
+    // split the markdown into front matter and content
+    const { frontMatter } = frontMatterParser(Base64.decode(content));
+
+    // data cleaning for non-comforming data
+    const sanitisedFrontMatter = sanitiseFrontMatter(frontMatter)
+
+    const { contacts, locations } = sanitisedFrontMatter
+
+    const contactsErrors = [], locationsErrors = []
+    const contactsDisplay = [], locationsDisplay = []
+    const contactsScrollRefs = [], locationsScrollRefs = []
+
+    const sectionsDisplay = {
+      contacts: false, 
+      locations: false
+    }
+    
+    const sectionsScrollRefs = {
+      header: React.createRef(),
+      feedback: React.createRef(),
+      contacts: React.createRef(),
+      locations: React.createRef(),
+    }
+
+    contacts.forEach(_ => {
+      contactsErrors.push(enumSection('contacts'))
+      contactsDisplay.push(false)
+      contactsScrollRefs.push(React.createRef())
+    })
+
+    locations.forEach(location => {
+      locationsErrors.push(enumSection('locations', { operatingHoursLength: location.operating_hours.length }))
+      locationsDisplay.push(false)
+      locationsScrollRefs.push(React.createRef())
+    })
+    
+    this.scrollRefs = {
+      sectionsScrollRefs,
+      contacts: contactsScrollRefs,
+      locations: locationsScrollRefs,
+    }
+
+    this.setState({
+      originalFooterContent: _.cloneDeep(footerContent),
+      footerContent,
+      footerSha,
+      originalFrontMatter:  _.cloneDeep(frontMatter),
+      frontMatter: sanitisedFrontMatter,
+      frontMatterSha: sha,
+      displaySections: {
+        sectionsDisplay,
+        contacts: contactsDisplay,
+        locations: locationsDisplay,
+      },
+      errors: {
+        contacts: contactsErrors,
+        locations: locationsErrors,
+      },
+    });
   }
 
   onDragEnd = (result) => {
@@ -376,6 +402,16 @@ export default class EditContactUs extends Component {
     try {
       const { scrollRefs, state } = this;
       const { frontMatter, displaySections, errors } = state;
+      const { contacts: contactsDisplay, locations: locationsDisplay } = displaySections
+
+      const resetDisplaySections = {
+        sectionsDisplay: displaySections.sectionsDisplay,
+        contacts: _.fill(Array(contactsDisplay.length), false),
+        locations: _.fill(Array(locationsDisplay.length), false),
+      }
+      const modifiedDisplaySections = update(resetDisplaySections, {
+        [id]: {$push: [true]},
+      });
 
       const newFrontMatter = update(frontMatter, {
         [id]: {$push: [enumSection(id)]},
@@ -384,7 +420,7 @@ export default class EditContactUs extends Component {
         [id]: {$push: [enumSection(id)]},
       })
       const newDisplaySections = update(displaySections, {
-        [id]: {$push: [true]},
+        $set: modifiedDisplaySections,
       });
       const newScrollRefs = update(scrollRefs, {
         [id]: {$push: [React.createRef()]},
@@ -542,9 +578,12 @@ export default class EditContactUs extends Component {
         sha: state.frontMatterSha,
       };
 
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/contact-us.md`, frontMatterParams, {
-        withCredentials: true,
-      });
+      if (JSON.stringify(state.originalFrontMatter) !== JSON.stringify(state.frontMatter)) {
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/contact-us.md`, frontMatterParams, {
+          withCredentials: true,
+        });
+      }
+      
       
       // // Update settings
       let updatedFooterContents = _.cloneDeep(state.footerContent)
@@ -554,12 +593,18 @@ export default class EditContactUs extends Component {
         footerSha: state.footerSha,
       };
     
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, footerParams, {
-        withCredentials: true,
-      });
+      if (JSON.stringify(state.footerContent) !== JSON.stringify(state.originalFooterContent)) {
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, footerParams, {
+          withCredentials: true,
+        });
+      }
 
       window.location.reload();
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text={`There was a problem trying to save your contact us page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }

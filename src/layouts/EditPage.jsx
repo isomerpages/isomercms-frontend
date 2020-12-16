@@ -121,13 +121,30 @@ export default class EditPage extends Component {
 
   async componentDidMount() {
     this._isMounted = true
+    let content, sha
     try {
       const resp = await axios.get(this.apiEndpoint);
-      const { content, sha } = resp.data;
-
+      const { content:pageContent, sha:pageSha } = resp.data;
+      content = pageContent
+      sha = pageSha
+    } catch (error) {
+      if (error?.response?.status === 404) {
+        this.setState({ shouldRedirectToNotFound: true })
+      } else {
+        toast(
+          <Toast notificationType='error' text={`There was a problem trying to load your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+        );
+      }
+      console.log(error)
+    }
+    
+    if (!content) return
+    
+    try {
       // split the markdown into front matter and content
       const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
-     
+      
       const { match } = this.props;
       const { siteName } = match.params;
       
@@ -164,8 +181,11 @@ export default class EditPage extends Component {
         isLoadingPageContent: false,
       });
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text={`There was a problem trying to load your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
-      this.setState({ shouldRedirectToNotFound: true })
     }
   }
 

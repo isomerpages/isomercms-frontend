@@ -219,6 +219,12 @@ export default class EditHomepage extends Component {
         errors,
       });
     } catch (err) {
+      // Set frontMatter to be same to prevent warning message when navigating away
+      this.setState( {frontMatter: this.state.originalFrontMatter} )
+      toast(
+        <Toast notificationType='error' text={`There was a problem trying to load your homepage. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }
@@ -468,7 +474,8 @@ export default class EditHomepage extends Component {
             },
           });
 
-          const newDisplaySections = update(displaySections, {
+          const resetDisplaySections = _.fill(Array(displaySections.length), false)
+          const newDisplaySections = update(resetDisplaySections, {
             $push: [true],
           });
 
@@ -498,7 +505,8 @@ export default class EditHomepage extends Component {
             },
           });
 
-          const newDisplayDropdownElems = update(displayDropdownElems, {
+          const resetDisplayDropdownElems = _.fill(Array(displayDropdownElems.length), false)
+          const newDisplayDropdownElems = update(resetDisplayDropdownElems, {
             $splice: [[dropdownsIndex, 0, true]],
           });
 
@@ -528,7 +536,8 @@ export default class EditHomepage extends Component {
               },
             });
 
-            const newDisplayHighlights = update(displayHighlights, {
+            const resetDisplayHighlights = _.fill(Array(displayHighlights.length), false)
+            const newDisplayHighlights = update(resetDisplayHighlights, {
               $splice: [[highlightIndex, 0, true]],
             });
 
@@ -847,10 +856,10 @@ export default class EditHomepage extends Component {
         case 'section': {
           const { displaySections } = this.state;
           const sectionId = idArray[1];
+          let resetDisplaySections = _.fill(Array(displaySections.length), false)
+          resetDisplaySections[sectionId] = !displaySections[sectionId]
           const newDisplaySections = update(displaySections, {
-            [sectionId]: {
-              $set: !displaySections[sectionId],
-            },
+            $set: resetDisplaySections,
           });
 
           this.setState({
@@ -861,10 +870,10 @@ export default class EditHomepage extends Component {
         case 'highlight': {
           const { displayHighlights } = this.state;
           const highlightIndex = idArray[1];
+          let resetHighlightSections = _.fill(Array(displayHighlights.length), false)
+          resetHighlightSections[highlightIndex] = !displayHighlights[highlightIndex]
           const newDisplayHighlights = update(displayHighlights, {
-            [highlightIndex]: {
-              $set: !displayHighlights[highlightIndex],
-            },
+            $set: resetHighlightSections,
           });
 
           this.setState({
@@ -875,10 +884,10 @@ export default class EditHomepage extends Component {
         case 'dropdownelem': {
           const { displayDropdownElems } = this.state;
           const dropdownsIndex = idArray[1];
+          let resetDropdownSections = _.fill(Array(displayDropdownElems.length), false)
+          resetDropdownSections[dropdownsIndex] = !displayDropdownElems[dropdownsIndex]
           const newDisplayDropdownElems = update(displayDropdownElems, {
-            [dropdownsIndex]: {
-              $set: !displayDropdownElems[dropdownsIndex],
-            },
+            $set: resetDropdownSections,
           });
 
           this.setState({
