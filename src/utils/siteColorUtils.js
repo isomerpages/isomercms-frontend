@@ -36,6 +36,7 @@ const createPageStyleSheet = (repoName, primaryColor, secondaryColor) => {
 
     // EditHomepage: key highlights - primary color
     customStyleSheet.insertRule(`#key-highlights { background-color: ${primaryColor} !important;}`, 0);
+    customStyleSheet.insertRule(`#key-highlights .col { background-color: ${primaryColor} !important;}`, 0);
 
     // EditHomepage: site notifications - secondary color
     customStyleSheet.insertRule(`.bg-secondary { background-color: ${secondaryColor} !important;}`, 0);
