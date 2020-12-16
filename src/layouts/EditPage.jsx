@@ -122,66 +122,65 @@ export default class EditPage extends Component {
   async componentDidMount() {
     this._isMounted = true
     try {
-      let content, sha
-      try {
         const resp = await axios.get(this.apiEndpoint);
-        const { content: pageContent, sha: pageSha } = resp.data;
-        content = pageContent
-        sha = pageSha
+        const { content, sha } = resp.data;
+        // split the markdown into front matter and content
+        const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
+        
+        const { match } = this.props;
+        const { siteName } = match.params;
+        
+        try {
+          // retrieve CSP
+          const cspResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`);
+          const { netlifyTomlHeaderValues } = cspResp.data;
+          const csp = new Policy(netlifyTomlHeaderValues['Content-Security-Policy']);
+
+          let leftNavPages
+          if (this.props.isCollectionPage) {
+            const collectionsApiEndpoint = getCollectionsApiEndpoint(this.apiEndpoint)
+            const collectionPagesResp = await axios.get(collectionsApiEndpoint);
+            const collectionResp = collectionPagesResp.data?.collectionPages;
+
+            // Retrieve third_nav_title from collection pages
+            leftNavPages = await Bluebird.map(collectionResp, async (collectionPage) => {
+              const collectionPageResp = await axios.get(`${collectionsApiEndpoint}/pages/${collectionPage.fileName}`)
+              const { content } = collectionPageResp.data;
+              const { frontMatter } = frontMatterParser(Base64.decode(content));
+              return {
+                ...collectionPage,
+                third_nav_title: frontMatter.third_nav_title,
+              }
+            });
+          }
+
+          if (this._isMounted) this.setState({
+            csp,
+            sha,
+            originalMdValue: mdBody.trim(),
+            editorValue: mdBody.trim(),
+            frontMatter,
+            leftNavPages,
+            isLoadingPageContent: false,
+          });
+        } catch (err) {
+          toast(
+            <Toast notificationType='error' text={`There was a problem trying to load your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+            {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+          );
+          console.log(err);
+        }
       } catch (error) {
         if (error?.response?.status === 404) {
           this.setState({ shouldRedirectToNotFound: true })
+        } else {
+          toast(
+            <Toast notificationType='error' text={`There was a problem trying to load your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+            {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+          );
         }
-        throw error
+        console.log(error)
       }
-
-      // split the markdown into front matter and content
-      const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
-     
-      const { match } = this.props;
-      const { siteName } = match.params;
-      
-      // retrieve CSP
-      const cspResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`);
-      const { netlifyTomlHeaderValues } = cspResp.data;
-      const csp = new Policy(netlifyTomlHeaderValues['Content-Security-Policy']);
-
-      let leftNavPages
-      if (this.props.isCollectionPage) {
-        const collectionsApiEndpoint = getCollectionsApiEndpoint(this.apiEndpoint)
-        const collectionPagesResp = await axios.get(collectionsApiEndpoint);
-        const collectionResp = collectionPagesResp.data?.collectionPages;
-
-        // Retrieve third_nav_title from collection pages
-        leftNavPages = await Bluebird.map(collectionResp, async (collectionPage) => {
-          const collectionPageResp = await axios.get(`${collectionsApiEndpoint}/pages/${collectionPage.fileName}`)
-          const { content } = collectionPageResp.data;
-          const { frontMatter } = frontMatterParser(Base64.decode(content));
-          return {
-            ...collectionPage,
-            third_nav_title: frontMatter.third_nav_title,
-          }
-        });
-      }
-
-      if (this._isMounted) this.setState({
-        csp,
-        sha,
-        originalMdValue: mdBody.trim(),
-        editorValue: mdBody.trim(),
-        frontMatter,
-        leftNavPages,
-        isLoadingPageContent: false,
-      });
-    } catch (err) {
-      if (!this.state.shouldRedirectToNotFound) {
-        toast(
-          <Toast notificationType='error' text={`There was a problem trying to load your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-        );
-      }
-      console.log(err);
-    }
   }
 
   componentWillUnmount() {
