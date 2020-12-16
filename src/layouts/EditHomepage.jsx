@@ -12,6 +12,10 @@ import TemplateInfopicLeftSection from '../templates/homepage/InfopicLeftSection
 import TemplateInfopicRightSection from '../templates/homepage/InfopicRightSection';
 import TemplateResourcesSection from '../templates/homepage/ResourcesSection';
 import { DEFAULT_ERROR_TOAST_MSG, frontMatterParser, concatFrontMatterMdBody } from '../utils';
+import {
+  createPageStyleSheet,
+  getSiteColors,
+} from '../utils/siteColorUtils';
 import EditorInfobarSection from '../components/homepage/InfobarSection';
 import EditorInfopicSection from '../components/homepage/InfopicSection';
 import EditorResourcesSection from '../components/homepage/ResourcesSection';
@@ -129,10 +133,43 @@ export default class EditHomepage extends Component {
   }
 
   async componentDidMount() {
+    const { match, siteColors, setSiteColors } = this.props;
+    const { siteName } = match.params;
     this._isMounted = true
+
+    // Set page colors
     try {
-      const { match } = this.props;
-      const { siteName } = match.params;
+      let primaryColor
+      let secondaryColor
+
+      if (!siteColors[siteName]) {
+        const {
+          primaryColor: sitePrimaryColor,
+          secondaryColor: siteSecondaryColor,
+        } = await getSiteColors(siteName)
+
+        primaryColor = sitePrimaryColor
+        secondaryColor = siteSecondaryColor
+
+        if (this._isMounted) setSiteColors((prevState) => ({
+          ...prevState,
+          [siteName]: {
+            primaryColor,
+            secondaryColor,
+          }
+        }))
+      } else {
+        primaryColor = siteColors[siteName].primaryColor
+        secondaryColor = siteColors[siteName].secondaryColor
+      }
+
+      createPageStyleSheet(siteName, primaryColor, secondaryColor)
+    
+    } catch (err) {
+      console.log(err);
+    }
+
+    try {
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/homepage`, {
         withCredentials: true,
       });
