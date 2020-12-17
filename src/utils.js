@@ -97,17 +97,16 @@ function monthIntToStr(monthInt) {
 // Each fileName comes in the format of `{date}-{type}-{title}.md`
 // A sample fileName is 2019-08-23-post-CEO-made-a-speech.md
 // {date} is YYYY-MM-DD, e.g. 2019-08-23
-// {type} is either `post` or `download`
+// {type} is either `post` or `file`
 // {title} is a string containing [a-z,A-Z,0-9] and all whitespaces are replaced by hyphens
 export function retrieveResourceFileMetadata(fileName) {
   const fileNameArray = fileName.split('.md')[0];
   const tokenArray = fileNameArray.split('-');
-  const day = tokenArray[2];
-  const month = monthIntToStr(tokenArray[1]);
-  const year = tokenArray[0];
-  const date = `${day} ${month} ${year}`;
+  const date = tokenArray.slice(0,3).join('-');
 
-  const titleTokenArray = tokenArray.slice(3);
+  const type = ['file', 'post'].includes(tokenArray[3]) ? tokenArray[3] : undefined
+
+  const titleTokenArray = type ? tokenArray.slice(4) : tokenArray.slice(3);
   const prettifiedTitleTokenArray = titleTokenArray.map((token) => {
     // We search for special characters which were converted to text
     // Convert dollar back to $ if it is followed by any alphanumeric character
@@ -117,7 +116,15 @@ export function retrieveResourceFileMetadata(fileName) {
   });
   const title = prettifiedTitleTokenArray.join(' ')
 
-  return { date, title };
+  return { date, type, title };
+}
+
+export function prettifyDate(date) {
+  const tokenArray = date.split('-');
+  const day = tokenArray[2];
+  const month = monthIntToStr(tokenArray[1]);
+  const year = tokenArray[0];
+  return `${day} ${month} ${year}`;
 }
 
 // function recursively checks if all child object values are empty
@@ -150,9 +157,9 @@ export function dequoteString(str) {
   return dequotedString;
 }
 
-export function generateResourceFileName(title, date) {
+export function generateResourceFileName(title, date, resourceType) {
   const safeTitle = slugify(title).replace(/[^a-zA-Z0-9-]/g, '');
-  return `${date}-${safeTitle}.md`;
+  return `${date}-${resourceType}-${safeTitle}.md`;
 }
 
 export function prettifyResourceCategory(category) {
@@ -233,6 +240,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
     originalCategory,
     collectionPageData,
     type,
+    resourceType,
     fileName,
     isNewFile,
     siteName,
@@ -247,7 +255,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   const newBaseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? type === "resource" ? `/resources/${category}` : `/collections/${category}` : ''}`
   let newFileName, frontMatter
   if (type === "resource") {
-    newFileName = generateResourceFileName(title.toLowerCase(), date);
+    newFileName = generateResourceFileName(title.toLowerCase(), date, resourceType);
     frontMatter = { title: enquoteString(title), date };
   } else if (type === "page") {
     frontMatter = thirdNavTitle

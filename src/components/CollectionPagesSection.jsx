@@ -149,6 +149,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                                     siteName={siteName}
                                     fileName={page.fileName}
                                     title={page.title}
+                                    resourceType={page.type}
                                     date={page.date}
                                     isResource={isResource}
                                     allCategories={allCategories}
