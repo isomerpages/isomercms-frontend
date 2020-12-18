@@ -10,7 +10,8 @@ import { Redirect } from 'react-router-dom'
 import { toast } from 'react-toastify';
 
 import { DEFAULT_ERROR_TOAST_MSG, frontMatterParser, concatFrontMatterMdBody, isEmpty, retrieveResourceFileMetadata } from '../utils';
-import { sanitiseFrontMatter } from '../utils/dataSanitisers';
+import { sanitiseFrontMatter } from '../utils/contact-us/dataSanitisers';
+import { validateFrontMatter } from '../utils/contact-us/validators';
 import { validateContactType, validateLocationType } from '../utils/validators';
 import {
   createPageStyleSheet,
@@ -203,8 +204,8 @@ export default class EditContactUs extends Component {
     const sanitisedFrontMatter = sanitiseFrontMatter(frontMatter)
 
     const { contacts, locations } = sanitisedFrontMatter
+    const { contactsErrors, locationsErrors } = validateFrontMatter(sanitisedFrontMatter)
 
-    const contactsErrors = [], locationsErrors = []
     const contactsDisplay = [], locationsDisplay = []
     const contactsScrollRefs = [], locationsScrollRefs = []
 
@@ -221,13 +222,11 @@ export default class EditContactUs extends Component {
     }
 
     contacts.forEach(_ => {
-      contactsErrors.push(enumSection('contacts'))
       contactsDisplay.push(false)
       contactsScrollRefs.push(React.createRef())
     })
 
-    locations.forEach(location => {
-      locationsErrors.push(enumSection('locations', { operatingHoursLength: location.operating_hours.length }))
+    locations.forEach(_ => {
       locationsDisplay.push(false)
       locationsScrollRefs.push(React.createRef())
     })
