@@ -36,6 +36,7 @@ import TemplateContactsSection from '../templates/contact-us/ContactsSection'
 import TemplateFeedbackSection from '../templates/contact-us/FeedbackSection';
 
 import DeleteWarningModal from '../components/DeleteWarningModal';
+import GenericWarningModal from '../components/GenericWarningModal';
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -100,6 +101,8 @@ export default class EditContactUs extends Component {
     this.state = {
       frontMatter: {},
       originalFrontMatter: {},
+      deletedFrontMatter: {},
+      sanitisedOriginalFrontMatter: {},
       frontMatterSha: null,
       footerContent: {},
       originalFooterContent: {},
@@ -201,8 +204,7 @@ export default class EditContactUs extends Component {
     const { frontMatter } = frontMatterParser(Base64.decode(content));
 
     // data cleaning for non-comforming data
-    const sanitisedFrontMatter = sanitiseFrontMatter(frontMatter)
-
+    const { sanitisedFrontMatter, deletedFrontMatter } = sanitiseFrontMatter(frontMatter)
     const { contacts, locations } = sanitisedFrontMatter
     const { contactsErrors, locationsErrors } = validateFrontMatter(sanitisedFrontMatter)
 
@@ -242,6 +244,7 @@ export default class EditContactUs extends Component {
       footerContent,
       footerSha,
       originalFrontMatter:  _.cloneDeep(frontMatter),
+      deletedFrontMatter,
       sanitisedOriginalFrontMatter: _.cloneDeep(sanitisedFrontMatter),
       frontMatter: sanitisedFrontMatter,
       frontMatterSha: sha,
@@ -659,9 +662,10 @@ export default class EditContactUs extends Component {
     const {
       footerContent,
       originalFooterContent,
-      frontMatter,
       originalFrontMatter,
+      deletedFrontMatter,
       sanitisedOriginalFrontMatter,
+      frontMatter,
       displaySections,
       frontMatterSha,
       footerSha,
@@ -676,11 +680,23 @@ export default class EditContactUs extends Component {
     const { sectionsDisplay } = displaySections
     const { sectionsScrollRefs } = scrollRefs
 
+    const hasDeletions = !isEmpty(deletedFrontMatter)
     const hasErrors = !isEmpty(errors.contacts) || !isEmpty(errors.locations);
     const hasChanges = JSON.stringify(sanitisedOriginalFrontMatter) === JSON.stringify(frontMatter) && JSON.stringify(footerContent) === JSON.stringify(originalFooterContent);
-
+    
     return (
       <>
+        { hasDeletions
+          && (
+          <GenericWarningModal
+            displayTitle="Removed content" 
+            displayText={`Some of your text has been removed. No changes are permanent unless you press Save.\n ${JSON.stringify(deletedFrontMatter)}`}
+            onProceed={()=>{}}
+            proceedText="Acknowledge"
+            cancelText="Go back"
+          />
+          )
+        }
         {
           itemPendingForDelete.id
           && (
