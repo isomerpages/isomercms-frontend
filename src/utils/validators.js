@@ -788,8 +788,8 @@ const validateFileName = (value) => {
 };
 
 export {
-  validateContact,
-  validateLocation,
+  validateContactType,
+  validateLocationType,
   validateHighlights,
   validateDropdownElems,
   validateSections,
