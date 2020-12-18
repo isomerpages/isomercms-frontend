@@ -12,23 +12,25 @@ function getContentDataField(content, dataType) {
 }
 
 function sanitiseContent(content) {
-  let sanitisedContent = [];
+  let sanitisedContent = [], deletedContent = [];
   // sanitisedContent should be an array of 3 objects, [{phone: }, {email: }, {other: }]
   // we find the first object of each of type (phone, email, other) and push a deep clone, else return initialized objects
   sanitisedContent.push( getContentDataField(content, 'phone') );
   sanitisedContent.push( getContentDataField(content, 'email') );
   sanitisedContent.push( getContentDataField(content, 'other') );
-  return sanitisedContent;
+  deletedContent = _.differenceWith(content, sanitisedContent, _.isEqual)
+  return { sanitisedContent, deletedContent };
 }
 
-function sanitiseAddress(address) {
-  let sanitisedAddress = [];
-  // sanitisedAddress should be an array of strings of length DEFAULT_ADDRESS_FIELD_LENGTH
+function sanitiseAddressArr(address) {
+  let sanitisedAddressArr = [], deletedAddressArr = [];
+  // sanitisedAddressArr should be an array of strings of length DEFAULT_ADDRESS_FIELD_LENGTH
   // we find the first DEFAULT_ADDRESS_FIELD_LENGTH strings and push a deep clone if they exist, else return empty strings
   _.range(DEFAULT_ADDRESS_FIELD_LENGTH).forEach( (index) => {
-    sanitisedAddress.push( (address && address[index] ) ? _.cloneDeep(address[index]) : '')
+    sanitisedAddressArr.push( (address && address[index] ) ? _.cloneDeep(address[index]) : '')
   })
-  return sanitisedAddress;
+  deletedAddressArr= (address && address.length > 3) ? _.slice(address, DEFAULT_ADDRESS_FIELD_LENGTH) : []
+  return { sanitisedAddressArr, deletedAddressArr };
 }
 
 function sanitiseOperatingHours(operatingHours) {
@@ -40,55 +42,73 @@ function sanitiseOperatingHours(operatingHours) {
 }
 
 function sanitiseOperatingHoursArr(operatingHoursArr) {
-  let sanitisedOperatingHoursArr = [];
+  let sanitisedOperatingHoursArr = [], deletedOperatingHoursArr = [];
   // sanitisedOperatingHours should be an array of objects of maximum length DEFAULT_NUM_OPERATING_FIELDS
   // we find the first DEFAULT_NUM_OPERATING_FIELDS objects and push a deep clone if they exist
   _.range(DEFAULT_NUM_OPERATING_FIELDS).forEach( (index) => {
     sanitisedOperatingHoursArr.push( (operatingHoursArr && operatingHoursArr[index]) ? sanitiseOperatingHours(operatingHoursArr[index]) : undefined)
   })
-  return sanitisedOperatingHoursArr.filter(elem => elem);
+  sanitisedOperatingHoursArr = sanitisedOperatingHoursArr.filter(elem => elem)
+  deletedOperatingHoursArr = (operatingHoursArr && operatingHoursArr.length > 3) ? _.slice(operatingHoursArr, DEFAULT_NUM_OPERATING_FIELDS) : []
+  return { sanitisedOperatingHoursArr, deletedOperatingHoursArr };
 }
 
 function sanitiseContact(contact) { // rearrange 
   const { title, content } = contact
   
+  const { sanitisedContent, deletedContent } = sanitiseContent(content)
   let sanitisedContact = {}
-  sanitisedContact.content = sanitiseContent(content)
+  sanitisedContact.content = sanitisedContent
   sanitisedContact.title = _.cloneDeep(title) || ''
   
-  return sanitisedContact
+  let deletedContact = {}
+  deletedContact.content = deletedContent
+  return { sanitisedContact, deletedContact }
 }
 
 function sanitiseLocation(location) {
   const { title, address, operating_hours: operatingHours, maps_link: mapUrl } = location
 
+  const { sanitisedAddressArr, deletedAddressArr } = sanitiseAddressArr(address)
+  const { sanitisedOperatingHoursArr, deletedOperatingHoursArr } = sanitiseOperatingHoursArr(operatingHours)
+  
   let sanitisedLocation = {}
-  sanitisedLocation.address = sanitiseAddress(address)
-  sanitisedLocation.operating_hours = sanitiseOperatingHoursArr(operatingHours)
+  sanitisedLocation.address = sanitisedAddressArr
+  sanitisedLocation.operating_hours = sanitisedOperatingHoursArr
   sanitisedLocation.maps_link = _.cloneDeep(mapUrl) || ''
   sanitisedLocation.title = _.cloneDeep(title) || ''
-  return sanitisedLocation
+
+  let deletedLocation = {}
+  deletedLocation.address = deletedAddressArr
+  deletedLocation.operating_hours = deletedOperatingHoursArr
+  return { sanitisedLocation, deletedLocation }
 }
 
 export function sanitiseFrontMatter(frontMatter) {
   const { contacts, locations } = frontMatter;
 
-  let sanitisedFrontMatter = _.cloneDeep(frontMatter)
-  let sanitisedContacts = [];
-  let sanitisedLocations = [];
+  let sanitisedFrontMatter = _.cloneDeep(frontMatter), deletedFrontMatter = {}
+  let sanitisedContacts = [], deletedContacts = [];
+  let sanitisedLocations = [], deletedLocations = [];
 
   if (contacts !== undefined) {
-    contacts.forEach(contact => 
-      sanitisedContacts.push(sanitiseContact(contact))
-    )
+    contacts.forEach(contact => {
+      const { sanitisedContact, deletedContact } = sanitiseContact(contact)
+      sanitisedContacts.push(sanitisedContact)
+      deletedContacts.push(deletedContact)
+    })
   }
   if (locations !== undefined) {
-    locations.forEach(location => 
-      sanitisedLocations.push(sanitiseLocation(location))
-    )
+    locations.forEach(location => {
+      const { sanitisedLocation, deletedLocation } = sanitiseLocation(location)
+      sanitisedLocations.push(sanitisedLocation)
+      deletedLocations.push(deletedLocation)
+    })
   }
 
   sanitisedFrontMatter.contacts = sanitisedContacts
   sanitisedFrontMatter.locations = sanitisedLocations
-  return sanitisedFrontMatter
+  deletedFrontMatter.contacts = deletedContacts
+  deletedFrontMatter.locations = deletedLocations
+  return { sanitisedFrontMatter, deletedFrontMatter }
 }
