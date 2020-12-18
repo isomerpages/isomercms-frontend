@@ -242,6 +242,7 @@ export default class EditContactUs extends Component {
       footerContent,
       footerSha,
       originalFrontMatter:  _.cloneDeep(frontMatter),
+      sanitisedOriginalFrontMatter: _.cloneDeep(sanitisedFrontMatter),
       frontMatter: sanitisedFrontMatter,
       frontMatterSha: sha,
       displaySections: {
@@ -660,6 +661,7 @@ export default class EditContactUs extends Component {
       originalFooterContent,
       frontMatter,
       originalFrontMatter,
+      sanitisedOriginalFrontMatter,
       displaySections,
       frontMatterSha,
       footerSha,
@@ -675,7 +677,7 @@ export default class EditContactUs extends Component {
     const { sectionsScrollRefs } = scrollRefs
 
     const hasErrors = !isEmpty(errors.contacts) || !isEmpty(errors.locations);
-    const hasChanges = JSON.stringify(originalFrontMatter) === JSON.stringify(frontMatter) && JSON.stringify(footerContent) === JSON.stringify(originalFooterContent);
+    const hasChanges = JSON.stringify(sanitisedOriginalFrontMatter) === JSON.stringify(frontMatter) && JSON.stringify(footerContent) === JSON.stringify(originalFooterContent);
 
     return (
       <>
