@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 
 import { DEFAULT_ERROR_TOAST_MSG, frontMatterParser, concatFrontMatterMdBody, isEmpty, retrieveResourceFileMetadata } from '../utils';
 import { sanitiseFrontMatter } from '../utils/dataSanitisers';
-import { validateContact, validateLocation } from '../utils/validators';
+import { validateContactType, validateLocationType } from '../utils/validators';
 import {
   createPageStyleSheet,
   getSiteColors,
@@ -362,7 +362,7 @@ export default class EditContactUs extends Component {
                 [elemType]: {[contactIndex]: {[contactType]: {$set: value }}},
               });
               newErrors = update(errors, {
-                [elemType]: {[contactIndex]: {[contactType]: {$set: validateContact(contactType, value)}}}
+                [elemType]: {[contactIndex]: {[contactType]: {$set: validateContactType(contactType, value)}}}
               })
               break;
             default: // 'phone', 'email', 'other'
@@ -370,7 +370,7 @@ export default class EditContactUs extends Component {
                 [elemType]: {[contactIndex]: {content : {[contentIndex]: {[contactType]:  {$set: value } }}}},
               });
               newErrors = update(errors, {
-                [elemType]: {[contactIndex]: {content : {[contentIndex]: {[contactType]:  {$set: validateContact(contactType, value) } }}}},
+                [elemType]: {[contactIndex]: {content : {[contentIndex]: {[contactType]:  {$set: validateContactType(contactType, value) } }}}},
               });
               break;
           }
@@ -389,7 +389,7 @@ export default class EditContactUs extends Component {
                 [elemType]: {[locationIndex]: {[locationType]: {[fieldIndex] : {[fieldType]: { $set: value }}}}},
               });
               newErrors = update(errors, {
-                locations: {[locationIndex]: {[locationType]: {[fieldIndex] : {[fieldType]: { $set: validateLocation(fieldType, value) }}}}},
+                locations: {[locationIndex]: {[locationType]: {[fieldIndex] : {[fieldType]: { $set: validateLocationType(fieldType, value) }}}}},
               });
               break;
             case 'add_operating_hours': 
@@ -415,7 +415,7 @@ export default class EditContactUs extends Component {
               // for address, we validate all address fields together, not the single field
               const addressFields = newFrontMatter.locations[locationIndex][locationType]
               newErrors = update(errors, {
-                [elemType]: {[locationIndex]: {[locationType]: { $set: validateLocation(locationType, addressFields) }}},
+                [elemType]: {[locationIndex]: {[locationType]: { $set: validateLocationType(locationType, addressFields) }}},
               });
               break;
             default:
@@ -423,7 +423,7 @@ export default class EditContactUs extends Component {
                 [elemType]: {[locationIndex]: {[locationType]: { $set: value }}},
               });
               newErrors = update(errors, {
-                [elemType]: {[locationIndex]: {[locationType]: { $set: validateLocation(locationType, value) }}},
+                [elemType]: {[locationIndex]: {[locationType]: { $set: validateLocationType(locationType, value) }}},
               });
               break;
           }
