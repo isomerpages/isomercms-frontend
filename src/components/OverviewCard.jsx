@@ -296,7 +296,7 @@ const OverviewCard = ({
                 <i className="bx bx-sm bx-folder-plus" />
                 <input
                   type="text"
-                  placeholder={'Create new category'}
+                  placeholder={`Create new ${isResource ? 'category' : 'collection'}`}
                   value={newCategory}
                   id={'categoryName'}
                   className={errorMessage ? `${elementStyles.error}` : null}
