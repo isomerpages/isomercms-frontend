@@ -139,7 +139,12 @@ const Workspace = ({ match, location }) => {
                 <hr className="invisible w-100 mt-3 mb-5" />
               </div>                {/* Pages title */}
               <div className={contentStyles.segment}>
-                Pages
+                Unlinked Pages
+              </div>
+              {/* Info segment */}
+              <div className={contentStyles.segment}>
+                <i className="bx bx-sm bx-info-circle text-dark" />
+                <span><strong className="ml-1">Note:</strong> Unlinked pages are pages which do not belong to any collection.</span>
               </div>
               {/* Pages */}
               <CollectionPagesSection
