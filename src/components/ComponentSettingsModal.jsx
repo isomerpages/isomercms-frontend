@@ -143,11 +143,10 @@ const ComponentSettingsModal = ({
           } else if (type === 'page') {
               const collectionsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`);
               const { collections } = collectionsResp.data;
-              const collectionCategories = [''].concat(collections) // allow for selection of "Unlinked Page" category
-              if (_isMounted) setAllCategories(collectionCategories.map((category) => (
+              if (_isMounted) setAllCategories(collections.map((category) => (
                   {
                     value:category,
-                    label:category ? category : 'Unlinked Page'
+                    label:category,
                   }
               )))
           }
@@ -409,7 +408,7 @@ const ComponentSettingsModal = ({
               <div className={elementStyles.modalContent}>
                 <div className={elementStyles.modalFormFields}>
                   {/* Category */}
-                  <p className={elementStyles.formLabel}>Category Folder Name</p>
+                  <p className={elementStyles.formLabel}>{`${type === 'resource' ? `Resource Category Name` : `Collection Name`} (optional)`}</p>
                   <div className="d-flex text-nowrap">
                     <CreatableSelect
                       isClearable
@@ -447,7 +446,7 @@ const ComponentSettingsModal = ({
                   { 
                     ((type === "page" && originalCategory) || (type === 'page' && !originalCategory && category)) &&
                     <>
-                        <p className={elementStyles.formLabel}>Third Nav Section</p>
+                        <p className={elementStyles.formLabel}>Third Nav Section (optional)</p>
                         <div className="d-flex text-nowrap">
                             <AsyncCreatableSelect
                               key={category}

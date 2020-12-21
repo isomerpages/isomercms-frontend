@@ -17,7 +17,7 @@ export const retrieveThirdNavOptions = async (siteName, collectionName, isExisti
             thirdNavArr = collectionPages.filter((elem) => elem.type === 'third-nav')
             allCollectionPages = collectionPages
         }
-        const thirdNavOptions = [''].concat(thirdNavArr).map((thirdNav) => (
+        const thirdNavOptions = thirdNavArr.map((thirdNav) => (
             {
                 value:thirdNav.title,
                 label:thirdNav.title ? thirdNav.title : 'None',
