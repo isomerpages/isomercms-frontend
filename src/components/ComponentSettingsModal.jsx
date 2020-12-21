@@ -416,10 +416,14 @@ const ComponentSettingsModal = ({
                       className="w-100"
                       onChange={categoryDropdownHandler}
                       isDisabled={isCategoryDisabled}
-                      defaultValue={{
+                      placeholder={"Select a category or create a new category..."}
+                      defaultValue={originalCategory ? 
+                        {
                           value: originalCategory,
                           label: generateInitialCategoryLabel(originalCategory, isCategoryDisabled),
-                        }}
+                        }
+                        : null
+                      }
                       options={allCategories}
                     />
                   </div>
@@ -445,10 +449,14 @@ const ComponentSettingsModal = ({
                               defaultOptions
                               className="w-100"
                               onChange={thirdNavDropdownHandler}
-                              value={{
+                              placeholder={"Select a third nav or create a new third nav section..."}
+                              value={thirdNavTitle ?
+                                {
                                   value: thirdNavTitle,
                                   label: generateInitialThirdNavLabel(thirdNavTitle, originalCategory),
-                              }}
+                                }
+                                : null
+                              }
                               // When displaying third nav from workspace, use backupLoadThirdNavOptions
                               loadOptions={(!originalCategory && category) ? backupLoadThirdNavOptions : loadThirdNavOptions}
                               filterOption={createFilter()}
