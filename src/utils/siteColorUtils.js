@@ -16,7 +16,7 @@ const defaultSiteColors = {
 const getStyleSheet = (unique_title) => {
     for(let i=0; i<document.styleSheets.length; i++) {
       const sheet = document.styleSheets[i];
-      if(sheet.title == unique_title) {
+      if(sheet.title === unique_title) {
         return sheet;
       }
     }
