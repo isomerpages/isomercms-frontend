@@ -442,6 +442,7 @@ const ComponentSettingsModal = ({
                     isRequired={true}
                     onFieldChange={changeHandler}
                   />
+                  {errors.title && <br/>}
                   {/* Third Nav */}
                   { 
                     ((type === "page" && originalCategory) || (type === 'page' && !originalCategory && category)) &&
