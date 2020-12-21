@@ -427,7 +427,12 @@ const ComponentSettingsModal = ({
                       options={allCategories}
                     />
                   </div>
-                  <span className={elementStyles.error}>{errors.category}</span>
+                  { errors.category &&
+                  <>
+                    <span className={elementStyles.error}>{errors.category}</span>
+                    <br/>
+                  </>
+                  }
                   {/* Title */}
                   <FormField
                     title="Title"
