@@ -408,7 +408,7 @@ const ComponentSettingsModal = ({
               <div className={elementStyles.modalContent}>
                 <div className={elementStyles.modalFormFields}>
                   {/* Category */}
-                  <p className={elementStyles.formLabel}>{`${type === 'resource' ? `Resource Category Name` : `Collection Name`} (optional)`}</p>
+                  <p className={elementStyles.formLabel}>{`Add to ${type === 'resource' ? `Resource Category` : `Collection`} (optional)`}</p>
                   <div className="d-flex text-nowrap">
                     <CreatableSelect
                       isClearable
@@ -446,7 +446,7 @@ const ComponentSettingsModal = ({
                   { 
                     ((type === "page" && originalCategory) || (type === 'page' && !originalCategory && category)) &&
                     <>
-                        <p className={elementStyles.formLabel}>Third Nav Section (optional)</p>
+                        <p className={elementStyles.formLabel}>Add to Third Nav Section (optional)</p>
                         <div className="d-flex text-nowrap">
                             <AsyncCreatableSelect
                               key={category}
