@@ -143,11 +143,10 @@ const ComponentSettingsModal = ({
           } else if (type === 'page') {
               const collectionsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`);
               const { collections } = collectionsResp.data;
-              const collectionCategories = [''].concat(collections) // allow for selection of "Unlinked Page" category
-              if (_isMounted) setAllCategories(collectionCategories.map((category) => (
+              if (_isMounted) setAllCategories(collections.map((category) => (
                   {
                     value:category,
-                    label:category ? category : 'Unlinked Page'
+                    label:category,
                   }
               )))
           }
@@ -409,21 +408,30 @@ const ComponentSettingsModal = ({
               <div className={elementStyles.modalContent}>
                 <div className={elementStyles.modalFormFields}>
                   {/* Category */}
-                  <p className={elementStyles.formLabel}>Category Folder Name</p>
+                  <p className={elementStyles.formLabel}>{`Add to ${type === 'resource' ? `Resource Category` : `Collection`} (optional)`}</p>
                   <div className="d-flex text-nowrap">
                     <CreatableSelect
                       isClearable
                       className="w-100"
                       onChange={categoryDropdownHandler}
                       isDisabled={isCategoryDisabled}
-                      defaultValue={{
+                      placeholder={"Select a category or create a new category..."}
+                      defaultValue={originalCategory ? 
+                        {
                           value: originalCategory,
                           label: generateInitialCategoryLabel(originalCategory, isCategoryDisabled),
-                        }}
+                        }
+                        : null
+                      }
                       options={allCategories}
                     />
                   </div>
-                  <span className={elementStyles.error}>{errors.category}</span>
+                  { errors.category &&
+                  <>
+                    <span className={elementStyles.error}>{errors.category}</span>
+                    <br/>
+                  </>
+                  }
                   {/* Title */}
                   <FormField
                     title="Title"
@@ -433,11 +441,12 @@ const ComponentSettingsModal = ({
                     isRequired={true}
                     onFieldChange={changeHandler}
                   />
+                  {errors.title && <br/>}
                   {/* Third Nav */}
                   { 
                     ((type === "page" && originalCategory) || (type === 'page' && !originalCategory && category)) &&
                     <>
-                        <p className={elementStyles.formLabel}>Third Nav Section</p>
+                        <p className={elementStyles.formLabel}>Add to Third Nav Section (optional)</p>
                         <div className="d-flex text-nowrap">
                             <AsyncCreatableSelect
                               key={category}
@@ -445,10 +454,14 @@ const ComponentSettingsModal = ({
                               defaultOptions
                               className="w-100"
                               onChange={thirdNavDropdownHandler}
-                              value={{
+                              placeholder={"Select a third nav or create a new third nav section..."}
+                              value={thirdNavTitle ?
+                                {
                                   value: thirdNavTitle,
                                   label: generateInitialThirdNavLabel(thirdNavTitle, originalCategory),
-                              }}
+                                }
+                                : null
+                              }
                               // When displaying third nav from workspace, use backupLoadThirdNavOptions
                               loadOptions={(!originalCategory && category) ? backupLoadThirdNavOptions : loadThirdNavOptions}
                               filterOption={createFilter()}

@@ -94,10 +94,10 @@ export default class MediaSettingsModal extends Component {
           <Toast notificationType='error' text={`Another ${type === 'image' ? 'image' : 'file'} with the same name exists. Please choose a different name.`}/>, 
           {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
         );
-      } else if (err?.response?.status === 413) {
-        // Error due to file size too large
+      } else if (err?.response?.status === 413 || err?.response === undefined) {
+        // Error due to file size too large - we receive 413 if nginx accepts the payload but it is blocked by our express settings, and undefined if it is blocked by nginx
         toast(
-          <Toast notificationType='error' text={`The ${type === 'image' ? 'image' : 'file'} is too large. Please choose a smaller ${type === 'image' ? 'image' : 'file'}.`}/>, 
+          <Toast notificationType='error' text={`Unable to upload as the ${type === 'image' ? 'image' : 'file'} size exceeds 5MB. Please reduce your ${type === 'image' ? 'image' : 'file'} size and try again.`}/>, 
           {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
         );
       } else {
