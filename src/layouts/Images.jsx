@@ -112,7 +112,7 @@ export default class Images extends Component {
                     hidden
                   />
                   {/* Images */}
-                  {images.map((image) => (
+                  {images.length > 0 && images.map((image) => (
                     <MediaCard
                       type="image"
                       media={image}
