@@ -27,6 +27,11 @@
         font-size: 30px;
         color: darken($isomer-blue,20%);
     }
+
+    button {
+      padding: 1.875rem;
+      margin: -1.875rem;
+    }
   }
 
   &.error{
