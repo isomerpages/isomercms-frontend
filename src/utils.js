@@ -322,7 +322,11 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   }
   let newPageUrl
   if (type === 'resource') {
-    newPageUrl = `/sites/${siteName}/resources/${slugifiedCategory}/${newFileName}`
+    if (resourceType === 'file') {
+      newPageUrl = `/sites/${siteName}/resources/${slugifiedCategory}`
+    } else {
+      newPageUrl = `/sites/${siteName}/resources/${slugifiedCategory}/${newFileName}`
+    }
   } else if (type === 'page') {
     newPageUrl = slugifiedCategory ? `/sites/${siteName}/collections/${slugifiedCategory}/${newFileName}` : `/sites/${siteName}/pages/${newFileName}`
   }

@@ -252,11 +252,16 @@ const ComponentSettingsModal = ({
 
             const redirectUrl = await saveFileAndRetrieveUrl(fileInfo)
 
-            // Refresh page
+            // If editing details of existing file, refresh page
             !isNewFile && window.location.reload();
-
-            setNewPageUrl(redirectUrl)
-            setRedirectToNewPage(true)
+            
+            // We refresh page if resource is being created from category folder
+            if (type === 'resource' && !isPost && originalCategory) {
+              window.location.reload();
+            } else {
+              setNewPageUrl(redirectUrl)
+              setRedirectToNewPage(true)
+            }            
         } catch (err) {
             if (err?.response?.status === 409) {
                 // Error due to conflict in name
@@ -265,7 +270,7 @@ const ComponentSettingsModal = ({
                     title: 'This title is already in use. Please choose a different one.',
                 }));
                 toast(
-                  <Toast notificationType='error' text={`Another ${type === 'image' ? 'image' : 'file'} with the same name exists. Please choose a different name.`}/>,
+                  <Toast notificationType='error' text={`Another ${type === 'resource' ? 'resource' : 'page'} with the same name exists. Please choose a different name.`}/>,
                   {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
                 );
             } else {
