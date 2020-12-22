@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
+
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import MediasModal from './media/MediaModal';
 import MediaSettingsModal from './media/MediaSettingsModal';
+import Toast from './Toast';
 
 const FormFieldMedia = ({
   title,
@@ -31,6 +34,10 @@ const FormFieldMedia = ({
         value: path,
       },
     };
+    toast(
+      <Toast notificationType='success' text={`Successfully updated ${title.toLowerCase()}!`}/>,
+      {className: `${elementStyles.toastSuccess}`},
+    );
     onFieldChange(event);
   }
 
