@@ -13,7 +13,7 @@ export default function Home() {
           <button
             type="button"
             onClick={() => {
-              window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&state=${UUID}&scope=public_repo`
+              window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&state=${UUID}&scope=repo`
             }}
             className={`${elementStyles.green} ${elementStyles.loginButton}`}
           >

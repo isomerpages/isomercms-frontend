@@ -264,13 +264,16 @@ const OverviewCard = ({
               </MenuItem>
               <hr/>
               {category && !isResource &&
-                <MenuItem handler={() => {
-                  setChosenCategory('')
-                  fileMoveDropdownRef.current.blur()
-                  setCanShowGenericWarningModal(true)
-                }}>
-                  <div className={elementStyles.dropdownText}>Unlinked Page</div>
-                </MenuItem>
+                <>
+                  <MenuItem handler={() => {
+                    setChosenCategory('')
+                    fileMoveDropdownRef.current.blur()
+                    setCanShowGenericWarningModal(true)
+                  }}>
+                    <div className={elementStyles.dropdownText}>Unlinked Page</div>
+                  </MenuItem>
+                  <hr/>
+                </>
               }
               {allCategories
                 ?
