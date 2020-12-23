@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import { Link } from "react-router-dom";
 import axios from 'axios';
 import _ from 'lodash';
 import { Base64 } from 'js-base64';
@@ -12,7 +11,11 @@ import TemplateInfobarSection from '../templates/homepage/InfobarSection';
 import TemplateInfopicLeftSection from '../templates/homepage/InfopicLeftSection';
 import TemplateInfopicRightSection from '../templates/homepage/InfopicRightSection';
 import TemplateResourcesSection from '../templates/homepage/ResourcesSection';
-import { frontMatterParser, concatFrontMatterMdBody } from '../utils';
+import { DEFAULT_ERROR_TOAST_MSG, frontMatterParser, concatFrontMatterMdBody } from '../utils';
+import {
+  createPageStyleSheet,
+  getSiteColors,
+} from '../utils/siteColorUtils';
 import EditorInfobarSection from '../components/homepage/InfobarSection';
 import EditorInfopicSection from '../components/homepage/InfopicSection';
 import EditorResourcesSection from '../components/homepage/ResourcesSection';
@@ -24,6 +27,8 @@ import Header from '../components/Header';
 import LoadingButton from '../components/LoadingButton';
 import { validateSections, validateHighlights, validateDropdownElems } from '../utils/validators';
 import DeleteWarningModal from '../components/DeleteWarningModal';
+import { toast } from 'react-toastify';
+import Toast from '../components/Toast';
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -93,6 +98,8 @@ const enumSection = (type, isErrorConstructor) => {
 };
 
 export default class EditHomepage extends Component {
+  _isMounted = false 
+
   constructor(props) {
     super(props);
     this.scrollRefs = [];
@@ -120,13 +127,49 @@ export default class EditHomepage extends Component {
         id: '',
         type: '',
       },
+      savedHeroElems: '',
+      savedHeroErrors: '',
     };
   }
 
   async componentDidMount() {
+    const { match, siteColors, setSiteColors } = this.props;
+    const { siteName } = match.params;
+    this._isMounted = true
+
+    // Set page colors
     try {
-      const { match } = this.props;
-      const { siteName } = match.params;
+      let primaryColor
+      let secondaryColor
+
+      if (!siteColors[siteName]) {
+        const {
+          primaryColor: sitePrimaryColor,
+          secondaryColor: siteSecondaryColor,
+        } = await getSiteColors(siteName)
+
+        primaryColor = sitePrimaryColor
+        secondaryColor = siteSecondaryColor
+
+        if (this._isMounted) setSiteColors((prevState) => ({
+          ...prevState,
+          [siteName]: {
+            primaryColor,
+            secondaryColor,
+          }
+        }))
+      } else {
+        primaryColor = siteColors[siteName].primaryColor
+        secondaryColor = siteColors[siteName].secondaryColor
+      }
+
+      createPageStyleSheet(siteName, primaryColor, secondaryColor)
+    
+    } catch (err) {
+      console.log(err);
+    }
+
+    try {
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/homepage`, {
         withCredentials: true,
       });
@@ -168,6 +211,13 @@ export default class EditHomepage extends Component {
               },
             });
           }
+          if (!dropdown && !keyHighlights) {
+            sectionsErrors.push({
+              hero: {
+                title: '', subtitle: '', background: '', button: '', url: '',
+              },
+            });
+          }
         }
 
         // Check if there is already a resources section
@@ -195,7 +245,7 @@ export default class EditHomepage extends Component {
         dropdownElems: dropdownElemsErrors,
       };
 
-      this.setState({
+      if (this._isMounted) this.setState({
         frontMatter,
         originalFrontMatter: _.cloneDeep(frontMatter),
         sha,
@@ -206,8 +256,18 @@ export default class EditHomepage extends Component {
         errors,
       });
     } catch (err) {
+      // Set frontMatter to be same to prevent warning message when navigating away
+      this.setState( {frontMatter: this.state.originalFrontMatter} )
+      toast(
+        <Toast notificationType='error' text={`There was a problem trying to load your homepage. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   onFieldChange = async (event) => {
@@ -235,11 +295,21 @@ export default class EditHomepage extends Component {
         case 'section': {
           // The field that changed belongs to a homepage section config
           const { sections } = state.frontMatter;
+
           // sectionIndex is the index of the section array in the frontMatter
           const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT);
           const sectionType = idArray[2]; // e.g. "hero" or "infobar" or "resources"
           const field = idArray[3]; // e.g. "title" or "subtitle"
-          sections[sectionIndex][sectionType][field] = value;
+
+          const newSections = update(sections, {
+            [sectionIndex]: {
+              [sectionType]: {
+                [field]: {
+                  $set: value,
+                },
+              },
+            },
+          });
 
           let newSectionError
 
@@ -280,7 +350,7 @@ export default class EditHomepage extends Component {
             ...currState,
             frontMatter: {
               ...currState.frontMatter,
-              sections,
+              sections: newSections,
             },
             errors: newErrors,
           }));
@@ -291,14 +361,24 @@ export default class EditHomepage extends Component {
         case 'highlight': {
           // The field that changed belongs to a hero highlight
           const { sections } = state.frontMatter;
-          const highlights = sections[0].hero.key_highlights;
 
           // highlightsIndex is the index of the key_highlights array
           const highlightsIndex = parseInt(idArray[1], RADIX_PARSE_INT);
           const field = idArray[2]; // e.g. "title" or "url"
 
-          highlights[highlightsIndex][field] = value;
-          sections[0].hero.key_highlights = highlights;
+          const newSections = update(sections, {
+            [0]: {
+              hero: {
+                key_highlights: {
+                  [highlightsIndex]: {
+                    [field]: {
+                      $set: value,
+                    },
+                  },
+                },
+              },
+            },
+          });
 
           const newErrors = update(errors, {
             highlights: {
@@ -312,7 +392,7 @@ export default class EditHomepage extends Component {
             ...currState,
             frontMatter: {
               ...currState.frontMatter,
-              sections,
+              sections: newSections,
             },
             errors: newErrors,
           }));
@@ -323,14 +403,26 @@ export default class EditHomepage extends Component {
         case 'dropdownelem': {
           // The field that changed is a dropdown element (i.e. dropdownelem)
           const { sections } = state.frontMatter;
-          const dropdowns = sections[0].hero.dropdown.options;
 
           // dropdownsIndex is the index of the dropdown.options array
           const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT);
           const field = idArray[2]; // e.g. "title" or "url"
 
-          dropdowns[dropdownsIndex][field] = value;
-          sections[0].hero.dropdown.options = dropdowns;
+          const newSections = update(sections, {
+            [0]: {
+              hero: {
+                dropdown: {
+                  options: {
+                    [dropdownsIndex]: {
+                      [field]: {
+                        $set: value,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          });
 
           const newErrors = update(errors, {
             dropdownElems: {
@@ -344,7 +436,7 @@ export default class EditHomepage extends Component {
             ...currState,
             frontMatter: {
               ...currState.frontMatter,
-              sections,
+              sections: newSections,
             },
             errors: newErrors,
           }));
@@ -419,56 +511,13 @@ export default class EditHomepage extends Component {
             },
           });
 
-          const newDisplaySections = update(displaySections, {
+          const resetDisplaySections = _.fill(Array(displaySections.length), false)
+          const newDisplaySections = update(resetDisplaySections, {
             $push: [true],
           });
 
           this.setState({
             displaySections: newDisplaySections,
-          });
-          break;
-        }
-        case 'dropdown': {
-          const dropdownObj = DropdownConstructor();
-
-          newSections = update(frontMatter.sections, {
-            0: {
-              hero: {
-                button: {
-                  $set: '',
-                },
-                url: {
-                  $set: '',
-                },
-                key_highlights: {
-                  $set: '',
-                },
-                dropdown: {
-                  $set: dropdownObj,
-                },
-              },
-            },
-          });
-
-          newErrors = update(errors, {
-            sections: {
-              0: {
-                hero: {
-                  button: {
-                    $set: '',
-                  },
-                  url: {
-                    $set: '',
-                  },
-                  dropdown: {
-                    $set: '',
-                  },
-                },
-              },
-            },
-            highlights: {
-              $set: '',
-            },
           });
           break;
         }
@@ -493,7 +542,8 @@ export default class EditHomepage extends Component {
             },
           });
 
-          const newDisplayDropdownElems = update(displayDropdownElems, {
+          const resetDisplayDropdownElems = _.fill(Array(displayDropdownElems.length), false)
+          const newDisplayDropdownElems = update(resetDisplayDropdownElems, {
             $splice: [[dropdownsIndex, 0, true]],
           });
 
@@ -503,31 +553,48 @@ export default class EditHomepage extends Component {
           break;
         }
         case 'highlight': {
-          const highlightIndex = parseInt(idArray[1], 10) + 1;
+          // If key highlights section exists
+          if (!_.isEmpty(frontMatter.sections[0].hero.key_highlights)) {
+            const highlightIndex = parseInt(idArray[1], 10) + 1;
 
-          newSections = update(frontMatter.sections, {
-            0: {
-              hero: {
-                key_highlights: {
-                  $splice: [[highlightIndex, 0, KeyHighlightConstructor(false)]],
+            newSections = update(frontMatter.sections, {
+              0: {
+                hero: {
+                  key_highlights: {
+                    $splice: [[highlightIndex, 0, KeyHighlightConstructor(false)]],
+                  },
                 },
               },
-            },
-          });
+            });
 
-          newErrors = update(errors, {
-            highlights: {
-              $splice: [[highlightIndex, 0, KeyHighlightConstructor(true)]],
-            },
-          });
+            newErrors = update(errors, {
+              highlights: {
+                $splice: [[highlightIndex, 0, KeyHighlightConstructor(true)]],
+              },
+            });
 
-          const newDisplayHighlights = update(displayHighlights, {
-            $splice: [[highlightIndex, 0, true]],
-          });
+            const resetDisplayHighlights = _.fill(Array(displayHighlights.length), false)
+            const newDisplayHighlights = update(resetDisplayHighlights, {
+              $splice: [[highlightIndex, 0, true]],
+            });
 
-          this.setState({
-            displayHighlights: newDisplayHighlights,
-          });
+            this.setState({
+              displayHighlights: newDisplayHighlights,
+            });
+          // If neither key highlights nor dropdown section exists, create new key highlights array
+          } else {
+            newSections = _.cloneDeep(frontMatter.sections)
+            newSections[0].hero.key_highlights = [KeyHighlightConstructor(false)];
+
+            newErrors = _.cloneDeep(errors)
+            newErrors.highlights = [KeyHighlightConstructor(true)]
+
+            const newDisplayHighlights = [true]
+
+            this.setState({
+              displayHighlights: newDisplayHighlights,
+            });
+          }
           break;
         }
         default:
@@ -582,39 +649,6 @@ export default class EditHomepage extends Component {
 
           this.setState({
             displaySections: newDisplaySections,
-          });
-          break;
-        }
-        case 'dropdown': {
-          newSections = update(frontMatter.sections, {
-            0: {
-              hero: {
-                dropdown: {
-                  $set: '',
-                },
-                key_highlights: {
-                  $set: [],
-                },
-              },
-            },
-          });
-
-          newErrors = update(errors, {
-            dropdownElems: {
-              $set: [],
-            },
-            highlights: {
-              $set: [],
-            },
-            sections: {
-              0: {
-                hero: {
-                  dropdown: {
-                    $set: '',
-                  },
-                },
-              },
-            },
           });
           break;
         }
@@ -690,6 +724,156 @@ export default class EditHomepage extends Component {
     }
   }
 
+  handleHighlightDropdownToggle = (event) => {
+    const {
+      frontMatter, errors,
+    } = this.state;
+    let newSections = [];
+    let newErrors = {};
+    const { target: { value } } = event;
+    if (value === 'highlights') {
+      if (!frontMatter.sections[0].hero.dropdown) return
+      let highlightObj, highlightErrors, buttonObj, buttonErrors, urlObj, urlErrors
+      if (this.state.savedHeroElems) {
+        highlightObj = this.state.savedHeroElems.key_highlights || []
+        highlightErrors = this.state.savedHeroErrors.highlights || []
+        buttonObj = this.state.savedHeroElems.button || ''
+        buttonErrors = this.state.savedHeroErrors.button || ''
+        urlObj = this.state.savedHeroElems.url || ''
+        urlErrors = this.state.savedHeroErrors.url || ''
+      } else {
+        highlightObj = [];
+        highlightErrors = [];
+        buttonObj = ''
+        buttonErrors = ''
+        urlObj = ''
+        urlErrors = ''
+      }
+      this.setState({
+        savedHeroElems: this.state.frontMatter.sections[0].hero,
+        savedHeroErrors: {
+          dropdown: this.state.errors.sections[0].hero.dropdown,
+          dropdownElems: this.state.errors.dropdownElems
+        },
+      });
+
+      newSections = update(frontMatter.sections, {
+        0: {
+          hero: {
+            dropdown: {
+              $set: '',
+            },
+            key_highlights: {
+              $set: highlightObj,
+            },
+            button: {
+              $set: buttonObj,
+            },
+            url: {
+              $set: urlObj,
+            },
+          },
+        },
+      });
+
+      newErrors = update(errors, {
+        dropdownElems: {
+          $set: [],
+        },
+        highlights: {
+          $set: highlightErrors,
+        },
+        sections: {
+          0: {
+            hero: {
+              dropdown: {
+                $set: '',
+              },
+              button: {
+                $set: buttonErrors,
+              },
+              url: {
+                $set: urlErrors,
+              },
+            },
+          },
+        },
+      });
+    } else {
+      if (frontMatter.sections[0].hero.dropdown) return
+      let dropdownObj, dropdownErrors, dropdownElemErrors
+      if (this.state.savedHeroElems) {
+        dropdownObj = this.state.savedHeroElems.dropdown || DropdownConstructor();
+        dropdownErrors = this.state.savedHeroErrors.dropdown || ''
+        dropdownElemErrors = this.state.savedHeroErrors.dropdownElems || ''
+      } else {
+        dropdownObj = DropdownConstructor();
+        dropdownErrors = ''
+        dropdownElemErrors = []
+      }
+
+      this.setState({
+        savedHeroElems: this.state.frontMatter.sections[0].hero,
+        savedHeroErrors: {
+          highlights: this.state.errors.highlights,
+          button: this.state.errors.sections[0].hero.button,
+          url: this.state.errors.sections[0].hero.url,
+        },
+      });
+
+      newSections = update(frontMatter.sections, {
+        0: {
+          hero: {
+            button: {
+              $set: '',
+            },
+            url: {
+              $set: '',
+            },
+            key_highlights: {
+              $set: '',
+            },
+            dropdown: {
+              $set: dropdownObj,
+            },
+          },
+        },
+      });
+
+      newErrors = update(errors, {
+        sections: {
+          0: {
+            hero: {
+              button: {
+                $set: '',
+              },
+              url: {
+                $set: '',
+              },
+              dropdown: {
+                $set: dropdownErrors,
+              },
+            },
+          },
+        },
+        highlights: {
+          $set: '',
+        },
+        dropdownElems: {
+          $set: dropdownElemErrors
+        }
+      });
+    }
+    this.setState((currState) => ({
+      ...currState,
+      frontMatter: {
+        ...currState.frontMatter,
+        sections: newSections,
+      },
+      errors: newErrors,
+    }));
+  }
+
   toggleDropdown = async () => {
     try {
       this.setState((currState) => ({
@@ -709,8 +893,11 @@ export default class EditHomepage extends Component {
         case 'section': {
           const { displaySections } = this.state;
           const sectionId = idArray[1];
-          const newDisplaySections = displaySections;
-          newDisplaySections[sectionId] = !newDisplaySections[sectionId];
+          let resetDisplaySections = _.fill(Array(displaySections.length), false)
+          resetDisplaySections[sectionId] = !displaySections[sectionId]
+          const newDisplaySections = update(displaySections, {
+            $set: resetDisplaySections,
+          });
 
           this.setState({
             displaySections: newDisplaySections,
@@ -720,8 +907,11 @@ export default class EditHomepage extends Component {
         case 'highlight': {
           const { displayHighlights } = this.state;
           const highlightIndex = idArray[1];
-          const newDisplayHighlights = displayHighlights;
-          newDisplayHighlights[highlightIndex] = !newDisplayHighlights[highlightIndex];
+          let resetHighlightSections = _.fill(Array(displayHighlights.length), false)
+          resetHighlightSections[highlightIndex] = !displayHighlights[highlightIndex]
+          const newDisplayHighlights = update(displayHighlights, {
+            $set: resetHighlightSections,
+          });
 
           this.setState({
             displayHighlights: newDisplayHighlights,
@@ -731,8 +921,11 @@ export default class EditHomepage extends Component {
         case 'dropdownelem': {
           const { displayDropdownElems } = this.state;
           const dropdownsIndex = idArray[1];
-          const newDisplayDropdownElems = displayDropdownElems;
-          newDisplayDropdownElems[dropdownsIndex] = !newDisplayDropdownElems[dropdownsIndex];
+          let resetDropdownSections = _.fill(Array(displayDropdownElems.length), false)
+          resetDropdownSections[dropdownsIndex] = !displayDropdownElems[dropdownsIndex]
+          const newDisplayDropdownElems = update(displayDropdownElems, {
+            $set: resetDropdownSections,
+          });
 
           this.setState({
             displayDropdownElems: newDisplayDropdownElems,
@@ -775,6 +968,10 @@ export default class EditHomepage extends Component {
 
       window.location.reload();
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text={`There was a problem trying to save your homepage. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }
@@ -993,8 +1190,8 @@ export default class EditHomepage extends Component {
                   value={frontMatter.notification}
                   id="site-notification"
                   onChange={this.onFieldChange} />
-                <span>
-                  <i>Note: Leave text field empty if you don’t need this notification bar</i>
+                <span className={elementStyles.info}>
+                  Note: Leave text field empty if you don’t need this notification bar
                 </span>
               </div>
 
@@ -1018,9 +1215,9 @@ export default class EditHomepage extends Component {
                                 background={section.hero.background}
                                 button={section.hero.button}
                                 url={section.hero.url}
-                                dropdown={section.hero.dropdown}
+                                dropdown={section.hero.dropdown ? section.hero.dropdown : null}
                                 sectionIndex={sectionIndex}
-                                highlights={section.hero.key_highlights}
+                                highlights={section.hero.key_highlights ? section.hero.key_highlights : []}
                                 onFieldChange={this.onFieldChange}
                                 createHandler={this.createHandler}
                                 deleteHandler={(event, type) => this.setState({ itemPendingForDelete: { id: event.target.id, type } })}
@@ -1031,6 +1228,7 @@ export default class EditHomepage extends Component {
                                 onDragEnd={this.onDragEnd}
                                 errors={errors}
                                 siteName={siteName}
+                                handleHighlightDropdownToggle={this.handleHighlightDropdownToggle}
                               />
                             </>
                           ) : (

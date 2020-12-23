@@ -34,6 +34,7 @@ const EditorHeroSection = ({
   displayHighlights,
   errors,
   siteName,
+  handleHighlightDropdownToggle,
 }) => (
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
@@ -73,14 +74,41 @@ const EditorHeroSection = ({
             siteName={siteName}
             type="image"
           />
-          <span>
-            <i>Note: you can only have either Key Highlights+Hero button or a Hero Dropdown</i>
-          </span>
           <div className={styles.card}>
+            <p className={elementStyles.formLabel}>Hero Section Type</p>
+            {/* Permalink or File URL */}
+            <div className="d-flex">
+              <label htmlFor="radio-highlights" className="flex-fill">
+                <input
+                  type="radio"
+                  id="radio-highlights"
+                  name="hero-type"
+                  defaultValue="highlights"
+                  onChange={handleHighlightDropdownToggle}
+                  checked={!dropdown}
+                />
+                Highlights + Button
+              </label>
+              <label htmlFor="radio-dropdown" className="flex-fill">
+                <input
+                  type="radio"
+                  id="radio-dropdown"
+                  name="hero-type"
+                  defaultValue="dropdown"
+                  onChange={handleHighlightDropdownToggle}
+                  checked={!!dropdown}
+                />
+                Dropdown
+              </label>
+            </div>
+            <span className={elementStyles.info}>
+              Note: you can only have either Key Highlights+Hero button or a Hero Dropdown
+            </span>
+          </div>
+          <div >
             {dropdown
               ? (
                 <>
-                  <button type="button" id="dropdown-delete" className={`ml-auto ${elementStyles.warning}`} onClick={(event) => deleteHandler(event, 'Hero Dropdown')}>Delete Hero Dropdown</button>
                   <HeroDropdown
                     title={dropdown.title}
                     options={dropdown.options}
@@ -96,7 +124,6 @@ const EditorHeroSection = ({
               )
               : (
                 <>
-                  <button type="button" id="dropdown-create" className={`ml-auto ${elementStyles.blue}`} onClick={createHandler}>Create Hero Dropdown</button>
                   <HeroButton
                     button={button}
                     url={url}
@@ -152,10 +179,10 @@ const EditorHeroSection = ({
                             </>
                           )
                           : null }
+                        {droppableProvided.placeholder}
                         {highlights.length < MAX_NUM_KEY_HIGHLIGHTS
                           ? <button type="button" id={`highlight-${highlights.length}-create`} className={`ml-auto ${elementStyles.blue}`} onClick={createHandler}>Create highlight</button>
                           : <button type="button" disabled className={`ml-auto ${elementStyles.disabled}`}>Create highlight</button>}
-                        {droppableProvided.placeholder}
                       </div>
                     )}
                   </Droppable>
@@ -171,24 +198,24 @@ const EditorHeroSection = ({
 export default EditorHeroSection;
 
 EditorHeroSection.propTypes = {
-  title: PropTypes.string.isRequired,
-  subtitle: PropTypes.string.isRequired,
-  background: PropTypes.string.isRequired,
-  button: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired,
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
+  background: PropTypes.string,
+  button: PropTypes.string,
+  url: PropTypes.string,
   sectionIndex: PropTypes.number.isRequired,
   onFieldChange: PropTypes.func.isRequired,
   createHandler: PropTypes.func.isRequired,
   deleteHandler: PropTypes.func.isRequired,
   shouldDisplay: PropTypes.bool.isRequired,
   displayHandler: PropTypes.func.isRequired,
-  displayHighlights: PropTypes.arrayOf(PropTypes.bool).isRequired,
-  displayDropdownElems: PropTypes.arrayOf(PropTypes.bool.isRequired).isRequired,
+  displayHighlights: PropTypes.arrayOf(PropTypes.bool),
+  displayDropdownElems: PropTypes.arrayOf(PropTypes.bool),
   highlights: PropTypes.arrayOf(
     PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
-      url: PropTypes.string.isRequired,
+      title: PropTypes.string,
+      description: PropTypes.string,
+      url: PropTypes.string,
       highlightIndex: PropTypes.number,
       createHandler: PropTypes.func,
       deleteHandler: PropTypes.func,
@@ -199,32 +226,32 @@ EditorHeroSection.propTypes = {
   dropdown: PropTypes.shape({
     options: PropTypes.arrayOf(
       PropTypes.shape({
-        title: PropTypes.string.isRequired,
-        url: PropTypes.string.isRequired,
-        dropdownsIndex: PropTypes.number.isRequired,
-        onFieldChange: PropTypes.func.isRequired,
+        title: PropTypes.string,
+        url: PropTypes.string,
+        dropdownsIndex: PropTypes.number,
+        onFieldChange: PropTypes.func,
       }),
-    ).isRequired,
+    ),
     title: PropTypes.string.isRequired,
   }),
   errors: PropTypes.shape({
     sections: PropTypes.arrayOf(
       PropTypes.shape({
         hero: PropTypes.shape({
-          title: PropTypes.string.isRequired,
-          subtitle: PropTypes.string.isRequired,
-          background: PropTypes.string.isRequired,
-          button: PropTypes.string.isRequired,
-          url: PropTypes.string.isRequired,
+          title: PropTypes.string,
+          subtitle: PropTypes.string,
+          background: PropTypes.string,
+          button: PropTypes.string,
+          url: PropTypes.string,
           dropdown: PropTypes.string,
         }),
       }),
     ),
     highlights: PropTypes.arrayOf(
       PropTypes.shape({
-        title: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired,
-        url: PropTypes.string.isRequired,
+        title: PropTypes.string,
+        description: PropTypes.string,
+        url: PropTypes.string,
       }),
     ),
   }).isRequired,

@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Breadcrumb from './pageComponents/Breadcrumb';
+import PageHeader from './pageComponents/PageHeader';
 
 // This following template was taken from the 'Simple Page'
 const SimplePage = ({ chunk, title, date }) => (
   <div>
-    <Breadcrumb title={title} date={date}/>
+    <PageHeader title={title} date={date}/>
     <section className="bp-section">
       <div className="bp-container content padding--top--lg padding--bottom--xl">
         <div className="row">

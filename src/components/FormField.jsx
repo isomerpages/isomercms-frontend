@@ -7,6 +7,7 @@ const FormField = ({
   defaultValue,
   value,
   id,
+  hasError, 
   errorMessage,
   onFieldChange,
   isRequired,
@@ -17,12 +18,9 @@ const FormField = ({
   maxWidth,
 }) => (
   <>
-    <p className={elementStyles.formLabel}>{title}</p>
+    { title && <label className={elementStyles.formLabel}>{title}</label> }
     <div className={`d-flex text-nowrap ${maxWidth ? 'w-100' : ''}`}>
-      {fixedMessage
-        ? <p className={elementStyles.formFixedText}>{fixedMessage}</p>
-        : null
-      }
+      { fixedMessage && <p className={elementStyles.formFixedText}>{fixedMessage}</p> }
       <input
         type="text"
         placeholder={placeholder ? placeholder : title}
@@ -31,20 +29,20 @@ const FormField = ({
         id={id}
         autoComplete="off"
         required={isRequired}
-        className={errorMessage ? `${elementStyles.error}` : null}
+        className={hasError || errorMessage ? `${elementStyles.error}` : null}
         style={style}
         onChange={onFieldChange}
         disabled={disabled}
       />
     </div>
-    <span className={elementStyles.error}>{errorMessage}</span>
+    { errorMessage && <span className={elementStyles.error}>{errorMessage}</span> }
   </>
 );
 
 export default FormField;
 
 FormField.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   defaultValue: PropTypes.string,
   value: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,

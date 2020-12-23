@@ -68,17 +68,17 @@ const EditorResourcesSection = ({
 export default EditorResourcesSection;
 
 EditorResourcesSection.propTypes = {
-  title: PropTypes.string.isRequired,
-  subtitle: PropTypes.string.isRequired,
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
   sectionIndex: PropTypes.number.isRequired,
-  button: PropTypes.string.isRequired,
+  button: PropTypes.string,
   onFieldChange: PropTypes.func.isRequired,
   deleteHandler: PropTypes.func.isRequired,
   shouldDisplay: PropTypes.bool.isRequired,
   displayHandler: PropTypes.func.isRequired,
   errors: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    subtitle: PropTypes.string.isRequired,
-    button: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    subtitle: PropTypes.string,
+    button: PropTypes.string,
   }).isRequired,
 };

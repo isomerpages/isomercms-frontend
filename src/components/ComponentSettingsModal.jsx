@@ -9,19 +9,22 @@ import * as _ from 'lodash';
 import { Redirect } from 'react-router-dom';
 import FormField from './FormField';
 import {
+  DEFAULT_ERROR_TOAST_MSG,
   frontMatterParser,
   dequoteString,
   generatePageFileName,
   generateCollectionPageFileName,
   generateResourceFileName,
-  retrieveCollectionAndLinkFromPermalink,
   saveFileAndRetrieveUrl,
+  retrieveResourceFileMetadata,
 } from '../utils';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import { validatePageSettings, validateResourceSettings } from '../utils/validators';
 import DeleteWarningModal from './DeleteWarningModal';
 import ResourceFormFields from './ResourceFormFields';
 import SaveDeleteButtons from './SaveDeleteButtons';
+import { toast } from 'react-toastify';
+import Toast from './Toast';
 
 // Import utils
 import { retrieveThirdNavOptions } from '../utils/dropdownUtils'
@@ -57,6 +60,7 @@ const ComponentSettingsModal = ({
     siteName,
     type,
     loadThirdNavOptions,
+    setIsComponentSettingsActive,
 }) => {
     // Errors
     const [errors, setErrors] = useState({
@@ -120,53 +124,50 @@ const ComponentSettingsModal = ({
     }
 
     useEffect(() => {
-        if (originalCategory) setCategory(originalCategory);
+      let _isMounted = true
 
-        const baseUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${originalCategory ? type === "resource" ? `/resources/${originalCategory}` : `/collections/${originalCategory}` : ''}`
-        setBaseApiUrl(baseUrl)
+      if (originalCategory) setCategory(originalCategory);
 
-        const fetchData = async () => {
-            // Retrieve the list of all page/resource categories for use in the dropdown options. Also sets the default category if none is specified.
-            if (type === 'resource') {
-                const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`);
-                const { resources } = resourcesResp.data;
-                setAllCategories(resources.map((category) => ({
-                  value: category.dirName,
-                  label: category.dirName,
-                })))
-            } else if (type === 'page') {
-                const collectionsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`);
-                const { collections } = collectionsResp.data;
-                const collectionCategories = [''].concat(collections) // allow for selection of "Unlinked Page" category
-                setAllCategories(collectionCategories.map((category) => (
-                    {
-                      value:category,
-                      label:category ? category : 'Unlinked Page'
-                    }
-                )))
-            }
+      const baseUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${originalCategory ? type === "resource" ? `/resources/${originalCategory}` : `/collections/${originalCategory}` : ''}`
+      setBaseApiUrl(baseUrl)
 
-            // Set component form values
-            if (isNewFile) {
-                // Set default values for new file
+      const fetchData = async () => {
+          // Retrieve the list of all page/resource categories for use in the dropdown options. Also sets the default category if none is specified.
+          if (type === 'resource') {
+              const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`);
+              const { resources } = resourcesResp.data;
+              if (_isMounted) setAllCategories(resources.map((category) => ({
+                value: category.dirName,
+                label: category.dirName,
+              })))
+          } else if (type === 'page') {
+              const collectionsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`);
+              const { collections } = collectionsResp.data;
+              if (_isMounted) setAllCategories(collections.map((category) => (
+                  {
+                    value:category,
+                    label:category,
+                  }
+              )))
+          }
+
+          // Set component form values
+          if (isNewFile) {
+              // Set default values for new file
+              if (_isMounted) {
                 setTitle('Title')
-                setPermalink('permalink')
+                setPermalink(`${originalCategory ? `/${originalCategory}` : ''}/permalink`)
                 if (type === 'resource') setResourceDate(new Date().toISOString().split("T")[0])
+              }
 
-            } else {
-                // Retrieve data from an existing page/resource
-                const resp = await axios.get(`${baseUrl}/pages/${fileName}`);
-                const { content, sha: fileSha } = resp.data;
-                const base64DecodedContent = Base64.decode(content);
-                const { frontMatter, mdBody } = frontMatterParser(base64DecodedContent);
+          } else {
+              // Retrieve data from an existing page/resource
+              const resp = await axios.get(`${baseUrl}/pages/${fileName}`);
+              const { content, sha: fileSha } = resp.data;
+              const base64DecodedContent = Base64.decode(content);
+              const { frontMatter, mdBody } = frontMatterParser(base64DecodedContent);
 
-                let existingLink
-                if (frontMatter.permalink) {
-                  // We want to set parts of the link by default, and only leave a portion editable by the user
-                  const { editableLink } = retrieveCollectionAndLinkFromPermalink(frontMatter.permalink)
-                  existingLink = editableLink
-                }
-
+              if (_isMounted) {
                 // File properties
                 setSha(fileSha)
                 setMdBody(mdBody)
@@ -175,22 +176,27 @@ const ComponentSettingsModal = ({
                 // Front matter properties
                 setTitle(dequoteString(frontMatter.title))
 
-                setPermalink(existingLink)
-                setOriginalPermalink(existingLink)
+                setPermalink(frontMatter.permalink)
+                setOriginalPermalink(frontMatter.permalink)
                 setFileUrl(frontMatter.file_url)
                 setOriginalFileUrl(frontMatter.file_url)
 
-                setResourceDate(frontMatter.date)
+                setResourceDate(type === 'resource' ? retrieveResourceFileMetadata(fileName).date : '')
                 setOriginalThirdNavTitle(frontMatter.third_nav_title)
                 setThirdNavTitle(frontMatter.third_nav_title)
-            }
-        }
+              }
+          }
+      }
 
-        try {
-            fetchData()
-        } catch (err) {
-            console.log(err)
-        }
+      fetchData().catch((err) => {
+        setIsComponentSettingsActive((prevState) => !prevState)
+        toast(
+          <Toast notificationType='error' text={`There was a problem retrieving data from your repo. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
+        );
+        console.log(err)
+      })
+      return () => { _isMounted = false }
     }, [])
 
     useEffect(() => {
@@ -236,6 +242,7 @@ const ComponentSettingsModal = ({
                 originalCategory,
                 collectionPageData,
                 type,
+                resourceType: isPost ? 'post' : 'file',
                 fileName,
                 isNewFile,
                 siteName,
@@ -244,12 +251,33 @@ const ComponentSettingsModal = ({
 
             const redirectUrl = await saveFileAndRetrieveUrl(fileInfo)
 
-            // Refresh page
+            // If editing details of existing file, refresh page
             !isNewFile && window.location.reload();
-
-            setNewPageUrl(redirectUrl)
-            setRedirectToNewPage(true)
+            
+            // We refresh page if resource is being created from category folder
+            if (type === 'resource' && !isPost && originalCategory) {
+              window.location.reload();
+            } else {
+              setNewPageUrl(redirectUrl)
+              setRedirectToNewPage(true)
+            }            
         } catch (err) {
+            if (err?.response?.status === 409) {
+                // Error due to conflict in name
+                setErrors((prevState) => ({
+                    ...prevState,
+                    title: 'This title is already in use. Please choose a different one.',
+                }));
+                toast(
+                  <Toast notificationType='error' text={`Another ${type === 'resource' ? 'resource' : 'page'} with the same name exists. Please choose a different name.`}/>,
+                  {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
+                );
+            } else {
+              toast(
+                <Toast notificationType='error' text={`There was a problem saving your page settings. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
+                {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
+              );
+            }
             console.log(err);
         }
     }
@@ -264,7 +292,11 @@ const ComponentSettingsModal = ({
             // Refresh page
             window.location.reload();
         } catch (err) {
-            console.log(err);
+          toast(
+            <Toast notificationType='error' text={`There was a problem trying to delete this file. ${DEFAULT_ERROR_TOAST_MSG}.`}/>,
+            {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
+          );
+          console.log(err);
         }
     }
 
@@ -381,21 +413,30 @@ const ComponentSettingsModal = ({
               <div className={elementStyles.modalContent}>
                 <div className={elementStyles.modalFormFields}>
                   {/* Category */}
-                  <p className={elementStyles.formLabel}>Category Folder Name</p>
+                  <p className={elementStyles.formLabel}>{`Add to ${type === 'resource' ? `Resource Category` : `Collection`} (optional)`}</p>
                   <div className="d-flex text-nowrap">
                     <CreatableSelect
                       isClearable
                       className="w-100"
                       onChange={categoryDropdownHandler}
                       isDisabled={isCategoryDisabled}
-                      defaultValue={{
+                      placeholder={"Select a category or create a new category..."}
+                      defaultValue={originalCategory ? 
+                        {
                           value: originalCategory,
                           label: generateInitialCategoryLabel(originalCategory, isCategoryDisabled),
-                        }}
+                        }
+                        : null
+                      }
                       options={allCategories}
                     />
                   </div>
-                  <span className={elementStyles.error}>{errors.category}</span>
+                  { errors.category &&
+                  <>
+                    <span className={elementStyles.error}>{errors.category}</span>
+                    <br/>
+                  </>
+                  }
                   {/* Title */}
                   <FormField
                     title="Title"
@@ -405,11 +446,12 @@ const ComponentSettingsModal = ({
                     isRequired={true}
                     onFieldChange={changeHandler}
                   />
+                  {errors.title && <br/>}
                   {/* Third Nav */}
                   { 
                     ((type === "page" && originalCategory) || (type === 'page' && !originalCategory && category)) &&
                     <>
-                        <p className={elementStyles.formLabel}>Third Nav Section</p>
+                        <p className={elementStyles.formLabel}>Add to Third Nav Section (optional)</p>
                         <div className="d-flex text-nowrap">
                             <AsyncCreatableSelect
                               key={category}
@@ -417,10 +459,14 @@ const ComponentSettingsModal = ({
                               defaultOptions
                               className="w-100"
                               onChange={thirdNavDropdownHandler}
-                              value={{
+                              placeholder={"Select a third nav or create a new third nav section..."}
+                              value={thirdNavTitle ?
+                                {
                                   value: thirdNavTitle,
                                   label: generateInitialThirdNavLabel(thirdNavTitle, originalCategory),
-                              }}
+                                }
+                                : null
+                              }
                               // When displaying third nav from workspace, use backupLoadThirdNavOptions
                               loadOptions={(!originalCategory && category) ? backupLoadThirdNavOptions : loadThirdNavOptions}
                               filterOption={createFilter()}
@@ -437,7 +483,6 @@ const ComponentSettingsModal = ({
                     isRequired={true}
                     onFieldChange={changeHandler}
                     disabled={!isPost}
-                    fixedMessage={(category || originalCategory) ? `/${category || originalCategory}/${thirdNavTitle ? `${thirdNavTitle}/` : ''}` : '/'}
                     placeholder=' '
                   />
                   { type === "resource" && 

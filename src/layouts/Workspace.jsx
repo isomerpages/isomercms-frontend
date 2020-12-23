@@ -14,25 +14,72 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 // Import utils
 import { prettifyPageFileName } from '../utils';
+import {
+  getSiteColors,
+} from '../utils/siteColorUtils';
+
 
 // Constants
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
-const Workspace = ({ match, location }) => {
+const Workspace = ({ match, location, siteColors, setSiteColors }) => {
     const { siteName } = match.params;
 
-    const [collections, setCollections] = useState([])
+    const [collections, setCollections] = useState()
     const [unlinkedPages, setUnlinkedPages] = useState()
+    const [contactUsCard, setContactUsCard] = useState(false)
 
     useEffect(() => {
-        const fetchData = async () => {
-            const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`);
-            setCollections(collectionsResp.data?.collections)
-
-            const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`);
-            setUnlinkedPages(unlinkedPagesResp.data?.pages)
+      let _isMounted = true
+      const fetchData = async () => {
+        try {
+          if (!siteColors[siteName]) {
+            const {
+              primaryColor,
+              secondaryColor,
+            } = await getSiteColors(siteName)
+    
+            if (_isMounted) setSiteColors((prevState) => ({
+              ...prevState,
+              [siteName]: {
+                primaryColor,
+                secondaryColor,
+              }
+            }))
+          }
+        } catch (e) {
+          console.log(e)
         }
-        fetchData()
+
+        try { 
+          await axios.get(`${BACKEND_URL}/sites/${siteName}/pages/contact-us.md`);
+          if (_isMounted) setContactUsCard(true) 
+        } catch (e) {
+          if (e.response.status === 500) {
+            // create option for contact-us page
+          }
+        }
+
+        try { 
+          const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`);
+          if (_isMounted) setCollections(collectionsResp.data?.collections)
+        } catch (e) {
+          setCollections(undefined)
+          console.log(e)
+        }
+        
+        try { 
+          const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`);
+          if (_isMounted) {
+            console.log(unlinkedPagesResp.data?.pages)
+            setUnlinkedPages(unlinkedPagesResp.data?.pages.filter(page => page.fileName !== 'contact-us.md'))
+          }
+        } catch (e) {
+          console.log(e)
+        }
+      }
+      fetchData()
+      return () => { _isMounted = false }
     }, [])
 
     return (
@@ -43,74 +90,90 @@ const Workspace = ({ match, location }) => {
             <Sidebar siteName={siteName} currPath={location.pathname} />
             {/* main section starts here */}
             <div className={contentStyles.mainSection}>
-                {/* Page title */}
-                <div className={contentStyles.sectionHeader}>
-                    <h1 className={contentStyles.sectionTitle}>My Workspace</h1>
-                </div>
-                {/* Info segment */}
-                <div className={contentStyles.segment}>
-                    <i className="bx bx-sm bx-bulb text-dark" />
-                    <span><strong className="ml-1">Pro tip:</strong> Organise this workspace by moving pages into folders</span>
-                </div>
-                {/* Homepage */}
-                <div className={contentStyles.folderContainerBoxes}>
-                    <div className={contentStyles.boxesContainer}>
-                        <FolderCard
-                            displayText={"Homepage"}
-                            settingsToggle={() => {}}
-                            key={"homepage"}
-                            isHomepage={true}
-                            isCollection={false}
-                            siteName={siteName}
-                        />
-                    </div>
-                </div>
-                {/* Segment divider  */}
-                <div className={contentStyles.segmentDividerContainer}>
-                    <hr className="w-100 mt-3 mb-5" />
-                </div>
-                {/* Collections title */}
-                <div className={contentStyles.segment}>
-                    Collections
-                </div>
-                {/* Info segment */}
-                <div className={contentStyles.segment}>
-                    <i className="bx bx-sm bx-info-circle text-dark" />
-                    <span><strong className="ml-1">Note:</strong> Collections cannot be empty, create a page first to create a collection.</span>
-                </div>
-                {/* Collections */}
-                <div className={contentStyles.folderContainerBoxes}>
-                    <div className={contentStyles.boxesContainer}>
-                        {
-                            collections && collections.length > 0
-                            ? collections.map((collection, collectionIdx) => (
-                                <FolderCard
-                                    displayText={prettifyPageFileName(collection)}
-                                    settingsToggle={() => {}}
-                                    key={collection}
-                                    isHomepage={false}
-                                    isCollection={true}
-                                    siteName={siteName}
-                                    category={collection}
-                                    itemIndex={collectionIdx}
-                                />
-                            ))
-                            : 'Loading Collections...'
-                        }
-                    </div>
-                </div>
-                {/* Segment divider  */}
-                <div className={contentStyles.segmentDividerContainer}>
-                    <hr className="invisible w-100 mt-3 mb-5" />
-                </div>                {/* Pages title */}
-                <div className={contentStyles.segment}>
-                    Pages
-                </div>
-                {/* Pages */}
-                <CollectionPagesSection
-                    pages={unlinkedPages}
+              {/* Page title */}
+              <div className={contentStyles.sectionHeader}>
+                <h1 className={contentStyles.sectionTitle}>My Workspace</h1>
+              </div>
+              {/* Info segment */}
+              <div className={contentStyles.segment}>
+                <i className="bx bx-sm bx-bulb text-dark" />
+                <span><strong className="ml-1">Pro tip:</strong> Organise this workspace by moving pages into folders</span>
+              </div>
+              {/* Homepage and Contact Us */}
+              <div className={contentStyles.folderContainerBoxes}>
+                <div className={contentStyles.boxesContainer}>
+                  <FolderCard
+                    displayText={"Homepage"}
+                    settingsToggle={() => {}}
+                    key={"homepage"}
+                    pageType={"homepage"}
                     siteName={siteName}
-                />
+                  />
+                  { contactUsCard && 
+                    <FolderCard
+                      displayText={"Contact Us"}
+                      settingsToggle={() => {}}
+                      key={"contact-us"}
+                      pageType={"contact-us"}
+                      siteName={siteName}
+                    />
+                  }
+                </div>
+              </div>
+              {/* Segment divider  */}
+              <div className={contentStyles.segmentDividerContainer}>
+                <hr className="w-100 mt-3 mb-5" />
+              </div>
+              {/* Collections title */}
+              <div className={contentStyles.segment}>
+                Collections
+              </div>
+              {/* Info segment */}
+              <div className={contentStyles.segment}>
+                <i className="bx bx-sm bx-info-circle text-dark" />
+                <span><strong className="ml-1">Note:</strong> Collections cannot be empty, create a page first to create a collection.</span>
+              </div>
+              {/* Collections */}
+              <div className={contentStyles.folderContainerBoxes}>
+                <div className={contentStyles.boxesContainer}>
+                  {
+                    collections && collections.length > 0
+                    ? collections.map((collection, collectionIdx) => (
+                        <FolderCard
+                            displayText={prettifyPageFileName(collection)}
+                            settingsToggle={() => {}}
+                            key={collection}
+                            pageType={"collection"}
+                            siteName={siteName}
+                            category={collection}
+                            itemIndex={collectionIdx}
+                        />
+                    ))
+                    : (
+                        !collections
+                            ? 'Loading Collections...'
+                            : 'There are no collections in this repository'
+                    )
+                  }
+                </div>
+              </div>
+              {/* Segment divider  */}
+              <div className={contentStyles.segmentDividerContainer}>
+                <hr className="invisible w-100 mt-3 mb-5" />
+              </div>                {/* Pages title */}
+              <div className={contentStyles.segment}>
+                Unlinked Pages
+              </div>
+              {/* Info segment */}
+              <div className={contentStyles.segment}>
+                <i className="bx bx-sm bx-info-circle text-dark" />
+                <span><strong className="ml-1">Note:</strong> Unlinked pages are pages which do not belong to any collection.</span>
+              </div>
+              {/* Pages */}
+              <CollectionPagesSection
+                pages={unlinkedPages}
+                siteName={siteName}
+              />
             </div>
             {/* main section ends here */}
           </div>

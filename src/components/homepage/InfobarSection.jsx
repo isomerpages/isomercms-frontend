@@ -87,21 +87,21 @@ const EditorInfobarSection = ({
 export default EditorInfobarSection;
 
 EditorInfobarSection.propTypes = {
-  title: PropTypes.string.isRequired,
-  subtitle: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
+  description: PropTypes.string,
   sectionIndex: PropTypes.number.isRequired,
-  button: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired,
+  button: PropTypes.string,
+  url: PropTypes.string,
   onFieldChange: PropTypes.func.isRequired,
   deleteHandler: PropTypes.func.isRequired,
   shouldDisplay: PropTypes.bool.isRequired,
   displayHandler: PropTypes.func.isRequired,
   errors: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    subtitle: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    button: PropTypes.string.isRequired,
-    url: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    subtitle: PropTypes.string,
+    description: PropTypes.string,
+    button: PropTypes.string,
+    url: PropTypes.string,
   }).isRequired,
 };

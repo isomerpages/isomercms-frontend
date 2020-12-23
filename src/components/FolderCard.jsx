@@ -5,9 +5,16 @@ import axios from 'axios';
 
 import FolderModal from './FolderModal';
 import DeleteWarningModal from './DeleteWarningModal'
+import { toast } from 'react-toastify';
+import Toast from './Toast';
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
+
+import {
+  DEFAULT_ERROR_TOAST_MSG,
+  checkIsOutOfViewport,
+} from '../utils'
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -16,24 +23,51 @@ const FolderCard = ({
   displayText,
   settingsToggle,
   itemIndex,
-  isHomepage,
-  isCollection,
+  pageType,
   siteName,
   category,
 }) => {
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
   const [canShowDropdown, setCanShowDropdown] = useState(false)
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
+  const [isOutOfViewport, setIsOutOfViewport] = useState()
   const dropdownRef = useRef(null)
 
   useEffect(() => {
-    if (canShowDropdown) dropdownRef.current.focus()
+    if (canShowDropdown) {
+      dropdownRef.current.focus()
+      if (isOutOfViewport === undefined) {
+        // We only want to run this once
+        const bounding = dropdownRef.current.getBoundingClientRect()
+        setIsOutOfViewport(checkIsOutOfViewport(bounding, ['right']))
+      }
+    }
   }, [canShowDropdown])
   
   const generateLink = () => {
-    if (isHomepage) return `/sites/${siteName}/homepage`
-    if (isCollection) return `/sites/${siteName}/collections/${category}`
-    return `/sites/${siteName}/resources/${category}`
+    switch(pageType) {
+      case 'homepage': 
+        return `/sites/${siteName}/homepage`
+      case 'collection':
+        return `/sites/${siteName}/collections/${category}`
+      case 'resources':
+        return `/sites/${siteName}/resources/${category}`
+      case 'contact-us':
+        return `/sites/${siteName}/contact-us`
+      default:
+        return ''
+    }
+  }
+
+  const generateImage = (pageType) => {
+    switch(pageType) {
+      case 'homepage':
+        return 'bxs-home-circle'
+      case 'contact-us':
+        return 'bxs-phone'
+      default: 
+        return 'bxs-folder'
+    }
   }
 
   const MenuItem = ({handler, id, children}) => {
@@ -54,12 +88,16 @@ const FolderCard = ({
 
   const deleteHandler = async () => {
     try {
-      const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${isCollection ? `/collections/${category}` : `/resources/${category}`}`
+      const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${pageType === 'collection' ? `/collections/${category}` : `/resources/${category}`}`
       await axios.delete(apiUrl);
 
       // Refresh page
       window.location.reload();
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text={`There was a problem trying to delete this folder. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }
@@ -68,12 +106,12 @@ const FolderCard = ({
     <>
       { isFolderModalOpen &&
         <FolderModal
-          displayTitle={isCollection ? 'Rename Collection' : 'Rename Resource Category'}
-          displayText={isCollection ? 'Collection name' : "Resource category name"}
+          displayTitle={pageType === 'collection' ? 'Rename Collection' : 'Rename Resource Category'}
+          displayText={pageType === 'collection' ? 'Collection name' : "Resource category name"}
           onClose={() => setIsFolderModalOpen(false)}
           category={category}
           siteName={siteName}
-          isCollection={isCollection}
+          isCollection={pageType === 'collection'}
         />
       }
       { canShowDeleteWarningModal &&
@@ -85,10 +123,10 @@ const FolderCard = ({
       }
       <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard}`} to={generateLink()}>
         <div id={itemIndex} className={`${contentStyles.folderInfo}`}>
-          <i className={`bx bx-md text-dark ${isHomepage ? 'bxs-home-circle' : 'bxs-folder'} ${contentStyles.componentIcon}`} />
+          <i className={`bx bx-md text-dark ${generateImage(pageType)} ${contentStyles.componentIcon}`} />
           <span className={`${contentStyles.componentFolderName} align-self-center ml-4 mr-auto`}>{displayText}</span>
           {
-            isHomepage
+            pageType === 'homepage' || pageType === 'contact-us'
             ? ''
             : (
               <div className={`position-relative`}>
@@ -101,20 +139,23 @@ const FolderCard = ({
                     settingsToggle(e);
                     setCanShowDropdown(true)
                   }}
-                  className={contentStyles.componentIcon}
                 >
                   <i id={`settingsIcon-${itemIndex}`} className="bx bx-dots-vertical-rounded" />
                 </button>
               { canShowDropdown &&
-                <div className={`position-absolute ${elementStyles.dropdown}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
-                  <MenuItem handler={(e) => {dropdownRef.current.blur(); setIsFolderModalOpen(true)}} id={`folderSettings-${itemIndex}`}>
-                    <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
-                    <div className={elementStyles.dropdownText}>Rename</div>
-                  </MenuItem>
-                  <MenuItem handler={() => {dropdownRef.current.blur(); setCanShowDeleteWarningModal(true)}} id={`folderDelete-${itemIndex}`}>
-                    <i className="bx bx-sm bx-trash text-danger"/>
-                    <div className={elementStyles.dropdownText}>Delete folder</div>
-                  </MenuItem>
+                <div className={`${elementStyles.dropdown} ${isOutOfViewport && elementStyles.right}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
+                  { isOutOfViewport !== undefined && 
+                    <>
+                      <MenuItem handler={(e) => {dropdownRef.current.blur(); setIsFolderModalOpen(true)}} id={`folderSettings-${itemIndex}`}>
+                        <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
+                        <div className={elementStyles.dropdownText}>Rename</div>
+                      </MenuItem>
+                      <MenuItem handler={() => {dropdownRef.current.blur(); setCanShowDeleteWarningModal(true)}} id={`folderDelete-${itemIndex}`}>
+                        <i className="bx bx-sm bx-trash text-danger"/>
+                        <div className={elementStyles.dropdownText}>Delete folder</div>
+                      </MenuItem>
+                    </>
+                  }
                 </div>
               }
               </div>
@@ -130,8 +171,7 @@ FolderCard.propTypes = {
   displayText: PropTypes.string.isRequired,
   settingsToggle: PropTypes.func.isRequired,
   itemIndex: PropTypes.number,
-  isHomepage: PropTypes.bool.isRequired,
-  isCollection: PropTypes.bool.isRequired,
+  pageType: PropTypes.string.isRequired,
   siteName: PropTypes.string.isRequired,
 };
 

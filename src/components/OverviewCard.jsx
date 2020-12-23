@@ -1,10 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { toast } from 'react-toastify';
 import DeleteWarningModal from './DeleteWarningModal'
+import GenericWarningModal from './GenericWarningModal'
 import LoadingButton from './LoadingButton'
+import Toast from './Toast';
 import {
+  DEFAULT_ERROR_TOAST_MSG,
   frontMatterParser,
   saveFileAndRetrieveUrl,
-  retrieveCollectionAndLinkFromPermalink,
+  checkIsOutOfViewport,
 } from '../utils';
 import {
   retrieveThirdNavOptions,
@@ -23,6 +27,7 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import {
   prettifyCollectionPageFileName,
   prettifyPageFileName,
+  prettifyDate,
   retrieveResourceFileMetadata,
 } from '../utils';
 
@@ -30,7 +35,7 @@ import {
 axios.defaults.withCredentials = true
 
 const OverviewCard = ({
-  date, category, settingsToggle, itemIndex, siteName, fileName, isResource, isHomepage, allCategories
+  date, category, settingsToggle, itemIndex, siteName, fileName, isResource, isHomepage, allCategories, resourceType
 }) => {
   const dropdownRef = useRef(null)
   const fileMoveDropdownRef = useRef(null)
@@ -40,14 +45,25 @@ const OverviewCard = ({
   const [canShowDropdown, setCanShowDropdown] = useState(false)
   const [canShowFileMoveDropdown, setCanShowFileMoveDropdown] = useState(false)
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
+  const [canShowGenericWarningModal, setCanShowGenericWarningModal] = useState(false)
+  const [chosenCategory, setChosenCategory] = useState()
+  const [isOutOfViewport, setIsOutOfViewport] = useState()
+  const [isNewCollection, setIsNewCollection] = useState(false)
   const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? isResource ? `/resources/${category}` : `/collections/${category}` : ''}`
 
   useEffect(() => {
     if (canShowFileMoveDropdown) fileMoveDropdownRef.current.focus()
-    if (canShowDropdown) dropdownRef.current.focus()
+    if (canShowDropdown) {
+      dropdownRef.current.focus()
+      if (isOutOfViewport === undefined) {
+        // We only want to run this once
+        const bounding = dropdownRef.current.getBoundingClientRect()
+        setIsOutOfViewport(checkIsOutOfViewport(bounding, ['right']))
+      }
+    }
   }, [canShowFileMoveDropdown, canShowDropdown])
 
-  const moveFile = async (chosenCategory) => {
+  const moveFile = async () => {
     try {
       // Retrieve data from existing page/resource
       const resp = await axios.get(`${baseApiUrl}/pages/${fileName}`);
@@ -56,39 +72,52 @@ const OverviewCard = ({
       const base64DecodedContent = Base64.decode(content);
       const { frontMatter, mdBody } = frontMatterParser(base64DecodedContent);
       const {
-        title, permalink, file_url: fileUrl, date, third_nav_title: thirdNavTitle,
+        title, permalink, file_url: fileUrl, third_nav_title: thirdNavTitle,
       } = frontMatter;
 
-      const { editableLink } = retrieveCollectionAndLinkFromPermalink(permalink)
-
       let collectionPageData
-      if (!isResource && chosenCategory) {
+      if (!isResource && !isNewCollection && chosenCategory) {
         // User selected an existing page collection
         const { collectionPages } = await retrieveThirdNavOptions(siteName, chosenCategory, true)
         collectionPageData = collectionPages
       }
       const fileInfo = {
         title,
-        permalink: editableLink,
+        permalink,
         fileUrl,
         date,
         mdBody,
         sha,
-        category: chosenCategory ? chosenCategory : newCategory,
+        category: chosenCategory,
         originalCategory: category,
         type: isResource ? 'resource' : 'page',
+        resourceType,
         originalThirdNavTitle: thirdNavTitle,
         fileName,
         isNewFile: false,
         siteName,
         collectionPageData,
-        isNewCollection: !chosenCategory,
+        isNewCollection,
       }
       await saveFileAndRetrieveUrl(fileInfo)
 
       // Refresh page
       window.location.reload();
     } catch (err) {
+      if (err?.response?.status === 409) {
+        // Error due to conflict in name
+        toast(
+          <Toast notificationType='error' text='This file name already exists in the category you are trying to move to. Please rename the file before proceeding.'/>, 
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+        );
+      } else {
+        toast(
+          <Toast notificationType='error' text={`There was a problem trying to move this file. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+        );
+      }
+      setIsNewCollection(false)
+      setCanShowGenericWarningModal(false)
       console.log(err);
     }
   }
@@ -107,6 +136,10 @@ const OverviewCard = ({
       // Refresh page
       window.location.reload();
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text="There was a problem trying to delete this file. Please try again or check your internet connection."/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }
@@ -181,14 +214,13 @@ const OverviewCard = ({
     setCanShowFileMoveDropdown(!canShowFileMoveDropdown)
     setCanShowDropdown(!canShowDropdown)
   }
-  
-  return (
+
+  const CardContent = (
     <>
-    <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`} to={generateLink()}>
       <div id={itemIndex} className={contentStyles.componentInfo}>
         <div className={contentStyles.componentCategory}>{category ? category : ''}</div>
         <h1 className={contentStyles.componentTitle}>{generateTitle()}</h1>
-        <p className={contentStyles.componentDate}>{date ? date : ''}</p>
+        <p className={contentStyles.componentDate}>{`${date ? prettifyDate(date) : ''}${resourceType ? `/${resourceType.toUpperCase()}` : ''}`}</p>
       </div>
       {settingsToggle &&
         <div className="position-relative mt-auto">
@@ -205,39 +237,54 @@ const OverviewCard = ({
             <i id={`settingsIcon-${itemIndex}`} className="bx bx-dots-vertical-rounded" />
           </button>
           {canShowDropdown &&
-            <div className={`position-absolute ${elementStyles.dropdown}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
-              <MenuItem handler={(e) => {dropdownRef.current.blur(); settingsToggle(e)}} id={`settings-${itemIndex}`}>
-                <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
-                <div id={`settingsText-${itemIndex}`} className={elementStyles.dropdownText}>Edit details</div>
-              </MenuItem>
-              <MenuItem handler={toggleDropdownModals}>
-                <i className="bx bx-sm bx-folder"/>
-                <div className={elementStyles.dropdownText}>Move to</div>
-                <i className="bx bx-sm bx-chevron-right ml-auto"/>
-              </MenuItem>
-              <MenuItem handler={() => {dropdownRef.current.blur(); setCanShowDeleteWarningModal(true)}}>
-                <i className="bx bx-sm bx-trash text-danger"/>
-                <div className={elementStyles.dropdownText}>Delete item</div>
-              </MenuItem>
+            <div className={`${elementStyles.dropdown} ${isOutOfViewport && elementStyles.right}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
+              { isOutOfViewport !== undefined &&
+                <>
+                  <MenuItem handler={(e) => {dropdownRef.current.blur(); settingsToggle(e)}} id={`settings-${itemIndex}`}>
+                    <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
+                    <div id={`settingsText-${itemIndex}`} className={elementStyles.dropdownText}>Edit details</div>
+                  </MenuItem>
+                  <MenuItem handler={toggleDropdownModals}>
+                    <i className="bx bx-sm bx-folder"/>
+                    <div className={elementStyles.dropdownText}>Move to</div>
+                    <i className="bx bx-sm bx-chevron-right ml-auto"/>
+                  </MenuItem>
+                  <MenuItem handler={() => {dropdownRef.current.blur(); setCanShowDeleteWarningModal(true)}}>
+                    <i className="bx bx-sm bx-trash text-danger"/>
+                    <div className={elementStyles.dropdownText}>Delete item</div>
+                  </MenuItem>
+                </>
+              }
           </div>}
           {canShowFileMoveDropdown &&
-            <div className={`position-absolute ${elementStyles.dropdown}`} ref={fileMoveDropdownRef} tabIndex={1} onBlur={handleBlur}>
+            <div className={`${elementStyles.dropdown} ${isOutOfViewport && elementStyles.right}`} ref={fileMoveDropdownRef} tabIndex={1} onBlur={handleBlur}>
               <MenuItem className={`d-flex`} handler={toggleDropdownModals}>
                 <i className="bx bx-sm bx-arrow-back"/>
                 <div className={elementStyles.dropdownText}>Move to</div>
               </MenuItem>
               <hr/>
               {category && !isResource &&
-                <MenuItem handler={() => moveFile('')}>
-                  <div className={elementStyles.dropdownText}>Unlinked Page</div>
-                </MenuItem>
+                <>
+                  <MenuItem handler={() => {
+                    setChosenCategory('')
+                    fileMoveDropdownRef.current.blur()
+                    setCanShowGenericWarningModal(true)
+                  }}>
+                    <div className={elementStyles.dropdownText}>Unlinked Page</div>
+                  </MenuItem>
+                  <hr/>
+                </>
               }
               {allCategories
                 ?
                 allCategories.map((categoryName) => {
                   if (categoryName !== category) {
                     return (
-                      <MenuItem key={categoryName} handler={() => moveFile(categoryName)}>
+                      <MenuItem key={categoryName} handler={() => {
+                        setChosenCategory(categoryName)
+                        fileMoveDropdownRef.current.blur()
+                        setCanShowGenericWarningModal(true)
+                      }}>
                         <div className={elementStyles.dropdownText}>{categoryName}</div>
                       </MenuItem>
                     )
@@ -252,7 +299,7 @@ const OverviewCard = ({
                 <i className="bx bx-sm bx-folder-plus" />
                 <input
                   type="text"
-                  placeholder={'Create new category'}
+                  placeholder={`Create new ${isResource ? 'category' : 'collection'}`}
                   value={newCategory}
                   id={'categoryName'}
                   className={errorMessage ? `${elementStyles.error}` : null}
@@ -264,7 +311,12 @@ const OverviewCard = ({
                   disabled={!!errorMessage || !newCategory}
                   disabledStyle={elementStyles.disabled}
                   className={(!!errorMessage || !newCategory) ? elementStyles.disabled : elementStyles.blue}
-                  callback={moveFile}
+                  callback={() => {
+                    setIsNewCollection(true)
+                    setChosenCategory(newCategory)
+                    fileMoveDropdownRef.current.blur()
+                    setCanShowGenericWarningModal(true)
+                  }}
                 />
               </div>
               { errorMessage &&
@@ -275,14 +327,43 @@ const OverviewCard = ({
           </div>}
         </div>
       }
-    </Link>
+    </>
+  )
+  
+  return (
+    <>
+    {
+      resourceType !== 'file'
+      ?
+        <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`} to={generateLink()}>
+          {CardContent}
+        </Link>
+      : <div className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`}>
+          {CardContent}
+        </div>
+    }
+    {
+      canShowGenericWarningModal &&
+      <GenericWarningModal
+        displayTitle="Warning"
+        displayText="Moving a page to a different collection might lead to user confusion. You may wish to change the permalink for this page afterwards."
+        onProceed={moveFile}
+        onCancel={() => {
+          setChosenCategory()
+          setIsNewCollection(false)
+          setCanShowGenericWarningModal(false)
+        }}
+        proceedText="Continue"
+        cancelText="Cancel"
+      />
+    }
     {
       canShowDeleteWarningModal
       && (
         <DeleteWarningModal
           onCancel={() => setCanShowDeleteWarningModal(false)}
           onDelete={deleteHandler}
-          type="resource"
+          type={isResource ? "resource" : "page"}
         />
       )
     }

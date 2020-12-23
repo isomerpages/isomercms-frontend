@@ -11,6 +11,8 @@ import MediaCard from '../components/media/MediaCard';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
 export default class Files extends Component {
+  _isMounted = false
+
   constructor(props) {
     super(props);
     this.state = {
@@ -21,6 +23,7 @@ export default class Files extends Component {
   }
 
   async componentDidMount() {
+    this._isMounted = true
     try {
       const { match } = this.props;
       const { siteName } = match.params;
@@ -28,10 +31,14 @@ export default class Files extends Component {
         withCredentials: true,
       });
       const files = resp.data.documents;
-      this.setState({ files });
+      if (this._isMounted) this.setState({ files });
     } catch (err) {
       console.log(err);
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   onFileSelect = async (event) => {
@@ -92,7 +99,7 @@ export default class Files extends Component {
             {/* Info segment */}
             <div className={contentStyles.segment}>
               <i className="bx bx-sm bx-info-circle text-dark" />
-              <span><strong className="ml-1">Note:</strong> Upload files here to link to them in pages and resources</span>
+              <span><strong className="ml-1">Note:</strong> Upload files here to link to them in pages and resources. The maximum file size allowed is 5MB.</span>
             </div>
             <div className={contentStyles.contentContainerBars}>
               {/* File cards */}

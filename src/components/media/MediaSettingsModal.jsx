@@ -7,6 +7,11 @@ import FormField from '../FormField';
 import DeleteWarningModal from '../DeleteWarningModal';
 import SaveDeleteButtons from '../SaveDeleteButtons';
 import { validateFileName } from '../../utils/validators';
+import { toast } from 'react-toastify';
+import Toast from '../Toast';
+import {
+  DEFAULT_ERROR_TOAST_MSG,
+} from '../../utils'
 
 export default class MediaSettingsModal extends Component {
   constructor(props) {
@@ -52,41 +57,62 @@ export default class MediaSettingsModal extends Component {
     } = this.props;
     const { newFileName, sha, content } = this.state;
 
-    if (isPendingUpload) {
-      const params = {
-        content,
-      };
+    try {
+      if (isPendingUpload) {
+        const params = {
+          content,
+        };
 
-      if (type === 'image') {
-        params.imageName = newFileName;
+        if (type === 'image') {
+          params.imageName = newFileName;
+        } else {
+          params.documentName = newFileName;
+        }
+
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}`, params, {
+          withCredentials: true,
+        });
       } else {
-        params.documentName = newFileName;
-      }
+        const params = {
+          sha,
+          content,
+        };
 
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}`, params, {
-        withCredentials: true,
-      });
-    } else {
-      const params = {
-        sha,
-        content,
-      };
-
-      // rename the image if the request comes from an already uploaded image
-      if (newFileName === fileName) {
-        return;
+        // rename the image if the request comes from an already uploaded image
+        if (newFileName === fileName) {
+          return;
+        }
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${fileName}/rename/${newFileName}`, params, {
+          withCredentials: true,
+        });
       }
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${fileName}/rename/${newFileName}`, params, {
-        withCredentials: true,
-      });
+      onSave()
+    } catch (err) {
+      if (err?.response?.status === 409) {
+        // Error due to conflict in name
+        toast(
+          <Toast notificationType='error' text={`Another ${type === 'image' ? 'image' : 'file'} with the same name exists. Please choose a different name.`}/>, 
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+        );
+      } else if (err?.response?.status === 413 || err?.response === undefined) {
+        // Error due to file size too large - we receive 413 if nginx accepts the payload but it is blocked by our express settings, and undefined if it is blocked by nginx
+        toast(
+          <Toast notificationType='error' text={`Unable to upload as the ${type === 'image' ? 'image' : 'file'} size exceeds 5MB. Please reduce your ${type === 'image' ? 'image' : 'file'} size and try again.`}/>, 
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+        );
+      } else {
+        toast(
+          <Toast notificationType='error' text={`There was a problem trying to save this ${type === 'image' ? 'image' : 'file'}. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+        );
+      }
+      console.log(err);
     }
-
-    onSave()
   }
 
   deleteFile = async () => {
+    const { siteName, media: { fileName }, type } = this.props;
     try {
-      const { siteName, media: { fileName }, type } = this.props;
       const { sha } = this.state;
       const params = {
         sha,
@@ -99,6 +125,10 @@ export default class MediaSettingsModal extends Component {
 
       window.location.reload();
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text={`There was a problem trying to delete this ${type === 'image' ? 'image' : 'file'}. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }

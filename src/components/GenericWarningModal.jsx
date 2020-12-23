@@ -4,7 +4,7 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import LoadingButton from './LoadingButton';
 
 
-const GenericWarningModal = ({ displayTitle, displayText, onProceed, onCancel }) => (
+const GenericWarningModal = ({ displayTitle, displayText, onProceed, onCancel, proceedText, cancelText }) => (
   <div className={elementStyles.overlay}>
     <div className={elementStyles['modal-warning']}>
       <div className={elementStyles.modalHeader}>
@@ -16,16 +16,16 @@ const GenericWarningModal = ({ displayTitle, displayText, onProceed, onCancel })
         <p>{displayText}</p>
         <div className={elementStyles.modalButtons}>
             <LoadingButton
-                label="Yes"
+                label={cancelText}
                 disabledStyle={elementStyles.disabled}
-                className={`ml-auto ${elementStyles.blue}`}
-                callback={onProceed}
+                className={`ml-auto ${elementStyles.warning}`}
+                callback={onCancel}
             />
             <LoadingButton
-                label="No"
+                label={proceedText}
                 disabledStyle={elementStyles.disabled}
-                className={elementStyles.warning}
-                callback={onCancel}
+                className={`${elementStyles.blue}`}
+                callback={onProceed}
             />
         </div>
       </form>
@@ -38,6 +38,8 @@ GenericWarningModal.propTypes = {
   displayText: PropTypes.string.isRequired,
   onProceed: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
+  proceedText: PropTypes.string.isRequired,
+  cancelText: PropTypes.string.isRequired,
 };
 
 export default GenericWarningModal;

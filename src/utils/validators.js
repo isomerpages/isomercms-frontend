@@ -1,17 +1,29 @@
 
+const _ = require('lodash');
+
 // Common regexes and constants
 // ==============
-const PERMALINK_REGEX = '^(([a-z0-9]+([-][a-z0-9]+)*)+)$';
-const SOCIAL_MEDIA_REGEX_PART_1 = '^(https://)?(www.)?(';
-const SOCIAL_MEDIA_REGEX_PART_2 = '.com/)([a-zA-Z0-9_-]+(/)?)+$';
-const permalinkRegexTest = RegExp(PERMALINK_REGEX);
+const PERMALINK_REGEX = '^((\/([a-z0-9]+-)*[a-z0-9]+)+)\/?$';
+const URL_REGEX_PART_1 = '^(https://)?(www.)?(';
+const URL_REGEX_PART_2 = '.com/)([a-zA-Z0-9_-]+(/)?)+$';
+const PHONE_REGEX = '^\\+65(6|8|9)[0-9]{7}$'
+const EMAIL_REGEX = '^(([^<>()\\[\\]\\.,;:\\s@\\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\\"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z-0-9]+\\.)+[a-zA-Z]{2,}))$'
 const DATE_REGEX = '^([0-9]{4}-[0-9]{2}-[0-9]{2})$';
+const ALPHABETS_ONLY_REGEX = '^[a-zA-Z" "\\._-]+$'
+const ALPHANUMERICS_ONLY_REGEX = '^[a-zA-Z0-9" "\\._-]+$'
+
+const permalinkRegexTest = RegExp(PERMALINK_REGEX);
+const phoneRegexTest = RegExp(PHONE_REGEX);
+const emailRegexTest = RegExp(EMAIL_REGEX);
 const dateRegexTest = RegExp(DATE_REGEX);
+const alphabetsRegexTest = RegExp(ALPHABETS_ONLY_REGEX);
+const alphanumericRegexTest = RegExp(ALPHANUMERICS_ONLY_REGEX);
 const fileNameRegexTest = /^[a-zA-Z0-9" "_-]+$/;
 const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/;
 const RESOURCE_CATEGORY_REGEX = '^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$';
-const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX);
 const resourceRoomNameRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
+const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX);
+
 const RADIX_PARSE_INT = 10;
 
 // Homepage Editor
@@ -39,7 +51,7 @@ const INFOBAR_SUBTITLE_MAX_LENGTH = 30;
 const INFOBAR_BUTTON_TEXT_MIN_LENGTH = 0;
 const INFOBAR_BUTTON_TEXT_MAX_LENGTH = 30;
 const INFOBAR_DESCRIPTION_MIN_LENGTH = 0;
-const INFOBAR_DESCRIPTION_MAX_LENGTH = 30;
+const INFOBAR_DESCRIPTION_MAX_LENGTH = 160;
 // Infopic
 const INFOPIC_TITLE_MIN_LENGTH = 0;
 const INFOPIC_TITLE_MAX_LENGTH = 30;
@@ -48,7 +60,7 @@ const INFOPIC_SUBTITLE_MAX_LENGTH = 30;
 const INFOPIC_BUTTON_TEXT_MIN_LENGTH = 0;
 const INFOPIC_BUTTON_TEXT_MAX_LENGTH = 30;
 const INFOPIC_DESCRIPTION_MIN_LENGTH = 0;
-const INFOPIC_DESCRIPTION_MAX_LENGTH = 30;
+const INFOPIC_DESCRIPTION_MAX_LENGTH = 160;
 const INFOPIC_ALT_TEXT_MIN_LENGTH = 0;
 const INFOPIC_ALT_TEXT_MAX_LENGTH = 30;
 // Hero
@@ -60,6 +72,24 @@ const HERO_SUBTITLE_MAX_LENGTH = 160;
 // const HERO_BUTTON_TEXT_MAX_LENGTH = 30;
 const HERO_DROPDOWN_MIN_LENGTH = 0;
 const HERO_DROPDOWN_MAX_LENGTH = 30;
+
+// Contact Us Editor
+// ===============
+// Contacts
+const CONTACT_TITLE_MIN_LENGTH = 1;
+const CONTACT_TITLE_MAX_LENGTH = 30;
+const CONTACT_DESCRIPTION_MAX_LENGTH = 400;
+
+// Locations
+const LOCATION_TITLE_MIN_LENGTH = 1;
+const LOCATION_TITLE_MAX_LENGTH = 30;
+const LOCATION_ADDRESS_MIN_LENGTH = 2;
+const LOCATION_ADDRESS_MAX_LENGTH = 30;
+const LOCATION_OPERATING_DAYS_MIN_LENGTH = 2;
+const LOCATION_OPERATING_DAYS_MAX_LENGTH = 30;
+const LOCATION_OPERATING_HOURS_MIN_LENGTH = 2;
+const LOCATION_OPERATING_HOURS_MAX_LENGTH = 30;
+const LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH = 100;
 
 // Page Settings Modal
 // ===================
@@ -429,6 +459,123 @@ const validateSections = (sectionError, sectionType, field, value) => {
   return newSectionError;
 };
 
+// Contact Us Editor
+// ===============
+// Contacts
+
+const validateContact = (contactType, value) => {
+  let errorMessage = '';
+  switch (contactType) {
+    case 'title':
+      if (value.length < CONTACT_TITLE_MIN_LENGTH) {
+        errorMessage = `Title cannot be empty.`;
+      };
+      if (value.length > CONTACT_TITLE_MAX_LENGTH) {
+        errorMessage = `Title should be shorter than ${CONTACT_TITLE_MAX_LENGTH} characters.`;
+      };
+      break;
+    case 'phone':
+      const strippedValue = value.replace(/\s/g, '')
+      if ( strippedValue.includes('_')) {
+        errorMessage = `Field not completed`
+      }
+      if (_.startsWith(strippedValue, '+65')) {
+        if (! strippedValue.includes('_') && !phoneRegexTest.test(strippedValue) ) {
+          errorMessage = `Local numbers should start with 6, 8 or 9.`
+        }
+      }
+      break;
+    case 'email':
+      if ( value && !emailRegexTest.test(value) ) {
+        errorMessage = `Emails should follow the format abc@def.gh and should not contain special characters such as: ?!#\\$% ` //TODO
+      }
+      break;
+    case 'other':
+      if ( value.length > CONTACT_DESCRIPTION_MAX_LENGTH ) {
+        errorMessage = `Description should be shorter than ${CONTACT_DESCRIPTION_MAX_LENGTH} characters.`;
+      }
+      break;
+    default:
+      break;
+  }
+  return errorMessage
+}
+
+// Locations
+
+const validateLocation = (locationType, value) => {
+  let errorMessage = '';
+  switch (locationType) {
+    case 'title':
+      // Title is too short
+      if (value.length < LOCATION_TITLE_MIN_LENGTH) {
+        errorMessage = `Title cannot be empty.`;
+      };
+      // Title is too long
+      if (value.length > LOCATION_TITLE_MAX_LENGTH) {
+        errorMessage = `Title should be shorter than ${LOCATION_TITLE_MAX_LENGTH} characters.`;
+      };
+      break;
+    case 'maps_link': {
+      break;
+    }
+    case 'address':
+      let errors = [];
+      // check if in-between fields are empty e.g. field 3 is filled but field 2 is empty
+      if ( (value[2].length && !(value[0].length && value[1].length)) || (value[1].length && !value[0].length) ) {
+        errors.push('Please do not leave in-between fields empty.');
+      } else {
+        value.forEach(field => {
+          let error = ''
+          // if else check necessarily because we want to push an empty string if there's no error
+          if (field && field.length < LOCATION_ADDRESS_MIN_LENGTH) {
+            error = `Field should be longer than ${LOCATION_ADDRESS_MIN_LENGTH} characters.`;
+          } 
+          if (field && field.length > LOCATION_ADDRESS_MAX_LENGTH) {
+            error = `Field should be shorter than ${LOCATION_ADDRESS_MAX_LENGTH} characters.`;
+          }
+          errors.push(error)
+        })
+      } 
+      errorMessage = errors;
+      break;
+    // fields below are operating hours fields
+    case 'days':
+      if (value && !alphabetsRegexTest.test(value)) {
+        errorMessage += `Field should only contain alphabets. `
+      }
+      if (value && value.length < LOCATION_OPERATING_DAYS_MIN_LENGTH) {
+        errorMessage += `Field should be longer than ${LOCATION_OPERATING_DAYS_MIN_LENGTH} characters. `
+      }
+      if (value && value.length > LOCATION_OPERATING_DAYS_MAX_LENGTH) {
+        errorMessage += `Field should be shorter than ${LOCATION_OPERATING_DAYS_MAX_LENGTH} characters. `
+      }
+      break;
+    case 'time': {
+      if (value && !alphanumericRegexTest.test(value)) {
+        errorMessage += `Field should only contain alphanumeric characters. `
+      }
+      if (value && value.length < LOCATION_OPERATING_HOURS_MIN_LENGTH) {
+        errorMessage += `Field should be longer than ${LOCATION_OPERATING_HOURS_MIN_LENGTH} characters.`
+      }
+      if (value && value.length > LOCATION_OPERATING_HOURS_MAX_LENGTH) {
+        errorMessage += `Field should be shorter than ${LOCATION_OPERATING_HOURS_MAX_LENGTH} characters.`
+      }
+      break;
+    }
+    case 'description': {
+      if (value.length > LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH) {
+        errorMessage =  `Description should be shorter than ${LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH} characters.`;
+      }
+      break;
+    }
+    default:
+      break;
+  }
+  return errorMessage
+}
+
+
 // Page Settings Modal
 // ===================
 const validatePageSettings = (id, value) => {
@@ -447,9 +594,7 @@ const validatePageSettings = (id, value) => {
 
       // Permalink fails regex
       if (!permalinkRegexTest.test(value)) {
-        errorMessage = `The permalink should contain 
-          lowercase words separated by hyphens only.
-          `;
+        errorMessage = `The url should start with a slash, and contain alphanumeric characters separated by hyphens and slashes only.`;
       }
       break;
     }
@@ -552,9 +697,7 @@ const validateResourceSettings = (id, value) => {
       }
       // Permalink fails regex
       if (!permalinkRegexTest.test(value)) {
-        errorMessage = `The permalink should contain 
-          lowercase words separated by hyphens only.
-          `;
+        errorMessage = `The url should start with a slash, and contain alphanumeric characters separated by hyphens and slashes only.`;
       }
       break;
     }
@@ -615,7 +758,7 @@ const validateCategoryName = (value, componentName) => {
 // ===================
 const validateSocialMedia = (value, id) => {
   let errorMessage = '';
-  const socialMediaRegexTest = RegExp(`${SOCIAL_MEDIA_REGEX_PART_1}${id}${SOCIAL_MEDIA_REGEX_PART_2}`);
+  const socialMediaRegexTest = RegExp(`${URL_REGEX_PART_1}${id}${URL_REGEX_PART_2}`);
 
   // conduct regex tests for each social media platform
   if (!socialMediaRegexTest.test(value)) {
@@ -645,6 +788,8 @@ const validateFileName = (value) => {
 };
 
 export {
+  validateContact,
+  validateLocation,
   validateHighlights,
   validateDropdownElems,
   validateSections,

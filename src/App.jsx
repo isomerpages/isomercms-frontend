@@ -6,6 +6,9 @@ import {
   Redirect,
 } from 'react-router-dom';
 import axios from 'axios';
+import * as Sentry from "@sentry/react";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Layouts
 import AuthCallback from './layouts/AuthCallback'
@@ -19,11 +22,20 @@ import EditImage from './layouts/EditImage';
 import Files from './layouts/Files';
 import EditFile from './layouts/EditFile';
 import EditHomepage from './layouts/EditHomepage';
+import EditContactUs from './layouts/EditContactUs';
 import Resources from './layouts/Resources';
 import Menus from './layouts/Menus';
 import EditNav from './layouts/EditNav';
 import Settings from './layouts/Settings';
+import NotFoundPage from './components/NotFoundPage'
 import ProtectedRoute from './components/ProtectedRoute'
+import FallbackComponent from './components/FallbackComponent'
+
+// Styles
+import elementStyles from './styles/isomer-cms/Elements.module.scss';
+
+// Utils
+import { defaultSiteColors } from './utils/siteColorUtils';
 
 // Import contexts
 const { LoginContext } = require('./contexts/LoginContext')
@@ -35,6 +47,18 @@ axios.defaults.withCredentials = true
 const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 const LOCAL_STORAGE_AUTH_STATE = 'isomercms_auth'
 
+const ToastCloseButton = ({ closeToast }) => (
+  <span style={{
+    display: "inline-flex",
+    alignItems: "center"
+  }}>
+    <i
+      className="bx bx-x bx-sm"
+      onClick={closeToast}
+    />
+  </span>
+);
+
 function App() {
   // Keep track of whether user is logged in
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -43,6 +67,7 @@ function App() {
     return false
   })
   const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false)
+  const [siteColors, setSiteColors] = useState({})
 
   axios.interceptors.response.use(
     function (response) {
@@ -92,11 +117,16 @@ function App() {
   }, [isLoggedIn])
 
   const ProtectedRouteWithProps = (props) => {
-    return <ProtectedRoute {...props} isLoggedIn={isLoggedIn} />
+    return (
+      <Sentry.ErrorBoundary fallback={FallbackComponent}>
+        <ProtectedRoute {...props} isLoggedIn={isLoggedIn} siteColors={siteColors} setSiteColors={setSiteColors} />
+      </Sentry.ErrorBoundary>
+    )
   }
 
   return (
     <Router basename={process.env.PUBLIC_URL}>
+        <ToastContainer hideProgressBar={true} position='top-center' closeButton={ToastCloseButton} className={elementStyles.toastContainer}/>
         <div>
           {/*
             A <Switch> looks through all its children <Route>
@@ -118,6 +148,7 @@ function App() {
                   <ProtectedRouteWithProps path="/sites/:siteName/pages/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={false} />
                   <ProtectedRouteWithProps path="/sites/:siteName/workspace" component={Workspace} />
                   <ProtectedRouteWithProps path="/sites/:siteName/homepage" component={EditHomepage} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/contact-us" component={EditContactUs} />
                   <ProtectedRouteWithProps path="/sites/:siteName/resources/:resourceName/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={true} />
                   <ProtectedRouteWithProps path="/sites/:siteName/resources/:collectionName" component={CategoryPages} isResource={true}/>
                   <ProtectedRouteWithProps path="/sites/:siteName/resources" component={Resources} />
@@ -125,6 +156,7 @@ function App() {
                   <ProtectedRouteWithProps path="/sites/:siteName/menus" component={Menus} />
                   <ProtectedRouteWithProps path="/sites/:siteName/settings" component={Settings} />
                   <ProtectedRouteWithProps exact path="/sites" component={Sites} />
+                  <ProtectedRouteWithProps path="/" component={NotFoundPage}/>
                   <Route>
                     <Redirect to={ isLoggedIn ? '/sites' : '/' } />
                   </Route>

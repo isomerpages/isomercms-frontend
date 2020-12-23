@@ -153,21 +153,21 @@ const TemplateHeroSection = ({
 export default TemplateHeroSection;
 
 HeroButton.propTypes = {
-  button: PropTypes.string.isRequired,
+  button: PropTypes.string,
 };
 
 HeroDropdownElem.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
 };
 
 HeroDropdown.propTypes = {
-  title: PropTypes.string.isRequired,
-  isActive: PropTypes.bool.isRequired,
-  toggleDropdown: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  isActive: PropTypes.bool,
+  toggleDropdown: PropTypes.func,
   options:
     PropTypes.arrayOf(
       PropTypes.shape({
-        title: PropTypes.string.isRequired,
+        title: PropTypes.string,
       }),
     ).isRequired,
 };
@@ -193,16 +193,16 @@ KeyHighlights.propTypes = {
 
 TemplateHeroSection.propTypes = {
   hero: PropTypes.shape({
-    background: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
+    background: PropTypes.string,
+    title: PropTypes.string,
     subtitle: PropTypes.string,
     button: PropTypes.string,
     dropdown: PropTypes.shape({
-      title: PropTypes.string.isRequired,
+      title: PropTypes.string,
       options:
         PropTypes.arrayOf(
           PropTypes.shape({
-            title: PropTypes.string.isRequired,
+            title: PropTypes.string,
           }),
         ).isRequired,
     }),

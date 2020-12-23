@@ -108,11 +108,11 @@ const EditorInfopicSection = ({
 export default EditorInfopicSection;
 
 EditorInfopicSection.propTypes = {
-  title: PropTypes.string.isRequired,
-  subtitle: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
+  description: PropTypes.string,
   sectionIndex: PropTypes.number.isRequired,
-  button: PropTypes.string.isRequired,
+  button: PropTypes.string,
   url: PropTypes.string,
   imageUrl: PropTypes.string,
   imageAlt: PropTypes.string,
@@ -121,11 +121,11 @@ EditorInfopicSection.propTypes = {
   shouldDisplay: PropTypes.bool.isRequired,
   displayHandler: PropTypes.func.isRequired,
   errors: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    subtitle: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    button: PropTypes.string.isRequired,
-    url: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    subtitle: PropTypes.string,
+    description: PropTypes.string,
+    button: PropTypes.string,
+    url: PropTypes.string,
     imageUrl: PropTypes.string,
     imageAlt: PropTypes.string,
   }).isRequired,

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import { Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import axios from 'axios';
 import Bluebird from 'bluebird';
 import PropTypes from 'prop-types';
@@ -10,14 +10,19 @@ import SimplePage from '../templates/SimplePage';
 import LeftNavPage from '../templates/LeftNavPage';
 import { checkCSP } from '../utils/cspUtils';
 import Policy from 'csp-parse';
+import { toast } from 'react-toastify';
+import Toast from '../components/Toast';
 
+// Isomer components
 import {
+  DEFAULT_ERROR_TOAST_MSG,
   frontMatterParser,
   concatFrontMatterMdBody,
   prependImageSrc,
   prettifyPageFileName,
   prettifyCollectionPageFileName,
   retrieveResourceFileMetadata,
+  prettifyDate,
 } from '../utils';
 import {
   boldButton,
@@ -32,6 +37,10 @@ import {
   tableButton,
   guideButton,
 } from '../utils/markdownToolbar';
+import {
+  createPageStyleSheet,
+  getSiteColors,
+} from '../utils/siteColorUtils';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -58,7 +67,11 @@ const getApiEndpoint = (isResourcePage, isCollectionPage, { collectionName, file
 
 const extractMetadataFromFilename = (isResourcePage, isCollectionPage, fileName) => {
   if (isResourcePage) {
-    return retrieveResourceFileMetadata(fileName)
+    const resourceMetadata = retrieveResourceFileMetadata(fileName)
+    return {
+      ...resourceMetadata,
+      date: prettifyDate(resourceMetadata.date)
+    }
   }
   if (isCollectionPage) {
     return { title: prettifyCollectionPageFileName(fileName), date: '' }
@@ -88,6 +101,8 @@ const getBackButtonInfo = (resourceCategory, collectionName, siteName) => {
 }
 
 export default class EditPage extends Component {
+  _isMounted = true 
+
   constructor(props) {
     super(props);
     const { match, isResourcePage, isCollectionPage } = this.props;
@@ -108,21 +123,73 @@ export default class EditPage extends Component {
       isFileStagedForUpload: false,
       stagedFileDetails: {},
       isLoadingPageContent: true,
+      shouldRedirectToNotFound: false,
     };
     this.mdeRef = React.createRef();
     this.apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName })
   }
 
   async componentDidMount() {
+    const { match, siteColors, setSiteColors } = this.props;
+    const { siteName } = match.params;
+
+    this._isMounted = true
+
+    // Set page colors
+    try {
+      let primaryColor
+      let secondaryColor
+
+      if (!siteColors[siteName]) {
+        const {
+          primaryColor: sitePrimaryColor,
+          secondaryColor: siteSecondaryColor,
+        } = await getSiteColors(siteName)
+
+        primaryColor = sitePrimaryColor
+        secondaryColor = siteSecondaryColor
+
+        if (this._isMounted) setSiteColors((prevState) => ({
+          ...prevState,
+          [siteName]: {
+            primaryColor,
+            secondaryColor,
+          }
+        }))
+      } else {
+        primaryColor = siteColors[siteName].primaryColor
+        secondaryColor = siteColors[siteName].secondaryColor
+      }
+
+      createPageStyleSheet(siteName, primaryColor, secondaryColor)
+
+    } catch (err) {
+      console.log(err);
+    }
+
+    let content, sha
     try {
       const resp = await axios.get(this.apiEndpoint);
-      const { content, sha } = resp.data;
-
+      const { content:pageContent, sha:pageSha } = resp.data;
+      content = pageContent
+      sha = pageSha
+    } catch (error) {
+      if (error?.response?.status === 404) {
+        this.setState({ shouldRedirectToNotFound: true })
+      } else {
+        toast(
+          <Toast notificationType='error' text={`There was a problem trying to load your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+        );
+      }
+      console.log(error)
+    }
+    
+    if (!content) return
+    
+    try {
       // split the markdown into front matter and content
       const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
-     
-      const { match } = this.props;
-      const { siteName } = match.params;
       
       // retrieve CSP
       const cspResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`);
@@ -147,7 +214,7 @@ export default class EditPage extends Component {
         });
       }
 
-      this.setState({
+      if (this._isMounted) this.setState({
         csp,
         sha,
         originalMdValue: mdBody.trim(),
@@ -157,8 +224,16 @@ export default class EditPage extends Component {
         isLoadingPageContent: false,
       });
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text={`There was a problem trying to load your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   updatePage = async () => {
@@ -181,6 +256,10 @@ export default class EditPage extends Component {
 
       window.location.reload();
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text={`There was a problem saving your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }
@@ -195,6 +274,10 @@ export default class EditPage extends Component {
       });
       history.goBack();
     } catch (err) {
+      toast(
+        <Toast notificationType='error' text={`There was a problem deleting your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
       console.log(err);
     }
   }
@@ -282,9 +365,9 @@ export default class EditPage extends Component {
   }
 
   render() {
-    const { match, isCollectionPage, isResourcePage } = this.props;
+    const { match, isCollectionPage, isResourcePage, primaryColors, secondaryColors } = this.props;
     const { siteName, fileName, collectionName, resourceName } = match.params;
-    const { title, date } = extractMetadataFromFilename(isResourcePage, isCollectionPage, fileName)
+    const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, isCollectionPage, fileName)
     const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, collectionName, siteName)
     const {
       csp,
@@ -347,55 +430,65 @@ export default class EditPage extends Component {
             />
             )
           }
-          <div className={`${editorStyles.pageEditorSidebar} ${isLoadingPageContent ? editorStyles.pageEditorSidebarLoading : null}`} >
-            {
-              isLoadingPageContent
-              ? (
-                <div className={`spinner-border text-primary ${editorStyles.sidebarLoadingIcon}`} />
-              ) : ''
-            }
-            <SimpleMDE
-              id="simplemde-editor"
-              className="h-100"
-              onChange={this.onEditorChange}
-              ref={this.mdeRef}
-              value={editorValue}
-              options={{
-                toolbar: [
-                  headingButton,
-                  boldButton,
-                  italicButton,
-                  strikethroughButton,
-                  '|',
-                  codeButton,
-                  quoteButton,
-                  unorderedListButton,
-                  orderedListButton,
-                  '|',
-                  {
-                    name: 'image',
-                    action: async () => {
-                      this.setState({ isSelectingImage: true });
+          {
+            <div className={`${editorStyles.pageEditorSidebar} ${isLoadingPageContent || resourceType === 'file' ? editorStyles.pageEditorSidebarLoading : null}`} >
+              {
+                resourceType === 'file'
+                ?
+                <>
+                  <div className={`text-center ${editorStyles.pageEditorSidebarDisabled}`}>
+                    Editing is disabled for downloadable files.
+                  </div>
+                </>
+                :
+                isLoadingPageContent
+                ? (
+                  <div className={`spinner-border text-primary ${editorStyles.sidebarLoadingIcon}`} />
+                ) : ''
+              }
+              <SimpleMDE
+                id="simplemde-editor"
+                className="h-100"
+                onChange={this.onEditorChange}
+                ref={this.mdeRef}
+                value={editorValue}
+                options={{
+                  toolbar: [
+                    headingButton,
+                    boldButton,
+                    italicButton,
+                    strikethroughButton,
+                    '|',
+                    codeButton,
+                    quoteButton,
+                    unorderedListButton,
+                    orderedListButton,
+                    '|',
+                    {
+                      name: 'image',
+                      action: async () => {
+                        this.setState({ isSelectingImage: true });
+                      },
+                      className: 'fa fa-picture-o',
+                      title: 'Insert Image',
+                      default: true,
                     },
-                    className: 'fa fa-picture-o',
-                    title: 'Insert Image',
-                    default: true,
-                  },
-                  {
-                    name: 'link',
-                    action: async () => { 
-                      this.onHyperlinkOpen() 
+                    {
+                      name: 'link',
+                      action: async () => { 
+                        this.onHyperlinkOpen() 
+                      },
+                      className: 'fa fa-link',
+                      title: 'Insert Link',
+                      default: true,
                     },
-                    className: 'fa fa-link',
-                    title: 'Insert Link',
-                    default: true,
-                  },
-                  tableButton,
-                  guideButton,
-                ],
-              }}
-            />
-          </div>
+                    tableButton,
+                    guideButton,
+                  ],
+                }}
+              />
+            </div>
+          }
           <div className={editorStyles.pageEditorMain}>
             {
               isCollectionPage && leftNavPages
@@ -435,6 +528,15 @@ export default class EditPage extends Component {
             type={isResourcePage ? 'resource' : 'page'}
           />
           )
+        }
+        {
+          this.state.shouldRedirectToNotFound &&
+          <Redirect
+            to={{
+                pathname: '/not-found',
+                state: {siteName: siteName}
+            }}
+          />
         }
       </>
     );

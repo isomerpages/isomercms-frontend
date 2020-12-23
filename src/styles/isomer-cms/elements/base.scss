@@ -50,8 +50,10 @@ i {
 
 .error {
   color: $error-red;
+  font-size: 14px;
 }
 
-span {
+.info {
+  color: $isomer-blue;
   font-size: 14px;
 }

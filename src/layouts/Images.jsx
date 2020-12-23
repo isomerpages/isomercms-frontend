@@ -11,6 +11,8 @@ import MediaCard from '../components/media/MediaCard';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
 export default class Images extends Component {
+  _isMounted = false
+
   constructor(props) {
     super(props);
     this.state = {
@@ -21,6 +23,7 @@ export default class Images extends Component {
   }
 
   async componentDidMount() {
+    this._isMounted = true
     try {
       const { match } = this.props;
       const { siteName } = match.params;
@@ -28,10 +31,14 @@ export default class Images extends Component {
         withCredentials: true,
       });
       const { images } = resp.data;
-      this.setState({ images });
+      if (this._isMounted) this.setState({ images });
     } catch (err) {
       console.log(err);
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   uploadImage = async (imageName, imageContent) => {
@@ -83,7 +90,7 @@ export default class Images extends Component {
             {/* Info segment */}
             <div className={contentStyles.segment}>
               <i className="bx bx-sm bx-info-circle text-dark" />
-              <span><strong className="ml-1">Note:</strong> Upload images here to link to them in pages and resources</span>
+              <span><strong className="ml-1">Note:</strong> Upload images here to link to them in pages and resources. The maximum image size allowed is 5MB.</span>
             </div>
             <div className={contentStyles.contentContainerBars}>
               <div className={contentStyles.boxesContainer}>
@@ -105,7 +112,7 @@ export default class Images extends Component {
                     hidden
                   />
                   {/* Images */}
-                  {images.map((image) => (
+                  {images.length > 0 && images.map((image) => (
                     <MediaCard
                       type="image"
                       media={image}

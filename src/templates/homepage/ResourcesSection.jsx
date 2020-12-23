@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import contentStyles from '../../styles/isomer-cms/pages/Content.module.scss';
+
 
 /* eslint
   react/no-array-index-key: 0
@@ -50,12 +52,16 @@ const TemplateResourceSection = ({
         </div>
       </div>
       <div className="watermark-container">
-        <div className="row padding--bottom">
+        <div className="row padding--bottom resource-sample-mask">
           <ResourcePost />
           <ResourcePost />
           <ResourcePost />
         </div>
-        <p className="watermark-text">Placeholder Media</p>
+        <div className="d-flex flex-column watermark-text">
+          <span className="watermark-text-title">PLACEHOLDER MEDIA</span>
+          <span className="watermark-text-content">Your 3 latest resources will be displayed here.</span>
+          <span className="watermark-text-content">You may change the resources displayed by changing the date of the resource in the resources section.</span>
+        </div>
       </div>
       <div className="row has-text-centered margin--top padding--bottom--lg">
         <div className="col is-offset-one-third is-one-third">

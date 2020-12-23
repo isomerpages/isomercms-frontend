@@ -115,6 +115,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                         }
                         collectionPageData={collectionPageData}
                         loadThirdNavOptions={loadThirdNavOptions}
+                        setIsComponentSettingsActive={setIsComponentSettingsActive}
                     />
                 )
             }
@@ -148,6 +149,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                                     siteName={siteName}
                                     fileName={page.fileName}
                                     title={page.title}
+                                    resourceType={page.type}
                                     date={page.date}
                                     isResource={isResource}
                                     allCategories={allCategories}

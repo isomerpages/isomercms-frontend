@@ -19,6 +19,15 @@
   position: relative;
 }
 
+.contactUsEditorMain{
+  width: calc(100vw - #{$homepage-editor-sidebar-width});
+  height: calc(100vh - #{$header-height} - #{$footer-height});
+  box-sizing: border-box;
+  overflow-y: scroll;
+  position: relative;
+  background-color: white;
+}
+
 .pageEditorSidebar{
   width: $page-editor-sidebar-width;
   background: $base-background-light;
@@ -44,6 +53,17 @@
   .hideSidebarLoadingIcon{
     visibility: hidden;
   }
+}
+
+.pageEditorSidebarDisabled{
+  width: 100%;
+  top: 50%;
+  pointer-events: none;
+  text-align: center;
+  position: absolute;
+  z-index: 2;
+  margin: -30px;
+  margin-bottom: -100px;
 }
 
 .pageEditorMain{

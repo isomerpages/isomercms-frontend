@@ -31,27 +31,32 @@ const Resources = ({ match, location }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [resourceRoomName, setResourceRoomName] = useState()
   const [newResourceRoomName, setNewResourceRoomName] = useState('')
-  const [resourceFolderNames, setResourceFolderNames] = useState()
+  const [resourceFolderNames, setResourceFolderNames] = useState([])
   const [resourceRoomNameError, setResourceRoomNameError] = useState('')
 
   useEffect(() => {
-    try {
-      const fetchData = async () => {
+    let _isMounted = true
+    const fetchData = async () => {
+      try {
         // Get the resource categories in the resource room
         const resourcesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/resources`);
         const { resourceRoomName, resources: resourceCategories } = resourcesResp.data;
-
         if (resourceRoomName) {
           const uniqueResourceFolderNames = resourceCategories ? _.uniq(resourceCategories.map((file) => file.dirName)) : []
-          setResourceFolderNames(uniqueResourceFolderNames)
-          setResourceRoomName(resourceRoomName)
+          if (_isMounted) {
+            setResourceFolderNames(uniqueResourceFolderNames)
+            setResourceRoomName(resourceRoomName)
+          }
         }
+        if (_isMounted) setIsLoading(false)
+      } catch (err) {
         setIsLoading(false)
+        console.log(err)
       }
-      fetchData()
-    } catch (err) {
-      console.log(err);
     }
+
+    fetchData()
+    return () => { _isMounted = false }
   }, [])
 
   const resourceRoomNameHandler = (event) => {
@@ -111,8 +116,7 @@ const Resources = ({ match, location }) => {
                                 displayText={prettifyResourceCategory(resourceCategory)}
                                 settingsToggle={() => {}}
                                 key={resourceCategory}
-                                isHomepage={false}
-                                isCollection={false}
+                                pageType={"resources"}
                                 siteName={siteName}
                                 category={resourceCategory}
                                 itemIndex={collectionIdx}

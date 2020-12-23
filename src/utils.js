@@ -13,6 +13,7 @@ axios.defaults.withCredentials = true
 const ALPHANUM_REGEX = /^[0-9]+[a-z]*$/ // at least one number, followed by 0 or more lower-cased alphabets
 const NUM_REGEX = /^[0-9]+$/
 const NUM_IDENTIFIER_REGEX = /^[0-9]+/
+export const DEFAULT_ERROR_TOAST_MSG = 'Please try again or check your internet connection.' 
 
 // extracts yaml front matter from a markdown file path
 export function frontMatterParser(content) {
@@ -39,7 +40,7 @@ export function deslugifyCollectionPage(collectionPageName) {
   return collectionPageName
     .split('.')[0] // remove the file extension
     .split('-').slice(1) // remove the number at the start
-    .map((string) => string.charAt(0).toUpperCase() + string.slice(1)) // capitalize first letter
+    .map(string => _.upperFirst(string)) // capitalize first letter
     .join(' '); // join it back together
 }
 
@@ -96,26 +97,50 @@ function monthIntToStr(monthInt) {
 // Each fileName comes in the format of `{date}-{type}-{title}.md`
 // A sample fileName is 2019-08-23-post-CEO-made-a-speech.md
 // {date} is YYYY-MM-DD, e.g. 2019-08-23
-// {type} is either `post` or `download`
+// {type} is either `post` or `file`
 // {title} is a string containing [a-z,A-Z,0-9] and all whitespaces are replaced by hyphens
 export function retrieveResourceFileMetadata(fileName) {
   const fileNameArray = fileName.split('.md')[0];
   const tokenArray = fileNameArray.split('-');
+  const date = tokenArray.slice(0,3).join('-');
+
+  const type = ['file', 'post'].includes(tokenArray[3]) ? tokenArray[3] : undefined
+
+  const titleTokenArray = type ? tokenArray.slice(4) : tokenArray.slice(3);
+  const prettifiedTitleTokenArray = titleTokenArray.map((token) => {
+    // We search for special characters which were converted to text
+    // Convert dollar back to $ if it is followed by any alphanumeric character
+    const convertedToken = token.replaceAll(/dollar(?=([0-9]))/g, '$')
+    if (convertedToken.length < 2) return convertedToken.toUpperCase()
+    return convertedToken.slice(0,1).toUpperCase() + convertedToken.slice(1)
+  });
+  const title = prettifiedTitleTokenArray.join(' ')
+
+  return { date, type, title };
+}
+
+export function prettifyDate(date) {
+  const tokenArray = date.split('-');
   const day = tokenArray[2];
   const month = monthIntToStr(tokenArray[1]);
   const year = tokenArray[0];
-  const date = `${day} ${month} ${year}`;
-
-  const title = tokenArray.slice(3).join(' ');
-
-  return { date, title };
+  return `${day} ${month} ${year}`;
 }
 
-export function enquoteString(str) {
-  let enquotedString = str;
-  if (str[0] !== '"') enquotedString = `"${enquotedString}`;
-  if (str[str.length - 1] !== '"') enquotedString += '"';
-  return enquotedString;
+// function recursively checks if all child object values are empty
+// note that {a: '', b: {c: ''}, d: [ {e: ''}, {f: [ {g: ''} ]} ]} returns true
+export function isEmpty(obj) {
+  let isEmptyVal = true;
+  for (var key in obj) {
+    if (typeof obj[key] === "object" && obj.hasOwnProperty(key)) {
+      isEmptyVal = isEmptyVal && isEmpty(obj[key]);
+    } else {
+      if (obj[key] !== "" && obj[key] !== null) {
+        isEmptyVal = false;
+      }
+    }
+  }
+  return isEmptyVal
 }
 
 export function dequoteString(str) {
@@ -125,17 +150,17 @@ export function dequoteString(str) {
   return dequotedString;
 }
 
-export function generateResourceFileName(title, date) {
-  const safeTitle = slugify(title).replace(/[^a-zA-Z-]/g, '');
-  return `${date}-${safeTitle}.md`;
+export function generateResourceFileName(title, date, resourceType) {
+  const safeTitle = slugify(title).replace(/[^a-zA-Z0-9-]/g, '');
+  return `${date}-${resourceType}-${safeTitle}.md`;
 }
 
 export function prettifyResourceCategory(category) {
   return category.replace(/-/g, ' ').toUpperCase();
 }
 
-export function slugifyResourceCategory(category) {
-  return slugify(category);
+export function slugifyCategory(category) {
+  return slugify(category).replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
 }
 
 export function prettifyPageFileName(fileName) {
@@ -167,6 +192,10 @@ export function generateCollectionPageFileName(title, groupIdentifier) {
 
 export function generatePermalink(title) {
   return slugify(title).replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
+}
+
+export function slugifyLower(str) {
+  return slugify(str, {lower: true})
 }
 
 export function retrieveCollectionAndLinkFromPermalink(permalink) {
@@ -204,25 +233,30 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
     originalCategory,
     collectionPageData,
     type,
+    resourceType,
     fileName,
     isNewFile,
     siteName,
     isNewCollection,
   } = fileInfo
 
+  let slugifiedCategory
+  if (isNewCollection) slugifiedCategory = slugifyCategory(category)
+  else slugifiedCategory = category
+
   const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${originalCategory ? type === "resource" ? `/resources/${originalCategory}` : `/collections/${originalCategory}` : ''}`
   const newBaseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? type === "resource" ? `/resources/${category}` : `/collections/${category}` : ''}`
   let newFileName, frontMatter
   if (type === "resource") {
-    newFileName = generateResourceFileName(title, date);
-    frontMatter = { title: enquoteString(title), date };
+    newFileName = generateResourceFileName(title.toLowerCase(), date, resourceType);
+    frontMatter = { title, date };
   } else if (type === "page") {
     frontMatter = thirdNavTitle
       ? { title, permalink, third_nav_title: thirdNavTitle }
       : { title, permalink };
 
     // Creating a collection page
-    if (category) {
+    if (slugifiedCategory) {
       newFileName = await generateNewCollectionFileName({
         fileName,
         originalThirdNavTitle,
@@ -230,21 +264,23 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
         thirdNavOptions,
         collectionPageData,
         baseApiUrl: newBaseApiUrl,
-        title,
+        title: title.toLowerCase(),
         siteName,
-        category,
+        category: slugifiedCategory,
         isNewCollection,
         isNewFile,
+        originalCategory,
+        newBaseApiUrl,
       })
     // Creating a simple page
     } else {
-      newFileName = generatePageFileName(title);
+      newFileName = generatePageFileName(title.toLowerCase());
     }
   }
   console.log('This is the new file name', newFileName)
 
   if (permalink) {
-    frontMatter.permalink = `/${category ? `${category}/${thirdNavTitle ? `${thirdNavTitle}/` : ''}` : ''}${permalink}`;
+    frontMatter.permalink = permalink;
   }
   if (fileUrl) {
     frontMatter.file_url = fileUrl;
@@ -260,7 +296,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
       content: base64EncodedContent,
       pageName: newFileName,
     };
-
+    await axios.post(`${newBaseApiUrl}/pages`, params);
     // If it is an existing file, delete the existing page
     if (!isNewFile) {
       await axios.delete(`${baseApiUrl}/pages/${fileName}`, {
@@ -269,7 +305,6 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
         },
       });
     }
-    await axios.post(`${newBaseApiUrl}/pages`, params);
   } else {
     // Save to existing .md file
     params = {
@@ -280,9 +315,13 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   }
   let newPageUrl
   if (type === 'resource') {
-    newPageUrl = `/sites/${siteName}/resources/${category}/${newFileName}`
+    if (resourceType === 'file') {
+      newPageUrl = `/sites/${siteName}/resources/${slugifiedCategory}`
+    } else {
+      newPageUrl = `/sites/${siteName}/resources/${slugifiedCategory}/${newFileName}`
+    }
   } else if (type === 'page') {
-    newPageUrl = category ? `/sites/${siteName}/collections/${category}/${newFileName}` : `/sites/${siteName}/pages/${newFileName}`
+    newPageUrl = slugifiedCategory ? `/sites/${siteName}/collections/${slugifiedCategory}/${newFileName}` : `/sites/${siteName}/pages/${newFileName}`
   }
   return newPageUrl
 }
@@ -304,10 +343,16 @@ const generateNewCollectionFileName = async ({
   category,
   isNewCollection,
   isNewFile,
+  originalCategory,
+  newBaseApiUrl
 }) => {
   let newFileName
   if (isNewCollection) {
     const groupIdentifier = await generateGroupIdentifier(null, false, null, thirdNavTitle ? true : false, thirdNavTitle, true)
+    newFileName = generateCollectionPageFileName(title, groupIdentifier);
+  } else if (originalCategory !== category) {
+    // Page is being moved
+    const groupIdentifier = await generateGroupIdentifier(collectionPageData, false, newBaseApiUrl)
     newFileName = generateCollectionPageFileName(title, groupIdentifier);
   }
   // New file name is also dependent on whether the file has been moved into or out of a third nav
@@ -457,4 +502,26 @@ const incrementGroupIdentifier = (pageArray, shouldAddToThirdNav, shouldCreateTh
   // If identifier is alphanumeric, but you want to increment to just a number (for example, from 2b to 3)
   // When not adding to a third nav
   return (parseInt(lastFileNameIdentifierNum) + 1).toString()
+}
+
+export const checkIsOutOfViewport = (bounding, posArr) => {
+  // Checks if the element exceeds viewport in any of the dimensions given in posArr
+  let out = {};
+	out.top = bounding.top < 0;
+	out.left = bounding.left < 0;
+	out.bottom = bounding.bottom > (window.innerHeight || document.documentElement.clientHeight);
+  out.right = bounding.right > (window.innerWidth || document.documentElement.clientWidth);
+  
+  return posArr.some((pos) => {return out[pos]})
+}
+
+export const getObjectDiff = (obj1, obj2) => {
+  const allkeys = _.union(_.keys(obj1), _.keys(obj2));
+  const difference = _.reduce(allkeys, function (result, key) {
+    if ( !_.isEqual(obj1[key], obj2[key]) ) {
+      result[key] = {obj1: obj1[key], obj2: obj2[key]}
+    }
+    return result;
+  }, {});
+  return difference
 }
