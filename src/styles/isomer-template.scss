@@ -12118,12 +12118,32 @@ a.navbar-item {
     right:0;
     width: 100%;
     height: 100%;
-    color: #ffffff;
-    font-weight: 700;
-    display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0.6;
+    opacity: 0.9;
     font-size: 5vw;
-    transform: rotate(-30deg);
+
+    .watermark-text-title {
+        color: #303754;
+        font-weight: 700;
+        font-size: 4rem;
+        font-family: Lato,sans-serif;
+        line-height: 4.8rem;
+        margin: 1rem;
+        text-align: center;
+    }
+
+    .watermark-text-content {
+        color: #303754;
+        font-weight: 400;
+        font-size: 1.2rem;
+        font-style: italic;
+        font-family: Lato,sans-serif;
+        line-height: 2rem;
+        text-align: center;
+    }
+}
+
+.resource-sample-mask{
+    opacity: 0.1;
 }

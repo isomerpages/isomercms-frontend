@@ -14,11 +14,15 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 // Import utils
 import { prettifyPageFileName } from '../utils';
+import {
+  getSiteColors,
+} from '../utils/siteColorUtils';
+
 
 // Constants
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
-const Workspace = ({ match, location }) => {
+const Workspace = ({ match, location, siteColors, setSiteColors }) => {
     const { siteName } = match.params;
 
     const [collections, setCollections] = useState()
@@ -28,6 +32,25 @@ const Workspace = ({ match, location }) => {
     useEffect(() => {
       let _isMounted = true
       const fetchData = async () => {
+        try {
+          if (!siteColors[siteName]) {
+            const {
+              primaryColor,
+              secondaryColor,
+            } = await getSiteColors(siteName)
+    
+            if (_isMounted) setSiteColors((prevState) => ({
+              ...prevState,
+              [siteName]: {
+                primaryColor,
+                secondaryColor,
+              }
+            }))
+          }
+        } catch (e) {
+          console.log(e)
+        }
+
         try { 
           await axios.get(`${BACKEND_URL}/sites/${siteName}/pages/contact-us.md`);
           if (_isMounted) setContactUsCard(true) 

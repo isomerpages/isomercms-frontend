@@ -12,6 +12,11 @@ import { toast } from 'react-toastify';
 import { DEFAULT_ERROR_TOAST_MSG, frontMatterParser, concatFrontMatterMdBody, isEmpty, retrieveResourceFileMetadata } from '../utils';
 import { sanitiseFrontMatter } from '../utils/dataSanitisers';
 import { validateContact, validateLocation } from '../utils/validators';
+import {
+  createPageStyleSheet,
+  getSiteColors,
+} from '../utils/siteColorUtils';
+
 
 import EditorSection from '../components/contact-us/Section';
 import Toast from '../components/Toast';
@@ -77,6 +82,8 @@ const enumSection = (type, args) => {
 };
 
 export default class EditContactUs extends Component {
+  _isMounted = false
+
   constructor(props) {
     super(props);
     this.scrollRefs = {
@@ -116,11 +123,45 @@ export default class EditContactUs extends Component {
     };
   }
 
-  async componentDidMount() {  
-    const { match } = this.props;
+  async componentDidMount() {
+    const { match, siteColors, setSiteColors } = this.props;
     const { siteName } = match.params;
+    this._isMounted = true
 
     let content, sha, footerContent, footerSha
+
+    // Set page colors
+    try {
+      let primaryColor
+      let secondaryColor
+
+      if (!siteColors[siteName]) {
+        const {
+          primaryColor: sitePrimaryColor,
+          secondaryColor: siteSecondaryColor,
+        } = await getSiteColors(siteName)
+
+        primaryColor = sitePrimaryColor
+        secondaryColor = siteSecondaryColor
+
+        if (this._isMounted) setSiteColors((prevState) => ({
+          ...prevState,
+          [siteName]: {
+            primaryColor,
+            secondaryColor,
+          }
+        }))
+      } else {
+        primaryColor = siteColors[siteName].primaryColor
+        secondaryColor = siteColors[siteName].secondaryColor
+      }
+
+      createPageStyleSheet(siteName, primaryColor, secondaryColor)
+    
+    } catch (err) {
+      console.log(err);
+    }
+
     try {
       const contactUsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/contact-us.md`);
       const { content:pageContent , sha:pageSha } = contactUsResp.data;
@@ -197,7 +238,7 @@ export default class EditContactUs extends Component {
       locations: locationsScrollRefs,
     }
 
-    this.setState({
+    if (this._isMounted) this.setState({
       originalFooterContent: _.cloneDeep(footerContent),
       footerContent,
       footerSha,
@@ -214,6 +255,10 @@ export default class EditContactUs extends Component {
         locations: locationsErrors,
       },
     });
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   onDragEnd = (result) => {

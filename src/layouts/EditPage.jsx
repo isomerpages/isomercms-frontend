@@ -13,6 +13,7 @@ import Policy from 'csp-parse';
 import { toast } from 'react-toastify';
 import Toast from '../components/Toast';
 
+// Isomer components
 import {
   DEFAULT_ERROR_TOAST_MSG,
   frontMatterParser,
@@ -36,6 +37,10 @@ import {
   tableButton,
   guideButton,
 } from '../utils/markdownToolbar';
+import {
+  createPageStyleSheet,
+  getSiteColors,
+} from '../utils/siteColorUtils';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -125,7 +130,43 @@ export default class EditPage extends Component {
   }
 
   async componentDidMount() {
+    const { match, siteColors, setSiteColors } = this.props;
+    const { siteName } = match.params;
+
     this._isMounted = true
+
+    // Set page colors
+    try {
+      let primaryColor
+      let secondaryColor
+
+      if (!siteColors[siteName]) {
+        const {
+          primaryColor: sitePrimaryColor,
+          secondaryColor: siteSecondaryColor,
+        } = await getSiteColors(siteName)
+
+        primaryColor = sitePrimaryColor
+        secondaryColor = siteSecondaryColor
+
+        if (this._isMounted) setSiteColors((prevState) => ({
+          ...prevState,
+          [siteName]: {
+            primaryColor,
+            secondaryColor,
+          }
+        }))
+      } else {
+        primaryColor = siteColors[siteName].primaryColor
+        secondaryColor = siteColors[siteName].secondaryColor
+      }
+
+      createPageStyleSheet(siteName, primaryColor, secondaryColor)
+
+    } catch (err) {
+      console.log(err);
+    }
+
     let content, sha
     try {
       const resp = await axios.get(this.apiEndpoint);
@@ -149,9 +190,6 @@ export default class EditPage extends Component {
     try {
       // split the markdown into front matter and content
       const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
-      
-      const { match } = this.props;
-      const { siteName } = match.params;
       
       // retrieve CSP
       const cspResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`);
@@ -327,7 +365,7 @@ export default class EditPage extends Component {
   }
 
   render() {
-    const { match, isCollectionPage, isResourcePage } = this.props;
+    const { match, isCollectionPage, isResourcePage, primaryColors, secondaryColors } = this.props;
     const { siteName, fileName, collectionName, resourceName } = match.params;
     const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, isCollectionPage, fileName)
     const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, collectionName, siteName)
