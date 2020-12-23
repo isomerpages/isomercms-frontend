@@ -143,13 +143,6 @@ export function isEmpty(obj) {
   return isEmptyVal
 }
 
-export function enquoteString(str) {
-  let enquotedString = str;
-  if (str[0] !== '"') enquotedString = `"${enquotedString}`;
-  if (str[str.length - 1] !== '"') enquotedString += '"';
-  return enquotedString;
-}
-
 export function dequoteString(str) {
   let dequotedString = str;
   if (str[0] === '"') dequotedString = dequotedString.slice(1);
@@ -256,7 +249,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   let newFileName, frontMatter
   if (type === "resource") {
     newFileName = generateResourceFileName(title.toLowerCase(), date, resourceType);
-    frontMatter = { title: enquoteString(title), date };
+    frontMatter = { title, date };
   } else if (type === "page") {
     frontMatter = thirdNavTitle
       ? { title, permalink, third_nav_title: thirdNavTitle }
