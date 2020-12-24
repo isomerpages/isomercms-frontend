@@ -124,6 +124,7 @@ export default class EditPage extends Component {
       stagedFileDetails: {},
       isLoadingPageContent: true,
       shouldRedirectToNotFound: false,
+      imageSearchTerm: '',
     };
     this.mdeRef = React.createRef();
     this.apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName })
@@ -292,11 +293,16 @@ export default class EditPage extends Component {
     }));
   }
 
-  toggleImageAndSettingsModal = () => {
+  toggleImageAndSettingsModal = (searchTerm) => {
     this.setState((currState) => ({
       isSelectingImage: !currState.isSelectingImage,
       isFileStagedForUpload: !currState.isFileStagedForUpload,
+      imageSearchTerm: searchTerm,
     }));
+  }
+
+  setImageSearchTerm = (searchTerm) => {
+    this.setState({ imageSearchTerm: searchTerm })
   }
 
   onHyperlinkOpen = () => {
@@ -365,7 +371,7 @@ export default class EditPage extends Component {
   }
 
   render() {
-    const { match, isCollectionPage, isResourcePage, primaryColors, secondaryColors } = this.props;
+    const { match, isCollectionPage, isResourcePage } = this.props;
     const { siteName, fileName, collectionName, resourceName } = match.params;
     const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, isCollectionPage, fileName)
     const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, collectionName, siteName)
@@ -381,6 +387,7 @@ export default class EditPage extends Component {
       leftNavPages,
       selectionText,
       isLoadingPageContent,
+      imageSearchTerm,
     } = this.state;
 
     const html = marked(editorValue)
@@ -406,6 +413,8 @@ export default class EditPage extends Component {
               toggleImageModal={this.toggleImageModal}
               readFileToStageUpload={this.readFileToStageUpload}
               onClose={() => this.setState({ isSelectingImage: false })}
+              imageSearchTerm={imageSearchTerm}
+              setImageSearchTerm={this.setImageSearchTerm}
             />
             )
           }

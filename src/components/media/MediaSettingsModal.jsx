@@ -86,7 +86,7 @@ export default class MediaSettingsModal extends Component {
           withCredentials: true,
         });
       }
-      onSave()
+      onSave(newFileName)
     } catch (err) {
       if (err?.response?.status === 409) {
         // Error due to conflict in name
