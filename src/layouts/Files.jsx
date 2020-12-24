@@ -43,6 +43,7 @@ export default class Files extends Component {
 
   onFileSelect = async (event) => {
     const fileReader = new FileReader();
+    console.log(event.target.files)
     const file = event.target?.files[0] || '';
     if (file.name) {
       fileReader.onload = (() => {
@@ -61,6 +62,7 @@ export default class Files extends Component {
         });
       });
       fileReader.readAsDataURL(file);
+      event.target.value = '';
     }
   }
 
