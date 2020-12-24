@@ -16,35 +16,49 @@ export default class MediasModal extends Component {
       medias: '',
       filteredMedias: '',
       selectedFile: null,
-      searchTerm: '',
     };
   }
 
   async componentDidMount() {
-    const { siteName, type } = this.props;
+    const { siteName, type, imageSearchTerm } = this.props;
     const mediaRoute = type === 'file' ? 'documents' : 'images';
     try {
       const { data: { documents, images } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${mediaRoute}`, {
         withCredentials: true,
       });
       if (_.isEmpty(documents || images)) {
-        this.setState({ medias: [], filteredMedias: [] });
+        this.setState({ medias: [], filteredMedias: [], searchTerm: imageSearchTerm });
       } else {
-        this.setState({ medias: documents || images, filteredMedias: documents || images });
+        let filteredMedias
+        if (type === 'file') {
+          filteredMedias = this.filterMediaByFileName(documents, imageSearchTerm)
+        } else {
+          filteredMedias = this.filterMediaByFileName(images, imageSearchTerm)
+        }
+
+        this.setState({ medias: documents || images, filteredMedias, searchTerm: imageSearchTerm });
       }
     } catch (err) {
       console.error(err);
     }
   }
 
-  searchChangeHandler = (event) => {
-    const { medias } = this.state
-    const { target: { value } } = event
+  filterMediaByFileName = (medias, filterTerm) => {
     const filteredMedias = medias.filter((media) => {
-      if (media.fileName.toLowerCase().includes(value)) return true
+      if (media.fileName.toLowerCase().includes(filterTerm.toLowerCase())) return true
       return false
     })
-    this.setState({ searchTerm: value, filteredMedias, })
+
+    return filteredMedias
+  }
+
+  searchChangeHandler = (event) => {
+    const { setImageSearchTerm } = this.props
+    const { medias } = this.state
+    const { target: { value } } = event
+    const filteredMedias = this.filterMediaByFileName(medias, value)
+    setImageSearchTerm(value)
+    this.setState({ filteredMedias })
   }
 
   render() {
@@ -54,8 +68,9 @@ export default class MediasModal extends Component {
       onMediaSelect,
       type,
       readFileToStageUpload,
+      imageSearchTerm,
     } = this.props;
-    const { filteredMedias, selectedFile, searchTerm } = this.state;
+    const { filteredMedias, selectedFile } = this.state;
     return (filteredMedias
       && (
         <>
@@ -63,7 +78,7 @@ export default class MediasModal extends Component {
             <div className={mediaStyles.mediaModal}>
               <div className={elementStyles.modalHeader}>
                 <h1 className="pl-5 mr-auto">{`Select ${type === 'file' ? 'File' : 'Image'}`}</h1>
-                <MediaSearchBar value={searchTerm} onSearchChange={this.searchChangeHandler} />
+                <MediaSearchBar value={imageSearchTerm} onSearchChange={this.searchChangeHandler} />
                 <button type="button" onClick={onClose}>
                   <i className="bx bx-x" />
                 </button>
@@ -126,4 +141,5 @@ MediasModal.propTypes = {
   siteName: PropTypes.string.isRequired,
   onMediaSelect: PropTypes.func.isRequired,
   type: PropTypes.oneOf(['file', 'image']).isRequired,
+  setImageSearchTerm: PropTypes.func.isRequired,
 };
