@@ -417,7 +417,7 @@ export default class EditPage extends Component {
                 onClose={() => this.setState({ isFileStagedForUpload: false })}
                 onSave={this.toggleImageAndSettingsModal}
                 media={stagedFileDetails}
-                isPendingUpload="true"
+                isPendingUpload
               />
             )
           }

@@ -125,7 +125,7 @@ const FormFieldMedia = ({
               onClose={() => setIsFileStagedForUpload(false)}
               onSave={toggleItemAndSettingsModal}
               media={stagedFileDetails}
-              isPendingUpload="true"
+              isPendingUpload
             />
           )
         }
