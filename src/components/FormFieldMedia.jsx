@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import MediasModal from './media/MediaModal';
+import MediaModal from './media/MediaModal';
 import MediaSettingsModal from './media/MediaSettingsModal';
 import Toast from './Toast';
 
@@ -25,6 +25,7 @@ const FormFieldMedia = ({
   const [isSelectingItem, setIsSelectingItem] = useState(false)
   const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
   const [stagedFileDetails, setStagedFileDetails] = useState()
+  const [imageSearchTerm, setImageSearchTerm] = useState('')
 
   const onItemClick = (path) => {
     setIsSelectingItem(false)
@@ -45,7 +46,8 @@ const FormFieldMedia = ({
     setIsSelectingItem(!isSelectingItem)
   }
   
-  const toggleItemAndSettingsModal = () => {
+  const toggleItemAndSettingsModal = (searchTerm) => {
+    setImageSearchTerm(searchTerm)
     setIsSelectingItem(!isSelectingItem)
     setIsFileStagedForUpload(!isFileStagedForUpload)
   }
@@ -107,13 +109,15 @@ const FormFieldMedia = ({
         }
         {
           isSelectingItem && (
-            <MediasModal
+            <MediaModal
               type={type}
               siteName={siteName}
               onMediaSelect={onItemClick}
               toggleItemModal={toggleItemModal}
               readFileToStageUpload={readFileToStageUpload}
               onClose={() => setIsSelectingItem(false)}
+              imageSearchTerm={imageSearchTerm}
+              setImageSearchTerm={setImageSearchTerm}
             />
           )
         }
