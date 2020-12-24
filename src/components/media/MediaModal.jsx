@@ -6,6 +6,7 @@ import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import MediaCard from './MediaCard';
 import MediaUploadCard from './MediaUploadCard';
+import { MediaSearchBar } from './MediaSearchBar';
 import LoadingButton from '../LoadingButton';
 
 export default class MediasModal extends Component {
@@ -13,7 +14,9 @@ export default class MediasModal extends Component {
     super(props);
     this.state = {
       medias: '',
+      filteredMedias: '',
       selectedFile: null,
+      searchTerm: '',
     };
   }
 
@@ -25,13 +28,23 @@ export default class MediasModal extends Component {
         withCredentials: true,
       });
       if (_.isEmpty(documents || images)) {
-        this.setState({ medias: [] });
+        this.setState({ medias: [], filteredMedias: [] });
       } else {
-        this.setState({ medias: documents || images });
+        this.setState({ medias: documents || images, filteredMedias: documents || images });
       }
     } catch (err) {
       console.error(err);
     }
+  }
+
+  searchChangeHandler = (event) => {
+    const { medias } = this.state
+    const { target: { value } } = event
+    const filteredMedias = medias.filter((media) => {
+      if (media.fileName.toLowerCase().includes(value)) return true
+      return false
+    })
+    this.setState({ searchTerm: value, filteredMedias, })
   }
 
   render() {
@@ -42,14 +55,15 @@ export default class MediasModal extends Component {
       type,
       readFileToStageUpload,
     } = this.props;
-    const { medias, selectedFile } = this.state;
-    return (medias 
+    const { filteredMedias, selectedFile, searchTerm } = this.state;
+    return (filteredMedias
       && (
         <>
           <div className={elementStyles.overlay}>
             <div className={mediaStyles.mediaModal}>
               <div className={elementStyles.modalHeader}>
-                <h1 className="pl-5" style={{ flexGrow: 1 }}>{`Select ${type === 'file' ? 'File' : 'Image'}`}</h1>
+                <h1 className="pl-5 mr-auto">{`Select ${type === 'file' ? 'File' : 'Image'}`}</h1>
+                <MediaSearchBar value={searchTerm} onSearchChange={this.searchChangeHandler} />
                 <button type="button" onClick={onClose}>
                   <i className="bx bx-x" />
                 </button>
@@ -73,7 +87,7 @@ export default class MediasModal extends Component {
                   hidden
                 />
                 {/* Render medias */}
-                {medias.map((media) => (
+                {filteredMedias.map((media) => (
                   <MediaCard
                     type={type}
                     media={media}
