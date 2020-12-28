@@ -4,6 +4,13 @@ import _ from 'lodash';
 const DEFAULT_ADDRESS_FIELD_LENGTH = 3;
 const DEFAULT_NUM_OPERATING_FIELDS = 5;
 
+function isNotNullAndEqual(arrVal, othVal) {
+  if (Object.values(arrVal)[0] == null) {
+    return true
+  }
+  return _.isEqual(arrVal, othVal)
+}
+
 function getContentDataField(content, dataType) {
   const dataObj = _.find(content, (obj) => {
     return dataType in obj && _.isString(obj[dataType])
@@ -18,7 +25,7 @@ function sanitiseContent(content) {
   sanitisedContent.push( getContentDataField(content, 'phone') );
   sanitisedContent.push( getContentDataField(content, 'email') );
   sanitisedContent.push( getContentDataField(content, 'other') );
-  deletedContent = _.differenceWith(content, sanitisedContent, _.isEqual)
+  deletedContent = _.differenceWith(content, sanitisedContent, isNotNullAndEqual)
   return { sanitisedContent, deletedContent };
 }
 
