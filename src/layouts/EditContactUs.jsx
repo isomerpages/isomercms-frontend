@@ -83,6 +83,34 @@ const enumSection = (type, args) => {
   }
 };
 
+const displayDeletedFrontMatter = (deletedFrontMatter) => {
+  let displayText = ''
+  const { contacts, locations } = deletedFrontMatter
+  contacts.forEach((contact, i) => {
+    if (!isEmpty(contact)) {
+      displayText += `<br/>In Contact <code>${i+1}</code>: <br/>`
+      contact.content.forEach((obj) => {
+        const [key, value] = Object.entries(obj)[0]
+        if (value) {
+          displayText += `    <code>${key}</code> field, <code>${JSON.stringify(value)}</code> is removed <br/>`
+        }
+      })
+    }
+  })
+  displayText += ''
+  locations.map((location, i) => {
+    if (!isEmpty(location)) {
+      displayText += `<br/>In Location <code>${i+1}</code>: <br/>`
+      Object.entries(location).forEach(([key, value]) => {
+        if (value?.length) {
+          displayText += `    <code>${key}</code> field, <code>${JSON.stringify(value)}</code> is removed </br>`
+        }
+      })
+    }
+  })
+  return displayText
+}
+
 export default class EditContactUs extends Component {
   _isMounted = false
 
@@ -123,6 +151,7 @@ export default class EditContactUs extends Component {
         id: null,
         type: '',
       },
+      showDeletedText: true,
       shouldRedirectToNotFound: false,
     };
   }
@@ -671,6 +700,7 @@ export default class EditContactUs extends Component {
       footerSha,
       errors,
       itemPendingForDelete,
+      showDeletedText,
     } = state;
     const { match } = this.props;
     const { siteName } = match.params;
@@ -686,16 +716,14 @@ export default class EditContactUs extends Component {
     
     return (
       <>
-        { hasDeletions
-          && (
+        { showDeletedText && hasDeletions
+          && 
           <GenericWarningModal
             displayTitle="Removed content" 
-            displayText={`Some of your text has been removed. No changes are permanent unless you press Save.\n ${JSON.stringify(deletedFrontMatter)}`}
-            onProceed={()=>{}}
+            displayText={`Some of your content has been removed as it is incompatible with the new Isomer format. No changes are permanent unless you press Save on the next page.<br/>${displayDeletedFrontMatter(deletedFrontMatter)}`}
+            onProceed={()=>{this.setState({showDeletedText: false})}}
             proceedText="Acknowledge"
-            cancelText="Go back"
           />
-          )
         }
         {
           itemPendingForDelete.id
@@ -795,6 +823,13 @@ export default class EditContactUs extends Component {
             </section>
           </div>
           <div className={editorStyles.pageEditorFooter}>
+            { hasDeletions && 
+              <LoadingButton
+                label="See removed content"
+                className={`ml-auto ${elementStyles.warning}`}
+                callback={() => {this.setState({showDeletedText: true})}}
+              />
+            }
             <LoadingButton
               label="Save"
               disabled={hasErrors} 
