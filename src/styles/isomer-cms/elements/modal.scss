@@ -73,20 +73,22 @@
     flex-direction: column;
     justify-content: space-between;
     flex: 1;
-  
-    .modalButtons {
-      padding-top: 20px;
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-      margin-left: auto;
-    }
+    overflow-y: scroll;
+  }
+
+  .modalButtons {
+    padding-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-left: auto;
   }
 }
 
 .modal-warning {
   @extend .modal;
   height: auto;
+  max-height: 70%;
 }
 
 .modal-settings {
