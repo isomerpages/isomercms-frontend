@@ -17,7 +17,7 @@ const FormField = ({
   fixedMessage,
   maxWidth,
 }) => (
-  <>
+  <div>
     { title && <label className={elementStyles.formLabel}>{title}</label> }
     <div className={`d-flex text-nowrap ${maxWidth ? 'w-100' : ''}`}>
       { fixedMessage && <p className={elementStyles.formFixedText}>{fixedMessage}</p> }
@@ -36,7 +36,7 @@ const FormField = ({
       />
     </div>
     { errorMessage && <span className={elementStyles.error}>{errorMessage}</span> }
-  </>
+  </div>
 );
 
 export default FormField;
