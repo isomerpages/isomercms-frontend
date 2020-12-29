@@ -8,6 +8,7 @@ import FormFieldMedia from '../FormFieldMedia';
 import HeroButton from './HeroButton';
 import HeroDropdown from './HeroDropdown';
 import KeyHighlight from './KeyHighlight';
+import { isEmpty } from '../../utils';
 
 /* eslint
   react/no-array-index-key: 0
@@ -36,7 +37,7 @@ const EditorHeroSection = ({
   siteName,
   handleHighlightDropdownToggle,
 }) => (
-  <div className={elementStyles.card}>
+  <div className={`${elementStyles.card} ${!shouldDisplay && !isEmpty(errors.sections[0].hero) ? elementStyles.error : ''}`}>
     <div className={elementStyles.cardHeader}>
       <h2>Hero section</h2>
       <button className="pl-3" type="button" id={`section-${sectionIndex}`} onClick={displayHandler}>
