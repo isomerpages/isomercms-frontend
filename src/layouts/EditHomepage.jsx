@@ -270,6 +270,12 @@ export default class EditHomepage extends Component {
     this._isMounted = false;
   }
 
+  componentDidUpdate(_, prevState) {
+    if (prevState.frontMatter.sections.length !== 0 && this.state.frontMatter.sections.length !== prevState.frontMatter.sections.length) {
+      // Occurs when a new section is created
+      this.scrollRefs[this.state.frontMatter.sections.length-1].scrollIntoView();
+    }
+  }
   onFieldChange = async (event) => {
     try {
       const { state } = this;
@@ -902,6 +908,7 @@ export default class EditHomepage extends Component {
           this.setState({
             displaySections: newDisplaySections,
           });
+          this.scrollRefs[sectionId].scrollIntoView();
           break;
         }
         case 'highlight': {
