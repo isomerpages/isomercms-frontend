@@ -413,7 +413,13 @@ const ComponentSettingsModal = ({
               <div className={elementStyles.modalContent}>
                 <div className={elementStyles.modalFormFields}>
                   {/* Category */}
-                  <p className={elementStyles.formLabel}>{`Add to ${type === 'resource' ? `Resource Category` : `Collection`} (optional)`}</p>
+                  <p className={elementStyles.formLabel}>
+                    {`Add to ${type === 'resource' ? `Resource Category` : `Collection (optional)`}`}
+                    {
+                      type === 'resource' &&
+                      <b> (required)</b>
+                    }
+                  </p>
                   <div className="d-flex text-nowrap">
                     <CreatableSelect
                       isClearable

@@ -317,14 +317,14 @@ export default class EditHomepage extends Component {
           // This needs to be done separately because it relies on the state of another field
           if (
             field === 'url' && !value && this.state.frontMatter.sections[sectionIndex][sectionType].button
-            && (this.state.frontMatter.sections[sectionIndex][sectionType].button || this.state.frontMatter.sections[sectionIndex][sectionType].url)
+            && (this.state.frontMatter.sections[sectionIndex][sectionType].button || value)
           ) {
             const errorMessage = 'Please specify a URL for your button'
             newSectionError = _.cloneDeep(errors.sections[sectionIndex])
             newSectionError[sectionType][field] = errorMessage
           } else if (
             field === 'button' && !this.state.frontMatter.sections[sectionIndex][sectionType].url
-            && (this.state.frontMatter.sections[sectionIndex][sectionType].button || this.state.frontMatter.sections[sectionIndex][sectionType].url)
+            && (value || this.state.frontMatter.sections[sectionIndex][sectionType].url)
           ) {
             const errorMessage = 'Please specify a URL for your button'
             newSectionError = _.cloneDeep(errors.sections[sectionIndex])
@@ -332,7 +332,7 @@ export default class EditHomepage extends Component {
           } else {
             newSectionError = validateSections(errors.sections[sectionIndex], sectionType, field, value)
 
-            if (!this.state.frontMatter.sections[sectionIndex][sectionType].button && !this.state.frontMatter.sections[sectionIndex][sectionType].url) {
+            if (field === 'button' && !value) {
               newSectionError[sectionType]['button'] = ''
               newSectionError[sectionType]['url'] = ''
             }
