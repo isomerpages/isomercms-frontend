@@ -324,7 +324,7 @@ export default class EditHomepage extends Component {
             newSectionError[sectionType][field] = errorMessage
           } else if (
             field === 'button' && !this.state.frontMatter.sections[sectionIndex][sectionType].url
-            && (value || this.state.frontMatter.sections[sectionIndex][sectionType].url)
+            && (value || this.state.frontMatter.sections[sectionIndex][sectionType].url) && sectionType !== 'resources'
           ) {
             const errorMessage = 'Please specify a URL for your button'
             newSectionError = _.cloneDeep(errors.sections[sectionIndex])
