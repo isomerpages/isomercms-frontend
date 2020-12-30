@@ -29,9 +29,9 @@ function validateContact(contact) {
   return {
     title: validateContactType('title', title),
     content: [
-      validateContactType('phone', content[0].phone),
-      validateContactType('email', content[1].email),
-      validateContactType('other', content[2].other),
+      {phone: validateContactType('phone', content[0].phone)},
+      {email: validateContactType('email', content[1].email)},
+      {other: validateContactType('other', content[2].other)},
     ]
   }
 }
