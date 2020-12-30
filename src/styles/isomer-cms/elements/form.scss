@@ -149,3 +149,23 @@ input[type=radio] {
   padding: 10px;
   box-sizing: border-box;
 }
+
+.formToggleContainer {
+  display: flex;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+.formToggleThumbIcon {
+  align-self: center;
+}
+
+.formToggleThumbIconEnabled {
+  @extend .formToggleThumbIcon;
+  color: $success;
+}
+
+.formToggleThumbIconDisabled {
+  @extend .formToggleThumbIcon;
+  color: $body-grey
+}
