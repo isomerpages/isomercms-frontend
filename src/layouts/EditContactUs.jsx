@@ -86,6 +86,17 @@ const enumSection = (type, args) => {
 const displayDeletedFrontMatter = (deletedFrontMatter) => {
   let displayText = ''
   const { contacts, locations } = deletedFrontMatter
+  locations.map((location, i) => {
+    if (!isEmpty(location)) {
+      displayText += `<br/>In Location <code>${i+1}</code>: <br/>`
+      Object.entries(location).forEach(([key, value]) => {
+        if (value?.length) {
+          displayText += `    <code>${key}</code> field, <code>${JSON.stringify(value)}</code> is removed </br>`
+        }
+      })
+    }
+  })  
+  displayText += ''
   contacts.forEach((contact, i) => {
     if (!isEmpty(contact)) {
       displayText += `<br/>In Contact <code>${i+1}</code>: <br/>`
@@ -93,17 +104,6 @@ const displayDeletedFrontMatter = (deletedFrontMatter) => {
         const [key, value] = Object.entries(obj)[0]
         if (value) {
           displayText += `    <code>${key}</code> field, <code>${JSON.stringify(value)}</code> is removed <br/>`
-        }
-      })
-    }
-  })
-  displayText += ''
-  locations.map((location, i) => {
-    if (!isEmpty(location)) {
-      displayText += `<br/>In Location <code>${i+1}</code>: <br/>`
-      Object.entries(location).forEach(([key, value]) => {
-        if (value?.length) {
-          displayText += `    <code>${key}</code> field, <code>${JSON.stringify(value)}</code> is removed </br>`
         }
       })
     }
