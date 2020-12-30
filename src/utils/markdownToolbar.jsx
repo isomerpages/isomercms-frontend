@@ -14,6 +14,7 @@ import {
   toggleItalic,
   toggleStrikethrough,
   toggleHeadingSmaller,
+  toggleHeadingBigger,
   toggleCodeBlock,
   toggleBlockquote,
   toggleUnorderedList,
@@ -44,13 +45,20 @@ export const strikethroughButton = {
   title: 'Strikethrough',
 };
 
-export const headingButton = {
-  name: 'heading',
+export const headingSmallerButton = {
+  name: 'headingSmaller',
   action: toggleHeadingSmaller,
   className: 'fa fa-header',
-  title: 'Heading',
-  default: true,
+  title: 'Decrease header size',
 };
+
+export const headingBiggerButton = {
+  name: 'headingBigger',
+  action: toggleHeadingBigger,
+  className: 'fa fa-lg fa-header',
+  title: 'Increase header size',
+};
+
 
 export const codeButton = {
   name: 'code',

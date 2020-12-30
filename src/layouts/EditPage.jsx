@@ -28,7 +28,8 @@ import {
   boldButton,
   italicButton,
   strikethroughButton,
-  headingButton,
+  headingSmallerButton,
+  headingBiggerButton,
   codeButton,
   quoteButton,
   unorderedListButton,
@@ -454,7 +455,9 @@ export default class EditPage extends Component {
                 value={editorValue}
                 options={{
                   toolbar: [
-                    headingButton,
+                    headingSmallerButton,
+                    headingBiggerButton,
+                    '|',
                     boldButton,
                     italicButton,
                     strikethroughButton,
