@@ -59,7 +59,6 @@ export const headingBiggerButton = {
   title: 'Increase header size',
 };
 
-
 export const codeButton = {
   name: 'code',
   action: toggleCodeBlock,
