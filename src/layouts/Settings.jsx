@@ -6,7 +6,7 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import LoadingButton from '../components/LoadingButton';
 import ColorPicker from '../components/ColorPicker';
-import FormFieldDropdown from '../components/FormFieldDropdown';
+import FormFieldToggle from '../components/FormFieldToggle';
 import FormFieldMedia from '../components/FormFieldMedia';
 import FormFieldColor from '../components/FormFieldColor';
 import FormFieldHorizontal from '../components/FormFieldHorizontal';
@@ -533,7 +533,7 @@ export default class Settings extends Component {
                     isRequired={false}
                     onFieldChange={this.changeHandler}
                   />
-                  <FormFieldDropdown
+                  <FormFieldToggle
                     title="Display government masthead"
                     id="is_government"
                     value={is_government}
@@ -661,7 +661,7 @@ export default class Settings extends Component {
 
                     if (footerSetting === 'show_reach') {
                       return (
-                        <FormFieldDropdown
+                        <FormFieldToggle
                           title={title}
                           id={footerSetting}
                           value={otherFooterSettings[footerSetting]}
