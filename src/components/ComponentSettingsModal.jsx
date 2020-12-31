@@ -45,6 +45,14 @@ const generateInitialThirdNavLabel = (thirdNavTitle, originalCategory) => {
     return "Select a third nav section..."
 }
 
+const generateCategoryFieldTitle = (type, isCategoryDisabled) => {
+  if (isCategoryDisabled) {
+    return `${type === 'resource' ? `Resource Category` : `Collection`}`
+  } else {
+    return `Add to ${type === 'resource' ? `Resource Category` : `Collection (optional)`}`
+  }
+}
+
 // Global state
 let thirdNavData = {}
 
@@ -414,9 +422,9 @@ const ComponentSettingsModal = ({
                 <div className={elementStyles.modalFormFields}>
                   {/* Category */}
                   <p className={elementStyles.formLabel}>
-                    {`Add to ${type === 'resource' ? `Resource Category` : `Collection (optional)`}`}
+                    {generateCategoryFieldTitle(type, isCategoryDisabled)}
                     {
-                      type === 'resource' &&
+                      type === 'resource' && !isCategoryDisabled &&
                       <b> (required)</b>
                     }
                   </p>
@@ -426,7 +434,7 @@ const ComponentSettingsModal = ({
                       className="w-100"
                       onChange={categoryDropdownHandler}
                       isDisabled={isCategoryDisabled}
-                      placeholder={"Select a category or create a new category..."}
+                      placeholder={isCategoryDisabled && type==='page' ? "Unlinked Page" : "Select a category or create a new category..."}
                       defaultValue={originalCategory ? 
                         {
                           value: originalCategory,
