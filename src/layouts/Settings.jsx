@@ -55,9 +55,9 @@ const stateFields = {
   },
   otherFooterSettings: {
     contact_us: '',
-    show_reach: '',
     feedback: '',
     faq: '',
+    show_reach: '',
   },
   navigationSettings: {
     logo: '',
@@ -125,9 +125,9 @@ export default class Settings extends Component {
         // footer fields
         otherFooterSettings: {
           contact_us: footerContent.contact_us,
-          show_reach: footerContent.show_reach,
           feedback: footerContent.feedback,
           faq: footerContent.faq,
+          show_reach: footerContent.show_reach,
         },
         socialMediaContent: {
           ...footerContent.social_media,
