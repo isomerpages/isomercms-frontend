@@ -463,7 +463,7 @@ const validateSections = (sectionError, sectionType, field, value) => {
 // ===============
 // Contacts
 
-const validateContact = (contactType, value) => {
+const validateContactType = (contactType, value) => {
   let errorMessage = '';
   switch (contactType) {
     case 'title':
@@ -503,7 +503,7 @@ const validateContact = (contactType, value) => {
 
 // Locations
 
-const validateLocation = (locationType, value) => {
+const validateLocationType = (locationType, value) => {
   let errorMessage = '';
   switch (locationType) {
     case 'title':
@@ -788,8 +788,8 @@ const validateFileName = (value) => {
 };
 
 export {
-  validateContact,
-  validateLocation,
+  validateContactType,
+  validateLocationType,
   validateHighlights,
   validateDropdownElems,
   validateSections,
