@@ -12,7 +12,7 @@ const creatableSelectHandler = (callback, dropdownEvent, id) => {
     })
 }
 
-const FormFieldDropdown = ({
+const FormFieldToggle = ({
     title,
     value,
     id,
@@ -37,9 +37,9 @@ const FormFieldDropdown = ({
     </>
 );
   
-export default FormFieldDropdown;
+export default FormFieldToggle;
   
-FormFieldDropdown.propTypes = {
+FormFieldToggle.propTypes = {
     title: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
