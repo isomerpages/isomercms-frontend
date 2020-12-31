@@ -19,13 +19,13 @@ const FormFieldToggle = ({
     onFieldChange,
 }) => (
     <>
-      <div className={elementStyles.formHorizontal}>
-        <div className={`d-flex align-items-center ${elementStyles.formHorizontalLabel}`}>
+      <div className={elementStyles.formToggle}>
+        <div className={`d-flex align-items-center ${elementStyles.formToggleLabel}`}>
             <span>{`${title}:`}</span>
         </div>
-        <div className={`d-flex align-items-center ${elementStyles.formHorizontalLabel}`}>
+        <div className={`d-flex align-items-center ${elementStyles.formToggleLabel}`}>
             <ToggleButton
-                className={elementStyles.formHorizontalInput}
+                className={elementStyles.formToggleInput}
                 inactiveLabel={''}
                 activeLabel={''}
                 thumbIcon={<span className={`bx bx-xs ${value ? `${elementStyles.formToggleThumbIconEnabled} bx-check` : `${elementStyles.formToggleThumbIconDisabled} bx-x`}`}/>}
