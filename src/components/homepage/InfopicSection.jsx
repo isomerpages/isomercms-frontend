@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
 import FormFieldMedia from '../FormFieldMedia';
+import { isEmpty } from '../../utils';
 
 /* eslint
   react/no-array-index-key: 0
@@ -24,7 +25,7 @@ const EditorInfopicSection = ({
   errors,
   siteName,
 }) => (
-  <div className={`${elementStyles.card} move`}>
+  <div className={`${elementStyles.card} ${!shouldDisplay && !isEmpty(errors) ? elementStyles.error : ''} move`}>
     <div className={elementStyles.cardHeader}>
       <h2>
         Infopic section: {title}

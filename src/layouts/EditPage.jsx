@@ -327,7 +327,7 @@ export default class EditPage extends Component {
 
   onImageClick = (path) => {
     const cm = this.mdeRef.current.simpleMde.codemirror;
-    cm.replaceSelection(`![](${path})`);
+    cm.replaceSelection(`![](${path.replaceAll(' ', '%20')})`);
     // set state so that rerender is triggered and image is shown
     this.setState({
       editorValue: this.mdeRef.current.simpleMde.codemirror.getValue(),

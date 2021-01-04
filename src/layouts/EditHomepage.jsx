@@ -270,6 +270,12 @@ export default class EditHomepage extends Component {
     this._isMounted = false;
   }
 
+  componentDidUpdate(_, prevState) {
+    if (prevState.frontMatter.sections.length !== 0 && this.state.frontMatter.sections.length !== prevState.frontMatter.sections.length) {
+      // Occurs when a new section is created
+      this.scrollRefs[this.state.frontMatter.sections.length-1].scrollIntoView();
+    }
+  }
   onFieldChange = async (event) => {
     try {
       const { state } = this;
@@ -317,14 +323,14 @@ export default class EditHomepage extends Component {
           // This needs to be done separately because it relies on the state of another field
           if (
             field === 'url' && !value && this.state.frontMatter.sections[sectionIndex][sectionType].button
-            && (this.state.frontMatter.sections[sectionIndex][sectionType].button || this.state.frontMatter.sections[sectionIndex][sectionType].url)
+            && (this.state.frontMatter.sections[sectionIndex][sectionType].button || value)
           ) {
             const errorMessage = 'Please specify a URL for your button'
             newSectionError = _.cloneDeep(errors.sections[sectionIndex])
             newSectionError[sectionType][field] = errorMessage
           } else if (
             field === 'button' && !this.state.frontMatter.sections[sectionIndex][sectionType].url
-            && (this.state.frontMatter.sections[sectionIndex][sectionType].button || this.state.frontMatter.sections[sectionIndex][sectionType].url)
+            && (value || this.state.frontMatter.sections[sectionIndex][sectionType].url) && sectionType !== 'resources'
           ) {
             const errorMessage = 'Please specify a URL for your button'
             newSectionError = _.cloneDeep(errors.sections[sectionIndex])
@@ -332,7 +338,7 @@ export default class EditHomepage extends Component {
           } else {
             newSectionError = validateSections(errors.sections[sectionIndex], sectionType, field, value)
 
-            if (!this.state.frontMatter.sections[sectionIndex][sectionType].button && !this.state.frontMatter.sections[sectionIndex][sectionType].url) {
+            if (field === 'button' && !value) {
               newSectionError[sectionType]['button'] = ''
               newSectionError[sectionType]['url'] = ''
             }
@@ -902,6 +908,7 @@ export default class EditHomepage extends Component {
           this.setState({
             displaySections: newDisplaySections,
           });
+          this.scrollRefs[sectionId].scrollIntoView();
           break;
         }
         case 'highlight': {

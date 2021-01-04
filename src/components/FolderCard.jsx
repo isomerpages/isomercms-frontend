@@ -74,7 +74,7 @@ const FolderCard = ({
     return (
       <div
         id={id}
-        onClick={(e) => {
+        onMouseDown={(e) => {
           e.stopPropagation();
           e.preventDefault(); 
           if (handler) handler(e);

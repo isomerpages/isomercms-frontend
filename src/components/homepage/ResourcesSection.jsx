@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
+import { isEmpty } from '../../utils';
 
 /* eslint
   react/no-array-index-key: 0
@@ -18,7 +19,7 @@ const EditorResourcesSection = ({
   displayHandler,
   errors,
 }) => (
-  <div className={`${elementStyles.card} move`}>
+  <div className={`${elementStyles.card} ${!shouldDisplay && !isEmpty(errors) ? elementStyles.error : ''} move`}>
     <div className={elementStyles.cardHeader}>
       <h2>
         Resources section: {title}

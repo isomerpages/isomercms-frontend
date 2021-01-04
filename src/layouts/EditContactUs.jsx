@@ -10,8 +10,9 @@ import { Redirect } from 'react-router-dom'
 import { toast } from 'react-toastify';
 
 import { DEFAULT_ERROR_TOAST_MSG, frontMatterParser, concatFrontMatterMdBody, isEmpty, retrieveResourceFileMetadata } from '../utils';
-import { sanitiseFrontMatter } from '../utils/dataSanitisers';
-import { validateContact, validateLocation } from '../utils/validators';
+import { sanitiseFrontMatter } from '../utils/contact-us/dataSanitisers';
+import { validateFrontMatter } from '../utils/contact-us/validators';
+import { validateContactType, validateLocationType } from '../utils/validators';
 import {
   createPageStyleSheet,
   getSiteColors,
@@ -35,6 +36,7 @@ import TemplateContactsSection from '../templates/contact-us/ContactsSection'
 import TemplateFeedbackSection from '../templates/contact-us/FeedbackSection';
 
 import DeleteWarningModal from '../components/DeleteWarningModal';
+import GenericWarningModal from '../components/GenericWarningModal';
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -81,6 +83,34 @@ const enumSection = (type, args) => {
   }
 };
 
+const displayDeletedFrontMatter = (deletedFrontMatter) => {
+  let displayText = ''
+  const { contacts, locations } = deletedFrontMatter
+  locations.map((location, i) => {
+    if (!isEmpty(location)) {
+      displayText += `<br/>In Location <code>${i+1}</code>: <br/>`
+      Object.entries(location).forEach(([key, value]) => {
+        if (value?.length) {
+          displayText += `    <code>${key}</code> field, <code>${JSON.stringify(value)}</code> is removed </br>`
+        }
+      })
+    }
+  })  
+  displayText += ''
+  contacts.forEach((contact, i) => {
+    if (!isEmpty(contact)) {
+      displayText += `<br/>In Contact <code>${i+1}</code>: <br/>`
+      contact.content.forEach((obj) => {
+        const [key, value] = Object.entries(obj)[0]
+        if (value) {
+          displayText += `    <code>${key}</code> field, <code>${JSON.stringify(value)}</code> is removed <br/>`
+        }
+      })
+    }
+  })
+  return displayText
+}
+
 export default class EditContactUs extends Component {
   _isMounted = false
 
@@ -99,6 +129,8 @@ export default class EditContactUs extends Component {
     this.state = {
       frontMatter: {},
       originalFrontMatter: {},
+      deletedFrontMatter: {},
+      sanitisedOriginalFrontMatter: {},
       frontMatterSha: null,
       footerContent: {},
       originalFooterContent: {},
@@ -119,6 +151,7 @@ export default class EditContactUs extends Component {
         id: null,
         type: '',
       },
+      showDeletedText: true,
       shouldRedirectToNotFound: false,
     };
   }
@@ -200,11 +233,10 @@ export default class EditContactUs extends Component {
     const { frontMatter } = frontMatterParser(Base64.decode(content));
 
     // data cleaning for non-comforming data
-    const sanitisedFrontMatter = sanitiseFrontMatter(frontMatter)
-
+    const { sanitisedFrontMatter, deletedFrontMatter } = sanitiseFrontMatter(frontMatter)
     const { contacts, locations } = sanitisedFrontMatter
+    const { contactsErrors, locationsErrors } = validateFrontMatter(sanitisedFrontMatter)
 
-    const contactsErrors = [], locationsErrors = []
     const contactsDisplay = [], locationsDisplay = []
     const contactsScrollRefs = [], locationsScrollRefs = []
 
@@ -221,13 +253,11 @@ export default class EditContactUs extends Component {
     }
 
     contacts.forEach(_ => {
-      contactsErrors.push(enumSection('contacts'))
       contactsDisplay.push(false)
       contactsScrollRefs.push(React.createRef())
     })
 
-    locations.forEach(location => {
-      locationsErrors.push(enumSection('locations', { operatingHoursLength: location.operating_hours.length }))
+    locations.forEach(_ => {
       locationsDisplay.push(false)
       locationsScrollRefs.push(React.createRef())
     })
@@ -243,6 +273,8 @@ export default class EditContactUs extends Component {
       footerContent,
       footerSha,
       originalFrontMatter:  _.cloneDeep(frontMatter),
+      deletedFrontMatter,
+      sanitisedOriginalFrontMatter: _.cloneDeep(sanitisedFrontMatter),
       frontMatter: sanitisedFrontMatter,
       frontMatterSha: sha,
       displaySections: {
@@ -362,7 +394,7 @@ export default class EditContactUs extends Component {
                 [elemType]: {[contactIndex]: {[contactType]: {$set: value }}},
               });
               newErrors = update(errors, {
-                [elemType]: {[contactIndex]: {[contactType]: {$set: validateContact(contactType, value)}}}
+                [elemType]: {[contactIndex]: {[contactType]: {$set: validateContactType(contactType, value)}}}
               })
               break;
             default: // 'phone', 'email', 'other'
@@ -370,7 +402,7 @@ export default class EditContactUs extends Component {
                 [elemType]: {[contactIndex]: {content : {[contentIndex]: {[contactType]:  {$set: value } }}}},
               });
               newErrors = update(errors, {
-                [elemType]: {[contactIndex]: {content : {[contentIndex]: {[contactType]:  {$set: validateContact(contactType, value) } }}}},
+                [elemType]: {[contactIndex]: {content : {[contentIndex]: {[contactType]:  {$set: validateContactType(contactType, value) } }}}},
               });
               break;
           }
@@ -389,7 +421,7 @@ export default class EditContactUs extends Component {
                 [elemType]: {[locationIndex]: {[locationType]: {[fieldIndex] : {[fieldType]: { $set: value }}}}},
               });
               newErrors = update(errors, {
-                locations: {[locationIndex]: {[locationType]: {[fieldIndex] : {[fieldType]: { $set: validateLocation(fieldType, value) }}}}},
+                locations: {[locationIndex]: {[locationType]: {[fieldIndex] : {[fieldType]: { $set: validateLocationType(fieldType, value) }}}}},
               });
               break;
             case 'add_operating_hours': 
@@ -415,7 +447,7 @@ export default class EditContactUs extends Component {
               // for address, we validate all address fields together, not the single field
               const addressFields = newFrontMatter.locations[locationIndex][locationType]
               newErrors = update(errors, {
-                [elemType]: {[locationIndex]: {[locationType]: { $set: validateLocation(locationType, addressFields) }}},
+                [elemType]: {[locationIndex]: {[locationType]: { $set: validateLocationType(locationType, addressFields) }}},
               });
               break;
             default:
@@ -423,7 +455,7 @@ export default class EditContactUs extends Component {
                 [elemType]: {[locationIndex]: {[locationType]: { $set: value }}},
               });
               newErrors = update(errors, {
-                [elemType]: {[locationIndex]: {[locationType]: { $set: validateLocation(locationType, value) }}},
+                [elemType]: {[locationIndex]: {[locationType]: { $set: validateLocationType(locationType, value) }}},
               });
               break;
           }
@@ -659,13 +691,16 @@ export default class EditContactUs extends Component {
     const {
       footerContent,
       originalFooterContent,
-      frontMatter,
       originalFrontMatter,
+      deletedFrontMatter,
+      sanitisedOriginalFrontMatter,
+      frontMatter,
       displaySections,
       frontMatterSha,
       footerSha,
       errors,
       itemPendingForDelete,
+      showDeletedText,
     } = state;
     const { match } = this.props;
     const { siteName } = match.params;
@@ -675,11 +710,21 @@ export default class EditContactUs extends Component {
     const { sectionsDisplay } = displaySections
     const { sectionsScrollRefs } = scrollRefs
 
+    const hasDeletions = !isEmpty(deletedFrontMatter)
     const hasErrors = !isEmpty(errors.contacts) || !isEmpty(errors.locations);
-    const hasChanges = JSON.stringify(originalFrontMatter) === JSON.stringify(frontMatter) && JSON.stringify(footerContent) === JSON.stringify(originalFooterContent);
-
+    const hasChanges = JSON.stringify(sanitisedOriginalFrontMatter) === JSON.stringify(frontMatter) && JSON.stringify(footerContent) === JSON.stringify(originalFooterContent);
+    
     return (
       <>
+        { showDeletedText && hasDeletions
+          && 
+          <GenericWarningModal
+            displayTitle="Removed content" 
+            displayText={`Some of your content has been removed as it is incompatible with the new Isomer format. No changes are permanent unless you press Save on the next page.<br/>${displayDeletedFrontMatter(deletedFrontMatter)}`}
+            onProceed={()=>{this.setState({showDeletedText: false})}}
+            proceedText="Acknowledge"
+          />
+        }
         {
           itemPendingForDelete.id
           && (
@@ -778,6 +823,13 @@ export default class EditContactUs extends Component {
             </section>
           </div>
           <div className={editorStyles.pageEditorFooter}>
+            { hasDeletions && 
+              <LoadingButton
+                label="See removed content"
+                className={`ml-auto ${elementStyles.warning}`}
+                callback={() => {this.setState({showDeletedText: true})}}
+              />
+            }
             <LoadingButton
               label="Save"
               disabled={hasErrors} 

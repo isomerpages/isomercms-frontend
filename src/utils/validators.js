@@ -5,7 +5,7 @@ const _ = require('lodash');
 // ==============
 const PERMALINK_REGEX = '^((\/([a-z0-9]+-)*[a-z0-9]+)+)\/?$';
 const URL_REGEX_PART_1 = '^(https://)?(www.)?(';
-const URL_REGEX_PART_2 = '.com/)([a-zA-Z0-9_-]+(/)?)+$';
+const URL_REGEX_PART_2 = '.com/)([a-zA-Z0-9_-]+([/.])?)+$';
 const PHONE_REGEX = '^\\+65(6|8|9)[0-9]{7}$'
 const EMAIL_REGEX = '^(([^<>()\\[\\]\\.,;:\\s@\\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\\"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z-0-9]+\\.)+[a-zA-Z]{2,}))$'
 const DATE_REGEX = '^([0-9]{4}-[0-9]{2}-[0-9]{2})$';
@@ -463,7 +463,7 @@ const validateSections = (sectionError, sectionType, field, value) => {
 // ===============
 // Contacts
 
-const validateContact = (contactType, value) => {
+const validateContactType = (contactType, value) => {
   let errorMessage = '';
   switch (contactType) {
     case 'title':
@@ -503,7 +503,7 @@ const validateContact = (contactType, value) => {
 
 // Locations
 
-const validateLocation = (locationType, value) => {
+const validateLocationType = (locationType, value) => {
   let errorMessage = '';
   switch (locationType) {
     case 'title':
@@ -788,8 +788,8 @@ const validateFileName = (value) => {
 };
 
 export {
-  validateContact,
-  validateLocation,
+  validateContactType,
+  validateLocationType,
   validateHighlights,
   validateDropdownElems,
   validateSections,
