@@ -47,6 +47,21 @@ p {
   }
 }
 
+.formToggle{
+  @extend .formHorizontal;
+  padding-bottom:20px;
+
+  .formToggleLabel{
+    @extend .formLabel;
+    width: 25%;
+    margin: 1px;
+  }
+
+  .formToggleInput{
+    width: 75%;
+  }
+}
+
 .formDropdown{
   @extend .formHorizontal;
 
@@ -148,4 +163,24 @@ input[type=radio] {
   margin: 0;
   padding: 10px;
   box-sizing: border-box;
+}
+
+.formToggleContainer {
+  display: flex;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+.formToggleThumbIcon {
+  align-self: center;
+}
+
+.formToggleThumbIconEnabled {
+  @extend .formToggleThumbIcon;
+  color: $success;
+}
+
+.formToggleThumbIconDisabled {
+  @extend .formToggleThumbIcon;
+  color: $body-grey
 }
