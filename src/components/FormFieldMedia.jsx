@@ -26,6 +26,7 @@ const FormFieldMedia = ({
   const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
   const [stagedFileDetails, setStagedFileDetails] = useState()
   const [imageSearchTerm, setImageSearchTerm] = useState('')
+  const [selectedFile, setSelectedFile] = useState({})
 
   const onItemClick = (path) => {
     setIsSelectingItem(false)
@@ -46,8 +47,9 @@ const FormFieldMedia = ({
     setIsSelectingItem(!isSelectingItem)
   }
   
-  const toggleItemAndSettingsModal = () => {
+  const toggleItemAndSettingsModal = (newFileName) => {
     setIsFileStagedForUpload(!isFileStagedForUpload)
+    onItemClick(`/images/${newFileName}`)
   }
 
   const stageFileForUpload = (fileName, fileData) => {
@@ -116,6 +118,8 @@ const FormFieldMedia = ({
               onClose={() => setIsSelectingItem(false)}
               imageSearchTerm={imageSearchTerm}
               setImageSearchTerm={setImageSearchTerm}
+              selectedFile={selectedFile}
+              setSelectedFile={setSelectedFile}
             />
           )
         }

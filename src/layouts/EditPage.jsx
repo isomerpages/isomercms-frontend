@@ -118,13 +118,13 @@ export default class EditPage extends Component {
       isSelectingImage: false,
       isInsertingHyperlink: false,
       pendingImageUpload: null,
-      selectedImage: '',
       selectionText: '',
       isFileStagedForUpload: false,
       stagedFileDetails: {},
       isLoadingPageContent: true,
       shouldRedirectToNotFound: false,
       imageSearchTerm: '',
+      selectedFile: '',
     };
     this.mdeRef = React.createRef();
     this.apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName })
@@ -237,6 +237,10 @@ export default class EditPage extends Component {
     this._isMounted = false;
   }
 
+  setSelectedFile = (selectedFile) => {
+    this.setState({ selectedFile })
+  }
+
   updatePage = async () => {
     try {
       const { state } = this;
@@ -293,10 +297,28 @@ export default class EditPage extends Component {
     }));
   }
 
-  toggleImageAndSettingsModal = (searchTerm) => {
-    this.setState((currState) => ({
-      isFileStagedForUpload: !currState.isFileStagedForUpload,
-    }));
+  toggleImageAndSettingsModal = (newFileName) => {
+    // insert image into editor
+    let editorValue
+    if (newFileName) {
+      const cm = this.mdeRef.current.simpleMde.codemirror;
+      cm.replaceSelection(`![](/images/${newFileName})`);
+
+      // set state so that rerender is triggered and image is shown
+      editorValue = this.mdeRef.current.simpleMde.codemirror.getValue()
+    }
+
+    this.setState((currState) => {
+      const updatedState = {
+        isFileStagedForUpload: !currState.isFileStagedForUpload,
+      }
+
+      if (editorValue) {
+        updatedState.editorValue = editorValue
+      }
+
+      return updatedState
+    });
   }
 
   setImageSearchTerm = (searchTerm) => {
@@ -386,6 +408,7 @@ export default class EditPage extends Component {
       selectionText,
       isLoadingPageContent,
       imageSearchTerm,
+      selectedFile,
     } = this.state;
 
     const html = marked(editorValue)
@@ -413,6 +436,8 @@ export default class EditPage extends Component {
               onClose={() => this.setState({ isSelectingImage: false })}
               imageSearchTerm={imageSearchTerm}
               setImageSearchTerm={this.setImageSearchTerm}
+              selectedFile={selectedFile}
+              setSelectedFile={this.setSelectedFile}
             />
             )
           }

@@ -69,8 +69,10 @@ export default class MediaModal extends Component {
       type,
       readFileToStageUpload,
       imageSearchTerm,
+      selectedFile,
+      setSelectedFile,
     } = this.props;
-    const { filteredMedias, selectedFile } = this.state;
+    const { filteredMedias } = this.state;
     return (filteredMedias
       && (
         <>
@@ -107,7 +109,7 @@ export default class MediaModal extends Component {
                     type={type}
                     media={media}
                     siteName={siteName}
-                    onClick={() => this.setState({ selectedFile: media })}
+                    onClick={() => setSelectedFile(media)}
                     key={media.path}
                     isSelected={media.path === selectedFile?.path}
                   />
