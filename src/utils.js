@@ -245,7 +245,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   else slugifiedCategory = category
 
   const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${originalCategory ? type === "resource" ? `/resources/${originalCategory}` : `/collections/${originalCategory}` : ''}`
-  const newBaseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? type === "resource" ? `/resources/${category}` : `/collections/${category}` : ''}`
+  const newBaseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? type === "resource" ? `/resources/${slugifiedCategory}` : `/collections/${slugifiedCategory}` : ''}`
   let newFileName, frontMatter
   if (type === "resource") {
     newFileName = generateResourceFileName(title.toLowerCase(), date, resourceType);
