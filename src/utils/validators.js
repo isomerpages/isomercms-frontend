@@ -20,7 +20,7 @@ const alphabetsRegexTest = RegExp(ALPHABETS_ONLY_REGEX);
 const alphanumericRegexTest = RegExp(ALPHANUMERICS_ONLY_REGEX);
 const fileNameRegexTest = /^[a-zA-Z0-9" "_-]+$/;
 const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/;
-const RESOURCE_CATEGORY_REGEX = '^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$';
+const RESOURCE_CATEGORY_REGEX = '^([a-zA-Z0-9]+[- ])*[a-zA-Z0-9]+$';
 const resourceRoomNameRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
 const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX);
 
@@ -748,7 +748,7 @@ const validateCategoryName = (value, componentName) => {
   }
   // Resource category fails regex
   else if (!resourceCategoryRegexTest.test(value)) {
-    errorMessage = `The ${componentName} category should only have alphanumeric characters separated by hypens.`;
+    errorMessage = `The ${componentName} category should only have alphanumeric characters separated by hypens or spaces.`;
   }
 
   return errorMessage;
