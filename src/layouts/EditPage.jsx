@@ -49,7 +49,7 @@ import Header from '../components/Header';
 import DeleteWarningModal from '../components/DeleteWarningModal';
 import LoadingButton from '../components/LoadingButton';
 import HyperlinkModal from '../components/HyperlinkModal';
-import MediasModal from '../components/media/MediaModal';
+import MediaModal from '../components/media/MediaModal';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
 // axios settings
@@ -404,7 +404,7 @@ export default class EditPage extends Component {
         <div className={elementStyles.wrapper}>
           {
             isSelectingImage && (
-            <MediasModal
+            <MediaModal
               type="image"
               siteName={siteName}
               onMediaSelect={this.onImageClick}

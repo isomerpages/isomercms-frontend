@@ -9,7 +9,7 @@ import MediaUploadCard from './MediaUploadCard';
 import { MediaSearchBar } from './MediaSearchBar';
 import LoadingButton from '../LoadingButton';
 
-export default class MediasModal extends Component {
+export default class MediaModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -136,7 +136,7 @@ export default class MediasModal extends Component {
   }
 }
 
-MediasModal.propTypes = {
+MediaModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   siteName: PropTypes.string.isRequired,
   onMediaSelect: PropTypes.func.isRequired,
