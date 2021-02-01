@@ -46,9 +46,7 @@ const FormFieldMedia = ({
     setIsSelectingItem(!isSelectingItem)
   }
   
-  const toggleItemAndSettingsModal = (searchTerm) => {
-    setImageSearchTerm(searchTerm)
-    setIsSelectingItem(!isSelectingItem)
+  const toggleItemAndSettingsModal = () => {
     setIsFileStagedForUpload(!isFileStagedForUpload)
   }
 

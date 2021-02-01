@@ -295,9 +295,7 @@ export default class EditPage extends Component {
 
   toggleImageAndSettingsModal = (searchTerm) => {
     this.setState((currState) => ({
-      isSelectingImage: !currState.isSelectingImage,
       isFileStagedForUpload: !currState.isFileStagedForUpload,
-      imageSearchTerm: searchTerm,
     }));
   }
 
