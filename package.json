@@ -28,7 +28,7 @@
     "react-dom": "^16.10.2",
     "react-input-mask": "^2.0.4",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.0",
+    "react-scripts": "^3.4.4",
     "react-select": "^3.1.0",
     "react-simplemde-editor": "^4.1.0",
     "react-toastify": "^6.1.0",
