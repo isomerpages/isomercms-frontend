@@ -12147,3 +12147,8 @@ a.navbar-item {
 .resource-sample-mask{
     opacity: 0.1;
 }
+
+.CodeMirror .cm-spell-error:not(.cm-url):not(.cm-comment):not(.cm-tag):not(.cm-word) {
+    background-color: #ffffff !important;
+    border-bottom: 1px dotted #ff0000;
+}
