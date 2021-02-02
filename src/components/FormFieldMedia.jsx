@@ -25,7 +25,7 @@ const FormFieldMedia = ({
   const [isSelectingItem, setIsSelectingItem] = useState(false)
   const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
   const [stagedFileDetails, setStagedFileDetails] = useState()
-  const [imageSearchTerm, setImageSearchTerm] = useState('')
+  const [mediaSearchTerm, setMediaSearchTerm] = useState('')
   const [selectedFile, setSelectedFile] = useState({})
 
   const onItemClick = (path) => {
@@ -116,8 +116,8 @@ const FormFieldMedia = ({
               toggleItemModal={toggleItemModal}
               readFileToStageUpload={readFileToStageUpload}
               onClose={() => setIsSelectingItem(false)}
-              imageSearchTerm={imageSearchTerm}
-              setImageSearchTerm={setImageSearchTerm}
+              mediaSearchTerm={mediaSearchTerm}
+              setMediaSearchTerm={setMediaSearchTerm}
               selectedFile={selectedFile}
               setSelectedFile={setSelectedFile}
             />

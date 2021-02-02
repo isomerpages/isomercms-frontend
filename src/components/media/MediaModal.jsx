@@ -20,23 +20,23 @@ export default class MediaModal extends Component {
   }
 
   async componentDidMount() {
-    const { siteName, type, imageSearchTerm } = this.props;
+    const { siteName, type, mediaSearchTerm } = this.props;
     const mediaRoute = type === 'file' ? 'documents' : 'images';
     try {
       const { data: { documents, images } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${mediaRoute}`, {
         withCredentials: true,
       });
       if (_.isEmpty(documents || images)) {
-        this.setState({ medias: [], filteredMedias: [], searchTerm: imageSearchTerm });
+        this.setState({ medias: [], filteredMedias: [], searchTerm: mediaSearchTerm });
       } else {
         let filteredMedias
         if (type === 'file') {
-          filteredMedias = this.filterMediaByFileName(documents, imageSearchTerm)
+          filteredMedias = this.filterMediaByFileName(documents, mediaSearchTerm)
         } else {
-          filteredMedias = this.filterMediaByFileName(images, imageSearchTerm)
+          filteredMedias = this.filterMediaByFileName(images, mediaSearchTerm)
         }
 
-        this.setState({ medias: documents || images, filteredMedias, searchTerm: imageSearchTerm });
+        this.setState({ medias: documents || images, filteredMedias, searchTerm: mediaSearchTerm });
       }
     } catch (err) {
       console.error(err);
@@ -53,11 +53,11 @@ export default class MediaModal extends Component {
   }
 
   searchChangeHandler = (event) => {
-    const { setImageSearchTerm } = this.props
+    const { setMediaSearchTerm } = this.props
     const { medias } = this.state
     const { target: { value } } = event
     const filteredMedias = this.filterMediaByFileName(medias, value)
-    setImageSearchTerm(value)
+    setMediaSearchTerm(value)
     this.setState({ filteredMedias })
   }
 
@@ -68,7 +68,7 @@ export default class MediaModal extends Component {
       onMediaSelect,
       type,
       readFileToStageUpload,
-      imageSearchTerm,
+      mediaSearchTerm,
       selectedFile,
       setSelectedFile,
     } = this.props;
@@ -80,7 +80,7 @@ export default class MediaModal extends Component {
             <div className={mediaStyles.mediaModal}>
               <div className={elementStyles.modalHeader}>
                 <h1 className="pl-5 mr-auto">{`Select ${type === 'file' ? 'File' : 'Image'}`}</h1>
-                <MediaSearchBar value={imageSearchTerm} onSearchChange={this.searchChangeHandler} />
+                <MediaSearchBar value={mediaSearchTerm} onSearchChange={this.searchChangeHandler} />
                 <button type="button" onClick={onClose}>
                   <i className="bx bx-x" />
                 </button>
@@ -143,5 +143,5 @@ MediaModal.propTypes = {
   siteName: PropTypes.string.isRequired,
   onMediaSelect: PropTypes.func.isRequired,
   type: PropTypes.oneOf(['file', 'image']).isRequired,
-  setImageSearchTerm: PropTypes.func.isRequired,
+  setMediaSearchTerm: PropTypes.func.isRequired,
 };

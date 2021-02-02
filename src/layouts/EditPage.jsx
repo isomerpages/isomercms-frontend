@@ -123,7 +123,7 @@ export default class EditPage extends Component {
       stagedFileDetails: {},
       isLoadingPageContent: true,
       shouldRedirectToNotFound: false,
-      imageSearchTerm: '',
+      mediaSearchTerm: '',
       selectedFile: '',
     };
     this.mdeRef = React.createRef();
@@ -321,8 +321,8 @@ export default class EditPage extends Component {
     });
   }
 
-  setImageSearchTerm = (searchTerm) => {
-    this.setState({ imageSearchTerm: searchTerm })
+  setMediaSearchTerm = (searchTerm) => {
+    this.setState({ mediaSearchTerm: searchTerm })
   }
 
   onHyperlinkOpen = () => {
@@ -407,7 +407,7 @@ export default class EditPage extends Component {
       leftNavPages,
       selectionText,
       isLoadingPageContent,
-      imageSearchTerm,
+      mediaSearchTerm,
       selectedFile,
     } = this.state;
 
@@ -434,8 +434,8 @@ export default class EditPage extends Component {
               toggleImageModal={this.toggleImageModal}
               readFileToStageUpload={this.readFileToStageUpload}
               onClose={() => this.setState({ isSelectingImage: false })}
-              imageSearchTerm={imageSearchTerm}
-              setImageSearchTerm={this.setImageSearchTerm}
+              mediaSearchTerm={mediaSearchTerm}
+              setMediaSearchTerm={this.setMediaSearchTerm}
               selectedFile={selectedFile}
               setSelectedFile={this.setSelectedFile}
             />
