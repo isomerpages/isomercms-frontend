@@ -102,9 +102,8 @@ const TemplateHeroSection = ({
   toggleDropdown,
 }) => {
   const heroStyle = {
-    background: `url(https://raw.githubusercontent.com/isomerpages/${siteName}/staging${hero.background}) no-repeat top left`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center center',
+    // See j08691's answer at https://stackoverflow.com/questions/21388712/background-size-doesnt-work
+    background: `url(https://raw.githubusercontent.com/isomerpages/${siteName}/staging${hero.background}) no-repeat center center/cover`,
   };
   return (
     <>
