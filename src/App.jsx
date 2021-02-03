@@ -88,14 +88,16 @@ function App() {
   )
 
   const setLogin = () => {
-    setIsLoggedIn(true)
+    if (!isLoggedIn) setIsLoggedIn(true)
     localStorage.setItem(LOCAL_STORAGE_AUTH_STATE, true)
   }
 
   const setLogoutState = () => {
     localStorage.removeItem(LOCAL_STORAGE_AUTH_STATE)
-    setIsLoggedIn(false)
-    setShouldBlockNavigation(false)
+    if (isLoggedIn) {
+      setIsLoggedIn(false)
+      setShouldBlockNavigation(false)
+    }
   }
 
   useEffect(() => {
