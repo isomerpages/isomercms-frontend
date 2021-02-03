@@ -29,7 +29,16 @@ const FormFieldHorizontal = ({
         onChange={onFieldChange}
       />
     </div>
-    <span className={elementStyles.error}>{errorMessage}</span>
+    {
+      errorMessage 
+      ? (
+        <>
+                <span className={elementStyles.error}>{errorMessage}</span>
+        <br></br>
+        <br></br>
+        </>
+      ) : null
+    }
   </>
 );
 
