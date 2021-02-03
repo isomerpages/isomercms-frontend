@@ -437,12 +437,7 @@ const ComponentSettingsModal = ({
                       options={allCategories}
                     />
                   </div>
-                  { errors.category &&
-                  <>
-                    <span className={elementStyles.error}>{errors.category}</span>
-                    <br/>
-                  </>
-                  }
+                  { errors.category && <span className={elementStyles.error}>{errors.category}</span> }
                   {/* Title */}
                   <FormField
                     title="Title"
@@ -452,7 +447,6 @@ const ComponentSettingsModal = ({
                     isRequired={true}
                     onFieldChange={changeHandler}
                   />
-                  {errors.title && <br/>}
                   {/* Third Nav */}
                   { 
                     ((type === "page" && originalCategory) || (type === 'page' && !originalCategory && category)) &&
