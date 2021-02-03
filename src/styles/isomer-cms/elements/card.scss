@@ -14,13 +14,18 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    overflow:hidden;
 
     h2{
       font-size: 20px;
       font-weight: normal;
-      overflow-wrap: anywhere;
       line-height: 2.0;
       color: darken($isomer-blue,20%);
+      min-width:0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-right: 1.875rem;
     }
 
     .bx{
