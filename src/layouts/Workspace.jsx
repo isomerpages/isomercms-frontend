@@ -21,8 +21,6 @@ import {
 
 // Constants
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
-const CancelToken = axios.CancelToken;
-const source = CancelToken.source();
 
 const Workspace = ({ match, location, siteColors, setSiteColors }) => {
     const { siteName } = match.params;
@@ -54,7 +52,7 @@ const Workspace = ({ match, location, siteColors, setSiteColors }) => {
         }
 
         try { 
-          await axios.get(`${BACKEND_URL}/sites/${siteName}/pages/contact-us.md`, { cancelToken: source.token });
+          await axios.get(`${BACKEND_URL}/sites/${siteName}/pages/contact-us.md`);
           if (_isMounted) setContactUsCard(true) 
         } catch (e) {
           if (e.response?.status === 500) {
@@ -63,7 +61,7 @@ const Workspace = ({ match, location, siteColors, setSiteColors }) => {
         }
 
         try { 
-          const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`, { cancelToken: source.token });
+          const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`);
           if (_isMounted) setCollections(collectionsResp.data?.collections)
         } catch (e) {
           setCollections(undefined)
@@ -71,7 +69,7 @@ const Workspace = ({ match, location, siteColors, setSiteColors }) => {
         }
         
         try { 
-          const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`, { cancelToken: source.token });
+          const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`);
           if (_isMounted) {
             console.log(unlinkedPagesResp.data?.pages)
             setUnlinkedPages(unlinkedPagesResp.data?.pages.filter(page => page.fileName !== 'contact-us.md'))
@@ -81,10 +79,7 @@ const Workspace = ({ match, location, siteColors, setSiteColors }) => {
         }
       }
       fetchData()
-      return () => {
-        source.cancel('Page was unmounted')
-        _isMounted = false
-      }
+      return () => { _isMounted = false }
     }, [])
 
     return (
