@@ -149,7 +149,7 @@ export default class Images extends Component {
             media={pendingImageUpload}
             siteName={siteName}
             // eslint-disable-next-line react/jsx-boolean-value
-            isPendingUpload={true}
+            isPendingUpload
             onClose={() => this.setState({ pendingImageUpload: null })}
             onSave={() => window.location.reload()}
           />

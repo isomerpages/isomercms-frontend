@@ -86,7 +86,7 @@ export default class MediaSettingsModal extends Component {
           withCredentials: true,
         });
       }
-      onSave()
+      onSave(newFileName)
     } catch (err) {
       if (err?.response?.status === 409) {
         // Error due to conflict in name
@@ -188,7 +188,8 @@ export default class MediaSettingsModal extends Component {
                 onFieldChange={this.setFileName}
               />
             </div>
-            <SaveDeleteButtons 
+            <SaveDeleteButtons
+              saveLabel="Upload"
               isDisabled={isPendingUpload ? false : (errorMessage || !sha)}
               hasDeleteButton={!isPendingUpload}
               saveCallback={this.saveFile}

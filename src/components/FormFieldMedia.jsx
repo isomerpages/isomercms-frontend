@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import MediasModal from './media/MediaModal';
+import MediaModal from './media/MediaModal';
 import MediaSettingsModal from './media/MediaSettingsModal';
 import Toast from './Toast';
 
@@ -25,6 +25,8 @@ const FormFieldMedia = ({
   const [isSelectingItem, setIsSelectingItem] = useState(false)
   const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
   const [stagedFileDetails, setStagedFileDetails] = useState()
+  const [mediaSearchTerm, setMediaSearchTerm] = useState('')
+  const [selectedFile, setSelectedFile] = useState({})
 
   const onItemClick = (path) => {
     setIsSelectingItem(false)
@@ -45,9 +47,9 @@ const FormFieldMedia = ({
     setIsSelectingItem(!isSelectingItem)
   }
   
-  const toggleItemAndSettingsModal = () => {
-    setIsSelectingItem(!isSelectingItem)
+  const toggleItemAndSettingsModal = (newFileName) => {
     setIsFileStagedForUpload(!isFileStagedForUpload)
+    onItemClick(`/images/${newFileName}`)
   }
 
   const stageFileForUpload = (fileName, fileData) => {
@@ -107,13 +109,17 @@ const FormFieldMedia = ({
         }
         {
           isSelectingItem && (
-            <MediasModal
+            <MediaModal
               type={type}
               siteName={siteName}
               onMediaSelect={onItemClick}
               toggleItemModal={toggleItemModal}
               readFileToStageUpload={readFileToStageUpload}
               onClose={() => setIsSelectingItem(false)}
+              mediaSearchTerm={mediaSearchTerm}
+              setMediaSearchTerm={setMediaSearchTerm}
+              selectedFile={selectedFile}
+              setSelectedFile={setSelectedFile}
             />
           )
         }
@@ -125,7 +131,7 @@ const FormFieldMedia = ({
               onClose={() => setIsFileStagedForUpload(false)}
               onSave={toggleItemAndSettingsModal}
               media={stagedFileDetails}
-              isPendingUpload="true"
+              isPendingUpload
             />
           )
         }

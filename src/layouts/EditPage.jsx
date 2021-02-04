@@ -49,7 +49,7 @@ import Header from '../components/Header';
 import DeleteWarningModal from '../components/DeleteWarningModal';
 import LoadingButton from '../components/LoadingButton';
 import HyperlinkModal from '../components/HyperlinkModal';
-import MediasModal from '../components/media/MediaModal';
+import MediaModal from '../components/media/MediaModal';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
 // axios settings
@@ -118,12 +118,13 @@ export default class EditPage extends Component {
       isSelectingImage: false,
       isInsertingHyperlink: false,
       pendingImageUpload: null,
-      selectedImage: '',
       selectionText: '',
       isFileStagedForUpload: false,
       stagedFileDetails: {},
       isLoadingPageContent: true,
       shouldRedirectToNotFound: false,
+      mediaSearchTerm: '',
+      selectedFile: '',
     };
     this.mdeRef = React.createRef();
     this.apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName })
@@ -236,6 +237,10 @@ export default class EditPage extends Component {
     this._isMounted = false;
   }
 
+  setSelectedFile = (selectedFile) => {
+    this.setState({ selectedFile })
+  }
+
   updatePage = async () => {
     try {
       const { state } = this;
@@ -292,11 +297,32 @@ export default class EditPage extends Component {
     }));
   }
 
-  toggleImageAndSettingsModal = () => {
-    this.setState((currState) => ({
-      isSelectingImage: !currState.isSelectingImage,
-      isFileStagedForUpload: !currState.isFileStagedForUpload,
-    }));
+  toggleImageAndSettingsModal = (newFileName) => {
+    // insert image into editor
+    let editorValue
+    if (newFileName) {
+      const cm = this.mdeRef.current.simpleMde.codemirror;
+      cm.replaceSelection(`![](/images/${newFileName})`);
+
+      // set state so that rerender is triggered and image is shown
+      editorValue = this.mdeRef.current.simpleMde.codemirror.getValue()
+    }
+
+    this.setState((currState) => {
+      const updatedState = {
+        isFileStagedForUpload: !currState.isFileStagedForUpload,
+      }
+
+      if (editorValue) {
+        updatedState.editorValue = editorValue
+      }
+
+      return updatedState
+    });
+  }
+
+  setMediaSearchTerm = (searchTerm) => {
+    this.setState({ mediaSearchTerm: searchTerm })
   }
 
   onHyperlinkOpen = () => {
@@ -365,7 +391,7 @@ export default class EditPage extends Component {
   }
 
   render() {
-    const { match, isCollectionPage, isResourcePage, primaryColors, secondaryColors } = this.props;
+    const { match, isCollectionPage, isResourcePage } = this.props;
     const { siteName, fileName, collectionName, resourceName } = match.params;
     const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, isCollectionPage, fileName)
     const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, collectionName, siteName)
@@ -381,6 +407,8 @@ export default class EditPage extends Component {
       leftNavPages,
       selectionText,
       isLoadingPageContent,
+      mediaSearchTerm,
+      selectedFile,
     } = this.state;
 
     const html = marked(editorValue)
@@ -399,13 +427,17 @@ export default class EditPage extends Component {
         <div className={elementStyles.wrapper}>
           {
             isSelectingImage && (
-            <MediasModal
+            <MediaModal
               type="image"
               siteName={siteName}
               onMediaSelect={this.onImageClick}
               toggleImageModal={this.toggleImageModal}
               readFileToStageUpload={this.readFileToStageUpload}
               onClose={() => this.setState({ isSelectingImage: false })}
+              mediaSearchTerm={mediaSearchTerm}
+              setMediaSearchTerm={this.setMediaSearchTerm}
+              selectedFile={selectedFile}
+              setSelectedFile={this.setSelectedFile}
             />
             )
           }
@@ -417,7 +449,7 @@ export default class EditPage extends Component {
                 onClose={() => this.setState({ isFileStagedForUpload: false })}
                 onSave={this.toggleImageAndSettingsModal}
                 media={stagedFileDetails}
-                isPendingUpload="true"
+                isPendingUpload
               />
             )
           }
