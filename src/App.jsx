@@ -69,13 +69,16 @@ function App() {
   const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false)
   const [siteColors, setSiteColors] = useState({})
 
+  let axiosErrCount = 0
+
   axios.interceptors.response.use(
     function (response) {
       return response
     },
     async function (error) {
       if (error.response && error.response.status === 401) {
-        if (isLoggedIn) {
+        axiosErrCount += 1
+        if (isLoggedIn && axiosErrCount === 1) {
           setShouldBlockNavigation(true)
           console.log('User token has expired or does not exist')
         }
@@ -97,8 +100,16 @@ function App() {
     if (isLoggedIn) {
       setIsLoggedIn(false)
       setShouldBlockNavigation(false)
+      axiosErrCount = 0
     }
   }
+
+  // useEffect(() => {
+  //   if (isLoggedIn && axiosErrCount === 1) {
+  //     setShouldBlockNavigation(true)
+  //     console.log('User token has expired or does not exist')
+  //   }
+  // }, [axiosErrCount])
 
   useEffect(() => {
     if (shouldBlockNavigation) {
