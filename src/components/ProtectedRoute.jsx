@@ -16,19 +16,22 @@ const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) =>
     const { siteName } = rest.computedMatch?.params
     
     useEffect(() => {
+        let _isMounted = true
         const fetchData = async () => {
             try {
                 await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}`)
-                setPageNotFound(false)
+                if (_isMounted) setPageNotFound(false)
             } catch (e) {
-                setPageNotFound(true)
+                if (_isMounted) setPageNotFound(true)
             }
         }
         if (siteName) {
             fetchData()
         } else {
-            setPageNotFound(false)
+            if (_isMounted) setPageNotFound(false)
         }
+
+        return () => { _isMounted = false } 
     }, [siteName])
 
     return (
