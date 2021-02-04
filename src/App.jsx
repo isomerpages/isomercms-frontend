@@ -113,7 +113,7 @@ function App() {
   const ProtectedRouteWithProps = (props) => {
     return (
       <Sentry.ErrorBoundary fallback={FallbackComponent}>
-        <ProtectedRoute {...props} isLoggedIn={isLoggedIn} siteColors={siteColors} setSiteColors={setSiteColors} />
+        <ProtectedRoute {...props} siteColors={siteColors} setSiteColors={setSiteColors} />
       </Sentry.ErrorBoundary>
     )
   }
@@ -129,9 +129,9 @@ function App() {
             you have multiple routes, but you want only one
             of them to render at a time
           */}
-            <LoginContext.Provider value={setLogoutState}>
+            <LoginContext.Provider value={{isLoggedIn, setLogin, setLogoutState}}>
               <Switch>
-                  <ProtectedRouteWithProps exact path='/auth' component={AuthCallback} setLogin={setLogin} />
+                  <ProtectedRouteWithProps exact path='/auth' component={AuthCallback} />
                   <ProtectedRouteWithProps exact path="/" component={Home} />
                   <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
                   <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName" component={CategoryPages} isResource={false}/>

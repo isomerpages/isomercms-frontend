@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Redirect, Route } from 'react-router-dom'
 import axios from 'axios'
 
 // Import layouts
 import Home from '../layouts/Home';
+
+// Import contexts
+const { LoginContext } = require('../contexts/LoginContext')
 
 // Constants
 const authContextString = '#isomercms'
@@ -11,7 +14,8 @@ const authContextString = '#isomercms'
 // axios settings
 axios.defaults.withCredentials = true
 
-const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) => {
+const ProtectedRoute = ({ component: WrappedComponent, ...rest }) => {
+    const { isLoggedIn } = useContext(LoginContext)
     const [pageNotFound, setPageNotFound] = useState()
     const { siteName } = rest.computedMatch?.params
     
@@ -73,7 +77,13 @@ const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) =>
                 }
 
                 console.log('User is not logged in at', rest.location.pathname)
-                return <Home {...rest} {...props} />
+                // Render login component if not logged in
+                if (rest.location.pathname === '/') {
+                    return <Home {...rest} {...props} />
+                }
+
+                // Redirect all URLs to Login component when not logged in	
+                return <Redirect to={{ pathname: '/' }} />
             }
         } />
     )
