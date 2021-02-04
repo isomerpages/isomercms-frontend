@@ -50,7 +50,7 @@ const Resources = ({ match, location }) => {
         }
         if (_isMounted) setIsLoading(false)
       } catch (err) {
-        setIsLoading(false)
+        if (_isMounted) setIsLoading(false)
         console.log(err)
       }
     }
