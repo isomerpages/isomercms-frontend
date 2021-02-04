@@ -30,19 +30,22 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
     const [allCategories, setAllCategories] = useState()
 
     useEffect(() => {
+        let _isMounted = true
         const fetchData = async () => {
           // Retrieve the list of all page/resource categories for use in the dropdown options.
           if (isResource) {
             const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`);
             const { resources: allCategories } = resourcesResp.data;
-            setAllCategories(allCategories.map((category) => category.dirName))
+            if (_isMounted) setAllCategories(allCategories.map((category) => category.dirName))
           } else {
             const collectionsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`);
             const { collections: collectionCategories } = collectionsResp.data;
-            setAllCategories(collectionCategories)
+            if (_isMounted) setAllCategories(collectionCategories)
           }
         }
         fetchData()
+
+        return () => { _isMounted = false }
       }, [])
 
     const loadThirdNavOptions = async () => {

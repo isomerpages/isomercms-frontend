@@ -75,8 +75,10 @@ function App() {
     },
     async function (error) {
       if (error.response && error.response.status === 401) {
-        setShouldBlockNavigation(true)
-        console.log('User token has expired or does not exist')
+        if (isLoggedIn && !shouldBlockNavigation) {
+          setShouldBlockNavigation(true)
+          console.log('User token has expired or does not exist')
+        }
       } else {
         console.log('An unknown error occurred: ')
         console.error(error)
@@ -92,14 +94,14 @@ function App() {
 
   const setLogoutState = () => {
     localStorage.removeItem(LOCAL_STORAGE_AUTH_STATE)
-    if (isLoggedIn) {
+    if (isLoggedIn && shouldBlockNavigation) {
       setIsLoggedIn(false)
       setShouldBlockNavigation(false)
     }
   }
 
   useEffect(() => {
-    if (shouldBlockNavigation) {
+    if (isLoggedIn && shouldBlockNavigation) {
       alert('Warning: your token has expired. Isomer will log you out now.')
       const logout = async () =>  {
         console.log('Logging out...')
