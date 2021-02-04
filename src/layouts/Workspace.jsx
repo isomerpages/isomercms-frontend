@@ -21,6 +21,8 @@ import {
 
 // Constants
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
+const CancelToken = axios.CancelToken;
+const source = CancelToken.source();
 
 const Workspace = ({ match, location, siteColors, setSiteColors }) => {
     const { siteName } = match.params;
@@ -52,16 +54,16 @@ const Workspace = ({ match, location, siteColors, setSiteColors }) => {
         }
 
         try { 
-          await axios.get(`${BACKEND_URL}/sites/${siteName}/pages/contact-us.md`);
+          await axios.get(`${BACKEND_URL}/sites/${siteName}/pages/contact-us.md`, { cancelToken: source.token });
           if (_isMounted) setContactUsCard(true) 
         } catch (e) {
-          if (e.response.status === 500) {
+          if (e.response?.status === 500) {
             // create option for contact-us page
           }
         }
 
         try { 
-          const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`);
+          const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`, { cancelToken: source.token });
           if (_isMounted) setCollections(collectionsResp.data?.collections)
         } catch (e) {
           setCollections(undefined)
@@ -69,7 +71,7 @@ const Workspace = ({ match, location, siteColors, setSiteColors }) => {
         }
         
         try { 
-          const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`);
+          const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`, { cancelToken: source.token });
           if (_isMounted) {
             console.log(unlinkedPagesResp.data?.pages)
             setUnlinkedPages(unlinkedPagesResp.data?.pages.filter(page => page.fileName !== 'contact-us.md'))
@@ -79,7 +81,10 @@ const Workspace = ({ match, location, siteColors, setSiteColors }) => {
         }
       }
       fetchData()
-      return () => { _isMounted = false }
+      return () => {
+        source.cancel('Page was unmounted')
+        _isMounted = false
+      }
     }, [])
 
     return (
