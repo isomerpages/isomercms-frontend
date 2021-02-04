@@ -73,13 +73,7 @@ const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) =>
                 }
 
                 console.log('User is not logged in at', rest.location.pathname)
-                // Render login component if not logged in
-                if (rest.location.pathname === '/') {
-                    return <Home {...rest} {...props} />
-                }
-
-                // Redirect all URLs to Login component when not logged in
-                return <Redirect to={{ pathname: '/' }} />
+                return <Home {...rest} {...props} />
             }
         } />
     )
