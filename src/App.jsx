@@ -104,13 +104,6 @@ function App() {
     }
   }
 
-  // useEffect(() => {
-  //   if (isLoggedIn && axiosErrCount === 1) {
-  //     setShouldBlockNavigation(true)
-  //     console.log('User token has expired or does not exist')
-  //   }
-  // }, [axiosErrCount])
-
   useEffect(() => {
     if (shouldBlockNavigation) {
       alert('Warning: your token has expired. Isomer will log you out now.')
@@ -122,12 +115,6 @@ function App() {
       logout()
     }
   }, [shouldBlockNavigation])
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      setShouldBlockNavigation(false)
-    }
-  }, [isLoggedIn])
 
   const ProtectedRouteWithProps = (props) => {
     return (
