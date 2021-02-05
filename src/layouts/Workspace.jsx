@@ -55,7 +55,7 @@ const Workspace = ({ match, location, siteColors, setSiteColors }) => {
           await axios.get(`${BACKEND_URL}/sites/${siteName}/pages/contact-us.md`);
           if (_isMounted) setContactUsCard(true) 
         } catch (e) {
-          if (e.response.status === 500) {
+          if (e.response?.status === 500) {
             // create option for contact-us page
           }
         }

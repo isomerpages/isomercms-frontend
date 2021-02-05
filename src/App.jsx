@@ -75,7 +75,7 @@ function App() {
     },
     async function (error) {
       if (error.response && error.response.status === 401) {
-        if (isLoggedIn) {
+        if (isLoggedIn && !shouldBlockNavigation) {
           setShouldBlockNavigation(true)
           console.log('User token has expired or does not exist')
         }
@@ -88,18 +88,20 @@ function App() {
   )
 
   const setLogin = () => {
-    setIsLoggedIn(true)
+    if (!isLoggedIn) setIsLoggedIn(true)
     localStorage.setItem(LOCAL_STORAGE_AUTH_STATE, true)
   }
 
   const setLogoutState = () => {
     localStorage.removeItem(LOCAL_STORAGE_AUTH_STATE)
-    setIsLoggedIn(false)
-    setShouldBlockNavigation(false)
+    if (isLoggedIn && shouldBlockNavigation) {
+      setIsLoggedIn(false)
+      setShouldBlockNavigation(false)
+    }
   }
 
   useEffect(() => {
-    if (shouldBlockNavigation) {
+    if (isLoggedIn && shouldBlockNavigation) {
       alert('Warning: your token has expired. Isomer will log you out now.')
       const logout = async () =>  {
         console.log('Logging out...')
@@ -110,16 +112,10 @@ function App() {
     }
   }, [shouldBlockNavigation])
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      setShouldBlockNavigation(false)
-    }
-  }, [isLoggedIn])
-
   const ProtectedRouteWithProps = (props) => {
     return (
       <Sentry.ErrorBoundary fallback={FallbackComponent}>
-        <ProtectedRoute {...props} isLoggedIn={isLoggedIn} siteColors={siteColors} setSiteColors={setSiteColors} />
+        <ProtectedRoute {...props} siteColors={siteColors} setSiteColors={setSiteColors} />
       </Sentry.ErrorBoundary>
     )
   }
@@ -135,9 +131,9 @@ function App() {
             you have multiple routes, but you want only one
             of them to render at a time
           */}
-            <LoginContext.Provider value={setLogoutState}>
+            <LoginContext.Provider value={{isLoggedIn, setLogin, setLogoutState}}>
               <Switch>
-                  <ProtectedRouteWithProps exact path='/auth' component={AuthCallback} setLogin={setLogin} />
+                  <ProtectedRouteWithProps exact path='/auth' component={AuthCallback} />
                   <ProtectedRouteWithProps exact path="/" component={Home} />
                   <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
                   <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName" component={CategoryPages} isResource={false}/>
