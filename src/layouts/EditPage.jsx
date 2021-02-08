@@ -250,7 +250,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, siteColors, setSite
       const base64Content = Base64.encode(upload);
       const params = {
         content: base64Content,
-        sha: sha,
+        sha,
       };
       await axios.post(apiEndpoint, params);
       window.location.reload();
