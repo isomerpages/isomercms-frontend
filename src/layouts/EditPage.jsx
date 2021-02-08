@@ -351,7 +351,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, siteColors, setSite
       stageFileForUpload(fileName, fileData);
     });
     fileReader.readAsDataURL(event.target.files[0]);
-    setIsSelectingImage(!isSelectingImage)
+    setIsSelectingImage((prevState) => !prevState)
   }
 
   return (
