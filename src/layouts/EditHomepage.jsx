@@ -351,8 +351,7 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
             newSectionError = _.cloneDeep(errors.sections[sectionIndex])
             newSectionError[sectionType]['url'] = errorMessage
           } else {
-            newSectionError = _.cloneDeep(errors.sections[sectionIndex])
-            newSectionError = validateSections(errors.sections[sectionIndex], sectionType, field, value)
+            newSectionError = validateSections(_.cloneDeep(errors.sections[sectionIndex]), sectionType, field, value)
 
             if (field === 'button' && !value) {
               newSectionError[sectionType]['button'] = ''
