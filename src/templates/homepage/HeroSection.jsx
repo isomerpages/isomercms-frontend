@@ -100,13 +100,13 @@ const TemplateHeroSection = ({
   siteName,
   dropdownIsActive,
   toggleDropdown,
-}) => {
+}, ref) => {
   const heroStyle = {
     // See j08691's answer at https://stackoverflow.com/questions/21388712/background-size-doesnt-work
     background: `url(https://raw.githubusercontent.com/isomerpages/${siteName}/staging${hero.background}) no-repeat center center/cover`,
   };
   return (
-    <>
+    <div ref={ref}>
       {/* Main hero banner */}
       <section className="bp-hero bg-hero" style={heroStyle}>
         <div className="bp-hero-body">
@@ -145,11 +145,11 @@ const TemplateHeroSection = ({
       { (!hero.dropdown && hero.key_highlights)
         ? <KeyHighlights highlights={hero.key_highlights} />
         : null}
-    </>
+    </div>
   );
 };
 
-export default TemplateHeroSection;
+export default React.forwardRef(TemplateHeroSection);
 
 HeroButton.propTypes = {
   button: PropTypes.string,

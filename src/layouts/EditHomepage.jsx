@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, createRef, useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
 import { Base64 } from 'js-base64';
@@ -100,7 +100,7 @@ const enumSection = (type, isErrorConstructor) => {
 const EditHomepage = ({ match, siteColors, setSiteColors }) => {
   const { siteName } = match.params;
   const [hasLoaded, setHasLoaded] = useState(false)
-  const scrollRefs = []
+  const [scrollRefs, setScrollRefs] = useState([])
   const [hasErrors, setHasErrors] = useState(false)
   const [frontMatter, setFrontMatter] = useState(
     {
@@ -194,7 +194,9 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
         const sectionsErrors = [];
         let dropdownElemsErrors = [];
         let highlightsErrors = [];
+        let scrollRefs = []
         frontMatter.sections.forEach((section) => {
+          scrollRefs.push(createRef())
           // If this is the hero section, hide all highlights/dropdownelems by default
           if (section.hero) {
             const { dropdown, key_highlights: keyHighlights } = section.hero;
@@ -250,6 +252,7 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
           setDisplayHighlights(displayHighlights)
           setErrors(errors)
           setHasLoaded(true)
+          setScrollRefs(scrollRefs)
         }
       } catch (err) {
         // Set frontMatter to be same to prevent warning message when navigating away
@@ -270,7 +273,7 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
 
   useEffect(() => {
     if (scrollRefs.length > 0) {
-      scrollRefs[frontMatter.sections.length-1].scrollIntoView();
+      scrollRefs[frontMatter.sections.length-1].current.scrollIntoView();
     }
   }, [frontMatter.sections.length])
 
@@ -373,7 +376,7 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[sectionIndex].scrollIntoView();
+          scrollRefs[sectionIndex].current.scrollIntoView();
           break;
         }
         case 'highlight': {
@@ -412,7 +415,7 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[0].scrollIntoView();
+          scrollRefs[0].current.scrollIntoView();
           break;
         }
         case 'dropdownelem': {
@@ -453,7 +456,7 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[0].scrollIntoView();
+          scrollRefs[0].current.scrollIntoView();
           break;
         }
         default: {
@@ -485,7 +488,7 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[0].scrollIntoView();
+          scrollRefs[0].current.scrollIntoView();
         }
       }
     } catch (err) {
@@ -518,12 +521,14 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
               $push: [enumSection(value, true)],
             },
           });
+          const newScrollRefs = update(scrollRefs, {$push: [createRef()]})
 
           const resetDisplaySections = _.fill(Array(displaySections.length), false)
           const newDisplaySections = update(resetDisplaySections, {
             $push: [true],
           });
 
+          setScrollRefs(newScrollRefs)
           setDisplaySections(newDisplaySections)
 
           break;
@@ -639,11 +644,14 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
             },
           });
 
+          const newScrollRefs = update(scrollRefs, {$splice: [[sectionIndex, 1]]})
+
           const newDisplaySections = update(displaySections, {
             $splice: [[sectionIndex, 1]],
           });
 
           setDisplaySections(newDisplaySections)
+          setScrollRefs(newScrollRefs)
           break;
         }
         case 'dropdownelem': {
@@ -875,7 +883,7 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
 
           setDisplaySections(newDisplaySections)
 
-          scrollRefs[sectionId].scrollIntoView();
+          scrollRefs[sectionId].current.scrollIntoView();
           break;
         }
         case 'highlight': {
@@ -1299,35 +1307,37 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
                 {/* Hero section */}
                 {section.hero
                   ? (
-                    <div ref={(ref) => { scrollRefs[sectionIndex] = ref }}>
+                    <>
                       <TemplateHeroSection
                         key={`section-${sectionIndex}`}
                         hero={section.hero}
                         siteName={siteName}
                         dropdownIsActive={dropdownIsActive}
                         toggleDropdown={toggleDropdown}
+                        ref={scrollRefs[sectionIndex]}
                       />
-                    </div>
+                    </>
                   )
                   : null}
                 {/* Resources section */}
                 {section.resources
                   ? (
-                    <div ref={(ref) => { scrollRefs[sectionIndex] = ref }}>
+                    <>
                       <TemplateResourcesSection
                         key={`section-${sectionIndex}`}
                         title={section.resources.title}
                         subtitle={section.resources.subtitle}
                         button={section.resources.button}
                         sectionIndex={sectionIndex}
+                        ref={scrollRefs[sectionIndex]}
                       />
-                    </div>
+                    </>
                   )
                   : null}
                 {/* Infobar section */}
                 {section.infobar
                   ? (
-                    <div ref={(ref) => { scrollRefs[sectionIndex] = ref }}>
+                    <>
                       <TemplateInfobarSection
                         key={`section-${sectionIndex}`}
                         title={section.infobar.title}
@@ -1335,14 +1345,15 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
                         description={section.infobar.description}
                         button={section.infobar.button}
                         sectionIndex={sectionIndex}
+                        ref={scrollRefs[sectionIndex]}
                       />
-                    </div>
+                    </>
                   )
                   : null}
                 {/* Infopic section */}
                 {section.infopic
                   ? (
-                    <div ref={(ref) => { scrollRefs[sectionIndex] = ref }}>
+                      <>
                       { isLeftInfoPic(sectionIndex)
                         ? (
                           <TemplateInfopicLeftSection
@@ -1355,6 +1366,7 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
                             button={section.infopic.button}
                             sectionIndex={sectionIndex}
                             siteName={siteName}
+                            ref={scrollRefs[sectionIndex]}
                           />
                         )
                         : (
@@ -1368,9 +1380,10 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
                             button={section.infopic.button}
                             sectionIndex={sectionIndex}
                             siteName={siteName}
+                            ref={scrollRefs[sectionIndex]}
                           />
                         )}
-                    </div>
+                      </>
                   )
                   : null}
               </>
