@@ -854,7 +854,7 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
 
   const toggleDropdown = async () => {
     try {
-      setDropdownIsActive(!dropdownIsActive)
+      setDropdownIsActive((prevState) => !prevState)
     } catch (err) {
       console.log(err);
     }
