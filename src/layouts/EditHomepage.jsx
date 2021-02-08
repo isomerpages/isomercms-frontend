@@ -198,36 +198,21 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
           // If this is the hero section, hide all highlights/dropdownelems by default
           if (section.hero) {
             const { dropdown, key_highlights: keyHighlights } = section.hero;
+            const hero = { title: '', subtitle: '', background: '', button: '', url: '' }
             if (dropdown) {
+              hero.dropdown = ''
               // Go through section.hero.dropdown.options
               displayDropdownElems = _.fill(Array(dropdown.options.length), false);
               // Fill in dropdown elem errors array
               dropdownElemsErrors = _.map(dropdown.options, () => DropdownElemConstructor(true));
-              // Fill in sectionErrors for hero with dropdown
-              sectionsErrors.push({
-                hero: {
-                  title: '', subtitle: '', background: '', button: '', url: '', dropdown: '',
-                },
-              });
             }
             if (keyHighlights) {
               displayHighlights = _.fill(Array(keyHighlights.length), false);
               // Fill in highlights errors array
               highlightsErrors = _.map(keyHighlights, () => KeyHighlightConstructor(true));
-              // Fill in sectionErrors for hero with key highlights
-              sectionsErrors.push({
-                hero: {
-                  title: '', subtitle: '', background: '', button: '', url: '',
-                },
-              });
             }
-            if (!dropdown && !keyHighlights) {
-              sectionsErrors.push({
-                hero: {
-                  title: '', subtitle: '', background: '', button: '', url: '',
-                },
-              });
-            }
+            // Fill in sectionErrors for hero
+            sectionsErrors.push({ hero })
           }
 
           // Check if there is already a resources section
@@ -366,6 +351,7 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
             newSectionError = _.cloneDeep(errors.sections[sectionIndex])
             newSectionError[sectionType]['url'] = errorMessage
           } else {
+            newSectionError = _.cloneDeep(errors.sections[sectionIndex])
             newSectionError = validateSections(errors.sections[sectionIndex], sectionType, field, value)
 
             if (field === 'button' && !value) {
