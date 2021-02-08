@@ -8,42 +8,44 @@ import PropTypes from 'prop-types';
 
 const TemplateInfobarSection = ({
   title, subtitle, description, button, sectionIndex,
-}) => (
-  <section className={`bp-section ${(sectionIndex % 2 === 1) ? 'bg-newssection' : null}`}>
-    <div className="bp-container">
-      <div className="row">
-        <div className="col is-half is-offset-one-quarter has-text-centered padding--top--xl">
-          {/* Subtitle */}
-          {subtitle
-            ? <p className="padding--bottom eyebrow is-uppercase">{subtitle}</p>
-            : null}
-          {/* Title */}
-          {title
-            ? <h1 className="has-text-secondary padding--bottom"><b>{title}</b></h1>
-            : null}
-          {/* Description */}
-          { description
-            ? <p>{description}</p>
-            : null}
+}, ref) => (
+  <div ref={ref}>
+    <section className={`bp-section ${(sectionIndex % 2 === 1) ? 'bg-newssection' : null}`}>
+      <div className="bp-container">
+        <div className="row">
+          <div className="col is-half is-offset-one-quarter has-text-centered padding--top--xl">
+            {/* Subtitle */}
+            {subtitle
+              ? <p className="padding--bottom eyebrow is-uppercase">{subtitle}</p>
+              : null}
+            {/* Title */}
+            {title
+              ? <h1 className="has-text-secondary padding--bottom"><b>{title}</b></h1>
+              : null}
+            {/* Description */}
+            { description
+              ? <p>{description}</p>
+              : null}
+          </div>
         </div>
       </div>
-    </div>
-    {/* Button */}
-    {button
-      ? (
-        <div className="row has-text-centered margin--top padding--bottom">
-          <div className="col is-offset-one-third is-one-third">
-            <div className="bp-sec-button">
-              <div>
-                <span>{button}</span>
-                <i className="sgds-icon sgds-icon-arrow-right is-size-4" aria-hidden="true" />
+      {/* Button */}
+      {button
+        ? (
+          <div className="row has-text-centered margin--top padding--bottom">
+            <div className="col is-offset-one-third is-one-third">
+              <div className="bp-sec-button">
+                <div>
+                  <span>{button}</span>
+                  <i className="sgds-icon sgds-icon-arrow-right is-size-4" aria-hidden="true" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )
-      : null}
-  </section>
+        )
+        : null}
+    </section>
+  </div>
 );
 
 TemplateInfobarSection.propTypes = {
@@ -61,4 +63,4 @@ TemplateInfobarSection.defaultProps = {
 };
 
 
-export default TemplateInfobarSection;
+export default React.forwardRef(TemplateInfobarSection);
