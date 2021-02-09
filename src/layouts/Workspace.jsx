@@ -15,14 +15,14 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 // Import utils
 import { prettifyPageFileName } from '../utils';
 
-// Import contexts
-const { SiteColorsContext } = require('../contexts/SiteColorsContext');
+// Import hooks
+import useSiteColorsHook from '../hooks/useSiteColorsHook';
 
 // Constants
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
 const Workspace = ({ match, location }) => {
-    const { retrieveSiteColors } = useContext(SiteColorsContext)
+    const { retrieveSiteColors } = useSiteColorsHook()
 
     const { siteName } = match.params;
 

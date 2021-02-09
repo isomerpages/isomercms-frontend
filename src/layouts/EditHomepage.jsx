@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, createRef, useState } from 'react';
+import React, { useEffect, createRef, useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
 import { Base64 } from 'js-base64';
@@ -26,8 +26,8 @@ import DeleteWarningModal from '../components/DeleteWarningModal';
 import { toast } from 'react-toastify';
 import Toast from '../components/Toast';
 
-// Import contexts
-const { SiteColorsContext } = require('../contexts/SiteColorsContext');
+// Import hooks
+import useSiteColorsHook from '../hooks/useSiteColorsHook';
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -97,7 +97,7 @@ const enumSection = (type, isErrorConstructor) => {
 };
 
 const EditHomepage = ({ match }) => {
-  const { retrieveSiteColors, generatePageStyleSheet } = useContext(SiteColorsContext)
+  const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
 
   const { siteName } = match.params;
   const [hasLoaded, setHasLoaded] = useState(false)
@@ -148,7 +148,7 @@ const EditHomepage = ({ match }) => {
   useEffect(() => {
     let _isMounted = true
     const loadPageDetails = async () => {
-      // Set page colors
+      // // Set page colors
       try {
         await retrieveSiteColors(siteName)
         generatePageStyleSheet(siteName)

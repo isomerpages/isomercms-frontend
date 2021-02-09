@@ -1,29 +1,44 @@
-import React, { useState } from 'react';
-
 // Utils
 import { defaultSiteColors, getSiteColors, createPageStyleSheet } from '../utils/siteColorUtils';
 
+// Constants
+const LOCAL_STORAGE_SITE_COLORS = 'isomercms_colors'
+
 const useSiteColorsHook = () => {
-    const [siteColors, setSiteColors] = useState(defaultSiteColors)
+    const getLocalStorageSiteColors = () => {
+        const localStorageSiteColors = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SITE_COLORS))
+        return localStorageSiteColors
+    }
+
+    const setLocalStorageSiteColors = (newSiteColors) => {
+        localStorage.setItem(LOCAL_STORAGE_SITE_COLORS, JSON.stringify(newSiteColors))
+    }
 
     const retrieveSiteColors = async (siteName) => {
-        if (!siteColors[siteName]) {
+        const siteColors = getLocalStorageSiteColors()
+        console.log(siteColors, 'test')
+        // if (!siteColors[siteName]) {
+        if (!siteColors || !siteColors[siteName]) {
+
             const {
                 primaryColor,
                 secondaryColor,
             } = await getSiteColors(siteName)
     
-            setSiteColors((prevState) => ({
-                ...prevState,
+            setLocalStorageSiteColors({
+                ...siteColors,
                 [siteName]: {
                     primaryColor,
                     secondaryColor,
-                }
-            }))
+                },
+            })
         }
     }
 
     const generatePageStyleSheet = (siteName) => {
+        const siteColors = getLocalStorageSiteColors()
+        console.log(siteColors)
+
         let primaryColor = defaultSiteColors.default.primaryColor
         let secondaryColor = defaultSiteColors.default.secondaryColor
 
@@ -39,11 +54,10 @@ const useSiteColorsHook = () => {
         createPageStyleSheet(siteName, primaryColor, secondaryColor)
     }
 
-    return [
-        siteColors,
+    return {
         retrieveSiteColors,
         generatePageStyleSheet,
-    ]
+    }
 }
 
 export default useSiteColorsHook;

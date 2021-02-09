@@ -1,5 +1,5 @@
 // TODO: Clean up formatting, semi-colons, PropTypes etc
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
 import { Base64 } from 'js-base64';
@@ -13,11 +13,6 @@ import { DEFAULT_ERROR_TOAST_MSG, frontMatterParser, concatFrontMatterMdBody, is
 import { sanitiseFrontMatter } from '../utils/contact-us/dataSanitisers';
 import { validateFrontMatter } from '../utils/contact-us/validators';
 import { validateContactType, validateLocationType } from '../utils/validators';
-import {
-  createPageStyleSheet,
-  getSiteColors,
-} from '../utils/siteColorUtils';
-
 
 import EditorSection from '../components/contact-us/Section';
 import Toast from '../components/Toast';
@@ -38,8 +33,8 @@ import TemplateFeedbackSection from '../templates/contact-us/FeedbackSection';
 import DeleteWarningModal from '../components/DeleteWarningModal';
 import GenericWarningModal from '../components/GenericWarningModal';
 
-// Import contexts
-const { SiteColorsContext } = require('../contexts/SiteColorsContext');
+// Import hooks
+import useSiteColorsHook from '../hooks/useSiteColorsHook';
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -115,7 +110,7 @@ const displayDeletedFrontMatter = (deletedFrontMatter) => {
 }
 
 const EditContactUs =  ({ match }) => {
-  const { retrieveSiteColors, generatePageStyleSheet } = useContext(SiteColorsContext)
+  const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
 
   const { siteName } = match.params;
   const [hasLoaded, setHasLoaded] = useState(false)

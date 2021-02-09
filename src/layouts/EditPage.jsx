@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Redirect } from "react-router-dom";
 import axios from 'axios';
 import Bluebird from 'bluebird';
@@ -47,8 +47,8 @@ import HyperlinkModal from '../components/HyperlinkModal';
 import MediaModal from '../components/media/MediaModal';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
-// Import contexts
-const { SiteColorsContext } = require('../contexts/SiteColorsContext');
+// Import hooks
+import useSiteColorsHook from '../hooks/useSiteColorsHook';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -99,7 +99,7 @@ const getBackButtonInfo = (resourceCategory, collectionName, siteName) => {
 }
 
 const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) => {
-  const { retrieveSiteColors, generatePageStyleSheet } = useContext(SiteColorsContext)
+  const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
 
   const { collectionName, fileName, siteName, resourceName } = match.params;
   const apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName })
