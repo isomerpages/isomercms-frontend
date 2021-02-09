@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
@@ -14,15 +14,16 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 // Import utils
 import { prettifyPageFileName } from '../utils';
-import {
-  getSiteColors,
-} from '../utils/siteColorUtils';
 
+// Import contexts
+const { SiteColorsContext } = require('../contexts/SiteColorsContext');
 
 // Constants
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
-const Workspace = ({ match, location, siteColors, setSiteColors }) => {
+const Workspace = ({ match, location }) => {
+    const { retrieveSiteColors } = useContext(SiteColorsContext)
+
     const { siteName } = match.params;
 
     const [collections, setCollections] = useState()
@@ -33,20 +34,7 @@ const Workspace = ({ match, location, siteColors, setSiteColors }) => {
       let _isMounted = true
       const fetchData = async () => {
         try {
-          if (!siteColors[siteName]) {
-            const {
-              primaryColor,
-              secondaryColor,
-            } = await getSiteColors(siteName)
-    
-            if (_isMounted) setSiteColors((prevState) => ({
-              ...prevState,
-              [siteName]: {
-                primaryColor,
-                secondaryColor,
-              }
-            }))
-          }
+          await retrieveSiteColors(siteName)
         } catch (e) {
           console.log(e)
         }

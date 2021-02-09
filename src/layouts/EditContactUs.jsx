@@ -1,5 +1,5 @@
 // TODO: Clean up formatting, semi-colons, PropTypes etc
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
 import { Base64 } from 'js-base64';
@@ -37,6 +37,9 @@ import TemplateFeedbackSection from '../templates/contact-us/FeedbackSection';
 
 import DeleteWarningModal from '../components/DeleteWarningModal';
 import GenericWarningModal from '../components/GenericWarningModal';
+
+// Import contexts
+const { SiteColorsContext } = require('../contexts/SiteColorsContext');
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -111,7 +114,9 @@ const displayDeletedFrontMatter = (deletedFrontMatter) => {
   return displayText
 }
 
-const EditContactUs =  ({ match, siteColors, setSiteColors }) => {
+const EditContactUs =  ({ match }) => {
+  const { retrieveSiteColors, generatePageStyleSheet } = useContext(SiteColorsContext)
+
   const { siteName } = match.params;
   const [hasLoaded, setHasLoaded] = useState(false)
   const [scrollRefs, setScrollRefs] = useState({
@@ -159,32 +164,8 @@ const EditContactUs =  ({ match, siteColors, setSiteColors }) => {
     const loadContactUsDetails = async () => {
       // Set page colors
       try {
-        let primaryColor
-        let secondaryColor
-
-        if (!siteColors[siteName]) {
-          const {
-            primaryColor: sitePrimaryColor,
-            secondaryColor: siteSecondaryColor,
-          } = await getSiteColors(siteName)
-
-          primaryColor = sitePrimaryColor
-          secondaryColor = siteSecondaryColor
-
-          if (_isMounted) setSiteColors((prevState) => ({
-            ...prevState,
-            [siteName]: {
-              primaryColor,
-              secondaryColor,
-            }
-          }))
-        } else {
-          primaryColor = siteColors[siteName].primaryColor
-          secondaryColor = siteColors[siteName].secondaryColor
-        }
-
-        createPageStyleSheet(siteName, primaryColor, secondaryColor)
-      
+        await retrieveSiteColors(siteName)
+        generatePageStyleSheet(siteName)
       } catch (err) {
         console.log(err);
       }

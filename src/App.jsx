@@ -34,8 +34,8 @@ import FallbackComponent from './components/FallbackComponent'
 // Styles
 import elementStyles from './styles/isomer-cms/Elements.module.scss';
 
-// Utils
-import { defaultSiteColors } from './utils/siteColorUtils';
+// Import hooks
+import useSiteColorsHook from './hooks/useSiteColorsHook';
 
 // Import contexts
 const { LoginContext } = require('./contexts/LoginContext');
@@ -68,7 +68,7 @@ function App() {
     return false
   })
   const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false)
-  const [siteColors, setSiteColors] = useState(defaultSiteColors)
+  const [siteColors, retrieveSiteColors, generatePageStyleSheet] = useSiteColorsHook()
 
   axios.interceptors.response.use(
     function (response) {
@@ -116,7 +116,7 @@ function App() {
   const ProtectedRouteWithProps = (props) => {
     return (
       <Sentry.ErrorBoundary fallback={FallbackComponent}>
-        <ProtectedRoute {...props} siteColors={siteColors} setSiteColors={setSiteColors} />
+        <ProtectedRoute {...props} />
       </Sentry.ErrorBoundary>
     )
   }
@@ -132,7 +132,7 @@ function App() {
             you have multiple routes, but you want only one
             of them to render at a time
           */}
-            <SiteColorsContext.Provider value={{siteColors, setSiteColors}}>
+            <SiteColorsContext.Provider value={{siteColors, retrieveSiteColors, generatePageStyleSheet}}>
               <LoginContext.Provider value={{isLoggedIn, setLogin, setLogoutState}}>
                 <Switch>
                     <ProtectedRouteWithProps exact path='/auth' component={AuthCallback} />

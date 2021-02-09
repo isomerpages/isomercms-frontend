@@ -1,4 +1,4 @@
-import React, { useEffect, createRef, useState } from 'react';
+import React, { useContext, useEffect, createRef, useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
 import { Base64 } from 'js-base64';
@@ -12,10 +12,6 @@ import TemplateInfopicLeftSection from '../templates/homepage/InfopicLeftSection
 import TemplateInfopicRightSection from '../templates/homepage/InfopicRightSection';
 import TemplateResourcesSection from '../templates/homepage/ResourcesSection';
 import { DEFAULT_ERROR_TOAST_MSG, frontMatterParser, concatFrontMatterMdBody } from '../utils';
-import {
-  createPageStyleSheet,
-  getSiteColors,
-} from '../utils/siteColorUtils';
 import EditorInfobarSection from '../components/homepage/InfobarSection';
 import EditorInfopicSection from '../components/homepage/InfopicSection';
 import EditorResourcesSection from '../components/homepage/ResourcesSection';
@@ -29,6 +25,9 @@ import { validateSections, validateHighlights, validateDropdownElems } from '../
 import DeleteWarningModal from '../components/DeleteWarningModal';
 import { toast } from 'react-toastify';
 import Toast from '../components/Toast';
+
+// Import contexts
+const { SiteColorsContext } = require('../contexts/SiteColorsContext');
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -97,7 +96,9 @@ const enumSection = (type, isErrorConstructor) => {
   }
 };
 
-const EditHomepage = ({ match, siteColors, setSiteColors }) => {
+const EditHomepage = ({ match }) => {
+  const { retrieveSiteColors, generatePageStyleSheet } = useContext(SiteColorsContext)
+
   const { siteName } = match.params;
   const [hasLoaded, setHasLoaded] = useState(false)
   const [scrollRefs, setScrollRefs] = useState([])
@@ -149,32 +150,8 @@ const EditHomepage = ({ match, siteColors, setSiteColors }) => {
     const loadPageDetails = async () => {
       // Set page colors
       try {
-        let primaryColor
-        let secondaryColor
-
-        if (!siteColors[siteName]) {
-          const {
-            primaryColor: sitePrimaryColor,
-            secondaryColor: siteSecondaryColor,
-          } = await getSiteColors(siteName)
-
-          primaryColor = sitePrimaryColor
-          secondaryColor = siteSecondaryColor
-
-          if (_isMounted) setSiteColors((prevState) => ({
-            ...prevState,
-            [siteName]: {
-              primaryColor,
-              secondaryColor,
-            }
-          }))
-        } else {
-          primaryColor = siteColors[siteName].primaryColor
-          secondaryColor = siteColors[siteName].secondaryColor
-        }
-
-        createPageStyleSheet(siteName, primaryColor, secondaryColor)
-      
+        await retrieveSiteColors(siteName)
+        generatePageStyleSheet(siteName)
       } catch (err) {
         console.log(err);
       }
