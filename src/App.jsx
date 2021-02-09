@@ -43,6 +43,7 @@ axios.defaults.withCredentials = true
 // Constants
 const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 const LOCAL_STORAGE_AUTH_STATE = 'isomercms_auth'
+const LOCAL_STORAGE_SITE_COLORS = 'isomercms_colors'
 
 const ToastCloseButton = ({ closeToast }) => (
   <span style={{
@@ -95,6 +96,10 @@ function App() {
       setShouldBlockNavigation(false)
     }
   }
+
+  useEffect(() => {
+    localStorage.removeItem(LOCAL_STORAGE_SITE_COLORS)
+  }, [])
 
   useEffect(() => {
     if (isLoggedIn && shouldBlockNavigation) {
