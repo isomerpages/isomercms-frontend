@@ -38,7 +38,8 @@ import elementStyles from './styles/isomer-cms/Elements.module.scss';
 import { defaultSiteColors } from './utils/siteColorUtils';
 
 // Import contexts
-const { LoginContext } = require('./contexts/LoginContext')
+const { LoginContext } = require('./contexts/LoginContext');
+const { SiteColorsContext } = require('./contexts/SiteColorsContext');
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -67,7 +68,7 @@ function App() {
     return false
   })
   const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false)
-  const [siteColors, setSiteColors] = useState({})
+  const [siteColors, setSiteColors] = useState(defaultSiteColors)
 
   axios.interceptors.response.use(
     function (response) {
@@ -131,33 +132,35 @@ function App() {
             you have multiple routes, but you want only one
             of them to render at a time
           */}
-            <LoginContext.Provider value={{isLoggedIn, setLogin, setLogoutState}}>
-              <Switch>
-                  <ProtectedRouteWithProps exact path='/auth' component={AuthCallback} />
-                  <ProtectedRouteWithProps exact path="/" component={Home} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName" component={CategoryPages} isResource={false}/>
-                  <ProtectedRouteWithProps path="/sites/:siteName/files/:fileName" component={EditFile} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/files" component={Files} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/images/:fileName" component={EditImage} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/images" component={Images} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/pages/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={false} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/workspace" component={Workspace} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/homepage" component={EditHomepage} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/contact-us" component={EditContactUs} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/resources/:resourceName/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={true} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/resources/:collectionName" component={CategoryPages} isResource={true}/>
-                  <ProtectedRouteWithProps path="/sites/:siteName/resources" component={Resources} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/menus/main-menu" component={EditNav} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/menus" component={Menus} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/settings" component={Settings} />
-                  <ProtectedRouteWithProps exact path="/sites" component={Sites} />
-                  <ProtectedRouteWithProps path="/" component={NotFoundPage}/>
-                  <Route>
-                    <Redirect to={ isLoggedIn ? '/sites' : '/' } />
-                  </Route>
-              </Switch>
-            </LoginContext.Provider>
+            <SiteColorsContext.Provider value={{siteColors, setSiteColors}}>
+              <LoginContext.Provider value={{isLoggedIn, setLogin, setLogoutState}}>
+                <Switch>
+                    <ProtectedRouteWithProps exact path='/auth' component={AuthCallback} />
+                    <ProtectedRouteWithProps exact path="/" component={Home} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName" component={CategoryPages} isResource={false}/>
+                    <ProtectedRouteWithProps path="/sites/:siteName/files/:fileName" component={EditFile} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/files" component={Files} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/images/:fileName" component={EditImage} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/images" component={Images} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/pages/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={false} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/workspace" component={Workspace} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/homepage" component={EditHomepage} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/contact-us" component={EditContactUs} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/resources/:resourceName/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={true} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/resources/:collectionName" component={CategoryPages} isResource={true}/>
+                    <ProtectedRouteWithProps path="/sites/:siteName/resources" component={Resources} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/menus/main-menu" component={EditNav} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/menus" component={Menus} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/settings" component={Settings} />
+                    <ProtectedRouteWithProps exact path="/sites" component={Sites} />
+                    <ProtectedRouteWithProps path="/" component={NotFoundPage}/>
+                    <Route>
+                      <Redirect to={ isLoggedIn ? '/sites' : '/' } />
+                    </Route>
+                </Switch>
+              </LoginContext.Provider>
+            </SiteColorsContext.Provider>
         </div>
     </Router>
   );
