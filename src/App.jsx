@@ -26,6 +26,7 @@ import EditContactUs from './layouts/EditContactUs';
 import Resources from './layouts/Resources';
 import Menus from './layouts/Menus';
 import EditNav from './layouts/EditNav';
+import EditNavBar from './layouts/EditNavBar'
 import Settings from './layouts/Settings';
 import NotFoundPage from './components/NotFoundPage'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -152,6 +153,7 @@ function App() {
                   <ProtectedRouteWithProps path="/sites/:siteName/resources/:collectionName" component={CategoryPages} isResource={true}/>
                   <ProtectedRouteWithProps path="/sites/:siteName/resources" component={Resources} />
                   <ProtectedRouteWithProps path="/sites/:siteName/menus/main-menu" component={EditNav} />
+                  <ProtectedRouteWithProps path="/sites/:siteName/menu" component={EditNavBar} />
                   <ProtectedRouteWithProps path="/sites/:siteName/menus" component={Menus} />
                   <ProtectedRouteWithProps path="/sites/:siteName/settings" component={Settings} />
                   <ProtectedRouteWithProps exact path="/sites" component={Sites} />
