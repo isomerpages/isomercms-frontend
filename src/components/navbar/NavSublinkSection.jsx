@@ -61,7 +61,7 @@ const NavSublinkSection = ({
   displayHandler,
   displaySublinks
 }) => (
-  <Droppable droppableId="sublink" type="sublink">
+  <Droppable droppableId={`sublink-${linkIndex}`} type="sublink">
     {(droppableProvided) => (
       /* eslint-disable react/jsx-props-no-spreading */
       <div

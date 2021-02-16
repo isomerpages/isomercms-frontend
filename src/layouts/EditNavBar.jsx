@@ -209,7 +209,6 @@ const EditNavBar =  ({ match }) => {
               },
             });
           }
-          console.log(newLinks)
           setLinks(newLinks)
           break;
         }
@@ -274,9 +273,7 @@ const EditNavBar =  ({ match }) => {
           const newLinks = update(links, {
             [linkIndex]: {
               sublinks: {
-                [sublinkIndex] : {
-                  $push: [enumSection(elemType)],
-                },
+                $push: [enumSection(elemType)],
               },
             },
           })
@@ -333,9 +330,7 @@ const EditNavBar =  ({ match }) => {
           const newLinks = update(links, {
             [linkIndex]: {
               sublinks: {
-                [sublinkIndex] : {
-                  $splice: [[sublinkIndex, 1]]
-                },
+                $splice: [[sublinkIndex, 1]]
               },
             },
           })
@@ -377,7 +372,7 @@ const EditNavBar =  ({ match }) => {
           const linkId = idArray[1];
           const sublinkId = idArray[2]
           let resetSublinkSections = _.fill(Array(displaySublinks[linkId].length), false)
-          resetSublinkSections[sublinkId] = !displaySublinks[sublinkId]
+          resetSublinkSections[sublinkId] = !displaySublinks[linkId][sublinkId]
           const newDisplaySublinks = update(displaySublinks, {
             [linkId]: {
               $set: resetSublinkSections,
@@ -401,9 +396,6 @@ const EditNavBar =  ({ match }) => {
 
   const onDragEnd = (result) => {
     const { source, destination, type } = result;
-    console.log(source)
-    console.log(destination)
-    console.log(type)
 
     // If the user dropped the draggable to no known droppable
     if (!destination) return;
@@ -413,9 +405,6 @@ const EditNavBar =  ({ match }) => {
       destination.droppableId === source.droppableId
       && destination.index === source.index
     ) return;
-
-    let newSections = [];
-    let newErrors = [];
 
     switch (type) {
       case 'link': {
@@ -447,7 +436,7 @@ const EditNavBar =  ({ match }) => {
       } case 'sublink': {
         const idArray = source.droppableId.split('-');
         const linkIndex = idArray[1]
-        const draggedSublink = links[linkIndex][source.index]
+        const draggedSublink = links[linkIndex].sublinks[source.index]
         const newLinks = update(links, {
           [linkIndex]: {
             sublinks: {

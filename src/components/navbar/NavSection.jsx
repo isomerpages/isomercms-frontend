@@ -99,10 +99,7 @@ const NavElem = ({
                 isRequired
                 onFieldChange={onFieldChange}
               />
-              <p className={elementStyles.formLabel}>Choose a label</p>
-              <span className={elementStyles.info}>
-                Note: you can specify a collection or resource room to automatically populate its links. Select "Create Sublinks" if you want to specify your own links.
-              </span>
+              <p className={elementStyles.formLabel}>Collection</p>
               <Select
                 isClearable
                 className="w-100"
@@ -111,6 +108,9 @@ const NavElem = ({
                 defaultValue={generateDefaultValue()}
                 options={options}
               />
+              <span className={elementStyles.info}>
+                Note: you can specify a collection or resource room to automatically populate its links. Select "Create Sublinks" if you want to specify your own links.
+              </span>
               {
                 sublinks &&
                 <NavSublinkSection
@@ -181,6 +181,7 @@ const NavSection = ({
                           url={link.url}
                           linkIndex={linkIndex}
                           onFieldChange={onFieldChange}
+                          createHandler={createHandler}
                           deleteHandler={deleteHandler}
                           displayHandler={displayHandler}
                           shouldDisplay={displayLinks[linkIndex]}
