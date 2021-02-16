@@ -14,6 +14,9 @@ const ALPHANUM_REGEX = /^[0-9]+[a-z]*$/ // at least one number, followed by 0 or
 const NUM_REGEX = /^[0-9]+$/
 const NUM_IDENTIFIER_REGEX = /^[0-9]+/
 export const DEFAULT_ERROR_TOAST_MSG = 'Please try again or check your internet connection.' 
+export const SINGLE_PAGE_IDENTIFIER = '_SINGLE_PAGE'
+export const SUBLINK_IDENTIFIER = '_SUBLINK'
+export const RESOURCE_ROOM_IDENTIFIER = '_RESOURCE_ROOM'
 
 // extracts yaml front matter from a markdown file path
 export function frontMatterParser(content) {

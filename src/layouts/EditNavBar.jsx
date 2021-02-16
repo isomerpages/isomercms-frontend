@@ -7,7 +7,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { Redirect } from 'react-router-dom'
 import { toast } from 'react-toastify';
 
-import { DEFAULT_ERROR_TOAST_MSG } from '../utils';
+import { DEFAULT_ERROR_TOAST_MSG, SINGLE_PAGE_IDENTIFIER, SUBLINK_IDENTIFIER, RESOURCE_ROOM_IDENTIFIER } from '../utils';
 
 import Toast from '../components/Toast';
 import NavSection from '../components/navbar/NavSection'
@@ -39,6 +39,7 @@ const EditNavBar =  ({ match }) => {
       type: '',
     }
   )
+  const [resourceRoomName, setResourceRoomName] = useState('')
 
 
   const LinkSectionConstructor = () => ({
@@ -66,16 +67,20 @@ const EditNavBar =  ({ match }) => {
     let _isMounted = true
 
     const loadNavBarDetails = async () => {
-      let content
+      let content, collectionContent, resourceRoomContent
       try {
         const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/navigation`);
         content = resp.data;
+        const collectionResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`)
+        collectionContent = collectionResp.data
+        const resourceRoomResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resource-room`)
+        resourceRoomContent = resourceRoomResp.data
       } catch (error) {
         if (error?.response?.status === 404) {
           setShouldRedirectToNotFound(true)
         } else {
           toast(
-            <Toast notificationType='error' text={`There was a problem trying to load your navigation bar. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+            <Toast notificationType='error' text={`There was a problem trying to load your data. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
             {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
           );
         }
@@ -86,19 +91,35 @@ const EditNavBar =  ({ match }) => {
 
       const { links } = content
 
-      // TODO: Load list of all collections
-
-      // TODO: add options for resource room and no collection
-
       // Add booleans for displaying links and sublinks
       const displayLinks = _.fill(Array(links.length), false)
       const displaySublinks = []
       links.forEach(link => {
         let numSublinks = 0
-        if ("sublink" in link) {
-          numSublinks = link.sublink.length
+        if ("sublinks" in link) {
+          numSublinks = link.sublinks.length
         }
         displaySublinks.push(_.fill(Array(numSublinks), false))
+      })
+
+      const { collections } = collectionContent
+      const { resourceRoom } = resourceRoomContent
+
+      const options = collections.map((collection) => ({
+        value: collection,
+        label: collection,
+      }))
+      options.push({
+        value: RESOURCE_ROOM_IDENTIFIER,
+        label: resourceRoom,
+      })
+      options.push({
+        value: SUBLINK_IDENTIFIER,
+        label: 'Create Sublinks',
+      })
+      options.push({
+        value: SINGLE_PAGE_IDENTIFIER,
+        label: 'Single Page',
       })
 
       if (_isMounted) {
@@ -106,6 +127,9 @@ const EditNavBar =  ({ match }) => {
         setHasLoaded(true)
         setDisplayLinks(displayLinks)
         setDisplaySublinks(displaySublinks)
+        setCollections(collections)
+        setOptions(options)
+        setResourceRoomName(resourceRoom)
       }
     }
 
@@ -126,13 +150,66 @@ const EditNavBar =  ({ match }) => {
         case 'link': {
           const linkIndex = parseInt(idArray[1], RADIX_PARSE_INT)
           const field = idArray[2]
-          const newLinks = update(links, {
-            [linkIndex]: {
-              [field]: {
-                $set: value,
+          let newLinks
+          // Collection field can modify different fields
+          if (field === 'collection') {
+            const resetLinks = update(links, {
+              [linkIndex]: {
+                $unset: ['collection', 'resource_room', 'sublinks', 'url']
               },
-            },
-          });
+            });
+            switch (value) {
+              case RESOURCE_ROOM_IDENTIFIER: {
+                newLinks = update(resetLinks, {
+                  [linkIndex]: {
+                    resource_room: {
+                      $set: true,
+                    },
+                  },
+                });
+                break;
+              }
+              case SUBLINK_IDENTIFIER: {
+                newLinks = update(resetLinks, {
+                  [linkIndex]: {
+                    sublinks: {
+                      $set: [],
+                    },
+                  },
+                });
+                break;
+              }
+              case SINGLE_PAGE_IDENTIFIER: {
+                newLinks = update(resetLinks, {
+                  [linkIndex]: {
+                    url: {
+                      $set: '/permalink',
+                    },
+                  },
+                });
+                break;
+              }
+              default: {
+                // Regular collection
+                newLinks = update(resetLinks, {
+                  [linkIndex]: {
+                    [field]: {
+                      $set: value,
+                    },
+                  },
+                });
+              }
+            }
+          } else {
+            newLinks = update(links, {
+              [linkIndex]: {
+                [field]: {
+                  $set: value,
+                },
+              },
+            });
+          }
+          console.log(newLinks)
           setLinks(newLinks)
           break;
         }
@@ -178,8 +255,8 @@ const EditNavBar =  ({ match }) => {
           const resetDisplaySublinks = []
           links.forEach(link => {
             let numSublinks = 0
-            if ("sublink" in link) {
-              numSublinks = link.sublink.length
+            if ("sublinks" in link) {
+              numSublinks = link.sublinks.length
             }
             resetDisplaySublinks.push(_.fill(Array(numSublinks), false))
           })
@@ -206,8 +283,8 @@ const EditNavBar =  ({ match }) => {
           const resetDisplaySublinks = []
           links.forEach(link => {
             let numSublinks = 0
-            if ("sublink" in link) {
-              numSublinks = link.sublink.length
+            if ("sublinks" in link) {
+              numSublinks = link.sublinks.length
             }
             resetDisplaySublinks.push(_.fill(Array(numSublinks), false))
           })
@@ -433,11 +510,12 @@ const EditNavBar =  ({ match }) => {
                   links={links}
                   options={options}
                   createHandler={createHandler}
-                  deleteHandler={(event) => setItemPendingForDelete({ id: event.target.id, type: 'Resources Section' })}
+                  deleteHandler={(event) => setItemPendingForDelete({ id: event.target.id, type: 'Link' })}
                   onFieldChange={onFieldChange}
                   displayHandler={displayHandler}
                   displayLinks={displayLinks}
                   displaySublinks={displaySublinks}
+                  resourceRoomName={resourceRoomName}
                 />
               </DragDropContext>
             </div>

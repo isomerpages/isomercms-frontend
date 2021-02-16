@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
+import Select from 'react-select/creatable';
+import { SINGLE_PAGE_IDENTIFIER, SUBLINK_IDENTIFIER, RESOURCE_ROOM_IDENTIFIER } from '../../utils';
 import styles from '../../styles/App.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
@@ -18,6 +20,8 @@ const NavElem = ({
   options,
   collection,
   isResourceRoom,
+  resourceRoomName,
+  url,
   linkIndex,
   sublinks,
   onFieldChange,
@@ -26,62 +30,109 @@ const NavElem = ({
   displayHandler,
   shouldDisplay,
   displaySublinks,
-}) => (
-  <div className={elementStyles.card}>
-    <div className={elementStyles.cardHeader}>
-      <h2>
-        {title}
-      </h2>
-      <button type="button" id={`link-${linkIndex}-toggle`} onClick={displayHandler}>
-        <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`link-${linkIndex}-icon`} />
-      </button>
-    </div>
-    { shouldDisplay
-      ? (
-        <>
-          <div className={elementStyles.cardContent}>
-            <FormField
-              title="Nav title"
-              id={`link-${linkIndex}-title`}
-              value={title}
-              isRequired
-              onFieldChange={onFieldChange}
-            />
-            <h2>
-              Choose a collection
-            </h2>
-            <span className={elementStyles.info}>
-              Note: you can specify a collection or resource room to automatically populate its links. Select "Create Sublinks" if you want to specify your own links.
-            </span>
-            <Dropdown 
-              options={options}
-              defaultOption={defaultText}
-              emptyDefault={true}
-              name='newSection'
-              id='section-new'
-              onFieldChange={onFieldChange}
-            />
-            {
-              collection === '' && !isResourceRoom &&
-              <NavSublinkSection
-                linkIndex={linkIndex}
-                sublinks={sublinks}
-                createHandler={createHandler}
-                deleteHandler={deleteHandler}
+}) => {
+  const collectionDropdownHandler = (newValue) => {
+    let event;
+    if (!newValue) {
+      // Field was cleared
+      event = {
+        target: {
+          id: `link-${linkIndex}-collection`,
+          value: '',
+        }
+      }
+    } else {
+      const { value } = newValue
+      event = {
+        target: {
+          id: `link-${linkIndex}-collection`,
+          value,
+        }
+      }
+    }
+    
+    onFieldChange(event);
+  };
+
+  const generateDefaultValue = () => {
+    if (collection) {
+      return {
+        value: collection,
+        label: collection,
+      }
+    } else if (isResourceRoom) {
+      return {
+        value: RESOURCE_ROOM_IDENTIFIER,
+        label: resourceRoomName,
+      }
+    } else if (sublinks) {
+      return {
+        value: SUBLINK_IDENTIFIER,
+        label: 'Create Sublinks',
+      }
+    } else if (url) {
+      return {
+        value: SINGLE_PAGE_IDENTIFIER,
+        label: 'Single Page',
+      }
+    }
+  }
+
+  return (
+    <div className={elementStyles.card}>
+      <div className={elementStyles.cardHeader}>
+        <h2>
+          {title}
+        </h2>
+        <button type="button" id={`link-${linkIndex}-toggle`} onClick={displayHandler}>
+          <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`link-${linkIndex}-icon`} />
+        </button>
+      </div>
+      { shouldDisplay
+        ? (
+          <>
+            <div className={elementStyles.cardContent}>
+              <FormField
+                title="Nav title"
+                id={`link-${linkIndex}-title`}
+                value={title}
+                isRequired
                 onFieldChange={onFieldChange}
-                displayHandler={displayHandler}
-                displaySublinks={displaySublinks[linkIndex]}
               />
-            }
-          </div>
-          <div className={elementStyles.inputGroup}>
-            <button type="button" id={`link-${linkIndex}-delete`} className={`ml-auto ${elementStyles.warning}`} onClick={deleteHandler}>Delete link</button>
-          </div>
-        </>
-      )
-      : null}
-  </div>
-);
+              <p className={elementStyles.formLabel}>Choose a label</p>
+              <span className={elementStyles.info}>
+                Note: you can specify a collection or resource room to automatically populate its links. Select "Create Sublinks" if you want to specify your own links.
+              </span>
+              <Select
+                isClearable
+                className="w-100"
+                onChange={collectionDropdownHandler}
+                placeholder={"Select a collection or resource room..."}
+                defaultValue={generateDefaultValue()}
+                options={options}
+              />
+              {
+                sublinks &&
+                <NavSublinkSection
+                  linkIndex={linkIndex}
+                  sublinks={sublinks}
+                  createHandler={createHandler}
+                  deleteHandler={deleteHandler}
+                  onFieldChange={onFieldChange}
+                  displayHandler={displayHandler}
+                  displaySublinks={displaySublinks}
+                />
+              }
+            </div>
+            <div className={elementStyles.inputGroup}>
+              <button type="button" id={`link-${linkIndex}-delete`} className={`ml-auto ${elementStyles.warning}`} onClick={deleteHandler}>Delete link</button>
+            </div>
+          </>
+        )
+        : null}
+    </div>
+  )
+};
 
 const NavSection = ({
   links,
@@ -92,6 +143,7 @@ const NavSection = ({
   displayHandler,
   displayLinks,
   displaySublinks,
+  resourceRoomName,
 }) => (
   <>
     <Droppable droppableId="link" type="link">
@@ -124,7 +176,9 @@ const NavSection = ({
                           options={options}
                           collection={link.collection}
                           isResourceRoom={link.resource_room}
+                          resourceRoomName={resourceRoomName}
                           sublinks={link.sublinks}
+                          url={link.url}
                           linkIndex={linkIndex}
                           onFieldChange={onFieldChange}
                           deleteHandler={deleteHandler}
