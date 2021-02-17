@@ -4,15 +4,22 @@ import React from 'react';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../../styles/isomer-cms/pages/Content.module.scss';
 
+const iconSelection = {
+    'rearrange': 'bx-sort',
+    'create-page': 'bx-file-blank',
+    'create-sub': 'bx-folder',
+}
 
-const FolderOptionButton = ({ isSelected, option }) => {
+const FolderOptionButton = ({ title, isSelected, option }) => {
     return (
         <button
             type="button"
             className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderOption} ${isSelected ? elementStyles.folderOptionSelected : ''}`}
         >
-            <i className={`bx bx-sort ${isSelected ? 'text-white' : ''}`} />
-            <span>abc</span>
+            <div className={`${contentStyles.contentContainerFolderRow} justify-content-center`}>
+                <i className={`bx ${iconSelection[option]} ${elementStyles.folderOptionIcon} ${isSelected ? 'text-white' : ''} mr-2`} />
+                <span className={`${elementStyles.folderOptionText} ml-2`}>{title}</span>
+            </div>
         </button>
     )
 }

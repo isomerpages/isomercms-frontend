@@ -100,6 +100,22 @@
     justify-content: center;
     align-items: center;
     color: $isomer-blue;
+
+    &:hover{
+      @extend .folderOptionSelected;
+    }
+
+    &:hover > div > i{
+      color: white;
+    }
+
+    .folderOptionIcon{
+      font-size: 30px;
+    }
+
+    .folderOptionText{
+      line-height: 2;
+    }
   }
 
   &.folderOptionSelected {
