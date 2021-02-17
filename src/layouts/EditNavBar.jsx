@@ -7,7 +7,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { Redirect } from 'react-router-dom'
 import { toast } from 'react-toastify';
 
-import { DEFAULT_ERROR_TOAST_MSG, SINGLE_PAGE_IDENTIFIER, SUBLINK_IDENTIFIER, RESOURCE_ROOM_IDENTIFIER } from '../utils';
+import { DEFAULT_ERROR_TOAST_MSG } from '../utils';
 
 import Toast from '../components/Toast';
 import NavSection from '../components/navbar/NavSection'
@@ -42,11 +42,27 @@ const EditNavBar =  ({ match }) => {
   const [resourceRoomName, setResourceRoomName] = useState('')
 
 
-  const LinkSectionConstructor = () => ({
+  const LinkCollectionSectionConstructor = () => ({
     title: 'Link Title',
     collection: collections[0],
   });
   
+  const LinkResourceSectionConstructor = () => ({
+    title: 'Link Title',
+    resource_room: true,
+  });
+
+  const LinkPageSectionConstructor = () => ({
+    title: 'Link Title',
+    url: '/permalink',
+  });
+
+  const LinkSublinkSectionConstructor = () => ({
+    title: 'Link Title',
+    url: '/permalink',
+    sublinks: [],
+  });
+
   const SublinkSectionConstructor = () => ({
     title: 'Sublink Title',
     url: ''
@@ -54,8 +70,14 @@ const EditNavBar =  ({ match }) => {
   
   const enumSection = (type) => {
     switch (type) {
-      case 'link':
-        return LinkSectionConstructor();
+      case 'collectionLink':
+        return LinkCollectionSectionConstructor();
+      case 'resourceLink':
+        return LinkResourceSectionConstructor();
+      case 'pageLink':
+        return LinkPageSectionConstructor();
+      case 'sublinkLink':
+        return LinkSublinkSectionConstructor();
       case 'sublink':
         return SublinkSectionConstructor();
       default:
@@ -109,18 +131,6 @@ const EditNavBar =  ({ match }) => {
         value: collection,
         label: collection,
       }))
-      options.push({
-        value: RESOURCE_ROOM_IDENTIFIER,
-        label: resourceRoom,
-      })
-      options.push({
-        value: SUBLINK_IDENTIFIER,
-        label: 'Create Sublinks',
-      })
-      options.push({
-        value: SINGLE_PAGE_IDENTIFIER,
-        label: 'Single Page',
-      })
 
       if (_isMounted) {
         setLinks(links)
@@ -150,65 +160,13 @@ const EditNavBar =  ({ match }) => {
         case 'link': {
           const linkIndex = parseInt(idArray[1], RADIX_PARSE_INT)
           const field = idArray[2]
-          let newLinks
-          // Collection field can modify different fields
-          if (field === 'collection') {
-            const resetLinks = update(links, {
-              [linkIndex]: {
-                $unset: ['collection', 'resource_room', 'sublinks', 'url']
+          const newLinks = update(links, {
+            [linkIndex]: {
+              [field]: {
+                $set: value,
               },
-            });
-            switch (value) {
-              case RESOURCE_ROOM_IDENTIFIER: {
-                newLinks = update(resetLinks, {
-                  [linkIndex]: {
-                    resource_room: {
-                      $set: true,
-                    },
-                  },
-                });
-                break;
-              }
-              case SUBLINK_IDENTIFIER: {
-                newLinks = update(resetLinks, {
-                  [linkIndex]: {
-                    sublinks: {
-                      $set: [],
-                    },
-                  },
-                });
-                break;
-              }
-              case SINGLE_PAGE_IDENTIFIER: {
-                newLinks = update(resetLinks, {
-                  [linkIndex]: {
-                    url: {
-                      $set: '/permalink',
-                    },
-                  },
-                });
-                break;
-              }
-              default: {
-                // Regular collection
-                newLinks = update(resetLinks, {
-                  [linkIndex]: {
-                    [field]: {
-                      $set: value,
-                    },
-                  },
-                });
-              }
-            }
-          } else {
-            newLinks = update(links, {
-              [linkIndex]: {
-                [field]: {
-                  $set: value,
-                },
-              },
-            });
-          }
+            },
+          });
           setLinks(newLinks)
           break;
         }
@@ -248,7 +206,7 @@ const EditNavBar =  ({ match }) => {
       switch (elemType) {
         case 'link': {
           const newLinks = update(links, {
-            $push: [enumSection(elemType)]
+            $push: [enumSection(value)]
           })
           const resetDisplayLinks = _.fill(Array(links.length), false)
           const resetDisplaySublinks = []
@@ -269,7 +227,6 @@ const EditNavBar =  ({ match }) => {
         }
         case 'sublink': {
           const linkIndex = parseInt(idArray[1], RADIX_PARSE_INT)
-          const sublinkIndex = parseInt(idArray[2], RADIX_PARSE_INT)
           const newLinks = update(links, {
             [linkIndex]: {
               sublinks: {
