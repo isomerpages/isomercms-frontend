@@ -84,6 +84,24 @@
     }
   }
 
+  &.folderOption{
+    background: none;
+    box-shadow: none;
+    height: 5.188rem;
+    font-weight: 700;
+    font-size: 1rem;
+    gap: 1rem;
+    line-height: 1.2rem;
+    margin-right: 1rem;
+    border: 1px dashed $isomer-blue;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    color: $isomer-blue;
+  }
+
   &.addNewHomepageSection{
     background: none;
     box-shadow: none;

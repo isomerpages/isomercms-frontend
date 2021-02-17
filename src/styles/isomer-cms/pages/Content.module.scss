@@ -126,6 +126,12 @@
   }
 }
 
+.contentContainerFolderOptions{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
 .contentContainerBoxes{
   //this is used in the OverviewCard page
   @include cardFormat;

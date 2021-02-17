@@ -15,6 +15,7 @@ import AuthCallback from './layouts/AuthCallback'
 import Home from './layouts/Home';
 import Sites from './layouts/Sites';
 import Workspace from './layouts/Workspace';
+import Folders from './layouts/Folders';
 import EditPage from './layouts/EditPage';
 import CategoryPages from './layouts/CategoryPages';
 import Images from './layouts/Images';
@@ -141,6 +142,8 @@ function App() {
                   <ProtectedRouteWithProps exact path="/" component={Home} />
                   <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
                   <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName" component={CategoryPages} isResource={false}/>
+                  <ProtectedRouteWithProps path="/sites/:siteName/folder/:folderName/" component={Folders} />
+                  {/* <ProtectedRouteWithProps path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName" /> */}
                   <ProtectedRouteWithProps path="/sites/:siteName/files/:fileName" component={EditFile} />
                   <ProtectedRouteWithProps path="/sites/:siteName/files" component={Files} />
                   <ProtectedRouteWithProps path="/sites/:siteName/images/:fileName" component={EditImage} />
