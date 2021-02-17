@@ -90,9 +90,9 @@
     height: 5.188rem;
     font-weight: 700;
     font-size: 1rem;
-    gap: 1rem;
     line-height: 1.2rem;
     margin-right: 1rem;
+    margin-bottom: 0;
     border: 1px dashed $isomer-blue;
     box-sizing: border-box;
     display: flex;
@@ -100,6 +100,39 @@
     justify-content: center;
     align-items: center;
     color: $isomer-blue;
+  }
+
+  &.folderOptionSelected {
+    background: $isomer-blue;
+    border: 1px solid $isomer-blue;
+    color: white;
+  }
+
+  &.folderItem{
+    background: white;
+    box-shadow: inset;
+    height: 5.188rem;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.2rem;
+    margin: 0.5rem 0 0.5rem 0;
+    border: 1px $isomer-blue;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    color: $body-text;
+
+    .folderItemIcon{
+      font-size: 30px;
+      color: $body-text;
+      margin-right: 1rem;
+    }
+
+    .folderItemText{
+      line-height: 2;
+    }
   }
 
   &.addNewHomepageSection{

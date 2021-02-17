@@ -9,9 +9,9 @@ const FolderOptionButton = ({ isSelected, option }) => {
     return (
         <button
             type="button"
-            className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderOption}`}
+            className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderOption} ${isSelected ? elementStyles.folderOptionSelected : ''}`}
         >
-            <i id="settingsIcon-NEW" className={`bx bx-sort ${elementStyles.bxPlusCircle}`} />
+            <i className={`bx bx-sort ${isSelected ? 'text-white' : ''}`} />
             <span>abc</span>
         </button>
     )

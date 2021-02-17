@@ -126,9 +126,20 @@
   }
 }
 
-.contentContainerFolderOptions{
+.contentContainerFolderRow{
   display: flex;
   flex-direction: row;
+  width: 100%;
+}
+
+.contentContainerFolderRowMargin{
+  @extend .contentContainerFolderRow;
+  margin-bottom: 2.5rem;
+}
+
+.contentContainerFolderColumn{
+  display: flex;
+  flex-direction: column;
   width: 100%;
 }
 

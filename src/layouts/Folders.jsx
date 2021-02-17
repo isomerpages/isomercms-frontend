@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import FolderOptionButton from '../components/folders/FolderOptionButton';
+import FolderContent from '../components/folders/FolderContent';
 
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -41,12 +42,13 @@ const Folders = ({ match, location }) => {
                 <strong className="ml-1"> SUP</strong>
               </div>
               {/* Options */}
-              <div className={contentStyles.contentContainerFolderOptions}>
-                <FolderOptionButton />
+              <div className={contentStyles.contentContainerFolderRowMargin}>
+                <FolderOptionButton isSelected={true} />
                 <FolderOptionButton />
                 <FolderOptionButton />
               </div>
               {/* Collections content */}
+              <FolderContent />
             </div>
             {/* main section ends here */}
           </div>
