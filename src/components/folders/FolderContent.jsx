@@ -6,7 +6,7 @@ import contentStyles from '../../styles/isomer-cms/pages/Content.module.scss';
 
 const FolderContentItem = ({ title, isFile, numItems }) => {
     return (
-        <div className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderItem}`}>
+        <div type="button" className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderItem}`}>
             <div className={contentStyles.contentContainerFolderRow}>
                 {
                     isFile

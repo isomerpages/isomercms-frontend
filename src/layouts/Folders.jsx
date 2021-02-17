@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
@@ -13,7 +13,11 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 const Folders = ({ match, location }) => {
-    const { siteName } = match.params;
+    const { siteName, folderName, subfolderName } = match.params;
+
+    const [isRearrangeActive, setIsRearrangeActive] = useState(false)
+
+    const toggleRearrange = () => { setIsRearrangeActive((prevState) => !prevState) }
 
     return (
         <>
@@ -25,7 +29,7 @@ const Folders = ({ match, location }) => {
             <div className={contentStyles.mainSection}>
               {/* Page title */}
               <div className={contentStyles.sectionHeader}>
-                <h1 className={contentStyles.sectionTitle}>Collection Name</h1>
+                <h1 className={contentStyles.sectionTitle}>{folderName}</h1>
               </div>
               {/* Info segment */}
               <div className={contentStyles.segment}>
@@ -38,14 +42,27 @@ const Folders = ({ match, location }) => {
               </div>
               {/* Collections title */}
               <div className={contentStyles.segment}>
-                My workspace >
-                <strong className="ml-1"> SUP</strong>
+                <span>
+                    My workspace >
+                    {
+                        folderName && !subfolderName
+                        ? <strong className="ml-1"> {folderName}</strong>
+                        : null
+                    }
+                    {
+                        folderName && subfolderName
+                        ? (
+                            <span>{` ${folderName}`} > <strong className="ml-1"> {subfolderName}</strong></span>
+                        )
+                        : null
+                    }
+                </span>
               </div>
               {/* Options */}
               <div className={contentStyles.contentContainerFolderRowMargin}>
-                <FolderOptionButton isSelected={true} />
-                <FolderOptionButton />
-                <FolderOptionButton />
+                <FolderOptionButton title="Rearrange items" isSelected={isRearrangeActive} onClick={toggleRearrange} option="rearrange" />
+                <FolderOptionButton title="Create new page" option="create-page" />
+                <FolderOptionButton title="Create new sub-folder" option="create-sub" />
               </div>
               {/* Collections content */}
               <FolderContent />

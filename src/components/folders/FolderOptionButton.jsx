@@ -10,11 +10,12 @@ const iconSelection = {
     'create-sub': 'bx-folder',
 }
 
-const FolderOptionButton = ({ title, isSelected, option }) => {
+const FolderOptionButton = ({ title, isSelected, onClick, option }) => {
     return (
         <button
             type="button"
             className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderOption} ${isSelected ? elementStyles.folderOptionSelected : ''}`}
+            onClick={onClick}
         >
             <div className={`${contentStyles.contentContainerFolderRow} justify-content-center`}>
                 <i className={`bx ${iconSelection[option]} ${elementStyles.folderOptionIcon} ${isSelected ? 'text-white' : ''} mr-2`} />
