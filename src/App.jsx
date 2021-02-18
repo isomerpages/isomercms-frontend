@@ -8,7 +8,6 @@ import {
 import axios from 'axios';
 import * as Sentry from "@sentry/react";
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -172,9 +171,6 @@ function App() {
                 </Switch>
               </LoginContext.Provider>
           </div>
-          {
-            process.env.REACT_APP_ENV === 'LOCAL_DEV' && <ReactQueryDevtools initialIsOpen={false} />
-          }
         </QueryClientProvider>
     </Router>
   );

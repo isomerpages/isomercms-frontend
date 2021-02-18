@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import { ReactQueryDevtools } from 'react-query/devtools'
 
 // Import components
 import Header from '../components/Header';
@@ -68,6 +69,9 @@ const Folders = ({ match, location }) => {
               <FolderContent />
             </div>
             {/* main section ends here */}
+            {
+                process.env.REACT_APP_ENV === 'LOCAL_DEV' && <ReactQueryDevtools initialIsOpen={false} />
+            }
           </div>
         </>
     );
