@@ -27,6 +27,7 @@
     "react-color": "^2.17.3",
     "react-dom": "^16.10.2",
     "react-input-mask": "^2.0.4",
+    "react-query": "^3.9.8",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.4",
     "react-select": "^3.1.0",
