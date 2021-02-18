@@ -28,7 +28,7 @@ const Header = ({
   const clearCookie = async () => {
     try {
       // Call the logout endpoint in the API server to clear the browser cookie
-      sessionStorage.clear()
+      localStorage.removeItem(userIdKey)
       await axios.get(`${BACKEND_URL}/auth/logout`)
       setShouldRedirect(true)
       setLogoutState()
@@ -72,8 +72,8 @@ const Header = ({
       </div>
       {/* Right section */}
       <div className={elementStyles.headerRight}>
-        <div className={elementStyles.info}>
-          Logged in as {sessionStorage.getItem(userIdKey)}
+        <div className={`${elementStyles.info} mr-3`}>
+          Logged in as @{localStorage.getItem(userIdKey)}
         </div>
         <button type="button" className={`${elementStyles.blue} float-right`} onClick={clearCookie}>
           Log Out

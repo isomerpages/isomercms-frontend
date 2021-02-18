@@ -44,6 +44,7 @@ axios.defaults.withCredentials = true
 const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 const LOCAL_STORAGE_AUTH_STATE = 'isomercms_auth'
 const LOCAL_STORAGE_SITE_COLORS = 'isomercms_colors'
+const userIdKey = "userId"
 
 const ToastCloseButton = ({ closeToast }) => (
   <span style={{
@@ -106,7 +107,7 @@ function App() {
       alert('Warning: your token has expired. Isomer will log you out now.')
       const logout = async () =>  {
         console.log('Logging out...')
-        sessionStorage.clear()
+        localStorage.removeItem(userIdKey)
         await axios.get(`${BACKEND_URL}/auth/logout`)
         setLogoutState()
       }

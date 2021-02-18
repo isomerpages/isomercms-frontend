@@ -46,7 +46,7 @@ const ProtectedRoute = ({ component: WrappedComponent, ...rest }) => {
                 if (rest.location.pathname === '/auth') {
                     const [ hash, userId ] = rest.location.hash.split('-')
                     if (hash === authContextString) {
-                        sessionStorage.setItem(userIdKey, userId)
+                        localStorage.setItem(userIdKey, userId)
                         return <WrappedComponent {...rest} {...props} isLoggedIn={isLoggedIn} />
                     }
                     return <Redirect to="/" />
