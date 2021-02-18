@@ -27,6 +27,7 @@ const RADIX_PARSE_INT = 10
 const EditNavBar =  ({ match }) => {
   const { siteName } = match.params
 
+  const [sha, setSha] = useState()
   const [links, setLinks] = useState([])
   const [originalNav, setOriginalNav] = useState()
   const [collections, setCollections] = useState([])
@@ -91,10 +92,12 @@ const EditNavBar =  ({ match }) => {
     let _isMounted = true
 
     const loadNavBarDetails = async () => {
-      let content, collectionContent, resourceContent
+      let navContent, collectionContent, resourceContent, navSha
       try {
         const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/navigation`);
-        content = resp.data;
+        const { content, sha } = resp.data;
+        navContent = content
+        navSha = sha
         const collectionResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`)
         collectionContent = collectionResp.data
         const resourceResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`)
@@ -111,9 +114,9 @@ const EditNavBar =  ({ match }) => {
         console.log(error)
       }
 
-      if (!content) return
+      if (!navContent) return
 
-      const { links } = content
+      const { links } = navContent
 
       // Add booleans for displaying links and sublinks
       const displayLinks = _.fill(Array(links.length), false)
@@ -142,7 +145,8 @@ const EditNavBar =  ({ match }) => {
         setCollections(collections)
         setOptions(options)
         setResources(resources.map(resource => deslugifyDirectory(resource.dirName)))
-        setOriginalNav(content)
+        setOriginalNav(navContent)
+        setSha(navSha)
       }
     }
 
@@ -351,7 +355,27 @@ const EditNavBar =  ({ match }) => {
   }
 
   const saveNav = async () => {
-    // TODO
+    try {
+      const params = {
+        content: {
+          ...originalNav,
+          links
+        },
+        sha: sha,
+      };
+
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/navigation`, params, {
+        withCredentials: true,
+      });
+
+      window.location.reload();
+    } catch (err) {
+      toast(
+        <Toast notificationType='error' text={`There was a problem trying to save your nav bar. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+      );
+      console.log(err);
+    }
   }
 
   const onDragEnd = (result) => {
@@ -426,7 +450,7 @@ const EditNavBar =  ({ match }) => {
   }
 
   const hasChanges = () => {
-    return JSON.stringify(originalNav) === JSON.stringify({
+    return JSON.stringify(originalNav) !== JSON.stringify({
       ...originalNav,
       links: links
     })
@@ -446,7 +470,7 @@ const EditNavBar =  ({ match }) => {
       }
       <Header
         title={"Nav Bar"}
-        shouldAllowEditPageBackNav={hasChanges()}
+        shouldAllowEditPageBackNav={!hasChanges()}
         isEditPage="true"
         backButtonText="Back to My Workspace"
         backButtonUrl={`/sites/${siteName}/workspace`}
@@ -481,7 +505,12 @@ const EditNavBar =  ({ match }) => {
           </div>
           <div className={editorStyles.pageEditorFooter}>
             {/* TODO: save button */}
-            SAVE
+            <LoadingButton
+              label="Save"
+              disabledStyle={elementStyles.disabled}
+              className={elementStyles.blue}
+              callback={saveNav}
+            />
           </div>
         </div>
       }
