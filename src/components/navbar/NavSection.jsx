@@ -141,7 +141,6 @@ const NavSection = ({
   displayHandler,
   displayLinks,
   displaySublinks,
-  resourceRoomName,
 }) => {
   const [newSectionType, setNewSectionType] = useState()
   const sectionCreationHandler = () => {
@@ -203,7 +202,6 @@ const NavSection = ({
                             options={options}
                             collection={link.collection}
                             isResourceRoom={link.resource_room}
-                            resourceRoomName={resourceRoomName}
                             sublinks={link.sublinks}
                             url={link.url}
                             linkIndex={linkIndex}

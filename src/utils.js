@@ -44,6 +44,15 @@ export function deslugifyCollectionPage(collectionPageName) {
     .join(' '); // join it back together
 }
 
+// this function converts directories into readable form
+// for example, '0-this-is-a-file.md' -> 'This Is A File'
+export function deslugifyDirectory(dirName) {
+  return dirName
+    .split('-')
+    .map(string => _.upperFirst(string)) // capitalize first letter
+    .join(' '); // join it back together
+}
+
 // takes a string URL and returns true if the link is an internal link
 // only works on browser side
 export function isLinkInternal(url) {

@@ -7,10 +7,11 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { Redirect } from 'react-router-dom'
 import { toast } from 'react-toastify';
 
-import { DEFAULT_ERROR_TOAST_MSG } from '../utils';
+import { DEFAULT_ERROR_TOAST_MSG, deslugifyDirectory } from '../utils';
 
 import Toast from '../components/Toast';
 import NavSection from '../components/navbar/NavSection'
+import TemplateNavBar from '../templates/NavBar'
 
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -39,7 +40,7 @@ const EditNavBar =  ({ match }) => {
       type: '',
     }
   )
-  const [resourceRoomName, setResourceRoomName] = useState('')
+  const [resources, setResources] = useState()
 
 
   const LinkCollectionSectionConstructor = () => ({
@@ -65,7 +66,7 @@ const EditNavBar =  ({ match }) => {
 
   const SublinkSectionConstructor = () => ({
     title: 'Sublink Title',
-    url: ''
+    url: '/permalink'
   });
   
   const enumSection = (type) => {
@@ -89,14 +90,14 @@ const EditNavBar =  ({ match }) => {
     let _isMounted = true
 
     const loadNavBarDetails = async () => {
-      let content, collectionContent, resourceRoomContent
+      let content, collectionContent, resourceContent
       try {
         const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/navigation`);
         content = resp.data;
         const collectionResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`)
         collectionContent = collectionResp.data
-        const resourceRoomResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resource-room`)
-        resourceRoomContent = resourceRoomResp.data
+        const resourceResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`)
+        resourceContent = resourceResp.data
       } catch (error) {
         if (error?.response?.status === 404) {
           setShouldRedirectToNotFound(true)
@@ -125,7 +126,7 @@ const EditNavBar =  ({ match }) => {
       })
 
       const { collections } = collectionContent
-      const { resourceRoom } = resourceRoomContent
+      const { resources } = resourceContent
 
       const options = collections.map((collection) => ({
         value: collection,
@@ -139,7 +140,7 @@ const EditNavBar =  ({ match }) => {
         setDisplaySublinks(displaySublinks)
         setCollections(collections)
         setOptions(options)
-        setResourceRoomName(resourceRoom)
+        setResources(resources.map(resource => deslugifyDirectory(resource.dirName)))
       }
     }
 
@@ -461,23 +462,19 @@ const EditNavBar =  ({ match }) => {
                   displayHandler={displayHandler}
                   displayLinks={displayLinks}
                   displaySublinks={displaySublinks}
-                  resourceRoomName={resourceRoomName}
                 />
               </DragDropContext>
             </div>
           </div>
+          {/* need to change the css here */}
           <div className={`${editorStyles.contactUsEditorMain} ` }>
             {/* navbar content */}
-            <section className="bp-section is-small padding--bottom--lg">
-              <div className="bp-container">
-                <div className="row">
-                  <div className="col is-8 is-offset-2">
-                    {/* TODO: display menu */}
-                    MENU
-                  </div>
-                </div>
-              </div>
-            </section>
+            {/* TODO: update collectionInfo */}
+            <TemplateNavBar
+              links={links}
+              collectionInfo={null}
+              resources={resources}
+            />
           </div>
           <div className={editorStyles.pageEditorFooter}>
             {/* TODO: save button */}
