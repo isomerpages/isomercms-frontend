@@ -106,6 +106,7 @@ function App() {
       alert('Warning: your token has expired. Isomer will log you out now.')
       const logout = async () =>  {
         console.log('Logging out...')
+        sessionStorage.clear()
         await axios.get(`${BACKEND_URL}/auth/logout`)
         setLogoutState()
       }

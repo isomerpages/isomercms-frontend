@@ -28,6 +28,7 @@ const Header = ({
   const clearCookie = async () => {
     try {
       // Call the logout endpoint in the API server to clear the browser cookie
+      sessionStorage.clear()
       await axios.get(`${BACKEND_URL}/auth/logout`)
       setShouldRedirect(true)
       setLogoutState()
