@@ -28,6 +28,7 @@ const EditNavBar =  ({ match }) => {
   const { siteName } = match.params
 
   const [links, setLinks] = useState([])
+  const [originalNav, setOriginalNav] = useState()
   const [collections, setCollections] = useState([])
   const [options, setOptions] = useState([])
   const [displayLinks, setDisplayLinks] = useState([])
@@ -141,6 +142,7 @@ const EditNavBar =  ({ match }) => {
         setCollections(collections)
         setOptions(options)
         setResources(resources.map(resource => deslugifyDirectory(resource.dirName)))
+        setOriginalNav(content)
       }
     }
 
@@ -424,9 +426,10 @@ const EditNavBar =  ({ match }) => {
   }
 
   const hasChanges = () => {
-    // TODO
-    // return JSON.stringify(sanitisedOriginalFrontMatter) === JSON.stringify(frontMatter) && JSON.stringify(footerContent) === JSON.stringify(originalFooterContent)
-    return false
+    return JSON.stringify(originalNav) === JSON.stringify({
+      ...originalNav,
+      links: links
+    })
   }
 
   return (
