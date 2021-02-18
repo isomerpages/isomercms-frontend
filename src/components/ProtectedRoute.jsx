@@ -10,6 +10,7 @@ const { LoginContext } = require('../contexts/LoginContext')
 
 // Constants
 const authContextString = '#isomercms'
+const userIdKey = 'userId'
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -45,7 +46,7 @@ const ProtectedRoute = ({ component: WrappedComponent, ...rest }) => {
                 if (rest.location.pathname === '/auth') {
                     const [ hash, userId ] = rest.location.hash.split('-')
                     if (hash === authContextString) {
-                        sessionStorage.setItem('userId', userId)
+                        sessionStorage.setItem(userIdKey, userId)
                         return <WrappedComponent {...rest} {...props} isLoggedIn={isLoggedIn} />
                     }
                     return <Redirect to="/" />
