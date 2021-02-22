@@ -9,7 +9,11 @@ import Sidebar from '../components/Sidebar';
 import FolderOptionButton from '../components/folders/FolderOptionButton';
 import FolderContent from '../components/folders/FolderContent';
 
-import { parseDirectoryFile } from '../utils'
+import {
+    parseDirectoryFile,
+    convertFolderOrderToArray,
+    retrieveSubfolderContents,
+} from '../utils'
 
 // Import API
 import { getDirectoryFile } from '../api';
@@ -34,10 +38,16 @@ const Folders = ({ match, location }) => {
 
     useEffect(() => {
         if (folderContents && folderContents.data) {
+            const parsedFolderContents = parseDirectoryFile(folderContents.data.content)
             setDirectoryFileSha(folderContents.data.sha)
-            setFolderOrder(parseDirectoryFile(folderContents.data.content))
+
+            if (subfolderName) {
+                setFolderOrder(retrieveSubfolderContents(parsedFolderContents, subfolderName))
+            } else {
+                setFolderOrder(convertFolderOrderToArray(parsedFolderContents))
+            }
         }
-    }, [folderContents])
+    }, [folderContents, subfolderName])
 
     const toggleRearrange = () => { setIsRearrangeActive((prevState) => !prevState) }
 
@@ -45,7 +55,7 @@ const Folders = ({ match, location }) => {
         <>
           <Header
             backButtonText={`Back to ${subfolderName ? folderName : 'Workspace'}`}
-            backButtonUrl={`/sites/${siteName}/${subfolderName ? `/folder/${folderName}` : 'workspace'}`}
+            backButtonUrl={`/sites/${siteName}/${subfolderName ? `folder/${folderName}` : 'workspace'}`}
           />
           {/* main bottom section */}
           <div className={elementStyles.wrapper}>
@@ -94,7 +104,7 @@ const Folders = ({ match, location }) => {
                   error && <span>There was an error retrieving your content. Please refresh the page.</span>
               }
               {
-                  !error && folderContents && <FolderContent data={folderOrder} />
+                  !error && folderContents && <FolderContent data={folderOrder} siteName={siteName} folderName={folderName} />
               }
             </div>
             {/* main section ends here */}

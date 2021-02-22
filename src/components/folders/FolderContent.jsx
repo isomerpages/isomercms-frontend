@@ -45,7 +45,7 @@ const FolderContent = ({ data, siteName, folderName }) => {
                         title={deslugifyPage(folderContentItem.title)}
                         numItems={folderContentItem.type === 'dir' ? folderContentItem.children.length : null}
                         isFile={folderContentItem.type === 'dir' ? false: true}
-                        link={folderContentItem.type === 'dir' ? `/sites/${siteName}/folder/${folderName}/${folderContentItem.title}` : `/sites/${siteName}/collections/${folderName}/${folderContentItem.path}`}
+                        link={folderContentItem.type === 'dir' ? `/sites/${siteName}/folder/${folderName}/subfolder/${folderContentItem.title}` : `/sites/${siteName}/collections/${folderName}/${folderContentItem.path}`}
                     />
                 ))
             }

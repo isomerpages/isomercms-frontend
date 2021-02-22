@@ -148,7 +148,7 @@ function App() {
                     <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
                     <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName" component={CategoryPages} isResource={false}/>
                     <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName" component={Folders} />
-                    <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/:subfolderName" component={Folders} />
+                    <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName" component={Folders} />
                     <ProtectedRouteWithProps path="/sites/:siteName/files/:fileName" component={EditFile} />
                     <ProtectedRouteWithProps path="/sites/:siteName/files" component={Files} />
                     <ProtectedRouteWithProps path="/sites/:siteName/images/:fileName" component={EditImage} />

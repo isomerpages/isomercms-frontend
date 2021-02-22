@@ -56,7 +56,11 @@ export function deslugifyDirectory(dirName) {
 // this function converts file names into readable form
 // for example, 'this-is-a-file.md' -> 'This Is A File'
 export function deslugifyPage(pageName) {
-  return _.upperFirst(pageName.split('.')[0]) // remove the file extension and capitalize first letter
+  return pageName
+    .split('.')[0] // remove the file extension
+    .split('-')
+    .map(string => _.upperFirst(string)) // capitalize first letter
+    .join(' '); // join it back together
 }
 
 
@@ -545,8 +549,10 @@ export const getObjectDiff = (obj1, obj2) => {
 export const parseDirectoryFile = (folderContent) => {
   const decodedContent = yaml.safeLoad(Base64.decode(folderContent))
   const collectionKey = Object.keys(decodedContent.collections)[0]
-  const folderOrder = decodedContent.collections[collectionKey].order
+  return decodedContent.collections[collectionKey].order
+}
 
+export const convertFolderOrderToArray = (folderOrder) => {
   let currFolderEntry = {}
   return folderOrder.reduce((acc, curr, currIdx) => {
       const folderPathArr = curr.split('/')
@@ -556,7 +562,7 @@ export const parseDirectoryFile = (folderContent) => {
           acc.push({
               type: 'file',
               path: curr,
-              title: deslugifyPage(curr),
+              title: curr,
           })
       }
 
@@ -572,6 +578,7 @@ export const parseDirectoryFile = (folderContent) => {
 
               currFolderEntry.type = 'dir';
               currFolderEntry.title = subfolderTitle;
+              currFolderEntry.path = curr;
               currFolderEntry.children = [curr];
           } else {
               currFolderEntry.children.push(curr)
@@ -581,5 +588,22 @@ export const parseDirectoryFile = (folderContent) => {
       }
 
       return acc
+  }, [])
+}
+
+export const retrieveSubfolderContents = (folderOrder, subfolderName) => {
+  return folderOrder.reduce((acc, curr) => {
+    const folderPathArr = curr.split('/')
+    if (folderPathArr.length === 2) {
+      const [subfolderTitle, subfolderFileName] = folderPathArr
+      if (subfolderTitle === subfolderName) {
+        acc.push({
+          type: 'file',
+          path: curr,
+          title: subfolderFileName,
+        })
+      }
+    }
+    return acc
   }, [])
 }
