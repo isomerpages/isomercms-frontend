@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { ReactQueryDevtools } from 'react-query/devtools'
+import { useQuery } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
+import yaml from 'js-yaml';
+import { Base64 } from 'js-base64';
 
 // Import components
 import Header from '../components/Header';
@@ -9,14 +11,35 @@ import Sidebar from '../components/Sidebar';
 import FolderOptionButton from '../components/folders/FolderOptionButton';
 import FolderContent from '../components/folders/FolderContent';
 
+import { parseDirectoryFile } from '../utils'
+
+// Import API
+import { getDirectoryFile } from '../api';
+
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
+// Constants
+const FOLDER_CONTENTS_KEY = 'folder-contents'
+
 const Folders = ({ match, location }) => {
     const { siteName, folderName, subfolderName } = match.params;
 
+    const { data: folderContents, error } = useQuery(
+        FOLDER_CONTENTS_KEY,
+        () => getDirectoryFile(siteName, folderName)
+    );
     const [isRearrangeActive, setIsRearrangeActive] = useState(false)
+    const [directoryFileSha, setDirectoryFileSha] = useState('')
+    const [folderOrder, setFolderOrder] = useState([])
+
+    useEffect(() => {
+        if (folderContents && folderContents.data) {
+            setDirectoryFileSha(folderContents.data.sha)
+            setFolderOrder(parseDirectoryFile(folderContents.data.content))
+        }
+    }, [folderContents])
 
     const toggleRearrange = () => { setIsRearrangeActive((prevState) => !prevState) }
 
@@ -66,7 +89,12 @@ const Folders = ({ match, location }) => {
                 <FolderOptionButton title="Create new sub-folder" option="create-sub" />
               </div>
               {/* Collections content */}
-              <FolderContent />
+              {
+                  error && <span>There was an error retrieving your content. Please refresh the page.</span>
+              }
+              {
+                  !error && folderContents && <FolderContent data={folderOrder} />
+              }
             </div>
             {/* main section ends here */}
             {

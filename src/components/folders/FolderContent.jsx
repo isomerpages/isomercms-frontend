@@ -16,7 +16,7 @@ const FolderContentItem = ({ title, isFile, numItems }) => {
                 <span className={`${elementStyles.folderItemText} mr-auto`} >{title}</span>
                 {
                     numItems
-                    ? <span className={elementStyles.folderItemText}>{numItems} items</span>
+                    ? <span className={elementStyles.folderItemText}>{numItems} item{numItems === '1' ? 's' : ''}</span>
                     : null
                 }
                 <button
@@ -30,11 +30,18 @@ const FolderContentItem = ({ title, isFile, numItems }) => {
     )
 }
 
-const FolderContent = () => {
+const FolderContent = ({ data }) => {
     return (
-        <div className={contentStyles.contentContainerFolderColumn}>
-            <FolderContentItem title={'testasdasdasd'} isFile={true} numItems={10} />
-            <FolderContentItem title={'hahasdasdas'} isFile={false} />
+        <div className={`${contentStyles.contentContainerFolderColumn} mb-5`}>
+            {
+                data.map((folderContentItem) => (
+                    <FolderContentItem
+                        key={folderContentItem.title}
+                        title={folderContentItem.title}
+                        numItems={folderContentItem.children ? folderContentItem.children.length : null}
+                        isFile={folderContentItem.type === 'dir' ? false : true} />
+                ))
+            }
         </div>
     )
 }
