@@ -130,7 +130,7 @@ const FolderCard = ({
           <i className={`bx bx-md text-dark ${generateImage(pageType)} ${contentStyles.componentIcon}`} />
           <span className={`${contentStyles.componentFolderName} align-self-center ml-4 mr-auto`}>{displayText}</span>
           {
-            pageType === 'homepage' || pageType === 'contact-us'
+            pageType === 'homepage' || pageType === 'contact-us' || pageType === 'nav'
             ? ''
             : (
               <div className={`position-relative`}>
