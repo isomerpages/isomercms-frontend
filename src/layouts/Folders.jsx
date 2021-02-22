@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import yaml from 'js-yaml';
-import { Base64 } from 'js-base64';
 
 // Import components
 import Header from '../components/Header';
@@ -45,7 +43,10 @@ const Folders = ({ match, location }) => {
 
     return (
         <>
-          <Header />
+          <Header
+            backButtonText={`Back to ${subfolderName ? folderName : 'Workspace'}`}
+            backButtonUrl={`/sites/${siteName}/${subfolderName ? `/folder/${folderName}` : 'workspace'}`}
+          />
           {/* main bottom section */}
           <div className={elementStyles.wrapper}>
             <Sidebar siteName={siteName} currPath={location.pathname} />
