@@ -54,6 +54,8 @@ const FolderCard = ({
         return `/sites/${siteName}/resources/${category}`
       case 'contact-us':
         return `/sites/${siteName}/contact-us`
+      case 'nav':
+        return `/sites/${siteName}/navbar`
       default:
         return ''
     }
@@ -65,6 +67,8 @@ const FolderCard = ({
         return 'bxs-home-circle'
       case 'contact-us':
         return 'bxs-phone'
+      case 'nav':
+        return 'bxs-compass'
       default: 
         return 'bxs-folder'
     }
