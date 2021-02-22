@@ -13,11 +13,6 @@ import { DEFAULT_ERROR_TOAST_MSG, frontMatterParser, concatFrontMatterMdBody, is
 import { sanitiseFrontMatter } from '../utils/contact-us/dataSanitisers';
 import { validateFrontMatter } from '../utils/contact-us/validators';
 import { validateContactType, validateLocationType } from '../utils/validators';
-import {
-  createPageStyleSheet,
-  getSiteColors,
-} from '../utils/siteColorUtils';
-
 
 import EditorSection from '../components/contact-us/Section';
 import Toast from '../components/Toast';
@@ -37,6 +32,9 @@ import TemplateFeedbackSection from '../templates/contact-us/FeedbackSection';
 
 import DeleteWarningModal from '../components/DeleteWarningModal';
 import GenericWarningModal from '../components/GenericWarningModal';
+
+// Import hooks
+import useSiteColorsHook from '../hooks/useSiteColorsHook';
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -111,7 +109,9 @@ const displayDeletedFrontMatter = (deletedFrontMatter) => {
   return displayText
 }
 
-const EditContactUs =  ({ match, siteColors, setSiteColors }) => {
+const EditContactUs =  ({ match }) => {
+  const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
+
   const { siteName } = match.params;
   const [hasLoaded, setHasLoaded] = useState(false)
   const [scrollRefs, setScrollRefs] = useState({
@@ -159,32 +159,8 @@ const EditContactUs =  ({ match, siteColors, setSiteColors }) => {
     const loadContactUsDetails = async () => {
       // Set page colors
       try {
-        let primaryColor
-        let secondaryColor
-
-        if (!siteColors[siteName]) {
-          const {
-            primaryColor: sitePrimaryColor,
-            secondaryColor: siteSecondaryColor,
-          } = await getSiteColors(siteName)
-
-          primaryColor = sitePrimaryColor
-          secondaryColor = siteSecondaryColor
-
-          if (_isMounted) setSiteColors((prevState) => ({
-            ...prevState,
-            [siteName]: {
-              primaryColor,
-              secondaryColor,
-            }
-          }))
-        } else {
-          primaryColor = siteColors[siteName].primaryColor
-          secondaryColor = siteColors[siteName].secondaryColor
-        }
-
-        createPageStyleSheet(siteName, primaryColor, secondaryColor)
-      
+        await retrieveSiteColors(siteName)
+        generatePageStyleSheet(siteName)
       } catch (err) {
         console.log(err);
       }

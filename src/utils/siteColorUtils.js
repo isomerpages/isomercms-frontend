@@ -7,7 +7,7 @@ const DEFAULT_ISOMER_PRIMARY_COLOR = '#6031b6';
 const DEFAULT_ISOMER_SECONDARY_COLOR = '#4372d6';
 
 const defaultSiteColors = {
-    defult: {
+    default: {
         primaryColor: DEFAULT_ISOMER_PRIMARY_COLOR,
         secondaryColor: DEFAULT_ISOMER_SECONDARY_COLOR,
     }

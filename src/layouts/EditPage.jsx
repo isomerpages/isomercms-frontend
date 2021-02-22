@@ -36,10 +36,6 @@ import {
   tableButton,
   guideButton,
 } from '../utils/markdownToolbar';
-import {
-  createPageStyleSheet,
-  getSiteColors,
-} from '../utils/siteColorUtils';
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -50,6 +46,9 @@ import LoadingButton from '../components/LoadingButton';
 import HyperlinkModal from '../components/HyperlinkModal';
 import MediaModal from '../components/media/MediaModal';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
+
+// Import hooks
+import useSiteColorsHook from '../hooks/useSiteColorsHook';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -99,7 +98,9 @@ const getBackButtonInfo = (resourceCategory, collectionName, siteName) => {
   }
 }
 
-const EditPage = ({ match, isResourcePage, isCollectionPage, siteColors, setSiteColors, history, type }) => {
+const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) => {
+  const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
+
   const { collectionName, fileName, siteName, resourceName } = match.params;
   const apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName })
   const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, isCollectionPage, fileName)
@@ -132,32 +133,8 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, siteColors, setSite
     const loadPageDetails = async () => {
       // Set page colors
       try {
-        let primaryColor
-        let secondaryColor
-
-        if (!siteColors[siteName]) {
-          const {
-            primaryColor: sitePrimaryColor,
-            secondaryColor: siteSecondaryColor,
-          } = await getSiteColors(siteName)
-
-          primaryColor = sitePrimaryColor
-          secondaryColor = siteSecondaryColor
-
-          if (_isMounted) setSiteColors((prevState) => ({
-            ...prevState,
-            [siteName]: {
-              primaryColor,
-              secondaryColor,
-            }
-          }))
-        } else {
-          primaryColor = siteColors[siteName].primaryColor
-          secondaryColor = siteColors[siteName].secondaryColor
-        }
-
-        createPageStyleSheet(siteName, primaryColor, secondaryColor)
-
+        await retrieveSiteColors(siteName)
+        generatePageStyleSheet(siteName)
       } catch (err) {
         console.log(err);
       }

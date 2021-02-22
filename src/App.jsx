@@ -34,11 +34,8 @@ import FallbackComponent from './components/FallbackComponent'
 // Styles
 import elementStyles from './styles/isomer-cms/Elements.module.scss';
 
-// Utils
-import { defaultSiteColors } from './utils/siteColorUtils';
-
 // Import contexts
-const { LoginContext } = require('./contexts/LoginContext')
+const { LoginContext } = require('./contexts/LoginContext');
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -46,6 +43,7 @@ axios.defaults.withCredentials = true
 // Constants
 const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 const LOCAL_STORAGE_AUTH_STATE = 'isomercms_auth'
+const LOCAL_STORAGE_SITE_COLORS = 'isomercms_colors'
 
 const ToastCloseButton = ({ closeToast }) => (
   <span style={{
@@ -67,7 +65,6 @@ function App() {
     return false
   })
   const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false)
-  const [siteColors, setSiteColors] = useState({})
 
   axios.interceptors.response.use(
     function (response) {
@@ -101,6 +98,10 @@ function App() {
   }
 
   useEffect(() => {
+    localStorage.removeItem(LOCAL_STORAGE_SITE_COLORS)
+  }, [])
+
+  useEffect(() => {
     if (isLoggedIn && shouldBlockNavigation) {
       alert('Warning: your token has expired. Isomer will log you out now.')
       const logout = async () =>  {
@@ -115,7 +116,7 @@ function App() {
   const ProtectedRouteWithProps = (props) => {
     return (
       <Sentry.ErrorBoundary fallback={FallbackComponent}>
-        <ProtectedRoute {...props} siteColors={siteColors} setSiteColors={setSiteColors} />
+        <ProtectedRoute {...props} />
       </Sentry.ErrorBoundary>
     )
   }
