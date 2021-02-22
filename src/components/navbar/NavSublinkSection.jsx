@@ -75,6 +75,7 @@ const NavSublinkSection = ({
               {sublinks.map((sublink, sublinkIndex) => (
                 <Draggable
                   draggableId={`sublink-${linkIndex}-${sublinkIndex}-draggable`}
+                  key={`sublink-${linkIndex}-${sublinkIndex}-draggable`}
                   index={sublinkIndex}
                 >
                   {(draggableProvided) => (

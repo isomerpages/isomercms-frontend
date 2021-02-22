@@ -186,6 +186,7 @@ const NavSection = ({
                   {links.map((link, linkIndex) => (
                     <Draggable
                       draggableId={`link-${linkIndex}-draggable`}
+                      key={`link-${linkIndex}-draggable`}
                       index={linkIndex}
                     >
                       {(draggableProvided) => (
