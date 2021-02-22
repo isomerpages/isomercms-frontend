@@ -87,8 +87,8 @@ const NavSublinkSection = ({
                     >
                       <SublinkElem
                         key={`sublink-${linkIndex}-${sublinkIndex}`}
-                        title={sublinks[sublinkIndex].title}
-                        url={sublinks[sublinkIndex].url}
+                        title={sublink.title}
+                        url={sublink.url}
                         linkIndex={linkIndex}
                         sublinkIndex={sublinkIndex}
                         onFieldChange={onFieldChange}
@@ -110,3 +110,29 @@ const NavSublinkSection = ({
 )
 
 export default NavSublinkSection
+
+SublinkElem.propTypes = {
+  title: PropTypes.string,
+  url: PropTypes.string,
+  linkIndex: PropTypes.number.isRequired,
+  sublinkIndex: PropTypes.number.isRequired,
+  onFieldChange: PropTypes.func.isRequired,
+  deleteHandler: PropTypes.func.isRequired,
+  shouldDisplay: PropTypes.bool,
+  displayHandler: PropTypes.func.isRequired,
+};
+
+NavSublinkSection.propTypes = {
+  linkIndex: PropTypes.number,
+  sublinks: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      url: PropTypes.string,
+    }),
+  ),
+  createHandler: PropTypes.func.isRequired,
+  deleteHandler: PropTypes.func.isRequired,
+  onFieldChange: PropTypes.func.isRequired,
+  displayHandler: PropTypes.func.isRequired,
+  displaySublinks: PropTypes.arrayOf(PropTypes.bool),
+};

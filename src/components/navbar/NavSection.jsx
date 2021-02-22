@@ -198,10 +198,9 @@ const NavSection = ({
                         >
                           <NavElem
                             key={`link-${linkIndex}`}
-                            title={links[linkIndex].title}
+                            title={link.title}
                             options={options}
                             collection={link.collection}
-                            isResourceRoom={link.resource_room}
                             sublinks={link.sublinks}
                             url={link.url}
                             linkIndex={linkIndex}
@@ -239,3 +238,57 @@ const NavSection = ({
 };
 
 export default NavSection;
+
+NavElem.propTypes = {
+  title: PropTypes.string,
+  url: PropTypes.string,
+  collection: PropTypes.string,
+  sublinks: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      url: PropTypes.string,
+    }),
+  ),
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
+  linkIndex: PropTypes.number.isRequired,
+  onFieldChange: PropTypes.func.isRequired,
+  createHandler: PropTypes.func.isRequired,
+  deleteHandler: PropTypes.func.isRequired,
+  displayHandler: PropTypes.func.isRequired,
+  shouldDisplay: PropTypes.bool,
+  displaySublinks: PropTypes.arrayOf(PropTypes.bool),
+};
+
+NavSection.propTypes = {
+  links: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      url: PropTypes.string,
+      collection: PropTypes.string,
+      resource_room: PropTypes.bool,
+      sublinks: PropTypes.arrayOf(
+        PropTypes.shape({
+          title: PropTypes.string,
+          url: PropTypes.string,
+        }),
+      )
+    }),
+  ).isRequired,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
+  createHandler: PropTypes.func.isRequired,
+  deleteHandler: PropTypes.func.isRequired,
+  onFieldChange: PropTypes.func.isRequired,
+  displayHandler: PropTypes.func.isRequired,
+  displayLinks: PropTypes.arrayOf(PropTypes.bool).isRequired,
+  displaySublinks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.bool)).isRequired,
+};
