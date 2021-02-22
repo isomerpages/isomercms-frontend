@@ -53,6 +53,13 @@ export function deslugifyDirectory(dirName) {
     .join(' '); // join it back together
 }
 
+// this function converts file names into readable form
+// for example, 'this-is-a-file.md' -> 'This Is A File'
+export function deslugifyPage(pageName) {
+  return _.upperFirst(pageName.split('.')[0]) // remove the file extension and capitalize first letter
+}
+
+
 // takes a string URL and returns true if the link is an internal link
 // only works on browser side
 export function isLinkInternal(url) {
@@ -533,4 +540,46 @@ export const getObjectDiff = (obj1, obj2) => {
     return result;
   }, {});
   return difference
+}
+
+export const parseDirectoryFile = (folderContent) => {
+  const decodedContent = yaml.safeLoad(Base64.decode(folderContent))
+  const collectionKey = Object.keys(decodedContent.collections)[0]
+  const folderOrder = decodedContent.collections[collectionKey].order
+
+  let currFolderEntry = {}
+  return folderOrder.reduce((acc, curr, currIdx) => {
+      const folderPathArr = curr.split('/')
+      if (folderPathArr.length === 1) {
+          if (JSON.stringify(currFolderEntry) !== '{}') acc.push(currFolderEntry)
+          currFolderEntry = {}
+          acc.push({
+              type: 'file',
+              path: curr,
+              title: deslugifyPage(curr),
+          })
+      }
+
+      if (folderPathArr.length > 1) {
+          const subfolderTitle = folderPathArr[0]
+
+          // Start of a new subfolder section
+          if (!currFolderEntry[subfolderTitle]) {
+              // Case: two consecutive subfolders - transitioning from one to the other
+              if (currFolderEntry.title && currFolderEntry.title !== subfolderTitle) {
+                  acc.push(currFolderEntry)
+              }
+
+              currFolderEntry.type = 'dir';
+              currFolderEntry.title = subfolderTitle;
+              currFolderEntry.children = [curr];
+          } else {
+              currFolderEntry.children.push(curr)
+          }
+
+          if (currIdx === folderOrder.length - 1) acc.push(currFolderEntry)
+      }
+
+      return acc
+  }, [])
 }
