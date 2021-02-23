@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const NavDropdownSection = ({ children, link, linkIndex }) => (
   <div className="navbar-item has-dropdown is-hoverable" key={`link-${linkIndex}`}>
@@ -74,3 +75,40 @@ const TemplateNavBar = ({ links, collectionInfo, resources }) => (
 );
 
 export default TemplateNavBar;
+
+NavDropdownSection.propTypes = {
+  link: PropTypes.shape({
+    title: PropTypes.string,
+    url: PropTypes.string,
+    collection: PropTypes.string,
+    resource_room: PropTypes.bool,
+    sublinks: PropTypes.arrayOf(
+      PropTypes.shape({
+        title: PropTypes.string,
+        url: PropTypes.string,
+      }),
+    )
+  }).isRequired,
+  linkIndex: PropTypes.number.isRequired,
+};
+
+TemplateNavBar.propTypes = {
+  links: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      url: PropTypes.string,
+      collection: PropTypes.string,
+      resource_room: PropTypes.bool,
+      sublinks: PropTypes.arrayOf(
+        PropTypes.shape({
+          title: PropTypes.string,
+          url: PropTypes.string,
+        }),
+      )
+    }),
+  ).isRequired,
+  collectionInfo: PropTypes.objectOf(
+    PropTypes.arrayOf(PropTypes.string)
+  ),
+  resources: PropTypes.arrayOf(PropTypes.string),
+};
