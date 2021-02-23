@@ -1,5 +1,16 @@
 import React from 'react';
 
+const NavDropdownSection = ({ children, link, linkIndex }) => (
+  <div className="navbar-item has-dropdown is-hoverable" key={`link-${linkIndex}`}>
+      <a className="navbar-link is-uppercase" href="/" onClick={(event) => event.preventDefault()}>
+          { link.title }
+      </a>
+       <div className="navbar-dropdown">
+          { children }
+      </div>
+  </div>
+)
+
 const TemplateNavBar = ({ links, collectionInfo, resources }) => (
   <nav className="navbar is-transparent flex-fill">
     <div className="bp-container">
@@ -9,50 +20,35 @@ const TemplateNavBar = ({ links, collectionInfo, resources }) => (
             links.map((link, linkIndex) => {
               if (link.collection) {
                 return (
-                  <div className="navbar-item has-dropdown is-hoverable" key={`link-${linkIndex}`}>
-                    <a className="navbar-link is-uppercase" href="/" onClick={(event) => event.preventDefault()}>
-                      { link.title }
-                    </a>
-                    <div className="navbar-dropdown">
-                      {collectionInfo && collectionInfo[link.collection].map((collection, collectionIndex) => (
-                        <a className="navbar-item sub-link" href="/" onClick={(event) => event.preventDefault()} key={`collection-${collectionIndex}`}>
-                          { collection }
-                        </a>
-                      ))}
-                    </div>
-                  </div>
+                  <NavDropdownSection link={link} linkIndex={linkIndex}>
+                    {collectionInfo && collectionInfo[link.collection].map((collection, collectionIndex) => (
+                      <a className="navbar-item sub-link" href="/" onClick={(event) => event.preventDefault()} key={`collection-${collectionIndex}`}>
+                        { collection }
+                      </a>
+                    ))}
+                  </NavDropdownSection>
                 );
               }
               if (link.resource_room) {
                 return (
-                  <div className="navbar-item has-dropdown is-hoverable" key={`link-${linkIndex}`}>
-                    <a className="navbar-link is-uppercase" href="/" onClick={(event) => event.preventDefault()}>
-                      { link.title }
-                    </a>
-                    <div className="navbar-dropdown">
-                      {resources && resources.map((resource, resourceIndex) => (
-                        <a className="navbar-item sub-link" href="/" onClick={(event) => event.preventDefault()} key={`resource-${resourceIndex}`}>
-                          { resource }
-                        </a>
-                      ))}
-                    </div>
-                  </div>
+                  <NavDropdownSection link={link} linkIndex={linkIndex}>
+                    {resources && resources.map((resource, resourceIndex) => (
+                      <a className="navbar-item sub-link" href="/" onClick={(event) => event.preventDefault()} key={`resource-${resourceIndex}`}>
+                        { resource }
+                      </a>
+                    ))}
+                  </NavDropdownSection>
                 )
               }
               if (link.sublinks) {
                 return (
-                  <div className="navbar-item has-dropdown is-hoverable" key={`link-${linkIndex}`}>
-                    <a className="navbar-link is-uppercase" href="/" onClick={(event) => event.preventDefault()}>
-                      { link.title }
-                    </a>
-                    <div className="navbar-dropdown">
-                      {link.sublinks && link.sublinks.map((sublink, sublinkIndex) => (
-                        <a className="navbar-item sub-link" href="/" onClick={(event) => event.preventDefault()} key={`sublink-${sublinkIndex}`}>
-                          { sublink.title }
-                        </a>
-                      ))}
-                    </div>
-                  </div>
+                  <NavDropdownSection link={link} linkIndex={linkIndex}>
+                    {link.sublinks && link.sublinks.map((sublink, sublinkIndex) => (
+                      <a className="navbar-item sub-link" href="/" onClick={(event) => event.preventDefault()} key={`sublink-${sublinkIndex}`}>
+                        { sublink.title }
+                      </a>
+                    ))}
+                  </NavDropdownSection>
                 )
               }
               if (link.url) {
