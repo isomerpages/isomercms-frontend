@@ -3,7 +3,7 @@ import React from 'react';
 const TemplateNavBar = ({ links, collectionInfo, resources }) => (
   <nav className="navbar is-transparent flex-fill">
     <div className="bp-container">
-      <div id="navbarExampleTransparentExample" className="bp-container is-fluid margin--none navbar-menu h-100">
+      <div className="bp-container is-fluid margin--none navbar-menu h-100">
         <div className="navbar-start">
           {
             links.map((link, linkIndex) => {

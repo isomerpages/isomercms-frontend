@@ -223,13 +223,13 @@ const NavSection = ({
         )}
       </Droppable>
       <div className='d-flex justify-content-between'>
-      <Select
-        className='w-50'
-        onChange={(option) => setNewSectionType(option ? option.value : '')}
-        placeholder={"Select link type..."}
-        options={sectionCreationOptions}
-      />
-      <button type="button" className={newSectionType ? elementStyles.blue: elementStyles.disabled} onClick={sectionCreationHandler} disabled={!newSectionType}>Create New Link</button>
+        <Select
+          className='w-50'
+          onChange={(option) => setNewSectionType(option ? option.value : '')}
+          placeholder={"Select link type..."}
+          options={sectionCreationOptions}
+        />
+        <button type="button" className={newSectionType ? elementStyles.blue: elementStyles.disabled} onClick={sectionCreationHandler} disabled={!newSectionType}>Create New Link</button>
       </div>
       <span className={elementStyles.info}>
         Note: you can specify a collection or resource room to automatically populate its links. Select "Sublinks" if you want to specify your own links.

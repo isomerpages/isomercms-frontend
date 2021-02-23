@@ -45,7 +45,7 @@ export function deslugifyCollectionPage(collectionPageName) {
 }
 
 // this function converts directories into readable form
-// for example, '0-this-is-a-file.md' -> 'This Is A File'
+// for example, 'this-is-a-directory' -> 'This Is A Directory'
 export function deslugifyDirectory(dirName) {
   return dirName
     .split('-')
