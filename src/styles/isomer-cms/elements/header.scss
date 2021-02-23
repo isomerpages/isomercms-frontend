@@ -43,11 +43,9 @@
   }
 
   .headerRight{
-    float: right;
-    text-align: right;
-    flex-basis: 20%;
     display: flex;
+    flex-basis: 20%;
     justify-content: flex-end;
-    align-content: center;
+    align-items: center;
   }
 }

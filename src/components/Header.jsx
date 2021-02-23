@@ -11,6 +11,9 @@ const { LoginContext } = require('../contexts/LoginContext')
 // axios settings
 axios.defaults.withCredentials = true
 
+// constants
+const userIdKey = "userId"
+
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
 const Header = ({
@@ -25,6 +28,7 @@ const Header = ({
   const clearCookie = async () => {
     try {
       // Call the logout endpoint in the API server to clear the browser cookie
+      localStorage.removeItem(userIdKey)
       await axios.get(`${BACKEND_URL}/auth/logout`)
       setShouldRedirect(true)
       setLogoutState()
@@ -68,7 +72,10 @@ const Header = ({
       </div>
       {/* Right section */}
       <div className={elementStyles.headerRight}>
-        <button type="button" className={elementStyles.blue} onClick={clearCookie}>
+        <div className={`${elementStyles.info} mr-3`}>
+          Logged in as @{localStorage.getItem(userIdKey)}
+        </div>
+        <button type="button" className={`${elementStyles.blue} float-right`} onClick={clearCookie}>
           Log Out
         </button>
       </div>
