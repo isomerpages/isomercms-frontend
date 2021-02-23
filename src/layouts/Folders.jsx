@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Link, Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -15,14 +15,17 @@ import Toast from '../components/Toast';
 
 
 import {
-  DEFAULT_ERROR_TOAST_MSG,
-  parseDirectoryFile,
-  convertFolderOrderToArray,
-  retrieveSubfolderContents,
+    DEFAULT_ERROR_TOAST_MSG,
+    parseDirectoryFile,
+    updateDirectoryFile,
+    convertFolderOrderToArray,
+    convertArrayToFolderOrder,
+    retrieveSubfolderContents,
+    convertSubfolderArray,
 } from '../utils'
 
 // Import API
-import { getDirectoryFile } from '../api';
+import { setDirectoryFile, getDirectoryFile } from '../api';
 
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -34,15 +37,20 @@ const FOLDER_CONTENTS_KEY = 'folder-contents'
 const Folders = ({ match, location }) => {
     const { siteName, folderName, subfolderName } = match.params;
 
+    const [isRearrangeActive, setIsRearrangeActive] = useState(false)
+    const [directoryFileSha, setDirectoryFileSha] = useState('')
+    const [folderOrderArray, setFolderOrderArray] = useState([])
+    const [parsedFolderContents, setParsedFolderContents] = useState([])
+    const [shouldRedirect, setShouldRedirect] = useState(false)
+
     const { data: folderContents, error } = useQuery(
         FOLDER_CONTENTS_KEY,
         () => getDirectoryFile(siteName, folderName),
-        { retry: false },
+        { 
+          retry: false,
+          enabled: !isRearrangeActive,
+        },
     );
-    const [isRearrangeActive, setIsRearrangeActive] = useState(false)
-    const [directoryFileSha, setDirectoryFileSha] = useState('')
-    const [folderOrder, setFolderOrder] = useState([])
-    const [shouldRedirect, setShouldRedirect] = useState(false)
 
     useEffect(() => {
       if (error) {
@@ -58,26 +66,52 @@ const Folders = ({ match, location }) => {
       }
     }, [error])
 
+    const { mutate } = useMutation(
+        payload => setDirectoryFile(siteName, folderName, payload)
+    )
+
     useEffect(() => {
         if (folderContents && folderContents.data) {
           const parsedFolderContents = parseDirectoryFile(folderContents.data.content)
           setDirectoryFileSha(folderContents.data.sha)
+          setParsedFolderContents(parsedFolderContents)
 
           if (subfolderName) {
             const subfolderFiles = retrieveSubfolderContents(parsedFolderContents, subfolderName)
             if (subfolderFiles.length > 0) {
-              setFolderOrder(retrieveSubfolderContents(parsedFolderContents, subfolderName))
+              setFolderOrderArray(retrieveSubfolderContents(parsedFolderContents, subfolderName))
             } else {
               // if subfolderName prop does not match directory file, it's not a valid subfolder
               if (!shouldRedirect) setShouldRedirect(true)
             }
           } else {
-            setFolderOrder(convertFolderOrderToArray(parsedFolderContents))
+            setFolderOrderArray(convertFolderOrderToArray(parsedFolderContents))
           }
         }
     }, [folderContents, subfolderName])
 
-    const toggleRearrange = () => { setIsRearrangeActive((prevState) => !prevState) }
+    const toggleRearrange = () => { 
+        
+        if (isRearrangeActive && folderOrderArray && folderContents) { 
+            // drag and drop complete, save new order 
+            let newFolderOrder
+            
+            if (subfolderName) {
+                newFolderOrder = convertSubfolderArray(folderOrderArray, parsedFolderContents, subfolderName)
+            } else {
+                newFolderOrder = convertArrayToFolderOrder(folderOrderArray)
+            }
+            const updatedDirectoryFile = updateDirectoryFile(folderContents.data.content, newFolderOrder)
+            
+            const payload = {
+                content: updatedDirectoryFile,
+                sha: directoryFileSha
+            } 
+            mutate(payload)
+        }
+        setIsRearrangeActive((prevState) => !prevState) 
+        
+    }
 
     return (
         <>
@@ -140,7 +174,15 @@ const Folders = ({ match, location }) => {
                   error && <span>There was an error retrieving your content. Please refresh the page.</span>
               }
               {
-                  !error && folderContents && <FolderContent data={folderOrder} siteName={siteName} folderName={folderName} />
+                    !error 
+                    && folderContents 
+                    && <FolderContent 
+                        folderOrderArray={folderOrderArray} 
+                        setFolderOrderArray={setFolderOrderArray} 
+                        siteName={siteName} 
+                        folderName={folderName} 
+                        enableDragDrop={isRearrangeActive}
+                    />
               }
             </div>
             {/* main section ends here */}
