@@ -43,7 +43,7 @@ const EditNavBar =  ({ match }) => {
     }
   )
   const [resources, setResources] = useState()
-
+  const [hasResources, setHasResources] = useState(false)
 
   const LinkCollectionSectionConstructor = () => ({
     title: 'Link Title',
@@ -118,6 +118,7 @@ const EditNavBar =  ({ match }) => {
 
       const { links } = navContent
 
+      let hasResources = false
       // Add booleans for displaying links and sublinks
       const displayLinks = _.fill(Array(links.length), false)
       const displaySublinks = []
@@ -126,6 +127,7 @@ const EditNavBar =  ({ match }) => {
         if ("sublinks" in link) {
           numSublinks = link.sublinks.length
         }
+        if ('resource_room' in link) hasResources = true
         displaySublinks.push(_.fill(Array(numSublinks), false))
       })
 
@@ -147,6 +149,7 @@ const EditNavBar =  ({ match }) => {
         setResources(resources.map(resource => deslugifyDirectory(resource.dirName)))
         setOriginalNav(navContent)
         setSha(navSha)
+        setHasResources(hasResources)
       }
     }
 
@@ -215,6 +218,7 @@ const EditNavBar =  ({ match }) => {
           const newLinks = update(links, {
             $push: [enumSection(value)]
           })
+          if (value === 'resourceLink') setHasResources(true)
           const resetDisplayLinks = _.fill(Array(links.length), false)
           const resetDisplaySublinks = []
           links.forEach(link => {
@@ -274,6 +278,7 @@ const EditNavBar =  ({ match }) => {
       switch (elemType) {
         case 'link': {
           const linkIndex = parseInt(idArray[1], RADIX_PARSE_INT)
+          if ('resource_room' in links[linkIndex]) setHasResources(false)
           const newLinks = update(links, {
             $splice: [[linkIndex, 1]]
           })
@@ -489,6 +494,7 @@ const EditNavBar =  ({ match }) => {
                   displayHandler={displayHandler}
                   displayLinks={displayLinks}
                   displaySublinks={displaySublinks}
+                  hasResources={hasResources}
                 />
               </DragDropContext>
             </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import Select from 'react-select';
@@ -141,9 +141,12 @@ const NavSection = ({
   displayHandler,
   displayLinks,
   displaySublinks,
+  hasResources,
 }) => {
   const [newSectionType, setNewSectionType] = useState()
+  const selectInputRef = useRef()
   const sectionCreationHandler = () => {
+    selectInputRef.current.select.clearValue()
     const event = {
       target: {
         id: `link-create`,
@@ -157,10 +160,12 @@ const NavSection = ({
       value: 'collectionLink',
       label: 'Collection',
     },
-    {
-      value: 'resourceLink',
-      label: 'Resource Room',
-    },
+    ... !hasResources 
+      ? [{
+        value: 'resourceLink',
+        label: 'Resource Room',
+      }]
+      : [],
     {
       value: 'pageLink',
       label: 'Single Page',
@@ -224,6 +229,7 @@ const NavSection = ({
       </Droppable>
       <div className='d-flex justify-content-between'>
         <Select
+          ref={selectInputRef}
           className='w-50'
           onChange={(option) => setNewSectionType(option ? option.value : '')}
           placeholder={"Select link type..."}
@@ -292,4 +298,5 @@ NavSection.propTypes = {
   displayHandler: PropTypes.func.isRequired,
   displayLinks: PropTypes.arrayOf(PropTypes.bool).isRequired,
   displaySublinks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.bool)).isRequired,
+  hasResources: PropTypes.bool.isRequired,
 };
