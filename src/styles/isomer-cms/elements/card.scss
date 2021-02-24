@@ -124,6 +124,22 @@
     color: white;
   }
 
+  &.folderOptionDisabled {
+    @extend .folderOption;
+    border: 1px dashed $isomer-dark;
+    color: $isomer-dark;
+
+    &:hover {
+      background: none;
+      border: 1px dashed $isomer-dark;
+      color: $isomer-dark;
+    }
+
+    &:hover > div > i{
+      color: $isomer-dark;
+    }
+  }
+
   &.folderItem{
     background: white;
     box-shadow: inset;

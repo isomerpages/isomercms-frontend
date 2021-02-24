@@ -97,7 +97,7 @@ const Folders = ({ match, location }) => {
               <div className={contentStyles.contentContainerFolderRowMargin}>
                 <FolderOptionButton title="Rearrange items" isSelected={isRearrangeActive} onClick={toggleRearrange} option="rearrange" />
                 <FolderOptionButton title="Create new page" option="create-page" />
-                <FolderOptionButton title="Create new sub-folder" option="create-sub" />
+                <FolderOptionButton title="Create new sub-folder" option="create-sub" isSubfolder={subfolderName ? true : false} />
               </div>
               {/* Collections content */}
               {
