@@ -4,6 +4,7 @@ import { useQuery } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Link, Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import _ from 'lodash';
 
 // Import components
 import Header from '../components/Header';
@@ -46,6 +47,7 @@ const Folders = ({ match, location }) => {
     useEffect(() => {
       if (error) {
         if (error.status === 404) {
+          // redirect if collection/folder cannot be found
           if (!shouldRedirect) setShouldRedirect(true)
         } else {
           toast(
@@ -58,14 +60,20 @@ const Folders = ({ match, location }) => {
 
     useEffect(() => {
         if (folderContents && folderContents.data) {
-            const parsedFolderContents = parseDirectoryFile(folderContents.data.content)
-            setDirectoryFileSha(folderContents.data.sha)
+          const parsedFolderContents = parseDirectoryFile(folderContents.data.content)
+          setDirectoryFileSha(folderContents.data.sha)
 
-            if (subfolderName) {
-                setFolderOrder(retrieveSubfolderContents(parsedFolderContents, subfolderName))
+          if (subfolderName) {
+            const subfolderFiles = retrieveSubfolderContents(parsedFolderContents, subfolderName)
+            if (subfolderFiles.length > 0) {
+              setFolderOrder(retrieveSubfolderContents(parsedFolderContents, subfolderName))
             } else {
-                setFolderOrder(convertFolderOrderToArray(parsedFolderContents))
+              // if subfolderName prop does not match directory file, it's not a valid subfolder
+              if (!shouldRedirect) setShouldRedirect(true)
             }
+          } else {
+            setFolderOrder(convertFolderOrderToArray(parsedFolderContents))
+          }
         }
     }, [folderContents, subfolderName])
 
