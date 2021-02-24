@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 // Import components
@@ -107,14 +107,18 @@ const Folders = ({ match, location }) => {
                 <span>
                     My workspace >
                     {
-                        folderName && !subfolderName
-                        ? <strong className="ml-1"> {folderName}</strong>
+                        folderName
+                        ? (
+                          subfolderName
+                          ? <Link to={`/sites/${siteName}/folder/${folderName}`}><strong className="ml-1"> {folderName}</strong></Link>
+                          : <strong className="ml-1"> {folderName}</strong>
+                        )
                         : null
                     }
                     {
                         folderName && subfolderName
                         ? (
-                            <span>{` ${folderName}`} > <strong className="ml-1"> {subfolderName}</strong></span>
+                            <span> ><strong className="ml-1"> {subfolderName}</strong></span>
                         )
                         : null
                     }
