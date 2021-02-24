@@ -20,7 +20,7 @@ const FolderContentItem = ({ title, isFile, numItems, link }) => {
                     <span className={`${elementStyles.folderItemText} mr-auto`} >{title}</span>
                     {
                         numItems
-                        ? <span className={elementStyles.folderItemText}>{numItems} item{numItems === '1' ? 's' : ''}</span>
+                        ? <span className={elementStyles.folderItemText}>{numItems} item{numItems === '1' ? '' : 's'}</span>
                         : null
                     }
                     <button

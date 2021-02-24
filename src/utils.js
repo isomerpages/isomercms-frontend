@@ -570,20 +570,23 @@ export const convertFolderOrderToArray = (folderOrder) => {
           const subfolderTitle = folderPathArr[0]
 
           // Start of a new subfolder section
-          if (!currFolderEntry[subfolderTitle]) {
+          if (currFolderEntry.title !== subfolderTitle) {
               // Case: two consecutive subfolders - transitioning from one to the other
               if (currFolderEntry.title && currFolderEntry.title !== subfolderTitle) {
                   acc.push(currFolderEntry)
               }
 
-              currFolderEntry.type = 'dir';
-              currFolderEntry.title = subfolderTitle;
-              currFolderEntry.path = curr;
-              currFolderEntry.children = [curr];
+              currFolderEntry = {
+                type: 'dir',
+                title: subfolderTitle,
+                path: curr,
+                children: [curr],
+              }
           } else {
               currFolderEntry.children.push(curr)
           }
 
+          // last entry
           if (currIdx === folderOrder.length - 1) acc.push(currFolderEntry)
       }
 
