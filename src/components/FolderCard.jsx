@@ -54,6 +54,8 @@ const FolderCard = ({
         return `/sites/${siteName}/resources/${category}`
       case 'contact-us':
         return `/sites/${siteName}/contact-us`
+      case 'nav':
+        return `/sites/${siteName}/navbar`
       default:
         return ''
     }
@@ -65,6 +67,8 @@ const FolderCard = ({
         return 'bxs-home-circle'
       case 'contact-us':
         return 'bxs-phone'
+      case 'nav':
+        return 'bxs-compass'
       default: 
         return 'bxs-folder'
     }
@@ -126,7 +130,7 @@ const FolderCard = ({
           <i className={`bx bx-md text-dark ${generateImage(pageType)} ${contentStyles.componentIcon}`} />
           <span className={`${contentStyles.componentFolderName} align-self-center ml-4 mr-auto`}>{displayText}</span>
           {
-            pageType === 'homepage' || pageType === 'contact-us'
+            pageType === 'homepage' || pageType === 'contact-us' || pageType === 'nav'
             ? ''
             : (
               <div className={`position-relative`}>

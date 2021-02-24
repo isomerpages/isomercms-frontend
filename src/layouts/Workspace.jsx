@@ -86,7 +86,7 @@ const Workspace = ({ match, location }) => {
                 <i className="bx bx-sm bx-bulb text-dark" />
                 <span><strong className="ml-1">Pro tip:</strong> Organise this workspace by moving pages into folders</span>
               </div>
-              {/* Homepage and Contact Us */}
+              {/* Homepage, Nav bar and Contact Us */}
               <div className={contentStyles.folderContainerBoxes}>
                 <div className={contentStyles.boxesContainer}>
                   <FolderCard
@@ -94,6 +94,13 @@ const Workspace = ({ match, location }) => {
                     settingsToggle={() => {}}
                     key={"homepage"}
                     pageType={"homepage"}
+                    siteName={siteName}
+                  />
+                  <FolderCard
+                    displayText={"Navigation Bar"}
+                    settingsToggle={() => {}}
+                    key={"nav"}
+                    pageType={"nav"}
                     siteName={siteName}
                   />
                   { contactUsCard && 
