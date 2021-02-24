@@ -56,7 +56,7 @@ const NavElem = ({
 
   const generateTitle = () => {
     if (collection) {
-      return `Collection: ${title}`
+      return `Folder: ${title}`
     }
     if (sublinks) {
       return `Sublinks: ${title}`
@@ -92,11 +92,11 @@ const NavElem = ({
               {
                 collection &&
                 <>
-                  <p className={elementStyles.formLabel}>Collection</p>
+                  <p className={elementStyles.formLabel}>Folder</p>
                   <Select
                     className="w-100"
                     onChange={collectionDropdownHandler}
-                    placeholder={"Select a collection..."}
+                    placeholder={"Select a folder..."}
                     defaultValue={{
                       value: collection,
                       label: collection,
@@ -167,7 +167,7 @@ const NavSection = ({
     ... options.length > 0 
       ? [{
         value: 'collectionLink',
-        label: 'Collection',
+        label: 'Folder',
       }]
       : [],
     ... !hasResources 
@@ -251,7 +251,7 @@ const NavSection = ({
         <button type="button" className={newSectionType ? elementStyles.blue: elementStyles.disabled} onClick={sectionCreationHandler} disabled={!newSectionType}>Create New Link</button>
       </div>
       <span className={elementStyles.info}>
-        Note: you can specify a collection or resource room to automatically populate its links. Only one resource room link is allowed. Select "Sublinks" if you want to specify your own links.
+        Note: you can specify a folder or resource room to automatically populate its links. Only one resource room link is allowed. Select "Sublinks" if you want to specify your own links.
       </span>
     </>
   )
