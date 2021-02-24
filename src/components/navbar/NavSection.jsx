@@ -164,10 +164,12 @@ const NavSection = ({
     createHandler(event)
   }
   const sectionCreationOptions = [
-    {
-      value: 'collectionLink',
-      label: 'Collection',
-    },
+    ... options.length > 0 
+      ? [{
+        value: 'collectionLink',
+        label: 'Collection',
+      }]
+      : [],
     ... !hasResources 
       ? [{
         value: 'resourceLink',
