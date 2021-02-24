@@ -108,7 +108,7 @@ export default class Images extends Component {
                     }}
                     type="file"
                     id="file-upload"
-                    accept="image/png, image/jpeg, image/gif"
+                    accept="image/*"
                     hidden
                   />
                   {/* Images */}
