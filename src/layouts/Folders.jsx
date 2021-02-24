@@ -2,17 +2,22 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { Redirect } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 // Import components
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import FolderOptionButton from '../components/folders/FolderOptionButton';
 import FolderContent from '../components/folders/FolderContent';
+import Toast from '../components/Toast';
+
 
 import {
-    parseDirectoryFile,
-    convertFolderOrderToArray,
-    retrieveSubfolderContents,
+  DEFAULT_ERROR_TOAST_MSG,
+  parseDirectoryFile,
+  convertFolderOrderToArray,
+  retrieveSubfolderContents,
 } from '../utils'
 
 // Import API
@@ -30,11 +35,29 @@ const Folders = ({ match, location }) => {
 
     const { data: folderContents, error } = useQuery(
         FOLDER_CONTENTS_KEY,
-        () => getDirectoryFile(siteName, folderName)
+        () => getDirectoryFile(siteName, folderName),
+        {
+          retry: false,
+          refetchOnWindowFocus: false,
+        },
     );
     const [isRearrangeActive, setIsRearrangeActive] = useState(false)
     const [directoryFileSha, setDirectoryFileSha] = useState('')
     const [folderOrder, setFolderOrder] = useState([])
+    const [shouldRedirect, setShouldRedirect] = useState(false)
+
+    useEffect(() => {
+      if (error) {
+        if (error.status === 404) {
+          if (!shouldRedirect) setShouldRedirect(true)
+        } else {
+          toast(
+            <Toast notificationType='error' text={`There was a problem retrieving data from your repo. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
+            {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
+          );
+        }
+      }
+    }, [error])
 
     useEffect(() => {
         if (folderContents && folderContents.data) {
@@ -53,6 +76,10 @@ const Folders = ({ match, location }) => {
 
     return (
         <>
+          {
+            shouldRedirect &&
+            <Redirect to={{pathname: `/sites/${siteName}/workspace`}} />
+          }
           <Header
             backButtonText={`Back to ${subfolderName ? folderName : 'Workspace'}`}
             backButtonUrl={`/sites/${siteName}/${subfolderName ? `folder/${folderName}` : 'workspace'}`}
