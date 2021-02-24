@@ -251,7 +251,7 @@ const NavSection = ({
         <button type="button" className={newSectionType ? elementStyles.blue: elementStyles.disabled} onClick={sectionCreationHandler} disabled={!newSectionType}>Create New Link</button>
       </div>
       <span className={elementStyles.info}>
-        Note: you can specify a collection or resource room to automatically populate its links. Select "Sublinks" if you want to specify your own links.
+        Note: you can specify a collection or resource room to automatically populate its links. Only one resource room link is allowed. Select "Sublinks" if you want to specify your own links.
       </span>
     </>
   )
