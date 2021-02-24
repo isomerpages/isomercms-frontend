@@ -128,46 +128,46 @@ const EditNavBar =  ({ match }) => {
 
       if (!navContent) return
 
-      const { links } = navContent
+      const { links: initialLinks } = navContent
 
-      let hasResources = false
+      let navHasResources = false
       // Add booleans for displaying links and sublinks
-      const displayLinks = _.fill(Array(links.length), false)
-      const displaySublinks = []
-      const errors = {
-        links: _.fill(Array(links.length), enumSection('error')),
+      const initialDisplayLinks = _.fill(Array(initialLinks.length), false)
+      const initialDisplaySublinks = []
+      const initialErrors = {
+        links: _.fill(Array(initialLinks.length), enumSection('error')),
         sublinks: [],
       }
-      links.forEach(link => {
+      initialLinks.forEach(link => {
         let numSublinks = 0
         if ("sublinks" in link) {
           numSublinks = link.sublinks.length
         }
-        if ('resource_room' in link) hasResources = true
-        displaySublinks.push(_.fill(Array(numSublinks), false))
-        errors.sublinks.push(_.fill(Array(numSublinks), enumSection('error')))
+        if ('resource_room' in link) navHasResources = true
+        initialDisplaySublinks.push(_.fill(Array(numSublinks), false))
+        initialErrors.sublinks.push(_.fill(Array(numSublinks), enumSection('error')))
       })
 
-      const { collections } = collectionContent
-      const { resources } = resourceContent
+      const { collections: initialCollections } = collectionContent
+      const { resources: initialResource } = resourceContent
 
-      const options = collections.map((collection) => ({
+      const initialOptions = initialCollections.map((collection) => ({
         value: collection,
         label: collection,
       }))
 
       if (_isMounted) {
-        setLinks(links)
+        setLinks(initialLinks)
         setHasLoaded(true)
-        setDisplayLinks(displayLinks)
-        setDisplaySublinks(displaySublinks)
-        setCollections(collections)
-        setOptions(options)
-        setResources(resources.map(resource => deslugifyDirectory(resource.dirName)))
+        setDisplayLinks(initialDisplayLinks)
+        setDisplaySublinks(initialDisplaySublinks)
+        setCollections(initialCollections)
+        setOptions(initialOptions)
+        setResources(initialResource.map(resource => deslugifyDirectory(resource.dirName)))
         setOriginalNav(navContent)
         setSha(navSha)
-        setHasResources(hasResources)
-        setErrors(errors)
+        setHasResources(navHasResources)
+        setErrors(initialErrors)
       }
     }
 
