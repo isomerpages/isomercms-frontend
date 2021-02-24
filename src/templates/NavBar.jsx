@@ -52,19 +52,13 @@ const TemplateNavBar = ({ links, collectionInfo, resources }) => (
                   </NavDropdownSection>
                 )
               }
-              if (link.url) {
-                return (
-                  <li className="navbar-item" key={`link-${linkIndex}`}>
-                    <a className="navbar-item is-uppercase" href="/" onClick={(event) => event.preventDefault()}>
-                      { link.title }
-                    </a>
-                  </li>
-                );
-              }
+              // Single Page
               return (
-                <p>
-                  Unaccounted for
-                </p>
+                <li className="navbar-item" key={`link-${linkIndex}`}>
+                  <a className="navbar-item is-uppercase" href="/" onClick={(event) => event.preventDefault()}>
+                    { link.title }
+                  </a>
+                </li>
               );
             })
           }
