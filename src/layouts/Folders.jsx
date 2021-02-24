@@ -67,7 +67,8 @@ const Folders = ({ match, location }) => {
     }, [error])
 
     const { mutate } = useMutation(
-        payload => setDirectoryFile(siteName, folderName, payload)
+        payload => setDirectoryFile(siteName, folderName, payload),
+        { onSettled: () => setIsRearrangeActive((prevState) => !prevState) }
     )
 
     useEffect(() => {
@@ -91,7 +92,10 @@ const Folders = ({ match, location }) => {
     }, [folderContents, subfolderName])
 
     const toggleRearrange = () => { 
-        if (isRearrangeActive && folderOrderArray && folderContents) { 
+        // if no folder contents, do not enable reordering
+        if (folderOrderArray.length == 0 || !folderContents) return
+        
+        if (isRearrangeActive) { 
             // drag and drop complete, save new order 
             let newFolderOrder
             if (subfolderName) {
@@ -105,9 +109,10 @@ const Folders = ({ match, location }) => {
                 content: updatedDirectoryFile,
                 sha: directoryFileSha
             } 
-            mutate(payload)
+            mutate(payload) // setIsRearrangeActive(false) handled by mutate
+        } else {
+          setIsRearrangeActive((prevState) => !prevState) 
         }
-        setIsRearrangeActive((prevState) => !prevState) 
     }
 
     return (
