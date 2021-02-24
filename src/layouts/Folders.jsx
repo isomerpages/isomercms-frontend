@@ -36,10 +36,7 @@ const Folders = ({ match, location }) => {
     const { data: folderContents, error } = useQuery(
         FOLDER_CONTENTS_KEY,
         () => getDirectoryFile(siteName, folderName),
-        {
-          retry: false,
-          refetchOnWindowFocus: false,
-        },
+        { retry: false },
     );
     const [isRearrangeActive, setIsRearrangeActive] = useState(false)
     const [directoryFileSha, setDirectoryFileSha] = useState('')
