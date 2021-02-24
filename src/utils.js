@@ -630,12 +630,10 @@ export const convertSubfolderArray = (folderOrderArray, rawFolderContents, subfo
   const arrayCopy = _.cloneDeep(folderOrderArray)
   return rawFolderContents.map((curr) => {
     const folderPathArr = curr.split('/')
-    if (folderPathArr.length === 2) {
-      const [subfolderTitle, subfolderFileName] = folderPathArr
-      if (subfolderTitle === subfolderName) {
-        const { path } = arrayCopy.shift()
-        return path
-      }
+    const subfolderTitle = folderPathArr[0]
+    if (folderPathArr.length === 2 && subfolderTitle === subfolderName) {
+      const { path } = arrayCopy.shift()
+      return path
     }
     return curr
   })

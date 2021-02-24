@@ -91,11 +91,9 @@ const Folders = ({ match, location }) => {
     }, [folderContents, subfolderName])
 
     const toggleRearrange = () => { 
-        
         if (isRearrangeActive && folderOrderArray && folderContents) { 
             // drag and drop complete, save new order 
             let newFolderOrder
-            
             if (subfolderName) {
                 newFolderOrder = convertSubfolderArray(folderOrderArray, parsedFolderContents, subfolderName)
             } else {
@@ -110,7 +108,6 @@ const Folders = ({ match, location }) => {
             mutate(payload)
         }
         setIsRearrangeActive((prevState) => !prevState) 
-        
     }
 
     return (
