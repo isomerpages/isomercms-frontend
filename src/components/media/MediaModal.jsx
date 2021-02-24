@@ -100,7 +100,7 @@ export default class MediaModal extends Component {
                   type="file"
                   id="file-upload"
                   accept={type === 'file' ? `application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
-                  text/plain, application/pdf` : 'image*'}
+                  text/plain, application/pdf` : 'image/*'}
                   hidden
                 />
                 {/* Render medias */}
