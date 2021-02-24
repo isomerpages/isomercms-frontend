@@ -7,7 +7,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { Redirect } from 'react-router-dom'
 import { toast } from 'react-toastify';
 
-import { DEFAULT_ERROR_TOAST_MSG, deslugifyDirectory } from '../utils';
+import { DEFAULT_ERROR_TOAST_MSG, deslugifyDirectory, isEmpty } from '../utils';
 
 import Toast from '../components/Toast';
 import NavSection from '../components/navbar/NavSection'
@@ -21,6 +21,7 @@ import Header from '../components/Header';
 import LoadingButton from '../components/LoadingButton';
 
 import DeleteWarningModal from '../components/DeleteWarningModal';
+import { validateLink } from '../utils/validators';
 
 const RADIX_PARSE_INT = 10
 
@@ -44,6 +45,10 @@ const EditNavBar =  ({ match }) => {
   )
   const [resources, setResources] = useState()
   const [hasResources, setHasResources] = useState(false)
+  const [errors, setErrors] = useState({
+    links: [],
+    sublinks: [],
+  })
 
   const LinkCollectionSectionConstructor = () => ({
     title: 'Link Title',
@@ -70,6 +75,11 @@ const EditNavBar =  ({ match }) => {
     title: 'Sublink Title',
     url: '/permalink'
   });
+
+  const ErrorConstructor = () => ({
+    title: '',
+    url: ''
+  });
   
   const enumSection = (type) => {
     switch (type) {
@@ -83,6 +93,8 @@ const EditNavBar =  ({ match }) => {
         return LinkSublinkSectionConstructor();
       case 'sublink':
         return SublinkSectionConstructor();
+      case 'error':
+        return ErrorConstructor();
       default:
         return;
     }
@@ -122,6 +134,10 @@ const EditNavBar =  ({ match }) => {
       // Add booleans for displaying links and sublinks
       const displayLinks = _.fill(Array(links.length), false)
       const displaySublinks = []
+      const errors = {
+        links: _.fill(Array(links.length), enumSection('error')),
+        sublinks: [],
+      }
       links.forEach(link => {
         let numSublinks = 0
         if ("sublinks" in link) {
@@ -129,6 +145,7 @@ const EditNavBar =  ({ match }) => {
         }
         if ('resource_room' in link) hasResources = true
         displaySublinks.push(_.fill(Array(numSublinks), false))
+        errors.sublinks.push(_.fill(Array(numSublinks), enumSection('error')))
       })
 
       const { collections } = collectionContent
@@ -150,6 +167,7 @@ const EditNavBar =  ({ match }) => {
         setOriginalNav(navContent)
         setSha(navSha)
         setHasResources(hasResources)
+        setErrors(errors)
       }
     }
 
@@ -177,7 +195,17 @@ const EditNavBar =  ({ match }) => {
               },
             },
           });
+          const newErrors = update(errors, {
+            links: {
+              [linkIndex]: {
+                [field]: {
+                  $set: validateLink(field, value)
+                }
+              }
+            }
+          })
           setLinks(newLinks)
+          setErrors(newErrors)
           break;
         }
         case 'sublink': {
@@ -195,7 +223,19 @@ const EditNavBar =  ({ match }) => {
               },
             },
           });
+          const newErrors = update(errors, {
+            sublinks: {
+              [linkIndex]: {
+                [sublinkIndex]: {
+                  [field]: {
+                    $set: validateLink(field, value)
+                  }
+                }
+              }
+            }
+          })
           setLinks(newLinks)
+          setErrors(newErrors)
           break;
         }
         default: {
@@ -231,9 +271,20 @@ const EditNavBar =  ({ match }) => {
           const newDisplayLinks = update(resetDisplayLinks, {
             $push: [true],
           });
+          const newLinkErrors = update(errors, {
+            links: {
+              $push: [enumSection('error')],
+            }
+          })
+          const newErrors = update(newLinkErrors, {
+            sublinks: {
+              $push: [[]]
+            }
+          })
           setLinks(newLinks)
           setDisplayLinks(newDisplayLinks)
           setDisplaySublinks(resetDisplaySublinks)
+          setErrors(newErrors)
           break
         }
         case 'sublink': {
@@ -258,8 +309,16 @@ const EditNavBar =  ({ match }) => {
               $push: [true],
             },
           });
+          const newErrors = update(errors, {
+            sublinks: {
+              [linkIndex]: {
+                $push: [enumSection('error')],
+              }
+            }
+          })
           setLinks(newLinks)
           setDisplaySublinks(newDisplaySublinks)
+          setErrors(newErrors)
           break
         }
         default:
@@ -288,9 +347,20 @@ const EditNavBar =  ({ match }) => {
           const newDisplaySublinks = update(displaySublinks, {
             $splice: [[linkIndex, 1]],
           })
+          const newLinkErrors = update(errors, {
+            links: {
+              $splice: [[linkIndex, 1]],
+            },
+          })
+          const newErrors = update(newLinkErrors, {
+            sublinks: {
+              $splice: [[linkIndex, 1]],
+            }
+          })
           setLinks(newLinks)
           setDisplayLinks(newDisplayLinks)
           setDisplaySublinks(newDisplaySublinks)
+          setErrors(newErrors)
           break
         }
         case 'sublink': {
@@ -308,8 +378,16 @@ const EditNavBar =  ({ match }) => {
               $splice: [[sublinkIndex, 1]],
             },
           })
+          const newErrors = update(errors, {
+            sublinks: {
+              [linkIndex]: {
+                $splice: [[sublinkIndex, 1]],
+              },
+            }
+          })
           setLinks(newLinks)
           setDisplaySublinks(newDisplaySublinks)
+          setErrors(newErrors)
           break
         }
         default:
@@ -406,6 +484,8 @@ const EditNavBar =  ({ match }) => {
         })
         const displayLinkBool = displayLinks[source.index];
         const displaySublinkBools = displaySublinks[source.index]
+        const linkErrors = errors.links[source.index]
+        const sublinkErrors = errors.sublinks[source.index]
         const newDisplayLinks = update(displayLinks, {
           $splice: [
             [source.index, 1],
@@ -418,14 +498,32 @@ const EditNavBar =  ({ match }) => {
             [destination.index, 0, displaySublinkBools],
           ],
         })
+        const newLinkErrors = update(errors, {
+          links: {
+            $splice: [
+              [source.index, 1],
+              [destination.index, 0, linkErrors],
+            ],
+          },
+        })
+        const newErrors = update(newLinkErrors, {
+          sublinks: {
+            $splice: [
+              [source.index, 1],
+              [destination.index, 0, sublinkErrors],
+            ],
+          },
+        })
         setLinks(newLinks)
         setDisplayLinks(newDisplayLinks)
         setDisplaySublinks(newDisplaySublinks)
+        setErrors(newErrors)
         break
       } case 'sublink': {
         const idArray = source.droppableId.split('-');
         const linkIndex = idArray[1]
         const draggedSublink = links[linkIndex].sublinks[source.index]
+        const sublinkErrors = errors.sublinks[linkIndex][source.index]
         const newLinks = update(links, {
           [linkIndex]: {
             sublinks: {
@@ -445,8 +543,19 @@ const EditNavBar =  ({ match }) => {
             ],
           },
         })
+        const newErrors = update(errors, {
+          sublinks: {
+            [linkIndex]: {
+              $splice: [
+                [source.index, 1],
+                [destination.index, 0, sublinkErrors],
+              ],
+            }
+          }
+        })
         setLinks(newLinks)
         setDisplaySublinks(newDisplaySublinks)
+        setErrors(newErrors)
         break
       }
       default:
@@ -459,6 +568,10 @@ const EditNavBar =  ({ match }) => {
       ...originalNav,
       links: links
     })
+  }
+
+  const hasErrors = () => {
+    return !isEmpty(errors.links) || !isEmpty(errors.sublinks)
   }
 
   return (
@@ -495,6 +608,7 @@ const EditNavBar =  ({ match }) => {
                   displayLinks={displayLinks}
                   displaySublinks={displaySublinks}
                   hasResources={hasResources}
+                  errors={errors}
                 />
               </DragDropContext>
             </div>
@@ -513,8 +627,9 @@ const EditNavBar =  ({ match }) => {
             {/* TODO: save button */}
             <LoadingButton
               label="Save"
+              disabled={hasErrors()} 
               disabledStyle={elementStyles.disabled}
-              className={elementStyles.blue}
+              className={hasErrors() ? elementStyles.disabled : elementStyles.blue}
               callback={saveNav}
             />
           </div>

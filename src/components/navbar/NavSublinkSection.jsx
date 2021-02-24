@@ -4,6 +4,7 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '../../styles/App.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
+import { isEmpty } from '../../utils';
 
 const SublinkElem = ({
   title,
@@ -14,8 +15,9 @@ const SublinkElem = ({
   deleteHandler,
   shouldDisplay,
   displayHandler,
+  errors,
 }) => (
-  <div className={elementStyles.card}>
+  <div className={`${elementStyles.card} ${!shouldDisplay && !isEmpty(errors) ? elementStyles.error : ''}`}>
     <div className={elementStyles.cardHeader}>
       <h2>
         {title}
@@ -34,6 +36,7 @@ const SublinkElem = ({
               value={title}
               isRequired
               onFieldChange={onFieldChange}
+              errorMessage={errors.title}
             />
             <FormField
               title="Sublink URL"
@@ -41,6 +44,7 @@ const SublinkElem = ({
               value={url}
               isRequired
               onFieldChange={onFieldChange}
+              errorMessage={errors.url}
             />
           </div>
           <div className={elementStyles.inputGroup}>
@@ -59,7 +63,8 @@ const NavSublinkSection = ({
   deleteHandler,
   onFieldChange,
   displayHandler,
-  displaySublinks
+  displaySublinks,
+  errors,
 }) => (
   <Droppable droppableId={`sublink-${linkIndex}`} type="sublink">
     {(droppableProvided) => (
@@ -96,6 +101,7 @@ const NavSublinkSection = ({
                         deleteHandler={deleteHandler}
                         displayHandler={displayHandler}
                         shouldDisplay={displaySublinks[sublinkIndex]}
+                        errors={errors[sublinkIndex]}
                       />
                     </div>
                   )}
@@ -121,6 +127,10 @@ SublinkElem.propTypes = {
   deleteHandler: PropTypes.func.isRequired,
   shouldDisplay: PropTypes.bool,
   displayHandler: PropTypes.func.isRequired,
+  errors: PropTypes.shape({
+    title: PropTypes.string,
+    url: PropTypes.string,
+  }),
 };
 
 NavSublinkSection.propTypes = {
@@ -136,4 +146,10 @@ NavSublinkSection.propTypes = {
   onFieldChange: PropTypes.func.isRequired,
   displayHandler: PropTypes.func.isRequired,
   displaySublinks: PropTypes.arrayOf(PropTypes.bool),
+  errors: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      url: PropTypes.string,
+    }),
+  )
 };

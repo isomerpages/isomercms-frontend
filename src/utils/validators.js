@@ -91,6 +91,12 @@ const LOCATION_OPERATING_HOURS_MIN_LENGTH = 2;
 const LOCATION_OPERATING_HOURS_MAX_LENGTH = 30;
 const LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH = 100;
 
+// Nav Bar Editor
+// ===============
+const LINK_TITLE_MIN_LENGTH = 1;
+const LINK_TITLE_MAX_LENGTH = 30;
+const LINK_URL_MIN_LENGTH = 1;
+
 // Page Settings Modal
 // ===================
 const PAGE_SETTINGS_PERMALINK_MIN_LENGTH = 4;
@@ -575,6 +581,29 @@ const validateLocationType = (locationType, value) => {
   return errorMessage
 }
 
+// Nav Bar Editor
+const validateLink = (linkType, value) => {
+  let errorMessage = '';
+  switch (linkType) {
+    case 'title':
+      if (value.length < LINK_TITLE_MIN_LENGTH) {
+        errorMessage = `Title cannot be empty.`;
+      };
+      if (value.length > LINK_TITLE_MAX_LENGTH) {
+        errorMessage = `Title should be shorter than ${LINK_TITLE_MAX_LENGTH} characters.`;
+      };
+      break;
+    case 'url':
+      if (value.length < LINK_URL_MIN_LENGTH) {
+        errorMessage = `Permalink cannot be empty.`;
+      };
+      break;
+    default:
+      break;
+  }
+  return errorMessage
+}
+
 
 // Page Settings Modal
 // ===================
@@ -790,6 +819,7 @@ const validateFileName = (value) => {
 export {
   validateContactType,
   validateLocationType,
+  validateLink,
   validateHighlights,
   validateDropdownElems,
   validateSections,

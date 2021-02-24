@@ -6,6 +6,7 @@ import styles from '../../styles/App.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import FormField from '../FormField';
 import NavSublinkSection from './NavSublinkSection'
+import { isEmpty } from '../../utils';
 
 /* eslint
   react/no-array-index-key: 0
@@ -20,12 +21,15 @@ const NavElem = ({
   url,
   linkIndex,
   sublinks,
+  isResource,
   onFieldChange,
   createHandler,
   deleteHandler,
   displayHandler,
   shouldDisplay,
   displaySublinks,
+  linkErrors,
+  sublinkErrors,
 }) => {
   const collectionDropdownHandler = (newValue) => {
     let event;
@@ -57,14 +61,14 @@ const NavElem = ({
     if (sublinks) {
       return `Sublinks: ${title}`
     }
-    if (url) {
-      return `Page: ${title}`
+    if (isResource) {
+      return `Resource: ${title}`
     }
-    return `Resource: ${title}`
+    return `Page: ${title}`
   }
 
   return (
-    <div className={elementStyles.card}>
+    <div className={`${elementStyles.card} ${!shouldDisplay && (!isEmpty(linkErrors) || !isEmpty(sublinkErrors)) ? elementStyles.error : ''}`}>
       <div className={elementStyles.cardHeader}>
         <h2>
           {generateTitle()}
@@ -83,6 +87,7 @@ const NavElem = ({
                 value={title}
                 isRequired
                 onFieldChange={onFieldChange}
+                errorMessage={linkErrors.title}
               />
               {
                 collection &&
@@ -101,12 +106,13 @@ const NavElem = ({
                 </>
               }
               {
-                (url || sublinks) &&
+                (!collection && !isResource) &&
                 <FormField
                   title="Permalink"
                   id={`link-${linkIndex}-url`}
                   value={url}
                   onFieldChange={onFieldChange}
+                  errorMessage={linkErrors.url}
                 />
               }
               {
@@ -119,6 +125,7 @@ const NavElem = ({
                   onFieldChange={onFieldChange}
                   displayHandler={displayHandler}
                   displaySublinks={displaySublinks}
+                  errors={sublinkErrors}
                 />
               }
             </div>
@@ -142,6 +149,7 @@ const NavSection = ({
   displayLinks,
   displaySublinks,
   hasResources,
+  errors,
 }) => {
   const [newSectionType, setNewSectionType] = useState()
   const selectInputRef = useRef()
@@ -209,6 +217,7 @@ const NavSection = ({
                             collection={link.collection}
                             sublinks={link.sublinks}
                             url={link.url}
+                            isResource={link.resource_room}
                             linkIndex={linkIndex}
                             onFieldChange={onFieldChange}
                             createHandler={createHandler}
@@ -216,6 +225,8 @@ const NavSection = ({
                             displayHandler={displayHandler}
                             shouldDisplay={displayLinks[linkIndex]}
                             displaySublinks={displaySublinks[linkIndex]}
+                            linkErrors={errors.links[linkIndex]}
+                            sublinkErrors={errors.sublinks[linkIndex]}
                           />
                         </div>
                       )}
@@ -262,6 +273,7 @@ NavElem.propTypes = {
       label: PropTypes.string.isRequired,
     }),
   ).isRequired,
+  isResource: PropTypes.bool,
   linkIndex: PropTypes.number.isRequired,
   onFieldChange: PropTypes.func.isRequired,
   createHandler: PropTypes.func.isRequired,
@@ -269,6 +281,16 @@ NavElem.propTypes = {
   displayHandler: PropTypes.func.isRequired,
   shouldDisplay: PropTypes.bool,
   displaySublinks: PropTypes.arrayOf(PropTypes.bool),
+  linkErrors: PropTypes.shape({
+    title: PropTypes.string,
+    url: PropTypes.string,
+  }),
+  sublinkErrors: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      url: PropTypes.string,
+    }),
+  )
 };
 
 NavSection.propTypes = {
@@ -299,4 +321,21 @@ NavSection.propTypes = {
   displayLinks: PropTypes.arrayOf(PropTypes.bool).isRequired,
   displaySublinks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.bool)).isRequired,
   hasResources: PropTypes.bool.isRequired,
+  errors: PropTypes.shape({
+    links: PropTypes.arrayOf(
+      PropTypes.shape({
+        title: PropTypes.string,
+        url: PropTypes.string,
+      }),
+    ),
+    sublinks: PropTypes.arrayOf(
+      PropTypes.arrayOf(
+        PropTypes.shape({
+          title: PropTypes.string,
+          url: PropTypes.string,
+        }),
+      )
+    ),
+  })
+  
 };
