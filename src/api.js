@@ -44,16 +44,22 @@ const getFolderContents = async (siteName, folderName, subfolderName) => {
 // EditNavBar
 
 const getEditNavBarData = async(siteName) => {
-    let navContent, collectionContent, resourceContent, navSha
+    let navContent, collectionContent, foldersContent, resourceContent, navSha
       try {
         const resp = await axios.get(`${BACKEND_URL}/sites/${siteName}/navigation`);
         const { content, sha } = resp.data;
         navContent = content
         navSha = sha
-        const collectionResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`)
-        collectionContent = collectionResp.data
         const resourceResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/resources`)
         resourceContent = resourceResp.data
+        const foldersResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/folders/all`)
+        foldersContent = foldersResp.data
+        
+        if (foldersContent && foldersContent.allFolderContent) {
+            collectionContent = {
+                collections: foldersContent.allFolderContent.map((folder) => folder.name.slice(1)),
+            }
+        }
 
         if (!navContent) return
 
@@ -61,6 +67,7 @@ const getEditNavBarData = async(siteName) => {
             navContent,
             navSha,
             collectionContent,
+            foldersContent,
             resourceContent,
         }
       } catch (err) {
