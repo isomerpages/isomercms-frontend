@@ -552,6 +552,13 @@ export const parseDirectoryFile = (folderContent) => {
   return decodedContent.collections[collectionKey].order
 }
 
+export const updateDirectoryFile = (folderContent, folderOrder) => {
+  const decodedContent = yaml.safeLoad(Base64.decode(folderContent))
+  const collectionKey = Object.keys(decodedContent.collections)[0]
+  decodedContent.collections[collectionKey].order = folderOrder
+  return Base64.encode(yaml.safeDump(decodedContent))
+}
+
 export const convertFolderOrderToArray = (folderOrder) => {
   let currFolderEntry = {}
   return folderOrder.reduce((acc, curr, currIdx) => {
@@ -594,6 +601,14 @@ export const convertFolderOrderToArray = (folderOrder) => {
   }, [])
 }
 
+export const convertArrayToFolderOrder = (array) => {
+  const updatedFolderOrder = array.map(({ type, children, path }) => {
+    if (type == 'dir') return children
+    if (type == 'file') return path
+  })
+  return _.flatten(updatedFolderOrder)
+}
+
 export const retrieveSubfolderContents = (folderOrder, subfolderName) => {
   return folderOrder.reduce((acc, curr) => {
     const folderPathArr = curr.split('/')
@@ -610,3 +625,16 @@ export const retrieveSubfolderContents = (folderOrder, subfolderName) => {
     return acc
   }, [])
 }
+
+export const convertSubfolderArray = (folderOrderArray, rawFolderContents, subfolderName) => {
+  const arrayCopy = _.cloneDeep(folderOrderArray)
+  return rawFolderContents.map((curr) => {
+    const folderPathArr = curr.split('/')
+    const subfolderTitle = folderPathArr[0]
+    if (folderPathArr.length === 2 && subfolderTitle === subfolderName) {
+      const { path } = arrayCopy.shift()
+      return path
+    }
+    return curr
+  })
+} 
