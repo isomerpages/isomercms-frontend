@@ -8,7 +8,6 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-
 import { DEFAULT_ERROR_TOAST_MSG, deslugifyDirectory, isEmpty } from '../utils';
 import { validateLink } from '../utils/validators';
 
