@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import axios from 'axios';
 import * as Sentry from "@sentry/react";
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -15,6 +16,7 @@ import AuthCallback from './layouts/AuthCallback'
 import Home from './layouts/Home';
 import Sites from './layouts/Sites';
 import Workspace from './layouts/Workspace';
+import Folders from './layouts/Folders';
 import EditPage from './layouts/EditPage';
 import CategoryPages from './layouts/CategoryPages';
 import Images from './layouts/Images';
@@ -58,6 +60,9 @@ const ToastCloseButton = ({ closeToast }) => (
     />
   </span>
 );
+
+// react-query client
+const queryClient = new QueryClient();
 
 function App() {
   // Keep track of whether user is logged in
@@ -126,44 +131,47 @@ function App() {
 
   return (
     <Router basename={process.env.PUBLIC_URL}>
-        <ToastContainer hideProgressBar={true} position='top-center' closeButton={ToastCloseButton} className={elementStyles.toastContainer}/>
-        <div>
-          {/*
-            A <Switch> looks through all its children <Route>
-            elements and renders the first one whose path
-            matches the current URL. Use a <Switch> any time
-            you have multiple routes, but you want only one
-            of them to render at a time
-          */}
-            <LoginContext.Provider value={{isLoggedIn, setLogin, setLogoutState}}>
-              <Switch>
-                  <ProtectedRouteWithProps exact path='/auth' component={AuthCallback} />
-                  <ProtectedRouteWithProps exact path="/" component={Home} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName" component={CategoryPages} isResource={false}/>
-                  <ProtectedRouteWithProps path="/sites/:siteName/files/:fileName" component={EditFile} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/files" component={Files} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/images/:fileName" component={EditImage} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/images" component={Images} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/pages/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={false} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/workspace" component={Workspace} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/homepage" component={EditHomepage} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/contact-us" component={EditContactUs} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/resources/:resourceName/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={true} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/resources/:collectionName" component={CategoryPages} isResource={true}/>
-                  <ProtectedRouteWithProps path="/sites/:siteName/resources" component={Resources} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/menus/main-menu" component={EditNav} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/navbar" component={EditNavBar} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/menus" component={Menus} />
-                  <ProtectedRouteWithProps path="/sites/:siteName/settings" component={Settings} />
-                  <ProtectedRouteWithProps exact path="/sites" component={Sites} />
-                  <ProtectedRouteWithProps path="/" component={NotFoundPage}/>
-                  <Route>
-                    <Redirect to={ isLoggedIn ? '/sites' : '/' } />
-                  </Route>
-              </Switch>
-            </LoginContext.Provider>
-        </div>
+      <QueryClientProvider client={queryClient}>
+          <ToastContainer hideProgressBar={true} position='top-center' closeButton={ToastCloseButton} className={elementStyles.toastContainer}/>
+          <div>
+            {/*
+              A <Switch> looks through all its children <Route>
+              elements and renders the first one whose path
+              matches the current URL. Use a <Switch> any time
+              you have multiple routes, but you want only one
+              of them to render at a time
+            */}
+              <LoginContext.Provider value={{isLoggedIn, setLogin, setLogoutState}}>
+                <Switch>
+                    <ProtectedRouteWithProps exact path='/auth' component={AuthCallback} />
+                    <ProtectedRouteWithProps exact path="/" component={Home} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName" component={CategoryPages} isResource={false}/>
+                    <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName" component={Folders} />
+                    <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName" component={Folders} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/files/:fileName" component={EditFile} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/files" component={Files} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/images/:fileName" component={EditImage} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/images" component={Images} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/pages/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={false} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/workspace" component={Workspace} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/homepage" component={EditHomepage} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/contact-us" component={EditContactUs} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/resources/:resourceName/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={true} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/resources/:collectionName" component={CategoryPages} isResource={true}/>
+                    <ProtectedRouteWithProps path="/sites/:siteName/resources" component={Resources} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/menus/main-menu" component={EditNav} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/menus" component={Menus} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/settings" component={Settings} />
+                    <ProtectedRouteWithProps exact path="/sites" component={Sites} />
+                    <ProtectedRouteWithProps path="/" component={NotFoundPage}/>
+                    <Route>
+                      <Redirect to={ isLoggedIn ? '/sites' : '/' } />
+                    </Route>
+                </Switch>
+              </LoginContext.Provider>
+          </div>
+        </QueryClientProvider>
     </Router>
   );
 }

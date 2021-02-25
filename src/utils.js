@@ -53,6 +53,17 @@ export function deslugifyDirectory(dirName) {
     .join(' '); // join it back together
 }
 
+// this function converts file names into readable form
+// for example, 'this-is-a-file.md' -> 'This Is A File'
+export function deslugifyPage(pageName) {
+  return pageName
+    .split('.')[0] // remove the file extension
+    .split('-')
+    .map(string => _.upperFirst(string)) // capitalize first letter
+    .join(' '); // join it back together
+}
+
+
 // takes a string URL and returns true if the link is an internal link
 // only works on browser side
 export function isLinkInternal(url) {
@@ -533,4 +544,69 @@ export const getObjectDiff = (obj1, obj2) => {
     return result;
   }, {});
   return difference
+}
+
+export const parseDirectoryFile = (folderContent) => {
+  const decodedContent = yaml.safeLoad(Base64.decode(folderContent))
+  const collectionKey = Object.keys(decodedContent.collections)[0]
+  return decodedContent.collections[collectionKey].order
+}
+
+export const convertFolderOrderToArray = (folderOrder) => {
+  let currFolderEntry = {}
+  return folderOrder.reduce((acc, curr, currIdx) => {
+      const folderPathArr = curr.split('/')
+      if (folderPathArr.length === 1) {
+          if (JSON.stringify(currFolderEntry) !== '{}') acc.push(currFolderEntry)
+          currFolderEntry = {}
+          acc.push({
+              type: 'file',
+              path: curr,
+              title: curr,
+          })
+      }
+
+      if (folderPathArr.length > 1) {
+          const subfolderTitle = folderPathArr[0]
+
+          // Start of a new subfolder section
+          if (currFolderEntry.title !== subfolderTitle) {
+              // Case: two consecutive subfolders - transitioning from one to the other
+              if (currFolderEntry.title && currFolderEntry.title !== subfolderTitle) {
+                  acc.push(currFolderEntry)
+              }
+
+              currFolderEntry = {
+                type: 'dir',
+                title: subfolderTitle,
+                path: curr,
+                children: [curr],
+              }
+          } else {
+              currFolderEntry.children.push(curr)
+          }
+
+          // last entry
+          if (currIdx === folderOrder.length - 1) acc.push(currFolderEntry)
+      }
+
+      return acc
+  }, [])
+}
+
+export const retrieveSubfolderContents = (folderOrder, subfolderName) => {
+  return folderOrder.reduce((acc, curr) => {
+    const folderPathArr = curr.split('/')
+    if (folderPathArr.length === 2) {
+      const [subfolderTitle, subfolderFileName] = folderPathArr
+      if (subfolderTitle === subfolderName) {
+        acc.push({
+          type: 'file',
+          path: curr,
+          title: subfolderFileName,
+        })
+      }
+    }
+    return acc
+  }, [])
 }

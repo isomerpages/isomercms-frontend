@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
@@ -24,6 +24,14 @@ const Header = ({
   const [shouldRedirect, setShouldRedirect] = useState(false)
   const [shouldPerformBackNav, setShouldPerformBackNav] = useState(false)
   const [showBackNavWarningModal, setShowBackNavWarningModal] = useState(false)
+
+  useEffect(() => {
+    let _isMounted = true
+    if (shouldPerformBackNav && _isMounted) setShouldPerformBackNav(false)
+    if (shouldRedirect && _isMounted) setShouldRedirect(false)
+
+    return () => { _isMounted = false }
+  }, [shouldPerformBackNav, shouldRedirect])
 
   const clearCookie = async () => {
     try {
