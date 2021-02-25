@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
