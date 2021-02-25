@@ -21,7 +21,12 @@ const getDirectoryFile = async (siteName, folderName) => {
 }
 
 const setDirectoryFile = async (siteName, folderName, payload) => {
-    return await axios.post(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`, payload);
+    try {
+        return await axios.post(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`, payload);
+    } catch (err) {
+        // any future custom error handling
+        throw err
+    }
 }
 
 const getFolderContents = async (siteName, folderName, subfolderName) => {

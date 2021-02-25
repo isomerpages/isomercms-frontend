@@ -43,7 +43,7 @@ const Folders = ({ match, location }) => {
     const [parsedFolderContents, setParsedFolderContents] = useState([])
     const [shouldRedirect, setShouldRedirect] = useState(false)
 
-    const { data: folderContents, error } = useQuery(
+    const { data: folderContents, error: queryError } = useQuery(
         FOLDER_CONTENTS_KEY,
         () => getDirectoryFile(siteName, folderName),
         { 
@@ -52,9 +52,14 @@ const Folders = ({ match, location }) => {
         },
     );
 
+    const { mutate, error: mutateError } = useMutation(
+      payload => setDirectoryFile(siteName, folderName, payload),
+      { onSettled: () => setIsRearrangeActive((prevState) => !prevState) }
+    )
+
     useEffect(() => {
-      if (error) {
-        if (error.status === 404) {
+      if (queryError) {
+        if (queryError.status === 404) {
           // redirect if collection/folder cannot be found
           if (!shouldRedirect) setShouldRedirect(true)
         } else {
@@ -64,12 +69,16 @@ const Folders = ({ match, location }) => {
           );
         }
       }
-    }, [error])
+    }, [queryError])
 
-    const { mutate } = useMutation(
-        payload => setDirectoryFile(siteName, folderName, payload),
-        { onSettled: () => setIsRearrangeActive((prevState) => !prevState) }
-    )
+    useEffect(() => {
+      if (mutateError) {
+        toast(
+          <Toast notificationType='error' text={`Your file reordering could not be saved. Please try again. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
+        );
+      }
+    }, [mutateError])
 
     useEffect(() => {
         if (folderContents && folderContents.data) {
@@ -173,10 +182,10 @@ const Folders = ({ match, location }) => {
               </div>
               {/* Collections content */}
               {
-                  error && <span>There was an error retrieving your content. Please refresh the page.</span>
+                  queryError && <span>There was an error retrieving your content. Please refresh the page.</span>
               }
               {
-                    !error 
+                    !queryError
                     && folderContents 
                     && <FolderContent 
                         folderOrderArray={folderOrderArray} 
