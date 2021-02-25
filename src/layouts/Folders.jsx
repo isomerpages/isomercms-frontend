@@ -58,16 +58,21 @@ const Folders = ({ match, location }) => {
     )
 
     useEffect(() => {
+      let _isMounted = true;
       if (queryError) {
         if (queryError.status === 404) {
           // redirect if collection/folder cannot be found
-          if (!shouldRedirect) setShouldRedirect(true)
+          if (!shouldRedirect && _isMounted) setShouldRedirect(true)
         } else {
           toast(
             <Toast notificationType='error' text={`There was a problem retrieving data from your repo. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
             {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
           );
         }
+      }
+
+      return () => {
+        _isMounted = false
       }
     }, [queryError])
 
