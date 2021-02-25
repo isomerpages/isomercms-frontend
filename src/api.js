@@ -33,8 +33,43 @@ const getFolderContents = async (siteName, folderName, subfolderName) => {
     return await axios.get(`${BACKEND_URL}/sites/${siteName}/folders?path=_${folderName}${subfolderName ? `/${subfolderName}` : ''}`);
 }
 
+// EditNavBar
+
+const getEditNavBarData = async(siteName) => {
+    let navContent, collectionContent, resourceContent, navSha
+      try {
+        const resp = await axios.get(`${BACKEND_URL}/sites/${siteName}/navigation`);
+        const { content, sha } = resp.data;
+        navContent = content
+        navSha = sha
+        const collectionResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`)
+        collectionContent = collectionResp.data
+        const resourceResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/resources`)
+        resourceContent = resourceResp.data
+
+        if (!navContent) return
+
+        return {
+            navContent,
+            navSha,
+            collectionContent,
+            resourceContent,
+        }
+      } catch (err) {
+        if (err.response && err.response.status === 404) {
+            throw {
+                status: 404,
+                message: err.response.data.message,
+            }
+        }
+
+        throw err
+    }
+}
+
 export {
     getDirectoryFile,
     setDirectoryFile,
     getFolderContents,
+    getEditNavBarData,
 }

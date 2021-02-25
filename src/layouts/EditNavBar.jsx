@@ -9,10 +9,13 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-
 import { DEFAULT_ERROR_TOAST_MSG, deslugifyDirectory, isEmpty } from '../utils';
+import { validateLink } from '../utils/validators';
 
 import Toast from '../components/Toast';
+import Header from '../components/Header';
+import LoadingButton from '../components/LoadingButton';
+import DeleteWarningModal from '../components/DeleteWarningModal';
 import NavSection from '../components/navbar/NavSection'
 import TemplateNavBar from '../templates/NavBar'
 
@@ -20,13 +23,11 @@ import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 
-import Header from '../components/Header';
-import LoadingButton from '../components/LoadingButton';
-
-import DeleteWarningModal from '../components/DeleteWarningModal';
-import { validateLink } from '../utils/validators';
+// Import API
+import { getEditNavBarData } from '../api';
 
 const RADIX_PARSE_INT = 10
+const NAVIGATION_CONTENT_KEY = 'navigation-contents';
 
 const EditNavBar =  ({ match }) => {
   const { siteName } = match.params
@@ -103,35 +104,40 @@ const EditNavBar =  ({ match }) => {
     }
   };
 
-
+  const { data: navigationContents, error: queryError } = useQuery(
+    NAVIGATION_CONTENT_KEY,
+    () => getEditNavBarData(siteName),
+    { retry: false },
+  );
 
   useEffect(() => {
-    let _isMounted = true
-
-    const loadNavBarDetails = async () => {
-      let navContent, collectionContent, resourceContent, navSha
-      try {
-        const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/navigation`);
-        const { content, sha } = resp.data;
-        navContent = content
-        navSha = sha
-        const collectionResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`)
-        collectionContent = collectionResp.data
-        const resourceResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`)
-        resourceContent = resourceResp.data
-      } catch (error) {
-        if (error?.response?.status === 404) {
-          setShouldRedirectToNotFound(true)
-        } else {
-          toast(
-            <Toast notificationType='error' text={`There was a problem trying to load your data. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-            {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-          );
-        }
-        console.log(error)
+    let _isMounted = true;
+    if (queryError) {
+      if (queryError.status === 404) {
+        // redirect if one of the nav bar assets cannot be found
+        if (!shouldRedirectToNotFound && _isMounted) setShouldRedirectToNotFound(true)
+      } else {
+        toast(
+          <Toast notificationType='error' text={`There was a problem trying to load your data. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+        );
       }
+    }
 
-      if (!navContent) return
+    return () => {
+      _isMounted = false;
+    }
+  }, [queryError])
+
+  useEffect(() => {
+    let _isMounted = true;
+    if (!_.isEmpty(navigationContents)) {
+      const {
+        navContent,
+        navSha,
+        collectionContent,
+        resourceContent,
+      } = navigationContents
 
       const { links: initialLinks } = navContent
 
@@ -176,12 +182,10 @@ const EditNavBar =  ({ match }) => {
       }
     }
 
-    loadNavBarDetails()
-
     return () => {
-      _isMounted = false
+      _isMounted = false;
     }
-  }, [])
+  }, [navigationContents])
 
   const onFieldChange = async (event) => {
     try {
