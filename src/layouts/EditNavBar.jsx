@@ -3,7 +3,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { Redirect } from 'react-router-dom';
@@ -14,7 +14,7 @@ import { validateLink } from '../utils/validators';
 
 import Toast from '../components/Toast';
 import Header from '../components/Header';
-import LoadingButton from '../components/LoadingButton';
+import LoadingButton from '../components/LoadingButtonReactQuery';
 import DeleteWarningModal from '../components/DeleteWarningModal';
 import NavSection from '../components/navbar/NavSection'
 import TemplateNavBar from '../templates/NavBar'
@@ -24,7 +24,7 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 
 // Import API
-import { getEditNavBarData } from '../api';
+import { getEditNavBarData, updateNavBarData } from '../api';
 
 const RADIX_PARSE_INT = 10
 const NAVIGATION_CONTENT_KEY = 'navigation-contents';
@@ -104,12 +104,17 @@ const EditNavBar =  ({ match }) => {
     }
   };
 
+  // get nav bar data
   const { data: navigationContents, error: queryError } = useQuery(
     NAVIGATION_CONTENT_KEY,
     () => getEditNavBarData(siteName),
     { retry: false },
   );
 
+  // update nav bar data
+  const { mutate: saveNavData, isLoading } = useMutation(() => updateNavBarData(siteName, originalNav, links, sha))
+
+  // handle query error
   useEffect(() => {
     let _isMounted = true;
     if (queryError) {
@@ -129,6 +134,7 @@ const EditNavBar =  ({ match }) => {
     }
   }, [queryError])
 
+  // process nav bar data on mount
   useEffect(() => {
     let _isMounted = true;
     if (!_.isEmpty(navigationContents)) {
@@ -446,30 +452,6 @@ const EditNavBar =  ({ match }) => {
     }
   }
 
-  const saveNav = async () => {
-    try {
-      const params = {
-        content: {
-          ...originalNav,
-          links
-        },
-        sha: sha,
-      };
-
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/navigation`, params, {
-        withCredentials: true,
-      });
-
-      window.location.reload();
-    } catch (err) {
-      toast(
-        <Toast notificationType='error' text={`There was a problem trying to save your nav bar. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-      );
-      console.log(err);
-    }
-  }
-
   const onDragEnd = (result) => {
     const { source, destination, type } = result;
 
@@ -639,7 +621,8 @@ const EditNavBar =  ({ match }) => {
               disabled={hasErrors()} 
               disabledStyle={elementStyles.disabled}
               className={hasErrors() ? elementStyles.disabled : elementStyles.blue}
-              callback={saveNav}
+              callback={() => saveNavData(siteName, originalNav, links, sha)}
+              isLoading={isLoading}
             />
           </div>
         </div>

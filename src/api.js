@@ -1,4 +1,12 @@
+import React from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+
+import Toast from './components/Toast';
+
+import { DEFAULT_ERROR_TOAST_MSG } from './utils';
+
+import elementStyles from './styles/isomer-cms/Elements.module.scss';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -67,9 +75,30 @@ const getEditNavBarData = async(siteName) => {
     }
 }
 
+const updateNavBarData = async (siteName, originalNav, links, sha) => {
+    try {
+        const params = {
+            content: {
+                ...originalNav,
+                links
+            },
+            sha: sha,
+        };
+        await axios.post(`${BACKEND_URL}/sites/${siteName}/navigation`, params);
+        window.location.reload();
+    } catch (err) {
+        toast(
+          <Toast notificationType='error' text={`There was a problem trying to save your nav bar. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+        );
+        throw err
+    }
+}
+
 export {
     getDirectoryFile,
     setDirectoryFile,
     getFolderContents,
     getEditNavBarData,
+    updateNavBarData,
 }
