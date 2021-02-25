@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const NavDropdownSection = ({ children, link, linkIndex }) => (
-  <div className="navbar-item has-dropdown is-hoverable" key={`link-${linkIndex}`}>
+  <div className="navbar-item has-dropdown is-hoverable">
       <a className="navbar-link is-uppercase" href="/" onClick={(event) => event.preventDefault()}>
           { link.title }
       </a>
@@ -21,7 +21,7 @@ const TemplateNavBar = ({ links, collectionInfo, resources }) => (
             links.map((link, linkIndex) => {
               if (link.collection) {
                 return (
-                  <NavDropdownSection link={link} linkIndex={linkIndex}>
+                  <NavDropdownSection link={link} linkIndex={linkIndex} key={linkIndex}>
                     {collectionInfo && collectionInfo[link.collection].map((collection, collectionIndex) => (
                       <a className="navbar-item sub-link" href="/" onClick={(event) => event.preventDefault()} key={`collection-${collectionIndex}`}>
                         { collection }
@@ -32,7 +32,7 @@ const TemplateNavBar = ({ links, collectionInfo, resources }) => (
               }
               if (link.resource_room) {
                 return (
-                  <NavDropdownSection link={link} linkIndex={linkIndex}>
+                  <NavDropdownSection link={link} linkIndex={linkIndex} key={linkIndex}>
                     {resources && resources.map((resource, resourceIndex) => (
                       <a className="navbar-item sub-link" href="/" onClick={(event) => event.preventDefault()} key={`resource-${resourceIndex}`}>
                         { resource }
@@ -43,7 +43,7 @@ const TemplateNavBar = ({ links, collectionInfo, resources }) => (
               }
               if (link.sublinks) {
                 return (
-                  <NavDropdownSection link={link} linkIndex={linkIndex}>
+                  <NavDropdownSection link={link} linkIndex={linkIndex} key={linkIndex}>
                     {link.sublinks && link.sublinks.map((sublink, sublinkIndex) => (
                       <a className="navbar-item sub-link" href="/" onClick={(event) => event.preventDefault()} key={`sublink-${sublinkIndex}`}>
                         { sublink.title }
