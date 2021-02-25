@@ -3,9 +3,12 @@ import axios from 'axios';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
+import { useQuery } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { DragDropContext } from 'react-beautiful-dnd';
-import { Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
+
 
 import { DEFAULT_ERROR_TOAST_MSG, deslugifyDirectory, isEmpty } from '../utils';
 
@@ -99,6 +102,8 @@ const EditNavBar =  ({ match }) => {
         return;
     }
   };
+
+
 
   useEffect(() => {
     let _isMounted = true
@@ -643,6 +648,9 @@ const EditNavBar =  ({ match }) => {
               state: {siteName: siteName}
           }}
         />
+      }
+      {
+          process.env.REACT_APP_ENV === 'LOCAL_DEV' && <ReactQueryDevtools initialIsOpen={false} />
       }
     </>
   )
