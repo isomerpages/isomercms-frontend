@@ -9,6 +9,7 @@ import _ from 'lodash';
 // Import components
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
+import FolderCreationModal from '../components/FolderCreationModal'
 import FolderOptionButton from '../components/folders/FolderOptionButton';
 import FolderContent from '../components/folders/FolderContent';
 import Toast from '../components/Toast';
@@ -41,6 +42,8 @@ const Folders = ({ match, location }) => {
     const [directoryFileSha, setDirectoryFileSha] = useState('')
     const [folderOrderArray, setFolderOrderArray] = useState([])
     const [parsedFolderContents, setParsedFolderContents] = useState([])
+    const [folderOrder, setFolderOrder] = useState([])
+    const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
     const [shouldRedirect, setShouldRedirect] = useState(false)
 
     const { data: folderContents, error: queryError } = useQuery(
@@ -137,6 +140,16 @@ const Folders = ({ match, location }) => {
             shouldRedirect &&
             <Redirect to={{pathname: `/sites/${siteName}/workspace`}} />
           }
+          {
+            isFolderCreationActive &&
+            <FolderCreationModal
+              parentFolder={folderName}
+              existingSubfolders={[]}
+              pagesData={folderOrder.filter(item => item.type === 'file')}
+              siteName={siteName}
+              setIsFolderCreationActive={setIsFolderCreationActive}
+            />
+          }
           <Header
             backButtonText={`Back to ${subfolderName ? folderName : 'Workspace'}`}
             backButtonUrl={`/sites/${siteName}/${subfolderName ? `folder/${folderName}` : 'workspace'}`}
@@ -187,7 +200,7 @@ const Folders = ({ match, location }) => {
               <div className={contentStyles.contentContainerFolderRowMargin}>
                 <FolderOptionButton title="Rearrange items" isSelected={isRearrangeActive} onClick={toggleRearrange} option="rearrange" isDisabled={folderOrderArray.length <= 1 || !folderContents}/>
                 <FolderOptionButton title="Create new page" option="create-page" />
-                <FolderOptionButton title="Create new sub-folder" option="create-sub" isDisabled={subfolderName ? true : false} />
+                <FolderOptionButton title="Create new sub-folder" option="create-sub" isSubfolder={subfolderName ? true : false} onClick={() => setIsFolderCreationActive(true)}/>
               </div>
               {/* Collections content */}
               {
