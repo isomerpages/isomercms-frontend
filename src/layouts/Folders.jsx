@@ -112,11 +112,17 @@ const Folders = ({ match, location }) => {
         } else {
           newFolderOrder = convertArrayToFolderOrder(folderOrderArray)
         }
+        if (JSON.stringify(newFolderOrder)==JSON.stringify(parsedFolderContents)) { 
+          // no change in file order
+          console.log('hi')
+          setIsRearrangeActive((prevState) => !prevState)
+          return
+        }
         const updatedDirectoryFile = updateDirectoryFile(folderContents.data.content, newFolderOrder)
 
         const payload = {
           content: updatedDirectoryFile,
-          sha: directoryFileSha
+          sha: directoryFileSha,
         } 
         mutate(payload) // setIsRearrangeActive(false) handled by mutate
       } else {
