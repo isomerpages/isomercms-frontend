@@ -42,6 +42,7 @@
 
   h1{
     font-size: 24px;
+    color:$isomer-blue
   }
 
   .bx{
@@ -95,4 +96,10 @@
   @extend .modal;
   height: initial;
   width: 40%;
+}
+
+.modal-newfolder {
+  @extend .modal;
+  height: 50%;
+  width: 70%;
 }
