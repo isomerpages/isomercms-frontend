@@ -41,6 +41,19 @@ const FolderCreationModal = ({
   const [redirectToNewPage, setRedirectToNewPage] = useState(false)
   const [sortedPagesData, setSortedPagesData] = useState(pagesData)
 
+  const sortOptions = [
+    ... parentFolder 
+      ? [{
+        value: 'collection',
+        label: 'Collection',
+      }]
+      : [],
+    {
+      value: 'title',
+      label: 'Name'
+    }
+  ]
+
   const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${parentFolder ? `/collections/${parentFolder}` : ''}`
 
   const saveHandler = async () => {
@@ -68,6 +81,21 @@ const FolderCreationModal = ({
       })
     }
     setSelectedFiles(newSelectedFiles)
+  }
+
+  const sortFuncs = {
+    'title': (a, b) => {
+      return a.title.localeCompare(b.title)
+    }
+  }
+
+  const sortOrderChangeHandler = (option) => {
+    // Reset to original order in collection
+    if (option.value === 'collection') setSortedPagesData(pagesData)
+    else {
+      const sortedOrder = sortedPagesData.concat().sort(sortFuncs[option.value])
+      setSortedPagesData(sortedOrder)
+    }
   }
 
   return (
@@ -118,13 +146,26 @@ const FolderCreationModal = ({
               </div>
               <div className={`d-flex justify-content-between w-100`}>
                 <span>Pages</span>
-                <div className={`d-flex`}>
-                  <p>{`Sort by`}</p>
+                <span className={`w-25`}>{`Sort by`}
                   <Select
-
+                    onChange={sortOrderChangeHandler}
+                    className={'w-100'}
+                    defaultValue={
+                      parentFolder 
+                      ? {
+                          value: 'collection',
+                          label: 'Collection',
+                        }
+                      : {
+                          value: 'title',
+                          label: 'Name',
+                        }
+                    }
+                    options={sortOptions}
                   />
-                </div>
+                </span>
               </div>
+              <br/>
               {/* Pages */}
               <div className={contentStyles.folderContainerBoxes}>
                 <div className={contentStyles.boxesContainer}>
@@ -162,8 +203,9 @@ const FolderCreationModal = ({
                 />
                 <LoadingButton
                   label={`Done`}
+                  disabled={selectedFiles.size === 0}
                   disabledStyle={elementStyles.disabled}
-                  className={`${elementStyles.blue}`}
+                  className={`${selectedFiles.size === 0 ? elementStyles.disabled : elementStyles.blue}`}
                   callback={saveHandler}
                 />
               </div>
