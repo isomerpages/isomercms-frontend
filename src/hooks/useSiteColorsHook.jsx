@@ -16,7 +16,6 @@ const useSiteColorsHook = () => {
 
     const retrieveSiteColors = async (siteName) => {
         const siteColors = getLocalStorageSiteColors()
-        console.log(siteColors, 'test')
         // if (!siteColors[siteName]) {
         if (!siteColors || !siteColors[siteName]) {
 
