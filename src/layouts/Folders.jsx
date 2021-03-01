@@ -102,7 +102,7 @@ const Folders = ({ match, location }) => {
 
     const toggleRearrange = () => { 
       // if no folder contents, do not enable reordering
-      if (folderOrderArray.length == 0 || !folderContents) return
+      if (folderOrderArray.length === 0 || !folderContents) return
 
       if (isRearrangeActive) { 
         // drag and drop complete, save new order 
@@ -112,7 +112,7 @@ const Folders = ({ match, location }) => {
         } else {
           newFolderOrder = convertArrayToFolderOrder(folderOrderArray)
         }
-        if (JSON.stringify(newFolderOrder)==JSON.stringify(parsedFolderContents)) { 
+        if (JSON.stringify(newFolderOrder) === JSON.stringify(parsedFolderContents)) { 
           // no change in file order
           setIsRearrangeActive((prevState) => !prevState)
           return

@@ -603,8 +603,8 @@ export const convertFolderOrderToArray = (folderOrder) => {
 
 export const convertArrayToFolderOrder = (array) => {
   const updatedFolderOrder = array.map(({ type, children, path }) => {
-    if (type == 'dir') return children
-    if (type == 'file') return path
+    if (type === 'dir') return children
+    if (type === 'file') return path
   })
   return _.flatten(updatedFolderOrder)
 }
