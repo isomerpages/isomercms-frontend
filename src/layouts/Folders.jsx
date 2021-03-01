@@ -101,9 +101,6 @@ const Folders = ({ match, location }) => {
     }, [folderContents, subfolderName])
 
     const toggleRearrange = () => { 
-      // if no folder contents, do not enable reordering
-      if (folderOrderArray.length === 0 || !folderContents) return
-
       if (isRearrangeActive) { 
         // drag and drop complete, save new order 
         let newFolderOrder
@@ -183,9 +180,9 @@ const Folders = ({ match, location }) => {
               </div>
               {/* Options */}
               <div className={contentStyles.contentContainerFolderRowMargin}>
-                <FolderOptionButton title="Rearrange items" isSelected={isRearrangeActive} onClick={toggleRearrange} option="rearrange" />
+                <FolderOptionButton title="Rearrange items" isSelected={isRearrangeActive} onClick={toggleRearrange} option="rearrange" isDisabled={folderOrderArray.length <= 1 || !folderContents}/>
                 <FolderOptionButton title="Create new page" option="create-page" />
-                <FolderOptionButton title="Create new sub-folder" option="create-sub" isSubfolder={subfolderName ? true : false} />
+                <FolderOptionButton title="Create new sub-folder" option="create-sub" isDisabled={subfolderName ? true : false} />
               </div>
               {/* Collections content */}
               {
