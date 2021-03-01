@@ -559,6 +559,22 @@ export const updateDirectoryFile = (folderContent, folderOrder) => {
   return Base64.encode(yaml.safeDump(decodedContent))
 }
 
+export const getNavFolderDropdownFromFolderOrder = (folderOrder) => {
+  return folderOrder.reduce((acc, curr) => {
+    const pathArr = curr.split('/') // sample paths: "prize-sponsor.md", "prize-jury/nominating-committee.md"
+
+    if (pathArr.length === 1) {
+      acc.push(deslugifyDirectory(curr.split('.')[0])) // remove file extension
+    }
+
+    if (pathArr.length === 2 && pathArr[0] !== acc[acc.length - 1]) {
+      acc.push(deslugifyDirectory(pathArr[0]))
+    }
+
+    return acc
+  }, [])
+}
+
 export const convertFolderOrderToArray = (folderOrder) => {
   let currFolderEntry = {}
   return folderOrder.reduce((acc, curr, currIdx) => {
