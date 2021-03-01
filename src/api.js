@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 
 import Toast from './components/Toast';
 
-import { DEFAULT_ERROR_TOAST_MSG } from './utils';
+import { DEFAULT_ERROR_TOAST_MSG, parseDirectoryFile, getNavFolderDropdownFromFolderOrder } from './utils';
 
 import elementStyles from './styles/isomer-cms/Elements.module.scss';
 
@@ -53,11 +53,17 @@ const getEditNavBarData = async(siteName) => {
         const resourceResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/resources`)
         resourceContent = resourceResp.data
         const foldersResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/folders/all`)
-        foldersContent = foldersResp.data
         
-        if (foldersContent && foldersContent.allFolderContent) {
+        if (foldersResp.data && foldersResp.data.allFolderContent) {
+            // parse directory files
+            foldersContent = foldersResp.data.allFolderContent.reduce((acc, currFolder) => {
+                const folderOrder = parseDirectoryFile(currFolder.content)
+                acc[currFolder.name.slice(1)] = getNavFolderDropdownFromFolderOrder(folderOrder)
+                return acc
+            }, {})
+
             collectionContent = {
-                collections: foldersContent.allFolderContent.map((folder) => folder.name.slice(1)),
+                collections: foldersResp.data.allFolderContent.map((folder) => folder.name.slice(1)),
             }
         }
 

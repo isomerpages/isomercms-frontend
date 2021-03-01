@@ -35,6 +35,7 @@ const EditNavBar =  ({ match }) => {
   const [links, setLinks] = useState([])
   const [originalNav, setOriginalNav] = useState()
   const [collections, setCollections] = useState([])
+  const [folderDropdowns, setFolderDropdowns] = useState({})
   const [options, setOptions] = useState([])
   const [displayLinks, setDisplayLinks] = useState([])
   const [displaySublinks, setDisplaySublinks] = useState([])
@@ -141,6 +142,7 @@ const EditNavBar =  ({ match }) => {
         navContent,
         navSha,
         collectionContent,
+        foldersContent,
         resourceContent,
       } = navigationContents
 
@@ -178,6 +180,7 @@ const EditNavBar =  ({ match }) => {
         setDisplayLinks(initialDisplayLinks)
         setDisplaySublinks(initialDisplaySublinks)
         setCollections(initialCollections)
+        setFolderDropdowns(foldersContent)
         setOptions(initialOptions)
         setResources(initialResource.map(resource => deslugifyDirectory(resource.dirName)))
         setOriginalNav(navContent)
@@ -609,7 +612,7 @@ const EditNavBar =  ({ match }) => {
             {/* TODO: update collectionInfo */}
             <TemplateNavBar
               links={links}
-              collectionInfo={null}
+              collectionInfo={folderDropdowns}
               resources={resources}
             />
           </div>

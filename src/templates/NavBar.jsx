@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const NavDropdownSection = ({ children, link, linkIndex }) => (
+const NavDropdownSection = ({ children, link }) => (
   <div className="navbar-item has-dropdown is-hoverable">
       <a className="navbar-link is-uppercase" href="/" onClick={(event) => event.preventDefault()}>
           { link.title }
