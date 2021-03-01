@@ -12,7 +12,7 @@ const iconSelection = {
 
 
 
-const FolderOptionButton = ({ title, isSelected, onClick, option, isSubfolder }) => {
+const FolderOptionButton = ({ title, isSelected, onClick, option, isDisabled }) => {
     return (
         <button
             type="button"
@@ -20,13 +20,13 @@ const FolderOptionButton = ({ title, isSelected, onClick, option, isSubfolder })
                 ${elementStyles.card}
                 ${contentStyles.card}
                 ${isSelected ? elementStyles.folderOptionSelected : ''}
-                ${isSubfolder ? elementStyles.folderOptionDisabled : elementStyles.folderOption}
+                ${isDisabled ? elementStyles.folderOptionDisabled : elementStyles.folderOption}
             `}
-            disabled={isSubfolder}
+            disabled={isDisabled}
             onClick={onClick}
         >
             <div className={`${contentStyles.contentContainerFolderRow} justify-content-center`}>
-                <i className={`bx ${iconSelection[option]} ${elementStyles.folderOptionIcon} ${isSelected ? 'text-white' : ''} ${isSubfolder ? elementStyles.disabledIcon : ''} mr-2`} />
+                <i className={`bx ${iconSelection[option]} ${elementStyles.folderOptionIcon} ${isSelected ? 'text-white' : ''} ${isDisabled ? elementStyles.disabledIcon : ''} mr-2`} />
                 <span className={`${elementStyles.folderOptionText} ml-2`}>{title}</span>
             </div>
         </button>

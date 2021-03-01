@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Link, Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -17,12 +17,15 @@ import Toast from '../components/Toast';
 import {
   DEFAULT_ERROR_TOAST_MSG,
   parseDirectoryFile,
+  updateDirectoryFile,
   convertFolderOrderToArray,
+  convertArrayToFolderOrder,
   retrieveSubfolderContents,
+  convertSubfolderArray,
 } from '../utils'
 
 // Import API
-import { getDirectoryFile } from '../api';
+import { getDirectoryFile, setDirectoryFile } from '../api';
 
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -34,19 +37,29 @@ const FOLDER_CONTENTS_KEY = 'folder-contents'
 const Folders = ({ match, location }) => {
     const { siteName, folderName, subfolderName } = match.params;
 
-    const { data: folderContents, error } = useQuery(
-        FOLDER_CONTENTS_KEY,
-        () => getDirectoryFile(siteName, folderName),
-        { retry: false },
-    );
     const [isRearrangeActive, setIsRearrangeActive] = useState(false)
     const [directoryFileSha, setDirectoryFileSha] = useState('')
-    const [folderOrder, setFolderOrder] = useState([])
+    const [folderOrderArray, setFolderOrderArray] = useState([])
+    const [parsedFolderContents, setParsedFolderContents] = useState([])
     const [shouldRedirect, setShouldRedirect] = useState(false)
 
+    const { data: folderContents, error: queryError } = useQuery(
+      FOLDER_CONTENTS_KEY,
+      () => getDirectoryFile(siteName, folderName),
+      { 
+        retry: false,
+        enabled: !isRearrangeActive,
+      },
+    );
+
+    const { mutate, error: mutateError } = useMutation(
+      payload => setDirectoryFile(siteName, folderName, payload),
+      { onSettled: () => setIsRearrangeActive((prevState) => !prevState) }
+    )
+
     useEffect(() => {
-      if (error) {
-        if (error.status === 404) {
+      if (queryError) {
+        if (queryError.status === 404) {
           // redirect if collection/folder cannot be found
           if (!shouldRedirect) setShouldRedirect(true)
         } else {
@@ -56,28 +69,62 @@ const Folders = ({ match, location }) => {
           );
         }
       }
-    }, [error])
+    }, [queryError])
+
+    useEffect(() => {
+      if (mutateError) {
+        toast(
+          <Toast notificationType='error' text={`Your file reordering could not be saved. Please try again. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
+        );
+      }
+    }, [mutateError])
 
     useEffect(() => {
         if (folderContents && folderContents.data) {
           const parsedFolderContents = parseDirectoryFile(folderContents.data.content)
           setDirectoryFileSha(folderContents.data.sha)
+          setParsedFolderContents(parsedFolderContents)
 
           if (subfolderName) {
             const subfolderFiles = retrieveSubfolderContents(parsedFolderContents, subfolderName)
             if (subfolderFiles.length > 0) {
-              setFolderOrder(retrieveSubfolderContents(parsedFolderContents, subfolderName))
+              setFolderOrderArray(subfolderFiles)
             } else {
               // if subfolderName prop does not match directory file, it's not a valid subfolder
               if (!shouldRedirect) setShouldRedirect(true)
             }
           } else {
-            setFolderOrder(convertFolderOrderToArray(parsedFolderContents))
+            setFolderOrderArray(convertFolderOrderToArray(parsedFolderContents))
           }
         }
     }, [folderContents, subfolderName])
 
-    const toggleRearrange = () => { setIsRearrangeActive((prevState) => !prevState) }
+    const toggleRearrange = () => { 
+      if (isRearrangeActive) { 
+        // drag and drop complete, save new order 
+        let newFolderOrder
+        if (subfolderName) {
+          newFolderOrder = convertSubfolderArray(folderOrderArray, parsedFolderContents, subfolderName)
+        } else {
+          newFolderOrder = convertArrayToFolderOrder(folderOrderArray)
+        }
+        if (JSON.stringify(newFolderOrder) === JSON.stringify(parsedFolderContents)) { 
+          // no change in file order
+          setIsRearrangeActive((prevState) => !prevState)
+          return
+        }
+        const updatedDirectoryFile = updateDirectoryFile(folderContents.data.content, newFolderOrder)
+
+        const payload = {
+          content: updatedDirectoryFile,
+          sha: directoryFileSha,
+        } 
+        mutate(payload) // setIsRearrangeActive(false) handled by mutate
+      } else {
+        setIsRearrangeActive((prevState) => !prevState) 
+      }
+    }
 
     return (
         <>
@@ -88,6 +135,8 @@ const Folders = ({ match, location }) => {
           <Header
             backButtonText={`Back to ${subfolderName ? folderName : 'Workspace'}`}
             backButtonUrl={`/sites/${siteName}/${subfolderName ? `folder/${folderName}` : 'workspace'}`}
+            shouldAllowEditPageBackNav={!isRearrangeActive}
+            isEditPage="true"
           />
           {/* main bottom section */}
           <div className={elementStyles.wrapper}>
@@ -131,16 +180,24 @@ const Folders = ({ match, location }) => {
               </div>
               {/* Options */}
               <div className={contentStyles.contentContainerFolderRowMargin}>
-                <FolderOptionButton title="Rearrange items" isSelected={isRearrangeActive} onClick={toggleRearrange} option="rearrange" />
+                <FolderOptionButton title="Rearrange items" isSelected={isRearrangeActive} onClick={toggleRearrange} option="rearrange" isDisabled={folderOrderArray.length <= 1 || !folderContents}/>
                 <FolderOptionButton title="Create new page" option="create-page" />
-                <FolderOptionButton title="Create new sub-folder" option="create-sub" isSubfolder={subfolderName ? true : false} />
+                <FolderOptionButton title="Create new sub-folder" option="create-sub" isDisabled={subfolderName ? true : false} />
               </div>
               {/* Collections content */}
               {
-                  error && <span>There was an error retrieving your content. Please refresh the page.</span>
+                  queryError && <span>There was an error retrieving your content. Please refresh the page.</span>
               }
               {
-                  !error && folderContents && <FolderContent data={folderOrder} siteName={siteName} folderName={folderName} />
+                !queryError
+                && folderContents 
+                && <FolderContent 
+                    folderOrderArray={folderOrderArray} 
+                    setFolderOrderArray={setFolderOrderArray} 
+                    siteName={siteName} 
+                    folderName={folderName} 
+                    enableDragDrop={isRearrangeActive}
+                  />
               }
             </div>
             {/* main section ends here */}
