@@ -114,7 +114,6 @@ const Folders = ({ match, location }) => {
         }
         if (JSON.stringify(newFolderOrder)==JSON.stringify(parsedFolderContents)) { 
           // no change in file order
-          console.log('hi')
           setIsRearrangeActive((prevState) => !prevState)
           return
         }
