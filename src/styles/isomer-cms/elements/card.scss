@@ -105,7 +105,15 @@
       @extend .folderOptionSelected;
     }
 
-    &:hover > div > i{
+    &:hover > div > i {
+      color: white;
+    }
+
+    > div > span {
+      color: $isomer-blue;
+    }
+
+    &:hover > div > span {
       color: white;
     }
 
