@@ -146,6 +146,18 @@ const Workspace = ({ match, location }) => {
                 <i className="bx bx-sm bx-info-circle text-dark" />
                 <span><strong className="ml-1">Note:</strong> Collections cannot be empty, create a page first to create a collection.</span>
               </div>
+              {
+                !collections &&
+                <div className={contentStyles.segment}>
+                  Loading Collections...
+                </div>
+              }
+              {
+                collections && collections.length === 0 &&
+                <div className={contentStyles.segment}>
+                  There are no collections in this repository.
+                </div>
+              }
               {/* Collections */}
               <div className={contentStyles.folderContainerBoxes}>
                 <div className={contentStyles.boxesContainer}>
@@ -165,11 +177,7 @@ const Workspace = ({ match, location }) => {
                             itemIndex={collectionIdx}
                         />
                     ))
-                    : (
-                        !collections
-                            ? 'Loading Collections...'
-                            : 'There are no collections in this repository'
-                    )
+                    : null
                   }
                 </div>
               </div>
