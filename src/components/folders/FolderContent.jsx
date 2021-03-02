@@ -80,6 +80,7 @@ const FolderContent = ({ folderOrderArray, setFolderOrderArray, siteName, folder
                                     draggableId={`folder-${folderContentIndex}-draggable`}
                                     index={folderContentIndex}
                                     isDragDisabled={!enableDragDrop}
+                                    key={folderContentItem.title}
                                 >
                                     {(draggableProvided) => (
                                         <div
