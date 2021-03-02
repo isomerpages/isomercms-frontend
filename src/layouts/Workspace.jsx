@@ -61,6 +61,7 @@ const Workspace = ({ match, location }) => {
         
         try { 
           const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`);
+          console.log(unlinkedPagesResp.data)
           if (_isMounted) {
             setUnlinkedPages(unlinkedPagesResp.data?.pages.filter(page => page.fileName !== 'contact-us.md'))
           }
@@ -148,7 +149,9 @@ const Workspace = ({ match, location }) => {
               {/* Collections */}
               <div className={contentStyles.folderContainerBoxes}>
                 <div className={contentStyles.boxesContainer}>
-                  <FolderOptionButton title="Create new sub-folder" option="create-sub" isSubfolder={false} onClick={() => setIsFolderCreationActive(true)}/>
+                  { unlinkedPages &&
+                    <FolderOptionButton title="Create new sub-folder" option="create-sub" isSubfolder={false} onClick={() => setIsFolderCreationActive(true)}/>
+                  }
                   {
                     collections && collections.length > 0
                     ? collections.map((collection, collectionIdx) => (
