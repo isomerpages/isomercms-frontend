@@ -14,15 +14,17 @@ axios.defaults.withCredentials = true
 // Constants
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
-const getDirectoryFile = async (siteName, folderName) => {
+const getDirectoryFile = async (siteName, folderName, errorCallback) => {
     try {
         return await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`);
     } catch (err) {
         if (err.response && err.response.status === 404) {
-            throw {
-                status: 404,
-                message: err.response.data.message,
-            }
+            errorCallback()
+        } else {
+            toast(
+                <Toast notificationType='error' text={`There was a problem retrieving data from your repo. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
+                {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
+            );
         }
         throw err
     }
@@ -30,9 +32,16 @@ const getDirectoryFile = async (siteName, folderName) => {
 
 const setDirectoryFile = async (siteName, folderName, payload) => {
     try {
-        return await axios.post(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`, payload);
+        await axios.post(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`, payload);
+        return toast(
+            <Toast notificationType='success' text={`Successfully updated page order!`}/>,
+            {className: `${elementStyles.toastSuccess}`},
+        );
     } catch (err) {
-        // if need be, add custom error handling here
+        toast(
+            <Toast notificationType='error' text={`Your file reordering could not be saved. Please try again. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
+            {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
+        );
         throw err
     }
 }

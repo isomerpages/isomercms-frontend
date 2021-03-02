@@ -49,47 +49,17 @@ const Folders = ({ match, location }) => {
 
     const { data: folderContents, error: queryError } = useQuery(
       FOLDER_CONTENTS_KEY,
-      () => getDirectoryFile(siteName, folderName),
+      () => getDirectoryFile(siteName, folderName, () => { if (!shouldRedirect) setShouldRedirect(true) }),
       { 
         retry: false,
         enabled: !isRearrangeActive,
       },
     );
 
-    const { mutate, error: mutateError } = useMutation(
+    const { mutate } = useMutation(
       payload => setDirectoryFile(siteName, folderName, payload),
       { onSettled: () => setIsRearrangeActive((prevState) => !prevState) }
     )
-
-    useEffect(() => {
-      let _isMounted = true;
-      if (queryError) {
-        if (queryError.status === 404) {
-          // redirect if collection/folder cannot be found
-          if (_isMounted) {
-            setRedirectToPage(`/sites/${siteName}/workspace`)
-          }
-        } else {
-          toast(
-            <Toast notificationType='error' text={`There was a problem retrieving data from your repo. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
-            {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
-          );
-        }
-      }
-
-      return () => {
-        _isMounted = false
-      }
-    }, [queryError])
-
-    useEffect(() => {
-      if (mutateError) {
-        toast(
-          <Toast notificationType='error' text={`Your file reordering could not be saved. Please try again. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
-        );
-      }
-    }, [mutateError])
 
     useEffect(() => {
         if (folderContents && folderContents.data) {
