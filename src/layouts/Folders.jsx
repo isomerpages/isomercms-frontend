@@ -42,7 +42,6 @@ const Folders = ({ match, location }) => {
     const [directoryFileSha, setDirectoryFileSha] = useState('')
     const [folderOrderArray, setFolderOrderArray] = useState([])
     const [parsedFolderContents, setParsedFolderContents] = useState([])
-    const [folderOrder, setFolderOrder] = useState([])
     const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
     const [shouldRedirect, setShouldRedirect] = useState(false)
     const [redirectUrl, setRedirectUrl] = useState('')
@@ -149,7 +148,7 @@ const Folders = ({ match, location }) => {
             <FolderCreationModal
               parentFolder={folderName}
               existingSubfolders={[]}
-              pagesData={folderOrder.filter(item => item.type === 'file')}
+              pagesData={folderOrderArray.filter(item => item.type === 'file')}
               siteName={siteName}
               setIsFolderCreationActive={setIsFolderCreationActive}
               setRedirectToNewPage={setShouldRedirect}
@@ -206,7 +205,7 @@ const Folders = ({ match, location }) => {
               <div className={contentStyles.contentContainerFolderRowMargin}>
                 <FolderOptionButton title="Rearrange items" isSelected={isRearrangeActive} onClick={toggleRearrange} option="rearrange" isDisabled={folderOrderArray.length <= 1 || !folderContents}/>
                 <FolderOptionButton title="Create new page" option="create-page" />
-                <FolderOptionButton title="Create new sub-folder" option="create-sub" isSubfolder={subfolderName || folderOrder.length === 0 ? true : false} onClick={() => setIsFolderCreationActive(true)}/>
+                <FolderOptionButton title="Create new sub-folder" option="create-sub" isDisabled={subfolderName || folderOrderArray.length === 0 ? true : false} onClick={() => setIsFolderCreationActive(true)}/>
               </div>
               {/* Collections content */}
               {
