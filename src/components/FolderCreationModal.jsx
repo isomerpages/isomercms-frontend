@@ -44,8 +44,8 @@ const FolderCreationModal = ({
   const sortOptions = [
     ... parentFolder 
       ? [{
-        value: 'collection',
-        label: 'Collection',
+        value: 'folder',
+        label: 'Original order',
       }]
       : [],
     {
@@ -90,8 +90,8 @@ const FolderCreationModal = ({
   }
 
   const sortOrderChangeHandler = (option) => {
-    // Reset to original order in collection
-    if (option.value === 'collection') setSortedPagesData(pagesData)
+    // Reset to original order in folder
+    if (option.value === 'folder') setSortedPagesData(pagesData)
     else {
       const sortedOrder = sortedPagesData.concat().sort(sortFuncs[option.value])
       setSortedPagesData(sortedOrder)
@@ -153,8 +153,8 @@ const FolderCreationModal = ({
                     defaultValue={
                       parentFolder 
                       ? {
-                          value: 'collection',
-                          label: 'Collection',
+                          value: 'folder',
+                          label: 'Original order',
                         }
                       : {
                           value: 'title',
