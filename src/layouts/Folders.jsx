@@ -45,6 +45,7 @@ const Folders = ({ match, location }) => {
     const [folderOrder, setFolderOrder] = useState([])
     const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
     const [shouldRedirect, setShouldRedirect] = useState(false)
+    const [redirectUrl, setRedirectUrl] = useState('')
 
     const { data: folderContents, error: queryError } = useQuery(
       FOLDER_CONTENTS_KEY,
@@ -65,7 +66,10 @@ const Folders = ({ match, location }) => {
       if (queryError) {
         if (queryError.status === 404) {
           // redirect if collection/folder cannot be found
-          if (!shouldRedirect && _isMounted) setShouldRedirect(true)
+          if (!shouldRedirect && _isMounted) {
+            setRedirectUrl(`/sites/${siteName}/workspace`)
+            setShouldRedirect(true)
+          }
         } else {
           toast(
             <Toast notificationType='error' text={`There was a problem retrieving data from your repo. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
@@ -138,7 +142,7 @@ const Folders = ({ match, location }) => {
         <>
           {
             shouldRedirect &&
-            <Redirect to={{pathname: `/sites/${siteName}/workspace`}} />
+            <Redirect to={{pathname: redirectUrl}} />
           }
           {
             isFolderCreationActive &&
@@ -148,6 +152,8 @@ const Folders = ({ match, location }) => {
               pagesData={folderOrder.filter(item => item.type === 'file')}
               siteName={siteName}
               setIsFolderCreationActive={setIsFolderCreationActive}
+              setRedirectToNewPage={setShouldRedirect}
+              setNewPageUrl={setRedirectUrl}
             />
           }
           <Header

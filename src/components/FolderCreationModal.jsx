@@ -26,20 +26,18 @@ const FolderCreationModal = ({
   pagesData,
   siteName,
   setIsFolderCreationActive,
+  setRedirectToNewPage,
+  setNewPageUrl,
 }) => {
   // Errors
   const [errors, setErrors] = useState('')
 
-  const [folderName, setFolderName] = useState('');
   const [title, setTitle] = useState('')
   const [selectedFiles, setSelectedFiles] = useState(new Set())
   //retrieve only when necessary, i.e. after user has chosen to move this page
   // const [sha, setSha] = useState('')
 
   const [isSelectingTitle, setIsSelectingTitle] = useState(true)
-  // Page redirection and modals
-  const [newPageUrl, setNewPageUrl] = useState('')
-  const [redirectToNewPage, setRedirectToNewPage] = useState(false)
   const [sortedPagesData, setSortedPagesData] = useState(pagesData)
 
   const sortOptions = [
@@ -191,16 +189,6 @@ const FolderCreationModal = ({
           </div>
         }
       </div>
-      {
-        redirectToNewPage
-        && (
-          <Redirect
-            to={{
-              pathname: newPageUrl
-            }}
-          />
-        )
-      }
     </>
   );
 }
@@ -213,4 +201,6 @@ FolderCreationModal.propTypes = {
   // pagesData, TODO
   siteName: PropTypes.string.isRequired,
   setIsFolderCreationActive: PropTypes.func.isRequired,
+  setRedirectToNewPage: PropTypes.func.isRequired,
+  setNewPageUrl: PropTypes.func.isRequired,
 };

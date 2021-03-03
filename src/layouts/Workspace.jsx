@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
 
 // Import components
 import Header from '../components/Header';
@@ -32,6 +33,8 @@ const Workspace = ({ match, location }) => {
     const [unlinkedPages, setUnlinkedPages] = useState()
     const [contactUsCard, setContactUsCard] = useState(false)
     const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
+    const [shouldRedirect, setShouldRedirect] = useState(false)
+    const [redirectUrl, setRedirectUrl] = useState('')
 
     useEffect(() => {
       let _isMounted = true
@@ -76,6 +79,10 @@ const Workspace = ({ match, location }) => {
     return (
         <>
           {
+            shouldRedirect &&
+            <Redirect to={{pathname: redirectUrl}} />
+          }
+          {
             isFolderCreationActive &&
             <FolderCreationModal
               existingSubfolders={collections}
@@ -88,6 +95,8 @@ const Workspace = ({ match, location }) => {
               })}
               siteName={siteName}
               setIsFolderCreationActive={setIsFolderCreationActive}
+              setRedirectToNewPage={setShouldRedirect}
+              setNewPageUrl={setRedirectUrl}
             />
           }
           <Header />
