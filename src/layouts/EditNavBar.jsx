@@ -5,17 +5,18 @@ import update from 'immutability-helper';
 import { useQuery, useMutation } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { DragDropContext } from 'react-beautiful-dnd';
-import { toast } from 'react-toastify';
 
-import { DEFAULT_ERROR_TOAST_MSG, deslugifyDirectory, isEmpty } from '../utils';
-import useRedirectHook from '../hooks/useRedirectHook';
+import { DEFAULT_RETRY_MSG, deslugifyDirectory, isEmpty } from '../utils';
 import { validateLink } from '../utils/validators';
+import { errorToast } from '../utils/toasts';
 
-import Toast from '../components/Toast';
+import useRedirectHook from '../hooks/useRedirectHook';
+
 import Header from '../components/Header';
 import LoadingButton from '../components/LoadingButtonReactQuery';
 import DeleteWarningModal from '../components/DeleteWarningModal';
 import NavSection from '../components/navbar/NavSection'
+
 import TemplateNavBar from '../templates/NavBar'
 
 import '../styles/isomer-template.scss';
@@ -106,34 +107,29 @@ const EditNavBar =  ({ match }) => {
   };
 
   // get nav bar data
-  const { data: navigationContents, error: queryError } = useQuery(
+  const { data: navigationContents } = useQuery(
     NAVIGATION_CONTENT_KEY,
     () => getEditNavBarData(siteName),
-    { retry: false },
+    {
+      retry: false,
+      onError: (err) => {
+        if (err.response && err.response.status === 404) {
+          if (!shouldRedirectToNotFound) setShouldRedirectToNotFound(true)
+        } else {
+            errorToast(`There was a problem trying to load your data. ${DEFAULT_RETRY_MSG}`)
+        }
+      }
+    },
   );
 
   // update nav bar data
-  const { mutate: saveNavData, isLoading } = useMutation(() => updateNavBarData(siteName, originalNav, links, sha))
-
-  // handle query error
-  useEffect(() => {
-    let _isMounted = true;
-    if (queryError) {
-      if (queryError.status === 404) {
-        // redirect if one of the nav bar assets cannot be found
-        if (_isMounted) setRedirectToNotFound(siteName)
-      } else {
-        toast(
-          <Toast notificationType='error' text={`There was a problem trying to load your data. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-        );
-      }
-    }
-
-    return () => {
-      _isMounted = false;
-    }
-  }, [queryError])
+  const { mutate: saveNavData, isLoading } = useMutation(
+    () => updateNavBarData(siteName, originalNav, links, sha),
+    {
+      onError: () => errorToast(`There was a problem trying to save your nav bar. ${DEFAULT_RETRY_MSG}`),
+      onSuccess: () => window.location.reload(),
+    },
+  )
 
   // process nav bar data on mount
   useEffect(() => {
