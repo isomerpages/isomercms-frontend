@@ -58,12 +58,12 @@ const getEditNavBarData = async(siteName) => {
             // parse directory files
             foldersContent = foldersResp.data.allFolderContent.reduce((acc, currFolder) => {
                 const folderOrder = parseDirectoryFile(currFolder.content)
-                acc[currFolder.name.slice(1)] = getNavFolderDropdownFromFolderOrder(folderOrder)
+                acc[currFolder.name] = getNavFolderDropdownFromFolderOrder(folderOrder)
                 return acc
             }, {})
 
             collectionContent = {
-                collections: foldersResp.data.allFolderContent.map((folder) => folder.name.slice(1)),
+                collections: foldersResp.data.allFolderContent.map((folder) => folder.name),
             }
         }
 
