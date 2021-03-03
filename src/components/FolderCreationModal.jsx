@@ -146,7 +146,11 @@ const FolderCreationModal = ({
               </div>
               <div className={`d-flex justify-content-between w-100`}>
                 <span>Pages</span>
-                <span className={`w-25`}>{`Sort by`}
+                <span className={`w-25 ${contentStyles.segment}`}>
+                  <span className={elementStyles.sortLabel}>
+                    {`Sort by `}
+                  </span>
+                  
                   <Select
                     onChange={sortOrderChangeHandler}
                     className={'w-100'}
