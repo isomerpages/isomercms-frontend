@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 
 import Toast from './components/Toast';
 
-import { DEFAULT_ERROR_TOAST_MSG } from './utils';
+import { DEFAULT_ERROR_TOAST_MSG, parseDirectoryFile, getNavFolderDropdownFromFolderOrder } from './utils';
 
 import elementStyles from './styles/isomer-cms/Elements.module.scss';
 
@@ -44,16 +44,28 @@ const getFolderContents = async (siteName, folderName, subfolderName) => {
 // EditNavBar
 
 const getEditNavBarData = async(siteName) => {
-    let navContent, collectionContent, resourceContent, navSha
+    let navContent, collectionContent, foldersContent, resourceContent, navSha
       try {
         const resp = await axios.get(`${BACKEND_URL}/sites/${siteName}/navigation`);
         const { content, sha } = resp.data;
         navContent = content
         navSha = sha
-        const collectionResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`)
-        collectionContent = collectionResp.data
         const resourceResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/resources`)
         resourceContent = resourceResp.data
+        const foldersResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/folders/all`)
+        
+        if (foldersResp.data && foldersResp.data.allFolderContent) {
+            // parse directory files
+            foldersContent = foldersResp.data.allFolderContent.reduce((acc, currFolder) => {
+                const folderOrder = parseDirectoryFile(currFolder.content)
+                acc[currFolder.name] = getNavFolderDropdownFromFolderOrder(folderOrder)
+                return acc
+            }, {})
+
+            collectionContent = {
+                collections: foldersResp.data.allFolderContent.map((folder) => folder.name),
+            }
+        }
 
         if (!navContent) return
 
@@ -61,6 +73,7 @@ const getEditNavBarData = async(siteName) => {
             navContent,
             navSha,
             collectionContent,
+            foldersContent,
             resourceContent,
         }
       } catch (err) {
