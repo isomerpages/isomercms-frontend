@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
-import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
+
 import FormField from '../FormField';
 import DeleteWarningModal from '../DeleteWarningModal';
 import SaveDeleteButtons from '../SaveDeleteButtons';
+
 import { validateFileName } from '../../utils/validators';
-import { toast } from 'react-toastify';
-import Toast from '../Toast';
 import {
-  DEFAULT_ERROR_TOAST_MSG,
+  DEFAULT_RETRY_MSG,
 } from '../../utils'
+import { errorToast } from '../../utils/toasts';
+
+import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
+import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 
 export default class MediaSettingsModal extends Component {
   constructor(props) {
@@ -90,21 +92,12 @@ export default class MediaSettingsModal extends Component {
     } catch (err) {
       if (err?.response?.status === 409) {
         // Error due to conflict in name
-        toast(
-          <Toast notificationType='error' text={`Another ${type === 'image' ? 'image' : 'file'} with the same name exists. Please choose a different name.`}/>, 
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-        );
+        errorToast(`Another ${type === 'image' ? 'image' : 'file'} with the same name exists. Please choose a different name.`)
       } else if (err?.response?.status === 413 || err?.response === undefined) {
         // Error due to file size too large - we receive 413 if nginx accepts the payload but it is blocked by our express settings, and undefined if it is blocked by nginx
-        toast(
-          <Toast notificationType='error' text={`Unable to upload as the ${type === 'image' ? 'image' : 'file'} size exceeds 5MB. Please reduce your ${type === 'image' ? 'image' : 'file'} size and try again.`}/>, 
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-        );
+        errorToast(`Unable to upload as the ${type === 'image' ? 'image' : 'file'} size exceeds 5MB. Please reduce your ${type === 'image' ? 'image' : 'file'} size and try again.`)
       } else {
-        toast(
-          <Toast notificationType='error' text={`There was a problem trying to save this ${type === 'image' ? 'image' : 'file'}. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-        );
+        errorToast(`There was a problem trying to save this ${type === 'image' ? 'image' : 'file'}. ${DEFAULT_RETRY_MSG}`)
       }
       console.log(err);
     }
@@ -125,10 +118,7 @@ export default class MediaSettingsModal extends Component {
 
       window.location.reload();
     } catch (err) {
-      toast(
-        <Toast notificationType='error' text={`There was a problem trying to delete this ${type === 'image' ? 'image' : 'file'}. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-      );
+      errorToast(`There was a problem trying to delete this ${type === 'image' ? 'image' : 'file'}. ${DEFAULT_RETRY_MSG}`)
       console.log(err);
     }
   }

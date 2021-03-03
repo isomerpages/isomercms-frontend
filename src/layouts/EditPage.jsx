@@ -5,16 +5,17 @@ import PropTypes from 'prop-types';
 import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
 import { Base64 } from 'js-base64';
+import Policy from 'csp-parse';
+
 import SimplePage from '../templates/SimplePage';
 import LeftNavPage from '../templates/LeftNavPage';
+
 import { checkCSP } from '../utils/cspUtils';
-import Policy from 'csp-parse';
-import { toast } from 'react-toastify';
-import Toast from '../components/Toast';
+import { errorToast } from '../utils/toasts';
 
 // Isomer components
 import {
-  DEFAULT_ERROR_TOAST_MSG,
+  DEFAULT_RETRY_MSG,
   frontMatterParser,
   concatFrontMatterMdBody,
   prependImageSrc,
@@ -149,10 +150,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         if (error?.response?.status === 404) {
           setRedirectToNotFound(siteName)
         } else {
-          toast(
-            <Toast notificationType='error' text={`There was a problem trying to load your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-            {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-          );
+          errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
         }
         console.log(error)
       }
@@ -196,10 +194,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
           setIsLoadingPageContent(false)
         }
       } catch (err) {
-        toast(
-          <Toast notificationType='error' text={`There was a problem trying to load your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-        );
+        errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`);
         console.log(err);
       }
     }
@@ -232,10 +227,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       await axios.post(apiEndpoint, params);
       window.location.reload();
     } catch (err) {
-      toast(
-        <Toast notificationType='error' text={`There was a problem saving your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-      );
+      errorToast(`There was a problem saving your page. ${DEFAULT_RETRY_MSG}`);
       console.log(err);
     }
   }
@@ -248,10 +240,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       });
       history.goBack();
     } catch (err) {
-      toast(
-        <Toast notificationType='error' text={`There was a problem deleting your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-      );
+      errorToast(`There was a problem deleting your page. ${DEFAULT_RETRY_MSG}`);
       console.log(err);
     }
   }
