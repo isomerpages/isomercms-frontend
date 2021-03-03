@@ -146,6 +146,14 @@
     &:hover > div > i{
       color: $isomer-dark;
     }
+
+    &:hover > div > span{
+      color: $isomer-dark;
+    }
+    
+    > div > span{
+      color: $isomer-dark;
+    }
   }
 
   &.folderItem{
