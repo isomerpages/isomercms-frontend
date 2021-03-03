@@ -17,27 +17,12 @@ axios.defaults.withCredentials = true
 // Constants
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
-const getDirectoryFile = async (siteName, folderName, errorCallback) => {
-    try {
-        return await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`);
-    } catch (err) {
-        if (err.response && err.response.status === 404) {
-            errorCallback()
-        } else {
-            errorToast()
-        }
-        throw err
-    }
+const getDirectoryFile = async (siteName, folderName) => {
+    return await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`);
 }
 
 const setDirectoryFile = async (siteName, folderName, payload) => {
-    try {
-        await axios.post(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`, payload);
-        return successToast('Successfully updated page order')
-    } catch (err) {
-        errorToast(`Your file reordering could not be saved. Please try again. ${DEFAULT_RETRY_MSG}`)
-        throw err
-    }
+    await axios.post(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`, payload);
 }
 
 const getFolderContents = async (siteName, folderName, subfolderName) => {

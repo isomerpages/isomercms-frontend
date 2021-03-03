@@ -11,10 +11,12 @@ import Sidebar from '../components/Sidebar';
 import FolderCreationModal from '../components/FolderCreationModal'
 import FolderOptionButton from '../components/folders/FolderOptionButton';
 import FolderContent from '../components/folders/FolderContent';
+import { errorToast, successToast } from '../utils/toasts';
 
 import useRedirectHook from '../hooks/useRedirectHook';
 
 import {
+  DEFAULT_RETRY_MSG,
   parseDirectoryFile,
   updateDirectoryFile,
   convertFolderOrderToArray,
@@ -46,16 +48,27 @@ const Folders = ({ match, location }) => {
 
     const { data: folderContents, error: queryError } = useQuery(
       FOLDER_CONTENTS_KEY,
-      () => getDirectoryFile(siteName, folderName, () => { if (!shouldRedirect) setShouldRedirect(true) }),
+      () => getDirectoryFile(siteName, folderName),
       { 
         retry: false,
         enabled: !isRearrangeActive,
+        onError: (err) => {
+          if (err.response && err.response.status === 404) {
+            if (!shouldRedirect) setShouldRedirect(true)
+          } else {
+              errorToast()
+          }
+        }
       },
     );
 
     const { mutate } = useMutation(
       payload => setDirectoryFile(siteName, folderName, payload),
-      { onSettled: () => setIsRearrangeActive((prevState) => !prevState) }
+      {
+        onError: () => errorToast(`Your file reordering could not be saved. Please try again. ${DEFAULT_RETRY_MSG}`),
+        onSuccess: () => successToast('Successfully updated page order'),
+        onSettled: () => setIsRearrangeActive((prevState) => !prevState),
+      }
     )
 
     useEffect(() => {
