@@ -15,6 +15,7 @@ import adminStyles from '../styles/isomer-cms/pages/Admin.module.scss';
 import { validateCategoryName } from '../utils/validators';
 import { toast } from 'react-toastify';
 import Toast from './Toast';
+import FolderNamingModal from './FolderNamingModal';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -102,39 +103,13 @@ const FolderCreationModal = ({
     <>
       <div className={elementStyles.overlay}>
         { isSelectingTitle &&
-          <div className={elementStyles['modal-newfolder']}>
-            <div className={elementStyles.modalHeader}>
-              <h1>{`Create new sub folder`}</h1>
-              <button id="settings-CLOSE" type="button" onClick={() => setIsFolderCreationActive(false)}>
-                <i id="settingsIcon-CLOSE" className="bx bx-x" />
-              </button>
-            </div>
-            <div className={elementStyles.modalContent}>
-              <div>
-                
-              You may edit folder name anytime. <br/>Choose the pages you would like to group.</div>
-              <div className={elementStyles.modalFormFields}>
-                {/* Title */}
-                <FormField
-                  title="Sub folder name"
-                  id="subfolder"
-                  value={title}
-                  errorMessage={errors}
-                  isRequired={true}
-                  onFieldChange={folderNameChangeHandler}
-                />
-              </div>
-              <div className={elementStyles.modalButtons}>
-                <LoadingButton
-                  label="Select Pages"
-                  disabled={(errors || !title) ? true : false}
-                  disabledStyle={elementStyles.disabled}
-                  className={(errors || !title) ? elementStyles.disabled : elementStyles.blue}
-                  callback={() => setIsSelectingTitle(false)}
-                />
-              </div>
-            </div>
-          </div>
+          <FolderNamingModal 
+            onClose={() => setIsFolderCreationActive(false)}
+            onProceed={() => setIsSelectingTitle(false)}
+            folderNameChangeHandler={folderNameChangeHandler}
+            title={title}
+            errors={errors}
+          />
         }
         { !isSelectingTitle &&
           <div className={`${elementStyles.fullscreenWrapper}`}>
