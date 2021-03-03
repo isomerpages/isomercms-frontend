@@ -1,12 +1,15 @@
-import React from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 
+<<<<<<< HEAD
 import Toast from './components/Toast';
 
 import { DEFAULT_ERROR_TOAST_MSG, parseDirectoryFile, getNavFolderDropdownFromFolderOrder } from './utils';
 
 import elementStyles from './styles/isomer-cms/Elements.module.scss';
+=======
+import { errorToast, successToast } from './utils/toasts';
+import { DEFAULT_RETRY_MSG } from './utils'
+>>>>>>> fix: update api file to use successToast and errorToast functions
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -21,10 +24,7 @@ const getDirectoryFile = async (siteName, folderName, errorCallback) => {
         if (err.response && err.response.status === 404) {
             errorCallback()
         } else {
-            toast(
-                <Toast notificationType='error' text={`There was a problem retrieving data from your repo. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
-                {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
-            );
+            errorToast()
         }
         throw err
     }
@@ -33,15 +33,9 @@ const getDirectoryFile = async (siteName, folderName, errorCallback) => {
 const setDirectoryFile = async (siteName, folderName, payload) => {
     try {
         await axios.post(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`, payload);
-        return toast(
-            <Toast notificationType='success' text={`Successfully updated page order!`}/>,
-            {className: `${elementStyles.toastSuccess}`},
-        );
+        return successToast('Successfully updated page order')
     } catch (err) {
-        toast(
-            <Toast notificationType='error' text={`Your file reordering could not be saved. Please try again. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
-            {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
-        );
+        errorToast(`Your file reordering could not be saved. Please try again. ${DEFAULT_RETRY_MSG}`)
         throw err
     }
 }
@@ -108,11 +102,9 @@ const updateNavBarData = async (siteName, originalNav, links, sha) => {
         };
         await axios.post(`${BACKEND_URL}/sites/${siteName}/navigation`, params);
         window.location.reload();
+        successToast('Successfully updated nav bar!')
     } catch (err) {
-        toast(
-          <Toast notificationType='error' text={`There was a problem trying to save your nav bar. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-        );
+        errorToast(`There was a problem trying to save your nav bar. ${DEFAULT_RETRY_MSG}`)
         throw err
     }
 }

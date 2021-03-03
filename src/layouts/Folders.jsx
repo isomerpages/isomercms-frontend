@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { useQuery, useMutation } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import _ from 'lodash';
 
 // Import components
@@ -12,12 +11,10 @@ import Sidebar from '../components/Sidebar';
 import FolderCreationModal from '../components/FolderCreationModal'
 import FolderOptionButton from '../components/folders/FolderOptionButton';
 import FolderContent from '../components/folders/FolderContent';
-import Toast from '../components/Toast';
 
 import useRedirectHook from '../hooks/useRedirectHook';
 
 import {
-  DEFAULT_ERROR_TOAST_MSG,
   parseDirectoryFile,
   updateDirectoryFile,
   convertFolderOrderToArray,
