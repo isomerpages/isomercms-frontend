@@ -138,8 +138,8 @@ const FolderCreationModal = ({
         }
         { !isSelectingTitle &&
           <div className={`${elementStyles.fullscreenWrapper}`}>
-            <div className={`${adminStyles.adminSidebar} bg-transparent`} />
-            <div className={`${contentStyles.mainSection} bg-light`}>
+            <div className={`${adminStyles.adminSidebar} ${elementStyles.wrappedContent} bg-transparent`} />
+            <div className={`${contentStyles.mainSection} ${elementStyles.wrappedContent} bg-light`}>
               {/* Page title */}
               <div className={contentStyles.sectionHeader}>
                 <h1 className={contentStyles.sectionTitle}>{`Select pages to add into '${title}'`}</h1>
