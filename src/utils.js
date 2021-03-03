@@ -13,8 +13,8 @@ axios.defaults.withCredentials = true
 const ALPHANUM_REGEX = /^[0-9]+[a-z]*$/ // at least one number, followed by 0 or more lower-cased alphabets
 const NUM_REGEX = /^[0-9]+$/
 const NUM_IDENTIFIER_REGEX = /^[0-9]+/
-export const RETRY_MSG = 'Please try again or check your internet connection'
-export const DEFAULT_ERROR_TOAST_MSG = `Something went wrong. ${RETRY_MSG}`
+export const DEFAULT_RETRY_MSG = 'Please try again or check your internet connection'
+export const DEFAULT_ERROR_TOAST_MSG = `Something went wrong. ${DEFAULT_RETRY_MSG}`
 
 // extracts yaml front matter from a markdown file path
 export function frontMatterParser(content) {
