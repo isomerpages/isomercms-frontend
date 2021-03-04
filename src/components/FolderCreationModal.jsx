@@ -1,21 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
-import { Redirect } from 'react-router-dom';
 import update from 'immutability-helper';
 import Select from 'react-select';
-import FormField from './FormField';
+import { toast } from 'react-toastify';
+
 import FolderCard from './FolderCard';
 import LoadingButton from './LoadingButton';
+import Toast from './Toast';
+import FolderNamingModal from './FolderNamingModal';
+import useRedirectHook from '../hooks/useRedirectHook';
+
+import { validateCategoryName } from '../utils/validators';
+
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import adminStyles from '../styles/isomer-cms/pages/Admin.module.scss';
-import { validateCategoryName } from '../utils/validators';
-import { toast } from 'react-toastify';
-import Toast from './Toast';
-import FolderNamingModal from './FolderNamingModal';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -26,11 +27,10 @@ const FolderCreationModal = ({
   pagesData,
   siteName,
   setIsFolderCreationActive,
-  setRedirectToNewPage,
-  setNewPageUrl,
 }) => {
   // Errors
   const [errors, setErrors] = useState('')
+  const { setShouldRedirect, setRedirectUrl } = useRedirectHook()
 
   const [title, setTitle] = useState('')
   const [selectedFiles, setSelectedFiles] = useState(new Set())

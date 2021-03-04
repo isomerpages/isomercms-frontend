@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import GenericWarningModal from './GenericWarningModal'
+import useRedirectHook from '../hooks/useRedirectHook';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
 // Import context
@@ -19,25 +19,27 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 const Header = ({
   showButton, title, isEditPage, shouldAllowEditPageBackNav, backButtonText, backButtonUrl,
 }) => {
+  const { shouldRedirect, setShouldRedirect, setRedirectUrl, setRedirectComponentState } = useRedirectHook()
   const setLogoutState = useContext(LoginContext)
 
-  const [shouldRedirect, setShouldRedirect] = useState(false)
-  const [shouldPerformBackNav, setShouldPerformBackNav] = useState(false)
   const [showBackNavWarningModal, setShowBackNavWarningModal] = useState(false)
 
   useEffect(() => {
     let _isMounted = true
-    if (shouldPerformBackNav && _isMounted) setShouldPerformBackNav(false)
-    if (shouldRedirect && _isMounted) setShouldRedirect(false)
+    if (_isMounted) {
+      setShouldRedirect(false)
+    }
 
     return () => { _isMounted = false }
-  }, [shouldPerformBackNav, shouldRedirect])
+  }, [shouldRedirect])
 
   const clearCookie = async () => {
     try {
       // Call the logout endpoint in the API server to clear the browser cookie
       localStorage.removeItem(userIdKey)
       await axios.get(`${BACKEND_URL}/auth/logout`)
+      setRedirectUrl('/')
+      setRedirectComponentState({ isFromSignOutButton: true })
       setShouldRedirect(true)
       setLogoutState()
     } catch (err) {
@@ -47,7 +49,8 @@ const Header = ({
   }
 
   const toggleBackNav = () => {
-    setShouldPerformBackNav(!shouldPerformBackNav)
+    setRedirectUrl(backButtonUrl)
+    setShouldRedirect(true)
   }
 
   const handleBackNav = () => {
@@ -87,21 +90,6 @@ const Header = ({
           Log Out
         </button>
       </div>
-      { shouldPerformBackNav && 
-        <Redirect
-          to={{
-            pathname: backButtonUrl
-          }}
-        />
-      }
-      { shouldRedirect && 
-        <Redirect
-          to={{
-            pathname: '/',
-            state: { isFromSignOutButton: true },
-          }}
-        />
-      }
       {
         showBackNavWarningModal &&
         <GenericWarningModal

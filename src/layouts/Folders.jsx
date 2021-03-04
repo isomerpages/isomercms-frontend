@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 
@@ -14,6 +14,7 @@ import FolderOptionButton from '../components/folders/FolderOptionButton';
 import FolderContent from '../components/folders/FolderContent';
 import Toast from '../components/Toast';
 
+import useRedirectHook from '../hooks/useRedirectHook';
 
 import {
   DEFAULT_ERROR_TOAST_MSG,
@@ -38,13 +39,13 @@ const FOLDER_CONTENTS_KEY = 'folder-contents'
 const Folders = ({ match, location }) => {
     const { siteName, folderName, subfolderName } = match.params;
 
+    const { shouldRedirect, setShouldRedirect, setRedirectUrl, setRedirectComponentState } = useRedirectHook()
+
     const [isRearrangeActive, setIsRearrangeActive] = useState(false)
     const [directoryFileSha, setDirectoryFileSha] = useState('')
     const [folderOrderArray, setFolderOrderArray] = useState([])
     const [parsedFolderContents, setParsedFolderContents] = useState([])
     const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
-    const [shouldRedirect, setShouldRedirect] = useState(false)
-    const [redirectUrl, setRedirectUrl] = useState('')
 
     const { data: folderContents, error: queryError } = useQuery(
       FOLDER_CONTENTS_KEY,
@@ -66,6 +67,7 @@ const Folders = ({ match, location }) => {
         if (queryError.status === 404) {
           // redirect if collection/folder cannot be found
           if (!shouldRedirect && _isMounted) {
+            setRedirectComponentState({siteName: siteName})
             setRedirectUrl(`/sites/${siteName}/workspace`)
             setShouldRedirect(true)
           }
@@ -103,7 +105,11 @@ const Folders = ({ match, location }) => {
               setFolderOrderArray(subfolderFiles)
             } else {
               // if subfolderName prop does not match directory file, it's not a valid subfolder
-              if (!shouldRedirect) setShouldRedirect(true)
+              if (!shouldRedirect) {
+                setRedirectComponentState({siteName: siteName})
+                setRedirectUrl(`/sites/${siteName}/workspace`)
+                setShouldRedirect(true)
+              }
             }
           } else {
             setFolderOrderArray(convertFolderOrderToArray(parsedFolderContents))
@@ -140,10 +146,6 @@ const Folders = ({ match, location }) => {
     return (
         <>
           {
-            shouldRedirect &&
-            <Redirect to={{pathname: redirectUrl}} />
-          }
-          {
             isFolderCreationActive &&
             <FolderCreationModal
               parentFolder={folderName}
@@ -151,8 +153,6 @@ const Folders = ({ match, location }) => {
               pagesData={folderOrderArray.filter(item => item.type === 'file')}
               siteName={siteName}
               setIsFolderCreationActive={setIsFolderCreationActive}
-              setRedirectToNewPage={setShouldRedirect}
-              setNewPageUrl={setRedirectUrl}
             />
           }
           <Header

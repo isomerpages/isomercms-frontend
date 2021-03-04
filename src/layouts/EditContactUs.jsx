@@ -6,7 +6,6 @@ import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { DragDropContext } from 'react-beautiful-dnd';
-import { Redirect } from 'react-router-dom'
 import { toast } from 'react-toastify';
 
 import { DEFAULT_ERROR_TOAST_MSG, frontMatterParser, concatFrontMatterMdBody, isEmpty } from '../utils';
@@ -35,6 +34,7 @@ import GenericWarningModal from '../components/GenericWarningModal';
 
 // Import hooks
 import useSiteColorsHook from '../hooks/useSiteColorsHook';
+import useRedirectHook from '../hooks/useRedirectHook';
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -111,6 +111,7 @@ const displayDeletedFrontMatter = (deletedFrontMatter) => {
 
 const EditContactUs =  ({ match }) => {
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
+  const { setShouldRedirect, setRedirectUrl, setRedirectComponentState } = useRedirectHook()
 
   const { siteName } = match.params;
   const [hasLoaded, setHasLoaded] = useState(false)
@@ -149,7 +150,6 @@ const EditContactUs =  ({ match }) => {
     type: '',
   })
   const [showDeletedText, setShowDeletedText] = useState(false)
-  const [shouldRedirectToNotFound, setShouldRedirectToNotFound] = useState(false)
 
   useEffect(() => {
     let _isMounted = true
@@ -172,7 +172,9 @@ const EditContactUs =  ({ match }) => {
         sha = pageSha
       } catch (error) {
         if (error?.response?.status === 404) {
-          setShouldRedirectToNotFound(true)
+          setRedirectComponentState({siteName: siteName})
+          setRedirectUrl('/not-found')
+          setShouldRedirect(true)
         } else {
           toast(
             <Toast notificationType='error' text={`There was a problem trying to load your contact us page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
@@ -762,15 +764,6 @@ const EditContactUs =  ({ match }) => {
             />
           </div>
         </div>
-      }
-      {
-        shouldRedirectToNotFound &&
-        <Redirect
-          to={{
-              pathname: '/not-found',
-              state: {siteName: siteName}
-          }}
-        />
       }
     </>
   )

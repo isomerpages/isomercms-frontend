@@ -6,7 +6,6 @@ import { createFilter } from 'react-select';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
-import { Redirect } from 'react-router-dom';
 import FormField from './FormField';
 import {
   DEFAULT_ERROR_TOAST_MSG,
@@ -18,6 +17,9 @@ import {
   saveFileAndRetrieveUrl,
   retrieveResourceFileMetadata,
 } from '../utils';
+
+import useRedirectHook from '../hooks/useRedirectHook';
+
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import { validatePageSettings, validateResourceSettings } from '../utils/validators';
 import DeleteWarningModal from './DeleteWarningModal';
@@ -70,6 +72,7 @@ const ComponentSettingsModal = ({
     loadThirdNavOptions,
     setIsComponentSettingsActive,
 }) => {
+    const { setShouldRedirect, setRedirectUrl } = useRedirectHook()
     // Errors
     const [errors, setErrors] = useState({
         title: '',
@@ -103,9 +106,7 @@ const ComponentSettingsModal = ({
     const [resourceDate, setResourceDate] = useState('')
     const [fileUrl, setFileUrl] = useState('')
 
-    // Page redirection and modals
-    const [newPageUrl, setNewPageUrl] = useState('')
-    const [redirectToNewPage, setRedirectToNewPage] = useState(false)
+    // Page redirection modals
     const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
 
     // Backup third nav option loader
@@ -260,15 +261,17 @@ const ComponentSettingsModal = ({
             const redirectUrl = await saveFileAndRetrieveUrl(fileInfo)
 
             // If editing details of existing file, refresh page
-            !isNewFile && window.location.reload();
-            
-            // We refresh page if resource is being created from category folder
-            if (type === 'resource' && !isPost && originalCategory) {
-              window.location.reload();
-            } else {
-              setNewPageUrl(redirectUrl)
-              setRedirectToNewPage(true)
-            }            
+            if (!isNewFile) window.location.reload();
+            else {
+              // We refresh page if resource is being created from category folder
+              if (type === 'resource' && !isPost && originalCategory) {
+                window.location.reload();
+              } else {
+                setRedirectUrl(redirectUrl)
+                setShouldRedirect(true)
+              }  
+            }
+                      
         } catch (err) {
             if (err?.response?.status === 409) {
                 // Error due to conflict in name
@@ -523,17 +526,6 @@ const ComponentSettingsModal = ({
                 onCancel={() => setCanShowDeleteWarningModal(false)}
                 onDelete={deleteHandler}
                 type="resource"
-              />
-            )
-          }
-          {
-            isNewFile
-            && redirectToNewPage
-            && (
-              <Redirect
-                to={{
-                  pathname: newPageUrl
-                }}
               />
             )
           }
