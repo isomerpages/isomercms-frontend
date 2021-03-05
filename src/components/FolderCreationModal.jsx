@@ -13,6 +13,7 @@ import FolderNamingModal from './FolderNamingModal';
 import useRedirectHook from '../hooks/useRedirectHook';
 
 import { validateCategoryName } from '../utils/validators';
+import { deslugifyPage } from '../utils'
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
@@ -150,7 +151,7 @@ const FolderCreationModal = ({
                     sortedPagesData && sortedPagesData.length > 0
                     ? sortedPagesData.map((pageData, pageIdx) => (
                           <FolderCard
-                              displayText={pageData.title}
+                              displayText={deslugifyPage(pageData.title)}
                               settingsToggle={() => {}}
                               key={pageData.title}
                               pageType={"file"}
