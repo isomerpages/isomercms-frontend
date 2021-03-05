@@ -162,7 +162,7 @@ const Workspace = ({ match, location }) => {
               <div className={contentStyles.folderContainerBoxes}>
                 <div className={contentStyles.boxesContainer}>
                   { unlinkedPages &&
-                    <FolderOptionButton title="Create new sub-folder" option="create-sub" isSubfolder={false} onClick={() => setIsFolderCreationActive(true)}/>
+                    <FolderOptionButton title="Create new folder" option="create-sub" isSubfolder={false} onClick={() => setIsFolderCreationActive(true)}/>
                   }
                   {
                     collections && collections.length > 0
