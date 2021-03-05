@@ -8,13 +8,33 @@ const useRedirectHook = () => {
   const history = useHistory()
 
   useEffect(() => {
-    if (shouldRedirect) history.push({
-      pathname: redirectUrl,
-      state: redirectComponentState
-    })
+    if (shouldRedirect) {
+      setShouldRedirect(false)
+      history.push({
+        pathname: redirectUrl,
+        state: redirectComponentState
+      })
+    }
   }, [shouldRedirect])
 
-  return { shouldRedirect, setShouldRedirect, setRedirectUrl, setRedirectComponentState }
+  const setRedirectToNotFound = (siteName) => {
+    setRedirectUrl("/not-found")
+    setRedirectComponentState({ siteName })
+    setShouldRedirect(true)
+  }
+
+  const setRedirectToPage = (url) => {
+    setRedirectUrl(url)
+    setShouldRedirect(true)
+  }
+
+  const setRedirectToLogout = () => {
+    setRedirectUrl("/")
+    setRedirectComponentState({ isFromSignOutButton: true })
+    setShouldRedirect(true)
+  }
+
+  return { setRedirectToNotFound, setRedirectToPage, setRedirectToLogout }
 }
 
 export default useRedirectHook;

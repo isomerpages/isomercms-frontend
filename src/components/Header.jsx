@@ -19,38 +19,25 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 const Header = ({
   showButton, title, isEditPage, shouldAllowEditPageBackNav, backButtonText, backButtonUrl,
 }) => {
-  const { shouldRedirect, setShouldRedirect, setRedirectUrl, setRedirectComponentState } = useRedirectHook()
+  const { setRedirectToPage, setRedirectToLogout } = useRedirectHook()
   const setLogoutState = useContext(LoginContext)
 
   const [showBackNavWarningModal, setShowBackNavWarningModal] = useState(false)
-
-  useEffect(() => {
-    let _isMounted = true
-    if (_isMounted) {
-      setShouldRedirect(false)
-    }
-
-    return () => { _isMounted = false }
-  }, [shouldRedirect])
 
   const clearCookie = async () => {
     try {
       // Call the logout endpoint in the API server to clear the browser cookie
       localStorage.removeItem(userIdKey)
       await axios.get(`${BACKEND_URL}/auth/logout`)
-      setRedirectUrl('/')
-      setRedirectComponentState({ isFromSignOutButton: true })
-      setShouldRedirect(true)
+      setRedirectToLogout()
       setLogoutState()
     } catch (err) {
       console.error(err)
-      setShouldRedirect(false)
     }
   }
 
   const toggleBackNav = () => {
-    setRedirectUrl(backButtonUrl)
-    setShouldRedirect(true)
+    setRedirectToPage(backButtonUrl)
   }
 
   const handleBackNav = () => {

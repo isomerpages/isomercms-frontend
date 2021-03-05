@@ -72,7 +72,7 @@ const ComponentSettingsModal = ({
     loadThirdNavOptions,
     setIsComponentSettingsActive,
 }) => {
-    const { setShouldRedirect, setRedirectUrl } = useRedirectHook()
+    const { setRedirectToPage } = useRedirectHook()
     // Errors
     const [errors, setErrors] = useState({
         title: '',
@@ -267,8 +267,7 @@ const ComponentSettingsModal = ({
               if (type === 'resource' && !isPost && originalCategory) {
                 window.location.reload();
               } else {
-                setRedirectUrl(redirectUrl)
-                setShouldRedirect(true)
+                setRedirectToPage(redirectUrl)
               }  
             }
                       

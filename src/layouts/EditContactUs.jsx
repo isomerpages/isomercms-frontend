@@ -111,7 +111,7 @@ const displayDeletedFrontMatter = (deletedFrontMatter) => {
 
 const EditContactUs =  ({ match }) => {
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
-  const { setShouldRedirect, setRedirectUrl, setRedirectComponentState } = useRedirectHook()
+  const { setRedirectToNotFound } = useRedirectHook()
 
   const { siteName } = match.params;
   const [hasLoaded, setHasLoaded] = useState(false)
@@ -172,9 +172,7 @@ const EditContactUs =  ({ match }) => {
         sha = pageSha
       } catch (error) {
         if (error?.response?.status === 404) {
-          setRedirectComponentState({siteName: siteName})
-          setRedirectUrl('/not-found')
-          setShouldRedirect(true)
+          setRedirectToNotFound(siteName)
         } else {
           toast(
             <Toast notificationType='error' text={`There was a problem trying to load your contact us page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 

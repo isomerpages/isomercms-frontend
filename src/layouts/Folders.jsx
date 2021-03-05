@@ -39,7 +39,7 @@ const FOLDER_CONTENTS_KEY = 'folder-contents'
 const Folders = ({ match, location }) => {
     const { siteName, folderName, subfolderName } = match.params;
 
-    const { shouldRedirect, setShouldRedirect, setRedirectUrl, setRedirectComponentState } = useRedirectHook()
+    const { setRedirectToPage } = useRedirectHook()
 
     const [isRearrangeActive, setIsRearrangeActive] = useState(false)
     const [directoryFileSha, setDirectoryFileSha] = useState('')
@@ -66,10 +66,8 @@ const Folders = ({ match, location }) => {
       if (queryError) {
         if (queryError.status === 404) {
           // redirect if collection/folder cannot be found
-          if (!shouldRedirect && _isMounted) {
-            setRedirectComponentState({siteName: siteName})
-            setRedirectUrl(`/sites/${siteName}/workspace`)
-            setShouldRedirect(true)
+          if (_isMounted) {
+            setRedirectToPage(`/sites/${siteName}/workspace`)
           }
         } else {
           toast(
@@ -105,11 +103,7 @@ const Folders = ({ match, location }) => {
               setFolderOrderArray(subfolderFiles)
             } else {
               // if subfolderName prop does not match directory file, it's not a valid subfolder
-              if (!shouldRedirect) {
-                setRedirectComponentState({siteName: siteName})
-                setRedirectUrl(`/sites/${siteName}/workspace`)
-                setShouldRedirect(true)
-              }
+              setRedirectToPage(`/sites/${siteName}/workspace`)
             }
           } else {
             setFolderOrderArray(convertFolderOrderToArray(parsedFolderContents))

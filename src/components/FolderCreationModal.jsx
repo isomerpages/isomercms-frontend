@@ -30,7 +30,7 @@ const FolderCreationModal = ({
 }) => {
   // Errors
   const [errors, setErrors] = useState('')
-  const { setShouldRedirect, setRedirectUrl } = useRedirectHook()
+  const { setRedirectToPage } = useRedirectHook()
 
   const [title, setTitle] = useState('')
   const [selectedFiles, setSelectedFiles] = useState(new Set())

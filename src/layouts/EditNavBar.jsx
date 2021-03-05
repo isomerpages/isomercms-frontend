@@ -31,7 +31,7 @@ const NAVIGATION_CONTENT_KEY = 'navigation-contents';
 const EditNavBar =  ({ match }) => {
   const { siteName } = match.params
 
-  const { shouldRedirect, setShouldRedirect, setRedirectUrl, setRedirectComponentState } = useRedirectHook()
+  const { setRedirectToNotFound } = useRedirectHook()
 
   const [sha, setSha] = useState()
   const [links, setLinks] = useState([])
@@ -120,11 +120,7 @@ const EditNavBar =  ({ match }) => {
     if (queryError) {
       if (queryError.status === 404) {
         // redirect if one of the nav bar assets cannot be found
-        if (!shouldRedirect && _isMounted) {
-          setRedirectComponentState({siteName: siteName})
-          setRedirectUrl('/not-found')
-          setShouldRedirect(true)
-        }
+        if (_isMounted) setRedirectToNotFound(siteName)
       } else {
         toast(
           <Toast notificationType='error' text={`There was a problem trying to load your data. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 

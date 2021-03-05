@@ -100,7 +100,7 @@ const getBackButtonInfo = (resourceCategory, collectionName, siteName) => {
 
 const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) => {
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
-  const { setShouldRedirect, setRedirectUrl, setRedirectComponentState } = useRedirectHook()
+  const { setRedirectToNotFound } = useRedirectHook()
 
   const { collectionName, fileName, siteName, resourceName } = match.params;
   const apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName })
@@ -147,9 +147,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         sha = pageSha
       } catch (error) {
         if (error?.response?.status === 404) {
-          setRedirectComponentState({siteName: siteName})
-          setRedirectUrl('/not-found')
-          setShouldRedirect(true)
+          setRedirectToNotFound(siteName)
         } else {
           toast(
             <Toast notificationType='error' text={`There was a problem trying to load your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
