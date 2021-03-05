@@ -161,6 +161,7 @@ function App() {
                     <ProtectedRouteWithProps path="/sites/:siteName/resources/:resourceName/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={true} />
                     <ProtectedRouteWithProps path="/sites/:siteName/resources/:collectionName" component={CategoryPages} isResource={true}/>
                     <ProtectedRouteWithProps path="/sites/:siteName/resources" component={Resources} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/navbar" component={EditNavBar} />
                     <ProtectedRouteWithProps path="/sites/:siteName/menus/main-menu" component={EditNav} />
                     <ProtectedRouteWithProps path="/sites/:siteName/menus" component={Menus} />
                     <ProtectedRouteWithProps path="/sites/:siteName/settings" component={Settings} />

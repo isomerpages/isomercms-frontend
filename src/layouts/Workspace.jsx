@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
@@ -7,6 +7,8 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import CollectionPagesSection from '../components/CollectionPagesSection'
 import FolderCard from '../components/FolderCard'
+import FolderCreationModal from '../components/FolderCreationModal'
+import FolderOptionButton from '../components/folders/FolderOptionButton'
 
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -29,6 +31,7 @@ const Workspace = ({ match, location }) => {
     const [collections, setCollections] = useState()
     const [unlinkedPages, setUnlinkedPages] = useState()
     const [contactUsCard, setContactUsCard] = useState(false)
+    const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
 
     useEffect(() => {
       let _isMounted = true
@@ -58,6 +61,7 @@ const Workspace = ({ match, location }) => {
         
         try { 
           const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`);
+          console.log(unlinkedPagesResp.data)
           if (_isMounted) {
             setUnlinkedPages(unlinkedPagesResp.data?.pages.filter(page => page.fileName !== 'contact-us.md'))
           }
@@ -71,6 +75,21 @@ const Workspace = ({ match, location }) => {
 
     return (
         <>
+          {
+            isFolderCreationActive &&
+            <FolderCreationModal
+              existingSubfolders={collections}
+              pagesData={unlinkedPages.map(page => {
+                const newPage = { 
+                  ...page,
+                  title: page.fileName,
+                }
+                return newPage
+              })}
+              siteName={siteName}
+              setIsFolderCreationActive={setIsFolderCreationActive}
+            />
+          }
           <Header />
           {/* main bottom section */}
           <div className={elementStyles.wrapper}>
@@ -127,9 +146,24 @@ const Workspace = ({ match, location }) => {
                 <i className="bx bx-sm bx-info-circle text-dark" />
                 <span><strong className="ml-1">Note:</strong> Collections cannot be empty, create a page first to create a collection.</span>
               </div>
+              {
+                !collections &&
+                <div className={contentStyles.segment}>
+                  Loading Collections...
+                </div>
+              }
+              {
+                collections && collections.length === 0 &&
+                <div className={contentStyles.segment}>
+                  There are no collections in this repository.
+                </div>
+              }
               {/* Collections */}
               <div className={contentStyles.folderContainerBoxes}>
                 <div className={contentStyles.boxesContainer}>
+                  { unlinkedPages &&
+                    <FolderOptionButton title="Create new folder" option="create-sub" isSubfolder={false} onClick={() => setIsFolderCreationActive(true)}/>
+                  }
                   {
                     collections && collections.length > 0
                     ? collections.map((collection, collectionIdx) => (
@@ -143,11 +177,7 @@ const Workspace = ({ match, location }) => {
                             itemIndex={collectionIdx}
                         />
                     ))
-                    : (
-                        !collections
-                            ? 'Loading Collections...'
-                            : 'There are no collections in this repository'
-                    )
+                    : null
                   }
                 </div>
               </div>

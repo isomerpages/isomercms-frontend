@@ -26,6 +26,8 @@ const FolderCard = ({
   pageType,
   siteName,
   category,
+  folderStyle,
+  onClick,
 }) => {
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
   const [canShowDropdown, setCanShowDropdown] = useState(false)
@@ -69,6 +71,8 @@ const FolderCard = ({
         return 'bxs-phone'
       case 'nav':
         return 'bxs-compass'
+      case 'file':
+        return 'bxs-file-blank'
       default: 
         return 'bxs-folder'
     }
@@ -106,6 +110,48 @@ const FolderCard = ({
     }
   }
 
+  const FolderCardContent = () =>
+    <div id={itemIndex} className={`${contentStyles.folderInfo}`}>
+      <i className={`bx bx-md text-dark ${generateImage(pageType)} ${contentStyles.componentIcon}`} />
+      <span className={`${contentStyles.componentFolderName} align-self-center ml-4 mr-auto`}>{displayText}</span>
+      {
+        pageType === 'homepage' || pageType === 'contact-us' || pageType === 'nav' || pageType === 'file'
+        ? ''
+        : (
+          <div className={`position-relative`}>
+            <button
+              className={contentStyles.componentIcon}
+              type="button"
+              id={`settings-folder-${itemIndex}`}
+              onClick={(e) => {
+                e.preventDefault();
+                settingsToggle(e);
+                setCanShowDropdown(true)
+              }}
+            >
+              <i id={`settingsIcon-${itemIndex}`} className="bx bx-dots-vertical-rounded" />
+            </button>
+          { canShowDropdown &&
+            <div className={`${elementStyles.dropdown} ${isOutOfViewport && elementStyles.right}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
+              { isOutOfViewport !== undefined && 
+                <>
+                  <MenuItem handler={(e) => {dropdownRef.current.blur(); setIsFolderModalOpen(true)}} id={`folderSettings-${itemIndex}`}>
+                    <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
+                    <div className={elementStyles.dropdownText}>Rename</div>
+                  </MenuItem>
+                  <MenuItem handler={() => {dropdownRef.current.blur(); setCanShowDeleteWarningModal(true)}} id={`folderDelete-${itemIndex}`}>
+                    <i className="bx bx-sm bx-trash text-danger"/>
+                    <div className={elementStyles.dropdownText}>Delete folder</div>
+                  </MenuItem>
+                </>
+              }
+            </div>
+          }
+          </div>
+        )
+      }
+    </div>
+
   return (
     <>
       { isFolderModalOpen &&
@@ -125,48 +171,16 @@ const FolderCard = ({
           type="folder"
         />
       }
-      <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard}`} to={generateLink()}>
-        <div id={itemIndex} className={`${contentStyles.folderInfo}`}>
-          <i className={`bx bx-md text-dark ${generateImage(pageType)} ${contentStyles.componentIcon}`} />
-          <span className={`${contentStyles.componentFolderName} align-self-center ml-4 mr-auto`}>{displayText}</span>
-          {
-            pageType === 'homepage' || pageType === 'contact-us' || pageType === 'nav'
-            ? ''
-            : (
-              <div className={`position-relative`}>
-                <button
-                  className={contentStyles.componentIcon}
-                  type="button"
-                  id={`settings-folder-${itemIndex}`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    settingsToggle(e);
-                    setCanShowDropdown(true)
-                  }}
-                >
-                  <i id={`settingsIcon-${itemIndex}`} className="bx bx-dots-vertical-rounded" />
-                </button>
-              { canShowDropdown &&
-                <div className={`${elementStyles.dropdown} ${isOutOfViewport && elementStyles.right}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
-                  { isOutOfViewport !== undefined && 
-                    <>
-                      <MenuItem handler={(e) => {dropdownRef.current.blur(); setIsFolderModalOpen(true)}} id={`folderSettings-${itemIndex}`}>
-                        <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
-                        <div className={elementStyles.dropdownText}>Rename</div>
-                      </MenuItem>
-                      <MenuItem handler={() => {dropdownRef.current.blur(); setCanShowDeleteWarningModal(true)}} id={`folderDelete-${itemIndex}`}>
-                        <i className="bx bx-sm bx-trash text-danger"/>
-                        <div className={elementStyles.dropdownText}>Delete folder</div>
-                      </MenuItem>
-                    </>
-                  }
-                </div>
-              }
-              </div>
-            )
-          }
+      {generateLink() 
+        ? 
+          <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard} ${folderStyle}`} to={generateLink()}>
+            {FolderCardContent()}
+          </Link>
+        :
+        <div className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard} ${folderStyle}`} onClick={onClick}>
+          {FolderCardContent()}
         </div>
-      </Link>
+      }
     </>
   )
 }

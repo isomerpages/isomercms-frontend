@@ -36,6 +36,15 @@ a{
 
 }
 
+.fullscreenWrapper {
+  @extend .wrapper;
+  top: $header-height/2;
+
+  > .wrappedContent {
+    height: calc(100vh - #{$header-height} - #{$footer-height});
+  }
+}
+
 h1,h2,h3,h4,h5,h6{
   font-family: 'Lato', sans-serif;
   font-weight: 700 !important;

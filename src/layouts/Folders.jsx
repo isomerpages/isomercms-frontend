@@ -2,17 +2,19 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 
 // Import components
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
+import FolderCreationModal from '../components/FolderCreationModal'
 import FolderOptionButton from '../components/folders/FolderOptionButton';
 import FolderContent from '../components/folders/FolderContent';
 import Toast from '../components/Toast';
 
+import useRedirectHook from '../hooks/useRedirectHook';
 
 import {
   DEFAULT_ERROR_TOAST_MSG,
@@ -37,11 +39,13 @@ const FOLDER_CONTENTS_KEY = 'folder-contents'
 const Folders = ({ match, location }) => {
     const { siteName, folderName, subfolderName } = match.params;
 
+    const { setRedirectToPage } = useRedirectHook()
+
     const [isRearrangeActive, setIsRearrangeActive] = useState(false)
     const [directoryFileSha, setDirectoryFileSha] = useState('')
     const [folderOrderArray, setFolderOrderArray] = useState([])
     const [parsedFolderContents, setParsedFolderContents] = useState([])
-    const [shouldRedirect, setShouldRedirect] = useState(false)
+    const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
 
     const { data: folderContents, error: queryError } = useQuery(
       FOLDER_CONTENTS_KEY,
@@ -62,7 +66,9 @@ const Folders = ({ match, location }) => {
       if (queryError) {
         if (queryError.status === 404) {
           // redirect if collection/folder cannot be found
-          if (!shouldRedirect && _isMounted) setShouldRedirect(true)
+          if (_isMounted) {
+            setRedirectToPage(`/sites/${siteName}/workspace`)
+          }
         } else {
           toast(
             <Toast notificationType='error' text={`There was a problem retrieving data from your repo. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
@@ -97,7 +103,7 @@ const Folders = ({ match, location }) => {
               setFolderOrderArray(subfolderFiles)
             } else {
               // if subfolderName prop does not match directory file, it's not a valid subfolder
-              if (!shouldRedirect) setShouldRedirect(true)
+              setRedirectToPage(`/sites/${siteName}/workspace`)
             }
           } else {
             setFolderOrderArray(convertFolderOrderToArray(parsedFolderContents))
@@ -134,8 +140,14 @@ const Folders = ({ match, location }) => {
     return (
         <>
           {
-            shouldRedirect &&
-            <Redirect to={{pathname: `/sites/${siteName}/workspace`}} />
+            isFolderCreationActive &&
+            <FolderCreationModal
+              parentFolder={folderName}
+              existingSubfolders={[]}
+              pagesData={folderOrderArray.filter(item => item.type === 'file')}
+              siteName={siteName}
+              setIsFolderCreationActive={setIsFolderCreationActive}
+            />
           }
           <Header
             backButtonText={`Back to ${subfolderName ? folderName : 'Workspace'}`}
@@ -187,7 +199,7 @@ const Folders = ({ match, location }) => {
               <div className={contentStyles.contentContainerFolderRowMargin}>
                 <FolderOptionButton title="Rearrange items" isSelected={isRearrangeActive} onClick={toggleRearrange} option="rearrange" isDisabled={folderOrderArray.length <= 1 || !folderContents}/>
                 <FolderOptionButton title="Create new page" option="create-page" />
-                <FolderOptionButton title="Create new sub-folder" option="create-sub" isDisabled={subfolderName ? true : false} />
+                <FolderOptionButton title="Create new sub-folder" option="create-sub" isDisabled={subfolderName || folderOrderArray.length === 0 ? true : false} onClick={() => setIsFolderCreationActive(true)}/>
               </div>
               {/* Collections content */}
               {

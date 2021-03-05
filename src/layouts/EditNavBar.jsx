@@ -5,10 +5,10 @@ import update from 'immutability-helper';
 import { useQuery, useMutation } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { DragDropContext } from 'react-beautiful-dnd';
-import { Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { DEFAULT_ERROR_TOAST_MSG, deslugifyDirectory, isEmpty } from '../utils';
+import useRedirectHook from '../hooks/useRedirectHook';
 import { validateLink } from '../utils/validators';
 
 import Toast from '../components/Toast';
@@ -31,6 +31,8 @@ const NAVIGATION_CONTENT_KEY = 'navigation-contents';
 const EditNavBar =  ({ match }) => {
   const { siteName } = match.params
 
+  const { setRedirectToNotFound } = useRedirectHook()
+
   const [sha, setSha] = useState()
   const [links, setLinks] = useState([])
   const [originalNav, setOriginalNav] = useState()
@@ -39,7 +41,6 @@ const EditNavBar =  ({ match }) => {
   const [options, setOptions] = useState([])
   const [displayLinks, setDisplayLinks] = useState([])
   const [displaySublinks, setDisplaySublinks] = useState([])
-  const [shouldRedirectToNotFound, setShouldRedirectToNotFound] = useState(false)
   const [hasLoaded, setHasLoaded] = useState(false)
   const [itemPendingForDelete, setItemPendingForDelete] = useState(
     {
@@ -120,7 +121,7 @@ const EditNavBar =  ({ match }) => {
     if (queryError) {
       if (queryError.status === 404) {
         // redirect if one of the nav bar assets cannot be found
-        if (!shouldRedirectToNotFound && _isMounted) setShouldRedirectToNotFound(true)
+        if (_isMounted) setRedirectToNotFound(siteName)
       } else {
         toast(
           <Toast notificationType='error' text={`There was a problem trying to load your data. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
@@ -628,15 +629,6 @@ const EditNavBar =  ({ match }) => {
             />
           </div>
         </div>
-      }
-      {
-        shouldRedirectToNotFound &&
-        <Redirect
-          to={{
-              pathname: '/not-found',
-              state: {siteName: siteName}
-          }}
-        />
       }
       {
           process.env.REACT_APP_ENV === 'LOCAL_DEV' && <ReactQueryDevtools initialIsOpen={false} />

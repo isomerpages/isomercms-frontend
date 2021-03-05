@@ -105,7 +105,15 @@
       @extend .folderOptionSelected;
     }
 
-    &:hover > div > i{
+    &:hover > div > i {
+      color: white;
+    }
+
+    > div > span {
+      color: $isomer-blue;
+    }
+
+    &:hover > div > span {
       color: white;
     }
 
@@ -136,6 +144,14 @@
     }
 
     &:hover > div > i{
+      color: $isomer-dark;
+    }
+
+    &:hover > div > span{
+      color: $isomer-dark;
+    }
+    
+    > div > span{
       color: $isomer-dark;
     }
   }
@@ -192,4 +208,5 @@
 .folderCard {
   @extend .card;
   padding: 1rem;
+  cursor: pointer;
 }

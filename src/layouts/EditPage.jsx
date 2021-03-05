@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Redirect } from "react-router-dom";
 import axios from 'axios';
 import Bluebird from 'bluebird';
 import PropTypes from 'prop-types';
@@ -49,6 +48,7 @@ import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
 // Import hooks
 import useSiteColorsHook from '../hooks/useSiteColorsHook';
+import useRedirectHook from '../hooks/useRedirectHook';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -100,6 +100,7 @@ const getBackButtonInfo = (resourceCategory, collectionName, siteName) => {
 
 const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) => {
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
+  const { setRedirectToNotFound } = useRedirectHook()
 
   const { collectionName, fileName, siteName, resourceName } = match.params;
   const apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName })
@@ -118,7 +119,6 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
   const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
   const [stagedFileDetails, setStagedFileDetails] = useState({})
   const [isLoadingPageContent, setIsLoadingPageContent] = useState(true)
-  const [shouldRedirectToNotFound, setShouldRedirectToNotFound] = useState(false)
   const [mediaSearchTerm, setMediaSearchTerm] = useState('')
   const [selectedFile, setSelectedFile] = useState('')
   const [leftNavPages, setLeftNavPages] = useState([])
@@ -147,7 +147,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         sha = pageSha
       } catch (error) {
         if (error?.response?.status === 404) {
-          setShouldRedirectToNotFound(true)
+          setRedirectToNotFound(siteName)
         } else {
           toast(
             <Toast notificationType='error' text={`There was a problem trying to load your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
@@ -476,15 +476,6 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
           type={isResourcePage ? 'resource' : 'page'}
         />
         )
-      }
-      {
-        shouldRedirectToNotFound &&
-        <Redirect
-          to={{
-              pathname: '/not-found',
-              state: {siteName: siteName}
-          }}
-        />
       }
     </>
   )
