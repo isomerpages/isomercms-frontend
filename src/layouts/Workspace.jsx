@@ -19,7 +19,6 @@ import { prettifyPageFileName } from '../utils';
 
 // Import hooks
 import useSiteColorsHook from '../hooks/useSiteColorsHook';
-import useRedirectHook from '../hooks/useRedirectHook';
 
 // Constants
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react"
-import { Redirect, useHistory } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { useHistory } from "react-router-dom"
 
 const useRedirectHook = () => {
   const [shouldRedirect, setShouldRedirect] = useState(false)
