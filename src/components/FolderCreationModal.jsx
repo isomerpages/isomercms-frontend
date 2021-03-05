@@ -201,6 +201,4 @@ FolderCreationModal.propTypes = {
   // pagesData, TODO
   siteName: PropTypes.string.isRequired,
   setIsFolderCreationActive: PropTypes.func.isRequired,
-  setRedirectToNewPage: PropTypes.func.isRequired,
-  setNewPageUrl: PropTypes.func.isRequired,
 };
