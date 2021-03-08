@@ -1,5 +1,6 @@
 
-const _ = require('lodash');
+import _ from 'lodash';
+import { slugifyLower } from '../utils';
 
 // Common regexes and constants
 // ==============
@@ -607,7 +608,7 @@ const validateLink = (linkType, value) => {
 
 // Page Settings Modal
 // ===================
-const validatePageSettings = (id, value) => {
+const validatePageSettings = (id, value, folderOrderArray) => {
   let errorMessage = '';
   switch (id) {
     case 'permalink': {
@@ -635,6 +636,12 @@ const validatePageSettings = (id, value) => {
       // Title is too long
       if (value.length > PAGE_SETTINGS_TITLE_MAX_LENGTH) {
         errorMessage = `The title should be shorter than ${PAGE_SETTINGS_TITLE_MAX_LENGTH} characters.`;
+      }
+      if ( 
+        folderOrderArray !== undefined 
+        && _.find(folderOrderArray, function(v) { return v.type === 'file' && slugifyLower(value) === (v.title?.split('.')[0] || v.name?.split('.')[0]) }) !== undefined 
+      ) {
+        errorMessage = `This title is already in use. Please choose a different title.`;
       }
       break;
     }
