@@ -77,7 +77,7 @@ const FolderCreationModal = ({
   const folderNameChangeHandler = (event) => {
     const { id, value } = event.target;
     let errorMessage = validateCategoryName(value, 'page')
-    if (existingSubfolders.includes(value)) errorMessage = `Another folder with the same name exists. Please choose a different name.`
+    if (existingSubfolders.includes(slugifyCategory(value))) errorMessage = `Another folder with the same name exists. Please choose a different name.`
     setTitle(value)
     setErrors(errorMessage)
   }
