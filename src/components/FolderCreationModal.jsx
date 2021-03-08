@@ -62,6 +62,7 @@ const FolderCreationModal = ({
     { onSuccess: () => {
       const redirectUrl = `/sites/${siteName}/folder/${parentFolder ? `${parentFolder}/subfolder/${slugifyCategory(title)}` : slugifyCategory(title)}`
       setRedirectToPage(redirectUrl)
+      setIsFolderCreationActive(false)
     }}
   )
 

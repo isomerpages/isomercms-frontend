@@ -50,7 +50,7 @@ const Folders = ({ match, location }) => {
     const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
 
     const { data: folderContents, error: queryError } = useQuery(
-      FOLDER_CONTENTS_KEY,
+      [FOLDER_CONTENTS_KEY, match],
       () => getDirectoryFile(siteName, folderName),
       { 
         retry: false,
