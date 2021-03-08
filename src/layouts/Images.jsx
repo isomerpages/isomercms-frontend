@@ -12,6 +12,7 @@ import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
 const Images = ({ match: { params: { siteName } }, location }) => {
   const [images, setImages] = useState([])
+  const [directories, setDirectories] = useState([])
   const [pendingImageUpload, setPendingImageUpload] = useState(null)
   const [chosenImage, setChosenImage] = useState('')
 
@@ -19,11 +20,23 @@ const Images = ({ match: { params: { siteName } }, location }) => {
     let _isMounted = true
     const fetchData = async () => {
       try {
-        const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/images`, {
+        const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/files/images`, {
           withCredentials: true,
         });
-        const { images } = resp.data;
-        if (_isMounted) setImages(images);
+        const { directoryContents } = resp.data;
+
+        let respImages = []
+        let respDirectories = []
+        directoryContents.forEach((fileOrDir) => {
+          const modifiedFileOrDir = { ...fileOrDir, fileName: fileOrDir.name }
+          if (fileOrDir.type === 'file') respImages.push(modifiedFileOrDir)
+          if (fileOrDir.type === 'dir') respDirectories.push(modifiedFileOrDir)
+        })
+
+        if (_isMounted) {
+          setImages(respImages);
+          setDirectories(respDirectories)
+        }
       } catch (err) {
         console.log(err);
       }
