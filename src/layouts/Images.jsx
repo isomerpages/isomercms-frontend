@@ -15,7 +15,38 @@ import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 
 import { deslugifyDirectory } from '../utils';
 
-const Images = ({ match: { params: { siteName } }, location }) => {
+const getPrevDirectoryPath = (customPath) => {
+  const customPathArr = customPath.split('/')
+
+  let prevDirectoryPath
+  if (customPathArr.length > 1) {
+    prevDirectoryPath = customPathArr
+      .slice(0, -1) // remove the latest directory
+      .join('/')
+      .slice(1) // remove starting `/`
+  }
+  else {
+    prevDirectoryPath = 'images'
+  }
+
+  return prevDirectoryPath
+}
+
+const getPrevDirectoryName = (customPath) => {
+  const customPathArr = customPath.split('/')
+
+  let prevDirectoryName
+  if (customPathArr.length > 1) {
+    prevDirectoryName = customPathArr[customPathArr.length - 2]
+  }
+  else {
+    prevDirectoryName = 'Images'
+  }
+
+  return deslugifyDirectory(prevDirectoryName)
+}
+
+const Images = ({ match: { params: { siteName, customPath } }, location }) => {
   const [images, setImages] = useState([])
   const [directories, setDirectories] = useState([])
   const [pendingImageUpload, setPendingImageUpload] = useState(null)
@@ -25,7 +56,7 @@ const Images = ({ match: { params: { siteName } }, location }) => {
     let _isMounted = true
     const fetchData = async () => {
       try {
-        const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/files/images`, {
+        const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/files/${customPath ? encodeURIComponent(`images/${customPath}`) : 'images'}`, {
           withCredentials: true,
         });
         const { directoryContents } = resp.data;
@@ -52,7 +83,7 @@ const Images = ({ match: { params: { siteName } }, location }) => {
     return () => {
       _isMounted = false
     }
-  }, [])
+  }, [customPath])
 
   const uploadImage = async (imageName, imageContent) => {
     try {
@@ -87,7 +118,10 @@ const Images = ({ match: { params: { siteName } }, location }) => {
 
   return (
     <>
-      <Header />
+      <Header
+        backButtonText={`Back to ${customPath ? getPrevDirectoryName(customPath) : 'Sites'}`}
+        backButtonUrl={customPath ? `/sites/${siteName}/${getPrevDirectoryPath(customPath)}` : '/sites'}
+      />
       {/* main bottom section */}
       <div className={elementStyles.wrapper}>
         <Sidebar siteName={siteName} currPath={location.pathname} />
@@ -116,7 +150,11 @@ const Images = ({ match: { params: { siteName } }, location }) => {
                       itemIndex={idx}
                     />
                 ))
-                : null
+                : (
+                  <div className={contentStyles.segment}>
+                    There are no image sub-directories in this directory.
+                  </div>
+                )
               }
             </div>
           </div>
