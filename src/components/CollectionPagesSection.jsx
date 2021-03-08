@@ -7,6 +7,7 @@ import _ from 'lodash';
 // Import components
 import OverviewCard from '../components/OverviewCard';
 import ComponentSettingsModal from './ComponentSettingsModal'
+import PageSettingsModal from './PageSettingsModal'
 
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -100,9 +101,9 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
     return (
         <>
             {
-                isComponentSettingsActive
-                && (
-                    <ComponentSettingsModal
+                isComponentSettingsActive 
+                && ( isResource 
+                    ? <ComponentSettingsModal
                         modalTitle={isResource ? "Resource Settings" : "Page Settings"}
                         settingsToggle={settingsToggle}
                         category={collectionName}
@@ -119,6 +120,13 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                         collectionPageData={collectionPageData}
                         loadThirdNavOptions={loadThirdNavOptions}
                         setIsComponentSettingsActive={setIsComponentSettingsActive}
+                    /> 
+                    : <PageSettingsModal
+                        pageType='page'
+                        pagesData={pages}
+                        siteName={siteName}
+                        isNewPage={true}
+                        setIsPageSettingsActive={setIsComponentSettingsActive}
                     />
                 )
             }
@@ -150,9 +158,8 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                                     settingsToggle={settingsToggle}
                                     category={collectionName}
                                     siteName={siteName}
-                                    fileName={page.fileName}
-                                    title={page.title}
-                                    resourceType={page.type}
+                                    fileName={page.name}
+                                    resourceType={isResource ? page.type : ''}
                                     date={page.date}
                                     isResource={isResource}
                                     allCategories={allCategories}
@@ -173,7 +180,7 @@ export default CollectionPagesSection
 CollectionPagesSection.propTypes = {
     pages: PropTypes.arrayOf(
         PropTypes.shape({
-            fileName: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired,
             path: PropTypes.string.isRequired,
             sha: PropTypes.string.isRequired,
         }),
