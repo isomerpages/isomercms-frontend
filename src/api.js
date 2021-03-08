@@ -57,6 +57,15 @@ const createPage = async (endpointUrl, content) => {
     return await axios.post(`${BACKEND_URL}/sites/${endpointUrl}`, { content });
 }
 
+const moveFiles = async (siteName, selectedFiles, title, parentFolder) => {
+    const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${parentFolder ? `/collections/${parentFolder}` : '/pages'}`
+    const params = {
+        files: selectedFiles
+    };
+    const newPath = encodeURIComponent(`${parentFolder ? `${parentFolder}/` : ''}${title}`)
+    await axios.post(`${baseApiUrl}/move/${newPath}`, params)
+}
+
 export {
     getDirectoryFile,
     setDirectoryFile,
@@ -64,4 +73,5 @@ export {
     getEditNavBarData,
     updateNavBarData,
     createPage,
+    moveFiles,
 }

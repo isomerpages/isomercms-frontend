@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import update from 'immutability-helper';
+import { useMutation } from 'react-query';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
 
 import FolderCard from './FolderCard';
-import LoadingButton from './LoadingButton';
 import Toast from './Toast';
+import LoadingButton from '../components/LoadingButtonReactQuery';
 import FolderNamingModal from './FolderNamingModal';
 import useRedirectHook from '../hooks/useRedirectHook';
 
@@ -18,6 +19,7 @@ import { deslugifyPage, slugifyCategory, DEFAULT_ERROR_TOAST_MSG } from '../util
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import adminStyles from '../styles/isomer-cms/pages/Admin.module.scss';
+import { moveFiles } from '../api';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -54,25 +56,23 @@ const FolderCreationModal = ({
     }
   ]
 
-  const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${parentFolder ? `/collections/${parentFolder}` : '/pages'}`
 
-  const saveHandler = async () => {
-    try {
-      const params = {
-        files: [ ...selectedFiles ]
-      };
-      const newPath = encodeURIComponent(`${parentFolder ? `${parentFolder}/` : ''}${slugifyCategory(title)}`)
-      await axios.post(`${baseApiUrl}/move/${newPath}`, params)
+  const { mutate: saveHandler, isLoading, error: mutateError } = useMutation(
+    () => moveFiles(siteName, [ ...selectedFiles ], slugifyCategory(title), parentFolder),
+    { onSuccess: () => {
       const redirectUrl = `/sites/${siteName}/folder/${parentFolder ? `${parentFolder}/subfolder/${slugifyCategory(title)}` : slugifyCategory(title)}`
       setRedirectToPage(redirectUrl)
-    } catch (err) {
+    }}
+  )
+
+  useEffect(() => {
+    if (mutateError) {
       toast(
-        <Toast notificationType='error' text={`There was a problem creating a new ${parentFolder ? "sub-folder" : "folder"}. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
-        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
+        <Toast notificationType='error' text={`There was a problem trying to save your nav bar. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
       );
-      console.log(err)
     }
-  }
+  }, [mutateError])
 
   const folderNameChangeHandler = (event) => {
     const { id, value } = event.target;
@@ -198,6 +198,7 @@ const FolderCreationModal = ({
                   disabledStyle={elementStyles.disabled}
                   className={`${selectedFiles.size === 0 ? elementStyles.disabled : elementStyles.blue}`}
                   callback={saveHandler}
+                  isLoading={isLoading}
                 />
               </div>
           </div>
