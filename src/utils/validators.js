@@ -639,6 +639,7 @@ const validatePageSettings = (id, value, folderOrderArray) => {
       }
       if ( 
         folderOrderArray !== undefined 
+        // need to check both v.title and v.name as Directory.list() backend output is different from frontend parsing of collection.yml
         && _.find(folderOrderArray, function(v) { return v.type === 'file' && slugifyLower(value) === (v.title?.split('.')[0] || v.name?.split('.')[0]) }) !== undefined 
       ) {
         errorMessage = `This title is already in use. Please choose a different title.`;
