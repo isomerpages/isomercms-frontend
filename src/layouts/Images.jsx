@@ -1,14 +1,19 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
-import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
+import FolderCard from '../components/FolderCard'
 import MediaUploadCard from '../components/media/MediaUploadCard';
 import MediaCard from '../components/media/MediaCard';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
+
+import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
+import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
+
+import { deslugifyDirectory } from '../utils';
 
 const Images = ({ match: { params: { siteName } }, location }) => {
   const [images, setImages] = useState([])
@@ -90,6 +95,34 @@ const Images = ({ match: { params: { siteName } }, location }) => {
         <div className={contentStyles.mainSection}>
           <div className={contentStyles.sectionHeader}>
             <h1 className={contentStyles.sectionTitle}>Images</h1>
+          </div>
+          {/* Directories segment */}
+          <div className={contentStyles.segment}>
+            Folders
+          </div>
+          {/* Image folders */}
+          <div className={contentStyles.folderContainerBoxes}>
+            <div className={contentStyles.boxesContainer}>
+              {
+                directories && directories.length > 0
+                ? directories.map((directory, idx) => (
+                    <FolderCard
+                      displayText={deslugifyDirectory(directory.name)}
+                      settingsToggle={() => {}}
+                      key={directory.name}
+                      pageType={"media"}
+                      linkPath={directory.path}
+                      siteName={siteName}
+                      itemIndex={idx}
+                    />
+                ))
+                : null
+              }
+            </div>
+          </div>
+          {/* Segment divider  */}
+          <div className={contentStyles.segmentDividerContainer}>
+            <hr className="w-100 mt-3 mb-5" />
           </div>
           {/* Info segment */}
           <div className={contentStyles.segment}>
