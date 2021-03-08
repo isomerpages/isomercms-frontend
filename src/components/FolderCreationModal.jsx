@@ -13,7 +13,7 @@ import FolderNamingModal from './FolderNamingModal';
 import useRedirectHook from '../hooks/useRedirectHook';
 
 import { validateCategoryName } from '../utils/validators';
-import { deslugifyPage } from '../utils'
+import { deslugifyPage, slugifyCategory, DEFAULT_ERROR_TOAST_MSG } from '../utils'
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
@@ -54,11 +54,24 @@ const FolderCreationModal = ({
     }
   ]
 
-  const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${parentFolder ? `/collections/${parentFolder}` : ''}`
+  const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${parentFolder ? `/collections/${parentFolder}` : '/pages'}`
 
   const saveHandler = async () => {
-    // TODO
-    console.log('saving')
+    try {
+      const params = {
+        files: [ ...selectedFiles ]
+      };
+      const newPath = encodeURIComponent(`${parentFolder ? `${parentFolder}/` : ''}${slugifyCategory(title)}`)
+      await axios.post(`${baseApiUrl}/move/${newPath}`, params)
+      const redirectUrl = `/sites/${siteName}/folder/${parentFolder ? `${parentFolder}/subfolder/${slugifyCategory(title)}` : slugifyCategory(title)}`
+      setRedirectToPage(redirectUrl)
+    } catch (err) {
+      toast(
+        <Toast notificationType='error' text={`There was a problem creating a new ${parentFolder ? "sub-folder" : "folder"}. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
+        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
+      );
+      console.log(err)
+    }
   }
 
   const folderNameChangeHandler = (event) => {
