@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
+import { useQuery } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
@@ -9,11 +11,16 @@ import MediaUploadCard from '../components/media/MediaUploadCard';
 import MediaCard from '../components/media/MediaCard';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
+import { getImages } from '../api';
+
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 
 import { deslugifyDirectory } from '../utils';
+
+// Constants
+const IMAGE_CONTENTS_KEY = 'image-contents'
 
 const getPrevDirectoryPath = (customPath) => {
   const customPathArr = customPath.split('/')
@@ -52,37 +59,37 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
   const [pendingImageUpload, setPendingImageUpload] = useState(null)
   const [chosenImage, setChosenImage] = useState('')
 
+  const { data: imageData, refetch } = useQuery(
+    IMAGE_CONTENTS_KEY,
+    () => getImages(siteName, customPath),
+    {
+      retry: false,
+      // TO-DO: error-handling
+    },
+  )
+
   useEffect(() => {
     let _isMounted = true
-    const fetchData = async () => {
-      try {
-        const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/files/${customPath ? encodeURIComponent(`images/${customPath}`) : 'images'}`, {
-          withCredentials: true,
-        });
-        const { directoryContents } = resp.data;
 
-        let respImages = []
-        let respDirectories = []
-        directoryContents.forEach((fileOrDir) => {
-          const modifiedFileOrDir = { ...fileOrDir, fileName: fileOrDir.name }
-          if (fileOrDir.type === 'file') respImages.push(modifiedFileOrDir)
-          if (fileOrDir.type === 'dir') respDirectories.push(modifiedFileOrDir)
-        })
+    if (imageData) {
+      const {
+        respImages,
+        respDirectories,
+      } = imageData
 
-        if (_isMounted) {
-          setImages(respImages);
-          setDirectories(respDirectories)
-        }
-      } catch (err) {
-        console.log(err);
+      if (_isMounted) {
+        setImages(respImages)
+        setDirectories(respDirectories)
       }
     }
-
-    fetchData()
 
     return () => {
       _isMounted = false
     }
+  }, [imageData])
+
+  useEffect(() => {
+    refetch()
   }, [customPath])
 
   const uploadImage = async (imageName, imageContent) => {
@@ -229,6 +236,9 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
           onSave={() => window.location.reload()}
         />
         )
+      }
+      {
+          process.env.REACT_APP_ENV === 'LOCAL_DEV' && <ReactQueryDevtools initialIsOpen={false} />
       }
     </>
   );
