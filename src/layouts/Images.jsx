@@ -61,7 +61,7 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
 
   const { data: imageData, refetch } = useQuery(
     IMAGE_CONTENTS_KEY,
-    () => getImages(siteName, customPath),
+    () => getImages(siteName, customPath ? decodeURIComponent(customPath): ''),
     {
       retry: false,
       // TO-DO: error-handling
@@ -152,7 +152,12 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
                       settingsToggle={() => {}}
                       key={directory.name}
                       pageType={"media"}
-                      linkPath={directory.path}
+                      linkPath={`images/${encodeURIComponent(directory.path
+                          .split('/')
+                          .slice(1) // remove `images` prefix
+                          .join('/')
+                        )}`
+                      }
                       siteName={siteName}
                       itemIndex={idx}
                     />
