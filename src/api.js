@@ -11,7 +11,7 @@ const getDirectoryFile = async (siteName, folderName) => {
 }
 
 const setDirectoryFile = async (siteName, folderName, payload) => {
-    await axios.post(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`, payload);
+    return await axios.post(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`, payload);
 }
 
 const getFolderContents = async (siteName, folderName, subfolderName) => {
@@ -50,7 +50,7 @@ const updateNavBarData = async (siteName, originalNav, links, sha) => {
         },
         sha: sha,
     };
-    await axios.post(`${BACKEND_URL}/sites/${siteName}/navigation`, params);
+    return await axios.post(`${BACKEND_URL}/sites/${siteName}/navigation`, params);
 }
 
 export {
