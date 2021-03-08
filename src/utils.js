@@ -204,7 +204,7 @@ export function prettifyCollectionPageFileName(fileName) {
 }
 
 export function generatePageFileName(title) {
-  return `${slugify(title).replace(/[^a-zA-Z0-9-]/g, '')}.md`;
+  return `${slugify(title, {lower: true}).replace(/[^a-zA-Z0-9-]/g, '')}.md`;
 }
 
 export function generateCollectionPageFileName(title, groupIdentifier) {
@@ -347,6 +347,51 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   return newPageUrl
 }
 
+function generateCollectionPageContent(fileInfo) {
+  const {
+    siteName,
+    title,
+    permalink,
+    mdBody,
+    folderName,
+    subfolderName,
+  } = fileInfo
+  const frontMatter = subfolderName
+    ? { title, permalink, third_nav_title: subfolderName }
+    : { title, permalink }
+  const content = concatFrontMatterMdBody(frontMatter, mdBody)
+  
+  const fileName = subfolderName 
+    ? `${subfolderName}/${generatePageFileName(title)}` 
+    : `${generatePageFileName(title)}`
+  const endpointUrl = `${siteName}/collections/${folderName}/pages/new/${encodeURIComponent(fileName)}`
+  
+  const redirectUrl = `/sites/${siteName}/collections/${folderName}/${encodeURIComponent(fileName)}`
+  
+  return { endpointUrl, content, redirectUrl }
+}
+
+function generateUnlinkedPageContent(fileInfo) {
+  const {
+    siteName,
+    title,
+    permalink,
+    mdBody,
+  } = fileInfo
+
+  const frontMatter = { title, permalink }
+  const content = concatFrontMatterMdBody(frontMatter, mdBody)
+  const fileName = `${generatePageFileName(title)}`
+  const endpointUrl = `${siteName}/pages/new/${encodeURIComponent(fileName)}`
+  const redirectUrl = `/sites/${siteName}/pages/${encodeURIComponent(fileName)}`
+  return { endpointUrl, content, redirectUrl }
+}
+
+export function generatePageContent(fileInfo) {
+  const { pageType } = fileInfo
+  if (pageType === 'collection') return generateCollectionPageContent(fileInfo)
+  if (pageType === 'page') return generateUnlinkedPageContent(fileInfo)
+}
 /*
  * Util functions for generating file identifiers (the numeric/alphanumeric strings which filenames begin with)
  */
