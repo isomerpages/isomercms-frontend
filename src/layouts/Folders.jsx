@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { useQuery, useMutation } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import _ from 'lodash';
 
 // Import components
@@ -12,12 +11,12 @@ import Sidebar from '../components/Sidebar';
 import FolderCreationModal from '../components/FolderCreationModal'
 import FolderOptionButton from '../components/folders/FolderOptionButton';
 import FolderContent from '../components/folders/FolderContent';
-import Toast from '../components/Toast';
+import { errorToast, successToast } from '../utils/toasts';
 
 import useRedirectHook from '../hooks/useRedirectHook';
 
 import {
-  DEFAULT_ERROR_TOAST_MSG,
+  DEFAULT_RETRY_MSG,
   parseDirectoryFile,
   updateDirectoryFile,
   convertFolderOrderToArray,
@@ -39,7 +38,7 @@ const FOLDER_CONTENTS_KEY = 'folder-contents'
 const Folders = ({ match, location }) => {
     const { siteName, folderName, subfolderName } = match.params;
 
-    const { setRedirectToPage } = useRedirectHook()
+    const { setRedirectToPage, setRedirectToNotFound } = useRedirectHook()
 
     const [isRearrangeActive, setIsRearrangeActive] = useState(false)
     const [directoryFileSha, setDirectoryFileSha] = useState('')
@@ -53,43 +52,24 @@ const Folders = ({ match, location }) => {
       { 
         retry: false,
         enabled: !isRearrangeActive,
+        onError: (err) => {
+          if (err.response && err.response.status === 404) {
+            setRedirectToNotFound(siteName)
+          } else {
+            errorToast()
+          }
+        }
       },
     );
 
-    const { mutate, error: mutateError } = useMutation(
+    const { mutate } = useMutation(
       payload => setDirectoryFile(siteName, folderName, payload),
-      { onSettled: () => setIsRearrangeActive((prevState) => !prevState) }
+      {
+        onError: () => errorToast(`Your file reordering could not be saved. Please try again. ${DEFAULT_RETRY_MSG}`),
+        onSuccess: () => successToast('Successfully updated page order'),
+        onSettled: () => setIsRearrangeActive((prevState) => !prevState),
+      }
     )
-
-    useEffect(() => {
-      let _isMounted = true;
-      if (queryError) {
-        if (queryError.status === 404) {
-          // redirect if collection/folder cannot be found
-          if (_isMounted) {
-            setRedirectToPage(`/sites/${siteName}/workspace`)
-          }
-        } else {
-          toast(
-            <Toast notificationType='error' text={`There was a problem retrieving data from your repo. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
-            {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
-          );
-        }
-      }
-
-      return () => {
-        _isMounted = false
-      }
-    }, [queryError])
-
-    useEffect(() => {
-      if (mutateError) {
-        toast(
-          <Toast notificationType='error' text={`Your file reordering could not be saved. Please try again. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
-        );
-      }
-    }, [mutateError])
 
     useEffect(() => {
         if (folderContents && folderContents.data) {

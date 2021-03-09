@@ -6,31 +6,29 @@ import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { DragDropContext } from 'react-beautiful-dnd';
-import { toast } from 'react-toastify';
 
-import { DEFAULT_ERROR_TOAST_MSG, frontMatterParser, concatFrontMatterMdBody, isEmpty } from '../utils';
+import EditorSection from '../components/contact-us/Section';
+import Header from '../components/Header';
+import LoadingButton from '../components/LoadingButton';
+import FormField from '../components/FormField';
+import DeleteWarningModal from '../components/DeleteWarningModal';
+import GenericWarningModal from '../components/GenericWarningModal';
+
+import { DEFAULT_RETRY_MSG, frontMatterParser, concatFrontMatterMdBody, isEmpty } from '../utils';
 import { sanitiseFrontMatter } from '../utils/contact-us/dataSanitisers';
 import { validateFrontMatter } from '../utils/contact-us/validators';
 import { validateContactType, validateLocationType } from '../utils/validators';
-
-import EditorSection from '../components/contact-us/Section';
-import Toast from '../components/Toast';
+import { errorToast } from '../utils/toasts';
 
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 
-import Header from '../components/Header';
-import LoadingButton from '../components/LoadingButton';
-import FormField from '../components/FormField';
 
 import TemplateContactUsHeader from '../templates/contact-us/ContactUsHeader';
 import TemplateLocationsSection from '../templates/contact-us/LocationsSection'
 import TemplateContactsSection from '../templates/contact-us/ContactsSection'
 import TemplateFeedbackSection from '../templates/contact-us/FeedbackSection';
-
-import DeleteWarningModal from '../components/DeleteWarningModal';
-import GenericWarningModal from '../components/GenericWarningModal';
 
 // Import hooks
 import useSiteColorsHook from '../hooks/useSiteColorsHook';
@@ -174,10 +172,7 @@ const EditContactUs =  ({ match }) => {
         if (error?.response?.status === 404) {
           setRedirectToNotFound(siteName)
         } else {
-          toast(
-            <Toast notificationType='error' text={`There was a problem trying to load your contact us page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-            {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-          );
+          errorToast(`There was a problem trying to load your contact us page. ${DEFAULT_RETRY_MSG}`)
         }
         console.log(error)
       }
@@ -190,10 +185,7 @@ const EditContactUs =  ({ match }) => {
         footerContent = retrievedContent
         footerSha = retrievedSha
       } catch (err) {
-        toast(
-          <Toast notificationType='error' text={`There was a problem trying to load your contact us page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-        );
+        errorToast(`There was a problem trying to load your contact us page. ${DEFAULT_RETRY_MSG}`)
         console.log(err);
       }
 
@@ -620,10 +612,7 @@ const EditContactUs =  ({ match }) => {
 
       window.location.reload();
     } catch (err) {
-      toast(
-        <Toast notificationType='error' text={`There was a problem trying to save your contact us page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-      );
+      errorToast(`There was a problem trying to save your contact us page. ${DEFAULT_RETRY_MSG}`)
       console.log(err);
     }
   }

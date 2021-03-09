@@ -6,9 +6,16 @@ import { createFilter } from 'react-select';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
+
 import FormField from './FormField';
+import DeleteWarningModal from './DeleteWarningModal';
+import ResourceFormFields from './ResourceFormFields';
+import SaveDeleteButtons from './SaveDeleteButtons';
+
+import useRedirectHook from '../hooks/useRedirectHook';
+
 import {
-  DEFAULT_ERROR_TOAST_MSG,
+  DEFAULT_RETRY_MSG,
   frontMatterParser,
   dequoteString,
   generatePageFileName,
@@ -17,19 +24,11 @@ import {
   saveFileAndRetrieveUrl,
   retrieveResourceFileMetadata,
 } from '../utils';
-
-import useRedirectHook from '../hooks/useRedirectHook';
+import { validatePageSettings, validateResourceSettings } from '../utils/validators';
+import { errorToast } from '../utils/toasts';
+import { retrieveThirdNavOptions } from '../utils/dropdownUtils'
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import { validatePageSettings, validateResourceSettings } from '../utils/validators';
-import DeleteWarningModal from './DeleteWarningModal';
-import ResourceFormFields from './ResourceFormFields';
-import SaveDeleteButtons from './SaveDeleteButtons';
-import { toast } from 'react-toastify';
-import Toast from './Toast';
-
-// Import utils
-import { retrieveThirdNavOptions } from '../utils/dropdownUtils'
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -199,10 +198,7 @@ const ComponentSettingsModal = ({
 
       fetchData().catch((err) => {
         setIsComponentSettingsActive((prevState) => !prevState)
-        toast(
-          <Toast notificationType='error' text={`There was a problem retrieving data from your repo. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
-        );
+        errorToast(`There was a problem retrieving data from your repo. ${DEFAULT_RETRY_MSG}`)
         console.log(err)
       })
       return () => { _isMounted = false }
@@ -278,15 +274,9 @@ const ComponentSettingsModal = ({
                     ...prevState,
                     title: 'This title is already in use. Please choose a different one.',
                 }));
-                toast(
-                  <Toast notificationType='error' text={`Another ${type === 'resource' ? 'resource' : 'page'} with the same name exists. Please choose a different name.`}/>,
-                  {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
-                );
+                errorToast(`Another ${type === 'resource' ? 'resource' : 'page'} with the same name exists. Please choose a different name.`)
             } else {
-              toast(
-                <Toast notificationType='error' text={`There was a problem saving your page settings. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
-                {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
-              );
+              errorToast(`There was a problem saving your page settings. ${DEFAULT_RETRY_MSG}`)
             }
             console.log(err);
         }
@@ -302,10 +292,7 @@ const ComponentSettingsModal = ({
             // Refresh page
             window.location.reload();
         } catch (err) {
-          toast(
-            <Toast notificationType='error' text={`There was a problem trying to delete this file. ${DEFAULT_ERROR_TOAST_MSG}.`}/>,
-            {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
-          );
+          errorToast(`There was a problem trying to delete this file. ${DEFAULT_RETRY_MSG}.`)
           console.log(err);
         }
     }

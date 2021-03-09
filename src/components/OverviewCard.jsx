@@ -1,11 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
+import axios from 'axios'
+import { Base64 } from 'js-base64';
+import PropTypes from 'prop-types';
+
 import DeleteWarningModal from './DeleteWarningModal'
 import GenericWarningModal from './GenericWarningModal'
 import LoadingButton from './LoadingButton'
-import Toast from './Toast';
+
 import {
-  DEFAULT_ERROR_TOAST_MSG,
+  DEFAULT_RETRY_MSG,
   frontMatterParser,
   saveFileAndRetrieveUrl,
   checkIsOutOfViewport,
@@ -16,10 +20,9 @@ import {
 import {
   validateCategoryName,
 } from '../utils/validators'
-import { Link } from 'react-router-dom';
-import axios from 'axios'
-import { Base64 } from 'js-base64';
-import PropTypes from 'prop-types';
+import { errorToast } from '../utils/toasts';
+
+
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
@@ -106,15 +109,9 @@ const OverviewCard = ({
     } catch (err) {
       if (err?.response?.status === 409) {
         // Error due to conflict in name
-        toast(
-          <Toast notificationType='error' text='This file name already exists in the category you are trying to move to. Please rename the file before proceeding.'/>, 
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-        );
+        errorToast('This file name already exists in the category you are trying to move to. Please rename the file before proceeding.')
       } else {
-        toast(
-          <Toast notificationType='error' text={`There was a problem trying to move this file. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-        );
+        errorToast(`There was a problem trying to move this file. ${DEFAULT_RETRY_MSG}`)
       }
       setIsNewCollection(false)
       setCanShowGenericWarningModal(false)
@@ -136,10 +133,7 @@ const OverviewCard = ({
       // Refresh page
       window.location.reload();
     } catch (err) {
-      toast(
-        <Toast notificationType='error' text="There was a problem trying to delete this file. Please try again or check your internet connection."/>, 
-        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-      );
+      errorToast(`There was a problem trying to delete this file. ${DEFAULT_RETRY_MSG}`)
       console.log(err);
     }
   }
