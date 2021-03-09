@@ -57,23 +57,21 @@ const FolderCreationModal = ({
   ]
 
 
-  const { mutate: saveHandler, isLoading, error: mutateError } = useMutation(
+  const { mutate: saveHandler, isLoading } = useMutation(
     () => moveFiles(siteName, [ ...selectedFiles ], slugifyCategory(title), parentFolder),
     { onSuccess: () => {
-      const redirectUrl = `/sites/${siteName}/folder/${parentFolder ? `${parentFolder}/subfolder/${slugifyCategory(title)}` : slugifyCategory(title)}`
-      setRedirectToPage(redirectUrl)
-      setIsFolderCreationActive(false)
-    }}
-  )
-
-  useEffect(() => {
-    if (mutateError) {
-      toast(
-        <Toast notificationType='error' text={`There was a problem trying to save your nav bar. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-      );
+        const redirectUrl = `/sites/${siteName}/folder/${parentFolder ? `${parentFolder}/subfolder/${slugifyCategory(title)}` : slugifyCategory(title)}`
+        setRedirectToPage(redirectUrl)
+        setIsFolderCreationActive(false)
+      },
+      onError: () => {
+        toast(
+          <Toast notificationType='error' text={`There was a problem trying to save your nav bar. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+        );
+      }
     }
-  }, [mutateError])
+  )
 
   const folderNameChangeHandler = (event) => {
     const { id, value } = event.target;
