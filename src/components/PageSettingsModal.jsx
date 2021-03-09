@@ -5,6 +5,7 @@ import * as _ from 'lodash';
 import FormField from './FormField';
 import {
   DEFAULT_ERROR_TOAST_MSG,
+  generatePageFileName,
 } from '../utils';
 
 import { createPage } from '../api'
@@ -81,6 +82,16 @@ const PageSettingsModal = ({
         )
       }
     )
+
+    useEffect(() => {
+      let exampleTitle = 'Example Title'
+      while (_.find(pagesData, function(v) { return v.type === 'file' && generatePageFileName(exampleTitle) === (v.title || v.name) }) !== undefined) {
+        exampleTitle = exampleTitle+'_1'
+      }
+      const examplePermalink = `/${folderName ? `${folderName}/` : ''}${subfolderName ? `${subfolderName}/` : ''}permalink`
+      setTitle(exampleTitle)
+      setPermalink(examplePermalink)
+    }, [])
 
     useEffect(() => {
       setHasErrors(_.some(errors, (field) => field.length > 0));
