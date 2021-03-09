@@ -10,13 +10,19 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 export function errorToast(message) {
     return toast(
         <Toast notificationType='error' text={message ? message : DEFAULT_ERROR_TOAST_MSG}/>,
-        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
+        {
+            className: `${elementStyles.toastError} ${elementStyles.toastLong}`,
+            toastId: 'error',
+        },
     );
 }
 
 export function successToast(message) {
     toast(
         <Toast notificationType='success' text={message ? message : `Success!`}/>,
-        {className: `${elementStyles.toastSuccess}`},
+        {
+            className: `${elementStyles.toastSuccess}`,
+            toastId: 'success',
+        },
     );
 }
