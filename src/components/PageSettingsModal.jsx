@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useQuery, useMutation } from 'react-query';
 import axios from 'axios';
 import * as _ from 'lodash';
 import FormField from './FormField';
@@ -51,28 +52,35 @@ const PageSettingsModal = ({
       permalink: setPermalink,
     }
 
-    useEffect(() => {
-      let _isMounted = true
-      const fetchData = async () => {
-        if (isNewPage) {
-          // Set default values for new file
-          if (_isMounted) {
-            setTitle('Example Title')
-            setPermalink(`/${folderName ? `${folderName}/` : ''}${subfolderName ? `${subfolderName}/` : ''}permalink`)
-          }
-        } else {
-          // pass
-        }
-      }
-      fetchData().catch((err) => {
-        toast(
-          <Toast notificationType='error' text={`There was a problem retrieving data from your repo. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
+    const { data } = useQuery(
+      'page',
+      () => console.log('getting page data'),
+      { 
+        enabled: !isNewPage,
+        onSuccess: () => {
+          setTitle(data.title)
+          setPermalink(data.permalink)
+          setSha(data.sha)
+          setMdBody(data.mdBody)
+        }, 
+        onError: () => toast(
+          <Toast notificationType='error' text={`The page data could not be retrieved. Please try again. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
           {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
-        );
-        console.log(err)
-      })
-      return () => { _isMounted = false }
-    }, [])
+        )
+      }
+    )
+
+    const { mutateAsync: saveHandler } = useMutation(
+      async () => await createPage({ siteName, title, permalink, mdBody, folderName, subfolderName, pageType }),
+      { 
+        onSettled: () => setIsPageSettingsActive(false),
+        onSuccess: (redirectUrl) => setRedirectToPage(redirectUrl),  
+        onError: () => toast(
+          <Toast notificationType='error' text={`A new page could not be created. Please try again. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
+          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
+        )
+      }
+    )
 
     useEffect(() => {
       setHasErrors(_.some(errors, (field) => field.length > 0));
@@ -86,26 +94,6 @@ const PageSettingsModal = ({
         [id]: errorMessage,
       }));
       idToSetterFuncMap[id](value);
-    }
-
-    const saveHandler = async () => {
-      
-      if (isNewPage) {
-        const fileInfo = {
-          siteName,
-          title,
-          permalink,
-          mdBody,
-          folderName,
-          subfolderName,
-          pageType,
-        }
-        const redirectUrl = await createPage(fileInfo)
-        setRedirectToPage(redirectUrl)
-      }
-      else {
-        // pass
-      }
     }
 
     return (
