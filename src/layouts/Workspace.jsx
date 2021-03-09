@@ -214,7 +214,7 @@ Workspace.propTypes = {
       }),
     }).isRequired,
     location: PropTypes.shape({
-      pathname: PropTypes.string.isRequired,  
+      pathname: PropTypes.string.isRequired,
     }).isRequired,
 };
   
