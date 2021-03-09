@@ -59,7 +59,7 @@ const PageSettingsModal = ({
       { 
         enabled: !isNewPage,
         onSuccess: () => {
-          setTitle(data.title)
+          setTitle(data.name)
           setPermalink(data.permalink)
           setSha(data.sha)
           setMdBody(data.mdBody)
@@ -84,7 +84,7 @@ const PageSettingsModal = ({
 
     useEffect(() => {
       let exampleTitle = 'Example Title'
-      while (_.find(pagesData, function(v) { return v.type === 'file' && generatePageFileName(exampleTitle) === (v.title || v.name) }) !== undefined) {
+      while (_.find(pagesData, function(v) { return v.type === 'file' && generatePageFileName(exampleTitle) === v.name }) !== undefined) {
         exampleTitle = exampleTitle+'_1'
       }
       const examplePermalink = `/${folderName ? `${folderName}/` : ''}${subfolderName ? `${subfolderName}/` : ''}permalink`

@@ -80,7 +80,7 @@ const FolderContent = ({ folderOrderArray, setFolderOrderArray, siteName, folder
                                     draggableId={`folder-${folderContentIndex}-draggable`}
                                     index={folderContentIndex}
                                     isDragDisabled={!enableDragDrop}
-                                    key={folderContentItem.title}
+                                    key={folderContentItem.name}
                                 >
                                     {(draggableProvided) => (
                                         <div
@@ -90,11 +90,11 @@ const FolderContent = ({ folderOrderArray, setFolderOrderArray, siteName, folder
                                             ref={draggableProvided.innerRef}
                                         >        
                                             <FolderContentItem
-                                                key={folderContentItem.title}
-                                                title={deslugifyPage(folderContentItem.title)}
+                                                key={folderContentItem.name}
+                                                title={deslugifyPage(folderContentItem.name)}
                                                 numItems={folderContentItem.type === 'dir' ? folderContentItem.children.length : null}
                                                 isFile={folderContentItem.type === 'dir' ? false: true}
-                                                link={folderContentItem.type === 'dir' ? `/sites/${siteName}/folder/${folderName}/subfolder/${folderContentItem.title}` : `/sites/${siteName}/collections/${folderName}/${folderContentItem.path}`}
+                                                link={folderContentItem.type === 'dir' ? `/sites/${siteName}/folder/${folderName}/subfolder/${folderContentItem.name}` : `/sites/${siteName}/collections/${folderName}/${folderContentItem.path}`}
                                                 itemIndex={folderContentIndex}
                                             />
                                         </div>

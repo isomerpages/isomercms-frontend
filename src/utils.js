@@ -631,7 +631,7 @@ export const convertFolderOrderToArray = (folderOrder) => {
           acc.push({
               type: 'file',
               path: curr,
-              title: curr,
+              name: curr,
           })
       }
 
@@ -647,7 +647,7 @@ export const convertFolderOrderToArray = (folderOrder) => {
 
               currFolderEntry = {
                 type: 'dir',
-                title: subfolderTitle,
+                name: subfolderTitle,
                 path: curr,
                 children: [curr],
               }
@@ -680,7 +680,7 @@ export const retrieveSubfolderContents = (folderOrder, subfolderName) => {
         acc.push({
           type: 'file',
           path: curr,
-          title: subfolderFileName,
+          name: subfolderFileName,
         })
       }
     }
