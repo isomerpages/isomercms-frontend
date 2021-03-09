@@ -137,11 +137,41 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
           <div className={contentStyles.sectionHeader}>
             <h1 className={contentStyles.sectionTitle}>Images</h1>
           </div>
-          {/* Directories segment */}
+          {/* Info segment */}
           <div className={contentStyles.segment}>
-            Folders
+            <i className="bx bx-sm bx-info-circle text-dark" />
+            <span><strong className="ml-1">Note:</strong> Upload images here to link to them in pages and resources. The maximum image size allowed is 5MB.</span>
           </div>
-          {/* Image folders */}
+          {/* Creation buttons */}
+          <div className={contentStyles.folderContainerBoxes}>
+            <div className={contentStyles.boxesContainer}>
+              {/* Upload Image */}
+              {/* <MediaUploadCard
+                type="image"
+                onClick={() => document.getElementById('file-upload').click()}
+              />
+              <input
+                onChange={onImageSelect}
+                onClick={(event) => {
+                  // eslint-disable-next-line no-param-reassign
+                  event.target.value = '';
+                }}
+                type="file"
+                id="file-upload"
+                accept="image/*"
+                hidden
+              /> */}
+            </div>
+          </div>
+          {/* Segment divider  */}
+          <div className={contentStyles.segmentDividerContainer}>
+            <hr className="w-100 mt-3 mb-5" />
+          </div>
+          {/* Directories title segment */}
+          <div className={contentStyles.segment}>
+            <span>Directories</span>
+          </div>
+          {/* Image directories */}
           <div className={contentStyles.folderContainerBoxes}>
             <div className={contentStyles.boxesContainer}>
               {
@@ -172,32 +202,16 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
           </div>
           {/* Segment divider  */}
           <div className={contentStyles.segmentDividerContainer}>
-            <hr className="w-100 mt-3 mb-5" />
+            <hr className="invisible w-100 mt-3 mb-5" />
           </div>
-          {/* Info segment */}
+          {/* Ungrouped Images title segment */}
           <div className={contentStyles.segment}>
-            <i className="bx bx-sm bx-info-circle text-dark" />
-            <span><strong className="ml-1">Note:</strong> Upload images here to link to them in pages and resources. The maximum image size allowed is 5MB.</span>
+            <span>Ungrouped Images</span>
           </div>
+          {/* Images segment */}
           <div className={contentStyles.contentContainerBars}>
             <div className={contentStyles.boxesContainer}>
               <div className={mediaStyles.mediaCards}>
-                {/* Upload Image */}
-                <MediaUploadCard
-                  type="image"
-                  onClick={() => document.getElementById('file-upload').click()}
-                />
-                <input
-                  onChange={onImageSelect}
-                  onClick={(event) => {
-                    // eslint-disable-next-line no-param-reassign
-                    event.target.value = '';
-                  }}
-                  type="file"
-                  id="file-upload"
-                  accept="image/*"
-                  hidden
-                />
                 {/* Images */}
                 {images.length > 0 && images.map((image) => (
                   <MediaCard
