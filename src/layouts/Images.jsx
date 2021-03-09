@@ -7,7 +7,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import FolderCard from '../components/FolderCard'
-import MediaUploadCard from '../components/media/MediaUploadCard';
+import FolderOptionButton from '../components/folders/FolderOptionButton'
 import MediaCard from '../components/media/MediaCard';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
@@ -96,11 +96,9 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
     try {
       // toggle state so that image renaming modal appears
       setPendingImageUpload({
-        pendingImageUpload: {
-          fileName: imageName,
-          path: `images%2F${imageName}`,
-          content: imageContent,
-        },
+        fileName: imageName,
+        path: `images%2F${imageName}`,
+        content: imageContent,
       })
     } catch (err) {
       console.log(err);
@@ -146,9 +144,16 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
           <div className={contentStyles.folderContainerBoxes}>
             <div className={contentStyles.boxesContainer}>
               {/* Upload Image */}
-              {/* <MediaUploadCard
-                type="image"
+              <FolderOptionButton
+                title="Upload new image"
+                option="create-sub"
                 onClick={() => document.getElementById('file-upload').click()}
+              />
+              <FolderOptionButton
+                title="Create new directory"
+                option="create-sub"
+                isSubfolder={false}
+                onClick={() => console.log('placeholder')}
               />
               <input
                 onChange={onImageSelect}
@@ -160,7 +165,7 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
                 id="file-upload"
                 accept="image/*"
                 hidden
-              /> */}
+              />
             </div>
           </div>
           {/* Segment divider  */}
