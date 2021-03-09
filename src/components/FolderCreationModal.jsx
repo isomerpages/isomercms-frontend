@@ -21,6 +21,8 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import adminStyles from '../styles/isomer-cms/pages/Admin.module.scss';
 import { moveFiles } from '../api';
 
+const ISOMER_TEMPLATE_PROTECTED_DIRS = ['data', 'includes', 'site', 'layouts', 'files', 'images', 'misc', 'pages']
+
 // axios settings
 axios.defaults.withCredentials = true
 
@@ -64,11 +66,18 @@ const FolderCreationModal = ({
         setRedirectToPage(redirectUrl)
         setIsFolderCreationActive(false)
       },
-      onError: () => {
-        toast(
-          <Toast notificationType='error' text={`There was a problem trying to save your nav bar. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-        );
+      onError: (error) => {
+        if (error.response.status === 409) {
+          toast(
+            <Toast notificationType='error' text={`The name chosen is a protected folder name. Please choose a different name.`}/>, 
+            {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+          );
+        } else {
+          toast(
+            <Toast notificationType='error' text={`There was a problem trying to save your nav bar. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
+            {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
+          );
+        }
       }
     }
   )
@@ -77,6 +86,7 @@ const FolderCreationModal = ({
     const { id, value } = event.target;
     let errorMessage = validateCategoryName(value, 'page')
     if (existingSubfolders.includes(slugifyCategory(value))) errorMessage = `Another folder with the same name exists. Please choose a different name.`
+    if (ISOMER_TEMPLATE_PROTECTED_DIRS.includes(slugifyCategory(value))) errorMessage = `The name chosen is a protected folder name. Please choose a different name.`
     setTitle(value)
     setErrors(errorMessage)
   }
