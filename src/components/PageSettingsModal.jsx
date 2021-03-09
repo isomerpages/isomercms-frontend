@@ -16,8 +16,7 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 import { validatePageSettings } from '../utils/validators';
 import SaveDeleteButtons from './SaveDeleteButtons';
-import { toast } from 'react-toastify';
-import Toast from './Toast';
+import { errorToast } from '../utils/toasts';
 import FormFieldHorizontal from './FormFieldHorizontal';
 
 import useRedirectHook from '../hooks/useRedirectHook';
@@ -65,10 +64,7 @@ const PageSettingsModal = ({
           setSha(data.sha)
           setMdBody(data.mdBody)
         }, 
-        onError: () => toast(
-          <Toast notificationType='error' text={`The page data could not be retrieved. Please try again. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
-        )
+        onError: () => errorToast(`The page data could not be retrieved. Please try again. ${DEFAULT_ERROR_TOAST_MSG}`)
       }
     )
 
@@ -82,10 +78,7 @@ const PageSettingsModal = ({
       { 
         onSettled: () => setIsPageSettingsActive(false),
         onSuccess: (redirectUrl) => setRedirectToPage(redirectUrl),  
-        onError: () => toast(
-          <Toast notificationType='error' text={`A new page could not be created. Please try again. ${DEFAULT_ERROR_TOAST_MSG}`}/>,
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`},
-        )
+        onError: () => errorToast(`A new page could not be created. Please try again. ${DEFAULT_ERROR_TOAST_MSG}`)
       }
     )
 
