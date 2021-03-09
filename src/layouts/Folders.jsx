@@ -38,7 +38,7 @@ const FOLDER_CONTENTS_KEY = 'folder-contents'
 const Folders = ({ match, location }) => {
     const { siteName, folderName, subfolderName } = match.params;
 
-    const { setRedirectToPage } = useRedirectHook()
+    const { setRedirectToPage, setRedirectToNotFound } = useRedirectHook()
 
     const [isRearrangeActive, setIsRearrangeActive] = useState(false)
     const [directoryFileSha, setDirectoryFileSha] = useState('')
@@ -54,9 +54,9 @@ const Folders = ({ match, location }) => {
         enabled: !isRearrangeActive,
         onError: (err) => {
           if (err.response && err.response.status === 404) {
-            if (!shouldRedirect) setShouldRedirect(true)
+            setRedirectToNotFound(siteName)
           } else {
-              errorToast()
+            errorToast()
           }
         }
       },

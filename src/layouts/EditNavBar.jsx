@@ -114,9 +114,9 @@ const EditNavBar =  ({ match }) => {
       retry: false,
       onError: (err) => {
         if (err.response && err.response.status === 404) {
-          if (!shouldRedirectToNotFound) setShouldRedirectToNotFound(true)
+          setRedirectToNotFound(siteName)
         } else {
-            errorToast(`There was a problem trying to load your data. ${DEFAULT_RETRY_MSG}`)
+          errorToast(`There was a problem trying to load your data. ${DEFAULT_RETRY_MSG}`)
         }
       }
     },
