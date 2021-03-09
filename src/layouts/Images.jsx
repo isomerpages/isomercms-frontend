@@ -13,11 +13,14 @@ import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
 import { getImages } from '../api';
 
+import useRedirectHook from '../hooks/useRedirectHook';
+
+import { deslugifyDirectory } from '../utils';
+import { errorToast } from '../utils/toasts';
+
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
-
-import { deslugifyDirectory } from '../utils';
 
 // Constants
 const IMAGE_CONTENTS_KEY = 'image-contents'
@@ -58,13 +61,20 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
   const [directories, setDirectories] = useState([])
   const [pendingImageUpload, setPendingImageUpload] = useState(null)
   const [chosenImage, setChosenImage] = useState('')
+  const { setRedirectToNotFound } = useRedirectHook()
 
   const { data: imageData, refetch } = useQuery(
     IMAGE_CONTENTS_KEY,
     () => getImages(siteName, customPath ? decodeURIComponent(customPath): ''),
     {
       retry: false,
-      // TO-DO: error-handling
+      onError: (err) => {
+        if (err.response && err.response.status === 404) {
+          setRedirectToNotFound(siteName)
+        } else {
+          errorToast()
+        }
+      }
     },
   )
 
@@ -218,15 +228,22 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
             <div className={contentStyles.boxesContainer}>
               <div className={mediaStyles.mediaCards}>
                 {/* Images */}
-                {images.length > 0 && images.map((image) => (
-                  <MediaCard
-                    type="image"
-                    media={image}
-                    siteName={siteName}
-                    onClick={() => setChosenImage(image)}
-                    key={image.fileName}
-                  />
-                ))}
+                {
+                  images && images.length > 0
+                  ? images.map((image) => (
+                    <MediaCard
+                      type="image"
+                      media={image}
+                      siteName={siteName}
+                      onClick={() => setChosenImage(image)}
+                      key={image.fileName}
+                    />
+                  )) : (
+                    <div className={contentStyles.segment}>
+                      There are no images in this directory.
+                    </div>
+                  )
+                }
               </div>
             </div>
           </div>
