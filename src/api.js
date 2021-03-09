@@ -1,6 +1,4 @@
 import axios from 'axios';
-import { generatePageContent } from './utils';
-
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -55,11 +53,8 @@ const updateNavBarData = async (siteName, originalNav, links, sha) => {
     return await axios.post(`${BACKEND_URL}/sites/${siteName}/navigation`, params);
 }
 
-const createPage = async (fileInfo) => {
-    const { endpointUrl, content, redirectUrl } = generatePageContent(fileInfo)
-    if ( !endpointUrl || !content || !redirectUrl ) return // fileType not recognised
-    await axios.post(`${BACKEND_URL}/sites/${endpointUrl}`, { content });
-    return redirectUrl
+const createPage = async (endpointUrl, content) => {
+    return await axios.post(`${BACKEND_URL}/sites/${endpointUrl}`, { content });
 }
 
 export {

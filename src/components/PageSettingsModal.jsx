@@ -6,6 +6,7 @@ import FormField from './FormField';
 import {
   DEFAULT_ERROR_TOAST_MSG,
   generatePageFileName,
+  generatePageContent,
 } from '../utils';
 
 import { createPage } from '../api'
@@ -72,7 +73,12 @@ const PageSettingsModal = ({
     )
 
     const { mutateAsync: saveHandler } = useMutation(
-      async () => await createPage({ siteName, title, permalink, mdBody, folderName, subfolderName, pageType }),
+      async () => { 
+        const fileInfo = { siteName, title, permalink, mdBody, folderName, subfolderName, pageType }
+        const { endpointUrl, content, redirectUrl } = generatePageContent(fileInfo)
+        await createPage(endpointUrl, content)
+        return redirectUrl
+      },
       { 
         onSettled: () => setIsPageSettingsActive(false),
         onSuccess: (redirectUrl) => setRedirectToPage(redirectUrl),  
