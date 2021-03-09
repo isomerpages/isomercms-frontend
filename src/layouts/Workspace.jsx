@@ -60,10 +60,10 @@ const Workspace = ({ match, location }) => {
         }
         
         try { 
-          const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/unlinkedPages`);
+          const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/files/pages`);
           console.log(unlinkedPagesResp.data)
           if (_isMounted) {
-            setUnlinkedPages(unlinkedPagesResp.data?.pages.filter(page => page.fileName !== 'contact-us.md'))
+            setUnlinkedPages(unlinkedPagesResp.data?.directoryContents.filter(page => page.name !== 'contact-us.md'))
           }
         } catch (e) {
           console.log(e)
@@ -214,7 +214,7 @@ Workspace.propTypes = {
       }),
     }).isRequired,
     location: PropTypes.shape({
-      pathname: PropTypes.string.isRequired,
+      pathname: PropTypes.string.isRequired,  
     }).isRequired,
 };
   
