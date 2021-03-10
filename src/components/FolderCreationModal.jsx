@@ -65,7 +65,7 @@ const FolderCreationModal = ({
         if (error.response.status === 409) {
           errorToast(`The name chosen is a protected folder name. Please choose a different name.`)
         } else {
-          errorToast(`There was a problem trying to save your nav bar. ${DEFAULT_RETRY_MSG}`)
+          errorToast(`There was a problem trying to create your new folder. ${DEFAULT_RETRY_MSG}`)
         }
       }
     }
