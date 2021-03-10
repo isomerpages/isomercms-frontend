@@ -40,7 +40,7 @@ const FOLDER_CONTENTS_KEY = 'folder-contents'
 const Folders = ({ match, location }) => {
     const { siteName, folderName, subfolderName } = match.params;
 
-    const { setRedirectToPage, setRedirectToNotFound } = useRedirectHook()
+    const { setRedirectToPage } = useRedirectHook()
 
     const [isRearrangeActive, setIsRearrangeActive] = useState(false)
     const [isPageSettingsActive, setIsPageSettingsActive] = useState(false)
@@ -57,7 +57,7 @@ const Folders = ({ match, location }) => {
         enabled: !isRearrangeActive,
         onError: (err) => {
           if (err.response && err.response.status === 404) {
-            setRedirectToNotFound(siteName)
+            setRedirectToPage(`/sites/${siteName}/workspace`)
           } else {
             errorToast()
           }
