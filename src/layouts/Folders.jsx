@@ -40,7 +40,7 @@ const FOLDER_CONTENTS_KEY = 'folder-contents'
 const Folders = ({ match, location }) => {
     const { siteName, folderName, subfolderName } = match.params;
 
-    const { setRedirectToPage, setRedirectToNotFound } = useRedirectHook()
+    const { setRedirectToPage } = useRedirectHook()
 
     const [isRearrangeActive, setIsRearrangeActive] = useState(false)
     const [isPageSettingsActive, setIsPageSettingsActive] = useState(false)
@@ -50,14 +50,14 @@ const Folders = ({ match, location }) => {
     const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
 
     const { data: folderContents, error: queryError } = useQuery(
-      FOLDER_CONTENTS_KEY,
+      [FOLDER_CONTENTS_KEY, match],
       () => getDirectoryFile(siteName, folderName),
       { 
         retry: false,
         enabled: !isRearrangeActive,
         onError: (err) => {
           if (err.response && err.response.status === 404) {
-            setRedirectToNotFound(siteName)
+            setRedirectToPage(`/sites/${siteName}/workspace`)
           } else {
             errorToast()
           }
@@ -126,7 +126,7 @@ const Folders = ({ match, location }) => {
             isFolderCreationActive &&
             <FolderCreationModal
               parentFolder={folderName}
-              existingSubfolders={[]}
+              existingSubfolders={folderOrderArray.filter(item => item.type === 'dir').map(item => item.title)}
               pagesData={folderOrderArray.filter(item => item.type === 'file')}
               siteName={siteName}
               setIsFolderCreationActive={setIsFolderCreationActive}

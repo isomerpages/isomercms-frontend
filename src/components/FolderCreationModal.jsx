@@ -1,23 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import update from 'immutability-helper';
+import { useMutation } from 'react-query';
 import Select from 'react-select';
-import { toast } from 'react-toastify';
 
 import FolderCard from './FolderCard';
-import LoadingButton from './LoadingButton';
-import Toast from './Toast';
+import LoadingButton from '../components/LoadingButton';
 import FolderNamingModal from './FolderNamingModal';
+import { errorToast } from '../utils/toasts';
 import useRedirectHook from '../hooks/useRedirectHook';
 
 import { validateCategoryName } from '../utils/validators';
-import { deslugifyPage } from '../utils'
+import { deslugifyPage, slugifyCategory, DEFAULT_RETRY_MSG } from '../utils'
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import adminStyles from '../styles/isomer-cms/pages/Admin.module.scss';
+import { moveFiles } from '../api';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -42,29 +43,37 @@ const FolderCreationModal = ({
   const [sortedPagesData, setSortedPagesData] = useState(pagesData)
 
   const sortOptions = [
-    ... parentFolder 
-      ? [{
-        value: 'folder',
-        label: 'Original order',
-      }]
-      : [],
     {
       value: 'title',
       label: 'Name'
     }
   ]
 
-  const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${parentFolder ? `/collections/${parentFolder}` : ''}`
+  useEffect(() => {
+    const sortedOrder = pagesData.concat().sort(sortFuncs['title'])
+    setSortedPagesData(sortedOrder)
+  }, [])
 
-  const saveHandler = async () => {
-    // TODO
-    console.log('saving')
-  }
+  const { mutateAsync: saveHandler } = useMutation(
+    () => moveFiles(siteName, [ ...selectedFiles ], slugifyCategory(title), parentFolder),
+    { onSuccess: () => {
+        const redirectUrl = `/sites/${siteName}/folder/${parentFolder ? `${parentFolder}/subfolder/${slugifyCategory(title)}` : slugifyCategory(title)}`
+        setRedirectToPage(redirectUrl)
+        setIsFolderCreationActive(false)
+      },
+      onError: (error) => {
+        if (error.response.status === 409) {
+          errorToast(`The name chosen is a protected folder name. Please choose a different name.`)
+        } else {
+          errorToast(`There was a problem trying to create your new folder. ${DEFAULT_RETRY_MSG}`)
+        }
+      }
+    }
+  )
 
   const folderNameChangeHandler = (event) => {
-    const { id, value } = event.target;
-    let errorMessage = validateCategoryName(value, 'page')
-    if (existingSubfolders.includes(value)) errorMessage = `Another folder with the same name exists. Please choose a different name.`
+    const { value } = event.target;
+    let errorMessage = validateCategoryName(value, 'page', existingSubfolders)
     setTitle(value)
     setErrors(errorMessage)
   }
@@ -129,15 +138,10 @@ const FolderCreationModal = ({
                     onChange={sortOrderChangeHandler}
                     className={'w-100'}
                     defaultValue={
-                      parentFolder 
-                      ? {
-                          value: 'folder',
-                          label: 'Original order',
-                        }
-                      : {
-                          value: 'title',
-                          label: 'Name',
-                        }
+                      {
+                        value: 'title',
+                        label: 'Name',
+                      }
                     }
                     options={sortOptions}
                   />
