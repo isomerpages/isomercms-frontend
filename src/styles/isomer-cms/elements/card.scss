@@ -130,6 +130,10 @@
     background: $isomer-blue;
     border: 1px solid $isomer-blue;
     color: white;
+    
+    > div > span{
+      color: white;
+    }
   }
 
   &.folderOptionDisabled {
