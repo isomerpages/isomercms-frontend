@@ -7,7 +7,7 @@ import { useMutation } from 'react-query';
 import Select from 'react-select';
 
 import FolderCard from './FolderCard';
-import LoadingButton from '../components/LoadingButtonReactQuery';
+import LoadingButton from '../components/LoadingButton';
 import FolderNamingModal from './FolderNamingModal';
 import { errorToast } from '../utils/toasts';
 import useRedirectHook from '../hooks/useRedirectHook';
