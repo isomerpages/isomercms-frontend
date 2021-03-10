@@ -54,7 +54,7 @@ const FolderCreationModal = ({
     setSortedPagesData(sortedOrder)
   }, [])
 
-  const { mutateAsync: saveHandler, isLoading } = useMutation(
+  const { mutateAsync: saveHandler } = useMutation(
     () => moveFiles(siteName, [ ...selectedFiles ], slugifyCategory(title), parentFolder),
     { onSuccess: () => {
         const redirectUrl = `/sites/${siteName}/folder/${parentFolder ? `${parentFolder}/subfolder/${slugifyCategory(title)}` : slugifyCategory(title)}`
@@ -189,7 +189,6 @@ const FolderCreationModal = ({
                   disabledStyle={elementStyles.disabled}
                   className={`${selectedFiles.size === 0 ? elementStyles.disabled : elementStyles.blue}`}
                   callback={saveHandler}
-                  isLoading={isLoading}
                 />
               </div>
           </div>
