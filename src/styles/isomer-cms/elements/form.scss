@@ -38,6 +38,7 @@ p {
 
   .formHorizontalLabel{
     @extend .formLabel;
+    padding-right: 5px;
     min-width: min-content;
     width: 20%;
   }
