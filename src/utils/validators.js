@@ -1,3 +1,4 @@
+import { slugifyCategory } from '../utils';
 
 import _ from 'lodash';
 import { generatePageFileName } from '../utils';
@@ -24,6 +25,8 @@ const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/;
 const RESOURCE_CATEGORY_REGEX = '^([a-zA-Z0-9]+[- ])*[a-zA-Z0-9]+$';
 const resourceRoomNameRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
 const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX);
+
+const ISOMER_TEMPLATE_PROTECTED_DIRS = ['data', 'includes', 'site', 'layouts', 'files', 'images', 'misc', 'pages']
 
 const RADIX_PARSE_INT = 10;
 
@@ -771,11 +774,13 @@ const validateResourceRoomName = (value) => {
 
 // Resource Category Modal
 // ===================
-const validateCategoryName = (value, componentName) => {
+const validateCategoryName = (value, componentName, existingNames) => {
   let errorMessage = '';
-
+  
+  if (existingNames && existingNames.includes(slugifyCategory(value))) errorMessage = `Another folder with the same name exists. Please choose a different name.`
+  else if (ISOMER_TEMPLATE_PROTECTED_DIRS.includes(slugifyCategory(value))) errorMessage = `The name chosen is a protected folder name. Please choose a different name.`
   // Resource category is too short
-  if (value.length < RESOURCE_CATEGORY_MIN_LENGTH) {
+  else if (value.length < RESOURCE_CATEGORY_MIN_LENGTH) {
     errorMessage = `The ${componentName} category should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`;
   }
   // Resource category is too long
