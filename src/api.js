@@ -63,7 +63,7 @@ const moveFiles = async (siteName, selectedFiles, title, parentFolder) => {
         files: selectedFiles
     };
     const newPath = encodeURIComponent(`${parentFolder ? `${parentFolder}/` : ''}${title}`)
-    await axios.post(`${baseApiUrl}/move/${newPath}`, params)
+    return await axios.post(`${baseApiUrl}/move/${newPath}`, params)
 }
 
 export {
