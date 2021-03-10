@@ -85,7 +85,7 @@ const FolderCreationModal = ({
 
   const sortFuncs = {
     'title': (a, b) => {
-      return a.title.localeCompare(b.title)
+      return a.name.localeCompare(b.name)
     }
   }
 
@@ -151,15 +151,15 @@ const FolderCreationModal = ({
                     sortedPagesData && sortedPagesData.length > 0
                     ? sortedPagesData.map((pageData, pageIdx) => (
                           <FolderCard
-                              displayText={deslugifyPage(pageData.title)}
+                              displayText={deslugifyPage(pageData.name)}
                               settingsToggle={() => {}}
-                              key={pageData.title}
+                              key={pageData.name}
                               pageType={"file"}
                               siteName={siteName}
                               itemIndex={pageIdx}
-                              folderStyle={selectedFiles.has(pageData.title) ? `border border-primary` : ''}
+                              folderStyle={selectedFiles.has(pageData.name) ? `border border-primary` : ''}
                               onClick={() => {
-                                  fileSelectChangeHandler(pageData.title)
+                                  fileSelectChangeHandler(pageData.name)
                               }}
                           />
                     ))

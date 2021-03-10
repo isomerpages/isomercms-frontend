@@ -15,7 +15,7 @@ const FormFieldHorizontal = ({
 }) => (
   <>
     <div className={elementStyles.formHorizontal}>
-      <p className={elementStyles.formHorizontalLabel}>{`${title}:`}</p>
+      <p className={elementStyles.formHorizontalLabel}>{`${title}`}</p>
       <input
         type="text"
         placeholder={placeholder ? placeholder : title}

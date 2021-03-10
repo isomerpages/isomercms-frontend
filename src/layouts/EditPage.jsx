@@ -91,7 +91,7 @@ const getBackButtonInfo = (resourceCategory, collectionName, siteName) => {
   }
   if (collectionName) return {
     backButtonLabel: collectionName,
-    backButtonUrl: `/sites/${siteName}/collections/${collectionName}`,
+    backButtonUrl: `/sites/${siteName}/folder/${collectionName}`,
   }
   return {
     backButtonLabel: 'My Workspace',

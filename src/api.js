@@ -53,10 +53,15 @@ const updateNavBarData = async (siteName, originalNav, links, sha) => {
     return await axios.post(`${BACKEND_URL}/sites/${siteName}/navigation`, params);
 }
 
+const createPage = async (endpointUrl, content) => {
+    return await axios.post(`${BACKEND_URL}/sites/${endpointUrl}`, { content });
+}
+
 export {
     getDirectoryFile,
     setDirectoryFile,
     getFolderContents,
     getEditNavBarData,
     updateNavBarData,
+    createPage,
 }
