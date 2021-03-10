@@ -45,18 +45,16 @@ const FolderCreationModal = ({
   const [sortedPagesData, setSortedPagesData] = useState(pagesData)
 
   const sortOptions = [
-    ... parentFolder 
-      ? [{
-        value: 'folder',
-        label: 'Original order',
-      }]
-      : [],
     {
       value: 'title',
       label: 'Name'
     }
   ]
 
+  useEffect(() => {
+    const sortedOrder = pagesData.concat().sort(sortFuncs['title'])
+    setSortedPagesData(sortedOrder)
+  }, [])
 
   const { mutateAsync: saveHandler, isLoading } = useMutation(
     () => moveFiles(siteName, [ ...selectedFiles ], slugifyCategory(title), parentFolder),
@@ -144,15 +142,10 @@ const FolderCreationModal = ({
                     onChange={sortOrderChangeHandler}
                     className={'w-100'}
                     defaultValue={
-                      parentFolder 
-                      ? {
-                          value: 'folder',
-                          label: 'Original order',
-                        }
-                      : {
-                          value: 'title',
-                          label: 'Name',
-                        }
+                      {
+                        value: 'title',
+                        label: 'Name',
+                      }
                     }
                     options={sortOptions}
                   />
