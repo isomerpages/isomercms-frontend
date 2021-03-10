@@ -5,16 +5,15 @@ import * as _ from 'lodash';
 import update from 'immutability-helper';
 import { useMutation } from 'react-query';
 import Select from 'react-select';
-import { toast } from 'react-toastify';
 
 import FolderCard from './FolderCard';
-import Toast from './Toast';
 import LoadingButton from '../components/LoadingButtonReactQuery';
 import FolderNamingModal from './FolderNamingModal';
+import { errorToast } from '../utils/toasts';
 import useRedirectHook from '../hooks/useRedirectHook';
 
 import { validateCategoryName } from '../utils/validators';
-import { deslugifyPage, slugifyCategory, DEFAULT_ERROR_TOAST_MSG } from '../utils'
+import { deslugifyPage, slugifyCategory, DEFAULT_RETRY_MSG } from '../utils'
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
@@ -59,7 +58,7 @@ const FolderCreationModal = ({
   ]
 
 
-  const { mutate: saveHandler, isLoading } = useMutation(
+  const { mutateAsync: saveHandler, isLoading } = useMutation(
     () => moveFiles(siteName, [ ...selectedFiles ], slugifyCategory(title), parentFolder),
     { onSuccess: () => {
         const redirectUrl = `/sites/${siteName}/folder/${parentFolder ? `${parentFolder}/subfolder/${slugifyCategory(title)}` : slugifyCategory(title)}`
@@ -68,15 +67,9 @@ const FolderCreationModal = ({
       },
       onError: (error) => {
         if (error.response.status === 409) {
-          toast(
-            <Toast notificationType='error' text={`The name chosen is a protected folder name. Please choose a different name.`}/>, 
-            {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-          );
+          errorToast(`The name chosen is a protected folder name. Please choose a different name.`)
         } else {
-          toast(
-            <Toast notificationType='error' text={`There was a problem trying to save your nav bar. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-            {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-          );
+          errorToast(`There was a problem trying to save your nav bar. ${DEFAULT_RETRY_MSG}`)
         }
       }
     }
