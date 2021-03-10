@@ -778,7 +778,7 @@ const validateCategoryName = (value, componentName, existingNames) => {
   let errorMessage = '';
   
   if (existingNames && existingNames.includes(slugifyCategory(value))) errorMessage = `Another folder with the same name exists. Please choose a different name.`
-  else if (ISOMER_TEMPLATE_PROTECTED_DIRS.includes(slugifyCategory(value))) errorMessage = `The name chosen is a protected folder name. Please choose a different name.`
+  else if (ISOMER_TEMPLATE_PROTECTED_DIRS.includes(slugifyCategory(value))) errorMessage = `The name chosen is a protected folder name (${ISOMER_TEMPLATE_PROTECTED_DIRS.map(item => `'${item}'`).join(', ')}). Please choose a different name.`
   // Resource category is too short
   else if (value.length < RESOURCE_CATEGORY_MIN_LENGTH) {
     errorMessage = `The ${componentName} category should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`;
