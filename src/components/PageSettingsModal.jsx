@@ -55,7 +55,7 @@ const PageSettingsModal = ({
 
     const { data } = useQuery(
       'page',
-      () => console.log('getting page data'),
+      () => {},  // for page settings editing 
       { 
         enabled: !isNewPage,
         onSuccess: () => {
