@@ -23,6 +23,8 @@ import {
   prettifyCollectionPageFileName,
   retrieveResourceFileMetadata,
   prettifyDate,
+  parseDirectoryFile,
+  deslugifyDirectory,
 } from '../utils';
 import {
   boldButton,
@@ -54,9 +56,9 @@ import useRedirectHook from '../hooks/useRedirectHook';
 // axios settings
 axios.defaults.withCredentials = true
 
-const getApiEndpoint = (isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName }) => {
+const getApiEndpoint = (isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName) => {
   if (isCollectionPage) {
-    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/${fileName}`
+    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${fileName}`)}`
   }
   if (isResourcePage) {
     return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`
@@ -78,12 +80,6 @@ const extractMetadataFromFilename = (isResourcePage, isCollectionPage, fileName)
   return { title: prettifyPageFileName(fileName), date: '' }
 }
 
-// Remove `/pages/${fileName}' from api endpoint
-const getCollectionsApiEndpoint = (endpoint) => {
-  const endpointArr = endpoint.split('/')
-  return endpointArr.slice(0, endpointArr.length - 2).join('/')
-}
-
 const getBackButtonInfo = (resourceCategory, collectionName, siteName) => {
   if (resourceCategory) return {
     backButtonLabel: resourceCategory,
@@ -103,8 +99,8 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
   const { setRedirectToNotFound } = useRedirectHook()
 
-  const { collectionName, fileName, siteName, resourceName } = match.params;
-  const apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName })
+  const { collectionName, fileName, siteName, resourceName, subfolderName } = match.params;
+  const apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName)
   const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, isCollectionPage, fileName)
   const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, collectionName, siteName)
 
@@ -168,20 +164,15 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
         let leftNavPages
         if (isCollectionPage) {
-          const collectionsApiEndpoint = getCollectionsApiEndpoint(apiEndpoint)
-          const collectionPagesResp = await axios.get(collectionsApiEndpoint);
-          const collectionResp = collectionPagesResp.data?.collectionPages;
-
-          // Retrieve third_nav_title from collection pages
-          leftNavPages = await Bluebird.map(collectionResp, async (collectionPage) => {
-            const collectionPageResp = await axios.get(`${collectionsApiEndpoint}/pages/${collectionPage.fileName}`)
-            const { content } = collectionPageResp.data;
-            const { frontMatter } = frontMatterParser(Base64.decode(content));
-            return {
-              ...collectionPage,
-              third_nav_title: frontMatter.third_nav_title,
-            }
-          });
+          const dirResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/collection.yml`)
+          const { content:dirContent, sha:dirSha } = dirResp.data
+          const parsedFolderContents = parseDirectoryFile(dirContent)
+          leftNavPages = parsedFolderContents.map((name) => 
+            ({
+              fileName: name.includes('/') ? name.split('/')[1] : name,
+              third_nav_title: name.includes('/') ? name.split('/')[0] : null,
+            })
+          )
         }
 
         if (_isMounted) {
@@ -435,6 +426,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
                 leftNavPages={leftNavPages}
                 fileName={fileName}
                 title={title}
+                collection={deslugifyDirectory(collectionName)}
               />
             ) : (
               <SimplePage

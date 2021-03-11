@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { deslugifyCollectionPage } from '../utils';
+import { deslugifyPage } from '../utils';
 
 export const generateLeftNav = (leftNavPages, fileName) => {
     const currentFileThirdNavTitle = retrieveCurrentFileThirdNavTitle(leftNavPages, fileName)
@@ -26,7 +26,7 @@ export const generateLeftNav = (leftNavPages, fileName) => {
                 thirdNavElements.push(
                     <li key={elementFileName}>
                         <a className={`third-level-nav-item padding--top--none ${fileName === elementFileName? 'has-text-secondary has-text-weight-bold': ''}`}>
-                        {deslugifyCollectionPage(elementFileName)}
+                        {deslugifyPage(elementFileName)}
                         </a>
                     </li>
                 )
@@ -50,7 +50,7 @@ export const generateLeftNav = (leftNavPages, fileName) => {
                     thirdNavElements.push(
                         <li key={elementFileName}>
                             <a className={`third-level-nav-item padding--top--none ${fileName === elementFileName? 'has-text-secondary has-text-weight-bold': ''}`}>
-                                {deslugifyCollectionPage(elementFileName)}
+                                {deslugifyPage(elementFileName)}
                             </a>
                         </li>
                     )
@@ -61,7 +61,7 @@ export const generateLeftNav = (leftNavPages, fileName) => {
                 thirdNavElements.push(
                     <li key={elementFileName}>
                         <a className={`third-level-nav-item padding--top--none ${fileName === elementFileName? 'has-text-secondary has-text-weight-bold': ''}`}>
-                        {deslugifyCollectionPage(elementFileName)}
+                        {deslugifyPage(elementFileName)}
                         </a>
                     </li>
                 )
@@ -91,7 +91,7 @@ export const generateLeftNav = (leftNavPages, fileName) => {
                 {/* Current on-third-nav section */}
                 <li key={elementFileName}>
                     <a className={`${fileName === elementFileName ? 'is-active': ''}`}>
-                        {deslugifyCollectionPage(elementFileName)}
+                        {deslugifyPage(elementFileName)}
                     </a>
                 </li>
             </>

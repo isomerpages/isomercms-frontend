@@ -9,14 +9,8 @@ const LeftNavPage = ({
   leftNavPages,
   fileName,
   title,
+  collection,
 }) => {
-  const currentPage = leftNavPages.filter((page) => page.fileName === fileName);
-  const collection = currentPage[0]
-    .path.split('%2')[0]
-    .slice(1) // remove the underscore at the start of the collection folder name
-    .split('-')
-    .map((string) => _.upperFirst(string)) // capitalize first letter
-    .join(' '); // join it back together
   return (
     <div>
       <PageHeader title={title} collection={collection} />
@@ -42,6 +36,7 @@ LeftNavPage.propTypes = {
   })).isRequired,
   title: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
+  collection: PropTypes.string.isRequired,
 };
 
 export default LeftNavPage;
