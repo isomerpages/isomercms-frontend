@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getNavFolderDropdownFromFolderOrder, parseDirectoryFile } from './utils';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -21,7 +22,7 @@ const getFolderContents = async (siteName, folderName, subfolderName) => {
 // EditNavBar
 
 const getEditNavBarData = async(siteName) => {
-    let navContent, collectionContent, resourceContent, navSha
+    let navContent, collectionContent, resourceContent, navSha, foldersContent
 
     const resp = await axios.get(`${BACKEND_URL}/sites/${siteName}/navigation`);
     const { content, sha } = resp.data;
@@ -31,6 +32,15 @@ const getEditNavBarData = async(siteName) => {
     collectionContent = collectionResp.data
     const resourceResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/resources`)
     resourceContent = resourceResp.data
+    const foldersResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/folders/all`)
+    if (foldersResp.data && foldersResp.data.allFolderContent) {
+        // parse directory files
+        foldersContent = foldersResp.data.allFolderContent.reduce((acc, currFolder) => {
+            const folderOrder = parseDirectoryFile(currFolder.content)
+            acc[currFolder.name] = getNavFolderDropdownFromFolderOrder(folderOrder)
+            return acc
+        }, {})
+    }
 
     if (!navContent) return
 
@@ -38,6 +48,7 @@ const getEditNavBarData = async(siteName) => {
         navContent,
         navSha,
         collectionContent,
+        foldersContent,
         resourceContent,
     }
 }
