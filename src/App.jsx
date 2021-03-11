@@ -145,7 +145,8 @@ function App() {
                 <Switch>
                     <ProtectedRouteWithProps exact path='/auth' component={AuthCallback} />
                     <ProtectedRouteWithProps exact path="/" component={Home} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
+                    <ProtectedRouteWithProps exact path="/sites/:siteName/collections/:collectionName/:subfolderName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
+                    <ProtectedRouteWithProps exact path="/sites/:siteName/collections/:collectionName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
                     <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName" component={CategoryPages} isResource={false}/>
                     <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName" component={Folders} />
                     <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName" component={Folders} />
