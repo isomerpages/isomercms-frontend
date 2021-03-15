@@ -72,14 +72,20 @@ const extractMetadataFromFilename = (isResourcePage, fileName) => {
   return { title: prettifyPageFileName(fileName), date: '' }
 }
 
-const getBackButtonInfo = (resourceCategory, collectionName, siteName) => {
+const getBackButtonInfo = (resourceCategory, collectionName, siteName, subfolderName) => {
   if (resourceCategory) return {
     backButtonLabel: resourceCategory,
     backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
   }
-  if (collectionName) return {
-    backButtonLabel: collectionName,
-    backButtonUrl: `/sites/${siteName}/folder/${collectionName}`,
+  if (collectionName) {
+    if (subfolderName) return {
+      backButtonLabel: `${collectionName}/${subfolderName}`,
+      backButtonUrl: `/sites/${siteName}/folder/${collectionName}/subfolder/${subfolderName}`,
+    }
+    return {
+      backButtonLabel: collectionName,
+      backButtonUrl: `/sites/${siteName}/folder/${collectionName}`,
+    }
   }
   return {
     backButtonLabel: 'My Workspace',
@@ -93,7 +99,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
   const { collectionName, fileName, siteName, resourceName, subfolderName } = match.params;
   const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, fileName)
-  const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, collectionName, siteName)
+  const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, collectionName, siteName, subfolderName)
 
   const [csp, setCsp] = useState(new Policy())
   const [sha, setSha] = useState(null)

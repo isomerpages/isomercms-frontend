@@ -39,6 +39,11 @@ const FolderContentItem = ({ title, isFile, numItems, link }) => {
 }
 
 const FolderContent = ({ folderOrderArray, setFolderOrderArray, siteName, folderName, enableDragDrop }) => {
+    const generateLink = (folderContentItem) => {
+        if (folderContentItem.type === 'dir') return `/sites/${siteName}/folder/${folderName}/subfolder/${folderContentItem.name}`
+        return `/sites/${siteName}/folder/${folderName}/${folderContentItem.path.includes('/') ? `subfolder/` : ''}${folderContentItem.path}`
+    }
+
     const onDragEnd = (result) => {
         const { source, destination } = result;
 
@@ -94,7 +99,7 @@ const FolderContent = ({ folderOrderArray, setFolderOrderArray, siteName, folder
                                                 title={deslugifyPage(folderContentItem.name)}
                                                 numItems={folderContentItem.type === 'dir' ? folderContentItem.children.length : null}
                                                 isFile={folderContentItem.type === 'dir' ? false: true}
-                                                link={folderContentItem.type === 'dir' ? `/sites/${siteName}/folder/${folderName}/subfolder/${folderContentItem.name}` : `/sites/${siteName}/collections/${folderName}/${folderContentItem.path}`}
+                                                link={generateLink(folderContentItem)}
                                                 itemIndex={folderContentIndex}
                                             />
                                         </div>
