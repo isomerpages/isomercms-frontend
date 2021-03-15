@@ -2,5 +2,18 @@
     "bracketSpacing": true,
     "semi": false,
     "singleQuote": false,
-    "useTabs": false
+    "useTabs": false,
+    "importOrder": [
+        "^(..\/)layouts\/(.*)$",
+        "^(..\/)components\/(.*)$",
+        "^(..\/)templates\/(.*)$",
+        "^(..\/)hooks\/(.*)$",
+        "^(..\/)contexts\/(.*)$",
+        "^(..\/)utils(\/)?(.*)$",
+        "^(..\/..\/)utils(\/)?(.*)$",
+        "^easymde\/dist\/easymde.min.css$",
+        "^(..\/)styles\/(.*)$",
+        "^(..\/..\/)styles\/(.*)$"
+    ],
+    "importOrderSeparation": true
 }
