@@ -61,16 +61,6 @@ axios.defaults.withCredentials = true
 
 const PAGE_CONTENT_KEY = 'page-contents';
 
-const getApiEndpoint = (isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName) => {
-  if (isCollectionPage) {
-    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${fileName}`)}`
-  }
-  if (isResourcePage) {
-    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`
-  }
-  return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`
-}
-
 const extractMetadataFromFilename = (isResourcePage, fileName) => {
   if (isResourcePage) {
     const resourceMetadata = retrieveResourceFileMetadata(fileName)
@@ -102,7 +92,6 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
   const { setRedirectToNotFound } = useRedirectHook()
 
   const { collectionName, fileName, siteName, resourceName, subfolderName } = match.params;
-  const apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName)
   const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, fileName)
   const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, collectionName, siteName)
 
@@ -128,7 +117,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
   // get nav bar data
   const { data: pageData } = useQuery(
-    PAGE_CONTENT_KEY,
+    [PAGE_CONTENT_KEY, match],
     () => getEditPageData(isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName),
     {
       retry: false,
