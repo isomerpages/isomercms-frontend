@@ -126,7 +126,7 @@ const Folders = ({ match, location }) => {
             isFolderCreationActive &&
             <FolderCreationModal
               parentFolder={folderName}
-              existingSubfolders={folderOrderArray.filter(item => item.type === 'dir').map(item => item.title)}
+              existingSubfolders={folderOrderArray.filter(item => item.type === 'dir').map(item => item.name)}
               pagesData={folderOrderArray.filter(item => item.type === 'file')}
               siteName={siteName}
               setIsFolderCreationActive={setIsFolderCreationActive}
