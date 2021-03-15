@@ -19,8 +19,64 @@ const getFolderContents = async (siteName, folderName, subfolderName) => {
     return await axios.get(`${BACKEND_URL}/sites/${siteName}/folders?path=_${folderName}${subfolderName ? `/${subfolderName}` : ''}`);
 }
 
-// EditNavBar
+// EditPage
+const getPageApiEndpoint = (isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName) => {
+    if (isCollectionPage) {
+        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${fileName}`)}`
+    }
+    if (isResourcePage) {
+        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`
+    }
+    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`
+}
 
+const getEditPageData = async (isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName) => {
+    const apiEndpoint = getPageApiEndpoint(isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName)
+    const resp = await axios.get(apiEndpoint);
+    const { content:pageContent, sha:pageSha } = resp.data;
+    
+    if (!pageContent) return
+
+    // retrieve CSP
+    const cspResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`);
+    const { netlifyTomlHeaderValues } = cspResp.data;
+
+    let dirContent, dirSha
+    if  (isCollectionPage) {
+        // retrieve directory information
+        const dirResp = await getDirectoryFile(siteName, collectionName)
+        const { content, sha } = dirResp.data
+        dirContent = content
+        dirSha = sha
+    }
+
+    return {
+        pageContent,
+        pageSha,
+        netlifyTomlHeaderValues,
+        dirContent,
+        dirSha,
+    }
+}
+
+const updatePageData = async (isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName, content, sha) => {
+    const apiEndpoint = getPageApiEndpoint(isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName)
+    const params = {
+        content,
+        sha,
+    };
+    return await axios.post(apiEndpoint, params);
+}
+
+const deletePageData = async (isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName, sha) => {
+    const apiEndpoint = getPageApiEndpoint(isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName)
+    const params = { sha };
+    return await axios.delete(apiEndpoint, {
+        data: params,
+    });
+}
+
+// EditNavBar
 const getEditNavBarData = async(siteName) => {
     let navContent, collectionContent, resourceContent, navSha, foldersContent
 
@@ -81,6 +137,9 @@ export {
     getDirectoryFile,
     setDirectoryFile,
     getFolderContents,
+    getEditPageData,
+    updatePageData,
+    deletePageData,
     getEditNavBarData,
     updateNavBarData,
     createPage,

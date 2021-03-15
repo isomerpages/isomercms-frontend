@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import Bluebird from 'bluebird';
+import _ from 'lodash';
+import { useQuery, useMutation } from 'react-query';
 import PropTypes from 'prop-types';
 import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
@@ -20,7 +21,6 @@ import {
   concatFrontMatterMdBody,
   prependImageSrc,
   prettifyPageFileName,
-  prettifyCollectionPageFileName,
   retrieveResourceFileMetadata,
   prettifyDate,
   parseDirectoryFile,
@@ -53,8 +53,13 @@ import MediaSettingsModal from '../components/media/MediaSettingsModal';
 import useSiteColorsHook from '../hooks/useSiteColorsHook';
 import useRedirectHook from '../hooks/useRedirectHook';
 
+// Import API
+import { getEditPageData, updatePageData, deletePageData } from '../api';
+
 // axios settings
 axios.defaults.withCredentials = true
+
+const PAGE_CONTENT_KEY = 'page-contents';
 
 const getApiEndpoint = (isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName) => {
   if (isCollectionPage) {
@@ -66,16 +71,13 @@ const getApiEndpoint = (isResourcePage, isCollectionPage, collectionName, subfol
   return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`
 }
 
-const extractMetadataFromFilename = (isResourcePage, isCollectionPage, fileName) => {
+const extractMetadataFromFilename = (isResourcePage, fileName) => {
   if (isResourcePage) {
     const resourceMetadata = retrieveResourceFileMetadata(fileName)
     return {
       ...resourceMetadata,
       date: prettifyDate(resourceMetadata.date)
     }
-  }
-  if (isCollectionPage) {
-    return { title: prettifyCollectionPageFileName(fileName), date: '' }
   }
   return { title: prettifyPageFileName(fileName), date: '' }
 }
@@ -101,7 +103,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
   const { collectionName, fileName, siteName, resourceName, subfolderName } = match.params;
   const apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName)
-  const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, isCollectionPage, fileName)
+  const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, fileName)
   const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, collectionName, siteName)
 
   const [csp, setCsp] = useState(new Policy())
@@ -124,6 +126,40 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
   const mdeRef = useRef()
 
+  // get nav bar data
+  const { data: pageData } = useQuery(
+    PAGE_CONTENT_KEY,
+    () => getEditPageData(isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName),
+    {
+      retry: false,
+      onError: (err) => {
+        if (err.response && err.response.status === 404) {
+          setRedirectToNotFound(siteName)
+        } else {
+          errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
+        }
+      }
+    },
+  );
+
+  // update page data
+  const { mutateAsync: saveHandler } = useMutation(
+    () => updatePageData(isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName, concatFrontMatterMdBody(frontMatter, editorValue), sha),
+    {
+      onError: () => errorToast(`There was a problem saving your page. ${DEFAULT_RETRY_MSG}`),
+      onSuccess: () => window.location.reload(),
+    },
+  )
+
+  // delete page data
+  const { mutateAsync: deleteHandler } = useMutation(
+    () => deletePageData(isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName, sha),
+    {
+      onError: () => errorToast(`There was a problem deleting your page. ${DEFAULT_RETRY_MSG}`),
+      onSuccess: () => history.goBack(),
+    },
+  )
+
   useEffect(() => {
     let _isMounted = true
 
@@ -136,57 +172,38 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         console.log(err);
       }
 
-      let content, sha
-      try {
-        const resp = await axios.get(apiEndpoint);
-        const { content:pageContent, sha:pageSha } = resp.data;
-        content = pageContent
-        sha = pageSha
-      } catch (error) {
-        if (error?.response?.status === 404) {
-          setRedirectToNotFound(siteName)
-        } else {
-          errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
-        }
-        console.log(error)
+      if (_.isEmpty(pageData)) return
+
+      const {
+        pageContent,
+        pageSha,
+        netlifyTomlHeaderValues,
+        dirContent
+      } = pageData
+      if (!pageContent) return
+      
+      const { frontMatter, mdBody } = frontMatterParser(Base64.decode(pageContent));
+      const csp = new Policy(netlifyTomlHeaderValues['Content-Security-Policy']);
+
+      let leftNavPages
+      if (isCollectionPage) {
+        const parsedFolderContents = parseDirectoryFile(dirContent)
+        leftNavPages = parsedFolderContents.map((name) => 
+          ({
+            fileName: name.includes('/') ? name.split('/')[1] : name,
+            third_nav_title: name.includes('/') ? name.split('/')[0] : null,
+          })
+        )
       }
-      
-      if (!content) return
-      
-      try {
-        // split the markdown into front matter and content
-        const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
-        
-        // retrieve CSP
-        const cspResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`);
-        const { netlifyTomlHeaderValues } = cspResp.data;
-        const csp = new Policy(netlifyTomlHeaderValues['Content-Security-Policy']);
 
-        let leftNavPages
-        if (isCollectionPage) {
-          const dirResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/collection.yml`)
-          const { content:dirContent, sha:dirSha } = dirResp.data
-          const parsedFolderContents = parseDirectoryFile(dirContent)
-          leftNavPages = parsedFolderContents.map((name) => 
-            ({
-              fileName: name.includes('/') ? name.split('/')[1] : name,
-              third_nav_title: name.includes('/') ? name.split('/')[0] : null,
-            })
-          )
-        }
-
-        if (_isMounted) {
-          setCsp(csp)
-          setSha(sha)
-          setOriginalMdValue(mdBody.trim())
-          setEditorValue(mdBody.trim())
-          setFrontMatter(frontMatter)
-          setLeftNavPages(leftNavPages)
-          setIsLoadingPageContent(false)
-        }
-      } catch (err) {
-        errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`);
-        console.log(err);
+      if (_isMounted) {
+        setCsp(csp)
+        setSha(pageSha)
+        setOriginalMdValue(mdBody.trim())
+        setEditorValue(mdBody.trim())
+        setFrontMatter(frontMatter)
+        setLeftNavPages(leftNavPages)
+        setIsLoadingPageContent(false)
       }
     }
 
@@ -194,7 +211,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     return () => {
       _isMounted = false
     }
-  }, [])
+  }, [pageData])
 
   useEffect(() => {
     const html = marked(editorValue)
@@ -203,38 +220,6 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     setIsCspViolation(isCspViolation)
     setChunk(chunk)
   }, [editorValue])
-
-  const updatePage = async () => {
-    try {
-      // here, we need to re-add the front matter of the markdown file
-      const upload = concatFrontMatterMdBody(frontMatter, editorValue);
-
-      // encode to Base64 for github
-      const base64Content = Base64.encode(upload);
-      const params = {
-        content: base64Content,
-        sha,
-      };
-      await axios.post(apiEndpoint, params);
-      window.location.reload();
-    } catch (err) {
-      errorToast(`There was a problem saving your page. ${DEFAULT_RETRY_MSG}`);
-      console.log(err);
-    }
-  }
-
-  const deletePage = async () => {
-    try {
-      const params = { sha };
-      await axios.delete(apiEndpoint, {
-        data: params,
-      });
-      history.goBack();
-    } catch (err) {
-      errorToast(`There was a problem deleting your page. ${DEFAULT_RETRY_MSG}`);
-      console.log(err);
-    }
-  }
 
   const onEditorChange = (value) => {
     setEditorValue(value);
@@ -445,7 +430,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
           disabledStyle={elementStyles.disabled}
           disabled={isCspViolation}
           className={isCspViolation ? elementStyles.disabled : elementStyles.blue}
-          callback={updatePage}
+          callback={saveHandler}
         />
       </div>
       {
@@ -453,7 +438,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         && (
         <DeleteWarningModal
           onCancel={() => setCanShowDeleteWarningModal(false)}
-          onDelete={deletePage}
+          onDelete={deleteHandler}
           type={isResourcePage ? 'resource' : 'page'}
         />
         )
