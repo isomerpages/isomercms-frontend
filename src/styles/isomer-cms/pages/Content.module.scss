@@ -263,6 +263,24 @@
         }
       }
 
+      .optionsIcon{
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-content: flex-end;
+        line-height: 2rem;
+
+        &:hover {
+          background: rgba(43, 95, 206, 0.1);
+        }
+      }
+
+      // hack because we can't use inbuilt &:focus (focus used for dropdown onBlur)
+      .optionsIconFocus {
+        @extend .optionsIcon;
+        background: rgba(43, 95, 206, 0.3);
+      }
+
       .folderInfo{
         @extend .componentInfo;
         flex-direction: row;
