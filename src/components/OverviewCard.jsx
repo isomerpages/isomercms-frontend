@@ -201,7 +201,8 @@ const OverviewCard = ({
                   itemName: 'Move to',
                   iconClassName: 'bx bx-sm bx-folder',
                   itemId: `pageMove`,
-                  handler: toggleDropdownModals
+                  handler: toggleDropdownModals,
+                  children: <i key={`arrow-${itemIndex}`} className="bx bx-sm bx-chevron-right ml-auto"/>
                 },
                 {
                   itemName: 'Delete page',
