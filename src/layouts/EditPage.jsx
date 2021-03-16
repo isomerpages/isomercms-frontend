@@ -124,7 +124,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
   // get page data
   const { data: pageData } = useQuery(
     [PAGE_CONTENT_KEY, match],
-    () => getEditPageData(isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName),
+    () => getEditPageData(match.params),
     {
       retry: false,
       onError: (err) => {
@@ -139,7 +139,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
   // update page data
   const { mutateAsync: saveHandler } = useMutation(
-    () => updatePageData(isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName, concatFrontMatterMdBody(frontMatter, editorValue), sha),
+    () => updatePageData(match.params, concatFrontMatterMdBody(frontMatter, editorValue), sha),
     {
       onError: () => errorToast(`There was a problem saving your page. ${DEFAULT_RETRY_MSG}`),
       onSuccess: () => window.location.reload(),
@@ -148,7 +148,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
   // delete page data
   const { mutateAsync: deleteHandler } = useMutation(
-    () => deletePageData(isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName, sha),
+    () => deletePageData(match.params, sha),
     {
       onError: () => errorToast(`There was a problem deleting your page. ${DEFAULT_RETRY_MSG}`),
       onSuccess: () => history.goBack(),
