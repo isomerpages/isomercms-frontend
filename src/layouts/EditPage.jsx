@@ -222,10 +222,10 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
   useEffect(() => {
     const html = marked(editorValue)
-    const { isCspViolation, sanitisedHtml } = checkCSP(csp, html)
-    const chunk = prependImageSrc(siteName, sanitisedHtml)
-    setIsCspViolation(isCspViolation)
-    setChunk(chunk)
+    const { isCspViolation: checkedIsCspViolation, sanitisedHtml: processedSanitisedHtml } = checkCSP(csp, html)
+    const processedChunk = prependImageSrc(siteName, processedSanitisedHtml)
+    setIsCspViolation(checkedIsCspViolation)
+    setChunk(processedChunk)
   }, [editorValue])
 
   const onEditorChange = (value) => {
