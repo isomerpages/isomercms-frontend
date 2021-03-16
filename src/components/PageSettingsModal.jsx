@@ -7,9 +7,11 @@ import {
   DEFAULT_ERROR_TOAST_MSG,
   generatePageFileName,
   generatePageContent,
+  frontMatterParser,
+  deslugifyPage,
 } from '../utils';
 
-import { createPage } from '../api'
+import { getPage, createPage, updatePage } from '../api'
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
@@ -28,10 +30,11 @@ const PageSettingsModal = ({
     pageType, 
     folderName,
     subfolderName,
-    pageName,
+    originalPageName,
     isNewPage,
     pagesData,
     siteName,
+    setSelectedPage,
     setIsPageSettingsActive,
 }) => {
     // Errors
@@ -44,6 +47,7 @@ const PageSettingsModal = ({
     // Base hooks
     const [title, setTitle] = useState('')
     const [permalink, setPermalink] = useState('')
+    const [originalPermalink, setOriginalPermalink] = useState('')
     const [sha, setSha] = useState('')
     const [mdBody, setMdBody] = useState('')
     const { setRedirectToPage } = useRedirectHook()
@@ -53,32 +57,36 @@ const PageSettingsModal = ({
       permalink: setPermalink,
     }
 
-    const { data } = useQuery(
+    const {} = useQuery(
       'page',
-      () => {},  // for page settings editing 
+      async () => await getPage(pageType, siteName, folderName, originalPageName),
       { 
         enabled: !isNewPage,
-        onSuccess: () => {
-          setTitle(data.name)
-          setPermalink(data.permalink)
-          setSha(data.sha)
-          setMdBody(data.mdBody)
+        onSuccess: ({ content, sha }) => {
+          const { frontMatter, mdBody } = frontMatterParser(content)
+          setTitle(deslugifyPage(originalPageName))
+          setPermalink(frontMatter.permalink)
+          setOriginalPermalink(frontMatter.permalink)
+          setSha(sha)
+          setMdBody(mdBody)
         }, 
         onError: () => errorToast(`The page data could not be retrieved. Please try again. ${DEFAULT_ERROR_TOAST_MSG}`)
       }
     )
 
     const { mutateAsync: saveHandler } = useMutation(
-      async () => { 
-        const fileInfo = { siteName, title, permalink, mdBody, folderName, subfolderName, pageType }
+      async () => {
+        if (originalPageName === generatePageFileName(title) && originalPermalink === permalink) return 
+        const fileInfo = { siteName, title, permalink, mdBody, folderName, subfolderName, isNewPage, pageType, originalPageName }
         const { endpointUrl, content, redirectUrl } = generatePageContent(fileInfo)
-        await createPage(endpointUrl, content)
+        if (isNewPage) await createPage(endpointUrl, content)
+        if (!isNewPage) await updatePage(endpointUrl, content, sha)
         return redirectUrl
       },
       { 
-        onSettled: () => setIsPageSettingsActive(false),
-        onSuccess: (redirectUrl) => setRedirectToPage(redirectUrl),  
-        onError: () => errorToast(`A new page could not be created. Please try again. ${DEFAULT_ERROR_TOAST_MSG}`)
+        onSettled: () => {setSelectedPage(''); setIsPageSettingsActive(false)},
+        onSuccess: (redirectUrl) => redirectUrl ? setRedirectToPage(redirectUrl) : window.location.reload(),
+        onError: () => errorToast(`${isNewPage ? 'A new page could not be created.' : 'Your page settings could not be saved'} Please try again. ${DEFAULT_ERROR_TOAST_MSG}`)
       }
     )
 
@@ -114,7 +122,7 @@ const PageSettingsModal = ({
             <div className={elementStyles['modal-settings']}>
               <div className={elementStyles.modalHeader}>
                 <h1>{ isNewPage  ? 'Create new page' : 'Page settings' }</h1>
-                <button id="settings-CLOSE" type="button" onClick={() => setIsPageSettingsActive((prevState)=> !prevState)}>
+                <button id="settings-CLOSE" type="button" onClick={() => {setSelectedPage(''); setIsPageSettingsActive((prevState)=> !prevState)}}>
                   <i id="settingsIcon-CLOSE" className="bx bx-x" />
                 </button>
               </div>
@@ -162,7 +170,7 @@ const PageSettingsModal = ({
                 </div>
                 <SaveDeleteButtons 
                   isDisabled={isNewPage ? hasErrors : (hasErrors || !sha)}
-                  hasDeleteButton={!isNewPage}
+                  hasDeleteButton={false}
                   saveCallback={saveHandler}
                 />
               </div>
