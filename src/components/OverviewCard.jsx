@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 
 import DeleteWarningModal from './DeleteWarningModal'
 import GenericWarningModal from './GenericWarningModal'
-import LoadingButton from './LoadingButton'
 import MenuDropdown from './MenuDropdown'
 
 import {
@@ -42,9 +41,6 @@ const OverviewCard = ({
 }) => {
   const dropdownRef = useRef(null)
   const fileMoveDropdownRef = useRef(null)
-  const categoryInputRef = useRef(null)
-  const [newCategory, setNewCategory] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
   const [canShowDropdown, setCanShowDropdown] = useState(false)
   const [canShowFileMoveDropdown, setCanShowFileMoveDropdown] = useState(false)
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
@@ -130,20 +126,6 @@ const OverviewCard = ({
     }
   }
   
-  const changeHandler = (event) => {
-    const { value } = event.target;
-
-    const errorMessage = validateCategoryName(value, isResource ? 'resource' : 'page')
-
-    if (errorMessage === '' && allCategories && allCategories.includes(value)) {
-      setErrorMessage('This category name is already in use. Please choose a different one.')
-      setNewCategory(value)
-    } else {
-      setErrorMessage(errorMessage)
-      setNewCategory(value)
-    }
-  }
-
   const generateLink = () => {
     if (isResource) {
       return `/sites/${siteName}/resources/${category}/${fileName}`
@@ -235,7 +217,6 @@ const OverviewCard = ({
             />
           }
           { canShowFileMoveDropdown &&
-            <>
             <MenuDropdown 
               dropdownItems={[
                 {
@@ -260,37 +241,6 @@ const OverviewCard = ({
               tabIndex={1}
               handleBlur={handleBlur}
             />
-            <hr/>
-            <div className={`d-flex text-nowrap ${elementStyles.dropdownItem}`} onClick={(e)=>{e.preventDefault();e.stopPropagation()}}>
-              <i className="bx bx-sm bx-folder-plus" />
-              <input
-                type="text"
-                placeholder={`Create new ${isResource ? 'category' : 'collection'}`}
-                value={newCategory}
-                id={'categoryName'}
-                className={errorMessage ? `${elementStyles.error}` : null}
-                onChange={changeHandler}
-                ref={categoryInputRef}
-              />
-              <LoadingButton
-                label="Submit"
-                disabled={!!errorMessage || !newCategory}
-                disabledStyle={elementStyles.disabled}
-                className={(!!errorMessage || !newCategory) ? elementStyles.disabled : elementStyles.blue}
-                callback={() => {
-                  setIsNewCollection(true)
-                  setChosenCategory(newCategory)
-                  fileMoveDropdownRef.current.blur()
-                  setCanShowGenericWarningModal(true)
-                }}
-              />
-            </div>
-            { errorMessage &&
-              <div className={`d-flex ${elementStyles.dropdownItemWarning}`} onClick={(e)=>{e.preventDefault();e.stopPropagation()}}>
-                <span className={elementStyles.error}>{errorMessage}</span>
-              </div>
-            }
-            </>
           }
         </div>
       }
