@@ -7,6 +7,7 @@
   z-index: 2;
   color: black;
   white-space: nowrap;
+  right: 0rem;
 
   &:focus {
     outline: none;
@@ -56,8 +57,4 @@
     padding: 0.5rem;
     margin-left: 0.5rem;
   }
-}
-
-.right {
-  right: 0rem;
 }
