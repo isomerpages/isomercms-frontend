@@ -125,7 +125,9 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                         pageType='page'
                         pagesData={pages}
                         siteName={siteName}
-                        isNewPage={true}
+                        originalPageName={selectedFile ? selectedFile.name : ''}
+                        isNewPage={createNewPage}
+                        setSelectedPage={setSelectedFile}
                         setIsPageSettingsActive={setIsComponentSettingsActive}
                     />
                 )
