@@ -1,16 +1,32 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { DragDropContext } from 'react-beautiful-dnd';
 import update from 'immutability-helper';
 
 import { deslugifyPage } from '../../utils'
+import MenuDropdown from '../MenuDropdown'
 
 // Import styles
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../../styles/isomer-cms/pages/Content.module.scss';
 
-const FolderContentItem = ({ title, isFile, numItems, link }) => {
+const FolderContentItem = ({ 
+    title,
+    isFile,
+    numItems,
+    link,
+    itemIndex,
+    dropdownItems,
+    setSelectedPage,
+}) => {
+    const [showDropdown, setShowDropdown] = useState(false)
+    const dropdownRef = useRef(null)
+
+    useEffect(() => {
+        if (showDropdown) dropdownRef.current.focus()
+    }, [showDropdown])
+
     return (
         <Link to={link}>
             <div type="button" className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderItem}`}>
@@ -20,17 +36,33 @@ const FolderContentItem = ({ title, isFile, numItems, link }) => {
                         ? <i className={`bx bxs-file-blank ${elementStyles.folderItemIcon}`} />
                         : <i className={`bx bxs-folder ${elementStyles.folderItemIcon}`} />
                     }
-                    <span className={`${elementStyles.folderItemText} mr-auto`} >{title}</span>
+                    <span className={`${elementStyles.folderItemText} mr-auto`} >{deslugifyPage(title)}</span>
                     {
                         numItems
                         ? <span className={elementStyles.folderItemText}>{numItems} item{numItems === '1' ? '' : 's'}</span>
                         : null
                     }
+                    { showDropdown &&
+                        <MenuDropdown
+                            menuIndex={itemIndex}
+                            dropdownItems={dropdownItems}
+                            setShowDropdown={setShowDropdown}
+                            dropdownRef={dropdownRef}
+                            tabIndex={2}
+                            onBlur={()=>setShowDropdown(false)}
+                        />
+                    }
                     <button
-                    className={`${contentStyles.componentIcon} ml-5 mr-3`}
-                    type="button"
+                        className={`${contentStyles.componentIcon} ml-5 mr-3`}
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            e.preventDefault()
+                            setSelectedPage(title)
+                            setShowDropdown(true)
+                        }}
                     >
-                    <i className="bx bx-dots-vertical-rounded" />
+                    <i className="bx bx-dots-vertical-rounded" />     
                     </button>
                 </div>
             </div>
@@ -38,7 +70,15 @@ const FolderContentItem = ({ title, isFile, numItems, link }) => {
     )
 }
 
-const FolderContent = ({ folderOrderArray, setFolderOrderArray, siteName, folderName, enableDragDrop }) => {
+const FolderContent = ({ 
+    folderOrderArray,
+    setFolderOrderArray,
+    siteName,
+    folderName,
+    enableDragDrop,
+    dropdownItems,
+    setSelectedPage,
+}) => {
     const generateLink = (folderContentItem) => {
         if (folderContentItem.type === 'dir') return `/sites/${siteName}/folder/${folderName}/subfolder/${folderContentItem.name}`
         return `/sites/${siteName}/folder/${folderName}/${folderContentItem.path.includes('/') ? `subfolder/` : ''}${folderContentItem.path}`
@@ -96,11 +136,13 @@ const FolderContent = ({ folderOrderArray, setFolderOrderArray, siteName, folder
                                         >        
                                             <FolderContentItem
                                                 key={folderContentItem.name}
-                                                title={deslugifyPage(folderContentItem.name)}
+                                                title={folderContentItem.name}
                                                 numItems={folderContentItem.type === 'dir' ? folderContentItem.children.length : null}
                                                 isFile={folderContentItem.type === 'dir' ? false: true}
                                                 link={generateLink(folderContentItem)}
                                                 itemIndex={folderContentIndex}
+                                                dropdownItems={dropdownItems}
+                                                setSelectedPage={setSelectedPage}
                                             />
                                         </div>
                                     )}
