@@ -62,6 +62,7 @@ const PageSettingsModal = ({
       async () => await getPage(pageType, siteName, folderName, originalPageName),
       { 
         enabled: !isNewPage,
+        retry: false,
         onSuccess: ({ content, sha }) => {
           const { frontMatter, mdBody } = frontMatterParser(content)
           setTitle(deslugifyPage(originalPageName))
@@ -70,7 +71,11 @@ const PageSettingsModal = ({
           setSha(sha)
           setMdBody(mdBody)
         }, 
-        onError: () => errorToast(`The page data could not be retrieved. Please try again. ${DEFAULT_ERROR_TOAST_MSG}`)
+        onError: () => { 
+          setSelectedPage('')
+          setIsPageSettingsActive(false)
+          errorToast(`The page data could not be retrieved. Please try again. ${DEFAULT_ERROR_TOAST_MSG}`)
+        }
       }
     )
 
@@ -115,10 +120,9 @@ const PageSettingsModal = ({
     }
 
     return (
-        <>
+      <>
+        { (sha || isNewPage) &&
           <div className={elementStyles.overlay}>
-            { (sha || isNewPage)
-            && (
             <div className={elementStyles['modal-settings']}>
               <div className={elementStyles.modalHeader}>
                 <h1>{ isNewPage  ? 'Create new page' : 'Page settings' }</h1>
@@ -175,9 +179,9 @@ const PageSettingsModal = ({
                 />
               </div>
             </div>
-            )}
           </div>
-        </>
+        }
+      </>
     );
 }
 
