@@ -184,7 +184,7 @@ const OverviewCard = ({
                 e.preventDefault();
                 setCanShowDropdown(true)
               }}
-            className={`${contentStyles.componentIcon}`}
+            className={`${canShowDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
           >
             <i id={`settingsIcon-${itemIndex}`} className="bx bx-dots-vertical-rounded" />
           </button>

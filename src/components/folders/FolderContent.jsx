@@ -28,7 +28,7 @@ const FolderContentItem = ({
     }, [showDropdown])
 
     return (
-        <Link to={link}>
+        <Link className={`${contentStyles.component} ${contentStyles.card}`} to={link}>
             <div type="button" className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderItem}`}>
                 <div className={contentStyles.contentContainerFolderRow}>
                     {
@@ -42,28 +42,30 @@ const FolderContentItem = ({
                         ? <span className={elementStyles.folderItemText}>{numItems} item{numItems === '1' ? '' : 's'}</span>
                         : null
                     }
-                    { showDropdown &&
-                        <MenuDropdown
-                            menuIndex={itemIndex}
-                            dropdownItems={dropdownItems}
-                            setShowDropdown={setShowDropdown}
-                            dropdownRef={dropdownRef}
-                            tabIndex={2}
-                            onBlur={()=>setShowDropdown(false)}
-                        />
-                    }
-                    <button
-                        className={`${contentStyles.componentIcon} ml-5 mr-3`}
-                        type="button"
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            e.preventDefault()
-                            setSelectedPage(title)
-                            setShowDropdown(true)
-                        }}
-                    >
-                    <i className="bx bx-dots-vertical-rounded" />     
-                    </button>
+                    <div className={`position-relative mt-auto mb-auto`}>
+                        <button
+                            className={`${showDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                e.preventDefault()
+                                setSelectedPage(title)
+                                setShowDropdown(true)
+                            }}
+                        >
+                            <i className="bx bx-dots-vertical-rounded" />     
+                        </button>
+                        { showDropdown &&
+                            <MenuDropdown
+                                menuIndex={itemIndex}
+                                dropdownItems={dropdownItems}
+                                setShowDropdown={setShowDropdown}
+                                dropdownRef={dropdownRef}
+                                tabIndex={2}
+                                onBlur={()=>setShowDropdown(false)}
+                            />
+                        }
+                    </div>
                 </div>
             </div>
         </Link>

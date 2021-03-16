@@ -89,9 +89,9 @@ const FolderCard = ({
         pageType === 'homepage' || pageType === 'contact-us' || pageType === 'nav' || pageType === 'file'
         ? ''
         : (
-          <div className={`position-relative`}>
+          <div className={`position-relative mt-auto mb-auto`}>
             <button
-              className={contentStyles.componentIcon}
+              className={`${canShowDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
               type="button"
               id={`settings-folder-${itemIndex}`}
               onClick={(e) => {
