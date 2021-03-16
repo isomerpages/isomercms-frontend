@@ -8,6 +8,7 @@ axios.defaults.withCredentials = true
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
 const getDirectoryFile = async (siteName, folderName) => {
+    if (!folderName) return
     return await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`);
 }
 
@@ -37,26 +38,15 @@ const getEditPageData = async ({collectionName, subfolderName, fileName, siteNam
     
     if (!pageContent) return
 
-    // retrieve CSP
-    const cspResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`);
-    const { netlifyTomlHeaderValues } = cspResp.data;
-
-    let dirContent, dirSha
-    if  (collectionName) {
-        // retrieve directory information
-        const dirResp = await getDirectoryFile(siteName, collectionName)
-        const { content, sha } = dirResp.data
-        dirContent = content
-        dirSha = sha
-    }
-
     return {
         pageContent,
         pageSha,
-        netlifyTomlHeaderValues,
-        dirContent,
-        dirSha,
     }
+}
+
+const getCsp = async (siteName) => {
+    // retrieve CSP
+    return await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`);
 }
 
 const updatePageData = async ({collectionName, subfolderName, fileName, siteName, resourceName}, content, sha) => {
@@ -138,6 +128,7 @@ export {
     setDirectoryFile,
     getFolderContents,
     getEditPageData,
+    getCsp,
     updatePageData,
     deletePageData,
     getEditNavBarData,

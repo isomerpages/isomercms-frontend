@@ -54,12 +54,14 @@ import useSiteColorsHook from '../hooks/useSiteColorsHook';
 import useRedirectHook from '../hooks/useRedirectHook';
 
 // Import API
-import { getEditPageData, updatePageData, deletePageData } from '../api';
+import { getEditPageData, updatePageData, deletePageData, getCsp, getDirectoryFile } from '../api';
 
 // axios settings
 axios.defaults.withCredentials = true
 
 const PAGE_CONTENT_KEY = 'page-contents';
+const DIR_CONTENT_KEY = 'dir-contents';
+const CSP_CONTENT_KEY = 'csp-contents';
 
 const extractMetadataFromFilename = (isResourcePage, fileName) => {
   if (isResourcePage) {
@@ -137,6 +139,38 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     },
   );
 
+  // get directory data
+  const { data: dirData } = useQuery(
+    [DIR_CONTENT_KEY, match],
+    () => getDirectoryFile(siteName, collectionName),
+    {
+      retry: false,
+      onError: (err) => {
+        if (err.response && err.response.status === 404) {
+          setRedirectToNotFound(siteName)
+        } else {
+          errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
+        }
+      }
+    },
+  );
+
+  // get csp data
+  const { data: cspData } = useQuery(
+    [CSP_CONTENT_KEY, siteName],
+    () => getCsp(siteName),
+    {
+      retry: false,
+      onError: (err) => {
+        if (err.response && err.response.status === 404) {
+          setRedirectToNotFound(siteName)
+        } else {
+          errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
+        }
+      }
+    },
+  );
+
   // update page data
   const { mutateAsync: saveHandler } = useMutation(
     () => updatePageData(match.params, concatFrontMatterMdBody(frontMatter, editorValue), sha),
@@ -180,13 +214,14 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     let _isMounted = true
 
     const loadPageDetails = async () => {
-      if (!pageData) return
+      if (!pageData || (isCollectionPage && !dirData) || !cspData) return
       const {
         pageContent,
         pageSha,
-        netlifyTomlHeaderValues,
-        dirContent
       } = pageData
+      const {
+        netlifyTomlHeaderValues
+      } = cspData.data
       if (!pageContent) return
       
       const { frontMatter: retrievedFrontMatter, mdBody: retrievedMdBody } = frontMatterParser(Base64.decode(pageContent));
@@ -194,6 +229,9 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
       let generatedLeftNavPages
       if (isCollectionPage) {
+        const {
+          content: dirContent,
+        } = dirData.data
         const parsedFolderContents = parseDirectoryFile(dirContent)
         generatedLeftNavPages = parsedFolderContents.map((name) => 
           ({
@@ -218,7 +256,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     return () => {
       _isMounted = false
     }
-  }, [pageData])
+  }, [pageData, dirData, cspData])
 
   useEffect(() => {
     const html = marked(editorValue)
