@@ -12,6 +12,7 @@ import FolderCreationModal from '../components/FolderCreationModal'
 import FolderOptionButton from '../components/folders/FolderOptionButton';
 import FolderContent from '../components/folders/FolderContent';
 import PageSettingsModal from '../components/PageSettingsModal'
+import DeleteWarningModal from '../components/DeleteWarningModal'
 
 import { errorToast, successToast } from '../utils/toasts';
 
@@ -29,7 +30,7 @@ import {
 import { DIR_CONTENT_KEY } from '../constants'
 
 // Import API
-import { getDirectoryFile, setDirectoryFile } from '../api';
+import { getDirectoryFile, setDirectoryFile, deletePage } from '../api';
 
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -46,6 +47,8 @@ const Folders = ({ match, location }) => {
     const [folderOrderArray, setFolderOrderArray] = useState([])
     const [parsedFolderContents, setParsedFolderContents] = useState([])
     const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
+    const [isDeleteModalActive, setIsDeleteModalActive] = useState(false)
+    const [selectedPage, setSelectedPage] = useState('')
 
     const { data: folderContents, error: queryError } = useQuery(
       [DIR_CONTENT_KEY, siteName, folderName],
@@ -63,12 +66,24 @@ const Folders = ({ match, location }) => {
       },
     );
 
-    const { mutate } = useMutation(
+    const { mutate: rearrangeFolder } = useMutation(
       payload => setDirectoryFile(siteName, folderName, payload),
       {
         onError: () => errorToast(`Your file reordering could not be saved. Please try again. ${DEFAULT_RETRY_MSG}`),
         onSuccess: () => successToast('Successfully updated page order'),
         onSettled: () => setIsRearrangeActive((prevState) => !prevState),
+      }
+    )
+
+
+    const { mutateAsync: deleteHandler } = useMutation(
+      async () => {
+        await deletePage('collection', folderName, subfolderName, selectedPage)
+      },
+      {
+        onError: () => errorToast(`Your file could not be deleted successfully. Please try again. ${DEFAULT_RETRY_MSG}`),
+        onSuccess: () => successToast('Successfully deleted file'),
+        onSettled: () => setIsDeleteModalActive((prevState) => !prevState),
       }
     )
 
@@ -112,7 +127,7 @@ const Folders = ({ match, location }) => {
           content: updatedDirectoryFile,
           sha: directoryFileSha,
         } 
-        mutate(payload) // setIsRearrangeActive(false) handled by mutate
+        rearrangeFolder(payload) // setIsRearrangeActive(false) handled by mutate
       } else {
         setIsRearrangeActive((prevState) => !prevState) 
       }
@@ -139,8 +154,20 @@ const Folders = ({ match, location }) => {
                 subfolderName={subfolderName}
                 pagesData={folderOrderArray.filter(item => item.type === 'file')}
                 siteName={siteName}
-                isNewPage={true}
+                originalPageName={selectedPage || ''}
+                isNewPage={!selectedPage.length > 0}
                 setIsPageSettingsActive={setIsPageSettingsActive}
+                setSelectedPage={setSelectedPage}
+              />
+            )
+          }
+          {
+            isDeleteModalActive
+            && (
+              <DeleteWarningModal
+                onCancel={() => setIsDeleteModalActive(false)}
+                onDelete={deleteHandler}
+                type={"page"}
               />
             )
           }
@@ -193,7 +220,7 @@ const Folders = ({ match, location }) => {
               {/* Options */}
               <div className={contentStyles.contentContainerFolderRowMargin}>
                 <FolderOptionButton title="Rearrange items" isSelected={isRearrangeActive} onClick={toggleRearrange} option="rearrange" isDisabled={folderOrderArray.length <= 1 || !folderContents}/>
-                <FolderOptionButton title="Create new page" option="create-page" onClick={() => setIsPageSettingsActive(true)}/>
+                <FolderOptionButton title="Create new page" option="create-page" id="pageSettings-new" onClick={() => setIsPageSettingsActive((prevState) => !prevState)}/>
                 <FolderOptionButton title="Create new sub-folder" option="create-sub" isDisabled={subfolderName || folderOrderArray.length === 0 ? true : false} onClick={() => setIsFolderCreationActive(true)}/>
               </div>
               {/* Collections content */}
@@ -209,6 +236,7 @@ const Folders = ({ match, location }) => {
                     siteName={siteName} 
                     folderName={folderName} 
                     enableDragDrop={isRearrangeActive}
+                    setSelectedPage={setSelectedPage}
                   />
               }
             </div>
