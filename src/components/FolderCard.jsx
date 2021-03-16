@@ -5,16 +5,14 @@ import axios from 'axios';
 
 import FolderModal from './FolderModal';
 import DeleteWarningModal from './DeleteWarningModal'
+import MenuDropdown from './MenuDropdown'
 
 import { errorToast } from '../utils/toasts';
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
-import {
-  DEFAULT_RETRY_MSG,
-  checkIsOutOfViewport,
-} from '../utils'
+import { DEFAULT_RETRY_MSG } from '../utils'
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -32,18 +30,10 @@ const FolderCard = ({
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
   const [canShowDropdown, setCanShowDropdown] = useState(false)
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
-  const [isOutOfViewport, setIsOutOfViewport] = useState()
   const dropdownRef = useRef(null)
 
   useEffect(() => {
-    if (canShowDropdown) {
-      dropdownRef.current.focus()
-      if (isOutOfViewport === undefined) {
-        // We only want to run this once
-        const bounding = dropdownRef.current.getBoundingClientRect()
-        setIsOutOfViewport(checkIsOutOfViewport(bounding, ['right']))
-      }
-    }
+    if (canShowDropdown) dropdownRef.current.focus()
   }, [canShowDropdown])
   
   const generateLink = () => {
@@ -76,22 +66,6 @@ const FolderCard = ({
       default: 
         return 'bxs-folder'
     }
-  }
-
-  const MenuItem = ({handler, id, children}) => {
-    return (
-      <div
-        id={id}
-        onMouseDown={(e) => {
-          e.stopPropagation();
-          e.preventDefault(); 
-          if (handler) handler(e);
-        }}
-        className={`${elementStyles.dropdownItem}`}
-      >
-        {children}
-      </div>
-    )
   }
 
   const deleteHandler = async () => {
@@ -128,22 +102,28 @@ const FolderCard = ({
             >
               <i id={`settingsIcon-${itemIndex}`} className="bx bx-dots-vertical-rounded" />
             </button>
-          { canShowDropdown &&
-            <div className={`${elementStyles.dropdown} ${isOutOfViewport && elementStyles.right}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
-              { isOutOfViewport !== undefined && 
-                <>
-                  <MenuItem handler={(e) => {dropdownRef.current.blur(); setIsFolderModalOpen(true)}} id={`folderSettings-${itemIndex}`}>
-                    <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
-                    <div className={elementStyles.dropdownText}>Rename</div>
-                  </MenuItem>
-                  <MenuItem handler={() => {dropdownRef.current.blur(); setCanShowDeleteWarningModal(true)}} id={`folderDelete-${itemIndex}`}>
-                    <i className="bx bx-sm bx-trash text-danger"/>
-                    <div className={elementStyles.dropdownText}>Delete folder</div>
-                  </MenuItem>
-                </>
-              }
-            </div>
-          }
+            { canShowDropdown &&
+              <MenuDropdown 
+                dropdownItems={[
+                  {
+                    itemName: 'Rename folder',
+                    itemId: 'folderSettings',
+                    iconClassName: "bx bx-sm bx-edit",
+                    handler: () => setIsFolderModalOpen(true),
+                  },
+                  {
+                    itemName: 'Delete folder',
+                    iconClassName: 'bx bx-sm bx-trash text-danger',
+                    itemId: `folderDelete`,
+                    handler: () => setCanShowDeleteWarningModal(true)
+                  },
+                ]}
+                dropdownRef={dropdownRef}
+                menuIndex={itemIndex}
+                tabIndex={2}
+                onBlur={()=>setCanShowDropdown(false)}
+              />
+            }
           </div>
         )
       }
