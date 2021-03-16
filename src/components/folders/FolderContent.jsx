@@ -39,7 +39,7 @@ const FolderContentItem = ({
                     <span className={`${elementStyles.folderItemText} mr-auto`} >{deslugifyPage(title)}</span>
                     {
                         numItems
-                        ? <span className={elementStyles.folderItemText}>{numItems} item{numItems === '1' ? '' : 's'}</span>
+                        ? <span className={`${elementStyles.folderItemText} mr-5`}>{numItems} item{numItems === 1 ? '' : 's'}</span>
                         : null
                     }
                     <div className={`position-relative mt-auto mb-auto`}>
