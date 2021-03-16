@@ -25,18 +25,8 @@ const MenuItem = ({ item, menuIndex, dropdownRef }) => {
 }
 
 const MenuDropdown = ({ dropdownItems, menuIndex, dropdownRef, tabIndex, onBlur }) => {
-  const [isOutOfViewport, setIsOutOfViewport] = useState()
-  
-  useEffect(() => {
-    if (isOutOfViewport === undefined) {
-      // We only want to run this once
-      const bounding = dropdownRef.current.getBoundingClientRect()
-      setIsOutOfViewport(checkIsOutOfViewport(bounding, ['right']))
-    }
-  }, [dropdownRef])
-  
   return (
-    <div className={`${elementStyles.dropdown} ${isOutOfViewport && elementStyles.right}`} ref={dropdownRef} tabIndex={tabIndex} onBlur={onBlur}>
+    <div className={`${elementStyles.dropdown} ${elementStyles.right}`} ref={dropdownRef} tabIndex={tabIndex} onBlur={onBlur}>
       { dropdownItems.map(item =>         
         ( <MenuItem 
             item={item}
