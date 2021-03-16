@@ -121,7 +121,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
   const mdeRef = useRef()
 
-  // get nav bar data
+  // get page data
   const { data: pageData } = useQuery(
     [PAGE_CONTENT_KEY, match],
     () => getEditPageData(isResourcePage, isCollectionPage, collectionName, subfolderName, fileName, siteName, resourceName),
@@ -157,7 +157,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
   useEffect(() => {
     let _isMounted = true
-  
+
     const loadPageDetails = async () => {
       // Set page colors
       try {
@@ -189,13 +189,13 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       } = pageData
       if (!pageContent) return
       
-      const { frontMatter, mdBody } = frontMatterParser(Base64.decode(pageContent));
-      const csp = new Policy(netlifyTomlHeaderValues['Content-Security-Policy']);
+      const { frontMatter: retrievedFrontMatter, mdBody: retrievedMdBody } = frontMatterParser(Base64.decode(pageContent));
+      const retrievedCsp = new Policy(netlifyTomlHeaderValues['Content-Security-Policy']);
 
-      let leftNavPages
+      let generatedLeftNavPages
       if (isCollectionPage) {
         const parsedFolderContents = parseDirectoryFile(dirContent)
-        leftNavPages = parsedFolderContents.map((name) => 
+        generatedLeftNavPages = parsedFolderContents.map((name) => 
           ({
             fileName: name.includes('/') ? name.split('/')[1] : name,
             third_nav_title: name.includes('/') ? name.split('/')[0] : null,
@@ -204,12 +204,12 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       }
 
       if (_isMounted) {
-        setCsp(csp)
+        setCsp(retrievedCsp)
         setSha(pageSha)
-        setOriginalMdValue(mdBody.trim())
-        setEditorValue(mdBody.trim())
-        setFrontMatter(frontMatter)
-        setLeftNavPages(leftNavPages)
+        setOriginalMdValue(retrievedMdBody.trim())
+        setEditorValue(retrievedMdBody.trim())
+        setFrontMatter(retrievedFrontMatter)
+        setLeftNavPages(generatedLeftNavPages)
         setIsLoadingPageContent(false)
       }
     }
