@@ -238,7 +238,6 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
           ({
             fileName: name.includes('/') ? name.split('/')[1] : name,
             third_nav_title: name.includes('/') ? name.split('/')[0] : null,
-          })
         )
       }
 
