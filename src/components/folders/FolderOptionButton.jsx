@@ -12,7 +12,7 @@ const iconSelection = {
 
 
 
-const FolderOptionButton = ({ title, isSelected, onClick, option, isDisabled }) => {
+const FolderOptionButton = ({ title, isSelected, onClick, option, isDisabled, id }) => {
     return (
         <button
             type="button"
@@ -24,6 +24,7 @@ const FolderOptionButton = ({ title, isSelected, onClick, option, isDisabled }) 
             `}
             disabled={isDisabled}
             onClick={onClick}
+            id={id}
         >
             <div className={`${contentStyles.contentContainerFolderRow} justify-content-center`}>
                 <i className={`bx ${iconSelection[option]} ${elementStyles.folderOptionIcon} ${isSelected ? 'text-white' : ''} ${isDisabled ? elementStyles.disabledIcon : ''} mr-2`} />
