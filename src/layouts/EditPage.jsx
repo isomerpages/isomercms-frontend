@@ -157,7 +157,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
   useEffect(() => {
     let _isMounted = true
-
+  
     const loadPageDetails = async () => {
       // Set page colors
       try {
@@ -168,7 +168,19 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       }
 
       if (_.isEmpty(pageData)) return
+    }
 
+    loadPageDetails()
+    return () => {
+      _isMounted = false
+    }
+  })
+
+  useEffect(() => {
+    let _isMounted = true
+
+    const loadPageDetails = async () => {
+      if (!pageData) return
       const {
         pageContent,
         pageSha,
