@@ -152,14 +152,6 @@ const createPage = async (endpointUrl, content) => {
     return await axios.post(`${BACKEND_URL}/sites/${endpointUrl}`, { content });
 }
 
-const getPage = async (pageType, siteName, collectionName, pageName) => {
-    const endpointUrl = (pageType === 'collection') 
-                      ? `${siteName}/collections/${collectionName}/pages/${pageName}`
-                      : `${siteName}/pages/${pageName}`
-    const resp = await axios.get(`${BACKEND_URL}/sites/${endpointUrl}`);
-    return resp.data
-}
-
 const updatePage = async(endpointUrl, content, sha) => {
     return await axios.post(`${BACKEND_URL}/sites/${endpointUrl}`, { content, sha });
 }
@@ -196,7 +188,6 @@ export {
     getEditNavBarData,
     updateNavBarData,
     createPage,
-    getPage,
     updatePage,
     deletePage,
     moveFiles,
