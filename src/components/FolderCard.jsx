@@ -51,7 +51,7 @@ const FolderCard = ({
       case 'homepage': 
         return `/sites/${siteName}/homepage`
       case 'collection':
-        return `/sites/${siteName}/collections/${category}`
+        return `/sites/${siteName}/folder/${category}`
       case 'resources':
         return `/sites/${siteName}/resources/${category}`
       case 'contact-us':

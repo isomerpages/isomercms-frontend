@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import Bluebird from 'bluebird';
+import _ from 'lodash';
+import { useQuery, useMutation } from 'react-query';
 import PropTypes from 'prop-types';
 import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
@@ -20,9 +21,10 @@ import {
   concatFrontMatterMdBody,
   prependImageSrc,
   prettifyPageFileName,
-  prettifyCollectionPageFileName,
   retrieveResourceFileMetadata,
   prettifyDate,
+  parseDirectoryFile,
+  deslugifyDirectory,
 } from '../utils';
 import {
   boldButton,
@@ -36,6 +38,11 @@ import {
   tableButton,
   guideButton,
 } from '../utils/markdownToolbar';
+import {
+  PAGE_CONTENT_KEY,
+  DIR_CONTENT_KEY,
+  CSP_CONTENT_KEY,
+} from '../constants'
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -51,20 +58,13 @@ import MediaSettingsModal from '../components/media/MediaSettingsModal';
 import useSiteColorsHook from '../hooks/useSiteColorsHook';
 import useRedirectHook from '../hooks/useRedirectHook';
 
+// Import API
+import { getEditPageData, updatePageData, deletePageData, getCsp, getDirectoryFile } from '../api';
+
 // axios settings
 axios.defaults.withCredentials = true
 
-const getApiEndpoint = (isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName }) => {
-  if (isCollectionPage) {
-    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/${fileName}`
-  }
-  if (isResourcePage) {
-    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`
-  }
-  return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`
-}
-
-const extractMetadataFromFilename = (isResourcePage, isCollectionPage, fileName) => {
+const extractMetadataFromFilename = (isResourcePage, fileName) => {
   if (isResourcePage) {
     const resourceMetadata = retrieveResourceFileMetadata(fileName)
     return {
@@ -72,26 +72,23 @@ const extractMetadataFromFilename = (isResourcePage, isCollectionPage, fileName)
       date: prettifyDate(resourceMetadata.date)
     }
   }
-  if (isCollectionPage) {
-    return { title: prettifyCollectionPageFileName(fileName), date: '' }
-  }
   return { title: prettifyPageFileName(fileName), date: '' }
 }
 
-// Remove `/pages/${fileName}' from api endpoint
-const getCollectionsApiEndpoint = (endpoint) => {
-  const endpointArr = endpoint.split('/')
-  return endpointArr.slice(0, endpointArr.length - 2).join('/')
-}
-
-const getBackButtonInfo = (resourceCategory, collectionName, siteName) => {
+const getBackButtonInfo = (resourceCategory, folderName, siteName, subfolderName) => {
   if (resourceCategory) return {
     backButtonLabel: resourceCategory,
     backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
   }
-  if (collectionName) return {
-    backButtonLabel: collectionName,
-    backButtonUrl: `/sites/${siteName}/folder/${collectionName}`,
+  if (folderName) {
+    if (subfolderName) return {
+      backButtonLabel: `${folderName}/${subfolderName}`,
+      backButtonUrl: `/sites/${siteName}/folder/${folderName}/subfolder/${subfolderName}`,
+    }
+    return {
+      backButtonLabel: folderName,
+      backButtonUrl: `/sites/${siteName}/folder/${folderName}`,
+    }
   }
   return {
     backButtonLabel: 'My Workspace',
@@ -103,10 +100,9 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
   const { setRedirectToNotFound } = useRedirectHook()
 
-  const { collectionName, fileName, siteName, resourceName } = match.params;
-  const apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName })
-  const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, isCollectionPage, fileName)
-  const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, collectionName, siteName)
+  const { folderName, fileName, siteName, resourceName, subfolderName } = match.params;
+  const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, fileName)
+  const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, folderName, siteName, subfolderName)
 
   const [csp, setCsp] = useState(new Policy())
   const [sha, setSha] = useState(null)
@@ -128,6 +124,72 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
   const mdeRef = useRef()
 
+  // get page data
+  const { data: pageData } = useQuery(
+    [PAGE_CONTENT_KEY, match.params],
+    () => getEditPageData(match.params),
+    {
+      retry: false,
+      onError: (err) => {
+        if (err.response && err.response.status === 404) {
+          setRedirectToNotFound(siteName)
+        } else {
+          errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
+        }
+      }
+    },
+  );
+
+  // get directory data
+  const { data: dirData } = useQuery(
+    [DIR_CONTENT_KEY, siteName, folderName],
+    () => getDirectoryFile(siteName, folderName),
+    {
+      retry: false,
+      onError: (err) => {
+        if (err.response && err.response.status === 404) {
+          setRedirectToNotFound(siteName)
+        } else {
+          errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
+        }
+      }
+    },
+  );
+
+  // get csp data
+  const { data: cspData } = useQuery(
+    [CSP_CONTENT_KEY, siteName],
+    () => getCsp(siteName),
+    {
+      retry: false,
+      onError: (err) => {
+        if (err.response && err.response.status === 404) {
+          setRedirectToNotFound(siteName)
+        } else {
+          errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
+        }
+      }
+    },
+  );
+
+  // update page data
+  const { mutateAsync: saveHandler } = useMutation(
+    () => updatePageData(match.params, concatFrontMatterMdBody(frontMatter, editorValue), sha),
+    {
+      onError: () => errorToast(`There was a problem saving your page. ${DEFAULT_RETRY_MSG}`),
+      onSuccess: () => window.location.reload(),
+    },
+  )
+
+  // delete page data
+  const { mutateAsync: deleteHandler } = useMutation(
+    () => deletePageData(match.params, sha),
+    {
+      onError: () => errorToast(`There was a problem deleting your page. ${DEFAULT_RETRY_MSG}`),
+      onSuccess: () => history.goBack(),
+    },
+  )
+
   useEffect(() => {
     let _isMounted = true
 
@@ -140,62 +202,54 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         console.log(err);
       }
 
-      let content, sha
-      try {
-        const resp = await axios.get(apiEndpoint);
-        const { content:pageContent, sha:pageSha } = resp.data;
-        content = pageContent
-        sha = pageSha
-      } catch (error) {
-        if (error?.response?.status === 404) {
-          setRedirectToNotFound(siteName)
-        } else {
-          errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
-        }
-        console.log(error)
+      if (_.isEmpty(pageData)) return
+    }
+
+    loadPageDetails()
+    return () => {
+      _isMounted = false
+    }
+  })
+
+  useEffect(() => {
+    let _isMounted = true
+
+    const loadPageDetails = async () => {
+      if (!pageData || (isCollectionPage && !dirData) || !cspData) return
+      const {
+        pageContent,
+        pageSha,
+      } = pageData
+      const {
+        netlifyTomlHeaderValues
+      } = cspData.data
+      if (!pageContent) return
+      
+      const { frontMatter: retrievedFrontMatter, mdBody: retrievedMdBody } = frontMatterParser(Base64.decode(pageContent));
+      const retrievedCsp = new Policy(netlifyTomlHeaderValues['Content-Security-Policy']);
+
+      let generatedLeftNavPages
+      if (isCollectionPage) {
+        const {
+          content: dirContent,
+        } = dirData.data
+        const parsedFolderContents = parseDirectoryFile(dirContent)
+        generatedLeftNavPages = parsedFolderContents.map((name) => 
+          ({
+            fileName: name.includes('/') ? name.split('/')[1] : name,
+            third_nav_title: name.includes('/') ? name.split('/')[0] : null,
+          })
+        )
       }
-      
-      if (!content) return
-      
-      try {
-        // split the markdown into front matter and content
-        const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
-        
-        // retrieve CSP
-        const cspResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`);
-        const { netlifyTomlHeaderValues } = cspResp.data;
-        const csp = new Policy(netlifyTomlHeaderValues['Content-Security-Policy']);
 
-        let leftNavPages
-        if (isCollectionPage) {
-          const collectionsApiEndpoint = getCollectionsApiEndpoint(apiEndpoint)
-          const collectionPagesResp = await axios.get(collectionsApiEndpoint);
-          const collectionResp = collectionPagesResp.data?.collectionPages;
-
-          // Retrieve third_nav_title from collection pages
-          leftNavPages = await Bluebird.map(collectionResp, async (collectionPage) => {
-            const collectionPageResp = await axios.get(`${collectionsApiEndpoint}/pages/${collectionPage.fileName}`)
-            const { content } = collectionPageResp.data;
-            const { frontMatter } = frontMatterParser(Base64.decode(content));
-            return {
-              ...collectionPage,
-              third_nav_title: frontMatter.third_nav_title,
-            }
-          });
-        }
-
-        if (_isMounted) {
-          setCsp(csp)
-          setSha(sha)
-          setOriginalMdValue(mdBody.trim())
-          setEditorValue(mdBody.trim())
-          setFrontMatter(frontMatter)
-          setLeftNavPages(leftNavPages)
-          setIsLoadingPageContent(false)
-        }
-      } catch (err) {
-        errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`);
-        console.log(err);
+      if (_isMounted) {
+        setCsp(retrievedCsp)
+        setSha(pageSha)
+        setOriginalMdValue(retrievedMdBody.trim())
+        setEditorValue(retrievedMdBody.trim())
+        setFrontMatter(retrievedFrontMatter)
+        setLeftNavPages(generatedLeftNavPages)
+        setIsLoadingPageContent(false)
       }
     }
 
@@ -203,47 +257,15 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     return () => {
       _isMounted = false
     }
-  }, [])
+  }, [pageData, dirData, cspData])
 
   useEffect(() => {
     const html = marked(editorValue)
-    const { isCspViolation, sanitisedHtml } = checkCSP(csp, html)
-    const chunk = prependImageSrc(siteName, sanitisedHtml)
-    setIsCspViolation(isCspViolation)
-    setChunk(chunk)
+    const { isCspViolation: checkedIsCspViolation, sanitisedHtml: processedSanitisedHtml } = checkCSP(csp, html)
+    const processedChunk = prependImageSrc(siteName, processedSanitisedHtml)
+    setIsCspViolation(checkedIsCspViolation)
+    setChunk(processedChunk)
   }, [editorValue])
-
-  const updatePage = async () => {
-    try {
-      // here, we need to re-add the front matter of the markdown file
-      const upload = concatFrontMatterMdBody(frontMatter, editorValue);
-
-      // encode to Base64 for github
-      const base64Content = Base64.encode(upload);
-      const params = {
-        content: base64Content,
-        sha,
-      };
-      await axios.post(apiEndpoint, params);
-      window.location.reload();
-    } catch (err) {
-      errorToast(`There was a problem saving your page. ${DEFAULT_RETRY_MSG}`);
-      console.log(err);
-    }
-  }
-
-  const deletePage = async () => {
-    try {
-      const params = { sha };
-      await axios.delete(apiEndpoint, {
-        data: params,
-      });
-      history.goBack();
-    } catch (err) {
-      errorToast(`There was a problem deleting your page. ${DEFAULT_RETRY_MSG}`);
-      console.log(err);
-    }
-  }
 
   const onEditorChange = (value) => {
     setEditorValue(value);
@@ -435,6 +457,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
                 leftNavPages={leftNavPages}
                 fileName={fileName}
                 title={title}
+                collection={deslugifyDirectory(folderName)}
               />
             ) : (
               <SimplePage
@@ -453,7 +476,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
           disabledStyle={elementStyles.disabled}
           disabled={isCspViolation}
           className={isCspViolation ? elementStyles.disabled : elementStyles.blue}
-          callback={updatePage}
+          callback={saveHandler}
         />
       </div>
       {
@@ -461,7 +484,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         && (
         <DeleteWarningModal
           onCancel={() => setCanShowDeleteWarningModal(false)}
-          onDelete={deletePage}
+          onDelete={deleteHandler}
           type={isResourcePage ? 'resource' : 'page'}
         />
         )

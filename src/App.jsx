@@ -26,8 +26,6 @@ import EditFile from './layouts/EditFile';
 import EditHomepage from './layouts/EditHomepage';
 import EditContactUs from './layouts/EditContactUs';
 import Resources from './layouts/Resources';
-import Menus from './layouts/Menus';
-import EditNav from './layouts/EditNav';
 import EditNavBar from './layouts/EditNavBar'
 import Settings from './layouts/Settings';
 import NotFoundPage from './components/NotFoundPage'
@@ -145,8 +143,8 @@ function App() {
                 <Switch>
                     <ProtectedRouteWithProps exact path='/auth' component={AuthCallback} />
                     <ProtectedRouteWithProps exact path="/" component={Home} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/collections/:collectionName" component={CategoryPages} isResource={false}/>
+                    <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
+                    <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
                     <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName" component={Folders} />
                     <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName" component={Folders} />
                     <ProtectedRouteWithProps exact path="/sites/:siteName/navbar" component={EditNavBar} />
@@ -162,8 +160,6 @@ function App() {
                     <ProtectedRouteWithProps path="/sites/:siteName/resources/:collectionName" component={CategoryPages} isResource={true}/>
                     <ProtectedRouteWithProps path="/sites/:siteName/resources" component={Resources} />
                     <ProtectedRouteWithProps path="/sites/:siteName/navbar" component={EditNavBar} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/menus/main-menu" component={EditNav} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/menus" component={Menus} />
                     <ProtectedRouteWithProps path="/sites/:siteName/settings" component={Settings} />
                     <ProtectedRouteWithProps exact path="/sites" component={Sites} />
                     <ProtectedRouteWithProps path="/" component={NotFoundPage}/>

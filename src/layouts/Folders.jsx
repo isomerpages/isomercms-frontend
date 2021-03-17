@@ -26,6 +26,7 @@ import {
   retrieveSubfolderContents,
   convertSubfolderArray,
 } from '../utils'
+import { DIR_CONTENT_KEY } from '../constants'
 
 // Import API
 import { getDirectoryFile, setDirectoryFile } from '../api';
@@ -33,9 +34,6 @@ import { getDirectoryFile, setDirectoryFile } from '../api';
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
-
-// Constants
-const FOLDER_CONTENTS_KEY = 'folder-contents'
 
 const Folders = ({ match, location }) => {
     const { siteName, folderName, subfolderName } = match.params;
@@ -50,7 +48,7 @@ const Folders = ({ match, location }) => {
     const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
 
     const { data: folderContents, error: queryError } = useQuery(
-      [FOLDER_CONTENTS_KEY, match],
+      [DIR_CONTENT_KEY, siteName, folderName],
       () => getDirectoryFile(siteName, folderName),
       { 
         retry: false,
@@ -126,7 +124,7 @@ const Folders = ({ match, location }) => {
             isFolderCreationActive &&
             <FolderCreationModal
               parentFolder={folderName}
-              existingSubfolders={folderOrderArray.filter(item => item.type === 'dir').map(item => item.title)}
+              existingSubfolders={folderOrderArray.filter(item => item.type === 'dir').map(item => item.name)}
               pagesData={folderOrderArray.filter(item => item.type === 'file')}
               siteName={siteName}
               setIsFolderCreationActive={setIsFolderCreationActive}
