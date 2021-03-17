@@ -1,18 +1,55 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { DragDropContext } from 'react-beautiful-dnd';
 import update from 'immutability-helper';
 
 import { deslugifyPage } from '../../utils'
+import MenuDropdown from '../MenuDropdown'
 
 // Import styles
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../../styles/isomer-cms/pages/Content.module.scss';
+import _default from 'immutability-helper';
+import _ from 'lodash';
 
-const FolderContentItem = ({ title, isFile, numItems, link }) => {
+const FolderContentItem = ({ 
+    title,
+    isFile,
+    numItems,
+    link,
+    itemIndex,
+    setSelectedPage,
+    setIsPageSettingsActive,
+    setIsDeleteModalActive
+}) => {
+    const [showDropdown, setShowDropdown] = useState(false)
+    const dropdownRef = useRef(null)
+
+    useEffect(() => {
+        if (showDropdown) dropdownRef.current.focus()
+    }, [showDropdown])
+
+    const generateDropdownItems = () => {
+        const dropdownItems = [
+            {
+                type: 'edit',
+                handler: () => setIsPageSettingsActive(true)
+            },
+            {
+                type: 'move',
+                handler: () => {}, // to be added in separate PR
+            },
+            {
+                type: 'delete',
+                handler: () => setIsDeleteModalActive(true)
+            },
+        ]
+        if (isFile) return dropdownItems
+        return dropdownItems.filter(item => item.itemId !== 'move')
+    }
     return (
-        <Link to={link}>
+        <Link className={`${contentStyles.component} ${contentStyles.card}`} to={link}>
             <div type="button" className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderItem}`}>
                 <div className={contentStyles.contentContainerFolderRow}>
                     {
@@ -20,25 +57,51 @@ const FolderContentItem = ({ title, isFile, numItems, link }) => {
                         ? <i className={`bx bxs-file-blank ${elementStyles.folderItemIcon}`} />
                         : <i className={`bx bxs-folder ${elementStyles.folderItemIcon}`} />
                     }
-                    <span className={`${elementStyles.folderItemText} mr-auto`} >{title}</span>
+                    <span className={`${elementStyles.folderItemText} mr-auto`} >{deslugifyPage(title)}</span>
                     {
                         numItems
-                        ? <span className={elementStyles.folderItemText}>{numItems} item{numItems === '1' ? '' : 's'}</span>
+                        ? <span className={`${elementStyles.folderItemText} mr-5`}>{numItems} item{numItems === 1 ? '' : 's'}</span>
                         : null
                     }
-                    <button
-                    className={`${contentStyles.componentIcon} ml-5 mr-3`}
-                    type="button"
-                    >
-                    <i className="bx bx-dots-vertical-rounded" />
-                    </button>
+                    <div className={`position-relative mt-auto mb-auto`}>
+                        <button
+                            className={`${showDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                e.preventDefault()
+                                setSelectedPage(title)
+                                setShowDropdown(true)
+                            }}
+                        >
+                            <i className="bx bx-dots-vertical-rounded" />     
+                        </button>
+                        { showDropdown &&
+                            <MenuDropdown
+                                menuIndex={itemIndex}
+                                dropdownItems={generateDropdownItems()}
+                                dropdownRef={dropdownRef}
+                                tabIndex={2}
+                                onBlur={()=>setShowDropdown(false)}
+                            />
+                        }
+                    </div>
                 </div>
             </div>
         </Link>
     )
 }
 
-const FolderContent = ({ folderOrderArray, setFolderOrderArray, siteName, folderName, enableDragDrop }) => {
+const FolderContent = ({ 
+    folderOrderArray,
+    setFolderOrderArray,
+    siteName,
+    folderName,
+    enableDragDrop,
+    setSelectedPage,
+    setIsPageSettingsActive,
+    setIsDeleteModalActive,
+}) => {
     const generateLink = (folderContentItem) => {
         if (folderContentItem.type === 'dir') return `/sites/${siteName}/folder/${folderName}/subfolder/${folderContentItem.name}`
         return `/sites/${siteName}/folder/${folderName}/${folderContentItem.path.includes('/') ? `subfolder/` : ''}${folderContentItem.path}`
@@ -96,11 +159,14 @@ const FolderContent = ({ folderOrderArray, setFolderOrderArray, siteName, folder
                                         >        
                                             <FolderContentItem
                                                 key={folderContentItem.name}
-                                                title={deslugifyPage(folderContentItem.name)}
+                                                title={folderContentItem.name}
                                                 numItems={folderContentItem.type === 'dir' ? folderContentItem.children.length : null}
                                                 isFile={folderContentItem.type === 'dir' ? false: true}
                                                 link={generateLink(folderContentItem)}
                                                 itemIndex={folderContentIndex}
+                                                setSelectedPage={setSelectedPage}
+                                                setIsPageSettingsActive={setIsPageSettingsActive}
+                                                setIsDeleteModalActive={setIsDeleteModalActive}
                                             />
                                         </div>
                                     )}

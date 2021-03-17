@@ -114,6 +114,23 @@ const createPage = async (endpointUrl, content) => {
     return await axios.post(`${BACKEND_URL}/sites/${endpointUrl}`, { content });
 }
 
+const getPage = async (pageType, siteName, collectionName, pageName) => {
+    const endpointUrl = (pageType === 'collection') 
+                      ? `${siteName}/collections/${collectionName}/pages/${pageName}`
+                      : `${siteName}/pages/${pageName}`
+    const resp = await axios.get(`${BACKEND_URL}/sites/${endpointUrl}`);
+    return resp.data
+}
+
+const updatePage = async(endpointUrl, content, sha) => {
+    return await axios.post(`${BACKEND_URL}/sites/${endpointUrl}`, { content, sha });
+}
+
+const deletePage = async(endpointUrl, sha) => {
+    return
+    // return await axios.delete(`${BACKEND_URL}/sites/${endpointUrl}`, { content, sha });
+}
+
 const moveFiles = async (siteName, selectedFiles, title, parentFolder) => {
     const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${parentFolder ? `/collections/${parentFolder}` : '/pages'}`
     const params = {
@@ -134,5 +151,8 @@ export {
     getEditNavBarData,
     updateNavBarData,
     createPage,
+    getPage,
+    updatePage,
+    deletePage,
     moveFiles,
 }

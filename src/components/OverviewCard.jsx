@@ -6,20 +6,16 @@ import PropTypes from 'prop-types';
 
 import DeleteWarningModal from './DeleteWarningModal'
 import GenericWarningModal from './GenericWarningModal'
-import LoadingButton from './LoadingButton'
+import MenuDropdown from './MenuDropdown'
 
 import {
   DEFAULT_RETRY_MSG,
   frontMatterParser,
   saveFileAndRetrieveUrl,
-  checkIsOutOfViewport,
 } from '../utils';
 import {
   retrieveThirdNavOptions,
 } from '../utils/dropdownUtils'
-import {
-  validateCategoryName,
-} from '../utils/validators'
 import { errorToast } from '../utils/toasts';
 
 
@@ -42,28 +38,17 @@ const OverviewCard = ({
 }) => {
   const dropdownRef = useRef(null)
   const fileMoveDropdownRef = useRef(null)
-  const categoryInputRef = useRef(null)
-  const [newCategory, setNewCategory] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
   const [canShowDropdown, setCanShowDropdown] = useState(false)
   const [canShowFileMoveDropdown, setCanShowFileMoveDropdown] = useState(false)
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
   const [canShowGenericWarningModal, setCanShowGenericWarningModal] = useState(false)
   const [chosenCategory, setChosenCategory] = useState()
-  const [isOutOfViewport, setIsOutOfViewport] = useState()
   const [isNewCollection, setIsNewCollection] = useState(false)
   const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? isResource ? `/resources/${category}` : `/collections/${category}` : ''}`
 
   useEffect(() => {
     if (canShowFileMoveDropdown) fileMoveDropdownRef.current.focus()
-    if (canShowDropdown) {
-      dropdownRef.current.focus()
-      if (isOutOfViewport === undefined) {
-        // We only want to run this once
-        const bounding = dropdownRef.current.getBoundingClientRect()
-        setIsOutOfViewport(checkIsOutOfViewport(bounding, ['right']))
-      }
-    }
+    if (canShowDropdown) dropdownRef.current.focus()
   }, [canShowFileMoveDropdown, canShowDropdown])
 
   const moveFile = async () => {
@@ -138,36 +123,6 @@ const OverviewCard = ({
     }
   }
   
-  const MenuItem = ({handler, id, children}) => {
-    return (
-      <div
-        id={id}
-        onMouseDown={(e) => {
-          e.stopPropagation();
-          e.preventDefault(); 
-          if (handler) handler(e);
-        }}
-        className={`${elementStyles.dropdownItem}`}
-      >
-        {children}
-      </div>
-    )
-  }
-
-  const changeHandler = (event) => {
-    const { value } = event.target;
-
-    const errorMessage = validateCategoryName(value, isResource ? 'resource' : 'page')
-
-    if (errorMessage === '' && allCategories && allCategories.includes(value)) {
-      setErrorMessage('This category name is already in use. Please choose a different one.')
-      setNewCategory(value)
-    } else {
-      setErrorMessage(errorMessage)
-      setNewCategory(value)
-    }
-  }
-
   const generateLink = () => {
     if (isResource) {
       return `/sites/${siteName}/resources/${category}/${fileName}`
@@ -226,99 +181,58 @@ const OverviewCard = ({
                 e.preventDefault();
                 setCanShowDropdown(true)
               }}
-            className={`${contentStyles.componentIcon}`}
+            className={`${canShowDropdown || canShowFileMoveDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
           >
             <i id={`settingsIcon-${itemIndex}`} className="bx bx-dots-vertical-rounded" />
           </button>
-          {canShowDropdown &&
-            <div className={`${elementStyles.dropdown} ${isOutOfViewport && elementStyles.right}`} ref={dropdownRef} tabIndex={2} onBlur={()=>setCanShowDropdown(false)}>
-              { isOutOfViewport !== undefined &&
-                <>
-                  <MenuItem handler={(e) => {dropdownRef.current.blur(); settingsToggle(e)}} id={`settings-${itemIndex}`}>
-                    <i id={`settingsIcon-${itemIndex}`} className="bx bx-sm bx-edit"/>
-                    <div id={`settingsText-${itemIndex}`} className={elementStyles.dropdownText}>Edit details</div>
-                  </MenuItem>
-                  <MenuItem handler={toggleDropdownModals}>
-                    <i className="bx bx-sm bx-folder"/>
-                    <div className={elementStyles.dropdownText}>Move to</div>
-                    <i className="bx bx-sm bx-chevron-right ml-auto"/>
-                  </MenuItem>
-                  <MenuItem handler={() => {dropdownRef.current.blur(); setCanShowDeleteWarningModal(true)}}>
-                    <i className="bx bx-sm bx-trash text-danger"/>
-                    <div className={elementStyles.dropdownText}>Delete item</div>
-                  </MenuItem>
-                </>
-              }
-          </div>}
-          {canShowFileMoveDropdown &&
-            <div className={`${elementStyles.dropdown} ${isOutOfViewport && elementStyles.right}`} ref={fileMoveDropdownRef} tabIndex={1} onBlur={handleBlur}>
-              <MenuItem className={`d-flex`} handler={toggleDropdownModals}>
-                <i className="bx bx-sm bx-arrow-back"/>
-                <div className={elementStyles.dropdownText}>Move to</div>
-              </MenuItem>
-              <hr/>
-              {category && !isResource &&
-                <>
-                  <MenuItem handler={() => {
-                    setChosenCategory('')
+          { canShowDropdown &&
+            <MenuDropdown 
+              dropdownItems={[
+                {
+                  type: 'edit',
+                  handler: (e) => settingsToggle(e),
+                },
+                {
+                  type: 'move',
+                  handler: toggleDropdownModals,
+                },
+                {
+                  type: 'delete',
+                  handler: () => setCanShowDeleteWarningModal(true)
+                },
+              ]}
+              dropdownRef={dropdownRef}
+              menuIndex={itemIndex}
+              tabIndex={2}
+              onBlur={()=>setCanShowDropdown(false)}
+            />
+          }
+          { canShowFileMoveDropdown &&
+            <MenuDropdown 
+              dropdownItems={[
+                {
+                  itemName: 'Move to',
+                  itemId: `move`,
+                  iconClassName: "bx bx-sm bx-arrow-back",
+                  handler: toggleDropdownModals,
+                },
+                ...allCategories.map(categoryName => ({
+                  itemName: categoryName,
+                  itemId: categoryName,
+                  handler: () => {
+                    setChosenCategory(categoryName)
                     fileMoveDropdownRef.current.blur()
                     setCanShowGenericWarningModal(true)
-                  }}>
-                    <div className={elementStyles.dropdownText}>Unlinked Page</div>
-                  </MenuItem>
-                  <hr/>
-                </>
-              }
-              {allCategories
-                ?
-                allCategories.map((categoryName) => {
-                  if (categoryName !== category) {
-                    return (
-                      <MenuItem key={categoryName} handler={() => {
-                        setChosenCategory(categoryName)
-                        fileMoveDropdownRef.current.blur()
-                        setCanShowGenericWarningModal(true)
-                      }}>
-                        <div className={elementStyles.dropdownText}>{categoryName}</div>
-                      </MenuItem>
-                    )
-                  }
-                  return null
-                })
-                :
-                  `Loading Categories...`
-              }
-              <hr/>
-              <div className={`d-flex text-nowrap ${elementStyles.dropdownItem}`} onClick={(e)=>{e.preventDefault();e.stopPropagation()}}>
-                <i className="bx bx-sm bx-folder-plus" />
-                <input
-                  type="text"
-                  placeholder={`Create new ${isResource ? 'category' : 'collection'}`}
-                  value={newCategory}
-                  id={'categoryName'}
-                  className={errorMessage ? `${elementStyles.error}` : null}
-                  onChange={changeHandler}
-                  ref={categoryInputRef}
-                />
-                <LoadingButton
-                  label="Submit"
-                  disabled={!!errorMessage || !newCategory}
-                  disabledStyle={elementStyles.disabled}
-                  className={(!!errorMessage || !newCategory) ? elementStyles.disabled : elementStyles.blue}
-                  callback={() => {
-                    setIsNewCollection(true)
-                    setChosenCategory(newCategory)
-                    fileMoveDropdownRef.current.blur()
-                    setCanShowGenericWarningModal(true)
-                  }}
-                />
-              </div>
-              { errorMessage &&
-                <div className={`d-flex ${elementStyles.dropdownItemWarning}`} onClick={(e)=>{e.preventDefault();e.stopPropagation()}}>
-                  <span className={elementStyles.error}>{errorMessage}</span>
-                </div>
-              }
-          </div>}
+                  },
+                }))
+              ]}
+              setShowDropdown={canShowFileMoveDropdown}
+              dropdownRef={fileMoveDropdownRef}
+              menuIndex={''}
+              tabIndex={1}
+              handleBlur={handleBlur}
+            />
+          }
         </div>
       }
     </>

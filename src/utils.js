@@ -355,19 +355,26 @@ function generateCollectionPageContent(fileInfo) {
     mdBody,
     folderName,
     subfolderName,
+    isNewPage,
+    originalPageName,
   } = fileInfo
   const frontMatter = subfolderName
     ? { title, permalink, third_nav_title: subfolderName }
     : { title, permalink }
   const content = concatFrontMatterMdBody(frontMatter, mdBody)
-  
   const fileName = subfolderName 
     ? `${subfolderName}/${generatePageFileName(title)}` 
     : `${generatePageFileName(title)}`
-  const endpointUrl = `${siteName}/collections/${folderName}/pages/new/${encodeURIComponent(fileName)}`
-  
-  const redirectUrl = `/sites/${siteName}/collections/${folderName}/${encodeURIComponent(fileName)}`
-  
+
+  let endpointUrl, redirectUrl = ''
+  if (isNewPage) {
+    endpointUrl = `${siteName}/collections/${folderName}/pages/new/${encodeURIComponent(fileName)}`
+    redirectUrl = `/sites/${siteName}/collections/${folderName}/${encodeURIComponent(fileName)}`
+  } else if (originalPageName !== fileName) {
+    endpointUrl = `${siteName}/collections/${folderName}/pages/${encodeURIComponent(originalPageName)}/rename/${encodeURIComponent(fileName)}`
+  } else {
+    endpointUrl = `${siteName}/collections/${folderName}/pages/${encodeURIComponent(fileName)}`
+  }
   return { endpointUrl, content, redirectUrl }
 }
 
@@ -377,13 +384,23 @@ function generateUnlinkedPageContent(fileInfo) {
     title,
     permalink,
     mdBody,
+    isNewPage,
+    originalPageName,
   } = fileInfo
 
   const frontMatter = { title, permalink }
   const content = concatFrontMatterMdBody(frontMatter, mdBody)
   const fileName = `${generatePageFileName(title)}`
-  const endpointUrl = `${siteName}/pages/new/${encodeURIComponent(fileName)}`
-  const redirectUrl = `/sites/${siteName}/pages/${encodeURIComponent(fileName)}`
+
+  let endpointUrl, redirectUrl = ''
+  if (isNewPage) {
+    endpointUrl = `${siteName}/pages/new/${encodeURIComponent(fileName)}`
+    redirectUrl = `/sites/${siteName}/pages/${encodeURIComponent(fileName)}`
+  } else if (originalPageName !== fileName) {
+    endpointUrl = `${siteName}/pages/${encodeURIComponent(originalPageName)}/rename/${encodeURIComponent(fileName)}`
+  } else { //update page
+    endpointUrl = `${siteName}/pages/${encodeURIComponent(fileName)}`
+  }
   return { endpointUrl, content, redirectUrl }
 }
 
@@ -593,16 +610,16 @@ export const getObjectDiff = (obj1, obj2) => {
 }
 
 export const parseDirectoryFile = (folderContent) => {
-  const decodedContent = yaml.safeLoad(Base64.decode(folderContent))
+  const decodedContent = yaml.safeLoad(folderContent)
   const collectionKey = Object.keys(decodedContent.collections)[0]
   return decodedContent.collections[collectionKey].order
 }
 
 export const updateDirectoryFile = (folderContent, folderOrder) => {
-  const decodedContent = yaml.safeLoad(Base64.decode(folderContent))
+  const decodedContent = yaml.safeLoad(folderContent)
   const collectionKey = Object.keys(decodedContent.collections)[0]
   decodedContent.collections[collectionKey].order = folderOrder
-  return Base64.encode(yaml.safeDump(decodedContent))
+  return yaml.safeDump(decodedContent)
 }
 
 export const getNavFolderDropdownFromFolderOrder = (folderOrder) => {
