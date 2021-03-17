@@ -69,7 +69,7 @@ const Folders = ({ match, location }) => {
     const { mutate: rearrangeFolder } = useMutation(
       payload => setDirectoryFile(siteName, folderName, payload),
       {
-        onError: () => errorToast(`Your file reordering could not be saved. Please try again. ${DEFAULT_RETRY_MSG}`),
+        onError: () => errorToast(`Your file reordering could not be saved. ${DEFAULT_RETRY_MSG}`),
         onSuccess: () => successToast('Successfully updated page order'),
         onSettled: () => setIsRearrangeActive((prevState) => !prevState),
       }
@@ -81,7 +81,7 @@ const Folders = ({ match, location }) => {
         await deletePage('collection', folderName, subfolderName, selectedPage)
       },
       {
-        onError: () => errorToast(`Your file could not be deleted successfully. Please try again. ${DEFAULT_RETRY_MSG}`),
+        onError: () => errorToast(`Your file could not be deleted successfully. ${DEFAULT_RETRY_MSG}`),
         onSuccess: () => successToast('Successfully deleted file'),
         onSettled: () => setIsDeleteModalActive((prevState) => !prevState),
       }

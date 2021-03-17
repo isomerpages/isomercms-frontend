@@ -4,7 +4,6 @@ import axios from 'axios';
 import * as _ from 'lodash';
 import FormField from './FormField';
 import {
-  DEFAULT_ERROR_TOAST_MSG,
   generatePageFileName,
   generatePageContent,
   frontMatterParser,
@@ -74,7 +73,7 @@ const PageSettingsModal = ({
         onError: () => { 
           setSelectedPage('')
           setIsPageSettingsActive(false)
-          errorToast(`The page data could not be retrieved. Please try again. ${DEFAULT_ERROR_TOAST_MSG}`)
+          errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
         }
       }
     )
@@ -91,7 +90,7 @@ const PageSettingsModal = ({
       { 
         onSettled: () => {setSelectedPage(''); setIsPageSettingsActive(false)},
         onSuccess: (redirectUrl) => redirectUrl ? setRedirectToPage(redirectUrl) : window.location.reload(),
-        onError: () => errorToast(`${isNewPage ? 'A new page could not be created.' : 'Your page settings could not be saved'} Please try again. ${DEFAULT_ERROR_TOAST_MSG}`)
+        onError: () => errorToast(`${isNewPage ? 'A new page could not be created.' : 'Your page settings could not be saved.'} ${DEFAULT_RETRY_MSG}`)
       }
     )
 
