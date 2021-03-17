@@ -74,19 +74,19 @@ const extractMetadataFromFilename = (isResourcePage, fileName) => {
   return { title: prettifyPageFileName(fileName), date: '' }
 }
 
-const getBackButtonInfo = (resourceCategory, collectionName, siteName, subfolderName) => {
+const getBackButtonInfo = (resourceCategory, folderName, siteName, subfolderName) => {
   if (resourceCategory) return {
     backButtonLabel: resourceCategory,
     backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
   }
-  if (collectionName) {
+  if (folderName) {
     if (subfolderName) return {
-      backButtonLabel: `${collectionName}/${subfolderName}`,
-      backButtonUrl: `/sites/${siteName}/folder/${collectionName}/subfolder/${subfolderName}`,
+      backButtonLabel: `${folderName}/${subfolderName}`,
+      backButtonUrl: `/sites/${siteName}/folder/${folderName}/subfolder/${subfolderName}`,
     }
     return {
-      backButtonLabel: collectionName,
-      backButtonUrl: `/sites/${siteName}/folder/${collectionName}`,
+      backButtonLabel: folderName,
+      backButtonUrl: `/sites/${siteName}/folder/${folderName}`,
     }
   }
   return {
@@ -99,9 +99,9 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
   const { setRedirectToNotFound } = useRedirectHook()
 
-  const { collectionName, fileName, siteName, resourceName, subfolderName } = match.params;
+  const { folderName, fileName, siteName, resourceName, subfolderName } = match.params;
   const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, fileName)
-  const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, collectionName, siteName, subfolderName)
+  const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, folderName, siteName, subfolderName)
 
   const [csp, setCsp] = useState(new Policy())
   const [sha, setSha] = useState(null)
@@ -142,7 +142,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
   // get directory data
   const { data: dirData } = useQuery(
     [DIR_CONTENT_KEY, match],
-    () => getDirectoryFile(siteName, collectionName),
+    () => getDirectoryFile(siteName, folderName),
     {
       retry: false,
       onError: (err) => {
@@ -456,7 +456,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
                 leftNavPages={leftNavPages}
                 fileName={fileName}
                 title={title}
-                collection={deslugifyDirectory(collectionName)}
+                collection={deslugifyDirectory(folderName)}
               />
             ) : (
               <SimplePage

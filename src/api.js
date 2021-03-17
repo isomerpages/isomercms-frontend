@@ -21,9 +21,9 @@ const getFolderContents = async (siteName, folderName, subfolderName) => {
 }
 
 // EditPage
-const getPageApiEndpoint = ({collectionName, subfolderName, fileName, siteName, resourceName}) => {
-    if (collectionName) {
-        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${fileName}`)}`
+const getPageApiEndpoint = ({folderName, subfolderName, fileName, siteName, resourceName}) => {
+    if (folderName) {
+        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${fileName}`)}`
     }
     if (resourceName) {
         return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`
@@ -31,8 +31,8 @@ const getPageApiEndpoint = ({collectionName, subfolderName, fileName, siteName, 
     return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`
 }
 
-const getEditPageData = async ({collectionName, subfolderName, fileName, siteName, resourceName}) => {
-    const apiEndpoint = getPageApiEndpoint({collectionName, subfolderName, fileName, siteName, resourceName})
+const getEditPageData = async ({folderName, subfolderName, fileName, siteName, resourceName}) => {
+    const apiEndpoint = getPageApiEndpoint({folderName, subfolderName, fileName, siteName, resourceName})
     const resp = await axios.get(apiEndpoint);
     const { content:pageContent, sha:pageSha } = resp.data;
     
@@ -49,8 +49,8 @@ const getCsp = async (siteName) => {
     return await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`);
 }
 
-const updatePageData = async ({collectionName, subfolderName, fileName, siteName, resourceName}, content, sha) => {
-    const apiEndpoint = getPageApiEndpoint({collectionName, subfolderName, fileName, siteName, resourceName})
+const updatePageData = async ({folderName, subfolderName, fileName, siteName, resourceName}, content, sha) => {
+    const apiEndpoint = getPageApiEndpoint({folderName, subfolderName, fileName, siteName, resourceName})
     const params = {
         content,
         sha,
@@ -58,8 +58,8 @@ const updatePageData = async ({collectionName, subfolderName, fileName, siteName
     return await axios.post(apiEndpoint, params);
 }
 
-const deletePageData = async ({collectionName, subfolderName, fileName, siteName, resourceName}, sha) => {
-    const apiEndpoint = getPageApiEndpoint({collectionName, subfolderName, fileName, siteName, resourceName})
+const deletePageData = async ({folderName, subfolderName, fileName, siteName, resourceName}, sha) => {
+    const apiEndpoint = getPageApiEndpoint({folderName, subfolderName, fileName, siteName, resourceName})
     const params = { sha };
     return await axios.delete(apiEndpoint, {
         data: params,
