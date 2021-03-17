@@ -225,7 +225,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       } = cspData.data
       if (!pageContent) return
       
-      const { frontMatter: retrievedFrontMatter, mdBody: retrievedMdBody } = frontMatterParser(Base64.decode(pageContent));
+      const { frontMatter: retrievedFrontMatter, mdBody: retrievedMdBody } = frontMatterParser(pageContent);
       const retrievedCsp = new Policy(netlifyTomlHeaderValues['Content-Security-Policy']);
 
       let generatedLeftNavPages
