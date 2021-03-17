@@ -33,22 +33,15 @@ const FolderContentItem = ({
     const generateDropdownItems = () => {
         const dropdownItems = [
             {
-                itemName: 'Edit details',
-                iconClassName: 'bx bx-sm bx-edit',
-                itemId: `settings`,
+                type: 'edit',
                 handler: () => setIsPageSettingsActive(true)
             },
             {
-                itemName: 'Move to',
-                iconClassName: 'bx bx-sm bx-folder',
-                itemId: `move`,
+                type: 'move',
                 handler: () => {}, // to be added in separate PR
-                children: <i className="bx bx-sm bx-chevron-right ml-auto"/>
             },
             {
-                itemName: 'Delete',
-                iconClassName: 'bx bx-sm bx-trash text-danger',
-                itemId: `delete`,
+                type: 'delete',
                 handler: () => setIsDeleteModalActive(true)
             },
         ]

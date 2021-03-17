@@ -189,22 +189,15 @@ const OverviewCard = ({
             <MenuDropdown 
               dropdownItems={[
                 {
-                  itemName: 'Edit details',
-                  itemId: 'settings',
-                  iconClassName: "bx bx-sm bx-edit",
+                  type: 'edit',
                   handler: (e) => settingsToggle(e),
                 },
                 {
-                  itemName: 'Move to',
-                  iconClassName: 'bx bx-sm bx-folder',
-                  itemId: `move`,
+                  type: 'move',
                   handler: toggleDropdownModals,
-                  children: <i key={`arrow-${itemIndex}`} className="bx bx-sm bx-chevron-right ml-auto"/>
                 },
                 {
-                  itemName: 'Delete',
-                  iconClassName: 'bx bx-sm bx-trash text-danger',
-                  itemId: `delete`,
+                  type: 'delete',
                   handler: () => setCanShowDeleteWarningModal(true)
                 },
               ]}

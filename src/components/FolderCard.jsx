@@ -106,15 +106,11 @@ const FolderCard = ({
               <MenuDropdown 
                 dropdownItems={[
                   {
-                    itemName: 'Edit details',
-                    itemId: 'settings',
-                    iconClassName: "bx bx-sm bx-edit",
+                    type: "edit",
                     handler: () => setIsFolderModalOpen(true),
                   },
                   {
-                    itemName: 'Delete',
-                    iconClassName: 'bx bx-sm bx-trash text-danger',
-                    itemId: `delete`,
+                    type: 'delete',
                     handler: () => setCanShowDeleteWarningModal(true)
                   },
                 ]}
