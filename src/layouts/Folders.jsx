@@ -26,7 +26,7 @@ import {
   retrieveSubfolderContents,
   convertSubfolderArray,
 } from '../utils'
-import { FOLDER_CONTENT_KEY } from '../constants'
+import { DIR_CONTENT_KEY } from '../constants'
 
 // Import API
 import { getDirectoryFile, setDirectoryFile } from '../api';
@@ -48,7 +48,7 @@ const Folders = ({ match, location }) => {
     const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
 
     const { data: folderContents, error: queryError } = useQuery(
-      [FOLDER_CONTENT_KEY, match],
+      [DIR_CONTENT_KEY, siteName, folderName],
       () => getDirectoryFile(siteName, folderName),
       { 
         retry: false,

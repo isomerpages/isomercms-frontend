@@ -126,7 +126,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
   // get page data
   const { data: pageData } = useQuery(
-    [PAGE_CONTENT_KEY, match],
+    [PAGE_CONTENT_KEY, match.params],
     () => getEditPageData(match.params),
     {
       retry: false,
@@ -142,7 +142,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
   // get directory data
   const { data: dirData } = useQuery(
-    [DIR_CONTENT_KEY, match],
+    [DIR_CONTENT_KEY, siteName, folderName],
     () => getDirectoryFile(siteName, folderName),
     {
       retry: false,

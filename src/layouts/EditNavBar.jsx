@@ -108,7 +108,7 @@ const EditNavBar =  ({ match }) => {
 
   // get nav bar data
   const { data: navigationContents } = useQuery(
-    NAVIGATION_CONTENT_KEY,
+    [NAVIGATION_CONTENT_KEY, siteName],
     () => getEditNavBarData(siteName),
     {
       retry: false,
