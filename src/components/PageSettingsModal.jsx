@@ -10,6 +10,10 @@ import {
   frontMatterParser,
   deslugifyPage,
 } from '../utils';
+import {
+  PAGE_CONTENT_KEY,
+} from '../constants'
+import { getEditPageData } from '../api'
 
 import { getPage, createPage, updatePage } from '../api'
 
@@ -57,27 +61,20 @@ const PageSettingsModal = ({
       permalink: setPermalink,
     }
 
-    const {} = useQuery(
-      'page',
-      async () => await getPage(pageType, siteName, folderName, originalPageName),
-      { 
+    // get page data
+    const { data: pageData } = useQuery(
+      [PAGE_CONTENT_KEY, { siteName, folderName, subfolderName, fileName: originalPageName }],
+      () => getEditPageData({ siteName, folderName, subfolderName, fileName: originalPageName }),
+      {
         enabled: !isNewPage,
         retry: false,
-        onSuccess: ({ content, sha }) => {
-          const { frontMatter, mdBody } = frontMatterParser(content)
-          setTitle(deslugifyPage(originalPageName))
-          setPermalink(frontMatter.permalink)
-          setOriginalPermalink(frontMatter.permalink)
-          setSha(sha)
-          setMdBody(mdBody)
-        }, 
-        onError: () => { 
+        onError: () => {
           setSelectedPage('')
           setIsPageSettingsActive(false)
           errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
         }
-      }
-    )
+      },
+    );
 
     const { mutateAsync: saveHandler } = useMutation(
       async () => {
@@ -94,6 +91,28 @@ const PageSettingsModal = ({
         onError: () => errorToast(`${isNewPage ? 'A new page could not be created.' : 'Your page settings could not be saved.'} ${DEFAULT_RETRY_MSG}`)
       }
     )
+
+    useEffect(() => {
+      let _isMounted = true
+
+      const loadPageDetails = async () => {
+        if (!pageData) return
+        const { pageContent, pageSha } = pageData
+        const { frontMatter, mdBody } = frontMatterParser(pageContent);
+        if (_isMounted) {
+          setTitle(deslugifyPage(originalPageName))
+          setPermalink(frontMatter.permalink)
+          setOriginalPermalink(frontMatter.permalink)
+          setSha(pageSha)
+          setMdBody(mdBody)
+        }
+      }
+      
+      loadPageDetails()
+      return () => {
+        _isMounted = false
+      }
+    }, [pageData])
 
     useEffect(() => {
       let exampleTitle = 'Example Title'
