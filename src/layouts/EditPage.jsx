@@ -38,6 +38,11 @@ import {
   tableButton,
   guideButton,
 } from '../utils/markdownToolbar';
+import {
+  PAGE_CONTENT_KEY,
+  DIR_CONTENT_KEY,
+  CSP_CONTENT_KEY,
+} from '../constants'
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -58,10 +63,6 @@ import { getEditPageData, updatePageData, deletePageData, getCsp, getDirectoryFi
 
 // axios settings
 axios.defaults.withCredentials = true
-
-const PAGE_CONTENT_KEY = 'page-contents';
-const DIR_CONTENT_KEY = 'dir-contents';
-const CSP_CONTENT_KEY = 'csp-contents';
 
 const extractMetadataFromFilename = (isResourcePage, fileName) => {
   if (isResourcePage) {

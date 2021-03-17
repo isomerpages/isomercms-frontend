@@ -7,6 +7,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { DragDropContext } from 'react-beautiful-dnd';
 
 import { DEFAULT_RETRY_MSG, deslugifyDirectory, isEmpty } from '../utils';
+import { NAVIGATION_CONTENT_KEY } from '../constants'
 import { validateLink } from '../utils/validators';
 import { errorToast } from '../utils/toasts';
 
@@ -27,7 +28,6 @@ import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import { getEditNavBarData, updateNavBarData } from '../api';
 
 const RADIX_PARSE_INT = 10
-const NAVIGATION_CONTENT_KEY = 'navigation-contents';
 
 const EditNavBar =  ({ match }) => {
   const { siteName } = match.params

@@ -26,6 +26,7 @@ import {
   retrieveSubfolderContents,
   convertSubfolderArray,
 } from '../utils'
+import { FOLDER_CONTENT_KEY } from '../constants'
 
 // Import API
 import { getDirectoryFile, setDirectoryFile } from '../api';
@@ -33,9 +34,6 @@ import { getDirectoryFile, setDirectoryFile } from '../api';
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
-
-// Constants
-const FOLDER_CONTENTS_KEY = 'folder-contents'
 
 const Folders = ({ match, location }) => {
     const { siteName, folderName, subfolderName } = match.params;
@@ -50,7 +48,7 @@ const Folders = ({ match, location }) => {
     const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
 
     const { data: folderContents, error: queryError } = useQuery(
-      [FOLDER_CONTENTS_KEY, match],
+      [FOLDER_CONTENT_KEY, match],
       () => getDirectoryFile(siteName, folderName),
       { 
         retry: false,
