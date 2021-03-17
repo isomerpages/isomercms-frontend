@@ -27,8 +27,9 @@ const MenuItem = ({ item, menuIndex, dropdownRef }) => {
 const MenuDropdown = ({ dropdownItems, menuIndex, dropdownRef, tabIndex, onBlur }) => {
   return (
     <div className={`${elementStyles.dropdown} ${elementStyles.right}`} ref={dropdownRef} tabIndex={tabIndex} onBlur={onBlur}>
-      { dropdownItems.map(item =>         
+      { dropdownItems.map(item =>
         ( <MenuItem 
+            key={`${item.itemId}-${menuIndex}`}
             item={item}
             menuIndex={menuIndex}
             dropdownRef={dropdownRef}
