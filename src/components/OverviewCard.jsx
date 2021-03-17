@@ -16,9 +16,6 @@ import {
 import {
   retrieveThirdNavOptions,
 } from '../utils/dropdownUtils'
-import {
-  validateCategoryName,
-} from '../utils/validators'
 import { errorToast } from '../utils/toasts';
 
 
@@ -193,21 +190,21 @@ const OverviewCard = ({
               dropdownItems={[
                 {
                   itemName: 'Edit details',
-                  itemId: 'pageSettings',
+                  itemId: 'settings',
                   iconClassName: "bx bx-sm bx-edit",
                   handler: (e) => settingsToggle(e),
                 },
                 {
                   itemName: 'Move to',
                   iconClassName: 'bx bx-sm bx-folder',
-                  itemId: `pageMove`,
+                  itemId: `move`,
                   handler: toggleDropdownModals,
                   children: <i key={`arrow-${itemIndex}`} className="bx bx-sm bx-chevron-right ml-auto"/>
                 },
                 {
-                  itemName: 'Delete page',
+                  itemName: 'Delete',
                   iconClassName: 'bx bx-sm bx-trash text-danger',
-                  itemId: `pageDelete`,
+                  itemId: `delete`,
                   handler: () => setCanShowDeleteWarningModal(true)
                 },
               ]}
@@ -222,7 +219,7 @@ const OverviewCard = ({
               dropdownItems={[
                 {
                   itemName: 'Move to',
-                  itemId: `pageMove`,
+                  itemId: `move`,
                   iconClassName: "bx bx-sm bx-arrow-back",
                   handler: toggleDropdownModals,
                 },
