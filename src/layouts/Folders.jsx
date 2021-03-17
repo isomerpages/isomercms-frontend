@@ -236,26 +236,8 @@ const Folders = ({ match, location }) => {
                     siteName={siteName} 
                     folderName={folderName} 
                     enableDragDrop={isRearrangeActive}
-                    dropdownItems={[
-                      {
-                        itemName: 'Edit details',
-                        iconClassName: 'bx bx-sm bx-edit',
-                        itemId: `pageSettings`,
-                        handler: () => setIsPageSettingsActive(true)
-                      },
-                      {
-                        itemName: 'Move page',
-                        iconClassName: 'bx bx-sm bx-folder',
-                        itemId: `pageMove`,
-                        handler: () => {} // to be added in separate PR
-                      },
-                      {
-                        itemName: 'Delete page',
-                        iconClassName: 'bx bx-sm bx-trash text-danger',
-                        itemId: `pageDelete`,
-                        handler: () => setIsDeleteModalActive(true)
-                      },
-                    ]}
+                    setIsPageSettingsActive={setIsPageSettingsActive}
+                    setIsDeleteModalActive={setIsDeleteModalActive}
                     setSelectedPage={setSelectedPage}
                   />
               }

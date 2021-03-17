@@ -10,6 +10,8 @@ import MenuDropdown from '../MenuDropdown'
 // Import styles
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../../styles/isomer-cms/pages/Content.module.scss';
+import _default from 'immutability-helper';
+import _ from 'lodash';
 
 const FolderContentItem = ({ 
     title,
@@ -17,8 +19,9 @@ const FolderContentItem = ({
     numItems,
     link,
     itemIndex,
-    dropdownItems,
     setSelectedPage,
+    setIsPageSettingsActive,
+    setIsDeleteModalActive
 }) => {
     const [showDropdown, setShowDropdown] = useState(false)
     const dropdownRef = useRef(null)
@@ -27,6 +30,31 @@ const FolderContentItem = ({
         if (showDropdown) dropdownRef.current.focus()
     }, [showDropdown])
 
+    const generateDropdownItems = () => {
+        const dropdownItems = [
+            {
+                itemName: 'Edit details',
+                iconClassName: 'bx bx-sm bx-edit',
+                itemId: `settings`,
+                handler: () => setIsPageSettingsActive(true)
+            },
+            {
+                itemName: 'Move to',
+                iconClassName: 'bx bx-sm bx-folder',
+                itemId: `move`,
+                handler: () => {}, // to be added in separate PR
+                children: <i className="bx bx-sm bx-chevron-right ml-auto"/>
+            },
+            {
+                itemName: 'Delete',
+                iconClassName: 'bx bx-sm bx-trash text-danger',
+                itemId: `delete`,
+                handler: () => setIsDeleteModalActive(true)
+            },
+        ]
+        if (isFile) return dropdownItems
+        return dropdownItems.filter(item => item.itemId !== 'move')
+    }
     return (
         <Link className={`${contentStyles.component} ${contentStyles.card}`} to={link}>
             <div type="button" className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderItem}`}>
@@ -58,8 +86,7 @@ const FolderContentItem = ({
                         { showDropdown &&
                             <MenuDropdown
                                 menuIndex={itemIndex}
-                                dropdownItems={dropdownItems}
-                                setShowDropdown={setShowDropdown}
+                                dropdownItems={generateDropdownItems()}
                                 dropdownRef={dropdownRef}
                                 tabIndex={2}
                                 onBlur={()=>setShowDropdown(false)}
@@ -78,8 +105,9 @@ const FolderContent = ({
     siteName,
     folderName,
     enableDragDrop,
-    dropdownItems,
     setSelectedPage,
+    setIsPageSettingsActive,
+    setIsDeleteModalActive,
 }) => {
     const generateLink = (folderContentItem) => {
         if (folderContentItem.type === 'dir') return `/sites/${siteName}/folder/${folderName}/subfolder/${folderContentItem.name}`
@@ -122,12 +150,12 @@ const FolderContent = ({
                         {...droppableProvided.droppableProps}
                     >
                         {
-                            folderOrderArray.map((folderContentItem, folderContentIndex) => (
+                            folderOrderArray.map(({ name, type, children, path }, folderContentIndex) => (
                                 <Draggable
                                     draggableId={`folder-${folderContentIndex}-draggable`}
                                     index={folderContentIndex}
                                     isDragDisabled={!enableDragDrop}
-                                    key={folderContentItem.name}
+                                    key={name}
                                 >
                                     {(draggableProvided) => (
                                         <div
@@ -143,8 +171,9 @@ const FolderContent = ({
                                                 isFile={folderContentItem.type === 'dir' ? false: true}
                                                 link={generateLink(folderContentItem)}
                                                 itemIndex={folderContentIndex}
-                                                dropdownItems={dropdownItems}
                                                 setSelectedPage={setSelectedPage}
+                                                setIsPageSettingsActive={setIsPageSettingsActive}
+                                                setIsDeleteModalActive={setIsDeleteModalActive}
                                             />
                                         </div>
                                     )}
