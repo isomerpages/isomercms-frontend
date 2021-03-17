@@ -143,12 +143,12 @@ const FolderContent = ({
                         {...droppableProvided.droppableProps}
                     >
                         {
-                            folderOrderArray.map(({ name, type, children, path }, folderContentIndex) => (
+                            folderOrderArray.map((folderContentItem, folderContentIndex) => (
                                 <Draggable
                                     draggableId={`folder-${folderContentIndex}-draggable`}
                                     index={folderContentIndex}
                                     isDragDisabled={!enableDragDrop}
-                                    key={name}
+                                    key={folderContentItem.name}
                                 >
                                     {(draggableProvided) => (
                                         <div
