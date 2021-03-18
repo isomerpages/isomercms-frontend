@@ -47,6 +47,7 @@ const PageSettingsModal = ({
         permalink: '',
     })
     const [hasErrors, setHasErrors] = useState(false)
+    const [hasChanges, setHasChanges] = useState(false)
 
     // Base hooks
     const [title, setTitle] = useState('')
@@ -128,9 +129,13 @@ const PageSettingsModal = ({
       setHasErrors(_.some(errors, (field) => field.length > 0));
     }, [errors])
 
+    useEffect(() => {
+      setHasChanges(!isNewPage && !(originalPageName === generatePageFileName(title) && originalPermalink === permalink))
+    }, [title, permalink])
+
     const changeHandler = (event) => {
       const { id, value } = event.target;
-      const errorMessage = validatePageSettings(id, value, pagesData)
+      const errorMessage = validatePageSettings(id, value, pagesData.filter(page => page.name !== originalPageName))
       setErrors((prevState) => ({
         ...prevState,
         [id]: errorMessage,
@@ -192,7 +197,7 @@ const PageSettingsModal = ({
                   />
                 </div>
                 <SaveDeleteButtons 
-                  isDisabled={isNewPage ? hasErrors : (hasErrors || !sha)}
+                  isDisabled={isNewPage ? hasErrors : (!hasChanges || hasErrors || !sha)}
                   hasDeleteButton={false}
                   saveCallback={saveHandler}
                 />
