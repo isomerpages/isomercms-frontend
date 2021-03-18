@@ -6,16 +6,14 @@ import FormField from './FormField';
 import {
   DEFAULT_RETRY_MSG,
   generatePageFileName,
-  generatePageContent,
+  concatFrontMatterMdBody,
   frontMatterParser,
   deslugifyPage,
 } from '../utils';
 import {
   PAGE_CONTENT_KEY,
 } from '../constants'
-import { getEditPageData } from '../api'
-
-import { getPage, createPage, updatePage } from '../api'
+import { createPageData, getEditPageData, updatePageData, renamePageData } from '../api'
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
@@ -78,13 +76,13 @@ const PageSettingsModal = ({
     );
 
     const { mutateAsync: saveHandler } = useMutation(
-      async () => {
-        if (originalPageName === generatePageFileName(title) && originalPermalink === permalink) return 
-        const fileInfo = { siteName, title, permalink, mdBody, folderName, subfolderName, isNewPage, pageType, originalPageName }
-        const { endpointUrl, content, redirectUrl } = generatePageContent(fileInfo)
-        if (isNewPage) await createPage(endpointUrl, content)
-        if (!isNewPage) await updatePage(endpointUrl, content, sha)
-        return redirectUrl
+      () => {
+        const frontMatter = subfolderName 
+          ? { title, permalink, third_nav_title: subfolderName }
+          : { title, permalink }
+        if (isNewPage) return createPageData({ siteName, folderName, subfolderName, newFileName: generatePageFileName(title) }, concatFrontMatterMdBody(frontMatter, mdBody)) 
+        if (originalPageName !== generatePageFileName(title)) return renamePageData({ siteName, folderName, subfolderName, fileName: originalPageName, newFileName: generatePageFileName(title) }, concatFrontMatterMdBody(frontMatter, mdBody), sha)
+        return updatePageData({ siteName, folderName, subfolderName, fileName: originalPageName }, concatFrontMatterMdBody(frontMatter, mdBody), sha)
       },
       { 
         onSettled: () => {setSelectedPage(''); setIsPageSettingsActive(false)},
