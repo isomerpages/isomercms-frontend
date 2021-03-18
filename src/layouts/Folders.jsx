@@ -58,8 +58,8 @@ const Folders = ({ match, location }) => {
     const [selectedPage, setSelectedPage] = useState('')
     const [isSelectedItemPage, setIsSelectedItemPage] = useState(false)
 
-    const { data: folderContents, error: queryError, refetch: refetchFolderContents } = useQuery(
-      [DIR_CONTENT_KEY, siteName, folderName],
+    const { data: folderContents, error: queryError, isLoading: isLoadingDirectory, refetch: refetchFolderContents } = useQuery(
+      [DIR_CONTENT_KEY, siteName, folderName, subfolderName],
       () => getDirectoryFile(siteName, folderName),
       { 
         retry: false,
@@ -77,8 +77,11 @@ const Folders = ({ match, location }) => {
     const { mutate: rearrangeFolder } = useMutation(
       payload => setDirectoryFile(siteName, folderName, payload),
       {
-        onError: () => errorToast(`Your file reordering could not be saved. ${DEFAULT_RETRY_MSG}`),
-        onSuccess: () => successToast('Successfully updated page order'),
+        onError: () => errorToast(`Your file reordering could not be saved. Please try again. ${DEFAULT_RETRY_MSG}`),
+        onSuccess: () => {
+          successToast('Successfully updated page order')
+          refetch()
+        },
         onSettled: () => setIsRearrangeActive((prevState) => !prevState),
       }
     )

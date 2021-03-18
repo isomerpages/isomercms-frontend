@@ -142,7 +142,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
   // get directory data
   const { data: dirData } = useQuery(
-    [DIR_CONTENT_KEY, siteName, folderName],
+    [DIR_CONTENT_KEY, siteName, folderName, subfolderName],
     () => getDirectoryFile(siteName, folderName),
     {
       retry: false,
