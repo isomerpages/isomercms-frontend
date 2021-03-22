@@ -260,7 +260,7 @@ const Folders = ({ match, location }) => {
               </div>
               {/* Collections content */}
               {
-                !isLoadingDirectory && folderOrderArray.length === 0 && <span>There are no pages in this {subfolderName ? `subfolder` : `folder`}.</span>
+                !isLoadingDirectory && !queryError && folderOrderArray.length === 0 && <span>There are no pages in this {subfolderName ? `subfolder` : `folder`}.</span>
               }
               {
                   queryError && <span>There was an error retrieving your content. Please refresh the page.</span>

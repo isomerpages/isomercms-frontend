@@ -140,11 +140,6 @@ const Workspace = ({ match, location }) => {
               <div className={contentStyles.segment}>
                 Collections
               </div>
-              {/* Info segment */}
-              <div className={contentStyles.segment}>
-                <i className="bx bx-sm bx-info-circle text-dark" />
-                <span><strong className="ml-1">Note:</strong> Collections cannot be empty, create a page first to create a collection.</span>
-              </div>
               {
                 !collections &&
                 <div className={contentStyles.segment}>
@@ -160,8 +155,8 @@ const Workspace = ({ match, location }) => {
               {/* Collections */}
               <div className={contentStyles.folderContainerBoxes}>
                 <div className={contentStyles.boxesContainer}>
-                  { unlinkedPages &&
-                    <FolderOptionButton title="Create new folder" option="create-sub" isSubfolder={false} onClick={() => setIsFolderCreationActive(true)}/>
+                  {
+                    collections && unlinkedPages && <FolderOptionButton title="Create new folder" option="create-sub" isSubfolder={false} onClick={() => setIsFolderCreationActive(true)}/>
                   }
                   {
                     collections && collections.length > 0

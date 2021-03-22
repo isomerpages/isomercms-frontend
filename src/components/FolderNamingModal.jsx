@@ -1,20 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Base64 } from 'js-base64';
+import React from 'react';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
-import { Redirect } from 'react-router-dom';
-import update from 'immutability-helper';
-import Select from 'react-select';
 import FormField from './FormField';
-import FolderCard from './FolderCard';
 import LoadingButton from './LoadingButton';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
-import adminStyles from '../styles/isomer-cms/pages/Admin.module.scss';
-import { validateCategoryName } from '../utils/validators';
-import { toast } from 'react-toastify';
-import Toast from './Toast';
 
 const FolderNamingModal = ({
   onClose,
@@ -22,27 +11,35 @@ const FolderNamingModal = ({
   folderNameChangeHandler,
   title,
   errors,
+  folderType,
+  proceedText,
 }) => {
+  const capitalizedFolderType = folderType.charAt(0).toUpperCase() + folderType.slice(1)
 
   return (         
     <div className={elementStyles['modal-newfolder']}>
       <div className={elementStyles.modalHeader}>
-        <h1>{`Create new sub folder`}</h1>
+        <h1>{`Create new ${folderType}`}</h1>
         <button id="settings-CLOSE" type="button" onClick={onClose}>
           <i id="settingsIcon-CLOSE" className="bx bx-x" />
         </button>
       </div>
       <div className={elementStyles.modalContent}>
         <div>
-          You may edit folder name anytime.
-          <br/>
-          Choose the pages you would like to group.
+          {`You may edit ${folderType} name anytime.`}
+          {
+            folderType !== 'resource' &&
+            <>
+              <br/>
+              Choose the pages you would like to group.
+            </>
+          }
         </div>
         <div className={elementStyles.modalFormFields}>
           {/* Title */}
           <FormField
-            title="Sub folder name"
-            id="subfolder"
+            title={`${capitalizedFolderType} name`}
+            id={folderType}
             value={title}
             errorMessage={errors}
             isRequired={true}
@@ -51,7 +48,7 @@ const FolderNamingModal = ({
         </div>
         <div className={elementStyles.modalButtons}>
           <LoadingButton
-            label="Select Pages"
+            label={proceedText}
             disabled={(errors || !title) ? true : false}
             disabledStyle={elementStyles.disabled}
             className={(errors || !title) ? elementStyles.disabled : elementStyles.blue}

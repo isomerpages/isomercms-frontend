@@ -120,6 +120,8 @@ const FolderCreationModal = ({
             folderNameChangeHandler={folderNameChangeHandler}
             title={title}
             errors={errors}
+            folderType={parentFolder ? 'subfolder' : 'folder'}
+            proceedText='Select pages'
           />
         }
         { !isSelectingTitle &&
