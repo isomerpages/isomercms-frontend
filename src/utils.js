@@ -369,12 +369,13 @@ function generateCollectionPageContent(fileInfo) {
   let endpointUrl, redirectUrl = ''
   if (isNewPage) {
     endpointUrl = `${siteName}/collections/${folderName}/pages/new/${encodeURIComponent(fileName)}`
-    redirectUrl = `/sites/${siteName}/collections/${folderName}/${encodeURIComponent(fileName)}`
+    redirectUrl = `/sites/${siteName}/folder/${folderName}/${subfolderName ? `subfolder/` : ''}${fileName}`
   } else if (originalPageName !== fileName) {
     endpointUrl = `${siteName}/collections/${folderName}/pages/${encodeURIComponent(originalPageName)}/rename/${encodeURIComponent(fileName)}`
   } else {
     endpointUrl = `${siteName}/collections/${folderName}/pages/${encodeURIComponent(fileName)}`
   }
+  
   return { endpointUrl, content, redirectUrl }
 }
 
@@ -706,7 +707,10 @@ export const retrieveSubfolderContents = (folderOrder, subfolderName) => {
 }
 
 export const convertSubfolderArray = (folderOrderArray, rawFolderContents, subfolderName) => {
-  const arrayCopy = _.cloneDeep(folderOrderArray)
+  const placeholderItem = {
+    path: `${subfolderName}/.keep`
+  }
+  const arrayCopy = [placeholderItem].concat(_.cloneDeep(folderOrderArray))
   return rawFolderContents.map((curr) => {
     const folderPathArr = curr.split('/')
     const subfolderTitle = folderPathArr[0]
