@@ -170,7 +170,7 @@ const FolderCreationModal = ({
                     : (
                         !sortedPagesData
                             ? 'Loading Pages...'
-                            : 'There are no pages in this folder'
+                            : 'There are no pages in this folder.'
                     )
                   }
                 </div>
