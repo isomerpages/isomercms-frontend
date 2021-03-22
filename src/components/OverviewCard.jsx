@@ -34,13 +34,23 @@ import {
 axios.defaults.withCredentials = true
 
 const OverviewCard = ({
-  date, category, settingsToggle, itemIndex, siteName, fileName, isResource, isHomepage, allCategories, resourceType
+  date, 
+  category, 
+  itemIndex, 
+  siteName, 
+  fileName, 
+  isResource, 
+  isHomepage, 
+  allCategories, 
+  resourceType,
+  setIsComponentSettingsActive,
+  setSelectedFile,
+  setCanShowDeleteWarningModal,
 }) => {
   const dropdownRef = useRef(null)
   const fileMoveDropdownRef = useRef(null)
   const [canShowDropdown, setCanShowDropdown] = useState(false)
   const [canShowFileMoveDropdown, setCanShowFileMoveDropdown] = useState(false)
-  const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
   const [canShowGenericWarningModal, setCanShowGenericWarningModal] = useState(false)
   const [chosenCategory, setChosenCategory] = useState()
   const [isNewCollection, setIsNewCollection] = useState(false)
@@ -104,25 +114,6 @@ const OverviewCard = ({
     }
   }
 
-  const deleteHandler = async () => {
-    try {
-      // Retrieve data from existing page/resource
-      const resp = await axios.get(`${baseApiUrl}/pages/${fileName}`);
-
-      const { sha } = resp.data;
-      const params = { sha };
-      await axios.delete(`${baseApiUrl}/pages/${fileName}`, {
-        data: params,
-      });
-
-      // Refresh page
-      window.location.reload();
-    } catch (err) {
-      errorToast(`There was a problem trying to delete this file. ${DEFAULT_RETRY_MSG}`)
-      console.log(err);
-    }
-  }
-  
   const generateLink = () => {
     if (isResource) {
       return `/sites/${siteName}/resources/${category}/${fileName}`
@@ -171,7 +162,6 @@ const OverviewCard = ({
         <h1 className={contentStyles.componentTitle}>{generateTitle()}</h1>
         <p className={contentStyles.componentDate}>{`${date ? prettifyDate(date) : ''}${resourceType ? `/${resourceType.toUpperCase()}` : ''}`}</p>
       </div>
-      {settingsToggle &&
         <div className="position-relative mt-auto">
           <button 
             type="button"
@@ -179,6 +169,7 @@ const OverviewCard = ({
             onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
+                setSelectedFile(fileName)
                 setCanShowDropdown(true)
               }}
             className={`${canShowDropdown || canShowFileMoveDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
@@ -190,7 +181,7 @@ const OverviewCard = ({
               dropdownItems={[
                 {
                   type: 'edit',
-                  handler: (e) => settingsToggle(e),
+                  handler: () => setIsComponentSettingsActive((prevState) => !prevState),
                 },
                 {
                   type: 'move',
@@ -234,7 +225,6 @@ const OverviewCard = ({
             />
           }
         </div>
-      }
     </>
   )
   
@@ -265,16 +255,6 @@ const OverviewCard = ({
         cancelText="Cancel"
       />
     }
-    {
-      canShowDeleteWarningModal
-      && (
-        <DeleteWarningModal
-          onCancel={() => setCanShowDeleteWarningModal(false)}
-          onDelete={deleteHandler}
-          type={isResource ? "resource" : "page"}
-        />
-      )
-    }
     </>
   );
 };
@@ -283,7 +263,6 @@ const OverviewCard = ({
 OverviewCard.propTypes = {
   date: PropTypes.string,
   category: PropTypes.string,
-  settingsToggle: PropTypes.func,
   itemIndex: PropTypes.number.isRequired,
   siteName: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,

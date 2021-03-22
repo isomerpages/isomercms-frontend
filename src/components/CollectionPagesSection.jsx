@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -17,7 +17,8 @@ import { DEFAULT_RETRY_MSG } from '../utils'
 import OverviewCard from '../components/OverviewCard';
 import ComponentSettingsModal from './ComponentSettingsModal'
 import PageSettingsModal from './PageSettingsModal'
-import { errorToast } from '../utils/toasts';
+import { errorToast, successToast } from '../utils/toasts';
+import DeleteWarningModal from '../components/DeleteWarningModal'
 
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -26,8 +27,6 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 // Import utils
 import { retrieveThirdNavOptions } from '../utils/dropdownUtils'
 
-// Constants
-const RADIX_PARSE_INT = 10;
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -39,6 +38,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
     const [collectionPageData, setCollectionPageData] = useState(null)
     const [thirdNavData, setThirdNavData] = useState(null)
     const [allCategories, setAllCategories] = useState()
+    const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
 
     useEffect(() => {
         let _isMounted = true
@@ -107,17 +107,26 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
     }
 
     const { data: pageData } = useQuery(
-        [PAGE_CONTENT_KEY, { siteName, fileName: selectedFile.name }],
-        () => getEditPageData({ siteName, fileName: selectedFile.name }),
+        [PAGE_CONTENT_KEY, { siteName, fileName: selectedFile }],
+        () => getEditPageData({ siteName, fileName: selectedFile }),
         {
-          enabled: selectedFile?.name?.length > 0,
+          enabled: selectedFile.length > 0,
           retry: false,
           onError: () => {
             setSelectedFile('')
             errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
           },
         },
-    );
+    )
+
+    const { mutateAsync: deleteHandler } = useMutation(
+        async () => deletePageData({ siteName, fileName: selectedFile }, pageData.pageSha),
+        {
+          onError: () => errorToast(`Your file could not be deleted successfully. ${DEFAULT_RETRY_MSG}`),
+          onSuccess: () => {successToast('Successfully deleted file'); window.location.reload();},
+          onSettled: () => setCanShowDeleteWarningModal((prevState) => !prevState),
+        }
+      )
 
     return (
         <>
@@ -126,7 +135,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                 && ( isResource 
                     ? <ComponentSettingsModal
                         modalTitle={isResource ? "Resource Settings" : "Page Settings"}
-                        settingsToggle={settingsToggle}
+                        // settingsToggle={settingsToggle}
                         category={collectionName}
                         isCategoryDisabled={isCategoryDropdownDisabled(createNewPage, collectionName)}
                         siteName={siteName}
@@ -147,7 +156,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                         pagesData={pages}
                         pageData={pageData}
                         siteName={siteName}
-                        originalPageName={selectedFile ? selectedFile.name : ''}
+                        originalPageName={selectedFile || ''}
                         isNewPage={createNewPage}
                         setSelectedPage={setSelectedFile}
                         setIsPageSettingsActive={setIsComponentSettingsActive}
@@ -155,12 +164,15 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                 )
             }
             {
-                pages && _.isEmpty(pages) && 
-                <>
-                    <div className='mr-auto'>No files found.</div>
-                    <hr className="invisible w-100 mt-3 mb-3" />
-                </>
-            }
+                canShowDeleteWarningModal
+                && (
+                <DeleteWarningModal
+                    onCancel={() => setCanShowDeleteWarningModal(false)}
+                    onDelete={deleteHandler}
+                    type={"page"}
+                />
+                )
+            } 
             <div className={contentStyles.contentContainerBoxes}>
                 {/* Display loader if pages have not been retrieved from API call */}
                 { pages
@@ -169,7 +181,11 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                         <button
                             type="button"
                             id="settings-NEW"
-                            onClick={settingsToggle}
+                            onClick={() => {
+                                setIsComponentSettingsActive(true)
+                                setSelectedFile('')
+                                setCreateNewPage(true)
+                            }}
                             className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.addNew}`}
                         >
                             <i id="settingsIcon-NEW" className={`bx bx-plus-circle ${elementStyles.bxPlusCircle}`} />
@@ -182,7 +198,6 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                                 <OverviewCard
                                     key={page.fileName}
                                     itemIndex={pageIdx}
-                                    settingsToggle={settingsToggle}
                                     category={collectionName}
                                     siteName={siteName}
                                     fileName={page.fileName || page.name} // temporary fix
@@ -190,6 +205,9 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                                     date={page.date}
                                     isResource={isResource}
                                     allCategories={allCategories}
+                                    setIsComponentSettingsActive={setIsComponentSettingsActive}
+                                    setSelectedFile={setSelectedFile}
+                                    setCanShowDeleteWarningModal={setCanShowDeleteWarningModal}
                                 />
                             ))
                         }
