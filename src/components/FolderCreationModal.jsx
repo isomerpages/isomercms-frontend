@@ -57,9 +57,12 @@ const FolderCreationModal = ({
   const { mutateAsync: saveHandler } = useMutation(
     () => moveFiles(siteName, [ ...selectedFiles ], slugifyCategory(title), parentFolder),
     { onSuccess: () => {
-        const redirectUrl = `/sites/${siteName}/folder/${parentFolder ? `${parentFolder}/subfolder/${slugifyCategory(title)}` : slugifyCategory(title)}`
-        setRedirectToPage(redirectUrl)
-        setIsFolderCreationActive(false)
+        // We set a delay here because the new collection.yml information takes time to propagate, redirecting too soon retrieves the old data
+        setTimeout(function() {
+          const redirectUrl = `/sites/${siteName}/folder/${parentFolder ? `${parentFolder}/subfolder/${slugifyCategory(title)}` : slugifyCategory(title)}`
+          setRedirectToPage(redirectUrl)
+          setIsFolderCreationActive(false)
+        }, 2000)
       },
       onError: (error) => {
         if (error.response.status === 409) {
