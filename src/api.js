@@ -73,7 +73,7 @@ const renameFolder = async ({ siteName, folderName, newFolderName }) => {
     return await axios.post(apiUrl)
 }
 
-const deletedSubfolder = async ({ siteName, folderName, subfolderName }) => {
+const deleteSubfolder = async ({ siteName, folderName, subfolderName }) => {
     const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/folders/${folderName}/subfolder/${subfolderName}`
     return await axios.delete(apiUrl)
 }
@@ -171,7 +171,7 @@ export {
     updatePageData,
     deletePageData,
     renameFolder,
-    deletedSubfolder,
+    deleteSubfolder,
     renameSubfolder,
     renameResourceCategory,
     getEditNavBarData,
