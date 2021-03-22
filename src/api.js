@@ -102,7 +102,8 @@ const updatePageData = async ({folderName, subfolderName, fileName, siteName, re
         content,
         sha,
     };
-    return await axios.post(apiEndpoint, params);
+    await axios.post(apiEndpoint, params);
+    return 
 }
 
 const deletePageData = async ({folderName, subfolderName, fileName, siteName, resourceName}, sha) => {
