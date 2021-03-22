@@ -21,8 +21,8 @@ import { errorToast } from '../utils/toasts';
 // axios settings
 axios.defaults.withCredentials = true
 
-const selectRenameApiCall = (isCollection, isSubfolder, siteName, folderOrCategoryName, subfolderName, newDirectoryName) => {
-  if (isCollection && !isSubfolder) {
+const selectRenameApiCall = (isCollection, siteName, folderOrCategoryName, subfolderName, newDirectoryName) => {
+  if (isCollection && !subfolderName) {
     const params = {
       siteName,
       folderName: folderOrCategoryName,
@@ -31,7 +31,7 @@ const selectRenameApiCall = (isCollection, isSubfolder, siteName, folderOrCatego
     return renameFolder(params)
   }
 
-  if (isCollection && isSubfolder) {
+  if (isCollection && subfolderName) {
     const params = {
       siteName,
       folderName: folderOrCategoryName,
