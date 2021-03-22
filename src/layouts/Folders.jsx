@@ -58,7 +58,7 @@ const Folders = ({ match, location }) => {
     const [selectedPage, setSelectedPage] = useState('')
     const [isSelectedItemPage, setIsSelectedItemPage] = useState(false)
 
-    const { data: folderContents, error: queryError } = useQuery(
+    const { data: folderContents, error: queryError, refetch: refetchFolderContents } = useQuery(
       [DIR_CONTENT_KEY, siteName, folderName],
       () => getDirectoryFile(siteName, folderName),
       { 
@@ -91,7 +91,10 @@ const Folders = ({ match, location }) => {
       },
       {
         onError: () => errorToast(`Your file could not be deleted successfully. ${DEFAULT_RETRY_MSG}`),
-        onSuccess: () => successToast(`Successfully deleted ${isSelectedItemPage ? 'file' : 'subfolder'}`),
+        onSuccess: () => {
+          successToast(`Successfully deleted ${isSelectedItemPage ? 'file' : 'subfolder'}`)
+          refetchFolderContents()
+        },
         onSettled: () => setIsDeleteModalActive((prevState) => !prevState),
       }
     )
