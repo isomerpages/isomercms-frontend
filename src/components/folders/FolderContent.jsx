@@ -57,6 +57,18 @@ const FolderContentItem = ({
         return dropdownItems.filter(item => item.itemId !== 'move')
     }
     return (
+        <>
+        { isFolderModalOpen && !isFile &&
+            <FolderModal
+                displayTitle={'Rename subfolder'}
+                displayText={'Subfolder name'}
+                onClose={() => setIsFolderModalOpen(false)}
+                folderOrCategoryName={folderName}
+                subfolderName={title}
+                siteName={siteName}
+                isCollection={true}
+            />
+        }
         <Link className={`${contentStyles.component} ${contentStyles.card}`} to={link}>
             <div type="button" className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderItem}`}>
                 <div className={contentStyles.contentContainerFolderRow}>
@@ -64,17 +76,6 @@ const FolderContentItem = ({
                         isFile
                         ? <i className={`bx bxs-file-blank ${elementStyles.folderItemIcon}`} />
                         : <i className={`bx bxs-folder ${elementStyles.folderItemIcon}`} />
-                    }
-                    { isFolderModalOpen && !isFile &&
-                        <FolderModal
-                            displayTitle={'Rename subfolder'}
-                            displayText={'Subfolder name'}
-                            onClose={() => setIsFolderModalOpen(false)}
-                            folderOrCategoryName={folderName}
-                            subfolderName={title}
-                            siteName={siteName}
-                            isCollection={true}
-                        />
                     }
                     <span className={`${elementStyles.folderItemText} mr-auto`} >{deslugifyPage(title)}</span>
                     {
@@ -108,6 +109,7 @@ const FolderContentItem = ({
                 </div>
             </div>
         </Link>
+        </>
     )
 }
 
