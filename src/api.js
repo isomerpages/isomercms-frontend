@@ -66,7 +66,6 @@ const deletePageData = async ({folderName, subfolderName, fileName, siteName, re
     });
 }
 
-
 // Folder and subfolders
 const renameFolder = async ({ siteName, folderName, newFolderName }) => {
     const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}/rename/${newFolderName}`
@@ -83,9 +82,16 @@ const renameSubfolder = async ({ siteName, folderName, subfolderName, newSubfold
     return await axios.post(apiUrl)
 }
 
+// Resources
 const renameResourceCategory = async ({ siteName, categoryName, newCategoryName}) => {
     const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${categoryName}/rename/${newCategoryName}`
     return await axios.post(apiUrl)
+}
+
+const addResourceCategory = async (siteName, resourceName) => {
+    if (!resourceName) return
+    const params = { resourceName }
+    return await axios.post(`${BACKEND_URL}/sites/${siteName}/resources`, params);
 }
 
 // EditNavBar
@@ -174,6 +180,7 @@ export {
     deleteSubfolder,
     renameSubfolder,
     renameResourceCategory,
+    addResourceCategory,
     getEditNavBarData,
     updateNavBarData,
     createPage,
