@@ -23,9 +23,9 @@ const FolderContentItem = ({
     itemIndex,
     setSelectedPage,
     setIsPageSettingsActive,
+    setIsFolderModalOpen,
     setIsDeleteModalActive
 }) => {
-    const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
     const [showDropdown, setShowDropdown] = useState(false)
     const dropdownRef = useRef(null)
 
@@ -57,18 +57,6 @@ const FolderContentItem = ({
         return dropdownItems.filter(item => item.itemId !== 'move')
     }
     return (
-        <>
-        { isFolderModalOpen && !isFile &&
-            <FolderModal
-                displayTitle={'Rename subfolder'}
-                displayText={'Subfolder name'}
-                onClose={() => setIsFolderModalOpen(false)}
-                folderOrCategoryName={folderName}
-                subfolderName={title}
-                siteName={siteName}
-                isCollection={true}
-            />
-        }
         <Link className={`${contentStyles.component} ${contentStyles.card}`} to={link}>
             <div type="button" className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderItem}`}>
                 <div className={contentStyles.contentContainerFolderRow}>
@@ -109,7 +97,6 @@ const FolderContentItem = ({
                 </div>
             </div>
         </Link>
-        </>
     )
 }
 
@@ -121,6 +108,7 @@ const FolderContent = ({
     enableDragDrop,
     setSelectedPage,
     setIsPageSettingsActive,
+    setIsFolderModalOpen,
     setIsDeleteModalActive,
 }) => {
     const generateLink = (folderContentItem) => {
@@ -189,6 +177,7 @@ const FolderContent = ({
                                                 itemIndex={folderContentIndex}
                                                 setSelectedPage={setSelectedPage}
                                                 setIsPageSettingsActive={setIsPageSettingsActive}
+                                                setIsFolderModalOpen={setIsFolderModalOpen}
                                                 setIsDeleteModalActive={setIsDeleteModalActive}
                                             />
                                         </div>

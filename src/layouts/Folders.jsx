@@ -11,6 +11,7 @@ import Sidebar from '../components/Sidebar';
 import FolderCreationModal from '../components/FolderCreationModal'
 import FolderOptionButton from '../components/folders/FolderOptionButton';
 import FolderContent from '../components/folders/FolderContent';
+import FolderModal from '../components/FolderModal';
 import PageSettingsModal from '../components/PageSettingsModal'
 import DeleteWarningModal from '../components/DeleteWarningModal'
 
@@ -48,6 +49,7 @@ const Folders = ({ match, location }) => {
     const [parsedFolderContents, setParsedFolderContents] = useState([])
     const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
     const [isDeleteModalActive, setIsDeleteModalActive] = useState(false)
+    const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
     const [selectedPage, setSelectedPage] = useState('')
 
     const { data: folderContents, error: queryError } = useQuery(
@@ -161,6 +163,19 @@ const Folders = ({ match, location }) => {
               />
             )
           }
+          { isFolderModalOpen &&
+            (
+              <FolderModal
+                displayTitle="Rename subfolder"
+                displayText="Subfolder name"
+                onClose={() => setIsFolderModalOpen(false)}
+                folderOrCategoryName={folderName}
+                subfolderName={selectedPage}
+                siteName={siteName}
+                isCollection
+              />
+            )
+          }
           {
             isDeleteModalActive
             && (
@@ -237,6 +252,7 @@ const Folders = ({ match, location }) => {
                     folderName={folderName} 
                     enableDragDrop={isRearrangeActive}
                     setIsPageSettingsActive={setIsPageSettingsActive}
+                    setIsFolderModalOpen={setIsFolderModalOpen}
                     setIsDeleteModalActive={setIsDeleteModalActive}
                     setSelectedPage={setSelectedPage}
                   />
