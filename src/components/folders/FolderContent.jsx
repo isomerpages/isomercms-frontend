@@ -4,17 +4,19 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { DragDropContext } from 'react-beautiful-dnd';
 import update from 'immutability-helper';
 
+import FolderModal from '../FolderModal';
+
 import { deslugifyPage } from '../../utils'
 import MenuDropdown from '../MenuDropdown'
 
 // Import styles
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../../styles/isomer-cms/pages/Content.module.scss';
-import _default from 'immutability-helper';
-import _ from 'lodash';
 
-const FolderContentItem = ({ 
+const FolderContentItem = ({
+    siteName,
     title,
+    folderName,
     isFile,
     numItems,
     link,
@@ -23,6 +25,7 @@ const FolderContentItem = ({
     setIsPageSettingsActive,
     setIsDeleteModalActive
 }) => {
+    const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
     const [showDropdown, setShowDropdown] = useState(false)
     const dropdownRef = useRef(null)
 
@@ -34,7 +37,12 @@ const FolderContentItem = ({
         const dropdownItems = [
             {
                 type: 'edit',
-                handler: () => setIsPageSettingsActive(true)
+                handler: () => {
+                    if (isFile) setIsPageSettingsActive(true)
+                    else {
+                        setIsFolderModalOpen(true)
+                    }
+                }
             },
             {
                 type: 'move',
@@ -56,6 +64,17 @@ const FolderContentItem = ({
                         isFile
                         ? <i className={`bx bxs-file-blank ${elementStyles.folderItemIcon}`} />
                         : <i className={`bx bxs-folder ${elementStyles.folderItemIcon}`} />
+                    }
+                    { isFolderModalOpen && !isFile &&
+                        <FolderModal
+                            displayTitle={'Rename subfolder'}
+                            displayText={'Subfolder name'}
+                            onClose={() => setIsFolderModalOpen(false)}
+                            folderOrCategoryName={folderName}
+                            subfolderName={title}
+                            siteName={siteName}
+                            isCollection={true}
+                        />
                     }
                     <span className={`${elementStyles.folderItemText} mr-auto`} >{deslugifyPage(title)}</span>
                     {
@@ -159,7 +178,9 @@ const FolderContent = ({
                                         >        
                                             <FolderContentItem
                                                 key={folderContentItem.name}
+                                                siteName={siteName}
                                                 title={folderContentItem.name}
+                                                folderName={folderName}
                                                 numItems={folderContentItem.type === 'dir' ? folderContentItem.children.length : null}
                                                 isFile={folderContentItem.type === 'dir' ? false: true}
                                                 link={generateLink(folderContentItem)}

@@ -8,6 +8,8 @@ import FormField from './FormField';
 
 import {
   renameFolder,
+  renameSubfolder,
+  renameResourcedirectory,
   renameResourceCategory,
 } from '../api'
 
@@ -19,30 +21,40 @@ import { errorToast } from '../utils/toasts';
 // axios settings
 axios.defaults.withCredentials = true
 
-const selectRenameApiCall = (isCollection, siteName, categoryName, newCategoryName) => {
-  if (isCollection) {
+const selectRenameApiCall = (isCollection, isSubfolder, siteName, folderOrCategoryName, subfolderName, newDirectoryName) => {
+  if (isCollection && !isSubfolder) {
     const params = {
       siteName,
-      folderName: categoryName,
-      newFolderName: newCategoryName,
+      folderName: folderOrCategoryName,
+      newFolderName: newDirectoryName,
     }
     return renameFolder(params)
   }
-  
+
+  if (isCollection && isSubfolder) {
+    const params = {
+      siteName,
+      folderName: folderOrCategoryName,
+      subfolderName,
+      newSubfolderName: newDirectoryName,
+    }
+    return renameSubfolder(params)
+  }
+
   const params = {
     siteName,
-    categoryName,
-    newCategoryName,
+    categoryName: folderOrCategoryName,
+    newCategoryName: newDirectoryName,
   }
   return renameResourceCategory(params)
 }
 
-const FolderModal = ({ displayTitle, displayText, onClose, category, siteName, isCollection }) => {
-  const [newCategoryName, setNewCategoryName] = useState(category)
+const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName, subfolderName, siteName, isCollection }) => {
+  const [newDirectoryName, setNewDirectoryName] = useState(subfolderName || folderOrCategoryName)
 
-  // rename folder/subfolder/category
+  // rename folder/subfolder/resource category
   const { mutateAsync: renameDirectory } = useMutation(
-    () => selectRenameApiCall(isCollection, siteName, category, newCategoryName),
+    () => selectRenameApiCall(isCollection, siteName, folderOrCategoryName, subfolderName, newDirectoryName),
     {
       onError: () => errorToast(`There was a problem trying to rename this folder. ${DEFAULT_RETRY_MSG}`),
       onSuccess: () => window.location.reload(),
@@ -51,7 +63,7 @@ const FolderModal = ({ displayTitle, displayText, onClose, category, siteName, i
 
   const folderNameChangeHandler = (event) => {
     const { value } = event.target
-    setNewCategoryName(value)
+    setNewDirectoryName(value)
   }
 
   return (
@@ -68,8 +80,8 @@ const FolderModal = ({ displayTitle, displayText, onClose, category, siteName, i
         <form className={elementStyles.modalContent}>
           <FormField
             title={displayText}
-            id="newCategoryName"
-            value={newCategoryName}
+            id="newDirectoryName"
+            value={newDirectoryName}
             onFieldChange={folderNameChangeHandler}
           />
           <SaveDeleteButtons
@@ -87,7 +99,8 @@ FolderModal.propTypes = {
   displayTitle: PropTypes.string.isRequired,
   displayText: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  category: PropTypes.string.isRequired,
+  folderOrCategoryName: PropTypes.string.isRequired,
+  subfolderName: PropTypes.string,
   siteName: PropTypes.string.isRequired,
   isCollection: PropTypes.bool.isRequired,
 };
