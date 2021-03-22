@@ -29,12 +29,12 @@ import useRedirectHook from '../hooks/useRedirectHook';
 axios.defaults.withCredentials = true
 
 const PageSettingsModal = ({
-    pageType, 
     folderName,
     subfolderName,
     originalPageName,
     isNewPage,
     pagesData,
+    pageData,
     siteName,
     setSelectedPage,
     setIsPageSettingsActive,
@@ -60,21 +60,6 @@ const PageSettingsModal = ({
       permalink: setPermalink,
     }
 
-    // get page data
-    const { data: pageData } = useQuery(
-      [PAGE_CONTENT_KEY, { siteName, folderName, subfolderName, fileName: originalPageName }],
-      () => getEditPageData({ siteName, folderName, subfolderName, fileName: originalPageName }),
-      {
-        enabled: !isNewPage,
-        retry: false,
-        onError: () => {
-          setSelectedPage('')
-          setIsPageSettingsActive(false)
-          errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
-        }
-      },
-    );
-
     const { mutateAsync: saveHandler } = useMutation(
       () => {
         const frontMatter = subfolderName 
@@ -94,33 +79,32 @@ const PageSettingsModal = ({
     useEffect(() => {
       let _isMounted = true
 
-      const loadPageDetails = async () => {
-        if (!pageData) return
-        const { pageContent, pageSha } = pageData
-        const { frontMatter, mdBody } = frontMatterParser(pageContent);
-        if (_isMounted) {
+      const initializePageDetails = () => {
+        if (pageData !== undefined) { // is existing page
+          const { pageContent, pageSha } = pageData
+          const { frontMatter, pageMdBody } = frontMatterParser(pageContent)
+          const { permalink: originalPermalink } = frontMatter
+        
           setTitle(deslugifyPage(originalPageName))
-          setPermalink(frontMatter.permalink)
-          setOriginalPermalink(frontMatter.permalink)
+          setPermalink(originalPermalink)
+          setOriginalPermalink(originalPermalink)
           setSha(pageSha)
-          setMdBody(mdBody)
+          setMdBody(pageMdBody)
+        }
+        if (isNewPage) {
+          let exampleTitle = 'Example Title'
+          while (_.find(pagesData, function(v) { return v.type === 'file' && generatePageFileName(exampleTitle) === v.name }) !== undefined) {
+            exampleTitle = exampleTitle+'_1'
+          }
+          const examplePermalink = `/${folderName ? `${folderName}/` : ''}${subfolderName ? `${subfolderName}/` : ''}permalink`
+          setTitle(exampleTitle)
+          setPermalink(examplePermalink)
         }
       }
-      
-      loadPageDetails()
+      initializePageDetails()
       return () => {
         _isMounted = false
       }
-    }, [pageData])
-
-    useEffect(() => {
-      let exampleTitle = 'Example Title'
-      while (_.find(pagesData, function(v) { return v.type === 'file' && generatePageFileName(exampleTitle) === v.name }) !== undefined) {
-        exampleTitle = exampleTitle+'_1'
-      }
-      const examplePermalink = `/${folderName ? `${folderName}/` : ''}${subfolderName ? `${subfolderName}/` : ''}permalink`
-      setTitle(exampleTitle)
-      setPermalink(examplePermalink)
     }, [])
 
     useEffect(() => {

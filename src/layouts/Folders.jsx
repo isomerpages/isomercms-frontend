@@ -18,7 +18,9 @@ import DeleteWarningModal from '../components/DeleteWarningModal'
 import { errorToast, successToast } from '../utils/toasts';
 
 import useRedirectHook from '../hooks/useRedirectHook';
-
+import {
+  PAGE_CONTENT_KEY,
+} from '../constants'
 import {
   DEFAULT_RETRY_MSG,
   parseDirectoryFile,
@@ -31,12 +33,7 @@ import {
 import { DIR_CONTENT_KEY } from '../constants'
 
 // Import API
-import {
-  getDirectoryFile,
-  setDirectoryFile,
-  deletePage,
-  deleteSubfolder,
-} from '../api';
+import { getDirectoryFile, setDirectoryFile, getEditPageData, deletePageData, deleteSubfolder, } from '../api';
 
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -74,6 +71,19 @@ const Folders = ({ match, location }) => {
       },
     );
 
+    const { data: pageData } = useQuery(
+      [PAGE_CONTENT_KEY, { siteName, folderName, subfolderName, fileName: selectedPage }],
+      () => getEditPageData({ siteName, folderName, subfolderName, fileName: selectedPage }),
+      {
+        enabled: selectedPage.length > 0,
+        retry: false,
+        onError: () => {
+          setSelectedPage('')
+          errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
+        },
+      },
+    );
+
     const { mutate: rearrangeFolder } = useMutation(
       payload => setDirectoryFile(siteName, folderName, payload),
       {
@@ -89,7 +99,7 @@ const Folders = ({ match, location }) => {
 
     const { mutateAsync: deleteHandler } = useMutation(
       async () => {
-       if (isSelectedItemPage) await deletePage('collection', folderName, subfolderName, selectedPage)
+       if (isSelectedItemPage) await deletePageData('collection', folderName, subfolderName, selectedPage)
        else await deleteSubfolder({ siteName, folderName, subfolderName: selectedPage })
       },
       {
@@ -168,16 +178,16 @@ const Folders = ({ match, location }) => {
             />
           }
           {
-            isPageSettingsActive
+            isPageSettingsActive && (!selectedPage || pageData)
             && (
               <PageSettingsModal
-                pageType='collection'
                 folderName={folderName}
                 subfolderName={subfolderName}
                 pagesData={folderOrderArray.filter(item => item.type === 'file')}
+                pageData={pageData}
                 siteName={siteName}
                 originalPageName={selectedPage || ''}
-                isNewPage={!selectedPage.length > 0}
+                isNewPage={!selectedPage}
                 setIsPageSettingsActive={setIsPageSettingsActive}
                 setSelectedPage={setSelectedPage}
               />

@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
+import { useQuery } from 'react-query';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+
+import {
+    PAGE_CONTENT_KEY,
+} from '../constants'
+
+import { getEditPageData, deletePageData } from '../api'
+
+import { DEFAULT_RETRY_MSG } from '../utils'
 
 // Import components
 import OverviewCard from '../components/OverviewCard';
 import ComponentSettingsModal from './ComponentSettingsModal'
 import PageSettingsModal from './PageSettingsModal'
+import { errorToast } from '../utils/toasts';
 
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -90,12 +101,23 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
           const pageIndex = parseInt(idArray[1], RADIX_PARSE_INT);
 
           setIsComponentSettingsActive((prevState) => !prevState)
-          setSelectedFile(() => {
-              return isComponentSettingsActive ? null : pages[pageIndex]
-          })
+          setSelectedFile(pages[pageIndex])
           setCreateNewPage(false)
         }
     }
+
+    const { data: pageData } = useQuery(
+        [PAGE_CONTENT_KEY, { siteName, fileName: selectedFile.name }],
+        () => getEditPageData({ siteName, fileName: selectedFile.name }),
+        {
+          enabled: selectedFile?.name?.length > 0,
+          retry: false,
+          onError: () => {
+            setSelectedFile('')
+            errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
+          },
+        },
+    );
 
     return (
         <>
@@ -120,9 +142,10 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                         loadThirdNavOptions={loadThirdNavOptions}
                         setIsComponentSettingsActive={setIsComponentSettingsActive}
                     /> 
-                    : <PageSettingsModal
-                        pageType='page'
+                    : (pageData || createNewPage) 
+                    && <PageSettingsModal
                         pagesData={pages}
+                        pageData={pageData}
                         siteName={siteName}
                         originalPageName={selectedFile ? selectedFile.name : ''}
                         isNewPage={createNewPage}
