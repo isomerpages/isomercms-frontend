@@ -31,7 +31,12 @@ import {
 import { DIR_CONTENT_KEY } from '../constants'
 
 // Import API
-import { getDirectoryFile, setDirectoryFile, deletePage } from '../api';
+import {
+  getDirectoryFile,
+  setDirectoryFile,
+  deletePage,
+  deleteSubfolder,
+} from '../api';
 
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -51,6 +56,7 @@ const Folders = ({ match, location }) => {
     const [isDeleteModalActive, setIsDeleteModalActive] = useState(false)
     const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
     const [selectedPage, setSelectedPage] = useState('')
+    const [isSelectedItemPage, setIsSelectedItemPage] = useState(false)
 
     const { data: folderContents, error: queryError } = useQuery(
       [DIR_CONTENT_KEY, siteName, folderName],
@@ -80,11 +86,12 @@ const Folders = ({ match, location }) => {
 
     const { mutateAsync: deleteHandler } = useMutation(
       async () => {
-        await deletePage('collection', folderName, subfolderName, selectedPage)
+       if (isSelectedItemPage) await deletePage('collection', folderName, subfolderName, selectedPage)
+       else await deleteSubfolder({ siteName, folderName, subfolderName: selectedPage })
       },
       {
         onError: () => errorToast(`Your file could not be deleted successfully. ${DEFAULT_RETRY_MSG}`),
-        onSuccess: () => successToast('Successfully deleted file'),
+        onSuccess: () => successToast(`Successfully deleted ${isSelectedItemPage ? 'file' : 'subfolder'}`),
         onSettled: () => setIsDeleteModalActive((prevState) => !prevState),
       }
     )
@@ -108,6 +115,11 @@ const Folders = ({ match, location }) => {
           }
         }
     }, [folderContents, subfolderName])
+
+    useEffect(() => {
+      const selectedItem = folderOrderArray.some((item) => item.name === selectedPage)
+      setIsSelectedItemPage(selectedItem.type === 'file' ? true : false)
+    }, [selectedPage])
 
     const toggleRearrange = () => { 
       if (isRearrangeActive) { 
@@ -182,7 +194,7 @@ const Folders = ({ match, location }) => {
               <DeleteWarningModal
                 onCancel={() => setIsDeleteModalActive(false)}
                 onDelete={deleteHandler}
-                type={"page"}
+                type={isSelectedItemPage ? "page" : "subfolder"}
               />
             )
           }
