@@ -65,10 +65,11 @@ const ComponentSettingsModal = ({
     modalTitle,
     collectionPageData,
     pageFileNames,
-    settingsToggle,
     siteName,
     type,
     loadThirdNavOptions,
+    setSelectedFile,
+    setCreateNewPage,
     setIsComponentSettingsActive,
 }) => {
     const { setRedirectToPage } = useRedirectHook()
@@ -403,7 +404,7 @@ const ComponentSettingsModal = ({
             <div className={elementStyles['modal-settings']}>
               <div className={elementStyles.modalHeader}>
                 <h1>{modalTitle}</h1>
-                <button id="settings-CLOSE" type="button" onClick={settingsToggle}>
+                <button id="settings-CLOSE" type="button" onClick={() => {setCreateNewPage(false); setSelectedFile(''); setIsComponentSettingsActive(false)}}>
                   <i id="settingsIcon-CLOSE" className="bx bx-x" />
                 </button>
               </div>

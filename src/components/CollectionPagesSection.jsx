@@ -87,30 +87,11 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
         }
     }
 
-    const settingsToggle = (event) => {
-        const { id } = event.target;
-        const idArray = id.split('-');
-
-        // Create new page
-        if (idArray[1] === 'NEW') {
-            setIsComponentSettingsActive((prevState) => !prevState)
-            setSelectedFile('')
-            setCreateNewPage(true)
-        } else {
-          // Modify existing page frontmatter
-          const pageIndex = parseInt(idArray[1], RADIX_PARSE_INT);
-
-          setIsComponentSettingsActive((prevState) => !prevState)
-          setSelectedFile(pages[pageIndex])
-          setCreateNewPage(false)
-        }
-    }
-
     const { data: pageData } = useQuery(
         [PAGE_CONTENT_KEY, { siteName, fileName: selectedFile }],
         () => getEditPageData({ siteName, fileName: selectedFile }),
         {
-          enabled: selectedFile.length > 0,
+          enabled: selectedFile.length > 0 && !collectionName,
           retry: false,
           onError: () => {
             setSelectedFile('')
@@ -134,12 +115,11 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                 isComponentSettingsActive 
                 && ( isResource 
                     ? <ComponentSettingsModal
-                        modalTitle={isResource ? "Resource Settings" : "Page Settings"}
-                        // settingsToggle={settingsToggle}
+                        modalTitle={"Resource Settings"}
                         category={collectionName}
                         isCategoryDisabled={isCategoryDropdownDisabled(createNewPage, collectionName)}
                         siteName={siteName}
-                        fileName={selectedFile ? selectedFile.fileName : ''}
+                        fileName={selectedFile || ''}
                         isNewFile={createNewPage}
                         type={isResource ? "resource" : "page"}
                         pageFileNames={
@@ -149,6 +129,8 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                         }
                         collectionPageData={collectionPageData}
                         loadThirdNavOptions={loadThirdNavOptions}
+                        setSelectedFile={setSelectedFile}
+                        setCreateNewPage={setCreateNewPage}
                         setIsComponentSettingsActive={setIsComponentSettingsActive}
                     /> 
                     : (pageData || createNewPage) 
