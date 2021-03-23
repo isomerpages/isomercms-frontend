@@ -120,8 +120,10 @@ const Folders = ({ match, location }) => {
     }, [folderContents, subfolderName])
 
     useEffect(() => {
-      const selectedItem = folderOrderArray.some((item) => item.name === selectedPage)
-      setIsSelectedItemPage(selectedItem.type === 'file' ? true : false)
+      if (selectedPage) {
+        const selectedItem = folderOrderArray.find((item) => item.name === selectedPage)
+        setIsSelectedItemPage(selectedItem.type === 'file' ? true : false)
+      }
     }, [selectedPage])
 
     const toggleRearrange = () => { 
