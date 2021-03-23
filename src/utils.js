@@ -237,6 +237,73 @@ export function retrieveCollectionAndLinkFromPermalink(permalink) {
   return {collectionName, editableLink}
 }
 
+export async function saveResourcePage(fileInfo) {
+  const {
+    category,
+    date,
+    fileUrl,
+    mdBody,
+    permalink,
+    resourceType,
+    sha,
+    title,
+    fileName,
+    isNewFile,
+    siteName,
+  } = fileInfo
+
+  const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${category}`
+
+  const newFileName = generateResourceFileName(title.toLowerCase(), date, resourceType);
+  const frontMatter = { title, date };
+
+  if (permalink) {
+    frontMatter.permalink = permalink;
+  }
+
+  if (fileUrl) {
+    frontMatter.file_url = fileUrl;
+  }
+
+  const content = concatFrontMatterMdBody(frontMatter, mdBody);
+  const base64EncodedContent = Base64.encode(content);
+
+  if (newFileName !== fileName) {
+    // We'll need to create a new .md file with a new filename
+    const params = {
+      content: base64EncodedContent,
+      pageName: newFileName,
+    };
+    await axios.post(`${baseApiUrl}/pages`, params);
+
+    // If it is an existing file, delete the existing page
+    if (!isNewFile) {
+      const params = {
+        data: {
+          sha,
+        },
+      }
+      await axios.delete(`${baseApiUrl}/pages/${fileName}`, params);
+    }
+  } else {
+    // Save to existing .md file
+    const params = {
+      content: base64EncodedContent,
+      sha,
+    };
+    await axios.post(`${baseApiUrl}/pages/${fileName}`, params);
+  }
+
+  let newPageUrl
+  if (resourceType === 'file') {
+    newPageUrl = `/sites/${siteName}/resources/${category}`
+  } else {
+    newPageUrl = `/sites/${siteName}/resources/${category}/${newFileName}`
+  }
+
+  return newPageUrl
+}
+
 export async function saveFileAndRetrieveUrl(fileInfo) {
   const {
     // state params
