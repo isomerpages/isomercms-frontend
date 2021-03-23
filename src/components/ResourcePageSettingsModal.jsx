@@ -11,12 +11,13 @@ import SaveDeleteButtons from './SaveDeleteButtons';
 
 import useRedirectHook from '../hooks/useRedirectHook';
 
+import { saveResourcePage } from '../api';
+
 import {
   DEFAULT_RETRY_MSG,
   frontMatterParser,
   dequoteString,
   generateResourceFileName,
-  saveResourcePage,
   retrieveResourceFileMetadata,
 } from '../utils';
 import { validateResourceSettings } from '../utils/validators';
