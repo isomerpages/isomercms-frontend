@@ -109,12 +109,12 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                         category={collectionName}
                         isCategoryDisabled={isCategoryDropdownDisabled(createNewPage, collectionName)}
                         siteName={siteName}
-                        fileName={selectedFile ? selectedFile.fileName : ''}
+                        fileName={selectedFile ? selectedFile.name : ''}
                         isNewFile={createNewPage}
-                        type={isResource ? "resource" : "page"}
+                        type="resource"
                         pageFileNames={
                             _.chain(pages)
-                                .map((page) => page.fileName)
+                                .map((page) => page.name)
                                 .value()
                         }
                         collectionPageData={collectionPageData}
@@ -155,12 +155,12 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                                 />
                             : pages.map((page, pageIdx) => (
                                 <OverviewCard
-                                    key={page.fileName}
+                                    key={page.name}
                                     itemIndex={pageIdx}
                                     settingsToggle={settingsToggle}
                                     category={collectionName}
                                     siteName={siteName}
-                                    fileName={page.fileName || page.name} // temporary fix
+                                    fileName={page.name}
                                     resourceType={isResource ? page.type : ''}
                                     date={page.date}
                                     isResource={isResource}
