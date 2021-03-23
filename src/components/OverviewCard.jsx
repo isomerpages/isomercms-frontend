@@ -10,12 +10,7 @@ import MenuDropdown from './MenuDropdown'
 
 import {
   DEFAULT_RETRY_MSG,
-  frontMatterParser,
-  saveFileAndRetrieveUrl,
 } from '../utils';
-import {
-  retrieveThirdNavOptions,
-} from '../utils/dropdownUtils'
 import { errorToast } from '../utils/toasts';
 
 
@@ -43,7 +38,6 @@ const OverviewCard = ({
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
   const [canShowGenericWarningModal, setCanShowGenericWarningModal] = useState(false)
   const [chosenCategory, setChosenCategory] = useState()
-  const [isNewCollection, setIsNewCollection] = useState(false)
   const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? isResource ? `/resources/${category}` : `/collections/${category}` : ''}`
 
   useEffect(() => {
@@ -53,41 +47,11 @@ const OverviewCard = ({
 
   const moveFile = async () => {
     try {
-      // Retrieve data from existing page/resource
-      const resp = await axios.get(`${baseApiUrl}/pages/${fileName}`);
-
-      const { content, sha } = resp.data;
-      const base64DecodedContent = Base64.decode(content);
-      const { frontMatter, mdBody } = frontMatterParser(base64DecodedContent);
-      const {
-        title, permalink, file_url: fileUrl, third_nav_title: thirdNavTitle,
-      } = frontMatter;
-
-      let collectionPageData
-      if (!isResource && !isNewCollection && chosenCategory) {
-        // User selected an existing page collection
-        const { collectionPages } = await retrieveThirdNavOptions(siteName, chosenCategory, true)
-        collectionPageData = collectionPages
+      const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/move/${chosenCategory}`
+      const params = {
+        files: [fileName]
       }
-      const fileInfo = {
-        title,
-        permalink,
-        fileUrl,
-        date,
-        mdBody,
-        sha,
-        category: chosenCategory,
-        originalCategory: category,
-        type: isResource ? 'resource' : 'page',
-        resourceType,
-        originalThirdNavTitle: thirdNavTitle,
-        fileName,
-        isNewFile: false,
-        siteName,
-        collectionPageData,
-        isNewCollection,
-      }
-      await saveFileAndRetrieveUrl(fileInfo)
+      await axios.post(apiUrl, params)
 
       // Refresh page
       window.location.reload();
@@ -98,7 +62,6 @@ const OverviewCard = ({
       } else {
         errorToast(`There was a problem trying to move this file. ${DEFAULT_RETRY_MSG}`)
       }
-      setIsNewCollection(false)
       setCanShowGenericWarningModal(false)
       console.log(err);
     }
@@ -258,7 +221,6 @@ const OverviewCard = ({
         onProceed={moveFile}
         onCancel={() => {
           setChosenCategory()
-          setIsNewCollection(false)
           setCanShowGenericWarningModal(false)
         }}
         proceedText="Continue"
