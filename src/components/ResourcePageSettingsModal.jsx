@@ -11,7 +11,8 @@ import SaveDeleteButtons from './SaveDeleteButtons';
 
 import useRedirectHook from '../hooks/useRedirectHook';
 
-import { saveResourcePage } from '../api';
+import { getResourcePage, saveResourcePage } from '../api';
+import { RESOURCE_PAGE_CONTENT_KEY } from '../constants'
 
 import {
   DEFAULT_RETRY_MSG,
@@ -71,6 +72,21 @@ const ResourcePageSettingsModal = ({
         fileUrl: setFileUrl,
     }
 
+    const { data: resourcePageContent } = useQuery(
+      [RESOURCE_PAGE_CONTENT_KEY, siteName, fileName],
+      () => {
+        if (!isNewFile) return getResourcePage({ siteName, category, fileName })
+      },
+      {
+        retry: false,
+        onError: (err) => {
+          setIsComponentSettingsActive((prevState) => !prevState)
+          errorToast(`There was a problem retrieving data from your repo. ${DEFAULT_RETRY_MSG}`)
+          console.log(err)
+        },
+      }
+    )
+
     const { mutateAsync: saveHandler } = useMutation(
       () => saveResourcePage({
           category,
@@ -117,51 +133,44 @@ const ResourcePageSettingsModal = ({
     useEffect(() => {
       let _isMounted = true
 
-      const baseUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${category}`
+      if (isNewFile) {
+        // Set default values for new file
+        if (_isMounted) {
+          setTitle('Title')
+          setPermalink(`${category}/permalink`)
+          setResourceDate(new Date().toISOString().split("T")[0])
+        }
+      } else {
+        if (!_.isEmpty(resourcePageContent)) {
+          const {
+              fileSha,
+              frontMatter,
+              mdBody,
+          } = resourcePageContent
 
-      const fetchData = async () => {
-          // Set component form values
-          if (isNewFile) {
-              // Set default values for new file
-              if (_isMounted) {
-                setTitle('Title')
-                setPermalink(`${category}/permalink`)
-                setResourceDate(new Date().toISOString().split("T")[0])
-              }
+          if (_isMounted) {
+            // File properties
+            setSha(fileSha)
+            setMdBody(mdBody)
+            setIsPost(!frontMatter.file_url)
 
-          } else {
-              // Retrieve data from an existing page/resource
-              const resp = await axios.get(`${baseUrl}/pages/${fileName}`);
-              const { content, sha: fileSha } = resp.data;
-              const base64DecodedContent = Base64.decode(content);
-              const { frontMatter, mdBody } = frontMatterParser(base64DecodedContent);
+            // Front matter properties
+            setTitle(dequoteString(frontMatter.title))
 
-              if (_isMounted) {
-                // File properties
-                setSha(fileSha)
-                setMdBody(mdBody)
-                setIsPost(!frontMatter.file_url)
+            setPermalink(frontMatter.permalink)
+            setOriginalPermalink(frontMatter.permalink)
+            setFileUrl(frontMatter.file_url)
+            setOriginalFileUrl(frontMatter.file_url)
 
-                // Front matter properties
-                setTitle(dequoteString(frontMatter.title))
-
-                setPermalink(frontMatter.permalink)
-                setOriginalPermalink(frontMatter.permalink)
-                setFileUrl(frontMatter.file_url)
-                setOriginalFileUrl(frontMatter.file_url)
-
-                setResourceDate(retrieveResourceFileMetadata(fileName).date)
-              }
+            setResourceDate(retrieveResourceFileMetadata(fileName).date)
           }
+        }
       }
 
-      fetchData().catch((err) => {
-        setIsComponentSettingsActive((prevState) => !prevState)
-        errorToast(`There was a problem retrieving data from your repo. ${DEFAULT_RETRY_MSG}`)
-        console.log(err)
-      })
-      return () => { _isMounted = false }
-    }, [])
+      return () => {
+        _isMounted = false;
+      }
+    }, [resourcePageContent])
 
     useEffect(() => {
         setHasErrors(_.some(errors, (field) => field.length > 0));

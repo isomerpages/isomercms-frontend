@@ -5,6 +5,7 @@ import {
     parseDirectoryFile,
     generateResourceFileName,
     concatFrontMatterMdBody,
+    frontMatterParser,
 } from './utils';
 
 // axios settings
@@ -155,13 +156,16 @@ const createNewResourcePage = async ({ content, pageName, siteName, category }) 
     await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${category}/pages`, params);
 }
 
-const deleteResourcePage = async ({ sha, siteName, category, fileName }) => {
-    const params = {
-        data: {
-          sha,
-        },
+const getResourcePage = async ({ siteName, category, fileName }) => {
+    const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${category}/pages/${fileName}`)
+    const { content, sha: fileSha } = resp.data;
+    const base64DecodedContent = Base64.decode(content);
+    const { frontMatter, mdBody } = frontMatterParser(base64DecodedContent);
+    return {
+        fileSha,
+        frontMatter,
+        mdBody,
     }
-    await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${category}/pages/${fileName}`, params);
 }
 
 const updateResourcePage = async ({ sha, content, siteName, category, fileName }) => {
@@ -170,6 +174,15 @@ const updateResourcePage = async ({ sha, content, siteName, category, fileName }
         content,
     }
     await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${category}/pages/${fileName}`, params);
+}
+
+const deleteResourcePage = async ({ sha, siteName, category, fileName }) => {
+    const params = {
+        data: {
+          sha,
+        },
+    }
+    await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${category}/pages/${fileName}`, params);
 }
 
 const saveResourcePage = async (fileInfo) => {
@@ -250,5 +263,6 @@ export {
     updatePage,
     deletePage,
     moveFiles,
+    getResourcePage,
     saveResourcePage,
 }
