@@ -26,8 +26,6 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
     const [isComponentSettingsActive, setIsComponentSettingsActive] = useState(false)
     const [selectedFile, setSelectedFile] = useState('')
     const [createNewPage, setCreateNewPage] = useState(false)
-    const [collectionPageData, setCollectionPageData] = useState(null)
-    const [thirdNavData, setThirdNavData] = useState(null)
     const [allCategories, setAllCategories] = useState()
 
     useEffect(() => {
@@ -48,20 +46,6 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
 
         return () => { _isMounted = false }
       }, [])
-
-    const loadThirdNavOptions = async () => {
-        if (thirdNavData) {
-            return new Promise((resolve) => {
-                resolve(thirdNavData)
-              });
-        }
-
-        const { collectionPages, thirdNavOptions } = await retrieveThirdNavOptions(siteName, collectionName, true)
-        setCollectionPageData(collectionPages)
-        setThirdNavData(thirdNavOptions)
-        return thirdNavOptions
-    }
-
 
     const isCategoryDropdownDisabled = (isNewFile, category) => {
         if (category) return true
@@ -111,14 +95,11 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                         siteName={siteName}
                         fileName={selectedFile ? selectedFile.name : ''}
                         isNewFile={createNewPage}
-                        type="resource"
                         pageFileNames={
                             _.chain(pages)
                                 .map((page) => page.name)
                                 .value()
                         }
-                        collectionPageData={collectionPageData}
-                        loadThirdNavOptions={loadThirdNavOptions}
                         setIsComponentSettingsActive={setIsComponentSettingsActive}
                     /> 
                     : <PageSettingsModal
