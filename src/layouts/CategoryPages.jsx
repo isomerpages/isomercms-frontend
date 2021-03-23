@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import { useQuery } from 'react-query';
 
 // Import components
 import Header from '../components/Header';
@@ -13,6 +14,10 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 //Import utils
 import { retrieveResourceFileMetadata } from '../utils.js'
+import { errorToast } from '../utils/toasts';
+import { getResourcePages } from '../api'
+import { RESOURCE_CATEGORY_CONTENT_KEY } from '../constants'
+import useRedirectHook from '../hooks/useRedirectHook';
 
 // Constants
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
@@ -33,14 +38,31 @@ const getBackButtonInfo = (pathname) => {
 const CategoryPages = ({ match, location, isResource }) => {
   const { backButtonLabel, backButtonUrl } = getBackButtonInfo(location.pathname)
   const { collectionName, siteName } = match.params;
+  const { setRedirectToPage } = useRedirectHook()
 
   const [categoryPages, setCategoryPages] = useState()
+
+  const { data: resourcePagesResp } = useQuery(
+    [RESOURCE_CATEGORY_CONTENT_KEY, siteName, collectionName, isResource],
+    () => getResourcePages(siteName, collectionName),
+    {
+      retry: false,
+      onError: (err) => {
+        console.log(err)
+        if (err.response && err.response.status === 404 && isResource) {
+          setRedirectToPage(`/sites/${siteName}/resources`)
+        } else {
+          errorToast()
+        }
+      }
+    },
+  );
 
   useEffect(() => {
     let _isMounted = true
     const fetchData = async () => {
       if (isResource) {
-        const resourcePagesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${collectionName}`);
+        if (!resourcePagesResp) return
         const { resourcePages } = resourcePagesResp.data;
 
         if (resourcePages.length > 0) {
@@ -64,7 +86,7 @@ const CategoryPages = ({ match, location, isResource }) => {
     }
     fetchData()
     return () => { _isMounted = false }
-  }, [])
+  }, [resourcePagesResp])
 
   return (
       <>

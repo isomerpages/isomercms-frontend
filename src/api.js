@@ -94,6 +94,11 @@ const addResourceCategory = async (siteName, resourceName) => {
     return await axios.post(`${BACKEND_URL}/sites/${siteName}/resources`, params);
 }
 
+const getResourcePages = async (siteName, resourceName) => {
+    if (!resourceName) return
+    return await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}`);
+}
+
 // EditNavBar
 const getEditNavBarData = async(siteName) => {
     let navContent, collectionContent, resourceContent, navSha, foldersContent
@@ -181,6 +186,7 @@ export {
     renameSubfolder,
     renameResourceCategory,
     addResourceCategory,
+    getResourcePages,
     getEditNavBarData,
     updateNavBarData,
     createPage,
