@@ -27,6 +27,15 @@ const getFolderContents = async (siteName, folderName, subfolderName) => {
     return await axios.get(`${BACKEND_URL}/sites/${siteName}/folders?path=_${folderName}${subfolderName ? `/${subfolderName}` : ''}`);
 }
 
+// Move files
+const moveUnlinkedPage = async ({ siteName, fileName, newFolderName }) => {
+    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/move/${newFolderName}`
+    const params = {
+        files: [fileName]
+    }
+    await axios.post(apiUrl, params)
+}
+
 // EditPage
 const getPageApiEndpoint = ({folderName, subfolderName, fileName, siteName, resourceName}) => {
     if (folderName) {
@@ -252,6 +261,7 @@ export {
     getDirectoryFile,
     setDirectoryFile,
     getFolderContents,
+    moveUnlinkedPage,
     getEditPageData,
     getCsp,
     updatePageData,

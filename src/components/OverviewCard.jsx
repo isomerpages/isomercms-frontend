@@ -1,12 +1,18 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios'
-import { Base64 } from 'js-base64';
+import { useMutation } from 'react-query';
 import PropTypes from 'prop-types';
 
 import DeleteWarningModal from './DeleteWarningModal'
 import GenericWarningModal from './GenericWarningModal'
 import MenuDropdown from './MenuDropdown'
+
+import {
+  moveUnlinkedPage,
+  getEditPageData,
+  deletePageData,
+} from '../api';
 
 import {
   DEFAULT_RETRY_MSG,
@@ -38,53 +44,42 @@ const OverviewCard = ({
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
   const [canShowGenericWarningModal, setCanShowGenericWarningModal] = useState(false)
   const [chosenCategory, setChosenCategory] = useState()
-  const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? isResource ? `/resources/${category}` : `/collections/${category}` : ''}`
 
   useEffect(() => {
     if (canShowFileMoveDropdown) fileMoveDropdownRef.current.focus()
     if (canShowDropdown) dropdownRef.current.focus()
   }, [canShowFileMoveDropdown, canShowDropdown])
 
-  const moveFile = async () => {
-    try {
-      const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/move/${chosenCategory}`
-      const params = {
-        files: [fileName]
+  const { mutateAsync: moveFile } = useMutation(
+    () => moveUnlinkedPage({ siteName, fileName, newFolderName: chosenCategory }),
+    {
+      onSuccess: () => window.location.reload(),
+      onError: (err) => {
+        if (err?.response?.status === 409) {
+          // Error due to conflict in name
+          errorToast('This file name already exists in the category you are trying to move to. Please rename the file before proceeding.')
+        } else {
+          errorToast(`There was a problem trying to move this file. ${DEFAULT_RETRY_MSG}`)
+        }
+        setCanShowGenericWarningModal(false)
+        console.log(err);
       }
-      await axios.post(apiUrl, params)
+    }
+  )
 
-      // Refresh page
-      window.location.reload();
-    } catch (err) {
-      if (err?.response?.status === 409) {
-        // Error due to conflict in name
-        errorToast('This file name already exists in the category you are trying to move to. Please rename the file before proceeding.')
-      } else {
-        errorToast(`There was a problem trying to move this file. ${DEFAULT_RETRY_MSG}`)
+  const { mutateAsync: deleteHandler } = useMutation(
+    async () => {
+      const { pageSha: sha } = await getEditPageData({ fileName, siteName })
+      await deletePageData({fileName, siteName}, sha)
+    },
+    {
+      onSuccess: () => window.location.reload(),
+      onError: (err) => {
+        errorToast(`There was a problem trying to delete this file. ${DEFAULT_RETRY_MSG}`)
+        console.log(err);
       }
-      setCanShowGenericWarningModal(false)
-      console.log(err);
     }
-  }
-
-  const deleteHandler = async () => {
-    try {
-      // Retrieve data from existing page/resource
-      const resp = await axios.get(`${baseApiUrl}/pages/${fileName}`);
-
-      const { sha } = resp.data;
-      const params = { sha };
-      await axios.delete(`${baseApiUrl}/pages/${fileName}`, {
-        data: params,
-      });
-
-      // Refresh page
-      window.location.reload();
-    } catch (err) {
-      errorToast(`There was a problem trying to delete this file. ${DEFAULT_RETRY_MSG}`)
-      console.log(err);
-    }
-  }
+  )
   
   const generateLink = () => {
     if (isResource) {
