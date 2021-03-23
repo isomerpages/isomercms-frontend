@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
+import { useQuery, useMutation } from 'react-query';
 
 import FormField from './FormField';
 import ResourceFormFields from './ResourceFormFields';
@@ -68,6 +69,49 @@ const ResourcePageSettingsModal = ({
         date: setResourceDate,
         fileUrl: setFileUrl,
     }
+
+    const { mutateAsync: saveHandler } = useMutation(
+      () => saveResourcePage({
+          category,
+          date: resourceDate,
+          fileUrl,
+          mdBody,
+          permalink,
+          resourceType: isPost ? 'post' : 'file',
+          sha,
+          title,
+          fileName,
+          isNewFile,
+          siteName,
+      }),
+      {
+        onSuccess: (redirectUrl) => {
+          // If editing details of existing file, refresh page
+          if (!isNewFile) window.location.reload();
+          else {
+            // We refresh page if resource type is a file
+            if (!isPost) {
+              window.location.reload();
+            } else {
+              setRedirectToPage(redirectUrl)
+            }  
+          }
+        },
+        onError: (err) => {
+          if (err?.response?.status === 409) {
+            // Error due to conflict in name
+            setErrors((prevState) => ({
+                ...prevState,
+                title: 'This title is already in use. Please choose a different one.',
+            }))
+            errorToast("Another resource with the same name exists. Please choose a different name.")
+          } else {
+            errorToast(`There was a problem saving your page settings. ${DEFAULT_RETRY_MSG}`)
+          }
+          console.log(err);
+        }
+      }
+    )
 
     useEffect(() => {
       let _isMounted = true
@@ -140,50 +184,6 @@ const ResourcePageSettingsModal = ({
                 ...prevState,
                 fileUrl: '',
             }))
-        }
-    }
-
-    const saveHandler = async () => {
-        try {
-            const fileInfo = {
-                category,
-                date: resourceDate,
-                fileUrl,
-                mdBody,
-                permalink,
-                resourceType: isPost ? 'post' : 'file',
-                sha,
-                title,
-                fileName,
-                isNewFile,
-                siteName,
-            }
-
-            const redirectUrl = await saveResourcePage(fileInfo)
-
-            // If editing details of existing file, refresh page
-            if (!isNewFile) window.location.reload();
-            else {
-              // We refresh page if resource type is a file
-              if (!isPost) {
-                window.location.reload();
-              } else {
-                setRedirectToPage(redirectUrl)
-              }  
-            }
-                      
-        } catch (err) {
-            if (err?.response?.status === 409) {
-                // Error due to conflict in name
-                setErrors((prevState) => ({
-                    ...prevState,
-                    title: 'This title is already in use. Please choose a different one.',
-                }))
-                errorToast("Another resource with the same name exists. Please choose a different name.")
-            } else {
-              errorToast(`There was a problem saving your page settings. ${DEFAULT_RETRY_MSG}`)
-            }
-            console.log(err);
         }
     }
 
