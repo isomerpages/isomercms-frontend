@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import AsyncCreatableSelect from "react-select/async-creatable";
-import CreatableSelect from 'react-select/creatable';
-import { createFilter } from 'react-select';
 import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 
 import FormField from './FormField';
-import DeleteWarningModal from './DeleteWarningModal';
 import ResourceFormFields from './ResourceFormFields';
 import SaveDeleteButtons from './SaveDeleteButtons';
 
@@ -18,57 +14,26 @@ import {
   DEFAULT_RETRY_MSG,
   frontMatterParser,
   dequoteString,
-  generatePageFileName,
-  generateCollectionPageFileName,
   generateResourceFileName,
-  saveFileAndRetrieveUrl,
+  saveResourcePage,
   retrieveResourceFileMetadata,
 } from '../utils';
-import { validatePageSettings, validateResourceSettings } from '../utils/validators';
+import { validateResourceSettings } from '../utils/validators';
 import { errorToast } from '../utils/toasts';
-import { retrieveThirdNavOptions } from '../utils/dropdownUtils'
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
 // axios settings
 axios.defaults.withCredentials = true
 
-// Helper functions
-const generateInitialCategoryLabel = (originalCategory, isCategoryDisabled) => {
-    if (originalCategory) return originalCategory
-    // If category is disabled and no original category exists, it is an unlinked page
-    return isCategoryDisabled ? "Unlinked Page" : "Select a category or create a new category..."
-}
-
-const generateInitialThirdNavLabel = (thirdNavTitle, originalCategory) => {
-    if (thirdNavTitle) return thirdNavTitle
-    if (originalCategory && !thirdNavTitle) return 'None'
-    return "Select a third nav section..."
-}
-
-const generateCategoryFieldTitle = (type, isCategoryDisabled) => {
-  if (isCategoryDisabled) {
-    return `${type === 'resource' ? `Resource Category` : `Collection`}`
-  } else {
-    return `Add to ${type === 'resource' ? `Resource Category` : `Collection (optional)`}`
-  }
-}
-
-// Global state
-let thirdNavData = {}
-
 const ResourcePageSettingsModal = ({
-    category: originalCategory,
+    category,
     fileName,
-    isCategoryDisabled,
     isNewFile,
     modalTitle,
-    collectionPageData,
     pageFileNames,
     settingsToggle,
     siteName,
-    type,
-    loadThirdNavOptions,
     setIsComponentSettingsActive,
 }) => {
     const { setRedirectToPage } = useRedirectHook()
@@ -78,15 +43,10 @@ const ResourcePageSettingsModal = ({
         permalink: '',
         fileUrl: '',
         resourceDate: '',
-        category: '',
-        originalCategory: '',
     })
     const [hasErrors, setHasErrors] = useState(false)
 
     // Base hooks
-    const [allCategories, setAllCategories] = useState(null);
-    const [category, setCategory] = useState('');
-    const [baseApiUrl, setBaseApiUrl] = useState('');
     const [title, setTitle] = useState('')
     const [permalink, setPermalink] = useState('')
     const [mdBody, setMdBody] = useState('')
@@ -97,36 +57,14 @@ const ResourcePageSettingsModal = ({
     const [originalPermalink, setOriginalPermalink] = useState('')
     const [originalFileUrl, setOriginalFileUrl] = useState('')
 
-    // Collections-related
-    const [originalThirdNavTitle, setOriginalThirdNavTitle] = useState('') // this state is required for comparison purposes
-    const [thirdNavTitle, setThirdNavTitle] = useState('')
-
     // Resource-related
     const [resourceDate, setResourceDate] = useState('')
     const [fileUrl, setFileUrl] = useState('')
 
-    // Page redirection modals
-    const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
-
-    // Backup third nav option loader
-    const backupLoadThirdNavOptions = async () => {
-      if (thirdNavData[category]) {
-        return new Promise((resolve) => {
-            resolve(thirdNavData[category])
-          });
-      }
-
-      const { thirdNavOptions } = await retrieveThirdNavOptions(siteName, category, allCategories.map(category => category.value).includes(category))
-      thirdNavData[category] = thirdNavOptions
-      return thirdNavOptions
-    }
-
     // Map element ID to setter functions
     const idToSetterFuncMap = {
-        category: setCategory,
         title: setTitle,
         permalink: setPermalink,
-        thirdNavTitle: setThirdNavTitle,
         date: setResourceDate,
         fileUrl: setFileUrl,
     }
@@ -134,38 +72,16 @@ const ResourcePageSettingsModal = ({
     useEffect(() => {
       let _isMounted = true
 
-      if (originalCategory) setCategory(originalCategory);
-
-      const baseUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${originalCategory ? type === "resource" ? `/resources/${originalCategory}` : `/collections/${originalCategory}` : ''}`
-      setBaseApiUrl(baseUrl)
+      const baseUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${category}`
 
       const fetchData = async () => {
-          // Retrieve the list of all page/resource categories for use in the dropdown options. Also sets the default category if none is specified.
-          if (type === 'resource') {
-              const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`);
-              const { resources } = resourcesResp.data;
-              if (_isMounted) setAllCategories(resources.map((category) => ({
-                value: category.dirName,
-                label: category.dirName,
-              })))
-          } else if (type === 'page') {
-              const collectionsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`);
-              const { collections } = collectionsResp.data;
-              if (_isMounted) setAllCategories(collections.map((category) => (
-                  {
-                    value:category,
-                    label:category,
-                  }
-              )))
-          }
-
           // Set component form values
           if (isNewFile) {
               // Set default values for new file
               if (_isMounted) {
                 setTitle('Title')
-                setPermalink(`${originalCategory ? `/${originalCategory}` : ''}/permalink`)
-                if (type === 'resource') setResourceDate(new Date().toISOString().split("T")[0])
+                setPermalink(`${category}/permalink`)
+                setResourceDate(new Date().toISOString().split("T")[0])
               }
 
           } else {
@@ -189,9 +105,7 @@ const ResourcePageSettingsModal = ({
                 setFileUrl(frontMatter.file_url)
                 setOriginalFileUrl(frontMatter.file_url)
 
-                setResourceDate(type === 'resource' ? retrieveResourceFileMetadata(fileName).date : '')
-                setOriginalThirdNavTitle(frontMatter.third_nav_title)
-                setThirdNavTitle(frontMatter.third_nav_title)
+                setResourceDate(retrieveResourceFileMetadata(fileName).date)
               }
           }
       }
@@ -232,35 +146,26 @@ const ResourcePageSettingsModal = ({
     const saveHandler = async () => {
         try {
             const fileInfo = {
-                // state
-                title,
-                permalink,
-                fileUrl,
-                date: resourceDate,
-                mdBody,
-                sha,
                 category,
-                originalThirdNavTitle,
-                thirdNavTitle,
-                thirdNavOptions: thirdNavData[category] ? thirdNavData[category].map((thirdNavObj) => thirdNavObj.label): null,
-                // props
-                originalCategory,
-                collectionPageData,
-                type,
+                date: resourceDate,
+                fileUrl,
+                mdBody,
+                permalink,
                 resourceType: isPost ? 'post' : 'file',
+                sha,
+                title,
                 fileName,
                 isNewFile,
                 siteName,
-                isNewCollection: !allCategories.map(category => category.value).includes(category)
             }
 
-            const redirectUrl = await saveFileAndRetrieveUrl(fileInfo)
+            const redirectUrl = await saveResourcePage(fileInfo)
 
             // If editing details of existing file, refresh page
             if (!isNewFile) window.location.reload();
             else {
-              // We refresh page if resource is being created from category folder
-              if (type === 'resource' && !isPost && originalCategory) {
+              // We refresh page if resource type is a file
+              if (!isPost) {
                 window.location.reload();
               } else {
                 setRedirectToPage(redirectUrl)
@@ -273,27 +178,12 @@ const ResourcePageSettingsModal = ({
                 setErrors((prevState) => ({
                     ...prevState,
                     title: 'This title is already in use. Please choose a different one.',
-                }));
-                errorToast(`Another ${type === 'resource' ? 'resource' : 'page'} with the same name exists. Please choose a different name.`)
+                }))
+                errorToast("Another resource with the same name exists. Please choose a different name.")
             } else {
               errorToast(`There was a problem saving your page settings. ${DEFAULT_RETRY_MSG}`)
             }
             console.log(err);
-        }
-    }
-
-    const deleteHandler = async () => {
-        try {
-            const params = { sha };
-            await axios.delete(`${baseApiUrl}/pages/${fileName}`, {
-                data: params,
-            });
-
-            // Refresh page
-            window.location.reload();
-        } catch (err) {
-          errorToast(`There was a problem trying to delete this file. ${DEFAULT_RETRY_MSG}.`)
-          console.log(err);
         }
     }
 
@@ -303,20 +193,8 @@ const ResourcePageSettingsModal = ({
 
         const pageFileNamesExc = pageFileNames ? pageFileNames.filter((filename) => filename !== currentFileName) : null;
 
-        let errorMessage, newFileName
-        if (type === 'resource') {
-            errorMessage = validateResourceSettings(id, value);
-            newFileName = generateResourceFileName(id === "title" ? value : title, id==="date" ? value : resourceDate)
-        } else if (type === 'page') {
-            errorMessage = validatePageSettings(id, value);
-            let groupIdentifier
-            if (originalCategory) {
-                groupIdentifier = fileName.split('-')[0]
-                newFileName = generateCollectionPageFileName(value, groupIdentifier)
-            } else {
-                newFileName = generatePageFileName(value);
-            }
-        }
+        const errorMessage = validateResourceSettings(id, value);
+        const newFileName = generateResourceFileName(id === "title" ? value : title, id==="date" ? value : resourceDate)
     
         if (errorMessage === '' && pageFileNamesExc && pageFileNamesExc.includes(newFileName)) {
             setErrors((prevState) => ({
@@ -331,68 +209,6 @@ const ResourcePageSettingsModal = ({
             }));
             idToSetterFuncMap[id](value);
         }
-    }
-
-    const dropdownChangeHandler = (event) => {
-        const { id, value } = event.target;
-        let errorMessage
-        if (type === 'resource') {
-            errorMessage = validateResourceSettings(id, value);
-        } else if (type === 'page') {
-            errorMessage = validatePageSettings(id, value);
-        }
-        setErrors((prevState) => ({
-            ...prevState,
-            [id]: errorMessage,
-        }));
-        idToSetterFuncMap[id](value);
-    }
-
-    const categoryDropdownHandler = (newValue) => {
-        let event;
-        if (!newValue) {
-          // Field was cleared
-          event = {
-            target: {
-              id: 'category',
-              value: '',
-            }
-          }
-        } else {
-          const { value } = newValue
-          event = {
-            target: {
-              id: 'category',
-              value,
-            }
-          }
-        }
-        
-        dropdownChangeHandler(event);
-    };
-
-    // Artificially create event from dropdown action
-    const thirdNavDropdownHandler = (newValue) => {
-        let event;
-        if (!newValue) {
-            // Field was cleared
-            event = {
-                target: {
-                    id: 'thirdNavTitle',
-                    value: '',
-                },
-            }
-        } else {
-            const { value } = newValue
-            event = {
-                target: {
-                    id: 'thirdNavTitle',
-                    value,
-                },
-            }
-        }
-
-        dropdownChangeHandler(event)
     }
 
     return (
@@ -410,31 +226,14 @@ const ResourcePageSettingsModal = ({
               <div className={elementStyles.modalContent}>
                 <div className={elementStyles.modalFormFields}>
                   {/* Category */}
-                  <p className={elementStyles.formLabel}>
-                    {generateCategoryFieldTitle(type, isCategoryDisabled)}
-                    {
-                      type === 'resource' && !isCategoryDisabled &&
-                      <b> (required)</b>
-                    }
-                  </p>
-                  <div className="d-flex text-nowrap">
-                    <CreatableSelect
-                      isClearable
-                      className="w-100"
-                      onChange={categoryDropdownHandler}
-                      isDisabled={isCategoryDisabled}
-                      placeholder={isCategoryDisabled && type==='page' ? "Unlinked Page" : "Select a category or create a new category..."}
-                      defaultValue={originalCategory ? 
-                        {
-                          value: originalCategory,
-                          label: generateInitialCategoryLabel(originalCategory, isCategoryDisabled),
-                        }
-                        : null
-                      }
-                      options={allCategories}
-                    />
-                  </div>
-                  { errors.category && <span className={elementStyles.error}>{errors.category}</span> }
+                  <FormField
+                    title="Resource Category"
+                    id="resource-category"
+                    value={category}
+                    isRequired={true}
+                    onFieldChange={() => {}}
+                    disabled={true}
+                  />
                   {/* Title */}
                   <FormField
                     title="Title"
@@ -444,33 +243,6 @@ const ResourcePageSettingsModal = ({
                     isRequired={true}
                     onFieldChange={changeHandler}
                   />
-                  {/* Third Nav */}
-                  { 
-                    ((type === "page" && originalCategory) || (type === 'page' && !originalCategory && category)) &&
-                    <>
-                        <p className={elementStyles.formLabel}>Add to Third Nav Section (optional)</p>
-                        <div className="d-flex text-nowrap">
-                            <AsyncCreatableSelect
-                              key={category}
-                              isClearable
-                              defaultOptions
-                              className="w-100"
-                              onChange={thirdNavDropdownHandler}
-                              placeholder={"Select a third nav or create a new third nav section..."}
-                              value={thirdNavTitle ?
-                                {
-                                  value: thirdNavTitle,
-                                  label: generateInitialThirdNavLabel(thirdNavTitle, originalCategory),
-                                }
-                                : null
-                              }
-                              // When displaying third nav from workspace, use backupLoadThirdNavOptions
-                              loadOptions={(!originalCategory && category) ? backupLoadThirdNavOptions : loadThirdNavOptions}
-                              filterOption={createFilter()}
-                            />
-                        </div>
-                    </>
-                  }
                   {/* Permalink */}
                   <FormField
                     title="Permalink"
@@ -482,7 +254,6 @@ const ResourcePageSettingsModal = ({
                     disabled={!isPost}
                     placeholder=' '
                   />
-                  { type === "resource" && 
                   <ResourceFormFields 
                     date={resourceDate}
                     errors={errors}
@@ -493,28 +264,17 @@ const ResourcePageSettingsModal = ({
                     siteName={siteName}
                     fileUrl={fileUrl ? fileUrl : ''}
                   />
-                  }
                 </div>
                 <SaveDeleteButtons 
-                  isDisabled={isNewFile ? hasErrors || (type==='resource' && category==='') : (hasErrors || !sha)}
-                  hasDeleteButton={!isNewFile}
+                  isDisabled={isNewFile ? (hasErrors || category === '') : (hasErrors || !sha)}
+                  hasDeleteButton={false}
                   saveCallback={saveHandler}
-                  deleteCallback={() => setCanShowDeleteWarningModal(true)}
+                  deleteCallback={() => {}}
                 />
               </div>
             </div>
             )}
           </div>
-          {
-            canShowDeleteWarningModal
-            && (
-              <DeleteWarningModal
-                onCancel={() => setCanShowDeleteWarningModal(false)}
-                onDelete={deleteHandler}
-                type="resource"
-              />
-            )
-          }
         </>
     );
 }
