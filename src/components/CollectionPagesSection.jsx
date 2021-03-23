@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 // Import components
 import OverviewCard from '../components/OverviewCard';
-import ComponentSettingsModal from './ComponentSettingsModal'
+import ResourcePageSettingsModal from './ResourcePageSettingsModal'
 import PageSettingsModal from './PageSettingsModal'
 
 // Import styles
@@ -103,7 +103,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
             {
                 isComponentSettingsActive 
                 && ( isResource 
-                    ? <ComponentSettingsModal
+                    ? <ResourcePageSettingsModal
                         modalTitle={isResource ? "Resource Settings" : "Page Settings"}
                         settingsToggle={settingsToggle}
                         category={collectionName}

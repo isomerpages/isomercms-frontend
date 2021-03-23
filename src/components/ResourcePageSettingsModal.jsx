@@ -57,7 +57,7 @@ const generateCategoryFieldTitle = (type, isCategoryDisabled) => {
 // Global state
 let thirdNavData = {}
 
-const ComponentSettingsModal = ({
+const ResourcePageSettingsModal = ({
     category: originalCategory,
     fileName,
     isCategoryDisabled,
@@ -519,9 +519,9 @@ const ComponentSettingsModal = ({
     );
 }
 
-export default ComponentSettingsModal
+export default ResourcePageSettingsModal
 
-ComponentSettingsModal.propTypes = {
+ResourcePageSettingsModal.propTypes = {
     siteName: PropTypes.string.isRequired,
     fileName: PropTypes.string.isRequired,
     category: PropTypes.string,
