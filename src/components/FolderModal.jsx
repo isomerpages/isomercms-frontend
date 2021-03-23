@@ -9,12 +9,12 @@ import FormField from './FormField';
 import {
   renameFolder,
   renameSubfolder,
-  renameResourcedirectory,
   renameResourceCategory,
 } from '../api'
 
 import {
   DEFAULT_RETRY_MSG,
+  slugifyCategory,
 } from '../utils'
 import { errorToast } from '../utils/toasts';
 
@@ -26,7 +26,7 @@ const selectRenameApiCall = (isCollection, siteName, folderOrCategoryName, subfo
     const params = {
       siteName,
       folderName: folderOrCategoryName,
-      newFolderName: newDirectoryName,
+      newFolderName: slugifyCategory(newDirectoryName),
     }
     return renameFolder(params)
   }
@@ -36,7 +36,7 @@ const selectRenameApiCall = (isCollection, siteName, folderOrCategoryName, subfo
       siteName,
       folderName: folderOrCategoryName,
       subfolderName,
-      newSubfolderName: newDirectoryName,
+      newSubfolderName: slugifyCategory(newDirectoryName),
     }
     return renameSubfolder(params)
   }
@@ -44,7 +44,7 @@ const selectRenameApiCall = (isCollection, siteName, folderOrCategoryName, subfo
   const params = {
     siteName,
     categoryName: folderOrCategoryName,
-    newCategoryName: newDirectoryName,
+    newCategoryName: slugifyCategory(newDirectoryName),
   }
   return renameResourceCategory(params)
 }
