@@ -21,14 +21,12 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 // Import utils
 import { DEFAULT_RETRY_MSG, prettifyResourceCategory, slugifyCategory } from '../utils';
 import { validateResourceRoomName, validateCategoryName } from '../utils/validators'
-import { errorToast, successToast } from '../utils/toasts';
-import { addResourceCategory } from '../api';
+import { errorToast } from '../utils/toasts';
+import { getAllResourceCategories, addResourceCategory } from '../api';
+import { RESOURCE_ROOM_CONTENT_KEY } from '../constants'
 
 // axios settings
 axios.defaults.withCredentials = true
-
-// Constants
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
 const Resources = ({ match, location }) => {
   const { siteName } = match.params;
@@ -44,12 +42,24 @@ const Resources = ({ match, location }) => {
   const [newFolderName, setNewFolderName] = useState('')
   const [folderNameErrors, setFolderNameErrors] = useState('')
 
+  const { data: resourcesResp } = useQuery(
+    [RESOURCE_ROOM_CONTENT_KEY, siteName],
+    () => getAllResourceCategories(siteName),
+    {
+      retry: false,
+      onError: (err) => {
+        console.log(err)
+        errorToast(`There was a problem trying to load your resource categories. ${DEFAULT_RETRY_MSG}`)
+      }
+    },
+  );
+
   const { mutateAsync: saveHandler } = useMutation(
     () => addResourceCategory(siteName, slugifyCategory(newFolderName)),
     {
       onError: () => errorToast(`There was a problem trying to create your new folder. ${DEFAULT_RETRY_MSG}`),
       onSuccess: () => {
-        const redirectUrl = `/sites/${siteName}/resources/${newFolderName}`
+        const redirectUrl = `/sites/${siteName}/resources/${slugifyCategory(newFolderName)}`
         setRedirectToPage(redirectUrl)
       },
     }
@@ -60,7 +70,7 @@ const Resources = ({ match, location }) => {
     const fetchData = async () => {
       try {
         // Get the resource categories in the resource room
-        const resourcesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/resources`);
+        if (!resourcesResp) return
         const { resourceRoomName, resources: resourceCategories } = resourcesResp.data;
         if (resourceRoomName) {
           const uniqueResourceFolderNames = resourceCategories ? _.uniq(resourceCategories.map((file) => file.dirName)) : []
@@ -78,7 +88,7 @@ const Resources = ({ match, location }) => {
 
     fetchData()
     return () => { _isMounted = false }
-  }, [])
+  }, [resourcesResp])
 
   const resourceRoomNameHandler = (event) => {
     const { value } = event.target;

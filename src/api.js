@@ -88,6 +88,10 @@ const renameResourceCategory = async ({ siteName, categoryName, newCategoryName}
     return await axios.post(apiUrl)
 }
 
+const getAllResourceCategories = async (siteName) => {
+    return await axios.get(`${BACKEND_URL}/sites/${siteName}/resources`);
+}
+
 const addResourceCategory = async (siteName, resourceName) => {
     if (!resourceName) return
     const params = { resourceName }
@@ -96,7 +100,7 @@ const addResourceCategory = async (siteName, resourceName) => {
 
 const getResourcePages = async (siteName, resourceName) => {
     if (!resourceName) return
-    return await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}`);
+    return await axios.get(`${BACKEND_URL}/sites/${siteName}/resources/${resourceName}`);
 }
 
 // EditNavBar
@@ -185,6 +189,7 @@ export {
     deleteSubfolder,
     renameSubfolder,
     renameResourceCategory,
+    getAllResourceCategories,
     addResourceCategory,
     getResourcePages,
     getEditNavBarData,
