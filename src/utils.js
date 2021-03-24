@@ -631,7 +631,7 @@ export const getNavFolderDropdownFromFolderOrder = (folderOrder) => {
       acc.push(deslugifyDirectory(curr.split('.')[0])) // remove file extension
     }
 
-    if (pathArr.length === 2 && deslugifyDirectory(pathArr[0]) !== acc[acc.length - 1]) {
+    if (pathArr.length === 2 && deslugifyDirectory(pathArr[0]) !== acc[acc.length - 1] && pathArr[1] !== '.keep') {
       acc.push(deslugifyDirectory(pathArr[0]))
     }
 

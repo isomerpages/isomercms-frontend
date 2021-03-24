@@ -119,7 +119,8 @@ const getEditNavBarData = async(siteName) => {
     if (foldersResp.data && foldersResp.data.allFolderContent) {
         // parse directory files
         foldersContent = foldersResp.data.allFolderContent.reduce((acc, currFolder) => {
-            const folderOrder = parseDirectoryFile(currFolder.content)
+            const collectionKey = Object.keys(currFolder.content.collections)[0]
+            const folderOrder = currFolder.content.collections[collectionKey].order
             acc[currFolder.name] = getNavFolderDropdownFromFolderOrder(folderOrder)
             return acc
         }, {})
