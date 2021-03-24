@@ -256,26 +256,14 @@ const ComponentSettingsModal = ({
 
     const changeHandler = (event) => {
         const { id, value } = event.target;
-        const currentFileName = fileName;
-
-        const pageFileNamesExc = pageFileNames ? pageFileNames.filter((filename) => filename !== currentFileName) : null;
-
-        const errorMessage = validateResourceSettings(id, value);
-        const newFileName = generateResourceFileName(id === "title" ? value : title, id==="date" ? value : resourceDate)
-    
-        if (errorMessage === '' && pageFileNamesExc && pageFileNamesExc.includes(newFileName)) {
-            setErrors((prevState) => ({
-                ...prevState,
-                title: 'This title is already in use. Please choose a different one.',
-            }));
-            idToSetterFuncMap[id](value);
-        } else {
-            setErrors((prevState) => ({
-                ...prevState,
-                [id]: errorMessage,
-            }));
-            idToSetterFuncMap[id](value);
-        }
+        const { titleErrorMessage, errorMessage } = validateResourceSettings(id, value, title, resourceDate, isPost, pageFileNames.filter(file => file !== fileName))
+        
+        setErrors((prevState) => ({
+            ...prevState,
+            [id]: errorMessage,
+            title: titleErrorMessage,
+        }));
+        idToSetterFuncMap[id](value);
     }
 
     const dropdownChangeHandler = (event) => {
