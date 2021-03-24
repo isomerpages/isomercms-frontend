@@ -80,7 +80,7 @@ const Folders = ({ match, location }) => {
         onError: () => errorToast(`Your file reordering could not be saved. Please try again. ${DEFAULT_RETRY_MSG}`),
         onSuccess: () => {
           successToast('Successfully updated page order')
-          refetch()
+          refetchFolderContents()
         },
         onSettled: () => setIsRearrangeActive((prevState) => !prevState),
       }
