@@ -16,10 +16,6 @@ const setDirectoryFile = async (siteName, folderName, payload) => {
     return await axios.post(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`, payload);
 }
 
-const getFolderContents = async (siteName, folderName, subfolderName) => {
-    return await axios.get(`${BACKEND_URL}/sites/${siteName}/folders?path=_${folderName}${subfolderName ? `/${subfolderName}` : ''}`);
-}
-
 // EditPage
 const getPageApiEndpoint = ({folderName, subfolderName, fileName, siteName, resourceName, newFileName}) => {
     if (newFileName && fileName) return getRenamePageApiEndpoint({folderName, subfolderName, fileName, siteName, resourceName, newFileName})
@@ -134,6 +130,17 @@ const renameSubfolder = async ({ siteName, folderName, subfolderName, newSubfold
 const renameResourceCategory = async ({ siteName, categoryName, newCategoryName}) => {
     const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${categoryName}/rename/${newCategoryName}`
     return await axios.post(apiUrl)
+const getAllCategoriesApiEndpoint = ({siteName, isResource}) => {
+    if (isResource) {
+        return `${BACKEND_URL}/sites/${siteName}/resources`
+    }
+    return `${BACKEND_URL}/sites/${siteName}/collections`
+}
+
+const getAllCategories = async ({siteName, isResource}) => {
+    const apiEndpoint = getAllCategoriesApiEndpoint({siteName, isResource})
+    const resp = await axios.get(apiEndpoint);
+    return resp.data
 }
 
 const getAllResourceCategories = async (siteName) => {
@@ -159,10 +166,8 @@ const getEditNavBarData = async(siteName) => {
     const { content, sha } = resp.data;
     navContent = content
     navSha = sha
-    const collectionResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`)
-    collectionContent = collectionResp.data
-    const resourceResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/resources`)
-    resourceContent = resourceResp.data
+    collectionContent = await getAllCategories({siteName, isResource: false})
+    resourceContent = await getAllCategories({siteName, isResource: true})
     const foldersResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/folders/all`)
     if (foldersResp.data && foldersResp.data.allFolderContent) {
         // parse directory files
@@ -205,10 +210,19 @@ const moveFiles = async (siteName, selectedFiles, title, parentFolder) => {
     return await axios.post(`${baseApiUrl}/move/${newPath}`, params)
 }
 
+const moveFile = async ({siteName, selectedFile, isResource, folderName, subfolderName, newPath}) => {
+    const baseApiUrl = `${BACKEND_URL}/sites/${siteName}${isResource ? '/resources' : folderName ? `/collections` : '/pages'}`
+    const collectionPath = encodeURIComponent(`${folderName ? `${folderName}`: ''}${subfolderName ? `/${subfolderName}` : ''}`)
+    const targetPath = encodeURIComponent(`${newPath}`)
+    const params = {
+        files: [selectedFile],
+    }
+    return await axios.post(`${baseApiUrl}/${collectionPath ? `${collectionPath}/` : ''}move/${targetPath}`, params)
+}
+
 export {
     getDirectoryFile,
     setDirectoryFile,
-    getFolderContents,
     getEditPageData,
     getCsp,
     updatePageData,
@@ -224,5 +238,7 @@ export {
     updateNavBarData,
     createPageData,
     renamePageData,
+    getAllCategories,
     moveFiles,
+    moveFile,
 }
