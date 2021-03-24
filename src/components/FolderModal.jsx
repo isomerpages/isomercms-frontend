@@ -1,35 +1,69 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import { useMutation } from 'react-query';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import SaveDeleteButtons from './SaveDeleteButtons';
 import FormField from './FormField';
 
 import {
+  renameFolder,
+  renameSubfolder,
+  renameResourceCategory,
+} from '../api'
+
+import {
   DEFAULT_RETRY_MSG,
+  slugifyCategory,
 } from '../utils'
 import { errorToast } from '../utils/toasts';
 
 // axios settings
 axios.defaults.withCredentials = true
 
-const FolderModal = ({ displayTitle, displayText, onClose, category, siteName, isCollection }) => {
-  const [newCategoryName, setNewCategoryName] = useState(category)
+const selectRenameApiCall = (isCollection, siteName, folderOrCategoryName, subfolderName, newDirectoryName) => {
+  if (isCollection && !subfolderName) {
+    const params = {
+      siteName,
+      folderName: folderOrCategoryName,
+      newFolderName: slugifyCategory(newDirectoryName),
+    }
+    return renameFolder(params)
+  }
+
+  if (isCollection && subfolderName) {
+    const params = {
+      siteName,
+      folderName: folderOrCategoryName,
+      subfolderName,
+      newSubfolderName: slugifyCategory(newDirectoryName),
+    }
+    return renameSubfolder(params)
+  }
+
+  const params = {
+    siteName,
+    categoryName: folderOrCategoryName,
+    newCategoryName: slugifyCategory(newDirectoryName),
+  }
+  return renameResourceCategory(params)
+}
+
+const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName, subfolderName, siteName, isCollection }) => {
+  const [newDirectoryName, setNewDirectoryName] = useState(subfolderName || folderOrCategoryName)
+
+  // rename folder/subfolder/resource category
+  const { mutateAsync: renameDirectory } = useMutation(
+    () => selectRenameApiCall(isCollection, siteName, folderOrCategoryName, subfolderName, newDirectoryName),
+    {
+      onError: () => errorToast(`There was a problem trying to rename this folder. ${DEFAULT_RETRY_MSG}`),
+      onSuccess: () => window.location.reload(),
+    },
+  )
 
   const folderNameChangeHandler = (event) => {
     const { value } = event.target
-    setNewCategoryName(value)
-  }
-
-  const saveHandler = async () => {
-    try {
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${isCollection ? 'collections' : 'resources'}/${category}/rename/${newCategoryName}`)
-      // Refresh page
-      window.location.reload();
-    } catch (err) {
-      errorToast(`There was a problem trying to rename this folder. ${DEFAULT_RETRY_MSG}`)
-      console.log(err);
-    }
+    setNewDirectoryName(value)
   }
 
   return (
@@ -46,14 +80,14 @@ const FolderModal = ({ displayTitle, displayText, onClose, category, siteName, i
         <form className={elementStyles.modalContent}>
           <FormField
             title={displayText}
-            id="newCategoryName"
-            value={newCategoryName}
+            id="newDirectoryName"
+            value={newDirectoryName}
             onFieldChange={folderNameChangeHandler}
           />
           <SaveDeleteButtons
             isDisabled={false}
             hasDeleteButton={false}
-            saveCallback={saveHandler}
+            saveCallback={renameDirectory}
           />
         </form>
       </div>
@@ -65,9 +99,10 @@ FolderModal.propTypes = {
   displayTitle: PropTypes.string.isRequired,
   displayText: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  category: PropTypes.string.isRequired,
+  folderOrCategoryName: PropTypes.string.isRequired,
+  subfolderName: PropTypes.string,
   siteName: PropTypes.string.isRequired,
-  isCollection: PropTypes.bool,
+  isCollection: PropTypes.bool.isRequired,
 };
 
 export default FolderModal;

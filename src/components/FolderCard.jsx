@@ -132,7 +132,7 @@ const FolderCard = ({
           displayTitle={pageType === 'collection' ? 'Rename Collection' : 'Rename Resource Category'}
           displayText={pageType === 'collection' ? 'Collection name' : "Resource category name"}
           onClose={() => setIsFolderModalOpen(false)}
-          category={category}
+          folderOrCategoryName={category}
           siteName={siteName}
           isCollection={pageType === 'collection'}
         />

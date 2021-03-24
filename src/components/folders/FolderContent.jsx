@@ -4,23 +4,26 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { DragDropContext } from 'react-beautiful-dnd';
 import update from 'immutability-helper';
 
+import FolderModal from '../FolderModal';
+
 import { deslugifyPage } from '../../utils'
 import MenuDropdown from '../MenuDropdown'
 
 // Import styles
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../../styles/isomer-cms/pages/Content.module.scss';
-import _default from 'immutability-helper';
-import _ from 'lodash';
 
-const FolderContentItem = ({ 
+const FolderContentItem = ({
+    siteName,
     title,
+    folderName,
     isFile,
     numItems,
     link,
     itemIndex,
     setSelectedPage,
     setIsPageSettingsActive,
+    setIsFolderModalOpen,
     setIsDeleteModalActive
 }) => {
     const [showDropdown, setShowDropdown] = useState(false)
@@ -34,7 +37,12 @@ const FolderContentItem = ({
         const dropdownItems = [
             {
                 type: 'edit',
-                handler: () => setIsPageSettingsActive(true)
+                handler: () => {
+                    if (isFile) setIsPageSettingsActive(true)
+                    else {
+                        setIsFolderModalOpen(true)
+                    }
+                }
             },
             {
                 type: 'move',
@@ -100,6 +108,7 @@ const FolderContent = ({
     enableDragDrop,
     setSelectedPage,
     setIsPageSettingsActive,
+    setIsFolderModalOpen,
     setIsDeleteModalActive,
 }) => {
     const generateLink = (folderContentItem) => {
@@ -159,13 +168,16 @@ const FolderContent = ({
                                         >        
                                             <FolderContentItem
                                                 key={folderContentItem.name}
+                                                siteName={siteName}
                                                 title={folderContentItem.name}
+                                                folderName={folderName}
                                                 numItems={folderContentItem.type === 'dir' ? folderContentItem.children.length : null}
                                                 isFile={folderContentItem.type === 'dir' ? false: true}
                                                 link={generateLink(folderContentItem)}
                                                 itemIndex={folderContentIndex}
                                                 setSelectedPage={setSelectedPage}
                                                 setIsPageSettingsActive={setIsPageSettingsActive}
+                                                setIsFolderModalOpen={setIsFolderModalOpen}
                                                 setIsDeleteModalActive={setIsDeleteModalActive}
                                             />
                                         </div>
