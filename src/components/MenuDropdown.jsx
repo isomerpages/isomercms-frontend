@@ -39,13 +39,13 @@ const MenuItem = ({ item, menuIndex, dropdownRef }) => {
         e.stopPropagation()
         e.preventDefault()
         dropdownRef.current.blur()
-        if (handler) handler(e)
+        if (handler && (e.target.id === `${itemId}-${menuIndex}` || !children || children.type !== 'button')) handler(e) // allows children buttons to work
       }}
       className={`${elementStyles.dropdownItem}`}
     >
       <i id={`${itemId}-${menuIndex}`} className={iconClassName}/>
       <div id={`${itemId}-${menuIndex}`} className={elementStyles.dropdownText}>{ itemName }</div>
-      { children }
+      <div className={'ml-auto'}>{ children }</div>
     </div>
   )
 }
@@ -53,9 +53,9 @@ const MenuItem = ({ item, menuIndex, dropdownRef }) => {
 const MenuDropdown = ({ dropdownItems, menuIndex, dropdownRef, tabIndex, onBlur }) => {
   return (
     <div className={`${elementStyles.dropdown} ${elementStyles.right}`} ref={dropdownRef} tabIndex={tabIndex} onBlur={onBlur}>
-      { dropdownItems.map(item =>
+      { dropdownItems.filter(x => x).map(item =>
         ( <MenuItem 
-            key={`${item.type}-${menuIndex}`}
+            key={`${item.type || item.itemId}-${menuIndex}`}
             item={item}
             menuIndex={menuIndex}
             dropdownRef={dropdownRef}
