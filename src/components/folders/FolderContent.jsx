@@ -21,17 +21,33 @@ const FolderContentItem = ({
     numItems,
     link,
     itemIndex,
+    queryFolderName,
+    allCategories,
+    setQueryFolderName,
     setSelectedPage,
+    setSelectedFolder,
     setIsPageSettingsActive,
     setIsFolderModalOpen,
+    setIsMoveModalActive,
     setIsDeleteModalActive
 }) => {
     const [showDropdown, setShowDropdown] = useState(false)
+    const [showFileMoveDropdown, setShowFileMoveDropdown] = useState(false)
     const dropdownRef = useRef(null)
+    const fileMoveDropdownRef = useRef(null)
 
     useEffect(() => {
         if (showDropdown) dropdownRef.current.focus()
+        if (showFileMoveDropdown) fileMoveDropdownRef.current.focus()
     }, [showDropdown])
+
+    const handleBlur = (event) => {
+        // if the blur was because of outside focus
+        // currentTarget is the parent element, relatedTarget is the clicked element
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+          setShowFileMoveDropdown(false)
+        }
+    }
 
     const generateDropdownItems = () => {
         const dropdownItems = [
@@ -46,7 +62,7 @@ const FolderContentItem = ({
             },
             {
                 type: 'move',
-                handler: () => {}, // to be added in separate PR
+                handler: () => setShowFileMoveDropdown(true), // to be added in separate PR
             },
             {
                 type: 'delete',
@@ -93,6 +109,49 @@ const FolderContentItem = ({
                                 onBlur={()=>setShowDropdown(false)}
                             />
                         }
+                        { showFileMoveDropdown &&
+                            <MenuDropdown 
+                                dropdownItems={[
+                                    {
+                                        itemName: `Move to`,
+                                        itemId: `move`,
+                                        iconClassName: "bx bx-sm bx-arrow-back",
+                                        handler: () => {
+                                            if (queryFolderName) { setQueryFolderName(''); setShowFileMoveDropdown(true) }
+                                            else { setShowDropdown(true); setShowFileMoveDropdown(false) }
+                                        },
+                                    },
+                                    ...allCategories.map(categoryName => ({
+                                        itemName: categoryName,
+                                        itemId: categoryName,
+                                        handler: () => { setSelectedFolder(`${queryFolderName ? `${queryFolderName}/` : ''}${categoryName}`); setIsMoveModalActive(true) },
+                                        children: queryFolderName === '' && <button
+                                            id={`${categoryName}-more`}
+                                            type="button"
+                                            onClick={(e) => { e.stopPropagation(); e.preventDefault(); setQueryFolderName(categoryName)}}
+                                            className={elementStyles.dropdownItemChildButton}
+                                        >
+                                            <i className="bx bx-sm bx-chevron-right ml-auto"/>   
+                                        </button>, 
+                                    })),
+                                    queryFolderName === '' && {
+                                        itemName: 'Unlinked pages',
+                                        itemId: `unlinked-pages`,
+                                        handler: () => { setSelectedFolder(`pages`); setIsMoveModalActive(true) },
+                                    },
+                                    allCategories.length === 0 && queryFolderName && {
+                                        itemName: 'No subfolders, move here',
+                                        itemId: `move-here`,
+                                        handler: () => { setSelectedFolder(`${queryFolderName}/`); setIsMoveModalActive(true) }
+                                    },
+                                ]}
+                                setShowDropdown={showFileMoveDropdown}
+                                dropdownRef={fileMoveDropdownRef}
+                                menuIndex={itemIndex}
+                                tabIndex={1}
+                                onBlur={handleBlur}
+                            />
+                        }
                     </div>
                 </div>
             </div>
@@ -106,9 +165,14 @@ const FolderContent = ({
     siteName,
     folderName,
     enableDragDrop,
+    allCategories,
+    queryFolderName,
+    setSelectedFolder,
+    setQueryFolderName,
     setSelectedPage,
     setIsPageSettingsActive,
     setIsFolderModalOpen,
+    setIsMoveModalActive,
     setIsDeleteModalActive,
 }) => {
     const generateLink = (folderContentItem) => {
@@ -174,10 +238,15 @@ const FolderContent = ({
                                                 numItems={folderContentItem.type === 'dir' ? folderContentItem.children.filter(name => !name.includes('.keep')).length : null}
                                                 isFile={folderContentItem.type === 'dir' ? false: true}
                                                 link={generateLink(folderContentItem)}
+                                                allCategories={allCategories}
                                                 itemIndex={folderContentIndex}
+                                                queryFolderName={queryFolderName}
+                                                setQueryFolderName={setQueryFolderName}
                                                 setSelectedPage={setSelectedPage}
+                                                setSelectedFolder={setSelectedFolder}
                                                 setIsPageSettingsActive={setIsPageSettingsActive}
                                                 setIsFolderModalOpen={setIsFolderModalOpen}
+                                                setIsMoveModalActive={setIsMoveModalActive}
                                                 setIsDeleteModalActive={setIsDeleteModalActive}
                                             />
                                         </div>
