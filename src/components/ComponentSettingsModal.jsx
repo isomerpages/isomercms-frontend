@@ -16,7 +16,6 @@ import {
   DEFAULT_RETRY_MSG,
   frontMatterParser,
   dequoteString,
-  generateResourceFileName,
   saveFileAndRetrieveUrl,
   retrieveResourceFileMetadata,
 } from '../utils';
@@ -28,20 +27,6 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 // axios settings
 axios.defaults.withCredentials = true
 
-// Helper functions
-const generateInitialCategoryLabel = (originalCategory) => {
-    if (originalCategory) return originalCategory
-    return "Select a category or create a new category..."
-}
-
-const generateCategoryFieldTitle = (type, isCategoryDisabled) => {
-  if (isCategoryDisabled) {
-    return `${type === 'resource' ? `Resource Category` : `Collection`}`
-  } else {
-    return `Add to ${type === 'resource' ? `Resource Category` : `Collection (optional)`}`
-  }
-}
-
 // Global state
 let thirdNavData = {}
 
@@ -50,13 +35,10 @@ const ComponentSettingsModal = ({
     fileName,
     isCategoryDisabled,
     isNewFile,
-    modalTitle,
     collectionPageData,
     pageFileNames,
     siteName,
-    type,
     setSelectedFile,
-    setCreateNewPage,
     setIsComponentSettingsActive,
 }) => {
     const { setRedirectToPage } = useRedirectHook()
@@ -106,19 +88,17 @@ const ComponentSettingsModal = ({
 
       if (originalCategory) setCategory(originalCategory);
 
-      const baseUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${originalCategory ? type === "resource" ? `/resources/${originalCategory}` : `/collections/${originalCategory}` : ''}`
+      const baseUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${originalCategory ? `/resources/${originalCategory}` : ''}`
       setBaseApiUrl(baseUrl)
 
       const fetchData = async () => {
           // Retrieve the list of all page/resource categories for use in the dropdown options. Also sets the default category if none is specified.
-          if (type === 'resource') {
-              const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`);
-              const { resources } = resourcesResp.data;
-              if (_isMounted) setAllCategories(resources.map((category) => ({
-                value: category.dirName,
-                label: category.dirName,
-              })))
-          }
+          const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`);
+          const { resources } = resourcesResp.data;
+          if (_isMounted) setAllCategories(resources.map((category) => ({
+            value: category.dirName,
+            label: category.dirName,
+          })))
 
           // Set component form values
           if (isNewFile) {
@@ -126,7 +106,7 @@ const ComponentSettingsModal = ({
               if (_isMounted) {
                 setTitle('Title')
                 setPermalink(`${originalCategory ? `/${originalCategory}` : ''}/permalink`)
-                if (type === 'resource') setResourceDate(new Date().toISOString().split("T")[0])
+                setResourceDate(new Date().toISOString().split("T")[0])
               }
 
           } else {
@@ -150,7 +130,7 @@ const ComponentSettingsModal = ({
                 setFileUrl(frontMatter.file_url)
                 setOriginalFileUrl(frontMatter.file_url)
 
-                setResourceDate(type === 'resource' ? retrieveResourceFileMetadata(fileName).date : '')
+                setResourceDate(retrieveResourceFileMetadata(fileName).date)
               }
           }
       }
@@ -203,7 +183,7 @@ const ComponentSettingsModal = ({
                 // props
                 originalCategory,
                 collectionPageData,
-                type,
+                type: 'resource',
                 resourceType: isPost ? 'post' : 'file',
                 fileName,
                 isNewFile,
@@ -217,7 +197,7 @@ const ComponentSettingsModal = ({
             if (!isNewFile) window.location.reload();
             else {
               // We refresh page if resource is being created from category folder
-              if (type === 'resource' && !isPost && originalCategory) {
+              if (!isPost && originalCategory) {
                 window.location.reload();
               } else {
                 setRedirectToPage(redirectUrl)
@@ -305,8 +285,8 @@ const ComponentSettingsModal = ({
             && (
             <div className={elementStyles['modal-settings']}>
               <div className={elementStyles.modalHeader}>
-                <h1>{modalTitle}</h1>
-                <button id="settings-CLOSE" type="button" onClick={() => {setCreateNewPage(false); setSelectedFile(''); setIsComponentSettingsActive(false)}}>
+                <h1>Resource Settings</h1>
+                <button id="settings-CLOSE" type="button" onClick={() => {setSelectedFile(''); setIsComponentSettingsActive(false)}}>
                   <i id="settingsIcon-CLOSE" className="bx bx-x" />
                 </button>
               </div>
@@ -314,9 +294,9 @@ const ComponentSettingsModal = ({
                 <div className={elementStyles.modalFormFields}>
                   {/* Category */}
                   <p className={elementStyles.formLabel}>
-                    {generateCategoryFieldTitle(type, isCategoryDisabled)}
+                    {isCategoryDisabled ? `Resource Category` : `Add to Resource Category`}
                     {
-                      type === 'resource' && !isCategoryDisabled &&
+                      !isCategoryDisabled &&
                       <b> (required)</b>
                     }
                   </p>
@@ -330,7 +310,7 @@ const ComponentSettingsModal = ({
                       defaultValue={originalCategory ? 
                         {
                           value: originalCategory,
-                          label: generateInitialCategoryLabel(originalCategory, isCategoryDisabled),
+                          label: originalCategory || "Select a category or create a new category...",
                         }
                         : null
                       }
@@ -358,7 +338,6 @@ const ComponentSettingsModal = ({
                     disabled={!isPost}
                     placeholder=' '
                   />
-                  { type === "resource" && 
                   <ResourceFormFields 
                     date={resourceDate}
                     errors={errors}
@@ -369,10 +348,9 @@ const ComponentSettingsModal = ({
                     siteName={siteName}
                     fileUrl={fileUrl ? fileUrl : ''}
                   />
-                  }
                 </div>
                 <SaveDeleteButtons 
-                  isDisabled={isNewFile ? hasErrors || (type==='resource' && category==='') : (hasErrors || !sha)}
+                  isDisabled={isNewFile ? hasErrors || category==='' : (hasErrors || !sha)}
                   hasDeleteButton={!isNewFile}
                   saveCallback={saveHandler}
                   deleteCallback={() => setCanShowDeleteWarningModal(true)}
