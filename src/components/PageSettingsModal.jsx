@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import axios from 'axios';
 import * as _ from 'lodash';
-import FormField from './FormField';
+
 import {
   DEFAULT_RETRY_MSG,
   generatePageFileName,
@@ -14,12 +14,13 @@ import {
 import { createPageData, updatePageData, renamePageData } from '../api'
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 import { validatePageSettings } from '../utils/validators';
-import SaveDeleteButtons from './SaveDeleteButtons';
 import { errorToast } from '../utils/toasts';
+
+import FormField from './FormField';
 import FormFieldHorizontal from './FormFieldHorizontal';
+import SaveDeleteButtons from './SaveDeleteButtons';
 
 import useRedirectHook from '../hooks/useRedirectHook';
 
@@ -139,10 +140,10 @@ const PageSettingsModal = ({
                 </button>
               </div>
               <div className={elementStyles.modalContent}>
-                { isNewPage ? 'You may edit page details anytime. ' : ''}
-                To edit page content, simply click on the page title. 
-                <div className={contentStyles.segment}>
-                  <span> 
+                <div className={elementStyles.modalFormFields}>
+                  { isNewPage ? 'You may edit page details anytime. ' : ''}
+                  To edit page content, simply click on the page title. <br/>
+                  <span className={elementStyles.infoGrey}> 
                     My workspace >
                     {
                       folderName
@@ -154,10 +155,8 @@ const PageSettingsModal = ({
                       ? <span> {subfolderName} > </span>
                       : null
                     } 
-                     <strong className="ml-1">{ title }</strong>
+                    <u className='ml-1'>{ title }</u><br/><br/>
                   </span>
-                </div>
-                <div className={elementStyles.modalFormFields}>
                   {/* Title */}
                   <FormField
                     title="Page title"
