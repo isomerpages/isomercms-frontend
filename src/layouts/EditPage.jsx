@@ -136,7 +136,11 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         } else {
           errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
         }
-      }
+      },
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchInterval: false,
+      refetchIntervalInBackground: false,
     },
   );
 
@@ -152,7 +156,11 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         } else {
           errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
         }
-      }
+      },
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchInterval: false,
+      refetchIntervalInBackground: false,
     },
   );
 
@@ -168,7 +176,11 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         } else {
           errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
         }
-      }
+      },
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchInterval: false,
+      refetchIntervalInBackground: false,
     },
   );
 

@@ -67,6 +67,32 @@ const PageSettingsModal = ({
       permalink: setPermalink,
     }
 
+    const {} = useQuery(
+      'page',
+      async () => await getPage(pageType, siteName, folderName, originalPageName),
+      { 
+        enabled: !isNewPage,
+        retry: false,
+        onSuccess: ({ content, sha }) => {
+          const { frontMatter, mdBody } = frontMatterParser(content)
+          setTitle(deslugifyPage(originalPageName))
+          setPermalink(frontMatter.permalink)
+          setOriginalPermalink(frontMatter.permalink)
+          setSha(sha)
+          setMdBody(mdBody)
+        }, 
+        onError: () => { 
+          setSelectedPage('')
+          setIsPageSettingsActive(false)
+          errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
+        },
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+        refetchInterval: false,
+        refetchIntervalInBackground: false,
+      }
+    )
+
     const { mutateAsync: saveHandler } = useMutation(
       () => {
         const frontMatter = subfolderName 

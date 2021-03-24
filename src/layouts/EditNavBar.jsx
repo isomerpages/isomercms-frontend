@@ -123,7 +123,11 @@ const EditNavBar =  ({ match }) => {
         } else {
           errorToast(`There was a problem trying to load your data. ${DEFAULT_RETRY_MSG}`)
         }
-      }
+      },
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchInterval: false,
+      refetchIntervalInBackground: false,
     },
   );
 
