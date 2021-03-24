@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery, useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 import axios from 'axios';
 import * as _ from 'lodash';
 import FormField from './FormField';
@@ -10,10 +10,8 @@ import {
   frontMatterParser,
   deslugifyPage,
 } from '../utils';
-import {
-  PAGE_CONTENT_KEY,
-} from '../constants'
-import { createPageData, getEditPageData, updatePageData, renamePageData } from '../api'
+
+import { createPageData, updatePageData, renamePageData } from '../api'
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
@@ -85,11 +83,13 @@ const PageSettingsModal = ({
           const { frontMatter, pageMdBody } = frontMatterParser(pageContent)
           const { permalink: originalPermalink } = frontMatter
         
-          setTitle(deslugifyPage(originalPageName))
-          setPermalink(originalPermalink)
-          setOriginalPermalink(originalPermalink)
-          setSha(pageSha)
-          setMdBody(pageMdBody)
+          if (_isMounted) {
+            setTitle(deslugifyPage(originalPageName))
+            setPermalink(originalPermalink)
+            setOriginalPermalink(originalPermalink)
+            setSha(pageSha)
+            setMdBody(pageMdBody)
+          }
         }
         if (isNewPage) {
           let exampleTitle = 'Example Title'
@@ -97,8 +97,10 @@ const PageSettingsModal = ({
             exampleTitle = exampleTitle+'_1'
           }
           const examplePermalink = `/${folderName ? `${folderName}/` : ''}${subfolderName ? `${subfolderName}/` : ''}permalink`
-          setTitle(exampleTitle)
-          setPermalink(examplePermalink)
+          if (_isMounted) {
+            setTitle(exampleTitle)
+            setPermalink(examplePermalink)
+          } 
         }
       }
       initializePageDetails()
