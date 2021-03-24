@@ -692,7 +692,7 @@ const validateDayOfMonth = (month, day) => {
 
 const validateResourceSettings = (id, value, title, resourceDate, isPost, folderOrderArray) => {
   let titleErrorMessage = '', errorMessage = '';
-  const newFileName = generateResourceFileName(id === "title" ? value : title, id==="date" ? value : resourceDate, isPost ? 'post' : 'file') 
+  const newFileName = generateResourceFileName(id === "title" ? value : title, id==="date" ? value : resourceDate, isPost) 
   switch (id) {
     case 'title': {
       // Title is too short
