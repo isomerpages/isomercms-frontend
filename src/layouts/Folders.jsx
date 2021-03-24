@@ -76,31 +76,47 @@ const Folders = ({ match, location }) => {
       },
     )
 
+    // parse contents of current folder directory
+    useEffect(() => {
+      if (folderContents && folderContents.data) {
+        const parsedFolderContents = parseDirectoryFile(folderContents.data.content)
+        setDirectoryFileSha(folderContents.data.sha)
+        setParsedFolderContents(parsedFolderContents)
+
+        if (subfolderName) {
+          const subfolderFiles = retrieveSubfolderContents(parsedFolderContents, subfolderName)
+          if (subfolderFiles.length > 0) {
+            setFolderOrderArray(subfolderFiles)
+          } else {
+            // if subfolderName prop does not match directory file, it's not a valid subfolder
+            setRedirectToPage(`/sites/${siteName}/workspace`)
+          }
+        } else {
+          setFolderOrderArray(convertFolderOrderToArray(parsedFolderContents))
+        }
+      }
+    }, [folderContents, subfolderName])
+
+    // set selected item type
+    useEffect(() => {
+      if (selectedPage) {
+        const selectedItem = folderOrderArray.find((item) => item.name === selectedPage)
+        setIsSelectedItemPage(selectedItem.type === 'file' ? true : false)
+      }
+    }, [selectedPage])
+
     // get page settings details when page is selected (used for editing page settings and deleting)
     const { data: pageData } = useQuery(
       [PAGE_CONTENT_KEY, { siteName, folderName, subfolderName, fileName: selectedPage }],
       () => getEditPageData({ siteName, folderName, subfolderName, fileName: selectedPage }),
       {
-        enabled: selectedPage.length > 0,
+        enabled: selectedPage.length > 0 && isSelectedItemPage,
         retry: false,
         onError: () => {
           setSelectedPage('')
           errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
         },
       },
-    )
-
-    // save file-reordering
-    const { mutate: rearrangeFolder } = useMutation(
-      payload => setDirectoryFile(siteName, folderName, payload),
-      {
-        onError: () => errorToast(`Your file reordering could not be saved. Please try again. ${DEFAULT_RETRY_MSG}`),
-        onSuccess: () => {
-          successToast('Successfully updated page order')
-          refetchFolderContents()
-        },
-        onSettled: () => setIsRearrangeActive((prevState) => !prevState),
-      }
     )
 
     // delete file
@@ -119,34 +135,6 @@ const Folders = ({ match, location }) => {
       }
     )
 
-    // parse contents of current folder directory
-    useEffect(() => {
-        if (folderContents && folderContents.data) {
-          const parsedFolderContents = parseDirectoryFile(folderContents.data.content)
-          setDirectoryFileSha(folderContents.data.sha)
-          setParsedFolderContents(parsedFolderContents)
-
-          if (subfolderName) {
-            const subfolderFiles = retrieveSubfolderContents(parsedFolderContents, subfolderName)
-            if (subfolderFiles.length > 0) {
-              setFolderOrderArray(subfolderFiles.filter(item => item.name !== '.keep'))
-            } else {
-              // if subfolderName prop does not match directory file, it's not a valid subfolder
-              setRedirectToPage(`/sites/${siteName}/workspace`)
-            }
-          } else {
-            setFolderOrderArray(convertFolderOrderToArray(parsedFolderContents))
-          }
-        }
-    }, [folderContents, subfolderName])
-
-    useEffect(() => {
-      if (selectedPage) {
-        const selectedItem = folderOrderArray.find((item) => item.name === selectedPage)
-        setIsSelectedItemPage(selectedItem.type === 'file' ? true : false)
-      }
-    }, [selectedPage])
-
     // move file
     const { mutateAsync: moveHandler } = useMutation(
       () => moveFile({siteName, selectedFile: selectedPage, folderName, subfolderName, newPath: selectedFolder}),
@@ -163,7 +151,7 @@ const Folders = ({ match, location }) => {
       [FOLDERS_CONTENT_KEY, { siteName, folderName }],
       async () => getAllCategories({ siteName }),
       {
-        enabled: selectedPage.length > 0,
+        enabled: selectedPage.length > 0 && isSelectedItemPage,
         onError: () => errorToast(`The folders data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
       },
     )
@@ -174,7 +162,7 @@ const Folders = ({ match, location }) => {
       [DIR_CONTENT_KEY, siteName, queryFolderName],
       async () => getDirectoryFile(siteName, queryFolderName),
       {
-        enabled: selectedPage.length > 0 && queryFolderName.length > 0,
+        enabled: selectedPage.length > 0 && queryFolderName.length > 0 && isSelectedItemPage,
         onError: () => errorToast(`The folders data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
       },
     )
@@ -193,6 +181,18 @@ const Folders = ({ match, location }) => {
       return []
     }
 
+    // REORDERING
+    // save file-reordering
+    const { mutate: rearrangeFolder } = useMutation(
+      payload => setDirectoryFile(siteName, folderName, payload),
+      {
+        onError: () => errorToast(`Your file reordering could not be saved. ${DEFAULT_RETRY_MSG}`),
+        onSuccess: () => successToast('Successfully updated page order'),
+        onSettled: () => setIsRearrangeActive((prevState) => !prevState),
+      }
+    )
+    
+    // REORDERING utils
     const toggleRearrange = () => { 
       if (isRearrangeActive) { 
         // drag and drop complete, save new order 
