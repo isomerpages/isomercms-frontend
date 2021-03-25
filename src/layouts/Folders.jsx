@@ -131,7 +131,12 @@ const Folders = ({ match, location }) => {
           successToast(`Successfully deleted ${isSelectedItemPage ? 'file' : 'subfolder'}`)
           refetchFolderContents()
         },
-        onSettled: () => setIsDeleteModalActive((prevState) => !prevState),
+        onSettled: () => {
+          setIsDeleteModalActive((prevState) => !prevState)
+          setSelectedPage('')
+          setSelectedFolder('')
+          setQueryFolderName('')
+        },
       }
     )
 
@@ -140,8 +145,16 @@ const Folders = ({ match, location }) => {
       () => moveFile({siteName, selectedFile: selectedPage, folderName, subfolderName, newPath: selectedFolder}),
       {
         onError: () => errorToast(`Your file could not be moved successfully. ${DEFAULT_RETRY_MSG}`),
-        onSuccess: () => {successToast('Successfully moved file');},
-        onSettled: () => setIsMoveModalActive((prevState) => !prevState),
+        onSuccess: () => {
+          successToast('Successfully moved file') 
+          refetchFolderContents()
+        },
+        onSettled: () => {
+          setIsMoveModalActive((prevState) => !prevState)
+          setSelectedPage('')
+          setSelectedFolder('')
+          setQueryFolderName('')
+        },
       }
     )
 
