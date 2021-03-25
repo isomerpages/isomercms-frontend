@@ -189,7 +189,7 @@ const Folders = ({ match, location }) => {
         return parsedFolderArray.filter(file => file.type === 'dir').map(file => file.name)
       }
       if (allFolders) {
-        return allFolders.collections.filter(name => name !== folderName)
+        return allFolders.collections
       }
       return []
     }
