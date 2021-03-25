@@ -77,9 +77,9 @@ const OverviewCard = ({
   const handleBlur = (event) => {
     // if the blur was because of outside focus
     // currentTarget is the parent element, relatedTarget is the clicked element
-    if (!event.currentTarget.contains(event.relatedTarget)) {
-      setCanShowFileMoveDropdown(false)
-    }
+    // if (!event.currentTarget.contains(event.relatedTarget)) {
+    //   setCanShowFileMoveDropdown(false)
+    // }
   }
 
   const toggleDropdownModals = () => {
