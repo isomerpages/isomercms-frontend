@@ -156,11 +156,6 @@ const OverviewCard = ({
                       <i className="bx bx-sm bx-chevron-right ml-auto"/>   
                   </button>,
                 })),
-                !isResource && queryFolderName === '' && {
-                    itemName: 'Unlinked pages',
-                    itemId: `unlinked-pages`,
-                    handler: () => { setSelectedPath(`pages`); setCanShowMoveModal(true); },
-                },
               ]}
               setShowDropdown={canShowFileMoveDropdown}
               dropdownRef={fileMoveDropdownRef}
