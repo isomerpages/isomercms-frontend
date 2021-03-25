@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
@@ -41,6 +41,8 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 const Folders = ({ match, location }) => {
+    // Instantiate queryClient
+    const queryClient = useQueryClient()
     const { siteName, folderName, subfolderName } = match.params;
 
     // set Move-To dropdown to start from current location of file
@@ -78,7 +80,7 @@ const Folders = ({ match, location }) => {
           } else {
             errorToast()
           }
-        }
+        },
       },
     )
 
@@ -127,6 +129,11 @@ const Folders = ({ match, location }) => {
         onError: () => {
           setSelectedPage('')
           errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
+        },
+        onSuccess: () => {
+          successToast('Successfully updated page order')
+          queryClient.invalidateQueries([DIR_CONTENT_KEY, siteName, folderName])
+          refetchFolderContents()
         },
       },
     )

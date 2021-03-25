@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { DragDropContext } from 'react-beautiful-dnd';
 
@@ -31,6 +31,9 @@ import { getEditNavBarData, updateNavBarData } from '../api';
 const RADIX_PARSE_INT = 10
 
 const EditNavBar =  ({ match }) => {
+  // Instantiate queryClient
+  const queryClient = useQueryClient()
+
   const { siteName } = match.params
 
   const { setRedirectToNotFound } = useRedirectHook()
@@ -136,7 +139,10 @@ const EditNavBar =  ({ match }) => {
     () => updateNavBarData(siteName, originalNav, links, sha),
     {
       onError: () => errorToast(`There was a problem trying to save your nav bar. ${DEFAULT_RETRY_MSG}`),
-      onSuccess: () => window.location.reload(),
+      onSuccess: () => {
+        queryClient.invalidateQueries([NAVIGATION_CONTENT_KEY, siteName])
+        window.location.reload()
+      },
     },
   )
 

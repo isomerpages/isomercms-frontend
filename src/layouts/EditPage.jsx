@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import PropTypes from 'prop-types';
 import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
@@ -96,6 +96,9 @@ const getBackButtonInfo = (resourceCategory, folderName, siteName, subfolderName
 }
 
 const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) => {
+  // Instantiate queryClient
+  const queryClient = useQueryClient()
+
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
   const { setRedirectToNotFound } = useRedirectHook()
 
@@ -189,7 +192,10 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     () => updatePageData(match.params, concatFrontMatterMdBody(frontMatter, editorValue), sha),
     {
       onError: () => errorToast(`There was a problem saving your page. ${DEFAULT_RETRY_MSG}`),
-      onSuccess: () => window.location.reload(),
+      onSuccess: () => {
+        queryClient.invalidateQueries([PAGE_CONTENT_KEY, match.params])
+        window.location.reload()
+      },
     },
   )
 

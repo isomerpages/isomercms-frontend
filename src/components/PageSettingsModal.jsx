@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useMutation } from 'react-query';
 import PropTypes from 'prop-types';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
 import * as _ from 'lodash';
 
@@ -13,7 +13,8 @@ import {
   deslugifyDirectory,
 } from '../utils';
 
-import { createPageData, updatePageData, renamePageData } from '../api'
+import { getPage, createPageData, updatePageData, renamePageData } from '../api'
+import { PAGE_SETTINGS_KEY } from '../constants'
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
@@ -41,6 +42,9 @@ const PageSettingsModal = ({
     setSelectedPage,
     setIsPageSettingsActive,
 }) => {
+    // Instantiate queryClient
+    const queryClient = useQueryClient()
+
     // Errors
     const [errors, setErrors] = useState({
         title: '',
@@ -68,7 +72,7 @@ const PageSettingsModal = ({
     }
 
     const {} = useQuery(
-      'page',
+      [PAGE_SETTINGS_KEY, originalPageName],
       async () => await getPage(pageType, siteName, folderName, originalPageName),
       { 
         enabled: !isNewPage,
@@ -86,6 +90,7 @@ const PageSettingsModal = ({
           setIsPageSettingsActive(false)
           errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
         },
+        cacheTime: 0,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
         refetchInterval: false,
@@ -105,7 +110,12 @@ const PageSettingsModal = ({
       },
       { 
         onSettled: () => {setSelectedPage(''); setIsPageSettingsActive(false)},
-        onSuccess: (redirectUrl) => redirectUrl ? setRedirectToPage(redirectUrl) : window.location.reload(),
+        onSuccess: (redirectUrl) => {
+          queryClient.invalidateQueries([PAGE_SETTINGS_KEY, originalPageName])
+
+          if (redirectUrl) setRedirectToPage(redirectUrl)
+          else window.location.reload()
+        },
         onError: () => errorToast(`${isNewPage ? 'A new page could not be created.' : 'Your page settings could not be saved.'} ${DEFAULT_RETRY_MSG}`)
       }
     )
