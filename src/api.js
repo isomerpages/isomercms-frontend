@@ -130,6 +130,8 @@ const renameSubfolder = async ({ siteName, folderName, subfolderName, newSubfold
 const renameResourceCategory = async ({ siteName, categoryName, newCategoryName}) => {
     const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${categoryName}/rename/${newCategoryName}`
     return await axios.post(apiUrl)
+}
+
 const getAllCategoriesApiEndpoint = ({siteName, isResource}) => {
     if (isResource) {
         return `${BACKEND_URL}/sites/${siteName}/resources`
