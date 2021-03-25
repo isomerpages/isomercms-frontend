@@ -142,7 +142,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
   // get directory data
   const { data: dirData } = useQuery(
-    [DIR_CONTENT_KEY, siteName, folderName],
+    [DIR_CONTENT_KEY, siteName, folderName, subfolderName],
     () => getDirectoryFile(siteName, folderName),
     {
       retry: false,
@@ -234,7 +234,9 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
           content: dirContent,
         } = dirData.data
         const parsedFolderContents = parseDirectoryFile(dirContent)
-        generatedLeftNavPages = parsedFolderContents.map((name) => 
+        // Filter out placeholder files
+        const filteredFolderContents = parsedFolderContents.filter(name => !name.includes('.keep'))
+        generatedLeftNavPages = filteredFolderContents.map((name) => 
           ({
             fileName: name.includes('/') ? name.split('/')[1] : name,
             third_nav_title: name.includes('/') ? name.split('/')[0] : null,

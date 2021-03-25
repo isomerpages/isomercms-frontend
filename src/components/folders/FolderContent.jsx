@@ -171,7 +171,7 @@ const FolderContent = ({
                                                 siteName={siteName}
                                                 title={folderContentItem.name}
                                                 folderName={folderName}
-                                                numItems={folderContentItem.type === 'dir' ? folderContentItem.children.length : null}
+                                                numItems={folderContentItem.type === 'dir' ? folderContentItem.children.filter(name => !name.includes('.keep')).length : null}
                                                 isFile={folderContentItem.type === 'dir' ? false: true}
                                                 link={generateLink(folderContentItem)}
                                                 itemIndex={folderContentIndex}

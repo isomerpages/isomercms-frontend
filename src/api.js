@@ -66,7 +66,6 @@ const deletePageData = async ({folderName, subfolderName, fileName, siteName, re
     });
 }
 
-
 // Folder and subfolders
 const renameFolder = async ({ siteName, folderName, newFolderName }) => {
     const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}/rename/${newFolderName}`
@@ -83,9 +82,25 @@ const renameSubfolder = async ({ siteName, folderName, subfolderName, newSubfold
     return await axios.post(apiUrl)
 }
 
+// Resources
 const renameResourceCategory = async ({ siteName, categoryName, newCategoryName}) => {
     const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${categoryName}/rename/${newCategoryName}`
     return await axios.post(apiUrl)
+}
+
+const getAllResourceCategories = async (siteName) => {
+    return await axios.get(`${BACKEND_URL}/sites/${siteName}/resources`);
+}
+
+const addResourceCategory = async (siteName, resourceName) => {
+    if (!resourceName) return
+    const params = { resourceName }
+    return await axios.post(`${BACKEND_URL}/sites/${siteName}/resources`, params);
+}
+
+const getResourcePages = async (siteName, resourceName) => {
+    if (!resourceName) return
+    return await axios.get(`${BACKEND_URL}/sites/${siteName}/resources/${resourceName}`);
 }
 
 // EditNavBar
@@ -104,7 +119,8 @@ const getEditNavBarData = async(siteName) => {
     if (foldersResp.data && foldersResp.data.allFolderContent) {
         // parse directory files
         foldersContent = foldersResp.data.allFolderContent.reduce((acc, currFolder) => {
-            const folderOrder = parseDirectoryFile(currFolder.content)
+            const collectionKey = Object.keys(currFolder.content.collections)[0]
+            const folderOrder = currFolder.content.collections[collectionKey].order
             acc[currFolder.name] = getNavFolderDropdownFromFolderOrder(folderOrder)
             return acc
         }, {})
@@ -174,6 +190,9 @@ export {
     deleteSubfolder,
     renameSubfolder,
     renameResourceCategory,
+    getAllResourceCategories,
+    addResourceCategory,
+    getResourcePages,
     getEditNavBarData,
     updateNavBarData,
     createPage,

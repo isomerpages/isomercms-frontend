@@ -117,6 +117,8 @@ const FolderCreationModal = ({
             folderNameChangeHandler={folderNameChangeHandler}
             title={title}
             errors={errors}
+            folderType={parentFolder ? 'subfolder' : 'folder'}
+            proceedText='Select pages'
           />
         }
         { !isSelectingTitle &&
@@ -170,7 +172,7 @@ const FolderCreationModal = ({
                     : (
                         !sortedPagesData
                             ? 'Loading Pages...'
-                            : 'There are no pages in this folder'
+                            : 'There are no pages in this folder.'
                     )
                   }
                 </div>
@@ -184,10 +186,9 @@ const FolderCreationModal = ({
                   callback={() => setIsFolderCreationActive(false)}
                 />
                 <LoadingButton
-                  label={`Done`}
-                  disabled={selectedFiles.size === 0}
+                  label={selectedFiles.size === 0 ? `Skip` : `Done`}
                   disabledStyle={elementStyles.disabled}
-                  className={`${selectedFiles.size === 0 ? elementStyles.disabled : elementStyles.blue}`}
+                  className={elementStyles.blue}
                   callback={saveHandler}
                 />
               </div>

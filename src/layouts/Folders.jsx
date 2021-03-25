@@ -58,8 +58,8 @@ const Folders = ({ match, location }) => {
     const [selectedPage, setSelectedPage] = useState('')
     const [isSelectedItemPage, setIsSelectedItemPage] = useState(false)
 
-    const { data: folderContents, error: queryError, refetch: refetchFolderContents } = useQuery(
-      [DIR_CONTENT_KEY, siteName, folderName],
+    const { data: folderContents, error: queryError, isLoading: isLoadingDirectory, refetch: refetchFolderContents } = useQuery(
+      [DIR_CONTENT_KEY, siteName, folderName, subfolderName],
       () => getDirectoryFile(siteName, folderName),
       { 
         retry: false,
@@ -77,8 +77,11 @@ const Folders = ({ match, location }) => {
     const { mutate: rearrangeFolder } = useMutation(
       payload => setDirectoryFile(siteName, folderName, payload),
       {
-        onError: () => errorToast(`Your file reordering could not be saved. ${DEFAULT_RETRY_MSG}`),
-        onSuccess: () => successToast('Successfully updated page order'),
+        onError: () => errorToast(`Your file reordering could not be saved. Please try again. ${DEFAULT_RETRY_MSG}`),
+        onSuccess: () => {
+          successToast('Successfully updated page order')
+          refetchFolderContents()
+        },
         onSettled: () => setIsRearrangeActive((prevState) => !prevState),
       }
     )
@@ -108,7 +111,7 @@ const Folders = ({ match, location }) => {
           if (subfolderName) {
             const subfolderFiles = retrieveSubfolderContents(parsedFolderContents, subfolderName)
             if (subfolderFiles.length > 0) {
-              setFolderOrderArray(subfolderFiles)
+              setFolderOrderArray(subfolderFiles.filter(item => item.name !== '.keep'))
             } else {
               // if subfolderName prop does not match directory file, it's not a valid subfolder
               setRedirectToPage(`/sites/${siteName}/workspace`)
@@ -253,9 +256,12 @@ const Folders = ({ match, location }) => {
               <div className={contentStyles.contentContainerFolderRowMargin}>
                 <FolderOptionButton title="Rearrange items" isSelected={isRearrangeActive} onClick={toggleRearrange} option="rearrange" isDisabled={folderOrderArray.length <= 1 || !folderContents}/>
                 <FolderOptionButton title="Create new page" option="create-page" id="pageSettings-new" onClick={() => setIsPageSettingsActive((prevState) => !prevState)}/>
-                <FolderOptionButton title="Create new sub-folder" option="create-sub" isDisabled={subfolderName || folderOrderArray.length === 0 ? true : false} onClick={() => setIsFolderCreationActive(true)}/>
+                <FolderOptionButton title="Create new sub-folder" option="create-sub" isDisabled={subfolderName || isLoadingDirectory ? true : false} onClick={() => setIsFolderCreationActive(true)}/>
               </div>
               {/* Collections content */}
+              {
+                !isLoadingDirectory && !queryError && folderOrderArray.length === 0 && <span>There are no pages in this {subfolderName ? `subfolder` : `folder`}.</span>
+              }
               {
                   queryError && <span>There was an error retrieving your content. Please refresh the page.</span>
               }

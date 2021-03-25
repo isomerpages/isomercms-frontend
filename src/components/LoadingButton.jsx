@@ -19,7 +19,12 @@ export default function LoadingButton(props) {
     let _isMounted = true
 
     const runCallback = async () => {
-      await callback();
+      try {
+        await callback();
+      } catch (err) {
+        if (_isMounted) setButtonLoading(false);
+        throw err
+      }
       if (_isMounted) setButtonLoading(false);
     }
 

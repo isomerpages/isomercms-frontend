@@ -112,6 +112,7 @@ const EditNavBar =  ({ match }) => {
     () => getEditNavBarData(siteName),
     {
       retry: false,
+      cacheTime: 0, // We want to refetch data on every page load because file order may have changed
       onError: (err) => {
         if (err.response && err.response.status === 404) {
           setRedirectToNotFound(siteName)
