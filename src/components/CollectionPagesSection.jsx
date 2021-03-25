@@ -80,7 +80,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
     // parse responses from move-to queries
     const getCategories = (queryFolderName, allCategories, querySubfolders) => {
         if (isResource && allCategories) {
-            allCategories.resources.map(resource => resource.dirName) 
+            return allCategories.resources.map(resource => resource.dirName).filter(dirName => dirName !== collectionName)
         }
         if (queryFolderName && querySubfolders) {
             const parsedFolderContents = parseDirectoryFile(querySubfolders.data.content)
@@ -106,7 +106,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
         () => moveFile({siteName, selectedFile, isResource, folderName: collectionName, newPath: selectedPath}),
         {
           onError: () => errorToast(`Your file could not be moved successfully. ${DEFAULT_RETRY_MSG}`),
-          onSuccess: () => successToast('Successfully moved file'),
+          onSuccess: () => {successToast('Successfully moved file'); window.location.reload();},
           onSettled: () => setCanShowMoveModal(prevState => !prevState),
         }
     )
