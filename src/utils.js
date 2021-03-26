@@ -1,5 +1,5 @@
 // import dependencies
-import yaml from 'js-yaml';
+import yaml from 'yaml';
 import cheerio from 'cheerio';
 import slugify from 'slugify';
 import axios from 'axios';
@@ -20,7 +20,7 @@ export const DEFAULT_ERROR_TOAST_MSG = `Something went wrong. ${DEFAULT_RETRY_MS
 export function frontMatterParser(content) {
   // format file to extract yaml front matter
   const results = content.split('---');
-  const frontMatter = yaml.safeLoad(results[1]); // get the front matter as an object
+  const frontMatter = yaml.parse(results[1]); // get the front matter as an object
   const mdBody = results.slice(2).join('---');
 
   return {
@@ -32,7 +32,7 @@ export function frontMatterParser(content) {
 // this function concatenates the front matter with the main content body
 // of the markdown file
 export function concatFrontMatterMdBody(frontMatter, mdBody) {
-  return ['---\n', yaml.safeDump(frontMatter), '---\n', mdBody].join('');
+  return ['---\n', yaml.stringify(frontMatter), '---\n', mdBody].join('');
 }
 
 // this function converts file names into readable form
@@ -611,16 +611,16 @@ export const getObjectDiff = (obj1, obj2) => {
 }
 
 export const parseDirectoryFile = (folderContent) => {
-  const decodedContent = yaml.safeLoad(folderContent)
+  const decodedContent = yaml.parse(folderContent)
   const collectionKey = Object.keys(decodedContent.collections)[0]
   return decodedContent.collections[collectionKey].order
 }
 
 export const updateDirectoryFile = (folderContent, folderOrder) => {
-  const decodedContent = yaml.safeLoad(folderContent)
+  const decodedContent = yaml.parse(folderContent)
   const collectionKey = Object.keys(decodedContent.collections)[0]
   decodedContent.collections[collectionKey].order = folderOrder
-  return yaml.safeDump(decodedContent)
+  return yaml.stringify(decodedContent)
 }
 
 export const getNavFolderDropdownFromFolderOrder = (folderOrder) => {
