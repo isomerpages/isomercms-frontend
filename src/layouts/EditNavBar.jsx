@@ -63,6 +63,8 @@ const EditNavBar =  ({ match }) => {
   const [showDeletedText, setShowDeletedText] = useState(true)
   const [deletedLinks, setDeletedLinks] = useState('')
 
+  const [hasChanges, setHasChanges] = useState(false)
+
   const LinkCollectionSectionConstructor = () => ({
     title: 'Menu Title',
     collection: collections[0],
@@ -118,6 +120,7 @@ const EditNavBar =  ({ match }) => {
     [NAVIGATION_CONTENT_KEY, siteName],
     () => getEditNavBarData(siteName),
     {
+      enabled: !hasChanges,
       retry: false,
       cacheTime: 0, // We want to refetch data on every page load because file order may have changed
       onError: (err) => {
@@ -127,10 +130,6 @@ const EditNavBar =  ({ match }) => {
           errorToast(`There was a problem trying to load your data. ${DEFAULT_RETRY_MSG}`)
         }
       },
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      refetchInterval: false,
-      refetchIntervalInBackground: false,
     },
   );
 
@@ -218,6 +217,13 @@ const EditNavBar =  ({ match }) => {
       _isMounted = false;
     }
   }, [navigationContents])
+
+  useEffect(() => {
+    setHasChanges(JSON.stringify(originalNav) !== JSON.stringify({
+      ...originalNav,
+      links: links
+    }))
+  }, [originalNav, links])
 
   const onFieldChange = async (event) => {
     try {
@@ -580,13 +586,6 @@ const EditNavBar =  ({ match }) => {
     }
   }
 
-  const hasChanges = () => {
-    return JSON.stringify(originalNav) !== JSON.stringify({
-      ...originalNav,
-      links: links
-    })
-  }
-
   const hasErrors = () => {
     return !isEmpty(errors.links) || !isEmpty(errors.sublinks)
   }
@@ -615,7 +614,7 @@ const EditNavBar =  ({ match }) => {
       <Header
         siteName={siteName}
         title={"Navigation Bar"}
-        shouldAllowEditPageBackNav={!hasChanges()}
+        shouldAllowEditPageBackNav={!hasChanges}
         isEditPage={true}
         backButtonText="Back to My Workspace"
         backButtonUrl={`/sites/${siteName}/workspace`}

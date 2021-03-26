@@ -125,6 +125,8 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
   const [isCspViolation, setIsCspViolation] = useState(false)
   const [chunk, setChunk] = useState('')
 
+  const [hasChanges, setHasChanges] = useState(false)
+
   const mdeRef = useRef()
 
   // get page data
@@ -132,6 +134,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     [PAGE_CONTENT_KEY, match.params],
     () => getEditPageData(match.params),
     {
+      enabled: !hasChanges,
       retry: false,
       onError: (err) => {
         if (err.response && err.response.status === 404) {
@@ -140,10 +143,6 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
           errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
         }
       },
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      refetchInterval: false,
-      refetchIntervalInBackground: false,
     },
   );
 
@@ -152,6 +151,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     [DIR_CONTENT_KEY, siteName, folderName, subfolderName],
     () => getDirectoryFile(siteName, folderName),
     {
+      enabled: !hasChanges,
       retry: false,
       onError: (err) => {
         if (err.response && err.response.status === 404) {
@@ -160,10 +160,6 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
           errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
         }
       },
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      refetchInterval: false,
-      refetchIntervalInBackground: false,
     },
   );
 
@@ -172,6 +168,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     [CSP_CONTENT_KEY, siteName],
     () => getCsp(siteName),
     {
+      enabled: !hasChanges,
       retry: false,
       onError: (err) => {
         if (err.response && err.response.status === 404) {
@@ -180,10 +177,6 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
           errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
         }
       },
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      refetchInterval: false,
-      refetchIntervalInBackground: false,
     },
   );
 
@@ -290,6 +283,10 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     setChunk(processedChunk)
   }, [editorValue])
 
+  useEffect(() => {
+    setHasChanges(originalMdValue === editorValue)
+  }, [originalMdValue, editorValue])
+
   const onEditorChange = (value) => {
     setEditorValue(value);
   }
@@ -370,7 +367,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       <Header
         siteName={siteName}
         title={title}
-        shouldAllowEditPageBackNav={originalMdValue === editorValue}
+        shouldAllowEditPageBackNav={hasChanges}
         isEditPage={true}
         backButtonText={backButtonLabel}
         backButtonUrl={backButtonUrl}

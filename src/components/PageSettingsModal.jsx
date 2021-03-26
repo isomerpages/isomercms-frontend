@@ -60,8 +60,8 @@ const PageSettingsModal = ({
     const [originalFrontMatter, setOriginalFrontMatter] = useState({})
     const [sha, setSha] = useState('')
     const [mdBody, setMdBody] = useState('')
-    
     const [siteUrl, setSiteUrl] = useState('https://abc.com.sg')
+    const [hasChanges, setHasChanges] = useState(false)
 
     const { setRedirectToPage } = useRedirectHook()
     const { retrieveSiteUrl } = useSiteUrlHook()
@@ -75,7 +75,7 @@ const PageSettingsModal = ({
       [PAGE_SETTINGS_KEY, originalPageName],
       async () => await getPage(pageType, siteName, folderName, originalPageName),
       { 
-        enabled: !isNewPage,
+        enabled: !(isNewPage || hasChanges), // disable if new page or if there are changes
         retry: false,
         onSuccess: ({ content, sha }) => {
           const { frontMatter, mdBody } = frontMatterParser(content)
@@ -90,11 +90,6 @@ const PageSettingsModal = ({
           setIsPageSettingsActive(false)
           errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
         },
-        cacheTime: 0,
-        refetchOnWindowFocus: false,
-        refetchOnReconnect: false,
-        refetchInterval: false,
-        refetchIntervalInBackground: false,
       }
     )
 
@@ -170,8 +165,10 @@ const PageSettingsModal = ({
     }, [errors])
 
     useEffect(() => {
-      setHasChanges(!isNewPage && !(originalPageName === generatePageFileName(title) && originalPermalink === permalink))
-    }, [title, permalink])
+      if (title && permalink) {
+        setHasChanges(!isNewPage && !(title === deslugifyPage(originalPageName) && permalink === originalPermalink))
+      }
+    }, [originalPageName, originalPermalink, title, permalink])
 
     const changeHandler = (event) => {
       const { id, value } = event.target;
