@@ -611,6 +611,12 @@ export const getObjectDiff = (obj1, obj2) => {
 }
 
 export const parseDirectoryFile = (folderContent) => {
+  const decodedContent = yaml.safeLoad(folderContent)
+  const collectionKey = Object.keys(decodedContent.collections)[0]
+  return decodedContent.collections[collectionKey].order
+}
+
+export const updateDirectoryFile = (folderContent, folderOrder) => {
   const decodedContent = yaml.parse(folderContent)
   const collectionKey = Object.keys(decodedContent.collections)[0]
   return decodedContent.collections[collectionKey]
