@@ -9,7 +9,8 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
 const getDirectoryFile = async (siteName, folderName) => {
     if (!folderName) return
-    return await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`);
+    const resp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`);
+    return resp.data
 }
 
 const setDirectoryFile = async (siteName, folderName, payload) => {
@@ -80,7 +81,8 @@ const getEditPageData = async ({folderName, subfolderName, fileName, siteName, r
 
 const getCsp = async (siteName) => {
     // retrieve CSP
-    return await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`);
+    const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`)
+    return resp.data
 }
 
 const createPageData = async ({folderName, subfolderName, newFileName, siteName, resourceName}, content) => {

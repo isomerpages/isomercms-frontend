@@ -241,7 +241,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       } = pageData
       const {
         netlifyTomlHeaderValues
-      } = cspData.data
+      } = cspData
       if (!pageContent) return
       
       const { frontMatter: retrievedFrontMatter, mdBody: retrievedMdBody } = frontMatterParser(pageContent);
@@ -251,8 +251,9 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       if (isCollectionPage) {
         const {
           content: dirContent,
-        } = dirData.data
+        } = dirData
         const { order: parsedFolderContents } = parseDirectoryFile(dirContent)
+        const parsedFolderContents = parseDirectoryFile(dirContent)
         // Filter out placeholder files
         const filteredFolderContents = parsedFolderContents.filter(name => !name.includes('.keep'))
         generatedLeftNavPages = filteredFolderContents.map((name) => 

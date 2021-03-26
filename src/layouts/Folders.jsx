@@ -224,6 +224,44 @@ const Folders = ({ match, location }) => {
       setMoveDropdownQuery({ ...initialMoveDropdownQueryState });
     };
 
+    // REORDERING
+    // save file-reordering
+    const { mutate: rearrangeFolder } = useMutation(
+      payload => setDirectoryFile(siteName, folderName, payload),
+      {
+        onError: () => errorToast(`Your file reordering could not be saved. ${DEFAULT_RETRY_MSG}`),
+        onSuccess: () => successToast('Successfully updated page order'),
+        onSettled: () => setIsRearrangeActive((prevState) => !prevState),
+      }
+    )
+    
+    // REORDERING utils
+    const toggleRearrange = () => { 
+      if (isRearrangeActive) { 
+        // drag and drop complete, save new order 
+        let newFolderOrder
+        if (subfolderName) {
+          newFolderOrder = convertSubfolderArray(folderOrderArray, parsedFolderContents, subfolderName)
+        } else {
+          newFolderOrder = convertArrayToFolderOrder(folderOrderArray)
+        }
+        if (JSON.stringify(newFolderOrder) === JSON.stringify(parsedFolderContents)) { 
+          // no change in file order
+          setIsRearrangeActive((prevState) => !prevState)
+          return
+        }
+        const updatedDirectoryFile = updateDirectoryFile(folderContents.content, newFolderOrder)
+
+        const payload = {
+          content: updatedDirectoryFile,
+          sha: directoryFileSha,
+        } 
+        rearrangeFolder(payload) // setIsRearrangeActive(false) handled by mutate
+      } else {
+        setIsRearrangeActive((prevState) => !prevState) 
+      }
+    }
+
     return (
         <>
           {
