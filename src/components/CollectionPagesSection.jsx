@@ -87,10 +87,10 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
             const parsedFolderArray = convertFolderOrderToArray(parsedFolderContents)
             return parsedFolderArray.filter(file => file.type === 'dir').map(file => file.name)
         }
-        if (allCategories) {
+        if (!queryFolderName && allCategories) {
             return allCategories.collections
         }
-        return []
+        return null
     }
 
     const { mutateAsync: deleteHandler } = useMutation(
