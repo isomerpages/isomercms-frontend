@@ -24,7 +24,7 @@ const FolderCard = ({
   pageType,
   siteName,
   category,
-  folderStyle,
+  selectedIndex,
   onClick,
 }) => {
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
@@ -146,12 +146,18 @@ const FolderCard = ({
       }
       {generateLink() 
         ? 
-          <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard} ${folderStyle}`} to={generateLink()}>
+          <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard}`} to={generateLink()}>
             {FolderCardContent()}
           </Link>
         :
-        <div className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard} ${folderStyle}`} onClick={onClick}>
+        <div className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard} ${selectedIndex ? `border border-primary` : ''}`} onClick={onClick}>
           {FolderCardContent()}
+          { selectedIndex &&
+            <div className={elementStyles.orderCircleContainer}>
+              <div className={elementStyles.orderCircle}>{selectedIndex}</div>
+            </div>
+          }
+          
         </div>
       }
     </>
