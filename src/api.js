@@ -18,9 +18,6 @@ const setDirectoryFile = async (siteName, folderName, payload) => {
 
 // EditPage
 const getPageApiEndpoint = ({folderName, subfolderName, fileName, siteName, resourceName, newFileName}) => {
-    if (newFileName && fileName) return getRenamePageApiEndpoint({folderName, subfolderName, fileName, siteName, resourceName, newFileName})
-    if (newFileName) return getCreatePageApiEndpoint({folderName, subfolderName, siteName, resourceName, newFileName})
-
     if (folderName) {
         return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${fileName}`)}`
     }
@@ -50,6 +47,16 @@ const getRenamePageApiEndpoint = ({folderName, subfolderName, fileName, siteName
     return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}/rename/${newFileName}`
 }
 
+const getMovePageEndpoint = ({siteName, resourceName, folderName, subfolderName, newPath}) => {
+    if (folderName) {
+        return `${BACKEND_URL}/sites/${siteName}/collections/${encodeURIComponent(`${folderName ? `${folderName}`: ''}${subfolderName ? `/${subfolderName}` : ''}`)}/move/${encodeURIComponent(`${newPath}`)}`
+    }
+    if (resourceName) {
+        return `${BACKEND_URL}/sites/${siteName}/resources/${resourceName}/move/${encodeURIComponent(`${newPath}`)}`
+    }
+    return `${BACKEND_URL}/sites/${siteName}/pages/move/${encodeURIComponent(`${newPath}`)}`
+}
+
 const getEditPageData = async ({folderName, subfolderName, fileName, siteName, resourceName}) => {
     const apiEndpoint = getPageApiEndpoint({folderName, subfolderName, fileName, siteName, resourceName})
     const resp = await axios.get(apiEndpoint);
@@ -69,7 +76,7 @@ const getCsp = async (siteName) => {
 }
 
 const createPageData = async ({folderName, subfolderName, newFileName, siteName, resourceName}, content) => {
-    const apiEndpoint = getPageApiEndpoint({folderName, subfolderName, newFileName, siteName, resourceName})
+    const apiEndpoint = getCreatePageApiEndpoint({folderName, subfolderName, newFileName, siteName, resourceName})
     const params = { content }
     await axios.post(apiEndpoint, params)
     
@@ -84,7 +91,7 @@ const createPageData = async ({folderName, subfolderName, newFileName, siteName,
 }
 
 const renamePageData = async ({folderName, subfolderName, fileName, siteName, resourceName, newFileName}, content, sha) => {
-    const apiEndpoint = getPageApiEndpoint({folderName, subfolderName, fileName, siteName, resourceName, newFileName})
+    const apiEndpoint = getRenamePageApiEndpoint({folderName, subfolderName, fileName, siteName, resourceName, newFileName})
     const params = {
         content,
         sha,
@@ -212,14 +219,12 @@ const moveFiles = async (siteName, selectedFiles, title, parentFolder) => {
     return await axios.post(`${baseApiUrl}/move/${newPath}`, params)
 }
 
-const moveFile = async ({siteName, selectedFile, isResource, folderName, subfolderName, newPath}) => {
-    const baseApiUrl = `${BACKEND_URL}/sites/${siteName}${isResource ? '/resources' : folderName ? `/collections` : '/pages'}`
-    const collectionPath = encodeURIComponent(`${folderName ? `${folderName}`: ''}${subfolderName ? `/${subfolderName}` : ''}`)
-    const targetPath = encodeURIComponent(`${newPath}`)
+const moveFile = async ({selectedFile, siteName, resourceName, folderName, subfolderName, newPath}) => {
+    const apiEndpoint = getMovePageEndpoint({siteName, resourceName, folderName, subfolderName, newPath})
     const params = {
         files: [selectedFile],
     }
-    return await axios.post(`${baseApiUrl}/${collectionPath ? `${collectionPath}/` : ''}move/${targetPath}`, params)
+    return await axios.post(apiEndpoint, params)
 }
 
 export {
