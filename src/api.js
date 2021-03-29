@@ -82,12 +82,12 @@ const createPageData = async ({folderName, subfolderName, newFileName, siteName,
     
     // redirect to new page upon successful creation
     if (folderName) {
-        return `/sites/${siteName}/folder/${folderName}/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${newFileName}`)}`
+        return `/sites/${siteName}/folder/${folderName}/${subfolderName ? `subfolder/${subfolderName}/` : ''}${newFileName}`
     } 
     if (resourceName) {
-        return `/sites/${siteName}/resources/${resourceName}/${encodeURIComponent(newFileName)}`
+        return `/sites/${siteName}/resources/${resourceName}/${newFileName}`
     }
-    return `/sites/${siteName}/pages/${encodeURIComponent(newFileName)}`
+    return `/sites/${siteName}/pages/${newFileName}`
 }
 
 const renamePageData = async ({folderName, subfolderName, fileName, siteName, resourceName, newFileName}, content, sha) => {
