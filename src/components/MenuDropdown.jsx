@@ -30,7 +30,7 @@ const MenuItem = ({ item, menuIndex, dropdownRef }) => {
     }
     
   }
-  const { type, handler } = item
+  const { type, handler, noBlur } = item
   const { itemName, itemId, iconClassName, children } = type ? getItemType(type) : item
   return (
     <div
@@ -38,8 +38,9 @@ const MenuItem = ({ item, menuIndex, dropdownRef }) => {
       onMouseDown={(e) => {
         e.stopPropagation()
         e.preventDefault()
-        dropdownRef.current.blur()
-        if (handler && (e.target.id === `${itemId}-${menuIndex}` || !children || children.type !== 'button')) handler(e) // allows children buttons to work
+        if (!noBlur) dropdownRef.current.blur()
+        // if user clicks on nested button, don't run handler
+        if (handler && (e.target.id === `${itemId}-${menuIndex}` || !children || children.type !== 'button')) handler(e) 
       }}
       className={`${elementStyles.dropdownItem}`}
     >
