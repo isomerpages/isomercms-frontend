@@ -39,14 +39,20 @@ const FolderContentItem = ({
     useEffect(() => {
         if (showDropdown) dropdownRef.current.focus()
         if (showFileMoveDropdown) fileMoveDropdownRef.current.focus()
-    }, [showDropdown])
+    }, [showDropdown, showFileMoveDropdown])
 
     const handleBlur = (event) => {
         // if the blur was because of outside focus
         // currentTarget is the parent element, relatedTarget is the clicked element
-        // if (!event.currentTarget.contains(event.relatedTarget)) {
-        //   setShowFileMoveDropdown(false)
-        // }
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+            setShowFileMoveDropdown(false)
+            setQueryFolderName('')
+        }
+    }
+
+    const toggleDropdownModals = () => {
+        setShowFileMoveDropdown(!showFileMoveDropdown)
+        setShowDropdown(!showDropdown)
     }
 
     const generateDropdownItems = () => {
@@ -62,7 +68,7 @@ const FolderContentItem = ({
             },
             {
                 type: 'move',
-                handler: () => setShowFileMoveDropdown(true), // to be added in separate PR
+                handler: toggleDropdownModals
             },
             {
                 type: 'delete',
@@ -72,90 +78,110 @@ const FolderContentItem = ({
         if (isFile) return dropdownItems
         return dropdownItems.filter(item => item.itemId !== 'move')
     }
-    return (
-        <Link className={`${contentStyles.component} ${contentStyles.card}`} to={link}>
-            <div type="button" className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderItem}`}>
-                <div className={contentStyles.contentContainerFolderRow}>
-                    {
-                        isFile
-                        ? <i className={`bx bxs-file-blank ${elementStyles.folderItemIcon}`} />
-                        : <i className={`bx bxs-folder ${elementStyles.folderItemIcon}`} />
+
+    const FolderItemContent = (
+        <div type="button" className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderItem}`}>
+            <div className={contentStyles.contentContainerFolderRow}>
+                {
+                    isFile
+                    ? <i className={`bx bxs-file-blank ${elementStyles.folderItemIcon}`} />
+                    : <i className={`bx bxs-folder ${elementStyles.folderItemIcon}`} />
+                }
+                <span className={`${elementStyles.folderItemText} mr-auto`} >{deslugifyPage(title)}</span>
+                {
+                    numItems
+                    ? <span className={`${elementStyles.folderItemText} mr-5`}>{numItems} item{numItems === 1 ? '' : 's'}</span>
+                    : null
+                }
+                <div className={`position-relative mt-auto mb-auto`}>
+                    <button
+                        className={`${showDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            e.preventDefault()
+                            setSelectedPage(title)
+                            setShowDropdown(true)
+                        }}
+                    >
+                        <i className="bx bx-dots-vertical-rounded" />     
+                    </button>
+                    { showDropdown &&
+                        <MenuDropdown
+                            menuIndex={itemIndex}
+                            dropdownItems={generateDropdownItems()}
+                            dropdownRef={dropdownRef}
+                            tabIndex={2}
+                            onBlur={()=>setShowDropdown(false)}
+                        />
                     }
-                    <span className={`${elementStyles.folderItemText} mr-auto`} >{deslugifyPage(title)}</span>
-                    {
-                        numItems
-                        ? <span className={`${elementStyles.folderItemText} mr-5`}>{numItems} item{numItems === 1 ? '' : 's'}</span>
-                        : null
-                    }
-                    <div className={`position-relative mt-auto mb-auto`}>
-                        <button
-                            className={`${showDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
-                            type="button"
-                            onClick={(e) => {
-                                e.stopPropagation()
-                                e.preventDefault()
-                                setSelectedPage(title)
-                                setShowDropdown(true)
-                            }}
-                        >
-                            <i className="bx bx-dots-vertical-rounded" />     
-                        </button>
-                        { showDropdown &&
-                            <MenuDropdown
-                                menuIndex={itemIndex}
-                                dropdownItems={generateDropdownItems()}
-                                dropdownRef={dropdownRef}
-                                tabIndex={2}
-                                onBlur={()=>setShowDropdown(false)}
-                            />
-                        }
-                        { showFileMoveDropdown &&
-                            <MenuDropdown 
-                                dropdownItems={[
-                                    {
-                                        itemName: `Move to`,
-                                        itemId: `move`,
-                                        iconClassName: "bx bx-sm bx-arrow-back",
-                                        handler: () => {
-                                            if (queryFolderName) { setQueryFolderName(''); setShowFileMoveDropdown(true) }
-                                            else { setShowDropdown(true); setShowFileMoveDropdown(false) }
-                                        },
+                    { showFileMoveDropdown &&
+                        <MenuDropdown 
+                            dropdownItems={[
+                                {
+                                    itemName: queryFolderName ? `Back to folders` : `Back to menu`,
+                                    itemId: `move`,
+                                    iconClassName: "bx bx-sm bx-arrow-back",
+                                    handler: () => {
+                                        if (queryFolderName) setQueryFolderName('')
+                                        else toggleDropdownModals()
                                     },
-                                    ...allCategories.map(categoryName => ({
+                                    noBlur: true,
+                                },
+                                queryFolderName === '' && {
+                                    itemName: 'Workspace',
+                                    itemId: `workspace`,
+                                    handler: () => { setSelectedFolder(`pages`); setIsMoveModalActive(true) },
+                                },
+                                ...(allCategories
+                                    ? allCategories.map(categoryName => ({
                                         itemName: categoryName,
                                         itemId: categoryName,
-                                        handler: () => { setSelectedFolder(`${queryFolderName ? `${queryFolderName}/` : ''}${categoryName}`); setIsMoveModalActive(true) },
-                                        children: queryFolderName === '' && <button
-                                            id={`${categoryName}-more`}
-                                            type="button"
-                                            onClick={(e) => { e.stopPropagation(); e.preventDefault(); setQueryFolderName(categoryName)}}
-                                            className={elementStyles.dropdownItemChildButton}
-                                        >
-                                            <i className="bx bx-sm bx-chevron-right ml-auto"/>   
-                                        </button>, 
-                                    })),
-                                    queryFolderName === '' && {
-                                        itemName: 'Unlinked pages',
-                                        itemId: `unlinked-pages`,
-                                        handler: () => { setSelectedFolder(`pages`); setIsMoveModalActive(true) },
-                                    },
-                                    allCategories.length === 0 && queryFolderName && {
-                                        itemName: 'No subfolders, move here',
-                                        itemId: `move-here`,
-                                        handler: () => { setSelectedFolder(`${queryFolderName}/`); setIsMoveModalActive(true) }
-                                    },
-                                ]}
-                                setShowDropdown={showFileMoveDropdown}
-                                dropdownRef={fileMoveDropdownRef}
-                                menuIndex={itemIndex}
-                                tabIndex={1}
-                                onBlur={handleBlur}
-                            />
-                        }
-                    </div>
+                                        handler: () => { 
+                                            setSelectedFolder(`${queryFolderName ? `${queryFolderName}/` : ''}${categoryName}`)
+                                            setIsMoveModalActive(true)
+                                        },
+                                        children: queryFolderName === '' && 
+                                            <button
+                                                id={`${categoryName}-more`}
+                                                onMouseDown={(e) => { 
+                                                    e.stopPropagation()
+                                                    e.preventDefault()
+                                                    setQueryFolderName(categoryName)
+                                                }}
+                                                className={elementStyles.dropdownItemChildButton}
+                                            >
+                                                <i className="bx bx-sm bx-chevron-right ml-auto"/>   
+                                            </button>, 
+                                        }))
+                                    : [{
+                                        itemId: `loading`,
+                                        itemName: <div className="spinner-border text-primary" role="status" />,
+                                    }]
+                                ),
+                            ]}
+                            setShowDropdown={showFileMoveDropdown}
+                            dropdownRef={fileMoveDropdownRef}
+                            menuIndex={itemIndex}
+                            tabIndex={1}
+                            onBlur={handleBlur}
+                        />
+                    }
                 </div>
             </div>
-        </Link>
+        </div>
+    )
+
+    return (
+        !showFileMoveDropdown && !showDropdown
+        ? 
+            <Link className={`${contentStyles.component} ${contentStyles.card}`} to={link}>
+                {FolderItemContent}
+            </Link>
+        :
+            <div className={`${contentStyles.component} ${contentStyles.card}`}>
+                {FolderItemContent}
+            </div>
     )
 }
 

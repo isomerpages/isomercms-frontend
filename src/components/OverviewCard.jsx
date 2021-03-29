@@ -77,9 +77,10 @@ const OverviewCard = ({
   const handleBlur = (event) => {
     // if the blur was because of outside focus
     // currentTarget is the parent element, relatedTarget is the clicked element
-    // if (!event.currentTarget.contains(event.relatedTarget)) {
-    //   setCanShowFileMoveDropdown(false)
-    // }
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      setCanShowFileMoveDropdown(false)
+      setQueryFolderName('')
+    }
   }
 
   const toggleDropdownModals = () => {
@@ -91,11 +92,11 @@ const OverviewCard = ({
     <>
       <div id={itemIndex} className={contentStyles.componentInfo}>
         <div className={contentStyles.componentCategory}>{category ? category : ''}</div>
-        <h1 className={contentStyles.componentTitle}>{generateTitle()}</h1>
+        <h1 className={resourceType === 'file' ? contentStyles.componentTitle : contentStyles.componentTitleLink}>{generateTitle()}</h1>
         <p className={contentStyles.componentDate}>{`${date ? prettifyDate(date) : ''}${resourceType ? `/${resourceType.toUpperCase()}` : ''}`}</p>
       </div>
         <div className="position-relative mt-auto">
-          <button 
+          <button
             type="button"
             id={`settings-${itemIndex}`}
             onClick={(e) => {
@@ -134,32 +135,45 @@ const OverviewCard = ({
             <MenuDropdown 
               dropdownItems={[
                 {
-                  itemName: 'Move to',
-                  itemId: `move`,
+                  itemName: queryFolderName ? `Back to folders` : `Back to menu`,
+                  itemId: `back`,
                   iconClassName: "bx bx-sm bx-arrow-back",
-                  handler: () => toggleDropdownModals(queryFolderName),
-                },
-                ...allCategories.map(categoryName => ({
-                  itemName: categoryName,
-                  itemId: categoryName,
                   handler: () => {
-                    setSelectedPath(`${queryFolderName ? `${queryFolderName}/` : ''}${categoryName}`)
-                    fileMoveDropdownRef.current.blur()
-                    setCanShowMoveModal(true)
+                    if (queryFolderName) setQueryFolderName('')
+                    else toggleDropdownModals()
                   },
-                  children: !isResource && queryFolderName === '' && <button
-                      id={`${categoryName}-more`}
-                      type="button"
-                      onClick={(e) => { e.stopPropagation(); e.preventDefault(); setQueryFolderName(categoryName)}}
-                      className={elementStyles.dropdownItemChildButton}
-                  >
-                      <i className="bx bx-sm bx-chevron-right ml-auto"/>   
-                  </button>,
-                })),
+                  noBlur: true,
+                },
+                ...(allCategories 
+                  ? allCategories.map(categoryName => ({
+                    itemName: categoryName,
+                    itemId: categoryName,
+                    handler: () => {
+                      setSelectedPath(`${queryFolderName ? `${queryFolderName}/` : ''}${categoryName}`)
+                      setCanShowMoveModal(true)
+                    },
+                    children: !isResource && queryFolderName === '' && 
+                      <button
+                        id={`${categoryName}-more`}
+                        onMouseDown={(e) => { 
+                          e.stopPropagation()
+                          e.preventDefault()
+                          setQueryFolderName(categoryName)
+                        }}
+                        className={elementStyles.dropdownItemChildButton}
+                      >
+                        <i className="bx bx-sm bx-chevron-right ml-auto"/>
+                      </button>,
+                    }))
+                  : [{
+                    itemId: `loading`,
+                    itemName: <div className="spinner-border text-primary" role="status" />,
+                  }]
+                ),
               ]}
               setShowDropdown={canShowFileMoveDropdown}
               dropdownRef={fileMoveDropdownRef}
-              menuIndex={''}
+              menuIndex={itemIndex}
               tabIndex={1}
               onBlur={handleBlur}
             />
@@ -171,7 +185,7 @@ const OverviewCard = ({
   return (
     <>
     {
-      resourceType !== 'file'
+      resourceType !== 'file' && !canShowFileMoveDropdown && !canShowDropdown // disables link while dropdown modals are open
       ?
         <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`} to={generateLink()}>
           {CardContent}
