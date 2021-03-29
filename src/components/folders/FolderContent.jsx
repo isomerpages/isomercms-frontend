@@ -4,8 +4,6 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { DragDropContext } from 'react-beautiful-dnd';
 import update from 'immutability-helper';
 
-import FolderModal from '../FolderModal';
-
 import { deslugifyPage } from '../../utils'
 import MenuDropdown from '../MenuDropdown'
 

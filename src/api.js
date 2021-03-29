@@ -27,7 +27,7 @@ const getPageApiEndpoint = ({folderName, subfolderName, fileName, siteName, reso
     return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`
 }
 
-const getCreatePageApiEndpoint = ({folderName, subfolderName, fileName, siteName, resourceName, newFileName}) => {
+const getCreatePageApiEndpoint = ({folderName, subfolderName, siteName, resourceName, newFileName}) => {
     if (folderName) {
         return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/new/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${newFileName}`)}`
     }
