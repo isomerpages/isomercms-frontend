@@ -87,7 +87,7 @@ const FolderContentItem = ({
                 }
                 <span className={`${elementStyles.folderItemText} mr-auto`} >{deslugifyPage(title)}</span>
                 {
-                    numItems
+                    numItems !== null
                     ? <span className={`${elementStyles.folderItemText} mr-5`}>{numItems} item{numItems === 1 ? '' : 's'}</span>
                     : null
                 }
