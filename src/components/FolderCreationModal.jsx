@@ -35,7 +35,7 @@ const FolderCreationModal = ({
   const { setRedirectToPage } = useRedirectHook()
 
   const [title, setTitle] = useState('')
-  const [selectedFiles, setSelectedFiles] = useState(new Set())
+  const [selectedFiles, setSelectedFiles] = useState({})
   //retrieve only when necessary, i.e. after user has chosen to move this page
   // const [sha, setSha] = useState('')
 
@@ -55,7 +55,7 @@ const FolderCreationModal = ({
   }, [])
 
   const { mutateAsync: saveHandler } = useMutation(
-    () => moveFiles(siteName, [ ...selectedFiles ], slugifyCategory(title), parentFolder),
+    () => moveFiles(siteName, Object.keys(selectedFiles), slugifyCategory(title), parentFolder),
     { onSuccess: () => {
         const redirectUrl = `/sites/${siteName}/folder/${parentFolder ? `${parentFolder}/subfolder/${slugifyCategory(title)}` : slugifyCategory(title)}`
         setRedirectToPage(redirectUrl)
@@ -80,13 +80,16 @@ const FolderCreationModal = ({
 
   const fileSelectChangeHandler = (name) => {
     let newSelectedFiles
-    if (selectedFiles.has(name)) {
+    if (name in selectedFiles) {
       newSelectedFiles = update(selectedFiles, {
-        $remove: [name]
+        $unset: [name]
       })
+      Object.keys(newSelectedFiles).forEach((fileName, idx) => newSelectedFiles = update(newSelectedFiles, {
+        [fileName]: {$set: idx + 1}
+      }))
     } else {
       newSelectedFiles = update(selectedFiles, {
-        $add: [name]
+        [name]: {$set: Object.keys(selectedFiles).length + 1}
       })
     }
     setSelectedFiles(newSelectedFiles)
@@ -163,7 +166,7 @@ const FolderCreationModal = ({
                               pageType={"file"}
                               siteName={siteName}
                               itemIndex={pageIdx}
-                              folderStyle={selectedFiles.has(pageData.name) ? `border border-primary` : ''}
+                              selectedIndex={selectedFiles[pageData.name]}
                               onClick={() => {
                                   fileSelectChangeHandler(pageData.name)
                               }}

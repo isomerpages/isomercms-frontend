@@ -212,5 +212,23 @@
 .folderCard {
   @extend .card;
   padding: 1rem;
+  position: relative;
   cursor: pointer;
+}
+
+.orderCircleContainer {
+  position: absolute;
+  left: calc(100% - 40px);
+  bottom: calc(100% - 40px);
+
+  .orderCircle {
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+
+    background: $isomer-blue;
+    color: white;
+    text-align: center;
+  }
 }
