@@ -86,7 +86,7 @@ const Folders = ({ match, location }) => {
         if (subfolderName) {
           const subfolderFiles = retrieveSubfolderContents(parsedFolderContents, subfolderName)
           if (subfolderFiles.length > 0) {
-            setFolderOrderArray(subfolderFiles)
+            setFolderOrderArray(subfolderFiles.filter(item => item.name !== '.keep'))
           } else {
             // if subfolderName prop does not match directory file, it's not a valid subfolder
             setRedirectToPage(`/sites/${siteName}/workspace`)
