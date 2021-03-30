@@ -25,6 +25,7 @@ const FolderCard = ({
   siteName,
   category,
   selectedIndex,
+  linkPath,
   onClick,
   existingFolders,
 }) => {
