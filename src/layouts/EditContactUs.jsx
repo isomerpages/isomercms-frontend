@@ -192,7 +192,7 @@ const EditContactUs =  ({ match }) => {
       if (!footerContent) return
 
       // split the markdown into front matter and content
-      const { frontMatter } = frontMatterParser(Base64.decode(content));
+      const { frontMatter } = frontMatterParser(content);
 
       // data cleaning for non-comforming data
       const { sanitisedFrontMatter, deletedFrontMatter } = sanitiseFrontMatter(frontMatter)
