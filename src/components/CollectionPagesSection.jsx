@@ -32,13 +32,19 @@ axios.defaults.withCredentials = true
 
 // Clean up note: Should be renamed, only used for resource pages and unlinked pages sections
 const CollectionPagesSection = ({ collectionName, pages, siteName, isResource }) => {
+    
+    const initialMoveDropdownQueryState = {
+        folderName: '',
+        subfolderName: '',
+    }
+
     const [isComponentSettingsActive, setIsComponentSettingsActive] = useState(false)
     const [selectedFile, setSelectedFile] = useState('')
     const [selectedPath, setSelectedPath] = useState('')
     const [createNewPage, setCreateNewPage] = useState(false)
     const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
     const [canShowMoveModal, setCanShowMoveModal] = useState(false)
-    const [queryFolderName, setQueryFolderName] = useState('')
+    const [moveDropdownQuery, setMoveDropdownQuery] = useState(initialMoveDropdownQueryState)
 
     const { data: pageData } = useQuery(
         [PAGE_CONTENT_KEY, { siteName, fileName: selectedFile, resourceName: collectionName }],
@@ -67,30 +73,42 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
     // MOVE-TO Dropdown
     // get subfolders of selected folder for move-to dropdown
     const { data: querySubfolders } = useQuery(
-        [DIR_CONTENT_KEY, siteName, queryFolderName],
-        async () => getDirectoryFile(siteName, queryFolderName),
+        [DIR_CONTENT_KEY, siteName, moveDropdownQuery.folderName],
+        async () => getDirectoryFile(siteName, moveDropdownQuery.folderName),
         {   
-            enabled: selectedFile.length > 0 && queryFolderName.length > 0,
+            enabled: selectedFile.length > 0 && moveDropdownQuery.folderName.length > 0 && !isResource,
             onError: () => errorToast(`The folders data could not be retrieved. ${DEFAULT_RETRY_MSG}`),
         },
     )
 
     // MOVE-TO Dropdown utils
     // parse responses from move-to queries
-    const getCategories = (queryFolderName, allCategories, querySubfolders) => {
-        if (isResource && allCategories) {
+    const getCategories = (moveDropdownQuery, allCategories, querySubfolders) => {
+        const { folderName, subfolderName } = moveDropdownQuery
+        if (isResource && folderName) { // inside resource folder, show empty
+            return []
+        }
+        if (isResource && allCategories) { // inside workspace, show all resource folders
             return allCategories.resources.map(resource => resource.dirName).filter(dirName => dirName !== collectionName)
         }
-        if (queryFolderName && querySubfolders) {
+        if (subfolderName !== '') { // inside subfolder, show empty 
+            return []
+        }
+        if (folderName !== '' && querySubfolders) { // inside folder, show all subfolders
             const parsedFolderContents = parseDirectoryFile(querySubfolders.data.content)
             const parsedFolderArray = convertFolderOrderToArray(parsedFolderContents)
             return parsedFolderArray.filter(file => file.type === 'dir').map(file => file.name)
         }
-        if (!queryFolderName && allCategories) {
+        if (folderName === '' && subfolderName === '' && allCategories) { // inside workspace, show all folders
             return allCategories.collections
         }
         return null
     }
+
+    // MOVE-TO Clear Query utils
+    const clearMoveDropdownQueryState = () => {
+        setMoveDropdownQuery({ ...initialMoveDropdownQueryState });
+    };
 
     const { mutateAsync: deleteHandler } = useMutation(
         async () => deletePageData({ siteName, fileName: selectedFile, resourceName: collectionName }, pageData.pageSha),
@@ -189,14 +207,15 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                                     resourceType={isResource ? page.type : ''}
                                     date={page.date}
                                     isResource={isResource}
-                                    allCategories={getCategories(queryFolderName, allCategories, querySubfolders)}
+                                    allCategories={getCategories(moveDropdownQuery, allCategories, querySubfolders)}
                                     setIsComponentSettingsActive={setIsComponentSettingsActive}
                                     setSelectedFile={setSelectedFile}
                                     setCanShowDeleteWarningModal={setCanShowDeleteWarningModal}
                                     setCanShowMoveModal={setCanShowMoveModal}
                                     setSelectedPath={setSelectedPath}
-                                    queryFolderName={queryFolderName}
-                                    setQueryFolderName={setQueryFolderName}
+                                    moveDropdownQuery={moveDropdownQuery}
+                                    setMoveDropdownQuery={setMoveDropdownQuery}
+                                    clearMoveDropdownQueryState={clearMoveDropdownQueryState}
                                 />
                             ))
                             /* Display loader if pages have not been retrieved from API call */

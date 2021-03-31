@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios'
 import PropTypes from 'prop-types';
 import { MenuDropdown } from './MenuDropdown'
+import FileMoveMenuDropdown from './FileMoveMenuDropdown'
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
@@ -33,8 +34,9 @@ const OverviewCard = ({
   setSelectedPath,
   setCanShowDeleteWarningModal,
   setCanShowMoveModal,
-  queryFolderName,
-  setQueryFolderName,
+  moveDropdownQuery,
+  setMoveDropdownQuery,
+  clearMoveDropdownQueryState,
 }) => {
   const dropdownRef = useRef(null)
   const fileMoveDropdownRef = useRef(null)
@@ -74,18 +76,45 @@ const OverviewCard = ({
     return title
   }
 
+  const generateDropdownBreadcrumb = () => {
+    const { folderName, subfolderName } = moveDropdownQuery
+    return (
+      <>
+        <span
+            id='workspace'
+            onClick={() => setMoveDropdownQuery({folderName: '', subfolderName: ''})}
+            style={ subfolderName || folderName ? {cursor:'pointer'}: {cursor:'default'}}
+        >{subfolderName ? `... >` : !subfolderName && !folderName ? <strong>Workspace</strong> : 'Workspace'}
+        </span>
+        <span 
+          id='workspace'
+          onClick={() => setMoveDropdownQuery({...moveDropdownQuery, subfolderName: ''})}
+          style={subfolderName ? {cursor:'pointer'} : {cursor:'default'}}
+        >{folderName && !subfolderName ? <strong> > {folderName}</strong> : `${folderName}`}
+        </span>
+        {subfolderName ? <strong> > {subfolderName}</strong> : ''}
+      </>
+    )
+  }
+
   const handleBlur = (event) => {
     // if the blur was because of outside focus
     // currentTarget is the parent element, relatedTarget is the clicked element
     if (!event.currentTarget.contains(event.relatedTarget)) {
       setCanShowFileMoveDropdown(false)
-      setQueryFolderName('')
+      clearMoveDropdownQueryState()
     }
   }
 
   const toggleDropdownModals = () => {
     setCanShowFileMoveDropdown(!canShowFileMoveDropdown)
     setCanShowDropdown(!canShowDropdown)
+  }
+
+  const moveDropdownQueryHandler = (categoryName) => {
+    const { folderName } = moveDropdownQuery
+    if (folderName) setMoveDropdownQuery({...moveDropdownQuery, subfolderName: categoryName})
+    else setMoveDropdownQuery({...moveDropdownQuery, folderName: categoryName})
   }
 
   const CardContent = (
@@ -132,50 +161,19 @@ const OverviewCard = ({
             />
           }
           { canShowFileMoveDropdown &&
-            <MenuDropdown 
-              dropdownItems={[
-                {
-                  itemName: queryFolderName ? `Back to folders` : `Back to menu`,
-                  itemId: `back`,
-                  iconClassName: "bx bx-sm bx-arrow-back",
-                  handler: () => {
-                    if (queryFolderName) setQueryFolderName('')
-                    else toggleDropdownModals()
-                  },
-                  noBlur: true,
-                },
-                ...(allCategories 
-                  ? allCategories.map(categoryName => ({
-                    itemName: categoryName,
-                    itemId: categoryName,
-                    handler: () => {
-                      setSelectedPath(`${queryFolderName ? `${queryFolderName}/` : ''}${categoryName}`)
-                      setCanShowMoveModal(true)
-                    },
-                    children: !isResource && queryFolderName === '' && 
-                      <button
-                        id={`${categoryName}-more`}
-                        onMouseDown={(e) => { 
-                          e.stopPropagation()
-                          e.preventDefault()
-                          setQueryFolderName(categoryName)
-                        }}
-                        className={elementStyles.dropdownItemChildButton}
-                      >
-                        <i className="bx bx-sm bx-chevron-right ml-auto"/>
-                      </button>,
-                    }))
-                  : [{
-                    itemId: `loading`,
-                    itemName: <div className="spinner-border text-primary" role="status" />,
-                  }]
-                ),
-              ]}
-              setShowDropdown={canShowFileMoveDropdown}
+            <FileMoveMenuDropdown 
+              dropdownItems={allCategories}
+              queryHandler={moveDropdownQueryHandler}
               dropdownRef={fileMoveDropdownRef}
               menuIndex={itemIndex}
-              tabIndex={1}
               onBlur={handleBlur}
+              breadcrumb={generateDropdownBreadcrumb()}
+              backHandler={toggleDropdownModals}
+              moveHandler={() => {
+                setSelectedPath(`${moveDropdownQuery.folderName ? moveDropdownQuery.folderName : 'pages'}${moveDropdownQuery.subfolderName ? `/${moveDropdownQuery.subfolderName}` : ''}`)
+                setCanShowMoveModal(true)
+              }}
+              moveDisabled={isResource && !moveDropdownQuery.folderName} // cannot move resources to Workspace
             />
           }
         </div>
