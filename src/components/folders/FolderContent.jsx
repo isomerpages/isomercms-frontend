@@ -6,6 +6,7 @@ import update from 'immutability-helper';
 
 import { deslugifyPage } from '../../utils'
 import { MenuDropdown } from '../MenuDropdown'
+import FileMoveMenuDropdown from '../FileMoveMenuDropdown'
 
 // Import styles
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
@@ -19,15 +20,16 @@ const FolderContentItem = ({
     numItems,
     link,
     itemIndex,
-    queryFolderName,
     allCategories,
-    setQueryFolderName,
     setSelectedPage,
-    setSelectedFolder,
+    setSelectedPath,
     setIsPageSettingsActive,
     setIsFolderModalOpen,
     setIsMoveModalActive,
-    setIsDeleteModalActive
+    setIsDeleteModalActive,
+    moveDropdownQuery,
+    setMoveDropdownQuery,
+    clearMoveDropdownQueryState,
 }) => {
     const [showDropdown, setShowDropdown] = useState(false)
     const [showFileMoveDropdown, setShowFileMoveDropdown] = useState(false)
@@ -44,7 +46,7 @@ const FolderContentItem = ({
         // currentTarget is the parent element, relatedTarget is the clicked element
         if (!event.currentTarget.contains(event.relatedTarget)) {
             setShowFileMoveDropdown(false)
-            setQueryFolderName('')
+            clearMoveDropdownQueryState()
         }
     }
 
@@ -74,7 +76,33 @@ const FolderContentItem = ({
             },
         ]
         if (isFile) return dropdownItems
-        return dropdownItems.filter(item => item.itemId !== 'move')
+        return dropdownItems.filter(item => item.type !== 'move')
+    }
+
+    const generateDropdownBreadcrumb = () => {
+        const { folderName, subfolderName } = moveDropdownQuery
+        return ( 
+        <>
+            <span
+                id='workspace'
+                onClick={() => setMoveDropdownQuery({folderName: '', subfolderName: ''})}
+                style={subfolderName || folderName ? {cursor:'pointer'}: {cursor:'default'}}
+            >{subfolderName ? `... >` : !subfolderName && !folderName ? <strong>Workspace</strong> : 'Workspace'}
+            </span>
+            <span 
+                id='workspace'
+                onClick={() => setMoveDropdownQuery({...moveDropdownQuery, subfolderName: ''})}
+                style={subfolderName ? {cursor:'pointer'} : {cursor:'default'}}
+            >{folderName && !subfolderName ? <strong> > {folderName}</strong> : `${folderName}`}
+            </span>
+            {subfolderName ? <strong> > {subfolderName}</strong> : ''}
+        </>)
+    }
+
+    const moveDropdownQueryHandler = (categoryName) => {
+        const { folderName } = moveDropdownQuery
+        if (folderName) setMoveDropdownQuery({...moveDropdownQuery, subfolderName: categoryName})
+        else setMoveDropdownQuery({...moveDropdownQuery, folderName: categoryName})
     }
 
     const FolderItemContent = (
@@ -114,55 +142,18 @@ const FolderContentItem = ({
                         />
                     }
                     { showFileMoveDropdown &&
-                        <MenuDropdown 
-                            dropdownItems={[
-                                {
-                                    itemName: queryFolderName ? `Back to folders` : `Back to menu`,
-                                    itemId: `move`,
-                                    iconClassName: "bx bx-sm bx-arrow-back",
-                                    handler: () => {
-                                        if (queryFolderName) setQueryFolderName('')
-                                        else toggleDropdownModals()
-                                    },
-                                    noBlur: true,
-                                },
-                                queryFolderName === '' && {
-                                    itemName: 'Workspace',
-                                    itemId: `workspace`,
-                                    handler: () => { setSelectedFolder(`pages`); setIsMoveModalActive(true) },
-                                },
-                                ...(allCategories
-                                    ? allCategories.map(categoryName => ({
-                                        itemName: categoryName,
-                                        itemId: categoryName,
-                                        handler: () => { 
-                                            setSelectedFolder(`${queryFolderName ? `${queryFolderName}/` : ''}${categoryName}`)
-                                            setIsMoveModalActive(true)
-                                        },
-                                        children: queryFolderName === '' && 
-                                            <button
-                                                id={`${categoryName}-more`}
-                                                onMouseDown={(e) => { 
-                                                    e.stopPropagation()
-                                                    e.preventDefault()
-                                                    setQueryFolderName(categoryName)
-                                                }}
-                                                className={elementStyles.dropdownItemChildButton}
-                                            >
-                                                <i className="bx bx-sm bx-chevron-right ml-auto"/>   
-                                            </button>, 
-                                        }))
-                                    : [{
-                                        itemId: `loading`,
-                                        itemName: <div className="spinner-border text-primary" role="status" />,
-                                    }]
-                                ),
-                            ]}
-                            setShowDropdown={showFileMoveDropdown}
+                        <FileMoveMenuDropdown 
+                            dropdownItems={allCategories}
+                            queryHandler={moveDropdownQueryHandler}
                             dropdownRef={fileMoveDropdownRef}
                             menuIndex={itemIndex}
-                            tabIndex={1}
                             onBlur={handleBlur}
+                            breadcrumb={generateDropdownBreadcrumb()}
+                            backHandler={toggleDropdownModals}
+                            moveHandler={() => {
+                                setSelectedPath(`${moveDropdownQuery.folderName ? moveDropdownQuery.folderName : 'pages'}${moveDropdownQuery.subfolderName ? `/${moveDropdownQuery.subfolderName}` : ''}`)
+                                setIsMoveModalActive(true)
+                            }}
                         />
                     }
                 </div>
@@ -190,14 +181,15 @@ const FolderContent = ({
     folderName,
     enableDragDrop,
     allCategories,
-    queryFolderName,
-    setSelectedFolder,
-    setQueryFolderName,
+    setSelectedPath,
     setSelectedPage,
     setIsPageSettingsActive,
     setIsFolderModalOpen,
     setIsMoveModalActive,
     setIsDeleteModalActive,
+    moveDropdownQuery,
+    setMoveDropdownQuery,
+    clearMoveDropdownQueryState,
 }) => {
     const generateLink = (folderContentItem) => {
         if (folderContentItem.type === 'dir') return `/sites/${siteName}/folder/${folderName}/subfolder/${folderContentItem.name}`
@@ -264,14 +256,15 @@ const FolderContent = ({
                                                 link={generateLink(folderContentItem)}
                                                 allCategories={allCategories}
                                                 itemIndex={folderContentIndex}
-                                                queryFolderName={queryFolderName}
-                                                setQueryFolderName={setQueryFolderName}
                                                 setSelectedPage={setSelectedPage}
-                                                setSelectedFolder={setSelectedFolder}
+                                                setSelectedPath={setSelectedPath}
                                                 setIsPageSettingsActive={setIsPageSettingsActive}
                                                 setIsFolderModalOpen={setIsFolderModalOpen}
                                                 setIsMoveModalActive={setIsMoveModalActive}
                                                 setIsDeleteModalActive={setIsDeleteModalActive}
+                                                moveDropdownQuery={moveDropdownQuery}
+                                                setMoveDropdownQuery={setMoveDropdownQuery}
+                                                clearMoveDropdownQueryState={clearMoveDropdownQueryState}
                                             />
                                         </div>
                                     )}
