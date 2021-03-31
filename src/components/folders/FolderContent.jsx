@@ -79,32 +79,6 @@ const FolderContentItem = ({
         return dropdownItems.filter(item => item.type !== 'move')
     }
 
-    const generateDropdownBreadcrumb = () => {
-        const { folderName, subfolderName } = moveDropdownQuery
-        return ( 
-        <>
-            <span
-                id='workspace'
-                onClick={() => setMoveDropdownQuery({folderName: '', subfolderName: ''})}
-                style={subfolderName || folderName ? {cursor:'pointer'}: {cursor:'default'}}
-            >{subfolderName ? `... >` : !subfolderName && !folderName ? <strong>Workspace</strong> : 'Workspace'}
-            </span>
-            <span 
-                id='workspace'
-                onClick={() => setMoveDropdownQuery({...moveDropdownQuery, subfolderName: ''})}
-                style={subfolderName ? {cursor:'pointer'} : {cursor:'default'}}
-            >{folderName && !subfolderName ? <strong> > {folderName}</strong> : `${folderName}`}
-            </span>
-            {subfolderName ? <strong> > {subfolderName}</strong> : ''}
-        </>)
-    }
-
-    const moveDropdownQueryHandler = (categoryName) => {
-        const { folderName } = moveDropdownQuery
-        if (folderName) setMoveDropdownQuery({...moveDropdownQuery, subfolderName: categoryName})
-        else setMoveDropdownQuery({...moveDropdownQuery, folderName: categoryName})
-    }
-
     const FolderItemContent = (
         <div type="button" className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderItem}`}>
             <div className={contentStyles.contentContainerFolderRow}>
@@ -144,11 +118,11 @@ const FolderContentItem = ({
                     { showFileMoveDropdown &&
                         <FileMoveMenuDropdown 
                             dropdownItems={allCategories}
-                            queryHandler={moveDropdownQueryHandler}
                             dropdownRef={fileMoveDropdownRef}
                             menuIndex={itemIndex}
                             onBlur={handleBlur}
-                            breadcrumb={generateDropdownBreadcrumb()}
+                            moveDropdownQuery={moveDropdownQuery}
+                            setMoveDropdownQuery={setMoveDropdownQuery}
                             backHandler={toggleDropdownModals}
                             moveHandler={() => {
                                 setSelectedPath(`${moveDropdownQuery.folderName ? moveDropdownQuery.folderName : 'pages'}${moveDropdownQuery.subfolderName ? `/${moveDropdownQuery.subfolderName}` : ''}`)

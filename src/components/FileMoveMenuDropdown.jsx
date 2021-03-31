@@ -4,15 +4,17 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
 const FileMoveMenuDropdown = ({ 
   dropdownItems, 
-  queryHandler,
   menuIndex, 
   dropdownRef, 
   onBlur, 
-  breadcrumb, 
+  moveDropdownQuery,
+  setMoveDropdownQuery,
   backHandler, 
   moveHandler,
   moveDisabled,
 }) => {
+
+  const { folderName, subfolderName } = moveDropdownQuery
 
   const MoveButton = (
     <button
@@ -24,6 +26,29 @@ const FileMoveMenuDropdown = ({
       Move Here
     </button>
   )
+
+  const Breadcrumb = (
+    <>
+      <span
+          id='workspace'
+          onClick={() => setMoveDropdownQuery({folderName: '', subfolderName: ''})}
+          style={ subfolderName || folderName ? {cursor:'pointer'}: {cursor:'default'}}
+      >{subfolderName ? `... >` : !subfolderName && !folderName ? <strong>Workspace</strong> : 'Workspace'}
+      </span>
+      <span 
+        id='folder'
+        onClick={() => setMoveDropdownQuery({...moveDropdownQuery, subfolderName: ''})}
+        style={subfolderName ? {cursor:'pointer'} : {cursor:'default'}}
+      >{folderName && !subfolderName ? <strong> > {folderName}</strong> : `${folderName}`}
+      </span>
+      {subfolderName ? <strong> > {subfolderName}</strong> : ''}
+    </>
+  )
+
+  const queryHandler = (categoryName) => {
+    if (folderName) setMoveDropdownQuery({...moveDropdownQuery, subfolderName: categoryName})
+    else setMoveDropdownQuery({...moveDropdownQuery, folderName: categoryName})
+  }
 
   return (
     <div className={`${elementStyles.fileMoveDropdown} ${elementStyles.right}`} ref={dropdownRef} tabIndex={1} onBlur={onBlur}>
@@ -42,7 +67,7 @@ const FileMoveMenuDropdown = ({
       <MenuItem 
         key={`breadcrumb-${menuIndex}`}
         item={{
-          itemName: breadcrumb,
+          itemName: Breadcrumb,
           itemId: `breadcrumb`,
           noBlur: true,
         }}

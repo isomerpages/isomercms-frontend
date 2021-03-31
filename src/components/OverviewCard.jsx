@@ -76,27 +76,6 @@ const OverviewCard = ({
     return title
   }
 
-  const generateDropdownBreadcrumb = () => {
-    const { folderName, subfolderName } = moveDropdownQuery
-    return (
-      <>
-        <span
-            id='workspace'
-            onClick={() => setMoveDropdownQuery({folderName: '', subfolderName: ''})}
-            style={ subfolderName || folderName ? {cursor:'pointer'}: {cursor:'default'}}
-        >{subfolderName ? `... >` : !subfolderName && !folderName ? <strong>Workspace</strong> : 'Workspace'}
-        </span>
-        <span 
-          id='workspace'
-          onClick={() => setMoveDropdownQuery({...moveDropdownQuery, subfolderName: ''})}
-          style={subfolderName ? {cursor:'pointer'} : {cursor:'default'}}
-        >{folderName && !subfolderName ? <strong> > {folderName}</strong> : `${folderName}`}
-        </span>
-        {subfolderName ? <strong> > {subfolderName}</strong> : ''}
-      </>
-    )
-  }
-
   const handleBlur = (event) => {
     // if the blur was because of outside focus
     // currentTarget is the parent element, relatedTarget is the clicked element
@@ -109,12 +88,6 @@ const OverviewCard = ({
   const toggleDropdownModals = () => {
     setCanShowFileMoveDropdown(!canShowFileMoveDropdown)
     setCanShowDropdown(!canShowDropdown)
-  }
-
-  const moveDropdownQueryHandler = (categoryName) => {
-    const { folderName } = moveDropdownQuery
-    if (folderName) setMoveDropdownQuery({...moveDropdownQuery, subfolderName: categoryName})
-    else setMoveDropdownQuery({...moveDropdownQuery, folderName: categoryName})
   }
 
   const CardContent = (
@@ -163,11 +136,11 @@ const OverviewCard = ({
           { canShowFileMoveDropdown &&
             <FileMoveMenuDropdown 
               dropdownItems={allCategories}
-              queryHandler={moveDropdownQueryHandler}
               dropdownRef={fileMoveDropdownRef}
               menuIndex={itemIndex}
               onBlur={handleBlur}
-              breadcrumb={generateDropdownBreadcrumb()}
+              moveDropdownQuery={moveDropdownQuery}
+              setMoveDropdownQuery={setMoveDropdownQuery}
               backHandler={toggleDropdownModals}
               moveHandler={() => {
                 setSelectedPath(`${moveDropdownQuery.folderName ? moveDropdownQuery.folderName : 'pages'}${moveDropdownQuery.subfolderName ? `/${moveDropdownQuery.subfolderName}` : ''}`)
