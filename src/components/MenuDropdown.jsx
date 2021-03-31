@@ -2,7 +2,7 @@ import React from 'react';
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
-const MenuItem = ({ item, menuIndex, dropdownRef }) => {
+const MenuItem = ({ item, menuIndex, dropdownRef, className }) => {
   
   const getItemType = (type) => {
     switch(type) {
@@ -34,15 +34,15 @@ const MenuItem = ({ item, menuIndex, dropdownRef }) => {
   const { itemName, itemId, iconClassName, children } = type ? getItemType(type) : item
   return (
     <div
+      tabIndex={2}
       id={`${itemId}-${menuIndex}`}
       onMouseDown={(e) => {
         e.stopPropagation()
         e.preventDefault()
         if (!noBlur) dropdownRef.current.blur()
-        // if user clicks on nested button, don't run handler
-        if (handler && (e.target.id === `${itemId}-${menuIndex}` || !children || children.type !== 'button')) handler(e) 
+        if (handler) handler(e) 
       }}
-      className={`${elementStyles.dropdownItem}`}
+      className={className ? className : `${elementStyles.dropdownItem}`}
     >
       <i id={`${itemId}-${menuIndex}`} className={iconClassName}/>
       <div id={`${itemId}-${menuIndex}`} className={elementStyles.dropdownText}>{ itemName }</div>
@@ -66,4 +66,4 @@ const MenuDropdown = ({ dropdownItems, menuIndex, dropdownRef, tabIndex, onBlur 
   )
 }
 
-export default MenuDropdown
+export { MenuItem, MenuDropdown }
