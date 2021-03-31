@@ -156,7 +156,7 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
               {/* Upload Image */}
               <FolderOptionButton
                 title="Upload new image"
-                option="create-sub"
+                option="upload-image"
                 onClick={() => document.getElementById('file-upload').click()}
               />
               <FolderOptionButton
