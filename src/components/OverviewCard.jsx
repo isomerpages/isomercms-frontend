@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios'
 import PropTypes from 'prop-types';
-import MenuDropdown from './MenuDropdown'
+import { MenuDropdown } from './MenuDropdown'
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';

@@ -5,7 +5,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import update from 'immutability-helper';
 
 import { deslugifyPage } from '../../utils'
-import MenuDropdown from '../MenuDropdown'
+import { MenuDropdown } from '../MenuDropdown'
 
 // Import styles
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
