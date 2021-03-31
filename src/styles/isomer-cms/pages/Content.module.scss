@@ -226,6 +226,11 @@
           text-overflow: ellipsis;
         }
 
+        .componentTitleLink{
+          @extend .componentTitle;
+          color: $isomer-blue;
+        }
+
         .componentFolderName{
           font-size: 16px;
           line-height: 24px;

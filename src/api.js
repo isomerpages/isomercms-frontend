@@ -16,12 +16,8 @@ const setDirectoryFile = async (siteName, folderName, payload) => {
     return await axios.post(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`, payload);
 }
 
-const getFolderContents = async (siteName, folderName, subfolderName) => {
-    return await axios.get(`${BACKEND_URL}/sites/${siteName}/folders?path=_${folderName}${subfolderName ? `/${subfolderName}` : ''}`);
-}
-
 // EditPage
-const getPageApiEndpoint = ({folderName, subfolderName, fileName, siteName, resourceName}) => {
+const getPageApiEndpoint = ({folderName, subfolderName, fileName, siteName, resourceName, newFileName}) => {
     if (folderName) {
         return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${fileName}`)}`
     }
@@ -29,6 +25,36 @@ const getPageApiEndpoint = ({folderName, subfolderName, fileName, siteName, reso
         return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`
     }
     return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`
+}
+
+const getCreatePageApiEndpoint = ({folderName, subfolderName, siteName, resourceName, newFileName}) => {
+    if (folderName) {
+        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/new/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${newFileName}`)}`
+    }
+    if (resourceName) {
+        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/new/${newFileName}`
+    }
+    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/new/${newFileName}`
+}
+
+const getRenamePageApiEndpoint = ({folderName, subfolderName, fileName, siteName, resourceName, newFileName}) => {
+    if (folderName) {
+        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${fileName}`)}/rename/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${newFileName}`)}`
+    }
+    if (resourceName) {
+        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}/rename/${newFileName}`
+    }
+    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}/rename/${newFileName}`
+}
+
+const getMovePageEndpoint = ({siteName, resourceName, folderName, subfolderName, newPath}) => {
+    if (folderName) {
+        return `${BACKEND_URL}/sites/${siteName}/collections/${encodeURIComponent(`${folderName ? `${folderName}`: ''}${subfolderName ? `/${subfolderName}` : ''}`)}/move/${encodeURIComponent(`${newPath}`)}`
+    }
+    if (resourceName) {
+        return `${BACKEND_URL}/sites/${siteName}/resources/${resourceName}/move/${encodeURIComponent(`${newPath}`)}`
+    }
+    return `${BACKEND_URL}/sites/${siteName}/pages/move/${encodeURIComponent(`${newPath}`)}`
 }
 
 const getEditPageData = async ({folderName, subfolderName, fileName, siteName, resourceName}) => {
@@ -49,13 +75,38 @@ const getCsp = async (siteName) => {
     return await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`);
 }
 
+const createPageData = async ({folderName, subfolderName, newFileName, siteName, resourceName}, content) => {
+    const apiEndpoint = getCreatePageApiEndpoint({folderName, subfolderName, newFileName, siteName, resourceName})
+    const params = { content }
+    await axios.post(apiEndpoint, params)
+    
+    // redirect to new page upon successful creation
+    if (folderName) {
+        return `/sites/${siteName}/folder/${folderName}/${subfolderName ? `subfolder/${subfolderName}/` : ''}${newFileName}`
+    } 
+    if (resourceName) {
+        return `/sites/${siteName}/resources/${resourceName}/${newFileName}`
+    }
+    return `/sites/${siteName}/pages/${newFileName}`
+}
+
+const renamePageData = async ({folderName, subfolderName, fileName, siteName, resourceName, newFileName}, content, sha) => {
+    const apiEndpoint = getRenamePageApiEndpoint({folderName, subfolderName, fileName, siteName, resourceName, newFileName})
+    const params = {
+        content,
+        sha,
+    };
+    await axios.post(apiEndpoint, params)
+}
+
 const updatePageData = async ({folderName, subfolderName, fileName, siteName, resourceName}, content, sha) => {
     const apiEndpoint = getPageApiEndpoint({folderName, subfolderName, fileName, siteName, resourceName})
     const params = {
         content,
         sha,
     };
-    return await axios.post(apiEndpoint, params);
+    await axios.post(apiEndpoint, params);
+    return 
 }
 
 const deletePageData = async ({folderName, subfolderName, fileName, siteName, resourceName}, sha) => {
@@ -88,6 +139,19 @@ const renameResourceCategory = async ({ siteName, categoryName, newCategoryName}
     return await axios.post(apiUrl)
 }
 
+const getAllCategoriesApiEndpoint = ({siteName, isResource}) => {
+    if (isResource) {
+        return `${BACKEND_URL}/sites/${siteName}/resources`
+    }
+    return `${BACKEND_URL}/sites/${siteName}/collections`
+}
+
+const getAllCategories = async ({siteName, isResource}) => {
+    const apiEndpoint = getAllCategoriesApiEndpoint({siteName, isResource})
+    const resp = await axios.get(apiEndpoint);
+    return resp.data
+}
+
 const getAllResourceCategories = async (siteName) => {
     return await axios.get(`${BACKEND_URL}/sites/${siteName}/resources`);
 }
@@ -111,10 +175,8 @@ const getEditNavBarData = async(siteName) => {
     const { content, sha } = resp.data;
     navContent = content
     navSha = sha
-    const collectionResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`)
-    collectionContent = collectionResp.data
-    const resourceResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/resources`)
-    resourceContent = resourceResp.data
+    collectionContent = await getAllCategories({siteName, isResource: false})
+    resourceContent = await getAllCategories({siteName, isResource: true})
     const foldersResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/folders/all`)
     if (foldersResp.data && foldersResp.data.allFolderContent) {
         // parse directory files
@@ -148,27 +210,6 @@ const updateNavBarData = async (siteName, originalNav, links, sha) => {
     return await axios.post(`${BACKEND_URL}/sites/${siteName}/navigation`, params);
 }
 
-const createPage = async (endpointUrl, content) => {
-    return await axios.post(`${BACKEND_URL}/sites/${endpointUrl}`, { content });
-}
-
-const getPage = async (pageType, siteName, collectionName, pageName) => {
-    const endpointUrl = (pageType === 'collection') 
-                      ? `${siteName}/collections/${collectionName}/pages/${pageName}`
-                      : `${siteName}/pages/${pageName}`
-    const resp = await axios.get(`${BACKEND_URL}/sites/${endpointUrl}`);
-    return resp.data
-}
-
-const updatePage = async(endpointUrl, content, sha) => {
-    return await axios.post(`${BACKEND_URL}/sites/${endpointUrl}`, { content, sha });
-}
-
-const deletePage = async(endpointUrl, sha) => {
-    return
-    // return await axios.delete(`${BACKEND_URL}/sites/${endpointUrl}`, { content, sha });
-}
-
 const moveFiles = async (siteName, selectedFiles, title, parentFolder) => {
     const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${parentFolder ? `/collections/${parentFolder}` : '/pages'}`
     const params = {
@@ -178,10 +219,17 @@ const moveFiles = async (siteName, selectedFiles, title, parentFolder) => {
     return await axios.post(`${baseApiUrl}/move/${newPath}`, params)
 }
 
+const moveFile = async ({selectedFile, siteName, resourceName, folderName, subfolderName, newPath}) => {
+    const apiEndpoint = getMovePageEndpoint({siteName, resourceName, folderName, subfolderName, newPath})
+    const params = {
+        files: [selectedFile],
+    }
+    return await axios.post(apiEndpoint, params)
+}
+
 export {
     getDirectoryFile,
     setDirectoryFile,
-    getFolderContents,
     getEditPageData,
     getCsp,
     updatePageData,
@@ -195,9 +243,9 @@ export {
     getResourcePages,
     getEditNavBarData,
     updateNavBarData,
-    createPage,
-    getPage,
-    updatePage,
-    deletePage,
+    createPageData,
+    renamePageData,
+    getAllCategories,
     moveFiles,
+    moveFile,
 }

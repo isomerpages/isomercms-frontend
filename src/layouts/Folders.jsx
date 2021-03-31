@@ -14,11 +14,16 @@ import FolderContent from '../components/folders/FolderContent';
 import FolderModal from '../components/FolderModal';
 import PageSettingsModal from '../components/PageSettingsModal'
 import DeleteWarningModal from '../components/DeleteWarningModal'
+import GenericWarningModal from '../components/GenericWarningModal'
 
 import { errorToast, successToast } from '../utils/toasts';
 
 import useRedirectHook from '../hooks/useRedirectHook';
-
+import {
+  PAGE_CONTENT_KEY,
+  FOLDERS_CONTENT_KEY,
+  DIR_CONTENT_KEY,
+} from '../constants'
 import {
   DEFAULT_RETRY_MSG,
   parseDirectoryFile,
@@ -28,15 +33,9 @@ import {
   retrieveSubfolderContents,
   convertSubfolderArray,
 } from '../utils'
-import { DIR_CONTENT_KEY } from '../constants'
 
 // Import API
-import {
-  getDirectoryFile,
-  setDirectoryFile,
-  deletePage,
-  deleteSubfolder,
-} from '../api';
+import { getDirectoryFile, setDirectoryFile, getEditPageData, deleteSubfolder, deletePageData, moveFile, getAllCategories } from '../api';
 
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -54,9 +53,12 @@ const Folders = ({ match, location }) => {
     const [parsedFolderContents, setParsedFolderContents] = useState([])
     const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
     const [isDeleteModalActive, setIsDeleteModalActive] = useState(false)
+    const [isMoveModalActive, setIsMoveModalActive] = useState(false)
     const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
     const [selectedPage, setSelectedPage] = useState('')
+    const [selectedFolder, setSelectedFolder] = useState('')
     const [isSelectedItemPage, setIsSelectedItemPage] = useState(false)
+    const [queryFolderName, setQueryFolderName] = useState('')
 
     const { data: folderContents, error: queryError, isLoading: isLoadingDirectory, refetch: refetchFolderContents } = useQuery(
       [DIR_CONTENT_KEY, siteName, folderName, subfolderName],
@@ -72,56 +74,30 @@ const Folders = ({ match, location }) => {
           }
         }
       },
-    );
-
-    const { mutate: rearrangeFolder } = useMutation(
-      payload => setDirectoryFile(siteName, folderName, payload),
-      {
-        onError: () => errorToast(`Your file reordering could not be saved. Please try again. ${DEFAULT_RETRY_MSG}`),
-        onSuccess: () => {
-          successToast('Successfully updated page order')
-          refetchFolderContents()
-        },
-        onSettled: () => setIsRearrangeActive((prevState) => !prevState),
-      }
     )
 
-
-    const { mutateAsync: deleteHandler } = useMutation(
-      async () => {
-       if (isSelectedItemPage) await deletePage('collection', folderName, subfolderName, selectedPage)
-       else await deleteSubfolder({ siteName, folderName, subfolderName: selectedPage })
-      },
-      {
-        onError: () => errorToast(`Your file could not be deleted successfully. ${DEFAULT_RETRY_MSG}`),
-        onSuccess: () => {
-          successToast(`Successfully deleted ${isSelectedItemPage ? 'file' : 'subfolder'}`)
-          refetchFolderContents()
-        },
-        onSettled: () => setIsDeleteModalActive((prevState) => !prevState),
-      }
-    )
-
+    // parse contents of current folder directory
     useEffect(() => {
-        if (folderContents && folderContents.data) {
-          const parsedFolderContents = parseDirectoryFile(folderContents.data.content)
-          setDirectoryFileSha(folderContents.data.sha)
-          setParsedFolderContents(parsedFolderContents)
+      if (folderContents && folderContents.data) {
+        const parsedFolderContents = parseDirectoryFile(folderContents.data.content)
+        setDirectoryFileSha(folderContents.data.sha)
+        setParsedFolderContents(parsedFolderContents)
 
-          if (subfolderName) {
-            const subfolderFiles = retrieveSubfolderContents(parsedFolderContents, subfolderName)
-            if (subfolderFiles.length > 0) {
-              setFolderOrderArray(subfolderFiles.filter(item => item.name !== '.keep'))
-            } else {
-              // if subfolderName prop does not match directory file, it's not a valid subfolder
-              setRedirectToPage(`/sites/${siteName}/workspace`)
-            }
+        if (subfolderName) {
+          const subfolderFiles = retrieveSubfolderContents(parsedFolderContents, subfolderName)
+          if (subfolderFiles.length > 0) {
+            setFolderOrderArray(subfolderFiles.filter(item => item.name !== '.keep'))
           } else {
-            setFolderOrderArray(convertFolderOrderToArray(parsedFolderContents))
+            // if subfolderName prop does not match directory file, it's not a valid subfolder
+            setRedirectToPage(`/sites/${siteName}/workspace`)
           }
+        } else {
+          setFolderOrderArray(convertFolderOrderToArray(parsedFolderContents))
         }
+      }
     }, [folderContents, subfolderName])
 
+    // set selected item type
     useEffect(() => {
       if (selectedPage) {
         const selectedItem = folderOrderArray.find((item) => item.name === selectedPage)
@@ -129,6 +105,107 @@ const Folders = ({ match, location }) => {
       }
     }, [selectedPage])
 
+    // get page settings details when page is selected (used for editing page settings and deleting)
+    const { data: pageData } = useQuery(
+      [PAGE_CONTENT_KEY, { siteName, folderName, subfolderName, fileName: selectedPage }],
+      () => getEditPageData({ siteName, folderName, subfolderName, fileName: selectedPage }),
+      {
+        enabled: selectedPage.length > 0 && isSelectedItemPage,
+        retry: false,
+        onError: () => {
+          setSelectedPage('')
+          errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
+        },
+      },
+    )
+
+    // delete file
+    const { mutateAsync: deleteHandler } = useMutation(
+      async () => {
+       if (isSelectedItemPage) await deletePageData({ siteName, folderName, subfolderName, fileName: selectedPage }, pageData.pageSha)
+       else await deleteSubfolder({ siteName, folderName, subfolderName: selectedPage })
+      },
+      {
+        onError: () => errorToast(`Your ${isSelectedItemPage ? 'file' : 'subfolder'} could not be deleted successfully. ${DEFAULT_RETRY_MSG}`),
+        onSuccess: () => {
+          successToast(`Successfully deleted ${isSelectedItemPage ? 'file' : 'subfolder'}`)
+          refetchFolderContents()
+        },
+        onSettled: () => {
+          setIsDeleteModalActive((prevState) => !prevState)
+          setSelectedPage('')
+          setSelectedFolder('')
+          setQueryFolderName('')
+        },
+      }
+    )
+
+    // move file
+    const { mutateAsync: moveHandler } = useMutation(
+      () => moveFile({siteName, selectedFile: selectedPage, folderName, subfolderName, newPath: selectedFolder}),
+      {
+        onError: () => errorToast(`Your file could not be moved successfully. ${DEFAULT_RETRY_MSG}`),
+        onSuccess: () => {
+          successToast('Successfully moved file') 
+          refetchFolderContents()
+        },
+        onSettled: () => {
+          setIsMoveModalActive((prevState) => !prevState)
+          setSelectedPage('')
+          setSelectedFolder('')
+          setQueryFolderName('')
+        },
+      }
+    )
+
+    // MOVE-TO Dropdown
+    // get all folders for move-to dropdown
+    const { data: allFolders } = useQuery(
+      [FOLDERS_CONTENT_KEY, { siteName, folderName }],
+      async () => getAllCategories({ siteName }),
+      {
+        enabled: selectedPage.length > 0 && isSelectedItemPage,
+        onError: () => errorToast(`The folders data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
+      },
+    )
+
+    // MOVE-TO Dropdown
+    // get subfolders of selected folder for move-to dropdown
+    const { data: querySubfolders } = useQuery(
+      [DIR_CONTENT_KEY, siteName, queryFolderName],
+      async () => getDirectoryFile(siteName, queryFolderName),
+      {
+        enabled: selectedPage.length > 0 && queryFolderName.length > 0 && isSelectedItemPage,
+        onError: () => errorToast(`The folders data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
+      },
+    )
+
+    // MOVE-TO Dropdown utils
+    // parse responses from move-to queries
+    const getCategories = (queryFolderName, allFolders, querySubfolders) => {
+      if (queryFolderName && querySubfolders) {
+        const parsedFolderContents = parseDirectoryFile(querySubfolders.data.content)
+        const parsedFolderArray = convertFolderOrderToArray(parsedFolderContents)
+        return parsedFolderArray.filter(file => file.type === 'dir').map(file => file.name)
+      }
+      if (allFolders) {
+        return allFolders.collections
+      }
+      return []
+    }
+
+    // REORDERING
+    // save file-reordering
+    const { mutate: rearrangeFolder } = useMutation(
+      payload => setDirectoryFile(siteName, folderName, payload),
+      {
+        onError: () => errorToast(`Your file reordering could not be saved. ${DEFAULT_RETRY_MSG}`),
+        onSuccess: () => successToast('Successfully updated page order'),
+        onSettled: () => setIsRearrangeActive((prevState) => !prevState),
+      }
+    )
+    
+    // REORDERING utils
     const toggleRearrange = () => { 
       if (isRearrangeActive) { 
         // drag and drop complete, save new order 
@@ -168,16 +245,16 @@ const Folders = ({ match, location }) => {
             />
           }
           {
-            isPageSettingsActive
+            isPageSettingsActive && (!selectedPage || pageData)
             && (
               <PageSettingsModal
-                pageType='collection'
                 folderName={folderName}
                 subfolderName={subfolderName}
                 pagesData={folderOrderArray.filter(item => item.type === 'file')}
+                pageData={pageData}
                 siteName={siteName}
                 originalPageName={selectedPage || ''}
-                isNewPage={!selectedPage.length > 0}
+                isNewPage={!selectedPage}
                 setIsPageSettingsActive={setIsPageSettingsActive}
                 setSelectedPage={setSelectedPage}
               />
@@ -203,6 +280,21 @@ const Folders = ({ match, location }) => {
                 onCancel={() => setIsDeleteModalActive(false)}
                 onDelete={deleteHandler}
                 type={isSelectedItemPage ? "page" : "subfolder"}
+              />
+            )
+          }
+          {
+            isMoveModalActive
+            && (
+              <GenericWarningModal
+                displayTitle="Warning"
+                displayText="Moving a page to a different collection might lead to user confusion. You may wish to change the permalink for this page afterwards."
+                onProceed={moveHandler}
+                onCancel={() => {
+                setIsMoveModalActive(false)
+                }}
+                proceedText="Continue"
+                cancelText="Cancel"
               />
             )
           }
@@ -271,13 +363,18 @@ const Folders = ({ match, location }) => {
                 && <FolderContent 
                     folderOrderArray={folderOrderArray} 
                     setFolderOrderArray={setFolderOrderArray} 
+                    allCategories={getCategories(queryFolderName, allFolders, querySubfolders)}
                     siteName={siteName} 
-                    folderName={folderName} 
+                    folderName={folderName}
                     enableDragDrop={isRearrangeActive}
+                    queryFolderName={queryFolderName}
+                    setQueryFolderName={setQueryFolderName}
                     setIsPageSettingsActive={setIsPageSettingsActive}
                     setIsFolderModalOpen={setIsFolderModalOpen}
                     setIsDeleteModalActive={setIsDeleteModalActive}
+                    setIsMoveModalActive={setIsMoveModalActive}
                     setSelectedPage={setSelectedPage}
+                    setSelectedFolder={setSelectedFolder}
                   />
               }
             </div>

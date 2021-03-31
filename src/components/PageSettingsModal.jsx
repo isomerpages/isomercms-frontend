@@ -1,25 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery, useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 import axios from 'axios';
 import * as _ from 'lodash';
-import FormField from './FormField';
+
 import {
   DEFAULT_RETRY_MSG,
   generatePageFileName,
-  generatePageContent,
+  concatFrontMatterMdBody,
   frontMatterParser,
   deslugifyPage,
 } from '../utils';
 
-import { getPage, createPage, updatePage } from '../api'
+import { createPageData, updatePageData, renamePageData } from '../api'
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 import { validatePageSettings } from '../utils/validators';
-import SaveDeleteButtons from './SaveDeleteButtons';
 import { errorToast } from '../utils/toasts';
+
+import FormField from './FormField';
 import FormFieldHorizontal from './FormFieldHorizontal';
+import SaveDeleteButtons from './SaveDeleteButtons';
 
 import useRedirectHook from '../hooks/useRedirectHook';
 
@@ -27,12 +28,12 @@ import useRedirectHook from '../hooks/useRedirectHook';
 axios.defaults.withCredentials = true
 
 const PageSettingsModal = ({
-    pageType, 
     folderName,
     subfolderName,
     originalPageName,
     isNewPage,
     pagesData,
+    pageData,
     siteName,
     setSelectedPage,
     setIsPageSettingsActive,
@@ -43,6 +44,7 @@ const PageSettingsModal = ({
         permalink: '',
     })
     const [hasErrors, setHasErrors] = useState(false)
+    const [hasChanges, setHasChanges] = useState(false)
 
     // Base hooks
     const [title, setTitle] = useState('')
@@ -57,36 +59,14 @@ const PageSettingsModal = ({
       permalink: setPermalink,
     }
 
-    const {} = useQuery(
-      'page',
-      async () => await getPage(pageType, siteName, folderName, originalPageName),
-      { 
-        enabled: !isNewPage,
-        retry: false,
-        onSuccess: ({ content, sha }) => {
-          const { frontMatter, mdBody } = frontMatterParser(content)
-          setTitle(deslugifyPage(originalPageName))
-          setPermalink(frontMatter.permalink)
-          setOriginalPermalink(frontMatter.permalink)
-          setSha(sha)
-          setMdBody(mdBody)
-        }, 
-        onError: () => { 
-          setSelectedPage('')
-          setIsPageSettingsActive(false)
-          errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
-        }
-      }
-    )
-
     const { mutateAsync: saveHandler } = useMutation(
-      async () => {
-        if (originalPageName === generatePageFileName(title) && originalPermalink === permalink) return 
-        const fileInfo = { siteName, title, permalink, mdBody, folderName, subfolderName, isNewPage, pageType, originalPageName }
-        const { endpointUrl, content, redirectUrl } = generatePageContent(fileInfo)
-        if (isNewPage) await createPage(endpointUrl, content)
-        if (!isNewPage) await updatePage(endpointUrl, content, sha)
-        return redirectUrl
+      () => {
+        const frontMatter = subfolderName 
+          ? { title, permalink, third_nav_title: subfolderName }
+          : { title, permalink }
+        if (isNewPage) return createPageData({ siteName, folderName, subfolderName, newFileName: generatePageFileName(title) }, concatFrontMatterMdBody(frontMatter, mdBody)) 
+        if (originalPageName !== generatePageFileName(title)) return renamePageData({ siteName, folderName, subfolderName, fileName: originalPageName, newFileName: generatePageFileName(title) }, concatFrontMatterMdBody(frontMatter, mdBody), sha)
+        return updatePageData({ siteName, folderName, subfolderName, fileName: originalPageName }, concatFrontMatterMdBody(frontMatter, mdBody), sha)
       },
       { 
         onSettled: () => {setSelectedPage(''); setIsPageSettingsActive(false)},
@@ -96,22 +76,51 @@ const PageSettingsModal = ({
     )
 
     useEffect(() => {
-      let exampleTitle = 'Example Title'
-      while (_.find(pagesData, function(v) { return v.type === 'file' && generatePageFileName(exampleTitle) === v.name }) !== undefined) {
-        exampleTitle = exampleTitle+'_1'
+      let _isMounted = true
+
+      const initializePageDetails = () => {
+        if (pageData !== undefined) { // is existing page
+          const { pageContent, pageSha } = pageData
+          const { frontMatter, pageMdBody } = frontMatterParser(pageContent)
+          const { permalink: originalPermalink } = frontMatter
+        
+          if (_isMounted) {
+            setTitle(deslugifyPage(originalPageName))
+            setPermalink(originalPermalink)
+            setOriginalPermalink(originalPermalink)
+            setSha(pageSha)
+            setMdBody(pageMdBody)
+          }
+        }
+        if (isNewPage) {
+          let exampleTitle = 'Example Title'
+          while (_.find(pagesData, function(v) { return v.type === 'file' && generatePageFileName(exampleTitle) === v.name }) !== undefined) {
+            exampleTitle = exampleTitle+'_1'
+          }
+          const examplePermalink = `/${folderName ? `${folderName}/` : ''}${subfolderName ? `${subfolderName}/` : ''}permalink`
+          if (_isMounted) {
+            setTitle(exampleTitle)
+            setPermalink(examplePermalink)
+          } 
+        }
       }
-      const examplePermalink = `/${folderName ? `${folderName}/` : ''}${subfolderName ? `${subfolderName}/` : ''}permalink`
-      setTitle(exampleTitle)
-      setPermalink(examplePermalink)
+      initializePageDetails()
+      return () => {
+        _isMounted = false
+      }
     }, [])
 
     useEffect(() => {
       setHasErrors(_.some(errors, (field) => field.length > 0));
     }, [errors])
 
+    useEffect(() => {
+      setHasChanges(!isNewPage && !(originalPageName === generatePageFileName(title) && originalPermalink === permalink))
+    }, [title, permalink])
+
     const changeHandler = (event) => {
       const { id, value } = event.target;
-      const errorMessage = validatePageSettings(id, value, pagesData)
+      const errorMessage = validatePageSettings(id, value, pagesData.filter(page => page.name !== originalPageName))
       setErrors((prevState) => ({
         ...prevState,
         [id]: errorMessage,
@@ -131,10 +140,10 @@ const PageSettingsModal = ({
                 </button>
               </div>
               <div className={elementStyles.modalContent}>
-                { isNewPage ? 'You may edit page details anytime. ' : ''}
-                To edit page content, simply click on the page title. 
-                <div className={contentStyles.segment}>
-                  <span> 
+                <div className={elementStyles.modalFormFields}>
+                  { isNewPage ? 'You may edit page details anytime. ' : ''}
+                  To edit page content, simply click on the page title. <br/>
+                  <span className={elementStyles.infoGrey}> 
                     My workspace >
                     {
                       folderName
@@ -146,10 +155,8 @@ const PageSettingsModal = ({
                       ? <span> {subfolderName} > </span>
                       : null
                     } 
-                     <strong className="ml-1">{ title }</strong>
+                    <u className='ml-1'>{ title }</u><br/><br/>
                   </span>
-                </div>
-                <div className={elementStyles.modalFormFields}>
                   {/* Title */}
                   <FormField
                     title="Page title"
@@ -173,7 +180,7 @@ const PageSettingsModal = ({
                   />
                 </div>
                 <SaveDeleteButtons 
-                  isDisabled={isNewPage ? hasErrors : (hasErrors || !sha)}
+                  isDisabled={isNewPage ? hasErrors : (!hasChanges || hasErrors || !sha)}
                   hasDeleteButton={false}
                   saveCallback={saveHandler}
                 />

@@ -171,9 +171,9 @@ export function dequoteString(str) {
   return dequotedString;
 }
 
-export function generateResourceFileName(title, date, resourceType) {
-  const safeTitle = slugify(title).replace(/[^a-zA-Z0-9-]/g, '');
-  return `${date}-${resourceType}-${safeTitle}.md`;
+export function generateResourceFileName(title, date, isPost) {
+  const safeTitle = slugify(title, {lower: true}).replace(/[^a-zA-Z0-9-]/g, '');
+  return `${date}-${isPost ? 'post' : 'file'}-${safeTitle}.md`;
 }
 
 export function prettifyResourceCategory(category) {

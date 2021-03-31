@@ -30,7 +30,7 @@ const MenuItem = ({ item, menuIndex, dropdownRef }) => {
     }
     
   }
-  const { type, handler } = item
+  const { type, handler, noBlur } = item
   const { itemName, itemId, iconClassName, children } = type ? getItemType(type) : item
   return (
     <div
@@ -38,14 +38,15 @@ const MenuItem = ({ item, menuIndex, dropdownRef }) => {
       onMouseDown={(e) => {
         e.stopPropagation()
         e.preventDefault()
-        dropdownRef.current.blur()
-        if (handler) handler(e)
+        if (!noBlur) dropdownRef.current.blur()
+        // if user clicks on nested button, don't run handler
+        if (handler && (e.target.id === `${itemId}-${menuIndex}` || !children || children.type !== 'button')) handler(e) 
       }}
       className={`${elementStyles.dropdownItem}`}
     >
       <i id={`${itemId}-${menuIndex}`} className={iconClassName}/>
       <div id={`${itemId}-${menuIndex}`} className={elementStyles.dropdownText}>{ itemName }</div>
-      { children }
+      <div className={'ml-auto'}>{ children }</div>
     </div>
   )
 }
@@ -53,9 +54,9 @@ const MenuItem = ({ item, menuIndex, dropdownRef }) => {
 const MenuDropdown = ({ dropdownItems, menuIndex, dropdownRef, tabIndex, onBlur }) => {
   return (
     <div className={`${elementStyles.dropdown} ${elementStyles.right}`} ref={dropdownRef} tabIndex={tabIndex} onBlur={onBlur}>
-      { dropdownItems.map(item =>
+      { dropdownItems.filter(x => x).map(item =>
         ( <MenuItem 
-            key={`${item.type}-${menuIndex}`}
+            key={`${item.type || item.itemId}-${menuIndex}`}
             item={item}
             menuIndex={menuIndex}
             dropdownRef={dropdownRef}

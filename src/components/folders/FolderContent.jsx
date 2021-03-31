@@ -4,8 +4,6 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { DragDropContext } from 'react-beautiful-dnd';
 import update from 'immutability-helper';
 
-import FolderModal from '../FolderModal';
-
 import { deslugifyPage } from '../../utils'
 import MenuDropdown from '../MenuDropdown'
 
@@ -21,17 +19,39 @@ const FolderContentItem = ({
     numItems,
     link,
     itemIndex,
+    queryFolderName,
+    allCategories,
+    setQueryFolderName,
     setSelectedPage,
+    setSelectedFolder,
     setIsPageSettingsActive,
     setIsFolderModalOpen,
+    setIsMoveModalActive,
     setIsDeleteModalActive
 }) => {
     const [showDropdown, setShowDropdown] = useState(false)
+    const [showFileMoveDropdown, setShowFileMoveDropdown] = useState(false)
     const dropdownRef = useRef(null)
+    const fileMoveDropdownRef = useRef(null)
 
     useEffect(() => {
         if (showDropdown) dropdownRef.current.focus()
-    }, [showDropdown])
+        if (showFileMoveDropdown) fileMoveDropdownRef.current.focus()
+    }, [showDropdown, showFileMoveDropdown])
+
+    const handleBlur = (event) => {
+        // if the blur was because of outside focus
+        // currentTarget is the parent element, relatedTarget is the clicked element
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+            setShowFileMoveDropdown(false)
+            setQueryFolderName('')
+        }
+    }
+
+    const toggleDropdownModals = () => {
+        setShowFileMoveDropdown(!showFileMoveDropdown)
+        setShowDropdown(!showDropdown)
+    }
 
     const generateDropdownItems = () => {
         const dropdownItems = [
@@ -46,7 +66,7 @@ const FolderContentItem = ({
             },
             {
                 type: 'move',
-                handler: () => {}, // to be added in separate PR
+                handler: toggleDropdownModals
             },
             {
                 type: 'delete',
@@ -56,47 +76,110 @@ const FolderContentItem = ({
         if (isFile) return dropdownItems
         return dropdownItems.filter(item => item.itemId !== 'move')
     }
-    return (
-        <Link className={`${contentStyles.component} ${contentStyles.card}`} to={link}>
-            <div type="button" className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderItem}`}>
-                <div className={contentStyles.contentContainerFolderRow}>
-                    {
-                        isFile
-                        ? <i className={`bx bxs-file-blank ${elementStyles.folderItemIcon}`} />
-                        : <i className={`bx bxs-folder ${elementStyles.folderItemIcon}`} />
+
+    const FolderItemContent = (
+        <div type="button" className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderItem}`}>
+            <div className={contentStyles.contentContainerFolderRow}>
+                {
+                    isFile
+                    ? <i className={`bx bxs-file-blank ${elementStyles.folderItemIcon}`} />
+                    : <i className={`bx bxs-folder ${elementStyles.folderItemIcon}`} />
+                }
+                <span className={`${elementStyles.folderItemText} mr-auto`} >{deslugifyPage(title)}</span>
+                {
+                    numItems !== null
+                    ? <span className={`${elementStyles.folderItemText} mr-5`}>{numItems} item{numItems === 1 ? '' : 's'}</span>
+                    : null
+                }
+                <div className={`position-relative mt-auto mb-auto`}>
+                    <button
+                        className={`${showDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            e.preventDefault()
+                            setSelectedPage(title)
+                            setShowDropdown(true)
+                        }}
+                    >
+                        <i className="bx bx-dots-vertical-rounded" />     
+                    </button>
+                    { showDropdown &&
+                        <MenuDropdown
+                            menuIndex={itemIndex}
+                            dropdownItems={generateDropdownItems()}
+                            dropdownRef={dropdownRef}
+                            tabIndex={2}
+                            onBlur={()=>setShowDropdown(false)}
+                        />
                     }
-                    <span className={`${elementStyles.folderItemText} mr-auto`} >{deslugifyPage(title)}</span>
-                    {
-                        numItems
-                        ? <span className={`${elementStyles.folderItemText} mr-5`}>{numItems} item{numItems === 1 ? '' : 's'}</span>
-                        : null
+                    { showFileMoveDropdown &&
+                        <MenuDropdown 
+                            dropdownItems={[
+                                {
+                                    itemName: queryFolderName ? `Back to folders` : `Back to menu`,
+                                    itemId: `move`,
+                                    iconClassName: "bx bx-sm bx-arrow-back",
+                                    handler: () => {
+                                        if (queryFolderName) setQueryFolderName('')
+                                        else toggleDropdownModals()
+                                    },
+                                    noBlur: true,
+                                },
+                                queryFolderName === '' && {
+                                    itemName: 'Workspace',
+                                    itemId: `workspace`,
+                                    handler: () => { setSelectedFolder(`pages`); setIsMoveModalActive(true) },
+                                },
+                                ...(allCategories
+                                    ? allCategories.map(categoryName => ({
+                                        itemName: categoryName,
+                                        itemId: categoryName,
+                                        handler: () => { 
+                                            setSelectedFolder(`${queryFolderName ? `${queryFolderName}/` : ''}${categoryName}`)
+                                            setIsMoveModalActive(true)
+                                        },
+                                        children: queryFolderName === '' && 
+                                            <button
+                                                id={`${categoryName}-more`}
+                                                onMouseDown={(e) => { 
+                                                    e.stopPropagation()
+                                                    e.preventDefault()
+                                                    setQueryFolderName(categoryName)
+                                                }}
+                                                className={elementStyles.dropdownItemChildButton}
+                                            >
+                                                <i className="bx bx-sm bx-chevron-right ml-auto"/>   
+                                            </button>, 
+                                        }))
+                                    : [{
+                                        itemId: `loading`,
+                                        itemName: <div className="spinner-border text-primary" role="status" />,
+                                    }]
+                                ),
+                            ]}
+                            setShowDropdown={showFileMoveDropdown}
+                            dropdownRef={fileMoveDropdownRef}
+                            menuIndex={itemIndex}
+                            tabIndex={1}
+                            onBlur={handleBlur}
+                        />
                     }
-                    <div className={`position-relative mt-auto mb-auto`}>
-                        <button
-                            className={`${showDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
-                            type="button"
-                            onClick={(e) => {
-                                e.stopPropagation()
-                                e.preventDefault()
-                                setSelectedPage(title)
-                                setShowDropdown(true)
-                            }}
-                        >
-                            <i className="bx bx-dots-vertical-rounded" />     
-                        </button>
-                        { showDropdown &&
-                            <MenuDropdown
-                                menuIndex={itemIndex}
-                                dropdownItems={generateDropdownItems()}
-                                dropdownRef={dropdownRef}
-                                tabIndex={2}
-                                onBlur={()=>setShowDropdown(false)}
-                            />
-                        }
-                    </div>
                 </div>
             </div>
-        </Link>
+        </div>
+    )
+
+    return (
+        !showFileMoveDropdown && !showDropdown
+        ? 
+            <Link className={`${contentStyles.component} ${contentStyles.card}`} to={link}>
+                {FolderItemContent}
+            </Link>
+        :
+            <div className={`${contentStyles.component} ${contentStyles.card}`}>
+                {FolderItemContent}
+            </div>
     )
 }
 
@@ -106,9 +189,14 @@ const FolderContent = ({
     siteName,
     folderName,
     enableDragDrop,
+    allCategories,
+    queryFolderName,
+    setSelectedFolder,
+    setQueryFolderName,
     setSelectedPage,
     setIsPageSettingsActive,
     setIsFolderModalOpen,
+    setIsMoveModalActive,
     setIsDeleteModalActive,
 }) => {
     const generateLink = (folderContentItem) => {
@@ -174,10 +262,15 @@ const FolderContent = ({
                                                 numItems={folderContentItem.type === 'dir' ? folderContentItem.children.filter(name => !name.includes('.keep')).length : null}
                                                 isFile={folderContentItem.type === 'dir' ? false: true}
                                                 link={generateLink(folderContentItem)}
+                                                allCategories={allCategories}
                                                 itemIndex={folderContentIndex}
+                                                queryFolderName={queryFolderName}
+                                                setQueryFolderName={setQueryFolderName}
                                                 setSelectedPage={setSelectedPage}
+                                                setSelectedFolder={setSelectedFolder}
                                                 setIsPageSettingsActive={setIsPageSettingsActive}
                                                 setIsFolderModalOpen={setIsFolderModalOpen}
+                                                setIsMoveModalActive={setIsMoveModalActive}
                                                 setIsDeleteModalActive={setIsDeleteModalActive}
                                             />
                                         </div>
