@@ -13,7 +13,7 @@ import {
   deslugifyDirectory,
 } from '../utils';
 
-import { getPage, createPageData, updatePageData, renamePageData } from '../api'
+import { createPageData, updatePageData, renamePageData } from '../api'
 import { PAGE_SETTINGS_KEY } from '../constants'
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -62,7 +62,6 @@ const PageSettingsModal = ({
     const [mdBody, setMdBody] = useState('')
     const [siteUrl, setSiteUrl] = useState('https://abc.com.sg')
     const [hasChanges, setHasChanges] = useState(false)
-
     const { setRedirectToPage } = useRedirectHook()
     const { retrieveSiteUrl } = useSiteUrlHook()
 
@@ -70,28 +69,6 @@ const PageSettingsModal = ({
       title: setTitle,
       permalink: setPermalink,
     }
-
-    const {} = useQuery(
-      [PAGE_SETTINGS_KEY, originalPageName],
-      async () => await getPage(pageType, siteName, folderName, originalPageName),
-      { 
-        enabled: !(isNewPage || hasChanges), // disable if new page or if there are changes
-        retry: false,
-        onSuccess: ({ content, sha }) => {
-          const { frontMatter, mdBody } = frontMatterParser(content)
-          setTitle(deslugifyPage(originalPageName))
-          setPermalink(frontMatter.permalink)
-          setOriginalPermalink(frontMatter.permalink)
-          setSha(sha)
-          setMdBody(mdBody)
-        }, 
-        onError: () => { 
-          setSelectedPage('')
-          setIsPageSettingsActive(false)
-          errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
-        },
-      }
-    )
 
     const { mutateAsync: saveHandler } = useMutation(
       () => {

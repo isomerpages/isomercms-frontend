@@ -91,10 +91,10 @@ const Folders = ({ match, location }) => {
 
     // parse contents of current folder directory
     useEffect(() => {
-      if (folderContents && folderContents.data) {
-        const { order: directoryFileOrder, output: directoryFileOutput } = parseDirectoryFile(folderContents.data.content)
-        setDirectoryFileSha(folderContents.data.sha)
-        setParsedFolderContents(directoryFileOrder)
+      if (folderContents && folderContents.sha) {
+        const parsedFolderContents = parseDirectoryFile(folderContents.content)
+        setDirectoryFileSha(folderContents.sha)
+        setParsedFolderContents(parsedFolderContents)
         setIsFolderLive(directoryFileOutput)
 
         if (subfolderName) {
@@ -109,6 +109,7 @@ const Folders = ({ match, location }) => {
           setFolderOrderArray(convertFolderOrderToArray(directoryFileOrder))
         }
       }
+
     }, [folderContents, subfolderName])
 
     // set selected item type
@@ -131,7 +132,6 @@ const Folders = ({ match, location }) => {
           errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
         },
         onSuccess: () => {
-          successToast('Successfully updated page order')
           queryClient.invalidateQueries([DIR_CONTENT_KEY, siteName, folderName])
           refetchFolderContents()
         },
