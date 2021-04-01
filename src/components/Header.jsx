@@ -17,6 +17,7 @@ const Header = ({
 }) => {
   const { setRedirectToLogout, setRedirectToPage } = useRedirectHook()
   const { retrieveStagingUrl } = useSiteUrlHook()
+  const { setLogoutState } = useContext(LoginContext)
 
   const [showBackNavWarningModal, setShowBackNavWarningModal] = useState(false)
   const [showStagingWarningModal, setShowStagingWarningModal] = useState(false)
