@@ -151,10 +151,14 @@ const Folders = ({ match, location }) => {
 
     // move file
     const { mutateAsync: moveHandler } = useMutation(
-      () => moveFile({siteName, selectedFile: selectedPage, folderName, subfolderName, newPath: selectedPath}),
+      () => {
+        if (`${folderName ? folderName : ''}${subfolderName ? `/${subfolderName}` : ''}` === selectedPath) return true
+        moveFile({siteName, selectedFile: selectedPage, folderName, subfolderName, newPath: selectedPath})
+      },
       {
         onError: () => errorToast(`Your file could not be moved successfully. ${DEFAULT_RETRY_MSG}`),
-        onSuccess: () => {
+        onSuccess: (noChange) => {
+          if (noChange) return successToast('Page is already in this folder') 
           successToast('Successfully moved file') 
           refetchFolderContents()
         },

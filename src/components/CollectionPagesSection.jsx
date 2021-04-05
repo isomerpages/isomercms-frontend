@@ -120,10 +120,17 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
     )
 
     const { mutateAsync: moveHandler } = useMutation(
-        () => moveFile({siteName, selectedFile, newPath: selectedPath, resourceName: collectionName}),
+        () => {
+            if ('pages' === selectedPath) return true
+            moveFile({siteName, selectedFile, newPath: selectedPath, resourceName: collectionName})
+        },
         {
           onError: () => errorToast(`Your file could not be moved successfully. ${DEFAULT_RETRY_MSG}`),
-          onSuccess: () => {successToast('Successfully moved file'); window.location.reload();},
+          onSuccess: (samePage) => {
+            if (samePage) return successToast('Page is already in this folder')   
+            successToast('Successfully moved file'); 
+            window.location.reload();
+          },
           onSettled: () => setCanShowMoveModal(prevState => !prevState),
         }
     )
