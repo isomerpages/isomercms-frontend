@@ -100,12 +100,16 @@ const Header = ({
       </div>
       {/* Right section */}
       <div className={elementStyles.headerRight}>
-        <button type="button" className={`${elementStyles.green} float-right text-nowrap`} onClick={handleViewPullRequest}>
-          Pull Request
-        </button>
-        <button type="button" className={`${elementStyles.blue} float-right text-nowrap`} onClick={() => setShowStagingWarningModal(true)}>
-          View Staging
-        </button>
+        { siteName &&
+          <>
+            <button type="button" className={`${elementStyles.green} float-right text-nowrap`} onClick={handleViewPullRequest}>
+              Pull Request
+            </button>
+            <button type="button" className={`${elementStyles.blue} float-right text-nowrap`} onClick={() => setShowStagingWarningModal(true)}>
+              View Staging
+            </button>
+          </>
+        }
       </div>
       {
         showBackNavWarningModal &&
