@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styles from '../styles/isomer-cms/pages/Admin.module.scss';
+import useRedirectHook from '../hooks/useRedirectHook';
+import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
+// Import context
+const { LoginContext } = require('../contexts/LoginContext')
+
+// axios settings
+axios.defaults.withCredentials = true
+
+// constants
+const userIdKey = "userId"
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 const sidebarPathDict = [
   {
     pathname: 'workspace',
@@ -30,62 +42,102 @@ const sidebarPathDict = [
   }
 ];
 
-// Highlight workspace sidebar tab when in collections layout
-const convertCollectionsPathToWorkspace = (currPath, siteName) => {
-  const currPathArr = currPath.split('/')
+const Sidebar = ({ siteName, currPath }) => {
+  const { setRedirectToLogout } = useRedirectHook()
+  const setLogoutState = useContext(LoginContext)
 
-  // example path: /sites/demo-v2/collections/left-nav-one
-  if (currPathArr.length === 5 && currPathArr[3] === 'collections') return `/sites/${siteName}/workspace`
-  
-  // example path: /sites/demo-v2/resources/news
-  if (currPathArr.length === 5 && currPathArr[3] === 'resources') return `/sites/${siteName}/resources`
-  
-  return currPath
-}
+  // Highlight workspace sidebar tab when in collections layout
+  const convertCollectionsPathToWorkspace = (currPath, siteName) => {
+    const currPathArr = currPath.split('/')
 
-const generateLink = (title, siteName, pathname) => {
-  if (title === 'Help') {
+    // example path: /sites/demo-v2/folder/left-nav-one
+    if (currPathArr[3] === 'folder') return `/sites/${siteName}/workspace`
+    
+    // example path: /sites/demo-v2/resources/news
+    if (currPathArr.length === 5 && currPathArr[3] === 'resources') return `/sites/${siteName}/resources`
+    
+    return currPath
+  }
+
+  const generateLink = (title, siteName, pathname) => {
+    if (title === 'Help') {
+      return (
+        <a
+          className="px-4 py-4 h-100 w-100"
+          href="https://go.gov.sg/isomer-cms-help"
+          target="_blank"
+        >
+          {title}
+        </a>
+      )
+    }
+
     return (
-      <a
+      <Link
         className="px-4 py-4 h-100 w-100"
-        href="https://go.gov.sg/isomer-cms-help"
-        target="_blank"
+        to={`/sites/${siteName}/${pathname}`}
       >
         {title}
-      </a>
+      </Link>
     )
   }
 
-  return (
-    <Link
-      className="px-4 py-4 h-100 w-100"
-      to={`/sites/${siteName}/${pathname}`}
-    >
-      {title}
-    </Link>
-  )
-}
+  const clearCookie = async () => {
+    try {
+      // Call the logout endpoint in the API server to clear the browser cookie
+      localStorage.removeItem(userIdKey)
+      await axios.get(`${BACKEND_URL}/auth/logout`)
+      setRedirectToLogout()
+      setLogoutState()
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
-const Sidebar = ({ siteName, currPath }) => (
-  <div className={styles.adminSidebar}>
-    <div className={styles.siteIntro}>
-      <div className={styles.siteName}>{siteName}</div>
-      <div className={styles.siteDate}>Updated 2 days ago</div>
-    </div>
-    <div className={styles.sidebarNavigation}>
-      <ul>
-        {sidebarPathDict.map(({ pathname, title }) => (
+  return (
+    <div className={styles.adminSidebar}>
+      <div className={styles.siteIntro}>
+        <div className={styles.siteName}>{siteName}</div>
+        <div className={styles.siteDate}>Updated 2 days ago</div>
+      </div>
+      <div className={styles.sidebarNavigation}>
+        <ul>
+          {sidebarPathDict.map(({ pathname, title }) => (
+            <li
+              className={`d-flex p-0 ${`/sites/${siteName}/${pathname}` === convertCollectionsPathToWorkspace(currPath, siteName) ? styles.active : null}`}
+              key={title}
+            >
+              {generateLink(title, siteName, pathname)}
+            </li>
+          ))}
           <li
-            className={`d-flex p-0 ${`/sites/${siteName}/${pathname}` === convertCollectionsPathToWorkspace(currPath, siteName) ? styles.active : null}`}
-            key={title}
+            className={`d-flex p-0`}
+            key={'logout'}
+            onClick={clearCookie}
           >
-            {generateLink(title, siteName, pathname)}
+            <div
+              className="px-4 py-4 h-100 w-100"
+            >
+              Logout
+            </div>
           </li>
-        ))}
-      </ul>
+          <li
+            className={`d-flex p-0`}
+            key={'user'}
+          >
+            <div
+              className={`px-4 py-4 h-100 w-100 ${elementStyles.info}`}
+            >
+              Logged in as 
+              <br/>
+              @{localStorage.getItem(userIdKey)}
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
-);
+  )
+};
 
 export default Sidebar;
 
