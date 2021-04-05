@@ -16,6 +16,7 @@ import useRedirectHook from '../hooks/useRedirectHook';
 import Header from '../components/Header';
 import LoadingButton from '../components/LoadingButtonReactQuery';
 import DeleteWarningModal from '../components/DeleteWarningModal';
+import GenericWarningModal from '../components/GenericWarningModal';
 import NavSection from '../components/navbar/NavSection'
 
 import TemplateNavBar from '../templates/NavBar'
@@ -55,6 +56,8 @@ const EditNavBar =  ({ match }) => {
     links: [],
     sublinks: [],
   })
+  const [showDeletedText, setShowDeletedText] = useState(true)
+  const [deletedLinks, setDeletedLinks] = useState('')
 
   const LinkCollectionSectionConstructor = () => ({
     title: 'Link Title',
@@ -148,18 +151,28 @@ const EditNavBar =  ({ match }) => {
 
       let navHasResources = false
       // Add booleans for displaying links and sublinks
-      const initialDisplayLinks = _.fill(Array(initialLinks.length), false)
+      const initialDisplayLinks = []
       const initialDisplaySublinks = []
       const initialErrors = {
         links: _.fill(Array(initialLinks.length), enumSection('error')),
         sublinks: [],
       }
-      initialLinks.forEach(link => {
+      let deletedDisplayText = ''
+      const filteredInitialLinks = []
+      initialLinks.forEach((link, idx) => {
         let numSublinks = 0
         if ("sublinks" in link) {
           numSublinks = link.sublinks.length
         }
         if ('resource_room' in link) navHasResources = true
+        if ('collection' in link && !(link.collection in foldersContent)) {
+          // Invalid collection linked
+          deletedDisplayText += `<br/>For link <code>${idx+1}</code>: <br/>`
+          deletedDisplayText += `    <code>${link.collection}</code> has been removed</br>`
+          return
+        }
+        filteredInitialLinks.push(link)
+        initialDisplayLinks.push(false)
         initialDisplaySublinks.push(_.fill(Array(numSublinks), false))
         initialErrors.sublinks.push(_.fill(Array(numSublinks), enumSection('error')))
       })
@@ -173,7 +186,7 @@ const EditNavBar =  ({ match }) => {
       }))
 
       if (_isMounted) {
-        setLinks(initialLinks)
+        setLinks(filteredInitialLinks)
         setHasLoaded(true)
         setDisplayLinks(initialDisplayLinks)
         setDisplaySublinks(initialDisplaySublinks)
@@ -185,6 +198,7 @@ const EditNavBar =  ({ match }) => {
         setSha(navSha)
         setHasResources(navHasResources)
         setErrors(initialErrors)
+        setDeletedLinks(deletedDisplayText)
       }
     }
 
@@ -567,6 +581,15 @@ const EditNavBar =  ({ match }) => {
 
   return (
     <>
+      { showDeletedText && !isEmpty(deletedLinks)
+        && 
+        <GenericWarningModal
+          displayTitle="Removed content" 
+          displayText={`Some of your content has been removed as they attempt to link to invalid folders. No changes are permanent unless you press Save on the next page.<br/>${deletedLinks}`}
+          onProceed={()=>{setShowDeletedText(false)}}
+          proceedText="Acknowledge"
+        />
+      }
       {
         itemPendingForDelete.id
         && (
@@ -615,7 +638,13 @@ const EditNavBar =  ({ match }) => {
             />
           </div>
           <div className={editorStyles.pageEditorFooter}>
-            {/* TODO: save button */}
+            { !isEmpty(deletedLinks) && 
+              <LoadingButton
+                label="See removed content"
+                className={`ml-auto ${elementStyles.warning}`}
+                callback={() => {setShowDeletedText(true)}}
+              />
+            }
             <LoadingButton
               label="Save"
               disabled={hasErrors()} 
