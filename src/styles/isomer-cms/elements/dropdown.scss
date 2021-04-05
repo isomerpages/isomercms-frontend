@@ -47,7 +47,7 @@
 .fileMoveDropdown {
   @extend .dropdown;
   width: 20rem;
-  height: 17.25rem;
+  height: 20.25rem;
   overflow: hidden;
 
   .dropdownHeader {
@@ -78,7 +78,7 @@
   }
 
   .dropdownContentItems {
-    height: 7.75rem;
+    height: 10.75rem;
     overflow-y: scroll;
     text-align: center;
   }
