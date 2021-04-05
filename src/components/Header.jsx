@@ -12,15 +12,10 @@ const { LoginContext } = require('../contexts/LoginContext')
 // axios settings
 axios.defaults.withCredentials = true
 
-// constants
-const userIdKey = "userId"
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
-
 const Header = ({
   siteName, showButton, title, isEditPage, shouldAllowEditPageBackNav, backButtonText, backButtonUrl,
 }) => {
-  const { setRedirectToPage, setRedirectToLogout } = useRedirectHook()
+  const { setRedirectToPage } = useRedirectHook()
   const { retrieveStagingUrl } = useSiteUrlHook()
   const setLogoutState = useContext(LoginContext)
 
@@ -43,18 +38,6 @@ const Header = ({
       _isMounted = false
     }
   }, [])
-
-  const clearCookie = async () => {
-    try {
-      // Call the logout endpoint in the API server to clear the browser cookie
-      localStorage.removeItem(userIdKey)
-      await axios.get(`${BACKEND_URL}/auth/logout`)
-      setRedirectToLogout()
-      setLogoutState()
-    } catch (err) {
-      console.error(err)
-    }
-  }
 
   const toggleBackNav = () => {
     setRedirectToPage(backButtonUrl)
