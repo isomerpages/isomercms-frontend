@@ -16,6 +16,13 @@ const setDirectoryFile = async (siteName, folderName, payload) => {
     return await axios.post(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`, payload);
 }
 
+const getLastUpdated = async (siteName) => {
+    if (!siteName) return
+    const resp = await axios.get(`${BACKEND_URL}/sites/${siteName}/lastUpdated`);
+    const { lastUpdated } = resp.data
+    return { lastUpdated }
+}
+
 // EditPage
 const getPageApiEndpoint = ({folderName, subfolderName, fileName, siteName, resourceName, newFileName}) => {
     if (folderName) {
@@ -230,6 +237,7 @@ const moveFile = async ({selectedFile, siteName, resourceName, folderName, subfo
 export {
     getDirectoryFile,
     setDirectoryFile,
+    getLastUpdated,
     getEditPageData,
     getCsp,
     updatePageData,
