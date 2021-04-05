@@ -1,10 +1,14 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { useQuery } from 'react-query';
 import PropTypes from 'prop-types';
 import styles from '../styles/isomer-cms/pages/Admin.module.scss';
 import useRedirectHook from '../hooks/useRedirectHook';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import { getLastUpdated } from '../api'
+import { LAST_UPDATED_KEY } from '../constants'
+import { errorToast } from '../utils/toasts';
 
 // Import context
 const { LoginContext } = require('../contexts/LoginContext')
@@ -77,6 +81,23 @@ const typeInfoDict = {
 const Sidebar = ({ siteName, currPath }) => {
   const { setRedirectToLogout } = useRedirectHook()
   const setLogoutState = useContext(LoginContext)
+  const [lastUpdated, setLastUpdated] = useState('Updated 2 days ago')
+
+  const { data: lastUpdatedResp } = useQuery(
+    [LAST_UPDATED_KEY, siteName],
+    () => getLastUpdated(siteName),
+    {
+      retry: false,
+      onError: (err) => {
+        console.log(err)
+        errorToast()
+      }
+    },
+  );
+
+  useEffect(() => {
+    if (lastUpdatedResp) setLastUpdated(lastUpdatedResp.lastUpdated)
+  }, [lastUpdatedResp])
 
   // Highlight workspace sidebar tab when in collections layout
   const convertCollectionsPathToWorkspace = (currPath, siteName) => {
@@ -172,7 +193,7 @@ const Sidebar = ({ siteName, currPath }) => {
     <div className={styles.adminSidebar}>
       <div className={styles.siteIntro}>
         <div className={`font-weight-bold ${styles.siteName}`}>{siteName}</div>
-        <div className={styles.siteDate}>Updated 2 days ago</div>
+        <div className={styles.siteDate}>{lastUpdated}</div>
       </div>
       <div className={styles.sidebarNavigation}>
         <ul>
