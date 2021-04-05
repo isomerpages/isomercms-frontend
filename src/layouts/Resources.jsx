@@ -132,7 +132,9 @@ const Resources = ({ match, location }) => {
           />
         </div>
       }
-      <Header />
+      <Header 
+        siteName={siteName}
+      />
       {/* main bottom section */}
       <div className={elementStyles.wrapper}>
         <Sidebar siteName={siteName} currPath={location.pathname} />

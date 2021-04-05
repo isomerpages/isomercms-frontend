@@ -299,6 +299,7 @@ const Folders = ({ match, location }) => {
             )
           }
           <Header
+            siteName={siteName}
             backButtonText={`Back to ${subfolderName ? folderName : 'Workspace'}`}
             backButtonUrl={`/sites/${siteName}/${subfolderName ? `folder/${folderName}` : 'workspace'}`}
             shouldAllowEditPageBackNav={!isRearrangeActive}

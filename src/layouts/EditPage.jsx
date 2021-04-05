@@ -347,6 +347,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
   return (
     <>
       <Header
+        siteName={siteName}
         title={title}
         shouldAllowEditPageBackNav={originalMdValue === editorValue}
         isEditPage="true"

@@ -647,6 +647,7 @@ const EditContactUs =  ({ match }) => {
         )
       }
       <Header
+        siteName={siteName}
         title={"Contact Us"}
         shouldAllowEditPageBackNav={hasChanges()}
         isEditPage="true"
