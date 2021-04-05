@@ -121,7 +121,7 @@ const Sidebar = ({ siteName, currPath }) => {
           >
             {title}
             <div className='float-right'>
-              <i className={`${typeInfoDict[title].icon}`} />
+              <i className={`text-dark ${typeInfoDict[title].icon}`} />
             </div>
           </a>
           
