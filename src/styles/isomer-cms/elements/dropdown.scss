@@ -42,11 +42,6 @@
     vertical-align: middle;
     line-height:inherit;
   }
-
-  button {
-    padding: 0.5rem;
-    margin-left: 0.5rem;
-  }
 }
 
 .fileMoveDropdown {
@@ -86,6 +81,14 @@
     height: 7.75rem;
     overflow-y: scroll;
     text-align: center;
+  }
+
+  .dropdownItemButton {
+    display: none;
+  }
+
+  .dropdownItem:hover .dropdownItemButton {
+    display: block;
   }
 
   .dropdownLastItem {

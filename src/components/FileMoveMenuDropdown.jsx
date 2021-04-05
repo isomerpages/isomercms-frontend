@@ -85,7 +85,7 @@ const FileMoveMenuDropdown = ({
                   itemName: categoryName,
                   itemId: categoryName,
                   iconClassName: "bx bx-sm bx-folder",
-                  children: <i className="bx bx-sm bx-chevron-right ml-auto"/>,
+                  children: <i className={`${elementStyles.dropdownItemButton} bx bx-sm bx-chevron-right ml-auto`}/>,
                   noBlur: true,
                   handler: () => queryHandler(categoryName)
                 }}
