@@ -15,7 +15,7 @@ axios.defaults.withCredentials = true
 // constants
 const userIdKey = "userId"
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
-const sidebarPathDict = [
+const sidebarContentPathDict = [
   {
     pathname: 'workspace',
     title: 'My Workspace',
@@ -31,16 +31,48 @@ const sidebarPathDict = [
   {
     pathname: 'files',
     title: 'Files',
-  },
+  }
+];
+const sidebarSettingsPathDict = [
   {
     pathname: 'settings',
     title: 'Settings',
   },
   {
+    pathname: 'guide',
+    title: 'Guide',
+  },
+  {
     pathname: 'help',
     title: 'Help',
   }
-];
+]
+const sidebarUserDict = [
+  {
+    pathname: 'logout',
+    title: 'Logout',
+  },
+  {
+    pathname: 'user',
+    title: 'User',
+  }
+]
+const typeInfoDict = {
+  Help: {
+    url: 'https://go.gov.sg/isomer-cms-help',
+    icon: 'bx bx-buoy'
+  },
+  Guide: {
+    url: 'https://v2.isomer.gov.sg/',
+    icon: 'bx bx-book'
+  },
+  Settings: {
+    icon: 'bx bx-cog'
+  },
+  Logout: {
+    icon: 'bx bx-log-out-circle'
+  }
+}
 
 const Sidebar = ({ siteName, currPath }) => {
   const { setRedirectToLogout } = useRedirectHook()
@@ -51,34 +83,76 @@ const Sidebar = ({ siteName, currPath }) => {
     const currPathArr = currPath.split('/')
 
     // example path: /sites/demo-v2/folder/left-nav-one
-    if (currPathArr[3] === 'folder') return `/sites/${siteName}/workspace`
-    
-    // example path: /sites/demo-v2/resources/news
-    if (currPathArr.length === 5 && currPathArr[3] === 'resources') return `/sites/${siteName}/resources`
-    
-    return currPath
+    if (currPathArr.length > 3 && currPathArr[3] === 'folder') return `/sites/${siteName}/workspace`
+
+    return currPathArr.slice(0,4).join('/')
   }
 
-  const generateLink = (title, siteName, pathname) => {
-    if (title === 'Help') {
-      return (
-        <a
-          className="px-4 py-4 h-100 w-100"
-          href="https://go.gov.sg/isomer-cms-help"
-          target="_blank"
-        >
-          {title}
-        </a>
-      )
+  const generateContent = (title, siteName, pathname, isActive) => {
+    switch (title) {
+      case 'Help':
+      case 'Guide':
+        return (
+          <a
+            className={`px-4 py-3 h-100 w-100 font-weight-bold text-dark`}
+            href={typeInfoDict[title].url}
+            target="_blank"
+          >
+            {title}
+            <div className='float-right'>
+              <i className={`${typeInfoDict[title].icon}`} />
+            </div>
+          </a>
+          
+        )
+      case 'Logout':
+        return (
+          <a
+            className="px-4 py-3 h-100 w-100 font-weight-bold"
+            onClick={clearCookie}
+          >
+            Logout
+            <div className='float-right'>
+              <i className={`${typeInfoDict[title].icon}`} />
+            </div>
+          </a>
+        )
+      case 'User':
+        return (
+          <div
+            className={`px-4 py-3 h-100 w-100 ${elementStyles.info}`}
+          >
+            Logged in as 
+            <br/>
+            @{localStorage.getItem(userIdKey)}
+          </div>
+        )
+      default:
+        return (
+          <Link
+            className={`px-4 py-3 h-100 w-100 font-weight-bold ${isActive ? '' : 'text-dark'}`}
+            to={`/sites/${siteName}/${pathname}`}
+          >
+            {title}
+            { title in typeInfoDict && 'icon' in typeInfoDict[title] &&
+              <div className='float-right'>
+                <i className={`${isActive ? '' : 'text-dark'} ${typeInfoDict[title].icon}`} />
+              </div>
+            }
+          </Link>
+        )
     }
+  }
 
+  const generateTab = (title, siteName, pathname) => {
+    const isActive = `/sites/${siteName}/${pathname}` === convertCollectionsPathToWorkspace(currPath, siteName)
     return (
-      <Link
-        className="px-4 py-4 h-100 w-100"
-        to={`/sites/${siteName}/${pathname}`}
+      <li
+        className={`d-flex p-0 ${isActive ? styles.active : ''}`}
+        key={title}
       >
-        {title}
-      </Link>
+        {generateContent(title, siteName, pathname, isActive)}
+      </li>
     )
   }
 
@@ -97,42 +171,29 @@ const Sidebar = ({ siteName, currPath }) => {
   return (
     <div className={styles.adminSidebar}>
       <div className={styles.siteIntro}>
-        <div className={styles.siteName}>{siteName}</div>
+        <div className={`font-weight-bold ${styles.siteName}`}>{siteName}</div>
         <div className={styles.siteDate}>Updated 2 days ago</div>
       </div>
       <div className={styles.sidebarNavigation}>
         <ul>
-          {sidebarPathDict.map(({ pathname, title }) => (
-            <li
-              className={`d-flex p-0 ${`/sites/${siteName}/${pathname}` === convertCollectionsPathToWorkspace(currPath, siteName) ? styles.active : null}`}
-              key={title}
-            >
-              {generateLink(title, siteName, pathname)}
-            </li>
+          {sidebarContentPathDict.map(({ pathname, title }) => (
+            generateTab(title, siteName, pathname)
           ))}
-          <li
-            className={`d-flex p-0`}
-            key={'logout'}
-            onClick={clearCookie}
-          >
-            <div
-              className="px-4 py-4 h-100 w-100"
-            >
-              Logout
-            </div>
-          </li>
-          <li
-            className={`d-flex p-0`}
-            key={'user'}
-          >
-            <div
-              className={`px-4 py-4 h-100 w-100 ${elementStyles.info}`}
-            >
-              Logged in as 
-              <br/>
-              @{localStorage.getItem(userIdKey)}
-            </div>
-          </li>
+        </ul>
+      </div>
+      <div className={styles.sidebarNavigation}>
+        <hr/>
+        <ul>
+          {sidebarSettingsPathDict.map(({ pathname, title }) => (
+            generateTab(title, siteName, pathname)
+          ))}
+        </ul>
+      </div>
+      <div className={styles.sidebarNavigation}>
+        <ul>
+          {sidebarUserDict.map(({ pathname, title }) => (
+            generateTab(title, siteName, pathname)
+          ))}
         </ul>
       </div>
     </div>
