@@ -201,7 +201,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource, r
                             className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.addNew}`}
                         >
                             <i id="settingsIcon-NEW" className={`bx bx-plus-circle ${elementStyles.bxPlusCircle}`} />
-                            <h2 id="settingsText-NEW">Add a new page</h2>
+                            <h2 id="settingsText-NEW">Create new page</h2>
                         </button>
                         { pages ?
                             pages.map((page, pageIdx) => (
