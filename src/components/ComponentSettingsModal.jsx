@@ -208,9 +208,9 @@ const ComponentSettingsModal = ({
                   <FormFieldHorizontal
                     title={`https://abc.gov.sg`}             
                     id="permalink"
-                    value={permalink ? permalink : ''}
+                    value={isPost ? permalink : fileUrl}
                     errorMessage={errors.permalink}
-                    isRequired={true}
+                    isRequired={isPost}
                     onFieldChange={changeHandler}
                     disabled={!isPost}
                     placeholder=' '
