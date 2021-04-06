@@ -100,7 +100,10 @@ const FileMoveMenuDropdown = ({
       <MenuItem 
         key={`move-here-${menuIndex}`}
         className={elementStyles.dropdownLastItem}
-        item={{children: MoveButton}}
+        item={{
+          children: MoveButton,
+          noBlur: true,
+        }}
         menuIndex={menuIndex}
         dropdownRef={dropdownRef}
       />
