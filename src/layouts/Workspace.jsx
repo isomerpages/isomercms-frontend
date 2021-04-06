@@ -53,7 +53,7 @@ const Workspace = ({ match, location }) => {
 
         try { 
           const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`);
-          if (_isMounted) setCollections(collectionsResp.data?.collections)
+          if (_isMounted) setCollections(collectionsResp.data?.collections || [])
         } catch (e) {
           setCollections(undefined)
           console.log(e)
@@ -62,7 +62,7 @@ const Workspace = ({ match, location }) => {
         try { 
           const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/files/pages`);
           if (_isMounted) {
-            setUnlinkedPages(unlinkedPagesResp.data?.directoryContents.filter(page => page.name !== 'contact-us.md'))
+            setUnlinkedPages(unlinkedPagesResp.data?.directoryContents.filter(page => page.name !== 'contact-us.md') || [])
           }
         } catch (e) {
           console.log(e)
@@ -136,30 +136,16 @@ const Workspace = ({ match, location }) => {
               <div className={contentStyles.segmentDividerContainer}>
                 <hr className="w-100 mt-3 mb-5" />
               </div>
-              {/* Collections title */}
+              {/* Folders title */}
               <div className={contentStyles.segment}>
-                Collections
+                Folders
               </div>
-              {
-                !collections &&
-                <div className={contentStyles.segment}>
-                  Loading Collections...
-                </div>
-              }
-              {
-                collections && collections.length === 0 &&
-                <div className={contentStyles.segment}>
-                  There are no collections in this repository.
-                </div>
-              }
-              {/* Collections */}
+              {/* Folders */}
               <div className={contentStyles.folderContainerBoxes}>
                 <div className={contentStyles.boxesContainer}>
+                  <FolderOptionButton title="Create new folder" option="create-sub" isSubfolder={false} onClick={() => setIsFolderCreationActive(true)}/>
                   {
-                    collections && unlinkedPages && <FolderOptionButton title="Create new folder" option="create-sub" isSubfolder={false} onClick={() => setIsFolderCreationActive(true)}/>
-                  }
-                  {
-                    collections && collections.length > 0
+                    collections
                     ? collections.map((collection, collectionIdx) => (
                         <FolderCard
                             displayText={prettifyPageFileName(collection)}
@@ -171,14 +157,15 @@ const Workspace = ({ match, location }) => {
                             itemIndex={collectionIdx}
                         />
                     ))
-                    : null
+                    : 'Loading Folders...'
                   }
                 </div>
               </div>
               {/* Segment divider  */}
               <div className={contentStyles.segmentDividerContainer}>
                 <hr className="invisible w-100 mt-3 mb-5" />
-              </div>                {/* Pages title */}
+              </div>
+              {/* Pages title */}
               <div className={contentStyles.segment}>
                 Unlinked Pages
               </div>
