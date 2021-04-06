@@ -158,7 +158,7 @@ const ComponentSettingsModal = ({
       },
       { 
         onSettled: () => {setSelectedFile(''); setIsComponentSettingsActive(false)},
-        onSuccess: (redirectUrl) => redirectUrl ? setRedirectToPage(redirectUrl) : window.location.reload(),
+        onSuccess: (redirectUrl) => redirectUrl && isPost ? setRedirectToPage(redirectUrl) : window.location.reload(),
         onError: () => errorToast(`${isNewFile ? 'A new resource page could not be created.' : 'Your resource page settings could not be saved.'} ${DEFAULT_RETRY_MSG}`)
       }
     )
