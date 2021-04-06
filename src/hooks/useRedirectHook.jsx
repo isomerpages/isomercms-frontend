@@ -14,7 +14,7 @@ const useRedirectHook = () => {
   const [redirectUrl, setRedirectUrl] = useState('')
   const [redirectComponentState, setRedirectComponentState] = useState({})
   const history = useHistory()
-  const setLogoutState = useContext(LoginContext)
+  const { setLogoutState } = useContext(LoginContext)
 
   useEffect(() => {
     if (shouldRedirect) {
