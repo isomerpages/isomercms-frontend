@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
@@ -10,15 +10,11 @@ import { getLastUpdated } from '../api'
 import { LAST_UPDATED_KEY } from '../constants'
 import { errorToast } from '../utils/toasts';
 
-// Import context
-const { LoginContext } = require('../contexts/LoginContext')
-
 // axios settings
 axios.defaults.withCredentials = true
 
 // constants
 const userIdKey = "userId"
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 const sidebarContentPathDict = [
   {
     pathname: 'workspace',
@@ -80,7 +76,6 @@ const typeInfoDict = {
 
 const Sidebar = ({ siteName, currPath }) => {
   const { setRedirectToLogout } = useRedirectHook()
-  const setLogoutState = useContext(LoginContext)
   const [lastUpdated, setLastUpdated] = useState('Updated 2 days ago')
 
   const { data: lastUpdatedResp } = useQuery(
@@ -130,7 +125,7 @@ const Sidebar = ({ siteName, currPath }) => {
         return (
           <a
             className="px-4 py-3 h-100 w-100 font-weight-bold"
-            onClick={clearCookie}
+            onClick={setRedirectToLogout}
           >
             Logout
             <div className='float-right'>
@@ -175,18 +170,6 @@ const Sidebar = ({ siteName, currPath }) => {
         {generateContent(title, siteName, pathname, isActive)}
       </li>
     )
-  }
-
-  const clearCookie = async () => {
-    try {
-      // Call the logout endpoint in the API server to clear the browser cookie
-      localStorage.removeItem(userIdKey)
-      await axios.get(`${BACKEND_URL}/auth/logout`)
-      setRedirectToLogout()
-      setLogoutState()
-    } catch (err) {
-      console.error(err)
-    }
   }
 
   return (
