@@ -136,7 +136,7 @@ const ComponentSettingsModal = ({
                 permalink: '',
             }))
         } else {
-            setPermalink(originalPermalink ? originalPermalink : 'permalink')
+            setPermalink(originalPermalink ? originalPermalink : `/${category}/permalink`)
             setFileUrl('')
             setIsPost(true)
             setErrors((prevState) => ({
