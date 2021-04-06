@@ -227,7 +227,7 @@ const ComponentSettingsModal = ({
                   />
                 </div>
                 <SaveDeleteButtons 
-                  isDisabled={isNewFile ? hasErrors : (hasErrors || !sha)}
+                  isDisabled={isNewFile && !isPost ? (hasErrors || !fileUrl) : isNewFile && isPost ? hasErrors : (hasErrors || !sha)}
                   hasDeleteButton={false}
                   saveCallback={saveHandler}
                 />
