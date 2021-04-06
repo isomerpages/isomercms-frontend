@@ -151,9 +151,9 @@ const Folders = ({ match, location }) => {
 
     // move file
     const { mutateAsync: moveHandler } = useMutation(
-      () => {
+      async () => {
         if (`${folderName ? folderName : ''}${subfolderName ? `/${subfolderName}` : ''}` === selectedPath) return true
-        moveFile({siteName, selectedFile: selectedPage, folderName, subfolderName, newPath: selectedPath})
+        await moveFile({siteName, selectedFile: selectedPage, folderName, subfolderName, newPath: selectedPath})
       },
       {
         onError: () => errorToast(`Your file could not be moved successfully. ${DEFAULT_RETRY_MSG}`),
