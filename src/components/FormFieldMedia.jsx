@@ -47,8 +47,9 @@ const FormFieldMedia = ({
   }
   
   const toggleItemAndSettingsModal = (newFileName) => {
+    const baseFolder = type === 'image' ? 'images' : 'files';
     setIsFileStagedForUpload(!isFileStagedForUpload)
-    onItemClick(`/images/${newFileName}`)
+    onItemClick(`/${baseFolder}/${newFileName}`)
   }
 
   const stageFileForUpload = (fileName, fileData) => {
