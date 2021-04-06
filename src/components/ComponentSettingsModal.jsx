@@ -103,7 +103,7 @@ const ComponentSettingsModal = ({
         }
         if (isNewFile) {
           const exampleDate = new Date().toISOString().split("T")[0]
-          const examplePermalink = `${category}/permalink`
+          const examplePermalink = `/${category}/permalink`
           let exampleTitle = 'Example Title'
           while (_.find(pageFileNames, (v) => generateResourceFileName(exampleTitle, exampleDate, isPost) === v ) !== undefined) {
             exampleTitle = exampleTitle+'_1'
