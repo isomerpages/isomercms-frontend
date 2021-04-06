@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import GenericWarningModal from './GenericWarningModal'
@@ -6,18 +6,17 @@ import useRedirectHook from '../hooks/useRedirectHook';
 import useSiteUrlHook from '../hooks/useSiteUrlHook';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
-// Import context
-const { LoginContext } = require('../contexts/LoginContext')
-
 // axios settings
 axios.defaults.withCredentials = true
+
+// constants
+const userIdKey = "userId"
 
 const Header = ({
   siteName, showButton, title, isEditPage, shouldAllowEditPageBackNav, backButtonText, backButtonUrl,
 }) => {
-  const { setRedirectToPage } = useRedirectHook()
+  const { setRedirectToLogout, setRedirectToPage } = useRedirectHook()
   const { retrieveStagingUrl } = useSiteUrlHook()
-  const setLogoutState = useContext(LoginContext)
 
   const [showBackNavWarningModal, setShowBackNavWarningModal] = useState(false)
   const [showStagingWarningModal, setShowStagingWarningModal] = useState(false)
@@ -83,13 +82,22 @@ const Header = ({
       </div>
       {/* Right section */}
       <div className={elementStyles.headerRight}>
-        { siteName &&
+        { siteName ?
           <>
             <button type="button" className={`${elementStyles.green} float-right text-nowrap`} onClick={handleViewPullRequest}>
               Pull Request
             </button>
             <button type="button" className={`${elementStyles.blue} float-right text-nowrap`} onClick={() => setShowStagingWarningModal(true)}>
               View Staging
+            </button>
+          </>
+          :
+          <>
+            <div className={`${elementStyles.info} mr-3`}>
+              Logged in as @{localStorage.getItem(userIdKey)}
+            </div>
+            <button type="button" className={`${elementStyles.blue} float-right text-nowrap`} onClick={setRedirectToLogout}>
+              Log Out
             </button>
           </>
         }
