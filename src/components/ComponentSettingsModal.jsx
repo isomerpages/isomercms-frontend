@@ -170,7 +170,7 @@ const ComponentSettingsModal = ({
         setErrors((prevState) => ({
             ...prevState,
             [id]: errorMessage,
-            title: titleErrorMessage,
+            title: titleErrorMessage || prevState.title,
         }));
         idToSetterFuncMap[id](value);
     }
