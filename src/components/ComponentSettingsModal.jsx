@@ -165,12 +165,11 @@ const ComponentSettingsModal = ({
 
     const changeHandler = (event) => {
         const { id, value } = event.target;
-        const { titleErrorMessage, errorMessage } = validateResourceSettings(id, value, title, resourceDate, isPost, pageFileNames.filter(file => file !== fileName))
+        const errorMessage = validateResourceSettings(id, value, pageFileNames.filter(file => file !== fileName))
         
         setErrors((prevState) => ({
             ...prevState,
             [id]: errorMessage,
-            title: (id === 'title' || id === 'date') ? titleErrorMessage : prevState.title
         }));
         idToSetterFuncMap[id](value);
     }

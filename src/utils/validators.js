@@ -1,7 +1,7 @@
 import { slugifyCategory } from '../utils';
 
 import _ from 'lodash';
-import { generatePageFileName, generateResourceFileName } from '../utils';
+import { generatePageFileName, retrieveResourceFileMetadata, } from '../utils';
 
 // Common regexes and constants
 // ==============
@@ -690,18 +690,20 @@ const validateDayOfMonth = (month, day) => {
   }
 };
 
-const validateResourceSettings = (id, value, title, resourceDate, isPost, folderOrderArray) => {
-  let titleErrorMessage = '', errorMessage = '';
-  const newFileName = generateResourceFileName(id === "title" ? value : title, id==="date" ? value : resourceDate, isPost) 
+const validateResourceSettings = (id, value, folderOrderArray) => {
+  let errorMessage = '';
   switch (id) {
     case 'title': {
       // Title is too short
       if (value.length < RESOURCE_SETTINGS_TITLE_MIN_LENGTH) {
-        titleErrorMessage = `The title should be longer than ${RESOURCE_SETTINGS_TITLE_MIN_LENGTH} characters.`;
+        errorMessage = `The title should be longer than ${RESOURCE_SETTINGS_TITLE_MIN_LENGTH} characters.`;
       }
       // Title is too long
       if (value.length > RESOURCE_SETTINGS_TITLE_MAX_LENGTH) {
-        titleErrorMessage = `The title should be shorter than ${RESOURCE_SETTINGS_TITLE_MAX_LENGTH} characters.`;
+        errorMessage = `The title should be shorter than ${RESOURCE_SETTINGS_TITLE_MAX_LENGTH} characters.`;
+      }
+      if (folderOrderArray !== undefined && folderOrderArray.map(fileName => retrieveResourceFileMetadata(fileName).title).includes(value)) {
+        errorMessage = `This title is already in use. Please choose a different title.`;
       }
       break;
     }
@@ -758,10 +760,7 @@ const validateResourceSettings = (id, value, title, resourceDate, isPost, folder
       break;
     }
   }
-  if (folderOrderArray !== undefined && folderOrderArray.includes(newFileName)) {
-    titleErrorMessage = `This title is already in use. Please choose a different title.`;
-  }
-  return { titleErrorMessage, errorMessage };
+  return errorMessage;
 };
 
 // Resource room creation
