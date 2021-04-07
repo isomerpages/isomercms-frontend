@@ -89,7 +89,9 @@ const Workspace = ({ match, location }) => {
               setIsFolderCreationActive={setIsFolderCreationActive}
             />
           }
-          <Header />
+          <Header 
+            siteName={siteName}
+          />
           {/* main bottom section */}
           <div className={elementStyles.wrapper}>
             <Sidebar siteName={siteName} currPath={location.pathname} />

@@ -494,6 +494,7 @@ export default class Settings extends Component {
     return (
       <>
         <Header
+          siteName={siteName}
           isEditPage={true}
           shouldAllowEditPageBackNav={_.isEmpty(settingsStateDiff)}
         />

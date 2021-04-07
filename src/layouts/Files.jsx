@@ -91,7 +91,9 @@ export default class Files extends Component {
     const { siteName } = match.params;
     return (
       <>
-        <Header />
+        <Header 
+          siteName={siteName}
+        />
         {/* main bottom section */}
         <div className={elementStyles.wrapper}>
           <Sidebar siteName={siteName} currPath={location.pathname} />

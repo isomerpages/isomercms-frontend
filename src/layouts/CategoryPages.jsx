@@ -91,6 +91,7 @@ const CategoryPages = ({ match, location, isResource }) => {
   return (
       <>
         <Header
+          siteName={siteName}
           backButtonText={`Back to ${backButtonLabel}`}
           backButtonUrl={`/sites/${siteName}/${backButtonUrl}`}
         />

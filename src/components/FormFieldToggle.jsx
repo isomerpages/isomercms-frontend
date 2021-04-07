@@ -41,7 +41,7 @@ export default FormFieldToggle;
   
 FormFieldToggle.propTypes = {
     title: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
+    value: PropTypes.bool.isRequired,
     id: PropTypes.string.isRequired,
     onFieldChange: PropTypes.func.isRequired,
 };

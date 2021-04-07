@@ -601,6 +601,7 @@ const EditNavBar =  ({ match }) => {
         )
       }
       <Header
+        siteName={siteName}
         title={"Nav Bar"}
         shouldAllowEditPageBackNav={!hasChanges()}
         isEditPage="true"
