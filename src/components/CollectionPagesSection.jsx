@@ -31,7 +31,7 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 axios.defaults.withCredentials = true
 
 // Clean up note: Should be renamed, only used for resource pages and unlinked pages sections
-const CollectionPagesSection = ({ collectionName, pages, siteName, isResource }) => {
+const CollectionPagesSection = ({ collectionName, pages, siteName, isResource, refetchPages }) => {
     
     const initialMoveDropdownQueryState = {
         folderName: '',
@@ -111,25 +111,25 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
     };
 
     const { mutateAsync: deleteHandler } = useMutation(
-        async () => deletePageData({ siteName, fileName: selectedFile, resourceName: collectionName }, pageData.pageSha),
+        async () => await deletePageData({ siteName, fileName: selectedFile, resourceName: collectionName }, pageData.pageSha),
         {
           onError: () => errorToast(`Your file could not be deleted successfully. ${DEFAULT_RETRY_MSG}`),
-          onSuccess: () => {successToast('Successfully deleted file'); window.location.reload();},
+          onSuccess: () => {successToast('Successfully deleted file'); refetchPages();},
           onSettled: () => setCanShowDeleteWarningModal((prevState) => !prevState),
         }
     )
 
     const { mutateAsync: moveHandler } = useMutation(
-        () => {
+        async () => {
             if ('pages' === selectedPath) return true
-            moveFile({siteName, selectedFile, newPath: selectedPath, resourceName: collectionName})
+            await moveFile({siteName, selectedFile, newPath: selectedPath, resourceName: collectionName})
         },
         {
           onError: () => errorToast(`Your file could not be moved successfully. ${DEFAULT_RETRY_MSG}`),
           onSuccess: (samePage) => {
             if (samePage) return successToast('Page is already in this folder')   
-            successToast('Successfully moved file'); 
-            window.location.reload();
+            successToast('Successfully moved file')
+            refetchPages()
           },
           onSettled: () => setCanShowMoveModal(prevState => !prevState),
         }
