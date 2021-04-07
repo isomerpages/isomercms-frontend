@@ -169,6 +169,11 @@ const addResourceCategory = async (siteName, resourceName) => {
     return await axios.post(`${BACKEND_URL}/sites/${siteName}/resources`, params);
 }
 
+const getPages = async ({ siteName }) => {
+    const pagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/pages`)
+    return pagesResp.data.pages
+}
+
 const getResourcePages = async (siteName, resourceName) => {
     if (!resourceName) return
     return await axios.get(`${BACKEND_URL}/sites/${siteName}/resources/${resourceName}`);
@@ -248,6 +253,7 @@ export {
     renameResourceCategory,
     getAllResourceCategories,
     addResourceCategory,
+    getPages,
     getResourcePages,
     getEditNavBarData,
     updateNavBarData,

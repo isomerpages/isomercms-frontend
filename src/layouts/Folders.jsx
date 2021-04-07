@@ -44,6 +44,12 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 const Folders = ({ match, location }) => {
     const { siteName, folderName, subfolderName } = match.params;
 
+    // set Move-To dropdown to start from current location of file
+    const initialMoveDropdownQueryState = {
+      folderName: folderName || '',
+      subfolderName: subfolderName || '',
+    }
+
     const { setRedirectToPage } = useRedirectHook()
 
     const [isRearrangeActive, setIsRearrangeActive] = useState(false)
@@ -56,9 +62,9 @@ const Folders = ({ match, location }) => {
     const [isMoveModalActive, setIsMoveModalActive] = useState(false)
     const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
     const [selectedPage, setSelectedPage] = useState('')
-    const [selectedFolder, setSelectedFolder] = useState('')
+    const [selectedPath, setSelectedPath] = useState('')
     const [isSelectedItemPage, setIsSelectedItemPage] = useState(false)
-    const [queryFolderName, setQueryFolderName] = useState('')
+    const [moveDropdownQuery, setMoveDropdownQuery] = useState({})
 
     const { data: folderContents, error: queryError, isLoading: isLoadingDirectory, refetch: refetchFolderContents } = useQuery(
       [DIR_CONTENT_KEY, siteName, folderName, subfolderName],
@@ -75,6 +81,11 @@ const Folders = ({ match, location }) => {
         }
       },
     )
+
+    // re-initialize query whenever we navigate between folders and subfolder pages
+    useEffect(() => {
+      setMoveDropdownQuery(initialMoveDropdownQueryState)
+    }, [folderName, subfolderName])
 
     // parse contents of current folder directory
     useEffect(() => {
@@ -134,26 +145,28 @@ const Folders = ({ match, location }) => {
         onSettled: () => {
           setIsDeleteModalActive((prevState) => !prevState)
           setSelectedPage('')
-          setSelectedFolder('')
-          setQueryFolderName('')
         },
       }
     )
 
     // move file
     const { mutateAsync: moveHandler } = useMutation(
-      () => moveFile({siteName, selectedFile: selectedPage, folderName, subfolderName, newPath: selectedFolder}),
+      async () => {
+        if (`${folderName ? folderName : ''}${subfolderName ? `/${subfolderName}` : ''}` === selectedPath) return true
+        await moveFile({siteName, selectedFile: selectedPage, folderName, subfolderName, newPath: selectedPath})
+      },
       {
         onError: () => errorToast(`Your file could not be moved successfully. ${DEFAULT_RETRY_MSG}`),
-        onSuccess: () => {
+        onSuccess: (noChange) => {
+          if (noChange) return successToast('Page is already in this folder') 
           successToast('Successfully moved file') 
           refetchFolderContents()
         },
         onSettled: () => {
           setIsMoveModalActive((prevState) => !prevState)
           setSelectedPage('')
-          setSelectedFolder('')
-          setQueryFolderName('')
+          setSelectedPath('')
+          clearMoveDropdownQueryState()
         },
       }
     )
@@ -161,7 +174,7 @@ const Folders = ({ match, location }) => {
     // MOVE-TO Dropdown
     // get all folders for move-to dropdown
     const { data: allFolders } = useQuery(
-      [FOLDERS_CONTENT_KEY, { siteName, folderName }],
+      [FOLDERS_CONTENT_KEY, { siteName, isResource: false }],
       async () => getAllCategories({ siteName }),
       {
         enabled: selectedPage.length > 0 && isSelectedItemPage,
@@ -172,27 +185,36 @@ const Folders = ({ match, location }) => {
     // MOVE-TO Dropdown
     // get subfolders of selected folder for move-to dropdown
     const { data: querySubfolders } = useQuery(
-      [DIR_CONTENT_KEY, siteName, queryFolderName],
-      async () => getDirectoryFile(siteName, queryFolderName),
+      [DIR_CONTENT_KEY, siteName, moveDropdownQuery.folderName],
+      async () => getDirectoryFile(siteName, moveDropdownQuery.folderName),
       {
-        enabled: selectedPage.length > 0 && queryFolderName.length > 0 && isSelectedItemPage,
+        enabled: selectedPage.length > 0 && moveDropdownQuery.folderName.length > 0 && isSelectedItemPage,
         onError: () => errorToast(`The folders data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
       },
     )
 
     // MOVE-TO Dropdown utils
     // parse responses from move-to queries
-    const getCategories = (queryFolderName, allFolders, querySubfolders) => {
-      if (queryFolderName && querySubfolders) {
+    const getCategories = (query, allFolders, querySubfolders) => {
+      const { folderName, subfolderName } = query
+      if (subfolderName !== '') { // inside subfolder, show empty 
+        return []
+      }
+      if (folderName !== '' && querySubfolders) { // inside folder, show all subfolders
         const parsedFolderContents = parseDirectoryFile(querySubfolders.data.content)
         const parsedFolderArray = convertFolderOrderToArray(parsedFolderContents)
         return parsedFolderArray.filter(file => file.type === 'dir').map(file => file.name)
       }
-      if (allFolders) {
+      if (folderName === '' && subfolderName === '' && allFolders) { // inside workspace, show all folders
         return allFolders.collections
       }
-      return []
+      return null
     }
+
+    // MOVE-TO Clear Query utils
+    const clearMoveDropdownQueryState = () => {
+      setMoveDropdownQuery({ ...initialMoveDropdownQueryState });
+    };
 
     // REORDERING
     // save file-reordering
@@ -364,18 +386,19 @@ const Folders = ({ match, location }) => {
                 && <FolderContent 
                     folderOrderArray={folderOrderArray} 
                     setFolderOrderArray={setFolderOrderArray} 
-                    allCategories={getCategories(queryFolderName, allFolders, querySubfolders)}
+                    allCategories={getCategories(moveDropdownQuery, allFolders, querySubfolders)}
                     siteName={siteName} 
                     folderName={folderName}
                     enableDragDrop={isRearrangeActive}
-                    queryFolderName={queryFolderName}
-                    setQueryFolderName={setQueryFolderName}
                     setIsPageSettingsActive={setIsPageSettingsActive}
                     setIsFolderModalOpen={setIsFolderModalOpen}
                     setIsDeleteModalActive={setIsDeleteModalActive}
                     setIsMoveModalActive={setIsMoveModalActive}
                     setSelectedPage={setSelectedPage}
-                    setSelectedFolder={setSelectedFolder}
+                    setSelectedPath={setSelectedPath}
+                    moveDropdownQuery={moveDropdownQuery}
+                    setMoveDropdownQuery={setMoveDropdownQuery}
+                    clearMoveDropdownQueryState={clearMoveDropdownQueryState}
                   />
               }
             </div>

@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import FolderModal from './FolderModal';
 import DeleteWarningModal from './DeleteWarningModal'
-import MenuDropdown from './MenuDropdown'
+import { MenuDropdown } from './MenuDropdown'
 
 import { errorToast } from '../utils/toasts';
 
