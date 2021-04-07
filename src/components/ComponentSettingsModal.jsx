@@ -122,7 +122,7 @@ const ComponentSettingsModal = ({
     }, [pageData])
 
     useEffect(() => {
-        setHasErrors(_.some(errors, (field) => field.length > 0));
+        setHasErrors(!isPost ? (_.some(errors, (field) => field.length > 0) || !fileUrl ) : _.some(errors, (field) => field.length > 0) );
     }, [errors])
 
     const handlePermalinkFileUrlToggle = (event) => {
@@ -227,7 +227,7 @@ const ComponentSettingsModal = ({
                   />
                 </div>
                 <SaveDeleteButtons 
-                  isDisabled={isNewFile && !isPost ? (hasErrors || !fileUrl) : isNewFile && isPost ? hasErrors : (hasErrors || !sha)}
+                  isDisabled={isNewFile ? hasErrors : (hasErrors || !sha)}
                   hasDeleteButton={false}
                   saveCallback={saveHandler}
                 />
