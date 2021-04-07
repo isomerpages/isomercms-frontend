@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import PropTypes from 'prop-types';
+import { useQuery } from 'react-query';
 
 // Import components
 import Header from '../components/Header';
@@ -15,13 +15,13 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 // Import utils
-import { prettifyPageFileName } from '../utils';
+import { DEFAULT_RETRY_MSG, prettifyPageFileName } from '../utils';
+import { errorToast } from '../utils/toasts';
+import { getPages, getAllCategories } from '../api';
+import { PAGE_CONTENT_KEY, FOLDERS_CONTENT_KEY } from '../constants'
 
 // Import hooks
 import useSiteColorsHook from '../hooks/useSiteColorsHook';
-
-// Constants
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
 const Workspace = ({ match, location }) => {
     const { retrieveSiteColors } = useSiteColorsHook()
@@ -33,37 +33,35 @@ const Workspace = ({ match, location }) => {
     const [contactUsCard, setContactUsCard] = useState(false)
     const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
 
+    // get unlinked pages
+    const { refetch: refetchPages } = useQuery(
+      [PAGE_CONTENT_KEY, { siteName }],
+      () => getPages({ siteName }),
+      {
+        retry: false,
+        onError: () => errorToast(`There was a problem trying to load your pages. ${DEFAULT_RETRY_MSG}`),
+        onSuccess: (pagesResp) => {
+          if (pagesResp.some(page => page.fileName === 'contact-us.md')) setContactUsCard(true)
+          setUnlinkedPages(pagesResp.filter(page => page.fileName !== 'contact-us.md'))
+        },
+      },
+    )
+    
+    // get all folders
+    const { refetch: refetchFolders } = useQuery(
+      [FOLDERS_CONTENT_KEY, { siteName, isResource: false }],
+      async () => getAllCategories({ siteName }),
+      {
+        onError: () => errorToast(`The folders data could not be retrieved. ${DEFAULT_RETRY_MSG}`),
+        onSuccess: (allFolders) => setCollections(allFolders.collections)
+      },
+    )
+
     useEffect(() => {
       let _isMounted = true
       const fetchData = async () => {
         try {
           await retrieveSiteColors(siteName)
-        } catch (e) {
-          console.log(e)
-        }
-
-        try { 
-          await axios.get(`${BACKEND_URL}/sites/${siteName}/pages/contact-us.md`);
-          if (_isMounted) setContactUsCard(true) 
-        } catch (e) {
-          if (e.response?.status === 500) {
-            // create option for contact-us page
-          }
-        }
-
-        try { 
-          const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections`);
-          if (_isMounted) setCollections(collectionsResp.data?.collections)
-        } catch (e) {
-          setCollections(undefined)
-          console.log(e)
-        }
-        
-        try { 
-          const unlinkedPagesResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/files/pages`);
-          if (_isMounted) {
-            setUnlinkedPages(unlinkedPagesResp.data?.directoryContents.filter(page => page.name !== 'contact-us.md'))
-          }
         } catch (e) {
           console.log(e)
         }
