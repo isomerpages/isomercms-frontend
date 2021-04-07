@@ -42,7 +42,7 @@ const Workspace = ({ match, location }) => {
         onError: () => errorToast(`There was a problem trying to load your pages. ${DEFAULT_RETRY_MSG}`),
         onSuccess: (pagesResp) => {
           if (pagesResp.some(page => page.fileName === 'contact-us.md')) setContactUsCard(true)
-          setUnlinkedPages(pagesResp.filter(page => page.fileName !== 'contact-us.md'))
+          setUnlinkedPages(pagesResp.filter(page => page.fileName !== 'contact-us.md') || [])
         },
       },
     )
@@ -53,7 +53,7 @@ const Workspace = ({ match, location }) => {
       async () => getAllCategories({ siteName }),
       {
         onError: () => errorToast(`The folders data could not be retrieved. ${DEFAULT_RETRY_MSG}`),
-        onSuccess: (allFolders) => setCollections(allFolders.collections)
+        onSuccess: (allFolders) => setCollections(allFolders.collections || [])
       },
     )
 
@@ -189,6 +189,7 @@ const Workspace = ({ match, location }) => {
               <CollectionPagesSection
                 pages={unlinkedPages}
                 siteName={siteName}
+                refetchPages={refetchPages}
               />
             </div>
             {/* main section ends here */}

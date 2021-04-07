@@ -42,7 +42,7 @@ const CategoryPages = ({ match, location, isResource }) => {
 
   const [categoryPages, setCategoryPages] = useState()
 
-  const { data: resourcePagesResp } = useQuery(
+  const { data: resourcePagesResp, refetch: refetchPages } = useQuery(
     [RESOURCE_CATEGORY_CONTENT_KEY, siteName, collectionName, isResource],
     () => getResourcePages(siteName, collectionName),
     {
@@ -109,6 +109,7 @@ const CategoryPages = ({ match, location, isResource }) => {
                   pages={categoryPages}
                   siteName={siteName}
                   isResource={isResource}
+                  refetchPages={refetchPages}
               />
           </div>
           {/* main section ends here */}
