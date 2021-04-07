@@ -113,6 +113,7 @@ const Sidebar = ({ siteName, currPath }) => {
             className={`px-4 py-3 h-100 w-100 font-weight-bold text-dark`}
             href={typeInfoDict[title].url}
             target="_blank"
+            rel="noopener noreferrer"
           >
             {title}
             <div className='float-right'>
