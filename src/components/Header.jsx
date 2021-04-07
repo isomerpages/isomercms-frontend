@@ -87,7 +87,7 @@ const Header = ({
             <button type="button" className={`${elementStyles.green} float-right text-nowrap`} onClick={handleViewPullRequest}>
               Pull Request
             </button>
-            <button type="button" className={`${elementStyles.blue} float-right text-nowrap`} onClick={() => setShowStagingWarningModal(true)}>
+            <button type="button" className={`${!stagingUrl ? elementStyles.disabled : elementStyles.blue} float-right text-nowrap`} onClick={() => setShowStagingWarningModal(true)} disabled={!stagingUrl}>
               View Staging
             </button>
           </>
