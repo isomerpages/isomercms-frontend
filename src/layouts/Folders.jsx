@@ -296,7 +296,7 @@ const Folders = ({ match, location }) => {
             )
           }
           {
-            isDeleteModalActive
+            isDeleteModalActive && pageData
             && (
               <DeleteWarningModal
                 onCancel={() => setIsDeleteModalActive(false)}

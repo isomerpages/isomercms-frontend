@@ -163,7 +163,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource, r
                 )
             }
             {
-                canShowDeleteWarningModal
+                canShowDeleteWarningModal && pageData
                 && (
                 <DeleteWarningModal
                     onCancel={() => setCanShowDeleteWarningModal(false)}

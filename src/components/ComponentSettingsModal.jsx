@@ -103,7 +103,7 @@ const ComponentSettingsModal = ({
         }
         if (isNewFile) {
           const exampleDate = new Date().toISOString().split("T")[0]
-          const examplePermalink = `${category}/permalink`
+          const examplePermalink = `/${category}/permalink`
           let exampleTitle = 'Example Title'
           while (_.find(pageFileNames, (v) => generateResourceFileName(exampleTitle, exampleDate, isPost) === v ) !== undefined) {
             exampleTitle = exampleTitle+'_1'
@@ -122,7 +122,7 @@ const ComponentSettingsModal = ({
     }, [pageData])
 
     useEffect(() => {
-        setHasErrors(_.some(errors, (field) => field.length > 0));
+        setHasErrors(!isPost ? (_.some(errors, (field) => field.length > 0) || !fileUrl ) : _.some(errors, (field) => field.length > 0) );
     }, [errors])
 
     const handlePermalinkFileUrlToggle = (event) => {
@@ -136,7 +136,7 @@ const ComponentSettingsModal = ({
                 permalink: '',
             }))
         } else {
-            setPermalink(originalPermalink ? originalPermalink : 'permalink')
+            setPermalink(originalPermalink ? originalPermalink : `/${category}/permalink`)
             setFileUrl('')
             setIsPost(true)
             setErrors((prevState) => ({
@@ -158,19 +158,18 @@ const ComponentSettingsModal = ({
       },
       { 
         onSettled: () => {setSelectedFile(''); setIsComponentSettingsActive(false)},
-        onSuccess: (redirectUrl) => redirectUrl ? setRedirectToPage(redirectUrl) : window.location.reload(),
+        onSuccess: (redirectUrl) => redirectUrl && isPost ? setRedirectToPage(redirectUrl) : window.location.reload(),
         onError: () => errorToast(`${isNewFile ? 'A new resource page could not be created.' : 'Your resource page settings could not be saved.'} ${DEFAULT_RETRY_MSG}`)
       }
     )
 
     const changeHandler = (event) => {
         const { id, value } = event.target;
-        const { titleErrorMessage, errorMessage } = validateResourceSettings(id, value, title, resourceDate, isPost, pageFileNames.filter(file => file !== fileName))
+        const errorMessage = validateResourceSettings(id, value, pageFileNames.filter(file => file !== fileName))
         
         setErrors((prevState) => ({
             ...prevState,
             [id]: errorMessage,
-            title: titleErrorMessage,
         }));
         idToSetterFuncMap[id](value);
     }
@@ -208,9 +207,9 @@ const ComponentSettingsModal = ({
                   <FormFieldHorizontal
                     title={`https://abc.gov.sg`}             
                     id="permalink"
-                    value={permalink ? permalink : ''}
+                    value={isPost ? permalink : fileUrl}
                     errorMessage={errors.permalink}
-                    isRequired={true}
+                    isRequired={isPost}
                     onFieldChange={changeHandler}
                     disabled={!isPost}
                     placeholder=' '
