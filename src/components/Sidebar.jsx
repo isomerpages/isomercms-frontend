@@ -187,7 +187,7 @@ const Sidebar = ({ siteName, currPath }) => {
         </ul>
       </div>
       <div className={styles.sidebarNavigation}>
-        <hr/>
+        <hr className="m-0"/>
         <ul>
           {sidebarSettingsPathDict.map(({ pathname, title }) => (
             generateTab(title, siteName, pathname)
