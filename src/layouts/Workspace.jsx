@@ -136,16 +136,30 @@ const Workspace = ({ match, location }) => {
               <div className={contentStyles.segmentDividerContainer}>
                 <hr className="w-100 mt-3 mb-5" />
               </div>
-              {/* Folders title */}
+              {/* Collections title */}
               <div className={contentStyles.segment}>
-                Folders
+                Collections
               </div>
-              {/* Folders */}
+              {
+                !collections &&
+                <div className={contentStyles.segment}>
+                  Loading Collections...
+                </div>
+              }
+              {
+                collections && collections.length === 0 &&
+                <div className={contentStyles.segment}>
+                  There are no collections in this repository.
+                </div>
+              }
+              {/* Collections */}
               <div className={contentStyles.folderContainerBoxes}>
                 <div className={contentStyles.boxesContainer}>
-                  <FolderOptionButton title="Create new folder" option="create-sub" isSubfolder={false} onClick={() => setIsFolderCreationActive(true)}/>
                   {
-                    collections
+                    collections && unlinkedPages && <FolderOptionButton title="Create new folder" option="create-sub" isSubfolder={false} onClick={() => setIsFolderCreationActive(true)}/>
+                  }
+                  {
+                    collections && collections.length > 0
                     ? collections.map((collection, collectionIdx) => (
                         <FolderCard
                             displayText={prettifyPageFileName(collection)}
@@ -157,15 +171,14 @@ const Workspace = ({ match, location }) => {
                             itemIndex={collectionIdx}
                         />
                     ))
-                    : 'Loading Folders...'
+                    : null
                   }
                 </div>
               </div>
               {/* Segment divider  */}
               <div className={contentStyles.segmentDividerContainer}>
                 <hr className="invisible w-100 mt-3 mb-5" />
-              </div>
-              {/* Pages title */}
+              </div>                {/* Pages title */}
               <div className={contentStyles.segment}>
                 Unlinked Pages
               </div>
