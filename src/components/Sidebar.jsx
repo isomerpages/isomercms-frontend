@@ -197,8 +197,8 @@ const Sidebar = ({ siteName, currPath }) => {
       <div>
         <div className={styles.siteIntro}>
           <div className={`font-weight-bold ${styles.siteName}`}>{siteName}</div>
-          <div className={styles.siteDate}>{siteUrl}</div>
-          <div className={styles.siteDate}>{lastUpdated}</div>
+          <div className={styles.siteInfo}>{siteUrl}</div>
+          <div className={styles.siteInfo}>{lastUpdated}</div>
         </div>
         <div className={styles.sidebarNavigation}>
           <ul>
