@@ -41,8 +41,8 @@ const Workspace = ({ match, location }) => {
         retry: false,
         onError: () => errorToast(`There was a problem trying to load your pages. ${DEFAULT_RETRY_MSG}`),
         onSuccess: (pagesResp) => {
-          if (pagesResp.some(page => page.fileName === 'contact-us.md')) setContactUsCard(true)
-          setUnlinkedPages(pagesResp.filter(page => page.fileName !== 'contact-us.md') || [])
+          if (pagesResp.length > 0 && pagesResp.some(page => page.fileName === 'contact-us.md')) setContactUsCard(true)
+          setUnlinkedPages(pagesResp.length > 0 && pagesResp.filter(page => page.fileName !== 'contact-us.md') || [])
         },
       },
     )
