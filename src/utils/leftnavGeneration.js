@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { deslugifyPage } from '../utils';
+import { deslugifyPage, deslugifyDirectory } from '../utils';
 
 export const generateLeftNav = (leftNavPages, fileName) => {
     const currentFileThirdNavTitle = retrieveCurrentFileThirdNavTitle(leftNavPages, fileName)
@@ -203,7 +203,7 @@ const generateThirdNavDiv = (currentFileThirdNavTitle, thirdNavElements, current
 const generateThirdNavHeader = (currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName) => (
     <li className="third-level-nav-header" key={`${currentThirdNavTitle}-header`} onClick={accordionHandler}>
         <a className={`third-level-nav-header ${calculateThirdNavHeaderState(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)}`}>
-        {currentThirdNavTitle}
+        {deslugifyDirectory(currentThirdNavTitle)}
         <i
             className={`sgds-icon is-pulled-right is-size-4 ${calculateThirdNavHeaderChevronState(currentFileThirdNavTitle, currentThirdNavTitle, elementThirdNavTitle, fileName, elementFileName)}`}
             aria-hidden="true"

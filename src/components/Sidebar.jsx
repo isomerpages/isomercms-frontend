@@ -175,19 +175,21 @@ const Sidebar = ({ siteName, currPath }) => {
 
   return (
     <div className={styles.adminSidebar}>
-      <div className={styles.siteIntro}>
-        <div className={`font-weight-bold ${styles.siteName}`}>{siteName}</div>
-        <div className={styles.siteDate}>{lastUpdated}</div>
+      <div>
+        <div className={styles.siteIntro}>
+          <div className={`font-weight-bold ${styles.siteName}`}>{siteName}</div>
+          <div className={styles.siteDate}>{lastUpdated}</div>
+        </div>
+        <div className={styles.sidebarNavigation}>
+          <ul>
+            {sidebarContentPathDict.map(({ pathname, title }) => (
+              generateTab(title, siteName, pathname)
+            ))}
+          </ul>
+        </div>
       </div>
       <div className={styles.sidebarNavigation}>
-        <ul>
-          {sidebarContentPathDict.map(({ pathname, title }) => (
-            generateTab(title, siteName, pathname)
-          ))}
-        </ul>
-      </div>
-      <div className={styles.sidebarNavigation}>
-        <hr/>
+        <hr className="m-0"/>
         <ul>
           {sidebarSettingsPathDict.map(({ pathname, title }) => (
             generateTab(title, siteName, pathname)
