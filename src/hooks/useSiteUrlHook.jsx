@@ -1,34 +1,48 @@
 import axios from 'axios';
 // Constants
-const LOCAL_STORAGE_STAGING_URL = 'isomercms_staging_url'
+const LOCAL_STORAGE_SITE_URL = 'isomercms_site_url'
 
 const useSiteUrlHook = () => {
-    const getStagingUrlObj = () => {
-        const localStorageStagingUrl = JSON.parse(localStorage.getItem(LOCAL_STORAGE_STAGING_URL))
-        return localStorageStagingUrl
+    const getSiteUrl = (siteName, type) => {
+        const siteUrlObj = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SITE_URL))
+        if (siteUrlObj && siteUrlObj[siteName]) return siteUrlObj[siteName][type]
+        return null
     }
 
-    const setLocalStorageStagingUrlObj = (newStagingUrlObj) => {
-        localStorage.setItem(LOCAL_STORAGE_STAGING_URL, JSON.stringify(newStagingUrlObj))
+    const setSiteUrl = (newUrl, siteName, type) => {
+        const siteUrlObj = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SITE_URL)) || {}
+        if (!(siteUrlObj.hasOwnProperty(siteName))) siteUrlObj[siteName] = {}
+        siteUrlObj[siteName][type] = newUrl
+        localStorage.setItem(LOCAL_STORAGE_SITE_URL, JSON.stringify({...siteUrlObj}))
     }
 
-    const retrieveStagingUrl = async (siteName) => {
-        const localStorageStagingUrlObj = getStagingUrlObj()
-        if (!localStorageStagingUrlObj || !localStorageStagingUrlObj[siteName]) {
-            const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/stagingUrl`);
-            const { stagingUrl } = resp.data
-            setLocalStorageStagingUrlObj({
-                ...localStorageStagingUrlObj,
-                [siteName]: {
-                    stagingUrl
-                },
-            })
-            return stagingUrl
+    const retrieveUrl = async (siteName, type) => {
+        const localStorageSiteUrl = getSiteUrl(siteName, type)
+        if (!localStorageSiteUrl) {
+            let url
+            if (type === 'staging') {
+                const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/stagingUrl`);
+                url = resp.data.stagingUrl
+            } 
+            if (type === 'site') {
+                const settingsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`);
+                url = settingsResp.data.settings.configFieldsRequired.url;
+            }
+            setSiteUrl(url, siteName, type)
+            return url
         }
-        return localStorageStagingUrlObj[siteName].stagingUrl
+        return localStorageSiteUrl
     }
 
-    return { retrieveStagingUrl }
+    const retrieveStagingUrl = async(siteName) => {
+        return await retrieveUrl(siteName, 'staging')
+    }
+
+    const retrieveSiteUrl = async(siteName) => {
+        return await retrieveUrl(siteName, 'site')
+    }
+
+    return { retrieveStagingUrl, retrieveSiteUrl }
 }
 
 export default useSiteUrlHook;
