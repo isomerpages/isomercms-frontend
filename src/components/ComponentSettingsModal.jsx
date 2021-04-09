@@ -9,6 +9,7 @@ import FormFieldHorizontal from './FormFieldHorizontal';
 import ResourceFormFields from './ResourceFormFields';
 import SaveDeleteButtons from './SaveDeleteButtons';
 
+import useSiteUrlHook from '../hooks/useSiteUrlHook';
 import useRedirectHook from '../hooks/useRedirectHook';
 
 import {
@@ -40,6 +41,8 @@ const ComponentSettingsModal = ({
     setIsComponentSettingsActive,
 }) => {
     const { setRedirectToPage } = useRedirectHook()
+    const { retrieveSiteUrl } = useSiteUrlHook()
+
     // Errors
     const [errors, setErrors] = useState({
         title: '',
@@ -64,6 +67,8 @@ const ComponentSettingsModal = ({
     // Resource-related
     const [resourceDate, setResourceDate] = useState('')
     const [fileUrl, setFileUrl] = useState('')
+
+    const [siteUrl, setSiteUrl] = useState('https://abc.com.sg')
 
     // Page redirection modals
     const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
@@ -115,6 +120,15 @@ const ComponentSettingsModal = ({
           } 
         }
       }
+
+      const loadSiteUrl = async () => {
+        if (siteName) {
+          const retrievedSiteUrl = await retrieveSiteUrl(siteName, 'site')
+          if (_isMounted) setSiteUrl(retrievedSiteUrl)
+        }
+      }
+  
+      loadSiteUrl()
       initializePageDetails()
       return () => {
         _isMounted = false
@@ -205,7 +219,7 @@ const ComponentSettingsModal = ({
                   <p className={elementStyles.formLabel}>{isPost? 'Page URL' : 'File URL'}</p>
                   {/* Permalink */}
                   <FormFieldHorizontal
-                    title={`https://abc.gov.sg`}             
+                    title={siteUrl}             
                     id="permalink"
                     value={isPost ? permalink : fileUrl}
                     errorMessage={errors.permalink}
