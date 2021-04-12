@@ -50,6 +50,7 @@ const PageSettingsModal = ({
     const [title, setTitle] = useState('')
     const [permalink, setPermalink] = useState('')
     const [originalPermalink, setOriginalPermalink] = useState('')
+    const [originalFrontMatter, setOriginalFrontMatter] = useState({})
     const [sha, setSha] = useState('')
     const [mdBody, setMdBody] = useState('')
     const { setRedirectToPage } = useRedirectHook()
@@ -62,11 +63,12 @@ const PageSettingsModal = ({
     const { mutateAsync: saveHandler } = useMutation(
       () => {
         const frontMatter = subfolderName 
-          ? { title, permalink, third_nav_title: subfolderName }
-          : { title, permalink }
-        if (isNewPage) return createPageData({ siteName, folderName, subfolderName, newFileName: generatePageFileName(title) }, concatFrontMatterMdBody(frontMatter, mdBody)) 
-        if (originalPageName !== generatePageFileName(title)) return renamePageData({ siteName, folderName, subfolderName, fileName: originalPageName, newFileName: generatePageFileName(title) }, concatFrontMatterMdBody(frontMatter, mdBody), sha)
-        return updatePageData({ siteName, folderName, subfolderName, fileName: originalPageName }, concatFrontMatterMdBody(frontMatter, mdBody), sha)
+          ? { ...originalFrontMatter, title, permalink, third_nav_title: subfolderName }
+          : { ...originalFrontMatter, title, permalink }
+        const newPageData = concatFrontMatterMdBody(frontMatter, mdBody)
+        if (isNewPage) return createPageData({ siteName, folderName, subfolderName, newFileName: generatePageFileName(title) },  newPageData) 
+        if (originalPageName !== generatePageFileName(title)) return renamePageData({ siteName, folderName, subfolderName, fileName: originalPageName, newFileName: generatePageFileName(title) }, newPageData, sha)
+        return updatePageData({ siteName, folderName, subfolderName, fileName: originalPageName }, newPageData, sha)
       },
       { 
         onSettled: () => {setSelectedPage(''); setIsPageSettingsActive(false)},
@@ -90,6 +92,7 @@ const PageSettingsModal = ({
             setOriginalPermalink(originalPermalink)
             setSha(pageSha)
             setMdBody(pageMdBody)
+            setOriginalFrontMatter(frontMatter)
           }
         }
         if (isNewPage) {
