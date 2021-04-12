@@ -22,6 +22,7 @@ import FormField from './FormField';
 import FormFieldHorizontal from './FormFieldHorizontal';
 import SaveDeleteButtons from './SaveDeleteButtons';
 
+import useSiteUrlHook from '../hooks/useSiteUrlHook';
 import useRedirectHook from '../hooks/useRedirectHook';
 
 // axios settings
@@ -52,7 +53,11 @@ const PageSettingsModal = ({
     const [originalPermalink, setOriginalPermalink] = useState('')
     const [sha, setSha] = useState('')
     const [mdBody, setMdBody] = useState('')
+    
+    const [siteUrl, setSiteUrl] = useState('https://abc.com.sg')
+
     const { setRedirectToPage } = useRedirectHook()
+    const { retrieveSiteUrl } = useSiteUrlHook()
 
     const idToSetterFuncMap = {
       title: setTitle,
@@ -104,6 +109,15 @@ const PageSettingsModal = ({
           } 
         }
       }
+
+      const loadSiteUrl = async () => {
+        if (siteName) {
+          const retrievedSiteUrl = await retrieveSiteUrl(siteName)
+          if (_isMounted && retrievedSiteUrl) setSiteUrl(retrievedSiteUrl)
+        }
+      }
+  
+      loadSiteUrl()
       initializePageDetails()
       return () => {
         _isMounted = false
@@ -170,7 +184,7 @@ const PageSettingsModal = ({
                   <p className={elementStyles.formLabel}>Page URL</p>
                   {/* Permalink */}
                   <FormFieldHorizontal
-                    title={`https://abc.gov.sg`}             
+                    title={siteUrl}             
                     id="permalink"
                     value={permalink ? permalink : ''}
                     errorMessage={errors.permalink}

@@ -53,7 +53,7 @@ export default class Sites extends Component {
                         <div className={siteStyles.siteImage} />
                         <div className={siteStyles.siteDescription}>
                           <div className={siteStyles.siteName}>{siteName.repoName}</div>
-                          <div className={siteStyles.siteDate}>{siteName.lastUpdated}</div>
+                          <div className={siteStyles.siteInfo}>{siteName.lastUpdated}</div>
                         </div>
                       </a>
                     </div>

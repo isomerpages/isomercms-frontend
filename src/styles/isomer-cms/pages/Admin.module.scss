@@ -20,10 +20,14 @@
       margin-bottom: 5px;
     }
 
-    .siteDate{
+    .siteInfo{
       font-weight: 300;
       color: $body-grey;
       font-size: .7em;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 100%;
+      overflow: hidden;
     }
   }
 

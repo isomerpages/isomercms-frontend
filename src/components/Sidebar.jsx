@@ -5,6 +5,7 @@ import { useQuery } from 'react-query';
 import PropTypes from 'prop-types';
 import styles from '../styles/isomer-cms/pages/Admin.module.scss';
 import useRedirectHook from '../hooks/useRedirectHook';
+import useSiteUrlHook from '../hooks/useSiteUrlHook';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import { getLastUpdated } from '../api'
 import { LAST_UPDATED_KEY } from '../constants'
@@ -77,6 +78,8 @@ const typeInfoDict = {
 const Sidebar = ({ siteName, currPath }) => {
   const { setRedirectToLogout } = useRedirectHook()
   const [lastUpdated, setLastUpdated] = useState('Updated 2 days ago')
+  const [siteUrl, setSiteUrl] = useState()
+  const { retrieveSiteUrl } = useSiteUrlHook()
 
   const { data: lastUpdatedResp } = useQuery(
     [LAST_UPDATED_KEY, siteName],
@@ -89,6 +92,22 @@ const Sidebar = ({ siteName, currPath }) => {
       }
     },
   );
+
+  useEffect(() => {
+    let _isMounted = true
+
+    const loadSiteUrl = async () => {
+      if (siteName) {
+        const retrievedSiteUrl = await retrieveSiteUrl(siteName)
+        if (_isMounted) setSiteUrl(retrievedSiteUrl)
+      }
+    }
+
+    loadSiteUrl()
+    return () => {
+      _isMounted = false
+    }
+  }, [])
 
   useEffect(() => {
     if (lastUpdatedResp) setLastUpdated(lastUpdatedResp.lastUpdated)
@@ -178,7 +197,8 @@ const Sidebar = ({ siteName, currPath }) => {
       <div>
         <div className={styles.siteIntro}>
           <div className={`font-weight-bold ${styles.siteName}`}>{siteName}</div>
-          <div className={styles.siteDate}>{lastUpdated}</div>
+          <div className={styles.siteInfo}>{siteUrl}</div>
+          <div className={styles.siteInfo}>{lastUpdated}</div>
         </div>
         <div className={styles.sidebarNavigation}>
           <ul>
