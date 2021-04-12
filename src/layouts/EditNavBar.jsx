@@ -52,6 +52,7 @@ const EditNavBar =  ({ match }) => {
   )
   const [resources, setResources] = useState()
   const [hasResources, setHasResources] = useState(false)
+  const [hasResourceRoom, setHasResourceRoom] = useState(false)
   const [errors, setErrors] = useState({
     links: [],
     sublinks: [],
@@ -178,7 +179,7 @@ const EditNavBar =  ({ match }) => {
       })
 
       const { collections: initialCollections } = collectionContent
-      const { resources: initialResource } = resourceContent
+      const { resourceRoomName, resources: initialResource } = resourceContent
 
       const initialOptions = initialCollections.map((collection) => ({
         value: collection,
@@ -193,7 +194,8 @@ const EditNavBar =  ({ match }) => {
         setCollections(initialCollections)
         setFolderDropdowns(foldersContent)
         setOptions(initialOptions)
-        setResources(initialResource.map(resource => deslugifyDirectory(resource.dirName)))
+        setHasResourceRoom(!!resourceRoomName)
+        if (resourceRoomName) setResources(initialResource.map(resource => deslugifyDirectory(resource.dirName)))
         setOriginalNav(navContent)
         setSha(navSha)
         setHasResources(navHasResources)
@@ -622,6 +624,7 @@ const EditNavBar =  ({ match }) => {
                   displayHandler={displayHandler}
                   displayLinks={displayLinks}
                   displaySublinks={displaySublinks}
+                  hasResourceRoom={hasResourceRoom}
                   hasResources={hasResources}
                   errors={errors}
                 />

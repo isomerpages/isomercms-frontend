@@ -148,6 +148,7 @@ const NavSection = ({
   displayHandler,
   displayLinks,
   displaySublinks,
+  hasResourceRoom,
   hasResources,
   errors,
 }) => {
@@ -170,7 +171,7 @@ const NavSection = ({
         label: 'Folder',
       }]
       : [],
-    ... !hasResources 
+    ... hasResourceRoom && !hasResources 
       ? [{
         value: 'resourceLink',
         label: 'Resource Room',
@@ -251,7 +252,7 @@ const NavSection = ({
         <button type="button" className={newSectionType ? elementStyles.blue: elementStyles.disabled} onClick={sectionCreationHandler} disabled={!newSectionType}>Create New Link</button>
       </div>
       <span className={elementStyles.info}>
-        Note: you can specify a folder or resource room to automatically populate its links. Only one resource room link is allowed. Select "Sublinks" if you want to specify your own links.
+        {`Note: you can specify a folder ${hasResourceRoom ? `or resource room ` : ``}to automatically populate its links. ${hasResourceRoom ? `Only one resource room link is allowed. ` : ``}Select "Sublinks" if you want to specify your own links.`}
       </span>
     </>
   )
@@ -322,6 +323,7 @@ NavSection.propTypes = {
   displayHandler: PropTypes.func.isRequired,
   displayLinks: PropTypes.arrayOf(PropTypes.bool).isRequired,
   displaySublinks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.bool)).isRequired,
+  hasResourceRoom: PropTypes.bool.isRequired,
   hasResources: PropTypes.bool.isRequired,
   errors: PropTypes.shape({
     links: PropTypes.arrayOf(
