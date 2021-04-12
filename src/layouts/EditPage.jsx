@@ -350,7 +350,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         siteName={siteName}
         title={title}
         shouldAllowEditPageBackNav={originalMdValue === editorValue}
-        isEditPage="true"
+        isEditPage={true}
         backButtonText={backButtonLabel}
         backButtonUrl={backButtonUrl}
       />

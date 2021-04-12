@@ -650,7 +650,7 @@ const EditContactUs =  ({ match }) => {
         siteName={siteName}
         title={"Contact Us"}
         shouldAllowEditPageBackNav={hasChanges()}
-        isEditPage="true"
+        isEditPage={true}
         backButtonText="Back to My Workspace"
         backButtonUrl={`/sites/${siteName}/workspace`}
       />

@@ -606,7 +606,7 @@ const EditNavBar =  ({ match }) => {
         siteName={siteName}
         title={"Nav Bar"}
         shouldAllowEditPageBackNav={!hasChanges()}
-        isEditPage="true"
+        isEditPage={true}
         backButtonText="Back to My Workspace"
         backButtonUrl={`/sites/${siteName}/workspace`}
       />

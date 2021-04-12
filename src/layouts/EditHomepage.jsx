@@ -1079,7 +1079,7 @@ const EditHomepage = ({ match }) => {
           siteName={siteName}
           title="Homepage"
           shouldAllowEditPageBackNav={JSON.stringify(originalFrontMatter) === JSON.stringify(frontMatter)}
-          isEditPage="true"
+          isEditPage={true}
           backButtonText="Back to My Workspace"
           backButtonUrl={`/sites/${siteName}/workspace`}
         />
