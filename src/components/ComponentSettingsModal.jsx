@@ -63,6 +63,7 @@ const ComponentSettingsModal = ({
     // Track original values
     const [originalPermalink, setOriginalPermalink] = useState('')
     const [originalFileUrl, setOriginalFileUrl] = useState('')
+    const [originalFrontMatter, setOriginalFrontMatter] = useState({})
 
     // Resource-related
     const [resourceDate, setResourceDate] = useState('')
@@ -87,7 +88,7 @@ const ComponentSettingsModal = ({
       const initializePageDetails = () => {
         if (pageData !== undefined) { // is existing page
           const { pageContent, pageSha } = pageData
-          const { frontMatter, pageMdBody } = frontMatterParser(pageContent)
+          const { frontMatter, mdBody: pageMdBody } = frontMatterParser(pageContent)
           const { file_url: originalFileUrl, permalink: originalPermalink } = frontMatter
           const { title: originalTitle, type: originalType, date: originalDate } = retrieveResourceFileMetadata(fileName)
           if (_isMounted) {
@@ -102,6 +103,7 @@ const ComponentSettingsModal = ({
             setOriginalPermalink(originalPermalink)
             setFileUrl(originalFileUrl)
             setOriginalFileUrl(originalFileUrl)
+            setOriginalFrontMatter(originalFrontMatter)
 
             setResourceDate(originalDate)
           }
@@ -163,12 +165,13 @@ const ComponentSettingsModal = ({
     const { mutateAsync: saveHandler } = useMutation(
       () => {
         const frontMatter = isPost 
-          ? { title, date: resourceDate, permalink }
-          : { title, date: resourceDate, file_url: fileUrl }
+          ? { ...originalFrontMatter, title, date: resourceDate, permalink }
+          : { ...originalFrontMatter, title, date: resourceDate, file_url: fileUrl }
         const newFileName = generateResourceFileName(title, resourceDate, isPost)
-        if (isNewFile) return createPageData({ siteName, resourceName: category, newFileName }, concatFrontMatterMdBody(frontMatter, mdBody)) 
-        if (fileName !== newFileName) return renamePageData({ siteName, resourceName: category, fileName, newFileName }, concatFrontMatterMdBody(frontMatter, mdBody), sha)
-        return updatePageData({ siteName, resourceName: category, fileName }, concatFrontMatterMdBody(frontMatter, mdBody), sha)
+        const newPageData = concatFrontMatterMdBody(frontMatter, mdBody)
+        if (isNewFile) return createPageData({ siteName, resourceName: category, newFileName }, newPageData) 
+        if (fileName !== newFileName) return renamePageData({ siteName, resourceName: category, fileName, newFileName }, newPageData, sha)
+        return updatePageData({ siteName, resourceName: category, fileName }, newPageData, sha)
       },
       { 
         onSettled: () => {setSelectedFile(''); setIsComponentSettingsActive(false)},
