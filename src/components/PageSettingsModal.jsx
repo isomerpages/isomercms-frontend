@@ -83,7 +83,7 @@ const PageSettingsModal = ({
       const initializePageDetails = () => {
         if (pageData !== undefined) { // is existing page
           const { pageContent, pageSha } = pageData
-          const { frontMatter, pageMdBody } = frontMatterParser(pageContent)
+          const { frontMatter, mdBody: pageMdBody } = frontMatterParser(pageContent)
           const { permalink: originalPermalink } = frontMatter
         
           if (_isMounted) {
