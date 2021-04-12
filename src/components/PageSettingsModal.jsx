@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation } from 'react-query';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import * as _ from 'lodash';
 
@@ -214,4 +215,16 @@ const PageSettingsModal = ({
 export default PageSettingsModal
 
 PageSettingsModal.propTypes = {
+  folderName: PropTypes.string,
+  subfolderName: PropTypes.string,
+  originalPageName: PropTypes.string,
+  isNewPage: PropTypes.bool,
+  pagesData: PropTypes.arrayOf(PropTypes.string),
+  pageData: PropTypes.shape({
+      pageContent: PropTypes.string.isRequired,
+      pageSha: PropTypes.string.isRequired,
+  }),
+  siteName: PropTypes.string.isRequired,
+  setSelectedPage: PropTypes.func.isRequired,
+  setIsPageSettingsActive: PropTypes.func.isRequired,
 };
