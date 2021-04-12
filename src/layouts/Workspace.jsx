@@ -23,6 +23,8 @@ import { PAGE_CONTENT_KEY, FOLDERS_CONTENT_KEY } from '../constants'
 // Import hooks
 import useSiteColorsHook from '../hooks/useSiteColorsHook';
 
+const CONTACT_US_TEMPLATE_LAYOUT = 'contact_us'
+
 const Workspace = ({ match, location }) => {
     const { retrieveSiteColors } = useSiteColorsHook()
 
@@ -42,7 +44,7 @@ const Workspace = ({ match, location }) => {
         onError: () => setContactUsCard(false),
         onSuccess: ({ pageContent: contactUsPageContent }) => {
           const { frontMatter: { layout } } = frontMatterParser(contactUsPageContent)
-          setContactUsCard(layout === 'contact_us') 
+          setContactUsCard(layout === CONTACT_US_TEMPLATE_LAYOUT) 
         },
       },
     )
