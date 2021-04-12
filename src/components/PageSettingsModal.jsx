@@ -138,7 +138,6 @@ const PageSettingsModal = ({
 
     const changeHandler = (event) => {
       const { id, value } = event.target;
-
       const errorMessage = validatePageSettings(id, value, pagesData.filter(page => page !== originalPageName))
 
       setErrors((prevState) => ({
