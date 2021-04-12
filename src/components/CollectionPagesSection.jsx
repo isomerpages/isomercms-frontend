@@ -152,7 +152,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource, r
                     /> 
                     : (pageData || createNewPage) 
                     && <PageSettingsModal
-                        pagesData={pages}
+                        pagesData={pages?.map(page => page.fileName) || []}
                         pageData={pageData}
                         siteName={siteName}
                         originalPageName={selectedFile || ''}

@@ -641,8 +641,7 @@ const validatePageSettings = (id, value, folderOrderArray) => {
         errorMessage = `The title should be shorter than ${PAGE_SETTINGS_TITLE_MAX_LENGTH} characters.`;
       }
       if ( 
-        folderOrderArray !== undefined 
-        && _.find(folderOrderArray, function(v) { return v.type === 'file' && generatePageFileName(value) === v.name }) !== undefined 
+        folderOrderArray !== undefined && folderOrderArray.includes(generatePageFileName(value))
       ) {
         errorMessage = `This title is already in use. Please choose a different title.`;
       }

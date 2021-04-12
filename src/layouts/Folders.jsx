@@ -272,7 +272,7 @@ const Folders = ({ match, location }) => {
               <PageSettingsModal
                 folderName={folderName}
                 subfolderName={subfolderName}
-                pagesData={folderOrderArray.filter(item => item.type === 'file')}
+                pagesData={folderOrderArray.filter(item => item.type === 'file').map(page => page.name)}
                 pageData={pageData}
                 siteName={siteName}
                 originalPageName={selectedPage || ''}

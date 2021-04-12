@@ -102,7 +102,7 @@ const PageSettingsModal = ({
         }
         if (isNewPage) {
           let exampleTitle = 'Example Title'
-          while (_.find(pagesData, function(v) { return v.type === 'file' && generatePageFileName(exampleTitle) === v.name }) !== undefined) {
+          while (pagesData.includes(generatePageFileName(exampleTitle))) {
             exampleTitle = exampleTitle+'_1'
           }
           const examplePermalink = `/${folderName ? `${folderName}/` : ''}${subfolderName ? `${subfolderName}/` : ''}permalink`
@@ -137,7 +137,9 @@ const PageSettingsModal = ({
 
     const changeHandler = (event) => {
       const { id, value } = event.target;
-      const errorMessage = validatePageSettings(id, value, pagesData.filter(page => page.name !== originalPageName))
+
+      const errorMessage = validatePageSettings(id, value, pagesData.filter(page => page !== originalPageName))
+
       setErrors((prevState) => ({
         ...prevState,
         [id]: errorMessage,
