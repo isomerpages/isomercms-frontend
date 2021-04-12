@@ -55,7 +55,7 @@ export default function LoadingButton(props) {
 LoadingButton.propTypes = {
   label: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
-  disabledStyle: PropTypes.string.isRequired,
+  disabledStyle: PropTypes.string,
   className: PropTypes.string.isRequired,
   callback: PropTypes.func.isRequired,
 };
