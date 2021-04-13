@@ -140,6 +140,7 @@ const OverviewCard = ({
               menuIndex={itemIndex}
               onBlur={handleBlur}
               moveDropdownQuery={moveDropdownQuery}
+              rootName={"Resources"}
               setMoveDropdownQuery={setMoveDropdownQuery}
               backHandler={toggleDropdownModals}
               moveHandler={() => {

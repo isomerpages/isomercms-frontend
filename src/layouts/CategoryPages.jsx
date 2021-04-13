@@ -13,7 +13,7 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 //Import utils
-import { retrieveResourceFileMetadata } from '../utils.js'
+import { retrieveResourceFileMetadata, deslugifyDirectory } from '../utils.js'
 import { errorToast } from '../utils/toasts';
 import { getResourcePages } from '../api'
 import { RESOURCE_CATEGORY_CONTENT_KEY } from '../constants'
@@ -102,7 +102,7 @@ const CategoryPages = ({ match, location, isResource }) => {
           <div className={contentStyles.mainSection}>
               {/* Collection title */}
               <div className={contentStyles.sectionHeader}>
-                  <h1 className={contentStyles.sectionTitle}>{collectionName}</h1>
+                  <h1 className={contentStyles.sectionTitle}>{deslugifyDirectory(collectionName)}</h1>
               </div>
               {/* Collection pages */}
               <CollectionPagesSection

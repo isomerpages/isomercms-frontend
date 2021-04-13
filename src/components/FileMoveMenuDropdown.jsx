@@ -7,6 +7,7 @@ const FileMoveMenuDropdown = ({
   menuIndex, 
   dropdownRef, 
   onBlur, 
+  rootName,
   moveDropdownQuery,
   setMoveDropdownQuery,
   backHandler, 
@@ -33,7 +34,7 @@ const FileMoveMenuDropdown = ({
           id='workspace'
           onClick={() => setMoveDropdownQuery({folderName: '', subfolderName: ''})}
           style={ subfolderName || folderName ? {cursor:'pointer'}: {cursor:'default'}}
-      >{subfolderName ? `... >` : !subfolderName && !folderName ? <strong>Workspace</strong> : 'Workspace'}
+      >{subfolderName ? `... >` : !subfolderName && !folderName ? <strong>{rootName}</strong> : rootName}
       </span>
       <span 
         id='folder'

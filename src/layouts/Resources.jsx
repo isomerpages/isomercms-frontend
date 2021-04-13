@@ -19,7 +19,7 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 // Import utils
-import { DEFAULT_RETRY_MSG, prettifyResourceCategory, slugifyCategory } from '../utils';
+import { DEFAULT_RETRY_MSG, deslugifyDirectory, slugifyCategory } from '../utils';
 import { validateResourceRoomName, validateCategoryName } from '../utils/validators'
 import { errorToast } from '../utils/toasts';
 import { getAllResourceCategories, addResourceCategory } from '../api';
@@ -49,7 +49,7 @@ const Resources = ({ match, location }) => {
       retry: false,
       onError: (err) => {
         console.log(err)
-        errorToast(`There was a problem trying to load your resource categories. ${DEFAULT_RETRY_MSG}`)
+        errorToast(`There was a problem trying to load your categories. ${DEFAULT_RETRY_MSG}`)
       }
     },
   );
@@ -57,7 +57,7 @@ const Resources = ({ match, location }) => {
   const { mutateAsync: saveHandler } = useMutation(
     () => addResourceCategory(siteName, slugifyCategory(newFolderName)),
     {
-      onError: () => errorToast(`There was a problem trying to create your new folder. ${DEFAULT_RETRY_MSG}`),
+      onError: () => errorToast(`There was a problem trying to create your new category. ${DEFAULT_RETRY_MSG}`),
       onSuccess: () => {
         const redirectUrl = `/sites/${siteName}/resources/${slugifyCategory(newFolderName)}`
         setRedirectToPage(redirectUrl)
@@ -69,7 +69,7 @@ const Resources = ({ match, location }) => {
     let _isMounted = true
     const fetchData = async () => {
       try {
-        // Get the resource categories in the resource room
+        // Get the categories in the resource room
         if (!resourcesResp) return
         const { resourceRoomName, resources: resourceCategories } = resourcesResp.data;
         if (resourceRoomName) {
@@ -151,7 +151,7 @@ const Resources = ({ match, location }) => {
               ? <>
                   {/* Category title */}
                   <div className={contentStyles.segment}>
-                    Resource Categories
+                    Categories
                   </div>
                   {/* Categories */}
                   <div className={contentStyles.folderContainerBoxes}>
@@ -163,16 +163,16 @@ const Resources = ({ match, location }) => {
                           {
                             resourceFolderNames.length === 0 && 
                             <>
-                              No Resource Categories.
+                              No Categories.
                               <hr className="invisible w-100 mt-3 mb-3" />
                             </>
                           }
-                          <FolderOptionButton title="Create new resource category" option="create-sub" isSubfolder={false} onClick={() => setIsFolderCreationActive(true)}/>
+                          <FolderOptionButton title="Create new category" option="create-sub" isSubfolder={false} onClick={() => setIsFolderCreationActive(true)}/>
                           {
                             resourceFolderNames.length > 0
                             ? resourceFolderNames.map((resourceCategory, collectionIdx) => (
                                 <FolderCard
-                                  displayText={prettifyResourceCategory(resourceCategory)}
+                                  displayText={deslugifyDirectory(resourceCategory)}
                                   settingsToggle={() => {}}
                                   key={resourceCategory}
                                   pageType={"resources"}
@@ -184,7 +184,7 @@ const Resources = ({ match, location }) => {
                             : null
                           }
                           </>
-                        : 'Loading Resource Categories...'
+                        : 'Loading Categories...'
                       }
                     </div>
                   </div>

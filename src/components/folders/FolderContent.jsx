@@ -121,6 +121,7 @@ const FolderContentItem = ({
                             dropdownRef={fileMoveDropdownRef}
                             menuIndex={itemIndex}
                             onBlur={handleBlur}
+                            rootName={"Workspace"}
                             moveDropdownQuery={moveDropdownQuery}
                             setMoveDropdownQuery={setMoveDropdownQuery}
                             backHandler={toggleDropdownModals}
