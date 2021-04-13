@@ -155,21 +155,21 @@ const Workspace = ({ match, location }) => {
               </div>
               {/* Collections title */}
               <div className={contentStyles.segment}>
-                Collections
+                Folders
               </div>
               {
                 !collections &&
                 <div className={contentStyles.segment}>
-                  Loading Collections...
+                  Loading Folders...
                 </div>
               }
               {
                 collections && collections.length === 0 &&
                 <div className={contentStyles.segment}>
-                  There are no collections in this repository.
+                  There are no folders in this repository.
                 </div>
               }
-              {/* Collections */}
+              {/* Folders */}
               <div className={contentStyles.folderContainerBoxes}>
                 <div className={contentStyles.boxesContainer}>
                   {
@@ -197,12 +197,12 @@ const Workspace = ({ match, location }) => {
                 <hr className="invisible w-100 mt-3 mb-5" />
               </div>                {/* Pages title */}
               <div className={contentStyles.segment}>
-                Unlinked Pages
+                Pages
               </div>
               {/* Info segment */}
               <div className={contentStyles.segment}>
                 <i className="bx bx-sm bx-info-circle text-dark" />
-                <span><strong className="ml-1">Note:</strong> Unlinked pages are pages which do not belong to any collection.</span>
+                <span><strong className="ml-1">Note:</strong> The pages here do not belong to any folders.</span>
               </div>
               {/* Pages */}
               <CollectionPagesSection
