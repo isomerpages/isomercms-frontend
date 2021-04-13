@@ -77,7 +77,7 @@ const typeInfoDict = {
 
 const Sidebar = ({ siteName, currPath }) => {
   const { setRedirectToLogout } = useRedirectHook()
-  const [lastUpdated, setLastUpdated] = useState('Updated 2 days ago')
+  const [lastUpdated, setLastUpdated] = useState('Updated')
   const [siteUrl, setSiteUrl] = useState()
   const { retrieveSiteUrl } = useSiteUrlHook()
 
