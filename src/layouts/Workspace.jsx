@@ -15,13 +15,15 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 // Import utils
-import { DEFAULT_RETRY_MSG, prettifyPageFileName } from '../utils';
+import { DEFAULT_RETRY_MSG, prettifyPageFileName, frontMatterParser } from '../utils';
 import { errorToast } from '../utils/toasts';
-import { getPages, getAllCategories } from '../api';
+import { getPages, getAllCategories, getEditPageData } from '../api';
 import { PAGE_CONTENT_KEY, FOLDERS_CONTENT_KEY } from '../constants'
 
 // Import hooks
 import useSiteColorsHook from '../hooks/useSiteColorsHook';
+
+const CONTACT_US_TEMPLATE_LAYOUT = 'contact_us'
 
 const Workspace = ({ match, location }) => {
     const { retrieveSiteColors } = useSiteColorsHook()
@@ -30,23 +32,38 @@ const Workspace = ({ match, location }) => {
 
     const [collections, setCollections] = useState()
     const [unlinkedPages, setUnlinkedPages] = useState()
-    const [contactUsCard, setContactUsCard] = useState(false)
+    const [contactUsCard, setContactUsCard] = useState()
     const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
 
+    // get page settings details when page is selected (used for editing page settings and deleting)
+    const {} = useQuery(
+      [PAGE_CONTENT_KEY, { siteName, fileName: 'contact-us.md' }],
+      async () => await getEditPageData({ siteName, fileName: 'contact-us.md' }),
+      { 
+        retry: false,
+        onError: () => setContactUsCard(false),
+        onSuccess: ({ pageContent: contactUsPageContent }) => {
+          const { frontMatter: { layout } } = frontMatterParser(contactUsPageContent)
+          setContactUsCard(layout === CONTACT_US_TEMPLATE_LAYOUT) 
+        },
+      },
+    )
+    
     // get unlinked pages
     const { refetch: refetchPages } = useQuery(
       [PAGE_CONTENT_KEY, { siteName }],
       () => getPages({ siteName }),
       {
+        enabled: contactUsCard !== undefined, // delay until contact page layout query runs
         retry: false,
         onError: () => errorToast(`There was a problem trying to load your pages. ${DEFAULT_RETRY_MSG}`),
         onSuccess: (pagesResp) => {
-          if (pagesResp.length > 0 && pagesResp.some(page => page.fileName === 'contact-us.md')) setContactUsCard(true)
-          setUnlinkedPages(pagesResp.length > 0 && pagesResp.filter(page => page.fileName !== 'contact-us.md') || [])
+          if (contactUsCard) setUnlinkedPages(pagesResp.length > 0 ? pagesResp.filter(page => page.fileName !== 'contact-us.md') : [])
+          else setUnlinkedPages(pagesResp.length > 0 ? pagesResp : [])
         },
       },
     )
-    
+
     // get all folders
     const { refetch: refetchFolders } = useQuery(
       [FOLDERS_CONTENT_KEY, { siteName, isResource: false }],
