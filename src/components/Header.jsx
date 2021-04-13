@@ -117,7 +117,7 @@ const Header = ({
         showStagingWarningModal &&
         <GenericWarningModal
           displayTitle=""
-          displayText="Your changes may take some time to be reflected. <br/> Refresh your page to see if your changes have been built."
+          displayText="Your changes may take some time to be reflected. <br/> Refresh your staging site to see if your changes have been built."
           displayImg="/publishModal.svg"
           displayImgAlt="View Staging Modal Image"
           onProceed={handleViewStaging}
