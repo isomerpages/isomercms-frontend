@@ -1,7 +1,6 @@
 import React, { useEffect, createRef, useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
-import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
