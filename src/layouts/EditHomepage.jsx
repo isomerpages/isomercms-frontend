@@ -1,7 +1,6 @@
 import React, { useEffect, createRef, useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
-import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -164,8 +163,7 @@ const EditHomepage = ({ match }) => {
           withCredentials: true,
         });
         const { content, sha } = resp.data;
-        const base64DecodedContent = Base64.decode(content);
-        const { frontMatter } = frontMatterParser(base64DecodedContent);
+        const { frontMatter } = frontMatterParser(content);
         // Compute hasResources and set displaySections
         let hasResources = false;
         const displaySections = [];
@@ -906,10 +904,9 @@ const EditHomepage = ({ match }) => {
         return newSection
       })
       const content = concatFrontMatterMdBody(filteredFrontMatter, '');
-      const base64EncodedContent = Base64.encode(content);
 
       const params = {
-        content: base64EncodedContent,
+        content,
         sha: sha,
       };
 

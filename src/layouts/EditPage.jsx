@@ -5,7 +5,6 @@ import { useQuery, useMutation } from 'react-query';
 import PropTypes from 'prop-types';
 import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
-import { Base64 } from 'js-base64';
 import Policy from 'csp-parse';
 
 import SimplePage from '../templates/SimplePage';

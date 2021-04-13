@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
-import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { DragDropContext } from 'react-beautiful-dnd';
@@ -147,7 +146,7 @@ const EditContactUs =  ({ match }) => {
     id: null,
     type: '',
   })
-  const [showDeletedText, setShowDeletedText] = useState(false)
+  const [showDeletedText, setShowDeletedText] = useState(true)
 
   useEffect(() => {
     let _isMounted = true
@@ -583,10 +582,9 @@ const EditContactUs =  ({ match }) => {
       if (!filteredFrontMatter.locations.length) delete filteredFrontMatter.locations
 
       const content = concatFrontMatterMdBody(filteredFrontMatter, '');
-      const base64EncodedContent = Base64.encode(content);
 
       const frontMatterParams = {
-        content: base64EncodedContent,
+        content,
         sha: frontMatterSha,
       };
 
