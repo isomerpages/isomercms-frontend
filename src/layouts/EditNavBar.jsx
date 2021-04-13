@@ -14,7 +14,7 @@ import { errorToast } from '../utils/toasts';
 import useRedirectHook from '../hooks/useRedirectHook';
 
 import Header from '../components/Header';
-import LoadingButton from '../components/LoadingButtonReactQuery';
+import LoadingButton from '../components/LoadingButton';
 import DeleteWarningModal from '../components/DeleteWarningModal';
 import GenericWarningModal from '../components/GenericWarningModal';
 import NavSection from '../components/navbar/NavSection'
@@ -52,6 +52,7 @@ const EditNavBar =  ({ match }) => {
   )
   const [resources, setResources] = useState()
   const [hasResources, setHasResources] = useState(false)
+  const [hasResourceRoom, setHasResourceRoom] = useState(false)
   const [errors, setErrors] = useState({
     links: [],
     sublinks: [],
@@ -127,7 +128,7 @@ const EditNavBar =  ({ match }) => {
   );
 
   // update nav bar data
-  const { mutate: saveNavData, isLoading } = useMutation(
+  const { mutateAsync: saveNavData } = useMutation(
     () => updateNavBarData(siteName, originalNav, links, sha),
     {
       onError: () => errorToast(`There was a problem trying to save your nav bar. ${DEFAULT_RETRY_MSG}`),
@@ -178,7 +179,7 @@ const EditNavBar =  ({ match }) => {
       })
 
       const { collections: initialCollections } = collectionContent
-      const { resources: initialResource } = resourceContent
+      const { resourceRoomName, resources: initialResource } = resourceContent
 
       const initialOptions = initialCollections.map((collection) => ({
         value: collection,
@@ -193,7 +194,8 @@ const EditNavBar =  ({ match }) => {
         setCollections(initialCollections)
         setFolderDropdowns(foldersContent)
         setOptions(initialOptions)
-        setResources(initialResource.map(resource => deslugifyDirectory(resource.dirName)))
+        setHasResourceRoom(!!resourceRoomName)
+        if (resourceRoomName) setResources(initialResource.map(resource => deslugifyDirectory(resource.dirName)))
         setOriginalNav(navContent)
         setSha(navSha)
         setHasResources(navHasResources)
@@ -604,7 +606,7 @@ const EditNavBar =  ({ match }) => {
         siteName={siteName}
         title={"Nav Bar"}
         shouldAllowEditPageBackNav={!hasChanges()}
-        isEditPage="true"
+        isEditPage={true}
         backButtonText="Back to My Workspace"
         backButtonUrl={`/sites/${siteName}/workspace`}
       />
@@ -622,6 +624,7 @@ const EditNavBar =  ({ match }) => {
                   displayHandler={displayHandler}
                   displayLinks={displayLinks}
                   displaySublinks={displaySublinks}
+                  hasResourceRoom={hasResourceRoom}
                   hasResources={hasResources}
                   errors={errors}
                 />
@@ -652,7 +655,6 @@ const EditNavBar =  ({ match }) => {
               disabledStyle={elementStyles.disabled}
               className={hasErrors() ? elementStyles.disabled : elementStyles.blue}
               callback={() => saveNavData(siteName, originalNav, links, sha)}
-              isLoading={isLoading}
             />
           </div>
         </div>

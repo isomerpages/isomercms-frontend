@@ -325,7 +325,7 @@ const Folders = ({ match, location }) => {
             backButtonText={`Back to ${subfolderName ? folderName : 'Workspace'}`}
             backButtonUrl={`/sites/${siteName}/${subfolderName ? `folder/${folderName}` : 'workspace'}`}
             shouldAllowEditPageBackNav={!isRearrangeActive}
-            isEditPage="true"
+            isEditPage={true}
           />
           {/* main bottom section */}
           <div className={elementStyles.wrapper}>
