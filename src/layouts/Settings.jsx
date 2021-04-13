@@ -100,6 +100,10 @@ export default class Settings extends Component {
     try {
       const { match } = this.props;
       const { siteName } = match.params;
+      if (this._isMounted) this.setState((currState) => ({
+        ...currState,
+        siteName,
+      }))
 
       // get settings data from backend
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, {
@@ -143,7 +147,6 @@ export default class Settings extends Component {
       // set state properly
       if (this._isMounted) this.setState((currState) => ({
         ...currState,
-        siteName,
         originalState: _.cloneDeep(originalState),
         ...originalState,
       }));
