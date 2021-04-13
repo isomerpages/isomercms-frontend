@@ -146,7 +146,7 @@ const EditContactUs =  ({ match }) => {
     id: null,
     type: '',
   })
-  const [showDeletedText, setShowDeletedText] = useState(false)
+  const [showDeletedText, setShowDeletedText] = useState(true)
 
   useEffect(() => {
     let _isMounted = true
