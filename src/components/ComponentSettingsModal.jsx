@@ -262,5 +262,11 @@ ComponentSettingsModal.propTypes = {
     fileName: PropTypes.string.isRequired,
     category: PropTypes.string,
     isNewFile: PropTypes.bool.isRequired,
-    settingsToggle: PropTypes.func.isRequired,
+    setSelectedFile: PropTypes.func.isRequired,
+    setIsComponentSettingsActive: PropTypes.func.isRequired,
+    pageData: PropTypes.shape({
+      pageContent: PropTypes.string.isRequired,
+      pageSha: PropTypes.string.isRequired,
+    }),
+    pageFileNames: PropTypes.arrayOf(PropTypes.string),
   };
