@@ -164,8 +164,7 @@ const EditHomepage = ({ match }) => {
           withCredentials: true,
         });
         const { content, sha } = resp.data;
-        const base64DecodedContent = Base64.decode(content);
-        const { frontMatter } = frontMatterParser(base64DecodedContent);
+        const { frontMatter } = frontMatterParser(content);
         // Compute hasResources and set displaySections
         let hasResources = false;
         const displaySections = [];
@@ -906,10 +905,9 @@ const EditHomepage = ({ match }) => {
         return newSection
       })
       const content = concatFrontMatterMdBody(filteredFrontMatter, '');
-      const base64EncodedContent = Base64.encode(content);
 
       const params = {
-        content: base64EncodedContent,
+        content,
         sha: sha,
       };
 
