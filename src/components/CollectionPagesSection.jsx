@@ -177,7 +177,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource, r
                 && (
                     <GenericWarningModal
                         displayTitle="Warning"
-                        displayText="Moving a page to a different collection might lead to user confusion. You may wish to change the permalink for this page afterwards."
+                        displayText="Moving a page to a different folder might lead to user confusion. You may wish to change the permalink for this page afterwards."
                         onProceed={moveHandler}
                         onCancel={() => {
                             setCanShowMoveModal(false)
