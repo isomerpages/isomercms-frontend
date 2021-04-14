@@ -18,6 +18,7 @@ import {
   generateResourceFileName,
   retrieveResourceFileMetadata,
   concatFrontMatterMdBody,
+  deslugifyDirectory,
 } from '../utils';
 
 import { createPageData, updatePageData, renamePageData } from '../api'
@@ -208,7 +209,7 @@ const ComponentSettingsModal = ({
                   { isNewFile ? 'You may edit page details anytime. ' : ''}
                   To edit page content, simply click on the page title. <br/>
                   <span className={elementStyles.infoGrey}> 
-                    Resources > { category } > <u className='ml-1'>{ title }</u><br/><br/>
+                    Resources > { deslugifyDirectory(category) } > <u className='ml-1'>{ title }</u><br/><br/>
                   </span>  
                   {/* Title */}
                   <FormField

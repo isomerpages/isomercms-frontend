@@ -14,6 +14,7 @@ import {
   prettifyPageFileName,
   prettifyDate,
   retrieveResourceFileMetadata,
+  deslugifyDirectory,
 } from '../utils';
 
 // axios settings
@@ -93,7 +94,7 @@ const OverviewCard = ({
   const CardContent = (
     <>
       <div id={itemIndex} className={contentStyles.componentInfo}>
-        <div className={contentStyles.componentCategory}>{category ? category : ''}</div>
+        <div className={contentStyles.componentCategory}>{category ? deslugifyDirectory(category) : ''}</div>
         <h1 className={resourceType === 'file' ? contentStyles.componentTitle : contentStyles.componentTitleLink}>{generateTitle()}</h1>
         <p className={contentStyles.componentDate}>{`${date ? prettifyDate(date) : ''}${resourceType ? `/${resourceType.toUpperCase()}` : ''}`}</p>
       </div>
