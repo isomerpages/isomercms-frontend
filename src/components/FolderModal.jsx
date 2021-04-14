@@ -15,7 +15,9 @@ import {
 import {
   DEFAULT_RETRY_MSG,
   slugifyCategory,
+  deslugifyDirectory,
 } from '../utils'
+
 import { errorToast } from '../utils/toasts';
 
 // axios settings
@@ -50,7 +52,7 @@ const selectRenameApiCall = (isCollection, siteName, folderOrCategoryName, subfo
 }
 
 const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName, subfolderName, siteName, isCollection }) => {
-  const [newDirectoryName, setNewDirectoryName] = useState(subfolderName || folderOrCategoryName)
+  const [newDirectoryName, setNewDirectoryName] = useState(deslugifyDirectory(subfolderName || folderOrCategoryName))
 
   // rename folder/subfolder/resource category
   const { mutateAsync: renameDirectory } = useMutation(
