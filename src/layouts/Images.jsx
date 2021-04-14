@@ -26,14 +26,13 @@ import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 const IMAGE_CONTENTS_KEY = 'image-contents'
 
 const getPrevDirectoryPath = (customPath) => {
-  const customPathArr = customPath.split('/')
+  const customPathArr = customPath.split('%2F')
 
   let prevDirectoryPath
   if (customPathArr.length > 1) {
-    prevDirectoryPath = customPathArr
+    prevDirectoryPath = `images/${customPathArr
       .slice(0, -1) // remove the latest directory
-      .join('/')
-      .slice(1) // remove starting `/`
+      .join('/')}`
   }
   else {
     prevDirectoryPath = 'images'
@@ -43,7 +42,7 @@ const getPrevDirectoryPath = (customPath) => {
 }
 
 const getPrevDirectoryName = (customPath) => {
-  const customPathArr = customPath.split('/')
+  const customPathArr = customPath.split('%2F')
 
   let prevDirectoryName
   if (customPathArr.length > 1) {
