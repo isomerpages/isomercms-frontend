@@ -127,7 +127,7 @@ const Resources = ({ match, location }) => {
             folderNameChangeHandler={folderNameChangeHandler}
             title={newFolderName}
             errors={folderNameErrors}
-            folderType='resource'
+            folderType='category'
             proceedText='Save'
           />
         </div>
