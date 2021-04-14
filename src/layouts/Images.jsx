@@ -134,6 +134,7 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
   return (
     <>
       <Header
+        siteName={siteName}
         backButtonText={`Back to ${customPath ? getPrevDirectoryName(customPath) : 'Sites'}`}
         backButtonUrl={customPath ? `/sites/${siteName}/${getPrevDirectoryPath(customPath)}` : '/sites'}
       />
