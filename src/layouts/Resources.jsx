@@ -179,6 +179,7 @@ const Resources = ({ match, location }) => {
                                   siteName={siteName}
                                   category={resourceCategory}
                                   itemIndex={collectionIdx}
+                                  existingFolders={resourceFolderNames}
                                 />
                               ))
                             : null

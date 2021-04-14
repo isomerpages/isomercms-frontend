@@ -18,6 +18,7 @@ import {
   deslugifyDirectory,
 } from '../utils'
 
+import { validateCategoryName } from '../utils/validators'
 import { errorToast } from '../utils/toasts';
 
 // axios settings
@@ -51,8 +52,9 @@ const selectRenameApiCall = (isCollection, siteName, folderOrCategoryName, subfo
   return renameResourceCategory(params)
 }
 
-const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName, subfolderName, siteName, isCollection }) => {
+const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName, subfolderName, siteName, isCollection, existingFolders }) => {
   const [newDirectoryName, setNewDirectoryName] = useState(deslugifyDirectory(subfolderName || folderOrCategoryName))
+  const [errors, setErrors] = useState('')
 
   // rename folder/subfolder/resource category
   const { mutateAsync: renameDirectory } = useMutation(
@@ -65,6 +67,9 @@ const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName,
 
   const folderNameChangeHandler = (event) => {
     const { value } = event.target
+    const comparisonCategoryArray = subfolderName ? existingFolders.filter(name => name !== subfolderName) : existingFolders.filter(name => name !== folderOrCategoryName)
+    let errorMessage = validateCategoryName(value, isCollection ? 'page' : 'resource', comparisonCategoryArray)
+    setErrors(errorMessage)
     setNewDirectoryName(value)
   }
 
@@ -85,6 +90,7 @@ const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName,
             id="newDirectoryName"
             value={newDirectoryName}
             onFieldChange={folderNameChangeHandler}
+            errorMessage={errors}
           />
           <SaveDeleteButtons
             isDisabled={false}

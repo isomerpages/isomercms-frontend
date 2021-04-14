@@ -26,6 +26,7 @@ const FolderCard = ({
   category,
   selectedIndex,
   onClick,
+  existingFolders,
 }) => {
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
   const [canShowDropdown, setCanShowDropdown] = useState(false)
@@ -135,6 +136,7 @@ const FolderCard = ({
           folderOrCategoryName={category}
           siteName={siteName}
           isCollection={pageType === 'collection'}
+          existingFolders={existingFolders}
         />
       }
       { canShowDeleteWarningModal &&

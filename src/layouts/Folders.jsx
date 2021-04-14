@@ -292,7 +292,8 @@ const Folders = ({ match, location }) => {
                 folderOrCategoryName={folderName}
                 subfolderName={selectedPage}
                 siteName={siteName}
-                isCollection
+                isCollection={true}
+                existingFolders={folderOrderArray.filter(item => item.type === 'dir').map(item => item.name)}
               />
             )
           }

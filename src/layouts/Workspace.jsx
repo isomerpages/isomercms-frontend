@@ -186,6 +186,7 @@ const Workspace = ({ match, location }) => {
                             siteName={siteName}
                             category={collection}
                             itemIndex={collectionIdx}
+                            existingFolders={collections}
                         />
                     ))
                     : null
