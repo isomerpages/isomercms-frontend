@@ -17,7 +17,7 @@ const SublinkElem = ({
   displayHandler,
   errors,
 }) => (
-  <div className={`${elementStyles.card} ${!shouldDisplay && !isEmpty(errors) ? elementStyles.error : ''}`}>
+  <div className={`${elementStyles.navCard} ${!shouldDisplay && !isEmpty(errors) ? elementStyles.error : ''}`}>
     <div className={elementStyles.cardHeader}>
       <h2>
         {title}
@@ -31,7 +31,7 @@ const SublinkElem = ({
         <>
           <div className={elementStyles.cardContent}>
             <FormField
-              title="Sublink title"
+              title="Submenu title"
               id={`sublink-${linkIndex}-${sublinkIndex}-title`}
               value={title}
               isRequired
@@ -39,7 +39,7 @@ const SublinkElem = ({
               errorMessage={errors.title}
             />
             <FormField
-              title="Sublink URL"
+              title="Submenu URL"
               id={`sublink-${linkIndex}-${sublinkIndex}-url`}
               value={url}
               isRequired
@@ -48,7 +48,7 @@ const SublinkElem = ({
             />
           </div>
           <div className={elementStyles.inputGroup}>
-            <button type="button" id={`sublink-${linkIndex}-${sublinkIndex}-delete`} className={`ml-auto ${elementStyles.warning}`} onClick={deleteHandler}>Delete sublink</button>
+            <button type="button" id={`sublink-${linkIndex}-${sublinkIndex}-delete`} className={`ml-auto ${elementStyles.warning}`} onClick={deleteHandler}>Delete Submenu</button>
           </div>
         </>
       )
@@ -76,7 +76,7 @@ const NavSublinkSection = ({
       >
         { (sublinks && sublinks.length > 0)
           ? <>
-              <b>Sublinks</b>
+              <b>Submenu</b>
               {sublinks.map((sublink, sublinkIndex) => (
                 <Draggable
                   draggableId={`sublink-${linkIndex}-${sublinkIndex}-draggable`}
@@ -110,7 +110,7 @@ const NavSublinkSection = ({
             </>
           : null}
         {droppableProvided.placeholder}
-        <button type="button" id={`sublink-${linkIndex}-${sublinks.length}-create`} className={`ml-auto ${elementStyles.blue}`} onClick={createHandler}>Create Sublink</button>
+        <button type="button" id={`sublink-${linkIndex}-${sublinks.length}-create`} className={`ml-auto mt-4 ${elementStyles.blue}`} onClick={createHandler}>Create Submenu</button>
       </div>
     )}
   </Droppable>

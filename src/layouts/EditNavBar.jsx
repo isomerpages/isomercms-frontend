@@ -604,7 +604,7 @@ const EditNavBar =  ({ match }) => {
       }
       <Header
         siteName={siteName}
-        title={"Nav Bar"}
+        title={"Navigation Bar"}
         shouldAllowEditPageBackNav={!hasChanges()}
         isEditPage={true}
         backButtonText="Back to My Workspace"

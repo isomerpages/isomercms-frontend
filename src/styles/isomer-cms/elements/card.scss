@@ -232,3 +232,8 @@
     text-align: center;
   }
 }
+
+.navCard {
+  @extend .card;
+  margin-bottom: 0rem;
+}
