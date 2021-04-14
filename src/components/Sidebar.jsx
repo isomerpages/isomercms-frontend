@@ -64,7 +64,7 @@ const typeInfoDict = {
     icon: 'bx bx-buoy'
   },
   Guide: {
-    url: 'https://v2.isomer.gov.sg/',
+    url: 'https://go.gov.sg/isomercms-guide/',
     icon: 'bx bx-book'
   },
   Settings: {
