@@ -320,12 +320,12 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
   const stageFileForUpload = (fileName, fileData) => {
     const baseFolder = type === 'file' ? 'files' : 'images';
-    setIsFileStagedForUpload(true)
     setStagedFileDetails({
       path: `${baseFolder}%2F${fileName}`,
       content: fileData,
       fileName,
     })
+    setIsFileStagedForUpload(true)
   }
 
   const readFileToStageUpload = async (event) => {
