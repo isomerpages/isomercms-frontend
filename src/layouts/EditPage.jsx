@@ -118,6 +118,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
   const [mediaSearchTerm, setMediaSearchTerm] = useState('')
   const [selectedFile, setSelectedFile] = useState('')
   const [leftNavPages, setLeftNavPages] = useState([])
+  const [resourceRoomName, setResourceRoomName] = useState('')
   const [isCspViolation, setIsCspViolation] = useState(false)
   const [chunk, setChunk] = useState('')
 
@@ -218,6 +219,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       const {
         pageContent,
         pageSha,
+        resourceRoomName,
       } = pageData
       const {
         netlifyTomlHeaderValues
@@ -250,6 +252,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         setEditorValue(retrievedMdBody.trim())
         setFrontMatter(retrievedFrontMatter)
         setLeftNavPages(generatedLeftNavPages)
+        setResourceRoomName(resourceRoomName || '')
         setIsLoadingPageContent(false)
       }
     }
@@ -466,6 +469,8 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
                 chunk={chunk}
                 title={title}
                 date={date}
+                resourceRoomName={deslugifyDirectory(resourceRoomName)}
+                collection={resourceName}
               />
             )
           }

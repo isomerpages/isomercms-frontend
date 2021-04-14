@@ -67,13 +67,14 @@ const getMovePageEndpoint = ({siteName, resourceName, folderName, subfolderName,
 const getEditPageData = async ({folderName, subfolderName, fileName, siteName, resourceName}) => {
     const apiEndpoint = getPageApiEndpoint({folderName, subfolderName, fileName, siteName, resourceName})
     const resp = await axios.get(apiEndpoint);
-    const { content:pageContent, sha:pageSha } = resp.data;
+    const { content:pageContent, sha:pageSha, resourceRoomName } = resp.data;
     
     if (!pageContent) return
 
     return {
         pageContent,
         pageSha,
+        resourceRoomName,
     }
 }
 
