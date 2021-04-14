@@ -32,6 +32,7 @@ import {
   convertArrayToFolderOrder,
   retrieveSubfolderContents,
   convertSubfolderArray,
+  deslugifyDirectory,
 } from '../utils'
 
 // Import API
@@ -334,7 +335,7 @@ const Folders = ({ match, location }) => {
             <div className={contentStyles.mainSection}>
               {/* Page title */}
               <div className={contentStyles.sectionHeader}>
-                <h1 className={contentStyles.sectionTitle}>{folderName}</h1>
+                <h1 className={contentStyles.sectionTitle}>{deslugifyDirectory(folderName)}</h1>
               </div>
               {/* Info segment */}
               <div className={contentStyles.segment}>
@@ -353,15 +354,15 @@ const Folders = ({ match, location }) => {
                         folderName
                         ? (
                           subfolderName
-                          ? <Link to={`/sites/${siteName}/folder/${folderName}`}><strong className="ml-1"> {folderName}</strong></Link>
-                          : <strong className="ml-1"> {folderName}</strong>
+                          ? <Link to={`/sites/${siteName}/folder/${folderName}`}><strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></Link>
+                          : <strong className="ml-1"> {deslugifyDirectory(folderName)}</strong>
                         )
                         : null
                     }
                     {
                         folderName && subfolderName
                         ? (
-                            <span> ><strong className="ml-1"> {subfolderName}</strong></span>
+                            <span> ><strong className="ml-1"> {deslugifyDirectory(subfolderName)}</strong></span>
                         )
                         : null
                     }

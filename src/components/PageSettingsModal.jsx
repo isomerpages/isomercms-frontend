@@ -10,6 +10,7 @@ import {
   concatFrontMatterMdBody,
   frontMatterParser,
   deslugifyPage,
+  deslugifyDirectory,
 } from '../utils';
 
 import { createPageData, updatePageData, renamePageData } from '../api'
@@ -166,12 +167,12 @@ const PageSettingsModal = ({
                     My workspace >
                     {
                       folderName
-                      ? <span> {folderName} > </span>  
+                      ? <span> {deslugifyDirectory(folderName)} > </span>  
                       : null
                     }
                     {
                       subfolderName
-                      ? <span> {subfolderName} > </span>
+                      ? <span> {deslugifyDirectory(subfolderName)} > </span>
                       : null
                     } 
                     <u className='ml-1'>{ title }</u><br/><br/>
