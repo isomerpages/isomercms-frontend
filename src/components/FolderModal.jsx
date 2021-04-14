@@ -25,6 +25,7 @@ import { errorToast } from '../utils/toasts';
 axios.defaults.withCredentials = true
 
 const selectRenameApiCall = (isCollection, siteName, folderOrCategoryName, subfolderName, newDirectoryName) => {
+  if (slugifyCategory(newDirectoryName) === subfolderName || slugifyCategory(newDirectoryName) === folderOrCategoryName ) return
   if (isCollection && !subfolderName) {
     const params = {
       siteName,
