@@ -80,8 +80,7 @@ export default class MediaSettingsModal extends Component {
 
         if (type === 'image') {
           params.imageName = newFileName;
-          params.imageDirectory = customPath ? customPath : '';
-          console.log(params)
+          params.imageDirectory = `images${customPath ? `/${customPath}` : ''}`;
         } else {
           params.documentName = newFileName;
         }
