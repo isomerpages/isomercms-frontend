@@ -97,6 +97,7 @@ const Workspace = ({ match, location }) => {
                 const newPage = { 
                   ...page,
                   title: page.fileName,
+                  name: page.fileName,
                 }
                 return newPage
               })}
@@ -186,6 +187,7 @@ const Workspace = ({ match, location }) => {
                             siteName={siteName}
                             category={collection}
                             itemIndex={collectionIdx}
+                            existingFolders={collections}
                         />
                     ))
                     : null

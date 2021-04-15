@@ -292,7 +292,8 @@ const Folders = ({ match, location }) => {
                 folderOrCategoryName={folderName}
                 subfolderName={selectedPage}
                 siteName={siteName}
-                isCollection
+                isCollection={true}
+                existingFolders={folderOrderArray.filter(item => item.type === 'dir').map(item => item.name)}
               />
             )
           }
@@ -311,7 +312,7 @@ const Folders = ({ match, location }) => {
             && (
               <GenericWarningModal
                 displayTitle="Warning"
-                displayText="Moving a page to a different collection might lead to user confusion. You may wish to change the permalink for this page afterwards."
+                displayText="Moving a page to a different folder might lead to user confusion. You may wish to change the permalink for this page afterwards."
                 onProceed={moveHandler}
                 onCancel={() => {
                 setIsMoveModalActive(false)
@@ -340,7 +341,7 @@ const Folders = ({ match, location }) => {
               {/* Info segment */}
               <div className={contentStyles.segment}>
                 <i className="bx bx-sm bx-bulb text-dark" />
-                <span><strong className="ml-1">Pro tip:</strong> You can make a new section by creating sub folders</span>
+                <span><strong className="ml-1">Pro tip:</strong> You can make a new section by creating subfolders</span>
               </div>
               {/* Segment divider  */}
               <div className={contentStyles.segmentDividerContainer}>
@@ -349,7 +350,7 @@ const Folders = ({ match, location }) => {
               {/* Collections title */}
               <div className={contentStyles.segment}>
                 <span>
-                    My workspace >
+                    <Link to={`/sites/${siteName}/workspace`}><strong>Workspace</strong></Link> > 
                     {
                         folderName
                         ? (
@@ -372,7 +373,7 @@ const Folders = ({ match, location }) => {
               <div className={contentStyles.contentContainerFolderRowMargin}>
                 <FolderOptionButton title="Rearrange items" isSelected={isRearrangeActive} onClick={toggleRearrange} option="rearrange" isDisabled={folderOrderArray.length <= 1 || !folderContents}/>
                 <FolderOptionButton title="Create new page" option="create-page" id="pageSettings-new" onClick={() => setIsPageSettingsActive((prevState) => !prevState)}/>
-                <FolderOptionButton title="Create new sub-folder" option="create-sub" isDisabled={subfolderName || isLoadingDirectory ? true : false} onClick={() => setIsFolderCreationActive(true)}/>
+                <FolderOptionButton title="Create new subfolder" option="create-sub" isDisabled={subfolderName || isLoadingDirectory ? true : false} onClick={() => setIsFolderCreationActive(true)}/>
               </div>
               {/* Collections content */}
               {

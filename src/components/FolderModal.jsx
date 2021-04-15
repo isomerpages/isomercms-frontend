@@ -15,13 +15,17 @@ import {
 import {
   DEFAULT_RETRY_MSG,
   slugifyCategory,
+  deslugifyDirectory,
 } from '../utils'
+
+import { validateCategoryName } from '../utils/validators'
 import { errorToast } from '../utils/toasts';
 
 // axios settings
 axios.defaults.withCredentials = true
 
 const selectRenameApiCall = (isCollection, siteName, folderOrCategoryName, subfolderName, newDirectoryName) => {
+  if (slugifyCategory(newDirectoryName) === subfolderName || slugifyCategory(newDirectoryName) === folderOrCategoryName ) return
   if (isCollection && !subfolderName) {
     const params = {
       siteName,
@@ -49,8 +53,9 @@ const selectRenameApiCall = (isCollection, siteName, folderOrCategoryName, subfo
   return renameResourceCategory(params)
 }
 
-const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName, subfolderName, siteName, isCollection }) => {
-  const [newDirectoryName, setNewDirectoryName] = useState(subfolderName || folderOrCategoryName)
+const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName, subfolderName, siteName, isCollection, existingFolders }) => {
+  const [newDirectoryName, setNewDirectoryName] = useState(deslugifyDirectory(subfolderName || folderOrCategoryName))
+  const [errors, setErrors] = useState('')
 
   // rename folder/subfolder/resource category
   const { mutateAsync: renameDirectory } = useMutation(
@@ -63,6 +68,9 @@ const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName,
 
   const folderNameChangeHandler = (event) => {
     const { value } = event.target
+    const comparisonCategoryArray = subfolderName ? existingFolders.filter(name => name !== subfolderName) : existingFolders.filter(name => name !== folderOrCategoryName)
+    let errorMessage = validateCategoryName(value, isCollection ? 'page' : 'resource', comparisonCategoryArray)
+    setErrors(errorMessage)
     setNewDirectoryName(value)
   }
 
@@ -83,6 +91,7 @@ const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName,
             id="newDirectoryName"
             value={newDirectoryName}
             onFieldChange={folderNameChangeHandler}
+            errorMessage={errors}
           />
           <SaveDeleteButtons
             isDisabled={false}

@@ -97,7 +97,7 @@ const FolderCreationModal = ({
 
   const sortFuncs = {
     'title': (a, b) => {
-      return a.fileName.localeCompare(b.fileName)
+      return a.name.localeCompare(b.name)
     }
   }
 
@@ -134,7 +134,7 @@ const FolderCreationModal = ({
               </div>
               <div className={`d-flex justify-content-between w-100`}>
                 <span>Pages</span>
-                <span className={`w-25 ${contentStyles.segment}`}>
+                {/* <span className={`w-25 ${contentStyles.segment}`}>
                   <span className={elementStyles.sortLabel}>
                     {`Sort by `}
                   </span>
@@ -150,7 +150,7 @@ const FolderCreationModal = ({
                     }
                     options={sortOptions}
                   />
-                </span>
+                </span> */}
               </div>
               <br/>
               {/* Pages */}
@@ -160,15 +160,15 @@ const FolderCreationModal = ({
                     sortedPagesData && sortedPagesData.length > 0
                     ? sortedPagesData.map((pageData, pageIdx) => (
                           <FolderCard
-                              displayText={deslugifyPage(pageData.fileName)}
+                              displayText={deslugifyPage(pageData.name)}
                               settingsToggle={() => {}}
-                              key={pageData.fileName}
+                              key={pageData.name}
                               pageType={"file"}
                               siteName={siteName}
                               itemIndex={pageIdx}
-                              selectedIndex={selectedFiles[pageData.fileName]}
+                              selectedIndex={selectedFiles[pageData.name]}
                               onClick={() => {
-                                  fileSelectChangeHandler(pageData.fileName)
+                                  fileSelectChangeHandler(pageData.name)
                               }}
                           />
                     ))

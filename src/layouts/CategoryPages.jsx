@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { useQuery } from 'react-query';
+import { Link } from 'react-router-dom';
 
 // Import components
 import Header from '../components/Header';
@@ -103,6 +104,18 @@ const CategoryPages = ({ match, location, isResource }) => {
               {/* Collection title */}
               <div className={contentStyles.sectionHeader}>
                   <h1 className={contentStyles.sectionTitle}>{deslugifyDirectory(collectionName)}</h1>
+              </div>
+              <div className={contentStyles.segment}>
+                <span>
+                    <Link to={`/sites/${siteName}/resources`}><strong>Resources</strong></Link> > 
+                    {
+                        collectionName 
+                        ? (
+                            <span><strong className="ml-1"> {deslugifyDirectory(collectionName)}</strong></span>
+                        )
+                        : null
+                    }
+                </span>
               </div>
               {/* Collection pages */}
               <CollectionPagesSection

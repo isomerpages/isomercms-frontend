@@ -27,13 +27,6 @@ const FolderNamingModal = ({
       <div className={elementStyles.modalContent}>
         <div>
           {`You may edit ${folderType} name anytime.`}
-          {
-            folderType !== 'resource' &&
-            <>
-              <br/>
-              Choose the pages you would like to group.
-            </>
-          }
         </div>
         <div className={elementStyles.modalFormFields}>
           {/* Title */}
