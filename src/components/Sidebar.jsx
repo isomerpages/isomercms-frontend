@@ -107,7 +107,7 @@ const Sidebar = ({ siteName, currPath }) => {
     return () => {
       _isMounted = false
     }
-  }, [])
+  }, [siteName])
 
   useEffect(() => {
     if (lastUpdatedResp) setLastUpdated(lastUpdatedResp.lastUpdated)
