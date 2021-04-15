@@ -30,7 +30,6 @@ const FolderCreationModal = ({
   siteName,
   setIsFolderCreationActive,
 }) => {
-  console.log(pagesData)
   // Errors
   const [errors, setErrors] = useState('')
   const { setRedirectToPage } = useRedirectHook()
