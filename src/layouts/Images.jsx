@@ -258,6 +258,7 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
           type="image"
           media={chosenImage}
           siteName={siteName}
+          customPath={customPath}
           isPendingUpload={false}
           onClose={() => setChosenImage(null)}
           onSave={() => window.location.reload()}
@@ -271,6 +272,7 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
           type="image"
           media={pendingImageUpload}
           siteName={siteName}
+          customPath={customPath}
           // eslint-disable-next-line react/jsx-boolean-value
           isPendingUpload
           onClose={() => setPendingImageUpload(null)}
