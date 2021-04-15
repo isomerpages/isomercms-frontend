@@ -98,7 +98,7 @@ export default class MediaSettingsModal extends Component {
         if (newFileName === fileName) {
           return;
         }
-        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${fileName}/rename/${newFileName}`, params, {
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${generateImageorFilePath(customPath, fileName)}/rename/${generateImageorFilePath(customPath, newFileName)}`, params, {
           withCredentials: true,
         });
       }
