@@ -238,12 +238,13 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource, r
 export default CollectionPagesSection
 
 CollectionPagesSection.propTypes = {
+    collectionName: PropTypes.string,
     pages: PropTypes.arrayOf(
         PropTypes.shape({
-            name: PropTypes.string.isRequired,
-            path: PropTypes.string.isRequired,
-            sha: PropTypes.string.isRequired,
+            fileName: PropTypes.string.isRequired,
         }),
     ),
     siteName: PropTypes.string.isRequired,
+    isResource: PropTypes.bool,
+    refetchPages: PropTypes.func.isRequired,
 };

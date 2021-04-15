@@ -208,7 +208,14 @@ export default FolderCreationModal
 FolderCreationModal.propTypes = {
   parentFolder: PropTypes.string.isRequired,
   existingSubfolders: PropTypes.arrayOf(PropTypes.string).isRequired,
-  // pagesData, TODO
+  pagesData: PropTypes.arrayOf(
+    PropTypes.shape({
+      fileName: PropTypes.string.isRequired,
+      path: PropTypes.string.isRequired,
+      sha: PropTypes.string,
+      title: PropTypes.string,
+    }),
+  ).isRequired,
   siteName: PropTypes.string.isRequired,
   setIsFolderCreationActive: PropTypes.func.isRequired,
 };

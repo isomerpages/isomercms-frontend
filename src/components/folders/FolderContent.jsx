@@ -254,3 +254,57 @@ const FolderContent = ({
 }
 
 export default FolderContent
+
+FolderContentItem.propTypes = {
+    title: PropTypes.string.isRequired,
+    isFile: PropTypes.bool.isRequired,
+    numItems: PropTypes.number,
+    link: PropTypes.string.isRequired,
+    itemIndex: PropTypes.number.isRequired,
+    allCategories: PropTypes.arrayOf(
+        PropTypes.string.isRequired
+    ),
+    setSelectedPage: PropTypes.func.isRequired,
+    setSelectedPath: PropTypes.func.isRequired,
+    setIsPageSettingsActive: PropTypes.func.isRequired,
+    setIsFolderModalOpen: PropTypes.func.isRequired,
+    setIsMoveModalActive: PropTypes.func.isRequired,
+    setIsDeleteModalActive: PropTypes.func.isRequired,
+    moveDropdownQuery: PropTypes.shape({
+        folderName: PropTypes.string.isRequired,
+        subfolderName: PropTypes.string.isRequired,
+    }).isRequired,
+    setMoveDropdownQuery: PropTypes.func.isRequired,
+    clearMoveDropdownQueryState: PropTypes.func.isRequired,
+};
+
+
+FolderContent.propTypes = {
+    folderOrderArray: PropTypes.arrayOf(
+        PropTypes.shape({
+            fileName: PropTypes.string.isRequired,
+            path: PropTypes.string.isRequired,
+            sha: PropTypes.string,
+            title: PropTypes.string,
+        }),
+    ).isRequired,
+    setFolderOrderArray: PropTypes.func.isRequired,
+    siteName: PropTypes.string.isRequired,
+    folderName: PropTypes.string.isRequired,
+    enableDragDrop: PropTypes.func.isRequired,
+    allCategories: PropTypes.arrayOf(
+        PropTypes.string.isRequired
+    ),
+    setSelectedPath: PropTypes.func.isRequired,
+    setSelectedPage: PropTypes.func.isRequired,
+    setIsPageSettingsActive: PropTypes.func.isRequired,
+    setIsFolderModalOpen: PropTypes.func.isRequired,
+    setIsMoveModalActive: PropTypes.func.isRequired,
+    setIsDeleteModalActive: PropTypes.func.isRequired,
+    moveDropdownQuery: PropTypes.shape({
+        folderName: PropTypes.string.isRequired,
+        subfolderName: PropTypes.string.isRequired,
+    }).isRequired,
+    setMoveDropdownQuery: PropTypes.func.isRequired,
+    clearMoveDropdownQueryState: PropTypes.func.isRequired,
+};
