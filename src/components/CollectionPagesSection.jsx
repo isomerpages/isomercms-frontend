@@ -97,7 +97,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource, r
         if (folderName !== '' && querySubfolders) { // inside folder, show all subfolders
             const parsedFolderContents = parseDirectoryFile(querySubfolders.data.content)
             const parsedFolderArray = convertFolderOrderToArray(parsedFolderContents)
-            return parsedFolderArray.filter(file => file.type === 'dir').map(file => file.name)
+            return parsedFolderArray.filter(file => file.type === 'dir').map(file => file.fileName)
         }
         if (folderName === '' && subfolderName === '' && allCategories) { // inside workspace, show all folders
             return allCategories.collections
@@ -146,7 +146,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource, r
                         fileName={selectedFile || ''}
                         isNewFile={!selectedFile}
                         pageData={pageData}
-                        pageFileNames={pages?.map(page => page.name) || []}
+                        pageFileNames={pages?.map(page => page.fileName) || []}
                         setSelectedFile={setSelectedFile}
                         setIsComponentSettingsActive={setIsComponentSettingsActive}
                     /> 
@@ -210,7 +210,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource, r
                                     itemIndex={pageIdx}
                                     category={collectionName}
                                     siteName={siteName}
-                                    fileName={page.fileName || page.name} // temporary fix
+                                    fileName={page.fileName} // temporary fix
                                     resourceType={isResource ? page.type : ''}
                                     date={page.date}
                                     isResource={isResource}

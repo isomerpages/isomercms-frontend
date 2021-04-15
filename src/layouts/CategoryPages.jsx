@@ -73,7 +73,7 @@ const CategoryPages = ({ match, location, isResource }) => {
               title,
               type,
               date,
-              name: resourcePage.fileName,
+              fileName: resourcePage.fileName,
             };
           });
           if (_isMounted) setCategoryPages(retrievedResourcePages)

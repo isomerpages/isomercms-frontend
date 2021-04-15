@@ -98,7 +98,7 @@ const Folders = ({ match, location }) => {
         if (subfolderName) {
           const subfolderFiles = retrieveSubfolderContents(parsedFolderContents, subfolderName)
           if (subfolderFiles.length > 0) {
-            setFolderOrderArray(subfolderFiles.filter(item => item.name !== '.keep'))
+            setFolderOrderArray(subfolderFiles.filter(item => item.fileName !== '.keep'))
           } else {
             // if subfolderName prop does not match directory file, it's not a valid subfolder
             setRedirectToPage(`/sites/${siteName}/workspace`)
@@ -112,7 +112,7 @@ const Folders = ({ match, location }) => {
     // set selected item type
     useEffect(() => {
       if (selectedPage) {
-        const selectedItem = folderOrderArray.find((item) => item.name === selectedPage)
+        const selectedItem = folderOrderArray.find((item) => item.fileName === selectedPage)
         setIsSelectedItemPage(selectedItem.type === 'file' ? true : false)
       }
     }, [selectedPage])
@@ -204,7 +204,7 @@ const Folders = ({ match, location }) => {
       if (folderName !== '' && querySubfolders) { // inside folder, show all subfolders
         const parsedFolderContents = parseDirectoryFile(querySubfolders.data.content)
         const parsedFolderArray = convertFolderOrderToArray(parsedFolderContents)
-        return parsedFolderArray.filter(file => file.type === 'dir').map(file => file.name)
+        return parsedFolderArray.filter(file => file.type === 'dir').map(file => file.fileName)
       }
       if (folderName === '' && subfolderName === '' && allFolders) { // inside workspace, show all folders
         return allFolders.collections
@@ -261,7 +261,7 @@ const Folders = ({ match, location }) => {
             isFolderCreationActive &&
             <FolderCreationModal
               parentFolder={folderName}
-              existingSubfolders={folderOrderArray.filter(item => item.type === 'dir').map(item => item.name)}
+              existingSubfolders={folderOrderArray.filter(item => item.type === 'dir').map(item => item.fileName)}
               pagesData={folderOrderArray.filter(item => item.type === 'file')}
               siteName={siteName}
               setIsFolderCreationActive={setIsFolderCreationActive}
@@ -273,7 +273,7 @@ const Folders = ({ match, location }) => {
               <PageSettingsModal
                 folderName={folderName}
                 subfolderName={subfolderName}
-                pagesData={folderOrderArray.filter(item => item.type === 'file').map(page => page.name)}
+                pagesData={folderOrderArray.filter(item => item.type === 'file').map(page => page.fileName)}
                 pageData={pageData}
                 siteName={siteName}
                 originalPageName={selectedPage || ''}
@@ -293,7 +293,7 @@ const Folders = ({ match, location }) => {
                 subfolderName={selectedPage}
                 siteName={siteName}
                 isCollection={true}
-                existingFolders={folderOrderArray.filter(item => item.type === 'dir').map(item => item.name)}
+                existingFolders={folderOrderArray.filter(item => item.type === 'dir').map(item => item.fileName)}
               />
             )
           }

@@ -649,7 +649,7 @@ export const convertFolderOrderToArray = (folderOrder) => {
           acc.push({
               type: 'file',
               path: curr,
-              name: curr,
+              fileName: curr,
           })
       }
 
@@ -657,15 +657,15 @@ export const convertFolderOrderToArray = (folderOrder) => {
           const subfolderTitle = folderPathArr[0]
 
           // Start of a new subfolder section
-          if (currFolderEntry.name !== subfolderTitle) {
+          if (currFolderEntry.fileName !== subfolderTitle) {
               // Case: two consecutive subfolders - transitioning from one to the other
-              if (currFolderEntry.name && currFolderEntry.name !== subfolderTitle) {
+              if (currFolderEntry.fileName && currFolderEntry.fileName !== subfolderTitle) {
                   acc.push(currFolderEntry)
               }
 
               currFolderEntry = {
                 type: 'dir',
-                name: subfolderTitle,
+                fileName: subfolderTitle,
                 path: curr,
                 children: [curr],
               }
@@ -698,7 +698,7 @@ export const retrieveSubfolderContents = (folderOrder, subfolderName) => {
         acc.push({
           type: 'file',
           path: curr,
-          name: subfolderFileName,
+          fileName: subfolderFileName,
         })
       }
     }

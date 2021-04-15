@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { DragDropContext } from 'react-beautiful-dnd';
 import update from 'immutability-helper';
+import PropTypes from 'prop-types';
 
 import { deslugifyPage } from '../../utils'
 import { MenuDropdown } from '../MenuDropdown'
@@ -13,9 +14,7 @@ import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../../styles/isomer-cms/pages/Content.module.scss';
 
 const FolderContentItem = ({
-    siteName,
     title,
-    folderName,
     isFile,
     numItems,
     link,
@@ -167,7 +166,7 @@ const FolderContent = ({
     clearMoveDropdownQueryState,
 }) => {
     const generateLink = (folderContentItem) => {
-        if (folderContentItem.type === 'dir') return `/sites/${siteName}/folder/${folderName}/subfolder/${folderContentItem.name}`
+        if (folderContentItem.type === 'dir') return `/sites/${siteName}/folder/${folderName}/subfolder/${folderContentItem.fileName}`
         return `/sites/${siteName}/folder/${folderName}/${folderContentItem.path.includes('/') ? `subfolder/` : ''}${folderContentItem.path}`
     }
 
@@ -212,7 +211,7 @@ const FolderContent = ({
                                     draggableId={`folder-${folderContentIndex}-draggable`}
                                     index={folderContentIndex}
                                     isDragDisabled={!enableDragDrop}
-                                    key={folderContentItem.name}
+                                    key={folderContentItem.fileName}
                                 >
                                     {(draggableProvided) => (
                                         <div
@@ -222,9 +221,9 @@ const FolderContent = ({
                                             ref={draggableProvided.innerRef}
                                         >        
                                             <FolderContentItem
-                                                key={folderContentItem.name}
+                                                key={folderContentItem.fileName}
                                                 siteName={siteName}
-                                                title={folderContentItem.name}
+                                                title={folderContentItem.fileName}
                                                 folderName={folderName}
                                                 numItems={folderContentItem.type === 'dir' ? folderContentItem.children.filter(name => !name.includes('.keep')).length : null}
                                                 isFile={folderContentItem.type === 'dir' ? false: true}

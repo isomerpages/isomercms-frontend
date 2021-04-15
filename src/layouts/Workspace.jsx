@@ -97,7 +97,6 @@ const Workspace = ({ match, location }) => {
                 const newPage = { 
                   ...page,
                   title: page.fileName,
-                  name: page.fileName,
                 }
                 return newPage
               })}
