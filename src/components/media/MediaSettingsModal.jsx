@@ -179,7 +179,7 @@ export default class MediaSettingsModal extends Component {
             </div>
             <SaveDeleteButtons
               saveLabel={isPendingUpload ? "Upload" : "Save"}
-              isDisabled={isPendingUpload ? false : (errorMessage || !sha)}
+              isDisabled={isPendingUpload ? false : !sha}
               isSaveDisabled={isPendingUpload ? false : (fileName === this.state.newFileName || errorMessage || !sha)}
               hasDeleteButton={!isPendingUpload}
               saveCallback={this.saveFile}
