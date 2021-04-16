@@ -97,7 +97,7 @@ const FolderCreationModal = ({
 
   const sortFuncs = {
     'title': (a, b) => {
-      return a.name.localeCompare(b.name)
+      return a.fileName.localeCompare(b.fileName)
     }
   }
 
@@ -160,15 +160,15 @@ const FolderCreationModal = ({
                     sortedPagesData && sortedPagesData.length > 0
                     ? sortedPagesData.map((pageData, pageIdx) => (
                           <FolderCard
-                              displayText={deslugifyPage(pageData.name)}
+                              displayText={deslugifyPage(pageData.fileName)}
                               settingsToggle={() => {}}
-                              key={pageData.name}
+                              key={pageData.fileName}
                               pageType={"file"}
                               siteName={siteName}
                               itemIndex={pageIdx}
-                              selectedIndex={selectedFiles[pageData.name]}
+                              selectedIndex={selectedFiles[pageData.fileName]}
                               onClick={() => {
-                                  fileSelectChangeHandler(pageData.name)
+                                  fileSelectChangeHandler(pageData.fileName)
                               }}
                           />
                     ))
@@ -207,7 +207,14 @@ export default FolderCreationModal
 FolderCreationModal.propTypes = {
   parentFolder: PropTypes.string.isRequired,
   existingSubfolders: PropTypes.arrayOf(PropTypes.string).isRequired,
-  // pagesData, TODO
+  pagesData: PropTypes.arrayOf(
+    PropTypes.shape({
+      fileName: PropTypes.string.isRequired,
+      path: PropTypes.string.isRequired,
+      sha: PropTypes.string,
+      title: PropTypes.string,
+    }),
+  ).isRequired,
   siteName: PropTypes.string.isRequired,
   setIsFolderCreationActive: PropTypes.func.isRequired,
 };
