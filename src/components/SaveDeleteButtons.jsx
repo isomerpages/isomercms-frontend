@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import LoadingButton from './LoadingButton'
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
-const SaveDeleteButtons = ({ saveLabel, deleteLabel, isDisabled, isSaveDisabled, isDeleteDisabled, hasDeleteButton, saveCallback, deleteCallback }) => {
+const SaveDeleteButtons = ({ saveLabel, deleteLabel, isDisabled, isSaveDisabled, isDeleteDisabled, hasDeleteButton, saveCallback, deleteCallback, isLoading }) => {
   const shouldDisableSave = isSaveDisabled ? isSaveDisabled : isDisabled
   const shouldDisableDelete = isDeleteDisabled ? isDeleteDisabled : isDisabled
   return (
@@ -16,6 +16,7 @@ const SaveDeleteButtons = ({ saveLabel, deleteLabel, isDisabled, isSaveDisabled,
             disabledStyle={elementStyles.disabled}
             className={`ml-auto ${shouldDisableDelete ? elementStyles.disabled : elementStyles.warning}`}
             callback={deleteCallback}
+            showLoading={isLoading}
           />
         ) : null}
       <LoadingButton
@@ -24,6 +25,7 @@ const SaveDeleteButtons = ({ saveLabel, deleteLabel, isDisabled, isSaveDisabled,
         disabledStyle={elementStyles.disabled}
         className={`${hasDeleteButton ? null : `ml-auto`} ${shouldDisableSave ? elementStyles.disabled : elementStyles.blue}`}
         callback={saveCallback}
+        showLoading={isLoading}
       />
       
     </div>
@@ -39,6 +41,7 @@ SaveDeleteButtons.propTypes = {
   hasDeleteButton: PropTypes.bool.isRequired,
   saveCallback: PropTypes.func.isRequired,
   deleteCallback: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool,
 };
 
 export default SaveDeleteButtons

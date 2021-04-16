@@ -9,6 +9,7 @@ export default function LoadingButton(props) {
     disabledStyle,
     className,
     callback,
+    showLoading,
     ...remainingProps
   } = props;
 
@@ -44,7 +45,7 @@ export default function LoadingButton(props) {
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...remainingProps}
     >
-      {isLoading
+      {isLoading || showLoading
         ? (
           <div className="spinner-border text-primary" role="status" />
         ) : label}
@@ -58,6 +59,7 @@ LoadingButton.propTypes = {
   disabledStyle: PropTypes.string,
   className: PropTypes.string.isRequired,
   callback: PropTypes.func.isRequired,
+  showLoading: PropTypes.bool,
 };
 
 LoadingButton.defaultProps = {
