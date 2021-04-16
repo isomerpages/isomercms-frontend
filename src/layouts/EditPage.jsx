@@ -76,16 +76,16 @@ const extractMetadataFromFilename = (isResourcePage, fileName) => {
 
 const getBackButtonInfo = (resourceCategory, folderName, siteName, subfolderName) => {
   if (resourceCategory) return {
-    backButtonLabel: resourceCategory,
+    backButtonLabel: deslugifyDirectory(resourceCategory),
     backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
   }
   if (folderName) {
     if (subfolderName) return {
-      backButtonLabel: `${folderName}/${subfolderName}`,
+      backButtonLabel: deslugifyDirectory(subfolderName),
       backButtonUrl: `/sites/${siteName}/folder/${folderName}/subfolder/${subfolderName}`,
     }
     return {
-      backButtonLabel: folderName,
+      backButtonLabel: deslugifyDirectory(folderName),
       backButtonUrl: `/sites/${siteName}/folder/${folderName}`,
     }
   }

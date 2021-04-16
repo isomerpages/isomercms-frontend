@@ -141,7 +141,7 @@ const OverviewCard = ({
               menuIndex={itemIndex}
               onBlur={handleBlur}
               moveDropdownQuery={moveDropdownQuery}
-              rootName={"Resources"}
+              rootName={isResource ? "Resources" : "Workspace" }
               setMoveDropdownQuery={setMoveDropdownQuery}
               backHandler={toggleDropdownModals}
               moveHandler={() => {
