@@ -56,19 +56,19 @@ const NavElem = ({
 
   const generateTitle = () => {
     if (collection) {
-      return `Folder: ${title}`
+      return `${title}`
     }
     if (sublinks) {
-      return `Sublinks: ${title}`
+      return `${title}`
     }
     if (isResource) {
-      return `Resource: ${title}`
+      return `${title}`
     }
-    return `Page: ${title}`
+    return `${title}`
   }
 
   return (
-    <div className={`${elementStyles.card} ${!shouldDisplay && (!isEmpty(linkErrors) || !isEmpty(sublinkErrors)) ? elementStyles.error : ''}`}>
+    <div className={`${elementStyles.navCard} ${!shouldDisplay && (!isEmpty(linkErrors) || !isEmpty(sublinkErrors)) ? elementStyles.error : ''}`}>
       <div className={elementStyles.cardHeader}>
         <h2>
           {generateTitle()}
@@ -82,7 +82,7 @@ const NavElem = ({
           <>
             <div className={elementStyles.cardContent}>
               <FormField
-                title="Nav title"
+                title="Menu title"
                 id={`link-${linkIndex}-title`}
                 value={title}
                 isRequired
@@ -130,7 +130,7 @@ const NavElem = ({
               }
             </div>
             <div className={elementStyles.inputGroup}>
-              <button type="button" id={`link-${linkIndex}-delete`} className={`ml-auto ${elementStyles.warning}`} onClick={deleteHandler}>Delete link</button>
+              <button type="button" id={`link-${linkIndex}-delete`} className={`ml-auto ${elementStyles.warning}`} onClick={deleteHandler}>Delete Menu</button>
             </div>
           </>
         )
@@ -183,7 +183,7 @@ const NavSection = ({
     },
     {
       value: 'sublinkLink',
-      label: 'Sublinks',
+      label: 'Submenu',
     },
   ]
   return (
@@ -198,7 +198,7 @@ const NavSection = ({
           >
             { (links && links.length > 0)
               ? <>
-                  <b>Links</b>
+                  <b>Menu</b>
                   {links.map((link, linkIndex) => (
                     <Draggable
                       draggableId={`link-${linkIndex}-draggable`}
@@ -241,7 +241,7 @@ const NavSection = ({
           </div>
         )}
       </Droppable>
-      <div className='d-flex justify-content-between'>
+      <div className='d-flex justify-content-between mt-4'>
         <Select
           ref={selectInputRef}
           className='w-50'
@@ -249,10 +249,10 @@ const NavSection = ({
           placeholder={"Select link type..."}
           options={sectionCreationOptions}
         />
-        <button type="button" className={newSectionType ? elementStyles.blue: elementStyles.disabled} onClick={sectionCreationHandler} disabled={!newSectionType}>Create New Link</button>
+        <button type="button" className={newSectionType ? elementStyles.blue: elementStyles.disabled} onClick={sectionCreationHandler} disabled={!newSectionType}>Create New Menu</button>
       </div>
       <span className={elementStyles.info}>
-        {`Note: you can specify a folder ${hasResourceRoom ? `or resource room ` : ``}to automatically populate its links. ${hasResourceRoom ? `Only one resource room link is allowed. ` : ``}Select "Sublinks" if you want to specify your own links.`}
+        {`Note: you can specify a folder ${hasResourceRoom ? `or resource room ` : ``}to automatically populate its links. ${hasResourceRoom ? `Only one resource room link is allowed. ` : ``}Select "Submenu" if you want to specify your own links.`}
       </span>
     </>
   )

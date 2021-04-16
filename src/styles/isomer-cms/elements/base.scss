@@ -76,3 +76,9 @@ i {
   font-size: 14px;
   margin-bottom: 1.5rem;
 }
+
+.noExtLink {
+  &:after {
+    display:none !important;
+  }
+}

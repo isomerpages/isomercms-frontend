@@ -64,7 +64,7 @@ const typeInfoDict = {
     icon: 'bx bx-buoy'
   },
   Guide: {
-    url: 'https://v2.isomer.gov.sg/',
+    url: 'https://go.gov.sg/isomercms-guide/',
     icon: 'bx bx-book'
   },
   Settings: {
@@ -77,7 +77,7 @@ const typeInfoDict = {
 
 const Sidebar = ({ siteName, currPath }) => {
   const { setRedirectToLogout } = useRedirectHook()
-  const [lastUpdated, setLastUpdated] = useState('Updated 2 days ago')
+  const [lastUpdated, setLastUpdated] = useState('Updated')
   const [siteUrl, setSiteUrl] = useState()
   const { retrieveSiteUrl } = useSiteUrlHook()
 
@@ -107,7 +107,7 @@ const Sidebar = ({ siteName, currPath }) => {
     return () => {
       _isMounted = false
     }
-  }, [])
+  }, [siteName])
 
   useEffect(() => {
     if (lastUpdatedResp) setLastUpdated(lastUpdatedResp.lastUpdated)
@@ -129,7 +129,7 @@ const Sidebar = ({ siteName, currPath }) => {
       case 'Guide':
         return (
           <a
-            className={`px-4 py-3 h-100 w-100 font-weight-bold text-dark`}
+            className={`px-4 py-3 h-100 w-100 font-weight-bold text-dark ${elementStyles.noExtLink}`}
             href={typeInfoDict[title].url}
             target="_blank"
             rel="noopener noreferrer"
@@ -184,7 +184,7 @@ const Sidebar = ({ siteName, currPath }) => {
     const isActive = `/sites/${siteName}/${pathname}` === convertCollectionsPathToWorkspace(currPath, siteName)
     return (
       <li
-        className={`d-flex p-0 ${isActive ? styles.active : ''}`}
+        className={`d-flex p-0 ${isActive ? styles.active : ''} ${pathname === 'user' ? styles.noHover: ''}`}
         key={title}
       >
         {generateContent(title, siteName, pathname, isActive)}

@@ -61,28 +61,28 @@ const EditNavBar =  ({ match }) => {
   const [deletedLinks, setDeletedLinks] = useState('')
 
   const LinkCollectionSectionConstructor = () => ({
-    title: 'Link Title',
+    title: 'Menu Title',
     collection: collections[0],
   });
   
   const LinkResourceSectionConstructor = () => ({
-    title: 'Link Title',
+    title: 'Menu Title',
     resource_room: true,
   });
 
   const LinkPageSectionConstructor = () => ({
-    title: 'Link Title',
+    title: 'Menu Title',
     url: '/permalink',
   });
 
   const LinkSublinkSectionConstructor = () => ({
-    title: 'Link Title',
+    title: 'Menu Title',
     url: '/permalink',
     sublinks: [],
   });
 
   const SublinkSectionConstructor = () => ({
-    title: 'Sublink Title',
+    title: 'Submenu Title',
     url: '/permalink'
   });
 
@@ -604,7 +604,7 @@ const EditNavBar =  ({ match }) => {
       }
       <Header
         siteName={siteName}
-        title={"Nav Bar"}
+        title={"Navigation Bar"}
         shouldAllowEditPageBackNav={!hasChanges()}
         isEditPage={true}
         backButtonText="Back to My Workspace"

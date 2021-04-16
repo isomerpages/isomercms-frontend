@@ -127,6 +127,7 @@ export default class MediaSettingsModal extends Component {
     const {
       onClose, media, type, isPendingUpload, siteName,
     } = this.props;
+    const { fileName } = media
     const {
       newFileName,
       sha,
@@ -140,9 +141,7 @@ export default class MediaSettingsModal extends Component {
         <div className={elementStyles.modal}>
           <div className={elementStyles.modalHeader}>
             <h1>
-              Edit
-              { ' ' }
-              { type }
+              {isPendingUpload ? `Upload new ${type}` : `Edit ${type} details`}
             </h1>
             <button type="button" onClick={onClose}>
               <i className="bx bx-x" />
@@ -179,11 +178,13 @@ export default class MediaSettingsModal extends Component {
               />
             </div>
             <SaveDeleteButtons
-              saveLabel="Upload"
-              isDisabled={isPendingUpload ? false : (errorMessage || !sha)}
+              saveLabel={isPendingUpload ? "Upload" : "Save"}
+              isDisabled={isPendingUpload ? false : !sha}
+              isSaveDisabled={isPendingUpload ? false : (fileName === this.state.newFileName || errorMessage || !sha)}
               hasDeleteButton={!isPendingUpload}
               saveCallback={this.saveFile}
               deleteCallback={() => this.setState({ canShowDeleteWarningModal: true })}
+              isLoading={!sha}
             />
           </form>
         </div>
