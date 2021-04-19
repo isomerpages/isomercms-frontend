@@ -184,7 +184,7 @@ export default class MediaSettingsModal extends Component {
               hasDeleteButton={!isPendingUpload}
               saveCallback={this.saveFile}
               deleteCallback={() => this.setState({ canShowDeleteWarningModal: true })}
-              isLoading={!sha}
+              isLoading={isPendingUpload ? false : !sha}
             />
           </form>
         </div>
