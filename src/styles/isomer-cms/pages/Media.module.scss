@@ -17,6 +17,9 @@
 
 .mediaCardDimensions {
   @include single-site;
+  width: $component-folder-width;
+  margin-right: $component-folder-margin;
+  margin-bottom: $component-folder-margin;
 }
 
 .mediaModal {
@@ -59,6 +62,11 @@
       border: none;
       box-sizing: border-box;
       transition: transform 0.2s ease-in;
+      min-width: 250px;
+      width: $component-card-width;
+      height: $component-card-height;
+      margin-right: $component-card-margin;
+      margin-bottom: $component-card-margin;
 
       .mediaCardPreviewContainer {
         height: 70%;
