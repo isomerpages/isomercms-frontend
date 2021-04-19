@@ -44,7 +44,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "lint": "eslint --ext .js --ext .jsx --ignore-path .gitignore .",
-    "lint-fix": "eslint --ext .js --ext .jsx --ignore-path .gitignore . --fix"
+    "lint-fix": "eslint --ext .js --ext .jsx --ignore-path .gitignore . --fix",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -62,13 +63,16 @@
     ]
   },
   "devDependencies": {
+    "@commitlint/cli": "^12.1.1",
+    "@commitlint/config-conventional": "^12.1.1",
     "cz-conventional-changelog": "^3.0.2",
     "eslint": "^6.5.1",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.16.0",
-    "eslint-plugin-react-hooks": "^1.7.0"
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "husky": "^6.0.0"
   },
   "config": {
     "commitizen": {
