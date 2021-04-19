@@ -4,8 +4,8 @@ import LoadingButton from './LoadingButton'
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
 const SaveDeleteButtons = ({ saveLabel, deleteLabel, isDisabled, isSaveDisabled, isDeleteDisabled, hasDeleteButton, saveCallback, deleteCallback, isLoading }) => {
-  const shouldDisableSave = isSaveDisabled ? isSaveDisabled : isDisabled
-  const shouldDisableDelete = isDeleteDisabled ? isDeleteDisabled : isDisabled
+  const shouldDisableSave = (isSaveDisabled !== undefined) ? isSaveDisabled : isDisabled
+  const shouldDisableDelete = (isDeleteDisabled !== undefined) ? isDeleteDisabled : isDisabled
   return (
     <div className={elementStyles.modalButtons}>
       { hasDeleteButton
