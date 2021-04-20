@@ -78,7 +78,9 @@ export default class Images extends Component {
     const { siteName } = match.params;
     return (
       <>
-        <Header />
+        <Header 
+          siteName={siteName}
+        />
         {/* main bottom section */}
         <div className={elementStyles.wrapper}>
           <Sidebar siteName={siteName} currPath={location.pathname} />
@@ -108,7 +110,7 @@ export default class Images extends Component {
                     }}
                     type="file"
                     id="file-upload"
-                    accept="image/png, image/jpeg, image/gif"
+                    accept="image/*"
                     hidden
                   />
                   {/* Images */}
@@ -149,7 +151,7 @@ export default class Images extends Component {
             media={pendingImageUpload}
             siteName={siteName}
             // eslint-disable-next-line react/jsx-boolean-value
-            isPendingUpload={true}
+            isPendingUpload
             onClose={() => this.setState({ pendingImageUpload: null })}
             onSave={() => window.location.reload()}
           />

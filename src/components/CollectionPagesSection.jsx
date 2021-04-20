@@ -1,164 +1,234 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+import { useQuery, useMutation } from 'react-query';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+
+import {
+    PAGE_CONTENT_KEY,
+    FOLDERS_CONTENT_KEY,
+    DIR_CONTENT_KEY,
+} from '../constants'
+
+import { getEditPageData, deletePageData, getAllCategories, moveFile, getDirectoryFile } from '../api'
+
+import { DEFAULT_RETRY_MSG, parseDirectoryFile, convertFolderOrderToArray } from '../utils'
 
 // Import components
 import OverviewCard from '../components/OverviewCard';
 import ComponentSettingsModal from './ComponentSettingsModal'
+import PageSettingsModal from './PageSettingsModal'
+import { errorToast, successToast } from '../utils/toasts';
+import DeleteWarningModal from '../components/DeleteWarningModal'
+import GenericWarningModal from '../components/GenericWarningModal'
 
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
-// Import utils
-import { retrieveThirdNavOptions } from '../utils/dropdownUtils'
-
-// Constants
-const RADIX_PARSE_INT = 10;
 
 // axios settings
 axios.defaults.withCredentials = true
 
-const CollectionPagesSection = ({ collectionName, pages, siteName, isResource }) => {
+// Clean up note: Should be renamed, only used for resource pages and unlinked pages sections
+const CollectionPagesSection = ({ collectionName, pages, siteName, isResource, refetchPages }) => {
+    
+    const initialMoveDropdownQueryState = {
+        folderName: '',
+        subfolderName: '',
+    }
+
     const [isComponentSettingsActive, setIsComponentSettingsActive] = useState(false)
     const [selectedFile, setSelectedFile] = useState('')
+    const [selectedPath, setSelectedPath] = useState('')
     const [createNewPage, setCreateNewPage] = useState(false)
-    const [collectionPageData, setCollectionPageData] = useState(null)
-    const [thirdNavData, setThirdNavData] = useState(null)
-    const [allCategories, setAllCategories] = useState()
+    const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
+    const [canShowMoveModal, setCanShowMoveModal] = useState(false)
+    const [moveDropdownQuery, setMoveDropdownQuery] = useState(initialMoveDropdownQueryState)
 
-    useEffect(() => {
-        const fetchData = async () => {
-          // Retrieve the list of all page/resource categories for use in the dropdown options.
-          if (isResource) {
-            const resourcesResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources`);
-            const { resources: allCategories } = resourcesResp.data;
-            setAllCategories(allCategories.map((category) => category.dirName))
-          } else {
-            const collectionsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections`);
-            const { collections: collectionCategories } = collectionsResp.data;
-            setAllCategories(collectionCategories)
-          }
-        }
-        fetchData()
-      }, [])
-
-    const loadThirdNavOptions = async () => {
-        if (thirdNavData) {
-            return new Promise((resolve) => {
-                resolve(thirdNavData)
-              });
-        }
-
-        const { collectionPages, thirdNavOptions } = await retrieveThirdNavOptions(siteName, collectionName, true)
-        setCollectionPageData(collectionPages)
-        setThirdNavData(thirdNavOptions)
-        return thirdNavOptions
-    }
-
-
-    const isCategoryDropdownDisabled = (isNewFile, category) => {
-        if (category) return true
-        if (isNewFile) return false
-        return true
-    }
-
-    const generateNewPageText = () => {
-        if (isResource) {
-            return `Add a new resource`
-        } else {
-            return `Add a new ${collectionName ? 'collection ' : ''}page`
-        }
-    }
-
-    const settingsToggle = (event) => {
-        const { id } = event.target;
-        const idArray = id.split('-');
-
-        // Create new page
-        if (idArray[1] === 'NEW') {
-            setIsComponentSettingsActive((prevState) => !prevState)
+    const { data: pageData } = useQuery(
+        [PAGE_CONTENT_KEY, { siteName, fileName: selectedFile, resourceName: collectionName }],
+        () => getEditPageData({ siteName, fileName: selectedFile, resourceName: collectionName }),
+        {
+          enabled: selectedFile.length > 0,
+          retry: false,
+          onError: () => {
             setSelectedFile('')
-            setCreateNewPage(true)
-        } else {
-          // Modify existing page frontmatter
-          const pageIndex = parseInt(idArray[1], RADIX_PARSE_INT);
+            errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
+          },
+        },
+    )
 
-          setIsComponentSettingsActive((prevState) => !prevState)
-          setSelectedFile(() => {
-              return isComponentSettingsActive ? null : pages[pageIndex]
-          })
-          setCreateNewPage(false)
+    // MOVE-TO Dropdown
+    // get all folders for move-to dropdown
+    const { data: allCategories } = useQuery(
+        [FOLDERS_CONTENT_KEY, { siteName, isResource }],
+        async () => getAllCategories({ siteName, isResource }),
+        {
+            enabled: selectedFile.length > 0,
+            onError: () => errorToast(`The folders data could not be retrieved. ${DEFAULT_RETRY_MSG}`),
+        },
+    )
+
+    // MOVE-TO Dropdown
+    // get subfolders of selected folder for move-to dropdown
+    const { data: querySubfolders } = useQuery(
+        [DIR_CONTENT_KEY, siteName, moveDropdownQuery.folderName],
+        async () => getDirectoryFile(siteName, moveDropdownQuery.folderName),
+        {   
+            enabled: selectedFile.length > 0 && moveDropdownQuery.folderName.length > 0 && !isResource,
+            onError: () => errorToast(`The folders data could not be retrieved. ${DEFAULT_RETRY_MSG}`),
+        },
+    )
+
+    // MOVE-TO Dropdown utils
+    // parse responses from move-to queries
+    const getCategories = (moveDropdownQuery, allCategories, querySubfolders) => {
+        const { folderName, subfolderName } = moveDropdownQuery
+        if (isResource && folderName) { // inside resource folder, show empty
+            return []
         }
+        if (isResource && allCategories) { // inside workspace, show all resource folders
+            return allCategories.resources.map(resource => resource.dirName).filter(dirName => dirName !== collectionName)
+        }
+        if (subfolderName !== '') { // inside subfolder, show empty 
+            return []
+        }
+        if (folderName !== '' && querySubfolders) { // inside folder, show all subfolders
+            const parsedFolderContents = parseDirectoryFile(querySubfolders.data.content)
+            const parsedFolderArray = convertFolderOrderToArray(parsedFolderContents)
+            return parsedFolderArray.filter(file => file.type === 'dir').map(file => file.fileName)
+        }
+        if (folderName === '' && subfolderName === '' && allCategories) { // inside workspace, show all folders
+            return allCategories.collections
+        }
+        return null
     }
+
+    // MOVE-TO Clear Query utils
+    const clearMoveDropdownQueryState = () => {
+        setMoveDropdownQuery({ ...initialMoveDropdownQueryState });
+    };
+
+    const { mutateAsync: deleteHandler } = useMutation(
+        async () => await deletePageData({ siteName, fileName: selectedFile, resourceName: collectionName }, pageData.pageSha),
+        {
+          onError: () => errorToast(`Your file could not be deleted successfully. ${DEFAULT_RETRY_MSG}`),
+          onSuccess: () => {successToast('Successfully deleted file'); refetchPages();},
+          onSettled: () => setCanShowDeleteWarningModal((prevState) => !prevState),
+        }
+    )
+
+    const { mutateAsync: moveHandler } = useMutation(
+        async () => {
+            if ('pages' === selectedPath) return true
+            await moveFile({siteName, selectedFile, newPath: selectedPath, resourceName: collectionName})
+        },
+        {
+          onError: () => errorToast(`Your file could not be moved successfully. ${DEFAULT_RETRY_MSG}`),
+          onSuccess: (samePage) => {
+            if (samePage) return successToast('Page is already in this folder')   
+            successToast('Successfully moved file')
+            refetchPages()
+          },
+          onSettled: () => setCanShowMoveModal(prevState => !prevState),
+        }
+    )
 
     return (
         <>
             {
-                isComponentSettingsActive
-                && (
-                    <ComponentSettingsModal
-                        modalTitle={isResource ? "Resource Settings" : "Page Settings"}
-                        settingsToggle={settingsToggle}
+                isComponentSettingsActive 
+                && ( isResource 
+                    ? <ComponentSettingsModal
                         category={collectionName}
-                        isCategoryDisabled={isCategoryDropdownDisabled(createNewPage, collectionName)}
                         siteName={siteName}
-                        fileName={selectedFile ? selectedFile.fileName : ''}
-                        isNewFile={createNewPage}
-                        type={isResource ? "resource" : "page"}
-                        pageFileNames={
-                            _.chain(pages)
-                                .map((page) => page.fileName)
-                                .value()
-                        }
-                        collectionPageData={collectionPageData}
-                        loadThirdNavOptions={loadThirdNavOptions}
+                        fileName={selectedFile || ''}
+                        isNewFile={!selectedFile}
+                        pageData={pageData}
+                        pageFileNames={pages?.map(page => page.fileName) || []}
+                        setSelectedFile={setSelectedFile}
                         setIsComponentSettingsActive={setIsComponentSettingsActive}
+                    /> 
+                    : (pageData || createNewPage) 
+                    && <PageSettingsModal
+                        pagesData={pages?.map(page => page.fileName) || []}
+                        pageData={pageData}
+                        siteName={siteName}
+                        originalPageName={selectedFile || ''}
+                        isNewPage={!selectedFile}
+                        setSelectedPage={setSelectedFile}
+                        setIsPageSettingsActive={setIsComponentSettingsActive}
+                    />
+                )
+            }
+            {
+                canShowDeleteWarningModal && pageData
+                && (
+                <DeleteWarningModal
+                    onCancel={() => setCanShowDeleteWarningModal(false)}
+                    onDelete={deleteHandler}
+                    type={"page"}
+                />
+                )
+            } 
+            {
+                canShowMoveModal
+                && (
+                    <GenericWarningModal
+                        displayTitle="Warning"
+                        displayText="Moving a page to a different folder might lead to user confusion. You may wish to change the permalink for this page afterwards."
+                        onProceed={moveHandler}
+                        onCancel={() => {
+                            setCanShowMoveModal(false)
+                        }}
+                        proceedText="Continue"
+                        cancelText="Cancel"
                     />
                 )
             }
             <div className={contentStyles.contentContainerBoxes}>
-                {/* Display loader if pages have not been retrieved from API call */}
-                { pages
-                    ? (
+                {
                     <div className={contentStyles.boxesContainer}>
                         <button
                             type="button"
                             id="settings-NEW"
-                            onClick={settingsToggle}
+                            onClick={() => {
+                                setIsComponentSettingsActive(true)
+                                setSelectedFile('')
+                                setCreateNewPage(true)
+                            }}
                             className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.addNew}`}
                         >
                             <i id="settingsIcon-NEW" className={`bx bx-plus-circle ${elementStyles.bxPlusCircle}`} />
-                            <h2 id="settingsText-NEW">{generateNewPageText()}</h2>
+                            <h2 id="settingsText-NEW">Add a new page</h2>
                         </button>
-                        {
-                            _.isEmpty(pages)
-                            ?   <Redirect
-                                    to={{
-                                    pathname: isResource ? `/sites/${siteName}/resources` : `/sites/${siteName}/workspace`
-                                    }}
-                                />
-                            : pages.map((page, pageIdx) => (
+                        { pages ?
+                            pages.map((page, pageIdx) => (
                                 <OverviewCard
                                     key={page.fileName}
                                     itemIndex={pageIdx}
-                                    settingsToggle={settingsToggle}
                                     category={collectionName}
                                     siteName={siteName}
                                     fileName={page.fileName}
-                                    title={page.title}
-                                    resourceType={page.type}
+                                    resourceType={isResource ? page.type : ''}
                                     date={page.date}
                                     isResource={isResource}
-                                    allCategories={allCategories}
+                                    allCategories={getCategories(moveDropdownQuery, allCategories, querySubfolders)}
+                                    setIsComponentSettingsActive={setIsComponentSettingsActive}
+                                    setSelectedFile={setSelectedFile}
+                                    setCanShowDeleteWarningModal={setCanShowDeleteWarningModal}
+                                    setCanShowMoveModal={setCanShowMoveModal}
+                                    setSelectedPath={setSelectedPath}
+                                    moveDropdownQuery={moveDropdownQuery}
+                                    setMoveDropdownQuery={setMoveDropdownQuery}
+                                    clearMoveDropdownQueryState={clearMoveDropdownQueryState}
                                 />
                             ))
+                            /* Display loader if pages have not been retrieved from API call */
+                            : 'Loading Pages...'  
                         }
                     </div>
-                    )
-                    : 'Loading Pages...'
                 }
             </div>
         </>
@@ -168,12 +238,13 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
 export default CollectionPagesSection
 
 CollectionPagesSection.propTypes = {
+    collectionName: PropTypes.string,
     pages: PropTypes.arrayOf(
         PropTypes.shape({
             fileName: PropTypes.string.isRequired,
-            path: PropTypes.string.isRequired,
-            sha: PropTypes.string.isRequired,
         }),
     ),
     siteName: PropTypes.string.isRequired,
+    isResource: PropTypes.bool,
+    refetchPages: PropTypes.func.isRequired,
 };

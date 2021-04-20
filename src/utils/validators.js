@@ -1,5 +1,7 @@
+import { slugifyCategory } from '../utils';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import { generatePageFileName, retrieveResourceFileMetadata, } from '../utils';
 
 // Common regexes and constants
 // ==============
@@ -20,9 +22,11 @@ const alphabetsRegexTest = RegExp(ALPHABETS_ONLY_REGEX);
 const alphanumericRegexTest = RegExp(ALPHANUMERICS_ONLY_REGEX);
 const fileNameRegexTest = /^[a-zA-Z0-9" "_-]+$/;
 const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/;
-const RESOURCE_CATEGORY_REGEX = '^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$';
+const RESOURCE_CATEGORY_REGEX = '^([a-zA-Z0-9]*[- ]?)+$';
 const resourceRoomNameRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
 const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX);
+
+const ISOMER_TEMPLATE_PROTECTED_DIRS = ['data', 'includes', 'site', 'layouts', 'files', 'images', 'misc', 'pages']
 
 const RADIX_PARSE_INT = 10;
 
@@ -90,6 +94,12 @@ const LOCATION_OPERATING_DAYS_MAX_LENGTH = 30;
 const LOCATION_OPERATING_HOURS_MIN_LENGTH = 2;
 const LOCATION_OPERATING_HOURS_MAX_LENGTH = 30;
 const LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH = 100;
+
+// Nav Bar Editor
+// ===============
+const LINK_TITLE_MIN_LENGTH = 1;
+const LINK_TITLE_MAX_LENGTH = 30;
+const LINK_URL_MIN_LENGTH = 1;
 
 // Page Settings Modal
 // ===================
@@ -575,10 +585,33 @@ const validateLocationType = (locationType, value) => {
   return errorMessage
 }
 
+// Nav Bar Editor
+const validateLink = (linkType, value) => {
+  let errorMessage = '';
+  switch (linkType) {
+    case 'title':
+      if (value.length < LINK_TITLE_MIN_LENGTH) {
+        errorMessage = `Title cannot be empty.`;
+      };
+      if (value.length > LINK_TITLE_MAX_LENGTH) {
+        errorMessage = `Title should be shorter than ${LINK_TITLE_MAX_LENGTH} characters.`;
+      };
+      break;
+    case 'url':
+      if (value.length < LINK_URL_MIN_LENGTH) {
+        errorMessage = `Permalink cannot be empty.`;
+      };
+      break;
+    default:
+      break;
+  }
+  return errorMessage
+}
+
 
 // Page Settings Modal
 // ===================
-const validatePageSettings = (id, value) => {
+const validatePageSettings = (id, value, folderOrderArray) => {
   let errorMessage = '';
   switch (id) {
     case 'permalink': {
@@ -606,6 +639,11 @@ const validatePageSettings = (id, value) => {
       // Title is too long
       if (value.length > PAGE_SETTINGS_TITLE_MAX_LENGTH) {
         errorMessage = `The title should be shorter than ${PAGE_SETTINGS_TITLE_MAX_LENGTH} characters.`;
+      }
+      if ( 
+        folderOrderArray !== undefined && folderOrderArray.includes(generatePageFileName(value))
+      ) {
+        errorMessage = `This title is already in use. Please choose a different title.`;
       }
       break;
     }
@@ -651,7 +689,7 @@ const validateDayOfMonth = (month, day) => {
   }
 };
 
-const validateResourceSettings = (id, value) => {
+const validateResourceSettings = (id, value, folderOrderArray) => {
   let errorMessage = '';
   switch (id) {
     case 'title': {
@@ -662,6 +700,9 @@ const validateResourceSettings = (id, value) => {
       // Title is too long
       if (value.length > RESOURCE_SETTINGS_TITLE_MAX_LENGTH) {
         errorMessage = `The title should be shorter than ${RESOURCE_SETTINGS_TITLE_MAX_LENGTH} characters.`;
+      }
+      if (folderOrderArray !== undefined && folderOrderArray.map(fileName => retrieveResourceFileMetadata(fileName).title).includes(value)) {
+        errorMessage = `This title is already in use. Please choose a different title.`;
       }
       break;
     }
@@ -735,11 +776,13 @@ const validateResourceRoomName = (value) => {
 
 // Resource Category Modal
 // ===================
-const validateCategoryName = (value, componentName) => {
+const validateCategoryName = (value, componentName, existingNames) => {
   let errorMessage = '';
-
+  
+  if (existingNames && existingNames.includes(slugifyCategory(value))) errorMessage = `Another folder with the same name exists. Please choose a different name.`
+  else if (ISOMER_TEMPLATE_PROTECTED_DIRS.includes(slugifyCategory(value))) errorMessage = `The name chosen is a protected folder name (${ISOMER_TEMPLATE_PROTECTED_DIRS.map(item => `'${item}'`).join(', ')}). Please choose a different name.`
   // Resource category is too short
-  if (value.length < RESOURCE_CATEGORY_MIN_LENGTH) {
+  else if (value.length < RESOURCE_CATEGORY_MIN_LENGTH) {
     errorMessage = `The ${componentName} category should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`;
   }
   // Resource category is too long
@@ -748,7 +791,7 @@ const validateCategoryName = (value, componentName) => {
   }
   // Resource category fails regex
   else if (!resourceCategoryRegexTest.test(value)) {
-    errorMessage = `The ${componentName} category should only have alphanumeric characters separated by hypens.`;
+    errorMessage = `The ${componentName} category should not contain special characters such as: ?!#\\$%.`;
   }
 
   return errorMessage;
@@ -790,6 +833,7 @@ const validateFileName = (value) => {
 export {
   validateContactType,
   validateLocationType,
+  validateLink,
   validateHighlights,
   validateDropdownElems,
   validateSections,

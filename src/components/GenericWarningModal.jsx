@@ -5,7 +5,7 @@ import LoadingButton from './LoadingButton';
 import parse from 'html-react-parser';
 
 
-const GenericWarningModal = ({ displayTitle, displayText, onProceed, onCancel, proceedText, cancelText }) => (
+const GenericWarningModal = ({ displayTitle, displayText, displayImg, displayImgAlt, onProceed, onCancel, proceedText, cancelText }) => (
   <div className={elementStyles.overlay}>
     <div className={elementStyles['modal-warning']}>
       <div className={elementStyles.modalHeader}>
@@ -13,6 +13,14 @@ const GenericWarningModal = ({ displayTitle, displayText, onProceed, onCancel, p
           {displayTitle}
         </h1>
       </div>
+      {
+        displayImg && 
+        <img
+          className="align-self-center"
+          alt={displayImgAlt}
+          src={displayImg}
+        />
+      }
       <div className={elementStyles.modalContent}>
         <p>{parse(displayText)}</p>
       </div>
@@ -41,6 +49,8 @@ const GenericWarningModal = ({ displayTitle, displayText, onProceed, onCancel, p
 GenericWarningModal.propTypes = {
   displayTitle: PropTypes.string.isRequired,
   displayText: PropTypes.string.isRequired,
+  displayImage: PropTypes.string,
+  displayImgAlt: PropTypes.string,
   onProceed: PropTypes.func,
   onCancel: PropTypes.func,
   proceedText: PropTypes.string,

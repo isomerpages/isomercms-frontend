@@ -122,9 +122,25 @@
     
     .card{
       box-sizing: border-box;
-      height: 200px;
     }
   }
+}
+
+.contentContainerFolderRow{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.contentContainerFolderRowMargin{
+  @extend .contentContainerFolderRow;
+  margin-bottom: 2.5rem;
+}
+
+.contentContainerFolderColumn{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 .contentContainerBoxes{
@@ -210,6 +226,11 @@
           text-overflow: ellipsis;
         }
 
+        .componentTitleLink{
+          @extend .componentTitle;
+          color: $isomer-blue;
+        }
+
         .componentFolderName{
           font-size: 16px;
           line-height: 24px;
@@ -247,6 +268,24 @@
         }
       }
 
+      .optionsIcon{
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-content: flex-end;
+        line-height: 2rem;
+
+        &:hover {
+          background: rgba(43, 95, 206, 0.1);
+        }
+      }
+
+      // hack because we can't use inbuilt &:focus (focus used for dropdown onBlur)
+      .optionsIconFocus {
+        @extend .optionsIcon;
+        background: rgba(43, 95, 206, 0.3);
+      }
+
       .folderInfo{
         @extend .componentInfo;
         flex-direction: row;
@@ -268,4 +307,20 @@
 
 .segmentDividerContainer{
   width: 100%;
+}
+
+.sectionFooter{
+  height: $footer-height;
+  background: white;
+  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.5);
+  position: absolute;
+  bottom: 0;
+  z-index: 10;
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
 }

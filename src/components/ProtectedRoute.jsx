@@ -1,34 +1,42 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Redirect, Route } from 'react-router-dom'
 import axios from 'axios'
 
 // Import layouts
 import Home from '../layouts/Home';
 
+// Import contexts
+const { LoginContext } = require('../contexts/LoginContext')
+
 // Constants
 const authContextString = '#isomercms'
+const userIdKey = 'userId'
 
 // axios settings
 axios.defaults.withCredentials = true
 
-const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) => {
+const ProtectedRoute = ({ component: WrappedComponent, ...rest }) => {
+    const { isLoggedIn } = useContext(LoginContext)
     const [pageNotFound, setPageNotFound] = useState()
     const { siteName } = rest.computedMatch?.params
     
     useEffect(() => {
+        let _isMounted = true
         const fetchData = async () => {
             try {
                 await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}`)
-                setPageNotFound(false)
+                if (_isMounted) setPageNotFound(false)
             } catch (e) {
-                setPageNotFound(true)
+                if (_isMounted) setPageNotFound(true)
             }
         }
         if (siteName) {
             fetchData()
         } else {
-            setPageNotFound(false)
+            if (_isMounted) setPageNotFound(false)
         }
+
+        return () => { _isMounted = false } 
     }, [siteName])
 
     return (
@@ -36,7 +44,9 @@ const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) =>
         <Route {...rest} render={
             props => {
                 if (rest.location.pathname === '/auth') {
-                    if (rest.location.hash === authContextString) {
+                    const [ hash, userId ] = rest.location.hash.split('-')
+                    if (hash === authContextString) {
+                        localStorage.setItem(userIdKey, userId)
                         return <WrappedComponent {...rest} {...props} isLoggedIn={isLoggedIn} />
                     }
                     return <Redirect to="/" />
@@ -75,7 +85,7 @@ const ProtectedRoute = ({ component: WrappedComponent, isLoggedIn, ...rest }) =>
                     return <Home {...rest} {...props} />
                 }
 
-                // Redirect all URLs to Login component when not logged in
+                // Redirect all URLs to Login component when not logged in	
                 return <Redirect to={{ pathname: '/' }} />
             }
         } />

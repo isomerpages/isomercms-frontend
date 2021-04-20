@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Breadcrumb from './Breadcrumb';
 
-const PageHeader = ({ title, date, collection }) => (
+const PageHeader = ({ title, date, collection, resourceRoomName }) => (
   <section className="bp-section is-small bp-section-pagetitle">
     <div className="bp-container page-header-container">
     <div className="row">
         <div className="col">
-        <Breadcrumb title={ title } collection={ collection } />
+        <Breadcrumb title={ title } collection={ collection } resourceRoomName={ resourceRoomName } />
         </div>
     </div>
     </div>

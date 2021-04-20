@@ -1,42 +1,37 @@
 // TODO: Clean up formatting, semi-colons, PropTypes etc
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
-import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { DragDropContext } from 'react-beautiful-dnd';
-import { Redirect } from 'react-router-dom'
-import { toast } from 'react-toastify';
 
-import { DEFAULT_ERROR_TOAST_MSG, frontMatterParser, concatFrontMatterMdBody, isEmpty, retrieveResourceFileMetadata } from '../utils';
+import EditorSection from '../components/contact-us/Section';
+import Header from '../components/Header';
+import LoadingButton from '../components/LoadingButton';
+import FormField from '../components/FormField';
+import DeleteWarningModal from '../components/DeleteWarningModal';
+import GenericWarningModal from '../components/GenericWarningModal';
+
+import { DEFAULT_RETRY_MSG, frontMatterParser, concatFrontMatterMdBody, isEmpty } from '../utils';
 import { sanitiseFrontMatter } from '../utils/contact-us/dataSanitisers';
 import { validateFrontMatter } from '../utils/contact-us/validators';
 import { validateContactType, validateLocationType } from '../utils/validators';
-import {
-  createPageStyleSheet,
-  getSiteColors,
-} from '../utils/siteColorUtils';
-
-
-import EditorSection from '../components/contact-us/Section';
-import Toast from '../components/Toast';
+import { errorToast } from '../utils/toasts';
 
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 
-import Header from '../components/Header';
-import LoadingButton from '../components/LoadingButton';
-import FormField from '../components/FormField';
 
 import TemplateContactUsHeader from '../templates/contact-us/ContactUsHeader';
 import TemplateLocationsSection from '../templates/contact-us/LocationsSection'
 import TemplateContactsSection from '../templates/contact-us/ContactsSection'
 import TemplateFeedbackSection from '../templates/contact-us/FeedbackSection';
 
-import DeleteWarningModal from '../components/DeleteWarningModal';
-import GenericWarningModal from '../components/GenericWarningModal';
+// Import hooks
+import useSiteColorsHook from '../hooks/useSiteColorsHook';
+import useRedirectHook from '../hooks/useRedirectHook';
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -111,192 +106,159 @@ const displayDeletedFrontMatter = (deletedFrontMatter) => {
   return displayText
 }
 
-export default class EditContactUs extends Component {
-  _isMounted = false
+const EditContactUs =  ({ match }) => {
+  const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
+  const { setRedirectToNotFound } = useRedirectHook()
 
-  constructor(props) {
-    super(props);
-    this.scrollRefs = {
-      sectionsScrollRefs: {
-        locations: null,
-        contacts: null,
-        header: null,
-        feedback: null,
-      },
-      contacts: [],
-      locations: [],
-    };
-    this.state = {
-      frontMatter: {},
-      originalFrontMatter: {},
-      deletedFrontMatter: {},
-      sanitisedOriginalFrontMatter: {},
-      frontMatterSha: null,
-      footerContent: {},
-      originalFooterContent: {},
-      footerSha: null,
-      displaySections: {
-        sectionsDisplay: {
-          locations: false,
-          contacts: false,
-        },
-        contacts: [],
-        locations: [],
-      },
-      errors: {
-        contacts: [],
-        locations: [],
-      },
-      itemPendingForDelete: {
-        id: null,
-        type: '',
-      },
-      showDeletedText: true,
-      shouldRedirectToNotFound: false,
-    };
-  }
+  const { siteName } = match.params;
+  const [hasLoaded, setHasLoaded] = useState(false)
+  const [scrollRefs, setScrollRefs] = useState({
+    sectionsScrollRefs: {
+      locations: null,
+      contacts: null,
+      header: null,
+      feedback: null,
+    },
+    contacts: [],
+    locations: [],
+  })
+  const [frontMatter, setFrontMatter] = useState({})
+  const [originalFrontMatter, setOriginalFrontMatter] = useState({})
+  const [deletedFrontMatter, setDeletedFrontMatter] = useState({})
+  const [sanitisedOriginalFrontMatter, setSanitisedOriginalFrontMatter] = useState({})
+  const [frontMatterSha, setFrontMatterSha] = useState(null)
+  const [footerContent, setFooterContent] = useState({})
+  const [originalFooterContent, setOriginalFooterContent] = useState({})
+  const [footerSha, setFooterSha] = useState(null)
+  const [displaySections, setDisplaySections] = useState({
+    sectionsDisplay: {
+      locations: false,
+      contacts: false,
+    },
+    contacts: [],
+    locations: [],
+  })
+  const [errors, setErrors] = useState({
+    contacts: [],
+    locations: [],
+  })
+  const [itemPendingForDelete, setItemPendingForDelete] = useState({
+    id: null,
+    type: '',
+  })
+  const [showDeletedText, setShowDeletedText] = useState(true)
 
-  async componentDidMount() {
-    const { match, siteColors, setSiteColors } = this.props;
-    const { siteName } = match.params;
-    this._isMounted = true
+  useEffect(() => {
+    let _isMounted = true
 
     let content, sha, footerContent, footerSha
 
-    // Set page colors
-    try {
-      let primaryColor
-      let secondaryColor
-
-      if (!siteColors[siteName]) {
-        const {
-          primaryColor: sitePrimaryColor,
-          secondaryColor: siteSecondaryColor,
-        } = await getSiteColors(siteName)
-
-        primaryColor = sitePrimaryColor
-        secondaryColor = siteSecondaryColor
-
-        if (this._isMounted) setSiteColors((prevState) => ({
-          ...prevState,
-          [siteName]: {
-            primaryColor,
-            secondaryColor,
-          }
-        }))
-      } else {
-        primaryColor = siteColors[siteName].primaryColor
-        secondaryColor = siteColors[siteName].secondaryColor
+    const loadContactUsDetails = async () => {
+      // Set page colors
+      try {
+        await retrieveSiteColors(siteName)
+        generatePageStyleSheet(siteName)
+      } catch (err) {
+        console.log(err);
       }
 
-      createPageStyleSheet(siteName, primaryColor, secondaryColor)
-    
-    } catch (err) {
-      console.log(err);
-    }
-
-    try {
-      const contactUsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/contact-us.md`);
-      const { content:pageContent , sha:pageSha } = contactUsResp.data;
-      content = pageContent
-      sha = pageSha
-    } catch (error) {
-      if (error?.response?.status === 404) {
-        this.setState({ shouldRedirectToNotFound: true })
-      } else {
-        toast(
-          <Toast notificationType='error' text={`There was a problem trying to load your contact us page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-        );
+      try {
+        const contactUsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/contact-us.md`);
+        const { content:pageContent , sha:pageSha } = contactUsResp.data;
+        content = pageContent
+        sha = pageSha
+      } catch (error) {
+        if (error?.response?.status === 404) {
+          setRedirectToNotFound(siteName)
+        } else {
+          errorToast(`There was a problem trying to load your contact us page. ${DEFAULT_RETRY_MSG}`)
+        }
+        console.log(error)
       }
-      console.log(error)
+
+      if (!content) return
+
+      try {
+        const settingsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`)
+        const { footerContent:retrievedContent, footerSha:retrievedSha } = settingsResp.data.settings;
+        footerContent = retrievedContent
+        footerSha = retrievedSha
+      } catch (err) {
+        errorToast(`There was a problem trying to load your contact us page. ${DEFAULT_RETRY_MSG}`)
+        console.log(err);
+      }
+
+      if (!footerContent) return
+
+      // split the markdown into front matter and content
+      const { frontMatter } = frontMatterParser(content);
+
+      // data cleaning for non-comforming data
+      const { sanitisedFrontMatter, deletedFrontMatter } = sanitiseFrontMatter(frontMatter)
+      const { contacts, locations } = sanitisedFrontMatter
+      const { contactsErrors, locationsErrors } = validateFrontMatter(sanitisedFrontMatter)
+
+      const contactsDisplay = [], locationsDisplay = []
+      const contactsScrollRefs = [], locationsScrollRefs = []
+
+      const sectionsDisplay = {
+        contacts: false, 
+        locations: false
+      }
+      
+      const sectionsScrollRefs = {
+        header: React.createRef(),
+        feedback: React.createRef(),
+        contacts: React.createRef(),
+        locations: React.createRef(),
+      }
+
+      contacts.forEach(_ => {
+        contactsDisplay.push(false)
+        contactsScrollRefs.push(React.createRef())
+      })
+
+      locations.forEach(_ => {
+        locationsDisplay.push(false)
+        locationsScrollRefs.push(React.createRef())
+      })
+
+      if (_isMounted) {
+        setScrollRefs({
+          sectionsScrollRefs,
+          contacts: contactsScrollRefs,
+          locations: locationsScrollRefs,
+        })
+        setFooterContent(footerContent)
+        setOriginalFooterContent(_.cloneDeep(footerContent))
+        setFooterSha(footerSha)
+        setFrontMatter(sanitisedFrontMatter)
+        setOriginalFrontMatter(_.cloneDeep(frontMatter))
+        setDeletedFrontMatter(deletedFrontMatter)
+        setSanitisedOriginalFrontMatter(_.cloneDeep(sanitisedFrontMatter))
+        setFrontMatterSha(sha)
+        setDisplaySections({
+          sectionsDisplay,
+          contacts: contactsDisplay,
+          locations: locationsDisplay,
+        })
+        setErrors({
+          contacts: contactsErrors,
+          locations: locationsErrors,
+        })
+        setHasLoaded(true)
+      }
     }
 
-    if (!content) return
+    loadContactUsDetails()
 
-    try {
-      const settingsResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`)
-      const { footerContent:retrievedContent, footerSha:retrievedSha } = settingsResp.data.settings;
-      footerContent = retrievedContent
-      footerSha = retrievedSha
-    } catch (err) {
-      toast(
-        <Toast notificationType='error' text={`There was a problem trying to load your contact us page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-      );
-      console.log(err);
+    return () => {
+      _isMounted = false
     }
+  }, [])
 
-    if (!footerContent) return
-
-    // split the markdown into front matter and content
-    const { frontMatter } = frontMatterParser(Base64.decode(content));
-
-    // data cleaning for non-comforming data
-    const { sanitisedFrontMatter, deletedFrontMatter } = sanitiseFrontMatter(frontMatter)
-    const { contacts, locations } = sanitisedFrontMatter
-    const { contactsErrors, locationsErrors } = validateFrontMatter(sanitisedFrontMatter)
-
-    const contactsDisplay = [], locationsDisplay = []
-    const contactsScrollRefs = [], locationsScrollRefs = []
-
-    const sectionsDisplay = {
-      contacts: false, 
-      locations: false
-    }
-    
-    const sectionsScrollRefs = {
-      header: React.createRef(),
-      feedback: React.createRef(),
-      contacts: React.createRef(),
-      locations: React.createRef(),
-    }
-
-    contacts.forEach(_ => {
-      contactsDisplay.push(false)
-      contactsScrollRefs.push(React.createRef())
-    })
-
-    locations.forEach(_ => {
-      locationsDisplay.push(false)
-      locationsScrollRefs.push(React.createRef())
-    })
-    
-    this.scrollRefs = {
-      sectionsScrollRefs,
-      contacts: contactsScrollRefs,
-      locations: locationsScrollRefs,
-    }
-
-    if (this._isMounted) this.setState({
-      originalFooterContent: _.cloneDeep(footerContent),
-      footerContent,
-      footerSha,
-      originalFrontMatter:  _.cloneDeep(frontMatter),
-      deletedFrontMatter,
-      sanitisedOriginalFrontMatter: _.cloneDeep(sanitisedFrontMatter),
-      frontMatter: sanitisedFrontMatter,
-      frontMatterSha: sha,
-      displaySections: {
-        sectionsDisplay,
-        contacts: contactsDisplay,
-        locations: locationsDisplay,
-      },
-      errors: {
-        contacts: contactsErrors,
-        locations: locationsErrors,
-      },
-    });
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
-  onDragEnd = (result) => {
-    const { scrollRefs, state } = this;
+  const onDragEnd = (result) => {
     const { source, destination, type } = result;
-    const { frontMatter, displaySections, errors } = state;
 
     // If the user dropped the draggable to no known droppable
     if (!destination) return;
@@ -346,21 +308,16 @@ export default class EditContactUs extends Component {
     })
 
     // scroll to new location of dragged element
-    this.scrollRefs[type][destination.index].current.scrollIntoView() 
-    this.scrollRefs = newScrollRefs
+    scrollRefs[type][destination.index].current.scrollIntoView() 
 
-    this.setState({
-      frontMatter: newFrontMatter,
-      errors: newErrors,
-      displaySections: newDisplaySections,
-    });
+    setScrollRefs(newScrollRefs)
+    setFrontMatter(newFrontMatter)
+    setErrors(newErrors)
+    setDisplaySections(newDisplaySections)
   }
 
-  onFieldChange = async (event) => { 
+  const onFieldChange = async (event) => { 
     try {
-      const { scrollRefs, state } = this;
-      const { frontMatter, footerContent } = state
-      const { errors } = state;
       const { id, value } = event.target;
       const idArray = id.split('-');
       const elemType = idArray[0];
@@ -463,22 +420,17 @@ export default class EditContactUs extends Component {
           break;
         }
       }
-      this.setState((currState) => ({ // we check explicitly for undefined
-        frontMatter: _.isUndefined(newFrontMatter) ? currState.frontMatter : newFrontMatter,
-        footerContent: _.isUndefined(newFooterContent) ? currState.footerContent : newFooterContent,
-        errors: _.isUndefined(newErrors) ? currState.errors : newErrors,
-      }));
-      
+      setFrontMatter(_.isUndefined(newFrontMatter) ? frontMatter : newFrontMatter)
+      setFooterContent(_.isUndefined(newFooterContent) ? footerContent : newFooterContent)
+      setErrors(_.isUndefined(newErrors) ? errors : newErrors)
     } catch (err) {
       console.log(err);
     }
   }
 
-  createHandler = async (event) => {
+  const createHandler = async (event) => {
     const { id } = event.target;
     try {
-      const { scrollRefs, state } = this;
-      const { frontMatter, displaySections, errors } = state;
       const { contacts: contactsDisplay, locations: locationsDisplay } = displaySections
 
       const resetDisplaySections = {
@@ -510,24 +462,17 @@ export default class EditContactUs extends Component {
         scrollRefs.sectionsScrollRefs[id].current.scrollIntoView()
       }
 
-      this.scrollRefs = newScrollRefs;      
-
-      this.setState({
-        frontMatter: newFrontMatter,
-        errors: newErrors,
-        displaySections: newDisplaySections,
-      });
-
+      setScrollRefs(newScrollRefs)
+      setFrontMatter(newFrontMatter)
+      setErrors(newErrors)
+      setDisplaySections(newDisplaySections)
     } catch (err) {
       console.log(err);
     }
   }
 
-  deleteHandler = async (id) => {
+  const deleteHandler = async (id) => {
     try {
-      const { scrollRefs, state } = this;
-      const { frontMatter, displaySections, errors } = state;
-
       const idArray = id.split('-');
       const elemType = idArray[0];
       const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT);
@@ -545,23 +490,18 @@ export default class EditContactUs extends Component {
         [elemType]: {$splice: [[sectionIndex, 1]]},
       });
 
-      this.scrollRefs = newScrollRefs;
+      setScrollRefs(newScrollRefs)
 
-      this.setState({
-        frontMatter: newFrontMatter,
-        errors: newErrors,
-        displaySections: newDisplaySections,
-      });
-
+      setFrontMatter(newFrontMatter)
+      setErrors(newErrors)
+      setDisplaySections(newDisplaySections)
     } catch (err) {
       console.log(err);
     }
   }
 
-  displayHandler = async (event) => {
+  const displayHandler = async (event) => {
     try {
-      const { state, scrollRefs } = this;
-      const { displaySections } = state;
       const { contacts: contactsDisplay, locations: locationsDisplay } = displaySections;
 
       const { id } = event.target;
@@ -600,33 +540,27 @@ export default class EditContactUs extends Component {
         }
       }
 
-      this.setState({
-        displaySections: newDisplaySections,
-      });
-      
+      setDisplaySections(newDisplaySections)
+
     } catch (err) {
       console.log(err);
     }
   }
 
-  savePage = async () => {
+  const savePage = async () => {
     try {
-      const { state } = this;
-      const { match } = this.props;
-      const { siteName } = match.params;
-      
       // Update contact-us
       // Filter out components which have no input
-      let filteredFrontMatter = _.cloneDeep(state.frontMatter)
+      let filteredFrontMatter = _.cloneDeep(frontMatter)
       
       let newContacts = [];
-      state.frontMatter.contacts.forEach((contact) => {
+      frontMatter.contacts.forEach((contact) => {
         if ( !isEmpty(contact) ) {
           newContacts.push(_.cloneDeep(contact))
         }
       })
       let newLocations = [];
-      state.frontMatter.locations.forEach((location) => {
+      frontMatter.locations.forEach((location) => {
         if ( !isEmpty(location) ) { 
           let newLocation = _.cloneDeep(location);
           let newOperatingHours = [];
@@ -648,29 +582,27 @@ export default class EditContactUs extends Component {
       if (!filteredFrontMatter.locations.length) delete filteredFrontMatter.locations
 
       const content = concatFrontMatterMdBody(filteredFrontMatter, '');
-      const base64EncodedContent = Base64.encode(content);
 
       const frontMatterParams = {
-        content: base64EncodedContent,
-        sha: state.frontMatterSha,
+        content,
+        sha: frontMatterSha,
       };
 
-      if (JSON.stringify(state.originalFrontMatter) !== JSON.stringify(state.frontMatter)) {
+      if (JSON.stringify(originalFrontMatter) !== JSON.stringify(frontMatter)) {
         await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/contact-us.md`, frontMatterParams, {
           withCredentials: true,
         });
       }
       
-      
       // // Update settings
-      let updatedFooterContents = _.cloneDeep(state.footerContent)
+      let updatedFooterContents = _.cloneDeep(footerContent)
     
       const footerParams = {
         footerSettings: updatedFooterContents,
-        footerSha: state.footerSha,
+        footerSha: footerSha,
       };
     
-      if (JSON.stringify(state.footerContent) !== JSON.stringify(state.originalFooterContent)) {
+      if (JSON.stringify(footerContent) !== JSON.stringify(originalFooterContent)) {
         await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, footerParams, {
           withCredentials: true,
         });
@@ -678,70 +610,49 @@ export default class EditContactUs extends Component {
 
       window.location.reload();
     } catch (err) {
-      toast(
-        <Toast notificationType='error' text={`There was a problem trying to save your contact us page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-      );
+      errorToast(`There was a problem trying to save your contact us page. ${DEFAULT_RETRY_MSG}`)
       console.log(err);
     }
   }
 
-  render() {
-    const { state, scrollRefs } = this
-    const {
-      footerContent,
-      originalFooterContent,
-      originalFrontMatter,
-      deletedFrontMatter,
-      sanitisedOriginalFrontMatter,
-      frontMatter,
-      displaySections,
-      frontMatterSha,
-      footerSha,
-      errors,
-      itemPendingForDelete,
-      showDeletedText,
-    } = state;
-    const { match } = this.props;
-    const { siteName } = match.params;
+  const hasErrors = () => {
+    return !isEmpty(errors.contacts) || !isEmpty(errors.locations)
+  }
 
-    const { agency_name: agencyName, contacts, locations } = frontMatter
-    const { feedback } = footerContent
-    const { sectionsDisplay } = displaySections
-    const { sectionsScrollRefs } = scrollRefs
+  const hasChanges = () => {
+    return JSON.stringify(sanitisedOriginalFrontMatter) === JSON.stringify(frontMatter) && JSON.stringify(footerContent) === JSON.stringify(originalFooterContent)
+  }
 
-    const hasDeletions = !isEmpty(deletedFrontMatter)
-    const hasErrors = !isEmpty(errors.contacts) || !isEmpty(errors.locations);
-    const hasChanges = JSON.stringify(sanitisedOriginalFrontMatter) === JSON.stringify(frontMatter) && JSON.stringify(footerContent) === JSON.stringify(originalFooterContent);
-    
-    return (
-      <>
-        { showDeletedText && hasDeletions
-          && 
-          <GenericWarningModal
-            displayTitle="Removed content" 
-            displayText={`Some of your content has been removed as it is incompatible with the new Isomer format. No changes are permanent unless you press Save on the next page.<br/>${displayDeletedFrontMatter(deletedFrontMatter)}`}
-            onProceed={()=>{this.setState({showDeletedText: false})}}
-            proceedText="Acknowledge"
-          />
-        }
-        {
-          itemPendingForDelete.id
-          && (
-          <DeleteWarningModal
-            onCancel={() => this.setState({ itemPendingForDelete: { id: null, type: '' } })}
-            onDelete={() => { this.deleteHandler(itemPendingForDelete.id); this.setState({ itemPendingForDelete: { id: null, type: '' } }); }}
-            type={itemPendingForDelete.type}
-          />
-          )
-        }
-        <Header
-          title={"Contact Us"}
-          shouldAllowEditPageBackNav={hasChanges}
-          isEditPage="true"
-          backButtonText="Back to My Workspace"
-          backButtonUrl={`/sites/${siteName}/workspace`}
+  return (
+    <>
+      { showDeletedText && !isEmpty(deletedFrontMatter)
+        && 
+        <GenericWarningModal
+          displayTitle="Removed content" 
+          displayText={`Some of your content has been removed as it is incompatible with the new Isomer format. No changes are permanent unless you press Save on the next page.<br/>${displayDeletedFrontMatter(deletedFrontMatter)}`}
+          onProceed={()=>{setShowDeletedText(false)}}
+          proceedText="Acknowledge"
         />
+      }
+      {
+        itemPendingForDelete.id
+        && (
+        <DeleteWarningModal
+          onCancel={() => setItemPendingForDelete({ id: null, type: '' })}
+          onDelete={() => { deleteHandler(itemPendingForDelete.id); setItemPendingForDelete({ id: null, type: '' }); }}
+          type={itemPendingForDelete.type}
+        />
+        )
+      }
+      <Header
+        siteName={siteName}
+        title={"Contact Us"}
+        shouldAllowEditPageBackNav={hasChanges()}
+        isEditPage={true}
+        backButtonText="Back to My Workspace"
+        backButtonUrl={`/sites/${siteName}/workspace`}
+      />
+      { hasLoaded &&
         <div className={elementStyles.wrapper}>
           <div className={editorStyles.homepageEditorSidebar}>
             <div>
@@ -752,39 +663,39 @@ export default class EditContactUs extends Component {
                 <FormField
                   title="Agency Name"
                   id={'header-agency_name'}
-                  value={agencyName || ""}
+                  value={frontMatter.agency_name || ""}
                   isRequired
-                  onFieldChange={this.onFieldChange}
+                  onFieldChange={onFieldChange}
                 />
                 <FormField
                   title="Feedback Url"
                   id={'feedback'}
-                  value={feedback || ""}
+                  value={footerContent.feedback || ""}
                   isRequired
-                  onFieldChange={this.onFieldChange}
+                  onFieldChange={onFieldChange}
                 />
               </div>
-              <DragDropContext onDragEnd={this.onDragEnd}>
+              <DragDropContext onDragEnd={onDragEnd}>
                 <EditorSection 
-                  cards={locations}
-                  onFieldChange={this.onFieldChange}
-                  createHandler={this.createHandler}
-                  deleteHandler={(event, type) => this.setState({ itemPendingForDelete: { id: event.target.id, type } })}
-                  shouldDisplay={sectionsDisplay.locations}
+                  cards={frontMatter.locations}
+                  onFieldChange={onFieldChange}
+                  createHandler={createHandler}
+                  deleteHandler={(event, type) => setItemPendingForDelete({ id: event.target.id, type })}
+                  shouldDisplay={displaySections.sectionsDisplay.locations}
                   displayCards={displaySections.locations}
-                  displayHandler={this.displayHandler}
+                  displayHandler={displayHandler}
                   errors={errors.locations}
                   sectionId={'locations'}
                 />
 
                 <EditorSection 
-                  cards={contacts}
-                  onFieldChange={this.onFieldChange}
-                  createHandler={this.createHandler}
-                  deleteHandler={(event, type) => this.setState({ itemPendingForDelete: { id: event.target.id, type } })}
-                  shouldDisplay={sectionsDisplay.contacts}
+                  cards={frontMatter.contacts}
+                  onFieldChange={onFieldChange}
+                  createHandler={createHandler}
+                  deleteHandler={(event, type) => setItemPendingForDelete({ id: event.target.id, type })}
+                  shouldDisplay={displaySections.sectionsDisplay.contacts}
                   displayCards={displaySections.contacts}
-                  displayHandler={this.displayHandler}
+                  displayHandler={displayHandler}
                   errors={errors.contacts}
                   sectionId={'contacts'}
                 />
@@ -795,8 +706,8 @@ export default class EditContactUs extends Component {
           <div className={`${editorStyles.contactUsEditorMain} ` }>
             {/* contact-us header */}
             <TemplateContactUsHeader 
-              agencyName={agencyName} 
-              ref={sectionsScrollRefs.header}
+              agencyName={frontMatter.agency_name} 
+              ref={scrollRefs.sectionsScrollRefs.header}
             />
             {/* contact-us content */}
             <section className="bp-section is-small padding--bottom--lg">
@@ -804,18 +715,18 @@ export default class EditContactUs extends Component {
                 <div className="row">
                   <div className="col is-8 is-offset-2">
                     <TemplateLocationsSection 
-                      locations={locations}
+                      locations={frontMatter.locations}
                       scrollRefs={scrollRefs.locations} 
-                      ref={sectionsScrollRefs.locations}
+                      ref={scrollRefs.sectionsScrollRefs.locations}
                     /> 
                     <TemplateContactsSection 
-                      contacts={contacts}
+                      contacts={frontMatter.contacts}
                       scrollRefs={scrollRefs.contacts}
-                      ref={sectionsScrollRefs.contacts}
+                      ref={scrollRefs.sectionsScrollRefs.contacts}
                     />
                     <TemplateFeedbackSection 
-                      feedback={feedback} 
-                      ref={sectionsScrollRefs.feedback}
+                      feedback={footerContent.feedback} 
+                      ref={scrollRefs.sectionsScrollRefs.feedback}
                     />
                   </div>
                 </div>
@@ -823,35 +734,28 @@ export default class EditContactUs extends Component {
             </section>
           </div>
           <div className={editorStyles.pageEditorFooter}>
-            { hasDeletions && 
+            { !isEmpty(deletedFrontMatter) && 
               <LoadingButton
                 label="See removed content"
                 className={`ml-auto ${elementStyles.warning}`}
-                callback={() => {this.setState({showDeletedText: true})}}
+                callback={() => {setShowDeletedText(true)}}
               />
             }
             <LoadingButton
               label="Save"
-              disabled={hasErrors} 
+              disabled={hasErrors()} 
               disabledStyle={elementStyles.disabled}
-              className={(hasErrors|| !(frontMatterSha && footerSha)) ? elementStyles.disabled : elementStyles.blue} 
-              callback={this.savePage}
+              className={(hasErrors() || !(frontMatterSha && footerSha)) ? elementStyles.disabled : elementStyles.blue} 
+              callback={savePage}
             />
           </div>
-        </div> 
-        {
-          this.state.shouldRedirectToNotFound &&
-          <Redirect
-            to={{
-                pathname: '/not-found',
-                state: {siteName: siteName}
-            }}
-          />
-        }
-      </>
-    );
-  }
+        </div>
+      }
+    </>
+  )
 }
+
+export default EditContactUs
 
 EditContactUs.propTypes = {
   match: PropTypes.shape({

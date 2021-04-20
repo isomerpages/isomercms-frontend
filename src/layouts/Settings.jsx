@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
+
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import LoadingButton from '../components/LoadingButton';
@@ -10,15 +11,16 @@ import FormFieldToggle from '../components/FormFieldToggle';
 import FormFieldMedia from '../components/FormFieldMedia';
 import FormFieldColor from '../components/FormFieldColor';
 import FormFieldHorizontal from '../components/FormFieldHorizontal';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
-import { validateSocialMedia } from '../utils/validators';
-import { toast } from 'react-toastify';
-import Toast from '../components/Toast';
+
 import {
-  DEFAULT_ERROR_TOAST_MSG,
+  DEFAULT_RETRY_MSG,
   getObjectDiff,
 } from '../utils'
+import { errorToast } from '../utils/toasts';
+import { validateSocialMedia } from '../utils/validators';
+
+import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 const stateFields = {
   title: '',
@@ -98,6 +100,10 @@ export default class Settings extends Component {
     try {
       const { match } = this.props;
       const { siteName } = match.params;
+      if (this._isMounted) this.setState((currState) => ({
+        ...currState,
+        siteName,
+      }))
 
       // get settings data from backend
       const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`, {
@@ -141,7 +147,6 @@ export default class Settings extends Component {
       // set state properly
       if (this._isMounted) this.setState((currState) => ({
         ...currState,
-        siteName,
         originalState: _.cloneDeep(originalState),
         ...originalState,
       }));
@@ -341,10 +346,7 @@ export default class Settings extends Component {
 
       window.location.reload();
     } catch (err) {
-      toast(
-        <Toast notificationType='error' text={`There was a problem trying to save your settings. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-      );
+      errorToast(`There was a problem trying to save your settings. ${DEFAULT_RETRY_MSG}`)
       console.log(err);
     }
   }
@@ -495,6 +497,7 @@ export default class Settings extends Component {
     return (
       <>
         <Header
+          siteName={siteName}
           isEditPage={true}
           shouldAllowEditPageBackNav={_.isEmpty(settingsStateDiff)}
         />

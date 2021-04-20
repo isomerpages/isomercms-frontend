@@ -1,7 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Redirect } from 'react-router-dom';
 
-const AuthCallback = ({ setLogin, isLoggedIn }) => {
+// Import contexts
+const { LoginContext } = require('../contexts/LoginContext')
+
+const AuthCallback = () => {
+    const { setLogin, isLoggedIn } = useContext(LoginContext)
+
     useEffect(() => {
         if (!isLoggedIn) setLogin()
     }, [isLoggedIn])

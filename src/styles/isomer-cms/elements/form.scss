@@ -38,12 +38,13 @@ p {
 
   .formHorizontalLabel{
     @extend .formLabel;
-    width: 25%;
-    margin: 1px;
+    padding-right: 5px;
+    min-width: min-content;
+    width: 20%;
   }
 
   .formHorizontalInput{
-    width: 75%;
+    max-width: 80%;
   }
 }
 

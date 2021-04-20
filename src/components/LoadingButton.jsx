@@ -9,6 +9,7 @@ export default function LoadingButton(props) {
     disabledStyle,
     className,
     callback,
+    showLoading,
     ...remainingProps
   } = props;
 
@@ -19,7 +20,12 @@ export default function LoadingButton(props) {
     let _isMounted = true
 
     const runCallback = async () => {
-      await callback();
+      try {
+        await callback();
+      } catch (err) {
+        if (_isMounted) setButtonLoading(false);
+        throw err
+      }
       if (_isMounted) setButtonLoading(false);
     }
 
@@ -39,7 +45,7 @@ export default function LoadingButton(props) {
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...remainingProps}
     >
-      {isLoading
+      {isLoading || showLoading
         ? (
           <div className="spinner-border text-primary" role="status" />
         ) : label}
@@ -50,9 +56,10 @@ export default function LoadingButton(props) {
 LoadingButton.propTypes = {
   label: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
-  disabledStyle: PropTypes.string.isRequired,
+  disabledStyle: PropTypes.string,
   className: PropTypes.string.isRequired,
   callback: PropTypes.func.isRequired,
+  showLoading: PropTypes.bool,
 };
 
 LoadingButton.defaultProps = {

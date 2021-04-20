@@ -1,5 +1,5 @@
 // import dependencies
-import yaml from 'js-yaml';
+import yaml from 'yaml';
 import cheerio from 'cheerio';
 import slugify from 'slugify';
 import axios from 'axios';
@@ -13,13 +13,14 @@ axios.defaults.withCredentials = true
 const ALPHANUM_REGEX = /^[0-9]+[a-z]*$/ // at least one number, followed by 0 or more lower-cased alphabets
 const NUM_REGEX = /^[0-9]+$/
 const NUM_IDENTIFIER_REGEX = /^[0-9]+/
-export const DEFAULT_ERROR_TOAST_MSG = 'Please try again or check your internet connection.' 
+export const DEFAULT_RETRY_MSG = 'Please try again or check your internet connection'
+export const DEFAULT_ERROR_TOAST_MSG = `Something went wrong. ${DEFAULT_RETRY_MSG}`
 
 // extracts yaml front matter from a markdown file path
 export function frontMatterParser(content) {
   // format file to extract yaml front matter
   const results = content.split('---');
-  const frontMatter = yaml.safeLoad(results[1]); // get the front matter as an object
+  const frontMatter = yaml.parse(results[1]); // get the front matter as an object
   const mdBody = results.slice(2).join('---');
 
   return {
@@ -31,7 +32,7 @@ export function frontMatterParser(content) {
 // this function concatenates the front matter with the main content body
 // of the markdown file
 export function concatFrontMatterMdBody(frontMatter, mdBody) {
-  return ['---\n', yaml.safeDump(frontMatter), '---\n', mdBody].join('');
+  return ['---\n', yaml.stringify(frontMatter), '---\n', mdBody].join('');
 }
 
 // this function converts file names into readable form
@@ -43,6 +44,26 @@ export function deslugifyCollectionPage(collectionPageName) {
     .map(string => _.upperFirst(string)) // capitalize first letter
     .join(' '); // join it back together
 }
+
+// this function converts directories into readable form
+// for example, 'this-is-a-directory' -> 'This Is A Directory'
+export function deslugifyDirectory(dirName) {
+  return dirName
+    .split('-')
+    .map(string => _.upperFirst(string)) // capitalize first letter
+    .join(' '); // join it back together
+}
+
+// this function converts file names into readable form
+// for example, 'this-is-a-file.md' -> 'This Is A File'
+export function deslugifyPage(pageName) {
+  return pageName
+    .split('.')[0] // remove the file extension
+    .split('-')
+    .map(string => _.upperFirst(string)) // capitalize first letter
+    .join(' '); // join it back together
+}
+
 
 // takes a string URL and returns true if the link is an internal link
 // only works on browser side
@@ -150,9 +171,9 @@ export function dequoteString(str) {
   return dequotedString;
 }
 
-export function generateResourceFileName(title, date, resourceType) {
-  const safeTitle = slugify(title).replace(/[^a-zA-Z0-9-]/g, '');
-  return `${date}-${resourceType}-${safeTitle}.md`;
+export function generateResourceFileName(title, date, isPost) {
+  const safeTitle = slugify(title, {lower: true}).replace(/[^a-zA-Z0-9-]/g, '');
+  return `${date}-${isPost ? 'post' : 'file'}-${safeTitle}.md`;
 }
 
 export function prettifyResourceCategory(category) {
@@ -183,7 +204,7 @@ export function prettifyCollectionPageFileName(fileName) {
 }
 
 export function generatePageFileName(title) {
-  return `${slugify(title).replace(/[^a-zA-Z0-9-]/g, '')}.md`;
+  return `${slugify(title, {lower: true}).replace(/[^a-zA-Z0-9-]/g, '')}.md`;
 }
 
 export function generateCollectionPageFileName(title, groupIdentifier) {
@@ -245,7 +266,7 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   else slugifiedCategory = category
 
   const baseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${originalCategory ? type === "resource" ? `/resources/${originalCategory}` : `/collections/${originalCategory}` : ''}`
-  const newBaseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? type === "resource" ? `/resources/${category}` : `/collections/${category}` : ''}`
+  const newBaseApiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${category ? type === "resource" ? `/resources/${slugifiedCategory}` : `/collections/${slugifiedCategory}` : ''}`
   let newFileName, frontMatter
   if (type === "resource") {
     newFileName = generateResourceFileName(title.toLowerCase(), date, resourceType);
@@ -326,6 +347,69 @@ export async function saveFileAndRetrieveUrl(fileInfo) {
   return newPageUrl
 }
 
+function generateCollectionPageContent(fileInfo) {
+  const {
+    siteName,
+    title,
+    permalink,
+    mdBody,
+    folderName,
+    subfolderName,
+    isNewPage,
+    originalPageName,
+  } = fileInfo
+  const frontMatter = subfolderName
+    ? { title, permalink, third_nav_title: subfolderName }
+    : { title, permalink }
+  const content = concatFrontMatterMdBody(frontMatter, mdBody)
+  const fileName = subfolderName 
+    ? `${subfolderName}/${generatePageFileName(title)}` 
+    : `${generatePageFileName(title)}`
+
+  let endpointUrl, redirectUrl = ''
+  if (isNewPage) {
+    endpointUrl = `${siteName}/collections/${folderName}/pages/new/${encodeURIComponent(fileName)}`
+    redirectUrl = `/sites/${siteName}/folder/${folderName}/${subfolderName ? `subfolder/` : ''}${fileName}`
+  } else if (originalPageName !== fileName) {
+    endpointUrl = `${siteName}/collections/${folderName}/pages/${encodeURIComponent(originalPageName)}/rename/${encodeURIComponent(fileName)}`
+  } else {
+    endpointUrl = `${siteName}/collections/${folderName}/pages/${encodeURIComponent(fileName)}`
+  }
+  
+  return { endpointUrl, content, redirectUrl }
+}
+
+function generateUnlinkedPageContent(fileInfo) {
+  const {
+    siteName,
+    title,
+    permalink,
+    mdBody,
+    isNewPage,
+    originalPageName,
+  } = fileInfo
+
+  const frontMatter = { title, permalink }
+  const content = concatFrontMatterMdBody(frontMatter, mdBody)
+  const fileName = `${generatePageFileName(title)}`
+
+  let endpointUrl, redirectUrl = ''
+  if (isNewPage) {
+    endpointUrl = `${siteName}/pages/new/${encodeURIComponent(fileName)}`
+    redirectUrl = `/sites/${siteName}/pages/${encodeURIComponent(fileName)}`
+  } else if (originalPageName !== fileName) {
+    endpointUrl = `${siteName}/pages/${encodeURIComponent(originalPageName)}/rename/${encodeURIComponent(fileName)}`
+  } else { //update page
+    endpointUrl = `${siteName}/pages/${encodeURIComponent(fileName)}`
+  }
+  return { endpointUrl, content, redirectUrl }
+}
+
+export function generatePageContent(fileInfo) {
+  const { pageType } = fileInfo
+  if (pageType === 'collection') return generateCollectionPageContent(fileInfo)
+  if (pageType === 'page') return generateUnlinkedPageContent(fileInfo)
+}
 /*
  * Util functions for generating file identifiers (the numeric/alphanumeric strings which filenames begin with)
  */
@@ -525,3 +609,115 @@ export const getObjectDiff = (obj1, obj2) => {
   }, {});
   return difference
 }
+
+export const parseDirectoryFile = (folderContent) => {
+  const decodedContent = yaml.parse(folderContent)
+  const collectionKey = Object.keys(decodedContent.collections)[0]
+  return decodedContent.collections[collectionKey].order
+}
+
+export const updateDirectoryFile = (folderContent, folderOrder) => {
+  const decodedContent = yaml.parse(folderContent)
+  const collectionKey = Object.keys(decodedContent.collections)[0]
+  decodedContent.collections[collectionKey].order = folderOrder
+  return yaml.stringify(decodedContent)
+}
+
+export const getNavFolderDropdownFromFolderOrder = (folderOrder) => {
+  return folderOrder.reduce((acc, curr) => {
+    const pathArr = curr.split('/') // sample paths: "prize-sponsor.md", "prize-jury/nominating-committee.md"
+
+    if (pathArr.length === 1) {
+      acc.push(deslugifyDirectory(curr.split('.')[0])) // remove file extension
+    }
+
+    if (pathArr.length === 2 && deslugifyDirectory(pathArr[0]) !== acc[acc.length - 1] && pathArr[1] !== '.keep') {
+      acc.push(deslugifyDirectory(pathArr[0]))
+    }
+
+    return acc
+  }, [])
+}
+
+export const convertFolderOrderToArray = (folderOrder) => {
+  let currFolderEntry = {}
+  return folderOrder.reduce((acc, curr, currIdx) => {
+      const folderPathArr = curr.split('/')
+      if (folderPathArr.length === 1) {
+          if (JSON.stringify(currFolderEntry) !== '{}') acc.push(currFolderEntry)
+          currFolderEntry = {}
+          acc.push({
+              type: 'file',
+              path: curr,
+              fileName: curr,
+          })
+      }
+
+      if (folderPathArr.length > 1) {
+          const subfolderTitle = folderPathArr[0]
+
+          // Start of a new subfolder section
+          if (currFolderEntry.fileName !== subfolderTitle) {
+              // Case: two consecutive subfolders - transitioning from one to the other
+              if (currFolderEntry.fileName && currFolderEntry.fileName !== subfolderTitle) {
+                  acc.push(currFolderEntry)
+              }
+
+              currFolderEntry = {
+                type: 'dir',
+                fileName: subfolderTitle,
+                path: curr,
+                children: [curr],
+              }
+          } else {
+              currFolderEntry.children.push(curr)
+          }
+
+          // last entry
+          if (currIdx === folderOrder.length - 1) acc.push(currFolderEntry)
+      }
+
+      return acc
+  }, [])
+}
+
+export const convertArrayToFolderOrder = (array) => {
+  const updatedFolderOrder = array.map(({ type, children, path }) => {
+    if (type === 'dir') return children
+    if (type === 'file') return path
+  })
+  return _.flatten(updatedFolderOrder)
+}
+
+export const retrieveSubfolderContents = (folderOrder, subfolderName) => {
+  return folderOrder.reduce((acc, curr) => {
+    const folderPathArr = curr.split('/')
+    if (folderPathArr.length === 2) {
+      const [subfolderTitle, subfolderFileName] = folderPathArr
+      if (subfolderTitle === subfolderName) {
+        acc.push({
+          type: 'file',
+          path: curr,
+          fileName: subfolderFileName,
+        })
+      }
+    }
+    return acc
+  }, [])
+}
+
+export const convertSubfolderArray = (folderOrderArray, rawFolderContents, subfolderName) => {
+  const placeholderItem = {
+    path: `${subfolderName}/.keep`
+  }
+  const arrayCopy = [placeholderItem].concat(_.cloneDeep(folderOrderArray))
+  return rawFolderContents.map((curr) => {
+    const folderPathArr = curr.split('/')
+    const subfolderTitle = folderPathArr[0]
+    if (folderPathArr.length === 2 && subfolderTitle === subfolderName) {
+      const { path } = arrayCopy.shift()
+      return path
+    }
+    return curr
+  })
+} 

@@ -1,28 +1,29 @@
-import React, { Component } from 'react';
-import { Redirect } from "react-router-dom";
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import Bluebird from 'bluebird';
+import _ from 'lodash';
+import { useQuery, useMutation } from 'react-query';
 import PropTypes from 'prop-types';
 import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
-import { Base64 } from 'js-base64';
+import Policy from 'csp-parse';
+
 import SimplePage from '../templates/SimplePage';
 import LeftNavPage from '../templates/LeftNavPage';
+
 import { checkCSP } from '../utils/cspUtils';
-import Policy from 'csp-parse';
-import { toast } from 'react-toastify';
-import Toast from '../components/Toast';
+import { errorToast } from '../utils/toasts';
 
 // Isomer components
 import {
-  DEFAULT_ERROR_TOAST_MSG,
+  DEFAULT_RETRY_MSG,
   frontMatterParser,
   concatFrontMatterMdBody,
   prependImageSrc,
   prettifyPageFileName,
-  prettifyCollectionPageFileName,
   retrieveResourceFileMetadata,
   prettifyDate,
+  parseDirectoryFile,
+  deslugifyDirectory,
 } from '../utils';
 import {
   boldButton,
@@ -33,14 +34,14 @@ import {
   quoteButton,
   unorderedListButton,
   orderedListButton,
-  linkButton,
   tableButton,
   guideButton,
 } from '../utils/markdownToolbar';
 import {
-  createPageStyleSheet,
-  getSiteColors,
-} from '../utils/siteColorUtils';
+  PAGE_CONTENT_KEY,
+  DIR_CONTENT_KEY,
+  CSP_CONTENT_KEY,
+} from '../constants'
 import 'easymde/dist/easymde.min.css';
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -49,23 +50,20 @@ import Header from '../components/Header';
 import DeleteWarningModal from '../components/DeleteWarningModal';
 import LoadingButton from '../components/LoadingButton';
 import HyperlinkModal from '../components/HyperlinkModal';
-import MediasModal from '../components/media/MediaModal';
+import MediaModal from '../components/media/MediaModal';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
+
+// Import hooks
+import useSiteColorsHook from '../hooks/useSiteColorsHook';
+import useRedirectHook from '../hooks/useRedirectHook';
+
+// Import API
+import { getEditPageData, updatePageData, deletePageData, getCsp, getDirectoryFile } from '../api';
 
 // axios settings
 axios.defaults.withCredentials = true
 
-const getApiEndpoint = (isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName }) => {
-  if (isCollectionPage) {
-    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/${fileName}`
-  }
-  if (isResourcePage) {
-    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`
-  }
-  return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`
-}
-
-const extractMetadataFromFilename = (isResourcePage, isCollectionPage, fileName) => {
+const extractMetadataFromFilename = (isResourcePage, fileName) => {
   if (isResourcePage) {
     const resourceMetadata = retrieveResourceFileMetadata(fileName)
     return {
@@ -73,26 +71,23 @@ const extractMetadataFromFilename = (isResourcePage, isCollectionPage, fileName)
       date: prettifyDate(resourceMetadata.date)
     }
   }
-  if (isCollectionPage) {
-    return { title: prettifyCollectionPageFileName(fileName), date: '' }
-  }
   return { title: prettifyPageFileName(fileName), date: '' }
 }
 
-// Remove `/pages/${fileName}' from api endpoint
-const getCollectionsApiEndpoint = (endpoint) => {
-  const endpointArr = endpoint.split('/')
-  return endpointArr.slice(0, endpointArr.length - 2).join('/')
-}
-
-const getBackButtonInfo = (resourceCategory, collectionName, siteName) => {
+const getBackButtonInfo = (resourceCategory, folderName, siteName, subfolderName) => {
   if (resourceCategory) return {
-    backButtonLabel: resourceCategory,
+    backButtonLabel: deslugifyDirectory(resourceCategory),
     backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
   }
-  if (collectionName) return {
-    backButtonLabel: collectionName,
-    backButtonUrl: `/sites/${siteName}/collections/${collectionName}`,
+  if (folderName) {
+    if (subfolderName) return {
+      backButtonLabel: deslugifyDirectory(subfolderName),
+      backButtonUrl: `/sites/${siteName}/folder/${folderName}/subfolder/${subfolderName}`,
+    }
+    return {
+      backButtonLabel: deslugifyDirectory(folderName),
+      backButtonUrl: `/sites/${siteName}/folder/${folderName}`,
+    }
   }
   return {
     backButtonLabel: 'My Workspace',
@@ -100,255 +95,242 @@ const getBackButtonInfo = (resourceCategory, collectionName, siteName) => {
   }
 }
 
-export default class EditPage extends Component {
-  _isMounted = true 
+const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) => {
+  const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
+  const { setRedirectToNotFound } = useRedirectHook()
 
-  constructor(props) {
-    super(props);
-    const { match, isResourcePage, isCollectionPage } = this.props;
-    const { collectionName, fileName, siteName, resourceName } = match.params;
-    this.state = {
-      csp: new Policy(),
-      sha: null,
-      originalMdValue: '',
-      editorValue: '',
-      frontMatter: '',
-      canShowDeleteWarningModal: false,
-      images: [],
-      isSelectingImage: false,
-      isInsertingHyperlink: false,
-      pendingImageUpload: null,
-      selectedImage: '',
-      selectionText: '',
-      isFileStagedForUpload: false,
-      stagedFileDetails: {},
-      isLoadingPageContent: true,
-      shouldRedirectToNotFound: false,
-    };
-    this.mdeRef = React.createRef();
-    this.apiEndpoint = getApiEndpoint(isResourcePage, isCollectionPage, { collectionName, fileName, siteName, resourceName })
-  }
+  const { folderName, fileName, siteName, resourceName, subfolderName } = match.params;
+  const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, fileName)
+  const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, folderName, siteName, subfolderName)
 
-  async componentDidMount() {
-    const { match, siteColors, setSiteColors } = this.props;
-    const { siteName } = match.params;
+  const [csp, setCsp] = useState(new Policy())
+  const [sha, setSha] = useState(null)
+  const [originalMdValue, setOriginalMdValue] = useState('')
+  const [editorValue, setEditorValue] = useState('')
+  const [frontMatter, setFrontMatter] = useState('')
+  const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
+  const [isSelectingImage, setIsSelectingImage] = useState(false)
+  const [isInsertingHyperlink, setIsInsertingHyperlink] = useState(false)
+  const [selectionText, setSelectionText] = useState('')
+  const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
+  const [stagedFileDetails, setStagedFileDetails] = useState({})
+  const [isLoadingPageContent, setIsLoadingPageContent] = useState(true)
+  const [mediaSearchTerm, setMediaSearchTerm] = useState('')
+  const [selectedFile, setSelectedFile] = useState('')
+  const [leftNavPages, setLeftNavPages] = useState([])
+  const [resourceRoomName, setResourceRoomName] = useState('')
+  const [isCspViolation, setIsCspViolation] = useState(false)
+  const [chunk, setChunk] = useState('')
 
-    this._isMounted = true
+  const mdeRef = useRef()
 
-    // Set page colors
-    try {
-      let primaryColor
-      let secondaryColor
+  // get page data
+  const { data: pageData } = useQuery(
+    [PAGE_CONTENT_KEY, match.params],
+    () => getEditPageData(match.params),
+    {
+      retry: false,
+      onError: (err) => {
+        if (err.response && err.response.status === 404) {
+          setRedirectToNotFound(siteName)
+        } else {
+          errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
+        }
+      }
+    },
+  );
 
-      if (!siteColors[siteName]) {
-        const {
-          primaryColor: sitePrimaryColor,
-          secondaryColor: siteSecondaryColor,
-        } = await getSiteColors(siteName)
+  // get directory data
+  const { data: dirData } = useQuery(
+    [DIR_CONTENT_KEY, siteName, folderName, subfolderName],
+    () => getDirectoryFile(siteName, folderName),
+    {
+      retry: false,
+      onError: (err) => {
+        if (err.response && err.response.status === 404) {
+          setRedirectToNotFound(siteName)
+        } else {
+          errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
+        }
+      }
+    },
+  );
 
-        primaryColor = sitePrimaryColor
-        secondaryColor = siteSecondaryColor
+  // get csp data
+  const { data: cspData } = useQuery(
+    [CSP_CONTENT_KEY, siteName],
+    () => getCsp(siteName),
+    {
+      retry: false,
+      onError: (err) => {
+        if (err.response && err.response.status === 404) {
+          setRedirectToNotFound(siteName)
+        } else {
+          errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
+        }
+      }
+    },
+  );
 
-        if (this._isMounted) setSiteColors((prevState) => ({
-          ...prevState,
-          [siteName]: {
-            primaryColor,
-            secondaryColor,
-          }
-        }))
-      } else {
-        primaryColor = siteColors[siteName].primaryColor
-        secondaryColor = siteColors[siteName].secondaryColor
+  // update page data
+  const { mutateAsync: saveHandler } = useMutation(
+    () => updatePageData(match.params, concatFrontMatterMdBody(frontMatter, editorValue), sha),
+    {
+      onError: () => errorToast(`There was a problem saving your page. ${DEFAULT_RETRY_MSG}`),
+      onSuccess: () => window.location.reload(),
+    },
+  )
+
+  // delete page data
+  const { mutateAsync: deleteHandler } = useMutation(
+    () => deletePageData(match.params, sha),
+    {
+      onError: () => errorToast(`There was a problem deleting your page. ${DEFAULT_RETRY_MSG}`),
+      onSuccess: () => history.goBack(),
+    },
+  )
+
+  useEffect(() => {
+    let _isMounted = true
+
+    const loadPageDetails = async () => {
+      // Set page colors
+      try {
+        await retrieveSiteColors(siteName)
+        generatePageStyleSheet(siteName)
+      } catch (err) {
+        console.log(err);
       }
 
-      createPageStyleSheet(siteName, primaryColor, secondaryColor)
-
-    } catch (err) {
-      console.log(err);
+      if (_.isEmpty(pageData)) return
     }
 
-    let content, sha
-    try {
-      const resp = await axios.get(this.apiEndpoint);
-      const { content:pageContent, sha:pageSha } = resp.data;
-      content = pageContent
-      sha = pageSha
-    } catch (error) {
-      if (error?.response?.status === 404) {
-        this.setState({ shouldRedirectToNotFound: true })
-      } else {
-        toast(
-          <Toast notificationType='error' text={`There was a problem trying to load your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-          {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-        );
-      }
-      console.log(error)
+    loadPageDetails()
+    return () => {
+      _isMounted = false
     }
-    
-    if (!content) return
-    
-    try {
-      // split the markdown into front matter and content
-      const { frontMatter, mdBody } = frontMatterParser(Base64.decode(content));
+  })
+
+  useEffect(() => {
+    let _isMounted = true
+
+    const loadPageDetails = async () => {
+      if (!pageData || (isCollectionPage && !dirData) || !cspData) return
+      const {
+        pageContent,
+        pageSha,
+        resourceRoomName,
+      } = pageData
+      const {
+        netlifyTomlHeaderValues
+      } = cspData.data
+      if (!pageContent) return
       
-      // retrieve CSP
-      const cspResp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`);
-      const { netlifyTomlHeaderValues } = cspResp.data;
-      const csp = new Policy(netlifyTomlHeaderValues['Content-Security-Policy']);
+      const { frontMatter: retrievedFrontMatter, mdBody: retrievedMdBody } = frontMatterParser(pageContent);
+      const retrievedCsp = new Policy(netlifyTomlHeaderValues['Content-Security-Policy']);
 
-      let leftNavPages
-      if (this.props.isCollectionPage) {
-        const collectionsApiEndpoint = getCollectionsApiEndpoint(this.apiEndpoint)
-        const collectionPagesResp = await axios.get(collectionsApiEndpoint);
-        const collectionResp = collectionPagesResp.data?.collectionPages;
-
-        // Retrieve third_nav_title from collection pages
-        leftNavPages = await Bluebird.map(collectionResp, async (collectionPage) => {
-          const collectionPageResp = await axios.get(`${collectionsApiEndpoint}/pages/${collectionPage.fileName}`)
-          const { content } = collectionPageResp.data;
-          const { frontMatter } = frontMatterParser(Base64.decode(content));
-          return {
-            ...collectionPage,
-            third_nav_title: frontMatter.third_nav_title,
-          }
-        });
+      let generatedLeftNavPages
+      if (isCollectionPage) {
+        const {
+          content: dirContent,
+        } = dirData.data
+        const parsedFolderContents = parseDirectoryFile(dirContent)
+        // Filter out placeholder files
+        const filteredFolderContents = parsedFolderContents.filter(name => !name.includes('.keep'))
+        generatedLeftNavPages = filteredFolderContents.map((name) => 
+          ({
+            fileName: name.includes('/') ? name.split('/')[1] : name,
+            third_nav_title: name.includes('/') ? name.split('/')[0] : null,
+          })
+        )
       }
 
-      if (this._isMounted) this.setState({
-        csp,
-        sha,
-        originalMdValue: mdBody.trim(),
-        editorValue: mdBody.trim(),
-        frontMatter,
-        leftNavPages,
-        isLoadingPageContent: false,
-      });
-    } catch (err) {
-      toast(
-        <Toast notificationType='error' text={`There was a problem trying to load your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-      );
-      console.log(err);
+      if (_isMounted) {
+        setCsp(retrievedCsp)
+        setSha(pageSha)
+        setOriginalMdValue(retrievedMdBody.trim())
+        setEditorValue(retrievedMdBody.trim())
+        setFrontMatter(retrievedFrontMatter)
+        setLeftNavPages(generatedLeftNavPages)
+        setResourceRoomName(resourceRoomName || '')
+        setIsLoadingPageContent(false)
+      }
+    }
+
+    loadPageDetails()
+    return () => {
+      _isMounted = false
+    }
+  }, [pageData, dirData, cspData])
+
+  useEffect(() => {
+    const html = marked(editorValue)
+    const { isCspViolation: checkedIsCspViolation, sanitisedHtml: processedSanitisedHtml } = checkCSP(csp, html)
+    const processedChunk = prependImageSrc(siteName, processedSanitisedHtml)
+    setIsCspViolation(checkedIsCspViolation)
+    setChunk(processedChunk)
+  }, [editorValue])
+
+  const onEditorChange = (value) => {
+    setEditorValue(value);
+  }
+
+  const toggleImageAndSettingsModal = (newFileName) => {
+    // insert image into editor
+    let editorValue
+    if (newFileName) {
+      const cm = mdeRef.current.simpleMde.codemirror;
+      cm.replaceSelection(`![](/images/${newFileName})`);
+
+      // set state so that rerender is triggered and image is shown
+      editorValue = mdeRef.current.simpleMde.codemirror.getValue()
+    }
+
+    setIsFileStagedForUpload(!isFileStagedForUpload)
+    if (editorValue) {
+      setEditorValue(editorValue)
     }
   }
 
-  componentWillUnmount() {
-    this._isMounted = false;
+  const onHyperlinkOpen = () => {
+    const cm = mdeRef.current.simpleMde.codemirror;
+    setSelectionText(cm.getSelection() || '')
+    setIsInsertingHyperlink(true)
   }
 
-  updatePage = async () => {
-    try {
-      const { state } = this;
-      const { editorValue, frontMatter } = state;
-
-      // here, we need to re-add the front matter of the markdown file
-      const upload = concatFrontMatterMdBody(frontMatter, editorValue);
-
-      // encode to Base64 for github
-      const base64Content = Base64.encode(upload);
-      const params = {
-        content: base64Content,
-        sha: state.sha,
-      };
-      const resp = await axios.post(this.apiEndpoint, params);
-      const { sha } = resp.data;
-      this.setState({ sha });
-
-      window.location.reload();
-    } catch (err) {
-      toast(
-        <Toast notificationType='error' text={`There was a problem saving your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-      );
-      console.log(err);
-    }
-  }
-
-  deletePage = async () => {
-    try {
-      const { history } = this.props;
-      const { sha } = this.state;
-      const params = { sha };
-      await axios.delete(this.apiEndpoint, {
-        data: params,
-      });
-      history.goBack();
-    } catch (err) {
-      toast(
-        <Toast notificationType='error' text={`There was a problem deleting your page. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-      );
-      console.log(err);
-    }
-  }
-
-  onEditorChange = (value) => {
-    this.setState({ editorValue: value });
-  }
-
-  toggleImageModal = () => {
-    this.setState((currState) => ({
-      isSelectingImage: !currState.isSelectingImage,
-    }));
-  }
-
-  toggleImageAndSettingsModal = () => {
-    this.setState((currState) => ({
-      isSelectingImage: !currState.isSelectingImage,
-      isFileStagedForUpload: !currState.isFileStagedForUpload,
-    }));
-  }
-
-  onHyperlinkOpen = () => {
-    const cm = this.mdeRef.current.simpleMde.codemirror;
-    this.setState({
-      selectionText: cm.getSelection() || '', 
-      isInsertingHyperlink: true,
-    });
-  }
-
-  onHyperlinkSave = (text, link) => {
-    const cm = this.mdeRef.current.simpleMde.codemirror;
+  const onHyperlinkSave = (text, link) => {
+    const cm = mdeRef.current.simpleMde.codemirror;
     cm.replaceSelection(`[${text}](${link})`);
     // set state so that rerender is triggered and path is shown
-    this.setState({
-      editorValue: this.mdeRef.current.simpleMde.codemirror.getValue(),
-      isInsertingHyperlink: false,
-      selectionText: '',
-    });
+    setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
+    setIsInsertingHyperlink(false)
+    setSelectionText('')
   }
 
-  onHyperlinkClose = () => {
-    this.setState({
-      isInsertingHyperlink: false,
-      selectionText: '',
-    });
+  const onHyperlinkClose = () => {
+    setIsInsertingHyperlink(false)
+    setSelectionText('')
   }
 
-  onImageClick = (path) => {
-    const cm = this.mdeRef.current.simpleMde.codemirror;
+  const onImageClick = (path) => {
+    const cm = mdeRef.current.simpleMde.codemirror;
     cm.replaceSelection(`![](${path.replaceAll(' ', '%20')})`);
     // set state so that rerender is triggered and image is shown
-    this.setState({
-      editorValue: this.mdeRef.current.simpleMde.codemirror.getValue(),
-      isSelectingImage: false,
-    });
+    setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
+    setIsSelectingImage(false)
   }
 
-  stageFileForUpload = (fileName, fileData) => {
-    const { type } = this.props;
+  const stageFileForUpload = (fileName, fileData) => {
     const baseFolder = type === 'file' ? 'files' : 'images';
-    this.setState({
-      isFileStagedForUpload: true,
-      stagedFileDetails: {
-        path: `${baseFolder}%2F${fileName}`,
-        content: fileData,
-        fileName,
-      },
-    });
+    setStagedFileDetails({
+      path: `${baseFolder}%2F${fileName}`,
+      content: fileData,
+      fileName,
+    })
+    setIsFileStagedForUpload(true)
   }
 
-  readFileToStageUpload = async (event) => {
+  const readFileToStageUpload = async (event) => {
     const fileReader = new FileReader();
     const fileName = event.target.files[0].name;
     fileReader.onload = (() => {
@@ -358,190 +340,167 @@ export default class EditPage extends Component {
          */
 
       const fileData = fileReader.result.split(',')[1];
-      this.stageFileForUpload(fileName, fileData);
+      stageFileForUpload(fileName, fileData);
     });
     fileReader.readAsDataURL(event.target.files[0]);
-    this.toggleImageModal()
+    setIsSelectingImage((prevState) => !prevState)
   }
 
-  render() {
-    const { match, isCollectionPage, isResourcePage, primaryColors, secondaryColors } = this.props;
-    const { siteName, fileName, collectionName, resourceName } = match.params;
-    const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, isCollectionPage, fileName)
-    const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, collectionName, siteName)
-    const {
-      csp,
-      originalMdValue,
-      editorValue,
-      canShowDeleteWarningModal,
-      isSelectingImage,
-      isInsertingHyperlink,
-      isFileStagedForUpload,
-      stagedFileDetails,
-      leftNavPages,
-      selectionText,
-      isLoadingPageContent,
-    } = this.state;
-
-    const html = marked(editorValue)
-    const { isCspViolation, sanitisedHtml } = checkCSP(csp, html)
-    const chunk = prependImageSrc(siteName, sanitisedHtml)
-
-    return (
-      <>
-        <Header
-          title={title}
-          shouldAllowEditPageBackNav={originalMdValue === editorValue}
-          isEditPage="true"
-          backButtonText={backButtonLabel}
-          backButtonUrl={backButtonUrl}
-        />
-        <div className={elementStyles.wrapper}>
-          {
-            isSelectingImage && (
-            <MediasModal
-              type="image"
-              siteName={siteName}
-              onMediaSelect={this.onImageClick}
-              toggleImageModal={this.toggleImageModal}
-              readFileToStageUpload={this.readFileToStageUpload}
-              onClose={() => this.setState({ isSelectingImage: false })}
-            />
-            )
-          }
-          {
-            isFileStagedForUpload && (
-              <MediaSettingsModal
-                type="image"
-                siteName={siteName}
-                onClose={() => this.setState({ isFileStagedForUpload: false })}
-                onSave={this.toggleImageAndSettingsModal}
-                media={stagedFileDetails}
-                isPendingUpload="true"
-              />
-            )
-          }
-          {
-            isInsertingHyperlink && (
-            <HyperlinkModal
-              text={selectionText}
-              onSave={this.onHyperlinkSave}
-              onClose={this.onHyperlinkClose}
-            />
-            )
-          }
-          {
-            <div className={`${editorStyles.pageEditorSidebar} ${isLoadingPageContent || resourceType === 'file' ? editorStyles.pageEditorSidebarLoading : null}`} >
-              {
-                resourceType === 'file'
-                ?
-                <>
-                  <div className={`text-center ${editorStyles.pageEditorSidebarDisabled}`}>
-                    Editing is disabled for downloadable files.
-                  </div>
-                </>
-                :
-                isLoadingPageContent
-                ? (
-                  <div className={`spinner-border text-primary ${editorStyles.sidebarLoadingIcon}`} />
-                ) : ''
-              }
-              <SimpleMDE
-                id="simplemde-editor"
-                className="h-100"
-                onChange={this.onEditorChange}
-                ref={this.mdeRef}
-                value={editorValue}
-                options={{
-                  toolbar: [
-                    headingButton,
-                    boldButton,
-                    italicButton,
-                    strikethroughButton,
-                    '|',
-                    codeButton,
-                    quoteButton,
-                    unorderedListButton,
-                    orderedListButton,
-                    '|',
-                    {
-                      name: 'image',
-                      action: async () => {
-                        this.setState({ isSelectingImage: true });
-                      },
-                      className: 'fa fa-picture-o',
-                      title: 'Insert Image',
-                      default: true,
-                    },
-                    {
-                      name: 'link',
-                      action: async () => { 
-                        this.onHyperlinkOpen() 
-                      },
-                      className: 'fa fa-link',
-                      title: 'Insert Link',
-                      default: true,
-                    },
-                    tableButton,
-                    guideButton,
-                  ],
-                }}
-              />
-            </div>
-          }
-          <div className={editorStyles.pageEditorMain}>
-            {
-              isCollectionPage && leftNavPages
-              ? (
-                <LeftNavPage
-                  chunk={chunk}
-                  leftNavPages={leftNavPages}
-                  fileName={fileName}
-                  title={title}
-                />
-              ) : (
-                <SimplePage
-                  chunk={chunk}
-                  title={title}
-                  date={date}
-                />
-              )
-            }
-          </div>
-        </div>
-        <div className={editorStyles.pageEditorFooter}>
-          <button type="button" className={elementStyles.warning} onClick={() => this.setState({ canShowDeleteWarningModal: true })}>Delete</button>
-          <LoadingButton
-            label="Save"
-            disabledStyle={elementStyles.disabled}
-            disabled={isCspViolation}
-            className={isCspViolation ? elementStyles.disabled : elementStyles.blue}
-            callback={this.updatePage}
-          />
-        </div>
+  return (
+    <>
+      <Header
+        siteName={siteName}
+        title={title}
+        shouldAllowEditPageBackNav={originalMdValue === editorValue}
+        isEditPage={true}
+        backButtonText={backButtonLabel}
+        backButtonUrl={backButtonUrl}
+      />
+      <div className={elementStyles.wrapper}>
         {
-          canShowDeleteWarningModal
-          && (
-          <DeleteWarningModal
-            onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
-            onDelete={this.deletePage}
-            type={isResourcePage ? 'resource' : 'page'}
+          isSelectingImage && (
+          <MediaModal
+            type="image"
+            siteName={siteName}
+            onMediaSelect={onImageClick}
+            toggleImageModal={() => setIsSelectingImage(!isSelectingImage)}
+            readFileToStageUpload={readFileToStageUpload}
+            onClose={() => setIsSelectingImage(false)}
+            mediaSearchTerm={mediaSearchTerm}
+            setMediaSearchTerm={setMediaSearchTerm}
+            selectedFile={selectedFile}
+            setSelectedFile={setSelectedFile}
           />
           )
         }
         {
-          this.state.shouldRedirectToNotFound &&
-          <Redirect
-            to={{
-                pathname: '/not-found',
-                state: {siteName: siteName}
-            }}
-          />
+          isFileStagedForUpload && (
+            <MediaSettingsModal
+              type="image"
+              siteName={siteName}
+              onClose={() => setIsFileStagedForUpload(false)}
+              onSave={toggleImageAndSettingsModal}
+              media={stagedFileDetails}
+              isPendingUpload
+            />
+          )
         }
-      </>
-    );
-  }
+        {
+          isInsertingHyperlink && (
+          <HyperlinkModal
+            text={selectionText}
+            onSave={onHyperlinkSave}
+            onClose={onHyperlinkClose}
+          />
+          )
+        }
+        {
+          <div className={`${editorStyles.pageEditorSidebar} ${isLoadingPageContent || resourceType === 'file' ? editorStyles.pageEditorSidebarLoading : null}`} >
+            {
+              resourceType === 'file'
+              ?
+              <>
+                <div className={`text-center ${editorStyles.pageEditorSidebarDisabled}`}>
+                  Editing is disabled for downloadable files.
+                </div>
+              </>
+              :
+              isLoadingPageContent
+              ? (
+                <div className={`spinner-border text-primary ${editorStyles.sidebarLoadingIcon}`} />
+              ) : ''
+            }
+            <SimpleMDE
+              id="simplemde-editor"
+              className="h-100"
+              onChange={onEditorChange}
+              ref={mdeRef}
+              value={editorValue}
+              options={{
+                toolbar: [
+                  headingButton,
+                  boldButton,
+                  italicButton,
+                  strikethroughButton,
+                  '|',
+                  codeButton,
+                  quoteButton,
+                  unorderedListButton,
+                  orderedListButton,
+                  '|',
+                  {
+                    name: 'image',
+                    action: async () => {
+                      setIsSelectingImage(true);
+                    },
+                    className: 'fa fa-picture-o',
+                    title: 'Insert Image',
+                    default: true,
+                  },
+                  {
+                    name: 'link',
+                    action: async () => { 
+                      onHyperlinkOpen() 
+                    },
+                    className: 'fa fa-link',
+                    title: 'Insert Link',
+                    default: true,
+                  },
+                  tableButton,
+                  guideButton,
+                ],
+              }}
+            />
+          </div>
+        }
+        <div className={editorStyles.pageEditorMain}>
+          {
+            isCollectionPage && leftNavPages.length > 0
+            ? (
+              <LeftNavPage
+                chunk={chunk}
+                leftNavPages={leftNavPages}
+                fileName={fileName}
+                title={title}
+                collection={deslugifyDirectory(folderName)}
+              />
+            ) : (
+              <SimplePage
+                chunk={chunk}
+                title={title}
+                date={date}
+                resourceRoomName={deslugifyDirectory(resourceRoomName)}
+                collection={resourceName}
+              />
+            )
+          }
+        </div>
+      </div>
+      <div className={editorStyles.pageEditorFooter}>
+        <button type="button" className={elementStyles.warning} onClick={() => setCanShowDeleteWarningModal(true)}>Delete</button>
+        <LoadingButton
+          label="Save"
+          disabledStyle={elementStyles.disabled}
+          disabled={isCspViolation}
+          className={isCspViolation ? elementStyles.disabled : elementStyles.blue}
+          callback={saveHandler}
+        />
+      </div>
+      {
+        canShowDeleteWarningModal
+        && (
+        <DeleteWarningModal
+          onCancel={() => setCanShowDeleteWarningModal(false)}
+          onDelete={deleteHandler}
+          type={isResourcePage ? 'resource' : 'page'}
+        />
+        )
+      }
+    </>
+  )
 }
+
+export default EditPage
 
 EditPage.propTypes = {
   match: PropTypes.shape({

@@ -1,46 +1,60 @@
-import React, { useState, useContext } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import GenericWarningModal from './GenericWarningModal'
+import useRedirectHook from '../hooks/useRedirectHook';
+import useSiteUrlHook from '../hooks/useSiteUrlHook';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-
-// Import context
-const { LoginContext } = require('../contexts/LoginContext')
 
 // axios settings
 axios.defaults.withCredentials = true
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
+// constants
+const userIdKey = "userId"
 
 const Header = ({
-  showButton, title, isEditPage, shouldAllowEditPageBackNav, backButtonText, backButtonUrl,
+  siteName, showButton, title, isEditPage, shouldAllowEditPageBackNav, backButtonText, backButtonUrl,
 }) => {
-  const setLogoutState = useContext(LoginContext)
+  const { setRedirectToLogout, setRedirectToPage } = useRedirectHook()
+  const { retrieveStagingUrl } = useSiteUrlHook()
 
-  const [shouldRedirect, setShouldRedirect] = useState(false)
-  const [shouldPerformBackNav, setShouldPerformBackNav] = useState(false)
   const [showBackNavWarningModal, setShowBackNavWarningModal] = useState(false)
+  const [showStagingWarningModal, setShowStagingWarningModal] = useState(false)
+  const [stagingUrl, setStagingUrl] = useState()
 
-  const clearCookie = async () => {
-    try {
-      // Call the logout endpoint in the API server to clear the browser cookie
-      await axios.get(`${BACKEND_URL}/auth/logout`)
-      setShouldRedirect(true)
-      setLogoutState()
-    } catch (err) {
-      console.error(err)
-      setShouldRedirect(false)
+  useEffect(() => {
+    let _isMounted = true
+
+    const loadStagingUrl = async () => {
+      if (siteName) {
+        const retrievedStagingUrl = await retrieveStagingUrl(siteName)
+        if (_isMounted) setStagingUrl(retrievedStagingUrl)
+      }
     }
-  }
+
+    loadStagingUrl()
+    return () => {
+      _isMounted = false
+    }
+  }, [])
 
   const toggleBackNav = () => {
-    setShouldPerformBackNav(!shouldPerformBackNav)
+    setRedirectToPage(backButtonUrl)
   }
 
   const handleBackNav = () => {
     if (isEditPage && !shouldAllowEditPageBackNav) setShowBackNavWarningModal(true)
     else toggleBackNav()
+  }
+
+  const handleViewPullRequest = () => {
+    const githubUrl = `https://github.com/isomerpages/${siteName}/pulls`
+    window.open(githubUrl, '_blank')
+  }
+
+  const handleViewStaging = () => {
+    window.open(stagingUrl, '_blank')
+    setShowStagingWarningModal(false)
   }
 
   return (
@@ -68,25 +82,26 @@ const Header = ({
       </div>
       {/* Right section */}
       <div className={elementStyles.headerRight}>
-        <button type="button" className={elementStyles.blue} onClick={clearCookie}>
-          Log Out
-        </button>
+        { siteName ?
+          <>
+            <button type="button" className={`${elementStyles.green} float-right text-nowrap`} onClick={handleViewPullRequest}>
+              Pull Request
+            </button>
+            <button type="button" className={`${!stagingUrl ? elementStyles.disabled : elementStyles.blue} float-right text-nowrap`} onClick={() => setShowStagingWarningModal(true)} disabled={!stagingUrl}>
+              View Staging
+            </button>
+          </>
+          :
+          <>
+            <div className={`${elementStyles.info} mr-3`}>
+              Logged in as @{localStorage.getItem(userIdKey)}
+            </div>
+            <button type="button" className={`${elementStyles.blue} float-right text-nowrap`} onClick={setRedirectToLogout}>
+              Log Out
+            </button>
+          </>
+        }
       </div>
-      { shouldPerformBackNav && 
-        <Redirect
-          to={{
-            pathname: backButtonUrl
-          }}
-        />
-      }
-      { shouldRedirect && 
-        <Redirect
-          to={{
-            pathname: '/',
-            state: { isFromSignOutButton: true },
-          }}
-        />
-      }
       {
         showBackNavWarningModal &&
         <GenericWarningModal
@@ -98,20 +113,39 @@ const Header = ({
           cancelText="No"
         />
       }
+      {
+        showStagingWarningModal &&
+        <GenericWarningModal
+          displayTitle=""
+          displayText="Your changes may take some time to be reflected. <br/> Refresh your staging site to see if your changes have been built."
+          displayImg="/publishModal.svg"
+          displayImgAlt="View Staging Modal Image"
+          onProceed={handleViewStaging}
+          onCancel={() => setShowStagingWarningModal(false)}
+          proceedText="Proceed to staging site"
+          cancelText="Cancel"
+        />
+      }
     </div>
   )
 };
 
 Header.defaultProps = {
+  siteName: undefined,
   showButton: true,
   title: undefined,
+  isEditPage: false,
+  shouldAllowEditPageBackNav: true,
   backButtonText: 'Back to Sites',
   backButtonUrl: '/sites',
 };
 
 Header.propTypes = {
+  siteName: PropTypes.string,
   showButton: PropTypes.bool,
   title: PropTypes.string,
+  isEditPage: PropTypes.bool,
+  shouldAllowEditPageBackNav: PropTypes.bool,
   backButtonText: PropTypes.string,
   backButtonUrl: PropTypes.string,
 };

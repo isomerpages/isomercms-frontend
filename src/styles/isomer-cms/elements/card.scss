@@ -14,13 +14,18 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    overflow:hidden;
 
     h2{
       font-size: 20px;
       font-weight: normal;
-      overflow-wrap: anywhere;
       line-height: 2.0;
       color: darken($isomer-blue,20%);
+      min-width:0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-right: 1.875rem;
     }
 
     .bx{
@@ -79,6 +84,109 @@
     }
   }
 
+  &.folderOption{
+    background: none;
+    box-shadow: none;
+    height: 5.188rem;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.2rem;
+    margin-right: 1rem;
+    margin-bottom: 0;
+    border: 1px dashed $isomer-blue;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    color: $isomer-blue;
+
+    &:hover{
+      @extend .folderOptionSelected;
+    }
+
+    &:hover > div > i {
+      color: white;
+    }
+
+    > div > span {
+      color: $isomer-blue;
+    }
+
+    &:hover > div > span {
+      color: white;
+    }
+
+    .folderOptionIcon{
+      font-size: 30px;
+    }
+
+    .folderOptionText{
+      line-height: 2;
+    }
+  }
+
+  &.folderOptionSelected {
+    background: $isomer-blue;
+    border: 1px solid $isomer-blue;
+    color: white;
+    
+    > div > span{
+      color: white;
+    }
+  }
+
+  &.folderOptionDisabled {
+    @extend .folderOption;
+    border: 1px dashed $isomer-dark;
+    color: $isomer-dark;
+
+    &:hover {
+      background: none;
+      border: 1px dashed $isomer-dark;
+      color: $isomer-dark;
+    }
+
+    &:hover > div > i{
+      color: $isomer-dark;
+    }
+
+    &:hover > div > span{
+      color: $isomer-dark;
+    }
+    
+    > div > span{
+      color: $isomer-dark;
+    }
+  }
+
+  &.folderItem{
+    background: white;
+    box-shadow: inset;
+    height: 5.188rem;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.2rem;
+    margin: 0.5rem 0 0.5rem 0;
+    border: 1px $isomer-blue;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    color: $body-text;
+
+    .folderItemIcon{
+      font-size: 30px;
+      color: $body-text;
+      margin-right: 1rem;
+    }
+
+    .folderItemText{
+      line-height: 2;
+    }
+  }
+
   &.addNewHomepageSection{
     background: none;
     box-shadow: none;
@@ -104,4 +212,28 @@
 .folderCard {
   @extend .card;
   padding: 1rem;
+  position: relative;
+  cursor: pointer;
+}
+
+.orderCircleContainer {
+  position: absolute;
+  left: calc(100% - 40px);
+  bottom: calc(100% - 40px);
+
+  .orderCircle {
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+
+    background: $isomer-blue;
+    color: white;
+    text-align: center;
+  }
+}
+
+.navCard {
+  @extend .card;
+  margin-bottom: 0rem;
 }

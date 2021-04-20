@@ -6,6 +6,9 @@
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
   margin: 0;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   .siteIntro{
     margin-top: 20px;
@@ -17,16 +20,19 @@
       margin-bottom: 5px;
     }
 
-    .siteDate{
+    .siteInfo{
       font-weight: 300;
       color: $body-grey;
       font-size: .7em;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 100%;
+      overflow: hidden;
     }
   }
 
   .sidebarNavigation{
     width: 100%;
-    margin-top: 20px;
 
     ul{
       width: 100%;
@@ -56,6 +62,12 @@
 
         &.active{
           border-left: 5px solid $isomer-blue;
+        }
+      }
+
+      .noHover {
+        &:hover{
+          background:none;
         }
       }
     }

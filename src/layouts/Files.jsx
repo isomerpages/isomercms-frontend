@@ -43,23 +43,27 @@ export default class Files extends Component {
 
   onFileSelect = async (event) => {
     const fileReader = new FileReader();
-    const fileName = event.target.files[0].name;
-    fileReader.onload = (() => {
-      /** Github only requires the content of the file
-       * fileReader returns  `data:application/*;base64, {fileContent}`
-       * hence the split
-       */
+    console.log(event.target.files)
+    const file = event.target?.files[0] || '';
+    if (file.name) {
+      fileReader.onload = (() => {
+        /** Github only requires the content of the file
+         * fileReader returns  `data:application/*;base64, {fileContent}`
+         * hence the split
+         */
 
-      const fileContent = fileReader.result.split(',')[1];
-      // For modal to pop up
-      this.setState({
-        pendingFileUpload: {
-          fileName,
-          content: fileContent,
-        },
+        const fileContent = fileReader.result.split(',')[1];
+        // For modal to pop up
+        this.setState({
+          pendingFileUpload: {
+            fileName: file.name,
+            content: fileContent,
+          },
+        });
       });
-    });
-    fileReader.readAsDataURL(event.target.files[0]);
+      fileReader.readAsDataURL(file);
+      event.target.value = '';
+    }
   }
 
   uploadFile = async (fileName, fileContent) => {
@@ -87,7 +91,9 @@ export default class Files extends Component {
     const { siteName } = match.params;
     return (
       <>
-        <Header />
+        <Header 
+          siteName={siteName}
+        />
         {/* main bottom section */}
         <div className={elementStyles.wrapper}>
           <Sidebar siteName={siteName} currPath={location.pathname} />

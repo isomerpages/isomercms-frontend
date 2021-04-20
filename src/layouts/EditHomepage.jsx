@@ -1,34 +1,35 @@
-import React, { Component } from 'react';
+import React, { useEffect, createRef, useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
-import { Base64 } from 'js-base64';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import '../styles/isomer-template.scss';
-import TemplateHeroSection from '../templates/homepage/HeroSection';
-import TemplateInfobarSection from '../templates/homepage/InfobarSection';
-import TemplateInfopicLeftSection from '../templates/homepage/InfopicLeftSection';
-import TemplateInfopicRightSection from '../templates/homepage/InfopicRightSection';
-import TemplateResourcesSection from '../templates/homepage/ResourcesSection';
-import { DEFAULT_ERROR_TOAST_MSG, frontMatterParser, concatFrontMatterMdBody } from '../utils';
-import {
-  createPageStyleSheet,
-  getSiteColors,
-} from '../utils/siteColorUtils';
+
 import EditorInfobarSection from '../components/homepage/InfobarSection';
 import EditorInfopicSection from '../components/homepage/InfopicSection';
 import EditorResourcesSection from '../components/homepage/ResourcesSection';
 import EditorHeroSection from '../components/homepage/HeroSection';
 import NewSectionCreator from '../components/homepage/NewSectionCreator';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
 import Header from '../components/Header';
 import LoadingButton from '../components/LoadingButton';
-import { validateSections, validateHighlights, validateDropdownElems } from '../utils/validators';
 import DeleteWarningModal from '../components/DeleteWarningModal';
-import { toast } from 'react-toastify';
-import Toast from '../components/Toast';
+
+import TemplateHeroSection from '../templates/homepage/HeroSection';
+import TemplateInfobarSection from '../templates/homepage/InfobarSection';
+import TemplateInfopicLeftSection from '../templates/homepage/InfopicLeftSection';
+import TemplateInfopicRightSection from '../templates/homepage/InfopicRightSection';
+import TemplateResourcesSection from '../templates/homepage/ResourcesSection';
+
+import { frontMatterParser, concatFrontMatterMdBody, DEFAULT_RETRY_MSG } from '../utils';
+import { validateSections, validateHighlights, validateDropdownElems } from '../utils/validators';
+import { errorToast } from '../utils/toasts';
+
+import '../styles/isomer-template.scss';
+import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
+
+// Import hooks
+import useSiteColorsHook from '../hooks/useSiteColorsHook';
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -97,189 +98,184 @@ const enumSection = (type, isErrorConstructor) => {
   }
 };
 
-export default class EditHomepage extends Component {
-  _isMounted = false 
+const EditHomepage = ({ match }) => {
+  const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
 
-  constructor(props) {
-    super(props);
-    this.scrollRefs = [];
-    this.state = {
-      frontMatter: {
-        title: '',
-        subtitle: '',
-        description: '',
-        image: '',
-        notification: '',
-        sections: [],
-      },
-      sha: null,
-      hasResources: false,
-      dropdownIsActive: false,
-      displaySections: [],
-      displayHighlights: [],
-      displayDropdownElems: [],
-      errors: {
-        sections: [],
-        highlights: [],
-        dropdownElems: [],
-      },
-      itemPendingForDelete: {
-        id: '',
-        type: '',
-      },
-      savedHeroElems: '',
-      savedHeroErrors: '',
-    };
-  }
+  const { siteName } = match.params;
+  const [hasLoaded, setHasLoaded] = useState(false)
+  const [scrollRefs, setScrollRefs] = useState([])
+  const [hasErrors, setHasErrors] = useState(false)
+  const [frontMatter, setFrontMatter] = useState(
+    {
+      title: '',
+      subtitle: '',
+      description: '',
+      image: '',
+      notification: '',
+      sections: [],
+    }
+  )
+  const [originalFrontMatter, setOriginalFrontMatter] = useState(
+    {
+      title: '',
+      subtitle: '',
+      description: '',
+      image: '',
+      notification: '',
+      sections: [],
+    }
+  )
+  const [sha, setSha] = useState(null)
+  const [hasResources, setHasResources] = useState(false)
+  const [dropdownIsActive, setDropdownIsActive] = useState(false)
+  const [displaySections, setDisplaySections] = useState([])
+  const [displayHighlights, setDisplayHighlights] = useState([])
+  const [displayDropdownElems, setDisplayDropdownElems] = useState([])
+  const [errors, setErrors] = useState(
+    {
+      sections: [],
+      highlights: [],
+      dropdownElems: [],
+    }
+  )
+  const [itemPendingForDelete, setItemPendingForDelete] = useState(
+    {
+      id: '',
+      type: '',
+    }
+  )
+  const [savedHeroElems, setSavedHeroElems] = useState('')
+  const [savedHeroErrors, setSavedHeroErrors] = useState('')
 
-  async componentDidMount() {
-    const { match, siteColors, setSiteColors } = this.props;
-    const { siteName } = match.params;
-    this._isMounted = true
-
-    // Set page colors
-    try {
-      let primaryColor
-      let secondaryColor
-
-      if (!siteColors[siteName]) {
-        const {
-          primaryColor: sitePrimaryColor,
-          secondaryColor: siteSecondaryColor,
-        } = await getSiteColors(siteName)
-
-        primaryColor = sitePrimaryColor
-        secondaryColor = siteSecondaryColor
-
-        if (this._isMounted) setSiteColors((prevState) => ({
-          ...prevState,
-          [siteName]: {
-            primaryColor,
-            secondaryColor,
-          }
-        }))
-      } else {
-        primaryColor = siteColors[siteName].primaryColor
-        secondaryColor = siteColors[siteName].secondaryColor
+  useEffect(() => {
+    let _isMounted = true
+    const loadPageDetails = async () => {
+      // // Set page colors
+      try {
+        await retrieveSiteColors(siteName)
+        generatePageStyleSheet(siteName)
+      } catch (err) {
+        console.log(err);
       }
 
-      createPageStyleSheet(siteName, primaryColor, secondaryColor)
-    
-    } catch (err) {
-      console.log(err);
+      try {
+        const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/homepage`, {
+          withCredentials: true,
+        });
+        const { content, sha } = resp.data;
+        const { frontMatter } = frontMatterParser(content);
+        // Compute hasResources and set displaySections
+        let hasResources = false;
+        const displaySections = [];
+        let displayHighlights = [];
+        let displayDropdownElems = [];
+        const sectionsErrors = [];
+        let dropdownElemsErrors = [];
+        let highlightsErrors = [];
+        let scrollRefs = []
+        frontMatter.sections.forEach((section) => {
+          scrollRefs.push(createRef())
+          // If this is the hero section, hide all highlights/dropdownelems by default
+          if (section.hero) {
+            const { dropdown, key_highlights: keyHighlights } = section.hero;
+            const hero = { title: '', subtitle: '', background: '', button: '', url: '' }
+            if (dropdown) {
+              hero.dropdown = ''
+              // Go through section.hero.dropdown.options
+              displayDropdownElems = _.fill(Array(dropdown.options.length), false);
+              // Fill in dropdown elem errors array
+              dropdownElemsErrors = _.map(dropdown.options, () => DropdownElemConstructor(true));
+            }
+            if (keyHighlights) {
+              displayHighlights = _.fill(Array(keyHighlights.length), false);
+              // Fill in highlights errors array
+              highlightsErrors = _.map(keyHighlights, () => KeyHighlightConstructor(true));
+            }
+            // Fill in sectionErrors for hero
+            sectionsErrors.push({ hero })
+          }
+
+          // Check if there is already a resources section
+          if (section.resources) {
+            sectionsErrors.push(ResourcesSectionConstructor(true));
+            hasResources = true;
+          }
+
+          if (section.infobar) {
+            sectionsErrors.push(InfobarSectionConstructor(true));
+          }
+
+          if (section.infopic) {
+            sectionsErrors.push(InfopicSectionConstructor(true));
+          }
+
+          // Minimize all sections by default
+          displaySections.push(false);
+        });
+
+        // Initialize errors object
+        const errors = {
+          sections: sectionsErrors,
+          highlights: highlightsErrors,
+          dropdownElems: dropdownElemsErrors,
+        };
+
+        if (_isMounted) {
+          setFrontMatter(frontMatter)
+          setOriginalFrontMatter(_.cloneDeep(frontMatter))
+          setSha(sha)
+          setHasResources(hasResources)
+          setDisplaySections(displaySections)
+          setDisplayDropdownElems(displayDropdownElems)
+          setDisplayHighlights(displayHighlights)
+          setErrors(errors)
+          setHasLoaded(true)
+          setScrollRefs(scrollRefs)
+        }
+      } catch (err) {
+        // Set frontMatter to be same to prevent warning message when navigating away
+        if (_isMounted) setFrontMatter(originalFrontMatter)
+        errorToast(`There was a problem trying to load your homepage. ${DEFAULT_RETRY_MSG}`)
+        console.log(err);
+      }
     }
 
+    loadPageDetails()
+    return () => {
+      _isMounted = false
+    }
+  }, [])
+
+  useEffect(() => {
+    if (scrollRefs.length > 0) {
+      scrollRefs[frontMatter.sections.length-1].current.scrollIntoView();
+    }
+  }, [frontMatter.sections.length])
+
+  useEffect(() => {
+    const hasSectionErrors = _.some(errors.sections, (section) => {
+      // Section is an object, e.g. { hero: {} }
+      // _.keys(section) produces an array with length 1
+      // The 0th element of the array contains the sectionType
+      const sectionType = _.keys(section)[0];
+      return _.some(section[sectionType], (errorMessage) => errorMessage.length > 0) === true;
+    })
+
+    const hasHighlightErrors = _.some(errors.highlights,
+      (highlight) => _.some(highlight,
+        (errorMessage) => errorMessage.length > 0) === true);
+
+    const hasDropdownElemErrors = _.some(errors.dropdownElems,
+      (dropdownElem) => _.some(dropdownElem,
+        (errorMessage) => errorMessage.length > 0) === true);
+
+    const hasErrors = hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors;
+
+    setHasErrors(hasErrors)
+  }, [errors])
+
+  const onFieldChange = async (event) => {
     try {
-      const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/homepage`, {
-        withCredentials: true,
-      });
-      const { content, sha } = resp.data;
-      const base64DecodedContent = Base64.decode(content);
-      const { frontMatter } = frontMatterParser(base64DecodedContent);
-      // Compute hasResources and set displaySections
-      let hasResources = false;
-      const displaySections = [];
-      let displayHighlights = [];
-      let displayDropdownElems = [];
-      const sectionsErrors = [];
-      let dropdownElemsErrors = [];
-      let highlightsErrors = [];
-      frontMatter.sections.forEach((section) => {
-        // If this is the hero section, hide all highlights/dropdownelems by default
-        if (section.hero) {
-          const { dropdown, key_highlights: keyHighlights } = section.hero;
-          if (dropdown) {
-            // Go through section.hero.dropdown.options
-            displayDropdownElems = _.fill(Array(dropdown.options.length), false);
-            // Fill in dropdown elem errors array
-            dropdownElemsErrors = _.map(dropdown.options, () => DropdownElemConstructor(true));
-            // Fill in sectionErrors for hero with dropdown
-            sectionsErrors.push({
-              hero: {
-                title: '', subtitle: '', background: '', button: '', url: '', dropdown: '',
-              },
-            });
-          }
-          if (keyHighlights) {
-            displayHighlights = _.fill(Array(keyHighlights.length), false);
-            // Fill in highlights errors array
-            highlightsErrors = _.map(keyHighlights, () => KeyHighlightConstructor(true));
-            // Fill in sectionErrors for hero with key highlights
-            sectionsErrors.push({
-              hero: {
-                title: '', subtitle: '', background: '', button: '', url: '',
-              },
-            });
-          }
-          if (!dropdown && !keyHighlights) {
-            sectionsErrors.push({
-              hero: {
-                title: '', subtitle: '', background: '', button: '', url: '',
-              },
-            });
-          }
-        }
-
-        // Check if there is already a resources section
-        if (section.resources) {
-          sectionsErrors.push(ResourcesSectionConstructor(true));
-          hasResources = true;
-        }
-
-        if (section.infobar) {
-          sectionsErrors.push(InfobarSectionConstructor(true));
-        }
-
-        if (section.infopic) {
-          sectionsErrors.push(InfopicSectionConstructor(true));
-        }
-
-        // Minimize all sections by default
-        displaySections.push(false);
-      });
-
-      // Initialize errors object
-      const errors = {
-        sections: sectionsErrors,
-        highlights: highlightsErrors,
-        dropdownElems: dropdownElemsErrors,
-      };
-
-      if (this._isMounted) this.setState({
-        frontMatter,
-        originalFrontMatter: _.cloneDeep(frontMatter),
-        sha,
-        hasResources,
-        displaySections,
-        displayDropdownElems,
-        displayHighlights,
-        errors,
-      });
-    } catch (err) {
-      // Set frontMatter to be same to prevent warning message when navigating away
-      this.setState( {frontMatter: this.state.originalFrontMatter} )
-      toast(
-        <Toast notificationType='error' text={`There was a problem trying to load your homepage. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-      );
-      console.log(err);
-    }
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
-  componentDidUpdate(_, prevState) {
-    if (prevState.frontMatter.sections.length !== 0 && this.state.frontMatter.sections.length !== prevState.frontMatter.sections.length) {
-      // Occurs when a new section is created
-      this.scrollRefs[this.state.frontMatter.sections.length-1].scrollIntoView();
-    }
-  }
-  onFieldChange = async (event) => {
-    try {
-      const { state } = this;
-      const { errors } = state;
       const { id, value } = event.target;
       const idArray = id.split('-');
       const elemType = idArray[0];
@@ -289,18 +285,15 @@ export default class EditHomepage extends Component {
           // The field that changed belongs to a site-wide config
           const field = idArray[1]; // e.g. "title" or "subtitle"
 
-          this.setState((currState) => ({
-            ...currState,
-            frontMatter: {
-              ...currState.frontMatter,
-              [field]: value,
-            },
-          }));
+          setFrontMatter({
+            ...frontMatter,
+            [field]: value,
+          });
           break;
         }
         case 'section': {
           // The field that changed belongs to a homepage section config
-          const { sections } = state.frontMatter;
+          const { sections } = frontMatter;
 
           // sectionIndex is the index of the section array in the frontMatter
           const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT);
@@ -322,21 +315,21 @@ export default class EditHomepage extends Component {
           // Set special error message if hero button has text but hero url is empty
           // This needs to be done separately because it relies on the state of another field
           if (
-            field === 'url' && !value && this.state.frontMatter.sections[sectionIndex][sectionType].button
-            && (this.state.frontMatter.sections[sectionIndex][sectionType].button || value)
+            field === 'url' && !value && frontMatter.sections[sectionIndex][sectionType].button
+            && (frontMatter.sections[sectionIndex][sectionType].button || value)
           ) {
             const errorMessage = 'Please specify a URL for your button'
             newSectionError = _.cloneDeep(errors.sections[sectionIndex])
             newSectionError[sectionType][field] = errorMessage
           } else if (
-            field === 'button' && !this.state.frontMatter.sections[sectionIndex][sectionType].url
-            && (value || this.state.frontMatter.sections[sectionIndex][sectionType].url) && sectionType !== 'resources'
+            field === 'button' && !frontMatter.sections[sectionIndex][sectionType].url
+            && (value || frontMatter.sections[sectionIndex][sectionType].url) && sectionType !== 'resources'
           ) {
             const errorMessage = 'Please specify a URL for your button'
             newSectionError = _.cloneDeep(errors.sections[sectionIndex])
             newSectionError[sectionType]['url'] = errorMessage
           } else {
-            newSectionError = validateSections(errors.sections[sectionIndex], sectionType, field, value)
+            newSectionError = validateSections(_.cloneDeep(errors.sections[sectionIndex]), sectionType, field, value)
 
             if (field === 'button' && !value) {
               newSectionError[sectionType]['button'] = ''
@@ -352,21 +345,18 @@ export default class EditHomepage extends Component {
             },
           });
 
-          this.setState((currState) => ({
-            ...currState,
-            frontMatter: {
-              ...currState.frontMatter,
-              sections: newSections,
-            },
-            errors: newErrors,
-          }));
+          setFrontMatter({
+            ...frontMatter,
+            sections: newSections,
+          })
+          setErrors(newErrors)
 
-          this.scrollRefs[sectionIndex].scrollIntoView();
+          scrollRefs[sectionIndex].current.scrollIntoView();
           break;
         }
         case 'highlight': {
           // The field that changed belongs to a hero highlight
-          const { sections } = state.frontMatter;
+          const { sections } = frontMatter;
 
           // highlightsIndex is the index of the key_highlights array
           const highlightsIndex = parseInt(idArray[1], RADIX_PARSE_INT);
@@ -394,21 +384,18 @@ export default class EditHomepage extends Component {
             },
           });
 
-          this.setState((currState) => ({
-            ...currState,
-            frontMatter: {
-              ...currState.frontMatter,
-              sections: newSections,
-            },
-            errors: newErrors,
-          }));
+          setFrontMatter({
+            ...frontMatter,
+            sections: newSections,
+          })
+          setErrors(newErrors)
 
-          this.scrollRefs[0].scrollIntoView();
+          scrollRefs[0].current.scrollIntoView();
           break;
         }
         case 'dropdownelem': {
           // The field that changed is a dropdown element (i.e. dropdownelem)
-          const { sections } = state.frontMatter;
+          const { sections } = frontMatter;
 
           // dropdownsIndex is the index of the dropdown.options array
           const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT);
@@ -438,16 +425,13 @@ export default class EditHomepage extends Component {
             },
           });
 
-          this.setState((currState) => ({
-            ...currState,
-            frontMatter: {
-              ...currState.frontMatter,
-              sections: newSections,
-            },
-            errors: newErrors,
-          }));
+          setFrontMatter({
+            ...frontMatter,
+            sections: newSections
+          })
+          setErrors(newErrors)
 
-          this.scrollRefs[0].scrollIntoView();
+          scrollRefs[0].current.scrollIntoView();
           break;
         }
         default: {
@@ -461,26 +445,25 @@ export default class EditHomepage extends Component {
             },
           });
 
-          this.setState((currState) => ({
-            ...currState,
-            frontMatter: {
-              ...currState.frontMatter,
-              sections: update(currState.frontMatter.sections, {
-                0: {
-                  hero: {
-                    dropdown: {
-                      title: {
-                        $set: value,
-                      },
-                    },
+          const newSections = update(frontMatter.sections, {
+            0: {
+              hero: {
+                dropdown: {
+                  title: {
+                    $set: value,
                   },
                 },
-              }),
+              },
             },
-            errors: newErrors,
-          }));
+          })
 
-          this.scrollRefs[0].scrollIntoView();
+          setFrontMatter({
+            ...frontMatter,
+            sections: newSections
+          })
+          setErrors(newErrors)
+
+          scrollRefs[0].current.scrollIntoView();
         }
       }
     } catch (err) {
@@ -488,15 +471,12 @@ export default class EditHomepage extends Component {
     }
   }
 
-  createHandler = async (event) => {
+  const createHandler = async (event) => {
     try {
       const { id, value } = event.target;
       const idArray = id.split('-');
       const elemType = idArray[0];
 
-      const {
-        frontMatter, errors, displaySections, displayDropdownElems, displayHighlights,
-      } = this.state;
       let newSections = [];
       let newErrors = [];
 
@@ -505,7 +485,7 @@ export default class EditHomepage extends Component {
           // The Isomer site can only have 1 resources section in the homepage
           // Set hasResources to prevent the creation of more resources sections
           if (value === 'resources') {
-            this.setState({ hasResources: true });
+            setHasResources(true)
           }
 
           newSections = update(frontMatter.sections, {
@@ -516,15 +496,16 @@ export default class EditHomepage extends Component {
               $push: [enumSection(value, true)],
             },
           });
+          const newScrollRefs = update(scrollRefs, {$push: [createRef()]})
 
           const resetDisplaySections = _.fill(Array(displaySections.length), false)
           const newDisplaySections = update(resetDisplaySections, {
             $push: [true],
           });
 
-          this.setState({
-            displaySections: newDisplaySections,
-          });
+          setScrollRefs(newScrollRefs)
+          setDisplaySections(newDisplaySections)
+
           break;
         }
         case 'dropdownelem': {
@@ -553,9 +534,8 @@ export default class EditHomepage extends Component {
             $splice: [[dropdownsIndex, 0, true]],
           });
 
-          this.setState({
-            displayDropdownElems: newDisplayDropdownElems,
-          });
+          setDisplayDropdownElems(newDisplayDropdownElems)
+
           break;
         }
         case 'highlight': {
@@ -584,11 +564,9 @@ export default class EditHomepage extends Component {
               $splice: [[highlightIndex, 0, true]],
             });
 
-            this.setState({
-              displayHighlights: newDisplayHighlights,
-            });
-          // If neither key highlights nor dropdown section exists, create new key highlights array
+            setDisplayHighlights(newDisplayHighlights)
           } else {
+            // If neither key highlights nor dropdown section exists, create new key highlights array
             newSections = _.cloneDeep(frontMatter.sections)
             newSections[0].hero.key_highlights = [KeyHighlightConstructor(false)];
 
@@ -597,36 +575,28 @@ export default class EditHomepage extends Component {
 
             const newDisplayHighlights = [true]
 
-            this.setState({
-              displayHighlights: newDisplayHighlights,
-            });
+            setDisplayHighlights(newDisplayHighlights)
           }
           break;
         }
         default:
           return;
       }
-      this.setState((currState) => ({
-        ...currState,
-        frontMatter: {
-          ...currState.frontMatter,
-          sections: newSections,
-        },
-        errors: newErrors,
-      }));
+      setFrontMatter({
+        ...frontMatter,
+        sections: newSections
+      })
+      setErrors(newErrors)
     } catch (err) {
       console.log(err);
     }
   }
 
-  deleteHandler = async (id) => {
+  const deleteHandler = async (id) => {
     try {
       const idArray = id.split('-');
       const elemType = idArray[0];
 
-      const {
-        frontMatter, errors, displaySections, displayDropdownElems, displayHighlights,
-      } = this.state;
       let newSections = [];
       let newErrors = {};
 
@@ -636,7 +606,7 @@ export default class EditHomepage extends Component {
 
           // Set hasResources to false to allow users to create a resources section
           if (frontMatter.sections[sectionIndex].resources) {
-            this.setState({ hasResources: false });
+            setHasResources(false)
           }
 
           newSections = update(frontMatter.sections, {
@@ -649,13 +619,14 @@ export default class EditHomepage extends Component {
             },
           });
 
+          const newScrollRefs = update(scrollRefs, {$splice: [[sectionIndex, 1]]})
+
           const newDisplaySections = update(displaySections, {
             $splice: [[sectionIndex, 1]],
           });
 
-          this.setState({
-            displaySections: newDisplaySections,
-          });
+          setDisplaySections(newDisplaySections)
+          setScrollRefs(newScrollRefs)
           break;
         }
         case 'dropdownelem': {
@@ -682,9 +653,7 @@ export default class EditHomepage extends Component {
             $splice: [[dropdownsIndex, 1]],
           });
 
-          this.setState({
-            displayDropdownElems: newDisplayDropdownElems,
-          });
+          setDisplayDropdownElems(newDisplayDropdownElems)
           break;
         }
         case 'highlight': {
@@ -709,44 +678,36 @@ export default class EditHomepage extends Component {
             $splice: [[highlightIndex, 1]],
           });
 
-          this.setState({
-            displayHighlights: newDisplayHighlights,
-          });
+          setDisplayHighlights(newDisplayHighlights)
           break;
         }
         default:
           return;
       }
-      this.setState((currState) => ({
-        ...currState,
-        frontMatter: {
-          ...currState.frontMatter,
-          sections: newSections,
-        },
-        errors: newErrors,
-      }));
+      setFrontMatter({
+        ...frontMatter,
+        sections: newSections
+      })
+      setErrors(newErrors)
     } catch (err) {
       console.log(err);
     }
   }
 
-  handleHighlightDropdownToggle = (event) => {
-    const {
-      frontMatter, errors,
-    } = this.state;
+  const handleHighlightDropdownToggle = (event) => {
     let newSections = [];
     let newErrors = {};
     const { target: { value } } = event;
     if (value === 'highlights') {
       if (!frontMatter.sections[0].hero.dropdown) return
       let highlightObj, highlightErrors, buttonObj, buttonErrors, urlObj, urlErrors
-      if (this.state.savedHeroElems) {
-        highlightObj = this.state.savedHeroElems.key_highlights || []
-        highlightErrors = this.state.savedHeroErrors.highlights || []
-        buttonObj = this.state.savedHeroElems.button || ''
-        buttonErrors = this.state.savedHeroErrors.button || ''
-        urlObj = this.state.savedHeroElems.url || ''
-        urlErrors = this.state.savedHeroErrors.url || ''
+      if (savedHeroElems) {
+        highlightObj = savedHeroElems.key_highlights || []
+        highlightErrors = savedHeroErrors.highlights || []
+        buttonObj = savedHeroElems.button || ''
+        buttonErrors = savedHeroErrors.button || ''
+        urlObj = savedHeroElems.url || ''
+        urlErrors = savedHeroErrors.url || ''
       } else {
         highlightObj = [];
         highlightErrors = [];
@@ -755,13 +716,11 @@ export default class EditHomepage extends Component {
         urlObj = ''
         urlErrors = ''
       }
-      this.setState({
-        savedHeroElems: this.state.frontMatter.sections[0].hero,
-        savedHeroErrors: {
-          dropdown: this.state.errors.sections[0].hero.dropdown,
-          dropdownElems: this.state.errors.dropdownElems
-        },
-      });
+      setSavedHeroElems(frontMatter.sections[0].hero)
+      setSavedHeroErrors({
+        dropdown: errors.sections[0].hero.dropdown,
+        dropdownElems: errors.dropdownElems
+      })
 
       newSections = update(frontMatter.sections, {
         0: {
@@ -808,24 +767,22 @@ export default class EditHomepage extends Component {
     } else {
       if (frontMatter.sections[0].hero.dropdown) return
       let dropdownObj, dropdownErrors, dropdownElemErrors
-      if (this.state.savedHeroElems) {
-        dropdownObj = this.state.savedHeroElems.dropdown || DropdownConstructor();
-        dropdownErrors = this.state.savedHeroErrors.dropdown || ''
-        dropdownElemErrors = this.state.savedHeroErrors.dropdownElems || ''
+      if (savedHeroElems) {
+        dropdownObj = savedHeroElems.dropdown || DropdownConstructor();
+        dropdownErrors = savedHeroErrors.dropdown || ''
+        dropdownElemErrors = savedHeroErrors.dropdownElems || ''
       } else {
         dropdownObj = DropdownConstructor();
         dropdownErrors = ''
         dropdownElemErrors = []
       }
 
-      this.setState({
-        savedHeroElems: this.state.frontMatter.sections[0].hero,
-        savedHeroErrors: {
-          highlights: this.state.errors.highlights,
-          button: this.state.errors.sections[0].hero.button,
-          url: this.state.errors.sections[0].hero.url,
-        },
-      });
+      setSavedHeroElems(frontMatter.sections[0].hero)
+      setSavedHeroErrors({
+        highlights: errors.highlights,
+        button: errors.sections[0].hero.button,
+        url: errors.sections[0].hero.url,
+      })
 
       newSections = update(frontMatter.sections, {
         0: {
@@ -870,34 +827,28 @@ export default class EditHomepage extends Component {
         }
       });
     }
-    this.setState((currState) => ({
-      ...currState,
-      frontMatter: {
-        ...currState.frontMatter,
-        sections: newSections,
-      },
-      errors: newErrors,
-    }));
+    setFrontMatter({
+      ...frontMatter,
+      sections: newSections
+    })
+    setErrors(newErrors)
   }
 
-  toggleDropdown = async () => {
+  const toggleDropdown = async () => {
     try {
-      this.setState((currState) => ({
-        dropdownIsActive: !currState.dropdownIsActive,
-      }));
+      setDropdownIsActive((prevState) => !prevState)
     } catch (err) {
       console.log(err);
     }
   }
 
-  displayHandler = async (event) => {
+  const displayHandler = async (event) => {
     try {
       const { id } = event.target;
       const idArray = id.split('-');
       const elemType = idArray[0];
       switch (elemType) {
         case 'section': {
-          const { displaySections } = this.state;
           const sectionId = idArray[1];
           let resetDisplaySections = _.fill(Array(displaySections.length), false)
           resetDisplaySections[sectionId] = !displaySections[sectionId]
@@ -905,14 +856,12 @@ export default class EditHomepage extends Component {
             $set: resetDisplaySections,
           });
 
-          this.setState({
-            displaySections: newDisplaySections,
-          });
-          this.scrollRefs[sectionId].scrollIntoView();
+          setDisplaySections(newDisplaySections)
+
+          scrollRefs[sectionId].current.scrollIntoView();
           break;
         }
         case 'highlight': {
-          const { displayHighlights } = this.state;
           const highlightIndex = idArray[1];
           let resetHighlightSections = _.fill(Array(displayHighlights.length), false)
           resetHighlightSections[highlightIndex] = !displayHighlights[highlightIndex]
@@ -920,13 +869,10 @@ export default class EditHomepage extends Component {
             $set: resetHighlightSections,
           });
 
-          this.setState({
-            displayHighlights: newDisplayHighlights,
-          });
+          setDisplayHighlights(newDisplayHighlights)
           break;
         }
         case 'dropdownelem': {
-          const { displayDropdownElems } = this.state;
           const dropdownsIndex = idArray[1];
           let resetDropdownSections = _.fill(Array(displayDropdownElems.length), false)
           resetDropdownSections[dropdownsIndex] = !displayDropdownElems[dropdownsIndex]
@@ -934,9 +880,7 @@ export default class EditHomepage extends Component {
             $set: resetDropdownSections,
           });
 
-          this.setState({
-            displayDropdownElems: newDisplayDropdownElems,
-          });
+          setDisplayDropdownElems(newDisplayDropdownElems)
           break;
         }
         default:
@@ -947,14 +891,12 @@ export default class EditHomepage extends Component {
     }
   }
 
-  savePage = async () => {
+  const savePage = async () => {
     try {
-      const { state } = this;
-      const { match } = this.props;
       const { siteName } = match.params;
-      let filteredFrontMatter = _.cloneDeep(state.frontMatter)
+      let filteredFrontMatter = _.cloneDeep(frontMatter)
       // Filter out components which have no input
-      filteredFrontMatter.sections = state.frontMatter.sections.map((section) => {
+      filteredFrontMatter.sections = frontMatter.sections.map((section) => {
         let newSection = {}
         for (const sectionName in section) {
           newSection[sectionName] = _.cloneDeep(_.omitBy(section[sectionName], _.isEmpty))
@@ -962,11 +904,10 @@ export default class EditHomepage extends Component {
         return newSection
       })
       const content = concatFrontMatterMdBody(filteredFrontMatter, '');
-      const base64EncodedContent = Base64.encode(content);
 
       const params = {
-        content: base64EncodedContent,
-        sha: state.sha,
+        content,
+        sha: sha,
       };
 
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/homepage`, params, {
@@ -975,19 +916,13 @@ export default class EditHomepage extends Component {
 
       window.location.reload();
     } catch (err) {
-      toast(
-        <Toast notificationType='error' text={`There was a problem trying to save your homepage. ${DEFAULT_ERROR_TOAST_MSG}`}/>, 
-        {className: `${elementStyles.toastError} ${elementStyles.toastLong}`}
-      );
+      errorToast(`There was a problem trying to save your homepage. ${DEFAULT_RETRY_MSG}`)
       console.log(err);
     }
   }
 
-  onDragEnd = (result) => {
+  const onDragEnd = (result) => {
     const { source, destination, type } = result;
-    const {
-      frontMatter, errors, displaySections, displayDropdownElems, displayHighlights,
-    } = this.state;
 
     // If the user dropped the draggable to no known droppable
     if (!destination) return;
@@ -1029,9 +964,7 @@ export default class EditHomepage extends Component {
           ],
         });
 
-        this.setState({
-          displaySections: newDisplaySections,
-        });
+        setDisplaySections(newDisplaySections)
         break;
       }
       case 'dropdownelem': {
@@ -1069,9 +1002,7 @@ export default class EditHomepage extends Component {
           ],
         });
 
-        this.setState({
-          displayDropdownElems: newDisplayDropdownElems,
-        });
+        setDisplayDropdownElems(newDisplayDropdownElems)
         break;
       }
       case 'highlight': {
@@ -1107,86 +1038,49 @@ export default class EditHomepage extends Component {
           ],
         });
 
-        this.setState({
-          displayHighlights: newDisplayHighlights,
-        });
+        setDisplayHighlights(newDisplayHighlights)
         break;
       }
       default:
         return;
     }
-    this.setState((currState) => ({
-      ...currState,
-      frontMatter: {
-        ...currState.frontMatter,
-        sections: newSections,
-      },
-      errors: newErrors,
-    }));
+    setFrontMatter({
+      ...frontMatter,
+      sections: newSections
+    })
+    setErrors(newErrors)
   }
 
-  render() {
-    const {
-      frontMatter,
-      originalFrontMatter,
-      hasResources,
-      dropdownIsActive,
-      displaySections,
-      displayHighlights,
-      displayDropdownElems,
-      errors,
-      itemPendingForDelete,
-      sha,
-    } = this.state;
-    const { match } = this.props;
-    const { siteName } = match.params;
+  const isLeftInfoPic = (sectionIndex) => {
+    // If the previous section in the list was not an infopic section
+    // or if the previous section was a right infopic section, return true
+    if (!frontMatter.sections[sectionIndex - 1].infopic
+      || !isLeftInfoPic(sectionIndex - 1)) return true;
 
-    const hasSectionErrors = _.some(errors.sections, (section) => {
-      // Section is an object, e.g. { hero: {} }
-      // _.keys(section) produces an array with length 1
-      // The 0th element of the array contains the sectionType
-      const sectionType = _.keys(section)[0];
-      return _.some(section[sectionType], (errorMessage) => errorMessage.length > 0) === true;
-    });
+    return false;
+  };
 
-    const hasHighlightErrors = _.some(errors.highlights,
-      (highlight) => _.some(highlight,
-        (errorMessage) => errorMessage.length > 0) === true);
-
-    const hasDropdownElemErrors = _.some(errors.dropdownElems,
-      (dropdownElem) => _.some(dropdownElem,
-        (errorMessage) => errorMessage.length > 0) === true);
-
-    const hasErrors = hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors;
-
-    const isLeftInfoPic = (sectionIndex) => {
-      // If the previous section in the list was not an infopic section
-      // or if the previous section was a right infopic section, return true
-      if (!frontMatter.sections[sectionIndex - 1].infopic
-        || !isLeftInfoPic(sectionIndex - 1)) return true;
-
-      return false;
-    };
-
-    return (
-      <>
+  return (
+    <>
         {
           itemPendingForDelete.id
           && (
           <DeleteWarningModal
-            onCancel={() => this.setState({ itemPendingForDelete: { id: null, type: '' } })}
-            onDelete={() => { this.deleteHandler(itemPendingForDelete.id); this.setState({ itemPendingForDelete: { id: null, type: '' } }); }}
+            onCancel={() => setItemPendingForDelete({ id: null, type: '' })}
+            onDelete={() => { deleteHandler(itemPendingForDelete.id); setItemPendingForDelete({ id: null, type: '' })}}
             type={itemPendingForDelete.type}
           />
           )
         }
         <Header
+          siteName={siteName}
           title="Homepage"
           shouldAllowEditPageBackNav={JSON.stringify(originalFrontMatter) === JSON.stringify(frontMatter)}
-          isEditPage="true"
+          isEditPage={true}
           backButtonText="Back to My Workspace"
           backButtonUrl={`/sites/${siteName}/workspace`}
         />
+        {hasLoaded && 
         <div className={elementStyles.wrapper}>
           <div className={editorStyles.homepageEditorSidebar}>
             <div>
@@ -1196,14 +1090,14 @@ export default class EditHomepage extends Component {
                   placeholder="Notification"
                   value={frontMatter.notification}
                   id="site-notification"
-                  onChange={this.onFieldChange} />
+                  onChange={onFieldChange} />
                 <span className={elementStyles.info}>
                   Note: Leave text field empty if you don’t need this notification bar
                 </span>
               </div>
 
               {/* Homepage section configurations */}
-              <DragDropContext onDragEnd={this.onDragEnd}>
+              <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="leftPane" type="editor">
                   {(droppableProvided) => (
                     <div
@@ -1225,17 +1119,17 @@ export default class EditHomepage extends Component {
                                 dropdown={section.hero.dropdown ? section.hero.dropdown : null}
                                 sectionIndex={sectionIndex}
                                 highlights={section.hero.key_highlights ? section.hero.key_highlights : []}
-                                onFieldChange={this.onFieldChange}
-                                createHandler={this.createHandler}
-                                deleteHandler={(event, type) => this.setState({ itemPendingForDelete: { id: event.target.id, type } })}
+                                onFieldChange={onFieldChange}
+                                createHandler={createHandler}
+                                deleteHandler={(event, type) => setItemPendingForDelete({ id: event.target.id, type })}
                                 shouldDisplay={displaySections[sectionIndex]}
                                 displayHighlights={displayHighlights}
                                 displayDropdownElems={displayDropdownElems}
-                                displayHandler={this.displayHandler}
-                                onDragEnd={this.onDragEnd}
+                                displayHandler={displayHandler}
+                                onDragEnd={onDragEnd}
                                 errors={errors}
                                 siteName={siteName}
-                                handleHighlightDropdownToggle={this.handleHighlightDropdownToggle}
+                                handleHighlightDropdownToggle={handleHighlightDropdownToggle}
                               />
                             </>
                           ) : (
@@ -1260,10 +1154,10 @@ export default class EditHomepage extends Component {
                                     subtitle={section.resources.subtitle}
                                     button={section.resources.button}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={(event) => this.setState({ itemPendingForDelete: { id: event.target.id, type: 'Resources Section' } })}
-                                    onFieldChange={this.onFieldChange}
+                                    deleteHandler={(event) => setItemPendingForDelete({ id: event.target.id, type: 'Resources Section' })}
+                                    onFieldChange={onFieldChange}
                                     shouldDisplay={displaySections[sectionIndex]}
-                                    displayHandler={this.displayHandler}
+                                    displayHandler={displayHandler}
                                     errors={errors.sections[sectionIndex].resources}
                                   />
                                 </div>
@@ -1293,10 +1187,10 @@ export default class EditHomepage extends Component {
                                     button={section.infobar.button}
                                     url={section.infobar.url}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={(event) => this.setState({ itemPendingForDelete: { id: event.target.id, type: 'Infobar Section' } })}
-                                    onFieldChange={this.onFieldChange}
+                                    deleteHandler={(event) => setItemPendingForDelete({ id: event.target.id, type: 'Infobar Section' })}
+                                    onFieldChange={onFieldChange}
                                     shouldDisplay={displaySections[sectionIndex]}
-                                    displayHandler={this.displayHandler}
+                                    displayHandler={displayHandler}
                                     errors={errors.sections[sectionIndex].infobar}
                                   />
                                 </div>
@@ -1328,10 +1222,10 @@ export default class EditHomepage extends Component {
                                     imageUrl={section.infopic.image}
                                     imageAlt={section.infopic.alt}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={(event) => this.setState({ itemPendingForDelete: { id: event.target.id, type: 'Infopic Section' } })}
-                                    onFieldChange={this.onFieldChange}
+                                    deleteHandler={(event) => setItemPendingForDelete({ id: event.target.id, type: 'Infopic Section' })}
+                                    onFieldChange={onFieldChange}
                                     shouldDisplay={displaySections[sectionIndex]}
-                                    displayHandler={this.displayHandler}
+                                    displayHandler={displayHandler}
                                     errors={errors.sections[sectionIndex].infopic}
                                     siteName={siteName}
                                   />
@@ -1356,7 +1250,7 @@ export default class EditHomepage extends Component {
               {/* Section creator */}
               <NewSectionCreator
                 hasResources={hasResources}
-                createHandler={this.createHandler}
+                createHandler={createHandler}
               />
             </div>
           </div>
@@ -1385,35 +1279,37 @@ export default class EditHomepage extends Component {
                 {/* Hero section */}
                 {section.hero
                   ? (
-                    <div ref={(ref) => { this.scrollRefs[sectionIndex] = ref; }}>
+                    <>
                       <TemplateHeroSection
                         key={`section-${sectionIndex}`}
                         hero={section.hero}
                         siteName={siteName}
                         dropdownIsActive={dropdownIsActive}
-                        toggleDropdown={this.toggleDropdown}
+                        toggleDropdown={toggleDropdown}
+                        ref={scrollRefs[sectionIndex]}
                       />
-                    </div>
+                    </>
                   )
                   : null}
                 {/* Resources section */}
                 {section.resources
                   ? (
-                    <div ref={(ref) => { this.scrollRefs[sectionIndex] = ref; }}>
+                    <>
                       <TemplateResourcesSection
                         key={`section-${sectionIndex}`}
                         title={section.resources.title}
                         subtitle={section.resources.subtitle}
                         button={section.resources.button}
                         sectionIndex={sectionIndex}
+                        ref={scrollRefs[sectionIndex]}
                       />
-                    </div>
+                    </>
                   )
                   : null}
                 {/* Infobar section */}
                 {section.infobar
                   ? (
-                    <div ref={(ref) => { this.scrollRefs[sectionIndex] = ref; }}>
+                    <>
                       <TemplateInfobarSection
                         key={`section-${sectionIndex}`}
                         title={section.infobar.title}
@@ -1421,14 +1317,15 @@ export default class EditHomepage extends Component {
                         description={section.infobar.description}
                         button={section.infobar.button}
                         sectionIndex={sectionIndex}
+                        ref={scrollRefs[sectionIndex]}
                       />
-                    </div>
+                    </>
                   )
                   : null}
                 {/* Infopic section */}
                 {section.infopic
                   ? (
-                    <div ref={(ref) => { this.scrollRefs[sectionIndex] = ref; }}>
+                      <>
                       { isLeftInfoPic(sectionIndex)
                         ? (
                           <TemplateInfopicLeftSection
@@ -1441,6 +1338,7 @@ export default class EditHomepage extends Component {
                             button={section.infopic.button}
                             sectionIndex={sectionIndex}
                             siteName={siteName}
+                            ref={scrollRefs[sectionIndex]}
                           />
                         )
                         : (
@@ -1454,9 +1352,10 @@ export default class EditHomepage extends Component {
                             button={section.infopic.button}
                             sectionIndex={sectionIndex}
                             siteName={siteName}
+                            ref={scrollRefs[sectionIndex]}
                           />
                         )}
-                    </div>
+                      </>
                   )
                   : null}
               </>
@@ -1468,14 +1367,15 @@ export default class EditHomepage extends Component {
               disabled={hasErrors}
               disabledStyle={elementStyles.disabled}
               className={(hasErrors || !sha) ? elementStyles.disabled : elementStyles.blue}
-              callback={this.savePage}
+              callback={savePage}
             />
           </div>
-        </div>
+        </div>}
       </>
-    );
-  }
+  )
 }
+
+export default EditHomepage
 
 EditHomepage.propTypes = {
   match: PropTypes.shape({

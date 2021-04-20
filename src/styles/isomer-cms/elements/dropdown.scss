@@ -1,12 +1,14 @@
 .dropdown {
   position: absolute;
-  width: 20rem;
+  width: 14rem;
+  overflow: hidden;
   background: white;
   box-shadow: 2px 2px 12px 0 rgba(43, 95, 206, 0.1);
   border-radius: 5px;
   z-index: 2;
   color: black;
   white-space: nowrap;
+  right: 0rem;
 
   &:focus {
     outline: none;
@@ -14,8 +16,8 @@
 
   .dropdownItem {
     width: 100%;
-    height: 3.5rem;
-    padding: 0.75rem 2rem 0.75rem 2rem;
+    height: 3rem;
+    padding: 0.75rem 0.25rem 0.75rem 1.5rem;
     display:flex;
     align-items: center;
 
@@ -31,17 +33,6 @@
     }
   }
 
-  .dropdownItemWarning {
-    @extend .dropdownItem;
-    height: auto;
-    cursor: default;
-    white-space: normal;
-
-    &:hover {
-      background: white;
-    }
-  }
-
   hr {
     margin: 0;
   }
@@ -51,13 +42,66 @@
     vertical-align: middle;
     line-height:inherit;
   }
-
-  button {
-    padding: 0.5rem;
-    margin-left: 0.5rem;
-  }
 }
 
-.right {
-  right: 0rem;
+.fileMoveDropdown {
+  @extend .dropdown;
+  width: 20rem;
+  height: 20.25rem;
+  overflow: hidden;
+
+  .dropdownHeader {
+    @extend .dropdownItem;
+    top: 0;
+    position: sticky;
+    background: $isomer-blue;
+
+    &:hover {
+      background: $isomer-blue;
+    }
+
+    .dropdownText {
+      color: white;
+    }
+  }
+
+  .dropdownFirstItem {
+    @extend .dropdownItem;
+    top: 3rem;
+    position: sticky;
+    background: white;
+    border-bottom: 0.5px solid rgba(43, 95, 206, 0.3);
+
+    &:hover {
+      background: white;
+    }
+  }
+
+  .dropdownContentItems {
+    height: 10.75rem;
+    overflow-y: scroll;
+    text-align: center;
+  }
+
+  .dropdownItemButton {
+    display: none;
+  }
+
+  .dropdownItem:hover .dropdownItemButton {
+    display: block;
+  }
+
+  .dropdownLastItem {
+    @extend .dropdownItem;
+    border-top: 0.5px solid rgba(43, 95, 206, 0.3);
+    bottom: 0;
+    height: 3.5rem;
+    position: sticky;
+    background: white;
+    z-index: 3;
+
+    &:hover {
+      background: white;
+    }
+  }
 }

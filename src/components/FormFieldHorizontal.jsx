@@ -8,6 +8,7 @@ const FormFieldHorizontal = ({
   placeholder,
   value,
   id,
+  disabled,
   errorMessage,
   onFieldChange,
   isRequired,
@@ -15,7 +16,7 @@ const FormFieldHorizontal = ({
 }) => (
   <>
     <div className={elementStyles.formHorizontal}>
-      <p className={elementStyles.formHorizontalLabel}>{`${title}:`}</p>
+      <p className={elementStyles.formHorizontalLabel}>{`${title}`}</p>
       <input
         type="text"
         placeholder={placeholder ? placeholder : title}
@@ -24,12 +25,22 @@ const FormFieldHorizontal = ({
         id={id}
         autoComplete="off"
         required={isRequired}
+        disabled={disabled}
         className={`${elementStyles.formHorizontalInput} ${errorMessage ? `${elementStyles.error}` : null}`}
         style={style}
         onChange={onFieldChange}
       />
     </div>
-    <span className={elementStyles.error}>{errorMessage}</span>
+    {
+      errorMessage 
+      ? (
+        <>
+                <span className={elementStyles.error}>{errorMessage}</span>
+        <br></br>
+        <br></br>
+        </>
+      ) : null
+    }
   </>
 );
 

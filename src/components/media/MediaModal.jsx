@@ -6,32 +6,59 @@ import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 import MediaCard from './MediaCard';
 import MediaUploadCard from './MediaUploadCard';
+import { MediaSearchBar } from './MediaSearchBar';
 import LoadingButton from '../LoadingButton';
 
-export default class MediasModal extends Component {
+export default class MediaModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
       medias: '',
+      filteredMedias: '',
       selectedFile: null,
     };
   }
 
   async componentDidMount() {
-    const { siteName, type } = this.props;
+    const { siteName, type, mediaSearchTerm } = this.props;
     const mediaRoute = type === 'file' ? 'documents' : 'images';
     try {
       const { data: { documents, images } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${mediaRoute}`, {
         withCredentials: true,
       });
       if (_.isEmpty(documents || images)) {
-        this.setState({ medias: [] });
+        this.setState({ medias: [], filteredMedias: [], searchTerm: mediaSearchTerm });
       } else {
-        this.setState({ medias: documents || images });
+        let filteredMedias
+        if (type === 'file') {
+          filteredMedias = this.filterMediaByFileName(documents, mediaSearchTerm)
+        } else {
+          filteredMedias = this.filterMediaByFileName(images, mediaSearchTerm)
+        }
+
+        this.setState({ medias: documents || images, filteredMedias, searchTerm: mediaSearchTerm });
       }
     } catch (err) {
       console.error(err);
     }
+  }
+
+  filterMediaByFileName = (medias, filterTerm) => {
+    const filteredMedias = medias.filter((media) => {
+      if (media.fileName.toLowerCase().includes(filterTerm.toLowerCase())) return true
+      return false
+    })
+
+    return filteredMedias
+  }
+
+  searchChangeHandler = (event) => {
+    const { setMediaSearchTerm } = this.props
+    const { medias } = this.state
+    const { target: { value } } = event
+    const filteredMedias = this.filterMediaByFileName(medias, value)
+    setMediaSearchTerm(value)
+    this.setState({ filteredMedias })
   }
 
   render() {
@@ -41,15 +68,19 @@ export default class MediasModal extends Component {
       onMediaSelect,
       type,
       readFileToStageUpload,
+      mediaSearchTerm,
+      selectedFile,
+      setSelectedFile,
     } = this.props;
-    const { medias, selectedFile } = this.state;
-    return (medias 
+    const { filteredMedias } = this.state;
+    return (filteredMedias
       && (
         <>
           <div className={elementStyles.overlay}>
             <div className={mediaStyles.mediaModal}>
               <div className={elementStyles.modalHeader}>
-                <h1 className="pl-5" style={{ flexGrow: 1 }}>{`Select ${type === 'file' ? 'File' : 'Image'}`}</h1>
+                <h1 className="pl-5 mr-auto">{`Select ${type === 'file' ? 'File' : 'Image'}`}</h1>
+                <MediaSearchBar value={mediaSearchTerm} onSearchChange={this.searchChangeHandler} />
                 <button type="button" onClick={onClose}>
                   <i className="bx bx-x" />
                 </button>
@@ -69,16 +100,16 @@ export default class MediasModal extends Component {
                   type="file"
                   id="file-upload"
                   accept={type === 'file' ? `application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
-                  text/plain, application/pdf` : 'image*'}
+                  text/plain, application/pdf` : 'image/*'}
                   hidden
                 />
                 {/* Render medias */}
-                {medias.map((media) => (
+                {filteredMedias.map((media) => (
                   <MediaCard
                     type={type}
                     media={media}
                     siteName={siteName}
-                    onClick={() => this.setState({ selectedFile: media })}
+                    onClick={() => setSelectedFile(media)}
                     key={media.path}
                     isSelected={media.path === selectedFile?.path}
                   />
@@ -107,9 +138,10 @@ export default class MediasModal extends Component {
   }
 }
 
-MediasModal.propTypes = {
+MediaModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   siteName: PropTypes.string.isRequired,
   onMediaSelect: PropTypes.func.isRequired,
   type: PropTypes.oneOf(['file', 'image']).isRequired,
+  setMediaSearchTerm: PropTypes.func.isRequired,
 };
