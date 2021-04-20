@@ -150,7 +150,7 @@ function App() {
                     <ProtectedRouteWithProps exact path="/sites/:siteName/navbar" component={EditNavBar} />
                     <ProtectedRouteWithProps path="/sites/:siteName/files/:fileName" component={EditFile} />
                     <ProtectedRouteWithProps path="/sites/:siteName/files" component={Files} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/images/:customPath" component={Images} />
+                    <ProtectedRouteWithProps path="/sites/:siteName/images/:fileName" component={EditImage} />
                     <ProtectedRouteWithProps path="/sites/:siteName/images" component={Images} />
                     <ProtectedRouteWithProps path="/sites/:siteName/pages/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={false} />
                     <ProtectedRouteWithProps path="/sites/:siteName/workspace" component={Workspace} />

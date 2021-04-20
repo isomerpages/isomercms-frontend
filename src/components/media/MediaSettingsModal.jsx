@@ -15,11 +15,6 @@ import { errorToast } from '../../utils/toasts';
 import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 
-const generateImageorFilePath = (customPath, fileName) => {
-  if (customPath) return encodeURIComponent(`${customPath}/${fileName}`)
-  return fileName
-}
-
 export default class MediaSettingsModal extends Component {
   constructor(props) {
     super(props);
@@ -34,7 +29,7 @@ export default class MediaSettingsModal extends Component {
 
   async componentDidMount() {
     const {
-      siteName, customPath, media, isPendingUpload, type,
+      siteName, media, isPendingUpload, type,
     } = this.props;
     const { fileName } = media;
 
@@ -44,16 +39,9 @@ export default class MediaSettingsModal extends Component {
       return;
     }
 
-    let sha, content
-    try {
-      const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${generateImageorFilePath(customPath, fileName)}`, {
-        withCredentials: true,
-      });
-      sha = data.sha
-      content = data.content
-    } catch (err) {
-      errorToast(`We were unable to retrieve data on your image file. ${DEFAULT_RETRY_MSG}`)
-    }
+    const { data: { sha, content } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${fileName}`, {
+      withCredentials: true,
+    });
     this.setState({ sha, content });
   }
 
@@ -64,7 +52,6 @@ export default class MediaSettingsModal extends Component {
   saveFile = async () => {
     const {
       siteName,
-      customPath,
       media: { fileName },
       isPendingUpload,
       type,
@@ -80,7 +67,6 @@ export default class MediaSettingsModal extends Component {
 
         if (type === 'image') {
           params.imageName = newFileName;
-          params.imageDirectory = `images${customPath ? `/${customPath}` : ''}`;
         } else {
           params.documentName = newFileName;
         }
@@ -98,7 +84,7 @@ export default class MediaSettingsModal extends Component {
         if (newFileName === fileName) {
           return;
         }
-        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${generateImageorFilePath(customPath, fileName)}/rename/${generateImageorFilePath(customPath, newFileName)}`, params, {
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${fileName}/rename/${newFileName}`, params, {
           withCredentials: true,
         });
       }
