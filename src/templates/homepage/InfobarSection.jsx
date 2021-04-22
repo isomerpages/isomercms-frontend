@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 /* eslint
   react/no-array-index-key: 0
-  jsx-a11y/anchor-is-valid: 0
  */
 
 const TemplateInfobarSection = ({
