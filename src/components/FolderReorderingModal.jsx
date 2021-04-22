@@ -37,7 +37,6 @@ const FolderReorderingModal = ({
 }) => {
   const [folderOrder, setFolderOrder] = useState(folderOrderArray)
 
-  console.log('here', folderName, subfolderName);
   const onDragEnd = (result) => {
     const { source, destination } = result;
 
@@ -95,7 +94,6 @@ const FolderReorderingModal = ({
     await rearrangeFolder(payload) // setIsRearrangeActive(false) handled by mutate
   }
   
-  
   return (
     <>
       <div className={elementStyles.overlay}>
@@ -117,12 +115,12 @@ const FolderReorderingModal = ({
             <br/>
             <div className={contentStyles.segment}>
               <span>
-                  Workspace > 
-                  {
-                    subfolderName
-                    ? deslugifyDirectory(folderName) > <strong>{deslugifyDirectory(subfolderName)}</strong>
-                    : <strong>{deslugifyDirectory(folderName)}</strong>
-                  }
+                Workspace > 
+                {
+                  subfolderName  
+                    ? <> {deslugifyDirectory(folderName)} <strong> > {deslugifyDirectory(subfolderName)}</strong> </>
+                    : <strong> {deslugifyDirectory(folderName)}</strong>
+                }
               </span>
             </div>
             {/* Pages */}
