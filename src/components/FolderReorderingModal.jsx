@@ -169,6 +169,12 @@ const FolderReorderingModal = ({
           </div>
           <div className={contentStyles.sectionFooter}>
             <LoadingButton
+              label={`Cancel`}
+              disabledStyle={elementStyles.disabled}
+              className={`${elementStyles.warning}`}
+              callback={() => setIsRearrangeActive(false)}
+            />
+            <LoadingButton
               label={`Done`}
               className={elementStyles.blue}
               callback={saveHandler}
