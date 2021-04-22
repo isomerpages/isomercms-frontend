@@ -8,6 +8,7 @@ const iconSelection = {
     'rearrange': 'bx-sort',
     'create-page': 'bx-file-blank',
     'create-sub': 'bx-folder',
+    'upload-image': 'bx-plus-circle',
 }
 
 

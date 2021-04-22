@@ -25,6 +25,7 @@ const FolderCard = ({
   siteName,
   category,
   selectedIndex,
+  linkPath,
   onClick,
   existingFolders,
 }) => {
@@ -49,6 +50,8 @@ const FolderCard = ({
         return `/sites/${siteName}/contact-us`
       case 'nav':
         return `/sites/${siteName}/navbar`
+      case 'media':
+        return `/sites/${siteName}/${linkPath}`
       default:
         return ''
     }
@@ -172,6 +175,8 @@ FolderCard.propTypes = {
   itemIndex: PropTypes.number,
   pageType: PropTypes.string.isRequired,
   siteName: PropTypes.string.isRequired,
+  category: PropTypes.string,
+  linkPath: PropTypes.string,
 };
 
 export default FolderCard;
