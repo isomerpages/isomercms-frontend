@@ -153,10 +153,9 @@ const FolderReorderingModal = ({
                             >        
                               <FolderContentItem
                                 key={folderContentItem.fileName}
-                                title={folderContentItem.fileName}
-                                isFile={folderContentItem.type === 'dir' ? false: true}
-                                numItems={folderContentItem.type === 'dir' ? folderContentItem.children.filter(name => !name.includes('.keep')).length : null}
+                                folderContentItem={folderContentItem}
                                 itemIndex={folderContentIndex}
+                                disableButton={true}
                               />
                             </div>
                           )}
