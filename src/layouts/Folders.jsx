@@ -10,7 +10,8 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import FolderCreationModal from '../components/FolderCreationModal'
 import FolderOptionButton from '../components/folders/FolderOptionButton';
-import FolderContent from '../components/folders/FolderContent';
+import FolderReorderingModal from '../components/FolderReorderingModal';
+import { FolderContent } from '../components/folders/FolderContent';
 import FolderModal from '../components/FolderModal';
 import PageSettingsModal from '../components/PageSettingsModal'
 import DeleteWarningModal from '../components/DeleteWarningModal'
@@ -27,16 +28,13 @@ import {
 import {
   DEFAULT_RETRY_MSG,
   parseDirectoryFile,
-  updateDirectoryFile,
   convertFolderOrderToArray,
-  convertArrayToFolderOrder,
   retrieveSubfolderContents,
-  convertSubfolderArray,
   deslugifyDirectory,
 } from '../utils'
 
 // Import API
-import { getDirectoryFile, setDirectoryFile, getEditPageData, deleteSubfolder, deletePageData, moveFile, getAllCategories } from '../api';
+import { getDirectoryFile, getEditPageData, deleteSubfolder, deletePageData, moveFile, getAllCategories } from '../api';
 
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -219,44 +217,6 @@ const Folders = ({ match, location }) => {
       setMoveDropdownQuery({ ...initialMoveDropdownQueryState });
     };
 
-    // REORDERING
-    // save file-reordering
-    const { mutate: rearrangeFolder } = useMutation(
-      payload => setDirectoryFile(siteName, folderName, payload),
-      {
-        onError: () => errorToast(`Your file reordering could not be saved. ${DEFAULT_RETRY_MSG}`),
-        onSuccess: () => successToast('Successfully updated page order'),
-        onSettled: () => setIsRearrangeActive((prevState) => !prevState),
-      }
-    )
-    
-    // REORDERING utils
-    const toggleRearrange = () => { 
-      if (isRearrangeActive) { 
-        // drag and drop complete, save new order 
-        let newFolderOrder
-        if (subfolderName) {
-          newFolderOrder = convertSubfolderArray(folderOrderArray, parsedFolderContents, subfolderName)
-        } else {
-          newFolderOrder = convertArrayToFolderOrder(folderOrderArray)
-        }
-        if (JSON.stringify(newFolderOrder) === JSON.stringify(parsedFolderContents)) { 
-          // no change in file order
-          setIsRearrangeActive((prevState) => !prevState)
-          return
-        }
-        const updatedDirectoryFile = updateDirectoryFile(folderName, parsedFolderOutput, newFolderOrder)
-
-        const payload = {
-          content: updatedDirectoryFile,
-          sha: directoryFileSha,
-        } 
-        rearrangeFolder(payload) // setIsRearrangeActive(false) handled by mutate
-      } else {
-        setIsRearrangeActive((prevState) => !prevState) 
-      }
-    }
-
     return (
         <>
           {
@@ -324,6 +284,21 @@ const Folders = ({ match, location }) => {
               />
             )
           }
+          {
+            isRearrangeActive
+            && (
+              <FolderReorderingModal
+                siteName={siteName}
+                folderName={folderName}
+                subfolderName={subfolderName}
+                folderOrderArray={folderOrderArray}
+                setIsRearrangeActive={setIsRearrangeActive}
+                directoryFileSha={directoryFileSha}
+                parsedFolderContents={parsedFolderContents}
+                parsedFolderOutput={parsedFolderOutput}
+              />
+            )
+          }
           <Header
             siteName={siteName}
             backButtonText={`Back to ${subfolderName ? folderName : 'Workspace'}`}
@@ -373,7 +348,7 @@ const Folders = ({ match, location }) => {
               </div>
               {/* Options */}
               <div className={contentStyles.contentContainerFolderRowMargin}>
-                <FolderOptionButton title="Rearrange items" isSelected={isRearrangeActive} onClick={toggleRearrange} option="rearrange" isDisabled={folderOrderArray.length <= 1 || !folderContents}/>
+                <FolderOptionButton title="Rearrange items" isSelected={isRearrangeActive} onClick={() => setIsRearrangeActive(true)} option="rearrange" isDisabled={folderOrderArray.length <= 1 || !folderContents}/>
                 <FolderOptionButton title="Create new page" option="create-page" id="pageSettings-new" onClick={() => setIsPageSettingsActive((prevState) => !prevState)}/>
                 <FolderOptionButton title="Create new subfolder" option="create-sub" isDisabled={subfolderName || isLoadingDirectory ? true : false} onClick={() => setIsFolderCreationActive(true)}/>
               </div>
@@ -393,7 +368,6 @@ const Folders = ({ match, location }) => {
                     allCategories={getCategories(moveDropdownQuery, allFolders, querySubfolders)}
                     siteName={siteName} 
                     folderName={folderName}
-                    enableDragDrop={isRearrangeActive}
                     setIsPageSettingsActive={setIsPageSettingsActive}
                     setIsFolderModalOpen={setIsFolderModalOpen}
                     setIsDeleteModalActive={setIsDeleteModalActive}

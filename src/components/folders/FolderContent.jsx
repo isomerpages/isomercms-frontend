@@ -1,8 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Droppable, Draggable } from 'react-beautiful-dnd';
-import { DragDropContext } from 'react-beautiful-dnd';
-import update from 'immutability-helper';
 import PropTypes from 'prop-types';
 
 import { deslugifyPage } from '../../utils'
@@ -153,7 +150,6 @@ const FolderContent = ({
     setFolderOrderArray,
     siteName,
     folderName,
-    enableDragDrop,
     allCategories,
     setSelectedPath,
     setSelectedPage,
@@ -170,90 +166,37 @@ const FolderContent = ({
         return `/sites/${siteName}/folder/${folderName}/${folderContentItem.path.includes('/') ? `subfolder/` : ''}${folderContentItem.path}`
     }
 
-    const onDragEnd = (result) => {
-        const { source, destination } = result;
-
-        // If the user dropped the draggable to no known droppable
-        if (!destination) return;
-
-        // The draggable elem was returned to its original position
-        if (
-            destination.droppableId === source.droppableId
-            && destination.index === source.index
-        ) return;
-
-        const elem = folderOrderArray[source.index]
-        const newFolderOrderArray = update(folderOrderArray, {
-            $splice: [
-                [source.index, 1], // Remove elem from its original position
-                [destination.index, 0, elem], // Splice elem into its new position
-            ],
-        });
-        setFolderOrderArray(newFolderOrderArray)
-    }
-
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable 
-                droppableId="folder" 
-                type="folder" 
-                isDropDisabled={!enableDragDrop}
-            >
-                {(droppableProvided) => (        
-                    <div 
-                        className={`${contentStyles.contentContainerFolderColumn} mb-5`}
-                        ref={droppableProvided.innerRef}
-                        {...droppableProvided.droppableProps}
-                    >
-                        {
-                            folderOrderArray.map((folderContentItem, folderContentIndex) => (
-                                <Draggable
-                                    draggableId={`folder-${folderContentIndex}-draggable`}
-                                    index={folderContentIndex}
-                                    isDragDisabled={!enableDragDrop}
-                                    key={folderContentItem.fileName}
-                                >
-                                    {(draggableProvided) => (
-                                        <div
-                                            key={folderContentIndex}
-                                            {...draggableProvided.draggableProps}
-                                            {...draggableProvided.dragHandleProps}
-                                            ref={draggableProvided.innerRef}
-                                        >        
-                                            <FolderContentItem
-                                                key={folderContentItem.fileName}
-                                                siteName={siteName}
-                                                title={folderContentItem.fileName}
-                                                folderName={folderName}
-                                                numItems={folderContentItem.type === 'dir' ? folderContentItem.children.filter(name => !name.includes('.keep')).length : null}
-                                                isFile={folderContentItem.type === 'dir' ? false: true}
-                                                link={generateLink(folderContentItem)}
-                                                allCategories={allCategories}
-                                                itemIndex={folderContentIndex}
-                                                setSelectedPage={setSelectedPage}
-                                                setSelectedPath={setSelectedPath}
-                                                setIsPageSettingsActive={setIsPageSettingsActive}
-                                                setIsFolderModalOpen={setIsFolderModalOpen}
-                                                setIsMoveModalActive={setIsMoveModalActive}
-                                                setIsDeleteModalActive={setIsDeleteModalActive}
-                                                moveDropdownQuery={moveDropdownQuery}
-                                                setMoveDropdownQuery={setMoveDropdownQuery}
-                                                clearMoveDropdownQueryState={clearMoveDropdownQueryState}
-                                            />
-                                        </div>
-                                    )}
-                                </Draggable>
-                            ))
-                        }
-                        {droppableProvided.placeholder}
-                    </div>
-                )}
-            </Droppable>
-        </DragDropContext>
+        <div className={`${contentStyles.contentContainerFolderColumn} mb-5`}>
+            {
+                folderOrderArray.map((folderContentItem, folderContentIndex) => (
+                    <FolderContentItem
+                        key={folderContentItem.fileName}
+                        siteName={siteName}
+                        title={folderContentItem.fileName}
+                        folderName={folderName}
+                        numItems={folderContentItem.type === 'dir' ? folderContentItem.children.filter(name => !name.includes('.keep')).length : null}
+                        isFile={folderContentItem.type === 'dir' ? false: true}
+                        link={generateLink(folderContentItem)}
+                        allCategories={allCategories}
+                        itemIndex={folderContentIndex}
+                        setSelectedPage={setSelectedPage}
+                        setSelectedPath={setSelectedPath}
+                        setIsPageSettingsActive={setIsPageSettingsActive}
+                        setIsFolderModalOpen={setIsFolderModalOpen}
+                        setIsMoveModalActive={setIsMoveModalActive}
+                        setIsDeleteModalActive={setIsDeleteModalActive}
+                        moveDropdownQuery={moveDropdownQuery}
+                        setMoveDropdownQuery={setMoveDropdownQuery}
+                        clearMoveDropdownQueryState={clearMoveDropdownQueryState}
+                    />
+                ))
+            }
+        </div>
     )
 }
 
-export default FolderContent
+export { FolderContent, FolderContentItem }
 
 FolderContentItem.propTypes = {
     title: PropTypes.string.isRequired,
@@ -291,7 +234,6 @@ FolderContent.propTypes = {
     setFolderOrderArray: PropTypes.func.isRequired,
     siteName: PropTypes.string.isRequired,
     folderName: PropTypes.string.isRequired,
-    enableDragDrop: PropTypes.func.isRequired,
     allCategories: PropTypes.arrayOf(
         PropTypes.string.isRequired
     ),
