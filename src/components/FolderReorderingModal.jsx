@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { useMutation } from 'react-query';
@@ -180,3 +181,21 @@ const FolderReorderingModal = ({
 }
 
 export default FolderReorderingModal
+
+FolderReorderingModal.propTypes = {
+  siteName: PropTypes.string.isRequired,
+  folderName: PropTypes.string.isRequired,
+  subfolderName: PropTypes.string,
+  folderOrderArray: PropTypes.arrayOf(
+    PropTypes.shape({
+      fileName: PropTypes.string.isRequired,
+      path: PropTypes.string.isRequired,
+      sha: PropTypes.string,
+      type: PropTypes.string,
+    }),
+  ).isRequired,
+  setIsRearrangeActive: PropTypes.func.isRequired,
+  directoryFileSha: PropTypes.string.isRequired,
+  parsedFolderContents: PropTypes.arrayOf(PropTypes.string).isRequired,
+  parsedFolderOutput: PropTypes.bool.isRequired,
+};
