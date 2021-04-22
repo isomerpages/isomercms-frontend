@@ -58,6 +58,7 @@ const Folders = ({ match, location }) => {
     const [directoryFileSha, setDirectoryFileSha] = useState('')
     const [folderOrderArray, setFolderOrderArray] = useState([])
     const [parsedFolderContents, setParsedFolderContents] = useState([])
+    const [parsedFolderOutput, setParsedFolderOutput] = useState(true)
     const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
     const [isDeleteModalActive, setIsDeleteModalActive] = useState(false)
     const [isMoveModalActive, setIsMoveModalActive] = useState(false)
@@ -91,9 +92,10 @@ const Folders = ({ match, location }) => {
     // parse contents of current folder directory
     useEffect(() => {
       if (folderContents && folderContents.data) {
-        const parsedFolderContents = parseDirectoryFile(folderContents.data.content)
+        const { order: parsedFolderContents, output: parsedFolderOutput } = parseDirectoryFile(folderContents.data.content)
         setDirectoryFileSha(folderContents.data.sha)
         setParsedFolderContents(parsedFolderContents)
+        setParsedFolderOutput(parsedFolderOutput)
 
         if (subfolderName) {
           const subfolderFiles = retrieveSubfolderContents(parsedFolderContents, subfolderName)
@@ -202,7 +204,7 @@ const Folders = ({ match, location }) => {
         return []
       }
       if (folderName !== '' && querySubfolders) { // inside folder, show all subfolders
-        const parsedFolderContents = parseDirectoryFile(querySubfolders.data.content)
+        const { order: parsedFolderContents } = parseDirectoryFile(querySubfolders.data.content)
         const parsedFolderArray = convertFolderOrderToArray(parsedFolderContents)
         return parsedFolderArray.filter(file => file.type === 'dir').map(file => file.fileName)
       }
@@ -243,7 +245,7 @@ const Folders = ({ match, location }) => {
           setIsRearrangeActive((prevState) => !prevState)
           return
         }
-        const updatedDirectoryFile = updateDirectoryFile(folderContents.data.content, newFolderOrder)
+        const updatedDirectoryFile = updateDirectoryFile(folderName, parsedFolderOutput, newFolderOrder)
 
         const payload = {
           content: updatedDirectoryFile,
