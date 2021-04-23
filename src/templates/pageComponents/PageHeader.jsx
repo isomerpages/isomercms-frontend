@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Breadcrumb from './Breadcrumb';
 
 const PageHeader = ({ title, date, collection, resourceRoomName }) => (
-  <section className="bp-section is-small bp-section-pagetitle">
+  <section className={`bp-section ${resourceRoomName ? 'bg-secondary' : 'is-small bp-section-pagetitle'}`}>
     <div className="bp-container page-header-container">
     <div className="row">
         <div className="col">
