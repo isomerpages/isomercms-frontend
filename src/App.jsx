@@ -12,7 +12,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // Layouts
-import AuthCallback from './layouts/AuthCallback'
 import Home from './layouts/Home';
 import Sites from './layouts/Sites';
 import Workspace from './layouts/Workspace';
@@ -36,16 +35,13 @@ import FallbackComponent from './components/FallbackComponent'
 import elementStyles from './styles/isomer-cms/Elements.module.scss';
 
 // Import contexts
-const { LoginContext } = require('./contexts/LoginContext');
+const { LoginProvider } = require('./contexts/LoginContext');
 
 // axios settings
 axios.defaults.withCredentials = true
 
 // Constants
-const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
-const LOCAL_STORAGE_AUTH_STATE = 'isomercms_auth'
 const LOCAL_STORAGE_SITE_COLORS = 'isomercms_colors'
-const userIdKey = "userId"
 
 const ToastCloseButton = ({ closeToast }) => (
   <span style={{
@@ -63,61 +59,9 @@ const ToastCloseButton = ({ closeToast }) => (
 const queryClient = new QueryClient();
 
 function App() {
-  // Keep track of whether user is logged in
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    const authState = localStorage.getItem(LOCAL_STORAGE_AUTH_STATE)
-    if (authState) return true
-    return false
-  })
-  const [shouldBlockNavigation, setShouldBlockNavigation] = useState(false)
-
-  axios.interceptors.response.use(
-    function (response) {
-      return response
-    },
-    async function (error) {
-      if (error.response && error.response.status === 401) {
-        if (isLoggedIn && !shouldBlockNavigation) {
-          setShouldBlockNavigation(true)
-          console.log('User token has expired or does not exist')
-        }
-      } else {
-        console.log('An unknown error occurred: ')
-        console.error(error)
-      }
-      return Promise.reject(error)
-    }
-  )
-
-  const setLogin = () => {
-    if (!isLoggedIn) setIsLoggedIn(true)
-    localStorage.setItem(LOCAL_STORAGE_AUTH_STATE, true)
-  }
-
-  const setLogoutState = () => {
-    localStorage.removeItem(LOCAL_STORAGE_AUTH_STATE)
-    if (isLoggedIn && shouldBlockNavigation) {
-      setIsLoggedIn(false)
-      setShouldBlockNavigation(false)
-    }
-  }
-
   useEffect(() => {
     localStorage.removeItem(LOCAL_STORAGE_SITE_COLORS)
   }, [])
-
-  useEffect(() => {
-    if (isLoggedIn && shouldBlockNavigation) {
-      alert('Warning: your token has expired. Isomer will log you out now.')
-      const logout = async () =>  {
-        console.log('Logging out...')
-        localStorage.removeItem(userIdKey)
-        await axios.get(`${BACKEND_URL}/auth/logout`)
-        setLogoutState()
-      }
-      logout()
-    }
-  }, [shouldBlockNavigation])
 
   const ProtectedRouteWithProps = (props) => {
     return (
@@ -139,10 +83,9 @@ function App() {
               you have multiple routes, but you want only one
               of them to render at a time
             */}
-              <LoginContext.Provider value={{isLoggedIn, setLogin, setLogoutState}}>
+              <LoginProvider>
                 <Switch>
-                    <ProtectedRouteWithProps exact path='/auth' component={AuthCallback} />
-                    <ProtectedRouteWithProps exact path="/" component={Home} />
+                    <Route exact path="/" component={Home} />
                     <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
                     <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
                     <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName" component={Folders} />
@@ -163,11 +106,8 @@ function App() {
                     <ProtectedRouteWithProps path="/sites/:siteName/settings" component={Settings} />
                     <ProtectedRouteWithProps exact path="/sites" component={Sites} />
                     <ProtectedRouteWithProps path="/" component={NotFoundPage}/>
-                    <Route>
-                      <Redirect to={ isLoggedIn ? '/sites' : '/' } />
-                    </Route>
                 </Switch>
-              </LoginContext.Provider>
+              </LoginProvider>
           </div>
         </QueryClientProvider>
     </Router>

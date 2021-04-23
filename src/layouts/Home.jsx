@@ -1,12 +1,20 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom'
 import uuid from 'uuid';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
 const UUID = uuid.v4();
 
+// Import contexts
+const { useLoginContext } = require('../contexts/LoginContext')
+
 export default function Home() {
+  const { userId } = useLoginContext()
+
   return (
-    <>
+    userId ? (
+      <Redirect to="/sites" />
+    ) : (
       <div className={elementStyles.loginDiv}>
         <div>
           <img className={elementStyles.loginImage} src={`${process.env.PUBLIC_URL}/img/logo.svg`} alt="Isomer CMS logo" />
@@ -21,6 +29,6 @@ export default function Home() {
           </button>
         </div>
       </div>
-    </>
+    )
   );
 }
