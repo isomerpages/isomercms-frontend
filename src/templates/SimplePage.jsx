@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import PageHeader from './pageComponents/PageHeader';
 
 // This following template was taken from the 'Simple Page'
-const SimplePage = ({ chunk, title, date, collection, resourceRoomName }) => (
+const SimplePage = ({ chunk, title, date, collection, isResourcePage, resourceRoomName }) => (
   <div>
-    <PageHeader title={title} date={date} collection={collection} resourceRoomName={resourceRoomName}/>
+    <PageHeader title={title} date={date} collection={collection} resourceRoomName={resourceRoomName} isResourcePage={isResourcePage}/>
     <section className="bp-section">
       <div className="bp-container content padding--top--lg padding--bottom--xl">
         <div className="row">
