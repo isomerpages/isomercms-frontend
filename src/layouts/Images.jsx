@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import FolderCard from '../components/FolderCard'
 import FolderOptionButton from '../components/folders/FolderOptionButton'
+import FolderNamingModal from '../components/FolderNamingModal'
 import MediaCard from '../components/media/MediaCard';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
-import { getImages } from '../api';
+import { createMediaSubfolder, getImages } from '../api';
 
 import useRedirectHook from '../hooks/useRedirectHook';
 
-import { deslugifyDirectory } from '../utils';
+import { DEFAULT_RETRY_MSG, deslugifyDirectory, slugifyCategory } from '../utils';
+import { validateCategoryName } from '../utils/validators'
 import { errorToast } from '../utils/toasts';
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -58,8 +60,12 @@ const getPrevDirectoryName = (customPath) => {
 const Images = ({ match: { params: { siteName, customPath } }, location }) => {
   const [images, setImages] = useState([])
   const [directories, setDirectories] = useState([])
+  const [directoryNames, setDirectoryNames] = useState([])
   const [pendingImageUpload, setPendingImageUpload] = useState(null)
   const [chosenImage, setChosenImage] = useState('')
+  const [newFolderName, setNewFolderName] = useState('')
+  const [errors, setErrors] = useState('')
+  const [isCreateModalActive, setIsCreateModalActive] = useState(false)
   const { setRedirectToNotFound } = useRedirectHook()
 
   const { data: imageData, refetch } = useQuery(
@@ -77,6 +83,21 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
     },
   )
 
+  // create folder
+  const { mutateAsync: createHandler } = useMutation(
+    () => createMediaSubfolder(siteName, 'images', `${customPath ? `${customPath}/` : ''}${slugifyCategory(newFolderName)}`),
+    {
+      onError: () => errorToast(`Your subfolder could not be created successfully. ${DEFAULT_RETRY_MSG}`),
+      onSuccess: () => {
+        window.location.reload()
+      },
+      onSettled: () => {
+        setIsCreateModalActive((prevState) => !prevState)
+      },
+    }
+  )
+  
+
   useEffect(() => {
     let _isMounted = true
 
@@ -89,6 +110,7 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
       if (_isMounted) {
         setImages(respImages)
         setDirectories(respDirectories)
+        setDirectoryNames(respDirectories.map(directory => directory.name))
       }
     }
 
@@ -130,8 +152,32 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
     imgReader.readAsDataURL(event.target.files[0]);
   }
 
+  const folderNameChangeHandler = (event) => {
+    const { value } = event.target;
+    let errorMessage = validateCategoryName(value, 'image', directoryNames)
+    setNewFolderName(value)
+    setErrors(errorMessage)
+  }
+
   return (
     <>
+      {
+        isCreateModalActive &&
+        <div className={elementStyles.overlay}>
+          <FolderNamingModal 
+            onClose={() => {
+              setNewFolderName('')
+              setIsCreateModalActive(false)
+            }}
+            onProceed={createHandler}
+            folderNameChangeHandler={folderNameChangeHandler}
+            title={newFolderName}
+            errors={errors}
+            folderType={'image directory'}
+            proceedText='Create'
+          />
+        </div>
+      }
       <Header
         siteName={siteName}
         backButtonText={`Back to ${customPath ? getPrevDirectoryName(customPath) : 'Sites'}`}
@@ -163,7 +209,7 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
                 title="Create new directory"
                 option="create-sub"
                 isSubfolder={false}
-                onClick={() => console.log('placeholder')}
+                onClick={() => setIsCreateModalActive(true)}
               />
               <input
                 onChange={onImageSelect}
@@ -231,6 +277,9 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
                 {
                   images && images.length > 0
                   ? images.map((image) => (
+                    image.fileName === '.keep' ? 
+                    null
+                    :
                     <MediaCard
                       type="image"
                       media={image}

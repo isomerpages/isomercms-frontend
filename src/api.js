@@ -25,7 +25,7 @@ const getLastUpdated = async (siteName) => {
 }
 
 // EditPage
-const getPageApiEndpoint = ({folderName, subfolderName, fileName, siteName, resourceName, newFileName}) => {
+const getPageApiEndpoint = ({folderName, subfolderName, fileName, siteName, resourceName}) => {
     if (folderName) {
         return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${fileName}`)}`
     }
@@ -246,6 +246,7 @@ const moveFile = async ({selectedFile, siteName, resourceName, folderName, subfo
     return await axios.post(apiEndpoint, params)
 }
 
+// Images
 const getImages = async (siteName, customPath) => {
     const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/files/${customPath ? encodeURIComponent(`images/${customPath}`) : 'images'}`);
     const { directoryContents } = resp.data;
@@ -262,6 +263,11 @@ const getImages = async (siteName, customPath) => {
         respImages,
         respDirectories,
     }
+}
+
+const createMediaSubfolder = async (siteName, mediaType, customPath) => {
+    if (mediaType !== 'images' || !customPath) return
+    return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/media/${mediaType}/${encodeURIComponent(customPath)}`)
 }
 
 export {
@@ -288,4 +294,5 @@ export {
     moveFiles,
     moveFile,
     getImages,
+    createMediaSubfolder
 }
