@@ -28,6 +28,7 @@ const FolderCard = ({
   linkPath,
   onClick,
   existingFolders,
+  mediaCustomPath,
 }) => {
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
   const [canShowDropdown, setCanShowDropdown] = useState(false)
@@ -50,7 +51,7 @@ const FolderCard = ({
         return `/sites/${siteName}/contact-us`
       case 'nav':
         return `/sites/${siteName}/navbar`
-      case 'media':
+      case 'images':
         return `/sites/${siteName}/${linkPath}`
       default:
         return ''
@@ -69,6 +70,17 @@ const FolderCard = ({
         return 'bxs-file-blank'
       default: 
         return 'bxs-folder'
+    }
+  }
+
+  const getFolderType = (pageType) => {
+    switch(pageType) {
+      case 'collection':
+        return 'page'
+      case 'images':
+        return 'images'
+      default:
+        return 'resource'
     }
   }
 
@@ -138,8 +150,9 @@ const FolderCard = ({
           onClose={() => setIsFolderModalOpen(false)}
           folderOrCategoryName={category}
           siteName={siteName}
-          isCollection={pageType === 'collection'}
+          folderType={getFolderType(pageType)}
           existingFolders={existingFolders}
+          mediaCustomPath={mediaCustomPath}
         />
       }
       { canShowDeleteWarningModal &&
@@ -177,6 +190,7 @@ FolderCard.propTypes = {
   siteName: PropTypes.string.isRequired,
   category: PropTypes.string,
   linkPath: PropTypes.string,
+  mediaCustomPath: PropTypes.string,
 };
 
 export default FolderCard;

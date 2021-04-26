@@ -242,7 +242,7 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
                       displayText={deslugifyDirectory(directory.name)}
                       settingsToggle={() => {}}
                       key={directory.name}
-                      pageType={"media"}
+                      pageType={"images"}
                       linkPath={`images/${encodeURIComponent(directory.path
                           .split('/')
                           .slice(1) // remove `images` prefix
@@ -251,6 +251,9 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
                       }
                       siteName={siteName}
                       itemIndex={idx}
+                      category={directory.name}
+                      existingFolders={directoryNames}
+                      mediaCustomPath={customPath}
                     />
                 ))
                 : (

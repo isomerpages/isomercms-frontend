@@ -270,6 +270,13 @@ const createMediaSubfolder = async (siteName, mediaType, customPath) => {
     return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/media/${mediaType}/${encodeURIComponent(customPath)}`)
 }
 
+const renameMediaSubfolder = async ({ siteName, mediaType, customPath, subfolderName, newSubfolderName}) => {
+    const fullCustomPath = encodeURIComponent(`${customPath ? `${customPath}/`:''}${subfolderName}`)
+    const fullNewCustomPath = encodeURIComponent(`${customPath ? `${customPath}/`:''}${newSubfolderName}`)
+    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/media/${mediaType}/${fullCustomPath}/rename/${fullNewCustomPath}`
+    return await axios.post(apiUrl)
+}
+
 export {
     getDirectoryFile,
     setDirectoryFile,
@@ -294,5 +301,6 @@ export {
     moveFiles,
     moveFile,
     getImages,
-    createMediaSubfolder
+    createMediaSubfolder,
+    renameMediaSubfolder,
 }
