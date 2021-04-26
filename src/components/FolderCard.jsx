@@ -1,11 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import axios from 'axios';
+import { useMutation } from 'react-query';
 
 import FolderModal from './FolderModal';
 import DeleteWarningModal from './DeleteWarningModal'
 import { MenuDropdown } from './MenuDropdown'
+
+import {
+  deleteFolder,
+  deleteResourceCategory,
+} from '../api'
+
 
 import { errorToast } from '../utils/toasts';
 
@@ -13,9 +19,6 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 import { DEFAULT_RETRY_MSG } from '../utils'
-
-// axios settings
-axios.defaults.withCredentials = true
 
 const FolderCard = ({
   displayText,
@@ -80,22 +83,36 @@ const FolderCard = ({
       case 'images':
         return 'images'
       default:
-        return 'resource'
+        return 'resources'
     }
   }
 
-  const deleteHandler = async () => {
-    try {
-      const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${pageType === 'collection' ? `/collections/${category}` : `/resources/${category}`}`
-      await axios.delete(apiUrl);
-
-      // Refresh page
-      window.location.reload();
-    } catch (err) {
-      errorToast(`There was a problem trying to delete this folder. ${DEFAULT_RETRY_MSG}`)
-      console.log(err);
+  const selectDeleteApiCall = (pageType, siteName, category) => {
+    if (pageType === 'collection') {
+      const params = {
+        siteName,
+        folderName: category,
+      }
+      return deleteFolder(params)
+    }
+  
+    if (pageType === 'resources') {
+      const params = {
+        siteName,
+        categoryName: category,
+      }
+      return deleteResourceCategory(params)
     }
   }
+
+  // delete folder/resource category
+  const { mutateAsync: deleteDirectory } = useMutation(
+    () => selectDeleteApiCall(pageType, siteName, category),
+    {
+      onError: () => errorToast(`There was a problem trying to delete this folder. ${DEFAULT_RETRY_MSG}`),
+      onSuccess: () => window.location.reload(),
+    },
+  )
 
   const FolderCardContent = () =>
     <div id={itemIndex} className={`${contentStyles.folderInfo}`}>
@@ -158,7 +175,7 @@ const FolderCard = ({
       { canShowDeleteWarningModal &&
         <DeleteWarningModal
           onCancel={() => setCanShowDeleteWarningModal(false)}
-          onDelete={deleteHandler}
+          onDelete={deleteDirectory}
           type="folder"
         />
       }

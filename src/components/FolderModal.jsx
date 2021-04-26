@@ -47,7 +47,7 @@ const selectRenameApiCall = (folderType, siteName, folderOrCategoryName, subfold
     return renameSubfolder(params)
   }
 
-  if (folderType === 'resource') {
+  if (folderType === 'resources') {
     const params = {
       siteName,
       categoryName: folderOrCategoryName,

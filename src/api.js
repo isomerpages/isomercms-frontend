@@ -133,6 +133,11 @@ const renameFolder = async ({ siteName, folderName, newFolderName }) => {
     return await axios.post(apiUrl)
 }
 
+const deleteFolder = async ({ siteName, folderName }) => {
+    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}`
+    return await axios.delete(apiUrl)
+}
+
 const deleteSubfolder = async ({ siteName, folderName, subfolderName }) => {
     const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/folders/${folderName}/subfolder/${subfolderName}`
     return await axios.delete(apiUrl)
@@ -144,6 +149,11 @@ const renameSubfolder = async ({ siteName, folderName, subfolderName, newSubfold
 }
 
 // Resources
+const deleteResourceCategory = async ({ siteName, categoryName}) => {
+    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${categoryName}`
+    return await axios.delete(apiUrl)
+}
+
 const renameResourceCategory = async ({ siteName, categoryName, newCategoryName}) => {
     const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${categoryName}/rename/${newCategoryName}`
     return await axios.post(apiUrl)
@@ -285,9 +295,11 @@ export {
     getCsp,
     updatePageData,
     deletePageData,
+    deleteFolder,
     renameFolder,
     deleteSubfolder,
     renameSubfolder,
+    deleteResourceCategory,
     renameResourceCategory,
     getAllResourceCategories,
     addResourceCategory,
