@@ -154,7 +154,7 @@ const FolderReorderingModal = ({
                                 key={folderContentItem.fileName}
                                 folderContentItem={folderContentItem}
                                 itemIndex={folderContentIndex}
-                                disableButton={true}
+                                disableLink={true}
                               />
                             </div>
                           )}

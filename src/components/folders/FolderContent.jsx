@@ -12,7 +12,7 @@ import contentStyles from '../../styles/isomer-cms/pages/Content.module.scss';
 
 const FolderContentItem = ({
     folderContentItem,
-    disableButton,
+    disableLink,
     siteName,
     folderName,
     itemIndex,
@@ -114,19 +114,20 @@ const FolderContentItem = ({
                     : null
                 }
                 <div className={`position-relative mt-auto mb-auto`}>
-                    <button
-                        className={`${showDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
-                        type="button"
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            e.preventDefault()
-                            if (disableButton) return
-                            setSelectedPage(fileName)
-                            setShowDropdown(true)
-                        }}
-                    >
-                        <i className="bx bx-dots-vertical-rounded" />     
-                    </button>
+                    { !disableLink &&
+                        <button
+                            className={`${showDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                e.preventDefault()
+                                setSelectedPage(fileName)
+                                setShowDropdown(true)
+                            }}
+                        >
+                            <i className="bx bx-dots-vertical-rounded" />
+                        </button>
+                    }
                     { showDropdown &&
                         <MenuDropdown
                             menuIndex={itemIndex}
@@ -158,7 +159,7 @@ const FolderContentItem = ({
     )
 
     return (
-        !showFileMoveDropdown && !showDropdown
+        !showFileMoveDropdown && !showDropdown && !disableLink
         ? 
             <Link className={`${contentStyles.component} ${contentStyles.card}`} to={link}>
                 {FolderItemContent}
@@ -198,7 +199,7 @@ FolderContentItem.propTypes = {
         type: PropTypes.string,
     }).isRequired,
     itemIndex: PropTypes.number.isRequired,
-    disableButton: PropTypes.bool,
+    disableLink: PropTypes.bool,
     allCategories: PropTypes.arrayOf(
         PropTypes.string
     ),
