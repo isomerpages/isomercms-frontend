@@ -139,7 +139,7 @@ const FolderReorderingModal = ({
                     {
                       folderOrder.map((folderContentItem, folderContentIndex) => (
                         <Draggable
-                          draggableId={`folder-${folderContentIndex}-draggable`}
+                          draggableId={folderContentItem.fileName}
                           index={folderContentIndex}
                           key={folderContentItem.fileName}
                         >
