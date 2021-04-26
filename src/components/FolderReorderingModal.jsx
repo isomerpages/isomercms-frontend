@@ -107,7 +107,7 @@ const FolderReorderingModal = ({
             </div>
             <div className={contentStyles.segment}>
               <i className="bx bx-sm bx-bulb text-dark" />
-              <span><strong className="ml-1">Pro tip:</strong> Drag and drop to rearrange pages</span>
+              <span><strong className="ml-1">Pro tip:</strong> Drag and drop the pages below to rearrange the order of pages or sub pages in your site.</span>
             </div>
             {/* Segment divider  */}
             <div className={contentStyles.segmentDividerContainer}>
