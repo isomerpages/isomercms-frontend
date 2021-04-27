@@ -3,23 +3,22 @@ import { Redirect, Route } from 'react-router-dom'
 import axios from 'axios'
 
 // Import contexts
-const { useLoginContext } = require('../contexts/LoginContext')
+const { LoginConsumer } = require('../contexts/LoginContext')
 
 // axios settings
 axios.defaults.withCredentials = true
 
 const ProtectedRoute = ({ children, component: WrappedComponent, ...rest }) => {
-  const { userId } = useLoginContext()
-  console.log(`protected route ${userId} ${window.location.href}`)
-  const renderRoute = (props) => (
-    userId ? (
-      children || WrappedComponent && <WrappedComponent {...props} />
-    ) : (
-      <Redirect to="/" /> 
-    )
+  return (
+    <LoginConsumer>
+      {({userId}) => (
+        userId ? (
+        children || WrappedComponent && <Route {...rest} component={WrappedComponent}/>
+      ) : (
+        <Redirect to="/" /> 
+      ))}
+    </LoginConsumer>
   )
-
-  return <Route {...rest} render={renderRoute} />
 }
 
 export default ProtectedRoute;

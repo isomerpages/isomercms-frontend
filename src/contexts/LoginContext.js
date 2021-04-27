@@ -4,13 +4,13 @@ import axios from 'axios';
 const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 const LOCAL_STORAGE_USER_ID_KEY = "userId"
 
-const LoginContext = createContext(null);
+export const LoginContext = createContext(null);
 
-// Wrapper function to verify that we are calling useLoginContext inside its provider
-export const useLoginContext = () => {
+export const LoginConsumer = ({ children }) => {
   const loginContextData = useContext(LoginContext)
   if (!loginContextData) throw new Error('useLoginContext must be used within an LoginProvider')
-  return loginContextData
+
+  return <LoginContext.Consumer>{children}</LoginContext.Consumer>
 }
 
 export const LoginProvider = ({ children }) => {

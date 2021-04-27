@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom"
 import axios from 'axios'
 
 // Import contexts
-const { useLoginContext } = require('../contexts/LoginContext')
+const { LoginContext } = require('../contexts/LoginContext')
 
 // constants
 const userIdKey = "userId"
@@ -14,7 +14,7 @@ const useRedirectHook = () => {
   const [redirectUrl, setRedirectUrl] = useState('')
   const [redirectComponentState, setRedirectComponentState] = useState({})
   const history = useHistory()
-  const { logout } = useLoginContext()
+  const { logout } = useContext(LoginContext)
 
   useEffect(() => {
     if (shouldRedirect) {
