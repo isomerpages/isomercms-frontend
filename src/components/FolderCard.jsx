@@ -10,6 +10,7 @@ import { MenuDropdown } from './MenuDropdown'
 import {
   deleteFolder,
   deleteResourceCategory,
+  deleteMediaSubfolder,
 } from '../api'
 
 
@@ -87,27 +88,34 @@ const FolderCard = ({
     }
   }
 
-  const selectDeleteApiCall = (pageType, siteName, category) => {
-    if (pageType === 'collection') {
-      const params = {
-        siteName,
-        folderName: category,
-      }
-      return deleteFolder(params)
-    }
-  
-    if (pageType === 'resources') {
-      const params = {
-        siteName,
-        categoryName: category,
-      }
-      return deleteResourceCategory(params)
+  const selectDeleteApiCall = (pageType, siteName, category, mediaCustomPath) => {
+    let params
+    switch(pageType) {
+      case 'collection':
+        params = {
+          siteName,
+          folderName: category,
+        }
+        return deleteFolder(params)
+      case 'resources':
+        params = {
+          siteName,
+          categoryName: category,
+        }
+        return deleteResourceCategory(params)
+      case 'images':
+        params = {
+          siteName,
+          mediaType: pageType,
+          customPath: `${mediaCustomPath ? `${mediaCustomPath}/` : ''}${category}`,
+        }
+        return deleteMediaSubfolder(params)
     }
   }
 
   // delete folder/resource category
   const { mutateAsync: deleteDirectory } = useMutation(
-    () => selectDeleteApiCall(pageType, siteName, category),
+    () => selectDeleteApiCall(pageType, siteName, category, mediaCustomPath),
     {
       onError: () => errorToast(`There was a problem trying to delete this folder. ${DEFAULT_RETRY_MSG}`),
       onSuccess: () => window.location.reload(),

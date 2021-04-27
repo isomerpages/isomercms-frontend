@@ -287,6 +287,11 @@ const renameMediaSubfolder = async ({ siteName, mediaType, customPath, subfolder
     return await axios.post(apiUrl)
 }
 
+const deleteMediaSubfolder = async ({ siteName, mediaType, customPath }) => {
+    if (mediaType !== 'images' || !customPath) return
+    return await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/media/${mediaType}/${encodeURIComponent(customPath)}`)
+}
+
 export {
     getDirectoryFile,
     setDirectoryFile,
@@ -315,4 +320,5 @@ export {
     getImages,
     createMediaSubfolder,
     renameMediaSubfolder,
+    deleteMediaSubfolder,
 }
