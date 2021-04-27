@@ -107,8 +107,11 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
         respDirectories,
       } = imageData
 
+      const filteredImages = []
+      respImages.forEach((image) => { if (image.fileName !== `.keep`) filteredImages.push(image) })
+
       if (_isMounted) {
-        setImages(respImages)
+        setImages(filteredImages)
         setDirectories(respDirectories)
         setDirectoryNames(respDirectories.map(directory => directory.name))
       }
@@ -280,9 +283,6 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
                 {
                   images && images.length > 0
                   ? images.map((image) => (
-                    image.fileName === '.keep' ? 
-                    null
-                    :
                     <MediaCard
                       type="image"
                       media={image}
