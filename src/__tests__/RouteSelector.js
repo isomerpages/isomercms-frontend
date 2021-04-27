@@ -4,14 +4,14 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import '@testing-library/jest-dom/extend-expect'
 
-import { RouteSelector } from '../RouteSelector'
-import { LoginContext } from '../../contexts/LoginContext'
+import { RouteSelector } from '../routing/RouteSelector'
+import { LoginContext } from '../contexts/LoginContext'
 
 const HOME_LAYOUT_TEXT = "Home layout mock text"
 const SITES_LAYOUT_TEXT = "Site layout mock text"
 
 // Layout mocks
-jest.mock("../../layouts/Home", () => {
+jest.mock("../layouts/Home", () => {
   return {
     __esModule: true,
     default: () => {
@@ -20,7 +20,7 @@ jest.mock("../../layouts/Home", () => {
   }
 })
 
-jest.mock("../../layouts/Sites", () => {
+jest.mock("../layouts/Sites", () => {
   return {
     __esModule: true,
     default: () => {
