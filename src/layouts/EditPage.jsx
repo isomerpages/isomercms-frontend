@@ -469,6 +469,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
                 chunk={chunk}
                 title={title}
                 date={date}
+                isResourcePage={isResourcePage}
                 resourceRoomName={deslugifyDirectory(resourceRoomName)}
                 collection={resourceName}
               />
