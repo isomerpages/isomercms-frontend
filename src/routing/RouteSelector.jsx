@@ -2,7 +2,6 @@ import React from 'react'
 import * as Sentry from "@sentry/react";
 import {
   Switch,
-  Route,
 } from 'react-router-dom';
 
 // Layouts
