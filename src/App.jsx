@@ -32,7 +32,7 @@ const ToastCloseButton = ({ closeToast }) => (
       onClick={closeToast}
     />
   </span>
-);
+)
 
 // react-query client
 const queryClient = new QueryClient();
@@ -46,21 +46,12 @@ export const App = () => {
     <Router basename={process.env.PUBLIC_URL}>
       <QueryClientProvider client={queryClient}>
           <ToastContainer hideProgressBar={true} position='top-center' closeButton={ToastCloseButton} className={elementStyles.toastContainer}/>
-          <div>
-            {/*
-              A <Switch> looks through all its children <Route>
-              elements and renders the first one whose path
-              matches the current URL. Use a <Switch> any time
-              you have multiple routes, but you want only one
-              of them to render at a time
-            */}
-              <LoginProvider>
-                <RouteSelector />
-              </LoginProvider>
-          </div>
+          <LoginProvider>
+            <RouteSelector />
+          </LoginProvider>
         </QueryClientProvider>
     </Router>
-  );
+  )
 }
 
 export default App
