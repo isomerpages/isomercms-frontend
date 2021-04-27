@@ -58,18 +58,44 @@ const ToastCloseButton = ({ closeToast }) => (
 // react-query client
 const queryClient = new QueryClient();
 
-function App() {
+const ProtectedRouteWithProps = (props) => {
+  return (
+    <Sentry.ErrorBoundary fallback={FallbackComponent}>
+      <ProtectedRoute {...props} />
+    </Sentry.ErrorBoundary>
+  )
+}
+
+export const RouteSelector = () => (
+  <Switch>
+    <Route exact path="/" component={Home} />
+    <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
+    <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
+    <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName" component={Folders} />
+    <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName" component={Folders} />
+    <ProtectedRouteWithProps exact path="/sites/:siteName/navbar" component={EditNavBar} />
+    <ProtectedRouteWithProps path="/sites/:siteName/files/:fileName" component={EditFile} />
+    <ProtectedRouteWithProps path="/sites/:siteName/files" component={Files} />
+    <ProtectedRouteWithProps path="/sites/:siteName/images/:customPath" component={Images} />
+    <ProtectedRouteWithProps path="/sites/:siteName/images" component={Images} />
+    <ProtectedRouteWithProps path="/sites/:siteName/pages/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={false} />
+    <ProtectedRouteWithProps path="/sites/:siteName/workspace" component={Workspace} />
+    <ProtectedRouteWithProps path="/sites/:siteName/homepage" component={EditHomepage} />
+    <ProtectedRouteWithProps path="/sites/:siteName/contact-us" component={EditContactUs} />
+    <ProtectedRouteWithProps path="/sites/:siteName/resources/:resourceName/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={true} />
+    <ProtectedRouteWithProps path="/sites/:siteName/resources/:collectionName" component={CategoryPages} isResource={true}/>
+    <ProtectedRouteWithProps path="/sites/:siteName/resources" component={Resources} />
+    <ProtectedRouteWithProps path="/sites/:siteName/navbar" component={EditNavBar} />
+    <ProtectedRouteWithProps path="/sites/:siteName/settings" component={Settings} />
+    <ProtectedRouteWithProps exact path="/sites" component={Sites} />
+    <ProtectedRouteWithProps path="/" component={NotFoundPage}/>
+  </Switch>
+)
+
+export const App = () => {
   useEffect(() => {
     localStorage.removeItem(LOCAL_STORAGE_SITE_COLORS)
   }, [])
-
-  const ProtectedRouteWithProps = (props) => {
-    return (
-      <Sentry.ErrorBoundary fallback={FallbackComponent}>
-        <ProtectedRoute {...props} />
-      </Sentry.ErrorBoundary>
-    )
-  }
 
   return (
     <Router basename={process.env.PUBLIC_URL}>
@@ -84,29 +110,7 @@ function App() {
               of them to render at a time
             */}
               <LoginProvider>
-                <Switch>
-                    <Route exact path="/" component={Home} />
-                    <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
-                    <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/:fileName" component={EditPage} isCollectionPage={true} isResourcePage={false} />
-                    <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName" component={Folders} />
-                    <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName" component={Folders} />
-                    <ProtectedRouteWithProps exact path="/sites/:siteName/navbar" component={EditNavBar} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/files/:fileName" component={EditFile} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/files" component={Files} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/images/:customPath" component={Images} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/images" component={Images} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/pages/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={false} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/workspace" component={Workspace} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/homepage" component={EditHomepage} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/contact-us" component={EditContactUs} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/resources/:resourceName/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={true} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/resources/:collectionName" component={CategoryPages} isResource={true}/>
-                    <ProtectedRouteWithProps path="/sites/:siteName/resources" component={Resources} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/navbar" component={EditNavBar} />
-                    <ProtectedRouteWithProps path="/sites/:siteName/settings" component={Settings} />
-                    <ProtectedRouteWithProps exact path="/sites" component={Sites} />
-                    <ProtectedRouteWithProps path="/" component={NotFoundPage}/>
-                </Switch>
+                <RouteSelector />
               </LoginProvider>
           </div>
         </QueryClientProvider>
@@ -114,4 +118,4 @@ function App() {
   );
 }
 
-export default App;
+export default App
