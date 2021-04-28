@@ -34,7 +34,7 @@ const FolderReorderingModal = ({
   setIsRearrangeActive,
   directoryFileSha,
   parsedFolderContents,
-  parsedFolderOutput,
+  isFolderLive,
 }) => {
   const [folderOrder, setFolderOrder] = useState(folderOrderArray)
 
@@ -86,7 +86,7 @@ const FolderReorderingModal = ({
       return
     }
 
-    const updatedDirectoryFile = updateDirectoryFile(folderName, parsedFolderOutput, newFolderOrder)
+    const updatedDirectoryFile = updateDirectoryFile(folderName, isFolderLive, newFolderOrder)
 
     const payload = {
       content: updatedDirectoryFile,
@@ -203,5 +203,5 @@ FolderReorderingModal.propTypes = {
   setIsRearrangeActive: PropTypes.func.isRequired,
   directoryFileSha: PropTypes.string.isRequired,
   parsedFolderContents: PropTypes.arrayOf(PropTypes.string).isRequired,
-  parsedFolderOutput: PropTypes.bool.isRequired,
+  isFolderLive: PropTypes.bool.isRequired,
 };

@@ -616,11 +616,11 @@ export const parseDirectoryFile = (folderContent) => {
   return decodedContent.collections[collectionKey]
 }
 
-export const updateDirectoryFile = (folderName, showFolder, folderOrder) => {
+export const updateDirectoryFile = (folderName, isFolderLive, folderOrder) => {
   const newContent = {
     collections: { 
       [folderName]: {
-        output: showFolder,
+        output: isFolderLive,
         order: folderOrder
       }
     }

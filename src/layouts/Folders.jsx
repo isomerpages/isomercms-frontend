@@ -56,7 +56,7 @@ const Folders = ({ match, location }) => {
     const [directoryFileSha, setDirectoryFileSha] = useState('')
     const [folderOrderArray, setFolderOrderArray] = useState([])
     const [parsedFolderContents, setParsedFolderContents] = useState([])
-    const [parsedFolderOutput, setParsedFolderOutput] = useState(true)
+    const [isFolderLive, setIsFolderLive] = useState(true)
     const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
     const [isDeleteModalActive, setIsDeleteModalActive] = useState(false)
     const [isMoveModalActive, setIsMoveModalActive] = useState(false)
@@ -90,13 +90,13 @@ const Folders = ({ match, location }) => {
     // parse contents of current folder directory
     useEffect(() => {
       if (folderContents && folderContents.data) {
-        const { order: parsedFolderContents, output: parsedFolderOutput } = parseDirectoryFile(folderContents.data.content)
+        const { order: directoryFileOrder, output: directoryFileOutput } = parseDirectoryFile(folderContents.data.content)
         setDirectoryFileSha(folderContents.data.sha)
-        setParsedFolderContents(parsedFolderContents)
-        setParsedFolderOutput(parsedFolderOutput)
+        setParsedFolderContents(directoryFileOrder)
+        setIsFolderLive(directoryFileOutput)
 
         if (subfolderName) {
-          const subfolderFiles = retrieveSubfolderContents(parsedFolderContents, subfolderName)
+          const subfolderFiles = retrieveSubfolderContents(directoryFileOrder, subfolderName)
           if (subfolderFiles.length > 0) {
             setFolderOrderArray(subfolderFiles.filter(item => item.fileName !== '.keep'))
           } else {
@@ -104,7 +104,7 @@ const Folders = ({ match, location }) => {
             setRedirectToPage(`/sites/${siteName}/workspace`)
           }
         } else {
-          setFolderOrderArray(convertFolderOrderToArray(parsedFolderContents))
+          setFolderOrderArray(convertFolderOrderToArray(directoryFileOrder))
         }
       }
     }, [folderContents, subfolderName])
@@ -295,7 +295,7 @@ const Folders = ({ match, location }) => {
                 setIsRearrangeActive={setIsRearrangeActive}
                 directoryFileSha={directoryFileSha}
                 parsedFolderContents={parsedFolderContents}
-                parsedFolderOutput={parsedFolderOutput}
+                isFolderLive={isFolderLive}
               />
             )
           }
