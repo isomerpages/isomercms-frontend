@@ -64,7 +64,7 @@ const CategoryPages = ({ match, location, isResource }) => {
     const fetchData = async () => {
       if (isResource) {
         if (!resourcePagesResp) return
-        const { resourcePages } = resourcePagesResp.data;
+        const { resourcePages } = resourcePagesResp;
 
         if (resourcePages.length > 0) {
           const retrievedResourcePages = resourcePages.map((resourcePage) => {

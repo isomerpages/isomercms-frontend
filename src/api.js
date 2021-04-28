@@ -163,7 +163,9 @@ const getAllCategories = async ({siteName, isResource}) => {
 }
 
 const getAllResourceCategories = async (siteName) => {
-    return await axios.get(`${BACKEND_URL}/sites/${siteName}/resources`);
+    const apiEndpoint = `${BACKEND_URL}/sites/${siteName}/resources`
+    const resp = await axios.get(apiEndpoint)
+    return resp.data;
 }
 
 const addResourceCategory = async (siteName, resourceName) => {
@@ -179,7 +181,9 @@ const getPages = async ({ siteName }) => {
 
 const getResourcePages = async (siteName, resourceName) => {
     if (!resourceName) return
-    return await axios.get(`${BACKEND_URL}/sites/${siteName}/resources/${resourceName}`);
+    const apiEndpoint = `${BACKEND_URL}/sites/${siteName}/resources/${resourceName}`
+    const resp = await axios.get(apiEndpoint)
+    return resp.data;
 }
 
 // EditNavBar
