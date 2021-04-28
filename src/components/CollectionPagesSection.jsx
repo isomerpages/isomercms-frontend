@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -8,6 +8,7 @@ import {
     PAGE_CONTENT_KEY,
     FOLDERS_CONTENT_KEY,
     DIR_CONTENT_KEY,
+    RESOURCE_CATEGORY_CONTENT_KEY,
 } from '../constants'
 
 import { getEditPageData, deletePageData, getAllCategories, moveFile, getDirectoryFile } from '../api'
@@ -31,8 +32,8 @@ import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 axios.defaults.withCredentials = true
 
 // Clean up note: Should be renamed, only used for resource pages and unlinked pages sections
-const CollectionPagesSection = ({ collectionName, pages, siteName, isResource, refetchPages }) => {
-    
+const CollectionPagesSection = ({ collectionName, pages, siteName, isResource }) => {
+    const queryClient = useQueryClient()
     const initialMoveDropdownQueryState = {
         folderName: '',
         subfolderName: '',
@@ -114,7 +115,12 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource, r
         async () => await deletePageData({ siteName, fileName: selectedFile, resourceName: collectionName }, pageData.pageSha),
         {
           onError: () => errorToast(`Your file could not be deleted successfully. ${DEFAULT_RETRY_MSG}`),
-          onSuccess: () => {successToast('Successfully deleted file'); refetchPages();},
+          onSuccess: () => {
+              setSelectedFile('')
+              if (isResource) queryClient.invalidateQueries([RESOURCE_CATEGORY_CONTENT_KEY, siteName, collectionName, true])
+              else queryClient.invalidateQueries([PAGE_CONTENT_KEY, { siteName }])
+              successToast('Successfully deleted file')
+            },
           onSettled: () => setCanShowDeleteWarningModal((prevState) => !prevState),
         }
     )
@@ -128,8 +134,10 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource, r
           onError: () => errorToast(`Your file could not be moved successfully. ${DEFAULT_RETRY_MSG}`),
           onSuccess: (samePage) => {
             if (samePage) return successToast('Page is already in this folder')   
+            setSelectedFile('')
+            if (isResource) queryClient.invalidateQueries([RESOURCE_CATEGORY_CONTENT_KEY, siteName, collectionName, true])
+            else queryClient.invalidateQueries([PAGE_CONTENT_KEY, { siteName }])
             successToast('Successfully moved file')
-            refetchPages()
           },
           onSettled: () => setCanShowMoveModal(prevState => !prevState),
         }
@@ -246,5 +254,4 @@ CollectionPagesSection.propTypes = {
     ),
     siteName: PropTypes.string.isRequired,
     isResource: PropTypes.bool,
-    refetchPages: PropTypes.func.isRequired,
 };
