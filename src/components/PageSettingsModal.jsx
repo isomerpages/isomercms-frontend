@@ -61,7 +61,6 @@ const PageSettingsModal = ({
     const [sha, setSha] = useState('')
     const [mdBody, setMdBody] = useState('')
     const [siteUrl, setSiteUrl] = useState('https://abc.com.sg')
-    const [hasChanges, setHasChanges] = useState(false)
     const { setRedirectToPage } = useRedirectHook()
     const { retrieveSiteUrl } = useSiteUrlHook()
 
