@@ -256,21 +256,21 @@ const moveFile = async ({selectedFile, siteName, resourceName, folderName, subfo
     return await axios.post(apiEndpoint, params)
 }
 
-// Images
-const getImages = async (siteName, customPath) => {
-    const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/files/${customPath ? encodeURIComponent(`images/${customPath}`) : 'images'}`);
+// Media
+const getMedia = async (siteName, customPath, mediaType) => {
+    const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/files/${customPath ? encodeURIComponent(`${mediaType}/${customPath}`) : mediaType}`);
     const { directoryContents } = resp.data;
 
-    let respImages = []
+    let respMedia = []
     let respDirectories = []
     directoryContents.forEach((fileOrDir) => {
         const modifiedFileOrDir = { ...fileOrDir, fileName: fileOrDir.name }
-        if (fileOrDir.type === 'file') respImages.push(modifiedFileOrDir)
+        if (fileOrDir.type === 'file') respMedia.push(modifiedFileOrDir)
         if (fileOrDir.type === 'dir') respDirectories.push(modifiedFileOrDir)
     })
 
     return {
-        respImages,
+        respMedia,
         respDirectories,
     }
 }
@@ -317,7 +317,7 @@ export {
     getAllCategories,
     moveFiles,
     moveFile,
-    getImages,
+    getMedia,
     createMediaSubfolder,
     renameMediaSubfolder,
     deleteMediaSubfolder,
