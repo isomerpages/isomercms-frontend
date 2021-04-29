@@ -87,7 +87,7 @@ const PageSettingsModal = ({
           else {
             if (folderName) queryClient.invalidateQueries([DIR_CONTENT_KEY, siteName, folderName, subfolderName])
             else queryClient.invalidateQueries([PAGE_CONTENT_KEY, { siteName }])
-            successToast(`Successfully updated ${title.toLowerCase()}!`)
+            successToast(`Successfully updated page settings!`)
           }
         },
         onError: () => errorToast(`${isNewPage ? 'A new page could not be created.' : 'Your page settings could not be saved.'} ${DEFAULT_RETRY_MSG}`)

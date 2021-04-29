@@ -68,7 +68,8 @@ const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName,
       onSuccess: () => {
         if (!isCollection) {
           // Resource folder
-          queryClient.invalidateQueries([RESOURCE_CATEGORY_CONTENT_KEY, siteName])
+          console.log('hey')
+          queryClient.invalidateQueries([RESOURCE_ROOM_CONTENT_KEY, siteName])
         } else if (subfolderName) {
           // Collection subfolder
           queryClient.invalidateQueries([DIR_CONTENT_KEY, siteName, folderOrCategoryName, undefined])
@@ -76,6 +77,7 @@ const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName,
           queryClient.invalidateQueries([FOLDERS_CONTENT_KEY, { siteName, isResource: false }])
         }
         onClose()
+        successToast(`Successfully renamed folder!`)
       },
     },
   )

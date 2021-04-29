@@ -179,7 +179,7 @@ const ComponentSettingsModal = ({
         onSuccess: (redirectUrl) => { 
           queryClient.invalidateQueries([RESOURCE_CATEGORY_CONTENT_KEY, siteName, category, true])
           if (redirectUrl && isPost) setRedirectToPage(redirectUrl)
-          else successToast(`Successfully updated ${title.toLowerCase()}!`)
+          else successToast(`Successfully updated file settings!`)
         },
         onError: () => errorToast(`${isNewFile ? 'A new resource page could not be created.' : 'Your resource page settings could not be saved.'} ${DEFAULT_RETRY_MSG}`)
       }
