@@ -132,6 +132,7 @@ const Folders = ({ match, location }) => {
           errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
         },
         onSuccess: () => {
+          successToast(`Successfully updated ${isSelectedItemPage ? 'file' : 'subfolder'}`)
           queryClient.invalidateQueries([DIR_CONTENT_KEY, siteName, folderName])
           refetchFolderContents()
         },
