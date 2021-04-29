@@ -613,14 +613,19 @@ export const getObjectDiff = (obj1, obj2) => {
 export const parseDirectoryFile = (folderContent) => {
   const decodedContent = yaml.parse(folderContent)
   const collectionKey = Object.keys(decodedContent.collections)[0]
-  return decodedContent.collections[collectionKey].order
+  return decodedContent.collections[collectionKey]
 }
 
-export const updateDirectoryFile = (folderContent, folderOrder) => {
-  const decodedContent = yaml.parse(folderContent)
-  const collectionKey = Object.keys(decodedContent.collections)[0]
-  decodedContent.collections[collectionKey].order = folderOrder
-  return yaml.stringify(decodedContent)
+export const updateDirectoryFile = (folderName, isFolderLive, folderOrder) => {
+  const newContent = {
+    collections: { 
+      [folderName]: {
+        output: isFolderLive,
+        order: folderOrder
+      }
+    }
+  }
+  return yaml.stringify(newContent)
 }
 
 export const getNavFolderDropdownFromFolderOrder = (folderOrder) => {

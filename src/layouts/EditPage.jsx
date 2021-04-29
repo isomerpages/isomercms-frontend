@@ -234,7 +234,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         const {
           content: dirContent,
         } = dirData.data
-        const parsedFolderContents = parseDirectoryFile(dirContent)
+        const { order: parsedFolderContents } = parseDirectoryFile(dirContent)
         // Filter out placeholder files
         const filteredFolderContents = parsedFolderContents.filter(name => !name.includes('.keep'))
         generatedLeftNavPages = filteredFolderContents.map((name) => 
