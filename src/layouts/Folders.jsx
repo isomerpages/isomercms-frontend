@@ -209,7 +209,7 @@ const Folders = ({ match, location }) => {
         return []
       }
       if (folderName !== '' && querySubfolders) { // inside folder, show all subfolders
-        const { order: parsedFolderContents } = parseDirectoryFile(querySubfolders.data.content)
+        const { order: parsedFolderContents } = parseDirectoryFile(querySubfolders.content)
         const parsedFolderArray = convertFolderOrderToArray(parsedFolderContents)
         return parsedFolderArray.filter(file => file.type === 'dir').map(file => file.fileName)
       }
