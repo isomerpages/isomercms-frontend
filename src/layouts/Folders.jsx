@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
@@ -41,6 +41,8 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 const Folders = ({ match, location }) => {
+    // Instantiate queryClient
+    const queryClient = useQueryClient()
     const { siteName, folderName, subfolderName } = match.params;
 
     // set Move-To dropdown to start from current location of file
@@ -78,7 +80,7 @@ const Folders = ({ match, location }) => {
           } else {
             errorToast()
           }
-        }
+        },
       },
     )
 
@@ -89,9 +91,9 @@ const Folders = ({ match, location }) => {
 
     // parse contents of current folder directory
     useEffect(() => {
-      if (folderContents && folderContents.data) {
-        const { order: directoryFileOrder, output: directoryFileOutput } = parseDirectoryFile(folderContents.data.content)
-        setDirectoryFileSha(folderContents.data.sha)
+      if (folderContents && folderContents.sha) {
+        const { order: directoryFileOrder, output: directoryFileOutput } = parseDirectoryFile(folderContents.content)
+        setDirectoryFileSha(folderContents.sha)
         setParsedFolderContents(directoryFileOrder)
         setIsFolderLive(directoryFileOutput)
 
@@ -107,6 +109,7 @@ const Folders = ({ match, location }) => {
           setFolderOrderArray(convertFolderOrderToArray(directoryFileOrder))
         }
       }
+
     }, [folderContents, subfolderName])
 
     // set selected item type
@@ -127,6 +130,11 @@ const Folders = ({ match, location }) => {
         onError: () => {
           setSelectedPage('')
           errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
+        },
+        onSuccess: () => {
+          successToast(`Successfully updated ${isSelectedItemPage ? 'file' : 'subfolder'}`)
+          queryClient.invalidateQueries([DIR_CONTENT_KEY, siteName, folderName])
+          refetchFolderContents()
         },
       },
     )
@@ -202,7 +210,7 @@ const Folders = ({ match, location }) => {
         return []
       }
       if (folderName !== '' && querySubfolders) { // inside folder, show all subfolders
-        const { order: parsedFolderContents } = parseDirectoryFile(querySubfolders.data.content)
+        const { order: parsedFolderContents } = parseDirectoryFile(querySubfolders.content)
         const parsedFolderArray = convertFolderOrderToArray(parsedFolderContents)
         return parsedFolderArray.filter(file => file.type === 'dir').map(file => file.fileName)
       }

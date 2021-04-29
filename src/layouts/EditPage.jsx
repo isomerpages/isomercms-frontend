@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import PropTypes from 'prop-types';
 import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
@@ -96,6 +96,9 @@ const getBackButtonInfo = (resourceCategory, folderName, siteName, subfolderName
 }
 
 const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) => {
+  // Instantiate queryClient
+  const queryClient = useQueryClient()
+
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
   const { setRedirectToNotFound } = useRedirectHook()
 
@@ -122,6 +125,8 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
   const [isCspViolation, setIsCspViolation] = useState(false)
   const [chunk, setChunk] = useState('')
 
+  const [hasChanges, setHasChanges] = useState(false)
+
   const mdeRef = useRef()
 
   // get page data
@@ -129,6 +134,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     [PAGE_CONTENT_KEY, match.params],
     () => getEditPageData(match.params),
     {
+      enabled: !hasChanges,
       retry: false,
       onError: (err) => {
         if (err.response && err.response.status === 404) {
@@ -136,7 +142,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         } else {
           errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
         }
-      }
+      },
     },
   );
 
@@ -145,6 +151,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     [DIR_CONTENT_KEY, siteName, folderName, subfolderName],
     () => getDirectoryFile(siteName, folderName),
     {
+      enabled: !hasChanges,
       retry: false,
       onError: (err) => {
         if (err.response && err.response.status === 404) {
@@ -152,7 +159,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         } else {
           errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
         }
-      }
+      },
     },
   );
 
@@ -161,6 +168,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     [CSP_CONTENT_KEY, siteName],
     () => getCsp(siteName),
     {
+      enabled: !hasChanges,
       retry: false,
       onError: (err) => {
         if (err.response && err.response.status === 404) {
@@ -168,7 +176,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         } else {
           errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
         }
-      }
+      },
     },
   );
 
@@ -177,7 +185,10 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     () => updatePageData(match.params, concatFrontMatterMdBody(frontMatter, editorValue), sha),
     {
       onError: () => errorToast(`There was a problem saving your page. ${DEFAULT_RETRY_MSG}`),
-      onSuccess: () => window.location.reload(),
+      onSuccess: () => {
+        queryClient.invalidateQueries([PAGE_CONTENT_KEY, match.params])
+        window.location.reload()
+      },
     },
   )
 
@@ -223,7 +234,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       } = pageData
       const {
         netlifyTomlHeaderValues
-      } = cspData.data
+      } = cspData
       if (!pageContent) return
       
       const { frontMatter: retrievedFrontMatter, mdBody: retrievedMdBody } = frontMatterParser(pageContent);
@@ -233,7 +244,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       if (isCollectionPage) {
         const {
           content: dirContent,
-        } = dirData.data
+        } = dirData
         const { order: parsedFolderContents } = parseDirectoryFile(dirContent)
         // Filter out placeholder files
         const filteredFolderContents = parsedFolderContents.filter(name => !name.includes('.keep'))
@@ -270,6 +281,10 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     setIsCspViolation(checkedIsCspViolation)
     setChunk(processedChunk)
   }, [editorValue])
+
+  useEffect(() => {
+    setHasChanges(originalMdValue === editorValue)
+  }, [originalMdValue, editorValue])
 
   const onEditorChange = (value) => {
     setEditorValue(value);
@@ -351,7 +366,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       <Header
         siteName={siteName}
         title={title}
-        shouldAllowEditPageBackNav={originalMdValue === editorValue}
+        shouldAllowEditPageBackNav={hasChanges}
         isEditPage={true}
         backButtonText={backButtonLabel}
         backButtonUrl={backButtonUrl}

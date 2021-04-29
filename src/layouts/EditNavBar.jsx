@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { DragDropContext } from 'react-beautiful-dnd';
 
@@ -31,6 +31,9 @@ import { getEditNavBarData, updateNavBarData } from '../api';
 const RADIX_PARSE_INT = 10
 
 const EditNavBar =  ({ match }) => {
+  // Instantiate queryClient
+  const queryClient = useQueryClient()
+
   const { siteName } = match.params
 
   const { setRedirectToNotFound } = useRedirectHook()
@@ -59,6 +62,8 @@ const EditNavBar =  ({ match }) => {
   })
   const [showDeletedText, setShowDeletedText] = useState(true)
   const [deletedLinks, setDeletedLinks] = useState('')
+
+  const [hasChanges, setHasChanges] = useState(false)
 
   const LinkCollectionSectionConstructor = () => ({
     title: 'Menu Title',
@@ -115,6 +120,7 @@ const EditNavBar =  ({ match }) => {
     [NAVIGATION_CONTENT_KEY, siteName],
     () => getEditNavBarData(siteName),
     {
+      enabled: !hasChanges,
       retry: false,
       cacheTime: 0, // We want to refetch data on every page load because file order may have changed
       onError: (err) => {
@@ -123,7 +129,7 @@ const EditNavBar =  ({ match }) => {
         } else {
           errorToast(`There was a problem trying to load your data. ${DEFAULT_RETRY_MSG}`)
         }
-      }
+      },
     },
   );
 
@@ -132,7 +138,10 @@ const EditNavBar =  ({ match }) => {
     () => updateNavBarData(siteName, originalNav, links, sha),
     {
       onError: () => errorToast(`There was a problem trying to save your nav bar. ${DEFAULT_RETRY_MSG}`),
-      onSuccess: () => window.location.reload(),
+      onSuccess: () => {
+        queryClient.invalidateQueries([NAVIGATION_CONTENT_KEY, siteName])
+        window.location.reload()
+      },
     },
   )
 
@@ -208,6 +217,13 @@ const EditNavBar =  ({ match }) => {
       _isMounted = false;
     }
   }, [navigationContents])
+
+  useEffect(() => {
+    setHasChanges(JSON.stringify(originalNav) !== JSON.stringify({
+      ...originalNav,
+      links: links
+    }))
+  }, [originalNav, links])
 
   const onFieldChange = async (event) => {
     try {
@@ -570,13 +586,6 @@ const EditNavBar =  ({ match }) => {
     }
   }
 
-  const hasChanges = () => {
-    return JSON.stringify(originalNav) !== JSON.stringify({
-      ...originalNav,
-      links: links
-    })
-  }
-
   const hasErrors = () => {
     return !isEmpty(errors.links) || !isEmpty(errors.sublinks)
   }
@@ -605,7 +614,7 @@ const EditNavBar =  ({ match }) => {
       <Header
         siteName={siteName}
         title={"Navigation Bar"}
-        shouldAllowEditPageBackNav={!hasChanges()}
+        shouldAllowEditPageBackNav={!hasChanges}
         isEditPage={true}
         backButtonText="Back to My Workspace"
         backButtonUrl={`/sites/${siteName}/workspace`}
