@@ -19,8 +19,8 @@ import {
 } from '../utils'
 
 import { validateCategoryName } from '../utils/validators'
-import { errorToast } from '../utils/toasts';
-import { DIR_CONTENT_KEY, FOLDERS_CONTENT_KEY, RESOURCE_CATEGORY_CONTENT_KEY } from '../constants';
+import { errorToast, successToast } from '../utils/toasts';
+import { DIR_CONTENT_KEY, FOLDERS_CONTENT_KEY, RESOURCE_ROOM_CONTENT_KEY } from '../constants';
 
 // axios settings
 axios.defaults.withCredentials = true
