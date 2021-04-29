@@ -25,7 +25,7 @@ import {
 import { createPageData, updatePageData, renamePageData } from '../api'
 
 import { validateResourceSettings } from '../utils/validators';
-import { errorToast } from '../utils/toasts';
+import { errorToast, successToast } from '../utils/toasts';
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
@@ -179,6 +179,7 @@ const ComponentSettingsModal = ({
         onSuccess: (redirectUrl) => { 
           queryClient.invalidateQueries([RESOURCE_CATEGORY_CONTENT_KEY, siteName, category, true])
           if (redirectUrl && isPost) setRedirectToPage(redirectUrl)
+          else successToast(`Successfully updated ${title.toLowerCase()}!`)
         },
         onError: () => errorToast(`${isNewFile ? 'A new resource page could not be created.' : 'Your resource page settings could not be saved.'} ${DEFAULT_RETRY_MSG}`)
       }
