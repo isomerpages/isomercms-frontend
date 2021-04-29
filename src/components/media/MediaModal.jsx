@@ -21,7 +21,7 @@ export default class MediaModal extends Component {
 
   async componentDidMount() {
     const { siteName, type, mediaSearchTerm } = this.props;
-    const mediaRoute = type === 'file' ? 'documents' : 'images';
+    const mediaRoute = type === 'files' ? 'documents' : 'images';
     try {
       const { data: { documents, images } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${mediaRoute}`, {
         withCredentials: true,
@@ -30,7 +30,7 @@ export default class MediaModal extends Component {
         this.setState({ medias: [], filteredMedias: [], searchTerm: mediaSearchTerm });
       } else {
         let filteredMedias
-        if (type === 'file') {
+        if (type === 'files') {
           filteredMedias = this.filterMediaByFileName(documents, mediaSearchTerm)
         } else {
           filteredMedias = this.filterMediaByFileName(images, mediaSearchTerm)
@@ -79,7 +79,7 @@ export default class MediaModal extends Component {
           <div className={elementStyles.overlay}>
             <div className={mediaStyles.mediaModal}>
               <div className={elementStyles.modalHeader}>
-                <h1 className="pl-5 mr-auto">{`Select ${type === 'file' ? 'File' : 'Image'}`}</h1>
+                <h1 className="pl-5 mr-auto">{`Select ${type === 'files' ? 'File' : 'Image'}`}</h1>
                 <MediaSearchBar value={mediaSearchTerm} onSearchChange={this.searchChangeHandler} />
                 <button type="button" onClick={onClose}>
                   <i className="bx bx-x" />
@@ -142,6 +142,6 @@ MediaModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   siteName: PropTypes.string.isRequired,
   onMediaSelect: PropTypes.func.isRequired,
-  type: PropTypes.oneOf(['file', 'image']).isRequired,
+  type: PropTypes.oneOf(['files', 'images']).isRequired,
   setMediaSearchTerm: PropTypes.func.isRequired,
 };

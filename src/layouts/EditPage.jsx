@@ -375,7 +375,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         {
           isSelectingImage && (
           <MediaModal
-            type="image"
+            type="images"
             siteName={siteName}
             onMediaSelect={onImageClick}
             toggleImageModal={() => setIsSelectingImage(!isSelectingImage)}
@@ -391,7 +391,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         {
           isFileStagedForUpload && (
             <MediaSettingsModal
-              type="image"
+              type="images"
               siteName={siteName}
               onClose={() => setIsFileStagedForUpload(false)}
               onSave={toggleImageAndSettingsModal}

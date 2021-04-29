@@ -125,7 +125,7 @@ export default class Files extends Component {
                 {files.length > 0
                   && files.map((file) => (
                     <MediaCard
-                      type="file"
+                      type="files"
                       media={file}
                       siteName={siteName}
                       key={file.fileName}
