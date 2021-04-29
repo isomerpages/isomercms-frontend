@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
@@ -8,6 +8,7 @@ import FormField from './FormField';
 import FormFieldHorizontal from './FormFieldHorizontal';
 import ResourceFormFields from './ResourceFormFields';
 import SaveDeleteButtons from './SaveDeleteButtons';
+import { RESOURCE_CATEGORY_CONTENT_KEY } from '../constants'
 
 import useSiteUrlHook from '../hooks/useSiteUrlHook';
 import useRedirectHook from '../hooks/useRedirectHook';
@@ -41,6 +42,9 @@ const ComponentSettingsModal = ({
     setSelectedFile,
     setIsComponentSettingsActive,
 }) => {
+    // Instantiate queryClient
+    const queryClient = useQueryClient()
+
     const { setRedirectToPage } = useRedirectHook()
     const { retrieveSiteUrl } = useSiteUrlHook()
 
@@ -54,7 +58,6 @@ const ComponentSettingsModal = ({
     const [hasErrors, setHasErrors] = useState(false)
 
     // Base hooks
-    const [baseApiUrl, setBaseApiUrl] = useState('');
     const [title, setTitle] = useState('')
     const [permalink, setPermalink] = useState('')
     const [mdBody, setMdBody] = useState('')
@@ -71,9 +74,6 @@ const ComponentSettingsModal = ({
     const [fileUrl, setFileUrl] = useState('')
 
     const [siteUrl, setSiteUrl] = useState('https://abc.com.sg')
-
-    // Page redirection modals
-    const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
 
     // Map element ID to setter functions
     const idToSetterFuncMap = {
@@ -176,7 +176,10 @@ const ComponentSettingsModal = ({
       },
       { 
         onSettled: () => {setSelectedFile(''); setIsComponentSettingsActive(false)},
-        onSuccess: (redirectUrl) => redirectUrl && isPost ? setRedirectToPage(redirectUrl) : window.location.reload(),
+        onSuccess: (redirectUrl) => { 
+          queryClient.invalidateQueries([RESOURCE_CATEGORY_CONTENT_KEY, siteName, category, true])
+          if (redirectUrl && isPost) setRedirectToPage(redirectUrl)
+        },
         onError: () => errorToast(`${isNewFile ? 'A new resource page could not be created.' : 'Your resource page settings could not be saved.'} ${DEFAULT_RETRY_MSG}`)
       }
     )

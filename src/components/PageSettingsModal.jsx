@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
 import * as _ from 'lodash';
 
@@ -14,7 +14,7 @@ import {
 } from '../utils';
 
 import { createPageData, updatePageData, renamePageData } from '../api'
-import { PAGE_SETTINGS_KEY } from '../constants'
+import { PAGE_SETTINGS_KEY, DIR_CONTENT_KEY } from '../constants'
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
@@ -83,9 +83,8 @@ const PageSettingsModal = ({
         onSettled: () => {setSelectedPage(''); setIsPageSettingsActive(false)},
         onSuccess: (redirectUrl) => {
           queryClient.invalidateQueries([PAGE_SETTINGS_KEY, originalPageName])
-
+          queryClient.invalidateQueries([DIR_CONTENT_KEY, siteName, folderName, subfolderName])
           if (redirectUrl) setRedirectToPage(redirectUrl)
-          else window.location.reload()
         },
         onError: () => errorToast(`${isNewPage ? 'A new page could not be created.' : 'Your page settings could not be saved.'} ${DEFAULT_RETRY_MSG}`)
       }
