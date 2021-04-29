@@ -68,7 +68,6 @@ const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName,
       onSuccess: () => {
         if (!isCollection) {
           // Resource folder
-          console.log('hey')
           queryClient.invalidateQueries([RESOURCE_ROOM_CONTENT_KEY, siteName])
         } else if (subfolderName) {
           // Collection subfolder
