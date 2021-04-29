@@ -10,3 +10,5 @@ export const RESOURCE_ROOM_CONTENT_KEY = 'resource-room-contents'
 export const FOLDERS_CONTENT_KEY = 'folders-contents'
 export const LAST_UPDATED_KEY = 'last-updated'
 export const PAGE_SETTINGS_KEY = 'page-settings';
+export const IMAGE_CONTENTS_KEY = 'image-contents'
+export const DOCUMENT_CONTENTS_KEY = 'document-contents'
