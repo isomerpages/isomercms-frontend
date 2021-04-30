@@ -138,7 +138,8 @@ const Folders = ({ match, location }) => {
     const { mutateAsync: deleteHandler } = useMutation(
       async () => {
        if (isSelectedItemPage && pageData) await deletePageData({ siteName, folderName, subfolderName, fileName: selectedPage }, pageData.pageSha)
-       else await deleteSubfolder({ siteName, folderName, subfolderName: selectedPage })
+       else if (!isSelectedItemPage) await deleteSubfolder({ siteName, folderName, subfolderName: selectedPage })
+       else return
       },
       {
         onError: () => errorToast(`Your ${isSelectedItemPage ? 'file' : 'subfolder'} could not be deleted successfully. ${DEFAULT_RETRY_MSG}`),
