@@ -131,19 +131,15 @@ const Folders = ({ match, location }) => {
           setSelectedPage('')
           errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
         },
-        onSuccess: () => {
-          successToast(`Successfully updated ${isSelectedItemPage ? 'file' : 'subfolder'}`)
-          queryClient.invalidateQueries([DIR_CONTENT_KEY, siteName, folderName])
-          refetchFolderContents()
-        },
       },
     )
 
     // delete file
     const { mutateAsync: deleteHandler } = useMutation(
       async () => {
-       if (isSelectedItemPage) await deletePageData({ siteName, folderName, subfolderName, fileName: selectedPage }, pageData.pageSha)
-       else await deleteSubfolder({ siteName, folderName, subfolderName: selectedPage })
+       if (isSelectedItemPage && pageData) await deletePageData({ siteName, folderName, subfolderName, fileName: selectedPage }, pageData.pageSha)
+       else if (!isSelectedItemPage) await deleteSubfolder({ siteName, folderName, subfolderName: selectedPage })
+       else return
       },
       {
         onError: () => errorToast(`Your ${isSelectedItemPage ? 'file' : 'subfolder'} could not be deleted successfully. ${DEFAULT_RETRY_MSG}`),
@@ -268,7 +264,7 @@ const Folders = ({ match, location }) => {
             )
           }
           {
-            isDeleteModalActive && pageData
+            isDeleteModalActive
             && (
               <DeleteWarningModal
                 onCancel={() => setIsDeleteModalActive(false)}
