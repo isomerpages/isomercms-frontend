@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useMutation } from 'react-query';
 import PropTypes from 'prop-types';
+import { useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
 import * as _ from 'lodash';
 
@@ -14,11 +14,12 @@ import {
 } from '../utils';
 
 import { createPageData, updatePageData, renamePageData } from '../api'
+import { PAGE_SETTINGS_KEY, DIR_CONTENT_KEY, PAGE_CONTENT_KEY } from '../constants'
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 
 import { validatePageSettings } from '../utils/validators';
-import { errorToast } from '../utils/toasts';
+import { errorToast, successToast } from '../utils/toasts';
 
 import FormField from './FormField';
 import FormFieldHorizontal from './FormFieldHorizontal';
@@ -41,6 +42,9 @@ const PageSettingsModal = ({
     setSelectedPage,
     setIsPageSettingsActive,
 }) => {
+    // Instantiate queryClient
+    const queryClient = useQueryClient()
+
     // Errors
     const [errors, setErrors] = useState({
         title: '',
@@ -56,9 +60,7 @@ const PageSettingsModal = ({
     const [originalFrontMatter, setOriginalFrontMatter] = useState({})
     const [sha, setSha] = useState('')
     const [mdBody, setMdBody] = useState('')
-    
     const [siteUrl, setSiteUrl] = useState('https://abc.com.sg')
-
     const { setRedirectToPage } = useRedirectHook()
     const { retrieveSiteUrl } = useSiteUrlHook()
 
@@ -79,7 +81,15 @@ const PageSettingsModal = ({
       },
       { 
         onSettled: () => {setSelectedPage(''); setIsPageSettingsActive(false)},
-        onSuccess: (redirectUrl) => redirectUrl ? setRedirectToPage(redirectUrl) : window.location.reload(),
+        onSuccess: (redirectUrl) => {
+          queryClient.invalidateQueries([PAGE_SETTINGS_KEY, originalPageName])
+          if (redirectUrl) setRedirectToPage(redirectUrl)
+          else {
+            if (folderName) queryClient.invalidateQueries([DIR_CONTENT_KEY, siteName, folderName, subfolderName])
+            else queryClient.invalidateQueries([PAGE_CONTENT_KEY, { siteName }])
+            successToast(`Successfully updated page settings!`)
+          }
+        },
         onError: () => errorToast(`${isNewPage ? 'A new page could not be created.' : 'Your page settings could not be saved.'} ${DEFAULT_RETRY_MSG}`)
       }
     )
@@ -134,8 +144,10 @@ const PageSettingsModal = ({
     }, [errors])
 
     useEffect(() => {
-      setHasChanges(!isNewPage && !(originalPageName === generatePageFileName(title) && originalPermalink === permalink))
-    }, [title, permalink])
+      if (title && permalink) {
+        setHasChanges(!isNewPage && !(title === deslugifyPage(originalPageName) && permalink === originalPermalink))
+      }
+    }, [originalPageName, originalPermalink, title, permalink])
 
     const changeHandler = (event) => {
       const { id, value } = event.target;

@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Breadcrumb from './Breadcrumb';
 
-const PageHeader = ({ title, date, collection, resourceRoomName }) => (
-  <section className="bp-section is-small bp-section-pagetitle">
+const PageHeader = ({ title, date, collection, resourceRoomName, isResourcePage }) => (
+  <section className={`bp-section ${isResourcePage ? 'bg-secondary' : 'is-small bp-section-pagetitle'}`}>
     <div className="bp-container page-header-container">
     <div className="row">
         <div className="col">

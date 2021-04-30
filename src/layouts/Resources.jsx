@@ -71,7 +71,7 @@ const Resources = ({ match, location }) => {
       try {
         // Get the categories in the resource room
         if (!resourcesResp) return
-        const { resourceRoomName, resources: resourceCategories } = resourcesResp.data;
+        const { resourceRoomName, resources: resourceCategories } = resourcesResp;
         if (resourceRoomName) {
           const uniqueResourceFolderNames = resourceCategories ? _.uniq(resourceCategories.map((file) => file.dirName)) : []
           if (_isMounted) {

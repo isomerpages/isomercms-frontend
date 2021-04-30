@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 /** *
  * This file exposes and exports default actions from the EasyMDE library
  * and includes a new default image upload action
