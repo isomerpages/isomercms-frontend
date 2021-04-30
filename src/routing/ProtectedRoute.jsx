@@ -13,7 +13,10 @@ const ProtectedRoute = ({ children, component: WrappedComponent, ...rest }) => {
     <LoginConsumer>
       {({userId}) => (
         userId ? (
-        children || WrappedComponent && <Route {...rest} component={WrappedComponent}/>
+        children || WrappedComponent && 
+        <Route {...rest}
+          render={(props) => <WrappedComponent {...rest} {...props} /> }
+        />
       ) : (
         <Redirect to="/" /> 
       ))}
