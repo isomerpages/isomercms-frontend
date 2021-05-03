@@ -44,6 +44,7 @@
     "start": "source .env.development.local && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test-e2e": "cypress run",
     "lint": "eslint --ext .js --ext .jsx --ignore-path .gitignore .",
     "lint-fix": "eslint --ext .js --ext .jsx --ignore-path .gitignore . --fix",
     "cypress:open": "cypress open"
