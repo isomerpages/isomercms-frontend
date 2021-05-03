@@ -276,7 +276,7 @@ const getMedia = async (siteName, customPath, mediaType) => {
 }
 
 const createMediaSubfolder = async (siteName, mediaType, customPath) => {
-    if (mediaType !== 'images' || !customPath) return
+    if ((mediaType !== 'images' && mediaType !== 'documents') || !customPath) return
     return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/media/${mediaType}/${encodeURIComponent(customPath)}`)
 }
 
@@ -288,7 +288,7 @@ const renameMediaSubfolder = async ({ siteName, mediaType, customPath, subfolder
 }
 
 const deleteMediaSubfolder = async ({ siteName, mediaType, customPath }) => {
-    if (mediaType !== 'images' || !customPath) return
+    if ((mediaType !== 'images' && mediaType !== 'documents') || !customPath) return
     return await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/media/${mediaType}/${encodeURIComponent(customPath)}`)
 }
 

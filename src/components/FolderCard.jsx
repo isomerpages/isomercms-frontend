@@ -56,6 +56,7 @@ const FolderCard = ({
       case 'nav':
         return `/sites/${siteName}/navbar`
       case 'images':
+      case 'documents':
         return `/sites/${siteName}/${linkPath}`
       default:
         return ''
@@ -83,6 +84,8 @@ const FolderCard = ({
         return 'page'
       case 'images':
         return 'images'
+      case 'documents':
+        return 'documents'
       default:
         return 'resources'
     }
@@ -104,6 +107,7 @@ const FolderCard = ({
         }
         return deleteResourceCategory(params)
       case 'images':
+      case 'documents':
         params = {
           siteName,
           mediaType: pageType,

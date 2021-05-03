@@ -13,7 +13,7 @@ import MediaCard from '../components/media/MediaCard';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
 import { createMediaSubfolder, getMedia } from '../api';
-import { IMAGE_CONTENTS_KEY } from '../constants'
+import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from '../constants'
 
 import useRedirectHook from '../hooks/useRedirectHook';
 
@@ -24,6 +24,11 @@ import { errorToast } from '../utils/toasts';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
+
+const mediaNames = {
+  images: 'images',
+  documents: 'files',
+}
 
 const getPrevDirectoryPath = (customPath, mediaType) => {
   const customPathArr = customPath.split('%2F')
@@ -49,7 +54,7 @@ const getPrevDirectoryName = (customPath, mediaType) => {
     prevDirectoryName = customPathArr[customPathArr.length - 2]
   }
   else {
-    prevDirectoryName = (mediaType === 'images' ? `Images` : '')
+    prevDirectoryName = (mediaType === 'images' ? `Images` : 'Files')
   }
 
   return deslugifyDirectory(prevDirectoryName)
@@ -67,8 +72,8 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
   const { setRedirectToNotFound } = useRedirectHook()
 
   const { data: mediaData, refetch } = useQuery(
-    mediaType === 'images' ? IMAGE_CONTENTS_KEY : null,
-    () => getMedia(siteName, customPath ? decodeURIComponent(customPath): '', mediaType),
+    mediaType === 'images' ? IMAGE_CONTENTS_KEY : DOCUMENT_CONTENTS_KEY,
+    () => getMedia(siteName, customPath ? decodeURIComponent(customPath): '', mediaNames[mediaType]),
     {
       retry: false,
       onError: (err) => {
@@ -153,9 +158,28 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
     imgReader.readAsDataURL(event.target.files[0]);
   }
 
+  const onFileSelect = async (event) => {
+    const fileReader = new FileReader();
+    const file = event.target?.files[0] || '';
+    if (file.name) {
+      fileReader.onload = (() => {
+        /** Github only requires the content of the file
+         * fileReader returns  `data:application/*;base64, {fileContent}`
+         * hence the split
+         */
+
+        const fileContent = fileReader.result.split(',')[1];
+        
+        uploadMedia(file.name, fileContent);
+      });
+      fileReader.readAsDataURL(file);
+      event.target.value = '';
+    }
+  }
+
   const folderNameChangeHandler = (event) => {
     const { value } = event.target;
-    let errorMessage = validateCategoryName(value, mediaType, directoryNames)
+    let errorMessage = validateCategoryName(value, mediaNames[mediaType], directoryNames)
     setNewFolderName(value)
     setErrors(errorMessage)
   }
@@ -174,7 +198,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
             folderNameChangeHandler={folderNameChangeHandler}
             title={newFolderName}
             errors={errors}
-            folderType={`${mediaType} directory`}
+            folderType={`${mediaNames[mediaType]} directory`}
             proceedText='Create'
           />
         </div>
@@ -190,20 +214,20 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
         {/* main section starts here */}
         <div className={contentStyles.mainSection}>
           <div className={contentStyles.sectionHeader}>
-            <h1 className={contentStyles.sectionTitle}>{mediaType[0].toUpperCase() + mediaType.substring(1)}</h1>
+            <h1 className={contentStyles.sectionTitle}>{mediaNames[mediaType][0].toUpperCase() + mediaNames[mediaType].substring(1)}</h1>
           </div>
           {/* Info segment */}
           <div className={contentStyles.segment}>
             <i className="bx bx-sm bx-info-circle text-dark" />
-            <span><strong className="ml-1">Note:</strong> Upload {mediaType} here to link to them in pages and resources. The maximum {mediaType.slice(0,-1)} size allowed is 5MB.</span>
+            <span><strong className="ml-1">Note:</strong> Upload {mediaNames[mediaType]} here to link to them in pages and resources. The maximum {mediaNames[mediaType].slice(0,-1)} size allowed is 5MB.</span>
           </div>
           {/* Creation buttons */}
           <div className={contentStyles.folderContainerBoxes}>
             <div className={contentStyles.boxesContainer}>
               {/* Upload Media */}
               <FolderOptionButton
-                title={`Upload new ${mediaType.slice(0,-1)}`}
-                option={`upload-${mediaType.slice(0,-1)}`}
+                title={`Upload new ${mediaNames[mediaType].slice(0,-1)}`}
+                option={`upload-${mediaNames[mediaType].slice(0,-1)}`}
                 onClick={() => document.getElementById('file-upload').click()}
               />
               <FolderOptionButton
@@ -225,7 +249,18 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
                   hidden
                 />
                 :
-                null
+                <input
+                  onChange={onFileSelect}
+                  onClick={(event) => {
+                    // eslint-disable-next-line no-param-reassign
+                    event.target.value = '';
+                  }}
+                  type="file"
+                  id="file-upload"
+                  accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
+                  text/plain, application/pdf"
+                  hidden
+                />
               }
             </div>
           </div>
@@ -263,7 +298,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
                 ))
                 : (
                   <div className={contentStyles.segment}>
-                    There are no {mediaType.slice(0,-1)} sub-directories in this directory.
+                    There are no {mediaNames[mediaType].slice(0,-1)} sub-directories in this directory.
                   </div>
                 )
               }
@@ -275,7 +310,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
           </div>
           {/* Ungrouped Media title segment */}
           <div className={contentStyles.segment}>
-            <span>Ungrouped {mediaType}</span>
+            <span>Ungrouped {mediaNames[mediaType]}</span>
           </div>
           {/* Media segment */}
           <div className={contentStyles.contentContainerBars}>
@@ -286,7 +321,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
                   media && media.length > 0
                   ? media.map((media) => (
                     <MediaCard
-                      type={mediaType}
+                      type={mediaNames[mediaType]}
                       media={media}
                       siteName={siteName}
                       onClick={() => setChosenMedia(media)}
@@ -294,7 +329,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
                     />
                   )) : (
                     <div className={contentStyles.segment}>
-                      There are no {mediaType} in this directory.
+                      There are no {mediaNames[mediaType]} in this directory.
                     </div>
                   )
                 }
@@ -309,7 +344,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
         chosenMedia
         && (
         <MediaSettingsModal
-          type={mediaType}
+          type={mediaNames[mediaType].slice(0,-1)}
           media={chosenMedia}
           siteName={siteName}
           customPath={customPath}
@@ -323,7 +358,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
         pendingMediaUpload
         && (
         <MediaSettingsModal
-          type={mediaType}
+          type={mediaNames[mediaType].slice(0,-1)}
           media={pendingMediaUpload}
           siteName={siteName}
           customPath={customPath}

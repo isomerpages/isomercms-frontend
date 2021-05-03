@@ -83,6 +83,7 @@ export default class MediaSettingsModal extends Component {
           params.imageDirectory = `images${customPath ? `/${customPath}` : ''}`;
         } else {
           params.documentName = newFileName;
+          params.documentDirectory = `files${customPath ? `/${customPath}` : ''}`;
         }
 
         await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}`, params, {
