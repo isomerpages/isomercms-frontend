@@ -27,3 +27,8 @@ Run the following:
 source .env
 npm run test-e2e
 ```
+
+If you would like the Cypress UI, run
+```
+npm run cypress:open
+```
