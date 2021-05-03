@@ -30,7 +30,7 @@ const sidebarContentPathDict = [
     title: 'Images',
   },
   {
-    pathname: 'files',
+    pathname: 'documents',
     title: 'Files',
   }
 ];

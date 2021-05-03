@@ -43,7 +43,8 @@ export const RouteSelector = () => (
     <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName" component={Folders} />
     <ProtectedRouteWithProps exact path="/sites/:siteName/navbar" component={EditNavBar} />
     <ProtectedRouteWithProps path="/sites/:siteName/files/:fileName" component={EditFile} />
-    <ProtectedRouteWithProps path="/sites/:siteName/files" component={Files} />
+    <ProtectedRouteWithProps path="/sites/:siteName/documents/:customPath" component={Media} mediaType={'documents'} />
+    <ProtectedRouteWithProps path="/sites/:siteName/documents" component={Media} mediaType={'documents'} />
     <ProtectedRouteWithProps path="/sites/:siteName/images/:customPath" component={Media} mediaType={'images'} />
     <ProtectedRouteWithProps path="/sites/:siteName/images" component={Media} mediaType={'images'} />
     <ProtectedRouteWithProps path="/sites/:siteName/pages/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={false} />
