@@ -4,12 +4,6 @@ describe('Login flow', () => {
   const LOGIN_BUTTON_TEXT = 'Login with GitHub'
   const GITHUB_LOGIN_URL = 'https://github.com/login'
 
-  beforeEach(() => {
-    // Before each test, we can automatically preserve the cookie.
-    // This means it will not be cleared before the NEXT test starts.
-    Cypress.Cookies.preserveOnce(COOKIE_NAME)
-  })
-
   it('Home page should have login button', () => {
     cy.visit(CMS_BASEURL)
     cy.get('button').should('have.text', LOGIN_BUTTON_TEXT)
