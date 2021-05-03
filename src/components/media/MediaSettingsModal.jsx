@@ -118,14 +118,14 @@ export default class MediaSettingsModal extends Component {
   }
 
   deleteFile = async () => {
-    const { siteName, media: { fileName }, type } = this.props;
+    const { siteName, media: { fileName }, type, customPath } = this.props;
     try {
       const { sha } = this.state;
       const params = {
         sha,
       };
 
-      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${fileName}`, {
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${generateImageorFilePath(customPath, fileName)}`, {
         data: params,
         withCredentials: true,
       });
