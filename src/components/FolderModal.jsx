@@ -80,7 +80,7 @@ const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName,
     {
       onError: () => errorToast(`There was a problem trying to rename this folder. ${DEFAULT_RETRY_MSG}`),
       onSuccess: () => {
-        if (!isCollection) {
+        if (folderType === "resources") {
           // Resource folder
           queryClient.invalidateQueries([RESOURCE_ROOM_CONTENT_KEY, siteName])
         } else if (subfolderName) {
