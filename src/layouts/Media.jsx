@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { useQuery, useMutation } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
@@ -218,6 +219,26 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
             <i className="bx bx-sm bx-info-circle text-dark" />
             <span><strong className="ml-1">Note:</strong> Upload {mediaNames[mediaType]} here to link to them in pages and resources. The maximum {mediaNames[mediaType].slice(0,-1)} size allowed is 5MB.</span>
           </div>
+          {/* Segment divider  */}
+          <div className={contentStyles.segmentDividerContainer}>
+            <hr className="w-100 mt-3 mb-5" />
+          </div>
+          {/* Breadcrumb */}
+          {
+            customPath &&
+            <div className={contentStyles.segment}>
+              <span>
+                <Link to={`/sites/${siteName}/${mediaType}`}><strong>{mediaNames[mediaType][0].toUpperCase() + mediaNames[mediaType].substring(1)}</strong></Link>
+                {
+                  decodeURIComponent(customPath).split("/").map((folderName, idx, arr) => {
+                    return idx === arr.length - 1
+                    ? <span> ><strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></span>
+                    : <span> ><Link to={`/sites/${siteName}/${mediaType}/${encodeURIComponent(arr.slice(0,idx+1))}`}><strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></Link></span>
+                  })
+                }
+              </span>
+            </div>
+          }
           {/* Creation buttons */}
           <div className={contentStyles.folderContainerBoxes}>
             <div className={contentStyles.boxesContainer}>
@@ -260,10 +281,6 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
                 />
               }
             </div>
-          </div>
-          {/* Segment divider  */}
-          <div className={contentStyles.segmentDividerContainer}>
-            <hr className="w-100 mt-3 mb-5" />
           </div>
           {/* Directories title segment */}
           <div className={contentStyles.segment}>
