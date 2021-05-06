@@ -21,7 +21,7 @@ import {
 
 import { validateCategoryName } from '../utils/validators'
 import { errorToast, successToast } from '../utils/toasts';
-import { DIR_CONTENT_KEY, FOLDERS_CONTENT_KEY, RESOURCE_ROOM_CONTENT_KEY } from '../constants';
+import { DOCUMENT_CONTENTS_KEY, IMAGE_CONTENTS_KEY, DIR_CONTENT_KEY, FOLDERS_CONTENT_KEY, RESOURCE_ROOM_CONTENT_KEY } from '../constants';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -83,11 +83,15 @@ const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName,
         if (folderType === "resources") {
           // Resource folder
           queryClient.invalidateQueries([RESOURCE_ROOM_CONTENT_KEY, siteName])
-        } else if (subfolderName) {
+        } else if (folderType === 'page' && subfolderName) {
           // Collection subfolder
           queryClient.invalidateQueries([DIR_CONTENT_KEY, siteName, folderOrCategoryName, undefined])
-        } else {
+        } else if (folderType === 'page' && !subfolderName) {
           queryClient.invalidateQueries([FOLDERS_CONTENT_KEY, { siteName, isResource: false }])
+        } else if (folderType === "images") {
+          queryClient.invalidateQueries([IMAGE_CONTENTS_KEY, mediaCustomPath])
+        } else if (folderType === "documents") {
+          queryClient.invalidateQueries([DOCUMENT_CONTENTS_KEY, mediaCustomPath])
         }
         onClose()
         successToast(`Successfully renamed folder!`)

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { useMutation } from 'react-query';
+import { useQueryClient, useMutation } from 'react-query';
 
 import FolderModal from './FolderModal';
 import DeleteWarningModal from './DeleteWarningModal'
@@ -14,7 +14,8 @@ import {
 } from '../api'
 
 
-import { errorToast } from '../utils/toasts';
+import { errorToast, successToast } from '../utils/toasts';
+import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY, FOLDERS_CONTENT_KEY, RESOURCE_ROOM_CONTENT_KEY } from '../constants';
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
@@ -34,6 +35,8 @@ const FolderCard = ({
   existingFolders,
   mediaCustomPath,
 }) => {
+  // Instantiate queryClient
+  const queryClient = useQueryClient()
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
   const [canShowDropdown, setCanShowDropdown] = useState(false)
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
@@ -122,7 +125,21 @@ const FolderCard = ({
     () => selectDeleteApiCall(pageType, siteName, category, mediaCustomPath),
     {
       onError: () => errorToast(`There was a problem trying to delete this folder. ${DEFAULT_RETRY_MSG}`),
-      onSuccess: () => window.location.reload(),
+      onSuccess: () => {
+        if (pageType === "resources") {
+          // Resource folder
+          queryClient.invalidateQueries([RESOURCE_ROOM_CONTENT_KEY, siteName])
+        } else if (pageType === "collection") {
+          // Collection folder
+          queryClient.invalidateQueries([FOLDERS_CONTENT_KEY, { siteName, isResource: false }])
+        } else if (pageType === "images") {
+          queryClient.invalidateQueries([IMAGE_CONTENTS_KEY, mediaCustomPath])
+        } else if (pageType === "documents") {
+          queryClient.invalidateQueries([DOCUMENT_CONTENTS_KEY, mediaCustomPath])
+        }
+        setCanShowDeleteWarningModal(false)
+        successToast(`Successfully deleted folder!`)
+      },
     },
   )
 
