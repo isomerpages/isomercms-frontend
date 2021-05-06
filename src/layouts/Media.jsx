@@ -72,7 +72,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
   const { setRedirectToNotFound } = useRedirectHook()
 
   const { data: mediaData, refetch } = useQuery(
-    mediaType === 'images' ? IMAGE_CONTENTS_KEY : DOCUMENT_CONTENTS_KEY,
+    mediaType === 'images' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath],
     () => getMedia(siteName, customPath ? decodeURIComponent(customPath): '', mediaNames[mediaType]),
     {
       retry: false,
@@ -125,10 +125,6 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
       _isMounted = false
     }
   }, [mediaData])
-
-  useEffect(() => {
-    refetch()
-  }, [customPath])
 
   const uploadMedia = async (mediaName, mediaContent) => {
     try {
