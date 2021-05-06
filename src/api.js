@@ -264,9 +264,9 @@ const getMedia = async (siteName, customPath, mediaType) => {
     let respMedia = []
     let respDirectories = []
     directoryContents.forEach((fileOrDir) => {
-        const modifiedFileOrDir = { ...fileOrDir, fileName: fileOrDir.name }
-        if (fileOrDir.type === 'file') respMedia.push(modifiedFileOrDir)
-        if (fileOrDir.type === 'dir') respDirectories.push(modifiedFileOrDir)
+        const processedFileOrDirData = { ...fileOrDir, fileName: fileOrDir.name }
+        if (fileOrDir.type === 'file') respMedia.push(processedFileOrDirData)
+        if (fileOrDir.type === 'dir') respDirectories.push(processedFileOrDirData)
     })
 
     return {
