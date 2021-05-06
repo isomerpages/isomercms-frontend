@@ -19,7 +19,7 @@ import useRedirectHook from '../hooks/useRedirectHook';
 
 import { DEFAULT_RETRY_MSG, deslugifyDirectory, slugifyCategory } from '../utils';
 import { validateCategoryName } from '../utils/validators'
-import { errorToast } from '../utils/toasts';
+import { errorToast, successToast } from '../utils/toasts';
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
@@ -92,7 +92,8 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
     {
       onError: () => errorToast(`Your subfolder could not be created successfully. ${DEFAULT_RETRY_MSG}`),
       onSuccess: () => {
-        window.location.reload()
+        refetch()
+        successToast(`Successfully created new subfolder!`)
       },
       onSettled: () => {
         setIsCreateModalActive((prevState) => !prevState)
