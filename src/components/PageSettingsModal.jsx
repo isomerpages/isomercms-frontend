@@ -72,7 +72,7 @@ const PageSettingsModal = ({
     const { mutateAsync: saveHandler } = useMutation(
       () => {
         const frontMatter = subfolderName 
-          ? { ...originalFrontMatter, title, permalink, third_nav_title: subfolderName }
+          ? { ...originalFrontMatter, title, permalink, third_nav_title: deslugifyDirectory(subfolderName) }
           : { ...originalFrontMatter, title, permalink }
         const newPageData = concatFrontMatterMdBody(frontMatter, mdBody)
         if (isNewPage) return createPageData({ siteName, folderName, subfolderName, newFileName: generatePageFileName(title) },  newPageData) 
