@@ -118,7 +118,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
   const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
   const [stagedFileDetails, setStagedFileDetails] = useState({})
   const [isLoadingPageContent, setIsLoadingPageContent] = useState(true)
-  const [mediaSearchTerm, setMediaSearchTerm] = useState('')
+  const [uploadPath, setUploadPath] = useState('')
   const [selectedFile, setSelectedFile] = useState('')
   const [leftNavPages, setLeftNavPages] = useState([])
   const [resourceRoomName, setResourceRoomName] = useState('')
@@ -295,7 +295,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     let editorValue
     if (newFileName) {
       const cm = mdeRef.current.simpleMde.codemirror;
-      cm.replaceSelection(`![](/images/${newFileName})`);
+      cm.replaceSelection(`![](/images/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`);
 
       // set state so that rerender is triggered and image is shown
       editorValue = mdeRef.current.simpleMde.codemirror.getValue()
@@ -375,24 +375,21 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         {
           isSelectingImage && (
           <MediaModal
-            type="images"
             siteName={siteName}
-            onMediaSelect={onImageClick}
-            toggleImageModal={() => setIsSelectingImage(!isSelectingImage)}
-            readFileToStageUpload={readFileToStageUpload}
             onClose={() => setIsSelectingImage(false)}
-            mediaSearchTerm={mediaSearchTerm}
-            setMediaSearchTerm={setMediaSearchTerm}
-            selectedFile={selectedFile}
-            setSelectedFile={setSelectedFile}
+            onMediaSelect={onImageClick}
+            type="images"
+            readFileToStageUpload={readFileToStageUpload}
+            setUploadPath={setUploadPath}
           />
           )
         }
         {
           isFileStagedForUpload && (
             <MediaSettingsModal
-              type="images"
+              type="image"
               siteName={siteName}
+              customPath={uploadPath}
               onClose={() => setIsFileStagedForUpload(false)}
               onSave={toggleImageAndSettingsModal}
               media={stagedFileDetails}
