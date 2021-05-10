@@ -112,7 +112,7 @@ const FormFieldMedia = ({
               siteName={siteName}
               onClose={() => setIsSelectingItem(false)}
               onMediaSelect={onItemClick}
-              type={'images'}
+              type={type}
               readFileToStageUpload={readFileToStageUpload}
               setUploadPath={setUploadPath}
             />
@@ -121,7 +121,7 @@ const FormFieldMedia = ({
         {
           isFileStagedForUpload && (
             <MediaSettingsModal
-              type={'image'}
+              type={type}
               siteName={siteName}
               customPath={uploadPath}
               onClose={() => setIsFileStagedForUpload(false)}
