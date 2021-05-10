@@ -113,6 +113,8 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
   const [frontMatter, setFrontMatter] = useState('')
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
   const [isSelectingImage, setIsSelectingImage] = useState(false)
+  const [isSelectingFile, setIsSelectingFile] = useState(false)
+  const [showMediaModal, setShowMediaModal] = useState(false)
   const [isInsertingHyperlink, setIsInsertingHyperlink] = useState(false)
   const [selectionText, setSelectionText] = useState('')
   const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
@@ -292,14 +294,16 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
   const toggleImageAndSettingsModal = (newFileName) => {
     // insert image into editor
     let editorValue
-    if (newFileName) {
-      const cm = mdeRef.current.simpleMde.codemirror;
+    const cm = mdeRef.current.simpleMde.codemirror;
+    if (newFileName && isSelectingImage) {
       cm.replaceSelection(`![](/images/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`);
-
-      // set state so that rerender is triggered and image is shown
-      editorValue = mdeRef.current.simpleMde.codemirror.getValue()
+      setIsSelectingImage(false);
+    } else if (newFileName && isSelectingFile) {
+      cm.replaceSelection(`[](/files/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`);
+      setIsSelectingFile(false)
     }
-
+    // set state so that rerender is triggered and image is shown
+    editorValue = mdeRef.current.simpleMde.codemirror.getValue()
     setIsFileStagedForUpload(!isFileStagedForUpload)
     if (editorValue) {
       setEditorValue(editorValue)
@@ -326,12 +330,18 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     setSelectionText('')
   }
 
-  const onImageClick = (path) => {
+  const onMediaSelect = (path) => {
     const cm = mdeRef.current.simpleMde.codemirror;
-    cm.replaceSelection(`![](${path.replaceAll(' ', '%20')})`);
+    if (isSelectingImage) {
+      cm.replaceSelection(`![](${path.replaceAll(' ', '%20')})`);
+      setIsSelectingImage(false)
+    } else {
+      cm.replaceSelection(`[](${path.replaceAll(' ', '%20')})`);
+      setIsSelectingFile(false)
+    }
     // set state so that rerender is triggered and image is shown
     setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
-    setIsSelectingImage(false)
+    setShowMediaModal(false)
   }
 
   const stageFileForUpload = (fileName, fileData) => {
@@ -357,7 +367,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       stageFileForUpload(fileName, fileData);
     });
     fileReader.readAsDataURL(event.target.files[0]);
-    setIsSelectingImage((prevState) => !prevState)
+    setShowMediaModal((prevState) => !prevState)
   }
 
   return (
@@ -371,13 +381,18 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         backButtonUrl={backButtonUrl}
       />
       <div className={elementStyles.wrapper}>
+        {/* Inserting Medias */}
         {
-          isSelectingImage && (
+          showMediaModal && (
           <MediaModal
             siteName={siteName}
-            onClose={() => setIsSelectingImage(false)}
-            onMediaSelect={onImageClick}
-            type='image'
+            onClose={() => {
+              setShowMediaModal(false); 
+              setIsSelectingImage(false)
+              setIsSelectingFile(false)
+            }}
+            onMediaSelect={onMediaSelect}
+            type={isSelectingImage ? 'image' : 'file'}
             readFileToStageUpload={readFileToStageUpload}
             setUploadPath={setUploadPath}
           />
@@ -386,7 +401,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         {
           isFileStagedForUpload && (
             <MediaSettingsModal
-              type="image"
+              type={isSelectingImage ? 'image' : 'file'}
               siteName={siteName}
               customPath={uploadPath}
               onClose={() => setIsFileStagedForUpload(false)}
@@ -442,10 +457,22 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
                   {
                     name: 'image',
                     action: async () => {
+                      setShowMediaModal(true);
                       setIsSelectingImage(true);
                     },
                     className: 'fa fa-picture-o',
                     title: 'Insert Image',
+                    default: true,
+                  },
+                  {
+                    name: 'file',
+                    action: async () => {
+
+                      setShowMediaModal(true);
+                      setIsSelectingFile(true);
+                    },
+                    className: 'fa fa-file-pdf-o',
+                    title: 'Insert File',
                     default: true,
                   },
                   {
