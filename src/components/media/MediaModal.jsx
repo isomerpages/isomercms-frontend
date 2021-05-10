@@ -10,15 +10,16 @@ import contentStyles from '../../styles/isomer-cms/pages/Content.module.scss';
 import MediaCard from './MediaCard';
 import { MediaSearchBar } from './MediaSearchBar';
 import LoadingButton from '../LoadingButton';
+import useRedirectHook from '../../hooks/useRedirectHook';
+
 import { errorToast } from '../../utils/toasts';
 import { getMedia } from '../../api';
-
 import { deslugifyDirectory } from '../../utils';
 import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from '../../constants'
 
 const mediaNames = {
-  images: 'images',
-  documents: 'files',
+  image: 'images',
+  file: 'files',
 }
 
 const MediaModal = ({
@@ -36,9 +37,10 @@ const MediaModal = ({
   const [selectedFile, setSelectedFile] = useState()
   const [customPath, setCustomPath] = useState('')
   const [mediaSearchTerm, setMediaSearchTerm] = useState('')
+  const { setRedirectToNotFound } = useRedirectHook()
 
   const { data: mediaData } = useQuery(
-    type === 'images' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath],
+    type === 'image' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath],
     () => getMedia(siteName, customPath || '', mediaNames[type]),
     {
       retry: false,
@@ -111,7 +113,7 @@ const MediaModal = ({
       <div className={elementStyles.overlay}>
         <div className={mediaStyles.mediaModal}>
           <div className={elementStyles.modalHeader}>
-            <h1 className="pl-5 mr-auto">{`Select ${type === 'files' ? 'File' : 'Image'}`}</h1>
+            <h1 className="pl-5 mr-auto">{`Select ${type === 'file' ? 'File' : 'Image'}`}</h1>
             {/* Search medias */}
             <MediaSearchBar value={mediaSearchTerm} onSearchChange={searchChangeHandler} />
             {/* Upload medias */}
@@ -132,7 +134,7 @@ const MediaModal = ({
               }}
               type="file"
               id="file-upload"
-              accept={type === 'images' 
+              accept={type === 'image' 
                 ? "image/*" 
                 : "application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf"
               }
@@ -153,7 +155,7 @@ const MediaModal = ({
               { customPath !== '' 
                 ? 
                   <>
-                  <BreadcrumbButton name={`${type === 'files' ? 'Files' : 'Images'}`} idx={-1}/>
+                  <BreadcrumbButton name={`${type === 'file' ? 'Files' : 'Images'}`} idx={-1}/>
                   { 
                     customPath.split("/").map((folderName, idx, arr) => {
                       return idx === arr.length - 1
@@ -162,7 +164,7 @@ const MediaModal = ({
                     })
                   }
                   </>
-                : <strong className="ml-1">{`${type === 'files' ? 'Files' : 'Images'}`}</strong>
+                : <strong className="ml-1">{`${type === 'file' ? 'Files' : 'Images'}`}</strong>
               }
             </div>
           }
@@ -215,6 +217,6 @@ MediaModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   siteName: PropTypes.string.isRequired,
   onMediaSelect: PropTypes.func.isRequired,
-  type: PropTypes.oneOf(['files', 'images']).isRequired,
+  type: PropTypes.oneOf(['file', 'image']).isRequired,
   setMediaSearchTerm: PropTypes.func.isRequired,
 };

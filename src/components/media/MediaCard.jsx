@@ -11,7 +11,7 @@ const MediaCard = ({
   >
     <a href="/" onClick={(e) => { e.preventDefault(); onClick(); }}>
       {
-        type === 'images' && (
+        type === 'image' && (
           <div className={mediaStyles.mediaCardImagePreviewContainer}>
             <img
               className={mediaStyles.mediaCardImage}
@@ -23,7 +23,7 @@ const MediaCard = ({
         )
       }
       {
-        type === 'files' && (
+        type === 'file' && (
           <div className={mediaStyles.mediaCardFilePreviewContainer}>
             <p>{media.fileName.split('.').pop().toUpperCase()}</p>
           </div>

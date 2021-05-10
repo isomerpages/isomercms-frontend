@@ -119,7 +119,6 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
   const [stagedFileDetails, setStagedFileDetails] = useState({})
   const [isLoadingPageContent, setIsLoadingPageContent] = useState(true)
   const [uploadPath, setUploadPath] = useState('')
-  const [selectedFile, setSelectedFile] = useState('')
   const [leftNavPages, setLeftNavPages] = useState([])
   const [resourceRoomName, setResourceRoomName] = useState('')
   const [isCspViolation, setIsCspViolation] = useState(false)
@@ -378,7 +377,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
             siteName={siteName}
             onClose={() => setIsSelectingImage(false)}
             onMediaSelect={onImageClick}
-            type="images"
+            type='image'
             readFileToStageUpload={readFileToStageUpload}
             setUploadPath={setUploadPath}
           />
