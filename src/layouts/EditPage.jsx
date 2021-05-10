@@ -467,7 +467,6 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
                   {
                     name: 'file',
                     action: async () => {
-
                       setShowMediaModal(true);
                       setIsSelectingFile(true);
                     },
