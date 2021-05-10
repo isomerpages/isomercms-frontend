@@ -27,8 +27,7 @@ const FormFieldMedia = ({
   const [isSelectingItem, setIsSelectingItem] = useState(false)
   const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
   const [stagedFileDetails, setStagedFileDetails] = useState()
-  const [mediaSearchTerm, setMediaSearchTerm] = useState('')
-  const [selectedFile, setSelectedFile] = useState({})
+  const [uploadPath, setUploadPath] = useState('')
 
   const onItemClick = (path) => {
     setIsSelectingItem(false)
@@ -49,7 +48,7 @@ const FormFieldMedia = ({
   const toggleItemAndSettingsModal = (newFileName) => {
     const baseFolder = type === 'image' ? 'images' : 'files';
     setIsFileStagedForUpload(!isFileStagedForUpload)
-    onItemClick(`/${baseFolder}/${newFileName}`)
+    onItemClick(`/${baseFolder}/${uploadPath ? `${uploadPath}/` : ''}${newFileName}`)
   }
 
   const stageFileForUpload = (fileName, fileData) => {
@@ -110,24 +109,21 @@ const FormFieldMedia = ({
         {
           isSelectingItem && (
             <MediaModal
-              type={type}
               siteName={siteName}
-              onMediaSelect={onItemClick}
-              toggleItemModal={toggleItemModal}
-              readFileToStageUpload={readFileToStageUpload}
               onClose={() => setIsSelectingItem(false)}
-              mediaSearchTerm={mediaSearchTerm}
-              setMediaSearchTerm={setMediaSearchTerm}
-              selectedFile={selectedFile}
-              setSelectedFile={setSelectedFile}
+              onMediaSelect={onItemClick}
+              type={'images'}
+              readFileToStageUpload={readFileToStageUpload}
+              setUploadPath={setUploadPath}
             />
           )
         }
         {
           isFileStagedForUpload && (
             <MediaSettingsModal
-              type={type}
+              type={'image'}
               siteName={siteName}
+              customPath={uploadPath}
               onClose={() => setIsFileStagedForUpload(false)}
               onSave={toggleItemAndSettingsModal}
               media={stagedFileDetails}
