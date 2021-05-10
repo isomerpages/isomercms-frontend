@@ -1,6 +1,5 @@
 describe('Login flow', () => {
   const CMS_BASEURL = Cypress.env('BASEURL')
-  const COOKIE_NAME = Cypress.env('COOKIE_NAME')
   const LOGIN_BUTTON_TEXT = 'Login with GitHub'
   const GITHUB_LOGIN_URL = 'https://github.com/login'
 
