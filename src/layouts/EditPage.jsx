@@ -335,7 +335,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     if (isSelectingImage) {
       cm.replaceSelection(`![](${path.replaceAll(' ', '%20')})`);
       setIsSelectingImage(false)
-    } else {
+    } else if (isSelectingFile) {
       cm.replaceSelection(`[](${path.replaceAll(' ', '%20')})`);
       setIsSelectingFile(false)
     }
