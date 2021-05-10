@@ -209,7 +209,6 @@ const Workspace = ({ match, location }) => {
               <CollectionPagesSection
                 pages={unlinkedPages}
                 siteName={siteName}
-                refetchPages={refetchPages}
               />
             </div>
             {/* main section ends here */}

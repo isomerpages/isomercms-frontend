@@ -9,7 +9,8 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
 const getDirectoryFile = async (siteName, folderName) => {
     if (!folderName) return
-    return await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`);
+    const resp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`);
+    return resp.data
 }
 
 const setDirectoryFile = async (siteName, folderName, payload) => {
@@ -80,7 +81,8 @@ const getEditPageData = async ({folderName, subfolderName, fileName, siteName, r
 
 const getCsp = async (siteName) => {
     // retrieve CSP
-    return await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`);
+    const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/netlify-toml`)
+    return resp.data
 }
 
 const createPageData = async ({folderName, subfolderName, newFileName, siteName, resourceName}, content) => {
@@ -161,7 +163,9 @@ const getAllCategories = async ({siteName, isResource}) => {
 }
 
 const getAllResourceCategories = async (siteName) => {
-    return await axios.get(`${BACKEND_URL}/sites/${siteName}/resources`);
+    const apiEndpoint = `${BACKEND_URL}/sites/${siteName}/resources`
+    const resp = await axios.get(apiEndpoint)
+    return resp.data;
 }
 
 const addResourceCategory = async (siteName, resourceName) => {
@@ -177,7 +181,9 @@ const getPages = async ({ siteName }) => {
 
 const getResourcePages = async (siteName, resourceName) => {
     if (!resourceName) return
-    return await axios.get(`${BACKEND_URL}/sites/${siteName}/resources/${resourceName}`);
+    const apiEndpoint = `${BACKEND_URL}/sites/${siteName}/resources/${resourceName}`
+    const resp = await axios.get(apiEndpoint)
+    return resp.data;
 }
 
 // EditNavBar

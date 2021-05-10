@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../components/Header';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -49,13 +50,13 @@ export default class Sites extends Component {
                 ? siteNames.map((siteName) => (
                   <div className={siteStyles.siteContainer} key={siteName.repoName}>
                     <div className={siteStyles.site}>
-                      <a href={`/sites/${siteName.repoName}/workspace`}>
+                      <Link to={`/sites/${siteName.repoName}/workspace`}>
                         <div className={siteStyles.siteImage} />
                         <div className={siteStyles.siteDescription}>
                           <div className={siteStyles.siteName}>{siteName.repoName}</div>
                           <div className={siteStyles.siteInfo}>{siteName.lastUpdated}</div>
                         </div>
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 )) : (

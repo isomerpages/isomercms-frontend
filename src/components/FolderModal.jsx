@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import SaveDeleteButtons from './SaveDeleteButtons';
 import FormField from './FormField';
@@ -19,7 +19,8 @@ import {
 } from '../utils'
 
 import { validateCategoryName } from '../utils/validators'
-import { errorToast } from '../utils/toasts';
+import { errorToast, successToast } from '../utils/toasts';
+import { DIR_CONTENT_KEY, FOLDERS_CONTENT_KEY, RESOURCE_ROOM_CONTENT_KEY } from '../constants';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -54,6 +55,8 @@ const selectRenameApiCall = (isCollection, siteName, folderOrCategoryName, subfo
 }
 
 const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName, subfolderName, siteName, isCollection, existingFolders }) => {
+  // Instantiate queryClient
+  const queryClient = useQueryClient()
   const [newDirectoryName, setNewDirectoryName] = useState(deslugifyDirectory(subfolderName || folderOrCategoryName))
   const [errors, setErrors] = useState('')
 
@@ -62,7 +65,19 @@ const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName,
     () => selectRenameApiCall(isCollection, siteName, folderOrCategoryName, subfolderName, newDirectoryName),
     {
       onError: () => errorToast(`There was a problem trying to rename this folder. ${DEFAULT_RETRY_MSG}`),
-      onSuccess: () => window.location.reload(),
+      onSuccess: () => {
+        if (!isCollection) {
+          // Resource folder
+          queryClient.invalidateQueries([RESOURCE_ROOM_CONTENT_KEY, siteName])
+        } else if (subfolderName) {
+          // Collection subfolder
+          queryClient.invalidateQueries([DIR_CONTENT_KEY, siteName, folderOrCategoryName, undefined])
+        } else {
+          queryClient.invalidateQueries([FOLDERS_CONTENT_KEY, { siteName, isResource: false }])
+        }
+        onClose()
+        successToast(`Successfully renamed folder!`)
+      },
     },
   )
 

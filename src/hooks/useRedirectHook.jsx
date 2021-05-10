@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
 import axios from 'axios'
 
-// Import context
+// Import contexts
 const { LoginContext } = require('../contexts/LoginContext')
 
 // constants
@@ -14,7 +14,7 @@ const useRedirectHook = () => {
   const [redirectUrl, setRedirectUrl] = useState('')
   const [redirectComponentState, setRedirectComponentState] = useState({})
   const history = useHistory()
-  const { setLogoutState } = useContext(LoginContext)
+  const { logout } = useContext(LoginContext)
 
   useEffect(() => {
     if (shouldRedirect) {
@@ -39,13 +39,9 @@ const useRedirectHook = () => {
 
   const setRedirectToLogout = async () => {
     try {
-      // Call the logout endpoint in the API server to clear the browser cookie
-      localStorage.removeItem(userIdKey)
-      await axios.get(`${BACKEND_URL}/auth/logout`)
-      setRedirectUrl("/")
+      await logout()
       setRedirectComponentState({ isFromSignOutButton: true })
       setShouldRedirect(true)
-      setLogoutState()
     } catch (err) {
       console.error(err)
     }

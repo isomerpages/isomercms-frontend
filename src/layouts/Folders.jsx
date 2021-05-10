@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
@@ -10,7 +10,8 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import FolderCreationModal from '../components/FolderCreationModal'
 import FolderOptionButton from '../components/folders/FolderOptionButton';
-import FolderContent from '../components/folders/FolderContent';
+import FolderReorderingModal from '../components/FolderReorderingModal';
+import { FolderContent } from '../components/folders/FolderContent';
 import FolderModal from '../components/FolderModal';
 import PageSettingsModal from '../components/PageSettingsModal'
 import DeleteWarningModal from '../components/DeleteWarningModal'
@@ -27,22 +28,21 @@ import {
 import {
   DEFAULT_RETRY_MSG,
   parseDirectoryFile,
-  updateDirectoryFile,
   convertFolderOrderToArray,
-  convertArrayToFolderOrder,
   retrieveSubfolderContents,
-  convertSubfolderArray,
   deslugifyDirectory,
 } from '../utils'
 
 // Import API
-import { getDirectoryFile, setDirectoryFile, getEditPageData, deleteSubfolder, deletePageData, moveFile, getAllCategories } from '../api';
+import { getDirectoryFile, getEditPageData, deleteSubfolder, deletePageData, moveFile, getAllCategories } from '../api';
 
 // Import styles
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 const Folders = ({ match, location }) => {
+    // Instantiate queryClient
+    const queryClient = useQueryClient()
     const { siteName, folderName, subfolderName } = match.params;
 
     // set Move-To dropdown to start from current location of file
@@ -58,6 +58,7 @@ const Folders = ({ match, location }) => {
     const [directoryFileSha, setDirectoryFileSha] = useState('')
     const [folderOrderArray, setFolderOrderArray] = useState([])
     const [parsedFolderContents, setParsedFolderContents] = useState([])
+    const [isFolderLive, setIsFolderLive] = useState(true)
     const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
     const [isDeleteModalActive, setIsDeleteModalActive] = useState(false)
     const [isMoveModalActive, setIsMoveModalActive] = useState(false)
@@ -79,7 +80,7 @@ const Folders = ({ match, location }) => {
           } else {
             errorToast()
           }
-        }
+        },
       },
     )
 
@@ -90,13 +91,14 @@ const Folders = ({ match, location }) => {
 
     // parse contents of current folder directory
     useEffect(() => {
-      if (folderContents && folderContents.data) {
-        const parsedFolderContents = parseDirectoryFile(folderContents.data.content)
-        setDirectoryFileSha(folderContents.data.sha)
-        setParsedFolderContents(parsedFolderContents)
+      if (folderContents && folderContents.sha) {
+        const { order: directoryFileOrder, output: directoryFileOutput } = parseDirectoryFile(folderContents.content)
+        setDirectoryFileSha(folderContents.sha)
+        setParsedFolderContents(directoryFileOrder)
+        setIsFolderLive(directoryFileOutput)
 
         if (subfolderName) {
-          const subfolderFiles = retrieveSubfolderContents(parsedFolderContents, subfolderName)
+          const subfolderFiles = retrieveSubfolderContents(directoryFileOrder, subfolderName)
           if (subfolderFiles.length > 0) {
             setFolderOrderArray(subfolderFiles.filter(item => item.fileName !== '.keep'))
           } else {
@@ -104,9 +106,10 @@ const Folders = ({ match, location }) => {
             setRedirectToPage(`/sites/${siteName}/workspace`)
           }
         } else {
-          setFolderOrderArray(convertFolderOrderToArray(parsedFolderContents))
+          setFolderOrderArray(convertFolderOrderToArray(directoryFileOrder))
         }
       }
+
     }, [folderContents, subfolderName])
 
     // set selected item type
@@ -134,8 +137,9 @@ const Folders = ({ match, location }) => {
     // delete file
     const { mutateAsync: deleteHandler } = useMutation(
       async () => {
-       if (isSelectedItemPage) await deletePageData({ siteName, folderName, subfolderName, fileName: selectedPage }, pageData.pageSha)
-       else await deleteSubfolder({ siteName, folderName, subfolderName: selectedPage })
+       if (isSelectedItemPage && pageData) await deletePageData({ siteName, folderName, subfolderName, fileName: selectedPage }, pageData.pageSha)
+       else if (!isSelectedItemPage) await deleteSubfolder({ siteName, folderName, subfolderName: selectedPage })
+       else return
       },
       {
         onError: () => errorToast(`Your ${isSelectedItemPage ? 'file' : 'subfolder'} could not be deleted successfully. ${DEFAULT_RETRY_MSG}`),
@@ -202,7 +206,7 @@ const Folders = ({ match, location }) => {
         return []
       }
       if (folderName !== '' && querySubfolders) { // inside folder, show all subfolders
-        const parsedFolderContents = parseDirectoryFile(querySubfolders.data.content)
+        const { order: parsedFolderContents } = parseDirectoryFile(querySubfolders.content)
         const parsedFolderArray = convertFolderOrderToArray(parsedFolderContents)
         return parsedFolderArray.filter(file => file.type === 'dir').map(file => file.fileName)
       }
@@ -216,44 +220,6 @@ const Folders = ({ match, location }) => {
     const clearMoveDropdownQueryState = () => {
       setMoveDropdownQuery({ ...initialMoveDropdownQueryState });
     };
-
-    // REORDERING
-    // save file-reordering
-    const { mutate: rearrangeFolder } = useMutation(
-      payload => setDirectoryFile(siteName, folderName, payload),
-      {
-        onError: () => errorToast(`Your file reordering could not be saved. ${DEFAULT_RETRY_MSG}`),
-        onSuccess: () => successToast('Successfully updated page order'),
-        onSettled: () => setIsRearrangeActive((prevState) => !prevState),
-      }
-    )
-    
-    // REORDERING utils
-    const toggleRearrange = () => { 
-      if (isRearrangeActive) { 
-        // drag and drop complete, save new order 
-        let newFolderOrder
-        if (subfolderName) {
-          newFolderOrder = convertSubfolderArray(folderOrderArray, parsedFolderContents, subfolderName)
-        } else {
-          newFolderOrder = convertArrayToFolderOrder(folderOrderArray)
-        }
-        if (JSON.stringify(newFolderOrder) === JSON.stringify(parsedFolderContents)) { 
-          // no change in file order
-          setIsRearrangeActive((prevState) => !prevState)
-          return
-        }
-        const updatedDirectoryFile = updateDirectoryFile(folderContents.data.content, newFolderOrder)
-
-        const payload = {
-          content: updatedDirectoryFile,
-          sha: directoryFileSha,
-        } 
-        rearrangeFolder(payload) // setIsRearrangeActive(false) handled by mutate
-      } else {
-        setIsRearrangeActive((prevState) => !prevState) 
-      }
-    }
 
     return (
         <>
@@ -298,7 +264,7 @@ const Folders = ({ match, location }) => {
             )
           }
           {
-            isDeleteModalActive && pageData
+            isDeleteModalActive
             && (
               <DeleteWarningModal
                 onCancel={() => setIsDeleteModalActive(false)}
@@ -319,6 +285,21 @@ const Folders = ({ match, location }) => {
                 }}
                 proceedText="Continue"
                 cancelText="Cancel"
+              />
+            )
+          }
+          {
+            isRearrangeActive
+            && (
+              <FolderReorderingModal
+                siteName={siteName}
+                folderName={folderName}
+                subfolderName={subfolderName}
+                folderOrderArray={folderOrderArray}
+                setIsRearrangeActive={setIsRearrangeActive}
+                directoryFileSha={directoryFileSha}
+                parsedFolderContents={parsedFolderContents}
+                isFolderLive={isFolderLive}
               />
             )
           }
@@ -371,7 +352,7 @@ const Folders = ({ match, location }) => {
               </div>
               {/* Options */}
               <div className={contentStyles.contentContainerFolderRowMargin}>
-                <FolderOptionButton title="Rearrange items" isSelected={isRearrangeActive} onClick={toggleRearrange} option="rearrange" isDisabled={folderOrderArray.length <= 1 || !folderContents}/>
+                <FolderOptionButton title="Rearrange items" isSelected={isRearrangeActive} onClick={() => setIsRearrangeActive(true)} option="rearrange" isDisabled={folderOrderArray.length <= 1 || !folderContents}/>
                 <FolderOptionButton title="Create new page" option="create-page" id="pageSettings-new" onClick={() => setIsPageSettingsActive((prevState) => !prevState)}/>
                 <FolderOptionButton title="Create new subfolder" option="create-sub" isDisabled={subfolderName || isLoadingDirectory ? true : false} onClick={() => setIsFolderCreationActive(true)}/>
               </div>
@@ -391,7 +372,6 @@ const Folders = ({ match, location }) => {
                     allCategories={getCategories(moveDropdownQuery, allFolders, querySubfolders)}
                     siteName={siteName} 
                     folderName={folderName}
-                    enableDragDrop={isRearrangeActive}
                     setIsPageSettingsActive={setIsPageSettingsActive}
                     setIsFolderModalOpen={setIsFolderModalOpen}
                     setIsDeleteModalActive={setIsDeleteModalActive}
