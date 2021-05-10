@@ -51,7 +51,11 @@
 }
 
 .modalFooter{
-  margin: 1rem 0;
+  position: absolute;
+  bottom: 0px;
+  background: white;
+  height: 12%;
+  width: 95%;
 }
 
 .modal{

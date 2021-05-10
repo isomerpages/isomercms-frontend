@@ -64,11 +64,14 @@ const MediaModal = ({
       const medias = []
       respMedia.forEach((mediaFile) => { if (mediaFile.fileName !== `.keep`) medias.push(mediaFile) })
 
+      const directories = []
+      respDirectories.forEach((mediaDir) => directories.push({...mediaDir, fileName: deslugifyDirectory(mediaDir.fileName)}))
+
       if (_isMounted) {
         setMedias(medias)
         setFilteredMedias(medias)
-        setDirectories(respDirectories)
-        setFilteredDirectories(respDirectories)
+        setDirectories(directories)
+        setFilteredDirectories(directories)
       }
     }
 
@@ -170,7 +173,7 @@ const MediaModal = ({
                 type='dir'
                 media={directory}
                 siteName={siteName}
-                onClick={() => setCustomPath((prevState) => prevState ? `${prevState}/${directory.fileName}` : directory.fileName)}
+                onClick={() => setCustomPath((prevState) => prevState ? `${prevState}/${directory.name}` : directory.name)}
                 key={directory.path}
               />
             ))}
@@ -187,19 +190,17 @@ const MediaModal = ({
             ))}
           </div>
           {/* Flexbox parent needs to be full-width - https://stackoverflow.com/a/49029061 */}
-          <div className="w-100">
-            <div className={`d-flex ${elementStyles.modalFooter}`}>
-              <div className="ml-auto">
-                <LoadingButton
-                    label={`Select ${type}`}
-                    disabledStyle={elementStyles.disabled}
-                    disabled={!selectedFile}
-                    className={elementStyles.blue}
-                    callback={() => {
-                      if (selectedFile) onMediaSelect(`/${decodeURIComponent(selectedFile.path)}`)
-                    }}
-                />
-              </div>
+          <div className={`d-flex ${elementStyles.modalFooter}`}>
+            <div className="ml-auto mt-3">
+              <LoadingButton
+                  label={`Select ${type}`}
+                  disabledStyle={elementStyles.disabled}
+                  disabled={!selectedFile}
+                  className={elementStyles.blue}
+                  callback={() => {
+                    if (selectedFile) onMediaSelect(`/${decodeURIComponent(selectedFile.path)}`)
+                  }}
+              />
             </div>
           </div>
         </div>
