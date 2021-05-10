@@ -219,4 +219,6 @@ MediaModal.propTypes = {
   onMediaSelect: PropTypes.func.isRequired,
   type: PropTypes.oneOf(['file', 'image']).isRequired,
   setMediaSearchTerm: PropTypes.func.isRequired,
+  readFileToStageUpload: PropTypes.func.isRequired,
+  setUploadPath: PropTypes.func.isRequired,
 };
