@@ -11,7 +11,7 @@ import SimplePage from '../templates/SimplePage';
 import LeftNavPage from '../templates/LeftNavPage';
 
 import { checkCSP } from '../utils/cspUtils';
-import { errorToast } from '../utils/toasts';
+import { successToast, errorToast } from '../utils/toasts';
 
 // Isomer components
 import {
@@ -188,7 +188,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       onError: () => errorToast(`There was a problem saving your page. ${DEFAULT_RETRY_MSG}`),
       onSuccess: () => {
         queryClient.invalidateQueries([PAGE_CONTENT_KEY, match.params])
-        window.location.reload()
+        successToast('Successfully saved page content')
       },
     },
   )
