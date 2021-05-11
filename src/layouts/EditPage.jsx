@@ -95,6 +95,11 @@ const getBackButtonInfo = (resourceCategory, folderName, siteName, subfolderName
   }
 }
 
+const MEDIA_PLACEHOLDER_TEXT = {
+  'images': 'Alt text for image on Isomer site',
+  'files': 'Example Filename',
+}
+
 const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
   // Instantiate queryClient
   const queryClient = useQueryClient()
@@ -296,10 +301,10 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
     let editorValue
     const cm = mdeRef.current.simpleMde.codemirror;
     if (newFileName && isSelectingImage) {
-      cm.replaceSelection(`![](/images/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`.replaceAll(' ', '%20'));
+      cm.replaceSelection(`![${MEDIA_PLACEHOLDER_TEXT['images']}]`+encodeURIComponent(`(/images/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`));
       setIsSelectingImage(false);
     } else if (newFileName && isSelectingFile) {
-      cm.replaceSelection(`[Example Filename]`+`(/files/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`.replaceAll(' ', '%20'));
+      cm.replaceSelection(`[${MEDIA_PLACEHOLDER_TEXT['files']}]`+encodeURIComponent(`(/files/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`));
       setIsSelectingFile(false)
     }
     // set state so that rerender is triggered and image is shown
@@ -333,10 +338,10 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
   const onMediaSelect = (path) => {
     const cm = mdeRef.current.simpleMde.codemirror;
     if (isSelectingImage) {
-      cm.replaceSelection(`![](${path.replaceAll(' ', '%20')})`);
+      cm.replaceSelection(`![${MEDIA_PLACEHOLDER_TEXT['images']}](${encodeURIComponent(path)})`);
       setIsSelectingImage(false)
     } else if (isSelectingFile) {
-      cm.replaceSelection(`[Example Filename](${path.replaceAll(' ', '%20')})`);
+      cm.replaceSelection(`[${MEDIA_PLACEHOLDER_TEXT['files']}](${encodeURIComponent(path)})`);
       setIsSelectingFile(false)
     }
     // set state so that rerender is triggered and image is shown

@@ -34,7 +34,7 @@ const FormFieldMedia = ({
     const event = {
       target: {
         id: id,
-        value: path.replaceAll(' ', '%20'),
+        value: encodeURIComponent(path),
       },
     };
     successToast(`Successfully updated ${title.toLowerCase()}!`)
