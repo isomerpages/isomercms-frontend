@@ -725,4 +725,9 @@ export const convertSubfolderArray = (folderOrderArray, rawFolderContents, subfo
     }
     return curr
   })
-} 
+}
+
+export const generateImageorFilePath = (customPath, fileName) => {
+  if (customPath) return encodeURIComponent(`${customPath}/${fileName}`)
+  return fileName
+}

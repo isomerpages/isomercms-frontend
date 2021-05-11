@@ -358,13 +358,13 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
         chosenMedia
         && (
         <MediaSettingsModal
-          type={mediaNames[mediaType].slice(0,-1)}
+          type={mediaNames[mediaType]}
           media={chosenMedia}
           siteName={siteName}
           customPath={customPath}
           isPendingUpload={false}
           onClose={() => setChosenMedia(null)}
-          onSave={() => window.location.reload()}
+          onSave={() => setChosenMedia(null)}
         />
         )
       }
@@ -372,14 +372,14 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
         pendingMediaUpload
         && (
         <MediaSettingsModal
-          type={mediaNames[mediaType].slice(0,-1)}
+          type={mediaNames[mediaType]}
           media={pendingMediaUpload}
           siteName={siteName}
           customPath={customPath}
           // eslint-disable-next-line react/jsx-boolean-value
           isPendingUpload
           onClose={() => setPendingMediaUpload(null)}
-          onSave={() => window.location.reload()}
+          onSave={() => setPendingMediaUpload(null)}
         />
         )
       }

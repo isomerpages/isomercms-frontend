@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getNavFolderDropdownFromFolderOrder, parseDirectoryFile } from './utils';
+import { getNavFolderDropdownFromFolderOrder, generateImageorFilePath } from './utils';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -275,6 +275,49 @@ const getMedia = async (siteName, customPath, mediaType) => {
     }
 }
 
+const getMediaDetails = async ( {siteName, type, customPath, fileName} ) => {
+    const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}/${generateImageorFilePath(customPath, fileName)}`)
+    return resp.data
+}
+
+const createMedia = async ( {siteName, type, customPath, newFileName, content} ) => {
+    const params = {
+        content,
+    };
+
+    if (type === 'images') {
+        params.imageName = newFileName;
+        params.imageDirectory = `images${customPath ? `/${customPath}` : ''}`;
+    } else {
+        params.documentName = newFileName;
+        params.documentDirectory = `files${customPath ? `/${customPath}` : ''}`;
+    }
+
+    return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}`, params)
+}
+
+const renameMedia = async ({siteName, type, sha, customPath, content, fileName, newFileName}) => {
+    const params = {
+        sha,
+        content,
+    };
+    if (newFileName === fileName) {
+        return;
+    }
+    return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}/${generateImageorFilePath(customPath, fileName)}/rename/${generateImageorFilePath(customPath, newFileName)}`, params);
+}
+
+const deleteMedia = async ({siteName, type, sha, customPath, fileName}) => {
+    const params = {
+        sha,
+    };
+
+    return await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}/${generateImageorFilePath(customPath, fileName)}`, {
+        data: params,
+    });
+}
+
+
 const createMediaSubfolder = async (siteName, mediaType, customPath) => {
     if ((mediaType !== 'images' && mediaType !== 'documents') || !customPath) return
     return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/media/${mediaType}/${encodeURIComponent(customPath)}`)
@@ -318,6 +361,10 @@ export {
     moveFiles,
     moveFile,
     getMedia,
+    getMediaDetails,
+    createMedia,
+    renameMedia,
+    deleteMedia,
     createMediaSubfolder,
     renameMediaSubfolder,
     deleteMediaSubfolder,

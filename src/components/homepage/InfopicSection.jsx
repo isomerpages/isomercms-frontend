@@ -86,7 +86,7 @@ const EditorInfopicSection = ({
               inlineButtonText="Choose Image"
               placeholder=" "
               siteName={siteName}
-              type="image"
+              type="images"
             />
             <FormField
               title="Infopic image alt text"
