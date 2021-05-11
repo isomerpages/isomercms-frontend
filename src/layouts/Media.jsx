@@ -364,7 +364,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
           customPath={customPath}
           isPendingUpload={false}
           onClose={() => setChosenMedia(null)}
-          onSave={() => window.location.reload()}
+          onSave={() => setChosenMedia(null)}
         />
         )
       }
@@ -379,7 +379,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
           // eslint-disable-next-line react/jsx-boolean-value
           isPendingUpload
           onClose={() => setPendingMediaUpload(null)}
-          onSave={() => window.location.reload()}
+          onSave={() => setPendingMediaUpload(null)}
         />
         )
       }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import PropTypes from 'prop-types';
 
 import FormField from '../FormField';
@@ -12,7 +12,7 @@ import {
 } from '../../utils'
 import { errorToast, successToast } from '../../utils/toasts';
 import { getMediaDetails, createMedia, renameMedia, deleteMedia } from '../../api';
-import { IMAGE_DETAILS_KEY, DOCUMENT_DETAILS_KEY } from '../../constants'
+import { IMAGE_DETAILS_KEY, IMAGE_CONTENTS_KEY, DOCUMENT_DETAILS_KEY, DOCUMENT_CONTENTS_KEY} from '../../constants'
 
 import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
@@ -24,6 +24,7 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
   const [content, setContent] = useState()
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
   const errorMessage = validateFileName(newFileName);
+  const queryClient = useQueryClient()
 
   // Retrieve media information
   const { data: mediaData } = useQuery(
@@ -67,10 +68,10 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
       },
       onSuccess: () => {
         successToast(`Successfully ${isPendingUpload ? `created new` : `renamed`} ${type.slice(0,-1)}!`)
-        window.location.reload()
+        queryClient.invalidateQueries(type === 'images' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath])
       },
       onSettled: () => {
-        // onSave(newFileName)
+        onSave()
       },
     }
   )
@@ -82,10 +83,11 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
       onError: () => errorToast(`There was a problem trying to delete this ${type === 'images' ? 'image' : 'file'}. ${DEFAULT_RETRY_MSG}`),
       onSuccess: () => {
         successToast(`Successfully deleted ${type.slice(0,-1)}!`)
-        window.location.reload()
+        queryClient.invalidateQueries(type === 'images' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath])
       },
       onSettled: () => {
-        // window.location.reload()
+        setCanShowDeleteWarningModal(false)
+        onSave()
       },
     }
   )
