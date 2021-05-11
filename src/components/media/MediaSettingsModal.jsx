@@ -192,4 +192,5 @@ MediaSettingsModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   isPendingUpload: PropTypes.bool.isRequired,
+  customPath: PropTypes.string,
 };
