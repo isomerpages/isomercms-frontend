@@ -71,7 +71,7 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
         queryClient.invalidateQueries(type === 'images' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath])
       },
       onSettled: () => {
-        onSave()
+        onSave(newFileName)
       },
     }
   )
