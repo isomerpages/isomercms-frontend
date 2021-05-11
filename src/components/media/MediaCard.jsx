@@ -29,6 +29,13 @@ const MediaCard = ({
           </div>
         )
       }
+      {
+        type === 'dirs' && (
+          <div className={mediaStyles.mediaCardFilePreviewContainer}>
+            <p><i className={`bx bx-lg bxs-folder`}/></p>
+          </div>
+        )
+      }
       <div className={mediaStyles.mediaCardDescription}>
         <div className={mediaStyles.mediaCardName}>{media.fileName}</div>
         { canShowEditIcon && <i className="bx bxs-edit" /> }
@@ -38,7 +45,7 @@ const MediaCard = ({
 );
 
 MediaCard.propTypes = {
-  type: PropTypes.oneOf(['images', 'files']).isRequired,
+  type: PropTypes.oneOf(['images', 'files', 'dirs']).isRequired,
   siteName: PropTypes.string,
   onClick: PropTypes.func.isRequired,
   media: PropTypes.shape({

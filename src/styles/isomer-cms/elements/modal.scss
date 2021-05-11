@@ -33,6 +33,12 @@
   }
 }
 
+  .breadcrumbText {
+    font-weight: strong;
+    font-size: 16px;
+    color: $isomer-blue;
+  }
+
 .modalHeader{
   width: 100%;
   display: flex;
@@ -51,7 +57,11 @@
 }
 
 .modalFooter{
-  margin: 1rem 0;
+  position: absolute;
+  bottom: 0px;
+  background: white;
+  height: 12%;
+  width: 95%;
 }
 
 .modal{

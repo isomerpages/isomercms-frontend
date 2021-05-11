@@ -11,7 +11,7 @@ import SimplePage from '../templates/SimplePage';
 import LeftNavPage from '../templates/LeftNavPage';
 
 import { checkCSP } from '../utils/cspUtils';
-import { errorToast } from '../utils/toasts';
+import { successToast, errorToast } from '../utils/toasts';
 
 // Isomer components
 import {
@@ -95,7 +95,12 @@ const getBackButtonInfo = (resourceCategory, folderName, siteName, subfolderName
   }
 }
 
-const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) => {
+const MEDIA_PLACEHOLDER_TEXT = {
+  'images': '![Alt text for image on Isomer site]',
+  'files': '[Example Filename]',
+}
+
+const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
   // Instantiate queryClient
   const queryClient = useQueryClient()
 
@@ -112,14 +117,14 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
   const [editorValue, setEditorValue] = useState('')
   const [frontMatter, setFrontMatter] = useState('')
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
-  const [isSelectingImage, setIsSelectingImage] = useState(false)
+  const [insertingMediaType, setInsertingMediaType] = useState('')
+  const [showMediaModal, setShowMediaModal] = useState(false)
   const [isInsertingHyperlink, setIsInsertingHyperlink] = useState(false)
   const [selectionText, setSelectionText] = useState('')
   const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
   const [stagedFileDetails, setStagedFileDetails] = useState({})
   const [isLoadingPageContent, setIsLoadingPageContent] = useState(true)
-  const [mediaSearchTerm, setMediaSearchTerm] = useState('')
-  const [selectedFile, setSelectedFile] = useState('')
+  const [uploadPath, setUploadPath] = useState('')
   const [leftNavPages, setLeftNavPages] = useState([])
   const [resourceRoomName, setResourceRoomName] = useState('')
   const [isCspViolation, setIsCspViolation] = useState(false)
@@ -187,7 +192,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       onError: () => errorToast(`There was a problem saving your page. ${DEFAULT_RETRY_MSG}`),
       onSuccess: () => {
         queryClient.invalidateQueries([PAGE_CONTENT_KEY, match.params])
-        window.location.reload()
+        successToast('Successfully saved page content')
       },
     },
   )
@@ -292,19 +297,14 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
 
   const toggleImageAndSettingsModal = (newFileName) => {
     // insert image into editor
-    let editorValue
+    const cm = mdeRef.current.simpleMde.codemirror;
     if (newFileName) {
-      const cm = mdeRef.current.simpleMde.codemirror;
-      cm.replaceSelection(`![](/images/${newFileName})`);
-
+      cm.replaceSelection(`${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}`+`(/${insertingMediaType}/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`.replaceAll(' ', '%20'));
       // set state so that rerender is triggered and image is shown
-      editorValue = mdeRef.current.simpleMde.codemirror.getValue()
+      setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
     }
-
+    setInsertingMediaType('')
     setIsFileStagedForUpload(!isFileStagedForUpload)
-    if (editorValue) {
-      setEditorValue(editorValue)
-    }
   }
 
   const onHyperlinkOpen = () => {
@@ -327,16 +327,17 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     setSelectionText('')
   }
 
-  const onImageClick = (path) => {
+  const onMediaSelect = (path) => {
     const cm = mdeRef.current.simpleMde.codemirror;
-    cm.replaceSelection(`![](${path.replaceAll(' ', '%20')})`);
+    cm.replaceSelection(`${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}(${path.replaceAll(' ', '%20')})`);
     // set state so that rerender is triggered and image is shown
     setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
-    setIsSelectingImage(false)
+    setInsertingMediaType('')
+    setShowMediaModal(false)
   }
 
   const stageFileForUpload = (fileName, fileData) => {
-    const baseFolder = type === 'file' ? 'files' : 'images';
+    const baseFolder = insertingMediaType;
     setStagedFileDetails({
       path: `${baseFolder}%2F${fileName}`,
       content: fileData,
@@ -358,7 +359,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       stageFileForUpload(fileName, fileData);
     });
     fileReader.readAsDataURL(event.target.files[0]);
-    setIsSelectingImage((prevState) => !prevState)
+    setShowMediaModal((prevState) => !prevState)
   }
 
   return (
@@ -372,28 +373,32 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
         backButtonUrl={backButtonUrl}
       />
       <div className={elementStyles.wrapper}>
+        {/* Inserting Medias */}
         {
-          isSelectingImage && (
+          showMediaModal && insertingMediaType && (
           <MediaModal
-            type="images"
             siteName={siteName}
-            onMediaSelect={onImageClick}
-            toggleImageModal={() => setIsSelectingImage(!isSelectingImage)}
+            onClose={() => {
+              setShowMediaModal(false); 
+              setInsertingMediaType('')
+            }}
+            onMediaSelect={onMediaSelect}
+            type={insertingMediaType}
             readFileToStageUpload={readFileToStageUpload}
-            onClose={() => setIsSelectingImage(false)}
-            mediaSearchTerm={mediaSearchTerm}
-            setMediaSearchTerm={setMediaSearchTerm}
-            selectedFile={selectedFile}
-            setSelectedFile={setSelectedFile}
+            setUploadPath={setUploadPath}
           />
           )
         }
         {
-          isFileStagedForUpload && (
+          isFileStagedForUpload && insertingMediaType && (
             <MediaSettingsModal
-              type="images"
+              type={insertingMediaType}
               siteName={siteName}
-              onClose={() => setIsFileStagedForUpload(false)}
+              customPath={uploadPath}
+              onClose={() => {
+                setIsFileStagedForUpload(false)
+                setInsertingMediaType('')
+              }}
               onSave={toggleImageAndSettingsModal}
               media={stagedFileDetails}
               isPendingUpload
@@ -446,10 +451,21 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
                   {
                     name: 'image',
                     action: async () => {
-                      setIsSelectingImage(true);
+                      setShowMediaModal(true);
+                      setInsertingMediaType('images');
                     },
                     className: 'fa fa-picture-o',
                     title: 'Insert Image',
+                    default: true,
+                  },
+                  {
+                    name: 'file',
+                    action: async () => {
+                      setShowMediaModal(true);
+                      setInsertingMediaType('files');
+                    },
+                    className: 'fa fa-file-pdf-o',
+                    title: 'Insert File',
                     default: true,
                   },
                   {
