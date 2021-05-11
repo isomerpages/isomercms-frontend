@@ -299,7 +299,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
     // insert image into editor
     const cm = mdeRef.current.simpleMde.codemirror;
     if (newFileName) {
-      cm.replaceSelection(`${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}`+encodeURIComponent(`(/${insertingMediaType}/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`));
+      cm.replaceSelection(`${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}`+`(/${insertingMediaType}/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`.replaceAll(' ', '%20'));
       // set state so that rerender is triggered and image is shown
       setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
     }
@@ -329,7 +329,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
 
   const onMediaSelect = (path) => {
     const cm = mdeRef.current.simpleMde.codemirror;
-    cm.replaceSelection(`${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}(${encodeURIComponent(path)})`);
+    cm.replaceSelection(`${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}(${path.replaceAll(' ', '%20')})`);
     // set state so that rerender is triggered and image is shown
     setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
     setInsertingMediaType('')
@@ -375,7 +375,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
       <div className={elementStyles.wrapper}>
         {/* Inserting Medias */}
         {
-          showMediaModal && (
+          showMediaModal && insertingMediaType && (
           <MediaModal
             siteName={siteName}
             onClose={() => {
@@ -390,7 +390,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
           )
         }
         {
-          isFileStagedForUpload && (
+          isFileStagedForUpload && insertingMediaType && (
             <MediaSettingsModal
               type={insertingMediaType}
               siteName={siteName}
