@@ -196,7 +196,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
             folderNameChangeHandler={folderNameChangeHandler}
             title={newFolderName}
             errors={errors}
-            folderType={`${mediaNames[mediaType]} directory`}
+            folderType={`${mediaNames[mediaType].slice(0,-1)} ${mediaType === 'images' ? 'album' : 'directory'}`}
             proceedText='Create'
           />
         </div>
@@ -249,7 +249,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
                 onClick={() => document.getElementById('file-upload').click()}
               />
               <FolderOptionButton
-                title="Create new directory"
+                title={`Create new ${mediaType === 'images' ? 'album' : 'directory'}`}
                 option="create-sub"
                 isSubfolder={false}
                 onClick={() => setIsCreateModalActive(true)}
@@ -284,7 +284,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
           </div>
           {/* Directories title segment */}
           <div className={contentStyles.segment}>
-            <span>Directories</span>
+            <span>{mediaType === 'images' ? 'Albums' : 'Directories'}</span>
           </div>
           {/* Media directories */}
           <div className={contentStyles.folderContainerBoxes}>
@@ -312,7 +312,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
                 ))
                 : (
                   <div className={contentStyles.segment}>
-                    There are no {mediaNames[mediaType].slice(0,-1)} sub-directories in this directory.
+                    {`There are no ${mediaNames[mediaType].slice(0,-1)} sub-${mediaType === 'images' ? 'albums' : 'directories'} in this ${mediaType === 'images' ? 'album' : 'directory'}.`}
                   </div>
                 )
               }
@@ -343,7 +343,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
                     />
                   )) : (
                     <div className={contentStyles.segment}>
-                      There are no {mediaNames[mediaType]} in this directory.
+                      There are no {mediaNames[mediaType]} in this {mediaType === 'images' ? 'album' : 'directory'}.
                     </div>
                   )
                 }
