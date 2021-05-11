@@ -96,8 +96,8 @@ const getBackButtonInfo = (resourceCategory, folderName, siteName, subfolderName
 }
 
 const MEDIA_PLACEHOLDER_TEXT = {
-  'images': 'Alt text for image on Isomer site',
-  'files': 'Example Filename',
+  'images': '![Alt text for image on Isomer site]',
+  'files': '[Example Filename]',
 }
 
 const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
@@ -117,8 +117,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
   const [editorValue, setEditorValue] = useState('')
   const [frontMatter, setFrontMatter] = useState('')
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
-  const [isSelectingImage, setIsSelectingImage] = useState(false)
-  const [isSelectingFile, setIsSelectingFile] = useState(false)
+  const [insertingMediaType, setInsertingMediaType] = useState('')
   const [showMediaModal, setShowMediaModal] = useState(false)
   const [isInsertingHyperlink, setIsInsertingHyperlink] = useState(false)
   const [selectionText, setSelectionText] = useState('')
@@ -298,21 +297,14 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
 
   const toggleImageAndSettingsModal = (newFileName) => {
     // insert image into editor
-    let editorValue
     const cm = mdeRef.current.simpleMde.codemirror;
-    if (newFileName && isSelectingImage) {
-      cm.replaceSelection(`![${MEDIA_PLACEHOLDER_TEXT['images']}]`+encodeURIComponent(`(/images/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`));
-      setIsSelectingImage(false);
-    } else if (newFileName && isSelectingFile) {
-      cm.replaceSelection(`[${MEDIA_PLACEHOLDER_TEXT['files']}]`+encodeURIComponent(`(/files/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`));
-      setIsSelectingFile(false)
+    if (newFileName) {
+      cm.replaceSelection(`${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}`+encodeURIComponent(`(/${insertingMediaType}/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`));
+      // set state so that rerender is triggered and image is shown
+      setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
     }
-    // set state so that rerender is triggered and image is shown
-    editorValue = mdeRef.current.simpleMde.codemirror.getValue()
+    setInsertingMediaType('')
     setIsFileStagedForUpload(!isFileStagedForUpload)
-    if (editorValue) {
-      setEditorValue(editorValue)
-    }
   }
 
   const onHyperlinkOpen = () => {
@@ -337,20 +329,15 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
 
   const onMediaSelect = (path) => {
     const cm = mdeRef.current.simpleMde.codemirror;
-    if (isSelectingImage) {
-      cm.replaceSelection(`![${MEDIA_PLACEHOLDER_TEXT['images']}](${encodeURIComponent(path)})`);
-      setIsSelectingImage(false)
-    } else if (isSelectingFile) {
-      cm.replaceSelection(`[${MEDIA_PLACEHOLDER_TEXT['files']}](${encodeURIComponent(path)})`);
-      setIsSelectingFile(false)
-    }
+    cm.replaceSelection(`${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}(${encodeURIComponent(path)})`);
     // set state so that rerender is triggered and image is shown
     setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
+    setInsertingMediaType('')
     setShowMediaModal(false)
   }
 
   const stageFileForUpload = (fileName, fileData) => {
-    const baseFolder = isSelectingFile === 'file' ? 'files' : 'images';
+    const baseFolder = insertingMediaType;
     setStagedFileDetails({
       path: `${baseFolder}%2F${fileName}`,
       content: fileData,
@@ -393,11 +380,10 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
             siteName={siteName}
             onClose={() => {
               setShowMediaModal(false); 
-              setIsSelectingImage(false)
-              setIsSelectingFile(false)
+              setInsertingMediaType('')
             }}
             onMediaSelect={onMediaSelect}
-            type={isSelectingImage ? 'images' : 'files'}
+            type={insertingMediaType}
             readFileToStageUpload={readFileToStageUpload}
             setUploadPath={setUploadPath}
           />
@@ -406,10 +392,13 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
         {
           isFileStagedForUpload && (
             <MediaSettingsModal
-              type={isSelectingImage ? 'images' : 'files'}
+              type={insertingMediaType}
               siteName={siteName}
               customPath={uploadPath}
-              onClose={() => setIsFileStagedForUpload(false)}
+              onClose={() => {
+                setIsFileStagedForUpload(false)
+                setInsertingMediaType('')
+              }}
               onSave={toggleImageAndSettingsModal}
               media={stagedFileDetails}
               isPendingUpload
@@ -463,7 +452,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
                     name: 'image',
                     action: async () => {
                       setShowMediaModal(true);
-                      setIsSelectingImage(true);
+                      setInsertingMediaType('image');
                     },
                     className: 'fa fa-picture-o',
                     title: 'Insert Image',
@@ -473,7 +462,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
                     name: 'file',
                     action: async () => {
                       setShowMediaModal(true);
-                      setIsSelectingFile(true);
+                      setInsertingMediaType('file');
                     },
                     className: 'fa fa-file-pdf-o',
                     title: 'Insert File',
