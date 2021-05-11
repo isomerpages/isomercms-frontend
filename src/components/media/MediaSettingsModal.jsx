@@ -57,12 +57,12 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
       onError: (err) => {
         if (err?.response?.status === 409) {
           // Error due to conflict in name
-          errorToast(`Another ${type === 'images' ? 'image' : 'file'} with the same name exists. Please choose a different name.`)
+          errorToast(`Another ${type.slice(0,-1)} with the same name exists. Please choose a different name.`)
         } else if (err?.response?.status === 413 || err?.response === undefined) {
           // Error due to file size too large - we receive 413 if nginx accepts the payload but it is blocked by our express settings, and undefined if it is blocked by nginx
-          errorToast(`Unable to upload as the ${type === 'images' ? 'image' : 'file'} size exceeds 5MB. Please reduce your ${type === 'images' ? 'image' : 'file'} size and try again.`)
+          errorToast(`Unable to upload as the ${type.slice(0,-1)} size exceeds 5MB. Please reduce your ${type.slice(0,-1)} size and try again.`)
         } else {
-          errorToast(`There was a problem trying to save this ${type === 'images' ? 'image' : 'file'}. ${DEFAULT_RETRY_MSG}`)
+          errorToast(`There was a problem trying to save this ${type.slice(0,-1)}. ${DEFAULT_RETRY_MSG}`)
         }
         console.log(err);
       },
@@ -80,7 +80,7 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
   const { mutateAsync: deleteHandler } = useMutation(
     () => deleteMedia({siteName, type, sha, customPath, fileName}),
     {
-      onError: () => errorToast(`There was a problem trying to delete this ${type === 'images' ? 'image' : 'file'}. ${DEFAULT_RETRY_MSG}`),
+      onError: () => errorToast(`There was a problem trying to delete this ${type.slice(0,-1)}. ${DEFAULT_RETRY_MSG}`),
       onSuccess: () => {
         successToast(`Successfully deleted ${type.slice(0,-1)}!`)
         queryClient.invalidateQueries(type === 'images' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath])
@@ -118,7 +118,7 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
       <div className={elementStyles.modal}>
         <div className={elementStyles.modalHeader}>
           <h1>
-            {isPendingUpload ? `Upload new ${type}` : `Edit ${type} details`}
+            {isPendingUpload ? `Upload new ${type.slice(0,-1)}` : `Edit ${type.slice(0,-1)} details`}
           </h1>
           <button type="button" onClick={onClose}>
             <i className="bx bx-x" />
