@@ -452,7 +452,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
                     name: 'image',
                     action: async () => {
                       setShowMediaModal(true);
-                      setInsertingMediaType('image');
+                      setInsertingMediaType('images');
                     },
                     className: 'fa fa-picture-o',
                     title: 'Insert Image',
@@ -462,7 +462,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
                     name: 'file',
                     action: async () => {
                       setShowMediaModal(true);
-                      setInsertingMediaType('file');
+                      setInsertingMediaType('files');
                     },
                     className: 'fa fa-file-pdf-o',
                     title: 'Insert File',
