@@ -1,21 +1,26 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import axios from 'axios';
+import { useQueryClient, useMutation } from 'react-query';
 
 import FolderModal from './FolderModal';
 import DeleteWarningModal from './DeleteWarningModal'
 import { MenuDropdown } from './MenuDropdown'
 
-import { errorToast } from '../utils/toasts';
+import {
+  deleteFolder,
+  deleteResourceCategory,
+  deleteMediaSubfolder,
+} from '../api'
+
+
+import { errorToast, successToast } from '../utils/toasts';
+import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY, FOLDERS_CONTENT_KEY, RESOURCE_ROOM_CONTENT_KEY } from '../constants';
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 import { DEFAULT_RETRY_MSG } from '../utils'
-
-// axios settings
-axios.defaults.withCredentials = true
 
 const FolderCard = ({
   displayText,
@@ -28,7 +33,10 @@ const FolderCard = ({
   linkPath,
   onClick,
   existingFolders,
+  mediaCustomPath,
 }) => {
+  // Instantiate queryClient
+  const queryClient = useQueryClient()
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
   const [canShowDropdown, setCanShowDropdown] = useState(false)
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
@@ -50,7 +58,8 @@ const FolderCard = ({
         return `/sites/${siteName}/contact-us`
       case 'nav':
         return `/sites/${siteName}/navbar`
-      case 'media':
+      case 'images':
+      case 'documents':
         return `/sites/${siteName}/${linkPath}`
       default:
         return ''
@@ -72,18 +81,67 @@ const FolderCard = ({
     }
   }
 
-  const deleteHandler = async () => {
-    try {
-      const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}${pageType === 'collection' ? `/collections/${category}` : `/resources/${category}`}`
-      await axios.delete(apiUrl);
-
-      // Refresh page
-      window.location.reload();
-    } catch (err) {
-      errorToast(`There was a problem trying to delete this folder. ${DEFAULT_RETRY_MSG}`)
-      console.log(err);
+  const getFolderType = (pageType) => {
+    switch(pageType) {
+      case 'collection':
+        return 'page'
+      case 'images':
+        return 'images'
+      case 'documents':
+        return 'documents'
+      default:
+        return 'resources'
     }
   }
+
+  const selectDeleteApiCall = (pageType, siteName, category, mediaCustomPath) => {
+    let params
+    switch(pageType) {
+      case 'collection':
+        params = {
+          siteName,
+          folderName: category,
+        }
+        return deleteFolder(params)
+      case 'resources':
+        params = {
+          siteName,
+          categoryName: category,
+        }
+        return deleteResourceCategory(params)
+      case 'images':
+      case 'documents':
+        params = {
+          siteName,
+          mediaType: pageType,
+          customPath: `${mediaCustomPath ? `${mediaCustomPath}/` : ''}${category}`,
+        }
+        return deleteMediaSubfolder(params)
+    }
+  }
+
+  // delete folder/resource category
+  const { mutateAsync: deleteDirectory } = useMutation(
+    () => selectDeleteApiCall(pageType, siteName, category, mediaCustomPath),
+    {
+      onError: () => errorToast(`There was a problem trying to delete this folder. ${DEFAULT_RETRY_MSG}`),
+      onSuccess: () => {
+        if (pageType === "resources") {
+          // Resource folder
+          queryClient.invalidateQueries([RESOURCE_ROOM_CONTENT_KEY, siteName])
+        } else if (pageType === "collection") {
+          // Collection folder
+          queryClient.invalidateQueries([FOLDERS_CONTENT_KEY, { siteName, isResource: false }])
+        } else if (pageType === "images") {
+          queryClient.invalidateQueries([IMAGE_CONTENTS_KEY, mediaCustomPath])
+        } else if (pageType === "documents") {
+          queryClient.invalidateQueries([DOCUMENT_CONTENTS_KEY, mediaCustomPath])
+        }
+        setCanShowDeleteWarningModal(false)
+        successToast(`Successfully deleted folder!`)
+      },
+    },
+  )
 
   const FolderCardContent = () =>
     <div id={itemIndex} className={`${contentStyles.folderInfo}`}>
@@ -138,14 +196,15 @@ const FolderCard = ({
           onClose={() => setIsFolderModalOpen(false)}
           folderOrCategoryName={category}
           siteName={siteName}
-          isCollection={pageType === 'collection'}
+          folderType={getFolderType(pageType)}
           existingFolders={existingFolders}
+          mediaCustomPath={mediaCustomPath}
         />
       }
       { canShowDeleteWarningModal &&
         <DeleteWarningModal
           onCancel={() => setCanShowDeleteWarningModal(false)}
-          onDelete={deleteHandler}
+          onDelete={deleteDirectory}
           type="folder"
         />
       }
@@ -177,6 +236,7 @@ FolderCard.propTypes = {
   siteName: PropTypes.string.isRequired,
   category: PropTypes.string,
   linkPath: PropTypes.string,
+  mediaCustomPath: PropTypes.string,
 };
 
 export default FolderCard;

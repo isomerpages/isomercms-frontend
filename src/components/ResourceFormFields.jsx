@@ -63,7 +63,7 @@ const ResourceFormFields = ({date, errors, changeHandler, onToggle, isPost, setI
         inlineButtonText={"Select File"}
         siteName={siteName}
         placeholder=" "
-        type="file"
+        type="files"
         errorMessage={errors.fileUrl}
         isDisabled={isPost}
       />
