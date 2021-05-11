@@ -108,7 +108,7 @@ const MediaModal = ({
       <div className={elementStyles.overlay}>
         <div className={mediaStyles.mediaModal}>
           <div className={elementStyles.modalHeader}>
-            <h1 className="pl-5 mr-auto">{`Select ${type === 'files' ? 'File' : 'Image'}`}</h1>
+            <h1 className="pl-5 mr-auto">{`Select ${type.slice(0,-1)}`}</h1>
             {/* Search medias */}
             <MediaSearchBar value={mediaSearchTerm} onSearchChange={searchChangeHandler} />
             {/* Upload medias */}
@@ -116,7 +116,7 @@ const MediaModal = ({
               type="button"
               className={elementStyles.blue}
               onClick={() => document.getElementById('file-upload').click()}
-            >{`Add new ${type === 'files' ? 'File' : 'Image'}`}
+            >{`Add new ${type.slice(0,-1)}`}
             </button>
             <input
               onChange={(event) => {
@@ -190,7 +190,7 @@ const MediaModal = ({
           <div className={`d-flex ${elementStyles.modalFooter}`}>
             <div className="ml-auto mt-3">
               <LoadingButton
-                  label={`Select ${type === 'files' ? 'File' : 'Image'}`}
+                  label={`Select ${type.slice(0,-1)}`}
                   disabledStyle={elementStyles.disabled}
                   disabled={!selectedFile}
                   className={elementStyles.blue}
