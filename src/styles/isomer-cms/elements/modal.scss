@@ -33,6 +33,12 @@
   }
 }
 
+  .breadcrumbText {
+    font-weight: strong;
+    font-size: 16px;
+    color: $isomer-blue;
+  }
+
 .modalHeader{
   width: 100%;
   display: flex;

@@ -97,7 +97,7 @@ const MediaModal = ({
   const BreadcrumbButton = ({ name, idx }) => {
     const newCustomPath = customPath.split('/').slice(0, idx+1).join('/') // retrieves paths elements up to (excluding) element idx
     return (
-      <button type="button" onClick={() => setCustomPath(newCustomPath)}>
+      <button className={`${elementStyles.breadcrumbText} ml-1`} type="button" onClick={() => setCustomPath(newCustomPath)}>
         {name}
       </button>
     )
