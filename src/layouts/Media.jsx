@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { useQuery, useMutation } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
@@ -12,38 +13,41 @@ import FolderNamingModal from '../components/FolderNamingModal'
 import MediaCard from '../components/media/MediaCard';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
-import { createMediaSubfolder, getImages } from '../api';
+import { createMediaSubfolder, getMedia } from '../api';
+import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from '../constants'
 
 import useRedirectHook from '../hooks/useRedirectHook';
 
 import { DEFAULT_RETRY_MSG, deslugifyDirectory, slugifyCategory } from '../utils';
 import { validateCategoryName } from '../utils/validators'
-import { errorToast } from '../utils/toasts';
+import { errorToast, successToast } from '../utils/toasts';
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
 
-// Constants
-const IMAGE_CONTENTS_KEY = 'image-contents'
+const mediaNames = {
+  images: 'images',
+  documents: 'files',
+}
 
-const getPrevDirectoryPath = (customPath) => {
+const getPrevDirectoryPath = (customPath, mediaType) => {
   const customPathArr = customPath.split('%2F')
 
   let prevDirectoryPath
   if (customPathArr.length > 1) {
-    prevDirectoryPath = `images/${customPathArr
+    prevDirectoryPath = `${mediaType}/${customPathArr
       .slice(0, -1) // remove the latest directory
       .join('/')}`
   }
   else {
-    prevDirectoryPath = 'images'
+    prevDirectoryPath = mediaType
   }
 
   return prevDirectoryPath
 }
 
-const getPrevDirectoryName = (customPath) => {
+const getPrevDirectoryName = (customPath, mediaType) => {
   const customPathArr = customPath.split('%2F')
 
   let prevDirectoryName
@@ -51,26 +55,26 @@ const getPrevDirectoryName = (customPath) => {
     prevDirectoryName = customPathArr[customPathArr.length - 2]
   }
   else {
-    prevDirectoryName = 'Images'
+    prevDirectoryName = (mediaType === 'images' ? `Images` : 'Files')
   }
 
   return deslugifyDirectory(prevDirectoryName)
 }
 
-const Images = ({ match: { params: { siteName, customPath } }, location }) => {
-  const [images, setImages] = useState([])
+const Media = ({ match: { params: { siteName, customPath } }, location, mediaType }) => {
+  const [media, setMedia] = useState([])
   const [directories, setDirectories] = useState([])
   const [directoryNames, setDirectoryNames] = useState([])
-  const [pendingImageUpload, setPendingImageUpload] = useState(null)
-  const [chosenImage, setChosenImage] = useState('')
+  const [pendingMediaUpload, setPendingMediaUpload] = useState(null)
+  const [chosenMedia, setChosenMedia] = useState('')
   const [newFolderName, setNewFolderName] = useState('')
   const [errors, setErrors] = useState('')
   const [isCreateModalActive, setIsCreateModalActive] = useState(false)
   const { setRedirectToNotFound } = useRedirectHook()
 
-  const { data: imageData, refetch } = useQuery(
-    IMAGE_CONTENTS_KEY,
-    () => getImages(siteName, customPath ? decodeURIComponent(customPath): ''),
+  const { data: mediaData, refetch } = useQuery(
+    mediaType === 'images' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath],
+    () => getMedia(siteName, customPath ? decodeURIComponent(customPath): '', mediaNames[mediaType]),
     {
       retry: false,
       onError: (err) => {
@@ -85,11 +89,12 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
 
   // create folder
   const { mutateAsync: createHandler } = useMutation(
-    () => createMediaSubfolder(siteName, 'images', `${customPath ? `${customPath}/` : ''}${slugifyCategory(newFolderName)}`),
+    () => createMediaSubfolder(siteName, mediaType, `${customPath ? `${customPath}/` : ''}${slugifyCategory(newFolderName)}`),
     {
       onError: () => errorToast(`Your subfolder could not be created successfully. ${DEFAULT_RETRY_MSG}`),
       onSuccess: () => {
-        window.location.reload()
+        refetch()
+        successToast(`Successfully created new subfolder!`)
       },
       onSettled: () => {
         setIsCreateModalActive((prevState) => !prevState)
@@ -101,17 +106,17 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
   useEffect(() => {
     let _isMounted = true
 
-    if (imageData) {
+    if (mediaData) {
       const {
-        respImages,
+        respMedia,
         respDirectories,
-      } = imageData
+      } = mediaData
 
-      const filteredImages = []
-      respImages.forEach((image) => { if (image.fileName !== `.keep`) filteredImages.push(image) })
+      const filteredMedia = []
+      respMedia.forEach((media) => { if (media.fileName !== `.keep`) filteredMedia.push(media) })
 
       if (_isMounted) {
-        setImages(filteredImages)
+        setMedia(filteredMedia)
         setDirectories(respDirectories)
         setDirectoryNames(respDirectories.map(directory => directory.name))
       }
@@ -120,19 +125,15 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
     return () => {
       _isMounted = false
     }
-  }, [imageData])
+  }, [mediaData])
 
-  useEffect(() => {
-    refetch()
-  }, [customPath])
-
-  const uploadImage = async (imageName, imageContent) => {
+  const uploadMedia = async (mediaName, mediaContent) => {
     try {
-      // toggle state so that image renaming modal appears
-      setPendingImageUpload({
-        fileName: imageName,
-        path: `images%2F${imageName}`,
-        content: imageContent,
+      // toggle state so that media renaming modal appears
+      setPendingMediaUpload({
+        fileName: mediaName,
+        path: `${mediaType}%2F${mediaName}`,
+        content: mediaContent,
       })
     } catch (err) {
       console.log(err);
@@ -150,14 +151,33 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
 
       const imgData = imgReader.result.split(',')[1];
 
-      uploadImage(imgName, imgData);
+      uploadMedia(imgName, imgData);
     });
     imgReader.readAsDataURL(event.target.files[0]);
   }
 
+  const onFileSelect = async (event) => {
+    const fileReader = new FileReader();
+    const file = event.target?.files[0] || '';
+    if (file.name) {
+      fileReader.onload = (() => {
+        /** Github only requires the content of the file
+         * fileReader returns  `data:application/*;base64, {fileContent}`
+         * hence the split
+         */
+
+        const fileContent = fileReader.result.split(',')[1];
+        
+        uploadMedia(file.name, fileContent);
+      });
+      fileReader.readAsDataURL(file);
+      event.target.value = '';
+    }
+  }
+
   const folderNameChangeHandler = (event) => {
     const { value } = event.target;
-    let errorMessage = validateCategoryName(value, 'image', directoryNames)
+    let errorMessage = validateCategoryName(value, mediaNames[mediaType], directoryNames)
     setNewFolderName(value)
     setErrors(errorMessage)
   }
@@ -176,15 +196,15 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
             folderNameChangeHandler={folderNameChangeHandler}
             title={newFolderName}
             errors={errors}
-            folderType={'image directory'}
+            folderType={`${mediaNames[mediaType]} directory`}
             proceedText='Create'
           />
         </div>
       }
       <Header
         siteName={siteName}
-        backButtonText={`Back to ${customPath ? getPrevDirectoryName(customPath) : 'Sites'}`}
-        backButtonUrl={customPath ? `/sites/${siteName}/${getPrevDirectoryPath(customPath)}` : '/sites'}
+        backButtonText={`Back to ${customPath ? getPrevDirectoryName(customPath, mediaType) : 'Sites'}`}
+        backButtonUrl={customPath ? `/sites/${siteName}/${getPrevDirectoryPath(customPath, mediaType)}` : '/sites'}
       />
       {/* main bottom section */}
       <div className={elementStyles.wrapper}>
@@ -192,20 +212,40 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
         {/* main section starts here */}
         <div className={contentStyles.mainSection}>
           <div className={contentStyles.sectionHeader}>
-            <h1 className={contentStyles.sectionTitle}>Images</h1>
+            <h1 className={contentStyles.sectionTitle}>{mediaNames[mediaType][0].toUpperCase() + mediaNames[mediaType].substring(1)}</h1>
           </div>
           {/* Info segment */}
           <div className={contentStyles.segment}>
             <i className="bx bx-sm bx-info-circle text-dark" />
-            <span><strong className="ml-1">Note:</strong> Upload images here to link to them in pages and resources. The maximum image size allowed is 5MB.</span>
+            <span><strong className="ml-1">Note:</strong> Upload {mediaNames[mediaType]} here to link to them in pages and resources. The maximum {mediaNames[mediaType].slice(0,-1)} size allowed is 5MB.</span>
           </div>
+          {/* Segment divider  */}
+          <div className={contentStyles.segmentDividerContainer}>
+            <hr className="w-100 mt-3 mb-5" />
+          </div>
+          {/* Breadcrumb */}
+          {
+            customPath &&
+            <div className={contentStyles.segment}>
+              <span>
+                <Link to={`/sites/${siteName}/${mediaType}`}><strong>{mediaNames[mediaType][0].toUpperCase() + mediaNames[mediaType].substring(1)}</strong></Link>
+                {
+                  decodeURIComponent(customPath).split("/").map((folderName, idx, arr) => {
+                    return idx === arr.length - 1
+                    ? <span> ><strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></span>
+                    : <span> ><Link to={`/sites/${siteName}/${mediaType}/${encodeURIComponent(arr.slice(0,idx+1))}`}><strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></Link></span>
+                  })
+                }
+              </span>
+            </div>
+          }
           {/* Creation buttons */}
           <div className={contentStyles.folderContainerBoxes}>
             <div className={contentStyles.boxesContainer}>
-              {/* Upload Image */}
+              {/* Upload Media */}
               <FolderOptionButton
-                title="Upload new image"
-                option="upload-image"
+                title={`Upload new ${mediaNames[mediaType].slice(0,-1)}`}
+                option={`upload-${mediaNames[mediaType].slice(0,-1)}`}
                 onClick={() => document.getElementById('file-upload').click()}
               />
               <FolderOptionButton
@@ -214,28 +254,39 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
                 isSubfolder={false}
                 onClick={() => setIsCreateModalActive(true)}
               />
-              <input
-                onChange={onImageSelect}
-                onClick={(event) => {
-                  // eslint-disable-next-line no-param-reassign
-                  event.target.value = '';
-                }}
-                type="file"
-                id="file-upload"
-                accept="image/*"
-                hidden
-              />
+              { mediaType === 'images' ?
+                <input
+                  onChange={onImageSelect}
+                  onClick={(event) => {
+                    // eslint-disable-next-line no-param-reassign
+                    event.target.value = '';
+                  }}
+                  type="file"
+                  id="file-upload"
+                  accept="image/*"
+                  hidden
+                />
+                :
+                <input
+                  onChange={onFileSelect}
+                  onClick={(event) => {
+                    // eslint-disable-next-line no-param-reassign
+                    event.target.value = '';
+                  }}
+                  type="file"
+                  id="file-upload"
+                  accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
+                  text/plain, application/pdf"
+                  hidden
+                />
+              }
             </div>
-          </div>
-          {/* Segment divider  */}
-          <div className={contentStyles.segmentDividerContainer}>
-            <hr className="w-100 mt-3 mb-5" />
           </div>
           {/* Directories title segment */}
           <div className={contentStyles.segment}>
             <span>Directories</span>
           </div>
-          {/* Image directories */}
+          {/* Media directories */}
           <div className={contentStyles.folderContainerBoxes}>
             <div className={contentStyles.boxesContainer}>
               {
@@ -245,10 +296,10 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
                       displayText={deslugifyDirectory(directory.name)}
                       settingsToggle={() => {}}
                       key={directory.name}
-                      pageType={"images"}
-                      linkPath={`images/${encodeURIComponent(directory.path
+                      pageType={mediaType}
+                      linkPath={`${mediaType}/${encodeURIComponent(directory.path
                           .split('/')
-                          .slice(1) // remove `images` prefix
+                          .slice(1) // remove `images/files` prefix
                           .join('/')
                         )}`
                       }
@@ -261,7 +312,7 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
                 ))
                 : (
                   <div className={contentStyles.segment}>
-                    There are no image sub-directories in this directory.
+                    There are no {mediaNames[mediaType].slice(0,-1)} sub-directories in this directory.
                   </div>
                 )
               }
@@ -271,64 +322,64 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
           <div className={contentStyles.segmentDividerContainer}>
             <hr className="invisible w-100 mt-3 mb-5" />
           </div>
-          {/* Ungrouped Images title segment */}
+          {/* Ungrouped Media title segment */}
           <div className={contentStyles.segment}>
-            <span>Ungrouped Images</span>
+            <span>Ungrouped {mediaNames[mediaType]}</span>
           </div>
-          {/* Images segment */}
+          {/* Media segment */}
           <div className={contentStyles.contentContainerBars}>
             <div className={contentStyles.boxesContainer}>
               <div className={mediaStyles.mediaCards}>
-                {/* Images */}
+                {/* Media */}
                 {
-                  images && images.length > 0
-                  ? images.map((image) => (
+                  media && media.length > 0
+                  ? media.map((media) => (
                     <MediaCard
-                      type="image"
-                      media={image}
+                      type={mediaNames[mediaType]}
+                      media={media}
                       siteName={siteName}
-                      onClick={() => setChosenImage(image)}
-                      key={image.fileName}
+                      onClick={() => setChosenMedia(media)}
+                      key={media.fileName}
                     />
                   )) : (
                     <div className={contentStyles.segment}>
-                      There are no images in this directory.
+                      There are no {mediaNames[mediaType]} in this directory.
                     </div>
                   )
                 }
               </div>
             </div>
           </div>
-          {/* End of image cards */}
+          {/* End of media cards */}
         </div>
         {/* main section ends here */}
       </div>
       {
-        chosenImage
+        chosenMedia
         && (
         <MediaSettingsModal
-          type="image"
-          media={chosenImage}
+          type={mediaNames[mediaType]}
+          media={chosenMedia}
           siteName={siteName}
           customPath={customPath}
           isPendingUpload={false}
-          onClose={() => setChosenImage(null)}
-          onSave={() => window.location.reload()}
+          onClose={() => setChosenMedia(null)}
+          onSave={() => setChosenMedia(null)}
         />
         )
       }
       {
-        pendingImageUpload
+        pendingMediaUpload
         && (
         <MediaSettingsModal
-          type="image"
-          media={pendingImageUpload}
+          type={mediaNames[mediaType]}
+          media={pendingMediaUpload}
           siteName={siteName}
           customPath={customPath}
           // eslint-disable-next-line react/jsx-boolean-value
           isPendingUpload
-          onClose={() => setPendingImageUpload(null)}
-          onSave={() => window.location.reload()}
+          onClose={() => setPendingMediaUpload(null)}
+          onSave={() => setPendingMediaUpload(null)}
         />
         )
       }
@@ -339,9 +390,9 @@ const Images = ({ match: { params: { siteName, customPath } }, location }) => {
   );
 }
 
-export default Images
+export default Media
 
-Images.propTypes = {
+Media.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
       siteName: PropTypes.string,
@@ -350,4 +401,5 @@ Images.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
+  mediaType: PropTypes.string.isRequired,
 };

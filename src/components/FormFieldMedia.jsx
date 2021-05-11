@@ -27,15 +27,14 @@ const FormFieldMedia = ({
   const [isSelectingItem, setIsSelectingItem] = useState(false)
   const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
   const [stagedFileDetails, setStagedFileDetails] = useState()
-  const [mediaSearchTerm, setMediaSearchTerm] = useState('')
-  const [selectedFile, setSelectedFile] = useState({})
+  const [uploadPath, setUploadPath] = useState('')
 
   const onItemClick = (path) => {
     setIsSelectingItem(false)
     const event = {
       target: {
         id: id,
-        value: path,
+        value: path.replaceAll(' ', '%20'),
       },
     };
     successToast(`Successfully updated ${title.toLowerCase()}!`)
@@ -47,13 +46,13 @@ const FormFieldMedia = ({
   }
   
   const toggleItemAndSettingsModal = (newFileName) => {
-    const baseFolder = type === 'image' ? 'images' : 'files';
+    const baseFolder = type;
     setIsFileStagedForUpload(!isFileStagedForUpload)
-    onItemClick(`/${baseFolder}/${newFileName}`)
+    onItemClick(`/${baseFolder}/${uploadPath ? `${uploadPath}/` : ''}${newFileName}`)
   }
 
   const stageFileForUpload = (fileName, fileData) => {
-    const baseFolder = type === 'image' ? 'images' : 'files';
+    const baseFolder = type;
     setStagedFileDetails({
       path: `${baseFolder}%2F${fileName}`,
       content: fileData,
@@ -110,16 +109,12 @@ const FormFieldMedia = ({
         {
           isSelectingItem && (
             <MediaModal
-              type={type}
               siteName={siteName}
-              onMediaSelect={onItemClick}
-              toggleItemModal={toggleItemModal}
-              readFileToStageUpload={readFileToStageUpload}
               onClose={() => setIsSelectingItem(false)}
-              mediaSearchTerm={mediaSearchTerm}
-              setMediaSearchTerm={setMediaSearchTerm}
-              selectedFile={selectedFile}
-              setSelectedFile={setSelectedFile}
+              onMediaSelect={onItemClick}
+              type={type}
+              readFileToStageUpload={readFileToStageUpload}
+              setUploadPath={setUploadPath}
             />
           )
         }
@@ -128,6 +123,7 @@ const FormFieldMedia = ({
             <MediaSettingsModal
               type={type}
               siteName={siteName}
+              customPath={uploadPath}
               onClose={() => setIsFileStagedForUpload(false)}
               onSave={toggleItemAndSettingsModal}
               media={stagedFileDetails}
@@ -152,6 +148,7 @@ FormFieldMedia.propTypes = {
   onFieldChange: PropTypes.func.isRequired,
   isRequired: PropTypes.bool,
   style: PropTypes.string,
+  type: PropTypes.oneOf(['files', 'images']).isRequired,
 };
 
 FormFieldMedia.defaultProps = {

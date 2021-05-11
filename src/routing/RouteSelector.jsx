@@ -11,8 +11,7 @@ import Workspace from '../layouts/Workspace';
 import Folders from '../layouts/Folders';
 import EditPage from '../layouts/EditPage';
 import CategoryPages from '../layouts/CategoryPages';
-import Images from '../layouts/Images';
-import Files from '../layouts/Files';
+import Media from '../layouts/Media';
 import EditFile from '../layouts/EditFile';
 import EditHomepage from '../layouts/EditHomepage';
 import EditContactUs from '../layouts/EditContactUs';
@@ -43,9 +42,10 @@ export const RouteSelector = () => (
     <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName" component={Folders} />
     <ProtectedRouteWithProps exact path="/sites/:siteName/navbar" component={EditNavBar} />
     <ProtectedRouteWithProps path="/sites/:siteName/files/:fileName" component={EditFile} />
-    <ProtectedRouteWithProps path="/sites/:siteName/files" component={Files} />
-    <ProtectedRouteWithProps path="/sites/:siteName/images/:customPath" component={Images} />
-    <ProtectedRouteWithProps path="/sites/:siteName/images" component={Images} />
+    <ProtectedRouteWithProps path="/sites/:siteName/documents/:customPath" component={Media} mediaType={'documents'} />
+    <ProtectedRouteWithProps path="/sites/:siteName/documents" component={Media} mediaType={'documents'} />
+    <ProtectedRouteWithProps path="/sites/:siteName/images/:customPath" component={Media} mediaType={'images'} />
+    <ProtectedRouteWithProps path="/sites/:siteName/images" component={Media} mediaType={'images'} />
     <ProtectedRouteWithProps path="/sites/:siteName/pages/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={false} />
     <ProtectedRouteWithProps path="/sites/:siteName/workspace" component={Workspace} />
     <ProtectedRouteWithProps path="/sites/:siteName/homepage" component={EditHomepage} />

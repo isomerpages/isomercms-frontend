@@ -556,7 +556,7 @@ export default class Settings extends Component {
                     inlineButtonText={"Choose Image"}
                     siteName={siteName}
                     placeholder=" "
-                    type="image"
+                    type="images"
                   />
                   <FormFieldMedia
                     title="Favicon"
@@ -568,7 +568,7 @@ export default class Settings extends Component {
                     inlineButtonText={"Choose Image"}
                     siteName={siteName}
                     placeholder=" "
-                    type="image"
+                    type="images"
                   />
                   <FormFieldMedia
                     title="Shareicon"
@@ -580,7 +580,7 @@ export default class Settings extends Component {
                     inlineButtonText={"Choose Image"}
                     siteName={siteName}
                     placeholder=" "
-                    type="image"
+                    type="images"
                   />
                 </div>
                 {/* Analytics fields */}

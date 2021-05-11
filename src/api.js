@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getNavFolderDropdownFromFolderOrder, parseDirectoryFile } from './utils';
+import { getNavFolderDropdownFromFolderOrder, generateImageorFilePath } from './utils';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -256,27 +256,70 @@ const moveFile = async ({selectedFile, siteName, resourceName, folderName, subfo
     return await axios.post(apiEndpoint, params)
 }
 
-// Images
-const getImages = async (siteName, customPath) => {
-    const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/files/${customPath ? encodeURIComponent(`images/${customPath}`) : 'images'}`);
+// Media
+const getMedia = async (siteName, customPath, mediaType) => {
+    const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/files/${customPath ? encodeURIComponent(`${mediaType}/${customPath}`) : mediaType}`);
     const { directoryContents } = resp.data;
 
-    let respImages = []
+    let respMedia = []
     let respDirectories = []
     directoryContents.forEach((fileOrDir) => {
-        const modifiedFileOrDir = { ...fileOrDir, fileName: fileOrDir.name }
-        if (fileOrDir.type === 'file') respImages.push(modifiedFileOrDir)
-        if (fileOrDir.type === 'dir') respDirectories.push(modifiedFileOrDir)
+        const processedFileOrDirData = { ...fileOrDir, fileName: fileOrDir.name }
+        if (fileOrDir.type === 'file') respMedia.push(processedFileOrDirData)
+        if (fileOrDir.type === 'dir') respDirectories.push(processedFileOrDirData)
     })
 
     return {
-        respImages,
+        respMedia,
         respDirectories,
     }
 }
 
+const getMediaDetails = async ( {siteName, type, customPath, fileName} ) => {
+    const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}/${generateImageorFilePath(customPath, fileName)}`)
+    return resp.data
+}
+
+const createMedia = async ( {siteName, type, customPath, newFileName, content} ) => {
+    const params = {
+        content,
+    };
+
+    if (type === 'images') {
+        params.imageName = newFileName;
+        params.imageDirectory = `images${customPath ? `/${customPath}` : ''}`;
+    } else {
+        params.documentName = newFileName;
+        params.documentDirectory = `files${customPath ? `/${customPath}` : ''}`;
+    }
+
+    return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}`, params)
+}
+
+const renameMedia = async ({siteName, type, sha, customPath, content, fileName, newFileName}) => {
+    const params = {
+        sha,
+        content,
+    };
+    if (newFileName === fileName) {
+        return;
+    }
+    return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}/${generateImageorFilePath(customPath, fileName)}/rename/${generateImageorFilePath(customPath, newFileName)}`, params);
+}
+
+const deleteMedia = async ({siteName, type, sha, customPath, fileName}) => {
+    const params = {
+        sha,
+    };
+
+    return await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}/${generateImageorFilePath(customPath, fileName)}`, {
+        data: params,
+    });
+}
+
+
 const createMediaSubfolder = async (siteName, mediaType, customPath) => {
-    if (mediaType !== 'images' || !customPath) return
+    if ((mediaType !== 'images' && mediaType !== 'documents') || !customPath) return
     return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/media/${mediaType}/${encodeURIComponent(customPath)}`)
 }
 
@@ -288,7 +331,7 @@ const renameMediaSubfolder = async ({ siteName, mediaType, customPath, subfolder
 }
 
 const deleteMediaSubfolder = async ({ siteName, mediaType, customPath }) => {
-    if (mediaType !== 'images' || !customPath) return
+    if ((mediaType !== 'images' && mediaType !== 'documents') || !customPath) return
     return await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/media/${mediaType}/${encodeURIComponent(customPath)}`)
 }
 
@@ -317,7 +360,11 @@ export {
     getAllCategories,
     moveFiles,
     moveFile,
-    getImages,
+    getMedia,
+    getMediaDetails,
+    createMedia,
+    renameMedia,
+    deleteMedia,
     createMediaSubfolder,
     renameMediaSubfolder,
     deleteMediaSubfolder,
