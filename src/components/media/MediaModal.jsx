@@ -14,7 +14,7 @@ import useRedirectHook from '../../hooks/useRedirectHook';
 
 import { errorToast } from '../../utils/toasts';
 import { getMedia } from '../../api';
-import { deslugifyDirectory } from '../../utils';
+import { DEFAULT_RETRY_MSG, deslugifyDirectory } from '../../utils';
 import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from '../../constants'
 
 const MediaModal = ({
@@ -43,7 +43,7 @@ const MediaModal = ({
         if (err.response && err.response.status === 404) {
           setRedirectToNotFound(siteName)
         } else {
-          errorToast()
+          errorToast(`There was a problem trying to load your ${type}. ${DEFAULT_RETRY_MSG}`)
         }
       },
     },
