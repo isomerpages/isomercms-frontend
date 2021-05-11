@@ -19,8 +19,10 @@ const LoginProvider = ({ children }) => {
   const verifyLoginAndSetLocalStorage = async () => {
     const resp = await axios.get(`${BACKEND_URL}/auth/whoami`)
     const { userId } = resp.data
-    setUserId(userId)
-    localStorage.setItem(LOCAL_STORAGE_USER_ID_KEY, userId)
+    if (userId) {
+      setUserId(userId)
+      localStorage.setItem(LOCAL_STORAGE_USER_ID_KEY, userId)
+    }
   }
 
   const logout = async () => {
