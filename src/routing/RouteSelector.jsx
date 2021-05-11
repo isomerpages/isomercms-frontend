@@ -13,7 +13,6 @@ import EditPage from '../layouts/EditPage';
 import CategoryPages from '../layouts/CategoryPages';
 import Images from '../layouts/Images';
 import Files from '../layouts/Files';
-import EditFile from '../layouts/EditFile';
 import EditHomepage from '../layouts/EditHomepage';
 import EditContactUs from '../layouts/EditContactUs';
 import Resources from '../layouts/Resources';
@@ -42,7 +41,6 @@ export const RouteSelector = () => (
     <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName" component={Folders} />
     <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName" component={Folders} />
     <ProtectedRouteWithProps exact path="/sites/:siteName/navbar" component={EditNavBar} />
-    <ProtectedRouteWithProps path="/sites/:siteName/files/:fileName" component={EditFile} />
     <ProtectedRouteWithProps path="/sites/:siteName/files" component={Files} />
     <ProtectedRouteWithProps path="/sites/:siteName/images/:customPath" component={Images} />
     <ProtectedRouteWithProps path="/sites/:siteName/images" component={Images} />

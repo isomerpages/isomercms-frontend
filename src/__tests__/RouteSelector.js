@@ -123,15 +123,6 @@ jest.mock("../layouts/Files", () => {
   }
 })
 
-jest.mock("../layouts/EditFile", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div>{EDIT_FILE_LAYOUT_TEXT}</div>
-    },
-  }
-})
-
 jest.mock("../layouts/EditPage", () => {
   return {
     __esModule: true,
