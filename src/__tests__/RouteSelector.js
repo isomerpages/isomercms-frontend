@@ -18,7 +18,6 @@ const EDIT_HOMEPAGE_LAYOUT_TEXT = "Homepage editor layout mock text"
 const WORKSPACE_LAYOUT_TEXT = "Workspace layout mock text"
 const IMAGES_LAYOUT_TEXT = "Images layout mock text"
 const FILES_LAYOUT_TEXT = "Files layout mock text"
-const EDIT_FILE_LAYOUT_TEXT = "File editor layout mock text"
 const EDIT_PAGE_LAYOUT_TEXT = "Page editor layout mock text"
 const FOLDERS_LAYOUT_TEXT = "Folders layout mock text"
 const NOT_FOUND_LAYOUT_TEXT = "Route does not exist"
@@ -618,37 +617,6 @@ describe("Tests for RouteSelector", () => {
 
       // Assert
       expect(screen.queryByText(FILES_LAYOUT_TEXT)).not.toBeInTheDocument()
-      expect(screen.queryByText(HOME_LAYOUT_TEXT)).toBeInTheDocument()
-    })
-  })
-
-  describe("/sites/:siteName/files/:fileName", () => {
-    test("Should render Edit Files page for site site-name if logged in", () => {
-      // Act
-      render(
-        <MemoryRouter initialEntries={['/sites/site-name/files/my-file']}>
-          <LoggedInContextProvider>
-            <RouteSelector/>
-          </LoggedInContextProvider>
-        </MemoryRouter>
-      )
-
-      // Assert
-      expect(screen.queryByText(EDIT_FILE_LAYOUT_TEXT)).toBeInTheDocument()
-    })
-
-    test("Should redirect to /home and not render Edit Files page if not logged in", () => {
-      // Act
-      render(
-        <MemoryRouter initialEntries={['/sites/site-name/files/my-file']}>
-          <NotLoggedInContextProvider>
-            <RouteSelector/>
-          </NotLoggedInContextProvider>
-        </MemoryRouter>
-      )
-
-      // Assert
-      expect(screen.queryByText(EDIT_FILE_LAYOUT_TEXT)).not.toBeInTheDocument()
       expect(screen.queryByText(HOME_LAYOUT_TEXT)).toBeInTheDocument()
     })
   })
