@@ -406,7 +406,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
         {
           isFileStagedForUpload && (
             <MediaSettingsModal
-              type={isSelectingImage ? 'image' : 'file'}
+              type={isSelectingImage ? 'images' : 'files'}
               siteName={siteName}
               customPath={uploadPath}
               onClose={() => setIsFileStagedForUpload(false)}

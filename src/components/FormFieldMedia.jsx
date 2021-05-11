@@ -121,7 +121,7 @@ const FormFieldMedia = ({
         {
           isFileStagedForUpload && (
             <MediaSettingsModal
-              type={type.slice(0,-1)}
+              type={type}
               siteName={siteName}
               customPath={uploadPath}
               onClose={() => setIsFileStagedForUpload(false)}
