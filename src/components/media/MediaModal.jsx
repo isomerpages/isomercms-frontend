@@ -17,11 +17,6 @@ import { getMedia } from '../../api';
 import { deslugifyDirectory } from '../../utils';
 import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from '../../constants'
 
-const mediaNames = {
-  image: 'images',
-  file: 'files',
-}
-
 const MediaModal = ({
   siteName,
   onClose,
@@ -40,8 +35,8 @@ const MediaModal = ({
   const { setRedirectToNotFound } = useRedirectHook()
 
   const { data: mediaData } = useQuery(
-    type === 'image' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath],
-    () => getMedia(siteName, customPath || '', mediaNames[type]),
+    type === 'images' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath],
+    () => getMedia(siteName, customPath || '', type),
     {
       retry: false,
       onError: (err) => {
@@ -113,7 +108,7 @@ const MediaModal = ({
       <div className={elementStyles.overlay}>
         <div className={mediaStyles.mediaModal}>
           <div className={elementStyles.modalHeader}>
-            <h1 className="pl-5 mr-auto">{`Select ${type === 'file' ? 'File' : 'Image'}`}</h1>
+            <h1 className="pl-5 mr-auto">{`Select ${type === 'files' ? 'File' : 'Image'}`}</h1>
             {/* Search medias */}
             <MediaSearchBar value={mediaSearchTerm} onSearchChange={searchChangeHandler} />
             {/* Upload medias */}
@@ -121,7 +116,7 @@ const MediaModal = ({
               type="button"
               className={elementStyles.blue}
               onClick={() => document.getElementById('file-upload').click()}
-            >{`Add new ${type}`}
+            >{`Add new ${type === 'files' ? 'File' : 'Image'}`}
             </button>
             <input
               onChange={(event) => {
@@ -134,7 +129,7 @@ const MediaModal = ({
               }}
               type="file"
               id="file-upload"
-              accept={type === 'image' 
+              accept={type === 'images' 
                 ? "image/*" 
                 : "application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf"
               }
@@ -155,7 +150,7 @@ const MediaModal = ({
               { customPath !== '' 
                 ? 
                   <>
-                  <BreadcrumbButton name={`${type === 'file' ? 'Files' : 'Images'}`} idx={-1}/>
+                  <BreadcrumbButton name={deslugifyDirectory(type)} idx={-1}/>
                   { 
                     customPath.split("/").map((folderName, idx, arr) => {
                       return idx === arr.length - 1
@@ -164,7 +159,7 @@ const MediaModal = ({
                     })
                   }
                   </>
-                : <strong className="ml-1">{`${type === 'file' ? 'Files' : 'Images'}`}</strong>
+                : <strong className="ml-1">{deslugifyDirectory(type)}</strong>
               }
             </div>
           }
@@ -172,7 +167,7 @@ const MediaModal = ({
             {/* Directories */}
             {filteredDirectories.map((directory) => (
               <MediaCard
-                type='dir'
+                type='dirs'
                 media={directory}
                 siteName={siteName}
                 onClick={() => setCustomPath((prevState) => prevState ? `${prevState}/${directory.name}` : directory.name)}
@@ -195,7 +190,7 @@ const MediaModal = ({
           <div className={`d-flex ${elementStyles.modalFooter}`}>
             <div className="ml-auto mt-3">
               <LoadingButton
-                  label={`Select ${type}`}
+                  label={`Select ${type === 'files' ? 'File' : 'Image'}`}
                   disabledStyle={elementStyles.disabled}
                   disabled={!selectedFile}
                   className={elementStyles.blue}
@@ -217,8 +212,7 @@ MediaModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   siteName: PropTypes.string.isRequired,
   onMediaSelect: PropTypes.func.isRequired,
-  type: PropTypes.oneOf(['file', 'image']).isRequired,
-  setMediaSearchTerm: PropTypes.func.isRequired,
+  type: PropTypes.oneOf(['files', 'images']).isRequired,
   readFileToStageUpload: PropTypes.func.isRequired,
   setUploadPath: PropTypes.func.isRequired,
 };

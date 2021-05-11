@@ -95,7 +95,7 @@ const getBackButtonInfo = (resourceCategory, folderName, siteName, subfolderName
   }
 }
 
-const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) => {
+const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
   // Instantiate queryClient
   const queryClient = useQueryClient()
 
@@ -296,10 +296,10 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
     let editorValue
     const cm = mdeRef.current.simpleMde.codemirror;
     if (newFileName && isSelectingImage) {
-      cm.replaceSelection(`![](/images/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`);
+      cm.replaceSelection(`![](/images/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`.replaceAll(' ', '%20'));
       setIsSelectingImage(false);
     } else if (newFileName && isSelectingFile) {
-      cm.replaceSelection(`[](/files/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`);
+      cm.replaceSelection(`[Example Filename]`+`(/files/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`.replaceAll(' ', '%20'));
       setIsSelectingFile(false)
     }
     // set state so that rerender is triggered and image is shown
@@ -336,7 +336,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
       cm.replaceSelection(`![](${path.replaceAll(' ', '%20')})`);
       setIsSelectingImage(false)
     } else if (isSelectingFile) {
-      cm.replaceSelection(`[](${path.replaceAll(' ', '%20')})`);
+      cm.replaceSelection(`[Example Filename](${path.replaceAll(' ', '%20')})`);
       setIsSelectingFile(false)
     }
     // set state so that rerender is triggered and image is shown
@@ -345,7 +345,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
   }
 
   const stageFileForUpload = (fileName, fileData) => {
-    const baseFolder = type === 'file' ? 'files' : 'images';
+    const baseFolder = isSelectingFile === 'file' ? 'files' : 'images';
     setStagedFileDetails({
       path: `${baseFolder}%2F${fileName}`,
       content: fileData,
@@ -392,7 +392,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history, type }) =>
               setIsSelectingFile(false)
             }}
             onMediaSelect={onMediaSelect}
-            type={isSelectingImage ? 'image' : 'file'}
+            type={isSelectingImage ? 'images' : 'files'}
             readFileToStageUpload={readFileToStageUpload}
             setUploadPath={setUploadPath}
           />

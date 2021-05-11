@@ -46,13 +46,13 @@ const FormFieldMedia = ({
   }
   
   const toggleItemAndSettingsModal = (newFileName) => {
-    const baseFolder = type === 'image' ? 'images' : 'files';
+    const baseFolder = type;
     setIsFileStagedForUpload(!isFileStagedForUpload)
     onItemClick(`/${baseFolder}/${uploadPath ? `${uploadPath}/` : ''}${newFileName}`)
   }
 
   const stageFileForUpload = (fileName, fileData) => {
-    const baseFolder = type === 'image' ? 'images' : 'files';
+    const baseFolder = type;
     setStagedFileDetails({
       path: `${baseFolder}%2F${fileName}`,
       content: fileData,
@@ -121,7 +121,7 @@ const FormFieldMedia = ({
         {
           isFileStagedForUpload && (
             <MediaSettingsModal
-              type={type}
+              type={type === 'images' ? 'image': 'file'}
               siteName={siteName}
               customPath={uploadPath}
               onClose={() => setIsFileStagedForUpload(false)}
@@ -148,6 +148,7 @@ FormFieldMedia.propTypes = {
   onFieldChange: PropTypes.func.isRequired,
   isRequired: PropTypes.bool,
   style: PropTypes.string,
+  type: PropTypes.oneOf(['files', 'images']).isRequired,
 };
 
 FormFieldMedia.defaultProps = {
