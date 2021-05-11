@@ -358,7 +358,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
         chosenMedia
         && (
         <MediaSettingsModal
-          type={mediaNames[mediaType].slice(0,-1)}
+          type={mediaNames[mediaType]}
           media={chosenMedia}
           siteName={siteName}
           customPath={customPath}
@@ -372,7 +372,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
         pendingMediaUpload
         && (
         <MediaSettingsModal
-          type={mediaNames[mediaType].slice(0,-1)}
+          type={mediaNames[mediaType]}
           media={pendingMediaUpload}
           siteName={siteName}
           customPath={customPath}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useQuery, useMutation } from 'react-query';
 import PropTypes from 'prop-types';
 
 import FormField from '../FormField';
@@ -10,15 +10,12 @@ import { validateFileName } from '../../utils/validators';
 import {
   DEFAULT_RETRY_MSG,
 } from '../../utils'
-import { errorToast } from '../../utils/toasts';
+import { errorToast, successToast } from '../../utils/toasts';
+import { getMediaDetails, createMedia, renameMedia, deleteMedia } from '../../api';
+import { IMAGE_DETAILS_KEY, DOCUMENT_DETAILS_KEY } from '../../constants'
 
 import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
-
-const generateImageorFilePath = (customPath, fileName) => {
-  if (customPath) return encodeURIComponent(`${customPath}/${fileName}`)
-  return fileName
-}
 
 const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingUpload, customPath }) => {
   const fileName = media.fileName
@@ -28,6 +25,71 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
   const errorMessage = validateFileName(newFileName);
 
+  // Retrieve media information
+  const { data: mediaData } = useQuery(
+    type === 'images' ? [IMAGE_DETAILS_KEY, customPath, fileName] : [DOCUMENT_DETAILS_KEY, customPath, fileName],
+    () => {if (!isPendingUpload) return getMediaDetails({siteName, type, customPath, fileName})},
+    {
+      retry: false,
+      onError: (err) => {
+        if (err.response && err.response.status === 404) {
+          setRedirectToNotFound(siteName)
+        } else {
+          errorToast()
+        }
+      }
+    },
+  )
+
+  // Handling save
+  const { mutateAsync: saveHandler } = useMutation(
+    () => {
+      if (isPendingUpload) {
+        // Creating a new file
+        return createMedia({siteName, type, customPath, newFileName, content})
+      } else {
+        // Renaming an existing file
+        return renameMedia({siteName, type, customPath, sha, content, fileName, newFileName})
+      }
+    },
+    {
+      onError: (err) => {
+        if (err?.response?.status === 409) {
+          // Error due to conflict in name
+          errorToast(`Another ${type === 'images' ? 'image' : 'file'} with the same name exists. Please choose a different name.`)
+        } else if (err?.response?.status === 413 || err?.response === undefined) {
+          // Error due to file size too large - we receive 413 if nginx accepts the payload but it is blocked by our express settings, and undefined if it is blocked by nginx
+          errorToast(`Unable to upload as the ${type === 'images' ? 'image' : 'file'} size exceeds 5MB. Please reduce your ${type === 'images' ? 'image' : 'file'} size and try again.`)
+        } else {
+          errorToast(`There was a problem trying to save this ${type === 'images' ? 'image' : 'file'}. ${DEFAULT_RETRY_MSG}`)
+        }
+        console.log(err);
+      },
+      onSuccess: () => {
+        successToast(`Successfully ${isPendingUpload ? `created new` : `renamed`} ${type.slice(0,-1)}!`)
+        window.location.reload()
+      },
+      onSettled: () => {
+        // onSave(newFileName)
+      },
+    }
+  )
+
+  // Handling delete
+  const { mutateAsync: deleteHandler } = useMutation(
+    () => deleteMedia({siteName, type, sha, customPath, fileName}),
+    {
+      onError: () => errorToast(`There was a problem trying to delete this ${type === 'images' ? 'image' : 'file'}. ${DEFAULT_RETRY_MSG}`),
+      onSuccess: () => {
+        successToast(`Successfully deleted ${type.slice(0,-1)}!`)
+        window.location.reload()
+      },
+      onSettled: () => {
+        // window.location.reload()
+      },
+    }
+  )
+
   useEffect(() => {
     let _isMounted = true
     if (_isMounted && isPendingUpload) {
@@ -35,98 +97,19 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
       setContent(retrievedContent)
       return
     }
-
-    const retrieveMediaData = async () => {
-      let retrievedSha, retrievedContent
-      try {
-        const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${generateImageorFilePath(customPath, fileName)}`, {
-          withCredentials: true,
-        });
-        const { data } = resp
-        retrievedSha = data.sha
-        retrievedContent = data.content
-      } catch (err) {
-        errorToast(`We were unable to retrieve data on your image file. ${DEFAULT_RETRY_MSG}`)
-      }
+    if (mediaData) {
+      const retrievedSha = mediaData.sha
+      const retrievedContent = mediaData.content
       if (_isMounted) {
         setContent(retrievedContent)
         setSha(retrievedSha)
       }
     }
 
-    retrieveMediaData()
     return () => {
       _isMounted = false
     }
-  }, [])
-
-  const saveFile = async () => {
-    const { fileName } = media
-
-    try {
-      if (isPendingUpload) {
-        const params = {
-          content,
-        };
-
-        if (type === 'image') {
-          params.imageName = newFileName;
-          params.imageDirectory = `images${customPath ? `/${customPath}` : ''}`;
-        } else {
-          params.documentName = newFileName;
-          params.documentDirectory = `files${customPath ? `/${customPath}` : ''}`;
-        }
-
-        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}`, params, {
-          withCredentials: true,
-        });
-      } else {
-        const params = {
-          sha,
-          content,
-        };
-
-        // rename the image if the request comes from an already uploaded image
-        if (newFileName === fileName) {
-          return;
-        }
-        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${generateImageorFilePath(customPath, fileName)}/rename/${generateImageorFilePath(customPath, newFileName)}`, params, {
-          withCredentials: true,
-        });
-      }
-      onSave(newFileName)
-    } catch (err) {
-      if (err?.response?.status === 409) {
-        // Error due to conflict in name
-        errorToast(`Another ${type === 'image' ? 'image' : 'file'} with the same name exists. Please choose a different name.`)
-      } else if (err?.response?.status === 413 || err?.response === undefined) {
-        // Error due to file size too large - we receive 413 if nginx accepts the payload but it is blocked by our express settings, and undefined if it is blocked by nginx
-        errorToast(`Unable to upload as the ${type === 'image' ? 'image' : 'file'} size exceeds 5MB. Please reduce your ${type === 'image' ? 'image' : 'file'} size and try again.`)
-      } else {
-        errorToast(`There was a problem trying to save this ${type === 'image' ? 'image' : 'file'}. ${DEFAULT_RETRY_MSG}`)
-      }
-      console.log(err);
-    }
-  }
-
-  const deleteFile = async () => {
-    const { fileName } = media
-    try {
-      const params = {
-        sha,
-      };
-
-      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${generateImageorFilePath(customPath, fileName)}`, {
-        data: params,
-        withCredentials: true,
-      });
-
-      window.location.reload();
-    } catch (err) {
-      errorToast(`There was a problem trying to delete this ${type === 'image' ? 'image' : 'file'}. ${DEFAULT_RETRY_MSG}`)
-      console.log(err);
-    }
-  }
+  }, [mediaData])
 
   return (
     <div className={elementStyles.overlay}>
@@ -139,7 +122,7 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
             <i className="bx bx-x" />
           </button>
         </div>
-        { type === 'image'
+        { type === 'images'
           ? (
             <div className={mediaStyles.editImagePreview}>
               <img
@@ -174,7 +157,7 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
             isDisabled={isPendingUpload ? false : !sha}
             isSaveDisabled={isPendingUpload ? false : (fileName === newFileName || errorMessage || !sha)}
             hasDeleteButton={!isPendingUpload}
-            saveCallback={saveFile}
+            saveCallback={saveHandler}
             deleteCallback={() => setCanShowDeleteWarningModal(true)}
             isLoading={isPendingUpload ? false : !sha}
           />
@@ -185,7 +168,7 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
         && (
           <DeleteWarningModal
             onCancel={() => setCanShowDeleteWarningModal(false)}
-            onDelete={deleteFile}
+            onDelete={deleteHandler}
             type="image"
           />
         )
@@ -202,7 +185,7 @@ MediaSettingsModal.propTypes = {
     path: PropTypes.string,
     content: PropTypes.string,
   }).isRequired,
-  type: PropTypes.oneOf(['image', 'file']).isRequired,
+  type: PropTypes.oneOf(['images', 'files']).isRequired,
   siteName: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
