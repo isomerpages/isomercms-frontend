@@ -97,6 +97,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
         successToast(`Successfully created new subfolder!`)
       },
       onSettled: () => {
+        setNewFolderName('')
         setIsCreateModalActive((prevState) => !prevState)
       },
     }
