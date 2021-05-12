@@ -1131,6 +1131,7 @@ const EditHomepage = ({ match }) => {
                                 siteName={siteName}
                                 handleHighlightDropdownToggle={handleHighlightDropdownToggle}
                               />
+                            <span><strong className="ml-1">Pro tip:</strong> Drag and drop the items below to rearrange their order in your Homepage.<br/><br/></span>
                             </>
                           ) : (
                             null
