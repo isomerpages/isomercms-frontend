@@ -17,10 +17,13 @@
 
 .mediaCardDimensions {
   @include single-site;
+  width: $component-folder-width;
+  margin-right: $component-folder-margin;
+  margin-bottom: $component-folder-margin;
 }
 
 .mediaModal {
-  width: 75%;
+  width: 65%;
   max-width: 75rem;
   height: 70%;
   background: white;
@@ -28,9 +31,11 @@
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   display: flex;
+  margin: auto;
   flex-direction: column;
   align-items: flex-start;
-  overflow-y: scroll
+  overflow-y: scroll;
+  position: relative;
 }
 
 .mediaCards{
@@ -59,6 +64,11 @@
       border: none;
       box-sizing: border-box;
       transition: transform 0.2s ease-in;
+      min-width: 250px;
+      width: $component-card-width;
+      height: $component-card-height;
+      margin-right: $component-card-margin;
+      margin-bottom: $component-card-margin;
 
       .mediaCardPreviewContainer {
         height: 70%;

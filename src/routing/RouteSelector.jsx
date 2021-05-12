@@ -11,8 +11,7 @@ import Workspace from '../layouts/Workspace';
 import Folders from '../layouts/Folders';
 import EditPage from '../layouts/EditPage';
 import CategoryPages from '../layouts/CategoryPages';
-import Images from '../layouts/Images';
-import Files from '../layouts/Files';
+import Media from '../layouts/Media';
 import EditHomepage from '../layouts/EditHomepage';
 import EditContactUs from '../layouts/EditContactUs';
 import Resources from '../layouts/Resources';
@@ -41,9 +40,10 @@ export const RouteSelector = () => (
     <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName" component={Folders} />
     <ProtectedRouteWithProps exact path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName" component={Folders} />
     <ProtectedRouteWithProps exact path="/sites/:siteName/navbar" component={EditNavBar} />
-    <ProtectedRouteWithProps path="/sites/:siteName/files" component={Files} />
-    <ProtectedRouteWithProps path="/sites/:siteName/images/:customPath" component={Images} />
-    <ProtectedRouteWithProps path="/sites/:siteName/images" component={Images} />
+    <ProtectedRouteWithProps path="/sites/:siteName/documents/:customPath" component={Media} mediaType={'documents'} />
+    <ProtectedRouteWithProps path="/sites/:siteName/documents" component={Media} mediaType={'documents'} />
+    <ProtectedRouteWithProps path="/sites/:siteName/images/:customPath" component={Media} mediaType={'images'} />
+    <ProtectedRouteWithProps path="/sites/:siteName/images" component={Media} mediaType={'images'} />
     <ProtectedRouteWithProps path="/sites/:siteName/pages/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={false} />
     <ProtectedRouteWithProps path="/sites/:siteName/workspace" component={Workspace} />
     <ProtectedRouteWithProps path="/sites/:siteName/homepage" component={EditHomepage} />
@@ -51,6 +51,7 @@ export const RouteSelector = () => (
     <ProtectedRouteWithProps path="/sites/:siteName/resources/:resourceName/:fileName" component={EditPage} isCollectionPage={false} isResourcePage={true} />
     <ProtectedRouteWithProps path="/sites/:siteName/resources/:collectionName" component={CategoryPages} isResource={true}/>
     <ProtectedRouteWithProps path="/sites/:siteName/resources" component={Resources} />
+    <ProtectedRouteWithProps path="/sites/:siteName/navbar" component={EditNavBar} />
     <ProtectedRouteWithProps path="/sites/:siteName/settings" component={Settings} />
     <ProtectedRouteWithProps exact path="/sites" component={Sites} />
     <ProtectedRouteWithProps path="/" component={NotFoundPage}/>
