@@ -1,7 +1,5 @@
-import { slugifyCategory } from '../utils';
-
 import _ from 'lodash';
-import { generatePageFileName, retrieveResourceFileMetadata, } from '../utils';
+import { generatePageFileName, retrieveResourceFileMetadata, slugifyCategory } from '../utils';
 
 // Common regexes and constants
 // ==============
@@ -701,7 +699,7 @@ const validateResourceSettings = (id, value, folderOrderArray) => {
       if (value.length > RESOURCE_SETTINGS_TITLE_MAX_LENGTH) {
         errorMessage = `The title should be shorter than ${RESOURCE_SETTINGS_TITLE_MAX_LENGTH} characters.`;
       }
-      if (folderOrderArray !== undefined && folderOrderArray.map(fileName => retrieveResourceFileMetadata(fileName).title).includes(value)) {
+      if (folderOrderArray !== undefined && folderOrderArray.map(fileName => slugifyCategory(retrieveResourceFileMetadata(fileName).title)).includes(slugifyCategory(value))) {
         errorMessage = `This title is already in use. Please choose a different title.`;
       }
       break;
