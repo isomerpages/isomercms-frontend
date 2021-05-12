@@ -56,6 +56,7 @@ const ComponentSettingsModal = ({
         resourceDate: '',
     })
     const [hasErrors, setHasErrors] = useState(false)
+    const [hasChanges, setHasChanges] = useState(false)
 
     // Base hooks
     const [title, setTitle] = useState('')
@@ -65,9 +66,11 @@ const ComponentSettingsModal = ({
     const [isPost, setIsPost] = useState(true)
 
     // Track original values
+    const [originalTitle, setOriginalTitle] = useState('')
     const [originalPermalink, setOriginalPermalink] = useState('')
     const [originalFileUrl, setOriginalFileUrl] = useState('')
     const [originalFrontMatter, setOriginalFrontMatter] = useState({})
+    const [originalResourceDate, setOriginalResourceDate] = useState()
 
     // Resource-related
     const [resourceDate, setResourceDate] = useState('')
@@ -98,6 +101,7 @@ const ComponentSettingsModal = ({
             setIsPost(originalType === 'post')
 
             // Front matter properties
+            setOriginalTitle(originalTitle)
             setTitle(originalTitle)
 
             setPermalink(originalPermalink)
@@ -106,6 +110,7 @@ const ComponentSettingsModal = ({
             setOriginalFileUrl(originalFileUrl)
             setOriginalFrontMatter(originalFrontMatter)
 
+            setOriginalResourceDate(originalDate)
             setResourceDate(originalDate)
           }
         }
@@ -141,6 +146,10 @@ const ComponentSettingsModal = ({
     useEffect(() => {
         setHasErrors(!isPost ? (_.some(errors, (field) => field.length > 0) || !fileUrl ) : _.some(errors, (field) => field.length > 0) );
     }, [errors])
+
+    useEffect(() => {
+      setHasChanges(!(title === originalTitle && permalink === originalPermalink && fileUrl === originalFileUrl && resourceDate === originalResourceDate))
+    }, [title, permalink, fileUrl, resourceDate])
 
     const handlePermalinkFileUrlToggle = (event) => {
         const { target: { value } } = event;
@@ -248,7 +257,7 @@ const ComponentSettingsModal = ({
                   />
                 </div>
                 <SaveDeleteButtons 
-                  isDisabled={isNewFile ? hasErrors : (hasErrors || !sha)}
+                  isDisabled={isNewFile ? hasErrors : (!hasChanges || hasErrors || !sha)}
                   hasDeleteButton={false}
                   saveCallback={saveHandler}
                 />

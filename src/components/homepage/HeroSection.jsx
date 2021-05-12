@@ -73,7 +73,7 @@ const EditorHeroSection = ({
             inlineButtonText="Choose Image"
             placeholder=" "
             siteName={siteName}
-            type="image"
+            type="images"
           />
           <div className={styles.card}>
             <p className={elementStyles.formLabel}>Hero Section Type</p>

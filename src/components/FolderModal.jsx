@@ -10,6 +10,7 @@ import {
   renameFolder,
   renameSubfolder,
   renameResourceCategory,
+  renameMediaSubfolder,
 } from '../api'
 
 import {
@@ -20,14 +21,14 @@ import {
 
 import { validateCategoryName } from '../utils/validators'
 import { errorToast, successToast } from '../utils/toasts';
-import { DIR_CONTENT_KEY, FOLDERS_CONTENT_KEY, RESOURCE_ROOM_CONTENT_KEY } from '../constants';
+import { DOCUMENT_CONTENTS_KEY, IMAGE_CONTENTS_KEY, DIR_CONTENT_KEY, FOLDERS_CONTENT_KEY, RESOURCE_ROOM_CONTENT_KEY } from '../constants';
 
 // axios settings
 axios.defaults.withCredentials = true
 
-const selectRenameApiCall = (isCollection, siteName, folderOrCategoryName, subfolderName, newDirectoryName) => {
+const selectRenameApiCall = (folderType, siteName, folderOrCategoryName, subfolderName, newDirectoryName, mediaCustomPath) => {
   if (slugifyCategory(newDirectoryName) === subfolderName || slugifyCategory(newDirectoryName) === folderOrCategoryName ) return
-  if (isCollection && !subfolderName) {
+  if (folderType === 'page' && !subfolderName) {
     const params = {
       siteName,
       folderName: folderOrCategoryName,
@@ -36,7 +37,7 @@ const selectRenameApiCall = (isCollection, siteName, folderOrCategoryName, subfo
     return renameFolder(params)
   }
 
-  if (isCollection && subfolderName) {
+  if (folderType === 'page' && subfolderName) {
     const params = {
       siteName,
       folderName: folderOrCategoryName,
@@ -46,15 +47,28 @@ const selectRenameApiCall = (isCollection, siteName, folderOrCategoryName, subfo
     return renameSubfolder(params)
   }
 
-  const params = {
-    siteName,
-    categoryName: folderOrCategoryName,
-    newCategoryName: slugifyCategory(newDirectoryName),
+  if (folderType === 'resources') {
+    const params = {
+      siteName,
+      categoryName: folderOrCategoryName,
+      newCategoryName: slugifyCategory(newDirectoryName),
+    }
+    return renameResourceCategory(params)
   }
-  return renameResourceCategory(params)
+
+  if (folderType === 'images' || folderType === 'documents') {
+    const params = {
+      siteName,
+      mediaType: folderType,
+      customPath: mediaCustomPath,
+      subfolderName: folderOrCategoryName,
+      newSubfolderName: slugifyCategory(newDirectoryName),
+    }
+    return renameMediaSubfolder(params)
+  }
 }
 
-const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName, subfolderName, siteName, isCollection, existingFolders }) => {
+const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName, subfolderName, siteName, folderType, existingFolders, mediaCustomPath }) => {
   // Instantiate queryClient
   const queryClient = useQueryClient()
   const [newDirectoryName, setNewDirectoryName] = useState(deslugifyDirectory(subfolderName || folderOrCategoryName))
@@ -62,18 +76,22 @@ const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName,
 
   // rename folder/subfolder/resource category
   const { mutateAsync: renameDirectory } = useMutation(
-    () => selectRenameApiCall(isCollection, siteName, folderOrCategoryName, subfolderName, newDirectoryName),
+    () => selectRenameApiCall(folderType, siteName, folderOrCategoryName, subfolderName, newDirectoryName, mediaCustomPath),
     {
       onError: () => errorToast(`There was a problem trying to rename this folder. ${DEFAULT_RETRY_MSG}`),
       onSuccess: () => {
-        if (!isCollection) {
+        if (folderType === "resources") {
           // Resource folder
           queryClient.invalidateQueries([RESOURCE_ROOM_CONTENT_KEY, siteName])
-        } else if (subfolderName) {
+        } else if (folderType === 'page' && subfolderName) {
           // Collection subfolder
           queryClient.invalidateQueries([DIR_CONTENT_KEY, siteName, folderOrCategoryName, undefined])
-        } else {
+        } else if (folderType === 'page' && !subfolderName) {
           queryClient.invalidateQueries([FOLDERS_CONTENT_KEY, { siteName, isResource: false }])
+        } else if (folderType === "images") {
+          queryClient.invalidateQueries([IMAGE_CONTENTS_KEY, mediaCustomPath])
+        } else if (folderType === "documents") {
+          queryClient.invalidateQueries([DOCUMENT_CONTENTS_KEY, mediaCustomPath])
         }
         onClose()
         successToast(`Successfully renamed folder!`)
@@ -84,7 +102,7 @@ const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName,
   const folderNameChangeHandler = (event) => {
     const { value } = event.target
     const comparisonCategoryArray = subfolderName ? existingFolders.filter(name => name !== subfolderName) : existingFolders.filter(name => name !== folderOrCategoryName)
-    let errorMessage = validateCategoryName(value, isCollection ? 'page' : 'resource', comparisonCategoryArray)
+    let errorMessage = validateCategoryName(value, folderType, comparisonCategoryArray)
     setErrors(errorMessage)
     setNewDirectoryName(value)
   }
@@ -126,7 +144,8 @@ FolderModal.propTypes = {
   folderOrCategoryName: PropTypes.string.isRequired,
   subfolderName: PropTypes.string,
   siteName: PropTypes.string.isRequired,
-  isCollection: PropTypes.bool.isRequired,
+  folderType: PropTypes.string.isRequired,
+  mediaCustomPath: PropTypes.string,
 };
 
 export default FolderModal;

@@ -11,7 +11,7 @@ const MediaCard = ({
   >
     <a href="/" onClick={(e) => { e.preventDefault(); onClick(); }}>
       {
-        type === 'image' && (
+        type === 'images' && (
           <div className={mediaStyles.mediaCardImagePreviewContainer}>
             <img
               className={mediaStyles.mediaCardImage}
@@ -23,9 +23,16 @@ const MediaCard = ({
         )
       }
       {
-        type === 'file' && (
+        type === 'files' && (
           <div className={mediaStyles.mediaCardFilePreviewContainer}>
             <p>{media.fileName.split('.').pop().toUpperCase()}</p>
+          </div>
+        )
+      }
+      {
+        type === 'dirs' && (
+          <div className={mediaStyles.mediaCardFilePreviewContainer}>
+            <p><i className={`bx bx-lg bxs-folder`}/></p>
           </div>
         )
       }
@@ -38,7 +45,7 @@ const MediaCard = ({
 );
 
 MediaCard.propTypes = {
-  type: PropTypes.oneOf(['image', 'file']).isRequired,
+  type: PropTypes.oneOf(['images', 'files', 'dirs']).isRequired,
   siteName: PropTypes.string,
   onClick: PropTypes.func.isRequired,
   media: PropTypes.shape({

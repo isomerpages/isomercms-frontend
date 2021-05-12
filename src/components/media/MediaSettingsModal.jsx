@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import PropTypes from 'prop-types';
 
 import FormField from '../FormField';
@@ -10,198 +10,176 @@ import { validateFileName } from '../../utils/validators';
 import {
   DEFAULT_RETRY_MSG,
 } from '../../utils'
-import { errorToast } from '../../utils/toasts';
+import { errorToast, successToast } from '../../utils/toasts';
+import { getMediaDetails, createMedia, renameMedia, deleteMedia } from '../../api';
+import { IMAGE_DETAILS_KEY, IMAGE_CONTENTS_KEY, DOCUMENT_DETAILS_KEY, DOCUMENT_CONTENTS_KEY} from '../../constants'
 
 import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 
-export default class MediaSettingsModal extends Component {
-  constructor(props) {
-    super(props);
-    const { media: { fileName } } = props;
-    this.state = {
-      newFileName: fileName,
-      sha: '',
-      content: null,
-      canShowDeleteWarningModal: false,
-    };
-  }
+const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingUpload, customPath }) => {
+  const fileName = media.fileName
+  const [newFileName, setNewFileName] = useState(fileName)
+  const [sha, setSha] = useState()
+  const [content, setContent] = useState()
+  const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
+  const errorMessage = validateFileName(newFileName);
+  const queryClient = useQueryClient()
 
-  async componentDidMount() {
-    const {
-      siteName, media, isPendingUpload, type,
-    } = this.props;
-    const { fileName } = media;
-
-    if (isPendingUpload) {
-      const { content } = media;
-      this.setState({ content });
-      return;
-    }
-
-    const { data: { sha, content } } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${fileName}`, {
-      withCredentials: true,
-    });
-    this.setState({ sha, content });
-  }
-
-  setFileName = (e) => {
-    this.setState({ newFileName: e.target.value });
-  }
-
-  saveFile = async () => {
-    const {
-      siteName,
-      media: { fileName },
-      isPendingUpload,
-      type,
-      onSave,
-    } = this.props;
-    const { newFileName, sha, content } = this.state;
-
-    try {
-      if (isPendingUpload) {
-        const params = {
-          content,
-        };
-
-        if (type === 'image') {
-          params.imageName = newFileName;
+  // Retrieve media information
+  const { data: mediaData } = useQuery(
+    type === 'images' ? [IMAGE_DETAILS_KEY, customPath, fileName] : [DOCUMENT_DETAILS_KEY, customPath, fileName],
+    () => {if (!isPendingUpload) return getMediaDetails({siteName, type, customPath, fileName})},
+    {
+      retry: false,
+      onError: (err) => {
+        if (err.response && err.response.status === 404) {
+          setRedirectToNotFound(siteName)
         } else {
-          params.documentName = newFileName;
+          errorToast()
         }
+      }
+    },
+  )
 
-        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}`, params, {
-          withCredentials: true,
-        });
+  // Handling save
+  const { mutateAsync: saveHandler } = useMutation(
+    () => {
+      if (isPendingUpload) {
+        // Creating a new file
+        return createMedia({siteName, type, customPath, newFileName, content})
       } else {
-        const params = {
-          sha,
-          content,
-        };
-
-        // rename the image if the request comes from an already uploaded image
-        if (newFileName === fileName) {
-          return;
+        // Renaming an existing file
+        return renameMedia({siteName, type, customPath, sha, content, fileName, newFileName})
+      }
+    },
+    {
+      onError: (err) => {
+        if (err?.response?.status === 409) {
+          // Error due to conflict in name
+          errorToast(`Another ${type.slice(0,-1)} with the same name exists. Please choose a different name.`)
+        } else if (err?.response?.status === 413 || err?.response === undefined) {
+          // Error due to file size too large - we receive 413 if nginx accepts the payload but it is blocked by our express settings, and undefined if it is blocked by nginx
+          errorToast(`Unable to upload as the ${type.slice(0,-1)} size exceeds 5MB. Please reduce your ${type.slice(0,-1)} size and try again.`)
+        } else {
+          errorToast(`There was a problem trying to save this ${type.slice(0,-1)}. ${DEFAULT_RETRY_MSG}`)
         }
-        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${fileName}/rename/${newFileName}`, params, {
-          withCredentials: true,
-        });
-      }
-      onSave(newFileName)
-    } catch (err) {
-      if (err?.response?.status === 409) {
-        // Error due to conflict in name
-        errorToast(`Another ${type === 'image' ? 'image' : 'file'} with the same name exists. Please choose a different name.`)
-      } else if (err?.response?.status === 413 || err?.response === undefined) {
-        // Error due to file size too large - we receive 413 if nginx accepts the payload but it is blocked by our express settings, and undefined if it is blocked by nginx
-        errorToast(`Unable to upload as the ${type === 'image' ? 'image' : 'file'} size exceeds 5MB. Please reduce your ${type === 'image' ? 'image' : 'file'} size and try again.`)
-      } else {
-        errorToast(`There was a problem trying to save this ${type === 'image' ? 'image' : 'file'}. ${DEFAULT_RETRY_MSG}`)
-      }
-      console.log(err);
+        console.log(err);
+      },
+      onSuccess: () => {
+        successToast(`Successfully ${isPendingUpload ? `created new` : `renamed`} ${type.slice(0,-1)}!`)
+        queryClient.invalidateQueries(type === 'images' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath])
+      },
+      onSettled: () => {
+        onSave(newFileName)
+      },
     }
-  }
+  )
 
-  deleteFile = async () => {
-    const { siteName, media: { fileName }, type } = this.props;
-    try {
-      const { sha } = this.state;
-      const params = {
-        sha,
-      };
-
-      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'image' ? 'images' : 'documents'}/${fileName}`, {
-        data: params,
-        withCredentials: true,
-      });
-
-      window.location.reload();
-    } catch (err) {
-      errorToast(`There was a problem trying to delete this ${type === 'image' ? 'image' : 'file'}. ${DEFAULT_RETRY_MSG}`)
-      console.log(err);
+  // Handling delete
+  const { mutateAsync: deleteHandler } = useMutation(
+    () => deleteMedia({siteName, type, sha, customPath, fileName}),
+    {
+      onError: () => errorToast(`There was a problem trying to delete this ${type.slice(0,-1)}. ${DEFAULT_RETRY_MSG}`),
+      onSuccess: () => {
+        successToast(`Successfully deleted ${type.slice(0,-1)}!`)
+        queryClient.invalidateQueries(type === 'images' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath])
+      },
+      onSettled: () => {
+        setCanShowDeleteWarningModal(false)
+        onSave()
+      },
     }
-  }
+  )
 
-  render() {
-    const {
-      onClose, media, type, isPendingUpload, siteName,
-    } = this.props;
-    const { fileName } = media
-    const {
-      newFileName,
-      sha,
-      content,
-      canShowDeleteWarningModal,
-    } = this.state;
-    const errorMessage = validateFileName(newFileName);
+  useEffect(() => {
+    let _isMounted = true
+    if (_isMounted && isPendingUpload) {
+      const { content:retrievedContent } = media
+      setContent(retrievedContent)
+      return
+    }
+    if (mediaData) {
+      const retrievedSha = mediaData.sha
+      const retrievedContent = mediaData.content
+      if (_isMounted) {
+        setContent(retrievedContent)
+        setSha(retrievedSha)
+      }
+    }
 
-    return (
-      <div className={elementStyles.overlay}>
-        <div className={elementStyles.modal}>
-          <div className={elementStyles.modalHeader}>
-            <h1>
-              {isPendingUpload ? `Upload new ${type}` : `Edit ${type} details`}
-            </h1>
-            <button type="button" onClick={onClose}>
-              <i className="bx bx-x" />
-            </button>
-          </div>
-          { type === 'image'
-            ? (
-              <div className={mediaStyles.editImagePreview}>
-                <img
-                  alt={`${media.fileName}`}
-                  src={isPendingUpload ? `data:image/png;base64,${content}`
-                    : (
-                      `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${media.path}${media.path.endsWith('.svg')
-                        ? '?sanitize=true'
-                        : ''}`
-                    )}
-                />
-              </div>
-            )
-            : (
-              <div className={mediaStyles.editFilePreview}>
-                <p>{media.fileName.split('.').pop().toUpperCase()}</p>
-              </div>
-            )}
-          <form className={elementStyles.modalContent}>
-            <div className={elementStyles.modalFormFields}>
-              <FormField
-                title="File name"
-                value={newFileName}
-                errorMessage={errorMessage}
-                id="file-name"
-                isRequired
-                onFieldChange={this.setFileName}
+    return () => {
+      _isMounted = false
+    }
+  }, [mediaData])
+
+  return (
+    <div className={elementStyles.overlay}>
+      <div className={elementStyles.modal}>
+        <div className={elementStyles.modalHeader}>
+          <h1>
+            {isPendingUpload ? `Upload new ${type.slice(0,-1)}` : `Edit ${type.slice(0,-1)} details`}
+          </h1>
+          <button type="button" onClick={onClose}>
+            <i className="bx bx-x" />
+          </button>
+        </div>
+        { type === 'images'
+          ? (
+            <div className={mediaStyles.editImagePreview}>
+              <img
+                alt={`${media.fileName}`}
+                src={isPendingUpload ? `data:image/png;base64,${content}`
+                  : (
+                    `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${media.path}${media.path.endsWith('.svg')
+                      ? '?sanitize=true'
+                      : ''}`
+                  )}
               />
             </div>
-            <SaveDeleteButtons
-              saveLabel={isPendingUpload ? "Upload" : "Save"}
-              isDisabled={isPendingUpload ? false : !sha}
-              isSaveDisabled={isPendingUpload ? false : (fileName === this.state.newFileName || errorMessage || !sha)}
-              hasDeleteButton={!isPendingUpload}
-              saveCallback={this.saveFile}
-              deleteCallback={() => this.setState({ canShowDeleteWarningModal: true })}
-              isLoading={isPendingUpload ? false : !sha}
-            />
-          </form>
-        </div>
-        {
-          canShowDeleteWarningModal
-          && (
-            <DeleteWarningModal
-              onCancel={() => this.setState({ canShowDeleteWarningModal: false })}
-              onDelete={this.deleteFile}
-              type="image"
-            />
           )
-        }
+          : (
+            <div className={mediaStyles.editFilePreview}>
+              <p>{media.fileName.split('.').pop().toUpperCase()}</p>
+            </div>
+          )}
+        <form className={elementStyles.modalContent}>
+          <div className={elementStyles.modalFormFields}>
+            <FormField
+              title="File name"
+              value={newFileName}
+              errorMessage={errorMessage}
+              id="file-name"
+              isRequired
+              onFieldChange={(e) => setNewFileName(e.target.value)}
+            />
+          </div>
+          <SaveDeleteButtons
+            saveLabel={isPendingUpload ? "Upload" : "Save"}
+            isDisabled={isPendingUpload ? false : !sha}
+            isSaveDisabled={isPendingUpload ? false : (fileName === newFileName || errorMessage || !sha)}
+            hasDeleteButton={!isPendingUpload}
+            saveCallback={saveHandler}
+            deleteCallback={() => setCanShowDeleteWarningModal(true)}
+            isLoading={isPendingUpload ? false : !sha}
+          />
+        </form>
       </div>
-    );
-  }
+      {
+        canShowDeleteWarningModal
+        && (
+          <DeleteWarningModal
+            onCancel={() => setCanShowDeleteWarningModal(false)}
+            onDelete={deleteHandler}
+            type="image"
+          />
+        )
+      }
+    </div>
+  );
 }
+
+export default MediaSettingsModal
 
 MediaSettingsModal.propTypes = {
   media: PropTypes.shape({
@@ -209,9 +187,10 @@ MediaSettingsModal.propTypes = {
     path: PropTypes.string,
     content: PropTypes.string,
   }).isRequired,
-  type: PropTypes.oneOf(['image', 'file']).isRequired,
+  type: PropTypes.oneOf(['images', 'files']).isRequired,
   siteName: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   isPendingUpload: PropTypes.bool.isRequired,
+  customPath: PropTypes.string,
 };
