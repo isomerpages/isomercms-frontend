@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '../../styles/App.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
+import contentStyles from'../../styles/isomer-cms/pages/Content.module.scss';
 import EditorContactCard from './ContactCard';
 import EditorLocationCard from './LocationCard';
 import _ from 'lodash';
@@ -44,6 +45,9 @@ const EditorSection = ({
               >
                 {cards && cards.length > 0 && (
                   <>
+                    <div className={contentStyles.segment}>
+                      <span><b><i className="bx bx-sm bx-bulb text-dark"/>Pro tip:</b> Drag and drop the items below to rearrange their order</span>
+                    </div>
                     { cards.map((card, cardIndex) => (
                       <Draggable
                         draggableId={`${sectionId}-${cardIndex}-draggable`}

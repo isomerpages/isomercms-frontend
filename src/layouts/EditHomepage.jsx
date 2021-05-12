@@ -27,6 +27,7 @@ import { errorToast } from '../utils/toasts';
 import '../styles/isomer-template.scss';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
+import contentStyles from'../styles/isomer-cms/pages/Content.module.scss';
 
 // Import hooks
 import useSiteColorsHook from '../hooks/useSiteColorsHook';
@@ -1131,7 +1132,9 @@ const EditHomepage = ({ match }) => {
                                 siteName={siteName}
                                 handleHighlightDropdownToggle={handleHighlightDropdownToggle}
                               />
-                            <span><strong className="ml-1">Pro tip:</strong> Drag and drop the items below to rearrange their order in your Homepage.<br/><br/></span>
+                              <div className={contentStyles.segment}>
+                                <span><b><i className="bx bx-sm bx-bulb text-dark"/>Pro tip:</b> Drag and drop the items below to rearrange their order in your Homepage</span>
+                              </div>
                             </>
                           ) : (
                             null

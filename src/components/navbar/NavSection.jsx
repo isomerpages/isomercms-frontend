@@ -4,6 +4,7 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import Select from 'react-select';
 import styles from '../../styles/App.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
+import contentStyles from'../../styles/isomer-cms/pages/Content.module.scss';
 import FormField from '../FormField';
 import NavSublinkSection from './NavSublinkSection'
 import { isEmpty } from '../../utils';
@@ -198,7 +199,9 @@ const NavSection = ({
           >
             { (links && links.length > 0)
               ? <>
-                  <b>Menu</b>
+                  <div className={contentStyles.segment}>
+                    <span><b><i className="bx bx-sm bx-bulb text-dark"/>Pro tip:</b> Drag and drop the items below to rearrange their order in your Navigation Bar</span>
+                  </div>
                   {links.map((link, linkIndex) => (
                     <Draggable
                       draggableId={`link-${linkIndex}-draggable`}
