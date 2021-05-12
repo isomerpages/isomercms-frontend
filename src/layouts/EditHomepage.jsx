@@ -1132,7 +1132,7 @@ const EditHomepage = ({ match }) => {
                                 siteName={siteName}
                                 handleHighlightDropdownToggle={handleHighlightDropdownToggle}
                               />
-                              <div className={contentStyles.segment}>
+                              <div className={`${contentStyles.segment} mb-0`}>
                                 <span><b><i className="bx bx-sm bx-bulb text-dark"/>Pro tip:</b> Drag and drop the items below to rearrange their order in your Homepage</span>
                               </div>
                             </>
