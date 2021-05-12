@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '../../styles/App.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
+import contentStyles from'../../styles/isomer-cms/pages/Content.module.scss';
 import FormField from '../FormField';
 import { isEmpty } from '../../utils';
 
@@ -76,7 +77,10 @@ const NavSublinkSection = ({
       >
         { (sublinks && sublinks.length > 0)
           ? <>
-              <b>Submenu</b>
+              <b>Submenu</b><br/><br/>
+              <div className={`${contentStyles.segment} mb-0`}>
+                <span><b><i className="bx bx-sm bx-bulb text-dark"/>Pro tip:</b> Drag and drop the items below to rearrange their order</span>
+              </div>
               {sublinks.map((sublink, sublinkIndex) => (
                 <Draggable
                   draggableId={`sublink-${linkIndex}-${sublinkIndex}-draggable`}
