@@ -30,7 +30,7 @@ describe('Images', () => {
       // Set intercept to listen for POST request on server
       cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/images` }).as('createImage')
 
-      cy.uploadImage(IMAGE_TITLE, TEST_IMAGE_PATH)
+      cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH)
       // ASSERTS
       cy.wait('@createImage') // should intercept POST request
       cy.contains(IMAGE_TITLE) // image should be contained in Images
@@ -40,11 +40,11 @@ describe('Images', () => {
     it('Should be able to edit an image', () => {
       const NEW_IMAGE_TITLE = 'america.jpg'
       
-      cy.renameImage(IMAGE_TITLE, NEW_IMAGE_TITLE)
+      cy.renameMedia(IMAGE_TITLE, NEW_IMAGE_TITLE)
       // ASSERTS
       cy.contains(NEW_IMAGE_TITLE) // Image should be contained in Images
 
-      cy.renameImage(NEW_IMAGE_TITLE, IMAGE_TITLE) // Rename image to original title 
+      cy.renameMedia(NEW_IMAGE_TITLE, IMAGE_TITLE) // Rename image to original title 
       // ASSERTS
       cy.contains(IMAGE_TITLE)
     })
@@ -56,21 +56,21 @@ describe('Images', () => {
       const ACTION_DISABLED = 'true'
       
       // should not be able to save with invalid characters in title 
-      cy.uploadImage(INVALID_CHARACTER, TEST_IMAGE_PATH, ACTION_DISABLED)
+      cy.uploadMedia(INVALID_CHARACTER, TEST_IMAGE_PATH, ACTION_DISABLED)
       // ASSERTS
       cy.contains('Invalid filename: filename must not contain any special characters')
       cy.get('button').contains(/^Upload$/).should('be.disabled') // necessary as multiple buttons containing Upload on page 
       cy.get('#closeMediaSettingsModal').click()
 
       // title should not allow for names without extensions
-      cy.uploadImage(MISSING_EXTENSION, TEST_IMAGE_PATH, ACTION_DISABLED)
+      cy.uploadMedia(MISSING_EXTENSION, TEST_IMAGE_PATH, ACTION_DISABLED)
       // ASSERTS
       cy.contains('Invalid filename: filename can only contain one full stop and must follow the structure {name}.{extension}')
       cy.get('button').contains(/^Upload$/).should('be.disabled') // necessary as multiple buttons containing Upload on page 
       cy.get('#closeMediaSettingsModal').click()
 
       // users should not be able to create file with duplicated filename in folder (NOT SUPPORTED YET)
-      // cy.uploadImage(IMAGE_TITLE, TEST_IMAGE_PATH, ACTION_DISABLED) 
+      // cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH, ACTION_DISABLED) 
       // // ASSERTS
       // cy.contains('Invalid filename: filename can only contain one full stop and must follow the structure {name}.{extension}')
       // cy.get('button').contains(/^Upload$/).should('be.disabled') // necessary as multiple buttons containing Upload on page
@@ -82,27 +82,27 @@ describe('Images', () => {
       const ACTION_DISABLED = 'true'
       
       // should not be able to save with invalid characters in title 
-      cy.renameImage(IMAGE_TITLE, INVALID_CHARACTER, ACTION_DISABLED)
+      cy.renameMedia(IMAGE_TITLE, INVALID_CHARACTER, ACTION_DISABLED)
       // ASSERTS
       cy.contains('Invalid filename: filename must not contain any special characters')
       cy.get('button').contains(/^Save$/).should('be.disabled') // necessary as multiple buttons containing Upload on page 
       cy.get('#closeMediaSettingsModal').click()
 
       // title should not allow for names without extensions
-      cy.renameImage(IMAGE_TITLE, MISSING_EXTENSION, ACTION_DISABLED)
+      cy.renameMedia(IMAGE_TITLE, MISSING_EXTENSION, ACTION_DISABLED)
       // ASSERTS
       cy.contains('Invalid filename: filename can only contain one full stop and must follow the structure {name}.{extension}')
       cy.get('button').contains(/^Save$/).should('be.disabled') // necessary as multiple buttons containing Upload on page 
       cy.get('#closeMediaSettingsModal').click()
 
       // should not be able to save if no change
-      cy.renameImage(IMAGE_TITLE, IMAGE_TITLE, ACTION_DISABLED)
+      cy.renameMedia(IMAGE_TITLE, IMAGE_TITLE, ACTION_DISABLED)
       // ASSERTS
       cy.get('button').contains(/^Save$/).should('be.disabled') // necessary as multiple buttons containing Upload on page 
       cy.get('#closeMediaSettingsModal').click()
 
       // users should not be able to create file with duplicated filename in folder (NOT SUPPORTED YET)
-      // cy.uploadImage(IMAGE_TITLE, TEST_IMAGE_PATH, ACTION_DISABLED)  
+      // cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH, ACTION_DISABLED)  
       // cy.contains('Invalid filename: filename can only contain one full stop and must follow the structure {name}.{extension}')
       // cy.get('button').contains(/^Save$/).should('be.disabled') // necessary as multiple buttons containing Upload on page
     })
@@ -111,7 +111,7 @@ describe('Images', () => {
       // Set intercept to listen for POST request on server
       cy.intercept({ method:'DELETE', url: `/v1/sites/${TEST_REPO_NAME}/images/${generateImageorFilePath('', IMAGE_TITLE)}` }).as('deleteImage')
 
-      cy.deleteImage(IMAGE_TITLE)
+      cy.deleteMedia(IMAGE_TITLE)
       // ASSERTS
       cy.wait('@deleteImage') // Should intercept DELETE request
       cy.contains(IMAGE_TITLE).should('not.exist') //Image file name should not exist in Images
@@ -188,7 +188,7 @@ describe('Images', () => {
       // Set intercept to listen for POST request on server
       cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/images` }).as('createImage')
 
-      cy.uploadImage(IMAGE_TITLE, TEST_IMAGE_PATH)
+      cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH)
       // ASSERTS
       cy.wait('@createImage') // should intercept POST request
       cy.contains(IMAGE_TITLE) // image should be contained in Images
@@ -197,11 +197,11 @@ describe('Images', () => {
     it('Should be able to edit an image in image album', () => {
       const NEW_IMAGE_TITLE = 'america.jpg'
       
-      cy.renameImage(IMAGE_TITLE, NEW_IMAGE_TITLE)
+      cy.renameMedia(IMAGE_TITLE, NEW_IMAGE_TITLE)
       // ASSERTS
       cy.contains(NEW_IMAGE_TITLE) // Image should be contained in Images
 
-      cy.renameImage(NEW_IMAGE_TITLE, IMAGE_TITLE) // Rename image to original title 
+      cy.renameMedia(NEW_IMAGE_TITLE, IMAGE_TITLE) // Rename image to original title 
       // ASSERTS
       cy.contains(IMAGE_TITLE)
     })
@@ -210,7 +210,7 @@ describe('Images', () => {
       // Set intercept to listen for POST request on server
       cy.intercept({ method:'DELETE', url: `/v1/sites/${TEST_REPO_NAME}/images/${generateImageorFilePath(EXISTING_ALBUM_TITLE, IMAGE_TITLE)}` }).as('deleteImage')
 
-      cy.deleteImage(IMAGE_TITLE)
+      cy.deleteMedia(IMAGE_TITLE)
       // ASSERTS
       cy.wait('@deleteImage') // Should intercept DELETE request
       cy.contains(IMAGE_TITLE).should('not.exist') //Image file name should not exist in Images

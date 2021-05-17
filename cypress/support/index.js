@@ -1,1 +1,1 @@
-import './images'
+import './medias'
