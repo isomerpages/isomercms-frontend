@@ -113,11 +113,11 @@ describe('Pages flow', () => {
       cy.get('div[id^=settings-]').first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
       cy.get('#title').clear().type(TEST_PAGE_TITLE)
       cy.contains('button', 'Save').click()
-      cy.wait(2000)
+      cy.wait(4000)
 
       // Page title should be reset in the Workspace
       cy.contains(PRETTIFIED_PAGE_TITLE)
-      cy.wait(2000) // Wait needed because the next test fails otherwise - the rename call takes some time to propagate
+      cy.wait(4000) // Wait needed because the next test fails otherwise - the rename call takes some time to propagate
     })
 
     it('Should be able to delete existing page on workspace', () => {
@@ -127,7 +127,7 @@ describe('Pages flow', () => {
       testPageCard.children().within(() => cy.get('[id^=settings-]').click())
       cy.get('div[id^=delete-]').first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
       cy.contains('button', 'Delete').click()
-      cy.wait(2000)
+      cy.wait(4000)
 
       cy.contains(PRETTIFIED_PAGE_TITLE).should('not.exist')
     })
@@ -168,7 +168,7 @@ describe('Pages flow', () => {
       // Create test page content
       cy.get('.CodeMirror-scroll').type(TEST_PAGE_CONTENT)
       cy.contains('Save').click()
-      cy.wait(2000)
+      cy.wait(4000)
       cy.contains('My Workspace').click()
       
       cy.contains('Create new folder').click()
@@ -408,7 +408,7 @@ describe('Pages flow', () => {
       cy.get('.bx-dots-vertical-rounded').parent().click()
       cy.get('div[id^=delete-]').first().click()
       cy.contains('button', 'Delete').click()
-      cy.wait(2000)
+      cy.wait(4000)
 
       cy.contains(EDITED_PRETTIFIED_PAGE_TITLE).should('not.exist')
     })
@@ -504,7 +504,7 @@ describe('Pages flow', () => {
       cy.get('.bx-dots-vertical-rounded').parent().click()
       cy.get('div[id^=delete-]').first().click()
       cy.contains('button', 'Delete').click()
-      cy.wait(2000)
+      cy.wait(4000)
 
       cy.contains(EDITED_PRETTIFIED_PAGE_TITLE).should('not.exist')
     })
