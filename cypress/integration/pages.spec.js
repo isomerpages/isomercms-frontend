@@ -390,7 +390,7 @@ describe('Pages flow', () => {
     })
 
     it('Should be able to edit existing page details with valid title and permalink', () => {
-      const testPageCard = cy.contains(PRETTIFIED_PAGE_TITLE)
+      cy.contains(PRETTIFIED_PAGE_TITLE)
 
       // User should be able edit page details
       cy.get('.bx-dots-vertical-rounded').parent().click()
@@ -403,8 +403,101 @@ describe('Pages flow', () => {
     })
 
     it('Should be able to delete existing page on workspace', () => {
-      const testPageCard = cy.contains(EDITED_PRETTIFIED_PAGE_TITLE)
+      // User should be able to remove the created test page card
+      cy.contains(EDITED_PRETTIFIED_PAGE_TITLE)
+      cy.get('.bx-dots-vertical-rounded').parent().click()
+      cy.get('div[id^=delete-]').first().click()
+      cy.contains('button', 'Delete').click()
+      cy.wait(2000)
 
+      cy.contains(EDITED_PRETTIFIED_PAGE_TITLE).should('not.exist')
+    })
+  })
+
+  describe('Create page, delete page, edit page settings in subfolder', () => {
+    before(() => {
+      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
+      window.localStorage.setItem('userId', 'test')
+      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}`)
+      cy.contains('Create new subfolder').click()
+      cy.get('input#subfolder').clear().type(TEST_SUBFOLDER_NO_PAGES_TITLE)
+      cy.contains('Select pages').click()
+      cy.contains('Done').click()
+
+      // Assert
+      cy.wait(4000)
+      cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE)
+      cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}/subfolder/${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}`)
+      cy.contains('There are no pages in this subfolder.')
+    })
+
+    beforeEach(() => {
+      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
+      window.localStorage.setItem('userId', 'test')
+      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}/subfolder/${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}`)
+    })
+  
+    it('Should be able to create a new page with valid title and permalink', () => {
+      cy.contains('Create new page').click()
+      cy.get('#title').clear().type(TEST_PAGE_TITLE)
+      cy.get('#permalink').clear().type(TEST_PAGE_PERMALNK)
+      cy.contains('Save').click()
+
+      // Asserts
+      // 1. User should be redirected to correct EditPage
+      cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}/subfolder/${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}/${TEST_PAGE_FILENAME}`)
+      cy.contains(PRETTIFIED_PAGE_TITLE)
+
+      // 2. If user goes back to the workspace, they should be able to see that the page exists
+      cy.contains('button', PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE).click()
+      cy.contains(PRETTIFIED_PAGE_TITLE)
+    })
+
+    it('Should not be able to create page with invalid title or permalink', () => {
+      const SHORT_TITLE = 'abc'
+      const SHORT_PERMALINK = '/12'
+      const INVALID_PERMALINK = 'test-'
+
+      cy.contains('Create new page').click()
+
+      // Page title has to be more than 4 characters long
+      cy.get('#title').clear().type(SHORT_TITLE)
+      cy.get('#permalink').clear().type(TEST_PAGE_PERMALNK)
+      cy.contains('The title should be longer than 4 characters.')
+      cy.contains('button', 'Save').should('be.disabled')
+  
+      // Page title must not already exist
+      cy.get('#title').clear().type(TEST_PAGE_TITLE)
+      cy.contains('This title is already in use. Please choose a different title.')
+      cy.contains('button', 'Save').should('be.disabled')
+
+      // Permalink needs to be longer than 4 characters
+      cy.get('#title').clear().type(EDITED_TEST_PAGE_TITLE)
+      cy.get('#permalink').clear().type(SHORT_PERMALINK)
+      cy.contains('The permalink should be longer than 4 characters.')
+      cy.contains('button', 'Save').should('be.disabled')
+  
+      // Permalink should start with a slash, and contain alphanumeric characters separated by hyphens and slashes only
+      cy.get('#title').clear().type(EDITED_TEST_PAGE_TITLE)
+      cy.get('#permalink').clear().type(INVALID_PERMALINK)
+      cy.contains('The url should start with a slash, and contain alphanumeric characters separated by hyphens and slashes only.')
+      cy.contains('button', 'Save').should('be.disabled')
+    })
+
+    it('Should be able to edit existing page details with valid title and permalink', () => {
+      cy.contains(PRETTIFIED_PAGE_TITLE)
+
+      // User should be able edit page details
+      cy.get('.bx-dots-vertical-rounded').parent().click()
+      cy.get('div[id^=settings-]').first().click()
+      cy.get('#title').clear().type(EDITED_TEST_PAGE_TITLE)
+      cy.contains('button', 'Save').click()
+
+      // New page title should be reflected in the Workspace
+      cy.contains(EDITED_PRETTIFIED_PAGE_TITLE)
+    })
+
+    it('Should be able to delete existing page on workspace', () => {
       // Assert
       // User should be able to remove the created test page card
       cy.contains(EDITED_PRETTIFIED_PAGE_TITLE)
