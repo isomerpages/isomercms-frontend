@@ -280,12 +280,17 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
   }, [pageData, dirData, cspData])
 
   useEffect(() => {
+    loadChunk()
+  }, [editorValue])
+
+  async function loadChunk() {
     const html = marked(editorValue)
     const { isCspViolation: checkedIsCspViolation, sanitisedHtml: processedSanitisedHtml } = checkCSP(csp, html)
-    const processedChunk = prependImageSrc(siteName, processedSanitisedHtml)
+    const processedChunk = await prependImageSrc(siteName, processedSanitisedHtml)
     setIsCspViolation(checkedIsCspViolation)
     setChunk(processedChunk)
-  }, [editorValue])
+  }
+
 
   useEffect(() => {
     setHasChanges(originalMdValue === editorValue)

@@ -4,6 +4,8 @@ import cheerio from 'cheerio';
 import slugify from 'slugify';
 import axios from 'axios';
 import _ from 'lodash';
+import {getMediaDetails} from "./api";
+import {QueryClient} from "react-query";
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -59,18 +61,49 @@ export function isLinkInternal(url) {
 }
 
 // takes in a permalink and returns a URL that links to the image on the staging branch of the repo
-export function prependImageSrc(repoName, chunk) {
-  const $ = cheerio.load(chunk);
+// export function prependImageSrc(repoName, chunk) {
+//   const $ = cheerio.load(chunk);
+//   $('img').each((i, elem) => {
+//     // check for whether the original image source is from within Github or outside of Github
+//     // only modify URL if it's a permalink on the website
+//     if (isLinkInternal($(elem).attr('src'))) {
+//       $(elem).attr('src', `https://raw.githubusercontent.com/isomerpages/${repoName}/staging${$(elem).attr('src')}?raw=true`);
+//     }
+//     // change src to placeholder image if images not found
+//     $(elem).attr('onerror', "this.onerror=null; this.src='/placeholder_no_image.png';")
+//   });
+//   return $.html();
+// }
+
+export async function prependImageSrc(repoName, chunk) {
+  const $ = cheerio.load(chunk)
+  const imagePromises = []
+  const elementsToUpdate = []
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 1000 * 60 // 60 seconds
+      }
+    }
+  })
+
   $('img').each((i, elem) => {
     // check for whether the original image source is from within Github or outside of Github
     // only modify URL if it's a permalink on the website
     if (isLinkInternal($(elem).attr('src'))) {
-      $(elem).attr('src', `https://raw.githubusercontent.com/isomerpages/${repoName}/staging${$(elem).attr('src')}?raw=true`);
+      const filePath = $(elem).attr('src').substring(1) // remove leading '/'
+      imagePromises.push(queryClient.fetchQuery(filePath, () => fetchImageURL(repoName, filePath)))
+      elementsToUpdate.push(elem)
     }
     // change src to placeholder image if images not found
-    $(elem).attr('onerror', "this.onerror=null; this.src='/placeholder_no_image.png';") 
+    $(elem).attr('onerror', "this.onerror=null; this.src='/placeholder_no_image.png';")
   });
-  return $.html();
+
+  const imageURLs = await Promise.allSettled(imagePromises)
+  for (var i = 0; i<imageURLs.length; i++) {
+    $(elementsToUpdate[i]).attr('src', imageURLs[i].value)
+  }
+  return $.html()
 }
 
 const monthMap = {
@@ -310,4 +343,43 @@ export const convertSubfolderArray = (folderOrderArray, rawFolderContents, subfo
 export const generateImageorFilePath = (customPath, fileName) => {
   if (customPath) return encodeURIComponent(`${customPath}/${fileName}`)
   return fileName
+}
+
+const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+  const byteCharacters = atob(b64Data);
+  const byteArrays = [];
+
+  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+    const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+
+  const blob = new Blob(byteArrays, {type: contentType});
+  return blob;
+}
+
+export async function fetchImageURL(siteName, filePath) {
+  var rawURL = `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${filePath}${filePath.endsWith('.svg') ? '?sanitize=true' : ''}`
+  const response = await fetch(rawURL);
+  //If the image is public, return the link to the raw file, otherwise make a call to the backend API to retrieve the image blob
+  if (response.ok) {
+    return rawURL;
+  } else {
+    const fileName = filePath.slice(filePath.lastIndexOf('/')+1)
+    const customPath = filePath.slice(filePath.indexOf('/')+1, filePath.lastIndexOf('/')+1).replaceAll('/','')
+    const {imageName, content} = await getMediaDetails({siteName, type:'images', fileName, customPath})
+
+    const imageExt = imageName.slice(imageName.lastIndexOf('.')+1)
+    const contentType = 'image/' + (imageExt==='svg'?'svg+xml':imageExt)
+
+    const blob = b64toBlob(content, contentType)
+    return URL.createObjectURL(blob)
+  }
 }

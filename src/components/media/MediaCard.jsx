@@ -1,10 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
+import {fetchImageURL} from "../../utils";
+import {useQuery} from "react-query";
 
 const MediaCard = ({
   type, siteName, onClick, media, isSelected, canShowEditIcon,
-}) => (
+}) => {
+
+  const {data: imageURL, status} = useQuery(media.path, () => fetchImageURL(siteName, media.path), {
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 // 60 seconds
+  })
+
+    return (
   <div
     className={isSelected ? mediaStyles.selectedMediaCard : mediaStyles.mediaCard}
     key={media.path}
@@ -17,7 +26,7 @@ const MediaCard = ({
               className={mediaStyles.mediaCardImage}
               alt={`${media.fileName}`}
               // The sanitise parameter is for SVGs. It converts the raw svg data into an image
-              src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${media.path}${media.path.endsWith('.svg') ? '?sanitize=true' : ''}`}
+              src={(status === 'success')?imageURL:'/placeholder_no_image.png'}
             />
           </div>
         )
@@ -43,6 +52,7 @@ const MediaCard = ({
     </a>
   </div>
 );
+}
 
 MediaCard.propTypes = {
   type: PropTypes.oneOf(['images', 'files', 'dirs']).isRequired,
