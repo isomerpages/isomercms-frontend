@@ -1,18 +1,18 @@
 import { slugifyCategory } from '../../src/utils'
 
-describe('Sites page', () => {
+describe('Resources page', () => {
   const CMS_BASEURL = Cypress.env('BASEURL')
   const COOKIE_NAME = Cypress.env('COOKIE_NAME')
   const COOKIE_VALUE = Cypress.env('COOKIE_VALUE')
   const TEST_REPO_NAME = Cypress.env('TEST_REPO_NAME')
 
   const TEST_CATEGORY = 'Test Folder'
-  const TEST_CATEGORY_2 = 'Test Folder 2'
+  const TEST_CATEGORY_2 = 'Another Folder'
   const TEST_CATEGORY_SLUGIFIED = slugifyCategory(TEST_CATEGORY)
-  const TEST_CATEGORY_2_SLUGIFIED = slugifyCategory(TEST_CATEGORY)
+  const TEST_CATEGORY_2_SLUGIFIED = slugifyCategory(TEST_CATEGORY_2)
   const TEST_CATEGORY_SPECIAL = 'Test Folder!'
   const TEST_CATEGORY_SHORT = 'T'
-  const TEST_CATEGORY_RENAMED = 'Test Folder Renamed'
+  const TEST_CATEGORY_RENAMED = 'Renamed Folder'
 
   before(() => {
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
@@ -22,20 +22,15 @@ describe('Sites page', () => {
     // Before each test, we can automatically preserve the cookie.
     // This means it will not be cleared before the NEXT test starts.
     Cypress.Cookies.preserveOnce(COOKIE_NAME)
-    // Visit once to set logged in state
-    cy.visit(`${CMS_BASEURL}/sites`)
-    // Set a wait time because the API takes time
-    cy.wait(3000)
+    window.localStorage.setItem('userId', 'test')
+    cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources`)
   })
 
   it('Resources page should have resources header', () => {
-    cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources`)
     cy.contains('Resources')
   })
 
   it('Resources page should allow user to create a new resource category', () => {
-    cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources`)
-
     cy.contains('Create new category').click()
 
     cy.get('input').clear().type(TEST_CATEGORY)
@@ -51,8 +46,6 @@ describe('Sites page', () => {
   })
 
   it('Resources page should not allow user to create a new resource category with invalid name', () => {
-    cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources`)
-
     cy.contains('Create new category').click()
 
     // Disabled button for special characters
@@ -69,8 +62,6 @@ describe('Sites page', () => {
   })
 
   it('Resources page should allow user to create another new resource category', () => {
-    cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources`)
-
     cy.contains('Create new category').click()
 
     cy.get('input').clear().type(TEST_CATEGORY_2)
@@ -86,8 +77,6 @@ describe('Sites page', () => {
   })
 
   it('Resources page should not allow user to rename a resource category using an invalid name', () => {
-    cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources`)
-
     cy.contains(TEST_CATEGORY_2).find('[id^=settings-folder]').click()
     cy.contains(TEST_CATEGORY_2).contains('Edit details').click()
 
@@ -105,8 +94,6 @@ describe('Sites page', () => {
   })
 
   it('Resources page should allow user to rename a resource category', () => {
-    cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources`)
-
     cy.contains(TEST_CATEGORY_2).find('[id^=settings-folder]').click()
     cy.contains(TEST_CATEGORY_2).contains('Edit details').click()
 
@@ -120,9 +107,12 @@ describe('Sites page', () => {
     cy.contains(TEST_CATEGORY_RENAMED)
   })
 
-  it('Resources page should allow user to delete a resource category', () => {
-    cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources`)
+  it('Resources page should allow user to navigate into a resource category', () => {
+    cy.contains(TEST_CATEGORY).click()
+    cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources/${TEST_CATEGORY_SLUGIFIED}`)
+  })
 
+  it('Resources page should allow user to delete a resource category', () => {
     cy.contains(TEST_CATEGORY_RENAMED).find('[id^=settings-folder]').click()
     cy.contains(TEST_CATEGORY_RENAMED).contains('Delete').click()
     cy.contains(':button', 'Cancel').click()
