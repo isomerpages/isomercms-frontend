@@ -145,10 +145,10 @@ const OverviewCard = ({
               setMoveDropdownQuery={setMoveDropdownQuery}
               backHandler={toggleDropdownModals}
               moveHandler={() => {
-                setSelectedPath(`${moveDropdownQuery.folderName ? moveDropdownQuery.folderName : 'pages'}${moveDropdownQuery.subfolderName ? `/${moveDropdownQuery.subfolderName}` : ''}`)
+                setSelectedPath(`${moveDropdownQuery ? moveDropdownQuery : 'pages'}`)
                 setCanShowMoveModal(true)
               }}
-              moveDisabled={isResource && !moveDropdownQuery.folderName} // cannot move resources to Workspace
+              moveDisabled={isResource && !moveDropdownQuery} // cannot move resources to Workspace
             />
           }
         </div>
