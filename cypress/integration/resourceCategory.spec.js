@@ -10,7 +10,6 @@ describe('Resource category page', () => {
   const TEST_CATEGORY = 'Test Page Folder'
   const TEST_CATEGORY_2 = 'Another Page Folder'
   const TEST_CATEGORY_SLUGIFIED = slugifyCategory(TEST_CATEGORY)
-  const TEST_CATEGORY_2_SLUGIFIED = slugifyCategory(TEST_CATEGORY_2)
 
   const TEST_PAGE_TITLE = 'Resource Page'
   const TEST_PAGE_TITLE_FILE = 'File Page'
