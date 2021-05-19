@@ -1,6 +1,9 @@
 import React from 'react';
-import { MenuItem } from './MenuDropdown'
+
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
+
+import { MenuItem } from './MenuDropdown'
 import { deslugifyDirectory } from '../utils'
 
 const FileMoveMenuDropdown = ({ 
@@ -16,8 +19,6 @@ const FileMoveMenuDropdown = ({
   moveDisabled,
 }) => {
 
-  const { folderName, subfolderName } = moveDropdownQuery
-
   const MoveButton = (
     <button
       type="button"
@@ -29,44 +30,39 @@ const FileMoveMenuDropdown = ({
     </button>
   )
 
+  const BreadcrumbButton = ({ name, idx }) => {
+    const newMoveDropdownQuery = moveDropdownQuery.split('/').slice(0, idx+1).join('/') // retrieves paths elements up to (excluding) element idx
+    return (
+      <button className={`${elementStyles.breadcrumbText} ml-1`} type="button" onClick={() => setMoveDropdownQuery(newMoveDropdownQuery)}>
+        {name}
+      </button>
+    )
+  }
+
   const Breadcrumb = (
-    <>
-      <span
-          id='workspace'
-          onClick={() => setMoveDropdownQuery({folderName: '', subfolderName: ''})}
-          style={ subfolderName || folderName ? {cursor:'pointer'}: {cursor:'default'}}
-      > 
-        {
-          subfolderName 
-          ? `... >` 
-          : !subfolderName && !folderName 
-          ? <strong>{rootName}</strong> 
-          : rootName
-        }
-      </span>
-      <span 
-        id='folder'
-        onClick={() => setMoveDropdownQuery({...moveDropdownQuery, subfolderName: ''})}
-        style={subfolderName ? {cursor:'pointer'} : {cursor:'default'}}
-      >
-        {
-          folderName && !subfolderName 
-          ? <strong> > {deslugifyDirectory(folderName)}</strong> 
-          : `${deslugifyDirectory(folderName)}`
-        }
-      </span>
-        {
-          subfolderName 
-          ? <strong> > {deslugifyDirectory(subfolderName)}</strong> 
-          : ''
-        }
-    </>
+    <div className={contentStyles.segment}>
+      { moveDropdownQuery !== '' 
+        ? 
+          <>
+          <BreadcrumbButton name={deslugifyDirectory(rootName)} idx={-1}/>
+          { 
+            moveDropdownQuery.split("/").map((folderName, idx, arr) => {
+              return idx === arr.length - 1
+              ? <> > <strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></>
+              : <> > <BreadcrumbButton idx={idx} name={deslugifyDirectory(folderName)}/></>
+            })
+          }
+          </>
+        : <strong className="ml-1">{deslugifyDirectory(rootName)}</strong>
+      }
+    </div>
   )
 
-  const queryHandler = (categoryName) => {
-    if (folderName) setMoveDropdownQuery({...moveDropdownQuery, subfolderName: categoryName})
-    else setMoveDropdownQuery({...moveDropdownQuery, folderName: categoryName})
-  }
+  const queryHandler = (categoryName) => setMoveDropdownQuery((prevState) =>
+    prevState 
+      ? `${moveDropdownQuery}/${categoryName}`
+      : categoryName
+  )
 
   return (
     <div className={`${elementStyles.fileMoveDropdown} ${elementStyles.right}`} ref={dropdownRef} tabIndex={1} onBlur={onBlur}>
