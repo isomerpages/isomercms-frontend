@@ -145,7 +145,7 @@ const ComponentSettingsModal = ({
 
     useEffect(() => {
         setHasErrors(!isPost ? (_.some(errors, (field) => field.length > 0) || !fileUrl ) : _.some(errors, (field) => field.length > 0) );
-    }, [errors])
+    }, [errors, fileUrl])
 
     useEffect(() => {
       setHasChanges(!(title === originalTitle && permalink === originalPermalink && fileUrl === originalFileUrl && resourceDate === originalResourceDate))
