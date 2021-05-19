@@ -402,13 +402,13 @@ describe('Pages flow', () => {
       cy.contains(EDITED_PRETTIFIED_PAGE_TITLE)
     })
 
-    it('Should be able to delete existing page on workspace', () => {
+    it('Should be able to delete existing page in folder', () => {
       // User should be able to remove the created test page card
       cy.contains(EDITED_PRETTIFIED_PAGE_TITLE)
       cy.get('.bx-dots-vertical-rounded').parent().click()
       cy.get('div[id^=delete-]').first().click()
       cy.contains('button', 'Delete').click()
-      cy.wait(4000)
+      cy.wait(8000)
 
       cy.contains(EDITED_PRETTIFIED_PAGE_TITLE).should('not.exist')
     })
@@ -497,16 +497,143 @@ describe('Pages flow', () => {
       cy.contains(EDITED_PRETTIFIED_PAGE_TITLE)
     })
 
-    it('Should be able to delete existing page on workspace', () => {
+    it('Should be able to delete existing page in subfolder', () => {
       // Assert
       // User should be able to remove the created test page card
       cy.contains(EDITED_PRETTIFIED_PAGE_TITLE)
       cy.get('.bx-dots-vertical-rounded').parent().click()
       cy.get('div[id^=delete-]').first().click()
       cy.contains('button', 'Delete').click()
-      cy.wait(4000)
+      cy.wait(8000)
 
       cy.contains(EDITED_PRETTIFIED_PAGE_TITLE).should('not.exist')
+    })
+  })
+
+  describe('Move pages', () => {
+    beforeEach(() => {
+      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
+      window.localStorage.setItem('userId', 'test')
+      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
+    })
+
+    it('Should be able to move page from workspace to folder', () => {
+      cy.contains('Add a new page').click()
+      cy.get('#title').clear().type(TEST_PAGE_TITLE)
+      cy.get('#permalink').clear().type(TEST_PAGE_PERMALNK)
+      cy.contains('Save').click()
+
+      cy.get('.CodeMirror-scroll').type(TEST_PAGE_CONTENT)
+      cy.contains('Save').click()
+      cy.wait(4000)
+
+      cy.contains('My Workspace').click()
+
+      const testPageCard = cy.contains(PRETTIFIED_PAGE_TITLE)
+
+      // User should be able edit page details
+      testPageCard.children().within(() => cy.get('[id^=settings-]').click())
+      cy.get('div[id^=move-]').first().click()
+      cy.wait(4000)
+      cy.get(`[id^=${PARSED_TEST_FOLDER_NO_PAGES_TITLE}]`).first().click()
+      cy.contains('button', 'Move Here').click()
+      cy.contains('button', 'Continue').click()
+
+      cy.wait(4000)
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).click()
+      cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}`)
+      cy.contains(PRETTIFIED_PAGE_TITLE).click()
+      cy.get('.CodeMirror-scroll').should('contain', TEST_PAGE_CONTENT)
+    })
+
+    it('Should be able to move page from workspace to subfolder', () => {
+      cy.contains('Add a new page').click()
+      cy.get('#title').clear().type(TEST_PAGE_TITLE)
+      cy.get('#permalink').clear().type(TEST_PAGE_PERMALNK)
+      cy.contains('Save').click()
+
+      cy.get('.CodeMirror-scroll').type(TEST_PAGE_CONTENT)
+      cy.contains('Save').click()
+      cy.wait(4000)
+
+      cy.contains('My Workspace').click()
+
+      const testPageCard = cy.contains(PRETTIFIED_PAGE_TITLE)
+
+      // User should be able edit page details
+      testPageCard.children().within(() => cy.get('[id^=settings-]').click())
+      cy.get('div[id^=move-]').first().click()
+      cy.wait(4000)
+      cy.get(`[id^=${PARSED_TEST_FOLDER_NO_PAGES_TITLE}]`).first().click()
+      cy.get(`[id^=${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}]`).first().click()
+      cy.contains('button', 'Move Here').click()
+      cy.contains('button', 'Continue').click()
+
+      cy.wait(4000)
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).click()
+      cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE).click()
+      cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}/subfolder/${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}`)
+      cy.contains(PRETTIFIED_PAGE_TITLE).click()
+      cy.get('.CodeMirror-scroll').should('contain', TEST_PAGE_CONTENT)
+    })
+
+    it('Should be able to move pages from subfolder to workspace', () => {
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).click()
+      cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE).click()
+
+      cy.get('.bx-dots-vertical-rounded').parent().click()
+      cy.get('div[id^=move-]').first().click()
+      cy.wait(4000)
+      cy.get(`[id^=breadcrumb`).first().click()
+      cy.get(`[id^=workspace]`).first().click()
+      cy.contains('button', 'Move Here').click()
+      cy.contains('button', 'Continue').click()
+      cy.wait(4000)
+
+      // Return to workspace and check for page + content
+      cy.contains('a', 'My Workspace').click({force: true})
+      cy.wait(4000)
+      cy.contains(PRETTIFIED_PAGE_TITLE).click()
+      cy.get('.CodeMirror-scroll').should('contain', TEST_PAGE_CONTENT)
+
+      // Delete page
+      cy.contains('button', 'Delete').click()
+      cy.get('[class^=Elements_modal-warning').children().within(() => cy.contains('button', 'Delete').click())
+      cy.wait(4000)
+      cy.contains(PRETTIFIED_PAGE_TITLE).should('not.exist')
+    })
+
+    it('Should be able to move pages from folder to workspace', () => {
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).click()
+
+      cy.get('.bx-dots-vertical-rounded').last().parent().click()
+      cy.get('div[id^=move-]').first().click()
+      cy.wait(4000)
+      cy.get(`[id^=breadcrumb`).first().click()
+      cy.get(`[id^=workspace]`).first().click()
+      cy.contains('button', 'Move Here').click()
+      cy.contains('button', 'Continue').click()
+      cy.wait(4000)
+
+      // Return to workspace and check for page + content
+      cy.contains('a', 'My Workspace').click({force: true})
+      cy.wait(4000)
+      cy.contains(PRETTIFIED_PAGE_TITLE).click()
+      cy.get('.CodeMirror-scroll').should('contain', TEST_PAGE_CONTENT)
+
+      // Delete page
+      cy.contains('button', 'Delete').click()
+      cy.get('[class^=Elements_modal-warning').children().within(() => cy.contains('button', 'Delete').click())
+      cy.wait(4000)
+      cy.contains(PRETTIFIED_PAGE_TITLE).should('not.exist')
+
+      // Delete folder
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).within(() => cy.get('[id^=settingsIcon]').click())
+      cy.get('div[id^=delete-]').first().click()
+      cy.contains('button', 'Delete').click()
+
+      cy.wait(4000)
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).should('not.exist')
     })
   })
 })
