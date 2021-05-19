@@ -110,14 +110,11 @@
         justify-content: center;
         align-items: center;
         padding-left: 15px;
-
-        i {
-          color: black;
-          margin-right: 16px;
-          font-size: x-large;
-        }
+        padding-right: 15px;
 
         .mediaCardName{
+          color: black;
+          font-size: x-large;
           width: 100%;
           font-size: .9em;
           color: $body-text;

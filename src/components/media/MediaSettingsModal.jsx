@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import PropTypes from 'prop-types';
 
 import FormField from '../FormField';
-import DeleteWarningModal from '../DeleteWarningModal';
 import SaveDeleteButtons from '../SaveDeleteButtons';
 
 import { validateFileName } from '../../utils/validators';
@@ -11,18 +10,17 @@ import {
   DEFAULT_RETRY_MSG,
 } from '../../utils'
 import { errorToast, successToast } from '../../utils/toasts';
-import { getMediaDetails, createMedia, renameMedia, deleteMedia } from '../../api';
+import { getMediaDetails, createMedia, renameMedia } from '../../api';
 import { IMAGE_DETAILS_KEY, IMAGE_CONTENTS_KEY, DOCUMENT_DETAILS_KEY, DOCUMENT_CONTENTS_KEY} from '../../constants'
 
 import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 
 const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingUpload, customPath }) => {
-  const fileName = media.fileName
+  const fileName = media.fileName || ''
   const [newFileName, setNewFileName] = useState(fileName)
   const [sha, setSha] = useState()
   const [content, setContent] = useState()
-  const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
   const errorMessage = validateFileName(newFileName);
   const queryClient = useQueryClient()
 
@@ -72,22 +70,6 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
       },
       onSettled: () => {
         onSave(newFileName)
-      },
-    }
-  )
-
-  // Handling delete
-  const { mutateAsync: deleteHandler } = useMutation(
-    () => deleteMedia({siteName, type, sha, customPath, fileName}),
-    {
-      onError: () => errorToast(`There was a problem trying to delete this ${type.slice(0,-1)}. ${DEFAULT_RETRY_MSG}`),
-      onSuccess: () => {
-        successToast(`Successfully deleted ${type.slice(0,-1)}!`)
-        queryClient.invalidateQueries(type === 'images' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath])
-      },
-      onSettled: () => {
-        setCanShowDeleteWarningModal(false)
-        onSave()
       },
     }
   )
@@ -158,23 +140,12 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
             saveLabel={isPendingUpload ? "Upload" : "Save"}
             isDisabled={isPendingUpload ? false : !sha}
             isSaveDisabled={isPendingUpload ? false : (fileName === newFileName || errorMessage || !sha)}
-            hasDeleteButton={!isPendingUpload}
+            hasDeleteButton={false}
             saveCallback={saveHandler}
-            deleteCallback={() => setCanShowDeleteWarningModal(true)}
             isLoading={isPendingUpload ? false : !sha}
           />
         </form>
       </div>
-      {
-        canShowDeleteWarningModal
-        && (
-          <DeleteWarningModal
-            onCancel={() => setCanShowDeleteWarningModal(false)}
-            onDelete={deleteHandler}
-            type="image"
-          />
-        )
-      }
     </div>
   );
 }
@@ -190,7 +161,6 @@ MediaSettingsModal.propTypes = {
   type: PropTypes.oneOf(['images', 'files']).isRequired,
   siteName: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  onSave: PropTypes.func.isRequired,
   isPendingUpload: PropTypes.bool.isRequired,
   customPath: PropTypes.string,
 };
