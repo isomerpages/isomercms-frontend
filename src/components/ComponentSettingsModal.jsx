@@ -20,6 +20,7 @@ import {
   retrieveResourceFileMetadata,
   concatFrontMatterMdBody,
   deslugifyDirectory,
+  slugifyCategory,
 } from '../utils';
 
 import { createPageData, updatePageData, renamePageData } from '../api'
@@ -118,7 +119,7 @@ const ComponentSettingsModal = ({
           const exampleDate = new Date().toISOString().split("T")[0]
           const examplePermalink = `/${category}/permalink`
           let exampleTitle = 'Example Title'
-          while (_.find(pageFileNames, (v) => generateResourceFileName(exampleTitle, exampleDate, isPost) === v ) !== undefined) {
+          while (pageFileNames.map(fileName => slugifyCategory(retrieveResourceFileMetadata(fileName).title)).includes(slugifyCategory(exampleTitle))) {
             exampleTitle = exampleTitle+'_1'
           }
           if (_isMounted) {
