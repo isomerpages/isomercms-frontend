@@ -1,3 +1,4 @@
+import 'cypress-file-upload'
 import { slugifyCategory, generateResourceFileName } from '../../src/utils'
 
 describe('Resource category page', () => {
@@ -183,31 +184,72 @@ describe('Resource category page', () => {
     cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources/${TEST_CATEGORY_SLUGIFIED}/${generateResourceFileName(TEST_PAGE_TITLE_RENAMED, TEST_PAGE_DATE_CHANGED, true)}`)
   })
 
-  // it('Resources category page should allow user to create a new resource page of type file', () => {
-  //   cy.contains('Add a new page').click()
+  it('Resources category page should allow user to create a new resource page of type file', () => {
+    cy.contains('Add a new page').click()
 
-  //   cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_FILE)
-  //   cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE)
-  //   cy.get('input[id="radio-file"]').click()
+    cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_FILE)
+    cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE)
+    cy.get('input[id="radio-file"]').click()
     
-  //   // No file selected yet
-  //   cy.contains('Save').should('be.disabled')
-  //   cy.contains(':button', 'Select File').click()
-  //   cy.contains(':button', 'Add new file').click()
+    // No file selected yet
+    cy.contains('Save').should('be.disabled')
+    cy.contains(':button', 'Select File').click()
+    cy.contains(':button', 'Add new file').click()
 
-  //   cy.get('#file-upload').attachFile(TEST_FILE_PATH)
-  //   cy.get('#file-name').clear().type(FILE_TITLE)
-  //   cy.get('button').contains(/^Upload$/).click()
+    cy.get('#file-upload').attachFile(TEST_FILE_PATH)
+    cy.get('#file-name').clear().type(FILE_TITLE)
+    cy.get('button').contains(/^Upload$/).click()
+    cy.wait(2000)
 
-  //   cy.contains('Save').click()
+    cy.contains('Save').click()
+    cy.wait(3000)
 
-  //   // Asserts
-  //   // 1. Should not redirect
-  //   cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources/${TEST_CATEGORY_SLUGIFIED}`)
+    // Asserts
+    // 1. Should not redirect
+    cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources/${TEST_CATEGORY_SLUGIFIED}`)
 
-  //   // 2. New page should be of type FILE with the correct date
-  //   cy.contains(TEST_PAGE_TITLE_FILE).contains(`${TEST_PAGE_DATE_PRETTIFIED}/FILE`)
-  // })
+    // 2. New page should be of type FILE with the correct date
+    cy.contains(TEST_PAGE_TITLE_FILE)
+    cy.contains(`${TEST_PAGE_DATE_PRETTIFIED}/FILE`)
+  })
+
+  it('Resources category page should allow user to change a new resource page from post to file', () => {
+    cy.contains(TEST_PAGE_TITLE_RENAMED).find('[id^="settings-"]').click()
+    cy.contains('Edit details').click()
+    cy.wait(2000)
+
+    cy.get('input[id="radio-file"]').click()
+    
+    // No file selected yet
+    cy.contains('Save').should('be.disabled')
+    cy.contains(':button', 'Select File').click()
+    cy.contains(':button', 'Add new file').click()
+
+    cy.contains(FILE_TITLE).click()
+    cy.contains(':button', 'Select file').click()
+
+    cy.contains('Save').click()
+    cy.wait(3000)
+
+    // New page should be of type FILE with the correct date
+    cy.contains(TEST_PAGE_TITLE_RENAMED)
+    cy.contains(`${TEST_PAGE_DATE_CHANGED_PRETTIFIED}/FILE`)
+  })
+
+  it('Resources category page should allow user to change a new resource page from post to file', () => {
+    cy.contains(TEST_PAGE_TITLE_RENAMED).parent().parent().find('[id^="settings-"]').click()
+    cy.contains('Edit details').click()
+    cy.wait(2000)
+
+    cy.get('input[id="radio-post"]').click()
+    
+    // No file selected yet
+    cy.contains('Save').click()
+    cy.wait(3000)
+
+    // New page should be of type FILE with the correct date
+    cy.contains(TEST_PAGE_TITLE_RENAMED).contains(`${TEST_PAGE_DATE_CHANGED_PRETTIFIED}/POST`)
+  })
 
   it('Resource category page should allow user to move a page', () => {
     // Set up file content first
@@ -215,6 +257,7 @@ describe('Resource category page', () => {
     cy.wait(2000)
     cy.get('.CodeMirror-scroll').type(TEST_PAGE_CONTENT)
     cy.contains(':button', 'Save').click()
+    cy.wait(2000)
     cy.contains(TEST_CATEGORY).click()
     
     cy.contains(TEST_PAGE_TITLE).find('[id^="settings-"]').click()
