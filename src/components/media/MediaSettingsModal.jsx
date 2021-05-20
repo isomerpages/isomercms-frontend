@@ -10,8 +10,8 @@ import {
   DEFAULT_RETRY_MSG,
 } from '../../utils'
 import { errorToast, successToast } from '../../utils/toasts';
-import { getMediaDetails, createMedia, renameMedia } from '../../api';
-import { IMAGE_DETAILS_KEY, IMAGE_CONTENTS_KEY, DOCUMENT_DETAILS_KEY, DOCUMENT_CONTENTS_KEY} from '../../constants'
+import { createMedia, renameMedia } from '../../api';
+import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from '../../constants'
 
 import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
@@ -28,10 +28,10 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
     () => {
       if (isPendingUpload) {
         // Creating a new file
-        return createMedia({siteName, type, customPath, newFileName, content})
+        return createMedia({siteName, type, customPath, newFileName, content: media.content})
       } else {
         // Renaming an existing file
-        return renameMedia({siteName, type, customPath, sha, fileName, newFileName})
+        return renameMedia({siteName, type, customPath, fileName, newFileName})
       }
     },
     {
@@ -73,7 +73,7 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
             <div className={mediaStyles.editImagePreview}>
               <img
                 alt={`${media.fileName}`}
-                src={isPendingUpload ? `data:image/png;base64,${content}`
+                src={isPendingUpload ? `data:image/png;base64,${media.content}`
                   : (
                     `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${media.path}${media.path.endsWith('.svg')
                       ? '?sanitize=true'
