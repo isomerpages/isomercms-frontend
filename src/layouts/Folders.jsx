@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
@@ -41,8 +41,6 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 const Folders = ({ match, location }) => {
-    // Instantiate queryClient
-    const queryClient = useQueryClient()
     const { siteName, folderName, subfolderName } = match.params;
 
     // set Move-To dropdown to start from current location of file
@@ -187,7 +185,7 @@ const Folders = ({ match, location }) => {
     // MOVE-TO Dropdown
     // get subfolders of selected folder for move-to dropdown
     const { data: querySubfolders } = useQuery(
-      [DIR_CONTENT_KEY, siteName, moveDropdownQuery.split('/')[0]],
+      [DIR_CONTENT_KEY, siteName, moveDropdownQuery.split('/')[0]],  // moveDropdownQuery has format {folderName} or {folderName}/{subfolderName}
       async () => getDirectoryFile(siteName, moveDropdownQuery.split('/')[0]),
       {
         enabled: selectedPage.length > 0 && moveDropdownQuery.split('/')[0].length > 0 && isSelectedItemPage,

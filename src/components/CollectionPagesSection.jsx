@@ -70,8 +70,8 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
     // MOVE-TO Dropdown
     // get subfolders of selected folder for move-to dropdown
     const { data: querySubfolders } = useQuery(
-        [DIR_CONTENT_KEY, siteName, moveDropdownQuery.split('/')[0]],
-        async () => getDirectoryFile(siteName, moveDropdownQuery.split('/')[0]),
+        [DIR_CONTENT_KEY, siteName, moveDropdownQuery.split('/')[0]], // moveDropdownQuery has format {folderName} or {folderName}/{subfolderName}
+        async () => getDirectoryFile(siteName, moveDropdownQuery.split('/')[0]), 
         {   
             enabled: selectedFile.length > 0 && moveDropdownQuery.split('/')[0].length > 0 && !isResource,
             onError: () => errorToast(`The folders data could not be retrieved. ${DEFAULT_RETRY_MSG}`),

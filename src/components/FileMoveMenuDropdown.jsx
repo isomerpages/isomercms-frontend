@@ -1,7 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 import { MenuItem } from './MenuDropdown'
 import { deslugifyDirectory } from '../utils'
@@ -125,4 +125,22 @@ const FileMoveMenuDropdown = ({
   )
 }
 
-export default FileMoveMenuDropdown
+export default FileMoveMenuDropdown;
+
+FileMoveMenuDropdown.propTypes = {
+  dropdownItems: PropTypes.arrayOf(
+    PropTypes.string.isRequired
+  ),
+  menuIndex: PropTypes.number.isRequired, 
+  dropdownRef: PropTypes.oneOfType([
+    PropTypes.func, 
+    PropTypes.shape({ current: PropTypes.any })
+  ]).isRequired,
+  onBlur: PropTypes.func,
+  rootName: PropTypes.string.isRequired,
+  moveDropdownQuery: PropTypes.string.isRequired,
+  setMoveDropdownQuery: PropTypes.func.isRequired,
+  backHandler: PropTypes.func.isRequired,
+  moveHandler: PropTypes.func,
+  moveDisabled: PropTypes.bool,
+}

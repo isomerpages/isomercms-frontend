@@ -156,13 +156,23 @@ const MediaCard = ({
 MediaCard.propTypes = {
   type: PropTypes.oneOf(['images', 'files', 'dirs']).isRequired,
   siteName: PropTypes.string,
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   media: PropTypes.shape({
     fileName: PropTypes.string,
     path: PropTypes.string,
   }).isRequired,
+  mediaItemIndex: PropTypes.number,
   isSelected: PropTypes.bool,
-  canShowEditIcon: PropTypes.bool,
+  setSelectedMedia: PropTypes.func,
+  setSelectedPath: PropTypes.func,
+  allCategories: PropTypes.arrayOf(PropTypes.string),
+  showSettings: PropTypes.bool,
+  moveDropdownQuery: PropTypes.string,
+  setIsMoveModalActive: PropTypes.func,
+  setIsMediaSettingsActive: PropTypes.func,
+  setIsDeleteModalActive: PropTypes.func,
+  setMoveDropdownQuery: PropTypes.func,
+  clearMoveDropdownQueryState: PropTypes.func,
 };
 
 MediaCard.defaultProps = {
