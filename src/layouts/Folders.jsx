@@ -46,7 +46,7 @@ const Folders = ({ match, location }) => {
     const { siteName, folderName, subfolderName } = match.params;
 
     // set Move-To dropdown to start from current location of file
-    const initialMoveDropdownQueryState = `${folderName}/${subfolderName}`
+    const initialMoveDropdownQueryState = `${folderName}${subfolderName ? `/${subfolderName}` : ''}`
 
     const { setRedirectToPage } = useRedirectHook()
 
