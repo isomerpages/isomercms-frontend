@@ -75,7 +75,7 @@ const MediaCard = ({
         e.stopPropagation();
         e.preventDefault(); 
         setSelectedMedia(media);
-        onClick();
+        if (!showFileMoveDropdown && !showDropdown && onClick) onClick();
       }}
     > 
       {
