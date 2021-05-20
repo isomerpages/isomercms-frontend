@@ -92,7 +92,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
   
   const { data: mediaData, refetch } = useQuery(
     mediaType === 'images' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath],
-    async () => getMedia(siteName, customPath ? decodeURIComponent(customPath): '', mediaNames[mediaType]),
+    () => getMedia(siteName, customPath ? decodeURIComponent(customPath): '', mediaNames[mediaType]),
     {
       retry: false,
       onError: (err) => {
@@ -215,7 +215,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
       },
       onSettled: () => {
         setIsMoveModalActive((prevState) => !prevState)
-        setSelectedMedia('')
+        setSelectedMedia(null)
         setSelectedPath('')
         setMoveDropdownQuery(initialMoveDropdownQueryState)
       },

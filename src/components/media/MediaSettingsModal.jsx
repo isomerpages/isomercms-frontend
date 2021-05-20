@@ -18,27 +18,10 @@ import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 
 const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingUpload, customPath }) => {
   const fileName = media.fileName || ''
+  const sha = media.sha || ''
   const [newFileName, setNewFileName] = useState(fileName)
-  const [sha, setSha] = useState()
-  const [content, setContent] = useState()
   const errorMessage = validateFileName(newFileName);
   const queryClient = useQueryClient()
-
-  // Retrieve media information
-  const { data: mediaData } = useQuery(
-    type === 'images' ? [IMAGE_DETAILS_KEY, customPath, fileName] : [DOCUMENT_DETAILS_KEY, customPath, fileName],
-    () => {if (!isPendingUpload) return getMediaDetails({siteName, type, customPath, fileName})},
-    {
-      retry: false,
-      onError: (err) => {
-        if (err.response && err.response.status === 404) {
-          setRedirectToNotFound(siteName)
-        } else {
-          errorToast()
-        }
-      }
-    },
-  )
 
   // Handling save
   const { mutateAsync: saveHandler } = useMutation(
@@ -48,7 +31,7 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
         return createMedia({siteName, type, customPath, newFileName, content})
       } else {
         // Renaming an existing file
-        return renameMedia({siteName, type, customPath, sha, content, fileName, newFileName})
+        return renameMedia({siteName, type, customPath, sha, fileName, newFileName})
       }
     },
     {
@@ -73,27 +56,6 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
       },
     }
   )
-
-  useEffect(() => {
-    let _isMounted = true
-    if (_isMounted && isPendingUpload) {
-      const { content:retrievedContent } = media
-      setContent(retrievedContent)
-      return
-    }
-    if (mediaData) {
-      const retrievedSha = mediaData.sha
-      const retrievedContent = mediaData.content
-      if (_isMounted) {
-        setContent(retrievedContent)
-        setSha(retrievedSha)
-      }
-    }
-
-    return () => {
-      _isMounted = false
-    }
-  }, [mediaData])
 
   return (
     <div className={elementStyles.overlay}>
