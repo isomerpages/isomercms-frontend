@@ -204,7 +204,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
   const { mutateAsync: moveHandler } = useMutation(
     async () => {
       const { fileName } = selectedMedia
-      await moveMedia({ siteName, type: mediaNames[mediaType], oldCustomPath: customPath, newCustomPath: selectedPath, fileName, newFileName: fileName})
+      await moveMedia({ siteName, type: mediaNames[mediaType], oldCustomPath: customPath, newCustomPath: selectedPath, fileName})
     },
     {
       onError: () => errorToast(`Your file could not be moved successfully. ${DEFAULT_RETRY_MSG}`),

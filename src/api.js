@@ -317,15 +317,15 @@ const deleteMedia = async ({siteName, type, sha, customPath, fileName}) => {
     });
 }
 
-const moveMedia = async ({siteName, type, sha, oldCustomPath, newCustomPath, content, fileName, newFileName}) => {
+const moveMedia = async ({siteName, type, sha, oldCustomPath, newCustomPath, content, fileName}) => {
     const params = {
         sha,
         content,
     };
-    if (newFileName === fileName && newCustomPath === oldCustomPath) {
+    if (newCustomPath === oldCustomPath) {
         return;
     }
-    return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}/${generateImageorFilePath(oldCustomPath, fileName)}/move/${generateImageorFilePath(newCustomPath, newFileName)}`, params);
+    return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}/${generateImageorFilePath(oldCustomPath, fileName)}/move/${generateImageorFilePath(newCustomPath, fileName)}`, params);
 }
 
 const createMediaSubfolder = async (siteName, mediaType, customPath) => {
