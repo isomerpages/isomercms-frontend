@@ -423,6 +423,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
                       setSelectedMedia={setSelectedMedia}
                       setSelectedPath={setSelectedPath}
                       showSettings={true}
+                      onClick={() => setIsMediaSettingsActive(true)}
                       setIsMoveModalActive={setIsMoveModalActive}
                       setIsDeleteModalActive={setIsDeleteModalActive}
                       setIsMediaSettingsActive={setIsMediaSettingsActive}
@@ -453,8 +454,8 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
           siteName={siteName}
           customPath={customPath}
           isPendingUpload={false}
-          onClose={() => setIsMediaSettingsActive(false)}
-          onSave={() => setIsMediaSettingsActive(false)}
+          onClose={() => {setIsMediaSettingsActive(false); setSelectedMedia(null);}}
+          onSave={() => {setIsMediaSettingsActive(false); setSelectedMedia(null);}}
         />
         )
       }

@@ -33,18 +33,18 @@ const FileMoveMenuDropdown = ({
   const BreadcrumbButton = ({ name, idx }) => {
     const newMoveDropdownQuery = moveDropdownQuery.split('/').slice(0, idx+1).join('/') // retrieves paths elements up to (excluding) element idx
     return (
-      <button className={`${elementStyles.breadcrumbText} ml-1`} type="button" onClick={() => setMoveDropdownQuery(newMoveDropdownQuery)}>
+      <button className={`${elementStyles.breadcrumbText} ml-1`} type="button" onClick={(e) => {e.stopPropagation(); e.preventDefault(); setMoveDropdownQuery(newMoveDropdownQuery)}}>
         {name}
       </button>
     )
   }
 
   const Breadcrumb = (
-    <div className={contentStyles.segment}>
+    <div className="d-flex justify-content-start">
       { moveDropdownQuery !== '' 
         ? 
           <>
-          <BreadcrumbButton name={deslugifyDirectory(rootName)} idx={-1}/>
+          <BreadcrumbButton name={moveDropdownQuery.split("/").length > 1 ? '...' : deslugifyDirectory(rootName)} idx={-1}/>
           { 
             moveDropdownQuery.split("/").map((folderName, idx, arr) => {
               return idx === arr.length - 1

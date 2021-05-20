@@ -72,8 +72,10 @@ const MediaCard = ({
       className={isSelected ? mediaStyles.selectedMediaCard : mediaStyles.mediaCard}
       key={media.path}
       onClick={(e) => { 
+        e.stopPropagation();
         e.preventDefault(); 
-        if (onClick) onClick();
+        setSelectedMedia(media);
+        onClick();
       }}
     > 
       {
@@ -102,7 +104,7 @@ const MediaCard = ({
           </div>
         )
       }
-      <div className={mediaStyles.mediaCardDescription}>
+      <div className={`${mediaStyles.mediaCardDescription} ${contentStyles.card} ${contentStyles.component}`}>
         <div className={mediaStyles.mediaCardName}>{media.fileName}</div>
         {/* Settings dropdown */}
         { showSettings && (
