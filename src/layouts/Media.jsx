@@ -451,6 +451,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
         <MediaSettingsModal
           type={mediaNames[mediaType]}
           media={selectedMedia}
+          mediaFileNames={media.filter(media => media.fileName !== selectedMedia.fileName).map(media => media.fileName)}
           siteName={siteName}
           customPath={customPath}
           isPendingUpload={false}
@@ -465,6 +466,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
         <MediaSettingsModal
           type={mediaNames[mediaType]}
           media={pendingMediaUpload}
+          mediaFileNames={media.filter(media => media.fileName !== pendingMediaUpload.fileName).map(media => media.fileName)}
           siteName={siteName}
           customPath={customPath}
           // eslint-disable-next-line react/jsx-boolean-value
