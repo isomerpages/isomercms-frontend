@@ -237,7 +237,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
   // MOVE-TO Dropdown utils
   // parse responses from move-to queries
   const getCategories = (dropdownMediaData) => {
-    if (!!!dropdownMediaData) return []
+    if (!dropdownMediaData) return []
     const { respDirectories } = dropdownMediaData
     return respDirectories.map(directory => directory.name)
   }
@@ -313,7 +313,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
                   decodeURIComponent(customPath).split("/").map((folderName, idx, arr) => {
                     return idx === arr.length - 1
                     ? <span> ><strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></span>
-                    : <span> ><Link to={`/sites/${siteName}/${mediaType}/${encodeURIComponent(arr.slice(0,idx+1))}`}><strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></Link></span>
+                    : <span> ><Link to={`/sites/${siteName}/${mediaType}/${encodeURIComponent(arr.slice(0,idx+1).join('/'))}`}><strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></Link></span>
                   })
                 }
               </span>
@@ -466,7 +466,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
         <MediaSettingsModal
           type={mediaNames[mediaType]}
           media={pendingMediaUpload}
-          mediaFileNames={media.filter(media => media.fileName !== pendingMediaUpload.fileName).map(media => media.fileName)}
+          mediaFileNames={media.map(media => media.fileName)}
           siteName={siteName}
           customPath={customPath}
           // eslint-disable-next-line react/jsx-boolean-value

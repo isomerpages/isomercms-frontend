@@ -49,7 +49,7 @@ const FileMoveMenuDropdown = ({
             moveDropdownQuery.split("/").map((folderName, idx, arr) => {
               return idx === arr.length - 1
               ? <> > <strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></>
-              : <> > <BreadcrumbButton idx={idx} name={deslugifyDirectory(folderName)}/></>
+              : <> > <BreadcrumbButton idx={idx} name={ idx < arr.length - 2 ? '...' : deslugifyDirectory(folderName) }/></> // shorten all except the last link
             })
           }
           </>

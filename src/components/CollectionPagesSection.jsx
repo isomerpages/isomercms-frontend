@@ -96,7 +96,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
             const parsedFolderArray = convertFolderOrderToArray(parsedFolderContents)
             return parsedFolderArray.filter(file => file.type === 'dir').map(file => file.fileName)
         }
-        if (!!!folderName && !!!subfolderName && allCategories) { // inside workspace, show all folders
+        if (!folderName && !subfolderName && allCategories) { // inside workspace, show all folders
             return allCategories.collections
         }
         return null
