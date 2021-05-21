@@ -84,7 +84,6 @@ const Workspace = ({ match, location }) => {
         }
       }
       fetchData()
-        setIsPrivate(siteName)
       return () => { _isMounted = false }
     }, [])
 

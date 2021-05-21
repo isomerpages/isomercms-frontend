@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
 import axios from 'axios';
 import Header from '../components/Header';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
@@ -22,6 +22,12 @@ export default class Sites extends Component {
         withCredentials: true,
       });
       const { siteNames } = resp.data;
+
+      window.sitesIsPrivate = siteNames.reduce((map, siteNames) => {
+        map[siteNames.repoName] = siteNames.isPrivate
+        return map
+      })
+
       if (this._isMounted) this.setState({ siteNames });
     } catch (err) {
       console.log(err);

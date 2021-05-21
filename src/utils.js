@@ -352,16 +352,6 @@ const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
   return blob;
 }
 
-// set window variable of whether repo is private by checking if the README.md file of repo can be retrieved
-// through its raw GitHub url
-export async function setIsPrivate(siteName) {
-  if (window[siteName+'isPublic'] === undefined) {
-    const readMeURL = `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/README.md`
-    const response = await fetch(readMeURL)
-    window[siteName+'isPublic'] = response.ok
-  }
-}
-
 /**
  * Checks if the current repo with siteName is private
  * If repo is public, returns the raw GitHub image URL
@@ -376,11 +366,9 @@ export async function setIsPrivate(siteName) {
  * @returns {Promise<string>}
  */
 export async function fetchImageURL(siteName, filePath) {
-  await setIsPrivate(siteName)
-
   const cleanPath = filePath.replace(/^\//, '') //Remove leading / if it exists e.g. /images/example.png -> images/example.png
   //If the image is public, return the link to the raw file, otherwise make a call to the backend API to retrieve the image blob
-  if (window[siteName+'isPublic']) {
+  if (!window.sitesIsPrivate[siteName]) {
     return `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${cleanPath}${cleanPath.endsWith('.svg') ? '?sanitize=true' : ''}`
   } else {
     const filePathArr = cleanPath.split('/')
