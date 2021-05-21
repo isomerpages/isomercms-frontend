@@ -74,7 +74,7 @@ const MediaCard = ({
       onClick={(e) => { 
         e.stopPropagation();
         e.preventDefault(); 
-        setSelectedMedia(media);
+        if (setSelectedMedia) setSelectedMedia(media);
         if (!showFileMoveDropdown && !showDropdown && onClick) onClick();
       }}
     > 
