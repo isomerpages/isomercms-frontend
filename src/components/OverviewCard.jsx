@@ -179,6 +179,17 @@ OverviewCard.propTypes = {
   siteName: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
   isResource: PropTypes.bool,
+  isHomepage: PropTypes.bool,
+  allCategories: PropTypes.arrayOf(PropTypes.string),
+  resourceType: PropTypes.oneOf(['file', 'post', '']),
+  setIsComponentSettingsActive: PropTypes.func,
+  setSelectedFile: PropTypes.func,
+  setSelectedPath: PropTypes.func,
+  setCanShowDeleteWarningModal: PropTypes.func,
+  setCanShowMoveModal: PropTypes.func,
+  moveDropdownQuery: PropTypes.string,
+  setMoveDropdownQuery: PropTypes.func,
+  clearMoveDropdownQueryState: PropTypes.func,
 };
 
 export default OverviewCard
