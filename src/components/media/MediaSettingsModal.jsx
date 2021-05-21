@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import FormField from '../FormField';
 import SaveDeleteButtons from '../SaveDeleteButtons';
 
-import { validateFileName } from '../../utils/validators';
+import { validateMediaSettings } from '../../utils/validators';
 import {
   DEFAULT_RETRY_MSG,
 } from '../../utils'
@@ -16,11 +16,19 @@ import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from '../../constants'
 import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 
-const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingUpload, customPath }) => {
+const MediaSettingsModal = ({
+  type,
+  siteName,
+  onClose,
+  onSave,
+  media,
+  mediaFileNames,
+  isPendingUpload,
+  customPath,
+}) => {
   const fileName = media.fileName || ''
-  const sha = media.sha || ''
   const [newFileName, setNewFileName] = useState(fileName)
-  const errorMessage = validateFileName(newFileName);
+  const errorMessage = validateMediaSettings(newFileName, mediaFileNames)
   const queryClient = useQueryClient()
 
   // Handling save
@@ -100,11 +108,10 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
           </div>
           <SaveDeleteButtons
             saveLabel={isPendingUpload ? "Upload" : "Save"}
-            isDisabled={isPendingUpload ? false : !sha}
-            isSaveDisabled={isPendingUpload ? false : (fileName === newFileName || errorMessage || !sha)}
+            isSaveDisabled={errorMessage || (!isPendingUpload && fileName === newFileName)}
             hasDeleteButton={false}
             saveCallback={saveHandler}
-            isLoading={isPendingUpload ? false : !sha}
+            isLoading={!!!media}
           />
         </form>
       </div>
@@ -120,6 +127,7 @@ MediaSettingsModal.propTypes = {
     path: PropTypes.string,
     content: PropTypes.string,
   }).isRequired,
+  mediaFileNames: PropTypes.arrayOf(PropTypes.string),
   type: PropTypes.oneOf(['images', 'files']).isRequired,
   siteName: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
