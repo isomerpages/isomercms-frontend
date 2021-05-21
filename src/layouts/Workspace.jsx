@@ -15,7 +15,7 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 // Import utils
-import {DEFAULT_RETRY_MSG, prettifyPageFileName, frontMatterParser, setIsPrivate} from '../utils';
+import {DEFAULT_RETRY_MSG, prettifyPageFileName, frontMatterParser} from '../utils';
 import { errorToast } from '../utils/toasts';
 import { getPages, getAllCategories, getEditPageData } from '../api';
 import { PAGE_CONTENT_KEY, FOLDERS_CONTENT_KEY } from '../constants'

@@ -6,6 +6,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import {getMediaDetails} from "./api";
 import {QueryClient} from "react-query";
+import {SITES_IS_PRIVATE_KEY} from "./constants";
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -368,7 +369,8 @@ const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
 export async function fetchImageURL(siteName, filePath) {
   const cleanPath = filePath.replace(/^\//, '') //Remove leading / if it exists e.g. /images/example.png -> images/example.png
   //If the image is public, return the link to the raw file, otherwise make a call to the backend API to retrieve the image blob
-  if (!window.sitesIsPrivate[siteName]) {
+  const isPrivate = JSON.parse(localStorage.getItem(SITES_IS_PRIVATE_KEY))[siteName]
+  if (!isPrivate) {
     return `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${cleanPath}${cleanPath.endsWith('.svg') ? '?sanitize=true' : ''}`
   } else {
     const filePathArr = cleanPath.split('/')

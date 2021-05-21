@@ -4,6 +4,7 @@ import axios from 'axios';
 import Header from '../components/Header';
 import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import siteStyles from '../styles/isomer-cms/pages/Sites.module.scss';
+import {SITES_IS_PRIVATE_KEY} from "../constants";
 
 export default class Sites extends Component {
   _isMounted = false
@@ -23,10 +24,10 @@ export default class Sites extends Component {
       });
       const { siteNames } = resp.data;
 
-      window.sitesIsPrivate = siteNames.reduce((map, siteNames) => {
-        map[siteNames.repoName] = siteNames.isPrivate
+      window.localStorage.setItem(SITES_IS_PRIVATE_KEY, JSON.stringify(siteNames.reduce((map, siteName) => {
+        map[siteName.repoName] = siteName.isPrivate
         return map
-      })
+      }, {})))
 
       if (this._isMounted) this.setState({ siteNames });
     } catch (err) {
