@@ -13,6 +13,8 @@ const MediaCard = ({
     staleTime: 1000 * 60 // 60 seconds
   })
 
+  console.log(media.path)
+
     return (
   <div
     className={isSelected ? mediaStyles.selectedMediaCard : mediaStyles.mediaCard}

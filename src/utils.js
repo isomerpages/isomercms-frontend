@@ -61,20 +61,6 @@ export function isLinkInternal(url) {
 }
 
 // takes in a permalink and returns a URL that links to the image on the staging branch of the repo
-// export function prependImageSrc(repoName, chunk) {
-//   const $ = cheerio.load(chunk);
-//   $('img').each((i, elem) => {
-//     // check for whether the original image source is from within Github or outside of Github
-//     // only modify URL if it's a permalink on the website
-//     if (isLinkInternal($(elem).attr('src'))) {
-//       $(elem).attr('src', `https://raw.githubusercontent.com/isomerpages/${repoName}/staging${$(elem).attr('src')}?raw=true`);
-//     }
-//     // change src to placeholder image if images not found
-//     $(elem).attr('onerror', "this.onerror=null; this.src='/placeholder_no_image.png';")
-//   });
-//   return $.html();
-// }
-
 export async function prependImageSrc(repoName, chunk) {
   const $ = cheerio.load(chunk)
   const imagePromises = []
@@ -91,8 +77,9 @@ export async function prependImageSrc(repoName, chunk) {
     // check for whether the original image source is from within Github or outside of Github
     // only modify URL if it's a permalink on the website
     if (isLinkInternal($(elem).attr('src'))) {
-      const filePath = $(elem).attr('src').substring(1) // remove leading '/'
-      imagePromises.push(queryClient.fetchQuery(filePath, () => fetchImageURL(repoName, filePath)))
+      const filePath = $(elem).attr('src')
+      const imagePromise = queryClient.fetchQuery(filePath, () => fetchImageURL(repoName, filePath))
+      imagePromises.push(imagePromise)
       elementsToUpdate.push(elem)
     }
     // change src to placeholder image if images not found
@@ -100,9 +87,9 @@ export async function prependImageSrc(repoName, chunk) {
   });
 
   const imageURLs = await Promise.allSettled(imagePromises)
-  for (var i = 0; i<imageURLs.length; i++) {
-    $(elementsToUpdate[i]).attr('src', imageURLs[i].value)
-  }
+  elementsToUpdate.forEach((elem, index) => {
+    $(elem).attr('src', imageURLs[index].value)
+  })
   return $.html()
 }
 
@@ -365,15 +352,40 @@ const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
   return blob;
 }
 
+// set window variable of whether repo is private by checking if the README.md file of repo can be retrieved
+// through its raw GitHub url
+export async function setIsPrivate(siteName) {
+  if (window[siteName+'isPublic'] === undefined) {
+    const readMeURL = `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/README.md`
+    const response = await fetch(readMeURL)
+    window[siteName+'isPublic'] = response.ok
+  }
+}
+
+/**
+ * Checks if the current repo with siteName is private
+ * If repo is public, returns the raw GitHub image URL
+ * If repo is private, calls the backend image API endpoint to retrieve the b64 encoded image blob text and returns the blob URL
+ *
+ * @param {string} siteName - Name of Isomer page repo
+ * @param {string} filePath - File path of image in repo. Should be of the format '/images/folder/subfolder1/subfolder2.../imagename.ext'.
+ *    The leading '/' is optional. The filePath parameter should be URI decoded. Examples:
+ *    images/test-folder/image sample.png
+ *    /images/test.svg
+ *    /images/folder 1/folder2/folder3/names.jpg
+ * @returns {Promise<string>}
+ */
 export async function fetchImageURL(siteName, filePath) {
-  var rawURL = `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${filePath}${filePath.endsWith('.svg') ? '?sanitize=true' : ''}`
-  const response = await fetch(rawURL);
+  await setIsPrivate(siteName)
+
+  const cleanPath = filePath.replace(/^\//, '') //Remove leading / if it exists e.g. /images/example.png -> images/example.png
   //If the image is public, return the link to the raw file, otherwise make a call to the backend API to retrieve the image blob
-  if (response.ok) {
-    return rawURL;
+  if (window[siteName+'isPublic']) {
+    return `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${cleanPath}${cleanPath.endsWith('.svg') ? '?sanitize=true' : ''}`
   } else {
-    const fileName = filePath.slice(filePath.lastIndexOf('/')+1)
-    const customPath = filePath.slice(filePath.indexOf('/')+1, filePath.lastIndexOf('/')+1).replaceAll('/','')
+    const filePathArr = cleanPath.split('/')
+    const fileName = filePathArr[filePathArr.length-1]
+    const customPath = filePathArr.slice(1, filePathArr.length-1).join('%2F')
     const {imageName, content} = await getMediaDetails({siteName, type:'images', fileName, customPath})
 
     const imageExt = imageName.slice(imageName.lastIndexOf('.')+1)
