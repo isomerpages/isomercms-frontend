@@ -205,7 +205,7 @@ const Folders = ({ match, location }) => {
         const parsedFolderArray = convertFolderOrderToArray(parsedFolderContents)
         return parsedFolderArray.filter(file => file.type === 'dir').map(file => file.fileName)
       }
-      if (!!!folderName && !!!subfolderName && allFolders) { // inside workspace, show all folders
+      if (!folderName && !subfolderName && allFolders) { // inside workspace, show all folders
         return allFolders.collections
       }
       return null

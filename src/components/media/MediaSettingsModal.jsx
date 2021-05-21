@@ -111,7 +111,7 @@ const MediaSettingsModal = ({
             isSaveDisabled={errorMessage || (!isPendingUpload && fileName === newFileName)}
             hasDeleteButton={false}
             saveCallback={saveHandler}
-            isLoading={!!!media}
+            isLoading={!media}
           />
         </form>
       </div>
