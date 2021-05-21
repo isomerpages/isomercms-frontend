@@ -68,7 +68,7 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
       },
       onSuccess: () => {
         successToast(`Successfully ${isPendingUpload ? `created new` : `renamed`} ${type.slice(0,-1)}!`)
-        queryClient.removeQueries('images/'+(customPath===undefined?'':customPath+'/')+fileName)
+        queryClient.removeQueries(`${siteName}/images/${(customPath===undefined?'':customPath+'/')}${fileName}`)
         queryClient.invalidateQueries(type === 'images' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath])
       },
       onSettled: () => {
@@ -88,7 +88,7 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
       },
       onSettled: () => {
         setCanShowDeleteWarningModal(false)
-        queryClient.removeQueries('images/'+(customPath===undefined?'':customPath+'/')+fileName)
+        queryClient.removeQueries(`${siteName}/images/${(customPath===undefined?'':customPath+'/')}${fileName}`)
         onSave()
       },
     }
@@ -115,9 +115,10 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
     }
   }, [mediaData])
 
-  const {data: imageURL, status} = useQuery(media.path, () => fetchImageURL(siteName, media.path), {
+  const {data: imageURL, status} = useQuery(`${siteName}/${media.path}`,
+      () => fetchImageURL(siteName, media.path, type === 'images'), {
     refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 // 60 seconds
+    staleTime: Infinity // Never automatically refetch image unless query is invalidated
   })
 
   return (

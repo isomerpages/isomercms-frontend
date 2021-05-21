@@ -8,9 +8,10 @@ const MediaCard = ({
   type, siteName, onClick, media, isSelected, canShowEditIcon,
 }) => {
 
-  const {data: imageURL, status} = useQuery(media.path, () => fetchImageURL(siteName, media.path), {
+  const {data: imageURL, status} = useQuery(`${siteName}/${media.path}`,
+      () => fetchImageURL(siteName, media.path, type === 'images'), {
     refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 // 60 seconds
+    staleTime: Infinity // Never automatically refetch image unless query is invalidated
   })
 
     return (

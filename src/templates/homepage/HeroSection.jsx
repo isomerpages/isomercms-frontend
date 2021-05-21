@@ -103,9 +103,10 @@ const TemplateHeroSection = ({
   toggleDropdown,
 }, ref) => {
 
-  const {data: loadedImageURL, status} = useQuery(hero.background, () => fetchImageURL(siteName, decodeURI(hero.background)), {
+  const {data: loadedImageURL, status} = useQuery(`${siteName}/${hero.background}`,
+      () => fetchImageURL(siteName, decodeURI(hero.background)), {
     refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 // 60 seconds
+    staleTime: Infinity // Never automatically refetch image unless query is invalidated
   })
 
   const heroStyle = {

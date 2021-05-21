@@ -6,6 +6,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import {getMediaDetails} from "./api";
 import {QueryClient} from "react-query";
+import {SITES_IS_PRIVATE_KEY} from "./constants";
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -68,7 +69,7 @@ export async function prependImageSrc(repoName, chunk) {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 1000 * 60 // 60 seconds
+        staleTime: Infinity // Never automatically refetch image unless query is invalidated
       }
     }
   })
@@ -78,7 +79,7 @@ export async function prependImageSrc(repoName, chunk) {
     // only modify URL if it's a permalink on the website
     if (isLinkInternal($(elem).attr('src'))) {
       const filePath = $(elem).attr('src')
-      const imagePromise = queryClient.fetchQuery(filePath, () => fetchImageURL(repoName, filePath))
+      const imagePromise = queryClient.fetchQuery(`${repoName}/${filePath}`, () => fetchImageURL(repoName, filePath))
       imagePromises.push(imagePromise)
       elementsToUpdate.push(elem)
     }
@@ -363,23 +364,28 @@ const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
  *    images/test-folder/image sample.png
  *    /images/test.svg
  *    /images/folder 1/folder2/folder3/names.jpg
+ * @param {boolean} shouldLoad - Specifies whether url should be generated or not. Images/documents in the Files tab should
+ *    should not have image URLs.
  * @returns {Promise<string>}
  */
-export async function fetchImageURL(siteName, filePath) {
-  const cleanPath = filePath.replace(/^\//, '') //Remove leading / if it exists e.g. /images/example.png -> images/example.png
-  //If the image is public, return the link to the raw file, otherwise make a call to the backend API to retrieve the image blob
-  if (!window.sitesIsPrivate[siteName]) {
-    return `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${cleanPath}${cleanPath.endsWith('.svg') ? '?sanitize=true' : ''}`
-  } else {
-    const filePathArr = cleanPath.split('/')
-    const fileName = filePathArr[filePathArr.length-1]
-    const customPath = filePathArr.slice(1, filePathArr.length-1).join('%2F')
-    const {imageName, content} = await getMediaDetails({siteName, type:'images', fileName, customPath})
+export async function fetchImageURL(siteName, filePath, shouldLoad = true) {
+  if (shouldLoad){
+    const cleanPath = filePath.replace(/^\//, '') //Remove leading / if it exists e.g. /images/example.png -> images/example.png
+    //If the image is public, return the link to the raw file, otherwise make a call to the backend API to retrieve the image blob
+    const isPrivate = JSON.parse(localStorage.getItem(SITES_IS_PRIVATE_KEY))[siteName]
+    if (!isPrivate) {
+      return `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${cleanPath}${cleanPath.endsWith('.svg') ? '?sanitize=true' : ''}`
+    } else {
+      const filePathArr = cleanPath.split('/')
+      const fileName = filePathArr[filePathArr.length - 1]
+      const customPath = filePathArr.slice(1, filePathArr.length - 1).join('%2F')
+      const {imageName, content} = await getMediaDetails({siteName, type: 'images', fileName, customPath})
 
-    const imageExt = imageName.slice(imageName.lastIndexOf('.')+1)
-    const contentType = 'image/' + (imageExt==='svg'?'svg+xml':imageExt)
+      const imageExt = imageName.slice(imageName.lastIndexOf('.') + 1)
+      const contentType = 'image/' + (imageExt === 'svg' ? 'svg+xml' : imageExt)
 
-    const blob = b64toBlob(content, contentType)
-    return URL.createObjectURL(blob)
+      const blob = b64toBlob(content, contentType)
+      return URL.createObjectURL(blob)
+    }
   }
 }

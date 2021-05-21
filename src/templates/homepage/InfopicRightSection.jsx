@@ -21,9 +21,10 @@ const TemplateInfopicRightSection = ({
     e.target.src = '/placeholder_no_image.png'
   }
 
-  const {data: loadedImageURL, status} = useQuery(imageUrl, () => fetchImageURL(siteName, decodeURI(imageUrl)), {
+  const {data: loadedImageURL, status} = useQuery(`${siteName}/${imageUrl}`,
+      () => fetchImageURL(siteName, decodeURI(imageUrl)), {
     refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 // 60 seconds
+    staleTime: Infinity // Never automatically refetch image unless query is invalidated
   })
 
   return (
