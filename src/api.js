@@ -148,6 +148,13 @@ const renameSubfolder = async ({ siteName, folderName, subfolderName, newSubfold
     return await axios.post(apiUrl)
 }
 
+const getResourceRoomName = async(siteName) => {
+    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resource-room`
+    const resp = await axios.get(apiUrl)
+    const { resourceRoom } = resp.data
+    return resourceRoom
+}
+
 // Resources
 const deleteResourceCategory = async ({ siteName, categoryName}) => {
     const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${categoryName}`
@@ -347,6 +354,7 @@ export {
     renameFolder,
     deleteSubfolder,
     renameSubfolder,
+    getResourceRoomName,
     deleteResourceCategory,
     renameResourceCategory,
     getAllResourceCategories,

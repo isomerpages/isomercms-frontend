@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
@@ -8,7 +8,7 @@ import FormField from './FormField';
 import FormFieldHorizontal from './FormFieldHorizontal';
 import ResourceFormFields from './ResourceFormFields';
 import SaveDeleteButtons from './SaveDeleteButtons';
-import { RESOURCE_CATEGORY_CONTENT_KEY } from '../constants'
+import { RESOURCE_ROOM_NAME_KEY, RESOURCE_CATEGORY_CONTENT_KEY } from '../constants'
 
 import useSiteUrlHook from '../hooks/useSiteUrlHook';
 import useRedirectHook from '../hooks/useRedirectHook';
@@ -23,7 +23,7 @@ import {
   slugifyCategory,
 } from '../utils';
 
-import { createPageData, updatePageData, renamePageData } from '../api'
+import { createPageData, updatePageData, renamePageData, getResourceRoomName } from '../api'
 
 import { validateResourceSettings } from '../utils/validators';
 import { errorToast, successToast } from '../utils/toasts';
@@ -77,6 +77,7 @@ const ComponentSettingsModal = ({
     const [resourceDate, setResourceDate] = useState('')
     const [fileUrl, setFileUrl] = useState('')
 
+    const [resourceRoomName, setResourceRoomName] = useState('')
     const [siteUrl, setSiteUrl] = useState('https://abc.com.sg')
 
     // Map element ID to setter functions
@@ -87,8 +88,24 @@ const ComponentSettingsModal = ({
         fileUrl: setFileUrl,
     }
 
+    useQuery(
+      [RESOURCE_ROOM_NAME_KEY, siteName],
+      () => getResourceRoomName(siteName),
+      {
+        retry: false,
+        onSuccess: (retrievedName) => {
+          setResourceRoomName(retrievedName)
+        },
+        onError: () => {
+          errorToast(`The resource room name could not be retrieved. ${DEFAULT_RETRY_MSG}`)
+        }
+      },
+    )
+
     useEffect(() => {
       let _isMounted = true
+
+      if (!resourceRoomName) return
 
       const initializePageDetails = () => {
         if (pageData !== undefined) { // is existing page
@@ -117,7 +134,7 @@ const ComponentSettingsModal = ({
         }
         if (isNewFile) {
           const exampleDate = new Date().toISOString().split("T")[0]
-          const examplePermalink = `/${category}/permalink`
+          const examplePermalink = `/${resourceRoomName}/${category}/permalink`
           let exampleTitle = 'Example Title'
           while (pageFileNames.map(fileName => slugifyCategory(retrieveResourceFileMetadata(fileName).title)).includes(slugifyCategory(exampleTitle))) {
             exampleTitle = exampleTitle+'_1'
@@ -142,7 +159,7 @@ const ComponentSettingsModal = ({
       return () => {
         _isMounted = false
       }
-    }, [pageData])
+    }, [pageData, resourceRoomName])
 
     useEffect(() => {
         setHasErrors(!isPost ? (_.some(errors, (field) => field.length > 0) || !fileUrl ) : _.some(errors, (field) => field.length > 0) );
