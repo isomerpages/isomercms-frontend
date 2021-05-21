@@ -111,8 +111,8 @@ const ComponentSettingsModal = ({
         if (pageData !== undefined) { // is existing page
           const { pageContent, pageSha } = pageData
           const { frontMatter, mdBody: pageMdBody } = frontMatterParser(pageContent)
-          const { file_url: originalFileUrl, permalink: originalPermalink } = frontMatter
-          const { title: originalTitle, type: originalType, date: originalDate } = retrieveResourceFileMetadata(fileName)
+          const { title: originalTitle, file_url: originalFileUrl, permalink: originalPermalink } = frontMatter
+          const { type: originalType, date: originalDate } = retrieveResourceFileMetadata(fileName)
           if (_isMounted) {
             setSha(pageSha)
             setMdBody(pageMdBody)
