@@ -481,7 +481,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
         && (
           <GenericWarningModal
             displayTitle="Warning"
-            displayText={`Moving ${mediaType.slice(0,-1)} to a different folder might lead to user confusion. You may wish to change the permalinks for this ${mediaType.slice(0,-1)} afterwards.`}
+            displayText={`Moving ${mediaType} to a different folder might lead to user confusion. You may wish to change the permalinks for this ${mediaType.slice(0,-1)} afterwards.`}
             onProceed={moveHandler}
             onCancel={() => setIsMoveModalActive(false)}
             proceedText="Continue"
