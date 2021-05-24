@@ -145,10 +145,10 @@ const OverviewCard = ({
               setMoveDropdownQuery={setMoveDropdownQuery}
               backHandler={toggleDropdownModals}
               moveHandler={() => {
-                setSelectedPath(`${moveDropdownQuery.folderName ? moveDropdownQuery.folderName : 'pages'}${moveDropdownQuery.subfolderName ? `/${moveDropdownQuery.subfolderName}` : ''}`)
+                setSelectedPath(`${moveDropdownQuery ? moveDropdownQuery : 'pages'}`)
                 setCanShowMoveModal(true)
               }}
-              moveDisabled={isResource && !moveDropdownQuery.folderName} // cannot move resources to Workspace
+              moveDisabled={isResource && !moveDropdownQuery} // cannot move resources to Workspace
             />
           }
         </div>
@@ -179,6 +179,17 @@ OverviewCard.propTypes = {
   siteName: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
   isResource: PropTypes.bool,
+  isHomepage: PropTypes.bool,
+  allCategories: PropTypes.arrayOf(PropTypes.string),
+  resourceType: PropTypes.oneOf(['file', 'post', '']),
+  setIsComponentSettingsActive: PropTypes.func,
+  setSelectedFile: PropTypes.func,
+  setSelectedPath: PropTypes.func,
+  setCanShowDeleteWarningModal: PropTypes.func,
+  setCanShowMoveModal: PropTypes.func,
+  moveDropdownQuery: PropTypes.string,
+  setMoveDropdownQuery: PropTypes.func,
+  clearMoveDropdownQueryState: PropTypes.func,
 };
 
 export default OverviewCard

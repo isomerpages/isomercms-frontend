@@ -760,6 +760,18 @@ const validateResourceSettings = (id, value, folderOrderArray) => {
   return errorMessage;
 };
 
+// Media Settings Modal
+// ===================
+
+const validateMediaSettings = (value, mediaFileNames) => {
+  let errorMessage = validateFileName(value)
+  
+  if (mediaFileNames !== undefined && mediaFileNames.includes(value)) {
+    errorMessage = `This title is already in use. Please choose a different title.`;
+  }
+  return errorMessage
+}
+
 // Resource room creation
 // ===================
 const validateResourceRoomName = (value) => {
@@ -837,6 +849,7 @@ export {
   validateSections,
   validatePageSettings,
   validateResourceSettings,
+  validateMediaSettings,
   validateCategoryName,
   validateSocialMedia,
   validateFileName,
