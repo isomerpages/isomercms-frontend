@@ -22,14 +22,14 @@ describe('Settings page', () => {
     const TEST_GOOGLE_ANALYTICS_ID = 'UA-39345131-3'
     const TEST_PRIMARY_COLOR = [255, 0, 0] // ([R, G, B])
     const TEST_SECONDARY_COLOR = [67, 214, 91] // ([R, G, B])
-    const TEST_FACEBOOK_LINK = 'https://www.facebook.com/YourFBPageTestEdit'
-    const TEST_LINKEDIN_LINK = 'https://www.linkedin.com/company/YourAgency'
-    const TEST_TWITTER_LINK = 'https://www.twitter.com/YourTwitter'
-    const TEST_YOUTUBE_LINK = 'https://www.youtube.com/YourYoutube'
-    const TEST_INSTAGRAM_LINK = 'https://www.instagram.com/yourinsta/'
-    const TEST_CONTACT_US = 'contact/'
-    const TEST_FEEDBACK = 'www.feedback.com'
-    const TEST_FAQ = '/faq/'
+    const TEST_FACEBOOK_LINK = 'https://www.facebook.com/testfb'
+    const TEST_LINKEDIN_LINK = 'https://www.linkedin.com/company/testagency'
+    const TEST_TWITTER_LINK = 'https://www.twitter.com/testtwitter'
+    const TEST_YOUTUBE_LINK = 'https://www.youtube.com/testyoutube'
+    const TEST_INSTAGRAM_LINK = 'https://www.instagram.com/testinsta/'
+    const TEST_CONTACT_US = 'testcontact/'
+    const TEST_FEEDBACK = 'www.feedbacktest.com'
+    const TEST_FAQ = '/faqpagetest/'
 
     // Pages to test color
     const SAMPLE_PAGE = 'Faq'
@@ -43,7 +43,7 @@ describe('Settings page', () => {
         cy.visit('/sites')
         cy.contains(TEST_REPO_NAME).click()
 
-        window.localStorage.setItem('userId', 'rlyss')
+        window.localStorage.setItem('userId', 'test')
         cy.visit(`/sites/${TEST_REPO_NAME}/settings`)
         cy.wait(1000)
 
@@ -121,7 +121,7 @@ describe('Settings page', () => {
     function rgbToHex(r, g, b) {
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     }
-    it.only('Should change Primary and Secondary colors and have colors reflected on page previews', () => {
+    it('Should change Primary and Secondary colors and have colors reflected on page previews', () => {
         // Enter RGB values for primary and secondary colors
         cy.contains('p', 'Primary').siblings('div').click()
         cy.contains(/^r/).siblings().clear().type(TEST_PRIMARY_COLOR[0].toString())

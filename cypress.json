@@ -1,9 +1,0 @@
-{
-  "chromeWebSecurity": false,
-  "env": {
-    "BASEURL": "localhost:3000",
-    "TEST_REPO_NAME": "e2e-test-repo",
-    "COOKIE_NAME": "isomercms",
-    "COOKIE_VALUE": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdG9rZW4iOiJnaG9fZU5YZlBIOXlsYmFGcmtKb0Z0SjdYeDRxYTZ0d0RuM1BMcHVmIiwidXNlcl9pZCI6InJseXNzIiwiaWF0IjoxNjIxNTgyNjc1LCJleHAiOjE2MjE1ODYyNzV9.KyS0RRSznMCC7sYTrG-57uZB2r4mILxPCF7DiyRoJFE"
-  }
-}
