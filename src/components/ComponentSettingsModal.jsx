@@ -77,7 +77,6 @@ const ComponentSettingsModal = ({
     const [resourceDate, setResourceDate] = useState('')
     const [fileUrl, setFileUrl] = useState('')
 
-    const [resourceRoomName, setResourceRoomName] = useState('')
     const [siteUrl, setSiteUrl] = useState('https://abc.com.sg')
 
     // Map element ID to setter functions
@@ -88,14 +87,11 @@ const ComponentSettingsModal = ({
         fileUrl: setFileUrl,
     }
 
-    useQuery(
+    const { data: resourceRoomName } = useQuery(
       [RESOURCE_ROOM_NAME_KEY, siteName],
       () => getResourceRoomName(siteName),
       {
         retry: false,
-        onSuccess: (retrievedName) => {
-          setResourceRoomName(retrievedName)
-        },
         onError: () => {
           errorToast(`The resource room name could not be retrieved. ${DEFAULT_RETRY_MSG}`)
         }
