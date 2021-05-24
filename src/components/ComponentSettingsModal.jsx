@@ -189,9 +189,8 @@ const ComponentSettingsModal = ({
     const { mutateAsync: saveHandler } = useMutation(
       () => {
         const frontMatter = isPost 
-          ? { ...originalFrontMatter, title, date: resourceDate, permalink }
+          ? { ...originalFrontMatter, title, date: resourceDate, permalink, layout: 'post' }
           : { ...originalFrontMatter, title, date: resourceDate, file_url: fileUrl }
-        if (isNewFile && isPost) frontMatter.layout = 'post'
         const newFileName = generateResourceFileName(title, resourceDate, isPost)
         const newPageData = concatFrontMatterMdBody(frontMatter, mdBody)
         if (isNewFile) return createPageData({ siteName, resourceName: category, newFileName }, newPageData) 
