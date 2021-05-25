@@ -1,12 +1,14 @@
 import { deslugifyPage, deslugifyDirectory, generatePageFileName, slugifyCategory } from '../../src/utils'
 
+const CUSTOM_TIMEOUT = 30000 // 30 seconds
+
 describe('Pages flow', () => {
   const CMS_BASEURL = Cypress.env('BASEURL')
   const COOKIE_NAME = Cypress.env('COOKIE_NAME')
   const COOKIE_VALUE = Cypress.env('COOKIE_VALUE')
   const TEST_REPO_NAME = Cypress.env('TEST_REPO_NAME')
   const TEST_PAGE_TITLE = 'test title'
-  const EDITED_TEST_PAGE_TITLE = 'edited test title'
+  const EDITED_TEST_PAGE_TITLE = 'new test page'
   const TEST_PAGE_PERMALNK = '/test-permalink'
   const TEST_PAGE_FILENAME = generatePageFileName(TEST_PAGE_TITLE)
   const TEST_PAGE_CONTENT = 'my test page content'
@@ -50,7 +52,7 @@ describe('Pages flow', () => {
     })
   
     it('Should be able to create a new page with valid title and permalink', () => {
-      cy.get('#settings-NEW').click()
+      cy.get('#settings-NEW', { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.get('#title').clear().type(TEST_PAGE_TITLE)
       cy.get('#permalink').clear().type(TEST_PAGE_PERMALNK)
       cy.contains('Save').click()
@@ -58,11 +60,11 @@ describe('Pages flow', () => {
       // Asserts
       // 1. User should be redirected to correct EditPage
       cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/pages/${TEST_PAGE_FILENAME}`)
-      cy.contains(PRETTIFIED_PAGE_TITLE)
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
 
       // 2. If user goes back to the workspace, they should be able to see that the page exists
-      cy.contains('My Workspace').click()
-      cy.contains(PRETTIFIED_PAGE_TITLE)
+      cy.contains('My Workspace', { timeout: CUSTOM_TIMEOUT}).should('exist').click()
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
     })
 
     it('Should not be able to create page with invalid title or permalink', () => {
@@ -70,7 +72,7 @@ describe('Pages flow', () => {
       const SHORT_PERMALINK = '/12'
       const INVALID_PERMALINK = 'test-'
 
-      cy.get('#settings-NEW').click()
+      cy.get('#settings-NEW', { timeout: CUSTOM_TIMEOUT}).should('exist').click()
 
       // Page title has to be more than 4 characters long
       cy.get('#title').clear().type(SHORT_TITLE)
@@ -97,7 +99,7 @@ describe('Pages flow', () => {
     })
 
     it('Should be able to edit existing page details with valid title and permalink', () => {
-      const testPageCard = cy.contains(PRETTIFIED_PAGE_TITLE)
+      const testPageCard = cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
 
       // User should be able edit page details
       testPageCard.children().within(() => cy.get('[id^=settings-]').click())
@@ -113,23 +115,25 @@ describe('Pages flow', () => {
       cy.get('div[id^=settings-]').first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
       cy.get('#title').clear().type(TEST_PAGE_TITLE)
       cy.contains('button', 'Save').click()
-      cy.wait(4000)
 
       // Page title should be reset in the Workspace
-      cy.contains(PRETTIFIED_PAGE_TITLE)
-      cy.wait(4000) // Wait needed because the next test fails otherwise - the rename call takes some time to propagate
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
     })
 
     it('Should be able to delete existing page on workspace', () => {
+      // Ensure that the frontend has been updated
+      cy.contains(EDITED_PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('not.exist')
+
       // Assert
       // User should be able to remove the created test page card
-      const testPageCard = cy.contains(PRETTIFIED_PAGE_TITLE)
-      testPageCard.children().within(() => cy.get('[id^=settings-]').click())
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT})
+        .should('exist')
+        .children()
+        .within(() => cy.get('[id^=settings-]').click())
       cy.get('div[id^=delete-]').first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
-      cy.contains('button', 'Delete').click()
-      cy.wait(4000)
+      cy.contains('button', 'Delete', { timeout: CUSTOM_TIMEOUT}).should('exist').click()
 
-      cy.contains(PRETTIFIED_PAGE_TITLE).should('not.exist')
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('not.exist')
     })
   })
 
@@ -141,19 +145,18 @@ describe('Pages flow', () => {
     })
 
     it('Test site workspace page should have folders section', () => {
-      cy.contains('Create new folder')
+      cy.contains('Create new folder', { timeout: CUSTOM_TIMEOUT}).should('exist')
     })
 
     // Create
     it('Should be able to create a new folder with valid folder name with no pages', () => {
-      cy.contains('Create new folder').click()
+      cy.contains('Create new folder', { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.get('input#folder').clear().type(TEST_FOLDER_NO_PAGES_TITLE)
       cy.contains('Select pages').click()
       cy.contains('Done').click()
 
       // Assert
-      cy.wait(4000)
-      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE)
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
       cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}`)
       cy.contains('There are no pages in this folder.')
     })
@@ -168,27 +171,27 @@ describe('Pages flow', () => {
       // Create test page content
       cy.get('.CodeMirror-scroll').type(TEST_PAGE_CONTENT)
       cy.contains('Save').click()
-      cy.wait(4000)
-      cy.contains('My Workspace').click()
+      cy.contains('Successfully saved page content', { timeout: CUSTOM_TIMEOUT})
+        .should('exist')
+        .then(() => cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`))
       
-      cy.contains('Create new folder').click()
+      cy.contains('Create new folder', { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.get('input#folder').clear().type(TEST_FOLDER_WITH_PAGES_TITLE)
       cy.contains('Select pages').click()
-      cy.contains(PRETTIFIED_PAGE_TITLE).click() // Select newly-created file
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click() // Select newly-created file
       cy.contains('Done').click()
 
       // Assert
-      cy.wait(4000)
-      cy.contains(PRETTIFIED_FOLDER_WITH_PAGES_TITLE)
+      cy.contains(PRETTIFIED_FOLDER_WITH_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
       cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_WITH_PAGES_TITLE}`)
-      cy.contains(PRETTIFIED_PAGE_TITLE).click()
-      cy.get('.CodeMirror-scroll').should('contain', TEST_PAGE_CONTENT)
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click()
+      cy.get('.CodeMirror-scroll', { timeout: CUSTOM_TIMEOUT}).should('contain', TEST_PAGE_CONTENT)
     })
 
     it('Should not be able to create a new folder with invalid folder name', () => {
       // Title is too short
       const INVALID_FOLDER_TITLE = 't'
-      cy.contains('Create new folder').click()
+      cy.contains('Create new folder', { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.get('input#folder').clear().type(INVALID_FOLDER_TITLE)
       cy.contains('The page category should be longer than 2 characters.')
       cy.contains('button', 'Select pages').should('be.disabled')
@@ -200,21 +203,20 @@ describe('Pages flow', () => {
     })
 
     it('Should be able to create a new sub-folder within a valid folder name with no pages', () => {
-      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).click()
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.contains('Create new subfolder').click()
       cy.get('input#subfolder').clear().type(TEST_SUBFOLDER_NO_PAGES_TITLE)
       cy.contains('Select pages').click()
       cy.contains('Done').click()
 
       // Assert
-      cy.wait(4000)
-      cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE)
+      cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
       cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}/subfolder/${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}`)
       cy.contains('There are no pages in this subfolder.')
     })
 
     it('Should be able to create a new sub-folder within a valid folder name with one page', () => {
-      cy.contains(PRETTIFIED_FOLDER_WITH_PAGES_TITLE).click()
+      cy.contains(PRETTIFIED_FOLDER_WITH_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.contains('Create new subfolder').click()
       cy.get('input#subfolder').clear().type(TEST_SUBFOLDER_WITH_PAGES_TITLE)
       cy.contains('Select pages').click()
@@ -222,15 +224,14 @@ describe('Pages flow', () => {
       cy.contains('Done').click()
 
       // Assert
-      cy.wait(4000)
-      cy.contains(PRETTIFIED_SUBFOLDER_WITH_PAGES_TITLE)
+      cy.contains(PRETTIFIED_SUBFOLDER_WITH_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
       cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_WITH_PAGES_TITLE}/subfolder/${PARSED_TEST_SUBFOLDER_WITH_PAGES_TITLE}`)
       cy.contains(PRETTIFIED_PAGE_TITLE).click()
       cy.get('.CodeMirror-scroll').should('contain', TEST_PAGE_CONTENT)
     })
 
     it('Should not be able to create a new sub-folder with invalid sub-folder name', () => {
-      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).click()
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click()
 
       // Title is too short
       const INVALID_SUBFOLDER_TITLE = 't'
@@ -252,16 +253,15 @@ describe('Pages flow', () => {
 
     // Rename
     it('Should be able to rename a sub-folder', () => {
-      cy.contains(PRETTIFIED_FOLDER_WITH_PAGES_TITLE).click()
+      cy.contains(PRETTIFIED_FOLDER_WITH_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.get('.bx-dots-vertical-rounded').parent().click()
       cy.contains('Edit details').click()
       cy.contains('Rename subfolder')
       cy.get('input#newDirectoryName').clear().type(EDITED_TEST_SUBFOLDER_WITH_PAGES_TITLE)
       cy.contains('button', 'Save').click()
-      cy.wait(4000)
 
       // Assert
-      cy.contains('1 item')
+      cy.contains('1 item', { timeout: CUSTOM_TIMEOUT}).should('exist')
       cy.contains(PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE).click()
       cy.contains(PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE)
       cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_WITH_PAGES_TITLE}/subfolder/${PARSED_EDITED_TEST_SUBFOLDER_WITH_PAGES_TITLE}`)
@@ -270,21 +270,20 @@ describe('Pages flow', () => {
     })
 
     it('Should be able to rename a folder', () => {
-      cy.contains(PRETTIFIED_FOLDER_WITH_PAGES_TITLE).within(() => cy.get('[id^=settingsIcon]').click())
+      cy.contains(PRETTIFIED_FOLDER_WITH_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').within(() => cy.get('[id^=settingsIcon]').click())
       cy.get('div[id^=settings-]').first().click()
       cy.contains('Rename Folder')
       cy.get('input#newDirectoryName').clear().type(EDITED_TEST_FOLDER_WITH_PAGES_TITLE)
       cy.contains('button', 'Save').click()
-      cy.wait(4000)
 
       // Assert
-      cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE).click()
-      cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE)
+      cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click()
+      cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
       cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_EDITED_TEST_FOLDER_WITH_PAGES_TITLE}`)
 
       cy.contains('1 item')
       cy.contains(PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE).click()
-      cy.contains(PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE)
+      cy.contains(PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
       cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_EDITED_TEST_FOLDER_WITH_PAGES_TITLE}/subfolder/${PARSED_EDITED_TEST_SUBFOLDER_WITH_PAGES_TITLE}`)
       cy.contains(PRETTIFIED_PAGE_TITLE).click()
       cy.get('.CodeMirror-scroll').should('contain', TEST_PAGE_CONTENT)
@@ -292,30 +291,27 @@ describe('Pages flow', () => {
 
     // Delete
     it('Should be able to delete a sub-folder', () => {
-      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).click()
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.get('.bx-dots-vertical-rounded').parent().click()
       cy.contains('Delete').click()
       cy.contains('button', 'Delete').click()
 
       // Assert
-      cy.wait(4000)
-      cy.contains('There are no pages in this folder.')
+      cy.contains('There are no pages in this folder.', { timeout: CUSTOM_TIMEOUT}).should('exist')
     })
 
     it('Should be able to delete a folder', () => {
-      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).within(() => cy.get('[id^=settingsIcon]').click())
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').within(() => cy.get('[id^=settingsIcon]').click())
       cy.get('div[id^=delete-]').first().click()
       cy.contains('button', 'Delete').click()
 
-      cy.wait(4000)
-      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).should('not.exist')
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('not.exist')
 
       cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE).within(() => cy.get('[id^=settingsIcon]').click())
       cy.get('div[id^=delete-]').first().click()
       cy.contains('button', 'Delete').click()
 
-      cy.wait(4000)
-      cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE).should('not.exist')
+      cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('not.exist')
     })
   })
 
@@ -330,8 +326,7 @@ describe('Pages flow', () => {
       cy.contains('Done').click()
 
       // Assert
-      cy.wait(4000)
-      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE)
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
       cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}`)
       cy.contains('There are no pages in this folder.')
     })
@@ -343,7 +338,7 @@ describe('Pages flow', () => {
     })
   
     it('Should be able to create a new page with valid title and permalink', () => {
-      cy.contains('Create new page').click()
+      cy.contains('Create new page', { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.get('#title').clear().type(TEST_PAGE_TITLE)
       cy.get('#permalink').clear().type(TEST_PAGE_PERMALNK)
       cy.contains('Save').click()
@@ -351,11 +346,11 @@ describe('Pages flow', () => {
       // Asserts
       // 1. User should be redirected to correct EditPage
       cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}/${TEST_PAGE_FILENAME}`)
-      cy.contains(PRETTIFIED_PAGE_TITLE)
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
 
       // 2. If user goes back to the workspace, they should be able to see that the page exists
       cy.contains('button', PRETTIFIED_FOLDER_NO_PAGES_TITLE).click()
-      cy.contains(PRETTIFIED_PAGE_TITLE)
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
     })
 
     it('Should not be able to create page with invalid title or permalink', () => {
@@ -363,7 +358,7 @@ describe('Pages flow', () => {
       const SHORT_PERMALINK = '/12'
       const INVALID_PERMALINK = 'test-'
 
-      cy.contains('Create new page').click()
+      cy.contains('Create new page', { timeout: CUSTOM_TIMEOUT}).should('exist').click()
 
       // Page title has to be more than 4 characters long
       cy.get('#title').clear().type(SHORT_TITLE)
@@ -390,7 +385,7 @@ describe('Pages flow', () => {
     })
 
     it('Should be able to edit existing page details with valid title and permalink', () => {
-      cy.contains(PRETTIFIED_PAGE_TITLE)
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
 
       // User should be able edit page details
       cy.get('.bx-dots-vertical-rounded').parent().click()
@@ -399,18 +394,18 @@ describe('Pages flow', () => {
       cy.contains('button', 'Save').click()
 
       // New page title should be reflected in the Workspace
-      cy.contains(EDITED_PRETTIFIED_PAGE_TITLE)
+      cy.contains(EDITED_PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
     })
 
     it('Should be able to delete existing page in folder', () => {
       // User should be able to remove the created test page card
-      cy.contains(EDITED_PRETTIFIED_PAGE_TITLE)
+      cy.contains(EDITED_PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
       cy.get('.bx-dots-vertical-rounded').parent().click()
       cy.get('div[id^=delete-]').first().click()
       cy.contains('button', 'Delete').click()
-      cy.wait(8000)
 
-      cy.contains(EDITED_PRETTIFIED_PAGE_TITLE).should('not.exist')
+      cy.reload()
+      cy.contains(EDITED_PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('not.exist')
     })
   })
 
@@ -425,8 +420,7 @@ describe('Pages flow', () => {
       cy.contains('Done').click()
 
       // Assert
-      cy.wait(4000)
-      cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE)
+      cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
       cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}/subfolder/${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}`)
       cy.contains('There are no pages in this subfolder.')
     })
@@ -438,7 +432,7 @@ describe('Pages flow', () => {
     })
   
     it('Should be able to create a new page with valid title and permalink', () => {
-      cy.contains('Create new page').click()
+      cy.contains('Create new page', { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.get('#title').clear().type(TEST_PAGE_TITLE)
       cy.get('#permalink').clear().type(TEST_PAGE_PERMALNK)
       cy.contains('Save').click()
@@ -446,11 +440,11 @@ describe('Pages flow', () => {
       // Asserts
       // 1. User should be redirected to correct EditPage
       cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}/subfolder/${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}/${TEST_PAGE_FILENAME}`)
-      cy.contains(PRETTIFIED_PAGE_TITLE)
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
 
       // 2. If user goes back to the workspace, they should be able to see that the page exists
       cy.contains('button', PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE).click()
-      cy.contains(PRETTIFIED_PAGE_TITLE)
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
     })
 
     it('Should not be able to create page with invalid title or permalink', () => {
@@ -458,7 +452,7 @@ describe('Pages flow', () => {
       const SHORT_PERMALINK = '/12'
       const INVALID_PERMALINK = 'test-'
 
-      cy.contains('Create new page').click()
+      cy.contains('Create new page', { timeout: CUSTOM_TIMEOUT}).should('exist').click()
 
       // Page title has to be more than 4 characters long
       cy.get('#title').clear().type(SHORT_TITLE)
@@ -485,7 +479,7 @@ describe('Pages flow', () => {
     })
 
     it('Should be able to edit existing page details with valid title and permalink', () => {
-      cy.contains(PRETTIFIED_PAGE_TITLE)
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
 
       // User should be able edit page details
       cy.get('.bx-dots-vertical-rounded').parent().click()
@@ -494,19 +488,18 @@ describe('Pages flow', () => {
       cy.contains('button', 'Save').click()
 
       // New page title should be reflected in the Workspace
-      cy.contains(EDITED_PRETTIFIED_PAGE_TITLE)
+      cy.contains(EDITED_PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
     })
 
     it('Should be able to delete existing page in subfolder', () => {
       // Assert
       // User should be able to remove the created test page card
-      cy.contains(EDITED_PRETTIFIED_PAGE_TITLE)
+      cy.contains(EDITED_PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
       cy.get('.bx-dots-vertical-rounded').parent().click()
       cy.get('div[id^=delete-]').first().click()
       cy.contains('button', 'Delete').click()
-      cy.wait(8000)
 
-      cy.contains(EDITED_PRETTIFIED_PAGE_TITLE).should('not.exist')
+      cy.contains(EDITED_PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('not.exist')
     })
   })
 
@@ -518,122 +511,113 @@ describe('Pages flow', () => {
     })
 
     it('Should be able to move page from workspace to folder', () => {
-      cy.contains('Add a new page').click()
+      cy.contains('Add a new page', { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.get('#title').clear().type(TEST_PAGE_TITLE)
       cy.get('#permalink').clear().type(TEST_PAGE_PERMALNK)
       cy.contains('Save').click()
 
       cy.get('.CodeMirror-scroll').type(TEST_PAGE_CONTENT)
       cy.contains('Save').click()
-      cy.wait(4000)
-
-      cy.contains('My Workspace').click()
+      cy.contains('Successfully saved page content', { timeout: CUSTOM_TIMEOUT})
+        .should('exist')
+        .then(() => cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`))
 
       const testPageCard = cy.contains(PRETTIFIED_PAGE_TITLE)
 
       // User should be able edit page details
       testPageCard.children().within(() => cy.get('[id^=settings-]').click())
       cy.get('div[id^=move-]').first().click()
-      cy.wait(4000)
-      cy.get(`[id^=${PARSED_TEST_FOLDER_NO_PAGES_TITLE}]`).first().click()
+      cy.get(`[id^=${PARSED_TEST_FOLDER_NO_PAGES_TITLE}]`, { timeout: CUSTOM_TIMEOUT}).should('exist').first().click()
       cy.contains('button', 'Move Here').click()
       cy.contains('button', 'Continue').click()
 
-      cy.wait(4000)
-      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).click()
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}`)
-      cy.contains(PRETTIFIED_PAGE_TITLE).click()
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.get('.CodeMirror-scroll').should('contain', TEST_PAGE_CONTENT)
     })
 
     it('Should be able to move page from workspace to subfolder', () => {
-      cy.contains('Add a new page').click()
+      cy.contains('Add a new page', { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.get('#title').clear().type(TEST_PAGE_TITLE)
       cy.get('#permalink').clear().type(TEST_PAGE_PERMALNK)
       cy.contains('Save').click()
 
       cy.get('.CodeMirror-scroll').type(TEST_PAGE_CONTENT)
       cy.contains('Save').click()
-      cy.wait(4000)
+      cy.contains('Successfully saved page content', { timeout: CUSTOM_TIMEOUT})
+        .should('exist')
+        .then(() => cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`))
 
-      cy.contains('My Workspace').click()
+      cy.contains('My Workspace', { timeout: CUSTOM_TIMEOUT}).should('exist').click()
 
-      const testPageCard = cy.contains(PRETTIFIED_PAGE_TITLE)
+      const testPageCard = cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
 
       // User should be able edit page details
       testPageCard.children().within(() => cy.get('[id^=settings-]').click())
       cy.get('div[id^=move-]').first().click()
-      cy.wait(4000)
-      cy.get(`[id^=${PARSED_TEST_FOLDER_NO_PAGES_TITLE}]`).first().click()
+      cy.get(`[id^=${PARSED_TEST_FOLDER_NO_PAGES_TITLE}]`, { timeout: CUSTOM_TIMEOUT}).should('exist').first().click()
       cy.get(`[id^=${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}]`).first().click()
       cy.contains('button', 'Move Here').click()
       cy.contains('button', 'Continue').click()
 
-      cy.wait(4000)
-      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).click()
-      cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE).click()
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click()
+      cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.url().should('include', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}/subfolder/${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}`)
-      cy.contains(PRETTIFIED_PAGE_TITLE).click()
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.get('.CodeMirror-scroll').should('contain', TEST_PAGE_CONTENT)
     })
 
     it('Should be able to move pages from subfolder to workspace', () => {
-      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).click()
-      cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE).click()
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click()
+      cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click()
 
       cy.get('.bx-dots-vertical-rounded').parent().click()
       cy.get('div[id^=move-]').first().click()
-      cy.wait(4000)
-      cy.get(`[id^=breadcrumb`).first().click()
+      cy.get(`[id^=breadcrumb`, { timeout: CUSTOM_TIMEOUT}).should('exist').first().click()
       cy.get(`[id^=workspace]`).first().click()
       cy.contains('button', 'Move Here').click()
       cy.contains('button', 'Continue').click()
-      cy.wait(4000)
+      cy.contains('Successfully moved file', { timeout: CUSTOM_TIMEOUT}).should('exist')
 
       // Return to workspace and check for page + content
-      cy.contains('a', 'My Workspace').click({force: true})
-      cy.wait(4000)
-      cy.contains(PRETTIFIED_PAGE_TITLE).click()
+      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.get('.CodeMirror-scroll').should('contain', TEST_PAGE_CONTENT)
 
       // Delete page
       cy.contains('button', 'Delete').click()
-      cy.get('[class^=Elements_modal-warning').children().within(() => cy.contains('button', 'Delete').click())
-      cy.wait(4000)
-      cy.contains(PRETTIFIED_PAGE_TITLE).should('not.exist')
+      cy.get('[class^=Elements_modal-warning', { timeout: CUSTOM_TIMEOUT}).should('exist').children().within(() => cy.contains('button', 'Delete').click())
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('not.exist')
     })
 
     it('Should be able to move pages from folder to workspace', () => {
-      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).click()
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click()
 
       cy.get('.bx-dots-vertical-rounded').last().parent().click()
       cy.get('div[id^=move-]').first().click()
-      cy.wait(4000)
-      cy.get(`[id^=breadcrumb`).first().click()
+      cy.get(`[id^=breadcrumb`, { timeout: CUSTOM_TIMEOUT}).should('exist').first().click()
       cy.get(`[id^=workspace]`).first().click()
       cy.contains('button', 'Move Here').click()
       cy.contains('button', 'Continue').click()
-      cy.wait(4000)
+      cy.contains('Successfully moved file', { timeout: CUSTOM_TIMEOUT}).should('exist')
 
       // Return to workspace and check for page + content
-      cy.contains('a', 'My Workspace').click({force: true})
-      cy.wait(4000)
-      cy.contains(PRETTIFIED_PAGE_TITLE).click()
+      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.get('.CodeMirror-scroll').should('contain', TEST_PAGE_CONTENT)
 
       // Delete page
-      cy.contains('button', 'Delete').click()
+      cy.contains('button', 'Delete', { timeout: CUSTOM_TIMEOUT}).should('exist').click()
       cy.get('[class^=Elements_modal-warning').children().within(() => cy.contains('button', 'Delete').click())
-      cy.wait(4000)
-      cy.contains(PRETTIFIED_PAGE_TITLE).should('not.exist')
+      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('not.exist')
 
       // Delete folder
-      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).within(() => cy.get('[id^=settingsIcon]').click())
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist').within(() => cy.get('[id^=settingsIcon]').click())
       cy.get('div[id^=delete-]').first().click()
       cy.contains('button', 'Delete').click()
 
-      cy.wait(4000)
-      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).should('not.exist')
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, { timeout: CUSTOM_TIMEOUT}).should('not.exist')
     })
   })
 })
