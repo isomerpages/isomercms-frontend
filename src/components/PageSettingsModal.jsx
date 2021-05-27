@@ -104,7 +104,7 @@ const PageSettingsModal = ({
           const { permalink: originalPermalink } = frontMatter
         
           if (_isMounted) {
-            setTitle(deslugifyPage(originalPageName))
+            setTitle(frontMatter.title)
             setPermalink(originalPermalink)
             setOriginalPermalink(originalPermalink)
             setSha(pageSha)

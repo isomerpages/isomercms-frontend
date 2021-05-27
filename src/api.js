@@ -148,6 +148,13 @@ const renameSubfolder = async ({ siteName, folderName, subfolderName, newSubfold
     return await axios.post(apiUrl)
 }
 
+const getResourceRoomName = async(siteName) => {
+    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resource-room`
+    const resp = await axios.get(apiUrl)
+    const { resourceRoom } = resp.data
+    return resourceRoom
+}
+
 // Resources
 const deleteResourceCategory = async ({ siteName, categoryName}) => {
     const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${categoryName}`
@@ -296,15 +303,9 @@ const createMedia = async ( {siteName, type, customPath, newFileName, content} )
     return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}`, params)
 }
 
-const renameMedia = async ({siteName, type, sha, customPath, content, fileName, newFileName}) => {
-    const params = {
-        sha,
-        content,
-    };
-    if (newFileName === fileName) {
-        return;
-    }
-    return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}/${generateImageorFilePath(customPath, fileName)}/rename/${generateImageorFilePath(customPath, newFileName)}`, params);
+const renameMedia = async ({siteName, type, customPath, fileName, newFileName}) => {
+    if (newFileName === fileName) return
+    return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}/${generateImageorFilePath(customPath, fileName)}/rename/${generateImageorFilePath(customPath, newFileName)}`);
 }
 
 const deleteMedia = async ({siteName, type, sha, customPath, fileName}) => {
@@ -317,6 +318,10 @@ const deleteMedia = async ({siteName, type, sha, customPath, fileName}) => {
     });
 }
 
+const moveMedia = async ({siteName, type, oldCustomPath, newCustomPath, fileName}) => {
+    if (newCustomPath === oldCustomPath) return
+    return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}/${generateImageorFilePath(oldCustomPath, fileName)}/move/${generateImageorFilePath(newCustomPath, fileName)}`);
+}
 
 const createMediaSubfolder = async (siteName, mediaType, customPath) => {
     if ((mediaType !== 'images' && mediaType !== 'documents') || !customPath) return
@@ -347,6 +352,7 @@ export {
     renameFolder,
     deleteSubfolder,
     renameSubfolder,
+    getResourceRoomName,
     deleteResourceCategory,
     renameResourceCategory,
     getAllResourceCategories,
@@ -365,6 +371,7 @@ export {
     createMedia,
     renameMedia,
     deleteMedia,
+    moveMedia,
     createMediaSubfolder,
     renameMediaSubfolder,
     deleteMediaSubfolder,

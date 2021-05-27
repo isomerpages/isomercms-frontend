@@ -127,7 +127,7 @@ const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName,
             errorMessage={errors}
           />
           <SaveDeleteButtons
-            isDisabled={false}
+            isDisabled={!!errors}
             hasDeleteButton={false}
             saveCallback={renameDirectory}
           />
