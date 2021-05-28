@@ -63,6 +63,8 @@ describe('Resource category page', () => {
   it('Resources category page should allow user to create a new resource page of type post', () => {
     cy.contains('Add a new page').click()
 
+    cy.wait(2000)
+
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE)
     cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK)
     cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE)
@@ -109,6 +111,7 @@ describe('Resource category page', () => {
 
   it('Resources category page should allow user to create a new resource page of type post', () => {
     cy.contains('Add a new page').click()
+    cy.wait(2000)
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_2)
     cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK)
@@ -185,6 +188,7 @@ describe('Resource category page', () => {
 
   it('Resources category page should allow user to create a new resource page of type file', () => {
     cy.contains('Add a new page').click()
+    cy.wait(2000)
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_FILE)
     cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE)
