@@ -22,8 +22,6 @@ describe('Resource category page', () => {
   const TEST_PAGE_DATE_PRETTIFIED = '17 May 2021'
   const TEST_PAGE_DATE_CHANGED_PRETTIFIED = '17 Jan 2021'
 
-  const TEST_PAGE_CONTENT = 'lorem ipsum'
-
   const TEST_PAGE_PERMALINK_SPECIAL = '/test permalink'
   const TEST_PAGE_DATE_INVALID_FORMAT = '20210517'
   const TEST_PAGE_DATE_INVALID_DATE = '2021-05-40'
@@ -252,54 +250,6 @@ describe('Resource category page', () => {
 
     // New page should be of type FILE with the correct date
     cy.contains(TEST_PAGE_TITLE_RENAMED).contains(`${TEST_PAGE_DATE_CHANGED_PRETTIFIED}/POST`)
-  })
-
-  it('Resource category page should allow user to move a page', () => {
-    // Set up file content first
-    cy.contains(TEST_PAGE_TITLE).click()
-    cy.wait(2000)
-    cy.get('.CodeMirror-scroll').type(TEST_PAGE_CONTENT)
-    cy.contains(':button', 'Save').click()
-    cy.wait(2000)
-    cy.contains(TEST_CATEGORY).click()
-    
-    cy.contains(TEST_PAGE_TITLE).find('[id^="settings-"]').click()
-    cy.contains('Move to').click()
-    cy.contains(TEST_CATEGORY_2).click()
-
-    // Breadcrumb works properly
-    cy.get('[id^="breadcrumb"]').contains('Resources').click()
-    cy.contains(TEST_CATEGORY_2).click()
-    cy.contains('Move Here').click()
-
-    // Cancel works properly
-    cy.contains(':button', 'Cancel').click()
-
-    cy.contains(TEST_PAGE_TITLE).find('[id^="settings-"]').click()
-    cy.contains('Move to').click()
-    cy.contains(TEST_CATEGORY_2).click()
-    cy.contains('Move Here').click()
-    cy.contains(':button', 'Continue').click()
-
-    // Set a wait time because the API takes time
-    cy.wait(3000)
-
-    // Assertions
-    // 1. Toast
-    cy.contains('Successfully moved file')
-
-    // 2. File does not exist
-    cy.contains(TEST_PAGE_TITLE).should('not.exist')
-
-    // 3. File exists in other folder
-    cy.contains('Back to Resources').click()
-    cy.contains(TEST_CATEGORY_2).click()
-    cy.contains(TEST_PAGE_TITLE)
-
-    // 4. File content is still present
-    cy.contains(TEST_PAGE_TITLE).click()
-    cy.wait(2000)
-    cy.contains(TEST_PAGE_CONTENT)
   })
 
   it('Resource category page should allow user to delete a page', () => {
