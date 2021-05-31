@@ -9,12 +9,12 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
 const getDirectoryFile = async (siteName, folderName) => {
     if (!folderName) return
-    const resp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`);
+    const resp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${encodeURIComponent(folderName)}/pages/collection.yml`);
     return resp.data
 }
 
 const setDirectoryFile = async (siteName, folderName, payload) => {
-    return await axios.post(`${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`, payload);
+    return await axios.post(`${BACKEND_URL}/sites/${siteName}/collections/${encodeURIComponent(folderName)}/pages/collection.yml`, payload);
 }
 
 const getLastUpdated = async (siteName) => {
@@ -27,32 +27,32 @@ const getLastUpdated = async (siteName) => {
 // EditPage
 const getPageApiEndpoint = ({folderName, subfolderName, fileName, siteName, resourceName}) => {
     if (folderName) {
-        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${fileName}`)}`
+        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${encodeURIComponent(folderName)}/pages/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${fileName}`)}`
     }
     if (resourceName) {
-        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`
+        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${encodeURIComponent(resourceName)}/pages/${encodeURIComponent(fileName)}`
     }
-    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`
+    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${encodeURIComponent(fileName)}`
 }
 
 const getCreatePageApiEndpoint = ({folderName, subfolderName, siteName, resourceName, newFileName}) => {
     if (folderName) {
-        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/new/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${newFileName}`)}`
+        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${encodeURIComponent(folderName)}/pages/new/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${newFileName}`)}`
     }
     if (resourceName) {
-        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/new/${newFileName}`
+        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${encodeURIComponent(resourceName)}/pages/new/${encodeURIComponent(newFileName)}`
     }
-    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/new/${newFileName}`
+    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/new/${encodeURIComponent(newFileName)}`
 }
 
 const getRenamePageApiEndpoint = ({folderName, subfolderName, fileName, siteName, resourceName, newFileName}) => {
     if (folderName) {
-        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${fileName}`)}/rename/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${newFileName}`)}`
+        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${encodeURIComponent(folderName)}/pages/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${fileName}`)}/rename/${encodeURIComponent(`${subfolderName ? `${subfolderName}/` : ''}${newFileName}`)}`
     }
     if (resourceName) {
-        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/${fileName}/rename/${newFileName}`
+        return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${encodeURIComponent(resourceName)}/pages/${encodeURIComponent(fileName)}/rename/${encodeURIComponent(newFileName)}`
     }
-    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}/rename/${newFileName}`
+    return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${encodeURIComponent(fileName)}/rename/${encodeURIComponent(newFileName)}`
 }
 
 const getMovePageEndpoint = ({siteName, resourceName, folderName, subfolderName, newPath}) => {
@@ -60,7 +60,7 @@ const getMovePageEndpoint = ({siteName, resourceName, folderName, subfolderName,
         return `${BACKEND_URL}/sites/${siteName}/collections/${encodeURIComponent(`${folderName ? `${folderName}`: ''}${subfolderName ? `/${subfolderName}` : ''}`)}/move/${encodeURIComponent(`${newPath}`)}`
     }
     if (resourceName) {
-        return `${BACKEND_URL}/sites/${siteName}/resources/${resourceName}/move/${encodeURIComponent(`${newPath}`)}`
+        return `${BACKEND_URL}/sites/${siteName}/resources/${encodeURIComponent(resourceName)}/move/${encodeURIComponent(`${newPath}`)}`
     }
     return `${BACKEND_URL}/sites/${siteName}/pages/move/${encodeURIComponent(`${newPath}`)}`
 }
@@ -129,22 +129,22 @@ const deletePageData = async ({folderName, subfolderName, fileName, siteName, re
 
 // Folder and subfolders
 const renameFolder = async ({ siteName, folderName, newFolderName }) => {
-    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}/rename/${newFolderName}`
+    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${encodeURIComponent(folderName)}/rename/${encodeURIComponent(newFolderName)}`
     return await axios.post(apiUrl)
 }
 
 const deleteFolder = async ({ siteName, folderName }) => {
-    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}`
+    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${encodeURIComponent(folderName)}`
     return await axios.delete(apiUrl)
 }
 
 const deleteSubfolder = async ({ siteName, folderName, subfolderName }) => {
-    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/folders/${folderName}/subfolder/${subfolderName}`
+    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/folders/${encodeURIComponent(folderName)}/subfolder/${encodeURIComponent(subfolderName)}`
     return await axios.delete(apiUrl)
 }
 
 const renameSubfolder = async ({ siteName, folderName, subfolderName, newSubfolderName }) => {
-    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/folders/${folderName}/subfolder/${subfolderName}/rename/${newSubfolderName}`
+    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/folders/${encodeURIComponent(folderName)}/subfolder/${encodeURIComponent(subfolderName)}/rename/${encodeURIComponent(newSubfolderName)}`
     return await axios.post(apiUrl)
 }
 
@@ -157,12 +157,12 @@ const getResourceRoomName = async(siteName) => {
 
 // Resources
 const deleteResourceCategory = async ({ siteName, categoryName}) => {
-    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${categoryName}`
+    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${encodeURIComponent(categoryName)}`
     return await axios.delete(apiUrl)
 }
 
 const renameResourceCategory = async ({ siteName, categoryName, newCategoryName}) => {
-    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${categoryName}/rename/${newCategoryName}`
+    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${encodeURIComponent(categoryName)}/rename/${encodeURIComponent(newCategoryName)}`
     return await axios.post(apiUrl)
 }
 
@@ -198,7 +198,7 @@ const getPages = async ({ siteName }) => {
 
 const getResourcePages = async (siteName, resourceName) => {
     if (!resourceName) return
-    const apiEndpoint = `${BACKEND_URL}/sites/${siteName}/resources/${resourceName}`
+    const apiEndpoint = `${BACKEND_URL}/sites/${siteName}/resources/${encodeURIComponent(resourceName)}`
     const resp = await axios.get(apiEndpoint)
     return resp.data;
 }

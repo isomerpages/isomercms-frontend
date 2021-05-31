@@ -160,7 +160,7 @@ const OverviewCard = ({
     {
       resourceType !== 'file' && !canShowFileMoveDropdown && !canShowDropdown // disables link while dropdown modals are open
       ?
-        <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`} to={generateLink()}>
+        <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`} to={generateLink().replaceAll('%', '%25')}>
           {CardContent}
         </Link>
       : <div className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`}>

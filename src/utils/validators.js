@@ -800,9 +800,9 @@ const validateCategoryName = (value, componentName, existingNames) => {
     errorMessage = `The ${componentName} category should be shorter than ${RESOURCE_CATEGORY_MAX_LENGTH} characters.`;
   }
   // Resource category fails regex
-  else if (!resourceCategoryRegexTest.test(value)) {
-    errorMessage = `The ${componentName} category should not contain special characters such as: ?!#\\$%.`;
-  }
+  // else if (!resourceCategoryRegexTest.test(value)) {
+  //   errorMessage = `The ${componentName} category should not contain special characters such as: ?!#\\$%.`;
+  // }
 
   return errorMessage;
 };

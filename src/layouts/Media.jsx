@@ -313,7 +313,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
                   decodeURIComponent(customPath).split("/").map((folderName, idx, arr) => {
                     return idx === arr.length - 1
                     ? <span> ><strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></span>
-                    : <span> ><Link to={`/sites/${siteName}/${mediaType}/${encodeURIComponent(arr.slice(0,idx+1).join('/'))}`}><strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></Link></span>
+                    : <span> ><Link to={`/sites/${siteName}/${mediaType}/${encodeURIComponent(arr.slice(0,idx+1).join('/'))}`}><strong className="ml-1"> {deslugifyDirectory(folderName).replaceAll('%', '%25')}</strong></Link></span>
                   })
                 }
               </span>

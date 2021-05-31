@@ -210,7 +210,7 @@ const FolderCard = ({
       }
       {generateLink() 
         ? 
-          <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard}`} to={generateLink()}>
+          <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard}`} to={generateLink().replaceAll('%', '%25')}>
             {FolderCardContent()}
           </Link>
         :

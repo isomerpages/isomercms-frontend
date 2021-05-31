@@ -326,7 +326,7 @@ const Folders = ({ match, location }) => {
                         folderName
                         ? (
                           subfolderName
-                          ? <Link to={`/sites/${siteName}/folder/${folderName}`}><strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></Link>
+                          ? <Link to={`/sites/${siteName}/folder/${folderName}`.replaceAll('%', '%25')}><strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></Link>
                           : <strong className="ml-1"> {deslugifyDirectory(folderName)}</strong>
                         )
                         : null

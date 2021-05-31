@@ -167,7 +167,7 @@ const Sidebar = ({ siteName, currPath }) => {
         return (
           <Link
             className={`px-4 py-3 h-100 w-100 font-weight-bold ${isActive ? '' : 'text-dark'}`}
-            to={`/sites/${siteName}/${pathname}`}
+            to={`/sites/${siteName}/${pathname}`.replaceAll('%', '%25')}
           >
             {title}
             { title in typeInfoDict && 'icon' in typeInfoDict[title] &&

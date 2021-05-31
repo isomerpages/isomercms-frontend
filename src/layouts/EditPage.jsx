@@ -108,9 +108,10 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
   const { setRedirectToNotFound } = useRedirectHook()
 
   const { folderName, fileName, siteName, resourceName, subfolderName } = match.params;
-  const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, fileName)
+  const { title: fileNameTitle, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, fileName)
   const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, folderName, siteName, subfolderName)
 
+  const [title, setTitle] = useState(fileNameTitle)
   const [csp, setCsp] = useState(new Policy())
   const [sha, setSha] = useState(null)
   const [originalMdValue, setOriginalMdValue] = useState('')
@@ -262,6 +263,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
       }
 
       if (_isMounted) {
+        setTitle(retrievedFrontMatter.title)
         setCsp(retrievedCsp)
         setSha(pageSha)
         setOriginalMdValue(retrievedMdBody.trim())

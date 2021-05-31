@@ -160,8 +160,9 @@ const FolderContentItem = ({
 
     return (
         !showFileMoveDropdown && !showDropdown && !disableLink
-        ? 
-            <Link className={`${contentStyles.component} ${contentStyles.card}`} to={link}>
+        ?
+            // Router ejects a brick when it sees '%'. Other characters seem to work fine somehow
+            <Link className={`${contentStyles.component} ${contentStyles.card}`} to={link.replaceAll('%', '%25')}>
                 {FolderItemContent}
             </Link>
         :

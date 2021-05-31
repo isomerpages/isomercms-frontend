@@ -34,20 +34,20 @@ export function concatFrontMatterMdBody(frontMatter, mdBody) {
 // this function converts directories into readable form
 // for example, 'this-is-a-directory' -> 'This Is A Directory'
 export function deslugifyDirectory(dirName) {
-  return dirName
-    .split('-')
-    .map(string => _.upperFirst(string)) // capitalize first letter
-    .join(' '); // join it back together
+  return dirName.replaceAll('%2F', '/')
+    // .split('-')
+    // .map(string => _.upperFirst(string)) // capitalize first letter
+    // .join(' '); // join it back together
 }
 
 // this function converts file names into readable form
 // for example, 'this-is-a-file.md' -> 'This Is A File'
 export function deslugifyPage(pageName) {
-  return pageName
-    .split('.')[0] // remove the file extension
-    .split('-')
-    .map(string => _.upperFirst(string)) // capitalize first letter
-    .join(' '); // join it back together
+  return pageName.replace('.md', '')
+    // .split('.')[0] // remove the file extension
+    // .split('-')
+    // .map(string => _.upperFirst(string)) // capitalize first letter
+    // .join(' '); // join it back together
 }
 
 // takes a string URL and returns true if the link is an internal link
@@ -111,10 +111,11 @@ export function retrieveResourceFileMetadata(fileName) {
     // We search for special characters which were converted to text
     // Convert dollar back to $ if it is followed by any alphanumeric character
     const convertedToken = token.replaceAll(/dollar(?=([0-9]))/g, '$')
-    if (convertedToken.length < 2) return convertedToken.toUpperCase()
-    return convertedToken.slice(0,1).toUpperCase() + convertedToken.slice(1)
+    //if (convertedToken.length < 2) return convertedToken.toUpperCase()
+    //return convertedToken.slice(0,1).toUpperCase() + convertedToken.slice(1)
+    return convertedToken
   });
-  const title = prettifiedTitleTokenArray.join(' ')
+  const title = prettifiedTitleTokenArray.join('-')
 
   return { date, type, title };
 }
@@ -144,35 +145,40 @@ export function isEmpty(obj) {
 }
 
 export function generateResourceFileName(title, date, isPost) {
-  const safeTitle = slugify(title, {lower: true}).replace(/[^a-zA-Z0-9-]/g, '');
+  //const safeTitle = slugify(title, {lower: true}).replace(/[^a-zA-Z0-9-]/g, '');
+  const safeTitle = title.replaceAll('/', '')
   return `${date}-${isPost ? 'post' : 'file'}-${safeTitle}.md`;
 }
 
 export function slugifyCategory(category) {
-  return slugify(category).replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
+  //return slugify(category).replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
+  return category.replaceAll('/', '')
 }
 
 export function prettifyPageFileName(fileName) {
-  const fileNameArray = fileName.split('.md')[0];
-  const tokenArray = fileNameArray.split('-').map((token) => {
-    if (token.length < 2) return token.toUpperCase()
-    return token.slice(0,1).toUpperCase() + token.slice(1)
-  });
-
-  return tokenArray.join(' ');
+  // const fileNameArray = fileName.split('.md')[0];
+  // const tokenArray = fileNameArray.split('-').map((token) => {
+  //   if (token.length < 2) return token.toUpperCase()
+  //   return token.slice(0,1).toUpperCase() + token.slice(1)
+  // });
+  //
+  // return tokenArray.join(' ');
+  return fileName.replace('.md', '')
 }
 
 export function prettifyCollectionPageFileName(fileName) {
-  const fileNameArray = fileName.split('.md')[0];
-  const tokenArray = fileNameArray.split('-').map((token) => {
-    if (token.length < 2) return token.toUpperCase()
-    return token.slice(0,1).toUpperCase() + token.slice(1)
-  });
-  return tokenArray.slice(1).join(' ');
+  // const fileNameArray = fileName.split('.md')[0];
+  // const tokenArray = fileNameArray.split('-').map((token) => {
+  //   if (token.length < 2) return token.toUpperCase()
+  //   return token.slice(0,1).toUpperCase() + token.slice(1)
+  // });
+  // return tokenArray.slice(1).join(' ');
+  return fileName.replace('.md', '')
 }
 
 export function generatePageFileName(title) {
-  return `${slugify(title, {lower: true}).replace(/[^a-zA-Z0-9-]/g, '')}.md`;
+  //return `${slugify(title, {lower: true}).replace(/[^a-zA-Z0-9-]/g, '')}.md`;
+  return title.replaceAll('/','')+'.md'
 }
 
 export function slugifyLower(str) {
