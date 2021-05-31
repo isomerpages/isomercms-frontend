@@ -2,10 +2,13 @@ import 'cypress-file-upload'
 import { slugifyCategory, generateResourceFileName } from '../../src/utils'
 
 describe('Resource category page', () => {
+  Cypress.config('defaultCommandTimeout', 5000)
+
   const CMS_BASEURL = Cypress.env('BASEURL')
   const COOKIE_NAME = Cypress.env('COOKIE_NAME')
   const COOKIE_VALUE = Cypress.env('COOKIE_VALUE')
   const TEST_REPO_NAME = Cypress.env('TEST_REPO_NAME')
+  Cypress.config('baseUrl', `${CMS_BASEURL}/sites/${TEST_REPO_NAME}`)
 
   const TEST_CATEGORY = 'Test Page Folder'
   const TEST_CATEGORY_2 = 'Another Page Folder'
@@ -34,12 +37,12 @@ describe('Resource category page', () => {
     window.localStorage.setItem('userId', 'test')
 
     // Set up test resource categories
-    cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources`)
+    cy.visit(`/resources`)
     cy.contains('Create new category').click()
     cy.get('input').clear().type(TEST_CATEGORY)
     cy.contains('Save').click()
     cy.wait(3000)
-    cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources`)
+    cy.visit(`/resources`)
     cy.contains('Create new category').click()
     cy.get('input').clear().type(TEST_CATEGORY_2)
     cy.contains('Save').click()
@@ -51,7 +54,7 @@ describe('Resource category page', () => {
     // This means it will not be cleared before the NEXT test starts.
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
     window.localStorage.setItem('userId', 'test')
-    cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources/${TEST_CATEGORY_SLUGIFIED}`)
+    cy.visit(`/resources/${TEST_CATEGORY_SLUGIFIED}`)
   })
 
   it('Resource category page should have name of resource category in header', () => {
@@ -230,9 +233,9 @@ describe('Resource category page', () => {
     cy.contains(':button', 'Select file').click()
 
     cy.contains('Save').click()
-    cy.wait(3000)
 
     // New page should be of type FILE with the correct date
+    cy.contains('Successfully updated select file').should('exist')
     cy.contains(TEST_PAGE_TITLE_RENAMED)
     cy.contains(`${TEST_PAGE_DATE_CHANGED_PRETTIFIED}/FILE`)
   })
@@ -244,11 +247,11 @@ describe('Resource category page', () => {
 
     cy.get('input[id="radio-post"]').click()
     
-    // No file selected yet
     cy.contains('Save').click()
-    cy.wait(3000)
+    cy.contains('Successfully updated file settings').should('exist')
 
     // New page should be of type FILE with the correct date
+    cy.reload()
     cy.contains(TEST_PAGE_TITLE_RENAMED).contains(`${TEST_PAGE_DATE_CHANGED_PRETTIFIED}/POST`)
   })
 
