@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
@@ -41,15 +41,10 @@ import elementStyles from '../styles/isomer-cms/Elements.module.scss';
 import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
 
 const Folders = ({ match, location }) => {
-    // Instantiate queryClient
-    const queryClient = useQueryClient()
     const { siteName, folderName, subfolderName } = match.params;
 
     // set Move-To dropdown to start from current location of file
-    const initialMoveDropdownQueryState = {
-      folderName: folderName || '',
-      subfolderName: subfolderName || '',
-    }
+    const initialMoveDropdownQueryState = `${folderName}${subfolderName ? `/${subfolderName}` : ''}`
 
     const { setRedirectToPage } = useRedirectHook()
 
@@ -66,7 +61,7 @@ const Folders = ({ match, location }) => {
     const [selectedPage, setSelectedPage] = useState('')
     const [selectedPath, setSelectedPath] = useState('')
     const [isSelectedItemPage, setIsSelectedItemPage] = useState(false)
-    const [moveDropdownQuery, setMoveDropdownQuery] = useState({})
+    const [moveDropdownQuery, setMoveDropdownQuery] = useState('')
 
     const { data: folderContents, error: queryError, isLoading: isLoadingDirectory, refetch: refetchFolderContents } = useQuery(
       [DIR_CONTENT_KEY, siteName, folderName, subfolderName],
@@ -171,7 +166,7 @@ const Folders = ({ match, location }) => {
           setIsMoveModalActive((prevState) => !prevState)
           setSelectedPage('')
           setSelectedPath('')
-          clearMoveDropdownQueryState()
+          setMoveDropdownQuery(initialMoveDropdownQueryState)
         },
       }
     )
@@ -190,36 +185,31 @@ const Folders = ({ match, location }) => {
     // MOVE-TO Dropdown
     // get subfolders of selected folder for move-to dropdown
     const { data: querySubfolders } = useQuery(
-      [DIR_CONTENT_KEY, siteName, moveDropdownQuery.folderName],
-      async () => getDirectoryFile(siteName, moveDropdownQuery.folderName),
+      [DIR_CONTENT_KEY, siteName, moveDropdownQuery.split('/')[0]],  // moveDropdownQuery has format {folderName} or {folderName}/{subfolderName}
+      async () => getDirectoryFile(siteName, moveDropdownQuery.split('/')[0]),
       {
-        enabled: selectedPage.length > 0 && moveDropdownQuery.folderName.length > 0 && isSelectedItemPage,
+        enabled: selectedPage.length > 0 && moveDropdownQuery.split('/')[0].length > 0 && isSelectedItemPage,
         onError: () => errorToast(`The folders data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
       },
     )
 
     // MOVE-TO Dropdown utils
     // parse responses from move-to queries
-    const getCategories = (query, allFolders, querySubfolders) => {
-      const { folderName, subfolderName } = query
-      if (subfolderName !== '') { // inside subfolder, show empty 
+    const getCategories = (moveDropdownQuery, allFolders, querySubfolders) => {
+      const [ folderName, subfolderName ] = moveDropdownQuery.split('/') 
+      if (!!subfolderName) { // inside subfolder, show empty 
         return []
       }
-      if (folderName !== '' && querySubfolders) { // inside folder, show all subfolders
+      if (!!folderName && querySubfolders) { // inside folder, show all subfolders
         const { order: parsedFolderContents } = parseDirectoryFile(querySubfolders.content)
         const parsedFolderArray = convertFolderOrderToArray(parsedFolderContents)
         return parsedFolderArray.filter(file => file.type === 'dir').map(file => file.fileName)
       }
-      if (folderName === '' && subfolderName === '' && allFolders) { // inside workspace, show all folders
+      if (!folderName && !subfolderName && allFolders) { // inside workspace, show all folders
         return allFolders.collections
       }
       return null
     }
-
-    // MOVE-TO Clear Query utils
-    const clearMoveDropdownQueryState = () => {
-      setMoveDropdownQuery({ ...initialMoveDropdownQueryState });
-    };
 
     return (
         <>
@@ -380,7 +370,7 @@ const Folders = ({ match, location }) => {
                     setSelectedPath={setSelectedPath}
                     moveDropdownQuery={moveDropdownQuery}
                     setMoveDropdownQuery={setMoveDropdownQuery}
-                    clearMoveDropdownQueryState={clearMoveDropdownQueryState}
+                    clearMoveDropdownQueryState={() => setMoveDropdownQuery(initialMoveDropdownQueryState)}
                   />
               }
             </div>

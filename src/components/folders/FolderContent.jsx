@@ -148,7 +148,7 @@ const FolderContentItem = ({
                             setMoveDropdownQuery={setMoveDropdownQuery}
                             backHandler={toggleDropdownModals}
                             moveHandler={() => {
-                                setSelectedPath(`${moveDropdownQuery.folderName ? moveDropdownQuery.folderName : 'pages'}${moveDropdownQuery.subfolderName ? `/${moveDropdownQuery.subfolderName}` : ''}`)
+                                setSelectedPath(`${moveDropdownQuery ? moveDropdownQuery : 'pages'}`)
                                 setIsMoveModalActive(true)
                             }}
                         />
@@ -209,10 +209,7 @@ FolderContentItem.propTypes = {
     setIsFolderModalOpen: PropTypes.func,
     setIsMoveModalActive: PropTypes.func,
     setIsDeleteModalActive: PropTypes.func,
-    moveDropdownQuery: PropTypes.shape({
-        folderName: PropTypes.string,
-        subfolderName: PropTypes.string,
-    }),
+    moveDropdownQuery: PropTypes.string,
     setMoveDropdownQuery: PropTypes.func,
     clearMoveDropdownQueryState: PropTypes.func,
 };

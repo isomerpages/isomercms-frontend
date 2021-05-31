@@ -3,54 +3,43 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import PropTypes from 'prop-types';
 
 import FormField from '../FormField';
-import DeleteWarningModal from '../DeleteWarningModal';
 import SaveDeleteButtons from '../SaveDeleteButtons';
 
-import { validateFileName } from '../../utils/validators';
+import { validateMediaSettings } from '../../utils/validators';
 import {
   DEFAULT_RETRY_MSG, fetchImageURL,
 } from '../../utils'
 import { errorToast, successToast } from '../../utils/toasts';
-import { getMediaDetails, createMedia, renameMedia, deleteMedia } from '../../api';
-import { IMAGE_DETAILS_KEY, IMAGE_CONTENTS_KEY, DOCUMENT_DETAILS_KEY, DOCUMENT_CONTENTS_KEY} from '../../constants'
+import { createMedia, renameMedia } from '../../api';
+import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from '../../constants'
 
 import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
 import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
 
-const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingUpload, customPath }) => {
-  const fileName = media.fileName
+const MediaSettingsModal = ({
+  type,
+  siteName,
+  onClose,
+  onSave,
+  media,
+  mediaFileNames,
+  isPendingUpload,
+  customPath,
+}) => {
+  const fileName = media.fileName || ''
   const [newFileName, setNewFileName] = useState(fileName)
-  const [sha, setSha] = useState()
-  const [content, setContent] = useState()
-  const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
-  const errorMessage = validateFileName(newFileName);
+  const errorMessage = validateMediaSettings(newFileName, mediaFileNames)
   const queryClient = useQueryClient()
-
-  // Retrieve media information
-  const { data: mediaData } = useQuery(
-    type === 'images' ? [IMAGE_DETAILS_KEY, customPath, fileName] : [DOCUMENT_DETAILS_KEY, customPath, fileName],
-    () => {if (!isPendingUpload) return getMediaDetails({siteName, type, customPath, fileName})},
-    {
-      retry: false,
-      onError: (err) => {
-        if (err.response && err.response.status === 404) {
-          setRedirectToNotFound(siteName)
-        } else {
-          errorToast()
-        }
-      }
-    },
-  )
 
   // Handling save
   const { mutateAsync: saveHandler } = useMutation(
     () => {
       if (isPendingUpload) {
         // Creating a new file
-        return createMedia({siteName, type, customPath, newFileName, content})
+        return createMedia({siteName, type, customPath, newFileName, content: media.content})
       } else {
         // Renaming an existing file
-        return renameMedia({siteName, type, customPath, sha, content, fileName, newFileName})
+        return renameMedia({siteName, type, customPath, fileName, newFileName})
       }
     },
     {
@@ -77,49 +66,11 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
     }
   )
 
-  // Handling delete
-  const { mutateAsync: deleteHandler } = useMutation(
-    () => deleteMedia({siteName, type, sha, customPath, fileName}),
-    {
-      onError: () => errorToast(`There was a problem trying to delete this ${type.slice(0,-1)}. ${DEFAULT_RETRY_MSG}`),
-      onSuccess: () => {
-        successToast(`Successfully deleted ${type.slice(0,-1)}!`)
-        queryClient.invalidateQueries(type === 'images' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath])
-      },
-      onSettled: () => {
-        setCanShowDeleteWarningModal(false)
-        queryClient.removeQueries(`${siteName}/images/${(customPath===undefined?'':customPath+'/')}${fileName}`)
-        onSave()
-      },
-    }
-  )
-
-  useEffect(() => {
-    let _isMounted = true
-    if (_isMounted && isPendingUpload) {
-      const { content:retrievedContent } = media
-      setContent(retrievedContent)
-      return
-    }
-    if (mediaData) {
-      const retrievedSha = mediaData.sha
-      const retrievedContent = mediaData.content
-      if (_isMounted) {
-        setContent(retrievedContent)
-        setSha(retrievedSha)
-      }
-    }
-
-    return () => {
-      _isMounted = false
-    }
-  }, [mediaData])
-
   const {data: imageURL, status} = useQuery(`${siteName}/${media.path}`,
       () => fetchImageURL(siteName, media.path, type === 'images'), {
-    refetchOnWindowFocus: false,
-    staleTime: Infinity // Never automatically refetch image unless query is invalidated
-  })
+        refetchOnWindowFocus: false,
+        staleTime: Infinity // Never automatically refetch image unless query is invalidated
+      })
 
   return (
     <div className={elementStyles.overlay}>
@@ -137,7 +88,7 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
             <div className={mediaStyles.editImagePreview}>
               <img
                 alt={`${media.fileName}`}
-                src={isPendingUpload ? `data:image/png;base64,${content}`
+                src={isPendingUpload ? `data:image/png;base64,${media.content}`
                   : (
                         (status === 'success')?imageURL:'/placeholder_no_image.png'
                   )}
@@ -162,25 +113,13 @@ const MediaSettingsModal = ({ type, siteName, onClose, onSave, media, isPendingU
           </div>
           <SaveDeleteButtons
             saveLabel={isPendingUpload ? "Upload" : "Save"}
-            isDisabled={isPendingUpload ? false : !sha}
-            isSaveDisabled={isPendingUpload ? false : (fileName === newFileName || errorMessage || !sha)}
-            hasDeleteButton={!isPendingUpload}
+            isSaveDisabled={errorMessage || (!isPendingUpload && fileName === newFileName)}
+            hasDeleteButton={false}
             saveCallback={saveHandler}
-            deleteCallback={() => setCanShowDeleteWarningModal(true)}
-            isLoading={isPendingUpload ? false : !sha}
+            isLoading={!media}
           />
         </form>
       </div>
-      {
-        canShowDeleteWarningModal
-        && (
-          <DeleteWarningModal
-            onCancel={() => setCanShowDeleteWarningModal(false)}
-            onDelete={deleteHandler}
-            type="image"
-          />
-        )
-      }
     </div>
   );
 }
@@ -193,6 +132,7 @@ MediaSettingsModal.propTypes = {
     path: PropTypes.string,
     content: PropTypes.string,
   }).isRequired,
+  mediaFileNames: PropTypes.arrayOf(PropTypes.string),
   type: PropTypes.oneOf(['images', 'files']).isRequired,
   siteName: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
