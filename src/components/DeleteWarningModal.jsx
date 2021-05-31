@@ -18,12 +18,13 @@ const DeleteWarningModal = ({ onDelete, onCancel, type }) => (
         <p>Are you sure you want to delete this?</p>
         <div className={elementStyles.modalButtons}>
           <LoadingButton
+            id="modal-delete"
             label="Delete"
             disabledStyle={elementStyles.disabled}
             className={elementStyles.warning}
             callback={onDelete}
           />
-          <button className={elementStyles.blue} type="button" onClick={onCancel}>Cancel</button>
+          <button id="modal-cancel" className={elementStyles.blue} type="button" onClick={onCancel}>Cancel</button>
         </div>
       </form>
     </div>
