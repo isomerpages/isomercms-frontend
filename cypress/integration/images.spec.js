@@ -69,17 +69,18 @@ describe('Images', () => {
       cy.get('button').contains(/^Upload$/).should('be.disabled') // necessary as multiple buttons containing Upload on page 
       cy.get('#closeMediaSettingsModal').click()
 
-      // users should not be able to create file with duplicated filename in folder (NOT SUPPORTED YET)
-      // cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH, ACTION_DISABLED) 
-      // // ASSERTS
-      // cy.contains('Invalid filename: filename can only contain one full stop and must follow the structure {name}.{extension}')
-      // cy.get('button').contains(/^Upload$/).should('be.disabled') // necessary as multiple buttons containing Upload on page
+      // users should not be able to create file with duplicated filename in folder
+      cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH, ACTION_DISABLED) 
+      // ASSERTS
+      cy.contains('This title is already in use. Please choose a different title.')
+      cy.get('button').contains(/^Upload$/).should('be.disabled') // necessary as multiple buttons containing Upload on page
     })
 
     it('Should not be able to edit image and save with invalid title', () => {
       const MISSING_EXTENSION = 'singapore'
       const INVALID_CHARACTER = '!!.png'
       const ACTION_DISABLED = 'true'
+      const OTHER_IMAGE_TITLE = 'america.png'
       
       // should not be able to save with invalid characters in title 
       cy.renameMedia(IMAGE_TITLE, INVALID_CHARACTER, ACTION_DISABLED)
@@ -101,10 +102,14 @@ describe('Images', () => {
       cy.get('button').contains(/^Save$/).should('be.disabled') // necessary as multiple buttons containing Upload on page 
       cy.get('#closeMediaSettingsModal').click()
 
-      // users should not be able to create file with duplicated filename in folder (NOT SUPPORTED YET)
-      // cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH, ACTION_DISABLED)  
-      // cy.contains('Invalid filename: filename can only contain one full stop and must follow the structure {name}.{extension}')
-      // cy.get('button').contains(/^Save$/).should('be.disabled') // necessary as multiple buttons containing Upload on page
+      // users should not be able to create file with duplicated filename in folder 
+      cy.uploadMedia(OTHER_IMAGE_TITLE, TEST_IMAGE_PATH) 
+      cy.renameMedia(OTHER_IMAGE_TITLE, IMAGE_TITLE, ACTION_DISABLED)  
+      // ASSERTS
+      cy.contains('This title is already in use. Please choose a different title.')
+      cy.get('button').contains(/^Save$/).should('be.disabled') // necessary as multiple buttons containing Upload on page
+      cy.get('#closeMediaSettingsModal').click()
+      cy.deleteMedia(OTHER_IMAGE_TITLE) // clean up
     })
 
     it('Should be able to delete image', () => {
@@ -178,10 +183,11 @@ describe('Images', () => {
 
   describe('Nested Images flow', () => {
     
-    const EXISTING_ALBUM_TITLE = 'test' // Should be existing repo since we don't want the tests to fail in cascade 
+    const EXISTING_ALBUM = 'hello-new-album' // Should be existing  since we don't want the tests to fail in cascade 
+    const EXISTING_ALBUM_DESLUGIFIED = deslugifyDirectory(EXISTING_ALBUM)
     
     beforeEach(() => {
-      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/images/${EXISTING_ALBUM_TITLE}`)
+      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/images/${EXISTING_ALBUM}`)
     })
 
     it('Should be able to add image to image album', () => {
@@ -208,12 +214,41 @@ describe('Images', () => {
 
     it('Should be able to delete image from image album', () => {
       // Set intercept to listen for POST request on server
-      cy.intercept({ method:'DELETE', url: `/v1/sites/${TEST_REPO_NAME}/images/${generateImageorFilePath(EXISTING_ALBUM_TITLE, IMAGE_TITLE)}` }).as('deleteImage')
+      cy.intercept({ method:'DELETE', url: `/v1/sites/${TEST_REPO_NAME}/images/${generateImageorFilePath(EXISTING_ALBUM, IMAGE_TITLE)}` }).as('deleteImage')
 
       cy.deleteMedia(IMAGE_TITLE)
       // ASSERTS
       cy.wait('@deleteImage') // Should intercept DELETE request
       cy.contains(IMAGE_TITLE).should('not.exist') //Image file name should not exist in Images
+    })
+
+    it('Should be able to move image from image album to Images', () => {
+      // Set intercept to listen for POST request on server
+      cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/images/${encodeURIComponent(`${EXISTING_ALBUM}/${IMAGE_TITLE}`)}/move/${IMAGE_TITLE}`}).as('moveImage')
+
+      cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH)
+      cy.moveMedia(IMAGE_TITLE)
+      cy.wait('@moveImage')  // should intercept POST request
+
+      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/images`)
+      cy.contains(IMAGE_TITLE) // image should be contained in album
+      
+      cy.deleteMedia(IMAGE_TITLE) // cleanup
+    })
+
+    it('Should be able to move image from Images to image album', () => {
+      // Set intercept to listen for POST request on server
+      cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/images/${IMAGE_TITLE}/move/${encodeURIComponent(`${EXISTING_ALBUM}/${IMAGE_TITLE}`)}`}).as('moveImage')
+
+      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/images`)
+      cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH)
+      cy.moveMedia(IMAGE_TITLE, EXISTING_ALBUM)
+      cy.wait('@moveImage')  // should intercept POST request
+
+      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/images/${EXISTING_ALBUM}`)
+      cy.contains(IMAGE_TITLE) // image should be contained in album
+      
+      cy.deleteMedia(IMAGE_TITLE) // cleanup
     })
   })
 })
