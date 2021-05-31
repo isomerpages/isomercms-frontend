@@ -1,30 +1,39 @@
 import 'cypress-file-upload';
-import { generateImageorFilePath, slugifyCategory, deslugifyDirectory } from '../../src/utils'
+import { generateImageorFilePath, slugifyCategory } from '../../src/utils'
 
 describe('Files', () => {
-  const CMS_BASEURL = Cypress.env('BASEURL')
+  Cypress.config('baseUrl', Cypress.env('BASEURL'))
   const COOKIE_NAME = Cypress.env('COOKIE_NAME')
   const COOKIE_VALUE = Cypress.env('COOKIE_VALUE')
   const TEST_REPO_NAME = Cypress.env('TEST_REPO_NAME')
+  const CUSTOM_TIMEOUT = Cypress.env('CUSTOM_TIMEOUT')
 
-  const TEST_FILE_PATH = 'files/singapore.pdf'
   const FILE_TITLE = 'singapore.pdf'
-  const DIRECTORY_TITLE = 'Singapore'
+  const OTHER_FILE_TITLE = 'america.pdf'
+  const TEST_FILE_PATH = 'files/singapore.pdf'
 
-  beforeEach(() => {
-    cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-    window.localStorage.setItem('userId', 'test')
-    cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/documents`)
-  })
+  const DIRECTORY_TITLE = 'Purple'
+  const OTHER_DIRECTORY_TITLE = 'Green'
+  const SLUGIFIED_DIRECTORY_TITLE = slugifyCategory(DIRECTORY_TITLE)
 
-  it('Files should contain Directories and Ungrouped Files', () => {
-    cy.contains('Directories')
-    cy.contains('Ungrouped files')
-    cy.contains('Upload new file')
-    cy.contains('Create new directory')
-  })
+  const MISSING_EXTENSION = 'singapore'
+  const INVALID_CHARACTER = '!!.pdf'
+  const ACTION_DISABLED = 'true'
 
-  describe('Files flow', () => {
+  describe('Create file, delete file, edit file settings in Files', () => {
+    beforeEach(() => {
+      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
+      window.localStorage.setItem('userId', 'test')
+
+      cy.visit(`/sites/${TEST_REPO_NAME}/documents`)
+    })
+      
+    it('Files should contain Directories and Ungrouped Files', () => {
+      cy.contains('Directories')
+      cy.contains('Ungrouped files')
+      cy.contains('Upload new file')
+      cy.contains('Create new directory')
+    })
 
     it('Should be able to create new file with valid title', () => {
       // Set intercept to listen for POST request on server
@@ -33,27 +42,29 @@ describe('Files', () => {
       cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH)
       // ASSERTS
       cy.wait('@createFile') // should intercept POST request
-      cy.contains(FILE_TITLE) // file should be contained in Files
+      cy.contains(FILE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist') // file should be contained in Files
     
     })
 
     it('Should be able to edit an file', () => {
-      const NEW_FILE_TITLE = 'america.pdf'
+      // Set intercept to listen for POST request on server
+      cy.intercept({ method:'POST', url: `/v1/sites/e2e-test-repo/documents/${FILE_TITLE}/rename/${OTHER_FILE_TITLE}` }).as('renameFile')
       
-      cy.renameMedia(FILE_TITLE, NEW_FILE_TITLE)
+      cy.renameMedia(FILE_TITLE, OTHER_FILE_TITLE)
       // ASSERTS
-      cy.contains(NEW_FILE_TITLE) // file should be contained in Files
+      cy.wait('@renameFile')
+      cy.contains(OTHER_FILE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist') // file should be contained in Files
 
-      cy.renameMedia(NEW_FILE_TITLE, FILE_TITLE) // Rename file to original title 
+      // Set intercept to listen for POST request on server
+      cy.intercept({ method:'POST', url: `/v1/sites/e2e-test-repo/documents/${OTHER_FILE_TITLE}/rename/${FILE_TITLE}` }).as('renameFileBack')
+      
+      cy.renameMedia(OTHER_FILE_TITLE, FILE_TITLE) // Rename file to original title 
       // ASSERTS
-      cy.contains(FILE_TITLE)
+      cy.wait('@renameFileBack')
+      cy.contains(FILE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
     })
 
-
     it('Should not be able to create file with invalid title', () => {
-      const MISSING_EXTENSION = 'singapore'
-      const INVALID_CHARACTER = '!!.pdf'
-      const ACTION_DISABLED = 'true'
       
       // should not be able to save with invalid characters in title 
       cy.uploadMedia(INVALID_CHARACTER, TEST_FILE_PATH, ACTION_DISABLED)
@@ -69,17 +80,14 @@ describe('Files', () => {
       cy.get('button').contains(/^Upload$/).should('be.disabled') // necessary as multiple buttons containing Upload on page 
       cy.get('#closeMediaSettingsModal').click()
 
-      // users should not be able to create file with duplicated filename in folder (NOT SUPPORTED YET)
-      // cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH, ACTION_DISABLED) 
-      // // ASSERTS
-      // cy.contains('Invalid filename: filename can only contain one full stop and must follow the structure {name}.{extension}')
-      // cy.get('button').contains(/^Upload$/).should('be.disabled') // necessary as multiple buttons containing Upload on page
+      // users should not be able to create file with duplicated filename in folder
+      cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH, ACTION_DISABLED) 
+      // ASSERTS
+      cy.contains('This title is already in use. Please choose a different title.')
+      cy.get('button').contains(/^Upload$/).should('be.disabled') // necessary as multiple buttons containing Upload on page
     })
 
     it('Should not be able to edit file and save with invalid title', () => {
-      const MISSING_EXTENSION = 'singapore'
-      const INVALID_CHARACTER = '!!.png'
-      const ACTION_DISABLED = 'true'
       
       // should not be able to save with invalid characters in title 
       cy.renameMedia(FILE_TITLE, INVALID_CHARACTER, ACTION_DISABLED)
@@ -102,9 +110,13 @@ describe('Files', () => {
       cy.get('#closeMediaSettingsModal').click()
 
       // users should not be able to create file with duplicated filename in folder (NOT SUPPORTED YET)
-      // cy.uploadFile(FILE_TITLE, TEST_FILE_PATH, ACTION_DISABLED)  
-      // cy.contains('Invalid filename: filename can only contain one full stop and must follow the structure {name}.{extension}')
-      // cy.get('button').contains(/^Save$/).should('be.disabled') // necessary as multiple buttons containing Upload on page
+      cy.uploadMedia(OTHER_FILE_TITLE, TEST_FILE_PATH)  
+      cy.renameMedia(OTHER_FILE_TITLE, FILE_TITLE, ACTION_DISABLED)  
+      // ASSERTS
+      cy.contains('This title is already in use. Please choose a different title.')
+      cy.get('button').contains(/^Save$/).should('be.disabled') // necessary as multiple buttons containing Upload on page
+      cy.get('#closeMediaSettingsModal').click()
+      cy.deleteMedia(OTHER_FILE_TITLE) // clean up
     })
 
     it('Should be able to delete file', () => {
@@ -118,8 +130,15 @@ describe('Files', () => {
     })
   })
 
-  describe('File Directories flows', () => {
+  describe('Create file directory, delete file directory, edit file directory settings in Files', () => {
     
+    beforeEach(() => {
+      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
+      window.localStorage.setItem('userId', 'test')
+
+      cy.visit(`/sites/${TEST_REPO_NAME}/documents`)
+    })
+
     it('Should be able to create new file directory', () => {
       // Set intercept to listen for POST request on server
       cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/media/documents/${slugifyCategory(DIRECTORY_TITLE)}` }).as('createDirectory')
@@ -131,33 +150,30 @@ describe('Files', () => {
 
       // ASSERTS
       cy.wait('@createDirectory') // Should intercept POST request
-      cy.contains(DIRECTORY_TITLE) // Directory name should be contained in Files
+      cy.contains(DIRECTORY_TITLE, { timeout: CUSTOM_TIMEOUT} ).should('exist') // Directory name should be contained in Files
     })
 
     it('Should be able to edit file directory name', () => {
-      const NEW_DIRECTORY_TITLE = 'America'
       
       // User should be able edit directory details
       const testDirectoryCard = cy.contains(DIRECTORY_TITLE)
       testDirectoryCard.children().within(() => cy.get('[id^=settings-]').click())
       cy.get('div[id^=settings-]').first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
-      cy.get('#newDirectoryName').clear().type(NEW_DIRECTORY_TITLE)
+      cy.get('#newDirectoryName').clear().type(OTHER_DIRECTORY_TITLE)
       cy.contains('button', 'Save').click()
 
       // ASSERTS
-      cy.wait(3000)
-      cy.contains(NEW_DIRECTORY_TITLE) // New file directory name should be contained in Files
+      cy.contains(OTHER_DIRECTORY_TITLE, { timeout: CUSTOM_TIMEOUT} ).should('exist') // New file directory name should be contained in Files
 
       // Rename directory to original directory title
-      const newTestDirectoryCard = cy.contains(NEW_DIRECTORY_TITLE)
+      const newTestDirectoryCard = cy.contains(OTHER_DIRECTORY_TITLE)
       newTestDirectoryCard.children().within(() => cy.get('[id^=settings-]').click())
       cy.get('div[id^=settings-]').first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
       cy.get('#newDirectoryName').clear().type(DIRECTORY_TITLE)
       cy.contains('button', 'Save').click()
       
       // ASSERTS
-      cy.wait(3000)
-      cy.contains(DIRECTORY_TITLE) // Original file directory name should be contained in Files
+      cy.contains(DIRECTORY_TITLE, { timeout: CUSTOM_TIMEOUT} ).should('exist') // Original file directory name should be contained in Files
     })
 
     it('Should be able to delete file directory', () => {
@@ -176,12 +192,25 @@ describe('Files', () => {
     })
   })
 
-  describe('Nested Files flow', () => {
-    
-    const EXISTING_DIRECTORY_TITLE = 'test' // Should be existing repo since we don't want the tests to fail in cascade 
-    
+  describe('Create file, delete file, edit file settings, and move files in file directories', () => {
+    before(() => {
+      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
+      window.localStorage.setItem('userId', 'test')
+
+      cy.visit(`/sites/${TEST_REPO_NAME}/documents`)
+      cy.contains('Create new directory').click()
+      cy.get("[id='file directory']").clear().type(DIRECTORY_TITLE)  
+      cy.get('button').contains(/^Create$/).click() 
+
+      // Assert
+      cy.contains(DIRECTORY_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
+    })
+
     beforeEach(() => {
-      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/documents/${EXISTING_DIRECTORY_TITLE}`)
+      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
+      window.localStorage.setItem('userId', 'test')
+
+      cy.visit(`/sites/${TEST_REPO_NAME}/documents/${SLUGIFIED_DIRECTORY_TITLE}`)
     })
 
     it('Should be able to add file to file directory', () => {
@@ -191,29 +220,73 @@ describe('Files', () => {
       cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH)
       // ASSERTS
       cy.wait('@createFile') // should intercept POST request
-      cy.contains(FILE_TITLE) // file should be contained in Files
+      cy.contains(FILE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist') // file should be contained in Files
     })
 
-    it('Should be able to edit an file in file directory', () => {
-      const NEW_FILE_TITLE = 'america.pdf'
+    it('Should be able to edit an file in file directory', () => {      
+      cy.intercept({ method:'POST', url: `/v1/sites/e2e-test-repo/documents/${generateImageorFilePath(SLUGIFIED_DIRECTORY_TITLE, FILE_TITLE)}/rename/${generateImageorFilePath(SLUGIFIED_DIRECTORY_TITLE, OTHER_FILE_TITLE)}` }).as('renameFile')
       
-      cy.renameMedia(FILE_TITLE, NEW_FILE_TITLE)
+      cy.renameMedia(FILE_TITLE, OTHER_FILE_TITLE)
       // ASSERTS
-      cy.contains(NEW_FILE_TITLE) // File should be contained in Files
+      cy.wait('@renameFile')
+      cy.contains(OTHER_FILE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist') // File should be contained in Files
 
-      cy.renameMedia(NEW_FILE_TITLE, FILE_TITLE) // Rename file to original title 
+      cy.intercept({ method:'POST', url: `/v1/sites/e2e-test-repo/documents/${generateImageorFilePath(SLUGIFIED_DIRECTORY_TITLE, OTHER_FILE_TITLE)}/rename/${generateImageorFilePath(SLUGIFIED_DIRECTORY_TITLE, FILE_TITLE)}` }).as('renameFile')
+      
+      cy.renameMedia(OTHER_FILE_TITLE, FILE_TITLE)
       // ASSERTS
-      cy.contains(FILE_TITLE)
+      cy.wait('@renameFile')
+      cy.contains(FILE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
     })
 
     it('Should be able to delete file from file directory', () => {
       // Set intercept to listen for POST request on server
-      cy.intercept({ method:'DELETE', url: `/v1/sites/${TEST_REPO_NAME}/documents/${generateImageorFilePath(EXISTING_DIRECTORY_TITLE, FILE_TITLE)}` }).as('deleteFile')
+      cy.intercept({ method:'DELETE', url: `/v1/sites/${TEST_REPO_NAME}/documents/${generateImageorFilePath(SLUGIFIED_DIRECTORY_TITLE, FILE_TITLE)}` }).as('deleteFile')
 
       cy.deleteMedia(FILE_TITLE)
       // ASSERTS
       cy.wait('@deleteFile') // Should intercept DELETE request
-      cy.contains(FILE_TITLE).should('not.exist') //File file name should not exist in Files
+      cy.contains(FILE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('not.exist') //File file name should not exist in Files
+    })
+
+    it('Should be able to move file from file directory to Files', () => {
+      // Set intercept to listen for POST request on server
+      cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/documents/${encodeURIComponent(`${SLUGIFIED_DIRECTORY_TITLE}/${FILE_TITLE}`)}/move/${FILE_TITLE}`}).as('moveFile')
+
+      cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH)
+      cy.moveMedia(FILE_TITLE)
+      cy.wait('@moveFile')  // should intercept POST request
+
+      cy.visit(`/sites/${TEST_REPO_NAME}/documents`)
+      cy.contains(FILE_TITLE) // file should be contained in directory
+      
+      cy.deleteMedia(FILE_TITLE) // cleanup
+    })
+
+    it('Should be able to move file from Files to file directory', () => {
+      // Set intercept to listen for POST request on server
+      cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/documents/${FILE_TITLE}/move/${encodeURIComponent(`${SLUGIFIED_DIRECTORY_TITLE}/${FILE_TITLE}`)}`}).as('moveFile')
+
+      cy.visit(`/sites/${TEST_REPO_NAME}/documents`)
+      cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH)
+      cy.moveMedia(FILE_TITLE, SLUGIFIED_DIRECTORY_TITLE)
+      cy.wait('@moveFile')  // should intercept POST request
+
+      cy.visit(`/sites/${TEST_REPO_NAME}/documents/${SLUGIFIED_DIRECTORY_TITLE}`)
+      cy.contains(FILE_TITLE) // file should be contained in directory
+      
+      cy.deleteMedia(FILE_TITLE) // cleanup
+    })
+
+    after(() => {
+      cy.visit(`/sites/${TEST_REPO_NAME}/documents`)
+      const testDirectoryCard = cy.contains(DIRECTORY_TITLE)
+      testDirectoryCard.children().within(() => cy.get('[id^=settings-]').click())
+      cy.get('div[id^=delete-]').first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
+      cy.contains('button', 'Delete').click()
+
+      // ASSERTS
+      cy.contains(DIRECTORY_TITLE, { timeout: CUSTOM_TIMEOUT}).should('not.exist')
     })
   })
 })
