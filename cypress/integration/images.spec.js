@@ -1,11 +1,12 @@
 import 'cypress-file-upload';
-import { generateImageorFilePath, slugifyCategory, deslugifyDirectory } from '../../src/utils'
+import { generateImageorFilePath, slugifyCategory } from '../../src/utils'
 
 describe('Images', () => {
-  const CMS_BASEURL = Cypress.env('BASEURL')
+  Cypress.config('baseUrl', Cypress.env('BASEURL'))
   const COOKIE_NAME = Cypress.env('COOKIE_NAME')
   const COOKIE_VALUE = Cypress.env('COOKIE_VALUE')
   const TEST_REPO_NAME = Cypress.env('TEST_REPO_NAME')
+  const CUSTOM_TIMEOUT = Cypress.env('CUSTOM_TIMEOUT')
 
   const TEST_IMAGE_PATH = 'images/singapore.jpg'
   const IMAGE_TITLE = 'singapore.jpg'
@@ -14,7 +15,7 @@ describe('Images', () => {
   beforeEach(() => {
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
     window.localStorage.setItem('userId', 'test')
-    cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/images`)
+    cy.visit(`/sites/${TEST_REPO_NAME}/images`)
   })
 
   it('Images should contain Albums and Ungrouped Images', () => {
@@ -184,10 +185,9 @@ describe('Images', () => {
   describe('Nested Images flow', () => {
     
     const EXISTING_ALBUM = 'hello-new-album' // Should be existing  since we don't want the tests to fail in cascade 
-    const EXISTING_ALBUM_DESLUGIFIED = deslugifyDirectory(EXISTING_ALBUM)
-    
+
     beforeEach(() => {
-      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/images/${EXISTING_ALBUM}`)
+      cy.visit(`/sites/${TEST_REPO_NAME}/images/${EXISTING_ALBUM}`)
     })
 
     it('Should be able to add image to image album', () => {
@@ -230,7 +230,7 @@ describe('Images', () => {
       cy.moveMedia(IMAGE_TITLE)
       cy.wait('@moveImage')  // should intercept POST request
 
-      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/images`)
+      cy.visit(`/sites/${TEST_REPO_NAME}/images`)
       cy.contains(IMAGE_TITLE) // image should be contained in album
       
       cy.deleteMedia(IMAGE_TITLE) // cleanup
@@ -240,12 +240,12 @@ describe('Images', () => {
       // Set intercept to listen for POST request on server
       cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/images/${IMAGE_TITLE}/move/${encodeURIComponent(`${EXISTING_ALBUM}/${IMAGE_TITLE}`)}`}).as('moveImage')
 
-      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/images`)
+      cy.visit(`/sites/${TEST_REPO_NAME}/images`)
       cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH)
       cy.moveMedia(IMAGE_TITLE, EXISTING_ALBUM)
       cy.wait('@moveImage')  // should intercept POST request
 
-      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/images/${EXISTING_ALBUM}`)
+      cy.visit(`/sites/${TEST_REPO_NAME}/images/${EXISTING_ALBUM}`)
       cy.contains(IMAGE_TITLE) // image should be contained in album
       
       cy.deleteMedia(IMAGE_TITLE) // cleanup
