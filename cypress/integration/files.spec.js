@@ -250,6 +250,7 @@ describe('Files', () => {
     })
 
     it('Should be able to move file from file directory to Files', () => {
+      cy.viewport(1500, 750) // increases viewport size to fit movedropdownmodal on screen 
       // Set intercept to listen for POST request on server
       cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/documents/${encodeURIComponent(`${SLUGIFIED_DIRECTORY_TITLE}/${FILE_TITLE}`)}/move/${FILE_TITLE}`}).as('moveFile')
 
@@ -264,6 +265,7 @@ describe('Files', () => {
     })
 
     it('Should be able to move file from Files to file directory', () => {
+      cy.viewport(1500, 750) // increases viewport size to fit movedropdownmodal on screen 
       // Set intercept to listen for POST request on server
       cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/documents/${FILE_TITLE}/move/${encodeURIComponent(`${SLUGIFIED_DIRECTORY_TITLE}/${FILE_TITLE}`)}`}).as('moveFile')
 
