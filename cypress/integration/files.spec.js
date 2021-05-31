@@ -231,11 +231,11 @@ describe('Files', () => {
       cy.wait('@renameFile')
       cy.contains(OTHER_FILE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist') // File should be contained in Files
 
-      cy.intercept({ method:'POST', url: `/v1/sites/e2e-test-repo/documents/${generateImageorFilePath(SLUGIFIED_DIRECTORY_TITLE, OTHER_FILE_TITLE)}/rename/${generateImageorFilePath(SLUGIFIED_DIRECTORY_TITLE, FILE_TITLE)}` }).as('renameFile')
+      cy.intercept({ method:'POST', url: `/v1/sites/e2e-test-repo/documents/${generateImageorFilePath(SLUGIFIED_DIRECTORY_TITLE, OTHER_FILE_TITLE)}/rename/${generateImageorFilePath(SLUGIFIED_DIRECTORY_TITLE, FILE_TITLE)}` }).as('renameFileBack')
       
       cy.renameMedia(OTHER_FILE_TITLE, FILE_TITLE)
       // ASSERTS
-      cy.wait('@renameFile')
+      cy.wait('@renameFileBack')
       cy.contains(FILE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
     })
 
