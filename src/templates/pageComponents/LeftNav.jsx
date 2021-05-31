@@ -11,7 +11,7 @@ const LeftNav = ({ leftNavPages, fileName }) => {
   }, [])
   return (
     <div className="col is-2 is-position-relative has-side-nav is-hidden-touch">
-      <div className="sidenav">
+      <div id='sidenav' className="sidenav">
         <aside className="bp-menu is-gt sidebar__inner">
           <ul className="bp-menu-list">
             {
