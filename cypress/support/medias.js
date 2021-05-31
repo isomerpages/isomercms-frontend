@@ -24,7 +24,9 @@ Cypress.Commands.add("moveMedia", (mediaTitle, newMediaFolder) => {
       .first()
       .click()
   } else {
-    cy.get(`[id^="breadcrumb-0"]`).click()
+    cy.get(`[id^="breadcrumbItem-0"]`)
+      .should('exist')
+      .click()
   }
   cy.contains('button', 'Move Here').click({scrollBehavior: false}) // necessary because it will otherwise scroll to top of page
   cy.contains('button', 'Continue').click()
