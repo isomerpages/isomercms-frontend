@@ -24,7 +24,7 @@ Cypress.Commands.add("moveMedia", (mediaTitle, newMediaFolder) => {
       .first()
       .click()
   } else {
-    cy.get(`[id^="breadcrumbItem-0"]`)
+    cy.get(`[id^="breadcrumbItem-0"]`, { timeout: CUSTOM_TIMEOUT} )
       .should('exist')
       .click()
   }
