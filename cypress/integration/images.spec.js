@@ -151,8 +151,7 @@ describe('Images', () => {
       cy.contains('button', 'Save').click()
 
       // ASSERTS
-      cy.wait(3000)
-      cy.contains(NEW_ALBUM_TITLE) // New image album name should be contained in Images
+      cy.contains(NEW_ALBUM_TITLE, { timeout: CUSTOM_TIMEOUT} ).should('exist') // New image album name should be contained in Images
 
       // Rename album to original album title
       const newTestAlbumCard = cy.contains(NEW_ALBUM_TITLE)
@@ -162,8 +161,7 @@ describe('Images', () => {
       cy.contains('button', 'Save').click()
       
       // ASSERTS
-      cy.wait(3000)
-      cy.contains(ALBUM_TITLE) // Original image album name should be contained in Images
+      cy.contains(ALBUM_TITLE, { timeout: CUSTOM_TIMEOUT} ).should('exist') // Original image album name should be contained in Images
     })
 
     it('Should be able to delete image album', () => {
