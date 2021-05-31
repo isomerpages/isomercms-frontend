@@ -44,12 +44,12 @@ const FileMoveMenuDropdown = ({
       { moveDropdownQuery !== '' 
         ? 
           <>
-          <BreadcrumbButton id="breadcrumb-0" name={moveDropdownQuery.split("/").length > 1 ? '...' : deslugifyDirectory(rootName)} idx={-1}/>
+          <BreadcrumbButton id="breadcrumbItem-0" name={moveDropdownQuery.split("/").length > 1 ? '...' : deslugifyDirectory(rootName)} idx={-1}/>
           { 
             moveDropdownQuery.split("/").map((folderName, idx, arr) => {
               return idx === arr.length - 1
               ? <> > <strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></>
-              : <> > <BreadcrumbButton id={`breadcrumb-${idx+1}`} idx={idx} name={ idx < arr.length - 2 ? '...' : deslugifyDirectory(folderName) }/></> // shorten all except the last link
+              : <> > <BreadcrumbButton id={`breadcrumbItem-${idx+1}`} idx={idx} name={ idx < arr.length - 2 ? '...' : deslugifyDirectory(folderName) }/></> // shorten all except the last link
             })
           }
           </>
