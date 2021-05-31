@@ -42,18 +42,24 @@ describe('Images', () => {
       cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH)
       // ASSERTS
       cy.wait('@createImage') // should intercept POST request
-      cy.contains(IMAGE_TITLE) // image should be contained in Images
+      cy.contains(IMAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist') // image should be contained in Images
     
     })
 
     it('Should be able to edit an image', () => {
+      // Set intercept to listen for POST request on server
+      cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/images/${IMAGE_TITLE}/rename/${OTHER_IMAGE_TITLE}`}).as('renameImage')
       cy.renameMedia(IMAGE_TITLE, OTHER_IMAGE_TITLE)
       // ASSERTS
+      cy.wait('@renameImage')
       cy.contains(OTHER_IMAGE_TITLE) // Image should be contained in Images
 
+      // Set intercept to listen for POST request on server
+      cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/images/${OTHER_IMAGE_TITLE}/rename/${IMAGE_TITLE}`}).as('renameImageBack')
       cy.renameMedia(OTHER_IMAGE_TITLE, IMAGE_TITLE) // Rename image to original title 
       // ASSERTS
-      cy.contains(IMAGE_TITLE)
+      cy.wait('@renameImageBack')
+      cy.contains(IMAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist')
     })
 
     it('Should not be able to create image with invalid title', () => {
@@ -212,16 +218,22 @@ describe('Images', () => {
       cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH)
       // ASSERTS
       cy.wait('@createImage') // should intercept POST request
-      cy.contains(IMAGE_TITLE) // image should be contained in Images
+      cy.contains(IMAGE_TITLE, { timeout: CUSTOM_TIMEOUT}).should('exist') // image should be contained in Images
     })
 
     it('Should be able to edit an image in image album', () => {
+      cy.intercept({ method:'POST', url: `/v1/sites/e2e-test-repo/images/${generateImageorFilePath(SLUGIFIED_ALBUM_TITLE, IMAGE_TITLE)}/rename/${generateImageorFilePath(SLUGIFIED_ALBUM_TITLE, OTHER_IMAGE_TITLE)}` }).as('renameImage')
+
       cy.renameMedia(IMAGE_TITLE, OTHER_IMAGE_TITLE)
       // ASSERTS
+      cy.wait('@renameImage')
       cy.contains(OTHER_IMAGE_TITLE) // Image should be contained in Images
+
+      cy.intercept({ method:'POST', url: `/v1/sites/e2e-test-repo/images/${generateImageorFilePath(SLUGIFIED_ALBUM_TITLE, OTHER_IMAGE_TITLE)}/rename/${generateImageorFilePath(SLUGIFIED_ALBUM_TITLE, IMAGE_TITLE)}` }).as('renameImageBack')
 
       cy.renameMedia(OTHER_IMAGE_TITLE, IMAGE_TITLE) // Rename image to original title 
       // ASSERTS
+      cy.wait('@renameImageBack')
       cy.contains(IMAGE_TITLE)
     })
 
