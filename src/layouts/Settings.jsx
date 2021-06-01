@@ -136,7 +136,11 @@ export default class Settings extends Component {
           show_reach: footerContent.show_reach,
         },
         socialMediaContent: {
-          ...footerContent.social_media,
+          facebook: footerContent.social_media.facebook,
+          twitter: footerContent.social_media.twitter,
+          youtube: footerContent.social_media.youtube,
+          instagram: footerContent.social_media.instagram,
+          linkedin: footerContent.social_media.linkedin,
         },
         // navigation fields
         navigationSettings: {
