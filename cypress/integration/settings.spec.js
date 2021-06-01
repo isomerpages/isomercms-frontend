@@ -2,6 +2,8 @@ describe('Settings page', () => {
     const COOKIE_NAME = Cypress.env('COOKIE_NAME')
     const COOKIE_VALUE = Cypress.env('COOKIE_VALUE')
     const TEST_REPO_NAME = Cypress.env('TEST_REPO_NAME')
+    Cypress.config('baseUrl', Cypress.env('BASEURL'))
+    Cypress.config('defaultCommandTimeout', 6000)
 
     const BASE_TITLE = 'TEST'
     const BASE_PRIMARY_COLOR = '#6031b6'
@@ -21,7 +23,7 @@ describe('Settings page', () => {
     const TEST_FACEBOOK_PIXEL_ID = '12345'
     const TEST_GOOGLE_ANALYTICS_ID = 'UA-39345131-3'
     const TEST_PRIMARY_COLOR = [255, 0, 0] // ([R, G, B])
-    const TEST_SECONDARY_COLOR = [67, 214, 91] // ([R, G, B])
+    const TEST_SECONDARY_COLOR = [0, 255, 0] // ([R, G, B])
     const TEST_FACEBOOK_LINK = 'https://www.facebook.com/testfb'
     const TEST_LINKEDIN_LINK = 'https://www.linkedin.com/company/testagency'
     const TEST_TWITTER_LINK = 'https://www.twitter.com/testtwitter'
@@ -32,7 +34,22 @@ describe('Settings page', () => {
     const TEST_FAQ = '/faqpagetest/'
 
     // Pages to test color
-    const SAMPLE_PAGE = 'Faq'
+    const SAMPLE_PAGE = 'pages/faq.md'
+    const HOMEPAGE = 'homepage'
+
+    // Reusable save command
+    Cypress.Commands.add('saveSettings', () => {
+        cy.intercept('POST', '/v1/**').as('awaitSave')
+        cy.contains('button', 'Save').click()
+        cy.wait('@awaitSave')
+    })
+
+    // Reusable visit command
+    Cypress.Commands.add('visitLoadSettings', (sitePath) => {
+        cy.intercept('GET', `/v1/sites/${TEST_REPO_NAME}/settings`).as('awaitSettings')
+        cy.visit(sitePath)
+        cy.wait('@awaitSettings')
+    })
 
     Cypress.Cookies.defaults({
         preserve: COOKIE_NAME
@@ -44,8 +61,7 @@ describe('Settings page', () => {
         cy.contains(TEST_REPO_NAME).click()
 
         window.localStorage.setItem('userId', 'test')
-        cy.visit(`/sites/${TEST_REPO_NAME}/settings`)
-        cy.wait(1000)
+        cy.visitLoadSettings(`/sites/${TEST_REPO_NAME}/settings`)
 
         // Reset page input field states
         cy.get('#title').clear().type(BASE_TITLE)
@@ -62,28 +78,34 @@ describe('Settings page', () => {
         cy.get('#feedback').clear().type(BASE_FEEDBACK)
         cy.get('#faq').clear().type(BASE_FAQ)
 
-        cy.contains('button', 'Save').click()
+        cy.saveSettings()
     })
 
     beforeEach(() => {
         window.localStorage.setItem('userId', 'test')
-        cy.visit(`/sites/${TEST_REPO_NAME}/settings`)
-        cy.wait(1000)
+        cy.visitLoadSettings(`/sites/${TEST_REPO_NAME}/settings`)
+        // Double check that settings are loaded before running tests cos sometimes the tests run too quickly
+        cy.get('#title').should((elem) => {
+            expect(elem.val()).to.have.length.greaterThan(0)
+        })
     })
 
     it('Should change Title and have change reflect correctly on save', () => {
         cy.get('#title').clear().type(TEST_TITLE)
-        cy.contains('button', 'Save').click() // Save
+
+        cy.saveSettings()
+
         cy.get('#title').should('have.value', TEST_TITLE)
     })
 
     it('Should toggle Masthead and Show Reach buttons and have change reflect correctly on save', () => {
         const shouldBeSelectedArr = []
+        // Toggles the Masthead and Show Reach buttons and saves their expected states to reference later
         cy.get('input[type=checkbox]').each(((element, index) => {
             shouldBeSelectedArr.push(`${!(element.val()==='true')}`)
             cy.wrap(element).parent().click({force: true})
         })).then(() => {
-            cy.contains('button', 'Save').click()
+            cy.saveSettings()
 
             cy.contains('Display government masthead:').parent().siblings().find('input[type=checkbox]')
                 .should('have.value', shouldBeSelectedArr[0])
@@ -99,7 +121,7 @@ describe('Settings page', () => {
             cy.contains('button', 'Select image').should('not.be.disabled').click()
         })
 
-        cy.contains('button', 'Save').click() // Save
+        cy.saveSettings() // Save
 
         cy.get('#logo').should('have.value', IMAGE_DIR + TEST_LOGO_IMAGES[0])
         cy.get('#favicon').should('have.value', IMAGE_DIR + TEST_LOGO_IMAGES[1])
@@ -111,7 +133,7 @@ describe('Settings page', () => {
         cy.get('#facebook_pixel').type(TEST_FACEBOOK_PIXEL_ID)
         cy.get('#google_analytics').type(TEST_GOOGLE_ANALYTICS_ID)
 
-        cy.contains('button', 'Save').click()
+        cy.saveSettings()
 
         cy.get('#facebook_pixel').should('have.value', TEST_FACEBOOK_PIXEL_ID)
         cy.get('#google_analytics').should('have.value', TEST_GOOGLE_ANALYTICS_ID)
@@ -135,7 +157,7 @@ describe('Settings page', () => {
         cy.contains(/^b/).siblings().clear().type(TEST_SECONDARY_COLOR[2].toString())
         cy.contains('button', 'Select').click()
 
-        cy.contains('button', 'Save').click()
+        cy.saveSettings()
 
         // Check if selected colors are reflected upon save
         const rgb_primary = `rgb(${TEST_PRIMARY_COLOR.join(', ')})`
@@ -152,15 +174,13 @@ describe('Settings page', () => {
             .should('have.attr', 'style', `background: ${rgb_secondary};`)
 
         // Check if page previews reflect color change
-        cy.wait(5000) // Wait for backend update
-        cy.visit('/sites/e2e-test-repo/workspace')
-        cy.contains('h1', SAMPLE_PAGE).click({force: true})
+        cy.visitLoadSettings(`/sites/${TEST_REPO_NAME}/${SAMPLE_PAGE}`)
         cy.get('section.bp-section-pagetitle') // Page title banner
             .should('have.css', 'background-color', rgb_primary)
 
         // Check if home page reflects color change
-        cy.visit('/sites/e2e-test-repo/workspace')
-        cy.contains('span', 'Homepage').click()
+        cy.visit(`/sites/${TEST_REPO_NAME}/workspace`) // Somehow colors won't load on homepage if visiting directly
+        cy.visitLoadSettings(`/sites/${TEST_REPO_NAME}/${HOMEPAGE}`)
         cy.get('.bp-notification').first() // Notification bar
             .should('have.css', 'background-color', rgb_secondary)
         cy.get('.bp-section').first() // Hero section
@@ -177,7 +197,7 @@ describe('Settings page', () => {
         cy.get('#youtube').clear().type(TEST_YOUTUBE_LINK)
         cy.get('#instagram').clear().type(TEST_INSTAGRAM_LINK)
 
-        cy.contains('button', 'Save').click()
+        cy.saveSettings()
 
         cy.get('#facebook').should('have.value',TEST_FACEBOOK_LINK)
         cy.get('#linkedin').should('have.value',TEST_LINKEDIN_LINK)
@@ -191,7 +211,7 @@ describe('Settings page', () => {
         cy.get('#feedback').clear().type(TEST_FEEDBACK)
         cy.get('#faq').clear().type(TEST_FAQ)
 
-        cy.contains('button', 'Save').click()
+        cy.saveSettings()
 
         cy.get('#contact_us').should('have.value', TEST_CONTACT_US)
         cy.get('#feedback').should('have.value', TEST_FEEDBACK)
