@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {useQuery} from "react-query";
+import {fetchImageURL} from "../../utils";
 
 /* eslint
   react/no-array-index-key: 0
@@ -18,6 +20,13 @@ const TemplateInfopicRightSection = ({
   const addDefaultSrc = (e) => {
     e.target.src = '/placeholder_no_image.png'
   }
+
+  const {data: loadedImageURL, status} = useQuery(`${siteName}/${imageUrl}`,
+      () => fetchImageURL(siteName, decodeURI(imageUrl)), {
+    refetchOnWindowFocus: false,
+    staleTime: Infinity // Never automatically refetch image unless query is invalidated
+  })
+
   return (
     <div ref={ref}>
       <section className={`bp-section ${(sectionIndex % 2 === 1) ? 'bg-newssection' : null}`}>
@@ -44,13 +53,13 @@ const TemplateInfopicRightSection = ({
               </div>
             </div>
             <div className="col is-half">
-              <img onError={addDefaultSrc} src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
+              <img onError={addDefaultSrc} src={loadedImageURL} alt={imageAlt} />
             </div>
           </div>
           {/* For tablet */}
           <div className="row is-hidden-mobile is-hidden-desktop">
             <div className="col is-half is-half padding--top--xl padding--bottom--xl">
-              <img onError={addDefaultSrc} src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
+              <img onError={addDefaultSrc} src={loadedImageURL} alt={imageAlt} />
             </div>
             <div className="col is-half">
               <p className="padding--bottom eyebrow is-uppercase">
@@ -75,7 +84,7 @@ const TemplateInfopicRightSection = ({
           {/* For desktop */}
           <div className="row is-hidden-mobile is-hidden-tablet-only">
             <div className="col is-half is-half padding--top--xl padding--bottom--xl">
-              <img onError={addDefaultSrc} src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
+              <img onError={addDefaultSrc} src={loadedImageURL} alt={imageAlt} />
             </div>
             <div className="col is-half padding--top--xl padding--bottom--xl padding--left--xl padding--right--xl">
               <p className="padding--bottom eyebrow is-uppercase">

@@ -5,13 +5,15 @@ import { MenuDropdown } from '../MenuDropdown'
 import FileMoveMenuDropdown from '../FileMoveMenuDropdown'
 
 import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
+import {fetchImageURL} from "../../utils";
+import {useQuery} from "react-query";
 import contentStyles from '../../styles/isomer-cms/pages/Content.module.scss';
 
 const MediaCard = ({
-  type, 
-  siteName, 
-  onClick, 
-  media, 
+  type,
+  siteName,
+  onClick,
+  media,
   mediaItemIndex,
   isSelected,
   setSelectedMedia,
@@ -20,7 +22,7 @@ const MediaCard = ({
   showSettings,
   moveDropdownQuery,
   setIsMoveModalActive,
-  setIsMediaSettingsActive, 
+  setIsMediaSettingsActive,
   setIsDeleteModalActive,
   setMoveDropdownQuery,
   clearMoveDropdownQueryState,
@@ -34,6 +36,12 @@ const MediaCard = ({
       if (showDropdown) dropdownRef.current.focus()
       if (showFileMoveDropdown) fileMoveDropdownRef.current.focus()
   }, [showDropdown, showFileMoveDropdown])
+
+  const {data: imageURL, status} = useQuery(`${siteName}/${media.path}`,
+      () => fetchImageURL(siteName, media.path, type === 'images'), {
+        refetchOnWindowFocus: false,
+        staleTime: Infinity // Never automatically refetch image unless query is invalidated
+      })
 
   const handleBlur = (event) => {
       // if the blur was because of outside focus
@@ -71,13 +79,13 @@ const MediaCard = ({
     <div
       className={isSelected ? mediaStyles.selectedMediaCard : mediaStyles.mediaCard}
       key={media.path}
-      onClick={(e) => { 
+      onClick={(e) => {
         e.stopPropagation();
-        e.preventDefault(); 
+        e.preventDefault();
         if (setSelectedMedia) setSelectedMedia(media);
         if (!showFileMoveDropdown && !showDropdown && onClick) onClick();
       }}
-    > 
+    >
       {
         type === 'images' && (
           <div className={mediaStyles.mediaCardImagePreviewContainer}>
@@ -85,7 +93,7 @@ const MediaCard = ({
               className={mediaStyles.mediaCardImage}
               alt={`${media.fileName}`}
               // The sanitise parameter is for SVGs. It converts the raw svg data into an image
-              src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${media.path}${media.path.endsWith('.svg') ? '?sanitize=true' : ''}`}
+              src={(status === 'success')?imageURL:'/placeholder_no_image.png'}
             />
           </div>
         )
@@ -131,7 +139,7 @@ const MediaCard = ({
               />
             }
             { showFileMoveDropdown &&
-              <FileMoveMenuDropdown 
+              <FileMoveMenuDropdown
                 dropdownItems={allCategories}
                 dropdownRef={fileMoveDropdownRef}
                 menuIndex={mediaItemIndex}

@@ -15,3 +15,5 @@ export const IMAGE_CONTENTS_KEY = 'image-contents'
 export const DOCUMENT_CONTENTS_KEY = 'document-contents'
 export const IMAGE_DETAILS_KEY = 'image-details'
 export const DOCUMENT_DETAILS_KEY = 'document-details'
+
+export const SITES_IS_PRIVATE_KEY = 'sites-is-private'
