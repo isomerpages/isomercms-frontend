@@ -250,14 +250,16 @@ describe('Files', () => {
     })
 
     it('Should be able to move file from file directory to Files', () => {
-      cy.viewport(1500, 750) // increases viewport size to fit movedropdownmodal on screen 
+      cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/documents` }).as('createFile')
+      cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH)
+      cy.wait('@createFile')
+      
       // Set intercept to listen for POST request on server
       cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/documents/${encodeURIComponent(`${SLUGIFIED_DIRECTORY_TITLE}/${FILE_TITLE}`)}/move/${FILE_TITLE}`}).as('moveFile')
-
-      cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH)
       cy.moveMedia(FILE_TITLE)
+      
+      // ASSERTS
       cy.wait('@moveFile')  // should intercept POST request
-
       cy.visit(`/sites/${TEST_REPO_NAME}/documents`)
       cy.contains(FILE_TITLE) // file should be contained in directory
       
@@ -265,15 +267,17 @@ describe('Files', () => {
     })
 
     it('Should be able to move file from Files to file directory', () => {
-      cy.viewport(1500, 750) // increases viewport size to fit movedropdownmodal on screen 
-      // Set intercept to listen for POST request on server
-      cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/documents/${FILE_TITLE}/move/${encodeURIComponent(`${SLUGIFIED_DIRECTORY_TITLE}/${FILE_TITLE}`)}`}).as('moveFile')
-
+      cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/documents` }).as('createFile')
       cy.visit(`/sites/${TEST_REPO_NAME}/documents`)
       cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH)
+      cy.wait('@createFile')
+      
+      // Set intercept to listen for POST request on server
+      cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/documents/${FILE_TITLE}/move/${encodeURIComponent(`${SLUGIFIED_DIRECTORY_TITLE}/${FILE_TITLE}`)}`}).as('moveFile')
       cy.moveMedia(FILE_TITLE, SLUGIFIED_DIRECTORY_TITLE)
+      
+      // ASSERTS
       cy.wait('@moveFile')  // should intercept POST request
-
       cy.visit(`/sites/${TEST_REPO_NAME}/documents/${SLUGIFIED_DIRECTORY_TITLE}`)
       cy.contains(FILE_TITLE) // file should be contained in directory
       

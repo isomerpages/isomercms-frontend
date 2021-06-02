@@ -248,14 +248,16 @@ describe('Images', () => {
     })
 
     it('Should be able to move image from image album to Images', () => {
-      cy.viewport(1500, 750) // increases viewport size to fit movedropdownmodal on screen 
+      cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/images` }).as('createImage')
+      cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH)
+      cy.wait('@createImage')
+
       // Set intercept to listen for POST request on server
       cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/images/${encodeURIComponent(`${SLUGIFIED_ALBUM_TITLE}/${IMAGE_TITLE}`)}/move/${IMAGE_TITLE}`}).as('moveImage')
-
-      cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH)
       cy.moveMedia(IMAGE_TITLE)
-      cy.wait('@moveImage')  // should intercept POST request
 
+      // ASSERTS
+      cy.wait('@moveImage')  // should intercept POST request
       cy.visit(`/sites/${TEST_REPO_NAME}/images`)
       cy.contains(IMAGE_TITLE) // image should be contained in album
       
@@ -263,15 +265,17 @@ describe('Images', () => {
     })
 
     it('Should be able to move image from Images to image album', () => {
-      cy.viewport(1500, 750) // increases viewport size to fit movedropdownmodal on screen 
-      // Set intercept to listen for POST request on server
-      cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/images/${IMAGE_TITLE}/move/${encodeURIComponent(`${SLUGIFIED_ALBUM_TITLE}/${IMAGE_TITLE}`)}`}).as('moveImage')
-
+      cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/images` }).as('createImage')
       cy.visit(`/sites/${TEST_REPO_NAME}/images`)
       cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH)
-      cy.moveMedia(IMAGE_TITLE, SLUGIFIED_ALBUM_TITLE)
-      cy.wait('@moveImage')  // should intercept POST request
+      cy.wait('@createImage')
 
+      // Set intercept to listen for POST request on server
+      cy.intercept({ method:'POST', url: `/v1/sites/${TEST_REPO_NAME}/images/${IMAGE_TITLE}/move/${encodeURIComponent(`${SLUGIFIED_ALBUM_TITLE}/${IMAGE_TITLE}`)}`}).as('moveImage')
+      cy.moveMedia(IMAGE_TITLE, SLUGIFIED_ALBUM_TITLE)
+      
+      // ASSERTS
+      cy.wait('@moveImage')  // should intercept POST request
       cy.visit(`/sites/${TEST_REPO_NAME}/images/${SLUGIFIED_ALBUM_TITLE}`)
       cy.contains(IMAGE_TITLE) // image should be contained in album
       
