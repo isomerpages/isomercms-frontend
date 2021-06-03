@@ -30,10 +30,10 @@ const FileMoveMenuDropdown = ({
     </button>
   )
 
-  const BreadcrumbButton = ({ name, idx }) => {
+  const BreadcrumbButton = ({ name, id, idx }) => {
     const newMoveDropdownQuery = moveDropdownQuery.split('/').slice(0, idx+1).join('/') // retrieves paths elements up to (excluding) element idx
     return (
-      <button className={`${elementStyles.breadcrumbText} ml-1`} type="button" onClick={(e) => {e.stopPropagation(); e.preventDefault(); setMoveDropdownQuery(newMoveDropdownQuery)}}>
+      <button id={id} className={`${elementStyles.breadcrumbText} ml-1`} type="button" onClick={(e) => {e.stopPropagation(); e.preventDefault(); setMoveDropdownQuery(newMoveDropdownQuery)}}>
         {name}
       </button>
     )
@@ -44,12 +44,12 @@ const FileMoveMenuDropdown = ({
       { moveDropdownQuery !== '' 
         ? 
           <>
-          <BreadcrumbButton name={moveDropdownQuery.split("/").length > 1 ? '...' : deslugifyDirectory(rootName)} idx={-1}/>
+          <BreadcrumbButton id="breadcrumbItem-0" name={moveDropdownQuery.split("/").length > 1 ? '...' : deslugifyDirectory(rootName)} idx={-1}/>
           { 
             moveDropdownQuery.split("/").map((folderName, idx, arr) => {
               return idx === arr.length - 1
               ? <> > <strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></>
-              : <> > <BreadcrumbButton idx={idx} name={ idx < arr.length - 2 ? '...' : deslugifyDirectory(folderName) }/></> // shorten all except the last link
+              : <> > <BreadcrumbButton id={`breadcrumbItem-${idx+1}`} idx={idx} name={ idx < arr.length - 2 ? '...' : deslugifyDirectory(folderName) }/></> // shorten all except the last link
             })
           }
           </>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { useQuery, useMutation } from 'react-query';
+import {useQuery, useMutation, useQueryClient} from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
 import Header from '../components/Header';
@@ -84,6 +84,9 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
   const [selectedPath, setSelectedPath] = useState('')
   const [moveDropdownQuery, setMoveDropdownQuery] = useState('')
   const [isMoveModalActive, setIsMoveModalActive] = useState(false)
+
+  // for invalidating cached query keys
+  const queryClient = useQueryClient()
 
   // re-initialize query whenever we navigate between folders and subfolder pages
   useEffect(() => {
@@ -218,6 +221,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
         setSelectedMedia(null)
         setSelectedPath('')
         setMoveDropdownQuery(initialMoveDropdownQueryState)
+        queryClient.removeQueries(`${siteName}/images/${(customPath===undefined?'':customPath+'/')}${selectedMedia.fileName}`)
       },
     }
   )
@@ -258,6 +262,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
         setIsDeleteModalActive(false)
         setIsMediaSettingsActive(false)
         setPendingMediaUpload(null)
+        queryClient.removeQueries(`${siteName}/images/${(customPath===undefined?'':customPath+'/')}${selectedMedia.fileName}`)
       },
     }
   )

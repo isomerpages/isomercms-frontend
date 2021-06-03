@@ -7,7 +7,7 @@ import SaveDeleteButtons from '../SaveDeleteButtons';
 
 import { validateMediaSettings } from '../../utils/validators';
 import {
-  DEFAULT_RETRY_MSG,
+  DEFAULT_RETRY_MSG, fetchImageURL,
 } from '../../utils'
 import { errorToast, successToast } from '../../utils/toasts';
 import { createMedia, renameMedia } from '../../api';
@@ -57,6 +57,7 @@ const MediaSettingsModal = ({
       },
       onSuccess: () => {
         successToast(`Successfully ${isPendingUpload ? `created new` : `renamed`} ${type.slice(0,-1)}!`)
+        queryClient.removeQueries(`${siteName}/images/${(customPath===undefined?'':customPath+'/')}${fileName}`)
         queryClient.invalidateQueries(type === 'images' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath])
       },
       onSettled: () => {
@@ -65,6 +66,12 @@ const MediaSettingsModal = ({
     }
   )
 
+  const {data: imageURL, status} = useQuery(`${siteName}/${media.path}`,
+      () => fetchImageURL(siteName, media.path, type === 'images'), {
+        refetchOnWindowFocus: false,
+        staleTime: Infinity // Never automatically refetch image unless query is invalidated
+      })
+
   return (
     <div className={elementStyles.overlay}>
       <div className={elementStyles.modal}>
@@ -72,7 +79,7 @@ const MediaSettingsModal = ({
           <h1>
             {isPendingUpload ? `Upload new ${type.slice(0,-1)}` : `Edit ${type.slice(0,-1)} details`}
           </h1>
-          <button type="button" onClick={onClose}>
+          <button type="button" id='closeMediaSettingsModal' onClick={onClose}>
             <i className="bx bx-x" />
           </button>
         </div>
@@ -83,9 +90,7 @@ const MediaSettingsModal = ({
                 alt={`${media.fileName}`}
                 src={isPendingUpload ? `data:image/png;base64,${media.content}`
                   : (
-                    `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${media.path}${media.path.endsWith('.svg')
-                      ? '?sanitize=true'
-                      : ''}`
+                        (status === 'success')?imageURL:'/placeholder_no_image.png'
                   )}
               />
             </div>

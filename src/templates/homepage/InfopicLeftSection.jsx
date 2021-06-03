@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {useQuery} from "react-query";
+import {fetchImageURL} from "../../utils";
 
 /* eslint
   react/no-array-index-key: 0
@@ -18,6 +20,13 @@ const TemplateInfopicLeftSection = ({
   const addDefaultSrc = (e) => {
     e.target.src = '/placeholder_no_image.png'
   }
+
+  const {data: loadedImageURL, status} = useQuery(`${siteName}/${imageUrl}`,
+      () => fetchImageURL(siteName, decodeURI(imageUrl)), {
+    refetchOnWindowFocus: false,
+    staleTime: Infinity // Never automatically refetch image unless query is invalidated
+  })
+
   return (
     <div ref={ref}>
       <section className={`bp-section ${(sectionIndex % 2 === 1) ? 'bg-newssection' : null}`}>
@@ -44,7 +53,7 @@ const TemplateInfopicLeftSection = ({
               </div>
             </div>
             <div className="col is-half">
-              <img onError={addDefaultSrc} src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
+              <img onError={addDefaultSrc} src={loadedImageURL} alt={imageAlt} />
             </div>
           </div>
           {/* For tablet */}
@@ -69,7 +78,7 @@ const TemplateInfopicLeftSection = ({
               </div>
             </div>
             <div className="col is-half is-half padding--top--xl padding--bottom--xl">
-              <img onError={addDefaultSrc} src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
+              <img onError={addDefaultSrc} src={loadedImageURL} alt={imageAlt} />
             </div>
           </div>
           {/* For desktop */}
@@ -94,7 +103,7 @@ const TemplateInfopicLeftSection = ({
               </div>
             </div>
             <div className="col is-half is-half padding--top--xl padding--bottom--xl">
-              <img onError={addDefaultSrc} src={`https://raw.githubusercontent.com/isomerpages/${siteName}/staging${imageUrl}`} alt={imageAlt} />
+              <img onError={addDefaultSrc} src={loadedImageURL} alt={imageAlt} />
             </div>
           </div>
         </div>
