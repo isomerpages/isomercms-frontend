@@ -120,6 +120,7 @@ const MediaCard = ({
             <button
               className={`${showDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
               type="button"
+              id={`${media.fileName}-settings-${mediaItemIndex}`}
               onClick={(e) => {
                 e.stopPropagation()
                 e.preventDefault()

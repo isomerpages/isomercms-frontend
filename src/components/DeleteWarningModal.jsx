@@ -23,6 +23,7 @@ const DeleteWarningModal = ({ onDelete, onCancel, type }) => (
             disabledStyle={elementStyles.disabled}
             className={elementStyles.warning}
             callback={onDelete}
+            id='delete-confirmation'
           />
           <button id="modal-cancel" className={elementStyles.blue} type="button" onClick={onCancel}>Cancel</button>
         </div>

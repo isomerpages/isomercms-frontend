@@ -79,7 +79,7 @@ const MediaSettingsModal = ({
           <h1>
             {isPendingUpload ? `Upload new ${type.slice(0,-1)}` : `Edit ${type.slice(0,-1)} details`}
           </h1>
-          <button type="button" onClick={onClose}>
+          <button type="button" id='closeMediaSettingsModal' onClick={onClose}>
             <i className="bx bx-x" />
           </button>
         </div>
