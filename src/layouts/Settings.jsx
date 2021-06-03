@@ -28,6 +28,7 @@ const stateFields = {
   shareicon: '',
   facebook_pixel: '',
   google_analytics: '',
+  linkedin_insights: '',
   is_government: '',
   colors: {
     'primary-color': '',
@@ -73,7 +74,7 @@ const stateFields = {
   },
 };
 
-const CONFIG_FIELDS = ['colors', 'favicon', 'facebook_pixel', 'google_analytics', 'is_government', 'shareicon', 'title']
+const CONFIG_FIELDS = ['colors', 'favicon', 'facebook_pixel', 'google_analytics', 'linkedin_insights', 'is_government', 'shareicon', 'title']
 const FOOTER_FIELDS = ['otherFooterSettings', 'socialMediaContent']
 const NAVIGATION_FIELDS = ['navigationSettings']
 
@@ -123,6 +124,7 @@ export default class Settings extends Component {
         favicon: configFieldsRequired.favicon,
         google_analytics: configFieldsRequired.google_analytics,
         facebook_pixel: configFieldsRequired.facebook_pixel,
+        linkedin_insights: configFieldsRequired.linkedin_insights,
         is_government: configFieldsRequired.is_government,
         // resources_name: configFieldsRequired.resources_name,
         // url: configFieldsRequired.url,
@@ -136,7 +138,11 @@ export default class Settings extends Component {
           show_reach: footerContent.show_reach,
         },
         socialMediaContent: {
-          ...footerContent.social_media,
+          facebook: footerContent.social_media.facebook,
+          twitter: footerContent.social_media.twitter,
+          youtube: footerContent.social_media.youtube,
+          instagram: footerContent.social_media.instagram,
+          linkedin: footerContent.social_media.linkedin,
         },
         // navigation fields
         navigationSettings: {
@@ -279,6 +285,7 @@ export default class Settings extends Component {
         favicon,
         facebook_pixel,
         google_analytics,
+        linkedin_insights,
         is_government,
         shareicon,
         title,
@@ -294,6 +301,7 @@ export default class Settings extends Component {
         favicon,
         facebook_pixel,
         google_analytics,
+        linkedin_insights,
         is_government,
         shareicon,
         title,
@@ -315,6 +323,8 @@ export default class Settings extends Component {
         if (CONFIG_FIELDS.includes(field)) {
           if (field === 'facebook_pixel') {
             configSettings['facebook-pixel'] = settingsStateDiff[field].obj1 // rename due to quirks on isomer template
+          } else if (field === 'linkedin_insights') {
+            configSettings['linkedin-insights'] = settingsStateDiff[field].obj1 // rename due to quirks on isomer template
           } else {
             configSettings[field] = settingsStateDiff[field].obj1
           }
@@ -452,6 +462,7 @@ export default class Settings extends Component {
       shareicon,
       facebook_pixel,
       google_analytics,
+      linkedin_insights,
       is_government,
       colors,
       socialMediaContent,
@@ -474,6 +485,7 @@ export default class Settings extends Component {
       favicon,
       facebook_pixel,
       google_analytics,
+      linkedin_insights,
       is_government,
       shareicon,
       title,
@@ -488,7 +500,7 @@ export default class Settings extends Component {
     }
 
     // retrieve errors
-    const hasConfigErrors = _.some([errors.favicon, errors.shareicon, errors.is_government, errors.facebook_pixel, errors.google_analytics]);
+    const hasConfigErrors = _.some([errors.favicon, errors.shareicon, errors.is_government, errors.facebook_pixel, errors.google_analytics, errors.linkedin_insights]);
     const hasNavigationErrors = _.some([errors.navigationSettings.logo])
     const hasColorErrors = _.some([errors.colors.primaryColor, errors.colors.secondaryColor]);
     const hasMediaColorErrors = _.some(errors.colors['media-colors'].map((mediaColor) => mediaColor.color));
@@ -601,6 +613,15 @@ export default class Settings extends Component {
                     id="google_analytics"
                     value={google_analytics}
                     errorMessage={errors.google_analytics}
+                    isRequired={false}
+                    onFieldChange={this.changeHandler}
+                  />
+                  <FormFieldHorizontal
+                    title="Linkedin Insights"
+                    placeholder="Linkedin Insights ID"
+                    id="linkedin_insights"
+                    value={linkedin_insights}
+                    errorMessage={errors.linkedin_insights}
                     isRequired={false}
                     onFieldChange={this.changeHandler}
                   />
