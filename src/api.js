@@ -287,26 +287,26 @@ const getMediaDetails = async ( {siteName, type, customPath, fileName} ) => {
     return resp.data
 }
 
-const createMedia = async ( {siteName, type, customPath, newFileName, content} ) => {
-    const params = {
-        content,
-    };
+// const createMedia = async ( {siteName, type, customPath, newFileName, content} ) => {
+//     const params = {
+//         content,
+//     };
 
-    if (type === 'images') {
-        params.imageName = newFileName;
-        params.imageDirectory = `images${customPath ? `/${customPath}` : ''}`;
-    } else {
-        params.documentName = newFileName;
-        params.documentDirectory = `files${customPath ? `/${customPath}` : ''}`;
-    }
+//     if (type === 'images') {
+//         params.imageName = newFileName;
+//         params.imageDirectory = `images${customPath ? `/${customPath}` : ''}`;
+//     } else {
+//         params.documentName = newFileName;
+//         params.documentDirectory = `files${customPath ? `/${customPath}` : ''}`;
+//     }
 
-    return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}`, params)
-}
+//     return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}`, params)
+// }
 
-const renameMedia = async ({siteName, type, customPath, fileName, newFileName}) => {
-    if (newFileName === fileName) return
-    return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}/${generateImageorFilePath(customPath, fileName)}/rename/${generateImageorFilePath(customPath, newFileName)}`);
-}
+// const renameMedia = async ({siteName, type, customPath, fileName, newFileName}) => {
+//     if (newFileName === fileName) return
+//     return await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${type === 'images' ? 'images' : 'documents'}/${generateImageorFilePath(customPath, fileName)}/rename/${generateImageorFilePath(customPath, newFileName)}`);
+// }
 
 const deleteMedia = async ({siteName, type, sha, customPath, fileName}) => {
     const params = {
@@ -368,8 +368,8 @@ export {
     moveFile,
     getMedia,
     getMediaDetails,
-    createMedia,
-    renameMedia,
+    // createMedia,
+    // renameMedia,
     deleteMedia,
     moveMedia,
     createMediaSubfolder,
