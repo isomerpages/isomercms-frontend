@@ -20,6 +20,8 @@ const getStyleSheet = (uniqueTitle) => {
       return sheet
     }
   }
+
+  return undefined
 }
 
 const createPageStyleSheet = (repoName, primaryColor, secondaryColor) => {
