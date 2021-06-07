@@ -283,10 +283,11 @@ export const getObjectDiff = (obj1, obj2) => {
   const difference = _.reduce(
     allkeys,
     function (result, key) {
+      const newResult = { ...result }
       if (!_.isEqual(obj1[key], obj2[key])) {
-        result[key] = { obj1: obj1[key], obj2: obj2[key] }
+        newResult[key] = { obj1: obj1[key], obj2: obj2[key] }
       }
-      return result
+      return newResult
     },
     {}
   )
