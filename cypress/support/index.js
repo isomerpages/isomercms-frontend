@@ -1,1 +1,1 @@
-import './medias'
+import "./medias"
