@@ -1,5 +1,4 @@
 import axios from "axios"
-import React from "react"
 
 import { DEFAULT_RETRY_MSG } from "../utils"
 import { errorToast } from "./toasts"
