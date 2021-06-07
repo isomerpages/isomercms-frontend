@@ -508,7 +508,7 @@ const validateSections = (sectionError, sectionType, field, value) => {
 const validateContactType = (contactType, value) => {
   let errorMessage = ""
   switch (contactType) {
-    case "title":
+    case "title": {
       if (value.length < CONTACT_TITLE_MIN_LENGTH) {
         errorMessage = `Title cannot be empty.`
       }
@@ -516,7 +516,8 @@ const validateContactType = (contactType, value) => {
         errorMessage = `Title should be shorter than ${CONTACT_TITLE_MAX_LENGTH} characters.`
       }
       break
-    case "phone":
+    }
+    case "phone": {
       const strippedValue = value.replace(/\s/g, "")
       if (strippedValue.includes("_")) {
         errorMessage = `Field not completed`
@@ -530,16 +531,19 @@ const validateContactType = (contactType, value) => {
         }
       }
       break
-    case "email":
+    }
+    case "email": {
       if (value && !emailRegexTest.test(value)) {
         errorMessage = `Emails should follow the format abc@def.gh and should not contain special characters such as: ?!#\\$% ` // TODO
       }
       break
-    case "other":
+    }
+    case "other": {
       if (value.length > CONTACT_DESCRIPTION_MAX_LENGTH) {
         errorMessage = `Description should be shorter than ${CONTACT_DESCRIPTION_MAX_LENGTH} characters.`
       }
       break
+    }
     default:
       break
   }
@@ -551,7 +555,7 @@ const validateContactType = (contactType, value) => {
 const validateLocationType = (locationType, value) => {
   let errorMessage = ""
   switch (locationType) {
-    case "title":
+    case "title": {
       // Title is too short
       if (value.length < LOCATION_TITLE_MIN_LENGTH) {
         errorMessage = `Title cannot be empty.`
@@ -561,10 +565,11 @@ const validateLocationType = (locationType, value) => {
         errorMessage = `Title should be shorter than ${LOCATION_TITLE_MAX_LENGTH} characters.`
       }
       break
+    }
     case "maps_link": {
       break
     }
-    case "address":
+    case "address": {
       const errors = []
       // check if in-between fields are empty e.g. field 3 is filled but field 2 is empty
       if (
@@ -587,8 +592,9 @@ const validateLocationType = (locationType, value) => {
       }
       errorMessage = errors
       break
+    }
     // fields below are operating hours fields
-    case "days":
+    case "days": {
       if (value && !alphabetsRegexTest.test(value)) {
         errorMessage += `Field should only contain alphabets. `
       }
@@ -599,6 +605,7 @@ const validateLocationType = (locationType, value) => {
         errorMessage += `Field should be shorter than ${LOCATION_OPERATING_DAYS_MAX_LENGTH} characters. `
       }
       break
+    }
     case "time": {
       if (value && !alphanumericRegexTest.test(value)) {
         errorMessage += `Field should only contain alphanumeric characters. `
