@@ -2,6 +2,180 @@ import React from "react"
 import _ from "lodash"
 import { deslugifyPage, deslugifyDirectory } from "../utils"
 
+const retrieveCurrentFileThirdNavTitle = (leftNavPages, fileName) => {
+  let currentFileThirdNavTitle = ""
+  leftNavPages.forEach((page) => {
+    if (fileName === page.fileName) {
+      if (page.third_nav_title) currentFileThirdNavTitle = page.third_nav_title
+    }
+  })
+  return currentFileThirdNavTitle
+}
+
+const calculateThirdNavHeaderState = (
+  currentFileThirdNavTitle,
+  currentThirdNavTitle,
+  currentElementThirdNavTitle,
+  fileName,
+  elementFileName
+) => {
+  if (currentFileThirdNavTitle !== currentThirdNavTitle) {
+    return ""
+    // The second condition is for elements in the same third nav as the current file
+  }
+  if (
+    fileName === elementFileName ||
+    currentThirdNavTitle === currentElementThirdNavTitle
+  ) {
+    return "is-active"
+  }
+  return undefined
+}
+
+const calculateThirdNavHeaderChevronState = (
+  currentFileThirdNavTitle,
+  currentThirdNavTitle,
+  currentElementThirdNavTitle,
+  fileName,
+  elementFileName
+) => {
+  if (currentFileThirdNavTitle !== currentThirdNavTitle) {
+    return "sgds-icon-chevron-down"
+  }
+  if (
+    fileName === elementFileName ||
+    currentThirdNavTitle === currentElementThirdNavTitle
+  ) {
+    return "sgds-icon-chevron-up"
+  }
+  return undefined
+}
+
+const calculateThirdNavElementState = (
+  currentFileThirdNavTitle,
+  currentThirdNavTitle,
+  currentElementThirdNavTitle,
+  fileName,
+  elementFileName
+) => {
+  if (currentThirdNavTitle === currentElementThirdNavTitle) {
+    if (fileName === elementFileName) {
+      return ""
+    }
+  }
+  if (currentFileThirdNavTitle === currentThirdNavTitle) return ""
+  return "is-hidden"
+}
+
+const accordionIconToggle = (accordionIconClass) => {
+  const upChevronIconClassName = "sgds-icon-chevron-up"
+  const downChevronIconClassName = "sgds-icon-chevron-down"
+
+  if (accordionIconClass.includes(upChevronIconClassName)) {
+    return accordionIconClass.replace(
+      upChevronIconClassName,
+      downChevronIconClassName
+    )
+  }
+  if (accordionIconClass.includes(downChevronIconClassName)) {
+    return accordionIconClass.replace(
+      downChevronIconClassName,
+      upChevronIconClassName
+    )
+  }
+  return undefined
+}
+
+const accordionElementToggle = (accordionElementClass) => {
+  const hiddenState = " is-hidden"
+  if (accordionElementClass.includes(hiddenState)) {
+    return accordionElementClass.replace(hiddenState, "")
+  }
+  return accordionElementClass + hiddenState
+}
+
+const accordionHandler = (e) => {
+  let accordionElement
+  if (e.target.className.includes("third-level-nav-header")) {
+    accordionElement = e.target.parentElement
+
+    // There are only two levels, the child element, third-level-nav-header, or the grandchild,
+    // the accordion icon
+  } else {
+    accordionElement = e.target.parentElement.parentElement
+  }
+
+  // Hierarchy is li > a > i
+  const accordionIcon = accordionElement.children[0].children[0]
+  accordionIcon.className = accordionIconToggle(accordionIcon.className)
+
+  accordionElement.nextSibling.className = accordionElementToggle(
+    accordionElement.nextSibling.className
+  )
+}
+
+const generateThirdNavDiv = (
+  currentFileThirdNavTitle,
+  thirdNavElements,
+  currentThirdNavTitle,
+  elementThirdNavTitle,
+  fileName,
+  elementFileName
+) => {
+  return thirdNavElements.length > 0 ? (
+    <div
+      key={`${currentThirdNavTitle}-div`}
+      className={`third-level-nav-div ${calculateThirdNavElementState(
+        currentFileThirdNavTitle,
+        currentThirdNavTitle,
+        elementThirdNavTitle,
+        fileName,
+        elementFileName
+      )}`}
+    >
+      {thirdNavElements.map((thirdNav) => thirdNav)}
+    </div>
+  ) : (
+    ""
+  )
+}
+
+const generateThirdNavHeader = (
+  currentFileThirdNavTitle,
+  currentThirdNavTitle,
+  elementThirdNavTitle,
+  fileName,
+  elementFileName
+) => (
+  <li
+    className="third-level-nav-header"
+    key={`${currentThirdNavTitle}-header`}
+    onClick={accordionHandler}
+  >
+    <a
+      className={`third-level-nav-header ${calculateThirdNavHeaderState(
+        currentFileThirdNavTitle,
+        currentThirdNavTitle,
+        elementThirdNavTitle,
+        fileName,
+        elementFileName
+      )}`}
+    >
+      {deslugifyDirectory(currentThirdNavTitle)}
+      <i
+        className={`sgds-icon is-pulled-right is-size-4 ${calculateThirdNavHeaderChevronState(
+          currentFileThirdNavTitle,
+          currentThirdNavTitle,
+          elementThirdNavTitle,
+          fileName,
+          elementFileName
+        )}`}
+        aria-hidden="true"
+      />
+    </a>
+  </li>
+)
+
 export const generateLeftNav = (leftNavPages, fileName) => {
   const currentFileThirdNavTitle = retrieveCurrentFileThirdNavTitle(
     leftNavPages,
@@ -158,174 +332,3 @@ export const generateLeftNav = (leftNavPages, fileName) => {
 
   return accordionElements
 }
-
-const retrieveCurrentFileThirdNavTitle = (leftNavPages, fileName) => {
-  let currentFileThirdNavTitle = ""
-  leftNavPages.forEach((page) => {
-    if (fileName == page.fileName) {
-      if (page.third_nav_title) currentFileThirdNavTitle = page.third_nav_title
-    }
-  })
-  return currentFileThirdNavTitle
-}
-
-const calculateThirdNavHeaderState = (
-  currentFileThirdNavTitle,
-  currentThirdNavTitle,
-  currentElementThirdNavTitle,
-  fileName,
-  elementFileName
-) => {
-  if (currentFileThirdNavTitle !== currentThirdNavTitle) {
-    return ""
-    // The second condition is for elements in the same third nav as the current file
-  }
-  if (
-    fileName === elementFileName ||
-    currentThirdNavTitle === currentElementThirdNavTitle
-  ) {
-    return "is-active"
-  }
-}
-
-const calculateThirdNavHeaderChevronState = (
-  currentFileThirdNavTitle,
-  currentThirdNavTitle,
-  currentElementThirdNavTitle,
-  fileName,
-  elementFileName
-) => {
-  if (currentFileThirdNavTitle !== currentThirdNavTitle) {
-    return "sgds-icon-chevron-down"
-  }
-  if (
-    fileName === elementFileName ||
-    currentThirdNavTitle === currentElementThirdNavTitle
-  ) {
-    return "sgds-icon-chevron-up"
-  }
-}
-
-const calculateThirdNavElementState = (
-  currentFileThirdNavTitle,
-  currentThirdNavTitle,
-  currentElementThirdNavTitle,
-  fileName,
-  elementFileName
-) => {
-  if (currentThirdNavTitle === currentElementThirdNavTitle) {
-    if (fileName === elementFileName) {
-      return ""
-    }
-  }
-  if (currentFileThirdNavTitle === currentThirdNavTitle) return ""
-  return "is-hidden"
-}
-
-const accordionIconToggle = (accordionIconClass) => {
-  const upChevronIconClassName = "sgds-icon-chevron-up"
-  const downChevronIconClassName = "sgds-icon-chevron-down"
-
-  if (accordionIconClass.includes(upChevronIconClassName)) {
-    return accordionIconClass.replace(
-      upChevronIconClassName,
-      downChevronIconClassName
-    )
-  }
-  if (accordionIconClass.includes(downChevronIconClassName)) {
-    return accordionIconClass.replace(
-      downChevronIconClassName,
-      upChevronIconClassName
-    )
-  }
-}
-
-const accordionElementToggle = (accordionElementClass) => {
-  const hiddenState = " is-hidden"
-  if (accordionElementClass.includes(hiddenState)) {
-    return accordionElementClass.replace(hiddenState, "")
-  }
-  return accordionElementClass + hiddenState
-}
-
-const accordionHandler = (e) => {
-  let accordionElement
-  if (e.target.className.includes("third-level-nav-header")) {
-    accordionElement = e.target.parentElement
-
-    // There are only two levels, the child element, third-level-nav-header, or the grandchild,
-    // the accordion icon
-  } else {
-    accordionElement = e.target.parentElement.parentElement
-  }
-
-  // Hierarchy is li > a > i
-  const accordionIcon = accordionElement.children[0].children[0]
-  accordionIcon.className = accordionIconToggle(accordionIcon.className)
-
-  accordionElement.nextSibling.className = accordionElementToggle(
-    accordionElement.nextSibling.className
-  )
-}
-
-const generateThirdNavDiv = (
-  currentFileThirdNavTitle,
-  thirdNavElements,
-  currentThirdNavTitle,
-  elementThirdNavTitle,
-  fileName,
-  elementFileName
-) => {
-  return thirdNavElements.length > 0 ? (
-    <div
-      key={`${currentThirdNavTitle}-div`}
-      className={`third-level-nav-div ${calculateThirdNavElementState(
-        currentFileThirdNavTitle,
-        currentThirdNavTitle,
-        elementThirdNavTitle,
-        fileName,
-        elementFileName
-      )}`}
-    >
-      {thirdNavElements.map((thirdNav) => thirdNav)}
-    </div>
-  ) : (
-    ""
-  )
-}
-
-const generateThirdNavHeader = (
-  currentFileThirdNavTitle,
-  currentThirdNavTitle,
-  elementThirdNavTitle,
-  fileName,
-  elementFileName
-) => (
-  <li
-    className="third-level-nav-header"
-    key={`${currentThirdNavTitle}-header`}
-    onClick={accordionHandler}
-  >
-    <a
-      className={`third-level-nav-header ${calculateThirdNavHeaderState(
-        currentFileThirdNavTitle,
-        currentThirdNavTitle,
-        elementThirdNavTitle,
-        fileName,
-        elementFileName
-      )}`}
-    >
-      {deslugifyDirectory(currentThirdNavTitle)}
-      <i
-        className={`sgds-icon is-pulled-right is-size-4 ${calculateThirdNavHeaderChevronState(
-          currentFileThirdNavTitle,
-          currentThirdNavTitle,
-          elementThirdNavTitle,
-          fileName,
-          elementFileName
-        )}`}
-        aria-hidden="true"
-      />
-    </a>
-  </li>
-)
