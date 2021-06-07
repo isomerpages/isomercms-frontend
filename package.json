@@ -48,6 +48,8 @@
     "test-e2e": "cypress run",
     "lint": "eslint --ext .js --ext .jsx --ignore-path .gitignore .",
     "lint-fix": "eslint --ext .js --ext .jsx --ignore-path .gitignore . --fix",
+    "format": "npx prettier --check .",
+    "format-fix": "npx prettier --write .",
     "cypress:open": "cypress open"
   },
   "eslintConfig": {
