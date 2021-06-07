@@ -20,5 +20,9 @@
       "react"
   ],
   "rules": {
+  },
+  "globals": {
+    "cy": "readonly",
+    "Cypress": "readonly"
   }
 }
