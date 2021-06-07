@@ -323,18 +323,14 @@ const getResourcePages = async (siteName, resourceName) => {
 
 // EditNavBar
 const getEditNavBarData = async (siteName) => {
-  let navContent
-  let collectionContent
-  let resourceContent
-  let navSha
   let foldersContent
 
   const resp = await axios.get(`${BACKEND_URL}/sites/${siteName}/navigation`)
   const { content, sha } = resp.data
-  navContent = content
-  navSha = sha
-  collectionContent = await getAllCategories({ siteName, isResource: false })
-  resourceContent = await getAllCategories({ siteName, isResource: true })
+  const navContent = content
+  const navSha = sha
+  const collectionContent = await getAllCategories({ siteName, isResource: false })
+  const resourceContent = await getAllCategories({ siteName, isResource: true })
   const foldersResp = await axios.get(
     `${BACKEND_URL}/sites/${siteName}/folders/all`
   )
