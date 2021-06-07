@@ -1,22 +1,19 @@
 // Supported CSP checks are img-src, frame-src, media-src, object-src script-src-elem
 // Supported fallbacks are child-src, script-src, and default-src
 
-import toml from "toml"
-import axios from "axios"
-import Policy from "csp-parse"
 import _ from "lodash"
 import cheerio from "cheerio"
 import escapeStringRegexp from "escape-string-regexp"
 import { isLinkInternal } from "../utils"
 
-function _stringContainsValue(string, value) {
+function stringContainsValue(string, value) {
   // regex checks specifically if value is preceded by whitespace or is at the start/ end of the string
   const VALUE_REGEX = `(\\s|^)${value}(\\s|$)`
   const ValueRegexTest = new RegExp(VALUE_REGEX)
   return ValueRegexTest.test(string)
 }
 
-function _toRegExp(string) {
+function toRegExp(string) {
   const strippedString = string.replace(/\/$/, "") // removes ending '/' from domains eg 'abc.com/'
   const escapedStrippedString = escapeStringRegexp(strippedString) // add escape characters
   const wildcardEscapedStrippedString = escapedStrippedString.replace(
@@ -28,8 +25,8 @@ function _toRegExp(string) {
 }
 
 /* Helper functions to check if elemSrc satisfies each CSP source specification: host-source, schema-source and 'self' */
-function _checkHostsourcePolicy(elemSrc, policy) {
-  if (_stringContainsValue(policy, "\\*")) return true
+function checkHostsourcePolicy(elemSrc, policy) {
+  if (stringContainsValue(policy, "\\*")) return true
 
   const specialValues = [
     "http:",
@@ -47,43 +44,43 @@ function _checkHostsourcePolicy(elemSrc, policy) {
     .filter((value) => !specialValues.includes(value))
 
   const hostsourcesSatisfied = hostsources.some((hostsource) =>
-    _toRegExp(hostsource).test(elemSrc)
+    toRegExp(hostsource).test(elemSrc)
   )
   return hostsourcesSatisfied
 }
 
-function _checkSchemasourcePolicy(elemSrc, policy) {
+function checkSchemasourcePolicy(elemSrc, policy) {
   const schemes = ["http:", "https:"]
   const dataSchemes = ["data:", "mediastream:", "blob:", "filesystem:"]
 
   const schemesSatisfied = schemes.some(
     (scheme) =>
-      _stringContainsValue(policy, scheme) && _.startsWith(elemSrc, scheme)
+      stringContainsValue(policy, scheme) && _.startsWith(elemSrc, scheme)
   )
   const dataSchemesSatisfied = dataSchemes.some(
     (dataScheme) =>
-      _stringContainsValue(policy, dataScheme) &&
+      stringContainsValue(policy, dataScheme) &&
       _.startsWith(elemSrc, dataScheme)
   )
   return schemesSatisfied || dataSchemesSatisfied
 }
 
-function _checkSelfPolicy(elemSrc, policy) {
-  return isLinkInternal(elemSrc) && _stringContainsValue(policy, "'self'")
+function checkSelfPolicy(elemSrc, policy) {
+  return isLinkInternal(elemSrc) && stringContainsValue(policy, "'self'")
 }
 
 /* Helper function to check if elemAttr satisfies CSP source specifications */
-function _elemAttrSatisfiesPolicies(elemAttr, policy) {
-  if (_stringContainsValue(policy, "'none'")) return false
+function elemAttrSatisfiesPolicies(elemAttr, policy) {
+  if (stringContainsValue(policy, "'none'")) return false
 
-  const selfSatisfied = _checkSelfPolicy(elemAttr, policy)
-  const schemasourceSatisfied = _checkSchemasourcePolicy(elemAttr, policy)
-  const hostsourceSatisfied = _checkHostsourcePolicy(elemAttr, policy)
+  const selfSatisfied = checkSelfPolicy(elemAttr, policy)
+  const schemasourceSatisfied = checkSchemasourcePolicy(elemAttr, policy)
+  const hostsourceSatisfied = checkHostsourcePolicy(elemAttr, policy)
   return selfSatisfied || schemasourceSatisfied || hostsourceSatisfied
 }
 
 /* Helper function to get resource policy from csp for given policyType */
-function _getResourcePolicy(cspPolicy, policyType) {
+function getResourcePolicy(cspPolicy, policyType) {
   const resourcePolicyMapping = {
     "frame-src": ["frame", "iframe"],
     "img-src": ["img"],
@@ -113,7 +110,7 @@ function _getResourcePolicy(cspPolicy, policyType) {
 }
 
 /* Helper function to check if resourcePolicyElems for a specific policyType satisfies CSP source specifications */
-function _checkResourcePolicyElems(
+function checkResourcePolicyElems(
   resourcePolicyElems,
   policy,
   { $, cspViolationArr }
@@ -122,7 +119,7 @@ function _checkResourcePolicyElems(
   resourcePolicyElems.forEach((elemType) => {
     $(elemType).each((i, elem) => {
       const checkAttr = elemType === "object" ? "data" : "src" // exception for object html: <object data='abc.html'></object>
-      if (!_elemAttrSatisfiesPolicies($(elem).attr(checkAttr), policy)) {
+      if (!elemAttrSatisfiesPolicies($(elem).attr(checkAttr), policy)) {
         $(elem).replaceWith(
           `<span style="color:#c91508"><br> Intended &lt${elemType}&gt content violates Content Security Policy and therefore could not be displayed. Isomer does not support display of any forbidden resources. </span>`
         )
@@ -134,7 +131,7 @@ function _checkResourcePolicyElems(
   return { $, cspViolationArr }
 }
 
-export function checkCSP(
+export default function checkCSP(
   cspPolicy,
   chunk,
   policyTypes = [
@@ -146,11 +143,11 @@ export function checkCSP(
   ]
 ) {
   const reducer = ({ $, cspViolationArr }, policyType) => {
-    const { resourcePolicy, resourcePolicyElems } = _getResourcePolicy(
+    const { resourcePolicy, resourcePolicyElems } = getResourcePolicy(
       cspPolicy,
       policyType
     )
-    return _checkResourcePolicyElems(resourcePolicyElems, resourcePolicy, {
+    return checkResourcePolicyElems(resourcePolicyElems, resourcePolicy, {
       $,
       cspViolationArr,
     })
