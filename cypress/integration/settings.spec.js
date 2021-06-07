@@ -118,7 +118,7 @@ describe("Settings page", () => {
     const shouldBeSelectedArr = []
     // Toggles the Masthead and Show Reach buttons and saves their expected states to reference later
     cy.get("input[type=checkbox]")
-      .each((element, index) => {
+      .each((element) => {
         shouldBeSelectedArr.push(`${!(element.val() === "true")}`)
         cy.wrap(element).parent().click({ force: true })
       })
@@ -164,6 +164,7 @@ describe("Settings page", () => {
 
   // [r, g, b] -> #RRGGBB
   function rgbToHex(r, g, b) {
+    // eslint-disable-next-line no-bitwise
     return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
   }
   it("Should change Primary and Secondary colors and have colors reflected on page previews", () => {
@@ -192,38 +193,38 @@ describe("Settings page", () => {
     cy.saveSettings()
 
     // Check if selected colors are reflected upon save
-    const rgb_primary = `rgb(${TEST_PRIMARY_COLOR.join(", ")})`
-    const hex_primary = rgbToHex(...TEST_PRIMARY_COLOR)
-    const rgb_secondary = `rgb(${TEST_SECONDARY_COLOR.join(", ")})`
-    const hex_secondary = rgbToHex(...TEST_SECONDARY_COLOR)
+    const rgbPrimary = `rgb(${TEST_PRIMARY_COLOR.join(", ")})`
+    const hexPrimary = rgbToHex(...TEST_PRIMARY_COLOR)
+    const rgbSecondary = `rgb(${TEST_SECONDARY_COLOR.join(", ")})`
+    const hexSecondary = rgbToHex(...TEST_SECONDARY_COLOR)
     cy.contains("p", "Primary")
       .siblings("input")
-      .should("have.value", hex_primary)
+      .should("have.value", hexPrimary)
     cy.contains("p", "Primary")
       .siblings("div")
-      .should("have.attr", "style", `background: ${rgb_primary};`)
+      .should("have.attr", "style", `background: ${rgbPrimary};`)
     cy.contains("p", "Secondary")
       .siblings("input")
-      .should("have.value", hex_secondary)
+      .should("have.value", hexSecondary)
     cy.contains("p", "Secondary")
       .siblings("div")
-      .should("have.attr", "style", `background: ${rgb_secondary};`)
+      .should("have.attr", "style", `background: ${rgbSecondary};`)
 
     // Check if page previews reflect color change
     cy.visitLoadSettings(`/sites/${TEST_REPO_NAME}/${SAMPLE_PAGE}`)
     cy.get("section.bp-section-pagetitle") // Page title banner
-      .should("have.css", "background-color", rgb_primary)
+      .should("have.css", "background-color", rgbPrimary)
 
     // Check if home page reflects color change
     cy.visit(`/sites/${TEST_REPO_NAME}/workspace`) // Somehow colors won't load on homepage if visiting directly
     cy.visitLoadSettings(`/sites/${TEST_REPO_NAME}/${HOMEPAGE}`)
     cy.get(".bp-notification")
       .first() // Notification bar
-      .should("have.css", "background-color", rgb_secondary)
+      .should("have.css", "background-color", rgbSecondary)
     cy.get(".bp-section")
       .first() // Hero section
-      .should("have.css", "background-color", rgb_primary)
-    cy.get("h1.has-text-secondary").should("have.css", "color", rgb_secondary)
+      .should("have.css", "background-color", rgbPrimary)
+    cy.get("h1.has-text-secondary").should("have.css", "color", rgbSecondary)
   })
 
   it("Should change Social Media links and have change reflected on save", () => {
