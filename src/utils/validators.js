@@ -653,6 +653,33 @@ const validateLink = (linkType, value) => {
   return errorMessage
 }
 
+// Resource Category Modal
+// ===================
+const validateCategoryName = (value, componentName, existingNames) => {
+  let errorMessage = ""
+
+  if (existingNames && existingNames.includes(slugifyCategory(value)))
+    errorMessage = `Another folder with the same name exists. Please choose a different name.`
+  else if (ISOMER_TEMPLATE_PROTECTED_DIRS.includes(slugifyCategory(value)))
+    errorMessage = `The name chosen is a protected folder name (${ISOMER_TEMPLATE_PROTECTED_DIRS.map(
+      (item) => `'${item}'`
+    ).join(", ")}). Please choose a different name.`
+  // Resource category is too short
+  else if (value.length < RESOURCE_CATEGORY_MIN_LENGTH) {
+    errorMessage = `The ${componentName} category should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`
+  }
+  // Resource category is too long
+  else if (value.length > RESOURCE_CATEGORY_MAX_LENGTH) {
+    errorMessage = `The ${componentName} category should be shorter than ${RESOURCE_CATEGORY_MAX_LENGTH} characters.`
+  }
+  // Resource category fails regex
+  else if (!resourceCategoryRegexTest.test(value)) {
+    errorMessage = `The ${componentName} category should not contain special characters such as: ?!#\\$%.`
+  }
+
+  return errorMessage
+}
+
 // Page Settings Modal
 // ===================
 const validatePageSettings = (id, value, folderOrderArray) => {
@@ -811,6 +838,26 @@ const validateResourceSettings = (id, value, folderOrderArray) => {
   return errorMessage
 }
 
+const validateFileName = (value) => {
+  if (!value.length) {
+    return "Please input the file name"
+  }
+
+  const fileNameArr = value.split(".")
+  if (fileNameArr.length !== 2) {
+    return "Invalid filename: filename can only contain one full stop and must follow the structure {name}.{extension}"
+  }
+  if (!fileNameExtensionRegexTest.test(fileNameArr[1])) {
+    return "Invalid filename: filename must end with a valid file extension (.JPG, .png, .pdf, etc.)"
+  }
+  if (fileNameArr[0] === "")
+    return "Invalid filename: please specify a filename"
+  if (!fileNameRegexTest.test(fileNameArr[0])) {
+    return "Invalid filename: filename must not contain any special characters"
+  }
+  return ""
+}
+
 // Media Settings Modal
 // ===================
 
@@ -836,33 +883,6 @@ const validateResourceRoomName = (value) => {
   return errorMessage
 }
 
-// Resource Category Modal
-// ===================
-const validateCategoryName = (value, componentName, existingNames) => {
-  let errorMessage = ""
-
-  if (existingNames && existingNames.includes(slugifyCategory(value)))
-    errorMessage = `Another folder with the same name exists. Please choose a different name.`
-  else if (ISOMER_TEMPLATE_PROTECTED_DIRS.includes(slugifyCategory(value)))
-    errorMessage = `The name chosen is a protected folder name (${ISOMER_TEMPLATE_PROTECTED_DIRS.map(
-      (item) => `'${item}'`
-    ).join(", ")}). Please choose a different name.`
-  // Resource category is too short
-  else if (value.length < RESOURCE_CATEGORY_MIN_LENGTH) {
-    errorMessage = `The ${componentName} category should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`
-  }
-  // Resource category is too long
-  else if (value.length > RESOURCE_CATEGORY_MAX_LENGTH) {
-    errorMessage = `The ${componentName} category should be shorter than ${RESOURCE_CATEGORY_MAX_LENGTH} characters.`
-  }
-  // Resource category fails regex
-  else if (!resourceCategoryRegexTest.test(value)) {
-    errorMessage = `The ${componentName} category should not contain special characters such as: ?!#\\$%.`
-  }
-
-  return errorMessage
-}
-
 // Settings page
 // ===================
 const validateSocialMedia = (value, id) => {
@@ -880,26 +900,6 @@ const validateSocialMedia = (value, id) => {
   }
 
   return errorMessage
-}
-
-const validateFileName = (value) => {
-  if (!value.length) {
-    return "Please input the file name"
-  }
-
-  const fileNameArr = value.split(".")
-  if (fileNameArr.length !== 2) {
-    return "Invalid filename: filename can only contain one full stop and must follow the structure {name}.{extension}"
-  }
-  if (!fileNameExtensionRegexTest.test(fileNameArr[1])) {
-    return "Invalid filename: filename must end with a valid file extension (.JPG, .png, .pdf, etc.)"
-  }
-  if (fileNameArr[0] === "")
-    return "Invalid filename: please specify a filename"
-  if (!fileNameRegexTest.test(fileNameArr[0])) {
-    return "Invalid filename: filename must not contain any special characters"
-  }
-  return ""
 }
 
 export {
