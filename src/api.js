@@ -11,7 +11,7 @@ axios.defaults.withCredentials = true
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
 const getDirectoryFile = async (siteName, folderName) => {
-  if (!folderName) return
+  if (!folderName) return undefined
   const resp = await axios.get(
     `${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`
   )
@@ -26,7 +26,7 @@ const setDirectoryFile = async (siteName, folderName, payload) => {
 }
 
 const getLastUpdated = async (siteName) => {
-  if (!siteName) return
+  if (!siteName) return undefined
   const resp = await axios.get(`${BACKEND_URL}/sites/${siteName}/lastUpdated`)
   const { lastUpdated } = resp.data
   return { lastUpdated }
@@ -137,7 +137,7 @@ const getEditPageData = async ({
   const resp = await axios.get(apiEndpoint)
   const { content: pageContent, sha: pageSha, resourceRoomName } = resp.data
 
-  if (!pageContent) return
+  if (!pageContent) return undefined
 
   return {
     pageContent,
@@ -304,7 +304,7 @@ const getAllResourceCategories = async (siteName) => {
 }
 
 const addResourceCategory = async (siteName, resourceName) => {
-  if (!resourceName) return
+  if (!resourceName) return undefined
   const params = { resourceName }
   return await axios.post(`${BACKEND_URL}/sites/${siteName}/resources`, params)
 }
@@ -315,7 +315,7 @@ const getPages = async ({ siteName }) => {
 }
 
 const getResourcePages = async (siteName, resourceName) => {
-  if (!resourceName) return
+  if (!resourceName) return undefined
   const apiEndpoint = `${BACKEND_URL}/sites/${siteName}/resources/${resourceName}`
   const resp = await axios.get(apiEndpoint)
   return resp.data
@@ -351,7 +351,7 @@ const getEditNavBarData = async (siteName) => {
     )
   }
 
-  if (!navContent) return
+  if (!navContent) return undefined
 
   return {
     navContent,
@@ -473,7 +473,7 @@ const renameMedia = async ({
   fileName,
   newFileName,
 }) => {
-  if (newFileName === fileName) return
+  if (newFileName === fileName) return undefined
   return await axios.post(
     `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${
       type === "images" ? "images" : "documents"
@@ -506,7 +506,7 @@ const moveMedia = async ({
   newCustomPath,
   fileName,
 }) => {
-  if (newCustomPath === oldCustomPath) return
+  if (newCustomPath === oldCustomPath) return undefined
   return await axios.post(
     `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${
       type === "images" ? "images" : "documents"
@@ -519,7 +519,7 @@ const moveMedia = async ({
 
 const createMediaSubfolder = async (siteName, mediaType, customPath) => {
   if ((mediaType !== "images" && mediaType !== "documents") || !customPath)
-    return
+    return undefined
   return await axios.post(
     `${
       process.env.REACT_APP_BACKEND_URL
@@ -546,7 +546,7 @@ const renameMediaSubfolder = async ({
 
 const deleteMediaSubfolder = async ({ siteName, mediaType, customPath }) => {
   if ((mediaType !== "images" && mediaType !== "documents") || !customPath)
-    return
+    return undefined
   return await axios.delete(
     `${
       process.env.REACT_APP_BACKEND_URL
