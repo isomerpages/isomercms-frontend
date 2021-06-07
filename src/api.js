@@ -329,7 +329,10 @@ const getEditNavBarData = async (siteName) => {
   const { content, sha } = resp.data
   const navContent = content
   const navSha = sha
-  const collectionContent = await getAllCategories({ siteName, isResource: false })
+  const collectionContent = await getAllCategories({
+    siteName,
+    isResource: false,
+  })
   const resourceContent = await getAllCategories({ siteName, isResource: true })
   const foldersResp = await axios.get(
     `${BACKEND_URL}/sites/${siteName}/folders/all`
