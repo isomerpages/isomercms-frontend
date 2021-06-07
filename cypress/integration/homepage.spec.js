@@ -1,3 +1,5 @@
+import { describe } from "@jest/globals"
+
 describe("Login flow", () => {
   const CMS_BASEURL = Cypress.env("BASEURL")
   const LOGIN_BUTTON_TEXT = "Login with GitHub"
