@@ -227,13 +227,16 @@ export function prettifyDate(date) {
 // note that {a: '', b: {c: ''}, d: [ {e: ''}, {f: [ {g: ''} ]} ]} returns true
 export function isEmpty(obj) {
   let isEmptyVal = true
-  for (const key in obj) {
-    if (typeof obj[key] === "object" && obj.hasOwnProperty(key)) {
+  Object.keys(obj).forEach((key) => {
+    if (
+      typeof obj[key] === "object" &&
+      Object.prototype.hasOwnProperty.call(obj, key)
+    ) {
       isEmptyVal = isEmptyVal && isEmpty(obj[key])
     } else if (obj[key] !== "" && obj[key] !== null) {
       isEmptyVal = false
     }
-  }
+  })
   return isEmptyVal
 }
 
