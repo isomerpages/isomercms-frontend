@@ -31,10 +31,10 @@ const retrieveThirdNavOptions = async (
       thirdNavOptions,
     }
   } catch (err) {
-    errorToast(
+    console.log(err)
+    return errorToast(
       `There was a problem trying to retrieve data from your repo. ${DEFAULT_RETRY_MSG}`
     )
-    console.log(err)
   }
 }
 

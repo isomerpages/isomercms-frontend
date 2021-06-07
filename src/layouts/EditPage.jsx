@@ -10,7 +10,7 @@ import Policy from 'csp-parse';
 import SimplePage from '../templates/SimplePage';
 import LeftNavPage from '../templates/LeftNavPage';
 
-import { checkCSP } from '../utils/cspUtils';
+import checkCSP from '../utils/cspUtils';
 import { successToast, errorToast } from '../utils/toasts';
 
 // Isomer components

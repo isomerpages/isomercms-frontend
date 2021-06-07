@@ -14,7 +14,7 @@ import DeleteWarningModal from '../components/DeleteWarningModal';
 import GenericWarningModal from '../components/GenericWarningModal';
 
 import { DEFAULT_RETRY_MSG, frontMatterParser, concatFrontMatterMdBody, isEmpty } from '../utils';
-import { sanitiseFrontMatter } from '../utils/contact-us/dataSanitisers';
+import sanitiseFrontMatter from '../utils/contact-us/dataSanitisers';
 import { validateFrontMatter } from '../utils/contact-us/validators';
 import { validateContactType, validateLocationType } from '../utils/validators';
 import { errorToast } from '../utils/toasts';
