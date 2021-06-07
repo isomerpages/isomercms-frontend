@@ -15,7 +15,7 @@ describe("Login flow", () => {
 
     // This is necessary to prevent the frontend from throwing the 401 error from the backend.
     // TODO: We should handle this properly in the axios interceptor.
-    cy.on("uncaught:exception", (err, runnable) => {
+    cy.on("uncaught:exception", () => {
       // returning false here prevents Cypress from failing the test
       return false
     })
