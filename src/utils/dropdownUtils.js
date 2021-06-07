@@ -6,7 +6,7 @@ import { errorToast } from "./toasts"
 // axios settings
 axios.defaults.withCredentials = true
 
-export const retrieveThirdNavOptions = async (
+const retrieveThirdNavOptions = async (
   siteName,
   collectionName,
   isExistingCollection
@@ -37,3 +37,5 @@ export const retrieveThirdNavOptions = async (
     console.log(err)
   }
 }
+
+export default retrieveThirdNavOptions
