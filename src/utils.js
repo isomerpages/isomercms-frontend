@@ -4,6 +4,9 @@ import cheerio from 'cheerio';
 import slugify from 'slugify';
 import axios from 'axios';
 import _ from 'lodash';
+import {getMediaDetails} from "./api";
+import {QueryClient} from "react-query";
+import {SITES_IS_PRIVATE_KEY} from "./constants";
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -59,18 +62,36 @@ export function isLinkInternal(url) {
 }
 
 // takes in a permalink and returns a URL that links to the image on the staging branch of the repo
-export function prependImageSrc(repoName, chunk) {
-  const $ = cheerio.load(chunk);
+export async function prependImageSrc(repoName, chunk) {
+  const $ = cheerio.load(chunk)
+  const imagePromises = []
+  const elementsToUpdate = []
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: Infinity // Never automatically refetch image unless query is invalidated
+      }
+    }
+  })
+
   $('img').each((i, elem) => {
     // check for whether the original image source is from within Github or outside of Github
     // only modify URL if it's a permalink on the website
     if (isLinkInternal($(elem).attr('src'))) {
-      $(elem).attr('src', `https://raw.githubusercontent.com/isomerpages/${repoName}/staging${$(elem).attr('src')}?raw=true`);
+      const filePath = $(elem).attr('src')
+      const imagePromise = queryClient.fetchQuery(`${repoName}/${filePath}`, () => fetchImageURL(repoName, filePath))
+      imagePromises.push(imagePromise)
+      elementsToUpdate.push(elem)
     }
     // change src to placeholder image if images not found
-    $(elem).attr('onerror', "this.onerror=null; this.src='/placeholder_no_image.png';") 
+    $(elem).attr('onerror', "this.onerror=null; this.src='/placeholder_no_image.png';")
   });
-  return $.html();
+
+  const imageURLs = await Promise.allSettled(imagePromises)
+  elementsToUpdate.forEach((elem, index) => {
+    $(elem).attr('src', imageURLs[index].value)
+  })
+  return $.html()
 }
 
 const monthMap = {
@@ -310,4 +331,61 @@ export const convertSubfolderArray = (folderOrderArray, rawFolderContents, subfo
 export const generateImageorFilePath = (customPath, fileName) => {
   if (customPath) return encodeURIComponent(`${customPath}/${fileName}`)
   return fileName
+}
+
+const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+  const byteCharacters = atob(b64Data);
+  const byteArrays = [];
+
+  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+    const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+
+  const blob = new Blob(byteArrays, {type: contentType});
+  return blob;
+}
+
+/**
+ * Checks if the current repo with siteName is private
+ * If repo is public, returns the raw GitHub image URL
+ * If repo is private, calls the backend image API endpoint to retrieve the b64 encoded image blob text and returns the blob URL
+ *
+ * @param {string} siteName - Name of Isomer page repo
+ * @param {string} filePath - File path of image in repo. Should be of the format '/images/folder/subfolder1/subfolder2.../imagename.ext'.
+ *    The leading '/' is optional. The filePath parameter should be URI decoded. Examples:
+ *    images/test-folder/image sample.png
+ *    /images/test.svg
+ *    /images/folder 1/folder2/folder3/names.jpg
+ * @param {boolean} shouldLoad - Specifies whether url should be generated or not. Images/documents in the Files tab should
+ *    should not have image URLs.
+ * @returns {Promise<string>}
+ */
+export async function fetchImageURL(siteName, filePath, shouldLoad = true) {
+  if (shouldLoad){
+    const cleanPath = filePath.replace(/^\//, '') //Remove leading / if it exists e.g. /images/example.png -> images/example.png
+    //If the image is public, return the link to the raw file, otherwise make a call to the backend API to retrieve the image blob
+    const isPrivate = JSON.parse(localStorage.getItem(SITES_IS_PRIVATE_KEY))[siteName]
+    if (!isPrivate) {
+      return `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${cleanPath}${cleanPath.endsWith('.svg') ? '?sanitize=true' : ''}`
+    } else {
+      const filePathArr = cleanPath.split('/')
+      const fileName = filePathArr[filePathArr.length - 1]
+      const customPath = filePathArr.slice(1, filePathArr.length - 1).join('%2F')
+      const {imageName, content} = await getMediaDetails({siteName, type: 'images', fileName, customPath})
+
+      const imageExt = imageName.slice(imageName.lastIndexOf('.') + 1)
+      const contentType = 'image/' + (imageExt === 'svg' ? 'svg+xml' : imageExt)
+
+      const blob = b64toBlob(content, contentType)
+      return URL.createObjectURL(blob)
+    }
+  }
 }

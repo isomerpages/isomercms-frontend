@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { useQuery, useMutation } from 'react-query';
+import {useQuery, useMutation, useQueryClient} from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
 import Header from '../components/Header';
@@ -10,10 +10,12 @@ import Sidebar from '../components/Sidebar';
 import FolderCard from '../components/FolderCard'
 import FolderOptionButton from '../components/folders/FolderOptionButton'
 import FolderNamingModal from '../components/FolderNamingModal'
+import GenericWarningModal from '../components/GenericWarningModal'
+import DeleteWarningModal from '../components/DeleteWarningModal';
 import MediaCard from '../components/media/MediaCard';
 import MediaSettingsModal from '../components/media/MediaSettingsModal';
 
-import { createMediaSubfolder, getMedia } from '../api';
+import { createMediaSubfolder, getMedia, moveMedia, deleteMedia } from '../api';
 import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from '../constants'
 
 import useRedirectHook from '../hooks/useRedirectHook';
@@ -62,16 +64,35 @@ const getPrevDirectoryName = (customPath, mediaType) => {
 }
 
 const Media = ({ match: { params: { siteName, customPath } }, location, mediaType }) => {
+  // set Move-To dropdown to start from current location of media
+  const initialMoveDropdownQueryState = customPath ? decodeURIComponent(customPath) : ''
+
   const [media, setMedia] = useState([])
   const [directories, setDirectories] = useState([])
   const [directoryNames, setDirectoryNames] = useState([])
   const [pendingMediaUpload, setPendingMediaUpload] = useState(null)
-  const [chosenMedia, setChosenMedia] = useState('')
   const [newFolderName, setNewFolderName] = useState('')
   const [errors, setErrors] = useState('')
   const [isCreateModalActive, setIsCreateModalActive] = useState(false)
   const { setRedirectToNotFound } = useRedirectHook()
 
+  const [isMediaSettingsActive, setIsMediaSettingsActive] = useState(false)
+  const [isDeleteModalActive, setIsDeleteModalActive] = useState(false)
+  
+  // for dropdown settings
+  const [selectedMedia, setSelectedMedia] = useState(null)
+  const [selectedPath, setSelectedPath] = useState('')
+  const [moveDropdownQuery, setMoveDropdownQuery] = useState('')
+  const [isMoveModalActive, setIsMoveModalActive] = useState(false)
+
+  // for invalidating cached query keys
+  const queryClient = useQueryClient()
+
+  // re-initialize query whenever we navigate between folders and subfolder pages
+  useEffect(() => {
+    setMoveDropdownQuery(initialMoveDropdownQueryState)
+  }, [customPath])
+  
   const { data: mediaData, refetch } = useQuery(
     mediaType === 'images' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath],
     () => getMedia(siteName, customPath ? decodeURIComponent(customPath): '', mediaNames[mediaType]),
@@ -103,7 +124,6 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
     }
   )
   
-
   useEffect(() => {
     let _isMounted = true
 
@@ -183,6 +203,70 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
     setErrors(errorMessage)
   }
 
+  // move file
+  const { mutateAsync: moveHandler } = useMutation(
+    async () => {
+      const { fileName } = selectedMedia
+      await moveMedia({ siteName, type: mediaNames[mediaType], oldCustomPath: customPath, newCustomPath: selectedPath, fileName})
+    },
+    {
+      onError: () => errorToast(`Your file could not be moved successfully. ${DEFAULT_RETRY_MSG}`),
+      onSuccess: (noChange) => {
+        if (noChange) return successToast('Page is already in this folder') 
+        successToast('Successfully moved file') 
+        refetch()
+      },
+      onSettled: () => {
+        setIsMoveModalActive((prevState) => !prevState)
+        setSelectedMedia(null)
+        setSelectedPath('')
+        setMoveDropdownQuery(initialMoveDropdownQueryState)
+        queryClient.removeQueries(`${siteName}/images/${(customPath===undefined?'':customPath+'/')}${selectedMedia.fileName}`)
+      },
+    }
+  )
+
+  // MOVE-TO Dropdown
+  // get folders for move-to dropdown
+  const { data: dropdownMediaData } = useQuery(
+    mediaType === 'images' ? [IMAGE_CONTENTS_KEY, moveDropdownQuery] : [DOCUMENT_CONTENTS_KEY, moveDropdownQuery],
+    async () => getMedia(siteName, moveDropdownQuery || '', mediaNames[mediaType]),
+    {
+      enabled: !!selectedMedia,
+      retry: false,
+      onError: () => errorToast(`The ${mediaType} data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
+    },
+  )
+
+  // MOVE-TO Dropdown utils
+  // parse responses from move-to queries
+  const getCategories = (dropdownMediaData) => {
+    if (!dropdownMediaData) return []
+    const { respDirectories } = dropdownMediaData
+    return respDirectories.map(directory => directory.name)
+  }
+
+  // Handling delete
+  const { mutateAsync: deleteHandler } = useMutation(
+    async () => {
+      const { sha, fileName } = selectedMedia
+      return await deleteMedia({ siteName, type: mediaNames[mediaType], sha, customPath, fileName })
+    },
+    {
+      onError: () => errorToast(`There was a problem trying to delete this ${mediaType.slice(0,-1)}. ${DEFAULT_RETRY_MSG}`),
+      onSuccess: () => {
+        successToast(`Successfully deleted ${mediaType.slice(0,-1)}!`)
+        refetch()
+      },
+      onSettled: () => {
+        setIsDeleteModalActive(false)
+        setIsMediaSettingsActive(false)
+        setPendingMediaUpload(null)
+        queryClient.removeQueries(`${siteName}/images/${(customPath===undefined?'':customPath+'/')}${selectedMedia.fileName}`)
+      },
+    }
+  )
+
   return (
     <>
       {
@@ -234,7 +318,7 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
                   decodeURIComponent(customPath).split("/").map((folderName, idx, arr) => {
                     return idx === arr.length - 1
                     ? <span> ><strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></span>
-                    : <span> ><Link to={`/sites/${siteName}/${mediaType}/${encodeURIComponent(arr.slice(0,idx+1))}`}><strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></Link></span>
+                    : <span> ><Link to={`/sites/${siteName}/${mediaType}/${encodeURIComponent(arr.slice(0,idx+1).join('/'))}`}><strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></Link></span>
                   })
                 }
               </span>
@@ -334,12 +418,23 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
                 {/* Media */}
                 {
                   media && media.length > 0
-                  ? media.map((media) => (
+                  ? media.map((media, mediaItemIndex) => (
                     <MediaCard
                       type={mediaNames[mediaType]}
+                      allCategories={getCategories(dropdownMediaData)}
                       media={media}
                       siteName={siteName}
-                      onClick={() => setChosenMedia(media)}
+                      mediaItemIndex={mediaItemIndex}
+                      setSelectedMedia={setSelectedMedia}
+                      setSelectedPath={setSelectedPath}
+                      showSettings={true}
+                      onClick={() => setIsMediaSettingsActive(true)}
+                      setIsMoveModalActive={setIsMoveModalActive}
+                      setIsDeleteModalActive={setIsDeleteModalActive}
+                      setIsMediaSettingsActive={setIsMediaSettingsActive}
+                      moveDropdownQuery={moveDropdownQuery}
+                      setMoveDropdownQuery={setMoveDropdownQuery}
+                      clearMoveDropdownQueryState={() => setMoveDropdownQuery(initialMoveDropdownQueryState)}
                       key={media.fileName}
                     />
                   )) : (
@@ -356,25 +451,27 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
         {/* main section ends here */}
       </div>
       {
-        chosenMedia
-        && (
+        isMediaSettingsActive && selectedMedia // existing media
+        && ( 
         <MediaSettingsModal
           type={mediaNames[mediaType]}
-          media={chosenMedia}
+          media={selectedMedia}
+          mediaFileNames={media.filter(media => media.fileName !== selectedMedia.fileName).map(media => media.fileName)}
           siteName={siteName}
           customPath={customPath}
           isPendingUpload={false}
-          onClose={() => setChosenMedia(null)}
-          onSave={() => setChosenMedia(null)}
+          onClose={() => {setIsMediaSettingsActive(false); setSelectedMedia(null);}}
+          onSave={() => {setIsMediaSettingsActive(false); setSelectedMedia(null);}}
         />
         )
       }
       {
-        pendingMediaUpload
+        pendingMediaUpload // new media
         && (
         <MediaSettingsModal
           type={mediaNames[mediaType]}
           media={pendingMediaUpload}
+          mediaFileNames={media.map(media => media.fileName)}
           siteName={siteName}
           customPath={customPath}
           // eslint-disable-next-line react/jsx-boolean-value
@@ -382,6 +479,29 @@ const Media = ({ match: { params: { siteName, customPath } }, location, mediaTyp
           onClose={() => setPendingMediaUpload(null)}
           onSave={() => setPendingMediaUpload(null)}
         />
+        )
+      }
+      {
+        isMoveModalActive && selectedMedia
+        && (
+          <GenericWarningModal
+            displayTitle="Warning"
+            displayText={`Moving ${mediaType} to a different folder might lead to user confusion. You may wish to change the permalinks for this ${mediaType.slice(0,-1)} afterwards.`}
+            onProceed={moveHandler}
+            onCancel={() => setIsMoveModalActive(false)}
+            proceedText="Continue"
+            cancelText="Cancel"
+          />
+        )
+      }
+      {
+        isDeleteModalActive && selectedMedia
+        && (
+          <DeleteWarningModal
+            onCancel={() => setIsDeleteModalActive(false)}
+            onDelete={deleteHandler}
+            type="image"
+          />
         )
       }
       {

@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {useQuery} from "react-query";
+import {fetchImageURL} from "../../utils";
 
 /* eslint
   react/no-array-index-key: 0
@@ -100,9 +102,16 @@ const TemplateHeroSection = ({
   dropdownIsActive,
   toggleDropdown,
 }, ref) => {
+
+  const {data: loadedImageURL, status} = useQuery(`${siteName}/${hero.background}`,
+      () => fetchImageURL(siteName, decodeURI(hero.background)), {
+    refetchOnWindowFocus: false,
+    staleTime: Infinity // Never automatically refetch image unless query is invalidated
+  })
+
   const heroStyle = {
     // See j08691's answer at https://stackoverflow.com/questions/21388712/background-size-doesnt-work
-    background: `url(https://raw.githubusercontent.com/isomerpages/${siteName}/staging${hero.background}) no-repeat center center/cover`,
+    background: `url(${loadedImageURL}) no-repeat center center/cover`,
   };
   return (
     <div ref={ref}>
