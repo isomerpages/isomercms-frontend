@@ -6,27 +6,27 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { DragDropContext } from 'react-beautiful-dnd';
 
-import { DEFAULT_RETRY_MSG, deslugifyDirectory, isEmpty } from '../utils';
-import { NAVIGATION_CONTENT_KEY } from '../constants'
-import { validateLink } from '../utils/validators';
-import { errorToast } from '../utils/toasts';
+import { DEFAULT_RETRY_MSG, deslugifyDirectory, isEmpty } from '@src/utils';
+import { NAVIGATION_CONTENT_KEY } from '@src/constants'
+import { validateLink } from '@utils/validators';
+import { errorToast } from '@utils/toasts';
 
-import useRedirectHook from '../hooks/useRedirectHook';
+import useRedirectHook from '@hooks/useRedirectHook';
 
-import Header from '../components/Header';
-import LoadingButton from '../components/LoadingButton';
-import DeleteWarningModal from '../components/DeleteWarningModal';
-import GenericWarningModal from '../components/GenericWarningModal';
-import NavSection from '../components/navbar/NavSection'
+import Header from '@components/Header';
+import LoadingButton from '@components/LoadingButton';
+import DeleteWarningModal from '@components/DeleteWarningModal';
+import GenericWarningModal from '@components/GenericWarningModal';
+import NavSection from '@components/navbar/NavSection'
 
-import TemplateNavBar from '../templates/NavBar'
+import TemplateNavBar from '@templates/NavBar'
 
-import '../styles/isomer-template.scss';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
+import '@styles/isomer-template.scss';
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import editorStyles from '@styles/isomer-cms/pages/Editor.module.scss';
 
 // Import API
-import { getEditNavBarData, updateNavBarData } from '../api';
+import { getEditNavBarData, updateNavBarData } from '@src/api';
 
 const RADIX_PARSE_INT = 10
 

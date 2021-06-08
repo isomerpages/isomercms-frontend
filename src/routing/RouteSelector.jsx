@@ -5,24 +5,24 @@ import {
 } from 'react-router-dom';
 
 // Layouts
-import Home from '../layouts/Home'
-import Sites from '../layouts/Sites';
-import Workspace from '../layouts/Workspace';
-import Folders from '../layouts/Folders';
-import EditPage from '../layouts/EditPage';
-import CategoryPages from '../layouts/CategoryPages';
-import Media from '../layouts/Media';
-import EditHomepage from '../layouts/EditHomepage';
-import EditContactUs from '../layouts/EditContactUs';
-import Resources from '../layouts/Resources';
-import EditNavBar from '../layouts/EditNavBar'
-import Settings from '../layouts/Settings';
-import NotFoundPage from '../components/NotFoundPage'
-import FallbackComponent from '../components/FallbackComponent'
+import Home from '@layouts/Home'
+import Sites from '@layouts/Sites';
+import Workspace from '@layouts/Workspace';
+import Folders from '@layouts/Folders';
+import EditPage from '@layouts/EditPage';
+import CategoryPages from '@layouts/CategoryPages';
+import Media from '@layouts/Media';
+import EditHomepage from '@layouts/EditHomepage';
+import EditContactUs from '@layouts/EditContactUs';
+import Resources from '@layouts/Resources';
+import EditNavBar from '@layouts/EditNavBar'
+import Settings from '@layouts/Settings';
+import NotFoundPage from '@components/NotFoundPage'
+import FallbackComponent from '@components/FallbackComponent'
 
 // ProtectedRoute component
-import ProtectedRoute from './ProtectedRoute'
-import RedirectIfLoggedInRoute from './RedirectIfLoggedInRoute'
+import ProtectedRoute from '@routing/ProtectedRoute'
+import RedirectIfLoggedInRoute from '@routing/RedirectIfLoggedInRoute'
 
 const ProtectedRouteWithProps = (props) => {
   return (

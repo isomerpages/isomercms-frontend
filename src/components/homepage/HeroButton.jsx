@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import FormField from '../FormField';
+import FormField from '@components/FormField';
 
 /* eslint
   react/no-array-index-key: 0

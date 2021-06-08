@@ -3,25 +3,25 @@ import PropTypes from 'prop-types';
 import { useQuery } from 'react-query';
 
 // Import components
-import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
-import CollectionPagesSection from '../components/CollectionPagesSection'
-import FolderCard from '../components/FolderCard'
-import FolderCreationModal from '../components/FolderCreationModal'
-import FolderOptionButton from '../components/folders/FolderOptionButton'
+import Header from '@components/Header';
+import Sidebar from '@components/Sidebar';
+import CollectionPagesSection from '@components/CollectionPagesSection'
+import FolderCard from '@components/FolderCard'
+import FolderCreationModal from '@components/FolderCreationModal'
+import FolderOptionButton from '@components/folders/FolderOptionButton'
 
 // Import styles
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
 
 // Import utils
-import {DEFAULT_RETRY_MSG, prettifyPageFileName, frontMatterParser} from '../utils';
-import { errorToast } from '../utils/toasts';
-import { getPages, getAllCategories, getEditPageData } from '../api';
-import { PAGE_CONTENT_KEY, FOLDERS_CONTENT_KEY } from '../constants'
+import {DEFAULT_RETRY_MSG, prettifyPageFileName, frontMatterParser} from '@src/utils';
+import { errorToast } from '@utils/toasts';
+import { getPages, getAllCategories, getEditPageData } from '@src/api';
+import { PAGE_CONTENT_KEY, FOLDERS_CONTENT_KEY } from '@src/constants'
 
 // Import hooks
-import useSiteColorsHook from '../hooks/useSiteColorsHook';
+import useSiteColorsHook from '@hooks/useSiteColorsHook';
 
 const CONTACT_US_TEMPLATE_LAYOUT = 'contact_us'
 

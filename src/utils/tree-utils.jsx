@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TreeBuilder from './tree-builder';
-import styles from '../styles/isomer-cms/pages/MenuEditor.module.scss';
+import styles from '@styles/isomer-cms/pages/MenuEditor.module.scss';
 
 /*
   Constructs a new FlattenedItem

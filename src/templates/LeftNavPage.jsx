@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import PageHeader from './pageComponents/PageHeader';
-import LeftNav from './pageComponents/LeftNav';
+import PageHeader from '@templates/pageComponents/PageHeader';
+import LeftNav from '@templates/pageComponents/LeftNav';
 import _ from 'lodash';
 
 const LeftNavPage = ({

@@ -7,11 +7,11 @@ import SimpleMDE from 'react-simplemde-editor';
 import marked from 'marked';
 import Policy from 'csp-parse';
 
-import SimplePage from '../templates/SimplePage';
-import LeftNavPage from '../templates/LeftNavPage';
+import SimplePage from '@templates/SimplePage';
+import LeftNavPage from '@templates/LeftNavPage';
 
-import checkCSP from '../utils/cspUtils';
-import { successToast, errorToast } from '../utils/toasts';
+import checkCSP from '@utils/cspUtils';
+import { successToast, errorToast } from '@utils/toasts';
 
 // Isomer components
 import {
@@ -24,7 +24,7 @@ import {
   prettifyDate,
   parseDirectoryFile,
   deslugifyDirectory,
-} from '../utils';
+} from '@src/utils';
 import {
   boldButton,
   italicButton,
@@ -36,29 +36,29 @@ import {
   orderedListButton,
   tableButton,
   guideButton,
-} from '../utils/markdownToolbar';
+} from '@utils/markdownToolbar';
 import {
   PAGE_CONTENT_KEY,
   DIR_CONTENT_KEY,
   CSP_CONTENT_KEY,
-} from '../constants'
+} from '@src/constants'
 import 'easymde/dist/easymde.min.css';
-import '../styles/isomer-template.scss';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
-import Header from '../components/Header';
-import DeleteWarningModal from '../components/DeleteWarningModal';
-import LoadingButton from '../components/LoadingButton';
-import HyperlinkModal from '../components/HyperlinkModal';
-import MediaModal from '../components/media/MediaModal';
-import MediaSettingsModal from '../components/media/MediaSettingsModal';
+import '@styles/isomer-template.scss';
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import editorStyles from '@styles/isomer-cms/pages/Editor.module.scss';
+import Header from '@components/Header';
+import DeleteWarningModal from '@components/DeleteWarningModal';
+import LoadingButton from '@components/LoadingButton';
+import HyperlinkModal from '@components/HyperlinkModal';
+import MediaModal from '@components/media/MediaModal';
+import MediaSettingsModal from '@components/media/MediaSettingsModal';
 
 // Import hooks
-import useSiteColorsHook from '../hooks/useSiteColorsHook';
-import useRedirectHook from '../hooks/useRedirectHook';
+import useSiteColorsHook from '@hooks/useSiteColorsHook';
+import useRedirectHook from '@hooks/useRedirectHook';
 
 // Import API
-import { getEditPageData, updatePageData, deletePageData, getCsp, getDirectoryFile } from '../api';
+import { getEditPageData, updatePageData, deletePageData, getCsp, getDirectoryFile } from '@src/api';
 
 // axios settings
 axios.defaults.withCredentials = true

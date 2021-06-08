@@ -1,5 +1,5 @@
 // Utils
-import { defaultSiteColors, getSiteColors, createPageStyleSheet } from '../utils/siteColorUtils';
+import { defaultSiteColors, getSiteColors, createPageStyleSheet } from '@utils/siteColorUtils';
 
 // Constants
 const LOCAL_STORAGE_SITE_COLORS = 'isomercms_colors'

@@ -103,23 +103,23 @@ jest.mock("../layouts/Workspace", () => {
   }
 })
 
-jest.mock("../layouts/Images", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div>{IMAGES_LAYOUT_TEXT}</div>
-    },
-  }
-})
+// jest.mock("../layouts/Images", () => {
+//   return {
+//     __esModule: true,
+//     default: () => {
+//       return <div>{IMAGES_LAYOUT_TEXT}</div>
+//     },
+//   }
+// })
 
-jest.mock("../layouts/Files", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div>{FILES_LAYOUT_TEXT}</div>
-    },
-  }
-})
+// jest.mock("../layouts/Files", () => {
+//   return {
+//     __esModule: true,
+//     default: () => {
+//       return <div>{FILES_LAYOUT_TEXT}</div>
+//     },
+//   }
+// })
 
 jest.mock("../layouts/EditPage", () => {
   return {

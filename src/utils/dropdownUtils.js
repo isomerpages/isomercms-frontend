@@ -1,7 +1,7 @@
 import axios from "axios"
 
-import { DEFAULT_RETRY_MSG } from "../utils"
-import { errorToast } from "./toasts"
+import { DEFAULT_RETRY_MSG } from "@src/utils"
+import { errorToast } from "@utils/toasts"
 
 // axios settings
 axios.defaults.withCredentials = true

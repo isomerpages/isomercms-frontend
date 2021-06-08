@@ -2,13 +2,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import { deslugifyPage } from '../../utils'
-import { MenuDropdown } from '../MenuDropdown'
-import FileMoveMenuDropdown from '../FileMoveMenuDropdown'
+import { deslugifyPage } from '@src/utils'
+import { MenuDropdown } from '@components/MenuDropdown'
+import FileMoveMenuDropdown from '@components/FileMoveMenuDropdown'
 
 // Import styles
-import elementStyles from '../../styles/isomer-cms/Elements.module.scss';
-import contentStyles from '../../styles/isomer-cms/pages/Content.module.scss';
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
 
 const FolderContentItem = ({
     folderContentItem,

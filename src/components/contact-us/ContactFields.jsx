@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import FormField from '../FormField';
-import InputMaskFormField from '../InputMaskFormField';
-import Dropdown from '../Dropdown';
+import FormField from '@components/FormField';
+import InputMaskFormField from '@components/InputMaskFormField';
+import Dropdown from '@components/Dropdown';
 import _ from 'lodash';
 
 const ContactFields = ({ 

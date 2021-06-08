@@ -5,8 +5,8 @@ import slugify from "slugify"
 import axios from "axios"
 import _ from "lodash"
 import { QueryClient } from "react-query"
-import { getMediaDetails } from "./api"
-import { SITES_IS_PRIVATE_KEY } from "./constants"
+import { getMediaDetails } from "@src/api"
+import { SITES_IS_PRIVATE_KEY } from "@src/constants"
 
 // axios settings
 axios.defaults.withCredentials = true

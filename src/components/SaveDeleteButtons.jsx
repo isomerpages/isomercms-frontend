@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import LoadingButton from './LoadingButton'
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import LoadingButton from '@components/LoadingButton'
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
 
 const SaveDeleteButtons = ({ saveLabel, deleteLabel, isDisabled, isSaveDisabled, isDeleteDisabled, hasDeleteButton, saveCallback, deleteCallback, isLoading }) => {
   const shouldDisableSave = (isSaveDisabled !== undefined) ? isSaveDisabled : isDisabled

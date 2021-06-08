@@ -9,23 +9,23 @@ import {
     FOLDERS_CONTENT_KEY,
     DIR_CONTENT_KEY,
     RESOURCE_CATEGORY_CONTENT_KEY,
-} from '../constants'
+} from '@src/constants'
 
-import { getEditPageData, deletePageData, getAllCategories, moveFile, getDirectoryFile } from '../api'
+import { getEditPageData, deletePageData, getAllCategories, moveFile, getDirectoryFile } from '@src/api'
 
-import { DEFAULT_RETRY_MSG, parseDirectoryFile, convertFolderOrderToArray } from '../utils'
+import { DEFAULT_RETRY_MSG, parseDirectoryFile, convertFolderOrderToArray } from '@src/utils'
 
 // Import components
-import OverviewCard from '../components/OverviewCard';
-import ComponentSettingsModal from './ComponentSettingsModal'
-import PageSettingsModal from './PageSettingsModal'
-import { errorToast, successToast } from '../utils/toasts';
-import DeleteWarningModal from '../components/DeleteWarningModal'
-import GenericWarningModal from '../components/GenericWarningModal'
+import OverviewCard from '@components/OverviewCard';
+import ComponentSettingsModal from '@components/ComponentSettingsModal'
+import PageSettingsModal from '@components/PageSettingsModal'
+import { errorToast, successToast } from '@utils/toasts';
+import DeleteWarningModal from '@components/DeleteWarningModal'
+import GenericWarningModal from '@components/GenericWarningModal'
 
 // Import styles
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
 
 
 // axios settings

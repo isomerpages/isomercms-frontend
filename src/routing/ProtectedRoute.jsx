@@ -3,7 +3,7 @@ import { Redirect, Route } from 'react-router-dom'
 import axios from 'axios'
 
 // Import contexts
-import { LoginConsumer } from '../contexts/LoginContext'
+import { LoginConsumer } from '@contexts/LoginContext'
 
 // axios settings
 axios.defaults.withCredentials = true

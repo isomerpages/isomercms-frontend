@@ -1,7 +1,7 @@
 import React from 'react';
-import { slugifyLower } from '../utils';
+import { slugifyLower } from '@src/utils';
 import PropTypes from 'prop-types';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
 
 const Dropdown = ({ 
   options, 

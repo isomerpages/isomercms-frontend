@@ -1,5 +1,5 @@
 import "cypress-file-upload"
-import { slugifyCategory, generateResourceFileName } from "../../src/utils"
+import { slugifyCategory, generateResourceFileName } from "@src/utils"
 
 describe("Resource category page", () => {
   Cypress.config("defaultCommandTimeout", 5000)

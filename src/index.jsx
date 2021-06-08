@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
-import './styles/index.scss';
+import '@styles/index.scss';
 import 'sgds-govtech/css/sgds.css';
-import App from './App';
+import App from '@src/App';
 
 if (process.env.REACT_APP_SENTRY_ENV === 'staging' || process.env.REACT_APP_SENTRY_ENV === 'production') {
   Sentry.init({

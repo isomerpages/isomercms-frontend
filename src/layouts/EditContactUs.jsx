@@ -6,32 +6,32 @@ import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { DragDropContext } from 'react-beautiful-dnd';
 
-import EditorSection from '../components/contact-us/Section';
-import Header from '../components/Header';
-import LoadingButton from '../components/LoadingButton';
-import FormField from '../components/FormField';
-import DeleteWarningModal from '../components/DeleteWarningModal';
-import GenericWarningModal from '../components/GenericWarningModal';
+import EditorSection from '@components/contact-us/Section';
+import Header from '@components/Header';
+import LoadingButton from '@components/LoadingButton';
+import FormField from '@components/FormField';
+import DeleteWarningModal from '@components/DeleteWarningModal';
+import GenericWarningModal from '@components/GenericWarningModal';
 
-import { DEFAULT_RETRY_MSG, frontMatterParser, concatFrontMatterMdBody, isEmpty } from '../utils';
-import sanitiseFrontMatter from '../utils/contact-us/dataSanitisers';
-import validateFrontMatter from '../utils/contact-us/validators';
-import { validateContactType, validateLocationType } from '../utils/validators';
-import { errorToast } from '../utils/toasts';
+import { DEFAULT_RETRY_MSG, frontMatterParser, concatFrontMatterMdBody, isEmpty } from '@src/utils';
+import sanitiseFrontMatter from '@utils/contact-us/dataSanitisers';
+import validateFrontMatter from '@utils/contact-us/validators';
+import { validateContactType, validateLocationType } from '@utils/validators';
+import { errorToast } from '@utils/toasts';
 
-import '../styles/isomer-template.scss';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
+import '@styles/isomer-template.scss';
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import editorStyles from '@styles/isomer-cms/pages/Editor.module.scss';
 
 
-import TemplateContactUsHeader from '../templates/contact-us/ContactUsHeader';
-import TemplateLocationsSection from '../templates/contact-us/LocationsSection'
-import TemplateContactsSection from '../templates/contact-us/ContactsSection'
-import TemplateFeedbackSection from '../templates/contact-us/FeedbackSection';
+import TemplateContactUsHeader from '@templates/contact-us/ContactUsHeader';
+import TemplateLocationsSection from '@templates/contact-us/LocationsSection'
+import TemplateContactsSection from '@templates/contact-us/ContactsSection'
+import TemplateFeedbackSection from '@templates/contact-us/FeedbackSection';
 
 // Import hooks
-import useSiteColorsHook from '../hooks/useSiteColorsHook';
-import useRedirectHook from '../hooks/useRedirectHook';
+import useSiteColorsHook from '@hooks/useSiteColorsHook';
+import useRedirectHook from '@hooks/useRedirectHook';
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */

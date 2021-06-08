@@ -3,24 +3,24 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useQueryClient, useMutation } from 'react-query';
 
-import FolderModal from './FolderModal';
-import DeleteWarningModal from './DeleteWarningModal'
-import { MenuDropdown } from './MenuDropdown'
+import FolderModal from '@components/FolderModal';
+import DeleteWarningModal from '@components/DeleteWarningModal'
+import { MenuDropdown } from '@components/MenuDropdown'
 
 import {
   deleteFolder,
   deleteResourceCategory,
   deleteMediaSubfolder,
-} from '../api'
+} from '@src/api'
 
 
-import { errorToast, successToast } from '../utils/toasts';
-import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY, FOLDERS_CONTENT_KEY, RESOURCE_ROOM_CONTENT_KEY } from '../constants';
+import { errorToast, successToast } from '@utils/toasts';
+import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY, FOLDERS_CONTENT_KEY, RESOURCE_ROOM_CONTENT_KEY } from '@src/constants';
 
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
 
-import { DEFAULT_RETRY_MSG } from '../utils'
+import { DEFAULT_RETRY_MSG } from '@src/utils'
 
 const FolderCard = ({
   displayText,

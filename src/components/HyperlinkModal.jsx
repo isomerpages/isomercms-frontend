@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import FormField from './FormField';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import SaveDeleteButtons from './SaveDeleteButtons';
+import FormField from '@components/FormField';
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import SaveDeleteButtons from '@components/SaveDeleteButtons';
 
 // axios settings
 axios.defaults.withCredentials = true

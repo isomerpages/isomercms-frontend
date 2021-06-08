@@ -4,14 +4,14 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 
-import FormField from './FormField';
-import FormFieldHorizontal from './FormFieldHorizontal';
-import ResourceFormFields from './ResourceFormFields';
-import SaveDeleteButtons from './SaveDeleteButtons';
-import { RESOURCE_ROOM_NAME_KEY, RESOURCE_CATEGORY_CONTENT_KEY } from '../constants'
+import FormField from '@components/FormField';
+import FormFieldHorizontal from '@components/FormFieldHorizontal';
+import ResourceFormFields from '@components/ResourceFormFields';
+import SaveDeleteButtons from '@components/SaveDeleteButtons';
+import { RESOURCE_ROOM_NAME_KEY, RESOURCE_CATEGORY_CONTENT_KEY } from '@src/constants'
 
-import useSiteUrlHook from '../hooks/useSiteUrlHook';
-import useRedirectHook from '../hooks/useRedirectHook';
+import useSiteUrlHook from '@hooks/useSiteUrlHook';
+import useRedirectHook from '@hooks/useRedirectHook';
 
 import {
   DEFAULT_RETRY_MSG,
@@ -21,14 +21,14 @@ import {
   concatFrontMatterMdBody,
   deslugifyDirectory,
   slugifyCategory,
-} from '../utils';
+} from '@src/utils';
 
-import { createPageData, updatePageData, renamePageData, getResourceRoomName } from '../api'
+import { createPageData, updatePageData, renamePageData, getResourceRoomName } from '@src/api'
 
-import { validateResourceSettings } from '../utils/validators';
-import { errorToast, successToast } from '../utils/toasts';
+import { validateResourceSettings } from '@utils/validators';
+import { errorToast, successToast } from '@utils/toasts';
 
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
 
 // axios settings
 axios.defaults.withCredentials = true

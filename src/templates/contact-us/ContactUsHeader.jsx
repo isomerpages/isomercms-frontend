@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Breadcrumb from '../pageComponents/Breadcrumb';
+import Breadcrumb from '@templates/pageComponents/Breadcrumb';
 
 
 const TemplateContactUsHeader = React.forwardRef(( { agencyName }, ref ) => (

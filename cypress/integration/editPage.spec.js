@@ -3,7 +3,7 @@ import {
   slugifyCategory,
   generateResourceFileName,
   generatePageFileName,
-} from "../../src/utils"
+} from "@src/utils"
 
 Cypress.config("baseUrl", Cypress.env("BASEURL"))
 Cypress.config("defaultCommandTimeout", 5000)

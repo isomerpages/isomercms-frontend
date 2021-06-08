@@ -1,6 +1,6 @@
 import React from "react"
 import _ from "lodash"
-import { deslugifyPage, deslugifyDirectory } from "../utils"
+import { deslugifyPage, deslugifyDirectory } from "@src/utils"
 
 const retrieveCurrentFileThirdNavTitle = (leftNavPages, fileName) => {
   let currentFileThirdNavTitle = ""

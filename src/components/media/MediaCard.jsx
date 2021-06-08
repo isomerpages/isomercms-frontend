@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { MenuDropdown } from '../MenuDropdown'
-import FileMoveMenuDropdown from '../FileMoveMenuDropdown'
+import { MenuDropdown } from '@components/MenuDropdown'
+import FileMoveMenuDropdown from '@components/FileMoveMenuDropdown'
 
-import mediaStyles from '../../styles/isomer-cms/pages/Media.module.scss';
-import {fetchImageURL} from "../../utils";
+import mediaStyles from '@styles/isomer-cms/pages/Media.module.scss';
+import {fetchImageURL} from "@src/utils";
 import {useQuery} from "react-query";
-import contentStyles from '../../styles/isomer-cms/pages/Content.module.scss';
+import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
 
 const MediaCard = ({
   type,

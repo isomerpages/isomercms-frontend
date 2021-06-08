@@ -5,8 +5,8 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { useMutation } from 'react-query';
 import update from 'immutability-helper';
 
-import { FolderContentItem } from './folders/FolderContent'
-import LoadingButton from '../components/LoadingButton';
+import { FolderContentItem } from '@components/folders/FolderContent'
+import LoadingButton from '@components/LoadingButton';
 
 import { 
   DEFAULT_RETRY_MSG,
@@ -14,17 +14,17 @@ import {
   convertSubfolderArray,
   updateDirectoryFile,
   convertArrayToFolderOrder,
-} from "../utils"
+} from "@src/utils"
 
-import { errorToast, successToast } from '../utils/toasts';
+import { errorToast, successToast } from '@utils/toasts';
 
-import { setDirectoryFile } from '../api'
+import { setDirectoryFile } from '@src/api'
   
 
 // Import styles
-import adminStyles from '../styles/isomer-cms/pages/Admin.module.scss';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
+import adminStyles from '@styles/isomer-cms/pages/Admin.module.scss';
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
 
 const FolderReorderingModal = ({
   siteName,

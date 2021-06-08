@@ -4,21 +4,20 @@ import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import update from 'immutability-helper';
 import { useMutation } from 'react-query';
-import Select from 'react-select';
 
-import FolderCard from './FolderCard';
-import LoadingButton from '../components/LoadingButton';
-import FolderNamingModal from './FolderNamingModal';
-import { errorToast } from '../utils/toasts';
-import useRedirectHook from '../hooks/useRedirectHook';
+import FolderCard from '@components/FolderCard';
+import LoadingButton from '@components/LoadingButton';
+import FolderNamingModal from '@components/FolderNamingModal';
+import { errorToast } from '@utils/toasts';
+import useRedirectHook from '@hooks/useRedirectHook';
 
-import { validateCategoryName } from '../utils/validators';
-import { deslugifyPage, slugifyCategory, DEFAULT_RETRY_MSG } from '../utils'
+import { validateCategoryName } from '@utils/validators';
+import { deslugifyPage, slugifyCategory, DEFAULT_RETRY_MSG } from '@src/utils'
 
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
-import adminStyles from '../styles/isomer-cms/pages/Admin.module.scss';
-import { moveFiles } from '../api';
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
+import adminStyles from '@styles/isomer-cms/pages/Admin.module.scss';
+import { moveFiles } from '@src/api';
 
 // axios settings
 axios.defaults.withCredentials = true

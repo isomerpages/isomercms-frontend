@@ -5,28 +5,28 @@ import { Link } from 'react-router-dom';
 import {useQuery, useMutation, useQueryClient} from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
-import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
-import FolderCard from '../components/FolderCard'
-import FolderOptionButton from '../components/folders/FolderOptionButton'
-import FolderNamingModal from '../components/FolderNamingModal'
-import GenericWarningModal from '../components/GenericWarningModal'
-import DeleteWarningModal from '../components/DeleteWarningModal';
-import MediaCard from '../components/media/MediaCard';
-import MediaSettingsModal from '../components/media/MediaSettingsModal';
+import Header from '@components/Header';
+import Sidebar from '@components/Sidebar';
+import FolderCard from '@components/FolderCard'
+import FolderOptionButton from '@components/folders/FolderOptionButton'
+import FolderNamingModal from '@components/FolderNamingModal'
+import GenericWarningModal from '@components/GenericWarningModal'
+import DeleteWarningModal from '@components/DeleteWarningModal';
+import MediaCard from '@components/media/MediaCard';
+import MediaSettingsModal from '@components/media/MediaSettingsModal';
 
-import { createMediaSubfolder, getMedia, moveMedia, deleteMedia } from '../api';
-import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from '../constants'
+import { createMediaSubfolder, getMedia, moveMedia, deleteMedia } from '@src/api';
+import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from '@src/constants'
 
-import useRedirectHook from '../hooks/useRedirectHook';
+import useRedirectHook from '@hooks/useRedirectHook';
 
-import { DEFAULT_RETRY_MSG, deslugifyDirectory, slugifyCategory } from '../utils';
-import { validateCategoryName } from '../utils/validators'
-import { errorToast, successToast } from '../utils/toasts';
+import { DEFAULT_RETRY_MSG, deslugifyDirectory, slugifyCategory } from '@src/utils';
+import { validateCategoryName } from '@utils/validators'
+import { errorToast, successToast } from '@utils/toasts';
 
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
-import mediaStyles from '../styles/isomer-cms/pages/Media.module.scss';
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
+import mediaStyles from '@styles/isomer-cms/pages/Media.module.scss';
 
 const mediaNames = {
   images: 'images',

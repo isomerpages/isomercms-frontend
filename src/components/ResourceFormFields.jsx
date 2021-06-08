@@ -1,7 +1,7 @@
 import React from 'react';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import FormField from './FormField'
-import FormFieldMedia from './FormFieldMedia';
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import FormField from '@components/FormField'
+import FormFieldMedia from '@components/FormFieldMedia';
 
 const ResourceFormFields = ({date, errors, changeHandler, onToggle, isPost, setIsPost, siteName, fileUrl}) => {
   const onToggleType = (e) => {

@@ -8,13 +8,13 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // Styles
-import elementStyles from './styles/isomer-cms/Elements.module.scss';
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
 
 // Import contexts
-import { LoginProvider } from './contexts/LoginContext'
+import { LoginProvider } from '@contexts/LoginContext'
 
 // Import route selector
-import { RouteSelector } from './routing/RouteSelector'
+import { RouteSelector } from '@routing/RouteSelector'
 
 // axios settings
 axios.defaults.withCredentials = true
