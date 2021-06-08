@@ -1,4 +1,4 @@
-@import '@styles/isomer-cms/elements/variable';
+@import "@styles/isomer-cms/elements/variable";
 
 @mixin single-site {
   margin-left: $site-margin-horizontal;
@@ -10,7 +10,7 @@
   border-radius: 5px;
 }
 
-.sitesContainer{
+.sitesContainer {
   width: 100%;
   box-sizing: border-box;
   display: flex;
@@ -19,18 +19,18 @@
   align-items: center;
   margin-top: 30px;
 
-  .sectionHeader{
+  .sectionHeader {
     width: $sites-container-width;
-    margin-left: $site-margin-horizontal*2;
+    margin-left: $site-margin-horizontal * 2;
 
-    .sectionTitle{
+    .sectionTitle {
       font-size: 28px;
       color: $isomer-blue;
       text-align: left;
     }
   }
 
-  .sites{
+  .sites {
     display: flex;
     flex-direction: rows;
     justify-content: flex-start;
@@ -43,7 +43,7 @@
       margin-left: $site-margin-horizontal;
     }
 
-    .siteContainer{
+    .siteContainer {
       // width: 33.33%;
       box-sizing: border-box;
       display: flex;
@@ -51,7 +51,7 @@
       justify-content: center;
       align-items: center;
 
-      .site{
+      .site {
         @include single-site;
         background: white;
         box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
@@ -59,16 +59,15 @@
         box-sizing: border-box;
         transition: transform 0.2s ease-in;
 
-        .siteImage{
+        .siteImage {
           height: 70%;
           width: 100%;
           background: grey;
           border-top-left-radius: 5px;
           border-top-right-radius: 5px;
-
         }
 
-        .siteDescription{
+        .siteDescription {
           height: 30%;
           width: 100%;
           display: flex;
@@ -77,27 +76,27 @@
           align-items: center;
           padding-left: 15px;
 
-          .siteName{
+          .siteName {
             width: 100%;
-            font-size: .9em;
+            font-size: 0.9em;
             color: $body-text;
             margin-bottom: 5px;
           }
 
-          .siteInfo{
+          .siteInfo {
             width: 100%;
             font-weight: 300;
             color: $body-grey;
-            font-size: .6em;
+            font-size: 0.6em;
           }
         }
 
-        &:hover{
+        &:hover {
           transform: translateY(-5px);
         }
       }
 
-      .createNew{
+      .createNew {
         @include single-site;
         border: 1px dashed $isomer-blue;
         box-sizing: border-box;
@@ -107,22 +106,20 @@
         align-items: center;
         color: $isomer-blue;
 
-         .bxPlusCircle{
-           font-size: 30px;
-           margin-bottom: 20px;
-         }
+        .bxPlusCircle {
+          font-size: 30px;
+          margin-bottom: 20px;
+        }
 
-         h2{
-           font-size: 18px;
-         }
+        h2 {
+          font-size: 18px;
+        }
 
-         &:hover{
-           background-color: white;
-           border: 1px solid $isomer-blue;
-         }
+        &:hover {
+          background-color: white;
+          border: 1px solid $isomer-blue;
+        }
       }
-
     }
   }
-
 }

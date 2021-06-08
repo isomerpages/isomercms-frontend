@@ -1,21 +1,16 @@
-import React from 'react';
+import React from "react"
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types"
 
-import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 
-import LoadingButton from '@components/LoadingButton';
-
+import LoadingButton from "@components/LoadingButton"
 
 const DeleteWarningModal = ({ onDelete, onCancel, type }) => (
   <div className={elementStyles.overlay}>
-    <div className={elementStyles['modal-warning']}>
+    <div className={elementStyles["modal-warning"]}>
       <div className={elementStyles.modalHeader}>
-        <h1>
-          Delete
-          {' '}
-          { type }
-        </h1>
+        <h1>Delete {type}</h1>
       </div>
       <form className={elementStyles.modalContent}>
         <p>Are you sure you want to delete this?</p>
@@ -26,19 +21,26 @@ const DeleteWarningModal = ({ onDelete, onCancel, type }) => (
             disabledStyle={elementStyles.disabled}
             className={elementStyles.warning}
             callback={onDelete}
-            id='delete-confirmation'
+            id="delete-confirmation"
           />
-          <button id="modal-cancel" className={elementStyles.blue} type="button" onClick={onCancel}>Cancel</button>
+          <button
+            id="modal-cancel"
+            className={elementStyles.blue}
+            type="button"
+            onClick={onCancel}
+          >
+            Cancel
+          </button>
         </div>
       </form>
     </div>
   </div>
-);
+)
 
 DeleteWarningModal.propTypes = {
   onDelete: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
-};
+}
 
-export default DeleteWarningModal;
+export default DeleteWarningModal

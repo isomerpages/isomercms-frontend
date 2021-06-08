@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react"
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types"
 
 export default function LoadingButton(props) {
   // extract props
@@ -12,29 +12,31 @@ export default function LoadingButton(props) {
     callback,
     showLoading,
     ...remainingProps
-  } = props;
+  } = props
 
   // track whether button is loading or not
-  const [isLoading, setButtonLoading] = React.useState(false);
+  const [isLoading, setButtonLoading] = React.useState(false)
 
   useEffect(() => {
     let _isMounted = true
 
     const runCallback = async () => {
       try {
-        await callback();
+        await callback()
       } catch (err) {
-        if (_isMounted) setButtonLoading(false);
+        if (_isMounted) setButtonLoading(false)
         throw err
       }
-      if (_isMounted) setButtonLoading(false);
+      if (_isMounted) setButtonLoading(false)
     }
 
     if (isLoading) {
       runCallback()
     }
 
-    return () => { _isMounted = false }
+    return () => {
+      _isMounted = false
+    }
   }, [isLoading])
 
   return (
@@ -46,12 +48,13 @@ export default function LoadingButton(props) {
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...remainingProps}
     >
-      {isLoading || showLoading
-        ? (
-          <div className="spinner-border text-primary" role="status" />
-        ) : label}
+      {isLoading || showLoading ? (
+        <div className="spinner-border text-primary" role="status" />
+      ) : (
+        label
+      )}
     </button>
-  );
+  )
 }
 
 LoadingButton.propTypes = {
@@ -61,8 +64,8 @@ LoadingButton.propTypes = {
   className: PropTypes.string.isRequired,
   callback: PropTypes.func.isRequired,
   showLoading: PropTypes.bool,
-};
+}
 
 LoadingButton.defaultProps = {
   disabled: false,
-};
+}

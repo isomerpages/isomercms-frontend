@@ -1,4 +1,4 @@
-@import '@styles/isomer-cms/elements/variable';
+@import "@styles/isomer-cms/elements/variable";
 
 //scrollbar
 /* width */
@@ -21,7 +21,7 @@
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: darken($base-background, 10%);
-}/* width */
+} /* width */
 ::-webkit-scrollbar {
   width: 5px;
 }

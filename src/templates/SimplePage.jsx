@@ -1,28 +1,44 @@
-import React from 'react';
+import React from "react"
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types"
 
-import PageHeader from '@templates/pageComponents/PageHeader';
+import PageHeader from "@templates/pageComponents/PageHeader"
 
 // This following template was taken from the 'Simple Page'
-const SimplePage = ({ chunk, title, date, collection, isResourcePage, resourceRoomName }) => (
+const SimplePage = ({
+  chunk,
+  title,
+  date,
+  collection,
+  isResourcePage,
+  resourceRoomName,
+}) => (
   <div>
-    <PageHeader title={title} date={date} collection={collection} resourceRoomName={resourceRoomName} isResourcePage={isResourcePage}/>
+    <PageHeader
+      title={title}
+      date={date}
+      collection={collection}
+      resourceRoomName={resourceRoomName}
+      isResourcePage={isResourcePage}
+    />
     <section className="bp-section">
       <div className="bp-container content padding--top--lg padding--bottom--xl">
         <div className="row">
           <div className="col is-8 is-offset-1-desktop is-12-touch print-content page-content-body">
-            <div className="content" dangerouslySetInnerHTML={{ __html: chunk }} />
+            <div
+              className="content"
+              dangerouslySetInnerHTML={{ __html: chunk }}
+            />
           </div>
         </div>
       </div>
     </section>
   </div>
-);
+)
 
 SimplePage.propTypes = {
   chunk: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-};
+}
 
-export default SimplePage;
+export default SimplePage

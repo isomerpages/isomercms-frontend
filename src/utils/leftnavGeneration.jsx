@@ -2,7 +2,7 @@ import React from "react"
 
 import _ from "lodash"
 
-import { deslugifyDirectory,deslugifyPage } from "@src/utils"
+import { deslugifyDirectory, deslugifyPage } from "@src/utils"
 
 const retrieveCurrentFileThirdNavTitle = (leftNavPages, fileName) => {
   let currentFileThirdNavTitle = ""
@@ -123,7 +123,8 @@ const generateThirdNavDiv = (
   elementThirdNavTitle,
   fileName,
   elementFileName
-) => thirdNavElements.length > 0 ? (
+) =>
+  thirdNavElements.length > 0 ? (
     <div
       key={`${currentThirdNavTitle}-div`}
       className={`third-level-nav-div ${calculateThirdNavElementState(

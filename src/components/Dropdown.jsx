@@ -1,44 +1,52 @@
-import React from 'react';
+import React from "react"
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types"
 
-import { slugifyLower } from '@src/utils';
+import { slugifyLower } from "@src/utils"
 
-import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 
-const Dropdown = ({ 
-  options, 
-  defaultOption, 
-  emptyDefault, 
+const Dropdown = ({
+  options,
+  defaultOption,
+  emptyDefault,
   name,
-  id, 
+  id,
   onFieldChange,
 }) => (
   <>
-    <select 
-      className={`${elementStyles.form} ${elementStyles.formHorizontal} ${elementStyles.formHorizontalInput}`} 
+    <select
+      className={`${elementStyles.form} ${elementStyles.formHorizontal} ${elementStyles.formHorizontalInput}`}
       name={name}
-      id={id} 
+      id={id}
       onChange={onFieldChange}
     >
-      { defaultOption &&
-        <option value={ emptyDefault ? '' : slugifyLower(defaultOption) } key={slugifyLower(defaultOption)}>{ defaultOption }</option>
-      }
-      { options
+      {defaultOption && (
+        <option
+          value={emptyDefault ? "" : slugifyLower(defaultOption)}
+          key={slugifyLower(defaultOption)}
+        >
+          {defaultOption}
+        </option>
+      )}
+      {options
         .filter((option) => option !== defaultOption)
-        .map((option) => ( <option value={ slugifyLower(option) } key={slugifyLower(option)}>{ option }</option> ))
-      }
+        .map((option) => (
+          <option value={slugifyLower(option)} key={slugifyLower(option)}>
+            {option}
+          </option>
+        ))}
     </select>
   </>
-);
+)
 
-export default Dropdown;
+export default Dropdown
 
 Dropdown.propTypes = {
-  options: PropTypes.arrayOf(PropTypes.string).isRequired, 
-  defaultOption: PropTypes.string, 
-  emptyDefault: PropTypes.bool, 
+  options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  defaultOption: PropTypes.string,
+  emptyDefault: PropTypes.bool,
   name: PropTypes.string,
-  id: PropTypes.string, 
+  id: PropTypes.string,
   onFieldChange: PropTypes.func.isRequired,
-};
+}

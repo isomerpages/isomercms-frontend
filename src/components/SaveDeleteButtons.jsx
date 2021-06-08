@@ -1,36 +1,50 @@
-import React from 'react';
+import React from "react"
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types"
 
-import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 
-import LoadingButton from '@components/LoadingButton'
+import LoadingButton from "@components/LoadingButton"
 
-const SaveDeleteButtons = ({ saveLabel, deleteLabel, isDisabled, isSaveDisabled, isDeleteDisabled, hasDeleteButton, saveCallback, deleteCallback, isLoading }) => {
-  const shouldDisableSave = (isSaveDisabled !== undefined) ? isSaveDisabled : isDisabled
-  const shouldDisableDelete = (isDeleteDisabled !== undefined) ? isDeleteDisabled : isDisabled
+const SaveDeleteButtons = ({
+  saveLabel,
+  deleteLabel,
+  isDisabled,
+  isSaveDisabled,
+  isDeleteDisabled,
+  hasDeleteButton,
+  saveCallback,
+  deleteCallback,
+  isLoading,
+}) => {
+  const shouldDisableSave =
+    isSaveDisabled !== undefined ? isSaveDisabled : isDisabled
+  const shouldDisableDelete =
+    isDeleteDisabled !== undefined ? isDeleteDisabled : isDisabled
   return (
     <div className={elementStyles.modalButtons}>
-      { hasDeleteButton
-        ? (
-          <LoadingButton
-            label={deleteLabel || 'Delete'}
-            disabled={shouldDisableDelete}
-            disabledStyle={elementStyles.disabled}
-            className={`ml-auto ${shouldDisableDelete ? elementStyles.disabled : elementStyles.warning}`}
-            callback={deleteCallback}
-            showLoading={isLoading}
-          />
-        ) : null}
+      {hasDeleteButton ? (
+        <LoadingButton
+          label={deleteLabel || "Delete"}
+          disabled={shouldDisableDelete}
+          disabledStyle={elementStyles.disabled}
+          className={`ml-auto ${
+            shouldDisableDelete ? elementStyles.disabled : elementStyles.warning
+          }`}
+          callback={deleteCallback}
+          showLoading={isLoading}
+        />
+      ) : null}
       <LoadingButton
-        label={saveLabel || 'Save'}
+        label={saveLabel || "Save"}
         disabled={shouldDisableSave}
         disabledStyle={elementStyles.disabled}
-        className={`${hasDeleteButton ? null : `ml-auto`} ${shouldDisableSave ? elementStyles.disabled : elementStyles.blue}`}
+        className={`${hasDeleteButton ? null : `ml-auto`} ${
+          shouldDisableSave ? elementStyles.disabled : elementStyles.blue
+        }`}
         callback={saveCallback}
         showLoading={isLoading}
       />
-      
     </div>
   )
 }
@@ -45,6 +59,6 @@ SaveDeleteButtons.propTypes = {
   saveCallback: PropTypes.func.isRequired,
   deleteCallback: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,
-};
+}
 
 export default SaveDeleteButtons

@@ -6,7 +6,7 @@
  * (https://github.com/sparksuite/simplemde-markdown-editor/blob/6abda7ab6
  * 8cc20f4aca870eb243747951b90ab04/src/js/simplemde.js) since EasyMDE is a
  * fork of SimpleMDE
-*/
+ */
 
 import {
   drawLink,
@@ -19,80 +19,80 @@ import {
   toggleOrderedList,
   toggleStrikethrough,
   toggleUnorderedList,
-} from 'easymde';
+} from "easymde"
 
 export const boldButton = {
-  name: 'bold',
+  name: "bold",
   action: toggleBold,
-  className: 'fa fa-bold',
-  title: 'Bold',
-};
+  className: "fa fa-bold",
+  title: "Bold",
+}
 
 export const italicButton = {
-  name: 'italic',
+  name: "italic",
   action: toggleItalic,
-  className: 'fa fa-italic',
-  title: 'Italic',
+  className: "fa fa-italic",
+  title: "Italic",
   default: true,
-};
+}
 
 export const strikethroughButton = {
-  name: 'strikethrough',
+  name: "strikethrough",
   action: toggleStrikethrough,
-  className: 'fa fa-strikethrough',
-  title: 'Strikethrough',
-};
+  className: "fa fa-strikethrough",
+  title: "Strikethrough",
+}
 
 export const headingButton = {
-  name: 'heading',
+  name: "heading",
   action: toggleHeadingSmaller,
-  className: 'fa fa-header',
-  title: 'Heading',
+  className: "fa fa-header",
+  title: "Heading",
   default: true,
-};
+}
 
 export const codeButton = {
-  name: 'code',
+  name: "code",
   action: toggleCodeBlock,
-  className: 'fa fa-code',
-  title: 'Code',
-};
+  className: "fa fa-code",
+  title: "Code",
+}
 
 export const quoteButton = {
-  name: 'quote',
+  name: "quote",
   action: toggleBlockquote,
-  className: 'fa fa-quote-left',
-  title: 'Quote',
+  className: "fa fa-quote-left",
+  title: "Quote",
   default: true,
-};
+}
 
 export const unorderedListButton = {
-  name: 'unordered-list',
+  name: "unordered-list",
   action: toggleUnorderedList,
-  className: 'fa fa-list-ul',
-  title: 'Generic List',
+  className: "fa fa-list-ul",
+  title: "Generic List",
   default: true,
-};
+}
 
 export const orderedListButton = {
-  name: 'ordered-list',
+  name: "ordered-list",
   action: toggleOrderedList,
-  className: 'fa fa-list-ol',
-  title: 'Numbered List',
+  className: "fa fa-list-ol",
+  title: "Numbered List",
   default: true,
-};
+}
 
 export const tableButton = {
-  name: 'table',
+  name: "table",
   action: drawTable,
-  className: 'fa fa-table',
-  title: 'Insert Table',
-};
+  className: "fa fa-table",
+  title: "Insert Table",
+}
 
 export const guideButton = {
-  name: 'guide',
-  action: 'https://simplemde.com/markdown-guide',
-  className: 'fa fa-question-circle',
-  title: 'Markdown Guide',
+  name: "guide",
+  action: "https://simplemde.com/markdown-guide",
+  className: "fa fa-question-circle",
+  title: "Markdown Guide",
   default: true,
-};
+}

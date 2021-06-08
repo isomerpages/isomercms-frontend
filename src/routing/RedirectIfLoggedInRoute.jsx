@@ -1,19 +1,24 @@
-import React from 'react';
-import { Redirect, Route } from 'react-router-dom'
+import React from "react"
+import { Redirect, Route } from "react-router-dom"
 
 // Import contexts
-const { LoginConsumer } = require('@contexts/LoginContext')
+const { LoginConsumer } = require("@contexts/LoginContext")
 
-export default function RedirectIfLoggedInRoute({ children, component: WrappedComponent, ...rest }) {
+export default function RedirectIfLoggedInRoute({
+  children,
+  component: WrappedComponent,
+  ...rest
+}) {
   return (
     <LoginConsumer>
-      { ({userId}) => (
+      {({ userId }) =>
         userId ? (
           <Redirect to="/sites" />
         ) : (
-          children || WrappedComponent && <Route {...rest} component={WrappedComponent}/>
+          children ||
+          (WrappedComponent && <Route {...rest} component={WrappedComponent} />)
         )
-      )}
+      }
     </LoginConsumer>
   )
 }

@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react"
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types"
 
-import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 
 const FormFieldHorizontal = ({
   title,
@@ -28,25 +28,24 @@ const FormFieldHorizontal = ({
         autoComplete="off"
         required={isRequired}
         disabled={disabled}
-        className={`${elementStyles.formHorizontalInput} ${errorMessage ? `${elementStyles.error}` : null}`}
+        className={`${elementStyles.formHorizontalInput} ${
+          errorMessage ? `${elementStyles.error}` : null
+        }`}
         style={style}
         onChange={onFieldChange}
       />
     </div>
-    {
-      errorMessage 
-      ? (
-        <>
-                <span className={elementStyles.error}>{errorMessage}</span>
+    {errorMessage ? (
+      <>
+        <span className={elementStyles.error}>{errorMessage}</span>
         <br />
         <br />
-        </>
-      ) : null
-    }
+      </>
+    ) : null}
   </>
-);
+)
 
-export default FormFieldHorizontal;
+export default FormFieldHorizontal
 
 FormFieldHorizontal.propTypes = {
   title: PropTypes.string.isRequired,
@@ -58,9 +57,9 @@ FormFieldHorizontal.propTypes = {
   onFieldChange: PropTypes.func.isRequired,
   isRequired: PropTypes.bool.isRequired,
   style: PropTypes.string,
-};
+}
 
 FormFieldHorizontal.defaultProps = {
   defaultValue: undefined,
   style: undefined,
-};
+}

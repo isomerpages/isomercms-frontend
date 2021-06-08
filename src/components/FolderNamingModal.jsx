@@ -1,12 +1,12 @@
-import React from 'react';
+import React from "react"
 
-import * as _ from 'lodash';
-import PropTypes from 'prop-types';
+import * as _ from "lodash"
+import PropTypes from "prop-types"
 
-import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 
-import FormField from '@components/FormField';
-import LoadingButton from '@components/LoadingButton';
+import FormField from "@components/FormField"
+import LoadingButton from "@components/LoadingButton"
 
 const FolderNamingModal = ({
   onClose,
@@ -17,10 +17,11 @@ const FolderNamingModal = ({
   folderType,
   proceedText,
 }) => {
-  const capitalizedFolderType = folderType.charAt(0).toUpperCase() + folderType.slice(1)
+  const capitalizedFolderType =
+    folderType.charAt(0).toUpperCase() + folderType.slice(1)
 
-  return (         
-    <div className={elementStyles['modal-newfolder']}>
+  return (
+    <div className={elementStyles["modal-newfolder"]}>
       <div className={elementStyles.modalHeader}>
         <h1>{`Create new ${folderType}`}</h1>
         <button id="settings-CLOSE" type="button" onClick={onClose}>
@@ -28,9 +29,7 @@ const FolderNamingModal = ({
         </button>
       </div>
       <div className={elementStyles.modalContent}>
-        <div>
-          {`You may edit ${folderType} name anytime.`}
-        </div>
+        <div>{`You may edit ${folderType} name anytime.`}</div>
         <div className={elementStyles.modalFormFields}>
           {/* Title */}
           <FormField
@@ -45,9 +44,11 @@ const FolderNamingModal = ({
         <div className={elementStyles.modalButtons}>
           <LoadingButton
             label={proceedText}
-            disabled={!!((errors || !title))}
+            disabled={!!(errors || !title)}
             disabledStyle={elementStyles.disabled}
-            className={(errors || !title) ? elementStyles.disabled : elementStyles.blue}
+            className={
+              errors || !title ? elementStyles.disabled : elementStyles.blue
+            }
             callback={onProceed}
           />
         </div>
@@ -64,4 +65,4 @@ FolderNamingModal.propTypes = {
   folderNameChangeHandler: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   errors: PropTypes.string,
-};
+}

@@ -1,4 +1,4 @@
-import { generateResourceFileName,slugifyCategory } from "@src/utils"
+import { generateResourceFileName, slugifyCategory } from "@src/utils"
 
 import "cypress-file-upload"
 

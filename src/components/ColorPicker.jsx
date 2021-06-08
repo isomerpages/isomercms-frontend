@@ -1,28 +1,24 @@
-import React, { useState } from 'react';
-import { SketchPicker } from 'react-color';
+import React, { useState } from "react"
+import { SketchPicker } from "react-color"
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types"
 
-import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 
-const ColorPicker = ({
-  value,
-  onColorSelect,
-  setRealTimeColor,
-}) => {
+const ColorPicker = ({ value, onColorSelect, setRealTimeColor }) => {
   // initiate selectedColor as color passed in as props
-  const [selectedColor, setSelectedColor] = useState(value);
+  const [selectedColor, setSelectedColor] = useState(value)
   const handleColorSelect = (color, event) => {
-    setSelectedColor(color);
-    setRealTimeColor(color);
-  };
+    setSelectedColor(color)
+    setRealTimeColor(color)
+  }
 
   return (
     <>
       <form
         className={elementStyles.colorModal}
         id="colorModal"
-        onSubmit={(event) => (onColorSelect(event, selectedColor))}
+        onSubmit={(event) => onColorSelect(event, selectedColor)}
       >
         <SketchPicker
           width={250}
@@ -31,16 +27,18 @@ const ColorPicker = ({
           onChange={handleColorSelect}
         />
         {/* Confirm color selection with button */}
-        <button className={elementStyles.modalButtons} type="submit">Select</button>
+        <button className={elementStyles.modalButtons} type="submit">
+          Select
+        </button>
       </form>
     </>
-  );
-};
+  )
+}
 
-export default ColorPicker;
+export default ColorPicker
 
 ColorPicker.propTypes = {
   value: PropTypes.string.isRequired,
   onColorSelect: PropTypes.func.isRequired,
   setRealTimeColor: PropTypes.func.isRequired,
-};
+}

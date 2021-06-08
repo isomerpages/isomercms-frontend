@@ -1,25 +1,30 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useMutation,useQueryClient } from 'react-query';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from "react"
+import { useMutation, useQueryClient } from "react-query"
+import { Link } from "react-router-dom"
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types"
 
 import {
   deleteFolder,
   deleteMediaSubfolder,
   deleteResourceCategory,
-} from '@src/api'
-import { DOCUMENT_CONTENTS_KEY, FOLDERS_CONTENT_KEY, IMAGE_CONTENTS_KEY, RESOURCE_ROOM_CONTENT_KEY } from '@src/constants';
-import { DEFAULT_RETRY_MSG } from '@src/utils'
+} from "@src/api"
+import {
+  DOCUMENT_CONTENTS_KEY,
+  FOLDERS_CONTENT_KEY,
+  IMAGE_CONTENTS_KEY,
+  RESOURCE_ROOM_CONTENT_KEY,
+} from "@src/constants"
+import { DEFAULT_RETRY_MSG } from "@src/utils"
 
-import { errorToast, successToast } from '@utils/toasts';
+import { errorToast, successToast } from "@utils/toasts"
 
-import elementStyles from '@styles/isomer-cms/Elements.module.scss';
-import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
 
-import DeleteWarningModal from '@components/DeleteWarningModal'
-import FolderModal from '@components/FolderModal';
-import { MenuDropdown } from '@components/MenuDropdown'
+import DeleteWarningModal from "@components/DeleteWarningModal"
+import FolderModal from "@components/FolderModal"
+import { MenuDropdown } from "@components/MenuDropdown"
 
 const FolderCard = ({
   displayText,
@@ -38,82 +43,91 @@ const FolderCard = ({
   const queryClient = useQueryClient()
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
   const [canShowDropdown, setCanShowDropdown] = useState(false)
-  const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
+  const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(
+    false
+  )
   const dropdownRef = useRef(null)
 
   useEffect(() => {
     if (canShowDropdown) dropdownRef.current.focus()
   }, [canShowDropdown])
-  
+
   const generateLink = () => {
-    switch(pageType) {
-      case 'homepage': 
+    switch (pageType) {
+      case "homepage":
         return `/sites/${siteName}/homepage`
-      case 'collection':
+      case "collection":
         return `/sites/${siteName}/folder/${category}`
-      case 'resources':
+      case "resources":
         return `/sites/${siteName}/resources/${category}`
-      case 'contact-us':
+      case "contact-us":
         return `/sites/${siteName}/contact-us`
-      case 'nav':
+      case "nav":
         return `/sites/${siteName}/navbar`
-      case 'images':
-      case 'documents':
+      case "images":
+      case "documents":
         return `/sites/${siteName}/${linkPath}`
       default:
-        return ''
+        return ""
     }
   }
 
   const generateImage = (pageType) => {
-    switch(pageType) {
-      case 'homepage':
-        return 'bxs-home-circle'
-      case 'contact-us':
-        return 'bxs-phone'
-      case 'nav':
-        return 'bxs-compass'
-      case 'file':
-        return 'bxs-file-blank'
-      default: 
-        return 'bxs-folder'
+    switch (pageType) {
+      case "homepage":
+        return "bxs-home-circle"
+      case "contact-us":
+        return "bxs-phone"
+      case "nav":
+        return "bxs-compass"
+      case "file":
+        return "bxs-file-blank"
+      default:
+        return "bxs-folder"
     }
   }
 
   const getFolderType = (pageType) => {
-    switch(pageType) {
-      case 'collection':
-        return 'page'
-      case 'images':
-        return 'images'
-      case 'documents':
-        return 'documents'
+    switch (pageType) {
+      case "collection":
+        return "page"
+      case "images":
+        return "images"
+      case "documents":
+        return "documents"
       default:
-        return 'resources'
+        return "resources"
     }
   }
 
-  const selectDeleteApiCall = (pageType, siteName, category, mediaCustomPath) => {
+  const selectDeleteApiCall = (
+    pageType,
+    siteName,
+    category,
+    mediaCustomPath
+  ) => {
     let params
-    switch(pageType) {
-      case 'collection':
+    switch (pageType) {
+      case "collection":
         params = {
           siteName,
           folderName: category,
         }
         return deleteFolder(params)
-      case 'resources':
+      case "resources":
         params = {
           siteName,
           categoryName: category,
         }
         return deleteResourceCategory(params)
-      case 'images':
-      case 'documents':
+      case "images":
+      case "documents":
         params = {
           siteName,
           mediaType: pageType,
-          customPath: `${mediaCustomPath ? `${mediaCustomPath}/` : ''}${category}`,
+          customPath: `${
+            mediaCustomPath ? `${mediaCustomPath}/` : ""
+          }${category}`,
         }
         return deleteMediaSubfolder(params)
     }
@@ -123,75 +137,105 @@ const FolderCard = ({
   const { mutateAsync: deleteDirectory } = useMutation(
     () => selectDeleteApiCall(pageType, siteName, category, mediaCustomPath),
     {
-      onError: () => errorToast(`There was a problem trying to delete this folder. ${DEFAULT_RETRY_MSG}`),
+      onError: () =>
+        errorToast(
+          `There was a problem trying to delete this folder. ${DEFAULT_RETRY_MSG}`
+        ),
       onSuccess: () => {
         if (pageType === "resources") {
           // Resource folder
           queryClient.invalidateQueries([RESOURCE_ROOM_CONTENT_KEY, siteName])
         } else if (pageType === "collection") {
           // Collection folder
-          queryClient.invalidateQueries([FOLDERS_CONTENT_KEY, { siteName, isResource: false }])
+          queryClient.invalidateQueries([
+            FOLDERS_CONTENT_KEY,
+            { siteName, isResource: false },
+          ])
         } else if (pageType === "images") {
           queryClient.invalidateQueries([IMAGE_CONTENTS_KEY, mediaCustomPath])
         } else if (pageType === "documents") {
-          queryClient.invalidateQueries([DOCUMENT_CONTENTS_KEY, mediaCustomPath])
+          queryClient.invalidateQueries([
+            DOCUMENT_CONTENTS_KEY,
+            mediaCustomPath,
+          ])
         }
         setCanShowDeleteWarningModal(false)
         successToast(`Successfully deleted folder!`)
       },
-    },
+    }
   )
 
-  const FolderCardContent = () =>
+  const FolderCardContent = () => (
     <div id={itemIndex} className={`${contentStyles.folderInfo}`}>
-      <i className={`bx bx-md text-dark ${generateImage(pageType)} ${contentStyles.componentIcon}`} />
-      <span className={`${contentStyles.componentFolderName} align-self-center ml-4 mr-auto`}>{displayText}</span>
-      {
-        pageType === 'homepage' || pageType === 'contact-us' || pageType === 'nav' || pageType === 'file'
-        ? ''
-        : (
-          <div className="position-relative mt-auto mb-auto">
-            <button
-              className={`${canShowDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
-              type="button"
-              id={`settings-folder-${itemIndex}`}
-              onClick={(e) => {
-                e.preventDefault();
-                settingsToggle(e);
-                setCanShowDropdown(true)
-              }}
-            >
-              <i id={`settingsIcon-${itemIndex}`} className="bx bx-dots-vertical-rounded" />
-            </button>
-            { canShowDropdown &&
-              <MenuDropdown 
-                dropdownItems={[
-                  {
-                    type: "edit",
-                    handler: () => setIsFolderModalOpen(true),
-                  },
-                  {
-                    type: 'delete',
-                    handler: () => setCanShowDeleteWarningModal(true)
-                  },
-                ]}
-                dropdownRef={dropdownRef}
-                menuIndex={itemIndex}
-                tabIndex={2}
-                onBlur={()=>setCanShowDropdown(false)}
-              />
-            }
-          </div>
-        )
-      }
+      <i
+        className={`bx bx-md text-dark ${generateImage(pageType)} ${
+          contentStyles.componentIcon
+        }`}
+      />
+      <span
+        className={`${contentStyles.componentFolderName} align-self-center ml-4 mr-auto`}
+      >
+        {displayText}
+      </span>
+      {pageType === "homepage" ||
+      pageType === "contact-us" ||
+      pageType === "nav" ||
+      pageType === "file" ? (
+        ""
+      ) : (
+        <div className="position-relative mt-auto mb-auto">
+          <button
+            className={`${
+              canShowDropdown
+                ? contentStyles.optionsIconFocus
+                : contentStyles.optionsIcon
+            }`}
+            type="button"
+            id={`settings-folder-${itemIndex}`}
+            onClick={(e) => {
+              e.preventDefault()
+              settingsToggle(e)
+              setCanShowDropdown(true)
+            }}
+          >
+            <i
+              id={`settingsIcon-${itemIndex}`}
+              className="bx bx-dots-vertical-rounded"
+            />
+          </button>
+          {canShowDropdown && (
+            <MenuDropdown
+              dropdownItems={[
+                {
+                  type: "edit",
+                  handler: () => setIsFolderModalOpen(true),
+                },
+                {
+                  type: "delete",
+                  handler: () => setCanShowDeleteWarningModal(true),
+                },
+              ]}
+              dropdownRef={dropdownRef}
+              menuIndex={itemIndex}
+              tabIndex={2}
+              onBlur={() => setCanShowDropdown(false)}
+            />
+          )}
+        </div>
+      )}
     </div>
+  )
 
   return (
     <>
-      { isFolderModalOpen &&
+      {isFolderModalOpen && (
         <FolderModal
-          displayTitle={pageType === 'collection' ? 'Rename Folder' : 'Rename Category'}
-          displayText={pageType === 'collection' ? 'Folder name' : "Category name"}
+          displayTitle={
+            pageType === "collection" ? "Rename Folder" : "Rename Category"
+          }
+          displayText={
+            pageType === "collection" ? "Folder name" : "Category name"
+          }
           onClose={() => setIsFolderModalOpen(false)}
           folderOrCategoryName={category}
           siteName={siteName}
@@ -199,30 +243,36 @@ const FolderCard = ({
           existingFolders={existingFolders}
           mediaCustomPath={mediaCustomPath}
         />
-      }
-      { canShowDeleteWarningModal &&
+      )}
+      {canShowDeleteWarningModal && (
         <DeleteWarningModal
           onCancel={() => setCanShowDeleteWarningModal(false)}
           onDelete={deleteDirectory}
           type="folder"
         />
-      }
-      {generateLink() 
-        ? 
-          <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard}`} to={generateLink()}>
-            {FolderCardContent()}
-          </Link>
-        :
-        <div className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard} ${selectedIndex ? `border border-primary` : ''}`} onClick={onClick}>
+      )}
+      {generateLink() ? (
+        <Link
+          className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard}`}
+          to={generateLink()}
+        >
           {FolderCardContent()}
-          { selectedIndex &&
+        </Link>
+      ) : (
+        <div
+          className={`${contentStyles.component} ${contentStyles.card} ${
+            elementStyles.folderCard
+          } ${selectedIndex ? `border border-primary` : ""}`}
+          onClick={onClick}
+        >
+          {FolderCardContent()}
+          {selectedIndex && (
             <div className={elementStyles.orderCircleContainer}>
               <div className={elementStyles.orderCircle}>{selectedIndex}</div>
             </div>
-          }
-          
+          )}
         </div>
-      }
+      )}
     </>
   )
 }
@@ -236,6 +286,6 @@ FolderCard.propTypes = {
   category: PropTypes.string,
   linkPath: PropTypes.string,
   mediaCustomPath: PropTypes.string,
-};
+}
 
-export default FolderCard;
+export default FolderCard

@@ -1,36 +1,53 @@
-import React, { useState } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import React, { useState } from "react"
+import { useMutation, useQueryClient } from "react-query"
 
-import axios from 'axios';
-import PropTypes from 'prop-types';
+import axios from "axios"
+import PropTypes from "prop-types"
 
 import {
   renameFolder,
   renameMediaSubfolder,
   renameResourceCategory,
   renameSubfolder,
-} from '@src/api'
-import { DIR_CONTENT_KEY, DOCUMENT_CONTENTS_KEY, FOLDERS_CONTENT_KEY, IMAGE_CONTENTS_KEY, RESOURCE_ROOM_CONTENT_KEY } from '@src/constants';
+} from "@src/api"
+import {
+  DIR_CONTENT_KEY,
+  DOCUMENT_CONTENTS_KEY,
+  FOLDERS_CONTENT_KEY,
+  IMAGE_CONTENTS_KEY,
+  RESOURCE_ROOM_CONTENT_KEY,
+} from "@src/constants"
 import {
   DEFAULT_RETRY_MSG,
   deslugifyDirectory,
   slugifyCategory,
-} from '@src/utils'
+} from "@src/utils"
 
-import { errorToast, successToast } from '@utils/toasts';
-import { validateCategoryName } from '@utils/validators'
+import { errorToast, successToast } from "@utils/toasts"
+import { validateCategoryName } from "@utils/validators"
 
-import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 
-import FormField from '@components/FormField';
-import SaveDeleteButtons from '@components/SaveDeleteButtons';
+import FormField from "@components/FormField"
+import SaveDeleteButtons from "@components/SaveDeleteButtons"
 
 // axios settings
 axios.defaults.withCredentials = true
 
-const selectRenameApiCall = (folderType, siteName, folderOrCategoryName, subfolderName, newDirectoryName, mediaCustomPath) => {
-  if (slugifyCategory(newDirectoryName) === subfolderName || slugifyCategory(newDirectoryName) === folderOrCategoryName ) return
-  if (folderType === 'page' && !subfolderName) {
+const selectRenameApiCall = (
+  folderType,
+  siteName,
+  folderOrCategoryName,
+  subfolderName,
+  newDirectoryName,
+  mediaCustomPath
+) => {
+  if (
+    slugifyCategory(newDirectoryName) === subfolderName ||
+    slugifyCategory(newDirectoryName) === folderOrCategoryName
+  )
+    return
+  if (folderType === "page" && !subfolderName) {
     const params = {
       siteName,
       folderName: folderOrCategoryName,
@@ -39,7 +56,7 @@ const selectRenameApiCall = (folderType, siteName, folderOrCategoryName, subfold
     return renameFolder(params)
   }
 
-  if (folderType === 'page' && subfolderName) {
+  if (folderType === "page" && subfolderName) {
     const params = {
       siteName,
       folderName: folderOrCategoryName,
@@ -49,7 +66,7 @@ const selectRenameApiCall = (folderType, siteName, folderOrCategoryName, subfold
     return renameSubfolder(params)
   }
 
-  if (folderType === 'resources') {
+  if (folderType === "resources") {
     const params = {
       siteName,
       categoryName: folderOrCategoryName,
@@ -58,7 +75,7 @@ const selectRenameApiCall = (folderType, siteName, folderOrCategoryName, subfold
     return renameResourceCategory(params)
   }
 
-  if (folderType === 'images' || folderType === 'documents') {
+  if (folderType === "images" || folderType === "documents") {
     const params = {
       siteName,
       mediaType: folderType,
@@ -70,52 +87,90 @@ const selectRenameApiCall = (folderType, siteName, folderOrCategoryName, subfold
   }
 }
 
-const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName, subfolderName, siteName, folderType, existingFolders, mediaCustomPath }) => {
+const FolderModal = ({
+  displayTitle,
+  displayText,
+  onClose,
+  folderOrCategoryName,
+  subfolderName,
+  siteName,
+  folderType,
+  existingFolders,
+  mediaCustomPath,
+}) => {
   // Instantiate queryClient
   const queryClient = useQueryClient()
-  const [newDirectoryName, setNewDirectoryName] = useState(deslugifyDirectory(subfolderName || folderOrCategoryName))
-  const [errors, setErrors] = useState('')
+  const [newDirectoryName, setNewDirectoryName] = useState(
+    deslugifyDirectory(subfolderName || folderOrCategoryName)
+  )
+  const [errors, setErrors] = useState("")
 
   // rename folder/subfolder/resource category
   const { mutateAsync: renameDirectory } = useMutation(
-    () => selectRenameApiCall(folderType, siteName, folderOrCategoryName, subfolderName, newDirectoryName, mediaCustomPath),
+    () =>
+      selectRenameApiCall(
+        folderType,
+        siteName,
+        folderOrCategoryName,
+        subfolderName,
+        newDirectoryName,
+        mediaCustomPath
+      ),
     {
-      onError: () => errorToast(`There was a problem trying to rename this folder. ${DEFAULT_RETRY_MSG}`),
+      onError: () =>
+        errorToast(
+          `There was a problem trying to rename this folder. ${DEFAULT_RETRY_MSG}`
+        ),
       onSuccess: () => {
         if (folderType === "resources") {
           // Resource folder
           queryClient.invalidateQueries([RESOURCE_ROOM_CONTENT_KEY, siteName])
-        } else if (folderType === 'page' && subfolderName) {
+        } else if (folderType === "page" && subfolderName) {
           // Collection subfolder
-          queryClient.invalidateQueries([DIR_CONTENT_KEY, siteName, folderOrCategoryName, undefined])
-        } else if (folderType === 'page' && !subfolderName) {
-          queryClient.invalidateQueries([FOLDERS_CONTENT_KEY, { siteName, isResource: false }])
+          queryClient.invalidateQueries([
+            DIR_CONTENT_KEY,
+            siteName,
+            folderOrCategoryName,
+            undefined,
+          ])
+        } else if (folderType === "page" && !subfolderName) {
+          queryClient.invalidateQueries([
+            FOLDERS_CONTENT_KEY,
+            { siteName, isResource: false },
+          ])
         } else if (folderType === "images") {
           queryClient.invalidateQueries([IMAGE_CONTENTS_KEY, mediaCustomPath])
         } else if (folderType === "documents") {
-          queryClient.invalidateQueries([DOCUMENT_CONTENTS_KEY, mediaCustomPath])
+          queryClient.invalidateQueries([
+            DOCUMENT_CONTENTS_KEY,
+            mediaCustomPath,
+          ])
         }
         onClose()
         successToast(`Successfully renamed folder!`)
       },
-    },
+    }
   )
 
   const folderNameChangeHandler = (event) => {
     const { value } = event.target
-    const comparisonCategoryArray = subfolderName ? existingFolders.filter(name => name !== subfolderName) : existingFolders.filter(name => name !== folderOrCategoryName)
-    const errorMessage = validateCategoryName(value, folderType, comparisonCategoryArray)
+    const comparisonCategoryArray = subfolderName
+      ? existingFolders.filter((name) => name !== subfolderName)
+      : existingFolders.filter((name) => name !== folderOrCategoryName)
+    const errorMessage = validateCategoryName(
+      value,
+      folderType,
+      comparisonCategoryArray
+    )
     setErrors(errorMessage)
     setNewDirectoryName(value)
   }
 
   return (
     <div className={elementStyles.overlay}>
-      <div className={elementStyles['modal-settings']}>
+      <div className={elementStyles["modal-settings"]}>
         <div className={elementStyles.modalHeader}>
-          <h1>
-            {displayTitle}
-          </h1>
+          <h1>{displayTitle}</h1>
           <button type="button" onClick={onClose}>
             <i className="bx bx-x" />
           </button>
@@ -137,7 +192,7 @@ const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName,
       </div>
     </div>
   )
-};
+}
 
 FolderModal.propTypes = {
   displayTitle: PropTypes.string.isRequired,
@@ -148,6 +203,6 @@ FolderModal.propTypes = {
   siteName: PropTypes.string.isRequired,
   folderType: PropTypes.string.isRequired,
   mediaCustomPath: PropTypes.string,
-};
+}
 
-export default FolderModal;
+export default FolderModal

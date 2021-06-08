@@ -1,4 +1,4 @@
-import { before,describe } from "@jest/globals"
+import { before, describe } from "@jest/globals"
 
 import { slugifyCategory } from "@src/utils"
 

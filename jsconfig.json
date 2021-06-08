@@ -1,20 +1,20 @@
 {
-    "compilerOptions": {
-      "target": "es2017",
-      "allowSyntheticDefaultImports": false,
-      "jsx": "react",
-      "baseUrl": "./",
-      "paths": {
-        "@src/*": ["./src/*"],
-        "@components/*": ["./src/components/*"],
-        "@contexts/*": ["./src/contexts/*"],
-        "@hooks/*": ["./src/hooks/*"],
-        "@layouts/*": ["./src/layouts/*"],
-        "@routing/*": ["./src/routing/*"],
-        "@styles/*": ["./src/styles/*"],
-        "@templates/*": ["./src/templates/*"],
-        "@utils/*": ["./src/utils/*"]
-      }
-    },
-    "exclude": ["node_modules", "dist"]
+  "compilerOptions": {
+    "target": "es2017",
+    "allowSyntheticDefaultImports": false,
+    "jsx": "react",
+    "baseUrl": "./",
+    "paths": {
+      "@src/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@contexts/*": ["./src/contexts/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@layouts/*": ["./src/layouts/*"],
+      "@routing/*": ["./src/routing/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@templates/*": ["./src/templates/*"],
+      "@utils/*": ["./src/utils/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist"]
 }

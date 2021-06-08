@@ -1,6 +1,6 @@
-@import '@styles/isomer-cms/elements/variable';
+@import "@styles/isomer-cms/elements/variable";
 
-.adminSidebar{
+.adminSidebar {
   width: $sidebar-width;
   background: white;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
@@ -10,20 +10,20 @@
   flex-direction: column;
   justify-content: space-between;
 
-  .siteIntro{
+  .siteIntro {
     margin-top: 20px;
     box-sizing: border-box;
     padding: 35px;
 
-    .siteName{
+    .siteName {
       color: $body-text;
       margin-bottom: 5px;
     }
 
-    .siteInfo{
+    .siteInfo {
       font-weight: 300;
       color: $body-grey;
-      font-size: .7em;
+      font-size: 0.7em;
       white-space: nowrap;
       text-overflow: ellipsis;
       width: 100%;
@@ -31,17 +31,17 @@
     }
   }
 
-  .sidebarNavigation{
+  .sidebarNavigation {
     width: 100%;
 
-    ul{
+    ul {
       width: 100%;
       box-sizing: border-box;
       list-style-position: outside;
       padding: 0;
       list-style-type: none;
 
-      li{
+      li {
         box-sizing: border-box;
         width: 100%;
         color: $isomer-blue;
@@ -55,19 +55,19 @@
         font-weight: 400;
         font-size: 16px;
 
-        &:hover{
-            border-left: 5px solid transparent;
-            background: #eee;
+        &:hover {
+          border-left: 5px solid transparent;
+          background: #eee;
         }
 
-        &.active{
+        &.active {
           border-left: 5px solid $isomer-blue;
         }
       }
 
       .noHover {
-        &:hover{
-          background:none;
+        &:hover {
+          background: none;
         }
       }
     }

@@ -1,119 +1,139 @@
-import React from 'react';
-import {useQuery} from "react-query";
+import React from "react"
+import { useQuery } from "react-query"
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types"
 
-import {fetchImageURL} from "@src/utils";
+import { fetchImageURL } from "@src/utils"
 
 /* eslint
   react/no-array-index-key: 0
  */
 
-const TemplateInfopicRightSection = ({
-  title,
-  subtitle,
-  description,
-  button,
-  sectionIndex,
-  imageUrl,
-  imageAlt,
-  siteName,
-}, ref) => {
+const TemplateInfopicRightSection = (
+  {
+    title,
+    subtitle,
+    description,
+    button,
+    sectionIndex,
+    imageUrl,
+    imageAlt,
+    siteName,
+  },
+  ref
+) => {
   const addDefaultSrc = (e) => {
-    e.target.src = '/placeholder_no_image.png'
+    e.target.src = "/placeholder_no_image.png"
   }
 
-  const {data: loadedImageURL, status} = useQuery(`${siteName}/${imageUrl}`,
-      () => fetchImageURL(siteName, decodeURI(imageUrl)), {
-    refetchOnWindowFocus: false,
-    staleTime: Infinity // Never automatically refetch image unless query is invalidated
-  })
+  const { data: loadedImageURL, status } = useQuery(
+    `${siteName}/${imageUrl}`,
+    () => fetchImageURL(siteName, decodeURI(imageUrl)),
+    {
+      refetchOnWindowFocus: false,
+      staleTime: Infinity, // Never automatically refetch image unless query is invalidated
+    }
+  )
 
   return (
     <div ref={ref}>
-      <section className={`bp-section ${(sectionIndex % 2 === 1) ? 'bg-newssection' : null}`}>
+      <section
+        className={`bp-section ${
+          sectionIndex % 2 === 1 ? "bg-newssection" : null
+        }`}
+      >
         <div className="bp-container">
           {/* For mobile */}
           <div className="row is-hidden-desktop is-hidden-tablet-only">
             <div className="col is-half padding--bottom">
-              <p className="padding--bottom eyebrow is-uppercase">
-                { subtitle }
-              </p>
+              <p className="padding--bottom eyebrow is-uppercase">{subtitle}</p>
               <h1 className="has-text-secondary padding--bottom">
-                <b>{ title }</b>
+                <b>{title}</b>
               </h1>
-              <p>{ description }</p>
+              <p>{description}</p>
               <div className="bp-sec-button margin--top padding--bottom">
-                {button
-                  ? (
-                    <div>
-                      <span>{ button }</span>
-                      <i className="sgds-icon sgds-icon-arrow-right is-size-4" aria-hidden="true" />
-                    </div>
-                  )
-                  : null}
+                {button ? (
+                  <div>
+                    <span>{button}</span>
+                    <i
+                      className="sgds-icon sgds-icon-arrow-right is-size-4"
+                      aria-hidden="true"
+                    />
+                  </div>
+                ) : null}
               </div>
             </div>
             <div className="col is-half">
-              <img onError={addDefaultSrc} src={loadedImageURL} alt={imageAlt} />
+              <img
+                onError={addDefaultSrc}
+                src={loadedImageURL}
+                alt={imageAlt}
+              />
             </div>
           </div>
           {/* For tablet */}
           <div className="row is-hidden-mobile is-hidden-desktop">
             <div className="col is-half is-half padding--top--xl padding--bottom--xl">
-              <img onError={addDefaultSrc} src={loadedImageURL} alt={imageAlt} />
+              <img
+                onError={addDefaultSrc}
+                src={loadedImageURL}
+                alt={imageAlt}
+              />
             </div>
             <div className="col is-half">
-              <p className="padding--bottom eyebrow is-uppercase">
-                { subtitle }
-              </p>
+              <p className="padding--bottom eyebrow is-uppercase">{subtitle}</p>
               <h1 className="has-text-secondary padding--bottom">
-                <b>{ title }</b>
+                <b>{title}</b>
               </h1>
-              <p>{ description }</p>
+              <p>{description}</p>
               <div className="bp-sec-button margin--top padding--bottom">
-                { button
-                  ? (
-                    <div>
-                      <span>{ button }</span>
-                      <i className="sgds-icon sgds-icon-arrow-right is-size-4" aria-hidden="true" />
-                    </div>
-                  )
-                  : null}
+                {button ? (
+                  <div>
+                    <span>{button}</span>
+                    <i
+                      className="sgds-icon sgds-icon-arrow-right is-size-4"
+                      aria-hidden="true"
+                    />
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
           {/* For desktop */}
           <div className="row is-hidden-mobile is-hidden-tablet-only">
             <div className="col is-half is-half padding--top--xl padding--bottom--xl">
-              <img onError={addDefaultSrc} src={loadedImageURL} alt={imageAlt} />
+              <img
+                onError={addDefaultSrc}
+                src={loadedImageURL}
+                alt={imageAlt}
+              />
             </div>
             <div className="col is-half padding--top--xl padding--bottom--xl padding--left--xl padding--right--xl">
-              <p className="padding--bottom eyebrow is-uppercase">
-                { subtitle }
-              </p>
+              <p className="padding--bottom eyebrow is-uppercase">{subtitle}</p>
               <h1 className="has-text-secondary padding--bottom">
-                <b>{ title }</b>
+                <b>{title}</b>
               </h1>
-              <p>{ description }</p>
+              <p>{description}</p>
               <div className="bp-sec-button margin--top padding--bottom">
-                { button
-                  ? (
-                    <div>
-                      <span>{ button }</span>
-                      <i className="sgds-icon sgds-icon-arrow-right is-size-4" aria-hidden="true" />
-                    </div>
-                  )
-                  : null }
+                {button ? (
+                  <div>
+                    <span>{button}</span>
+                    <i
+                      className="sgds-icon sgds-icon-arrow-right is-size-4"
+                      aria-hidden="true"
+                    />
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
         </div>
       </section>
     </div>
-)};
+  )
+}
 
-export default React.forwardRef(TemplateInfopicRightSection);
+export default React.forwardRef(TemplateInfopicRightSection)
 
 TemplateInfopicRightSection.propTypes = {
   title: PropTypes.string,
@@ -124,10 +144,10 @@ TemplateInfopicRightSection.propTypes = {
   imageAlt: PropTypes.string,
   sectionIndex: PropTypes.number.isRequired,
   siteName: PropTypes.string.isRequired,
-};
+}
 
 TemplateInfopicRightSection.defaultProps = {
   title: undefined,
   subtitle: undefined,
   description: undefined,
-};
+}

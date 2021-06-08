@@ -1,15 +1,15 @@
-import React, { useEffect,useRef, useState } from 'react';
-import {useQuery} from "react-query";
+import React, { useEffect, useRef, useState } from "react"
+import { useQuery } from "react-query"
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types"
 
-import {fetchImageURL} from "@src/utils";
+import { fetchImageURL } from "@src/utils"
 
-import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
-import mediaStyles from '@styles/isomer-cms/pages/Media.module.scss';
+import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
+import mediaStyles from "@styles/isomer-cms/pages/Media.module.scss"
 
-import FileMoveMenuDropdown from '@components/FileMoveMenuDropdown'
-import { MenuDropdown } from '@components/MenuDropdown'
+import FileMoveMenuDropdown from "@components/FileMoveMenuDropdown"
+import { MenuDropdown } from "@components/MenuDropdown"
 
 const MediaCard = ({
   type,
@@ -35,43 +35,46 @@ const MediaCard = ({
   const fileMoveDropdownRef = useRef(null)
 
   useEffect(() => {
-      if (showDropdown) dropdownRef.current.focus()
-      if (showFileMoveDropdown) fileMoveDropdownRef.current.focus()
+    if (showDropdown) dropdownRef.current.focus()
+    if (showFileMoveDropdown) fileMoveDropdownRef.current.focus()
   }, [showDropdown, showFileMoveDropdown])
 
-  const {data: imageURL, status} = useQuery(`${siteName}/${media.path}`,
-      () => fetchImageURL(siteName, media.path, type === 'images'), {
-        refetchOnWindowFocus: false,
-        staleTime: Infinity // Never automatically refetch image unless query is invalidated
-      })
+  const { data: imageURL, status } = useQuery(
+    `${siteName}/${media.path}`,
+    () => fetchImageURL(siteName, media.path, type === "images"),
+    {
+      refetchOnWindowFocus: false,
+      staleTime: Infinity, // Never automatically refetch image unless query is invalidated
+    }
+  )
 
   const handleBlur = (event) => {
-      // if the blur was because of outside focus
-      // currentTarget is the parent element, relatedTarget is the clicked element
-      if (!event.currentTarget.contains(event.relatedTarget)) {
-          setShowFileMoveDropdown(false)
-          clearMoveDropdownQueryState()
-      }
+    // if the blur was because of outside focus
+    // currentTarget is the parent element, relatedTarget is the clicked element
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      setShowFileMoveDropdown(false)
+      clearMoveDropdownQueryState()
+    }
   }
 
   const toggleDropdownModals = () => {
-      setShowFileMoveDropdown(!showFileMoveDropdown)
-      setShowDropdown(!showDropdown)
+    setShowFileMoveDropdown(!showFileMoveDropdown)
+    setShowDropdown(!showDropdown)
   }
 
   const generateDropdownItems = () => {
     const dropdownItems = [
       {
-        type: 'edit',
-        handler: () => setIsMediaSettingsActive(true)
+        type: "edit",
+        handler: () => setIsMediaSettingsActive(true),
       },
       {
-        type: 'move',
-        handler: toggleDropdownModals
+        type: "move",
+        handler: toggleDropdownModals,
       },
       {
-        type: 'delete',
-        handler: () => setIsDeleteModalActive(true)
+        type: "delete",
+        handler: () => setIsDeleteModalActive(true),
       },
     ]
     return dropdownItems
@@ -79,48 +82,52 @@ const MediaCard = ({
 
   return (
     <div
-      className={isSelected ? mediaStyles.selectedMediaCard : mediaStyles.mediaCard}
+      className={
+        isSelected ? mediaStyles.selectedMediaCard : mediaStyles.mediaCard
+      }
       key={media.path}
       onClick={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        if (setSelectedMedia) setSelectedMedia(media);
-        if (!showFileMoveDropdown && !showDropdown && onClick) onClick();
+        e.stopPropagation()
+        e.preventDefault()
+        if (setSelectedMedia) setSelectedMedia(media)
+        if (!showFileMoveDropdown && !showDropdown && onClick) onClick()
       }}
     >
-      {
-        type === 'images' && (
-          <div className={mediaStyles.mediaCardImagePreviewContainer}>
-            <img
-              className={mediaStyles.mediaCardImage}
-              alt={`${media.fileName}`}
-              // The sanitise parameter is for SVGs. It converts the raw svg data into an image
-              src={(status === 'success')?imageURL:'/placeholder_no_image.png'}
-            />
-          </div>
-        )
-      }
-      {
-        type === 'files' && (
-          <div className={mediaStyles.mediaCardFilePreviewContainer}>
-            <p>{media.fileName.split('.').pop().toUpperCase()}</p>
-          </div>
-        )
-      }
-      {
-        type === 'dirs' && (
-          <div className={mediaStyles.mediaCardFilePreviewContainer}>
-            <p><i className="bx bx-lg bxs-folder"/></p>
-          </div>
-        )
-      }
-      <div className={`${mediaStyles.mediaCardDescription} ${contentStyles.card} ${contentStyles.component}`}>
+      {type === "images" && (
+        <div className={mediaStyles.mediaCardImagePreviewContainer}>
+          <img
+            className={mediaStyles.mediaCardImage}
+            alt={`${media.fileName}`}
+            // The sanitise parameter is for SVGs. It converts the raw svg data into an image
+            src={status === "success" ? imageURL : "/placeholder_no_image.png"}
+          />
+        </div>
+      )}
+      {type === "files" && (
+        <div className={mediaStyles.mediaCardFilePreviewContainer}>
+          <p>{media.fileName.split(".").pop().toUpperCase()}</p>
+        </div>
+      )}
+      {type === "dirs" && (
+        <div className={mediaStyles.mediaCardFilePreviewContainer}>
+          <p>
+            <i className="bx bx-lg bxs-folder" />
+          </p>
+        </div>
+      )}
+      <div
+        className={`${mediaStyles.mediaCardDescription} ${contentStyles.card} ${contentStyles.component}`}
+      >
         <div className={mediaStyles.mediaCardName}>{media.fileName}</div>
         {/* Settings dropdown */}
-        { showSettings && (
+        {showSettings && (
           <div className="position-relative mt-auto mb-auto">
             <button
-              className={`${showDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
+              className={`${
+                showDropdown
+                  ? contentStyles.optionsIconFocus
+                  : contentStyles.optionsIcon
+              }`}
               type="button"
               id={`${media.fileName}-settings-${mediaItemIndex}`}
               onClick={(e) => {
@@ -132,16 +139,16 @@ const MediaCard = ({
             >
               <i className="bx bx-dots-vertical-rounded" />
             </button>
-            { showDropdown &&
+            {showDropdown && (
               <MenuDropdown
                 menuIndex={mediaItemIndex}
                 dropdownItems={generateDropdownItems()}
                 dropdownRef={dropdownRef}
                 tabIndex={2}
-                onBlur={()=>setShowDropdown(false)}
+                onBlur={() => setShowDropdown(false)}
               />
-            }
-            { showFileMoveDropdown &&
+            )}
+            {showFileMoveDropdown && (
               <FileMoveMenuDropdown
                 dropdownItems={allCategories}
                 dropdownRef={fileMoveDropdownRef}
@@ -156,16 +163,16 @@ const MediaCard = ({
                   setIsMoveModalActive(true)
                 }}
               />
-            }
+            )}
           </div>
         )}
       </div>
     </div>
   )
-};
+}
 
 MediaCard.propTypes = {
-  type: PropTypes.oneOf(['images', 'files', 'dirs']).isRequired,
+  type: PropTypes.oneOf(["images", "files", "dirs"]).isRequired,
   siteName: PropTypes.string,
   onClick: PropTypes.func,
   media: PropTypes.shape({
@@ -184,12 +191,12 @@ MediaCard.propTypes = {
   setIsDeleteModalActive: PropTypes.func,
   setMoveDropdownQuery: PropTypes.func,
   clearMoveDropdownQueryState: PropTypes.func,
-};
+}
 
 MediaCard.defaultProps = {
-  siteName: '',
+  siteName: "",
   isSelected: false,
   canShowEditIcon: false,
-};
+}
 
-export default MediaCard;
+export default MediaCard

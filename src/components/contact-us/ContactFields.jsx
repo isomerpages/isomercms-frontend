@@ -1,26 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState } from "react"
 
-import _ from 'lodash';
-import PropTypes from 'prop-types';
+import _ from "lodash"
+import PropTypes from "prop-types"
 
-import Dropdown from '@components/Dropdown';
-import FormField from '@components/FormField';
-import InputMaskFormField from '@components/InputMaskFormField';
+import Dropdown from "@components/Dropdown"
+import FormField from "@components/FormField"
+import InputMaskFormField from "@components/InputMaskFormField"
 
-const ContactFields = ({ 
-  cardIndex, 
-  content, 
-  onFieldChange,  
+const ContactFields = ({
+  cardIndex,
+  content,
+  onFieldChange,
   errors,
   sectionId,
-}) => {  
-  const [phoneFieldType, setPhoneFieldType] = useState(content[0].phone[0] === '1' ? 'tollfree' : 'local')
+}) => {
+  const [phoneFieldType, setPhoneFieldType] = useState(
+    content[0].phone[0] === "1" ? "tollfree" : "local"
+  )
 
   return (
     <div className="d-flex flex-column">
       <InputMaskFormField
         title="Phone"
-        mask={phoneFieldType === 'local' ? '+65 9999 9999': '1 800 999 9999'}
+        mask={phoneFieldType === "local" ? "+65 9999 9999" : "1 800 999 9999"}
         maskChar="_"
         alwaysShowMask={false}
         id={`${sectionId}-${cardIndex}-phone-0`}
@@ -30,9 +32,9 @@ const ContactFields = ({
       />
       <Dropdown
         options={["Local", "Tollfree"]}
-        defaultOption={_.upperFirst(phoneFieldType)} 
+        defaultOption={_.upperFirst(phoneFieldType)}
         id="phone-field-type"
-        onFieldChange={e => setPhoneFieldType(e.target.value)}
+        onFieldChange={(e) => setPhoneFieldType(e.target.value)}
       />
       <FormField
         title="Email"
@@ -50,9 +52,9 @@ const ContactFields = ({
       />
     </div>
   )
-};
+}
 
-export default ContactFields;
+export default ContactFields
 
 ContactFields.propTypes = {
   cardIndex: PropTypes.number.isRequired,
@@ -65,9 +67,9 @@ ContactFields.propTypes = {
     }),
     PropTypes.shape({
       other: PropTypes.string,
-    }),
+    })
   ),
-  onFieldChange: PropTypes.func.isRequired, 
+  onFieldChange: PropTypes.func.isRequired,
   errors: PropTypes.arrayOf(
     PropTypes.shape({
       phone: PropTypes.string,
@@ -77,7 +79,7 @@ ContactFields.propTypes = {
     }),
     PropTypes.shape({
       other: PropTypes.string,
-    }),
+    })
   ),
   sectionId: PropTypes.string,
-};
+}

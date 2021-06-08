@@ -317,7 +317,8 @@ export const updateDirectoryFile = (folderName, isFolderLive, folderOrder) => {
   return yaml.stringify(newContent)
 }
 
-export const getNavFolderDropdownFromFolderOrder = (folderOrder) => folderOrder.reduce((acc, curr) => {
+export const getNavFolderDropdownFromFolderOrder = (folderOrder) =>
+  folderOrder.reduce((acc, curr) => {
     const pathArr = curr.split("/") // sample paths: "prize-sponsor.md", "prize-jury/nominating-committee.md"
 
     if (pathArr.length === 1) {
@@ -389,7 +390,8 @@ export const convertArrayToFolderOrder = (array) => {
   return _.flatten(updatedFolderOrder)
 }
 
-export const retrieveSubfolderContents = (folderOrder, subfolderName) => folderOrder.reduce((acc, curr) => {
+export const retrieveSubfolderContents = (folderOrder, subfolderName) =>
+  folderOrder.reduce((acc, curr) => {
     const folderPathArr = curr.split("/")
     if (folderPathArr.length === 2) {
       const [subfolderTitle, subfolderFileName] = folderPathArr

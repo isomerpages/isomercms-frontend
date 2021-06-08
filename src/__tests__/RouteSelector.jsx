@@ -26,49 +26,49 @@ const NOT_FOUND_LAYOUT_TEXT = "Route does not exist"
 
 // Layout mocks
 jest.mock("@layouts/Home", () => ({
-    __esModule: true,
-    default: () => <div>{HOME_LAYOUT_TEXT}</div>,
-  }))
+  __esModule: true,
+  default: () => <div>{HOME_LAYOUT_TEXT}</div>,
+}))
 
 jest.mock("@layouts/Sites", () => ({
-    __esModule: true,
-    default: () => <div>{SITES_LAYOUT_TEXT}</div>,
-  }))
+  __esModule: true,
+  default: () => <div>{SITES_LAYOUT_TEXT}</div>,
+}))
 
 jest.mock("@layouts/Settings", () => ({
-    __esModule: true,
-    default: () => <div>{SETTINGS_LAYOUT_TEXT}</div>,
-  }))
+  __esModule: true,
+  default: () => <div>{SETTINGS_LAYOUT_TEXT}</div>,
+}))
 
 jest.mock("@layouts/EditNavBar", () => ({
-    __esModule: true,
-    default: () => <div>{EDIT_NAVBAR_LAYOUT_TEXT}</div>,
-  }))
+  __esModule: true,
+  default: () => <div>{EDIT_NAVBAR_LAYOUT_TEXT}</div>,
+}))
 
 jest.mock("@layouts/Resources", () => ({
-    __esModule: true,
-    default: () => <div>{RESOURCES_LAYOUT_TEXT}</div>,
-  }))
+  __esModule: true,
+  default: () => <div>{RESOURCES_LAYOUT_TEXT}</div>,
+}))
 
 jest.mock("@layouts/CategoryPages", () => ({
-    __esModule: true,
-    default: () => <div>{RESOURCES_CATEGORY_LAYOUT_TEXT}</div>,
-  }))
+  __esModule: true,
+  default: () => <div>{RESOURCES_CATEGORY_LAYOUT_TEXT}</div>,
+}))
 
 jest.mock("@layouts/EditContactUs", () => ({
-    __esModule: true,
-    default: () => <div>{EDIT_CONTACT_US_LAYOUT_TEXT}</div>,
-  }))
+  __esModule: true,
+  default: () => <div>{EDIT_CONTACT_US_LAYOUT_TEXT}</div>,
+}))
 
 jest.mock("@layouts/EditHomepage", () => ({
-    __esModule: true,
-    default: () => <div>{EDIT_HOMEPAGE_LAYOUT_TEXT}</div>,
-  }))
+  __esModule: true,
+  default: () => <div>{EDIT_HOMEPAGE_LAYOUT_TEXT}</div>,
+}))
 
 jest.mock("@layouts/Workspace", () => ({
-    __esModule: true,
-    default: () => <div>{WORKSPACE_LAYOUT_TEXT}</div>,
-  }))
+  __esModule: true,
+  default: () => <div>{WORKSPACE_LAYOUT_TEXT}</div>,
+}))
 
 // jest.mock("@layouts/Images", () => {
 //   return {
@@ -89,24 +89,24 @@ jest.mock("@layouts/Workspace", () => ({
 // })
 
 jest.mock("@layouts/EditPage", () => ({
-    __esModule: true,
-    default: () => <div>{EDIT_PAGE_LAYOUT_TEXT}</div>,
-  }))
+  __esModule: true,
+  default: () => <div>{EDIT_PAGE_LAYOUT_TEXT}</div>,
+}))
 
 jest.mock("@layouts/Folders", () => ({
-    __esModule: true,
-    default: () => <div>{FOLDERS_LAYOUT_TEXT}</div>,
-  }))
+  __esModule: true,
+  default: () => <div>{FOLDERS_LAYOUT_TEXT}</div>,
+}))
 
 jest.mock("@layouts/Folders", () => ({
-    __esModule: true,
-    default: () => <div>{FOLDERS_LAYOUT_TEXT}</div>,
-  }))
+  __esModule: true,
+  default: () => <div>{FOLDERS_LAYOUT_TEXT}</div>,
+}))
 
 jest.mock("@components/NotFoundPage", () => ({
-    __esModule: true,
-    default: () => <div>{NOT_FOUND_LAYOUT_TEXT}</div>,
-  }))
+  __esModule: true,
+  default: () => <div>{NOT_FOUND_LAYOUT_TEXT}</div>,
+}))
 
 // Context mocks
 const LoggedInContextProvider = ({ children }) => {

@@ -1,46 +1,53 @@
-import React, { useEffect,useState } from 'react';
-import { useMutation,useQuery } from 'react-query';
+import React, { useEffect, useState } from "react"
+import { useMutation, useQuery } from "react-query"
 
-import axios from 'axios';
-import * as _ from 'lodash';
-import PropTypes from 'prop-types';
+import axios from "axios"
+import * as _ from "lodash"
+import PropTypes from "prop-types"
 
-import { addResourceCategory,getAllResourceCategories } from '@src/api';
-import { RESOURCE_ROOM_CONTENT_KEY } from '@src/constants'
-import { DEFAULT_RETRY_MSG, deslugifyDirectory, slugifyCategory } from '@src/utils';
+import { addResourceCategory, getAllResourceCategories } from "@src/api"
+import { RESOURCE_ROOM_CONTENT_KEY } from "@src/constants"
+import {
+  DEFAULT_RETRY_MSG,
+  deslugifyDirectory,
+  slugifyCategory,
+} from "@src/utils"
 
-import useRedirectHook from '@hooks/useRedirectHook';
+import useRedirectHook from "@hooks/useRedirectHook"
 
-import { errorToast } from '@utils/toasts';
-import { validateCategoryName,validateResourceRoomName } from '@utils/validators'
+import { errorToast } from "@utils/toasts"
+import {
+  validateCategoryName,
+  validateResourceRoomName,
+} from "@utils/validators"
 
-import elementStyles from '@styles/isomer-cms/Elements.module.scss';
-import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
 
-import FolderCard from '@components/FolderCard'
-import FolderNamingModal from '@components/FolderNamingModal'
-import FolderOptionButton from '@components/folders/FolderOptionButton'
-import FormField from '@components/FormField';
-import Header from '@components/Header';
-import LoadingButton from '@components/LoadingButton';
-import Sidebar from '@components/Sidebar';
+import FolderCard from "@components/FolderCard"
+import FolderNamingModal from "@components/FolderNamingModal"
+import FolderOptionButton from "@components/folders/FolderOptionButton"
+import FormField from "@components/FormField"
+import Header from "@components/Header"
+import LoadingButton from "@components/LoadingButton"
+import Sidebar from "@components/Sidebar"
 
 // axios settings
 axios.defaults.withCredentials = true
 
 const Resources = ({ match, location }) => {
-  const { siteName } = match.params;
+  const { siteName } = match.params
 
   const { setRedirectToPage } = useRedirectHook()
 
   const [isLoading, setIsLoading] = useState(true)
   const [resourceRoomName, setResourceRoomName] = useState()
-  const [newResourceRoomName, setNewResourceRoomName] = useState('')
+  const [newResourceRoomName, setNewResourceRoomName] = useState("")
   const [resourceFolderNames, setResourceFolderNames] = useState([])
-  const [resourceRoomNameError, setResourceRoomNameError] = useState('')
+  const [resourceRoomNameError, setResourceRoomNameError] = useState("")
   const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
-  const [newFolderName, setNewFolderName] = useState('')
-  const [folderNameErrors, setFolderNameErrors] = useState('')
+  const [newFolderName, setNewFolderName] = useState("")
+  const [folderNameErrors, setFolderNameErrors] = useState("")
 
   const { data: resourcesResp } = useQuery(
     [RESOURCE_ROOM_CONTENT_KEY, siteName],
@@ -49,17 +56,24 @@ const Resources = ({ match, location }) => {
       retry: false,
       onError: (err) => {
         console.log(err)
-        errorToast(`There was a problem trying to load your categories. ${DEFAULT_RETRY_MSG}`)
-      }
-    },
-  );
+        errorToast(
+          `There was a problem trying to load your categories. ${DEFAULT_RETRY_MSG}`
+        )
+      },
+    }
+  )
 
   const { mutateAsync: saveHandler } = useMutation(
     () => addResourceCategory(siteName, slugifyCategory(newFolderName)),
     {
-      onError: () => errorToast(`There was a problem trying to create your new category. ${DEFAULT_RETRY_MSG}`),
+      onError: () =>
+        errorToast(
+          `There was a problem trying to create your new category. ${DEFAULT_RETRY_MSG}`
+        ),
       onSuccess: () => {
-        const redirectUrl = `/sites/${siteName}/resources/${slugifyCategory(newFolderName)}`
+        const redirectUrl = `/sites/${siteName}/resources/${slugifyCategory(
+          newFolderName
+        )}`
         setRedirectToPage(redirectUrl)
       },
     }
@@ -71,9 +85,14 @@ const Resources = ({ match, location }) => {
       try {
         // Get the categories in the resource room
         if (!resourcesResp) return
-        const { resourceRoomName, resources: resourceCategories } = resourcesResp;
+        const {
+          resourceRoomName,
+          resources: resourceCategories,
+        } = resourcesResp
         if (resourceRoomName) {
-          const uniqueResourceFolderNames = resourceCategories ? _.uniq(resourceCategories.map((file) => file.dirName)) : []
+          const uniqueResourceFolderNames = resourceCategories
+            ? _.uniq(resourceCategories.map((file) => file.dirName))
+            : []
           if (_isMounted) {
             setResourceFolderNames(uniqueResourceFolderNames)
             setResourceRoomName(resourceRoomName)
@@ -87,11 +106,13 @@ const Resources = ({ match, location }) => {
     }
 
     fetchData()
-    return () => { _isMounted = false }
+    return () => {
+      _isMounted = false
+    }
   }, [resourcesResp])
 
   const resourceRoomNameHandler = (event) => {
-    const { value } = event.target;
+    const { value } = event.target
     const errorMessage = validateResourceRoomName(value)
     setNewResourceRoomName(value)
     setResourceRoomNameError(errorMessage)
@@ -99,42 +120,46 @@ const Resources = ({ match, location }) => {
 
   const createResourceRoom = async () => {
     try {
-      const { siteName } = match.params;
-      const params = { resourceRoom: newResourceRoomName };
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resource-room`, params);
+      const { siteName } = match.params
+      const params = { resourceRoom: newResourceRoomName }
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resource-room`,
+        params
+      )
       // Refresh page
-      window.location.reload();
+      window.location.reload()
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
   }
 
   const folderNameChangeHandler = (event) => {
-    const { value } = event.target;
-    const errorMessage = validateCategoryName(value, 'resource', resourceFolderNames)
+    const { value } = event.target
+    const errorMessage = validateCategoryName(
+      value,
+      "resource",
+      resourceFolderNames
+    )
     setNewFolderName(value)
     setFolderNameErrors(errorMessage)
   }
 
   return (
     <>
-      {
-        isFolderCreationActive &&
+      {isFolderCreationActive && (
         <div className={elementStyles.overlay}>
-          <FolderNamingModal 
+          <FolderNamingModal
             onClose={() => setIsFolderCreationActive(false)}
             onProceed={saveHandler}
             folderNameChangeHandler={folderNameChangeHandler}
             title={newFolderName}
             errors={folderNameErrors}
-            folderType='category'
-            proceedText='Save'
+            folderType="category"
+            proceedText="Save"
           />
         </div>
-      }
-      <Header 
-        siteName={siteName}
-      />
+      )}
+      <Header siteName={siteName} />
       {/* main bottom section */}
       <div className={elementStyles.wrapper}>
         <Sidebar siteName={siteName} currPath={location.pathname} />
@@ -144,89 +169,97 @@ const Resources = ({ match, location }) => {
           <div className={contentStyles.sectionHeader}>
             <h1 className={contentStyles.sectionTitle}>Resources</h1>
           </div>
-          {
-            isLoading ? 'Loading Resources...'
-            :
-              resourceRoomName
-              ? <>
-                  {/* Category title */}
-                  <div className={contentStyles.segment}>
-                    Categories
-                  </div>
-                  {/* Categories */}
-                  <div className={contentStyles.folderContainerBoxes}>
-                    <div className={contentStyles.boxesContainer}>
-                      {
-                        resourceFolderNames 
-                        ? 
-                          <>
-                          {
-                            resourceFolderNames.length === 0 && 
-                            <>
-                              No Categories.
-                              <hr className="invisible w-100 mt-3 mb-3" />
-                            </>
-                          }
-                          <FolderOptionButton title="Create new category" option="create-sub" isSubfolder={false} onClick={() => setIsFolderCreationActive(true)}/>
-                          {
-                            resourceFolderNames.length > 0
-                            ? resourceFolderNames.map((resourceCategory, collectionIdx) => (
-                                <FolderCard
-                                  displayText={deslugifyDirectory(resourceCategory)}
-                                  settingsToggle={() => {}}
-                                  key={resourceCategory}
-                                  pageType="resources"
-                                  siteName={siteName}
-                                  category={resourceCategory}
-                                  itemIndex={collectionIdx}
-                                  existingFolders={resourceFolderNames}
-                                />
-                              ))
-                            : null
-                          }
-                          </>
-                        : 'Loading Categories...'
-                      }
-                    </div>
-                  </div>
-                </>
-              : <>
-                  {/* Resource Room does not exist */}
-                  <div className={contentStyles.segment}>
-                    Create Resource Room
-                  </div>
-                  {/* Info segment */}
-                  <div className={contentStyles.segment}>
-                    <i className="bx bx-sm bx-info-circle text-dark" />
-                    <span><strong className="ml-1">Note:</strong> You must create a Resource Room before you can create Resources.</span>
-                  </div>
-                  <FormField
-                    className="w-100"
-                    value={newResourceRoomName}
-                    placeholder="Resource room title"
-                    errorMessage={resourceRoomNameError}
-                    isRequired
-                    onFieldChange={resourceRoomNameHandler}
-                    maxWidth
-                  />
-                  {/* Segment divider  */}
-                  <div className={contentStyles.segmentDividerContainer}>
-                    <hr className="invisible w-100 mt-3 mb-3" />
-                  </div>
-                  <LoadingButton
-                    label="Create Resource Room"
-                    disabled={!!resourceRoomNameError}
-                    disabledStyle={elementStyles.disabled}
-                    className={resourceRoomNameError ? elementStyles.disabled : elementStyles.blue}
-                    callback={createResourceRoom}
-                  />
-                </>
-          }
+          {isLoading ? (
+            "Loading Resources..."
+          ) : resourceRoomName ? (
+            <>
+              {/* Category title */}
+              <div className={contentStyles.segment}>Categories</div>
+              {/* Categories */}
+              <div className={contentStyles.folderContainerBoxes}>
+                <div className={contentStyles.boxesContainer}>
+                  {resourceFolderNames ? (
+                    <>
+                      {resourceFolderNames.length === 0 && (
+                        <>
+                          No Categories.
+                          <hr className="invisible w-100 mt-3 mb-3" />
+                        </>
+                      )}
+                      <FolderOptionButton
+                        title="Create new category"
+                        option="create-sub"
+                        isSubfolder={false}
+                        onClick={() => setIsFolderCreationActive(true)}
+                      />
+                      {resourceFolderNames.length > 0
+                        ? resourceFolderNames.map(
+                            (resourceCategory, collectionIdx) => (
+                              <FolderCard
+                                displayText={deslugifyDirectory(
+                                  resourceCategory
+                                )}
+                                settingsToggle={() => {}}
+                                key={resourceCategory}
+                                pageType="resources"
+                                siteName={siteName}
+                                category={resourceCategory}
+                                itemIndex={collectionIdx}
+                                existingFolders={resourceFolderNames}
+                              />
+                            )
+                          )
+                        : null}
+                    </>
+                  ) : (
+                    "Loading Categories..."
+                  )}
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Resource Room does not exist */}
+              <div className={contentStyles.segment}>Create Resource Room</div>
+              {/* Info segment */}
+              <div className={contentStyles.segment}>
+                <i className="bx bx-sm bx-info-circle text-dark" />
+                <span>
+                  <strong className="ml-1">Note:</strong> You must create a
+                  Resource Room before you can create Resources.
+                </span>
+              </div>
+              <FormField
+                className="w-100"
+                value={newResourceRoomName}
+                placeholder="Resource room title"
+                errorMessage={resourceRoomNameError}
+                isRequired
+                onFieldChange={resourceRoomNameHandler}
+                maxWidth
+              />
+              {/* Segment divider  */}
+              <div className={contentStyles.segmentDividerContainer}>
+                <hr className="invisible w-100 mt-3 mb-3" />
+              </div>
+              <LoadingButton
+                label="Create Resource Room"
+                disabled={!!resourceRoomNameError}
+                disabledStyle={elementStyles.disabled}
+                className={
+                  resourceRoomNameError
+                    ? elementStyles.disabled
+                    : elementStyles.blue
+                }
+                callback={createResourceRoom}
+              />
+            </>
+          )}
         </div>
         {/* main section ends here */}
       </div>
     </>
-  );
+  )
 }
 
 export default Resources
@@ -240,5 +273,4 @@ Resources.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
-};
-  
+}

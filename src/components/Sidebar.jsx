@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react"
+import { useQuery } from "react-query"
+import { Link } from "react-router-dom"
 
-import axios from 'axios';
-import PropTypes from 'prop-types';
+import axios from "axios"
+import PropTypes from "prop-types"
 
-import { getLastUpdated } from '@src/api'
-import { LAST_UPDATED_KEY } from '@src/constants'
+import { getLastUpdated } from "@src/api"
+import { LAST_UPDATED_KEY } from "@src/constants"
 
-import useRedirectHook from '@hooks/useRedirectHook';
-import useSiteUrlHook from '@hooks/useSiteUrlHook';
+import useRedirectHook from "@hooks/useRedirectHook"
+import useSiteUrlHook from "@hooks/useSiteUrlHook"
 
-import { errorToast } from '@utils/toasts';
+import { errorToast } from "@utils/toasts"
 
-import elementStyles from '@styles/isomer-cms/Elements.module.scss';
-import styles from '@styles/isomer-cms/pages/Admin.module.scss';
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import styles from "@styles/isomer-cms/pages/Admin.module.scss"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -23,66 +23,66 @@ axios.defaults.withCredentials = true
 const userIdKey = "userId"
 const sidebarContentPathDict = [
   {
-    pathname: 'workspace',
-    title: 'My Workspace',
+    pathname: "workspace",
+    title: "My Workspace",
   },
   {
-    pathname: 'resources',
-    title: 'Resources',
+    pathname: "resources",
+    title: "Resources",
   },
   {
-    pathname: 'images',
-    title: 'Images',
+    pathname: "images",
+    title: "Images",
   },
   {
-    pathname: 'documents',
-    title: 'Files',
-  }
-];
+    pathname: "documents",
+    title: "Files",
+  },
+]
 const sidebarSettingsPathDict = [
   {
-    pathname: 'settings',
-    title: 'Settings',
+    pathname: "settings",
+    title: "Settings",
   },
   {
-    pathname: 'guide',
-    title: 'Guide',
+    pathname: "guide",
+    title: "Guide",
   },
   {
-    pathname: 'help',
-    title: 'Help',
-  }
+    pathname: "help",
+    title: "Help",
+  },
 ]
 const sidebarUserDict = [
   {
-    pathname: 'logout',
-    title: 'Logout',
+    pathname: "logout",
+    title: "Logout",
   },
   {
-    pathname: 'user',
-    title: 'User',
-  }
+    pathname: "user",
+    title: "User",
+  },
 ]
 const typeInfoDict = {
   Help: {
-    url: 'https://go.gov.sg/isomer-cms-help',
-    icon: 'bx bx-buoy'
+    url: "https://go.gov.sg/isomer-cms-help",
+    icon: "bx bx-buoy",
   },
   Guide: {
-    url: 'https://go.gov.sg/isomercms-guide/',
-    icon: 'bx bx-book'
+    url: "https://go.gov.sg/isomercms-guide/",
+    icon: "bx bx-book",
   },
   Settings: {
-    icon: 'bx bx-cog'
+    icon: "bx bx-cog",
   },
   Logout: {
-    icon: 'bx bx-log-out-circle'
-  }
+    icon: "bx bx-log-out-circle",
+  },
 }
 
 const Sidebar = ({ siteName, currPath }) => {
   const { setRedirectToLogout } = useRedirectHook()
-  const [lastUpdated, setLastUpdated] = useState('Updated')
+  const [lastUpdated, setLastUpdated] = useState("Updated")
   const [siteUrl, setSiteUrl] = useState()
   const { retrieveSiteUrl } = useSiteUrlHook()
 
@@ -94,9 +94,9 @@ const Sidebar = ({ siteName, currPath }) => {
       onError: (err) => {
         console.log(err)
         errorToast()
-      }
-    },
-  );
+      },
+    }
+  )
 
   useEffect(() => {
     let _isMounted = true
@@ -120,18 +120,19 @@ const Sidebar = ({ siteName, currPath }) => {
 
   // Highlight workspace sidebar tab when in collections layout
   const convertCollectionsPathToWorkspace = (currPath, siteName) => {
-    const currPathArr = currPath.split('/')
+    const currPathArr = currPath.split("/")
 
     // example path: /sites/demo-v2/folder/left-nav-one
-    if (currPathArr.length > 3 && currPathArr[3] === 'folder') return `/sites/${siteName}/workspace`
+    if (currPathArr.length > 3 && currPathArr[3] === "folder")
+      return `/sites/${siteName}/workspace`
 
-    return currPathArr.slice(0,4).join('/')
+    return currPathArr.slice(0, 4).join("/")
   }
 
   const generateContent = (title, siteName, pathname, isActive) => {
     switch (title) {
-      case 'Help':
-      case 'Guide':
+      case "Help":
+      case "Guide":
         return (
           <a
             className={`px-4 py-3 h-100 w-100 font-weight-bold text-dark ${elementStyles.noExtLink}`}
@@ -140,56 +141,62 @@ const Sidebar = ({ siteName, currPath }) => {
             rel="noopener noreferrer"
           >
             {title}
-            <div className='float-right'>
+            <div className="float-right">
               <i className={`text-dark ${typeInfoDict[title].icon}`} />
             </div>
           </a>
-          
         )
-      case 'Logout':
+      case "Logout":
         return (
           <a
             className="px-4 py-3 h-100 w-100 font-weight-bold"
             onClick={setRedirectToLogout}
           >
             Logout
-            <div className='float-right'>
+            <div className="float-right">
               <i className={`${typeInfoDict[title].icon}`} />
             </div>
           </a>
         )
-      case 'User':
+      case "User":
         return (
-          <div
-            className={`px-4 py-3 h-100 w-100 ${elementStyles.info}`}
-          >
-            Logged in as 
-            <br/>
-            @{localStorage.getItem(userIdKey)}
+          <div className={`px-4 py-3 h-100 w-100 ${elementStyles.info}`}>
+            Logged in as
+            <br />@{localStorage.getItem(userIdKey)}
           </div>
         )
       default:
         return (
           <Link
-            className={`px-4 py-3 h-100 w-100 font-weight-bold ${isActive ? '' : 'text-dark'}`}
+            className={`px-4 py-3 h-100 w-100 font-weight-bold ${
+              isActive ? "" : "text-dark"
+            }`}
             to={`/sites/${siteName}/${pathname}`}
           >
             {title}
-            { title in typeInfoDict && 'icon' in typeInfoDict[title] &&
-              <div className='float-right'>
-                <i className={`${isActive ? '' : 'text-dark'} ${typeInfoDict[title].icon}`} />
+            {title in typeInfoDict && "icon" in typeInfoDict[title] && (
+              <div className="float-right">
+                <i
+                  className={`${isActive ? "" : "text-dark"} ${
+                    typeInfoDict[title].icon
+                  }`}
+                />
               </div>
-            }
+            )}
           </Link>
         )
     }
   }
 
   const generateTab = (title, siteName, pathname) => {
-    const isActive = `/sites/${siteName}/${pathname}` === convertCollectionsPathToWorkspace(currPath, siteName)
+    const isActive =
+      `/sites/${siteName}/${pathname}` ===
+      convertCollectionsPathToWorkspace(currPath, siteName)
     return (
       <li
-        className={`d-flex p-0 ${isActive ? styles.active : ''} ${pathname === 'user' ? styles.noHover: ''}`}
+        className={`d-flex p-0 ${isActive ? styles.active : ""} ${
+          pathname === "user" ? styles.noHover : ""
+        }`}
         key={title}
       >
         {generateContent(title, siteName, pathname, isActive)}
@@ -201,40 +208,42 @@ const Sidebar = ({ siteName, currPath }) => {
     <div className={styles.adminSidebar}>
       <div>
         <div className={styles.siteIntro}>
-          <div className={`font-weight-bold ${styles.siteName}`}>{siteName}</div>
+          <div className={`font-weight-bold ${styles.siteName}`}>
+            {siteName}
+          </div>
           <div className={styles.siteInfo}>{siteUrl}</div>
           <div className={styles.siteInfo}>{lastUpdated}</div>
         </div>
         <div className={styles.sidebarNavigation}>
           <ul>
-            {sidebarContentPathDict.map(({ pathname, title }) => (
+            {sidebarContentPathDict.map(({ pathname, title }) =>
               generateTab(title, siteName, pathname)
-            ))}
+            )}
           </ul>
         </div>
       </div>
       <div className={styles.sidebarNavigation}>
-        <hr className="m-0"/>
+        <hr className="m-0" />
         <ul>
-          {sidebarSettingsPathDict.map(({ pathname, title }) => (
+          {sidebarSettingsPathDict.map(({ pathname, title }) =>
             generateTab(title, siteName, pathname)
-          ))}
+          )}
         </ul>
       </div>
       <div className={styles.sidebarNavigation}>
         <ul>
-          {sidebarUserDict.map(({ pathname, title }) => (
+          {sidebarUserDict.map(({ pathname, title }) =>
             generateTab(title, siteName, pathname)
-          ))}
+          )}
         </ul>
       </div>
     </div>
   )
-};
+}
 
-export default Sidebar;
+export default Sidebar
 
 Sidebar.propTypes = {
   siteName: PropTypes.string.isRequired,
   currPath: PropTypes.string.isRequired,
-};
+}

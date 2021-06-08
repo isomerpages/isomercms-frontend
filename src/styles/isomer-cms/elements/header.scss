@@ -1,6 +1,6 @@
-@import '@styles/isomer-cms/elements/variable';
+@import "@styles/isomer-cms/elements/variable";
 
-.header{
+.header {
   position: fixed;
   height: $header-height;
   background: $header-background;
@@ -16,33 +16,33 @@
   padding-right: 30px;
   top: 0;
 
-  .logo{
-    img{
+  .logo {
+    img {
       width: 180px;
     }
   }
 
-  .headerCenter{
+  .headerCenter {
     margin: 0 auto;
     flex-basis: 60%;
     text-align: center;
-    overflow:hidden;
+    overflow: hidden;
 
-    h1{
+    h1 {
       font-size: 20px;
-      min-width:0;
+      min-width: 0;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
   }
 
-  .headerLeft{
+  .headerLeft {
     float: left;
     flex-basis: 20%;
   }
 
-  .headerRight{
+  .headerRight {
     display: flex;
     flex-basis: 20%;
     justify-content: flex-end;

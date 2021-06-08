@@ -1,7 +1,6 @@
-@import '@styles/isomer-cms/elements/variable';
+@import "@styles/isomer-cms/elements/variable";
 
-
-.menuEditorSidebar{
+.menuEditorSidebar {
   overflow-y: scroll;
   margin-top: $header-height;
   padding-left: 20px;
@@ -13,14 +12,12 @@
   height: calc(100vh - #{$header-height});
   width: 400px;
 
-
-  .instructions{
+  .instructions {
     font-size: 14px;
     margin-bottom: -10px;
   }
 
-
-  h2{
+  h2 {
     margin: 0;
     margin-top: 20px;
     margin-bottom: 5px;
@@ -28,20 +25,19 @@
   }
 }
 
-.treeTitle{
+.treeTitle {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 
-  h2{
+  h2 {
     font-size: 16px;
     font-weight: bold;
   }
-
 }
 
-.navGroup{
+.navGroup {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -50,31 +46,31 @@
   margin-bottom: 4px;
   margin-left: -30px;
 
-  i{
+  i {
     color: $isomer-blue;
     font-size: 20px;
     padding-right: 5px;
   }
 
-  .transparent{
+  .transparent {
     opacity: 0 !important;
   }
 
-  .pageType{
+  .pageType {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
 
-    i{
+    i {
       font-size: 16px;
-      color: lighten($body-text,.5);
+      color: lighten($body-text, 0.5);
       padding-right: 5px;
     }
   }
 }
 
-.createNew{
+.createNew {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -89,20 +85,20 @@
   margin-top: 4px;
   margin-bottom: 4px;
 
-  i{
+  i {
     padding-right: 5px;
     font-size: 16px;
   }
 }
 
-.isDragging{
+.isDragging {
   border-radius: 3px;
   padding: 5px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   border: 1px solid $isomer-blue;
 }
 
-.isDraggingPlaceholderBox{
+.isDraggingPlaceholderBox {
   background: $base-background-dark;
   border-radius: 3px;
   padding: 5px;

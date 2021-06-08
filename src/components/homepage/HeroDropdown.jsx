@@ -1,12 +1,12 @@
-import React from 'react';
-import { Draggable,Droppable } from 'react-beautiful-dnd';
+import React from "react"
+import { Draggable, Droppable } from "react-beautiful-dnd"
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types"
 
-import styles from '@styles/App.module.scss';
-import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import styles from "@styles/App.module.scss"
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 
-import FormField from '@components/FormField';
+import FormField from "@components/FormField"
 
 /* eslint
   react/no-array-index-key: 0
@@ -24,42 +24,54 @@ const HeroDropdownElem = ({
 }) => (
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
-      <h2>
-        {title}
-      </h2>
-      <button type="button" id={`dropdownelem-${dropdownsIndex}-toggle`} onClick={displayHandler}>
-        <i className={`bx ${shouldDisplay ? 'bx-chevron-down' : 'bx-chevron-right'}`} id={`dropdownelem-${dropdownsIndex}-icon`} />
+      <h2>{title}</h2>
+      <button
+        type="button"
+        id={`dropdownelem-${dropdownsIndex}-toggle`}
+        onClick={displayHandler}
+      >
+        <i
+          className={`bx ${
+            shouldDisplay ? "bx-chevron-down" : "bx-chevron-right"
+          }`}
+          id={`dropdownelem-${dropdownsIndex}-icon`}
+        />
       </button>
     </div>
-    { shouldDisplay
-      ? (
-        <>
-          <div className={elementStyles.cardContent}>
-            <FormField
-              title="Dropdown element title"
-              id={`dropdownelem-${dropdownsIndex}-title`}
-              value={title}
-              errorMessage={errors.title}
-              isRequired
-              onFieldChange={onFieldChange}
-            />
-            <FormField
-              title="Dropdown element URL"
-              id={`dropdownelem-${dropdownsIndex}-url`}
-              value={url}
-              errorMessage={errors.url}
-              isRequired
-              onFieldChange={onFieldChange}
-            />
-          </div>
-          <div className={elementStyles.inputGroup}>
-            <button type="button" id={`dropdownelem-${dropdownsIndex}-delete`} className={`ml-auto ${elementStyles.warning}`} onClick={deleteHandler}>Delete dropdown element</button>
-          </div>
-        </>
-      )
-      : null}
+    {shouldDisplay ? (
+      <>
+        <div className={elementStyles.cardContent}>
+          <FormField
+            title="Dropdown element title"
+            id={`dropdownelem-${dropdownsIndex}-title`}
+            value={title}
+            errorMessage={errors.title}
+            isRequired
+            onFieldChange={onFieldChange}
+          />
+          <FormField
+            title="Dropdown element URL"
+            id={`dropdownelem-${dropdownsIndex}-url`}
+            value={url}
+            errorMessage={errors.url}
+            isRequired
+            onFieldChange={onFieldChange}
+          />
+        </div>
+        <div className={elementStyles.inputGroup}>
+          <button
+            type="button"
+            id={`dropdownelem-${dropdownsIndex}-delete`}
+            className={`ml-auto ${elementStyles.warning}`}
+            onClick={deleteHandler}
+          >
+            Delete dropdown element
+          </button>
+        </div>
+      </>
+    ) : null}
   </div>
-);
+)
 
 const HeroDropdown = ({
   title,
@@ -88,8 +100,8 @@ const HeroDropdown = ({
           ref={droppableProvided.innerRef}
           {...droppableProvided.droppableProps}
         >
-          { (options && options.length > 0)
-            ? <>
+          {options && options.length > 0 ? (
+            <>
               <b>Hero dropdown options</b>
               {options.map((option, dropdownsIndex) => (
                 <Draggable
@@ -121,16 +133,23 @@ const HeroDropdown = ({
                 </Draggable>
               ))}
             </>
-            : null}
+          ) : null}
           {droppableProvided.placeholder}
-          <button type="button" id={`dropdownelem-${options.length}-create`} className={`ml-auto ${elementStyles.blue}`} onClick={createHandler}>Create dropdown element</button>
+          <button
+            type="button"
+            id={`dropdownelem-${options.length}-create`}
+            className={`ml-auto ${elementStyles.blue}`}
+            onClick={createHandler}
+          >
+            Create dropdown element
+          </button>
         </div>
       )}
     </Droppable>
   </div>
-);
+)
 
-export default HeroDropdown;
+export default HeroDropdown
 
 HeroDropdownElem.propTypes = {
   title: PropTypes.string,
@@ -144,7 +163,7 @@ HeroDropdownElem.propTypes = {
     title: PropTypes.string,
     url: PropTypes.string,
   }).isRequired,
-};
+}
 
 HeroDropdown.propTypes = {
   title: PropTypes.string,
@@ -161,7 +180,7 @@ HeroDropdown.propTypes = {
       onFieldChange: PropTypes.func.isRequired,
       shouldDisplay: PropTypes.bool.isRequired,
       displayHandler: PropTypes.func.isRequired,
-    }),
+    })
   ).isRequired,
   errors: PropTypes.shape({
     sections: PropTypes.arrayOf(
@@ -169,13 +188,13 @@ HeroDropdown.propTypes = {
         hero: PropTypes.shape({
           dropdown: PropTypes.string,
         }),
-      }),
+      })
     ),
     dropdownElems: PropTypes.arrayOf(
       PropTypes.shape({
         title: PropTypes.string,
         url: PropTypes.string,
-      }),
+      })
     ),
   }).isRequired,
-};
+}

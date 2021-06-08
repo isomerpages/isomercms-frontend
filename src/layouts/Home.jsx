@@ -1,16 +1,20 @@
-import React from 'react';
+import React from "react"
 
-import uuid from 'uuid';
+import uuid from "uuid"
 
-import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 
-const UUID = uuid.v4();
+const UUID = uuid.v4()
 
 export default function Home() {
   return (
     <div className={elementStyles.loginDiv}>
       <div>
-        <img className={elementStyles.loginImage} src={`${process.env.PUBLIC_URL}/img/logo.svg`} alt="Isomer CMS logo" />
+        <img
+          className={elementStyles.loginImage}
+          src={`${process.env.PUBLIC_URL}/img/logo.svg`}
+          alt="Isomer CMS logo"
+        />
         <button
           type="button"
           onClick={() => {
