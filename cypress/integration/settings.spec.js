@@ -1,5 +1,3 @@
-import { describe, before } from "@jest/globals"
-
 describe("Settings page", () => {
   const COOKIE_NAME = Cypress.env("COOKIE_NAME")
   const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")

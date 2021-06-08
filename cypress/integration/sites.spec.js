@@ -1,5 +1,3 @@
-import { describe, before } from "@jest/globals"
-
 describe("Sites page", () => {
   const CMS_BASEURL = Cypress.env("BASEURL")
   const COOKIE_NAME = Cypress.env("COOKIE_NAME")

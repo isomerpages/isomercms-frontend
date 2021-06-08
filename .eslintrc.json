@@ -23,6 +23,10 @@
   },
   "globals": {
     "cy": "readonly",
-    "Cypress": "readonly"
+    "Cypress": "readonly",
+    "describe": "readonly",
+    "it": "readonly",
+    "after": "readonly",
+    "before": "readonly"
   }
 }

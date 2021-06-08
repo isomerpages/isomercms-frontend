@@ -1,4 +1,3 @@
-import { describe, before, after } from "@jest/globals"
 import "cypress-file-upload"
 import { generateImageorFilePath, slugifyCategory } from "../../src/utils"
 

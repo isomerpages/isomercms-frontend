@@ -1,4 +1,3 @@
-import { describe, before } from "@jest/globals"
 import "cypress-file-upload"
 import {
   slugifyCategory,
