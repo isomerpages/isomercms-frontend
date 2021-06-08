@@ -30,11 +30,7 @@ const NewSectionCreator = ({ createHandler, hasResources }) => {
         <Dropdown
           options={options}
           defaultOption={defaultText}
-<<<<<<< HEAD
           emptyDefault
-=======
-          emptyDefault={true}
->>>>>>> develop
           name="newSection"
           id="section-new"
           onFieldChange={(e) => setNewSectionType(e.target.value)}

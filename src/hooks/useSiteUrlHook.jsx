@@ -42,21 +42,11 @@ const useSiteUrlHook = () => {
     return localStorageSiteUrl
   }
 
-<<<<<<< HEAD
   const retrieveStagingUrl = async (siteName) =>
     await retrieveUrl(siteName, "staging")
 
   const retrieveSiteUrl = async (siteName) =>
     await retrieveUrl(siteName, "site")
-=======
-  const retrieveStagingUrl = async (siteName) => {
-    return await retrieveUrl(siteName, "staging")
-  }
-
-  const retrieveSiteUrl = async (siteName) => {
-    return await retrieveUrl(siteName, "site")
-  }
->>>>>>> develop
 
   return { retrieveStagingUrl, retrieveSiteUrl }
 }

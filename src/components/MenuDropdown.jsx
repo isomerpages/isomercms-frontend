@@ -47,11 +47,7 @@ const MenuItem = ({ item, menuIndex, dropdownRef, className }) => {
       <div id={`${itemId}-${menuIndex}`} className={elementStyles.dropdownText}>
         {itemName}
       </div>
-<<<<<<< HEAD
       <div className="ml-auto">{children}</div>
-=======
-      <div className={"ml-auto"}>{children}</div>
->>>>>>> develop
     </div>
   )
 }
@@ -62,7 +58,6 @@ const MenuDropdown = ({
   dropdownRef,
   tabIndex,
   onBlur,
-<<<<<<< HEAD
 }) => (
   <div
     className={`${elementStyles.dropdown} ${elementStyles.right}`}
@@ -82,28 +77,5 @@ const MenuDropdown = ({
       ))}
   </div>
 )
-=======
-}) => {
-  return (
-    <div
-      className={`${elementStyles.dropdown} ${elementStyles.right}`}
-      ref={dropdownRef}
-      tabIndex={tabIndex}
-      onBlur={onBlur}
-    >
-      {dropdownItems
-        .filter((x) => x)
-        .map((item) => (
-          <MenuItem
-            key={`${item.type || item.itemId}-${menuIndex}`}
-            item={item}
-            menuIndex={menuIndex}
-            dropdownRef={dropdownRef}
-          />
-        ))}
-    </div>
-  )
-}
->>>>>>> develop
 
 export { MenuItem, MenuDropdown }

@@ -90,11 +90,7 @@ const FolderCreationModal = ({
 
   const folderNameChangeHandler = (event) => {
     const { value } = event.target
-<<<<<<< HEAD
     const errorMessage = validateCategoryName(value, "page", existingSubfolders)
-=======
-    let errorMessage = validateCategoryName(value, "page", existingSubfolders)
->>>>>>> develop
     setTitle(value)
     setErrors(errorMessage)
   }
@@ -120,13 +116,7 @@ const FolderCreationModal = ({
   }
 
   const sortFuncs = {
-<<<<<<< HEAD
     title: (a, b) => a.fileName.localeCompare(b.fileName),
-=======
-    title: (a, b) => {
-      return a.fileName.localeCompare(b.fileName)
-    },
->>>>>>> develop
   }
 
   const sortOrderChangeHandler = (option) => {
@@ -196,11 +186,7 @@ const FolderCreationModal = ({
                           displayText={deslugifyPage(pageData.fileName)}
                           settingsToggle={() => {}}
                           key={pageData.fileName}
-<<<<<<< HEAD
                           pageType="file"
-=======
-                          pageType={"file"}
->>>>>>> develop
                           siteName={siteName}
                           itemIndex={pageIdx}
                           selectedIndex={selectedFiles[pageData.fileName]}
@@ -217,11 +203,7 @@ const FolderCreationModal = ({
             </div>
             <div className={contentStyles.sectionFooter}>
               <LoadingButton
-<<<<<<< HEAD
                 label="Cancel"
-=======
-                label={`Cancel`}
->>>>>>> develop
                 disabledStyle={elementStyles.disabled}
                 className={`${elementStyles.warning}`}
                 callback={() => setIsFolderCreationActive(false)}

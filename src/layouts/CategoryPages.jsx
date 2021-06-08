@@ -123,7 +123,7 @@ const CategoryPages = ({ match, location, isResource }) => {
               {collectionName ? (
                 <span>
                   <strong className="ml-1">
-                    {" "}
+                    {" > "}
                     {deslugifyDirectory(collectionName)}
                   </strong>
                 </span>

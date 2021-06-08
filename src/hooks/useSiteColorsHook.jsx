@@ -42,13 +42,8 @@ const useSiteColorsHook = () => {
   const generatePageStyleSheet = (siteName) => {
     const siteColors = getLocalStorageSiteColors()
 
-<<<<<<< HEAD
     let { primaryColor } = defaultSiteColors.default
     let { secondaryColor } = defaultSiteColors.default
-=======
-    let primaryColor = defaultSiteColors.default.primaryColor
-    let secondaryColor = defaultSiteColors.default.secondaryColor
->>>>>>> develop
 
     if (siteColors[siteName]) {
       const {

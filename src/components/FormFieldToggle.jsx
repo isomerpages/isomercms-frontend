@@ -27,13 +27,8 @@ const FormFieldToggle = ({ title, value, id, onFieldChange }) => (
       >
         <ToggleButton
           className={elementStyles.formToggleInput}
-<<<<<<< HEAD
           inactiveLabel=""
           activeLabel=""
-=======
-          inactiveLabel={""}
-          activeLabel={""}
->>>>>>> develop
           thumbIcon={
             <span
               className={`bx bx-xs ${
