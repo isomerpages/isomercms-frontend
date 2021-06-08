@@ -53,6 +53,8 @@ import {
 } from "@utils/markdownToolbar"
 import { errorToast, successToast } from "@utils/toasts"
 
+import "easymde/dist/easymde.min.css"
+import "@styles/isomer-template.scss"
 import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 import editorStyles from "@styles/isomer-cms/pages/Editor.module.scss"
 
@@ -62,9 +64,6 @@ import HyperlinkModal from "@components/HyperlinkModal"
 import LoadingButton from "@components/LoadingButton"
 import MediaModal from "@components/media/MediaModal"
 import MediaSettingsModal from "@components/media/MediaSettingsModal"
-
-import "easymde/dist/easymde.min.css"
-import "@styles/isomer-template.scss"
 
 // axios settings
 axios.defaults.withCredentials = true

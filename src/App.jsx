@@ -5,16 +5,12 @@ import { ToastContainer } from "react-toastify"
 
 import axios from "axios"
 
-// Import contexts
 import { LoginProvider } from "@contexts/LoginContext"
 
-// Styles
+import "react-toastify/dist/ReactToastify.css"
 import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 
-// Import route selector
 import { RouteSelector } from "@routing/RouteSelector"
-
-import "react-toastify/dist/ReactToastify.css"
 
 // axios settings
 axios.defaults.withCredentials = true

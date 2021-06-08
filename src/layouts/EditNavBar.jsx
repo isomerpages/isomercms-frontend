@@ -18,6 +18,7 @@ import TemplateNavBar from "@templates/NavBar"
 import { errorToast } from "@utils/toasts"
 import { validateLink } from "@utils/validators"
 
+import "@styles/isomer-template.scss"
 import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 import editorStyles from "@styles/isomer-cms/pages/Editor.module.scss"
 
@@ -26,8 +27,6 @@ import GenericWarningModal from "@components/GenericWarningModal"
 import Header from "@components/Header"
 import LoadingButton from "@components/LoadingButton"
 import NavSection from "@components/navbar/NavSection"
-
-import "@styles/isomer-template.scss"
 
 const RADIX_PARSE_INT = 10
 

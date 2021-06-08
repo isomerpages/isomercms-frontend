@@ -27,6 +27,7 @@ import {
   validateSections,
 } from "@utils/validators"
 
+import "@styles/isomer-template.scss"
 import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 import editorStyles from "@styles/isomer-cms/pages/Editor.module.scss"
 
@@ -38,8 +39,6 @@ import EditorInfopicSection from "@components/homepage/InfopicSection"
 import NewSectionCreator from "@components/homepage/NewSectionCreator"
 import EditorResourcesSection from "@components/homepage/ResourcesSection"
 import LoadingButton from "@components/LoadingButton"
-
-import "@styles/isomer-template.scss"
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */

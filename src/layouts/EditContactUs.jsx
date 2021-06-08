@@ -27,6 +27,7 @@ import validateFrontMatter from "@utils/contact-us/validators"
 import { errorToast } from "@utils/toasts"
 import { validateContactType, validateLocationType } from "@utils/validators"
 
+import "@styles/isomer-template.scss"
 import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 import editorStyles from "@styles/isomer-cms/pages/Editor.module.scss"
 
@@ -36,8 +37,6 @@ import FormField from "@components/FormField"
 import GenericWarningModal from "@components/GenericWarningModal"
 import Header from "@components/Header"
 import LoadingButton from "@components/LoadingButton"
-
-import "@styles/isomer-template.scss"
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */

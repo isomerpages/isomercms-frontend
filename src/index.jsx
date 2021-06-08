@@ -6,8 +6,8 @@ import { Integrations } from "@sentry/tracing"
 
 import App from "@src/App"
 
-import "@styles/index.scss"
 import "sgds-govtech/css/sgds.css"
+import "@styles/index.scss"
 
 if (
   process.env.REACT_APP_SENTRY_ENV === "staging" ||
