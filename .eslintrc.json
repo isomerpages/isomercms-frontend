@@ -21,6 +21,22 @@
   ],
   "rules": {
   },
+  "settings": {
+    "import/resolver": {
+      "alias": [
+            ["@root", "./"],
+            ["@src", "./src"],
+            ["@components", "./src/components"],
+            ["@contexts", "./src/contexts"],
+            ["@hooks", "./src/hooks"],
+            ["@layouts", "./src/layouts"],
+            ["@routing", "./src/routing"],
+            ["@styles", "./src/styles"],
+            ["@templates", "./src/templates"],
+            ["@utils", "./src/utils"]
+        ]
+    }
+  },
   "globals": {
     "cy": "readonly",
     "Cypress": "readonly",
