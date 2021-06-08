@@ -22,7 +22,7 @@
 .toastInfo {
   @extend .toast;
   background: $toast-info;
-  border: 1px solid #224BA3;
+  border: 1px solid #224ba3;
 }
 
 .toastSuccess {
@@ -34,14 +34,14 @@
 .toastError {
   @extend .toast;
   background: $toast-error;
-  border: 1px solid #A01207;
+  border: 1px solid #a01207;
 }
 
 .toastWarning {
   @extend .toast;
   background: $toast-warning;
   color: $toast-warning-text;
-  border: 1px solid #D6B02C;
+  border: 1px solid #d6b02c;
   i {
     color: $toast-warning-text;
   }

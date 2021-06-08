@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import React from "react"
+import PropTypes from "prop-types"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
 const FormFieldColor = ({
   title,
@@ -35,9 +35,9 @@ const FormFieldColor = ({
     </div>
     {/* <span className={elementStyles.error}>{errorMessage}</span> */}
   </>
-);
+)
 
-export default FormFieldColor;
+export default FormFieldColor
 
 FormFieldColor.propTypes = {
   title: PropTypes.string.isRequired,
@@ -48,9 +48,9 @@ FormFieldColor.propTypes = {
   onColorClick: PropTypes.func.isRequired,
   isRequired: PropTypes.bool.isRequired,
   style: PropTypes.string,
-};
+}
 
 FormFieldColor.defaultProps = {
   defaultValue: undefined,
   style: undefined,
-};
+}

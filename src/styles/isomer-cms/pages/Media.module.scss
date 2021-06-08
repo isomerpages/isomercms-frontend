@@ -1,4 +1,4 @@
-@import '../elements/variable';
+@import "../elements/variable";
 
 @mixin single-site {
   margin-right: $site-margin-horizontal;
@@ -10,7 +10,7 @@
 }
 
 @mixin checkered-background-grid {
-  background-image: url('../../img/transparent_bg.jpg');
+  background-image: url("../../img/transparent_bg.jpg");
   background-size: 20px 20px;
   background-repeat: repeat;
 }
@@ -38,7 +38,7 @@
   position: relative;
 }
 
-.mediaCards{
+.mediaCards {
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -47,96 +47,95 @@
   padding-bottom: 50px;
   width: 100%;
 
-    &:after {
-      content: '';
-      flex: auto;
+  &:after {
+    content: "";
+    flex: auto;
+  }
+
+  .selectedMediaCard {
+    outline: 2px solid $isomer-blue;
+    @extend .mediaCard;
+  }
+
+  .mediaCard {
+    @include single-site;
+    background: white;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+    border: none;
+    box-sizing: border-box;
+    transition: transform 0.2s ease-in;
+    min-width: 250px;
+    width: $component-card-width;
+    height: $component-card-height;
+    margin-right: $component-card-margin;
+    margin-bottom: $component-card-margin;
+
+    .mediaCardPreviewContainer {
+      height: 70%;
+      width: 100%;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .mediaCardImagePreviewContainer {
+      @extend .mediaCardPreviewContainer;
+      @include checkered-background-grid;
+
+      .mediaCardImage {
+        max-height: 100%;
+      }
     }
 
-    .selectedMediaCard{
-      outline: 2px solid $isomer-blue;
-      @extend .mediaCard;
+    .mediaCardFilePreviewContainer {
+      @extend .mediaCardPreviewContainer;
+      background: rgb(216, 216, 216);
+
+      p {
+        color: rgb(102, 102, 102);
+        font-weight: bold;
+        font-size: 30px;
+        margin-top: 10%;
+      }
     }
 
-    .mediaCard{
-      @include single-site;
-      background: white;
-      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
-      border: none;
-      box-sizing: border-box;
-      transition: transform 0.2s ease-in;
-      min-width: 250px;
-      width: $component-card-width;
-      height: $component-card-height;
-      margin-right: $component-card-margin;
-      margin-bottom: $component-card-margin;
+    .mediaCardDescription {
+      height: 30%;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding-left: 15px;
+      padding-right: 15px;
 
-      .mediaCardPreviewContainer {
-        height: 70%;
+      .mediaCardName {
+        color: black;
+        font-size: x-large;
         width: 100%;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
+        font-size: 0.9em;
+        color: $body-text;
+        margin-bottom: 5px;
         overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .mediaCardImagePreviewContainer {
-        @extend .mediaCardPreviewContainer;
-        @include checkered-background-grid;
-
-        .mediaCardImage {
-          max-height: 100%;
-        }
-
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
 
-      .mediaCardFilePreviewContainer {
-        @extend .mediaCardPreviewContainer;
-        background: rgb(216, 216, 216);
-
-        p {
-          color: rgb(102, 102, 102);
-          font-weight: bold;
-          font-size: 30px;
-          margin-top: 10%;
-        }
-      }
-
-      .mediaCardDescription{
-        height: 30%;
+      .mediaCardDate {
         width: 100%;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        padding-left: 15px;
-        padding-right: 15px;
-
-        .mediaCardName{
-          color: black;
-          font-size: x-large;
-          width: 100%;
-          font-size: .9em;
-          color: $body-text;
-          margin-bottom: 5px;
-          overflow:hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-        }
-
-        .mediaCardDate{
-          width: 100%;
-          font-weight: 300;
-          color: $body-grey;
-          font-size: .6em;
-        }
+        font-weight: 300;
+        color: $body-grey;
+        font-size: 0.6em;
       }
+    }
 
-      &:hover{
-        cursor: pointer;
-      }
+    &:hover {
+      cursor: pointer;
     }
   }
+}
 
 .editMediaPreview {
   width: 100%;

@@ -1,6 +1,6 @@
-@import '../elements/variable';
+@import "../elements/variable";
 
-.homepageEditorSidebar{
+.homepageEditorSidebar {
   width: $homepage-editor-sidebar-width;
   background: $base-background-light;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
@@ -11,7 +11,7 @@
   height: calc(100vh - #{$header-height} - #{$footer-height});
 }
 
-.homepageEditorMain{
+.homepageEditorMain {
   width: calc(100vw - #{$homepage-editor-sidebar-width});
   height: calc(100vh - #{$header-height} - #{$footer-height});
   box-sizing: border-box;
@@ -19,7 +19,7 @@
   position: relative;
 }
 
-.contactUsEditorMain{
+.contactUsEditorMain {
   width: calc(100vw - #{$homepage-editor-sidebar-width});
   height: calc(100vh - #{$header-height} - #{$footer-height});
   box-sizing: border-box;
@@ -28,7 +28,7 @@
   background-color: white;
 }
 
-.pageEditorSidebar{
+.pageEditorSidebar {
   width: $page-editor-sidebar-width;
   background: $base-background-light;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
@@ -39,23 +39,23 @@
   position: relative;
 }
 
-.pageEditorSidebarLoading{
+.pageEditorSidebarLoading {
   opacity: 0.5;
   pointer-events: none;
 
-  .sidebarLoadingIcon{
+  .sidebarLoadingIcon {
     position: absolute;
     z-index: 2;
     top: 50%;
     left: 50%;
   }
 
-  .hideSidebarLoadingIcon{
+  .hideSidebarLoadingIcon {
     visibility: hidden;
   }
 }
 
-.pageEditorSidebarDisabled{
+.pageEditorSidebarDisabled {
   width: 100%;
   top: 50%;
   pointer-events: none;
@@ -66,18 +66,18 @@
   margin-bottom: -100px;
 }
 
-.pageEditorMain{
+.pageEditorMain {
   transform: scale(0.95);
   transform-origin: center;
   width: calc(100vw - #{$page-editor-sidebar-width});
-  left: $page-editor-sidebar-width;;
+  left: $page-editor-sidebar-width;
   box-sizing: border-box;
   overflow-y: auto;
   height: calc(100vh - #{$header-height} - #{$footer-height});
   background-color: white;
 }
 
-.pageEditorFooter{
+.pageEditorFooter {
   height: $footer-height;
   background: white;
   box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.5);

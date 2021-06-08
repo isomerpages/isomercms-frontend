@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react"
+import PropTypes from "prop-types"
 
 export default function LoadingButton(props) {
   // extract props
@@ -11,7 +11,7 @@ export default function LoadingButton(props) {
     callback,
     isLoading,
     ...remainingProps
-  } = props;
+  } = props
 
   return (
     <button
@@ -22,12 +22,13 @@ export default function LoadingButton(props) {
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...remainingProps}
     >
-      {isLoading
-        ? (
-          <div className="spinner-border text-primary" role="status" />
-        ) : label}
+      {isLoading ? (
+        <div className="spinner-border text-primary" role="status" />
+      ) : (
+        label
+      )}
     </button>
-  );
+  )
 }
 
 LoadingButton.propTypes = {
@@ -37,8 +38,8 @@ LoadingButton.propTypes = {
   className: PropTypes.string.isRequired,
   callback: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
-};
+}
 
 LoadingButton.defaultProps = {
   disabled: false,
-};
+}

@@ -1,9 +1,18 @@
-import React from 'react';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import FormField from './FormField'
-import FormFieldMedia from './FormFieldMedia';
+import React from "react"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import FormField from "./FormField"
+import FormFieldMedia from "./FormFieldMedia"
 
-const ResourceFormFields = ({date, errors, changeHandler, onToggle, isPost, setIsPost, siteName, fileUrl}) => {
+const ResourceFormFields = ({
+  date,
+  errors,
+  changeHandler,
+  onToggle,
+  isPost,
+  setIsPost,
+  siteName,
+  fileUrl,
+}) => {
   const onToggleType = (e) => {
     onToggle(e)
     setIsPost(!isPost)
@@ -23,7 +32,7 @@ const ResourceFormFields = ({date, errors, changeHandler, onToggle, isPost, setI
             onFieldChange={(e) => changeHandler(e)}
           />
         </div>
-        
+
         <div className="col-8">
           <p className={elementStyles.formLabel}>Resource Type</p>
           {/* Permalink or File URL */}
@@ -57,7 +66,7 @@ const ResourceFormFields = ({date, errors, changeHandler, onToggle, isPost, setI
       <FormFieldMedia
         title="Select File"
         id="fileUrl"
-        value={fileUrl?.split('/').pop()}
+        value={fileUrl?.split("/").pop()}
         errorMessage={errors.fileUrl}
         onFieldChange={changeHandler}
         inlineButtonText={"Select File"}

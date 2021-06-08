@@ -1,26 +1,23 @@
 {
   "env": {
-      "browser": true,
-      "es2021": true,
-      "jest": true
+    "browser": true,
+    "es2021": true,
+    "jest": true
   },
   "extends": [
-      "plugin:react/recommended",
-      "airbnb",
-      "plugin:prettier/recommended"
+    "plugin:react/recommended",
+    "airbnb",
+    "plugin:prettier/recommended"
   ],
   "parserOptions": {
-      "ecmaFeatures": {
-          "jsx": true
-      },
-      "ecmaVersion": 12,
-      "sourceType": "module"
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
   },
-  "plugins": [
-      "react"
-  ],
-  "rules": {
-  },
+  "plugins": ["react"],
+  "rules": {},
   "globals": {
     "cy": "readonly",
     "Cypress": "readonly",

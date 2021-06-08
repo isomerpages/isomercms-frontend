@@ -1,4 +1,4 @@
-@import '../elements/variable';
+@import "../elements/variable";
 
 @mixin cardFormat {
   width: 100%;
@@ -8,7 +8,7 @@
   flex-wrap: wrap;
 }
 
-.mainSection{
+.mainSection {
   display: flex;
   width: calc(100vw - #{$sidebar-width});
   flex-direction: column;
@@ -22,7 +22,7 @@
   overflow-y: scroll;
 }
 
-.sectionHeader{
+.sectionHeader {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -32,13 +32,13 @@
   margin-bottom: 1.5rem;
   margin-top: 1rem;
 
-  .sectionTitle{
+  .sectionTitle {
     font-size: 28px;
     color: $isomer-blue;
     text-align: left;
   }
 
-  button{
+  button {
     float: right;
   }
 }
@@ -58,17 +58,15 @@
   }
 }
 
-
-
-.contentContainerBars{
+.contentContainerBars {
   width: 100%;
-  ul{
+  ul {
     width: 100%;
     box-sizing: border-box;
     list-style-position: outside;
     padding: 0;
     list-style-type: none;
-    li{
+    li {
       display: flex;
       flex-direction: row;
       justify-content: center;
@@ -87,15 +85,15 @@
       margin-bottom: 20px;
       padding: 30px;
 
-      .bx{
+      .bx {
         font-size: 20px;
       }
 
-      &:hover{
+      &:hover {
         transform: translateY(-5px);
       }
 
-      a{
+      a {
         width: 100%;
         color: $body-text;
         line-height: 20px;
@@ -104,7 +102,7 @@
   }
 }
 
-.contentContainerCards{
+.contentContainerCards {
   //this is used in the setting page
   width: 100%;
   display: flex;
@@ -114,43 +112,43 @@
   background: white;
   margin-bottom: 50px;
 
-  .cardContainer{
+  .cardContainer {
     // flex: 1 0 calc(25% - 20px);
     margin: 10px;
     padding: 10px;
     width: 45%;
-    
-    .card{
+
+    .card {
       box-sizing: border-box;
     }
   }
 }
 
-.contentContainerFolderRow{
+.contentContainerFolderRow {
   display: flex;
   flex-direction: row;
   width: 100%;
 }
 
-.contentContainerFolderRowMargin{
+.contentContainerFolderRowMargin {
   @extend .contentContainerFolderRow;
   margin-bottom: 2.5rem;
 }
 
-.contentContainerFolderColumn{
+.contentContainerFolderColumn {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-.contentContainerBoxes{
+.contentContainerBoxes {
   //this is used in the OverviewCard page
   @include cardFormat;
 
-  .boxesContainer{
+  .boxesContainer {
     @include cardFormat;
 
-    .card{
+    .card {
       width: $component-card-width;
       box-sizing: border-box;
       height: $component-card-height;
@@ -161,30 +159,30 @@
   }
 }
 
-.folderContainerBoxes{
+.folderContainerBoxes {
   //this is used in the FolderCard page
   @include cardFormat;
 
-  .boxesContainer{
+  .boxesContainer {
     @include cardFormat;
 
-    .card{
-      align-items:center;
+    .card {
+      align-items: center;
       width: $component-folder-width;
       box-sizing: border-box;
       height: $component-folder-height;
       margin-right: $component-folder-margin;
       margin-bottom: $component-folder-margin;
       min-width: 250px;
-      color:black;
+      color: black;
       text-overflow: ellipsis;
-      .componentIcon{
+      .componentIcon {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-content: flex-end;
 
-        .bx{
+        .bx {
           font-size: 20px;
         }
       }
@@ -192,124 +190,124 @@
   }
 }
 
-.card{
-  &.component{
-      height: 100%;
+.card {
+  &.component {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+    min-width: 250px;
+
+    .componentInfo {
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       justify-content: space-between;
       align-content: center;
-      min-width: 250px;
 
-      .componentInfo{
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-content: center;
-
-        .componentCategory{
-          text-transform: uppercase;
-          color: grey;
-          font-size: 12px;
-          letter-spacing: .5px;
-        }
-
-        .componentTitle{
-          font-size: 16px;
-          line-height: 24px;
-          padding-top: 16px;
-          padding-bottom: 8px;
-          height: 115px;
-          max-height: 115px;
-          overflow-y: scroll;
-          overflow-x: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .componentTitleLink{
-          @extend .componentTitle;
-          color: $isomer-blue;
-        }
-
-        .componentFolderName{
-          font-size: 16px;
-          line-height: 24px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .componentDate{
-          color: grey;
-          font-size: 12px;
-          line-height: 20px;
-        }
-
-        .componentType{
-          color: grey;
-          text-transform: uppercase;
-          font-size: 12px;
-          line-height: 20px;
-        }
-
-        .componentUpdated{
-          color: grey;
-          font-size: 12px;
-        }
+      .componentCategory {
+        text-transform: uppercase;
+        color: grey;
+        font-size: 12px;
+        letter-spacing: 0.5px;
       }
 
-      .componentIcon{
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        align-content: flex-end;
-
-        .bx{
-          font-size: 20px;
-        }
-      }
-
-      .optionsIcon{
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        align-content: flex-end;
-        line-height: 2rem;
-
-        &:hover {
-          background: rgba(43, 95, 206, 0.1);
-        }
-      }
-
-      // hack because we can't use inbuilt &:focus (focus used for dropdown onBlur)
-      .optionsIconFocus {
-        @extend .optionsIcon;
-        background: rgba(43, 95, 206, 0.3);
-      }
-
-      .folderInfo{
-        @extend .componentInfo;
-        flex-direction: row;
-        width: 100%;
-        height: 100%;
-        white-space: nowrap;
+      .componentTitle {
+        font-size: 16px;
+        line-height: 24px;
+        padding-top: 16px;
+        padding-bottom: 8px;
+        height: 115px;
+        max-height: 115px;
+        overflow-y: scroll;
+        overflow-x: hidden;
         text-overflow: ellipsis;
-        i {
-          vertical-align: middle;
-          line-height:inherit;
-        }
+      }
+
+      .componentTitleLink {
+        @extend .componentTitle;
+        color: $isomer-blue;
+      }
+
+      .componentFolderName {
+        font-size: 16px;
+        line-height: 24px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .componentDate {
+        color: grey;
+        font-size: 12px;
+        line-height: 20px;
+      }
+
+      .componentType {
+        color: grey;
+        text-transform: uppercase;
+        font-size: 12px;
+        line-height: 20px;
+      }
+
+      .componentUpdated {
+        color: grey;
+        font-size: 12px;
       }
     }
 
-    // &:hover{
-    //   transform: translateY(-5px);
-    // }
+    .componentIcon {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-content: flex-end;
+
+      .bx {
+        font-size: 20px;
+      }
+    }
+
+    .optionsIcon {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-content: flex-end;
+      line-height: 2rem;
+
+      &:hover {
+        background: rgba(43, 95, 206, 0.1);
+      }
+    }
+
+    // hack because we can't use inbuilt &:focus (focus used for dropdown onBlur)
+    .optionsIconFocus {
+      @extend .optionsIcon;
+      background: rgba(43, 95, 206, 0.3);
+    }
+
+    .folderInfo {
+      @extend .componentInfo;
+      flex-direction: row;
+      width: 100%;
+      height: 100%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      i {
+        vertical-align: middle;
+        line-height: inherit;
+      }
+    }
+  }
+
+  // &:hover{
+  //   transform: translateY(-5px);
+  // }
 }
 
-.segmentDividerContainer{
+.segmentDividerContainer {
   width: 100%;
 }
 
-.sectionFooter{
+.sectionFooter {
   height: $footer-height;
   background: white;
   box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.5);

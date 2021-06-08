@@ -1,8 +1,8 @@
-@import './variable';
-@import './buttons';
+@import "./variable";
+@import "./buttons";
 
-.inputGroup{
-    margin-bottom: 20px;
+.inputGroup {
+  margin-bottom: 20px;
 }
 
 p {
@@ -15,14 +15,14 @@ p {
   }
 }
 
-.formLabel{
+.formLabel {
   font-size: 14px;
   margin-bottom: 8px;
   line-height: 14px;
   padding-top: 20px;
 }
 
-.formSectionHeader{
+.formSectionHeader {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 8px;
@@ -31,70 +31,70 @@ p {
   padding-top: 20px;
 }
 
-.formHorizontal{
+.formHorizontal {
   display: flex;
   margin-bottom: 5px;
   margin-top: 5px;
 
-  .formHorizontalLabel{
+  .formHorizontalLabel {
     @extend .formLabel;
     padding-right: 5px;
     min-width: min-content;
     width: 20%;
   }
 
-  .formHorizontalInput{
+  .formHorizontalInput {
     max-width: 80%;
   }
 }
 
-.formToggle{
+.formToggle {
   @extend .formHorizontal;
-  padding-bottom:20px;
+  padding-bottom: 20px;
 
-  .formToggleLabel{
+  .formToggleLabel {
     @extend .formLabel;
     width: 25%;
     margin: 1px;
   }
 
-  .formToggleInput{
+  .formToggleInput {
     width: 75%;
   }
 }
 
-.formDropdown{
+.formDropdown {
   @extend .formHorizontal;
 
-  .formDropdownLabel{
+  .formDropdownLabel {
     @extend .formLabel;
     width: 25%;
     margin: 0px;
     padding: 0px;
   }
 
-  .formDropdownInput{
+  .formDropdownInput {
     width: 75%;
   }
 }
 
-.formColor{
+.formColor {
   display: flex;
   width: 50%;
   margin-bottom: 5px;
   margin-top: 5px;
 
-  .formColorLabel{
+  .formColorLabel {
     @extend .formLabel;
     width: 40%;
     margin: 1px;
   }
 
-  .formColorInput{
+  .formColorInput {
     width: 40%;
   }
 
-  .formColorBox{
+  .formColorBox {
     float: left;
     width: 50px;
     border: 0.5px solid black;
@@ -102,35 +102,36 @@ p {
   }
 }
 
-.formSave{
+.formSave {
   position: relative;
   width: 50%;
 
-  .formSaveButton{
+  .formSaveButton {
     position: absolute;
     right: 0px;
     bottom: 0px;
     margin-bottom: 20px;
   }
 
-  .formSaveButtonActive{
+  .formSaveButtonActive {
     @extend .blue;
     @extend .formSaveButton;
   }
 
-  .formSaveButtonDisabled{
+  .formSaveButtonDisabled {
     @extend .disabled;
     @extend .formSaveButton;
-  }    
+  }
 }
 
-input,textarea{
+input,
+textarea {
   border-radius: 3px;
   font-size: 14px;
   color: $body-text;
   width: 100%;
-  font-family: 'Lato', sans-serif;
-  border:1px solid #cccccc;
+  font-family: "Lato", sans-serif;
+  border: 1px solid #cccccc;
   padding: 10px;
   box-sizing: border-box;
 
@@ -141,26 +142,26 @@ input,textarea{
     line-height: 21px;
   }
 
-  &:focus{
+  &:focus {
     border: 1px solid $isomer-blue;
-    outline:none;
+    outline: none;
   }
 
-  &.error{
+  &.error {
     color: $body-text;
     border: 1px solid $error-red;
-    outline:none;
+    outline: none;
   }
 }
 
-input[type=radio] {
+input[type="radio"] {
   width: auto;
   margin-right: 8px;
 }
 
-.formFixedText{
+.formFixedText {
   font-size: 14px;
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
   margin: 0;
   padding: 10px;
   box-sizing: border-box;
@@ -183,5 +184,5 @@ input[type=radio] {
 
 .formToggleThumbIconDisabled {
   @extend .formToggleThumbIcon;
-  color: $body-grey
+  color: $body-grey;
 }
