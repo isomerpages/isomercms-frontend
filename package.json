@@ -102,5 +102,18 @@
     "@styles": "src/styles",
     "@templates": "src/templates",
     "@utils": "src/utils"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "^@src(.*)": "<rootDir>/src$1",
+      "^@components(.*)": "<rootDir>/src/components$1",
+      "^@contexts(.*)": "<rootDir>/src/contexts$1",
+      "^@hooks(.*)": "<rootDir>/src/hooks$1",
+      "^@layouts(.*)": "<rootDir>/src/layouts$1",
+      "^@routing(.*)": "<rootDir>/src/routing$1",
+      "^@styles(.*)": "<rootDir>/src/styles$1",
+      "^@templates(.*)": "<rootDir>/src/templates$1",
+      "^@utils(.*)": "<rootDir>/src/utils$1"
+    }
   }
 }
