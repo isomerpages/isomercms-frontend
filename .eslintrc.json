@@ -5,9 +5,9 @@
       "jest": true
   },
   "extends": [
-      "plugin:react/recommended",
-      "airbnb",
-      "prettier"
+        "plugin:react/recommended",
+        "airbnb",
+        "prettier"
   ],
   "parserOptions": {
       "ecmaFeatures": {
@@ -17,24 +17,30 @@
       "sourceType": "module"
   },
   "plugins": [
-      "react"
+      "react",
+      "simple-import-sort",
+      "import"
   ],
   "rules": {
+    "simple-import-sort/imports": "error"
   },
   "settings": {
     "import/resolver": {
-      "alias": [
-            ["@root", "./"],
-            ["@src", "./src"],
-            ["@components", "./src/components"],
-            ["@contexts", "./src/contexts"],
-            ["@hooks", "./src/hooks"],
-            ["@layouts", "./src/layouts"],
-            ["@routing", "./src/routing"],
-            ["@styles", "./src/styles"],
-            ["@templates", "./src/templates"],
-            ["@utils", "./src/utils"]
-        ]
+        "alias": {
+            "map": [
+                ["@root", "./"],
+                ["@src", "./src"],
+                ["@components", "./src/components"],
+                ["@contexts", "./src/contexts"],
+                ["@hooks", "./src/hooks"],
+                ["@layouts", "./src/layouts"],
+                ["@routing", "./src/routing"],
+                ["@styles", "./src/styles"],
+                ["@templates", "./src/templates"],
+                ["@utils", "./src/utils"]
+            ],
+            "extensions": [".js", ".jsx", ".scss"]
+        }
     }
   },
   "globals": {
