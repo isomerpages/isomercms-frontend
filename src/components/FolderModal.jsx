@@ -1,27 +1,29 @@
 import React, { useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
+
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import { useMutation, useQueryClient } from 'react-query';
-import elementStyles from '@styles/isomer-cms/Elements.module.scss';
-import SaveDeleteButtons from '@components/SaveDeleteButtons';
-import FormField from '@components/FormField';
 
 import {
   renameFolder,
-  renameSubfolder,
-  renameResourceCategory,
   renameMediaSubfolder,
+  renameResourceCategory,
+  renameSubfolder,
 } from '@src/api'
-
+import { DIR_CONTENT_KEY, DOCUMENT_CONTENTS_KEY, FOLDERS_CONTENT_KEY, IMAGE_CONTENTS_KEY, RESOURCE_ROOM_CONTENT_KEY } from '@src/constants';
 import {
   DEFAULT_RETRY_MSG,
-  slugifyCategory,
   deslugifyDirectory,
+  slugifyCategory,
 } from '@src/utils'
 
-import { validateCategoryName } from '@utils/validators'
 import { errorToast, successToast } from '@utils/toasts';
-import { DOCUMENT_CONTENTS_KEY, IMAGE_CONTENTS_KEY, DIR_CONTENT_KEY, FOLDERS_CONTENT_KEY, RESOURCE_ROOM_CONTENT_KEY } from '@src/constants';
+import { validateCategoryName } from '@utils/validators'
+
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+
+import FormField from '@components/FormField';
+import SaveDeleteButtons from '@components/SaveDeleteButtons';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -102,7 +104,7 @@ const FolderModal = ({ displayTitle, displayText, onClose, folderOrCategoryName,
   const folderNameChangeHandler = (event) => {
     const { value } = event.target
     const comparisonCategoryArray = subfolderName ? existingFolders.filter(name => name !== subfolderName) : existingFolders.filter(name => name !== folderOrCategoryName)
-    let errorMessage = validateCategoryName(value, folderType, comparisonCategoryArray)
+    const errorMessage = validateCategoryName(value, folderType, comparisonCategoryArray)
     setErrors(errorMessage)
     setNewDirectoryName(value)
   }

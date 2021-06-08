@@ -12,9 +12,7 @@ function isNotNullAndEqual(arrVal, othVal) {
 }
 
 function getContentDataField(content, dataType) {
-  const dataObj = _.find(content, (obj) => {
-    return dataType in obj && _.isString(obj[dataType])
-  })
+  const dataObj = _.find(content, (obj) => dataType in obj && _.isString(obj[dataType]))
   return _.cloneDeep(dataObj) || { [dataType]: "" }
 }
 

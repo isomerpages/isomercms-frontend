@@ -1,9 +1,13 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import elementStyles from '@styles/isomer-cms/Elements.module.scss';
-import FormField from '@components/FormField';
-import ContactFields from '@components/contact-us/ContactFields';
+
 import { isEmpty } from '@src/utils';
+
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+
+import ContactFields from '@components/contact-us/ContactFields';
+import FormField from '@components/FormField';
 
 /* eslint
   react/no-array-index-key: 0
@@ -19,8 +23,7 @@ const EditorContactCard = ({
   displayHandler,
   cardErrors,
   sectionId,
-}) => {
-  return (
+}) => (
   <div className={`${elementStyles.card} ${!shouldDisplay && !isEmpty(cardErrors) ? elementStyles.error : ''} move`}>
     <div className={elementStyles.cardHeader}>
       <h2>
@@ -56,7 +59,7 @@ const EditorContactCard = ({
       )
       : null}
   </div>
-)};
+);
 
 export default EditorContactCard;
 

@@ -1,9 +1,10 @@
-import "cypress-file-upload"
 import {
-  slugifyCategory,
-  generateResourceFileName,
   generatePageFileName,
+  generateResourceFileName,
+  slugifyCategory,
 } from "@src/utils"
+
+import "cypress-file-upload"
 
 Cypress.config("baseUrl", Cypress.env("BASEURL"))
 Cypress.config("defaultCommandTimeout", 5000)

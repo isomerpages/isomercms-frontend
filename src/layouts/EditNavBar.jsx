@@ -1,32 +1,33 @@
 import React, { useEffect, useState } from 'react';
+import { DragDropContext } from 'react-beautiful-dnd';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
+
+import update from 'immutability-helper';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import update from 'immutability-helper';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
-import { DragDropContext } from 'react-beautiful-dnd';
 
-import { DEFAULT_RETRY_MSG, deslugifyDirectory, isEmpty } from '@src/utils';
+import { getEditNavBarData, updateNavBarData } from '@src/api';
 import { NAVIGATION_CONTENT_KEY } from '@src/constants'
-import { validateLink } from '@utils/validators';
-import { errorToast } from '@utils/toasts';
+import { DEFAULT_RETRY_MSG, deslugifyDirectory, isEmpty } from '@src/utils';
 
 import useRedirectHook from '@hooks/useRedirectHook';
 
-import Header from '@components/Header';
-import LoadingButton from '@components/LoadingButton';
-import DeleteWarningModal from '@components/DeleteWarningModal';
-import GenericWarningModal from '@components/GenericWarningModal';
-import NavSection from '@components/navbar/NavSection'
-
 import TemplateNavBar from '@templates/NavBar'
 
-import '@styles/isomer-template.scss';
+import { errorToast } from '@utils/toasts';
+import { validateLink } from '@utils/validators';
+
 import elementStyles from '@styles/isomer-cms/Elements.module.scss';
 import editorStyles from '@styles/isomer-cms/pages/Editor.module.scss';
 
-// Import API
-import { getEditNavBarData, updateNavBarData } from '@src/api';
+import DeleteWarningModal from '@components/DeleteWarningModal';
+import GenericWarningModal from '@components/GenericWarningModal';
+import Header from '@components/Header';
+import LoadingButton from '@components/LoadingButton';
+import NavSection from '@components/navbar/NavSection'
+
+import '@styles/isomer-template.scss';
 
 const RADIX_PARSE_INT = 10
 
@@ -111,7 +112,7 @@ const EditNavBar =  ({ match }) => {
       case 'error':
         return ErrorConstructor();
       default:
-        return;
+        
     }
   };
 
@@ -221,7 +222,7 @@ const EditNavBar =  ({ match }) => {
   useEffect(() => {
     setHasChanges(JSON.stringify(originalNav) !== JSON.stringify({
       ...originalNav,
-      links: links
+      links
     }))
   }, [originalNav, links])
 
@@ -453,7 +454,7 @@ const EditNavBar =  ({ match }) => {
       switch (elemType) {
         case 'link': {
           const linkId = idArray[1];
-          let resetDisplayLinks = _.fill(Array(links.length), false)
+          const resetDisplayLinks = _.fill(Array(links.length), false)
           resetDisplayLinks[linkId] = !displayLinks[linkId]
           const newDisplayLinks = update(displayLinks, {
             $set: resetDisplayLinks,
@@ -465,7 +466,7 @@ const EditNavBar =  ({ match }) => {
         case 'sublink': {
           const linkId = idArray[1];
           const sublinkId = idArray[2]
-          let resetSublinkSections = _.fill(Array(displaySublinks[linkId].length), false)
+          const resetSublinkSections = _.fill(Array(displaySublinks[linkId].length), false)
           resetSublinkSections[sublinkId] = !displaySublinks[linkId][sublinkId]
           const newDisplaySublinks = update(displaySublinks, {
             [linkId]: {
@@ -582,13 +583,11 @@ const EditNavBar =  ({ match }) => {
         break
       }
       default:
-        return;
+        
     }
   }
 
-  const hasErrors = () => {
-    return !isEmpty(errors.links) || !isEmpty(errors.sublinks)
-  }
+  const hasErrors = () => !isEmpty(errors.links) || !isEmpty(errors.sublinks)
 
   return (
     <>
@@ -613,9 +612,9 @@ const EditNavBar =  ({ match }) => {
       }
       <Header
         siteName={siteName}
-        title={"Navigation Bar"}
+        title="Navigation Bar"
         shouldAllowEditPageBackNav={!hasChanges}
-        isEditPage={true}
+        isEditPage
         backButtonText="Back to My Workspace"
         backButtonUrl={`/sites/${siteName}/workspace`}
       />

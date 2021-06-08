@@ -1,8 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import PageHeader from '@templates/pageComponents/PageHeader';
-import LeftNav from '@templates/pageComponents/LeftNav';
+
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+
+import LeftNav from '@templates/pageComponents/LeftNav';
+import PageHeader from '@templates/pageComponents/PageHeader';
 
 const LeftNavPage = ({
   chunk,
@@ -10,8 +12,7 @@ const LeftNavPage = ({
   fileName,
   title,
   collection,
-}) => {
-  return (
+}) => (
     <div>
       <PageHeader title={title} collection={collection} />
       <section className="bp-section page-content-body">
@@ -26,7 +27,6 @@ const LeftNavPage = ({
       </section>
     </div>
   );
-};
 
 LeftNavPage.propTypes = {
   chunk: PropTypes.string.isRequired,

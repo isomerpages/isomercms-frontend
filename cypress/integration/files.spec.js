@@ -1,5 +1,6 @@
-import "cypress-file-upload"
 import { generateImageorFilePath, slugifyCategory } from "@src/utils"
+
+import "cypress-file-upload"
 
 describe("Files", () => {
   Cypress.config("baseUrl", Cypress.env("BASEURL"))

@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import FormField from '@components/FormField';
-import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+
 import { isEmpty } from '@src/utils'
+
+import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+
+import FormField from '@components/FormField';
 
 const DEFAULT_NUM_OPERATING_FIELDS = 5;
 
@@ -13,9 +17,7 @@ const LocationHoursFields = ({
   onFieldChange,
   errors,
   sectionId,
-}) => {
-  
-  return (
+}) => (
     <div className= "mt-4">
       <h6> Operating Hours </h6>
       { operatingHours && operatingHours.map( (operations, operationsIndex) => ( 
@@ -63,8 +65,7 @@ const LocationHoursFields = ({
         }
       </div>
   </div>
-  )
-};
+  );
 
 const LocationAddressFields = ({ 
   title,

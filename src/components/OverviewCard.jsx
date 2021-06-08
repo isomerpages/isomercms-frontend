@@ -1,21 +1,23 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef,useState } from 'react';
 import { Link } from 'react-router-dom';
+
 import axios from 'axios'
 import PropTypes from 'prop-types';
-import { MenuDropdown } from '@components/MenuDropdown'
-import FileMoveMenuDropdown from '@components/FileMoveMenuDropdown'
+
+// Import utils
+import {
+  deslugifyDirectory,
+  prettifyCollectionPageFileName,
+  prettifyDate,
+  prettifyPageFileName,
+  retrieveResourceFileMetadata,
+} from '@src/utils';
 
 import elementStyles from '@styles/isomer-cms/Elements.module.scss';
 import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
 
-// Import utils
-import {
-  prettifyCollectionPageFileName,
-  prettifyPageFileName,
-  prettifyDate,
-  retrieveResourceFileMetadata,
-  deslugifyDirectory,
-} from '@src/utils';
+import FileMoveMenuDropdown from '@components/FileMoveMenuDropdown'
+import { MenuDropdown } from '@components/MenuDropdown'
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -52,28 +54,26 @@ const OverviewCard = ({
   const generateLink = () => {
     if (isResource) {
       return `/sites/${siteName}/resources/${category}/${fileName}`
-    } else if (isHomepage) {
+    } if (isHomepage) {
       return `/sites/${siteName}/homepage`
-    } else {
+    } 
       if (category) {
         return `/sites/${siteName}/collections/${category}/${fileName}`
-      } else {
+      } 
         return `/sites/${siteName}/pages/${fileName}`
-      }
-    }
+      
+    
   }
 
   const generateTitle = () => {
     let title
     if (isResource) {
       title = retrieveResourceFileMetadata(fileName).title
-    } else {
-      if (category) {
+    } else if (category) {
         title = prettifyCollectionPageFileName(fileName)
       } else {
         title = prettifyPageFileName(fileName)
       }
-    }
     return title
   }
 
@@ -145,7 +145,7 @@ const OverviewCard = ({
               setMoveDropdownQuery={setMoveDropdownQuery}
               backHandler={toggleDropdownModals}
               moveHandler={() => {
-                setSelectedPath(`${moveDropdownQuery ? moveDropdownQuery : 'pages'}`)
+                setSelectedPath(`${moveDropdownQuery || 'pages'}`)
                 setCanShowMoveModal(true)
               }}
               moveDisabled={isResource && !moveDropdownQuery} // cannot move resources to Workspace

@@ -1,6 +1,7 @@
 import axios from "axios"
 
 import { DEFAULT_RETRY_MSG } from "@src/utils"
+
 import { errorToast } from "@utils/toasts.jsx"
 
 // axios settings

@@ -1,14 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect,useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+
 import PropTypes from 'prop-types';
 
 import { deslugifyPage } from '@src/utils'
-import { MenuDropdown } from '@components/MenuDropdown'
-import FileMoveMenuDropdown from '@components/FileMoveMenuDropdown'
 
 // Import styles
 import elementStyles from '@styles/isomer-cms/Elements.module.scss';
 import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
+
+import FileMoveMenuDropdown from '@components/FileMoveMenuDropdown'
+import { MenuDropdown } from '@components/MenuDropdown'
 
 const FolderContentItem = ({
     folderContentItem,
@@ -33,9 +35,7 @@ const FolderContentItem = ({
         const numItems = type === 'dir' 
             ? children.filter(name => !name.includes('.keep')).length 
             : null
-        const isFile = type === 'dir' 
-            ? false
-            : true
+        const isFile = type !== 'dir'
         const link = type === 'dir' 
             ? `/sites/${siteName}/folder/${folderName}/subfolder/${fileName}`
             : `/sites/${siteName}/folder/${folderName}/${path.includes('/') ? `subfolder/` : ''}${path}`
@@ -113,7 +113,7 @@ const FolderContentItem = ({
                     ? <span className={`${elementStyles.folderItemText} mr-5`}>{numItems} item{numItems === 1 ? '' : 's'}</span>
                     : null
                 }
-                <div className={`position-relative mt-auto mb-auto`}>
+                <div className="position-relative mt-auto mb-auto">
                     { !disableLink &&
                         <button
                             className={`${showDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
@@ -143,12 +143,12 @@ const FolderContentItem = ({
                             dropdownRef={fileMoveDropdownRef}
                             menuIndex={itemIndex}
                             onBlur={handleBlur}
-                            rootName={"Workspace"}
+                            rootName="Workspace"
                             moveDropdownQuery={moveDropdownQuery}
                             setMoveDropdownQuery={setMoveDropdownQuery}
                             backHandler={toggleDropdownModals}
                             moveHandler={() => {
-                                setSelectedPath(`${moveDropdownQuery ? moveDropdownQuery : 'pages'}`)
+                                setSelectedPath(`${moveDropdownQuery || 'pages'}`)
                                 setIsMoveModalActive(true)
                             }}
                         />

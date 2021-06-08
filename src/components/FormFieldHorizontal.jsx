@@ -1,5 +1,7 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
+
 import elementStyles from '@styles/isomer-cms/Elements.module.scss';
 
 const FormFieldHorizontal = ({
@@ -19,7 +21,7 @@ const FormFieldHorizontal = ({
       <p className={elementStyles.formHorizontalLabel}>{`${title}`}</p>
       <input
         type="text"
-        placeholder={placeholder ? placeholder : title}
+        placeholder={placeholder || title}
         value={value}
         defaultValue={defaultValue}
         id={id}
@@ -36,8 +38,8 @@ const FormFieldHorizontal = ({
       ? (
         <>
                 <span className={elementStyles.error}>{errorMessage}</span>
-        <br></br>
-        <br></br>
+        <br />
+        <br />
         </>
       ) : null
     }

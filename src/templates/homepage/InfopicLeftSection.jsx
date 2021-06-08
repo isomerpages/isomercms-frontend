@@ -1,6 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {useQuery} from "react-query";
+
+import PropTypes from 'prop-types';
+
 import {fetchImageURL} from "@src/utils";
 
 /* eslint

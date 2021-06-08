@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import PropTypes from 'prop-types';
+import React, { useEffect,useState } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 
-// Import components
-import Header from '@components/Header';
-import Sidebar from '@components/Sidebar';
-import CollectionPagesSection from '@components/CollectionPagesSection'
+import axios from 'axios';
+import PropTypes from 'prop-types';
 
-// Import styles
+import { getResourcePages } from '@src/api'
+import { RESOURCE_CATEGORY_CONTENT_KEY } from '@src/constants'
+import { deslugifyDirectory,retrieveResourceFileMetadata } from '@src/utils'
+
+import useRedirectHook from '@hooks/useRedirectHook';
+
+import { errorToast } from '@utils/toasts';
+
 import elementStyles from '@styles/isomer-cms/Elements.module.scss';
 import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
 
-//Import utils
-import { retrieveResourceFileMetadata, deslugifyDirectory } from '@src/utils'
-import { errorToast } from '@utils/toasts';
-import { getResourcePages } from '@src/api'
-import { RESOURCE_CATEGORY_CONTENT_KEY } from '@src/constants'
-import useRedirectHook from '@hooks/useRedirectHook';
+import CollectionPagesSection from '@components/CollectionPagesSection'
+import Header from '@components/Header';
+import Sidebar from '@components/Sidebar';
 
 // Constants
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
@@ -77,9 +77,7 @@ const CategoryPages = ({ match, location, isResource }) => {
             };
           });
           if (_isMounted) setCategoryPages(retrievedResourcePages)
-        } else {
-          if (_isMounted) setCategoryPages([])
-        }
+        } else if (_isMounted) setCategoryPages([])
       } else {
         const collectionsResp = await axios.get(`${BACKEND_URL}/sites/${siteName}/collections/${collectionName}`);
         if (_isMounted) setCategoryPages(collectionsResp.data?.collectionPages)
@@ -107,7 +105,7 @@ const CategoryPages = ({ match, location, isResource }) => {
               </div>
               <div className={contentStyles.segment}>
                 <span>
-                    <Link to={`/sites/${siteName}/resources`}><strong>Resources</strong></Link> > 
+                    <Link to={`/sites/${siteName}/resources`}><strong>Resources</strong></Link>
                     {
                         collectionName 
                         ? (

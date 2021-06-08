@@ -1,32 +1,29 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
+import axios from 'axios';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+
+import { deletePageData, getAllCategories, getDirectoryFile,getEditPageData, moveFile } from '@src/api'
 import {
-    PAGE_CONTENT_KEY,
-    FOLDERS_CONTENT_KEY,
     DIR_CONTENT_KEY,
+    FOLDERS_CONTENT_KEY,
+    PAGE_CONTENT_KEY,
     RESOURCE_CATEGORY_CONTENT_KEY,
 } from '@src/constants'
+import { convertFolderOrderToArray,DEFAULT_RETRY_MSG, parseDirectoryFile } from '@src/utils'
 
-import { getEditPageData, deletePageData, getAllCategories, moveFile, getDirectoryFile } from '@src/api'
-
-import { DEFAULT_RETRY_MSG, parseDirectoryFile, convertFolderOrderToArray } from '@src/utils'
-
-// Import components
-import OverviewCard from '@components/OverviewCard';
-import ComponentSettingsModal from '@components/ComponentSettingsModal'
-import PageSettingsModal from '@components/PageSettingsModal'
 import { errorToast, successToast } from '@utils/toasts';
-import DeleteWarningModal from '@components/DeleteWarningModal'
-import GenericWarningModal from '@components/GenericWarningModal'
 
-// Import styles
 import elementStyles from '@styles/isomer-cms/Elements.module.scss';
 import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
 
+import ComponentSettingsModal from '@components/ComponentSettingsModal'
+import DeleteWarningModal from '@components/DeleteWarningModal'
+import GenericWarningModal from '@components/GenericWarningModal'
+import OverviewCard from '@components/OverviewCard';
+import PageSettingsModal from '@components/PageSettingsModal'
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -88,7 +85,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
         if (isResource && allCategories) { // inside workspace, show all resource folders
             return allCategories.resources.map(resource => resource.dirName).filter(dirName => dirName !== collectionName)
         }
-        if (!!subfolderName) { // inside subfolder, show empty 
+        if (subfolderName) { // inside subfolder, show empty 
             return []
         }
         if (!!folderName && querySubfolders) { // inside folder, show all subfolders
@@ -118,7 +115,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
 
     const { mutateAsync: moveHandler } = useMutation(
         async () => {
-            if ('pages' === selectedPath) return true
+            if (selectedPath === 'pages') return true
             await moveFile({siteName, selectedFile, newPath: selectedPath, resourceName: collectionName})
         },
         {
@@ -167,7 +164,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                 <DeleteWarningModal
                     onCancel={() => setCanShowDeleteWarningModal(false)}
                     onDelete={deleteHandler}
-                    type={"page"}
+                    type="page"
                 />
                 )
             } 
@@ -187,8 +184,7 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                 )
             }
             <div className={contentStyles.contentContainerBoxes}>
-                {
-                    <div className={contentStyles.boxesContainer}>
+                <div className={contentStyles.boxesContainer}>
                         <button
                             type="button"
                             id="settings-NEW"
@@ -228,7 +224,6 @@ const CollectionPagesSection = ({ collectionName, pages, siteName, isResource })
                             : 'Loading Pages...'  
                         }
                     </div>
-                }
             </div>
         </>
     )

@@ -26,7 +26,7 @@ const MenuItem = ({ item, menuIndex, dropdownRef, className }) => {
           itemId: `delete`,
         }
       default:
-        return
+        
     }
     
   }
@@ -42,17 +42,16 @@ const MenuItem = ({ item, menuIndex, dropdownRef, className }) => {
         if (!noBlur) dropdownRef.current.blur()
         if (handler) handler(e) 
       }}
-      className={className ? className : `${elementStyles.dropdownItem}`}
+      className={className || `${elementStyles.dropdownItem}`}
     >
       <i id={`${itemId}-${menuIndex}`} className={iconClassName}/>
       <div id={`${itemId}-${menuIndex}`} className={elementStyles.dropdownText}>{ itemName }</div>
-      <div className={'ml-auto'}>{ children }</div>
+      <div className="ml-auto">{ children }</div>
     </div>
   )
 }
 
-const MenuDropdown = ({ dropdownItems, menuIndex, dropdownRef, tabIndex, onBlur }) => {
-  return (
+const MenuDropdown = ({ dropdownItems, menuIndex, dropdownRef, tabIndex, onBlur }) => (
     <div className={`${elementStyles.dropdown} ${elementStyles.right}`} ref={dropdownRef} tabIndex={tabIndex} onBlur={onBlur}>
       { dropdownItems.filter(x => x).map(item =>
         ( <MenuItem 
@@ -64,6 +63,5 @@ const MenuDropdown = ({ dropdownItems, menuIndex, dropdownRef, tabIndex, onBlur 
       )}
     </div>
   )
-}
 
 export { MenuItem, MenuDropdown }

@@ -1,15 +1,14 @@
 import React from 'react'
 import { Redirect, Route } from 'react-router-dom'
+
 import axios from 'axios'
 
-// Import contexts
 import { LoginConsumer } from '@contexts/LoginContext'
 
 // axios settings
 axios.defaults.withCredentials = true
 
-const ProtectedRoute = ({ children, component: WrappedComponent, ...rest }) => {
-  return (
+const ProtectedRoute = ({ children, component: WrappedComponent, ...rest }) => (
     <LoginConsumer>
       {({userId}) => (
         userId ? (
@@ -22,6 +21,5 @@ const ProtectedRoute = ({ children, component: WrappedComponent, ...rest }) => {
       ))}
     </LoginConsumer>
   )
-}
 
 export default ProtectedRoute;

@@ -1,64 +1,64 @@
 import React, { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
-import _ from 'lodash';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
-import PropTypes from 'prop-types';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import SimpleMDE from 'react-simplemde-editor';
-import marked from 'marked';
+
+import axios from 'axios';
 import Policy from 'csp-parse';
+import _ from 'lodash';
+import marked from 'marked';
+import PropTypes from 'prop-types';
 
-import SimplePage from '@templates/SimplePage';
-import LeftNavPage from '@templates/LeftNavPage';
-
-import checkCSP from '@utils/cspUtils';
-import { successToast, errorToast } from '@utils/toasts';
-
-// Isomer components
+import { deletePageData, getCsp, getDirectoryFile,getEditPageData, updatePageData } from '@src/api';
 import {
-  DEFAULT_RETRY_MSG,
-  frontMatterParser,
+  CSP_CONTENT_KEY,
+  DIR_CONTENT_KEY,
+  PAGE_CONTENT_KEY,
+} from '@src/constants'
+import {
   concatFrontMatterMdBody,
+  DEFAULT_RETRY_MSG,
+  deslugifyDirectory,
+  frontMatterParser,
+  parseDirectoryFile,
   prependImageSrc,
+  prettifyDate,
   prettifyPageFileName,
   retrieveResourceFileMetadata,
-  prettifyDate,
-  parseDirectoryFile,
-  deslugifyDirectory,
 } from '@src/utils';
+
+import useRedirectHook from '@hooks/useRedirectHook';
+import useSiteColorsHook from '@hooks/useSiteColorsHook';
+
+import LeftNavPage from '@templates/LeftNavPage';
+import SimplePage from '@templates/SimplePage';
+
+import checkCSP from '@utils/cspUtils';
 import {
   boldButton,
-  italicButton,
-  strikethroughButton,
-  headingButton,
   codeButton,
-  quoteButton,
-  unorderedListButton,
-  orderedListButton,
-  tableButton,
   guideButton,
+  headingButton,
+  italicButton,
+  orderedListButton,
+  quoteButton,
+  strikethroughButton,
+  tableButton,
+  unorderedListButton,
 } from '@utils/markdownToolbar';
-import {
-  PAGE_CONTENT_KEY,
-  DIR_CONTENT_KEY,
-  CSP_CONTENT_KEY,
-} from '@src/constants'
-import 'easymde/dist/easymde.min.css';
-import '@styles/isomer-template.scss';
+import { errorToast,successToast } from '@utils/toasts';
+
 import elementStyles from '@styles/isomer-cms/Elements.module.scss';
 import editorStyles from '@styles/isomer-cms/pages/Editor.module.scss';
-import Header from '@components/Header';
+
 import DeleteWarningModal from '@components/DeleteWarningModal';
-import LoadingButton from '@components/LoadingButton';
+import Header from '@components/Header';
 import HyperlinkModal from '@components/HyperlinkModal';
+import LoadingButton from '@components/LoadingButton';
 import MediaModal from '@components/media/MediaModal';
 import MediaSettingsModal from '@components/media/MediaSettingsModal';
 
-// Import hooks
-import useSiteColorsHook from '@hooks/useSiteColorsHook';
-import useRedirectHook from '@hooks/useRedirectHook';
-
-// Import API
-import { getEditPageData, updatePageData, deletePageData, getCsp, getDirectoryFile } from '@src/api';
+import 'easymde/dist/easymde.min.css';
+import '@styles/isomer-template.scss';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -302,7 +302,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
     // insert image into editor
     const cm = mdeRef.current.simpleMde.codemirror;
     if (newFileName) {
-      cm.replaceSelection(`${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}`+`(/${insertingMediaType}/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`.replaceAll(' ', '%20'));
+      cm.replaceSelection(`${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}${`(/${insertingMediaType}/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`.replaceAll(' ', '%20')}`);
       // set state so that rerender is triggered and image is shown
       setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
     }
@@ -371,7 +371,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
         siteName={siteName}
         title={title}
         shouldAllowEditPageBackNav={hasChanges}
-        isEditPage={true}
+        isEditPage
         backButtonText={backButtonLabel}
         backButtonUrl={backButtonUrl}
       />
@@ -417,8 +417,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
           />
           )
         }
-        {
-          <div className={`${editorStyles.pageEditorSidebar} ${isLoadingPageContent || resourceType === 'file' ? editorStyles.pageEditorSidebarLoading : null}`} >
+        <div className={`${editorStyles.pageEditorSidebar} ${isLoadingPageContent || resourceType === 'file' ? editorStyles.pageEditorSidebarLoading : null}`} >
             {
               resourceType === 'file'
               ?
@@ -486,7 +485,6 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
               }}
             />
           </div>
-        }
         <div className={editorStyles.pageEditorMain}>
           {
             isCollectionPage && leftNavPages.length > 0

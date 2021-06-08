@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import React, { useEffect,useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+
 import PropTypes from 'prop-types';
 
-import FormField from '@components/FormField';
-import SaveDeleteButtons from '@components/SaveDeleteButtons';
-
-import { validateMediaSettings } from '@utils/validators';
+import { createMedia, renameMedia } from '@src/api';
+import { DOCUMENT_CONTENTS_KEY,IMAGE_CONTENTS_KEY } from '@src/constants'
 import {
   DEFAULT_RETRY_MSG, fetchImageURL,
 } from '@src/utils'
-import { errorToast, successToast } from '@utils/toasts';
-import { createMedia, renameMedia } from '@src/api';
-import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from '@src/constants'
 
-import mediaStyles from '@styles/isomer-cms/pages/Media.module.scss';
+import { errorToast, successToast } from '@utils/toasts';
+import { validateMediaSettings } from '@utils/validators';
+
 import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+import mediaStyles from '@styles/isomer-cms/pages/Media.module.scss';
+
+import FormField from '@components/FormField';
+import SaveDeleteButtons from '@components/SaveDeleteButtons';
 
 const MediaSettingsModal = ({
   type,
@@ -37,10 +39,10 @@ const MediaSettingsModal = ({
       if (isPendingUpload) {
         // Creating a new file
         return createMedia({siteName, type, customPath, newFileName, content: media.content})
-      } else {
+      } 
         // Renaming an existing file
         return renameMedia({siteName, type, customPath, fileName, newFileName})
-      }
+      
     },
     {
       onError: (err) => {
@@ -57,7 +59,7 @@ const MediaSettingsModal = ({
       },
       onSuccess: () => {
         successToast(`Successfully ${isPendingUpload ? `created new` : `renamed`} ${type.slice(0,-1)}!`)
-        queryClient.removeQueries(`${siteName}/images/${(customPath===undefined?'':customPath+'/')}${fileName}`)
+        queryClient.removeQueries(`${siteName}/images/${(customPath===undefined?'':`${customPath}/`)}${fileName}`)
         queryClient.invalidateQueries(type === 'images' ? [IMAGE_CONTENTS_KEY, customPath] : [DOCUMENT_CONTENTS_KEY, customPath])
       },
       onSettled: () => {

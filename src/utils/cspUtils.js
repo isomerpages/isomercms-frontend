@@ -1,9 +1,10 @@
 // Supported CSP checks are img-src, frame-src, media-src, object-src script-src-elem
 // Supported fallbacks are child-src, script-src, and default-src
 
-import _ from "lodash"
 import cheerio from "cheerio"
 import escapeStringRegexp from "escape-string-regexp"
+import _ from "lodash"
+
 import { isLinkInternal } from "@src/utils"
 
 function stringContainsValue(string, value) {

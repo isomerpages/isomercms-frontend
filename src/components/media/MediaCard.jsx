@@ -1,13 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect,useRef, useState } from 'react';
+import {useQuery} from "react-query";
+
 import PropTypes from 'prop-types';
 
-import { MenuDropdown } from '@components/MenuDropdown'
-import FileMoveMenuDropdown from '@components/FileMoveMenuDropdown'
-
-import mediaStyles from '@styles/isomer-cms/pages/Media.module.scss';
 import {fetchImageURL} from "@src/utils";
-import {useQuery} from "react-query";
+
 import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
+import mediaStyles from '@styles/isomer-cms/pages/Media.module.scss';
+
+import FileMoveMenuDropdown from '@components/FileMoveMenuDropdown'
+import { MenuDropdown } from '@components/MenuDropdown'
 
 const MediaCard = ({
   type,
@@ -108,7 +110,7 @@ const MediaCard = ({
       {
         type === 'dirs' && (
           <div className={mediaStyles.mediaCardFilePreviewContainer}>
-            <p><i className={`bx bx-lg bxs-folder`}/></p>
+            <p><i className="bx bx-lg bxs-folder"/></p>
           </div>
         )
       }
@@ -116,7 +118,7 @@ const MediaCard = ({
         <div className={mediaStyles.mediaCardName}>{media.fileName}</div>
         {/* Settings dropdown */}
         { showSettings && (
-          <div className={`position-relative mt-auto mb-auto`}>
+          <div className="position-relative mt-auto mb-auto">
             <button
               className={`${showDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
               type="button"

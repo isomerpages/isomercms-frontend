@@ -1,12 +1,16 @@
-import React, { useState, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { Droppable, Draggable } from 'react-beautiful-dnd';
+import React, { useRef,useState } from 'react';
+import { Draggable,Droppable } from 'react-beautiful-dnd';
 import Select from 'react-select';
+
+import PropTypes from 'prop-types';
+
+import { isEmpty } from '@src/utils';
+
 import styles from '@styles/App.module.scss';
 import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+
 import FormField from '@components/FormField';
 import NavSublinkSection from '@components/navbar/NavSublinkSection'
-import { isEmpty } from '@src/utils';
 
 /* eslint
   react/no-array-index-key: 0
@@ -96,7 +100,7 @@ const NavElem = ({
                   <Select
                     className="w-100"
                     onChange={collectionDropdownHandler}
-                    placeholder={"Select a folder..."}
+                    placeholder="Select a folder..."
                     defaultValue={{
                       value: collection,
                       label: collection,
@@ -246,7 +250,7 @@ const NavSection = ({
           ref={selectInputRef}
           className='w-50'
           onChange={(option) => setNewSectionType(option ? option.value : '')}
-          placeholder={"Select link type..."}
+          placeholder="Select link type..."
           options={sectionCreationOptions}
         />
         <button type="button" className={newSectionType ? elementStyles.blue: elementStyles.disabled} onClick={sectionCreationHandler} disabled={!newSectionType}>Create New Menu</button>

@@ -14,8 +14,7 @@ const iconSelection = {
 
 
 
-const FolderOptionButton = ({ title, isSelected, onClick, option, isDisabled, id }) => {
-    return (
+const FolderOptionButton = ({ title, isSelected, onClick, option, isDisabled, id }) => (
         <button
             type="button"
             className={`
@@ -34,6 +33,5 @@ const FolderOptionButton = ({ title, isSelected, onClick, option, isDisabled, id
             </div>
         </button>
     )
-}
 
 export default FolderOptionButton

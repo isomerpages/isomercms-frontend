@@ -1,7 +1,10 @@
 /* eslint-disable arrow-body-style */
 import React, { useEffect, useState } from 'react';
+
 import PropTypes from 'prop-types';
+
 import { generateLeftNav } from '@utils/leftnavGeneration'
+
 import '@styles/isomer-template.scss';
 
 const LeftNav = ({ leftNavPages, fileName }) => {

@@ -1,6 +1,6 @@
 import {
-  deslugifyPage,
   deslugifyDirectory,
+  deslugifyPage,
   generatePageFileName,
   slugifyCategory,
 } from "@src/utils"

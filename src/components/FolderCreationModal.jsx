@@ -1,23 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import PropTypes from 'prop-types';
-import * as _ from 'lodash';
-import update from 'immutability-helper';
 import { useMutation } from 'react-query';
 
-import FolderCard from '@components/FolderCard';
-import LoadingButton from '@components/LoadingButton';
-import FolderNamingModal from '@components/FolderNamingModal';
-import { errorToast } from '@utils/toasts';
+import axios from 'axios';
+import update from 'immutability-helper';
+import * as _ from 'lodash';
+import PropTypes from 'prop-types';
+
+import { moveFiles } from '@src/api';
+import { DEFAULT_RETRY_MSG,deslugifyPage, slugifyCategory } from '@src/utils'
+
 import useRedirectHook from '@hooks/useRedirectHook';
 
+import { errorToast } from '@utils/toasts';
 import { validateCategoryName } from '@utils/validators';
-import { deslugifyPage, slugifyCategory, DEFAULT_RETRY_MSG } from '@src/utils'
 
 import elementStyles from '@styles/isomer-cms/Elements.module.scss';
-import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
 import adminStyles from '@styles/isomer-cms/pages/Admin.module.scss';
-import { moveFiles } from '@src/api';
+import contentStyles from '@styles/isomer-cms/pages/Content.module.scss';
+
+import FolderCard from '@components/FolderCard';
+import FolderNamingModal from '@components/FolderNamingModal';
+import LoadingButton from '@components/LoadingButton';
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -35,7 +38,7 @@ const FolderCreationModal = ({
 
   const [title, setTitle] = useState('')
   const [selectedFiles, setSelectedFiles] = useState({})
-  //retrieve only when necessary, i.e. after user has chosen to move this page
+  // retrieve only when necessary, i.e. after user has chosen to move this page
   // const [sha, setSha] = useState('')
 
   const [isSelectingTitle, setIsSelectingTitle] = useState(true)
@@ -49,7 +52,7 @@ const FolderCreationModal = ({
   ]
 
   useEffect(() => {
-    const sortedOrder = pagesData.concat().sort(sortFuncs['title'])
+    const sortedOrder = pagesData.concat().sort(sortFuncs.title)
     setSortedPagesData(sortedOrder)
   }, [])
 
@@ -72,7 +75,7 @@ const FolderCreationModal = ({
 
   const folderNameChangeHandler = (event) => {
     const { value } = event.target;
-    let errorMessage = validateCategoryName(value, 'page', existingSubfolders)
+    const errorMessage = validateCategoryName(value, 'page', existingSubfolders)
     setTitle(value)
     setErrors(errorMessage)
   }
@@ -95,9 +98,7 @@ const FolderCreationModal = ({
   }
 
   const sortFuncs = {
-    'title': (a, b) => {
-      return a.fileName.localeCompare(b.fileName)
-    }
+    'title': (a, b) => a.fileName.localeCompare(b.fileName)
   }
 
   const sortOrderChangeHandler = (option) => {
@@ -131,7 +132,7 @@ const FolderCreationModal = ({
               <div className={contentStyles.sectionHeader}>
                 <h1 className={contentStyles.sectionTitle}>{`Select pages to add into '${title}'`}</h1>
               </div>
-              <div className={`d-flex justify-content-between w-100`}>
+              <div className="d-flex justify-content-between w-100">
                 <span>Pages</span>
                 {/* <span className={`w-25 ${contentStyles.segment}`}>
                   <span className={elementStyles.sortLabel}>
@@ -162,7 +163,7 @@ const FolderCreationModal = ({
                               displayText={deslugifyPage(pageData.fileName)}
                               settingsToggle={() => {}}
                               key={pageData.fileName}
-                              pageType={"file"}
+                              pageType="file"
                               siteName={siteName}
                               itemIndex={pageIdx}
                               selectedIndex={selectedFiles[pageData.fileName]}
@@ -182,7 +183,7 @@ const FolderCreationModal = ({
             </div>
             <div className={contentStyles.sectionFooter}>
                 <LoadingButton
-                  label={`Cancel`}
+                  label="Cancel"
                   disabledStyle={elementStyles.disabled}
                   className={`${elementStyles.warning}`}
                   callback={() => setIsFolderCreationActive(false)}

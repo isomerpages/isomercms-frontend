@@ -1,5 +1,7 @@
 import React from 'react';
+
 import elementStyles from '@styles/isomer-cms/Elements.module.scss';
+
 import FormField from '@components/FormField'
 import FormFieldMedia from '@components/FormFieldMedia';
 
@@ -60,7 +62,7 @@ const ResourceFormFields = ({date, errors, changeHandler, onToggle, isPost, setI
         value={fileUrl?.split('/').pop()}
         errorMessage={errors.fileUrl}
         onFieldChange={changeHandler}
-        inlineButtonText={"Select File"}
+        inlineButtonText="Select File"
         siteName={siteName}
         placeholder=" "
         type="files"

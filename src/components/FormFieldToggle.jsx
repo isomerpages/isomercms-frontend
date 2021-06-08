@@ -1,6 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import ToggleButton from 'react-toggle-button'
+
+import PropTypes from 'prop-types';
+
 import elementStyles from '@styles/isomer-cms/Elements.module.scss';
 
 const creatableSelectHandler = (callback, dropdownEvent, id) => {
@@ -26,8 +28,8 @@ const FormFieldToggle = ({
         <div className={`d-flex align-items-center ${elementStyles.formToggleLabel}`}>
             <ToggleButton
                 className={elementStyles.formToggleInput}
-                inactiveLabel={''}
-                activeLabel={''}
+                inactiveLabel=""
+                activeLabel=""
                 thumbIcon={<span className={`bx bx-xs ${value ? `${elementStyles.formToggleThumbIconEnabled} bx-check` : `${elementStyles.formToggleThumbIconDisabled} bx-x`}`}/>}
                 value={value}
                 onToggle={(value) => creatableSelectHandler(onFieldChange, !value, id)}
