@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npx commitlint --from origin/staging --to HEAD --verbose
+npx commitlint --from origin/develop --to HEAD --verbose
