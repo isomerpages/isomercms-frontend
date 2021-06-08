@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@atlaskit/tree": "^7.0.2",
     "@craco/craco": "^6.1.2",
     "@sentry/react": "^5.27.6",
     "@sentry/tracing": "^5.27.6",
