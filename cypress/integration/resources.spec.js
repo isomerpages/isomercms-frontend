@@ -1,5 +1,3 @@
-import { before, describe } from "@jest/globals"
-
 import { slugifyCategory } from "@src/utils"
 
 describe("Resources page", () => {
