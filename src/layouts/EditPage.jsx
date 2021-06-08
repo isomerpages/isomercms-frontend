@@ -1,17 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
-import _ from 'lodash';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
-import PropTypes from 'prop-types';
-import SimpleMDE from 'react-simplemde-editor';
-import marked from 'marked';
-import Policy from 'csp-parse';
+import React, { useEffect, useRef, useState } from "react"
+import axios from "axios"
+import _ from "lodash"
+import { useQuery, useMutation, useQueryClient } from "react-query"
+import PropTypes from "prop-types"
+import SimpleMDE from "react-simplemde-editor"
+import marked from "marked"
+import Policy from "csp-parse"
 
-import SimplePage from '../templates/SimplePage';
-import LeftNavPage from '../templates/LeftNavPage';
+import SimplePage from "../templates/SimplePage"
+import LeftNavPage from "../templates/LeftNavPage"
 
-import { checkCSP } from '../utils/cspUtils';
-import { successToast, errorToast } from '../utils/toasts';
+import checkCSP from "../utils/cspUtils"
+import { successToast, errorToast } from "../utils/toasts"
 
 // Isomer components
 import {
@@ -24,7 +24,7 @@ import {
   prettifyDate,
   parseDirectoryFile,
   deslugifyDirectory,
-} from '../utils';
+} from "../utils"
 import {
   boldButton,
   italicButton,
@@ -36,29 +36,35 @@ import {
   orderedListButton,
   tableButton,
   guideButton,
-} from '../utils/markdownToolbar';
+} from "../utils/markdownToolbar"
 import {
   PAGE_CONTENT_KEY,
   DIR_CONTENT_KEY,
   CSP_CONTENT_KEY,
-} from '../constants'
-import 'easymde/dist/easymde.min.css';
-import '../styles/isomer-template.scss';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
-import Header from '../components/Header';
-import DeleteWarningModal from '../components/DeleteWarningModal';
-import LoadingButton from '../components/LoadingButton';
-import HyperlinkModal from '../components/HyperlinkModal';
-import MediaModal from '../components/media/MediaModal';
-import MediaSettingsModal from '../components/media/MediaSettingsModal';
+} from "../constants"
+import "easymde/dist/easymde.min.css"
+import "../styles/isomer-template.scss"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import editorStyles from "../styles/isomer-cms/pages/Editor.module.scss"
+import Header from "../components/Header"
+import DeleteWarningModal from "../components/DeleteWarningModal"
+import LoadingButton from "../components/LoadingButton"
+import HyperlinkModal from "../components/HyperlinkModal"
+import MediaModal from "../components/media/MediaModal"
+import MediaSettingsModal from "../components/media/MediaSettingsModal"
 
 // Import hooks
-import useSiteColorsHook from '../hooks/useSiteColorsHook';
-import useRedirectHook from '../hooks/useRedirectHook';
+import useSiteColorsHook from "../hooks/useSiteColorsHook"
+import useRedirectHook from "../hooks/useRedirectHook"
 
 // Import API
-import { getEditPageData, updatePageData, deletePageData, getCsp, getDirectoryFile } from '../api';
+import {
+  getEditPageData,
+  updatePageData,
+  deletePageData,
+  getCsp,
+  getDirectoryFile,
+} from "../api"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -68,36 +74,43 @@ const extractMetadataFromFilename = (isResourcePage, fileName) => {
     const resourceMetadata = retrieveResourceFileMetadata(fileName)
     return {
       ...resourceMetadata,
-      date: prettifyDate(resourceMetadata.date)
+      date: prettifyDate(resourceMetadata.date),
     }
   }
-  return { title: prettifyPageFileName(fileName), date: '' }
+  return { title: prettifyPageFileName(fileName), date: "" }
 }
 
-const getBackButtonInfo = (resourceCategory, folderName, siteName, subfolderName) => {
-  if (resourceCategory) return {
-    backButtonLabel: deslugifyDirectory(resourceCategory),
-    backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
-  }
-  if (folderName) {
-    if (subfolderName) return {
-      backButtonLabel: deslugifyDirectory(subfolderName),
-      backButtonUrl: `/sites/${siteName}/folder/${folderName}/subfolder/${subfolderName}`,
+const getBackButtonInfo = (
+  resourceCategory,
+  folderName,
+  siteName,
+  subfolderName
+) => {
+  if (resourceCategory)
+    return {
+      backButtonLabel: deslugifyDirectory(resourceCategory),
+      backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
     }
+  if (folderName) {
+    if (subfolderName)
+      return {
+        backButtonLabel: deslugifyDirectory(subfolderName),
+        backButtonUrl: `/sites/${siteName}/folder/${folderName}/subfolder/${subfolderName}`,
+      }
     return {
       backButtonLabel: deslugifyDirectory(folderName),
       backButtonUrl: `/sites/${siteName}/folder/${folderName}`,
     }
   }
   return {
-    backButtonLabel: 'My Workspace',
+    backButtonLabel: "My Workspace",
     backButtonUrl: `/sites/${siteName}/workspace`,
   }
 }
 
 const MEDIA_PLACEHOLDER_TEXT = {
-  'images': '![Alt text for image on Isomer site]',
-  'files': '[Example Filename]',
+  images: "![Alt text for image on Isomer site]",
+  files: "[Example Filename]",
 }
 
 const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
@@ -107,28 +120,44 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
   const { setRedirectToNotFound } = useRedirectHook()
 
-  const { folderName, fileName, siteName, resourceName, subfolderName } = match.params;
-  const { title, type: resourceType, date } = extractMetadataFromFilename(isResourcePage, fileName)
-  const { backButtonLabel, backButtonUrl } = getBackButtonInfo(resourceName, folderName, siteName, subfolderName)
+  const {
+    folderName,
+    fileName,
+    siteName,
+    resourceName,
+    subfolderName,
+  } = match.params
+  const { title, type: resourceType, date } = extractMetadataFromFilename(
+    isResourcePage,
+    fileName
+  )
+  const { backButtonLabel, backButtonUrl } = getBackButtonInfo(
+    resourceName,
+    folderName,
+    siteName,
+    subfolderName
+  )
 
   const [csp, setCsp] = useState(new Policy())
   const [sha, setSha] = useState(null)
-  const [originalMdValue, setOriginalMdValue] = useState('')
-  const [editorValue, setEditorValue] = useState('')
-  const [frontMatter, setFrontMatter] = useState('')
-  const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(false)
-  const [insertingMediaType, setInsertingMediaType] = useState('')
+  const [originalMdValue, setOriginalMdValue] = useState("")
+  const [editorValue, setEditorValue] = useState("")
+  const [frontMatter, setFrontMatter] = useState("")
+  const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(
+    false
+  )
+  const [insertingMediaType, setInsertingMediaType] = useState("")
   const [showMediaModal, setShowMediaModal] = useState(false)
   const [isInsertingHyperlink, setIsInsertingHyperlink] = useState(false)
-  const [selectionText, setSelectionText] = useState('')
+  const [selectionText, setSelectionText] = useState("")
   const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
   const [stagedFileDetails, setStagedFileDetails] = useState({})
   const [isLoadingPageContent, setIsLoadingPageContent] = useState(true)
-  const [uploadPath, setUploadPath] = useState('')
+  const [uploadPath, setUploadPath] = useState("")
   const [leftNavPages, setLeftNavPages] = useState([])
-  const [resourceRoomName, setResourceRoomName] = useState('')
+  const [resourceRoomName, setResourceRoomName] = useState("")
   const [isCspViolation, setIsCspViolation] = useState(false)
-  const [chunk, setChunk] = useState('')
+  const [chunk, setChunk] = useState("")
 
   const [hasChanges, setHasChanges] = useState(false)
 
@@ -145,11 +174,13 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
         if (err.response && err.response.status === 404) {
           setRedirectToNotFound(siteName)
         } else {
-          errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
+          errorToast(
+            `There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`
+          )
         }
       },
-    },
-  );
+    }
+  )
 
   // get directory data
   const { data: dirData } = useQuery(
@@ -162,11 +193,13 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
         if (err.response && err.response.status === 404) {
           setRedirectToNotFound(siteName)
         } else {
-          errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
+          errorToast(
+            `There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`
+          )
         }
       },
-    },
-  );
+    }
+  )
 
   // get csp data
   const { data: cspData } = useQuery(
@@ -179,31 +212,44 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
         if (err.response && err.response.status === 404) {
           setRedirectToNotFound(siteName)
         } else {
-          errorToast(`There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`)
+          errorToast(
+            `There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`
+          )
         }
       },
-    },
-  );
+    }
+  )
 
   // update page data
   const { mutateAsync: saveHandler } = useMutation(
-    () => updatePageData(match.params, concatFrontMatterMdBody(frontMatter, editorValue), sha),
+    () =>
+      updatePageData(
+        match.params,
+        concatFrontMatterMdBody(frontMatter, editorValue),
+        sha
+      ),
     {
-      onError: () => errorToast(`There was a problem saving your page. ${DEFAULT_RETRY_MSG}`),
+      onError: () =>
+        errorToast(
+          `There was a problem saving your page. ${DEFAULT_RETRY_MSG}`
+        ),
       onSuccess: () => {
         queryClient.invalidateQueries([PAGE_CONTENT_KEY, match.params])
-        successToast('Successfully saved page content')
+        successToast("Successfully saved page content")
       },
-    },
+    }
   )
 
   // delete page data
   const { mutateAsync: deleteHandler } = useMutation(
     () => deletePageData(match.params, sha),
     {
-      onError: () => errorToast(`There was a problem deleting your page. ${DEFAULT_RETRY_MSG}`),
+      onError: () =>
+        errorToast(
+          `There was a problem deleting your page. ${DEFAULT_RETRY_MSG}`
+        ),
       onSuccess: () => history.goBack(),
-    },
+    }
   )
 
   useEffect(() => {
@@ -215,7 +261,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
         await retrieveSiteColors(siteName)
         generatePageStyleSheet(siteName)
       } catch (err) {
-        console.log(err);
+        console.log(err)
       }
 
       if (_.isEmpty(pageData)) return
@@ -232,33 +278,30 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
 
     const loadPageDetails = async () => {
       if (!pageData || (isCollectionPage && !dirData) || !cspData) return
-      const {
-        pageContent,
-        pageSha,
-        resourceRoomName,
-      } = pageData
-      const {
-        netlifyTomlHeaderValues
-      } = cspData
+      const { pageContent, pageSha, resourceRoomName } = pageData
+      const { netlifyTomlHeaderValues } = cspData
       if (!pageContent) return
-      
-      const { frontMatter: retrievedFrontMatter, mdBody: retrievedMdBody } = frontMatterParser(pageContent);
-      const retrievedCsp = new Policy(netlifyTomlHeaderValues['Content-Security-Policy']);
+
+      const {
+        frontMatter: retrievedFrontMatter,
+        mdBody: retrievedMdBody,
+      } = frontMatterParser(pageContent)
+      const retrievedCsp = new Policy(
+        netlifyTomlHeaderValues["Content-Security-Policy"]
+      )
 
       let generatedLeftNavPages
       if (isCollectionPage) {
-        const {
-          content: dirContent,
-        } = dirData
+        const { content: dirContent } = dirData
         const { order: parsedFolderContents } = parseDirectoryFile(dirContent)
         // Filter out placeholder files
-        const filteredFolderContents = parsedFolderContents.filter(name => !name.includes('.keep'))
-        generatedLeftNavPages = filteredFolderContents.map((name) => 
-          ({
-            fileName: name.includes('/') ? name.split('/')[1] : name,
-            third_nav_title: name.includes('/') ? name.split('/')[0] : null,
-          })
+        const filteredFolderContents = parsedFolderContents.filter(
+          (name) => !name.includes(".keep")
         )
+        generatedLeftNavPages = filteredFolderContents.map((name) => ({
+          fileName: name.includes("/") ? name.split("/")[1] : name,
+          third_nav_title: name.includes("/") ? name.split("/")[0] : null,
+        }))
       }
 
       if (_isMounted) {
@@ -268,7 +311,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
         setEditorValue(retrievedMdBody.trim())
         setFrontMatter(retrievedFrontMatter)
         setLeftNavPages(generatedLeftNavPages)
-        setResourceRoomName(resourceRoomName || '')
+        setResourceRoomName(resourceRoomName || "")
         setIsLoadingPageContent(false)
       }
     }
@@ -282,8 +325,14 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
   useEffect(() => {
     async function loadChunk() {
       const html = marked(editorValue)
-      const { isCspViolation: checkedIsCspViolation, sanitisedHtml: processedSanitisedHtml } = checkCSP(csp, html)
-      const processedChunk = await prependImageSrc(siteName, processedSanitisedHtml)
+      const {
+        isCspViolation: checkedIsCspViolation,
+        sanitisedHtml: processedSanitisedHtml,
+      } = checkCSP(csp, html)
+      const processedChunk = await prependImageSrc(
+        siteName,
+        processedSanitisedHtml
+      )
       setIsCspViolation(checkedIsCspViolation)
       setChunk(processedChunk)
     }
@@ -295,52 +344,62 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
   }, [originalMdValue, editorValue])
 
   const onEditorChange = (value) => {
-    setEditorValue(value);
+    setEditorValue(value)
   }
 
   const toggleImageAndSettingsModal = (newFileName) => {
     // insert image into editor
-    const cm = mdeRef.current.simpleMde.codemirror;
+    const cm = mdeRef.current.simpleMde.codemirror
     if (newFileName) {
-      cm.replaceSelection(`${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}`+`(/${insertingMediaType}/${uploadPath ? `${uploadPath}/`: ''}${newFileName})`.replaceAll(' ', '%20'));
+      cm.replaceSelection(
+        `${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}` +
+          `(/${insertingMediaType}/${
+            uploadPath ? `${uploadPath}/` : ""
+          }${newFileName})`.replaceAll(" ", "%20")
+      )
       // set state so that rerender is triggered and image is shown
       setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
     }
-    setInsertingMediaType('')
+    setInsertingMediaType("")
     setIsFileStagedForUpload(!isFileStagedForUpload)
   }
 
   const onHyperlinkOpen = () => {
-    const cm = mdeRef.current.simpleMde.codemirror;
-    setSelectionText(cm.getSelection() || '')
+    const cm = mdeRef.current.simpleMde.codemirror
+    setSelectionText(cm.getSelection() || "")
     setIsInsertingHyperlink(true)
   }
 
   const onHyperlinkSave = (text, link) => {
-    const cm = mdeRef.current.simpleMde.codemirror;
-    cm.replaceSelection(`[${text}](${link})`);
+    const cm = mdeRef.current.simpleMde.codemirror
+    cm.replaceSelection(`[${text}](${link})`)
     // set state so that rerender is triggered and path is shown
     setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
     setIsInsertingHyperlink(false)
-    setSelectionText('')
+    setSelectionText("")
   }
 
   const onHyperlinkClose = () => {
     setIsInsertingHyperlink(false)
-    setSelectionText('')
+    setSelectionText("")
   }
 
   const onMediaSelect = (path) => {
-    const cm = mdeRef.current.simpleMde.codemirror;
-    cm.replaceSelection(`${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}(${path.replaceAll(' ', '%20')})`);
+    const cm = mdeRef.current.simpleMde.codemirror
+    cm.replaceSelection(
+      `${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}(${path.replaceAll(
+        " ",
+        "%20"
+      )})`
+    )
     // set state so that rerender is triggered and image is shown
     setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
-    setInsertingMediaType('')
+    setInsertingMediaType("")
     setShowMediaModal(false)
   }
 
   const stageFileForUpload = (fileName, fileData) => {
-    const baseFolder = insertingMediaType;
+    const baseFolder = insertingMediaType
     setStagedFileDetails({
       path: `${baseFolder}%2F${fileName}`,
       content: fileData,
@@ -350,18 +409,18 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
   }
 
   const readFileToStageUpload = async (event) => {
-    const fileReader = new FileReader();
-    const fileName = event.target.files[0].name;
-    fileReader.onload = (() => {
+    const fileReader = new FileReader()
+    const fileName = event.target.files[0].name
+    fileReader.onload = () => {
       /** Github only requires the content of the image
-         * fileReader returns  `data:application/pdf;base64, {fileContent}`
-         * hence the split
-         */
+       * fileReader returns  `data:application/pdf;base64, {fileContent}`
+       * hence the split
+       */
 
-      const fileData = fileReader.result.split(',')[1];
-      stageFileForUpload(fileName, fileData);
-    });
-    fileReader.readAsDataURL(event.target.files[0]);
+      const fileData = fileReader.result.split(",")[1]
+      stageFileForUpload(fileName, fileData)
+    }
+    fileReader.readAsDataURL(event.target.files[0])
     setShowMediaModal((prevState) => !prevState)
   }
 
@@ -377,62 +436,63 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
       />
       <div className={elementStyles.wrapper}>
         {/* Inserting Medias */}
-        {
-          showMediaModal && insertingMediaType && (
+        {showMediaModal && insertingMediaType && (
           <MediaModal
             siteName={siteName}
             onClose={() => {
-              setShowMediaModal(false); 
-              setInsertingMediaType('')
+              setShowMediaModal(false)
+              setInsertingMediaType("")
             }}
             onMediaSelect={onMediaSelect}
             type={insertingMediaType}
             readFileToStageUpload={readFileToStageUpload}
             setUploadPath={setUploadPath}
           />
-          )
-        }
-        {
-          isFileStagedForUpload && insertingMediaType && (
-            <MediaSettingsModal
-              type={insertingMediaType}
-              siteName={siteName}
-              customPath={uploadPath}
-              onClose={() => {
-                setIsFileStagedForUpload(false)
-                setInsertingMediaType('')
-              }}
-              onSave={toggleImageAndSettingsModal}
-              media={stagedFileDetails}
-              isPendingUpload
-            />
-          )
-        }
-        {
-          isInsertingHyperlink && (
+        )}
+        {isFileStagedForUpload && insertingMediaType && (
+          <MediaSettingsModal
+            type={insertingMediaType}
+            siteName={siteName}
+            customPath={uploadPath}
+            onClose={() => {
+              setIsFileStagedForUpload(false)
+              setInsertingMediaType("")
+            }}
+            onSave={toggleImageAndSettingsModal}
+            media={stagedFileDetails}
+            isPendingUpload
+          />
+        )}
+        {isInsertingHyperlink && (
           <HyperlinkModal
             text={selectionText}
             onSave={onHyperlinkSave}
             onClose={onHyperlinkClose}
           />
-          )
-        }
+        )}
         {
-          <div className={`${editorStyles.pageEditorSidebar} ${isLoadingPageContent || resourceType === 'file' ? editorStyles.pageEditorSidebarLoading : null}`} >
-            {
-              resourceType === 'file'
-              ?
+          <div
+            className={`${editorStyles.pageEditorSidebar} ${
+              isLoadingPageContent || resourceType === "file"
+                ? editorStyles.pageEditorSidebarLoading
+                : null
+            }`}
+          >
+            {resourceType === "file" ? (
               <>
-                <div className={`text-center ${editorStyles.pageEditorSidebarDisabled}`}>
+                <div
+                  className={`text-center ${editorStyles.pageEditorSidebarDisabled}`}
+                >
                   Editing is disabled for downloadable files.
                 </div>
               </>
-              :
-              isLoadingPageContent
-              ? (
-                <div className={`spinner-border text-primary ${editorStyles.sidebarLoadingIcon}`} />
-              ) : ''
-            }
+            ) : isLoadingPageContent ? (
+              <div
+                className={`spinner-border text-primary ${editorStyles.sidebarLoadingIcon}`}
+              />
+            ) : (
+              ""
+            )}
             <SimpleMDE
               id="simplemde-editor"
               className="h-100"
@@ -445,39 +505,39 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
                   boldButton,
                   italicButton,
                   strikethroughButton,
-                  '|',
+                  "|",
                   codeButton,
                   quoteButton,
                   unorderedListButton,
                   orderedListButton,
-                  '|',
+                  "|",
                   {
-                    name: 'image',
+                    name: "image",
                     action: async () => {
-                      setShowMediaModal(true);
-                      setInsertingMediaType('images');
+                      setShowMediaModal(true)
+                      setInsertingMediaType("images")
                     },
-                    className: 'fa fa-picture-o',
-                    title: 'Insert Image',
+                    className: "fa fa-picture-o",
+                    title: "Insert Image",
                     default: true,
                   },
                   {
-                    name: 'file',
+                    name: "file",
                     action: async () => {
-                      setShowMediaModal(true);
-                      setInsertingMediaType('files');
+                      setShowMediaModal(true)
+                      setInsertingMediaType("files")
                     },
-                    className: 'fa fa-file-pdf-o',
-                    title: 'Insert File',
+                    className: "fa fa-file-pdf-o",
+                    title: "Insert File",
                     default: true,
                   },
                   {
-                    name: 'link',
-                    action: async () => { 
-                      onHyperlinkOpen() 
+                    name: "link",
+                    action: async () => {
+                      onHyperlinkOpen()
                     },
-                    className: 'fa fa-link',
-                    title: 'Insert Link',
+                    className: "fa fa-link",
+                    title: "Insert Link",
                     default: true,
                   },
                   tableButton,
@@ -488,49 +548,51 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
           </div>
         }
         <div className={editorStyles.pageEditorMain}>
-          {
-            isCollectionPage && leftNavPages.length > 0
-            ? (
-              <LeftNavPage
-                chunk={chunk}
-                leftNavPages={leftNavPages}
-                fileName={fileName}
-                title={title}
-                collection={deslugifyDirectory(folderName)}
-              />
-            ) : (
-              <SimplePage
-                chunk={chunk}
-                title={title}
-                date={date}
-                isResourcePage={isResourcePage}
-                resourceRoomName={deslugifyDirectory(resourceRoomName)}
-                collection={resourceName}
-              />
-            )
-          }
+          {isCollectionPage && leftNavPages.length > 0 ? (
+            <LeftNavPage
+              chunk={chunk}
+              leftNavPages={leftNavPages}
+              fileName={fileName}
+              title={title}
+              collection={deslugifyDirectory(folderName)}
+            />
+          ) : (
+            <SimplePage
+              chunk={chunk}
+              title={title}
+              date={date}
+              isResourcePage={isResourcePage}
+              resourceRoomName={deslugifyDirectory(resourceRoomName)}
+              collection={resourceName}
+            />
+          )}
         </div>
       </div>
       <div className={editorStyles.pageEditorFooter}>
-        <button type="button" className={elementStyles.warning} onClick={() => setCanShowDeleteWarningModal(true)}>Delete</button>
+        <button
+          type="button"
+          className={elementStyles.warning}
+          onClick={() => setCanShowDeleteWarningModal(true)}
+        >
+          Delete
+        </button>
         <LoadingButton
           label="Save"
           disabledStyle={elementStyles.disabled}
           disabled={isCspViolation}
-          className={isCspViolation ? elementStyles.disabled : elementStyles.blue}
+          className={
+            isCspViolation ? elementStyles.disabled : elementStyles.blue
+          }
           callback={saveHandler}
         />
       </div>
-      {
-        canShowDeleteWarningModal
-        && (
+      {canShowDeleteWarningModal && (
         <DeleteWarningModal
           onCancel={() => setCanShowDeleteWarningModal(false)}
           onDelete={deleteHandler}
-          type={isResourcePage ? 'resource' : 'page'}
+          type={isResourcePage ? "resource" : "page"}
         />
-        )
-      }
+      )}
     </>
   )
 }
@@ -550,4 +612,4 @@ EditPage.propTypes = {
   }).isRequired,
   isCollectionPage: PropTypes.bool.isRequired,
   isResourcePage: PropTypes.bool.isRequired,
-};
+}

@@ -1,18 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import FormField from '../FormField';
+import React from "react"
+import PropTypes from "prop-types"
+import FormField from "../FormField"
 
 /* eslint
   react/no-array-index-key: 0
  */
 
-const HeroButton = ({
-  button,
-  url,
-  sectionIndex,
-  onFieldChange,
-  errors,
-}) => (
+const HeroButton = ({ button, url, sectionIndex, onFieldChange, errors }) => (
   <>
     <FormField
       title="Hero button"
@@ -32,9 +26,9 @@ const HeroButton = ({
       onFieldChange={onFieldChange}
     />
   </>
-);
+)
 
-export default HeroButton;
+export default HeroButton
 
 HeroButton.propTypes = {
   button: PropTypes.string.isRequired,
@@ -45,4 +39,4 @@ HeroButton.propTypes = {
     button: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired,
   }).isRequired,
-};
+}

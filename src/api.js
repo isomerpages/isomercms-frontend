@@ -11,7 +11,7 @@ axios.defaults.withCredentials = true
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
 const getDirectoryFile = async (siteName, folderName) => {
-  if (!folderName) return
+  if (!folderName) return undefined
   const resp = await axios.get(
     `${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`
   )
@@ -19,14 +19,14 @@ const getDirectoryFile = async (siteName, folderName) => {
 }
 
 const setDirectoryFile = async (siteName, folderName, payload) => {
-  return await axios.post(
+  return axios.post(
     `${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`,
     payload
   )
 }
 
 const getLastUpdated = async (siteName) => {
-  if (!siteName) return
+  if (!siteName) return undefined
   const resp = await axios.get(`${BACKEND_URL}/sites/${siteName}/lastUpdated`)
   const { lastUpdated } = resp.data
   return { lastUpdated }
@@ -137,7 +137,7 @@ const getEditPageData = async ({
   const resp = await axios.get(apiEndpoint)
   const { content: pageContent, sha: pageSha, resourceRoomName } = resp.data
 
-  if (!pageContent) return
+  if (!pageContent) return undefined
 
   return {
     pageContent,
@@ -231,7 +231,7 @@ const deletePageData = async (
     resourceName,
   })
   const params = { sha }
-  return await axios.delete(apiEndpoint, {
+  return axios.delete(apiEndpoint, {
     data: params,
   })
 }
@@ -239,17 +239,17 @@ const deletePageData = async (
 // Folder and subfolders
 const renameFolder = async ({ siteName, folderName, newFolderName }) => {
   const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}/rename/${newFolderName}`
-  return await axios.post(apiUrl)
+  return axios.post(apiUrl)
 }
 
 const deleteFolder = async ({ siteName, folderName }) => {
   const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}`
-  return await axios.delete(apiUrl)
+  return axios.delete(apiUrl)
 }
 
 const deleteSubfolder = async ({ siteName, folderName, subfolderName }) => {
   const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/folders/${folderName}/subfolder/${subfolderName}`
-  return await axios.delete(apiUrl)
+  return axios.delete(apiUrl)
 }
 
 const renameSubfolder = async ({
@@ -259,7 +259,7 @@ const renameSubfolder = async ({
   newSubfolderName,
 }) => {
   const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/folders/${folderName}/subfolder/${subfolderName}/rename/${newSubfolderName}`
-  return await axios.post(apiUrl)
+  return axios.post(apiUrl)
 }
 
 const getResourceRoomName = async (siteName) => {
@@ -272,7 +272,7 @@ const getResourceRoomName = async (siteName) => {
 // Resources
 const deleteResourceCategory = async ({ siteName, categoryName }) => {
   const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${categoryName}`
-  return await axios.delete(apiUrl)
+  return axios.delete(apiUrl)
 }
 
 const renameResourceCategory = async ({
@@ -281,7 +281,7 @@ const renameResourceCategory = async ({
   newCategoryName,
 }) => {
   const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${categoryName}/rename/${newCategoryName}`
-  return await axios.post(apiUrl)
+  return axios.post(apiUrl)
 }
 
 const getAllCategoriesApiEndpoint = ({ siteName, isResource }) => {
@@ -304,9 +304,9 @@ const getAllResourceCategories = async (siteName) => {
 }
 
 const addResourceCategory = async (siteName, resourceName) => {
-  if (!resourceName) return
+  if (!resourceName) return undefined
   const params = { resourceName }
-  return await axios.post(`${BACKEND_URL}/sites/${siteName}/resources`, params)
+  return axios.post(`${BACKEND_URL}/sites/${siteName}/resources`, params)
 }
 
 const getPages = async ({ siteName }) => {
@@ -315,7 +315,7 @@ const getPages = async ({ siteName }) => {
 }
 
 const getResourcePages = async (siteName, resourceName) => {
-  if (!resourceName) return
+  if (!resourceName) return undefined
   const apiEndpoint = `${BACKEND_URL}/sites/${siteName}/resources/${resourceName}`
   const resp = await axios.get(apiEndpoint)
   return resp.data
@@ -323,18 +323,17 @@ const getResourcePages = async (siteName, resourceName) => {
 
 // EditNavBar
 const getEditNavBarData = async (siteName) => {
-  let navContent
-  let collectionContent
-  let resourceContent
-  let navSha
   let foldersContent
 
   const resp = await axios.get(`${BACKEND_URL}/sites/${siteName}/navigation`)
   const { content, sha } = resp.data
-  navContent = content
-  navSha = sha
-  collectionContent = await getAllCategories({ siteName, isResource: false })
-  resourceContent = await getAllCategories({ siteName, isResource: true })
+  const navContent = content
+  const navSha = sha
+  const collectionContent = await getAllCategories({
+    siteName,
+    isResource: false,
+  })
+  const resourceContent = await getAllCategories({ siteName, isResource: true })
   const foldersResp = await axios.get(
     `${BACKEND_URL}/sites/${siteName}/folders/all`
   )
@@ -351,7 +350,7 @@ const getEditNavBarData = async (siteName) => {
     )
   }
 
-  if (!navContent) return
+  if (!navContent) return undefined
 
   return {
     navContent,
@@ -370,7 +369,7 @@ const updateNavBarData = async (siteName, originalNav, links, sha) => {
     },
     sha,
   }
-  return await axios.post(`${BACKEND_URL}/sites/${siteName}/navigation`, params)
+  return axios.post(`${BACKEND_URL}/sites/${siteName}/navigation`, params)
 }
 
 const moveFiles = async (siteName, selectedFiles, title, parentFolder) => {
@@ -383,7 +382,7 @@ const moveFiles = async (siteName, selectedFiles, title, parentFolder) => {
   const newPath = encodeURIComponent(
     `${parentFolder ? `${parentFolder}/` : ""}${title}`
   )
-  return await axios.post(`${baseApiUrl}/move/${newPath}`, params)
+  return axios.post(`${baseApiUrl}/move/${newPath}`, params)
 }
 
 const moveFile = async ({
@@ -404,7 +403,7 @@ const moveFile = async ({
   const params = {
     files: [selectedFile],
   }
-  return await axios.post(apiEndpoint, params)
+  return axios.post(apiEndpoint, params)
 }
 
 // Media
@@ -458,7 +457,7 @@ const createMedia = async ({
     params.documentDirectory = `files${customPath ? `/${customPath}` : ""}`
   }
 
-  return await axios.post(
+  return axios.post(
     `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${
       type === "images" ? "images" : "documents"
     }`,
@@ -473,8 +472,8 @@ const renameMedia = async ({
   fileName,
   newFileName,
 }) => {
-  if (newFileName === fileName) return
-  return await axios.post(
+  if (newFileName === fileName) return undefined
+  return axios.post(
     `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${
       type === "images" ? "images" : "documents"
     }/${generateImageorFilePath(
@@ -489,7 +488,7 @@ const deleteMedia = async ({ siteName, type, sha, customPath, fileName }) => {
     sha,
   }
 
-  return await axios.delete(
+  return axios.delete(
     `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${
       type === "images" ? "images" : "documents"
     }/${generateImageorFilePath(customPath, fileName)}`,
@@ -506,8 +505,8 @@ const moveMedia = async ({
   newCustomPath,
   fileName,
 }) => {
-  if (newCustomPath === oldCustomPath) return
-  return await axios.post(
+  if (newCustomPath === oldCustomPath) return undefined
+  return axios.post(
     `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${
       type === "images" ? "images" : "documents"
     }/${generateImageorFilePath(
@@ -519,8 +518,8 @@ const moveMedia = async ({
 
 const createMediaSubfolder = async (siteName, mediaType, customPath) => {
   if ((mediaType !== "images" && mediaType !== "documents") || !customPath)
-    return
-  return await axios.post(
+    return undefined
+  return axios.post(
     `${
       process.env.REACT_APP_BACKEND_URL
     }/sites/${siteName}/media/${mediaType}/${encodeURIComponent(customPath)}`
@@ -541,13 +540,13 @@ const renameMediaSubfolder = async ({
     `${customPath ? `${customPath}/` : ""}${newSubfolderName}`
   )
   const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/media/${mediaType}/${fullCustomPath}/rename/${fullNewCustomPath}`
-  return await axios.post(apiUrl)
+  return axios.post(apiUrl)
 }
 
 const deleteMediaSubfolder = async ({ siteName, mediaType, customPath }) => {
   if ((mediaType !== "images" && mediaType !== "documents") || !customPath)
-    return
-  return await axios.delete(
+    return undefined
+  return axios.delete(
     `${
       process.env.REACT_APP_BACKEND_URL
     }/sites/${siteName}/media/${mediaType}/${encodeURIComponent(customPath)}`

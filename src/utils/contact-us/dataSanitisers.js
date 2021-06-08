@@ -120,7 +120,7 @@ function sanitiseLocation(location) {
   return { sanitisedLocation, deletedLocation }
 }
 
-export function sanitiseFrontMatter(frontMatter) {
+export default function sanitiseFrontMatter(frontMatter) {
   const { contacts, locations } = frontMatter
 
   const sanitisedFrontMatter = _.cloneDeep(frontMatter)

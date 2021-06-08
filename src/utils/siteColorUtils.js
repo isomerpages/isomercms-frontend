@@ -13,13 +13,15 @@ const defaultSiteColors = {
   },
 }
 
-const getStyleSheet = (unique_title) => {
-  for (let i = 0; i < document.styleSheets.length; i++) {
+const getStyleSheet = (uniqueTitle) => {
+  for (let i = 0; i < document.styleSheets.length; i += 1) {
     const sheet = document.styleSheets[i]
-    if (sheet.title === unique_title) {
+    if (sheet.title === uniqueTitle) {
       return sheet
     }
   }
+
+  return undefined
 }
 
 const createPageStyleSheet = (repoName, primaryColor, secondaryColor) => {

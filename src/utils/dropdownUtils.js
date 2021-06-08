@@ -1,5 +1,4 @@
 import axios from "axios"
-import React from "react"
 
 import { DEFAULT_RETRY_MSG } from "../utils"
 import { errorToast } from "./toasts"
@@ -7,7 +6,7 @@ import { errorToast } from "./toasts"
 // axios settings
 axios.defaults.withCredentials = true
 
-export const retrieveThirdNavOptions = async (
+const retrieveThirdNavOptions = async (
   siteName,
   collectionName,
   isExistingCollection
@@ -32,9 +31,11 @@ export const retrieveThirdNavOptions = async (
       thirdNavOptions,
     }
   } catch (err) {
-    errorToast(
+    console.log(err)
+    return errorToast(
       `There was a problem trying to retrieve data from your repo. ${DEFAULT_RETRY_MSG}`
     )
-    console.log(err)
   }
 }
+
+export default retrieveThirdNavOptions

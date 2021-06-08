@@ -508,7 +508,7 @@ const validateSections = (sectionError, sectionType, field, value) => {
 const validateContactType = (contactType, value) => {
   let errorMessage = ""
   switch (contactType) {
-    case "title":
+    case "title": {
       if (value.length < CONTACT_TITLE_MIN_LENGTH) {
         errorMessage = `Title cannot be empty.`
       }
@@ -516,7 +516,8 @@ const validateContactType = (contactType, value) => {
         errorMessage = `Title should be shorter than ${CONTACT_TITLE_MAX_LENGTH} characters.`
       }
       break
-    case "phone":
+    }
+    case "phone": {
       const strippedValue = value.replace(/\s/g, "")
       if (strippedValue.includes("_")) {
         errorMessage = `Field not completed`
@@ -530,16 +531,19 @@ const validateContactType = (contactType, value) => {
         }
       }
       break
-    case "email":
+    }
+    case "email": {
       if (value && !emailRegexTest.test(value)) {
         errorMessage = `Emails should follow the format abc@def.gh and should not contain special characters such as: ?!#\\$% ` // TODO
       }
       break
-    case "other":
+    }
+    case "other": {
       if (value.length > CONTACT_DESCRIPTION_MAX_LENGTH) {
         errorMessage = `Description should be shorter than ${CONTACT_DESCRIPTION_MAX_LENGTH} characters.`
       }
       break
+    }
     default:
       break
   }
@@ -551,7 +555,7 @@ const validateContactType = (contactType, value) => {
 const validateLocationType = (locationType, value) => {
   let errorMessage = ""
   switch (locationType) {
-    case "title":
+    case "title": {
       // Title is too short
       if (value.length < LOCATION_TITLE_MIN_LENGTH) {
         errorMessage = `Title cannot be empty.`
@@ -561,10 +565,11 @@ const validateLocationType = (locationType, value) => {
         errorMessage = `Title should be shorter than ${LOCATION_TITLE_MAX_LENGTH} characters.`
       }
       break
+    }
     case "maps_link": {
       break
     }
-    case "address":
+    case "address": {
       const errors = []
       // check if in-between fields are empty e.g. field 3 is filled but field 2 is empty
       if (
@@ -587,8 +592,9 @@ const validateLocationType = (locationType, value) => {
       }
       errorMessage = errors
       break
+    }
     // fields below are operating hours fields
-    case "days":
+    case "days": {
       if (value && !alphabetsRegexTest.test(value)) {
         errorMessage += `Field should only contain alphabets. `
       }
@@ -599,6 +605,7 @@ const validateLocationType = (locationType, value) => {
         errorMessage += `Field should be shorter than ${LOCATION_OPERATING_DAYS_MAX_LENGTH} characters. `
       }
       break
+    }
     case "time": {
       if (value && !alphanumericRegexTest.test(value)) {
         errorMessage += `Field should only contain alphanumeric characters. `
@@ -643,6 +650,33 @@ const validateLink = (linkType, value) => {
     default:
       break
   }
+  return errorMessage
+}
+
+// Resource Category Modal
+// ===================
+const validateCategoryName = (value, componentName, existingNames) => {
+  let errorMessage = ""
+
+  if (existingNames && existingNames.includes(slugifyCategory(value)))
+    errorMessage = `Another folder with the same name exists. Please choose a different name.`
+  else if (ISOMER_TEMPLATE_PROTECTED_DIRS.includes(slugifyCategory(value)))
+    errorMessage = `The name chosen is a protected folder name (${ISOMER_TEMPLATE_PROTECTED_DIRS.map(
+      (item) => `'${item}'`
+    ).join(", ")}). Please choose a different name.`
+  // Resource category is too short
+  else if (value.length < RESOURCE_CATEGORY_MIN_LENGTH) {
+    errorMessage = `The ${componentName} category should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`
+  }
+  // Resource category is too long
+  else if (value.length > RESOURCE_CATEGORY_MAX_LENGTH) {
+    errorMessage = `The ${componentName} category should be shorter than ${RESOURCE_CATEGORY_MAX_LENGTH} characters.`
+  }
+  // Resource category fails regex
+  else if (!resourceCategoryRegexTest.test(value)) {
+    errorMessage = `The ${componentName} category should not contain special characters such as: ?!#\\$%.`
+  }
+
   return errorMessage
 }
 
@@ -804,6 +838,26 @@ const validateResourceSettings = (id, value, folderOrderArray) => {
   return errorMessage
 }
 
+const validateFileName = (value) => {
+  if (!value.length) {
+    return "Please input the file name"
+  }
+
+  const fileNameArr = value.split(".")
+  if (fileNameArr.length !== 2) {
+    return "Invalid filename: filename can only contain one full stop and must follow the structure {name}.{extension}"
+  }
+  if (!fileNameExtensionRegexTest.test(fileNameArr[1])) {
+    return "Invalid filename: filename must end with a valid file extension (.JPG, .png, .pdf, etc.)"
+  }
+  if (fileNameArr[0] === "")
+    return "Invalid filename: please specify a filename"
+  if (!fileNameRegexTest.test(fileNameArr[0])) {
+    return "Invalid filename: filename must not contain any special characters"
+  }
+  return ""
+}
+
 // Media Settings Modal
 // ===================
 
@@ -829,33 +883,6 @@ const validateResourceRoomName = (value) => {
   return errorMessage
 }
 
-// Resource Category Modal
-// ===================
-const validateCategoryName = (value, componentName, existingNames) => {
-  let errorMessage = ""
-
-  if (existingNames && existingNames.includes(slugifyCategory(value)))
-    errorMessage = `Another folder with the same name exists. Please choose a different name.`
-  else if (ISOMER_TEMPLATE_PROTECTED_DIRS.includes(slugifyCategory(value)))
-    errorMessage = `The name chosen is a protected folder name (${ISOMER_TEMPLATE_PROTECTED_DIRS.map(
-      (item) => `'${item}'`
-    ).join(", ")}). Please choose a different name.`
-  // Resource category is too short
-  else if (value.length < RESOURCE_CATEGORY_MIN_LENGTH) {
-    errorMessage = `The ${componentName} category should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`
-  }
-  // Resource category is too long
-  else if (value.length > RESOURCE_CATEGORY_MAX_LENGTH) {
-    errorMessage = `The ${componentName} category should be shorter than ${RESOURCE_CATEGORY_MAX_LENGTH} characters.`
-  }
-  // Resource category fails regex
-  else if (!resourceCategoryRegexTest.test(value)) {
-    errorMessage = `The ${componentName} category should not contain special characters such as: ?!#\\$%.`
-  }
-
-  return errorMessage
-}
-
 // Settings page
 // ===================
 const validateSocialMedia = (value, id) => {
@@ -873,26 +900,6 @@ const validateSocialMedia = (value, id) => {
   }
 
   return errorMessage
-}
-
-const validateFileName = (value) => {
-  if (!value.length) {
-    return "Please input the file name"
-  }
-
-  const fileNameArr = value.split(".")
-  if (fileNameArr.length !== 2) {
-    return "Invalid filename: filename can only contain one full stop and must follow the structure {name}.{extension}"
-  }
-  if (!fileNameExtensionRegexTest.test(fileNameArr[1])) {
-    return "Invalid filename: filename must end with a valid file extension (.JPG, .png, .pdf, etc.)"
-  }
-  if (fileNameArr[0] === "")
-    return "Invalid filename: please specify a filename"
-  if (!fileNameRegexTest.test(fileNameArr[0])) {
-    return "Invalid filename: filename must not contain any special characters"
-  }
-  return ""
 }
 
 export {

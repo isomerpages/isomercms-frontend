@@ -41,7 +41,7 @@ function validateContact(contact) {
   }
 }
 
-export function validateFrontMatter(frontMatter) {
+export default function validateFrontMatter(frontMatter) {
   const { contacts, locations } = frontMatter
 
   const contactsErrors = []

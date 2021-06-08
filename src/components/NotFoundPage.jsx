@@ -1,8 +1,8 @@
-import React from "react";
-import { Link } from 'react-router-dom';
+import React from "react"
+import { Link } from "react-router-dom"
 
-import errorStyles from '../styles/isomer-cms/pages/Error.module.scss';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import errorStyles from "../styles/isomer-cms/pages/Error.module.scss"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
 const NotFoundPage = ({ location }) => {
   const siteName = location?.state?.siteName
@@ -16,12 +16,14 @@ const NotFoundPage = ({ location }) => {
         />
         <div className={errorStyles.errorText}>
           The page you are looking for does not exist anymore.
-          <br/> 
+          <br />
           Try refreshing your page when you return.
         </div>
-        
-        <Link to={siteName ? `/sites/${siteName}/workspace` : '/sites'}>
-          <button className={`${errorStyles.errorButton} ${elementStyles.blue}`}>
+
+        <Link to={siteName ? `/sites/${siteName}/workspace` : "/sites"}>
+          <button
+            className={`${errorStyles.errorButton} ${elementStyles.blue}`}
+          >
             Back to IsomerCMS
           </button>
         </Link>
@@ -30,4 +32,4 @@ const NotFoundPage = ({ location }) => {
   )
 }
 
-export default NotFoundPage;
+export default NotFoundPage

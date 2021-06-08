@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios'
-import PropTypes from 'prop-types';
-import { MenuDropdown } from './MenuDropdown'
-import FileMoveMenuDropdown from './FileMoveMenuDropdown'
+import React, { useEffect, useState, useRef } from "react"
+import { Link } from "react-router-dom"
+import axios from "axios"
+import PropTypes from "prop-types"
+import { MenuDropdown } from "./MenuDropdown"
+import FileMoveMenuDropdown from "./FileMoveMenuDropdown"
 
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import contentStyles from '../styles/isomer-cms/pages/Content.module.scss';
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
 
 // Import utils
 import {
@@ -15,20 +15,20 @@ import {
   prettifyDate,
   retrieveResourceFileMetadata,
   deslugifyDirectory,
-} from '../utils';
+} from "../utils"
 
 // axios settings
 axios.defaults.withCredentials = true
 
 const OverviewCard = ({
-  date, 
-  category, 
-  itemIndex, 
-  siteName, 
-  fileName, 
-  isResource, 
-  isHomepage, 
-  allCategories, 
+  date,
+  category,
+  itemIndex,
+  siteName,
+  fileName,
+  isResource,
+  isHomepage,
+  allCategories,
   resourceType,
   setIsComponentSettingsActive,
   setSelectedFile,
@@ -94,83 +94,110 @@ const OverviewCard = ({
   const CardContent = (
     <>
       <div id={itemIndex} className={contentStyles.componentInfo}>
-        <div className={contentStyles.componentCategory}>{category ? deslugifyDirectory(category) : ''}</div>
-        <h1 className={resourceType === 'file' ? contentStyles.componentTitle : contentStyles.componentTitleLink}>{generateTitle()}</h1>
-        <p className={contentStyles.componentDate}>{`${date ? prettifyDate(date) : ''}${resourceType ? `/${resourceType.toUpperCase()}` : ''}`}</p>
-      </div>
-        <div className="position-relative mt-auto">
-          <button
-            type="button"
-            id={`settings-${itemIndex}`}
-            onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                setSelectedFile(fileName)
-                setCanShowDropdown(true)
-              }}
-            className={`${canShowDropdown || canShowFileMoveDropdown ? contentStyles.optionsIconFocus : contentStyles.optionsIcon}`}
-          >
-            <i id={`settingsIcon-${itemIndex}`} className="bx bx-dots-vertical-rounded" />
-          </button>
-          { canShowDropdown &&
-            <MenuDropdown 
-              dropdownItems={[
-                {
-                  type: 'edit',
-                  handler: () => setIsComponentSettingsActive((prevState) => !prevState),
-                },
-                {
-                  type: 'move',
-                  handler: toggleDropdownModals,
-                },
-                {
-                  type: 'delete',
-                  handler: () => setCanShowDeleteWarningModal(true)
-                },
-              ]}
-              dropdownRef={dropdownRef}
-              menuIndex={itemIndex}
-              tabIndex={2}
-              onBlur={()=>setCanShowDropdown(false)}
-            />
-          }
-          { canShowFileMoveDropdown &&
-            <FileMoveMenuDropdown 
-              dropdownItems={allCategories}
-              dropdownRef={fileMoveDropdownRef}
-              menuIndex={itemIndex}
-              onBlur={handleBlur}
-              moveDropdownQuery={moveDropdownQuery}
-              rootName={isResource ? "Resources" : "Workspace" }
-              setMoveDropdownQuery={setMoveDropdownQuery}
-              backHandler={toggleDropdownModals}
-              moveHandler={() => {
-                setSelectedPath(`${moveDropdownQuery ? moveDropdownQuery : 'pages'}`)
-                setCanShowMoveModal(true)
-              }}
-              moveDisabled={isResource && !moveDropdownQuery} // cannot move resources to Workspace
-            />
-          }
+        <div className={contentStyles.componentCategory}>
+          {category ? deslugifyDirectory(category) : ""}
         </div>
+        <h1
+          className={
+            resourceType === "file"
+              ? contentStyles.componentTitle
+              : contentStyles.componentTitleLink
+          }
+        >
+          {generateTitle()}
+        </h1>
+        <p className={contentStyles.componentDate}>{`${
+          date ? prettifyDate(date) : ""
+        }${resourceType ? `/${resourceType.toUpperCase()}` : ""}`}</p>
+      </div>
+      <div className="position-relative mt-auto">
+        <button
+          type="button"
+          id={`settings-${itemIndex}`}
+          onClick={(e) => {
+            e.stopPropagation()
+            e.preventDefault()
+            setSelectedFile(fileName)
+            setCanShowDropdown(true)
+          }}
+          className={`${
+            canShowDropdown || canShowFileMoveDropdown
+              ? contentStyles.optionsIconFocus
+              : contentStyles.optionsIcon
+          }`}
+        >
+          <i
+            id={`settingsIcon-${itemIndex}`}
+            className="bx bx-dots-vertical-rounded"
+          />
+        </button>
+        {canShowDropdown && (
+          <MenuDropdown
+            dropdownItems={[
+              {
+                type: "edit",
+                handler: () =>
+                  setIsComponentSettingsActive((prevState) => !prevState),
+              },
+              {
+                type: "move",
+                handler: toggleDropdownModals,
+              },
+              {
+                type: "delete",
+                handler: () => setCanShowDeleteWarningModal(true),
+              },
+            ]}
+            dropdownRef={dropdownRef}
+            menuIndex={itemIndex}
+            tabIndex={2}
+            onBlur={() => setCanShowDropdown(false)}
+          />
+        )}
+        {canShowFileMoveDropdown && (
+          <FileMoveMenuDropdown
+            dropdownItems={allCategories}
+            dropdownRef={fileMoveDropdownRef}
+            menuIndex={itemIndex}
+            onBlur={handleBlur}
+            moveDropdownQuery={moveDropdownQuery}
+            rootName={isResource ? "Resources" : "Workspace"}
+            setMoveDropdownQuery={setMoveDropdownQuery}
+            backHandler={toggleDropdownModals}
+            moveHandler={() => {
+              setSelectedPath(
+                `${moveDropdownQuery ? moveDropdownQuery : "pages"}`
+              )
+              setCanShowMoveModal(true)
+            }}
+            moveDisabled={isResource && !moveDropdownQuery} // cannot move resources to Workspace
+          />
+        )}
+      </div>
     </>
   )
-  
+
   return (
     <>
-    {
-      resourceType !== 'file' && !canShowFileMoveDropdown && !canShowDropdown // disables link while dropdown modals are open
-      ?
-        <Link className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`} to={generateLink()}>
+      {resourceType !== "file" &&
+      !canShowFileMoveDropdown &&
+      !canShowDropdown ? ( // disables link while dropdown modals are open
+        <Link
+          className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`}
+          to={generateLink()}
+        >
           {CardContent}
         </Link>
-      : <div className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`}>
+      ) : (
+        <div
+          className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`}
+        >
           {CardContent}
         </div>
-    }
+      )}
     </>
-  );
-};
-
+  )
+}
 
 OverviewCard.propTypes = {
   date: PropTypes.string,
@@ -181,7 +208,7 @@ OverviewCard.propTypes = {
   isResource: PropTypes.bool,
   isHomepage: PropTypes.bool,
   allCategories: PropTypes.arrayOf(PropTypes.string),
-  resourceType: PropTypes.oneOf(['file', 'post', '']),
+  resourceType: PropTypes.oneOf(["file", "post", ""]),
   setIsComponentSettingsActive: PropTypes.func,
   setSelectedFile: PropTypes.func,
   setSelectedPath: PropTypes.func,
@@ -190,6 +217,6 @@ OverviewCard.propTypes = {
   moveDropdownQuery: PropTypes.string,
   setMoveDropdownQuery: PropTypes.func,
   clearMoveDropdownQueryState: PropTypes.func,
-};
+}
 
 export default OverviewCard
