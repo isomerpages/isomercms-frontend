@@ -164,7 +164,13 @@ const OverviewCard = ({
             setMoveDropdownQuery={setMoveDropdownQuery}
             backHandler={toggleDropdownModals}
             moveHandler={() => {
+<<<<<<< HEAD
               setSelectedPath(`${moveDropdownQuery || "pages"}`)
+=======
+              setSelectedPath(
+                `${moveDropdownQuery ? moveDropdownQuery : "pages"}`
+              )
+>>>>>>> develop
               setCanShowMoveModal(true)
             }}
             moveDisabled={isResource && !moveDropdownQuery} // cannot move resources to Workspace

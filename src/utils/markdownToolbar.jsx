@@ -9,7 +9,6 @@
  */
 
 import {
-  drawLink,
   drawTable,
   toggleBlockquote,
   toggleBold,

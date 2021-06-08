@@ -728,7 +728,7 @@ const EditContactUs = ({ match }) => {
         )
       }
 
-      // // Update settings
+      // Update settings
       const updatedFooterContents = _.cloneDeep(footerContent)
 
       const footerParams = {

@@ -1,8 +1,11 @@
 import React, { Component } from "react"
-import PropTypes from "prop-types"
+
 import axios from "axios"
-import FormField from "@components/FormField"
+import PropTypes from "prop-types"
+
 import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+
+import FormField from "@components/FormField"
 import SaveDeleteButtons from "@components/SaveDeleteButtons"
 
 // axios settings

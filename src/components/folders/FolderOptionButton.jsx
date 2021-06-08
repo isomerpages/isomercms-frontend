@@ -1,6 +1,5 @@
 import React from "react"
 
-// Import styles
 import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
 
