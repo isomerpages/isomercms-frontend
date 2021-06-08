@@ -16,7 +16,6 @@ export function errorToast(message) {
     {
       className: `${elementStyles.toastError} ${elementStyles.toastLong}`,
       toastId: "error",
-      autoClose: false,
     }
   )
 }
@@ -25,6 +24,5 @@ export function successToast(message) {
   toast(<Toast notificationType="success" text={message || `Success!`} />, {
     className: `${elementStyles.toastSuccess}`,
     toastId: "success",
-    autoClose: false,
   })
 }
