@@ -33,8 +33,7 @@
           ["^@hooks(.*|$)"],
           ["^@templates(.*|$)"],
           ["^@utils(.*|$)"],
-          ["^.+\\.s?css$"], // Direct style imports, for e.g. import "<file name>"
-          ["^@style(.*|$)"], // Indirect style imports, for e.g. import elementStyles from "<file name>"
+          ["^@style(.*|$)"],
           ["^@components(.*|$)"],
           ["^@layouts(.*|$)"],
           ["^@routing(.*|$)"],
@@ -43,7 +42,9 @@
           // Parent imports. Put `..` last.
           ["^\\.\\.(?!/?$)", "^\\.\\./?$"],
           // Other relative imports. Put same-folder imports and `.` last.
-          ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"]
+          ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"],
+          // Direct imports for e.g. import "<package>"
+          ["^.+\\.s?css$"]
         ]
       }
     ]
