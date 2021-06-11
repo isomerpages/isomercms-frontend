@@ -43,7 +43,8 @@
     "yaml": "^1.10.2"
   },
   "scripts": {
-    "start": "source .env.development.local && craco start",
+    "run": "source .env && craco start",
+    "dev": "source .env && craco start",
     "build": "craco build",
     "test": "craco test",
     "test-e2e": "cypress run",
