@@ -1,7 +1,10 @@
 import React, { useState } from "react"
+
 import PropTypes from "prop-types"
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
-import Dropdown from "../Dropdown"
+
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+
+import Dropdown from "@components/Dropdown"
 
 const NewSectionCreator = ({ createHandler, hasResources }) => {
   const [newSectionType, setNewSectionType] = useState()
@@ -27,7 +30,7 @@ const NewSectionCreator = ({ createHandler, hasResources }) => {
         <Dropdown
           options={options}
           defaultOption={defaultText}
-          emptyDefault={true}
+          emptyDefault
           name="newSection"
           id="section-new"
           onFieldChange={(e) => setNewSectionType(e.target.value)}

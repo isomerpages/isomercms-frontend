@@ -1,9 +1,12 @@
 import React from "react"
+import { Draggable, Droppable } from "react-beautiful-dnd"
+
 import PropTypes from "prop-types"
-import { Droppable, Draggable } from "react-beautiful-dnd"
-import styles from "../../styles/App.module.scss"
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
-import FormField from "../FormField"
+
+import styles from "@styles/App.module.scss"
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+
+import FormField from "@components/FormField"
 
 /* eslint
   react/no-array-index-key: 0

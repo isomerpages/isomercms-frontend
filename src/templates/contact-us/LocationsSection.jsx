@@ -1,18 +1,17 @@
 import React from "react"
+
 import PropTypes from "prop-types"
 
 const LocationHours = ({ operatingHours }) => (
   <div className="col is-6">
     {operatingHours &&
-      operatingHours.map((operation, i) => {
-        return (
-          <p className="margin--top--none" key={i}>
-            <b>{operation.days}</b>:&nbsp;{operation.time}
-            <br />
-            {operation.description}
-          </p>
-        )
-      })}
+      operatingHours.map((operation, i) => (
+        <p className="margin--top--none" key={i}>
+          <b>{operation.days}</b>:&nbsp;{operation.time}
+          <br />
+          {operation.description}
+        </p>
+      ))}
   </div>
 )
 
@@ -37,7 +36,7 @@ const LocationAddress = ({ location }) => (
       >
         <div>
           <span>VIEW MAP</span>
-          <i className="sgds-icon sgds-icon-arrow-right" aria-hidden="true"></i>
+          <i className="sgds-icon sgds-icon-arrow-right" aria-hidden="true" />
         </div>
       </a>
     </div>

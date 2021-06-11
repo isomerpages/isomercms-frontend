@@ -1,23 +1,25 @@
 import React, { Component } from "react"
+
 import axios from "axios"
 import PropTypes from "prop-types"
 import * as _ from "lodash"
 
-import Header from "../components/Header"
-import Sidebar from "../components/Sidebar"
-import LoadingButton from "../components/LoadingButton"
-import ColorPicker from "../components/ColorPicker"
-import FormFieldToggle from "../components/FormFieldToggle"
-import FormFieldMedia from "../components/FormFieldMedia"
-import FormFieldColor from "../components/FormFieldColor"
-import FormFieldHorizontal from "../components/FormFieldHorizontal"
+import { DEFAULT_RETRY_MSG, getObjectDiff } from "@src/utils"
 
-import { DEFAULT_RETRY_MSG, getObjectDiff } from "../utils"
-import { errorToast } from "../utils/toasts"
-import { validateSocialMedia } from "../utils/validators"
+import { errorToast } from "@utils/toasts"
+import { validateSocialMedia } from "@utils/validators"
 
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
+
+import Header from "@components/Header"
+import Sidebar from "@components/Sidebar"
+import LoadingButton from "@components/LoadingButton"
+import ColorPicker from "@components/ColorPicker"
+import FormFieldToggle from "@components/FormFieldToggle"
+import FormFieldMedia from "@components/FormFieldMedia"
+import FormFieldColor from "@components/FormFieldColor"
+import FormFieldHorizontal from "@components/FormFieldHorizontal"
 
 const stateFields = {
   title: "",

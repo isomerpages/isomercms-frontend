@@ -11,26 +11,26 @@ import {
   frontMatterParser,
   deslugifyPage,
   deslugifyDirectory,
-} from "../utils"
+} from "@src/utils"
 
-import { createPageData, updatePageData, renamePageData } from "../api"
+import { createPageData, updatePageData, renamePageData } from "@src/api"
 import {
   PAGE_SETTINGS_KEY,
   DIR_CONTENT_KEY,
   PAGE_CONTENT_KEY,
-} from "../constants"
+} from "@src/constants"
 
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 
-import { validatePageSettings } from "../utils/validators"
-import { errorToast, successToast } from "../utils/toasts"
+import { validatePageSettings } from "@utils/validators"
+import { errorToast, successToast } from "@utils/toasts"
 
-import FormField from "./FormField"
-import FormFieldHorizontal from "./FormFieldHorizontal"
-import SaveDeleteButtons from "./SaveDeleteButtons"
+import FormField from "@components/FormField"
+import FormFieldHorizontal from "@components/FormFieldHorizontal"
+import SaveDeleteButtons from "@components/SaveDeleteButtons"
 
-import useSiteUrlHook from "../hooks/useSiteUrlHook"
-import useRedirectHook from "../hooks/useRedirectHook"
+import useSiteUrlHook from "@hooks/useSiteUrlHook"
+import useRedirectHook from "@hooks/useRedirectHook"
 
 // axios settings
 axios.defaults.withCredentials = true

@@ -1,7 +1,9 @@
 import React from "react"
-import PropTypes from "prop-types"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 import InputMask from "react-input-mask"
+
+import PropTypes from "prop-types"
+
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 
 const InputMaskFormField = ({
   title,

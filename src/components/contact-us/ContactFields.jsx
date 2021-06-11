@@ -1,9 +1,11 @@
 import React, { useState } from "react"
-import PropTypes from "prop-types"
-import FormField from "../FormField"
-import InputMaskFormField from "../InputMaskFormField"
-import Dropdown from "../Dropdown"
+
 import _ from "lodash"
+import PropTypes from "prop-types"
+
+import Dropdown from "@components/Dropdown"
+import FormField from "@components/FormField"
+import InputMaskFormField from "@components/InputMaskFormField"
 
 const ContactFields = ({
   cardIndex,
@@ -17,7 +19,7 @@ const ContactFields = ({
   )
 
   return (
-    <div className={`d-flex flex-column`}>
+    <div className="d-flex flex-column">
       <InputMaskFormField
         title="Phone"
         mask={phoneFieldType === "local" ? "+65 9999 9999" : "1 800 999 9999"}
@@ -31,7 +33,7 @@ const ContactFields = ({
       <Dropdown
         options={["Local", "Tollfree"]}
         defaultOption={_.upperFirst(phoneFieldType)}
-        id={"phone-field-type"}
+        id="phone-field-type"
         onFieldChange={(e) => setPhoneFieldType(e.target.value)}
       />
       <FormField

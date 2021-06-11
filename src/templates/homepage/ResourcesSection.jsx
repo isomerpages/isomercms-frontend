@@ -1,6 +1,8 @@
 import React from "react"
+
 import PropTypes from "prop-types"
-import contentStyles from "../../styles/isomer-cms/pages/Content.module.scss"
+
+import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
 
 /* eslint
   react/no-array-index-key: 0

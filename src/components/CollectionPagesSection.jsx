@@ -1,41 +1,39 @@
 import React, { useState } from "react"
+import { useMutation, useQuery, useQueryClient } from "react-query"
+
 import axios from "axios"
-import { useQuery, useMutation, useQueryClient } from "react-query"
-import PropTypes from "prop-types"
 import _ from "lodash"
+import PropTypes from "prop-types"
 
 import {
-  PAGE_CONTENT_KEY,
-  FOLDERS_CONTENT_KEY,
-  DIR_CONTENT_KEY,
-  RESOURCE_CATEGORY_CONTENT_KEY,
-} from "../constants"
-
-import {
-  getEditPageData,
   deletePageData,
   getAllCategories,
-  moveFile,
   getDirectoryFile,
-} from "../api"
-
+  getEditPageData,
+  moveFile,
+} from "@src/api"
 import {
+  DIR_CONTENT_KEY,
+  FOLDERS_CONTENT_KEY,
+  PAGE_CONTENT_KEY,
+  RESOURCE_CATEGORY_CONTENT_KEY,
+} from "@src/constants"
+import {
+  convertFolderOrderToArray,
   DEFAULT_RETRY_MSG,
   parseDirectoryFile,
-  convertFolderOrderToArray,
-} from "../utils"
+} from "@src/utils"
 
-// Import components
-import OverviewCard from "../components/OverviewCard"
-import ComponentSettingsModal from "./ComponentSettingsModal"
-import PageSettingsModal from "./PageSettingsModal"
-import { errorToast, successToast } from "../utils/toasts"
-import DeleteWarningModal from "../components/DeleteWarningModal"
-import GenericWarningModal from "../components/GenericWarningModal"
+import { errorToast, successToast } from "@utils/toasts"
 
-// Import styles
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
+
+import ComponentSettingsModal from "@components/ComponentSettingsModal"
+import DeleteWarningModal from "@components/DeleteWarningModal"
+import GenericWarningModal from "@components/GenericWarningModal"
+import OverviewCard from "@components/OverviewCard"
+import PageSettingsModal from "@components/PageSettingsModal"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -127,7 +125,7 @@ const CollectionPagesSection = ({
         .map((resource) => resource.dirName)
         .filter((dirName) => dirName !== collectionName)
     }
-    if (!!subfolderName) {
+    if (subfolderName) {
       // inside subfolder, show empty
       return []
     }
@@ -177,7 +175,7 @@ const CollectionPagesSection = ({
 
   const { mutateAsync: moveHandler } = useMutation(
     async () => {
-      if ("pages" === selectedPath) return true
+      if (selectedPath === "pages") return true
       await moveFile({
         siteName,
         selectedFile,
@@ -238,7 +236,7 @@ const CollectionPagesSection = ({
         <DeleteWarningModal
           onCancel={() => setCanShowDeleteWarningModal(false)}
           onDelete={deleteHandler}
-          type={"page"}
+          type="page"
         />
       )}
       {canShowMoveModal && (
@@ -254,54 +252,52 @@ const CollectionPagesSection = ({
         />
       )}
       <div className={contentStyles.contentContainerBoxes}>
-        {
-          <div className={contentStyles.boxesContainer}>
-            <button
-              type="button"
-              id="settings-NEW"
-              onClick={() => {
-                setIsComponentSettingsActive(true)
-                setSelectedFile("")
-                setCreateNewPage(true)
-              }}
-              className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.addNew}`}
-            >
-              <i
-                id="settingsIcon-NEW"
-                className={`bx bx-plus-circle ${elementStyles.bxPlusCircle}`}
-              />
-              <h2 id="settingsText-NEW">Add a new page</h2>
-            </button>
-            {pages
-              ? pages.map((page, pageIdx) => (
-                  <OverviewCard
-                    key={page.fileName}
-                    itemIndex={pageIdx}
-                    category={collectionName}
-                    siteName={siteName}
-                    fileName={page.fileName}
-                    resourceType={isResource ? page.type : ""}
-                    date={page.date}
-                    isResource={isResource}
-                    allCategories={getCategories(
-                      moveDropdownQuery,
-                      allCategories,
-                      querySubfolders
-                    )}
-                    setIsComponentSettingsActive={setIsComponentSettingsActive}
-                    setSelectedFile={setSelectedFile}
-                    setCanShowDeleteWarningModal={setCanShowDeleteWarningModal}
-                    setCanShowMoveModal={setCanShowMoveModal}
-                    setSelectedPath={setSelectedPath}
-                    moveDropdownQuery={moveDropdownQuery}
-                    setMoveDropdownQuery={setMoveDropdownQuery}
-                    clearMoveDropdownQueryState={() => setMoveDropdownQuery("")}
-                  />
-                ))
-              : /* Display loader if pages have not been retrieved from API call */
-                "Loading Pages..."}
-          </div>
-        }
+        <div className={contentStyles.boxesContainer}>
+          <button
+            type="button"
+            id="settings-NEW"
+            onClick={() => {
+              setIsComponentSettingsActive(true)
+              setSelectedFile("")
+              setCreateNewPage(true)
+            }}
+            className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.addNew}`}
+          >
+            <i
+              id="settingsIcon-NEW"
+              className={`bx bx-plus-circle ${elementStyles.bxPlusCircle}`}
+            />
+            <h2 id="settingsText-NEW">Add a new page</h2>
+          </button>
+          {pages
+            ? pages.map((page, pageIdx) => (
+                <OverviewCard
+                  key={page.fileName}
+                  itemIndex={pageIdx}
+                  category={collectionName}
+                  siteName={siteName}
+                  fileName={page.fileName}
+                  resourceType={isResource ? page.type : ""}
+                  date={page.date}
+                  isResource={isResource}
+                  allCategories={getCategories(
+                    moveDropdownQuery,
+                    allCategories,
+                    querySubfolders
+                  )}
+                  setIsComponentSettingsActive={setIsComponentSettingsActive}
+                  setSelectedFile={setSelectedFile}
+                  setCanShowDeleteWarningModal={setCanShowDeleteWarningModal}
+                  setCanShowMoveModal={setCanShowMoveModal}
+                  setSelectedPath={setSelectedPath}
+                  moveDropdownQuery={moveDropdownQuery}
+                  setMoveDropdownQuery={setMoveDropdownQuery}
+                  clearMoveDropdownQueryState={() => setMoveDropdownQuery("")}
+                />
+              ))
+            : /* Display loader if pages have not been retrieved from API call */
+              "Loading Pages..."}
+        </div>
       </div>
     </>
   )

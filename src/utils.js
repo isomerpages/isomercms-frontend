@@ -1,12 +1,14 @@
 // import dependencies
-import yaml from "yaml"
-import cheerio from "cheerio"
-import slugify from "slugify"
-import axios from "axios"
-import _ from "lodash"
 import { QueryClient } from "react-query"
-import { getMediaDetails } from "./api"
-import { SITES_IS_PRIVATE_KEY } from "./constants"
+
+import axios from "axios"
+import cheerio from "cheerio"
+import _ from "lodash"
+import slugify from "slugify"
+import yaml from "yaml"
+
+import { getMediaDetails } from "@src/api"
+import { SITES_IS_PRIVATE_KEY } from "@src/constants"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -285,7 +287,7 @@ export const getObjectDiff = (obj1, obj2) => {
   const allkeys = _.union(_.keys(obj1), _.keys(obj2))
   const difference = _.reduce(
     allkeys,
-    function (result, key) {
+    (result, key) => {
       const newResult = { ...result }
       if (!_.isEqual(obj1[key], obj2[key])) {
         newResult[key] = { obj1: obj1[key], obj2: obj2[key] }
@@ -315,8 +317,8 @@ export const updateDirectoryFile = (folderName, isFolderLive, folderOrder) => {
   return yaml.stringify(newContent)
 }
 
-export const getNavFolderDropdownFromFolderOrder = (folderOrder) => {
-  return folderOrder.reduce((acc, curr) => {
+export const getNavFolderDropdownFromFolderOrder = (folderOrder) =>
+  folderOrder.reduce((acc, curr) => {
     const pathArr = curr.split("/") // sample paths: "prize-sponsor.md", "prize-jury/nominating-committee.md"
 
     if (pathArr.length === 1) {
@@ -333,7 +335,6 @@ export const getNavFolderDropdownFromFolderOrder = (folderOrder) => {
 
     return acc
   }, [])
-}
 
 export const convertFolderOrderToArray = (folderOrder) => {
   let currFolderEntry = {}
@@ -389,8 +390,8 @@ export const convertArrayToFolderOrder = (array) => {
   return _.flatten(updatedFolderOrder)
 }
 
-export const retrieveSubfolderContents = (folderOrder, subfolderName) => {
-  return folderOrder.reduce((acc, curr) => {
+export const retrieveSubfolderContents = (folderOrder, subfolderName) =>
+  folderOrder.reduce((acc, curr) => {
     const folderPathArr = curr.split("/")
     if (folderPathArr.length === 2) {
       const [subfolderTitle, subfolderFileName] = folderPathArr
@@ -404,7 +405,6 @@ export const retrieveSubfolderContents = (folderOrder, subfolderName) => {
     }
     return acc
   }, [])
-}
 
 export const convertSubfolderArray = (
   folderOrderArray,

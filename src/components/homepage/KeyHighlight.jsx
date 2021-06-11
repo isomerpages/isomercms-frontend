@@ -1,7 +1,10 @@
 import React from "react"
+
 import PropTypes from "prop-types"
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
-import FormField from "../FormField"
+
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+
+import FormField from "@components/FormField"
 
 /* eslint
   react/no-array-index-key: 0

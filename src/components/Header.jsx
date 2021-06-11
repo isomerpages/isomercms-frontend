@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from "react"
+import React, { useEffect, useState } from "react"
+
 import axios from "axios"
 import PropTypes from "prop-types"
-import GenericWarningModal from "./GenericWarningModal"
-import useRedirectHook from "../hooks/useRedirectHook"
-import useSiteUrlHook from "../hooks/useSiteUrlHook"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+
+import useRedirectHook from "@hooks/useRedirectHook"
+import useSiteUrlHook from "@hooks/useSiteUrlHook"
+
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+
+import GenericWarningModal from "@components/GenericWarningModal"
 
 // axios settings
 axios.defaults.withCredentials = true

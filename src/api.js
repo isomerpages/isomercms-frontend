@@ -1,8 +1,9 @@
 import axios from "axios"
+
 import {
-  getNavFolderDropdownFromFolderOrder,
   generateImageorFilePath,
-} from "./utils"
+  getNavFolderDropdownFromFolderOrder,
+} from "@src/utils"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -18,12 +19,11 @@ const getDirectoryFile = async (siteName, folderName) => {
   return resp.data
 }
 
-const setDirectoryFile = async (siteName, folderName, payload) => {
-  return axios.post(
+const setDirectoryFile = async (siteName, folderName, payload) =>
+  axios.post(
     `${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`,
     payload
   )
-}
 
 const getLastUpdated = async (siteName) => {
   if (!siteName) return undefined

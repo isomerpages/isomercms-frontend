@@ -1,6 +1,8 @@
 import React from "react"
+
 import PropTypes from "prop-types"
-import Breadcrumb from "./Breadcrumb"
+
+import Breadcrumb from "@templates/pageComponents/Breadcrumb"
 
 const PageHeader = ({
   title,

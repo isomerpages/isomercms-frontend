@@ -13,10 +13,12 @@ describe("Login flow", () => {
 
     // This is necessary to prevent the frontend from throwing the 401 error from the backend.
     // TODO: We should handle this properly in the axios interceptor.
-    cy.on("uncaught:exception", () => {
-      // returning false here prevents Cypress from failing the test
-      return false
-    })
+    cy.on(
+      "uncaught:exception",
+      () =>
+        // returning false here prevents Cypress from failing the test
+        false
+    )
 
     cy.contains(LOGIN_BUTTON_TEXT).click()
     cy.url().should("include", GITHUB_LOGIN_URL)

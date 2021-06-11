@@ -1,43 +1,44 @@
-import React, { useEffect, createRef, useState } from "react"
+import React, { createRef, useEffect, useState } from "react"
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"
+
 import axios from "axios"
+import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
-import update from "immutability-helper"
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
-
-import EditorInfobarSection from "../components/homepage/InfobarSection"
-import EditorInfopicSection from "../components/homepage/InfopicSection"
-import EditorResourcesSection from "../components/homepage/ResourcesSection"
-import EditorHeroSection from "../components/homepage/HeroSection"
-import NewSectionCreator from "../components/homepage/NewSectionCreator"
-import Header from "../components/Header"
-import LoadingButton from "../components/LoadingButton"
-import DeleteWarningModal from "../components/DeleteWarningModal"
-
-import TemplateHeroSection from "../templates/homepage/HeroSection"
-import TemplateInfobarSection from "../templates/homepage/InfobarSection"
-import TemplateInfopicLeftSection from "../templates/homepage/InfopicLeftSection"
-import TemplateInfopicRightSection from "../templates/homepage/InfopicRightSection"
-import TemplateResourcesSection from "../templates/homepage/ResourcesSection"
 
 import {
-  frontMatterParser,
   concatFrontMatterMdBody,
   DEFAULT_RETRY_MSG,
-} from "../utils"
+  frontMatterParser,
+} from "@src/utils"
+
+import useSiteColorsHook from "@hooks/useSiteColorsHook"
+
+import TemplateHeroSection from "@templates/homepage/HeroSection"
+import TemplateInfobarSection from "@templates/homepage/InfobarSection"
+import TemplateInfopicLeftSection from "@templates/homepage/InfopicLeftSection"
+import TemplateInfopicRightSection from "@templates/homepage/InfopicRightSection"
+import TemplateResourcesSection from "@templates/homepage/ResourcesSection"
+
+import { errorToast } from "@utils/toasts"
 import {
-  validateSections,
-  validateHighlights,
   validateDropdownElems,
-} from "../utils/validators"
-import { errorToast } from "../utils/toasts"
+  validateHighlights,
+  validateSections,
+} from "@utils/validators"
 
-import "../styles/isomer-template.scss"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import editorStyles from "../styles/isomer-cms/pages/Editor.module.scss"
+import "@styles/isomer-template.scss"
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import editorStyles from "@styles/isomer-cms/pages/Editor.module.scss"
 
-// Import hooks
-import useSiteColorsHook from "../hooks/useSiteColorsHook"
+import DeleteWarningModal from "@components/DeleteWarningModal"
+import Header from "@components/Header"
+import EditorHeroSection from "@components/homepage/HeroSection"
+import EditorInfobarSection from "@components/homepage/InfobarSection"
+import EditorInfopicSection from "@components/homepage/InfopicSection"
+import NewSectionCreator from "@components/homepage/NewSectionCreator"
+import EditorResourcesSection from "@components/homepage/ResourcesSection"
+import LoadingButton from "@components/LoadingButton"
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -175,7 +176,7 @@ const EditHomepage = ({ match }) => {
         const sectionsErrors = []
         let dropdownElemsErrors = []
         let highlightsErrors = []
-        let scrollRefs = []
+        const scrollRefs = []
         frontMatter.sections.forEach((section) => {
           scrollRefs.push(createRef())
           // If this is the hero section, hide all highlights/dropdownelems by default
@@ -359,7 +360,7 @@ const EditHomepage = ({ match }) => {
           ) {
             const errorMessage = "Please specify a URL for your button"
             newSectionError = _.cloneDeep(errors.sections[sectionIndex])
-            newSectionError[sectionType]["url"] = errorMessage
+            newSectionError[sectionType].url = errorMessage
           } else {
             newSectionError = validateSections(
               _.cloneDeep(errors.sections[sectionIndex]),
@@ -369,8 +370,8 @@ const EditHomepage = ({ match }) => {
             )
 
             if (field === "button" && !value) {
-              newSectionError[sectionType]["button"] = ""
-              newSectionError[sectionType]["url"] = ""
+              newSectionError[sectionType].button = ""
+              newSectionError[sectionType].url = ""
             }
           }
 
@@ -400,7 +401,7 @@ const EditHomepage = ({ match }) => {
           const field = idArray[2] // e.g. "title" or "url"
 
           const newSections = update(sections, {
-            [0]: {
+            0: {
               hero: {
                 key_highlights: {
                   [highlightsIndex]: {
@@ -443,7 +444,7 @@ const EditHomepage = ({ match }) => {
           const field = idArray[2] // e.g. "title" or "url"
 
           const newSections = update(sections, {
-            [0]: {
+            0: {
               hero: {
                 dropdown: {
                   options: {
@@ -769,12 +770,12 @@ const EditHomepage = ({ match }) => {
     } = event
     if (value === "highlights") {
       if (!frontMatter.sections[0].hero.dropdown) return
-      let highlightObj,
-        highlightErrors,
-        buttonObj,
-        buttonErrors,
-        urlObj,
-        urlErrors
+      let highlightObj
+      let highlightErrors
+      let buttonObj
+      let buttonErrors
+      let urlObj
+      let urlErrors
       if (savedHeroElems) {
         highlightObj = savedHeroElems.key_highlights || []
         highlightErrors = savedHeroErrors.highlights || []
@@ -840,7 +841,9 @@ const EditHomepage = ({ match }) => {
       })
     } else {
       if (frontMatter.sections[0].hero.dropdown) return
-      let dropdownObj, dropdownErrors, dropdownElemErrors
+      let dropdownObj
+      let dropdownErrors
+      let dropdownElemErrors
       if (savedHeroElems) {
         dropdownObj = savedHeroElems.dropdown || DropdownConstructor()
         dropdownErrors = savedHeroErrors.dropdown || ""
@@ -924,7 +927,7 @@ const EditHomepage = ({ match }) => {
       switch (elemType) {
         case "section": {
           const sectionId = idArray[1]
-          let resetDisplaySections = _.fill(
+          const resetDisplaySections = _.fill(
             Array(displaySections.length),
             false
           )
@@ -940,7 +943,7 @@ const EditHomepage = ({ match }) => {
         }
         case "highlight": {
           const highlightIndex = idArray[1]
-          let resetHighlightSections = _.fill(
+          const resetHighlightSections = _.fill(
             Array(displayHighlights.length),
             false
           )
@@ -956,7 +959,7 @@ const EditHomepage = ({ match }) => {
         }
         case "dropdownelem": {
           const dropdownsIndex = idArray[1]
-          let resetDropdownSections = _.fill(
+          const resetDropdownSections = _.fill(
             Array(displayDropdownElems.length),
             false
           )
@@ -981,10 +984,10 @@ const EditHomepage = ({ match }) => {
   const savePage = async () => {
     try {
       const { siteName } = match.params
-      let filteredFrontMatter = _.cloneDeep(frontMatter)
+      const filteredFrontMatter = _.cloneDeep(frontMatter)
       // Filter out components which have no input
       filteredFrontMatter.sections = frontMatter.sections.map((section) => {
-        let newSection = {}
+        const newSection = {}
         for (const sectionName in section) {
           newSection[sectionName] = _.cloneDeep(
             _.omitBy(section[sectionName], _.isEmpty)
@@ -996,7 +999,7 @@ const EditHomepage = ({ match }) => {
 
       const params = {
         content,
-        sha: sha,
+        sha,
       }
 
       await axios.post(
@@ -1179,7 +1182,7 @@ const EditHomepage = ({ match }) => {
         shouldAllowEditPageBackNav={
           JSON.stringify(originalFrontMatter) === JSON.stringify(frontMatter)
         }
-        isEditPage={true}
+        isEditPage
         backButtonText="Back to My Workspace"
         backButtonUrl={`/sites/${siteName}/workspace`}
       />

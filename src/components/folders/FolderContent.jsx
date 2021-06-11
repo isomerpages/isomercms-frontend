@@ -1,14 +1,15 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
+
 import PropTypes from "prop-types"
 
-import { deslugifyPage } from "../../utils"
-import { MenuDropdown } from "../MenuDropdown"
-import FileMoveMenuDropdown from "../FileMoveMenuDropdown"
+import { deslugifyPage } from "@src/utils"
 
-// Import styles
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../../styles/isomer-cms/pages/Content.module.scss"
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
+
+import FileMoveMenuDropdown from "@components/FileMoveMenuDropdown"
+import { MenuDropdown } from "@components/MenuDropdown"
 
 const FolderContentItem = ({
   folderContentItem,
@@ -33,7 +34,7 @@ const FolderContentItem = ({
       type === "dir"
         ? children.filter((name) => !name.includes(".keep")).length
         : null
-    const isFile = type === "dir" ? false : true
+    const isFile = type !== "dir"
     const link =
       type === "dir"
         ? `/sites/${siteName}/folder/${folderName}/subfolder/${fileName}`
@@ -121,7 +122,7 @@ const FolderContentItem = ({
             {numItems} item{numItems === 1 ? "" : "s"}
           </span>
         ) : null}
-        <div className={`position-relative mt-auto mb-auto`}>
+        <div className="position-relative mt-auto mb-auto">
           {!disableLink && (
             <button
               className={`${
@@ -155,14 +156,12 @@ const FolderContentItem = ({
               dropdownRef={fileMoveDropdownRef}
               menuIndex={itemIndex}
               onBlur={handleBlur}
-              rootName={"Workspace"}
+              rootName="Workspace"
               moveDropdownQuery={moveDropdownQuery}
               setMoveDropdownQuery={setMoveDropdownQuery}
               backHandler={toggleDropdownModals}
               moveHandler={() => {
-                setSelectedPath(
-                  `${moveDropdownQuery ? moveDropdownQuery : "pages"}`
-                )
+                setSelectedPath(`${moveDropdownQuery || "pages"}`)
                 setIsMoveModalActive(true)
               }}
             />

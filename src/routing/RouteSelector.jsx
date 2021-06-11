@@ -1,34 +1,32 @@
 import React from "react"
-import * as Sentry from "@sentry/react"
 import { Switch } from "react-router-dom"
 
-// Layouts
-import Home from "../layouts/Home"
-import Sites from "../layouts/Sites"
-import Workspace from "../layouts/Workspace"
-import Folders from "../layouts/Folders"
-import EditPage from "../layouts/EditPage"
-import CategoryPages from "../layouts/CategoryPages"
-import Media from "../layouts/Media"
-import EditHomepage from "../layouts/EditHomepage"
-import EditContactUs from "../layouts/EditContactUs"
-import Resources from "../layouts/Resources"
-import EditNavBar from "../layouts/EditNavBar"
-import Settings from "../layouts/Settings"
-import NotFoundPage from "../components/NotFoundPage"
-import FallbackComponent from "../components/FallbackComponent"
+import * as Sentry from "@sentry/react"
 
-// ProtectedRoute component
-import ProtectedRoute from "./ProtectedRoute"
-import RedirectIfLoggedInRoute from "./RedirectIfLoggedInRoute"
+import FallbackComponent from "@components/FallbackComponent"
+import NotFoundPage from "@components/NotFoundPage"
 
-const ProtectedRouteWithProps = (props) => {
-  return (
-    <Sentry.ErrorBoundary fallback={FallbackComponent}>
-      <ProtectedRoute {...props} />
-    </Sentry.ErrorBoundary>
-  )
-}
+import CategoryPages from "@layouts/CategoryPages"
+import EditContactUs from "@layouts/EditContactUs"
+import EditHomepage from "@layouts/EditHomepage"
+import EditNavBar from "@layouts/EditNavBar"
+import EditPage from "@layouts/EditPage"
+import Folders from "@layouts/Folders"
+import Home from "@layouts/Home"
+import Media from "@layouts/Media"
+import Resources from "@layouts/Resources"
+import Settings from "@layouts/Settings"
+import Sites from "@layouts/Sites"
+import Workspace from "@layouts/Workspace"
+
+import ProtectedRoute from "@routing/ProtectedRoute"
+import RedirectIfLoggedInRoute from "@routing/RedirectIfLoggedInRoute"
+
+const ProtectedRouteWithProps = (props) => (
+  <Sentry.ErrorBoundary fallback={FallbackComponent}>
+    <ProtectedRoute {...props} />
+  </Sentry.ErrorBoundary>
+)
 
 export const RouteSelector = () => (
   <Switch>
@@ -37,14 +35,14 @@ export const RouteSelector = () => (
       exact
       path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName/:fileName"
       component={EditPage}
-      isCollectionPage={true}
+      isCollectionPage
       isResourcePage={false}
     />
     <ProtectedRouteWithProps
       exact
       path="/sites/:siteName/folder/:folderName/:fileName"
       component={EditPage}
-      isCollectionPage={true}
+      isCollectionPage
       isResourcePage={false}
     />
     <ProtectedRouteWithProps
@@ -65,22 +63,22 @@ export const RouteSelector = () => (
     <ProtectedRouteWithProps
       path="/sites/:siteName/documents/:customPath"
       component={Media}
-      mediaType={"documents"}
+      mediaType="documents"
     />
     <ProtectedRouteWithProps
       path="/sites/:siteName/documents"
       component={Media}
-      mediaType={"documents"}
+      mediaType="documents"
     />
     <ProtectedRouteWithProps
       path="/sites/:siteName/images/:customPath"
       component={Media}
-      mediaType={"images"}
+      mediaType="images"
     />
     <ProtectedRouteWithProps
       path="/sites/:siteName/images"
       component={Media}
-      mediaType={"images"}
+      mediaType="images"
     />
     <ProtectedRouteWithProps
       path="/sites/:siteName/pages/:fileName"
@@ -104,12 +102,12 @@ export const RouteSelector = () => (
       path="/sites/:siteName/resources/:resourceName/:fileName"
       component={EditPage}
       isCollectionPage={false}
-      isResourcePage={true}
+      isResourcePage
     />
     <ProtectedRouteWithProps
       path="/sites/:siteName/resources/:collectionName"
       component={CategoryPages}
-      isResource={true}
+      isResource
     />
     <ProtectedRouteWithProps
       path="/sites/:siteName/resources"

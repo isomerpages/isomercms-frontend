@@ -1,70 +1,69 @@
 import React, { useEffect, useRef, useState } from "react"
-import axios from "axios"
-import _ from "lodash"
-import { useQuery, useMutation, useQueryClient } from "react-query"
-import PropTypes from "prop-types"
+import { useMutation, useQuery, useQueryClient } from "react-query"
 import SimpleMDE from "react-simplemde-editor"
-import marked from "marked"
+
+import axios from "axios"
 import Policy from "csp-parse"
+import _ from "lodash"
+import marked from "marked"
+import PropTypes from "prop-types"
 
-import SimplePage from "../templates/SimplePage"
-import LeftNavPage from "../templates/LeftNavPage"
-
-import checkCSP from "../utils/cspUtils"
-import { successToast, errorToast } from "../utils/toasts"
-
-// Isomer components
 import {
-  DEFAULT_RETRY_MSG,
-  frontMatterParser,
-  concatFrontMatterMdBody,
-  prependImageSrc,
-  prettifyPageFileName,
-  retrieveResourceFileMetadata,
-  prettifyDate,
-  parseDirectoryFile,
-  deslugifyDirectory,
-} from "../utils"
-import {
-  boldButton,
-  italicButton,
-  strikethroughButton,
-  headingButton,
-  codeButton,
-  quoteButton,
-  unorderedListButton,
-  orderedListButton,
-  tableButton,
-  guideButton,
-} from "../utils/markdownToolbar"
-import {
-  PAGE_CONTENT_KEY,
-  DIR_CONTENT_KEY,
-  CSP_CONTENT_KEY,
-} from "../constants"
-import "easymde/dist/easymde.min.css"
-import "../styles/isomer-template.scss"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import editorStyles from "../styles/isomer-cms/pages/Editor.module.scss"
-import Header from "../components/Header"
-import DeleteWarningModal from "../components/DeleteWarningModal"
-import LoadingButton from "../components/LoadingButton"
-import HyperlinkModal from "../components/HyperlinkModal"
-import MediaModal from "../components/media/MediaModal"
-import MediaSettingsModal from "../components/media/MediaSettingsModal"
-
-// Import hooks
-import useSiteColorsHook from "../hooks/useSiteColorsHook"
-import useRedirectHook from "../hooks/useRedirectHook"
-
-// Import API
-import {
-  getEditPageData,
-  updatePageData,
   deletePageData,
   getCsp,
   getDirectoryFile,
-} from "../api"
+  getEditPageData,
+  updatePageData,
+} from "@src/api"
+import {
+  CSP_CONTENT_KEY,
+  DIR_CONTENT_KEY,
+  PAGE_CONTENT_KEY,
+} from "@src/constants"
+import {
+  concatFrontMatterMdBody,
+  DEFAULT_RETRY_MSG,
+  deslugifyDirectory,
+  frontMatterParser,
+  parseDirectoryFile,
+  prependImageSrc,
+  prettifyDate,
+  prettifyPageFileName,
+  retrieveResourceFileMetadata,
+} from "@src/utils"
+
+import useRedirectHook from "@hooks/useRedirectHook"
+import useSiteColorsHook from "@hooks/useSiteColorsHook"
+
+import LeftNavPage from "@templates/LeftNavPage"
+import SimplePage from "@templates/SimplePage"
+
+import checkCSP from "@utils/cspUtils"
+import {
+  boldButton,
+  codeButton,
+  guideButton,
+  headingButton,
+  italicButton,
+  orderedListButton,
+  quoteButton,
+  strikethroughButton,
+  tableButton,
+  unorderedListButton,
+} from "@utils/markdownToolbar"
+import { errorToast, successToast } from "@utils/toasts"
+
+import "easymde/dist/easymde.min.css"
+import "@styles/isomer-template.scss"
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import editorStyles from "@styles/isomer-cms/pages/Editor.module.scss"
+
+import DeleteWarningModal from "@components/DeleteWarningModal"
+import Header from "@components/Header"
+import HyperlinkModal from "@components/HyperlinkModal"
+import LoadingButton from "@components/LoadingButton"
+import MediaModal from "@components/media/MediaModal"
+import MediaSettingsModal from "@components/media/MediaSettingsModal"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -352,10 +351,11 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
     const cm = mdeRef.current.simpleMde.codemirror
     if (newFileName) {
       cm.replaceSelection(
-        `${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}` +
-          `(/${insertingMediaType}/${
-            uploadPath ? `${uploadPath}/` : ""
-          }${newFileName})`.replaceAll(" ", "%20")
+        `${
+          MEDIA_PLACEHOLDER_TEXT[insertingMediaType]
+        }${`(/${insertingMediaType}/${
+          uploadPath ? `${uploadPath}/` : ""
+        }${newFileName})`.replaceAll(" ", "%20")}`
       )
       // set state so that rerender is triggered and image is shown
       setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
@@ -430,7 +430,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
         siteName={siteName}
         title={title}
         shouldAllowEditPageBackNav={hasChanges}
-        isEditPage={true}
+        isEditPage
         backButtonText={backButtonLabel}
         backButtonUrl={backButtonUrl}
       />
@@ -470,83 +470,81 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
             onClose={onHyperlinkClose}
           />
         )}
-        {
-          <div
-            className={`${editorStyles.pageEditorSidebar} ${
-              isLoadingPageContent || resourceType === "file"
-                ? editorStyles.pageEditorSidebarLoading
-                : null
-            }`}
-          >
-            {resourceType === "file" ? (
-              <>
-                <div
-                  className={`text-center ${editorStyles.pageEditorSidebarDisabled}`}
-                >
-                  Editing is disabled for downloadable files.
-                </div>
-              </>
-            ) : isLoadingPageContent ? (
+        <div
+          className={`${editorStyles.pageEditorSidebar} ${
+            isLoadingPageContent || resourceType === "file"
+              ? editorStyles.pageEditorSidebarLoading
+              : null
+          }`}
+        >
+          {resourceType === "file" ? (
+            <>
               <div
-                className={`spinner-border text-primary ${editorStyles.sidebarLoadingIcon}`}
-              />
-            ) : (
-              ""
-            )}
-            <SimpleMDE
-              id="simplemde-editor"
-              className="h-100"
-              onChange={onEditorChange}
-              ref={mdeRef}
-              value={editorValue}
-              options={{
-                toolbar: [
-                  headingButton,
-                  boldButton,
-                  italicButton,
-                  strikethroughButton,
-                  "|",
-                  codeButton,
-                  quoteButton,
-                  unorderedListButton,
-                  orderedListButton,
-                  "|",
-                  {
-                    name: "image",
-                    action: async () => {
-                      setShowMediaModal(true)
-                      setInsertingMediaType("images")
-                    },
-                    className: "fa fa-picture-o",
-                    title: "Insert Image",
-                    default: true,
-                  },
-                  {
-                    name: "file",
-                    action: async () => {
-                      setShowMediaModal(true)
-                      setInsertingMediaType("files")
-                    },
-                    className: "fa fa-file-pdf-o",
-                    title: "Insert File",
-                    default: true,
-                  },
-                  {
-                    name: "link",
-                    action: async () => {
-                      onHyperlinkOpen()
-                    },
-                    className: "fa fa-link",
-                    title: "Insert Link",
-                    default: true,
-                  },
-                  tableButton,
-                  guideButton,
-                ],
-              }}
+                className={`text-center ${editorStyles.pageEditorSidebarDisabled}`}
+              >
+                Editing is disabled for downloadable files.
+              </div>
+            </>
+          ) : isLoadingPageContent ? (
+            <div
+              className={`spinner-border text-primary ${editorStyles.sidebarLoadingIcon}`}
             />
-          </div>
-        }
+          ) : (
+            ""
+          )}
+          <SimpleMDE
+            id="simplemde-editor"
+            className="h-100"
+            onChange={onEditorChange}
+            ref={mdeRef}
+            value={editorValue}
+            options={{
+              toolbar: [
+                headingButton,
+                boldButton,
+                italicButton,
+                strikethroughButton,
+                "|",
+                codeButton,
+                quoteButton,
+                unorderedListButton,
+                orderedListButton,
+                "|",
+                {
+                  name: "image",
+                  action: async () => {
+                    setShowMediaModal(true)
+                    setInsertingMediaType("images")
+                  },
+                  className: "fa fa-picture-o",
+                  title: "Insert Image",
+                  default: true,
+                },
+                {
+                  name: "file",
+                  action: async () => {
+                    setShowMediaModal(true)
+                    setInsertingMediaType("files")
+                  },
+                  className: "fa fa-file-pdf-o",
+                  title: "Insert File",
+                  default: true,
+                },
+                {
+                  name: "link",
+                  action: async () => {
+                    onHyperlinkOpen()
+                  },
+                  className: "fa fa-link",
+                  title: "Insert Link",
+                  default: true,
+                },
+                tableButton,
+                guideButton,
+              ],
+            }}
+          />
+        </div>
         <div className={editorStyles.pageEditorMain}>
           {isCollectionPage && leftNavPages.length > 0 ? (
             <LeftNavPage

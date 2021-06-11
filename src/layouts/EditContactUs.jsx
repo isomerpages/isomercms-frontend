@@ -1,41 +1,42 @@
 // TODO: Clean up formatting, semi-colons, PropTypes etc
 import React, { useEffect, useState } from "react"
-import axios from "axios"
-import _ from "lodash"
-import PropTypes from "prop-types"
-import update from "immutability-helper"
 import { DragDropContext } from "react-beautiful-dnd"
 
-import EditorSection from "../components/contact-us/Section"
-import Header from "../components/Header"
-import LoadingButton from "../components/LoadingButton"
-import FormField from "../components/FormField"
-import DeleteWarningModal from "../components/DeleteWarningModal"
-import GenericWarningModal from "../components/GenericWarningModal"
+import axios from "axios"
+import update from "immutability-helper"
+import _ from "lodash"
+import PropTypes from "prop-types"
 
 import {
+  concatFrontMatterMdBody,
   DEFAULT_RETRY_MSG,
   frontMatterParser,
-  concatFrontMatterMdBody,
   isEmpty,
-} from "../utils"
-import sanitiseFrontMatter from "../utils/contact-us/dataSanitisers"
-import validateFrontMatter from "../utils/contact-us/validators"
-import { validateContactType, validateLocationType } from "../utils/validators"
-import { errorToast } from "../utils/toasts"
+} from "@src/utils"
 
-import "../styles/isomer-template.scss"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import editorStyles from "../styles/isomer-cms/pages/Editor.module.scss"
+import useRedirectHook from "@hooks/useRedirectHook"
+import useSiteColorsHook from "@hooks/useSiteColorsHook"
 
-import TemplateContactUsHeader from "../templates/contact-us/ContactUsHeader"
-import TemplateLocationsSection from "../templates/contact-us/LocationsSection"
-import TemplateContactsSection from "../templates/contact-us/ContactsSection"
-import TemplateFeedbackSection from "../templates/contact-us/FeedbackSection"
+import TemplateContactsSection from "@templates/contact-us/ContactsSection"
+import TemplateContactUsHeader from "@templates/contact-us/ContactUsHeader"
+import TemplateFeedbackSection from "@templates/contact-us/FeedbackSection"
+import TemplateLocationsSection from "@templates/contact-us/LocationsSection"
 
-// Import hooks
-import useSiteColorsHook from "../hooks/useSiteColorsHook"
-import useRedirectHook from "../hooks/useRedirectHook"
+import sanitiseFrontMatter from "@utils/contact-us/dataSanitisers"
+import validateFrontMatter from "@utils/contact-us/validators"
+import { errorToast } from "@utils/toasts"
+import { validateContactType, validateLocationType } from "@utils/validators"
+
+import "@styles/isomer-template.scss"
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import editorStyles from "@styles/isomer-cms/pages/Editor.module.scss"
+
+import EditorSection from "@components/contact-us/Section"
+import DeleteWarningModal from "@components/DeleteWarningModal"
+import FormField from "@components/FormField"
+import GenericWarningModal from "@components/GenericWarningModal"
+import Header from "@components/Header"
+import LoadingButton from "@components/LoadingButton"
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -164,7 +165,10 @@ const EditContactUs = ({ match }) => {
   useEffect(() => {
     let _isMounted = true
 
-    let content, sha, footerContent, footerSha
+    let content
+    let sha
+    let footerContent
+    let footerSha
 
     const loadContactUsDetails = async () => {
       // Set page colors
@@ -226,10 +230,10 @@ const EditContactUs = ({ match }) => {
         sanitisedFrontMatter
       )
 
-      const contactsDisplay = [],
-        locationsDisplay = []
-      const contactsScrollRefs = [],
-        locationsScrollRefs = []
+      const contactsDisplay = []
+      const locationsDisplay = []
+      const contactsScrollRefs = []
+      const locationsScrollRefs = []
 
       const sectionsDisplay = {
         contacts: false,
@@ -353,7 +357,9 @@ const EditContactUs = ({ match }) => {
       const idArray = id.split("-")
       const elemType = idArray[0]
 
-      let newFrontMatter, newFooterContent, newErrors
+      let newFrontMatter
+      let newFooterContent
+      let newErrors
       switch (elemType) {
         case "feedback": {
           newFooterContent = update(footerContent, {
@@ -630,7 +636,7 @@ const EditContactUs = ({ match }) => {
       const elemType = idArray[0]
       const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT) || idArray[1]
 
-      let resetDisplaySections = {
+      const resetDisplaySections = {
         sectionsDisplay: {
           contacts: false,
           locations: false,
@@ -671,21 +677,21 @@ const EditContactUs = ({ match }) => {
     try {
       // Update contact-us
       // Filter out components which have no input
-      let filteredFrontMatter = _.cloneDeep(frontMatter)
+      const filteredFrontMatter = _.cloneDeep(frontMatter)
 
-      let newContacts = []
+      const newContacts = []
       frontMatter.contacts.forEach((contact) => {
         if (!isEmpty(contact)) {
           newContacts.push(_.cloneDeep(contact))
         }
       })
-      let newLocations = []
+      const newLocations = []
       frontMatter.locations.forEach((location) => {
         if (!isEmpty(location)) {
-          let newLocation = _.cloneDeep(location)
-          let newOperatingHours = []
+          const newLocation = _.cloneDeep(location)
+          const newOperatingHours = []
           location.operating_hours.forEach((operatingHour) => {
-            //remove empty operatingHours objects
+            // remove empty operatingHours objects
             if (!isEmpty(operatingHour)) {
               newOperatingHours.push(_.cloneDeep(operatingHour))
             }
@@ -721,12 +727,12 @@ const EditContactUs = ({ match }) => {
         )
       }
 
-      // // Update settings
-      let updatedFooterContents = _.cloneDeep(footerContent)
+      // Update settings
+      const updatedFooterContents = _.cloneDeep(footerContent)
 
       const footerParams = {
         footerSettings: updatedFooterContents,
-        footerSha: footerSha,
+        footerSha,
       }
 
       if (
@@ -750,17 +756,13 @@ const EditContactUs = ({ match }) => {
     }
   }
 
-  const hasErrors = () => {
-    return !isEmpty(errors.contacts) || !isEmpty(errors.locations)
-  }
+  const hasErrors = () =>
+    !isEmpty(errors.contacts) || !isEmpty(errors.locations)
 
-  const hasChanges = () => {
-    return (
-      JSON.stringify(sanitisedOriginalFrontMatter) ===
-        JSON.stringify(frontMatter) &&
-      JSON.stringify(footerContent) === JSON.stringify(originalFooterContent)
-    )
-  }
+  const hasChanges = () =>
+    JSON.stringify(sanitisedOriginalFrontMatter) ===
+      JSON.stringify(frontMatter) &&
+    JSON.stringify(footerContent) === JSON.stringify(originalFooterContent)
 
   return (
     <>
@@ -788,9 +790,9 @@ const EditContactUs = ({ match }) => {
       )}
       <Header
         siteName={siteName}
-        title={"Contact Us"}
+        title="Contact Us"
         shouldAllowEditPageBackNav={hasChanges()}
-        isEditPage={true}
+        isEditPage
         backButtonText="Back to My Workspace"
         backButtonUrl={`/sites/${siteName}/workspace`}
       />
@@ -800,18 +802,18 @@ const EditContactUs = ({ match }) => {
             <div>
               <div className={`${elementStyles.card}`}>
                 <div className={elementStyles.cardHeader}>
-                  <h2>{"Site Settings"}</h2>
+                  <h2>Site Settings</h2>
                 </div>
                 <FormField
                   title="Agency Name"
-                  id={"header-agency_name"}
+                  id="header-agency_name"
                   value={frontMatter.agency_name || ""}
                   isRequired
                   onFieldChange={onFieldChange}
                 />
                 <FormField
                   title="Feedback Url"
-                  id={"feedback"}
+                  id="feedback"
                   value={footerContent.feedback || ""}
                   isRequired
                   onFieldChange={onFieldChange}
@@ -829,7 +831,7 @@ const EditContactUs = ({ match }) => {
                   displayCards={displaySections.locations}
                   displayHandler={displayHandler}
                   errors={errors.locations}
-                  sectionId={"locations"}
+                  sectionId="locations"
                 />
 
                 <EditorSection
@@ -843,7 +845,7 @@ const EditContactUs = ({ match }) => {
                   displayCards={displaySections.contacts}
                   displayHandler={displayHandler}
                   errors={errors.contacts}
-                  sectionId={"contacts"}
+                  sectionId="contacts"
                 />
               </DragDropContext>
             </div>

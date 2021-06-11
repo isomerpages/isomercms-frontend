@@ -1,33 +1,35 @@
 import React, { useState } from "react"
+import { useMutation, useQueryClient } from "react-query"
+
 import axios from "axios"
 import PropTypes from "prop-types"
-import { useMutation, useQueryClient } from "react-query"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import SaveDeleteButtons from "./SaveDeleteButtons"
-import FormField from "./FormField"
 
 import {
   renameFolder,
-  renameSubfolder,
-  renameResourceCategory,
   renameMediaSubfolder,
-} from "../api"
-
+  renameResourceCategory,
+  renameSubfolder,
+} from "@src/api"
+import {
+  DIR_CONTENT_KEY,
+  DOCUMENT_CONTENTS_KEY,
+  FOLDERS_CONTENT_KEY,
+  IMAGE_CONTENTS_KEY,
+  RESOURCE_ROOM_CONTENT_KEY,
+} from "@src/constants"
 import {
   DEFAULT_RETRY_MSG,
-  slugifyCategory,
   deslugifyDirectory,
-} from "../utils"
+  slugifyCategory,
+} from "@src/utils"
 
-import { validateCategoryName } from "../utils/validators"
-import { errorToast, successToast } from "../utils/toasts"
-import {
-  DOCUMENT_CONTENTS_KEY,
-  IMAGE_CONTENTS_KEY,
-  DIR_CONTENT_KEY,
-  FOLDERS_CONTENT_KEY,
-  RESOURCE_ROOM_CONTENT_KEY,
-} from "../constants"
+import { errorToast, successToast } from "@utils/toasts"
+import { validateCategoryName } from "@utils/validators"
+
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+
+import FormField from "@components/FormField"
+import SaveDeleteButtons from "@components/SaveDeleteButtons"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -155,7 +157,7 @@ const FolderModal = ({
     const comparisonCategoryArray = subfolderName
       ? existingFolders.filter((name) => name !== subfolderName)
       : existingFolders.filter((name) => name !== folderOrCategoryName)
-    let errorMessage = validateCategoryName(
+    const errorMessage = validateCategoryName(
       value,
       folderType,
       comparisonCategoryArray

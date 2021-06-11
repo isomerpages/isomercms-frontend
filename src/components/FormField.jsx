@@ -1,6 +1,8 @@
 import React from "react"
+
 import PropTypes from "prop-types"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 
 const FormField = ({
   title,
@@ -25,7 +27,7 @@ const FormField = ({
       )}
       <input
         type="text"
-        placeholder={placeholder ? placeholder : title}
+        placeholder={placeholder || title}
         value={value}
         defaultValue={defaultValue}
         id={id}

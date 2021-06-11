@@ -1,10 +1,13 @@
 import React from "react"
-import { render, screen } from "@testing-library/react"
 import { MemoryRouter } from "react-router-dom"
-import "@testing-library/jest-dom/extend-expect"
 
-import { RouteSelector } from "../routing/RouteSelector"
-import { LoginContext } from "../contexts/LoginContext"
+import { render, screen } from "@testing-library/react"
+
+import { LoginContext } from "@contexts/LoginContext"
+
+import { RouteSelector } from "@routing/RouteSelector"
+
+import "@testing-library/jest-dom/extend-expect"
 
 const HOME_LAYOUT_TEXT = "Home layout mock text"
 const SITES_LAYOUT_TEXT = "Site layout mock text"
@@ -22,88 +25,52 @@ const FOLDERS_LAYOUT_TEXT = "Folders layout mock text"
 const NOT_FOUND_LAYOUT_TEXT = "Route does not exist"
 
 // Layout mocks
-jest.mock("../layouts/Home", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div>{HOME_LAYOUT_TEXT}</div>
-    },
-  }
-})
+jest.mock("@layouts/Home", () => ({
+  __esModule: true,
+  default: () => <div>{HOME_LAYOUT_TEXT}</div>,
+}))
 
-jest.mock("../layouts/Sites", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div>{SITES_LAYOUT_TEXT}</div>
-    },
-  }
-})
+jest.mock("@layouts/Sites", () => ({
+  __esModule: true,
+  default: () => <div>{SITES_LAYOUT_TEXT}</div>,
+}))
 
-jest.mock("../layouts/Settings", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div>{SETTINGS_LAYOUT_TEXT}</div>
-    },
-  }
-})
+jest.mock("@layouts/Settings", () => ({
+  __esModule: true,
+  default: () => <div>{SETTINGS_LAYOUT_TEXT}</div>,
+}))
 
-jest.mock("../layouts/EditNavBar", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div>{EDIT_NAVBAR_LAYOUT_TEXT}</div>
-    },
-  }
-})
+jest.mock("@layouts/EditNavBar", () => ({
+  __esModule: true,
+  default: () => <div>{EDIT_NAVBAR_LAYOUT_TEXT}</div>,
+}))
 
-jest.mock("../layouts/Resources", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div>{RESOURCES_LAYOUT_TEXT}</div>
-    },
-  }
-})
+jest.mock("@layouts/Resources", () => ({
+  __esModule: true,
+  default: () => <div>{RESOURCES_LAYOUT_TEXT}</div>,
+}))
 
-jest.mock("../layouts/CategoryPages", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div>{RESOURCES_CATEGORY_LAYOUT_TEXT}</div>
-    },
-  }
-})
+jest.mock("@layouts/CategoryPages", () => ({
+  __esModule: true,
+  default: () => <div>{RESOURCES_CATEGORY_LAYOUT_TEXT}</div>,
+}))
 
-jest.mock("../layouts/EditContactUs", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div>{EDIT_CONTACT_US_LAYOUT_TEXT}</div>
-    },
-  }
-})
+jest.mock("@layouts/EditContactUs", () => ({
+  __esModule: true,
+  default: () => <div>{EDIT_CONTACT_US_LAYOUT_TEXT}</div>,
+}))
 
-jest.mock("../layouts/EditHomepage", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div>{EDIT_HOMEPAGE_LAYOUT_TEXT}</div>
-    },
-  }
-})
+jest.mock("@layouts/EditHomepage", () => ({
+  __esModule: true,
+  default: () => <div>{EDIT_HOMEPAGE_LAYOUT_TEXT}</div>,
+}))
 
-jest.mock("../layouts/Workspace", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div>{WORKSPACE_LAYOUT_TEXT}</div>
-    },
-  }
-})
+jest.mock("@layouts/Workspace", () => ({
+  __esModule: true,
+  default: () => <div>{WORKSPACE_LAYOUT_TEXT}</div>,
+}))
 
-jest.mock("../layouts/Images", () => {
+jest.mock("@layouts/Images", () => {
   return {
     __esModule: true,
     default: () => {
@@ -112,7 +79,7 @@ jest.mock("../layouts/Images", () => {
   }
 })
 
-jest.mock("../layouts/Files", () => {
+jest.mock("@layouts/Files", () => {
   return {
     __esModule: true,
     default: () => {
@@ -121,41 +88,25 @@ jest.mock("../layouts/Files", () => {
   }
 })
 
-jest.mock("../layouts/EditPage", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div>{EDIT_PAGE_LAYOUT_TEXT}</div>
-    },
-  }
-})
+jest.mock("@layouts/EditPage", () => ({
+  __esModule: true,
+  default: () => <div>{EDIT_PAGE_LAYOUT_TEXT}</div>,
+}))
 
-jest.mock("../layouts/Folders", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div>{FOLDERS_LAYOUT_TEXT}</div>
-    },
-  }
-})
+jest.mock("@layouts/Folders", () => ({
+  __esModule: true,
+  default: () => <div>{FOLDERS_LAYOUT_TEXT}</div>,
+}))
 
-jest.mock("../layouts/Folders", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div>{FOLDERS_LAYOUT_TEXT}</div>
-    },
-  }
-})
+jest.mock("@layouts/Folders", () => ({
+  __esModule: true,
+  default: () => <div>{FOLDERS_LAYOUT_TEXT}</div>,
+}))
 
-jest.mock("../components/NotFoundPage", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div>{NOT_FOUND_LAYOUT_TEXT}</div>
-    },
-  }
-})
+jest.mock("@components/NotFoundPage", () => ({
+  __esModule: true,
+  default: () => <div>{NOT_FOUND_LAYOUT_TEXT}</div>,
+}))
 
 // Context mocks
 const LoggedInContextProvider = ({ children }) => {

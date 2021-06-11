@@ -1,18 +1,21 @@
 import React, { useEffect } from "react"
-import { BrowserRouter as Router } from "react-router-dom"
-import axios from "axios"
 import { QueryClient, QueryClientProvider } from "react-query"
+import { BrowserRouter as Router } from "react-router-dom"
 import { ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
+// we need to import react-toastify before our styles, but that is
+// incompatible with our code linting sorting order. There is no
+// easy way around this (see https://github.com/lydell/eslint-plugin-simple-import-sort/issues/8)
+// so we are importing react-toastify styles as an unused import for now
+// eslint-disable-next-line no-unused-vars
+import reactToastifyStyles from "react-toastify/dist/ReactToastify.css"
 
-// Styles
-import elementStyles from "./styles/isomer-cms/Elements.module.scss"
+import axios from "axios"
 
-// Import contexts
-import { LoginProvider } from "./contexts/LoginContext"
+import { LoginProvider } from "@contexts/LoginContext"
 
-// Import route selector
-import { RouteSelector } from "./routing/RouteSelector"
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+
+import { RouteSelector } from "@routing/RouteSelector"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -43,7 +46,7 @@ export const App = () => {
     <Router basename={process.env.PUBLIC_URL}>
       <QueryClientProvider client={queryClient}>
         <ToastContainer
-          hideProgressBar={true}
+          hideProgressBar
           position="top-center"
           closeButton={ToastCloseButton}
           className={elementStyles.toastContainer}
@@ -55,5 +58,3 @@ export const App = () => {
     </Router>
   )
 }
-
-export default App

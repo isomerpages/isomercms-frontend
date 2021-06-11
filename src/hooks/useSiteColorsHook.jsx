@@ -1,9 +1,9 @@
 // Utils
 import {
+  createPageStyleSheet,
   defaultSiteColors,
   getSiteColors,
-  createPageStyleSheet,
-} from "../utils/siteColorUtils"
+} from "@utils/siteColorUtils"
 
 // Constants
 const LOCAL_STORAGE_SITE_COLORS = "isomercms_colors"
@@ -42,8 +42,8 @@ const useSiteColorsHook = () => {
   const generatePageStyleSheet = (siteName) => {
     const siteColors = getLocalStorageSiteColors()
 
-    let primaryColor = defaultSiteColors.default.primaryColor
-    let secondaryColor = defaultSiteColors.default.secondaryColor
+    let { primaryColor } = defaultSiteColors.default
+    let { secondaryColor } = defaultSiteColors.default
 
     if (siteColors[siteName]) {
       const {

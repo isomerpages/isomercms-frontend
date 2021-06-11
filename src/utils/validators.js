@@ -1,9 +1,10 @@
 import _ from "lodash"
+
 import {
   generatePageFileName,
   retrieveResourceFileMetadata,
   slugifyCategory,
-} from "../utils"
+} from "@src/utils"
 
 // Common regexes and constants
 // ==============

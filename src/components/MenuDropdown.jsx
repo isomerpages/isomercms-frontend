@@ -1,6 +1,6 @@
 import React from "react"
 
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 
 const MenuItem = ({ item, menuIndex, dropdownRef, className }) => {
   const getItemType = (type) => {
@@ -25,7 +25,6 @@ const MenuItem = ({ item, menuIndex, dropdownRef, className }) => {
           itemId: `delete`,
         }
       default:
-        return
     }
   }
   const { type, handler, noBlur } = item
@@ -42,13 +41,13 @@ const MenuItem = ({ item, menuIndex, dropdownRef, className }) => {
         if (!noBlur) dropdownRef.current.blur()
         if (handler) handler(e)
       }}
-      className={className ? className : `${elementStyles.dropdownItem}`}
+      className={className || `${elementStyles.dropdownItem}`}
     >
       <i id={`${itemId}-${menuIndex}`} className={iconClassName} />
       <div id={`${itemId}-${menuIndex}`} className={elementStyles.dropdownText}>
         {itemName}
       </div>
-      <div className={"ml-auto"}>{children}</div>
+      <div className="ml-auto">{children}</div>
     </div>
   )
 }
@@ -59,26 +58,24 @@ const MenuDropdown = ({
   dropdownRef,
   tabIndex,
   onBlur,
-}) => {
-  return (
-    <div
-      className={`${elementStyles.dropdown} ${elementStyles.right}`}
-      ref={dropdownRef}
-      tabIndex={tabIndex}
-      onBlur={onBlur}
-    >
-      {dropdownItems
-        .filter((x) => x)
-        .map((item) => (
-          <MenuItem
-            key={`${item.type || item.itemId}-${menuIndex}`}
-            item={item}
-            menuIndex={menuIndex}
-            dropdownRef={dropdownRef}
-          />
-        ))}
-    </div>
-  )
-}
+}) => (
+  <div
+    className={`${elementStyles.dropdown} ${elementStyles.right}`}
+    ref={dropdownRef}
+    tabIndex={tabIndex}
+    onBlur={onBlur}
+  >
+    {dropdownItems
+      .filter((x) => x)
+      .map((item) => (
+        <MenuItem
+          key={`${item.type || item.itemId}-${menuIndex}`}
+          item={item}
+          menuIndex={menuIndex}
+          dropdownRef={dropdownRef}
+        />
+      ))}
+  </div>
+)
 
 export { MenuItem, MenuDropdown }

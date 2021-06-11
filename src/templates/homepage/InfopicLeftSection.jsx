@@ -1,7 +1,9 @@
 import React from "react"
-import PropTypes from "prop-types"
 import { useQuery } from "react-query"
-import { fetchImageURL } from "../../utils"
+
+import PropTypes from "prop-types"
+
+import { fetchImageURL } from "@src/utils"
 
 /* eslint
   react/no-array-index-key: 0

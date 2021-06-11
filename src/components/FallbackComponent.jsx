@@ -1,7 +1,7 @@
 import React from "react"
 
-import errorStyles from "../styles/isomer-cms/pages/Error.module.scss"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import errorStyles from "@styles/isomer-cms/pages/Error.module.scss"
 
 function FallbackComponent({ error }) {
   console.log(error)
@@ -11,8 +11,8 @@ function FallbackComponent({ error }) {
       <div className={errorStyles.errorPageMain}>
         <img
           className={errorStyles.errorImage}
-          alt={`Generic Error Image`}
-          src={`/genericError.svg`}
+          alt="Generic Error Image"
+          src="/genericError.svg"
         />
         <div className={errorStyles.errorText}>
           Whoops, something went wrong.

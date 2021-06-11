@@ -1,10 +1,10 @@
 import React from "react"
 import PropTypes from "prop-types"
 
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 
-import { MenuItem } from "./MenuDropdown"
-import { deslugifyDirectory } from "../utils"
+import { MenuItem } from "@components/MenuDropdown"
+import { deslugifyDirectory } from "@src/utils"
 
 const FileMoveMenuDropdown = ({
   dropdownItems,

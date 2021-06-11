@@ -1,14 +1,18 @@
 import React from "react"
+import { Draggable, Droppable } from "react-beautiful-dnd"
+
 import PropTypes from "prop-types"
-import { Droppable, Draggable } from "react-beautiful-dnd"
-import styles from "../../styles/App.module.scss"
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
-import FormField from "../FormField"
-import FormFieldMedia from "../FormFieldMedia"
-import HeroButton from "./HeroButton"
-import HeroDropdown from "./HeroDropdown"
-import KeyHighlight from "./KeyHighlight"
-import { isEmpty } from "../../utils"
+
+import { isEmpty } from "@src/utils"
+
+import styles from "@styles/App.module.scss"
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+
+import FormField from "@components/FormField"
+import FormFieldMedia from "@components/FormFieldMedia"
+import HeroButton from "@components/homepage/HeroButton"
+import HeroDropdown from "@components/homepage/HeroDropdown"
+import KeyHighlight from "@components/homepage/KeyHighlight"
 
 /* eslint
   react/no-array-index-key: 0

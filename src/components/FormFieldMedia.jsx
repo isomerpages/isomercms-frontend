@@ -1,12 +1,13 @@
 import React, { useState } from "react"
+
 import PropTypes from "prop-types"
 
-import MediaModal from "./media/MediaModal"
-import MediaSettingsModal from "./media/MediaSettingsModal"
+import { successToast } from "@utils/toasts"
 
-import { successToast } from "../utils/toasts"
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
 
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import MediaModal from "@components/media/MediaModal"
+import MediaSettingsModal from "@components/media/MediaSettingsModal"
 
 const FormFieldMedia = ({
   title,
@@ -32,7 +33,7 @@ const FormFieldMedia = ({
     setIsSelectingItem(false)
     const event = {
       target: {
-        id: id,
+        id,
         value: path.replaceAll(" ", "%20"),
       },
     }
@@ -84,7 +85,7 @@ const FormFieldMedia = ({
       <div className="d-flex border">
         <input
           type="text"
-          placeholder={placeholder ? placeholder : title}
+          placeholder={placeholder || title}
           value={value}
           defaultValue={defaultValue}
           id={id}

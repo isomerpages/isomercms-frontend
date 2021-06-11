@@ -1,31 +1,29 @@
-import React, { useState, useEffect } from "react"
-import PropTypes from "prop-types"
+import React, { useEffect, useState } from "react"
 import { useQuery } from "react-query"
 
-// Import components
-import Header from "../components/Header"
-import Sidebar from "../components/Sidebar"
-import CollectionPagesSection from "../components/CollectionPagesSection"
-import FolderCard from "../components/FolderCard"
-import FolderCreationModal from "../components/FolderCreationModal"
-import FolderOptionButton from "../components/folders/FolderOptionButton"
+import PropTypes from "prop-types"
 
-// Import styles
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
-
-// Import utils
+import { getAllCategories, getEditPageData, getPages } from "@src/api"
+import { FOLDERS_CONTENT_KEY, PAGE_CONTENT_KEY } from "@src/constants"
 import {
   DEFAULT_RETRY_MSG,
-  prettifyPageFileName,
   frontMatterParser,
-} from "../utils"
-import { errorToast } from "../utils/toasts"
-import { getPages, getAllCategories, getEditPageData } from "../api"
-import { PAGE_CONTENT_KEY, FOLDERS_CONTENT_KEY } from "../constants"
+  prettifyPageFileName,
+} from "@src/utils"
 
-// Import hooks
-import useSiteColorsHook from "../hooks/useSiteColorsHook"
+import useSiteColorsHook from "@hooks/useSiteColorsHook"
+
+import { errorToast } from "@utils/toasts"
+
+import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
+
+import CollectionPagesSection from "@components/CollectionPagesSection"
+import FolderCard from "@components/FolderCard"
+import FolderCreationModal from "@components/FolderCreationModal"
+import FolderOptionButton from "@components/folders/FolderOptionButton"
+import Header from "@components/Header"
+import Sidebar from "@components/Sidebar"
 
 const CONTACT_US_TEMPLATE_LAYOUT = "contact_us"
 
@@ -144,25 +142,25 @@ const Workspace = ({ match, location }) => {
           <div className={contentStyles.folderContainerBoxes}>
             <div className={contentStyles.boxesContainer}>
               <FolderCard
-                displayText={"Homepage"}
+                displayText="Homepage"
                 settingsToggle={() => {}}
-                key={"homepage"}
-                pageType={"homepage"}
+                key="homepage"
+                pageType="homepage"
                 siteName={siteName}
               />
               <FolderCard
-                displayText={"Navigation Bar"}
+                displayText="Navigation Bar"
                 settingsToggle={() => {}}
-                key={"nav"}
-                pageType={"nav"}
+                key="nav"
+                pageType="nav"
                 siteName={siteName}
               />
               {contactUsCard && (
                 <FolderCard
-                  displayText={"Contact Us"}
+                  displayText="Contact Us"
                   settingsToggle={() => {}}
-                  key={"contact-us"}
-                  pageType={"contact-us"}
+                  key="contact-us"
+                  pageType="contact-us"
                   siteName={siteName}
                 />
               )}
@@ -199,7 +197,7 @@ const Workspace = ({ match, location }) => {
                       displayText={prettifyPageFileName(collection)}
                       settingsToggle={() => {}}
                       key={collection}
-                      pageType={"collection"}
+                      pageType="collection"
                       siteName={siteName}
                       category={collection}
                       itemIndex={collectionIdx}
