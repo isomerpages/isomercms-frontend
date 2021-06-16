@@ -1,5 +1,5 @@
-import moment from "moment-timezone"
 import _ from "lodash"
+import moment from "moment-timezone"
 
 import {
   generatePageFileName,
@@ -761,7 +761,7 @@ const validateDayOfMonth = (month, day) => {
 }
 
 const validateNonFutureDate = (dateStr) => {
-  const today = new Date(moment().tz('Asia/Singapore').format('YYYY-MM-DD'))
+  const today = new Date(moment().tz("Asia/Singapore").format("YYYY-MM-DD"))
   const chosenDate = new Date(dateStr)
   const daysDiff = today - chosenDate
   return daysDiff >= 0
@@ -791,7 +791,7 @@ const validateResourceSettings = (id, value, folderOrderArray) => {
       }
       break
     }
-    case "date": {      
+    case "date": {
       // Date is in the future
       if (!validateNonFutureDate(value)) {
         errorMessage = "Selected date is greater than today's date."
