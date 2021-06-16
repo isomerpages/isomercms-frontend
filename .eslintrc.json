@@ -12,7 +12,7 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": ["react", "simple-import-sort", "import"],
+  "plugins": ["only-warn", "react", "simple-import-sort", "import"],
   "rules": {
     "no-underscore-dangle": "off",
     "simple-import-sort/imports": [
