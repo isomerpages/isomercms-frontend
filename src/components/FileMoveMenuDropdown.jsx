@@ -1,10 +1,10 @@
 import React from "react"
 import PropTypes from "prop-types"
 
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
-import { MenuItem } from "@components/MenuDropdown"
-import { deslugifyDirectory } from "@src/utils"
+import { MenuItem } from "./MenuDropdown"
+import { deslugifyDirectory } from "../utils"
 
 const FileMoveMenuDropdown = ({
   dropdownItems,
@@ -68,17 +68,15 @@ const FileMoveMenuDropdown = ({
           {moveDropdownQuery.split("/").map((folderName, idx, arr) => {
             return idx === arr.length - 1 ? (
               <>
-                {" "}
-                >{" "}
+                {">"}
                 <strong className="ml-1">
-                  {" "}
+                  &nbsp;
                   {deslugifyDirectory(folderName)}
                 </strong>
               </>
             ) : (
               <>
-                {" "}
-                >{" "}
+                {">"}
                 <BreadcrumbButton
                   id={`breadcrumbItem-${idx + 1}`}
                   idx={idx}

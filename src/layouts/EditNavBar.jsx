@@ -1,32 +1,32 @@
 import React, { useEffect, useState } from "react"
-import { DragDropContext } from "react-beautiful-dnd"
-import { useMutation, useQuery, useQueryClient } from "react-query"
-import { ReactQueryDevtools } from "react-query/devtools"
-
-import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
+import update from "immutability-helper"
+import { useQuery, useMutation, useQueryClient } from "react-query"
+import { ReactQueryDevtools } from "react-query/devtools"
+import { DragDropContext } from "react-beautiful-dnd"
 
-import { getEditNavBarData, updateNavBarData } from "@src/api"
-import { NAVIGATION_CONTENT_KEY } from "@src/constants"
-import { DEFAULT_RETRY_MSG, deslugifyDirectory, isEmpty } from "@src/utils"
+import { DEFAULT_RETRY_MSG, deslugifyDirectory, isEmpty } from "../utils"
+import { NAVIGATION_CONTENT_KEY } from "../constants"
+import { validateLink } from "../utils/validators"
+import { errorToast } from "../utils/toasts"
 
-import useRedirectHook from "@hooks/useRedirectHook"
+import useRedirectHook from "../hooks/useRedirectHook"
 
-import TemplateNavBar from "@templates/NavBar"
+import Header from "../components/Header"
+import LoadingButton from "../components/LoadingButton"
+import DeleteWarningModal from "../components/DeleteWarningModal"
+import GenericWarningModal from "../components/GenericWarningModal"
+import NavSection from "../components/navbar/NavSection"
 
-import { errorToast } from "@utils/toasts"
-import { validateLink } from "@utils/validators"
+import TemplateNavBar from "../templates/NavBar"
 
-import "@styles/isomer-template.scss"
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
-import editorStyles from "@styles/isomer-cms/pages/Editor.module.scss"
+import "../styles/isomer-template.scss"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import editorStyles from "../styles/isomer-cms/pages/Editor.module.scss"
 
-import DeleteWarningModal from "@components/DeleteWarningModal"
-import GenericWarningModal from "@components/GenericWarningModal"
-import Header from "@components/Header"
-import LoadingButton from "@components/LoadingButton"
-import NavSection from "@components/navbar/NavSection"
+// Import API
+import { getEditNavBarData, updateNavBarData } from "../api"
 
 const RADIX_PARSE_INT = 10
 
@@ -602,7 +602,9 @@ const EditNavBar = ({ match }) => {
     }
   }
 
-  const hasErrors = () => !isEmpty(errors.links) || !isEmpty(errors.sublinks)
+  const hasErrors = () => {
+    return !isEmpty(errors.links) || !isEmpty(errors.sublinks)
+  }
 
   return (
     <>

@@ -1,30 +1,30 @@
 import React, { useEffect, useRef, useState } from "react"
-import { useMutation, useQueryClient } from "react-query"
 import { Link } from "react-router-dom"
-
 import PropTypes from "prop-types"
+import { useQueryClient, useMutation } from "react-query"
+
+import FolderModal from "./FolderModal"
+import DeleteWarningModal from "./DeleteWarningModal"
+import { MenuDropdown } from "./MenuDropdown"
 
 import {
   deleteFolder,
-  deleteMediaSubfolder,
   deleteResourceCategory,
-} from "@src/api"
+  deleteMediaSubfolder,
+} from "../api"
+
+import { errorToast, successToast } from "../utils/toasts"
 import {
+  IMAGE_CONTENTS_KEY,
   DOCUMENT_CONTENTS_KEY,
   FOLDERS_CONTENT_KEY,
-  IMAGE_CONTENTS_KEY,
   RESOURCE_ROOM_CONTENT_KEY,
-} from "@src/constants"
-import { DEFAULT_RETRY_MSG } from "@src/utils"
+} from "../constants"
 
-import { errorToast, successToast } from "@utils/toasts"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
 
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
-import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
-
-import DeleteWarningModal from "@components/DeleteWarningModal"
-import FolderModal from "@components/FolderModal"
-import { MenuDropdown } from "@components/MenuDropdown"
+import { DEFAULT_RETRY_MSG } from "../utils"
 
 const FolderCard = ({
   displayText,

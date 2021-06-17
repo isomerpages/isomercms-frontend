@@ -1,12 +1,12 @@
 import React, { useState } from "react"
 import PropTypes from "prop-types"
-import { Droppable, Draggable } from "react-beautiful-dnd"
-import { DragDropContext } from "react-beautiful-dnd"
+import { Droppable, Draggable, DragDropContext } from "react-beautiful-dnd"
+
 import { useMutation } from "react-query"
 import update from "immutability-helper"
 
-import { FolderContentItem } from "@components/folders/FolderContent"
-import LoadingButton from "@components/LoadingButton"
+import { FolderContentItem } from "./folders/FolderContent"
+import LoadingButton from "./LoadingButton"
 
 import {
   DEFAULT_RETRY_MSG,
@@ -14,16 +14,16 @@ import {
   convertSubfolderArray,
   updateDirectoryFile,
   convertArrayToFolderOrder,
-} from "@src/utils"
+} from "../utils"
 
-import { errorToast, successToast } from "@utils/toasts"
+import { errorToast, successToast } from "../utils/toasts"
 
-import { setDirectoryFile } from "@src/api"
+import { setDirectoryFile } from "../api"
 
 // Import styles
-import adminStyles from "@styles/isomer-cms/pages/Admin.module.scss"
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
-import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
+import adminStyles from "../styles/isomer-cms/pages/Admin.module.scss"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
 
 const FolderReorderingModal = ({
   siteName,
@@ -140,12 +140,16 @@ const FolderReorderingModal = ({
             <br />
             <div className={contentStyles.segment}>
               <span>
-                Workspace >
+                Workspace {">"}
                 {subfolderName ? (
                   <>
-                    {" "}
-                    {deslugifyDirectory(folderName)}{" "}
-                    <strong> > {deslugifyDirectory(subfolderName)}</strong>{" "}
+                    &nbsp;
+                    {deslugifyDirectory(folderName)}&nbsp;
+                    <strong>
+                      {">"}
+                      {deslugifyDirectory(subfolderName)}
+                    </strong>
+                    &nbsp;
                   </>
                 ) : (
                   <strong> {deslugifyDirectory(folderName)}</strong>
@@ -179,7 +183,7 @@ const FolderReorderingModal = ({
                                 key={folderContentItem.fileName}
                                 folderContentItem={folderContentItem}
                                 itemIndex={folderContentIndex}
-                                disableLink={true}
+                                disableLink
                               />
                             </div>
                           )}
@@ -194,13 +198,13 @@ const FolderReorderingModal = ({
           </div>
           <div className={contentStyles.sectionFooter}>
             <LoadingButton
-              label={`Cancel`}
+              label="Cancel"
               disabledStyle={elementStyles.disabled}
               className={`${elementStyles.warning}`}
               callback={() => setIsRearrangeActive(false)}
             />
             <LoadingButton
-              label={`Done`}
+              label="Done"
               className={elementStyles.blue}
               callback={saveHandler}
             />

@@ -1,26 +1,24 @@
 import React, { useEffect, useState } from "react"
-import { useMutation } from "react-query"
-
 import axios from "axios"
-import update from "immutability-helper"
-import * as _ from "lodash"
 import PropTypes from "prop-types"
+import * as _ from "lodash"
+import update from "immutability-helper"
+import { useMutation } from "react-query"
+import Select from "react-select"
 
-import { moveFiles } from "@src/api"
-import { DEFAULT_RETRY_MSG, deslugifyPage, slugifyCategory } from "@src/utils"
+import FolderCard from "./FolderCard"
+import LoadingButton from "./LoadingButton"
+import FolderNamingModal from "./FolderNamingModal"
+import { errorToast } from "../utils/toasts"
+import useRedirectHook from "../hooks/useRedirectHook"
 
-import useRedirectHook from "@hooks/useRedirectHook"
+import { validateCategoryName } from "../utils/validators"
+import { deslugifyPage, slugifyCategory, DEFAULT_RETRY_MSG } from "../utils"
 
-import { errorToast } from "@utils/toasts"
-import { validateCategoryName } from "@utils/validators"
-
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
-import adminStyles from "@styles/isomer-cms/pages/Admin.module.scss"
-import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
-
-import FolderCard from "@components/FolderCard"
-import FolderNamingModal from "@components/FolderNamingModal"
-import LoadingButton from "@components/LoadingButton"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
+import adminStyles from "../styles/isomer-cms/pages/Admin.module.scss"
+import { moveFiles } from "../api"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -116,7 +114,9 @@ const FolderCreationModal = ({
   }
 
   const sortFuncs = {
-    title: (a, b) => a.fileName.localeCompare(b.fileName),
+    title: (a, b) => {
+      return a.fileName.localeCompare(b.fileName)
+    },
   }
 
   const sortOrderChangeHandler = (option) => {

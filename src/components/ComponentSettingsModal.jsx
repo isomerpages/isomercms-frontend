@@ -4,17 +4,17 @@ import axios from "axios"
 import PropTypes from "prop-types"
 import * as _ from "lodash"
 
-import FormField from "@components/FormField"
-import FormFieldHorizontal from "@components/FormFieldHorizontal"
-import ResourceFormFields from "@components/ResourceFormFields"
-import SaveDeleteButtons from "@components/SaveDeleteButtons"
+import FormField from "./FormField"
+import FormFieldHorizontal from "./FormFieldHorizontal"
+import ResourceFormFields from "./ResourceFormFields"
+import SaveDeleteButtons from "./SaveDeleteButtons"
 import {
   RESOURCE_ROOM_NAME_KEY,
   RESOURCE_CATEGORY_CONTENT_KEY,
-} from "@src/constants"
+} from "../constants"
 
-import useSiteUrlHook from "@hooks/useSiteUrlHook"
-import useRedirectHook from "@hooks/useRedirectHook"
+import useSiteUrlHook from "../hooks/useSiteUrlHook"
+import useRedirectHook from "../hooks/useRedirectHook"
 
 import {
   DEFAULT_RETRY_MSG,
@@ -24,19 +24,19 @@ import {
   concatFrontMatterMdBody,
   deslugifyDirectory,
   slugifyCategory,
-} from "@src/utils"
+} from "../utils"
 
 import {
   createPageData,
   updatePageData,
   renamePageData,
   getResourceRoomName,
-} from "@src/api"
+} from "../api"
 
-import { validateResourceSettings } from "@utils/validators"
-import { errorToast, successToast } from "@utils/toasts"
+import { validateResourceSettings } from "../utils/validators"
+import { errorToast, successToast } from "../utils/toasts"
 
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -159,7 +159,7 @@ const ComponentSettingsModal = ({
             )
             .includes(slugifyCategory(exampleTitle))
         ) {
-          exampleTitle = exampleTitle + "_1"
+          exampleTitle += "_1"
         }
         if (_isMounted) {
           setTitle(exampleTitle)
@@ -208,16 +208,14 @@ const ComponentSettingsModal = ({
     } = event
     if (value === "file") {
       setPermalink("")
-      setFileUrl(originalFileUrl ? originalFileUrl : "")
+      setFileUrl(originalFileUrl || "")
       setIsPost(false)
       setErrors((prevState) => ({
         ...prevState,
         permalink: "",
       }))
     } else {
-      setPermalink(
-        originalPermalink ? originalPermalink : `/${category}/permalink`
-      )
+      setPermalink(originalPermalink || `/${category}/permalink`)
       setFileUrl("")
       setIsPost(true)
       setErrors((prevState) => ({
@@ -339,7 +337,7 @@ const ComponentSettingsModal = ({
                   id="title"
                   value={title}
                   errorMessage={errors.title}
-                  isRequired={true}
+                  isRequired
                   onFieldChange={changeHandler}
                 />
                 <p className={elementStyles.formLabel}>
@@ -364,7 +362,7 @@ const ComponentSettingsModal = ({
                   isPost={isPost}
                   setIsPost={setIsPost}
                   siteName={siteName}
-                  fileUrl={fileUrl ? fileUrl : ""}
+                  fileUrl={fileUrl || ""}
                 />
               </div>
               <SaveDeleteButtons

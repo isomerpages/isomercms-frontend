@@ -1,6 +1,6 @@
 import React from "react"
 
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
 const MenuItem = ({ item, menuIndex, dropdownRef, className }) => {
   const getItemType = (type) => {
@@ -58,24 +58,26 @@ const MenuDropdown = ({
   dropdownRef,
   tabIndex,
   onBlur,
-}) => (
-  <div
-    className={`${elementStyles.dropdown} ${elementStyles.right}`}
-    ref={dropdownRef}
-    tabIndex={tabIndex}
-    onBlur={onBlur}
-  >
-    {dropdownItems
-      .filter((x) => x)
-      .map((item) => (
-        <MenuItem
-          key={`${item.type || item.itemId}-${menuIndex}`}
-          item={item}
-          menuIndex={menuIndex}
-          dropdownRef={dropdownRef}
-        />
-      ))}
-  </div>
-)
+}) => {
+  return (
+    <div
+      className={`${elementStyles.dropdown} ${elementStyles.right}`}
+      ref={dropdownRef}
+      tabIndex={tabIndex}
+      onBlur={onBlur}
+    >
+      {dropdownItems
+        .filter((x) => x)
+        .map((item) => (
+          <MenuItem
+            key={`${item.type || item.itemId}-${menuIndex}`}
+            item={item}
+            menuIndex={menuIndex}
+            dropdownRef={dropdownRef}
+          />
+        ))}
+    </div>
+  )
+}
 
 export { MenuItem, MenuDropdown }

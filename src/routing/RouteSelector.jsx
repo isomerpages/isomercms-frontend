@@ -1,32 +1,34 @@
 import React from "react"
+import * as Sentry from "@sentry/react"
 import { Switch } from "react-router-dom"
 
-import * as Sentry from "@sentry/react"
+// Layouts
+import Home from "../layouts/Home"
+import Sites from "../layouts/Sites"
+import Workspace from "../layouts/Workspace"
+import Folders from "../layouts/Folders"
+import EditPage from "../layouts/EditPage"
+import CategoryPages from "../layouts/CategoryPages"
+import Media from "../layouts/Media"
+import EditHomepage from "../layouts/EditHomepage"
+import EditContactUs from "../layouts/EditContactUs"
+import Resources from "../layouts/Resources"
+import EditNavBar from "../layouts/EditNavBar"
+import Settings from "../layouts/Settings"
+import NotFoundPage from "../components/NotFoundPage"
+import FallbackComponent from "../components/FallbackComponent"
 
-import FallbackComponent from "@components/FallbackComponent"
-import NotFoundPage from "@components/NotFoundPage"
+// ProtectedRoute component
+import ProtectedRoute from "./ProtectedRoute"
+import RedirectIfLoggedInRoute from "./RedirectIfLoggedInRoute"
 
-import CategoryPages from "@layouts/CategoryPages"
-import EditContactUs from "@layouts/EditContactUs"
-import EditHomepage from "@layouts/EditHomepage"
-import EditNavBar from "@layouts/EditNavBar"
-import EditPage from "@layouts/EditPage"
-import Folders from "@layouts/Folders"
-import Home from "@layouts/Home"
-import Media from "@layouts/Media"
-import Resources from "@layouts/Resources"
-import Settings from "@layouts/Settings"
-import Sites from "@layouts/Sites"
-import Workspace from "@layouts/Workspace"
-
-import ProtectedRoute from "@routing/ProtectedRoute"
-import RedirectIfLoggedInRoute from "@routing/RedirectIfLoggedInRoute"
-
-const ProtectedRouteWithProps = (props) => (
-  <Sentry.ErrorBoundary fallback={FallbackComponent}>
-    <ProtectedRoute {...props} />
-  </Sentry.ErrorBoundary>
-)
+const ProtectedRouteWithProps = (props) => {
+  return (
+    <Sentry.ErrorBoundary fallback={FallbackComponent}>
+      <ProtectedRoute {...props} />
+    </Sentry.ErrorBoundary>
+  )
+}
 
 export const RouteSelector = () => (
   <Switch>

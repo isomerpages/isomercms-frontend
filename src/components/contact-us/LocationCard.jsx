@@ -1,16 +1,9 @@
 import React from "react"
-
 import PropTypes from "prop-types"
-
-import { isEmpty } from "@src/utils"
-
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
-
-import {
-  LocationAddressFields,
-  LocationHoursFields,
-} from "@components/contact-us/LocationFields"
-import FormField from "@components/FormField"
+import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
+import FormField from "../FormField"
+import { LocationHoursFields, LocationAddressFields } from "./LocationFields"
+import { isEmpty } from "../../utils"
 
 /* eslint
   react/no-array-index-key: 0

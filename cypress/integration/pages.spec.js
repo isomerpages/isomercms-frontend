@@ -1,9 +1,9 @@
 import {
-  deslugifyDirectory,
   deslugifyPage,
+  deslugifyDirectory,
   generatePageFileName,
   slugifyCategory,
-} from "@src/utils"
+} from "../../src/utils"
 
 const CUSTOM_TIMEOUT = 30000 // 30 seconds
 

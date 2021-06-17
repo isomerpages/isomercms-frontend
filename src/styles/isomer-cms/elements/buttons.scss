@@ -1,4 +1,4 @@
-@import "@styles/isomer-cms/elements/variable";
+@import "./variable";
 
 @mixin buttonColor($color) {
   background: $color;

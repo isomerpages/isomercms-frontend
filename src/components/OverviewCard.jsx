@@ -1,23 +1,21 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import { Link } from "react-router-dom"
-
 import axios from "axios"
 import PropTypes from "prop-types"
+import { MenuDropdown } from "./MenuDropdown"
+import FileMoveMenuDropdown from "./FileMoveMenuDropdown"
+
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
 
 // Import utils
 import {
-  deslugifyDirectory,
   prettifyCollectionPageFileName,
-  prettifyDate,
   prettifyPageFileName,
+  prettifyDate,
   retrieveResourceFileMetadata,
-} from "@src/utils"
-
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
-import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
-
-import FileMoveMenuDropdown from "@components/FileMoveMenuDropdown"
-import { MenuDropdown } from "@components/MenuDropdown"
+  deslugifyDirectory,
+} from "../utils"
 
 // axios settings
 axios.defaults.withCredentials = true

@@ -1,4 +1,4 @@
-import { slugifyCategory } from "@src/utils"
+import { slugifyCategory } from "../../src/utils"
 
 describe("Resources page", () => {
   const CMS_BASEURL = Cypress.env("BASEURL")

@@ -1,25 +1,23 @@
 import React, { Component } from "react"
-
 import axios from "axios"
 import PropTypes from "prop-types"
 import * as _ from "lodash"
 
-import { DEFAULT_RETRY_MSG, getObjectDiff } from "@src/utils"
+import Header from "../components/Header"
+import Sidebar from "../components/Sidebar"
+import LoadingButton from "../components/LoadingButton"
+import ColorPicker from "../components/ColorPicker"
+import FormFieldToggle from "../components/FormFieldToggle"
+import FormFieldMedia from "../components/FormFieldMedia"
+import FormFieldColor from "../components/FormFieldColor"
+import FormFieldHorizontal from "../components/FormFieldHorizontal"
 
-import { errorToast } from "@utils/toasts"
-import { validateSocialMedia } from "@utils/validators"
+import { DEFAULT_RETRY_MSG, getObjectDiff } from "../utils"
+import { errorToast } from "../utils/toasts"
+import { validateSocialMedia } from "../utils/validators"
 
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
-import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
-
-import Header from "@components/Header"
-import Sidebar from "@components/Sidebar"
-import LoadingButton from "@components/LoadingButton"
-import ColorPicker from "@components/ColorPicker"
-import FormFieldToggle from "@components/FormFieldToggle"
-import FormFieldMedia from "@components/FormFieldMedia"
-import FormFieldColor from "@components/FormFieldColor"
-import FormFieldHorizontal from "@components/FormFieldHorizontal"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
 
 const stateFields = {
   title: "",
@@ -265,21 +263,19 @@ export default class Settings extends Component {
           "media-colors": newMediaColors,
         },
       }))
-    } else {
-      if (id === "logo") {
-        this.setState((currState) => ({
-          ...currState,
-          navigationSettings: {
-            ...currState.navigationSettings,
-            [id]: value,
-          },
-        }))
-      } else {
-        this.setState((currState) => ({
-          ...currState,
+    } else if (id === "logo") {
+      this.setState((currState) => ({
+        ...currState,
+        navigationSettings: {
+          ...currState.navigationSettings,
           [id]: value,
-        }))
-      }
+        },
+      }))
+    } else {
+      this.setState((currState) => ({
+        ...currState,
+        [id]: value,
+      }))
     }
   }
 
@@ -325,7 +321,7 @@ export default class Settings extends Component {
       }
 
       // Construct payload
-      let configSettings = {}
+      const configSettings = {}
       let footerSettings = {}
       let navigationSettings = {}
       Object.keys(settingsStateDiff).forEach((field) => {
@@ -347,7 +343,7 @@ export default class Settings extends Component {
             }
 
           if (field === "socialMediaContent")
-            footerSettings["social_media"] = settingsStateDiff[field].obj1
+            footerSettings.social_media = settingsStateDiff[field].obj1
         }
 
         if (NAVIGATION_FIELDS.includes(field)) {
@@ -558,7 +554,7 @@ export default class Settings extends Component {
       <>
         <Header
           siteName={siteName}
-          isEditPage={true}
+          isEditPage
           shouldAllowEditPageBackNav={_.isEmpty(settingsStateDiff)}
         />
         {/* main bottom section */}
@@ -610,7 +606,7 @@ export default class Settings extends Component {
                     errorMessage={errors.navigationSettings.logo}
                     isRequired
                     onFieldChange={this.changeHandler}
-                    inlineButtonText={"Choose Image"}
+                    inlineButtonText="Choose Image"
                     siteName={siteName}
                     placeholder=" "
                     type="images"
@@ -622,7 +618,7 @@ export default class Settings extends Component {
                     errorMessage={errors.favicon}
                     isRequired
                     onFieldChange={this.changeHandler}
-                    inlineButtonText={"Choose Image"}
+                    inlineButtonText="Choose Image"
                     siteName={siteName}
                     placeholder=" "
                     type="images"
@@ -634,7 +630,7 @@ export default class Settings extends Component {
                     errorMessage={errors.shareicon}
                     isRequired
                     onFieldChange={this.changeHandler}
-                    inlineButtonText={"Choose Image"}
+                    inlineButtonText="Choose Image"
                     siteName={siteName}
                     placeholder=" "
                     type="images"

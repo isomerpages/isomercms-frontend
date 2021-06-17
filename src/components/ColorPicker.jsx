@@ -1,9 +1,7 @@
 import React, { useState } from "react"
-import { SketchPicker } from "react-color"
-
 import PropTypes from "prop-types"
-
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import { SketchPicker } from "react-color"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
 const ColorPicker = ({ value, onColorSelect, setRealTimeColor }) => {
   // initiate selectedColor as color passed in as props

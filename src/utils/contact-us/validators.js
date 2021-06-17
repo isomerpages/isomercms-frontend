@@ -1,4 +1,4 @@
-import { validateContactType, validateLocationType } from "@utils/validators"
+import { validateContactType, validateLocationType } from "../validators"
 
 function validateOperatingHours(operatingHours) {
   const { days, time, description } = operatingHours
