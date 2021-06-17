@@ -187,10 +187,12 @@ describe("Edit unlinked page", () => {
 
     // Cancel works properly in modal
     cy.get("#modal-cancel").click()
+    cy.get("#modal-cancel").should("not.exist")
 
     cy.contains(":button", "Delete").click()
 
     // Test delete in modal
+    cy.get("#modal-delete").should("exist")
     cy.get("#modal-delete").click()
 
     // Assert: page no longer exists
