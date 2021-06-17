@@ -39,5 +39,5 @@ Cypress.Commands.add("moveMedia", (mediaTitle, newMediaFolder) => {
 Cypress.Commands.add("deleteMedia", (mediaTitle, disableAction) => {
   cy.get(`[id^="${mediaTitle}-settings-"]`).click()
   cy.contains("Delete").click()
-  if (!disableAction) cy.get("#delete-confirmation").click()
+  if (!disableAction) cy.get("#modal-delete").click()
 })
