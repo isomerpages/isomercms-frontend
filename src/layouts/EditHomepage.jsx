@@ -1,151 +1,151 @@
-import React, { useEffect, createRef, useState } from 'react';
-import axios from 'axios';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
-import update from 'immutability-helper';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import React, { useEffect, createRef, useState } from "react"
+import axios from "axios"
+import _ from "lodash"
+import PropTypes from "prop-types"
+import update from "immutability-helper"
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
-import EditorInfobarSection from '../components/homepage/InfobarSection';
-import EditorInfopicSection from '../components/homepage/InfopicSection';
-import EditorResourcesSection from '../components/homepage/ResourcesSection';
-import EditorHeroSection from '../components/homepage/HeroSection';
-import NewSectionCreator from '../components/homepage/NewSectionCreator';
-import Header from '../components/Header';
-import LoadingButton from '../components/LoadingButton';
-import DeleteWarningModal from '../components/DeleteWarningModal';
+import EditorInfobarSection from "../components/homepage/InfobarSection"
+import EditorInfopicSection from "../components/homepage/InfopicSection"
+import EditorResourcesSection from "../components/homepage/ResourcesSection"
+import EditorHeroSection from "../components/homepage/HeroSection"
+import NewSectionCreator from "../components/homepage/NewSectionCreator"
+import Header from "../components/Header"
+import LoadingButton from "../components/LoadingButton"
+import DeleteWarningModal from "../components/DeleteWarningModal"
 
-import TemplateHeroSection from '../templates/homepage/HeroSection';
-import TemplateInfobarSection from '../templates/homepage/InfobarSection';
-import TemplateInfopicLeftSection from '../templates/homepage/InfopicLeftSection';
-import TemplateInfopicRightSection from '../templates/homepage/InfopicRightSection';
-import TemplateResourcesSection from '../templates/homepage/ResourcesSection';
+import TemplateHeroSection from "../templates/homepage/HeroSection"
+import TemplateInfobarSection from "../templates/homepage/InfobarSection"
+import TemplateInfopicLeftSection from "../templates/homepage/InfopicLeftSection"
+import TemplateInfopicRightSection from "../templates/homepage/InfopicRightSection"
+import TemplateResourcesSection from "../templates/homepage/ResourcesSection"
 
-import { frontMatterParser, concatFrontMatterMdBody, DEFAULT_RETRY_MSG } from '../utils';
-import { validateSections, validateHighlights, validateDropdownElems } from '../utils/validators';
-import { errorToast } from '../utils/toasts';
+import {
+  frontMatterParser,
+  concatFrontMatterMdBody,
+  DEFAULT_RETRY_MSG,
+} from "../utils"
+import {
+  validateSections,
+  validateHighlights,
+  validateDropdownElems,
+} from "../utils/validators"
+import { errorToast } from "../utils/toasts"
 
-import '../styles/isomer-template.scss';
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
-import editorStyles from '../styles/isomer-cms/pages/Editor.module.scss';
+import "../styles/isomer-template.scss"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import editorStyles from "../styles/isomer-cms/pages/Editor.module.scss"
 
 // Import hooks
-import useSiteColorsHook from '../hooks/useSiteColorsHook';
+import useSiteColorsHook from "../hooks/useSiteColorsHook"
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
 
 // Constants
 // ==========
-const RADIX_PARSE_INT = 10;
+const RADIX_PARSE_INT = 10
 
 // Section constructors
 const ResourcesSectionConstructor = (isErrorConstructor) => ({
   resources: {
-    title: isErrorConstructor ? '' : 'Resources Section Title',
-    subtitle: isErrorConstructor ? '' : 'Resources Section Subtitle',
-    button: isErrorConstructor ? '' : 'Resources Button Name',
+    title: isErrorConstructor ? "" : "Resources Section Title",
+    subtitle: isErrorConstructor ? "" : "Resources Section Subtitle",
+    button: isErrorConstructor ? "" : "Resources Button Name",
   },
-});
+})
 
 const InfobarSectionConstructor = (isErrorConstructor) => ({
   infobar: {
-    title: isErrorConstructor ? '' : 'Infobar Title',
-    subtitle: isErrorConstructor ? '' : 'Infobar Subtitle',
-    description: isErrorConstructor ? '' : 'Infobar description',
-    button: isErrorConstructor ? '' : 'Button Text',
-    url: '', // No default value so that no broken link is created
+    title: isErrorConstructor ? "" : "Infobar Title",
+    subtitle: isErrorConstructor ? "" : "Infobar Subtitle",
+    description: isErrorConstructor ? "" : "Infobar description",
+    button: isErrorConstructor ? "" : "Button Text",
+    url: "", // No default value so that no broken link is created
   },
-});
+})
 
 const InfopicSectionConstructor = (isErrorConstructor) => ({
   infopic: {
-    title: isErrorConstructor ? '' : 'Infopic Title',
-    subtitle: isErrorConstructor ? '' : 'Infopic Subtitle',
-    description: isErrorConstructor ? '' : 'Infopic description',
-    button: isErrorConstructor ? '' : 'Button Text',
-    url: '', // No default value so that no broken link is created
-    image: '', // Always blank since the image modal handles this
-    alt: isErrorConstructor ? '' : 'Image alt text',
+    title: isErrorConstructor ? "" : "Infopic Title",
+    subtitle: isErrorConstructor ? "" : "Infopic Subtitle",
+    description: isErrorConstructor ? "" : "Infopic description",
+    button: isErrorConstructor ? "" : "Button Text",
+    url: "", // No default value so that no broken link is created
+    image: "", // Always blank since the image modal handles this
+    alt: isErrorConstructor ? "" : "Image alt text",
   },
-});
+})
 
 const KeyHighlightConstructor = (isErrorConstructor) => ({
-  title: isErrorConstructor ? '' : 'Key Highlight Title',
-  description: isErrorConstructor ? '' : 'Key Highlight description',
-  url: '', // No default value so that no broken link is created
-});
+  title: isErrorConstructor ? "" : "Key Highlight Title",
+  description: isErrorConstructor ? "" : "Key Highlight description",
+  url: "", // No default value so that no broken link is created
+})
 
 const DropdownElemConstructor = (isErrorConstructor) => ({
-  title: isErrorConstructor ? '' : 'Hero Dropdown Element Title',
-  url: '', // No default value so that no broken link is created
-});
+  title: isErrorConstructor ? "" : "Hero Dropdown Element Title",
+  url: "", // No default value so that no broken link is created
+})
 
 const DropdownConstructor = () => ({
-  title: 'Hero Dropdown Title',
+  title: "Hero Dropdown Title",
   options: [],
-});
+})
 
 const enumSection = (type, isErrorConstructor) => {
   switch (type) {
-    case 'resources':
-      return ResourcesSectionConstructor(isErrorConstructor);
-    case 'infobar':
-      return InfobarSectionConstructor(isErrorConstructor);
-    case 'infopic':
-      return InfopicSectionConstructor(isErrorConstructor);
+    case "resources":
+      return ResourcesSectionConstructor(isErrorConstructor)
+    case "infobar":
+      return InfobarSectionConstructor(isErrorConstructor)
+    case "infopic":
+      return InfopicSectionConstructor(isErrorConstructor)
     default:
-      return InfobarSectionConstructor(isErrorConstructor);
+      return InfobarSectionConstructor(isErrorConstructor)
   }
-};
+}
 
 const EditHomepage = ({ match }) => {
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
 
-  const { siteName } = match.params;
+  const { siteName } = match.params
   const [hasLoaded, setHasLoaded] = useState(false)
   const [scrollRefs, setScrollRefs] = useState([])
   const [hasErrors, setHasErrors] = useState(false)
-  const [frontMatter, setFrontMatter] = useState(
-    {
-      title: '',
-      subtitle: '',
-      description: '',
-      image: '',
-      notification: '',
-      sections: [],
-    }
-  )
-  const [originalFrontMatter, setOriginalFrontMatter] = useState(
-    {
-      title: '',
-      subtitle: '',
-      description: '',
-      image: '',
-      notification: '',
-      sections: [],
-    }
-  )
+  const [frontMatter, setFrontMatter] = useState({
+    title: "",
+    subtitle: "",
+    description: "",
+    image: "",
+    notification: "",
+    sections: [],
+  })
+  const [originalFrontMatter, setOriginalFrontMatter] = useState({
+    title: "",
+    subtitle: "",
+    description: "",
+    image: "",
+    notification: "",
+    sections: [],
+  })
   const [sha, setSha] = useState(null)
   const [hasResources, setHasResources] = useState(false)
   const [dropdownIsActive, setDropdownIsActive] = useState(false)
   const [displaySections, setDisplaySections] = useState([])
   const [displayHighlights, setDisplayHighlights] = useState([])
   const [displayDropdownElems, setDisplayDropdownElems] = useState([])
-  const [errors, setErrors] = useState(
-    {
-      sections: [],
-      highlights: [],
-      dropdownElems: [],
-    }
-  )
-  const [itemPendingForDelete, setItemPendingForDelete] = useState(
-    {
-      id: '',
-      type: '',
-    }
-  )
-  const [savedHeroElems, setSavedHeroElems] = useState('')
-  const [savedHeroErrors, setSavedHeroErrors] = useState('')
+  const [errors, setErrors] = useState({
+    sections: [],
+    highlights: [],
+    dropdownElems: [],
+  })
+  const [itemPendingForDelete, setItemPendingForDelete] = useState({
+    id: "",
+    type: "",
+  })
+  const [savedHeroElems, setSavedHeroElems] = useState("")
+  const [savedHeroErrors, setSavedHeroErrors] = useState("")
 
   useEffect(() => {
     let _isMounted = true
@@ -155,41 +155,57 @@ const EditHomepage = ({ match }) => {
         await retrieveSiteColors(siteName)
         generatePageStyleSheet(siteName)
       } catch (err) {
-        console.log(err);
+        console.log(err)
       }
 
       try {
-        const resp = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/homepage`, {
-          withCredentials: true,
-        });
-        const { content, sha } = resp.data;
-        const { frontMatter } = frontMatterParser(content);
+        const resp = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/homepage`,
+          {
+            withCredentials: true,
+          }
+        )
+        const { content, sha } = resp.data
+        const { frontMatter } = frontMatterParser(content)
         // Compute hasResources and set displaySections
-        let hasResources = false;
-        const displaySections = [];
-        let displayHighlights = [];
-        let displayDropdownElems = [];
-        const sectionsErrors = [];
-        let dropdownElemsErrors = [];
-        let highlightsErrors = [];
-        let scrollRefs = []
+        let hasResources = false
+        const displaySections = []
+        let displayHighlights = []
+        let displayDropdownElems = []
+        const sectionsErrors = []
+        let dropdownElemsErrors = []
+        let highlightsErrors = []
+        const scrollRefs = []
         frontMatter.sections.forEach((section) => {
           scrollRefs.push(createRef())
           // If this is the hero section, hide all highlights/dropdownelems by default
           if (section.hero) {
-            const { dropdown, key_highlights: keyHighlights } = section.hero;
-            const hero = { title: '', subtitle: '', background: '', button: '', url: '' }
+            const { dropdown, key_highlights: keyHighlights } = section.hero
+            const hero = {
+              title: "",
+              subtitle: "",
+              background: "",
+              button: "",
+              url: "",
+            }
             if (dropdown) {
-              hero.dropdown = ''
+              hero.dropdown = ""
               // Go through section.hero.dropdown.options
-              displayDropdownElems = _.fill(Array(dropdown.options.length), false);
+              displayDropdownElems = _.fill(
+                Array(dropdown.options.length),
+                false
+              )
               // Fill in dropdown elem errors array
-              dropdownElemsErrors = _.map(dropdown.options, () => DropdownElemConstructor(true));
+              dropdownElemsErrors = _.map(dropdown.options, () =>
+                DropdownElemConstructor(true)
+              )
             }
             if (keyHighlights) {
-              displayHighlights = _.fill(Array(keyHighlights.length), false);
+              displayHighlights = _.fill(Array(keyHighlights.length), false)
               // Fill in highlights errors array
-              highlightsErrors = _.map(keyHighlights, () => KeyHighlightConstructor(true));
+              highlightsErrors = _.map(keyHighlights, () =>
+                KeyHighlightConstructor(true)
+              )
             }
             // Fill in sectionErrors for hero
             sectionsErrors.push({ hero })
@@ -197,28 +213,28 @@ const EditHomepage = ({ match }) => {
 
           // Check if there is already a resources section
           if (section.resources) {
-            sectionsErrors.push(ResourcesSectionConstructor(true));
-            hasResources = true;
+            sectionsErrors.push(ResourcesSectionConstructor(true))
+            hasResources = true
           }
 
           if (section.infobar) {
-            sectionsErrors.push(InfobarSectionConstructor(true));
+            sectionsErrors.push(InfobarSectionConstructor(true))
           }
 
           if (section.infopic) {
-            sectionsErrors.push(InfopicSectionConstructor(true));
+            sectionsErrors.push(InfopicSectionConstructor(true))
           }
 
           // Minimize all sections by default
-          displaySections.push(false);
-        });
+          displaySections.push(false)
+        })
 
         // Initialize errors object
         const errors = {
           sections: sectionsErrors,
           highlights: highlightsErrors,
           dropdownElems: dropdownElemsErrors,
-        };
+        }
 
         if (_isMounted) {
           setFrontMatter(frontMatter)
@@ -235,8 +251,10 @@ const EditHomepage = ({ match }) => {
       } catch (err) {
         // Set frontMatter to be same to prevent warning message when navigating away
         if (_isMounted) setFrontMatter(originalFrontMatter)
-        errorToast(`There was a problem trying to load your homepage. ${DEFAULT_RETRY_MSG}`)
-        console.log(err);
+        errorToast(
+          `There was a problem trying to load your homepage. ${DEFAULT_RETRY_MSG}`
+        )
+        console.log(err)
       }
     }
 
@@ -248,7 +266,7 @@ const EditHomepage = ({ match }) => {
 
   useEffect(() => {
     if (scrollRefs.length > 0) {
-      scrollRefs[frontMatter.sections.length-1].current.scrollIntoView();
+      scrollRefs[frontMatter.sections.length - 1].current.scrollIntoView()
     }
   }, [frontMatter.sections.length])
 
@@ -257,48 +275,58 @@ const EditHomepage = ({ match }) => {
       // Section is an object, e.g. { hero: {} }
       // _.keys(section) produces an array with length 1
       // The 0th element of the array contains the sectionType
-      const sectionType = _.keys(section)[0];
-      return _.some(section[sectionType], (errorMessage) => errorMessage.length > 0) === true;
+      const sectionType = _.keys(section)[0]
+      return (
+        _.some(
+          section[sectionType],
+          (errorMessage) => errorMessage.length > 0
+        ) === true
+      )
     })
 
-    const hasHighlightErrors = _.some(errors.highlights,
-      (highlight) => _.some(highlight,
-        (errorMessage) => errorMessage.length > 0) === true);
+    const hasHighlightErrors = _.some(
+      errors.highlights,
+      (highlight) =>
+        _.some(highlight, (errorMessage) => errorMessage.length > 0) === true
+    )
 
-    const hasDropdownElemErrors = _.some(errors.dropdownElems,
-      (dropdownElem) => _.some(dropdownElem,
-        (errorMessage) => errorMessage.length > 0) === true);
+    const hasDropdownElemErrors = _.some(
+      errors.dropdownElems,
+      (dropdownElem) =>
+        _.some(dropdownElem, (errorMessage) => errorMessage.length > 0) === true
+    )
 
-    const hasErrors = hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors;
+    const hasErrors =
+      hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors
 
     setHasErrors(hasErrors)
   }, [errors])
 
   const onFieldChange = async (event) => {
     try {
-      const { id, value } = event.target;
-      const idArray = id.split('-');
-      const elemType = idArray[0];
+      const { id, value } = event.target
+      const idArray = id.split("-")
+      const elemType = idArray[0]
 
       switch (elemType) {
-        case 'site': {
+        case "site": {
           // The field that changed belongs to a site-wide config
-          const field = idArray[1]; // e.g. "title" or "subtitle"
+          const field = idArray[1] // e.g. "title" or "subtitle"
 
           setFrontMatter({
             ...frontMatter,
             [field]: value,
-          });
-          break;
+          })
+          break
         }
-        case 'section': {
+        case "section": {
           // The field that changed belongs to a homepage section config
-          const { sections } = frontMatter;
+          const { sections } = frontMatter
 
           // sectionIndex is the index of the section array in the frontMatter
-          const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT);
-          const sectionType = idArray[2]; // e.g. "hero" or "infobar" or "resources"
-          const field = idArray[3]; // e.g. "title" or "subtitle"
+          const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT)
+          const sectionType = idArray[2] // e.g. "hero" or "infobar" or "resources"
+          const field = idArray[3] // e.g. "title" or "subtitle"
 
           const newSections = update(sections, {
             [sectionIndex]: {
@@ -308,32 +336,41 @@ const EditHomepage = ({ match }) => {
                 },
               },
             },
-          });
+          })
 
           let newSectionError
 
           // Set special error message if hero button has text but hero url is empty
           // This needs to be done separately because it relies on the state of another field
           if (
-            field === 'url' && !value && frontMatter.sections[sectionIndex][sectionType].button
-            && (frontMatter.sections[sectionIndex][sectionType].button || value)
+            field === "url" &&
+            !value &&
+            frontMatter.sections[sectionIndex][sectionType].button &&
+            (frontMatter.sections[sectionIndex][sectionType].button || value)
           ) {
-            const errorMessage = 'Please specify a URL for your button'
+            const errorMessage = "Please specify a URL for your button"
             newSectionError = _.cloneDeep(errors.sections[sectionIndex])
             newSectionError[sectionType][field] = errorMessage
           } else if (
-            field === 'button' && !frontMatter.sections[sectionIndex][sectionType].url
-            && (value || frontMatter.sections[sectionIndex][sectionType].url) && sectionType !== 'resources'
+            field === "button" &&
+            !frontMatter.sections[sectionIndex][sectionType].url &&
+            (value || frontMatter.sections[sectionIndex][sectionType].url) &&
+            sectionType !== "resources"
           ) {
-            const errorMessage = 'Please specify a URL for your button'
+            const errorMessage = "Please specify a URL for your button"
             newSectionError = _.cloneDeep(errors.sections[sectionIndex])
-            newSectionError[sectionType]['url'] = errorMessage
+            newSectionError[sectionType].url = errorMessage
           } else {
-            newSectionError = validateSections(_.cloneDeep(errors.sections[sectionIndex]), sectionType, field, value)
+            newSectionError = validateSections(
+              _.cloneDeep(errors.sections[sectionIndex]),
+              sectionType,
+              field,
+              value
+            )
 
-            if (field === 'button' && !value) {
-              newSectionError[sectionType]['button'] = ''
-              newSectionError[sectionType]['url'] = ''
+            if (field === "button" && !value) {
+              newSectionError[sectionType].button = ""
+              newSectionError[sectionType].url = ""
             }
           }
 
@@ -343,7 +380,7 @@ const EditHomepage = ({ match }) => {
                 $set: newSectionError,
               },
             },
-          });
+          })
 
           setFrontMatter({
             ...frontMatter,
@@ -351,19 +388,19 @@ const EditHomepage = ({ match }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[sectionIndex].current.scrollIntoView();
-          break;
+          scrollRefs[sectionIndex].current.scrollIntoView()
+          break
         }
-        case 'highlight': {
+        case "highlight": {
           // The field that changed belongs to a hero highlight
-          const { sections } = frontMatter;
+          const { sections } = frontMatter
 
           // highlightsIndex is the index of the key_highlights array
-          const highlightsIndex = parseInt(idArray[1], RADIX_PARSE_INT);
-          const field = idArray[2]; // e.g. "title" or "url"
+          const highlightsIndex = parseInt(idArray[1], RADIX_PARSE_INT)
+          const field = idArray[2] // e.g. "title" or "url"
 
           const newSections = update(sections, {
-            [0]: {
+            0: {
               hero: {
                 key_highlights: {
                   [highlightsIndex]: {
@@ -374,15 +411,19 @@ const EditHomepage = ({ match }) => {
                 },
               },
             },
-          });
+          })
 
           const newErrors = update(errors, {
             highlights: {
               [highlightsIndex]: {
-                $set: validateHighlights(errors.highlights[highlightsIndex], field, value),
+                $set: validateHighlights(
+                  errors.highlights[highlightsIndex],
+                  field,
+                  value
+                ),
               },
             },
-          });
+          })
 
           setFrontMatter({
             ...frontMatter,
@@ -390,19 +431,19 @@ const EditHomepage = ({ match }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[0].current.scrollIntoView();
-          break;
+          scrollRefs[0].current.scrollIntoView()
+          break
         }
-        case 'dropdownelem': {
+        case "dropdownelem": {
           // The field that changed is a dropdown element (i.e. dropdownelem)
-          const { sections } = frontMatter;
+          const { sections } = frontMatter
 
           // dropdownsIndex is the index of the dropdown.options array
-          const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT);
-          const field = idArray[2]; // e.g. "title" or "url"
+          const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT)
+          const field = idArray[2] // e.g. "title" or "url"
 
           const newSections = update(sections, {
-            [0]: {
+            0: {
               hero: {
                 dropdown: {
                   options: {
@@ -415,24 +456,28 @@ const EditHomepage = ({ match }) => {
                 },
               },
             },
-          });
+          })
 
           const newErrors = update(errors, {
             dropdownElems: {
               [dropdownsIndex]: {
-                $set: validateDropdownElems(errors.dropdownElems[dropdownsIndex], field, value),
+                $set: validateDropdownElems(
+                  errors.dropdownElems[dropdownsIndex],
+                  field,
+                  value
+                ),
               },
             },
-          });
+          })
 
           setFrontMatter({
             ...frontMatter,
-            sections: newSections
+            sections: newSections,
           })
           setErrors(newErrors)
 
-          scrollRefs[0].current.scrollIntoView();
-          break;
+          scrollRefs[0].current.scrollIntoView()
+          break
         }
         default: {
           // The field that changed is the dropdown placeholder title
@@ -440,10 +485,15 @@ const EditHomepage = ({ match }) => {
           const newErrors = update(errors, {
             sections: {
               0: {
-                $set: validateSections(errors.sections[0], 'hero', 'dropdown', value),
+                $set: validateSections(
+                  errors.sections[0],
+                  "hero",
+                  "dropdown",
+                  value
+                ),
               },
             },
-          });
+          })
 
           const newSections = update(frontMatter.sections, {
             0: {
@@ -459,116 +509,131 @@ const EditHomepage = ({ match }) => {
 
           setFrontMatter({
             ...frontMatter,
-            sections: newSections
+            sections: newSections,
           })
           setErrors(newErrors)
 
-          scrollRefs[0].current.scrollIntoView();
+          scrollRefs[0].current.scrollIntoView()
         }
       }
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
   }
 
   const createHandler = async (event) => {
     try {
-      const { id, value } = event.target;
-      const idArray = id.split('-');
-      const elemType = idArray[0];
+      const { id, value } = event.target
+      const idArray = id.split("-")
+      const elemType = idArray[0]
 
-      let newSections = [];
-      let newErrors = [];
+      let newSections = []
+      let newErrors = []
 
       switch (elemType) {
-        case 'section': {
+        case "section": {
           // The Isomer site can only have 1 resources section in the homepage
           // Set hasResources to prevent the creation of more resources sections
-          if (value === 'resources') {
+          if (value === "resources") {
             setHasResources(true)
           }
 
           newSections = update(frontMatter.sections, {
             $push: [enumSection(value, false)],
-          });
+          })
           newErrors = update(errors, {
             sections: {
               $push: [enumSection(value, true)],
             },
-          });
-          const newScrollRefs = update(scrollRefs, {$push: [createRef()]})
+          })
+          const newScrollRefs = update(scrollRefs, { $push: [createRef()] })
 
-          const resetDisplaySections = _.fill(Array(displaySections.length), false)
+          const resetDisplaySections = _.fill(
+            Array(displaySections.length),
+            false
+          )
           const newDisplaySections = update(resetDisplaySections, {
             $push: [true],
-          });
+          })
 
           setScrollRefs(newScrollRefs)
           setDisplaySections(newDisplaySections)
 
-          break;
+          break
         }
-        case 'dropdownelem': {
-          const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT) + 1;
+        case "dropdownelem": {
+          const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT) + 1
 
           newSections = update(frontMatter.sections, {
             0: {
               hero: {
                 dropdown: {
                   options: {
-                    $splice: [[dropdownsIndex, 0, DropdownElemConstructor(false)]],
+                    $splice: [
+                      [dropdownsIndex, 0, DropdownElemConstructor(false)],
+                    ],
                   },
                 },
               },
             },
-          });
+          })
 
           newErrors = update(errors, {
             dropdownElems: {
               $splice: [[dropdownsIndex, 0, DropdownElemConstructor(true)]],
             },
-          });
+          })
 
-          const resetDisplayDropdownElems = _.fill(Array(displayDropdownElems.length), false)
+          const resetDisplayDropdownElems = _.fill(
+            Array(displayDropdownElems.length),
+            false
+          )
           const newDisplayDropdownElems = update(resetDisplayDropdownElems, {
             $splice: [[dropdownsIndex, 0, true]],
-          });
+          })
 
           setDisplayDropdownElems(newDisplayDropdownElems)
 
-          break;
+          break
         }
-        case 'highlight': {
+        case "highlight": {
           // If key highlights section exists
           if (!_.isEmpty(frontMatter.sections[0].hero.key_highlights)) {
-            const highlightIndex = parseInt(idArray[1], 10) + 1;
+            const highlightIndex = parseInt(idArray[1], 10) + 1
 
             newSections = update(frontMatter.sections, {
               0: {
                 hero: {
                   key_highlights: {
-                    $splice: [[highlightIndex, 0, KeyHighlightConstructor(false)]],
+                    $splice: [
+                      [highlightIndex, 0, KeyHighlightConstructor(false)],
+                    ],
                   },
                 },
               },
-            });
+            })
 
             newErrors = update(errors, {
               highlights: {
                 $splice: [[highlightIndex, 0, KeyHighlightConstructor(true)]],
               },
-            });
+            })
 
-            const resetDisplayHighlights = _.fill(Array(displayHighlights.length), false)
+            const resetDisplayHighlights = _.fill(
+              Array(displayHighlights.length),
+              false
+            )
             const newDisplayHighlights = update(resetDisplayHighlights, {
               $splice: [[highlightIndex, 0, true]],
-            });
+            })
 
             setDisplayHighlights(newDisplayHighlights)
           } else {
             // If neither key highlights nor dropdown section exists, create new key highlights array
             newSections = _.cloneDeep(frontMatter.sections)
-            newSections[0].hero.key_highlights = [KeyHighlightConstructor(false)];
+            newSections[0].hero.key_highlights = [
+              KeyHighlightConstructor(false),
+            ]
 
             newErrors = _.cloneDeep(errors)
             newErrors.highlights = [KeyHighlightConstructor(true)]
@@ -577,32 +642,32 @@ const EditHomepage = ({ match }) => {
 
             setDisplayHighlights(newDisplayHighlights)
           }
-          break;
+          break
         }
         default:
-          return;
+          return
       }
       setFrontMatter({
         ...frontMatter,
-        sections: newSections
+        sections: newSections,
       })
       setErrors(newErrors)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
   }
 
   const deleteHandler = async (id) => {
     try {
-      const idArray = id.split('-');
-      const elemType = idArray[0];
+      const idArray = id.split("-")
+      const elemType = idArray[0]
 
-      let newSections = [];
-      let newErrors = {};
+      let newSections = []
+      let newErrors = {}
 
       switch (elemType) {
-        case 'section': {
-          const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT);
+        case "section": {
+          const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT)
 
           // Set hasResources to false to allow users to create a resources section
           if (frontMatter.sections[sectionIndex].resources) {
@@ -611,26 +676,28 @@ const EditHomepage = ({ match }) => {
 
           newSections = update(frontMatter.sections, {
             $splice: [[sectionIndex, 1]],
-          });
+          })
 
           newErrors = update(errors, {
             sections: {
               $splice: [[sectionIndex, 1]],
             },
-          });
+          })
 
-          const newScrollRefs = update(scrollRefs, {$splice: [[sectionIndex, 1]]})
+          const newScrollRefs = update(scrollRefs, {
+            $splice: [[sectionIndex, 1]],
+          })
 
           const newDisplaySections = update(displaySections, {
             $splice: [[sectionIndex, 1]],
-          });
+          })
 
           setDisplaySections(newDisplaySections)
           setScrollRefs(newScrollRefs)
-          break;
+          break
         }
-        case 'dropdownelem': {
-          const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT);
+        case "dropdownelem": {
+          const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT)
           newSections = update(frontMatter.sections, {
             0: {
               hero: {
@@ -641,23 +708,23 @@ const EditHomepage = ({ match }) => {
                 },
               },
             },
-          });
+          })
 
           newErrors = update(errors, {
             dropdownElems: {
               $splice: [[dropdownsIndex, 1]],
             },
-          });
+          })
 
           const newDisplayDropdownElems = update(displayDropdownElems, {
             $splice: [[dropdownsIndex, 1]],
-          });
+          })
 
           setDisplayDropdownElems(newDisplayDropdownElems)
-          break;
+          break
         }
-        case 'highlight': {
-          const highlightIndex = parseInt(idArray[1], 10);
+        case "highlight": {
+          const highlightIndex = parseInt(idArray[1], 10)
           newSections = update(frontMatter.sections, {
             0: {
               hero: {
@@ -666,67 +733,74 @@ const EditHomepage = ({ match }) => {
                 },
               },
             },
-          });
+          })
 
           newErrors = update(errors, {
             highlights: {
               $splice: [[highlightIndex, 1]],
             },
-          });
+          })
 
           const newDisplayHighlights = update(displayHighlights, {
             $splice: [[highlightIndex, 1]],
-          });
+          })
 
           setDisplayHighlights(newDisplayHighlights)
-          break;
+          break
         }
         default:
-          return;
+          return
       }
       setFrontMatter({
         ...frontMatter,
-        sections: newSections
+        sections: newSections,
       })
       setErrors(newErrors)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
   }
 
   const handleHighlightDropdownToggle = (event) => {
-    let newSections = [];
-    let newErrors = {};
-    const { target: { value } } = event;
-    if (value === 'highlights') {
+    let newSections = []
+    let newErrors = {}
+    const {
+      target: { value },
+    } = event
+    if (value === "highlights") {
       if (!frontMatter.sections[0].hero.dropdown) return
-      let highlightObj, highlightErrors, buttonObj, buttonErrors, urlObj, urlErrors
+      let highlightObj
+      let highlightErrors
+      let buttonObj
+      let buttonErrors
+      let urlObj
+      let urlErrors
       if (savedHeroElems) {
         highlightObj = savedHeroElems.key_highlights || []
         highlightErrors = savedHeroErrors.highlights || []
-        buttonObj = savedHeroElems.button || ''
-        buttonErrors = savedHeroErrors.button || ''
-        urlObj = savedHeroElems.url || ''
-        urlErrors = savedHeroErrors.url || ''
+        buttonObj = savedHeroElems.button || ""
+        buttonErrors = savedHeroErrors.button || ""
+        urlObj = savedHeroElems.url || ""
+        urlErrors = savedHeroErrors.url || ""
       } else {
-        highlightObj = [];
-        highlightErrors = [];
-        buttonObj = ''
-        buttonErrors = ''
-        urlObj = ''
-        urlErrors = ''
+        highlightObj = []
+        highlightErrors = []
+        buttonObj = ""
+        buttonErrors = ""
+        urlObj = ""
+        urlErrors = ""
       }
       setSavedHeroElems(frontMatter.sections[0].hero)
       setSavedHeroErrors({
         dropdown: errors.sections[0].hero.dropdown,
-        dropdownElems: errors.dropdownElems
+        dropdownElems: errors.dropdownElems,
       })
 
       newSections = update(frontMatter.sections, {
         0: {
           hero: {
             dropdown: {
-              $set: '',
+              $set: "",
             },
             key_highlights: {
               $set: highlightObj,
@@ -739,7 +813,7 @@ const EditHomepage = ({ match }) => {
             },
           },
         },
-      });
+      })
 
       newErrors = update(errors, {
         dropdownElems: {
@@ -752,7 +826,7 @@ const EditHomepage = ({ match }) => {
           0: {
             hero: {
               dropdown: {
-                $set: '',
+                $set: "",
               },
               button: {
                 $set: buttonErrors,
@@ -763,17 +837,19 @@ const EditHomepage = ({ match }) => {
             },
           },
         },
-      });
+      })
     } else {
       if (frontMatter.sections[0].hero.dropdown) return
-      let dropdownObj, dropdownErrors, dropdownElemErrors
+      let dropdownObj
+      let dropdownErrors
+      let dropdownElemErrors
       if (savedHeroElems) {
-        dropdownObj = savedHeroElems.dropdown || DropdownConstructor();
-        dropdownErrors = savedHeroErrors.dropdown || ''
-        dropdownElemErrors = savedHeroErrors.dropdownElems || ''
+        dropdownObj = savedHeroElems.dropdown || DropdownConstructor()
+        dropdownErrors = savedHeroErrors.dropdown || ""
+        dropdownElemErrors = savedHeroErrors.dropdownElems || ""
       } else {
-        dropdownObj = DropdownConstructor();
-        dropdownErrors = ''
+        dropdownObj = DropdownConstructor()
+        dropdownErrors = ""
         dropdownElemErrors = []
       }
 
@@ -788,30 +864,30 @@ const EditHomepage = ({ match }) => {
         0: {
           hero: {
             button: {
-              $set: '',
+              $set: "",
             },
             url: {
-              $set: '',
+              $set: "",
             },
             key_highlights: {
-              $set: '',
+              $set: "",
             },
             dropdown: {
               $set: dropdownObj,
             },
           },
         },
-      });
+      })
 
       newErrors = update(errors, {
         sections: {
           0: {
             hero: {
               button: {
-                $set: '',
+                $set: "",
               },
               url: {
-                $set: '',
+                $set: "",
               },
               dropdown: {
                 $set: dropdownErrors,
@@ -820,16 +896,16 @@ const EditHomepage = ({ match }) => {
           },
         },
         highlights: {
-          $set: '',
+          $set: "",
         },
         dropdownElems: {
-          $set: dropdownElemErrors
-        }
-      });
+          $set: dropdownElemErrors,
+        },
+      })
     }
     setFrontMatter({
       ...frontMatter,
-      sections: newSections
+      sections: newSections,
     })
     setErrors(newErrors)
   }
@@ -838,115 +914,137 @@ const EditHomepage = ({ match }) => {
     try {
       setDropdownIsActive((prevState) => !prevState)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
   }
 
   const displayHandler = async (event) => {
     try {
-      const { id } = event.target;
-      const idArray = id.split('-');
-      const elemType = idArray[0];
+      const { id } = event.target
+      const idArray = id.split("-")
+      const elemType = idArray[0]
       switch (elemType) {
-        case 'section': {
-          const sectionId = idArray[1];
-          let resetDisplaySections = _.fill(Array(displaySections.length), false)
+        case "section": {
+          const sectionId = idArray[1]
+          const resetDisplaySections = _.fill(
+            Array(displaySections.length),
+            false
+          )
           resetDisplaySections[sectionId] = !displaySections[sectionId]
           const newDisplaySections = update(displaySections, {
             $set: resetDisplaySections,
-          });
+          })
 
           setDisplaySections(newDisplaySections)
 
-          scrollRefs[sectionId].current.scrollIntoView();
-          break;
+          scrollRefs[sectionId].current.scrollIntoView()
+          break
         }
-        case 'highlight': {
-          const highlightIndex = idArray[1];
-          let resetHighlightSections = _.fill(Array(displayHighlights.length), false)
-          resetHighlightSections[highlightIndex] = !displayHighlights[highlightIndex]
+        case "highlight": {
+          const highlightIndex = idArray[1]
+          const resetHighlightSections = _.fill(
+            Array(displayHighlights.length),
+            false
+          )
+          resetHighlightSections[highlightIndex] = !displayHighlights[
+            highlightIndex
+          ]
           const newDisplayHighlights = update(displayHighlights, {
             $set: resetHighlightSections,
-          });
+          })
 
           setDisplayHighlights(newDisplayHighlights)
-          break;
+          break
         }
-        case 'dropdownelem': {
-          const dropdownsIndex = idArray[1];
-          let resetDropdownSections = _.fill(Array(displayDropdownElems.length), false)
-          resetDropdownSections[dropdownsIndex] = !displayDropdownElems[dropdownsIndex]
+        case "dropdownelem": {
+          const dropdownsIndex = idArray[1]
+          const resetDropdownSections = _.fill(
+            Array(displayDropdownElems.length),
+            false
+          )
+          resetDropdownSections[dropdownsIndex] = !displayDropdownElems[
+            dropdownsIndex
+          ]
           const newDisplayDropdownElems = update(displayDropdownElems, {
             $set: resetDropdownSections,
-          });
+          })
 
           setDisplayDropdownElems(newDisplayDropdownElems)
-          break;
+          break
         }
         default:
-          return;
+          return
       }
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
   }
 
   const savePage = async () => {
     try {
-      const { siteName } = match.params;
-      let filteredFrontMatter = _.cloneDeep(frontMatter)
+      const { siteName } = match.params
+      const filteredFrontMatter = _.cloneDeep(frontMatter)
       // Filter out components which have no input
       filteredFrontMatter.sections = frontMatter.sections.map((section) => {
-        let newSection = {}
+        const newSection = {}
         for (const sectionName in section) {
-          newSection[sectionName] = _.cloneDeep(_.omitBy(section[sectionName], _.isEmpty))
+          newSection[sectionName] = _.cloneDeep(
+            _.omitBy(section[sectionName], _.isEmpty)
+          )
         }
         return newSection
       })
-      const content = concatFrontMatterMdBody(filteredFrontMatter, '');
+      const content = concatFrontMatterMdBody(filteredFrontMatter, "")
 
       const params = {
         content,
-        sha: sha,
-      };
+        sha,
+      }
 
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/homepage`, params, {
-        withCredentials: true,
-      });
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/homepage`,
+        params,
+        {
+          withCredentials: true,
+        }
+      )
 
-      window.location.reload();
+      window.location.reload()
     } catch (err) {
-      errorToast(`There was a problem trying to save your homepage. ${DEFAULT_RETRY_MSG}`)
-      console.log(err);
+      errorToast(
+        `There was a problem trying to save your homepage. ${DEFAULT_RETRY_MSG}`
+      )
+      console.log(err)
     }
   }
 
   const onDragEnd = (result) => {
-    const { source, destination, type } = result;
+    const { source, destination, type } = result
 
     // If the user dropped the draggable to no known droppable
-    if (!destination) return;
+    if (!destination) return
 
     // The draggable elem was returned to its original position
     if (
-      destination.droppableId === source.droppableId
-      && destination.index === source.index
-    ) return;
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    )
+      return
 
-    let newSections = [];
-    let newErrors = [];
+    let newSections = []
+    let newErrors = []
 
     switch (type) {
-      case 'editor': {
-        const draggedElem = frontMatter.sections[source.index];
+      case "editor": {
+        const draggedElem = frontMatter.sections[source.index]
         newSections = update(frontMatter.sections, {
           $splice: [
             [source.index, 1], // Remove elem from its original position
             [destination.index, 0, draggedElem], // Splice elem into its new position
           ],
-        });
+        })
 
-        const draggedError = errors.sections[source.index];
+        const draggedError = errors.sections[source.index]
         newErrors = update(errors, {
           sections: {
             $splice: [
@@ -954,21 +1052,22 @@ const EditHomepage = ({ match }) => {
               [destination.index, 0, draggedError], // Splice error into its new position
             ],
           },
-        });
+        })
 
-        const displayBool = displaySections[source.index];
+        const displayBool = displaySections[source.index]
         const newDisplaySections = update(displaySections, {
           $splice: [
             [source.index, 1],
             [destination.index, 0, displayBool],
           ],
-        });
+        })
 
         setDisplaySections(newDisplaySections)
-        break;
+        break
       }
-      case 'dropdownelem': {
-        const draggedElem = frontMatter.sections[0].hero.dropdown.options[source.index];
+      case "dropdownelem": {
+        const draggedElem =
+          frontMatter.sections[0].hero.dropdown.options[source.index]
         newSections = update(frontMatter.sections, {
           0: {
             hero: {
@@ -982,9 +1081,9 @@ const EditHomepage = ({ match }) => {
               },
             },
           },
-        });
+        })
 
-        const draggedError = errors.dropdownElems[source.index];
+        const draggedError = errors.dropdownElems[source.index]
         newErrors = update(errors, {
           dropdownElems: {
             $splice: [
@@ -992,21 +1091,22 @@ const EditHomepage = ({ match }) => {
               [destination.index, 0, draggedError], // Splice error into its new position
             ],
           },
-        });
+        })
 
-        const displayBool = displayDropdownElems[source.index];
+        const displayBool = displayDropdownElems[source.index]
         const newDisplayDropdownElems = update(displayDropdownElems, {
           $splice: [
             [source.index, 1],
             [destination.index, 0, displayBool],
           ],
-        });
+        })
 
         setDisplayDropdownElems(newDisplayDropdownElems)
-        break;
+        break
       }
-      case 'highlight': {
-        const draggedElem = frontMatter.sections[0].hero.key_highlights[source.index];
+      case "highlight": {
+        const draggedElem =
+          frontMatter.sections[0].hero.key_highlights[source.index]
         newSections = update(frontMatter.sections, {
           0: {
             hero: {
@@ -1018,9 +1118,9 @@ const EditHomepage = ({ match }) => {
               },
             },
           },
-        });
+        })
 
-        const draggedError = errors.highlights[source.index];
+        const draggedError = errors.highlights[source.index]
         newErrors = update(errors, {
           highlights: {
             $splice: [
@@ -1028,25 +1128,25 @@ const EditHomepage = ({ match }) => {
               [destination.index, 0, draggedError], // Splice error into its new position
             ],
           },
-        });
+        })
 
-        const displayBool = displayHighlights[source.index];
+        const displayBool = displayHighlights[source.index]
         const newDisplayHighlights = update(displayHighlights, {
           $splice: [
             [source.index, 1],
             [destination.index, 0, displayBool],
           ],
-        });
+        })
 
         setDisplayHighlights(newDisplayHighlights)
-        break;
+        break
       }
       default:
-        return;
+        return
     }
     setFrontMatter({
       ...frontMatter,
-      sections: newSections
+      sections: newSections,
     })
     setErrors(newErrors)
   }
@@ -1054,45 +1154,54 @@ const EditHomepage = ({ match }) => {
   const isLeftInfoPic = (sectionIndex) => {
     // If the previous section in the list was not an infopic section
     // or if the previous section was a right infopic section, return true
-    if (!frontMatter.sections[sectionIndex - 1].infopic
-      || !isLeftInfoPic(sectionIndex - 1)) return true;
+    if (
+      !frontMatter.sections[sectionIndex - 1].infopic ||
+      !isLeftInfoPic(sectionIndex - 1)
+    )
+      return true
 
-    return false;
-  };
+    return false
+  }
 
   return (
     <>
-        {
-          itemPendingForDelete.id
-          && (
-          <DeleteWarningModal
-            onCancel={() => setItemPendingForDelete({ id: null, type: '' })}
-            onDelete={() => { deleteHandler(itemPendingForDelete.id); setItemPendingForDelete({ id: null, type: '' })}}
-            type={itemPendingForDelete.type}
-          />
-          )
-        }
-        <Header
-          siteName={siteName}
-          title="Homepage"
-          shouldAllowEditPageBackNav={JSON.stringify(originalFrontMatter) === JSON.stringify(frontMatter)}
-          isEditPage={true}
-          backButtonText="Back to My Workspace"
-          backButtonUrl={`/sites/${siteName}/workspace`}
+      {itemPendingForDelete.id && (
+        <DeleteWarningModal
+          onCancel={() => setItemPendingForDelete({ id: null, type: "" })}
+          onDelete={() => {
+            deleteHandler(itemPendingForDelete.id)
+            setItemPendingForDelete({ id: null, type: "" })
+          }}
+          type={itemPendingForDelete.type}
         />
-        {hasLoaded && 
+      )}
+      <Header
+        siteName={siteName}
+        title="Homepage"
+        shouldAllowEditPageBackNav={
+          JSON.stringify(originalFrontMatter) === JSON.stringify(frontMatter)
+        }
+        isEditPage
+        backButtonText="Back to My Workspace"
+        backButtonUrl={`/sites/${siteName}/workspace`}
+      />
+      {hasLoaded && (
         <div className={elementStyles.wrapper}>
           <div className={editorStyles.homepageEditorSidebar}>
             <div>
               <div className={`${elementStyles.card}`}>
-                <p><b>Site notification</b></p>
+                <p>
+                  <b>Site notification</b>
+                </p>
                 <input
                   placeholder="Notification"
                   value={frontMatter.notification}
                   id="site-notification"
-                  onChange={onFieldChange} />
+                  onChange={onFieldChange}
+                />
                 <span className={elementStyles.info}>
-                  Note: Leave text field empty if you don’t need this notification bar
+                  Note: Leave text field empty if you don’t need this
+                  notification bar
                 </span>
               </div>
 
@@ -1116,12 +1225,25 @@ const EditHomepage = ({ match }) => {
                                 background={section.hero.background}
                                 button={section.hero.button}
                                 url={section.hero.url}
-                                dropdown={section.hero.dropdown ? section.hero.dropdown : null}
+                                dropdown={
+                                  section.hero.dropdown
+                                    ? section.hero.dropdown
+                                    : null
+                                }
                                 sectionIndex={sectionIndex}
-                                highlights={section.hero.key_highlights ? section.hero.key_highlights : []}
+                                highlights={
+                                  section.hero.key_highlights
+                                    ? section.hero.key_highlights
+                                    : []
+                                }
                                 onFieldChange={onFieldChange}
                                 createHandler={createHandler}
-                                deleteHandler={(event, type) => setItemPendingForDelete({ id: event.target.id, type })}
+                                deleteHandler={(event, type) =>
+                                  setItemPendingForDelete({
+                                    id: event.target.id,
+                                    type,
+                                  })
+                                }
                                 shouldDisplay={displaySections[sectionIndex]}
                                 displayHighlights={displayHighlights}
                                 displayDropdownElems={displayDropdownElems}
@@ -1129,12 +1251,12 @@ const EditHomepage = ({ match }) => {
                                 onDragEnd={onDragEnd}
                                 errors={errors}
                                 siteName={siteName}
-                                handleHighlightDropdownToggle={handleHighlightDropdownToggle}
+                                handleHighlightDropdownToggle={
+                                  handleHighlightDropdownToggle
+                                }
                               />
                             </>
-                          ) : (
-                            null
-                          )}
+                          ) : null}
 
                           {/* Resources section */}
                           {section.resources ? (
@@ -1154,18 +1276,25 @@ const EditHomepage = ({ match }) => {
                                     subtitle={section.resources.subtitle}
                                     button={section.resources.button}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={(event) => setItemPendingForDelete({ id: event.target.id, type: 'Resources Section' })}
+                                    deleteHandler={(event) =>
+                                      setItemPendingForDelete({
+                                        id: event.target.id,
+                                        type: "Resources Section",
+                                      })
+                                    }
                                     onFieldChange={onFieldChange}
-                                    shouldDisplay={displaySections[sectionIndex]}
+                                    shouldDisplay={
+                                      displaySections[sectionIndex]
+                                    }
                                     displayHandler={displayHandler}
-                                    errors={errors.sections[sectionIndex].resources}
+                                    errors={
+                                      errors.sections[sectionIndex].resources
+                                    }
                                   />
                                 </div>
                               )}
                             </Draggable>
-                          ) : (
-                            null
-                          )}
+                          ) : null}
 
                           {/* Infobar section */}
                           {section.infobar ? (
@@ -1187,18 +1316,25 @@ const EditHomepage = ({ match }) => {
                                     button={section.infobar.button}
                                     url={section.infobar.url}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={(event) => setItemPendingForDelete({ id: event.target.id, type: 'Infobar Section' })}
+                                    deleteHandler={(event) =>
+                                      setItemPendingForDelete({
+                                        id: event.target.id,
+                                        type: "Infobar Section",
+                                      })
+                                    }
                                     onFieldChange={onFieldChange}
-                                    shouldDisplay={displaySections[sectionIndex]}
+                                    shouldDisplay={
+                                      displaySections[sectionIndex]
+                                    }
                                     displayHandler={displayHandler}
-                                    errors={errors.sections[sectionIndex].infobar}
+                                    errors={
+                                      errors.sections[sectionIndex].infobar
+                                    }
                                   />
                                 </div>
                               )}
                             </Draggable>
-                          ) : (
-                            null
-                          )}
+                          ) : null}
 
                           {/* Infopic section */}
                           {section.infopic ? (
@@ -1222,23 +1358,29 @@ const EditHomepage = ({ match }) => {
                                     imageUrl={section.infopic.image}
                                     imageAlt={section.infopic.alt}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={(event) => setItemPendingForDelete({ id: event.target.id, type: 'Infopic Section' })}
+                                    deleteHandler={(event) =>
+                                      setItemPendingForDelete({
+                                        id: event.target.id,
+                                        type: "Infopic Section",
+                                      })
+                                    }
                                     onFieldChange={onFieldChange}
-                                    shouldDisplay={displaySections[sectionIndex]}
+                                    shouldDisplay={
+                                      displaySections[sectionIndex]
+                                    }
                                     displayHandler={displayHandler}
-                                    errors={errors.sections[sectionIndex].infopic}
+                                    errors={
+                                      errors.sections[sectionIndex].infopic
+                                    }
                                     siteName={siteName}
                                   />
                                 </div>
                               )}
                             </Draggable>
-                          ) : (
-                            null
-                          )}
+                          ) : null}
 
                           {/* Carousel section */}
                           {/* TO-DO */}
-
                         </>
                       ))}
                       {droppableProvided.placeholder}
@@ -1257,107 +1399,98 @@ const EditHomepage = ({ match }) => {
           <div className={editorStyles.homepageEditorMain}>
             {/* Isomer Template Pane */}
             {/* Notification */}
-            { frontMatter.notification && 
-            <div className="bp-notification bg-secondary is-marginless">
-              <div className="bp-container">
-                <div className="row">
-                  <div className="col">
-                    <div className="field has-addons bp-notification-flex">
-                      <div className="control has-text-centered has-text-white">
-                        <h6>{ frontMatter.notification }</h6>
-                      </div>
-                      <div className="button has-text-white">
-                        <span className="sgds-icon sgds-icon-cross"/>
+            {frontMatter.notification && (
+              <div className="bp-notification bg-secondary is-marginless">
+                <div className="bp-container">
+                  <div className="row">
+                    <div className="col">
+                      <div className="field has-addons bp-notification-flex">
+                        <div className="control has-text-centered has-text-white">
+                          <h6>{frontMatter.notification}</h6>
+                        </div>
+                        <div className="button has-text-white">
+                          <span className="sgds-icon sgds-icon-cross" />
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>}
+            )}
             {frontMatter.sections.map((section, sectionIndex) => (
               <>
                 {/* Hero section */}
-                {section.hero
-                  ? (
-                    <>
-                      <TemplateHeroSection
-                        key={`section-${sectionIndex}`}
-                        hero={section.hero}
-                        siteName={siteName}
-                        dropdownIsActive={dropdownIsActive}
-                        toggleDropdown={toggleDropdown}
-                        ref={scrollRefs[sectionIndex]}
-                      />
-                    </>
-                  )
-                  : null}
+                {section.hero ? (
+                  <>
+                    <TemplateHeroSection
+                      key={`section-${sectionIndex}`}
+                      hero={section.hero}
+                      siteName={siteName}
+                      dropdownIsActive={dropdownIsActive}
+                      toggleDropdown={toggleDropdown}
+                      ref={scrollRefs[sectionIndex]}
+                    />
+                  </>
+                ) : null}
                 {/* Resources section */}
-                {section.resources
-                  ? (
-                    <>
-                      <TemplateResourcesSection
-                        key={`section-${sectionIndex}`}
-                        title={section.resources.title}
-                        subtitle={section.resources.subtitle}
-                        button={section.resources.button}
-                        sectionIndex={sectionIndex}
-                        ref={scrollRefs[sectionIndex]}
-                      />
-                    </>
-                  )
-                  : null}
+                {section.resources ? (
+                  <>
+                    <TemplateResourcesSection
+                      key={`section-${sectionIndex}`}
+                      title={section.resources.title}
+                      subtitle={section.resources.subtitle}
+                      button={section.resources.button}
+                      sectionIndex={sectionIndex}
+                      ref={scrollRefs[sectionIndex]}
+                    />
+                  </>
+                ) : null}
                 {/* Infobar section */}
-                {section.infobar
-                  ? (
-                    <>
-                      <TemplateInfobarSection
+                {section.infobar ? (
+                  <>
+                    <TemplateInfobarSection
+                      key={`section-${sectionIndex}`}
+                      title={section.infobar.title}
+                      subtitle={section.infobar.subtitle}
+                      description={section.infobar.description}
+                      button={section.infobar.button}
+                      sectionIndex={sectionIndex}
+                      ref={scrollRefs[sectionIndex]}
+                    />
+                  </>
+                ) : null}
+                {/* Infopic section */}
+                {section.infopic ? (
+                  <>
+                    {isLeftInfoPic(sectionIndex) ? (
+                      <TemplateInfopicLeftSection
                         key={`section-${sectionIndex}`}
-                        title={section.infobar.title}
-                        subtitle={section.infobar.subtitle}
-                        description={section.infobar.description}
-                        button={section.infobar.button}
+                        title={section.infopic.title}
+                        subtitle={section.infopic.subtitle}
+                        description={section.infopic.description}
+                        imageUrl={section.infopic.image}
+                        imageAlt={section.infopic.alt}
+                        button={section.infopic.button}
                         sectionIndex={sectionIndex}
+                        siteName={siteName}
                         ref={scrollRefs[sectionIndex]}
                       />
-                    </>
-                  )
-                  : null}
-                {/* Infopic section */}
-                {section.infopic
-                  ? (
-                      <>
-                      { isLeftInfoPic(sectionIndex)
-                        ? (
-                          <TemplateInfopicLeftSection
-                            key={`section-${sectionIndex}`}
-                            title={section.infopic.title}
-                            subtitle={section.infopic.subtitle}
-                            description={section.infopic.description}
-                            imageUrl={section.infopic.image}
-                            imageAlt={section.infopic.alt}
-                            button={section.infopic.button}
-                            sectionIndex={sectionIndex}
-                            siteName={siteName}
-                            ref={scrollRefs[sectionIndex]}
-                          />
-                        )
-                        : (
-                          <TemplateInfopicRightSection
-                            key={`section-${sectionIndex}`}
-                            title={section.infopic.title}
-                            subtitle={section.infopic.subtitle}
-                            description={section.infopic.description}
-                            imageUrl={section.infopic.image}
-                            imageAlt={section.infopic.alt}
-                            button={section.infopic.button}
-                            sectionIndex={sectionIndex}
-                            siteName={siteName}
-                            ref={scrollRefs[sectionIndex]}
-                          />
-                        )}
-                      </>
-                  )
-                  : null}
+                    ) : (
+                      <TemplateInfopicRightSection
+                        key={`section-${sectionIndex}`}
+                        title={section.infopic.title}
+                        subtitle={section.infopic.subtitle}
+                        description={section.infopic.description}
+                        imageUrl={section.infopic.image}
+                        imageAlt={section.infopic.alt}
+                        button={section.infopic.button}
+                        sectionIndex={sectionIndex}
+                        siteName={siteName}
+                        ref={scrollRefs[sectionIndex]}
+                      />
+                    )}
+                  </>
+                ) : null}
               </>
             ))}
           </div>
@@ -1366,12 +1499,15 @@ const EditHomepage = ({ match }) => {
               label="Save"
               disabled={hasErrors}
               disabledStyle={elementStyles.disabled}
-              className={(hasErrors || !sha) ? elementStyles.disabled : elementStyles.blue}
+              className={
+                hasErrors || !sha ? elementStyles.disabled : elementStyles.blue
+              }
               callback={savePage}
             />
           </div>
-        </div>}
-      </>
+        </div>
+      )}
+    </>
   )
 }
 
@@ -1383,4 +1519,4 @@ EditHomepage.propTypes = {
       siteName: PropTypes.string,
     }),
   }).isRequired,
-};
+}

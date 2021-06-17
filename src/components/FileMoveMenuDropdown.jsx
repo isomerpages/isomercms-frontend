@@ -1,28 +1,29 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react"
+import PropTypes from "prop-types"
 
-import elementStyles from '../styles/isomer-cms/Elements.module.scss';
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
-import { MenuItem } from './MenuDropdown'
-import { deslugifyDirectory } from '../utils'
+import { MenuItem } from "./MenuDropdown"
+import { deslugifyDirectory } from "../utils"
 
-const FileMoveMenuDropdown = ({ 
-  dropdownItems, 
-  menuIndex, 
-  dropdownRef, 
-  onBlur, 
+const FileMoveMenuDropdown = ({
+  dropdownItems,
+  menuIndex,
+  dropdownRef,
+  onBlur,
   rootName,
   moveDropdownQuery,
   setMoveDropdownQuery,
-  backHandler, 
+  backHandler,
   moveHandler,
   moveDisabled,
 }) => {
-
   const MoveButton = (
     <button
       type="button"
-      className={`ml-auto ${moveDisabled ? elementStyles.disabled : elementStyles.green}`}
+      className={`ml-auto ${
+        moveDisabled ? elementStyles.disabled : elementStyles.green
+      }`}
       disabled={moveDisabled}
       onMouseDown={() => moveHandler()}
     >
@@ -31,9 +32,21 @@ const FileMoveMenuDropdown = ({
   )
 
   const BreadcrumbButton = ({ name, id, idx }) => {
-    const newMoveDropdownQuery = moveDropdownQuery.split('/').slice(0, idx+1).join('/') // retrieves paths elements up to (excluding) element idx
+    const newMoveDropdownQuery = moveDropdownQuery
+      .split("/")
+      .slice(0, idx + 1)
+      .join("/") // retrieves paths elements up to (excluding) element idx
     return (
-      <button id={id} className={`${elementStyles.breadcrumbText} ml-1`} type="button" onClick={(e) => {e.stopPropagation(); e.preventDefault(); setMoveDropdownQuery(newMoveDropdownQuery)}}>
+      <button
+        id={id}
+        className={`${elementStyles.breadcrumbText} ml-1`}
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation()
+          e.preventDefault()
+          setMoveDropdownQuery(newMoveDropdownQuery)
+        }}
+      >
         {name}
       </button>
     )
@@ -41,35 +54,64 @@ const FileMoveMenuDropdown = ({
 
   const Breadcrumb = (
     <div className="d-flex justify-content-start">
-      { moveDropdownQuery !== '' 
-        ? 
-          <>
-          <BreadcrumbButton id="breadcrumbItem-0" name={moveDropdownQuery.split("/").length > 1 ? '...' : deslugifyDirectory(rootName)} idx={-1}/>
-          { 
-            moveDropdownQuery.split("/").map((folderName, idx, arr) => {
-              return idx === arr.length - 1
-              ? <> > <strong className="ml-1"> {deslugifyDirectory(folderName)}</strong></>
-              : <> > <BreadcrumbButton id={`breadcrumbItem-${idx+1}`} idx={idx} name={ idx < arr.length - 2 ? '...' : deslugifyDirectory(folderName) }/></> // shorten all except the last link
-            })
-          }
-          </>
-        : <strong className="ml-1">{deslugifyDirectory(rootName)}</strong>
-      }
+      {moveDropdownQuery !== "" ? (
+        <>
+          <BreadcrumbButton
+            id="breadcrumbItem-0"
+            name={
+              moveDropdownQuery.split("/").length > 1
+                ? "..."
+                : deslugifyDirectory(rootName)
+            }
+            idx={-1}
+          />
+          {moveDropdownQuery.split("/").map((folderName, idx, arr) => {
+            return idx === arr.length - 1 ? (
+              <>
+                {">"}
+                <strong className="ml-1">
+                  &nbsp;
+                  {deslugifyDirectory(folderName)}
+                </strong>
+              </>
+            ) : (
+              <>
+                {">"}
+                <BreadcrumbButton
+                  id={`breadcrumbItem-${idx + 1}`}
+                  idx={idx}
+                  name={
+                    idx < arr.length - 2
+                      ? "..."
+                      : deslugifyDirectory(folderName)
+                  }
+                />
+              </>
+            ) // shorten all except the last link
+          })}
+        </>
+      ) : (
+        <strong className="ml-1">{deslugifyDirectory(rootName)}</strong>
+      )}
     </div>
   )
 
-  const queryHandler = (categoryName) => setMoveDropdownQuery((prevState) =>
-    prevState 
-      ? `${moveDropdownQuery}/${categoryName}`
-      : categoryName
-  )
+  const queryHandler = (categoryName) =>
+    setMoveDropdownQuery((prevState) =>
+      prevState ? `${moveDropdownQuery}/${categoryName}` : categoryName
+    )
 
   return (
-    <div className={`${elementStyles.fileMoveDropdown} ${elementStyles.right}`} ref={dropdownRef} tabIndex={1} onBlur={onBlur}>
-      <MenuItem 
+    <div
+      className={`${elementStyles.fileMoveDropdown} ${elementStyles.right}`}
+      ref={dropdownRef}
+      tabIndex={1}
+      onBlur={onBlur}
+    >
+      <MenuItem
         key={`back-${menuIndex}`}
         item={{
-          itemName: 'Move to',
+          itemName: "Move to",
           itemId: `back`,
           iconClassName: "bx bx-sm bx-arrow-back text-white",
           handler: () => backHandler(),
@@ -77,8 +119,8 @@ const FileMoveMenuDropdown = ({
         menuIndex={menuIndex}
         dropdownRef={dropdownRef}
         className={elementStyles.dropdownHeader}
-      /> 
-      <MenuItem 
+      />
+      <MenuItem
         key={`breadcrumb-${menuIndex}`}
         item={{
           itemName: Breadcrumb,
@@ -89,29 +131,32 @@ const FileMoveMenuDropdown = ({
         dropdownRef={dropdownRef}
         className={elementStyles.dropdownFirstItem}
       />
-      <div className={elementStyles.dropdownContentItems}> 
-        { dropdownItems 
-          ?
-            dropdownItems.map(categoryName =>
-              <MenuItem 
-                key={`${categoryName}-${menuIndex}`}
-                item={{
-                  itemName: deslugifyDirectory(categoryName),
-                  itemId: categoryName,
-                  iconClassName: "bx bx-sm bx-folder",
-                  children: <i className={`${elementStyles.dropdownItemButton} bx bx-sm bx-chevron-right ml-auto`}/>,
-                  noBlur: true,
-                  handler: () => queryHandler(categoryName)
-                }}
-                menuIndex={menuIndex}
-                dropdownRef={dropdownRef}
-              /> 
-              )
-          : 
-            <div className="spinner-border text-primary mt-3" role="status" />
-        }
+      <div className={elementStyles.dropdownContentItems}>
+        {dropdownItems ? (
+          dropdownItems.map((categoryName) => (
+            <MenuItem
+              key={`${categoryName}-${menuIndex}`}
+              item={{
+                itemName: deslugifyDirectory(categoryName),
+                itemId: categoryName,
+                iconClassName: "bx bx-sm bx-folder",
+                children: (
+                  <i
+                    className={`${elementStyles.dropdownItemButton} bx bx-sm bx-chevron-right ml-auto`}
+                  />
+                ),
+                noBlur: true,
+                handler: () => queryHandler(categoryName),
+              }}
+              menuIndex={menuIndex}
+              dropdownRef={dropdownRef}
+            />
+          ))
+        ) : (
+          <div className="spinner-border text-primary mt-3" role="status" />
+        )}
       </div>
-      <MenuItem 
+      <MenuItem
         key={`move-here-${menuIndex}`}
         className={elementStyles.dropdownLastItem}
         item={{
@@ -125,16 +170,14 @@ const FileMoveMenuDropdown = ({
   )
 }
 
-export default FileMoveMenuDropdown;
+export default FileMoveMenuDropdown
 
 FileMoveMenuDropdown.propTypes = {
-  dropdownItems: PropTypes.arrayOf(
-    PropTypes.string.isRequired
-  ),
-  menuIndex: PropTypes.number.isRequired, 
+  dropdownItems: PropTypes.arrayOf(PropTypes.string.isRequired),
+  menuIndex: PropTypes.number.isRequired,
   dropdownRef: PropTypes.oneOfType([
-    PropTypes.func, 
-    PropTypes.shape({ current: PropTypes.any })
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.any }),
   ]).isRequired,
   onBlur: PropTypes.func,
   rootName: PropTypes.string.isRequired,

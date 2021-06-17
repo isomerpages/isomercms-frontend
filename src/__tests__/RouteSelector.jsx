@@ -1,11 +1,10 @@
+import React from "react"
+import { render, screen } from "@testing-library/react"
+import { MemoryRouter } from "react-router-dom"
+import "@testing-library/jest-dom/extend-expect"
 
-import React from 'react';
-import { render, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router'
-import '@testing-library/jest-dom/extend-expect'
-
-import { RouteSelector } from '../routing/RouteSelector'
-import { LoginContext } from '../contexts/LoginContext'
+import { RouteSelector } from "../routing/RouteSelector"
+import { LoginContext } from "../contexts/LoginContext"
 
 const HOME_LAYOUT_TEXT = "Home layout mock text"
 const SITES_LAYOUT_TEXT = "Site layout mock text"
@@ -161,8 +160,8 @@ jest.mock("../components/NotFoundPage", () => {
 // Context mocks
 const LoggedInContextProvider = ({ children }) => {
   const loggedInContextData = {
-    userId: 'test-user',
-    logout: jest.fn()
+    userId: "test-user",
+    logout: jest.fn(),
   }
 
   return (
@@ -175,7 +174,7 @@ const LoggedInContextProvider = ({ children }) => {
 const NotLoggedInContextProvider = ({ children }) => {
   const notLoggedInContextData = {
     userId: null,
-    logout: jest.fn()
+    logout: jest.fn(),
   }
 
   return (
@@ -191,9 +190,9 @@ describe("Tests for RouteSelector", () => {
     test("Should render Home layout if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/']}>
+        <MemoryRouter initialEntries={["/"]}>
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
@@ -205,9 +204,9 @@ describe("Tests for RouteSelector", () => {
     test("Should redirect to /sites and render Sites layout if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/']}>
+        <MemoryRouter initialEntries={["/"]}>
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
@@ -222,9 +221,9 @@ describe("Tests for RouteSelector", () => {
     test("Should render Sites page if at /sites and logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites']}>
+        <MemoryRouter initialEntries={["/sites"]}>
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
@@ -236,9 +235,9 @@ describe("Tests for RouteSelector", () => {
     test("Should redirect to /home and not render Sites page if at /sites and not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites']}>
+        <MemoryRouter initialEntries={["/sites"]}>
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
@@ -253,9 +252,9 @@ describe("Tests for RouteSelector", () => {
     test("Should render Settings page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/settings']}>
+        <MemoryRouter initialEntries={["/sites/site-name/settings"]}>
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
@@ -267,9 +266,9 @@ describe("Tests for RouteSelector", () => {
     test("Should redirect to /home and not render Settings page if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/settings']}>
+        <MemoryRouter initialEntries={["/sites/site-name/settings"]}>
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
@@ -284,9 +283,9 @@ describe("Tests for RouteSelector", () => {
     test("Should render Navbar editor page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/navbar']}>
+        <MemoryRouter initialEntries={["/sites/site-name/navbar"]}>
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
@@ -298,15 +297,17 @@ describe("Tests for RouteSelector", () => {
     test("Should redirect to /home and not render Navbar editor page if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/navbar']}>
+        <MemoryRouter initialEntries={["/sites/site-name/navbar"]}>
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
 
       // Assert
-      expect(screen.queryByText(EDIT_NAVBAR_LAYOUT_TEXT)).not.toBeInTheDocument()
+      expect(
+        screen.queryByText(EDIT_NAVBAR_LAYOUT_TEXT)
+      ).not.toBeInTheDocument()
       expect(screen.queryByText(HOME_LAYOUT_TEXT)).toBeInTheDocument()
     })
   })
@@ -315,9 +316,9 @@ describe("Tests for RouteSelector", () => {
     test("Should render Resources editor page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/resources']}>
+        <MemoryRouter initialEntries={["/sites/site-name/resources"]}>
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
@@ -329,9 +330,9 @@ describe("Tests for RouteSelector", () => {
     test("Should redirect to /home and not render Resources editor page if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/resources']}>
+        <MemoryRouter initialEntries={["/sites/site-name/resources"]}>
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
@@ -346,29 +347,37 @@ describe("Tests for RouteSelector", () => {
     test("Should render Resources Collection layout page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/resources/my-collection']}>
+        <MemoryRouter
+          initialEntries={["/sites/site-name/resources/my-collection"]}
+        >
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
 
       // Assert
-      expect(screen.queryByText(RESOURCES_CATEGORY_LAYOUT_TEXT)).toBeInTheDocument()
+      expect(
+        screen.queryByText(RESOURCES_CATEGORY_LAYOUT_TEXT)
+      ).toBeInTheDocument()
     })
 
     test("Should redirect to /home and not render Resources Collection layout page if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/resources/my-collection']}>
+        <MemoryRouter
+          initialEntries={["/sites/site-name/resources/my-collection"]}
+        >
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
 
       // Assert
-      expect(screen.queryByText(RESOURCES_CATEGORY_LAYOUT_TEXT)).not.toBeInTheDocument()
+      expect(
+        screen.queryByText(RESOURCES_CATEGORY_LAYOUT_TEXT)
+      ).not.toBeInTheDocument()
       expect(screen.queryByText(HOME_LAYOUT_TEXT)).toBeInTheDocument()
     })
   })
@@ -377,9 +386,11 @@ describe("Tests for RouteSelector", () => {
     test("Should render EditPage layout page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/resources/my-collection/my-file']}>
+        <MemoryRouter
+          initialEntries={["/sites/site-name/resources/my-collection/my-file"]}
+        >
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
@@ -391,9 +402,11 @@ describe("Tests for RouteSelector", () => {
     test("Should redirect to /home and not render Resources Collection layout page if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/resources/my-collection/my-file']}>
+        <MemoryRouter
+          initialEntries={["/sites/site-name/resources/my-collection/my-file"]}
+        >
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
@@ -408,29 +421,33 @@ describe("Tests for RouteSelector", () => {
     test("Should render Contact Us editor page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/contact-us']}>
+        <MemoryRouter initialEntries={["/sites/site-name/contact-us"]}>
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
 
       // Assert
-      expect(screen.queryByText(EDIT_CONTACT_US_LAYOUT_TEXT)).toBeInTheDocument()
+      expect(
+        screen.queryByText(EDIT_CONTACT_US_LAYOUT_TEXT)
+      ).toBeInTheDocument()
     })
 
     test("Should redirect to /home and not render Contact Us editor page if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/contact-us']}>
+        <MemoryRouter initialEntries={["/sites/site-name/contact-us"]}>
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
 
       // Assert
-      expect(screen.queryByText(EDIT_CONTACT_US_LAYOUT_TEXT)).not.toBeInTheDocument()
+      expect(
+        screen.queryByText(EDIT_CONTACT_US_LAYOUT_TEXT)
+      ).not.toBeInTheDocument()
       expect(screen.queryByText(HOME_LAYOUT_TEXT)).toBeInTheDocument()
     })
   })
@@ -439,9 +456,9 @@ describe("Tests for RouteSelector", () => {
     test("Should render Homepage editor page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/homepage']}>
+        <MemoryRouter initialEntries={["/sites/site-name/homepage"]}>
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
@@ -453,15 +470,17 @@ describe("Tests for RouteSelector", () => {
     test("Should redirect to /home and not render Homepage editor page if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/homepage']}>
+        <MemoryRouter initialEntries={["/sites/site-name/homepage"]}>
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
 
       // Assert
-      expect(screen.queryByText(EDIT_HOMEPAGE_LAYOUT_TEXT)).not.toBeInTheDocument()
+      expect(
+        screen.queryByText(EDIT_HOMEPAGE_LAYOUT_TEXT)
+      ).not.toBeInTheDocument()
       expect(screen.queryByText(HOME_LAYOUT_TEXT)).toBeInTheDocument()
     })
   })
@@ -470,9 +489,9 @@ describe("Tests for RouteSelector", () => {
     test("Should render Workspace page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/workspace']}>
+        <MemoryRouter initialEntries={["/sites/site-name/workspace"]}>
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
@@ -484,9 +503,9 @@ describe("Tests for RouteSelector", () => {
     test("Should redirect to /home and not render Workspace page if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/workspace']}>
+        <MemoryRouter initialEntries={["/sites/site-name/workspace"]}>
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
@@ -501,9 +520,9 @@ describe("Tests for RouteSelector", () => {
     test("Should render EditPage page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/pages/my-file']}>
+        <MemoryRouter initialEntries={["/sites/site-name/pages/my-file"]}>
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
@@ -515,9 +534,9 @@ describe("Tests for RouteSelector", () => {
     test("Should redirect to /home and not render Workspace page if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/pages/my-file']}>
+        <MemoryRouter initialEntries={["/sites/site-name/pages/my-file"]}>
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
@@ -532,9 +551,9 @@ describe("Tests for RouteSelector", () => {
     test("Should render Images page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/images']}>
+        <MemoryRouter initialEntries={["/sites/site-name/images"]}>
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
@@ -546,9 +565,9 @@ describe("Tests for RouteSelector", () => {
     test("Should redirect to /home and not render Images page if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/images']}>
+        <MemoryRouter initialEntries={["/sites/site-name/images"]}>
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
@@ -563,9 +582,11 @@ describe("Tests for RouteSelector", () => {
     test("Should render Images page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/images/custom-image-path']}>
+        <MemoryRouter
+          initialEntries={["/sites/site-name/images/custom-image-path"]}
+        >
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
@@ -577,9 +598,11 @@ describe("Tests for RouteSelector", () => {
     test("Should redirect to /home and not render Images page if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/images/custom-image-path']}>
+        <MemoryRouter
+          initialEntries={["/sites/site-name/images/custom-image-path"]}
+        >
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
@@ -594,9 +617,9 @@ describe("Tests for RouteSelector", () => {
     test("Should render Files page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/files']}>
+        <MemoryRouter initialEntries={["/sites/site-name/files"]}>
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
@@ -608,9 +631,9 @@ describe("Tests for RouteSelector", () => {
     test("Should redirect to /home and not render Files page if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/files']}>
+        <MemoryRouter initialEntries={["/sites/site-name/files"]}>
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
@@ -625,9 +648,9 @@ describe("Tests for RouteSelector", () => {
     test("Should render Folders layout page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/folder/my-folder']}>
+        <MemoryRouter initialEntries={["/sites/site-name/folder/my-folder"]}>
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
@@ -639,9 +662,9 @@ describe("Tests for RouteSelector", () => {
     test("Should redirect to /home and not render Folders layout page if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/folder/my-folder']}>
+        <MemoryRouter initialEntries={["/sites/site-name/folder/my-folder"]}>
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
@@ -656,9 +679,13 @@ describe("Tests for RouteSelector", () => {
     test("Should render Folders layout page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/folder/my-folder/subfolder/my-subfolder']}>
+        <MemoryRouter
+          initialEntries={[
+            "/sites/site-name/folder/my-folder/subfolder/my-subfolder",
+          ]}
+        >
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
@@ -670,9 +697,13 @@ describe("Tests for RouteSelector", () => {
     test("Should redirect to /home and not render Folders layout page if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/folder/my-folder/subfolder/my-subfolder']}>
+        <MemoryRouter
+          initialEntries={[
+            "/sites/site-name/folder/my-folder/subfolder/my-subfolder",
+          ]}
+        >
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
@@ -687,9 +718,11 @@ describe("Tests for RouteSelector", () => {
     test("Should render EditPage page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/folder/my-folder/my-file']}>
+        <MemoryRouter
+          initialEntries={["/sites/site-name/folder/my-folder/my-file"]}
+        >
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
@@ -701,9 +734,11 @@ describe("Tests for RouteSelector", () => {
     test("Should redirect to /home and not render EditPage page if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/folder/my-folder/my-file']}>
+        <MemoryRouter
+          initialEntries={["/sites/site-name/folder/my-folder/my-file"]}
+        >
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
@@ -718,9 +753,13 @@ describe("Tests for RouteSelector", () => {
     test("Should render EditPage page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/folder/my-folder/subfolder/my-subfolder/my-file']}>
+        <MemoryRouter
+          initialEntries={[
+            "/sites/site-name/folder/my-folder/subfolder/my-subfolder/my-file",
+          ]}
+        >
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
@@ -732,9 +771,13 @@ describe("Tests for RouteSelector", () => {
     test("Should redirect to /home and not render EditPage page if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/sites/site-name/folder/my-folder/subfolder/my-subfolder/my-file']}>
+        <MemoryRouter
+          initialEntries={[
+            "/sites/site-name/folder/my-folder/subfolder/my-subfolder/my-file",
+          ]}
+        >
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )
@@ -749,9 +792,9 @@ describe("Tests for RouteSelector", () => {
     test("Should render NotFound page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/not-found']}>
+        <MemoryRouter initialEntries={["/not-found"]}>
           <LoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </LoggedInContextProvider>
         </MemoryRouter>
       )
@@ -763,9 +806,9 @@ describe("Tests for RouteSelector", () => {
     test("Should redirect to /home and not render NotFound page if not logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={['/not-found']}>
+        <MemoryRouter initialEntries={["/not-found"]}>
           <NotLoggedInContextProvider>
-            <RouteSelector/>
+            <RouteSelector />
           </NotLoggedInContextProvider>
         </MemoryRouter>
       )

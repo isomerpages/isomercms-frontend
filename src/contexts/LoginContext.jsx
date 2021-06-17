@@ -1,21 +1,24 @@
-import React, { createContext, useEffect, useState, useContext } from 'react';
-import axios from 'axios';
-import {SITES_IS_PRIVATE_KEY} from "../constants";
+import React, { createContext, useEffect, useState, useContext } from "react"
+import axios from "axios"
+import { SITES_IS_PRIVATE_KEY } from "../constants"
 
 const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 const LOCAL_STORAGE_USER_ID_KEY = "userId"
 
-const LoginContext = createContext(null);
+const LoginContext = createContext(null)
 
 const LoginConsumer = ({ children }) => {
   const loginContextData = useContext(LoginContext)
-  if (!loginContextData) throw new Error('useLoginContext must be used within an LoginProvider')
+  if (!loginContextData)
+    throw new Error("useLoginContext must be used within an LoginProvider")
 
   return <LoginContext.Consumer>{children}</LoginContext.Consumer>
 }
 
 const LoginProvider = ({ children }) => {
-  const [userId, setUserId] = useState(localStorage.getItem(LOCAL_STORAGE_USER_ID_KEY))
+  const [userId, setUserId] = useState(
+    localStorage.getItem(LOCAL_STORAGE_USER_ID_KEY)
+  )
 
   const verifyLoginAndSetLocalStorage = async () => {
     const resp = await axios.get(`${BACKEND_URL}/auth/whoami`)
@@ -52,14 +55,14 @@ const LoginProvider = ({ children }) => {
 
   const loginContextData = {
     userId,
-    logout
+    logout,
   }
 
-  return <LoginContext.Provider value={loginContextData}>{children}</LoginContext.Provider>
+  return (
+    <LoginContext.Provider value={loginContextData}>
+      {children}
+    </LoginContext.Provider>
+  )
 }
 
-export {
-  LoginContext,
-  LoginConsumer,
-  LoginProvider
-}
+export { LoginContext, LoginConsumer, LoginProvider }

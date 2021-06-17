@@ -15,11 +15,13 @@
     "dompurify": "^2.2.2",
     "easymde": "^2.8.0",
     "escape-string-regexp": "^4.0.0",
+    "eslint-plugin-only-warn": "^1.0.2",
     "html-react-parser": "^1.1.1",
     "immutability-helper": "^3.0.1",
     "js-base64": "^2.5.1",
     "lodash": "^4.17.21",
     "marked": "^0.7.0",
+    "moment-timezone": "^0.5.33",
     "node-sass": "^4.13.1",
     "prop-types": "^15.7.2",
     "react": "^16.10.2",
@@ -43,12 +45,16 @@
   },
   "scripts": {
     "start": "source .env.development.local && react-scripts start",
+    "dev": "source .env && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test-e2e": "cypress run",
     "lint": "eslint --ext .js --ext .jsx --ignore-path .gitignore .",
     "lint-fix": "eslint --ext .js --ext .jsx --ignore-path .gitignore . --fix",
-    "cypress:open": "cypress open"
+    "format": "npx prettier --check .",
+    "format-fix": "npx prettier --write .",
+    "cypress:open": "cypress open",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -66,12 +72,14 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/eslint-parser": "^7.14.5",
+    "@jest/globals": "^27.0.3",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
-    "@trivago/prettier-plugin-sort-imports": "^2.0.2",
     "cypress": "^7.2.0",
     "cz-conventional-changelog": "^3.0.2",
-    "eslint": "^7.21.0",
+    "eslint": "^7.28.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-import": "^2.22.1",
@@ -80,6 +88,8 @@
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^1.7.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
     "prettier": "2.2.1",
     "react-test-renderer": "^17.0.2"
   },
@@ -87,5 +97,11 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "lint-staged": {
+    "**/*.(js|jsx|ts|tsx)": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }

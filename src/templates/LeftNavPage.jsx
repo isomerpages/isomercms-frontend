@@ -1,16 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import PageHeader from './pageComponents/PageHeader';
-import LeftNav from './pageComponents/LeftNav';
-import _ from 'lodash';
+import React from "react"
+import PropTypes from "prop-types"
+import _ from "lodash"
+import PageHeader from "./pageComponents/PageHeader"
+import LeftNav from "./pageComponents/LeftNav"
 
-const LeftNavPage = ({
-  chunk,
-  leftNavPages,
-  fileName,
-  title,
-  collection,
-}) => {
+const LeftNavPage = ({ chunk, leftNavPages, fileName, title, collection }) => {
   return (
     <div>
       <PageHeader title={title} collection={collection} />
@@ -19,24 +13,29 @@ const LeftNavPage = ({
           <div className="row">
             <LeftNav leftNavPages={leftNavPages} fileName={fileName} />
             <div className="col is-8 is-offset-1-desktop is-12-touch print-content page-content-body">
-              <div className="content" dangerouslySetInnerHTML={{ __html: chunk }} />
+              <div
+                className="content"
+                dangerouslySetInnerHTML={{ __html: chunk }}
+              />
             </div>
           </div>
         </div>
       </section>
     </div>
-  );
-};
+  )
+}
 
 LeftNavPage.propTypes = {
   chunk: PropTypes.string.isRequired,
-  leftNavPages: PropTypes.arrayOf(PropTypes.shape({
-    path: PropTypes.string,
-    fileName: PropTypes.string,
-  })).isRequired,
+  leftNavPages: PropTypes.arrayOf(
+    PropTypes.shape({
+      path: PropTypes.string,
+      fileName: PropTypes.string,
+    })
+  ).isRequired,
   title: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
   collection: PropTypes.string.isRequired,
-};
+}
 
-export default LeftNavPage;
+export default LeftNavPage

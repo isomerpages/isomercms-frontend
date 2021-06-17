@@ -1,6 +1,6 @@
-@import './variable';
+@import "./variable";
 
-.card{
+.card {
   width: 100%;
   background: white;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
@@ -9,28 +9,28 @@
   padding: 1.875rem;
   margin-bottom: 30px;
 
-  .cardHeader{
+  .cardHeader {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    overflow:hidden;
+    overflow: hidden;
 
-    h2{
+    h2 {
       font-size: 20px;
       font-weight: normal;
-      line-height: 2.0;
-      color: darken($isomer-blue,20%);
-      min-width:0;
+      line-height: 2;
+      color: darken($isomer-blue, 20%);
+      min-width: 0;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       padding-right: 1.875rem;
     }
 
-    .bx{
-        font-size: 30px;
-        color: darken($isomer-blue,20%);
+    .bx {
+      font-size: 30px;
+      color: darken($isomer-blue, 20%);
     }
 
     button {
@@ -39,23 +39,23 @@
     }
   }
 
-  &.error{
+  &.error {
     border: 1px solid $error-red;
   }
 
-  &.dragging{
+  &.dragging {
     background: white;
     box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
   }
 
-  &.placeable{
+  &.placeable {
     background: none;
     box-shadow: none;
     border: 1px dashed darken($base-background-light, 10%);
-    opacity: .8;
+    opacity: 0.8;
   }
 
-  &.addNew{
+  &.addNew {
     background: none;
     box-shadow: none;
 
@@ -67,24 +67,24 @@
     align-items: center;
     color: $isomer-blue;
 
-    .bxPlusCircle{
+    .bxPlusCircle {
       font-size: 30px;
       margin-bottom: 20px;
     }
 
-    h2{
+    h2 {
       font-size: 18px;
       width: 100%;
       text-align: center;
     }
 
-    &:hover{
-      background-color: rgba(255,255,255,0.5);
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.5);
       border: 1px dashed $isomer-blue;
     }
   }
 
-  &.folderOption{
+  &.folderOption {
     background: none;
     box-shadow: none;
     height: 5.188rem;
@@ -101,7 +101,7 @@
     align-items: center;
     color: $isomer-blue;
 
-    &:hover{
+    &:hover {
       @extend .folderOptionSelected;
     }
 
@@ -117,11 +117,11 @@
       color: white;
     }
 
-    .folderOptionIcon{
+    .folderOptionIcon {
       font-size: 30px;
     }
 
-    .folderOptionText{
+    .folderOptionText {
       line-height: 2;
     }
   }
@@ -130,8 +130,8 @@
     background: $isomer-blue;
     border: 1px solid $isomer-blue;
     color: white;
-    
-    > div > span{
+
+    > div > span {
       color: white;
     }
   }
@@ -147,20 +147,20 @@
       color: $isomer-dark;
     }
 
-    &:hover > div > i{
+    &:hover > div > i {
       color: $isomer-dark;
     }
 
-    &:hover > div > span{
+    &:hover > div > span {
       color: $isomer-dark;
     }
-    
-    > div > span{
+
+    > div > span {
       color: $isomer-dark;
     }
   }
 
-  &.folderItem{
+  &.folderItem {
     background: white;
     box-shadow: inset;
     height: 5.188rem;
@@ -176,18 +176,18 @@
     align-items: center;
     color: $body-text;
 
-    .folderItemIcon{
+    .folderItemIcon {
       font-size: 30px;
       color: $body-text;
       margin-right: 1rem;
     }
 
-    .folderItemText{
+    .folderItemText {
       line-height: 2;
     }
   }
 
-  &.addNewHomepageSection{
+  &.addNewHomepageSection {
     background: none;
     box-shadow: none;
 
@@ -196,14 +196,14 @@
     flex-direction: column;
     color: $isomer-blue;
 
-    h2{
+    h2 {
       font-size: 18px;
       width: 100%;
       text-align: left;
     }
   }
 
-  .cardContent{
+  .cardContent {
     margin-top: 20px;
     margin-bottom: 20px;
   }
