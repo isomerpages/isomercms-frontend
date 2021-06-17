@@ -15,6 +15,7 @@
     "dompurify": "^2.2.2",
     "easymde": "^2.8.0",
     "escape-string-regexp": "^4.0.0",
+    "eslint-plugin-only-warn": "^1.0.2",
     "html-react-parser": "^1.1.1",
     "immutability-helper": "^3.0.1",
     "js-base64": "^2.5.1",
@@ -53,7 +54,8 @@
     "lint-fix": "eslint --ext .js --ext .jsx --ignore-path .gitignore . --fix",
     "format": "npx prettier --check .",
     "format-fix": "npx prettier --write .",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -87,6 +89,8 @@
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^1.7.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
     "prettier": "2.2.1",
     "react-test-renderer": "^17.0.2"
   },
@@ -118,5 +122,11 @@
       "^@templates(.*)": "<rootDir>/src/templates$1",
       "^@utils(.*)": "<rootDir>/src/utils$1"
     }
+  },
+  "lint-staged": {
+    "**/*.(js|jsx|ts|tsx)": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }
