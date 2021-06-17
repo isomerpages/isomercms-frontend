@@ -4,69 +4,22 @@
     "es2021": true,
     "jest": true
   },
-  "extends": ["plugin:react/recommended", "airbnb", "prettier"],
+  "extends": [
+    "plugin:react/recommended",
+    "airbnb",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "babel-eslint",
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
     },
-    "ecmaVersion": 12,
+    "ecmaVersion": 2020,
     "sourceType": "module"
   },
-  "plugins": ["only-warn", "react", "simple-import-sort", "import"],
+  "plugins": ["only-warn", "react"],
   "rules": {
-    "no-underscore-dangle": "off",
-    "simple-import-sort/imports": [
-      "error",
-      {
-        "groups": [
-          // Node.js builtins. You could also generate this regex if you use a `.js` config.
-          // For example: `^(${require("module").builtinModules.join("|")})(/|$)`
-          [
-            "^(assert|buffer|child_process|cluster|console|constants|crypto|dgram|dns|domain|events|fs|http|https|module|net|os|path|punycode|querystring|readline|repl|stream|string_decoder|sys|timers|tls|tty|url|util|vm|zlib|freelist|v8|process|async_hooks|http2|perf_hooks)(/.*|$)"
-          ],
-          // Packages. `react` related packages come first.
-          ["^react(.*|$)"],
-          ["^@?\\w"],
-          // Internal packages.
-          ["^@src(.*|$)"],
-          ["^@contexts(.*|$)"],
-          ["^@hooks(.*|$)"],
-          ["^@templates(.*|$)"],
-          ["^@utils(.*|$)"],
-          ["^@style(.*|$)"],
-          ["^@components(.*|$)"],
-          ["^@layouts(.*|$)"],
-          ["^@routing(.*|$)"],
-          // Side effect imports.
-          ["^\\u0000"],
-          // Parent imports. Put `..` last.
-          ["^\\.\\.(?!/?$)", "^\\.\\./?$"],
-          // Other relative imports. Put same-folder imports and `.` last.
-          ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"],
-          // Direct imports for e.g. import "<package>"
-          ["^.+\\.s?css$"]
-        ]
-      }
-    ]
-  },
-  "settings": {
-    "import/resolver": {
-      "alias": {
-        "map": [
-          ["@root", "./"],
-          ["@src", "./src"],
-          ["@components", "./src/components"],
-          ["@contexts", "./src/contexts"],
-          ["@hooks", "./src/hooks"],
-          ["@layouts", "./src/layouts"],
-          ["@routing", "./src/routing"],
-          ["@styles", "./src/styles"],
-          ["@templates", "./src/templates"],
-          ["@utils", "./src/utils"]
-        ],
-        "extensions": [".js", ".jsx", ".scss"]
-      }
-    }
+    "no-underscore-dangle": "off"
   },
   "globals": {
     "cy": "readonly",

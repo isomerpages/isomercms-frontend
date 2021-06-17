@@ -1,7 +1,6 @@
 import React from "react"
-
-import DOMPurify from "dompurify"
 import PropTypes from "prop-types"
+import DOMPurify from "dompurify"
 
 const Contact = React.forwardRef(({ contact }, ref) => (
   <div className="col is-6" ref={ref}>

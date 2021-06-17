@@ -1,15 +1,14 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import { Link } from "react-router-dom"
-
 import PropTypes from "prop-types"
 
-import { deslugifyPage } from "@src/utils"
+import { deslugifyPage } from "../../utils"
+import { MenuDropdown } from "../MenuDropdown"
+import FileMoveMenuDropdown from "../FileMoveMenuDropdown"
 
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
-import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
-
-import FileMoveMenuDropdown from "@components/FileMoveMenuDropdown"
-import { MenuDropdown } from "@components/MenuDropdown"
+// Import styles
+import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
+import contentStyles from "../../styles/isomer-cms/pages/Content.module.scss"
 
 const FolderContentItem = ({
   folderContentItem,

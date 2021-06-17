@@ -1,12 +1,9 @@
 import React from "react"
-
-import * as _ from "lodash"
 import PropTypes from "prop-types"
-
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
-
-import FormField from "@components/FormField"
-import LoadingButton from "@components/LoadingButton"
+import * as _ from "lodash"
+import FormField from "./FormField"
+import LoadingButton from "./LoadingButton"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
 const FolderNamingModal = ({
   onClose,

@@ -6,32 +6,32 @@ import { Link } from "react-router-dom"
 import _ from "lodash"
 
 // Import components
-import Header from "@components/Header"
-import Sidebar from "@components/Sidebar"
-import FolderCreationModal from "@components/FolderCreationModal"
-import FolderOptionButton from "@components/folders/FolderOptionButton"
-import FolderReorderingModal from "@components/FolderReorderingModal"
-import { FolderContent } from "@components/folders/FolderContent"
-import FolderModal from "@components/FolderModal"
-import PageSettingsModal from "@components/PageSettingsModal"
-import DeleteWarningModal from "@components/DeleteWarningModal"
-import GenericWarningModal from "@components/GenericWarningModal"
+import Header from "../components/Header"
+import Sidebar from "../components/Sidebar"
+import FolderCreationModal from "../components/FolderCreationModal"
+import FolderOptionButton from "../components/folders/FolderOptionButton"
+import FolderReorderingModal from "../components/FolderReorderingModal"
+import { FolderContent } from "../components/folders/FolderContent"
+import FolderModal from "../components/FolderModal"
+import PageSettingsModal from "../components/PageSettingsModal"
+import DeleteWarningModal from "../components/DeleteWarningModal"
+import GenericWarningModal from "../components/GenericWarningModal"
 
-import { errorToast, successToast } from "@utils/toasts"
+import { errorToast, successToast } from "../utils/toasts"
 
-import useRedirectHook from "@hooks/useRedirectHook"
+import useRedirectHook from "../hooks/useRedirectHook"
 import {
   PAGE_CONTENT_KEY,
   FOLDERS_CONTENT_KEY,
   DIR_CONTENT_KEY,
-} from "@src/constants"
+} from "../constants"
 import {
   DEFAULT_RETRY_MSG,
   parseDirectoryFile,
   convertFolderOrderToArray,
   retrieveSubfolderContents,
   deslugifyDirectory,
-} from "@src/utils"
+} from "../utils"
 
 // Import API
 import {
@@ -41,11 +41,11 @@ import {
   deletePageData,
   moveFile,
   getAllCategories,
-} from "@src/api"
+} from "../api"
 
 // Import styles
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
-import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
 
 const Folders = ({ match, location }) => {
   const { siteName, folderName, subfolderName } = match.params
@@ -134,7 +134,7 @@ const Folders = ({ match, location }) => {
       const selectedItem = folderOrderArray.find(
         (item) => item.fileName === selectedPage
       )
-      setIsSelectedItemPage(selectedItem.type === "file" ? true : false)
+      setIsSelectedItemPage(selectedItem.type === "file")
     }
   }, [selectedPage])
 
@@ -201,9 +201,8 @@ const Folders = ({ match, location }) => {
   const { mutateAsync: moveHandler } = useMutation(
     async () => {
       if (
-        `${folderName ? folderName : ""}${
-          subfolderName ? `/${subfolderName}` : ""
-        }` === selectedPath
+        `${folderName || ""}${subfolderName ? `/${subfolderName}` : ""}` ===
+        selectedPath
       )
         return true
       await moveFile({
@@ -268,7 +267,7 @@ const Folders = ({ match, location }) => {
   // parse responses from move-to queries
   const getCategories = (moveDropdownQuery, allFolders, querySubfolders) => {
     const [folderName, subfolderName] = moveDropdownQuery.split("/")
-    if (!!subfolderName) {
+    if (subfolderName) {
       // inside subfolder, show empty
       return []
     }
@@ -369,7 +368,7 @@ const Folders = ({ match, location }) => {
           subfolderName ? `folder/${folderName}` : "workspace"
         }`}
         shouldAllowEditPageBackNav={!isRearrangeActive}
-        isEditPage={true}
+        isEditPage
       />
       {/* main bottom section */}
       <div className={elementStyles.wrapper}>
@@ -399,29 +398,30 @@ const Folders = ({ match, location }) => {
             <span>
               <Link to={`/sites/${siteName}/workspace`}>
                 <strong>Workspace</strong>
-              </Link>{" "}
-              >
+              </Link>
+              &nbsp;
+              {">"}
               {folderName ? (
                 subfolderName ? (
                   <Link to={`/sites/${siteName}/folder/${folderName}`}>
                     <strong className="ml-1">
-                      {" "}
+                      &nbsp;
                       {deslugifyDirectory(folderName)}
                     </strong>
                   </Link>
                 ) : (
                   <strong className="ml-1">
-                    {" "}
+                    &nbsp;
                     {deslugifyDirectory(folderName)}
                   </strong>
                 )
               ) : null}
               {folderName && subfolderName ? (
                 <span>
-                  {" "}
-                  >
+                  &nbsp;
+                  {">"}
                   <strong className="ml-1">
-                    {" "}
+                    &nbsp;
                     {deslugifyDirectory(subfolderName)}
                   </strong>
                 </span>
@@ -446,19 +446,17 @@ const Folders = ({ match, location }) => {
             <FolderOptionButton
               title="Create new subfolder"
               option="create-sub"
-              isDisabled={subfolderName || isLoadingDirectory ? true : false}
+              isDisabled={!!(subfolderName || isLoadingDirectory)}
               onClick={() => setIsFolderCreationActive(true)}
             />
           </div>
           {/* Collections content */}
-          {!isLoadingDirectory &&
-            !queryError &&
-            folderOrderArray.length === 0 && (
-              <span>
-                There are no pages in this{" "}
-                {subfolderName ? `subfolder` : `folder`}.
-              </span>
-            )}
+          {!isLoadingDirectory && !queryError && folderOrderArray.length === 0 && (
+            <span>
+              There are no pages in this&nbsp;
+              {subfolderName ? `subfolder` : `folder`}.
+            </span>
+          )}
           {queryError && (
             <span>
               There was an error retrieving your content. Please refresh the

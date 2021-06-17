@@ -5,7 +5,7 @@ import {
   generatePageFileName,
   retrieveResourceFileMetadata,
   slugifyCategory,
-} from "@src/utils"
+} from "../utils"
 
 // Common regexes and constants
 // ==============

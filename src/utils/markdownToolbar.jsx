@@ -9,15 +9,16 @@
  */
 
 import {
-  drawTable,
-  toggleBlockquote,
   toggleBold,
-  toggleCodeBlock,
-  toggleHeadingSmaller,
   toggleItalic,
-  toggleOrderedList,
   toggleStrikethrough,
+  toggleHeadingSmaller,
+  toggleCodeBlock,
+  toggleBlockquote,
   toggleUnorderedList,
+  toggleOrderedList,
+  drawLink,
+  drawTable,
 } from "easymde"
 
 export const boldButton = {

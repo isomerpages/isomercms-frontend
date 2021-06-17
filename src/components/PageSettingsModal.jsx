@@ -11,26 +11,26 @@ import {
   frontMatterParser,
   deslugifyPage,
   deslugifyDirectory,
-} from "@src/utils"
+} from "../utils"
 
-import { createPageData, updatePageData, renamePageData } from "@src/api"
+import { createPageData, updatePageData, renamePageData } from "../api"
 import {
   PAGE_SETTINGS_KEY,
   DIR_CONTENT_KEY,
   PAGE_CONTENT_KEY,
-} from "@src/constants"
+} from "../constants"
 
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
-import { validatePageSettings } from "@utils/validators"
-import { errorToast, successToast } from "@utils/toasts"
+import { validatePageSettings } from "../utils/validators"
+import { errorToast, successToast } from "../utils/toasts"
 
-import FormField from "@components/FormField"
-import FormFieldHorizontal from "@components/FormFieldHorizontal"
-import SaveDeleteButtons from "@components/SaveDeleteButtons"
+import FormField from "./FormField"
+import FormFieldHorizontal from "./FormFieldHorizontal"
+import SaveDeleteButtons from "./SaveDeleteButtons"
 
-import useSiteUrlHook from "@hooks/useSiteUrlHook"
-import useRedirectHook from "@hooks/useRedirectHook"
+import useSiteUrlHook from "../hooks/useSiteUrlHook"
+import useRedirectHook from "../hooks/useRedirectHook"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -167,7 +167,7 @@ const PageSettingsModal = ({
       if (isNewPage) {
         let exampleTitle = "Example Title"
         while (pagesData.includes(generatePageFileName(exampleTitle))) {
-          exampleTitle = exampleTitle + "_1"
+          exampleTitle += "_1"
         }
         const examplePermalink = `/${folderName ? `${folderName}/` : ""}${
           subfolderName ? `${subfolderName}/` : ""
@@ -247,12 +247,18 @@ const PageSettingsModal = ({
                 {isNewPage ? "You may edit page details anytime. " : ""}
                 To edit page content, simply click on the page title. <br />
                 <span className={elementStyles.infoGrey}>
-                  My workspace >
+                  My workspace {">"}
                   {folderName ? (
-                    <span> {deslugifyDirectory(folderName)} > </span>
+                    <span>
+                      {deslugifyDirectory(folderName)}
+                      {">"}
+                    </span>
                   ) : null}
                   {subfolderName ? (
-                    <span> {deslugifyDirectory(subfolderName)} > </span>
+                    <span>
+                      {deslugifyDirectory(subfolderName)}
+                      {">"}
+                    </span>
                   ) : null}
                   <u className="ml-1">{title}</u>
                   <br />
@@ -264,7 +270,7 @@ const PageSettingsModal = ({
                   id="title"
                   value={title}
                   errorMessage={errors.title}
-                  isRequired={true}
+                  isRequired
                   onFieldChange={changeHandler}
                 />
                 <br />
@@ -273,9 +279,9 @@ const PageSettingsModal = ({
                 <FormFieldHorizontal
                   title={siteUrl}
                   id="permalink"
-                  value={permalink ? permalink : ""}
+                  value={permalink || ""}
                   errorMessage={errors.permalink}
-                  isRequired={true}
+                  isRequired
                   onFieldChange={changeHandler}
                   placeholder=" "
                 />

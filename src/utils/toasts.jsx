@@ -1,11 +1,11 @@
 import React from "react"
 import { toast } from "react-toastify"
 
-import { DEFAULT_ERROR_TOAST_MSG } from "@src/utils"
+import Toast from "../components/Toast"
 
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import { DEFAULT_ERROR_TOAST_MSG } from "../utils"
 
-import Toast from "@components/Toast"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
 export function errorToast(message) {
   return toast(

@@ -1,29 +1,31 @@
-import React, { useEffect, useState } from "react"
+import React, { useState, useEffect } from "react"
+import PropTypes from "prop-types"
 import { useQuery } from "react-query"
 
-import PropTypes from "prop-types"
+// Import components
+import Header from "../components/Header"
+import Sidebar from "../components/Sidebar"
+import CollectionPagesSection from "../components/CollectionPagesSection"
+import FolderCard from "../components/FolderCard"
+import FolderCreationModal from "../components/FolderCreationModal"
+import FolderOptionButton from "../components/folders/FolderOptionButton"
 
-import { getAllCategories, getEditPageData, getPages } from "@src/api"
-import { FOLDERS_CONTENT_KEY, PAGE_CONTENT_KEY } from "@src/constants"
+// Import styles
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
+
+// Import utils
 import {
   DEFAULT_RETRY_MSG,
-  frontMatterParser,
   prettifyPageFileName,
-} from "@src/utils"
+  frontMatterParser,
+} from "../utils"
+import { errorToast } from "../utils/toasts"
+import { getPages, getAllCategories, getEditPageData } from "../api"
+import { PAGE_CONTENT_KEY, FOLDERS_CONTENT_KEY } from "../constants"
 
-import useSiteColorsHook from "@hooks/useSiteColorsHook"
-
-import { errorToast } from "@utils/toasts"
-
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
-import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
-
-import CollectionPagesSection from "@components/CollectionPagesSection"
-import FolderCard from "@components/FolderCard"
-import FolderCreationModal from "@components/FolderCreationModal"
-import FolderOptionButton from "@components/folders/FolderOptionButton"
-import Header from "@components/Header"
-import Sidebar from "@components/Sidebar"
+// Import hooks
+import useSiteColorsHook from "../hooks/useSiteColorsHook"
 
 const CONTACT_US_TEMPLATE_LAYOUT = "contact_us"
 

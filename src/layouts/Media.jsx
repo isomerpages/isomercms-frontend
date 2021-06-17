@@ -5,37 +5,32 @@ import { Link } from "react-router-dom"
 import { useQuery, useMutation, useQueryClient } from "react-query"
 import { ReactQueryDevtools } from "react-query/devtools"
 
-import Header from "@components/Header"
-import Sidebar from "@components/Sidebar"
-import FolderCard from "@components/FolderCard"
-import FolderOptionButton from "@components/folders/FolderOptionButton"
-import FolderNamingModal from "@components/FolderNamingModal"
-import GenericWarningModal from "@components/GenericWarningModal"
-import DeleteWarningModal from "@components/DeleteWarningModal"
-import MediaCard from "@components/media/MediaCard"
-import MediaSettingsModal from "@components/media/MediaSettingsModal"
+import Header from "../components/Header"
+import Sidebar from "../components/Sidebar"
+import FolderCard from "../components/FolderCard"
+import FolderOptionButton from "../components/folders/FolderOptionButton"
+import FolderNamingModal from "../components/FolderNamingModal"
+import GenericWarningModal from "../components/GenericWarningModal"
+import DeleteWarningModal from "../components/DeleteWarningModal"
+import MediaCard from "../components/media/MediaCard"
+import MediaSettingsModal from "../components/media/MediaSettingsModal"
 
-import {
-  createMediaSubfolder,
-  getMedia,
-  moveMedia,
-  deleteMedia,
-} from "@src/api"
-import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from "@src/constants"
+import { createMediaSubfolder, getMedia, moveMedia, deleteMedia } from "../api"
+import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from "../constants"
 
-import useRedirectHook from "@hooks/useRedirectHook"
+import useRedirectHook from "../hooks/useRedirectHook"
 
 import {
   DEFAULT_RETRY_MSG,
   deslugifyDirectory,
   slugifyCategory,
-} from "@src/utils"
-import { validateCategoryName } from "@utils/validators"
-import { errorToast, successToast } from "@utils/toasts"
+} from "../utils"
+import { validateCategoryName } from "../utils/validators"
+import { errorToast, successToast } from "../utils/toasts"
 
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
-import contentStyles from "@styles/isomer-cms/pages/Content.module.scss"
-import mediaStyles from "@styles/isomer-cms/pages/Media.module.scss"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
+import mediaStyles from "../styles/isomer-cms/pages/Media.module.scss"
 
 const mediaNames = {
   images: "images",
@@ -227,7 +222,7 @@ const Media = ({
 
   const folderNameChangeHandler = (event) => {
     const { value } = event.target
-    let errorMessage = validateCategoryName(
+    const errorMessage = validateCategoryName(
       value,
       mediaNames[mediaType],
       directoryNames
@@ -265,7 +260,7 @@ const Media = ({
         setMoveDropdownQuery(initialMoveDropdownQueryState)
         queryClient.removeQueries(
           `${siteName}/images/${
-            customPath === undefined ? "" : customPath + "/"
+            customPath === undefined ? "" : `${customPath}/`
           }${selectedMedia.fileName}`
         )
       },
@@ -328,7 +323,7 @@ const Media = ({
         setPendingMediaUpload(null)
         queryClient.removeQueries(
           `${siteName}/images/${
-            customPath === undefined ? "" : customPath + "/"
+            customPath === undefined ? "" : `${customPath}/`
           }${selectedMedia.fileName}`
         )
       },
@@ -409,24 +404,24 @@ const Media = ({
                   .map((folderName, idx, arr) => {
                     return idx === arr.length - 1 ? (
                       <span>
-                        {" "}
-                        >
+                        &nbsp;
+                        {">"}
                         <strong className="ml-1">
-                          {" "}
+                          &nbsp;
                           {deslugifyDirectory(folderName)}
                         </strong>
                       </span>
                     ) : (
                       <span>
-                        {" "}
-                        >
+                        &nbsp;
+                        {">"}
                         <Link
                           to={`/sites/${siteName}/${mediaType}/${encodeURIComponent(
                             arr.slice(0, idx + 1).join("/")
                           )}`}
                         >
                           <strong className="ml-1">
-                            {" "}
+                            &nbsp;
                             {deslugifyDirectory(folderName)}
                           </strong>
                         </Link>
@@ -540,7 +535,7 @@ const Media = ({
                       mediaItemIndex={mediaItemIndex}
                       setSelectedMedia={setSelectedMedia}
                       setSelectedPath={setSelectedPath}
-                      showSettings={true}
+                      showSettings
                       onClick={() => setIsMediaSettingsActive(true)}
                       setIsMoveModalActive={setIsMoveModalActive}
                       setIsDeleteModalActive={setIsDeleteModalActive}
@@ -555,7 +550,7 @@ const Media = ({
                   ))
                 ) : (
                   <div className={contentStyles.segment}>
-                    There are no {mediaNames[mediaType]} in this{" "}
+                    There are no {mediaNames[mediaType]} in this&nbsp;
                     {mediaType === "images" ? "album" : "directory"}.
                   </div>
                 )}

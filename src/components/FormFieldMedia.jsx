@@ -1,13 +1,12 @@
 import React, { useState } from "react"
-
 import PropTypes from "prop-types"
 
-import { successToast } from "@utils/toasts"
+import MediaModal from "./media/MediaModal"
+import MediaSettingsModal from "./media/MediaSettingsModal"
 
-import elementStyles from "@styles/isomer-cms/Elements.module.scss"
+import { successToast } from "../utils/toasts"
 
-import MediaModal from "@components/media/MediaModal"
-import MediaSettingsModal from "@components/media/MediaSettingsModal"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
 const FormFieldMedia = ({
   title,

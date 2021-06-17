@@ -1,8 +1,6 @@
-import React, { createContext, useContext, useEffect, useState } from "react"
-
+import React, { createContext, useEffect, useState, useContext } from "react"
 import axios from "axios"
-
-import { SITES_IS_PRIVATE_KEY } from "@src/constants"
+import { SITES_IS_PRIVATE_KEY } from "../constants"
 
 const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 const LOCAL_STORAGE_USER_ID_KEY = "userId"
@@ -40,8 +38,10 @@ const LoginProvider = ({ children }) => {
 
   // Set interceptors to log users out if an error occurs within the LoginProvider
   axios.interceptors.response.use(
-    (response) => response,
-    async (error) => {
+    function (response) {
+      return response
+    },
+    async function (error) {
       if (error.response && error.response.status === 401) {
         await logout()
       }
