@@ -1,8 +1,5 @@
 import React from "react"
-import uuid from "uuid"
 import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-
-const UUID = uuid.v4()
 
 export default function Home() {
   return (
@@ -16,7 +13,7 @@ export default function Home() {
         <button
           type="button"
           onClick={() => {
-            window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&state=${UUID}&scope=repo`
+            window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/github-redirect`
           }}
           className={`${elementStyles.green} ${elementStyles.loginButton}`}
         >
