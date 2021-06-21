@@ -43,10 +43,10 @@ const resetE2eTestRepo = async () => {
 
       const child = spawn(runCypressCommand, { shell: true })
       child.stderr.on("data", (data) => {
-        console.error(data.toString())
+        console.error(data.toString().trim())
       })
       child.stdout.on("data", (data) => {
-        console.log(data.toString())
+        console.log(data.toString().trim())
       })
       child.on("exit", (exitCode) => {
         console.log(`Child exited with code: ${exitCode}`)
