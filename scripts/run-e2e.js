@@ -1,6 +1,7 @@
 const axios = require("axios")
 const btoa = require("btoa")
 const { spawn } = require("child_process")
+const cypress = require("cypress")
 const path = require("path")
 
 // login credentials
@@ -13,9 +14,10 @@ const headers = {
 }
 
 // cypress commands
+const cypressCommand = process.argv[2] // either `run` or `open`
 const srcPath = path.resolve(__dirname, "..")
 const envFilePath = `${srcPath}/.env`
-const runCypressOpenCommand = `source ${envFilePath} && npx cypress open`
+const runCypressCommand = `source ${envFilePath} && npx cypress ${cypressCommand}`
 
 // reset e2e-test-repo
 const { E2E_COMMIT_HASH } = process.env
@@ -39,7 +41,7 @@ const resetE2eTestRepo = async () => {
     .then(() => {
       console.log(`Successfully reset e2e-test-repo to ${E2E_COMMIT_HASH}`)
 
-      const child = spawn(runCypressOpenCommand, { shell: true })
+      const child = spawn(runCypressCommand, { shell: true })
       child.stderr.on("data", (data) => {
         console.error(data.toString())
       })
