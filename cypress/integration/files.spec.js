@@ -363,7 +363,12 @@ describe("Files", () => {
       cy.visit(`/sites/${TEST_REPO_NAME}/documents`)
       cy.contains(FILE_TITLE) // file should be contained in directory
 
-      cy.deleteMedia(FILE_TITLE) // cleanup
+      cy.intercept({
+        method: "DELETE",
+        url: `/v1/sites/${TEST_REPO_NAME}/documents/${FILE_TITLE}`,
+      }).as("deleteFile")
+      cy.deleteMedia(FILE_TITLE)
+      cy.wait("@deleteFile")
     })
 
     it("Should be able to move file from Files to file directory", () => {
@@ -390,8 +395,6 @@ describe("Files", () => {
         `/sites/${TEST_REPO_NAME}/documents/${SLUGIFIED_DIRECTORY_TITLE}`
       )
       cy.contains(FILE_TITLE) // file should be contained in directory
-
-      cy.deleteMedia(FILE_TITLE) // cleanup
     })
 
     after(() => {

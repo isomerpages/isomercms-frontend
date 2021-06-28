@@ -1,3 +1,6 @@
+import "cypress-pipe"
+
+const click = ($el) => $el.click()
 const CUSTOM_TIMEOUT = 30000 // 30 seconds
 
 Cypress.Commands.add("uploadMedia", (mediaTitle, mediaPath, disableAction) => {
@@ -23,14 +26,20 @@ Cypress.Commands.add("moveMedia", (mediaTitle, newMediaFolder) => {
   cy.get(`[id^="${mediaTitle}-settings-"]`).click()
   cy.contains("Move to").click()
   if (newMediaFolder) {
-    cy.get(`[id^="${newMediaFolder}"]`, { timeout: CUSTOM_TIMEOUT })
-      .should("exist")
+    cy.get(`[id^="${newMediaFolder}-1"]`, { timeout: CUSTOM_TIMEOUT })
+      .should("have.length.gte", 1)
+      .should("be.visible")
       .first()
       .click()
   } else {
     cy.get(`[id^="breadcrumbItem-0"]`, { timeout: CUSTOM_TIMEOUT })
-      .should("exist")
-      .click()
+      .should("be.visible")
+      // breadcrumb elements in FileMoveMenuDropdown are flaky, so we need to
+      // use cypress-pipe
+      .pipe(click)
+      .should(($el) => {
+        expect($el).to.not.exist
+      })
   }
   cy.contains("button", "Move Here").click({ scrollBehavior: false }) // necessary because it will otherwise scroll to top of page
   cy.contains("button", "Continue").click()
