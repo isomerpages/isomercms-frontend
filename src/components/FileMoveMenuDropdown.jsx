@@ -107,6 +107,7 @@ const FileMoveMenuDropdown = ({
       ref={dropdownRef}
       tabIndex={1}
       onBlur={onBlur}
+      data-cy="menu-dropdown"
     >
       <MenuItem
         key={`back-${menuIndex}`}

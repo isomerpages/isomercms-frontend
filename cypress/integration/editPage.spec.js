@@ -27,7 +27,7 @@ describe("Edit unlinked page", () => {
     TEST_UNLINKED_PAGE_TITLE
   )}.md`
 
-  const DEFAULT_IMAGE_TITLE = "hero-banner.png"
+  const DEFAULT_IMAGE_TITLE = "isomer-logo.svg"
   const ADDED_IMAGE_TITLE = "balloon.png"
   const ADDED_IMAGE_PATH = "images/balloon.png"
 

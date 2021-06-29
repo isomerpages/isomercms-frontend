@@ -25,6 +25,7 @@ Cypress.Commands.add(
 Cypress.Commands.add("moveMedia", (mediaTitle, newMediaFolder) => {
   cy.get(`[id^="${mediaTitle}-settings-"]`).click()
   cy.contains("Move to").click()
+  cy.get("[data-cy=menu-dropdown]").children().should("have.length.gt", 3) // assert that "Move to" options have loaded
   if (newMediaFolder) {
     cy.get(`[id^="${newMediaFolder}-1"]`, { timeout: CUSTOM_TIMEOUT })
       .should("have.length.gte", 1)
