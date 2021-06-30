@@ -350,7 +350,12 @@ describe("Images", () => {
       cy.visit(`/sites/${TEST_REPO_NAME}/images`)
       cy.contains(IMAGE_TITLE) // image should be contained in album
 
-      cy.deleteMedia(IMAGE_TITLE) // cleanup
+      cy.intercept({
+        method: "DELETE",
+        url: `/v1/sites/${TEST_REPO_NAME}/images/${IMAGE_TITLE}`,
+      }).as("deleteFile")
+      cy.deleteMedia(IMAGE_TITLE)
+      cy.wait("@deleteFile")
     })
 
     it("Should be able to move image from Images to image album", () => {
@@ -375,8 +380,6 @@ describe("Images", () => {
       cy.wait("@moveImage") // should intercept POST request
       cy.visit(`/sites/${TEST_REPO_NAME}/images/${SLUGIFIED_ALBUM_TITLE}`)
       cy.contains(IMAGE_TITLE) // image should be contained in album
-
-      cy.deleteMedia(IMAGE_TITLE) // cleanup
     })
 
     after(() => {

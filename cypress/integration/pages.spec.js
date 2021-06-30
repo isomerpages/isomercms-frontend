@@ -364,6 +364,11 @@ describe("Pages flow", () => {
 
     // Rename
     it("Should be able to rename a sub-folder", () => {
+      cy.intercept({
+        method: "POST",
+        url: `/v1/sites/e2e-test-repo/folders/${PARSED_TEST_FOLDER_WITH_PAGES_TITLE}/subfolder/${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}/rename/${PARSED_EDITED_TEST_SUBFOLDER_WITH_PAGES_TITLE}`,
+      }).as("renameSubfolder")
+
       cy.contains(PRETTIFIED_FOLDER_WITH_PAGES_TITLE, {
         timeout: CUSTOM_TIMEOUT,
       })
@@ -378,7 +383,8 @@ describe("Pages flow", () => {
       cy.contains("button", "Save").click()
 
       // Assert
-      cy.contains("1 item", { timeout: CUSTOM_TIMEOUT }).should("exist")
+      cy.wait("@renameSubfolder")
+      cy.contains("1 item").should("exist")
       cy.contains(PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE).click()
       cy.contains(PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE)
       cy.url().should(
