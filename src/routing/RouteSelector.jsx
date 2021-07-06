@@ -15,6 +15,7 @@ import EditContactUs from "../layouts/EditContactUs"
 import Resources from "../layouts/Resources"
 import EditNavBar from "../layouts/EditNavBar"
 import Settings from "../layouts/Settings"
+import Collections from "../layouts/Collections"
 import NotFoundPage from "../components/NotFoundPage"
 import FallbackComponent from "../components/FallbackComponent"
 
@@ -49,13 +50,13 @@ export const RouteSelector = () => (
     />
     <ProtectedRouteWithProps
       exact
-      path="/sites/:siteName/folder/:folderName"
-      component={Folders}
+      path="/sites/:siteName/folder/:collectionName"
+      component={Collections}
     />
     <ProtectedRouteWithProps
       exact
-      path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName"
-      component={Folders}
+      path="/sites/:siteName/folder/:collectionName/subfolder/:subcollectionName"
+      component={Collections}
     />
     <ProtectedRouteWithProps
       exact

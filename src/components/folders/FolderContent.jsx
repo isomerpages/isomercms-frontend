@@ -14,7 +14,7 @@ const FolderContentItem = ({
   folderContentItem,
   disableLink,
   siteName,
-  folderName,
+  collectionName,
   itemIndex,
   allCategories,
   setSelectedPage,
@@ -36,8 +36,8 @@ const FolderContentItem = ({
     const isFile = type !== "dir"
     const link =
       type === "dir"
-        ? `/sites/${siteName}/folder/${folderName}/subfolder/${fileName}`
-        : `/sites/${siteName}/folder/${folderName}/${
+        ? `/sites/${siteName}/folder/${collectionName}/subfolder/${fileName}`
+        : `/sites/${siteName}/folder/${collectionName}/${
             path.includes("/") ? `subfolder/` : ""
           }${path}`
     const title = deslugifyPage(fileName)
