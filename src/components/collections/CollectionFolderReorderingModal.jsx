@@ -1,42 +1,62 @@
-import React, { useState } from "react"
+import React from "react"
 import PropTypes from "prop-types"
 import { Droppable, Draggable, DragDropContext } from "react-beautiful-dnd"
-
-import { useMutation } from "react-query"
 import update from "immutability-helper"
 
-import { FolderContentItem } from "./folders/FolderContent"
-import LoadingButton from "./LoadingButton"
+// Import contexts
+import { CollectionConsumer } from "../../contexts/CollectionContext"
 
-import {
-  DEFAULT_RETRY_MSG,
-  deslugifyDirectory,
-  convertSubfolderArray,
-  updateDirectoryFile,
-  convertArrayToFolderOrder,
-} from "../utils"
+import { FolderContentItem } from "../folders/FolderContent"
+import LoadingButton from "../LoadingButton"
 
-import { errorToast, successToast } from "../utils/toasts"
-
-import { setDirectoryFile } from "../api"
+import { deslugifyDirectory } from "../../utils"
 
 // Import styles
-import adminStyles from "../styles/isomer-cms/pages/Admin.module.scss"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
+import adminStyles from "../../styles/isomer-cms/pages/Admin.module.scss"
+import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
+import contentStyles from "../../styles/isomer-cms/pages/Content.module.scss"
 
-const FolderReorderingModal = ({
-  siteName,
-  folderName,
-  subfolderName,
-  folderOrderArray,
+const CollectionFolderReorderingModal = () => {
+  return (
+    <CollectionConsumer>
+      {({
+        collectionName,
+        subcollectionName,
+        directoryFileSha,
+        collectionFolderOrderArray,
+        setCollectionFolderOrderArray,
+        parsedFolderContents,
+        isRearrangeActive,
+        setIsRearrangeActive,
+        rearrangeFolder,
+      }) => (
+        <>
+          {isRearrangeActive && (
+            <ModalBody
+              collectionName={collectionName}
+              subcollectionName={subcollectionName}
+              collectionFolderOrderArray={collectionFolderOrderArray}
+              setCollectionFolderOrderArray={setCollectionFolderOrderArray}
+              setIsRearrangeActive={setIsRearrangeActive}
+              directoryFileSha={directoryFileSha}
+              parsedFolderContents={parsedFolderContents}
+              rearrangeFolder={rearrangeFolder}
+            />
+          )}
+        </>
+      )}
+    </CollectionConsumer>
+  )
+}
+
+const ModalBody = ({
+  collectionName,
+  subcollectionName,
+  collectionFolderOrderArray,
+  setCollectionFolderOrderArray,
   setIsRearrangeActive,
-  directoryFileSha,
-  parsedFolderContents,
-  isFolderLive,
+  rearrangeFolder,
 }) => {
-  const [folderOrder, setFolderOrder] = useState(folderOrderArray)
-
   const onDragEnd = (result) => {
     const { source, destination } = result
 
@@ -50,62 +70,14 @@ const FolderReorderingModal = ({
     )
       return
 
-    const elem = folderOrder[source.index]
-    const newFolderOrder = update(folderOrder, {
+    const elem = collectionFolderOrderArray[source.index]
+    const newFolderOrder = update(collectionFolderOrderArray, {
       $splice: [
         [source.index, 1], // Remove elem from its original position
         [destination.index, 0, elem], // Splice elem into its new position
       ],
     })
-    setFolderOrder(newFolderOrder)
-  }
-
-  // REORDERING
-  // save file-reordering
-  const { mutateAsync: rearrangeFolder } = useMutation(
-    (payload) => setDirectoryFile(siteName, folderName, payload),
-    {
-      onError: () =>
-        errorToast(
-          `Your file reordering could not be saved. ${DEFAULT_RETRY_MSG}`
-        ),
-      onSuccess: () => successToast("Successfully updated page order"),
-      onSettled: () => setIsRearrangeActive((prevState) => !prevState),
-    }
-  )
-
-  // REORDERING utils
-  const saveHandler = async () => {
-    // drag and drop complete, save new order
-    let newFolderOrder
-    if (subfolderName) {
-      newFolderOrder = convertSubfolderArray(
-        folderOrder,
-        parsedFolderContents,
-        subfolderName
-      )
-    } else {
-      newFolderOrder = convertArrayToFolderOrder(folderOrder)
-    }
-    if (
-      JSON.stringify(newFolderOrder) === JSON.stringify(parsedFolderContents)
-    ) {
-      // no change in file order
-      setIsRearrangeActive((prevState) => !prevState)
-      return
-    }
-
-    const updatedDirectoryFile = updateDirectoryFile(
-      folderName,
-      isFolderLive,
-      newFolderOrder
-    )
-
-    const payload = {
-      content: updatedDirectoryFile,
-      sha: directoryFileSha,
-    }
-    await rearrangeFolder(payload) // setIsRearrangeActive(false) handled by mutate
+    setCollectionFolderOrderArray(newFolderOrder)
   }
 
   return (
@@ -121,9 +93,9 @@ const FolderReorderingModal = ({
             {/* Page title */}
             <div className={contentStyles.sectionHeader}>
               <h1 className={contentStyles.sectionTitle}>{`Rearrange items in ${
-                subfolderName
-                  ? deslugifyDirectory(subfolderName)
-                  : deslugifyDirectory(folderName)
+                subcollectionName
+                  ? deslugifyDirectory(subcollectionName)
+                  : deslugifyDirectory(collectionName)
               }`}</h1>
             </div>
             <div className={contentStyles.segment}>
@@ -141,18 +113,18 @@ const FolderReorderingModal = ({
             <div className={contentStyles.segment}>
               <span>
                 Workspace {">"}
-                {subfolderName ? (
+                {subcollectionName ? (
                   <>
                     &nbsp;
-                    {deslugifyDirectory(folderName)}&nbsp;
+                    {deslugifyDirectory(collectionName)}&nbsp;
                     <strong>
                       {">"}
-                      {deslugifyDirectory(subfolderName)}
+                      {deslugifyDirectory(subcollectionName)}
                     </strong>
                     &nbsp;
                   </>
                 ) : (
-                  <strong> {deslugifyDirectory(folderName)}</strong>
+                  <strong> {deslugifyDirectory(collectionName)}</strong>
                 )}
               </span>
             </div>
@@ -165,7 +137,7 @@ const FolderReorderingModal = ({
                     ref={droppableProvided.innerRef}
                     {...droppableProvided.droppableProps}
                   >
-                    {folderOrder.map(
+                    {collectionFolderOrderArray.map(
                       (folderContentItem, folderContentIndex) => (
                         <Draggable
                           draggableId={folderContentItem.fileName}
@@ -206,7 +178,7 @@ const FolderReorderingModal = ({
             <LoadingButton
               label="Done"
               className={elementStyles.blue}
-              callback={saveHandler}
+              callback={rearrangeFolder}
             />
           </div>
         </div>
@@ -215,13 +187,11 @@ const FolderReorderingModal = ({
   )
 }
 
-export default FolderReorderingModal
-
-FolderReorderingModal.propTypes = {
+ModalBody.propTypes = {
   siteName: PropTypes.string.isRequired,
-  folderName: PropTypes.string.isRequired,
-  subfolderName: PropTypes.string,
-  folderOrderArray: PropTypes.arrayOf(
+  collectionName: PropTypes.string.isRequired,
+  subcollectionName: PropTypes.string,
+  collectionFolderOrderArray: PropTypes.arrayOf(
     PropTypes.shape({
       fileName: PropTypes.string.isRequired,
       path: PropTypes.string.isRequired,
@@ -232,5 +202,6 @@ FolderReorderingModal.propTypes = {
   setIsRearrangeActive: PropTypes.func.isRequired,
   directoryFileSha: PropTypes.string.isRequired,
   parsedFolderContents: PropTypes.arrayOf(PropTypes.string).isRequired,
-  isFolderLive: PropTypes.bool.isRequired,
 }
+
+export default CollectionFolderReorderingModal

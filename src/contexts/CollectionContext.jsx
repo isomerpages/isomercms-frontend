@@ -13,11 +13,14 @@ import {
 // Import validators and utils
 import { validateCategoryName } from "../utils/validators"
 import {
-  DEFAULT_RETRY_MSG,
+  DEFAULT_RETRY_MSG, // TO-DO: Why is this in utils? Move it somewhere else
   parseDirectoryFile,
   convertFolderOrderToArray,
   retrieveSubfolderContents,
   slugifyCategory,
+  convertSubfolderArray,
+  updateDirectoryFile,
+  convertArrayToFolderOrder,
 } from "../utils"
 import { errorToast, successToast } from "../utils/toasts"
 
@@ -25,7 +28,7 @@ import { errorToast, successToast } from "../utils/toasts"
 import useRedirectHook from "../hooks/useRedirectHook"
 
 // Import API service calls
-import { getDirectoryFile, moveFiles } from "../api"
+import { getDirectoryFile, moveFiles, setDirectoryFile } from "../api"
 
 const CollectionContext = createContext(null)
 
@@ -131,6 +134,10 @@ const CollectionProvider = ({
 
   // parse contents of current folder directory
   useEffect(() => {
+    // We want to regenerate the folder order if isRearrangeActive is false,
+    // i.e. user has clicked out of the rearrange modal
+    if (isRearrangeActive) return
+
     if (folderContents && folderContents.sha) {
       const {
         order: directoryFileOrder,
@@ -159,7 +166,7 @@ const CollectionProvider = ({
         )
       }
     }
-  }, [folderContents, subcollectionName])
+  }, [folderContents, subcollectionName, isRearrangeActive])
 
   useEffect(() => {
     setMoveDropdownQuery(initialMoveDropdownQueryState)
@@ -235,6 +242,58 @@ const CollectionProvider = ({
   }
 
   // ===============================
+  // API calls for creating new collection/subcollection
+  // ===============================
+  const { mutateAsync: updateCollectionFolderOrderApiCall } = useMutation(
+    (payload) => setDirectoryFile(siteName, collectionName, payload),
+    {
+      onError: () =>
+        errorToast(
+          `Your file reordering could not be saved. ${DEFAULT_RETRY_MSG}`
+        ),
+      onSuccess: () => successToast("Successfully updated collection order"),
+      onSettled: () => setIsRearrangeActive((prevState) => !prevState),
+    }
+  )
+
+  // ===============================
+  // Functions for reordering collection/subcollection
+  // ===============================
+  // REORDERING utils
+  const rearrangeFolder = async () => {
+    // drag and drop complete, save new order
+    let newFolderOrder
+    if (subcollectionName) {
+      newFolderOrder = convertSubfolderArray(
+        collectionFolderOrderArray,
+        parsedFolderContents,
+        subcollectionName
+      )
+    } else {
+      newFolderOrder = convertArrayToFolderOrder(collectionFolderOrderArray)
+    }
+    if (
+      JSON.stringify(newFolderOrder) === JSON.stringify(parsedFolderContents)
+    ) {
+      // no change in file order
+      setIsRearrangeActive((prevState) => !prevState)
+      return
+    }
+
+    const updatedDirectoryFile = updateDirectoryFile(
+      collectionName,
+      isFolderLive,
+      newFolderOrder
+    )
+
+    const payload = {
+      content: updatedDirectoryFile,
+      sha: directoryFileSha,
+    }
+    await updateCollectionFolderOrderApiCall(payload) // setIsRearrangeActive(false) handled by mutate
+  }
+
+  // ===============================
   // Functions for creating new collection folder/subfolder
   // ===============================
   // Handler for when user updates the name of a new collection folder/subfolder
@@ -273,12 +332,6 @@ const CollectionProvider = ({
   // ===============================
   // API calls for creating new collection/subcollection
   // ===============================
-  const { mutateAsync: createNewColl } = useCreateCollHook(
-    siteName,
-    collectionName,
-    collectionFolderCreationTitle
-  )
-
   const { mutateAsync: createNewCollectionFolderApiCall } = useMutation(
     () =>
       moveFiles(
@@ -340,6 +393,7 @@ const CollectionProvider = ({
     // Collection/subcollection rearrangement data
     isRearrangeActive,
     setIsRearrangeActive,
+    setCollectionFolderOrderArray,
 
     // Collection page setting data
     isPageSettingsActive,
@@ -368,8 +422,9 @@ const CollectionProvider = ({
     collectionFolderCreationPageSelectChangeHandler,
     collectionFolderMovePages,
 
-    // API calls
+    // Methods that involve API calls
     createNewCollectionFolderApiCall,
+    rearrangeFolder,
   }
 
   return (

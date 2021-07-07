@@ -6,6 +6,7 @@ import { CollectionProvider } from "../contexts/CollectionContext"
 // Import components
 import CollectionCreationModal from "../components/collections/CollectionCreationModal"
 import CollectionFolderBody from "../components/collections/CollectionFolderBody"
+import CollectionFolderReorderingModal from "../components/collections/CollectionFolderReorderingModal"
 
 const Collections = ({ match }) => {
   const { siteName, collectionName, subcollectionName } = match.params
@@ -17,13 +18,16 @@ const Collections = ({ match }) => {
       subcollectionName={subcollectionName}
     >
       {/* Modal to rearrange existing collection folder */}
-      {/* <CollectionFolderReorderingModal /> */}
+      <CollectionFolderReorderingModal />
 
       {/* Modal to create new subcollection */}
       <CollectionCreationModal />
 
       {/* Modal to modify settings of a collection page in this collection */}
       {/* <CollectionPageSettingsModal /> */}
+
+      {/* Modal to delete collection page */}
+      {/* <CollectionFolderSettingsModal /> */}
 
       {/* Modal to modify settings of a collection subfolder in this collection */}
       {/* <CollectionFolderSettingsModal /> */}
