@@ -355,7 +355,7 @@ const CollectionProvider = ({
   // ===============================
   // API calls for creating new collection/subcollection
   // ===============================
-  const { mutateAsync: createNewCollectionFolderApiCall } = useMutation(
+  const { mutateAsync: createSubcollection } = useMutation(
     () =>
       moveFiles(
         siteName,
@@ -519,7 +519,7 @@ const CollectionProvider = ({
 
     // TO-DO: Improve naming convention for these...
     // Methods that involve API calls
-    createNewCollectionFolderApiCall,
+    createSubcollection,
     rearrangeFolder,
     deleteCollectionPageOrSubcollection,
   }

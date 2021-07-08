@@ -41,7 +41,7 @@ const CollectionCreationModal = () => {
         collectionFolderCreationNameChangeHandler,
         collectionFolderCreationPageSelectChangeHandler,
         collectionFolderMovePages,
-        createNewCollectionFolderApiCall,
+        createSubcollection,
       }) => (
         <>
           {collectionFolderCreationState ===
@@ -78,7 +78,7 @@ const CollectionCreationModal = () => {
                     CollectionCreationSteps.INACTIVE
                   )
                 }
-                onProceed={createNewCollectionFolderApiCall}
+                onProceed={createSubcollection}
                 selectedPages={collectionFolderMovePages}
                 sortedCollectionPages={getSortedCollectionPages(
                   collectionFolderOrderArray
