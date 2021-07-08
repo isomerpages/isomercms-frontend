@@ -8,6 +8,7 @@ import {
   CollectionCreationSteps,
   DIR_CONTENT_KEY,
   FOLDERS_CONTENT_KEY,
+  PAGE_CONTENT_KEY,
 } from "../constants"
 
 // Import validators and utils
@@ -28,7 +29,14 @@ import { errorToast, successToast } from "../utils/toasts"
 import useRedirectHook from "../hooks/useRedirectHook"
 
 // Import API service calls
-import { getDirectoryFile, moveFiles, setDirectoryFile } from "../api"
+import {
+  getDirectoryFile,
+  moveFiles,
+  setDirectoryFile,
+  deletePageData,
+  getEditPageData,
+  deleteSubfolder,
+} from "../api"
 
 const CollectionContext = createContext(null)
 
@@ -62,8 +70,12 @@ const CollectionProvider = ({
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
 
   // TO-DO: clarify what these are
+  // selectedPage refers to the page that is about to be edited or deleted.
   const [selectedPage, setSelectedPage] = useState("")
   const [selectedPath, setSelectedPath] = useState("")
+
+  // TO-DO: Rename this? At first glance, this is a variable that is true if a selected item is a page
+  // and false if selected item is not a page. Or can we combine this state variable with selectedPage?
   const [isSelectedItemPage, setIsSelectedItemPage] = useState(false)
 
   // ===============================
@@ -171,6 +183,16 @@ const CollectionProvider = ({
   useEffect(() => {
     setMoveDropdownQuery(initialMoveDropdownQueryState)
   }, [collectionName, subcollectionName])
+
+  // set selected item type
+  useEffect(() => {
+    if (selectedPage) {
+      const selectedItem = collectionFolderOrderArray.find(
+        (item) => item.fileName === selectedPage
+      )
+      setIsSelectedItemPage(selectedItem.type === "file")
+    }
+  }, [selectedPage])
 
   // Reset the folder creation title, errors, and pages to be moved if the state is inactive
   useEffect(() => {
@@ -366,6 +388,77 @@ const CollectionProvider = ({
     }
   )
 
+  // ===============================
+  // API calls for deleting subcollection or collection page
+  // ===============================
+  // get page settings details when page is selected (used for editing page settings and deleting)
+  const { data: pageData } = useQuery(
+    [
+      PAGE_CONTENT_KEY,
+      {
+        siteName,
+        folderName: collectionName,
+        subfolderName: subcollectionName,
+        fileName: selectedPage,
+      },
+    ],
+    () =>
+      getEditPageData({
+        siteName,
+        folderName: collectionName,
+        subfolderName: subcollectionName,
+        fileName: selectedPage,
+      }),
+    {
+      enabled: selectedPage.length > 0 && isSelectedItemPage,
+      retry: false,
+      onError: () => {
+        setSelectedPage("")
+        errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
+      },
+    }
+  )
+
+  const { mutateAsync: deleteCollectionPageOrSubcollection } = useMutation(
+    async () => {
+      if (isSelectedItemPage && pageData)
+        await deletePageData(
+          {
+            siteName,
+            folderName: collectionName,
+            subFolderName: subcollectionName,
+            fileName: selectedPage,
+          },
+          pageData.pageSha
+        )
+      else if (!isSelectedItemPage)
+        await deleteSubfolder({
+          siteName,
+          folderName: collectionName,
+          subfolderName: selectedPage,
+        })
+      else return
+    },
+    {
+      onError: () =>
+        errorToast(
+          `Your ${
+            isSelectedItemPage ? "file" : "subfolder"
+          } could not be deleted successfully. ${DEFAULT_RETRY_MSG}`
+        ),
+      onSuccess: () => {
+        successToast(
+          `Successfully deleted ${isSelectedItemPage ? "file" : "subfolder"}`
+        )
+        refetchFolderContents()
+      },
+      onSettled: () => {
+        setIsDeleteModalActive((prevState) => !prevState)
+        setSelectedPage("")
+      },
+    }
+  )
+
   const collectionContextData = {
     // General collection data
     siteName,
@@ -422,9 +515,11 @@ const CollectionProvider = ({
     collectionFolderCreationPageSelectChangeHandler,
     collectionFolderMovePages,
 
+    // TO-DO: Improve naming convention for these...
     // Methods that involve API calls
     createNewCollectionFolderApiCall,
     rearrangeFolder,
+    deleteCollectionPageOrSubcollection,
   }
 
   return (
