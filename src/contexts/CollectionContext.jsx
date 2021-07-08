@@ -36,6 +36,7 @@ import {
   deletePageData,
   getEditPageData,
   deleteSubfolder,
+  getAllCategories,
 } from "../api"
 
 const CollectionContext = createContext(null)
@@ -482,6 +483,7 @@ const CollectionProvider = ({
     setSelectedPath,
     isSelectedItemPage,
     setIsSelectedItemPage,
+    pageData,
 
     // Collection/subcollection rearrangement data
     isRearrangeActive,

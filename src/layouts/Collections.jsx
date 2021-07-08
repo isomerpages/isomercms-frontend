@@ -8,6 +8,7 @@ import CollectionCreationModal from "../components/collections/CollectionCreatio
 import CollectionFolderBody from "../components/collections/CollectionFolderBody"
 import CollectionFolderReorderingModal from "../components/collections/CollectionFolderReorderingModal"
 import CollectionPageOrSubcollectionDeleteWarningModal from "../components/collections/CollectionPageOrSubcollectionDeleteWarningModal"
+import CollectionPageSettingsModal from "../components/collections/CollectionPageSettingsModal"
 
 const Collections = ({ match }) => {
   const { siteName, collectionName, subcollectionName } = match.params
@@ -25,7 +26,7 @@ const Collections = ({ match }) => {
       <CollectionCreationModal />
 
       {/* Modal to modify settings of a collection page in this collection */}
-      {/* <CollectionPageSettingsModal /> */}
+      <CollectionPageSettingsModal />
 
       {/* Modal to delete collection page or subcollection */}
       <CollectionPageOrSubcollectionDeleteWarningModal />
