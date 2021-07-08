@@ -17,3 +17,9 @@ export const IMAGE_DETAILS_KEY = "image-details"
 export const DOCUMENT_DETAILS_KEY = "document-details"
 
 export const SITES_IS_PRIVATE_KEY = "sites-is-private"
+
+export const CollectionCreationSteps = {
+  INACTIVE: "inactive", // user is not creating a new collection folder/subfolder
+  SELECT_FOLDER_NAME: "select_folder_name", // user is naming the collection folder/subfolder
+  SELECT_PAGES: "select_pages", // user is selecting pages to add to new collection folder/subfolder
+}

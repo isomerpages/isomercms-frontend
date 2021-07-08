@@ -10,7 +10,7 @@ import Header from "../components/Header"
 import Sidebar from "../components/Sidebar"
 import FolderCreationModal from "../components/FolderCreationModal"
 import FolderOptionButton from "../components/folders/FolderOptionButton"
-import FolderReorderingModal from "../components/FolderReorderingModal"
+// import FolderReorderingModal from "../components/FolderReorderingModal"
 import { FolderContent } from "../components/folders/FolderContent"
 import FolderModal from "../components/FolderModal"
 import PageSettingsModal from "../components/PageSettingsModal"
@@ -347,18 +347,6 @@ const Folders = ({ match, location }) => {
           }}
           proceedText="Continue"
           cancelText="Cancel"
-        />
-      )}
-      {isRearrangeActive && (
-        <FolderReorderingModal
-          siteName={siteName}
-          folderName={folderName}
-          subfolderName={subfolderName}
-          folderOrderArray={folderOrderArray}
-          setIsRearrangeActive={setIsRearrangeActive}
-          directoryFileSha={directoryFileSha}
-          parsedFolderContents={parsedFolderContents}
-          isFolderLive={isFolderLive}
         />
       )}
       <Header
