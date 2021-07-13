@@ -1,0 +1,1 @@
+export { useCollectionHook } from "./useCollectionHook"
