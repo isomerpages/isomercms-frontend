@@ -15,16 +15,13 @@ import { FolderContent } from "../components/folders/FolderContent"
 import FolderModal from "../components/FolderModal"
 import PageSettingsModal from "../components/PageSettingsModal"
 import DeleteWarningModal from "../components/DeleteWarningModal"
+import DeleteWarningModalState from "../components/DeleteWarningModalState"
 import GenericWarningModal from "../components/GenericWarningModal"
 
 import { errorToast, successToast } from "../utils/toasts"
 
 import useRedirectHook from "../hooks/useRedirectHook"
-import {
-  PAGE_CONTENT_KEY,
-  FOLDERS_CONTENT_KEY,
-  DIR_CONTENT_KEY,
-} from "../constants"
+import { FOLDERS_CONTENT_KEY, DIR_CONTENT_KEY } from "../constants"
 import {
   DEFAULT_RETRY_MSG,
   parseDirectoryFile,
@@ -36,9 +33,7 @@ import {
 // Import API
 import {
   getDirectoryFile,
-  getEditPageData,
   deleteSubfolder,
-  deletePageData,
   moveFile,
   getAllCategories,
 } from "../api"
@@ -138,56 +133,21 @@ const Folders = ({ match, location }) => {
     }
   }, [selectedPage])
 
-  // get page settings details when page is selected (used for editing page settings and deleting)
-  const { data: pageData } = useQuery(
-    [
-      PAGE_CONTENT_KEY,
-      { siteName, folderName, subfolderName, fileName: selectedPage },
-    ],
-    () =>
-      getEditPageData({
-        siteName,
-        folderName,
-        subfolderName,
-        fileName: selectedPage,
-      }),
-    {
-      enabled: selectedPage.length > 0 && isSelectedItemPage,
-      retry: false,
-      onError: () => {
-        setSelectedPage("")
-        errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
-      },
-    }
-  )
-
   // delete file
   const { mutateAsync: deleteHandler } = useMutation(
-    async () => {
-      if (isSelectedItemPage && pageData)
-        await deletePageData(
-          { siteName, folderName, subfolderName, fileName: selectedPage },
-          pageData.pageSha
-        )
-      else if (!isSelectedItemPage)
-        await deleteSubfolder({
-          siteName,
-          folderName,
-          subfolderName: selectedPage,
-        })
-      else return
-    },
+    () =>
+      deleteSubfolder({
+        siteName,
+        folderName,
+        subfolderName: selectedPage,
+      }),
     {
       onError: () =>
         errorToast(
-          `Your ${
-            isSelectedItemPage ? "file" : "subfolder"
-          } could not be deleted successfully. ${DEFAULT_RETRY_MSG}`
+          `Your subfolder could not be deleted successfully. ${DEFAULT_RETRY_MSG}`
         ),
       onSuccess: () => {
-        successToast(
-          `Successfully deleted ${isSelectedItemPage ? "file" : "subfolder"}`
-        )
+        successToast(`Successfully deleted subfolder`)
         refetchFolderContents()
       },
       onSettled: () => {
@@ -301,19 +261,25 @@ const Folders = ({ match, location }) => {
           setIsFolderCreationActive={setIsFolderCreationActive}
         />
       )}
-      {isPageSettingsActive && (!selectedPage || pageData) && (
+      {isPageSettingsActive && (
         <PageSettingsModal
-          folderName={folderName}
-          subfolderName={subfolderName}
-          pagesData={folderOrderArray
-            .filter((item) => item.type === "file")
-            .map((page) => page.fileName)}
-          pageData={pageData}
-          siteName={siteName}
-          originalPageName={selectedPage || ""}
-          isNewPage={!selectedPage}
-          setIsPageSettingsActive={setIsPageSettingsActive}
-          setSelectedPage={setSelectedPage}
+          siteParams={{
+            ...match.params,
+            fileName: selectedPage,
+            collectionName: folderName,
+            subCollectionName: subfolderName,
+          }}
+          modalParams={{
+            // see notes about removing this in PageSettingsModal file
+            pagesData: folderOrderArray
+              .filter((item) => item.type === "file")
+              .map((page) => page.fileName),
+            isNewPage: !selectedPage,
+          }}
+          onClose={() => {
+            setSelectedPage("")
+            setIsPageSettingsActive(false)
+          }}
         />
       )}
       {isFolderModalOpen && (
@@ -330,13 +296,26 @@ const Folders = ({ match, location }) => {
             .map((item) => item.fileName)}
         />
       )}
-      {isDeleteModalActive && (
-        <DeleteWarningModal
-          onCancel={() => setIsDeleteModalActive(false)}
-          onDelete={deleteHandler}
-          type={isSelectedItemPage ? "page" : "subfolder"}
-        />
-      )}
+      {isDeleteModalActive &&
+        !isSelectedItemPage(
+          <DeleteWarningModal
+            onCancel={() => setIsDeleteModalActive(false)}
+            onDelete={deleteHandler}
+            type={isSelectedItemPage ? "page" : "subfolder"}
+          />
+        )}
+      {isDeleteModalActive &&
+        isSelectedItemPage(
+          <DeleteWarningModalState
+            siteParams={{
+              ...match.params,
+              fileName: selectedPage,
+              collectionName: folderName,
+              subCollectionName: subfolderName,
+            }}
+            onClose={() => setIsDeleteModalActive(false)}
+          />
+        )}
       {isMoveModalActive && (
         <GenericWarningModal
           displayTitle="Warning"
