@@ -37,15 +37,19 @@ export const RouteSelector = () => (
       exact
       path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName/:fileName"
       component={EditPage}
-      isCollectionPage
-      isResourcePage={false}
+      pageParams={{
+        isCollectionPage: true,
+        isResourcePage: false,
+      }}
     />
     <ProtectedRouteWithProps
       exact
       path="/sites/:siteName/folder/:folderName/:fileName"
       component={EditPage}
-      isCollectionPage
-      isResourcePage={false}
+      pageParams={{
+        isCollectionPage: true,
+        isResourcePage: false,
+      }}
     />
     <ProtectedRouteWithProps
       exact
@@ -85,8 +89,10 @@ export const RouteSelector = () => (
     <ProtectedRouteWithProps
       path="/sites/:siteName/pages/:fileName"
       component={EditPage}
-      isCollectionPage={false}
-      isResourcePage={false}
+      pageParams={{
+        isCollectionPage: false,
+        isResourcePage: false,
+      }}
     />
     <ProtectedRouteWithProps
       path="/sites/:siteName/workspace"
