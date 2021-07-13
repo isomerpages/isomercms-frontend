@@ -2,15 +2,23 @@ import axios from "axios"
 
 import { useQuery } from "react-query"
 import { errorToast } from "../../utils/toasts"
+import { parseDirectoryFile } from "../../utils"
 import { DIR_CONTENT_KEY } from "../queryKeys"
 import useRedirectHook from "../useRedirectHook"
 
+// temporary before we standardise return for collection endpoint
 const getDirectoryFile = async ({ siteName, folderName }) => {
   if (!folderName) return undefined
   const resp = await axios.get(
     `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`
   )
-  return resp.data
+  const { content: dirContent } = resp.data
+  const { order: parsedFolderContents } = parseDirectoryFile(dirContent)
+  // Filter out placeholder files
+  const filteredFolderContents = parsedFolderContents.filter(
+    (name) => !name.includes(".keep")
+  )
+  return filteredFolderContents
 }
 
 // get directory data
