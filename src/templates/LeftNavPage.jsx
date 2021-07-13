@@ -3,8 +3,10 @@ import PropTypes from "prop-types"
 import _ from "lodash"
 import PageHeader from "./pageComponents/PageHeader"
 import LeftNav from "./pageComponents/LeftNav"
+import { prettifyPageFileName } from "../utils"
 
-const LeftNavPage = ({ chunk, leftNavPages, fileName, title, collection }) => {
+const LeftNavPage = ({ chunk, leftNavPages, fileName, collection }) => {
+  const title = prettifyPageFileName(fileName)
   return (
     <div>
       <PageHeader title={title} collection={collection} />

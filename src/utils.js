@@ -196,7 +196,7 @@ function monthIntToStr(monthInt) {
 export function retrieveResourceFileMetadata(fileName) {
   const fileNameArray = fileName.split(".md")[0]
   const tokenArray = fileNameArray.split("-")
-  const date = tokenArray.slice(0, 3).join("-")
+  const rawDate = tokenArray.slice(0, 3).join("-")
 
   const type = ["file", "post"].includes(tokenArray[3])
     ? tokenArray[3]
@@ -211,6 +211,7 @@ export function retrieveResourceFileMetadata(fileName) {
     return convertedToken.slice(0, 1).toUpperCase() + convertedToken.slice(1)
   })
   const title = prettifiedTitleTokenArray.join(" ")
+  const date = prettifyDate(rawDate)
 
   return { date, type, title }
 }
@@ -429,4 +430,85 @@ export const convertSubfolderArray = (
 export const generateImageorFilePath = (customPath, fileName) => {
   if (customPath) return encodeURIComponent(`${customPath}/${fileName}`)
   return fileName
+}
+
+export const generateNewPageFrontMatter = (
+  { folderName, subfolderName },
+  pagesData
+) => {
+  const generateUniqueTitle = (
+    comparators,
+    seed = "Example Title",
+    append = "_1"
+  ) => {
+    let curr = seed
+    while (comparators.includes(generatePageFileName(curr))) {
+      curr += append
+    }
+    return curr
+  }
+
+  const generatePermalink = (folderName, subfolderName) => {
+    return `/${folderName ? `${folderName}/` : ""}${
+      subfolderName ? `${subfolderName}/` : ""
+    }permalink`
+  }
+  return {
+    title: generateUniqueTitle(pagesData),
+    permalink: generatePermalink(folderName, subfolderName),
+  }
+}
+
+export const getRedirectUrl = (
+  { siteName, collectionName, subCollectionName, resourceName },
+  newFileName
+) => {
+  if (collectionName) {
+    return `/sites/${siteName}/folder/${collectionName}/${
+      subCollectionName ? `subfolder/${subCollectionName}/` : ""
+    }${newFileName}`
+  }
+  if (resourceName) {
+    return `/sites/${siteName}/resources/${resourceName}/${newFileName}`
+  }
+  return `/sites/${siteName}/pages/${newFileName}`
+}
+
+export const extractMetadataFromFilename = (fileName, isResourcePage) => {
+  if (isResourcePage) {
+    const resourceMetadata = retrieveResourceFileMetadata(fileName)
+    return {
+      ...resourceMetadata,
+      date: prettifyDate(resourceMetadata.date),
+    }
+  }
+  return { title: prettifyPageFileName(fileName), date: "" }
+}
+
+export const getBackButtonInfo = ({
+  resourceCategory,
+  folderName,
+  siteName,
+  subfolderName,
+}) => {
+  if (resourceCategory)
+    return {
+      backButtonLabel: deslugifyDirectory(resourceCategory),
+      backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
+    }
+  if (folderName) {
+    if (subfolderName)
+      return {
+        backButtonLabel: deslugifyDirectory(subfolderName),
+        backButtonUrl: `/sites/${siteName}/folder/${folderName}/subfolder/${subfolderName}`,
+      }
+    return {
+      backButtonLabel: deslugifyDirectory(folderName),
+      backButtonUrl: `/sites/${siteName}/folder/${folderName}`,
+    }
+  }
+  return {
+    backButtonLabel: "My Workspace",
+    backButtonUrl: `/sites/${siteName}/workspace`,
+  }
 }
