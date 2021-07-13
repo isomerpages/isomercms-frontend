@@ -53,6 +53,34 @@ const getPageApiEndpoint = ({
   return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/${fileName}`
 }
 
+// EditPage
+const getPageApiEndpointV2 = ({
+  siteName,
+  collectionName,
+  subCollectionName,
+  resourceName,
+  fileName,
+}) => {
+  if (subCollectionName && collectionName) {
+    return `${
+      process.env.REACT_APP_BACKEND_URL_V2
+    }/sites/${siteName}/collections/${collectionName}/subcollections/${encodeURIComponent(
+      subCollectionName
+    )}/pages/${encodeURIComponent(fileName)}`
+  }
+  if (collectionName) {
+    return `${
+      process.env.REACT_APP_BACKEND_URL_V2
+    }/sites/${siteName}/collections/${collectionName}/pages/${encodeURIComponent(
+      fileName
+    )}`
+  }
+  if (resourceName) {
+    return `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/resources/${resourceName}/pages/${fileName}`
+  }
+  return `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/pages/${fileName}`
+}
+
 const getCreatePageApiEndpoint = ({
   folderName,
   subfolderName,
@@ -71,6 +99,30 @@ const getCreatePageApiEndpoint = ({
     return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resources/${resourceName}/pages/new/${newFileName}`
   }
   return `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/new/${newFileName}`
+}
+
+const getCreatePageApiEndpointV2 = ({
+  siteName,
+  collectionName,
+  subCollectionName,
+  resourceName,
+}) => {
+  if (subCollectionName && collectionName) {
+    return `${
+      process.env.REACT_APP_BACKEND_URL_V2
+    }/sites/${siteName}/collections/${collectionName}/subcollections/${encodeURIComponent(
+      subCollectionName
+    )}/pages`
+  }
+  if (collectionName) {
+    return `${
+      process.env.REACT_APP_BACKEND_URL_V2
+    }/sites/${siteName}/collections/${encodeURIComponent(collectionName)}/pages`
+  }
+  if (resourceName) {
+    return `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/resources/${resourceName}/pages`
+  }
+  return `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/pages`
 }
 
 const getRenamePageApiEndpoint = ({
@@ -576,6 +628,8 @@ export {
   updateNavBarData,
   createPageData,
   renamePageData,
+  getCreatePageApiEndpointV2,
+  getPageApiEndpointV2,
   getAllCategories,
   moveFiles,
   moveFile,
