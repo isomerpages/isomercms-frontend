@@ -30,7 +30,7 @@ const LoginProvider = ({ children }) => {
   }
 
   const logout = async () => {
-    await axios.get(`${BACKEND_URL}/auth/logout`)
+    await axios.delete(`${BACKEND_URL}/auth/logout`)
     localStorage.removeItem(LOCAL_STORAGE_USER_ID_KEY)
     localStorage.removeItem(SITES_IS_PRIVATE_KEY)
     setUserId(null)
