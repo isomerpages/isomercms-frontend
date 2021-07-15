@@ -1,5 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
+import { sanitizeUrl } from "@braintree/sanitize-url"
 
 const TemplateFeedbackSection = React.forwardRef(({ feedback }, ref) => (
   <div ref={ref}>
@@ -15,7 +16,12 @@ const TemplateFeedbackSection = React.forwardRef(({ feedback }, ref) => (
           <p>
             If you have a query, feedback or wish to report a problem related to
             this website, please fill in the{" "}
-            <a href={feedback} rel="noopener noreferrer" target="_blank">
+            <a
+              href={sanitizeUrl(feedback)}
+              rel="noopener noreferrer"
+              target="_blank"
+              onClick={(event) => event.preventDefault()}
+            >
               <u>online form</u>
             </a>
             .

@@ -1,6 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import DOMPurify from "dompurify"
+import { sanitizeUrl } from "@braintree/sanitize-url"
 
 const Contact = React.forwardRef(({ contact }, ref) => (
   <div className="col is-6" ref={ref}>
@@ -13,7 +14,10 @@ const Contact = React.forwardRef(({ contact }, ref) => (
         case "phone": {
           return (
             <p className="margin--top--none margin--bottom--none" key={i}>
-              <a href={`tel:${d[key].replace(/\s/g, "")}`}>
+              <a
+                href={sanitizeUrl(`tel:${d[key].replace(/\s/g, "")}`)}
+                onClick={(event) => event.preventDefault()}
+              >
                 <u>{d[key]}</u>
               </a>
             </p>
@@ -22,7 +26,10 @@ const Contact = React.forwardRef(({ contact }, ref) => (
         case "email": {
           return (
             <p className="margin--top--none margin--bottom--none" key={i}>
-              <a href={`mailto:${d[key]}`}>
+              <a
+                href={sanitizeUrl(`mailto:${d[key]}`)}
+                onClick={(event) => event.preventDefault()}
+              >
                 <u>{d[key]}</u>
               </a>
             </p>
