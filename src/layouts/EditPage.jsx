@@ -446,8 +446,14 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
               DOMPurify.removed.length > 1 ? "s" : ""
             }:
             ${DOMPurify.removed.map(
-              ({ attribute }, i) =>
-                `<br/><code>${i}</code>: <code>${attribute.textContent}</code>`
+              (elem, i) =>
+                `<br/><code>${i}</code>: <code>${
+                  elem.attribute?.textContent || elem.element?.textContent
+                    ? (
+                        elem.attribute?.textContent || elem.element?.textContent
+                      ).replace("<", "&lt;")
+                    : elem
+                }</code>`
             )}
             <br/><br/>Before saving, the editor input will be automatically sanitised to prevent security vulnerabilities.
             <br/><br/>To save the sanitised editor input, press Acknowledge. To return to the editor without sanitising, press Cancel.`}
