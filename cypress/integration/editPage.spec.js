@@ -27,7 +27,7 @@ describe("Edit unlinked page", () => {
     TEST_UNLINKED_PAGE_TITLE
   )}.md`
 
-  const DEFAULT_IMAGE_TITLE = "hero-banner.png"
+  const DEFAULT_IMAGE_TITLE = "isomer-logo.svg"
   const ADDED_IMAGE_TITLE = "balloon.png"
   const ADDED_IMAGE_PATH = "images/balloon.png"
 
@@ -187,10 +187,12 @@ describe("Edit unlinked page", () => {
 
     // Cancel works properly in modal
     cy.get("#modal-cancel").click()
+    cy.get("#modal-cancel").should("not.exist")
 
     cy.contains(":button", "Delete").click()
 
     // Test delete in modal
+    cy.get("#modal-delete").should("exist")
     cy.get("#modal-delete").click()
 
     // Assert: page no longer exists

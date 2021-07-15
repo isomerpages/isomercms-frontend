@@ -35,6 +35,7 @@ const MenuItem = ({ item, menuIndex, dropdownRef, className }) => {
     <div
       tabIndex={2}
       id={`${itemId}-${menuIndex}`}
+      data-cy={itemId}
       onMouseDown={(e) => {
         e.stopPropagation()
         e.preventDefault()

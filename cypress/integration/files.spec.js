@@ -117,6 +117,7 @@ describe("Files", () => {
         .contains(/^Save$/)
         .should("be.disabled") // necessary as multiple buttons containing Upload on page
       cy.get("#closeMediaSettingsModal").click()
+      cy.get("#closeMediaSettingsModal").should("not.exist")
 
       // title should not allow for names without extensions
       cy.renameMedia(FILE_TITLE, MISSING_EXTENSION, ACTION_DISABLED)
@@ -128,6 +129,7 @@ describe("Files", () => {
         .contains(/^Save$/)
         .should("be.disabled") // necessary as multiple buttons containing Upload on page
       cy.get("#closeMediaSettingsModal").click()
+      cy.get("#closeMediaSettingsModal").should("not.exist")
 
       // should not be able to save if no change
       cy.renameMedia(FILE_TITLE, FILE_TITLE, ACTION_DISABLED)
@@ -136,6 +138,7 @@ describe("Files", () => {
         .contains(/^Save$/)
         .should("be.disabled") // necessary as multiple buttons containing Upload on page
       cy.get("#closeMediaSettingsModal").click()
+      cy.get("#closeMediaSettingsModal").should("not.exist")
 
       // users should not be able to create file with duplicated filename in folder (NOT SUPPORTED YET)
       cy.uploadMedia(OTHER_FILE_TITLE, TEST_FILE_PATH)
@@ -148,6 +151,8 @@ describe("Files", () => {
         .contains(/^Save$/)
         .should("be.disabled") // necessary as multiple buttons containing Upload on page
       cy.get("#closeMediaSettingsModal").click()
+      cy.get("#closeMediaSettingsModal").should("not.exist")
+
       cy.deleteMedia(OTHER_FILE_TITLE) // clean up
     })
 
@@ -358,7 +363,12 @@ describe("Files", () => {
       cy.visit(`/sites/${TEST_REPO_NAME}/documents`)
       cy.contains(FILE_TITLE) // file should be contained in directory
 
-      cy.deleteMedia(FILE_TITLE) // cleanup
+      cy.intercept({
+        method: "DELETE",
+        url: `/v1/sites/${TEST_REPO_NAME}/documents/${FILE_TITLE}`,
+      }).as("deleteFile")
+      cy.deleteMedia(FILE_TITLE)
+      cy.wait("@deleteFile")
     })
 
     it("Should be able to move file from Files to file directory", () => {
@@ -385,8 +395,6 @@ describe("Files", () => {
         `/sites/${TEST_REPO_NAME}/documents/${SLUGIFIED_DIRECTORY_TITLE}`
       )
       cy.contains(FILE_TITLE) // file should be contained in directory
-
-      cy.deleteMedia(FILE_TITLE) // cleanup
     })
 
     after(() => {

@@ -1,5 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
+import { sanitizeUrl } from "@braintree/sanitize-url"
 
 const LocationHours = ({ operatingHours }) => (
   <div className="col is-6">
@@ -26,11 +27,15 @@ const LocationAddress = ({ location }) => (
       ))}
       <a
         href={
-          location.maps_link ||
-          `https://maps.google.com/?q=${location.address
-            .join("+")
-            .replace(/\s/g, "+")}`
+          location.maps_link
+            ? sanitizeUrl(location.maps_link)
+            : sanitizeUrl(
+                `https://maps.google.com/?q=${location.address
+                  .join("+")
+                  .replace(/\s/g, "+")}`
+              )
         }
+        onClick={(event) => event.preventDefault()}
         className="bp-sec-button has-text-secondary margin--top"
         rel="noopener noreferrer"
         target="_blank"

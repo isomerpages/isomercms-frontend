@@ -7,6 +7,7 @@ import SimpleMDE from "react-simplemde-editor"
 import marked from "marked"
 import Policy from "csp-parse"
 
+import DOMPurify from "dompurify"
 import SimplePage from "../templates/SimplePage"
 import LeftNavPage from "../templates/LeftNavPage"
 
@@ -52,6 +53,7 @@ import LoadingButton from "../components/LoadingButton"
 import HyperlinkModal from "../components/HyperlinkModal"
 import MediaModal from "../components/media/MediaModal"
 import MediaSettingsModal from "../components/media/MediaSettingsModal"
+import GenericWarningModal from "../components/GenericWarningModal"
 
 // Import hooks
 import useSiteColorsHook from "../hooks/useSiteColorsHook"
@@ -157,6 +159,8 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
   const [leftNavPages, setLeftNavPages] = useState([])
   const [resourceRoomName, setResourceRoomName] = useState("")
   const [isCspViolation, setIsCspViolation] = useState(false)
+  const [isXSSViolation, setIsXSSViolation] = useState(false)
+  const [showXSSWarning, setShowXSSWarning] = useState(false)
   const [chunk, setChunk] = useState("")
 
   const [hasChanges, setHasChanges] = useState(false)
@@ -225,7 +229,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
     () =>
       updatePageData(
         match.params,
-        concatFrontMatterMdBody(frontMatter, editorValue),
+        concatFrontMatterMdBody(frontMatter, DOMPurify.sanitize(editorValue)),
         sha
       ),
     {
@@ -325,15 +329,14 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
   useEffect(() => {
     async function loadChunk() {
       const html = marked(editorValue)
-      const {
-        isCspViolation: checkedIsCspViolation,
-        sanitisedHtml: processedSanitisedHtml,
-      } = checkCSP(csp, html)
-      const processedChunk = await prependImageSrc(
-        siteName,
-        processedSanitisedHtml
+      const { isCspViolation, sanitisedHtml: CSPSanitisedHtml } = checkCSP(
+        csp,
+        html
       )
-      setIsCspViolation(checkedIsCspViolation)
+      const cleanedHtml = DOMPurify.sanitize(CSPSanitisedHtml)
+      const processedChunk = await prependImageSrc(siteName, cleanedHtml)
+      setIsXSSViolation(DOMPurify.removed.length > 0)
+      setIsCspViolation(isCspViolation)
       setChunk(processedChunk)
     }
     loadChunk()
@@ -436,6 +439,37 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
         backButtonUrl={backButtonUrl}
       />
       <div className={elementStyles.wrapper}>
+        {isXSSViolation && showXSSWarning && (
+          <GenericWarningModal
+            displayTitle="Warning"
+            // DOMPurify removed object format taken from https://github.com/cure53/DOMPurify/blob/dd63379e6354f66d4689bb80b30cb43a6d8727c2/src/purify.js
+            displayText={`There is unauthorised JS detected in the following snippet${
+              DOMPurify.removed.length > 1 ? "s" : ""
+            }:
+            ${DOMPurify.removed.map(
+              (elem, i) =>
+                `<br/><code>${i}</code>: <code>${
+                  elem.attribute?.textContent || elem.element?.textContent
+                    ? (
+                        elem.attribute?.textContent || elem.element?.textContent
+                      ).replace("<", "&lt;")
+                    : elem
+                }</code>`
+            )}
+            <br/><br/>Before saving, the editor input will be automatically sanitised to prevent security vulnerabilities.
+            <br/><br/>To save the sanitised editor input, press Acknowledge. To return to the editor without sanitising, press Cancel.`}
+            onProceed={() => {
+              setIsXSSViolation(false)
+              setShowXSSWarning(false)
+              saveHandler()
+            }}
+            onCancel={() => {
+              setShowXSSWarning(false)
+            }}
+            cancelText="Cancel"
+            proceedText="Acknowledge"
+          />
+        )}
         {/* Inserting Medias */}
         {showMediaModal && insertingMediaType && (
           <MediaModal
@@ -584,7 +618,9 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
           className={
             isCspViolation ? elementStyles.disabled : elementStyles.blue
           }
-          callback={saveHandler}
+          callback={
+            isXSSViolation ? () => setShowXSSWarning(true) : saveHandler
+          }
         />
       </div>
       {canShowDeleteWarningModal && (
