@@ -7,6 +7,7 @@ import SimpleMDE from "react-simplemde-editor"
 import marked from "marked"
 import Policy from "csp-parse"
 
+import DOMPurify from "dompurify"
 import SimplePage from "../templates/SimplePage"
 import LeftNavPage from "../templates/LeftNavPage"
 
@@ -325,15 +326,12 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
   useEffect(() => {
     async function loadChunk() {
       const html = marked(editorValue)
-      const {
-        isCspViolation: checkedIsCspViolation,
-        sanitisedHtml: processedSanitisedHtml,
-      } = checkCSP(csp, html)
-      const processedChunk = await prependImageSrc(
-        siteName,
-        processedSanitisedHtml
+      const { isCspViolation, sanitisedHtml: CSPSanitisedHtml } = checkCSP(
+        csp,
+        html
       )
-      setIsCspViolation(checkedIsCspViolation)
+      const cleanedHtml = DOMPurify.sanitize(CSPSanitisedHtml)
+      const processedChunk = await prependImageSrc(siteName, cleanedHtml)
       setChunk(processedChunk)
     }
     loadChunk()
