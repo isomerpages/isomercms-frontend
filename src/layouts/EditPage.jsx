@@ -442,6 +442,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
         {isXSSViolation && showXSSWarning && (
           <GenericWarningModal
             displayTitle="Warning"
+            // DOMPurify removed object format taken from https://github.com/cure53/DOMPurify/blob/dd63379e6354f66d4689bb80b30cb43a6d8727c2/src/purify.js
             displayText={`There is unauthorised JS detected in the following snippet${
               DOMPurify.removed.length > 1 ? "s" : ""
             }:
