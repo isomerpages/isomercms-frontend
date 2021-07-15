@@ -53,6 +53,7 @@ import LoadingButton from "../components/LoadingButton"
 import HyperlinkModal from "../components/HyperlinkModal"
 import MediaModal from "../components/media/MediaModal"
 import MediaSettingsModal from "../components/media/MediaSettingsModal"
+import GenericWarningModal from "../components/GenericWarningModal"
 
 // Import hooks
 import useSiteColorsHook from "../hooks/useSiteColorsHook"
@@ -158,6 +159,8 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
   const [leftNavPages, setLeftNavPages] = useState([])
   const [resourceRoomName, setResourceRoomName] = useState("")
   const [isCspViolation, setIsCspViolation] = useState(false)
+  const [isXSSViolation, setIsXSSViolation] = useState(false)
+  const [showXSSWarning, setShowXSSWarning] = useState(false)
   const [chunk, setChunk] = useState("")
 
   const [hasChanges, setHasChanges] = useState(false)
@@ -226,7 +229,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
     () =>
       updatePageData(
         match.params,
-        concatFrontMatterMdBody(frontMatter, editorValue),
+        concatFrontMatterMdBody(frontMatter, DOMPurify.sanitize(editorValue)),
         sha
       ),
     {
@@ -332,6 +335,8 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
       )
       const cleanedHtml = DOMPurify.sanitize(CSPSanitisedHtml)
       const processedChunk = await prependImageSrc(siteName, cleanedHtml)
+      setIsXSSViolation(DOMPurify.removed.length > 0)
+      setIsCspViolation(isCspViolation)
       setChunk(processedChunk)
     }
     loadChunk()
@@ -434,6 +439,30 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
         backButtonUrl={backButtonUrl}
       />
       <div className={elementStyles.wrapper}>
+        {isXSSViolation && showXSSWarning && (
+          <GenericWarningModal
+            displayTitle="Warning"
+            displayText={`There is unauthorised JS detected in the following snippet${
+              DOMPurify.removed.length > 1 ? "s" : ""
+            }:
+            ${DOMPurify.removed.map(
+              ({ attribute }, i) =>
+                `<br/><code>${i}</code>: <code>${attribute.textContent}</code>`
+            )}
+            <br/><br/>Before saving, the editor input will be automatically sanitised to prevent security vulnerabilities.
+            <br/><br/>To save the sanitised editor input, press Acknowledge. To return to the editor without sanitising, press Cancel.`}
+            onProceed={() => {
+              setIsXSSViolation(false)
+              setShowXSSWarning(false)
+              saveHandler()
+            }}
+            onCancel={() => {
+              setShowXSSWarning(false)
+            }}
+            cancelText="Cancel"
+            proceedText="Acknowledge"
+          />
+        )}
         {/* Inserting Medias */}
         {showMediaModal && insertingMediaType && (
           <MediaModal
@@ -582,7 +611,9 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
           className={
             isCspViolation ? elementStyles.disabled : elementStyles.blue
           }
-          callback={saveHandler}
+          callback={
+            isXSSViolation ? () => setShowXSSWarning(true) : saveHandler
+          }
         />
       </div>
       {canShowDeleteWarningModal && (
