@@ -13,7 +13,7 @@
     "csp-parse": "0.0.2",
     "cypress-file-upload": "^5.0.7",
     "dompurify": "^2.2.2",
-    "easymde": "^2.8.0",
+    "easymde": "^2.15.0",
     "escape-string-regexp": "^4.0.0",
     "eslint-plugin-only-warn": "^1.0.2",
     "html-react-parser": "^1.1.1",
