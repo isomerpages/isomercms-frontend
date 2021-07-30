@@ -15,3 +15,34 @@
 .loginButton {
   margin: auto !important;
 }
+
+.otpDiv {
+  margin: 32px 0px;
+
+  .controls {
+    display: flex;
+    flex-direction: row;
+    margin: 16px 0px;
+
+    input {
+      flex: 1;
+      padding-right: 26px;
+    }
+
+    button {
+      margin-left: -16px;
+    }
+  }
+
+  .verified {
+    text-align: center;
+
+    p {
+      margin-bottom: 8px;
+    }
+
+    .redirectMsg {
+      color: grey;
+    }
+  }
+}
