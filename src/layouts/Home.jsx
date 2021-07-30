@@ -81,10 +81,18 @@ export default function Home() {
       case LoginStep.OTP_VERIFIED:
         return (
           <div className={elementStyles.verified}>
-            <p>OTP verified. Redirecting to GitHub for authentication...</p>
-            <div className={elementStyles.redirectMsg}>
-              If your browser does not redirect you automatically, click{" "}
-              <a href={redirectUrl}>here</a>.
+            <div className={elementStyles.spinner}>
+              <div
+                className={cx("spinner-border", "text-primary")}
+                role="status"
+              />
+            </div>
+            <div>
+              <p>OTP verified. Redirecting to GitHub for authentication...</p>
+              <div className={elementStyles.redirectMsg}>
+                If your browser does not redirect you automatically, click{" "}
+                <a href={redirectUrl}>here</a>.
+              </div>
             </div>
           </div>
         )

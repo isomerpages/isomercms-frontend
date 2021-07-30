@@ -35,10 +35,17 @@
   }
 
   .verified {
-    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+
+    .spinner {
+      margin-right: 32px;
+    }
 
     p {
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
 
     .redirectMsg {
