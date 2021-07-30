@@ -562,6 +562,18 @@ const deleteMediaSubfolder = async ({ siteName, mediaType, customPath }) => {
   )
 }
 
+// Login
+const getOtp = (email) => {
+  const endpoint = `${BACKEND_URL}/auth/otp`
+  return axios.post(endpoint, { email })
+}
+
+const verifyOtp = async (email, otp) => {
+  const endpoint = `${BACKEND_URL}/auth/login`
+  const res = await axios.post(endpoint, { email, otp })
+  return res.data
+}
+
 export {
   getDirectoryFile,
   setDirectoryFile,
@@ -597,4 +609,6 @@ export {
   createMediaSubfolder,
   renameMediaSubfolder,
   deleteMediaSubfolder,
+  getOtp,
+  verifyOtp,
 }
