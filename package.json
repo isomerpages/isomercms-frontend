@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@atlaskit/tree": "^7.0.2",
-    "@sentry/react": "^5.27.6",
+    "@sentry/react": "^5.30.0",
     "@sentry/tracing": "^5.30.0",
     "axios": "^0.21.1",
     "bluebird": "^3.7.1",
