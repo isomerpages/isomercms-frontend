@@ -20,11 +20,12 @@ export default function Home() {
   async function handleGetOtp(e) {
     e.preventDefault()
     setIsLoading(true)
+    setError("")
     try {
       await getOtp(email)
       setLoginStep(LoginStep.VERIFY_OTP)
     } catch (err) {
-      setError("Unable to get OTP")
+      setError("Unable to request for an OTP")
     } finally {
       setIsLoading(false)
     }
@@ -33,6 +34,7 @@ export default function Home() {
   async function handleVerifyOtp(e) {
     e.preventDefault()
     setIsLoading(true)
+    setError("")
     try {
       const { githubAuthUrl } = await verifyOtp(email, otp)
       setRedirectUrl(githubAuthUrl)
@@ -46,7 +48,7 @@ export default function Home() {
         window.location.href = githubAuthUrl
       }, 3000)
     } catch (err) {
-      setError("Unable to verify OTP")
+      setError("Unable to login. Failed to verify OTP.")
     } finally {
       setIsLoading(false)
     }
