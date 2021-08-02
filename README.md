@@ -23,6 +23,12 @@ Add the following Cypress environment variables:
 - CYPRESS_COOKIE_VALUE (Value of the JWT cookie)
 - CYPRESS_TEST_REPO_NAME (Name of the test repo on GitHub)
 
+Add the following environment variables which we use to reset our test repo:
+
+- E2E_COMMIT_HASH (the commit hash which you would like to reset the `e2e-test-repo` to)
+- PERSONAL_ACCESS_TOKEN (your GitHub personal access token)
+- USERNAME (your GitHub username)
+
 Run the following:
 
 ```
