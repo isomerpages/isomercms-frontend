@@ -171,7 +171,7 @@ const MediaModal = ({
           {/* Breadcrumb */}
           {
             <>
-              <div>
+              <div className={contentStyles.segment}>
                 {customPath !== "" ? (
                   <>
                     <BreadcrumbButton
@@ -182,7 +182,7 @@ const MediaModal = ({
                       return idx === arr.length - 1 ? (
                         <>
                           &nbsp;{">"}
-                          <strong className="ml-1">
+                          <strong>
                             &nbsp;
                             {deslugifyDirectory(folderName)}
                           </strong>
@@ -199,20 +199,22 @@ const MediaModal = ({
                     })}
                   </>
                 ) : (
-                  <strong className="ml-1">{deslugifyDirectory(type)}</strong>
+                  <strong>{deslugifyDirectory(type)}</strong>
                 )}
               </div>
-              <div>
-                For {type} other than
-                {type === "images"
-                  ? `'png', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg'`
-                  : `'pdf'`}
-                , please use{" "}
-                <Link to={{ pathname: `https://go.gov.sg` }} target="_blank">
-                  {" "}
-                  https://go.gov.sg{" "}
-                </Link>{" "}
-                to upload and link them to your Isomer site.
+              <div className={contentStyles.segment}>
+                <p>
+                  For {type} other than
+                  {type === "images"
+                    ? `'png', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg'`
+                    : `'pdf'`}
+                  , please use{" "}
+                  <Link to={{ pathname: `https://go.gov.sg` }} target="_blank">
+                    {" "}
+                    https://go.gov.sg{" "}
+                  </Link>{" "}
+                  to upload and link them to your Isomer site.
+                </p>
               </div>
             </>
           }
