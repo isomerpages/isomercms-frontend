@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import _ from "lodash"
 import { useQuery } from "react-query"
+import { Link } from "react-router-dom"
 
 import mediaStyles from "../../styles/isomer-cms/pages/Media.module.scss"
 import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
@@ -169,34 +170,51 @@ const MediaModal = ({
           </div>
           {/* Breadcrumb */}
           {
-            <div className={contentStyles.segment}>
-              {customPath !== "" ? (
-                <>
-                  <BreadcrumbButton name={deslugifyDirectory(type)} idx={-1} />
-                  {customPath.split("/").map((folderName, idx, arr) => {
-                    return idx === arr.length - 1 ? (
-                      <>
-                        &nbsp;{">"}
-                        <strong className="ml-1">
-                          &nbsp;
-                          {deslugifyDirectory(folderName)}
-                        </strong>
-                      </>
-                    ) : (
-                      <>
-                        &nbsp;{">"}
-                        <BreadcrumbButton
-                          idx={idx}
-                          name={deslugifyDirectory(folderName)}
-                        />
-                      </>
-                    )
-                  })}
-                </>
-              ) : (
-                <strong className="ml-1">{deslugifyDirectory(type)}</strong>
-              )}
-            </div>
+            <>
+              <div>
+                {customPath !== "" ? (
+                  <>
+                    <BreadcrumbButton
+                      name={deslugifyDirectory(type)}
+                      idx={-1}
+                    />
+                    {customPath.split("/").map((folderName, idx, arr) => {
+                      return idx === arr.length - 1 ? (
+                        <>
+                          &nbsp;{">"}
+                          <strong className="ml-1">
+                            &nbsp;
+                            {deslugifyDirectory(folderName)}
+                          </strong>
+                        </>
+                      ) : (
+                        <>
+                          &nbsp;{">"}
+                          <BreadcrumbButton
+                            idx={idx}
+                            name={deslugifyDirectory(folderName)}
+                          />
+                        </>
+                      )
+                    })}
+                  </>
+                ) : (
+                  <strong className="ml-1">{deslugifyDirectory(type)}</strong>
+                )}
+              </div>
+              <div>
+                For {type} other than
+                {type === "images"
+                  ? `'png', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg'`
+                  : `'pdf'`}
+                , please use{" "}
+                <Link to={{ pathname: `https://go.gov.sg` }} target="_blank">
+                  {" "}
+                  https://go.gov.sg{" "}
+                </Link>{" "}
+                to upload and link them to your Isomer site.
+              </div>
+            </>
           }
           <div className={mediaStyles.mediaCards}>
             {/* Directories */}
