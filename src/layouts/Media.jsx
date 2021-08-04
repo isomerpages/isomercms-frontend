@@ -457,7 +457,7 @@ const Media = ({
                   }}
                   type="file"
                   id="file-upload"
-                  accept="image/*"
+                  accept="image/jpeg, image/png, image/gif, image/svg+xml, image/tiff, image/bmp, image/x-icon"
                   hidden
                 />
               ) : (
@@ -469,8 +469,7 @@ const Media = ({
                   }}
                   type="file"
                   id="file-upload"
-                  accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
-                  text/plain, application/pdf"
+                  accept="application/pdf"
                   hidden
                 />
               )}
