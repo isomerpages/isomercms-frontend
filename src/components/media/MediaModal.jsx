@@ -153,8 +153,8 @@ const MediaModal = ({
               id="file-upload"
               accept={
                 type === "images"
-                  ? "image/*"
-                  : "application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf"
+                  ? "image/jpeg, image/png, image/gif, image/svg+xml, image/tiff, image/bmp, image/x-icon"
+                  : "application/pdf"
               }
               hidden
             />
