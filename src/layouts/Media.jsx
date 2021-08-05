@@ -377,12 +377,25 @@ const Media = ({
           </div>
           {/* Info segment */}
           <div className={contentStyles.segment}>
-            <i className="bx bx-sm bx-info-circle text-dark" />
             <span>
+              <i className="bx bx-sm bx-info-circle text-dark" />
               <strong className="ml-1">Note:</strong> Upload{" "}
               {mediaNames[mediaType]} here to link to them in pages and
               resources. The maximum {mediaNames[mediaType].slice(0, -1)} size
               allowed is 5MB.
+              <br />
+              <strong className="ml-1">
+                For {mediaType} other than
+                {mediaType === "images"
+                  ? `'png', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg'`
+                  : `'pdf'`}
+                , please use
+                <Link to={{ pathname: `https://go.gov.sg` }} target="_blank">
+                  {" "}
+                  https://go.gov.sg{" "}
+                </Link>{" "}
+                to upload and link them to your Isomer site.
+              </strong>
             </span>
           </div>
           {/* Segment divider  */}
@@ -457,7 +470,7 @@ const Media = ({
                   }}
                   type="file"
                   id="file-upload"
-                  accept="image/*"
+                  accept="image/jpeg, image/png, image/gif, image/svg+xml, image/tiff, image/bmp, image/x-icon"
                   hidden
                 />
               ) : (
@@ -469,8 +482,7 @@ const Media = ({
                   }}
                   type="file"
                   id="file-upload"
-                  accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
-                  text/plain, application/pdf"
+                  accept="application/pdf"
                   hidden
                 />
               )}
