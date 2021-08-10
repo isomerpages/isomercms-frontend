@@ -315,7 +315,7 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
       <Header
         siteName={siteName}
         title={title}
-        shouldAllowEditPageBackNav={hasChanges}
+        shouldAllowEditPageBackNav={!hasChanges}
         isEditPage
         backButtonText={backButtonLabel}
         backButtonUrl={backButtonUrl}
