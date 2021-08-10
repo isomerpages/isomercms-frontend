@@ -1,17 +1,14 @@
 import React, { useEffect, useRef, useState } from "react"
 import axios from "axios"
 import _ from "lodash"
-import { useQuery } from "react-query"
 import PropTypes from "prop-types"
 import SimpleMDE from "react-simplemde-editor"
 import marked from "marked"
-import Policy from "csp-parse"
 
 import SimplePage from "../templates/SimplePage"
 import LeftNavPage from "../templates/LeftNavPage"
 
 import checkCSP from "../utils/cspUtils"
-import { errorToast } from "../utils/toasts"
 
 import {
   usePageHook,
@@ -24,12 +21,10 @@ import { useCspHook, useSiteColorsHook } from "../hooks/settingsHooks"
 
 // Isomer components
 import {
-  DEFAULT_RETRY_MSG,
   prependImageSrc,
   prettifyPageFileName,
   retrieveResourceFileMetadata,
   prettifyDate,
-  parseDirectoryFile,
   deslugifyDirectory,
 } from "../utils"
 import {
@@ -47,7 +42,6 @@ import {
 
 import { createPageStyleSheet } from "../utils/siteColorUtils"
 
-import { DIR_CONTENT_KEY, CSP_CONTENT_KEY } from "../constants"
 import "easymde/dist/easymde.min.css"
 import "../styles/isomer-template.scss"
 import elementStyles from "../styles/isomer-cms/Elements.module.scss"
@@ -58,12 +52,6 @@ import LoadingButton from "../components/LoadingButton"
 import HyperlinkModal from "../components/HyperlinkModal"
 import MediaModal from "../components/media/MediaModal"
 import MediaSettingsModal from "../components/media/MediaSettingsModal"
-
-// Import hooks
-import useRedirectHook from "../hooks/useRedirectHook"
-
-// Import API
-import { getCsp, getDirectoryFile } from "../api"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -113,8 +101,6 @@ const MEDIA_PLACEHOLDER_TEXT = {
 }
 
 const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
-  const { setRedirectToNotFound } = useRedirectHook()
-
   const {
     folderName,
     fileName,
@@ -133,7 +119,6 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
     subfolderName
   )
 
-  const [csp, setCsp] = useState(new Policy())
   const [editorValue, setEditorValue] = useState("")
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(
     false
@@ -144,10 +129,9 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
   const [selectionText, setSelectionText] = useState("")
   const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
   const [stagedFileDetails, setStagedFileDetails] = useState({})
-  const [isLoadingPageContent, setIsLoadingPageContent] = useState(true)
+
   const [uploadPath, setUploadPath] = useState("")
-  const [leftNavPages, setLeftNavPages] = useState([])
-  const [resourceRoomName, setResourceRoomName] = useState("")
+  const [resourceRoomName, setResourceRoomName] = useState("") // broken
   const [isCspViolation, setIsCspViolation] = useState(false)
   const [chunk, setChunk] = useState("")
 
@@ -162,50 +146,29 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
     subCollectionName: match.params.subfolderName,
   }
 
-  const { data: pageData } = usePageHook(siteParams)
+  const { data: pageData, isLoading: isLoadingPage } = usePageHook(siteParams)
   const { mutateAsync: updatePageHandler } = useUpdatePageHook(siteParams)
   const { mutateAsync: deletePageHandler } = useDeletePageHook(siteParams, {
     onSuccess: () => history.goBack(),
   })
 
-  const { data: cspData } = useCspHook(siteParams)
+  const { data: csp } = useCspHook(siteParams)
   const { data: dirData } = useCollectionHook(siteParams)
   const { data: siteColorsData } = useSiteColorsHook(siteParams)
 
   useEffect(() => {
-    if (!siteColorsData) return
-    createPageStyleSheet(
-      siteName,
-      siteColorsData.primaryColor,
-      siteColorsData.secondaryColor
-    )
+    if (siteColorsData)
+      createPageStyleSheet(
+        siteName,
+        siteColorsData.primaryColor,
+        siteColorsData.secondaryColor
+      )
   }, [siteColorsData])
 
   useEffect(() => {
-    let _isMounted = true
-
-    const loadPageDetails = async () => {
-      if (!pageData || (isCollectionPage && !dirData) || !cspData) return
-
-      if (_isMounted) {
-        setCsp(cspData)
-        setEditorValue(pageData.content.pageBody)
-        setLeftNavPages(
-          dirData.map((name) => ({
-            fileName: name.includes("/") ? name.split("/")[1] : name,
-            third_nav_title: name.includes("/") ? name.split("/")[0] : null,
-          }))
-        )
-        setResourceRoomName(resourceRoomName || "")
-        setIsLoadingPageContent(false)
-      }
-    }
-
-    loadPageDetails()
-    return () => {
-      _isMounted = false
-    }
-  }, [pageData, dirData, cspData])
+    if (pageData && !hasChanges)
+      setEditorValue(pageData.content.pageBody.trim())
+  }, [pageData])
 
   useEffect(() => {
     async function loadChunk() {
@@ -225,13 +188,9 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
   }, [editorValue])
 
   useEffect(() => {
-    if (pageData) setHasChanges(pageData.content.pageBody !== editorValue)
+    if (pageData)
+      setHasChanges(pageData.content.pageBody.trim() !== editorValue)
   }, [pageData, editorValue])
-
-  const onEditorChange = (value) => {
-    setEditorValue(value)
-  }
-
   const toggleImageAndSettingsModal = (newFileName) => {
     // insert image into editor
     const cm = mdeRef.current.simpleMde.codemirror
@@ -359,7 +318,7 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
         {
           <div
             className={`${editorStyles.pageEditorSidebar} ${
-              isLoadingPageContent || resourceType === "file"
+              isLoadingPage || resourceType === "file"
                 ? editorStyles.pageEditorSidebarLoading
                 : null
             }`}
@@ -372,7 +331,7 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
                   Editing is disabled for downloadable files.
                 </div>
               </>
-            ) : isLoadingPageContent ? (
+            ) : isLoadingPage ? (
               <div
                 className={`spinner-border text-primary ${editorStyles.sidebarLoadingIcon}`}
               />
@@ -382,7 +341,7 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
             <SimpleMDE
               id="simplemde-editor"
               className="h-100"
-              onChange={onEditorChange}
+              onChange={(value) => setEditorValue(value)}
               ref={mdeRef}
               value={editorValue}
               options={{
