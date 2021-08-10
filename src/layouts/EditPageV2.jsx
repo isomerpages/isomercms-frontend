@@ -19,6 +19,9 @@ import {
   useDeletePageHook,
 } from "../hooks/pageHooks"
 
+import { useCollectionHook } from "../hooks/collectionHooks"
+import { useCspHook, useSiteColorsHook } from "../hooks/settingsHooks"
+
 // Isomer components
 import {
   DEFAULT_RETRY_MSG,
@@ -41,6 +44,9 @@ import {
   tableButton,
   guideButton,
 } from "../utils/markdownToolbar"
+
+import { createPageStyleSheet } from "../utils/siteColorUtils"
+
 import { DIR_CONTENT_KEY, CSP_CONTENT_KEY } from "../constants"
 import "easymde/dist/easymde.min.css"
 import "../styles/isomer-template.scss"
@@ -54,7 +60,6 @@ import MediaModal from "../components/media/MediaModal"
 import MediaSettingsModal from "../components/media/MediaSettingsModal"
 
 // Import hooks
-import useSiteColorsHook from "../hooks/useSiteColorsHook"
 import useRedirectHook from "../hooks/useRedirectHook"
 
 // Import API
@@ -108,7 +113,6 @@ const MEDIA_PLACEHOLDER_TEXT = {
 }
 
 const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
-  const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
   const { setRedirectToNotFound } = useRedirectHook()
 
   const {
@@ -164,94 +168,34 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
     onSuccess: () => history.goBack(),
   })
 
-  // get directory data
-  const { data: dirData } = useQuery(
-    [DIR_CONTENT_KEY, siteName, folderName, subfolderName],
-    () => getDirectoryFile(siteName, folderName),
-    {
-      enabled: !hasChanges,
-      retry: false,
-      onError: (err) => {
-        if (err.response && err.response.status === 404) {
-          setRedirectToNotFound(siteName)
-        } else {
-          errorToast(
-            `There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`
-          )
-        }
-      },
-    }
-  )
-
-  // get csp data
-  const { data: cspData } = useQuery(
-    [CSP_CONTENT_KEY, siteName],
-    () => getCsp(siteName),
-    {
-      enabled: !hasChanges,
-      retry: false,
-      onError: (err) => {
-        if (err.response && err.response.status === 404) {
-          setRedirectToNotFound(siteName)
-        } else {
-          errorToast(
-            `There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`
-          )
-        }
-      },
-    }
-  )
+  const { data: cspData } = useCspHook(siteParams)
+  const { data: dirData } = useCollectionHook(siteParams)
+  const { data: siteColorsData } = useSiteColorsHook(siteParams)
 
   useEffect(() => {
-    let _isMounted = true
-
-    const loadPageDetails = async () => {
-      // Set page colors
-      try {
-        await retrieveSiteColors(siteName)
-        generatePageStyleSheet(siteName)
-      } catch (err) {
-        console.log(err)
-      }
-
-      if (_.isEmpty(pageData)) return
-    }
-
-    loadPageDetails()
-    return () => {
-      _isMounted = false
-    }
-  })
+    if (!siteColorsData) return
+    createPageStyleSheet(
+      siteName,
+      siteColorsData.primaryColor,
+      siteColorsData.secondaryColor
+    )
+  }, [siteColorsData])
 
   useEffect(() => {
     let _isMounted = true
 
     const loadPageDetails = async () => {
       if (!pageData || (isCollectionPage && !dirData) || !cspData) return
-      const { netlifyTomlHeaderValues } = cspData
-
-      const retrievedCsp = new Policy(
-        netlifyTomlHeaderValues["Content-Security-Policy"]
-      )
-
-      let generatedLeftNavPages
-      if (isCollectionPage) {
-        const { content: dirContent } = dirData
-        const { order: parsedFolderContents } = parseDirectoryFile(dirContent)
-        // Filter out placeholder files
-        const filteredFolderContents = parsedFolderContents.filter(
-          (name) => !name.includes(".keep")
-        )
-        generatedLeftNavPages = filteredFolderContents.map((name) => ({
-          fileName: name.includes("/") ? name.split("/")[1] : name,
-          third_nav_title: name.includes("/") ? name.split("/")[0] : null,
-        }))
-      }
 
       if (_isMounted) {
-        setCsp(retrievedCsp)
+        setCsp(cspData)
         setEditorValue(pageData.content.pageBody)
-        setLeftNavPages(generatedLeftNavPages)
+        setLeftNavPages(
+          dirData.map((name) => ({
+            fileName: name.includes("/") ? name.split("/")[1] : name,
+            third_nav_title: name.includes("/") ? name.split("/")[0] : null,
+          }))
+        )
         setResourceRoomName(resourceRoomName || "")
         setIsLoadingPageContent(false)
       }
