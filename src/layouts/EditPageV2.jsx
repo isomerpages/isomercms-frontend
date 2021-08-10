@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import axios from "axios"
 import _ from "lodash"
-import { useQuery, useMutation, useQueryClient } from "react-query"
+import { useQuery } from "react-query"
 import PropTypes from "prop-types"
 import SimpleMDE from "react-simplemde-editor"
 import marked from "marked"
@@ -11,7 +11,7 @@ import SimplePage from "../templates/SimplePage"
 import LeftNavPage from "../templates/LeftNavPage"
 
 import checkCSP from "../utils/cspUtils"
-import { successToast, errorToast } from "../utils/toasts"
+import { errorToast } from "../utils/toasts"
 
 import {
   usePageHook,
@@ -22,8 +22,6 @@ import {
 // Isomer components
 import {
   DEFAULT_RETRY_MSG,
-  frontMatterParser,
-  concatFrontMatterMdBody,
   prependImageSrc,
   prettifyPageFileName,
   retrieveResourceFileMetadata,
@@ -43,11 +41,7 @@ import {
   tableButton,
   guideButton,
 } from "../utils/markdownToolbar"
-import {
-  PAGE_CONTENT_KEY,
-  DIR_CONTENT_KEY,
-  CSP_CONTENT_KEY,
-} from "../constants"
+import { DIR_CONTENT_KEY, CSP_CONTENT_KEY } from "../constants"
 import "easymde/dist/easymde.min.css"
 import "../styles/isomer-template.scss"
 import elementStyles from "../styles/isomer-cms/Elements.module.scss"
@@ -114,9 +108,6 @@ const MEDIA_PLACEHOLDER_TEXT = {
 }
 
 const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
-  // Instantiate queryClient
-  const queryClient = useQueryClient()
-
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
   const { setRedirectToNotFound } = useRedirectHook()
 
@@ -139,10 +130,7 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
   )
 
   const [csp, setCsp] = useState(new Policy())
-  const [sha, setSha] = useState(null)
-  const [originalMdValue, setOriginalMdValue] = useState("")
   const [editorValue, setEditorValue] = useState("")
-  const [frontMatter, setFrontMatter] = useState("")
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(
     false
   )
@@ -262,10 +250,7 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
 
       if (_isMounted) {
         setCsp(retrievedCsp)
-        setSha(pageData.sha)
-        setOriginalMdValue(pageData.content.pageBody)
         setEditorValue(pageData.content.pageBody)
-        setFrontMatter(pageData.content.frontMatter)
         setLeftNavPages(generatedLeftNavPages)
         setResourceRoomName(resourceRoomName || "")
         setIsLoadingPageContent(false)
@@ -296,8 +281,8 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
   }, [editorValue])
 
   useEffect(() => {
-    setHasChanges(originalMdValue === editorValue)
-  }, [originalMdValue, editorValue])
+    if (pageData) setHasChanges(pageData.content.pageBody !== editorValue)
+  }, [pageData, editorValue])
 
   const onEditorChange = (value) => {
     setEditorValue(value)
