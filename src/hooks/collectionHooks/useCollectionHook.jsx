@@ -28,6 +28,7 @@ export function useCollectionHook(params) {
   const { setRedirectToNotFound } = useRedirectHook()
   return useQuery([DIR_CONTENT_KEY, params], () => getDirectoryFile(params), {
     retry: false,
+    initialData: [],
     onError: (err) => {
       if (err.response && err.response.status === 404) {
         setRedirectToNotFound(siteName)

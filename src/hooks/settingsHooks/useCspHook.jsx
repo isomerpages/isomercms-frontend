@@ -20,6 +20,7 @@ export function useCspHook({ siteName }, queryParams) {
   return useQuery([CSP_CONTENT_KEY, { siteName }], () => getCsp({ siteName }), {
     ...queryParams,
     retry: false,
+    initialData: new Policy(),
     onError: (err) => {
       if (err.response && err.response.status === 404) {
         setRedirectToNotFound(siteName)
