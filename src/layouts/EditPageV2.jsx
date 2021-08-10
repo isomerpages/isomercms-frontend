@@ -434,10 +434,10 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
           </div>
         }
         <div className={editorStyles.pageEditorMain}>
-          {isCollectionPage && leftNavPages.length > 0 ? (
+          {isCollectionPage && dirData ? (
             <LeftNavPage
               chunk={chunk}
-              leftNavPages={leftNavPages}
+              dirData={dirData}
               fileName={fileName}
               title={title}
               collection={deslugifyDirectory(folderName)}

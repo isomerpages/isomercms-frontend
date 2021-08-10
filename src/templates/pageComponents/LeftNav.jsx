@@ -4,16 +4,23 @@ import PropTypes from "prop-types"
 import { generateLeftNav } from "../../utils/leftnavGeneration"
 import "../../styles/isomer-template.scss"
 
-const LeftNav = ({ leftNavPages, fileName }) => {
-  const [leftNavData, setLeftNavData] = useState()
+const LeftNav = ({ dirData, fileName }) => {
+  const [leftNavPages, setLeftNavPages] = useState()
   useEffect(() => {
-    setLeftNavData(generateLeftNav(leftNavPages, fileName))
-  }, [])
+    if (!dirData) return
+    // map function to be removed with collection refactor
+    const leftNavData = dirData.map((name) => ({
+      fileName: name.includes("/") ? name.split("/")[1] : name,
+      third_nav_title: name.includes("/") ? name.split("/")[0] : null,
+    }))
+    setLeftNavPages(generateLeftNav(leftNavData, fileName))
+  }, [dirData])
+
   return (
     <div className="col is-2 is-position-relative has-side-nav is-hidden-touch">
       <div id="sidenav" className="sidenav">
         <aside className="bp-menu is-gt sidebar__inner">
-          <ul className="bp-menu-list">{leftNavData}</ul>
+          <ul className="bp-menu-list">{leftNavPages}</ul>
           <div dir="ltr" className="resize resize-sensor">
             <div className="resize resize-sensor-expand">
               <div
