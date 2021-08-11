@@ -227,7 +227,7 @@ const EditPageV2 = ({ match, history }) => {
         backButtonUrl={backButtonUrl}
       />
       <div className={elementStyles.wrapper}>
-        {/* Inserting Medias */}
+        {/* Modals */}
         {showMediaModal && insertingMediaType && (
           <MediaModal
             siteName={siteName}
@@ -262,6 +262,19 @@ const EditPageV2 = ({ match, history }) => {
             onClose={onHyperlinkClose}
           />
         )}
+        {canShowDeleteWarningModal && (
+          <DeleteWarningModal
+            onCancel={() => setCanShowDeleteWarningModal(false)}
+            onDelete={() => {
+              deletePageHandler({
+                sha: pageData.sha,
+              })
+              setCanShowDeleteWarningModal(false)
+            }}
+            type="page"
+          />
+        )}
+        {/* Editor */}
         <MarkdownEditor
           mdeRef={mdeRef}
           onChange={(value) => setEditorValue(value)}
@@ -282,6 +295,7 @@ const EditPageV2 = ({ match, history }) => {
           isDisabled={resourceType === "file"}
           isLoading={isLoadingPage}
         />
+        {/* Preview */}
         <div className={editorStyles.pageEditorMain}>
           {collectionName && dirData ? (
             <LeftNavPage
@@ -328,18 +342,6 @@ const EditPageV2 = ({ match, history }) => {
           }
         />
       </div>
-      {canShowDeleteWarningModal && (
-        <DeleteWarningModal
-          onCancel={() => setCanShowDeleteWarningModal(false)}
-          onDelete={() => {
-            deletePageHandler({
-              sha: pageData.sha,
-            })
-            setCanShowDeleteWarningModal(false)
-          }}
-          type="page"
-        />
-      )}
     </>
   )
 }
