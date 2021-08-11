@@ -5,14 +5,14 @@ import axios from "axios"
 
 import { useQuery } from "react-query"
 import { errorToast } from "../../utils/toasts"
-import { parseDirectoryFile } from "../../utils"
+import { parseDirectoryFile, DEFAULT_RETRY_MSG } from "../../utils"
 import { DIR_CONTENT_KEY } from "../queryKeys"
 import useRedirectHook from "../useRedirectHook"
 
-const getDirectoryFile = async ({ siteName, folderName }) => {
-  if (!folderName) return undefined
+const getDirectoryFile = async ({ siteName, collectionName }) => {
+  if (!collectionName) return undefined
   const resp = await axios.get(
-    `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`
+    `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/collections/${collectionName}/pages/collection.yml`
   )
   const { content: dirContent } = resp.data
   const { order: parsedFolderContents } = parseDirectoryFile(dirContent)

@@ -222,14 +222,16 @@ const createPageData = async (
 
   // redirect to new page upon successful creation
   if (folderName) {
-    return `/sites/${siteName}/folder/${folderName}/${
-      subfolderName ? `subfolder/${subfolderName}/` : ""
-    }${newFileName}`
+    // V2
+    return `/sites/${siteName}/folders/${folderName}/${
+      subfolderName ? `subfolders/${subfolderName}/` : ""
+    }editPage/${newFileName}`
   }
   if (resourceName) {
+    // V1
     return `/sites/${siteName}/resources/${resourceName}/${newFileName}`
   }
-  return `/sites/${siteName}/pages/${newFileName}`
+  return `/sites/${siteName}/pages/${newFileName}` // V1
 }
 
 const renamePageData = async (

@@ -436,36 +436,38 @@ export const getRedirectUrl = (
   newFileName
 ) => {
   if (collectionName) {
-    return `/sites/${siteName}/folder/${collectionName}/${
-      subCollectionName ? `subfolder/${subCollectionName}/` : ""
-    }${newFileName}`
+    // V2
+    return `/sites/${siteName}/folders/${collectionName}/${
+      subCollectionName ? `subfolders/${subCollectionName}/` : ""
+    }editPage/${newFileName}`
   }
   if (resourceName) {
+    // V1
     return `/sites/${siteName}/resources/${resourceName}/${newFileName}`
   }
-  return `/sites/${siteName}/pages/${newFileName}`
+  return `/sites/${siteName}/pages/${newFileName}` // V1
 }
 
 export const getBackButton = ({
   resourceCategory,
-  folderName,
+  collectionName,
   siteName,
-  subfolderName,
+  subCollectionName,
 }) => {
   if (resourceCategory)
     return {
       backButtonLabel: deslugifyDirectory(resourceCategory),
       backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
     }
-  if (folderName) {
-    if (subfolderName)
+  if (collectionName) {
+    if (subCollectionName)
       return {
-        backButtonLabel: deslugifyDirectory(subfolderName),
-        backButtonUrl: `/sites/${siteName}/folder/${folderName}/subfolder/${subfolderName}`,
+        backButtonLabel: deslugifyDirectory(subCollectionName),
+        backButtonUrl: `/sites/${siteName}/folder/${collectionName}/subfolder/${subCollectionName}`,
       }
     return {
-      backButtonLabel: deslugifyDirectory(folderName),
-      backButtonUrl: `/sites/${siteName}/folder/${folderName}`,
+      backButtonLabel: deslugifyDirectory(collectionName),
+      backButtonUrl: `/sites/${siteName}/folder/${collectionName}`,
     }
   }
   return {
@@ -474,8 +476,11 @@ export const getBackButton = ({
   }
 }
 
-export const extractMetadataFromFilename = (isResourcePage, fileName) => {
-  if (isResourcePage) {
+export const extractMetadataFromFilename = ({
+  resourceCategoryName,
+  fileName,
+}) => {
+  if (resourceCategoryName) {
     const resourceMetadata = retrieveResourceFileMetadata(fileName)
     return {
       ...resourceMetadata,

@@ -47,20 +47,15 @@ const MEDIA_PLACEHOLDER_TEXT = {
   files: "[Example Filename]",
 }
 
-const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
+const EditPageV2 = ({ match, history }) => {
   const {
-    folderName,
+    subCollectionName,
+    collectionName,
+    resourceRoomName,
+    resourceCategoryName,
     fileName,
     siteName,
-    resourceName,
-    subfolderName,
   } = match.params
-
-  const { title, type: resourceType, date } = extractMetadataFromFilename(
-    isResourcePage,
-    fileName
-  )
-
   const [editorValue, setEditorValue] = useState("")
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(
     false
@@ -73,7 +68,6 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
   const [stagedFileDetails, setStagedFileDetails] = useState({})
 
   const [uploadPath, setUploadPath] = useState("")
-  const [resourceRoomName, setResourceRoomName] = useState("") // broken
   const [isCspViolation, setIsCspViolation] = useState(false)
   const [chunk, setChunk] = useState("")
 
@@ -81,24 +75,20 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
 
   const mdeRef = useRef()
 
-  const siteParams = {
-    // temporary until we standardize on collectionName and subCollectionName
-    ...match.params,
-    collectionName: match.params.folderName,
-    subCollectionName: match.params.subfolderName,
-  }
+  const { backButtonLabel, backButtonUrl } = getBackButton(match.params)
+  const { title, type: resourceType, date } = extractMetadataFromFilename(
+    match.params
+  )
 
-  const { backButtonLabel, backButtonUrl } = getBackButton(siteParams)
-
-  const { data: pageData, isLoading: isLoadingPage } = usePageHook(siteParams)
-  const { mutateAsync: updatePageHandler } = useUpdatePageHook(siteParams)
-  const { mutateAsync: deletePageHandler } = useDeletePageHook(siteParams, {
+  const { data: pageData, isLoading: isLoadingPage } = usePageHook(match.params)
+  const { mutateAsync: updatePageHandler } = useUpdatePageHook(match.params)
+  const { mutateAsync: deletePageHandler } = useDeletePageHook(match.params, {
     onSuccess: () => history.goBack(),
   })
 
-  const { data: csp } = useCspHook(siteParams)
-  const { data: dirData } = useCollectionHook(siteParams)
-  const { data: siteColorsData } = useSiteColorsHook(siteParams)
+  const { data: csp } = useCspHook(match.params)
+  const { data: dirData } = useCollectionHook(match.params)
+  const { data: siteColorsData } = useSiteColorsHook(match.params)
 
   /** ******************************** */
   /*     useEffects to load data     */
@@ -293,23 +283,24 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
           isLoading={isLoadingPage}
         />
         <div className={editorStyles.pageEditorMain}>
-          {isCollectionPage && dirData ? (
+          {collectionName && dirData ? (
             <LeftNavPage
               chunk={chunk}
               dirData={dirData}
               fileName={fileName}
               title={title}
-              collection={deslugifyDirectory(folderName)}
+              collection={deslugifyDirectory(collectionName)}
             />
-          ) : (
+          ) : resourceRoomName && resourceCategoryName ? (
             <SimplePage
               chunk={chunk}
               title={title}
               date={date}
-              isResourcePage={isResourcePage}
               resourceRoomName={deslugifyDirectory(resourceRoomName)}
-              collection={resourceName}
+              collection={resourceCategoryName}
             />
+          ) : (
+            <SimplePage chunk={chunk} title={title} date={date} />
           )}
         </div>
       </div>
@@ -346,7 +337,7 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
             })
             setCanShowDeleteWarningModal(false)
           }}
-          type={isResourcePage ? "resource" : "page"}
+          type="page"
         />
       )}
     </>
@@ -358,14 +349,15 @@ export default EditPageV2
 EditPageV2.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
+      subCollectionName: PropTypes.string,
+      collectionName: PropTypes.string,
+      resourceRoomName: PropTypes.string,
+      resourceCategoryName: PropTypes.string,
       siteName: PropTypes.string,
       fileName: PropTypes.string,
-      newFileName: PropTypes.string,
     }),
   }).isRequired,
   history: PropTypes.shape({
     goBack: PropTypes.func,
   }).isRequired,
-  isCollectionPage: PropTypes.bool.isRequired,
-  isResourcePage: PropTypes.bool.isRequired,
 }

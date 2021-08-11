@@ -36,17 +36,13 @@ export const RouteSelector = () => (
     <RedirectIfLoggedInRoute exact path="/" component={Home} />
     <ProtectedRouteWithProps
       exact
-      path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName/:fileName"
+      path="/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName/editPage/:fileName"
       component={EditPageV2}
-      isCollectionPage
-      isResourcePage={false}
     />
     <ProtectedRouteWithProps
       exact
-      path="/sites/:siteName/folder/:folderName/:fileName"
+      path="/sites/:siteName/folders/:collectionName/editPage/:fileName"
       component={EditPageV2}
-      isCollectionPage
-      isResourcePage={false}
     />
     <ProtectedRouteWithProps
       exact

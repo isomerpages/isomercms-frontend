@@ -28,7 +28,12 @@ const FolderContentItem = ({
   clearMoveDropdownQueryState,
 }) => {
   const parseFolderContentItem = (folderContentItem) => {
+    // to be removed during collections refactor
     const { fileName, children, type, path } = folderContentItem
+    let subfolderName
+    if (path.includes("/")) {
+      subfolderName = path.split("/")[0]
+    }
     const numItems =
       type === "dir"
         ? children.filter((name) => !name.includes(".keep")).length
@@ -37,9 +42,9 @@ const FolderContentItem = ({
     const link =
       type === "dir"
         ? `/sites/${siteName}/folder/${folderName}/subfolder/${fileName}`
-        : `/sites/${siteName}/folder/${folderName}/${
-            path.includes("/") ? `subfolder/` : ""
-          }${path}`
+        : `/sites/${siteName}/folders/${folderName}/${
+            path.includes("/") ? `subfolders/${subfolderName}/` : ""
+          }editPage/${fileName}`
     const title = deslugifyPage(fileName)
     return {
       fileName,
