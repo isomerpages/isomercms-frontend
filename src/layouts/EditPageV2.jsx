@@ -13,6 +13,8 @@ import {
 import { useCollectionHook } from "../hooks/collectionHooks"
 import { useCspHook, useSiteColorsHook } from "../hooks/settingsHooks"
 
+import useRedirectHook from "../hooks/useRedirectHook"
+
 import {
   prependImageSrc,
   getBackButton,
@@ -64,13 +66,19 @@ const EditPageV2 = ({ match, history }) => {
   const [hasChanges, setHasChanges] = useState(false)
 
   const mdeRef = useRef()
+  const { setRedirectToNotFound } = useRedirectHook()
 
   const { backButtonLabel, backButtonUrl } = getBackButton(match.params)
   const { title, type: resourceType, date } = extractMetadataFromFilename(
     match.params
   )
 
-  const { data: pageData, isLoading: isLoadingPage } = usePageHook(match.params)
+  const { data: pageData, isLoading: isLoadingPage } = usePageHook(
+    match.params,
+    {
+      onError: () => setRedirectToNotFound(siteName),
+    }
+  )
   const { mutateAsync: updatePageHandler } = useUpdatePageHook(match.params)
   const { mutateAsync: deletePageHandler } = useDeletePageHook(match.params, {
     onSuccess: () => history.goBack(),
@@ -255,12 +263,11 @@ const EditPageV2 = ({ match, history }) => {
         {canShowDeleteWarningModal && (
           <DeleteWarningModal
             onCancel={() => setCanShowDeleteWarningModal(false)}
-            onDelete={() => {
+            onDelete={() =>
               deletePageHandler({
                 sha: pageData.sha,
               })
-              setCanShowDeleteWarningModal(false)
-            }}
+            }
             type="page"
           />
         )}
