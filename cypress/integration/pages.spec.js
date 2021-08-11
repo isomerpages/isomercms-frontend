@@ -514,7 +514,7 @@ describe("Pages flow", () => {
       // 1. User should be redirected to correct EditPage
       cy.url().should(
         "include",
-        `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}/${TEST_PAGE_FILENAME}`
+        `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}/editPage/${TEST_PAGE_FILENAME}`
       )
       cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT }).should(
         "exist"
@@ -647,7 +647,7 @@ describe("Pages flow", () => {
       // 1. User should be redirected to correct EditPage
       cy.url().should(
         "include",
-        `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}/subfolder/${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}/${TEST_PAGE_FILENAME}`
+        `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}/subfolders/${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}/editPage/${TEST_PAGE_FILENAME}`
       )
       cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT }).should(
         "exist"

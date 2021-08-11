@@ -115,7 +115,7 @@ describe("Edit unlinked page", () => {
     )
   })
 
-  it("Edit page should allow user to modify and save content", () => {
+  it("Edit page (unlinked) should allow user to modify and save content", () => {
     cy.get(".CodeMirror-scroll").type(TEST_PAGE_CONTENT)
     cy.contains(":button", "Save").click()
 
@@ -128,7 +128,7 @@ describe("Edit unlinked page", () => {
     cy.contains(TEST_PAGE_CONTENT).should("exist")
   })
 
-  it("Edit page should allow user to add existing image", () => {
+  it("Edit page (unlinked) should allow user to add existing image", () => {
     cy.get(".image").click()
     cy.contains(DEFAULT_IMAGE_TITLE).click()
     cy.contains(":button", "Select image").click()
@@ -136,7 +136,7 @@ describe("Edit unlinked page", () => {
     cy.contains(`/images/${DEFAULT_IMAGE_TITLE}`)
   })
 
-  it("Edit page should allow user to upload and add existing image", () => {
+  it("Edit page (unlinked) should allow user to upload and add existing image", () => {
     cy.get(".image").click()
     cy.contains(":button", "Add new image").click()
 
@@ -150,7 +150,7 @@ describe("Edit unlinked page", () => {
     cy.contains(`/images/${ADDED_IMAGE_TITLE}`)
   })
 
-  it("Edit page should allow user to upload and add new file", () => {
+  it("Edit page (unlinked) should allow user to upload and add new file", () => {
     cy.get(".file").click()
     cy.contains(":button", "Add new file").click()
 
@@ -164,7 +164,7 @@ describe("Edit unlinked page", () => {
     cy.contains(`/files/${ADDED_FILE_TITLE}`)
   })
 
-  it("Edit page should allow user to add existing file", () => {
+  it("Edit page (unlinked) should allow user to add existing file", () => {
     cy.get(".file").click()
     cy.contains(ADDED_FILE_TITLE).click()
     cy.contains(":button", "Select file").click()
@@ -172,7 +172,7 @@ describe("Edit unlinked page", () => {
     cy.contains(`/files/${ADDED_FILE_TITLE}`)
   })
 
-  it("Edit page should allow user to add link", () => {
+  it("Edit page (unlinked) should allow user to add link", () => {
     cy.get(".link").click()
 
     cy.get('input[id="text"]').type(LINK_TITLE)
@@ -182,7 +182,7 @@ describe("Edit unlinked page", () => {
     cy.contains(`[${LINK_TITLE}](${LINK_URL})`)
   })
 
-  it("Edit page should allow user to delete page", () => {
+  it("Edit page (unlinked) should allow user to delete page", () => {
     cy.contains(":button", "Delete").click()
 
     // Cancel works properly in modal
@@ -207,6 +207,15 @@ describe("Edit collection page", () => {
 
   const TEST_PAGE_TITLE = "Test Collection Page"
   const TEST_PAGE_TITLE_SLUGIFIED = generatePageFileName(TEST_PAGE_TITLE)
+
+  const TEST_PAGE_CONTENT = "lorem ipsum"
+
+  const DEFAULT_IMAGE_TITLE = "isomer-logo.svg"
+
+  const ADDED_FILE_TITLE = "singapore.pdf"
+
+  const LINK_TITLE = "link"
+  const LINK_URL = "https://www.google.com"
 
   before(() => {
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
@@ -234,7 +243,7 @@ describe("Edit collection page", () => {
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
     window.localStorage.setItem("userId", "test")
     cy.visit(
-      `/sites/${TEST_REPO_NAME}/folder/${TEST_FOLDER_TITLE_SLUGIFIED}/${TEST_PAGE_TITLE_SLUGIFIED}`
+      `/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_SLUGIFIED}`
     )
     cy.wait(2000)
   })
@@ -247,8 +256,98 @@ describe("Edit collection page", () => {
     )
   })
 
+  it("Edit page (collection) should have name of title", () => {
+    cy.contains(TEST_PAGE_TITLE)
+  })
+
   it("Edit page (collection) should have third nav menu", () => {
     cy.get("#sidenav").contains(TEST_PAGE_TITLE).should("exist")
+  })
+
+  it("Edit page (collection) should provide a warning to users when navigating away", () => {
+    cy.get(".CodeMirror-scroll").type(TEST_PAGE_CONTENT)
+    cy.contains(":button", TEST_FOLDER_TITLE).click()
+
+    cy.contains("Warning")
+    cy.contains(":button", "No").click()
+
+    // Sanity check: still in edit collection pages and content still present
+    cy.url().should(
+      "include",
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_SLUGIFIED}`
+    )
+    cy.contains(TEST_PAGE_CONTENT)
+
+    cy.contains(":button", TEST_FOLDER_TITLE).click()
+
+    cy.contains("Warning")
+    cy.contains(":button", "Yes").click()
+
+    // Assert: in Collection folder
+    cy.url().should(
+      "include",
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${TEST_FOLDER_TITLE_SLUGIFIED}` // to be fixed after collections refactor
+    )
+  })
+
+  it("Edit page (collection) should allow user to modify and save content", () => {
+    cy.get(".CodeMirror-scroll").type(TEST_PAGE_CONTENT)
+    cy.contains(":button", "Save").click()
+
+    // Asserts
+    // 1. Toast
+    cy.contains("Successfully updated page")
+
+    // 2. Content is there even after refreshing
+    cy.reload()
+    cy.contains(TEST_PAGE_CONTENT).should("exist")
+  })
+
+  it("Edit page (collection) should allow user to add existing image", () => {
+    cy.get(".image").click()
+    cy.contains(DEFAULT_IMAGE_TITLE).click()
+    cy.contains(":button", "Select image").click()
+
+    cy.contains(`/images/${DEFAULT_IMAGE_TITLE}`)
+  })
+
+  it("Edit page (collection) should allow user to add existing file", () => {
+    cy.get(".file").click()
+    cy.contains(ADDED_FILE_TITLE).click()
+    cy.contains(":button", "Select file").click()
+
+    cy.contains(`/files/${ADDED_FILE_TITLE}`)
+  })
+
+  it("Edit page (collection) should allow user to add link", () => {
+    cy.get(".link").click()
+
+    cy.get('input[id="text"]').type(LINK_TITLE)
+    cy.get('input[id="link"]').type(LINK_URL)
+    cy.contains(":button", "Save").click()
+
+    cy.contains(`[${LINK_TITLE}](${LINK_URL})`)
+  })
+
+  it("Edit page (collection) should allow user to delete page", () => {
+    cy.contains(":button", "Delete").click()
+
+    // Cancel works properly in modal
+    cy.get("#modal-cancel").click()
+    cy.get("#modal-cancel").should("not.exist")
+
+    cy.contains(":button", "Delete").click()
+
+    // Test delete in modal
+    cy.get("#modal-delete").should("exist")
+    cy.get("#modal-delete").click()
+    cy.wait(2000)
+
+    // Assert: page no longer exists
+    cy.visit(
+      `/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_SLUGIFIED}`
+    )
+    cy.contains("The page you are looking for does not exist anymore.")
   })
 })
 
