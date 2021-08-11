@@ -29,9 +29,13 @@ export function useCreatePageHook(params, queryParams) {
   const { setRedirectToPage } = useRedirectHook()
   return useMutation((body) => createPageData(params, body), {
     ...queryParams,
-    onSuccess: (resp) =>
-      setRedirectToPage(getRedirectUrl(params, resp.data.fileName)),
-    onError: () =>
-      errorToast(`A new page could not be created. ${DEFAULT_RETRY_MSG}`),
+    onSuccess: (resp) => {
+      setRedirectToPage(getRedirectUrl(params, resp.data.fileName))
+      queryParams && queryParams.onSuccess && queryParams.onSuccess()
+    },
+    onError: () => {
+      errorToast(`A new page could not be created. ${DEFAULT_RETRY_MSG}`)
+      queryParams && queryParams.onError && queryParams.onError()
+    },
   })
 }

@@ -2,8 +2,8 @@ import axios from "axios"
 import { useQuery } from "react-query"
 import Policy from "csp-parse"
 import { errorToast } from "../../utils/toasts"
-import useRedirectHook from "../useRedirectHook"
 import { CSP_CONTENT_KEY } from "../queryKeys"
+import { DEFAULT_RETRY_MSG } from "../../utils"
 
 const getCsp = async ({ siteName }) => {
   const resp = await axios.get(
@@ -16,19 +16,15 @@ const getCsp = async ({ siteName }) => {
 }
 
 export function useCspHook({ siteName }, queryParams) {
-  const { setRedirectToNotFound } = useRedirectHook()
   return useQuery([CSP_CONTENT_KEY, { siteName }], () => getCsp({ siteName }), {
     ...queryParams,
     retry: false,
     initialData: new Policy(),
-    onError: (err) => {
-      if (err.response && err.response.status === 404) {
-        setRedirectToNotFound(siteName)
-      } else {
-        errorToast(
-          `There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`
-        )
-      }
+    onError: () => {
+      errorToast(
+        `There was a problem trying to load your CSP. ${DEFAULT_RETRY_MSG}`
+      )
+      queryParams && queryParams.onError && queryParams.onError()
     },
   })
 }

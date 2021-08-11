@@ -9,6 +9,8 @@ import {
   DEFAULT_ISOMER_SECONDARY_COLOR,
 } from "../../utils/siteColorUtils"
 
+import { DEFAULT_RETRY_MSG } from "../../utils"
+
 const getSiteColors = async ({ siteName }) => {
   const settingsResp = await axios.get(
     `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`
@@ -31,10 +33,12 @@ export function useSiteColorsHook({ siteName }, queryParams) {
     () => getSiteColors({ siteName }),
     {
       ...queryParams,
-      onError: () =>
+      onError: () => {
         errorToast(
           `There was a problem loading the page theme colors. ${DEFAULT_RETRY_MSG}`
         ),
+          queryParams && queryParams.onError && queryParams.onError()
+      },
     }
   )
 }

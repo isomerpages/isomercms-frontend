@@ -47,8 +47,11 @@ export function useUpdatePageHook(params, queryParams) {
         ])
       // else queryClient.invalidateQueries([PAGE_CONTENT_KEY, { siteName }]) // invalidates unlinked pages
       successToast(`Successfully updated page!`)
+      queryParams && queryParams.onSuccess && queryParams.onSuccess()
     },
-    onError: () =>
-      errorToast(`Your page could not be updated. ${DEFAULT_RETRY_MSG}`),
+    onError: () => {
+      errorToast(`Your page could not be updated. ${DEFAULT_RETRY_MSG}`)
+      queryParams && queryParams.onError && queryParams.onError()
+    },
   })
 }

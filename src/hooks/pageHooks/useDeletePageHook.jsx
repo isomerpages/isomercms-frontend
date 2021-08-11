@@ -25,10 +25,12 @@ export function useDeletePageHook(params, queryParams) {
   const queryClient = new useQueryClient()
   return useMutation((body) => deletePageData(params, body), {
     ...queryParams,
-    onError: () =>
+    onError: () => {
       errorToast(
         `Your file could not be deleted successfully. ${DEFAULT_RETRY_MSG}`
-      ),
+      )
+      queryParams && queryParams.onError && queryParams.onError()
+    },
     onSuccess: () => {
       successToast(`Successfully deleted file`)
       if (params.collectionName)
@@ -38,7 +40,7 @@ export function useDeletePageHook(params, queryParams) {
           (({ fileName, ...p }) => p)(params),
         ])
       else queryClient.invalidateQueries([PAGE_CONTENT_KEY, { siteName }]) // invalidates unlinked pages
-      queryParams.onSuccess && queryParams.onSuccess()
+      queryParams && queryParams.onSuccess && queryParams.onSuccess()
     },
   })
 }

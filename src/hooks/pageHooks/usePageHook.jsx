@@ -33,6 +33,7 @@ export function usePageHook(params, queryParams) {
       retry: false,
       onError: () => {
         errorToast(`The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`)
+        queryParams && queryParams.onError && queryParams.onError()
       },
     }
   )
