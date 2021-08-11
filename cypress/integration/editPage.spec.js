@@ -31,8 +31,8 @@ describe("Edit unlinked page", () => {
   const ADDED_IMAGE_TITLE = "balloon.png"
   const ADDED_IMAGE_PATH = "images/balloon.png"
 
-  const ADDED_FILE_TITLE = "editpage_placeholder_add.txt"
-  const ADDED_FILE_PATH = "files/editpage_placeholder_add.txt"
+  const ADDED_FILE_TITLE = "singapore.pdf"
+  const ADDED_FILE_PATH = "files/singapore.pdf"
 
   const LINK_TITLE = "link"
   const LINK_URL = "https://www.google.com"
