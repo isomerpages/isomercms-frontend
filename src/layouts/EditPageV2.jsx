@@ -19,7 +19,7 @@ import { useCspHook, useSiteColorsHook } from "../hooks/settingsHooks"
 import {
   prependImageSrc,
   deslugifyDirectory,
-  getBackButtonInfo,
+  getBackButton,
   extractMetadataFromFilename,
 } from "../utils"
 
