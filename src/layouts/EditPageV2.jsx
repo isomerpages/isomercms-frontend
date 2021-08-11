@@ -7,8 +7,6 @@ import marked from "marked"
 import SimplePage from "../templates/SimplePage"
 import LeftNavPage from "../templates/LeftNavPage"
 
-import checkCSP from "../utils/cspUtils"
-
 import {
   usePageHook,
   useUpdatePageHook,
@@ -18,21 +16,21 @@ import {
 import { useCollectionHook } from "../hooks/collectionHooks"
 import { useCspHook, useSiteColorsHook } from "../hooks/settingsHooks"
 
-// Isomer components
 import {
   prependImageSrc,
-  prettifyPageFileName,
-  retrieveResourceFileMetadata,
-  prettifyDate,
   deslugifyDirectory,
+  getBackButtonInfo,
+  extractMetadataFromFilename,
 } from "../utils"
 
+import checkCSP from "../utils/cspUtils"
 import { createPageStyleSheet } from "../utils/siteColorUtils"
 
 import "easymde/dist/easymde.min.css"
 import "../styles/isomer-template.scss"
 import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 import editorStyles from "../styles/isomer-cms/pages/Editor.module.scss"
+
 import Header from "../components/Header"
 import DeleteWarningModal from "../components/DeleteWarningModal"
 import LoadingButton from "../components/LoadingButton"
@@ -43,45 +41,6 @@ import MarkdownEditor from "../components/pages/MarkdownEditor"
 
 // axios settings
 axios.defaults.withCredentials = true
-
-const extractMetadataFromFilename = (isResourcePage, fileName) => {
-  if (isResourcePage) {
-    const resourceMetadata = retrieveResourceFileMetadata(fileName)
-    return {
-      ...resourceMetadata,
-      date: prettifyDate(resourceMetadata.date),
-    }
-  }
-  return { title: prettifyPageFileName(fileName), date: "" }
-}
-
-const getBackButtonInfo = (
-  resourceCategory,
-  folderName,
-  siteName,
-  subfolderName
-) => {
-  if (resourceCategory)
-    return {
-      backButtonLabel: deslugifyDirectory(resourceCategory),
-      backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
-    }
-  if (folderName) {
-    if (subfolderName)
-      return {
-        backButtonLabel: deslugifyDirectory(subfolderName),
-        backButtonUrl: `/sites/${siteName}/folder/${folderName}/subfolder/${subfolderName}`,
-      }
-    return {
-      backButtonLabel: deslugifyDirectory(folderName),
-      backButtonUrl: `/sites/${siteName}/folder/${folderName}`,
-    }
-  }
-  return {
-    backButtonLabel: "My Workspace",
-    backButtonUrl: `/sites/${siteName}/workspace`,
-  }
-}
 
 const MEDIA_PLACEHOLDER_TEXT = {
   images: "![Alt text for image on Isomer site]",
@@ -96,15 +55,10 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
     resourceName,
     subfolderName,
   } = match.params
+
   const { title, type: resourceType, date } = extractMetadataFromFilename(
     isResourcePage,
     fileName
-  )
-  const { backButtonLabel, backButtonUrl } = getBackButtonInfo(
-    resourceName,
-    folderName,
-    siteName,
-    subfolderName
   )
 
   const [editorValue, setEditorValue] = useState("")
@@ -134,6 +88,8 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
     subCollectionName: match.params.subfolderName,
   }
 
+  const { backButtonLabel, backButtonUrl } = getBackButton(siteParams)
+
   const { data: pageData, isLoading: isLoadingPage } = usePageHook(siteParams)
   const { mutateAsync: updatePageHandler } = useUpdatePageHook(siteParams)
   const { mutateAsync: deletePageHandler } = useDeletePageHook(siteParams, {
@@ -143,6 +99,10 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
   const { data: csp } = useCspHook(siteParams)
   const { data: dirData } = useCollectionHook(siteParams)
   const { data: siteColorsData } = useSiteColorsHook(siteParams)
+
+  /** ******************************** */
+  /*     useEffects to load data     */
+  /** ******************************** */
 
   useEffect(() => {
     if (siteColorsData)
@@ -157,6 +117,11 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
     if (pageData && !hasChanges)
       setEditorValue(pageData.content.pageBody.trim())
   }, [pageData])
+
+  useEffect(() => {
+    if (pageData)
+      setHasChanges(pageData.content.pageBody.trim() !== editorValue)
+  }, [pageData, editorValue])
 
   useEffect(() => {
     async function loadChunk() {
@@ -175,27 +140,9 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
     loadChunk()
   }, [editorValue])
 
-  useEffect(() => {
-    if (pageData)
-      setHasChanges(pageData.content.pageBody.trim() !== editorValue)
-  }, [pageData, editorValue])
-  const toggleImageAndSettingsModal = (newFileName) => {
-    // insert image into editor
-    const cm = mdeRef.current.simpleMde.codemirror
-    if (newFileName) {
-      cm.replaceSelection(
-        `${
-          MEDIA_PLACEHOLDER_TEXT[insertingMediaType]
-        }${`(/${insertingMediaType}/${
-          uploadPath ? `${uploadPath}/` : ""
-        }${newFileName})`.replaceAll(" ", "%20")}`
-      )
-      // set state so that rerender is triggered and image is shown
-      setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
-    }
-    setInsertingMediaType("")
-    setIsFileStagedForUpload(!isFileStagedForUpload)
-  }
+  /** ******************************** */
+  /*         Hyperlink Modal         */
+  /** ******************************** */
 
   const onHyperlinkOpen = () => {
     const cm = mdeRef.current.simpleMde.codemirror
@@ -215,6 +162,28 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
   const onHyperlinkClose = () => {
     setIsInsertingHyperlink(false)
     setSelectionText("")
+  }
+
+  /** ******************************** */
+  /*           Media Modal           */
+  /** ******************************** */
+
+  const toggleMediaAndSettingsModal = (newFileName) => {
+    // insert image into editor
+    const cm = mdeRef.current.simpleMde.codemirror
+    if (newFileName) {
+      cm.replaceSelection(
+        `${
+          MEDIA_PLACEHOLDER_TEXT[insertingMediaType]
+        }${`(/${insertingMediaType}/${
+          uploadPath ? `${uploadPath}/` : ""
+        }${newFileName})`.replaceAll(" ", "%20")}`
+      )
+      // set state so that rerender is triggered and image is shown
+      setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
+    }
+    setInsertingMediaType("")
+    setIsFileStagedForUpload(!isFileStagedForUpload)
   }
 
   const onMediaSelect = (path) => {
@@ -291,7 +260,7 @@ const EditPageV2 = ({ match, isResourcePage, isCollectionPage, history }) => {
               setIsFileStagedForUpload(false)
               setInsertingMediaType("")
             }}
-            onSave={toggleImageAndSettingsModal}
+            onSave={toggleMediaAndSettingsModal}
             media={stagedFileDetails}
             isPendingUpload
           />
