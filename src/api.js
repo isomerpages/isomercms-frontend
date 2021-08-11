@@ -207,6 +207,7 @@ const getCsp = async (siteName) => {
 }
 
 const createPageData = async (
+  // to be removed after collections and page settings refactor
   { folderName, subfolderName, newFileName, siteName, resourceName },
   content
 ) => {
@@ -235,6 +236,7 @@ const createPageData = async (
 }
 
 const renamePageData = async (
+  // to be removed after collections and page settings refactor
   { folderName, subfolderName, fileName, siteName, resourceName, newFileName },
   content,
   sha
@@ -255,6 +257,7 @@ const renamePageData = async (
 }
 
 const updatePageData = async (
+  // to be removed after collections and page settings refactor
   { folderName, subfolderName, fileName, siteName, resourceName },
   content,
   sha
@@ -274,6 +277,7 @@ const updatePageData = async (
 }
 
 const deletePageData = async (
+  // to be removed after collections and page settings refactor
   { folderName, subfolderName, fileName, siteName, resourceName },
   sha
 ) => {
