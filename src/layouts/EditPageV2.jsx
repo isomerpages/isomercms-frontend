@@ -4,9 +4,6 @@ import _ from "lodash"
 import PropTypes from "prop-types"
 import marked from "marked"
 
-import SimplePage from "../templates/SimplePage"
-import LeftNavPage from "../templates/LeftNavPage"
-
 import {
   usePageHook,
   useUpdatePageHook,
@@ -18,7 +15,6 @@ import { useCspHook, useSiteColorsHook } from "../hooks/settingsHooks"
 
 import {
   prependImageSrc,
-  deslugifyDirectory,
   getBackButton,
   extractMetadataFromFilename,
 } from "../utils"
@@ -38,6 +34,7 @@ import HyperlinkModal from "../components/HyperlinkModal"
 import MediaModal from "../components/media/MediaModal"
 import MediaSettingsModal from "../components/media/MediaSettingsModal"
 import MarkdownEditor from "../components/pages/MarkdownEditor"
+import PagePreview from "../components/pages/PagePreview"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -48,14 +45,7 @@ const MEDIA_PLACEHOLDER_TEXT = {
 }
 
 const EditPageV2 = ({ match, history }) => {
-  const {
-    subCollectionName,
-    collectionName,
-    resourceRoomName,
-    resourceCategoryName,
-    fileName,
-    siteName,
-  } = match.params
+  const { siteName } = match.params
   const [editorValue, setEditorValue] = useState("")
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(
     false
@@ -296,27 +286,11 @@ const EditPageV2 = ({ match, history }) => {
           isLoading={isLoadingPage}
         />
         {/* Preview */}
-        <div className={editorStyles.pageEditorMain}>
-          {collectionName && dirData ? (
-            <LeftNavPage
-              chunk={chunk}
-              dirData={dirData}
-              fileName={fileName}
-              title={title}
-              collection={deslugifyDirectory(collectionName)}
-            />
-          ) : resourceRoomName && resourceCategoryName ? (
-            <SimplePage
-              chunk={chunk}
-              title={title}
-              date={date}
-              resourceRoomName={deslugifyDirectory(resourceRoomName)}
-              collection={resourceCategoryName}
-            />
-          ) : (
-            <SimplePage chunk={chunk} title={title} date={date} />
-          )}
-        </div>
+        <PagePreview
+          pageParams={match.params}
+          chunk={chunk}
+          dirData={dirData}
+        />
       </div>
       <div className={editorStyles.pageEditorFooter}>
         <button
