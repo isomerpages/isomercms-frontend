@@ -37,8 +37,8 @@ export function useUpdatePageHook(params, queryParams) {
   return useMutation((body) => updatePageData(params, body), {
     ...queryParams,
     onSuccess: () => {
-      queryClient.invalidateQueries([PAGE_CONTENT_KEY, { params }])
-      queryClient.invalidateQueries([PAGE_SETTINGS_KEY, { params }])
+      queryClient.invalidateQueries([PAGE_CONTENT_KEY, { ...params }])
+      queryClient.invalidateQueries([PAGE_SETTINGS_KEY, { ...params }])
       if (params.collectionName)
         queryClient.invalidateQueries([
           // invalidates collection
