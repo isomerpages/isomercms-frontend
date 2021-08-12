@@ -445,3 +445,45 @@ export const getRedirectUrl = (
   }
   return `/sites/${siteName}/pages/${newFileName}` // V1
 }
+
+export const getBackButton = ({
+  resourceCategory,
+  collectionName,
+  siteName,
+  subCollectionName,
+}) => {
+  if (resourceCategory)
+    return {
+      backButtonLabel: deslugifyDirectory(resourceCategory),
+      backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
+    }
+  if (collectionName) {
+    if (subCollectionName)
+      return {
+        backButtonLabel: deslugifyDirectory(subCollectionName),
+        backButtonUrl: `/sites/${siteName}/folder/${collectionName}/subfolder/${subCollectionName}`,
+      }
+    return {
+      backButtonLabel: deslugifyDirectory(collectionName),
+      backButtonUrl: `/sites/${siteName}/folder/${collectionName}`,
+    }
+  }
+  return {
+    backButtonLabel: "My Workspace",
+    backButtonUrl: `/sites/${siteName}/workspace`,
+  }
+}
+
+export const extractMetadataFromFilename = ({
+  resourceCategoryName,
+  fileName,
+}) => {
+  if (resourceCategoryName) {
+    const resourceMetadata = retrieveResourceFileMetadata(fileName)
+    return {
+      ...resourceMetadata,
+      date: prettifyDate(resourceMetadata.date),
+    }
+  }
+  return { title: prettifyPageFileName(fileName), date: "" }
+}
