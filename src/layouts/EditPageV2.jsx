@@ -9,10 +9,8 @@ import {
   useUpdatePageHook,
   useDeletePageHook,
 } from "../hooks/pageHooks"
-
 import { useCollectionHook } from "../hooks/collectionHooks"
 import { useCspHook, useSiteColorsHook } from "../hooks/settingsHooks"
-
 import useRedirectHook from "../hooks/useRedirectHook"
 
 import {
@@ -20,11 +18,9 @@ import {
   getBackButton,
   extractMetadataFromFilename,
 } from "../utils"
-
 import checkCSP from "../utils/cspUtils"
 import { createPageStyleSheet } from "../utils/siteColorUtils"
 
-import "easymde/dist/easymde.min.css"
 import "../styles/isomer-template.scss"
 import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
@@ -39,23 +35,27 @@ import Footer from "../components/Footer"
 axios.defaults.withCredentials = true
 
 const EditPageV2 = ({ match, history }) => {
-  const { siteName } = match.params
   const [editorValue, setEditorValue] = useState("")
-  const [editorModalType, setEditorModalType] = useState("")
-  const [insertingMediaType, setInsertingMediaType] = useState("")
-
   const [isCspViolation, setIsCspViolation] = useState(false)
   const [chunk, setChunk] = useState("")
+
+  const [editorModalType, setEditorModalType] = useState("")
+  const [insertingMediaType, setInsertingMediaType] = useState("")
+  const [showDeleteWarning, setShowDeleteWarning] = useState(false)
 
   const [hasChanges, setHasChanges] = useState(false)
 
   const mdeRef = useRef()
+
   const { setRedirectToNotFound } = useRedirectHook()
 
+  const { siteName } = match.params
   const { backButtonLabel, backButtonUrl } = getBackButton(match.params)
-  const { title, type: resourceType, date } = extractMetadataFromFilename(
-    match.params
-  )
+  const { type: resourceType } = extractMetadataFromFilename(match.params)
+
+  /** ******************************** */
+  /*   hooks to fetch & update data  */
+  /** ******************************** */
 
   const { data: pageData, isLoading: isLoadingPage } = usePageHook(
     match.params,
@@ -116,7 +116,7 @@ const EditPageV2 = ({ match, history }) => {
     <>
       <Header
         siteName={siteName}
-        title={title}
+        title={prettifyPageFileName(match.params.fileName)}
         shouldAllowEditPageBackNav={!hasChanges}
         isEditPage
         backButtonText={backButtonLabel}
@@ -162,7 +162,7 @@ const EditPageV2 = ({ match, history }) => {
       </div>
       {showDeleteWarning && (
         <DeleteWarningModal
-          onCancel={() => setCanShowDeleteWarningModal(false)}
+          onCancel={() => setShowDeleteWarning(false)}
           onDelete={() =>
             deletePageHandler({
               sha: pageData.sha,
@@ -173,7 +173,7 @@ const EditPageV2 = ({ match, history }) => {
       )}
       <Footer
         isSaveDisabled={isCspViolation}
-        deleteCallback={() => setCanShowDeleteWarningModal(true)}
+        deleteCallback={() => setShowDeleteWarning(true)}
         saveCallback={() =>
           updatePageHandler({
             frontMatter: pageData.content.frontMatter,
