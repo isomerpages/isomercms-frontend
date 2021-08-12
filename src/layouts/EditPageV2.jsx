@@ -30,36 +30,20 @@ import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
 import Header from "../components/Header"
 import DeleteWarningModal from "../components/DeleteWarningModal"
-import HyperlinkModal from "../components/HyperlinkModal"
-import MediaModal from "../components/media/MediaModal"
-import MediaSettingsModal from "../components/media/MediaSettingsModal"
-
 import MarkdownEditor from "../components/pages/MarkdownEditor"
 import PagePreview from "../components/pages/PagePreview"
+import EditorModals from "../components/pages/EditorModals"
 import Footer from "../components/Footer"
 
 // axios settings
 axios.defaults.withCredentials = true
 
-const MEDIA_PLACEHOLDER_TEXT = {
-  images: "![Alt text for image on Isomer site]",
-  files: "[Example Filename]",
-}
-
 const EditPageV2 = ({ match, history }) => {
   const { siteName } = match.params
   const [editorValue, setEditorValue] = useState("")
-  const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(
-    false
-  )
+  const [editorModalType, setEditorModalType] = useState("")
   const [insertingMediaType, setInsertingMediaType] = useState("")
-  const [showMediaModal, setShowMediaModal] = useState(false)
-  const [isInsertingHyperlink, setIsInsertingHyperlink] = useState(false)
-  const [selectionText, setSelectionText] = useState("")
-  const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
-  const [stagedFileDetails, setStagedFileDetails] = useState({})
 
-  const [uploadPath, setUploadPath] = useState("")
   const [isCspViolation, setIsCspViolation] = useState(false)
   const [chunk, setChunk] = useState("")
 
@@ -128,92 +112,6 @@ const EditPageV2 = ({ match, history }) => {
     loadChunk()
   }, [editorValue])
 
-  /** ******************************** */
-  /*         Hyperlink Modal         */
-  /** ******************************** */
-
-  const onHyperlinkOpen = () => {
-    const cm = mdeRef.current.simpleMde.codemirror
-    setSelectionText(cm.getSelection() || "")
-    setIsInsertingHyperlink(true)
-  }
-
-  const onHyperlinkSave = (text, link) => {
-    const cm = mdeRef.current.simpleMde.codemirror
-    cm.replaceSelection(`[${text}](${link})`)
-    // set state so that rerender is triggered and path is shown
-    setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
-    setIsInsertingHyperlink(false)
-    setSelectionText("")
-  }
-
-  const onHyperlinkClose = () => {
-    setIsInsertingHyperlink(false)
-    setSelectionText("")
-  }
-
-  /** ******************************** */
-  /*           Media Modal           */
-  /** ******************************** */
-
-  const toggleMediaAndSettingsModal = (newFileName) => {
-    // insert image into editor
-    const cm = mdeRef.current.simpleMde.codemirror
-    if (newFileName) {
-      cm.replaceSelection(
-        `${
-          MEDIA_PLACEHOLDER_TEXT[insertingMediaType]
-        }${`(/${insertingMediaType}/${
-          uploadPath ? `${uploadPath}/` : ""
-        }${newFileName})`.replaceAll(" ", "%20")}`
-      )
-      // set state so that rerender is triggered and image is shown
-      setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
-    }
-    setInsertingMediaType("")
-    setIsFileStagedForUpload(!isFileStagedForUpload)
-  }
-
-  const onMediaSelect = (path) => {
-    const cm = mdeRef.current.simpleMde.codemirror
-    cm.replaceSelection(
-      `${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}(${path.replaceAll(
-        " ",
-        "%20"
-      )})`
-    )
-    // set state so that rerender is triggered and image is shown
-    setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
-    setInsertingMediaType("")
-    setShowMediaModal(false)
-  }
-
-  const stageFileForUpload = (fileName, fileData) => {
-    const baseFolder = insertingMediaType
-    setStagedFileDetails({
-      path: `${baseFolder}%2F${fileName}`,
-      content: fileData,
-      fileName,
-    })
-    setIsFileStagedForUpload(true)
-  }
-
-  const readFileToStageUpload = async (event) => {
-    const fileReader = new FileReader()
-    const fileName = event.target.files[0].name
-    fileReader.onload = () => {
-      /** Github only requires the content of the image
-       * fileReader returns  `data:application/pdf;base64, {fileContent}`
-       * hence the split
-       */
-
-      const fileData = fileReader.result.split(",")[1]
-      stageFileForUpload(fileName, fileData)
-    }
-    fileReader.readAsDataURL(event.target.files[0])
-    setShowMediaModal((prevState) => !prevState)
-  }
-
   return (
     <>
       <Header
@@ -225,52 +123,15 @@ const EditPageV2 = ({ match, history }) => {
         backButtonUrl={backButtonUrl}
       />
       <div className={elementStyles.wrapper}>
-        {/* Modals */}
-        {showMediaModal && insertingMediaType && (
-          <MediaModal
-            siteName={siteName}
-            onClose={() => {
-              setShowMediaModal(false)
-              setInsertingMediaType("")
-            }}
-            onMediaSelect={onMediaSelect}
-            type={insertingMediaType}
-            readFileToStageUpload={readFileToStageUpload}
-            setUploadPath={setUploadPath}
-          />
-        )}
-        {isFileStagedForUpload && insertingMediaType && (
-          <MediaSettingsModal
-            type={insertingMediaType}
-            siteName={siteName}
-            customPath={uploadPath}
-            onClose={() => {
-              setIsFileStagedForUpload(false)
-              setInsertingMediaType("")
-            }}
-            onSave={toggleMediaAndSettingsModal}
-            media={stagedFileDetails}
-            isPendingUpload
-          />
-        )}
-        {isInsertingHyperlink && (
-          <HyperlinkModal
-            text={selectionText}
-            onSave={onHyperlinkSave}
-            onClose={onHyperlinkClose}
-          />
-        )}
-        {canShowDeleteWarningModal && (
-          <DeleteWarningModal
-            onCancel={() => setCanShowDeleteWarningModal(false)}
-            onDelete={() =>
-              deletePageHandler({
-                sha: pageData.sha,
-              })
-            }
-            type="page"
-          />
-        )}
+        <EditorModals
+          siteName={siteName}
+          mdeRef={mdeRef}
+          setEditorValue={setEditorValue}
+          modalType={editorModalType}
+          setModalType={setEditorModalType}
+          insertingMediaType={insertingMediaType}
+          setInsertingMediaType={setInsertingMediaType}
+        />
         {/* Editor */}
         <MarkdownEditor
           mdeRef={mdeRef}
@@ -278,15 +139,15 @@ const EditPageV2 = ({ match, history }) => {
           value={editorValue}
           customOptions={{
             imageAction: async () => {
-              setShowMediaModal(true)
+              setEditorModalType("media")
               setInsertingMediaType("images")
             },
             fileAction: async () => {
-              setShowMediaModal(true)
+              setEditorModalType("media")
               setInsertingMediaType("files")
             },
             linkAction: async () => {
-              onHyperlinkOpen()
+              setEditorModalType("hyperlink")
             },
           }}
           isDisabled={resourceType === "file"}
@@ -299,6 +160,17 @@ const EditPageV2 = ({ match, history }) => {
           dirData={dirData}
         />
       </div>
+      {showDeleteWarning && (
+        <DeleteWarningModal
+          onCancel={() => setCanShowDeleteWarningModal(false)}
+          onDelete={() =>
+            deletePageHandler({
+              sha: pageData.sha,
+            })
+          }
+          type="page"
+        />
+      )}
       <Footer
         isSaveDisabled={isCspViolation}
         deleteCallback={() => setCanShowDeleteWarningModal(true)}
