@@ -170,9 +170,9 @@ const createPageData = async (
 
   // redirect to new page upon successful creation
   if (folderName) {
-    return `/sites/${siteName}/folder/${folderName}/${
-      subfolderName ? `subfolder/${subfolderName}/` : ""
-    }${newFileName}`
+    return `/sites/${siteName}/folders/${folderName}/${
+      subfolderName ? `subfolders/${subfolderName}/` : ""
+    }editPage/${newFileName}` // V2
   }
   if (resourceName) {
     return `/sites/${siteName}/resources/${resourceName}/${newFileName}`
