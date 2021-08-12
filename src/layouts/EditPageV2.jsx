@@ -17,6 +17,7 @@ import {
   prependImageSrc,
   getBackButton,
   extractMetadataFromFilename,
+  prettifyPageFileName,
 } from "../utils"
 import checkCSP from "../utils/cspUtils"
 import { createPageStyleSheet } from "../utils/siteColorUtils"
