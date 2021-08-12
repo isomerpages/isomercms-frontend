@@ -430,3 +430,18 @@ export const generateImageorFilePath = (customPath, fileName) => {
   if (customPath) return encodeURIComponent(`${customPath}/${fileName}`)
   return fileName
 }
+
+export const getRedirectUrl = (
+  { siteName, collectionName, subCollectionName, resourceCategoryName },
+  newFileName
+) => {
+  if (collectionName) {
+    return `/sites/${siteName}/folders/${collectionName}/${
+      subCollectionName ? `subfolders/${subCollectionName}/` : ""
+    }editPage/${newFileName}` // V2
+  }
+  if (resourceCategoryName) {
+    return `/sites/${siteName}/resources/${resourceCategoryName}/${newFileName}` // V1
+  }
+  return `/sites/${siteName}/pages/${newFileName}` // V1
+}
