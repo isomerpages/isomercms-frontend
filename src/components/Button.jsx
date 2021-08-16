@@ -1,7 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 
-export default function LoadingButton(props) {
+export default function Button(props) {
   // extract props
   const {
     label,
@@ -12,7 +12,6 @@ export default function LoadingButton(props) {
     isLoading,
     ...remainingProps
   } = props
-
   return (
     <button
       type="button"
@@ -31,7 +30,7 @@ export default function LoadingButton(props) {
   )
 }
 
-LoadingButton.propTypes = {
+Button.propTypes = {
   label: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
   disabledStyle: PropTypes.string.isRequired,
@@ -40,6 +39,6 @@ LoadingButton.propTypes = {
   isLoading: PropTypes.bool.isRequired,
 }
 
-LoadingButton.defaultProps = {
+Button.defaultProps = {
   disabled: false,
 }
