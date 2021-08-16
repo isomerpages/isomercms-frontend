@@ -176,7 +176,12 @@ const generateThirdNavHeader = (
   </li>
 )
 
-export const generateLeftNav = (leftNavPages, fileName) => {
+export const generateLeftNav = (dirData, fileName) => {
+  const leftNavPages = dirData.map((name) => ({
+    fileName: name.includes("/") ? name.split("/")[1] : name,
+    third_nav_title: name.includes("/") ? name.split("/")[0] : null,
+  }))
+
   const currentFileThirdNavTitle = retrieveCurrentFileThirdNavTitle(
     leftNavPages,
     fileName
