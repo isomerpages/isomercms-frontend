@@ -27,18 +27,6 @@ import {
   extractMetadataFromFilename,
   deslugifyDirectory,
 } from "../utils"
-import {
-  boldButton,
-  italicButton,
-  strikethroughButton,
-  headingButton,
-  codeButton,
-  quoteButton,
-  unorderedListButton,
-  orderedListButton,
-  tableButton,
-  guideButton,
-} from "../utils/markdownToolbar"
 
 import { createPageStyleSheet } from "../utils/siteColorUtils"
 
@@ -52,6 +40,7 @@ import LoadingButton from "../components/LoadingButton"
 import HyperlinkModal from "../components/HyperlinkModal"
 import MediaModal from "../components/media/MediaModal"
 import MediaSettingsModal from "../components/media/MediaSettingsModal"
+import MarkdownEditor from "../components/pages/MarkdownEditor"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -290,83 +279,26 @@ const EditPageV2 = ({ match, history }) => {
             onClose={onHyperlinkClose}
           />
         )}
-        {
-          <div
-            className={`${editorStyles.pageEditorSidebar} ${
-              isLoadingPage || resourceType === "file"
-                ? editorStyles.pageEditorSidebarLoading
-                : null
-            }`}
-          >
-            {resourceType === "file" ? (
-              <>
-                <div
-                  className={`text-center ${editorStyles.pageEditorSidebarDisabled}`}
-                >
-                  Editing is disabled for downloadable files.
-                </div>
-              </>
-            ) : isLoadingPage ? (
-              <div
-                className={`spinner-border text-primary ${editorStyles.sidebarLoadingIcon}`}
-              />
-            ) : (
-              ""
-            )}
-            <SimpleMDE
-              id="simplemde-editor"
-              className="h-100"
-              onChange={(value) => setEditorValue(value)}
-              ref={mdeRef}
-              value={editorValue}
-              options={{
-                toolbar: [
-                  headingButton,
-                  boldButton,
-                  italicButton,
-                  strikethroughButton,
-                  "|",
-                  codeButton,
-                  quoteButton,
-                  unorderedListButton,
-                  orderedListButton,
-                  "|",
-                  {
-                    name: "image",
-                    action: async () => {
-                      setShowMediaModal(true)
-                      setInsertingMediaType("images")
-                    },
-                    className: "fa fa-picture-o",
-                    title: "Insert Image",
-                    default: true,
-                  },
-                  {
-                    name: "file",
-                    action: async () => {
-                      setShowMediaModal(true)
-                      setInsertingMediaType("files")
-                    },
-                    className: "fa fa-file-pdf-o",
-                    title: "Insert File",
-                    default: true,
-                  },
-                  {
-                    name: "link",
-                    action: async () => {
-                      onHyperlinkOpen()
-                    },
-                    className: "fa fa-link",
-                    title: "Insert Link",
-                    default: true,
-                  },
-                  tableButton,
-                  guideButton,
-                ],
-              }}
-            />
-          </div>
-        }
+        <MarkdownEditor
+          mdeRef={mdeRef}
+          onChange={(value) => setEditorValue(value)}
+          value={editorValue}
+          customOptions={{
+            imageAction: async () => {
+              setShowMediaModal(true)
+              setInsertingMediaType("images")
+            },
+            fileAction: async () => {
+              setShowMediaModal(true)
+              setInsertingMediaType("files")
+            },
+            linkAction: async () => {
+              onHyperlinkOpen()
+            },
+          }}
+          isDisabled={resourceType === "file"}
+          isLoading={isLoadingPage}
+        />
         <div className={editorStyles.pageEditorMain}>
           {collectionName && leftNavPages.length > 0 ? (
             <LeftNavPage
