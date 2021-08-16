@@ -27,15 +27,13 @@ import { createPageStyleSheet } from "../utils/siteColorUtils"
 import "easymde/dist/easymde.min.css"
 import "../styles/isomer-template.scss"
 import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import editorStyles from "../styles/isomer-cms/pages/Editor.module.scss"
 import Header from "../components/Header"
-import DeleteWarningModal from "../components/DeleteWarningModal"
-import LoadingButton from "../components/LoadingButton"
 import HyperlinkModal from "../components/HyperlinkModal"
 import MediaModal from "../components/media/MediaModal"
 import MediaSettingsModal from "../components/media/MediaSettingsModal"
 import MarkdownEditor from "../components/pages/MarkdownEditor"
 import PagePreview from "../components/pages/PagePreview"
+import EditPageFooter from "../components/pages/EditPageFooter"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -48,9 +46,6 @@ const MEDIA_PLACEHOLDER_TEXT = {
 const EditPageV2 = ({ match, history }) => {
   const { siteName } = match.params
   const [editorValue, setEditorValue] = useState("")
-  const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(
-    false
-  )
   const [insertingMediaType, setInsertingMediaType] = useState("")
   const [showMediaModal, setShowMediaModal] = useState(false)
   const [isInsertingHyperlink, setIsInsertingHyperlink] = useState(false)
@@ -78,7 +73,10 @@ const EditPageV2 = ({ match, history }) => {
       onError: () => setRedirectToNotFound(siteName),
     }
   )
-  const { mutateAsync: updatePageHandler } = useUpdatePageHook(match.params)
+  const {
+    mutateAsync: updatePageHandler,
+    isLoading: isSavingPage,
+  } = useUpdatePageHook(match.params)
   const { mutateAsync: deletePageHandler } = useDeletePageHook(match.params, {
     onSuccess: () => history.goBack(),
   })
@@ -282,41 +280,22 @@ const EditPageV2 = ({ match, history }) => {
           dirData={dirData}
         />
       </div>
-      <div className={editorStyles.pageEditorFooter}>
-        <button
-          type="button"
-          className={elementStyles.warning}
-          onClick={() => setCanShowDeleteWarningModal(true)}
-        >
-          Delete
-        </button>
-        <LoadingButton
-          label="Save"
-          disabledStyle={elementStyles.disabled}
-          disabled={isCspViolation}
-          className={
-            isCspViolation ? elementStyles.disabled : elementStyles.blue
-          }
-          callback={() =>
-            updatePageHandler({
-              frontMatter: pageData.content.frontMatter,
-              sha: pageData.sha,
-              pageBody: editorValue,
-            })
-          }
-        />
-      </div>
-      {canShowDeleteWarningModal && (
-        <DeleteWarningModal
-          onCancel={() => setCanShowDeleteWarningModal(false)}
-          onDelete={() =>
-            deletePageHandler({
-              sha: pageData.sha,
-            })
-          }
-          type="page"
-        />
-      )}
+      <EditPageFooter
+        isSaveDisabled={isCspViolation}
+        deleteCallback={() =>
+          deletePageHandler({
+            sha: pageData.sha,
+          })
+        }
+        saveCallback={() =>
+          updatePageHandler({
+            frontMatter: pageData.content.frontMatter,
+            sha: pageData.sha,
+            pageBody: editorValue,
+          })
+        }
+        isSaving={isSavingPage}
+      />
     </>
   )
 }
