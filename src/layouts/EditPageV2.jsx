@@ -28,9 +28,6 @@ import "easymde/dist/easymde.min.css"
 import "../styles/isomer-template.scss"
 import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 import Header from "../components/Header"
-import HyperlinkModal from "../components/HyperlinkModal"
-import MediaModal from "../components/media/MediaModal"
-import MediaSettingsModal from "../components/media/MediaSettingsModal"
 import MarkdownEditor from "../components/pages/MarkdownEditor"
 import PagePreview from "../components/pages/PagePreview"
 import EditPageFooter from "../components/pages/EditPageFooter"
@@ -38,22 +35,9 @@ import EditPageFooter from "../components/pages/EditPageFooter"
 // axios settings
 axios.defaults.withCredentials = true
 
-const MEDIA_PLACEHOLDER_TEXT = {
-  images: "![Alt text for image on Isomer site]",
-  files: "[Example Filename]",
-}
-
 const EditPageV2 = ({ match, history }) => {
   const { siteName } = match.params
   const [editorValue, setEditorValue] = useState("")
-  const [insertingMediaType, setInsertingMediaType] = useState("")
-  const [showMediaModal, setShowMediaModal] = useState(false)
-  const [isInsertingHyperlink, setIsInsertingHyperlink] = useState(false)
-  const [selectionText, setSelectionText] = useState("")
-  const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
-  const [stagedFileDetails, setStagedFileDetails] = useState({})
-
-  const [uploadPath, setUploadPath] = useState("")
   const [isCspViolation, setIsCspViolation] = useState(false)
   const [chunk, setChunk] = useState("")
 
@@ -125,88 +109,6 @@ const EditPageV2 = ({ match, history }) => {
     loadChunk()
   }, [editorValue])
 
-  /** ******************************** */
-  /*       Component functions      */
-  /** ******************************** */
-
-  const toggleImageAndSettingsModal = (newFileName) => {
-    // insert image into editor
-    const cm = mdeRef.current.simpleMde.codemirror
-    if (newFileName) {
-      cm.replaceSelection(
-        `${
-          MEDIA_PLACEHOLDER_TEXT[insertingMediaType]
-        }${`(/${insertingMediaType}/${
-          uploadPath ? `${uploadPath}/` : ""
-        }${newFileName})`.replaceAll(" ", "%20")}`
-      )
-      // set state so that rerender is triggered and image is shown
-      setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
-    }
-    setInsertingMediaType("")
-    setIsFileStagedForUpload(!isFileStagedForUpload)
-  }
-
-  const onHyperlinkOpen = () => {
-    const cm = mdeRef.current.simpleMde.codemirror
-    setSelectionText(cm.getSelection() || "")
-    setIsInsertingHyperlink(true)
-  }
-
-  const onHyperlinkSave = (text, link) => {
-    const cm = mdeRef.current.simpleMde.codemirror
-    cm.replaceSelection(`[${text}](${link})`)
-    // set state so that rerender is triggered and path is shown
-    setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
-    setIsInsertingHyperlink(false)
-    setSelectionText("")
-  }
-
-  const onHyperlinkClose = () => {
-    setIsInsertingHyperlink(false)
-    setSelectionText("")
-  }
-
-  const onMediaSelect = (path) => {
-    const cm = mdeRef.current.simpleMde.codemirror
-    cm.replaceSelection(
-      `${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}(${path.replaceAll(
-        " ",
-        "%20"
-      )})`
-    )
-    // set state so that rerender is triggered and image is shown
-    setEditorValue(mdeRef.current.simpleMde.codemirror.getValue())
-    setInsertingMediaType("")
-    setShowMediaModal(false)
-  }
-
-  const stageFileForUpload = (fileName, fileData) => {
-    const baseFolder = insertingMediaType
-    setStagedFileDetails({
-      path: `${baseFolder}%2F${fileName}`,
-      content: fileData,
-      fileName,
-    })
-    setIsFileStagedForUpload(true)
-  }
-
-  const readFileToStageUpload = async (event) => {
-    const fileReader = new FileReader()
-    const fileName = event.target.files[0].name
-    fileReader.onload = () => {
-      /** Github only requires the content of the image
-       * fileReader returns  `data:application/pdf;base64, {fileContent}`
-       * hence the split
-       */
-
-      const fileData = fileReader.result.split(",")[1]
-      stageFileForUpload(fileName, fileData)
-    }
-    fileReader.readAsDataURL(event.target.files[0])
-    setShowMediaModal((prevState) => !prevState)
-  }
-
   return (
     <>
       <Header
@@ -218,58 +120,12 @@ const EditPageV2 = ({ match, history }) => {
         backButtonUrl={backButtonUrl}
       />
       <div className={elementStyles.wrapper}>
-        {/* Inserting Medias */}
-        {showMediaModal && insertingMediaType && (
-          <MediaModal
-            siteName={siteName}
-            onClose={() => {
-              setShowMediaModal(false)
-              setInsertingMediaType("")
-            }}
-            onMediaSelect={onMediaSelect}
-            type={insertingMediaType}
-            readFileToStageUpload={readFileToStageUpload}
-            setUploadPath={setUploadPath}
-          />
-        )}
-        {isFileStagedForUpload && insertingMediaType && (
-          <MediaSettingsModal
-            type={insertingMediaType}
-            siteName={siteName}
-            customPath={uploadPath}
-            onClose={() => {
-              setIsFileStagedForUpload(false)
-              setInsertingMediaType("")
-            }}
-            onSave={toggleImageAndSettingsModal}
-            media={stagedFileDetails}
-            isPendingUpload
-          />
-        )}
-        {isInsertingHyperlink && (
-          <HyperlinkModal
-            text={selectionText}
-            onSave={onHyperlinkSave}
-            onClose={onHyperlinkClose}
-          />
-        )}
+        {/* Editor */}
         <MarkdownEditor
+          siteName={siteName}
           mdeRef={mdeRef}
           onChange={(value) => setEditorValue(value)}
           value={editorValue}
-          customOptions={{
-            imageAction: async () => {
-              setShowMediaModal(true)
-              setInsertingMediaType("images")
-            },
-            fileAction: async () => {
-              setShowMediaModal(true)
-              setInsertingMediaType("files")
-            },
-            linkAction: async () => {
-              onHyperlinkOpen()
-            },
-          }}
           isDisabled={resourceType === "file"}
           isLoading={isLoadingPage}
         />
