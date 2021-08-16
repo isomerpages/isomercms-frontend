@@ -7,3 +7,14 @@
     X-Frame-Options = "deny"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
     Content-Security-Policy = "frame-ancestors 'none'"
+[build.environment]
+  # cache Cypress binary in local "node_modules" folder
+  # so Netlify caches it
+  CYPRESS_CACHE_FOLDER = "./node_modules/CypressBinary"
+  # set TERM variable for terminal output
+  TERM = "xterm"
+[[plugins]]
+  # runs Cypress tests against the deployed URL
+  package = "netlify-plugin-cypress"
+    [plugins.inputs]
+    enable = false
