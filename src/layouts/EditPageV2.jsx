@@ -2,12 +2,7 @@ import React, { useEffect, useRef, useState } from "react"
 import axios from "axios"
 import _ from "lodash"
 import PropTypes from "prop-types"
-import SimpleMDE from "react-simplemde-editor"
 import marked from "marked"
-
-import SimplePage from "../templates/SimplePage"
-import LeftNavPage from "../templates/LeftNavPage"
-
 import checkCSP from "../utils/cspUtils"
 
 import {
@@ -25,7 +20,6 @@ import {
   prependImageSrc,
   getBackButton,
   extractMetadataFromFilename,
-  deslugifyDirectory,
 } from "../utils"
 
 import { createPageStyleSheet } from "../utils/siteColorUtils"
@@ -41,6 +35,7 @@ import HyperlinkModal from "../components/HyperlinkModal"
 import MediaModal from "../components/media/MediaModal"
 import MediaSettingsModal from "../components/media/MediaSettingsModal"
 import MarkdownEditor from "../components/pages/MarkdownEditor"
+import PagePreview from "../components/pages/PagePreview"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -51,15 +46,7 @@ const MEDIA_PLACEHOLDER_TEXT = {
 }
 
 const EditPageV2 = ({ match, history }) => {
-  const {
-    subCollectionName,
-    collectionName,
-    resourceRoomName,
-    resourceCategoryName,
-    fileName,
-    siteName,
-  } = match.params
-
+  const { siteName } = match.params
   const [editorValue, setEditorValue] = useState("")
   const [canShowDeleteWarningModal, setCanShowDeleteWarningModal] = useState(
     false
@@ -72,7 +59,6 @@ const EditPageV2 = ({ match, history }) => {
   const [stagedFileDetails, setStagedFileDetails] = useState({})
 
   const [uploadPath, setUploadPath] = useState("")
-  const [leftNavPages, setLeftNavPages] = useState([])
   const [isCspViolation, setIsCspViolation] = useState(false)
   const [chunk, setChunk] = useState("")
 
@@ -123,16 +109,6 @@ const EditPageV2 = ({ match, history }) => {
     if (pageData)
       setHasChanges(pageData.content.pageBody.trim() !== editorValue)
   }, [pageData, editorValue])
-
-  useEffect(() => {
-    if (dirData)
-      setLeftNavPages(
-        dirData.map((name) => ({
-          fileName: name.includes("/") ? name.split("/")[1] : name,
-          third_nav_title: name.includes("/") ? name.split("/")[0] : null,
-        }))
-      )
-  }, [dirData])
 
   useEffect(() => {
     async function loadChunk() {
@@ -299,27 +275,12 @@ const EditPageV2 = ({ match, history }) => {
           isDisabled={resourceType === "file"}
           isLoading={isLoadingPage}
         />
-        <div className={editorStyles.pageEditorMain}>
-          {collectionName && leftNavPages.length > 0 ? (
-            <LeftNavPage
-              chunk={chunk}
-              leftNavPages={leftNavPages}
-              fileName={fileName}
-              title={title}
-              collection={deslugifyDirectory(collectionName)}
-            />
-          ) : resourceRoomName && resourceCategoryName ? (
-            <SimplePage
-              chunk={chunk}
-              title={title}
-              date={date}
-              resourceRoomName={deslugifyDirectory(resourceRoomName)}
-              collection={resourceCategoryName}
-            />
-          ) : (
-            <SimplePage chunk={chunk} title={title} date={date} />
-          )}
-        </div>
+        {/* Preview */}
+        <PagePreview
+          pageParams={match.params}
+          chunk={chunk}
+          dirData={dirData}
+        />
       </div>
       <div className={editorStyles.pageEditorFooter}>
         <button
