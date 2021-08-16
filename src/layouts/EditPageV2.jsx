@@ -24,9 +24,9 @@ import {
 
 import { createPageStyleSheet } from "../utils/siteColorUtils"
 
-import "easymde/dist/easymde.min.css"
 import "../styles/isomer-template.scss"
 import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+
 import Header from "../components/Header"
 import MarkdownEditor from "../components/pages/MarkdownEditor"
 import PagePreview from "../components/pages/PagePreview"
@@ -37,11 +37,13 @@ axios.defaults.withCredentials = true
 
 const EditPageV2 = ({ match, history }) => {
   const { siteName } = match.params
+
   const [editorValue, setEditorValue] = useState("")
-  const [isCspViolation, setIsCspViolation] = useState(false)
-  const [chunk, setChunk] = useState("")
+  const [htmlChunk, setHtmlChunk] = useState("")
 
   const [hasChanges, setHasChanges] = useState(false)
+  const [isContentViolation, setIsContentViolation] = useState(false)
+
   const { setRedirectToNotFound } = useRedirectHook()
 
   const mdeRef = useRef()
@@ -93,7 +95,7 @@ const EditPageV2 = ({ match, history }) => {
   }, [pageData, editorValue])
 
   useEffect(() => {
-    async function loadChunk() {
+    async function editorValueToHtml() {
       const html = marked(editorValue)
       const {
         isCspViolation: checkedIsCspViolation,
@@ -103,10 +105,10 @@ const EditPageV2 = ({ match, history }) => {
         siteName,
         processedSanitisedHtml
       )
-      setIsCspViolation(checkedIsCspViolation)
-      setChunk(processedChunk)
+      setIsContentViolation(checkedIsCspViolation)
+      setHtmlChunk(processedChunk)
     }
-    loadChunk()
+    editorValueToHtml()
   }, [editorValue])
 
   return (
@@ -132,12 +134,12 @@ const EditPageV2 = ({ match, history }) => {
         {/* Preview */}
         <PagePreview
           pageParams={match.params}
-          chunk={chunk}
+          chunk={htmlChunk}
           dirData={dirData}
         />
       </div>
       <EditPageFooter
-        isSaveDisabled={isCspViolation}
+        isSaveDisabled={isContentViolation}
         deleteCallback={() =>
           deletePageHandler({
             sha: pageData.sha,
