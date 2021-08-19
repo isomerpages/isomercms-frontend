@@ -10,6 +10,7 @@ import elementStyles from "./styles/isomer-cms/Elements.module.scss"
 
 // Import contexts
 import { LoginProvider } from "./contexts/LoginContext"
+import { ServicesProvider } from "./contexts/ServicesContext"
 
 // Import route selector
 import { RouteSelector } from "./routing/RouteSelector"
@@ -34,6 +35,13 @@ const ToastCloseButton = ({ closeToast }) => (
 // react-query client
 const queryClient = new QueryClient()
 
+// api client
+const API_BASE_URL_V2 = `${process.env.REACT_APP_BACKEND_URL_V2}`
+const apiClient = axios.create({
+  baseURL: API_BASE_URL_V2,
+  timeout: 100000, // 100 secs
+})
+
 export const App = () => {
   useEffect(() => {
     localStorage.removeItem(LOCAL_STORAGE_SITE_COLORS)
@@ -41,17 +49,19 @@ export const App = () => {
 
   return (
     <Router basename={process.env.PUBLIC_URL}>
-      <QueryClientProvider client={queryClient}>
-        <ToastContainer
-          hideProgressBar
-          position="top-center"
-          closeButton={ToastCloseButton}
-          className={elementStyles.toastContainer}
-        />
-        <LoginProvider>
-          <RouteSelector />
-        </LoginProvider>
-      </QueryClientProvider>
+      <ServicesProvider client={apiClient}>
+        <QueryClientProvider client={queryClient}>
+          <ToastContainer
+            hideProgressBar
+            position="top-center"
+            closeButton={ToastCloseButton}
+            className={elementStyles.toastContainer}
+          />
+          <LoginProvider>
+            <RouteSelector />
+          </LoginProvider>
+        </QueryClientProvider>
+      </ServicesProvider>
     </Router>
   )
 }
