@@ -8,6 +8,7 @@ import Sites from "../layouts/Sites"
 import Workspace from "../layouts/Workspace"
 import Folders from "../layouts/Folders"
 import EditPage from "../layouts/EditPage"
+import EditPageV2 from "../layouts/EditPageV2"
 import CategoryPages from "../layouts/CategoryPages"
 import Media from "../layouts/Media"
 import EditHomepage from "../layouts/EditHomepage"
@@ -35,17 +36,13 @@ export const RouteSelector = () => (
     <RedirectIfLoggedInRoute exact path="/" component={Home} />
     <ProtectedRouteWithProps
       exact
-      path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName/:fileName"
-      component={EditPage}
-      isCollectionPage
-      isResourcePage={false}
+      path="/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName/editPage/:fileName"
+      component={EditPageV2}
     />
     <ProtectedRouteWithProps
       exact
-      path="/sites/:siteName/folder/:folderName/:fileName"
-      component={EditPage}
-      isCollectionPage
-      isResourcePage={false}
+      path="/sites/:siteName/folders/:collectionName/editPage/:fileName"
+      component={EditPageV2}
     />
     <ProtectedRouteWithProps
       exact

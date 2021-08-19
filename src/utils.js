@@ -430,3 +430,60 @@ export const generateImageorFilePath = (customPath, fileName) => {
   if (customPath) return encodeURIComponent(`${customPath}/${fileName}`)
   return fileName
 }
+
+export const getRedirectUrl = (
+  { siteName, collectionName, subCollectionName, resourceCategoryName },
+  newFileName
+) => {
+  if (collectionName) {
+    return `/sites/${siteName}/folders/${collectionName}/${
+      subCollectionName ? `subfolders/${subCollectionName}/` : ""
+    }editPage/${newFileName}` // V2
+  }
+  if (resourceCategoryName) {
+    return `/sites/${siteName}/resources/${resourceCategoryName}/${newFileName}` // V1
+  }
+  return `/sites/${siteName}/pages/${newFileName}` // V1
+}
+
+export const getBackButton = ({
+  resourceCategory,
+  collectionName,
+  siteName,
+  subCollectionName,
+}) => {
+  if (resourceCategory)
+    return {
+      backButtonLabel: deslugifyDirectory(resourceCategory),
+      backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
+    }
+  if (collectionName) {
+    if (subCollectionName)
+      return {
+        backButtonLabel: deslugifyDirectory(subCollectionName),
+        backButtonUrl: `/sites/${siteName}/folder/${collectionName}/subfolder/${subCollectionName}`,
+      }
+    return {
+      backButtonLabel: deslugifyDirectory(collectionName),
+      backButtonUrl: `/sites/${siteName}/folder/${collectionName}`,
+    }
+  }
+  return {
+    backButtonLabel: "My Workspace",
+    backButtonUrl: `/sites/${siteName}/workspace`,
+  }
+}
+
+export const extractMetadataFromFilename = ({
+  resourceCategoryName,
+  fileName,
+}) => {
+  if (resourceCategoryName) {
+    const resourceMetadata = retrieveResourceFileMetadata(fileName)
+    return {
+      ...resourceMetadata,
+      date: prettifyDate(resourceMetadata.date),
+    }
+  }
+  return { title: prettifyPageFileName(fileName), date: "" }
+}
