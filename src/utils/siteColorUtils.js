@@ -3,8 +3,8 @@ import axios from "axios"
 // axios settings
 axios.defaults.withCredentials = true
 
-const DEFAULT_ISOMER_PRIMARY_COLOR = "#6031b6"
-const DEFAULT_ISOMER_SECONDARY_COLOR = "#4372d6"
+export const DEFAULT_ISOMER_PRIMARY_COLOR = "#6031b6"
+export const DEFAULT_ISOMER_SECONDARY_COLOR = "#4372d6"
 
 const defaultSiteColors = {
   default: {

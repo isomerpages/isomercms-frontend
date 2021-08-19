@@ -29,8 +29,8 @@ describe("Resource category page", () => {
   const TEST_PAGE_DATE_INVALID_FORMAT = "20210517"
   const TEST_PAGE_DATE_INVALID_DATE = "2021-05-40"
 
-  const TEST_FILE_PATH = "files/placeholder.txt"
-  const FILE_TITLE = "placeholder.txt"
+  const TEST_FILE_PATH = "files/singapore.pdf"
+  const FILE_TITLE = "singapore.pdf"
 
   before(() => {
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
