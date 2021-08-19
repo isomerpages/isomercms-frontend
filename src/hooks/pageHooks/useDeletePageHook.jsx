@@ -1,35 +1,15 @@
-import axios from "axios"
-
+import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
-import { getPageApiEndpointV2 } from "../../utils/apiEndpoints"
 import { DEFAULT_RETRY_MSG } from "../../utils"
 import { errorToast, successToast } from "../../utils/toasts"
 import { DIR_CONTENT_KEY } from "../queryKeys"
 
-const deletePageData = async (
-  {
-    siteName,
-    collectionName,
-    subCollectionName,
-    resourceCategoryName,
-    fileName,
-  },
-  { sha }
-) => {
-  const apiEndpoint = getPageApiEndpointV2({
-    siteName,
-    collectionName,
-    subCollectionName,
-    resourceCategoryName,
-    fileName,
-  })
-  const body = { sha }
-  return axios.delete(apiEndpoint, { data: body })
-}
+import { ServicesContext } from "../../contexts/ServicesContext"
 
 export function useDeletePageHook(params, queryParams) {
-  const queryClient = new useQueryClient()
-  return useMutation((body) => deletePageData(params, body), {
+  const queryClient = useQueryClient()
+  const { pageService } = useContext(ServicesContext)
+  return useMutation((body) => pageService.delete(params, body), {
     ...queryParams,
     onError: () => {
       errorToast(
