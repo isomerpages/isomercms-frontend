@@ -1,16 +1,34 @@
-import { useContext } from "react"
+import axios from "axios"
+
 import { useQuery } from "react-query"
+import { getPageApiEndpointV2 } from "../../utils/apiEndpoints"
 import { DEFAULT_RETRY_MSG } from "../../utils"
 import { errorToast } from "../../utils/toasts"
 import { PAGE_CONTENT_KEY } from "../queryKeys"
 
-import { ServicesContext } from "../../contexts/ServicesContext"
+// to be replaced by abstraction service class
+const getEditPageData = async ({
+  siteName,
+  collectionName,
+  subCollectionName,
+  resourceCategoryName,
+  fileName,
+}) => {
+  const apiEndpoint = getPageApiEndpointV2({
+    siteName,
+    collectionName,
+    subCollectionName,
+    resourceCategoryName,
+    fileName,
+  })
+  const resp = await axios.get(apiEndpoint)
+  return resp.data
+}
 
 export function useGetPageHook(params, queryParams) {
-  const { pageService } = useContext(ServicesContext)
   return useQuery(
     [PAGE_CONTENT_KEY, { ...params }],
-    () => pageService.get(params),
+    () => getEditPageData(params),
     {
       ...queryParams,
       retry: false,

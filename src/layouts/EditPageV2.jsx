@@ -6,7 +6,7 @@ import marked from "marked"
 import checkCSP from "../utils/cspUtils"
 
 import {
-  usePageHook,
+  useGetPageHook,
   useUpdatePageHook,
   useDeletePageHook,
 } from "../hooks/pageHooks"
@@ -53,7 +53,7 @@ const EditPageV2 = ({ match, history }) => {
     match.params
   )
 
-  const { data: pageData, isLoading: isLoadingPage } = usePageHook(
+  const { data: pageData, isLoading: isLoadingPage } = useGetPageHook(
     match.params,
     {
       onError: () => setRedirectToNotFound(siteName),

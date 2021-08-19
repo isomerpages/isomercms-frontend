@@ -1,7 +1,5 @@
-import axios from "axios"
-
+import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
-import { getPageApiEndpointV2 } from "../../utils/apiEndpoints"
 import { DEFAULT_RETRY_MSG } from "../../utils"
 import { errorToast, successToast } from "../../utils/toasts"
 import {
@@ -10,37 +8,12 @@ import {
   PAGE_SETTINGS_KEY,
 } from "../queryKeys"
 
-const updatePageData = async (
-  {
-    siteName,
-    collectionName,
-    subCollectionName,
-    resourceCategoryName,
-    fileName,
-  },
-  { newFileName, frontMatter, pageBody, sha }
-) => {
-  const apiEndpoint = getPageApiEndpointV2({
-    siteName,
-    collectionName,
-    subCollectionName,
-    resourceCategoryName,
-    fileName,
-  })
-  const body = {
-    content: {
-      pageBody,
-      frontMatter,
-    },
-    newFileName,
-    sha,
-  }
-  return await axios.post(apiEndpoint, body)
-}
+import { ServicesContext } from "../../contexts/ServicesContext"
 
 export function useUpdatePageHook(params, queryParams) {
-  const queryClient = new useQueryClient()
-  return useMutation((body) => updatePageData(params, body), {
+  const queryClient = useQueryClient()
+  const { pageService } = useContext(ServicesContext)
+  return useMutation((body) => pageService.update(params, body), {
     ...queryParams,
     onSuccess: () => {
       queryClient.invalidateQueries([PAGE_CONTENT_KEY, { ...params }])
