@@ -25,7 +25,7 @@ const getEditPageData = async ({
   return resp.data
 }
 
-export function usePageHook(params, queryParams) {
+export function useGetPageHook(params, queryParams) {
   return useQuery(
     [PAGE_CONTENT_KEY, { ...params }],
     () => getEditPageData(params),
