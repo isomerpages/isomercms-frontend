@@ -5,6 +5,7 @@ import { SITES_IS_PRIVATE_KEY } from "constants/constants"
 
 const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 const LOCAL_STORAGE_USER_ID_KEY = "userId"
+const LOCAL_STORAGE_USER_EMAIL_KEY = "userEmail"
 
 const LoginContext = createContext(null)
 
@@ -17,22 +18,32 @@ const LoginConsumer = ({ children }) => {
 }
 
 const LoginProvider = ({ children }) => {
+  const [email, setEmail] = useState(
+    localStorage.getItem(LOCAL_STORAGE_USER_EMAIL_KEY)
+  )
   const [userId, setUserId] = useState(
     localStorage.getItem(LOCAL_STORAGE_USER_ID_KEY)
   )
 
   const verifyLoginAndSetLocalStorage = async () => {
     const resp = await axios.get(`${BACKEND_URL}/auth/whoami`)
-    const { userId } = resp.data
+    const { userId, email } = resp.data
+
     if (userId) {
       setUserId(userId)
       localStorage.setItem(LOCAL_STORAGE_USER_ID_KEY, userId)
+    }
+
+    if (email) {
+      setEmail(email)
+      localStorage.setItem(LOCAL_STORAGE_USER_EMAIL_KEY, email)
     }
   }
 
   const logout = async () => {
     await axios.delete(`${BACKEND_URL}/auth/logout`)
     localStorage.removeItem(LOCAL_STORAGE_USER_ID_KEY)
+    localStorage.removeItem(LOCAL_STORAGE_USER_EMAIL_KEY)
     localStorage.removeItem(SITES_IS_PRIVATE_KEY)
     setUserId(null)
   }
@@ -56,7 +67,9 @@ const LoginProvider = ({ children }) => {
 
   const loginContextData = {
     userId,
+    email,
     logout,
+    verifyLoginAndSetLocalStorage,
   }
 
   return (
