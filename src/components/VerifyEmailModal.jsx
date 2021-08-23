@@ -5,9 +5,9 @@ import { getOtp, verifyOtp } from "../api"
 import { LoginContext } from "../contexts/LoginContext"
 import useRedirectHook from "../hooks/useRedirectHook"
 
-const LoginStep = {
-  GET_OTP: "GET_OTP",
-  VERIFY_OTP: "VERIFY_OTP",
+const VerificationStep = {
+  GET_EMAIL_OTP: "GET_EMAIL_OTP",
+  VERIFY_EMAIL_OTP: "VERIFY_EMAIL_OTP",
 }
 
 const VerifyEmailModal = () => {
@@ -18,19 +18,21 @@ const VerifyEmailModal = () => {
   } = useContext(LoginContext)
   const { setRedirectToLogout } = useRedirectHook()
 
-  const [loginStep, setLoginStep] = useState(LoginStep.GET_OTP)
+  const [verificationStep, setVerificationStep] = useState(
+    VerificationStep.GET_EMAIL_OTP
+  )
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState("")
   const [otp, setOtp] = useState("")
 
-  async function handleGetOtp(e) {
+  async function handleGetEmailOtp(e) {
     e.preventDefault()
     setIsLoading(true)
     setError("")
     try {
       await getOtp(email)
-      setLoginStep(LoginStep.VERIFY_OTP)
+      setVerificationStep(VerificationStep.VERIFY_EMAIL_OTP)
     } catch (err) {
       setError("Unable to request for an OTP")
     } finally {
@@ -38,7 +40,7 @@ const VerifyEmailModal = () => {
     }
   }
 
-  async function handleVerifyOtp(e) {
+  async function handleVerifyEmailOtp(e) {
     e.preventDefault()
     setIsLoading(true)
     setError("")
@@ -49,17 +51,17 @@ const VerifyEmailModal = () => {
       setEmail("")
       setOtp("")
     } catch (err) {
-      setError("Unable to login. Failed to verify OTP.")
+      setError("Invalid OTP. Failed to verify OTP.")
     } finally {
       setIsLoading(false)
     }
   }
-  function renderLoginStep() {
-    switch (loginStep) {
-      case LoginStep.VERIFY_OTP:
+  function renderVerificationStep() {
+    switch (verificationStep) {
+      case VerificationStep.VERIFY_EMAIL_OTP:
         return (
           <>
-            <form onSubmit={handleVerifyOtp}>
+            <form onSubmit={handleVerifyEmailOtp}>
               <div className={elementStyles.formInputWithButton}>
                 <input
                   type="text"
@@ -81,11 +83,11 @@ const VerifyEmailModal = () => {
             <div className={elementStyles.error}>{error}</div>
           </>
         )
-      case LoginStep.GET_OTP:
+      case VerificationStep.GET_EMAIL_OTP:
       default:
         return (
           <>
-            <form onSubmit={handleGetOtp}>
+            <form onSubmit={handleGetEmailOtp}>
               <div className={elementStyles.formInputWithButton}>
                 <input
                   type="email"
@@ -121,7 +123,7 @@ const VerifyEmailModal = () => {
             all users of Isomer CMS. Only .gov.sg or whitelisted email addresses
             will be accepted.
           </div>
-          <div>{renderLoginStep()}</div>
+          <div>{renderVerificationStep()}</div>
         </div>
         <div className={elementStyles.footer}>
           <button onClick={setRedirectToLogout} type="button">
