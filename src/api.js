@@ -569,7 +569,7 @@ const getOtp = (email) => {
 }
 
 const verifyOtp = async (email, otp) => {
-  const endpoint = `${BACKEND_URL}/auth/login`
+  const endpoint = `${BACKEND_URL}/auth/verifyOtp`
   const res = await axios.post(endpoint, { email, otp })
   return res.data
 }

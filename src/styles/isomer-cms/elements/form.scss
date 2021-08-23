@@ -189,3 +189,19 @@ input[type="radio"] {
   @extend .formToggleThumbIcon;
   color: $body-grey;
 }
+
+.formInputWithButton {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  margin: 16px 0px;
+
+  input {
+    flex: 1;
+    padding-right: 26px;
+  }
+
+  button {
+    margin-left: -16px;
+  }
+}
