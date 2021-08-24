@@ -6,6 +6,8 @@ import { SITES_IS_PRIVATE_KEY } from "constants/constants"
 const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 const LOCAL_STORAGE_USER_ID_KEY = "userId"
 const LOCAL_STORAGE_USER_EMAIL_KEY = "userEmail"
+const LOCAL_STORAGE_USER_CONTACT_NUMBER = "userContactNumber"
+const LOCAL_STORAGE_USER = "user"
 
 const LoginContext = createContext(null)
 
@@ -18,32 +20,43 @@ const LoginConsumer = ({ children }) => {
 }
 
 const LoginProvider = ({ children }) => {
-  const [email, setEmail] = useState(
-    localStorage.getItem(LOCAL_STORAGE_USER_EMAIL_KEY)
-  )
   const [userId, setUserId] = useState(
     localStorage.getItem(LOCAL_STORAGE_USER_ID_KEY)
   )
 
+  const storedUser = localStorage.getItem(LOCAL_STORAGE_USER)
+  const user = storedUser ? JSON.parse(storedUser) : {}
+
+  const [email, setEmail] = useState(user.email)
+  const [contactNumber, setContactNumber] = useState(user.contactNumber)
+
   const verifyLoginAndSetLocalStorage = async () => {
     const resp = await axios.get(`${BACKEND_URL}/auth/whoami`)
-    const { userId, email } = resp.data
+    const { userId, email, contactNumber } = resp.data
 
     if (userId) {
       setUserId(userId)
       localStorage.setItem(LOCAL_STORAGE_USER_ID_KEY, userId)
     }
 
+    const loggedInUser = {}
     if (email) {
       setEmail(email)
-      localStorage.setItem(LOCAL_STORAGE_USER_EMAIL_KEY, email)
+      loggedInUser.email = email
     }
+
+    if (contactNumber) {
+      setContactNumber(contactNumber)
+      loggedInUser.contactNumber = contactNumber
+    }
+
+    localStorage.setItem(LOCAL_STORAGE_USER, JSON.stringify(loggedInUser))
   }
 
   const logout = async () => {
     await axios.delete(`${BACKEND_URL}/auth/logout`)
     localStorage.removeItem(LOCAL_STORAGE_USER_ID_KEY)
-    localStorage.removeItem(LOCAL_STORAGE_USER_EMAIL_KEY)
+    localStorage.removeItem(LOCAL_STORAGE_USER)
     localStorage.removeItem(SITES_IS_PRIVATE_KEY)
     setUserId(null)
   }
@@ -68,6 +81,7 @@ const LoginProvider = ({ children }) => {
   const loginContextData = {
     userId,
     email,
+    contactNumber,
     logout,
     verifyLoginAndSetLocalStorage,
   }
