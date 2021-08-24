@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/react"
 import FallbackComponent from "components/FallbackComponent"
-import VerifyEmailModal from "components/VerifyEmailModal"
+import VerifyUserDetailsModal from "components/VerifyUserDetailsModal"
 import React from "react"
 import { Switch } from "react-router-dom"
 
@@ -98,6 +98,6 @@ export const RouteSelector = () => (
       <ProtectedRouteWithProps exact path="/sites" component={Sites} />
       <ProtectedRouteWithProps path="/" component={NotFoundPage} />
     </Switch>
-    <VerifyEmailModal />
+    <VerifyUserDetailsModal />
   </>
 )
