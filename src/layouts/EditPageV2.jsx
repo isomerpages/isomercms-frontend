@@ -3,6 +3,7 @@ import axios from "axios"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import marked from "marked"
+import DOMPurify from "dompurify"
 import checkCSP from "../utils/cspUtils"
 
 import {
@@ -31,9 +32,21 @@ import Header from "../components/Header"
 import MarkdownEditor from "../components/pages/MarkdownEditor"
 import PagePreview from "../components/pages/PagePreview"
 import EditPageFooter from "../components/pages/EditPageFooter"
-
+import GenericWarningModal from "../components/GenericWarningModal"
 // axios settings
 axios.defaults.withCredentials = true
+
+DOMPurify.setConfig({
+  ADD_TAGS: ["iframe", "#comment"],
+  ADD_ATTR: [
+    "allow",
+    "allowfullscreen",
+    "frameborder",
+    "scrolling",
+    "marginheight",
+    "marginwidth",
+  ],
+})
 
 const EditPageV2 = ({ match, history }) => {
   const { siteName } = match.params
@@ -43,6 +56,8 @@ const EditPageV2 = ({ match, history }) => {
 
   const [hasChanges, setHasChanges] = useState(false)
   const [isContentViolation, setIsContentViolation] = useState(false)
+  const [isXSSViolation, setIsXSSViolation] = useState(false)
+  const [showXSSWarning, setShowXSSWarning] = useState(false)
 
   const { setRedirectToNotFound } = useRedirectHook()
 
@@ -99,12 +114,15 @@ const EditPageV2 = ({ match, history }) => {
       const html = marked(editorValue)
       const {
         isCspViolation: checkedIsCspViolation,
-        sanitisedHtml: processedSanitisedHtml,
+        sanitisedHtml: CSPSanitisedHtml,
       } = checkCSP(csp, html)
+      const DOMCSPSanitisedHtml = DOMPurify.sanitize(CSPSanitisedHtml)
+      console.log(DOMPurify.removed)
       const processedChunk = await prependImageSrc(
         siteName,
-        processedSanitisedHtml
+        DOMCSPSanitisedHtml
       )
+      setIsXSSViolation(DOMPurify.removed.length > 0)
       setIsContentViolation(checkedIsCspViolation)
       setHtmlChunk(processedChunk)
     }
@@ -122,6 +140,42 @@ const EditPageV2 = ({ match, history }) => {
         backButtonUrl={backButtonUrl}
       />
       <div className={elementStyles.wrapper}>
+        {isXSSViolation &&
+          showXSSWarning && ( // to be refactored later
+            <GenericWarningModal
+              displayTitle="Warning"
+              // DOMPurify removed object format taken from https://github.com/cure53/DOMPurify/blob/dd63379e6354f66d4689bb80b30cb43a6d8727c2/src/purify.js
+              displayText={`There is unauthorised JS detected in the following snippet${
+                DOMPurify.removed.length > 1 ? "s" : ""
+              }:
+            ${DOMPurify.removed.map(
+              (elem, i) =>
+                `<br/><code>${i}</code>: <code>${
+                  elem.attribute?.textContent || elem.element?.textContent
+                    ? (
+                        elem.attribute?.textContent || elem.element?.textContent
+                      ).replace("<", "&lt;")
+                    : elem
+                }</code>`
+            )}
+            <br/><br/>Before saving, the editor input will be automatically sanitised to prevent security vulnerabilities.
+            <br/><br/>To save the sanitised editor input, press Acknowledge. To return to the editor without sanitising, press Cancel.`}
+              onProceed={() => {
+                setIsXSSViolation(false)
+                setShowXSSWarning(false)
+                updatePageHandler({
+                  frontMatter: pageData.content.frontMatter,
+                  sha: pageData.sha,
+                  pageBody: DOMPurify.sanitize(editorValue),
+                })
+              }}
+              onCancel={() => {
+                setShowXSSWarning(false)
+              }}
+              cancelText="Cancel"
+              proceedText="Acknowledge"
+            />
+          )}
         {/* Editor */}
         <MarkdownEditor
           siteName={siteName}
@@ -145,13 +199,15 @@ const EditPageV2 = ({ match, history }) => {
             sha: pageData.sha,
           })
         }
-        saveCallback={() =>
-          updatePageHandler({
-            frontMatter: pageData.content.frontMatter,
-            sha: pageData.sha,
-            pageBody: editorValue,
-          })
-        }
+        saveCallback={() => {
+          if (isXSSViolation) setShowXSSWarning(true)
+          else
+            updatePageHandler({
+              frontMatter: pageData.content.frontMatter,
+              sha: pageData.sha,
+              pageBody: editorValue,
+            })
+        }}
         isSaving={isSavingPage}
       />
     </>
