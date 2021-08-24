@@ -563,14 +563,25 @@ const deleteMediaSubfolder = async ({ siteName, mediaType, customPath }) => {
 }
 
 // Login
-const getOtp = (email) => {
-  const endpoint = `${BACKEND_URL}/auth/otp`
+const getEmailOtp = (email) => {
+  const endpoint = `${BACKEND_URL}/user/email/otp`
   return axios.post(endpoint, { email })
 }
 
-const verifyOtp = async (email, otp) => {
-  const endpoint = `${BACKEND_URL}/auth/verifyOtp`
+const verifyEmailOtp = async (email, otp) => {
+  const endpoint = `${BACKEND_URL}/user/email/verifyOtp`
   const res = await axios.post(endpoint, { email, otp })
+  return res.data
+}
+
+const getMobileNumberOtp = (mobile) => {
+  const endpoint = `${BACKEND_URL}/user/mobile/otp`
+  return axios.post(endpoint, { mobile })
+}
+
+const verifyMobileNumberOtp = async (mobile, otp) => {
+  const endpoint = `${BACKEND_URL}/user/mobile/verifyOtp`
+  const res = await axios.post(endpoint, { mobile, otp })
   return res.data
 }
 
@@ -609,6 +620,8 @@ export {
   createMediaSubfolder,
   renameMediaSubfolder,
   deleteMediaSubfolder,
-  getOtp,
-  verifyOtp,
+  getEmailOtp,
+  verifyEmailOtp,
+  getMobileNumberOtp,
+  verifyMobileNumberOtp,
 }
