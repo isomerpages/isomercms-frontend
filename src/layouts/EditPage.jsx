@@ -115,6 +115,18 @@ const MEDIA_PLACEHOLDER_TEXT = {
   files: "[Example Filename]",
 }
 
+DOMPurify.setConfig({
+  ADD_TAGS: ["iframe", "#comment"],
+  ADD_ATTR: [
+    "allow",
+    "allowfullscreen",
+    "frameborder",
+    "scrolling",
+    "marginheight",
+    "marginwidth",
+  ],
+})
+
 const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
   // Instantiate queryClient
   const queryClient = useQueryClient()
