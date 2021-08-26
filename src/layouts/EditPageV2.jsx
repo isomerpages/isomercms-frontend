@@ -45,6 +45,7 @@ DOMPurify.setConfig({
     "scrolling",
     "marginheight",
     "marginwidth",
+    "target",
   ],
 })
 
