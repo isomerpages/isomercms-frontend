@@ -239,10 +239,10 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
 
   // update page data
   const { mutateAsync: saveHandler } = useMutation(
-    () =>
+    (editorValue) =>
       updatePageData(
         match.params,
-        concatFrontMatterMdBody(frontMatter, DOMPurify.sanitize(editorValue)),
+        concatFrontMatterMdBody(frontMatter, editorValue),
         sha
       ),
     {
@@ -472,9 +472,11 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
             <br/><br/>Before saving, the editor input will be automatically sanitised to prevent security vulnerabilities.
             <br/><br/>To save the sanitised editor input, press Acknowledge. To return to the editor without sanitising, press Cancel.`}
             onProceed={() => {
+              const sanitizedEditorValue = DOMPurify.sanitize(editorValue)
+              setEditorValue(sanitizedEditorValue)
               setIsXSSViolation(false)
               setShowXSSWarning(false)
-              saveHandler()
+              saveHandler(sanitizedEditorValue)
             }}
             onCancel={() => {
               setShowXSSWarning(false)
@@ -631,9 +633,9 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
           className={
             isCspViolation ? elementStyles.disabled : elementStyles.blue
           }
-          callback={
-            isXSSViolation ? () => setShowXSSWarning(true) : saveHandler
-          }
+          callback={() => {
+            isXSSViolation ? setShowXSSWarning(true) : saveHandler(editorValue)
+          }}
         />
       </div>
       {canShowDeleteWarningModal && (
