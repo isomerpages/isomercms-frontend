@@ -45,6 +45,7 @@ DOMPurify.setConfig({
     "scrolling",
     "marginheight",
     "marginwidth",
+    "target",
   ],
 })
 
@@ -117,7 +118,6 @@ const EditPageV2 = ({ match, history }) => {
         sanitisedHtml: CSPSanitisedHtml,
       } = checkCSP(csp, html)
       const DOMCSPSanitisedHtml = DOMPurify.sanitize(CSPSanitisedHtml)
-      console.log(DOMPurify.removed)
       const processedChunk = await prependImageSrc(
         siteName,
         DOMCSPSanitisedHtml
@@ -161,12 +161,14 @@ const EditPageV2 = ({ match, history }) => {
             <br/><br/>Before saving, the editor input will be automatically sanitised to prevent security vulnerabilities.
             <br/><br/>To save the sanitised editor input, press Acknowledge. To return to the editor without sanitising, press Cancel.`}
               onProceed={() => {
+                const sanitizedEditorValue = DOMPurify.sanitize(editorValue)
+                setEditorValue(sanitizedEditorValue)
                 setIsXSSViolation(false)
                 setShowXSSWarning(false)
                 updatePageHandler({
                   frontMatter: pageData.content.frontMatter,
                   sha: pageData.sha,
-                  pageBody: DOMPurify.sanitize(editorValue),
+                  pageBody: sanitizedEditorValue,
                 })
               }}
               onCancel={() => {
