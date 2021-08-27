@@ -21,6 +21,7 @@ import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
 
 const stateFields = {
   title: "",
+  description: "",
   favicon: "",
   shareicon: "",
   facebook_pixel: "",
@@ -80,6 +81,7 @@ const CONFIG_FIELDS = [
   "is_government",
   "shareicon",
   "title",
+  "description",
 ]
 const FOOTER_FIELDS = ["otherFooterSettings", "socialMediaContent"]
 const NAVIGATION_FIELDS = ["navigationSettings"]
@@ -140,6 +142,7 @@ export default class Settings extends Component {
         // url: configFieldsRequired.url,
         shareicon: configFieldsRequired.shareicon,
         title: configFieldsRequired.title,
+        description: configFieldsRequired.description,
         // footer fields
         otherFooterSettings: {
           contact_us: footerContent.contact_us,
@@ -294,6 +297,7 @@ export default class Settings extends Component {
         is_government,
         shareicon,
         title,
+        description,
         otherFooterSettings,
         socialMediaContent,
         navigationSettings: navigationSettingsState,
@@ -310,6 +314,7 @@ export default class Settings extends Component {
         is_government,
         shareicon,
         title,
+        description,
         otherFooterSettings,
         socialMediaContent,
         navigationSettings: navigationSettingsState,
@@ -483,6 +488,7 @@ export default class Settings extends Component {
       colorPicker,
       siteName,
       title,
+      description,
       favicon,
       shareicon,
       facebook_pixel,
@@ -514,6 +520,7 @@ export default class Settings extends Component {
       is_government,
       shareicon,
       title,
+      description,
       otherFooterSettings,
       socialMediaContent,
       navigationSettings,
@@ -586,6 +593,14 @@ export default class Settings extends Component {
                     id="title"
                     value={title}
                     errorMessage={errors.title}
+                    isRequired={false}
+                    onFieldChange={this.changeHandler}
+                  />
+                  <FormFieldHorizontal
+                    title="Description"
+                    id="description"
+                    value={description}
+                    errorMessage={errors.description}
                     isRequired={false}
                     onFieldChange={this.changeHandler}
                   />
