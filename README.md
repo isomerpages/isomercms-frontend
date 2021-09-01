@@ -19,8 +19,8 @@ npm run start
 Add the following Cypress environment variables:
 
 - CYPRESS_BASEURL (CMS frontend baseurl of the environment you want to test)
-- CYPRESS_COOKIE_NAME (Name of the JWT cookie that the CMS frontend sends to the backend)
-- CYPRESS_COOKIE_VALUE (Value of the JWT cookie)
+- CYPRESS_COOKIE_NAME (The name of the specialized cookie used for E2E testing)
+- CYPRESS_COOKIE_VALUE (The value of the above cookie)
 - CYPRESS_TEST_REPO_NAME (Name of the test repo on GitHub)
 
 Add the following environment variables which we use to reset our test repo:
