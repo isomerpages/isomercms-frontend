@@ -15,10 +15,9 @@ const getSiteColors = async ({ siteName }) => {
   const settingsResp = await axios.get(
     `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`
   )
-  const { settings } = settingsResp.data
   const {
-    configFieldsRequired: { colors },
-  } = settings
+    configSettings: { colors },
+  } = settingsResp.data
 
   return {
     primaryColor: colors?.["primary-color"] || DEFAULT_ISOMER_PRIMARY_COLOR,

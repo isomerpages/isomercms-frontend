@@ -125,46 +125,40 @@ export default class Settings extends Component {
           withCredentials: true,
         }
       )
-      const { settings } = resp.data
-      const {
-        configFieldsRequired,
-        footerContent,
-        navigationContent,
-      } = settings
+      const { configSettings, footerSettings, navigationSettings } = resp.data
 
       const originalState = {
         // config fields
         // note: config fields are listed out one-by-one since we do not use all config fields
-        colors: configFieldsRequired.colors,
-        favicon: configFieldsRequired.favicon,
-        google_analytics: configFieldsRequired.google_analytics,
-        facebook_pixel: configFieldsRequired.facebook_pixel,
-        linkedin_insights: configFieldsRequired.linkedin_insights,
-        is_government: configFieldsRequired.is_government,
-        // resources_name: configFieldsRequired.resources_name,
-        // url: configFieldsRequired.url,
-        shareicon: configFieldsRequired.shareicon,
-        title: configFieldsRequired.title,
-        description: configFieldsRequired.description,
+        colors: configSettings.colors,
+        favicon: configSettings.favicon,
+        google_analytics: configSettings.google_analytics,
+        facebook_pixel: configSettings.facebook_pixel,
+        linkedin_insights: configSettings.linkedin_insights,
+        is_government: configSettings.is_government,
+        // resources_name: configSettings.resources_name,
+        // url: configSettings.url,
+        shareicon: configSettings.shareicon,
+        title: configSettings.title,
         // footer fields
         otherFooterSettings: {
-          contact_us: footerContent.contact_us,
-          feedback: footerContent.feedback,
-          faq: footerContent.faq,
-          show_reach: footerContent.show_reach,
+          contact_us: footerSettings.contact_us,
+          feedback: footerSettings.feedback,
+          faq: footerSettings.faq,
+          show_reach: footerSettings.show_reach,
         },
         socialMediaContent: {
-          facebook: footerContent.social_media.facebook,
-          twitter: footerContent.social_media.twitter,
-          youtube: footerContent.social_media.youtube,
-          instagram: footerContent.social_media.instagram,
-          linkedin: footerContent.social_media.linkedin,
-          telegram: footerContent.social_media.telegram,
-          tiktok: footerContent.social_media.tiktok,
+          facebook: footerSettings.social_media.facebook,
+          twitter: footerSettings.social_media.twitter,
+          youtube: footerSettings.social_media.youtube,
+          instagram: footerSettings.social_media.instagram,
+          linkedin: footerSettings.social_media.linkedin,
+          telegram: footerSettings.social_media.telegram,
+          tiktok: footerSettings.social_media.tiktok,
         },
         // navigation fields
         navigationSettings: {
-          ...navigationContent,
+          ...navigationSettings,
         },
       }
 
