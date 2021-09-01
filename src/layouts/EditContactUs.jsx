@@ -144,7 +144,6 @@ const EditContactUs = ({ match }) => {
   const [frontMatterSha, setFrontMatterSha] = useState(null)
   const [footerContent, setFooterContent] = useState({})
   const [originalFooterContent, setOriginalFooterContent] = useState({})
-  const [footerSha, setFooterSha] = useState(null)
   const [displaySections, setDisplaySections] = useState({
     sectionsDisplay: {
       locations: false,
@@ -169,7 +168,6 @@ const EditContactUs = ({ match }) => {
     let content
     let sha
     let footerContent
-    let footerSha
 
     const loadContactUsDetails = async () => {
       // Set page colors
@@ -204,12 +202,8 @@ const EditContactUs = ({ match }) => {
         const settingsResp = await axios.get(
           `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`
         )
-        const {
-          footerContent: retrievedContent,
-          footerSha: retrievedSha,
-        } = settingsResp.data.settings
-        footerContent = retrievedContent
-        footerSha = retrievedSha
+        const { footerSettings } = settingsResp.data
+        footerContent = footerSettings
       } catch (err) {
         errorToast(
           `There was a problem trying to load your contact us page. ${DEFAULT_RETRY_MSG}`
@@ -266,7 +260,6 @@ const EditContactUs = ({ match }) => {
         })
         setFooterContent(footerContent)
         setOriginalFooterContent(_.cloneDeep(footerContent))
-        setFooterSha(footerSha)
         setFrontMatter(sanitisedFrontMatter)
         setOriginalFrontMatter(_.cloneDeep(frontMatter))
         setDeletedFrontMatter(deletedFrontMatter)
@@ -728,12 +721,11 @@ const EditContactUs = ({ match }) => {
         )
       }
 
-      // // Update settings
+      // Update settings
       const updatedFooterContents = _.cloneDeep(footerContent)
 
       const footerParams = {
         footerSettings: updatedFooterContents,
-        footerSha,
       }
 
       if (
@@ -900,7 +892,7 @@ const EditContactUs = ({ match }) => {
               disabled={hasErrors()}
               disabledStyle={elementStyles.disabled}
               className={
-                hasErrors() || !(frontMatterSha && footerSha)
+                hasErrors() || !frontMatterSha
                   ? elementStyles.disabled
                   : elementStyles.blue
               }
