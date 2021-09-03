@@ -8,7 +8,7 @@ import Sidebar from "../components/Sidebar"
 import CollectionPagesSection from "../components/CollectionPagesSection"
 import FolderCard from "../components/FolderCard"
 import FolderCreationModal from "../components/FolderCreationModal"
-import FolderOptionButton from "../components/folders/FolderOptionButton"
+import FolderOptionButton from "../components/FolderOptionButton"
 
 // Import styles
 import elementStyles from "../styles/isomer-cms/Elements.module.scss"
