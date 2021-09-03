@@ -45,8 +45,11 @@ export const RouteSelector = () => (
       component={EditPageV2}
     />
     <ProtectedRouteWithProps
-      exact
-      path="/sites/:siteName/folder/:folderName"
+      path="/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName"
+      component={Folders}
+    />
+    <ProtectedRouteWithProps
+      path="/sites/:siteName/folders/:collectionName"
       component={Folders}
     />
     <ProtectedRouteWithProps
