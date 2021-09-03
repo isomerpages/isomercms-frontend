@@ -68,7 +68,11 @@ const Folders = ({ match, location }) => {
           {/* Page title */}
           <div className={contentStyles.sectionHeader}>
             <h1 className={contentStyles.sectionTitle}>
-              {match.params[getLastItemType(match.params)]}
+              {getLastItemType(match.params) === "collectionName"
+                ? deslugifyDirectory(
+                    match.params[getLastItemType(match.params)]
+                  )
+                : match.params[getLastItemType(match.params)]}
             </h1>
           </div>
           {/* Info segment */}
