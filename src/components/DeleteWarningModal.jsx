@@ -10,7 +10,7 @@ const DeleteWarningModal = ({ onDelete, onCancel, type }) => (
         <h1>Delete {type}</h1>
       </div>
       <form className={elementStyles.modalContent}>
-        <p>Are you sure you want to delete this?</p>
+        <p>{`Are you sure you want to delete ${type || "this"}?`}</p>
         <div className={elementStyles.modalButtons}>
           <LoadingButton
             id="modal-delete"
