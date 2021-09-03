@@ -140,14 +140,7 @@ const Folders = ({ match, location }) => {
             />
           </div>
           {/* Collections content */}
-          {dirData ? (
-            <FolderContent dirData={dirData} />
-          ) : (
-            <span>
-              There are no pages in this&nbsp;
-              {subCollectionName ? `subfolder` : `folder`}.
-            </span>
-          )}
+          <FolderContent dirData={dirData} />
         </div>
         {/* main section ends here */}
         {process.env.REACT_APP_ENV === "LOCAL_DEV" && (
