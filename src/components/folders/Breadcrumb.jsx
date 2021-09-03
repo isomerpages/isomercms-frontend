@@ -10,6 +10,12 @@ const BreadcrumbItem = ({ item, isLast }) => (
 )
 
 const Breadcrumb = ({ params, title }) => {
+  const {
+    collectionName,
+    subCollectionName,
+    resourceRoomName,
+    resourceCategoryName,
+  } = params
   const newParams = { ...params, fileName: title }
   return (
     <span>
