@@ -16,17 +16,17 @@ import contentStyles from "../../styles/isomer-cms/pages/Content.module.scss"
 
 import Breadcrumb from "./Breadcrumb"
 
-const ReorderingModal = ({ params, pagesData, onProceed, onClose }) => {
+const ReorderingModal = ({ params, dirData, onProceed, onClose }) => {
   const { collectionName, subCollectionName } = params
-  const [pagesOrder, setPagesOrder] = useState([])
+  const [dirOrder, setDirOrder] = useState([])
 
   /** ******************************** */
   /*     useEffects to load data     */
   /** ******************************** */
 
   useEffect(() => {
-    setPagesOrder(pagesData)
-  }, [pagesData])
+    if (dirData) setDirOrder(dirData)
+  }, [dirData])
 
   /** ******************************** */
   /*     handler functions    */
@@ -45,14 +45,14 @@ const ReorderingModal = ({ params, pagesData, onProceed, onClose }) => {
     )
       return
 
-    const elem = pagesOrder[source.index]
-    const newPagesOrder = update(pagesOrder, {
+    const elem = dirOrder[source.index]
+    const newDirOrder = update(dirOrder, {
       $splice: [
         [source.index, 1], // Remove elem from its original position
         [destination.index, 0, elem], // Splice elem into its new position
       ],
     })
-    setPagesOrder(newPagesOrder)
+    setDirOrder(newDirOrder)
   }
 
   return (
@@ -89,7 +89,7 @@ const ReorderingModal = ({ params, pagesData, onProceed, onClose }) => {
             <div className={contentStyles.segment}>
               <Breadcrumb params={params} />
             </div>
-            {/* Pages */}
+            {/* Directory data */}
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="folder" type="folder">
                 {(droppableProvided) => (
@@ -98,7 +98,7 @@ const ReorderingModal = ({ params, pagesData, onProceed, onClose }) => {
                     ref={droppableProvided.innerRef}
                     {...droppableProvided.droppableProps}
                   >
-                    {pagesOrder.map((folderContentItem, folderContentIndex) => (
+                    {dirOrder.map((folderContentItem, folderContentIndex) => (
                       <Draggable
                         draggableId={folderContentItem.name}
                         index={folderContentIndex}
@@ -139,7 +139,7 @@ const ReorderingModal = ({ params, pagesData, onProceed, onClose }) => {
               className={elementStyles.blue}
               callback={() =>
                 onProceed({
-                  items: pagesOrder,
+                  items: dirOrder,
                 })
               }
             />
