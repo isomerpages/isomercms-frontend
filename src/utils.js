@@ -480,11 +480,11 @@ export const getBackButton = ({
     if (subCollectionName)
       return {
         backButtonLabel: deslugifyDirectory(subCollectionName),
-        backButtonUrl: `/sites/${siteName}/folder/${collectionName}/subfolder/${subCollectionName}`,
+        backButtonUrl: `/sites/${siteName}/folders/${collectionName}/subfolders/${subCollectionName}`,
       }
     return {
       backButtonLabel: deslugifyDirectory(collectionName),
-      backButtonUrl: `/sites/${siteName}/folder/${collectionName}`,
+      backButtonUrl: `/sites/${siteName}/folders/${collectionName}`,
     }
   }
   return {
