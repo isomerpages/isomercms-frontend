@@ -273,6 +273,14 @@ export function prettifyCollectionPageFileName(fileName) {
   return tokenArray.slice(1).join(" ")
 }
 
+export function titleToPageFileName(title) {
+  return `${title}.md`
+}
+
+export function pageFileNameToTitle(pageFileName) {
+  return `${pageFileName.split(".")[0]}`
+}
+
 export function generatePageFileName(title) {
   return `${slugify(title, { lower: true }).replace(/[^a-zA-Z0-9-]/g, "")}.md`
 }

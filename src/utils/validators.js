@@ -2,9 +2,10 @@ import _ from "lodash"
 import moment from "moment-timezone"
 
 import {
-  generatePageFileName,
   retrieveResourceFileMetadata,
   slugifyCategory,
+  titleToPageFileName,
+  deslugifyDirectory,
 } from "../utils"
 
 // Common regexes and constants
@@ -715,7 +716,7 @@ const validatePageSettings = (id, value, folderOrderArray) => {
       }
       if (
         folderOrderArray !== undefined &&
-        folderOrderArray.includes(generatePageFileName(value))
+        folderOrderArray.includes(titleToPageFileName(value))
       ) {
         errorMessage = `This title is already in use. Please choose a different title.`
       }
@@ -915,6 +916,21 @@ const validateSocialMedia = (value, id) => {
   return errorMessage
 }
 
+// Folder Creation Modal
+// ====================
+const validateSubfolderName = (value, componentName, existingNames) => {
+  let errorMessage = ""
+
+  if (existingNames && existingNames.includes(deslugifyDirectory(value))) {
+    errorMessage = `Another folder with the same name exists. Please choose a different name.`
+  } else if (value.length < RESOURCE_CATEGORY_MIN_LENGTH) {
+    errorMessage = `The ${componentName} name should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`
+  } else if (value.length > RESOURCE_CATEGORY_MAX_LENGTH) {
+    errorMessage = `The ${componentName} name should be shorter than ${RESOURCE_CATEGORY_MAX_LENGTH} characters.`
+  }
+  return errorMessage
+}
+
 export {
   validateContactType,
   validateLocationType,
@@ -929,4 +945,5 @@ export {
   validateSocialMedia,
   validateFileName,
   validateResourceRoomName,
+  validateSubfolderName,
 }

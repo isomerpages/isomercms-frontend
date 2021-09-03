@@ -133,7 +133,7 @@ const EditPageV2 = ({ match, history }) => {
     <>
       <Header
         siteName={siteName}
-        title={title}
+        title={pageData?.content?.frontMatter?.title || ""}
         shouldAllowEditPageBackNav={!hasChanges}
         isEditPage
         backButtonText={backButtonLabel}
@@ -190,6 +190,7 @@ const EditPageV2 = ({ match, history }) => {
         {/* Preview */}
         <PagePreview
           pageParams={match.params}
+          title={pageData?.content?.frontMatter?.title || ""}
           chunk={htmlChunk}
           dirData={dirData}
         />
