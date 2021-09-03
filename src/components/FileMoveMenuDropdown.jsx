@@ -1,3 +1,6 @@
+// TODO: deprecate after Workspace and Media refactor
+// remove from OverviewCard and MediaCard and use as separate modal on layout page
+
 import React from "react"
 import PropTypes from "prop-types"
 
