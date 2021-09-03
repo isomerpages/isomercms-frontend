@@ -439,19 +439,30 @@ export const generateImageorFilePath = (customPath, fileName) => {
   return fileName
 }
 
-export const getRedirectUrl = (
-  { siteName, collectionName, subCollectionName, resourceCategoryName },
-  newFileName
-) => {
-  if (collectionName) {
-    return `/sites/${siteName}/folders/${collectionName}/${
-      subCollectionName ? `subfolders/${subCollectionName}/` : ""
-    }editPage/${newFileName}` // V2
+export const getRedirectUrl = ({
+  siteName,
+  collectionName,
+  subCollectionName,
+  resourceCategoryName,
+  fileName,
+}) => {
+  if (!fileName) {
+    if (collectionName) {
+      return `/sites/${siteName}/folders/${collectionName}/${
+        subCollectionName ? `subfolders/${subCollectionName}` : "" // V2
+      }`
+    }
+  } else {
+    if (collectionName) {
+      return `/sites/${siteName}/folders/${collectionName}/${
+        subCollectionName ? `subfolders/${subCollectionName}/` : ""
+      }editPage/${fileName}` // V2
+    }
+    if (resourceCategoryName) {
+      return `/sites/${siteName}/resources/${resourceCategoryName}/${fileName}` // V1
+    }
+    return `/sites/${siteName}/pages/${fileName}` // V1
   }
-  if (resourceCategoryName) {
-    return `/sites/${siteName}/resources/${resourceCategoryName}/${newFileName}` // V1
-  }
-  return `/sites/${siteName}/pages/${newFileName}` // V1
 }
 
 export const getBackButton = ({

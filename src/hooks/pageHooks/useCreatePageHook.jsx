@@ -12,7 +12,9 @@ export function useCreatePageHook(params, queryParams) {
   return useMutation((body) => pageService.create(params, body), {
     ...queryParams,
     onSuccess: (resp) => {
-      setRedirectToPage(getRedirectUrl(params, resp.data.fileName))
+      setRedirectToPage(
+        getRedirectUrl({ ...params, fileName: resp.data.fileName })
+      )
       queryParams && queryParams.onSuccess && queryParams.onSuccess()
     },
     onError: () => {
