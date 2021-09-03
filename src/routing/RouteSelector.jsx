@@ -54,11 +54,6 @@ export const RouteSelector = () => (
     />
     <ProtectedRouteWithProps
       exact
-      path="/sites/:siteName/folder/:folderName/subfolder/:subfolderName"
-      component={Folders}
-    />
-    <ProtectedRouteWithProps
-      exact
       path="/sites/:siteName/navbar"
       component={EditNavBar}
     />
