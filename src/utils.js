@@ -506,3 +506,85 @@ export const extractMetadataFromFilename = ({
   }
   return { title: prettifyPageFileName(fileName), date: "" }
 }
+
+export const getDefaultFrontMatter = (params, pagesData) => {
+  const {
+    collectionName,
+    subCollectionName,
+    resourceRoomName,
+    resourceCategoryName,
+  } = params
+  let exampleTitle = "Example Title"
+  while (pagesData.includes(titleToPageFileName(exampleTitle))) {
+    exampleTitle += " 1"
+  }
+  const examplePermalink = `/${collectionName ? `${collectionName}/` : ""}${
+    subCollectionName ? `${subCollectionName}/` : ""
+  }${resourceRoomName ? `${resourceRoomName}/` : ""}${
+    resourceCategoryName ? `${resourceCategoryName}/` : ""
+  }permalink`
+  return { exampleTitle, examplePermalink }
+}
+
+export const isLastItem = (type, params) => {
+  const {
+    collectionName,
+    subCollectionName,
+    resourceRoomName,
+    resourceCategoryName,
+    fileName,
+  } = params
+  if (type === "siteName") {
+    return (
+      !collectionName &&
+      !subCollectionName &&
+      !fileName &&
+      !resourceRoomName &&
+      !resourceCategoryName &&
+      !fileName
+    )
+  }
+  if (type === "collectionName") {
+    return !subCollectionName && !fileName
+  }
+  if (type === "subCollectionName") {
+    return !fileName
+  }
+  if (type === "resourceRoomName") {
+    return !resourceCategoryName && !fileName
+  }
+  if (type === "resourceCategoryName") {
+    return !fileName
+  }
+  if (type === "fileName") {
+    return !!fileName
+  }
+}
+
+export const getLastItemType = (params) => {
+  const types = Object.keys(params)
+  const lastItemType = types.filter((type) => isLastItem(type, params))[0]
+  return lastItemType
+}
+
+export const getNextItemType = (params) => {
+  const lastItemType = getLastItemType(params)
+  if (lastItemType === "siteName") {
+    return "collectionName"
+  }
+  if (lastItemType === "collectionName") {
+    return "subCollectionName"
+  }
+  if (lastItemType === "subCollectionName") {
+    return "fileName"
+  }
+  if (lastItemType === "resourceRoomName") {
+    return "resourceCategoryName"
+  }
+  if (lastItemType === "resourceCategoryName") {
+    return "fileName"
+  }
+  if (lastItemType === "fileName") {
+    return False
+  }
+}
