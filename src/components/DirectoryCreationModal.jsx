@@ -1,146 +1,110 @@
-// TODO: deprecate after Workspace refactor, replaced by DirectoryCreationModal
-
 import React, { useEffect, useState } from "react"
 import axios from "axios"
 import PropTypes from "prop-types"
 import * as _ from "lodash"
-import update from "immutability-helper"
-import { useMutation } from "react-query"
-import Select from "react-select"
 
 import FolderCard from "./FolderCard"
 import LoadingButton from "./LoadingButton"
 import FolderNamingModal from "./FolderNamingModal"
-import { errorToast } from "../utils/toasts"
-import useRedirectHook from "../hooks/useRedirectHook"
 
-import { validateCategoryName } from "../utils/validators"
-import { deslugifyPage, slugifyCategory, DEFAULT_RETRY_MSG } from "../utils"
+import { validateSubfolderName } from "../utils/validators"
 
 import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
 import adminStyles from "../styles/isomer-cms/pages/Admin.module.scss"
-import { moveFiles } from "../api"
 
 // axios settings
 axios.defaults.withCredentials = true
 
-const FolderCreationModal = ({
-  parentFolder,
-  existingSubfolders,
-  pagesData,
-  siteName,
-  setIsFolderCreationActive,
-}) => {
-  // Errors
+const DirectoryCreationModal = ({ params, onClose, dirData, onProceed }) => {
+  const { siteName, collectionName } = params
+
+  const [pagesData, setPagesData] = useState([])
   const [errors, setErrors] = useState("")
-  const { setRedirectToPage } = useRedirectHook()
 
   const [title, setTitle] = useState("")
-  const [selectedFiles, setSelectedFiles] = useState({})
-  // retrieve only when necessary, i.e. after user has chosen to move this page
-  // const [sha, setSha] = useState('')
+  const [selectedPages, setSelectedPages] = useState([])
 
   const [isSelectingTitle, setIsSelectingTitle] = useState(true)
-  const [sortedPagesData, setSortedPagesData] = useState(pagesData)
+  // const [sortedPagesData, setSortedPagesData] = useState(pagesData)
 
-  const sortOptions = [
-    {
-      value: "title",
-      label: "Name",
-    },
-  ]
+  // const sortOptions = [
+  //   {
+  //     value: "title",
+  //     label: "Name",
+  //   },
+  // ]
+
+  // useEffect(() => {
+  //   const sortedOrder = pagesData.concat().sort(sortFuncs.title)
+  //   setSortedPagesData(sortedOrder)
+  // }, [])
+
+  /** ******************************** */
+  /*     useEffects to load data     */
+  /** ******************************** */
 
   useEffect(() => {
-    const sortedOrder = pagesData.concat().sort(sortFuncs.title)
-    setSortedPagesData(sortedOrder)
-  }, [])
-
-  const { mutateAsync: saveHandler } = useMutation(
-    () =>
-      moveFiles(
-        siteName,
-        Object.keys(selectedFiles),
-        slugifyCategory(title),
-        parentFolder
-      ),
-    {
-      onSuccess: () => {
-        const redirectUrl = `/sites/${siteName}/folders/${
-          parentFolder
-            ? `${parentFolder}/subfolders/${slugifyCategory(title)}`
-            : slugifyCategory(title)
-        }`
-        setRedirectToPage(redirectUrl)
-        setIsFolderCreationActive(false)
-      },
-      onError: (error) => {
-        if (error.response.status === 409) {
-          errorToast(
-            `The name chosen is a protected folder name. Please choose a different name.`
-          )
-        } else {
-          errorToast(
-            `There was a problem trying to create your new folder. ${DEFAULT_RETRY_MSG}`
-          )
-        }
-      },
+    if (dirData) {
+      setPagesData(dirData.filter((item) => item.type == "file"))
     }
-  )
+  }, [dirData])
+
+  /** ******************************** */
+  /*     handler functions    */
+  /** ******************************** */
 
   const folderNameChangeHandler = (event) => {
     const { value } = event.target
-    const errorMessage = validateCategoryName(value, "page", existingSubfolders)
+    const errorMessage = validateSubfolderName(
+      value,
+      "page",
+      dirData.filter((item) => item.type == "dir").map((item) => item.name)
+    )
     setTitle(value)
     setErrors(errorMessage)
   }
 
-  const fileSelectChangeHandler = (name) => {
-    let newSelectedFiles
-    if (name in selectedFiles) {
-      newSelectedFiles = update(selectedFiles, {
-        $unset: [name],
-      })
-      Object.keys(newSelectedFiles).forEach(
-        (fileName, idx) =>
-          (newSelectedFiles = update(newSelectedFiles, {
-            [fileName]: { $set: idx + 1 },
-          }))
+  const fileSelectChangeHandler = (selectedItem) => {
+    const indexOfItem = selectedPages.findIndex(
+      (item) => item.name === selectedItem.name
+    )
+    if (indexOfItem != -1) {
+      // found
+      setSelectedPages((prevState) =>
+        prevState.slice(0, indexOfItem).concat(prevState.slice(indexOfItem + 1))
       )
     } else {
-      newSelectedFiles = update(selectedFiles, {
-        [name]: { $set: Object.keys(selectedFiles).length + 1 },
-      })
-    }
-    setSelectedFiles(newSelectedFiles)
-  }
-
-  const sortFuncs = {
-    title: (a, b) => {
-      return a.fileName.localeCompare(b.fileName)
-    },
-  }
-
-  const sortOrderChangeHandler = (option) => {
-    // Reset to original order in folder
-    if (option.value === "folder") setSortedPagesData(pagesData)
-    else {
-      const sortedOrder = sortedPagesData.concat().sort(sortFuncs[option.value])
-      setSortedPagesData(sortedOrder)
+      setSelectedPages((prevState) => [...prevState, selectedItem])
     }
   }
+
+  // const sortFuncs = {
+  //   title: (a, b) => {
+  //     return a.fileName.localeCompare(b.fileName)
+  //   },
+  // }
+
+  // const sortOrderChangeHandler = (option) => {
+  //   // Reset to original order in folder
+  //   if (option.value === "folder") setSortedPagesData(pagesData)
+  //   else {
+  //     const sortedOrder = sortedPagesData.concat().sort(sortFuncs[option.value])
+  //     setSortedPagesData(sortedOrder)
+  //   }
+  // }
 
   return (
     <>
       <div className={elementStyles.overlay}>
         {isSelectingTitle && (
           <FolderNamingModal
-            onClose={() => setIsFolderCreationActive(false)}
+            onClose={onClose}
             onProceed={() => setIsSelectingTitle(false)}
             folderNameChangeHandler={folderNameChangeHandler}
             title={title}
             errors={errors}
-            folderType={parentFolder ? "subfolder" : "folder"}
+            folderType={collectionName ? "subfolder" : "folder"}
             proceedText="Select pages"
           />
         )}
@@ -182,22 +146,30 @@ const FolderCreationModal = ({
               {/* Pages */}
               <div className={contentStyles.folderContainerBoxes}>
                 <div className={contentStyles.boxesContainer}>
-                  {sortedPagesData && sortedPagesData.length > 0
-                    ? sortedPagesData.map((pageData, pageIdx) => (
+                  {pagesData && pagesData.length > 0
+                    ? pagesData.map((pageData, pageIdx) => (
                         <FolderCard
-                          displayText={deslugifyPage(pageData.fileName)}
+                          displayText={pageData.name}
                           settingsToggle={() => {}}
-                          key={pageData.fileName}
+                          key={pageData.name}
                           pageType="file"
                           siteName={siteName}
                           itemIndex={pageIdx}
-                          selectedIndex={selectedFiles[pageData.fileName]}
+                          selectedIndex={
+                            selectedPages.findIndex(
+                              (item) => item.name === pageData.name
+                            ) != -1
+                              ? selectedPages.findIndex(
+                                  (item) => item.name === pageData.name
+                                ) + 1
+                              : null
+                          }
                           onClick={() => {
-                            fileSelectChangeHandler(pageData.fileName)
+                            fileSelectChangeHandler(pageData)
                           }}
                         />
                       ))
-                    : !sortedPagesData
+                    : !pagesData
                     ? "Loading Pages..."
                     : "There are no pages in this folder."}
                 </div>
@@ -208,13 +180,18 @@ const FolderCreationModal = ({
                 label="Cancel"
                 disabledStyle={elementStyles.disabled}
                 className={`${elementStyles.warning}`}
-                callback={() => setIsFolderCreationActive(false)}
+                callback={onClose}
               />
               <LoadingButton
-                label={selectedFiles.size === 0 ? `Skip` : `Done`}
+                label={selectedPages.length === 0 ? `Skip` : `Done`}
                 disabledStyle={elementStyles.disabled}
                 className={elementStyles.blue}
-                callback={saveHandler}
+                callback={() =>
+                  onProceed({
+                    newDirectoryName: title,
+                    items: selectedPages,
+                  })
+                }
               />
             </div>
           </div>
@@ -224,9 +201,9 @@ const FolderCreationModal = ({
   )
 }
 
-export default FolderCreationModal
+export default DirectoryCreationModal
 
-FolderCreationModal.propTypes = {
+DirectoryCreationModal.propTypes = {
   parentFolder: PropTypes.string.isRequired,
   existingSubfolders: PropTypes.arrayOf(PropTypes.string).isRequired,
   pagesData: PropTypes.arrayOf(
