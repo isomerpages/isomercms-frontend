@@ -114,9 +114,17 @@ const FolderItem = ({ item, itemIndex, isDisabled }) => {
 const FolderContent = ({ dirData }) => {
   return (
     <div className={`${contentStyles.contentContainerFolderColumn} mb-5`}>
-      {dirData.map((item) => (
-        <FolderItem key={item.name} item={item} />
-      ))}
+      {dirData && dirData.length ? (
+        dirData.map((item) => <FolderItem key={item.name} item={item} />)
+      ) : dirData && !dirData.length ? (
+        <span className="d-flex justify-content-center">
+          No pages here yet.
+        </span>
+      ) : (
+        <div className="d-flex justify-content-center">
+          <div className="spinner-border text-primary" role="status" />
+        </div>
+      )}
     </div>
   )
 }
