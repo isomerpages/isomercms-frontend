@@ -22,7 +22,8 @@ export const FoldersDirectorySettingsScreen = ({ onClose }) => {
     onSuccess: () => onClose(),
   })
   const { data: dirData } = useGetDirectoryHook(
-    (({ [getLastItemType(params)]: unused, ...p }) => p)(params)
+    (({ [getLastItemType(params)]: unused, ...p }) => p)(params),
+    { initialData: [] }
   )
 
   return (

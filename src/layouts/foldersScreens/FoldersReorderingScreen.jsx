@@ -12,14 +12,14 @@ import {
 
 export const FoldersReorderingScreen = ({ onClose }) => {
   const params = useParams()
-  const { data: pagesData } = useGetDirectoryHook(params)
+  const { data: dirData } = useGetDirectoryHook(params, { initialData: [] })
   const { mutateAsync: reorderHandler } = useReorderDirectoryHook(params, {
     onSettled: onClose,
   })
 
   return (
     <ReorderingModal
-      pagesData={pagesData}
+      dirData={dirData}
       onProceed={reorderHandler}
       params={params}
       onClose={onClose}
