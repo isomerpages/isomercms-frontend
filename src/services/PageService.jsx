@@ -26,7 +26,7 @@ export class PageService {
     }
     endpoint += `/pages`
     if (fileName) {
-      endpoint += `/${fileName}`
+      endpoint += `/${encodeURIComponent(fileName)}`
     }
     return endpoint
   }

@@ -3,14 +3,14 @@ import PropTypes from "prop-types"
 import _ from "lodash"
 import { PageHeader, PageBody, LeftNav } from "../pageComponentsV2"
 
-const CollectionPageTemplate = ({ chunk, dirData, pageParams }) => {
+const CollectionPageTemplate = ({ chunk, dirData, pageParams, title }) => {
   return (
     <div>
       <section
         id="display-header"
         className="bp-section is-small bp-section-pagetitle"
       >
-        <PageHeader pageParams={pageParams} />
+        <PageHeader pageParams={pageParams} title={title} />
       </section>
       <section className="bp-section page-content-body">
         <div className="bp-container padding--top--lg padding--bottom--xl">

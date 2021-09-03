@@ -4,9 +4,9 @@ import Breadcrumb from "./Breadcrumb"
 
 import { extractMetadataFromFilename } from "../../utils"
 
-export const PageHeader = ({ pageParams }) => {
+export const PageHeader = ({ pageParams, title }) => {
   const { resourceCategoryName, fileName } = pageParams
-  const { title, date } = extractMetadataFromFilename({
+  const { date } = extractMetadataFromFilename({
     resourceCategoryName,
     fileName,
   })
@@ -23,14 +23,7 @@ export const PageHeader = ({ pageParams }) => {
         <div className="row">
           <div className="col">
             <h1 className="has-text-white">
-              <b>
-                {title
-                  .split(" ")
-                  .map(
-                    (string) => string.charAt(0).toUpperCase() + string.slice(1)
-                  )
-                  .join(" ")}
-              </b>
+              <b>{title}</b>
             </h1>
           </div>
         </div>

@@ -7,7 +7,7 @@ import PageTemplate from "../../templates/pages/PageTemplate"
 
 import editorStyles from "../../styles/isomer-cms/pages/Editor.module.scss"
 
-const PagePreview = ({ pageParams, chunk, dirData }) => {
+const PagePreview = ({ pageParams, chunk, dirData, title }) => {
   const {
     collectionName,
     subCollectionName,
@@ -22,15 +22,17 @@ const PagePreview = ({ pageParams, chunk, dirData }) => {
           chunk={chunk}
           dirData={dirData}
           pageParams={pageParams}
+          title={title}
         />
       ) : resourceRoomName && resourceCategoryName ? (
         <ResourcePageTemplate
           chunk={chunk}
           fileName={fileName}
           pageParams={pageParams}
+          title={title}
         />
       ) : (
-        <PageTemplate chunk={chunk} fileName={fileName} />
+        <PageTemplate chunk={chunk} fileName={fileName} title={title} />
       )}
     </div>
   )

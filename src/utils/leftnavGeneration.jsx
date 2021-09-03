@@ -1,6 +1,6 @@
 import React from "react"
 import _ from "lodash"
-import { deslugifyPage, deslugifyDirectory } from "../utils"
+import { pageFileNameToTitle } from "../utils"
 
 const retrieveCurrentFileThirdNavTitle = (leftNavPages, fileName) => {
   let currentFileThirdNavTitle = ""
@@ -161,7 +161,7 @@ const generateThirdNavHeader = (
         elementFileName
       )}`}
     >
-      {deslugifyDirectory(currentThirdNavTitle)}
+      {currentThirdNavTitle}
       <i
         className={`sgds-icon is-pulled-right is-size-4 ${calculateThirdNavHeaderChevronState(
           currentFileThirdNavTitle,
@@ -225,7 +225,7 @@ export const generateLeftNav = (dirData, fileName) => {
                   : ""
               }`}
             >
-              {deslugifyPage(elementFileName)}
+              {pageFileNameToTitle(elementFileName)}
             </a>
           </li>
         )
@@ -268,7 +268,7 @@ export const generateLeftNav = (dirData, fileName) => {
                   : ""
               }`}
             >
-              {deslugifyPage(elementFileName)}
+              {pageFileNameToTitle(elementFileName)}
             </a>
           </li>
         )
@@ -285,7 +285,7 @@ export const generateLeftNav = (dirData, fileName) => {
                 : ""
             }`}
           >
-            {deslugifyPage(elementFileName)}
+            {pageFileNameToTitle(elementFileName)}
           </a>
         </li>
       )
@@ -314,7 +314,7 @@ export const generateLeftNav = (dirData, fileName) => {
         {/* Current on-third-nav section */}
         <li key={elementFileName}>
           <a className={`${fileName === elementFileName ? "is-active" : ""}`}>
-            {deslugifyPage(elementFileName)}
+            {pageFileNameToTitle(elementFileName)}
           </a>
         </li>
       </>
