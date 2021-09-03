@@ -1,3 +1,6 @@
+// TODO: deprecate after Workspace and Resources refactor
+// remove from FolderCard, use DirectorySettingsModal as separate modal on layout
+
 import React, { useState } from "react"
 import axios from "axios"
 import PropTypes from "prop-types"
