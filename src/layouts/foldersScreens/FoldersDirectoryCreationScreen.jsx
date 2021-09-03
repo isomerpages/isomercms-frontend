@@ -18,7 +18,7 @@ axios.defaults.withCredentials = true
 export const FoldersDirectoryCreationScreen = ({ onClose }) => {
   const params = useParams()
 
-  const { data: dirData } = useGetDirectoryHook(params)
+  const { data: dirData } = useGetDirectoryHook(params, { initialData: [] })
   const { mutateAsync: saveHandler } = useCreateDirectoryHook(params, {
     onSuccess: () => onClose(),
   })
