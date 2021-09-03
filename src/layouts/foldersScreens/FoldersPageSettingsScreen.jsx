@@ -20,7 +20,7 @@ export const FoldersPageSettingsScreen = ({ onClose }) => {
     onSuccess: () => onClose(),
   })
   const { mutateAsync: createHandler } = useCreatePageHook(params)
-  const { data: dirData } = useGetDirectoryHook(params)
+  const { data: dirData } = useGetDirectoryHook(params, { initialData: [] })
   const { data: siteUrl } = useSiteUrlHook(params)
 
   return (
