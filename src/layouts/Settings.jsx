@@ -119,7 +119,7 @@ export default class Settings extends Component {
 
       // get settings data from backend
       const resp = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`,
+        `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/settings`,
         {
           withCredentials: true,
         }
@@ -361,7 +361,7 @@ export default class Settings extends Component {
       }
 
       await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`,
+        `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/settings`,
         params,
         {
           withCredentials: true,

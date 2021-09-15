@@ -132,7 +132,7 @@ const getSiteColors = async (siteName) => {
   try {
     // get settings data from backend
     const settingsResp = await axios.get(
-      `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`
+      `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/settings`
     )
     const {
       configSettings: { colors },
