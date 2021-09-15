@@ -200,7 +200,7 @@ const EditContactUs = ({ match }) => {
 
       try {
         const settingsResp = await axios.get(
-          `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`
+          `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/settings`
         )
         const { footerSettings } = settingsResp.data
         footerContent = footerSettings
@@ -732,7 +732,7 @@ const EditContactUs = ({ match }) => {
         JSON.stringify(footerContent) !== JSON.stringify(originalFooterContent)
       ) {
         await axios.post(
-          `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`,
+          `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/settings`,
           footerParams,
           {
             withCredentials: true,
