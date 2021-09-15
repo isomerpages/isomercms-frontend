@@ -139,6 +139,7 @@ export default class Settings extends Component {
         // url: configSettings.url,
         shareicon: configSettings.shareicon,
         title: configSettings.title,
+        description: configSettings.description,
         // footer fields
         otherFooterSettings: {
           contact_us: footerSettings.contact_us,
