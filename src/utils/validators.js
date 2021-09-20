@@ -33,6 +33,7 @@ const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/
 const RESOURCE_CATEGORY_REGEX = "^([a-zA-Z0-9]*[- ]?)+$"
 const resourceRoomNameRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
 const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX)
+const specialCharactersRegexTest = /[~!@#$%^&*_+\-./\\\`:;~{}()[\]"'<>,?]/
 
 const ISOMER_TEMPLATE_PROTECTED_DIRS = [
   "data",
@@ -716,6 +717,9 @@ const validatePageSettings = (id, value, folderOrderArray) => {
       if (value.length > PAGE_SETTINGS_TITLE_MAX_LENGTH) {
         errorMessage = `The title should be shorter than ${PAGE_SETTINGS_TITLE_MAX_LENGTH} characters.`
       }
+      if (specialCharactersRegexTest.test(value)) {
+        errorMessage = `The title cannot contain any of the following special characters: ~!@#$%^&*_+\-./\\\`:;~{}()[\]"'<>,?`
+      }
       if (
         folderOrderArray !== undefined &&
         folderOrderArray.includes(titleToPageFileName(value))
@@ -934,17 +938,22 @@ const validateSocialMedia = (value, id) => {
   return errorMessage
 }
 
-// Folder Creation Modal
+// SubFolder Creation Modal
 // ====================
 const validateSubfolderName = (value, componentName, existingNames) => {
   let errorMessage = ""
 
   if (existingNames && existingNames.includes(deslugifyDirectory(value))) {
     errorMessage = `Another folder with the same name exists. Please choose a different name.`
-  } else if (value.length < RESOURCE_CATEGORY_MIN_LENGTH) {
-    errorMessage = `The ${componentName} name should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`
-  } else if (value.length > RESOURCE_CATEGORY_MAX_LENGTH) {
-    errorMessage = `The ${componentName} name should be shorter than ${RESOURCE_CATEGORY_MAX_LENGTH} characters.`
+  }
+  if (value.length < RESOURCE_CATEGORY_MIN_LENGTH) {
+    errorMessage = `The subfolder name should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`
+  }
+  if (value.length > RESOURCE_CATEGORY_MAX_LENGTH) {
+    errorMessage = `The subfolder name should be shorter than ${RESOURCE_CATEGORY_MAX_LENGTH} characters.`
+  }
+  if (specialCharactersRegexTest.test(value)) {
+    errorMessage = `The subfolder name cannot contain any of the following special characters: ~!@#$%^&*_+\-./\\\`:;~{}()[\]"'<>,?`
   }
   return errorMessage
 }

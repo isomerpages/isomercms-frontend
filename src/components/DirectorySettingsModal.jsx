@@ -33,11 +33,7 @@ const DirectorySettingsModal = ({ params, dirData, onProceed, onClose }) => {
       .map((item) => item.name)
 
     const errorMessage = params.collectionName
-      ? validateSubfolderName(
-          value,
-          getLastItemType(params),
-          comparisonCategoryArray
-        )
+      ? validateSubfolderName(value, comparisonCategoryArray)
       : validateCategoryName(
           value,
           getLastItemType(params),
