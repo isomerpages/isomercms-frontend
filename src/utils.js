@@ -278,7 +278,7 @@ export function titleToPageFileName(title) {
 }
 
 export function pageFileNameToTitle(pageFileName) {
-  return `${pageFileName.split(".")[0]}`
+  return `${pageFileName.split(".md")[0]}`
 }
 
 export function generatePageFileName(title) {
