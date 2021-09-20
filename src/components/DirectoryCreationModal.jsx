@@ -58,7 +58,6 @@ const DirectoryCreationModal = ({ params, onClose, dirData, onProceed }) => {
     const { value } = event.target
     const errorMessage = validateSubfolderName(
       value,
-      "page",
       dirData.filter((item) => item.type == "dir").map((item) => item.name)
     )
     setTitle(value)
