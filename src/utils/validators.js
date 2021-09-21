@@ -10,7 +10,7 @@ import {
 
 // Common regexes and constants
 // ==============
-const PERMALINK_REGEX = "^((/([a-zA-Z0-9]+-)*[a-z0-9]+)+)/?$"
+const PERMALINK_REGEX = "^((/([a-zA-Z0-9]+-)*[a-zA-Z0-9]+)+)/?$"
 const URL_REGEX_PART_1 = "^(https://)?(www.)?("
 const URL_REGEX_PART_2 = ".com/)([a-zA-Z0-9_-]+([/.])?)+$"
 const PHONE_REGEX = "^\\+65(6|8|9)[0-9]{7}$"
