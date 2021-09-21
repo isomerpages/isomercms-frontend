@@ -518,11 +518,34 @@ export const getDefaultFrontMatter = (params, pagesData) => {
   while (pagesData.includes(titleToPageFileName(exampleTitle))) {
     exampleTitle += " 1"
   }
-  const examplePermalink = `/${collectionName ? `${collectionName}/` : ""}${
-    subCollectionName ? `${subCollectionName}/` : ""
-  }${resourceRoomName ? `${resourceRoomName}/` : ""}${
-    resourceCategoryName ? `${resourceCategoryName}/` : ""
-  }permalink`
+  let examplePermalink = "/"
+  if (collectionName) {
+    examplePermalink += `${
+      slugify(collectionName) ? `${slugify(collectionName)}/` : "unrecognised/"
+    }`
+  }
+  if (subCollectionName) {
+    examplePermalink += `${
+      slugify(subCollectionName)
+        ? `${slugify(subCollectionName)}/`
+        : "unrecognised/"
+    }`
+  }
+  if (resourceRoomName) {
+    examplePermalink += `${
+      slugify(resourceRoomName)
+        ? `${slugify(resourceRoomName)}/`
+        : "unrecognised/"
+    }`
+  }
+  if (resourceCategoryName) {
+    examplePermalink += `${
+      slugify(resourceCategoryName)
+        ? `${slugify(resourceCategoryName)}/`
+        : "unrecognised/"
+    }`
+  }
+  examplePermalink += `permalink`
   return { exampleTitle, examplePermalink }
 }
 
