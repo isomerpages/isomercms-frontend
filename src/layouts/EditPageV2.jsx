@@ -203,12 +203,14 @@ const EditPageV2 = ({ match, history }) => {
         }
         saveCallback={() => {
           if (isXSSViolation) setShowXSSWarning(true)
-          else
+          else {
+            console.log(pageData.sha)
             updatePageHandler({
               frontMatter: pageData.content.frontMatter,
               sha: pageData.sha,
               pageBody: editorValue,
             })
+          }
         }}
         isSaving={isSavingPage}
       />
