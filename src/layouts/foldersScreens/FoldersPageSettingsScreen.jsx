@@ -29,7 +29,7 @@ export const FoldersPageSettingsScreen = ({ onClose }) => {
       onClose={onClose}
       pageData={pageData}
       onProceed={fileName ? updateHandler : createHandler}
-      dirData={dirData.filter((page) => page.name !== fileName)}
+      dirData={dirData ? dirData.filter((page) => page.name !== fileName) : []}
       siteUrl={siteUrl}
     />
   )
