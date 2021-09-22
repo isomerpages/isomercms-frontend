@@ -19,9 +19,7 @@ export const FoldersDirectoryCreationScreen = ({ onClose }) => {
   const params = useParams()
 
   const { data: dirData } = useGetDirectoryHook(params, { initialData: [] })
-  const { mutateAsync: saveHandler } = useCreateDirectoryHook(params, {
-    onSuccess: () => onClose(),
-  })
+  const { mutateAsync: saveHandler } = useCreateDirectoryHook(params)
 
   return (
     <DirectoryCreationModal
