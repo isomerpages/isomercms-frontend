@@ -6,6 +6,7 @@ import {
   slugifyCategory,
   titleToPageFileName,
   deslugifyDirectory,
+  generatePageFileName,
 } from "../utils"
 
 // Common regexes and constants
@@ -720,7 +721,8 @@ const validatePageSettings = (id, value, folderOrderArray) => {
       }
       if (
         folderOrderArray !== undefined &&
-        folderOrderArray.includes(titleToPageFileName(value))
+        (folderOrderArray.includes(titleToPageFileName(value)) ||
+          folderOrderArray.includes(generatePageFileName(value)))
       ) {
         errorMessage = `This title is already in use. Please choose a different title.`
       }
@@ -922,7 +924,7 @@ const validateSocialMedia = (value, id) => {
 
 // SubFolder Creation Modal
 // ====================
-const validateSubfolderName = (value, componentName, existingNames) => {
+const validateSubfolderName = (value, existingNames) => {
   let errorMessage = ""
 
   if (existingNames && existingNames.includes(deslugifyDirectory(value))) {
