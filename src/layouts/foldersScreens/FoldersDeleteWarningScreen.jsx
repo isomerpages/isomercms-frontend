@@ -17,13 +17,13 @@ export const FoldersDeleteWarningScreen = ({ onClose }) => {
       onSuccess: () => onClose(),
     })
 
-    return (
+    return pageData ? (
       <DeleteWarningModal
         onDelete={() => deleteHandler({ sha: pageData.sha })}
         onCancel={() => onClose()}
         type={deleteItemType}
       />
-    )
+    ) : null
   }
   const { mutateAsync: deleteHandler } = useDeleteDirectoryHook(params, {
     onSuccess: () => onClose(),
