@@ -260,6 +260,7 @@ const FolderCard = ({
         </Link>
       ) : (
         <div
+          id="folderCard-small"
           className={`${contentStyles.component} ${contentStyles.card} ${
             elementStyles.folderCard
           } ${selectedIndex ? `border border-primary` : ""}`}
