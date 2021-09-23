@@ -58,6 +58,7 @@ const MoveModal = ({ params, onProceed, onClose }) => {
           <i className={`${elementStyles.dropdownIcon} bx bx-sm bx-folder`} />
           {deslugifyDirectory(name)}
           <i
+            id={`moveModal-forwardButton-${name}`}
             className={`${elementStyles.dropdownItemButton} bx bx-sm bx-chevron-right ml-auto`}
             onMouseDown={() => {
               setMoveTo((moveQuery) => ({
@@ -80,7 +81,7 @@ const MoveModal = ({ params, onProceed, onClose }) => {
     const isEnabled = Object.keys(params).length > 1
     return (
       <div
-        id="back-button"
+        id="moveModal-backButton"
         className={`${elementStyles.dropdownHeader}`}
         onMouseDown={
           isEnabled
