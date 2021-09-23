@@ -189,7 +189,7 @@ const EditPageV2 = ({ match, history }) => {
           )}
         {showOverwriteWarning && ( // to be refactored later
           <GenericWarningModal
-            displayTitle="Warning"
+            displayTitle="Override Changes"
             displayText={`A different version of this page has recently been saved by another user. You can choose to either override their changes, or go back to editing.
               <br/><br/>We recommend you to make a copy of your changes elsewhere, and come back later to reconcile your changes.`}
             onProceed={() => {
@@ -202,7 +202,7 @@ const EditPageV2 = ({ match, history }) => {
             }}
             onCancel={() => setShowOverwriteWarning(false)}
             cancelText="Back to Editing"
-            proceedText="Override and Save"
+            proceedText="Override"
           />
         )}
         {/* Editor */}
