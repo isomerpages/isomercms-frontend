@@ -15,9 +15,11 @@ export function useUpdatePageHook(params, queryParams) {
   const { pageService } = useContext(ServicesContext)
   return useMutation((body) => pageService.update(params, body), {
     ...queryParams,
-    onSuccess: () => {
+    onSettled: () => {
       queryClient.invalidateQueries([PAGE_CONTENT_KEY, { ...params }])
       queryClient.invalidateQueries([PAGE_SETTINGS_KEY, { ...params }])
+    },
+    onSuccess: () => {
       if (params.collectionName)
         queryClient.invalidateQueries([
           // invalidates collection
@@ -28,9 +30,10 @@ export function useUpdatePageHook(params, queryParams) {
       successToast(`Successfully updated page!`)
       queryParams && queryParams.onSuccess && queryParams.onSuccess()
     },
-    onError: () => {
-      errorToast(`Your page could not be updated. ${DEFAULT_RETRY_MSG}`)
-      queryParams && queryParams.onError && queryParams.onError()
+    onError: (err) => {
+      if (err.response.status !== 409)
+        errorToast(`Your page could not be updated. ${DEFAULT_RETRY_MSG}`)
+      queryParams && queryParams.onError && queryParams.onError(err)
     },
   })
 }
