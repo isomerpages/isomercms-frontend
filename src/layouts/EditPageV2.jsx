@@ -53,12 +53,14 @@ const EditPageV2 = ({ match, history }) => {
   const { siteName } = match.params
 
   const [editorValue, setEditorValue] = useState("")
+  const [currSha, setCurrSha] = useState("")
   const [htmlChunk, setHtmlChunk] = useState("")
 
   const [hasChanges, setHasChanges] = useState(false)
   const [isContentViolation, setIsContentViolation] = useState(false)
   const [isXSSViolation, setIsXSSViolation] = useState(false)
   const [showXSSWarning, setShowXSSWarning] = useState(false)
+  const [showOverwriteWarning, setShowOverwriteWarning] = useState(false)
 
   const { setRedirectToNotFound } = useRedirectHook()
 
@@ -78,7 +80,12 @@ const EditPageV2 = ({ match, history }) => {
   const {
     mutateAsync: updatePageHandler,
     isLoading: isSavingPage,
-  } = useUpdatePageHook(match.params)
+  } = useUpdatePageHook(match.params, {
+    onError: (err) => {
+      if (err.response.status === 409) setShowOverwriteWarning(true)
+    },
+    onSuccess: () => setHasChanges(false),
+  })
   const { mutateAsync: deletePageHandler } = useDeletePageHook(match.params, {
     onSuccess: () => history.goBack(),
   })
@@ -101,8 +108,10 @@ const EditPageV2 = ({ match, history }) => {
   }, [siteColorsData])
 
   useEffect(() => {
-    if (pageData && !hasChanges)
+    if (pageData && !hasChanges) {
       setEditorValue(pageData.content.pageBody.trim())
+      setCurrSha(pageData.sha)
+    }
   }, [pageData])
 
   useEffect(() => {
@@ -167,7 +176,7 @@ const EditPageV2 = ({ match, history }) => {
                 setShowXSSWarning(false)
                 updatePageHandler({
                   frontMatter: pageData.content.frontMatter,
-                  sha: pageData.sha,
+                  sha: currSha,
                   pageBody: sanitizedEditorValue,
                 })
               }}
@@ -178,6 +187,24 @@ const EditPageV2 = ({ match, history }) => {
               proceedText="Acknowledge"
             />
           )}
+        {showOverwriteWarning && ( // to be refactored later
+          <GenericWarningModal
+            displayTitle="Warning"
+            displayText={`A different version of this page has recently been saved by another user. You can choose to either override their changes, or go back to editing.
+              <br/><br/>We recommend you to make a copy of your changes elsewhere, and come back later to reconcile your changes.`}
+            onProceed={() => {
+              setShowOverwriteWarning(false)
+              updatePageHandler({
+                frontMatter: pageData.content.frontMatter,
+                sha: pageData.sha,
+                pageBody: editorValue,
+              })
+            }}
+            onCancel={() => setShowOverwriteWarning(false)}
+            cancelText="Back to Editing"
+            proceedText="Override and Save"
+          />
+        )}
         {/* Editor */}
         <MarkdownEditor
           siteName={siteName}
@@ -198,7 +225,7 @@ const EditPageV2 = ({ match, history }) => {
         isSaveDisabled={isContentViolation}
         deleteCallback={() =>
           deletePageHandler({
-            sha: pageData.sha,
+            sha: currSha,
           })
         }
         saveCallback={() => {
@@ -206,7 +233,7 @@ const EditPageV2 = ({ match, history }) => {
           else
             updatePageHandler({
               frontMatter: pageData.content.frontMatter,
-              sha: pageData.sha,
+              sha: currSha,
               pageBody: editorValue,
             })
         }}
