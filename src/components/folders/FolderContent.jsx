@@ -80,6 +80,7 @@ const FolderItem = ({ item, itemIndex, isDisabled }) => {
           {!isDisabled && (
             <div className="position-relative mt-auto mb-auto">
               <button
+                id={`folderItem-dropdown-${name}`}
                 className={`${
                   showDropdown
                     ? contentStyles.optionsIconFocus
