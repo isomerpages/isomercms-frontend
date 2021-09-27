@@ -35,23 +35,25 @@ export function concatFrontMatterMdBody(frontMatter, mdBody) {
   return ["---\n", yaml.stringify(frontMatter), "---\n", mdBody].join("")
 }
 
+// this function deslugifies a string into readable form
+// for example, 'this-is-a-directory' -> 'This Is A Directory'
+export function deslugify(string) {
+  return string
+    .split("-")
+    .map((word) => _.upperFirst(word)) // capitalize first letter
+    .join(" ") // join it back together
+}
+
 // this function converts directories into readable form
 // for example, 'this-is-a-directory' -> 'This Is A Directory'
 export function deslugifyDirectory(dirName) {
-  return dirName
-    .split("-")
-    .map((string) => _.upperFirst(string)) // capitalize first letter
-    .join(" ") // join it back together
+  return deslugify(dirName)
 }
 
 // this function converts file names into readable form
 // for example, 'this-is-a-file.md' -> 'This Is A File'
 export function deslugifyPage(pageName) {
-  return pageName
-    .split(".")[0] // remove the file extension
-    .split("-")
-    .map((string) => _.upperFirst(string)) // capitalize first letter
-    .join(" ") // join it back together
+  return deslugify(pageName.split(".")[0]) // remove the file extension
 }
 
 // takes a string URL and returns true if the link is an internal link
