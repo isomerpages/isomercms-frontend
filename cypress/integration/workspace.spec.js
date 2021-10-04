@@ -19,13 +19,13 @@ describe("Workspace Pages flow", () => {
   const TEST_PAGE_FILENAME = generatePageFileName(TEST_PAGE_TITLE)
   const TEST_PAGE_CONTENT = "my test page content"
   const EDITED_TEST_PAGE_FILENAME = generatePageFileName(EDITED_TEST_PAGE_TITLE)
+  // temporary variables until refactor
   const PRETTIFIED_PAGE_TITLE_IN_FOLDER_CREATION = deslugifyPage(
     TEST_PAGE_FILENAME
-  ) // temporary until refactor
-  const PRETTIFIED_PAGE_TITLE = pageFileNameToTitle(TEST_PAGE_FILENAME)
-  const EDITED_PRETTIFIED_PAGE_TITLE = pageFileNameToTitle(
-    EDITED_TEST_PAGE_FILENAME
   )
+  const PRETTIFIED_PAGE_TITLE = deslugifyPage(TEST_PAGE_FILENAME)
+  const PRETTIFIED_PAGE_TITLE_V2 = pageFileNameToTitle(TEST_PAGE_FILENAME)
+  const EDITED_PRETTIFIED_PAGE_TITLE = deslugifyPage(EDITED_TEST_PAGE_FILENAME)
 
   const TEST_FOLDER_NO_PAGES_TITLE = "test folder title no pages"
   const PARSED_TEST_FOLDER_NO_PAGES_TITLE = slugifyCategory(
@@ -248,7 +248,7 @@ describe("Workspace Pages flow", () => {
         "include",
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_FOLDER_WITH_PAGES_TITLE}`
       )
-      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT })
+      cy.contains(PRETTIFIED_PAGE_TITLE_V2, { timeout: CUSTOM_TIMEOUT })
         .should("exist")
         .click()
       cy.get(".CodeMirror-scroll", { timeout: CUSTOM_TIMEOUT }).should(
@@ -302,7 +302,7 @@ describe("Workspace Pages flow", () => {
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_EDITED_TEST_FOLDER_WITH_PAGES_TITLE}`
       )
 
-      cy.contains(PRETTIFIED_PAGE_TITLE).click()
+      cy.contains(PRETTIFIED_PAGE_TITLE_V2).click()
       cy.get(".CodeMirror-scroll").should("contain", TEST_PAGE_CONTENT)
     })
 
