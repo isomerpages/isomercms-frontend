@@ -139,10 +139,17 @@ const PageSettingsModalV2 = ({
               hasDeleteButton={false}
               saveCallback={() =>
                 onProceed({
-                  frontMatter: {
-                    title,
-                    permalink,
-                  },
+                  frontMatter:
+                    pageData && pageData.content
+                      ? {
+                          ...pageData.content.frontMatter,
+                          title,
+                          permalink,
+                        }
+                      : {
+                          title,
+                          permalink,
+                        },
                   sha: pageData?.sha || "",
                   pageBody: pageData?.content?.pageBody || "",
                   newFileName: `${title}.md`,
