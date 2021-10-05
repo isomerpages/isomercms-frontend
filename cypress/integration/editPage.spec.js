@@ -2,7 +2,7 @@ import "cypress-file-upload"
 import {
   slugifyCategory,
   generateResourceFileName,
-  generatePageFileName,
+  titleToPageFileName,
 } from "../../src/utils"
 
 Cypress.config("baseUrl", Cypress.env("BASEURL"))
@@ -31,7 +31,7 @@ describe("Edit unlinked page", () => {
   const ADDED_IMAGE_TITLE = "balloon.png"
   const ADDED_IMAGE_PATH = "images/balloon.png"
 
-  const ADDED_FILE_TITLE = "singapore.pdf"
+  const ADDED_FILE_TITLE = "singapore-pages.pdf"
   const ADDED_FILE_PATH = "files/singapore.pdf"
 
   const LINK_TITLE = "link"
@@ -206,13 +206,14 @@ describe("Edit collection page", () => {
   const TEST_FOLDER_TITLE_SLUGIFIED = slugifyCategory(TEST_FOLDER_TITLE)
 
   const TEST_PAGE_TITLE = "Test Collection Page"
-  const TEST_PAGE_TITLE_SLUGIFIED = generatePageFileName(TEST_PAGE_TITLE)
+  const TEST_PAGE_FILENAME = titleToPageFileName(TEST_PAGE_TITLE)
+  const TEST_PAGE_TITLE_ENCODED = encodeURIComponent(TEST_PAGE_FILENAME)
 
   const TEST_PAGE_CONTENT = "lorem ipsum"
 
   const DEFAULT_IMAGE_TITLE = "isomer-logo.svg"
 
-  const ADDED_FILE_TITLE = "singapore.pdf"
+  const ADDED_FILE_TITLE = "singapore-pages.pdf"
 
   const LINK_TITLE = "link"
   const LINK_URL = "https://www.google.com"
@@ -230,7 +231,7 @@ describe("Edit collection page", () => {
     cy.wait(2000)
 
     // Set up test collection page
-    cy.visit(`/sites/${TEST_REPO_NAME}/folder/${TEST_FOLDER_TITLE_SLUGIFIED}`)
+    cy.visit(`/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}`)
     cy.contains("Create new page").should("exist").click()
     cy.get("#title").clear().type(TEST_PAGE_TITLE)
     cy.contains("Save").click()
@@ -243,7 +244,7 @@ describe("Edit collection page", () => {
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
     window.localStorage.setItem("userId", "test")
     cy.visit(
-      `/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_SLUGIFIED}`
+      `/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_ENCODED}`
     )
     cy.wait(2000)
   })
@@ -274,7 +275,7 @@ describe("Edit collection page", () => {
     // Sanity check: still in edit collection pages and content still present
     cy.url().should(
       "include",
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_SLUGIFIED}`
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_ENCODED}`
     )
     cy.contains(TEST_PAGE_CONTENT)
 
@@ -286,7 +287,7 @@ describe("Edit collection page", () => {
     // Assert: in Collection folder
     cy.url().should(
       "include",
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${TEST_FOLDER_TITLE_SLUGIFIED}` // to be fixed after collections refactor
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}`
     )
   })
 
@@ -345,7 +346,7 @@ describe("Edit collection page", () => {
 
     // Assert: page no longer exists
     cy.visit(
-      `/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_SLUGIFIED}`
+      `/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_ENCODED}`
     )
     cy.contains("The page you are looking for does not exist anymore.")
   })
