@@ -18,13 +18,13 @@ import FolderOptionButton from "../components/FolderOptionButton"
 import { FolderContent } from "../components/folders/FolderContent"
 
 import {
-  FoldersPageSettingsScreen,
-  FoldersPageMoveScreen,
-  FoldersDirectoryCreationScreen,
-  FoldersDirectorySettingsScreen,
-  FoldersReorderingScreen,
-  FoldersDeleteWarningScreen,
-} from "./foldersScreens"
+  PageSettingsScreen,
+  PageMoveScreen,
+  DirectoryCreationScreen,
+  DirectorySettingsScreen,
+  ReorderingScreen,
+  DeleteWarningScreen,
+} from "./screens"
 
 import useRedirectHook from "../hooks/useRedirectHook"
 
@@ -155,14 +155,12 @@ const Folders = ({ match, location }) => {
         <Route
           path={[`${path}/createFolder`]}
           render={() => (
-            <FoldersDirectoryCreationScreen onClose={() => history.goBack()} />
+            <DirectoryCreationScreen onClose={() => history.goBack()} />
           )}
         />
         <Route
           path={[`${path}/createPage`, `${path}/editPageSettings/:fileName`]}
-          render={() => (
-            <FoldersPageSettingsScreen onClose={() => history.goBack()} />
-          )}
+          render={() => <PageSettingsScreen onClose={() => history.goBack()} />}
         />
         <Route
           path={[
@@ -170,26 +168,22 @@ const Folders = ({ match, location }) => {
             `${path}/deleteSubfolder/:subCollectionName`,
           ]}
           render={() => (
-            <FoldersDeleteWarningScreen onClose={() => history.goBack()} />
+            <DeleteWarningScreen onClose={() => history.goBack()} />
           )}
         />
         <Route
           path={[`${path}/rearrange`]}
-          render={() => (
-            <FoldersReorderingScreen onClose={() => history.goBack()} />
-          )}
+          render={() => <ReorderingScreen onClose={() => history.goBack()} />}
         />
         <Route
           path={[`${path}/editSubfolderSettings/:subCollectionName`]}
           render={() => (
-            <FoldersDirectorySettingsScreen onClose={() => history.goBack()} />
+            <DirectorySettingsScreen onClose={() => history.goBack()} />
           )}
         />
         <Route
           path={[`${path}/movePage/:fileName`]}
-          render={() => (
-            <FoldersPageMoveScreen onClose={() => history.goBack()} />
-          )}
+          render={() => <PageMoveScreen onClose={() => history.goBack()} />}
         />
       </Switch>
     </>

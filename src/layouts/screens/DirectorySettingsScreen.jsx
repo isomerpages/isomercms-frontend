@@ -15,7 +15,7 @@ import DirectorySettingsModal from "../../components/DirectorySettingsModal"
 // axios settings
 axios.defaults.withCredentials = true
 
-export const FoldersDirectorySettingsScreen = ({ onClose }) => {
+export const DirectorySettingsScreen = ({ onClose }) => {
   const params = useParams()
 
   const { mutateAsync: renameDir } = useUpdateDirectoryHook(params, {
@@ -36,6 +36,6 @@ export const FoldersDirectorySettingsScreen = ({ onClose }) => {
   )
 }
 
-FoldersDirectorySettingsScreen.propTypes = {
+DirectorySettingsScreen.propTypes = {
   onClose: PropTypes.func.isRequired,
 }

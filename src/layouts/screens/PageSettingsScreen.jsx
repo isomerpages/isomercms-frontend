@@ -11,7 +11,7 @@ import {
 import { useSiteUrlHook } from "../../hooks/settingsHooks"
 import { useGetDirectoryHook } from "../../hooks/directoryHooks"
 
-export const FoldersPageSettingsScreen = ({ onClose }) => {
+export const PageSettingsScreen = ({ onClose }) => {
   const params = useParams() // /site/:siteName/folders/:collectionName/subfolders/:subCollectionName/editPageSettings/:fileName
 
   const { fileName } = params
@@ -35,6 +35,6 @@ export const FoldersPageSettingsScreen = ({ onClose }) => {
   )
 }
 
-FoldersPageSettingsScreen.propTypes = {
+PageSettingsScreen.propTypes = {
   onClose: PropTypes.func.isRequired,
 }

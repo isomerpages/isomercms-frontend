@@ -10,7 +10,7 @@ import {
   useReorderDirectoryHook,
 } from "../../hooks/directoryHooks"
 
-export const FoldersReorderingScreen = ({ onClose }) => {
+export const ReorderingScreen = ({ onClose }) => {
   const params = useParams()
   const { data: dirData } = useGetDirectoryHook(params, { initialData: [] })
   const { mutateAsync: reorderHandler } = useReorderDirectoryHook(params, {
@@ -27,6 +27,6 @@ export const FoldersReorderingScreen = ({ onClose }) => {
   )
 }
 
-FoldersReorderingScreen.propTypes = {
+ReorderingScreen.propTypes = {
   onClose: PropTypes.func.isRequired,
 }
