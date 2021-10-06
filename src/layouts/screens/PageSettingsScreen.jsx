@@ -12,7 +12,7 @@ import { useSiteUrlHook } from "../../hooks/settingsHooks"
 import { useGetDirectoryHook } from "../../hooks/directoryHooks"
 
 export const PageSettingsScreen = ({ onClose }) => {
-  const params = useParams() // /site/:siteName/folders/:collectionName/subfolders/:subCollectionName/editPageSettings/:fileName
+  const params = useParams()
 
   const { fileName } = params
   const { data: pageData } = useGetPageHook(params, { enabled: !!fileName })
@@ -20,7 +20,10 @@ export const PageSettingsScreen = ({ onClose }) => {
     onSuccess: () => onClose(),
   })
   const { mutateAsync: createHandler } = useCreatePageHook(params)
-  const { data: dirData } = useGetDirectoryHook(params, { initialData: [] })
+  const { data: dirData } = useGetDirectoryHook(
+    { ...params, isUnlinked: !params.collectionName },
+    { initialData: [] }
+  )
   const { data: siteUrl } = useSiteUrlHook(params)
 
   return (
