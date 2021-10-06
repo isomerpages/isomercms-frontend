@@ -463,7 +463,7 @@ export const getRedirectUrl = ({
     if (resourceCategoryName) {
       return `/sites/${siteName}/resources/${resourceCategoryName}/${fileName}` // V1
     }
-    return `/sites/${siteName}/pages/${fileName}` // V1
+    return `/sites/${siteName}/editPage/${fileName}` // V2
   }
 }
 
