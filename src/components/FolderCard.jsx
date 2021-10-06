@@ -17,7 +17,7 @@ import { errorToast, successToast } from "../utils/toasts"
 import {
   IMAGE_CONTENTS_KEY,
   DOCUMENT_CONTENTS_KEY,
-  FOLDERS_CONTENT_KEY,
+  DIR_CONTENT_KEY,
   RESOURCE_ROOM_CONTENT_KEY,
 } from "../constants"
 
@@ -147,10 +147,7 @@ const FolderCard = ({
           queryClient.invalidateQueries([RESOURCE_ROOM_CONTENT_KEY, siteName])
         } else if (pageType === "collection") {
           // Collection folder
-          queryClient.invalidateQueries([
-            FOLDERS_CONTENT_KEY,
-            { siteName, isResource: false },
-          ])
+          queryClient.invalidateQueries([DIR_CONTENT_KEY, { siteName }])
         } else if (pageType === "images") {
           queryClient.invalidateQueries([IMAGE_CONTENTS_KEY, mediaCustomPath])
         } else if (pageType === "documents") {
