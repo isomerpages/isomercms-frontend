@@ -24,6 +24,15 @@ export class PageService {
     if (resourceCategoryName) {
       endpoint += `/resources/${resourceCategoryName}`
     }
+    if (
+      !collectionName &&
+      !subCollectionName &&
+      !resourceRoomName &&
+      !resourceCategoryName
+    ) {
+      // unlinked page endpoint
+      endpoint += `/pages`
+    }
     endpoint += `/pages`
     if (fileName) {
       endpoint += `/${encodeURIComponent(fileName)}`
