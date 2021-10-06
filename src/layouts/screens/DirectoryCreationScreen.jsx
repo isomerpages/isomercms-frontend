@@ -15,7 +15,7 @@ import DirectoryCreationModal from "../../components/DirectoryCreationModal"
 // axios settings
 axios.defaults.withCredentials = true
 
-export const FoldersDirectoryCreationScreen = ({ onClose }) => {
+export const DirectoryCreationScreen = ({ onClose }) => {
   const params = useParams()
 
   const { data: dirData } = useGetDirectoryHook(params, { initialData: [] })
@@ -31,6 +31,6 @@ export const FoldersDirectoryCreationScreen = ({ onClose }) => {
   )
 }
 
-FoldersDirectoryCreationScreen.propTypes = {
+DirectoryCreationScreen.propTypes = {
   onClose: PropTypes.func.isRequired,
 }

@@ -6,7 +6,7 @@ import { useDeleteDirectoryHook } from "../../hooks/directoryHooks"
 import { useGetPageHook, useDeletePageHook } from "../../hooks/pageHooks"
 import { getLastItemType } from "../../utils"
 
-export const FoldersDeleteWarningScreen = ({ onClose }) => {
+export const DeleteWarningScreen = ({ onClose }) => {
   const params = useParams()
   const { fileName } = params
   const deleteItemType = params[getLastItemType(params)]
@@ -38,6 +38,6 @@ export const FoldersDeleteWarningScreen = ({ onClose }) => {
   )
 }
 
-FoldersDeleteWarningScreen.propTypes = {
+DeleteWarningScreen.propTypes = {
   onClose: PropTypes.func.isRequired,
 }

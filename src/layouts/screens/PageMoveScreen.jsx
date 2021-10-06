@@ -6,7 +6,7 @@ import { useMoveHook } from "../../hooks/moveHooks"
 
 import MoveModal from "../../components/MoveModal"
 
-export const FoldersPageMoveScreen = ({ onClose }) => {
+export const PageMoveScreen = ({ onClose }) => {
   const params = useParams()
 
   const { mutateAsync: moveHandler } = useMoveHook(
@@ -19,6 +19,6 @@ export const FoldersPageMoveScreen = ({ onClose }) => {
   return <MoveModal params={params} onProceed={moveHandler} onClose={onClose} />
 }
 
-FoldersPageMoveScreen.propTypes = {
+PageMoveScreen.propTypes = {
   onClose: PropTypes.func.isRequired,
 }
