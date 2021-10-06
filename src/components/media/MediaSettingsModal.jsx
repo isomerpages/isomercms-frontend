@@ -145,7 +145,7 @@ const MediaSettingsModal = ({
           </div>
         ) : (
           <div className={mediaStyles.editFilePreview}>
-            <p>{media.fileName.split(".").pop().toUpperCase()}</p>
+            <p>{newFileName}</p>
           </div>
         )}
         <form className={elementStyles.modalContent}>

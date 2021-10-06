@@ -115,7 +115,7 @@ const ReorderingModal = ({ params, dirData, onProceed, onClose }) => {
                               key={folderContentItem.name}
                               item={folderContentItem}
                               itemIndex={folderContentIndex}
-                              isLinkDisabled
+                              isDisabled
                             />
                           </div>
                         )}
