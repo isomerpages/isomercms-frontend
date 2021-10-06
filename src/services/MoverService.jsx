@@ -11,7 +11,7 @@ export class MoverService {
     if (subCollectionName) {
       endpoint += `/subcollections/${encodeURIComponent(subCollectionName)}`
     }
-    if (!collectionName && !subcollectionName) {
+    if (!collectionName && !subCollectionName) {
       endpoint += `/pages`
     }
     endpoint += `/move`
