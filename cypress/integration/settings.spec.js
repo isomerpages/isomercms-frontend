@@ -38,7 +38,7 @@ describe("Settings page", () => {
   const TEST_FAQ = "/faqpagetest/"
 
   // Pages to test color
-  const SAMPLE_PAGE = "pages/faq.md"
+  const SAMPLE_PAGE = "editPage/faq.md"
   const HOMEPAGE = "homepage"
 
   // Reusable save command
