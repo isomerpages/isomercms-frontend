@@ -23,9 +23,12 @@ describe("Edit unlinked page", () => {
   const TEST_PAGE_CONTENT = "lorem ipsum"
 
   const TEST_UNLINKED_PAGE_TITLE = "Test Unlinked Page"
-  const TEST_UNLINKED_PAGE_FILE_NAME = `${slugifyCategory(
+  const TEST_UNLINKED_PAGE_FILENAME = titleToPageFileName(
     TEST_UNLINKED_PAGE_TITLE
-  )}.md`
+  )
+  const TEST_PAGE_TITLE_ENCODED = encodeURIComponent(
+    TEST_UNLINKED_PAGE_FILENAME
+  )
 
   const DEFAULT_IMAGE_TITLE = "isomer-logo.svg"
   const ADDED_IMAGE_TITLE = "balloon.png"
@@ -73,7 +76,7 @@ describe("Edit unlinked page", () => {
     // This means it will not be cleared before the NEXT test starts.
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
     window.localStorage.setItem("userId", "test")
-    cy.visit(`/sites/${TEST_REPO_NAME}/pages/${TEST_UNLINKED_PAGE_FILE_NAME}`)
+    cy.visit(`/sites/${TEST_REPO_NAME}/editPage/${TEST_PAGE_TITLE_ENCODED}`)
     cy.wait(2000)
   })
 
@@ -99,7 +102,7 @@ describe("Edit unlinked page", () => {
     // Sanity check: still in unlinked pages and content still present
     cy.url().should(
       "include",
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/pages/${TEST_UNLINKED_PAGE_FILE_NAME}`
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/editPage/${TEST_PAGE_TITLE_ENCODED}`
     )
     cy.contains(TEST_PAGE_CONTENT)
 
@@ -121,7 +124,7 @@ describe("Edit unlinked page", () => {
 
     // Asserts
     // 1. Toast
-    cy.contains("Successfully saved page content")
+    cy.contains("Successfully updated page")
 
     // 2. Content is there even after refreshing
     cy.reload()
@@ -196,7 +199,7 @@ describe("Edit unlinked page", () => {
     cy.get("#modal-delete").click()
 
     // Assert: page no longer exists
-    cy.visit(`/sites/${TEST_REPO_NAME}/pages/${TEST_UNLINKED_PAGE_FILE_NAME}`)
+    cy.visit(`/sites/${TEST_REPO_NAME}/editPage/${TEST_PAGE_TITLE_ENCODED}`)
     cy.contains("The page you are looking for does not exist anymore.")
   })
 })
