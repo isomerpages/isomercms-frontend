@@ -90,7 +90,7 @@ const PageCard = ({ item, itemIndex, isDisabled }) => {
       <div className="position-relative mt-auto">
         <button
           type="button"
-          id={`settings-${itemIndex}`}
+          id={`pageCard-dropdown-${name}-${itemIndex}`}
           onClick={(e) => {
             e.stopPropagation()
             e.preventDefault()
