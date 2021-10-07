@@ -16,9 +16,144 @@ describe("Move flow", () => {
     TEST_REPO_SUBFOLDER_NAME
   )
 
-  // TODO: after refactor, add tests for Workspace
-  // describe("Move pages out of Workspace", () => {
-  // })
+  describe("Move pages out of Workspace", () => {
+    const TITLE_WORKSPACE_TO_FOLDER = "Move from Workspace to folder"
+    const FILENAME_WORKSPACE_TO_FOLDER = titleToPageFileName(
+      TITLE_WORKSPACE_TO_FOLDER
+    )
+
+    const TITLE_WORKSPACE_TO_SUBFOLDER = "Move from Workspace to subfolder"
+    const FILENAME_WORKSPACE_TO_SUBFOLDER = titleToPageFileName(
+      TITLE_WORKSPACE_TO_SUBFOLDER
+    )
+
+    beforeEach(() => {
+      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
+      window.localStorage.setItem("userId", "test")
+      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
+    })
+
+    it("Should be able to navigate from Workspace to subfolder back to Workspace via MoveModal buttons", () => {
+      cy.contains(FILENAME_WORKSPACE_TO_FOLDER).should("exist")
+      cy.get(
+        `button[id^="folderItem-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`
+      ).click()
+      cy.get("div[id^=move-]").first().click()
+      cy.contains(`Move Page`)
+
+      cy.contains(`Workspace > ${FILENAME_WORKSPACE_TO_FOLDER}`).should("exist")
+
+      // Navigate to Move folder
+      cy.get("i[id^=moveModal-forwardButton-]").eq(1).click({ force: true })
+      cy.contains(
+        `Workspace > ${TEST_REPO_FOLDER_NAME} > ${FILENAME_WORKSPACE_TO_FOLDER}`
+      ).should("exist")
+
+      // Navigate to Move subfolder
+      cy.get("i[id^=moveModal-forwardButton-]").click({ force: true })
+      cy.contains(
+        `Workspace > ${TEST_REPO_FOLDER_NAME} > ${TEST_REPO_SUBFOLDER_NAME} > ${FILENAME_WORKSPACE_TO_FOLDER}`
+      ).should("exist")
+
+      // Navigate to Move folder
+      cy.get("#moveModal-backButton").click({ force: true })
+      cy.contains(
+        `Workspace > ${TEST_REPO_FOLDER_NAME} > ${FILENAME_WORKSPACE_TO_FOLDER}`
+      ).should("exist")
+
+      // Navigate to Workspace
+      cy.get("#moveModal-backButton").click({ force: true })
+      cy.contains(`Workspace > ${FILENAME_WORKSPACE_TO_FOLDER}`).should("exist")
+    })
+
+    it("Should be able to move page from Workspace to itself and show correct success message", () => {
+      cy.contains(FILENAME_WORKSPACE_TO_FOLDER).should("exist")
+      cy.get(
+        `button[id^="folderItem-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`
+      ).click()
+      cy.get("div[id^=move-]").first().click()
+      cy.contains(`Move Page`)
+
+      cy.contains("button", "Move Here").click()
+      cy.contains("File is already in this folder", {
+        timeout: CUSTOM_TIMEOUT,
+      }).should("exist")
+    })
+
+    it("Should be able to move a page from Workspace to folder", () => {
+      cy.contains(FILENAME_WORKSPACE_TO_FOLDER).should("exist")
+      cy.get(
+        `button[id^="folderItem-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`
+      ).click()
+      cy.get("div[id^=move-]").first().click()
+      cy.contains(`Move Page`)
+
+      // Assert
+      cy.contains(`Workspace > ${FILENAME_WORKSPACE_TO_FOLDER}`)
+
+      // Navigate to Move folder
+      cy.get("i[id^=moveModal-forwardButton-]").eq(1).click({ force: true })
+
+      // Assert
+      cy.contains(
+        `Workspace > ${TEST_REPO_FOLDER_NAME} > ${FILENAME_WORKSPACE_TO_FOLDER}`
+      )
+
+      cy.contains("button", "Move Here").click()
+      cy.contains("Successfully moved file", {
+        timeout: CUSTOM_TIMEOUT,
+      }).should("exist")
+
+      // Assert
+      // 1. File is not in folder
+      cy.contains(FILENAME_WORKSPACE_TO_FOLDER).should("not.exist", {
+        timeout: CUSTOM_TIMEOUT,
+      })
+      // 2. File is in folder
+      cy.visit(
+        `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_REPO_FOLDER_NAME}`
+      )
+      cy.contains(TITLE_WORKSPACE_TO_FOLDER).should("exist")
+    })
+
+    it("Should be able to move a page from folder to subfolder", () => {
+      cy.contains(FILENAME_WORKSPACE_TO_SUBFOLDER).should("exist")
+      cy.get(
+        `button[id^="folderItem-dropdown-${FILENAME_WORKSPACE_TO_SUBFOLDER}"]`
+      ).click()
+      cy.get("div[id^=move-]").first().click()
+      cy.contains(`Move Page`)
+
+      // Assert
+      cy.contains(`Workspace > ${FILENAME_WORKSPACE_TO_SUBFOLDER}`)
+
+      // Navigate to Move folder
+      cy.get("i[id^=moveModal-forwardButton-]").eq(1).click({ force: true })
+      // Navigate to Move subfolder
+      cy.get("i[id^=moveModal-forwardButton-]").click({ force: true })
+
+      // Assert
+      cy.contains(
+        `Workspace > ${TEST_REPO_FOLDER_NAME} > ${TEST_REPO_SUBFOLDER_NAME} > ${FILENAME_WORKSPACE_TO_SUBFOLDER}`
+      )
+
+      cy.contains("button", "Move Here").click()
+      cy.contains("Successfully moved file", {
+        timeout: CUSTOM_TIMEOUT,
+      }).should("exist")
+
+      // Assert
+      // 1. File is not in Workspace
+      cy.contains(FILENAME_WORKSPACE_TO_SUBFOLDER).should("not.exist", {
+        timeout: CUSTOM_TIMEOUT,
+      })
+      // 2. File is in subfolder
+      cy.visit(
+        `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_REPO_FOLDER_NAME}/subfolders/${PARSED_TEST_REPO_SUBFOLDER_NAME}`
+      )
+      cy.contains(TITLE_WORKSPACE_TO_SUBFOLDER).should("exist")
+    })
+  })
 
   describe("Move pages out of folder", () => {
     const TITLE_FOLDER_TO_WORKSPACE = "Move from folder to Workspace"
