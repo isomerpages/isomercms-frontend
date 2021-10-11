@@ -69,6 +69,8 @@ const stateFields = {
     twitter: "",
     youtube: "",
     instagram: "",
+    telegram: "",
+    tiktok: "",
   },
 }
 
@@ -156,6 +158,8 @@ export default class Settings extends Component {
           youtube: footerContent.social_media.youtube,
           instagram: footerContent.social_media.instagram,
           linkedin: footerContent.social_media.linkedin,
+          telegram: footerContent.social_media.telegram,
+          tiktok: footerContent.social_media.tiktok,
         },
         // navigation fields
         navigationSettings: {
