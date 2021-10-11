@@ -13,6 +13,7 @@ const PERMALINK_REGEX = "^((/([a-z0-9]+-)*[a-z0-9]+)+)/?$"
 const URL_REGEX_PART_1 = "^(https://)?(www.)?("
 const URL_REGEX_PART_2 = ".com/)([a-zA-Z0-9_-]+([/.])?)+$"
 const TELEGRAM_REGEX = "telegram|t).me/([a-zA-Z0-9_-]+([/.])?)+$"
+const TIKTOK_REGEX = ".com/@)([a-zA-Z0-9_-]+([/.])?)+$"
 const PHONE_REGEX = "^\\+65(6|8|9)[0-9]{7}$"
 const EMAIL_REGEX =
   '^(([^<>()\\[\\]\\.,;:\\s@\\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\\"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z-0-9]+\\.)+[a-zA-Z]{2,}))$'
@@ -906,12 +907,18 @@ const validateSocialMedia = (value, id) => {
   )
 
   const telegramRegexTest = RegExp(`${URL_REGEX_PART_1}${TELEGRAM_REGEX}`)
+  const tiktokRegexTest = RegExp(`${URL_REGEX_PART_1}${id}${TIKTOK_REGEX}`)
+
+  const customRegex = {
+    telegram: telegramRegexTest,
+    tiktok: tiktokRegexTest,
+  }
 
   // conduct regex tests for each social media platform
   if (
     !(
-      socialMediaRegexTest.test(value) ||
-      (id === "telegram" && telegramRegexTest.test(value))
+      (!(id in customRegex) && socialMediaRegexTest.test(value)) ||
+      customRegex[id].test(value)
     )
   ) {
     if (value !== "")
