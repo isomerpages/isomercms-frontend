@@ -12,6 +12,7 @@ import {
 const PERMALINK_REGEX = "^((/([a-z0-9]+-)*[a-z0-9]+)+)/?$"
 const URL_REGEX_PART_1 = "^(https://)?(www.)?("
 const URL_REGEX_PART_2 = ".com/)([a-zA-Z0-9_-]+([/.])?)+$"
+const TELEGRAM_REGEX = "telegram|t).me/([a-zA-Z0-9_-]+([/.])?)+$"
 const PHONE_REGEX = "^\\+65(6|8|9)[0-9]{7}$"
 const EMAIL_REGEX =
   '^(([^<>()\\[\\]\\.,;:\\s@\\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\\"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z-0-9]+\\.)+[a-zA-Z]{2,}))$'
@@ -904,8 +905,15 @@ const validateSocialMedia = (value, id) => {
     `${URL_REGEX_PART_1}${id}${URL_REGEX_PART_2}`
   )
 
+  const telegramRegexTest = RegExp(`${URL_REGEX_PART_1}${TELEGRAM_REGEX}`)
+
   // conduct regex tests for each social media platform
-  if (!socialMediaRegexTest.test(value)) {
+  if (
+    !(
+      socialMediaRegexTest.test(value) ||
+      (id === "telegram" && telegramRegexTest.test(value))
+    )
+  ) {
     if (value !== "")
       errorMessage = `The URL you have entered is not a valid ${id[0].toUpperCase()}${id.slice(
         1
