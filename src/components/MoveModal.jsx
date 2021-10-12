@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import PropTypes from "prop-types"
 import Breadcrumb from "./folders/Breadcrumb"
 
 import elementStyles from "../styles/isomer-cms/Elements.module.scss"
@@ -8,9 +9,9 @@ import SaveDeleteButtons from "./SaveDeleteButtons"
 
 import { getLastItemType, getNextItemType, deslugifyDirectory } from "../utils"
 
-const MoveModal = ({ params, onProceed, onClose }) => {
+const MoveModal = ({ queryParams, params, onProceed, onClose }) => {
   const [moveQuery, setMoveQuery] = useState(
-    (({ fileName, ...p }) => p)(params)
+    (({ fileName, ...p }) => p)(queryParams)
   )
   const [moveTo, setMoveTo] = useState(moveQuery)
 
@@ -67,7 +68,7 @@ const MoveModal = ({ params, onProceed, onClose }) => {
               }))
               setMoveQuery((prevState) => ({
                 ...prevState,
-                [nextItemType]: name,
+                [nextItemType]: encodeURIComponent(name),
               }))
             }}
           />
@@ -76,9 +77,9 @@ const MoveModal = ({ params, onProceed, onClose }) => {
     return null
   }
 
-  const MoveMenuBackButton = ({ params }) => {
-    const lastItemType = getLastItemType(params)
-    const isEnabled = Object.keys(params).length > 1
+  const MoveMenuBackButton = () => {
+    const lastItemType = getLastItemType(moveQuery)
+    const isEnabled = Object.keys(moveQuery).length > 1
     return (
       <div
         id="moveModal-backButton"
@@ -102,14 +103,14 @@ const MoveModal = ({ params, onProceed, onClose }) => {
         />
         {lastItemType === "siteName"
           ? "Workspace"
-          : deslugifyDirectory(params[lastItemType])}
+          : deslugifyDirectory(decodeURIComponent(moveQuery[lastItemType]))}
       </div>
     )
   }
 
-  const MoveMenu = ({ dirData }) => (
+  const MoveMenu = () => (
     <div className={`${elementStyles.moveModal}`}>
-      <MoveMenuBackButton params={moveQuery} />
+      <MoveMenuBackButton />
       {dirData && dirData.length ? (
         <>
           {/* directories */}
@@ -159,7 +160,7 @@ const MoveModal = ({ params, onProceed, onClose }) => {
             <br />
             Current location of page: <br />
             <Breadcrumb params={params} title={params.fileName} />
-            <MoveMenu dirData={dirData} />
+            <MoveMenu />
             Moving page to: <br />
             <Breadcrumb params={moveTo} title={params.fileName} />
           </div>
@@ -181,18 +182,19 @@ const MoveModal = ({ params, onProceed, onClose }) => {
 
 export default MoveModal
 
-// MoveModal.propTypes = {
-//   dropdownItems: PropTypes.arrayOf(PropTypes.string.isRequired),
-//   menuIndex: PropTypes.number.isRequired,
-//   dropdownRef: PropTypes.oneOfType([
-//     PropTypes.func,
-//     PropTypes.shape({ current: PropTypes.any }),
-//   ]).isRequired,
-//   onBlur: PropTypes.func,
-//   rootName: PropTypes.string.isRequired,
-//   moveDropdownQuery: PropTypes.string.isRequired,
-//   setMoveDropdownQuery: PropTypes.func.isRequired,
-//   backHandler: PropTypes.func.isRequired,
-//   moveHandler: PropTypes.func,
-//   moveDisabled: PropTypes.bool,
-// }
+MoveModal.propTypes = {
+  queryParams: PropTypes.shape({
+    siteName: PropTypes.string,
+    collectionName: PropTypes.string,
+    subCollectionName: PropTypes.string,
+    fileName: PropTypes.string,
+  }).isRequired,
+  params: PropTypes.shape({
+    siteName: PropTypes.string,
+    collectionName: PropTypes.string,
+    subCollectionName: PropTypes.string,
+    fileName: PropTypes.string,
+  }).isRequired,
+  onProceed: PropTypes.func,
+  onClose: PropTypes.func,
+}
