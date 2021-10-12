@@ -16,7 +16,7 @@ export class PageService {
       endpoint += `/collections/${collectionName}`
     }
     if (subCollectionName) {
-      endpoint += `/subcollections/${encodeURIComponent(subCollectionName)}`
+      endpoint += `/subcollections/${subCollectionName}`
     }
     if (resourceRoomName) {
       endpoint += `/resourceRoom/${resourceRoomName}`
@@ -35,7 +35,7 @@ export class PageService {
     }
     endpoint += `/pages`
     if (fileName) {
-      endpoint += `/${encodeURIComponent(fileName)}`
+      endpoint += `/${fileName}`
     }
     return endpoint
   }

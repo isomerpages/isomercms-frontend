@@ -9,7 +9,7 @@ export class MoverService {
       endpoint += `/collections/${collectionName}`
     }
     if (subCollectionName) {
-      endpoint += `/subcollections/${encodeURIComponent(subCollectionName)}`
+      endpoint += `/subcollections/${subCollectionName}`
     }
     if (!collectionName && !subCollectionName) {
       endpoint += `/pages`
