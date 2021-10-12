@@ -1,6 +1,5 @@
 import React from "react"
 import PropTypes from "prop-types"
-import { useParams } from "react-router-dom"
 import PageSettingsModalV2 from "../../components/PageSettingsModalV2"
 
 import {
@@ -11,8 +10,8 @@ import {
 import { useSiteUrlHook } from "../../hooks/settingsHooks"
 import { useGetDirectoryHook } from "../../hooks/directoryHooks"
 
-export const PageSettingsScreen = ({ onClose }) => {
-  const params = useParams()
+export const PageSettingsScreen = ({ match, onClose }) => {
+  const { params, decodedParams } = match
 
   const { fileName } = params
   const { data: pageData } = useGetPageHook(params, { enabled: !!fileName })
@@ -28,7 +27,7 @@ export const PageSettingsScreen = ({ onClose }) => {
 
   return (
     <PageSettingsModalV2
-      params={params}
+      params={decodedParams}
       onClose={onClose}
       pageData={pageData}
       onProceed={fileName ? updateHandler : createHandler}
