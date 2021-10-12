@@ -50,7 +50,8 @@ DOMPurify.setConfig({
 })
 
 const EditPageV2 = ({ match, history }) => {
-  const { siteName } = match.params
+  const { params, decodedParams } = match
+  const { siteName } = decodedParams
 
   const [editorValue, setEditorValue] = useState("")
   const [htmlChunk, setHtmlChunk] = useState("")
@@ -64,28 +65,24 @@ const EditPageV2 = ({ match, history }) => {
 
   const mdeRef = useRef()
 
-  const { backButtonLabel, backButtonUrl } = getBackButton(match.params)
+  const { backButtonLabel, backButtonUrl } = getBackButton(decodedParams)
   const { title, type: resourceType, date } = extractMetadataFromFilename(
-    match.params
+    decodedParams
   )
-
-  const { data: pageData, isLoading: isLoadingPage } = useGetPageHook(
-    match.params,
-    {
-      onError: () => setRedirectToNotFound(siteName),
-    }
-  )
+  const { data: pageData, isLoading: isLoadingPage } = useGetPageHook(params, {
+    onError: () => setRedirectToNotFound(siteName),
+  })
   const {
     mutateAsync: updatePageHandler,
     isLoading: isSavingPage,
-  } = useUpdatePageHook(match.params)
-  const { mutateAsync: deletePageHandler } = useDeletePageHook(match.params, {
+  } = useUpdatePageHook(params)
+  const { mutateAsync: deletePageHandler } = useDeletePageHook(params, {
     onSuccess: () => history.goBack(),
   })
 
-  const { data: csp } = useCspHook(match.params)
-  const { data: dirData } = useCollectionHook(match.params)
-  const { data: siteColorsData } = useSiteColorsHook(match.params)
+  const { data: csp } = useCspHook(params)
+  const { data: dirData } = useCollectionHook(params)
+  const { data: siteColorsData } = useSiteColorsHook(params)
 
   /** ******************************** */
   /*     useEffects to load data     */
@@ -189,7 +186,7 @@ const EditPageV2 = ({ match, history }) => {
         />
         {/* Preview */}
         <PagePreview
-          pageParams={match.params}
+          pageParams={decodedParams}
           title={pageData?.content?.frontMatter?.title || ""}
           chunk={htmlChunk}
           dirData={dirData}
