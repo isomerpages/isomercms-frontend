@@ -47,12 +47,12 @@
     "dev": "source .env && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "test-e2e": "node scripts/run-e2e.js run",
+    "test-e2e": "source .env && node scripts/run-e2e.js run",
     "lint": "eslint --ext .js --ext .jsx --ignore-path .gitignore .",
     "lint-fix": "eslint --ext .js --ext .jsx --ignore-path .gitignore . --fix",
     "format": "npx prettier --check .",
     "format-fix": "npx prettier --write .",
-    "cypress:open": "node scripts/run-e2e.js open",
+    "cypress:open": "source .env && node scripts/run-e2e.js open",
     "prepare": "husky install"
   },
   "eslintConfig": {
