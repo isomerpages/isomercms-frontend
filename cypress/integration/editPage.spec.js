@@ -197,6 +197,7 @@ describe("Edit unlinked page", () => {
     // Test delete in modal
     cy.get("#modal-delete").should("exist")
     cy.get("#modal-delete").click()
+    cy.wait(2000)
 
     // Assert: page no longer exists
     cy.visit(`/sites/${TEST_REPO_NAME}/editPage/${TEST_PAGE_TITLE_ENCODED}`)
