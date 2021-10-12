@@ -34,7 +34,7 @@ const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/
 const RESOURCE_CATEGORY_REGEX = "^([a-zA-Z0-9]*[- ]?)+$"
 const resourceRoomNameRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
 const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX)
-const specialCharactersRegexTest = /[~!@#$%^&*_+\-./\\\`:;~{}()[\]"'<>,?]/
+const specialCharactersRegexTest = /[~%^*_+\-./\\`;~{}[\]"<>]/
 
 const ISOMER_TEMPLATE_PROTECTED_DIRS = [
   "data",
@@ -719,7 +719,7 @@ const validatePageSettings = (id, value, folderOrderArray) => {
         errorMessage = `The title should be shorter than ${PAGE_SETTINGS_TITLE_MAX_LENGTH} characters.`
       }
       if (specialCharactersRegexTest.test(value)) {
-        errorMessage = `The title cannot contain any of the following special characters: ~!@#$%^&*_+\-./\\\`:;~{}()[\]"'<>,?`
+        errorMessage = `The title cannot contain any of the following special characters: ~%^*_+-./\\\`;~{}[]"<>`
       }
       if (
         folderOrderArray !== undefined &&
@@ -955,7 +955,7 @@ const validateSubfolderName = (value, existingNames) => {
     errorMessage = `The subfolder name should be shorter than ${RESOURCE_CATEGORY_MAX_LENGTH} characters.`
   }
   if (specialCharactersRegexTest.test(value)) {
-    errorMessage = `The subfolder name cannot contain any of the following special characters: ~!@#$%^&*_+\-./\\\`:;~{}()[\]"'<>,?`
+    errorMessage = `The subfolder name cannot contain any of the following special characters: ~%^*_+-./\\\`;~{}[]"<>`
   }
   return errorMessage
 }
