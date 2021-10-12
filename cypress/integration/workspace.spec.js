@@ -94,11 +94,14 @@ describe("Workspace Pages flow", () => {
     it("Should not be able to create page with invalid title", () => {
       const INVALID_TEST_PAGE_TITLES = [
         "Ab",
-        "Lorem Ipsum-",
-        "?Lorem Ipsum",
-        "#Lorem Ipsum",
-        "@Lorem Ipsum",
-        "&Lorem Ipsum",
+        "Lorem Ipsum<",
+        "^Lorem Ipsum",
+        "~%Lorem Ipsum",
+        "/Lorem Ipsum",
+        ";Lorem Ipsum",
+        ">Lorem Ipsum",
+        "[Lorem Ipsum",
+        "]Lorem Ipsum",
       ]
 
       cy.get("#settings-NEW", { timeout: CUSTOM_TIMEOUT })
