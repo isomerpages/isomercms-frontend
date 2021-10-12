@@ -451,14 +451,16 @@ export const getRedirectUrl = ({
   if (!fileName) {
     if (collectionName) {
       return `/sites/${siteName}/folders/${collectionName}/${
-        subCollectionName ? `subfolders/${subCollectionName}` : "" // V2
+        subCollectionName
+          ? `subfolders/${encodeURIComponent(subCollectionName)}`
+          : "" // V2
       }`
     }
   } else {
     if (collectionName) {
       return `/sites/${siteName}/folders/${collectionName}/${
         subCollectionName ? `subfolders/${subCollectionName}/` : ""
-      }editPage/${fileName}` // V2
+      }editPage/${encodeURIComponent(fileName)}` // V2
     }
     if (resourceCategoryName) {
       return `/sites/${siteName}/resources/${resourceCategoryName}/${fileName}` // V1
@@ -482,7 +484,9 @@ export const getBackButton = ({
     if (subCollectionName)
       return {
         backButtonLabel: deslugifyDirectory(subCollectionName),
-        backButtonUrl: `/sites/${siteName}/folders/${collectionName}/subfolders/${subCollectionName}`,
+        backButtonUrl: `/sites/${siteName}/folders/${collectionName}/subfolders/${encodeURIComponent(
+          subCollectionName
+        )}`,
       }
     return {
       backButtonLabel: deslugifyDirectory(collectionName),
