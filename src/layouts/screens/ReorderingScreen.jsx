@@ -1,8 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
 
-import { useParams } from "react-router-dom"
-
 import ReorderingModal from "../../components/folders/ReorderingModal"
 
 import {
@@ -10,8 +8,8 @@ import {
   useReorderDirectoryHook,
 } from "../../hooks/directoryHooks"
 
-export const ReorderingScreen = ({ onClose }) => {
-  const params = useParams()
+export const ReorderingScreen = ({ match, onClose }) => {
+  const { params, decodedParams } = match
   const { data: dirData } = useGetDirectoryHook(params, { initialData: [] })
   const { mutateAsync: reorderHandler } = useReorderDirectoryHook(params, {
     onSettled: onClose,
@@ -21,7 +19,7 @@ export const ReorderingScreen = ({ onClose }) => {
     <ReorderingModal
       dirData={dirData}
       onProceed={reorderHandler}
-      params={params}
+      params={decodedParams}
       onClose={onClose}
     />
   )
