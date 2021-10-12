@@ -36,6 +36,8 @@ import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
 
 import { useGetDirectoryHook } from "../hooks/directoryHooks"
 
+import { ProtectedRouteWithProps } from "../routing/RouteSelector"
+
 const Folders = ({ match, location }) => {
   const { siteName, subCollectionName, collectionName } = match.params
 
@@ -152,38 +154,38 @@ const Folders = ({ match, location }) => {
         )}
       </div>
       <Switch>
-        <Route
+        <ProtectedRouteWithProps
           path={[`${path}/createFolder`]}
-          render={() => (
-            <DirectoryCreationScreen onClose={() => history.goBack()} />
-          )}
+          component={DirectoryCreationScreen}
+          onClose={() => history.goBack()}
         />
-        <Route
+        <ProtectedRouteWithProps
           path={[`${path}/createPage`, `${path}/editPageSettings/:fileName`]}
-          render={() => <PageSettingsScreen onClose={() => history.goBack()} />}
+          component={PageSettingsScreen}
+          onClose={() => history.goBack()}
         />
-        <Route
+        <ProtectedRouteWithProps
           path={[
             `${path}/deletePage/:fileName`,
             `${path}/deleteSubfolder/:subCollectionName`,
           ]}
-          render={() => (
-            <DeleteWarningScreen onClose={() => history.goBack()} />
-          )}
+          component={DeleteWarningScreen}
+          onClose={() => history.goBack()}
         />
-        <Route
+        <ProtectedRouteWithProps
           path={[`${path}/rearrange`]}
-          render={() => <ReorderingScreen onClose={() => history.goBack()} />}
+          component={ReorderingScreen}
+          onClose={() => history.goBack()}
         />
-        <Route
+        <ProtectedRouteWithProps
           path={[`${path}/editSubfolderSettings/:subCollectionName`]}
-          render={() => (
-            <DirectorySettingsScreen onClose={() => history.goBack()} />
-          )}
+          component={DirectorySettingsScreen}
+          onClose={() => history.goBack()}
         />
-        <Route
+        <ProtectedRouteWithProps
           path={[`${path}/movePage/:fileName`]}
-          render={() => <PageMoveScreen onClose={() => history.goBack()} />}
+          component={PageMoveScreen}
+          onClose={() => history.goBack()}
         />
       </Switch>
     </>
