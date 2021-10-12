@@ -1,13 +1,12 @@
 import React from "react"
-import { useParams } from "react-router-dom"
 import PropTypes from "prop-types"
 
 import { useMoveHook } from "../../hooks/moveHooks"
 
 import MoveModal from "../../components/MoveModal"
 
-export const PageMoveScreen = ({ onClose }) => {
-  const params = useParams()
+export const PageMoveScreen = ({ match, onClose }) => {
+  const { params, decodedParams } = match
 
   const { mutateAsync: moveHandler } = useMoveHook(
     (({ fileName, ...p }) => p)(params),
@@ -16,7 +15,14 @@ export const PageMoveScreen = ({ onClose }) => {
     }
   )
 
-  return <MoveModal params={params} onProceed={moveHandler} onClose={onClose} />
+  return (
+    <MoveModal
+      queryParams={params}
+      params={decodedParams}
+      onProceed={moveHandler}
+      onClose={onClose}
+    />
+  )
 }
 
 PageMoveScreen.propTypes = {
