@@ -1,13 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { ReactQueryDevtools } from "react-query/devtools"
-import {
-  Link,
-  Route,
-  Switch,
-  useRouteMatch,
-  useHistory,
-} from "react-router-dom"
+import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom"
 import _ from "lodash"
 
 // Import components
@@ -39,7 +33,8 @@ import { useGetDirectoryHook } from "../hooks/directoryHooks"
 import { ProtectedRouteWithProps } from "../routing/RouteSelector"
 
 const Folders = ({ match, location }) => {
-  const { siteName, subCollectionName, collectionName } = match.params
+  const { params, decodedParams } = match
+  const { siteName, subCollectionName, collectionName } = decodedParams
 
   const { path, url } = useRouteMatch()
   const history = useHistory()
@@ -47,7 +42,7 @@ const Folders = ({ match, location }) => {
   const { setRedirectToPage } = useRedirectHook()
 
   const { data: dirData, isLoading: isLoadingDirectory } = useGetDirectoryHook(
-    match.params
+    params
   )
   return (
     <>
@@ -70,11 +65,11 @@ const Folders = ({ match, location }) => {
           {/* Page title */}
           <div className={contentStyles.sectionHeader}>
             <h1 className={contentStyles.sectionTitle}>
-              {getLastItemType(match.params) === "collectionName"
+              {getLastItemType(decodedParams) === "collectionName"
                 ? deslugifyDirectory(
-                    match.params[getLastItemType(match.params)]
+                    decodedParams[getLastItemType(decodedParams)]
                   )
-                : match.params[getLastItemType(match.params)]}
+                : decodedParams[getLastItemType(decodedParams)]}
             </h1>
           </div>
           {/* Info segment */}
