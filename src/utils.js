@@ -474,29 +474,37 @@ export const getBackButton = ({
   collectionName,
   siteName,
   subCollectionName,
+  fileName,
 }) => {
   if (resourceCategory)
     return {
-      backButtonLabel: deslugifyDirectory(resourceCategory),
+      backButtonLabel: `Back to ${deslugifyDirectory(resourceCategory)}`,
       backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
     }
   if (collectionName) {
-    if (subCollectionName)
+    if (subCollectionName && fileName)
       return {
-        backButtonLabel: deslugifyDirectory(subCollectionName),
+        backButtonLabel: `Back to ${deslugifyDirectory(subCollectionName)}`,
         backButtonUrl: `/sites/${siteName}/folders/${collectionName}/subfolders/${encodeURIComponent(
           subCollectionName
         )}`,
       }
+    if (fileName || subCollectionName)
+      return {
+        backButtonLabel: `Back to ${deslugifyDirectory(collectionName)}`,
+        backButtonUrl: `/sites/${siteName}/folders/${collectionName}`,
+      }
     return {
-      backButtonLabel: deslugifyDirectory(collectionName),
-      backButtonUrl: `/sites/${siteName}/folders/${collectionName}`,
+      backButtonLabel: "Back to My Workspace",
+      backButtonUrl: `/sites/${siteName}/workspace`,
     }
   }
-  return {
-    backButtonLabel: "My Workspace",
-    backButtonUrl: `/sites/${siteName}/workspace`,
-  }
+  if (siteName)
+    return {
+      backButtonLabel: "Back to Sites",
+      backButtonUrl: `/sites`,
+    }
+  return {}
 }
 
 export const extractMetadataFromFilename = ({
