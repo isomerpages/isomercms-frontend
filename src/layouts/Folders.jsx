@@ -1,7 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { ReactQueryDevtools } from "react-query/devtools"
-import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom"
+import { Switch, useRouteMatch, useHistory } from "react-router-dom"
 import _ from "lodash"
 
 // Import components
@@ -10,6 +10,7 @@ import Sidebar from "../components/Sidebar"
 
 import FolderOptionButton from "../components/FolderOptionButton"
 import { FolderContent } from "../components/folders/FolderContent"
+import Breadcrumb from "../components/folders/Breadcrumb"
 
 import {
   PageSettingsScreen,
@@ -44,6 +45,7 @@ const Folders = ({ match, location }) => {
   const { data: dirData, isLoading: isLoadingDirectory } = useGetDirectoryHook(
     params
   )
+
   return (
     <>
       <Header
@@ -86,38 +88,7 @@ const Folders = ({ match, location }) => {
           </div>
           {/* Collections title */}
           <div className={contentStyles.segment}>
-            <span>
-              <Link to={`/sites/${siteName}/workspace`}>
-                <strong>Workspace</strong>
-              </Link>
-              &nbsp;
-              {">"}
-              {collectionName ? (
-                subCollectionName ? (
-                  <Link to={`/sites/${siteName}/folders/${collectionName}`}>
-                    <strong className="ml-1">
-                      &nbsp;
-                      {deslugifyDirectory(collectionName)}
-                    </strong>
-                  </Link>
-                ) : (
-                  <strong className="ml-1">
-                    &nbsp;
-                    {deslugifyDirectory(collectionName)}
-                  </strong>
-                )
-              ) : null}
-              {collectionName && subCollectionName ? (
-                <span>
-                  &nbsp;
-                  {">"}
-                  <strong className="ml-1">
-                    &nbsp;
-                    {subCollectionName}
-                  </strong>
-                </span>
-              ) : null}
-            </span>
+            <Breadcrumb params={decodedParams} isLink />
           </div>
           {/* Options */}
           <div className={contentStyles.contentContainerFolderRowMargin}>
