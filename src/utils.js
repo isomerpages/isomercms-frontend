@@ -499,11 +499,17 @@ export const getBackButton = ({
       backButtonUrl: `/sites/${siteName}/workspace`,
     }
   }
-  if (siteName)
+  if (siteName) {
+    if (fileName)
+      return {
+        backButtonLabel: "Back to Workspace",
+        backButtonUrl: `/sites/${siteName}/workspace`,
+      }
     return {
       backButtonLabel: "Back to Sites",
       backButtonUrl: `/sites`,
     }
+  }
   return {}
 }
 
