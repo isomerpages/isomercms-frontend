@@ -17,7 +17,7 @@ import { useCspHook, useSiteColorsHook } from "../hooks/settingsHooks"
 import useRedirectHook from "../hooks/useRedirectHook"
 
 // Isomer components
-import { prependImageSrc, extractMetadataFromFilename } from "../utils"
+import { prependImageSrc } from "../utils"
 
 import { createPageStyleSheet } from "../utils/siteColorUtils"
 
@@ -63,9 +63,6 @@ const EditPageV2 = ({ match, history }) => {
 
   const mdeRef = useRef()
 
-  const { title, type: resourceType, date } = extractMetadataFromFilename(
-    decodedParams
-  )
   const { data: pageData, isLoading: isLoadingPage } = useGetPageHook(params, {
     onError: () => setRedirectToNotFound(siteName),
   })
@@ -201,7 +198,6 @@ const EditPageV2 = ({ match, history }) => {
           mdeRef={mdeRef}
           onChange={(value) => setEditorValue(value)}
           value={editorValue}
-          isDisabled={resourceType === "file"}
           isLoading={isLoadingPage}
         />
         {/* Preview */}
@@ -222,7 +218,6 @@ const EditPageV2 = ({ match, history }) => {
         saveCallback={() => {
           if (isXSSViolation) setShowXSSWarning(true)
           else {
-            console.log(pageData.sha)
             updatePageHandler({
               frontMatter: pageData.content.frontMatter,
               sha: currSha,
