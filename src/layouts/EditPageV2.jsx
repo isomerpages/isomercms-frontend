@@ -17,11 +17,7 @@ import { useCspHook, useSiteColorsHook } from "../hooks/settingsHooks"
 import useRedirectHook from "../hooks/useRedirectHook"
 
 // Isomer components
-import {
-  prependImageSrc,
-  getBackButton,
-  extractMetadataFromFilename,
-} from "../utils"
+import { prependImageSrc, extractMetadataFromFilename } from "../utils"
 
 import { createPageStyleSheet } from "../utils/siteColorUtils"
 
@@ -65,7 +61,6 @@ const EditPageV2 = ({ match, history }) => {
 
   const mdeRef = useRef()
 
-  const { backButtonLabel, backButtonUrl } = getBackButton(decodedParams)
   const { title, type: resourceType, date } = extractMetadataFromFilename(
     decodedParams
   )
@@ -129,12 +124,10 @@ const EditPageV2 = ({ match, history }) => {
   return (
     <>
       <Header
-        siteName={siteName}
         title={pageData?.content?.frontMatter?.title || ""}
         shouldAllowEditPageBackNav={!hasChanges}
         isEditPage
-        backButtonText={backButtonLabel}
-        backButtonUrl={backButtonUrl}
+        params={decodedParams}
       />
       <div className={elementStyles.wrapper}>
         {isXSSViolation &&

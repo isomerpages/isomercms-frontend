@@ -48,17 +48,7 @@ const Folders = ({ match, location }) => {
 
   return (
     <>
-      <Header
-        siteName={siteName}
-        backButtonText={`Back to ${
-          subCollectionName ? collectionName : "Workspace"
-        }`}
-        backButtonUrl={`/sites/${siteName}/${
-          subCollectionName ? `folders/${collectionName}` : "workspace"
-        }`}
-        shouldAllowEditPageBackNav
-        isEditPage
-      />
+      <Header params={decodedParams} />
       {/* main bottom section */}
       <div className={elementStyles.wrapper}>
         <Sidebar siteName={siteName} currPath={location.pathname} />
