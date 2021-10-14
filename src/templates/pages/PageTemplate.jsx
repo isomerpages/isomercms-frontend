@@ -2,13 +2,13 @@ import React from "react"
 import PropTypes from "prop-types"
 import { PageHeader, PageBody } from "../pageComponentsV2"
 
-const PageTemplate = ({ chunk, pageParams }) => (
+const PageTemplate = ({ chunk, pageParams, title }) => (
   <div>
     <section
       id="display-header"
       className="bp-section is-small bp-section-pagetitle"
     >
-      <PageHeader pageParams={pageParams} />
+      <PageHeader pageParams={pageParams} title={title} />
     </section>
     <section className="bp-section">
       <div className="bp-container content padding--top--lg padding--bottom--xl">

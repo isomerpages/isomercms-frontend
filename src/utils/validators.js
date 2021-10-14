@@ -2,16 +2,20 @@ import _ from "lodash"
 import moment from "moment-timezone"
 
 import {
-  generatePageFileName,
   retrieveResourceFileMetadata,
   slugifyCategory,
+  titleToPageFileName,
+  deslugifyDirectory,
+  generatePageFileName,
 } from "../utils"
 
 // Common regexes and constants
 // ==============
-const PERMALINK_REGEX = "^((/([a-z0-9]+-)*[a-z0-9]+)+)/?$"
+const PERMALINK_REGEX = "^((/([a-zA-Z0-9]+-)*[a-zA-Z0-9]+)+)/?$"
 const URL_REGEX_PART_1 = "^(https://)?(www.)?("
 const URL_REGEX_PART_2 = ".com/)([a-zA-Z0-9_-]+([/.])?)+$"
+const TELEGRAM_REGEX = "telegram|t).me/([a-zA-Z0-9_-]+([/.])?)+$"
+const TIKTOK_REGEX = ".com/@)([a-zA-Z0-9_-]+([/.])?)+$"
 const PHONE_REGEX = "^\\+65(6|8|9)[0-9]{7}$"
 const EMAIL_REGEX =
   '^(([^<>()\\[\\]\\.,;:\\s@\\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\\"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z-0-9]+\\.)+[a-zA-Z]{2,}))$'
@@ -30,6 +34,7 @@ const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/
 const RESOURCE_CATEGORY_REGEX = "^([a-zA-Z0-9]*[- ]?)+$"
 const resourceRoomNameRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
 const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX)
+const specialCharactersRegexTest = /[~%^*_+\-./\\`;~{}[\]"<>]/
 
 const ISOMER_TEMPLATE_PROTECTED_DIRS = [
   "data",
@@ -713,9 +718,13 @@ const validatePageSettings = (id, value, folderOrderArray) => {
       if (value.length > PAGE_SETTINGS_TITLE_MAX_LENGTH) {
         errorMessage = `The title should be shorter than ${PAGE_SETTINGS_TITLE_MAX_LENGTH} characters.`
       }
+      if (specialCharactersRegexTest.test(value)) {
+        errorMessage = `The title cannot contain any of the following special characters: ~%^*_+-./\\\`;~{}[]"<>`
+      }
       if (
         folderOrderArray !== undefined &&
-        folderOrderArray.includes(generatePageFileName(value))
+        (folderOrderArray.includes(titleToPageFileName(value)) ||
+          folderOrderArray.includes(generatePageFileName(value)))
       ) {
         errorMessage = `This title is already in use. Please choose a different title.`
       }
@@ -904,14 +913,50 @@ const validateSocialMedia = (value, id) => {
     `${URL_REGEX_PART_1}${id}${URL_REGEX_PART_2}`
   )
 
+  const telegramRegexTest = RegExp(`${URL_REGEX_PART_1}${TELEGRAM_REGEX}`)
+  const tiktokRegexTest = RegExp(`${URL_REGEX_PART_1}${id}${TIKTOK_REGEX}`)
+
+  const customRegex = {
+    telegram: telegramRegexTest,
+    tiktok: tiktokRegexTest,
+  }
+
   // conduct regex tests for each social media platform
-  if (!socialMediaRegexTest.test(value)) {
+  let isAllowed
+  if (value !== "") {
+    if (id in customRegex) {
+      isAllowed = customRegex[id].test(value)
+    } else {
+      isAllowed = socialMediaRegexTest.test(value)
+    }
+  }
+  if (!isAllowed) {
     if (value !== "")
       errorMessage = `The URL you have entered is not a valid ${id[0].toUpperCase()}${id.slice(
         1
       )} URL.`
   }
 
+  return errorMessage
+}
+
+// SubFolder Creation Modal
+// ====================
+const validateSubfolderName = (value, existingNames) => {
+  let errorMessage = ""
+
+  if (existingNames && existingNames.includes(deslugifyDirectory(value))) {
+    errorMessage = `Another folder with the same name exists. Please choose a different name.`
+  }
+  if (value.length < RESOURCE_CATEGORY_MIN_LENGTH) {
+    errorMessage = `The subfolder name should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`
+  }
+  if (value.length > RESOURCE_CATEGORY_MAX_LENGTH) {
+    errorMessage = `The subfolder name should be shorter than ${RESOURCE_CATEGORY_MAX_LENGTH} characters.`
+  }
+  if (specialCharactersRegexTest.test(value)) {
+    errorMessage = `The subfolder name cannot contain any of the following special characters: ~%^*_+-./\\\`;~{}[]"<>`
+  }
   return errorMessage
 }
 
@@ -929,4 +974,5 @@ export {
   validateSocialMedia,
   validateFileName,
   validateResourceRoomName,
+  validateSubfolderName,
 }

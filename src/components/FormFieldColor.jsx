@@ -26,6 +26,7 @@ const FormFieldColor = ({
         className={elementStyles.formColorInput}
         style={style}
         onChange={onFieldChange}
+        disabled
       />
       <div
         className={elementStyles.formColorBox}

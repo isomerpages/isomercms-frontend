@@ -17,7 +17,7 @@ import { errorToast, successToast } from "../utils/toasts"
 import {
   IMAGE_CONTENTS_KEY,
   DOCUMENT_CONTENTS_KEY,
-  FOLDERS_CONTENT_KEY,
+  DIR_CONTENT_KEY,
   RESOURCE_ROOM_CONTENT_KEY,
 } from "../constants"
 
@@ -57,7 +57,7 @@ const FolderCard = ({
       case "homepage":
         return `/sites/${siteName}/homepage`
       case "collection":
-        return `/sites/${siteName}/folder/${category}`
+        return `/sites/${siteName}/folders/${category}`
       case "resources":
         return `/sites/${siteName}/resources/${category}`
       case "contact-us":
@@ -147,10 +147,7 @@ const FolderCard = ({
           queryClient.invalidateQueries([RESOURCE_ROOM_CONTENT_KEY, siteName])
         } else if (pageType === "collection") {
           // Collection folder
-          queryClient.invalidateQueries([
-            FOLDERS_CONTENT_KEY,
-            { siteName, isResource: false },
-          ])
+          queryClient.invalidateQueries([DIR_CONTENT_KEY, { siteName }])
         } else if (pageType === "images") {
           queryClient.invalidateQueries([IMAGE_CONTENTS_KEY, mediaCustomPath])
         } else if (pageType === "documents") {
@@ -260,6 +257,7 @@ const FolderCard = ({
         </Link>
       ) : (
         <div
+          id="folderCard-small"
           className={`${contentStyles.component} ${contentStyles.card} ${
             elementStyles.folderCard
           } ${selectedIndex ? `border border-primary` : ""}`}

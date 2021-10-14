@@ -35,23 +35,25 @@ export function concatFrontMatterMdBody(frontMatter, mdBody) {
   return ["---\n", yaml.stringify(frontMatter), "---\n", mdBody].join("")
 }
 
+// this function deslugifies a string into readable form
+// for example, 'this-is-a-directory' -> 'This Is A Directory'
+export function deslugify(string) {
+  return string
+    .split("-")
+    .map((word) => _.upperFirst(word)) // capitalize first letter
+    .join(" ") // join it back together
+}
+
 // this function converts directories into readable form
 // for example, 'this-is-a-directory' -> 'This Is A Directory'
 export function deslugifyDirectory(dirName) {
-  return dirName
-    .split("-")
-    .map((string) => _.upperFirst(string)) // capitalize first letter
-    .join(" ") // join it back together
+  return deslugify(dirName)
 }
 
 // this function converts file names into readable form
 // for example, 'this-is-a-file.md' -> 'This Is A File'
 export function deslugifyPage(pageName) {
-  return pageName
-    .split(".")[0] // remove the file extension
-    .split("-")
-    .map((string) => _.upperFirst(string)) // capitalize first letter
-    .join(" ") // join it back together
+  return deslugify(pageName.split(".")[0]) // remove the file extension
 }
 
 // takes a string URL and returns true if the link is an internal link
@@ -273,6 +275,14 @@ export function prettifyCollectionPageFileName(fileName) {
   return tokenArray.slice(1).join(" ")
 }
 
+export function titleToPageFileName(title) {
+  return `${title}.md`
+}
+
+export function pageFileNameToTitle(pageFileName) {
+  return `${pageFileName.split(".md")[0]}`
+}
+
 export function generatePageFileName(title) {
   return `${slugify(title, { lower: true }).replace(/[^a-zA-Z0-9-]/g, "")}.md`
 }
@@ -431,19 +441,32 @@ export const generateImageorFilePath = (customPath, fileName) => {
   return fileName
 }
 
-export const getRedirectUrl = (
-  { siteName, collectionName, subCollectionName, resourceCategoryName },
-  newFileName
-) => {
-  if (collectionName) {
-    return `/sites/${siteName}/folders/${collectionName}/${
-      subCollectionName ? `subfolders/${subCollectionName}/` : ""
-    }editPage/${newFileName}` // V2
+export const getRedirectUrl = ({
+  siteName,
+  collectionName,
+  subCollectionName,
+  resourceCategoryName,
+  fileName,
+}) => {
+  if (!fileName) {
+    if (collectionName) {
+      return `/sites/${siteName}/folders/${collectionName}/${
+        subCollectionName
+          ? `subfolders/${encodeURIComponent(subCollectionName)}`
+          : "" // V2
+      }`
+    }
+  } else {
+    if (collectionName) {
+      return `/sites/${siteName}/folders/${collectionName}/${
+        subCollectionName ? `subfolders/${subCollectionName}/` : ""
+      }editPage/${encodeURIComponent(fileName)}` // V2
+    }
+    if (resourceCategoryName) {
+      return `/sites/${siteName}/resources/${resourceCategoryName}/${fileName}` // V1
+    }
+    return `/sites/${siteName}/editPage/${fileName}` // V2
   }
-  if (resourceCategoryName) {
-    return `/sites/${siteName}/resources/${resourceCategoryName}/${newFileName}` // V1
-  }
-  return `/sites/${siteName}/pages/${newFileName}` // V1
 }
 
 export const getBackButton = ({
@@ -451,27 +474,43 @@ export const getBackButton = ({
   collectionName,
   siteName,
   subCollectionName,
+  fileName,
 }) => {
   if (resourceCategory)
     return {
-      backButtonLabel: deslugifyDirectory(resourceCategory),
+      backButtonLabel: `Back to ${deslugifyDirectory(resourceCategory)}`,
       backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
     }
   if (collectionName) {
-    if (subCollectionName)
+    if (subCollectionName && fileName)
       return {
-        backButtonLabel: deslugifyDirectory(subCollectionName),
-        backButtonUrl: `/sites/${siteName}/folder/${collectionName}/subfolder/${subCollectionName}`,
+        backButtonLabel: `Back to ${deslugifyDirectory(subCollectionName)}`,
+        backButtonUrl: `/sites/${siteName}/folders/${collectionName}/subfolders/${encodeURIComponent(
+          subCollectionName
+        )}`,
+      }
+    if (fileName || subCollectionName)
+      return {
+        backButtonLabel: `Back to ${deslugifyDirectory(collectionName)}`,
+        backButtonUrl: `/sites/${siteName}/folders/${collectionName}`,
       }
     return {
-      backButtonLabel: deslugifyDirectory(collectionName),
-      backButtonUrl: `/sites/${siteName}/folder/${collectionName}`,
+      backButtonLabel: "Back to My Workspace",
+      backButtonUrl: `/sites/${siteName}/workspace`,
     }
   }
-  return {
-    backButtonLabel: "My Workspace",
-    backButtonUrl: `/sites/${siteName}/workspace`,
+  if (siteName) {
+    if (fileName)
+      return {
+        backButtonLabel: "Back to Workspace",
+        backButtonUrl: `/sites/${siteName}/workspace`,
+      }
+    return {
+      backButtonLabel: "Back to Sites",
+      backButtonUrl: `/sites`,
+    }
   }
+  return {}
 }
 
 export const extractMetadataFromFilename = ({
@@ -487,3 +526,116 @@ export const extractMetadataFromFilename = ({
   }
   return { title: prettifyPageFileName(fileName), date: "" }
 }
+
+export const getDefaultFrontMatter = (params, pagesData) => {
+  const {
+    collectionName,
+    subCollectionName,
+    resourceRoomName,
+    resourceCategoryName,
+  } = params
+  let exampleTitle = "Example Title"
+  while (pagesData.includes(titleToPageFileName(exampleTitle))) {
+    exampleTitle += " 1"
+  }
+  let examplePermalink = "/"
+  if (collectionName) {
+    examplePermalink += `${
+      slugify(collectionName) ? `${slugify(collectionName)}/` : "unrecognised/"
+    }`
+  }
+  if (subCollectionName) {
+    examplePermalink += `${
+      slugify(subCollectionName)
+        ? `${slugify(subCollectionName)}/`
+        : "unrecognised/"
+    }`
+  }
+  if (resourceRoomName) {
+    examplePermalink += `${
+      slugify(resourceRoomName)
+        ? `${slugify(resourceRoomName)}/`
+        : "unrecognised/"
+    }`
+  }
+  if (resourceCategoryName) {
+    examplePermalink += `${
+      slugify(resourceCategoryName)
+        ? `${slugify(resourceCategoryName)}/`
+        : "unrecognised/"
+    }`
+  }
+  examplePermalink += `permalink`
+  return { exampleTitle, examplePermalink }
+}
+
+export const isLastItem = (type, params) => {
+  const {
+    collectionName,
+    subCollectionName,
+    resourceRoomName,
+    resourceCategoryName,
+    fileName,
+  } = params
+  if (type === "siteName") {
+    return (
+      !collectionName &&
+      !subCollectionName &&
+      !fileName &&
+      !resourceRoomName &&
+      !resourceCategoryName &&
+      !fileName
+    )
+  }
+  if (type === "collectionName") {
+    return !subCollectionName && !fileName
+  }
+  if (type === "subCollectionName") {
+    return !fileName
+  }
+  if (type === "resourceRoomName") {
+    return !resourceCategoryName && !fileName
+  }
+  if (type === "resourceCategoryName") {
+    return !fileName
+  }
+  if (type === "fileName") {
+    return !!fileName
+  }
+}
+
+export const getLastItemType = (params) => {
+  const types = Object.keys(params)
+  const lastItemType = types.filter((type) => isLastItem(type, params))[0]
+  return lastItemType
+}
+
+export const getNextItemType = (params) => {
+  const lastItemType = getLastItemType(params)
+  if (lastItemType === "siteName") {
+    return "collectionName"
+  }
+  if (lastItemType === "collectionName") {
+    return "subCollectionName"
+  }
+  if (lastItemType === "subCollectionName") {
+    return "fileName"
+  }
+  if (lastItemType === "resourceRoomName") {
+    return "resourceCategoryName"
+  }
+  if (lastItemType === "resourceCategoryName") {
+    return "fileName"
+  }
+  if (lastItemType === "fileName") {
+    return False
+  }
+}
+
+export const getDecodedParams = (params) =>
+  Object.entries(params).reduce((acc, [key, value]) => {
+    if (!acc[key]) {
+      acc[key] = decodeURIComponent(value)
+    }
+    return acc
+  }, {})
