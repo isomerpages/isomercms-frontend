@@ -25,7 +25,11 @@ export function useDeletePageHook(params, queryParams) {
           DIR_CONTENT_KEY,
           (({ fileName, ...p }) => p)(params),
         ])
-      else queryClient.invalidateQueries([PAGE_CONTENT_KEY, { siteName }]) // invalidates unlinked pages
+      else
+        queryClient.invalidateQueries([
+          DIR_CONTENT_KEY,
+          { siteName: params.siteName, isUnlinked: true },
+        ]) // invalidates unlinked pages
       queryParams && queryParams.onSuccess && queryParams.onSuccess()
     },
   })

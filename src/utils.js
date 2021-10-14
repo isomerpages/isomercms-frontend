@@ -451,19 +451,21 @@ export const getRedirectUrl = ({
   if (!fileName) {
     if (collectionName) {
       return `/sites/${siteName}/folders/${collectionName}/${
-        subCollectionName ? `subfolders/${subCollectionName}` : "" // V2
+        subCollectionName
+          ? `subfolders/${encodeURIComponent(subCollectionName)}`
+          : "" // V2
       }`
     }
   } else {
     if (collectionName) {
       return `/sites/${siteName}/folders/${collectionName}/${
         subCollectionName ? `subfolders/${subCollectionName}/` : ""
-      }editPage/${fileName}` // V2
+      }editPage/${encodeURIComponent(fileName)}` // V2
     }
     if (resourceCategoryName) {
       return `/sites/${siteName}/resources/${resourceCategoryName}/${fileName}` // V1
     }
-    return `/sites/${siteName}/pages/${fileName}` // V1
+    return `/sites/${siteName}/editPage/${fileName}` // V2
   }
 }
 
@@ -472,27 +474,43 @@ export const getBackButton = ({
   collectionName,
   siteName,
   subCollectionName,
+  fileName,
 }) => {
   if (resourceCategory)
     return {
-      backButtonLabel: deslugifyDirectory(resourceCategory),
+      backButtonLabel: `Back to ${deslugifyDirectory(resourceCategory)}`,
       backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
     }
   if (collectionName) {
-    if (subCollectionName)
+    if (subCollectionName && fileName)
       return {
-        backButtonLabel: deslugifyDirectory(subCollectionName),
-        backButtonUrl: `/sites/${siteName}/folders/${collectionName}/subfolders/${subCollectionName}`,
+        backButtonLabel: `Back to ${deslugifyDirectory(subCollectionName)}`,
+        backButtonUrl: `/sites/${siteName}/folders/${collectionName}/subfolders/${encodeURIComponent(
+          subCollectionName
+        )}`,
+      }
+    if (fileName || subCollectionName)
+      return {
+        backButtonLabel: `Back to ${deslugifyDirectory(collectionName)}`,
+        backButtonUrl: `/sites/${siteName}/folders/${collectionName}`,
       }
     return {
-      backButtonLabel: deslugifyDirectory(collectionName),
-      backButtonUrl: `/sites/${siteName}/folders/${collectionName}`,
+      backButtonLabel: "Back to My Workspace",
+      backButtonUrl: `/sites/${siteName}/workspace`,
     }
   }
-  return {
-    backButtonLabel: "My Workspace",
-    backButtonUrl: `/sites/${siteName}/workspace`,
+  if (siteName) {
+    if (fileName)
+      return {
+        backButtonLabel: "Back to Workspace",
+        backButtonUrl: `/sites/${siteName}/workspace`,
+      }
+    return {
+      backButtonLabel: "Back to Sites",
+      backButtonUrl: `/sites`,
+    }
   }
+  return {}
 }
 
 export const extractMetadataFromFilename = ({
@@ -613,3 +631,11 @@ export const getNextItemType = (params) => {
     return False
   }
 }
+
+export const getDecodedParams = (params) =>
+  Object.entries(params).reduce((acc, [key, value]) => {
+    if (!acc[key]) {
+      acc[key] = decodeURIComponent(value)
+    }
+    return acc
+  }, {})

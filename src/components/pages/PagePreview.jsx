@@ -32,7 +32,12 @@ const PagePreview = ({ pageParams, chunk, dirData, title }) => {
           title={title}
         />
       ) : (
-        <PageTemplate chunk={chunk} fileName={fileName} title={title} />
+        <PageTemplate
+          chunk={chunk}
+          fileName={fileName}
+          title={title}
+          pageParams={pageParams}
+        />
       )}
     </div>
   )

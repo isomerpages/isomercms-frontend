@@ -23,7 +23,7 @@ import FallbackComponent from "../components/FallbackComponent"
 import ProtectedRoute from "./ProtectedRoute"
 import RedirectIfLoggedInRoute from "./RedirectIfLoggedInRoute"
 
-const ProtectedRouteWithProps = (props) => {
+export const ProtectedRouteWithProps = (props) => {
   return (
     <Sentry.ErrorBoundary fallback={FallbackComponent}>
       <ProtectedRoute {...props} />
@@ -42,6 +42,11 @@ export const RouteSelector = () => (
     <ProtectedRouteWithProps
       exact
       path="/sites/:siteName/folders/:collectionName/editPage/:fileName"
+      component={EditPageV2}
+    />
+    <ProtectedRouteWithProps
+      exact
+      path="/sites/:siteName/editPage/:fileName"
       component={EditPageV2}
     />
     <ProtectedRouteWithProps
@@ -76,12 +81,6 @@ export const RouteSelector = () => (
       path="/sites/:siteName/images"
       component={Media}
       mediaType="images"
-    />
-    <ProtectedRouteWithProps
-      path="/sites/:siteName/pages/:fileName"
-      component={EditPage}
-      isCollectionPage={false}
-      isResourcePage={false}
     />
     <ProtectedRouteWithProps
       path="/sites/:siteName/workspace"

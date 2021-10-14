@@ -1,120 +1,74 @@
-import React, { useState, useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import PropTypes from "prop-types"
-import { useQuery } from "react-query"
 
 // Import components
+import { Route, Switch, useRouteMatch, useHistory } from "react-router-dom"
 import Header from "../components/Header"
 import Sidebar from "../components/Sidebar"
-import CollectionPagesSection from "../components/CollectionPagesSection"
 import FolderCard from "../components/FolderCard"
 import FolderCreationModal from "../components/FolderCreationModal"
 import FolderOptionButton from "../components/FolderOptionButton"
+import PageCard from "../components/PageCard"
+
+import {
+  PageSettingsScreen,
+  PageMoveScreen,
+  DeleteWarningScreen,
+} from "./screens"
 
 // Import styles
 import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
 
+import { ProtectedRouteWithProps } from "../routing/RouteSelector"
 // Import utils
-import {
-  DEFAULT_RETRY_MSG,
-  prettifyPageFileName,
-  frontMatterParser,
-} from "../utils"
-import { errorToast } from "../utils/toasts"
-import { getPages, getAllCategories, getEditPageData } from "../api"
-import { PAGE_CONTENT_KEY, FOLDERS_CONTENT_KEY } from "../constants"
+import { prettifyPageFileName } from "../utils"
 
 // Import hooks
-import useSiteColorsHook from "../hooks/useSiteColorsHook"
+import { useGetDirectoryHook } from "../hooks/directoryHooks"
+
+import useRedirectHook from "../hooks/useRedirectHook"
+import { useGetPageHook } from "../hooks/pageHooks"
 
 const CONTACT_US_TEMPLATE_LAYOUT = "contact_us"
 
 const Workspace = ({ match, location }) => {
-  const { retrieveSiteColors } = useSiteColorsHook()
-
   const { siteName } = match.params
-
-  const [collections, setCollections] = useState()
-  const [unlinkedPages, setUnlinkedPages] = useState()
   const [contactUsCard, setContactUsCard] = useState()
-  const [isFolderCreationActive, setIsFolderCreationActive] = useState(false)
+  const [isFolderCreationActive, setIsFolderCreationActive] = useState(false) // to be removed after Workspace-folders refactor
 
-  // get page settings details when page is selected (used for editing page settings and deleting)
-  const {} = useQuery(
-    [PAGE_CONTENT_KEY, { siteName, fileName: "contact-us.md" }],
-    async () => await getEditPageData({ siteName, fileName: "contact-us.md" }),
-    {
-      retry: false,
-      onError: () => setContactUsCard(false),
-      onSuccess: ({ pageContent: contactUsPageContent }) => {
-        const {
-          frontMatter: { layout },
-        } = frontMatterParser(contactUsPageContent)
-        setContactUsCard(layout === CONTACT_US_TEMPLATE_LAYOUT)
-      },
-    }
-  )
+  const { setRedirectToPage } = useRedirectHook()
+  const { path, url } = useRouteMatch()
+  const history = useHistory()
 
-  // get unlinked pages
-  const { refetch: refetchPages } = useQuery(
-    [PAGE_CONTENT_KEY, { siteName }],
-    () => getPages({ siteName }),
-    {
-      enabled: contactUsCard !== undefined, // delay until contact page layout query runs
-      retry: false,
-      onError: () =>
-        errorToast(
-          `There was a problem trying to load your pages. ${DEFAULT_RETRY_MSG}`
-        ),
-      onSuccess: (pagesResp) => {
-        if (contactUsCard)
-          setUnlinkedPages(
-            pagesResp.length > 0
-              ? pagesResp.filter((page) => page.fileName !== "contact-us.md")
-              : []
-          )
-        else setUnlinkedPages(pagesResp.length > 0 ? pagesResp : [])
-      },
-    }
-  )
-
-  // get all folders
-  const { refetch: refetchFolders } = useQuery(
-    [FOLDERS_CONTENT_KEY, { siteName, isResource: false }],
-    async () => getAllCategories({ siteName }),
-    {
-      onError: () =>
-        errorToast(
-          `The folders data could not be retrieved. ${DEFAULT_RETRY_MSG}`
-        ),
-      onSuccess: (allFolders) => setCollections(allFolders.collections || []),
-    }
-  )
+  const { data: dirsData } = useGetDirectoryHook(match.params)
+  const { data: pagesData } = useGetDirectoryHook({
+    ...match.params,
+    isUnlinked: true,
+  })
+  const { data: contactUsPage } = useGetPageHook({
+    siteName,
+    fileName: "contact-us.md",
+  })
 
   useEffect(() => {
-    let _isMounted = true
-    const fetchData = async () => {
-      try {
-        await retrieveSiteColors(siteName)
-      } catch (e) {
-        console.log(e)
-      }
-    }
-    fetchData()
-    return () => {
-      _isMounted = false
-    }
-  }, [])
+    if (contactUsPage)
+      setContactUsCard(
+        contactUsPage.content?.frontMatter?.layout ===
+          CONTACT_US_TEMPLATE_LAYOUT
+      )
+  }, [pagesData, contactUsPage])
 
   return (
     <>
-      {isFolderCreationActive && (
+      {isFolderCreationActive && ( // to be removed after Workspace-folders refactor
         <FolderCreationModal
-          existingSubfolders={collections}
-          pagesData={unlinkedPages.map((page) => {
+          existingSubfolders={dirsData.map((dir) => dir.name)}
+          pagesData={pagesData.map((page) => {
             const newPage = {
               ...page,
-              title: page.fileName,
+              title: page.name,
+              fileName: page.name,
             }
             return newPage
           })}
@@ -174,10 +128,10 @@ const Workspace = ({ match, location }) => {
           </div>
           {/* Collections title */}
           <div className={contentStyles.segment}>Folders</div>
-          {!collections && (
+          {!dirsData && (
             <div className={contentStyles.segment}>Loading Folders...</div>
           )}
-          {collections && collections.length === 0 && (
+          {dirsData && dirsData.length === 0 && (
             <div className={contentStyles.segment}>
               There are no folders in this repository.
             </div>
@@ -185,7 +139,7 @@ const Workspace = ({ match, location }) => {
           {/* Folders */}
           <div className={contentStyles.folderContainerBoxes}>
             <div className={contentStyles.boxesContainer}>
-              {collections && unlinkedPages && (
+              {dirsData && (
                 <FolderOptionButton
                   title="Create new folder"
                   option="create-sub"
@@ -193,17 +147,17 @@ const Workspace = ({ match, location }) => {
                   onClick={() => setIsFolderCreationActive(true)}
                 />
               )}
-              {collections && collections.length > 0
-                ? collections.map((collection, collectionIdx) => (
+              {dirsData && dirsData.length > 0
+                ? dirsData.map((collection, collectionIdx) => (
                     <FolderCard
-                      displayText={prettifyPageFileName(collection)}
+                      displayText={prettifyPageFileName(collection.name)}
                       settingsToggle={() => {}}
                       key={collection}
                       pageType="collection"
                       siteName={siteName}
-                      category={collection}
+                      category={collection.name}
                       itemIndex={collectionIdx}
-                      existingFolders={collections}
+                      existingFolders={dirsData}
                     />
                   ))
                 : null}
@@ -224,10 +178,50 @@ const Workspace = ({ match, location }) => {
             </span>
           </div>
           {/* Pages */}
-          <CollectionPagesSection pages={unlinkedPages} siteName={siteName} />
+          <div className={contentStyles.contentContainerBoxes}>
+            <div className={contentStyles.boxesContainer}>
+              <button
+                type="button"
+                id="settings-NEW"
+                onClick={() => setRedirectToPage(`${url}/createPage`)}
+                className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.addNew}`}
+              >
+                <i
+                  id="settingsIcon-NEW"
+                  className={`bx bx-plus-circle ${elementStyles.bxPlusCircle}`}
+                />
+                <h2 id="settingsText-NEW">Add a new page</h2>
+              </button>
+              {pagesData
+                ? pagesData
+                    .filter((page) => page.name != "contact-us.md")
+                    .map((page, pageIdx) => (
+                      <PageCard itemIndex={pageIdx} item={page} />
+                    ))
+                : /* Display loader if pages have not been retrieved from API call */
+                  "Loading Pages..."}
+            </div>
+          </div>
         </div>
         {/* main section ends here */}
       </div>
+      <Switch>
+        <ProtectedRouteWithProps
+          path={[`${path}/createPage`, `${path}/editPageSettings/:fileName`]}
+          component={PageSettingsScreen}
+          onClose={() => history.goBack()}
+        />
+        <ProtectedRouteWithProps
+          path={[`${path}/deletePage/:fileName`]}
+          component={DeleteWarningScreen}
+          onClose={() => history.goBack()}
+        />
+        <ProtectedRouteWithProps
+          path={[`${path}/movePage/:fileName`]}
+          component={PageMoveScreen}
+          onClose={() => history.goBack()}
+        />
+      </Switch>
     </>
   )
 }

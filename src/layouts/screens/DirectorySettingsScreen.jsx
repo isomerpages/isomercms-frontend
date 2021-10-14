@@ -1,7 +1,6 @@
 import React from "react"
 import axios from "axios"
 import PropTypes from "prop-types"
-import { useParams } from "react-router-dom"
 
 import { getLastItemType } from "../../utils"
 
@@ -15,8 +14,8 @@ import DirectorySettingsModal from "../../components/DirectorySettingsModal"
 // axios settings
 axios.defaults.withCredentials = true
 
-export const FoldersDirectorySettingsScreen = ({ onClose }) => {
-  const params = useParams()
+export const DirectorySettingsScreen = ({ match, onClose }) => {
+  const { params, decodedParams } = match
 
   const { mutateAsync: renameDir } = useUpdateDirectoryHook(params, {
     onSuccess: () => onClose(),
@@ -30,12 +29,12 @@ export const FoldersDirectorySettingsScreen = ({ onClose }) => {
     <DirectorySettingsModal
       onProceed={renameDir}
       onClose={onClose}
-      params={params}
+      params={decodedParams}
       dirData={dirData}
     />
   )
 }
 
-FoldersDirectorySettingsScreen.propTypes = {
+DirectorySettingsScreen.propTypes = {
   onClose: PropTypes.func.isRequired,
 }

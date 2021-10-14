@@ -6,6 +6,8 @@ import useRedirectHook from "../hooks/useRedirectHook"
 import useSiteUrlHook from "../hooks/useSiteUrlHook"
 import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
+import { getBackButton } from "../utils"
+
 // axios settings
 axios.defaults.withCredentials = true
 
@@ -20,6 +22,7 @@ const Header = ({
   shouldAllowEditPageBackNav,
   backButtonText,
   backButtonUrl,
+  params,
 }) => {
   const { setRedirectToLogout, setRedirectToPage } = useRedirectHook()
   const { retrieveStagingUrl } = useSiteUrlHook()
@@ -28,12 +31,20 @@ const Header = ({
   const [showStagingWarningModal, setShowStagingWarningModal] = useState(false)
   const [stagingUrl, setStagingUrl] = useState()
 
+  const {
+    backButtonLabel: backButtonTextFromParams,
+    backButtonUrl: backButtonUrlFromParams,
+  } = getBackButton(params)
+  const { siteName: siteNameFromParams } = params
+
   useEffect(() => {
     let _isMounted = true
 
     const loadStagingUrl = async () => {
-      if (siteName) {
-        const retrievedStagingUrl = await retrieveStagingUrl(siteName)
+      if (siteNameFromParams || siteName) {
+        const retrievedStagingUrl = await retrieveStagingUrl(
+          siteNameFromParams || siteName
+        )
         if (_isMounted) setStagingUrl(retrievedStagingUrl)
       }
     }
@@ -45,7 +56,7 @@ const Header = ({
   }, [])
 
   const toggleBackNav = () => {
-    setRedirectToPage(backButtonUrl)
+    setRedirectToPage(backButtonUrlFromParams || backButtonUrl)
   }
 
   const handleBackNav = () => {
@@ -55,8 +66,12 @@ const Header = ({
   }
 
   const handleViewPullRequest = () => {
-    const githubUrl = `https://github.com/isomerpages/${siteName}/pulls`
-    window.open(githubUrl, "_blank")
+    if (siteNameFromParams || siteName) {
+      const githubUrl = `https://github.com/isomerpages/${
+        siteNameFromParams || siteName
+      }/pulls`
+      window.open(githubUrl, "_blank")
+    }
   }
 
   const handleViewStaging = () => {
@@ -76,7 +91,7 @@ const Header = ({
               type="button"
             >
               <i className="bx bx-chevron-left" />
-              {backButtonText}
+              {backButtonTextFromParams || backButtonText}
             </button>
           </div>
         )}
@@ -96,7 +111,7 @@ const Header = ({
       </div>
       {/* Right section */}
       <div className={elementStyles.headerRight}>
-        {siteName ? (
+        {siteNameFromParams || siteName ? (
           <>
             <button
               type="button"
@@ -165,6 +180,7 @@ Header.defaultProps = {
   shouldAllowEditPageBackNav: true,
   backButtonText: "Back to Sites",
   backButtonUrl: "/sites",
+  params: {},
 }
 
 Header.propTypes = {
@@ -175,6 +191,12 @@ Header.propTypes = {
   shouldAllowEditPageBackNav: PropTypes.bool,
   backButtonText: PropTypes.string,
   backButtonUrl: PropTypes.string,
+  params: PropTypes.shape({
+    siteName: PropTypes.string,
+    collectionName: PropTypes.string,
+    subCollectionName: PropTypes.string,
+    fileName: PropTypes.string,
+  }),
 }
 
 export default Header
