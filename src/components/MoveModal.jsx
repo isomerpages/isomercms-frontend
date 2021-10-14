@@ -9,17 +9,41 @@ import SaveDeleteButtons from "./SaveDeleteButtons"
 
 import { getLastItemType, getNextItemType, deslugifyDirectory } from "../utils"
 
-const MoveModal = ({ queryParams, params, onProceed, onClose }) => {
-  const [moveQuery, setMoveQuery] = useState(
-    (({ fileName, ...p }) => p)(queryParams)
-  )
-  const [moveTo, setMoveTo] = useState(moveQuery)
-
-  const { data: dirData } = useGetDirectoryHook(moveQuery)
-
+const MoveMenu = ({ moveQuery, setMoveQuery, moveTo, setMoveTo, dirData }) => {
   /** ******************************** */
   /*     subcomponents    */
   /** ******************************** */
+
+  const MoveMenuBackButton = () => {
+    const lastItemType = getLastItemType(moveQuery)
+    const isEnabled = Object.keys(moveQuery).length > 1
+    return (
+      <div
+        id="moveModal-backButton"
+        className={`${elementStyles.dropdownHeader}`}
+        onMouseDown={
+          isEnabled
+            ? () => {
+                const newMoveQuery = (({ [lastItemType]: unused, ...p }) => p)(
+                  moveQuery
+                )
+                setMoveQuery(newMoveQuery)
+                setMoveTo(newMoveQuery)
+              }
+            : null
+        }
+      >
+        <i
+          className={`${elementStyles.dropdownIcon} ${
+            lastItemType != "siteName" && "bx bx-sm bx-arrow-back text-white"
+          }`}
+        />
+        {lastItemType === "siteName"
+          ? "Workspace"
+          : deslugifyDirectory(decodeURIComponent(moveQuery[lastItemType]))}
+      </div>
+    )
+  }
 
   const MoveMenuItem = ({ item, id }) => {
     const { name, type } = item
@@ -77,38 +101,7 @@ const MoveModal = ({ queryParams, params, onProceed, onClose }) => {
     return null
   }
 
-  const MoveMenuBackButton = () => {
-    const lastItemType = getLastItemType(moveQuery)
-    const isEnabled = Object.keys(moveQuery).length > 1
-    return (
-      <div
-        id="moveModal-backButton"
-        className={`${elementStyles.dropdownHeader}`}
-        onMouseDown={
-          isEnabled
-            ? () => {
-                const newMoveQuery = (({ [lastItemType]: unused, ...p }) => p)(
-                  moveQuery
-                )
-                setMoveQuery(newMoveQuery)
-                setMoveTo(newMoveQuery)
-              }
-            : null
-        }
-      >
-        <i
-          className={`${elementStyles.dropdownIcon} ${
-            lastItemType != "siteName" && "bx bx-sm bx-arrow-back text-white"
-          }`}
-        />
-        {lastItemType === "siteName"
-          ? "Workspace"
-          : deslugifyDirectory(decodeURIComponent(moveQuery[lastItemType]))}
-      </div>
-    )
-  }
-
-  const MoveMenu = () => (
+  return (
     <div className={`${elementStyles.moveModal}`}>
       <MoveMenuBackButton />
       {dirData && dirData.length ? (
@@ -122,7 +115,6 @@ const MoveModal = ({ queryParams, params, onProceed, onClose }) => {
           {/* pages */}
           {dirData
             .filter((item) => item.type === "file")
-            .filter((item) => item.name != params.fileName)
             .map((item, itemIndex) => (
               <MoveMenuItem item={item} id={itemIndex} />
             ))}
@@ -142,6 +134,15 @@ const MoveModal = ({ queryParams, params, onProceed, onClose }) => {
       )}
     </div>
   )
+}
+
+const MoveModal = ({ queryParams, params, onProceed, onClose }) => {
+  const [moveQuery, setMoveQuery] = useState(
+    (({ fileName, ...p }) => p)(queryParams)
+  )
+  const [moveTo, setMoveTo] = useState(moveQuery)
+
+  const { data: dirData } = useGetDirectoryHook(moveQuery)
 
   return (
     <div className={elementStyles.overlay}>
@@ -160,7 +161,17 @@ const MoveModal = ({ queryParams, params, onProceed, onClose }) => {
             <br />
             Current location of page: <br />
             <Breadcrumb params={params} title={params.fileName} />
-            <MoveMenu />
+            <MoveMenu
+              moveQuery={moveQuery}
+              setMoveQuery={setMoveQuery}
+              moveTo={moveTo}
+              setMoveTo={setMoveTo}
+              dirData={
+                dirData
+                  ? dirData.filter((item) => item.name != params.fileName)
+                  : []
+              }
+            />
             Moving page to: <br />
             <Breadcrumb params={moveTo} title={params.fileName} />
           </div>

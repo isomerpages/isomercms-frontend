@@ -94,7 +94,7 @@ describe("Edit unlinked page", () => {
 
   it("Edit page (unlinked) should provide a warning to users when navigating away", () => {
     cy.get(".CodeMirror-scroll").type(TEST_PAGE_CONTENT)
-    cy.contains(":button", "My Workspace").click()
+    cy.contains(":button", "Back to Workspace").click()
 
     cy.contains("Warning")
     cy.contains(":button", "No").click()
@@ -106,7 +106,7 @@ describe("Edit unlinked page", () => {
     )
     cy.contains(TEST_PAGE_CONTENT)
 
-    cy.contains(":button", "My Workspace").click()
+    cy.contains(":button", "Back to Workspace").click()
 
     cy.contains("Warning")
     cy.contains(":button", "Yes").click()
