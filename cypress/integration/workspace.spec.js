@@ -83,7 +83,7 @@ describe("Workspace Pages flow", () => {
       cy.contains(TEST_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist")
 
       // 2. If user goes back to the workspace, they should be able to see that the page exists
-      cy.contains("My Workspace", { timeout: CUSTOM_TIMEOUT })
+      cy.contains("Back to Workspace", { timeout: CUSTOM_TIMEOUT })
         .should("exist")
         .click()
       cy.contains(TEST_PAGE_FILENAME, { timeout: CUSTOM_TIMEOUT }).should(
@@ -94,11 +94,14 @@ describe("Workspace Pages flow", () => {
     it("Should not be able to create page with invalid title", () => {
       const INVALID_TEST_PAGE_TITLES = [
         "Ab",
-        "Lorem Ipsum-",
-        "?Lorem Ipsum",
-        "#Lorem Ipsum",
-        "@Lorem Ipsum",
-        "&Lorem Ipsum",
+        "Lorem Ipsum<",
+        "^Lorem Ipsum",
+        "~%Lorem Ipsum",
+        "/Lorem Ipsum",
+        ";Lorem Ipsum",
+        ">Lorem Ipsum",
+        "[Lorem Ipsum",
+        "]Lorem Ipsum",
       ]
 
       cy.get("#settings-NEW", { timeout: CUSTOM_TIMEOUT })

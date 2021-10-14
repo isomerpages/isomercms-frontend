@@ -36,7 +36,7 @@ describe("Move flow", () => {
     it("Should be able to navigate from Workspace to subfolder back to Workspace via MoveModal buttons", () => {
       cy.contains(FILENAME_WORKSPACE_TO_FOLDER).should("exist")
       cy.get(
-        `button[id^="folderItem-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`
+        `button[id^="pageCard-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`
       ).click()
       cy.get("div[id^=move-]").first().click()
       cy.contains(`Move Page`)
@@ -69,7 +69,7 @@ describe("Move flow", () => {
     it("Should be able to move page from Workspace to itself and show correct success message", () => {
       cy.contains(FILENAME_WORKSPACE_TO_FOLDER).should("exist")
       cy.get(
-        `button[id^="folderItem-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`
+        `button[id^="pageCard-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`
       ).click()
       cy.get("div[id^=move-]").first().click()
       cy.contains(`Move Page`)
@@ -83,7 +83,7 @@ describe("Move flow", () => {
     it("Should be able to move a page from Workspace to folder", () => {
       cy.contains(FILENAME_WORKSPACE_TO_FOLDER).should("exist")
       cy.get(
-        `button[id^="folderItem-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`
+        `button[id^="pageCard-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`
       ).click()
       cy.get("div[id^=move-]").first().click()
       cy.contains(`Move Page`)
@@ -119,7 +119,7 @@ describe("Move flow", () => {
     it("Should be able to move a page from folder to subfolder", () => {
       cy.contains(FILENAME_WORKSPACE_TO_SUBFOLDER).should("exist")
       cy.get(
-        `button[id^="folderItem-dropdown-${FILENAME_WORKSPACE_TO_SUBFOLDER}"]`
+        `button[id^="pageCard-dropdown-${FILENAME_WORKSPACE_TO_SUBFOLDER}"]`
       ).click()
       cy.get("div[id^=move-]").first().click()
       cy.contains(`Move Page`)
