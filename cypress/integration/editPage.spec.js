@@ -2,7 +2,7 @@ import "cypress-file-upload"
 import {
   slugifyCategory,
   generateResourceFileName,
-  generatePageFileName,
+  titleToPageFileName,
 } from "../../src/utils"
 
 Cypress.config("baseUrl", Cypress.env("BASEURL"))
@@ -23,15 +23,18 @@ describe("Edit unlinked page", () => {
   const TEST_PAGE_CONTENT = "lorem ipsum"
 
   const TEST_UNLINKED_PAGE_TITLE = "Test Unlinked Page"
-  const TEST_UNLINKED_PAGE_FILE_NAME = `${slugifyCategory(
+  const TEST_UNLINKED_PAGE_FILENAME = titleToPageFileName(
     TEST_UNLINKED_PAGE_TITLE
-  )}.md`
+  )
+  const TEST_PAGE_TITLE_ENCODED = encodeURIComponent(
+    TEST_UNLINKED_PAGE_FILENAME
+  )
 
   const DEFAULT_IMAGE_TITLE = "isomer-logo.svg"
   const ADDED_IMAGE_TITLE = "balloon.png"
   const ADDED_IMAGE_PATH = "images/balloon.png"
 
-  const ADDED_FILE_TITLE = "singapore.pdf"
+  const ADDED_FILE_TITLE = "singapore-pages.pdf"
   const ADDED_FILE_PATH = "files/singapore.pdf"
 
   const LINK_TITLE = "link"
@@ -73,7 +76,7 @@ describe("Edit unlinked page", () => {
     // This means it will not be cleared before the NEXT test starts.
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
     window.localStorage.setItem("userId", "test")
-    cy.visit(`/sites/${TEST_REPO_NAME}/pages/${TEST_UNLINKED_PAGE_FILE_NAME}`)
+    cy.visit(`/sites/${TEST_REPO_NAME}/editPage/${TEST_PAGE_TITLE_ENCODED}`)
     cy.wait(2000)
   })
 
@@ -91,7 +94,7 @@ describe("Edit unlinked page", () => {
 
   it("Edit page (unlinked) should provide a warning to users when navigating away", () => {
     cy.get(".CodeMirror-scroll").type(TEST_PAGE_CONTENT)
-    cy.contains(":button", "My Workspace").click()
+    cy.contains(":button", "Back to Workspace").click()
 
     cy.contains("Warning")
     cy.contains(":button", "No").click()
@@ -99,11 +102,11 @@ describe("Edit unlinked page", () => {
     // Sanity check: still in unlinked pages and content still present
     cy.url().should(
       "include",
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/pages/${TEST_UNLINKED_PAGE_FILE_NAME}`
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/editPage/${TEST_PAGE_TITLE_ENCODED}`
     )
     cy.contains(TEST_PAGE_CONTENT)
 
-    cy.contains(":button", "My Workspace").click()
+    cy.contains(":button", "Back to Workspace").click()
 
     cy.contains("Warning")
     cy.contains(":button", "Yes").click()
@@ -121,7 +124,7 @@ describe("Edit unlinked page", () => {
 
     // Asserts
     // 1. Toast
-    cy.contains("Successfully saved page content")
+    cy.contains("Successfully updated page")
 
     // 2. Content is there even after refreshing
     cy.reload()
@@ -194,9 +197,10 @@ describe("Edit unlinked page", () => {
     // Test delete in modal
     cy.get("#modal-delete").should("exist")
     cy.get("#modal-delete").click()
+    cy.wait(2000)
 
     // Assert: page no longer exists
-    cy.visit(`/sites/${TEST_REPO_NAME}/pages/${TEST_UNLINKED_PAGE_FILE_NAME}`)
+    cy.visit(`/sites/${TEST_REPO_NAME}/editPage/${TEST_PAGE_TITLE_ENCODED}`)
     cy.contains("The page you are looking for does not exist anymore.")
   })
 })
@@ -206,13 +210,14 @@ describe("Edit collection page", () => {
   const TEST_FOLDER_TITLE_SLUGIFIED = slugifyCategory(TEST_FOLDER_TITLE)
 
   const TEST_PAGE_TITLE = "Test Collection Page"
-  const TEST_PAGE_TITLE_SLUGIFIED = generatePageFileName(TEST_PAGE_TITLE)
+  const TEST_PAGE_FILENAME = titleToPageFileName(TEST_PAGE_TITLE)
+  const TEST_PAGE_TITLE_ENCODED = encodeURIComponent(TEST_PAGE_FILENAME)
 
   const TEST_PAGE_CONTENT = "lorem ipsum"
 
   const DEFAULT_IMAGE_TITLE = "isomer-logo.svg"
 
-  const ADDED_FILE_TITLE = "singapore.pdf"
+  const ADDED_FILE_TITLE = "singapore-pages.pdf"
 
   const LINK_TITLE = "link"
   const LINK_URL = "https://www.google.com"
@@ -230,7 +235,7 @@ describe("Edit collection page", () => {
     cy.wait(2000)
 
     // Set up test collection page
-    cy.visit(`/sites/${TEST_REPO_NAME}/folder/${TEST_FOLDER_TITLE_SLUGIFIED}`)
+    cy.visit(`/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}`)
     cy.contains("Create new page").should("exist").click()
     cy.get("#title").clear().type(TEST_PAGE_TITLE)
     cy.contains("Save").click()
@@ -243,7 +248,7 @@ describe("Edit collection page", () => {
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
     window.localStorage.setItem("userId", "test")
     cy.visit(
-      `/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_SLUGIFIED}`
+      `/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_ENCODED}`
     )
     cy.wait(2000)
   })
@@ -274,7 +279,7 @@ describe("Edit collection page", () => {
     // Sanity check: still in edit collection pages and content still present
     cy.url().should(
       "include",
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_SLUGIFIED}`
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_ENCODED}`
     )
     cy.contains(TEST_PAGE_CONTENT)
 
@@ -286,7 +291,7 @@ describe("Edit collection page", () => {
     // Assert: in Collection folder
     cy.url().should(
       "include",
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folder/${TEST_FOLDER_TITLE_SLUGIFIED}` // to be fixed after collections refactor
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}`
     )
   })
 
@@ -345,7 +350,7 @@ describe("Edit collection page", () => {
 
     // Assert: page no longer exists
     cy.visit(
-      `/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_SLUGIFIED}`
+      `/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_ENCODED}`
     )
     cy.contains("The page you are looking for does not exist anymore.")
   })

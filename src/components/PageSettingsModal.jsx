@@ -1,3 +1,6 @@
+// TODO: deprecate after Workspace refactor
+// remove from CollecionPagesSection, use PageSettingsModalV2 instead as separate modal on Workspace
+
 import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import { useMutation, useQueryClient } from "react-query"

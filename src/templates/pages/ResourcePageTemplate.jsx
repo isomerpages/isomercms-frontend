@@ -6,7 +6,7 @@ const ResourcePageTemplate = ({ chunk, pageParams }) => {
   return (
     <div>
       <section id="display-header" className="bp-section bg-secondary">
-        <PageHeader pageParams={pageParams} />
+        <PageHeader pageParams={pageParams} title={title} />
       </section>
       <section className="bp-section">
         <div className="bp-container content padding--top--lg padding--bottom--xl">

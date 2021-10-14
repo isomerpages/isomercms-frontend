@@ -1,3 +1,5 @@
+// TODO: deprecate after Workspace refactor, replaced by DirectoryCreationModal
+
 import React, { useEffect, useState } from "react"
 import axios from "axios"
 import PropTypes from "prop-types"
@@ -64,9 +66,9 @@ const FolderCreationModal = ({
       ),
     {
       onSuccess: () => {
-        const redirectUrl = `/sites/${siteName}/folder/${
+        const redirectUrl = `/sites/${siteName}/folders/${
           parentFolder
-            ? `${parentFolder}/subfolder/${slugifyCategory(title)}`
+            ? `${parentFolder}/subfolders/${slugifyCategory(title)}`
             : slugifyCategory(title)
         }`
         setRedirectToPage(redirectUrl)

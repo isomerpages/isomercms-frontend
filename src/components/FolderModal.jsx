@@ -1,3 +1,6 @@
+// TODO: deprecate after Workspace and Resources refactor
+// remove from FolderCard, use DirectorySettingsModal as separate modal on layout
+
 import React, { useState } from "react"
 import axios from "axios"
 import PropTypes from "prop-types"
@@ -132,10 +135,7 @@ const FolderModal = ({
             undefined,
           ])
         } else if (folderType === "page" && !subfolderName) {
-          queryClient.invalidateQueries([
-            FOLDERS_CONTENT_KEY,
-            { siteName, isResource: false },
-          ])
+          queryClient.invalidateQueries([DIR_CONTENT_KEY, { siteName }])
         } else if (folderType === "images") {
           queryClient.invalidateQueries([IMAGE_CONTENTS_KEY, mediaCustomPath])
         } else if (folderType === "documents") {

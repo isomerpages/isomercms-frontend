@@ -2,14 +2,16 @@ import _ from "lodash"
 import moment from "moment-timezone"
 
 import {
-  generatePageFileName,
   retrieveResourceFileMetadata,
   slugifyCategory,
+  titleToPageFileName,
+  deslugifyDirectory,
+  generatePageFileName,
 } from "../utils"
 
 // Common regexes and constants
 // ==============
-const PERMALINK_REGEX = "^((/([a-z0-9]+-)*[a-z0-9]+)+)/?$"
+const PERMALINK_REGEX = "^((/([a-zA-Z0-9]+-)*[a-zA-Z0-9]+)+)/?$"
 const URL_REGEX_PART_1 = "^(https://)?(www.)?("
 const URL_REGEX_PART_2 = ".com/)([a-zA-Z0-9_-]+([/.])?)+$"
 const TELEGRAM_REGEX = "telegram|t).me/([a-zA-Z0-9_-]+([/.])?)+$"
@@ -32,6 +34,7 @@ const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/
 const RESOURCE_CATEGORY_REGEX = "^([a-zA-Z0-9]*[- ]?)+$"
 const resourceRoomNameRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
 const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX)
+const specialCharactersRegexTest = /[~%^*_+\-./\\`;~{}[\]"<>]/
 
 const ISOMER_TEMPLATE_PROTECTED_DIRS = [
   "data",
@@ -715,9 +718,13 @@ const validatePageSettings = (id, value, folderOrderArray) => {
       if (value.length > PAGE_SETTINGS_TITLE_MAX_LENGTH) {
         errorMessage = `The title should be shorter than ${PAGE_SETTINGS_TITLE_MAX_LENGTH} characters.`
       }
+      if (specialCharactersRegexTest.test(value)) {
+        errorMessage = `The title cannot contain any of the following special characters: ~%^*_+-./\\\`;~{}[]"<>`
+      }
       if (
         folderOrderArray !== undefined &&
-        folderOrderArray.includes(generatePageFileName(value))
+        (folderOrderArray.includes(titleToPageFileName(value)) ||
+          folderOrderArray.includes(generatePageFileName(value)))
       ) {
         errorMessage = `This title is already in use. Please choose a different title.`
       }
@@ -933,6 +940,26 @@ const validateSocialMedia = (value, id) => {
   return errorMessage
 }
 
+// SubFolder Creation Modal
+// ====================
+const validateSubfolderName = (value, existingNames) => {
+  let errorMessage = ""
+
+  if (existingNames && existingNames.includes(deslugifyDirectory(value))) {
+    errorMessage = `Another folder with the same name exists. Please choose a different name.`
+  }
+  if (value.length < RESOURCE_CATEGORY_MIN_LENGTH) {
+    errorMessage = `The subfolder name should be longer than ${RESOURCE_CATEGORY_MIN_LENGTH} characters.`
+  }
+  if (value.length > RESOURCE_CATEGORY_MAX_LENGTH) {
+    errorMessage = `The subfolder name should be shorter than ${RESOURCE_CATEGORY_MAX_LENGTH} characters.`
+  }
+  if (specialCharactersRegexTest.test(value)) {
+    errorMessage = `The subfolder name cannot contain any of the following special characters: ~%^*_+-./\\\`;~{}[]"<>`
+  }
+  return errorMessage
+}
+
 export {
   validateContactType,
   validateLocationType,
@@ -947,4 +974,5 @@ export {
   validateSocialMedia,
   validateFileName,
   validateResourceRoomName,
+  validateSubfolderName,
 }
