@@ -8,7 +8,7 @@ describe("Resource category page", () => {
   const COOKIE_NAME = Cypress.env("COOKIE_NAME")
   const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
   const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
-  Cypress.config("baseUrl", `${CMS_BASEURL}/sites/${TEST_REPO_NAME}`)
+  Cypress.config("baseUrl", Cypress.env("BASEURL"))
 
   const TEST_CATEGORY = "Test Page Folder"
   const TEST_CATEGORY_2 = "Another Page Folder"
@@ -37,12 +37,12 @@ describe("Resource category page", () => {
     window.localStorage.setItem("userId", "test")
 
     // Set up test resource categories
-    cy.visit(`/resources`)
+    cy.visit(`/sites/${TEST_REPO_NAME}/resources`)
     cy.contains("Create new category").click()
     cy.get("input").clear().type(TEST_CATEGORY)
     cy.contains("Save").click()
     cy.wait(3000)
-    cy.visit(`/resources`)
+    cy.visit(`/sites/${TEST_REPO_NAME}/resources`)
     cy.contains("Create new category").click()
     cy.get("input").clear().type(TEST_CATEGORY_2)
     cy.contains("Save").click()
@@ -54,7 +54,7 @@ describe("Resource category page", () => {
     // This means it will not be cleared before the NEXT test starts.
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
     window.localStorage.setItem("userId", "test")
-    cy.visit(`/resources/${TEST_CATEGORY_SLUGIFIED}`)
+    cy.visit(`/sites/${TEST_REPO_NAME}/resources/${TEST_CATEGORY_SLUGIFIED}`)
   })
 
   it("Resource category page should have name of resource category in header", () => {

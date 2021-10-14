@@ -1,15 +1,15 @@
 import React from "react"
 import PropTypes from "prop-types"
-import { useParams } from "react-router-dom"
+
 import DeleteWarningModal from "../../components/DeleteWarningModal"
 import { useDeleteDirectoryHook } from "../../hooks/directoryHooks"
 import { useGetPageHook, useDeletePageHook } from "../../hooks/pageHooks"
 import { getLastItemType } from "../../utils"
 
-export const DeleteWarningScreen = ({ onClose }) => {
-  const params = useParams()
+export const DeleteWarningScreen = ({ match, onClose }) => {
+  const { params, decodedParams } = match
   const { fileName } = params
-  const deleteItemType = params[getLastItemType(params)]
+  const deleteItemName = decodedParams[getLastItemType(decodedParams)]
 
   if (fileName) {
     const { data: pageData } = useGetPageHook(params)
@@ -21,7 +21,7 @@ export const DeleteWarningScreen = ({ onClose }) => {
       <DeleteWarningModal
         onDelete={() => deleteHandler({ sha: pageData.sha })}
         onCancel={() => onClose()}
-        type={deleteItemType}
+        type={deleteItemName}
       />
     ) : null
   }
@@ -33,7 +33,7 @@ export const DeleteWarningScreen = ({ onClose }) => {
     <DeleteWarningModal
       onDelete={deleteHandler}
       onCancel={() => onClose()}
-      type={deleteItemType}
+      type={deleteItemName}
     />
   )
 }
