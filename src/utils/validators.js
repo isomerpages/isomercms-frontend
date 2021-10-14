@@ -915,12 +915,15 @@ const validateSocialMedia = (value, id) => {
   }
 
   // conduct regex tests for each social media platform
-  if (
-    !(
-      (!(id in customRegex) && socialMediaRegexTest.test(value)) ||
-      customRegex[id].test(value)
-    )
-  ) {
+  let isAllowed
+  if (value !== "") {
+    if (id in customRegex) {
+      isAllowed = customRegex[id].test(value)
+    } else {
+      isAllowed = socialMediaRegexTest.test(value)
+    }
+  }
+  if (!isAllowed) {
     if (value !== "")
       errorMessage = `The URL you have entered is not a valid ${id[0].toUpperCase()}${id.slice(
         1
