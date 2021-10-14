@@ -55,15 +55,25 @@ describe("Folders flow", () => {
 
   const INVALID_TEST_PAGE_TITLES = [
     "Ab",
-    "Lorem Ipsum-",
-    "?Lorem Ipsum",
-    "#Lorem Ipsum",
-    "@Lorem Ipsum",
-    "&Lorem Ipsum",
+    "Lorem Ipsum<",
+    "^Lorem Ipsum",
+    "~%Lorem Ipsum",
+    "/Lorem Ipsum",
+    ";Lorem Ipsum",
+    ">Lorem Ipsum",
+    "[Lorem Ipsum",
+    "]Lorem Ipsum",
   ]
   const INVALID_TEST_PAGE_PERMALINKS = ["/12", "test-", "/abcd?"]
 
-  const INVALID_SUBFOLDER_TITLES = ["t", "!abc"]
+  const INVALID_SUBFOLDER_TITLES = [
+    "t",
+    "/abc",
+    "%abc",
+    "[abc]",
+    "~abc",
+    "<abc>",
+  ]
 
   const TEST_SUBFOLDER_NO_PAGES_TITLE = "test subfolder title no pages"
   const PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE = deslugifyDirectory(

@@ -23,7 +23,7 @@ import FallbackComponent from "../components/FallbackComponent"
 import ProtectedRoute from "./ProtectedRoute"
 import RedirectIfLoggedInRoute from "./RedirectIfLoggedInRoute"
 
-const ProtectedRouteWithProps = (props) => {
+export const ProtectedRouteWithProps = (props) => {
   return (
     <Sentry.ErrorBoundary fallback={FallbackComponent}>
       <ProtectedRoute {...props} />

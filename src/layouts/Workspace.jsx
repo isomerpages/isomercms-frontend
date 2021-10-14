@@ -20,6 +20,7 @@ import {
 import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
 
+import { ProtectedRouteWithProps } from "../routing/RouteSelector"
 // Import utils
 import { prettifyPageFileName } from "../utils"
 
@@ -205,19 +206,20 @@ const Workspace = ({ match, location }) => {
         {/* main section ends here */}
       </div>
       <Switch>
-        <Route
+        <ProtectedRouteWithProps
           path={[`${path}/createPage`, `${path}/editPageSettings/:fileName`]}
-          render={() => <PageSettingsScreen onClose={() => history.goBack()} />}
+          component={PageSettingsScreen}
+          onClose={() => history.goBack()}
         />
-        <Route
+        <ProtectedRouteWithProps
           path={[`${path}/deletePage/:fileName`]}
-          render={() => (
-            <DeleteWarningScreen onClose={() => history.goBack()} />
-          )}
+          component={DeleteWarningScreen}
+          onClose={() => history.goBack()}
         />
-        <Route
+        <ProtectedRouteWithProps
           path={[`${path}/movePage/:fileName`]}
-          render={() => <PageMoveScreen onClose={() => history.goBack()} />}
+          component={PageMoveScreen}
+          onClose={() => history.goBack()}
         />
       </Switch>
     </>

@@ -53,6 +53,16 @@ const PageSettingsModalV2 = ({
     if (fileName && pageData && !hasChanges && pageData.content) {
       setTitle(pageData.content.frontMatter.title)
       setPermalink(pageData.content.frontMatter.permalink)
+      setErrors({
+        title: validatePageSettings(
+          "title",
+          pageData.content.frontMatter.title
+        ),
+        permalink: validatePageSettings(
+          "permalink",
+          pageData.content.frontMatter.permalink
+        ),
+      })
     }
   }, [pageData])
 

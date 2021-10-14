@@ -38,7 +38,7 @@ export class DirectoryService {
       endpoint += `/subcollections`
     }
     if (subCollectionName) {
-      endpoint += `/subcollections/${encodeURIComponent(subCollectionName)}`
+      endpoint += `/subcollections/${subCollectionName}`
     }
     if (isReorder) {
       endpoint += `/reorder`

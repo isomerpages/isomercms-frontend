@@ -34,10 +34,11 @@ const PageCard = ({ item, itemIndex, isDisabled }) => {
   const { setRedirectToPage } = useRedirectHook()
 
   const generateLink = () => {
+    const encodedName = encodeURIComponent(name)
     if (resourceRoomName) {
-      return `/sites/${siteName}/resourceRoom/${resourceRoomName}/resources/${resourceCategoryName}/${name}`
+      return `/sites/${siteName}/resourceRoom/${resourceRoomName}/resources/${resourceCategoryName}/${encodedName}`
     }
-    return `/sites/${siteName}/editPage/${name}`
+    return `/sites/${siteName}/editPage/${encodedName}`
   }
 
   useEffect(() => {
@@ -45,18 +46,20 @@ const PageCard = ({ item, itemIndex, isDisabled }) => {
   }, [showDropdown])
 
   const generateDropdownItems = ({ name }, url) => {
+    const encodedName = encodeURIComponent(name)
     return [
       {
         type: "edit",
-        handler: () => setRedirectToPage(`${url}/editPageSettings/${name}`),
+        handler: () =>
+          setRedirectToPage(`${url}/editPageSettings/${encodedName}`),
       },
       {
         type: "move",
-        handler: () => setRedirectToPage(`${url}/movePage/${name}`),
+        handler: () => setRedirectToPage(`${url}/movePage/${encodedName}`),
       },
       {
         type: "delete",
-        handler: () => setRedirectToPage(`${url}/deletePage/${name}`),
+        handler: () => setRedirectToPage(`${url}/deletePage/${encodedName}`),
       },
     ]
   }

@@ -1,6 +1,7 @@
 import React from "react"
 import { Redirect, Route } from "react-router-dom"
 import axios from "axios"
+import { getDecodedParams } from "../utils"
 
 // Import contexts
 import { LoginConsumer } from "../contexts/LoginContext"
@@ -17,7 +18,17 @@ const ProtectedRoute = ({ children, component: WrappedComponent, ...rest }) => {
           (WrappedComponent && (
             <Route
               {...rest}
-              render={(props) => <WrappedComponent {...rest} {...props} />}
+              render={(props) => {
+                const { match } = props
+                const { params } = match
+                const newMatch = {
+                  ...match,
+                  decodedParams: getDecodedParams(params),
+                }
+                return (
+                  <WrappedComponent {...rest} {...props} match={newMatch} />
+                )
+              }}
             />
           ))
         ) : (
