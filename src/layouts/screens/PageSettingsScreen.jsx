@@ -1,6 +1,5 @@
 import React from "react"
 import PropTypes from "prop-types"
-import { useParams } from "react-router-dom"
 import PageSettingsModalV2 from "../../components/PageSettingsModalV2"
 
 import {
@@ -11,8 +10,8 @@ import {
 import { useSiteUrlHook } from "../../hooks/settingsHooks"
 import { useGetDirectoryHook } from "../../hooks/directoryHooks"
 
-export const FoldersPageSettingsScreen = ({ onClose }) => {
-  const params = useParams() // /site/:siteName/folders/:collectionName/subfolders/:subCollectionName/editPageSettings/:fileName
+export const PageSettingsScreen = ({ match, onClose }) => {
+  const { params, decodedParams } = match
 
   const { fileName } = params
   const { data: pageData } = useGetPageHook(params, { enabled: !!fileName })
@@ -20,12 +19,15 @@ export const FoldersPageSettingsScreen = ({ onClose }) => {
     onSuccess: () => onClose(),
   })
   const { mutateAsync: createHandler } = useCreatePageHook(params)
-  const { data: dirData } = useGetDirectoryHook(params, { initialData: [] })
+  const { data: dirData } = useGetDirectoryHook(
+    { ...params, isUnlinked: !params.collectionName },
+    { initialData: [] }
+  )
   const { data: siteUrl } = useSiteUrlHook(params)
 
   return (
     <PageSettingsModalV2
-      params={params}
+      params={decodedParams}
       onClose={onClose}
       pageData={pageData}
       onProceed={fileName ? updateHandler : createHandler}
@@ -35,6 +37,6 @@ export const FoldersPageSettingsScreen = ({ onClose }) => {
   )
 }
 
-FoldersPageSettingsScreen.propTypes = {
+PageSettingsScreen.propTypes = {
   onClose: PropTypes.func.isRequired,
 }

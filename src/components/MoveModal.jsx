@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import PropTypes from "prop-types"
 import Breadcrumb from "./folders/Breadcrumb"
 
 import elementStyles from "../styles/isomer-cms/Elements.module.scss"
@@ -8,17 +9,41 @@ import SaveDeleteButtons from "./SaveDeleteButtons"
 
 import { getLastItemType, getNextItemType, deslugifyDirectory } from "../utils"
 
-const MoveModal = ({ params, onProceed, onClose }) => {
-  const [moveQuery, setMoveQuery] = useState(
-    (({ fileName, ...p }) => p)(params)
-  )
-  const [moveTo, setMoveTo] = useState(moveQuery)
-
-  const { data: dirData } = useGetDirectoryHook(moveQuery)
-
+const MoveMenu = ({ moveQuery, setMoveQuery, moveTo, setMoveTo, dirData }) => {
   /** ******************************** */
   /*     subcomponents    */
   /** ******************************** */
+
+  const MoveMenuBackButton = () => {
+    const lastItemType = getLastItemType(moveQuery)
+    const isEnabled = Object.keys(moveQuery).length > 1
+    return (
+      <div
+        id="moveModal-backButton"
+        className={`${elementStyles.dropdownHeader}`}
+        onMouseDown={
+          isEnabled
+            ? () => {
+                const newMoveQuery = (({ [lastItemType]: unused, ...p }) => p)(
+                  moveQuery
+                )
+                setMoveQuery(newMoveQuery)
+                setMoveTo(newMoveQuery)
+              }
+            : null
+        }
+      >
+        <i
+          className={`${elementStyles.dropdownIcon} ${
+            lastItemType != "siteName" && "bx bx-sm bx-arrow-back text-white"
+          }`}
+        />
+        {lastItemType === "siteName"
+          ? "Workspace"
+          : deslugifyDirectory(decodeURIComponent(moveQuery[lastItemType]))}
+      </div>
+    )
+  }
 
   const MoveMenuItem = ({ item, id }) => {
     const { name, type } = item
@@ -58,6 +83,7 @@ const MoveModal = ({ params, onProceed, onClose }) => {
           <i className={`${elementStyles.dropdownIcon} bx bx-sm bx-folder`} />
           {deslugifyDirectory(name)}
           <i
+            id={`moveModal-forwardButton-${name}`}
             className={`${elementStyles.dropdownItemButton} bx bx-sm bx-chevron-right ml-auto`}
             onMouseDown={() => {
               setMoveTo((moveQuery) => ({
@@ -66,7 +92,7 @@ const MoveModal = ({ params, onProceed, onClose }) => {
               }))
               setMoveQuery((prevState) => ({
                 ...prevState,
-                [nextItemType]: name,
+                [nextItemType]: encodeURIComponent(name),
               }))
             }}
           />
@@ -75,40 +101,9 @@ const MoveModal = ({ params, onProceed, onClose }) => {
     return null
   }
 
-  const MoveMenuBackButton = ({ params }) => {
-    const lastItemType = getLastItemType(params)
-    const isEnabled = Object.keys(params).length > 1
-    return (
-      <div
-        id="back-button"
-        className={`${elementStyles.dropdownHeader}`}
-        onMouseDown={
-          isEnabled
-            ? () => {
-                const newMoveQuery = (({ [lastItemType]: unused, ...p }) => p)(
-                  moveQuery
-                )
-                setMoveQuery(newMoveQuery)
-                setMoveTo(newMoveQuery)
-              }
-            : null
-        }
-      >
-        <i
-          className={`${elementStyles.dropdownIcon} ${
-            lastItemType != "siteName" && "bx bx-sm bx-arrow-back text-white"
-          }`}
-        />
-        {lastItemType === "siteName"
-          ? "Workspace"
-          : deslugifyDirectory(params[lastItemType])}
-      </div>
-    )
-  }
-
-  const MoveMenu = ({ dirData }) => (
+  return (
     <div className={`${elementStyles.moveModal}`}>
-      <MoveMenuBackButton params={moveQuery} />
+      <MoveMenuBackButton />
       {dirData && dirData.length ? (
         <>
           {/* directories */}
@@ -120,7 +115,6 @@ const MoveModal = ({ params, onProceed, onClose }) => {
           {/* pages */}
           {dirData
             .filter((item) => item.type === "file")
-            .filter((item) => item.name != params.fileName)
             .map((item, itemIndex) => (
               <MoveMenuItem item={item} id={itemIndex} />
             ))}
@@ -140,6 +134,15 @@ const MoveModal = ({ params, onProceed, onClose }) => {
       )}
     </div>
   )
+}
+
+const MoveModal = ({ queryParams, params, onProceed, onClose }) => {
+  const [moveQuery, setMoveQuery] = useState(
+    (({ fileName, ...p }) => p)(queryParams)
+  )
+  const [moveTo, setMoveTo] = useState(moveQuery)
+
+  const { data: dirData } = useGetDirectoryHook(moveQuery)
 
   return (
     <div className={elementStyles.overlay}>
@@ -158,7 +161,17 @@ const MoveModal = ({ params, onProceed, onClose }) => {
             <br />
             Current location of page: <br />
             <Breadcrumb params={params} title={params.fileName} />
-            <MoveMenu dirData={dirData} />
+            <MoveMenu
+              moveQuery={moveQuery}
+              setMoveQuery={setMoveQuery}
+              moveTo={moveTo}
+              setMoveTo={setMoveTo}
+              dirData={
+                dirData
+                  ? dirData.filter((item) => item.name != params.fileName)
+                  : []
+              }
+            />
             Moving page to: <br />
             <Breadcrumb params={moveTo} title={params.fileName} />
           </div>
@@ -180,18 +193,19 @@ const MoveModal = ({ params, onProceed, onClose }) => {
 
 export default MoveModal
 
-// MoveModal.propTypes = {
-//   dropdownItems: PropTypes.arrayOf(PropTypes.string.isRequired),
-//   menuIndex: PropTypes.number.isRequired,
-//   dropdownRef: PropTypes.oneOfType([
-//     PropTypes.func,
-//     PropTypes.shape({ current: PropTypes.any }),
-//   ]).isRequired,
-//   onBlur: PropTypes.func,
-//   rootName: PropTypes.string.isRequired,
-//   moveDropdownQuery: PropTypes.string.isRequired,
-//   setMoveDropdownQuery: PropTypes.func.isRequired,
-//   backHandler: PropTypes.func.isRequired,
-//   moveHandler: PropTypes.func,
-//   moveDisabled: PropTypes.bool,
-// }
+MoveModal.propTypes = {
+  queryParams: PropTypes.shape({
+    siteName: PropTypes.string,
+    collectionName: PropTypes.string,
+    subCollectionName: PropTypes.string,
+    fileName: PropTypes.string,
+  }).isRequired,
+  params: PropTypes.shape({
+    siteName: PropTypes.string,
+    collectionName: PropTypes.string,
+    subCollectionName: PropTypes.string,
+    fileName: PropTypes.string,
+  }).isRequired,
+  onProceed: PropTypes.func,
+  onClose: PropTypes.func,
+}

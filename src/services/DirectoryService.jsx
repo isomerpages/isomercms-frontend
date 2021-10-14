@@ -9,7 +9,11 @@ export class DirectoryService {
     subCollectionName,
     isCreate,
     isReorder,
+    isUnlinked,
   }) {
+    // R Unlinked pages
+    // /sites/a-test-v4/pages
+
     // R all Collections
     // GET /sites/a-test-v4/collections
     // C Collections
@@ -23,18 +27,21 @@ export class DirectoryService {
     // Reorder
     // /sites/a-test-v4/collections/:collectionName/reorder
     // /sites/a-test-v4/collections/:collectionName/subCollection/:subCollection/reorder
+
+    if (isUnlinked) return `/sites/${siteName}/pages`
+
     let endpoint = `/sites/${siteName}/collections`
     if (collectionName) {
       endpoint += `/${collectionName}`
     }
+    if (collectionName && isCreate) {
+      endpoint += `/subcollections`
+    }
     if (subCollectionName) {
-      endpoint += `/subcollections/${encodeURIComponent(subCollectionName)}`
+      endpoint += `/subcollections/${subCollectionName}`
     }
     if (isReorder) {
       endpoint += `/reorder`
-    }
-    if (isCreate) {
-      endpoint += `/subcollections`
     }
     return endpoint
   }

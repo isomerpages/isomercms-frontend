@@ -18,29 +18,34 @@ const FolderItem = ({ item, itemIndex, isDisabled }) => {
   const dropdownRef = useRef(null)
   const [showDropdown, setShowDropdown] = useState(false)
 
-  const generateLink = ({ type, name }, url) =>
-    type === "dir" ? `${url}/subfolders/${name}` : `${url}/editPage/${name}`
+  const generateLink = ({ type, name }, url) => {
+    const encodedName = encodeURIComponent(name)
+    return type === "dir"
+      ? `${url}/subfolders/${encodedName}`
+      : `${url}/editPage/${encodedName}`
+  }
 
   const generateDropdownItems = ({ type, name }, url) => {
+    const encodedName = encodeURIComponent(name)
     const dropdownItems = [
       {
         type: "edit",
         handler: () => {
           type === "dir"
-            ? setRedirectToPage(`${url}/editSubfolderSettings/${name}`)
-            : setRedirectToPage(`${url}/editPageSettings/${name}`)
+            ? setRedirectToPage(`${url}/editSubfolderSettings/${encodedName}`)
+            : setRedirectToPage(`${url}/editPageSettings/${encodedName}`)
         },
       },
       {
         type: "move",
-        handler: () => setRedirectToPage(`${url}/movePage/${name}`),
+        handler: () => setRedirectToPage(`${url}/movePage/${encodedName}`),
       },
       {
         type: "delete",
         handler: () => {
           type === "dir"
-            ? setRedirectToPage(`${url}/deleteSubfolder/${name}`)
-            : setRedirectToPage(`${url}/deletePage/${name}`)
+            ? setRedirectToPage(`${url}/deleteSubfolder/${encodedName}`)
+            : setRedirectToPage(`${url}/deletePage/${encodedName}`)
         },
       },
     ]
@@ -80,6 +85,7 @@ const FolderItem = ({ item, itemIndex, isDisabled }) => {
           {!isDisabled && (
             <div className="position-relative mt-auto mb-auto">
               <button
+                id={`folderItem-dropdown-${name}`}
                 className={`${
                   showDropdown
                     ? contentStyles.optionsIconFocus

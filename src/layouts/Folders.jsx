@@ -1,13 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { ReactQueryDevtools } from "react-query/devtools"
-import {
-  Link,
-  Route,
-  Switch,
-  useRouteMatch,
-  useHistory,
-} from "react-router-dom"
+import { Switch, useRouteMatch, useHistory } from "react-router-dom"
 import _ from "lodash"
 
 // Import components
@@ -16,15 +10,16 @@ import Sidebar from "../components/Sidebar"
 
 import FolderOptionButton from "../components/FolderOptionButton"
 import { FolderContent } from "../components/folders/FolderContent"
+import Breadcrumb from "../components/folders/Breadcrumb"
 
 import {
-  FoldersPageSettingsScreen,
-  FoldersPageMoveScreen,
-  FoldersDirectoryCreationScreen,
-  FoldersDirectorySettingsScreen,
-  FoldersReorderingScreen,
-  FoldersDeleteWarningScreen,
-} from "./foldersScreens"
+  PageSettingsScreen,
+  PageMoveScreen,
+  DirectoryCreationScreen,
+  DirectorySettingsScreen,
+  ReorderingScreen,
+  DeleteWarningScreen,
+} from "./screens"
 
 import useRedirectHook from "../hooks/useRedirectHook"
 
@@ -36,8 +31,11 @@ import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
 
 import { useGetDirectoryHook } from "../hooks/directoryHooks"
 
+import { ProtectedRouteWithProps } from "../routing/RouteSelector"
+
 const Folders = ({ match, location }) => {
-  const { siteName, subCollectionName, collectionName } = match.params
+  const { params, decodedParams } = match
+  const { siteName, subCollectionName, collectionName } = decodedParams
 
   const { path, url } = useRouteMatch()
   const history = useHistory()
@@ -45,21 +43,12 @@ const Folders = ({ match, location }) => {
   const { setRedirectToPage } = useRedirectHook()
 
   const { data: dirData, isLoading: isLoadingDirectory } = useGetDirectoryHook(
-    match.params
+    params
   )
+
   return (
     <>
-      <Header
-        siteName={siteName}
-        backButtonText={`Back to ${
-          subCollectionName ? collectionName : "Workspace"
-        }`}
-        backButtonUrl={`/sites/${siteName}/${
-          subCollectionName ? `folders/${collectionName}` : "workspace"
-        }`}
-        shouldAllowEditPageBackNav
-        isEditPage
-      />
+      <Header params={decodedParams} />
       {/* main bottom section */}
       <div className={elementStyles.wrapper}>
         <Sidebar siteName={siteName} currPath={location.pathname} />
@@ -68,11 +57,11 @@ const Folders = ({ match, location }) => {
           {/* Page title */}
           <div className={contentStyles.sectionHeader}>
             <h1 className={contentStyles.sectionTitle}>
-              {getLastItemType(match.params) === "collectionName"
+              {getLastItemType(decodedParams) === "collectionName"
                 ? deslugifyDirectory(
-                    match.params[getLastItemType(match.params)]
+                    decodedParams[getLastItemType(decodedParams)]
                   )
-                : match.params[getLastItemType(match.params)]}
+                : decodedParams[getLastItemType(decodedParams)]}
             </h1>
           </div>
           {/* Info segment */}
@@ -89,38 +78,7 @@ const Folders = ({ match, location }) => {
           </div>
           {/* Collections title */}
           <div className={contentStyles.segment}>
-            <span>
-              <Link to={`/sites/${siteName}/workspace`}>
-                <strong>Workspace</strong>
-              </Link>
-              &nbsp;
-              {">"}
-              {collectionName ? (
-                subCollectionName ? (
-                  <Link to={`/sites/${siteName}/folders/${collectionName}`}>
-                    <strong className="ml-1">
-                      &nbsp;
-                      {deslugifyDirectory(collectionName)}
-                    </strong>
-                  </Link>
-                ) : (
-                  <strong className="ml-1">
-                    &nbsp;
-                    {deslugifyDirectory(collectionName)}
-                  </strong>
-                )
-              ) : null}
-              {collectionName && subCollectionName ? (
-                <span>
-                  &nbsp;
-                  {">"}
-                  <strong className="ml-1">
-                    &nbsp;
-                    {subCollectionName}
-                  </strong>
-                </span>
-              ) : null}
-            </span>
+            <Breadcrumb params={decodedParams} isLink />
           </div>
           {/* Options */}
           <div className={contentStyles.contentContainerFolderRowMargin}>
@@ -152,44 +110,38 @@ const Folders = ({ match, location }) => {
         )}
       </div>
       <Switch>
-        <Route
+        <ProtectedRouteWithProps
           path={[`${path}/createFolder`]}
-          render={() => (
-            <FoldersDirectoryCreationScreen onClose={() => history.goBack()} />
-          )}
+          component={DirectoryCreationScreen}
+          onClose={() => history.goBack()}
         />
-        <Route
+        <ProtectedRouteWithProps
           path={[`${path}/createPage`, `${path}/editPageSettings/:fileName`]}
-          render={() => (
-            <FoldersPageSettingsScreen onClose={() => history.goBack()} />
-          )}
+          component={PageSettingsScreen}
+          onClose={() => history.goBack()}
         />
-        <Route
+        <ProtectedRouteWithProps
           path={[
             `${path}/deletePage/:fileName`,
             `${path}/deleteSubfolder/:subCollectionName`,
           ]}
-          render={() => (
-            <FoldersDeleteWarningScreen onClose={() => history.goBack()} />
-          )}
+          component={DeleteWarningScreen}
+          onClose={() => history.goBack()}
         />
-        <Route
+        <ProtectedRouteWithProps
           path={[`${path}/rearrange`]}
-          render={() => (
-            <FoldersReorderingScreen onClose={() => history.goBack()} />
-          )}
+          component={ReorderingScreen}
+          onClose={() => history.goBack()}
         />
-        <Route
+        <ProtectedRouteWithProps
           path={[`${path}/editSubfolderSettings/:subCollectionName`]}
-          render={() => (
-            <FoldersDirectorySettingsScreen onClose={() => history.goBack()} />
-          )}
+          component={DirectorySettingsScreen}
+          onClose={() => history.goBack()}
         />
-        <Route
+        <ProtectedRouteWithProps
           path={[`${path}/movePage/:fileName`]}
-          render={() => (
-            <FoldersPageMoveScreen onClose={() => history.goBack()} />
-          )}
+          component={PageMoveScreen}
+          onClose={() => history.goBack()}
         />
       </Switch>
     </>

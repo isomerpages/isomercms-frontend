@@ -23,6 +23,11 @@ export function useMoveHook(params, queryParams) {
       else successToast("Successfully moved file")
       if (params.collectionName)
         queryClient.invalidateQueries([DIR_CONTENT_KEY, { ...params }])
+      else
+        queryClient.invalidateQueries([
+          DIR_CONTENT_KEY,
+          { ...params, isUnlinked: true },
+        ]) // invalidates unlinked pages
       queryParams && queryParams.onSuccess && queryParams.onSuccess()
     },
   })

@@ -17,11 +17,7 @@ import { useCspHook, useSiteColorsHook } from "../hooks/settingsHooks"
 import useRedirectHook from "../hooks/useRedirectHook"
 
 // Isomer components
-import {
-  prependImageSrc,
-  getBackButton,
-  extractMetadataFromFilename,
-} from "../utils"
+import { prependImageSrc } from "../utils"
 
 import { createPageStyleSheet } from "../utils/siteColorUtils"
 
@@ -50,7 +46,8 @@ DOMPurify.setConfig({
 })
 
 const EditPageV2 = ({ match, history }) => {
-  const { siteName } = match.params
+  const { params, decodedParams } = match
+  const { siteName } = decodedParams
 
   const [editorValue, setEditorValue] = useState("")
   const [currSha, setCurrSha] = useState("")
@@ -66,33 +63,25 @@ const EditPageV2 = ({ match, history }) => {
 
   const mdeRef = useRef()
 
-  const { backButtonLabel, backButtonUrl } = getBackButton(match.params)
-  const { title, type: resourceType, date } = extractMetadataFromFilename(
-    match.params
-  )
-
-  const { data: pageData, isLoading: isLoadingPage } = useGetPageHook(
-    match.params,
-    {
-      onError: () => setRedirectToNotFound(siteName),
-    }
-  )
+  const { data: pageData, isLoading: isLoadingPage } = useGetPageHook(params, {
+    onError: () => setRedirectToNotFound(siteName),
+  })
   const {
     mutateAsync: updatePageHandler,
     isLoading: isSavingPage,
-  } = useUpdatePageHook(match.params, {
+  } = useUpdatePageHook(params, {
     onError: (err) => {
       if (err.response.status === 409) setShowOverwriteWarning(true)
     },
     onSuccess: () => setHasChanges(false),
   })
-  const { mutateAsync: deletePageHandler } = useDeletePageHook(match.params, {
+  const { mutateAsync: deletePageHandler } = useDeletePageHook(params, {
     onSuccess: () => history.goBack(),
   })
 
-  const { data: csp } = useCspHook(match.params)
-  const { data: dirData } = useCollectionHook(match.params)
-  const { data: siteColorsData } = useSiteColorsHook(match.params)
+  const { data: csp } = useCspHook(params)
+  const { data: dirData } = useCollectionHook(params)
+  const { data: siteColorsData } = useSiteColorsHook(params)
 
   /** ******************************** */
   /*     useEffects to load data     */
@@ -141,12 +130,10 @@ const EditPageV2 = ({ match, history }) => {
   return (
     <>
       <Header
-        siteName={siteName}
         title={pageData?.content?.frontMatter?.title || ""}
         shouldAllowEditPageBackNav={!hasChanges}
         isEditPage
-        backButtonText={backButtonLabel}
-        backButtonUrl={backButtonUrl}
+        params={decodedParams}
       />
       <div className={elementStyles.wrapper}>
         {isXSSViolation &&
@@ -211,12 +198,11 @@ const EditPageV2 = ({ match, history }) => {
           mdeRef={mdeRef}
           onChange={(value) => setEditorValue(value)}
           value={editorValue}
-          isDisabled={resourceType === "file"}
           isLoading={isLoadingPage}
         />
         {/* Preview */}
         <PagePreview
-          pageParams={match.params}
+          pageParams={decodedParams}
           title={pageData?.content?.frontMatter?.title || ""}
           chunk={htmlChunk}
           dirData={dirData}
@@ -232,7 +218,6 @@ const EditPageV2 = ({ match, history }) => {
         saveCallback={() => {
           if (isXSSViolation) setShowXSSWarning(true)
           else {
-            console.log(pageData.sha)
             updatePageHandler({
               frontMatter: pageData.content.frontMatter,
               sha: currSha,
