@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react"
-import axios from "axios"
 import * as _ from "lodash"
 import PropTypes from "prop-types"
 
@@ -18,7 +17,14 @@ import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 import { errorToast } from "utils/toasts"
 import { validateSocialMedia } from "utils/validators"
 
-import { DEFAULT_RETRY_MSG, getObjectDiff } from "utils"
+import GenericWarningModal from "components/GenericWarningModal"
+
+import {
+  useGetSettingsHook,
+  useUpdateSettingsHook,
+} from "hooks/settingsHooks"
+
+import { DEFAULT_RETRY_MSG, getObjectDiff, isEmpty } from "utils"
 
 const stateFields = {
   title: "",
@@ -90,7 +96,8 @@ const FOOTER_FIELDS = ["otherFooterSettings", "socialMediaContent"]
 const NAVIGATION_FIELDS = ["navigationSettings"]
 
 const Settings = ({ match, location }) => {
-  const { siteName } = match.params
+  const { params, decodedParams } = match
+  const { siteName } = decodedParams
 
   const [colorPicker, setColorPicker] = useState({
     currentColor: "",
@@ -105,74 +112,75 @@ const Settings = ({ match, location }) => {
     _.omit(_.cloneDeep(stateFields), "colors")
   )
   const [hasChanges, setHasChanges] = useState(false)
+  const [hasSettingsChanged, setHasSettingsChanged] = useState(false)
   const [settingsStateDiff, setSettingsStateDiff] = useState()
+  const [showOverwriteWarning, setShowOverwriteWarning] = useState()
+
+  const { data: settingsData } = useGetSettingsHook(params)
+
+  const {
+    mutateAsync: updateSettingsHandler,
+    isLoading: isSavingSettings,
+  } = useUpdateSettingsHook(params, {
+    onError: (err) => {
+      if (err.response.status === 409) setShowOverwriteWarning(true)
+    },
+    onSuccess: () => setHasChanges(false),
+  })
 
   useEffect(() => {
-    let _isMounted = true
+    if (settingsData && !hasChanges) {
+      const {
+        configSettings,
+        footerSettings,
+        navigationSettings,
+      } = settingsData
 
-    const loadSettings = async () => {
-      try {
-        // get settings data from backend
-        const resp = await axios.get(
-          `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/settings`,
-          {
-            withCredentials: true,
-          }
-        )
-        const { configSettings, footerSettings, navigationSettings } = resp.data
-
-        const retrievedState = {
-          // config fields
-          // note: config fields are listed out one-by-one since we do not use all config fields
-          colors: configSettings.colors,
-          favicon: configSettings.favicon,
-          google_analytics: configSettings.google_analytics,
-          facebook_pixel: configSettings.facebook_pixel,
-          linkedin_insights: configSettings.linkedin_insights,
-          is_government: configSettings.is_government,
-          // resources_name: configSettings.resources_name,
-          // url: configSettings.url,
-          shareicon: configSettings.shareicon,
-          title: configSettings.title,
-          description: configSettings.description,
-          // footer fields
-          otherFooterSettings: {
-            contact_us: footerSettings.contact_us,
-            feedback: footerSettings.feedback,
-            faq: footerSettings.faq,
-            show_reach: footerSettings.show_reach,
-          },
-          socialMediaContent: {
-            facebook: footerSettings.social_media.facebook,
-            twitter: footerSettings.social_media.twitter,
-            youtube: footerSettings.social_media.youtube,
-            instagram: footerSettings.social_media.instagram,
-            linkedin: footerSettings.social_media.linkedin,
-            telegram: footerSettings.social_media.telegram,
-            tiktok: footerSettings.social_media.tiktok,
-          },
-          // navigation fields
-          navigationSettings: {
-            ...navigationSettings,
-          },
-        }
-        if (_isMounted) {
-          setCurrState(retrievedState)
-          setOriginalState(retrievedState)
-        }
-      } catch (err) {
-        errorToast(
-          `There was a problem trying to load your settings. ${DEFAULT_RETRY_MSG}`
-        )
-        console.log(err)
+      const retrievedState = {
+        // config fields
+        // note: config fields are listed out one-by-one since we do not use all config fields
+        colors: configSettings.colors,
+        favicon: configSettings.favicon,
+        google_analytics: configSettings.google_analytics,
+        facebook_pixel: configSettings.facebook_pixel,
+        linkedin_insights: configSettings.linkedin_insights,
+        is_government: configSettings.is_government,
+        // resources_name: configSettings.resources_name,
+        // url: configSettings.url,
+        shareicon: configSettings.shareicon,
+        title: configSettings.title,
+        description: configSettings.description,
+        // footer fields
+        otherFooterSettings: {
+          contact_us: footerSettings.contact_us,
+          feedback: footerSettings.feedback,
+          faq: footerSettings.faq,
+          show_reach: footerSettings.show_reach,
+        },
+        socialMediaContent: {
+          facebook: footerSettings.social_media.facebook,
+          twitter: footerSettings.social_media.twitter,
+          youtube: footerSettings.social_media.youtube,
+          instagram: footerSettings.social_media.instagram,
+          linkedin: footerSettings.social_media.linkedin,
+          telegram: footerSettings.social_media.telegram,
+          tiktok: footerSettings.social_media.tiktok,
+        },
+        // navigation fields
+        navigationSettings: {
+          ...navigationSettings,
+        },
       }
+      if (!originalState || _.isEqual(retrievedState, originalState)) {
+        setCurrState(retrievedState)
+        setOriginalState(retrievedState)
+      } else {
+        setHasSettingsChanged(true)
+      }
+      setCurrState(retrievedState)
+      setOriginalState(retrievedState)
     }
-
-    loadSettings()
-    return () => {
-      _isMounted = false
-    }
-  }, [])
+  }, [settingsData])
 
   // event listener callback function that resets ColorPicker modal
   // when escape key is pressed while modal is active
@@ -342,21 +350,11 @@ const Settings = ({ match, location }) => {
         }
       })
 
-      const params = {
+      updateSettingsHandler({
         configSettings,
         footerSettings,
         navigationSettings,
-      }
-
-      await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/settings`,
-        params,
-        {
-          withCredentials: true,
-        }
-      )
-
-      window.location.reload()
+      })
     } catch (err) {
       errorToast(
         `There was a problem trying to save your settings. ${DEFAULT_RETRY_MSG}`
@@ -480,6 +478,18 @@ const Settings = ({ match, location }) => {
                   isRequired={false}
                   onFieldChange={changeHandler}
                 />
+                <FormFieldMedia
+                  title="Shareicon"
+                  id="shareicon"
+                  value={currState.shareicon}
+                  errorMessage={errors.shareicon}
+                  isRequired
+                  onFieldChange={changeHandler}
+                  inlineButtonText="Choose Image"
+                  siteName={siteName}
+                  placeholder=" "
+                  type="images"
+                />
                 <FormFieldToggle
                   title="Display government masthead"
                   id="is_government"
@@ -507,18 +517,6 @@ const Settings = ({ match, location }) => {
                   id="favicon"
                   value={currState.favicon}
                   errorMessage={errors.favicon}
-                  isRequired
-                  onFieldChange={changeHandler}
-                  inlineButtonText="Choose Image"
-                  siteName={siteName}
-                  placeholder=" "
-                  type="images"
-                />
-                <FormFieldMedia
-                  title="Shareicon"
-                  id="shareicon"
-                  value={currState.shareicon}
-                  errorMessage={errors.shareicon}
                   isRequired
                   onFieldChange={changeHandler}
                   inlineButtonText="Choose Image"
@@ -662,19 +660,40 @@ const Settings = ({ match, location }) => {
             <div className={elementStyles.formSave}>
               <LoadingButton
                 label="Save"
-                disabled={hasErrors}
+                disabled={hasErrors || isSavingSettings}
                 disabledStyle={elementStyles.formSaveButtonDisabled}
                 className={
-                  hasErrors
+                  hasErrors || isSavingSettings
                     ? elementStyles.formSaveButtonDisabled
                     : elementStyles.formSaveButtonActive
                 }
-                callback={saveSettings}
+                showLoading={isSavingSettings}
+                callback={() => {
+                  if (hasSettingsChanged) {
+                    setShowOverwriteWarning(true)
+                  } else {
+                    saveSettings()
+                  }
+                }}
               />
             </div>
           </div>
         </div>
       </form>
+      {showOverwriteWarning && (
+        <GenericWarningModal
+          displayTitle="Override Changes"
+          displayText={`Your site settings have recently been changed by another user. You can choose to either override their changes, or go back to editing.
+            <br/><br/>We recommend you to make a copy of your changes elsewhere, and come back later to reconcile your changes.`}
+          onProceed={() => {
+            setShowOverwriteWarning(false)
+            saveSettings()
+          }}
+          onCancel={() => setShowOverwriteWarning(false)}
+          cancelText="Back to Editing"
+          proceedText="Override"
+        />
+      )}
     </>
   )
 }
