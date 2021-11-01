@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useState } from "react"
 import * as _ from "lodash"
 import PropTypes from "prop-types"
 
-import ColorPicker from "components/settings/ColorPicker"
-import FormFieldColor from "components/settings/FormFieldColor"
 import FormFieldHorizontal from "components/FormFieldHorizontal"
 import FormFieldMedia from "components/FormFieldMedia"
 import FormFieldToggle from "components/FormFieldToggle"
@@ -99,12 +97,6 @@ const Settings = ({ match, location }) => {
   const { params, decodedParams } = match
   const { siteName } = decodedParams
 
-  const [colorPicker, setColorPicker] = useState({
-    currentColor: "",
-    elementId: "",
-    oldColors: {},
-  })
-  const [colorPickerToggle, setColorPickerToggle] = useState(false)
   const [currState, setCurrState] = useState(stateFields)
   const [originalState, setOriginalState] = useState()
   const [hasErrors, setHasErrors] = useState(false)
@@ -181,58 +173,6 @@ const Settings = ({ match, location }) => {
       setOriginalState(retrievedState)
     }
   }, [settingsData])
-
-  // event listener callback function that resets ColorPicker modal
-  // when escape key is pressed while modal is active
-  const escFunction = useCallback(
-    (event) => {
-      if (event.key === "Escape") {
-        setColorPickerToggle(false)
-      }
-    },
-    [setColorPickerToggle]
-  )
-
-  // event listener callback function that resets ColorPicker modal
-  // when mouse clicks on area outside of modal while modal is active
-  const clickFunction = useCallback(
-    (event) => {
-      let { target } = event
-      let { tagName } = target
-      // keep checking parent element until you hit a tagName of FORM
-      while (tagName !== "FORM") {
-        target = target.parentElement
-        tagName = target.tagName
-      }
-      // toggle only if descendant of colorModal
-      if (target.id !== "colorModal") {
-        setColorPickerToggle(false)
-      }
-    },
-    [setColorPickerToggle]
-  )
-
-  useEffect(() => {
-    if (colorPickerToggle) {
-      // setup escape key event listener to exit from ColorPicker modal
-      document.addEventListener("keydown", escFunction)
-      document.addEventListener("click", clickFunction)
-    } else {
-      // remove event listeners
-      document.removeEventListener("keydown", escFunction)
-      document.removeEventListener("click", clickFunction)
-      if (!_.isEmpty(colorPicker.oldColors)) {
-        setCurrState({
-          ...currState,
-          colors: colorPicker.oldColors,
-        })
-      }
-    }
-    return () => {
-      document.removeEventListener("keydown", escFunction)
-      document.removeEventListener("click", clickFunction)
-    }
-  }, [colorPickerToggle, escFunction, clickFunction])
 
   useEffect(() => {
     if (originalState) {
@@ -363,74 +303,6 @@ const Settings = ({ match, location }) => {
     }
   }
 
-  // toggles color picker modal
-  const activateColorPicker = (event) => {
-    const { colors } = currState
-
-    const {
-      target: {
-        previousSibling: { id, value },
-      },
-    } = event
-    const currentColor = value.slice(1)
-    setColorPicker({
-      currentColor,
-      elementId: id,
-      oldColors: { ...colors },
-    })
-    setColorPickerToggle(true)
-  }
-
-  // onColorSelect sets value of appropriate color field
-  const onColorSelect = (event, color) => {
-    // prevent event from reloading
-    // prevent parent form from being submitted
-    event.preventDefault()
-    event.stopPropagation()
-
-    // reflect color changes
-    setRealTimeColor(color)
-
-    // reset color picker
-    setColorPicker({
-      currentColor: "",
-      elementId: "",
-      oldColors: {},
-    })
-    setColorPickerToggle(false)
-  }
-
-  const setRealTimeColor = (color) => {
-    const { elementId } = colorPicker
-    const { colors } = currState
-    // there is no hex property if the color submitted is the
-    // same as the original color
-    const hex = color.hex ? color.hex : `#${color}`
-
-    // set state of color fields
-    if (elementId === "primary-color" || elementId === "secondary-color") {
-      setCurrState({
-        ...currState,
-        colors: {
-          ...currState.colors,
-          [elementId]: hex,
-        },
-      })
-    } else {
-      // set state of resource colors
-      const index = elementId.split("@")[elementId.split("@").length - 1]
-      const newMediaColors = _.cloneDeep(colors["media-colors"])
-      newMediaColors[index].color = hex
-      setCurrState({
-        ...currState,
-        colors: {
-          ...currState.colors,
-          "media-colors": newMediaColors,
-        },
-      })
-    }
-  }
-
   return (
     <>
       <Header
@@ -440,17 +312,7 @@ const Settings = ({ match, location }) => {
       />
       {/* main bottom section */}
       <form className={elementStyles.wrapper}>
-        {/* Color picker modal */}
-        {colorPickerToggle && (
-          <ColorPicker
-            value={colorPicker.currentColor}
-            onColorSelect={onColorSelect}
-            setRealTimeColor={setRealTimeColor}
-            elementId={colorPicker.elementId}
-          />
-        )}
         <Sidebar siteName={siteName} currPath={location.pathname} />
-
         {/* main section starts here */}
         <div className={contentStyles.mainSection}>
           <div className={contentStyles.sectionHeader}>
@@ -557,41 +419,15 @@ const Settings = ({ match, location }) => {
                 />
               </div>
               {/* Color fields */}
-              <div id="color-fields">
-                <p className={elementStyles.formSectionHeader}>Colors</p>
-                <FormFieldColor
-                  title="Primary"
-                  id="primary-color"
-                  value={currState.colors["primary-color"]}
-                  isRequired
-                  onFieldChange={changeHandler}
-                  onColorClick={activateColorPicker}
-                />
-                <FormFieldColor
-                  title="Secondary"
-                  id="secondary-color"
-                  value={currState.colors["secondary-color"]}
-                  isRequired
-                  onFieldChange={changeHandler}
-                  onColorClick={activateColorPicker}
-                />
-                <div id="media-color-fields">
-                  {currState.colors["media-colors"].map((category, index) => {
-                    const { title: mediaColorName, color } = category
-                    return (
-                      <FormFieldColor
-                        title={`Resource ${index + 1}`}
-                        id={`media-color@${index}`}
-                        value={color}
-                        key={mediaColorName}
-                        isRequired
-                        onFieldChange={changeHandler}
-                        onColorClick={activateColorPicker}
-                      />
-                    )
-                  })}
-                </div>
-              </div>
+              <ColorPickerSection
+                colors={currState.colors}
+                saveChanges={(selectedColors) => {
+                  setCurrState({
+                    ...currState,
+                    colors: selectedColors,
+                  })
+                }}
+              />
               {/* Social media fields */}
               <div id="social-media-fields">
                 <p className={elementStyles.formSectionHeader}>Social Media</p>
