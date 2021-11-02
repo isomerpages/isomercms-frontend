@@ -117,7 +117,10 @@ const Settings = ({ match, location }) => {
     onError: (err) => {
       if (err.response.status === 409) setShowOverwriteWarning(true)
     },
-    onSuccess: () => setHasChanges(false),
+    onSuccess: () => {
+      setHasChanges(false)
+      setHasSettingsChanged(false)
+    },
   })
 
   useEffect(() => {
@@ -163,14 +166,10 @@ const Settings = ({ match, location }) => {
           ...navigationSettings,
         },
       }
-      if (!originalState || _.isEqual(retrievedState, originalState)) {
-        setCurrState(retrievedState)
-        setOriginalState(retrievedState)
-      } else {
-        setHasSettingsChanged(true)
-      }
       setCurrState(retrievedState)
       setOriginalState(retrievedState)
+    } else if (settingsData && hasChanges) {
+      setHasSettingsChanged(true)
     }
   }, [settingsData])
 
