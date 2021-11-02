@@ -22,6 +22,7 @@ const FormFieldMedia = ({
   placeholder,
   type,
   isDisabled = false,
+  register = () => {},
 }) => {
   const [isSelectingItem, setIsSelectingItem] = useState(false)
   const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
@@ -83,6 +84,7 @@ const FormFieldMedia = ({
       <p className={elementStyles.formLabel}>{title}</p>
       <div className="d-flex border">
         <input
+          {...register(id, { required: isRequired })}
           type="text"
           placeholder={placeholder || title}
           value={value}
