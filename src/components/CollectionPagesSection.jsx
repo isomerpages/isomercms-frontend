@@ -28,7 +28,7 @@ import {
 // Import components
 import OverviewCard from "./OverviewCard"
 import ComponentSettingsModal from "./ComponentSettingsModal"
-import PageSettingsModal from "./PageSettingsModal"
+import PageSettingsModal from "./PageSettingsModalV1"
 import { errorToast, successToast } from "../utils/toasts"
 import DeleteWarningModal from "./DeleteWarningModal"
 import GenericWarningModal from "./GenericWarningModal"
