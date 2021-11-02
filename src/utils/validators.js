@@ -23,18 +23,18 @@ const DATE_REGEX = "^([0-9]{4}-[0-9]{2}-[0-9]{2})$"
 const ALPHABETS_ONLY_REGEX = '^[a-zA-Z" "\\._-]+$'
 const ALPHANUMERICS_ONLY_REGEX = '^[a-zA-Z0-9" "\\._-]+$'
 
-const permalinkRegexTest = RegExp(PERMALINK_REGEX)
-const phoneRegexTest = RegExp(PHONE_REGEX)
-const emailRegexTest = RegExp(EMAIL_REGEX)
-const dateRegexTest = RegExp(DATE_REGEX)
-const alphabetsRegexTest = RegExp(ALPHABETS_ONLY_REGEX)
-const alphanumericRegexTest = RegExp(ALPHANUMERICS_ONLY_REGEX)
-const fileNameRegexTest = /^[a-zA-Z0-9" "_-]+$/
-const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/
-const RESOURCE_CATEGORY_REGEX = "^([a-zA-Z0-9]*[- ]?)+$"
-const resourceRoomNameRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
-const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX)
-const specialCharactersRegexTest = /[~%^*_+\-./\\`;~{}[\]"<>]/
+export const permalinkRegexTest = RegExp(PERMALINK_REGEX)
+export const phoneRegexTest = RegExp(PHONE_REGEX)
+export const emailRegexTest = RegExp(EMAIL_REGEX)
+export const dateRegexTest = RegExp(DATE_REGEX)
+export const alphabetsRegexTest = RegExp(ALPHABETS_ONLY_REGEX)
+export const alphanumericRegexTest = RegExp(ALPHANUMERICS_ONLY_REGEX)
+export const fileNameRegexTest = /^[a-zA-Z0-9" "_-]+$/
+export const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/
+export const RESOURCE_CATEGORY_REGEX = "^([a-zA-Z0-9]*[- ]?)+$"
+export const resourceRoomNameRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
+export const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX)
+export const specialCharactersRegexTest = /[~%^*_+\-./\\`;~{}[\]"<>]/
 
 const ISOMER_TEMPLATE_PROTECTED_DIRS = [
   "data",
@@ -122,10 +122,10 @@ const LINK_URL_MIN_LENGTH = 1
 
 // Page Settings Modal
 // ===================
-const PAGE_SETTINGS_PERMALINK_MIN_LENGTH = 4
-const PAGE_SETTINGS_PERMALINK_MAX_LENGTH = 50
-const PAGE_SETTINGS_TITLE_MIN_LENGTH = 4
-const PAGE_SETTINGS_TITLE_MAX_LENGTH = 100
+export const PAGE_SETTINGS_PERMALINK_MIN_LENGTH = 4
+export const PAGE_SETTINGS_PERMALINK_MAX_LENGTH = 50
+export const PAGE_SETTINGS_TITLE_MIN_LENGTH = 4
+export const PAGE_SETTINGS_TITLE_MAX_LENGTH = 100
 
 // Resource Settings Modal
 // ===================
