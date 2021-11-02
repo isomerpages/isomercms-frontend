@@ -113,11 +113,11 @@ export const PageSettingsModal = ({
                 isRequired
               />
               <br />
-              <p className={elementStyles.formLabel}>Page URL</p>
               {/* Permalink */}
               <FormFieldHorizontal
                 register={register}
-                title={siteUrl}
+                title="Page URL"
+                description={siteUrl || "https://google.com"}
                 id="permalink"
                 errorMessage={errors.permalink?.message}
                 isRequired
@@ -127,13 +127,26 @@ export const PageSettingsModal = ({
               <p className={elementStyles.formLabel}>Page details</p>
               <FormField
                 register={register}
-                title="Meta Description"
+                title="Meta Description (Optional)"
                 id="description"
+                children={
+                  <p className={elementStyles.formDescription}>
+                    Description snippet shown in search results.{" "}
+                    <a href="https://google.com">Learn more</a>
+                  </p>
+                }
                 errorMessage={errors.description?.message}
               />
+              <br />
               <FormFieldMedia
                 register={register}
-                title="Meta Image URL"
+                title="Meta Image URL (Optional)"
+                children={
+                  <p className={elementStyles.formDescription}>
+                    Image shown when link is shared on social media.{" "}
+                    <a href="https://google.com">Learn more</a>
+                  </p>
+                }
                 id="image"
                 errorMessage={errors.image?.message}
                 inlineButtonText="Select Image"
