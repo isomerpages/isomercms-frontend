@@ -11,6 +11,7 @@ import { getDefaultFrontMatter } from "../../utils"
 
 import FormField from "../FormField"
 import FormFieldHorizontal from "../FormFieldHorizontal"
+import FormFieldMedia from "../FormFieldMedia"
 import SaveDeleteButtons from "../SaveDeleteButtons"
 import Breadcrumb from "../folders/Breadcrumb"
 
@@ -27,7 +28,7 @@ export const PageSettingsModal = ({
   siteUrl,
   onClose,
 }) => {
-  const { fileName } = params
+  const { siteName, fileName } = params
 
   const existingTitlesArray = dirData
     .filter((item) => item.type === "file")
@@ -61,12 +62,11 @@ export const PageSettingsModal = ({
 
   useEffect(() => {
     if (fileName && pageData && pageData.content) {
-      setValue("title", pageData.content.frontMatter.title, {
-        shouldValidate: true,
-      })
-      setValue("permalink", pageData.content.frontMatter.permalink, {
-        shouldValidate: true,
-      })
+      Object.entries(pageData.content.frontMatter).forEach(([key, value]) =>
+        setValue(key, value, {
+          shouldValidate: true,
+        })
+      )
     }
   }, [pageData, setValue])
 
@@ -82,9 +82,7 @@ export const PageSettingsModal = ({
               ...pageData.content.frontMatter,
               ...data,
             }
-          : {
-              ...data,
-            },
+          : data,
       sha: pageData?.sha || "",
       pageBody: pageData?.content?.pageBody || "",
       newFileName: `${data.title}.md`,
@@ -124,6 +122,24 @@ export const PageSettingsModal = ({
                 errorMessage={errors.permalink?.message}
                 isRequired
                 placeholder=""
+              />
+              <br />
+              <p className={elementStyles.formLabel}>Page details</p>
+              <FormField
+                register={register}
+                title="Meta Description"
+                id="description"
+                errorMessage={errors.description?.message}
+              />
+              <FormFieldMedia
+                register={register}
+                title="Meta Image URL"
+                id="image"
+                errorMessage={errors.image?.message}
+                inlineButtonText="Select Image"
+                siteName={siteName}
+                type="images"
+                onFieldChange={(e) => setValue("image", e.target.value)} // temporary workaround before refactoring FormFieldMedia
               />
             </div>
             <SaveDeleteButtons
