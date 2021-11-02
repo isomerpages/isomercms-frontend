@@ -16,10 +16,15 @@ p {
 }
 
 .formLabel {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  margin-bottom: 0px;
+}
+
+.formDescription {
   font-size: 14px;
-  margin-bottom: 8px;
-  line-height: 14px;
-  padding-top: 20px;
+  padding-right: 5px;
 }
 
 .formSectionHeader {
