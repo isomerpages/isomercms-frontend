@@ -13,11 +13,13 @@ const FormFieldHorizontal = ({
   onFieldChange,
   isRequired,
   style,
+  register = () => {},
 }) => (
   <>
     <div className={elementStyles.formHorizontal}>
       <p className={elementStyles.formHorizontalLabel}>{`${title}`}</p>
       <input
+        {...register(id, { required: isRequired })}
         type="text"
         placeholder={placeholder || title}
         value={value}
