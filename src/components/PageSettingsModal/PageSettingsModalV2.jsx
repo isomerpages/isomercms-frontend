@@ -3,21 +3,21 @@ import PropTypes from "prop-types"
 import axios from "axios"
 import * as _ from "lodash"
 
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
 
-import { validatePageSettings } from "../utils/validators"
+import { validatePageSettings } from "../../utils/validators"
 
-import { getDefaultFrontMatter } from "../utils"
+import { getDefaultFrontMatter } from "../../utils"
 
-import FormField from "./FormField"
-import FormFieldHorizontal from "./FormFieldHorizontal"
-import SaveDeleteButtons from "./SaveDeleteButtons"
-import Breadcrumb from "./folders/Breadcrumb"
+import FormField from "../FormField"
+import FormFieldHorizontal from "../FormFieldHorizontal"
+import SaveDeleteButtons from "../SaveDeleteButtons"
+import Breadcrumb from "../folders/Breadcrumb"
 
 // axios settings
 axios.defaults.withCredentials = true
 
-const PageSettingsModalV2 = ({
+export const PageSettingsModal = ({
   params,
   pageData,
   onProceed,
@@ -173,8 +173,6 @@ const PageSettingsModalV2 = ({
   )
 }
 
-export default PageSettingsModalV2
-
-PageSettingsModalV2.propTypes = {
+PageSettingsModal.propTypes = {
   onClose: PropTypes.func.isRequired,
 }

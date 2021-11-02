@@ -1,6 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
-import PageSettingsModalV2 from "../../components/PageSettingsModalV2"
+import { PageSettingsModal } from "../../components/PageSettingsModal"
 
 import {
   useCreatePageHook,
@@ -26,7 +26,7 @@ export const PageSettingsScreen = ({ match, onClose }) => {
   const { data: siteUrl } = useSiteUrlHook(params)
 
   return (
-    <PageSettingsModalV2
+    <PageSettingsModal
       params={decodedParams}
       onClose={onClose}
       pageData={pageData}
