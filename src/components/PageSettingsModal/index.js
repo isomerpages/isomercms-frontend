@@ -1,2 +1,2 @@
-export { PageSettingsModal } from "./PageSettingsModalV2"
+export { PageSettingsModal } from "./PageSettingsModal"
 export { PageSettingsSchema } from "./PageSettingsSchema"
