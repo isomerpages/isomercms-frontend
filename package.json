@@ -7,7 +7,7 @@
     "@braintree/sanitize-url": "^5.0.2",
     "@hookform/resolvers": "^2.8.2",
     "@sentry/react": "^5.30.0",
-    "@sentry/tracing": "^5.30.0",
+    "@sentry/tracing": "^6.14.0",
     "axios": "^0.21.3",
     "bluebird": "^3.7.1",
     "bootstrap": "^4.6.0",
