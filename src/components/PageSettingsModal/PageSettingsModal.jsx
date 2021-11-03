@@ -117,7 +117,7 @@ export const PageSettingsModal = ({
               <FormFieldHorizontal
                 register={register}
                 title="Page URL"
-                description={siteUrl || "https://google.com"}
+                description={siteUrl}
                 id="permalink"
                 errorMessage={errors.permalink?.message}
                 isRequired
