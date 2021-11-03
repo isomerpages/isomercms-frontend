@@ -1,14 +1,14 @@
-import React from "react"
 import PropTypes from "prop-types"
 import { PageSettingsModal } from "../../components/PageSettingsModal"
+import React from "react"
 
+import { useGetDirectoryHook } from "hooks/directoryHooks"
 import {
   useCreatePageHook,
   useGetPageHook,
   useUpdatePageHook,
-} from "../../hooks/pageHooks"
-import { useSiteUrlHook } from "../../hooks/settingsHooks"
-import { useGetDirectoryHook } from "../../hooks/directoryHooks"
+} from "hooks/pageHooks"
+import { useSiteUrlHook } from "hooks/settingsHooks"
 
 export const PageSettingsScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match

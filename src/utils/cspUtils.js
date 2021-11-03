@@ -1,10 +1,11 @@
 // Supported CSP checks are img-src, frame-src, media-src, object-src script-src-elem
 // Supported fallbacks are child-src, script-src, and default-src
 
-import _ from "lodash"
 import cheerio from "cheerio"
 import escapeStringRegexp from "escape-string-regexp"
-import { isLinkInternal } from "../utils"
+import _ from "lodash"
+
+import { isLinkInternal } from "utils"
 
 function stringContainsValue(string, value) {
   // regex checks specifically if value is preceded by whitespace or is at the start/ end of the string

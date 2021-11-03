@@ -1,6 +1,7 @@
-import React from "react"
 import PropTypes from "prop-types"
-import { deslugifyDirectory } from "../../utils"
+import React from "react"
+
+import { deslugifyDirectory } from "utils"
 
 const BreadCrumbItem = ({ itemName }) => (
   <li>

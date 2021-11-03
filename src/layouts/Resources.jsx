@@ -1,35 +1,34 @@
-import React, { useState, useEffect } from "react"
 import axios from "axios"
-import PropTypes from "prop-types"
 import * as _ from "lodash"
+import PropTypes from "prop-types"
+import React, { useState, useEffect } from "react"
 import { useQuery, useMutation } from "react-query"
 
 // Import components
-import Header from "../components/Header"
-import Sidebar from "../components/Sidebar"
-import FolderCard from "../components/FolderCard"
-import FolderOptionButton from "../components/FolderOptionButton"
-import FolderNamingModal from "../components/FolderNamingModal"
-import FormField from "../components/FormField"
-import LoadingButton from "../components/LoadingButton"
-import useRedirectHook from "../hooks/useRedirectHook"
+import FolderCard from "components/FolderCard"
+import FolderNamingModal from "components/FolderNamingModal"
+import FolderOptionButton from "components/FolderOptionButton"
+import FormField from "components/FormField"
+import Header from "components/Header"
+import LoadingButton from "components/LoadingButton"
+import Sidebar from "components/Sidebar"
+
+import useRedirectHook from "hooks/useRedirectHook"
 
 // Import styles
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
 // Import utils
-import {
-  DEFAULT_RETRY_MSG,
-  deslugifyDirectory,
-  slugifyCategory,
-} from "../utils"
+import { errorToast } from "utils/toasts"
 import {
   validateResourceRoomName,
   validateCategoryName,
-} from "../utils/validators"
-import { errorToast } from "../utils/toasts"
-import { getAllResourceCategories, addResourceCategory } from "../api"
+} from "utils/validators"
+
+import { getAllResourceCategories, addResourceCategory } from "api"
+import { DEFAULT_RETRY_MSG, deslugifyDirectory, slugifyCategory } from "utils"
+
 import { RESOURCE_ROOM_CONTENT_KEY } from "../constants"
 
 // axios settings

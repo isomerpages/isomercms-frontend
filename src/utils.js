@@ -1,11 +1,13 @@
 // import dependencies
-import yaml from "yaml"
-import cheerio from "cheerio"
-import slugify from "slugify"
 import axios from "axios"
+import cheerio from "cheerio"
 import _ from "lodash"
 import { QueryClient } from "react-query"
-import { getMediaDetails } from "./api"
+import slugify from "slugify"
+import yaml from "yaml"
+
+import { getMediaDetails } from "api"
+
 import { SITES_IS_PRIVATE_KEY } from "./constants"
 
 // axios settings

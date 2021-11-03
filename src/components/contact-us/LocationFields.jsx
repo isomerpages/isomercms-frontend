@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react"
-import PropTypes from "prop-types"
 import _ from "lodash"
-import FormField from "../FormField"
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
-import { isEmpty } from "../../utils"
+import PropTypes from "prop-types"
+import React, { useEffect, useState } from "react"
+
+import FormField from "components/FormField"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import { isEmpty } from "utils"
 
 const DEFAULT_NUM_OPERATING_FIELDS = 5
 

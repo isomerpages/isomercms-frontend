@@ -1,5 +1,5 @@
-import React from "react"
 import PropTypes from "prop-types"
+import React from "react"
 
 const Breadcrumb = ({ title, collection, resourceRoomName }) => (
   <nav className="bp-breadcrumb" aria-label="breadcrumbs">

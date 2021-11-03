@@ -1,8 +1,9 @@
-import React from "react"
-import PropTypes from "prop-types"
 import _ from "lodash"
-import PageHeader from "./pageComponents/PageHeader"
-import LeftNav from "./pageComponents/LeftNav"
+import PropTypes from "prop-types"
+import React from "react"
+
+import LeftNav from "templates/pageComponents/LeftNav"
+import PageHeader from "templates/pageComponents/PageHeader"
 
 const LeftNavPage = ({ chunk, leftNavPages, fileName, title, collection }) => {
   return (

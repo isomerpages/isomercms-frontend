@@ -1,6 +1,7 @@
 import React, { useState } from "react"
-import Footer from "../Footer"
-import DeleteWarningModal from "../DeleteWarningModal"
+
+import DeleteWarningModal from "components/DeleteWarningModal"
+import Footer from "components/Footer"
 
 const EditPageFooter = ({
   isSaveDisabled,

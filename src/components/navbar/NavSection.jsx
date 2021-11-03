@@ -1,12 +1,15 @@
-import React, { useState, useRef } from "react"
 import PropTypes from "prop-types"
+import React, { useState, useRef } from "react"
 import { Droppable, Draggable } from "react-beautiful-dnd"
 import Select from "react-select"
-import styles from "../../styles/App.module.scss"
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
-import FormField from "../FormField"
-import NavSublinkSection from "./NavSublinkSection"
-import { isEmpty } from "../../utils"
+
+import FormField from "components/FormField"
+import NavSublinkSection from "components/navbar/NavSublinkSection"
+
+import styles from "styles/App.module.scss"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import { isEmpty } from "utils"
 
 /* eslint
   react/no-array-index-key: 0

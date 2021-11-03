@@ -1,8 +1,9 @@
-import React from "react"
 import PropTypes from "prop-types"
-import Breadcrumb from "./Breadcrumb"
+import React from "react"
 
-import { extractMetadataFromFilename } from "../../utils"
+import Breadcrumb from "templates/pageComponentsV2/Breadcrumb"
+
+import { extractMetadataFromFilename } from "utils"
 
 export const PageHeader = ({ pageParams, title }) => {
   const { resourceCategoryName, fileName } = pageParams

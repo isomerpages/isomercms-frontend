@@ -1,7 +1,9 @@
 import React from "react"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import FormField from "./FormField"
-import FormFieldMedia from "./FormFieldMedia"
+
+import FormField from "components/FormField"
+import FormFieldMedia from "components/FormFieldMedia"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 const ResourceFormFields = ({
   date,

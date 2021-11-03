@@ -1,7 +1,9 @@
-import React, { useState } from "react"
 import PropTypes from "prop-types"
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
-import Dropdown from "../Dropdown"
+import React, { useState } from "react"
+
+import Dropdown from "components/Dropdown"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 const NewSectionCreator = ({ createHandler, hasResources }) => {
   const [newSectionType, setNewSectionType] = useState()

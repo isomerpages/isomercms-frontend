@@ -1,15 +1,19 @@
-import React, { useState } from "react"
 import axios from "axios"
-import { useQuery, useMutation, useQueryClient } from "react-query"
-import PropTypes from "prop-types"
 import _ from "lodash"
+import PropTypes from "prop-types"
+import React, { useState } from "react"
+import { useQuery, useMutation, useQueryClient } from "react-query"
 
-import {
-  PAGE_CONTENT_KEY,
-  FOLDERS_CONTENT_KEY,
-  DIR_CONTENT_KEY,
-  RESOURCE_CATEGORY_CONTENT_KEY,
-} from "../constants"
+import ComponentSettingsModal from "components/ComponentSettingsModal"
+import DeleteWarningModal from "components/DeleteWarningModal"
+import GenericWarningModal from "components/GenericWarningModal"
+import OverviewCard from "components/OverviewCard"
+import PageSettingsModal from "components/PageSettingsModal"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
+
+import { errorToast, successToast } from "utils/toasts"
 
 import {
   getEditPageData,
@@ -17,25 +21,19 @@ import {
   getAllCategories,
   moveFile,
   getDirectoryFile,
-} from "../api"
-
+} from "api"
 import {
   DEFAULT_RETRY_MSG,
   parseDirectoryFile,
   convertFolderOrderToArray,
-} from "../utils"
+} from "utils"
 
-// Import components
-import OverviewCard from "./OverviewCard"
-import ComponentSettingsModal from "./ComponentSettingsModal"
-import PageSettingsModal from "./PageSettingsModalV1"
-import { errorToast, successToast } from "../utils/toasts"
-import DeleteWarningModal from "./DeleteWarningModal"
-import GenericWarningModal from "./GenericWarningModal"
-
-// Import styles
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
+import {
+  PAGE_CONTENT_KEY,
+  FOLDERS_CONTENT_KEY,
+  DIR_CONTENT_KEY,
+  RESOURCE_CATEGORY_CONTENT_KEY,
+} from "../constants"
 
 // axios settings
 axios.defaults.withCredentials = true

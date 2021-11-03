@@ -2,12 +2,14 @@
 // currently uses the v1 collection endpoints, to be refactored after v2 collection endpoints are completed
 
 import axios from "axios"
-
 import { useQuery } from "react-query"
-import { errorToast } from "../../utils/toasts"
-import { parseDirectoryFile, DEFAULT_RETRY_MSG } from "../../utils"
-import { DIR_CONTENT_KEY } from "../queryKeys"
-import useRedirectHook from "../useRedirectHook"
+
+import { DIR_CONTENT_KEY } from "hooks/queryKeys"
+import useRedirectHook from "hooks/useRedirectHook"
+
+import { errorToast } from "utils/toasts"
+
+import { parseDirectoryFile, DEFAULT_RETRY_MSG } from "utils"
 
 const getDirectoryFile = async ({ siteName, collectionName }) => {
   if (!collectionName) return undefined

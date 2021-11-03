@@ -1,13 +1,14 @@
 // TODO: deprecate after Workspace and Media refactor
 // remove from OverviewCard and MediaCard and use as separate modal on layout page
 
-import React from "react"
 import PropTypes from "prop-types"
+import React from "react"
 
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import { MenuItem } from "components/MenuDropdown"
 
-import { MenuItem } from "./MenuDropdown"
-import { deslugifyDirectory } from "../utils"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import { deslugifyDirectory } from "utils"
 
 const FileMoveMenuDropdown = ({
   dropdownItems,

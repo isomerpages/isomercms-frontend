@@ -1,8 +1,9 @@
 /* eslint-disable arrow-body-style */
-import React, { useEffect, useState } from "react"
 import PropTypes from "prop-types"
-import { generateLeftNav } from "../../utils/leftnavGeneration"
-import "../../styles/isomer-template.scss"
+import React, { useEffect, useState } from "react"
+
+import { generateLeftNav } from "utils/leftnavGeneration"
+import "styles/isomer-template.scss"
 
 export const LeftNav = ({ dirData, fileName }) => {
   const [leftNavData, setLeftNavData] = useState()

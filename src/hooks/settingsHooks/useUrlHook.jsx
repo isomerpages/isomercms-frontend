@@ -1,6 +1,7 @@
 import axios from "axios"
 import { useQuery } from "react-query"
-import { SITE_URL_KEY, STAGING_URL_KEY } from "../queryKeys"
+
+import { SITE_URL_KEY, STAGING_URL_KEY } from "hooks/queryKeys"
 
 const getStagingUrl = async (siteName) => {
   const resp = await axios.get(

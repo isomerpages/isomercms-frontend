@@ -1,9 +1,13 @@
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
-import { DEFAULT_RETRY_MSG } from "../../utils"
-import { successToast, errorToast } from "../../utils/toasts"
-import { ServicesContext } from "../../contexts/ServicesContext"
-import { DIR_CONTENT_KEY } from "../queryKeys"
+
+import { ServicesContext } from "contexts/ServicesContext"
+
+import { DIR_CONTENT_KEY } from "hooks/queryKeys"
+
+import { successToast, errorToast } from "utils/toasts"
+
+import { DEFAULT_RETRY_MSG } from "utils"
 
 export function useMoveHook(params, queryParams) {
   const { moverService } = useContext(ServicesContext)

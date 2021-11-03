@@ -1,16 +1,18 @@
-import React from "react"
+import _ from "lodash"
 import PropTypes from "prop-types"
+import React from "react"
 import { ReactQueryDevtools } from "react-query/devtools"
 import { Switch, useRouteMatch, useHistory } from "react-router-dom"
-import _ from "lodash"
 
 // Import components
-import Header from "../components/Header"
-import Sidebar from "../components/Sidebar"
+import FolderOptionButton from "components/FolderOptionButton"
+import Breadcrumb from "components/folders/Breadcrumb"
+import { FolderContent } from "components/folders/FolderContent"
+import Header from "components/Header"
+import Sidebar from "components/Sidebar"
 
-import FolderOptionButton from "../components/FolderOptionButton"
-import { FolderContent } from "../components/folders/FolderContent"
-import Breadcrumb from "../components/folders/Breadcrumb"
+import { useGetDirectoryHook } from "hooks/directoryHooks"
+import useRedirectHook from "hooks/useRedirectHook"
 
 import {
   PageSettingsScreen,
@@ -19,19 +21,16 @@ import {
   DirectorySettingsScreen,
   ReorderingScreen,
   DeleteWarningScreen,
-} from "./screens"
+} from "layouts/screens"
 
-import useRedirectHook from "../hooks/useRedirectHook"
+import { ProtectedRouteWithProps } from "routing/RouteSelector"
 
-import { deslugifyDirectory, getLastItemType } from "../utils"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
+
+import { deslugifyDirectory, getLastItemType } from "utils"
 
 // Import styles
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
-
-import { useGetDirectoryHook } from "../hooks/directoryHooks"
-
-import { ProtectedRouteWithProps } from "../routing/RouteSelector"
 
 const Folders = ({ match, location }) => {
   const { params, decodedParams } = match

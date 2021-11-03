@@ -1,9 +1,9 @@
-import React, { useState } from "react"
 import PropTypes from "prop-types"
+import React, { useState } from "react"
 
-import HyperlinkModal from "../HyperlinkModal"
-import MediaModal from "../media/MediaModal"
-import MediaSettingsModal from "../media/MediaSettingsModal"
+import HyperlinkModal from "components/HyperlinkModal"
+import MediaModal from "components/media/MediaModal"
+import MediaSettingsModal from "components/media/MediaSettingsModal"
 
 const MEDIA_PLACEHOLDER_TEXT = {
   images: "![Alt text for image on Isomer site]",

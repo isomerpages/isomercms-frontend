@@ -1,15 +1,15 @@
 import axios from "axios"
 import { useQuery } from "react-query"
 
-import { errorToast } from "../../utils/toasts"
-import { SITE_COLORS_KEY } from "../queryKeys"
+import { SITE_COLORS_KEY } from "hooks/queryKeys"
 
 import {
   DEFAULT_ISOMER_PRIMARY_COLOR,
   DEFAULT_ISOMER_SECONDARY_COLOR,
-} from "../../utils/siteColorUtils"
+} from "utils/siteColorUtils"
+import { errorToast } from "utils/toasts"
 
-import { DEFAULT_RETRY_MSG } from "../../utils"
+import { DEFAULT_RETRY_MSG } from "utils"
 
 const getSiteColors = async ({ siteName }) => {
   const settingsResp = await axios.get(

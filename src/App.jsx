@@ -1,19 +1,20 @@
-import React, { useEffect } from "react"
-import { BrowserRouter as Router } from "react-router-dom"
 import axios from "axios"
+import React, { useEffect } from "react"
 import { QueryClient, QueryClientProvider } from "react-query"
+import { BrowserRouter as Router } from "react-router-dom"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
 // Styles
-import elementStyles from "./styles/isomer-cms/Elements.module.scss"
 
 // Import contexts
-import { LoginProvider } from "./contexts/LoginContext"
-import { ServicesProvider } from "./contexts/ServicesContext"
+import { LoginProvider } from "contexts/LoginContext"
+import { ServicesProvider } from "contexts/ServicesContext"
 
 // Import route selector
-import { RouteSelector } from "./routing/RouteSelector"
+import { RouteSelector } from "routing/RouteSelector"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 // axios settings
 axios.defaults.withCredentials = true

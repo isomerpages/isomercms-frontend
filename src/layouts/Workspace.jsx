@@ -1,34 +1,37 @@
-import React, { useEffect, useState } from "react"
 import PropTypes from "prop-types"
+import React, { useEffect, useState } from "react"
 
 // Import components
 import { Route, Switch, useRouteMatch, useHistory } from "react-router-dom"
-import Header from "../components/Header"
-import Sidebar from "../components/Sidebar"
-import FolderCard from "../components/FolderCard"
-import FolderCreationModal from "../components/FolderCreationModal"
-import FolderOptionButton from "../components/FolderOptionButton"
-import PageCard from "../components/PageCard"
+
+import FolderCard from "components/FolderCard"
+import FolderCreationModal from "components/FolderCreationModal"
+import FolderOptionButton from "components/FolderOptionButton"
+import Header from "components/Header"
+import PageCard from "components/PageCard"
+import Sidebar from "components/Sidebar"
+
+// Import styles
+
+// Import utils
+
+// Import hooks
+import { useGetDirectoryHook } from "hooks/directoryHooks"
+import { useGetPageHook } from "hooks/pageHooks"
+import useRedirectHook from "hooks/useRedirectHook"
 
 import {
   PageSettingsScreen,
   PageMoveScreen,
   DeleteWarningScreen,
-} from "./screens"
+} from "layouts/screens"
 
-// Import styles
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
+import { ProtectedRouteWithProps } from "routing/RouteSelector"
 
-import { ProtectedRouteWithProps } from "../routing/RouteSelector"
-// Import utils
-import { prettifyPageFileName } from "../utils"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
-// Import hooks
-import { useGetDirectoryHook } from "../hooks/directoryHooks"
-
-import useRedirectHook from "../hooks/useRedirectHook"
-import { useGetPageHook } from "../hooks/pageHooks"
+import { prettifyPageFileName } from "utils"
 
 const CONTACT_US_TEMPLATE_LAYOUT = "contact_us"
 

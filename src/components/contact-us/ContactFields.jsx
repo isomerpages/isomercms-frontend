@@ -1,9 +1,10 @@
-import React, { useState } from "react"
-import PropTypes from "prop-types"
 import _ from "lodash"
-import FormField from "../FormField"
-import InputMaskFormField from "../InputMaskFormField"
-import Dropdown from "../Dropdown"
+import PropTypes from "prop-types"
+import React, { useState } from "react"
+
+import Dropdown from "components/Dropdown"
+import FormField from "components/FormField"
+import InputMaskFormField from "components/InputMaskFormField"
 
 const ContactFields = ({
   cardIndex,

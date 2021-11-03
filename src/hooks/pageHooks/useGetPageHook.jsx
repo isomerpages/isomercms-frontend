@@ -1,10 +1,13 @@
 import { useContext } from "react"
 import { useQuery } from "react-query"
-import { DEFAULT_RETRY_MSG } from "../../utils"
-import { errorToast } from "../../utils/toasts"
-import { PAGE_CONTENT_KEY } from "../queryKeys"
 
-import { ServicesContext } from "../../contexts/ServicesContext"
+import { ServicesContext } from "contexts/ServicesContext"
+
+import { PAGE_CONTENT_KEY } from "hooks/queryKeys"
+
+import { errorToast } from "utils/toasts"
+
+import { DEFAULT_RETRY_MSG } from "utils"
 
 export function useGetPageHook(params, queryParams) {
   const { pageService } = useContext(ServicesContext)

@@ -31,6 +31,7 @@ const FormFieldColor = ({
       />
       <div
         className={elementStyles.formColorBox}
+        id={`${id}-box`}
         style={{ background: value }}
         onClick={onColorClick}
       />

@@ -1,14 +1,17 @@
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
-import { DEFAULT_RETRY_MSG } from "../../utils"
-import { errorToast, successToast } from "../../utils/toasts"
+
+import { ServicesContext } from "contexts/ServicesContext"
+
 import {
   DIR_CONTENT_KEY,
   PAGE_CONTENT_KEY,
   PAGE_SETTINGS_KEY,
-} from "../queryKeys"
+} from "hooks/queryKeys"
 
-import { ServicesContext } from "../../contexts/ServicesContext"
+import { errorToast, successToast } from "utils/toasts"
+
+import { DEFAULT_RETRY_MSG } from "utils"
 
 export function useUpdatePageHook(params, queryParams) {
   const queryClient = useQueryClient()

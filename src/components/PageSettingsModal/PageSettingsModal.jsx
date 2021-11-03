@@ -5,16 +5,16 @@ import * as _ from "lodash"
 
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
-import { getDefaultFrontMatter } from "../../utils"
+import { getDefaultFrontMatter } from "utils"
 
-import FormField from "../FormField"
-import FormFieldHorizontal from "../FormFieldHorizontal"
-import FormFieldMedia from "../FormFieldMedia"
+import FormField from "components/FormField"
+import FormFieldHorizontal from "components/FormFieldHorizontal"
+import FormFieldMedia from "components/FormFieldMedia"
 
-import SaveDeleteButtons from "../SaveDeleteButtons"
-import Breadcrumb from "../folders/Breadcrumb"
+import SaveDeleteButtons from "components/SaveDeleteButtons"
+import Breadcrumb from "components/folders/Breadcrumb"
 
 import { PageSettingsSchema } from "."
 

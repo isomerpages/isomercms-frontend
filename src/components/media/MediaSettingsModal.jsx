@@ -1,18 +1,20 @@
+import PropTypes from "prop-types"
 import React, { useState, useEffect } from "react"
 import { useQuery, useMutation, useQueryClient } from "react-query"
-import PropTypes from "prop-types"
 
-import FormField from "../FormField"
-import SaveDeleteButtons from "../SaveDeleteButtons"
+import FormField from "components/FormField"
+import SaveDeleteButtons from "components/SaveDeleteButtons"
 
-import { validateMediaSettings } from "../../utils/validators"
-import { DEFAULT_RETRY_MSG, fetchImageURL } from "../../utils"
-import { errorToast, successToast } from "../../utils/toasts"
-import { createMedia, renameMedia } from "../../api"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
+
+import { errorToast, successToast } from "utils/toasts"
+import { validateMediaSettings } from "utils/validators"
+
+import { createMedia, renameMedia } from "api"
+import { DEFAULT_RETRY_MSG, fetchImageURL } from "utils"
+
 import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from "../../constants"
-
-import mediaStyles from "../../styles/isomer-cms/pages/Media.module.scss"
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
 
 const MediaSettingsModal = ({
   type,

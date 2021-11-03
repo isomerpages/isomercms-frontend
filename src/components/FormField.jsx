@@ -1,6 +1,7 @@
-import React from "react"
 import PropTypes from "prop-types"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import React from "react"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 const FormField = ({
   title,

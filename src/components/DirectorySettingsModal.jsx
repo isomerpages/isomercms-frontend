@@ -1,16 +1,15 @@
-import React, { useState } from "react"
 import axios from "axios"
 import PropTypes from "prop-types"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import SaveDeleteButtons from "./SaveDeleteButtons"
-import FormField from "./FormField"
+import React, { useState } from "react"
 
-import { getLastItemType } from "../utils"
+import FormField from "components/FormField"
+import SaveDeleteButtons from "components/SaveDeleteButtons"
 
-import {
-  validateCategoryName,
-  validateSubfolderName,
-} from "../utils/validators"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import { validateCategoryName, validateSubfolderName } from "utils/validators"
+
+import { getLastItemType } from "utils"
 
 // axios settings
 axios.defaults.withCredentials = true

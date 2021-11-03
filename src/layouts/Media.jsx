@@ -1,36 +1,33 @@
-import React, { useEffect, useState } from "react"
 import _ from "lodash"
 import PropTypes from "prop-types"
-import { Link } from "react-router-dom"
+import React, { useEffect, useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "react-query"
 import { ReactQueryDevtools } from "react-query/devtools"
+import { Link } from "react-router-dom"
 
-import Header from "../components/Header"
-import Sidebar from "../components/Sidebar"
-import FolderCard from "../components/FolderCard"
-import FolderOptionButton from "../components/FolderOptionButton"
-import FolderNamingModal from "../components/FolderNamingModal"
-import GenericWarningModal from "../components/GenericWarningModal"
-import DeleteWarningModal from "../components/DeleteWarningModal"
-import MediaCard from "../components/media/MediaCard"
-import MediaSettingsModal from "../components/media/MediaSettingsModal"
+import DeleteWarningModal from "components/DeleteWarningModal"
+import FolderCard from "components/FolderCard"
+import FolderNamingModal from "components/FolderNamingModal"
+import FolderOptionButton from "components/FolderOptionButton"
+import GenericWarningModal from "components/GenericWarningModal"
+import Header from "components/Header"
+import MediaCard from "components/media/MediaCard"
+import MediaSettingsModal from "components/media/MediaSettingsModal"
+import Sidebar from "components/Sidebar"
 
-import { createMediaSubfolder, getMedia, moveMedia, deleteMedia } from "../api"
+import useRedirectHook from "hooks/useRedirectHook"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
+import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
+
+import { errorToast, successToast } from "utils/toasts"
+import { validateCategoryName } from "utils/validators"
+
+import { createMediaSubfolder, getMedia, moveMedia, deleteMedia } from "api"
+import { DEFAULT_RETRY_MSG, deslugifyDirectory, slugifyCategory } from "utils"
+
 import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from "../constants"
-
-import useRedirectHook from "../hooks/useRedirectHook"
-
-import {
-  DEFAULT_RETRY_MSG,
-  deslugifyDirectory,
-  slugifyCategory,
-} from "../utils"
-import { validateCategoryName } from "../utils/validators"
-import { errorToast, successToast } from "../utils/toasts"
-
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
-import mediaStyles from "../styles/isomer-cms/pages/Media.module.scss"
 
 const mediaNames = {
   images: "images",

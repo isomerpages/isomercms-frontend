@@ -26,7 +26,11 @@ const ColorPicker = ({ value, onColorSelect, setRealTimeColor }) => {
           onChange={handleColorSelect}
         />
         {/* Confirm color selection with button */}
-        <button className={elementStyles.modalButtons} type="submit">
+        <button
+          id="colorModalSubmit"
+          className={elementStyles.modalButtons}
+          type="submit"
+        >
           Select
         </button>
       </form>

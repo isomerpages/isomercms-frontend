@@ -6,7 +6,7 @@ import {
   PAGE_SETTINGS_PERMALINK_MAX_LENGTH,
   PAGE_SETTINGS_TITLE_MIN_LENGTH,
   PAGE_SETTINGS_TITLE_MAX_LENGTH,
-} from "../../utils/validators"
+} from "utils/validators"
 
 export const PageSettingsSchema = (existingTitlesArray = []) =>
   Yup.object().shape({

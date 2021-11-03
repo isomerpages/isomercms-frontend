@@ -1,9 +1,12 @@
-import React from "react"
 import PropTypes from "prop-types"
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
-import FormField from "../FormField"
-import FormFieldMedia from "../FormFieldMedia"
-import { isEmpty } from "../../utils"
+import React from "react"
+
+import FormField from "components/FormField"
+import FormFieldMedia from "components/FormFieldMedia"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import { isEmpty } from "utils"
 
 /* eslint
   react/no-array-index-key: 0

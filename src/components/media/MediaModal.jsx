@@ -1,21 +1,24 @@
-import React, { useState, useEffect } from "react"
-import PropTypes from "prop-types"
 import _ from "lodash"
+import PropTypes from "prop-types"
+import React, { useState, useEffect } from "react"
 import { useQuery } from "react-query"
 import { Link } from "react-router-dom"
 
-import mediaStyles from "../../styles/isomer-cms/pages/Media.module.scss"
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../../styles/isomer-cms/pages/Content.module.scss"
+import LoadingButton from "components/LoadingButton"
+import MediaCard from "components/media/MediaCard"
+import { MediaSearchBar } from "components/media/MediaSearchBar"
 
-import MediaCard from "./MediaCard"
-import { MediaSearchBar } from "./MediaSearchBar"
-import LoadingButton from "../LoadingButton"
-import useRedirectHook from "../../hooks/useRedirectHook"
+import useRedirectHook from "hooks/useRedirectHook"
 
-import { errorToast } from "../../utils/toasts"
-import { getMedia } from "../../api"
-import { DEFAULT_RETRY_MSG, deslugifyDirectory } from "../../utils"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
+import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
+
+import { errorToast } from "utils/toasts"
+
+import { getMedia } from "api"
+import { DEFAULT_RETRY_MSG, deslugifyDirectory } from "utils"
+
 import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from "../../constants"
 
 const MediaModal = ({
