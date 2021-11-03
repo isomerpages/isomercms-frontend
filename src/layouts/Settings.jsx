@@ -153,13 +153,13 @@ const Settings = ({ match, location }) => {
           show_reach: footerSettings.show_reach,
         },
         socialMediaContent: {
-          facebook: footerSettings.social_media.facebook,
-          twitter: footerSettings.social_media.twitter,
-          youtube: footerSettings.social_media.youtube,
-          instagram: footerSettings.social_media.instagram,
-          linkedin: footerSettings.social_media.linkedin,
-          telegram: footerSettings.social_media.telegram,
-          tiktok: footerSettings.social_media.tiktok,
+          facebook: footerSettings.social_media?.facebook,
+          twitter: footerSettings.social_media?.twitter,
+          youtube: footerSettings.social_media?.youtube,
+          instagram: footerSettings.social_media?.instagram,
+          linkedin: footerSettings.social_media?.linkedin,
+          telegram: footerSettings.social_media?.telegram,
+          tiktok: footerSettings.social_media?.tiktok,
         },
         // navigation fields
         navigationSettings: {
