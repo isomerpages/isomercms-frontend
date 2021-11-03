@@ -22,6 +22,8 @@ const FormFieldMedia = ({
   placeholder,
   type,
   isDisabled = false,
+  children,
+  register = () => {},
 }) => {
   const [isSelectingItem, setIsSelectingItem] = useState(false)
   const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
@@ -36,7 +38,7 @@ const FormFieldMedia = ({
         value: path.replaceAll(" ", "%20"),
       },
     }
-    successToast(`Successfully updated ${title.toLowerCase()}!`)
+    // successToast(`Successfully updated ${title.toLowerCase()}!`)
     onFieldChange(event)
   }
 
@@ -81,8 +83,10 @@ const FormFieldMedia = ({
   return (
     <>
       <p className={elementStyles.formLabel}>{title}</p>
+      {children}
       <div className="d-flex border">
         <input
+          {...register(id, { required: isRequired })}
           type="text"
           placeholder={placeholder || title}
           value={value}

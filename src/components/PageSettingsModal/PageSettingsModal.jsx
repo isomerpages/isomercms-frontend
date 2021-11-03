@@ -11,6 +11,8 @@ import { getDefaultFrontMatter } from "../../utils"
 
 import FormField from "../FormField"
 import FormFieldHorizontal from "../FormFieldHorizontal"
+import FormFieldMedia from "../FormFieldMedia"
+
 import SaveDeleteButtons from "../SaveDeleteButtons"
 import Breadcrumb from "../folders/Breadcrumb"
 
@@ -27,7 +29,7 @@ export const PageSettingsModal = ({
   siteUrl,
   onClose,
 }) => {
-  const { fileName } = params
+  const { siteName, fileName } = params
 
   const existingTitlesArray = dirData
     .filter((item) => item.type === "file")
@@ -61,12 +63,11 @@ export const PageSettingsModal = ({
 
   useEffect(() => {
     if (fileName && pageData && pageData.content) {
-      setValue("title", pageData.content.frontMatter.title, {
-        shouldValidate: true,
-      })
-      setValue("permalink", pageData.content.frontMatter.permalink, {
-        shouldValidate: true,
-      })
+      Object.entries(pageData.content.frontMatter).forEach(([key, value]) =>
+        setValue(key, value, {
+          shouldValidate: true,
+        })
+      )
     }
   }, [pageData, setValue])
 
@@ -82,9 +83,7 @@ export const PageSettingsModal = ({
               ...pageData.content.frontMatter,
               ...data,
             }
-          : {
-              ...data,
-            },
+          : data,
       sha: pageData?.sha || "",
       pageBody: pageData?.content?.pageBody || "",
       newFileName: `${data.title}.md`,
@@ -115,15 +114,50 @@ export const PageSettingsModal = ({
                 isRequired
               />
               <br />
-              <p className={elementStyles.formLabel}>Page URL</p>
               {/* Permalink */}
               <FormFieldHorizontal
                 register={register}
-                title={siteUrl}
+                title="Page URL"
+                description={siteUrl}
                 id="permalink"
                 errorMessage={errors.permalink?.message}
                 isRequired
                 placeholder=""
+              />
+              <br />
+              <p className={elementStyles.formLabel}>Page details</p>
+              <FormField
+                register={register}
+                title="Meta Description (Optional)"
+                id="description"
+                children={
+                  <p className={elementStyles.formDescription}>
+                    Description snippet shown in search results.{" "}
+                    <a href="https://go.gov.sg/isomer-meta" target="_blank">
+                      Learn more
+                    </a>
+                  </p>
+                }
+                errorMessage={errors.description?.message}
+              />
+              <br />
+              <FormFieldMedia
+                register={register}
+                title="Meta Image URL (Optional)"
+                children={
+                  <p className={elementStyles.formDescription}>
+                    Image shown when link is shared on social media.{" "}
+                    <a href="https://go.gov.sg/isomer-meta" target="_blank">
+                      Learn more
+                    </a>
+                  </p>
+                }
+                id="image"
+                errorMessage={errors.image?.message}
+                inlineButtonText="Select Image"
+                siteName={siteName}
+                type="images"
+                onFieldChange={(e) => setValue("image", e.target.value)} // temporary workaround before refactoring FormFieldMedia
               />
             </div>
             <SaveDeleteButtons
