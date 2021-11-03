@@ -4,6 +4,7 @@ import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
 const FormFieldHorizontal = ({
   title,
+  description,
   defaultValue,
   placeholder,
   value,
@@ -13,11 +14,16 @@ const FormFieldHorizontal = ({
   onFieldChange,
   isRequired,
   style,
+  children,
+  register = () => {},
 }) => (
   <>
+    <p className={elementStyles.formLabel}>{title}</p>
+    {children}
     <div className={elementStyles.formHorizontal}>
-      <p className={elementStyles.formHorizontalLabel}>{`${title}`}</p>
+      <p className={elementStyles.formDescription}>{description}</p>
       <input
+        {...register(id, { required: isRequired })}
         type="text"
         placeholder={placeholder || title}
         value={value}
