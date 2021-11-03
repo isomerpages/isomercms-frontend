@@ -16,6 +16,7 @@ const FormField = ({
   disabled,
   fixedMessage,
   maxWidth,
+  register = () => {},
 }) => (
   <div>
     {title && <label className={elementStyles.formLabel}>{title}</label>}
@@ -24,6 +25,7 @@ const FormField = ({
         <p className={elementStyles.formFixedText}>{fixedMessage}</p>
       )}
       <input
+        {...register(id, { required: isRequired })}
         type="text"
         placeholder={placeholder || title}
         value={value}

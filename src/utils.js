@@ -527,7 +527,7 @@ export const extractMetadataFromFilename = ({
   return { title: prettifyPageFileName(fileName), date: "" }
 }
 
-export const getDefaultFrontMatter = (params, pagesData) => {
+export const getDefaultFrontMatter = (params, existingTitles) => {
   const {
     collectionName,
     subCollectionName,
@@ -535,7 +535,7 @@ export const getDefaultFrontMatter = (params, pagesData) => {
     resourceCategoryName,
   } = params
   let exampleTitle = "Example Title"
-  while (pagesData.includes(titleToPageFileName(exampleTitle))) {
+  while (existingTitles.includes(exampleTitle)) {
     exampleTitle += " 1"
   }
   let examplePermalink = "/"

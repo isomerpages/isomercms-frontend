@@ -4,9 +4,10 @@
   "private": true,
   "dependencies": {
     "@atlaskit/tree": "^7.0.2",
+    "@braintree/sanitize-url": "^5.0.2",
+    "@hookform/resolvers": "^2.8.2",
     "@sentry/react": "^5.30.0",
     "@sentry/tracing": "^5.30.0",
-    "@braintree/sanitize-url": "^5.0.2",
     "axios": "^0.21.3",
     "bluebird": "^3.7.1",
     "bootstrap": "^4.6.0",
@@ -28,6 +29,7 @@
     "react-beautiful-dnd": "^12.0.0",
     "react-color": "^2.17.3",
     "react-dom": "^16.10.2",
+    "react-hook-form": "^7.17.5",
     "react-input-mask": "^2.0.4",
     "react-query": "^3.18.1",
     "react-router-dom": "^5.1.2",
@@ -40,7 +42,8 @@
     "toml": "^3.0.0",
     "type-fest": "^0.21.3",
     "uuid": "^3.3.3",
-    "yaml": "^1.10.2"
+    "yaml": "^1.10.2",
+    "yup": "^0.32.11"
   },
   "scripts": {
     "start": "source .env.development.local && react-scripts start",
