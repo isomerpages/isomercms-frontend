@@ -12,6 +12,9 @@
 }
 
 .homepageEditorMain {
+  * { 
+    font-family: "Lato";
+  }
   width: calc(100vw - #{$homepage-editor-sidebar-width});
   height: calc(100vh - #{$header-height} - #{$footer-height});
   box-sizing: border-box;
@@ -20,6 +23,9 @@
 }
 
 .contactUsEditorMain {
+  * { 
+    font-family: "Lato";
+  }
   width: calc(100vw - #{$homepage-editor-sidebar-width});
   height: calc(100vh - #{$header-height} - #{$footer-height});
   box-sizing: border-box;
@@ -67,6 +73,9 @@
 }
 
 .pageEditorMain {
+  * { 
+    font-family: "Lato";
+  }
   transform: scale(0.95);
   transform-origin: center;
   width: calc(100vw - #{$page-editor-sidebar-width});
