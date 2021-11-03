@@ -132,7 +132,9 @@ export const PageSettingsModal = ({
                 children={
                   <p className={elementStyles.formDescription}>
                     Description snippet shown in search results.{" "}
-                    <a href="https://google.com">Learn more</a>
+                    <a href="https://go.gov.sg/isomer-meta" target="_blank">
+                      Learn more
+                    </a>
                   </p>
                 }
                 errorMessage={errors.description?.message}
@@ -144,7 +146,9 @@ export const PageSettingsModal = ({
                 children={
                   <p className={elementStyles.formDescription}>
                     Image shown when link is shared on social media.{" "}
-                    <a href="https://google.com">Learn more</a>
+                    <a href="https://go.gov.sg/isomer-meta" target="_blank">
+                      Learn more
+                    </a>
                   </p>
                 }
                 id="image"
