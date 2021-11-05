@@ -1,6 +1,7 @@
 import PropTypes from "prop-types"
-import { PageSettingsModal } from "../../components/PageSettingsModal"
 import React from "react"
+
+import { PageSettingsModal } from "components/PageSettingsModal"
 
 import { useGetDirectoryHook } from "hooks/directoryHooks"
 import {

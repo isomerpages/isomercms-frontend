@@ -8,7 +8,7 @@ import ComponentSettingsModal from "components/ComponentSettingsModal"
 import DeleteWarningModal from "components/DeleteWarningModal"
 import GenericWarningModal from "components/GenericWarningModal"
 import OverviewCard from "components/OverviewCard"
-import PageSettingsModal from "components/PageSettingsModal"
+import PageSettingsModal from "components/PageSettingsModalV1"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
