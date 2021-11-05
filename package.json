@@ -76,6 +76,8 @@
   "devDependencies": {
     "@babel/core": "^7.14.6",
     "@babel/eslint-parser": "^7.14.5",
+    "@cypress/browserify-preprocessor": "^3.0.2",
+    "@cypress/webpack-preprocessor": "^5.9.1",
     "@jest/globals": "^27.0.3",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
@@ -92,9 +94,11 @@
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^1.7.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
+    "find-webpack": "^2.2.1",
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
     "node-sass": "^4.13.1",
+    "pathmodify": "^0.5.0",
     "prettier": "2.2.1",
     "react-scripts": "^4.0.3",
     "react-test-renderer": "^17.0.2"
