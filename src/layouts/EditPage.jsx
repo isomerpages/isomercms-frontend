@@ -1,4 +1,10 @@
 import axios from "axios"
+import DeleteWarningModal from "components/DeleteWarningModal"
+import Header from "components/Header"
+import HyperlinkModal from "components/HyperlinkModal"
+import LoadingButton from "components/LoadingButton"
+import MediaModal from "components/media/MediaModal"
+import MediaSettingsModal from "components/media/MediaSettingsModal"
 import Policy from "csp-parse"
 import DOMPurify from "dompurify"
 import _ from "lodash"
@@ -8,8 +14,11 @@ import React, { useEffect, useRef, useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "react-query"
 import SimpleMDE from "react-simplemde-editor"
 
-import DeleteWarningModal from "components/DeleteWarningModal"
-import Header from "components/Header"
+import {
+  PAGE_CONTENT_KEY,
+  DIR_CONTENT_KEY,
+  CSP_CONTENT_KEY,
+} from "constants/constants"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -44,20 +53,10 @@ import {
   deslugifyDirectory,
 } from "utils"
 
-import {
-  PAGE_CONTENT_KEY,
-  DIR_CONTENT_KEY,
-  CSP_CONTENT_KEY,
-} from "../constants"
-
 import "easymde/dist/easymde.min.css"
 import "styles/isomer-template.scss"
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
-import LoadingButton from "components/LoadingButton"
-import HyperlinkModal from "components/HyperlinkModal"
-import MediaModal from "components/media/MediaModal"
-import MediaSettingsModal from "components/media/MediaSettingsModal"
 import GenericWarningModal from "components/GenericWarningModal"
 
 // Import hooks

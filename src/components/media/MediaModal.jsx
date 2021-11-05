@@ -1,12 +1,13 @@
+import LoadingButton from "components/LoadingButton"
+import MediaCard from "components/media/MediaCard"
+import { MediaSearchBar } from "components/media/MediaSearchBar"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import React, { useState, useEffect } from "react"
 import { useQuery } from "react-query"
 import { Link } from "react-router-dom"
 
-import LoadingButton from "components/LoadingButton"
-import MediaCard from "components/media/MediaCard"
-import { MediaSearchBar } from "components/media/MediaSearchBar"
+import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from "constants/constants"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -18,8 +19,6 @@ import { errorToast } from "utils/toasts"
 
 import { getMedia } from "api"
 import { DEFAULT_RETRY_MSG, deslugifyDirectory } from "utils"
-
-import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from "../../constants"
 
 const MediaModal = ({
   siteName,

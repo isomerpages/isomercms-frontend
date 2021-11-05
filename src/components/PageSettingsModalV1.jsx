@@ -2,14 +2,19 @@
 // remove from CollecionPagesSection, use PageSettingsModalV2 instead as separate modal on Workspace
 
 import axios from "axios"
+import FormField from "components/FormField"
+import FormFieldHorizontal from "components/FormFieldHorizontal"
+import SaveDeleteButtons from "components/SaveDeleteButtons"
 import * as _ from "lodash"
 import PropTypes from "prop-types"
 import React, { useState, useEffect } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
-import FormField from "components/FormField"
-import FormFieldHorizontal from "components/FormFieldHorizontal"
-import SaveDeleteButtons from "components/SaveDeleteButtons"
+import {
+  PAGE_SETTINGS_KEY,
+  DIR_CONTENT_KEY,
+  PAGE_CONTENT_KEY,
+} from "constants/constants"
 
 import useRedirectHook from "hooks/useRedirectHook"
 import useSiteUrlHook from "hooks/useSiteUrlHook"
@@ -28,12 +33,6 @@ import {
   deslugifyPage,
   deslugifyDirectory,
 } from "utils"
-
-import {
-  PAGE_SETTINGS_KEY,
-  DIR_CONTENT_KEY,
-  PAGE_CONTENT_KEY,
-} from "../constants"
 
 // axios settings
 axios.defaults.withCredentials = true

@@ -43,6 +43,11 @@
             "position": "before"
           },
           {
+            "pattern": "constants/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
             "pattern": "contexts/**",
             "group": "internal",
             "position": "before"

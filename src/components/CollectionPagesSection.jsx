@@ -1,14 +1,20 @@
 import axios from "axios"
-import _ from "lodash"
-import PropTypes from "prop-types"
-import React, { useState } from "react"
-import { useQuery, useMutation, useQueryClient } from "react-query"
-
 import ComponentSettingsModal from "components/ComponentSettingsModal"
 import DeleteWarningModal from "components/DeleteWarningModal"
 import GenericWarningModal from "components/GenericWarningModal"
 import OverviewCard from "components/OverviewCard"
 import PageSettingsModal from "components/PageSettingsModalV1"
+import _ from "lodash"
+import PropTypes from "prop-types"
+import React, { useState } from "react"
+import { useQuery, useMutation, useQueryClient } from "react-query"
+
+import {
+  PAGE_CONTENT_KEY,
+  FOLDERS_CONTENT_KEY,
+  DIR_CONTENT_KEY,
+  RESOURCE_CATEGORY_CONTENT_KEY,
+} from "constants/constants"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
@@ -27,13 +33,6 @@ import {
   parseDirectoryFile,
   convertFolderOrderToArray,
 } from "utils"
-
-import {
-  PAGE_CONTENT_KEY,
-  FOLDERS_CONTENT_KEY,
-  DIR_CONTENT_KEY,
-  RESOURCE_CATEGORY_CONTENT_KEY,
-} from "../constants"
 
 // axios settings
 axios.defaults.withCredentials = true

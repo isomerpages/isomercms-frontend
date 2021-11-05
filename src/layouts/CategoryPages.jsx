@@ -1,15 +1,17 @@
 import axios from "axios"
+import CollectionPagesSection from "components/CollectionPagesSection"
+import Header from "components/Header"
+import Sidebar from "components/Sidebar"
 import PropTypes from "prop-types"
 import React, { useState, useEffect } from "react"
 import { useQuery } from "react-query"
 import { Link } from "react-router-dom"
 
 // Import components
-import CollectionPagesSection from "components/CollectionPagesSection"
-import Header from "components/Header"
-import Sidebar from "components/Sidebar"
 
 // Import styles
+import { RESOURCE_CATEGORY_CONTENT_KEY } from "constants/constants"
+
 import useRedirectHook from "hooks/useRedirectHook"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -20,8 +22,6 @@ import { errorToast } from "utils/toasts"
 
 import { getResourcePages } from "api"
 import { retrieveResourceFileMetadata, deslugifyDirectory } from "utils.js"
-
-import { RESOURCE_CATEGORY_CONTENT_KEY } from "../constants"
 
 // Constants
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL

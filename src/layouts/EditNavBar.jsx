@@ -1,3 +1,8 @@
+import DeleteWarningModal from "components/DeleteWarningModal"
+import GenericWarningModal from "components/GenericWarningModal"
+import Header from "components/Header"
+import LoadingButton from "components/LoadingButton"
+import NavSection from "components/navbar/NavSection"
 import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
@@ -5,12 +10,6 @@ import React, { useEffect, useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useQuery, useMutation, useQueryClient } from "react-query"
 import { ReactQueryDevtools } from "react-query/devtools"
-
-import DeleteWarningModal from "components/DeleteWarningModal"
-import GenericWarningModal from "components/GenericWarningModal"
-import Header from "components/Header"
-import LoadingButton from "components/LoadingButton"
-import NavSection from "components/navbar/NavSection"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -27,7 +26,7 @@ import { validateLink } from "utils/validators"
 import { getEditNavBarData, updateNavBarData } from "api"
 import { DEFAULT_RETRY_MSG, deslugifyDirectory, isEmpty } from "utils"
 
-import { NAVIGATION_CONTENT_KEY } from "../constants"
+import { NAVIGATION_CONTENT_KEY } from "constants/constants"
 
 const RADIX_PARSE_INT = 10
 

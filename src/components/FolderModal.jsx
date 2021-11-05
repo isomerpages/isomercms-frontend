@@ -2,12 +2,19 @@
 // remove from FolderCard, use DirectorySettingsModal as separate modal on layout
 
 import axios from "axios"
+import FormField from "components/FormField"
+import SaveDeleteButtons from "components/SaveDeleteButtons"
 import PropTypes from "prop-types"
 import React, { useState } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
-import FormField from "components/FormField"
-import SaveDeleteButtons from "components/SaveDeleteButtons"
+import {
+  DOCUMENT_CONTENTS_KEY,
+  IMAGE_CONTENTS_KEY,
+  DIR_CONTENT_KEY,
+  FOLDERS_CONTENT_KEY,
+  RESOURCE_ROOM_CONTENT_KEY,
+} from "constants/constants"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -21,14 +28,6 @@ import {
   renameMediaSubfolder,
 } from "api"
 import { DEFAULT_RETRY_MSG, slugifyCategory, deslugifyDirectory } from "utils"
-
-import {
-  DOCUMENT_CONTENTS_KEY,
-  IMAGE_CONTENTS_KEY,
-  DIR_CONTENT_KEY,
-  FOLDERS_CONTENT_KEY,
-  RESOURCE_ROOM_CONTENT_KEY,
-} from "../constants"
 
 // axios settings
 axios.defaults.withCredentials = true

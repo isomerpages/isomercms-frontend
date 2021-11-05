@@ -6,9 +6,9 @@ import { QueryClient } from "react-query"
 import slugify from "slugify"
 import yaml from "yaml"
 
-import { getMediaDetails } from "api"
+import { SITES_IS_PRIVATE_KEY } from "constants/constants"
 
-import { SITES_IS_PRIVATE_KEY } from "./constants"
+import { getMediaDetails } from "api"
 
 // axios settings
 axios.defaults.withCredentials = true

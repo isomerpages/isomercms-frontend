@@ -1,17 +1,19 @@
 import axios from "axios"
-import * as _ from "lodash"
-import PropTypes from "prop-types"
-import React, { useState, useEffect } from "react"
-import { useQuery, useMutation } from "react-query"
+import FolderCard from "components/FolderCard"
 
 // Import components
-import FolderCard from "components/FolderCard"
 import FolderNamingModal from "components/FolderNamingModal"
 import FolderOptionButton from "components/FolderOptionButton"
 import FormField from "components/FormField"
 import Header from "components/Header"
 import LoadingButton from "components/LoadingButton"
 import Sidebar from "components/Sidebar"
+import * as _ from "lodash"
+import PropTypes from "prop-types"
+import React, { useState, useEffect } from "react"
+import { useQuery, useMutation } from "react-query"
+
+import { RESOURCE_ROOM_CONTENT_KEY } from "constants/constants"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -28,8 +30,6 @@ import {
 
 import { getAllResourceCategories, addResourceCategory } from "api"
 import { DEFAULT_RETRY_MSG, deslugifyDirectory, slugifyCategory } from "utils"
-
-import { RESOURCE_ROOM_CONTENT_KEY } from "../constants"
 
 // axios settings
 axios.defaults.withCredentials = true

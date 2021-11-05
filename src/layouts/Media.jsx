@@ -1,10 +1,3 @@
-import _ from "lodash"
-import PropTypes from "prop-types"
-import React, { useEffect, useState } from "react"
-import { useQuery, useMutation, useQueryClient } from "react-query"
-import { ReactQueryDevtools } from "react-query/devtools"
-import { Link } from "react-router-dom"
-
 import DeleteWarningModal from "components/DeleteWarningModal"
 import FolderCard from "components/FolderCard"
 import FolderNamingModal from "components/FolderNamingModal"
@@ -14,6 +7,14 @@ import Header from "components/Header"
 import MediaCard from "components/media/MediaCard"
 import MediaSettingsModal from "components/media/MediaSettingsModal"
 import Sidebar from "components/Sidebar"
+import _ from "lodash"
+import PropTypes from "prop-types"
+import React, { useEffect, useState } from "react"
+import { useQuery, useMutation, useQueryClient } from "react-query"
+import { ReactQueryDevtools } from "react-query/devtools"
+import { Link } from "react-router-dom"
+
+import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from "constants/constants"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -26,8 +27,6 @@ import { validateCategoryName } from "utils/validators"
 
 import { createMediaSubfolder, getMedia, moveMedia, deleteMedia } from "api"
 import { DEFAULT_RETRY_MSG, deslugifyDirectory, slugifyCategory } from "utils"
-
-import { IMAGE_CONTENTS_KEY, DOCUMENT_CONTENTS_KEY } from "../constants"
 
 const mediaNames = {
   images: "images",

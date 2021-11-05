@@ -1,13 +1,17 @@
 import axios from "axios"
+import FormField from "components/FormField"
+import FormFieldHorizontal from "components/FormFieldHorizontal"
+import ResourceFormFields from "components/ResourceFormFields"
+import SaveDeleteButtons from "components/SaveDeleteButtons"
 import * as _ from "lodash"
 import PropTypes from "prop-types"
 import React, { useState, useEffect } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 
-import FormField from "components/FormField"
-import FormFieldHorizontal from "components/FormFieldHorizontal"
-import ResourceFormFields from "components/ResourceFormFields"
-import SaveDeleteButtons from "components/SaveDeleteButtons"
+import {
+  RESOURCE_ROOM_NAME_KEY,
+  RESOURCE_CATEGORY_CONTENT_KEY,
+} from "constants/constants"
 
 import useRedirectHook from "hooks/useRedirectHook"
 import useSiteUrlHook from "hooks/useSiteUrlHook"
@@ -32,11 +36,6 @@ import {
   deslugifyDirectory,
   slugifyCategory,
 } from "utils"
-
-import {
-  RESOURCE_ROOM_NAME_KEY,
-  RESOURCE_CATEGORY_CONTENT_KEY,
-} from "../constants"
 
 // axios settings
 axios.defaults.withCredentials = true

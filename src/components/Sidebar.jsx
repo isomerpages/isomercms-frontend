@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { Link } from "react-router-dom"
 
+import { LAST_UPDATED_KEY } from "constants/constants"
+
 import useRedirectHook from "hooks/useRedirectHook"
 import useSiteUrlHook from "hooks/useSiteUrlHook"
 
@@ -13,8 +15,6 @@ import styles from "styles/isomer-cms/pages/Admin.module.scss"
 import { errorToast } from "utils/toasts"
 
 import { getLastUpdated } from "api"
-
-import { LAST_UPDATED_KEY } from "../constants"
 
 // axios settings
 axios.defaults.withCredentials = true
