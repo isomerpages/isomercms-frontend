@@ -139,6 +139,11 @@ const RESOURCE_SETTINGS_PERMALINK_MAX_LENGTH = 50
 const RESOURCE_CATEGORY_MIN_LENGTH = 2
 const RESOURCE_CATEGORY_MAX_LENGTH = 30
 
+// Directory Settings Modal
+// ===================
+export const DIRECTORY_SETTINGS_TITLE_MIN_LENGTH = 2
+export const DIRECTORY_SETTINGS_TITLE_MAX_LENGTH = 30
+
 // Homepage Editor
 // ==========
 // Returns new errors.highlights[index] object
