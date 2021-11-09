@@ -2,7 +2,7 @@ import axios from "axios"
 import PropTypes from "prop-types"
 import React from "react"
 
-import DirectorySettingsModal from "components/DirectorySettingsModal"
+import { DirectorySettingsModal } from "components/DirectorySettingsModal"
 
 import {
   useGetDirectoryHook,
