@@ -3,7 +3,7 @@ import * as _ from "lodash"
 import PropTypes from "prop-types"
 import React from "react"
 
-import DirectoryCreationModal from "components/DirectoryCreationModal"
+import { DirectoryCreationModal } from "components/DirectoryCreationModal"
 
 import {
   useGetDirectoryHook,

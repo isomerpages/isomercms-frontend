@@ -19,7 +19,12 @@ import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 // axios settings
 axios.defaults.withCredentials = true
 
-const DirectoryCreationModal = ({ params, onClose, dirData, onProceed }) => {
+export const DirectoryCreationModal = ({
+  params,
+  onClose,
+  dirData,
+  onProceed,
+}) => {
   const { siteName, collectionName } = params
   const [pagesData, setPagesData] = useState([])
 
@@ -142,8 +147,6 @@ const DirectoryCreationModal = ({ params, onClose, dirData, onProceed }) => {
     </FormProvider>
   )
 }
-
-export default DirectoryCreationModal
 
 DirectoryCreationModal.propTypes = {
   parentFolder: PropTypes.string.isRequired,
