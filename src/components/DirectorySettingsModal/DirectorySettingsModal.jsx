@@ -1,7 +1,7 @@
 import React from "react"
 import axios from "axios"
 import PropTypes from "prop-types"
-import { useForm } from "react-hook-form"
+import { useForm, useFormContext } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
@@ -29,13 +29,15 @@ export const DirectorySettingsModal = ({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    mode: "onBlur",
-    resolver: yupResolver(DirectorySettingsSchema(existingTitlesArray)),
-    defaultValues: {
-      newDirectoryName: params[getLastItemType(params)],
-    },
-  })
+  } =
+    useFormContext() ||
+    useForm({
+      mode: "onBlur",
+      resolver: yupResolver(DirectorySettingsSchema(existingTitlesArray)),
+      defaultValues: {
+        newDirectoryName: params[getLastItemType(params)],
+      },
+    })
 
   return (
     <div className={elementStyles.overlay}>

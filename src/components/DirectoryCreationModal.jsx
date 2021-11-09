@@ -2,30 +2,42 @@ import axios from "axios"
 import * as _ from "lodash"
 import PropTypes from "prop-types"
 import React, { useEffect, useState } from "react"
+import { useFieldArray, useForm, FormProvider } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
 
 import FolderCard from "components/FolderCard"
-import FolderNamingModal from "components/FolderNamingModal"
 import LoadingButton from "components/LoadingButton"
+import {
+  DirectorySettingsSchema,
+  DirectorySettingsModal,
+} from "components/DirectorySettingsModal"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import adminStyles from "styles/isomer-cms/pages/Admin.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
-
-import { validateSubfolderName } from "utils/validators"
 
 // axios settings
 axios.defaults.withCredentials = true
 
 const DirectoryCreationModal = ({ params, onClose, dirData, onProceed }) => {
   const { siteName, collectionName } = params
-
   const [pagesData, setPagesData] = useState([])
-  const [errors, setErrors] = useState("")
-
-  const [title, setTitle] = useState("")
-  const [selectedPages, setSelectedPages] = useState([])
 
   const [isSelectingTitle, setIsSelectingTitle] = useState(true)
+
+  const existingTitlesArray = dirData
+    .filter((item) => item.type === "dir")
+    .map((item) => item.name)
+
+  const methods = useForm({
+    mode: "onBlur",
+    resolver: yupResolver(DirectorySettingsSchema(existingTitlesArray)),
+  })
+
+  const { fields, append, remove } = useFieldArray({
+    name: "selectedPages",
+    control: methods.control,
+  })
   // const [sortedPagesData, setSortedPagesData] = useState(pagesData)
 
   // const sortOptions = [
@@ -53,31 +65,6 @@ const DirectoryCreationModal = ({ params, onClose, dirData, onProceed }) => {
   /** ******************************** */
   /*     handler functions    */
   /** ******************************** */
-
-  const folderNameChangeHandler = (event) => {
-    const { value } = event.target
-    const errorMessage = validateSubfolderName(
-      value,
-      dirData.filter((item) => item.type == "dir").map((item) => item.name)
-    )
-    setTitle(value)
-    setErrors(errorMessage)
-  }
-
-  const fileSelectChangeHandler = (selectedItem) => {
-    const indexOfItem = selectedPages.findIndex(
-      (item) => item.name === selectedItem.name
-    )
-    if (indexOfItem != -1) {
-      // found
-      setSelectedPages((prevState) =>
-        prevState.slice(0, indexOfItem).concat(prevState.slice(indexOfItem + 1))
-      )
-    } else {
-      setSelectedPages((prevState) => [...prevState, selectedItem])
-    }
-  }
-
   // const sortFuncs = {
   //   title: (a, b) => {
   //     return a.fileName.localeCompare(b.fileName)
@@ -92,22 +79,18 @@ const DirectoryCreationModal = ({ params, onClose, dirData, onProceed }) => {
   //     setSortedPagesData(sortedOrder)
   //   }
   // }
-
   return (
-    <>
-      <div className={elementStyles.overlay}>
-        {isSelectingTitle && (
-          <FolderNamingModal
-            onClose={onClose}
-            onProceed={() => setIsSelectingTitle(false)}
-            folderNameChangeHandler={folderNameChangeHandler}
-            title={title}
-            errors={errors}
-            folderType={collectionName ? "subfolder" : "folder"}
-            proceedText="Select pages"
-          />
-        )}
-        {!isSelectingTitle && (
+    <FormProvider {...methods}>
+      {isSelectingTitle && (
+        <DirectorySettingsModal
+          params={params}
+          dirData={dirData}
+          onProceed={() => setIsSelectingTitle(false)}
+          onClose={onClose}
+        />
+      )}
+      {!isSelectingTitle && (
+        <div className={elementStyles.overlay}>
           <div className={`${elementStyles.fullscreenWrapper}`}>
             <div
               className={`${adminStyles.adminSidebar} ${elementStyles.wrappedContent} bg-transparent`}
@@ -119,7 +102,9 @@ const DirectoryCreationModal = ({ params, onClose, dirData, onProceed }) => {
               <div className={contentStyles.sectionHeader}>
                 <h1
                   className={contentStyles.sectionTitle}
-                >{`Select pages to add into '${title}'`}</h1>
+                >{`Select pages to add into '${methods.watch(
+                  "newDirectoryName"
+                )}'`}</h1>
               </div>
               <div className="d-flex justify-content-between w-100">
                 <span>Pages</span>
@@ -155,16 +140,21 @@ const DirectoryCreationModal = ({ params, onClose, dirData, onProceed }) => {
                           siteName={siteName}
                           itemIndex={pageIdx}
                           selectedIndex={
-                            selectedPages.findIndex(
+                            fields.findIndex(
                               (item) => item.name === pageData.name
                             ) != -1
-                              ? selectedPages.findIndex(
+                              ? fields.findIndex(
                                   (item) => item.name === pageData.name
                                 ) + 1
                               : null
                           }
                           onClick={() => {
-                            fileSelectChangeHandler(pageData)
+                            const indexOfItem = fields.findIndex(
+                              (item) => item.name === pageData.name
+                            )
+                            indexOfItem != -1
+                              ? remove(indexOfItem)
+                              : append(pageData)
                           }}
                         />
                       ))
@@ -182,21 +172,21 @@ const DirectoryCreationModal = ({ params, onClose, dirData, onProceed }) => {
                 callback={onClose}
               />
               <LoadingButton
-                label={selectedPages.length === 0 ? `Skip` : `Done`}
+                label={fields.length === 0 ? `Skip` : `Done`}
                 disabledStyle={elementStyles.disabled}
                 className={elementStyles.blue}
                 callback={() =>
                   onProceed({
-                    newDirectoryName: title,
-                    items: selectedPages,
+                    newDirectoryName: methods.watch("newDirectoryName"),
+                    items: fields.map((field) => (({ id, ...p }) => p)(field)),
                   })
                 }
               />
             </div>
           </div>
-        )}
-      </div>
-    </>
+        </div>
+      )}
+    </FormProvider>
   )
 }
 
