@@ -38,19 +38,6 @@ const DirectoryCreationModal = ({ params, onClose, dirData, onProceed }) => {
     name: "selectedPages",
     control: methods.control,
   })
-  // const [sortedPagesData, setSortedPagesData] = useState(pagesData)
-
-  // const sortOptions = [
-  //   {
-  //     value: "title",
-  //     label: "Name",
-  //   },
-  // ]
-
-  // useEffect(() => {
-  //   const sortedOrder = pagesData.concat().sort(sortFuncs.title)
-  //   setSortedPagesData(sortedOrder)
-  // }, [])
 
   /** ******************************** */
   /*     useEffects to load data     */
@@ -62,23 +49,6 @@ const DirectoryCreationModal = ({ params, onClose, dirData, onProceed }) => {
     }
   }, [dirData])
 
-  /** ******************************** */
-  /*     handler functions    */
-  /** ******************************** */
-  // const sortFuncs = {
-  //   title: (a, b) => {
-  //     return a.fileName.localeCompare(b.fileName)
-  //   },
-  // }
-
-  // const sortOrderChangeHandler = (option) => {
-  //   // Reset to original order in folder
-  //   if (option.value === "folder") setSortedPagesData(pagesData)
-  //   else {
-  //     const sortedOrder = sortedPagesData.concat().sort(sortFuncs[option.value])
-  //     setSortedPagesData(sortedOrder)
-  //   }
-  // }
   return (
     <FormProvider {...methods}>
       {isSelectingTitle && (
@@ -108,23 +78,6 @@ const DirectoryCreationModal = ({ params, onClose, dirData, onProceed }) => {
               </div>
               <div className="d-flex justify-content-between w-100">
                 <span>Pages</span>
-                {/* <span className={`w-25 ${contentStyles.segment}`}>
-                  <span className={elementStyles.sortLabel}>
-                    {`Sort by `}
-                  </span>
-                  
-                  <Select
-                    onChange={sortOrderChangeHandler}
-                    className={'w-100'}
-                    defaultValue={
-                      {
-                        value: 'title',
-                        label: 'Name',
-                      }
-                    }
-                    options={sortOptions}
-                  />
-                </span> */}
               </div>
               <br />
               {/* Pages */}
