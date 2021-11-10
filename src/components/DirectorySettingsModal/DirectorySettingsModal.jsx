@@ -14,12 +14,13 @@ import { DirectorySettingsSchema } from "."
 axios.defaults.withCredentials = true
 
 export const DirectorySettingsModal = ({
+  isCreate,
   params,
   dirData,
   onProceed,
   onClose,
 }) => {
-  const { subCollectionName } = params
+  const { collectionName, subCollectionName } = params
   const existingTitlesArray = dirData
     .filter((item) => item.name !== params[getLastItemType(params)])
     .filter((item) => item.type === "dir")
@@ -33,7 +34,12 @@ export const DirectorySettingsModal = ({
     useFormContext() ||
     useForm({
       mode: "onBlur",
-      resolver: yupResolver(DirectorySettingsSchema(existingTitlesArray)),
+      resolver: yupResolver(
+        DirectorySettingsSchema(
+          existingTitlesArray,
+          subCollectionName ? "subCollectionName" : "collectionName"
+        )
+      ),
       defaultValues: {
         newDirectoryName: params[getLastItemType(params)],
       },
@@ -44,17 +50,22 @@ export const DirectorySettingsModal = ({
       <div className={elementStyles["modal-settings"]}>
         <div className={elementStyles.modalHeader}>
           <h1>
-            {!subCollectionName ? "Create new subfolder" : "Subfolder settings"}
+            {isCreate
+              ? collectionName
+                ? "Create new subfolder"
+                : "Create new folder"
+              : subCollectionName
+              ? "Subfolder settings"
+              : "Folder settings"}
           </h1>
           <button type="button" onClick={onClose}>
             <i className="bx bx-x" />
           </button>
         </div>
-        <Breadcrumb params={params} />
         <form className={elementStyles.modalContent}>
           <FormField
             register={register}
-            title="Directory title"
+            title="Title"
             id="newDirectoryName"
             errorMessage={errors.newDirectoryName?.message}
           />

@@ -36,7 +36,12 @@ export const DirectoryCreationModal = ({
 
   const methods = useForm({
     mode: "onBlur",
-    resolver: yupResolver(DirectorySettingsSchema(existingTitlesArray)),
+    resolver: yupResolver(
+      DirectorySettingsSchema(
+        existingTitlesArray,
+        collectionName ? "subCollectionName" : "collectionName"
+      )
+    ),
   })
 
   const { fields, append, remove } = useFieldArray({
@@ -58,6 +63,7 @@ export const DirectoryCreationModal = ({
     <FormProvider {...methods}>
       {isSelectingTitle && (
         <DirectorySettingsModal
+          isCreate
           params={params}
           dirData={dirData}
           onProceed={() => setIsSelectingTitle(false)}
