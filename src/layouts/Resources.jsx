@@ -1,7 +1,7 @@
 import axios from "axios"
-import FolderCard from "components/FolderCard"
 
 // Import components
+import FolderCard from "components/FolderCardV1"
 import FolderNamingModal from "components/FolderNamingModal"
 import FolderOptionButton from "components/FolderOptionButton"
 import FormField from "components/FormField"
