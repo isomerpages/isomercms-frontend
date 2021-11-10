@@ -22,17 +22,15 @@ axios.defaults.withCredentials = true
 export const DirectoryCreationModal = ({
   params,
   onClose,
-  dirData,
+  dirsData,
+  pagesData,
   onProceed,
 }) => {
   const { siteName, collectionName } = params
-  const [pagesData, setPagesData] = useState([])
 
   const [isSelectingTitle, setIsSelectingTitle] = useState(true)
 
-  const existingTitlesArray = dirData
-    .filter((item) => item.type === "dir")
-    .map((item) => item.name)
+  const existingTitlesArray = dirsData.map((item) => item.name)
 
   const methods = useForm({
     mode: "onBlur",
@@ -49,23 +47,13 @@ export const DirectoryCreationModal = ({
     control: methods.control,
   })
 
-  /** ******************************** */
-  /*     useEffects to load data     */
-  /** ******************************** */
-
-  useEffect(() => {
-    if (dirData) {
-      setPagesData(dirData.filter((item) => item.type == "file"))
-    }
-  }, [dirData])
-
   return (
     <FormProvider {...methods}>
       {isSelectingTitle && (
         <DirectorySettingsModal
           isCreate
           params={params}
-          dirData={dirData}
+          dirsData={dirsData}
           onProceed={() => setIsSelectingTitle(false)}
           onClose={onClose}
         />

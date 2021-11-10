@@ -16,14 +16,14 @@ axios.defaults.withCredentials = true
 export const DirectorySettingsModal = ({
   isCreate,
   params,
-  dirData,
+  dirsData,
   onProceed,
   onClose,
 }) => {
   const { collectionName, subCollectionName } = params
-  const existingTitlesArray = dirData
+
+  const existingTitlesArray = dirsData
     .filter((item) => item.name !== params[getLastItemType(params)])
-    .filter((item) => item.type === "dir")
     .map((item) => item.name)
 
   const {

@@ -32,7 +32,7 @@ export const PageSettingsScreen = ({ match, onClose }) => {
       onClose={onClose}
       pageData={pageData}
       onProceed={fileName ? updateHandler : createHandler}
-      dirData={dirData ? dirData.filter((page) => page.name !== fileName) : []}
+      pagesData={dirData ? dirData.filter((item) => item.type === "file") : []}
       siteUrl={siteUrl}
     />
   )

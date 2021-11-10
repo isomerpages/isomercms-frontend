@@ -17,11 +17,33 @@ export const DirectoryCreationScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match
 
   const { data: dirData } = useGetDirectoryHook(params, { initialData: [] })
-  const { mutateAsync: saveHandler } = useCreateDirectoryHook(params)
+  const { mutateAsync: saveHandler } = useCreateDirectoryHook(params, {
+    onSuccess: () => onClose(),
+  })
+  const { data: pagesData } = useGetDirectoryHook(
+    {
+      ...params,
+      isUnlinked: true,
+    },
+    { enabled: !params.collectionName }
+  )
 
   return (
     <DirectoryCreationModal
-      dirData={dirData}
+      dirsData={
+        pagesData
+          ? dirData || []
+          : dirData
+          ? dirData.filter((item) => item.type == "dir")
+          : []
+      }
+      pagesData={
+        pagesData
+          ? pagesData.filter((item) => item.name != "contact-us.md")
+          : dirData
+          ? dirData.filter((item) => item.type == "file")
+          : []
+      }
       params={decodedParams}
       onProceed={saveHandler}
       onClose={onClose}

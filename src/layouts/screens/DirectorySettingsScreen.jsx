@@ -30,7 +30,7 @@ export const DirectorySettingsScreen = ({ match, onClose }) => {
       onProceed={renameDir}
       onClose={onClose}
       params={decodedParams}
-      dirData={dirData}
+      dirsData={dirData ? dirData.filter((item) => item.type === "dir") : []}
     />
   )
 }
