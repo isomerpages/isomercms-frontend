@@ -386,9 +386,7 @@ section {
 }
 
 code,
-code > span,
-pre,
-pre > span {
+pre {
   -moz-osx-font-smoothing: auto;
   -webkit-font-smoothing: auto;
   font-family: monospace;
