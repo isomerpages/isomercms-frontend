@@ -33,7 +33,12 @@ export const DirectorySettingsModal = ({
     useFormContext() ||
     useForm({
       mode: "onBlur",
-      resolver: yupResolver(DirectorySettingsSchema(existingTitlesArray)),
+      resolver: yupResolver(
+        DirectorySettingsSchema(
+          existingTitlesArray,
+          subCollectionName ? "subCollectionName" : "collectionName"
+        )
+      ),
       defaultValues: {
         newDirectoryName: deslugifyDirectory(params[getLastItemType(params)]),
       },
