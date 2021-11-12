@@ -5,7 +5,7 @@ import {
   DIRECTORY_SETTINGS_TITLE_MIN_LENGTH,
   DIRECTORY_SETTINGS_TITLE_MAX_LENGTH,
 } from "utils/validators"
-
+import { deslugifyDirectory } from "utils"
 export const DirectorySettingsSchema = (existingTitlesArray = []) =>
   Yup.object().shape({
     newDirectoryName: Yup.string()
@@ -24,11 +24,13 @@ export const DirectorySettingsSchema = (existingTitlesArray = []) =>
       )
       .when("$type", (type, schema) => {
         if (type === "subCollectionName")
-          return schema.test(
-            "Special characters found",
-            'Title cannot contain any of the following special characters: ~%^*_+-./\\`;~{}[]"<>',
-            (value) => !specialCharactersRegexTest.test(value)
-          )
+          return schema
+            .transform((value) => deslugifyDirectory(value))
+            .test(
+              "Special characters found",
+              'Title cannot contain any of the following special characters: ~%^*_+-./\\`;~{}[]"<>',
+              (value) => !specialCharactersRegexTest.test(value)
+            )
         if (type === "collectionName")
           return schema
             .transform((value) =>

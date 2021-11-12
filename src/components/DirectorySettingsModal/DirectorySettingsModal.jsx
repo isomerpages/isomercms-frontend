@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
 import FormField from "components/FormField"
-import { deslugify, getLastItemType } from "utils"
+import { deslugifyDirectory, getLastItemType } from "utils"
 import { DirectorySettingsSchema } from "."
 
 // axios settings
@@ -35,7 +35,7 @@ export const DirectorySettingsModal = ({
       mode: "onBlur",
       resolver: yupResolver(DirectorySettingsSchema(existingTitlesArray)),
       defaultValues: {
-        newDirectoryName: deslugify(params[getLastItemType(params)]),
+        newDirectoryName: deslugifyDirectory(params[getLastItemType(params)]),
       },
       context: {
         type: subCollectionName ? "subCollectionName" : "collectionName",
@@ -67,6 +67,7 @@ export const DirectorySettingsModal = ({
             errorMessage={errors.newDirectoryName?.message}
           />
           <SaveDeleteButtons
+            saveLabel={isCreate && "Select pages"}
             isDisabled={!_.isEmpty(errors)}
             hasDeleteButton={false}
             saveCallback={handleSubmit((data) => onProceed(data))}

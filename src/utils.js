@@ -452,9 +452,9 @@ export const getRedirectUrl = ({
 }) => {
   if (!fileName) {
     if (collectionName) {
-      return `/sites/${siteName}/folders/${collectionName}/${
+      return `/sites/${siteName}/folders/${collectionName}${
         subCollectionName
-          ? `subfolders/${encodeURIComponent(subCollectionName)}`
+          ? `/subfolders/${encodeURIComponent(subCollectionName)}`
           : ""
       }`
     }
