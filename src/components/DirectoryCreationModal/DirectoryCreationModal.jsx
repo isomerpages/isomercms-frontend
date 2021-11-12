@@ -34,12 +34,8 @@ export const DirectoryCreationModal = ({
 
   const methods = useForm({
     mode: "onBlur",
-    resolver: yupResolver(
-      DirectorySettingsSchema(
-        existingTitlesArray,
-        collectionName ? "subCollectionName" : "collectionName"
-      )
-    ),
+    resolver: yupResolver(DirectorySettingsSchema(existingTitlesArray)),
+    context: { type: collectionName ? "subCollectionName" : "collectionName" },
   })
 
   const { fields, append, remove } = useFieldArray({
