@@ -29,13 +29,14 @@ export const DirectorySettingsSchema = (existingTitlesArray = []) =>
             'Title cannot contain any of the following special characters: ~%^*_+-./\\`;~{}[]"<>',
             (value) => !specialCharactersRegexTest.test(value)
           )
-        if (type === "collectionName") {
+        if (type === "collectionName")
           return schema
-            .transform((value) => value.trim().replaceAll(" ", "-"))
+            .transform((value) =>
+              value.trim().replaceAll(" ", "-").toLowerCase()
+            )
             .matches(
               slugifyLowerFalseRegexTest,
               "Title cannot contain any symbols"
             )
-        }
       }),
   })

@@ -6,8 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
 import FormField from "components/FormField"
-import { getLastItemType } from "utils"
-import Breadcrumb from "folders/Breadcrumb"
+import { deslugify, getLastItemType } from "utils"
 import { DirectorySettingsSchema } from "."
 
 // axios settings
@@ -36,7 +35,7 @@ export const DirectorySettingsModal = ({
       mode: "onBlur",
       resolver: yupResolver(DirectorySettingsSchema(existingTitlesArray)),
       defaultValues: {
-        newDirectoryName: params[getLastItemType(params)],
+        newDirectoryName: deslugify(params[getLastItemType(params)]),
       },
       context: {
         type: subCollectionName ? "subCollectionName" : "collectionName",

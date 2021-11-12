@@ -39,7 +39,7 @@ export const DirectoryCreationModal = ({
   })
 
   const { fields, append, remove } = useFieldArray({
-    name: "selectedPages",
+    name: "items",
     control: methods.control,
   })
 
@@ -123,12 +123,9 @@ export const DirectoryCreationModal = ({
                 label={fields.length === 0 ? `Skip` : `Done`}
                 disabledStyle={elementStyles.disabled}
                 className={elementStyles.blue}
-                callback={() =>
-                  onProceed({
-                    newDirectoryName: methods.watch("newDirectoryName"),
-                    items: fields.map((field) => (({ id, ...p }) => p)(field)),
-                  })
-                }
+                callback={methods.handleSubmit(async (data) => {
+                  await onProceed(data)
+                })}
               />
             </div>
           </div>

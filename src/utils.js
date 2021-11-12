@@ -537,7 +537,7 @@ export const getDefaultFrontMatter = (params, existingTitles) => {
     resourceCategoryName,
   } = params
   let exampleTitle = "Example Title"
-  while (existingTitles.includes(exampleTitle)) {
+  while (existingTitles.includes(`${exampleTitle}.md`)) {
     exampleTitle += " 1"
   }
   let examplePermalink = "/"
