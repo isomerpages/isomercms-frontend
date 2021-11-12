@@ -1,5 +1,4 @@
 import * as Yup from "yup"
-import { slugifyCategory } from "../../utils"
 import {
   specialCharactersRegexTest,
   slugifyLowerFalseRegexTest,
