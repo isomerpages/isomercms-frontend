@@ -27,8 +27,10 @@ export function useCreateDirectoryHook(params, queryParams) {
         queryClient.invalidateQueries([DIR_CONTENT_KEY, { ...params }])
         setRedirectToPage(
           getRedirectUrl({
+            collectionName: resp.data.newDirectoryName,
+            subCollectionName:
+              params.collectionName && resp.data.newDirectoryName,
             ...params,
-            subCollectionName: resp.data.newDirectoryName,
           })
         )
         queryParams && queryParams.onSuccess && queryParams.onSuccess()

@@ -455,7 +455,7 @@ export const getRedirectUrl = ({
       return `/sites/${siteName}/folders/${collectionName}/${
         subCollectionName
           ? `subfolders/${encodeURIComponent(subCollectionName)}`
-          : "" // V2
+          : ""
       }`
     }
   } else {

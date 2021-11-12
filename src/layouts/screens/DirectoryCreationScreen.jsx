@@ -17,9 +17,7 @@ export const DirectoryCreationScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match
 
   const { data: dirData } = useGetDirectoryHook(params, { initialData: [] })
-  const { mutateAsync: saveHandler } = useCreateDirectoryHook(params, {
-    onSuccess: () => onClose(),
-  })
+  const { mutateAsync: saveHandler } = useCreateDirectoryHook(params)
   const { data: pagesData } = useGetDirectoryHook(
     {
       ...params,
