@@ -40,9 +40,6 @@ export const DirectorySettingsModal = ({
       context: {
         type: subCollectionName ? "subCollectionName" : "collectionName",
       },
-      context: {
-        type: subCollectionName ? "subCollectionName" : "collectionName",
-      },
     })
 
   return (
