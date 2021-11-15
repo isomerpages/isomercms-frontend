@@ -1,10 +1,12 @@
+import axios from "axios"
+import Header from "components/Header"
 import React, { Component } from "react"
 import { Link } from "react-router-dom"
-import axios from "axios"
-import Header from "../components/Header"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import siteStyles from "../styles/isomer-cms/pages/Sites.module.scss"
-import { SITES_IS_PRIVATE_KEY } from "../constants"
+
+import { SITES_IS_PRIVATE_KEY } from "constants/constants"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import siteStyles from "styles/isomer-cms/pages/Sites.module.scss"
 
 export default class Sites extends Component {
   _isMounted = false

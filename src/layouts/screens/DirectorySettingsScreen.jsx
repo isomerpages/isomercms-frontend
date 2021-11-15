@@ -1,15 +1,15 @@
-import React from "react"
 import axios from "axios"
 import PropTypes from "prop-types"
+import React from "react"
 
-import { getLastItemType } from "../../utils"
+import DirectorySettingsModal from "components/DirectorySettingsModal"
 
 import {
   useGetDirectoryHook,
   useUpdateDirectoryHook,
-} from "../../hooks/directoryHooks"
+} from "hooks/directoryHooks"
 
-import DirectorySettingsModal from "../../components/DirectorySettingsModal"
+import { getLastItemType } from "utils"
 
 // axios settings
 axios.defaults.withCredentials = true

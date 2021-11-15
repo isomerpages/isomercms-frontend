@@ -1,6 +1,7 @@
-import React, { createContext, useEffect, useState, useContext } from "react"
 import axios from "axios"
-import { SITES_IS_PRIVATE_KEY } from "../constants"
+import React, { createContext, useEffect, useState, useContext } from "react"
+
+import { SITES_IS_PRIVATE_KEY } from "constants/constants"
 
 const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 const LOCAL_STORAGE_USER_ID_KEY = "userId"

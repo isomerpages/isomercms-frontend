@@ -1,21 +1,32 @@
+import axios from "axios"
+import FormField from "components/FormField"
+import FormFieldHorizontal from "components/FormFieldHorizontal"
+import ResourceFormFields from "components/ResourceFormFields"
+import SaveDeleteButtons from "components/SaveDeleteButtons"
+import * as _ from "lodash"
+import PropTypes from "prop-types"
 import React, { useState, useEffect } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
-import axios from "axios"
-import PropTypes from "prop-types"
-import * as _ from "lodash"
 
-import FormField from "./FormField"
-import FormFieldHorizontal from "./FormFieldHorizontal"
-import ResourceFormFields from "./ResourceFormFields"
-import SaveDeleteButtons from "./SaveDeleteButtons"
 import {
   RESOURCE_ROOM_NAME_KEY,
   RESOURCE_CATEGORY_CONTENT_KEY,
-} from "../constants"
+} from "constants/constants"
 
-import useSiteUrlHook from "../hooks/useSiteUrlHook"
-import useRedirectHook from "../hooks/useRedirectHook"
+import useRedirectHook from "hooks/useRedirectHook"
+import useSiteUrlHook from "hooks/useSiteUrlHook"
 
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import { errorToast, successToast } from "utils/toasts"
+import { validateResourceSettings } from "utils/validators"
+
+import {
+  createPageData,
+  updatePageData,
+  renamePageData,
+  getResourceRoomName,
+} from "api"
 import {
   DEFAULT_RETRY_MSG,
   frontMatterParser,
@@ -24,19 +35,7 @@ import {
   concatFrontMatterMdBody,
   deslugifyDirectory,
   slugifyCategory,
-} from "../utils"
-
-import {
-  createPageData,
-  updatePageData,
-  renamePageData,
-  getResourceRoomName,
-} from "../api"
-
-import { validateResourceSettings } from "../utils/validators"
-import { errorToast, successToast } from "../utils/toasts"
-
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+} from "utils"
 
 // axios settings
 axios.defaults.withCredentials = true

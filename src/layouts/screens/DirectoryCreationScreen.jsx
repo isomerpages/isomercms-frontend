@@ -1,14 +1,14 @@
-import React from "react"
 import axios from "axios"
-import PropTypes from "prop-types"
 import * as _ from "lodash"
+import PropTypes from "prop-types"
+import React from "react"
+
+import DirectoryCreationModal from "components/DirectoryCreationModal"
 
 import {
   useGetDirectoryHook,
   useCreateDirectoryHook,
-} from "../../hooks/directoryHooks"
-
-import DirectoryCreationModal from "../../components/DirectoryCreationModal"
+} from "hooks/directoryHooks"
 
 // axios settings
 axios.defaults.withCredentials = true

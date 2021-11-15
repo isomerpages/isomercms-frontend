@@ -1,7 +1,7 @@
-import React from "react"
-import PropTypes from "prop-types"
-import DOMPurify from "dompurify"
 import { sanitizeUrl } from "@braintree/sanitize-url"
+import DOMPurify from "dompurify"
+import PropTypes from "prop-types"
+import React from "react"
 
 const Contact = React.forwardRef(({ contact }, ref) => (
   <div className="col is-6" ref={ref}>

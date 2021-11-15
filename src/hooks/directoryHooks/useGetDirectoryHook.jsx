@@ -1,10 +1,13 @@
 import { useContext } from "react"
 import { useQuery } from "react-query"
-import { errorToast } from "../../utils/toasts"
-import { DEFAULT_RETRY_MSG } from "../../utils"
-import { DIR_CONTENT_KEY } from "../queryKeys"
 
-import { ServicesContext } from "../../contexts/ServicesContext"
+import { ServicesContext } from "contexts/ServicesContext"
+
+import { DIR_CONTENT_KEY } from "hooks/queryKeys"
+
+import { errorToast } from "utils/toasts"
+
+import { DEFAULT_RETRY_MSG } from "utils"
 
 // get directory data
 export function useGetDirectoryHook(params, queryParams) {

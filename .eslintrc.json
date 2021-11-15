@@ -9,6 +9,13 @@
     "airbnb",
     "plugin:prettier/recommended"
   ],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src"]
+      }
+    }
+  },
   "parser": "babel-eslint",
   "parserOptions": {
     "ecmaFeatures": {
@@ -19,7 +26,70 @@
   },
   "plugins": ["only-warn", "react"],
   "rules": {
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "import/order": [
+      "error",
+      {
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        },
+        "newlines-between": "always",
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object"],
+        "pathGroups": [
+          {
+            "pattern": "components/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "constants/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "contexts/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "hooks/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "layouts/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "routing/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "services/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "styles/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "templates/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "utils/**",
+            "group": "internal",
+            "position": "before"
+          }
+        ]
+      }
+    ]
   },
   "globals": {
     "cy": "readonly",

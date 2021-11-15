@@ -1,11 +1,11 @@
-import React from "react"
 import PropTypes from "prop-types"
+import React from "react"
 
-import CollectionPageTemplate from "../../templates/pages/CollectionPageTemplate"
-import ResourcePageTemplate from "../../templates/pages/ResourcePageTemplate"
-import PageTemplate from "../../templates/pages/PageTemplate"
+import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
-import editorStyles from "../../styles/isomer-cms/pages/Editor.module.scss"
+import CollectionPageTemplate from "templates/pages/CollectionPageTemplate"
+import PageTemplate from "templates/pages/PageTemplate"
+import ResourcePageTemplate from "templates/pages/ResourcePageTemplate"
 
 const PagePreview = ({ pageParams, chunk, dirData, title }) => {
   const {

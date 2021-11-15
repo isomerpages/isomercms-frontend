@@ -1,10 +1,12 @@
+import axios from "axios"
 import React from "react"
 import { Redirect, Route } from "react-router-dom"
-import axios from "axios"
-import { getDecodedParams } from "../utils"
+
+import { LoginConsumer } from "contexts/LoginContext"
+
+import { getDecodedParams } from "utils"
 
 // Import contexts
-import { LoginConsumer } from "../contexts/LoginContext"
 
 // axios settings
 axios.defaults.withCredentials = true

@@ -1,10 +1,13 @@
-import React from "react"
 import PropTypes from "prop-types"
+import React from "react"
 import { Droppable, Draggable } from "react-beautiful-dnd"
-import styles from "../../styles/App.module.scss"
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
-import FormField from "../FormField"
-import { isEmpty } from "../../utils"
+
+import FormField from "components/FormField"
+
+import styles from "styles/App.module.scss"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import { isEmpty } from "utils"
 
 const SublinkElem = ({
   title,

@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react"
 import axios from "axios"
-import PropTypes from "prop-types"
 import * as _ from "lodash"
+import PropTypes from "prop-types"
+import React, { useEffect, useState } from "react"
 
-import FolderCard from "./FolderCard"
-import LoadingButton from "./LoadingButton"
-import FolderNamingModal from "./FolderNamingModal"
+import FolderCard from "components/FolderCard"
+import FolderNamingModal from "components/FolderNamingModal"
+import LoadingButton from "components/LoadingButton"
 
-import { validateSubfolderName } from "../utils/validators"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import adminStyles from "styles/isomer-cms/pages/Admin.module.scss"
+import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
-import adminStyles from "../styles/isomer-cms/pages/Admin.module.scss"
+import { validateSubfolderName } from "utils/validators"
 
 // axios settings
 axios.defaults.withCredentials = true

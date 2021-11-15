@@ -1,8 +1,9 @@
+const { spawn } = require("child_process")
+const path = require("path")
+
 const axios = require("axios")
 const btoa = require("btoa")
-const { spawn } = require("child_process")
 const cypress = require("cypress")
-const path = require("path")
 
 // login credentials
 const { PERSONAL_ACCESS_TOKEN, USERNAME } = process.env

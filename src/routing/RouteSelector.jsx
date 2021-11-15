@@ -1,27 +1,28 @@
-import React from "react"
 import * as Sentry from "@sentry/react"
+import React from "react"
 import { Switch } from "react-router-dom"
 
 // Layouts
-import Home from "../layouts/Home"
-import Sites from "../layouts/Sites"
-import Workspace from "../layouts/Workspace"
-import Folders from "../layouts/Folders"
-import EditPage from "../layouts/EditPage"
-import EditPageV2 from "../layouts/EditPageV2"
-import CategoryPages from "../layouts/CategoryPages"
-import Media from "../layouts/Media"
-import EditHomepage from "../layouts/EditHomepage"
-import EditContactUs from "../layouts/EditContactUs"
-import Resources from "../layouts/Resources"
-import EditNavBar from "../layouts/EditNavBar"
-import Settings from "../layouts/Settings"
-import NotFoundPage from "../components/NotFoundPage"
-import FallbackComponent from "../components/FallbackComponent"
+import FallbackComponent from "components/FallbackComponent"
+import NotFoundPage from "components/NotFoundPage"
+
+import CategoryPages from "layouts/CategoryPages"
+import EditContactUs from "layouts/EditContactUs"
+import EditHomepage from "layouts/EditHomepage"
+import EditNavBar from "layouts/EditNavBar"
+import EditPage from "layouts/EditPage"
+import EditPageV2 from "layouts/EditPageV2"
+import Folders from "layouts/Folders"
+import Home from "layouts/Home"
+import Media from "layouts/Media"
+import Resources from "layouts/Resources"
+import Settings from "layouts/Settings"
+import Sites from "layouts/Sites"
+import Workspace from "layouts/Workspace"
 
 // ProtectedRoute component
-import ProtectedRoute from "./ProtectedRoute"
-import RedirectIfLoggedInRoute from "./RedirectIfLoggedInRoute"
+import ProtectedRoute from "routing/ProtectedRoute"
+import RedirectIfLoggedInRoute from "routing/RedirectIfLoggedInRoute"
 
 export const ProtectedRouteWithProps = (props) => {
   return (

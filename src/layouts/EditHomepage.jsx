@@ -1,43 +1,44 @@
-import React, { useEffect, createRef, useState } from "react"
 import axios from "axios"
+import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
-import update from "immutability-helper"
+import React, { useEffect, createRef, useState } from "react"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
-import EditorInfobarSection from "../components/homepage/InfobarSection"
-import EditorInfopicSection from "../components/homepage/InfopicSection"
-import EditorResourcesSection from "../components/homepage/ResourcesSection"
-import EditorHeroSection from "../components/homepage/HeroSection"
-import NewSectionCreator from "../components/homepage/NewSectionCreator"
-import Header from "../components/Header"
-import LoadingButton from "../components/LoadingButton"
-import DeleteWarningModal from "../components/DeleteWarningModal"
+import DeleteWarningModal from "components/DeleteWarningModal"
+import Header from "components/Header"
+import EditorHeroSection from "components/homepage/HeroSection"
+import EditorInfobarSection from "components/homepage/InfobarSection"
+import EditorInfopicSection from "components/homepage/InfopicSection"
+import NewSectionCreator from "components/homepage/NewSectionCreator"
+import EditorResourcesSection from "components/homepage/ResourcesSection"
+import LoadingButton from "components/LoadingButton"
 
-import TemplateHeroSection from "../templates/homepage/HeroSection"
-import TemplateInfobarSection from "../templates/homepage/InfobarSection"
-import TemplateInfopicLeftSection from "../templates/homepage/InfopicLeftSection"
-import TemplateInfopicRightSection from "../templates/homepage/InfopicRightSection"
-import TemplateResourcesSection from "../templates/homepage/ResourcesSection"
+import TemplateHeroSection from "templates/homepage/HeroSection"
+import TemplateInfobarSection from "templates/homepage/InfobarSection"
+import TemplateInfopicLeftSection from "templates/homepage/InfopicLeftSection"
+import TemplateInfopicRightSection from "templates/homepage/InfopicRightSection"
+import TemplateResourcesSection from "templates/homepage/ResourcesSection"
+
+import { errorToast } from "utils/toasts"
+import {
+  validateSections,
+  validateHighlights,
+  validateDropdownElems,
+} from "utils/validators"
 
 import {
   frontMatterParser,
   concatFrontMatterMdBody,
   DEFAULT_RETRY_MSG,
-} from "../utils"
-import {
-  validateSections,
-  validateHighlights,
-  validateDropdownElems,
-} from "../utils/validators"
-import { errorToast } from "../utils/toasts"
+} from "utils"
 
-import "../styles/isomer-template.scss"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import editorStyles from "../styles/isomer-cms/pages/Editor.module.scss"
+import "styles/isomer-template.scss"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 // Import hooks
-import useSiteColorsHook from "../hooks/useSiteColorsHook"
+import useSiteColorsHook from "hooks/useSiteColorsHook"
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */

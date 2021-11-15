@@ -1,7 +1,8 @@
-import React from "react"
-import PropTypes from "prop-types"
 import _ from "lodash"
-import { PageHeader, PageBody, LeftNav } from "../pageComponentsV2"
+import PropTypes from "prop-types"
+import React from "react"
+
+import { PageHeader, PageBody, LeftNav } from "templates/pageComponentsV2"
 
 const CollectionPageTemplate = ({ chunk, dirData, pageParams, title }) => {
   return (

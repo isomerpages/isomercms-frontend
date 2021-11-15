@@ -1,7 +1,9 @@
-import React from "react"
 import PropTypes from "prop-types"
-import LoadingButton from "./LoadingButton"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import React from "react"
+
+import LoadingButton from "components/LoadingButton"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 const SaveDeleteButtons = ({
   saveLabel,

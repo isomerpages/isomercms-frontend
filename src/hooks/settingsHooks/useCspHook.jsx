@@ -1,9 +1,12 @@
 import axios from "axios"
-import { useQuery } from "react-query"
 import Policy from "csp-parse"
-import { errorToast } from "../../utils/toasts"
-import { CSP_CONTENT_KEY } from "../queryKeys"
-import { DEFAULT_RETRY_MSG } from "../../utils"
+import { useQuery } from "react-query"
+
+import { CSP_CONTENT_KEY } from "hooks/queryKeys"
+
+import { errorToast } from "utils/toasts"
+
+import { DEFAULT_RETRY_MSG } from "utils"
 
 const getCsp = async ({ siteName }) => {
   const resp = await axios.get(

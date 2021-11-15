@@ -1,15 +1,20 @@
-import React, { useEffect, useState } from "react"
 import axios from "axios"
-import { Link } from "react-router-dom"
-import { useQuery } from "react-query"
 import PropTypes from "prop-types"
-import styles from "../styles/isomer-cms/pages/Admin.module.scss"
-import useRedirectHook from "../hooks/useRedirectHook"
-import useSiteUrlHook from "../hooks/useSiteUrlHook"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import { getLastUpdated } from "../api"
-import { LAST_UPDATED_KEY } from "../constants"
-import { errorToast } from "../utils/toasts"
+import React, { useEffect, useState } from "react"
+import { useQuery } from "react-query"
+import { Link } from "react-router-dom"
+
+import { LAST_UPDATED_KEY } from "constants/constants"
+
+import useRedirectHook from "hooks/useRedirectHook"
+import useSiteUrlHook from "hooks/useSiteUrlHook"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import styles from "styles/isomer-cms/pages/Admin.module.scss"
+
+import { errorToast } from "utils/toasts"
+
+import { getLastUpdated } from "api"
 
 // axios settings
 axios.defaults.withCredentials = true

@@ -1,14 +1,14 @@
+import PropTypes from "prop-types"
 import React, { useState, useEffect, useRef } from "react"
 import { Link, useRouteMatch } from "react-router-dom"
-import PropTypes from "prop-types"
 
-import { MenuDropdown } from "../MenuDropdown"
+import { MenuDropdown } from "components/MenuDropdown"
 
-import useRedirectHook from "../../hooks/useRedirectHook"
+import useRedirectHook from "hooks/useRedirectHook"
 
 // Import styles
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../../styles/isomer-cms/pages/Content.module.scss"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
 const FolderItem = ({ item, itemIndex, isDisabled }) => {
   const { url } = useRouteMatch()

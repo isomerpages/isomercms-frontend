@@ -1,5 +1,5 @@
-import React from "react"
 import PropTypes from "prop-types"
+import React from "react"
 
 export const PageBody = ({ chunk }) => (
   <div className="col is-8 is-offset-1-desktop is-12-touch print-content page-content-body">

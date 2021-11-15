@@ -2,7 +2,7 @@ import React from "react"
 import { Redirect, Route } from "react-router-dom"
 
 // Import contexts
-const { LoginConsumer } = require("../contexts/LoginContext")
+const { LoginConsumer } = require("contexts/LoginContext")
 
 export default function RedirectIfLoggedInRoute({
   children,

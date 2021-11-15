@@ -1,6 +1,7 @@
-import React from "react"
 import PropTypes from "prop-types"
-import PageHeader from "./pageComponents/PageHeader"
+import React from "react"
+
+import PageHeader from "templates/pageComponents/PageHeader"
 
 // This following template was taken from the 'Simple Page'
 const SimplePage = ({

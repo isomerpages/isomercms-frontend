@@ -7,7 +7,7 @@ import {
   titleToPageFileName,
   deslugifyDirectory,
   generatePageFileName,
-} from "../utils"
+} from "utils"
 
 // Common regexes and constants
 // ==============

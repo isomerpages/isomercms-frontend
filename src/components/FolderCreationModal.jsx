@@ -1,26 +1,28 @@
 // TODO: deprecate after Workspace refactor, replaced by DirectoryCreationModal
 
-import React, { useEffect, useState } from "react"
 import axios from "axios"
-import PropTypes from "prop-types"
-import * as _ from "lodash"
 import update from "immutability-helper"
+import * as _ from "lodash"
+import PropTypes from "prop-types"
+import React, { useEffect, useState } from "react"
 import { useMutation } from "react-query"
 import Select from "react-select"
 
-import FolderCard from "./FolderCard"
-import LoadingButton from "./LoadingButton"
-import FolderNamingModal from "./FolderNamingModal"
-import { errorToast } from "../utils/toasts"
-import useRedirectHook from "../hooks/useRedirectHook"
+import FolderCard from "components/FolderCard"
+import FolderNamingModal from "components/FolderNamingModal"
+import LoadingButton from "components/LoadingButton"
 
-import { validateCategoryName } from "../utils/validators"
-import { deslugifyPage, slugifyCategory, DEFAULT_RETRY_MSG } from "../utils"
+import useRedirectHook from "hooks/useRedirectHook"
 
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
-import adminStyles from "../styles/isomer-cms/pages/Admin.module.scss"
-import { moveFiles } from "../api"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import adminStyles from "styles/isomer-cms/pages/Admin.module.scss"
+import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
+
+import { errorToast } from "utils/toasts"
+import { validateCategoryName } from "utils/validators"
+
+import { moveFiles } from "api"
+import { deslugifyPage, slugifyCategory, DEFAULT_RETRY_MSG } from "utils"
 
 // axios settings
 axios.defaults.withCredentials = true

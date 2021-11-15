@@ -1,8 +1,10 @@
-import React from "react"
-import PropTypes from "prop-types"
 import parse from "html-react-parser"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import LoadingButton from "./LoadingButton"
+import PropTypes from "prop-types"
+import React from "react"
+
+import LoadingButton from "components/LoadingButton"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 const GenericWarningModal = ({
   displayTitle,

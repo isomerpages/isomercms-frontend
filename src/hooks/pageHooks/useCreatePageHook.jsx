@@ -1,10 +1,13 @@
 import { useContext } from "react"
 import { useMutation } from "react-query"
-import { getRedirectUrl, DEFAULT_RETRY_MSG } from "../../utils"
-import { errorToast } from "../../utils/toasts"
-import useRedirectHook from "../useRedirectHook"
 
-import { ServicesContext } from "../../contexts/ServicesContext"
+import { ServicesContext } from "contexts/ServicesContext"
+
+import useRedirectHook from "hooks/useRedirectHook"
+
+import { errorToast } from "utils/toasts"
+
+import { getRedirectUrl, DEFAULT_RETRY_MSG } from "utils"
 
 export function useCreatePageHook(params, queryParams) {
   const { pageService } = useContext(ServicesContext)

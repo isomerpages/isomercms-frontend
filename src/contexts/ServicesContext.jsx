@@ -1,5 +1,6 @@
 import React, { createContext } from "react"
-import { PageService, DirectoryService, MoverService } from "../services"
+
+import { PageService, DirectoryService, MoverService } from "services"
 
 const ServicesContext = createContext({}) // holds all services we need
 

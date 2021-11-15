@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react"
 import axios from "axios"
 import PropTypes from "prop-types"
-import GenericWarningModal from "./GenericWarningModal"
-import useRedirectHook from "../hooks/useRedirectHook"
-import useSiteUrlHook from "../hooks/useSiteUrlHook"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import React, { useState, useEffect } from "react"
 
-import { getBackButton } from "../utils"
+import GenericWarningModal from "components/GenericWarningModal"
+
+import useRedirectHook from "hooks/useRedirectHook"
+import useSiteUrlHook from "hooks/useSiteUrlHook"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import { getBackButton } from "utils"
 
 // axios settings
 axios.defaults.withCredentials = true

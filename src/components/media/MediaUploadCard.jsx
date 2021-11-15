@@ -1,8 +1,9 @@
-import React from "react"
 import PropTypes from "prop-types"
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
-import mediaStyles from "../../styles/isomer-cms/pages/Media.module.scss"
-import contentStyles from "../../styles/isomer-cms/pages/Content.module.scss"
+import React from "react"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
+import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
 
 const MediaUploadCard = ({ onClick, type }) => (
   <button
