@@ -1,26 +1,22 @@
-import React, { useEffect, useState } from "react"
-import * as _ from "lodash"
-import PropTypes from "prop-types"
-
 import FormFieldHorizontal from "components/FormFieldHorizontal"
 import FormFieldMedia from "components/FormFieldMedia"
 import FormFieldToggle from "components/FormFieldToggle"
+import GenericWarningModal from "components/GenericWarningModal"
 import Header from "components/Header"
 import LoadingButton from "components/LoadingButton"
+import ColorPickerSection from "components/settings/ColorPickerSection"
 import Sidebar from "components/Sidebar"
+import * as _ from "lodash"
+import PropTypes from "prop-types"
+import React, { useEffect, useState } from "react"
+
+import { useGetSettingsHook, useUpdateSettingsHook } from "hooks/settingsHooks"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
 import { errorToast } from "utils/toasts"
 import { validateSocialMedia } from "utils/validators"
-
-import GenericWarningModal from "components/GenericWarningModal"
-
-import {
-  useGetSettingsHook,
-  useUpdateSettingsHook,
-} from "hooks/settingsHooks"
 
 import { DEFAULT_RETRY_MSG, getObjectDiff, isEmpty } from "utils"
 
