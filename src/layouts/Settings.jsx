@@ -1,9 +1,9 @@
+import Footer from "components/Footer"
 import FormFieldHorizontal from "components/FormFieldHorizontal"
 import FormFieldMedia from "components/FormFieldMedia"
 import FormFieldToggle from "components/FormFieldToggle"
 import GenericWarningModal from "components/GenericWarningModal"
 import Header from "components/Header"
-import LoadingButton from "components/LoadingButton"
 import ColorPickerSection from "components/settings/ColorPickerSection"
 import Sidebar from "components/Sidebar"
 import * as _ from "lodash"
@@ -488,29 +488,21 @@ const Settings = ({ match, location }) => {
               <br />
               <br />
             </div>
-            <div className={elementStyles.formSave}>
-              <LoadingButton
-                label="Save"
-                disabled={hasErrors || isSavingSettings}
-                disabledStyle={elementStyles.formSaveButtonDisabled}
-                className={
-                  hasErrors || isSavingSettings
-                    ? elementStyles.formSaveButtonDisabled
-                    : elementStyles.formSaveButtonActive
-                }
-                showLoading={isSavingSettings}
-                callback={() => {
-                  if (hasSettingsChanged) {
-                    setShowOverwriteWarning(true)
-                  } else {
-                    saveSettings()
-                  }
-                }}
-              />
-            </div>
           </div>
         </div>
       </form>
+      <Footer
+        isKeyButtonDisabled={hasErrors || isSavingSettings}
+        keyCallback={() => {
+          if (hasSettingsChanged) {
+            setShowOverwriteWarning(true)
+          } else {
+            saveSettings()
+          }
+        }}
+        keyButtonText="Save"
+        keyButtonIsLoading={isSavingSettings}
+      />
       {showOverwriteWarning && (
         <GenericWarningModal
           displayTitle="Override Changes"
