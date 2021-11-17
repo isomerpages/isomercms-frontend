@@ -1,18 +1,14 @@
-import PropTypes from "prop-types"
-import React, { useEffect, useState } from "react"
-import { Switch, useRouteMatch, useHistory } from "react-router-dom"
-
 // Import components
-import { ProtectedRouteWithProps } from "routing/RouteSelector"
-import FolderCard from "components/FolderCard"
+import { FolderCard } from "components/FolderCard"
 import FolderOptionButton from "components/FolderOptionButton"
 import Header from "components/Header"
 import PageCard from "components/PageCard"
 import Sidebar from "components/Sidebar"
+import PropTypes from "prop-types"
+import React, { useEffect, useState } from "react"
+import { Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 // Import styles
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
-import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
 // Import utils
 
@@ -29,6 +25,11 @@ import {
   DirectoryCreationScreen,
   DirectorySettingsScreen,
 } from "layouts/screens"
+
+import { ProtectedRouteWithProps } from "routing/RouteSelector"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
 const CONTACT_US_TEMPLATE_LAYOUT = "contact_us"
 

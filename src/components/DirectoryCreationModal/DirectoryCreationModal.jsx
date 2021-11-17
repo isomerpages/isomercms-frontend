@@ -1,16 +1,15 @@
-import axios from "axios"
-import * as _ from "lodash"
-import PropTypes from "prop-types"
-import React, { useEffect, useState } from "react"
-import { useFieldArray, useForm, FormProvider } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
-
-import FolderCard from "components/FolderCard"
-import LoadingButton from "components/LoadingButton"
+import axios from "axios"
 import {
   DirectorySettingsSchema,
   DirectorySettingsModal,
 } from "components/DirectorySettingsModal"
+import { FolderCard } from "components/FolderCard"
+import LoadingButton from "components/LoadingButton"
+import * as _ from "lodash"
+import PropTypes from "prop-types"
+import React, { useEffect, useState } from "react"
+import { useFieldArray, useForm, FormProvider } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import adminStyles from "styles/isomer-cms/pages/Admin.module.scss"
