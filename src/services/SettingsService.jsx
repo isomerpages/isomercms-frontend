@@ -7,16 +7,11 @@ export class SettingsService {
     return `/sites/${siteName}/settings`
   }
 
-  async update(
-    apiParams,
-    { configSettings, footerSettings, navigationSettings }
-  ) {
-    const body = {
-      configSettings,
-      footerSettings,
-      navigationSettings,
-    }
-    await this.apiClient.post(this.getSettingsEndpoint(apiParams), body)
+  async update(apiParams, { configSettings }) {
+    await this.apiClient.post(
+      this.getSettingsEndpoint(apiParams),
+      configSettings
+    )
   }
 
   async get(apiParams) {

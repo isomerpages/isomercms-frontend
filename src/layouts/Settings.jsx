@@ -55,15 +55,11 @@ const stateFields = {
       },
     ],
   },
-  otherFooterSettings: {
-    contact_us: "",
-    feedback: "",
-    faq: "",
-    show_reach: "",
-  },
-  navigationSettings: {
-    logo: "",
-  },
+  contact_us: "",
+  feedback: "",
+  faq: "",
+  show_reach: "",
+  logo: "",
   socialMediaContent: {
     facebook: "",
     linkedin: "",
@@ -75,19 +71,7 @@ const stateFields = {
   },
 }
 
-const CONFIG_FIELDS = [
-  "colors",
-  "favicon",
-  "facebook_pixel",
-  "google_analytics",
-  "linkedin_insights",
-  "is_government",
-  "shareicon",
-  "title",
-  "description",
-]
-const FOOTER_FIELDS = ["otherFooterSettings", "socialMediaContent"]
-const NAVIGATION_FIELDS = ["navigationSettings"]
+const OTHER_FOOTER_SETTINGS = ["contact_us", "feedback", "faq", "show_reach"]
 
 const Settings = ({ match, location }) => {
   const { params, decodedParams } = match
@@ -121,45 +105,17 @@ const Settings = ({ match, location }) => {
 
   useEffect(() => {
     if (settingsData && !hasChanges) {
-      const {
-        configSettings,
-        footerSettings,
-        navigationSettings,
-      } = settingsData
-
       const retrievedState = {
-        // config fields
-        // note: config fields are listed out one-by-one since we do not use all config fields
-        colors: configSettings.colors,
-        favicon: configSettings.favicon,
-        google_analytics: configSettings.google_analytics,
-        facebook_pixel: configSettings.facebook_pixel,
-        linkedin_insights: configSettings.linkedin_insights,
-        is_government: configSettings.is_government,
-        // resources_name: configSettings.resources_name,
-        // url: configSettings.url,
-        shareicon: configSettings.shareicon,
-        title: configSettings.title,
-        description: configSettings.description,
-        // footer fields
-        otherFooterSettings: {
-          contact_us: footerSettings.contact_us,
-          feedback: footerSettings.feedback,
-          faq: footerSettings.faq,
-          show_reach: footerSettings.show_reach,
-        },
+        ...stateFields,
+        ...settingsData,
         socialMediaContent: {
-          facebook: footerSettings.social_media?.facebook,
-          twitter: footerSettings.social_media?.twitter,
-          youtube: footerSettings.social_media?.youtube,
-          instagram: footerSettings.social_media?.instagram,
-          linkedin: footerSettings.social_media?.linkedin,
-          telegram: footerSettings.social_media?.telegram,
-          tiktok: footerSettings.social_media?.tiktok,
-        },
-        // navigation fields
-        navigationSettings: {
-          ...navigationSettings,
+          facebook: settingsData.social_media?.facebook,
+          twitter: settingsData.social_media?.twitter,
+          youtube: settingsData.social_media?.youtube,
+          instagram: settingsData.social_media?.instagram,
+          linkedin: settingsData.social_media?.linkedin,
+          telegram: settingsData.social_media?.telegram,
+          tiktok: settingsData.social_media?.tiktok,
         },
       }
       setCurrState(retrievedState)
@@ -191,10 +147,7 @@ const Settings = ({ match, location }) => {
     if (id === "show_reach" || grandparentElementId === "footer-fields") {
       setCurrState({
         ...currState,
-        otherFooterSettings: {
-          ...currState.otherFooterSettings,
-          [id]: value,
-        },
+        [id]: value,
       })
     } else if (grandparentElementId === "social-media-fields") {
       const errorMessage = validateSocialMedia(value, id)
@@ -236,14 +189,6 @@ const Settings = ({ match, location }) => {
           "media-colors": newMediaColors,
         },
       })
-    } else if (id === "logo") {
-      setCurrState({
-        ...currState,
-        navigationSettings: {
-          ...currState.navigationSettings,
-          [id]: value,
-        },
-      })
     } else {
       setCurrState({
         ...currState,
@@ -256,39 +201,20 @@ const Settings = ({ match, location }) => {
     try {
       // Construct payload
       const configSettings = {}
-      let footerSettings = {}
-      let navigationSettings = {}
       Object.keys(settingsStateDiff).forEach((field) => {
-        if (CONFIG_FIELDS.includes(field)) {
-          if (field === "facebook_pixel") {
-            configSettings["facebook-pixel"] = settingsStateDiff[field].obj1 // rename due to quirks on isomer template
-          } else if (field === "linkedin_insights") {
-            configSettings["linkedin-insights"] = settingsStateDiff[field].obj1 // rename due to quirks on isomer template
-          } else {
-            configSettings[field] = settingsStateDiff[field].obj1
-          }
-        }
-
-        if (FOOTER_FIELDS.includes(field)) {
-          if (field === "otherFooterSettings")
-            footerSettings = {
-              ...footerSettings,
-              ...settingsStateDiff[field].obj1,
-            }
-
-          if (field === "socialMediaContent")
-            footerSettings.social_media = settingsStateDiff[field].obj1
-        }
-
-        if (NAVIGATION_FIELDS.includes(field)) {
-          navigationSettings = settingsStateDiff[field].obj1
+        if (field === "facebook_pixel") {
+          configSettings["facebook-pixel"] = settingsStateDiff[field].obj1 // rename due to quirks on isomer template
+        } else if (field === "linkedin_insights") {
+          configSettings["linkedin-insights"] = settingsStateDiff[field].obj1 // rename due to quirks on isomer template
+        } else if (field === "socialMediaContent") {
+          configSettings.social_media = settingsStateDiff[field].obj1
+        } else {
+          configSettings[field] = settingsStateDiff[field].obj1
         }
       })
 
       updateSettingsHandler({
         configSettings,
-        footerSettings,
-        navigationSettings,
       })
     } catch (err) {
       errorToast(
@@ -360,8 +286,8 @@ const Settings = ({ match, location }) => {
                 <FormFieldMedia
                   title="Agency logo"
                   id="logo"
-                  value={currState.navigationSettings.logo}
-                  errorMessage={errors.navigationSettings.logo}
+                  value={currState.logo}
+                  errorMessage={errors.logo}
                   isRequired
                   onFieldChange={changeHandler}
                   inlineButtonText="Choose Image"
@@ -446,44 +372,38 @@ const Settings = ({ match, location }) => {
               {/* Footer fields */}
               <div id="footer-fields">
                 <p className={elementStyles.formSectionHeader}>Footer</p>
-                {Object.keys(currState.otherFooterSettings).map(
-                  (footerSetting) => {
-                    const title = footerSetting
-                      .split("_")
-                      .map(
-                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
-                      )
-                      .join(" ")
+                {OTHER_FOOTER_SETTINGS.map((footerSetting) => {
+                  const title = footerSetting
+                    .split("_")
+                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(" ")
 
-                    if (footerSetting === "show_reach") {
-                      return (
-                        <FormFieldToggle
-                          title={title}
-                          id={footerSetting}
-                          value={currState.otherFooterSettings[footerSetting]}
-                          key={`${footerSetting}-form`}
-                          errorMessage={
-                            errors.otherFooterSettings[footerSetting]
-                          }
-                          isRequired={false}
-                          onFieldChange={changeHandler}
-                        />
-                      )
-                    }
-
+                  if (footerSetting === "show_reach") {
                     return (
-                      <FormFieldHorizontal
+                      <FormFieldToggle
                         title={title}
                         id={footerSetting}
-                        value={currState.otherFooterSettings[footerSetting]}
+                        value={currState[footerSetting]}
                         key={`${footerSetting}-form`}
-                        errorMessage={errors.otherFooterSettings[footerSetting]}
+                        errorMessage={errors[footerSetting]}
                         isRequired={false}
                         onFieldChange={changeHandler}
                       />
                     )
                   }
-                )}
+
+                  return (
+                    <FormFieldHorizontal
+                      title={title}
+                      id={footerSetting}
+                      value={currState[footerSetting]}
+                      key={`${footerSetting}-form`}
+                      errorMessage={errors[footerSetting]}
+                      isRequired={false}
+                      onFieldChange={changeHandler}
+                    />
+                  )
+                })}
               </div>
               <br />
               <br />

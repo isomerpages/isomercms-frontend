@@ -34,7 +34,7 @@ const useSiteUrlHook = () => {
         const settingsResp = await axios.get(
           `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/settings`
         )
-        url = settingsResp.data.configSettings.url
+        url = settingsResp.data.url
       }
       setSiteUrl(url, siteName, type)
       return url
