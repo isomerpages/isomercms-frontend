@@ -1,10 +1,10 @@
 import * as Sentry from "@sentry/react"
+import FallbackComponent from "components/FallbackComponent"
+import NotFoundPage from "components/NotFoundPage"
 import React from "react"
 import { Switch } from "react-router-dom"
 
 // Layouts
-import FallbackComponent from "components/FallbackComponent"
-import NotFoundPage from "components/NotFoundPage"
 
 import CategoryPages from "layouts/CategoryPages"
 import EditContactUs from "layouts/EditContactUs"
@@ -15,7 +15,7 @@ import EditPageV2 from "layouts/EditPageV2"
 import Folders from "layouts/Folders"
 import Home from "layouts/Home"
 import Media from "layouts/Media"
-import Resources from "layouts/Resources"
+import ResourceRoom from "layouts/ResourceRoom"
 import Settings from "layouts/Settings"
 import Sites from "layouts/Sites"
 import Workspace from "layouts/Workspace"
@@ -95,20 +95,23 @@ export const RouteSelector = () => (
       path="/sites/:siteName/contact-us"
       component={EditContactUs}
     />
-    <ProtectedRouteWithProps
-      path="/sites/:siteName/resources/:resourceName/:fileName"
+    <ProtectedRouteWithProps // temporary until refactor
+      path="/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceName/editPage/:fileName"
       component={EditPage}
       isCollectionPage={false}
       isResourcePage
     />
-    <ProtectedRouteWithProps
-      path="/sites/:siteName/resources/:collectionName"
+    <ProtectedRouteWithProps // temporary until refactor
+      path="/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:collectionName"
       component={CategoryPages}
       isResource
     />
     <ProtectedRouteWithProps
-      path="/sites/:siteName/resources"
-      component={Resources}
+      path={[
+        "/sites/:siteName/resourceRoom/:resourceRoomName",
+        "/sites/:siteName/resourceRoom",
+      ]}
+      component={ResourceRoom}
     />
     <ProtectedRouteWithProps
       path="/sites/:siteName/navbar"

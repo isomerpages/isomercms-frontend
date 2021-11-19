@@ -42,10 +42,7 @@ const getBackButtonInfo = (pathname) => {
 }
 
 const CategoryPages = ({ match, location, isResource }) => {
-  const { backButtonLabel, backButtonUrl } = getBackButtonInfo(
-    location.pathname
-  )
-  const { collectionName, siteName } = match.params
+  const { resourceRoomName, collectionName, siteName } = match.params
   const { setRedirectToPage } = useRedirectHook()
 
   const [categoryPages, setCategoryPages] = useState()
@@ -104,8 +101,8 @@ const CategoryPages = ({ match, location, isResource }) => {
     <>
       <Header
         siteName={siteName}
-        backButtonText={`Back to ${backButtonLabel}`}
-        backButtonUrl={`/sites/${siteName}/${backButtonUrl}`}
+        backButtonText="Back to Resources"
+        backButtonUrl={`/sites/${siteName}/resourceRoom/${resourceRoomName}`}
       />
       {/* main bottom section */}
       <div className={elementStyles.wrapper}>
@@ -120,7 +117,7 @@ const CategoryPages = ({ match, location, isResource }) => {
           </div>
           <div className={contentStyles.segment}>
             <span>
-              <Link to={`/sites/${siteName}/resources`}>
+              <Link to={`/sites/${siteName}/resourceRoom/${resourceRoomName}`}>
                 <strong>Resources</strong>
               </Link>
               &nbsp;{">"}

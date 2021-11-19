@@ -16,6 +16,7 @@ import {
   PAGE_CONTENT_KEY,
 } from "constants/constants"
 
+import { useGetResourceRoomNameHook } from "hooks/settingsHooks/useGetResourceRoomName"
 import useRedirectHook from "hooks/useRedirectHook"
 import useSiteUrlHook from "hooks/useSiteUrlHook"
 
@@ -69,6 +70,7 @@ const PageSettingsModal = ({
   const [siteUrl, setSiteUrl] = useState("https://abc.com.sg")
   const { setRedirectToPage } = useRedirectHook()
   const { retrieveSiteUrl } = useSiteUrlHook()
+  const { data: resourceRoomName } = useGetResourceRoomNameHook({ siteName }) // temporary fix pre-refactor
 
   const idToSetterFuncMap = {
     title: setTitle,
@@ -91,6 +93,7 @@ const PageSettingsModal = ({
           {
             siteName,
             folderName,
+            resourceRoomName, // temporary fix pre-refactor
             subfolderName,
             newFileName: generatePageFileName(title),
           },

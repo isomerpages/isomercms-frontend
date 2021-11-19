@@ -244,7 +244,7 @@ const ComponentSettingsModal = ({
       const newPageData = concatFrontMatterMdBody(frontMatter, mdBody)
       if (isNewFile)
         return createPageData(
-          { siteName, resourceName: category, newFileName },
+          { siteName, resourceName: category, newFileName, resourceRoomName }, // temporary fix for V1
           newPageData
         )
       if (fileName !== newFileName)

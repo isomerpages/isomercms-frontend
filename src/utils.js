@@ -447,10 +447,18 @@ export const getRedirectUrl = ({
   siteName,
   collectionName,
   subCollectionName,
+  resourceRoomName,
   resourceCategoryName,
   fileName,
 }) => {
   if (!fileName) {
+    if (resourceRoomName) {
+      return `/sites/${siteName}/resourceRoom/${resourceRoomName}${
+        resourceCategoryName
+          ? `/resourceCategory/${encodeURIComponent(resourceCategoryName)}`
+          : ""
+      }`
+    }
     if (collectionName) {
       return `/sites/${siteName}/folders/${collectionName}${
         subCollectionName
