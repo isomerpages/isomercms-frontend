@@ -87,6 +87,7 @@ const extractMetadataFromFilename = (isResourcePage, fileName) => {
 }
 
 const getBackButtonInfo = (
+  resourceRoomName,
   resourceCategory,
   folderName,
   siteName,
@@ -95,7 +96,7 @@ const getBackButtonInfo = (
   if (resourceCategory)
     return {
       backButtonLabel: deslugifyDirectory(resourceCategory),
-      backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
+      backButtonUrl: `/sites/${siteName}/resourceRoom/${resourceRoomName}/resourceCategory/${resourceCategory}`,
     }
   if (folderName) {
     if (subfolderName)
@@ -138,6 +139,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
 
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
   const { setRedirectToNotFound } = useRedirectHook()
+  const { resourceRoomName } = match.params
 
   const {
     folderName,
@@ -151,6 +153,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
     fileName
   )
   const { backButtonLabel, backButtonUrl } = getBackButtonInfo(
+    resourceRoomName,
     resourceName,
     folderName,
     siteName,
@@ -174,7 +177,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
   const [isLoadingPageContent, setIsLoadingPageContent] = useState(true)
   const [uploadPath, setUploadPath] = useState("")
   const [leftNavPages, setLeftNavPages] = useState([])
-  const [resourceRoomName, setResourceRoomName] = useState("")
+  // const [resourceRoomName, setResourceRoomName] = useState("")
   const [isCspViolation, setIsCspViolation] = useState(false)
   const [isXSSViolation, setIsXSSViolation] = useState(false)
   const [showXSSWarning, setShowXSSWarning] = useState(false)
@@ -332,7 +335,7 @@ const EditPage = ({ match, isResourcePage, isCollectionPage, history }) => {
         setEditorValue(retrievedMdBody.trim())
         setFrontMatter(retrievedFrontMatter)
         setLeftNavPages(generatedLeftNavPages)
-        setResourceRoomName(resourceRoomName || "")
+        // setResourceRoomName(resourceRoomName || "")
         setIsLoadingPageContent(false)
       }
     }

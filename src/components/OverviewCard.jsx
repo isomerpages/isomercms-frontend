@@ -1,10 +1,13 @@
+// to deprecate in favor of PageCard after refactor for Resource Category screen
+
 import axios from "axios"
+import FileMoveMenuDropdown from "components/FileMoveMenuDropdown"
+import { MenuDropdown } from "components/MenuDropdown"
 import PropTypes from "prop-types"
 import React, { useEffect, useState, useRef } from "react"
 import { Link } from "react-router-dom"
 
-import FileMoveMenuDropdown from "components/FileMoveMenuDropdown"
-import { MenuDropdown } from "components/MenuDropdown"
+import { useGetResourceRoomNameHook } from "hooks/settingsHooks/useGetResourceRoomName"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
@@ -44,6 +47,7 @@ const OverviewCard = ({
   const fileMoveDropdownRef = useRef(null)
   const [canShowDropdown, setCanShowDropdown] = useState(false)
   const [canShowFileMoveDropdown, setCanShowFileMoveDropdown] = useState(false)
+  const { data: resourceRoomName } = useGetResourceRoomNameHook({ siteName }) // temporary fix pre-refactor
 
   useEffect(() => {
     if (canShowFileMoveDropdown) fileMoveDropdownRef.current.focus()
@@ -52,7 +56,7 @@ const OverviewCard = ({
 
   const generateLink = () => {
     if (isResource) {
-      return `/sites/${siteName}/resources/${category}/${fileName}`
+      return `/sites/${siteName}/resourceRoom/${resourceRoomName}/resourceCategory/${category}/editPage/${fileName}` // temporary fix pre-refactor
     }
     if (isHomepage) {
       return `/sites/${siteName}/homepage`
