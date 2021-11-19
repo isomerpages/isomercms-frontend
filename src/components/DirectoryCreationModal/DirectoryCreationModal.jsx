@@ -24,10 +24,11 @@ export const DirectoryCreationModal = ({
   dirsData,
   pagesData,
   onProceed,
+  showSelectPages,
 }) => {
   const { siteName, collectionName } = params
 
-  const [isSelectingTitle, setIsSelectingTitle] = useState(true)
+  const [isSelectingPages, setIsSelectingPages] = useState(false)
 
   const existingTitlesArray = dirsData.map((item) => item.name)
 
@@ -44,16 +45,20 @@ export const DirectoryCreationModal = ({
 
   return (
     <FormProvider {...methods}>
-      {isSelectingTitle && (
+      {!isSelectingPages && (
         <DirectorySettingsModal
           isCreate
           params={params}
           dirsData={dirsData}
-          onProceed={() => setIsSelectingTitle(false)}
+          onProceed={
+            showSelectPages
+              ? () => setIsSelectingPages(true)
+              : (data) => onProceed(data)
+          }
           onClose={onClose}
         />
       )}
-      {!isSelectingTitle && (
+      {showSelectPages && isSelectingPages && (
         <div className={elementStyles.overlay}>
           <div className={`${elementStyles.fullscreenWrapper}`}>
             <div
