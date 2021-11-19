@@ -21,10 +21,16 @@ export function useUpdateDirectoryHook(params, queryParams) {
       queryParams && queryParams.onError && queryParams.onError()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries([
-        DIR_CONTENT_KEY,
-        (({ subCollectionName, ...p }) => p)(params),
-      ])
+      if (params.subCollectionName)
+        queryClient.invalidateQueries([
+          DIR_CONTENT_KEY,
+          (({ subCollectionName, ...p }) => p)(params),
+        ])
+      else
+        queryClient.invalidateQueries([
+          DIR_CONTENT_KEY,
+          (({ collectionName, ...p }) => p)(params),
+        ])
       successToast("Successfully updated directory settings")
       queryParams && queryParams.onSuccess && queryParams.onSuccess()
     },

@@ -2,7 +2,7 @@ import axios from "axios"
 import PropTypes from "prop-types"
 import React from "react"
 
-import DirectorySettingsModal from "components/DirectorySettingsModal"
+import { DirectorySettingsModal } from "components/DirectorySettingsModal"
 
 import {
   useGetDirectoryHook,
@@ -30,7 +30,7 @@ export const DirectorySettingsScreen = ({ match, onClose }) => {
       onProceed={renameDir}
       onClose={onClose}
       params={decodedParams}
-      dirData={dirData}
+      dirsData={dirData ? dirData.filter((item) => item.type === "dir") : []}
     />
   )
 }

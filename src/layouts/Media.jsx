@@ -1,5 +1,5 @@
 import DeleteWarningModal from "components/DeleteWarningModal"
-import FolderCard from "components/FolderCard"
+import FolderCard from "components/FolderCardV1"
 import FolderNamingModal from "components/FolderNamingModal"
 import FolderOptionButton from "components/FolderOptionButton"
 import GenericWarningModal from "components/GenericWarningModal"

@@ -6,8 +6,8 @@ describe("Settings page", () => {
   Cypress.config("defaultCommandTimeout", 6000)
 
   const BASE_TITLE = "TEST"
-  const BASE_PRIMARY_COLOR = "#6031b6"
-  const BASE_SECONDARY_COLOR = "#4372d6"
+  // const BASE_PRIMARY_COLOR = "#6031b6"
+  // const BASE_SECONDARY_COLOR = "#4372d6"
   const BASE_FACEBOOK_LINK = "https://www.facebook.com/YourFBPageTestEdit"
   const BASE_LINKEDIN_LINK = "https://www.linkedin.com/company/YourAgency"
   const BASE_TWITTER_LINK = "https://www.twitter.com/YourTwitter"
@@ -75,14 +75,15 @@ describe("Settings page", () => {
       .parent()
       .find("input")
       .each((elem) => cy.wrap(elem).clear())
-    cy.contains("p", "Primary")
-      .siblings("input")
-      .clear()
-      .type(BASE_PRIMARY_COLOR)
-    cy.contains("p", "Secondary")
-      .siblings("input")
-      .clear()
-      .type(BASE_SECONDARY_COLOR)
+    // cy.contains("p", "Primary")
+    //   .siblings("input")
+    //   .clear()
+    //   .type(BASE_PRIMARY_COLOR)
+    // cy.contains("p", "Secondary")
+    //   .siblings("input")
+    //   .clear()
+    //   .type(BASE_SECONDARY_COLOR)
+
     cy.get("#facebook").clear().type(BASE_FACEBOOK_LINK)
     cy.get("#linkedin").clear().type(BASE_LINKEDIN_LINK)
     cy.get("#twitter").clear().type(BASE_TWITTER_LINK)

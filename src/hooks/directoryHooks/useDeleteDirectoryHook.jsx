@@ -20,10 +20,16 @@ export function useDeleteDirectoryHook(params, queryParams) {
     },
     onSuccess: () => {
       successToast(`Successfully deleted directory`)
-      queryClient.invalidateQueries([
-        DIR_CONTENT_KEY,
-        (({ subCollectionName, ...p }) => p)(params),
-      ])
+      if (params.subCollectionName)
+        queryClient.invalidateQueries([
+          DIR_CONTENT_KEY,
+          (({ subCollectionName, ...p }) => p)(params),
+        ])
+      else
+        queryClient.invalidateQueries([
+          DIR_CONTENT_KEY,
+          (({ collectionName, ...p }) => p)(params),
+        ])
       queryParams && queryParams.onSuccess && queryParams.onSuccess()
     },
   })

@@ -114,7 +114,9 @@ describe("Folders flow", () => {
 
     it("Should be able to create a new sub-folder within a valid folder name with no pages", () => {
       cy.contains("Create new subfolder").click()
-      cy.get("input#subfolder").clear().type(TEST_SUBFOLDER_NO_PAGES_TITLE)
+      cy.get("input#newDirectoryName")
+        .clear()
+        .type(TEST_SUBFOLDER_NO_PAGES_TITLE)
       cy.contains("Select pages").click()
       cy.contains("Skip").click()
 
@@ -131,7 +133,9 @@ describe("Folders flow", () => {
 
     it("Should be able to create a new sub-folder within a valid folder name with one page", () => {
       cy.contains("Create new subfolder").click()
-      cy.get("input#subfolder").clear().type(TEST_SUBFOLDER_WITH_PAGES_TITLE)
+      cy.get("input#newDirectoryName")
+        .clear()
+        .type(TEST_SUBFOLDER_WITH_PAGES_TITLE)
       cy.contains("Select pages").click()
 
       cy.get("div[id^=folderCard-small]")
@@ -160,15 +164,16 @@ describe("Folders flow", () => {
 
       // Cannot use titles shorter than 2 characters or containing symbols ~!@#$%^&*_+-./\`:;~{}()[]"'<>,?
       INVALID_SUBFOLDER_TITLES.forEach((invalidTitle) => {
-        cy.get("input#subfolder").clear().type(invalidTitle)
+        cy.get("input#newDirectoryName").clear().type(invalidTitle).blur()
         cy.contains("button", "Select pages").should("be.disabled")
       })
 
       // Subfolder exists
-      cy.get("input#subfolder").clear().type(TEST_SUBFOLDER_WITH_PAGES_TITLE)
-      cy.contains(
-        "Another folder with the same name exists. Please choose a different name."
-      )
+      cy.get("input#newDirectoryName")
+        .clear()
+        .type(TEST_SUBFOLDER_WITH_PAGES_TITLE)
+        .blur()
+      cy.contains("Title is already in use. Please choose a different title.")
       cy.contains("button", "Select pages").should("be.disabled")
     })
 
@@ -188,7 +193,7 @@ describe("Folders flow", () => {
 
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
       cy.get("div[id^=settings-]").first().click()
-      cy.contains(`Rename ${PRETTIFIED_SUBFOLDER_WITH_PAGES_TITLE}`)
+      cy.contains(`Subfolder settings`)
       cy.get("input#newDirectoryName")
         .clear()
         .type(EDITED_TEST_SUBFOLDER_WITH_PAGES_TITLE)
@@ -283,15 +288,13 @@ describe("Folders flow", () => {
 
       // Cannot use titles shorter than 4 characters or containing symbols ~!@#$%^&*_+-./\`:;~{}()[]"'<>,?
       INVALID_TEST_PAGE_TITLES.forEach((invalidTitle) => {
-        cy.get("#title").clear().type(invalidTitle)
+        cy.get("#title").clear().type(invalidTitle).blur()
         cy.contains("button", "Save").should("be.disabled")
       })
 
       // Page title must not already exist
-      cy.get("#title").clear().type(TEST_PAGE_TITLE)
-      cy.contains(
-        "This title is already in use. Please choose a different title."
-      )
+      cy.get("#title").clear().type(TEST_PAGE_TITLE).blur()
+      cy.contains("Title is already in use. Please choose a different title.")
       cy.contains("button", "Save").should("be.disabled")
     })
 
@@ -302,7 +305,7 @@ describe("Folders flow", () => {
 
       // Permalink needs to be longer than 4 characters, should start with a slash, and contain alphanumeric characters separated by hyphens and slashes only
       INVALID_TEST_PAGE_PERMALINKS.forEach((invalidPermalink) => {
-        cy.get("#permalink").clear().type(invalidPermalink)
+        cy.get("#permalink").clear().type(invalidPermalink).blur()
         cy.contains("button", "Save").should("be.disabled")
       })
     })
@@ -391,7 +394,9 @@ describe("Folders flow", () => {
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}`
       )
       cy.contains("Create new subfolder").click()
-      cy.get("input#subfolder").clear().type(TEST_SUBFOLDER_NO_PAGES_TITLE)
+      cy.get("input#newDirectoryName")
+        .clear()
+        .type(TEST_SUBFOLDER_NO_PAGES_TITLE)
       cy.contains("Select pages").click()
       cy.contains("Skip").click()
 
@@ -455,15 +460,13 @@ describe("Folders flow", () => {
 
       // Cannot use titles shorter than 4 characters or containing symbols ~!@#$%^&*_+-./\`:;~{}()[]"'<>,?
       INVALID_TEST_PAGE_TITLES.forEach((invalidTitle) => {
-        cy.get("#title").clear().type(invalidTitle)
+        cy.get("#title").clear().type(invalidTitle).blur()
         cy.contains("button", "Save").should("be.disabled")
       })
 
       // Page title must not already exist
-      cy.get("#title").clear().type(TEST_PAGE_TITLE)
-      cy.contains(
-        "This title is already in use. Please choose a different title."
-      )
+      cy.get("#title").clear().type(TEST_PAGE_TITLE).blur()
+      cy.contains("Title is already in use. Please choose a different title.")
       cy.contains("button", "Save").should("be.disabled")
     })
 
@@ -474,7 +477,7 @@ describe("Folders flow", () => {
 
       // Permalink needs to be longer than 4 characters, should start with a slash, and contain alphanumeric characters separated by hyphens and slashes only
       INVALID_TEST_PAGE_PERMALINKS.forEach((invalidPermalink) => {
-        cy.get("#permalink").clear().type(invalidPermalink)
+        cy.get("#permalink").clear().type(invalidPermalink).blur()
         cy.contains("button", "Save").should("be.disabled")
       })
     })

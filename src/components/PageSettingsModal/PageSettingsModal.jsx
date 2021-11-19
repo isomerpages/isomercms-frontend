@@ -25,17 +25,15 @@ export const PageSettingsModal = ({
   params,
   pageData,
   onProceed,
-  dirData,
+  pagesData,
   siteUrl,
   onClose,
 }) => {
   const { siteName, fileName } = params
 
-  const existingTitlesArray = dirData
-    .filter((item) => item.type === "file")
+  const existingTitlesArray = pagesData
     .map((page) => page.name)
     .filter((pageName) => pageName !== fileName)
-    .map((pageName) => pageName.split(".")[0])
 
   const { exampleTitle, examplePermalink } = getDefaultFrontMatter(
     params,

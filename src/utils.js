@@ -452,10 +452,10 @@ export const getRedirectUrl = ({
 }) => {
   if (!fileName) {
     if (collectionName) {
-      return `/sites/${siteName}/folders/${collectionName}/${
+      return `/sites/${siteName}/folders/${collectionName}${
         subCollectionName
-          ? `subfolders/${encodeURIComponent(subCollectionName)}`
-          : "" // V2
+          ? `/subfolders/${encodeURIComponent(subCollectionName)}`
+          : ""
       }`
     }
   } else {
@@ -537,7 +537,7 @@ export const getDefaultFrontMatter = (params, existingTitles) => {
     resourceCategoryName,
   } = params
   let exampleTitle = "Example Title"
-  while (existingTitles.includes(exampleTitle)) {
+  while (existingTitles.includes(`${exampleTitle}.md`)) {
     exampleTitle += " 1"
   }
   let examplePermalink = "/"

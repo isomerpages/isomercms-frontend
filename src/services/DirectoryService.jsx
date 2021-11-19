@@ -1,3 +1,5 @@
+import { getLastItemType } from "../utils"
+
 export class DirectoryService {
   constructor({ apiClient }) {
     this.apiClient = apiClient
@@ -55,6 +57,7 @@ export class DirectoryService {
   }
 
   async update(apiParams, { newDirectoryName }) {
+    if (apiParams[getLastItemType(apiParams)] === newDirectoryName) return
     const body = {
       newDirectoryName,
     }
