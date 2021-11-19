@@ -97,7 +97,7 @@ const Folders = ({ match, location }) => {
               title="Create new subfolder"
               option="create-sub"
               isDisabled={!!(subCollectionName || isLoadingDirectory)}
-              onClick={() => setRedirectToPage(`${url}/createFolder`)}
+              onClick={() => setRedirectToPage(`${url}/createDirectory`)}
             />
           </div>
           {/* Collections content */}
