@@ -37,15 +37,15 @@ describe("Resource category page", () => {
     window.localStorage.setItem("userId", "test")
 
     // Set up test resource categories
-    cy.visit(`/sites/${TEST_REPO_NAME}/resources`)
+    cy.visit(`/sites/${TEST_REPO_NAME}/resourceRoom/resources`)
     cy.contains("Create new category").click()
     cy.get("input").clear().type(TEST_CATEGORY)
-    cy.contains("Save").click()
+    cy.contains("Next").click()
     cy.wait(3000)
-    cy.visit(`/sites/${TEST_REPO_NAME}/resources`)
+    cy.visit(`/sites/${TEST_REPO_NAME}/resourceRoom/resources`)
     cy.contains("Create new category").click()
     cy.get("input").clear().type(TEST_CATEGORY_2)
-    cy.contains("Save").click()
+    cy.contains("Next").click()
     cy.wait(3000)
   })
 
@@ -54,7 +54,9 @@ describe("Resource category page", () => {
     // This means it will not be cleared before the NEXT test starts.
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
     window.localStorage.setItem("userId", "test")
-    cy.visit(`/sites/${TEST_REPO_NAME}/resources/${TEST_CATEGORY_SLUGIFIED}`)
+    cy.visit(
+      `/sites/${TEST_REPO_NAME}/resourceRoom/resources/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
+    )
   })
 
   it("Resource category page should have name of resource category in header", () => {
@@ -75,7 +77,7 @@ describe("Resource category page", () => {
     // 1. Redirect to newly created folder
     cy.url().should(
       "include",
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources/${TEST_CATEGORY_SLUGIFIED}/${generateResourceFileName(
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/resources/resourceCategory/${TEST_CATEGORY_SLUGIFIED}/editPage/${generateResourceFileName(
         TEST_PAGE_TITLE,
         TEST_PAGE_DATE,
         true
@@ -130,7 +132,7 @@ describe("Resource category page", () => {
     // 1. Redirect to newly created folder
     cy.url().should(
       "include",
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources/${TEST_CATEGORY_SLUGIFIED}/${generateResourceFileName(
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/resources/resourceCategory/${TEST_CATEGORY_SLUGIFIED}/editPage/${generateResourceFileName(
         TEST_PAGE_TITLE_2,
         TEST_PAGE_DATE,
         true
@@ -202,7 +204,7 @@ describe("Resource category page", () => {
     cy.contains(TEST_PAGE_TITLE_RENAMED).click()
     cy.url().should(
       "include",
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources/${TEST_CATEGORY_SLUGIFIED}/${generateResourceFileName(
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/resources/resourceCategory/${TEST_CATEGORY_SLUGIFIED}/editPage/${generateResourceFileName(
         TEST_PAGE_TITLE_RENAMED,
         TEST_PAGE_DATE_CHANGED,
         true
@@ -237,7 +239,7 @@ describe("Resource category page", () => {
     // 1. Should not redirect
     cy.url().should(
       "include",
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources/${TEST_CATEGORY_SLUGIFIED}`
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/resources/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
     )
 
     // 2. New page should be of type FILE with the correct date
@@ -263,7 +265,7 @@ describe("Resource category page", () => {
     cy.contains("Save").click()
 
     // New page should be of type FILE with the correct date
-    cy.contains("Successfully updated select file").should("exist")
+    // cy.contains("Successfully updated select file").should("exist")
     cy.contains(TEST_PAGE_TITLE_RENAMED)
     cy.contains(`${TEST_PAGE_DATE_CHANGED_PRETTIFIED}/FILE`)
   })
