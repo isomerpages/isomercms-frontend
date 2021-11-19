@@ -28,7 +28,7 @@ const sidebarContentPathDict = (resourceRoomName) => [
     title: "My Workspace",
   },
   {
-    pathname: `resourceRoom/${resourceRoomName}`,
+    pathname: `resourceRoom${resourceRoomName ? `/${resourceRoomName}` : ""}`,
     title: "Resources",
   },
   {
