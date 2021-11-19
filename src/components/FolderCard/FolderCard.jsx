@@ -1,15 +1,17 @@
 // not completely refactored yet, to finish after Media and Resources
 // should create separate display component Card without functionality
 
+import { MenuDropdown } from "components/MenuDropdown"
+import PropTypes from "prop-types"
 import React, { useEffect, useRef, useState } from "react"
 import { Link, useRouteMatch } from "react-router-dom"
-import PropTypes from "prop-types"
-import { MenuDropdown } from "../MenuDropdown"
-import useRedirectHook from "../../hooks/useRedirectHook"
 
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../../styles/isomer-cms/pages/Content.module.scss"
-import { prettifyPageFileName } from "../../utils"
+import useRedirectHook from "hooks/useRedirectHook"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
+
+import { prettifyPageFileName } from "utils"
 
 export const FolderCard = ({
   displayText,
@@ -39,7 +41,7 @@ export const FolderCard = ({
       case "collection":
         return `/sites/${siteName}/folders/${category}`
       case "resources":
-        return `/sites/${siteName}/resources/${category}`
+        return `${url}/resourceCategory/${category}`
       case "contact-us":
         return `/sites/${siteName}/contact-us`
       case "nav":
@@ -110,12 +112,14 @@ export const FolderCard = ({
                 {
                   type: "edit",
                   handler: () =>
-                    setRedirectToPage(`${url}/editFolderSettings/${category}`),
+                    setRedirectToPage(
+                      `${url}/editDirectorySettings/${category}`
+                    ),
                 },
                 {
                   type: "delete",
                   handler: () =>
-                    setRedirectToPage(`${url}/deleteFolder/${category}`),
+                    setRedirectToPage(`${url}/deleteDirectory/${category}`),
                 },
               ]}
               dropdownRef={dropdownRef}
