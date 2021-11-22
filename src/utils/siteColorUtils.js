@@ -132,12 +132,9 @@ const getSiteColors = async (siteName) => {
   try {
     // get settings data from backend
     const settingsResp = await axios.get(
-      `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`
+      `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/settings`
     )
-    const { settings } = settingsResp.data
-    const {
-      configFieldsRequired: { colors },
-    } = settings
+    const { colors } = settingsResp.data
 
     return {
       primaryColor: colors?.["primary-color"] || DEFAULT_ISOMER_PRIMARY_COLOR,

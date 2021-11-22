@@ -6,22 +6,24 @@ describe("Settings page", () => {
   Cypress.config("defaultCommandTimeout", 6000)
 
   const BASE_TITLE = "TEST"
-  // const BASE_PRIMARY_COLOR = "#6031b6"
-  // const BASE_SECONDARY_COLOR = "#4372d6"
+  const BASE_PRIMARY_COLOR = "#6031b6"
+  const BASE_SECONDARY_COLOR = "#4372d6"
   const BASE_FACEBOOK_LINK = "https://www.facebook.com/YourFBPageTestEdit"
   const BASE_LINKEDIN_LINK = "https://www.linkedin.com/company/YourAgency"
   const BASE_TWITTER_LINK = "https://www.twitter.com/YourTwitter"
   const BASE_YOUTUBE_LINK = "https://www.youtube.com/YourYoutube"
   const BASE_INSTAGRAM_LINK = "https://www.instagram.com/yourinsta/"
+  const BASE_TELEGRAM_LINK = "https://t.me/youragency"
+  const BASE_TIKTOK_LINK = "https://tiktok.com/@YourTiktok"
   const BASE_CONTACT_US = "contact/"
   const BASE_FEEDBACK = "www.feedback.com"
   const BASE_FAQ = "/faq/"
 
   const TEST_TITLE = "Test title"
   const TEST_LOGO_IMAGES = [
-    "favicon-isomer.ico",
-    "isomer-logo.svg",
     "hero-banner.png",
+    "isomer-logo.svg",
+    "favicon-isomer.ico",
   ] // [Agency, Favicon, Shareicon]
   const IMAGE_DIR = "/images/"
   const TEST_FACEBOOK_PIXEL_ID = "12345"
@@ -33,6 +35,8 @@ describe("Settings page", () => {
   const TEST_TWITTER_LINK = "https://www.twitter.com/testtwitter"
   const TEST_YOUTUBE_LINK = "https://www.youtube.com/testyoutube"
   const TEST_INSTAGRAM_LINK = "https://www.instagram.com/testinsta/"
+  const TEST_TELEGRAM_LINK = "https://telegram.me/testagency"
+  const TEST_TIKTOK_LINK = "https://tiktok.com/@testTiktok"
   const TEST_CONTACT_US = "testcontact/"
   const TEST_FEEDBACK = "www.feedbacktest.com"
   const TEST_FAQ = "/faqpagetest/"
@@ -43,14 +47,14 @@ describe("Settings page", () => {
 
   // Reusable save command
   Cypress.Commands.add("saveSettings", () => {
-    cy.intercept("POST", "/v1/**").as("awaitSave")
+    cy.intercept("POST", "/v2/**").as("awaitSave")
     cy.contains("button", "Save").click()
     cy.wait("@awaitSave")
   })
 
   // Reusable visit command
   Cypress.Commands.add("visitLoadSettings", (sitePath) => {
-    cy.intercept("GET", `/v1/sites/${TEST_REPO_NAME}/settings`).as(
+    cy.intercept("GET", `/v2/sites/${TEST_REPO_NAME}/settings`).as(
       "awaitSettings"
     )
     cy.visit(sitePath)
@@ -75,20 +79,27 @@ describe("Settings page", () => {
       .parent()
       .find("input")
       .each((elem) => cy.wrap(elem).clear())
-    // cy.contains("p", "Primary")
-    //   .siblings("input")
-    //   .clear()
-    //   .type(BASE_PRIMARY_COLOR)
-    // cy.contains("p", "Secondary")
-    //   .siblings("input")
-    //   .clear()
-    //   .type(BASE_SECONDARY_COLOR)
-
+    cy.contains("p", "Primary").siblings("[id$=-box]").click()
+    cy.get("[id=colorModal]")
+      .find("input")
+      .first()
+      .clear()
+      .type(BASE_PRIMARY_COLOR)
+    cy.get("[id=colorModalSubmit]").click()
+    cy.contains("p", "Secondary").siblings("[id$=-box]").click()
+    cy.get("[id=colorModal]")
+      .find("input")
+      .first()
+      .clear()
+      .type(BASE_SECONDARY_COLOR)
+    cy.get("[id=colorModalSubmit]").click()
     cy.get("#facebook").clear().type(BASE_FACEBOOK_LINK)
     cy.get("#linkedin").clear().type(BASE_LINKEDIN_LINK)
     cy.get("#twitter").clear().type(BASE_TWITTER_LINK)
     cy.get("#youtube").clear().type(BASE_YOUTUBE_LINK)
     cy.get("#instagram").clear().type(BASE_INSTAGRAM_LINK)
+    cy.get("#telegram").clear().type(BASE_TELEGRAM_LINK)
+    cy.get("#tiktok").clear().type(BASE_TIKTOK_LINK)
     cy.get("#contact_us").clear().type(BASE_CONTACT_US)
     cy.get("#feedback").clear().type(BASE_FEEDBACK)
     cy.get("#faq").clear().type(BASE_FAQ)
@@ -146,9 +157,9 @@ describe("Settings page", () => {
 
     cy.saveSettings() // Save
 
-    cy.get("#logo").should("have.value", IMAGE_DIR + TEST_LOGO_IMAGES[0])
-    cy.get("#favicon").should("have.value", IMAGE_DIR + TEST_LOGO_IMAGES[1])
-    cy.get("#shareicon").should("have.value", IMAGE_DIR + TEST_LOGO_IMAGES[2])
+    cy.get("#shareicon").should("have.value", IMAGE_DIR + TEST_LOGO_IMAGES[0])
+    cy.get("#logo").should("have.value", IMAGE_DIR + TEST_LOGO_IMAGES[1])
+    cy.get("#favicon").should("have.value", IMAGE_DIR + TEST_LOGO_IMAGES[2])
   })
 
   it("Should change analytics codes and have change reflect correctly on save", () => {
@@ -232,6 +243,8 @@ describe("Settings page", () => {
     cy.get("#twitter").clear().type(TEST_TWITTER_LINK)
     cy.get("#youtube").clear().type(TEST_YOUTUBE_LINK)
     cy.get("#instagram").clear().type(TEST_INSTAGRAM_LINK)
+    cy.get("#telegram").clear().type(TEST_TELEGRAM_LINK)
+    cy.get("#tiktok").clear().type(TEST_TIKTOK_LINK)
 
     cy.saveSettings()
 
@@ -240,6 +253,8 @@ describe("Settings page", () => {
     cy.get("#twitter").should("have.value", TEST_TWITTER_LINK)
     cy.get("#youtube").should("have.value", TEST_YOUTUBE_LINK)
     cy.get("#instagram").should("have.value", TEST_INSTAGRAM_LINK)
+    cy.get("#telegram").should("have.value", TEST_TELEGRAM_LINK)
+    cy.get("#tiktok").should("have.value", TEST_TIKTOK_LINK)
   })
 
   it("Should change footer info and have info reflected correctly on save", () => {

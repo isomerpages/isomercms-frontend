@@ -1,17 +1,16 @@
 // TODO: Clean up formatting, semi-colons, PropTypes etc
 import axios from "axios"
-import update from "immutability-helper"
-import _ from "lodash"
-import PropTypes from "prop-types"
-import React, { useEffect, useState } from "react"
-import { DragDropContext } from "react-beautiful-dnd"
-
 import EditorSection from "components/contact-us/Section"
 import DeleteWarningModal from "components/DeleteWarningModal"
 import FormField from "components/FormField"
 import GenericWarningModal from "components/GenericWarningModal"
 import Header from "components/Header"
 import LoadingButton from "components/LoadingButton"
+import update from "immutability-helper"
+import _ from "lodash"
+import PropTypes from "prop-types"
+import React, { useEffect, useState } from "react"
+import { DragDropContext } from "react-beautiful-dnd"
 
 import {
   DEFAULT_RETRY_MSG,
@@ -144,7 +143,6 @@ const EditContactUs = ({ match }) => {
   const [frontMatterSha, setFrontMatterSha] = useState(null)
   const [footerContent, setFooterContent] = useState({})
   const [originalFooterContent, setOriginalFooterContent] = useState({})
-  const [footerSha, setFooterSha] = useState(null)
   const [displaySections, setDisplaySections] = useState({
     sectionsDisplay: {
       locations: false,
@@ -169,7 +167,6 @@ const EditContactUs = ({ match }) => {
     let content
     let sha
     let footerContent
-    let footerSha
 
     const loadContactUsDetails = async () => {
       // Set page colors
@@ -202,14 +199,10 @@ const EditContactUs = ({ match }) => {
 
       try {
         const settingsResp = await axios.get(
-          `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`
+          `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/settings`
         )
-        const {
-          footerContent: retrievedContent,
-          footerSha: retrievedSha,
-        } = settingsResp.data.settings
-        footerContent = retrievedContent
-        footerSha = retrievedSha
+        const { feedback } = settingsResp.data
+        footerContent = { feedback }
       } catch (err) {
         errorToast(
           `There was a problem trying to load your contact us page. ${DEFAULT_RETRY_MSG}`
@@ -266,7 +259,6 @@ const EditContactUs = ({ match }) => {
         })
         setFooterContent(footerContent)
         setOriginalFooterContent(_.cloneDeep(footerContent))
-        setFooterSha(footerSha)
         setFrontMatter(sanitisedFrontMatter)
         setOriginalFrontMatter(_.cloneDeep(frontMatter))
         setDeletedFrontMatter(deletedFrontMatter)
@@ -728,19 +720,18 @@ const EditContactUs = ({ match }) => {
         )
       }
 
-      // // Update settings
+      // Update settings
       const updatedFooterContents = _.cloneDeep(footerContent)
 
       const footerParams = {
-        footerSettings: updatedFooterContents,
-        footerSha,
+        ...updatedFooterContents,
       }
 
       if (
         JSON.stringify(footerContent) !== JSON.stringify(originalFooterContent)
       ) {
         await axios.post(
-          `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/settings`,
+          `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/settings`,
           footerParams,
           {
             withCredentials: true,
@@ -900,7 +891,7 @@ const EditContactUs = ({ match }) => {
               disabled={hasErrors()}
               disabledStyle={elementStyles.disabled}
               className={
-                hasErrors() || !(frontMatterSha && footerSha)
+                hasErrors() || !frontMatterSha
                   ? elementStyles.disabled
                   : elementStyles.blue
               }
