@@ -9,12 +9,19 @@ import * as _ from "lodash"
 import PropTypes from "prop-types"
 import React from "react"
 import { useForm } from "react-hook-form"
-import { Switch, useRouteMatch, useHistory } from "react-router-dom"
+import {
+  Switch,
+  useRouteMatch,
+  useHistory,
+  Redirect,
+  Route,
+} from "react-router-dom"
 
 import {
   useGetDirectoryHook,
   useCreateDirectoryHook,
 } from "hooks/directoryHooks"
+import { useGetResourceRoomNameHook } from "hooks/settingsHooks/useGetResourceRoomName"
 import useRedirectHook from "hooks/useRedirectHook"
 
 import {
@@ -80,95 +87,107 @@ const EmptyResourceRoom = ({ params }) => {
 const ResourceRoom = ({ match, location }) => {
   const { params, decodedParams } = match
   const { siteName, resourceRoomName } = params
-
+  const {
+    data: queriedResourceRoomName,
+    isLoading: isResourceRoomNameLoading,
+  } = useGetResourceRoomNameHook({ siteName })
   const { setRedirectToPage } = useRedirectHook()
 
   const { path, url } = useRouteMatch()
   const history = useHistory()
 
   const { data: dirsData, isLoading } = useGetDirectoryHook(params, {
-    enabled: !!resourceRoomName,
+    enabled: !!resourceRoomName && queriedResourceRoomName === resourceRoomName,
   })
 
   return (
-    <>
-      <Header siteName={siteName} />
-      {/* main bottom section */}
-      <div className={elementStyles.wrapper}>
-        <Sidebar siteName={siteName} currPath={location.pathname} />
-        {/* main section starts here */}
-        <div className={contentStyles.mainSection}>
-          {/* Page title */}
-          <div className={contentStyles.sectionHeader}>
-            <h1 className={contentStyles.sectionTitle}>Resources</h1>
-          </div>
-          {!resourceRoomName ? (
-            <EmptyResourceRoom params={params} />
-          ) : (
-            <>
-              {/* Category title */}
-              <div className={contentStyles.segment}>Categories</div>
-              {/* Categories */}
-              <div className={contentStyles.folderContainerBoxes}>
-                <div className={contentStyles.boxesContainer}>
-                  {isLoading ? (
-                    "Loading Categories..."
-                  ) : (
-                    <>
-                      {dirsData && dirsData.length === 0 && (
+    <Route>
+      {queriedResourceRoomName &&
+      queriedResourceRoomName !== resourceRoomName ? (
+        <Redirect
+          to={`/sites/${siteName}/resourceRoom${
+            queriedResourceRoomName ? `/${queriedResourceRoomName}` : ""
+          }`}
+        />
+      ) : (
+        <>
+          <Header siteName={siteName} />
+          {/* main bottom section */}
+          <div className={elementStyles.wrapper}>
+            <Sidebar siteName={siteName} currPath={location.pathname} />
+            {/* main section starts here */}
+            <div className={contentStyles.mainSection}>
+              {/* Page title */}
+              <div className={contentStyles.sectionHeader}>
+                <h1 className={contentStyles.sectionTitle}>Resources</h1>
+              </div>
+              {!isResourceRoomNameLoading && !resourceRoomName ? (
+                <EmptyResourceRoom params={params} />
+              ) : (
+                <>
+                  {/* Categories */}
+                  <div className={contentStyles.folderContainerBoxes}>
+                    <div className={contentStyles.boxesContainer}>
+                      {isLoading ? (
+                        "Loading Categories..."
+                      ) : (
                         <>
-                          No Categories.
-                          <hr className="invisible w-100 mt-3 mb-3" />
+                          <FolderOptionButton
+                            title="Create new category"
+                            option="create-sub"
+                            isSubfolder={false}
+                            onClick={() =>
+                              setRedirectToPage(`${url}/createDirectory`)
+                            }
+                          />
+                          {dirsData && dirsData.length === 0 && (
+                            <>
+                              No Categories.
+                              <hr className="invisible w-100 mt-3 mb-3" />
+                            </>
+                          )}
+                          {dirsData && dirsData.length > 0
+                            ? dirsData.map(
+                                (resourceCategory, resourceCategoryIdx) => (
+                                  <FolderCard
+                                    key={resourceCategory.name}
+                                    pageType="resources"
+                                    siteName={siteName}
+                                    category={resourceCategory.name}
+                                    itemIndex={resourceCategoryIdx}
+                                  />
+                                )
+                              )
+                            : null}
                         </>
                       )}
-                      <FolderOptionButton
-                        title="Create new category"
-                        option="create-sub"
-                        isSubfolder={false}
-                        onClick={() =>
-                          setRedirectToPage(`${url}/createDirectory`)
-                        }
-                      />
-                      {dirsData && dirsData.length > 0
-                        ? dirsData.map(
-                            (resourceCategory, resourceCategoryIdx) => (
-                              <FolderCard
-                                key={resourceCategory.name}
-                                pageType="resources"
-                                siteName={siteName}
-                                category={resourceCategory.name}
-                                itemIndex={resourceCategoryIdx}
-                              />
-                            )
-                          )
-                        : null}
-                    </>
-                  )}
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-        {/* main section ends here */}
-      </div>
-      <Switch>
-        <ProtectedRouteWithProps
-          path={[`${path}/createDirectory`]}
-          component={DirectoryCreationScreen}
-          onClose={() => history.goBack()}
-        />
-        <ProtectedRouteWithProps
-          path={[`${path}/deleteDirectory/:resourceCategoryName`]}
-          component={DeleteWarningScreen}
-          onClose={() => history.goBack()}
-        />
-        <ProtectedRouteWithProps
-          path={[`${path}/editDirectorySettings/:resourceCategoryName`]}
-          component={DirectorySettingsScreen}
-          onClose={() => history.goBack()}
-        />
-      </Switch>
-    </>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+            {/* main section ends here */}
+          </div>
+          <Switch>
+            <ProtectedRouteWithProps
+              path={[`${path}/createDirectory`]}
+              component={DirectoryCreationScreen}
+              onClose={() => history.goBack()}
+            />
+            <ProtectedRouteWithProps
+              path={[`${path}/deleteDirectory/:resourceCategoryName`]}
+              component={DeleteWarningScreen}
+              onClose={() => history.goBack()}
+            />
+            <ProtectedRouteWithProps
+              path={[`${path}/editDirectorySettings/:resourceCategoryName`]}
+              component={DirectorySettingsScreen}
+              onClose={() => history.goBack()}
+            />
+          </Switch>
+        </>
+      )}
+    </Route>
   )
 }
 
