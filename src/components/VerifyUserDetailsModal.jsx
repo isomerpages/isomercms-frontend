@@ -50,7 +50,9 @@ const VerifyUserDetailsModal = () => {
       await getEmailOtp(email)
       setVerificationStep(VerificationStep.VERIFY_EMAIL_OTP)
     } catch (err) {
-      setError("Unable to request for an OTP")
+      setError(
+        err.response?.data?.error?.message || "Unable to request for an OTP"
+      )
     } finally {
       setIsLoading(false)
     }
