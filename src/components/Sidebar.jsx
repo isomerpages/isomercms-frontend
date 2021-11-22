@@ -124,8 +124,11 @@ const Sidebar = ({ siteName, currPath }) => {
   const convertCollectionsPathToWorkspace = (currPath, siteName) => {
     const currPathArr = currPath.split("/")
 
+    if (currPathArr[3] === "resourceRoom")
+      return currPathArr.slice(0, 5).join("/")
+
     // example path: /sites/demo-v2/folder/left-nav-one
-    if (currPathArr.length > 3 && currPathArr[3] === "folder")
+    if (currPathArr.length > 3 && currPathArr[3] === "folders")
       return `/sites/${siteName}/workspace`
 
     return currPathArr.slice(0, 4).join("/")

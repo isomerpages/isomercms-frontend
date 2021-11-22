@@ -115,7 +115,7 @@ const ResourceRoom = ({ match, location }) => {
                     "Loading Categories..."
                   ) : (
                     <>
-                      {dirsData.length === 0 && (
+                      {dirsData && dirsData.length === 0 && (
                         <>
                           No Categories.
                           <hr className="invisible w-100 mt-3 mb-3" />
@@ -129,7 +129,7 @@ const ResourceRoom = ({ match, location }) => {
                           setRedirectToPage(`${url}/createDirectory`)
                         }
                       />
-                      {dirsData.length > 0
+                      {dirsData && dirsData.length > 0
                         ? dirsData.map(
                             (resourceCategory, resourceCategoryIdx) => (
                               <FolderCard
