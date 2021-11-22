@@ -102,8 +102,8 @@ const ResourceRoom = ({ match, location }) => {
 
   return (
     <Route>
-      {queriedResourceRoomName &&
-      queriedResourceRoomName !== resourceRoomName ? (
+      {(resourceRoomName && resourceRoomName !== queriedResourceRoomName) ||
+      (!resourceRoomName && queriedResourceRoomName) ? (
         <Redirect
           to={`/sites/${siteName}/resourceRoom${
             queriedResourceRoomName ? `/${queriedResourceRoomName}` : ""
