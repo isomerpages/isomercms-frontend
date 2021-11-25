@@ -1,18 +1,44 @@
-import React, { useEffect, useRef, useState } from "react"
 import axios from "axios"
-import _ from "lodash"
-import { useQuery, useMutation, useQueryClient } from "react-query"
-import PropTypes from "prop-types"
-import SimpleMDE from "react-simplemde-editor"
-import marked from "marked"
+import DeleteWarningModal from "components/DeleteWarningModal"
+import Header from "components/Header"
+import HyperlinkModal from "components/HyperlinkModal"
+import LoadingButton from "components/LoadingButton"
+import MediaModal from "components/media/MediaModal"
+import MediaSettingsModal from "components/media/MediaSettingsModal"
 import Policy from "csp-parse"
-
 import DOMPurify from "dompurify"
-import SimplePage from "../templates/SimplePage"
-import LeftNavPage from "../templates/LeftNavPage"
+import _ from "lodash"
+import marked from "marked"
+import PropTypes from "prop-types"
+import React, { useEffect, useRef, useState } from "react"
+import { useQuery, useMutation, useQueryClient } from "react-query"
+import SimpleMDE from "react-simplemde-editor"
 
-import checkCSP from "../utils/cspUtils"
-import { successToast, errorToast } from "../utils/toasts"
+import {
+  PAGE_CONTENT_KEY,
+  DIR_CONTENT_KEY,
+  CSP_CONTENT_KEY,
+} from "constants/constants"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import LeftNavPage from "templates/LeftNavPage"
+import SimplePage from "templates/SimplePage"
+
+import checkCSP from "utils/cspUtils"
+import {
+  boldButton,
+  italicButton,
+  strikethroughButton,
+  headingButton,
+  codeButton,
+  quoteButton,
+  unorderedListButton,
+  orderedListButton,
+  tableButton,
+  guideButton,
+} from "utils/markdownToolbar"
+import { successToast, errorToast } from "utils/toasts"
 
 // Isomer components
 import {
@@ -25,39 +51,17 @@ import {
   prettifyDate,
   parseDirectoryFile,
   deslugifyDirectory,
-} from "../utils"
-import {
-  boldButton,
-  italicButton,
-  strikethroughButton,
-  headingButton,
-  codeButton,
-  quoteButton,
-  unorderedListButton,
-  orderedListButton,
-  tableButton,
-  guideButton,
-} from "../utils/markdownToolbar"
-import {
-  PAGE_CONTENT_KEY,
-  DIR_CONTENT_KEY,
-  CSP_CONTENT_KEY,
-} from "../constants"
+} from "utils"
+
 import "easymde/dist/easymde.min.css"
-import "../styles/isomer-template.scss"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import editorStyles from "../styles/isomer-cms/pages/Editor.module.scss"
-import Header from "../components/Header"
-import DeleteWarningModal from "../components/DeleteWarningModal"
-import LoadingButton from "../components/LoadingButton"
-import HyperlinkModal from "../components/HyperlinkModal"
-import MediaModal from "../components/media/MediaModal"
-import MediaSettingsModal from "../components/media/MediaSettingsModal"
-import GenericWarningModal from "../components/GenericWarningModal"
+import "styles/isomer-template.scss"
+import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
+
+import GenericWarningModal from "components/GenericWarningModal"
 
 // Import hooks
-import useSiteColorsHook from "../hooks/useSiteColorsHook"
-import useRedirectHook from "../hooks/useRedirectHook"
+import useSiteColorsHook from "hooks/useSiteColorsHook"
+import useRedirectHook from "hooks/useRedirectHook"
 
 // Import API
 import {
@@ -66,7 +70,7 @@ import {
   deletePageData,
   getCsp,
   getDirectoryFile,
-} from "../api"
+} from "api"
 
 // axios settings
 axios.defaults.withCredentials = true

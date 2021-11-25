@@ -1,11 +1,14 @@
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
-import { getRedirectUrl, DEFAULT_RETRY_MSG } from "../../utils"
-import { errorToast } from "../../utils/toasts"
-import { DIR_CONTENT_KEY } from "../queryKeys"
-import useRedirectHook from "../useRedirectHook"
 
-import { ServicesContext } from "../../contexts/ServicesContext"
+import { ServicesContext } from "contexts/ServicesContext"
+
+import { DIR_CONTENT_KEY } from "hooks/queryKeys"
+import useRedirectHook from "hooks/useRedirectHook"
+
+import { errorToast } from "utils/toasts"
+
+import { getRedirectUrl, DEFAULT_RETRY_MSG } from "utils"
 
 export function useCreateDirectoryHook(params, queryParams) {
   const queryClient = useQueryClient()
@@ -24,8 +27,10 @@ export function useCreateDirectoryHook(params, queryParams) {
         queryClient.invalidateQueries([DIR_CONTENT_KEY, { ...params }])
         setRedirectToPage(
           getRedirectUrl({
+            collectionName: resp.data.newDirectoryName,
+            subCollectionName:
+              params.collectionName && resp.data.newDirectoryName,
             ...params,
-            subCollectionName: resp.data.newDirectoryName,
           })
         )
         queryParams && queryParams.onSuccess && queryParams.onSuccess()

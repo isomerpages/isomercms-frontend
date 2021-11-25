@@ -1,6 +1,7 @@
-import React from "react"
 import PropTypes from "prop-types"
-import { PageHeader, PageBody } from "../pageComponentsV2"
+import React from "react"
+
+import { PageHeader, PageBody } from "templates/pageComponentsV2"
 
 const PageTemplate = ({ chunk, pageParams, title }) => (
   <div>

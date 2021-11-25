@@ -229,9 +229,9 @@ describe("Edit collection page", () => {
     // Set up test collection
     cy.visit(`/sites/${TEST_REPO_NAME}/workspace`)
     cy.contains("Create new folder").should("exist").click()
-    cy.get("input#folder").clear().type(TEST_FOLDER_TITLE)
+    cy.get("input#newDirectoryName").clear().type(TEST_FOLDER_TITLE)
     cy.contains("Select pages").click()
-    cy.contains("Done").click()
+    cy.contains("Skip").click()
     cy.wait(2000)
 
     // Set up test collection page
@@ -346,7 +346,7 @@ describe("Edit collection page", () => {
     // Test delete in modal
     cy.get("#modal-delete").should("exist")
     cy.get("#modal-delete").click()
-    cy.wait(2000)
+    cy.wait(4000)
 
     // Assert: page no longer exists
     cy.visit(

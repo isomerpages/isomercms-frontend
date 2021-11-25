@@ -1,41 +1,41 @@
-import React, { useEffect, useState } from "react"
-import PropTypes from "prop-types"
-
 // Import components
-import { Route, Switch, useRouteMatch, useHistory } from "react-router-dom"
-import Header from "../components/Header"
-import Sidebar from "../components/Sidebar"
-import FolderCard from "../components/FolderCard"
-import FolderCreationModal from "../components/FolderCreationModal"
-import FolderOptionButton from "../components/FolderOptionButton"
-import PageCard from "../components/PageCard"
+import { FolderCard } from "components/FolderCard"
+import FolderOptionButton from "components/FolderOptionButton"
+import Header from "components/Header"
+import PageCard from "components/PageCard"
+import Sidebar from "components/Sidebar"
+import PropTypes from "prop-types"
+import React, { useEffect, useState } from "react"
+import { Switch, useRouteMatch, useHistory } from "react-router-dom"
 
+// Import styles
+
+// Import utils
+
+// Import hooks
+import { useGetDirectoryHook } from "hooks/directoryHooks"
+import { useGetPageHook } from "hooks/pageHooks"
+import useRedirectHook from "hooks/useRedirectHook"
+
+// Import screens
 import {
   PageSettingsScreen,
   PageMoveScreen,
   DeleteWarningScreen,
-} from "./screens"
+  DirectoryCreationScreen,
+  DirectorySettingsScreen,
+} from "layouts/screens"
 
-// Import styles
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
+import { ProtectedRouteWithProps } from "routing/RouteSelector"
 
-import { ProtectedRouteWithProps } from "../routing/RouteSelector"
-// Import utils
-import { prettifyPageFileName } from "../utils"
-
-// Import hooks
-import { useGetDirectoryHook } from "../hooks/directoryHooks"
-
-import useRedirectHook from "../hooks/useRedirectHook"
-import { useGetPageHook } from "../hooks/pageHooks"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
 const CONTACT_US_TEMPLATE_LAYOUT = "contact_us"
 
 const Workspace = ({ match, location }) => {
   const { siteName } = match.params
   const [contactUsCard, setContactUsCard] = useState()
-  const [isFolderCreationActive, setIsFolderCreationActive] = useState(false) // to be removed after Workspace-folders refactor
 
   const { setRedirectToPage } = useRedirectHook()
   const { path, url } = useRouteMatch()
@@ -61,21 +61,6 @@ const Workspace = ({ match, location }) => {
 
   return (
     <>
-      {isFolderCreationActive && ( // to be removed after Workspace-folders refactor
-        <FolderCreationModal
-          existingSubfolders={dirsData.map((dir) => dir.name)}
-          pagesData={pagesData.map((page) => {
-            const newPage = {
-              ...page,
-              title: page.name,
-              fileName: page.name,
-            }
-            return newPage
-          })}
-          siteName={siteName}
-          setIsFolderCreationActive={setIsFolderCreationActive}
-        />
-      )}
       <Header siteName={siteName} />
       {/* main bottom section */}
       <div className={elementStyles.wrapper}>
@@ -144,20 +129,17 @@ const Workspace = ({ match, location }) => {
                   title="Create new folder"
                   option="create-sub"
                   isSubfolder={false}
-                  onClick={() => setIsFolderCreationActive(true)}
+                  onClick={() => setRedirectToPage(`${url}/createFolder`)}
                 />
               )}
               {dirsData && dirsData.length > 0
                 ? dirsData.map((collection, collectionIdx) => (
                     <FolderCard
-                      displayText={prettifyPageFileName(collection.name)}
-                      settingsToggle={() => {}}
                       key={collection}
                       pageType="collection"
                       siteName={siteName}
                       category={collection.name}
                       itemIndex={collectionIdx}
-                      existingFolders={dirsData}
                     />
                   ))
                 : null}
@@ -219,6 +201,21 @@ const Workspace = ({ match, location }) => {
         <ProtectedRouteWithProps
           path={[`${path}/movePage/:fileName`]}
           component={PageMoveScreen}
+          onClose={() => history.goBack()}
+        />
+        <ProtectedRouteWithProps
+          path={[`${path}/createFolder`]}
+          component={DirectoryCreationScreen}
+          onClose={() => history.goBack()}
+        />
+        <ProtectedRouteWithProps
+          path={[`${path}/deleteFolder/:collectionName`]}
+          component={DeleteWarningScreen}
+          onClose={() => history.goBack()}
+        />
+        <ProtectedRouteWithProps
+          path={[`${path}/editFolderSettings/:collectionName`]}
+          component={DirectorySettingsScreen}
           onClose={() => history.goBack()}
         />
       </Switch>

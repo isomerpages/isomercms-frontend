@@ -1,6 +1,10 @@
 import React, { useState } from "react"
 import SimpleMDE from "react-simplemde-editor"
-import editorStyles from "../../styles/isomer-cms/pages/Editor.module.scss"
+
+import EditorModals from "components/pages/EditorModals"
+
+import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
+
 import {
   boldButton,
   italicButton,
@@ -12,8 +16,7 @@ import {
   orderedListButton,
   tableButton,
   guideButton,
-} from "../../utils/markdownToolbar"
-import EditorModals from "./EditorModals"
+} from "utils/markdownToolbar"
 
 const MarkdownEditor = ({
   siteName,

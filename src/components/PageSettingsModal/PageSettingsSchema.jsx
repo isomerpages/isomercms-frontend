@@ -1,4 +1,6 @@
 import * as Yup from "yup"
+import _ from "lodash"
+import { titleToPageFileName } from "../../utils"
 import {
   permalinkRegexTest,
   specialCharactersRegexTest,
@@ -6,12 +8,17 @@ import {
   PAGE_SETTINGS_PERMALINK_MAX_LENGTH,
   PAGE_SETTINGS_TITLE_MIN_LENGTH,
   PAGE_SETTINGS_TITLE_MAX_LENGTH,
-} from "../../utils/validators"
+} from "utils/validators"
 
 export const PageSettingsSchema = (existingTitlesArray = []) =>
   Yup.object().shape({
     title: Yup.string()
       .required("Title is required")
+      .test(
+        "Special characters found",
+        'Title cannot contain any of the following special characters: ~%^*_+-./\\`;~{}[]"<>',
+        (value) => !specialCharactersRegexTest.test(value)
+      )
       .min(
         PAGE_SETTINGS_TITLE_MIN_LENGTH,
         `Title must be longer than ${PAGE_SETTINGS_TITLE_MIN_LENGTH} characters`
@@ -20,14 +27,10 @@ export const PageSettingsSchema = (existingTitlesArray = []) =>
         PAGE_SETTINGS_TITLE_MAX_LENGTH,
         `Title must be shorter than ${PAGE_SETTINGS_TITLE_MAX_LENGTH} characters`
       )
-      .notOneOf(
-        existingTitlesArray,
-        "Title is already in use. Please choose a different title."
-      )
       .test(
-        "Special characters found",
-        'Title cannot contain any of the following special characters: ~%^*_+-./\\`;~{}[]"<>',
-        (value) => !specialCharactersRegexTest.test(value)
+        "Duplicate title",
+        "Title is already in use. Please choose a different title.",
+        (value) => !_.includes(existingTitlesArray, titleToPageFileName(value))
       ),
     permalink: Yup.string()
       .required("Permalink is required")

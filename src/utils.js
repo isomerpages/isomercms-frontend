@@ -1,12 +1,14 @@
 // import dependencies
-import yaml from "yaml"
-import cheerio from "cheerio"
-import slugify from "slugify"
 import axios from "axios"
+import cheerio from "cheerio"
 import _ from "lodash"
 import { QueryClient } from "react-query"
-import { getMediaDetails } from "./api"
-import { SITES_IS_PRIVATE_KEY } from "./constants"
+import slugify from "slugify"
+import yaml from "yaml"
+
+import { SITES_IS_PRIVATE_KEY } from "constants/constants"
+
+import { getMediaDetails } from "api"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -450,10 +452,10 @@ export const getRedirectUrl = ({
 }) => {
   if (!fileName) {
     if (collectionName) {
-      return `/sites/${siteName}/folders/${collectionName}/${
+      return `/sites/${siteName}/folders/${collectionName}${
         subCollectionName
-          ? `subfolders/${encodeURIComponent(subCollectionName)}`
-          : "" // V2
+          ? `/subfolders/${encodeURIComponent(subCollectionName)}`
+          : ""
       }`
     }
   } else {
@@ -535,7 +537,7 @@ export const getDefaultFrontMatter = (params, existingTitles) => {
     resourceCategoryName,
   } = params
   let exampleTitle = "Example Title"
-  while (existingTitles.includes(exampleTitle)) {
+  while (existingTitles.includes(`${exampleTitle}.md`)) {
     exampleTitle += " 1"
   }
   let examplePermalink = "/"

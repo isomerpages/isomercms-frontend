@@ -18,10 +18,6 @@ describe("Workspace Pages flow", () => {
   const TEST_PAGE_FILENAME = titleToPageFileName(TEST_PAGE_TITLE)
   const TEST_PAGE_ENCODED = encodeURIComponent(TEST_PAGE_FILENAME)
   const TEST_PAGE_CONTENT = "my test page content"
-  // temporary variables until refactor
-  const PRETTIFIED_PAGE_TITLE_IN_FOLDER_CREATION = deslugifyPage(
-    TEST_PAGE_FILENAME
-  )
 
   const EDITED_TEST_PAGE_TITLE = "把我如到價小岸發"
   const EDITED_TEST_PAGE_FILENAME = titleToPageFileName(EDITED_TEST_PAGE_TITLE)
@@ -110,15 +106,13 @@ describe("Workspace Pages flow", () => {
 
       // Cannot use titles shorter than 4 characters or containing symbols ~!@#$%^&*_+-./\`:;~{}()[]"'<>,?
       INVALID_TEST_PAGE_TITLES.forEach((invalidTitle) => {
-        cy.get("#title").clear().type(invalidTitle)
+        cy.get("#title").clear().type(invalidTitle).blur()
         cy.contains("button", "Save").should("be.disabled")
       })
 
       // Page title must not already exist
-      cy.get("#title").clear().type(TEST_PAGE_TITLE)
-      cy.contains(
-        "This title is already in use. Please choose a different title."
-      )
+      cy.get("#title").clear().type(TEST_PAGE_TITLE).blur()
+      cy.contains("Title is already in use. Please choose a different title.")
       cy.contains("button", "Save").should("be.disabled")
     })
 
@@ -131,7 +125,7 @@ describe("Workspace Pages flow", () => {
 
       // Permalink needs to be longer than 4 characters, should start with a slash, and contain alphanumeric characters separated by hyphens and slashes only
       INVALID_TEST_PAGE_PERMALINKS.forEach((invalidPermalink) => {
-        cy.get("#permalink").clear().type(invalidPermalink)
+        cy.get("#permalink").clear().type(invalidPermalink).blur()
         cy.contains("button", "Save").should("be.disabled")
       })
     })
@@ -232,9 +226,9 @@ describe("Workspace Pages flow", () => {
       cy.contains("Create new folder", { timeout: CUSTOM_TIMEOUT })
         .should("exist")
         .click()
-      cy.get("input#folder").clear().type(TEST_FOLDER_NO_PAGES_TITLE)
+      cy.get("input#newDirectoryName").clear().type(TEST_FOLDER_NO_PAGES_TITLE)
       cy.contains("Select pages").click()
-      cy.contains("Done").click()
+      cy.contains("Skip").click()
 
       // Assert
       cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, {
@@ -268,13 +262,11 @@ describe("Workspace Pages flow", () => {
       cy.contains("Create new folder", { timeout: CUSTOM_TIMEOUT })
         .should("exist")
         .click()
-      cy.get("input#folder").clear().type(TEST_FOLDER_WITH_PAGES_TITLE)
+      cy.get("input#newDirectoryName")
+        .clear()
+        .type(TEST_FOLDER_WITH_PAGES_TITLE)
       cy.contains("Select pages").click()
-      cy.contains(PRETTIFIED_PAGE_TITLE_IN_FOLDER_CREATION, {
-        timeout: CUSTOM_TIMEOUT,
-      })
-        .should("exist")
-        .click() // Select newly-created file
+      cy.get("div[id^=folderCard-small]").contains(TEST_PAGE_FILENAME).click()
       cy.contains("Done").click()
 
       // Assert
@@ -300,15 +292,16 @@ describe("Workspace Pages flow", () => {
       cy.contains("Create new folder", { timeout: CUSTOM_TIMEOUT })
         .should("exist")
         .click()
-      cy.get("input#folder").clear().type(INVALID_FOLDER_TITLE)
-      cy.contains("The page category should be longer than 2 characters.")
+      cy.get("input#newDirectoryName").clear().type(INVALID_FOLDER_TITLE).blur()
+      cy.contains("Title must be longer than 2 characters")
       cy.contains("button", "Select pages").should("be.disabled")
 
       // Folder exists
-      cy.get("input#folder").clear().type(TEST_FOLDER_NO_PAGES_TITLE)
-      cy.contains(
-        "Another folder with the same name exists. Please choose a different name."
-      )
+      cy.get("input#newDirectoryName")
+        .clear()
+        .type(TEST_FOLDER_NO_PAGES_TITLE)
+        .blur()
+      cy.contains("Title is already in use. Please choose a different title.")
       cy.contains("button", "Select pages").should("be.disabled")
     })
 
@@ -319,7 +312,7 @@ describe("Workspace Pages flow", () => {
         .should("exist")
         .within(() => cy.get("[id^=settingsIcon]").click())
       cy.get("div[id^=settings-]").first().click()
-      cy.contains("Rename Folder")
+      cy.contains("Folder settings")
       cy.get("input#newDirectoryName")
         .clear()
         .type(EDITED_TEST_FOLDER_WITH_PAGES_TITLE)

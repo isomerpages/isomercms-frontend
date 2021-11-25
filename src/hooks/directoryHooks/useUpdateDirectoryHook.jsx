@@ -1,10 +1,13 @@
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
-import { DEFAULT_RETRY_MSG } from "../../utils"
-import { successToast, errorToast } from "../../utils/toasts"
-import { DIR_CONTENT_KEY } from "../queryKeys"
 
-import { ServicesContext } from "../../contexts/ServicesContext"
+import { ServicesContext } from "contexts/ServicesContext"
+
+import { DIR_CONTENT_KEY } from "hooks/queryKeys"
+
+import { successToast, errorToast } from "utils/toasts"
+
+import { DEFAULT_RETRY_MSG } from "utils"
 
 export function useUpdateDirectoryHook(params, queryParams) {
   const queryClient = useQueryClient()
@@ -18,10 +21,16 @@ export function useUpdateDirectoryHook(params, queryParams) {
       queryParams && queryParams.onError && queryParams.onError()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries([
-        DIR_CONTENT_KEY,
-        (({ subCollectionName, ...p }) => p)(params),
-      ])
+      if (params.subCollectionName)
+        queryClient.invalidateQueries([
+          DIR_CONTENT_KEY,
+          (({ subCollectionName, ...p }) => p)(params),
+        ])
+      else
+        queryClient.invalidateQueries([
+          DIR_CONTENT_KEY,
+          (({ collectionName, ...p }) => p)(params),
+        ])
       successToast("Successfully updated directory settings")
       queryParams && queryParams.onSuccess && queryParams.onSuccess()
     },

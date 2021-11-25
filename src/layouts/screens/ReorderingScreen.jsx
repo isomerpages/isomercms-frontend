@@ -1,12 +1,12 @@
-import React from "react"
 import PropTypes from "prop-types"
+import React from "react"
 
-import ReorderingModal from "../../components/folders/ReorderingModal"
+import ReorderingModal from "components/folders/ReorderingModal"
 
 import {
   useGetDirectoryHook,
   useReorderDirectoryHook,
-} from "../../hooks/directoryHooks"
+} from "hooks/directoryHooks"
 
 export const ReorderingScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match

@@ -1,10 +1,11 @@
-import React from "react"
 import { render, screen } from "@testing-library/react"
+import React from "react"
 import { MemoryRouter } from "react-router-dom"
 import "@testing-library/jest-dom/extend-expect"
 
-import { RouteSelector } from "../routing/RouteSelector"
-import { LoginContext } from "../contexts/LoginContext"
+import { LoginContext } from "contexts/LoginContext"
+
+import { RouteSelector } from "routing/RouteSelector"
 
 const HOME_LAYOUT_TEXT = "Home layout mock text"
 const SITES_LAYOUT_TEXT = "Site layout mock text"
@@ -22,7 +23,7 @@ const FOLDERS_LAYOUT_TEXT = "Folders layout mock text"
 const NOT_FOUND_LAYOUT_TEXT = "Route does not exist"
 
 // Layout mocks
-jest.mock("../layouts/Home", () => {
+jest.mock("layouts/Home", () => {
   return {
     __esModule: true,
     default: () => {
@@ -31,7 +32,7 @@ jest.mock("../layouts/Home", () => {
   }
 })
 
-jest.mock("../layouts/Sites", () => {
+jest.mock("layouts/Sites", () => {
   return {
     __esModule: true,
     default: () => {
@@ -40,7 +41,7 @@ jest.mock("../layouts/Sites", () => {
   }
 })
 
-jest.mock("../layouts/Settings", () => {
+jest.mock("layouts/Settings", () => {
   return {
     __esModule: true,
     default: () => {
@@ -49,7 +50,7 @@ jest.mock("../layouts/Settings", () => {
   }
 })
 
-jest.mock("../layouts/EditNavBar", () => {
+jest.mock("layouts/EditNavBar", () => {
   return {
     __esModule: true,
     default: () => {
@@ -58,7 +59,7 @@ jest.mock("../layouts/EditNavBar", () => {
   }
 })
 
-jest.mock("../layouts/Resources", () => {
+jest.mock("layouts/Resources", () => {
   return {
     __esModule: true,
     default: () => {
@@ -67,7 +68,7 @@ jest.mock("../layouts/Resources", () => {
   }
 })
 
-jest.mock("../layouts/CategoryPages", () => {
+jest.mock("layouts/CategoryPages", () => {
   return {
     __esModule: true,
     default: () => {
@@ -76,7 +77,7 @@ jest.mock("../layouts/CategoryPages", () => {
   }
 })
 
-jest.mock("../layouts/EditContactUs", () => {
+jest.mock("layouts/EditContactUs", () => {
   return {
     __esModule: true,
     default: () => {
@@ -85,7 +86,7 @@ jest.mock("../layouts/EditContactUs", () => {
   }
 })
 
-jest.mock("../layouts/EditHomepage", () => {
+jest.mock("layouts/EditHomepage", () => {
   return {
     __esModule: true,
     default: () => {
@@ -94,7 +95,7 @@ jest.mock("../layouts/EditHomepage", () => {
   }
 })
 
-jest.mock("../layouts/Workspace", () => {
+jest.mock("layouts/Workspace", () => {
   return {
     __esModule: true,
     default: () => {
@@ -103,7 +104,7 @@ jest.mock("../layouts/Workspace", () => {
   }
 })
 
-jest.mock("../layouts/Images", () => {
+jest.mock("layouts/Images", () => {
   return {
     __esModule: true,
     default: () => {
@@ -112,7 +113,7 @@ jest.mock("../layouts/Images", () => {
   }
 })
 
-jest.mock("../layouts/Files", () => {
+jest.mock("layouts/Files", () => {
   return {
     __esModule: true,
     default: () => {
@@ -121,7 +122,7 @@ jest.mock("../layouts/Files", () => {
   }
 })
 
-jest.mock("../layouts/EditPage", () => {
+jest.mock("layouts/EditPage", () => {
   return {
     __esModule: true,
     default: () => {
@@ -130,7 +131,7 @@ jest.mock("../layouts/EditPage", () => {
   }
 })
 
-jest.mock("../layouts/Folders", () => {
+jest.mock("layouts/Folders", () => {
   return {
     __esModule: true,
     default: () => {
@@ -139,7 +140,7 @@ jest.mock("../layouts/Folders", () => {
   }
 })
 
-jest.mock("../layouts/Folders", () => {
+jest.mock("layouts/Folders", () => {
   return {
     __esModule: true,
     default: () => {
@@ -148,7 +149,7 @@ jest.mock("../layouts/Folders", () => {
   }
 })
 
-jest.mock("../components/NotFoundPage", () => {
+jest.mock("components/NotFoundPage", () => {
   return {
     __esModule: true,
     default: () => {

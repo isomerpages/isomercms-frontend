@@ -1,7 +1,9 @@
-import React from "react"
 import PropTypes from "prop-types"
-import { slugifyLower } from "../utils"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import React from "react"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import { slugifyLower } from "utils"
 
 const Dropdown = ({
   options,

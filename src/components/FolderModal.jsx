@@ -1,36 +1,33 @@
 // TODO: deprecate after Workspace and Resources refactor
 // remove from FolderCard, use DirectorySettingsModal as separate modal on layout
 
-import React, { useState } from "react"
 import axios from "axios"
+import FormField from "components/FormField"
+import SaveDeleteButtons from "components/SaveDeleteButtons"
 import PropTypes from "prop-types"
+import React, { useState } from "react"
 import { useMutation, useQueryClient } from "react-query"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import SaveDeleteButtons from "./SaveDeleteButtons"
-import FormField from "./FormField"
 
-import {
-  renameFolder,
-  renameSubfolder,
-  renameResourceCategory,
-  renameMediaSubfolder,
-} from "../api"
-
-import {
-  DEFAULT_RETRY_MSG,
-  slugifyCategory,
-  deslugifyDirectory,
-} from "../utils"
-
-import { validateCategoryName } from "../utils/validators"
-import { errorToast, successToast } from "../utils/toasts"
 import {
   DOCUMENT_CONTENTS_KEY,
   IMAGE_CONTENTS_KEY,
   DIR_CONTENT_KEY,
   FOLDERS_CONTENT_KEY,
   RESOURCE_ROOM_CONTENT_KEY,
-} from "../constants"
+} from "constants/constants"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import { errorToast, successToast } from "utils/toasts"
+import { validateCategoryName } from "utils/validators"
+
+import {
+  renameFolder,
+  renameSubfolder,
+  renameResourceCategory,
+  renameMediaSubfolder,
+} from "api"
+import { DEFAULT_RETRY_MSG, slugifyCategory, deslugifyDirectory } from "utils"
 
 // axios settings
 axios.defaults.withCredentials = true

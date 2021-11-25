@@ -1,20 +1,18 @@
-import React, { useEffect, useState } from "react"
+import update from "immutability-helper"
 import PropTypes from "prop-types"
+import React, { useEffect, useState } from "react"
 import { Droppable, Draggable, DragDropContext } from "react-beautiful-dnd"
 
-import update from "immutability-helper"
-
-import { FolderItem } from "./FolderContent"
-import LoadingButton from "../LoadingButton"
-
-import { deslugifyDirectory } from "../../utils"
-
 // Import styles
-import adminStyles from "../../styles/isomer-cms/pages/Admin.module.scss"
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../../styles/isomer-cms/pages/Content.module.scss"
+import Breadcrumb from "components/folders/Breadcrumb"
+import { FolderItem } from "components/folders/FolderContent"
+import LoadingButton from "components/LoadingButton"
 
-import Breadcrumb from "./Breadcrumb"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import adminStyles from "styles/isomer-cms/pages/Admin.module.scss"
+import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
+
+import { deslugifyDirectory } from "utils"
 
 const ReorderingModal = ({ params, dirData, onProceed, onClose }) => {
   const { collectionName, subCollectionName } = params

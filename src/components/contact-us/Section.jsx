@@ -1,12 +1,15 @@
-import React from "react"
-import PropTypes from "prop-types"
-import { Droppable, Draggable } from "react-beautiful-dnd"
 import _ from "lodash"
-import styles from "../../styles/App.module.scss"
-import elementStyles from "../../styles/isomer-cms/Elements.module.scss"
-import EditorContactCard from "./ContactCard"
-import EditorLocationCard from "./LocationCard"
-import { isEmpty } from "../../utils"
+import PropTypes from "prop-types"
+import React from "react"
+import { Droppable, Draggable } from "react-beautiful-dnd"
+
+import EditorContactCard from "components/contact-us/ContactCard"
+import EditorLocationCard from "components/contact-us/LocationCard"
+
+import styles from "styles/App.module.scss"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import { isEmpty } from "utils"
 
 /* eslint
   react/no-array-index-key: 0

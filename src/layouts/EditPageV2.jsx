@@ -1,34 +1,35 @@
-import React, { useEffect, useRef, useState } from "react"
 import axios from "axios"
-import _ from "lodash"
-import PropTypes from "prop-types"
-import marked from "marked"
 import DOMPurify from "dompurify"
-import checkCSP from "../utils/cspUtils"
+import _ from "lodash"
+import marked from "marked"
+import PropTypes from "prop-types"
+import React, { useEffect, useRef, useState } from "react"
 
+import GenericWarningModal from "components/GenericWarningModal"
+import Header from "components/Header"
+import EditPageFooter from "components/pages/EditPageFooter"
+import MarkdownEditor from "components/pages/MarkdownEditor"
+import PagePreview from "components/pages/PagePreview"
+
+import { useCollectionHook } from "hooks/collectionHooks"
 import {
   useGetPageHook,
   useUpdatePageHook,
   useDeletePageHook,
-} from "../hooks/pageHooks"
+} from "hooks/pageHooks"
+import { useCspHook, useSiteColorsHook } from "hooks/settingsHooks"
+import useRedirectHook from "hooks/useRedirectHook"
 
-import { useCollectionHook } from "../hooks/collectionHooks"
-import { useCspHook, useSiteColorsHook } from "../hooks/settingsHooks"
-import useRedirectHook from "../hooks/useRedirectHook"
+import checkCSP from "utils/cspUtils"
 
 // Isomer components
-import { prependImageSrc } from "../utils"
+import { createPageStyleSheet } from "utils/siteColorUtils"
 
-import { createPageStyleSheet } from "../utils/siteColorUtils"
+import { prependImageSrc } from "utils"
 
-import "../styles/isomer-template.scss"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import "styles/isomer-template.scss"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
-import Header from "../components/Header"
-import MarkdownEditor from "../components/pages/MarkdownEditor"
-import PagePreview from "../components/pages/PagePreview"
-import EditPageFooter from "../components/pages/EditPageFooter"
-import GenericWarningModal from "../components/GenericWarningModal"
 // axios settings
 axios.defaults.withCredentials = true
 

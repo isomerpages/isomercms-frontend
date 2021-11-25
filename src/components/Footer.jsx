@@ -1,10 +1,10 @@
-import React from "react"
 import PropTypes from "prop-types"
+import React from "react"
 
-import editorStyles from "../styles/isomer-cms/pages/Editor.module.scss"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import Button from "components/Button"
 
-import Button from "./Button"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 const Footer = ({
   keyButtonText,

@@ -1,16 +1,17 @@
-import React, { useEffect, useState, useRef } from "react"
-import { Link, useRouteMatch } from "react-router-dom"
 import axios from "axios"
 import PropTypes from "prop-types"
-import { MenuDropdown } from "./MenuDropdown"
+import React, { useEffect, useState, useRef } from "react"
+import { Link, useRouteMatch } from "react-router-dom"
 
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-import contentStyles from "../styles/isomer-cms/pages/Content.module.scss"
+import { MenuDropdown } from "components/MenuDropdown"
 
-import useRedirectHook from "../hooks/useRedirectHook"
+import useRedirectHook from "hooks/useRedirectHook"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
 // Import utils
-import { prettifyDate, deslugifyDirectory } from "../utils"
+import { prettifyDate, deslugifyDirectory } from "utils"
 
 // axios settings
 axios.defaults.withCredentials = true

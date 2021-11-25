@@ -1,13 +1,14 @@
-import React, { useState } from "react"
 import PropTypes from "prop-types"
-import Breadcrumb from "./folders/Breadcrumb"
+import React, { useState } from "react"
 
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import Breadcrumb from "components/folders/Breadcrumb"
+import SaveDeleteButtons from "components/SaveDeleteButtons"
 
-import { useGetDirectoryHook } from "../hooks/directoryHooks"
-import SaveDeleteButtons from "./SaveDeleteButtons"
+import { useGetDirectoryHook } from "hooks/directoryHooks"
 
-import { getLastItemType, getNextItemType, deslugifyDirectory } from "../utils"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import { getLastItemType, getNextItemType, deslugifyDirectory } from "utils"
 
 const MoveMenu = ({ moveQuery, setMoveQuery, moveTo, setMoveTo, dirData }) => {
   /** ******************************** */

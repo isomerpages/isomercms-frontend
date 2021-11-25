@@ -1,12 +1,30 @@
 // TODO: deprecate after Workspace refactor
 // remove from CollecionPagesSection, use PageSettingsModalV2 instead as separate modal on Workspace
 
-import React, { useState, useEffect } from "react"
-import PropTypes from "prop-types"
-import { useMutation, useQueryClient } from "react-query"
 import axios from "axios"
+import FormField from "components/FormField"
+import FormFieldHorizontal from "components/FormFieldHorizontal"
+import SaveDeleteButtons from "components/SaveDeleteButtons"
 import * as _ from "lodash"
+import PropTypes from "prop-types"
+import React, { useState, useEffect } from "react"
+import { useMutation, useQueryClient } from "react-query"
 
+import {
+  PAGE_SETTINGS_KEY,
+  DIR_CONTENT_KEY,
+  PAGE_CONTENT_KEY,
+} from "constants/constants"
+
+import useRedirectHook from "hooks/useRedirectHook"
+import useSiteUrlHook from "hooks/useSiteUrlHook"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import { errorToast, successToast } from "utils/toasts"
+import { validatePageSettings } from "utils/validators"
+
+import { createPageData, updatePageData, renamePageData } from "api"
 import {
   DEFAULT_RETRY_MSG,
   generatePageFileName,
@@ -14,26 +32,7 @@ import {
   frontMatterParser,
   deslugifyPage,
   deslugifyDirectory,
-} from "../utils"
-
-import { createPageData, updatePageData, renamePageData } from "../api"
-import {
-  PAGE_SETTINGS_KEY,
-  DIR_CONTENT_KEY,
-  PAGE_CONTENT_KEY,
-} from "../constants"
-
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
-
-import { validatePageSettings } from "../utils/validators"
-import { errorToast, successToast } from "../utils/toasts"
-
-import FormField from "./FormField"
-import FormFieldHorizontal from "./FormFieldHorizontal"
-import SaveDeleteButtons from "./SaveDeleteButtons"
-
-import useSiteUrlHook from "../hooks/useSiteUrlHook"
-import useRedirectHook from "../hooks/useRedirectHook"
+} from "utils"
 
 // axios settings
 axios.defaults.withCredentials = true

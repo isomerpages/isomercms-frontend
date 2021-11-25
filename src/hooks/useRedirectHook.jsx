@@ -1,9 +1,9 @@
+import axios from "axios"
 import { useContext, useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
-import axios from "axios"
 
 // Import contexts
-const { LoginContext } = require("../contexts/LoginContext")
+const { LoginContext } = require("contexts/LoginContext")
 
 // constants
 const userIdKey = "userId"

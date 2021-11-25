@@ -1,9 +1,9 @@
-import React from "react"
 import PropTypes from "prop-types"
+import React from "react"
 
-import { useMoveHook } from "../../hooks/moveHooks"
+import MoveModal from "components/MoveModal"
 
-import MoveModal from "../../components/MoveModal"
+import { useMoveHook } from "hooks/moveHooks"
 
 export const PageMoveScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match

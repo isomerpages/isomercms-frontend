@@ -7,7 +7,7 @@ import {
   titleToPageFileName,
   deslugifyDirectory,
   generatePageFileName,
-} from "../utils"
+} from "utils"
 
 // Common regexes and constants
 // ==============
@@ -32,7 +32,7 @@ export const alphanumericRegexTest = RegExp(ALPHANUMERICS_ONLY_REGEX)
 export const fileNameRegexTest = /^[a-zA-Z0-9" "_-]+$/
 export const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/
 export const RESOURCE_CATEGORY_REGEX = "^([a-zA-Z0-9]*[- ]?)+$"
-export const resourceRoomNameRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
+export const slugifyLowerFalseRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
 export const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX)
 export const specialCharactersRegexTest = /[~%^*_+\-./\\`;~{}[\]"<>]/
 
@@ -138,6 +138,11 @@ const RESOURCE_SETTINGS_PERMALINK_MAX_LENGTH = 50
 // ===================
 const RESOURCE_CATEGORY_MIN_LENGTH = 2
 const RESOURCE_CATEGORY_MAX_LENGTH = 30
+
+// Directory Settings Modal
+// ===================
+export const DIRECTORY_SETTINGS_TITLE_MIN_LENGTH = 2
+export const DIRECTORY_SETTINGS_TITLE_MAX_LENGTH = 30
 
 // Homepage Editor
 // ==========
@@ -897,7 +902,7 @@ const validateMediaSettings = (value, mediaFileNames) => {
 const validateResourceRoomName = (value) => {
   let errorMessage = ""
 
-  if (!resourceRoomNameRegexTest.test(value)) {
+  if (!slugifyLowerFalseRegexTest.test(value)) {
     errorMessage =
       "The resource room name should only contain alphanumeric characters or dashes."
   }

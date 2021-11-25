@@ -1,6 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { deslugifyDirectory, isLastItem } from "../../utils"
+
+import { deslugifyDirectory, isLastItem } from "utils"
 
 const BreadcrumbItem = ({ item, isLast, link }) => (
   <>

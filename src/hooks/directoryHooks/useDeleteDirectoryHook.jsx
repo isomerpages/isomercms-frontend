@@ -1,10 +1,13 @@
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
-import { DEFAULT_RETRY_MSG } from "../../utils"
-import { successToast, errorToast } from "../../utils/toasts"
-import { DIR_CONTENT_KEY } from "../queryKeys"
 
-import { ServicesContext } from "../../contexts/ServicesContext"
+import { ServicesContext } from "contexts/ServicesContext"
+
+import { DIR_CONTENT_KEY } from "hooks/queryKeys"
+
+import { successToast, errorToast } from "utils/toasts"
+
+import { DEFAULT_RETRY_MSG } from "utils"
 
 export function useDeleteDirectoryHook(params, queryParams) {
   const { directoryService } = useContext(ServicesContext)
@@ -17,10 +20,16 @@ export function useDeleteDirectoryHook(params, queryParams) {
     },
     onSuccess: () => {
       successToast(`Successfully deleted directory`)
-      queryClient.invalidateQueries([
-        DIR_CONTENT_KEY,
-        (({ subCollectionName, ...p }) => p)(params),
-      ])
+      if (params.subCollectionName)
+        queryClient.invalidateQueries([
+          DIR_CONTENT_KEY,
+          (({ subCollectionName, ...p }) => p)(params),
+        ])
+      else
+        queryClient.invalidateQueries([
+          DIR_CONTENT_KEY,
+          (({ collectionName, ...p }) => p)(params),
+        ])
       queryParams && queryParams.onSuccess && queryParams.onSuccess()
     },
   })
