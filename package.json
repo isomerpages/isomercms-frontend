@@ -8,7 +8,7 @@
     "@hookform/resolvers": "^2.8.2",
     "@sentry/react": "^5.30.0",
     "@sentry/tracing": "^6.15.0",
-    "axios": "^0.21.3",
+    "axios": "^0.24.0",
     "bluebird": "^3.7.1",
     "bootstrap": "^4.6.0",
     "cheerio": "^1.0.0-rc.3",
