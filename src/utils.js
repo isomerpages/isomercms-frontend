@@ -1,6 +1,7 @@
 // import dependencies
 import axios from "axios"
 import cheerio from "cheerio"
+import { format } from "date-fns-tz"
 import _ from "lodash"
 import { QueryClient } from "react-query"
 import slugify from "slugify"
@@ -312,18 +313,6 @@ export const parseDirectoryFile = (folderContent) => {
   return decodedContent.collections[collectionKey]
 }
 
-export const updateDirectoryFile = (folderName, isFolderLive, folderOrder) => {
-  const newContent = {
-    collections: {
-      [folderName]: {
-        output: isFolderLive,
-        order: folderOrder,
-      },
-    },
-  }
-  return yaml.stringify(newContent)
-}
-
 export const getNavFolderDropdownFromFolderOrder = (folderOrder) => {
   return folderOrder.reduce((acc, curr) => {
     const pathArr = curr.split("/") // sample paths: "prize-sponsor.md", "prize-jury/nominating-committee.md"
@@ -342,97 +331,6 @@ export const getNavFolderDropdownFromFolderOrder = (folderOrder) => {
 
     return acc
   }, [])
-}
-
-export const convertFolderOrderToArray = (folderOrder) => {
-  let currFolderEntry = {}
-  return folderOrder.reduce((acc, curr, currIdx) => {
-    const folderPathArr = curr.split("/")
-    if (folderPathArr.length === 1) {
-      if (JSON.stringify(currFolderEntry) !== "{}") acc.push(currFolderEntry)
-      currFolderEntry = {}
-      acc.push({
-        type: "file",
-        path: curr,
-        fileName: curr,
-      })
-    }
-
-    if (folderPathArr.length > 1) {
-      const subfolderTitle = folderPathArr[0]
-
-      // Start of a new subfolder section
-      if (currFolderEntry.fileName !== subfolderTitle) {
-        // Case: two consecutive subfolders - transitioning from one to the other
-        if (
-          currFolderEntry.fileName &&
-          currFolderEntry.fileName !== subfolderTitle
-        ) {
-          acc.push(currFolderEntry)
-        }
-
-        currFolderEntry = {
-          type: "dir",
-          fileName: subfolderTitle,
-          path: curr,
-          children: [curr],
-        }
-      } else {
-        currFolderEntry.children.push(curr)
-      }
-
-      // last entry
-      if (currIdx === folderOrder.length - 1) acc.push(currFolderEntry)
-    }
-
-    return acc
-  }, [])
-}
-
-export const convertArrayToFolderOrder = (array) => {
-  const updatedFolderOrder = array.map(({ type, children, path }) => {
-    if (type === "dir") return children
-    if (type === "file") return path
-    return undefined
-  })
-  return _.flatten(updatedFolderOrder)
-}
-
-export const retrieveSubfolderContents = (folderOrder, subfolderName) => {
-  return folderOrder.reduce((acc, curr) => {
-    const folderPathArr = curr.split("/")
-    if (folderPathArr.length === 2) {
-      const [subfolderTitle, subfolderFileName] = folderPathArr
-      if (subfolderTitle === subfolderName) {
-        acc.push({
-          type: "file",
-          path: curr,
-          fileName: subfolderFileName,
-        })
-      }
-    }
-    return acc
-  }, [])
-}
-
-export const convertSubfolderArray = (
-  folderOrderArray,
-  rawFolderContents,
-  subfolderName
-) => {
-  const placeholderItem = {
-    path: `${subfolderName}/.keep`,
-  }
-  const arrayCopy = [placeholderItem].concat(_.cloneDeep(folderOrderArray))
-  return rawFolderContents.map((curr) => {
-    const folderPathArr = curr.split("/")
-    const subfolderTitle = folderPathArr[0]
-    if (folderPathArr.length === 2 && subfolderTitle === subfolderName) {
-      const { path } = arrayCopy.shift()
-      return path
-    }
-    return curr
-  })
 }
 
 export const generateImageorFilePath = (customPath, fileName) => {
