@@ -117,7 +117,7 @@ describe("Folders flow", () => {
       cy.get("input#newDirectoryName")
         .clear()
         .type(TEST_SUBFOLDER_NO_PAGES_TITLE)
-      cy.contains("Select pages").click()
+      cy.contains("Next").click()
       cy.contains("Skip").click()
 
       // Assert
@@ -136,7 +136,8 @@ describe("Folders flow", () => {
       cy.get("input#newDirectoryName")
         .clear()
         .type(TEST_SUBFOLDER_WITH_PAGES_TITLE)
-      cy.contains("Select pages").click()
+        .blur()
+      cy.contains("Next").click()
 
       cy.get("div[id^=folderCard-small]")
         .contains(PRETTIFIED_DEFAULT_PAGE_TITLE)
@@ -165,7 +166,7 @@ describe("Folders flow", () => {
       // Cannot use titles shorter than 2 characters or containing symbols ~!@#$%^&*_+-./\`:;~{}()[]"'<>,?
       INVALID_SUBFOLDER_TITLES.forEach((invalidTitle) => {
         cy.get("input#newDirectoryName").clear().type(invalidTitle).blur()
-        cy.contains("button", "Select pages").should("be.disabled")
+        cy.contains("button", "Next").should("be.disabled")
       })
 
       // Subfolder exists
@@ -174,7 +175,7 @@ describe("Folders flow", () => {
         .type(TEST_SUBFOLDER_WITH_PAGES_TITLE)
         .blur()
       cy.contains("Title is already in use. Please choose a different title.")
-      cy.contains("button", "Select pages").should("be.disabled")
+      cy.contains("button", "Next").should("be.disabled")
     })
 
     it("Should not be able to create a nested sub-folder within a sub-folder", () => {
@@ -217,7 +218,7 @@ describe("Folders flow", () => {
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
       cy.get("div[id^=delete-]").first().click()
       cy.contains("button", "Delete").click()
-
+      cy.wait(2000)
       // Assert
       cy.contains(PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE).should(
         "not.exist"
@@ -311,9 +312,7 @@ describe("Folders flow", () => {
     })
 
     it("Should be able to edit existing page details with Chinese title and valid permalink", () => {
-      cy.contains(TEST_PAGE_FILENAME, { timeout: CUSTOM_TIMEOUT }).should(
-        "exist"
-      )
+      cy.contains(TEST_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist")
 
       // User should be able edit page details
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
@@ -331,17 +330,17 @@ describe("Folders flow", () => {
       // Asserts
       // 1. New page title should be reflected in Folders
       cy.reload()
-      cy.contains(EDITED_TEST_PAGE_FILENAME, {
+      cy.contains(EDITED_TEST_PAGE_TITLE, {
         timeout: CUSTOM_TIMEOUT,
       }).should("exist")
 
       // 2. Test page content should still be in Edit Page
-      cy.contains(EDITED_TEST_PAGE_FILENAME).click()
+      cy.contains(EDITED_TEST_PAGE_TITLE).click()
       cy.get(".CodeMirror-scroll").should("contain", DEFAULT_TEST_PAGE_CONTENT)
     })
 
     it("Should be able to edit existing page details with Tamil title and valid permalink", () => {
-      cy.contains(EDITED_TEST_PAGE_FILENAME, {
+      cy.contains(EDITED_TEST_PAGE_TITLE, {
         timeout: CUSTOM_TIMEOUT,
       }).should("exist")
 
@@ -361,12 +360,12 @@ describe("Folders flow", () => {
       // Asserts
       // 1. New page title should be reflected in Folders
       cy.reload()
-      cy.contains(EDITED_TEST_PAGE_FILENAME_2, {
+      cy.contains(EDITED_TEST_PAGE_TITLE_2, {
         timeout: CUSTOM_TIMEOUT,
       }).should("exist")
 
       // 2. Test page content should still be in Edit Page
-      cy.contains(EDITED_TEST_PAGE_FILENAME_2).click()
+      cy.contains(EDITED_TEST_PAGE_TITLE_2).click()
       cy.get(".CodeMirror-scroll").should("contain", DEFAULT_TEST_PAGE_CONTENT)
     })
 
@@ -380,7 +379,7 @@ describe("Folders flow", () => {
       }).should("exist")
 
       cy.reload()
-      cy.contains(EDITED_TEST_PAGE_FILENAME, {
+      cy.contains(EDITED_TEST_PAGE_TITLE, {
         timeout: CUSTOM_TIMEOUT,
       }).should("not.exist")
     })
@@ -397,7 +396,7 @@ describe("Folders flow", () => {
       cy.get("input#newDirectoryName")
         .clear()
         .type(TEST_SUBFOLDER_NO_PAGES_TITLE)
-      cy.contains("Select pages").click()
+      cy.contains("Next").click()
       cy.contains("Skip").click()
 
       // Assert
@@ -483,9 +482,7 @@ describe("Folders flow", () => {
     })
 
     it("Should be able to edit existing page details with Chinese title and valid permalink", () => {
-      cy.contains(TEST_PAGE_FILENAME, { timeout: CUSTOM_TIMEOUT }).should(
-        "exist"
-      )
+      cy.contains(TEST_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist")
 
       // User should be able edit page details
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
@@ -503,17 +500,17 @@ describe("Folders flow", () => {
       // Asserts
       // 1. New page title should be reflected in Folders
       cy.reload()
-      cy.contains(EDITED_TEST_PAGE_FILENAME, {
+      cy.contains(EDITED_TEST_PAGE_TITLE, {
         timeout: CUSTOM_TIMEOUT,
       }).should("exist")
 
       // 2. Test page content should still be in Edit Page
-      cy.contains(EDITED_TEST_PAGE_FILENAME).click()
+      cy.contains(EDITED_TEST_PAGE_TITLE).click()
       cy.get(".CodeMirror-scroll").should("contain", DEFAULT_TEST_PAGE_CONTENT)
     })
 
     it("Should be able to edit existing page details with Tamil title and valid permalink", () => {
-      cy.contains(EDITED_TEST_PAGE_FILENAME, {
+      cy.contains(EDITED_TEST_PAGE_TITLE, {
         timeout: CUSTOM_TIMEOUT,
       }).should("exist")
 
@@ -533,12 +530,12 @@ describe("Folders flow", () => {
       // Asserts
       // 1. New page title should be reflected in Folders
       cy.reload()
-      cy.contains(EDITED_TEST_PAGE_FILENAME_2, {
+      cy.contains(EDITED_TEST_PAGE_TITLE_2, {
         timeout: CUSTOM_TIMEOUT,
       }).should("exist")
 
       // 2. Test page content should still be in Edit Page
-      cy.contains(EDITED_TEST_PAGE_FILENAME_2).click()
+      cy.contains(EDITED_TEST_PAGE_TITLE_2).click()
       cy.get(".CodeMirror-scroll").should("contain", DEFAULT_TEST_PAGE_CONTENT)
     })
 
@@ -552,7 +549,7 @@ describe("Folders flow", () => {
       }).should("exist")
 
       cy.reload()
-      cy.contains(EDITED_TEST_PAGE_FILENAME, {
+      cy.contains(EDITED_TEST_PAGE_TITLE, {
         timeout: CUSTOM_TIMEOUT,
       }).should("not.exist")
     })

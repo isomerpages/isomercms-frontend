@@ -1,6 +1,8 @@
 import "cypress-file-upload"
 import { slugifyCategory, generateResourceFileName } from "../../src/utils"
 
+const CUSTOM_TIMEOUT = 30000 // 30 seconds
+
 describe("Resource category page", () => {
   Cypress.config("defaultCommandTimeout", 5000)
 
@@ -10,6 +12,7 @@ describe("Resource category page", () => {
   const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
   Cypress.config("baseUrl", Cypress.env("BASEURL"))
 
+  const TEST_RESOURCE_ROOM_NAME = "resources"
   const TEST_CATEGORY = "Test Page Folder"
   const TEST_CATEGORY_2 = "Another Page Folder"
   const TEST_CATEGORY_SLUGIFIED = slugifyCategory(TEST_CATEGORY)
@@ -37,16 +40,17 @@ describe("Resource category page", () => {
     window.localStorage.setItem("userId", "test")
 
     // Set up test resource categories
-    cy.visit(`/sites/${TEST_REPO_NAME}/resourceRoom/resources`)
-    cy.contains("Create new category").click()
-    cy.get("input").clear().type(TEST_CATEGORY)
-    cy.contains("Next").click()
+    cy.visit(`/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}`)
     cy.wait(3000)
-    cy.visit(`/sites/${TEST_REPO_NAME}/resourceRoom/resources`)
     cy.contains("Create new category").click()
-    cy.get("input").clear().type(TEST_CATEGORY_2)
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY)
     cy.contains("Next").click()
+
+    cy.visit(`/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}`)
     cy.wait(3000)
+    cy.contains("Create new category").click()
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_2)
+    cy.contains("Next").click()
   })
 
   beforeEach(() => {
@@ -55,7 +59,7 @@ describe("Resource category page", () => {
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
     window.localStorage.setItem("userId", "test")
     cy.visit(
-      `/sites/${TEST_REPO_NAME}/resourceRoom/resources/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
+      `/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
     )
   })
 
@@ -77,8 +81,8 @@ describe("Resource category page", () => {
     // 1. Redirect to newly created folder
     cy.url().should(
       "include",
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/resources/resourceCategory/${TEST_CATEGORY_SLUGIFIED}/editPage/${generateResourceFileName(
-        TEST_PAGE_TITLE,
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}/editPage/${generateResourceFileName(
+        encodeURIComponent(TEST_PAGE_TITLE),
         TEST_PAGE_DATE,
         true
       )}`
@@ -96,26 +100,32 @@ describe("Resource category page", () => {
     cy.contains("Add a new page").click()
     cy.wait(2000)
     // Same name as existing file
-    cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE)
+    cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE).blur()
     cy.contains("Save").should("be.disabled")
 
     // Changing another field should not enable save
-    cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK)
+    cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK).blur()
     cy.contains("Save").should("be.disabled")
 
     // Reset to valid title
     cy.get('input[id="title"]').clear().type(`${TEST_PAGE_TITLE}1`)
     // Special character in permalink
-    cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK_SPECIAL)
+    cy.get('input[id="permalink"]')
+      .clear()
+      .type(TEST_PAGE_PERMALINK_SPECIAL)
+      .blur()
     cy.contains("Save").should("be.disabled")
 
     // Reset to valid permalink
     cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK)
     // Invalid date format
-    cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE_INVALID_FORMAT)
+    cy.get('input[id="date"]')
+      .clear()
+      .type(TEST_PAGE_DATE_INVALID_FORMAT)
+      .blur()
     cy.contains("Save").should("be.disabled")
     // Invalid date
-    cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE_INVALID_DATE)
+    cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE_INVALID_DATE).blur()
     cy.contains("Save").should("be.disabled")
   })
 
@@ -132,8 +142,8 @@ describe("Resource category page", () => {
     // 1. Redirect to newly created folder
     cy.url().should(
       "include",
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/resources/resourceCategory/${TEST_CATEGORY_SLUGIFIED}/editPage/${generateResourceFileName(
-        TEST_PAGE_TITLE_2,
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}/editPage/${generateResourceFileName(
+        encodeURIComponent(TEST_PAGE_TITLE_2),
         TEST_PAGE_DATE,
         true
       )}`
@@ -148,40 +158,60 @@ describe("Resource category page", () => {
   })
 
   it("Resource category page should not allow user to rename a resource page using invalid parameters", () => {
-    cy.contains(TEST_PAGE_TITLE_2).find('[id^="settings-"]').click()
-    cy.contains("Edit details").click()
+    const testPageCard = cy
+      .contains(TEST_PAGE_TITLE_2, { timeout: CUSTOM_TIMEOUT })
+      .should("exist")
+
+    testPageCard
+      .children()
+      .within(() => cy.get("[id^=pageCard-dropdown-]").click())
+
+    cy.get("div[id^=settings-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
     cy.wait(2000)
 
-    // Cannot save without making changes
-    cy.contains("Save").should("be.disabled")
-
     // Same name as existing file
-    cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE)
+    cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE).blur()
     cy.contains("Save").should("be.disabled")
 
     // Changing another field should not enable save
-    cy.get('input[id="permalink"]').clear().type(`${TEST_PAGE_PERMALINK}1`)
+    cy.get('input[id="permalink"]')
+      .clear()
+      .type(`${TEST_PAGE_PERMALINK}1`)
+      .blur()
     cy.contains("Save").should("be.disabled")
 
     // Reset to valid title
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_RENAMED)
     // Special character in permalink
-    cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK_SPECIAL)
+    cy.get('input[id="permalink"]')
+      .clear()
+      .type(TEST_PAGE_PERMALINK_SPECIAL)
+      .blur()
     cy.contains("Save").should("be.disabled")
 
     // Reset to valid permalink
     cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK)
     // Invalid date format
-    cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE_INVALID_FORMAT)
+    cy.get('input[id="date"]')
+      .clear()
+      .type(TEST_PAGE_DATE_INVALID_FORMAT)
+      .blur()
     cy.contains("Save").should("be.disabled")
     // Invalid date
-    cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE_INVALID_DATE)
+    cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE_INVALID_DATE).blur()
     cy.contains("Save").should("be.disabled")
   })
 
   it("Resource category page should allow user to edit a resource page details", () => {
-    cy.contains(TEST_PAGE_TITLE_2).find('[id^="settings-"]').click()
-    cy.contains("Edit details").click()
+    const testPageCard = cy
+      .contains(TEST_PAGE_TITLE_2, { timeout: CUSTOM_TIMEOUT })
+      .should("exist")
+
+    testPageCard
+      .children()
+      .within(() => cy.get("[id^=pageCard-dropdown-]").click())
+
+    cy.get("div[id^=settings-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
     cy.wait(2000)
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_RENAMED)
@@ -204,8 +234,8 @@ describe("Resource category page", () => {
     cy.contains(TEST_PAGE_TITLE_RENAMED).click()
     cy.url().should(
       "include",
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/resources/resourceCategory/${TEST_CATEGORY_SLUGIFIED}/editPage/${generateResourceFileName(
-        TEST_PAGE_TITLE_RENAMED,
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}/editPage/${generateResourceFileName(
+        encodeURIComponent(TEST_PAGE_TITLE_RENAMED),
         TEST_PAGE_DATE_CHANGED,
         true
       )}`
@@ -218,10 +248,8 @@ describe("Resource category page", () => {
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_FILE)
     cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE)
-    cy.get('input[id="radio-file"]').click()
+    cy.get('input[id="radio-file"]').click().blur()
 
-    // No file selected yet
-    cy.contains("Save").should("be.disabled")
     cy.contains(":button", "Select File").click()
     cy.contains(":button", "Add new file").click()
 
@@ -239,7 +267,7 @@ describe("Resource category page", () => {
     // 1. Should not redirect
     cy.url().should(
       "include",
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/resources/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
     )
 
     // 2. New page should be of type FILE with the correct date
@@ -247,15 +275,20 @@ describe("Resource category page", () => {
     cy.contains(`${TEST_PAGE_DATE_PRETTIFIED}/FILE`)
   })
 
-  it("Resources category page should allow user to change a new resource page from post to file", () => {
-    cy.contains(TEST_PAGE_TITLE_RENAMED).find('[id^="settings-"]').click()
-    cy.contains("Edit details").click()
+  it("Resources category page should allow user to change an existing resource page from post to file", () => {
+    const testPageCard = cy
+      .contains(TEST_PAGE_TITLE_RENAMED, { timeout: CUSTOM_TIMEOUT })
+      .should("exist")
+
+    testPageCard
+      .children()
+      .within(() => cy.get("[id^=pageCard-dropdown-]").click())
+
+    cy.get("div[id^=settings-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
     cy.wait(2000)
 
     cy.get('input[id="radio-file"]').click()
 
-    // No file selected yet
-    cy.contains("Save").should("be.disabled")
     cy.contains(":button", "Select File").click()
     cy.contains(":button", "Add new file").click()
 
@@ -270,19 +303,22 @@ describe("Resource category page", () => {
     cy.contains(`${TEST_PAGE_DATE_CHANGED_PRETTIFIED}/FILE`)
   })
 
-  it("Resources category page should allow user to change a new resource page from post to file", () => {
-    cy.contains(TEST_PAGE_TITLE_RENAMED)
-      .parent()
-      .parent()
-      .find('[id^="settings-"]')
-      .click()
-    cy.contains("Edit details").click()
+  it("Resources category page should allow user to change an existing resource page from file to post", () => {
+    const testPageCard = cy
+      .contains(TEST_PAGE_TITLE_RENAMED, { timeout: CUSTOM_TIMEOUT })
+      .should("exist")
+
+    testPageCard
+      .children()
+      .within(() => cy.get("[id^=pageCard-dropdown-]").click())
+
+    cy.get("div[id^=settings-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
     cy.wait(2000)
 
     cy.get('input[id="radio-post"]').click()
 
     cy.contains("Save").click()
-    cy.contains("Successfully updated file settings").should("exist")
+    cy.contains("Successfully updated page").should("exist")
 
     // New page should be of type FILE with the correct date
     cy.reload()
@@ -292,13 +328,18 @@ describe("Resource category page", () => {
   })
 
   it("Resource category page should allow user to delete a page", () => {
-    cy.contains(TEST_PAGE_TITLE_RENAMED).find('[id^="settings-"]').click()
-    cy.contains("Delete").click()
-    cy.contains(":button", "Cancel").click()
+    const testPageCard = cy
+      .contains(TEST_PAGE_TITLE_RENAMED, { timeout: CUSTOM_TIMEOUT })
+      .should("exist")
 
-    cy.contains(TEST_PAGE_TITLE_RENAMED).find('[id^="settings-"]').click()
-    cy.contains("Delete").click()
-    cy.contains(":button", "Delete").click()
+    testPageCard
+      .children()
+      .within(() => cy.get("[id^=pageCard-dropdown-]").click())
+
+    cy.get("div[id^=delete-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
+    cy.contains("button", "Delete", { timeout: CUSTOM_TIMEOUT })
+      .should("exist")
+      .click()
 
     // Set a wait time because the API takes time
     cy.wait(3000)

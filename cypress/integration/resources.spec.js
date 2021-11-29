@@ -34,9 +34,9 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to create a new resource category", () => {
+    cy.wait(3000)
     cy.contains("Create new category").click()
-
-    cy.get("input").clear().type(TEST_CATEGORY)
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY)
     cy.contains("Next").click()
 
     cy.wait(8000)
@@ -54,25 +54,27 @@ describe("Resources page", () => {
   })
 
   it("Resources page should not allow user to create a new resource category with invalid name", () => {
+    cy.wait(3000)
     cy.contains("Create new category").click()
 
     // Disabled button for special characters
-    cy.get("input").type(TEST_CATEGORY_SPECIAL).blur()
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_SPECIAL).blur()
     cy.contains("Next").should("be.disabled")
 
     // Disabled button for short names
-    cy.get("input").clear().type(TEST_CATEGORY_SHORT).blur()
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_SHORT).blur()
     cy.contains("Next").should("be.disabled")
 
     // Disabled button for same name
-    cy.get("input").clear().type(TEST_CATEGORY).blur()
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY).blur()
     cy.contains("Next").should("be.disabled")
   })
 
   it("Resources page should allow user to create another new resource category", () => {
+    cy.wait(3000)
     cy.contains("Create new category").click()
 
-    cy.get("input").clear().type(TEST_CATEGORY_2)
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_2)
     cy.contains("Next").click()
 
     // Asserts
@@ -92,15 +94,15 @@ describe("Resources page", () => {
     cy.contains(TEST_CATEGORY_2).contains("Edit details").click()
 
     // Disabled button for special characters
-    cy.get("input").clear().type(TEST_CATEGORY_SPECIAL).blur()
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_SPECIAL).blur()
     cy.contains("Save").should("be.disabled")
 
     // Disabled button for short names
-    cy.get("input").clear().type(TEST_CATEGORY_SHORT).blur()
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_SHORT).blur()
     cy.contains("Save").should("be.disabled")
 
     // Disabled button for same name
-    cy.get("input").clear().type(TEST_CATEGORY).blur()
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY).blur()
     cy.contains("Save").should("be.disabled")
   })
 
