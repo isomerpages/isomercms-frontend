@@ -28,7 +28,6 @@ const FormField = ({
         <p className={elementStyles.formFixedText}>{fixedMessage}</p>
       )}
       <input
-        {...register(id, { required: isRequired })}
         type="text"
         placeholder={placeholder || title}
         value={value}
@@ -39,6 +38,7 @@ const FormField = ({
         className={hasError || errorMessage ? `${elementStyles.error}` : null}
         style={style}
         onChange={onFieldChange}
+        {...register(id, { required: isRequired })}
         disabled={disabled}
       />
     </div>
