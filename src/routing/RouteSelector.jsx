@@ -1,20 +1,19 @@
 import * as Sentry from "@sentry/react"
 import FallbackComponent from "components/FallbackComponent"
-import NotFoundPage from "components/NotFoundPage"
 import React from "react"
 import { Switch } from "react-router-dom"
 
 // Layouts
 
-import CategoryPages from "layouts/CategoryPages"
 import EditContactUs from "layouts/EditContactUs"
 import EditHomepage from "layouts/EditHomepage"
 import EditNavBar from "layouts/EditNavBar"
 import EditPage from "layouts/EditPage"
-import EditPageV2 from "layouts/EditPageV2"
 import Folders from "layouts/Folders"
 import Home from "layouts/Home"
 import Media from "layouts/Media"
+import NotFoundPage from "layouts/NotFoundPage"
+import ResourceCategory from "layouts/ResourceCategory"
 import ResourceRoom from "layouts/ResourceRoom"
 import Settings from "layouts/Settings"
 import Sites from "layouts/Sites"
@@ -37,25 +36,19 @@ export const RouteSelector = () => (
     <RedirectIfLoggedInRoute exact path="/" component={Home} />
     <ProtectedRouteWithProps
       exact
-      path="/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName/editPage/:fileName"
-      component={EditPageV2}
+      path={[
+        "/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName/editPage/:fileName",
+        "/sites/:siteName/folders/:collectionName/editPage/:fileName",
+        "/sites/:siteName/editPage/:fileName",
+        "/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName/editPage/:fileName",
+      ]}
+      component={EditPage}
     />
     <ProtectedRouteWithProps
-      exact
-      path="/sites/:siteName/folders/:collectionName/editPage/:fileName"
-      component={EditPageV2}
-    />
-    <ProtectedRouteWithProps
-      exact
-      path="/sites/:siteName/editPage/:fileName"
-      component={EditPageV2}
-    />
-    <ProtectedRouteWithProps
-      path="/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName"
-      component={Folders}
-    />
-    <ProtectedRouteWithProps
-      path="/sites/:siteName/folders/:collectionName"
+      path={[
+        "/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName",
+        "/sites/:siteName/folders/:collectionName",
+      ]}
       component={Folders}
     />
     <ProtectedRouteWithProps
@@ -95,16 +88,9 @@ export const RouteSelector = () => (
       path="/sites/:siteName/contact-us"
       component={EditContactUs}
     />
-    <ProtectedRouteWithProps // temporary until refactor
-      path="/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceName/editPage/:fileName"
-      component={EditPage}
-      isCollectionPage={false}
-      isResourcePage
-    />
-    <ProtectedRouteWithProps // temporary until refactor
-      path="/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:collectionName"
-      component={CategoryPages}
-      isResource
+    <ProtectedRouteWithProps
+      path="/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName"
+      component={ResourceCategory}
     />
     <ProtectedRouteWithProps
       path={[
