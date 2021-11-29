@@ -1,14 +1,16 @@
+import { MenuDropdown } from "components/MenuDropdown"
 import PropTypes from "prop-types"
 import React, { useState, useEffect, useRef } from "react"
 import { Link, useRouteMatch } from "react-router-dom"
 
-import { MenuDropdown } from "components/MenuDropdown"
-
 import useRedirectHook from "hooks/useRedirectHook"
 
-// Import styles
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
+
+import { pageFileNameToTitle } from "utils"
+
+// Import styles
 
 const FolderItem = ({ item, itemIndex, isDisabled }) => {
   const { url } = useRouteMatch()
@@ -32,7 +34,7 @@ const FolderItem = ({ item, itemIndex, isDisabled }) => {
         type: "edit",
         handler: () => {
           type === "dir"
-            ? setRedirectToPage(`${url}/editSubfolderSettings/${encodedName}`)
+            ? setRedirectToPage(`${url}/editDirectorySettings/${encodedName}`)
             : setRedirectToPage(`${url}/editPageSettings/${encodedName}`)
         },
       },
@@ -44,7 +46,7 @@ const FolderItem = ({ item, itemIndex, isDisabled }) => {
         type: "delete",
         handler: () => {
           type === "dir"
-            ? setRedirectToPage(`${url}/deleteSubfolder/${encodedName}`)
+            ? setRedirectToPage(`${url}/deleteDirectory/${encodedName}`)
             : setRedirectToPage(`${url}/deletePage/${encodedName}`)
         },
       },
@@ -75,7 +77,7 @@ const FolderItem = ({ item, itemIndex, isDisabled }) => {
             <i className={`bx bxs-folder ${elementStyles.folderItemIcon}`} />
           )}
           <span className={`${elementStyles.folderItemText} mr-auto`}>
-            {name}
+            {pageFileNameToTitle(name)}
           </span>
           {children ? (
             <span className={`${elementStyles.folderItemText} mr-5`}>
