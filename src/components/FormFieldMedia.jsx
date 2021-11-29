@@ -1,8 +1,7 @@
-import PropTypes from "prop-types"
-import React, { useState } from "react"
-
 import MediaModal from "components/media/MediaModal"
 import MediaSettingsModal from "components/media/MediaSettingsModal"
+import PropTypes from "prop-types"
+import React, { useState } from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -86,7 +85,6 @@ const FormFieldMedia = ({
       {children}
       <div className="d-flex border">
         <input
-          {...register(id, { required: isRequired })}
           type="text"
           placeholder={placeholder || title}
           value={value}
@@ -97,6 +95,7 @@ const FormFieldMedia = ({
           className={errorMessage ? `${elementStyles.error}` : "border-0"}
           style={style}
           disabled
+          {...register(id, { required: isRequired })}
         />
         {inlineButtonText && (
           <button
