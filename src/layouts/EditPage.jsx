@@ -46,7 +46,7 @@ DOMPurify.setConfig({
   ],
 })
 
-const EditPageV2 = ({ match, history }) => {
+const EditPage = ({ match, history }) => {
   const { params, decodedParams } = match
   const { siteName } = decodedParams
 
@@ -232,9 +232,9 @@ const EditPageV2 = ({ match, history }) => {
   )
 }
 
-export default EditPageV2
+export default EditPage
 
-EditPageV2.propTypes = {
+EditPage.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
       subCollectionName: PropTypes.string,
