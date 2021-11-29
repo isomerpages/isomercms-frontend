@@ -245,11 +245,7 @@ export function isEmpty(obj) {
 }
 
 export function generateResourceFileName(title, date, isPost) {
-  const safeTitle = slugify(title, { lower: true }).replace(
-    /[^a-zA-Z0-9-]/g,
-    ""
-  )
-  return `${date}-${isPost ? "post" : "file"}-${safeTitle}.md`
+  return `${date}-${isPost ? "post" : "file"}-${title}.md`
 }
 
 export function slugifyCategory(category) {
@@ -281,7 +277,8 @@ export function titleToPageFileName(title) {
   return `${title}.md`
 }
 
-export function pageFileNameToTitle(pageFileName) {
+export function pageFileNameToTitle(pageFileName, isResource = false) {
+  if (isResource) return retrieveResourceFileMetadata(pageFileName).title
   return `${pageFileName.split(".md")[0]}`
 }
 
@@ -467,29 +464,38 @@ export const getRedirectUrl = ({
       }`
     }
   } else {
+    if (resourceRoomName && resourceCategoryName) {
+      // if resourceType is 'file', redirect to resourceCategory
+      // temporary workaround until we allow for preview of PDF
+      return `/sites/${siteName}/resourceRoom/${resourceRoomName}/resourceCategory/${encodeURIComponent(
+        resourceCategoryName
+      )}${
+        fileName.split("-")[3] === "file"
+          ? ""
+          : `/editPage/${encodeURIComponent(fileName)}`
+      }`
+    }
     if (collectionName) {
       return `/sites/${siteName}/folders/${collectionName}/${
         subCollectionName ? `subfolders/${subCollectionName}/` : ""
-      }editPage/${encodeURIComponent(fileName)}` // V2
+      }editPage/${encodeURIComponent(fileName)}`
     }
-    if (resourceCategoryName) {
-      return `/sites/${siteName}/resources/${resourceCategoryName}/${fileName}` // V1
-    }
-    return `/sites/${siteName}/editPage/${fileName}` // V2
+    return `/sites/${siteName}/editPage/${encodeURIComponent(fileName)}`
   }
 }
 
 export const getBackButton = ({
-  resourceCategory,
+  resourceRoomName,
+  resourceCategoryName,
   collectionName,
   siteName,
   subCollectionName,
   fileName,
 }) => {
-  if (resourceCategory)
+  if (resourceCategoryName)
     return {
-      backButtonLabel: `Back to ${deslugifyDirectory(resourceCategory)}`,
-      backButtonUrl: `/sites/${siteName}/resources/${resourceCategory}`,
+      backButtonLabel: `Back to ${deslugifyDirectory(resourceCategoryName)}`,
+      backButtonUrl: `/sites/${siteName}/resourceRoom/${resourceRoomName}/resourceCategory/${resourceCategoryName}`,
     }
   if (collectionName) {
     if (subCollectionName && fileName)
@@ -545,10 +551,21 @@ export const getDefaultFrontMatter = (params, existingTitles) => {
     resourceCategoryName,
   } = params
   let exampleTitle = "Example Title"
-  while (existingTitles.includes(`${exampleTitle}.md`)) {
-    exampleTitle += " 1"
-  }
   let examplePermalink = "/"
+  const exampleDate = format(Date.now(), "yyyy-MM-dd")
+  const exampleLayout = "post"
+  if (resourceRoomName)
+    while (
+      existingTitles.includes(
+        `${exampleDate}-${exampleLayout}-${exampleTitle}.md`
+      )
+    ) {
+      exampleTitle += " 1"
+    }
+  else
+    while (existingTitles.includes(`${exampleTitle}.md`)) {
+      exampleTitle += " 1"
+    }
   if (collectionName) {
     examplePermalink += `${
       slugify(collectionName) ? `${slugify(collectionName)}/` : "unrecognised/"
@@ -576,7 +593,17 @@ export const getDefaultFrontMatter = (params, existingTitles) => {
     }`
   }
   examplePermalink += `permalink`
-  return { exampleTitle, examplePermalink }
+  if (collectionName)
+    return {
+      title: exampleTitle,
+      permalink: examplePermalink,
+    }
+  return {
+    title: exampleTitle,
+    permalink: examplePermalink,
+    date: exampleDate,
+    layout: exampleLayout,
+  }
 }
 
 export const isLastItem = (type, params) => {
