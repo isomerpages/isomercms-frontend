@@ -82,9 +82,7 @@ describe("Workspace Pages flow", () => {
       cy.contains("Back to Workspace", { timeout: CUSTOM_TIMEOUT })
         .should("exist")
         .click()
-      cy.contains(TEST_PAGE_FILENAME, { timeout: CUSTOM_TIMEOUT }).should(
-        "exist"
-      )
+      cy.contains(TEST_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist")
     })
 
     it("Should not be able to create page with invalid title", () => {
@@ -132,7 +130,7 @@ describe("Workspace Pages flow", () => {
 
     it("Should be able to edit existing page details with Chinese title and valid permalink", () => {
       const testPageCard = cy
-        .contains(TEST_PAGE_FILENAME, { timeout: CUSTOM_TIMEOUT })
+        .contains(TEST_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT })
         .should("exist")
 
       // User should be able edit page details
@@ -149,14 +147,16 @@ describe("Workspace Pages flow", () => {
       cy.contains("button", "Save").click()
 
       // ASSERT: New page title should be reflected in the Workspace
-      cy.contains(EDITED_TEST_PAGE_FILENAME, {
+      cy.contains(EDITED_TEST_PAGE_TITLE, {
         timeout: CUSTOM_TIMEOUT,
       }).should("exist")
+
+      cy.wait(2000)
     })
 
     it("Should be able to edit existing page details with Tamil title and valid permalink", () => {
       const testPageCard = cy
-        .contains(EDITED_TEST_PAGE_FILENAME, {
+        .contains(EDITED_TEST_PAGE_TITLE, {
           timeout: CUSTOM_TIMEOUT,
         })
         .should("exist")
@@ -180,20 +180,20 @@ describe("Workspace Pages flow", () => {
 
       // Asserts
       // 1. New page title should be reflected in Folders
-      cy.contains(EDITED_TEST_PAGE_FILENAME_2, {
+      cy.contains(EDITED_TEST_PAGE_TITLE_2, {
         timeout: CUSTOM_TIMEOUT,
       }).should("exist")
     })
 
     it("Should be able to delete existing page on workspace", () => {
       // Ensure that the frontend has been updated
-      cy.contains(EDITED_TEST_PAGE_FILENAME, {
+      cy.contains(EDITED_TEST_PAGE_TITLE, {
         timeout: CUSTOM_TIMEOUT,
       }).should("not.exist")
 
       // Assert
       // User should be able to remove the created test page card
-      cy.contains(EDITED_TEST_PAGE_FILENAME_2, { timeout: CUSTOM_TIMEOUT })
+      cy.contains(EDITED_TEST_PAGE_TITLE_2, { timeout: CUSTOM_TIMEOUT })
         .should("exist")
         .children()
         .within(() => cy.get("[id^=pageCard-dropdown-]").click())
@@ -202,7 +202,7 @@ describe("Workspace Pages flow", () => {
         .should("exist")
         .click()
 
-      cy.contains(EDITED_TEST_PAGE_FILENAME_2, {
+      cy.contains(EDITED_TEST_PAGE_TITLE_2, {
         timeout: CUSTOM_TIMEOUT,
       }).should("not.exist")
     })
@@ -227,7 +227,7 @@ describe("Workspace Pages flow", () => {
         .should("exist")
         .click()
       cy.get("input#newDirectoryName").clear().type(TEST_FOLDER_NO_PAGES_TITLE)
-      cy.contains("Select pages").click()
+      cy.contains("Next").click()
       cy.contains("Skip").click()
 
       // Assert
@@ -265,8 +265,8 @@ describe("Workspace Pages flow", () => {
       cy.get("input#newDirectoryName")
         .clear()
         .type(TEST_FOLDER_WITH_PAGES_TITLE)
-      cy.contains("Select pages").click()
-      cy.get("div[id^=folderCard-small]").contains(TEST_PAGE_FILENAME).click()
+      cy.contains("Next").click()
+      cy.get("div[id^=folderCard-small]").contains(TEST_PAGE_TITLE).click()
       cy.contains("Done").click()
 
       // Assert
@@ -294,7 +294,7 @@ describe("Workspace Pages flow", () => {
         .click()
       cy.get("input#newDirectoryName").clear().type(INVALID_FOLDER_TITLE).blur()
       cy.contains("Title must be longer than 2 characters")
-      cy.contains("button", "Select pages").should("be.disabled")
+      cy.contains("button", "Next").should("be.disabled")
 
       // Folder exists
       cy.get("input#newDirectoryName")
@@ -302,7 +302,7 @@ describe("Workspace Pages flow", () => {
         .type(TEST_FOLDER_NO_PAGES_TITLE)
         .blur()
       cy.contains("Title is already in use. Please choose a different title.")
-      cy.contains("button", "Select pages").should("be.disabled")
+      cy.contains("button", "Next").should("be.disabled")
     })
 
     it("Should be able to rename a folder", () => {

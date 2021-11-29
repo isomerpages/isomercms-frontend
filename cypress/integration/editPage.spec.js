@@ -230,7 +230,7 @@ describe("Edit collection page", () => {
     cy.visit(`/sites/${TEST_REPO_NAME}/workspace`)
     cy.contains("Create new folder").should("exist").click()
     cy.get("input#newDirectoryName").clear().type(TEST_FOLDER_TITLE)
-    cy.contains("Select pages").click()
+    cy.contains("Next").click()
     cy.contains("Skip").click()
     cy.wait(2000)
 
@@ -359,7 +359,7 @@ describe("Edit collection page", () => {
 describe("Edit resource page", () => {
   const TEST_CATEGORY = "Test Edit Resource Category"
   const TEST_CATEGORY_SLUGIFIED = slugifyCategory(TEST_CATEGORY)
-
+  const TEST_RESOURCE_ROOM = "resources"
   const TEST_PAGE_TITLE = "Test Resource Page"
   const TEST_PAGE_DATE = "2021-05-17"
 
@@ -387,15 +387,15 @@ describe("Edit resource page", () => {
     cy.wait(2000)
 
     // Set up test resource category
-    cy.visit(`/sites/${TEST_REPO_NAME}/resources`)
+    cy.visit(`/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM}`)
+    cy.wait(2000)
     cy.contains("Create new category").click()
     cy.get("input").clear().type(TEST_CATEGORY)
-    cy.contains("Save").click()
-    cy.wait(2000)
+    cy.contains("Next").click()
 
     // Set up test resource page
     cy.visit(
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources/${TEST_CATEGORY_SLUGIFIED}`
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
     )
 
     cy.contains("Add a new page").click()
@@ -413,8 +413,8 @@ describe("Edit resource page", () => {
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
     window.localStorage.setItem("userId", "test")
     cy.visit(
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources/${TEST_CATEGORY_SLUGIFIED}/${generateResourceFileName(
-        TEST_PAGE_TITLE,
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}/editPage/${generateResourceFileName(
+        encodeURIComponent(TEST_PAGE_TITLE),
         TEST_PAGE_DATE,
         true
       )}`
