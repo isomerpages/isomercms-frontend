@@ -1,14 +1,18 @@
-import PropTypes from "prop-types"
-import React, { useState } from "react"
-
 import Breadcrumb from "components/folders/Breadcrumb"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
+import PropTypes from "prop-types"
+import React, { useState } from "react"
 
 import { useGetDirectoryHook } from "hooks/directoryHooks"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
-import { getLastItemType, getNextItemType, deslugifyDirectory } from "utils"
+import {
+  pageFileNameToTitle,
+  getLastItemType,
+  getNextItemType,
+  deslugifyDirectory,
+} from "utils"
 
 const MoveMenu = ({ moveQuery, setMoveQuery, moveTo, setMoveTo, dirData }) => {
   /** ******************************** */
@@ -17,7 +21,9 @@ const MoveMenu = ({ moveQuery, setMoveQuery, moveTo, setMoveTo, dirData }) => {
 
   const MoveMenuBackButton = () => {
     const lastItemType = getLastItemType(moveQuery)
-    const isEnabled = Object.keys(moveQuery).length > 1
+    const isEnabled = moveQuery.resourceRoomName
+      ? Object.keys(moveQuery).length > 2
+      : Object.keys(moveQuery).length > 1
     return (
       <div
         id="moveModal-backButton"
@@ -36,7 +42,7 @@ const MoveMenu = ({ moveQuery, setMoveQuery, moveTo, setMoveTo, dirData }) => {
       >
         <i
           className={`${elementStyles.dropdownIcon} ${
-            lastItemType != "siteName" && "bx bx-sm bx-arrow-back text-white"
+            isEnabled && "bx bx-sm bx-arrow-back text-white"
           }`}
         />
         {lastItemType === "siteName"
@@ -62,7 +68,8 @@ const MoveMenu = ({ moveQuery, setMoveQuery, moveTo, setMoveTo, dirData }) => {
           <i
             className={`${elementStyles.dropdownIcon} ${elementStyles.disabledIcon} bx bx-sm bx-file-blank`}
           />
-          {deslugifyDirectory(name)}
+          {pageFileNameToTitle(name, !!moveQuery.resourceRoomName) ||
+            deslugifyDirectory(name)}
         </div>
       )
     if (type === "dir")
@@ -161,7 +168,13 @@ const MoveModal = ({ queryParams, params, onProceed, onClose }) => {
             <br />
             <br />
             Current location of page: <br />
-            <Breadcrumb params={params} title={params.fileName} />
+            <Breadcrumb
+              params={params}
+              title={pageFileNameToTitle(
+                params.fileName,
+                !!params.resourceRoomName
+              )}
+            />
             <MoveMenu
               moveQuery={moveQuery}
               setMoveQuery={setMoveQuery}
@@ -174,9 +187,16 @@ const MoveModal = ({ queryParams, params, onProceed, onClose }) => {
               }
             />
             Moving page to: <br />
-            <Breadcrumb params={moveTo} title={params.fileName} />
+            <Breadcrumb
+              params={moveTo}
+              title={pageFileNameToTitle(
+                params.fileName,
+                !!params.resourceRoomName
+              )}
+            />
           </div>
           <SaveDeleteButtons
+            isDisabled={moveTo.resourceRoomName && !moveTo.resourceCategoryName}
             hasDeleteButton={false}
             saveCallback={() =>
               onProceed({

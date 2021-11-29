@@ -69,7 +69,7 @@ const Breadcrumb = ({ params, title, isLink }) => {
           isLast={isLastItem("resourceCategoryName", newParams)}
           link={
             isLink &&
-            `/sites/${siteName}/resourceRoomName/${resourceRoomName}/resources/${resourceCategoryName}`
+            `/sites/${siteName}/resourceRoomName/${resourceRoomName}/resourceCategory/${resourceCategoryName}`
           }
         />
       ) : null}

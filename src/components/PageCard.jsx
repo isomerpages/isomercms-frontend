@@ -1,9 +1,8 @@
 import axios from "axios"
+import { MenuDropdown } from "components/MenuDropdown"
 import PropTypes from "prop-types"
 import React, { useEffect, useState, useRef } from "react"
 import { Link, useRouteMatch } from "react-router-dom"
-
-import { MenuDropdown } from "components/MenuDropdown"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -11,19 +10,13 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
 // Import utils
-import { prettifyDate, deslugifyDirectory } from "utils"
+import { prettifyDate, pageFileNameToTitle } from "utils"
 
 // axios settings
 axios.defaults.withCredentials = true
 
 const PageCard = ({ item, itemIndex, isDisabled }) => {
-  const {
-    name,
-    date,
-    resourceRoomName,
-    resourceCategoryName,
-    resourceType,
-  } = item
+  const { title, name, date, resourceType } = item
   const dropdownRef = useRef(null)
   const [showDropdown, setShowDropdown] = useState(false)
 
@@ -36,8 +29,8 @@ const PageCard = ({ item, itemIndex, isDisabled }) => {
 
   const generateLink = () => {
     const encodedName = encodeURIComponent(name)
-    if (resourceRoomName) {
-      return `/sites/${siteName}/resourceRoom/${resourceRoomName}/resources/${resourceCategoryName}/${encodedName}`
+    if (resourceType) {
+      return `${url}/editPage/${encodedName}`
     }
     return `/sites/${siteName}/editPage/${encodedName}`
   }
@@ -75,9 +68,6 @@ const PageCard = ({ item, itemIndex, isDisabled }) => {
       }
     >
       <div id={itemIndex} className={contentStyles.componentInfo}>
-        <div className={contentStyles.componentCategory}>
-          {resourceCategoryName ? deslugifyDirectory(resourceCategoryName) : ""}
-        </div>
         <h1
           className={
             resourceType === "file"
@@ -85,7 +75,7 @@ const PageCard = ({ item, itemIndex, isDisabled }) => {
               : contentStyles.componentTitleLink
           }
         >
-          {name}
+          {pageFileNameToTitle(name, !!resourceType)}
         </h1>
         <p className={contentStyles.componentDate}>{`${
           date ? prettifyDate(date) : ""

@@ -16,15 +16,15 @@ import { DirectorySettingsSchema } from "."
 axios.defaults.withCredentials = true
 
 const getModalTitle = ({ isCreate, params }) => {
-  const { collectionName, resourceRoomName } = params
+  const { subCollectionName, collectionName, resourceRoomName } = params
   if (isCreate) {
     if (resourceRoomName) return "Create new resource category"
     if (collectionName) return "Create new subfolder"
     return "Create new folder"
   }
   if (resourceRoomName) return "Resource category settings"
-  if (collectionName) return "Folder settings"
-  return "Subfolder settings"
+  if (subCollectionName) return "Subfolder settings"
+  return "Folder settings"
 }
 
 export const DirectorySettingsModal = ({

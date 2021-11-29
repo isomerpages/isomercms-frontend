@@ -15,6 +15,8 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import adminStyles from "styles/isomer-cms/pages/Admin.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
+import { pageFileNameToTitle } from "utils"
+
 // axios settings
 axios.defaults.withCredentials = true
 
@@ -85,7 +87,7 @@ export const DirectoryCreationModal = ({
                   {pagesData && pagesData.length > 0
                     ? pagesData.map((pageData, pageIdx) => (
                         <FolderCard
-                          displayText={pageData.name}
+                          displayText={pageFileNameToTitle(pageData.name)}
                           settingsToggle={() => {}}
                           key={pageData.name}
                           pageType="file"
