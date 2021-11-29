@@ -128,18 +128,18 @@ const ResourceRoom = ({ match, location }) => {
                   {/* Categories */}
                   <div className={contentStyles.folderContainerBoxes}>
                     <div className={contentStyles.boxesContainer}>
+                      <FolderOptionButton
+                        title="Create new category"
+                        option="create-sub"
+                        isSubfolder={false}
+                        onClick={() =>
+                          setRedirectToPage(`${url}/createDirectory`)
+                        }
+                      />
                       {isLoading ? (
                         "Loading Categories..."
                       ) : (
                         <>
-                          <FolderOptionButton
-                            title="Create new category"
-                            option="create-sub"
-                            isSubfolder={false}
-                            onClick={() =>
-                              setRedirectToPage(`${url}/createDirectory`)
-                            }
-                          />
                           {dirsData && dirsData.length === 0 && (
                             <>
                               No Categories.
