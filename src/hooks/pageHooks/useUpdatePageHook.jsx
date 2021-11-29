@@ -23,9 +23,9 @@ export function useUpdatePageHook(params, queryParams) {
       queryClient.invalidateQueries([PAGE_SETTINGS_KEY, { ...params }])
     },
     onSuccess: () => {
-      if (params.collectionName)
+      if (params.collectionName || params.resourceRoomName)
         queryClient.invalidateQueries([
-          // invalidates collection
+          // invalidates collection pages or resource pages
           DIR_CONTENT_KEY,
           (({ fileName, ...p }) => p)(params),
         ])
