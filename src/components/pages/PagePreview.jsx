@@ -13,7 +13,6 @@ const PagePreview = ({ pageParams, chunk, dirData, title }) => {
     subCollectionName,
     resourceRoomName,
     resourceCategoryName,
-    fileName,
   } = pageParams
   return (
     <div className={editorStyles.pageEditorMain}>
@@ -27,17 +26,11 @@ const PagePreview = ({ pageParams, chunk, dirData, title }) => {
       ) : resourceRoomName && resourceCategoryName ? (
         <ResourcePageTemplate
           chunk={chunk}
-          fileName={fileName}
           pageParams={pageParams}
           title={title}
         />
       ) : (
-        <PageTemplate
-          chunk={chunk}
-          fileName={fileName}
-          title={title}
-          pageParams={pageParams}
-        />
+        <PageTemplate chunk={chunk} title={title} pageParams={pageParams} />
       )}
     </div>
   )
