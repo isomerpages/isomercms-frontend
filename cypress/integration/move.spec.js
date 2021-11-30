@@ -16,6 +16,19 @@ describe("Move flow", () => {
     TEST_REPO_SUBFOLDER_NAME
   )
 
+  const TEST_REPO_RESOURCE_ROOM_NAME = "Resources"
+  const PARSED_TEST_REPO_RESOURCE_ROOM_NAME = slugifyCategory(
+    TEST_REPO_RESOURCE_ROOM_NAME
+  )
+  const TEST_REPO_RESOURCE_CATEGORY_NAME = "Move Resource Category"
+  const PARSED_TEST_REPO_RESOURCE_CATEGORY_NAME = slugifyCategory(
+    TEST_REPO_RESOURCE_CATEGORY_NAME
+  )
+  const TEST_REPO_RESOURCE_CATEGORY_NAME_1 = "Move Resource Category 1"
+  const PARSED_TEST_REPO_RESOURCE_CATEGORY_NAME_1 = slugifyCategory(
+    TEST_REPO_RESOURCE_CATEGORY_NAME
+  )
+
   describe("Move pages out of Workspace", () => {
     const TITLE_WORKSPACE_TO_FOLDER = "Move from Workspace to folder"
     const FILENAME_WORKSPACE_TO_FOLDER = titleToPageFileName(
@@ -434,6 +447,95 @@ describe("Move flow", () => {
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_REPO_FOLDER_NAME}`
       )
       cy.contains(TITLE_SUBFOLDER_TO_FOLDER).should("exist")
+    })
+  })
+
+  describe("Move pages between resource folders", () => {
+    const TITLE_RESOURCE_PAGE = "Move resource page"
+    const FILENAME_RESOURCE_PAGE = titleToPageFileName(TITLE_RESOURCE_PAGE)
+
+    beforeEach(() => {
+      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
+      window.localStorage.setItem("userId", "test")
+      cy.visit(
+        `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${PARSED_TEST_REPO_RESOURCE_ROOM_NAME}/resourceCategory/${PARSED_TEST_REPO_RESOURCE_CATEGORY_NAME}`
+      )
+    })
+
+    it("Should be able to navigate from Resource Category to Resource Room back to Resource Category via MoveModal buttons", () => {
+      cy.contains(TITLE_RESOURCE_PAGE).should("exist")
+      cy.get(`button[id^="pageCard-dropdown-"]`).click()
+      cy.get("div[id^=move-]").first().click()
+      cy.contains(`Move Page`)
+
+      // Assert
+      cy.contains(
+        `Workspace > ${TEST_REPO_RESOURCE_ROOM_NAME} > ${TEST_REPO_RESOURCE_CATEGORY_NAME} > ${TITLE_RESOURCE_PAGE}`
+      ).should("exist")
+
+      // Navigate to Resource Room
+      cy.get("#moveModal-backButton").click({ force: true })
+      cy.contains(
+        `Workspace > ${TEST_REPO_RESOURCE_ROOM_NAME} > ${TITLE_RESOURCE_PAGE}`
+      ).should("exist")
+
+      // Navigate to Resource Category
+      cy.get("i[id^=moveModal-forwardButton-]").eq(1).click({ force: true })
+      cy.contains(
+        `Workspace > ${TEST_REPO_RESOURCE_ROOM_NAME} > ${TEST_REPO_RESOURCE_CATEGORY_NAME} > ${TITLE_RESOURCE_PAGE}`
+      ).should("exist")
+    })
+
+    it("Should be able to move page from resource category to itself and show correct success message", () => {
+      cy.contains(TITLE_RESOURCE_PAGE).should("exist")
+      cy.get(`button[id^="pageCard-dropdown-"]`).click()
+      cy.get("div[id^=move-]").first().click()
+      cy.contains(`Move Page`)
+
+      cy.contains("button", "Move Here").click()
+      cy.contains("File is already in this folder", {
+        timeout: CUSTOM_TIMEOUT,
+      }).should("exist")
+    })
+
+    it("Should be able to move page from resource category to another resource category", () => {
+      cy.contains(TITLE_RESOURCE_PAGE).should("exist")
+      cy.get(`button[id^="pageCard-dropdown-"]`).click()
+      cy.get("div[id^=move-]").first().click()
+      cy.contains(`Move Page`)
+
+      // Assert
+      cy.contains(
+        `Workspace > ${TEST_REPO_RESOURCE_ROOM_NAME} > ${TEST_REPO_RESOURCE_CATEGORY_NAME} > ${TITLE_RESOURCE_PAGE}`
+      ).should("exist")
+
+      // Navigate to Resource Room
+      cy.get("#moveModal-backButton").click({ force: true })
+      cy.contains(
+        `Workspace > ${TEST_REPO_RESOURCE_ROOM_NAME} > ${TITLE_RESOURCE_PAGE}`
+      ).should("exist")
+
+      // Navigate to Resource Category
+      cy.get("i[id^=moveModal-forwardButton-]").eq(0).click({ force: true })
+      cy.contains(
+        `Workspace > ${TEST_REPO_RESOURCE_ROOM_NAME} > ${TEST_REPO_RESOURCE_CATEGORY_NAME_1} > ${TITLE_RESOURCE_PAGE}`
+      ).should("exist")
+
+      cy.contains("button", "Move Here").click()
+      cy.contains("Successfully moved file", {
+        timeout: CUSTOM_TIMEOUT,
+      }).should("exist")
+
+      // Assert
+      // 1. File is not in resource category
+      cy.contains(TITLE_RESOURCE_PAGE).should("not.exist", {
+        timeout: CUSTOM_TIMEOUT,
+      })
+      // 2. File is in resource category 1
+      cy.visit(
+        `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${PARSED_TEST_REPO_RESOURCE_ROOM_NAME}/resourceCategory/${PARSED_TEST_REPO_RESOURCE_CATEGORY_NAME_1}`
+      )
+      cy.contains(TITLE_RESOURCE_PAGE).should("exist")
     })
   })
 })

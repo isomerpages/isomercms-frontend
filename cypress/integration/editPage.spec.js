@@ -392,6 +392,7 @@ describe("Edit resource page", () => {
     cy.contains("Create new category").click()
     cy.get("input").clear().type(TEST_CATEGORY)
     cy.contains("Next").click()
+    cy.wait(4000)
 
     // Set up test resource page
     cy.visit(
