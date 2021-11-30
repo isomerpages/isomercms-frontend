@@ -22,14 +22,16 @@ const PageCard = ({ item, itemIndex, isDisabled }) => {
 
   const {
     url,
-    params: { siteName },
+    params: { siteName, resourceRoomName },
   } = useRouteMatch()
 
   const { setRedirectToPage } = useRedirectHook()
 
   const generateLink = () => {
     const encodedName = encodeURIComponent(name)
-    if (resourceType) {
+    if (resourceType || resourceRoomName) {
+      // use resourceRoomName in case resourcePage does not have format Date-Type-Name.md
+      // for resourcePages that are not migrated
       return `${url}/editPage/${encodedName}`
     }
     return `/sites/${siteName}/editPage/${encodedName}`
