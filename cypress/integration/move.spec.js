@@ -26,7 +26,7 @@ describe("Move flow", () => {
   )
   const TEST_REPO_RESOURCE_CATEGORY_NAME_1 = "Move Resource Category 1"
   const PARSED_TEST_REPO_RESOURCE_CATEGORY_NAME_1 = slugifyCategory(
-    TEST_REPO_RESOURCE_CATEGORY_NAME
+    TEST_REPO_RESOURCE_CATEGORY_NAME_1
   )
 
   describe("Move pages out of Workspace", () => {
