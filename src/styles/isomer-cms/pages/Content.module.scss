@@ -301,10 +301,15 @@
       }
     }
   }
+}
 
-  // &:hover{
-  //   transform: translateY(-5px);
-  // }
+.cardDisabled {
+  @extend .card;
+
+  cursor: default;
+  .componentTitle {
+    color: #000000;
+  }
 }
 
 .segmentDividerContainer {
