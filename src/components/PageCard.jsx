@@ -15,7 +15,7 @@ import { prettifyDate, pageFileNameToTitle } from "utils"
 // axios settings
 axios.defaults.withCredentials = true
 
-const PageCard = ({ item, itemIndex, isDisabled }) => {
+const PageCard = ({ item, itemIndex }) => {
   const { title, name, date, resourceType } = item
   const dropdownRef = useRef(null)
   const [showDropdown, setShowDropdown] = useState(false)
@@ -28,6 +28,9 @@ const PageCard = ({ item, itemIndex, isDisabled }) => {
   const { setRedirectToPage } = useRedirectHook()
 
   const generateLink = () => {
+    if (resourceType === "file")
+      // TODO: implement file preview on CMS
+      return "#"
     const encodedName = encodeURIComponent(name)
     if (resourceType || resourceRoomName) {
       // use resourceRoomName in case resourcePage does not have format Date-Type-Name.md
@@ -62,12 +65,12 @@ const PageCard = ({ item, itemIndex, isDisabled }) => {
 
   return (
     <Link
-      className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`}
-      to={
-        showDropdown || isDisabled || resourceType === "file"
-          ? "#"
-          : generateLink()
-      }
+      className={`${contentStyles.component} ${
+        resourceType === "file"
+          ? contentStyles.cardDisabled
+          : contentStyles.card
+      } ${elementStyles.card}`}
+      to={generateLink()}
     >
       <div id={itemIndex} className={contentStyles.componentInfo}>
         <h1
@@ -125,7 +128,6 @@ PageCard.propTypes = {
     resourceType: PropTypes.oneOf(["file", "post", ""]),
   }),
   itemIndex: PropTypes.number.isRequired,
-  isDisabled: PropTypes.bool,
 }
 
 export default PageCard
