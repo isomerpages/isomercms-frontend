@@ -1,11 +1,12 @@
+import PropTypes from "prop-types"
 import React from "react"
 import { Link } from "react-router-dom"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import errorStyles from "styles/isomer-cms/pages/Error.module.scss"
 
-const NotFoundPage = ({ location }) => {
-  const siteName = location?.state?.siteName
+const NotFoundPage = ({ match }) => {
+  const { siteName } = match?.params
   return (
     <>
       <div className={errorStyles.errorPageMain}>
@@ -33,3 +34,11 @@ const NotFoundPage = ({ location }) => {
 }
 
 export default NotFoundPage
+
+NotFoundPage.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      siteName: PropTypes.string,
+    }),
+  }).isRequired,
+}

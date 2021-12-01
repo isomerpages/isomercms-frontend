@@ -3,7 +3,7 @@ import React from "react"
 
 import { PageHeader, PageBody } from "templates/pageComponentsV2"
 
-const ResourcePageTemplate = ({ chunk, pageParams }) => {
+const ResourcePageTemplate = ({ chunk, pageParams, title }) => {
   return (
     <div>
       <section id="display-header" className="bp-section bg-secondary">

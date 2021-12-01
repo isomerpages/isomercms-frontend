@@ -15,6 +15,8 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import adminStyles from "styles/isomer-cms/pages/Admin.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
+import { pageFileNameToTitle } from "utils"
+
 // axios settings
 axios.defaults.withCredentials = true
 
@@ -24,10 +26,11 @@ export const DirectoryCreationModal = ({
   dirsData,
   pagesData,
   onProceed,
+  showSelectPages,
 }) => {
   const { siteName, collectionName } = params
 
-  const [isSelectingTitle, setIsSelectingTitle] = useState(true)
+  const [isSelectingPages, setIsSelectingPages] = useState(false)
 
   const existingTitlesArray = dirsData.map((item) => item.name)
 
@@ -44,16 +47,20 @@ export const DirectoryCreationModal = ({
 
   return (
     <FormProvider {...methods}>
-      {isSelectingTitle && (
+      {!isSelectingPages && (
         <DirectorySettingsModal
           isCreate
           params={params}
           dirsData={dirsData}
-          onProceed={() => setIsSelectingTitle(false)}
+          onProceed={
+            showSelectPages
+              ? () => setIsSelectingPages(true)
+              : (data) => onProceed(data)
+          }
           onClose={onClose}
         />
       )}
-      {!isSelectingTitle && (
+      {showSelectPages && isSelectingPages && (
         <div className={elementStyles.overlay}>
           <div className={`${elementStyles.fullscreenWrapper}`}>
             <div
@@ -80,7 +87,7 @@ export const DirectoryCreationModal = ({
                   {pagesData && pagesData.length > 0
                     ? pagesData.map((pageData, pageIdx) => (
                         <FolderCard
-                          displayText={pageData.name}
+                          displayText={pageFileNameToTitle(pageData.name)}
                           settingsToggle={() => {}}
                           key={pageData.name}
                           pageType="file"

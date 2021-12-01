@@ -9,12 +9,41 @@ export class DirectoryService {
     siteName,
     collectionName,
     subCollectionName,
+    resourceRoomName,
+    resourceCategoryName,
     isCreate,
     isReorder,
     isUnlinked,
+    isResource,
   }) {
-    // R Unlinked pages
-    // /sites/a-test-v4/pages
+    if (isUnlinked) {
+      // R Unlinked pages
+      // /sites/a-test-v4/pages
+      return `/sites/${siteName}/pages`
+    }
+
+    if (isResource || resourceRoomName || resourceCategoryName) {
+      // C resource room
+      // POST /sites/a-test-v4/resourceRoom
+      // RUD resource room
+      // /sites/a-test-v4/resourceRoom/:resourceRoomName
+      // C resource category
+      // POST /sites/a-test-v4/resourceRoom/:resourceRoomName/resourceCategory
+      // RUD resource category
+      // POST /sites/a-test-v4/resourceRoom/:resourceRoomName/resourceCategory/:resourcesName
+      let endpoint = `/sites/${siteName}/resourceRoom`
+
+      if (resourceRoomName) {
+        endpoint += `/${resourceRoomName}`
+      }
+      if (resourceRoomName && isCreate) {
+        endpoint += `/resources`
+      }
+      if (resourceCategoryName) {
+        endpoint += `/resources/${resourceCategoryName}`
+      }
+      return endpoint
+    }
 
     // R all Collections
     // GET /sites/a-test-v4/collections
@@ -29,9 +58,6 @@ export class DirectoryService {
     // Reorder
     // /sites/a-test-v4/collections/:collectionName/reorder
     // /sites/a-test-v4/collections/:collectionName/subCollection/:subCollection/reorder
-
-    if (isUnlinked) return `/sites/${siteName}/pages`
-
     let endpoint = `/sites/${siteName}/collections`
     if (collectionName) {
       endpoint += `/${collectionName}`

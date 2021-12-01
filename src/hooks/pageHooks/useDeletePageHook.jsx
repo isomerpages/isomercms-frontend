@@ -22,9 +22,9 @@ export function useDeletePageHook(params, queryParams) {
     },
     onSuccess: () => {
       successToast(`Successfully deleted file`)
-      if (params.collectionName)
+      if (params.collectionName || params.resourceRoomName)
         queryClient.invalidateQueries([
-          // invalidates collection
+          // invalidates collection pages or resource pages
           DIR_CONTENT_KEY,
           (({ fileName, ...p }) => p)(params),
         ])

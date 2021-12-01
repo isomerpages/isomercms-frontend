@@ -1,9 +1,8 @@
 import axios from "axios"
+import { DirectoryCreationModal } from "components/DirectoryCreationModal"
 import * as _ from "lodash"
 import PropTypes from "prop-types"
 import React from "react"
-
-import { DirectoryCreationModal } from "components/DirectoryCreationModal"
 
 import {
   useGetDirectoryHook,
@@ -28,6 +27,7 @@ export const DirectoryCreationScreen = ({ match, onClose }) => {
 
   return (
     <DirectoryCreationModal
+      showSelectPages={!params.resourceRoomName}
       dirsData={
         pagesData
           ? dirData || []

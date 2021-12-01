@@ -6,6 +6,7 @@ import { Link } from "react-router-dom"
 
 import { LAST_UPDATED_KEY } from "constants/constants"
 
+import { useGetResourceRoomNameHook } from "hooks/settingsHooks/useGetResourceRoomName"
 import useRedirectHook from "hooks/useRedirectHook"
 import useSiteUrlHook from "hooks/useSiteUrlHook"
 
@@ -21,13 +22,13 @@ axios.defaults.withCredentials = true
 
 // constants
 const userIdKey = "userId"
-const sidebarContentPathDict = [
+const sidebarContentPathDict = (resourceRoomName) => [
   {
     pathname: "workspace",
     title: "My Workspace",
   },
   {
-    pathname: "resources",
+    pathname: `resourceRoom${resourceRoomName ? `/${resourceRoomName}` : ""}`,
     title: "Resources",
   },
   {
@@ -85,6 +86,7 @@ const Sidebar = ({ siteName, currPath }) => {
   const [lastUpdated, setLastUpdated] = useState("Updated")
   const [siteUrl, setSiteUrl] = useState()
   const { retrieveSiteUrl } = useSiteUrlHook()
+  const { data: resourceRoomName } = useGetResourceRoomNameHook({ siteName })
 
   const { data: lastUpdatedResp } = useQuery(
     [LAST_UPDATED_KEY, siteName],
@@ -122,8 +124,11 @@ const Sidebar = ({ siteName, currPath }) => {
   const convertCollectionsPathToWorkspace = (currPath, siteName) => {
     const currPathArr = currPath.split("/")
 
+    if (currPathArr[3] === "resourceRoom")
+      return currPathArr.slice(0, 5).join("/")
+
     // example path: /sites/demo-v2/folder/left-nav-one
-    if (currPathArr.length > 3 && currPathArr[3] === "folder")
+    if (currPathArr.length > 3 && currPathArr[3] === "folders")
       return `/sites/${siteName}/workspace`
 
     return currPathArr.slice(0, 4).join("/")
@@ -216,7 +221,9 @@ const Sidebar = ({ siteName, currPath }) => {
         </div>
         <div className={styles.sidebarNavigation}>
           <ul>
-            {sidebarContentPathDict.map(({ pathname, title }) =>
+            {sidebarContentPathDict(
+              resourceRoomName
+            ).map(({ pathname, title }) =>
               generateTab(title, siteName, pathname)
             )}
           </ul>

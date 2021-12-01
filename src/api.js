@@ -156,7 +156,15 @@ const getCsp = async (siteName) => {
 }
 
 const createPageData = async (
-  { folderName, subfolderName, newFileName, siteName, resourceName },
+  // temporary fix for v1 endpoint
+  {
+    folderName,
+    subfolderName,
+    newFileName,
+    siteName,
+    resourceRoomName,
+    resourceName,
+  },
   content
 ) => {
   const apiEndpoint = getCreatePageApiEndpoint({
@@ -176,7 +184,7 @@ const createPageData = async (
     }editPage/${newFileName}` // V2
   }
   if (resourceName) {
-    return `/sites/${siteName}/resources/${resourceName}/${newFileName}`
+    return `/sites/${siteName}/resourceRoom/${resourceRoomName}/resourceCategory/${resourceName}/editPage/${newFileName}`
   }
   return `/sites/${siteName}/pages/${newFileName}`
 }

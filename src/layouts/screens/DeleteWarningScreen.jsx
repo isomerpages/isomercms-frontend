@@ -1,17 +1,19 @@
+import DeleteWarningModal from "components/DeleteWarningModal"
 import PropTypes from "prop-types"
 import React from "react"
-
-import DeleteWarningModal from "components/DeleteWarningModal"
 
 import { useDeleteDirectoryHook } from "hooks/directoryHooks"
 import { useGetPageHook, useDeletePageHook } from "hooks/pageHooks"
 
-import { getLastItemType } from "utils"
+import { getLastItemType, pageFileNameToTitle } from "utils"
 
 export const DeleteWarningScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match
   const { fileName } = params
-  const deleteItemName = decodedParams[getLastItemType(decodedParams)]
+  const deleteItemName = pageFileNameToTitle(
+    decodedParams[getLastItemType(decodedParams)],
+    !!params.resourceRoomName
+  )
 
   if (fileName) {
     const { data: pageData } = useGetPageHook(params)

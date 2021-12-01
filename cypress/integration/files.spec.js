@@ -142,6 +142,7 @@ describe("Files", () => {
 
       // users should not be able to create file with duplicated filename in folder (NOT SUPPORTED YET)
       cy.uploadMedia(OTHER_FILE_TITLE, TEST_FILE_PATH)
+      cy.wait(2000)
       cy.contains("Successfully created new file")
 
       cy.renameMedia(OTHER_FILE_TITLE, FILE_TITLE, ACTION_DISABLED)

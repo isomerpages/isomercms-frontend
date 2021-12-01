@@ -1,7 +1,6 @@
+import { PageSettingsModal } from "components/PageSettingsModal"
 import PropTypes from "prop-types"
 import React from "react"
-
-import { PageSettingsModal } from "components/PageSettingsModal"
 
 import { useGetDirectoryHook } from "hooks/directoryHooks"
 import {
@@ -21,7 +20,10 @@ export const PageSettingsScreen = ({ match, onClose }) => {
   })
   const { mutateAsync: createHandler } = useCreatePageHook(params)
   const { data: dirData } = useGetDirectoryHook(
-    { ...params, isUnlinked: !params.collectionName },
+    {
+      ...params,
+      isUnlinked: !params.collectionName && !params.resourceRoomName,
+    },
     { initialData: [] }
   )
   const { data: siteUrl } = useSiteUrlHook(params)
