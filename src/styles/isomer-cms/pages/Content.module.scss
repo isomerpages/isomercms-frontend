@@ -146,7 +146,7 @@
 }
 
 .contentContainerBoxes {
-  //this is used in the OverviewCard page
+  //this is used in the PageCard page
   @include cardFormat;
 
   .boxesContainer {
@@ -301,10 +301,15 @@
       }
     }
   }
+}
 
-  // &:hover{
-  //   transform: translateY(-5px);
-  // }
+.cardDisabled {
+  @extend .card;
+
+  cursor: default;
+  .componentTitle {
+    color: #000000;
+  }
 }
 
 .segmentDividerContainer {

@@ -1,9 +1,8 @@
 import axios from "axios"
+import { MenuDropdown } from "components/MenuDropdown"
 import PropTypes from "prop-types"
 import React, { useEffect, useState, useRef } from "react"
 import { Link, useRouteMatch } from "react-router-dom"
-
-import { MenuDropdown } from "components/MenuDropdown"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -11,33 +10,32 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
 // Import utils
-import { prettifyDate, deslugifyDirectory } from "utils"
+import { prettifyDate, pageFileNameToTitle } from "utils"
 
 // axios settings
 axios.defaults.withCredentials = true
 
-const PageCard = ({ item, itemIndex, isDisabled }) => {
-  const {
-    name,
-    date,
-    resourceRoomName,
-    resourceCategoryName,
-    resourceType,
-  } = item
+const PageCard = ({ item, itemIndex }) => {
+  const { title, name, date, resourceType } = item
   const dropdownRef = useRef(null)
   const [showDropdown, setShowDropdown] = useState(false)
 
   const {
     url,
-    params: { siteName },
+    params: { siteName, resourceRoomName },
   } = useRouteMatch()
 
   const { setRedirectToPage } = useRedirectHook()
 
   const generateLink = () => {
+    if (resourceType === "file")
+      // TODO: implement file preview on CMS
+      return "#"
     const encodedName = encodeURIComponent(name)
-    if (resourceRoomName) {
-      return `/sites/${siteName}/resourceRoom/${resourceRoomName}/resources/${resourceCategoryName}/${encodedName}`
+    if (resourceType || resourceRoomName) {
+      // use resourceRoomName in case resourcePage does not have format Date-Type-Name.md
+      // for resourcePages that are not migrated
+      return `${url}/editPage/${encodedName}`
     }
     return `/sites/${siteName}/editPage/${encodedName}`
   }
@@ -67,17 +65,14 @@ const PageCard = ({ item, itemIndex, isDisabled }) => {
 
   return (
     <Link
-      className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.card}`}
-      to={
-        showDropdown || isDisabled || resourceType === "file"
-          ? "#"
-          : generateLink()
-      }
+      className={`${contentStyles.component} ${
+        resourceType === "file"
+          ? contentStyles.cardDisabled
+          : contentStyles.card
+      } ${elementStyles.card}`}
+      to={generateLink()}
     >
       <div id={itemIndex} className={contentStyles.componentInfo}>
-        <div className={contentStyles.componentCategory}>
-          {resourceCategoryName ? deslugifyDirectory(resourceCategoryName) : ""}
-        </div>
         <h1
           className={
             resourceType === "file"
@@ -85,7 +80,7 @@ const PageCard = ({ item, itemIndex, isDisabled }) => {
               : contentStyles.componentTitleLink
           }
         >
-          {name}
+          {pageFileNameToTitle(name, !!resourceType)}
         </h1>
         <p className={contentStyles.componentDate}>{`${
           date ? prettifyDate(date) : ""
@@ -133,7 +128,6 @@ PageCard.propTypes = {
     resourceType: PropTypes.oneOf(["file", "post", ""]),
   }),
   itemIndex: PropTypes.number.isRequired,
-  isDisabled: PropTypes.bool,
 }
 
 export default PageCard

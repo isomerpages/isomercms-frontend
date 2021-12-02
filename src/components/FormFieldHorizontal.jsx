@@ -24,7 +24,6 @@ const FormFieldHorizontal = ({
     <div className={elementStyles.formHorizontal}>
       <p className={elementStyles.formDescription}>{description}</p>
       <input
-        {...register(id, { required: isRequired })}
         type="text"
         placeholder={placeholder || title}
         value={value}
@@ -38,6 +37,7 @@ const FormFieldHorizontal = ({
         }`}
         style={style}
         onChange={onFieldChange}
+        {...register(id, { required: isRequired })}
       />
     </div>
     {errorMessage ? (

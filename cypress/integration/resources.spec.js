@@ -5,6 +5,7 @@ describe("Resources page", () => {
   const COOKIE_NAME = Cypress.env("COOKIE_NAME")
   const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
   const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
+  const TEST_RESOURCE_ROOM_NAME = "resources"
 
   const TEST_CATEGORY = "Test Folder"
   const TEST_CATEGORY_2 = "Another Folder"
@@ -23,7 +24,9 @@ describe("Resources page", () => {
     // This means it will not be cleared before the NEXT test starts.
     Cypress.Cookies.preserveOnce(COOKIE_NAME)
     window.localStorage.setItem("userId", "test")
-    cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources`)
+    cy.visit(
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}`
+    )
   })
 
   it("Resources page should have resources header", () => {
@@ -31,16 +34,18 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to create a new resource category", () => {
+    cy.wait(3000)
     cy.contains("Create new category").click()
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY)
+    cy.contains("Next").click()
 
-    cy.get("input").clear().type(TEST_CATEGORY)
-    cy.contains("Save").click()
+    cy.wait(8000)
 
     // Asserts
     // 1. Redirect to newly created folder
     cy.url().should(
       "include",
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources/${TEST_CATEGORY_SLUGIFIED}`
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
     )
 
     // 2. If user goes back to Resources, they should be able to see that the folder exists
@@ -49,32 +54,34 @@ describe("Resources page", () => {
   })
 
   it("Resources page should not allow user to create a new resource category with invalid name", () => {
+    cy.wait(3000)
     cy.contains("Create new category").click()
 
     // Disabled button for special characters
-    cy.get("input").type(TEST_CATEGORY_SPECIAL)
-    cy.contains("Save").should("be.disabled")
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_SPECIAL).blur()
+    cy.contains("Next").should("be.disabled")
 
     // Disabled button for short names
-    cy.get("input").clear().type(TEST_CATEGORY_SHORT)
-    cy.contains("Save").should("be.disabled")
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_SHORT).blur()
+    cy.contains("Next").should("be.disabled")
 
     // Disabled button for same name
-    cy.get("input").clear().type(TEST_CATEGORY)
-    cy.contains("Save").should("be.disabled")
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY).blur()
+    cy.contains("Next").should("be.disabled")
   })
 
   it("Resources page should allow user to create another new resource category", () => {
+    cy.wait(3000)
     cy.contains("Create new category").click()
 
-    cy.get("input").clear().type(TEST_CATEGORY_2)
-    cy.contains("Save").click()
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_2)
+    cy.contains("Next").click()
 
     // Asserts
     // 1. Redirect to newly created folder
     cy.url().should(
       "include",
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources/${TEST_CATEGORY_2_SLUGIFIED}`
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}/resourceCategory/${TEST_CATEGORY_2_SLUGIFIED}`
     )
 
     // 2. If user goes back to Resources, they should be able to see that the folder exists
@@ -87,15 +94,15 @@ describe("Resources page", () => {
     cy.contains(TEST_CATEGORY_2).contains("Edit details").click()
 
     // Disabled button for special characters
-    cy.get("input").clear().type(TEST_CATEGORY_SPECIAL)
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_SPECIAL).blur()
     cy.contains("Save").should("be.disabled")
 
     // Disabled button for short names
-    cy.get("input").clear().type(TEST_CATEGORY_SHORT)
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_SHORT).blur()
     cy.contains("Save").should("be.disabled")
 
     // Disabled button for same name
-    cy.get("input").clear().type(TEST_CATEGORY)
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY).blur()
     cy.contains("Save").should("be.disabled")
   })
 
@@ -107,8 +114,8 @@ describe("Resources page", () => {
     cy.contains("Save").click()
 
     // Set a wait time because the API takes time
-    cy.wait(3000)
-    cy.contains("Successfully renamed folder!")
+    cy.wait(8000)
+    cy.contains("Successfully updated directory settings")
 
     cy.contains(TEST_CATEGORY_RENAMED)
   })
@@ -117,7 +124,7 @@ describe("Resources page", () => {
     cy.contains(TEST_CATEGORY).click()
     cy.url().should(
       "include",
-      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resources/${TEST_CATEGORY_SLUGIFIED}`
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
     )
   })
 
@@ -132,7 +139,7 @@ describe("Resources page", () => {
 
     // Set a wait time because the API takes time
     cy.wait(3000)
-    cy.contains("Successfully deleted folder!")
+    cy.contains("Successfully deleted directory")
 
     cy.contains(TEST_CATEGORY_RENAMED).should("not.exist")
   })

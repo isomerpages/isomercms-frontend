@@ -3,15 +3,32 @@ export class MoverService {
     this.apiClient = apiClient
   }
 
-  getDirectoryEndpoint({ siteName, collectionName, subCollectionName }) {
+  getDirectoryEndpoint({
+    siteName,
+    resourceRoomName,
+    resourceCategoryName,
+    collectionName,
+    subCollectionName,
+  }) {
     let endpoint = `/sites/${siteName}`
+    if (resourceRoomName) {
+      endpoint += `/resourceRoom/${resourceRoomName}`
+    }
+    if (resourceCategoryName) {
+      endpoint += `/resources/${resourceCategoryName}`
+    }
     if (collectionName) {
       endpoint += `/collections/${collectionName}`
     }
     if (subCollectionName) {
       endpoint += `/subcollections/${subCollectionName}`
     }
-    if (!collectionName && !subCollectionName) {
+    if (
+      !collectionName &&
+      !subCollectionName &&
+      !resourceCategoryName &&
+      !resourceRoomName
+    ) {
       endpoint += `/pages`
     }
     endpoint += `/move`

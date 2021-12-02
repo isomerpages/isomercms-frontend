@@ -129,7 +129,7 @@ const Workspace = ({ match, location }) => {
                   title="Create new folder"
                   option="create-sub"
                   isSubfolder={false}
-                  onClick={() => setRedirectToPage(`${url}/createFolder`)}
+                  onClick={() => setRedirectToPage(`${url}/createDirectory`)}
                 />
               )}
               {dirsData && dirsData.length > 0
@@ -204,17 +204,17 @@ const Workspace = ({ match, location }) => {
           onClose={() => history.goBack()}
         />
         <ProtectedRouteWithProps
-          path={[`${path}/createFolder`]}
+          path={[`${path}/createDirectory`]}
           component={DirectoryCreationScreen}
           onClose={() => history.goBack()}
         />
         <ProtectedRouteWithProps
-          path={[`${path}/deleteFolder/:collectionName`]}
+          path={[`${path}/deleteDirectory/:collectionName`]}
           component={DeleteWarningScreen}
           onClose={() => history.goBack()}
         />
         <ProtectedRouteWithProps
-          path={[`${path}/editFolderSettings/:collectionName`]}
+          path={[`${path}/editDirectorySettings/:collectionName`]}
           component={DirectorySettingsScreen}
           onClose={() => history.goBack()}
         />

@@ -1,3 +1,8 @@
+import FolderOptionButton from "components/FolderOptionButton"
+import Breadcrumb from "components/folders/Breadcrumb"
+import { FolderContent } from "components/folders/FolderContent"
+import Header from "components/Header"
+import Sidebar from "components/Sidebar"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import React from "react"
@@ -5,11 +10,6 @@ import { ReactQueryDevtools } from "react-query/devtools"
 import { Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 // Import components
-import FolderOptionButton from "components/FolderOptionButton"
-import Breadcrumb from "components/folders/Breadcrumb"
-import { FolderContent } from "components/folders/FolderContent"
-import Header from "components/Header"
-import Sidebar from "components/Sidebar"
 
 import { useGetDirectoryHook } from "hooks/directoryHooks"
 import useRedirectHook from "hooks/useRedirectHook"
@@ -97,7 +97,7 @@ const Folders = ({ match, location }) => {
               title="Create new subfolder"
               option="create-sub"
               isDisabled={!!(subCollectionName || isLoadingDirectory)}
-              onClick={() => setRedirectToPage(`${url}/createFolder`)}
+              onClick={() => setRedirectToPage(`${url}/createDirectory`)}
             />
           </div>
           {/* Collections content */}
@@ -110,7 +110,7 @@ const Folders = ({ match, location }) => {
       </div>
       <Switch>
         <ProtectedRouteWithProps
-          path={[`${path}/createFolder`]}
+          path={[`${path}/createDirectory`]}
           component={DirectoryCreationScreen}
           onClose={() => history.goBack()}
         />
@@ -122,7 +122,7 @@ const Folders = ({ match, location }) => {
         <ProtectedRouteWithProps
           path={[
             `${path}/deletePage/:fileName`,
-            `${path}/deleteSubfolder/:subCollectionName`,
+            `${path}/deleteDirectory/:subCollectionName`,
           ]}
           component={DeleteWarningScreen}
           onClose={() => history.goBack()}
@@ -133,7 +133,7 @@ const Folders = ({ match, location }) => {
           onClose={() => history.goBack()}
         />
         <ProtectedRouteWithProps
-          path={[`${path}/editSubfolderSettings/:subCollectionName`]}
+          path={[`${path}/editDirectorySettings/:subCollectionName`]}
           component={DirectorySettingsScreen}
           onClose={() => history.goBack()}
         />
