@@ -67,9 +67,7 @@ export const PageSettingsModal = ({
         setValue("layout", "file", {
           shouldValidate: true,
         })
-        setValue("permalink", undefined, {
-          shouldValidate: true,
-        })
+        setValue("permalink", undefined)
       }
     }
   }, [pageData, setValue])
