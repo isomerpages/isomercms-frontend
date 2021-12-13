@@ -32,11 +32,11 @@ const sidebarContentPathDict = (resourceRoomName) => [
     title: "Resources",
   },
   {
-    pathname: "images",
+    pathname: "media/images",
     title: "Images",
   },
   {
-    pathname: "documents",
+    pathname: "media/files",
     title: "Files",
   },
 ]
@@ -124,7 +124,7 @@ const Sidebar = ({ siteName, currPath }) => {
   const convertCollectionsPathToWorkspace = (currPath, siteName) => {
     const currPathArr = currPath.split("/")
 
-    if (currPathArr[3] === "resourceRoom")
+    if (currPathArr[3] === "resourceRoom" || currPathArr[3] === "media")
       return currPathArr.slice(0, 5).join("/")
 
     // example path: /sites/demo-v2/folder/left-nav-one

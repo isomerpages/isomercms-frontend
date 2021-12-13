@@ -26,6 +26,8 @@ const Breadcrumb = ({ params, title, isLink }) => {
     subCollectionName,
     resourceRoomName,
     resourceCategoryName,
+    mediaRoom,
+    mediaDirectoryName,
   } = params
   const newParams = { ...params, fileName: title }
   return (
@@ -70,6 +72,23 @@ const Breadcrumb = ({ params, title, isLink }) => {
           link={
             isLink &&
             `/sites/${siteName}/resourceRoomName/${resourceRoomName}/resourceCategory/${resourceCategoryName}`
+          }
+        />
+      ) : null}
+      {mediaRoom ? (
+        <BreadcrumbItem
+          item={deslugifyDirectory(mediaRoom)}
+          isLast={isLastItem("mediaRoom", newParams)}
+          link={isLink && `/sites/${siteName}/media/${mediaRoom}`}
+        />
+      ) : null}
+      {mediaDirectoryName ? (
+        <BreadcrumbItem
+          item={deslugifyDirectory(mediaDirectoryName)}
+          isLast={isLastItem("mediaDirectoryName", newParams)}
+          link={
+            isLink &&
+            `/sites/${siteName}/media/${mediaRoom}/${mediaDirectoryName}`
           }
         />
       ) : null}

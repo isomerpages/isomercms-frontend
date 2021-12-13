@@ -14,16 +14,24 @@ import {
   deslugifyDirectory,
 } from "utils"
 
-const MoveMenu = ({ moveQuery, setMoveQuery, moveTo, setMoveTo, dirData }) => {
+const MoveMenu = ({
+  type,
+  moveQuery,
+  setMoveQuery,
+  moveTo,
+  setMoveTo,
+  dirData,
+}) => {
   /** ******************************** */
   /*     subcomponents    */
   /** ******************************** */
 
   const MoveMenuBackButton = () => {
     const lastItemType = getLastItemType(moveQuery)
-    const isEnabled = moveQuery.resourceRoomName
-      ? Object.keys(moveQuery).length > 2
-      : Object.keys(moveQuery).length > 1
+    const isEnabled =
+      moveQuery.resourceRoomName || moveQuery.mediaRoom
+        ? Object.keys(moveQuery).length > 2
+        : Object.keys(moveQuery).length > 1
     return (
       <div
         id="moveModal-backButton"
@@ -120,7 +128,7 @@ const MoveMenu = ({ moveQuery, setMoveQuery, moveTo, setMoveTo, dirData }) => {
             .map((item, itemIndex) => (
               <MoveMenuItem item={item} id={itemIndex} />
             ))}
-          {/* pages */}
+          {/* files */}
           {dirData
             .filter((item) => item.type === "file")
             .map((item, itemIndex) => (
@@ -131,7 +139,7 @@ const MoveMenu = ({ moveQuery, setMoveQuery, moveTo, setMoveTo, dirData }) => {
         <div
           className={`${elementStyles.dropdownItemDisabled} d-flex justify-content-center`}
         >
-          No pages here yet.
+          {`No ${type}s here yet.`}
         </div>
       ) : (
         <div
@@ -149,25 +157,25 @@ const MoveModal = ({ queryParams, params, onProceed, onClose }) => {
     (({ fileName, ...p }) => p)(queryParams)
   )
   const [moveTo, setMoveTo] = useState(moveQuery)
-
   const { data: dirData } = useGetDirectoryHook(moveQuery)
 
+  const type = moveQuery.mediaRoom ? moveQuery.mediaRoom.slice(0, -1) : "page"
   return (
     <div className={elementStyles.overlay}>
       <div className={elementStyles["modal-settings"]}>
         <div className={elementStyles.modalHeader}>
-          <h1>Move Page</h1>
+          <h1>{`Move ${type}`}</h1>
           <button id="settings-CLOSE" type="button" onClick={onClose}>
             <i id="settingsIcon-CLOSE" className="bx bx-x" />
           </button>
         </div>
         <div className={elementStyles.modalContent}>
           <div className={elementStyles.modalFormFields}>
-            Moving a page to a different folder might lead to user confusion.
-            You may wish to change the permalink for this page afterwards.
+            {`Moving a ${type} to a different folder might lead to user confusion.
+            You may wish to change the permalink or references to this ${type} afterwards.`}
             <br />
             <br />
-            Current location of page: <br />
+            Current location: <br />
             <Breadcrumb
               params={params}
               title={pageFileNameToTitle(
@@ -180,13 +188,14 @@ const MoveModal = ({ queryParams, params, onProceed, onClose }) => {
               setMoveQuery={setMoveQuery}
               moveTo={moveTo}
               setMoveTo={setMoveTo}
+              type={type}
               dirData={
                 dirData
                   ? dirData.filter((item) => item.name != params.fileName)
                   : []
               }
             />
-            Moving page to: <br />
+            Moving to: <br />
             <Breadcrumb
               params={moveTo}
               title={pageFileNameToTitle(
@@ -200,7 +209,11 @@ const MoveModal = ({ queryParams, params, onProceed, onClose }) => {
             hasDeleteButton={false}
             saveCallback={() =>
               onProceed({
-                target: (({ siteName, ...p }) => p)(moveTo),
+                target: moveTo.mediaRoom
+                  ? {
+                      directoryName: `${moveTo.mediaRoom}/${moveTo.mediaDirectoryName}`,
+                    }
+                  : (({ siteName, ...p }) => p)(moveTo),
                 items: [{ name: params.fileName, type: "file" }],
               })
             }

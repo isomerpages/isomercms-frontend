@@ -47,8 +47,8 @@ export const FolderCard = ({
       case "nav":
         return `/sites/${siteName}/navbar`
       case "images":
-      case "documents":
-        return `/sites/${siteName}/${linkPath}`
+      case "files":
+        return `/sites/${siteName}/media/${pageType}/mediaDirectory/${category}`
       default:
         return ""
     }

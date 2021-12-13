@@ -9,30 +9,25 @@ import { errorToast, successToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
-export function useDeletePageHook(params, queryParams) {
+export function useDeleteMediaHook(params, queryParams) {
   const queryClient = useQueryClient()
-  const { pageService } = useContext(ServicesContext)
-  return useMutation((body) => pageService.delete(params, body), {
+  const { mediaService } = useContext(ServicesContext)
+  return useMutation((body) => mediaService.delete(params, body), {
     ...queryParams,
     onError: () => {
       errorToast(
-        `Your page could not be deleted successfully. ${DEFAULT_RETRY_MSG}`
+        `Your media file could not be deleted successfully. ${DEFAULT_RETRY_MSG}`
       )
       queryParams && queryParams.onError && queryParams.onError()
     },
     onSuccess: () => {
-      successToast(`Successfully deleted page`)
-      if (params.collectionName || params.resourceRoomName)
+      successToast(`Successfully deleted media file`)
+      if (params.mediaRoom || params.mediaDirectoryName)
         queryClient.invalidateQueries([
-          // invalidates collection pages or resource pages
+          // invalidates media directory
           DIR_CONTENT_KEY,
           (({ fileName, ...p }) => p)(params),
         ])
-      else
-        queryClient.invalidateQueries([
-          DIR_CONTENT_KEY,
-          { siteName: params.siteName, isUnlinked: true },
-        ]) // invalidates unlinked pages
       queryParams && queryParams.onSuccess && queryParams.onSuccess()
     },
   })

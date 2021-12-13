@@ -3,11 +3,7 @@ import { useMutation, useQueryClient } from "react-query"
 
 import { ServicesContext } from "contexts/ServicesContext"
 
-import {
-  DIR_CONTENT_KEY,
-  PAGE_CONTENT_KEY,
-  PAGE_SETTINGS_KEY,
-} from "hooks/queryKeys"
+import { DIR_CONTENT_KEY, PAGE_CONTENT_KEY } from "hooks/queryKeys"
 
 import { errorToast, successToast } from "utils/toasts"
 
@@ -20,7 +16,6 @@ export function useUpdatePageHook(params, queryParams) {
     ...queryParams,
     onSettled: () => {
       queryClient.invalidateQueries([PAGE_CONTENT_KEY, { ...params }])
-      queryClient.invalidateQueries([PAGE_SETTINGS_KEY, { ...params }])
     },
     onSuccess: () => {
       if (params.collectionName || params.resourceRoomName)

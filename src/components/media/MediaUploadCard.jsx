@@ -10,7 +10,7 @@ const MediaUploadCard = ({ onClick, type }) => (
     type="button"
     id="settings-NEW"
     onClick={onClick}
-    className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.addNew} ${mediaStyles.mediaCardDimensions}`}
+    className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.addNew}`}
   >
     <i
       id="settingsIcon-NEW"
@@ -22,7 +22,7 @@ const MediaUploadCard = ({ onClick, type }) => (
 
 MediaUploadCard.propTypes = {
   onClick: PropTypes.func.isRequired,
-  type: PropTypes.oneOf(["image", "file"]).isRequired,
+  type: PropTypes.oneOf(["images", "files"]).isRequired,
 }
 
 export default MediaUploadCard

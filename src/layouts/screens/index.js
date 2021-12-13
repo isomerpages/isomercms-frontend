@@ -1,6 +1,9 @@
 /*     page modals     */
 export { PageSettingsScreen } from "./PageSettingsScreen"
-export { PageMoveScreen } from "./PageMoveScreen"
+
+/*     media modals     */
+export { MediaCreationScreen } from "./MediaCreationScreen"
+export { MediaSettingsScreen } from "./MediaSettingsScreen"
 
 /*     directory modals     */
 export { DirectoryCreationScreen } from "./DirectoryCreationScreen"
@@ -9,3 +12,4 @@ export { DirectorySettingsScreen } from "./DirectorySettingsScreen"
 /*     misc    */
 export { ReorderingScreen } from "./ReorderingScreen"
 export { DeleteWarningScreen } from "./DeleteWarningScreen"
+export { PageMoveScreen } from "./PageMoveScreen"

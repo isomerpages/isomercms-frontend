@@ -144,6 +144,12 @@ const RESOURCE_CATEGORY_MAX_LENGTH = 30
 export const DIRECTORY_SETTINGS_TITLE_MIN_LENGTH = 2
 export const DIRECTORY_SETTINGS_TITLE_MAX_LENGTH = 30
 
+// Media Settings Modal
+// ===================
+export const MEDIA_SETTINGS_TITLE_MIN_LENGTH = 4
+export const MEDIA_SETTINGS_TITLE_MAX_LENGTH = 100
+export const MEDIA_FILE_MAX_SIZE = 5242880 // 5MB -> 5242880B
+
 // Homepage Editor
 // ==========
 // Returns new errors.highlights[index] object

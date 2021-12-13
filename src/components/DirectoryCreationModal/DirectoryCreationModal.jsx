@@ -108,7 +108,7 @@ export const DirectoryCreationModal = ({
                             )
                             indexOfItem != -1
                               ? remove(indexOfItem)
-                              : append(pageData)
+                              : append({ name: pageData.name, type: "file" })
                           }}
                         />
                       ))

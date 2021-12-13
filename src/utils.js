@@ -510,6 +510,8 @@ export const isLastItem = (type, params) => {
     subCollectionName,
     resourceRoomName,
     resourceCategoryName,
+    mediaRoom,
+    mediaDirectoryName,
     fileName,
   } = params
   if (type === "siteName") {
@@ -519,6 +521,8 @@ export const isLastItem = (type, params) => {
       !fileName &&
       !resourceRoomName &&
       !resourceCategoryName &&
+      !mediaRoom &&
+      !mediaDirectoryName &&
       !fileName
     )
   }
@@ -532,6 +536,12 @@ export const isLastItem = (type, params) => {
     return !resourceCategoryName && !fileName
   }
   if (type === "resourceCategoryName") {
+    return !fileName
+  }
+  if (type === "mediaRoom") {
+    return !mediaDirectoryName && !fileName
+  }
+  if (type === "mediaDirectoryName") {
     return !fileName
   }
   if (type === "fileName") {
@@ -549,6 +559,9 @@ export const getNextItemType = (params) => {
   const lastItemType = getLastItemType(params)
   if (lastItemType === "siteName") {
     return "collectionName"
+  }
+  if (lastItemType === "mediaRoom") {
+    return "mediaDirectoryName"
   }
   if (lastItemType === "collectionName") {
     return "subCollectionName"

@@ -9,8 +9,16 @@ export class MoverService {
     resourceCategoryName,
     collectionName,
     subCollectionName,
+    mediaRoom,
+    mediaDirectoryName,
   }) {
     let endpoint = `/sites/${siteName}`
+    if (mediaRoom) {
+      endpoint += `/media/${mediaRoom}/${mediaRoom}`
+    }
+    if (mediaDirectoryName) {
+      endpoint += encodeURIComponent(`/${mediaDirectoryName}`)
+    }
     if (resourceRoomName) {
       endpoint += `/resourceRoom/${resourceRoomName}`
     }
@@ -27,7 +35,9 @@ export class MoverService {
       !collectionName &&
       !subCollectionName &&
       !resourceCategoryName &&
-      !resourceRoomName
+      !resourceRoomName &&
+      !mediaRoom &&
+      !mediaDirectoryName
     ) {
       endpoint += `/pages`
     }
@@ -36,6 +46,14 @@ export class MoverService {
   }
 
   async move(apiParams, { target, items }) {
+    console.log(
+      "endpoint",
+      this.getDirectoryEndpoint(apiParams),
+      "target",
+      target,
+      "items",
+      items
+    )
     if (
       JSON.stringify(target) ===
       JSON.stringify((({ siteName, ...p }) => p)(apiParams))

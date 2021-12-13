@@ -11,11 +11,32 @@ export class DirectoryService {
     subCollectionName,
     resourceRoomName,
     resourceCategoryName,
+    mediaRoom,
+    mediaDirectoryName,
     isCreate,
     isReorder,
     isUnlinked,
     isResource,
   }) {
+    // R media room (images)
+    // GET /sites/a-test-v4/media/images/images
+    // C media folder
+    // POST /sites/a-test-v4/media/images
+    // Rename media folder
+    // POST /sites/a-test-v4/media/images/images/:directoryName
+    // D media folder
+    // DELETE /sites/a-test-v4/media/images/images/:directoryName
+
+    if (mediaRoom || mediaDirectoryName) {
+      let endpoint = `/sites/${siteName}/media/${mediaRoom}`
+      if (isCreate) return endpoint
+      endpoint += `/${mediaRoom}`
+      if (mediaDirectoryName) {
+        endpoint += `${encodeURIComponent(`/${mediaDirectoryName}`)}`
+      }
+      return endpoint
+    }
+
     if (isUnlinked) {
       // R Unlinked pages
       // /sites/a-test-v4/pages
@@ -77,8 +98,11 @@ export class DirectoryService {
   async create(apiParams, { newDirectoryName, items }) {
     const body = {
       items,
-      newDirectoryName,
+      newDirectoryName: apiParams.mediaRoom
+        ? `${apiParams.mediaRoom}/${newDirectoryName}`
+        : newDirectoryName,
     }
+    console.log(this.getDirectoryEndpoint(apiParams), body)
     return await this.apiClient.post(this.getDirectoryEndpoint(apiParams), body)
   }
 
