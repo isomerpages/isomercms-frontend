@@ -62,11 +62,15 @@ export const PageSettingsModal = ({
           shouldValidate: true,
         })
       )
-      if (pageData.content.frontMatter.file_url)
+      if (pageData.content.frontMatter.file_url) {
         // backwards compatible with previous resource files
         setValue("layout", "file", {
           shouldValidate: true,
         })
+        setValue("permalink", undefined, {
+          shouldValidate: true,
+        })
+      }
     }
   }, [pageData, setValue])
 
