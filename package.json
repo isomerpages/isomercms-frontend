@@ -33,7 +33,7 @@
     "react-dom": "^16.10.2",
     "react-hook-form": "^7.17.5",
     "react-input-mask": "^2.0.4",
-    "react-query": "^3.33.4",
+    "react-query": "^3.34.3",
     "react-router-dom": "^5.1.2",
     "react-select": "^3.1.0",
     "react-simplemde-editor": "^4.1.0",
