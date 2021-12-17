@@ -16,7 +16,7 @@ import useRedirectHook from "hooks/useRedirectHook"
 
 import {
   PageSettingsScreen,
-  PageMoveScreen,
+  MoveScreen,
   DirectoryCreationScreen,
   DirectorySettingsScreen,
   ReorderingScreen,
@@ -139,7 +139,7 @@ const Folders = ({ match, location }) => {
         />
         <ProtectedRouteWithProps
           path={[`${path}/movePage/:fileName`]}
-          component={PageMoveScreen}
+          component={MoveScreen}
           onClose={() => history.goBack()}
         />
       </Switch>

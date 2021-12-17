@@ -3,7 +3,7 @@ import PageCard from "components/PageCard"
 import Sidebar from "components/Sidebar"
 import PropTypes from "prop-types"
 import React from "react"
-import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom"
+import { Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 import { useGetDirectoryHook } from "hooks/directoryHooks"
 import useRedirectHook from "hooks/useRedirectHook"
@@ -11,7 +11,7 @@ import useRedirectHook from "hooks/useRedirectHook"
 // Import screens
 import {
   PageSettingsScreen,
-  PageMoveScreen,
+  MoveScreen,
   DeleteWarningScreen,
 } from "layouts/screens"
 
@@ -112,7 +112,7 @@ const ResourceCategory = ({ match, location }) => {
         />
         <ProtectedRouteWithProps
           path={[`${path}/movePage/:fileName`]}
-          component={PageMoveScreen}
+          component={MoveScreen}
           onClose={() => history.goBack()}
         />
       </Switch>
