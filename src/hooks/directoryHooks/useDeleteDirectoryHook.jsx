@@ -7,7 +7,7 @@ import { DIR_CONTENT_KEY } from "hooks/queryKeys"
 
 import { successToast, errorToast } from "utils/toasts"
 
-import { DEFAULT_RETRY_MSG } from "utils"
+import { DEFAULT_RETRY_MSG, getMediaDirectoryName } from "utils"
 
 export function useDeleteDirectoryHook(params, queryParams) {
   const { directoryService } = useContext(ServicesContext)
@@ -20,6 +20,17 @@ export function useDeleteDirectoryHook(params, queryParams) {
     },
     onSuccess: () => {
       successToast(`Successfully deleted directory`)
+      if (params.mediaDirectoryName)
+        queryClient.invalidateQueries([
+          DIR_CONTENT_KEY,
+          {
+            ...params,
+            mediaDirectoryName: getMediaDirectoryName(
+              params.mediaDirectoryName,
+              { end: -1 }
+            ),
+          },
+        ])
       if (params.subCollectionName)
         queryClient.invalidateQueries([
           DIR_CONTENT_KEY,

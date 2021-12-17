@@ -7,7 +7,7 @@ import { DIR_CONTENT_KEY } from "hooks/queryKeys"
 
 import { successToast, errorToast } from "utils/toasts"
 
-import { DEFAULT_RETRY_MSG } from "utils"
+import { DEFAULT_RETRY_MSG, getMediaDirectoryName } from "utils"
 
 export function useUpdateDirectoryHook(params, queryParams) {
   const queryClient = useQueryClient()
@@ -35,6 +35,17 @@ export function useUpdateDirectoryHook(params, queryParams) {
         queryClient.invalidateQueries([
           DIR_CONTENT_KEY,
           (({ resourceCategoryName, ...p }) => p)(params),
+        ])
+      else if (params.mediaDirectoryName)
+        queryClient.invalidateQueries([
+          DIR_CONTENT_KEY,
+          {
+            ...params,
+            mediaDirectoryName: getMediaDirectoryName(
+              params.mediaDirectoryName,
+              { end: -1 }
+            ),
+          },
         ])
       successToast("Successfully updated directory settings")
       queryParams && queryParams.onSuccess && queryParams.onSuccess()
