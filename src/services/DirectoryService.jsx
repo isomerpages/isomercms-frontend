@@ -1,4 +1,4 @@
-import { getLastItemType } from "../utils"
+import { getLastItemType, getMediaDirectoryName } from "../utils"
 
 export class DirectoryService {
   constructor({ apiClient }) {
@@ -11,11 +11,30 @@ export class DirectoryService {
     subCollectionName,
     resourceRoomName,
     resourceCategoryName,
+    mediaDirectoryName,
     isCreate,
     isReorder,
     isUnlinked,
     isResource,
   }) {
+    // R media room (images)
+    // GET /sites/a-test-v4/media/images/images
+    // C media folder
+    // POST /sites/a-test-v4/media/images
+    // Rename media folder
+    // POST /sites/a-test-v4/media/images/images/:directoryName
+    // D media folder
+    // DELETE /sites/a-test-v4/media/images/images/:directoryName
+
+    if (mediaDirectoryName) {
+      let endpoint = `/sites/${siteName}/media`
+      if (isCreate) return endpoint
+      if (mediaDirectoryName) {
+        endpoint += `/${mediaDirectoryName}`
+      }
+      return endpoint
+    }
+
     if (isUnlinked) {
       // R Unlinked pages
       // /sites/a-test-v4/pages
@@ -83,6 +102,12 @@ export class DirectoryService {
   }
 
   async update(apiParams, { newDirectoryName }) {
+    if (
+      apiParams.mediaDirectoryName &&
+      apiParams.mediaDirectoryName ===
+        getMediaDirectoryName(newDirectoryName, { splitOn: "/", joinOn: "%2F" })
+    )
+      return
     if (apiParams[getLastItemType(apiParams)] === newDirectoryName) return
     const body = {
       newDirectoryName,
