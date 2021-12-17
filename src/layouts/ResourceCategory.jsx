@@ -25,11 +25,12 @@ import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 import { deslugifyDirectory } from "utils"
 
 const ResourceCategory = ({ match, location }) => {
+  const { params, decodedParams } = match
   const {
     resourceRoomName,
     resourceCategoryName: collectionName,
     siteName,
-  } = match.params
+  } = params
   const { setRedirectToPage } = useRedirectHook()
   const { path, url } = useRouteMatch()
   const history = useHistory()
