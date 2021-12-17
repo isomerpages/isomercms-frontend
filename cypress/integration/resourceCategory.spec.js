@@ -258,8 +258,9 @@ describe("Resource category page", () => {
     cy.get("button")
       .contains(/^Upload$/)
       .click()
-    cy.wait(2000)
+    cy.wait(4000)
 
+    cy.get('button[id="selectMedia"]').click()
     cy.contains("Save").click()
     cy.wait(3000)
 
@@ -290,10 +291,9 @@ describe("Resource category page", () => {
     cy.get('input[id="radio-file"]').click()
 
     cy.contains(":button", "Select File").click()
-    cy.contains(":button", "Add new file").click()
 
     cy.contains(FILE_TITLE).click()
-    cy.contains(":button", "Select file").click()
+    cy.get('button[id="selectMedia"]').click()
 
     cy.contains("Save").click()
 
