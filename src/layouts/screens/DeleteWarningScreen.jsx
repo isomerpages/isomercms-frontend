@@ -1,34 +1,48 @@
 import DeleteWarningModal from "components/DeleteWarningModal"
+import { useGetMediaHook, useDeleteMediaHook } from "hooks/mediaHooks"
 import PropTypes from "prop-types"
 import React from "react"
 
 import { useDeleteDirectoryHook } from "hooks/directoryHooks"
 import { useGetPageHook, useDeletePageHook } from "hooks/pageHooks"
 
-import { getLastItemType, pageFileNameToTitle } from "utils"
+import {
+  getLastItemType,
+  getMediaDirectoryName,
+  pageFileNameToTitle,
+} from "utils"
 
 export const DeleteWarningScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match
-  const { fileName } = params
-  const deleteItemName = pageFileNameToTitle(
-    decodedParams[getLastItemType(decodedParams)],
-    !!params.resourceRoomName
-  )
+  const { fileName, mediaRoom } = params
+  const deleteItemName = params.mediaDirectoryName
+    ? getMediaDirectoryName(params.mediaDirectoryName, { start: -1 })
+    : pageFileNameToTitle(
+        decodedParams[getLastItemType(decodedParams)],
+        !!params.resourceRoomName
+      )
 
   if (fileName) {
-    const { data: pageData } = useGetPageHook(params)
-    const { mutateAsync: deleteHandler } = useDeletePageHook(params, {
-      onSuccess: () => onClose(),
-    })
+    const { data: fileData } = mediaRoom
+      ? useGetMediaHook(params)
+      : useGetPageHook(params)
+    const { mutateAsync: deleteHandler } = mediaRoom
+      ? useDeleteMediaHook(params, {
+          onSuccess: () => onClose(),
+        })
+      : useDeletePageHook(params, {
+          onSuccess: () => onClose(),
+        })
 
-    return pageData ? (
+    return fileData ? (
       <DeleteWarningModal
-        onDelete={() => deleteHandler({ sha: pageData.sha })}
+        onDelete={() => deleteHandler({ sha: fileData.sha })}
         onCancel={() => onClose()}
-        type={deleteItemName}
+        type={fileName}
       />
     ) : null
   }
+
   const { mutateAsync: deleteHandler } = useDeleteDirectoryHook(params, {
     onSuccess: () => onClose(),
   })
