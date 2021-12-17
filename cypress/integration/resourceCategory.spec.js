@@ -78,7 +78,7 @@ describe("Resource category page", () => {
     cy.contains("Save").click()
 
     // Asserts
-    // 1. Redirect to newly created folder
+    // 1. Redirect to newly created page
     cy.url().should(
       "include",
       `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}/editPage/${generateResourceFileName(
@@ -139,7 +139,7 @@ describe("Resource category page", () => {
     cy.contains("Save").click()
 
     // Asserts
-    // 1. Redirect to newly created folder
+    // 1. Redirect to newly created page
     cy.url().should(
       "include",
       `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}/editPage/${generateResourceFileName(
@@ -251,10 +251,10 @@ describe("Resource category page", () => {
     cy.get('input[id="radio-file"]').click().blur()
 
     cy.contains(":button", "Select File").click()
-    cy.contains(":button", "Add new file").click()
+    cy.contains(":button", "Add new").click()
 
     cy.get("#file-upload").attachFile(TEST_FILE_PATH)
-    cy.get("#file-name").clear().type(FILE_TITLE)
+    cy.get("#name").clear().type(FILE_TITLE)
     cy.get("button")
       .contains(/^Upload$/)
       .click()
@@ -343,7 +343,7 @@ describe("Resource category page", () => {
 
     // Set a wait time because the API takes time
     cy.wait(3000)
-    cy.contains("Successfully deleted file")
+    cy.contains("Successfully deleted page")
     cy.contains(TEST_PAGE_TITLE_RENAMED).should("not.exist")
   })
 })

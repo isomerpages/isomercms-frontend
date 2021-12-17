@@ -152,7 +152,7 @@ describe("Settings page", () => {
     cy.get("button:contains(Choose Image)").each((el, index) => {
       cy.wrap(el).click()
       cy.contains(TEST_LOGO_IMAGES[index]).click()
-      cy.contains("button", "Select image").should("not.be.disabled").click()
+      cy.contains("button", "Select").should("not.be.disabled").click()
     })
 
     cy.saveSettings() // Save

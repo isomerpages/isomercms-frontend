@@ -374,7 +374,7 @@ describe("Folders flow", () => {
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
       cy.get("div[id^=delete-]").first().click()
       cy.contains("button", "Delete").click()
-      cy.contains("Successfully deleted file", {
+      cy.contains("Successfully deleted page", {
         timeout: CUSTOM_TIMEOUT,
       }).should("exist")
 
@@ -544,7 +544,7 @@ describe("Folders flow", () => {
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
       cy.get("div[id^=delete-]").first().click()
       cy.contains("button", "Delete").click()
-      cy.contains("Successfully deleted file", {
+      cy.contains("Successfully deleted page", {
         timeout: CUSTOM_TIMEOUT,
       }).should("exist")
 
