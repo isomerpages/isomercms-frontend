@@ -1,6 +1,8 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
 import { deslugifyDirectory, isLastItem } from "utils"
 
 const BreadcrumbItem = ({ item, isLast, link, onClick }) => (
@@ -33,7 +35,7 @@ const Breadcrumb = ({ params, title, isLink }) => {
   } = params
   const newParams = { ...params, fileName: title }
   return (
-    <span>
+    <div className={elementStyles.breadcrumb}>
       {
         <BreadcrumbItem
           item="Workspace"
@@ -62,9 +64,7 @@ const Breadcrumb = ({ params, title, isLink }) => {
         <BreadcrumbItem
           item={deslugifyDirectory(resourceRoomName)}
           isLast={isLastItem("resourceRoomName", newParams)}
-          link={
-            isLink && `/sites/${siteName}/resourceRoomName/${resourceRoomName}`
-          }
+          link={isLink && `/sites/${siteName}/resourceRoom/${resourceRoomName}`}
         />
       ) : null}
       {resourceCategoryName ? (
@@ -73,7 +73,7 @@ const Breadcrumb = ({ params, title, isLink }) => {
           isLast={isLastItem("resourceCategoryName", newParams)}
           link={
             isLink &&
-            `/sites/${siteName}/resourceRoomName/${resourceRoomName}/resourceCategory/${resourceCategoryName}`
+            `/sites/${siteName}/resourceRoom/${resourceRoomName}/resourceCategory/${resourceCategoryName}`
           }
         />
       ) : null}
@@ -105,7 +105,7 @@ const Breadcrumb = ({ params, title, isLink }) => {
       ) : null}
       <br />
       <br />
-    </span>
+    </div>
   )
 }
 
