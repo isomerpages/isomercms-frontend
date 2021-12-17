@@ -27,6 +27,9 @@ export function useCreateDirectoryHook(params, queryParams) {
         queryClient.invalidateQueries([DIR_CONTENT_KEY, { ...params }])
         setRedirectToPage(
           getRedirectUrl({
+            mediaDirectoryPath: params.mediaDirectoryName
+              ? resp.data.newDirectoryName
+              : "",
             resourceRoomName: params.isResource
               ? resp.data.newDirectoryName
               : "",

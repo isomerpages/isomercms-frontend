@@ -52,7 +52,7 @@ describe("Move flow", () => {
         `button[id^="pageCard-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`
       ).click()
       cy.get("div[id^=move-]").first().click()
-      cy.contains(`Move Page`)
+      cy.contains(`Move Here`)
 
       cy.contains(`Workspace > ${TITLE_WORKSPACE_TO_FOLDER}`).should("exist")
 
@@ -85,7 +85,7 @@ describe("Move flow", () => {
         `button[id^="pageCard-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`
       ).click()
       cy.get("div[id^=move-]").first().click()
-      cy.contains(`Move Page`)
+      cy.contains(`Move Here`)
 
       cy.contains("button", "Move Here").click()
       cy.contains("File is already in this folder", {
@@ -99,7 +99,7 @@ describe("Move flow", () => {
         `button[id^="pageCard-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`
       ).click()
       cy.get("div[id^=move-]").first().click()
-      cy.contains(`Move Page`)
+      cy.contains(`Move Here`)
 
       // Assert
       cy.contains(`Workspace > ${TITLE_WORKSPACE_TO_FOLDER}`)
@@ -135,7 +135,7 @@ describe("Move flow", () => {
         `button[id^="pageCard-dropdown-${FILENAME_WORKSPACE_TO_SUBFOLDER}"]`
       ).click()
       cy.get("div[id^=move-]").first().click()
-      cy.contains(`Move Page`)
+      cy.contains(`Move Here`)
 
       // Assert
       cy.contains(`Workspace > ${TITLE_WORKSPACE_TO_SUBFOLDER}`)
@@ -193,7 +193,7 @@ describe("Move flow", () => {
         `button[id^="folderItem-dropdown-${FILENAME_FOLDER_TO_WORKSPACE}"]`
       ).click()
       cy.get("div[id^=move-]").first().click()
-      cy.contains(`Move Page`)
+      cy.contains(`Move Here`)
 
       cy.contains(
         `Workspace > ${TEST_REPO_FOLDER_NAME} > ${TITLE_FOLDER_TO_WORKSPACE}`
@@ -228,7 +228,7 @@ describe("Move flow", () => {
         `button[id^="folderItem-dropdown-${FILENAME_FOLDER_TO_WORKSPACE}"]`
       ).click()
       cy.get("div[id^=move-]").first().click()
-      cy.contains(`Move Page`)
+      cy.contains(`Move Here`)
 
       cy.contains("button", "Move Here").click()
       cy.contains("File is already in this folder", {
@@ -242,7 +242,7 @@ describe("Move flow", () => {
         `button[id^="folderItem-dropdown-${FILENAME_FOLDER_TO_WORKSPACE}"]`
       ).click()
       cy.get("div[id^=move-]").first().click()
-      cy.contains(`Move Page`)
+      cy.contains(`Move Here`)
 
       // Assert
       cy.contains(
@@ -275,7 +275,7 @@ describe("Move flow", () => {
         `button[id^="folderItem-dropdown-${FILENAME_FOLDER_TO_SUBFOLDER}"]`
       ).click()
       cy.get("div[id^=move-]").first().click()
-      cy.contains(`Move Page`)
+      cy.contains(`Move Here`)
 
       // Assert
       cy.contains(
@@ -332,7 +332,7 @@ describe("Move flow", () => {
         `button[id^="folderItem-dropdown-${FILENAME_SUBFOLDER_TO_WORKSPACE}"]`
       ).click()
       cy.get("div[id^=move-]").first().click()
-      cy.contains(`Move Page`)
+      cy.contains(`Move Here`)
 
       cy.contains(
         `Workspace > ${TEST_REPO_FOLDER_NAME} > ${TEST_REPO_SUBFOLDER_NAME} > ${TITLE_SUBFOLDER_TO_WORKSPACE}`
@@ -367,7 +367,7 @@ describe("Move flow", () => {
         `button[id^="folderItem-dropdown-${FILENAME_SUBFOLDER_TO_WORKSPACE}"]`
       ).click()
       cy.get("div[id^=move-]").first().click()
-      cy.contains(`Move Page`)
+      cy.contains(`Move Here`)
 
       cy.contains("button", "Move Here").click()
       cy.contains("File is already in this folder", {
@@ -381,7 +381,7 @@ describe("Move flow", () => {
         `button[id^="folderItem-dropdown-${TITLE_SUBFOLDER_TO_WORKSPACE}"]`
       ).click()
       cy.get("div[id^=move-]").first().click()
-      cy.contains(`Move Page`)
+      cy.contains(`Move Here`)
 
       // Assert
       cy.contains(
@@ -419,7 +419,7 @@ describe("Move flow", () => {
         `button[id^="folderItem-dropdown-${FILENAME_SUBFOLDER_TO_FOLDER}"]`
       ).click()
       cy.get("div[id^=move-]").first().click()
-      cy.contains(`Move Page`)
+      cy.contains(`Move Here`)
 
       // Assert
       cy.contains(
@@ -466,7 +466,7 @@ describe("Move flow", () => {
       cy.contains(TITLE_RESOURCE_PAGE).should("exist")
       cy.get(`button[id^="pageCard-dropdown-"]`).click()
       cy.get("div[id^=move-]").first().click()
-      cy.contains(`Move Page`)
+      cy.contains(`Move Here`)
 
       // Assert
       cy.contains(
@@ -490,7 +490,7 @@ describe("Move flow", () => {
       cy.contains(TITLE_RESOURCE_PAGE).should("exist")
       cy.get(`button[id^="pageCard-dropdown-"]`).click()
       cy.get("div[id^=move-]").first().click()
-      cy.contains(`Move Page`)
+      cy.contains(`Move Here`)
 
       cy.contains("button", "Move Here").click()
       cy.contains("File is already in this folder", {
@@ -502,7 +502,7 @@ describe("Move flow", () => {
       cy.contains(TITLE_RESOURCE_PAGE).should("exist")
       cy.get(`button[id^="pageCard-dropdown-"]`).click()
       cy.get("div[id^=move-]").first().click()
-      cy.contains(`Move Page`)
+      cy.contains(`Move Here`)
 
       // Assert
       cy.contains(

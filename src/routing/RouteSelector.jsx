@@ -37,10 +37,10 @@ export const RouteSelector = () => (
     <ProtectedRouteWithProps
       exact
       path={[
+        "/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName/editPage/:fileName",
         "/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName/editPage/:fileName",
         "/sites/:siteName/folders/:collectionName/editPage/:fileName",
         "/sites/:siteName/editPage/:fileName",
-        "/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName/editPage/:fileName",
       ]}
       component={EditPage}
     />
@@ -57,24 +57,10 @@ export const RouteSelector = () => (
       component={EditNavBar}
     />
     <ProtectedRouteWithProps
-      path="/sites/:siteName/documents/:customPath"
+      path={[
+        "/sites/:siteName/media/:mediaRoom/mediaDirectory/:mediaDirectoryName",
+      ]}
       component={Media}
-      mediaType="documents"
-    />
-    <ProtectedRouteWithProps
-      path="/sites/:siteName/documents"
-      component={Media}
-      mediaType="documents"
-    />
-    <ProtectedRouteWithProps
-      path="/sites/:siteName/images/:customPath"
-      component={Media}
-      mediaType="images"
-    />
-    <ProtectedRouteWithProps
-      path="/sites/:siteName/images"
-      component={Media}
-      mediaType="images"
     />
     <ProtectedRouteWithProps
       path="/sites/:siteName/workspace"

@@ -8,7 +8,11 @@ import { useForm, useFormContext } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
-import { deslugifyDirectory, getLastItemType } from "utils"
+import {
+  deslugifyDirectory,
+  getLastItemType,
+  getMediaDirectoryName,
+} from "utils"
 
 import { DirectorySettingsSchema } from "."
 
@@ -16,14 +20,21 @@ import { DirectorySettingsSchema } from "."
 axios.defaults.withCredentials = true
 
 const getModalTitle = ({ isCreate, params }) => {
-  const { subCollectionName, collectionName, resourceRoomName } = params
+  const {
+    subCollectionName,
+    collectionName,
+    resourceRoomName,
+    mediaDirectoryName,
+  } = params
   if (isCreate) {
     if (resourceRoomName) return "Create new resource category"
     if (collectionName) return "Create new subfolder"
+    if (mediaDirectoryName) return "Create new directory"
     return "Create new folder"
   }
   if (resourceRoomName) return "Resource category settings"
   if (subCollectionName) return "Subfolder settings"
+  if (mediaDirectoryName) return "Directory settings"
   return "Folder settings"
 }
 
@@ -34,10 +45,13 @@ export const DirectorySettingsModal = ({
   onProceed,
   onClose,
 }) => {
-  const { subCollectionName } = params
+  const { subCollectionName, mediaDirectoryName } = params
+  const existingDirectoryName = mediaDirectoryName
+    ? getMediaDirectoryName(mediaDirectoryName, { start: -1, splitOn: "/" })
+    : params[getLastItemType(params)]
 
   const existingTitlesArray = dirsData
-    .filter((item) => item.name !== params[getLastItemType(params)])
+    .filter((item) => item.name !== existingDirectoryName)
     .map((item) => item.name)
 
   const {
@@ -50,11 +64,30 @@ export const DirectorySettingsModal = ({
       mode: "onBlur",
       resolver: yupResolver(DirectorySettingsSchema(existingTitlesArray)),
       defaultValues: {
-        newDirectoryName: deslugifyDirectory(params[getLastItemType(params)]),
+        newDirectoryName: deslugifyDirectory(existingDirectoryName),
       },
       context: {
-        type: subCollectionName ? "subCollectionName" : "collectionName",
+        type: mediaDirectoryName
+          ? "mediaDirectoryName"
+          : subCollectionName
+          ? "subCollectionName"
+          : "collectionName",
       },
+    })
+
+  /** ******************************** */
+  /*     handler functions    */
+  /** ******************************** */
+
+  const onSubmit = (data) =>
+    onProceed({
+      newDirectoryName: mediaDirectoryName
+        ? `${getMediaDirectoryName(mediaDirectoryName, {
+            end: -1,
+            splitOn: "/",
+            joinOn: "/",
+          })}/${data.newDirectoryName}`
+        : data.newDirectoryName,
     })
 
   return (
@@ -77,7 +110,7 @@ export const DirectorySettingsModal = ({
             saveLabel={isCreate && "Next"}
             isDisabled={!_.isEmpty(errors)}
             hasDeleteButton={false}
-            saveCallback={handleSubmit((data) => onProceed(data))}
+            saveCallback={handleSubmit(onSubmit)}
           />
         </form>
       </div>

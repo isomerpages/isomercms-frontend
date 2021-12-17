@@ -1,31 +1,9 @@
-import PropTypes from "prop-types"
-import React, { useState } from "react"
-
 import HyperlinkModal from "components/HyperlinkModal"
 import MediaModal from "components/media/MediaModal"
-import MediaSettingsModal from "components/media/MediaSettingsModal"
+import PropTypes from "prop-types"
+import React from "react"
 
-const MEDIA_PLACEHOLDER_TEXT = {
-  images: "![Alt text for image on Isomer site]",
-  files: "[Example Filename]",
-}
-
-const EditorModals = ({
-  siteName,
-  mdeRef,
-  onSave,
-  modalType,
-  onClose,
-  insertingMediaType,
-}) => {
-  const [isMediaUpload, setIsMediaUpload] = useState(false)
-  const [stagedMediaDetails, setStagedMediaDetails] = useState({})
-  const [uploadPath, setUploadPath] = useState("")
-
-  /** ******************************** */
-  /*         Hyperlink Modal         */
-  /** ******************************** */
-
+const EditorModals = ({ mdeRef, onSave, modalType, onClose, mediaType }) => {
   const onHyperlinkSave = (text, link) => {
     const cm = mdeRef.current.simpleMde.codemirror
     cm.replaceSelection(`[${text}](${link})`)
@@ -34,84 +12,30 @@ const EditorModals = ({
     onClose()
   }
 
-  /** ******************************** */
-  /*           Media Modal           */
-  /*   to be refactored with media   */
-  /** ******************************** */
-
-  const toggleMediaAndSettingsModal = (newFileName) => {
+  const onMediaSave = (data) => {
+    const { selectedMediaPath, altText } = data
     const cm = mdeRef.current.simpleMde.codemirror
-    if (newFileName) {
+    if (mediaType === "files")
       cm.replaceSelection(
-        `${
-          MEDIA_PLACEHOLDER_TEXT[insertingMediaType]
-        }${`(/${insertingMediaType}/${
-          uploadPath ? `${uploadPath}/` : ""
-        }${newFileName})`.replaceAll(" ", "%20")}`
+        `[${altText}](${selectedMediaPath.replaceAll(" ", "%20")})`
       )
-      // set state so that rerender is triggered and image is shown
-      onSave(mdeRef.current.simpleMde.codemirror.getValue())
-    }
-    onClose()
-    setIsMediaUpload(false)
-  }
-
-  const onMediaSelect = (path) => {
-    const cm = mdeRef.current.simpleMde.codemirror
-    cm.replaceSelection(
-      `${MEDIA_PLACEHOLDER_TEXT[insertingMediaType]}(${path.replaceAll(
-        " ",
-        "%20"
-      )})`
-    )
+    if (mediaType === "images")
+      cm.replaceSelection(
+        `![${altText}](${selectedMediaPath.replaceAll(" ", "%20")})`
+      )
     // set state so that rerender is triggered and image is shown
     onSave(mdeRef.current.simpleMde.codemirror.getValue())
     onClose()
   }
 
-  const readMediaToStageUpload = async (event) => {
-    const fileReader = new FileReader()
-    const fileName = event.target.files[0].name
-    fileReader.onload = () => {
-      /** Github only requires the content of the image
-       * fileReader returns  `data:application/pdf;base64, {fileContent}`
-       * hence the split
-       */
-      const fileData = fileReader.result.split(",")[1]
-      setStagedMediaDetails({
-        path: `${insertingMediaType}%2F${fileName}`,
-        content: fileData,
-        fileName,
-      })
-    }
-    fileReader.readAsDataURL(event.target.files[0])
-    setIsMediaUpload(true)
-  }
-
   return (
     <>
-      {modalType == "media" && insertingMediaType && !isMediaUpload && (
+      {modalType == "media" && mediaType && (
         <MediaModal
-          siteName={siteName}
           onClose={onClose}
-          onMediaSelect={onMediaSelect}
-          type={insertingMediaType}
-          readFileToStageUpload={readMediaToStageUpload}
-          setUploadPath={setUploadPath}
-        />
-      )}
-      {modalType == "media" && insertingMediaType && isMediaUpload && (
-        <MediaSettingsModal
-          type={insertingMediaType}
-          siteName={siteName}
-          customPath={uploadPath}
-          onClose={() => {
-            onClose()
-            setIsMediaUpload(false)
-          }}
-          onSave={toggleMediaAndSettingsModal}
-          media={stagedMediaDetails}
-          isPendingUpload
+          type={mediaType}
+          onProceed={onMediaSave}
+          showAltTextModal
         />
       )}
       {modalType == "hyperlink" && (

@@ -133,36 +133,50 @@ describe("Edit unlinked page", () => {
 
   it("Edit page (unlinked) should allow user to add existing image", () => {
     cy.get(".image").click()
+    cy.wait(3000)
     cy.contains(DEFAULT_IMAGE_TITLE).click()
-    cy.contains(":button", "Select image").click()
+    cy.contains(":button", "Select").click()
+
+    cy.get("#altText").clear().type("Hello World")
+    cy.contains(":button", "Save").click()
 
     cy.contains(`/images/${DEFAULT_IMAGE_TITLE}`)
   })
 
   it("Edit page (unlinked) should allow user to upload and add existing image", () => {
     cy.get(".image").click()
-    cy.contains(":button", "Add new image").click()
+    cy.contains(":button", "Add new").click()
 
     cy.get("#file-upload").attachFile(ADDED_IMAGE_PATH)
-    cy.get("#file-name").clear().type(ADDED_IMAGE_TITLE)
+    cy.get("#name").clear().type(ADDED_IMAGE_TITLE)
     cy.get("button")
       .contains(/^Upload$/)
       .click()
     cy.wait(2000)
+
+    cy.contains(":button", "Select").click()
+
+    cy.get("#altText").clear().type("Hello World")
+    cy.contains(":button", "Save").click()
 
     cy.contains(`/images/${ADDED_IMAGE_TITLE}`)
   })
 
   it("Edit page (unlinked) should allow user to upload and add new file", () => {
     cy.get(".file").click()
-    cy.contains(":button", "Add new file").click()
+    cy.contains(":button", "Add new").click()
 
     cy.get("#file-upload").attachFile(ADDED_FILE_PATH)
-    cy.get("#file-name").clear().type(ADDED_FILE_TITLE)
+    cy.get("#name").clear().type(ADDED_FILE_TITLE)
     cy.get("button")
       .contains(/^Upload$/)
       .click()
     cy.wait(2000)
+
+    cy.contains(":button", "Select").click()
+
+    cy.get("#altText").clear().type("Hello World")
+    cy.contains(":button", "Save").click()
 
     cy.contains(`/files/${ADDED_FILE_TITLE}`)
   })
@@ -170,8 +184,10 @@ describe("Edit unlinked page", () => {
   it("Edit page (unlinked) should allow user to add existing file", () => {
     cy.get(".file").click()
     cy.contains(ADDED_FILE_TITLE).click()
-    cy.contains(":button", "Select file").click()
+    cy.contains(":button", "Select").click()
 
+    cy.get("#altText").clear().type("Hello World")
+    cy.contains(":button", "Save").click()
     cy.contains(`/files/${ADDED_FILE_TITLE}`)
   })
 
@@ -311,16 +327,20 @@ describe("Edit collection page", () => {
   it("Edit page (collection) should allow user to add existing image", () => {
     cy.get(".image").click()
     cy.contains(DEFAULT_IMAGE_TITLE).click()
-    cy.contains(":button", "Select image").click()
+    cy.contains(":button", "Select").click()
 
+    cy.get("#altText").clear().type("Hello World")
+    cy.contains(":button", "Save").click()
     cy.contains(`/images/${DEFAULT_IMAGE_TITLE}`)
   })
 
   it("Edit page (collection) should allow user to add existing file", () => {
     cy.get(".file").click()
     cy.contains(ADDED_FILE_TITLE).click()
-    cy.contains(":button", "Select file").click()
+    cy.contains(":button", "Select").click()
 
+    cy.get("#altText").clear().type("Hello World")
+    cy.contains(":button", "Save").click()
     cy.contains(`/files/${ADDED_FILE_TITLE}`)
   })
 

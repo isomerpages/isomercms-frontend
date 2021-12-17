@@ -16,7 +16,7 @@ export const PageSettingsSchema = (existingTitlesArray = []) =>
       .required("Title is required")
       .test(
         "Special characters found",
-        'Title cannot contain any of the following special characters: ~%^*_+-./\\`;~{}[]"<>',
+        'Title cannot contain any of the following special characters: ~%^*_+-./`;{}[]"<>',
         (value) => !specialCharactersRegexTest.test(value)
       )
       .min(

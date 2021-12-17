@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup"
 import axios from "axios"
-import Breadcrumb from "components/folders/Breadcrumb"
+import { Breadcrumb } from "components/folders/Breadcrumb"
 import FormField from "components/FormField"
 import FormFieldHorizontal from "components/FormFieldHorizontal"
 import FormFieldMedia from "components/FormFieldMedia"

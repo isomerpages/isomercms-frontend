@@ -1,15 +1,14 @@
 import axios from "axios"
+import { DirectorySettingsModal } from "components/DirectorySettingsModal"
 import PropTypes from "prop-types"
 import React from "react"
-
-import { DirectorySettingsModal } from "components/DirectorySettingsModal"
 
 import {
   useGetDirectoryHook,
   useUpdateDirectoryHook,
 } from "hooks/directoryHooks"
 
-import { getLastItemType } from "utils"
+import { getLastItemType, getMediaDirectoryName } from "utils"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -21,7 +20,14 @@ export const DirectorySettingsScreen = ({ match, onClose }) => {
     onSuccess: () => onClose(),
   })
   const { data: dirData } = useGetDirectoryHook(
-    (({ [getLastItemType(params)]: unused, ...p }) => p)(params),
+    params.mediaDirectoryName
+      ? {
+          ...params,
+          mediaDirectoryName: getMediaDirectoryName(params.mediaDirectoryName, {
+            end: -1,
+          }),
+        }
+      : (({ [getLastItemType(params)]: unused, ...p }) => p)(params),
     { initialData: [] }
   )
 

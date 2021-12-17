@@ -1,0 +1,20 @@
+@import "./variable";
+@import "./buttons";
+
+.breadcrumb {
+  p {
+    font-size: 16px !important;
+    display:inline;
+  }
+
+  u {
+    font-size: 16px !important;
+    display:inline;
+  }
+
+  a {
+    font-size: 16px !important;
+    color: $isomer-blue;
+    display:inline;
+  }
+}

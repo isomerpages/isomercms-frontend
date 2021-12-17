@@ -1,7 +1,6 @@
+import EditorModals from "components/pages/EditorModals"
 import React, { useState } from "react"
 import SimpleMDE from "react-simplemde-editor"
-
-import EditorModals from "components/pages/EditorModals"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
@@ -40,7 +39,7 @@ const MarkdownEditor = ({
           setEditorModalType("")
           setInsertingMediaType("")
         }}
-        insertingMediaType={insertingMediaType}
+        mediaType={insertingMediaType}
       />
       <div
         className={`${editorStyles.pageEditorSidebar} ${
