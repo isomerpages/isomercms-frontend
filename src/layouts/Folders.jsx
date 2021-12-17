@@ -1,5 +1,5 @@
 import FolderOptionButton from "components/FolderOptionButton"
-import Breadcrumb from "components/folders/Breadcrumb"
+import { Breadcrumb } from "components/folders/Breadcrumb"
 import { FolderContent } from "components/folders/FolderContent"
 import Header from "components/Header"
 import Sidebar from "components/Sidebar"

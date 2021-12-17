@@ -3,17 +3,19 @@ import { Link } from "react-router-dom"
 
 import { deslugifyDirectory, isLastItem } from "utils"
 
-const BreadcrumbItem = ({ item, isLast, link }) => (
+const BreadcrumbItem = ({ item, isLast, link, onClick }) => (
   <>
     {link && !isLast ? (
       <Link to={link}>{item}</Link>
+    ) : onClick && !isLast ? (
+      <Link to="" onClick={onClick}>
+        {item}
+      </Link>
     ) : !isLast ? (
-      <span>{item}</span>
+      <p>{item}</p>
     ) : (
       // underline last item
-      <span>
-        <u className="ml-1">{item}</u>
-      </span>
+      <u className="ml-1">{item}</u>
     )}
     {isLast ? "" : " > "}
   </>
@@ -107,4 +109,4 @@ const Breadcrumb = ({ params, title, isLink }) => {
   )
 }
 
-export default Breadcrumb
+export { Breadcrumb, BreadcrumbItem }

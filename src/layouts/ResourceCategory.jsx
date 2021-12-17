@@ -1,3 +1,4 @@
+import { Breadcrumb } from "components/folders/Breadcrumb"
 import Header from "components/Header"
 import PageCard from "components/PageCard"
 import Sidebar from "components/Sidebar"
@@ -56,20 +57,7 @@ const ResourceCategory = ({ match, location }) => {
             </h1>
           </div>
           <div className={contentStyles.segment}>
-            <span>
-              <Link to={`/sites/${siteName}/resourceRoom/${resourceRoomName}`}>
-                <strong>Resources</strong>
-              </Link>
-              &nbsp;{">"}
-              {collectionName ? (
-                <span>
-                  <strong className="ml-1">
-                    &nbsp;
-                    {deslugifyDirectory(collectionName)}
-                  </strong>
-                </span>
-              ) : null}
-            </span>
+            <Breadcrumb params={decodedParams} isLink />
           </div>
           {/* Collection pages */}
           <div className={contentStyles.contentContainerBoxes}>
