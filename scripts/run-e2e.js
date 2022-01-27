@@ -18,7 +18,12 @@ const headers = {
 const cypressCommand = process.argv[2] // either `run` or `open`
 const srcPath = path.resolve(__dirname, "..")
 const envFilePath = `${srcPath}/.env`
-const runCypressCommand = `source ${envFilePath} && npx cypress ${cypressCommand}`
+const baseCypressCommand = `source ${envFilePath} && npx cypress ${cypressCommand}`
+// if we are running tests, record them on the dashboard so that github will show the corresponding status
+const runCypressCommand =
+  cypressCommand === "run"
+    ? `${baseCypressCommand} --record`
+    : baseCypressCommand
 
 // reset e2e-test-repo
 const { E2E_COMMIT_HASH } = process.env
