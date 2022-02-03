@@ -86,6 +86,7 @@ describe("Resources page", () => {
 
     // 2. If user goes back to Resources, they should be able to see that the folder exists
     cy.contains("Back to Resources").click()
+    cy.wait(3000)
     cy.contains(TEST_CATEGORY_2)
   })
 
@@ -107,6 +108,7 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to rename a resource category", () => {
+    cy.wait(3000)
     cy.contains(TEST_CATEGORY_2).find("[id^=settings-folder]").click()
     cy.contains(TEST_CATEGORY_2).contains("Edit details").click()
 

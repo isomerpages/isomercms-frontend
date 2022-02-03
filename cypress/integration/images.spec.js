@@ -135,6 +135,7 @@ describe("Images", () => {
       window.localStorage.setItem("userId", "test")
 
       cy.visit(`/sites/${TEST_REPO_NAME}/media/images/mediaDirectory/images`)
+      cy.wait(2000)
     })
 
     it("Should be able to create new image album", () => {
@@ -214,6 +215,7 @@ describe("Images", () => {
       cy.visit(
         `/sites/${TEST_REPO_NAME}/media/images/mediaDirectory/images%2F${ALBUM_TITLE}`
       )
+      cy.wait(2000)
     })
 
     it("Should be able to add image to image album", () => {
