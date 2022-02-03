@@ -20,7 +20,7 @@ const srcPath = path.resolve(__dirname, "..")
 const envFilePath = `${srcPath}/.env`
 const runCypressCommand = `source ${envFilePath} && npx cypress ${cypressCommand}`
 // NOTE: This is not prefixed with source because the env vars should be set in the hosting platform
-const buildCommand = "npm run build"
+const buildCommand = "react-scripts start"
 
 // reset e2e-test-repo
 const { E2E_COMMIT_HASH } = process.env
