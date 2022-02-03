@@ -116,11 +116,9 @@ const Media = ({ match, location }) => {
                       pageType={mediaType}
                       siteName={siteName}
                       itemIndex={idx}
-                      category={
-                        mediaDirectoryName
-                          ? `${mediaDirectoryName}%2F${directory.name}`
-                          : directory.name
-                      }
+                      category={`${mediaDirectoryName}%2F${encodeURIComponent(
+                        directory.name
+                      )}`}
                     />
                   ))}
             </div>
