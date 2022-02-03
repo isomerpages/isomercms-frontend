@@ -58,7 +58,8 @@
     "format": "npx prettier --check .",
     "format-fix": "npx prettier --write .",
     "cypress:open": "source .env && node scripts/run-e2e.js open",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "ci": "node scripts/run-ci.js"
   },
   "eslintConfig": {
     "extends": "react-app"
