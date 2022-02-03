@@ -32,8 +32,8 @@ export const DirectorySettingsSchema = (existingTitlesArray = []) =>
             .transform((value) => deslugifyDirectory(value))
             .test(
               "Special characters found",
-              'Title cannot contain any of the following special characters: ~%^*+./`;{}[]"<>',
-              (value) => !mediaSpecialCharactersRegexTest.test(value)
+              'Title cannot contain any of the following special characters: ~%^*_+-./`;{}[]"<>',
+              (value) => !specialCharactersRegexTest.test(value)
             )
         if (type === "subCollectionName")
           return schema
