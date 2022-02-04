@@ -1,9 +1,11 @@
 import React, { createContext } from "react"
+
 import {
   PageService,
   DirectoryService,
   MoverService,
   SettingsService,
+  MediaService,
 } from "services"
 
 const ServicesContext = createContext({}) // holds all services we need
@@ -13,12 +15,14 @@ const ServicesProvider = ({ client, children }) => {
   const directoryService = new DirectoryService({ apiClient: client })
   const moverService = new MoverService({ apiClient: client })
   const settingsService = new SettingsService({ apiClient: client })
+  const mediaService = new MediaService({ apiClient: client })
 
   const services = {
     pageService,
     directoryService,
     moverService,
     settingsService,
+    mediaService,
   }
 
   return (
