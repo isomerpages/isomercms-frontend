@@ -57,7 +57,12 @@ const runE2eTests = async () =>
         console.log(`Child exited with code: ${exitCode}`)
       })
     })
-    .catch((err) => console.error(err))
+    .catch((err) => {
+      console.error(err)
+      // NOTE: If we encounter an error at any step, we should exit with a failure code.
+      // This also prevents CI from recording this as a successful step.
+      process.exit(1)
+    })
 
 module.exports = {
   runE2eTests,

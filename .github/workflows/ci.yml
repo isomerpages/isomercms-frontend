@@ -48,6 +48,8 @@ jobs:
   build:
     needs: lint
     runs-on: ubuntu-latest
+    env:
+      CI: false
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
@@ -66,6 +68,16 @@ jobs:
   test:
     needs: build
     runs-on: ubuntu-latest
+    environment: staging
+    env:
+      CYPRESS_RECORD_KEY: ${{secrets.CYPRESS_RECORD_KEY}}
+      CYPRESS_BASEURL: ${{secrets.CYPRESS_BASEURL}}
+      CYPRESS_COOKIE_NAME: ${{secrets.CYPRESS_COOKIE_NAME}}
+      CYPRESS_COOKIE_VALUE: ${{secrets.CYPRESS_COOKIE_VALUE}}
+      CYPRESS_TEST_REPO_NAME: ${{secrets.CYPRESS_TEST_REPO_NAME}}
+      USERNAME: ${{secrets.USERNAME}}
+      PERSONAL_ACCESS_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
+      E2E_COMMIT_HASH: ${{secrets.E2E_COMMIT_HASH}}
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js

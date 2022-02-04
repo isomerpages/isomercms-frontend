@@ -19,5 +19,3 @@
   [plugins.inputs.postBuild]
     # run tests after the deploy
     enable = true
-    start = 'npm run ci'
-    wait-on = 'http://localhost:3000'
