@@ -1,3 +1,3 @@
-const { runE2eTests } = require("./reset-e2e")
+const { runE2eTests } = require("./build")
 
 runE2eTests()
