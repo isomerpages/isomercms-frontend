@@ -16,7 +16,7 @@ export function useGetDirectoryHook(params, queryParams) {
   const { directoryService } = useContext(ServicesContext)
   const { setRedirectToNotFound } = useRedirectHook()
   return useQuery(
-    [DIR_CONTENT_KEY, { ...params }],
+    [DIR_CONTENT_KEY, { ...(({ fileName, ...p }) => p)(params) }],
     () => directoryService.get(params),
     {
       ...queryParams,
@@ -38,7 +38,10 @@ export function useGetDirectoryHook(params, queryParams) {
           data.map((mediaData) => {
             if (mediaData.type === "file")
               queryClient.setQueryData(
-                [MEDIA_CONTENT_KEY, { ...params, fileName: mediaData.name }],
+                [
+                  MEDIA_CONTENT_KEY,
+                  { ...params, fileName: encodeURIComponent(mediaData.name) },
+                ],
                 mediaData
               )
           })
