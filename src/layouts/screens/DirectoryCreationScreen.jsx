@@ -37,7 +37,9 @@ export const DirectoryCreationScreen = ({ match, onClose }) => {
       }
       pagesData={
         pagesData
-          ? pagesData.filter((item) => item.name != "contact-us.md")
+          ? pagesData
+              .filter((item) => item.name != "contact-us.md")
+              .filter((item) => item.type == "file")
           : dirData
           ? dirData.filter((item) => item.type == "file")
           : []

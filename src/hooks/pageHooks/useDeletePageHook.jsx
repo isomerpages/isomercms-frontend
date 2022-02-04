@@ -16,12 +16,12 @@ export function useDeletePageHook(params, queryParams) {
     ...queryParams,
     onError: () => {
       errorToast(
-        `Your file could not be deleted successfully. ${DEFAULT_RETRY_MSG}`
+        `Your page could not be deleted successfully. ${DEFAULT_RETRY_MSG}`
       )
       queryParams && queryParams.onError && queryParams.onError()
     },
     onSuccess: () => {
-      successToast(`Successfully deleted file`)
+      successToast(`Successfully deleted page`)
       if (params.collectionName || params.resourceRoomName)
         queryClient.invalidateQueries([
           // invalidates collection pages or resource pages

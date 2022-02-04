@@ -1,11 +1,15 @@
 import * as Yup from "yup"
+
 import {
+  mediaSpecialCharactersRegexTest,
   specialCharactersRegexTest,
   slugifyLowerFalseRegexTest,
   DIRECTORY_SETTINGS_TITLE_MIN_LENGTH,
   DIRECTORY_SETTINGS_TITLE_MAX_LENGTH,
 } from "utils/validators"
+
 import { deslugifyDirectory } from "utils"
+
 export const DirectorySettingsSchema = (existingTitlesArray = []) =>
   Yup.object().shape({
     newDirectoryName: Yup.string()
@@ -23,12 +27,20 @@ export const DirectorySettingsSchema = (existingTitlesArray = []) =>
         "Title is already in use. Please choose a different title."
       )
       .when("$type", (type, schema) => {
+        if (type === "mediaDirectoryName")
+          return schema
+            .transform((value) => deslugifyDirectory(value))
+            .test(
+              "Special characters found",
+              'Title cannot contain any of the following special characters: ~%^*_+-./`;{}[]"<>',
+              (value) => !specialCharactersRegexTest.test(value)
+            )
         if (type === "subCollectionName")
           return schema
             .transform((value) => deslugifyDirectory(value))
             .test(
               "Special characters found",
-              'Title cannot contain any of the following special characters: ~%^*_+-./\\`;~{}[]"<>',
+              'Title cannot contain any of the following special characters: ~%^*_+-./`;{}[]"<>',
               (value) => !specialCharactersRegexTest.test(value)
             )
         if (type === "collectionName")

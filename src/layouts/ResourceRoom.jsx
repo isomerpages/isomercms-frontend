@@ -1,6 +1,7 @@
 import axios from "axios"
 import { FolderCard } from "components/FolderCard"
 import FolderOptionButton from "components/FolderOptionButton"
+import { Breadcrumb } from "components/folders/Breadcrumb"
 import FormField from "components/FormField"
 import Header from "components/Header"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
@@ -120,6 +121,9 @@ const ResourceRoom = ({ match, location }) => {
               {/* Page title */}
               <div className={contentStyles.sectionHeader}>
                 <h1 className={contentStyles.sectionTitle}>Resources</h1>
+              </div>
+              <div className={contentStyles.segment}>
+                <Breadcrumb params={decodedParams} isLink />
               </div>
               {!isResourceRoomNameLoading && !resourceRoomName ? (
                 <EmptyResourceRoom params={params} />

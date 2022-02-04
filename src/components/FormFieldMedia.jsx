@@ -1,11 +1,8 @@
 import MediaModal from "components/media/MediaModal"
-import MediaSettingsModal from "components/media/MediaSettingsModal"
 import PropTypes from "prop-types"
 import React, { useState } from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
-
-import { successToast } from "utils/toasts"
 
 const FormFieldMedia = ({
   title,
@@ -17,7 +14,6 @@ const FormFieldMedia = ({
   isRequired,
   style,
   inlineButtonText = "Choose Item",
-  siteName,
   placeholder,
   type,
   isDisabled = false,
@@ -25,58 +21,16 @@ const FormFieldMedia = ({
   register = () => {},
 }) => {
   const [isSelectingItem, setIsSelectingItem] = useState(false)
-  const [isFileStagedForUpload, setIsFileStagedForUpload] = useState(false)
-  const [stagedFileDetails, setStagedFileDetails] = useState()
-  const [uploadPath, setUploadPath] = useState("")
 
-  const onItemClick = (path) => {
-    setIsSelectingItem(false)
+  const onMediaSave = ({ selectedMediaPath }) => {
     const event = {
       target: {
         id,
-        value: path.replaceAll(" ", "%20"),
+        value: selectedMediaPath,
       },
     }
-    // successToast(`Successfully updated ${title.toLowerCase()}!`)
     onFieldChange(event)
-  }
-
-  const toggleItemModal = () => {
-    setIsSelectingItem(!isSelectingItem)
-  }
-
-  const toggleItemAndSettingsModal = (newFileName) => {
-    const baseFolder = type
-    setIsFileStagedForUpload(!isFileStagedForUpload)
-    onItemClick(
-      `/${baseFolder}/${uploadPath ? `${uploadPath}/` : ""}${newFileName}`
-    )
-  }
-
-  const stageFileForUpload = (fileName, fileData) => {
-    const baseFolder = type
-    setStagedFileDetails({
-      path: `${baseFolder}%2F${fileName}`,
-      content: fileData,
-      fileName,
-    })
-    setIsFileStagedForUpload(true)
-  }
-
-  const readFileToStageUpload = async (event) => {
-    const fileReader = new FileReader()
-    const fileName = event.target.files[0].name
-    fileReader.onload = () => {
-      /** Github only requires the content of the image
-       * fileReader returns  `data:application/pdf;base64, {fileContent}`
-       * hence the split
-       */
-
-      const fileData = fileReader.result.split(",")[1]
-      stageFileForUpload(fileName, fileData)
-    }
-    fileReader.readAsDataURL(event.target.files[0])
-    toggleItemModal()
+    setIsSelectingItem(false)
   }
 
   return (
@@ -111,23 +65,9 @@ const FormFieldMedia = ({
         )}
         {isSelectingItem && (
           <MediaModal
-            siteName={siteName}
             onClose={() => setIsSelectingItem(false)}
-            onMediaSelect={onItemClick}
             type={type}
-            readFileToStageUpload={readFileToStageUpload}
-            setUploadPath={setUploadPath}
-          />
-        )}
-        {isFileStagedForUpload && (
-          <MediaSettingsModal
-            type={type}
-            siteName={siteName}
-            customPath={uploadPath}
-            onClose={() => setIsFileStagedForUpload(false)}
-            onSave={toggleItemAndSettingsModal}
-            media={stagedFileDetails}
-            isPendingUpload
+            onProceed={onMediaSave}
           />
         )}
       </div>
