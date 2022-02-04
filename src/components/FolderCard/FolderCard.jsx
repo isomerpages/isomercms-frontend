@@ -20,8 +20,8 @@ export const FolderCard = ({
   siteName,
   category,
   selectedIndex,
-  linkPath,
   onClick,
+  hideSettings,
 }) => {
   const [canShowDropdown, setCanShowDropdown] = useState(false)
 
@@ -47,8 +47,8 @@ export const FolderCard = ({
       case "nav":
         return `/sites/${siteName}/navbar`
       case "images":
-      case "documents":
-        return `/sites/${siteName}/${linkPath}`
+      case "files":
+        return `/sites/${siteName}/media/${pageType}/mediaDirectory/${category}`
       default:
         return ""
     }
@@ -81,7 +81,8 @@ export const FolderCard = ({
       >
         {displayText || prettifyPageFileName(category)}
       </span>
-      {pageType === "homepage" ||
+      {hideSettings ||
+      pageType === "homepage" ||
       pageType === "contact-us" ||
       pageType === "nav" ||
       pageType === "file" ? (
@@ -169,6 +170,4 @@ FolderCard.propTypes = {
   pageType: PropTypes.string.isRequired,
   siteName: PropTypes.string.isRequired,
   category: PropTypes.string,
-  linkPath: PropTypes.string,
-  mediaCustomPath: PropTypes.string,
 }
