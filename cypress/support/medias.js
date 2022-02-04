@@ -17,6 +17,7 @@ Cypress.Commands.add(
   "renameMedia",
   (mediaTitle, newMediaTitle, disableAction) => {
     cy.contains(mediaTitle).click()
+    cy.wait(2000)
     cy.get("#name").clear().type(newMediaTitle).blur()
     if (!disableAction) cy.get("button").contains("Save").click()
   }

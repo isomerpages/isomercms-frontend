@@ -5,6 +5,7 @@ describe("Resources page", () => {
   const COOKIE_NAME = Cypress.env("COOKIE_NAME")
   const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
   const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
+  const CUSTOM_TIMEOUT = Cypress.env("CUSTOM_TIMEOUT")
   const TEST_RESOURCE_ROOM_NAME = "resources"
 
   const TEST_CATEGORY = "Test Folder"
@@ -116,8 +117,10 @@ describe("Resources page", () => {
     cy.contains("Save").click()
 
     // Set a wait time because the API takes time
-    cy.wait(8000)
-    cy.contains("Successfully updated directory settings")
+    cy.wait(3000)
+    cy.contains("Successfully updated directory settings", {
+      timeout: CUSTOM_TIMEOUT,
+    }).should("exist")
 
     cy.contains(TEST_CATEGORY_RENAMED)
   })
