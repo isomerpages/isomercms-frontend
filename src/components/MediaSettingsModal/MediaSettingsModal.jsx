@@ -38,9 +38,11 @@ export const MediaSettingsModal = ({
   toggleUploadInput,
 }) => {
   const { mediaRoom, fileName } = params
-  const existingTitlesArray = mediasData
-    .filter((item) => item.name !== params[getLastItemType(params)])
-    .map((item) => item.name)
+  const existingTitlesArray =
+    mediasData &&
+    mediasData
+      .filter((item) => item.name !== params[getLastItemType(params)])
+      .map((item) => item.name)
 
   const {
     register,
@@ -66,7 +68,7 @@ export const MediaSettingsModal = ({
       setValue("name", mediaData.name)
       setValue("sha", mediaData.sha)
     }
-  }, [setValue])
+  }, [setValue, mediaData])
 
   /** ******************************** */
   /*     handler functions    */
