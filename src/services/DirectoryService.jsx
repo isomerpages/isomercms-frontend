@@ -18,13 +18,15 @@ export class DirectoryService {
     isResource,
   }) {
     // R media room (images)
-    // GET /sites/a-test-v4/media/images/images
+    // GET /sites/a-test-v4/media/images
+    // R media room (images folder)
+    // GET /sites/a-test-v4/media/images%2F:directoryName
     // C media folder
-    // POST /sites/a-test-v4/media/images
+    // POST /sites/a-test-v4/media
     // Rename media folder
-    // POST /sites/a-test-v4/media/images/images/:directoryName
+    // POST /sites/a-test-v4/media/images%2F:directoryName
     // D media folder
-    // DELETE /sites/a-test-v4/media/images/images/:directoryName
+    // DELETE /sites/a-test-v4/media/images%2F:directoryName
 
     if (mediaDirectoryName) {
       let endpoint = `/sites/${siteName}/media`
