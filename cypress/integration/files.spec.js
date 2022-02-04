@@ -112,6 +112,7 @@ describe("Files", () => {
         .contains(/^Save$/)
         .should("be.disabled") // necessary as multiple buttons containing Upload on page
       cy.get("#closeMediaSettingsModal").click()
+      cy.get("#closeMediaSettingsModal").should("not.exist")
 
       cy.renameMedia(OTHER_FILE_TITLE, EXISTING_FILE_TITLE, ACTION_DISABLED)
       cy.contains("Title is already in use. Please choose a different title.")
@@ -222,10 +223,14 @@ describe("Files", () => {
       cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH)
       // ASSERTS
       cy.wait(2000)
+      cy.contains("Media file successfully uploaded", {
+        timeout: CUSTOM_TIMEOUT,
+      }).should("exist")
       cy.contains(FILE_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist") // file should be contained in Files
     })
 
     it("Should be able to edit an file in file directory", () => {
+      cy.contains(FILE_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist")
       cy.renameMedia(FILE_TITLE, OTHER_FILE_TITLE)
       // ASSERTS
       cy.wait(2000)
@@ -233,6 +238,7 @@ describe("Files", () => {
     })
 
     it("Should be able to delete file from file directory", () => {
+      cy.contains(OTHER_FILE_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist")
       cy.deleteMedia(OTHER_FILE_TITLE)
       // ASSERTS
       cy.contains(OTHER_FILE_TITLE, { timeout: CUSTOM_TIMEOUT }).should(
