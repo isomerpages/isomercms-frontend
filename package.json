@@ -52,14 +52,14 @@
     "dev": "source .env && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:ci": "node scripts/run-e2e.js run",
     "test-e2e": "source .env && node scripts/run-e2e.js run",
     "lint": "eslint --ext .js --ext .jsx --ignore-path .gitignore .",
     "lint-fix": "eslint --ext .js --ext .jsx --ignore-path .gitignore . --fix",
     "format": "npx prettier --check .",
     "format-fix": "npx prettier --write .",
     "cypress:open": "source .env && node scripts/run-e2e.js open",
-    "prepare": "husky install",
-    "ci": "node scripts/run-ci.js"
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": "react-app"
