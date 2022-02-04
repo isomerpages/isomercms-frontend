@@ -6,7 +6,7 @@ const CUSTOM_TIMEOUT = 30000 // 30 seconds
 Cypress.Commands.add("uploadMedia", (mediaTitle, mediaPath, disableAction) => {
   cy.contains(`Upload new`).click().get("#file-upload").attachFile(mediaPath)
 
-  cy.get("#file-name").clear().type(mediaTitle)
+  cy.get("#name").clear().type(mediaTitle).blur()
   if (!disableAction)
     cy.get("button")
       .contains(/^Upload$/)
@@ -17,7 +17,8 @@ Cypress.Commands.add(
   "renameMedia",
   (mediaTitle, newMediaTitle, disableAction) => {
     cy.contains(mediaTitle).click()
-    cy.get("#file-name").clear().type(newMediaTitle)
+    cy.wait(2000)
+    cy.get("#name").clear().type(newMediaTitle).blur()
     if (!disableAction) cy.get("button").contains("Save").click()
   }
 )
