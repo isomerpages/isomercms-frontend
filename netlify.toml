@@ -14,8 +14,4 @@
 [[plugins]]
   package = "netlify-plugin-cypress"
   [plugins.inputs]
-    # record the test results to cypress dashboard
-    record = true
-  [plugins.inputs.postBuild]
-    # run tests after the deploy
-    enable = true
+    enable = false

@@ -99,7 +99,6 @@
     "find-webpack": "^2.2.1",
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
-    "netlify-plugin-cypress": "^2.2.0",
     "node-sass": "^4.13.1",
     "pathmodify": "^0.5.0",
     "prettier": "2.2.1",
