@@ -55,6 +55,10 @@ const runE2eTests = async () =>
       })
       child.on("exit", (exitCode) => {
         console.log(`Child exited with code: ${exitCode}`)
+        // NOTE: Cypress uses the exit code to show the number of failed tests.
+        // If we do not exit here, the child process (that's running the test) will not be able to feedback
+        // to Github Actions if the tests pass.
+        process.exit(exitCode)
       })
     })
     .catch((err) => {
