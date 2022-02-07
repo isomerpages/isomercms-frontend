@@ -2,8 +2,12 @@ name: ci
 
 on:
   push:
+    branches:
+      - master
+      - "dependabot/**"
+      - "snyk-**"
   pull_request:
-    branches: [develop]
+    branches: [master]
     types: [opened, reopened]
 
 jobs:
