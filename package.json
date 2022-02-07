@@ -103,6 +103,7 @@
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
     "auto-changelog": "^2.4.0",
+    "@tsconfig/recommended": "^1.0.1",
     "btoa": "^1.2.1",
     "cypress": "^7.2.0",
     "cypress-pipe": "^2.0.0",
@@ -123,7 +124,8 @@
     "pathmodify": "^0.5.0",
     "prettier": "2.2.1",
     "react-scripts": "^4.0.3",
-    "react-test-renderer": "^17.0.2"
+    "react-test-renderer": "^17.0.2",
+    "typescript": "^4.5.5"
   },
   "config": {
     "commitizen": {
