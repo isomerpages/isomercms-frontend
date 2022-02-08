@@ -1,8 +1,8 @@
-import PropTypes from "prop-types"
-import React from "react"
-
+import { FormContext, FormError, FormTitle } from "components/Form"
 import FormField from "components/FormField"
 import FormFieldMedia from "components/FormFieldMedia"
+import PropTypes from "prop-types"
+import React from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -26,7 +26,6 @@ const EditorInfopicSection = ({
   shouldDisplay,
   displayHandler,
   errors,
-  siteName,
 }) => (
   <div
     className={`${elementStyles.card} ${
@@ -90,18 +89,22 @@ const EditorInfopicSection = ({
             isRequired
             onFieldChange={onFieldChange}
           />
-          <FormFieldMedia
-            title="Infopic image URL"
-            id={`section-${sectionIndex}-infopic-image`}
-            value={imageUrl}
-            errorMessage={errors.image}
-            isRequired
+
+          <FormContext
+            hasError={!!errors.image}
             onFieldChange={onFieldChange}
-            inlineButtonText="Choose Image"
-            placeholder=" "
-            siteName={siteName}
-            type="images"
-          />
+            isRequired
+          >
+            <FormTitle>Infopic image URL</FormTitle>
+            <FormFieldMedia
+              placeholder=" "
+              value={imageUrl}
+              id={`section-${sectionIndex}-infopic-image`}
+              type="images"
+              inlineButtonText="Choose Image"
+            />
+            <FormError>{errors.image}</FormError>
+          </FormContext>
           <FormField
             title="Infopic image alt text"
             id={`section-${sectionIndex}-infopic-alt`}
