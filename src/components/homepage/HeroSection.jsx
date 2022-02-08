@@ -87,10 +87,8 @@ const EditorHeroSection = ({
         >
           <FormTitle>Hero background image</FormTitle>
           <FormFieldMedia
-            placeholder=" "
             value={background}
             id={`section-${sectionIndex}-hero-background`}
-            type="images"
             inlineButtonText="Choose Image"
           />
           <FormError>{errors.sections[0].hero.background}</FormError>

@@ -7,10 +7,8 @@ import { useFormContext } from "../Form/FormContext"
 
 const FormMediaInput = ({
   placeholder = "",
-  defaultValue = undefined,
   value,
   register = () => {},
-  style = undefined,
   id,
   onClick = () => {},
   inlineButtonText = "Choose Item",
@@ -23,12 +21,10 @@ const FormMediaInput = ({
         type="text"
         placeholder={placeholder}
         value={value}
-        defaultValue={defaultValue}
         id={id}
         autoComplete="off"
         required={isRequired}
         className={hasError ? `${elementStyles.error}` : "border-0"}
-        style={style}
         disabled
         {...register(id, { required: isRequired })}
       />
@@ -49,12 +45,10 @@ const FormMediaInput = ({
 }
 
 FormMediaInput.propTypes = {
-  defaultValue: PropTypes.string,
   value: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
   register: PropTypes.func,
-  style: PropTypes.string,
   onClick: PropTypes.func,
   inlineButtonText: PropTypes.string,
 }

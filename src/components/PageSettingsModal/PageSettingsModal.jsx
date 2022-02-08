@@ -196,7 +196,6 @@ export const PageSettingsModal = ({
                       register={register}
                       placeholder="Meta Image URL (Optional)"
                       id="image"
-                      type="images"
                       inlineButtonText="Select Image"
                     />
                     <FormError>{errors.image?.message}</FormError>

@@ -97,10 +97,8 @@ const EditorInfopicSection = ({
           >
             <FormTitle>Infopic image URL</FormTitle>
             <FormFieldMedia
-              placeholder=" "
               value={imageUrl}
               id={`section-${sectionIndex}-infopic-image`}
-              type="images"
               inlineButtonText="Choose Image"
             />
             <FormError>{errors.image}</FormError>

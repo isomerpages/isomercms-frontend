@@ -269,10 +269,8 @@ const Settings = ({ match, location }) => {
                 >
                   <FormTitle>Shareicon</FormTitle>
                   <FormFieldMedia
-                    placeholder=" "
                     value={currState.shareicon}
                     id="shareicon"
-                    type="images"
                     inlineButtonText="Choose Image"
                   />
                   <FormError>{errors.shareicon}</FormError>
@@ -294,10 +292,8 @@ const Settings = ({ match, location }) => {
                 >
                   <FormTitle>Agency logo</FormTitle>
                   <FormFieldMedia
-                    placeholder=" "
                     value={currState.logo}
                     id="logo"
-                    type="images"
                     inlineButtonText="Choose Image"
                   />
                   <FormError>{errors.logo}</FormError>
@@ -310,10 +306,8 @@ const Settings = ({ match, location }) => {
                 >
                   <FormTitle>Favicon</FormTitle>
                   <FormFieldMedia
-                    placeholder=" "
                     value={currState.favicon}
                     id="favicon"
-                    type="images"
                     inlineButtonText="Choose Image"
                   />
                   <FormError>{errors.favicon}</FormError>

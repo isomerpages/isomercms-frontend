@@ -9,12 +9,10 @@ import FormMediaInput from "./FormMediaInput"
 // This component wraps the input so that the modal can be composed alongside the input and the button
 // This component controls the rendering logic for both underlying components
 const FormFieldMedia = ({
-  defaultValue = undefined,
   value,
   id,
-  style = undefined,
   placeholder = "",
-  type,
+  type = "images",
   inlineButtonText = "Choose Item",
   register = () => {},
 }) => {
@@ -36,10 +34,8 @@ const FormFieldMedia = ({
     <>
       <FormMediaInput
         placeholder={placeholder}
-        defaultValue={defaultValue}
         value={value}
         register={register}
-        style={style}
         id={id}
         onClick={() => setIsSelectingItem(true)}
         inlineButtonText={inlineButtonText}
@@ -58,12 +54,10 @@ const FormFieldMedia = ({
 export default FormFieldMedia
 
 FormFieldMedia.propTypes = {
-  defaultValue: PropTypes.string,
   value: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
-  style: PropTypes.string,
   placeholder: PropTypes.string,
-  type: PropTypes.oneOf(["files", "images"]).isRequired,
+  type: PropTypes.oneOf(["files", "images"]),
   inlineButtonText: PropTypes.string,
   register: PropTypes.func,
 }
