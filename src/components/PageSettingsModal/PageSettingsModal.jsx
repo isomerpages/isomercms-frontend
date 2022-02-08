@@ -1,6 +1,12 @@
 import { yupResolver } from "@hookform/resolvers/yup"
 import axios from "axios"
 import { Breadcrumb } from "components/folders/Breadcrumb"
+import {
+  FormContext,
+  FormError,
+  FormTitle,
+  FormDescription,
+} from "components/Form"
 import FormField from "components/FormField"
 import FormFieldHorizontal from "components/FormFieldHorizontal"
 import FormFieldMedia from "components/FormFieldMedia"
@@ -20,6 +26,7 @@ import { PageSettingsSchema } from "."
 // axios settings
 axios.defaults.withCredentials = true
 
+// eslint-disable-next-line import/prefer-default-export
 export const PageSettingsModal = ({
   params,
   pageData,
@@ -28,7 +35,7 @@ export const PageSettingsModal = ({
   siteUrl,
   onClose,
 }) => {
-  const { siteName, fileName, resourceRoomName } = params
+  const { fileName, resourceRoomName } = params
 
   const existingTitlesArray = pagesData
     .filter((page) => page.name !== fileName)
@@ -147,7 +154,6 @@ export const PageSettingsModal = ({
                       <ResourceFormFields
                         register={register}
                         errors={errors}
-                        siteName={siteName}
                         watch={watch}
                         setValue={setValue}
                         trigger={trigger}
@@ -171,24 +177,30 @@ export const PageSettingsModal = ({
                     errorMessage={errors.description?.message}
                   />
                   <br />
-                  <FormFieldMedia
-                    register={register}
-                    title="Meta Image URL (Optional)"
-                    children={
-                      <p className={elementStyles.formDescription}>
-                        Image shown when link is shared on social media.{" "}
-                        <a href="https://go.gov.sg/isomer-meta" target="_blank">
-                          Learn more
-                        </a>
-                      </p>
-                    }
-                    id="image"
-                    errorMessage={errors.image?.message}
-                    inlineButtonText="Select Image"
-                    siteName={siteName}
-                    type="images"
-                    onFieldChange={(e) => setValue("image", e.target.value)} // temporary workaround before refactoring FormFieldMedia
-                  />
+                  <FormContext
+                    hasError={!!errors.image?.message}
+                    onFieldChange={(e) => setValue("image", e.target.value)}
+                  >
+                    <FormTitle>Meta Image URL (Optional)</FormTitle>
+                    <FormDescription>
+                      Image shown when link is shared on social media.{" "}
+                      <a
+                        href="https://go.gov.sg/isomer-meta"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Learn more
+                      </a>
+                    </FormDescription>
+                    <FormFieldMedia
+                      register={register}
+                      placeholder="Meta Image URL (Optional)"
+                      id="image"
+                      type="images"
+                      inlineButtonText="Select Image"
+                    />
+                    <FormError>{errors.image?.message}</FormError>
+                  </FormContext>
                 </div>
                 <SaveDeleteButtons
                   isDisabled={
