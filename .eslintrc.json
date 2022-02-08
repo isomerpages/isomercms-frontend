@@ -25,8 +25,16 @@
     "sourceType": "module"
   },
   "plugins": ["only-warn", "react"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "parser": "@typescript-eslint/parser",
+      "extends": ["react-app", "plugin:@typescript-eslint/recommended"]
+    }
+  ],
   "rules": {
     "no-underscore-dangle": "off",
+    "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],
     "import/order": [
       "error",
       {
@@ -35,7 +43,15 @@
           "caseInsensitive": true
         },
         "newlines-between": "always",
-        "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object"],
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index",
+          "object"
+        ],
         "pathGroups": [
           {
             "pattern": "components/**",
