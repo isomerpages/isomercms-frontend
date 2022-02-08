@@ -14,8 +14,4 @@ FormError.propTypes = {
   children: PropTypes.node,
 }
 
-FormError.defaultProps = {
-  children: null,
-}
-
 export default FormError

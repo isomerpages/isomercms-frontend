@@ -11,8 +11,4 @@ FormDescription.propTypes = {
   children: PropTypes.node,
 }
 
-FormDescription.defaultProps = {
-  children: null,
-}
-
 export default FormDescription

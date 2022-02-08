@@ -11,8 +11,4 @@ FormTitle.propTypes = {
   children: PropTypes.node,
 }
 
-FormTitle.defaultProps = {
-  children: null,
-}
-
 export default FormTitle
