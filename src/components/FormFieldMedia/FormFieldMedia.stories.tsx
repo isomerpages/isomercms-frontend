@@ -1,38 +1,65 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { Story, Meta } from "@storybook/react"
+import {
+  FormContext,
+  FormError,
+  FormTitle,
+  FormDescription,
+} from "components/Form"
 import React from "react"
-import { QueryClient, QueryClientProvider } from "react-query"
-import { BrowserRouter as Router, Route } from "react-router-dom"
+
+import FormMediaInput from "./FormMediaInput"
+import "./FormFieldMedia.scss"
 
 import FormFieldMedia from "./index"
 
 const formFieldMeta = {
   title: "FormFieldMedia",
   component: FormFieldMedia,
-} as ComponentMeta<typeof FormFieldMedia>
+} as Meta<typeof FormFieldMedia>
 
-const queryClient = new QueryClient()
+interface FormFieldProps {
+  hasError: boolean
+  errorMessage: string
+  formTitle: string
+  formDescription: string
+  placeholder: string
+  inlineButtonText: string
+}
 
-const Template: ComponentStory<typeof FormFieldMedia> = (args) => (
-  <Router>
-    <QueryClientProvider client={queryClient}>
-      {/* NOTE: This is required as we nest the modal within the FormFieldMedia */}
-      <Route path="/:siteName" component={() => <FormFieldMedia {...args} />} />
-    </QueryClientProvider>
-  </Router>
+const Template: Story<FormFieldProps> = ({
+  hasError,
+  errorMessage,
+  formTitle,
+  formDescription,
+  placeholder,
+  inlineButtonText,
+}: FormFieldProps) => (
+  <FormContext
+    hasError={hasError}
+    onFieldChange={(e) => console.log(e.target.value)}
+  >
+    <FormTitle>{formTitle}</FormTitle>
+    <FormDescription>{formDescription}</FormDescription>
+    <FormMediaInput
+      register={() => {}}
+      placeholder={placeholder}
+      id="image"
+      inlineButtonText={inlineButtonText}
+      value=""
+    />
+    <FormError>{errorMessage}</FormError>
+  </FormContext>
 )
 
 export const ImageFormField = Template.bind({})
 
 ImageFormField.args = {
-  title: "Image Form Field",
-  id: "primary",
-  value: "some default value",
   errorMessage: "something went wrong",
-  isRequired: true,
-  onFieldChange: () => console.log("success!"),
-  inlineButtonText: "Click me",
-  placeholder: "this is a placeholder",
-  type: "images",
+  formTitle: "some title",
+  formDescription: "hello world",
+  placeholder: "some placeholder",
+  inlineButtonText: "select",
+  hasError: false,
 }
 
 export default formFieldMeta
