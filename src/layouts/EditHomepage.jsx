@@ -7,8 +7,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
 import DeleteWarningModal from "components/DeleteWarningModal"
 import Header from "components/Header"
-import EditorHeroSection from "components/homepage/HeroSection"
-import EditorInfobarSection from "components/homepage/InfobarSection"
+import { EditorInfobarSection } from "components/homepage/EditorInfobarSection"
 import EditorInfopicSection from "components/homepage/InfopicSection"
 import NewSectionCreator from "components/homepage/NewSectionCreator"
 import EditorResourcesSection from "components/homepage/ResourcesSection"
@@ -1310,26 +1309,35 @@ const EditHomepage = ({ match }) => {
                                   ref={draggableProvided.innerRef}
                                 >
                                   <EditorInfobarSection
+                                    shouldDisplay={true} // temporary
+                                    displayHandler={displayHandler}
                                     key={`section-${sectionIndex}`}
-                                    title={section.infobar.title}
-                                    subtitle={section.infobar.subtitle}
-                                    description={section.infobar.description}
-                                    button={section.infobar.button}
-                                    url={section.infobar.url}
+                                    sectionContent={section.infobar}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={(event) =>
+                                    shouldDisplay={true} // temporary
+                                    siteName={siteName}
+                                    onUpdate={(data) => {
+                                      setFrontMatter({
+                                        ...frontMatter,
+                                        sections: [
+                                          ...frontMatter.sections.slice(
+                                            0,
+                                            sectionIndex
+                                          ),
+                                          { infobar: data },
+                                          ...frontMatter.sections.slice(
+                                            sectionIndex + 1
+                                          ),
+                                        ],
+                                      })
+                                    }}
+                                    deleteHandler={(
+                                      event // temporary
+                                    ) =>
                                       setItemPendingForDelete({
                                         id: event.target.id,
                                         type: "Infobar Section",
                                       })
-                                    }
-                                    onFieldChange={onFieldChange}
-                                    shouldDisplay={
-                                      displaySections[sectionIndex]
-                                    }
-                                    displayHandler={displayHandler}
-                                    errors={
-                                      errors.sections[sectionIndex].infobar
                                     }
                                   />
                                 </div>
