@@ -9,6 +9,7 @@ import {
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 
 import FormMediaInput from "./FormMediaInput"
+import V2Input from "./FormMediaInput.v2"
 
 const formFieldMeta = {
   title: "Components/Form Field Media/v2",
@@ -30,6 +31,7 @@ interface FormFieldProps {
   formDescription: string
   placeholder: string
   inlineButtonText: string
+  useV2: boolean
 }
 
 const defaultArgs = {
@@ -40,6 +42,7 @@ const defaultArgs = {
   inlineButtonText: "select",
   hasError: false,
   isRequired: false,
+  useV2: false,
 }
 
 const BaseComponent = ({
@@ -50,26 +53,33 @@ const BaseComponent = ({
   placeholder,
   inlineButtonText,
   isRequired,
-}: FormFieldProps) => (
-  <FormControl isRequired={isRequired} isInvalid={hasError}>
-    <FormLabel>{formTitle}</FormLabel>
-    <FormFieldMessage>{formDescription}</FormFieldMessage>
-    <FormMediaInput
-      register={() => {}}
-      placeholder={placeholder}
-      id="image"
-      inlineButtonText={inlineButtonText}
-      value=""
-    />
-    <FormErrorMessage>{errorMessage}</FormErrorMessage>
-  </FormControl>
-)
+  useV2,
+}: FormFieldProps) => {
+  const MediaComponent = useV2 ? V2Input : FormMediaInput
+
+  return (
+    <FormControl isRequired={isRequired} isInvalid={hasError}>
+      <FormLabel>{formTitle}</FormLabel>
+      <FormFieldMessage>{formDescription}</FormFieldMessage>
+      <MediaComponent
+        register={() => {}}
+        placeholder={placeholder}
+        id="image"
+        inlineButtonText={inlineButtonText}
+        value=""
+      />
+      <FormErrorMessage>{errorMessage}</FormErrorMessage>
+    </FormControl>
+  )
+}
 
 const Template: ComponentStory<typeof BaseComponent> = (args) => (
   <BaseComponent {...args} />
 )
 
 export const FormFieldMedia = Template.bind({})
+export const DesignSystemFormFieldMedia = Template.bind({})
 
 FormFieldMedia.args = defaultArgs
+DesignSystemFormFieldMedia.args = { ...defaultArgs, useV2: true }
 export default formFieldMeta
