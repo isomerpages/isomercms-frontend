@@ -2,11 +2,7 @@
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
     "target": "es6",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -18,13 +14,10 @@
     "moduleResolution": "node",
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "downlevelIteration": true,
     "baseUrl": "./src",
     "resolveJsonModule": true
   },
-  "include": [
-    "src/**/*",
-    ".storybook/**/*"
-  ]
+  "include": ["src/**/*", ".storybook/**/*"]
 }
