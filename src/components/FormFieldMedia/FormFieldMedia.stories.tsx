@@ -11,12 +11,10 @@ import {
 import FormMediaInput from "./FormMediaInput"
 import "./FormFieldMedia.scss"
 
-import FormFieldMediaComponent from "./index"
-
 const formFieldMeta = {
-  title: "Components/Form Field Media",
-  component: FormFieldMediaComponent,
-} as ComponentMeta<typeof FormFieldMediaComponent>
+  title: "Components/Form Field Media/v1",
+  component: FormMediaInput,
+} as ComponentMeta<typeof FormMediaInput>
 
 interface FormFieldProps {
   hasError: boolean
