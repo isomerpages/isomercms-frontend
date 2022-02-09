@@ -8,7 +8,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 import DeleteWarningModal from "components/DeleteWarningModal"
 import Header from "components/Header"
 import { EditorInfobarSection } from "components/homepage/EditorInfobarSection"
-import EditorInfopicSection from "components/homepage/InfopicSection"
+import { EditorInfopicSection } from "components/homepage/EditorInfopicSection"
 import NewSectionCreator from "components/homepage/NewSectionCreator"
 import EditorResourcesSection from "components/homepage/ResourcesSection"
 import LoadingButton from "components/LoadingButton"
@@ -1358,30 +1358,36 @@ const EditHomepage = ({ match }) => {
                                   ref={draggableProvided.innerRef}
                                 >
                                   <EditorInfopicSection
+                                    shouldDisplay={true} // temporary
+                                    displayHandler={displayHandler}
                                     key={`section-${sectionIndex}`}
-                                    title={section.infopic.title}
-                                    subtitle={section.infopic.subtitle}
-                                    description={section.infopic.description}
-                                    button={section.infopic.button}
-                                    url={section.infopic.url}
-                                    imageUrl={section.infopic.image}
-                                    imageAlt={section.infopic.alt}
+                                    sectionContent={section.infopic}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={(event) =>
+                                    shouldDisplay={true} // temporary
+                                    siteName={siteName}
+                                    onUpdate={(data) => {
+                                      setFrontMatter({
+                                        ...frontMatter,
+                                        sections: [
+                                          ...frontMatter.sections.slice(
+                                            0,
+                                            sectionIndex
+                                          ),
+                                          { infopic: data },
+                                          ...frontMatter.sections.slice(
+                                            sectionIndex + 1
+                                          ),
+                                        ],
+                                      })
+                                    }}
+                                    deleteHandler={(
+                                      event // temporary
+                                    ) =>
                                       setItemPendingForDelete({
                                         id: event.target.id,
-                                        type: "Infopic Section",
+                                        type: "Infobar Section",
                                       })
                                     }
-                                    onFieldChange={onFieldChange}
-                                    shouldDisplay={
-                                      displaySections[sectionIndex]
-                                    }
-                                    displayHandler={displayHandler}
-                                    errors={
-                                      errors.sections[sectionIndex].infopic
-                                    }
-                                    siteName={siteName}
                                   />
                                 </div>
                               )}
