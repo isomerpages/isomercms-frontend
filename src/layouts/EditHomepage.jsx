@@ -10,7 +10,7 @@ import Header from "components/Header"
 import { EditorInfobarSection } from "components/homepage/EditorInfobarSection"
 import { EditorInfopicSection } from "components/homepage/EditorInfopicSection"
 import NewSectionCreator from "components/homepage/NewSectionCreator"
-import EditorResourcesSection from "components/homepage/ResourcesSection"
+import { EditorResourcesSection } from "components/homepage/EditorResourcesSection"
 import LoadingButton from "components/LoadingButton"
 
 import TemplateHeroSection from "templates/homepage/HeroSection"
@@ -1271,24 +1271,34 @@ const EditHomepage = ({ match }) => {
                                   ref={draggableProvided.innerRef}
                                 >
                                   <EditorResourcesSection
+                                    shouldDisplay={true} // temporary
+                                    displayHandler={displayHandler}
                                     key={`section-${sectionIndex}`}
-                                    title={section.resources.title}
-                                    subtitle={section.resources.subtitle}
-                                    button={section.resources.button}
+                                    sectionContent={section.resources}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={(event) =>
+                                    shouldDisplay={true} // temporary
+                                    onUpdate={(data) => {
+                                      setFrontMatter({
+                                        ...frontMatter,
+                                        sections: [
+                                          ...frontMatter.sections.slice(
+                                            0,
+                                            sectionIndex
+                                          ),
+                                          { resources: data },
+                                          ...frontMatter.sections.slice(
+                                            sectionIndex + 1
+                                          ),
+                                        ],
+                                      })
+                                    }}
+                                    deleteHandler={(
+                                      event // temporary
+                                    ) =>
                                       setItemPendingForDelete({
                                         id: event.target.id,
-                                        type: "Resources Section",
+                                        type: "Infobar Section",
                                       })
-                                    }
-                                    onFieldChange={onFieldChange}
-                                    shouldDisplay={
-                                      displaySections[sectionIndex]
-                                    }
-                                    displayHandler={displayHandler}
-                                    errors={
-                                      errors.sections[sectionIndex].resources
                                     }
                                   />
                                 </div>
