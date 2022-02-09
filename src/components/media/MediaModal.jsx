@@ -2,8 +2,6 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import { MediaAltText } from "components/media/MediaAltText"
 import MediasSelectModal from "components/media/MediasSelectModal"
 import { MediaCreationModal } from "components/MediaCreationModal/MediaCreationModal"
-import { useCreateMediaHook } from "hooks/mediaHooks/useCreateMediaHook"
-import _ from "lodash"
 import PropTypes from "prop-types"
 import React, { useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
@@ -11,6 +9,7 @@ import { useRouteMatch } from "react-router-dom"
 import * as Yup from "yup"
 
 import { useGetDirectoryHook } from "hooks/directoryHooks/useGetDirectoryHook"
+import { useCreateMediaHook } from "hooks/mediaHooks/useCreateMediaHook"
 
 import { getMediaDirectoryName } from "utils"
 
@@ -55,9 +54,11 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
     }
   }
 
-  return (
-    <FormProvider {...methods}>
-      {mediaMode === "upload" ? (
+  // Returns the appropriate modal type based on the media mode.
+  // This defaults to null if no conditions fit.
+  const Modal = () => {
+    if (mediaMode === "upload") {
+      return (
         <MediaCreationModal
           params={queryParams}
           mediasData={mediasData}
@@ -68,7 +69,11 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
           }}
           onClose={onClose}
         />
-      ) : mediaMode === "select" ? (
+      )
+    }
+
+    if (mediaMode === "select") {
+      return (
         <MediasSelectModal
           queryParams={queryParams}
           setQueryParams={setQueryParams}
@@ -80,9 +85,17 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
           onMediaSelect={onMediaSelect}
           onClose={onClose}
         />
-      ) : showAltTextModal && mediaMode === "details" ? (
-        <MediaAltText onProceed={onProceed} type={type} onClose={onClose} />
-      ) : null}
+      )
+    }
+
+    return showAltTextModal && mediaMode === "details" ? (
+      <MediaAltText onProceed={onProceed} type={type} onClose={onClose} />
+    ) : null
+  }
+
+  return (
+    <FormProvider {...methods}>
+      <Modal />
     </FormProvider>
   )
 }
@@ -91,9 +104,7 @@ export default MediaModal
 
 MediaModal.propTypes = {
   onClose: PropTypes.func.isRequired,
-  siteName: PropTypes.string.isRequired,
-  onMediaSelect: PropTypes.func.isRequired,
+  onProceed: PropTypes.func.isRequired,
   type: PropTypes.oneOf(["files", "images"]).isRequired,
-  readFileToStageUpload: PropTypes.func.isRequired,
-  setUploadPath: PropTypes.func.isRequired,
+  showAltTextModal: PropTypes.bool,
 }
