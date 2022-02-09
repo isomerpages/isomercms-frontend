@@ -5,7 +5,9 @@
   "dependencies": {
     "@atlaskit/tree": "^7.0.2",
     "@braintree/sanitize-url": "^5.0.2",
+    "@chakra-ui/react": "^1.8.3",
     "@hookform/resolvers": "^2.8.2",
+    "@opengovsg/design-system-react": "0.0.6",
     "@sentry/react": "^5.30.0",
     "@sentry/tracing": "^6.15.0",
     "axios": "^0.21.3",
