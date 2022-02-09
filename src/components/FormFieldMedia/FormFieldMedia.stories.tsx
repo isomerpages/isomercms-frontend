@@ -1,21 +1,22 @@
-import { Story, Meta } from "@storybook/react"
+import "@opengovsg/design-system-react/build/fonts/inter.css"
+import { ThemeProvider } from "@opengovsg/design-system-react"
+import { ComponentStory, ComponentMeta } from "@storybook/react"
 import {
   FormContext,
   FormError,
   FormTitle,
   FormDescription,
 } from "components/Form"
-import React from "react"
 
 import FormMediaInput from "./FormMediaInput"
 import "./FormFieldMedia.scss"
 
-import FormFieldMedia from "./index"
+import FormFieldMediaComponent from "./index"
 
 const formFieldMeta = {
-  title: "FormFieldMedia",
-  component: FormFieldMedia,
-} as Meta<typeof FormFieldMedia>
+  title: "Components/Form Field Media",
+  component: FormFieldMediaComponent,
+} as ComponentMeta<typeof FormFieldMediaComponent>
 
 interface FormFieldProps {
   hasError: boolean
@@ -26,7 +27,16 @@ interface FormFieldProps {
   inlineButtonText: string
 }
 
-const Template: Story<FormFieldProps> = ({
+const defaultArgs = {
+  errorMessage: "something went wrong",
+  formTitle: "some title",
+  formDescription: "hello world",
+  placeholder: "some placeholder",
+  inlineButtonText: "select",
+  hasError: false,
+}
+
+const BaseComponent = ({
   hasError,
   errorMessage,
   formTitle,
@@ -51,15 +61,21 @@ const Template: Story<FormFieldProps> = ({
   </FormContext>
 )
 
-export const ImageFormField = Template.bind({})
+const Template: ComponentStory<typeof BaseComponent> = (args) => (
+  <BaseComponent {...args} />
+)
 
-ImageFormField.args = {
-  errorMessage: "something went wrong",
-  formTitle: "some title",
-  formDescription: "hello world",
-  placeholder: "some placeholder",
-  inlineButtonText: "select",
-  hasError: false,
-}
+export const FormFieldMedia = Template.bind({})
+export const FormFieldMediaWithTheming = Template.bind({})
 
+FormFieldMediaWithTheming.decorators = [
+  (Story) => (
+    <ThemeProvider>
+      <Story />
+    </ThemeProvider>
+  ),
+]
+
+FormFieldMedia.args = defaultArgs
+FormFieldMediaWithTheming.args = defaultArgs
 export default formFieldMeta
