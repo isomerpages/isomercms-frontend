@@ -28,7 +28,7 @@ export const DirectoryCreationModal = ({
   onProceed,
   showSelectPages,
 }) => {
-  const { siteName, collectionName } = params
+  const { siteName, collectionName, mediaDirectoryName } = params
 
   const [isSelectingPages, setIsSelectingPages] = useState(false)
 
@@ -37,13 +37,32 @@ export const DirectoryCreationModal = ({
   const methods = useForm({
     mode: "onBlur",
     resolver: yupResolver(DirectorySettingsSchema(existingTitlesArray)),
-    context: { type: collectionName ? "subCollectionName" : "collectionName" },
+    context: {
+      type: mediaDirectoryName
+        ? "mediaDirectoryName"
+        : collectionName
+        ? "subCollectionName"
+        : "collectionName",
+    },
   })
 
   const { fields, append, remove } = useFieldArray({
     name: "items",
     control: methods.control,
   })
+
+  /** ******************************** */
+  /*     handler functions    */
+  /** ******************************** */
+
+  const onSubmit = (data) => {
+    return onProceed({
+      items: data.items,
+      newDirectoryName: mediaDirectoryName
+        ? `${mediaDirectoryName}/${data.newDirectoryName}`
+        : data.newDirectoryName,
+    })
+  }
 
   return (
     <FormProvider {...methods}>
@@ -108,7 +127,7 @@ export const DirectoryCreationModal = ({
                             )
                             indexOfItem != -1
                               ? remove(indexOfItem)
-                              : append(pageData)
+                              : append({ name: pageData.name, type: "file" })
                           }}
                         />
                       ))
@@ -129,9 +148,7 @@ export const DirectoryCreationModal = ({
                 label={fields.length === 0 ? `Skip` : `Done`}
                 disabledStyle={elementStyles.disabled}
                 className={elementStyles.blue}
-                callback={methods.handleSubmit(async (data) => {
-                  await onProceed(data)
-                })}
+                callback={methods.handleSubmit(onSubmit)}
               />
             </div>
           </div>

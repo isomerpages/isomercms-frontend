@@ -9,8 +9,13 @@ export class MoverService {
     resourceCategoryName,
     collectionName,
     subCollectionName,
+    mediaRoom,
+    mediaDirectoryName,
   }) {
     let endpoint = `/sites/${siteName}`
+    if (mediaDirectoryName) {
+      endpoint += `/media/${mediaDirectoryName}`
+    }
     if (resourceRoomName) {
       endpoint += `/resourceRoom/${resourceRoomName}`
     }
@@ -27,7 +32,9 @@ export class MoverService {
       !collectionName &&
       !subCollectionName &&
       !resourceCategoryName &&
-      !resourceRoomName
+      !resourceRoomName &&
+      !mediaRoom &&
+      !mediaDirectoryName
     ) {
       endpoint += `/pages`
     }

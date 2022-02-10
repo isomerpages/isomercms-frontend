@@ -35,6 +35,9 @@ export const RESOURCE_CATEGORY_REGEX = "^([a-zA-Z0-9]*[- ]?)+$"
 export const slugifyLowerFalseRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
 export const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX)
 export const specialCharactersRegexTest = /[~%^*_+\-./\\`;~{}[\]"<>]/
+export const mediaSpecialCharactersRegexTest = /[~%^?*+#./\\`;~{}[\]"<>]/
+export const imagesSuffixRegexTest = /^.+\.(svg|jpg|jpeg|png|gif|tif|bmp|ico)$/
+export const filesSuffixRegexTest = /^.+\.(pdf)$/
 
 const ISOMER_TEMPLATE_PROTECTED_DIRS = [
   "data",
@@ -143,6 +146,12 @@ const RESOURCE_CATEGORY_MAX_LENGTH = 30
 // ===================
 export const DIRECTORY_SETTINGS_TITLE_MIN_LENGTH = 2
 export const DIRECTORY_SETTINGS_TITLE_MAX_LENGTH = 30
+
+// Media Settings Modal
+// ===================
+export const MEDIA_SETTINGS_TITLE_MIN_LENGTH = 6
+export const MEDIA_SETTINGS_TITLE_MAX_LENGTH = 100
+export const MEDIA_FILE_MAX_SIZE = 5242880 // 5MB -> 5242880B
 
 // Homepage Editor
 // ==========

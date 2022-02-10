@@ -25,7 +25,7 @@ export function useMoveHook(params, queryParams) {
     onSuccess: (resp) => {
       if (!resp) successToast("File is already in this folder")
       else successToast("Successfully moved file")
-      if (params.collectionName || params.resourceRoomName)
+      if (params.mediaRoom || params.collectionName || params.resourceRoomName)
         queryClient.invalidateQueries([
           // invalidates collection pages or resource pages
           DIR_CONTENT_KEY,

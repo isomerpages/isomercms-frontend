@@ -344,9 +344,16 @@ export const getRedirectUrl = ({
   subCollectionName,
   resourceRoomName,
   resourceCategoryName,
+  mediaRoom,
+  mediaDirectoryPath,
   fileName,
 }) => {
   if (!fileName) {
+    if (mediaDirectoryPath) {
+      return `/sites/${siteName}/media/${mediaRoom}/mediaDirectory/${encodeURIComponent(
+        mediaDirectoryPath
+      )}`
+    }
     if (resourceRoomName) {
       return `/sites/${siteName}/resourceRoom/${resourceRoomName}${
         resourceCategoryName
@@ -510,6 +517,8 @@ export const isLastItem = (type, params) => {
     subCollectionName,
     resourceRoomName,
     resourceCategoryName,
+    mediaRoom,
+    mediaDirectoryName,
     fileName,
   } = params
   if (type === "siteName") {
@@ -519,6 +528,8 @@ export const isLastItem = (type, params) => {
       !fileName &&
       !resourceRoomName &&
       !resourceCategoryName &&
+      !mediaRoom &&
+      !mediaDirectoryName &&
       !fileName
     )
   }
@@ -534,6 +545,12 @@ export const isLastItem = (type, params) => {
   if (type === "resourceCategoryName") {
     return !fileName
   }
+  if (type === "mediaRoom") {
+    return !mediaDirectoryName && !fileName
+  }
+  if (type === "mediaDirectoryName") {
+    return !fileName
+  }
   if (type === "fileName") {
     return !!fileName
   }
@@ -545,10 +562,28 @@ export const getLastItemType = (params) => {
   return lastItemType
 }
 
+export const getMediaDirectoryName = (
+  mediaDirectoryName,
+  { start = 0, end, splitOn = "%2F", joinOn = "%2F", decode = false }
+) => {
+  const mediaDirectoryArray = mediaDirectoryName.split(splitOn)
+  const selectedMediaDirectoryArray = mediaDirectoryArray.slice(start, end)
+  if (decode) {
+    const decodedSelectedMediaDirectoryArray = selectedMediaDirectoryArray.map(
+      (v) => decodeURIComponent(v)
+    )
+    return decodedSelectedMediaDirectoryArray.join(joinOn)
+  }
+  return selectedMediaDirectoryArray.join(joinOn)
+}
+
 export const getNextItemType = (params) => {
   const lastItemType = getLastItemType(params)
   if (lastItemType === "siteName") {
     return "collectionName"
+  }
+  if (lastItemType === "mediaRoom") {
+    return "mediaDirectoryName"
   }
   if (lastItemType === "collectionName") {
     return "subCollectionName"

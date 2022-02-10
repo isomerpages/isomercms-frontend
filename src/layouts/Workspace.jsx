@@ -20,7 +20,7 @@ import useRedirectHook from "hooks/useRedirectHook"
 // Import screens
 import {
   PageSettingsScreen,
-  PageMoveScreen,
+  MoveScreen,
   DeleteWarningScreen,
   DirectoryCreationScreen,
   DirectorySettingsScreen,
@@ -200,7 +200,7 @@ const Workspace = ({ match, location }) => {
         />
         <ProtectedRouteWithProps
           path={[`${path}/movePage/:fileName`]}
-          component={PageMoveScreen}
+          component={MoveScreen}
           onClose={() => history.goBack()}
         />
         <ProtectedRouteWithProps

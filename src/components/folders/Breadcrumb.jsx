@@ -1,19 +1,23 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
 import { deslugifyDirectory, isLastItem } from "utils"
 
-const BreadcrumbItem = ({ item, isLast, link }) => (
+const BreadcrumbItem = ({ item, isLast, link, onClick }) => (
   <>
     {link && !isLast ? (
       <Link to={link}>{item}</Link>
+    ) : onClick && !isLast ? (
+      <Link to="" onClick={onClick}>
+        {item}
+      </Link>
     ) : !isLast ? (
-      <span>{item}</span>
+      <p>{item}</p>
     ) : (
       // underline last item
-      <span>
-        <u className="ml-1">{item}</u>
-      </span>
+      <u className="ml-1">{item}</u>
     )}
     {isLast ? "" : " > "}
   </>
@@ -26,10 +30,12 @@ const Breadcrumb = ({ params, title, isLink }) => {
     subCollectionName,
     resourceRoomName,
     resourceCategoryName,
+    mediaRoom,
+    mediaDirectoryName,
   } = params
   const newParams = { ...params, fileName: title }
   return (
-    <span>
+    <div className={elementStyles.breadcrumb}>
       {
         <BreadcrumbItem
           item="Workspace"
@@ -58,9 +64,7 @@ const Breadcrumb = ({ params, title, isLink }) => {
         <BreadcrumbItem
           item={deslugifyDirectory(resourceRoomName)}
           isLast={isLastItem("resourceRoomName", newParams)}
-          link={
-            isLink && `/sites/${siteName}/resourceRoomName/${resourceRoomName}`
-          }
+          link={isLink && `/sites/${siteName}/resourceRoom/${resourceRoomName}`}
         />
       ) : null}
       {resourceCategoryName ? (
@@ -69,10 +73,30 @@ const Breadcrumb = ({ params, title, isLink }) => {
           isLast={isLastItem("resourceCategoryName", newParams)}
           link={
             isLink &&
-            `/sites/${siteName}/resourceRoomName/${resourceRoomName}/resourceCategory/${resourceCategoryName}`
+            `/sites/${siteName}/resourceRoom/${resourceRoomName}/resourceCategory/${resourceCategoryName}`
           }
         />
       ) : null}
+      {mediaDirectoryName
+        ? mediaDirectoryName.split("/").map((dir, idx) => (
+            <BreadcrumbItem
+              item={deslugifyDirectory(dir)}
+              isLast={
+                idx === mediaDirectoryName.split("/").length - 1 &&
+                isLastItem("mediaDirectoryName", newParams)
+              }
+              link={
+                isLink &&
+                `/sites/${siteName}/media/${mediaRoom}/mediaDirectory/${encodeURIComponent(
+                  mediaDirectoryName
+                    .split("/")
+                    .slice(0, idx + 1)
+                    .join("/")
+                )}`
+              }
+            />
+          ))
+        : null}
       {title ? (
         <BreadcrumbItem
           item={title}
@@ -81,8 +105,8 @@ const Breadcrumb = ({ params, title, isLink }) => {
       ) : null}
       <br />
       <br />
-    </span>
+    </div>
   )
 }
 
-export default Breadcrumb
+export { Breadcrumb, BreadcrumbItem }
