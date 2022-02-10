@@ -1,6 +1,7 @@
 import { Flex, useFormControlContext } from "@chakra-ui/react"
 import { Button, Input } from "@opengovsg/design-system-react"
 import { MouseEventHandler } from "react"
+
 import { RegisterFunc } from "types/forms"
 
 export interface FormMediaInputProps {
@@ -22,21 +23,18 @@ export const FormMediaInput = ({
   onClick = () => {},
   inlineButtonText = "Choose Item",
 }: FormMediaInputProps): JSX.Element => {
-  const {
-    isRequired,
-    isInvalid: hasError,
-    isDisabled,
-  } = useFormControlContext()
+  const { isRequired, isDisabled } = useFormControlContext()
 
   return (
     <Flex>
       <Input
+        // This is disabled because we want to disallow users from typing here.
+        // This is meant as a visual display to users, not an interface
+        isDisabled
         placeholder={placeholder}
         value={value}
         id={id}
         autoComplete="off"
-        required={isRequired}
-        disabled
         {...register(id, { required: isRequired })}
       />
       {inlineButtonText && (

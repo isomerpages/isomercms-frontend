@@ -1,5 +1,5 @@
 import "@opengovsg/design-system-react/build/fonts/inter.css"
-import { FormControl, FormHelperText } from "@chakra-ui/react"
+import { FormControl } from "@chakra-ui/react"
 import {
   FormErrorMessage,
   FormFieldMessage,
@@ -8,7 +8,7 @@ import {
 } from "@opengovsg/design-system-react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 
-import FormMediaInput from "./FormMediaInput"
+import { FormMediaInput } from "./FormMediaInput"
 import V2Input from "./FormMediaInput.v2"
 
 const formFieldMeta = {
@@ -31,6 +31,7 @@ interface FormFieldProps {
   formDescription: string
   placeholder: string
   inlineButtonText: string
+  isDisabled: boolean
   useV2: boolean
 }
 
@@ -42,6 +43,7 @@ const defaultArgs = {
   inlineButtonText: "select",
   hasError: false,
   isRequired: false,
+  isDisabled: false,
   useV2: false,
 }
 
@@ -53,12 +55,17 @@ const BaseComponent = ({
   placeholder,
   inlineButtonText,
   isRequired,
+  isDisabled,
   useV2,
 }: FormFieldProps) => {
   const MediaComponent = useV2 ? V2Input : FormMediaInput
 
   return (
-    <FormControl isRequired={isRequired} isInvalid={hasError}>
+    <FormControl
+      isRequired={isRequired}
+      isInvalid={hasError}
+      isDisabled={isDisabled}
+    >
       <FormLabel>{formTitle}</FormLabel>
       <FormFieldMessage>{formDescription}</FormFieldMessage>
       <MediaComponent
@@ -82,4 +89,5 @@ export const DesignSystemFormFieldMedia = Template.bind({})
 
 FormFieldMedia.args = defaultArgs
 DesignSystemFormFieldMedia.args = { ...defaultArgs, useV2: true }
+
 export default formFieldMeta

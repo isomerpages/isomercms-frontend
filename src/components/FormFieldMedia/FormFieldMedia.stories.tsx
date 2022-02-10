@@ -23,6 +23,7 @@ interface FormFieldProps {
   formDescription: string
   placeholder: string
   inlineButtonText: string
+  isDisabled: boolean
 }
 
 const defaultArgs = {
@@ -32,6 +33,7 @@ const defaultArgs = {
   placeholder: "some placeholder",
   inlineButtonText: "select",
   hasError: false,
+  isDisabled: false,
 }
 
 const BaseComponent = ({
@@ -41,9 +43,11 @@ const BaseComponent = ({
   formDescription,
   placeholder,
   inlineButtonText,
+  isDisabled,
 }: FormFieldProps) => (
   <FormContext
     hasError={hasError}
+    isDisabled={isDisabled}
     onFieldChange={(e) => console.log(e.target.value)}
   >
     <FormTitle>{formTitle}</FormTitle>
