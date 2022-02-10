@@ -16,6 +16,13 @@ jobs:
     # Job steps
     steps:
       - uses: actions/checkout@v1
+      # This extra step is not in the original chromatic workflow.
+      # This is to use a specific version of node (14.x), because the default is 16.x,
+      # which is not compatible with sass
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14.x"
       - name: Install dependencies
         run: npm i
         # 👇 Adds Chromatic as a step in the workflow
