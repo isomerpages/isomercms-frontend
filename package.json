@@ -114,6 +114,7 @@
     "@tsconfig/recommended": "^1.0.1",
     "@types/react-router-dom": "^5.3.3",
     "btoa": "^1.2.1",
+    "chromatic": "^6.4.3",
     "cypress": "^7.2.0",
     "cypress-pipe": "^2.0.0",
     "cz-conventional-changelog": "^3.0.2",
