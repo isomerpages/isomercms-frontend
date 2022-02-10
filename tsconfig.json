@@ -17,7 +17,8 @@
     "jsx": "react-jsx",
     "downlevelIteration": true,
     "baseUrl": "./src",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "sourceMap": true
   },
   "include": ["src/**/*", ".storybook/**/*"]
 }
