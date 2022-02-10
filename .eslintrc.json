@@ -8,12 +8,14 @@
     "plugin:react/recommended",
     "airbnb",
     "plugin:prettier/recommended",
-    "plugin:react/jsx-runtime"
+    "plugin:react/jsx-runtime",
+    "plugin:import/typescript"
   ],
   "settings": {
     "import/resolver": {
       "node": {
-        "paths": ["src"]
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     }
   },
@@ -36,6 +38,7 @@
   "rules": {
     "no-underscore-dangle": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],
+    "import/extensions": 0, // Turn off "Missing file extension for ..." error
     "import/order": [
       "error",
       {
