@@ -38,7 +38,7 @@ interface FormFieldProps {
 const defaultArgs = {
   errorMessage: "something went wrong",
   formTitle: "some title",
-  formDescription: "hello world",
+  formDescription: "some description",
   placeholder: "some placeholder",
   inlineButtonText: "select",
   hasError: false,
