@@ -14,7 +14,7 @@ export const MediaSettingsSchema = (existingTitlesArray = []) =>
       .required("Title is required")
       .test(
         "Special characters found",
-        'Title cannot contain any of the following special characters: ~%^*+#./`;{}[]"<>',
+        'Title cannot contain any of the following special characters: ~%^*+#?./`;{}[]"<>',
         (value) => !mediaSpecialCharactersRegexTest.test(value.split(".")[0])
       )
       .min(

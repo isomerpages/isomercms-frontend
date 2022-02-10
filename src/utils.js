@@ -564,12 +564,17 @@ export const getLastItemType = (params) => {
 
 export const getMediaDirectoryName = (
   mediaDirectoryName,
-  { start = 0, end, splitOn = "%2F", joinOn = "%2F" }
+  { start = 0, end, splitOn = "%2F", joinOn = "%2F", decode = false }
 ) => {
   const mediaDirectoryArray = mediaDirectoryName.split(splitOn)
   const selectedMediaDirectoryArray = mediaDirectoryArray.slice(start, end)
-  const newMediaDirectoryName = selectedMediaDirectoryArray.join(joinOn)
-  return newMediaDirectoryName
+  if (decode) {
+    const decodedSelectedMediaDirectoryArray = selectedMediaDirectoryArray.map(
+      (v) => decodeURIComponent(v)
+    )
+    return decodedSelectedMediaDirectoryArray.join(joinOn)
+  }
+  return selectedMediaDirectoryArray.join(joinOn)
 }
 
 export const getNextItemType = (params) => {

@@ -59,7 +59,7 @@ export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
                     ...moveQuery,
                     mediaDirectoryName: getMediaDirectoryName(
                       moveQuery.mediaDirectoryName,
-                      { end: -1, joinOn: "/" }
+                      { end: -1, joinOn: "/", decode: true }
                     ),
                   })
                 }}
@@ -68,7 +68,7 @@ export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
                 } // images%2Fdir%2Fdir2
                 backButtonText={getMediaDirectoryName(
                   moveQuery.mediaDirectoryName,
-                  { start: -1 }
+                  { start: -1, decode: true }
                 )}
               />
               {dirData && dirData.length ? (
@@ -91,7 +91,7 @@ export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
                             ...moveQuery,
                             mediaDirectoryName: `${getMediaDirectoryName(
                               moveQuery.mediaDirectoryName,
-                              { joinOn: "/" }
+                              { joinOn: "/", decode: true }
                             )}/${item.name}`,
                           })
                         }
@@ -100,12 +100,14 @@ export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
                             ...moveQuery,
                             mediaDirectoryName: `${getMediaDirectoryName(
                               moveQuery.mediaDirectoryName,
-                              { joinOn: "/" }
+                              { joinOn: "/", decode: true }
                             )}/${item.name}`,
                           })
                           setMoveQuery((prevState) => ({
                             ...prevState,
-                            mediaDirectoryName: `${moveQuery.mediaDirectoryName}%2F${item.name}`,
+                            mediaDirectoryName: `${
+                              moveQuery.mediaDirectoryName
+                            }%2F${encodeURIComponent(item.name)}`,
                           }))
                         }}
                       />
