@@ -5,6 +5,8 @@ import {
   titleToPageFileName,
 } from "../../src/utils"
 
+import { E2E_CHANGE_WAIT_TIME, E2E_DEFAULT_WAIT_TIME } from "./constants"
+
 Cypress.config("baseUrl", Cypress.env("BASEURL"))
 Cypress.config("defaultCommandTimeout", 5000)
 
@@ -61,7 +63,7 @@ describe("Edit unlinked page", () => {
       .type(TEST_PRIMARY_COLOR_VALUES[2].toString())
     cy.contains("button", "Select").click()
     cy.contains("button", "Save").click()
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     // Set up test resource categories
     cy.visit(`/sites/${TEST_REPO_NAME}/workspace`)
@@ -77,7 +79,7 @@ describe("Edit unlinked page", () => {
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
     window.localStorage.setItem("userId", "test")
     cy.visit(`/sites/${TEST_REPO_NAME}/editPage/${TEST_PAGE_TITLE_ENCODED}`)
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
   })
 
   it("Edit page (unlinked) should have correct colour", () => {
@@ -152,7 +154,7 @@ describe("Edit unlinked page", () => {
     cy.get("button")
       .contains(/^Upload$/)
       .click()
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.contains(":button", "Select").click()
 
@@ -171,7 +173,7 @@ describe("Edit unlinked page", () => {
     cy.get("button")
       .contains(/^Upload$/)
       .click()
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.contains(":button", "Select").click()
 
@@ -213,7 +215,7 @@ describe("Edit unlinked page", () => {
     // Test delete in modal
     cy.get("#modal-delete").should("exist")
     cy.get("#modal-delete").click()
-    cy.wait(2000)
+    cy.wait(E2E_CHANGE_WAIT_TIME)
 
     // Assert: page no longer exists
     cy.visit(`/sites/${TEST_REPO_NAME}/editPage/${TEST_PAGE_TITLE_ENCODED}`)
@@ -248,14 +250,14 @@ describe("Edit collection page", () => {
     cy.get("input#newDirectoryName").clear().type(TEST_FOLDER_TITLE)
     cy.contains("Next").click()
     cy.contains("Skip").click()
-    cy.wait(2000)
+    cy.wait(E2E_CHANGE_WAIT_TIME)
 
     // Set up test collection page
     cy.visit(`/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}`)
     cy.contains("Create new page").should("exist").click()
     cy.get("#title").clear().type(TEST_PAGE_TITLE)
     cy.contains("Save").click()
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
   })
 
   beforeEach(() => {
@@ -266,7 +268,7 @@ describe("Edit collection page", () => {
     cy.visit(
       `/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_ENCODED}`
     )
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
   })
 
   it("Edit page (collection) should have correct colour", () => {
@@ -366,7 +368,7 @@ describe("Edit collection page", () => {
     // Test delete in modal
     cy.get("#modal-delete").should("exist")
     cy.get("#modal-delete").click()
-    cy.wait(4000)
+    cy.wait(E2E_CHANGE_WAIT_TIME)
 
     // Assert: page no longer exists
     cy.visit(
@@ -404,11 +406,11 @@ describe("Edit resource page", () => {
       .type(TEST_SECONDARY_COLOR_VALUES[2].toString())
     cy.contains("button", "Select").click()
     cy.contains("button", "Save").click()
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     // Set up test resource category
     cy.visit(`/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM}`)
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains("Create new category").click()
     cy.get("input").clear().type(TEST_CATEGORY)
     cy.contains("Next").click()
@@ -420,12 +422,12 @@ describe("Edit resource page", () => {
     )
 
     cy.contains("Add a new page").click()
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE)
     cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE)
     cy.contains("Save").click()
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
   })
 
   beforeEach(() => {
@@ -440,7 +442,7 @@ describe("Edit resource page", () => {
         true
       )}`
     )
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
   })
 
   it("Edit page (resource) should have correct colour", () => {
