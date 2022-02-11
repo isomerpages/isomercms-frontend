@@ -21,6 +21,13 @@ pull_request_rules:
       merge:
         method: squash
 
+  - name: Close stale PRs (>1 month since last activity)
+    conditions:
+      - updated-at>30 days ago
+    actions:
+      close:
+        message: This pull request has been closed as it has been a month since the most recent activity on it.
+
   - name: Automatically delete branches after they have been merged
     conditions:
       - merged
