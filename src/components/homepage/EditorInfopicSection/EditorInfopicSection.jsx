@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form"
 import { CardContainer } from "components/CardContainer"
 import { EditorInfopicSchema } from "."
 import { yupResolver } from "@hookform/resolvers/yup"
+import _ from "lodash"
 
 export const EditorInfopicSection = ({
   sectionContent,
@@ -54,7 +55,7 @@ export const EditorInfopicSection = ({
   return (
     <CardContainer
       cardTitle={`Infopic section: ${watch("title")}`}
-      isError={!!!errors}
+      isError={!_.isEmpty(errors)}
     >
       <div className={elementStyles.cardContent}>
         <FormField
