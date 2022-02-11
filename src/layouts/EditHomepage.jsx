@@ -7,6 +7,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
 import DeleteWarningModal from "components/DeleteWarningModal"
 import Header from "components/Header"
+import { EditorHeroSection } from "components/homepage/EditorHeroSection"
 import { EditorInfobarSection } from "components/homepage/EditorInfobarSection"
 import { EditorInfopicSection } from "components/homepage/EditorInfopicSection"
 import NewSectionCreator from "components/homepage/NewSectionCreator"
@@ -1220,40 +1221,19 @@ const EditHomepage = ({ match }) => {
                             <>
                               <EditorHeroSection
                                 key={`section-${sectionIndex}`}
-                                title={section.hero.title}
-                                subtitle={section.hero.subtitle}
-                                background={section.hero.background}
-                                button={section.hero.button}
-                                url={section.hero.url}
-                                dropdown={
-                                  section.hero.dropdown
-                                    ? section.hero.dropdown
-                                    : null
-                                }
+                                sectionContent={section.hero}
                                 sectionIndex={sectionIndex}
-                                highlights={
-                                  section.hero.key_highlights
-                                    ? section.hero.key_highlights
-                                    : []
-                                }
-                                onFieldChange={onFieldChange}
-                                createHandler={createHandler}
-                                deleteHandler={(event, type) =>
-                                  setItemPendingForDelete({
-                                    id: event.target.id,
-                                    type,
-                                  })
-                                }
-                                shouldDisplay={displaySections[sectionIndex]}
-                                displayHighlights={displayHighlights}
-                                displayDropdownElems={displayDropdownElems}
-                                displayHandler={displayHandler}
-                                onDragEnd={onDragEnd}
-                                errors={errors}
+                                shouldDisplay={true}
                                 siteName={siteName}
-                                handleHighlightDropdownToggle={
-                                  handleHighlightDropdownToggle
-                                }
+                                onUpdate={(data) => {
+                                  setFrontMatter({
+                                    ...frontMatter,
+                                    sections: [
+                                      { hero: data },
+                                      ...frontMatter.sections.slice(1),
+                                    ],
+                                  })
+                                }}
                               />
                             </>
                           ) : null}
