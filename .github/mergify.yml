@@ -1,9 +1,9 @@
 pull_request_rules:
   - name: Approve and merge non-major version dependabot upgrades
     conditions:
-      - author~=^dependabot(|-preview)\[bot\]$
+      - author~=^dependabot\[bot\]$
       - check-success~=lint
-      - title~=^build\(deps[^)]*\). bump [^\s]+ from ([\d]+)\..+ to \1\.
+      - title~=^Bump [^\s]+ from ([\d]+)\..+ to \1\.
     actions:
       review:
         type: APPROVE
