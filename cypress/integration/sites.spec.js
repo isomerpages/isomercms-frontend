@@ -1,3 +1,5 @@
+import { E2E_DEFAULT_WAIT_TIME } from "../fixtures/constants"
+
 describe("Sites page", () => {
   const CMS_BASEURL = Cypress.env("BASEURL")
   const COOKIE_NAME = Cypress.env("COOKIE_NAME")
@@ -23,7 +25,7 @@ describe("Sites page", () => {
     cy.visit(`${CMS_BASEURL}/sites`)
 
     // Set a wait time because the API takes time
-    cy.wait(3000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains(TEST_REPO_NAME).click()
     cy.url().should(
       "include",

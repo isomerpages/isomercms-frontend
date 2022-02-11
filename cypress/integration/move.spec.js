@@ -1,6 +1,5 @@
 import { titleToPageFileName, slugifyCategory } from "../../src/utils"
-
-const CUSTOM_TIMEOUT = 30000 // 30 seconds
+import { E2E_EXTENDED_TIMEOUT } from "../fixtures/constants"
 
 describe("Move flow", () => {
   const CMS_BASEURL = Cypress.env("BASEURL")
@@ -89,7 +88,7 @@ describe("Move flow", () => {
 
       cy.contains("button", "Move Here").click()
       cy.contains("File is already in this folder", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
     })
 
@@ -114,13 +113,13 @@ describe("Move flow", () => {
 
       cy.contains("button", "Move Here").click()
       cy.contains("Successfully moved file", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       // Assert
       // 1. File is not in folder
       cy.contains(TITLE_WORKSPACE_TO_FOLDER).should("not.exist", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       })
       // 2. File is in folder
       cy.visit(
@@ -152,13 +151,13 @@ describe("Move flow", () => {
 
       cy.contains("button", "Move Here").click()
       cy.contains("Successfully moved file", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       // Assert
       // 1. File is not in Workspace
       cy.contains(TITLE_WORKSPACE_TO_SUBFOLDER).should("not.exist", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       })
       // 2. File is in subfolder
       cy.visit(
@@ -232,7 +231,7 @@ describe("Move flow", () => {
 
       cy.contains("button", "Move Here").click()
       cy.contains("File is already in this folder", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
     })
 
@@ -256,13 +255,13 @@ describe("Move flow", () => {
 
       cy.contains("button", "Move Here").click()
       cy.contains("Successfully moved file", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       // Assert
       // 1. File is not in folder
       cy.contains(TITLE_FOLDER_TO_WORKSPACE).should("not.exist", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       })
       // 2. File is in Workspace
       cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
@@ -291,13 +290,13 @@ describe("Move flow", () => {
 
       cy.contains("button", "Move Here").click()
       cy.contains("Successfully moved file", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       // Assert
       // 1. File is not in folder
       cy.contains(TITLE_FOLDER_TO_SUBFOLDER).should("not.exist", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       })
       // 2. File is in subfolder
       cy.visit(
@@ -371,7 +370,7 @@ describe("Move flow", () => {
 
       cy.contains("button", "Move Here").click()
       cy.contains("File is already in this folder", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
     })
 
@@ -400,13 +399,13 @@ describe("Move flow", () => {
 
       cy.contains("button", "Move Here").click()
       cy.contains("Successfully moved file", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       // Assert
       // 1. File is not in subfolder
       cy.contains(TITLE_SUBFOLDER_TO_WORKSPACE).should("not.exist", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       })
       // 2. File is in Workspace
       cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
@@ -434,13 +433,13 @@ describe("Move flow", () => {
 
       cy.contains("button", "Move Here").click()
       cy.contains("Successfully moved file", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       // Assert
       // 1. File is not in subfolder
       cy.contains(TITLE_SUBFOLDER_TO_FOLDER).should("not.exist", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       })
       // 2. File is in Workspace
       cy.visit(
@@ -452,7 +451,6 @@ describe("Move flow", () => {
 
   describe("Move pages between resource folders", () => {
     const TITLE_RESOURCE_PAGE = "Move resource page"
-    const FILENAME_RESOURCE_PAGE = titleToPageFileName(TITLE_RESOURCE_PAGE)
 
     beforeEach(() => {
       cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
@@ -494,7 +492,7 @@ describe("Move flow", () => {
 
       cy.contains("button", "Move Here").click()
       cy.contains("File is already in this folder", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
     })
 
@@ -523,13 +521,13 @@ describe("Move flow", () => {
 
       cy.contains("button", "Move Here").click()
       cy.contains("Successfully moved file", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       // Assert
       // 1. File is not in resource category
       cy.contains(TITLE_RESOURCE_PAGE).should("not.exist", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       })
       // 2. File is in resource category 1
       cy.visit(

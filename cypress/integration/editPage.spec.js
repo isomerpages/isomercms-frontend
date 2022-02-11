@@ -4,8 +4,10 @@ import {
   generateResourceFileName,
   titleToPageFileName,
 } from "../../src/utils"
-
-import { E2E_CHANGE_WAIT_TIME, E2E_DEFAULT_WAIT_TIME } from "./constants"
+import {
+  E2E_CHANGE_WAIT_TIME,
+  E2E_DEFAULT_WAIT_TIME,
+} from "../fixtures/constants"
 
 Cypress.config("baseUrl", Cypress.env("BASEURL"))
 Cypress.config("defaultCommandTimeout", 5000)
@@ -63,14 +65,14 @@ describe("Edit unlinked page", () => {
       .type(TEST_PRIMARY_COLOR_VALUES[2].toString())
     cy.contains("button", "Select").click()
     cy.contains("button", "Save").click()
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
+    cy.wait(E2E_CHANGE_WAIT_TIME)
 
     // Set up test resource categories
     cy.visit(`/sites/${TEST_REPO_NAME}/workspace`)
     cy.contains("Add a new page").click()
     cy.get("#title").clear().type(TEST_UNLINKED_PAGE_TITLE)
     cy.contains("Save").click()
-    cy.wait(5000)
+    cy.wait(E2E_CHANGE_WAIT_TIME)
   })
 
   beforeEach(() => {
@@ -135,7 +137,7 @@ describe("Edit unlinked page", () => {
 
   it("Edit page (unlinked) should allow user to add existing image", () => {
     cy.get(".image").click()
-    cy.wait(3000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains(DEFAULT_IMAGE_TITLE).click()
     cy.contains(":button", "Select").click()
 
@@ -414,7 +416,7 @@ describe("Edit resource page", () => {
     cy.contains("Create new category").click()
     cy.get("input").clear().type(TEST_CATEGORY)
     cy.contains("Next").click()
-    cy.wait(4000)
+    cy.wait(E2E_CHANGE_WAIT_TIME)
 
     // Set up test resource page
     cy.visit(
