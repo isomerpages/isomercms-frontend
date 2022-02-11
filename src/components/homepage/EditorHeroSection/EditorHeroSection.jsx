@@ -88,7 +88,7 @@ export const EditorHeroSection = ({ sectionContent, onUpdate }) => {
               value="highlights"
               onChange={(e) => {
                 register("heroType").onChange(e)
-                unregister("dropdown")
+                setValue("dropdown", {})
               }}
             />
             Highlights + Button
@@ -121,7 +121,7 @@ export const EditorHeroSection = ({ sectionContent, onUpdate }) => {
                 setValue("key_highlights", [])
                 setValue("button", "")
                 setValue("url", "")
-                unregister("dropdown")
+                setValue("dropdown", {})
               }}
             />
             None
