@@ -8,6 +8,7 @@ import { CardContainer } from "components/CardContainer"
 
 import { EditorInfobarSchema } from "."
 import { yupResolver } from "@hookform/resolvers/yup"
+import _ from "lodash"
 
 export const EditorInfobarSection = ({
   sectionContent,
@@ -51,7 +52,7 @@ export const EditorInfobarSection = ({
   return (
     <CardContainer
       cardTitle={`Infobar section: ${watch("title")}`}
-      isError={!!!errors}
+      isError={!_.isEmpty(errors)}
     >
       <div className={elementStyles.cardContent}>
         <FormField

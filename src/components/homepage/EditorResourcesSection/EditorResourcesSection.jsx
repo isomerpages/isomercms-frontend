@@ -8,6 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import { EditorResourcesSchema } from "."
+import _ from "lodash"
 
 export const EditorResourcesSection = ({
   sectionContent,
@@ -49,7 +50,7 @@ export const EditorResourcesSection = ({
   return (
     <CardContainer
       cardTitle={`Resources section: ${watch("title")}`}
-      isError={!!!errors}
+      isError={!_.isEmpty(errors)}
     >
       <div className={elementStyles.cardContent}>
         <FormField
