@@ -48,6 +48,7 @@ export const EditorHeroSection = ({ sectionContent, onUpdate }) => {
     <CardContainer cardTitle={"Hero Section"} isError={!_.isEmpty(errors)}>
       <FormField
         register={register}
+        onClose={() => trigger()} // trigger validation when card is closed, prevents unnecessary validation
         title="Hero title"
         id="title"
         errorMessage={errors.title?.message}
