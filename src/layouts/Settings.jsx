@@ -1,4 +1,5 @@
 import Footer from "components/Footer"
+import { FormContext, FormError, FormTitle } from "components/Form"
 import FormFieldHorizontal from "components/FormFieldHorizontal"
 import FormFieldMedia from "components/FormFieldMedia"
 import FormFieldToggle from "components/FormFieldToggle"
@@ -261,18 +262,19 @@ const Settings = ({ match, location }) => {
                   isRequired={false}
                   onFieldChange={changeHandler}
                 />
-                <FormFieldMedia
-                  title="Shareicon"
-                  id="shareicon"
-                  value={currState.shareicon}
-                  errorMessage={errors.shareicon}
-                  isRequired
+                <FormContext
+                  hasError={!!errors.shareicon}
                   onFieldChange={changeHandler}
-                  inlineButtonText="Choose Image"
-                  siteName={siteName}
-                  placeholder=" "
-                  type="images"
-                />
+                  isRequired
+                >
+                  <FormTitle>Shareicon</FormTitle>
+                  <FormFieldMedia
+                    value={currState.shareicon}
+                    id="shareicon"
+                    inlineButtonText="Choose Image"
+                  />
+                  <FormError>{errors.shareicon}</FormError>
+                </FormContext>
                 <FormFieldToggle
                   title="Display government masthead"
                   id="is_government"
@@ -283,30 +285,33 @@ const Settings = ({ match, location }) => {
               {/* Logo fields */}
               <div id="logo-fields">
                 <p className={elementStyles.formSectionHeader}>Logos</p>
-                <FormFieldMedia
-                  title="Agency logo"
-                  id="logo"
-                  value={currState.logo}
-                  errorMessage={errors.logo}
-                  isRequired
+                <FormContext
+                  hasError={!!errors.logo}
                   onFieldChange={changeHandler}
-                  inlineButtonText="Choose Image"
-                  siteName={siteName}
-                  placeholder=" "
-                  type="images"
-                />
-                <FormFieldMedia
-                  title="Favicon"
-                  id="favicon"
-                  value={currState.favicon}
-                  errorMessage={errors.favicon}
                   isRequired
+                >
+                  <FormTitle>Agency logo</FormTitle>
+                  <FormFieldMedia
+                    value={currState.logo}
+                    id="logo"
+                    inlineButtonText="Choose Image"
+                  />
+                  <FormError>{errors.logo}</FormError>
+                </FormContext>
+
+                <FormContext
+                  hasError={!!errors.favicon}
                   onFieldChange={changeHandler}
-                  inlineButtonText="Choose Image"
-                  siteName={siteName}
-                  placeholder=" "
-                  type="images"
-                />
+                  isRequired
+                >
+                  <FormTitle>Favicon</FormTitle>
+                  <FormFieldMedia
+                    value={currState.favicon}
+                    id="favicon"
+                    inlineButtonText="Choose Image"
+                  />
+                  <FormError>{errors.favicon}</FormError>
+                </FormContext>
               </div>
               {/* Analytics fields */}
               <div id="analytics-fields">
