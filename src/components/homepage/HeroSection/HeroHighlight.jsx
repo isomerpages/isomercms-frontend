@@ -39,7 +39,7 @@ export const HeroHighlight = ({ highlightsContent, onUpdate }) => {
   /*   useForm effects   */
   /** ****************** */
 
-  watch((data) => onUpdate(data)) // updates parent component (EditorHeroSection) when form values are changed
+  watch((data) => !_.isEqual(data, highlightsContent) && onUpdate(data)) // updates parent component (EditorHeroSection) when form values are changed
   useEffect(() => {
     trigger()
   }, []) // triggers validation when component is mounted
