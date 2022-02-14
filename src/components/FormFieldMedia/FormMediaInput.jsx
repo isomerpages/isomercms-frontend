@@ -4,6 +4,7 @@ import React from "react"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { useFormContext } from "../Form/FormContext"
+import FormInput from "../Form/FormInput"
 
 const FormMediaInput = ({
   placeholder = "",
@@ -13,19 +14,16 @@ const FormMediaInput = ({
   onClick = () => {},
   inlineButtonText = "Choose Item",
 }) => {
-  const { isRequired, hasError, isDisabled } = useFormContext()
+  const { isRequired, isDisabled } = useFormContext()
 
   return (
-    <div className="d-flex border">
-      <input
-        type="text"
+    <div className="d-flex">
+      <FormInput
         placeholder={placeholder}
         value={value}
         id={id}
-        autoComplete="off"
-        required={isRequired}
-        className={hasError ? `${elementStyles.error}` : "border-0"}
-        disabled
+        alwaysDisabled
+        className="border-1"
         {...register(id, { required: isRequired })}
       />
       {inlineButtonText && (
