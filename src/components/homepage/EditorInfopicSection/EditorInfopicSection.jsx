@@ -37,7 +37,7 @@ export const EditorInfopicSection = ({
     },
   })
 
-  watch((data) => onUpdate(data)) // updates parent component (EditHomepage) when form values are changed
+  watch((data) => !_.isEqual(data, sectionContent) && onUpdate(data)) // updates parent component (EditHomepage) when form values are changed
 
   /** ******************************** */
   /*     useEffects to load data     */

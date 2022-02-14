@@ -27,7 +27,6 @@ export const EditorHeroSection = ({ sectionContent, onUpdate }) => {
   })
   const {
     register,
-    unregister,
     formState: { errors },
     setValue,
     watch,
@@ -37,7 +36,7 @@ export const EditorHeroSection = ({ sectionContent, onUpdate }) => {
   /** ****************** */
   /*   useForm effects   */
   /** ****************** */
-  watch((data) => onUpdate(data)) // updates parent component (EditHomepage) when form values are changed
+  watch((data) => !_.isEqual(data, sectionContent) && onUpdate(data)) // updates parent component (EditHomepage) when form values are changed
   useEffect(() => {
     if (sectionContent.key_highlights) setValue("heroType", "highlights")
     else if (sectionContent.dropdown) setValue("heroType", "dropdown")

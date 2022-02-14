@@ -34,7 +34,7 @@ export const HeroOption = ({
   /*   useForm effects   */
   /** ****************** */
 
-  watch((data) => onUpdate(data)) // updates parent component (HeroDropdwon/HeroHighlights) when form values are changed
+  watch((data) => !_.isEqual(data, optionContent) && onUpdate(data)) // updates parent component (HeroDropdwon/HeroHighlights) when form values are changed
   useEffect(() => {
     trigger()
   }, []) // triggers validation when component is mounted
