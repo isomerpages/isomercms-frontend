@@ -12,6 +12,8 @@ on:
 
 jobs:
   install:
+    # NOTE: Netlify uses ubuntu 16.08 but Github Actions does not offer it by default.
+    # Hence, we default to the latest version.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
