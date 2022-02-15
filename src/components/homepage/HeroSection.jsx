@@ -64,22 +64,24 @@ const EditorHeroSection = ({
     </div>
     {shouldDisplay ? (
       <>
-        <FormField
-          title="Hero title"
-          id={`section-${sectionIndex}-hero-title`}
-          value={title}
-          errorMessage={errors.sections[0].hero.title}
-          isRequired
-          onFieldChange={onFieldChange}
-        />
-        <FormField
-          title="Hero subtitle"
-          id={`section-${sectionIndex}-hero-subtitle`}
-          value={subtitle}
-          errorMessage={errors.sections[0].hero.subtitle}
-          isRequired
-          onFieldChange={onFieldChange}
-        />
+        <FormContext isRequired hasError={!!errors.sections[0].hero.title}>
+          <FormTitle>Hero title</FormTitle>
+          <FormField
+            id={`section-${sectionIndex}-hero-title`}
+            value={title}
+            onChange={onFieldChange}
+          />
+          <FormError>{errors.sections[0].hero.title}</FormError>
+        </FormContext>
+        <FormContext isRequired hasError={!!errors.sections[0].hero.subtitle}>
+          <FormTitle>Hero subtitle</FormTitle>
+          <FormField
+            id={`section-${sectionIndex}-hero-subtitle`}
+            value={subtitle}
+            onChange={onFieldChange}
+          />
+          <FormError>{errors.sections[0].hero.subtitle}</FormError>
+        </FormContext>
         <FormContext
           hasError={!!errors.sections[0].hero.background}
           onFieldChange={onFieldChange}
