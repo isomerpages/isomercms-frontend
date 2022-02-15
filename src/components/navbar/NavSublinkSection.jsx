@@ -1,8 +1,10 @@
+import { FormError } from "components/Form"
+import FormContext from "components/Form/FormContext"
+import FormTitle from "components/Form/FormTitle"
+import FormField from "components/FormField"
 import PropTypes from "prop-types"
 import React from "react"
 import { Droppable, Draggable } from "react-beautiful-dnd"
-
-import FormField from "components/FormField"
 
 import styles from "styles/App.module.scss"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -43,22 +45,24 @@ const SublinkElem = ({
     {shouldDisplay ? (
       <>
         <div className={elementStyles.cardContent}>
-          <FormField
-            title="Submenu title"
-            id={`sublink-${linkIndex}-${sublinkIndex}-title`}
-            value={title}
-            isRequired
-            onFieldChange={onFieldChange}
-            errorMessage={errors.title}
-          />
-          <FormField
-            title="Submenu URL"
-            id={`sublink-${linkIndex}-${sublinkIndex}-url`}
-            value={url}
-            isRequired
-            onFieldChange={onFieldChange}
-            errorMessage={errors.url}
-          />
+          <FormContext isRequired hasError={!!errors.title}>
+            <FormTitle>Submenu title</FormTitle>
+            <FormField
+              id={`sublink-${linkIndex}-${sublinkIndex}-title`}
+              value={title}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.title}</FormError>
+          </FormContext>
+          <FormContext isRequired hasError={!!errors.url}>
+            <FormTitle>Submenu URL</FormTitle>
+            <FormField
+              id={`sublink-${linkIndex}-${sublinkIndex}-url`}
+              value={url}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.url}</FormError>
+          </FormContext>
         </div>
         <div className={elementStyles.inputGroup}>
           <button
