@@ -1,8 +1,10 @@
+import ContactFields from "components/contact-us/ContactFields"
+import FormContext from "components/Form/FormContext"
+import FormError from "components/Form/FormError"
+import FormTitle from "components/Form/FormTitle"
+import FormField from "components/FormField"
 import PropTypes from "prop-types"
 import React from "react"
-
-import ContactFields from "components/contact-us/ContactFields"
-import FormField from "components/FormField"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -47,13 +49,15 @@ const EditorContactCard = ({
       {shouldDisplay ? (
         <>
           <div className={elementStyles.cardContent}>
-            <FormField
-              title="Title"
-              id={`${sectionId}-${cardIndex}-title`}
-              value={title}
-              onFieldChange={onFieldChange}
-              errorMessage={cardErrors.title}
-            />
+            <FormContext hasError={!!cardErrors.title}>
+              <FormTitle>Title</FormTitle>
+              <FormField
+                id={`${sectionId}-${cardIndex}-title`}
+                value={title}
+                onChange={onFieldChange}
+              />
+              <FormError>{cardErrors.title}</FormError>
+            </FormContext>
             <ContactFields
               cardIndex={cardIndex}
               content={content}
