@@ -1,10 +1,12 @@
+import FormContext from "components/Form/FormContext"
+import FormError from "components/Form/FormError"
+import FormTitle from "components/Form/FormTitle"
+import FormField from "components/FormField"
+import NavSublinkSection from "components/navbar/NavSublinkSection"
 import PropTypes from "prop-types"
 import React, { useState, useRef } from "react"
 import { Droppable, Draggable } from "react-beautiful-dnd"
 import Select from "react-select"
-
-import FormField from "components/FormField"
-import NavSublinkSection from "components/navbar/NavSublinkSection"
 
 import styles from "styles/App.module.scss"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -14,8 +16,6 @@ import { isEmpty } from "utils"
 /* eslint
   react/no-array-index-key: 0
  */
-
-const defaultText = "--Choose a collection--"
 
 const NavElem = ({
   title,
@@ -96,14 +96,15 @@ const NavElem = ({
       {shouldDisplay ? (
         <>
           <div className={elementStyles.cardContent}>
-            <FormField
-              title="Menu title"
-              id={`link-${linkIndex}-title`}
-              value={title}
-              isRequired
-              onFieldChange={onFieldChange}
-              errorMessage={linkErrors.title}
-            />
+            <FormContext isRequired hasError={!!linkErrors.title}>
+              <FormTitle>Menu title</FormTitle>
+              <FormField
+                id={`link-${linkIndex}-title`}
+                value={title}
+                onChange={onFieldChange}
+              />
+              <FormError>{linkErrors.title}</FormError>
+            </FormContext>
             {collection && (
               <>
                 <p className={elementStyles.formLabel}>Folder</p>
@@ -120,13 +121,15 @@ const NavElem = ({
               </>
             )}
             {!collection && !isResource && (
-              <FormField
-                title="Permalink"
-                id={`link-${linkIndex}-url`}
-                value={url}
-                onFieldChange={onFieldChange}
-                errorMessage={linkErrors.url}
-              />
+              <FormContext hasError={!!linkErrors.url}>
+                <FormTitle>Permalink</FormTitle>
+                <FormField
+                  id={`link-${linkIndex}-url`}
+                  value={url}
+                  onChange={onFieldChange}
+                />
+                <FormError>{linkErrors.url}</FormError>
+              </FormContext>
             )}
             {sublinks && (
               <NavSublinkSection
