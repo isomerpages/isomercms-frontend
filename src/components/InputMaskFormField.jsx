@@ -16,15 +16,11 @@ const InputMaskFormField = ({
   onFieldChange,
   style,
   disabled,
-  fixedMessage,
   maxWidth,
 }) => (
   <>
     {title && <label className={elementStyles.formLabel}>{title}</label>}
     <div className={`d-flex text-nowrap ${maxWidth ? "w-100" : ""}`}>
-      {fixedMessage && (
-        <p className={elementStyles.formFixedText}>{fixedMessage}</p>
-      )}
       <InputMask
         mask={mask}
         maskChar={maskChar}
