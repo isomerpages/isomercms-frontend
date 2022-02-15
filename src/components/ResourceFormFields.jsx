@@ -11,13 +11,11 @@ const ResourceFormFields = ({ register, setValue, watch, trigger, errors }) => {
       <div className="d-flex row m-0">
         <div className="col-4 m-0 p-0">
           {/* Date */}
-          <FormField
-            register={register}
-            title="Date (YYYY-MM-DD)"
-            id="date"
-            errorMessage={errors.date?.message}
-            isRequired
-          />
+          <FormContext isRequired hasError={!!errors.date?.message}>
+            <FormTitle>Date (YYYY-MM-DD)</FormTitle>
+            <FormField {...register("date", { required: true })} id="date" />
+            <FormError>{errors.date?.message}</FormError>
+          </FormContext>
         </div>
         <div className="col-8">
           <p className={elementStyles.formLabel}>Resource Type</p>
