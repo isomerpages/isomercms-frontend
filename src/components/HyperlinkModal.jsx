@@ -6,6 +6,9 @@ import React, { Component } from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
+import FormContext from "./Form/FormContext"
+import FormTitle from "./Form/FormTitle"
+
 // axios settings
 axios.defaults.withCredentials = true
 
@@ -42,20 +45,20 @@ export default class HyperlinkModal extends Component {
             </div>
             <div className={elementStyles.modalContent}>
               <div className={elementStyles.modalFormFields}>
-                <FormField
-                  title="Text"
-                  id="text"
-                  value={text}
-                  isRequired
-                  onFieldChange={this.changeHandler}
-                />
-                <FormField
-                  title="Link"
-                  id="link"
-                  value={link}
-                  isRequired
-                  onFieldChange={this.changeHandler}
-                />
+                <FormContext isRequired>
+                  <FormTitle>Text</FormTitle>
+                  <FormField
+                    id="text"
+                    value={text}
+                    onChange={this.changeHandler}
+                  />
+                  <FormTitle>Link</FormTitle>
+                  <FormField
+                    id="link"
+                    value={link}
+                    onChange={this.changeHandler}
+                  />
+                </FormContext>
               </div>
               <SaveDeleteButtons
                 isDisabled={false}
