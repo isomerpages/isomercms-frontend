@@ -128,7 +128,7 @@ export const PageSettingsModal = ({
                       {...register("title", { required: true })}
                       id="title"
                     />
-                    <FormError>errors.title?.message</FormError>
+                    <FormError>{errors.title?.message}</FormError>
                   </FormContext>
                   <br />
                   {/* Permalink */}
