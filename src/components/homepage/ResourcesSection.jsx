@@ -1,7 +1,9 @@
+import { FormError } from "components/Form"
+import FormContext from "components/Form/FormContext"
+import FormTitle from "components/Form/FormTitle"
+import FormField from "components/FormField"
 import PropTypes from "prop-types"
 import React from "react"
-
-import FormField from "components/FormField"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -46,30 +48,33 @@ const EditorResourcesSection = ({
     {shouldDisplay ? (
       <>
         <div className={elementStyles.cardContent}>
-          <FormField
-            title="Resources section subtitle"
-            id={`section-${sectionIndex}-resources-subtitle`}
-            value={subtitle}
-            errorMessage={errors.subtitle}
-            isRequired
-            onFieldChange={onFieldChange}
-          />
-          <FormField
-            title="Resources section title"
-            id={`section-${sectionIndex}-resources-title`}
-            value={title}
-            errorMessage={errors.title}
-            isRequired
-            onFieldChange={onFieldChange}
-          />
-          <FormField
-            title="Resources button name"
-            id={`section-${sectionIndex}-resources-button`}
-            value={button}
-            errorMessage={errors.button}
-            isRequired
-            onFieldChange={onFieldChange}
-          />
+          <FormContext isRequired hasError={!!errors.subtitle}>
+            <FormTitle>Resources section subtitle</FormTitle>
+            <FormField
+              id={`section-${sectionIndex}-resources-subtitle`}
+              value={subtitle}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.subtitle}</FormError>
+          </FormContext>
+          <FormContext isRequired hasError={!!errors.title}>
+            <FormTitle>Resources section title</FormTitle>
+            <FormField
+              id={`section-${sectionIndex}-resources-title`}
+              value={title}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.title}</FormError>
+          </FormContext>
+          <FormContext isRequired hasError={!!errors.button}>
+            <FormTitle>Resources button name</FormTitle>
+            <FormField
+              id={`section-${sectionIndex}-resources-button`}
+              value={button}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.button}</FormError>
+          </FormContext>
         </div>
         <div className={elementStyles.inputGroup}>
           <button
