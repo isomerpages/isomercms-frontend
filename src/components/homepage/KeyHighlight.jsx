@@ -1,7 +1,9 @@
+import FormContext from "components/Form/FormContext"
+import FormError from "components/Form/FormError"
+import FormTitle from "components/Form/FormTitle"
+import FormField from "components/FormField"
 import PropTypes from "prop-types"
 import React from "react"
-
-import FormField from "components/FormField"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -38,34 +40,37 @@ const KeyHighlight = ({
       </button>
     </div>
     {/* Core highlight fields */}
-    {shouldDisplay ? (
+    {shouldDisplay && (
       <>
         <div className={elementStyles.cardContent}>
-          <FormField
-            title="Highlight title"
-            id={`highlight-${highlightIndex}-title`}
-            value={title}
-            errorMessage={errors.title}
-            isRequired
-            onFieldChange={onFieldChange}
-          />
-          <FormField
-            title="Highlight description"
-            id={`highlight-${highlightIndex}-description`}
-            value={description}
-            errorMessage={errors.description}
-            isRequired
-            onFieldChange={onFieldChange}
-          />
-          <FormField
-            title="Highlight URL"
-            placeholder="Insert permalink or external URL"
-            id={`highlight-${highlightIndex}-url`}
-            value={url}
-            errorMessage={errors.url}
-            isRequired
-            onFieldChange={onFieldChange}
-          />
+          <FormContext isRequired hasError={!!errors.title}>
+            <FormTitle>Highlight title</FormTitle>
+            <FormField
+              id={`highlight-${highlightIndex}-title`}
+              value={title}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.title}</FormError>
+          </FormContext>
+          <FormContext isRequired hasError={!!errors.description}>
+            <FormTitle>Highlight description</FormTitle>
+            <FormField
+              id={`highlight-${highlightIndex}-description`}
+              value={description}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.description}</FormError>
+          </FormContext>
+          <FormContext isRequired hasError={!!errors.url}>
+            <FormTitle>Highlight URL</FormTitle>
+            <FormField
+              placeholder="Insert permalink or external URL"
+              id={`highlight-${highlightIndex}-url`}
+              value={url}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.url}</FormError>
+          </FormContext>
         </div>
         <div className={elementStyles.inputGroup}>
           <button
@@ -79,7 +84,7 @@ const KeyHighlight = ({
           </button>
         </div>
       </>
-    ) : null}
+    )}
   </div>
 )
 
