@@ -1,5 +1,8 @@
 import { yupResolver } from "@hookform/resolvers/yup"
 import axios from "axios"
+import { FormContext } from "components/Form"
+import FormError from "components/Form/FormError"
+import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
 import PropTypes from "prop-types"
@@ -38,6 +41,7 @@ const getModalTitle = ({ isCreate, params }) => {
   return "Folder settings"
 }
 
+// eslint-disable-next-line import/prefer-default-export
 export const DirectorySettingsModal = ({
   isCreate,
   params,
@@ -100,12 +104,14 @@ export const DirectorySettingsModal = ({
           </button>
         </div>
         <form className={elementStyles.modalContent}>
-          <FormField
-            register={register}
-            title="Title"
-            id="newDirectoryName"
-            errorMessage={errors.newDirectoryName?.message}
-          />
+          <FormContext hasError={!!errors.newDirectoryName?.message}>
+            <FormTitle>Title</FormTitle>
+            <FormField
+              {...register("newDirectoryName")}
+              id="newDirectoryName"
+            />
+            <FormError>{errors.newDirectoryName?.message}</FormError>
+          </FormContext>
           <SaveDeleteButtons
             saveLabel={isCreate && "Next"}
             isDisabled={!_.isEmpty(errors)}
