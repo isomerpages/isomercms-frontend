@@ -51,45 +51,52 @@ const EditorInfopicSection = ({
     {shouldDisplay ? (
       <>
         <div className={elementStyles.cardContent}>
-          <FormField
-            title="Infopic subtitle"
-            id={`section-${sectionIndex}-infopic-subtitle`}
-            value={subtitle}
-            errorMessage={errors.subtitle}
-            onFieldChange={onFieldChange}
-          />
-          <FormField
-            title="Infopic title"
-            id={`section-${sectionIndex}-infopic-title`}
-            value={title}
-            errorMessage={errors.title}
-            onFieldChange={onFieldChange}
-          />
-          <FormField
-            title="Infopic description"
-            id={`section-${sectionIndex}-infopic-description`}
-            value={description}
-            errorMessage={errors.description}
-            onFieldChange={onFieldChange}
-          />
-          <FormField
-            title="Infopic button name"
-            id={`section-${sectionIndex}-infopic-button`}
-            value={button}
-            errorMessage={errors.button}
-            isRequired
-            onFieldChange={onFieldChange}
-          />
-          <FormField
-            title="Infopic button URL"
-            placeholder="Insert permalink or external URL"
-            id={`section-${sectionIndex}-infopic-url`}
-            value={url}
-            errorMessage={errors.url}
-            isRequired
-            onFieldChange={onFieldChange}
-          />
-
+          <FormContext hasError={!!errors.subtitle}>
+            <FormTitle>Infopic subtitle</FormTitle>
+            <FormField
+              id={`section-${sectionIndex}-infopic-subtitle`}
+              value={subtitle}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.subtitle}</FormError>
+          </FormContext>
+          <FormContext hasError={!!errors.title}>
+            <FormTitle>Infopic title</FormTitle>
+            <FormField
+              id={`section-${sectionIndex}-infopic-title`}
+              value={title}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.title}</FormError>
+          </FormContext>
+          <FormContext hasError={!!errors.description}>
+            <FormTitle>Infopic description</FormTitle>
+            <FormField
+              id={`section-${sectionIndex}-infopic-description`}
+              value={description}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.description}</FormError>
+          </FormContext>
+          <FormContext isRequired hasError={!!errors.button}>
+            <FormTitle>Infopic button name</FormTitle>
+            <FormField
+              id={`section-${sectionIndex}-infopic-button`}
+              value={button}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.button}</FormError>
+          </FormContext>
+          <FormContext isRequired hasError={errors.url}>
+            <FormTitle>Infopic button URL</FormTitle>
+            <FormField
+              placeholder="Insert permalink or external URL"
+              id={`section-${sectionIndex}-infopic-url`}
+              value={url}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.url}</FormError>
+          </FormContext>
           <FormContext
             hasError={!!errors.image}
             onFieldChange={onFieldChange}
@@ -103,14 +110,15 @@ const EditorInfopicSection = ({
             />
             <FormError>{errors.image}</FormError>
           </FormContext>
-          <FormField
-            title="Infopic image alt text"
-            id={`section-${sectionIndex}-infopic-alt`}
-            value={imageAlt}
-            errorMessage={errors.alt}
-            isRequired
-            onFieldChange={onFieldChange}
-          />
+          <FormContext isRequired hasError={!!errors.alt}>
+            <FormTitle>Infopic image alt text</FormTitle>
+            <FormField
+              id={`section-${sectionIndex}-infopic-alt`}
+              value={imageAlt}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.alt}</FormError>
+          </FormContext>
         </div>
         <div className={elementStyles.inputGroup}>
           <button
