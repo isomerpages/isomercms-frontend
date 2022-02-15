@@ -122,13 +122,14 @@ export const PageSettingsModal = ({
                   To edit page content, simply click on the page title. <br />
                   <Breadcrumb params={params} title={watch("title")} />
                   {/* Title */}
-                  <FormField
-                    register={register}
-                    title="Page title"
-                    id="title"
-                    errorMessage={errors.title?.message}
-                    isRequired
-                  />
+                  <FormContext isRequired hasError={!!errors.title?.message}>
+                    <FormTitle>Page Title</FormTitle>
+                    <FormField
+                      {...register("title", { required: true })}
+                      id="title"
+                    />
+                    <FormError>errors.title?.message</FormError>
+                  </FormContext>
                   <br />
                   {/* Permalink */}
                   {watch("layout") !== "file" && (
@@ -162,20 +163,21 @@ export const PageSettingsModal = ({
                   )}
                   <br />
                   <p className={elementStyles.formLabel}>Page details</p>
-                  <FormField
-                    register={register}
-                    title="Meta Description (Optional)"
-                    id="description"
-                    children={
-                      <p className={elementStyles.formDescription}>
-                        Description snippet shown in search results.{" "}
-                        <a href="https://go.gov.sg/isomer-meta" target="_blank">
-                          Learn more
-                        </a>
-                      </p>
-                    }
-                    errorMessage={errors.description?.message}
-                  />
+                  <FormContext hasError={!!errors.description?.message}>
+                    <FormTitle>Meta Description (Optional)</FormTitle>
+                    <FormDescription>
+                      Description snippet shown in search results.{" "}
+                      <a
+                        href="https://go.gov.sg/isomer-meta"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Learn more
+                      </a>
+                    </FormDescription>
+                    <FormField {...register("description")} id="description" />
+                    <FormError>{errors.description?.message}</FormError>
+                  </FormContext>
                   <br />
                   <FormContext
                     hasError={!!errors.image?.message}
