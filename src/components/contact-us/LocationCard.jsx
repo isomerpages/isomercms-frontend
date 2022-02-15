@@ -1,11 +1,13 @@
-import PropTypes from "prop-types"
-import React from "react"
-
 import {
   LocationHoursFields,
   LocationAddressFields,
 } from "components/contact-us/LocationFields"
+import { FormContext } from "components/Form"
+import FormError from "components/Form/FormError"
+import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
+import PropTypes from "prop-types"
+import React from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -51,13 +53,15 @@ const EditorLocationSection = ({
     {shouldDisplay ? (
       <>
         <div className={elementStyles.cardContent}>
-          <FormField
-            title="Title"
-            id={`${sectionId}-${cardIndex}-title`}
-            value={title}
-            onFieldChange={onFieldChange}
-            errorMessage={cardErrors.title}
-          />
+          <FormContext hasError={!!cardErrors.title}>
+            <FormTitle>Title</FormTitle>
+            <FormField
+              id={`${sectionId}-${cardIndex}-title`}
+              value={title}
+              onChange={onFieldChange}
+            />
+            <FormError>{cardErrors.title}</FormError>
+          </FormContext>
           <LocationAddressFields
             title="Address"
             cardIndex={cardIndex}
@@ -66,13 +70,15 @@ const EditorLocationSection = ({
             errors={cardErrors.address}
             sectionId={sectionId}
           />
-          <FormField
-            title="Map url"
-            id={`${sectionId}-${cardIndex}-maps_link`}
-            value={mapUrl}
-            onFieldChange={onFieldChange}
-            errorMessage={cardErrors.maps_link}
-          />
+          <FormContext hasError={!!cardErrors.maps_link}>
+            <FormTitle>Map url</FormTitle>
+            <FormField
+              id={`${sectionId}-${cardIndex}-maps_link`}
+              value={mapUrl}
+              onChange={onFieldChange}
+            />
+            <FormError>{cardErrors.maps_link}</FormError>
+          </FormContext>
           <span className={elementStyles.info}>
             Note: If left blank, map url is automatically generated from Address
             fields
