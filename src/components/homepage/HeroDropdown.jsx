@@ -1,8 +1,10 @@
+import FormContext from "components/Form/FormContext"
+import FormError from "components/Form/FormError"
+import FormTitle from "components/Form/FormTitle"
+import FormField from "components/FormField"
 import PropTypes from "prop-types"
 import React from "react"
 import { Droppable, Draggable } from "react-beautiful-dnd"
-
-import FormField from "components/FormField"
 
 import styles from "styles/App.module.scss"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -40,22 +42,24 @@ const HeroDropdownElem = ({
     {shouldDisplay ? (
       <>
         <div className={elementStyles.cardContent}>
-          <FormField
-            title="Dropdown element title"
-            id={`dropdownelem-${dropdownsIndex}-title`}
-            value={title}
-            errorMessage={errors.title}
-            isRequired
-            onFieldChange={onFieldChange}
-          />
-          <FormField
-            title="Dropdown element URL"
-            id={`dropdownelem-${dropdownsIndex}-url`}
-            value={url}
-            errorMessage={errors.url}
-            isRequired
-            onFieldChange={onFieldChange}
-          />
+          <FormContext isRequired hasError={!!errors.title}>
+            <FormTitle>Dropdown element title</FormTitle>
+            <FormField
+              id={`dropdownelem-${dropdownsIndex}-title`}
+              value={title}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.title}</FormError>
+          </FormContext>
+          <FormContext isRequired hasError={!!errors.url}>
+            <FormTitle>Dropdown element URL</FormTitle>
+            <FormField
+              id={`dropdownelem-${dropdownsIndex}-url`}
+              value={url}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.url}</FormError>
+          </FormContext>
         </div>
         <div className={elementStyles.inputGroup}>
           <button
@@ -83,14 +87,11 @@ const HeroDropdown = ({
   errors,
 }) => (
   <div>
-    <FormField
-      title="Hero dropdown title"
-      id="dropdown-title"
-      value={title}
-      errorMessage={errors.sections[0].hero.dropdown}
-      isRequired
-      onFieldChange={onFieldChange}
-    />
+    <FormContext isRequired hasError={!!errors.sections[0].hero.dropdown}>
+      <FormTitle>Hero dropdown title</FormTitle>
+      <FormField id="dropdown-title" value={title} onChange={onFieldChange} />
+      <FormError>{errors.sections[0].hero.dropdown}</FormError>
+    </FormContext>
     <Droppable droppableId="dropdownelem" type="dropdownelem">
       {(droppableProvided) => (
         /* eslint-disable react/jsx-props-no-spreading */
