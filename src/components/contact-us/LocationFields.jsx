@@ -29,6 +29,7 @@ const LocationHoursFields = ({
                 <FormContext hasError={!!errors[operationsIndex].days}>
                   <FormTitle>Days</FormTitle>
                   <FormField
+                    placeholder="Days"
                     id={`${sectionId}-${cardIndex}-operating_hours-${operationsIndex}-days`}
                     value={operations.days}
                     onChange={onFieldChange}
@@ -40,6 +41,7 @@ const LocationHoursFields = ({
                 <FormContext hasError={!!errors[operationsIndex].time}>
                   <FormTitle>Hours</FormTitle>
                   <FormField
+                    placeholder="Hours"
                     id={`${sectionId}-${cardIndex}-operating_hours-${operationsIndex}-time`}
                     value={operations.time}
                     onChange={onFieldChange}
@@ -52,6 +54,7 @@ const LocationHoursFields = ({
               <FormContext hasError={!!errors[operationsIndex].description}>
                 <FormTitle>Description</FormTitle>
                 <FormField
+                  placeholder="Description"
                   id={`${sectionId}-${cardIndex}-operating_hours-${operationsIndex}-description`}
                   value={operations.description}
                   onChange={onFieldChange}
@@ -122,6 +125,7 @@ const LocationAddressFields = ({
       ) => (
         <div className="py-1" key={addressIndex}>
           <FormField
+            placeholder={title}
             id={`${sectionId}-${cardIndex}-address-${addressIndex}`}
             value={addressValue}
             onChange={onFieldChange}

@@ -50,12 +50,13 @@ const EditorLocationSection = ({
         />
       </button>
     </div>
-    {shouldDisplay ? (
+    {shouldDisplay && (
       <>
         <div className={elementStyles.cardContent}>
           <FormContext hasError={!!cardErrors.title}>
             <FormTitle>Title</FormTitle>
             <FormField
+              placeholder="Title"
               id={`${sectionId}-${cardIndex}-title`}
               value={title}
               onChange={onFieldChange}
@@ -73,6 +74,7 @@ const EditorLocationSection = ({
           <FormContext hasError={!!cardErrors.maps_link}>
             <FormTitle>Map url</FormTitle>
             <FormField
+              placeholder="Map url"
               id={`${sectionId}-${cardIndex}-maps_link`}
               value={mapUrl}
               onChange={onFieldChange}
@@ -102,7 +104,7 @@ const EditorLocationSection = ({
           </button>
         </div>
       </>
-    ) : null}
+    )}
   </div>
 )
 

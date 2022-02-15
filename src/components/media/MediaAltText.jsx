@@ -21,6 +21,7 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
     handleSubmit,
     formState: { errors },
   } = useFormContext()
+  const formTitle = type === "images" ? "Alt text" : "Text"
 
   return (
     <div className={elementStyles.overlay}>
@@ -67,6 +68,7 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
                 <FormContext isDisabled>
                   <FormTitle>File name</FormTitle>
                   <FormField
+                    placeholder="File name"
                     value={
                       watch("selectedMedia").name ||
                       watch("selectedMedia").newFileName
@@ -75,9 +77,7 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
                 </FormContext>
                 <br />
                 <FormContext hasError={!!errors.altText?.message}>
-                  <FormTitle>
-                    {type === "images" ? "Alt text" : "Text"}
-                  </FormTitle>
+                  <FormTitle>{formTitle}</FormTitle>
                   <FormDescription>
                     {type === "images" ? (
                       <>
@@ -94,7 +94,11 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
                       "Description of file displayed in hyperlink"
                     )}
                   </FormDescription>
-                  <FormField {...register("altText")} id="altText" />
+                  <FormField
+                    placeholder={formTitle}
+                    {...register("altText")}
+                    id="altText"
+                  />
                   <FormError>{errors.altText?.message}</FormError>
                 </FormContext>
               </div>

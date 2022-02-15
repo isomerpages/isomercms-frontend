@@ -40,6 +40,7 @@ const ContactFields = ({
       <FormContext hasError={!!errors[1].email}>
         <FormTitle>Email</FormTitle>
         <FormField
+          placeholder="Email"
           id={`${sectionId}-${cardIndex}-email-1`}
           value={content[1].email}
           onChange={onFieldChange}
@@ -49,6 +50,7 @@ const ContactFields = ({
       <FormContext hasError={!!errors[2].other}>
         <FormTitle>Others</FormTitle>
         <FormField
+          placeholder="Others"
           id={`${sectionId}-${cardIndex}-other-2`}
           value={content[2].other}
           onChange={onFieldChange}

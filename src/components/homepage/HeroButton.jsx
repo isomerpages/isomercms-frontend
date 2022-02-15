@@ -14,6 +14,7 @@ const HeroButton = ({ button, url, sectionIndex, onFieldChange, errors }) => (
     <FormContext hasError={!!errors.button}>
       <FormTitle>Hero button</FormTitle>
       <FormField
+        placeholder="Hero button"
         id={`section-${sectionIndex}-hero-button`}
         value={button}
         onChange={onFieldChange}

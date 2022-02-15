@@ -107,8 +107,9 @@ export const DirectorySettingsModal = ({
           <FormContext hasError={!!errors.newDirectoryName?.message}>
             <FormTitle>Title</FormTitle>
             <FormField
-              {...register("newDirectoryName")}
+              placeholder="Title"
               id="newDirectoryName"
+              {...register("newDirectoryName")}
             />
             <FormError>{errors.newDirectoryName?.message}</FormError>
           </FormContext>

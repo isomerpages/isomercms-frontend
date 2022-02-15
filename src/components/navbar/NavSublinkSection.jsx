@@ -48,6 +48,7 @@ const SublinkElem = ({
           <FormContext isRequired hasError={!!errors.title}>
             <FormTitle>Submenu title</FormTitle>
             <FormField
+              placeholder="Submenu title"
               id={`sublink-${linkIndex}-${sublinkIndex}-title`}
               value={title}
               onChange={onFieldChange}
@@ -57,6 +58,7 @@ const SublinkElem = ({
           <FormContext isRequired hasError={!!errors.url}>
             <FormTitle>Submenu URL</FormTitle>
             <FormField
+              placeholder="Submenu URL"
               id={`sublink-${linkIndex}-${sublinkIndex}-url`}
               value={url}
               onChange={onFieldChange}

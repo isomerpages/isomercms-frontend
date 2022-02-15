@@ -99,6 +99,7 @@ const NavElem = ({
             <FormContext isRequired hasError={!!linkErrors.title}>
               <FormTitle>Menu title</FormTitle>
               <FormField
+                placeholder="Menu title"
                 id={`link-${linkIndex}-title`}
                 value={title}
                 onChange={onFieldChange}
@@ -124,6 +125,7 @@ const NavElem = ({
               <FormContext hasError={!!linkErrors.url}>
                 <FormTitle>Permalink</FormTitle>
                 <FormField
+                  placeholder="Permalink"
                   id={`link-${linkIndex}-url`}
                   value={url}
                   onChange={onFieldChange}

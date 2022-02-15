@@ -67,6 +67,7 @@ const EditorHeroSection = ({
         <FormContext isRequired hasError={!!errors.sections[0].hero.title}>
           <FormTitle>Hero title</FormTitle>
           <FormField
+            placeholder="Hero title"
             id={`section-${sectionIndex}-hero-title`}
             value={title}
             onChange={onFieldChange}
@@ -76,6 +77,7 @@ const EditorHeroSection = ({
         <FormContext isRequired hasError={!!errors.sections[0].hero.subtitle}>
           <FormTitle>Hero subtitle</FormTitle>
           <FormField
+            placeholder="Hero subtitle"
             id={`section-${sectionIndex}-hero-subtitle`}
             value={subtitle}
             onChange={onFieldChange}

@@ -51,6 +51,7 @@ const EditorResourcesSection = ({
           <FormContext isRequired hasError={!!errors.subtitle}>
             <FormTitle>Resources section subtitle</FormTitle>
             <FormField
+              placeholder="Resources section subtitle"
               id={`section-${sectionIndex}-resources-subtitle`}
               value={subtitle}
               onChange={onFieldChange}
@@ -60,6 +61,7 @@ const EditorResourcesSection = ({
           <FormContext isRequired hasError={!!errors.title}>
             <FormTitle>Resources section title</FormTitle>
             <FormField
+              placeholder="Resources section title"
               id={`section-${sectionIndex}-resources-title`}
               value={title}
               onChange={onFieldChange}
@@ -69,6 +71,7 @@ const EditorResourcesSection = ({
           <FormContext isRequired hasError={!!errors.button}>
             <FormTitle>Resources button name</FormTitle>
             <FormField
+              placeholder="Resources button name"
               id={`section-${sectionIndex}-resources-button`}
               value={button}
               onChange={onFieldChange}

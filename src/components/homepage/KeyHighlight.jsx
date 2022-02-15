@@ -46,6 +46,7 @@ const KeyHighlight = ({
           <FormContext isRequired hasError={!!errors.title}>
             <FormTitle>Highlight title</FormTitle>
             <FormField
+              placeholder="Highlight title"
               id={`highlight-${highlightIndex}-title`}
               value={title}
               onChange={onFieldChange}
@@ -55,6 +56,7 @@ const KeyHighlight = ({
           <FormContext isRequired hasError={!!errors.description}>
             <FormTitle>Highlight description</FormTitle>
             <FormField
+              placeholder="Highlight description"
               id={`highlight-${highlightIndex}-description`}
               value={description}
               onChange={onFieldChange}

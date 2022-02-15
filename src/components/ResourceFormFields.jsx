@@ -13,7 +13,11 @@ const ResourceFormFields = ({ register, setValue, watch, trigger, errors }) => {
           {/* Date */}
           <FormContext isRequired hasError={!!errors.date?.message}>
             <FormTitle>Date (YYYY-MM-DD)</FormTitle>
-            <FormField {...register("date", { required: true })} id="date" />
+            <FormField
+              placeholder="Date (YYYY-MM-DD)"
+              {...register("date", { required: true })}
+              id="date"
+            />
             <FormError>{errors.date?.message}</FormError>
           </FormContext>
         </div>

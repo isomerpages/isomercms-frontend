@@ -54,6 +54,7 @@ const EditorInfopicSection = ({
           <FormContext hasError={!!errors.subtitle}>
             <FormTitle>Infopic subtitle</FormTitle>
             <FormField
+              placeholder="Infopic subtitle"
               id={`section-${sectionIndex}-infopic-subtitle`}
               value={subtitle}
               onChange={onFieldChange}
@@ -63,6 +64,7 @@ const EditorInfopicSection = ({
           <FormContext hasError={!!errors.title}>
             <FormTitle>Infopic title</FormTitle>
             <FormField
+              placeholder="Infopic title"
               id={`section-${sectionIndex}-infopic-title`}
               value={title}
               onChange={onFieldChange}
@@ -72,6 +74,7 @@ const EditorInfopicSection = ({
           <FormContext hasError={!!errors.description}>
             <FormTitle>Infopic description</FormTitle>
             <FormField
+              placeholder="Infopic description"
               id={`section-${sectionIndex}-infopic-description`}
               value={description}
               onChange={onFieldChange}
@@ -81,6 +84,7 @@ const EditorInfopicSection = ({
           <FormContext isRequired hasError={!!errors.button}>
             <FormTitle>Infopic button name</FormTitle>
             <FormField
+              placeholder="Infopic button name"
               id={`section-${sectionIndex}-infopic-button`}
               value={button}
               onChange={onFieldChange}
@@ -113,6 +117,7 @@ const EditorInfopicSection = ({
           <FormContext isRequired hasError={!!errors.alt}>
             <FormTitle>Infopic image alt text</FormTitle>
             <FormField
+              placeholder="Infopic image alt text"
               id={`section-${sectionIndex}-infopic-alt`}
               value={imageAlt}
               onChange={onFieldChange}

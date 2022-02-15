@@ -52,6 +52,7 @@ const EditorContactCard = ({
             <FormContext hasError={!!cardErrors.title}>
               <FormTitle>Title</FormTitle>
               <FormField
+                placeholder="Title"
                 id={`${sectionId}-${cardIndex}-title`}
                 value={title}
                 onChange={onFieldChange}

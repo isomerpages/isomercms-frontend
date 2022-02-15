@@ -67,7 +67,6 @@ const EmptyResourceRoom = ({ params }) => {
       <FormContext isRequired hasError={!!errors.newDirectoryName?.message}>
         <FormField
           id="newDirectoryName"
-          className="w-100"
           placeholder="Resource room title"
           {...register("newDirectoryName", { required: true })}
         />

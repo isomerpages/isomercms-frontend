@@ -53,6 +53,7 @@ const EditorInfobarSection = ({
           <FormContext isRequired hasError={!!errors.subtitle}>
             <FormTitle>Infobar subtitle</FormTitle>
             <FormField
+              placeholder="Infobar subtitle"
               id={`section-${sectionIndex}-infobar-subtitle`}
               value={subtitle}
               onChange={onFieldChange}
@@ -62,6 +63,7 @@ const EditorInfobarSection = ({
           <FormContext isRequired hasError={!!errors.title}>
             <FormTitle>Infobar title</FormTitle>
             <FormField
+              placeholder="Infobar title"
               id={`section-${sectionIndex}-infobar-title`}
               value={title}
               onChange={onFieldChange}
@@ -71,6 +73,7 @@ const EditorInfobarSection = ({
           <FormContext isRequired hasError={!!errors.description}>
             <FormTitle>Infobar description</FormTitle>
             <FormField
+              placeholder="Infobar description"
               id={`section-${sectionIndex}-infobar-description`}
               value={description}
               onChange={onFieldChange}
@@ -80,6 +83,7 @@ const EditorInfobarSection = ({
           <FormContext isRequired hasError={!!errors.button}>
             <FormTitle>Infobar button name</FormTitle>
             <FormField
+              placeholder="Infobar button name"
               id={`section-${sectionIndex}-infobar-button`}
               value={button}
               onChange={onFieldChange}

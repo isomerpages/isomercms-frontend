@@ -45,6 +45,7 @@ const HeroDropdownElem = ({
           <FormContext isRequired hasError={!!errors.title}>
             <FormTitle>Dropdown element title</FormTitle>
             <FormField
+              placeholder="Dropdown element title"
               id={`dropdownelem-${dropdownsIndex}-title`}
               value={title}
               onChange={onFieldChange}
@@ -54,6 +55,7 @@ const HeroDropdownElem = ({
           <FormContext isRequired hasError={!!errors.url}>
             <FormTitle>Dropdown element URL</FormTitle>
             <FormField
+              placeholder="Dropdown element URL"
               id={`dropdownelem-${dropdownsIndex}-url`}
               value={url}
               onChange={onFieldChange}
@@ -89,7 +91,12 @@ const HeroDropdown = ({
   <div>
     <FormContext isRequired hasError={!!errors.sections[0].hero.dropdown}>
       <FormTitle>Hero dropdown title</FormTitle>
-      <FormField id="dropdown-title" value={title} onChange={onFieldChange} />
+      <FormField
+        placeholder="Hero dropdown title"
+        id="dropdown-title"
+        value={title}
+        onChange={onFieldChange}
+      />
       <FormError>{errors.sections[0].hero.dropdown}</FormError>
     </FormContext>
     <Droppable droppableId="dropdownelem" type="dropdownelem">

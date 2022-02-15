@@ -805,12 +805,14 @@ const EditContactUs = ({ match }) => {
                 <FormContext isRequired>
                   <FormTitle>Agency Name</FormTitle>
                   <FormField
+                    placeholder="Agency Name"
                     id="header-agency_name"
                     value={frontMatter.agency_name || ""}
                     onChange={onFieldChange}
                   />
                   <FormTitle>Feedback Url</FormTitle>
                   <FormField
+                    placeholder="Feedback Url"
                     id="feedback"
                     value={footerContent.feedback || ""}
                     onChange={onFieldChange}

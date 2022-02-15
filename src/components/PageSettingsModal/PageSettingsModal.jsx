@@ -125,8 +125,9 @@ export const PageSettingsModal = ({
                   <FormContext isRequired hasError={!!errors.title?.message}>
                     <FormTitle>Page Title</FormTitle>
                     <FormField
-                      {...register("title", { required: true })}
+                      placeholder="Page Title"
                       id="title"
+                      {...register("title", { required: true })}
                     />
                     <FormError>{errors.title?.message}</FormError>
                   </FormContext>
@@ -175,7 +176,11 @@ export const PageSettingsModal = ({
                         Learn more
                       </a>
                     </FormDescription>
-                    <FormField {...register("description")} id="description" />
+                    <FormField
+                      placeholder="Meta Description (Optional)"
+                      id="description"
+                      {...register("description")}
+                    />
                     <FormError>{errors.description?.message}</FormError>
                   </FormContext>
                   <br />

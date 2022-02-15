@@ -147,7 +147,11 @@ export const MediaSettingsModal = ({
             <div className={elementStyles.modalFormFields}>
               <FormContext hasError={!!errors.name?.message}>
                 <FormTitle>File name</FormTitle>
-                <FormField {...register("name")} id="name" />
+                <FormField
+                  placeholder="File name"
+                  {...register("name")}
+                  id="name"
+                />
                 <FormError>{errors.name?.message}</FormError>
               </FormContext>
             </div>

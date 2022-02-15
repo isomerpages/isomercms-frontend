@@ -48,12 +48,14 @@ export default class HyperlinkModal extends Component {
                 <FormContext isRequired>
                   <FormTitle>Text</FormTitle>
                   <FormField
+                    placeholder="Text"
                     id="text"
                     value={text}
                     onChange={this.changeHandler}
                   />
                   <FormTitle>Link</FormTitle>
                   <FormField
+                    placeholder="Link"
                     id="link"
                     value={link}
                     onChange={this.changeHandler}
