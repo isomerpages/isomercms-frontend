@@ -1,8 +1,9 @@
-import _ from "lodash"
+import { FormContext } from "components/Form"
+import FormError from "components/Form/FormError"
+import FormTitle from "components/Form/FormTitle"
+import FormField from "components/FormField"
 import PropTypes from "prop-types"
 import React, { useEffect, useState } from "react"
-
-import FormField from "components/FormField"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -25,32 +26,38 @@ const LocationHoursFields = ({
           <div className="mb-1" key={operationsIndex}>
             <div className="d-flex flex-row">
               <div className="w-50 pr-1">
-                <FormField
-                  title="Days"
-                  id={`${sectionId}-${cardIndex}-operating_hours-${operationsIndex}-days`}
-                  value={operations.days}
-                  onFieldChange={onFieldChange}
-                  errorMessage={errors[operationsIndex].days}
-                />
+                <FormContext hasError={!!errors[operationsIndex].days}>
+                  <FormTitle>Days</FormTitle>
+                  <FormField
+                    id={`${sectionId}-${cardIndex}-operating_hours-${operationsIndex}-days`}
+                    value={operations.days}
+                    onChange={onFieldChange}
+                  />
+                  <FormError>{errors[operationsIndex].days}</FormError>
+                </FormContext>
               </div>
               <div className="w-50 pl-1">
-                <FormField
-                  title="Hours"
-                  id={`${sectionId}-${cardIndex}-operating_hours-${operationsIndex}-time`}
-                  value={operations.time}
-                  onFieldChange={onFieldChange}
-                  errorMessage={errors[operationsIndex].time}
-                />
+                <FormContext hasError={!!errors[operationsIndex].time}>
+                  <FormTitle>Hours</FormTitle>
+                  <FormField
+                    id={`${sectionId}-${cardIndex}-operating_hours-${operationsIndex}-time`}
+                    value={operations.time}
+                    onChange={onFieldChange}
+                  />
+                  <FormError>{errors[operationsIndex].time}</FormError>
+                </FormContext>
               </div>
             </div>
             <div>
-              <FormField
-                title="Description"
-                id={`${sectionId}-${cardIndex}-operating_hours-${operationsIndex}-description`}
-                value={operations.description}
-                onFieldChange={onFieldChange}
-                errorMessage={errors[operationsIndex].description}
-              />
+              <FormContext hasError={!!errors[operationsIndex].description}>
+                <FormTitle>Description</FormTitle>
+                <FormField
+                  id={`${sectionId}-${cardIndex}-operating_hours-${operationsIndex}-description`}
+                  value={operations.description}
+                  onChange={onFieldChange}
+                />
+                <FormError>{errors[operationsIndex].description}</FormError>
+              </FormContext>
             </div>
             <a
               className={elementStyles.formFixedText}
@@ -107,25 +114,22 @@ const LocationAddressFields = ({
     setErrorMessage(newErrorMessage)
   }, [errors])
   return (
-    <>
+    <FormContext hasError={!!errorMessage}>
+      <FormTitle>{title}</FormTitle>
       {address.map((
         addressValue,
         addressIndex // sets default address length
       ) => (
         <div className="py-1" key={addressIndex}>
           <FormField
-            title={addressIndex === 0 ? title : null} // title appears above first field
             id={`${sectionId}-${cardIndex}-address-${addressIndex}`}
             value={addressValue}
-            onFieldChange={onFieldChange}
-            hasError={errorMessage}
-            errorMessage={
-              errorMessage && addressIndex === 2 ? errorMessage : null
-            } // error appears below last field
+            onChange={onFieldChange}
           />
         </div>
       ))}
-    </>
+      <FormError>{errorMessage}</FormError>
+    </FormContext>
   )
 }
 
