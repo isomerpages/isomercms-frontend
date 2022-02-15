@@ -1,7 +1,9 @@
+import { FormError } from "components/Form"
+import FormContext from "components/Form/FormContext"
+import FormTitle from "components/Form/FormTitle"
+import FormField from "components/FormField"
 import PropTypes from "prop-types"
 import React from "react"
-
-import FormField from "components/FormField"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -48,47 +50,52 @@ const EditorInfobarSection = ({
     {shouldDisplay ? (
       <>
         <div className={elementStyles.cardContent}>
-          <FormField
-            title="Infobar subtitle"
-            id={`section-${sectionIndex}-infobar-subtitle`}
-            value={subtitle}
-            errorMessage={errors.subtitle}
-            isRequired
-            onFieldChange={onFieldChange}
-          />
-          <FormField
-            title="Infobar title"
-            id={`section-${sectionIndex}-infobar-title`}
-            value={title}
-            errorMessage={errors.title}
-            isRequired
-            onFieldChange={onFieldChange}
-          />
-          <FormField
-            title="Infobar description"
-            id={`section-${sectionIndex}-infobar-description`}
-            value={description}
-            errorMessage={errors.description}
-            isRequired
-            onFieldChange={onFieldChange}
-          />
-          <FormField
-            title="Infobar button name"
-            id={`section-${sectionIndex}-infobar-button`}
-            value={button}
-            errorMessage={errors.button}
-            isRequired
-            onFieldChange={onFieldChange}
-          />
-          <FormField
-            title="Infobar button URL"
-            placeholder="Insert permalink or external URL"
-            id={`section-${sectionIndex}-infobar-url`}
-            value={url}
-            errorMessage={errors.url}
-            isRequired
-            onFieldChange={onFieldChange}
-          />
+          <FormContext isRequired hasError={!!errors.subtitle}>
+            <FormTitle>Infobar subtitle</FormTitle>
+            <FormField
+              id={`section-${sectionIndex}-infobar-subtitle`}
+              value={subtitle}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.subtitle}</FormError>
+          </FormContext>
+          <FormContext isRequired hasError={!!errors.title}>
+            <FormTitle>Infobar title</FormTitle>
+            <FormField
+              id={`section-${sectionIndex}-infobar-title`}
+              value={title}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.title}</FormError>
+          </FormContext>
+          <FormContext isRequired hasError={!!errors.description}>
+            <FormTitle>Infobar description</FormTitle>
+            <FormField
+              id={`section-${sectionIndex}-infobar-description`}
+              value={description}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.description}</FormError>
+          </FormContext>
+          <FormContext isRequired hasError={!!errors.button}>
+            <FormTitle>Infobar button name</FormTitle>
+            <FormField
+              id={`section-${sectionIndex}-infobar-button`}
+              value={button}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.button}</FormError>
+          </FormContext>
+          <FormContext isRequired hasError={!!errors.url}>
+            <FormTitle>Infobar button URL</FormTitle>
+            <FormField
+              placeholder="Insert permalink or external URL"
+              id={`section-${sectionIndex}-infobar-url`}
+              value={url}
+              onChange={onFieldChange}
+            />
+            <FormError>{errors.url}</FormError>
+          </FormContext>
         </div>
         <div className={elementStyles.inputGroup}>
           <button
