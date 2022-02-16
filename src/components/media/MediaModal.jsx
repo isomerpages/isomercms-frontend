@@ -56,7 +56,7 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
 
   // Returns the appropriate modal type based on the media mode.
   // This defaults to null if no conditions fit.
-  const Modal = () => {
+  const getModal = () => {
     if (mediaMode === "upload") {
       return (
         <MediaCreationModal
@@ -93,11 +93,7 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
     ) : null
   }
 
-  return (
-    <FormProvider {...methods}>
-      <Modal />
-    </FormProvider>
-  )
+  return <FormProvider {...methods}>{getModal()}</FormProvider>
 }
 
 export default MediaModal
