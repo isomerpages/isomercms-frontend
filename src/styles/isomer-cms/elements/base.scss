@@ -41,7 +41,6 @@ li {
 .wrapper {
   height: calc(100vh - #{$header-height});
   width: 100%;
-  top: $header-height;
   position: relative;
   display: flex;
   flex-direction: row;
