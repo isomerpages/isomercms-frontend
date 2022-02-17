@@ -1,7 +1,7 @@
 @import "./variable";
 
 .header {
-  position: fixed;
+  position: relative;
   height: $header-height;
   background: $header-background;
   width: 100%;
