@@ -8,7 +8,6 @@ export interface BannerProps {
 const styles = {
   banner: { color: "white", bg: "#2B5FCE" },
   item: {
-    display: "flex",
     justifyContent: "space-between",
     px: "1rem",
     py: ["1rem", "1rem", "0.5rem"],
@@ -18,9 +17,7 @@ const styles = {
 export const Banner = ({ children }: BannerProps): JSX.Element => {
   return (
     <Box __css={styles.banner}>
-      <Flex sx={styles.item}>
-        <Flex>{children}</Flex>
-      </Flex>
+      <Flex sx={styles.item}>{children}</Flex>
     </Box>
   )
 }
