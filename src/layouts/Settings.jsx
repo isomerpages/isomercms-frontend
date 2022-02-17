@@ -141,7 +141,6 @@ const Settings = ({ match, location }) => {
   const changeHandler = (event) => {
     const { id, value, parentElement } = event.target
     const grandparentElementId = parentElement?.parentElement?.id
-    // const errorMessage = validateSettings(id, value);
 
     // although show_reach is a part of footer-fields, the CreatableSelect dropdown handler does not
     // return a normal event, so we need to handle the case separately
