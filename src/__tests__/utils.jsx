@@ -11,9 +11,11 @@ describe("Utils test", () => {
     const resourceCategoryName = "resourceCategory"
     const exampleDate = format(Date.now(), "yyyy-MM-dd")
     const exampleLayout = "post"
+
     it("returns the proper parameters for unlinked pages", async () => {
       const params = {}
       const examplePermalink = "/permalink"
+
       expect(getDefaultFrontMatter(params, [])).toMatchObject({
         title: exampleTitle,
         permalink: examplePermalink,
@@ -24,6 +26,7 @@ describe("Utils test", () => {
       const params = {}
       const examplePermalink = "/permalink"
       const existingTitles = [`${exampleTitle}.md`, `${exampleTitle} 1.md`]
+
       expect(getDefaultFrontMatter(params, existingTitles)).toMatchObject({
         title: `${exampleTitle} 1 1`,
         permalink: examplePermalink,
@@ -35,6 +38,7 @@ describe("Utils test", () => {
         collectionName,
       }
       const examplePermalink = `/${collectionName}/permalink`
+
       expect(getDefaultFrontMatter(params, [])).toMatchObject({
         title: exampleTitle,
         permalink: examplePermalink,
@@ -47,6 +51,7 @@ describe("Utils test", () => {
         subCollectionName,
       }
       const examplePermalink = `/${collectionName}/${subCollectionName}/permalink`
+
       expect(getDefaultFrontMatter(params, [])).toMatchObject({
         title: exampleTitle,
         permalink: examplePermalink,
@@ -58,8 +63,8 @@ describe("Utils test", () => {
         resourceRoomName,
         resourceCategoryName,
       }
-      const exampleResourceTitle = `${exampleDate}-${exampleLayout}-${exampleTitle}.md`
       const examplePermalink = `/${resourceRoomName}/${resourceCategoryName}/permalink`
+
       expect(getDefaultFrontMatter(params, [])).toMatchObject({
         title: exampleTitle,
         permalink: examplePermalink,
@@ -75,6 +80,7 @@ describe("Utils test", () => {
       }
       const exampleResourceTitle = `${exampleDate}-${exampleLayout}-${exampleTitle}`
       const examplePermalink = `/${resourceRoomName}/${resourceCategoryName}/permalink`
+
       expect(
         getDefaultFrontMatter(params, [
           `${exampleResourceTitle}.md`,
