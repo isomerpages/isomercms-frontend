@@ -1,4 +1,8 @@
 import "cypress-file-upload"
+import {
+  E2E_DEFAULT_WAIT_TIME,
+  E2E_CHANGE_WAIT_TIME,
+} from "../fixtures/constants"
 
 describe("Files", () => {
   Cypress.config("baseUrl", Cypress.env("BASEURL"))
@@ -25,7 +29,7 @@ describe("Files", () => {
       window.localStorage.setItem("userId", "test")
 
       cy.visit(`/sites/${TEST_REPO_NAME}/media/files/mediaDirectory/files`)
-      cy.wait(2000)
+      cy.wait(E2E_DEFAULT_WAIT_TIME)
     })
 
     it("Files should contain Directories and Ungrouped Files", () => {
@@ -152,7 +156,7 @@ describe("Files", () => {
         .click()
 
       // ASSERTS
-      cy.wait(2000)
+      cy.wait(E2E_DEFAULT_WAIT_TIME)
       cy.contains(DIRECTORY_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist") // Directory name should be contained in Files
     })
 
@@ -167,7 +171,7 @@ describe("Files", () => {
       cy.get("div[id^=settings-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
       cy.get("#newDirectoryName").clear().type(OTHER_DIRECTORY_TITLE)
       cy.contains("button", "Save").click()
-      cy.wait(4000)
+      cy.wait(E2E_CHANGE_WAIT_TIME)
 
       // ASSERTS
       cy.contains(OTHER_DIRECTORY_TITLE, { timeout: CUSTOM_TIMEOUT }).should(
@@ -183,7 +187,7 @@ describe("Files", () => {
         .within(() => cy.get("[id^=settings-]").click())
       cy.get("div[id^=delete-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
       cy.contains("button", "Delete").click()
-      cy.wait(4000)
+      cy.wait(E2E_CHANGE_WAIT_TIME)
       // ASSERTS
       cy.contains(OTHER_DIRECTORY_TITLE).should("not.exist") // Directory name should not be contained in Files
     })
@@ -206,7 +210,7 @@ describe("Files", () => {
         .click()
 
       // Assert
-      cy.wait(2000)
+      cy.wait(E2E_DEFAULT_WAIT_TIME)
       cy.contains(DIRECTORY_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist")
     })
 
@@ -222,7 +226,7 @@ describe("Files", () => {
     it("Should be able to add file to file directory", () => {
       cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH)
       // ASSERTS
-      cy.wait(2000)
+      cy.wait(E2E_DEFAULT_WAIT_TIME)
       cy.contains("Media file successfully uploaded", {
         timeout: CUSTOM_TIMEOUT,
       }).should("exist")
@@ -233,7 +237,7 @@ describe("Files", () => {
       cy.contains(FILE_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist")
       cy.renameMedia(FILE_TITLE, OTHER_FILE_TITLE)
       // ASSERTS
-      cy.wait(2000)
+      cy.wait(E2E_DEFAULT_WAIT_TIME)
       cy.contains(OTHER_FILE_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist") // File should be contained in Files
     })
 

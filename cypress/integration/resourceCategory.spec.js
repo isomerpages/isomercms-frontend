@@ -1,7 +1,9 @@
 import "cypress-file-upload"
-import { slugifyCategory, generateResourceFileName } from "../../src/utils"
-
-const CUSTOM_TIMEOUT = 30000 // 30 seconds
+import { slugifyCategory, generateResourceFileName } from "../../src/utils" // 30 seconds
+import {
+  E2E_EXTENDED_TIMEOUT,
+  E2E_DEFAULT_WAIT_TIME,
+} from "../fixtures/constants"
 
 describe("Resource category page", () => {
   Cypress.config("defaultCommandTimeout", 5000)
@@ -41,13 +43,13 @@ describe("Resource category page", () => {
 
     // Set up test resource categories
     cy.visit(`/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}`)
-    cy.wait(3000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains("Create new category").click()
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY)
     cy.contains("Next").click()
 
     cy.visit(`/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}`)
-    cy.wait(3000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains("Create new category").click()
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_2)
     cy.contains("Next").click()
@@ -70,7 +72,7 @@ describe("Resource category page", () => {
   it("Resources category page should allow user to create a new resource page of type post", () => {
     cy.contains("Add a new page").click()
 
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE)
     cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK)
@@ -98,7 +100,7 @@ describe("Resource category page", () => {
 
   it("Resources page should not allow user to create a new resource category with invalid name", () => {
     cy.contains("Add a new page").click()
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
     // Same name as existing file
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE).blur()
     cy.contains("Save").should("be.disabled")
@@ -131,7 +133,7 @@ describe("Resource category page", () => {
 
   it("Resources category page should allow user to create a new resource page of type post", () => {
     cy.contains("Add a new page").click()
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_2)
     cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK)
@@ -159,7 +161,7 @@ describe("Resource category page", () => {
 
   it("Resource category page should not allow user to rename a resource page using invalid parameters", () => {
     const testPageCard = cy
-      .contains(TEST_PAGE_TITLE_2, { timeout: CUSTOM_TIMEOUT })
+      .contains(TEST_PAGE_TITLE_2, { timeout: E2E_EXTENDED_TIMEOUT })
       .should("exist")
 
     testPageCard
@@ -167,7 +169,7 @@ describe("Resource category page", () => {
       .within(() => cy.get("[id^=pageCard-dropdown-]").click())
 
     cy.get("div[id^=settings-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     // Same name as existing file
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE).blur()
@@ -204,7 +206,7 @@ describe("Resource category page", () => {
 
   it("Resource category page should allow user to edit a resource page details", () => {
     const testPageCard = cy
-      .contains(TEST_PAGE_TITLE_2, { timeout: CUSTOM_TIMEOUT })
+      .contains(TEST_PAGE_TITLE_2, { timeout: E2E_EXTENDED_TIMEOUT })
       .should("exist")
 
     testPageCard
@@ -212,13 +214,13 @@ describe("Resource category page", () => {
       .within(() => cy.get("[id^=pageCard-dropdown-]").click())
 
     cy.get("div[id^=settings-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_RENAMED)
     cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK_CHANGED)
     cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE_CHANGED)
     cy.contains("Save").click()
-    cy.wait(3000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     // Asserts
 
@@ -244,7 +246,7 @@ describe("Resource category page", () => {
 
   it("Resources category page should allow user to create a new resource page of type file", () => {
     cy.contains("Add a new page").click()
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_FILE)
     cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE)
@@ -258,11 +260,11 @@ describe("Resource category page", () => {
     cy.get("button")
       .contains(/^Upload$/)
       .click()
-    cy.wait(4000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('button[id="selectMedia"]').click()
     cy.contains("Save").click()
-    cy.wait(3000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     // Asserts
     // 1. Should not redirect
@@ -278,7 +280,7 @@ describe("Resource category page", () => {
 
   it("Resources category page should allow user to change an existing resource page from post to file", () => {
     const testPageCard = cy
-      .contains(TEST_PAGE_TITLE_RENAMED, { timeout: CUSTOM_TIMEOUT })
+      .contains(TEST_PAGE_TITLE_RENAMED, { timeout: E2E_EXTENDED_TIMEOUT })
       .should("exist")
 
     testPageCard
@@ -286,7 +288,7 @@ describe("Resource category page", () => {
       .within(() => cy.get("[id^=pageCard-dropdown-]").click())
 
     cy.get("div[id^=settings-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('input[id="radio-file"]').click()
 
@@ -305,7 +307,7 @@ describe("Resource category page", () => {
 
   it("Resources category page should allow user to change an existing resource page from file to post", () => {
     const testPageCard = cy
-      .contains(TEST_PAGE_TITLE_RENAMED, { timeout: CUSTOM_TIMEOUT })
+      .contains(TEST_PAGE_TITLE_RENAMED, { timeout: E2E_EXTENDED_TIMEOUT })
       .should("exist")
 
     testPageCard
@@ -313,7 +315,7 @@ describe("Resource category page", () => {
       .within(() => cy.get("[id^=pageCard-dropdown-]").click())
 
     cy.get("div[id^=settings-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('input[id="radio-post"]').click()
 
@@ -329,7 +331,7 @@ describe("Resource category page", () => {
 
   it("Resource category page should allow user to delete a page", () => {
     const testPageCard = cy
-      .contains(TEST_PAGE_TITLE_RENAMED, { timeout: CUSTOM_TIMEOUT })
+      .contains(TEST_PAGE_TITLE_RENAMED, { timeout: E2E_EXTENDED_TIMEOUT })
       .should("exist")
 
     testPageCard
@@ -337,12 +339,12 @@ describe("Resource category page", () => {
       .within(() => cy.get("[id^=pageCard-dropdown-]").click())
 
     cy.get("div[id^=delete-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
-    cy.contains("button", "Delete", { timeout: CUSTOM_TIMEOUT })
+    cy.contains("button", "Delete", { timeout: E2E_EXTENDED_TIMEOUT })
       .should("exist")
       .click()
 
     // Set a wait time because the API takes time
-    cy.wait(3000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains("Successfully deleted page")
     cy.contains(TEST_PAGE_TITLE_RENAMED).should("not.exist")
   })
