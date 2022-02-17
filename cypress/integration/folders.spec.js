@@ -5,8 +5,10 @@ import {
   pageFileNameToTitle,
   deslugifyDirectory,
 } from "../../src/utils"
-
-const CUSTOM_TIMEOUT = 30000 // 30 seconds
+import {
+  E2E_DEFAULT_WAIT_TIME,
+  E2E_EXTENDED_TIMEOUT,
+} from "../fixtures/constants"
 
 describe("Folders flow", () => {
   const CMS_BASEURL = Cypress.env("BASEURL")
@@ -39,20 +41,8 @@ describe("Folders flow", () => {
   const PRETTIFIED_EDITED_TEST_PAGE_TITLE = pageFileNameToTitle(
     EDITED_TEST_PAGE_FILENAME
   )
-  const PARSED_PRETTIFIED_EDITED_TEST_PAGE_TITLE = encodeURIComponent(
-    PRETTIFIED_EDITED_TEST_PAGE_TITLE
-  )
 
   const EDITED_TEST_PAGE_TITLE_2 = "லோரம் இப்சம்"
-  const EDITED_TEST_PAGE_FILENAME_2 = titleToPageFileName(
-    EDITED_TEST_PAGE_TITLE_2
-  )
-  const PRETTIFIED_EDITED_TEST_PAGE_TITLE_2 = pageFileNameToTitle(
-    EDITED_TEST_PAGE_FILENAME_2
-  )
-  const PARSED_PRETTIFIED_EDITED_TEST_PAGE_TITLE_2 = encodeURIComponent(
-    PRETTIFIED_EDITED_TEST_PAGE_TITLE_2
-  )
 
   const INVALID_TEST_PAGE_TITLES = [
     "Ab",
@@ -122,7 +112,7 @@ describe("Folders flow", () => {
 
       // Assert
       cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE, {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
       cy.url().should(
         "include",
@@ -146,7 +136,7 @@ describe("Folders flow", () => {
 
       // Assert
       cy.contains(PRETTIFIED_SUBFOLDER_WITH_PAGES_TITLE, {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
       cy.url().should(
         "include",
@@ -158,7 +148,7 @@ describe("Folders flow", () => {
 
     it("Should not be able to create a new sub-folder with invalid sub-folder name", () => {
       cy.contains(PRETTIFIED_SUBFOLDER_WITH_PAGES_TITLE, {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       cy.contains("Create new subfolder").click()
@@ -218,7 +208,7 @@ describe("Folders flow", () => {
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
       cy.get("div[id^=delete-]").first().click()
       cy.contains("button", "Delete").click()
-      cy.wait(2000)
+      cy.wait(E2E_DEFAULT_WAIT_TIME)
       // Assert
       cy.contains(PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE).should(
         "not.exist"
@@ -232,10 +222,10 @@ describe("Folders flow", () => {
 
       // Assert
       cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE).should("not.exist", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       })
       cy.contains("No pages here yet.", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
     })
   })
@@ -251,7 +241,7 @@ describe("Folders flow", () => {
 
     it("Should be able to create a new page with valid title and permalink", () => {
       const DEFAULT_TEST_PAGE_PERMALINK = `/${DEFAULT_REPO_FOLDER_NAME}/permalink`
-      cy.contains("Create new page", { timeout: CUSTOM_TIMEOUT })
+      cy.contains("Create new page", { timeout: E2E_EXTENDED_TIMEOUT })
         .should("exist")
         .click()
       cy.get("#title").clear().type(TEST_PAGE_TITLE)
@@ -268,22 +258,22 @@ describe("Folders flow", () => {
         "include",
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}/editPage/${PARSED_TEST_PAGE_TITLE}`
       )
-      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT }).should(
-        "exist"
-      )
+      cy.contains(PRETTIFIED_PAGE_TITLE, {
+        timeout: E2E_EXTENDED_TIMEOUT,
+      }).should("exist")
 
       cy.get(".CodeMirror-scroll").type(DEFAULT_TEST_PAGE_CONTENT)
       cy.contains(":button", "Save").click()
 
       // 2. If user goes back to the workspace, they should be able to see that the page exists
       cy.contains("button", PRETTIFIED_DEFAULT_REPO_FOLDER_NAME).click()
-      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT }).should(
-        "exist"
-      )
+      cy.contains(PRETTIFIED_PAGE_TITLE, {
+        timeout: E2E_EXTENDED_TIMEOUT,
+      }).should("exist")
     })
 
     it("Should not be able to create page with invalid title", () => {
-      cy.contains("Create new page", { timeout: CUSTOM_TIMEOUT })
+      cy.contains("Create new page", { timeout: E2E_EXTENDED_TIMEOUT })
         .should("exist")
         .click()
 
@@ -300,7 +290,7 @@ describe("Folders flow", () => {
     })
 
     it("Should not be able to create page with invalid permalink", () => {
-      cy.contains("Create new page", { timeout: CUSTOM_TIMEOUT })
+      cy.contains("Create new page", { timeout: E2E_EXTENDED_TIMEOUT })
         .should("exist")
         .click()
 
@@ -312,26 +302,28 @@ describe("Folders flow", () => {
     })
 
     it("Should be able to edit existing page details with Chinese title and valid permalink", () => {
-      cy.contains(TEST_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist")
+      cy.contains(TEST_PAGE_TITLE, { timeout: E2E_EXTENDED_TIMEOUT }).should(
+        "exist"
+      )
 
       // User should be able edit page details
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
       cy.get("div[id^=settings-]").first().click()
       cy.get("#title").should("have.value", PRETTIFIED_PAGE_TITLE, {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       })
 
       cy.get("#title").clear().type(EDITED_TEST_PAGE_TITLE)
       cy.contains("button", "Save").click()
       cy.contains("Successfully updated page!", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       // Asserts
       // 1. New page title should be reflected in Folders
       cy.reload()
       cy.contains(EDITED_TEST_PAGE_TITLE, {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       // 2. Test page content should still be in Edit Page
@@ -341,27 +333,27 @@ describe("Folders flow", () => {
 
     it("Should be able to edit existing page details with Tamil title and valid permalink", () => {
       cy.contains(EDITED_TEST_PAGE_TITLE, {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       // User should be able edit page details
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
       cy.get("div[id^=settings-]").first().click()
       cy.get("#title").should("have.value", PRETTIFIED_EDITED_TEST_PAGE_TITLE, {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       })
 
       cy.get("#title").clear().type(EDITED_TEST_PAGE_TITLE_2)
       cy.contains("button", "Save").click()
       cy.contains("Successfully updated page!", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       // Asserts
       // 1. New page title should be reflected in Folders
       cy.reload()
       cy.contains(EDITED_TEST_PAGE_TITLE_2, {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       // 2. Test page content should still be in Edit Page
@@ -375,12 +367,12 @@ describe("Folders flow", () => {
       cy.get("div[id^=delete-]").first().click()
       cy.contains("button", "Delete").click()
       cy.contains("Successfully deleted page", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       cy.reload()
       cy.contains(EDITED_TEST_PAGE_TITLE, {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("not.exist")
     })
   })
@@ -401,7 +393,7 @@ describe("Folders flow", () => {
 
       // Assert
       cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE, {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
       cy.url().should(
         "include",
@@ -421,7 +413,7 @@ describe("Folders flow", () => {
     it("Should be able to create a new page with valid title and permalink", () => {
       const DEFAULT_TEST_PAGE_PERMALINK = `/${DEFAULT_REPO_FOLDER_NAME}/${SLUGIFIED_PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE}/permalink`
 
-      cy.contains("Create new page", { timeout: CUSTOM_TIMEOUT })
+      cy.contains("Create new page", { timeout: E2E_EXTENDED_TIMEOUT })
         .should("exist")
         .click()
       cy.get("#title").clear().type(TEST_PAGE_TITLE)
@@ -438,22 +430,22 @@ describe("Folders flow", () => {
         "include",
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}/subfolders/${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}/editPage/${PARSED_TEST_PAGE_TITLE}`
       )
-      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT }).should(
-        "exist"
-      )
+      cy.contains(PRETTIFIED_PAGE_TITLE, {
+        timeout: E2E_EXTENDED_TIMEOUT,
+      }).should("exist")
 
       cy.get(".CodeMirror-scroll").type(DEFAULT_TEST_PAGE_CONTENT)
       cy.contains(":button", "Save").click()
 
       // 2. If user goes back to the workspace, they should be able to see that the page exists
       cy.contains("button", PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE).click()
-      cy.contains(PRETTIFIED_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT }).should(
-        "exist"
-      )
+      cy.contains(PRETTIFIED_PAGE_TITLE, {
+        timeout: E2E_EXTENDED_TIMEOUT,
+      }).should("exist")
     })
 
     it("Should not be able to create page with invalid title", () => {
-      cy.contains("Create new page", { timeout: CUSTOM_TIMEOUT })
+      cy.contains("Create new page", { timeout: E2E_EXTENDED_TIMEOUT })
         .should("exist")
         .click()
 
@@ -470,7 +462,7 @@ describe("Folders flow", () => {
     })
 
     it("Should not be able to create page with invalid permalink", () => {
-      cy.contains("Create new page", { timeout: CUSTOM_TIMEOUT })
+      cy.contains("Create new page", { timeout: E2E_EXTENDED_TIMEOUT })
         .should("exist")
         .click()
 
@@ -482,26 +474,28 @@ describe("Folders flow", () => {
     })
 
     it("Should be able to edit existing page details with Chinese title and valid permalink", () => {
-      cy.contains(TEST_PAGE_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist")
+      cy.contains(TEST_PAGE_TITLE, { timeout: E2E_EXTENDED_TIMEOUT }).should(
+        "exist"
+      )
 
       // User should be able edit page details
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
       cy.get("div[id^=settings-]").first().click()
       cy.get("#title").should("have.value", PRETTIFIED_PAGE_TITLE, {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       })
 
       cy.get("#title").clear().type(EDITED_TEST_PAGE_TITLE)
       cy.contains("button", "Save").click()
       cy.contains("Successfully updated page!", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       // Asserts
       // 1. New page title should be reflected in Folders
       cy.reload()
       cy.contains(EDITED_TEST_PAGE_TITLE, {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       // 2. Test page content should still be in Edit Page
@@ -511,27 +505,27 @@ describe("Folders flow", () => {
 
     it("Should be able to edit existing page details with Tamil title and valid permalink", () => {
       cy.contains(EDITED_TEST_PAGE_TITLE, {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       // User should be able edit page details
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
       cy.get("div[id^=settings-]").first().click()
       cy.get("#title").should("have.value", PRETTIFIED_EDITED_TEST_PAGE_TITLE, {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       })
 
       cy.get("#title").clear().type(EDITED_TEST_PAGE_TITLE_2)
       cy.contains("button", "Save").click()
       cy.contains("Successfully updated page!", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       // Asserts
       // 1. New page title should be reflected in Folders
       cy.reload()
       cy.contains(EDITED_TEST_PAGE_TITLE_2, {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       // 2. Test page content should still be in Edit Page
@@ -545,12 +539,12 @@ describe("Folders flow", () => {
       cy.get("div[id^=delete-]").first().click()
       cy.contains("button", "Delete").click()
       cy.contains("Successfully deleted page", {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
       cy.reload()
       cy.contains(EDITED_TEST_PAGE_TITLE, {
-        timeout: CUSTOM_TIMEOUT,
+        timeout: E2E_EXTENDED_TIMEOUT,
       }).should("not.exist")
     })
   })
