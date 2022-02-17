@@ -56,7 +56,8 @@ export default class Sites extends Component {
     const { siteNames } = this.state
     return (
       <>
-        {/* TODO: Move ThemeProvider to root of app during design system refactor */}
+        {/* TODO: Move ThemeProvider to root of app during design system refactor. 
+        Refer to issue: https://github.com/isomerpages/isomercms-frontend/issues/782 */}
         <ThemeProvider>
           <Banner>
             From 31 Mar 2022, all users will have to use an agency-issued email

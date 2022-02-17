@@ -5,6 +5,7 @@ export interface BannerProps {
 }
 
 // TODO: Please get rid of this and use the design system instead!!
+// Refer to issue: https://github.com/isomerpages/isomercms-frontend/issues/782
 const styles = {
   banner: { color: "white", bg: "#2B5FCE" },
   item: {
