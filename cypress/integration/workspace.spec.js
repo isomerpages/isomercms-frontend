@@ -68,7 +68,20 @@ describe("Workspace Pages flow", () => {
         .click()
       cy.get("#title").clear().type(TEST_PAGE_TITLE)
       cy.get("#permalink").clear().type(TEST_PAGE_PERMALNK)
+      cy.intercept("POST", "/v2/**").as("awaitSave")
       cy.contains("Save").click()
+      cy.wait("@awaitSave")
+        .its("request.body")
+        .should("deep.equal", {
+          content: {
+            frontMatter: {
+              title: TEST_PAGE_TITLE,
+              permalink: TEST_PAGE_PERMALNK,
+              description: "",
+            },
+          },
+          newFileName: `${TEST_PAGE_TITLE}.md`,
+        })
 
       // Asserts
       // 1. User should be redirected to correct EditPage
