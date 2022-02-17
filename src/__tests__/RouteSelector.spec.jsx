@@ -16,7 +16,7 @@ const RESOURCES_CATEGORY_LAYOUT_TEXT = "Resource category layout text"
 const EDIT_CONTACT_US_LAYOUT_TEXT = "Contact us editor layout mock text"
 const EDIT_HOMEPAGE_LAYOUT_TEXT = "Homepage editor layout mock text"
 const WORKSPACE_LAYOUT_TEXT = "Workspace layout mock text"
-const IMAGES_LAYOUT_TEXT = "Images layout mock text"
+const MEDIA_LAYOUT_TEXT = "Media layout mock text"
 const FILES_LAYOUT_TEXT = "Files layout mock text"
 const EDIT_PAGE_LAYOUT_TEXT = "Page editor layout mock text"
 const FOLDERS_LAYOUT_TEXT = "Folders layout mock text"
@@ -59,7 +59,7 @@ jest.mock("layouts/EditNavBar", () => {
   }
 })
 
-jest.mock("layouts/Resources", () => {
+jest.mock("layouts/ResourceRoom", () => {
   return {
     __esModule: true,
     default: () => {
@@ -68,7 +68,7 @@ jest.mock("layouts/Resources", () => {
   }
 })
 
-jest.mock("layouts/CategoryPages", () => {
+jest.mock("layouts/ResourceCategory", () => {
   return {
     __esModule: true,
     default: () => {
@@ -104,20 +104,11 @@ jest.mock("layouts/Workspace", () => {
   }
 })
 
-jest.mock("layouts/Images", () => {
+jest.mock("layouts/Media", () => {
   return {
     __esModule: true,
     default: () => {
-      return <div>{IMAGES_LAYOUT_TEXT}</div>
-    },
-  }
-})
-
-jest.mock("layouts/Files", () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div>{FILES_LAYOUT_TEXT}</div>
+      return <div>{MEDIA_LAYOUT_TEXT}</div>
     },
   }
 })
@@ -149,7 +140,7 @@ jest.mock("layouts/Folders", () => {
   }
 })
 
-jest.mock("components/NotFoundPage", () => {
+jest.mock("layouts/NotFoundPage", () => {
   return {
     __esModule: true,
     default: () => {
@@ -313,11 +304,11 @@ describe("Tests for RouteSelector", () => {
     })
   })
 
-  describe("/sites/:siteName/resources", () => {
-    test("Should render Resources editor page for site site-name if logged in", () => {
+  describe("/sites/:siteName/resourceRoom", () => {
+    test("Should render Resource room page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={["/sites/site-name/resources"]}>
+        <MemoryRouter initialEntries={["/sites/site-name/resourceRoom"]}>
           <LoggedInContextProvider>
             <RouteSelector />
           </LoggedInContextProvider>
@@ -328,7 +319,7 @@ describe("Tests for RouteSelector", () => {
       expect(screen.queryByText(RESOURCES_LAYOUT_TEXT)).toBeInTheDocument()
     })
 
-    test("Should redirect to /home and not render Resources editor page if not logged in", () => {
+    test("Should redirect to /home and not render Resource room page if not logged in", () => {
       // Act
       render(
         <MemoryRouter initialEntries={["/sites/site-name/resources"]}>
@@ -344,12 +335,14 @@ describe("Tests for RouteSelector", () => {
     })
   })
 
-  describe("/sites/:siteName/resources/:collectionName", () => {
-    test("Should render Resources Collection layout page for site site-name if logged in", () => {
+  describe("/sites/:siteName/resourceRoom/:resourceName/resourceCategory/:categoryName", () => {
+    test("Should render Resources Catrgory layout page for site site-name if logged in", () => {
       // Act
       render(
         <MemoryRouter
-          initialEntries={["/sites/site-name/resources/my-collection"]}
+          initialEntries={[
+            "/sites/site-name/resourceRoom/some-resource/resourceCategory/my-collection",
+          ]}
         >
           <LoggedInContextProvider>
             <RouteSelector />
@@ -383,12 +376,14 @@ describe("Tests for RouteSelector", () => {
     })
   })
 
-  describe("/sites/:siteName/resources/:resourceName/:fileName", () => {
+  describe("/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName/editPage/:fileName", () => {
     test("Should render EditPage layout page for site site-name if logged in", () => {
       // Act
       render(
         <MemoryRouter
-          initialEntries={["/sites/site-name/resources/my-collection/my-file"]}
+          initialEntries={[
+            "/sites/site-name/resourceRoom/my-resource/resourceCategory/my-category/editPage/my-file",
+          ]}
         >
           <LoggedInContextProvider>
             <RouteSelector />
@@ -517,11 +512,11 @@ describe("Tests for RouteSelector", () => {
     })
   })
 
-  describe("/sites/:siteName/pages/:fileName", () => {
+  describe("/sites/:siteName/editPage/:fileName", () => {
     test("Should render EditPage page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={["/sites/site-name/pages/my-file"]}>
+        <MemoryRouter initialEntries={["/sites/site-name/editPage/my-file"]}>
           <LoggedInContextProvider>
             <RouteSelector />
           </LoggedInContextProvider>
@@ -548,11 +543,15 @@ describe("Tests for RouteSelector", () => {
     })
   })
 
-  describe("/sites/:siteName/images", () => {
-    test("Should render Images page for site site-name if logged in", () => {
+  describe("/sites/:siteName/media/:mediaRoom/mediaDirectory/:mediaDirectoryName", () => {
+    test("Should render Media page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={["/sites/site-name/images"]}>
+        <MemoryRouter
+          initialEntries={[
+            "/sites/site-name/media/my-room/mediaDirectory/my-directory-name",
+          ]}
+        >
           <LoggedInContextProvider>
             <RouteSelector />
           </LoggedInContextProvider>
@@ -560,7 +559,7 @@ describe("Tests for RouteSelector", () => {
       )
 
       // Assert
-      expect(screen.queryByText(IMAGES_LAYOUT_TEXT)).toBeInTheDocument()
+      expect(screen.queryByText(MEDIA_LAYOUT_TEXT)).toBeInTheDocument()
     })
 
     test("Should redirect to /home and not render Images page if not logged in", () => {
@@ -574,82 +573,16 @@ describe("Tests for RouteSelector", () => {
       )
 
       // Assert
-      expect(screen.queryByText(IMAGES_LAYOUT_TEXT)).not.toBeInTheDocument()
+      expect(screen.queryByText(MEDIA_LAYOUT_TEXT)).not.toBeInTheDocument()
       expect(screen.queryByText(HOME_LAYOUT_TEXT)).toBeInTheDocument()
     })
   })
 
-  describe("/sites/:siteName/images/:customPath", () => {
-    test("Should render Images page for site site-name if logged in", () => {
-      // Act
-      render(
-        <MemoryRouter
-          initialEntries={["/sites/site-name/images/custom-image-path"]}
-        >
-          <LoggedInContextProvider>
-            <RouteSelector />
-          </LoggedInContextProvider>
-        </MemoryRouter>
-      )
-
-      // Assert
-      expect(screen.queryByText(IMAGES_LAYOUT_TEXT)).toBeInTheDocument()
-    })
-
-    test("Should redirect to /home and not render Images page if not logged in", () => {
-      // Act
-      render(
-        <MemoryRouter
-          initialEntries={["/sites/site-name/images/custom-image-path"]}
-        >
-          <NotLoggedInContextProvider>
-            <RouteSelector />
-          </NotLoggedInContextProvider>
-        </MemoryRouter>
-      )
-
-      // Assert
-      expect(screen.queryByText(IMAGES_LAYOUT_TEXT)).not.toBeInTheDocument()
-      expect(screen.queryByText(HOME_LAYOUT_TEXT)).toBeInTheDocument()
-    })
-  })
-
-  describe("/sites/:siteName/files", () => {
-    test("Should render Files page for site site-name if logged in", () => {
-      // Act
-      render(
-        <MemoryRouter initialEntries={["/sites/site-name/files"]}>
-          <LoggedInContextProvider>
-            <RouteSelector />
-          </LoggedInContextProvider>
-        </MemoryRouter>
-      )
-
-      // Assert
-      expect(screen.queryByText(FILES_LAYOUT_TEXT)).toBeInTheDocument()
-    })
-
-    test("Should redirect to /home and not render Files page if not logged in", () => {
-      // Act
-      render(
-        <MemoryRouter initialEntries={["/sites/site-name/files"]}>
-          <NotLoggedInContextProvider>
-            <RouteSelector />
-          </NotLoggedInContextProvider>
-        </MemoryRouter>
-      )
-
-      // Assert
-      expect(screen.queryByText(FILES_LAYOUT_TEXT)).not.toBeInTheDocument()
-      expect(screen.queryByText(HOME_LAYOUT_TEXT)).toBeInTheDocument()
-    })
-  })
-
-  describe("/sites/:siteName/folder/:folderName", () => {
+  describe("/sites/:siteName/folders/:collectionName", () => {
     test("Should render Folders layout page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={["/sites/site-name/folder/my-folder"]}>
+        <MemoryRouter initialEntries={["/sites/site-name/folders/my-folder"]}>
           <LoggedInContextProvider>
             <RouteSelector />
           </LoggedInContextProvider>
@@ -676,13 +609,13 @@ describe("Tests for RouteSelector", () => {
     })
   })
 
-  describe("/sites/:siteName/folder/:folderName/subfolder/:subfolderName", () => {
+  describe("/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName", () => {
     test("Should render Folders layout page for site site-name if logged in", () => {
       // Act
       render(
         <MemoryRouter
           initialEntries={[
-            "/sites/site-name/folder/my-folder/subfolder/my-subfolder",
+            "/sites/site-name/folders/my-folder/subfolders/my-subfolder",
           ]}
         >
           <LoggedInContextProvider>
@@ -715,12 +648,14 @@ describe("Tests for RouteSelector", () => {
     })
   })
 
-  describe("/sites/:siteName/folder/:folderName/:fileName", () => {
+  describe("/sites/:siteName/folders/:collectionName/editPage/:fileName", () => {
     test("Should render EditPage page for site site-name if logged in", () => {
       // Act
       render(
         <MemoryRouter
-          initialEntries={["/sites/site-name/folder/my-folder/my-file"]}
+          initialEntries={[
+            "/sites/site-name/folders/my-folder/editPage/my-file",
+          ]}
         >
           <LoggedInContextProvider>
             <RouteSelector />
@@ -750,13 +685,13 @@ describe("Tests for RouteSelector", () => {
     })
   })
 
-  describe("/sites/:siteName/folder/:folderName/subfolder/:subfolderName/:fileName", () => {
+  describe("/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName/editPage/:fileName", () => {
     test("Should render EditPage page for site site-name if logged in", () => {
       // Act
       render(
         <MemoryRouter
           initialEntries={[
-            "/sites/site-name/folder/my-folder/subfolder/my-subfolder/my-file",
+            "/sites/site-name/folders/my-folder/subfolders/my-subfolder/editPage/my-file",
           ]}
         >
           <LoggedInContextProvider>
