@@ -1,7 +1,9 @@
+import { Link } from "@chakra-ui/react"
+import { ThemeProvider } from "@opengovsg/design-system-react"
 import axios from "axios"
+import Banner from "components/Banner"
 import Header from "components/Header"
 import React, { Component } from "react"
-import { Link } from "react-router-dom"
 
 import { SITES_IS_PRIVATE_KEY } from "constants/constants"
 
@@ -53,6 +55,20 @@ export default class Sites extends Component {
     const { siteNames } = this.state
     return (
       <>
+        {/* TODO: Move ThemeProvider to root of app during design system refactor */}
+        <ThemeProvider>
+          <Banner>
+            From 31 Mar 2022, all users will have to use an agency-issued email
+            to verify their account before making new edits in the CMS. &nbsp;
+            <Link
+              color="white"
+              href="https://go.gov.sg/isomer-identity"
+              isExternal
+            >
+              Read more
+            </Link>
+          </Banner>
+        </ThemeProvider>
         <Header showButton={false} />
         <div className={elementStyles.wrapper}>
           <div className={siteStyles.sitesContainer}>
