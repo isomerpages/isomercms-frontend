@@ -7,12 +7,15 @@
   "extends": [
     "plugin:react/recommended",
     "airbnb",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "plugin:react/jsx-runtime",
+    "plugin:import/typescript"
   ],
   "settings": {
     "import/resolver": {
       "node": {
-        "paths": ["src"]
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     }
   },
@@ -25,8 +28,17 @@
     "sourceType": "module"
   },
   "plugins": ["only-warn", "react"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "parser": "@typescript-eslint/parser",
+      "extends": ["react-app", "plugin:@typescript-eslint/recommended"]
+    }
+  ],
   "rules": {
     "no-underscore-dangle": "off",
+    "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],
+    "import/extensions": 0, // Turn off "Missing file extension for ..." error
     "import/order": [
       "error",
       {
@@ -35,7 +47,15 @@
           "caseInsensitive": true
         },
         "newlines-between": "always",
-        "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object"],
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index",
+          "object"
+        ],
         "pathGroups": [
           {
             "pattern": "components/**",
