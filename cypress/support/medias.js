@@ -1,4 +1,5 @@
 import "cypress-pipe"
+import { E2E_DEFAULT_WAIT_TIME } from "../fixtures/constants"
 
 const click = ($el) => $el.click()
 const CUSTOM_TIMEOUT = 30000 // 30 seconds
@@ -17,7 +18,7 @@ Cypress.Commands.add(
   "renameMedia",
   (mediaTitle, newMediaTitle, disableAction) => {
     cy.contains(mediaTitle).click()
-    cy.wait(2000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.get("#name").clear().type(newMediaTitle).blur()
     if (!disableAction) cy.get("button").contains("Save").click()
   }

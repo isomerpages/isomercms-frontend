@@ -4,7 +4,6 @@ import { Breadcrumb } from "components/folders/Breadcrumb"
 import Header from "components/Header"
 import MediaCard from "components/media/MediaCard"
 import Sidebar from "components/Sidebar"
-import _ from "lodash"
 import PropTypes from "prop-types"
 import React from "react"
 import { ReactQueryDevtools } from "react-query/devtools"
@@ -25,8 +24,6 @@ import { ProtectedRouteWithProps } from "routing/RouteSelector"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
-
-import { deslugifyDirectory } from "utils"
 
 const Media = ({ match, location }) => {
   const { params, decodedParams } = match

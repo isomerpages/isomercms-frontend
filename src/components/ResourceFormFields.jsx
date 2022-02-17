@@ -1,17 +1,11 @@
+import { FormContext, FormError, FormTitle } from "components/Form"
 import FormField from "components/FormField"
 import FormFieldMedia from "components/FormFieldMedia"
 import React from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
-const ResourceFormFields = ({
-  register,
-  setValue,
-  watch,
-  trigger,
-  errors,
-  siteName,
-}) => {
+const ResourceFormFields = ({ register, setValue, watch, trigger, errors }) => {
   return (
     <>
       <div className="d-flex row m-0">
@@ -64,19 +58,23 @@ const ResourceFormFields = ({
       {watch("layout") === "file" && (
         <>
           <br />
-          <FormFieldMedia
-            register={register}
-            title="Select File"
-            id="file_url"
+          <FormContext
+            hasError={!!errors.file_url?.message}
             onFieldChange={(e) => {
               setValue("file_url", e.target.value)
               trigger("file_url")
             }}
-            errorMessage={errors.file_url?.message}
-            inlineButtonText="Select File"
-            siteName={siteName}
-            type="files"
-          />
+          >
+            <FormTitle>Select File</FormTitle>
+            <FormFieldMedia
+              placeholder="Select File"
+              register={register}
+              id="file_url"
+              type="files"
+              inlineButtonText="Select File"
+            />
+            <FormError>{errors.file_url?.message}</FormError>
+          </FormContext>
         </>
       )}
     </>

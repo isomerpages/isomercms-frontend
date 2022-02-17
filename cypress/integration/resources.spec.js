@@ -1,11 +1,15 @@
 import { slugifyCategory } from "../../src/utils"
+import {
+  E2E_DEFAULT_WAIT_TIME,
+  E2E_EXTENDED_TIMEOUT,
+  E2E_CHANGE_WAIT_TIME,
+} from "../fixtures/constants"
 
 describe("Resources page", () => {
   const CMS_BASEURL = Cypress.env("BASEURL")
   const COOKIE_NAME = Cypress.env("COOKIE_NAME")
   const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
   const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
-  const CUSTOM_TIMEOUT = Cypress.env("CUSTOM_TIMEOUT")
   const TEST_RESOURCE_ROOM_NAME = "resources"
 
   const TEST_CATEGORY = "Test Folder"
@@ -35,12 +39,12 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to create a new resource category", () => {
-    cy.wait(3000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains("Create new category").click()
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY)
     cy.contains("Next").click()
 
-    cy.wait(8000)
+    cy.wait(E2E_CHANGE_WAIT_TIME)
 
     // Asserts
     // 1. Redirect to newly created folder
@@ -55,7 +59,7 @@ describe("Resources page", () => {
   })
 
   it("Resources page should not allow user to create a new resource category with invalid name", () => {
-    cy.wait(3000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains("Create new category").click()
 
     // Disabled button for special characters
@@ -72,7 +76,7 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to create another new resource category", () => {
-    cy.wait(3000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains("Create new category").click()
 
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_2)
@@ -87,7 +91,7 @@ describe("Resources page", () => {
 
     // 2. If user goes back to Resources, they should be able to see that the folder exists
     cy.contains("Back to Resources").click()
-    cy.wait(3000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains(TEST_CATEGORY_2)
   })
 
@@ -109,7 +113,7 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to rename a resource category", () => {
-    cy.wait(3000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains(TEST_CATEGORY_2).find("[id^=settings-folder]").click()
     cy.contains(TEST_CATEGORY_2).contains("Edit details").click()
 
@@ -117,9 +121,9 @@ describe("Resources page", () => {
     cy.contains("Save").click()
 
     // Set a wait time because the API takes time
-    cy.wait(3000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains("Successfully updated directory settings", {
-      timeout: CUSTOM_TIMEOUT,
+      timeout: E2E_EXTENDED_TIMEOUT,
     }).should("exist")
 
     cy.contains(TEST_CATEGORY_RENAMED)
@@ -143,7 +147,7 @@ describe("Resources page", () => {
     cy.contains(":button", "Delete").click()
 
     // Set a wait time because the API takes time
-    cy.wait(3000)
+    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains("Successfully deleted directory")
 
     cy.contains(TEST_CATEGORY_RENAMED).should("not.exist")

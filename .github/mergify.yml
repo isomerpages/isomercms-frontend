@@ -1,0 +1,39 @@
+pull_request_rules:
+  - name: Approve and merge non-major version dependabot upgrades
+    conditions:
+      - author~=^dependabot\[bot\]$
+      - check-success~=lint
+      - check-success~=build
+      - check-success~=test
+      - title~=^Bump [^\s]+ from ([\d]+)\..+ to \1\.
+    actions:
+      review:
+        type: APPROVE
+      merge:
+        method: squash
+
+  - name: Approve and merge Snyk.io upgrades
+    conditions:
+      - author=snyk-bot
+      - check-success~=lint
+      - check-success~=build
+      - check-success~=test
+      - title~=^\[Snyk\]
+    actions:
+      review:
+        type: APPROVE
+      merge:
+        method: squash
+
+  - name: Automatically delete branches after they have been merged
+    conditions:
+      - merged
+    actions:
+      delete_head_branch:
+
+  - name: Automatically mark a PR as draft if [WIP] is in the title
+    conditions:
+      - title~=(?i)\[wip\]
+    actions:
+      edit:
+        draft: True

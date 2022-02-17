@@ -1,0 +1,94 @@
+name: ci-e2e
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  install:
+    # NOTE: Netlify uses ubuntu 16.08 but Github Actions does not offer it by default.
+    # Hence, we default to the latest version.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14.x"
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+      - run: npm ci
+
+  lint:
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14.x"
+      - name: Load Node.js modules
+        uses: actions/cache@v2
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+      - run: npm ci
+      - run: npm run lint-fix
+      - run: npm run format-fix
+
+  build:
+    needs: lint
+    runs-on: ubuntu-latest
+    env:
+      CI: false
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14.x"
+      - name: Load Node.js modules
+        uses: actions/cache@v2
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+      - run: npm ci
+      - run: npm run build
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: staging
+    env:
+      CYPRESS_RECORD_KEY: ${{secrets.CYPRESS_RECORD_KEY}}
+      CYPRESS_BASEURL: ${{secrets.CYPRESS_BASEURL}}
+      CYPRESS_COOKIE_NAME: ${{secrets.CYPRESS_COOKIE_NAME}}
+      CYPRESS_COOKIE_VALUE: ${{secrets.CYPRESS_COOKIE_VALUE}}
+      CYPRESS_TEST_REPO_NAME: ${{secrets.CYPRESS_TEST_REPO_NAME}}
+      USERNAME: ${{secrets.USERNAME}}
+      PERSONAL_ACCESS_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
+      E2E_COMMIT_HASH: ${{secrets.E2E_COMMIT_HASH}}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14.x"
+      - name: Load Node.js modules
+        uses: actions/cache@v2
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+      - run: npm ci
+      - run: npm run test:ci

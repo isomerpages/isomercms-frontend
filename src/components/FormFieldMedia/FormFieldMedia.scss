@@ -1,0 +1,11 @@
+// NOTE: This file is used solely for the component's stories.
+// This is because the base styling for the component is done in bootstrap, which is included in the index.html file.
+// The styles here are obtained by looking at the element in the console and copying the styling there.
+
+.d-flex {
+  display: flex;
+}
+
+.border {
+  border: 1px solid #dee2e6;
+}

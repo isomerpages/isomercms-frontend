@@ -498,7 +498,7 @@ export const getDefaultFrontMatter = (params, existingTitles) => {
     }`
   }
   examplePermalink += `permalink`
-  if (collectionName)
+  if (!resourceRoomName)
     return {
       title: exampleTitle,
       permalink: examplePermalink,

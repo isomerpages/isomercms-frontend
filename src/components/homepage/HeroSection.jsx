@@ -1,12 +1,12 @@
-import PropTypes from "prop-types"
-import React from "react"
-import { Droppable, Draggable } from "react-beautiful-dnd"
-
+import { FormContext, FormError, FormTitle } from "components/Form"
 import FormField from "components/FormField"
 import FormFieldMedia from "components/FormFieldMedia"
 import HeroButton from "components/homepage/HeroButton"
 import HeroDropdown from "components/homepage/HeroDropdown"
 import KeyHighlight from "components/homepage/KeyHighlight"
+import PropTypes from "prop-types"
+import React from "react"
+import { Droppable, Draggable } from "react-beautiful-dnd"
 
 import styles from "styles/App.module.scss"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -37,7 +37,6 @@ const EditorHeroSection = ({
   displayDropdownElems,
   displayHighlights,
   errors,
-  siteName,
   handleHighlightDropdownToggle,
 }) => (
   <div
@@ -81,18 +80,19 @@ const EditorHeroSection = ({
           isRequired
           onFieldChange={onFieldChange}
         />
-        <FormFieldMedia
-          title="Hero background image"
-          id={`section-${sectionIndex}-hero-background`}
-          value={background}
-          errorMessage={errors.sections[0].hero.background}
-          isRequired
+        <FormContext
+          hasError={!!errors.sections[0].hero.background}
           onFieldChange={onFieldChange}
-          inlineButtonText="Choose Image"
-          placeholder=" "
-          siteName={siteName}
-          type="images"
-        />
+          isRequired
+        >
+          <FormTitle>Hero background image</FormTitle>
+          <FormFieldMedia
+            value={background}
+            id={`section-${sectionIndex}-hero-background`}
+            inlineButtonText="Choose Image"
+          />
+          <FormError>{errors.sections[0].hero.background}</FormError>
+        </FormContext>
         <div className={styles.card}>
           <p className={elementStyles.formLabel}>Hero Section Type</p>
           {/* Permalink or File URL */}
