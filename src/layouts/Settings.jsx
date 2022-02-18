@@ -7,7 +7,8 @@ import GenericWarningModal from "components/GenericWarningModal"
 import Header from "components/Header"
 import ColorPickerSection from "components/settings/ColorPickerSection"
 import Sidebar from "components/Sidebar"
-import * as _ from "lodash"
+import Spacing from "components/Spacing/Spacing"
+import _ from "lodash"
 import PropTypes from "prop-types"
 import React, { useEffect, useState } from "react"
 
@@ -73,6 +74,12 @@ const stateFields = {
 }
 
 const OTHER_FOOTER_SETTINGS = ["contact_us", "feedback", "faq", "show_reach"]
+
+const getTitle = (unprocessedTitle) =>
+  unprocessedTitle
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ")
 
 const Settings = ({ match, location }) => {
   const { params, decodedParams } = match
@@ -140,16 +147,17 @@ const Settings = ({ match, location }) => {
 
   const changeHandler = (event) => {
     const { id, value, parentElement } = event.target
-    const grandparentElementId = parentElement?.parentElement?.id
+    const ancesterElementId =
+      parentElement?.parentElement?.parentElement?.parentElement?.id
 
     // although show_reach is a part of footer-fields, the CreatableSelect dropdown handler does not
     // return a normal event, so we need to handle the case separately
-    if (id === "show_reach" || grandparentElementId === "footer-fields") {
+    if (id === "show_reach" || ancesterElementId === "footer-fields") {
       setCurrState({
         ...currState,
         [id]: value,
       })
-    } else if (grandparentElementId === "social-media-fields") {
+    } else if (ancesterElementId === "social-media-fields") {
       const errorMessage = validateSocialMedia(value, id)
       setCurrState({
         ...currState,
@@ -165,7 +173,7 @@ const Settings = ({ match, location }) => {
           [id]: errorMessage,
         },
       })
-    } else if (grandparentElementId === "color-fields") {
+    } else if (ancesterElementId === "color-fields") {
       setCurrState({
         ...currState,
         colors: {
@@ -173,7 +181,7 @@ const Settings = ({ match, location }) => {
           [id]: value,
         },
       })
-    } else if (grandparentElementId === "media-color-fields") {
+    } else if (ancesterElementId === "media-color-fields") {
       const index = id.split("@")[id.split("@").length - 1]
       const { colors } = currState
 
@@ -245,35 +253,41 @@ const Settings = ({ match, location }) => {
               {/* General fields */}
               <div id="general-fields">
                 <p className={elementStyles.formSectionHeader}>General</p>
-                <FormFieldHorizontal
-                  title="Title"
-                  id="title"
-                  value={currState.title}
-                  errorMessage={errors.title}
-                  isRequired={false}
-                  onFieldChange={changeHandler}
-                />
-                <FormFieldHorizontal
-                  title="Description"
-                  id="description"
-                  value={currState.description}
-                  errorMessage={errors.description}
-                  isRequired={false}
-                  onFieldChange={changeHandler}
-                />
-                <FormContext
-                  hasError={!!errors.shareicon}
-                  onFieldChange={changeHandler}
-                  isRequired
-                >
-                  <FormTitle>Shareicon</FormTitle>
-                  <FormFieldMedia
-                    value={currState.shareicon}
-                    id="shareicon"
-                    inlineButtonText="Choose Image"
-                  />
-                  <FormError>{errors.shareicon}</FormError>
-                </FormContext>
+                <Spacing>
+                  <FormContext hasError={!!errors.title}>
+                    <FormTitle>Title</FormTitle>
+                    <FormFieldHorizontal
+                      placeholder="Title"
+                      id="title"
+                      value={currState.title}
+                      onChange={changeHandler}
+                    />
+                    <FormError>{errors.title}</FormError>
+                  </FormContext>
+                  <FormContext hasError={!!errors.description}>
+                    <FormTitle>Description</FormTitle>
+                    <FormFieldHorizontal
+                      placeholder="Description"
+                      id="description"
+                      value={currState.description}
+                      onChange={changeHandler}
+                    />
+                    <FormError>{errors.description}</FormError>
+                  </FormContext>
+                  <FormContext
+                    hasError={!!errors.shareicon}
+                    onFieldChange={changeHandler}
+                    isRequired
+                  >
+                    <FormTitle>Shareicon</FormTitle>
+                    <FormFieldMedia
+                      value={currState.shareicon}
+                      id="shareicon"
+                      inlineButtonText="Choose Image"
+                    />
+                    <FormError>{errors.shareicon}</FormError>
+                  </FormContext>
+                </Spacing>
                 <FormFieldToggle
                   title="Display government masthead"
                   id="is_government"
@@ -284,64 +298,71 @@ const Settings = ({ match, location }) => {
               {/* Logo fields */}
               <div id="logo-fields">
                 <p className={elementStyles.formSectionHeader}>Logos</p>
-                <FormContext
-                  hasError={!!errors.logo}
-                  onFieldChange={changeHandler}
-                  isRequired
-                >
-                  <FormTitle>Agency logo</FormTitle>
-                  <FormFieldMedia
-                    value={currState.logo}
-                    id="logo"
-                    inlineButtonText="Choose Image"
-                  />
-                  <FormError>{errors.logo}</FormError>
-                </FormContext>
+                <Spacing>
+                  <FormContext
+                    hasError={!!errors.logo}
+                    onFieldChange={changeHandler}
+                    isRequired
+                  >
+                    <FormTitle>Agency logo</FormTitle>
+                    <FormFieldMedia
+                      value={currState.logo}
+                      id="logo"
+                      inlineButtonText="Choose Image"
+                    />
+                    <FormError>{errors.logo}</FormError>
+                  </FormContext>
 
-                <FormContext
-                  hasError={!!errors.favicon}
-                  onFieldChange={changeHandler}
-                  isRequired
-                >
-                  <FormTitle>Favicon</FormTitle>
-                  <FormFieldMedia
-                    value={currState.favicon}
-                    id="favicon"
-                    inlineButtonText="Choose Image"
-                  />
-                  <FormError>{errors.favicon}</FormError>
-                </FormContext>
+                  <FormContext
+                    hasError={!!errors.favicon}
+                    onFieldChange={changeHandler}
+                    isRequired
+                  >
+                    <FormTitle>Favicon</FormTitle>
+                    <FormFieldMedia
+                      value={currState.favicon}
+                      id="favicon"
+                      inlineButtonText="Choose Image"
+                    />
+                    <FormError>{errors.favicon}</FormError>
+                  </FormContext>
+                </Spacing>
               </div>
               {/* Analytics fields */}
               <div id="analytics-fields">
                 <p className={elementStyles.formSectionHeader}>Analytics</p>
-                <FormFieldHorizontal
-                  title="Facebook Pixel"
-                  placeholder="Facebook Pixel ID"
-                  id="facebook_pixel"
-                  value={currState.facebook_pixel}
-                  errorMessage={errors.facebook_pixel}
-                  isRequired={false}
-                  onFieldChange={changeHandler}
-                />
-                <FormFieldHorizontal
-                  title="Google Analytics"
-                  placeholder="Google Analytics ID"
-                  id="google_analytics"
-                  value={currState.google_analytics}
-                  errorMessage={errors.google_analytics}
-                  isRequired={false}
-                  onFieldChange={changeHandler}
-                />
-                <FormFieldHorizontal
-                  title="Linkedin Insights"
-                  placeholder="Linkedin Insights ID"
-                  id="linkedin_insights"
-                  value={currState.linkedin_insights}
-                  errorMessage={errors.linkedin_insights}
-                  isRequired={false}
-                  onFieldChange={changeHandler}
-                />
+                <Spacing>
+                  <FormContext hasError={!!errors.facebook_pixel}>
+                    <FormTitle>Facebook Pixel</FormTitle>
+                    <FormFieldHorizontal
+                      placeholder="Facebook Pixel ID"
+                      id="facebook_pixel"
+                      value={currState.facebook_pixel}
+                      onChange={changeHandler}
+                    />
+                    <FormError>{errors.facebook_pixel}</FormError>
+                  </FormContext>
+                  <FormContext hasError={!!errors.google_analytics}>
+                    <FormTitle>Google Analytics</FormTitle>
+                    <FormFieldHorizontal
+                      placeholder="Google Analytics ID"
+                      id="google_analytics"
+                      value={currState.google_analytics}
+                      onChange={changeHandler}
+                    />
+                    <FormError>{errors.google_analytics}</FormError>
+                  </FormContext>
+                  <FormContext hasError={!!errors.linkedin_insights}>
+                    <FormTitle>Linkedin Insights</FormTitle>
+                    <FormFieldHorizontal
+                      placeholder="Linkedin Insights ID"
+                      id="linkedin_insights"
+                      value={currState.linkedin_insights}
+                      onChange={changeHandler}
+                    />
+                    <FormError>{errors.linkedin_insights}</FormError>
+                  </FormContext>
+                </Spacing>
               </div>
               {/* Color fields */}
               <ColorPickerSection
@@ -356,58 +377,76 @@ const Settings = ({ match, location }) => {
               {/* Social media fields */}
               <div id="social-media-fields">
                 <p className={elementStyles.formSectionHeader}>Social Media</p>
-                {Object.keys(currState.socialMediaContent).map(
-                  (socialMediaPage) => (
-                    <FormFieldHorizontal
-                      title={
+                <Spacing>
+                  {_.keys(currState.socialMediaContent).map(
+                    (socialMediaPage) => {
+                      const formTitle =
                         socialMediaPage.charAt(0).toUpperCase() +
                         socialMediaPage.slice(1)
-                      }
-                      id={socialMediaPage}
-                      value={currState.socialMediaContent[socialMediaPage]}
-                      key={`${socialMediaPage}-form`}
-                      errorMessage={errors.socialMediaContent[socialMediaPage]}
-                      isRequired={false}
-                      onFieldChange={changeHandler}
-                    />
-                  )
-                )}
+
+                      return (
+                        // NOTE: The FormContext has to be here because the error is tied to
+                        // the object's keys, which is local to the FormField
+                        <FormContext
+                          hasError={
+                            !!errors.socialMediaContent[socialMediaPage]
+                          }
+                        >
+                          <FormTitle>{formTitle}</FormTitle>
+                          <FormFieldHorizontal
+                            placeholder={formTitle}
+                            id={socialMediaPage}
+                            value={_.get(
+                              currState,
+                              `socialMediaContent.${socialMediaPage}`
+                            )}
+                            key={`${socialMediaPage}-form`}
+                            onChange={changeHandler}
+                          />
+                          <FormError>
+                            {errors.socialMediaContent[socialMediaPage]}
+                          </FormError>
+                        </FormContext>
+                      )
+                    }
+                  )}
+                </Spacing>
               </div>
               {/* Footer fields */}
               <div id="footer-fields">
                 <p className={elementStyles.formSectionHeader}>Footer</p>
-                {OTHER_FOOTER_SETTINGS.map((footerSetting) => {
-                  const title = footerSetting
-                    .split("_")
-                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                    .join(" ")
+                <Spacing>
+                  {_.without(OTHER_FOOTER_SETTINGS, "show_reach").map(
+                    (footerSetting) => {
+                      const title = getTitle(footerSetting)
 
-                  if (footerSetting === "show_reach") {
-                    return (
-                      <FormFieldToggle
-                        title={title}
-                        id={footerSetting}
-                        value={currState[footerSetting]}
-                        key={`${footerSetting}-form`}
-                        errorMessage={errors[footerSetting]}
-                        isRequired={false}
-                        onFieldChange={changeHandler}
-                      />
-                    )
-                  }
-
-                  return (
-                    <FormFieldHorizontal
-                      title={title}
-                      id={footerSetting}
-                      value={currState[footerSetting]}
-                      key={`${footerSetting}-form`}
-                      errorMessage={errors[footerSetting]}
-                      isRequired={false}
-                      onFieldChange={changeHandler}
-                    />
-                  )
-                })}
+                      return (
+                        <FormContext hasError={!!errors[footerSetting]}>
+                          <FormTitle>{title}</FormTitle>
+                          <FormFieldHorizontal
+                            placeholder={title}
+                            id={footerSetting}
+                            value={currState[footerSetting]}
+                            key={`${footerSetting}-form`}
+                            onChange={changeHandler}
+                          />
+                          <FormError>{errors[footerSetting]}</FormError>
+                        </FormContext>
+                      )
+                    }
+                  )}
+                </Spacing>
+                {["show_reach"].map((footerSetting) => (
+                  <FormFieldToggle
+                    title={getTitle(footerSetting)}
+                    id={footerSetting}
+                    value={currState[footerSetting]}
+                    key={`${footerSetting}-form`}
+                    errorMessage={errors[footerSetting]}
+                    isRequired={false}
+                    onFieldChange={changeHandler}
+                  />
+                ))}
               </div>
               <br />
               <br />
