@@ -12,7 +12,7 @@ import FormFieldHorizontal from "components/FormFieldHorizontal"
 import FormFieldMedia from "components/FormFieldMedia"
 import ResourceFormFields from "components/ResourceFormFields"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
-import * as _ from "lodash"
+import _ from "lodash"
 import PropTypes from "prop-types"
 import React, { useEffect } from "react"
 import { useForm } from "react-hook-form"
@@ -21,7 +21,7 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { getDefaultFrontMatter, pageFileNameToTitle } from "utils"
 
-import { PageSettingsSchema } from "."
+import { PageSettingsSchema } from "./PageSettingsSchema"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -135,16 +135,20 @@ export const PageSettingsModal = ({
                   {/* Permalink */}
                   {watch("layout") !== "file" && (
                     <>
-                      <FormFieldHorizontal
-                        register={register}
-                        disabled={watch("layout") === "file"}
-                        title="Page URL"
-                        description={siteUrl}
-                        id="permalink"
-                        errorMessage={errors.permalink?.message}
+                      <FormContext
+                        hasError={!!errors.permalink?.message}
                         isRequired
-                        placeholder=""
-                      />
+                        isDisabled={watch("layout") === "file"}
+                      >
+                        <FormTitle>Page URL</FormTitle>
+                        <FormDescription>{siteUrl}</FormDescription>
+                        <FormFieldHorizontal
+                          {...register("permalink", { required: true })}
+                          id="permalink"
+                          placeholder="Page URL"
+                        />
+                        <FormError>{errors.permalink?.message}</FormError>
+                      </FormContext>
                       <br />
                     </>
                   )}
