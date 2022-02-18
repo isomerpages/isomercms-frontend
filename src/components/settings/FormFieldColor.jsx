@@ -101,7 +101,6 @@ const FormFieldColor = ({ value, id, saveChanges }) => {
       <FormInput
         value={value}
         id={id}
-        autoComplete="off"
         // This component is purely presentational.
         // It is used to display the hex code and hence, is alwaysDisabled.
         alwaysDisabled
