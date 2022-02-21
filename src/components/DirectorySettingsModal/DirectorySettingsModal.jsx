@@ -5,10 +5,13 @@ import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
+import _ from "lodash"
 import PropTypes from "prop-types"
 import { useForm, useFormContext } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import { getDirectoryType } from "utils/directoryUtils"
 
 import {
   deslugifyDirectory,
@@ -70,11 +73,7 @@ export const DirectorySettingsModal = ({
         newDirectoryName: deslugifyDirectory(existingDirectoryName),
       },
       context: {
-        type: mediaDirectoryName
-          ? "mediaDirectoryName"
-          : subCollectionName
-          ? "subCollectionName"
-          : "collectionName",
+        type: getDirectoryType(mediaDirectoryName, subCollectionName),
       },
     })
 
