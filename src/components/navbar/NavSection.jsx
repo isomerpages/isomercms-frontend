@@ -4,7 +4,7 @@ import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import NavSublinkSection from "components/navbar/NavSublinkSection"
 import PropTypes from "prop-types"
-import React, { useState, useRef } from "react"
+import { useState, useRef } from "react"
 import { Droppable, Draggable } from "react-beautiful-dnd"
 import Select from "react-select"
 

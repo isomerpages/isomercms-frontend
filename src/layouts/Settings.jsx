@@ -10,7 +10,7 @@ import Sidebar from "components/Sidebar"
 import Spacing from "components/Spacing/Spacing"
 import _ from "lodash"
 import PropTypes from "prop-types"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
 import { useGetSettingsHook, useUpdateSettingsHook } from "hooks/settingsHooks"
 

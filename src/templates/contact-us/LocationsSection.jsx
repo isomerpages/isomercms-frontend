@@ -1,6 +1,6 @@
 import { sanitizeUrl } from "@braintree/sanitize-url"
 import PropTypes from "prop-types"
-import React from "react"
+import { forwardRef } from "react"
 
 const LocationHours = ({ operatingHours }) => (
   <div className="col is-6">
@@ -49,7 +49,7 @@ const LocationAddress = ({ location }) => (
   </div>
 )
 
-const Location = React.forwardRef(({ location }, ref) => (
+const Location = forwardRef(({ location }, ref) => (
   <div className="row is-multiline margin--bottom" ref={ref}>
     {location.address && location.title && (
       <div className="col is-6 padding--bottom--none">
@@ -71,7 +71,7 @@ const Location = React.forwardRef(({ location }, ref) => (
   </div>
 ))
 
-const TemplateLocationsSection = React.forwardRef(
+const TemplateLocationsSection = forwardRef(
   ({ locations, scrollRefs }, ref) => (
     <div ref={ref}>
       {locations && (

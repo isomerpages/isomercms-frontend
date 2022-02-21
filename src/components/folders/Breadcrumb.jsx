@@ -1,4 +1,3 @@
-import React from "react"
 import { Link } from "react-router-dom"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"

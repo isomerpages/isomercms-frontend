@@ -10,7 +10,6 @@ import SaveDeleteButtons from "components/SaveDeleteButtons"
 import Sidebar from "components/Sidebar"
 import * as _ from "lodash"
 import PropTypes from "prop-types"
-import React from "react"
 import { useForm } from "react-hook-form"
 import {
   Switch,

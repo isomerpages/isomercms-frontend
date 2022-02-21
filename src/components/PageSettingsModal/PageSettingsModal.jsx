@@ -14,7 +14,7 @@ import ResourceFormFields from "components/ResourceFormFields"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
 import _ from "lodash"
 import PropTypes from "prop-types"
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"

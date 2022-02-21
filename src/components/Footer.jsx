@@ -1,7 +1,5 @@
-import PropTypes from "prop-types"
-import React from "react"
-
 import Button from "components/Button"
+import PropTypes from "prop-types"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"

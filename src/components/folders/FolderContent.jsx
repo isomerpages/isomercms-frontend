@@ -1,6 +1,6 @@
 import { MenuDropdown } from "components/MenuDropdown"
 import PropTypes from "prop-types"
-import React, { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Link, useRouteMatch } from "react-router-dom"
 
 import useRedirectHook from "hooks/useRedirectHook"

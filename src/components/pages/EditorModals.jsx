@@ -1,7 +1,6 @@
 import HyperlinkModal from "components/HyperlinkModal"
 import MediaModal from "components/media/MediaModal"
 import PropTypes from "prop-types"
-import React from "react"
 
 const EditorModals = ({ mdeRef, onSave, modalType, onClose, mediaType }) => {
   const onHyperlinkSave = (text, link) => {

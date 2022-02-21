@@ -2,7 +2,6 @@ import EditorContactCard from "components/contact-us/ContactCard"
 import EditorLocationCard from "components/contact-us/LocationCard"
 import _ from "lodash"
 import PropTypes from "prop-types"
-import React from "react"
 import { Droppable, Draggable } from "react-beautiful-dnd"
 
 import styles from "styles/App.module.scss"

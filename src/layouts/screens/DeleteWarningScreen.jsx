@@ -1,9 +1,8 @@
 import DeleteWarningModal from "components/DeleteWarningModal"
-import { useGetMediaHook, useDeleteMediaHook } from "hooks/mediaHooks"
 import PropTypes from "prop-types"
-import React from "react"
 
 import { useDeleteDirectoryHook } from "hooks/directoryHooks"
+import { useGetMediaHook, useDeleteMediaHook } from "hooks/mediaHooks"
 import { useGetPageHook, useDeletePageHook } from "hooks/pageHooks"
 
 import {

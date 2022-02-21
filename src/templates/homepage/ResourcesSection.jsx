@@ -1,5 +1,5 @@
 import PropTypes from "prop-types"
-import React from "react"
+import { forwardRef } from "react"
 
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
@@ -103,4 +103,4 @@ TemplateResourceSection.defaultProps = {
   button: undefined,
 }
 
-export default React.forwardRef(TemplateResourceSection)
+export default forwardRef(TemplateResourceSection)

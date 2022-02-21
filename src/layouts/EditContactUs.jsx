@@ -11,7 +11,7 @@ import LoadingButton from "components/LoadingButton"
 import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
-import React, { useEffect, useState } from "react"
+import { createRef, useEffect, useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 
 import "styles/isomer-template.scss"
@@ -237,20 +237,20 @@ const EditContactUs = ({ match }) => {
       }
 
       const sectionsScrollRefs = {
-        header: React.createRef(),
-        feedback: React.createRef(),
-        contacts: React.createRef(),
-        locations: React.createRef(),
+        header: createRef(),
+        feedback: createRef(),
+        contacts: createRef(),
+        locations: createRef(),
       }
 
       contacts.forEach((_) => {
         contactsDisplay.push(false)
-        contactsScrollRefs.push(React.createRef())
+        contactsScrollRefs.push(createRef())
       })
 
       locations.forEach((_) => {
         locationsDisplay.push(false)
-        locationsScrollRefs.push(React.createRef())
+        locationsScrollRefs.push(createRef())
       })
 
       if (_isMounted) {
@@ -571,7 +571,7 @@ const EditContactUs = ({ match }) => {
         $set: modifiedDisplaySections,
       })
       const newScrollRefs = update(scrollRefs, {
-        [id]: { $push: [React.createRef()] },
+        [id]: { $push: [createRef()] },
       })
 
       if (scrollRefs[id].length) {

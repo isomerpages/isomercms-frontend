@@ -1,6 +1,6 @@
 import axios from "axios"
 import PropTypes from "prop-types"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { Link } from "react-router-dom"
 

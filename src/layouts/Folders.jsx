@@ -5,7 +5,6 @@ import Header from "components/Header"
 import Sidebar from "components/Sidebar"
 import _ from "lodash"
 import PropTypes from "prop-types"
-import React from "react"
 import { ReactQueryDevtools } from "react-query/devtools"
 import { Switch, useRouteMatch, useHistory } from "react-router-dom"
 

@@ -4,7 +4,7 @@ import {
   MediaSettingsModal,
 } from "components/MediaSettingsModal"
 import * as _ from "lodash"
-import React, { useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
 import { errorToast } from "utils/toasts"

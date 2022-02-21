@@ -5,7 +5,7 @@ import MediaCard from "components/media/MediaCard"
 import { MediaSearchBar } from "components/media/MediaSearchBar"
 import _ from "lodash"
 import PropTypes from "prop-types"
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
 import { Link, useRouteMatch } from "react-router-dom"
 

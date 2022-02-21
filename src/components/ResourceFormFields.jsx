@@ -1,7 +1,6 @@
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormField from "components/FormField"
 import FormFieldMedia from "components/FormFieldMedia"
-import React from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 

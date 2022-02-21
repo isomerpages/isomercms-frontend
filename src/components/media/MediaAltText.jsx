@@ -5,7 +5,6 @@ import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
-import React from "react"
 import { useFormContext } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"

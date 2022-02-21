@@ -1,5 +1,5 @@
 import axios from "axios"
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { BrowserRouter as Router } from "react-router-dom"
 import { ToastContainer } from "react-toastify"
