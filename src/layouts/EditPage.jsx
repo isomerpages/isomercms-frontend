@@ -8,7 +8,7 @@ import DOMPurify from "dompurify"
 import _ from "lodash"
 import marked from "marked"
 import PropTypes from "prop-types"
-import React, { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { useCollectionHook } from "hooks/collectionHooks"
 import {

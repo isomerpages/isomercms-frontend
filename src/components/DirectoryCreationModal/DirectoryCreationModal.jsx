@@ -8,7 +8,7 @@ import { FolderCard } from "components/FolderCard"
 import LoadingButton from "components/LoadingButton"
 import * as _ from "lodash"
 import PropTypes from "prop-types"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useFieldArray, useForm, FormProvider } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"

@@ -1,5 +1,5 @@
 import axios from "axios"
-import React, { createContext, useEffect, useState, useContext } from "react"
+import { createContext, useEffect, useState, useContext } from "react"
 
 import { SITES_IS_PRIVATE_KEY } from "constants/constants"
 

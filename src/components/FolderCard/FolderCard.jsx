@@ -3,7 +3,7 @@
 
 import { MenuDropdown } from "components/MenuDropdown"
 import PropTypes from "prop-types"
-import React, { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Link, useRouteMatch } from "react-router-dom"
 
 import useRedirectHook from "hooks/useRedirectHook"

@@ -3,7 +3,6 @@ import FormTitle from "components/Form/FormTitle"
 import FormFieldColor from "components/settings/FormFieldColor"
 import _ from "lodash"
 import PropTypes from "prop-types"
-import React from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 

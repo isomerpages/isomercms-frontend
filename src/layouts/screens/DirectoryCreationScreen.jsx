@@ -1,8 +1,7 @@
 import axios from "axios"
 import { DirectoryCreationModal } from "components/DirectoryCreationModal"
-import * as _ from "lodash"
+import _ from "lodash"
 import PropTypes from "prop-types"
-import React from "react"
 
 import {
   useGetDirectoryHook,

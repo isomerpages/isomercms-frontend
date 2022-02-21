@@ -3,7 +3,7 @@ import { ThemeProvider } from "@opengovsg/design-system-react"
 import axios from "axios"
 import Banner from "components/Banner"
 import Header from "components/Header"
-import React, { Component } from "react"
+import { Component } from "react"
 import { Link } from "react-router-dom"
 
 import { SITES_IS_PRIVATE_KEY } from "constants/constants"

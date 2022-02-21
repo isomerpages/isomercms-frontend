@@ -1,5 +1,5 @@
 import EditorModals from "components/pages/EditorModals"
-import React, { useState } from "react"
+import { useState } from "react"
 import SimpleMDE from "react-simplemde-editor"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"

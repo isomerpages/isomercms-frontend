@@ -1,6 +1,5 @@
 import * as Sentry from "@sentry/react"
 import FallbackComponent from "components/FallbackComponent"
-import React from "react"
 import { Switch } from "react-router-dom"
 
 // Layouts

@@ -1,6 +1,5 @@
 import _ from "lodash"
 import PropTypes from "prop-types"
-import React from "react"
 
 import LeftNav from "templates/pageComponents/LeftNav"
 import PageHeader from "templates/pageComponents/PageHeader"

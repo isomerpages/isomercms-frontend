@@ -5,7 +5,7 @@ import Header from "components/Header"
 import PageCard from "components/PageCard"
 import Sidebar from "components/Sidebar"
 import PropTypes from "prop-types"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 // Import styles

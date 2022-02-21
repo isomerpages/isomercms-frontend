@@ -1,7 +1,7 @@
 import FormInput from "components/Form/FormInput"
 import ColorPickerModal from "components/settings/ColorPickerModal"
 import PropTypes from "prop-types"
-import React, { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 

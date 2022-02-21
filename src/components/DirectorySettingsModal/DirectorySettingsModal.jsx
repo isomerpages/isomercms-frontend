@@ -6,7 +6,6 @@ import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
 import PropTypes from "prop-types"
-import React from "react"
 import { useForm, useFormContext } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"

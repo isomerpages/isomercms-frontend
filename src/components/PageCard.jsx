@@ -1,7 +1,7 @@
 import axios from "axios"
 import { MenuDropdown } from "components/MenuDropdown"
 import PropTypes from "prop-types"
-import React, { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef } from "react"
 import { Link, useRouteMatch } from "react-router-dom"
 
 import useRedirectHook from "hooks/useRedirectHook"

@@ -1,8 +1,8 @@
 import { sanitizeUrl } from "@braintree/sanitize-url"
 import PropTypes from "prop-types"
-import React from "react"
+import { forwardRef } from "react"
 
-const TemplateFeedbackSection = React.forwardRef(({ feedback }, ref) => (
+const TemplateFeedbackSection = forwardRef(({ feedback }, ref) => (
   <div ref={ref}>
     {feedback && (
       <div className="row is-multiline margin--bottom--lg">

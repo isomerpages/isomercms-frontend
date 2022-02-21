@@ -1,5 +1,5 @@
 import PropTypes from "prop-types"
-import React from "react"
+import { forwardRef } from "react"
 import { useQuery } from "react-query"
 
 import { fetchImageURL } from "utils"
@@ -170,7 +170,7 @@ const TemplateHeroSection = (
   )
 }
 
-export default React.forwardRef(TemplateHeroSection)
+export default forwardRef(TemplateHeroSection)
 
 HeroButton.propTypes = {
   button: PropTypes.string,

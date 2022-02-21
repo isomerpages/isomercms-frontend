@@ -1,5 +1,3 @@
-import React from "react"
-
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { pageFileNameToTitle, deslugifyDirectory } from "utils"

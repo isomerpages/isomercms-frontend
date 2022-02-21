@@ -1,7 +1,6 @@
 import { MediaMoveModal } from "components/MediaMoveModal"
 import { PageMoveModal } from "components/PageMoveModal"
 import PropTypes from "prop-types"
-import React from "react"
 
 import { useMoveHook } from "hooks/moveHooks"
 

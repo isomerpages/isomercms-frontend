@@ -1,7 +1,7 @@
 import { Breadcrumb } from "components/folders/Breadcrumb"
 import { MoveMenuBackButton, MoveMenuItem } from "components/move"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
-import React, { useState } from "react"
+import { useState } from "react"
 
 import { useGetDirectoryHook } from "hooks/directoryHooks"
 

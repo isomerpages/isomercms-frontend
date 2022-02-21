@@ -1,8 +1,7 @@
 import axios from "axios"
-import PropTypes from "prop-types"
-import React, { useState, useEffect } from "react"
-
 import GenericWarningModal from "components/GenericWarningModal"
+import PropTypes from "prop-types"
+import { useState, useEffect } from "react"
 
 import useRedirectHook from "hooks/useRedirectHook"
 import useSiteUrlHook from "hooks/useSiteUrlHook"

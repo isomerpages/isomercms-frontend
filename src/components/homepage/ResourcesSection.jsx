@@ -3,7 +3,6 @@ import FormContext from "components/Form/FormContext"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import PropTypes from "prop-types"
-import React from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
