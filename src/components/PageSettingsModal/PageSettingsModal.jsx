@@ -123,9 +123,9 @@ export const PageSettingsModal = ({
                   <Breadcrumb params={params} title={watch("title")} />
                   {/* Title */}
                   <FormContext isRequired hasError={!!errors.title?.message}>
-                    <FormTitle>Page Title</FormTitle>
+                    <FormTitle>Page title</FormTitle>
                     <FormField
-                      placeholder="Page Title"
+                      placeholder="Page title"
                       id="title"
                       {...register("title", { required: true })}
                     />
