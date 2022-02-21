@@ -24,7 +24,6 @@
     "dompurify": "^2.3.0",
     "easymde": "^2.15.0",
     "escape-string-regexp": "^4.0.0",
-    "eslint-plugin-only-warn": "^1.0.2",
     "framer-motion": "^6.2.6",
     "html-react-parser": "^1.2.7",
     "immutability-helper": "^3.0.1",
