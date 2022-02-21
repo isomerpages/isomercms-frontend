@@ -10,6 +10,7 @@ import {
 
 import { deslugifyDirectory } from "utils"
 
+// eslint-disable-next-line import/prefer-default-export
 export const DirectorySettingsSchema = (existingTitlesArray = []) =>
   Yup.object().shape({
     newDirectoryName: Yup.string()
@@ -26,6 +27,7 @@ export const DirectorySettingsSchema = (existingTitlesArray = []) =>
         existingTitlesArray,
         "Title is already in use. Please choose a different title."
       )
+      // We only have three possible types (passed from context)
       .when("$type", (type, schema) => {
         if (type === "mediaDirectoryName")
           return schema
@@ -43,14 +45,11 @@ export const DirectorySettingsSchema = (existingTitlesArray = []) =>
               'Title cannot contain any of the following special characters: ~%^*_+-./`;{}[]"<>',
               (value) => !specialCharactersRegexTest.test(value)
             )
-        if (type === "collectionName")
-          return schema
-            .transform((value) =>
-              value.trim().replaceAll(" ", "-").toLowerCase()
-            )
-            .matches(
-              slugifyLowerFalseRegexTest,
-              "Title cannot contain any symbols"
-            )
+        return schema
+          .transform((value) => value.trim().replaceAll(" ", "-").toLowerCase())
+          .matches(
+            slugifyLowerFalseRegexTest,
+            "Title cannot contain any symbols"
+          )
       }),
   })
