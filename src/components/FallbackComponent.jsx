@@ -9,7 +9,7 @@ function FallbackComponent({ error }) {
       <div className={errorStyles.errorPageMain}>
         <img
           className={errorStyles.errorImage}
-          alt="Generic Error Image"
+          alt="Generic Error"
           src="/genericError.svg"
         />
         <div className={errorStyles.errorText}>
@@ -18,6 +18,7 @@ function FallbackComponent({ error }) {
           Click below to return to IsomerCMS.
         </div>
         <button
+          type="button"
           className={`${errorStyles.errorButton} ${elementStyles.blue}`}
           onClick={() => window.location.reload()}
         >
