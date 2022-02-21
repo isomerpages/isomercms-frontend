@@ -1,4 +1,3 @@
-import cx from "classnames"
 import { PropTypes } from "prop-types"
 import React from "react"
 
@@ -16,7 +15,7 @@ const Spacing = ({ direction = "column", shouldWrap = true, children }) => {
   return (
     <div
       id="spacing"
-      className={cx(elementStyles.spacing, elementStyles[direction])}
+      className={`${elementStyles.spacing} ${elementStyles[direction]}`}
     >
       {React.Children.map(children, (child) =>
         shouldWrap ? <div>{child}</div> : child
