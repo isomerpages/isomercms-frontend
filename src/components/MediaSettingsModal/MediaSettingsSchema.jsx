@@ -8,6 +8,7 @@ import {
   MEDIA_SETTINGS_TITLE_MAX_LENGTH,
 } from "utils/validators"
 
+// eslint-disable-next-line import/prefer-default-export
 export const MediaSettingsSchema = (existingTitlesArray = []) =>
   Yup.object().shape({
     name: Yup.string()
@@ -25,6 +26,7 @@ export const MediaSettingsSchema = (existingTitlesArray = []) =>
         MEDIA_SETTINGS_TITLE_MAX_LENGTH,
         `Title must be shorter than ${MEDIA_SETTINGS_TITLE_MAX_LENGTH} characters`
       )
+      // When this is called, mediaRoom is one of either images or files
       .when("$mediaRoom", (mediaRoom, schema) => {
         if (mediaRoom === "images")
           return schema.test(
@@ -32,12 +34,11 @@ export const MediaSettingsSchema = (existingTitlesArray = []) =>
             "Title must end with one of the following extensions: 'png', 'jpeg', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg'",
             (value) => imagesSuffixRegexTest.test(value)
           )
-        if (mediaRoom === "files")
-          return schema.test(
-            "Special characters found",
-            "Title must end with the following extensions: 'pdf'",
-            (value) => filesSuffixRegexTest.test(value)
-          )
+        return schema.test(
+          "Special characters found",
+          "Title must end with the following extensions: 'pdf'",
+          (value) => filesSuffixRegexTest.test(value)
+        )
       })
       .notOneOf(
         existingTitlesArray,
