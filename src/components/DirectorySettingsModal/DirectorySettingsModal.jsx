@@ -11,7 +11,7 @@ import { useForm, useFormContext } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
-import { getDirectoryType } from "utils/directoryUtils"
+import { getDirectorySettingsType } from "utils/directoryUtils"
 
 import {
   deslugifyDirectory,
@@ -73,7 +73,7 @@ export const DirectorySettingsModal = ({
         newDirectoryName: deslugifyDirectory(existingDirectoryName),
       },
       context: {
-        type: getDirectoryType(mediaDirectoryName, subCollectionName),
+        type: getDirectorySettingsType(mediaDirectoryName, subCollectionName),
       },
     })
 

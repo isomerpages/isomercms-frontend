@@ -14,7 +14,7 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import adminStyles from "styles/isomer-cms/pages/Admin.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
-import { getDirectoryType } from "utils/directoryUtils"
+import { getDirectoryCreationType } from "utils/directoryUtils"
 
 import { pageFileNameToTitle } from "utils"
 
@@ -40,7 +40,7 @@ export const DirectoryCreationModal = ({
     mode: "onBlur",
     resolver: yupResolver(DirectorySettingsSchema(existingTitlesArray)),
     context: {
-      type: getDirectoryType(mediaDirectoryName, collectionName),
+      type: getDirectoryCreationType(mediaDirectoryName, collectionName),
     },
   })
 
