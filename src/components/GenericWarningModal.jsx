@@ -54,7 +54,6 @@ const GenericWarningModal = ({
 GenericWarningModal.propTypes = {
   displayTitle: PropTypes.string.isRequired,
   displayText: PropTypes.string.isRequired,
-  displayImage: PropTypes.string,
   displayImgAlt: PropTypes.string,
   onProceed: PropTypes.func,
   onCancel: PropTypes.func,
