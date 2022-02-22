@@ -51,46 +51,46 @@ import * as Yup from "yup"
 const RADIX_PARSE_INT = 10
 
 // Section constructors
-const ResourcesSectionConstructor = (isErrorConstructor) => ({
+const defaultResourcesSection = {
   resources: {
-    title: isErrorConstructor ? "" : "Resources Section Title",
-    subtitle: isErrorConstructor ? "" : "Resources Section Subtitle",
-    button: isErrorConstructor ? "" : "Resources Button Name",
+    title: "Resources Section Title",
+    subtitle: "Resources Section Subtitle",
+    button: "Resources Button Name",
   },
-})
+}
 
-const InfobarSectionConstructor = (isErrorConstructor) => ({
+const defaultInfobarSection = {
   infobar: {
-    title: isErrorConstructor ? "" : "Infobar Title",
-    subtitle: isErrorConstructor ? "" : "Infobar Subtitle",
-    description: isErrorConstructor ? "" : "Infobar description",
-    button: isErrorConstructor ? "" : "Button Text",
+    title: "Infobar Title",
+    subtitle: "Infobar Subtitle",
+    description: "Infobar description",
+    button: "Button Text",
     url: "", // No default value so that no broken link is created
   },
-})
+}
 
-const InfopicSectionConstructor = (isErrorConstructor) => ({
+const defaultInfopicSection = {
   infopic: {
-    title: isErrorConstructor ? "" : "Infopic Title",
-    subtitle: isErrorConstructor ? "" : "Infopic Subtitle",
-    description: isErrorConstructor ? "" : "Infopic description",
-    button: isErrorConstructor ? "" : "Button Text",
+    title: "Infopic Title",
+    subtitle: "Infopic Subtitle",
+    description: "Infopic description",
+    button: "Button Text",
     url: "", // No default value so that no broken link is created
     image: "", // Always blank since the image modal handles this
-    alt: isErrorConstructor ? "" : "Image alt text",
+    alt: "Image alt text",
   },
-})
+}
 
-const enumSection = (type, isErrorConstructor) => {
+const enumSection = (type) => {
   switch (type) {
     case "resources":
-      return ResourcesSectionConstructor(isErrorConstructor)
+      return defaultResourcesSection
     case "infobar":
-      return InfobarSectionConstructor(isErrorConstructor)
+      return defaultInfobarSection
     case "infopic":
-      return InfopicSectionConstructor(isErrorConstructor)
+      return defaultInfopicSection
     default:
-      return InfobarSectionConstructor(isErrorConstructor)
+      return defaultInfobarSection
   }
 }
 
@@ -120,7 +120,6 @@ const EditHomepage = ({ match }) => {
 
   const { siteName } = match.params
   const [hasLoaded, setHasLoaded] = useState(false)
-  const [hasErrors, setHasErrors] = useState(false)
   const [frontMatter, setFrontMatter] = useState({
     title: "",
     subtitle: "",
@@ -149,7 +148,13 @@ const EditHomepage = ({ match }) => {
     resolver: yupResolver(EditHomepageSchema),
     mode: "onBlur",
   })
-  const { watch, control, register, setValue } = methods
+  const {
+    watch,
+    control,
+    register,
+    setValue,
+    formState: { errors },
+  } = methods
 
   const { fields, append, remove, update, move } = useFieldArray({
     control,
@@ -211,38 +216,6 @@ const EditHomepage = ({ match }) => {
       _isMounted = false
     }
   }, [])
-
-  // useEffect(() => {
-  //   const hasSectionErrors = _.some(errors.sections, (section) => {
-  //     // Section is an object, e.g. { hero: {} }
-  //     // _.keys(section) produces an array with length 1
-  //     // The 0th element of the array contains the sectionType
-  //     const sectionType = _.keys(section)[0]
-  //     return (
-  //       _.some(
-  //         section[sectionType],
-  //         (errorMessage) => errorMessage.length > 0
-  //       ) === true
-  //     )
-  //   })
-
-  //   const hasHighlightErrors = _.some(
-  //     errors.highlights,
-  //     (highlight) =>
-  //       _.some(highlight, (errorMessage) => errorMessage.length > 0) === true
-  //   )
-
-  //   const hasDropdownElemErrors = _.some(
-  //     errors.dropdownElems,
-  //     (dropdownElem) =>
-  //       _.some(dropdownElem, (errorMessage) => errorMessage.length > 0) === true
-  //   )
-
-  //   const hasErrors =
-  //     hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors
-
-  //   setHasErrors(hasErrors)
-  // }, [errors])
 
   const createHandler = async (event) => {
     try {
@@ -321,18 +294,9 @@ const EditHomepage = ({ match }) => {
     }
   }
 
-  const onDragEnd = (result) => {
-    const { source, destination } = result
-
+  const onDragEnd = ({ source, destination }) => {
     // If the user dropped the draggable to no known droppable
     if (!destination) return
-
-    // The draggable elem was returned to its original position
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    )
-      return
 
     move(source.index, destination.index)
     moveRefs(source.index, destination.index)
@@ -611,10 +575,12 @@ const EditHomepage = ({ match }) => {
           <div className={editorStyles.pageEditorFooter}>
             <LoadingButton
               label="Save"
-              disabled={hasErrors}
+              disabled={!_.isEmpty(errors)}
               disabledStyle={elementStyles.disabled}
               className={
-                hasErrors || !sha ? elementStyles.disabled : elementStyles.blue
+                !_.isEmpty(errors) || !sha
+                  ? elementStyles.disabled
+                  : elementStyles.blue
               }
               callback={savePage}
             />
