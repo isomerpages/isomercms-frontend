@@ -6,6 +6,7 @@ import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
+import _ from "lodash"
 import { useEffect } from "react"
 import { useForm, useFormContext } from "react-hook-form"
 import { Link } from "react-router-dom"
@@ -31,6 +32,7 @@ const getModalTitle = ({ isCreate, params }) => {
   return "File settings"
 }
 
+// eslint-disable-next-line import/prefer-default-export
 export const MediaSettingsModal = ({
   params,
   isCreate,
@@ -85,12 +87,64 @@ export const MediaSettingsModal = ({
     })
   }
 
+  // Dynamically generated component based on whether users want to create
+  const MediaComponent = () => {
+    if (isCreate && !watch("mediaUrl") && !watch("content")) {
+      return (
+        <>
+          <div className={`${contentStyles.segment} mb-0`}>
+            <p>
+              For {mediaRoom} other than
+              {mediaRoom === "images"
+                ? ` 'png', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg'`
+                : ` 'pdf'`}
+              , please use{" "}
+              <Link to={{ pathname: `https://go.gov.sg` }} target="_blank">
+                {" "}
+                https://go.gov.sg{" "}
+              </Link>{" "}
+              to upload and link them to your Isomer site.
+            </p>
+          </div>
+          <Button
+            label="Select file"
+            className={elementStyles.blue}
+            callback={toggleUploadInput}
+          />
+          <br />
+        </>
+      )
+    }
+
+    if (!isCreate && !watch("mediaUrl") && !watch("content")) {
+      return <div className="spinner-border text-primary" role="status" />
+    }
+
+    if (mediaRoom === "images") {
+      return (
+        <div className={mediaStyles.editImagePreview}>
+          <img
+            alt={watch("name")}
+            src={watch("mediaUrl") || watch("content")}
+          />
+        </div>
+      )
+    }
+
+    return (
+      <div className={mediaStyles.editFilePreview}>
+        <p>{watch("name")}</p>
+      </div>
+    )
+  }
+
   return (
     <div className={elementStyles.overlay}>
       <div className={elementStyles.modal}>
         <div className={elementStyles.modalHeader}>
           <h1>{getModalTitle({ isCreate, params })}</h1>
           <button
+            type="button"
             mediaType="button"
             id="closeMediaSettingsModal"
             onClick={onClose}
@@ -102,47 +156,7 @@ export const MediaSettingsModal = ({
           <p className={elementStyles.formLabel}>
             {mediaRoom === "images" ? "Image" : "File"}
           </p>
-          {isCreate && !watch("mediaUrl") && !watch("content") ? (
-            <>
-              <div className={`${contentStyles.segment} mb-0`}>
-                <p>
-                  For {mediaRoom} other than
-                  {mediaRoom === "images"
-                    ? ` 'png', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg'`
-                    : ` 'pdf'`}
-                  , please use{" "}
-                  <Link to={{ pathname: `https://go.gov.sg` }} target="_blank">
-                    {" "}
-                    https://go.gov.sg{" "}
-                  </Link>{" "}
-                  to upload and link them to your Isomer site.
-                </p>
-              </div>
-              <Button
-                label="Select file"
-                className={elementStyles.blue}
-                callback={toggleUploadInput}
-              />
-              <br />
-            </>
-          ) : !isCreate && !watch("mediaUrl") && !watch("content") ? (
-            <div className="spinner-border text-primary" role="status" />
-          ) : (
-            <>
-              {mediaRoom === "images" ? (
-                <div className={mediaStyles.editImagePreview}>
-                  <img
-                    alt={watch("name")}
-                    src={watch("mediaUrl") || watch("content")}
-                  />
-                </div>
-              ) : (
-                <div className={mediaStyles.editFilePreview}>
-                  <p>{watch("name")}</p>
-                </div>
-              )}
-            </>
-          )}
+          <MediaComponent />
           <form className={elementStyles.modalContent}>
             <div className={elementStyles.modalFormFields}>
               <FormContext hasError={!!errors.name?.message}>
