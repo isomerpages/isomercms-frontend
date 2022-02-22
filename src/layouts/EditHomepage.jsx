@@ -3,7 +3,7 @@ import _ from "lodash"
 import PropTypes from "prop-types"
 import React, { useEffect, createRef, useState } from "react"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
-import { useForm, useFieldArray } from "react-hook-form"
+import { useForm, useFieldArray, FormProvider } from "react-hook-form"
 
 import DeleteWarningModal from "components/DeleteWarningModal"
 import Header from "components/Header"
@@ -21,11 +21,8 @@ import TemplateInfopicRightSection from "templates/homepage/InfopicRightSection"
 import TemplateResourcesSection from "templates/homepage/ResourcesSection"
 
 import { errorToast } from "utils/toasts"
-import {
-  validateSections,
-  validateHighlights,
-  validateDropdownElems,
-} from "utils/validators"
+
+import { yupResolver } from "@hookform/resolvers/yup"
 
 import {
   frontMatterParser,
@@ -43,6 +40,12 @@ import useSiteColorsHook from "hooks/useSiteColorsHook"
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
 
+import { EditorHeroSchema } from "components/homepage/EditorHeroSection"
+import { EditorInfopicSchema } from "components/homepage/EditorInfopicSection"
+import { EditorInfobarSchema } from "components/homepage/EditorInfobarSection"
+import { EditorResourcesSchema } from "components/homepage/EditorResourcesSection"
+
+import * as Yup from "yup"
 // Constants
 // ==========
 const RADIX_PARSE_INT = 10
@@ -78,22 +81,6 @@ const InfopicSectionConstructor = (isErrorConstructor) => ({
   },
 })
 
-const KeyHighlightConstructor = (isErrorConstructor) => ({
-  title: isErrorConstructor ? "" : "Key Highlight Title",
-  description: isErrorConstructor ? "" : "Key Highlight description",
-  url: "", // No default value so that no broken link is created
-})
-
-const DropdownElemConstructor = (isErrorConstructor) => ({
-  title: isErrorConstructor ? "" : "Hero Dropdown Element Title",
-  url: "", // No default value so that no broken link is created
-})
-
-const DropdownConstructor = () => ({
-  title: "Hero Dropdown Title",
-  options: [],
-})
-
 const enumSection = (type, isErrorConstructor) => {
   switch (type) {
     case "resources":
@@ -106,6 +93,27 @@ const enumSection = (type, isErrorConstructor) => {
       return InfobarSectionConstructor(isErrorConstructor)
   }
 }
+
+const EditHomepageSchema = Yup.object().shape({
+  sections: Yup.array().of(
+    Yup.lazy((value) => {
+      const key = Object.keys(value).find((k) => k !== "id")
+      switch (key) {
+        case "hero":
+          return EditorHeroSchema
+        case "infobar":
+          return EditorInfobarSchema
+        case "infopic":
+          return EditorInfopicSchema
+        case "resources":
+          return EditorResourcesSchema
+        default:
+          return EditorHeroSchema
+      }
+    })
+  ),
+  notification: Yup.string(),
+})
 
 const EditHomepage = ({ match }) => {
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
@@ -137,7 +145,12 @@ const EditHomepage = ({ match }) => {
     type: "",
   })
 
-  const { watch, control, register, setValue } = useForm()
+  const methods = useForm({
+    resolver: yupResolver(EditHomepageSchema),
+    mode: "onBlur",
+  })
+  const { watch, control, register, setValue } = methods
+
   const { fields, append, remove, update, move } = useFieldArray({
     control,
     name: "sections",
@@ -175,14 +188,7 @@ const EditHomepage = ({ match }) => {
         // Compute hasResources and set displaySections
         let hasResources = false
         setValue("notification", frontMatter.notification)
-        frontMatter.sections.forEach((section) => {
-          appendRefs(createRef())
-          append(section)
-          if (section.resources) {
-            hasResources = true
-          }
-        })
-
+        setValue("sections", frontMatter.sections)
         if (_isMounted) {
           setFrontMatter(frontMatter)
           setOriginalFrontMatter(_.cloneDeep(frontMatter))
@@ -343,7 +349,7 @@ const EditHomepage = ({ match }) => {
   }
 
   return (
-    <>
+    <FormProvider {...methods}>
       {itemPendingForDelete.id && (
         <DeleteWarningModal
           onCancel={() => setItemPendingForDelete({ id: null, type: "" })}
@@ -397,15 +403,12 @@ const EditHomepage = ({ match }) => {
                           {section.hero ? (
                             <>
                               <EditorHeroSection
-                                key={`section-${sectionIndex}`}
-                                sectionContent={section.hero}
-                                sectionIndex={sectionIndex}
-                                shouldDisplay={true}
+                                fieldId={`sections.0.hero`}
+                                sectionIndex={0}
                                 siteName={siteName}
                               />
                             </>
                           ) : null}
-
                           {/* Resources section */}
                           {section.resources ? (
                             <Draggable
@@ -419,10 +422,7 @@ const EditHomepage = ({ match }) => {
                                   ref={draggableProvided.innerRef}
                                 >
                                   <EditorResourcesSection
-                                    key={`section-${sectionIndex}`}
-                                    sectionContent={section.resources}
-                                    sectionIndex={sectionIndex}
-                                    shouldDisplay={true} // temporary
+                                    fieldId={`sections.${sectionIndex}.resources`}
                                     deleteHandler={(
                                       event // temporary
                                     ) =>
@@ -450,11 +450,7 @@ const EditHomepage = ({ match }) => {
                                   ref={draggableProvided.innerRef}
                                 >
                                   <EditorInfobarSection
-                                    key={`section-${sectionIndex}`}
-                                    sectionContent={section.infobar}
-                                    sectionIndex={sectionIndex}
-                                    shouldDisplay={true} // temporary
-                                    siteName={siteName}
+                                    fieldId={`sections.${sectionIndex}.infobar`}
                                     deleteHandler={(
                                       event // temporary
                                     ) =>
@@ -482,11 +478,7 @@ const EditHomepage = ({ match }) => {
                                   ref={draggableProvided.innerRef}
                                 >
                                   <EditorInfopicSection
-                                    key={`section-${sectionIndex}`}
-                                    sectionContent={section.infopic}
-                                    sectionIndex={sectionIndex}
-                                    shouldDisplay={true} // temporary
-                                    siteName={siteName}
+                                    fieldId={`sections.${sectionIndex}.infopic`}
                                     deleteHandler={(
                                       event // temporary
                                     ) =>
@@ -629,7 +621,7 @@ const EditHomepage = ({ match }) => {
           </div>
         </div>
       )}
-    </>
+    </FormProvider>
   )
 }
 
