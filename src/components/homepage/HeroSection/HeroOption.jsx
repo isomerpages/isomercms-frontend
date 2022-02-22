@@ -1,68 +1,52 @@
 import PropTypes from "prop-types"
-import React, { useEffect } from "react"
+import React from "react"
 
-import { useForm } from "react-hook-form"
+import { useFormContext } from "react-hook-form"
 
 import FormField from "components/FormField"
-import { yupResolver } from "@hookform/resolvers/yup"
-import { HeroHighlightOptionSchema, HeroDropdownOptionSchema } from "."
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import { CardContainer } from "components/CardContainer"
 import _ from "lodash"
 
 export const HeroOption = ({
-  optionContent,
   deleteHandler,
-  optionIndex,
-  onUpdate,
   isHighlight,
+  fieldId, // sections.0.hero.dropdown.options.[optionIndex] or sections.0.hero.key_highlights.[optionIndex]
 }) => {
   const {
     register,
     formState: { errors },
     watch,
-    trigger,
-  } = useForm({
-    mode: "onBlur",
-    resolver: yupResolver(
-      isHighlight ? HeroHighlightOptionSchema : HeroDropdownOptionSchema
-    ),
-    defaultValues: optionContent,
-  })
-
-  /** ****************** */
-  /*   useForm effects   */
-  /** ****************** */
-
-  watch((data) => !_.isEqual(data, optionContent) && onUpdate(data)) // updates parent component (HeroDropdwon/HeroHighlights) when form values are changed
-  useEffect(() => {
-    trigger()
-  }, []) // triggers validation when component is mounted
+  } = useFormContext()
+  const sectionErrors = _.get(errors, fieldId)
 
   return (
-    <CardContainer cardTitle={watch("title")} isError={!_.isEmpty(errors)}>
-      <div className={elementStyles.cardContent}>
+    <CardContainer
+      cardTitle={watch(`${fieldId}.title`)}
+      isError={!_.isEmpty(sectionErrors)}
+    >
+      <div id={fieldId} className={elementStyles.cardContent}>
         <FormField
           register={register}
           title="Title"
-          id={`title`}
-          errorMessage={errors.title?.message}
+          id={`${fieldId}.title`}
+          errorMessage={sectionErrors?.title?.message}
           isRequired
         />
         <FormField
           register={register}
           title="URL"
           placeholder="Insert permalink or external URL"
-          id={`url`}
-          errorMessage={errors.url?.message}
+          id={`${fieldId}.url`}
+          errorMessage={sectionErrors?.url?.message}
           isRequired
         />
         {isHighlight && (
           <FormField
             register={register}
             title="Description"
-            id={`description`}
-            errorMessage={errors.description?.message}
+            id={`${fieldId}.description`}
+            errorMessage={sectionErrors?.description?.message}
             isRequired
           />
         )}
@@ -70,10 +54,10 @@ export const HeroOption = ({
       <div className={elementStyles.inputGroup}>
         <button
           type="button"
-          id={`highlight-${optionIndex}-delete`}
+          id={`${fieldId}-delete`}
           className={`ml-auto ${elementStyles.warning}`}
           onClick={deleteHandler}
-          key={`${optionIndex}-delete`}
+          key={`${fieldId}-delete`}
         >
           Delete
         </button>
