@@ -3,13 +3,29 @@ import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import PropTypes from "prop-types"
-import { useEffect, useState } from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { isEmpty } from "utils"
 
 const DEFAULT_NUM_OPERATING_FIELDS = 5
+
+const getErrorMessage = (errors) => {
+  if (isEmpty(errors)) {
+    return ""
+  }
+
+  if (errors.length === 1) {
+    return _.head(errors)
+  }
+
+  return errors
+    .filter((err) => !!err)
+    .map((err, idx) => {
+      return `Line ${idx + 1}: ${err}`
+    })
+    .join("\n")
+}
 
 const LocationHoursFields = ({
   operatingHours,
@@ -23,6 +39,7 @@ const LocationHoursFields = ({
       <h6> Operating Hours </h6>
       {operatingHours &&
         operatingHours.map((operations, operationsIndex) => (
+          // eslint-disable-next-line react/no-array-index-key
           <div className="mb-1" key={operationsIndex}>
             <div className="d-flex flex-row">
               <div className="w-50 pr-1">
@@ -62,26 +79,31 @@ const LocationHoursFields = ({
                 <FormError>{errors[operationsIndex].description}</FormError>
               </FormContext>
             </div>
-            <a
-              className={elementStyles.formFixedText}
+            <button
+              className={`${elementStyles.formFixedText} ${elementStyles.textButton}`}
               id={`${sectionId}-${cardIndex}-remove_operating_hours-${operationsIndex}`}
-              href="#"
+              type="button"
               onClick={onFieldChange}
+              style={{ font: "none" }}
             >
               Remove
-            </a>
+            </button>
           </div>
         ))}
       <div className="mt-3">
         {operatingHours.length < DEFAULT_NUM_OPERATING_FIELDS ? (
-          <a
-            className={elementStyles.formLabel}
-            id={`${sectionId}-${cardIndex}-add_operating_hours`}
-            href="#"
-            onClick={onFieldChange}
-          >
-            Add operating hours
-          </a>
+          <button onClick={onFieldChange} type="button">
+            <button
+              className={`${elementStyles.formLabel} ${elementStyles.textButton}`}
+              id={`${sectionId}-${cardIndex}-add_operating_hours`}
+              type="button"
+              style={{
+                fontSize: "16px",
+              }}
+            >
+              Add operating hours
+            </button>
+          </button>
         ) : (
           <p className={elementStyles.formLabel}>
             {" "}
@@ -101,21 +123,8 @@ const LocationAddressFields = ({
   errors,
   sectionId,
 }) => {
-  const [errorMessage, setErrorMessage] = useState("")
-
-  useEffect(() => {
-    let newErrorMessage = ""
-    if (!isEmpty(errors)) {
-      if (errors.length === 1) {
-        newErrorMessage = errors[0]
-      } else {
-        errors.forEach((error, i) => {
-          newErrorMessage += error ? `Line ${i + 1}: ${error} ` : ""
-        })
-      }
-    }
-    setErrorMessage(newErrorMessage)
-  }, [errors])
+  console.log("ERRORS: ", errors)
+  const errorMessage = getErrorMessage(errors)
   return (
     <FormContext hasError={!!errorMessage}>
       <FormTitle>{title}</FormTitle>
@@ -123,7 +132,7 @@ const LocationAddressFields = ({
         addressValue,
         addressIndex // sets default address length
       ) => (
-        <div className="py-1" key={addressIndex}>
+        <div className="py-1">
           <FormField
             placeholder={title}
             id={`${sectionId}-${cardIndex}-address-${addressIndex}`}
