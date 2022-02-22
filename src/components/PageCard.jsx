@@ -16,7 +16,7 @@ import { prettifyDate, pageFileNameToTitle } from "utils"
 axios.defaults.withCredentials = true
 
 const PageCard = ({ item, itemIndex }) => {
-  const { title, name, date, resourceType } = item
+  const { name, date, resourceType } = item
   const dropdownRef = useRef(null)
   const [showDropdown, setShowDropdown] = useState(false)
 
@@ -44,7 +44,7 @@ const PageCard = ({ item, itemIndex }) => {
     if (showDropdown) dropdownRef.current.focus()
   }, [showDropdown])
 
-  const generateDropdownItems = ({ name }, url) => {
+  const generateDropdownItems = () => {
     const encodedName = encodeURIComponent(name)
     return [
       {
@@ -108,10 +108,9 @@ const PageCard = ({ item, itemIndex }) => {
         </button>
         {showDropdown && (
           <MenuDropdown
-            dropdownItems={generateDropdownItems({ name }, url)}
+            dropdownItems={generateDropdownItems()}
             dropdownRef={dropdownRef}
             menuIndex={itemIndex}
-            tabIndex={2}
             onBlur={() => setShowDropdown(false)}
           />
         )}
