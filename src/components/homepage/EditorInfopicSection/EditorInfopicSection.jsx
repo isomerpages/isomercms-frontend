@@ -1,21 +1,16 @@
 import PropTypes from "prop-types"
-import React, { useEffect } from "react"
+import React from "react"
 
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormField from "components/FormField"
 import FormFieldMedia from "components/FormFieldMedia"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
-import { useForm } from "react-hook-form"
-
+import { useFormContext } from "react-hook-form"
 import { CardContainer } from "components/CardContainer"
-import { EditorInfopicSchema } from "."
-import { yupResolver } from "@hookform/resolvers/yup"
 import _ from "lodash"
 
 export const EditorInfopicSection = ({
-  sectionContent,
-  sectionIndex,
-  onUpdate,
+  fieldId, // sections.[sectionId].infopic
   deleteHandler,
 }) => {
   const {
@@ -23,100 +18,72 @@ export const EditorInfopicSection = ({
     formState: { errors },
     setValue,
     watch,
-  } = useForm({
-    mode: "onBlur",
-    resolver: yupResolver(EditorInfopicSchema),
-    defaultValues: {
-      title: "",
-      subtitle: "",
-      description: "",
-      button: "",
-      url: "",
-      imageUrl: "",
-      alt: "",
-    },
-  })
-
-  watch((data) => !_.isEqual(data, sectionContent) && onUpdate(data)) // updates parent component (EditHomepage) when form values are changed
-
-  /** ******************************** */
-  /*     useEffects to load data     */
-  /** ******************************** */
-
-  useEffect(() => {
-    if (sectionContent) {
-      Object.entries(sectionContent).forEach(([key, value]) => {
-        setValue(key, value, {
-          shouldValidate: true,
-        })
-      })
-    }
-  }, [])
+  } = useFormContext()
+  const sectionErrors = _.get(errors, fieldId)
 
   return (
     <CardContainer
       cardTitle={`Infopic section: ${watch("title")}`}
-      isError={!_.isEmpty(errors)}
+      isError={!_.isEmpty(sectionErrors)}
     >
       <div className={elementStyles.cardContent}>
         <FormField
           register={register}
           title="Infopic subtitle"
-          id={`subtitle`}
-          errorMessage={errors.subtitle?.message}
+          id={`${fieldId}.subtitle`}
+          errorMessage={sectionErrors?.subtitle?.message}
         />
         <FormField
           register={register}
           title="Infopic title"
-          id={`title`}
-          errorMessage={errors.title?.message}
+          id={`${fieldId}.title`}
+          errorMessage={sectionErrors?.title?.message}
         />
         <FormField
           register={register}
           title="Infopic description"
-          id={`description`}
-          errorMessage={errors.description?.message}
+          id={`${fieldId}.description`}
+          errorMessage={sectionErrors?.description?.message}
         />
         <FormField
           register={register}
           title="Infopic button name"
-          id={`button`}
-          errorMessage={errors.button?.message}
+          id={`${fieldId}.button`}
+          errorMessage={sectionErrors?.button?.message}
           isRequired
         />
         <FormField
           register={register}
           title="Infopic button URL"
           placeholder="Insert permalink or external URL"
-          id={`url`}
-          errorMessage={errors.url?.message}
+          id={`${fieldId}.url`}
+          errorMessage={sectionErrors?.url?.message}
           isRequired
         />
         <FormContext
-          hasError={!!errors.image}
-          onFieldChange={onFieldChange}
+          hasError={!!sectionErrors?.image?.message}
           isRequired
         >
           <FormTitle>Infopic image URL</FormTitle>
           <FormFieldMedia
-            value={imageUrl}
-            id={`section-${sectionIndex}-infopic-image`}
+            id={`${fieldId}.image`}
             inlineButtonText="Choose Image"
+            register={register}
           />
-          <FormError>{errors.image}</FormError>
+          <FormError>{sectionErrors?.image?.message}</FormError>
         </FormContext>
         <FormField
           register={register}
           title="Infopic image alt text"
-          id={`alt`}
-          errorMessage={errors.alt?.message}
+          id={`${fieldId}.alt`}
+          errorMessage={sectionErrors?.alt?.message}
           isRequired
         />
       </div>
       <div className={elementStyles.inputGroup}>
         <button
           type="button"
-          id={`section-${sectionIndex}`}
+          id={`${fieldId}-delete`}
           className={`ml-auto ${elementStyles.warning}`}
           onClick={deleteHandler}
         >
