@@ -1,84 +1,56 @@
 import PropTypes from "prop-types"
-import React, { useEffect } from "react"
+import React from "react"
 
 import FormField from "components/FormField"
 import { CardContainer } from "components/CardContainer"
-import { useForm } from "react-hook-form"
-import { yupResolver } from "@hookform/resolvers/yup"
-
+import { useFormContext } from "react-hook-form"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
-import { EditorResourcesSchema } from "."
+
 import _ from "lodash"
 
 export const EditorResourcesSection = ({
-  sectionContent,
-  sectionIndex,
-  onUpdate,
+  fieldId, // sections.[sectionIndex].resources
   deleteHandler,
 }) => {
   const {
     register,
     formState: { errors },
-    setValue,
     watch,
-  } = useForm({
-    mode: "onBlur",
-    resolver: yupResolver(EditorResourcesSchema),
-    defaultValues: {
-      title: "",
-      subtitle: "",
-      button: "",
-    },
-  })
-
-  watch((data) => !_.isEqual(data, sectionContent) && onUpdate(data)) // updates parent component (EditHomepage) when form values are changed
-
-  /** ******************************** */
-  /*     useEffects to load data     */
-  /** ******************************** */
-
-  useEffect(() => {
-    if (sectionContent) {
-      Object.entries(sectionContent).forEach(([key, value]) => {
-        setValue(key, value, {
-          shouldValidate: true,
-        })
-      })
-    }
-  }, [])
+  } = useFormContext()
+  const sectionErrors = _.get(errors, fieldId)
 
   return (
     <CardContainer
       cardTitle={`Resources section: ${watch("title")}`}
-      isError={!_.isEmpty(errors)}
+      isError={!_.isEmpty(sectionErrors)}
     >
       <div className={elementStyles.cardContent}>
         <FormField
           register={register}
           title="Resources section subtitle"
-          id={`subtitle`}
-          errorMessage={errors.subtitle?.message}
+          id={`${fieldId}.subtitle`}
+          errorMessage={sectionErrors?.subtitle?.message}
           isRequired
         />
         <FormField
           register={register}
           title="Resources section title"
-          id={`title`}
-          errorMessage={errors.title?.message}
+          id={`${fieldId}.title`}
+          errorMessage={sectionErrors?.title?.message}
           isRequired
         />
         <FormField
           register={register}
           title="Resources button name"
-          id={`button`}
-          errorMessage={errors.button?.message}
+          id={`${fieldId}.button`}
+          errorMessage={sectionErrors?.button?.message}
           isRequired
         />
       </div>
       <div className={elementStyles.inputGroup}>
         <button
           type="button"
-          id={`section-${sectionIndex}`}
+          id={`${fieldId}-delete`}
           className={`ml-auto ${elementStyles.warning}`}
           onClick={deleteHandler}
         >
