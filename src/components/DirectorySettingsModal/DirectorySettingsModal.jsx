@@ -19,7 +19,7 @@ import {
   getMediaDirectoryName,
 } from "utils"
 
-import { DirectorySettingsSchema } from "."
+import { DirectorySettingsSchema } from "./DirectorySettingsSchema"
 
 // axios settings
 axios.defaults.withCredentials = true

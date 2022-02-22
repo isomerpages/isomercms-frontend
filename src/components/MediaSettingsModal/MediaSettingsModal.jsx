@@ -17,7 +17,7 @@ import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
 
 import { getLastItemType } from "utils"
 
-import { MediaSettingsSchema } from "."
+import { MediaSettingsSchema } from "./MediaSettingsSchema"
 
 // axios settings
 axios.defaults.withCredentials = true
