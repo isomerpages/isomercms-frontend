@@ -30,6 +30,7 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
           <button
             type="button"
             mediaType="button"
+            type="button"
             id="closeMediaSettingsModal"
             onClick={onClose}
           >
