@@ -2,11 +2,13 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { deslugifyDirectory } from "utils"
 
+// eslint-disable-next-line import/prefer-default-export
 export const MoveMenuBackButton = ({ onBack, isDisabled, backButtonText }) => {
   return (
-    <div
+    <button
+      type="button"
       id="moveModal-backButton"
-      className={`${elementStyles.dropdownHeader}`}
+      className={`${elementStyles.dropdownHeader} ${elementStyles.dropdownTextButton}`}
       onMouseDown={!isDisabled && onBack}
     >
       <i
@@ -15,6 +17,6 @@ export const MoveMenuBackButton = ({ onBack, isDisabled, backButtonText }) => {
         }`}
       />
       {deslugifyDirectory(backButtonText)}
-    </div>
+    </button>
   )
 }
