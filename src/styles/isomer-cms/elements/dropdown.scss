@@ -104,9 +104,10 @@
 
   .dropdownItemButton {
     text-align: right;
+    background-color: unset;
+    font: unset;
     border-radius: 5px;
     padding: 0.2rem 1.5rem 0.2rem 1.5rem;
-    font: inherit;
     color: $isomer-blue;
 
     &:hover {
