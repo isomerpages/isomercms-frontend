@@ -104,7 +104,6 @@ const ReorderingModal = ({ params, dirData, onProceed, onClose }) => {
                       >
                         {(draggableProvided) => (
                           <div
-                            key={folderContentIndex}
                             {...draggableProvided.draggableProps}
                             {...draggableProvided.dragHandleProps}
                             ref={draggableProvided.innerRef}
