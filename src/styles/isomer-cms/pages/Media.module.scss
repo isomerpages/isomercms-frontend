@@ -46,15 +46,18 @@
   overflow-y: scroll;
   padding-bottom: 50px;
   width: 100%;
+  // NOTE: This is a workaround so that on focus,
+  // the left side of the focus-ring isn't cut off
+  padding-left: 2px;
 
   &:after {
     content: "";
     flex: auto;
   }
 
-  .selectedMediaCard {
+  .selectedMediaCard,
+  .mediaCard:focus {
     outline: 2px solid $isomer-blue;
-    @extend .mediaCard;
   }
 
   .mediaCard {
@@ -69,6 +72,10 @@
     height: $component-card-height;
     margin-right: $component-card-margin;
     margin-bottom: $component-card-margin;
+    display: flex;
+    flex-direction: column;
+    font: inherit;
+    text-align: left;
 
     .mediaCardPreviewContainer {
       height: 70%;

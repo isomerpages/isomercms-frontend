@@ -31,7 +31,7 @@ const MediaCard = ({
     if (showDropdown) dropdownRef.current.focus()
   }, [showDropdown])
 
-  const generateDropdownItems = ({ name }, url) => {
+  const generateDropdownItems = () => {
     const encodedName = encodeURIComponent(name)
     return [
       {
@@ -51,19 +51,21 @@ const MediaCard = ({
   }
 
   return (
-    <div
-      className={
-        isSelected ? mediaStyles.selectedMediaCard : mediaStyles.mediaCard
-      }
+    <button
+      type="button"
+      className={`${isSelected ? mediaStyles.selectedMediaCard : ""} ${
+        mediaStyles.mediaCard
+      }`}
       key={name}
       onClick={(e) => {
         e.stopPropagation()
         e.preventDefault()
-        onClick
-          ? onClick()
-          : setRedirectToPage(
-              `${url}/editMediaSettings/${encodeURIComponent(name)}`
-            )
+        if (onClick) {
+          onClick()
+        } else
+          setRedirectToPage(
+            `${url}/editMediaSettings/${encodeURIComponent(name)}`
+          )
       }}
     >
       {(type === "images" || mediaRoom === "images") && (
@@ -109,14 +111,13 @@ const MediaCard = ({
                 menuIndex={mediaItemIndex}
                 dropdownItems={generateDropdownItems({ name }, url)}
                 dropdownRef={dropdownRef}
-                tabIndex={2}
                 onBlur={() => setShowDropdown(false)}
               />
             )}
           </div>
         )}
       </div>
-    </div>
+    </button>
   )
 }
 
