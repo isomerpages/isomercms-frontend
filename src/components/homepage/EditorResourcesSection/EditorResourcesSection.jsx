@@ -21,7 +21,7 @@ export const EditorResourcesSection = ({
 
   return (
     <CardContainer
-      cardTitle={`Resources section: ${watch("title")}`}
+      cardTitle={`Resources section: ${watch(`${fieldId}.title`)}`}
       isError={!_.isEmpty(sectionErrors)}
     >
       <div className={elementStyles.cardContent}>
