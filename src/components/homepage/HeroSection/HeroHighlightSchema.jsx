@@ -41,5 +41,5 @@ export const HeroHighlightSchema = Yup.object().shape({
       `Title must be shorter than ${HERO_BUTTON_MAX_LENGTH} characters`
     ),
   url: Yup.string(),
-  key_highlights: Yup.array().of(HeroHighlightOptionSchema),
+  key_highlights: Yup.array().of(HeroHighlightOptionSchema).optional(),
 })

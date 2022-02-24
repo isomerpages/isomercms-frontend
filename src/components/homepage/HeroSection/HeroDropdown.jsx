@@ -25,6 +25,7 @@ export const HeroDropdown = ({
   const { fields, append, remove, move } = useFieldArray({
     control,
     name: `${fieldId}.options`, // key for dropdown array
+    shouldUnregister: true,
   })
   const sectionErrors = _.get(errors, fieldId)
 
@@ -39,7 +40,7 @@ export const HeroDropdown = ({
       />
       <DragDropContext
         onDragEnd={({ source, destination }) =>
-          move(source.index, destination.index)
+          destination && move(source.index, destination.index)
         }
       >
         <Droppable droppableId="dropdownelem" type="dropdownelem">

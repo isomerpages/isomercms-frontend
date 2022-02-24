@@ -22,7 +22,7 @@ export const EditorInfopicSection = ({
 
   return (
     <CardContainer
-      cardTitle={`Infopic section: ${watch("title")}`}
+      cardTitle={`Infopic section: ${watch(`${fieldId}.title`)}`}
       isError={!_.isEmpty(sectionErrors)}
     >
       <div className={elementStyles.cardContent}>
