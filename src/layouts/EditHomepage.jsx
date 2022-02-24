@@ -1,4 +1,3 @@
-import axios from "axios"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import React, { useEffect, createRef, useState } from "react"
@@ -19,23 +18,20 @@ import TemplateInfobarSection from "templates/homepage/InfobarSection"
 import TemplateInfopicLeftSection from "templates/homepage/InfopicLeftSection"
 import TemplateInfopicRightSection from "templates/homepage/InfopicRightSection"
 import TemplateResourcesSection from "templates/homepage/ResourcesSection"
+import {
+  useGetConfigHook,
+  useUpdateConfigHook,
+  useSiteColorsHook,
+} from "hooks/settingsHooks"
 
-import { errorToast } from "utils/toasts"
+// Isomer components
+import { createPageStyleSheet } from "utils/siteColorUtils"
 
 import { yupResolver } from "@hookform/resolvers/yup"
-
-import {
-  frontMatterParser,
-  concatFrontMatterMdBody,
-  DEFAULT_RETRY_MSG,
-} from "utils"
 
 import "styles/isomer-template.scss"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
-
-// Import hooks
-import useSiteColorsHook from "hooks/useSiteColorsHook"
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -115,19 +111,10 @@ const EditHomepageSchema = Yup.object().shape({
   notification: Yup.string(),
 })
 
-const EditHomepage = ({ match }) => {
-  const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
+const EditHomepage = ({ match, location }) => {
+  const { params, decodedParams } = match
 
   const { siteName } = match.params
-  const [hasLoaded, setHasLoaded] = useState(false)
-  const [frontMatter, setFrontMatter] = useState({
-    title: "",
-    subtitle: "",
-    description: "",
-    image: "",
-    notification: "",
-    sections: [],
-  })
   const [originalFrontMatter, setOriginalFrontMatter] = useState({
     title: "",
     subtitle: "",
@@ -136,7 +123,6 @@ const EditHomepage = ({ match }) => {
     notification: "",
     sections: [],
   })
-  const [sha, setSha] = useState(null)
   const [hasResources, setHasResources] = useState(false)
   const [dropdownIsActive, setDropdownIsActive] = useState(false)
   const [itemPendingForDelete, setItemPendingForDelete] = useState({
@@ -154,6 +140,7 @@ const EditHomepage = ({ match }) => {
     register,
     setValue,
     formState: { errors },
+    handleSubmit,
   } = methods
 
   const { fields, append, remove, update, move } = useFieldArray({
@@ -170,52 +157,51 @@ const EditHomepage = ({ match }) => {
     name: "scrollRefs",
   })
 
+  const { data: siteColorsData } = useSiteColorsHook(params)
+  const { data: homepageData } = useGetConfigHook({
+    ...params,
+    isHomepage: true,
+  })
+  const { mutateAsync: updateHandler } = useUpdateConfigHook({
+    ...params,
+    isHomepage: true,
+  })
+
+  /** ******************************** */
+  /*     useEffects to load data     */
+  /** ******************************** */
+
   useEffect(() => {
-    let _isMounted = true
-    const loadPageDetails = async () => {
-      // // Set page colors
-      try {
-        await retrieveSiteColors(siteName)
-        generatePageStyleSheet(siteName)
-      } catch (err) {
-        console.log(err)
-      }
+    if (
+      homepageData &&
+      (watch("sections").length === 0 || !watch("sections"))
+    ) {
+      const { frontMatter } = homepageData.content
+      setValue("notification", frontMatter.notification)
+      setValue("sections", frontMatter.sections)
 
-      try {
-        const resp = await axios.get(
-          `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/homepage`,
-          {
-            withCredentials: true,
-          }
-        )
-        const { content, sha } = resp.data
-        const { frontMatter } = frontMatterParser(content)
-        // Compute hasResources and set displaySections
-        let hasResources = false
-        setValue("notification", frontMatter.notification)
-        setValue("sections", frontMatter.sections)
-        if (_isMounted) {
-          setFrontMatter(frontMatter)
-          setOriginalFrontMatter(_.cloneDeep(frontMatter))
-          setSha(sha)
-          setHasResources(hasResources)
-          setHasLoaded(true)
-        }
-      } catch (err) {
-        // Set frontMatter to be same to prevent warning message when navigating away
-        if (_isMounted) setFrontMatter(originalFrontMatter)
-        errorToast(
-          `There was a problem trying to load your homepage. ${DEFAULT_RETRY_MSG}`
-        )
-        console.log(err)
-      }
-    }
+      if (frontMatter.sections[0].hero.key_highlights)
+        setValue(`sections.0.hero.heroType`, "highlights")
+      else if (frontMatter.sections[0].hero.dropdown)
+        setValue(`sections.0.hero.heroType`, "dropdown")
+      else setValue(`sections.0.hero.heroType`, "none")
 
-    loadPageDetails()
-    return () => {
-      _isMounted = false
+      setValue(
+        "scrollRefs",
+        frontMatter.sections.map((_) => createRef())
+      )
+      setOriginalFrontMatter(_.cloneDeep(frontMatter))
     }
-  }, [])
+  }, [homepageData])
+
+  useEffect(() => {
+    if (siteColorsData)
+      createPageStyleSheet(
+        siteName,
+        siteColorsData.primaryColor,
+        siteColorsData.secondaryColor
+      )
+  }, [siteColorsData])
 
   const createHandler = async (event) => {
     try {
@@ -233,7 +219,7 @@ const EditHomepage = ({ match }) => {
 
   const deleteHandler = async (id) => {
     try {
-      const idArray = id.split("-")
+      const idArray = id.split(".")
       const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT)
 
       // Set hasResources to false to allow users to create a resources section
@@ -255,43 +241,29 @@ const EditHomepage = ({ match }) => {
     }
   }
 
-  const savePage = async () => {
-    try {
-      const { siteName } = match.params
-      const filteredFrontMatter = _.cloneDeep(frontMatter)
-      // Filter out components which have no input
-      filteredFrontMatter.notification = watch("notification")
-      filteredFrontMatter.sections = fields.map((section) => {
-        const newSection = {}
-        for (const sectionName in section) {
+  const onSubmit = (data) => {
+    const { notification, sections } = data
+
+    const filteredSections = sections.map((section) => {
+      const newSection = {}
+      for (const sectionName in section) {
+        if (sectionName !== "id")
           newSection[sectionName] = _.cloneDeep(
             _.omitBy(section[sectionName], _.isEmpty)
           )
-        }
-        return newSection
-      })
-      const content = concatFrontMatterMdBody(filteredFrontMatter, "")
-
-      const params = {
-        content,
-        sha,
       }
-
-      await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/homepage`,
-        params,
-        {
-          withCredentials: true,
-        }
-      )
-
-      window.location.reload()
-    } catch (err) {
-      errorToast(
-        `There was a problem trying to save your homepage. ${DEFAULT_RETRY_MSG}`
-      )
-      console.log(err)
-    }
+      return newSection
+    })
+    return updateHandler({
+      ...homepageData,
+      content: {
+        frontMatter: {
+          ...homepageData.content.frontMatter,
+          notification,
+          sections: filteredSections,
+        },
+      },
+    })
   }
 
   const onDragEnd = ({ source, destination }) => {
@@ -327,14 +299,12 @@ const EditHomepage = ({ match }) => {
       <Header
         siteName={siteName}
         title="Homepage"
-        shouldAllowEditPageBackNav={
-          JSON.stringify(originalFrontMatter) === JSON.stringify(frontMatter)
-        }
+        shouldAllowEditPageBackNav={true} // temporary
         isEditPage
         backButtonText="Back to My Workspace"
         backButtonUrl={`/sites/${siteName}/workspace`}
       />
-      {hasLoaded && (
+      {
         <div className={elementStyles.wrapper}>
           <div className={editorStyles.homepageEditorSidebar}>
             <div>
@@ -578,15 +548,13 @@ const EditHomepage = ({ match }) => {
               disabled={!_.isEmpty(errors)}
               disabledStyle={elementStyles.disabled}
               className={
-                !_.isEmpty(errors) || !sha
-                  ? elementStyles.disabled
-                  : elementStyles.blue
+                !_.isEmpty(errors) ? elementStyles.disabled : elementStyles.blue
               }
-              callback={savePage}
+              callback={handleSubmit(onSubmit)}
             />
           </div>
         </div>
-      )}
+      }
     </FormProvider>
   )
 }
