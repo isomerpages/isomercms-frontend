@@ -16,7 +16,9 @@ const defaultHighlightOption = {
   url: "", // No default value so that no broken link is created
 }
 
-export const HeroHighlight = ({ fieldId }) => {
+export const HeroHighlight = ({
+  fieldId, // sections.0.hero
+}) => {
   const {
     register,
     formState: { errors },

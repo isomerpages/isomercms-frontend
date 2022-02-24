@@ -25,6 +25,7 @@ export const HeroDropdown = ({
   const { fields, append, remove, move } = useFieldArray({
     control,
     name: `${fieldId}.options`, // key for dropdown array
+    shouldUnregister: true,
   })
   const sectionErrors = _.get(errors, fieldId)
 
