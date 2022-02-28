@@ -74,6 +74,8 @@ const EditHomepage = ({ match, location }) => {
   const [originalFrontMatter, setOriginalFrontMatter] = useState({})
   const [hasResources, setHasResources] = useState(false)
 
+  const [hasChanged, setHasChanged] = useState(false)
+
   const [itemPendingForDelete, setItemPendingForDelete] = useState({
     id: "",
     type: "",
@@ -159,6 +161,14 @@ const EditHomepage = ({ match, location }) => {
         siteColorsData.secondaryColor
       )
   }, [siteColorsData])
+
+  useEffect(() => {
+    setHasChanged(
+      originalFrontMatter.notification !== watch("notification") ||
+        JSON.stringify(originalFrontMatter.sections) !==
+          JSON.stringify(watch("sections"))
+    )
+  }, [watch()])
 
   const createHandler = async (event) => {
     try {
@@ -248,7 +258,7 @@ const EditHomepage = ({ match, location }) => {
       <Header
         siteName={siteName}
         title="Homepage"
-        shouldAllowEditPageBackNav={true} // temporary
+        shouldAllowEditPageBackNav={!hasChanged}
         isEditPage
         backButtonText="Back to My Workspace"
         backButtonUrl={`/sites/${siteName}/workspace`}
