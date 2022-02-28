@@ -7,11 +7,11 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
 import DeleteWarningModal from "components/DeleteWarningModal"
 import Header from "components/Header"
-import EditorHeroSection from "components/homepage/HeroSection"
-import EditorInfobarSection from "components/homepage/InfobarSection"
-import EditorInfopicSection from "components/homepage/InfopicSection"
+import { EditorHeroSection } from "components/homepage/EditorHeroSection"
+import { EditorInfobarSection } from "components/homepage/EditorInfobarSection"
+import { EditorInfopicSection } from "components/homepage/EditorInfopicSection"
 import NewSectionCreator from "components/homepage/NewSectionCreator"
-import EditorResourcesSection from "components/homepage/ResourcesSection"
+import { EditorResourcesSection } from "components/homepage/EditorResourcesSection"
 import LoadingButton from "components/LoadingButton"
 
 import TemplateHeroSection from "templates/homepage/HeroSection"
@@ -1221,40 +1221,19 @@ const EditHomepage = ({ match }) => {
                             <>
                               <EditorHeroSection
                                 key={`section-${sectionIndex}`}
-                                title={section.hero.title}
-                                subtitle={section.hero.subtitle}
-                                background={section.hero.background}
-                                button={section.hero.button}
-                                url={section.hero.url}
-                                dropdown={
-                                  section.hero.dropdown
-                                    ? section.hero.dropdown
-                                    : null
-                                }
+                                sectionContent={section.hero}
                                 sectionIndex={sectionIndex}
-                                highlights={
-                                  section.hero.key_highlights
-                                    ? section.hero.key_highlights
-                                    : []
-                                }
-                                onFieldChange={onFieldChange}
-                                createHandler={createHandler}
-                                deleteHandler={(event, type) =>
-                                  setItemPendingForDelete({
-                                    id: event.target.id,
-                                    type,
-                                  })
-                                }
-                                shouldDisplay={displaySections[sectionIndex]}
-                                displayHighlights={displayHighlights}
-                                displayDropdownElems={displayDropdownElems}
-                                displayHandler={displayHandler}
-                                onDragEnd={onDragEnd}
-                                errors={errors}
+                                shouldDisplay={true}
                                 siteName={siteName}
-                                handleHighlightDropdownToggle={
-                                  handleHighlightDropdownToggle
-                                }
+                                onUpdate={(data) => {
+                                  setFrontMatter({
+                                    ...frontMatter,
+                                    sections: [
+                                      { hero: data },
+                                      ...frontMatter.sections.slice(1),
+                                    ],
+                                  })
+                                }}
                               />
                             </>
                           ) : null}
@@ -1272,24 +1251,34 @@ const EditHomepage = ({ match }) => {
                                   ref={draggableProvided.innerRef}
                                 >
                                   <EditorResourcesSection
+                                    shouldDisplay={true} // temporary
+                                    displayHandler={displayHandler}
                                     key={`section-${sectionIndex}`}
-                                    title={section.resources.title}
-                                    subtitle={section.resources.subtitle}
-                                    button={section.resources.button}
+                                    sectionContent={section.resources}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={(event) =>
+                                    shouldDisplay={true} // temporary
+                                    onUpdate={(data) => {
+                                      setFrontMatter({
+                                        ...frontMatter,
+                                        sections: [
+                                          ...frontMatter.sections.slice(
+                                            0,
+                                            sectionIndex
+                                          ),
+                                          { resources: data },
+                                          ...frontMatter.sections.slice(
+                                            sectionIndex + 1
+                                          ),
+                                        ],
+                                      })
+                                    }}
+                                    deleteHandler={(
+                                      event // temporary
+                                    ) =>
                                       setItemPendingForDelete({
                                         id: event.target.id,
-                                        type: "Resources Section",
+                                        type: "Infobar Section",
                                       })
-                                    }
-                                    onFieldChange={onFieldChange}
-                                    shouldDisplay={
-                                      displaySections[sectionIndex]
-                                    }
-                                    displayHandler={displayHandler}
-                                    errors={
-                                      errors.sections[sectionIndex].resources
                                     }
                                   />
                                 </div>
@@ -1310,26 +1299,35 @@ const EditHomepage = ({ match }) => {
                                   ref={draggableProvided.innerRef}
                                 >
                                   <EditorInfobarSection
+                                    shouldDisplay={true} // temporary
+                                    displayHandler={displayHandler}
                                     key={`section-${sectionIndex}`}
-                                    title={section.infobar.title}
-                                    subtitle={section.infobar.subtitle}
-                                    description={section.infobar.description}
-                                    button={section.infobar.button}
-                                    url={section.infobar.url}
+                                    sectionContent={section.infobar}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={(event) =>
+                                    shouldDisplay={true} // temporary
+                                    siteName={siteName}
+                                    onUpdate={(data) => {
+                                      setFrontMatter({
+                                        ...frontMatter,
+                                        sections: [
+                                          ...frontMatter.sections.slice(
+                                            0,
+                                            sectionIndex
+                                          ),
+                                          { infobar: data },
+                                          ...frontMatter.sections.slice(
+                                            sectionIndex + 1
+                                          ),
+                                        ],
+                                      })
+                                    }}
+                                    deleteHandler={(
+                                      event // temporary
+                                    ) =>
                                       setItemPendingForDelete({
                                         id: event.target.id,
                                         type: "Infobar Section",
                                       })
-                                    }
-                                    onFieldChange={onFieldChange}
-                                    shouldDisplay={
-                                      displaySections[sectionIndex]
-                                    }
-                                    displayHandler={displayHandler}
-                                    errors={
-                                      errors.sections[sectionIndex].infobar
                                     }
                                   />
                                 </div>
@@ -1350,30 +1348,36 @@ const EditHomepage = ({ match }) => {
                                   ref={draggableProvided.innerRef}
                                 >
                                   <EditorInfopicSection
+                                    shouldDisplay={true} // temporary
+                                    displayHandler={displayHandler}
                                     key={`section-${sectionIndex}`}
-                                    title={section.infopic.title}
-                                    subtitle={section.infopic.subtitle}
-                                    description={section.infopic.description}
-                                    button={section.infopic.button}
-                                    url={section.infopic.url}
-                                    imageUrl={section.infopic.image}
-                                    imageAlt={section.infopic.alt}
+                                    sectionContent={section.infopic}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={(event) =>
+                                    shouldDisplay={true} // temporary
+                                    siteName={siteName}
+                                    onUpdate={(data) => {
+                                      setFrontMatter({
+                                        ...frontMatter,
+                                        sections: [
+                                          ...frontMatter.sections.slice(
+                                            0,
+                                            sectionIndex
+                                          ),
+                                          { infopic: data },
+                                          ...frontMatter.sections.slice(
+                                            sectionIndex + 1
+                                          ),
+                                        ],
+                                      })
+                                    }}
+                                    deleteHandler={(
+                                      event // temporary
+                                    ) =>
                                       setItemPendingForDelete({
                                         id: event.target.id,
-                                        type: "Infopic Section",
+                                        type: "Infobar Section",
                                       })
                                     }
-                                    onFieldChange={onFieldChange}
-                                    shouldDisplay={
-                                      displaySections[sectionIndex]
-                                    }
-                                    displayHandler={displayHandler}
-                                    errors={
-                                      errors.sections[sectionIndex].infopic
-                                    }
-                                    siteName={siteName}
                                   />
                                 </div>
                               )}
