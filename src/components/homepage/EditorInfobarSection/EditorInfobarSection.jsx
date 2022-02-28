@@ -1,12 +1,11 @@
+import { CardContainer } from "components/CardContainer"
+import FormField from "components/FormField"
+import _ from "lodash"
 import PropTypes from "prop-types"
 import React from "react"
-
-import FormField from "components/FormField"
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import { useFormContext } from "react-hook-form"
-import { CardContainer } from "components/CardContainer"
 
-import _ from "lodash"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 export const EditorInfobarSection = ({
   fieldId, // sections.[sectionId].infobar
@@ -49,7 +48,7 @@ export const EditorInfobarSection = ({
         <FormField
           register={register}
           title="Infobar button name"
-          id={`button`}
+          id={`${fieldId}.button`}
           errorMessage={sectionErrors?.button?.message}
           isRequired
         />
