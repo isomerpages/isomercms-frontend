@@ -34,8 +34,9 @@ export const EditorHeroSchema = Yup.object().shape({
         ),
       background: Yup.string(),
       heroType: Yup.string(),
-      options: Yup.array(),
-      dropdown: HeroDropdownSchema,
+      dropdown: Yup.lazy((val) =>
+        val ? HeroDropdownSchema : Yup.object().nullable()
+      ),
     })
     .concat(HeroHighlightSchema),
 })

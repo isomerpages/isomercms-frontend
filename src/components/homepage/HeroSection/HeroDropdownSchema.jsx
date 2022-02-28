@@ -18,6 +18,7 @@ export const HeroDropdownOptionSchema = Yup.object({
     ),
   url: Yup.string(),
 })
+
 export const HeroDropdownSchema = Yup.object().shape({
   options: Yup.array().of(HeroDropdownOptionSchema),
   title: Yup.string()
