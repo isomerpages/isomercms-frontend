@@ -43,7 +43,7 @@ export const HeroHighlight = ({ fieldId }) => {
       />
       <DragDropContext
         onDragEnd={({ source, destination }) =>
-          move(source.index, destination.index)
+          destination && move(source.index, destination.index)
         }
       >
         <Droppable droppableId="highlight" type="highlight">

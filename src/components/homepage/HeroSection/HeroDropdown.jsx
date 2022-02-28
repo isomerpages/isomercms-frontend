@@ -39,7 +39,7 @@ export const HeroDropdown = ({
       />
       <DragDropContext
         onDragEnd={({ source, destination }) =>
-          move(source.index, destination.index)
+          destination && move(source.index, destination.index)
         }
       >
         <Droppable droppableId="dropdownelem" type="dropdownelem">
