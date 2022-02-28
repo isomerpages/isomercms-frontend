@@ -8,8 +8,8 @@ export class ConfigService {
     if (isSettings) return `/sites/${siteName}/settings`
   }
 
-  async update(apiParams, { configConfig }) {
-    await this.apiClient.post(this.getEndpoint(apiParams), configConfig)
+  async update(apiParams, config) {
+    await this.apiClient.post(this.getEndpoint(apiParams), config)
   }
 
   async get(apiParams) {
