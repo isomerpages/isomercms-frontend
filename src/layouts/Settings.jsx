@@ -220,9 +220,7 @@ const Settings = ({ match, location }) => {
         }
       })
 
-      updateSettingsHandler({
-        configSettings,
-      })
+      updateSettingsHandler(configSettings)
     } catch (err) {
       errorToast(
         `There was a problem trying to save your settings. ${DEFAULT_RETRY_MSG}`
