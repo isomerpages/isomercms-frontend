@@ -65,6 +65,7 @@ export const EditorHeroSection = ({
       <FormContext
         hasError={!!sectionErrors?.background?.message}
         isRequired
+        onFieldChange={(e) => setValue(`${fieldId}.background`, e.target.value)}
       >
         <FormTitle>Hero background image</FormTitle>
         <FormFieldMedia

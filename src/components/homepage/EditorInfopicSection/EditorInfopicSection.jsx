@@ -63,6 +63,7 @@ export const EditorInfopicSection = ({
         <FormContext
           hasError={!!sectionErrors?.image?.message}
           isRequired
+          onFieldChange={(e) => setValue(`${fieldId}.image`, e.target.value)}
         >
           <FormTitle>Infopic image URL</FormTitle>
           <FormFieldMedia
