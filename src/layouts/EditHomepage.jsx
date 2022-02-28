@@ -80,7 +80,7 @@ const EditHomepage = ({ match, location }) => {
     sections: [],
   })
   const [hasResources, setHasResources] = useState(false)
-  const [dropdownIsActive, setDropdownIsActive] = useState(false)
+
   const [itemPendingForDelete, setItemPendingForDelete] = useState({
     id: "",
     type: "",
@@ -184,14 +184,6 @@ const EditHomepage = ({ match, location }) => {
       }
       remove(sectionIndex)
       removeRefs(sectionIndex)
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  const toggleDropdown = async () => {
-    try {
-      setDropdownIsActive((prevState) => !prevState)
     } catch (err) {
       console.log(err)
     }
@@ -430,8 +422,6 @@ const EditHomepage = ({ match, location }) => {
                       key={`section-${sectionIndex}`}
                       hero={section.hero}
                       siteName={siteName}
-                      dropdownIsActive={dropdownIsActive}
-                      toggleDropdown={toggleDropdown}
                       ref={scrollRefs[sectionIndex]}
                     />
                   </>
