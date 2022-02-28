@@ -20,6 +20,7 @@ export const EditorResourcesSection = ({
 
   return (
     <CardContainer
+      id={fieldId}
       cardTitle={`Resources section: ${watch(`${fieldId}.title`)}`}
       isError={!_.isEmpty(sectionErrors)}
     >

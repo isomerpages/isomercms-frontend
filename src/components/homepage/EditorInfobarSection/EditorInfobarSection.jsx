@@ -20,6 +20,7 @@ export const EditorInfobarSection = ({
 
   return (
     <CardContainer
+      id={fieldId}
       cardTitle={`Infobar section: ${watch(`${fieldId}.title`)}`}
       isError={!_.isEmpty(sectionErrors)}
     >

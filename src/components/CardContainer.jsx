@@ -2,7 +2,13 @@ import React, { useState } from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
-export const CardContainer = ({ cardTitle, children, isError, onClose }) => {
+export const CardContainer = ({
+  id,
+  cardTitle,
+  children,
+  isError,
+  onClose,
+}) => {
   const [shouldDisplay, setShouldDisplay] = useState(false)
 
   return (
@@ -14,7 +20,7 @@ export const CardContainer = ({ cardTitle, children, isError, onClose }) => {
       <div className={elementStyles.cardHeader}>
         <h2>{cardTitle}</h2>
         <button
-          className="pl-3"
+          id={id}
           type="button"
           onClick={() => {
             setShouldDisplay(!shouldDisplay)

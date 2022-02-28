@@ -23,6 +23,7 @@ export const HeroOption = ({
     <CardContainer
       cardTitle={watch(`${fieldId}.title`)}
       isError={!_.isEmpty(sectionErrors)}
+      id={fieldId}
     >
       <div id={fieldId} className={elementStyles.cardContent}>
         <FormField
