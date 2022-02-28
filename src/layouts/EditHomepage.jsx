@@ -94,7 +94,7 @@ const EditHomepage = ({ match, location }) => {
     handleSubmit,
   } = methods
 
-  const { fields, append, remove, update, move } = useFieldArray({
+  const { fields, append, remove, move } = useFieldArray({
     control,
     name: "sections",
   })
@@ -207,6 +207,7 @@ const EditHomepage = ({ match, location }) => {
       const newSection = {}
       for (const sectionName in section) {
         if (sectionName !== "id")
+          // filter out useFieldArray's id
           newSection[sectionName] = _.cloneDeep(
             _.omitBy(section[sectionName], _.isEmpty)
           )
@@ -316,11 +317,7 @@ const EditHomepage = ({ match, location }) => {
                                 >
                                   <EditorResourcesSection
                                     fieldId={`sections.${sectionIndex}.resources`}
-                                    key={`section-${sectionIndex}`}
-                                    sectionIndex={sectionIndex}
-                                    deleteHandler={(
-                                      event // temporary
-                                    ) =>
+                                    deleteHandler={(event) =>
                                       setItemPendingForDelete({
                                         id: event.target.id,
                                         type: "Infobar Section",
@@ -346,11 +343,7 @@ const EditHomepage = ({ match, location }) => {
                                 >
                                   <EditorInfobarSection
                                     fieldId={`sections.${sectionIndex}.infobar`}
-                                    key={`section-${sectionIndex}`}
-                                    sectionIndex={sectionIndex}
-                                    deleteHandler={(
-                                      event // temporary
-                                    ) =>
+                                    deleteHandler={(event) =>
                                       setItemPendingForDelete({
                                         id: event.target.id,
                                         type: "Infobar Section",
@@ -376,10 +369,7 @@ const EditHomepage = ({ match, location }) => {
                                 >
                                   <EditorInfopicSection
                                     fieldId={`sections.${sectionIndex}.infopic`}
-                                    key={`section-${sectionIndex}`}
-                                    deleteHandler={(
-                                      event // temporary
-                                    ) =>
+                                    deleteHandler={(event) =>
                                       setItemPendingForDelete({
                                         id: event.target.id,
                                         type: "Infobar Section",
