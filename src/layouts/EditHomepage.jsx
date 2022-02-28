@@ -320,7 +320,7 @@ const EditHomepage = ({ match, location }) => {
                                     deleteHandler={(event) =>
                                       setItemPendingForDelete({
                                         id: event.target.id,
-                                        type: "Infobar Section",
+                                        type: "Resources Section",
                                       })
                                     }
                                   />
@@ -372,7 +372,7 @@ const EditHomepage = ({ match, location }) => {
                                     deleteHandler={(event) =>
                                       setItemPendingForDelete({
                                         id: event.target.id,
-                                        type: "Infobar Section",
+                                        type: "Infopic Section",
                                       })
                                     }
                                   />
