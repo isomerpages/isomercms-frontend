@@ -71,14 +71,7 @@ const EditHomepage = ({ match, location }) => {
   const { params, decodedParams } = match
 
   const { siteName } = match.params
-  const [originalFrontMatter, setOriginalFrontMatter] = useState({
-    title: "",
-    subtitle: "",
-    description: "",
-    image: "",
-    notification: "",
-    sections: [],
-  })
+  const [originalFrontMatter, setOriginalFrontMatter] = useState({})
   const [hasResources, setHasResources] = useState(false)
 
   const [itemPendingForDelete, setItemPendingForDelete] = useState({
@@ -128,25 +121,33 @@ const EditHomepage = ({ match, location }) => {
   /** ******************************** */
 
   useEffect(() => {
-    if (
-      homepageData &&
-      (watch("sections").length === 0 || !watch("sections"))
-    ) {
-      const { frontMatter } = homepageData.content
-      setValue("notification", frontMatter.notification)
-      setValue("sections", frontMatter.sections)
+    if (homepageData && watch("sections").length === 0) {
+      const {
+        frontMatter: { notification, sections },
+      } = homepageData.content
+      setValue("notification", notification)
+      setValue("sections", sections)
 
-      if (frontMatter.sections[0].hero.key_highlights)
-        setValue(`sections.0.hero.heroType`, "highlights")
-      else if (frontMatter.sections[0].hero.dropdown)
-        setValue(`sections.0.hero.heroType`, "dropdown")
-      else setValue(`sections.0.hero.heroType`, "none")
+      sections.forEach((section) => {
+        if (section.hero) {
+          if (
+            section.hero.key_highlights ||
+            section.hero.button ||
+            section.hero.url
+          )
+            setValue(`sections.0.hero.heroType`, "highlights")
+          else if (section.hero.dropdown)
+            setValue(`sections.0.hero.heroType`, "dropdown")
+          else setValue(`sections.0.hero.heroType`, "none")
+        }
+        if (section.resources) setHasResources(true)
+        appendRefs(createRef())
+      })
 
-      setValue(
-        "scrollRefs",
-        frontMatter.sections.map((_) => createRef())
-      )
-      setOriginalFrontMatter(_.cloneDeep(frontMatter))
+      setOriginalFrontMatter({
+        notification: _.clone(notification),
+        sections: _.cloneDeep(sections),
+      })
     }
   }, [homepageData])
 
