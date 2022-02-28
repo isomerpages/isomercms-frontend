@@ -13,7 +13,7 @@ import {
 } from "utils/validators"
 
 export const EditorInfopicSchema = Yup.object().shape({
-  infobar: Yup.object().shape({
+  infopic: Yup.object().shape({
     title: Yup.string()
       .min(
         INFOPIC_TITLE_MIN_LENGTH,
