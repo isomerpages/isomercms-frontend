@@ -33,8 +33,8 @@ export const EditorHeroSection = ({
     // reset highlight and dropdown toggle states
     if (heroType !== "highlights") {
       setValue(`${fieldId}.key_highlights`, [])
-      setValue(`${fieldId}.button`, "")
-      setValue(`${fieldId}.url`, "")
+      unregister(`${fieldId}.button`)
+      unregister(`${fieldId}.url`)
     }
     if (heroType !== "dropdown") {
       unregister(`${fieldId}.dropdown`)
@@ -44,7 +44,7 @@ export const EditorHeroSection = ({
   return (
     <CardContainer
       cardTitle={"Hero Section"}
-      isError={!_.isEmpty(errors)}
+      isError={!_.isEmpty(sectionErrors)}
       onClose={() => trigger()} // trigger validation when card is closed, prevents unnecessary validation
     >
       <FormField
