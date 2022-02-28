@@ -20,20 +20,26 @@ export const EditorHeroSection = ({
 }) => {
   const {
     register,
+    unregister,
     formState: { errors },
     setValue,
     watch,
     trigger,
   } = useFormContext()
   const sectionErrors = _.get(errors, fieldId)
+  const heroType = watch(`${fieldId}.heroType`)
 
-  /** ****************** */
-  /*   useForm effects   */
-  /** ****************** */
   useEffect(() => {
-    if (watch(fieldId).key_highlights) setValue("heroType", "highlights")
-    else if (watch(fieldId).dropdown) setValue("heroType", "dropdown")
-  }, [])
+    // reset highlight and dropdown toggle states
+    if (heroType !== "highlights") {
+      setValue(`${fieldId}.key_highlights`, [])
+      unregister(`${fieldId}.button`)
+      unregister(`${fieldId}.url`)
+    }
+    if (heroType !== "dropdown") {
+      unregister(`${fieldId}.dropdown`)
+    }
+  }, [heroType, unregister, setValue])
 
   return (
     <CardContainer
@@ -74,56 +80,39 @@ export const EditorHeroSection = ({
           <label className="flex-fill">
             <input
               type="radio"
-              {...register("heroType")}
+              {...register(`${fieldId}.heroType`)}
               id="radio-highlights"
-              name="heroType"
+              name={`${fieldId}.heroType`}
               value="highlights"
-              onChange={(e) => {
-                register("heroType").onChange(e)
-                setValue("dropdown", {})
-              }}
             />
             Highlights + Button
           </label>
           <label htmlFor="radio-dropdown" className="flex-fill">
             <input
               type="radio"
-              {...register("heroType")}
+              {...register(`${fieldId}.heroType`)}
               id="radio-dropdown"
-              name="heroType"
+              name={`${fieldId}.heroType`}
               value="dropdown"
-              onChange={(e) => {
-                register("heroType").onChange(e)
-                setValue("key_highlights", [])
-                setValue("button", "")
-                setValue("url", "")
-              }}
             />
             Dropdown
           </label>
           <label htmlFor="radio-none" className="flex-fill">
             <input
               type="radio"
-              {...register("heroType")}
+              {...register(`${fieldId}.heroType`)}
               id="radio-none"
-              name="heroType"
+              name={`${fieldId}.heroType`}
               value="none"
-              onChange={(e) => {
-                register("heroType").onChange(e)
-                setValue("key_highlights", [])
-                setValue("button", "")
-                setValue("url", "")
-                setValue("dropdown", {})
-              }}
             />
             None
           </label>
         </div>
       </>
       <br />
-      {watch("heroType") === "dropdown" ? (
-        <HeroDropdown fieldId={fieldId} />
-      ) : watch("heroType") === "highlights" ? (
+      {heroType === "dropdown" ? (
+        <HeroDropdown fieldId={`${fieldId}.dropdown`} />
+      ) : heroType === "highlights" ? (
         <HeroHighlight fieldId={fieldId} />
       ) : null}
     </CardContainer>
