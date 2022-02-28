@@ -9,7 +9,7 @@ import Header from "components/Header"
 import { EditorHeroSection } from "components/homepage/EditorHeroSection"
 import { EditorInfobarSection } from "components/homepage/EditorInfobarSection"
 import { EditorInfopicSection } from "components/homepage/EditorInfopicSection"
-import NewSectionCreator from "components/homepage/NewSectionCreator"
+import { NewSectionCreator } from "components/homepage/NewSectionCreator"
 import { EditorResourcesSection } from "components/homepage/EditorResourcesSection"
 import LoadingButton from "components/LoadingButton"
 
@@ -45,50 +45,6 @@ import * as Yup from "yup"
 // Constants
 // ==========
 const RADIX_PARSE_INT = 10
-
-// Section constructors
-const defaultResourcesSection = {
-  resources: {
-    title: "Resources Section Title",
-    subtitle: "Resources Section Subtitle",
-    button: "Resources Button Name",
-  },
-}
-
-const defaultInfobarSection = {
-  infobar: {
-    title: "Infobar Title",
-    subtitle: "Infobar Subtitle",
-    description: "Infobar description",
-    button: "Button Text",
-    url: "", // No default value so that no broken link is created
-  },
-}
-
-const defaultInfopicSection = {
-  infopic: {
-    title: "Infopic Title",
-    subtitle: "Infopic Subtitle",
-    description: "Infopic description",
-    button: "Button Text",
-    url: "", // No default value so that no broken link is created
-    image: "", // Always blank since the image modal handles this
-    alt: "Image alt text",
-  },
-}
-
-const enumSection = (type) => {
-  switch (type) {
-    case "resources":
-      return defaultResourcesSection
-    case "infobar":
-      return defaultInfobarSection
-    case "infopic":
-      return defaultInfopicSection
-    default:
-      return defaultInfobarSection
-  }
-}
 
 const EditHomepageSchema = Yup.object().shape({
   sections: Yup.array().of(
@@ -205,11 +161,11 @@ const EditHomepage = ({ match, location }) => {
 
   const createHandler = async (event) => {
     try {
-      const { value } = event.target
-      if (value === "resources") {
+      const { value, id } = event.target
+      if (id === "resources") {
         setHasResources(true)
       }
-      append(enumSection(value, false))
+      append(value)
       appendRefs(createRef())
       scrollRefs[scrollRefs.length - 1].current.scrollIntoView()
     } catch (err) {
