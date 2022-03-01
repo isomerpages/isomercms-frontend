@@ -32,7 +32,7 @@ export class MediaService {
   }
 
   async get(apiParams) {
-    return await this.apiClient
+    return this.apiClient
       .get(this.getMediaEndpoint(apiParams))
       .then((res) => res.data)
   }
@@ -41,7 +41,7 @@ export class MediaService {
     const body = {
       sha,
     }
-    return await this.apiClient
+    return this.apiClient
       .delete(this.getMediaEndpoint(apiParams), { data: body })
       .then((res) => res.data)
   }
