@@ -1,5 +1,5 @@
 import PropTypes from "prop-types"
-import React from "react"
+import React, { useState } from "react"
 import { useQuery } from "react-query"
 
 import { fetchImageURL } from "utils"
@@ -24,53 +24,59 @@ const HeroDropdownElem = ({ title }) => (
   </div>
 )
 
-const HeroDropdown = ({ title, options, isActive, toggleDropdown }) => (
-  <div
-    className={`bp-dropdown margin--top--sm ${isActive ? "is-active" : null}`}
-  >
-    <div className="bp-dropdown-trigger">
-      <a
-        className="bp-button bp-dropdown-button hero-dropdown is-centered"
-        role="button"
-        tabIndex="0"
-        aria-haspopup="true"
-        aria-controls="hero-dropdown-menu"
-        onClick={toggleDropdown}
-        onKeyDown={toggleDropdown}
-      >
-        <span>
-          <b>
-            <p>{title}</p>
-          </b>
-        </span>
-        <span className="icon is-small">
-          <i
-            className="sgds-icon sgds-icon-chevron-down is-size-4"
-            aria-hidden="true"
-          />
-        </span>
-      </a>
-    </div>
+const HeroDropdown = ({ title, options }) => {
+  const [dropdownIsActive, setDropdownIsActive] = useState(false)
+  const toggleDropdown = () => setDropdownIsActive((prevState) => !prevState)
+  return (
     <div
-      className="bp-dropdown-menu has-text-left"
-      id="hero-dropdown-menu"
-      role="menu"
+      className={`bp-dropdown margin--top--sm ${
+        dropdownIsActive ? "is-active" : null
+      }`}
     >
-      <div className="bp-dropdown-content is-centered">
-        {options
-          ? options.map((option, index) =>
-              option.title ? (
-                <HeroDropdownElem
-                  key={`dropdown-${index}`}
-                  title={option.title}
-                />
-              ) : null
-            )
-          : null}
+      <div className="bp-dropdown-trigger">
+        <a
+          className="bp-button bp-dropdown-button hero-dropdown is-centered"
+          role="button"
+          tabIndex="0"
+          aria-haspopup="true"
+          aria-controls="hero-dropdown-menu"
+          onClick={toggleDropdown}
+          onKeyDown={toggleDropdown}
+        >
+          <span>
+            <b>
+              <p>{title}</p>
+            </b>
+          </span>
+          <span className="icon is-small">
+            <i
+              className="sgds-icon sgds-icon-chevron-down is-size-4"
+              aria-hidden="true"
+            />
+          </span>
+        </a>
+      </div>
+      <div
+        className="bp-dropdown-menu has-text-left"
+        id="hero-dropdown-menu"
+        role="menu"
+      >
+        <div className="bp-dropdown-content is-centered">
+          {options
+            ? options.map((option, index) =>
+                option.title ? (
+                  <HeroDropdownElem
+                    key={`dropdown-${index}`}
+                    title={option.title}
+                  />
+                ) : null
+              )
+            : null}
+        </div>
       </div>
     </div>
-  </div>
-)
+  )
+}
 
 const KeyHighlightElem = ({ title, description }) => (
   <>
@@ -111,10 +117,7 @@ const KeyHighlights = ({ highlights }) => (
   </section>
 )
 
-const TemplateHeroSection = (
-  { hero, siteName, dropdownIsActive, toggleDropdown },
-  ref
-) => {
+const TemplateHeroSection = ({ hero, siteName }, ref) => {
   const { data: loadedImageURL, status } = useQuery(
     `${siteName}/${hero.background}`,
     () => fetchImageURL(siteName, decodeURI(hero.background)),
@@ -147,12 +150,10 @@ const TemplateHeroSection = (
                   </p>
                 ) : null}
                 {/* Hero dropdown */}
-                {hero.dropdown ? (
+                {!_.isEmpty(hero.dropdown) ? (
                   <HeroDropdown
                     title={hero.dropdown.title}
                     options={hero.dropdown.options}
-                    isActive={dropdownIsActive}
-                    toggleDropdown={toggleDropdown}
                   />
                 ) : (
                   <HeroButton button={hero.button} />
@@ -163,7 +164,7 @@ const TemplateHeroSection = (
         </div>
       </section>
       {/* Key highlights */}
-      {!hero.dropdown && hero.key_highlights ? (
+      {hero.key_highlights ? (
         <KeyHighlights highlights={hero.key_highlights} />
       ) : null}
     </div>
@@ -182,8 +183,6 @@ HeroDropdownElem.propTypes = {
 
 HeroDropdown.propTypes = {
   title: PropTypes.string,
-  isActive: PropTypes.bool,
-  toggleDropdown: PropTypes.func,
   options: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string,
@@ -232,6 +231,4 @@ TemplateHeroSection.propTypes = {
     ),
   }).isRequired,
   siteName: PropTypes.string.isRequired,
-  dropdownIsActive: PropTypes.bool.isRequired,
-  toggleDropdown: PropTypes.func.isRequired,
 }

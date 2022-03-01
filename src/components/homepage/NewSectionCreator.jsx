@@ -5,13 +5,57 @@ import Dropdown from "components/Dropdown"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
-const NewSectionCreator = ({ createHandler, hasResources }) => {
+// Section constructors
+const defaultResourcesSection = () => ({
+  resources: {
+    title: "Resources Section Title",
+    subtitle: "Resources Section Subtitle",
+    button: "Resources Button Name",
+  },
+})
+
+const defaultInfobarSection = () => ({
+  infobar: {
+    title: "Infobar Title",
+    subtitle: "Infobar Subtitle",
+    description: "Infobar description",
+    button: "Button Text",
+    url: "", // No default value so that no broken link is created
+  },
+})
+
+const defaultInfopicSection = () => ({
+  infopic: {
+    title: "Infopic Title",
+    subtitle: "Infopic Subtitle",
+    description: "Infopic description",
+    button: "Button Text",
+    url: "", // No default value so that no broken link is created
+    image: "", // Always blank since the image modal handles this
+    alt: "Image alt text",
+  },
+})
+
+const enumSection = (type) => {
+  switch (type) {
+    case "resources":
+      return defaultResourcesSection()
+    case "infobar":
+      return defaultInfobarSection()
+    case "infopic":
+      return defaultInfopicSection()
+    default:
+      return defaultInfobarSection()
+  }
+}
+
+export const NewSectionCreator = ({ createHandler, hasResources }) => {
   const [newSectionType, setNewSectionType] = useState()
   const onFormSubmit = () => {
     const event = {
       target: {
-        id: "section-new",
-        value: newSectionType,
+        id: newSectionType,
+        value: enumSection(newSectionType),
       },
     }
     createHandler(event)
@@ -50,8 +94,6 @@ const NewSectionCreator = ({ createHandler, hasResources }) => {
     </div>
   )
 }
-
-export default NewSectionCreator
 
 NewSectionCreator.propTypes = {
   createHandler: PropTypes.func.isRequired,
