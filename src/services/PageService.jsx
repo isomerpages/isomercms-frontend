@@ -63,7 +63,7 @@ export class PageService {
   }
 
   async get(apiParams) {
-    return await this.apiClient
+    return this.apiClient
       .get(this.getPageEndpoint(apiParams))
       .then((res) => res.data)
   }
@@ -72,7 +72,7 @@ export class PageService {
     const body = {
       sha,
     }
-    return await this.apiClient
+    return this.apiClient
       .delete(this.getPageEndpoint(apiParams), { data: body })
       .then((res) => res.data)
   }

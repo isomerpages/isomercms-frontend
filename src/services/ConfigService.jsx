@@ -13,7 +13,7 @@ export class ConfigService {
   }
 
   async get(apiParams) {
-    return await this.apiClient
+    return this.apiClient
       .get(this.getEndpoint(apiParams))
       .then((res) => res.data)
   }
