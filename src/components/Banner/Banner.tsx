@@ -18,7 +18,9 @@ const styles = {
 export const Banner = ({ children }: BannerProps): JSX.Element => {
   return (
     <Box __css={styles.banner}>
-      <Flex sx={styles.item}>{children}</Flex>
+      <Flex sx={styles.item}>
+        <Flex>{children}</Flex>
+      </Flex>
     </Box>
   )
 }
