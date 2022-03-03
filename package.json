@@ -60,7 +60,7 @@
     "start": "source .env.development.local && craco start",
     "dev": "source .env && craco start",
     "build": "craco build",
-    "release": "npm version $npm_config_update && git push --tags",
+    "release": "npm version $npm_config_isomer_update && git push --tags",
     "test": "craco test",
     "test:ci": "node scripts/run-e2e.js run",
     "test-e2e": "source .env && node scripts/run-e2e.js run",
