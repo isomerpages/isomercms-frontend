@@ -23,11 +23,11 @@ export const HeroHighlightOptionSchema = Yup.object({
   description: Yup.string()
     .min(
       HIGHLIGHTS_DESCRIPTION_MIN_LENGTH,
-      `Title must be longer than ${HIGHLIGHTS_DESCRIPTION_MIN_LENGTH} characters`
+      `Description must be longer than ${HIGHLIGHTS_DESCRIPTION_MIN_LENGTH} characters`
     )
     .max(
       HIGHLIGHTS_DESCRIPTION_MAX_LENGTH,
-      `Title must be shorter than ${HIGHLIGHTS_DESCRIPTION_MAX_LENGTH} characters`
+      `Description must be shorter than ${HIGHLIGHTS_DESCRIPTION_MAX_LENGTH} characters`
     ),
 })
 
@@ -37,11 +37,11 @@ export const HeroHighlightSchema = Yup.object().shape({
       ? Yup.string()
           .min(
             HERO_BUTTON_MIN_LENGTH,
-            `Title must be longer than ${HERO_BUTTON_MIN_LENGTH} characters`
+            `Button text must be longer than ${HERO_BUTTON_MIN_LENGTH} characters`
           )
           .max(
             HERO_BUTTON_MAX_LENGTH,
-            `Title must be shorter than ${HERO_BUTTON_MAX_LENGTH} characters`
+            `Button text must be shorter than ${HERO_BUTTON_MAX_LENGTH} characters`
           )
       : Yup.string().nullable()
   ),
