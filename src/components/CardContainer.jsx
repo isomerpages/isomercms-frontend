@@ -2,7 +2,7 @@ import React, { useState } from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
-export const CardContainer = ({ cardTitle, children, isError, onClose }) => {
+export const CardContainer = ({ cardTitle, children, isError }) => {
   const [shouldDisplay, setShouldDisplay] = useState(false)
 
   return (
@@ -16,10 +16,7 @@ export const CardContainer = ({ cardTitle, children, isError, onClose }) => {
         <button
           className="pl-3"
           type="button"
-          onClick={() => {
-            setShouldDisplay(!shouldDisplay)
-            if (shouldDisplay && onClose) onClose()
-          }}
+          onClick={() => setShouldDisplay(!shouldDisplay)}
         >
           <i
             className={`bx ${

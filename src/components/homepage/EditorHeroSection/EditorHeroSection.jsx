@@ -19,7 +19,6 @@ export const EditorHeroSection = ({
     formState: { errors },
     setValue,
     watch,
-    trigger,
   } = useFormContext()
   const sectionErrors = _.get(errors, fieldId)
   const heroType = watch(`${fieldId}.heroType`)
@@ -37,11 +36,7 @@ export const EditorHeroSection = ({
   }, [heroType, unregister, setValue])
 
   return (
-    <CardContainer
-      cardTitle="Hero Section"
-      isError={!_.isEmpty(sectionErrors)}
-      onClose={() => trigger()} // trigger validation when card is closed, prevents unnecessary validation
-    >
+    <CardContainer cardTitle="Hero Section" isError={!_.isEmpty(sectionErrors)}>
       <FormField
         register={register}
         title="Hero title"
