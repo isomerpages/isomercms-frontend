@@ -14,7 +14,7 @@ const defaultDropdownOption = {
 }
 
 export const HeroDropdown = ({
-  fieldId, // sections.0.hero.dropdown
+  fieldId, // This fieldId refers to sections.0.hero.dropdown, and it's a string reference id to the object in useForm
 }) => {
   const {
     register,
