@@ -11,7 +11,7 @@ import { useFormContext } from "react-hook-form"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 export const EditorHeroSection = ({
-  fieldId, // sections.0.hero  // string reference id to object in useForm
+  fieldId, //  This fieldId refers to sections.0.hero, and it's a string reference id to the object in useForm
 }) => {
   const {
     register,

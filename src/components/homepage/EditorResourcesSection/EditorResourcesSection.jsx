@@ -8,7 +8,7 @@ import { useFormContext } from "react-hook-form"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 export const EditorResourcesSection = ({
-  fieldId, // sections.[sectionIndex].resources // string reference id to object in useForm
+  fieldId, // This fieldId refers to sections.[sectionIndex].resources, and it's a string reference id to the object in useForm
   deleteHandler,
 }) => {
   const {

@@ -18,7 +18,7 @@ const defaultHighlightOption = {
 }
 
 export const HeroHighlight = ({
-  fieldId, // sections.0.hero
+  fieldId, // This fieldId refers to sections.0.hero, and it's a string reference id to the object in useForm
 }) => {
   const {
     register,

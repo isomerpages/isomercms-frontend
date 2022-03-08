@@ -10,7 +10,7 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 export const HeroOption = ({
   deleteHandler,
   isHighlight,
-  fieldId, // sections.0.hero.dropdown.options.[optionIndex] or sections.0.hero.key_highlights.[optionIndex]
+  fieldId, // This fieldId refers to one of [ 'sections.0.hero.dropdown.options.[optionIndex]', 'sections.0.hero.key_highlights.[optionIndex]' ], and it's a string reference id to the object in useForm
 }) => {
   const {
     register,
