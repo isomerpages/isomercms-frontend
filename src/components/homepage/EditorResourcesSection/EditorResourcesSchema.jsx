@@ -23,20 +23,20 @@ export const EditorResourcesSchema = Yup.object().shape({
     subtitle: Yup.string()
       .min(
         RESOURCES_SUBTITLE_MIN_LENGTH,
-        `Title must be longer than ${RESOURCES_SUBTITLE_MIN_LENGTH} characters`
+        `Subtitle must be longer than ${RESOURCES_SUBTITLE_MIN_LENGTH} characters`
       )
       .max(
         RESOURCES_SUBTITLE_MAX_LENGTH,
-        `Title must be shorter than ${RESOURCES_SUBTITLE_MAX_LENGTH} characters`
+        `Subtitle must be shorter than ${RESOURCES_SUBTITLE_MAX_LENGTH} characters`
       ),
     button: Yup.string()
       .min(
         RESOURCES_BUTTON_MIN_LENGTH,
-        `Title must be longer than ${RESOURCES_BUTTON_MIN_LENGTH} characters`
+        `Button text must be longer than ${RESOURCES_BUTTON_MIN_LENGTH} characters`
       )
       .max(
         RESOURCES_BUTTON_MAX_LENGTH,
-        `Title must be shorter than ${RESOURCES_BUTTON_MAX_LENGTH} characters`
+        `Button text must be shorter than ${RESOURCES_BUTTON_MAX_LENGTH} characters`
       ),
   }),
 })

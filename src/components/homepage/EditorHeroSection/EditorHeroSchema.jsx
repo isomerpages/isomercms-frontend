@@ -26,11 +26,11 @@ export const EditorHeroSchema = Yup.object().shape({
       subtitle: Yup.string()
         .min(
           HERO_SUBTITLE_MIN_LENGTH,
-          `Title must be longer than ${HERO_SUBTITLE_MIN_LENGTH} characters`
+          `Subtitle must be longer than ${HERO_SUBTITLE_MIN_LENGTH} characters`
         )
         .max(
           HERO_SUBTITLE_MAX_LENGTH,
-          `Title must be shorter than ${HERO_SUBTITLE_MAX_LENGTH} characters`
+          `Subtitle must be shorter than ${HERO_SUBTITLE_MAX_LENGTH} characters`
         ),
       background: Yup.string(),
       heroType: Yup.string(),
