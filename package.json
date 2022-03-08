@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@atlaskit/tree": "^7.0.2",
-    "@braintree/sanitize-url": "^5.0.2",
+    "@braintree/sanitize-url": "^6.0.0",
     "@chakra-ui/react": "^1.8.3",
     "@craco/craco": "^6.4.3",
     "@emotion/react": "^11.7.1",
