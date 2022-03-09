@@ -42,19 +42,16 @@ export const HeroHighlightOptionSchema = Yup.object({
 })
 
 export const HeroHighlightSchema = Yup.object().shape({
-  button: Yup.lazy((val) =>
-    val
-      ? Yup.string()
-          .min(
-            HERO_BUTTON_MIN_LENGTH,
-            `Button text must be longer than ${HERO_BUTTON_MIN_LENGTH} characters`
-          )
-          .max(
-            HERO_BUTTON_MAX_LENGTH,
-            `Button text must be shorter than ${HERO_BUTTON_MAX_LENGTH} characters`
-          )
-      : Yup.string().nullable()
-  ),
+  button: Yup.string()
+    .min(
+      HERO_BUTTON_MIN_LENGTH,
+      `Button text must be longer than ${HERO_BUTTON_MIN_LENGTH} characters`
+    )
+    .max(
+      HERO_BUTTON_MAX_LENGTH,
+      `Button text must be shorter than ${HERO_BUTTON_MAX_LENGTH} characters`
+    )
+    .nullable(),
   url: Yup.lazy((val) => {
     if (val && val.startsWith("/"))
       return Yup.string(
