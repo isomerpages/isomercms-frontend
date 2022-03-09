@@ -9,6 +9,7 @@ import {
   HERO_TITLE_MAX_LENGTH,
   HERO_SUBTITLE_MIN_LENGTH,
   HERO_SUBTITLE_MAX_LENGTH,
+  imagesDirectoryRegexTest,
 } from "utils/validators"
 
 export const EditorHeroSchema = Yup.object().shape({
@@ -32,7 +33,9 @@ export const EditorHeroSchema = Yup.object().shape({
           HERO_SUBTITLE_MAX_LENGTH,
           `Subtitle must be shorter than ${HERO_SUBTITLE_MAX_LENGTH} characters`
         ),
-      background: Yup.string(),
+      background: Yup.string().matches(imagesDirectoryRegexTest, {
+        excludeEmptyString: true,
+      }),
       heroType: Yup.string().matches(/(dropdown|highlights|none)/, {
         excludeEmptyString: true,
       }),
