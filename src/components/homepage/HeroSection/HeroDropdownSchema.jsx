@@ -17,7 +17,17 @@ export const HeroDropdownOptionSchema = Yup.object({
       DROPDOWNELEM_TITLE_MAX_LENGTH,
       `Title must be shorter than ${DROPDOWNELEM_TITLE_MAX_LENGTH} characters`
     ),
-  url: Yup.string(),
+  url: Yup.lazy((val) => {
+    if (val && val.startsWith("/"))
+      return Yup.string(
+        `URL must be either a permalink to a page on the site or a valid external URL`
+      )
+    return Yup.string()
+      .url(
+        `URL must be either a permalink to a page on the site or a valid external URL`
+      )
+      .nullable()
+  }),
 })
 
 export const HeroDropdownSchema = Yup.object().shape({

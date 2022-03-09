@@ -19,7 +19,17 @@ export const HeroHighlightOptionSchema = Yup.object({
       HIGHLIGHTS_TITLE_MAX_LENGTH,
       `Title must be shorter than ${HIGHLIGHTS_TITLE_MAX_LENGTH} characters`
     ),
-  url: Yup.string(),
+  url: Yup.lazy((val) => {
+    if (val && val.startsWith("/"))
+      return Yup.string(
+        `URL must be either a permalink to a page on the site or a valid external URL`
+      )
+    return Yup.string()
+      .url(
+        `URL must be either a permalink to a page on the site or a valid external URL`
+      )
+      .nullable()
+  }),
   description: Yup.string()
     .min(
       HIGHLIGHTS_DESCRIPTION_MIN_LENGTH,
@@ -45,7 +55,17 @@ export const HeroHighlightSchema = Yup.object().shape({
           )
       : Yup.string().nullable()
   ),
-  url: Yup.lazy((val) => (val ? Yup.string() : Yup.string().nullable())),
+  url: Yup.lazy((val) => {
+    if (val && val.startsWith("/"))
+      return Yup.string(
+        `URL must be either a permalink to a page on the site or a valid external URL`
+      )
+    return Yup.string()
+      .url(
+        `URL must be either a permalink to a page on the site or a valid external URL`
+      )
+      .nullable()
+  }),
   key_highlights: Yup.lazy((val) =>
     val ? Yup.array().of(HeroHighlightOptionSchema) : Yup.object().nullable()
   ),
