@@ -33,7 +33,9 @@ export const EditorHeroSchema = Yup.object().shape({
           `Subtitle must be shorter than ${HERO_SUBTITLE_MAX_LENGTH} characters`
         ),
       background: Yup.string(),
-      heroType: Yup.string(),
+      heroType: Yup.string().matches(/(dropdown|highlights|none)/, {
+        excludeEmptyString: true,
+      }),
       dropdown: Yup.lazy((val) =>
         val ? HeroDropdownSchema : Yup.object().nullable()
       ),
