@@ -10,6 +10,13 @@ import { useFormContext } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
+const HeroComponent = ({ heroType, fieldId }) => {
+  if (heroType === "highlights") return <HeroHighlight fieldId={fieldId} />
+  if (heroType === "dropdown")
+    return <HeroDropdown fieldId={`${fieldId}.dropdown`} />
+  return null
+}
+
 export const EditorHeroSection = ({
   fieldId, //  This fieldId refers to sections.0.hero, and it's a string reference id to the object in useForm
 }) => {
@@ -102,11 +109,7 @@ export const EditorHeroSection = ({
         </div>
       </>
       <br />
-      {heroType === "dropdown" ? (
-        <HeroDropdown fieldId={`${fieldId}.dropdown`} />
-      ) : heroType === "highlights" ? (
-        <HeroHighlight fieldId={fieldId} />
-      ) : null}
+      <HeroComponent heroType={heroType} fieldId={fieldId} />
     </CardContainer>
   )
 }
