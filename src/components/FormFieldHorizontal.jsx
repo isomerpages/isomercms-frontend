@@ -1,70 +1,20 @@
-import PropTypes from "prop-types"
-import React from "react"
+import React, { forwardRef } from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
-const FormFieldHorizontal = ({
-  title,
-  description,
-  defaultValue,
-  placeholder,
-  value,
-  id,
-  disabled,
-  errorMessage,
-  onFieldChange,
-  isRequired,
-  style,
-  children,
-  register = () => {},
-}) => (
-  <>
-    <p className={elementStyles.formLabel}>{title}</p>
-    {children}
-    <div className={elementStyles.formHorizontal}>
-      <p className={elementStyles.formDescription}>{description}</p>
-      <input
-        type="text"
-        placeholder={placeholder || title}
-        value={value}
-        defaultValue={defaultValue}
-        id={id}
-        autoComplete="off"
-        required={isRequired}
-        disabled={disabled}
-        className={`${elementStyles.formHorizontalInput} ${
-          errorMessage ? `${elementStyles.error}` : null
-        }`}
-        style={style}
-        onChange={onFieldChange}
-        {...register(id, { required: isRequired })}
-      />
-    </div>
-    {errorMessage ? (
-      <>
-        <span className={elementStyles.error}>{errorMessage}</span>
-        <br />
-        <br />
-      </>
-    ) : null}
-  </>
-)
+import FormInput from "./Form/FormInput"
+
+// This component is a thin wrapper over the basic FormInput.
+// It serves to apply additional UI styling over the base FormInput.
+// Because of this, any additional props are forwarded to the base FormInput for consumption
+const FormFieldHorizontal = forwardRef((args, ref) => (
+  <div className={elementStyles.formHorizontal}>
+    <FormInput
+      className={elementStyles.formHorizontalInput}
+      {...args}
+      ref={ref}
+    />
+  </div>
+))
 
 export default FormFieldHorizontal
-
-FormFieldHorizontal.propTypes = {
-  title: PropTypes.string.isRequired,
-  placeholder: PropTypes.string,
-  defaultValue: PropTypes.string,
-  value: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
-  errorMessage: PropTypes.string.isRequired,
-  onFieldChange: PropTypes.func.isRequired,
-  isRequired: PropTypes.bool.isRequired,
-  style: PropTypes.string,
-}
-
-FormFieldHorizontal.defaultProps = {
-  defaultValue: undefined,
-  style: undefined,
-}
