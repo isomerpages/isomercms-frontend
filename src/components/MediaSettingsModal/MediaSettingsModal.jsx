@@ -1,6 +1,9 @@
 import { yupResolver } from "@hookform/resolvers/yup"
 import axios from "axios"
 import Button from "components/Button"
+import FormContext from "components/Form/FormContext"
+import FormError from "components/Form/FormError"
+import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
 import React, { useEffect } from "react"
@@ -142,12 +145,15 @@ export const MediaSettingsModal = ({
           )}
           <form className={elementStyles.modalContent}>
             <div className={elementStyles.modalFormFields}>
-              <FormField
-                register={register}
-                title="File name"
-                errorMessage={errors.name?.message}
-                id="name"
-              />
+              <FormContext hasError={!!errors.name?.message}>
+                <FormTitle>File name</FormTitle>
+                <FormField
+                  placeholder="File name"
+                  {...register("name")}
+                  id="name"
+                />
+                <FormError>{errors.name?.message}</FormError>
+              </FormContext>
             </div>
             <SaveDeleteButtons
               saveLabel={!fileName ? "Upload" : "Save"}

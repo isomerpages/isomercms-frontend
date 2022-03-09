@@ -1,0 +1,25 @@
+.spacing {
+  display: flex;
+}
+
+.row {
+  flex-direction: row;
+  // Refer here for a detailed explation of this: https://emmenko.medium.com/patching-lobotomized-owl-selector-for-emotion-ssr-5a582a3c424c
+  // It selects all elements a preceding sibling
+  > * ~ * {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-inline-end: 0;
+    margin-inline-start: 24px;
+  }
+}
+
+.column {
+  flex-direction: column;
+  > * ~ * {
+    margin-top: 24px;
+    margin-bottom: 0px;
+    margin-inline-end: 0;
+    margin-inline-start: 0;
+  }
+}

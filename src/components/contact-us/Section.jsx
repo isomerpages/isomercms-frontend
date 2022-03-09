@@ -1,10 +1,9 @@
+import EditorContactCard from "components/contact-us/ContactCard"
+import EditorLocationCard from "components/contact-us/LocationCard"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import React from "react"
 import { Droppable, Draggable } from "react-beautiful-dnd"
-
-import EditorContactCard from "components/contact-us/ContactCard"
-import EditorLocationCard from "components/contact-us/LocationCard"
 
 import styles from "styles/App.module.scss"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"

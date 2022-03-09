@@ -1,4 +1,8 @@
 import axios from "axios"
+import FormContext from "components/Form/FormContext"
+import FormDescription from "components/Form/FormDescription"
+import FormError from "components/Form/FormError"
+import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
 import React from "react"
@@ -6,10 +10,10 @@ import { useFormContext } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
-
 // axios settings
 axios.defaults.withCredentials = true
 
+// eslint-disable-next-line import/prefer-default-export
 export const MediaAltText = ({ onProceed, onClose, type }) => {
   const {
     watch,
@@ -17,6 +21,7 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
     handleSubmit,
     formState: { errors },
   } = useFormContext()
+  const formTitle = type === "images" ? "Alt text" : "Text"
 
   return (
     <div className={elementStyles.overlay}>
@@ -24,6 +29,7 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
         <div className={elementStyles.modalHeader}>
           <h1>Insert media</h1>
           <button
+            type="button"
             mediaType="button"
             id="closeMediaSettingsModal"
             onClick={onClose}
@@ -59,35 +65,42 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
             )}
             <form className={elementStyles.modalContent}>
               <div className={elementStyles.modalFormFields}>
-                <FormField
-                  title="File name"
-                  value={
-                    watch("selectedMedia").name ||
-                    watch("selectedMedia").newFileName
-                  }
-                  disabled
-                />
+                <FormContext isDisabled>
+                  <FormTitle>File name</FormTitle>
+                  <FormField
+                    placeholder="File name"
+                    value={
+                      watch("selectedMedia").name ||
+                      watch("selectedMedia").newFileName
+                    }
+                  />
+                </FormContext>
                 <br />
-                <FormField
-                  register={register}
-                  title={type === "images" ? "Alt text" : "Text"}
-                  id="altText"
-                  errorMessage={errors.altText?.message}
-                  children={
-                    type === "images" ? (
-                      <p className={elementStyles.formDescription}>
+                <FormContext hasError={!!errors.altText?.message}>
+                  <FormTitle>{formTitle}</FormTitle>
+                  <FormDescription>
+                    {type === "images" ? (
+                      <>
                         Short description of image used for accessibility.{" "}
-                        <a href="https://go.gov.sg/isomer-meta" target="_blank">
+                        <a
+                          href="https://go.gov.sg/isomer-meta"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
                           Learn more
                         </a>
-                      </p>
+                      </>
                     ) : (
-                      <p className={elementStyles.formDescription}>
-                        Description of file displayed in hyperlink
-                      </p>
-                    )
-                  }
-                />
+                      "Description of file displayed in hyperlink"
+                    )}
+                  </FormDescription>
+                  <FormField
+                    placeholder={formTitle}
+                    {...register("altText")}
+                    id="altText"
+                  />
+                  <FormError>{errors.altText?.message}</FormError>
+                </FormContext>
               </div>
               <SaveDeleteButtons
                 saveLabel="Save"

@@ -48,7 +48,7 @@ const BaseComponent = ({
   <FormContext
     hasError={hasError}
     isDisabled={isDisabled}
-    onFieldChange={(e) => console.log(e.target.value)}
+    onFieldChange={() => console.log("clicked")}
   >
     <FormTitle>{formTitle}</FormTitle>
     <FormDescription>{formDescription}</FormDescription>

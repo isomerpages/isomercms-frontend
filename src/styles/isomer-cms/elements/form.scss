@@ -41,13 +41,6 @@ p {
   margin-bottom: 5px;
   margin-top: 5px;
 
-  .formHorizontalLabel {
-    @extend .formLabel;
-    padding-right: 5px;
-    min-width: min-content;
-    width: 20%;
-  }
-
   .formHorizontalInput {
     max-width: 80%;
   }
