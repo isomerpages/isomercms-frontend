@@ -22,6 +22,7 @@ const EMAIL_REGEX =
 const DATE_REGEX = "^([0-9]{4}-[0-9]{2}-[0-9]{2})$"
 const ALPHABETS_ONLY_REGEX = '^[a-zA-Z" "\\._-]+$'
 const ALPHANUMERICS_ONLY_REGEX = '^[a-zA-Z0-9" "\\._-]+$'
+const IMAGES_DIRECTORY_REGEX = "^(/images/).+$"
 
 export const permalinkRegexTest = RegExp(PERMALINK_REGEX)
 export const phoneRegexTest = RegExp(PHONE_REGEX)
@@ -34,6 +35,7 @@ export const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/
 export const RESOURCE_CATEGORY_REGEX = "^([a-zA-Z0-9]*[- ]?)+$"
 export const slugifyLowerFalseRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
 export const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX)
+export const imagesDirectoryRegexTest = RegExp(IMAGES_DIRECTORY_REGEX)
 export const specialCharactersRegexTest = /[~%^*_+\-./\\`;~{}[\]"<>]/
 export const mediaSpecialCharactersRegexTest = /[~%^?*+#./\\`;~{}[\]"<>]/
 export const imagesSuffixRegexTest = /^.+\.(svg|jpg|jpeg|png|gif|tif|bmp|ico)$/

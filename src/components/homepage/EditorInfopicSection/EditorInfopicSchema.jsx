@@ -52,7 +52,9 @@ export const EditorInfopicSchema = Yup.object().shape({
         `Button text must be shorter than ${INFOPIC_BUTTON_MAX_LENGTH} characters`
       ),
     url: Yup.string(),
-    imageUrl: Yup.string(),
+    imageUrl: Yup.string().matches(imagesDirectoryRegexTest, {
+      excludeEmptyString: true,
+    }),
     alt: Yup.string()
       .min(
         INFOPIC_ALT_MIN_LENGTH,
