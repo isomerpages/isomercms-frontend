@@ -12,7 +12,7 @@ import FormFieldHorizontal from "components/FormFieldHorizontal"
 import FormFieldMedia from "components/FormFieldMedia"
 import ResourceFormFields from "components/ResourceFormFields"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
-import * as _ from "lodash"
+import _ from "lodash"
 import PropTypes from "prop-types"
 import React, { useEffect } from "react"
 import { useForm } from "react-hook-form"
@@ -21,7 +21,7 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { getDefaultFrontMatter, pageFileNameToTitle } from "utils"
 
-import { PageSettingsSchema } from "."
+import { PageSettingsSchema } from "./PageSettingsSchema"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -122,27 +122,33 @@ export const PageSettingsModal = ({
                   To edit page content, simply click on the page title. <br />
                   <Breadcrumb params={params} title={watch("title")} />
                   {/* Title */}
-                  <FormField
-                    register={register}
-                    title="Page title"
-                    id="title"
-                    errorMessage={errors.title?.message}
-                    isRequired
-                  />
+                  <FormContext isRequired hasError={!!errors.title?.message}>
+                    <FormTitle>Page title</FormTitle>
+                    <FormField
+                      placeholder="Page title"
+                      id="title"
+                      {...register("title", { required: true })}
+                    />
+                    <FormError>{errors.title?.message}</FormError>
+                  </FormContext>
                   <br />
                   {/* Permalink */}
                   {watch("layout") !== "file" && (
                     <>
-                      <FormFieldHorizontal
-                        register={register}
-                        disabled={watch("layout") === "file"}
-                        title="Page URL"
-                        description={siteUrl}
-                        id="permalink"
-                        errorMessage={errors.permalink?.message}
+                      <FormContext
+                        hasError={!!errors.permalink?.message}
                         isRequired
-                        placeholder=""
-                      />
+                        isDisabled={watch("layout") === "file"}
+                      >
+                        <FormTitle>Page URL</FormTitle>
+                        <FormDescription>{siteUrl}</FormDescription>
+                        <FormFieldHorizontal
+                          {...register("permalink", { required: true })}
+                          id="permalink"
+                          placeholder="Page URL"
+                        />
+                        <FormError>{errors.permalink?.message}</FormError>
+                      </FormContext>
                       <br />
                     </>
                   )}
@@ -162,20 +168,25 @@ export const PageSettingsModal = ({
                   )}
                   <br />
                   <p className={elementStyles.formLabel}>Page details</p>
-                  <FormField
-                    register={register}
-                    title="Meta Description (Optional)"
-                    id="description"
-                    children={
-                      <p className={elementStyles.formDescription}>
-                        Description snippet shown in search results.{" "}
-                        <a href="https://go.gov.sg/isomer-meta" target="_blank">
-                          Learn more
-                        </a>
-                      </p>
-                    }
-                    errorMessage={errors.description?.message}
-                  />
+                  <FormContext hasError={!!errors.description?.message}>
+                    <FormTitle>Meta Description (Optional)</FormTitle>
+                    <FormDescription>
+                      Description snippet shown in search results.{" "}
+                      <a
+                        href="https://go.gov.sg/isomer-meta"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Learn more
+                      </a>
+                    </FormDescription>
+                    <FormField
+                      placeholder="Meta Description (Optional)"
+                      id="description"
+                      {...register("description")}
+                    />
+                    <FormError>{errors.description?.message}</FormError>
+                  </FormContext>
                   <br />
                   <FormContext
                     hasError={!!errors.image?.message}

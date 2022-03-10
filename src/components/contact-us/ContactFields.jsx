@@ -1,10 +1,12 @@
+import Dropdown from "components/Dropdown"
+import FormContext from "components/Form/FormContext"
+import FormError from "components/Form/FormError"
+import FormTitle from "components/Form/FormTitle"
+import FormField from "components/FormField"
+import InputMaskFormField from "components/InputMaskFormField"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import React, { useState } from "react"
-
-import Dropdown from "components/Dropdown"
-import FormField from "components/FormField"
-import InputMaskFormField from "components/InputMaskFormField"
 
 const ContactFields = ({
   cardIndex,
@@ -35,20 +37,26 @@ const ContactFields = ({
         id="phone-field-type"
         onFieldChange={(e) => setPhoneFieldType(e.target.value)}
       />
-      <FormField
-        title="Email"
-        id={`${sectionId}-${cardIndex}-email-1`}
-        value={content[1].email}
-        onFieldChange={onFieldChange}
-        errorMessage={errors[1].email}
-      />
-      <FormField
-        title="Others"
-        id={`${sectionId}-${cardIndex}-other-2`}
-        value={content[2].other}
-        onFieldChange={onFieldChange}
-        errorMessage={errors[2].other}
-      />
+      <FormContext hasError={!!errors[1].email}>
+        <FormTitle>Email</FormTitle>
+        <FormField
+          placeholder="Email"
+          id={`${sectionId}-${cardIndex}-email-1`}
+          value={content[1].email}
+          onChange={onFieldChange}
+        />
+        <FormError>{errors[1].email}</FormError>
+      </FormContext>
+      <FormContext hasError={!!errors[2].other}>
+        <FormTitle>Others</FormTitle>
+        <FormField
+          placeholder="Others"
+          id={`${sectionId}-${cardIndex}-other-2`}
+          value={content[2].other}
+          onChange={onFieldChange}
+        />
+        <FormError>{errors[2].other}</FormError>
+      </FormContext>
     </div>
   )
 }

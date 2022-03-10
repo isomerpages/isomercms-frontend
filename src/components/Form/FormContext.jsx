@@ -7,8 +7,8 @@ const FormControlContext = createContext(undefined)
 // State is held here to avoid prop-threading and to ensure that the leaf components
 // only have display logic associated with them.
 const FormContext = ({
+  onFieldChange = () => {},
   hasError = false,
-  onFieldChange,
   isRequired = false,
   isDisabled = false,
   children,
@@ -31,10 +31,10 @@ export const useFormContext = () => {
 }
 
 FormContext.propTypes = {
+  onFieldChange: PropTypes.func,
   hasError: PropTypes.bool,
   isRequired: PropTypes.bool,
   isDisabled: PropTypes.bool,
   children: PropTypes.node,
-  onFieldChange: PropTypes.func.isRequired,
 }
 export default FormContext

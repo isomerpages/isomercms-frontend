@@ -2,6 +2,8 @@
 import axios from "axios"
 import EditorSection from "components/contact-us/Section"
 import DeleteWarningModal from "components/DeleteWarningModal"
+import FormContext from "components/Form/FormContext"
+import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import GenericWarningModal from "components/GenericWarningModal"
 import Header from "components/Header"
@@ -11,18 +13,6 @@ import _ from "lodash"
 import PropTypes from "prop-types"
 import React, { useEffect, useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
-
-import {
-  DEFAULT_RETRY_MSG,
-  frontMatterParser,
-  concatFrontMatterMdBody,
-  isEmpty,
-} from "utils"
-
-import sanitiseFrontMatter from "utils/contact-us/dataSanitisers"
-import validateFrontMatter from "utils/contact-us/validators"
-import { validateContactType, validateLocationType } from "utils/validators"
-import { errorToast } from "utils/toasts"
 
 import "styles/isomer-template.scss"
 
@@ -37,6 +27,18 @@ import TemplateContactsSection from "templates/contact-us/ContactsSection"
 import TemplateContactUsHeader from "templates/contact-us/ContactUsHeader"
 import TemplateFeedbackSection from "templates/contact-us/FeedbackSection"
 import TemplateLocationsSection from "templates/contact-us/LocationsSection"
+
+import sanitiseFrontMatter from "utils/contact-us/dataSanitisers"
+import validateFrontMatter from "utils/contact-us/validators"
+import { errorToast } from "utils/toasts"
+import { validateContactType, validateLocationType } from "utils/validators"
+
+import {
+  DEFAULT_RETRY_MSG,
+  frontMatterParser,
+  concatFrontMatterMdBody,
+  isEmpty,
+} from "utils"
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -800,20 +802,22 @@ const EditContactUs = ({ match }) => {
                 <div className={elementStyles.cardHeader}>
                   <h2>Site Settings</h2>
                 </div>
-                <FormField
-                  title="Agency Name"
-                  id="header-agency_name"
-                  value={frontMatter.agency_name || ""}
-                  isRequired
-                  onFieldChange={onFieldChange}
-                />
-                <FormField
-                  title="Feedback Url"
-                  id="feedback"
-                  value={footerContent.feedback || ""}
-                  isRequired
-                  onFieldChange={onFieldChange}
-                />
+                <FormContext isRequired>
+                  <FormTitle>Agency Name</FormTitle>
+                  <FormField
+                    placeholder="Agency Name"
+                    id="header-agency_name"
+                    value={frontMatter.agency_name || ""}
+                    onChange={onFieldChange}
+                  />
+                  <FormTitle>Feedback Url</FormTitle>
+                  <FormField
+                    placeholder="Feedback Url"
+                    id="feedback"
+                    value={footerContent.feedback || ""}
+                    onChange={onFieldChange}
+                  />
+                </FormContext>
               </div>
               <DragDropContext onDragEnd={onDragEnd}>
                 <EditorSection

@@ -2,6 +2,8 @@ import axios from "axios"
 import { FolderCard } from "components/FolderCard"
 import FolderOptionButton from "components/FolderOptionButton"
 import { Breadcrumb } from "components/folders/Breadcrumb"
+import FormContext from "components/Form/FormContext"
+import FormError from "components/Form/FormError"
 import FormField from "components/FormField"
 import Header from "components/Header"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
@@ -62,15 +64,14 @@ const EmptyResourceRoom = ({ params }) => {
           Room before you can create Resources.
         </span>
       </div>
-      <FormField
-        register={register}
-        id="newDirectoryName"
-        className="w-100"
-        placeholder="Resource room title"
-        errorMessage={errors.newDirectoryName?.message}
-        isRequired
-        maxWidth
-      />
+      <FormContext isRequired hasError={!!errors.newDirectoryName?.message}>
+        <FormField
+          id="newDirectoryName"
+          placeholder="Resource room title"
+          {...register("newDirectoryName", { required: true })}
+        />
+        <FormError>{errors.newDirectoryName?.message}</FormError>
+      </FormContext>
       {/* Segment divider  */}
       <div className={contentStyles.segmentDividerContainer}>
         <hr className="invisible w-100 mt-3 mb-3" />
