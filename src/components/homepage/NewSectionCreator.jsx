@@ -1,7 +1,6 @@
+import Dropdown from "components/Dropdown"
 import PropTypes from "prop-types"
 import React, { useState } from "react"
-
-import Dropdown from "components/Dropdown"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -44,8 +43,6 @@ const enumSection = (type) => {
       return defaultInfobarSection()
     case "infopic":
       return defaultInfopicSection()
-    default:
-      return defaultInfobarSection()
   }
 }
 
