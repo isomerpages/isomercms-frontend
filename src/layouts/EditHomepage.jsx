@@ -1,33 +1,44 @@
+import { yupResolver } from "@hookform/resolvers/yup"
+import DeleteWarningModal from "components/DeleteWarningModal"
+import Header from "components/Header"
+import {
+  EditorHeroSection,
+  EditorHeroSchema,
+} from "components/homepage/EditorHeroSection"
+import {
+  EditorInfobarSection,
+  EditorInfobarSchema,
+} from "components/homepage/EditorInfobarSection"
+import {
+  EditorInfopicSection,
+  EditorInfopicSchema,
+} from "components/homepage/EditorInfopicSection"
+import {
+  EditorResourcesSection,
+  EditorResourcesSchema,
+} from "components/homepage/EditorResourcesSection"
+import { NewSectionCreator } from "components/homepage/NewSectionCreator"
+import LoadingButton from "components/LoadingButton"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import React, { useEffect, createRef, useState } from "react"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 import { useForm, useFieldArray, FormProvider } from "react-hook-form"
 
-import DeleteWarningModal from "components/DeleteWarningModal"
-import Header from "components/Header"
-import { EditorHeroSection } from "components/homepage/EditorHeroSection"
-import { EditorInfobarSection } from "components/homepage/EditorInfobarSection"
-import { EditorInfopicSection } from "components/homepage/EditorInfopicSection"
-import { NewSectionCreator } from "components/homepage/NewSectionCreator"
-import { EditorResourcesSection } from "components/homepage/EditorResourcesSection"
-import LoadingButton from "components/LoadingButton"
+import {
+  useGetHomepageHook,
+  useUpdateHomepageHook,
+  useSiteColorsHook,
+} from "hooks/settingsHooks"
 
 import TemplateHeroSection from "templates/homepage/HeroSection"
 import TemplateInfobarSection from "templates/homepage/InfobarSection"
 import TemplateInfopicLeftSection from "templates/homepage/InfopicLeftSection"
 import TemplateInfopicRightSection from "templates/homepage/InfopicRightSection"
 import TemplateResourcesSection from "templates/homepage/ResourcesSection"
-import {
-  useGetConfigHook,
-  useUpdateConfigHook,
-  useSiteColorsHook,
-} from "hooks/settingsHooks"
 
 // Isomer components
 import { createPageStyleSheet } from "utils/siteColorUtils"
-
-import { yupResolver } from "@hookform/resolvers/yup"
 
 import "styles/isomer-template.scss"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -35,11 +46,6 @@ import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
-
-import { EditorHeroSchema } from "components/homepage/EditorHeroSection"
-import { EditorInfopicSchema } from "components/homepage/EditorInfopicSection"
-import { EditorInfobarSchema } from "components/homepage/EditorInfobarSection"
-import { EditorResourcesSchema } from "components/homepage/EditorResourcesSection"
 
 import * as Yup from "yup"
 // Constants
@@ -109,14 +115,8 @@ const EditHomepage = ({ match, location }) => {
   })
 
   const { data: siteColorsData } = useSiteColorsHook(params)
-  const { data: homepageData } = useGetConfigHook({
-    ...params,
-    isHomepage: true,
-  })
-  const { mutateAsync: updateHandler } = useUpdateConfigHook({
-    ...params,
-    isHomepage: true,
-  })
+  const { data: homepageData } = useGetHomepageHook(params)
+  const { mutateAsync: updateHandler } = useUpdateHomepageHook(params)
 
   /** ******************************** */
   /*     useEffects to load data     */
@@ -297,7 +297,7 @@ const EditHomepage = ({ match, location }) => {
                           {section.hero ? (
                             <>
                               <EditorHeroSection
-                                fieldId={`sections.0.hero`}
+                                fieldId="sections.0.hero"
                                 sectionIndex={0}
                                 siteName={siteName}
                               />
