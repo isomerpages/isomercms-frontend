@@ -11,7 +11,7 @@ import * as _ from "lodash"
 import PropTypes from "prop-types"
 import React, { useEffect, useState } from "react"
 
-import { useGetConfigHook, useUpdateConfigHook } from "hooks/settingsHooks"
+import { useGetSettingsHook, useUpdateSettingsHook } from "hooks/settingsHooks"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
@@ -89,26 +89,20 @@ const Settings = ({ match, location }) => {
   const [settingsStateDiff, setSettingsStateDiff] = useState()
   const [showOverwriteWarning, setShowOverwriteWarning] = useState()
 
-  const { data: settingsData } = useGetConfigHook({
-    ...params,
-    isSettings: true,
-  })
+  const { data: settingsData } = useGetSettingsHook(params)
 
   const {
     mutateAsync: updateSettingsHandler,
     isLoading: isSavingSettings,
-  } = useUpdateConfigHook(
-    { ...params, isSettings: true },
-    {
-      onError: (err) => {
-        if (err.response.status === 409) setShowOverwriteWarning(true)
-      },
-      onSuccess: () => {
-        setHasChanges(false)
-        setHasSettingsChanged(false)
-      },
-    }
-  )
+  } = useUpdateSettingsHook(params, {
+    onError: (err) => {
+      if (err.response.status === 409) setShowOverwriteWarning(true)
+    },
+    onSuccess: () => {
+      setHasChanges(false)
+      setHasSettingsChanged(false)
+    },
+  })
 
   useEffect(() => {
     if (settingsData && !hasChanges) {

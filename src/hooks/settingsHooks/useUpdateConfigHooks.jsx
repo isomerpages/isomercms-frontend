@@ -1,12 +1,33 @@
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
+
+import { ServicesContext } from "../../contexts/ServicesContext"
 import { DEFAULT_RETRY_MSG } from "../../utils"
 import { errorToast, successToast } from "../../utils/toasts"
 import { CONFIG_CONTENT_KEY } from "../queryKeys"
 
-import { ServicesContext } from "../../contexts/ServicesContext"
+export function useUpdateSettingsHook(params, queryParams) {
+  return useUpdateConfigHook(
+    { ...params, configEndpoint: "settings" },
+    queryParams
+  )
+}
 
-export function useUpdateConfigHook(params, queryParams) {
+export function useUpdateHomepageHook(params, queryParams) {
+  return useUpdateConfigHook(
+    { ...params, configEndpoint: "homepage" },
+    queryParams
+  )
+}
+
+export function useUpdateNavBarHook(params, queryParams) {
+  return useUpdateConfigHook(
+    { ...params, configEndpoint: "navbar" },
+    queryParams
+  )
+}
+
+function useUpdateConfigHook(params, queryParams) {
   const queryClient = useQueryClient()
   const { configService } = useContext(ServicesContext)
   return useMutation((body) => configService.update(params, body), {

@@ -11,6 +11,7 @@ import {
   INFOPIC_BUTTON_MAX_LENGTH,
   INFOPIC_ALT_MIN_LENGTH,
   INFOPIC_ALT_MAX_LENGTH,
+  imagesDirectoryRegexTest,
 } from "utils/validators"
 
 export const EditorInfopicSchema = Yup.object().shape({
@@ -27,40 +28,52 @@ export const EditorInfopicSchema = Yup.object().shape({
     subtitle: Yup.string()
       .min(
         INFOPIC_SUBTITLE_MIN_LENGTH,
-        `Title must be longer than ${INFOPIC_SUBTITLE_MIN_LENGTH} characters`
+        `Subtitle must be longer than ${INFOPIC_SUBTITLE_MIN_LENGTH} characters`
       )
       .max(
         INFOPIC_SUBTITLE_MAX_LENGTH,
-        `Title must be shorter than ${INFOPIC_SUBTITLE_MAX_LENGTH} characters`
+        `Subtitle must be shorter than ${INFOPIC_SUBTITLE_MAX_LENGTH} characters`
       ),
     description: Yup.string()
       .min(
         INFOPIC_DESCRIPTION_MIN_LENGTH,
-        `Title must be longer than ${INFOPIC_DESCRIPTION_MIN_LENGTH} characters`
+        `Description must be longer than ${INFOPIC_DESCRIPTION_MIN_LENGTH} characters`
       )
       .max(
         INFOPIC_DESCRIPTION_MAX_LENGTH,
-        `Title must be shorter than ${INFOPIC_DESCRIPTION_MAX_LENGTH} characters`
+        `Description must be shorter than ${INFOPIC_DESCRIPTION_MAX_LENGTH} characters`
       ),
     button: Yup.string()
       .min(
         INFOPIC_BUTTON_MIN_LENGTH,
-        `Title must be longer than ${INFOPIC_BUTTON_MIN_LENGTH} characters`
+        `Button text must be longer than ${INFOPIC_BUTTON_MIN_LENGTH} characters`
       )
       .max(
         INFOPIC_BUTTON_MAX_LENGTH,
-        `Title must be shorter than ${INFOPIC_BUTTON_MAX_LENGTH} characters`
+        `Button text must be shorter than ${INFOPIC_BUTTON_MAX_LENGTH} characters`
       ),
-    url: Yup.string(),
-    imageUrl: Yup.string(),
+    url: Yup.lazy((val) => {
+      if (val && val.startsWith("/"))
+        return Yup.string(
+          `URL must be either a permalink to a page on the site or a valid external URL`
+        )
+      return Yup.string()
+        .url(
+          `URL must be either a permalink to a page on the site or a valid external URL`
+        )
+        .nullable()
+    }),
+    imageUrl: Yup.string().matches(imagesDirectoryRegexTest, {
+      excludeEmptyString: true,
+    }),
     alt: Yup.string()
       .min(
         INFOPIC_ALT_MIN_LENGTH,
-        `Title must be longer than ${INFOPIC_ALT_MIN_LENGTH} characters`
+        `Image alt text must be longer than ${INFOPIC_ALT_MIN_LENGTH} characters`
       )
       .max(
         INFOPIC_ALT_MAX_LENGTH,
-        `Title must be shorter than ${INFOPIC_ALT_MAX_LENGTH} characters`
+        `Image alt text must be shorter than ${INFOPIC_ALT_MAX_LENGTH} characters`
       ),
   }),
 })

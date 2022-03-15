@@ -1,3 +1,4 @@
+import _ from "lodash"
 import PropTypes from "prop-types"
 import React, { useState } from "react"
 import { useQuery } from "react-query"
@@ -19,12 +20,16 @@ const HeroButton = ({ button }) => (
 )
 
 const HeroDropdownElem = ({ title }) => (
-  <div className="bp-dropdown-item">
-    <h5>{title}</h5>
-  </div>
+  <>
+    {title ? (
+      <div className="bp-dropdown-item">
+        <h5>{title}</h5>
+      </div>
+    ) : null}
+  </>
 )
 
-const HeroDropdown = ({ title, options }) => {
+const HeroDropdown = ({ title, options = [] }) => {
   const [dropdownIsActive, setDropdownIsActive] = useState(false)
   const toggleDropdown = () => setDropdownIsActive((prevState) => !prevState)
   return (
@@ -62,16 +67,9 @@ const HeroDropdown = ({ title, options }) => {
         role="menu"
       >
         <div className="bp-dropdown-content is-centered">
-          {options
-            ? options.map((option, index) =>
-                option.title ? (
-                  <HeroDropdownElem
-                    key={`dropdown-${index}`}
-                    title={option.title}
-                  />
-                ) : null
-              )
-            : null}
+          {options.map(({ title }, index) => (
+            <HeroDropdownElem key={`dropdown-${index}`} title={title} />
+          ))}
         </div>
       </div>
     </div>
@@ -101,7 +99,7 @@ const KeyHighlightElem = ({ title, description }) => (
   </>
 )
 
-const KeyHighlights = ({ highlights }) => (
+const KeyHighlights = ({ highlights = [] }) => (
   <section id="key-highlights" className="bp-section is-paddingless">
     <div className="bp-container">
       <div className="row is-gapless has-text-centered">

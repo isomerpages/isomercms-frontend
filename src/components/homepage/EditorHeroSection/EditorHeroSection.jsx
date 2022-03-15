@@ -10,8 +10,15 @@ import { useFormContext } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
+const HeroComponent = ({ heroType, fieldId }) => {
+  if (heroType === "highlights") return <HeroHighlight fieldId={fieldId} />
+  if (heroType === "dropdown")
+    return <HeroDropdown fieldId={`${fieldId}.dropdown`} />
+  return null
+}
+
 export const EditorHeroSection = ({
-  fieldId, // sections.0.hero  // string reference id to object in useForm
+  fieldId, //  This fieldId refers to sections.0.hero, and it's a string reference id to the object in useForm
 }) => {
   const {
     register,
@@ -19,7 +26,6 @@ export const EditorHeroSection = ({
     formState: { errors },
     setValue,
     watch,
-    trigger,
   } = useFormContext()
   const sectionErrors = _.get(errors, fieldId)
   const heroType = watch(`${fieldId}.heroType`)
@@ -41,7 +47,6 @@ export const EditorHeroSection = ({
       cardTitle="Hero Section"
       id={fieldId}
       isError={!_.isEmpty(sectionErrors)}
-      onClose={() => trigger()} // trigger validation when card is closed, prevents unnecessary validation
     >
       <FormField
         register={register}
@@ -108,11 +113,7 @@ export const EditorHeroSection = ({
         </div>
       </>
       <br />
-      {heroType === "dropdown" ? (
-        <HeroDropdown fieldId={`${fieldId}.dropdown`} />
-      ) : heroType === "highlights" ? (
-        <HeroHighlight fieldId={fieldId} />
-      ) : null}
+      <HeroComponent heroType={heroType} fieldId={fieldId} />
     </CardContainer>
   )
 }

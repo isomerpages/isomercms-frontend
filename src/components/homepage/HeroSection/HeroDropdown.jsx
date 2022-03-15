@@ -1,5 +1,6 @@
 import FormField from "components/FormField"
 import { HeroOption } from "components/homepage/HeroSection/HeroOption"
+import _ from "lodash"
 import PropTypes from "prop-types"
 import React from "react"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
@@ -14,7 +15,7 @@ const defaultDropdownOption = {
 }
 
 export const HeroDropdown = ({
-  fieldId, // sections.0.hero.dropdown
+  fieldId, // This fieldId refers to sections.0.hero.dropdown, and it's a string reference id to the object in useForm
 }) => {
   const {
     register,

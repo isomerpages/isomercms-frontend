@@ -7,7 +7,6 @@ export const CardContainer = ({
   cardTitle,
   children,
   isError,
-  onClose,
 }) => {
   const [shouldDisplay, setShouldDisplay] = useState(false)
 
@@ -22,10 +21,7 @@ export const CardContainer = ({
         <button
           id={id}
           type="button"
-          onClick={() => {
-            setShouldDisplay(!shouldDisplay)
-            if (shouldDisplay && onClose) onClose()
-          }}
+          onClick={() => setShouldDisplay(!shouldDisplay)}
         >
           <i
             className={`bx ${
