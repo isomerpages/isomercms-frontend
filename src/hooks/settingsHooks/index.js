@@ -1,5 +1,5 @@
 export { useCspHook } from "./useCspHook"
 export { useSiteColorsHook } from "./useSiteColorsHook"
-export { useGetConfigHook } from "./useGetConfigHook"
-export { useUpdateConfigHook } from "./useUpdateConfigHook"
+export * from "./useGetConfigHooks"
+export * from "./useUpdateConfigHooks"
 export * from "./useUrlHook"
