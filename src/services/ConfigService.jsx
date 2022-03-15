@@ -3,9 +3,8 @@ export class ConfigService {
     this.apiClient = apiClient
   }
 
-  getEndpoint({ siteName, isHomepage, isSettings }) {
-    if (isHomepage) return `/sites/${siteName}/homepage`
-    if (isSettings) return `/sites/${siteName}/settings`
+  getEndpoint({ siteName, configEndpoint }) {
+    if (configEndpoint) return `/sites/${siteName}/${configEndpoint}`
   }
 
   async update(apiParams, config) {
