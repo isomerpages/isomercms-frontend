@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useState } from "react"
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+import Button from "components/Button"
+import { useContext, useEffect, useState } from "react"
+
 import {
   getEmailOtp,
   verifyEmailOtp,
@@ -8,6 +9,8 @@ import {
 } from "../api"
 import { LoginContext } from "../contexts/LoginContext"
 import useRedirectHook from "../hooks/useRedirectHook"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
+
 import InputWithButton from "./InputWithButton"
 
 const VerificationStep = {
@@ -214,9 +217,12 @@ const VerifyUserDetailsModal = () => {
           {renderVerificationStep()}
         </div>
         <div className={elementStyles.footer}>
-          <button onClick={setRedirectToLogout} type="button">
-            Logout
-          </button>
+          <Button
+            onClick={setRedirectToLogout}
+            type="button"
+            label="Logout"
+            className={elementStyles.blue}
+          />
         </div>
       </div>
     </div>
