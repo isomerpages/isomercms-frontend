@@ -36,6 +36,7 @@
     }
   ],
   "rules": {
+    "react/require-default-props": "warn",
     "import/prefer-default-export": "warn",
     "react/prop-types": "warn",
     "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
