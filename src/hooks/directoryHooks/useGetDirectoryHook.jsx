@@ -1,3 +1,4 @@
+import _ from "lodash"
 import { useContext } from "react"
 import { useQuery, useQueryClient } from "react-query"
 
@@ -11,12 +12,13 @@ import { errorToast } from "utils/toasts"
 import { DEFAULT_RETRY_MSG } from "utils"
 
 // get directory data
+// eslint-disable-next-line import/prefer-default-export
 export function useGetDirectoryHook(params, queryParams) {
   const queryClient = useQueryClient()
   const { directoryService } = useContext(ServicesContext)
   const { setRedirectToNotFound } = useRedirectHook()
   return useQuery(
-    [DIR_CONTENT_KEY, { ...(({ fileName, ...p }) => p)(params) }],
+    [DIR_CONTENT_KEY, _.omit(params, "fileName")],
     () => directoryService.get(params),
     {
       ...queryParams,
@@ -30,13 +32,14 @@ export function useGetDirectoryHook(params, queryParams) {
             `There was a problem retrieving directory contents. ${DEFAULT_RETRY_MSG}`
           )
         }
-        queryParams && queryParams.onError && queryParams.onError(err)
+        if (queryParams && queryParams.onError) queryParams.onError(err)
       },
       onSuccess: (data) => {
         if (params.mediaRoom)
           // set queryCache for individual media files because media is bandwidth intensive
-          data.map((mediaData) => {
-            if (mediaData.type === "file")
+          data
+            .filter(({ type }) => type === "file")
+            .forEach((mediaData) => {
               queryClient.setQueryData(
                 [
                   MEDIA_CONTENT_KEY,
@@ -44,8 +47,8 @@ export function useGetDirectoryHook(params, queryParams) {
                 ],
                 mediaData
               )
-          })
-        queryParams && queryParams.onSuccess && queryParams.onSuccess(data)
+            })
+        if (queryParams && queryParams.onSuccess) queryParams.onSuccess(data)
       },
     }
   )
