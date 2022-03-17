@@ -10,6 +10,7 @@ import { errorToast } from "utils/toasts"
 
 import { getRedirectUrl, DEFAULT_RETRY_MSG } from "utils"
 
+// eslint-disable-next-line import/prefer-default-export
 export function useCreateDirectoryHook(params, queryParams) {
   const queryClient = useQueryClient()
   const { directoryService } = useContext(ServicesContext)
@@ -21,7 +22,7 @@ export function useCreateDirectoryHook(params, queryParams) {
       retry: false,
       onError: () => {
         errorToast(`A new directory could not be created. ${DEFAULT_RETRY_MSG}`)
-        queryParams && queryParams.onError && queryParams.onError()
+        if (queryParams && queryParams.onError) queryParams.onError()
       },
       onSuccess: (resp) => {
         queryClient.invalidateQueries([DIR_CONTENT_KEY, { ...params }])
@@ -44,7 +45,7 @@ export function useCreateDirectoryHook(params, queryParams) {
             ...params,
           })
         )
-        queryParams && queryParams.onSuccess && queryParams.onSuccess()
+        if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
       },
     }
   )

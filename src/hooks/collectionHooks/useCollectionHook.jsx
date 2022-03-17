@@ -26,6 +26,7 @@ const getDirectoryFile = async ({ siteName, collectionName }) => {
 }
 
 // get directory data
+// eslint-disable-next-line import/prefer-default-export
 export function useCollectionHook(params) {
   const { setRedirectToNotFound } = useRedirectHook()
   return useQuery([DIR_CONTENT_KEY, params], () => getDirectoryFile(params), {
@@ -33,7 +34,7 @@ export function useCollectionHook(params) {
     initialData: [],
     onError: (err) => {
       if (err.response && err.response.status === 404) {
-        setRedirectToNotFound(siteName)
+        setRedirectToNotFound(params.siteName)
       } else {
         errorToast(
           `There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`

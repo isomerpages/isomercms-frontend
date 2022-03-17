@@ -5,7 +5,6 @@ import EditPageFooter from "components/pages/EditPageFooter"
 import MarkdownEditor from "components/pages/MarkdownEditor"
 import PagePreview from "components/pages/PagePreview"
 import DOMPurify from "dompurify"
-import _ from "lodash"
 import marked from "marked"
 import PropTypes from "prop-types"
 import { useEffect, useRef, useState } from "react"
@@ -19,16 +18,16 @@ import {
 import { useCspHook, useSiteColorsHook } from "hooks/settingsHooks"
 import useRedirectHook from "hooks/useRedirectHook"
 
-import checkCSP from "utils/cspUtils"
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
-// Isomer components
+// Isomer utils
+import checkCSP from "utils/cspUtils"
 import { createPageStyleSheet } from "utils/siteColorUtils"
 
 import { prependImageSrc } from "utils"
 
 import "easymde/dist/easymde.min.css"
 import "styles/isomer-template.scss"
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 // axios settings
 axios.defaults.withCredentials = true
