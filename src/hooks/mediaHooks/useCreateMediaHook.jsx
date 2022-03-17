@@ -1,3 +1,4 @@
+import _ from "lodash"
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
@@ -22,20 +23,20 @@ export function useCreateMediaHook(params, queryParams) {
         type: "file",
       }
       queryClient.setQueryData(
-        [DIR_CONTENT_KEY, (({ fileName, ...p }) => p)(params)],
+        [DIR_CONTENT_KEY, _.omit(params, "fileName")],
         (oldMediasData) =>
           oldMediasData ? [newMedia, ...oldMediasData] : [newMedia]
       )
       queryClient.invalidateQueries([
         // invalidates media directory
         DIR_CONTENT_KEY,
-        (({ fileName, ...p }) => p)(params),
+        _.omit(params, "fileName"),
       ])
-      queryParams && queryParams.onSuccess && queryParams.onSuccess()
+      if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
     },
     onError: () => {
       errorToast(`A new media file could not be created. ${DEFAULT_RETRY_MSG}`)
-      queryParams && queryParams.onError && queryParams.onError()
+      if (queryParams && queryParams.onError) queryParams.onError()
     },
   })
 }

@@ -1,3 +1,4 @@
+import _ from "lodash"
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
@@ -10,6 +11,7 @@ import { errorToast } from "utils/toasts"
 
 import { getRedirectUrl, DEFAULT_RETRY_MSG } from "utils"
 
+// eslint-disable-next-line import/prefer-default-export
 export function useCreatePageHook(params, queryParams) {
   const queryClient = useQueryClient()
   const { pageService } = useContext(ServicesContext)
@@ -21,7 +23,7 @@ export function useCreatePageHook(params, queryParams) {
         queryClient.invalidateQueries([
           // invalidates collection pages or resource pages
           DIR_CONTENT_KEY,
-          (({ fileName, ...p }) => p)(params),
+          _.omit(params, "fileName"),
         ])
       else
         queryClient.invalidateQueries([
@@ -31,11 +33,11 @@ export function useCreatePageHook(params, queryParams) {
       setRedirectToPage(
         getRedirectUrl({ ...params, fileName: resp.data.fileName })
       )
-      queryParams && queryParams.onSuccess && queryParams.onSuccess()
+      if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
     },
     onError: () => {
       errorToast(`A new page could not be created. ${DEFAULT_RETRY_MSG}`)
-      queryParams && queryParams.onError && queryParams.onError()
+      if (queryParams && queryParams.onError) queryParams.onError()
     },
   })
 }

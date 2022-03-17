@@ -1,3 +1,4 @@
+import _ from "lodash"
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
@@ -22,7 +23,7 @@ export function useUpdatePageHook(params, queryParams) {
         queryClient.invalidateQueries([
           // invalidates collection pages or resource pages
           DIR_CONTENT_KEY,
-          (({ fileName, ...p }) => p)(params),
+          _.omit(params, "fileName"),
         ])
       else
         queryClient.invalidateQueries([
@@ -30,12 +31,12 @@ export function useUpdatePageHook(params, queryParams) {
           { siteName: params.siteName, isUnlinked: true },
         ]) // invalidates unlinked pages
       successToast(`Successfully updated page!`)
-      queryParams && queryParams.onSuccess && queryParams.onSuccess()
+      if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
     },
     onError: (err) => {
       if (err.response.status !== 409)
         errorToast(`Your page could not be updated. ${DEFAULT_RETRY_MSG}`)
-      queryParams && queryParams.onError && queryParams.onError(err)
+      if (queryParams && queryParams.onError) queryParams.onError(err)
     },
   })
 }
