@@ -11,6 +11,7 @@ const FormFieldHorizontal = forwardRef((args, ref) => (
   <div className={elementStyles.formHorizontal}>
     <FormInput
       className={elementStyles.formHorizontalInput}
+      // eslint-disable-next-line react/jsx-props-no-spreading
       {...args}
       ref={ref}
     />

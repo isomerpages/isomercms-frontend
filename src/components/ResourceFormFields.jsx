@@ -14,6 +14,7 @@ const ResourceFormFields = ({ register, setValue, watch, trigger, errors }) => {
             <FormTitle>Date (YYYY-MM-DD)</FormTitle>
             <FormField
               placeholder="Date (YYYY-MM-DD)"
+              // eslint-disable-next-line react/jsx-props-no-spreading
               {...register("date", { required: true })}
               id="date"
             />
@@ -26,6 +27,7 @@ const ResourceFormFields = ({ register, setValue, watch, trigger, errors }) => {
           <div className="d-flex">
             <label htmlFor="radio-post" className="flex-fill">
               <input
+                // eslint-disable-next-line react/jsx-props-no-spreading
                 {...register("layout")}
                 onChange={(e) => {
                   register("layout").onChange(e)
@@ -40,6 +42,7 @@ const ResourceFormFields = ({ register, setValue, watch, trigger, errors }) => {
             </label>
             <label htmlFor="radio-file" className="flex-fill">
               <input
+                // eslint-disable-next-line react/jsx-props-no-spreading
                 {...register("layout")}
                 type="radio"
                 id="radio-file"

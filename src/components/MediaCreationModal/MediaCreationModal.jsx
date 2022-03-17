@@ -46,6 +46,7 @@ export const MediaCreationModal = ({
   }, [])
 
   return (
+    // eslint-disable-next-line react/jsx-props-no-spreading
     <FormProvider {...methods}>
       <>
         <input

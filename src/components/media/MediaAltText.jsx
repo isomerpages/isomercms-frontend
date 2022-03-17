@@ -28,7 +28,6 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
         <div className={elementStyles.modalHeader}>
           <h1>Insert media</h1>
           <button
-            type="button"
             mediaType="button"
             type="button"
             id="closeMediaSettingsModal"
@@ -96,6 +95,7 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
                   </FormDescription>
                   <FormField
                     placeholder={formTitle}
+                    // eslint-disable-next-line react/jsx-props-no-spreading
                     {...register("altText")}
                     id="altText"
                   />
