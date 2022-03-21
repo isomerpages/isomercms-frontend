@@ -15,7 +15,7 @@ import {
   useUpdatePageHook,
   useDeletePageHook,
 } from "hooks/pageHooks"
-import { useCspHook, useSiteColorsHook } from "hooks/settingsHooks"
+import { useCspHook, useGetSiteColorsHook } from "hooks/settingsHooks"
 import useRedirectHook from "hooks/useRedirectHook"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -81,7 +81,7 @@ const EditPage = ({ match, history }) => {
 
   const { data: csp } = useCspHook(params)
   const { data: dirData } = useCollectionHook(params)
-  const { data: siteColorsData } = useSiteColorsHook(params)
+  const { data: siteColorsData } = useGetSiteColorsHook(params)
 
   /** ******************************** */
   /*     useEffects to load data     */
