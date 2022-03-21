@@ -3,6 +3,7 @@ export class MediaService {
     this.apiClient = apiClient
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getMediaEndpoint({ siteName, mediaDirectoryName, fileName }) {
     let endpoint = `/sites/${siteName}/media`
     if (mediaDirectoryName) {
@@ -20,7 +21,7 @@ export class MediaService {
       content,
       newFileName,
     }
-    return await this.apiClient.post(this.getMediaEndpoint(apiParams), body)
+    return this.apiClient.post(this.getMediaEndpoint(apiParams), body)
   }
 
   async update(apiParams, { newFileName, sha }) {
@@ -28,11 +29,11 @@ export class MediaService {
       newFileName,
       sha,
     }
-    return await this.apiClient.post(this.getMediaEndpoint(apiParams), body)
+    return this.apiClient.post(this.getMediaEndpoint(apiParams), body)
   }
 
   async get(apiParams) {
-    return await this.apiClient
+    return this.apiClient
       .get(this.getMediaEndpoint(apiParams))
       .then((res) => res.data)
   }
@@ -41,7 +42,7 @@ export class MediaService {
     const body = {
       sha,
     }
-    return await this.apiClient
+    return this.apiClient
       .delete(this.getMediaEndpoint(apiParams), { data: body })
       .then((res) => res.data)
   }

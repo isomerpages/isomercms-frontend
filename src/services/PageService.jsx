@@ -3,6 +3,7 @@ export class PageService {
     this.apiClient = apiClient
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getPageEndpoint({
     siteName,
     collectionName,
@@ -47,7 +48,7 @@ export class PageService {
       },
       newFileName,
     }
-    return await this.apiClient.post(this.getPageEndpoint(apiParams), body)
+    return this.apiClient.post(this.getPageEndpoint(apiParams), body)
   }
 
   async update(apiParams, { newFileName, sha, frontMatter, pageBody }) {
@@ -63,7 +64,7 @@ export class PageService {
   }
 
   async get(apiParams) {
-    return await this.apiClient
+    return this.apiClient
       .get(this.getPageEndpoint(apiParams))
       .then((res) => res.data)
   }
@@ -72,7 +73,7 @@ export class PageService {
     const body = {
       sha,
     }
-    return await this.apiClient
+    return this.apiClient
       .delete(this.getPageEndpoint(apiParams), { data: body })
       .then((res) => res.data)
   }
