@@ -15,6 +15,7 @@ export default function RedirectIfLoggedInRoute({
           <Redirect to="/sites" />
         ) : (
           children ||
+          // eslint-disable-next-line react/jsx-props-no-spreading
           (WrappedComponent && <Route {...rest} component={WrappedComponent} />)
         )
       }

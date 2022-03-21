@@ -11,7 +11,7 @@ const NotFoundPage = ({ match }) => {
       <div className={errorStyles.errorPageMain}>
         <img
           className={errorStyles.errorImage}
-          alt="Page Not Found Error Image"
+          alt="Page Not Found Error"
           src="/404Error.svg"
         />
         <div className={errorStyles.errorText}>
@@ -22,6 +22,7 @@ const NotFoundPage = ({ match }) => {
 
         <Link to={siteName ? `/sites/${siteName}/workspace` : "/sites"}>
           <button
+            type="button"
             className={`${errorStyles.errorButton} ${elementStyles.blue}`}
           >
             Back to IsomerCMS

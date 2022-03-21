@@ -206,5 +206,4 @@ Media.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
-  mediaType: PropTypes.string.isRequired,
 }
