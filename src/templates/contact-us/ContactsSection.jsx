@@ -8,12 +8,12 @@ const Contact = forwardRef(({ contact }, ref) => (
     <p className="has-text-weight-semibold margin--top--none margin--bottom--none">
       {contact.title}
     </p>
-    {contact.content.map((d, i) => {
+    {contact.content.map((d) => {
       const key = Object.keys(d)[0]
       switch (key) {
         case "phone": {
           return (
-            <p className="margin--top--none margin--bottom--none" key={i}>
+            <p className="margin--top--none margin--bottom--none">
               <a
                 href={sanitizeUrl(`tel:${d[key].replace(/\s/g, "")}`)}
                 onClick={(event) => event.preventDefault()}
@@ -25,7 +25,7 @@ const Contact = forwardRef(({ contact }, ref) => (
         }
         case "email": {
           return (
-            <p className="margin--top--none margin--bottom--none" key={i}>
+            <p className="margin--top--none margin--bottom--none">
               <a
                 href={sanitizeUrl(`mailto:${d[key]}`)}
                 onClick={(event) => event.preventDefault()}
@@ -45,7 +45,6 @@ const Contact = forwardRef(({ contact }, ref) => (
                   d[key]
                 )}</p>`,
               }}
-              key={i}
             />
           )
         }
@@ -64,7 +63,7 @@ const TemplateContactsSection = forwardRef(({ contacts, scrollRefs }, ref) => (
           </h5>
         </div>
         {contacts.map((contact, i) => (
-          <Contact contact={contact} key={i} ref={scrollRefs[i]} />
+          <Contact contact={contact} ref={scrollRefs[i]} />
         ))}
       </div>
     ) : null}
