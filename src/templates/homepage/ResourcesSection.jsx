@@ -1,8 +1,6 @@
 import PropTypes from "prop-types"
 import { forwardRef } from "react"
 
-import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
-
 /* eslint
   react/no-array-index-key: 0
  */
