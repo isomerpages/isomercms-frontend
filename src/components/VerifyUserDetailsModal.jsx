@@ -12,6 +12,7 @@ import useRedirectHook from "../hooks/useRedirectHook"
 import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
 import InputWithButton from "./InputWithButton"
+import Link from "./Link"
 
 const VerificationStep = {
   GET_EMAIL_OTP: "GET_EMAIL_OTP",
@@ -186,8 +187,12 @@ const VerifyUserDetailsModal = () => {
           <>
             <div>
               In order to improve security, a verified email is now required for
-              all users of Isomer CMS. Only .gov.sg or whitelisted email
-              addresses will be accepted.
+              all users of Isomer CMS. Only .gov.sg or{" "}
+              <b>whitelisted email addresses</b> will be accepted. You must
+              verify your email before proceeding.{" "}
+              <Link target="_blank" href="https://go.gov.sg/isomer-identity">
+                Read more.
+              </Link>
             </div>
             <form onSubmit={handleGetEmailOtp}>
               <InputWithButton
