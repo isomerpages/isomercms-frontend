@@ -41,6 +41,7 @@
     "react/prop-types": "warn",
     "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     "no-underscore-dangle": "off",
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
     "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],
     "import/extensions": 0, // Turn off "Missing file extension for ..." error
     "import/order": [
