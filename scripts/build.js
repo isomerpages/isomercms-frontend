@@ -5,6 +5,11 @@ const btoa = require("btoa")
 
 // login credentials
 const { PERSONAL_ACCESS_TOKEN, USERNAME } = process.env
+if (!PERSONAL_ACCESS_TOKEN || !USERNAME) {
+  throw new Error(
+    `E2E tests require env vars PERSONAL_ACCESS_TOKEN (${PERSONAL_ACCESS_TOKEN}) and USERNAME (${USERNAME}) to be set.`
+  )
+}
 
 const CREDENTIALS = `${USERNAME}:${PERSONAL_ACCESS_TOKEN}`
 const headers = {
@@ -23,6 +28,11 @@ const runCypressCommand =
 
 // reset e2e-test-repo
 const { E2E_COMMIT_HASH } = process.env
+if (!E2E_COMMIT_HASH) {
+  throw new Error(
+    `E2E tests require env var E2E_COMMIT_HASH (${E2E_COMMIT_HASH}) to be set.`
+  )
+}
 const GITHUB_ORG_NAME = "isomerpages"
 const REPO_NAME = "e2e-test-repo"
 
