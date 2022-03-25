@@ -63,7 +63,7 @@ export const DirectoryCreationModal = ({
   }
 
   // Sub-component used here for clarity
-  const Folders = () => {
+  const FolderContents = () => {
     if (pagesData && pagesData.length > 0) {
       return pagesData.map((pageData, pageIdx) => (
         <FolderCard
@@ -139,7 +139,7 @@ export const DirectoryCreationModal = ({
               {/* Pages */}
               <div className={contentStyles.folderContainerBoxes}>
                 <div className={contentStyles.boxesContainer}>
-                  <Folders />
+                  <FolderContents />
                 </div>
               </div>
             </div>
