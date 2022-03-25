@@ -28,16 +28,25 @@ export const MediaSettingsSchema = (existingTitlesArray = []) =>
       )
       // When this is called, mediaRoom is one of either images or files
       .when("$mediaRoom", (mediaRoom, schema) => {
-        if (mediaRoom === "images")
+        if (mediaRoom === "images") {
           return schema.test(
             "Special characters found",
             "Title must end with one of the following extensions: 'png', 'jpeg', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg'",
             (value) => imagesSuffixRegexTest.test(value)
           )
+        }
+        if (mediaRoom === "files") {
+          return schema.test(
+            "Special characters found",
+            "Title must end with the following extensions: 'pdf'",
+            (value) => filesSuffixRegexTest.test(value)
+          )
+        }
+
         return schema.test(
-          "Special characters found",
-          "Title must end with the following extensions: 'pdf'",
-          (value) => filesSuffixRegexTest.test(value)
+          "Invalid case",
+          "This is an invalid value for the mediaRoom type!",
+          () => false
         )
       })
       .notOneOf(

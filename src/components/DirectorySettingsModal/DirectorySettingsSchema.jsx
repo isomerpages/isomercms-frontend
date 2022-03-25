@@ -29,7 +29,7 @@ export const DirectorySettingsSchema = (existingTitlesArray = []) =>
       )
       // We only have three possible types (passed from context)
       .when("$type", (type, schema) => {
-        if (type === "mediaDirectoryName")
+        if (type === "mediaDirectoryName") {
           return schema
             .transform((value) => deslugifyDirectory(value))
             .test(
@@ -37,7 +37,8 @@ export const DirectorySettingsSchema = (existingTitlesArray = []) =>
               'Title cannot contain any of the following special characters: ~%^*+#?./`;{}[]"<>',
               (value) => !mediaSpecialCharactersRegexTest.test(value)
             )
-        if (type === "subCollectionName")
+        }
+        if (type === "subCollectionName") {
           return schema
             .transform((value) => deslugifyDirectory(value))
             .test(
@@ -45,11 +46,22 @@ export const DirectorySettingsSchema = (existingTitlesArray = []) =>
               'Title cannot contain any of the following special characters: ~%^*_+-./`;{}[]"<>',
               (value) => !specialCharactersRegexTest.test(value)
             )
-        return schema
-          .transform((value) => value.trim().replaceAll(" ", "-").toLowerCase())
-          .matches(
-            slugifyLowerFalseRegexTest,
-            "Title cannot contain any symbols"
-          )
+        }
+        if (type === "collectionName") {
+          return schema
+            .transform((value) =>
+              value.trim().replaceAll(" ", "-").toLowerCase()
+            )
+            .matches(
+              slugifyLowerFalseRegexTest,
+              "Title cannot contain any symbols"
+            )
+        }
+
+        return schema.test(
+          "Invalid case",
+          "This is an invalid value for the collection type!",
+          () => false
+        )
       }),
   })
