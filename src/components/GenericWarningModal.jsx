@@ -7,7 +7,7 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 const GenericWarningModal = ({
   displayTitle,
   displayText,
-  displayImg,
+  displayImage,
   displayImgAlt,
   onProceed,
   onCancel,
@@ -19,11 +19,11 @@ const GenericWarningModal = ({
       <div className={elementStyles.modalHeader}>
         <h1>{displayTitle}</h1>
       </div>
-      {displayImg && (
+      {displayImage && (
         <img
           className="align-self-center"
           alt={displayImgAlt}
-          src={displayImg}
+          src={displayImage}
         />
       )}
       <div className={elementStyles.modalContent}>
@@ -54,6 +54,7 @@ const GenericWarningModal = ({
 GenericWarningModal.propTypes = {
   displayTitle: PropTypes.string.isRequired,
   displayText: PropTypes.string.isRequired,
+  displayImage: PropTypes.string,
   displayImgAlt: PropTypes.string,
   onProceed: PropTypes.func,
   onCancel: PropTypes.func,
