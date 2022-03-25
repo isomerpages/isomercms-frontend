@@ -12,7 +12,7 @@ import { SITES_IS_PRIVATE_KEY } from "constants/constants"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import siteStyles from "styles/isomer-cms/pages/Sites.module.scss"
 
-const Site = ({ siteNames }) => {
+const Sites = ({ siteNames }) => {
   if (siteNames && siteNames.length > 0)
     return siteNames.map((siteName) => (
       <div className={siteStyles.siteContainer} key={siteName.repoName}>
@@ -39,7 +39,7 @@ const Site = ({ siteNames }) => {
   return <div className={siteStyles.infoText}>Loading sites...</div>
 }
 
-export default class Sites extends Component {
+export default class SitesWrapper extends Component {
   _isMounted = false
 
   constructor(props) {
@@ -109,7 +109,7 @@ export default class Sites extends Component {
               </div>
             </div>
             <div className={siteStyles.sites}>
-              <Site siteNames={siteNames} />
+              <Sites siteNames={siteNames} />
             </div>
           </div>
         </div>
