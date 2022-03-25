@@ -1,6 +1,7 @@
 import { Breadcrumb } from "components/folders/Breadcrumb"
 import { MoveMenuBackButton, MoveMenuItem } from "components/move"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
+import _ from "lodash"
 import PropTypes from "prop-types"
 import { useState } from "react"
 
@@ -11,7 +12,7 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import { pageFileNameToTitle, getMediaDirectoryName } from "utils"
 
 export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
-  const [moveQuery, setMoveQuery] = useState((({ ...p }) => p)(queryParams))
+  const [moveQuery, setMoveQuery] = useState(_.omit(queryParams, "fileName"))
   const [moveTo, setMoveTo] = useState(params)
   const { data: dirData } = useGetDirectoryHook(moveQuery)
 
