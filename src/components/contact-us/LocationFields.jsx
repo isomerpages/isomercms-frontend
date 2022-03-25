@@ -123,7 +123,6 @@ const LocationAddressFields = ({
   errors,
   sectionId,
 }) => {
-  console.log("ERRORS: ", errors)
   const errorMessage = getErrorMessage(errors)
   return (
     <FormContext hasError={!!errorMessage}>
