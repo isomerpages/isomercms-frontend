@@ -9,6 +9,7 @@ import { successToast, errorToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
+// eslint-disable-next-line import/prefer-default-export
 export function useMoveHook(params, queryParams) {
   const { moverService } = useContext(ServicesContext)
   const queryClient = useQueryClient()
@@ -20,7 +21,7 @@ export function useMoveHook(params, queryParams) {
           "A file of the same name exists in the folder you are moving to. Please rename your file before moving."
         )
       else errorToast(`Your file could not be moved. ${DEFAULT_RETRY_MSG}`)
-      queryParams && queryParams.onError && queryParams.onError()
+      if (queryParams && queryParams.onError) queryParams.onError()
     },
     onSuccess: (resp) => {
       if (!resp) successToast("File is already in this folder")
@@ -36,7 +37,7 @@ export function useMoveHook(params, queryParams) {
           DIR_CONTENT_KEY,
           { ...params, isUnlinked: true },
         ]) // invalidates unlinked pages
-      queryParams && queryParams.onSuccess && queryParams.onSuccess()
+      if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
     },
   })
 }

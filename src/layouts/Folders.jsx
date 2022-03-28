@@ -3,7 +3,6 @@ import { Breadcrumb } from "components/folders/Breadcrumb"
 import { FolderContent } from "components/folders/FolderContent"
 import Header from "components/Header"
 import Sidebar from "components/Sidebar"
-import _ from "lodash"
 import PropTypes from "prop-types"
 import { ReactQueryDevtools } from "react-query/devtools"
 import { Switch, useRouteMatch, useHistory } from "react-router-dom"
@@ -33,7 +32,7 @@ import { deslugifyDirectory, getLastItemType } from "utils"
 
 const Folders = ({ match, location }) => {
   const { params, decodedParams } = match
-  const { siteName, subCollectionName, collectionName } = decodedParams
+  const { siteName, subCollectionName } = decodedParams
 
   const { path, url } = useRouteMatch()
   const history = useHistory()

@@ -1,3 +1,4 @@
+import _ from "lodash"
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
@@ -18,23 +19,23 @@ export function useUpdateDirectoryHook(params, queryParams) {
       errorToast(
         `Your directory settings could not be saved. ${DEFAULT_RETRY_MSG}`
       )
-      queryParams && queryParams.onError && queryParams.onError()
+      if (queryParams && queryParams.onError) queryParams.onError()
     },
     onSuccess: () => {
       if (params.subCollectionName)
         queryClient.invalidateQueries([
           DIR_CONTENT_KEY,
-          (({ subCollectionName, ...p }) => p)(params),
+          _.omit(params, "subCollectionName"),
         ])
       else if (params.collectionName)
         queryClient.invalidateQueries([
           DIR_CONTENT_KEY,
-          (({ collectionName, ...p }) => p)(params),
+          _.omit(params, "collectionName"),
         ])
       else if (params.resourceCategoryName)
         queryClient.invalidateQueries([
           DIR_CONTENT_KEY,
-          (({ resourceCategoryName, ...p }) => p)(params),
+          _.omit(params, "resourceCategoryName"),
         ])
       else if (params.mediaDirectoryName)
         queryClient.invalidateQueries([
@@ -48,7 +49,7 @@ export function useUpdateDirectoryHook(params, queryParams) {
           },
         ])
       successToast("Successfully updated directory settings")
-      queryParams && queryParams.onSuccess && queryParams.onSuccess()
+      if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
     },
   })
 }

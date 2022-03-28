@@ -176,7 +176,7 @@ const Workspace = ({ match, location }) => {
               </button>
               {pagesData
                 ? pagesData
-                    .filter((page) => page.name != "contact-us.md")
+                    .filter((page) => page.name !== "contact-us.md")
                     .map((page, pageIdx) => (
                       <PageCard itemIndex={pageIdx} item={page} />
                     ))

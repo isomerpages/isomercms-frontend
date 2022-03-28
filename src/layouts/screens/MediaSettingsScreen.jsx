@@ -2,11 +2,7 @@ import { MediaSettingsModal } from "components/MediaSettingsModal"
 import PropTypes from "prop-types"
 
 import { useGetDirectoryHook } from "hooks/directoryHooks"
-import {
-  useGetMediaHook,
-  useCreateMediaHook,
-  useUpdateMediaHook,
-} from "hooks/mediaHooks"
+import { useGetMediaHook, useUpdateMediaHook } from "hooks/mediaHooks"
 
 export const MediaSettingsScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match

@@ -17,7 +17,7 @@ import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
 
 import { getLastItemType } from "utils"
 
-import { MediaSettingsSchema } from "."
+import { MediaSettingsSchema } from "./MediaSettingsSchema"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -163,6 +163,7 @@ export const MediaSettingsModal = ({
                 <FormTitle>File name</FormTitle>
                 <FormField
                   placeholder="File name"
+                  // eslint-disable-next-line react/jsx-props-no-spreading
                   {...register("name")}
                   id="name"
                 />

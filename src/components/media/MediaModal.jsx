@@ -93,6 +93,7 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
     ) : null
   }
 
+  // eslint-disable-next-line react/jsx-props-no-spreading
   return <FormProvider {...methods}>{getModal()}</FormProvider>
 }
 

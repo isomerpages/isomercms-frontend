@@ -23,6 +23,7 @@ const FormMediaInput = ({
         id={id}
         alwaysDisabled
         className="border-1"
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...register(id, { required: isRequired })}
       />
       {inlineButtonText && (

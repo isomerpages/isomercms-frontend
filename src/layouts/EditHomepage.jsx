@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 import axios from "axios"
 import DeleteWarningModal from "components/DeleteWarningModal"
 import Header from "components/Header"
@@ -12,6 +13,12 @@ import _ from "lodash"
 import PropTypes from "prop-types"
 import { useEffect, createRef, useState } from "react"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
+
+// Import hooks
+import useSiteColorsHook from "hooks/useSiteColorsHook"
+
+import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import TemplateHeroSection from "templates/homepage/HeroSection"
 import TemplateInfobarSection from "templates/homepage/InfobarSection"
@@ -33,11 +40,6 @@ import {
 } from "utils"
 
 import "styles/isomer-template.scss"
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
-import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
-
-// Import hooks
-import useSiteColorsHook from "hooks/useSiteColorsHook"
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -987,11 +989,13 @@ const EditHomepage = ({ match }) => {
       // Filter out components which have no input
       filteredFrontMatter.sections = frontMatter.sections.map((section) => {
         const newSection = {}
-        for (const sectionName in section) {
+        // Enumerate over own object properties and clones those that are not empty.
+        // This is done in order to prevent expensive writes on disk for empty sections.
+        _.forOwn(section, (sectionValue, sectionName) => {
           newSection[sectionName] = _.cloneDeep(
-            _.omitBy(section[sectionName], _.isEmpty)
+            _.omitBy(sectionValue, _.isEmpty)
           )
-        }
+        })
         return newSection
       })
       const content = concatFrontMatterMdBody(filteredFrontMatter, "")

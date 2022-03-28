@@ -1,10 +1,10 @@
 import { useContext } from "react"
 import { useQuery } from "react-query"
+
+import { ServicesContext } from "../../contexts/ServicesContext"
 import { DEFAULT_RETRY_MSG } from "../../utils"
 import { errorToast } from "../../utils/toasts"
 import { SETTINGS_CONTENT_KEY } from "../queryKeys"
-
-import { ServicesContext } from "../../contexts/ServicesContext"
 
 export function useGetSettingsHook(params, queryParams) {
   const { settingsService } = useContext(ServicesContext)
@@ -18,7 +18,7 @@ export function useGetSettingsHook(params, queryParams) {
         errorToast(
           `The settings data could not be retrieved. ${DEFAULT_RETRY_MSG}`
         )
-        queryParams && queryParams.onError && queryParams.onError()
+        if (queryParams && queryParams.onError) queryParams.onError()
       },
     }
   )

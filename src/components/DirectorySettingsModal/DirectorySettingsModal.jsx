@@ -19,7 +19,7 @@ import {
   getMediaDirectoryName,
 } from "utils"
 
-import { DirectorySettingsSchema } from "."
+import { DirectorySettingsSchema } from "./DirectorySettingsSchema"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -107,6 +107,7 @@ export const DirectorySettingsModal = ({
             <FormField
               placeholder="Title"
               id="newDirectoryName"
+              // eslint-disable-next-line react/jsx-props-no-spreading
               {...register("newDirectoryName")}
             />
             <FormError>{errors.newDirectoryName?.message}</FormError>

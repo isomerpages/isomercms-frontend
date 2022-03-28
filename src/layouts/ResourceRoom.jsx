@@ -67,6 +67,7 @@ const EmptyResourceRoom = ({ params }) => {
         <FormField
           id="newDirectoryName"
           placeholder="Resource room title"
+          // eslint-disable-next-line react/jsx-props-no-spreading
           {...register("newDirectoryName", { required: true })}
         />
         <FormError>{errors.newDirectoryName?.message}</FormError>

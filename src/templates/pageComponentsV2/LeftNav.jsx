@@ -74,11 +74,5 @@ export const LeftNav = ({ dirData, fileName }) => {
 }
 
 LeftNav.propTypes = {
-  leftNavPages: PropTypes.arrayOf(
-    PropTypes.shape({
-      path: PropTypes.string,
-      fileName: PropTypes.string,
-    })
-  ).isRequired,
   fileName: PropTypes.string.isRequired,
 }

@@ -1,5 +1,6 @@
 import axios from "axios"
 import { DirectorySettingsModal } from "components/DirectorySettingsModal"
+import _ from "lodash"
 import PropTypes from "prop-types"
 
 import {
@@ -12,6 +13,7 @@ import { getLastItemType, getMediaDirectoryName } from "utils"
 // axios settings
 axios.defaults.withCredentials = true
 
+// eslint-disable-next-line import/prefer-default-export
 export const DirectorySettingsScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match
 
@@ -26,7 +28,7 @@ export const DirectorySettingsScreen = ({ match, onClose }) => {
             end: -1,
           }),
         }
-      : (({ [getLastItemType(params)]: unused, ...p }) => p)(params),
+      : _.omit(params, getLastItemType(params)),
     { initialData: [] }
   )
 

@@ -37,8 +37,8 @@ const FormFieldToggle = ({ title, value, id, onFieldChange }) => (
             />
           }
           value={value}
-          onToggle={(value) =>
-            creatableSelectHandler(onFieldChange, !value, id)
+          onToggle={(previousValue) =>
+            creatableSelectHandler(onFieldChange, !previousValue, id)
           }
         />
       </div>

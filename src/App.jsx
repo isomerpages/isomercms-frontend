@@ -46,7 +46,7 @@ const apiClient = axios.create({
   timeout: 100000, // 100 secs
 })
 
-export const App = () => {
+const App = () => {
   useEffect(() => {
     localStorage.removeItem(LOCAL_STORAGE_SITE_COLORS)
   }, [])

@@ -295,7 +295,7 @@ export const getObjectDiff = (obj1, obj2) => {
   const allkeys = _.union(_.keys(obj1), _.keys(obj2))
   const difference = _.reduce(
     allkeys,
-    function (result, key) {
+    (result, key) => {
       const newResult = { ...result }
       if (!_.isEqual(obj1[key], obj2[key])) {
         newResult[key] = { obj1: obj1[key], obj2: obj2[key] }
@@ -385,8 +385,8 @@ export const getRedirectUrl = ({
         subCollectionName ? `subfolders/${subCollectionName}/` : ""
       }editPage/${encodeURIComponent(fileName)}`
     }
-    return `/sites/${siteName}/editPage/${encodeURIComponent(fileName)}`
   }
+  return `/sites/${siteName}/editPage/${encodeURIComponent(fileName)}`
 }
 
 export const getBackButton = ({
@@ -554,6 +554,8 @@ export const isLastItem = (type, params) => {
   if (type === "fileName") {
     return !!fileName
   }
+
+  return false
 }
 
 export const getLastItemType = (params) => {
@@ -598,8 +600,9 @@ export const getNextItemType = (params) => {
     return "fileName"
   }
   if (lastItemType === "fileName") {
-    return False
+    return false
   }
+  return false
 }
 
 export const getDecodedParams = (params) =>
