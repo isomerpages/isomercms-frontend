@@ -19,7 +19,7 @@ const findWebpack = require("find-webpack")
 /**
  * @type {Cypress.PluginConfig}
  */
-module.exports = (on, config) => {
+module.exports = (on, _config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
 

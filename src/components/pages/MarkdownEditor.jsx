@@ -28,6 +28,28 @@ const MarkdownEditor = ({
   const [editorModalType, setEditorModalType] = useState("")
   const [insertingMediaType, setInsertingMediaType] = useState("")
 
+  const StatusIcon = () => {
+    if (isDisabled) {
+      return (
+        <div
+          className={`text-center ${editorStyles.pageEditorSidebarDisabled}`}
+        >
+          Editing is disabled for downloadable files.
+        </div>
+      )
+    }
+
+    if (isLoading) {
+      return (
+        <div
+          className={`spinner-border text-primary ${editorStyles.sidebarLoadingIcon}`}
+        />
+      )
+    }
+
+    return null
+  }
+
   return (
     <>
       <EditorModals
@@ -46,21 +68,7 @@ const MarkdownEditor = ({
           isLoading || isDisabled ? editorStyles.pageEditorSidebarLoading : null
         }`}
       >
-        {isDisabled ? (
-          <>
-            <div
-              className={`text-center ${editorStyles.pageEditorSidebarDisabled}`}
-            >
-              Editing is disabled for downloadable files.
-            </div>
-          </>
-        ) : isLoading ? (
-          <div
-            className={`spinner-border text-primary ${editorStyles.sidebarLoadingIcon}`}
-          />
-        ) : (
-          ""
-        )}
+        <StatusIcon />
         <SimpleMDE
           id="simplemde-editor"
           className="h-100"

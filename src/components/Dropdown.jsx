@@ -6,9 +6,9 @@ import { slugifyLower } from "utils"
 
 const Dropdown = ({
   options,
-  defaultOption,
-  emptyDefault,
-  name,
+  defaultOption = "",
+  emptyDefault = false,
+  name = "dropdown",
   id,
   onFieldChange,
 }) => (
@@ -45,6 +45,6 @@ Dropdown.propTypes = {
   defaultOption: PropTypes.string,
   emptyDefault: PropTypes.bool,
   name: PropTypes.string,
-  id: PropTypes.string,
+  id: PropTypes.string.isRequired,
   onFieldChange: PropTypes.func.isRequired,
 }

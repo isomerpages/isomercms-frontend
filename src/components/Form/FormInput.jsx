@@ -1,5 +1,5 @@
 import PropTypes from "prop-types"
-import React, { forwardRef } from "react"
+import { forwardRef } from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -58,13 +58,11 @@ FormInput.propTypes = {
   value: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
-  register: PropTypes.func,
   className: PropTypes.string,
   alwaysDisabled: PropTypes.bool,
   onChange: PropTypes.func,
   onBlur: PropTypes.func,
   name: PropTypes.string,
-  ref: PropTypes.node,
 }
 
 export default FormInput

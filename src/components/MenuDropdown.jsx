@@ -1,7 +1,7 @@
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 const MenuItem = ({ item, menuIndex, dropdownRef, className }) => {
-  const getItemType = (type) => {
+  const getItemType = (type, dropdownItem) => {
     switch (type) {
       case "edit":
         return {
@@ -23,15 +23,16 @@ const MenuItem = ({ item, menuIndex, dropdownRef, className }) => {
           itemId: `delete`,
         }
       default:
+        return dropdownItem
     }
   }
+
   const { type, handler, noBlur } = item
-  const { itemName, itemId, iconClassName, children } = type
-    ? getItemType(type)
-    : item
+  const { itemName, itemId, iconClassName, children } = getItemType(type, item)
+
   return (
-    <div
-      tabIndex={2}
+    <button
+      type="button"
       id={`${itemId}-${menuIndex}`}
       data-cy={itemId}
       onMouseDown={(e) => {
@@ -41,28 +42,23 @@ const MenuItem = ({ item, menuIndex, dropdownRef, className }) => {
         if (handler) handler(e)
       }}
       className={className || `${elementStyles.dropdownItem}`}
+      style={{ font: "inherit" }}
     >
       <i id={`${itemId}-${menuIndex}`} className={iconClassName} />
       <div id={`${itemId}-${menuIndex}`} className={elementStyles.dropdownText}>
         {itemName}
       </div>
       <div className="ml-auto">{children}</div>
-    </div>
+    </button>
   )
 }
 
-const MenuDropdown = ({
-  dropdownItems,
-  menuIndex,
-  dropdownRef,
-  tabIndex,
-  onBlur,
-}) => {
+const MenuDropdown = ({ dropdownItems, menuIndex, dropdownRef, onBlur }) => {
   return (
     <div
       className={`${elementStyles.dropdown} ${elementStyles.right}`}
       ref={dropdownRef}
-      tabIndex={tabIndex}
+      tabIndex={-1}
       onBlur={onBlur}
     >
       {dropdownItems

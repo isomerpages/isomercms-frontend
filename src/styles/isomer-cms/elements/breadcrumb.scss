@@ -2,19 +2,27 @@
 @import "./buttons";
 
 .breadcrumb {
-  p {
-    font-size: 16px !important;
-    display:inline;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+
+  > * {
+    font-size: 16px;
   }
 
-  u {
-    font-size: 16px !important;
-    display:inline;
+  // NOTE: This is required because of global styling in Buttons.scss
+  // that causes buttons to have bolded text
+  button {
+    font-weight: normal;
   }
 
+  button,
   a {
-    font-size: 16px !important;
     color: $isomer-blue;
-    display:inline;
+  }
+
+  .arrowItem {
+    margin-left: 4px;
+    margin-right: 4px;
   }
 }

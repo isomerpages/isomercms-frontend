@@ -23,14 +23,17 @@ axios.defaults.withCredentials = true
 const LOCAL_STORAGE_SITE_COLORS = "isomercms_colors"
 
 const ToastCloseButton = ({ closeToast }) => (
-  <span
+  <button
+    type="button"
+    onClick={closeToast}
     style={{
       display: "inline-flex",
       alignItems: "center",
+      background: "inherit",
     }}
   >
-    <i className="bx bx-x bx-sm" onClick={closeToast} />
-  </span>
+    <i className="bx bx-x bx-sm" />
+  </button>
 )
 
 // react-query client
@@ -43,7 +46,7 @@ const apiClient = axios.create({
   timeout: 100000, // 100 secs
 })
 
-export const App = () => {
+const App = () => {
   useEffect(() => {
     localStorage.removeItem(LOCAL_STORAGE_SITE_COLORS)
   }, [])

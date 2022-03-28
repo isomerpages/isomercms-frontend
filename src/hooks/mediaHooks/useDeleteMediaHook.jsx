@@ -1,3 +1,4 @@
+import _ from "lodash"
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
@@ -18,23 +19,23 @@ export function useDeleteMediaHook(params, queryParams) {
       errorToast(
         `Your media file could not be deleted successfully. ${DEFAULT_RETRY_MSG}`
       )
-      queryParams && queryParams.onError && queryParams.onError()
+      if (queryParams && queryParams.onError) queryParams.onError()
     },
     onSuccess: () => {
       successToast(`Successfully deleted media file`)
       if (params.mediaRoom || params.mediaDirectoryName)
         // delete cached media from directory list
         queryClient.setQueryData(
-          [DIR_CONTENT_KEY, (({ fileName, ...p }) => p)(params)],
+          [DIR_CONTENT_KEY, _.omit(params, "fileName")],
           (oldMediasData) =>
             oldMediasData.filter((media) => media.name !== params.fileName)
         )
       queryClient.invalidateQueries([
         // invalidates media directory
         DIR_CONTENT_KEY,
-        (({ fileName, ...p }) => p)(params),
+        _.omit(params, "fileName"),
       ])
-      queryParams && queryParams.onSuccess && queryParams.onSuccess()
+      if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
     },
   })
 }

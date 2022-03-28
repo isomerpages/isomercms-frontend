@@ -94,6 +94,7 @@ const ReorderingModal = ({ params, dirData, onProceed, onClose }) => {
                   <div
                     className={`${contentStyles.contentContainerFolderColumn} mb-5`}
                     ref={droppableProvided.innerRef}
+                    // eslint-disable-next-line react/jsx-props-no-spreading
                     {...droppableProvided.droppableProps}
                   >
                     {dirOrder.map((folderContentItem, folderContentIndex) => (
@@ -104,8 +105,9 @@ const ReorderingModal = ({ params, dirData, onProceed, onClose }) => {
                       >
                         {(draggableProvided) => (
                           <div
-                            key={folderContentIndex}
+                            // eslint-disable-next-line react/jsx-props-no-spreading
                             {...draggableProvided.draggableProps}
+                            // eslint-disable-next-line react/jsx-props-no-spreading
                             {...draggableProvided.dragHandleProps}
                             ref={draggableProvided.innerRef}
                           >

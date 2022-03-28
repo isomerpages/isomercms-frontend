@@ -1,3 +1,8 @@
+// NOTE: jsx-ally is disabled for this file as the output of this
+// should match jekyll output as closely as possible.
+// As jekyll outputs an <a /> tag like so, this behaviour is preserved here.
+/* eslint-disable jsx-a11y/anchor-is-valid */
+
 import _ from "lodash"
 
 import { pageFileNameToTitle, deslugify } from "utils"
@@ -147,33 +152,34 @@ const generateThirdNavHeader = (
   fileName,
   elementFileName
 ) => (
-  <li
-    className="third-level-nav-header"
-    key={`${currentThirdNavTitle}-header`}
-    onClick={accordionHandler}
-  >
-    <a
-      className={`third-level-nav-header ${calculateThirdNavHeaderState(
-        currentFileThirdNavTitle,
-        currentThirdNavTitle,
-        elementThirdNavTitle,
-        fileName,
-        elementFileName
-      )}`}
+  <button type="button" onClick={accordionHandler}>
+    <li
+      className="third-level-nav-header"
+      key={`${currentThirdNavTitle}-header`}
     >
-      {deslugify(currentThirdNavTitle)}
-      <i
-        className={`sgds-icon is-pulled-right is-size-4 ${calculateThirdNavHeaderChevronState(
+      <span
+        className={`third-level-nav-header ${calculateThirdNavHeaderState(
           currentFileThirdNavTitle,
           currentThirdNavTitle,
           elementThirdNavTitle,
           fileName,
           elementFileName
         )}`}
-        aria-hidden="true"
-      />
-    </a>
-  </li>
+      >
+        {deslugify(currentThirdNavTitle)}
+        <i
+          className={`sgds-icon is-pulled-right is-size-4 ${calculateThirdNavHeaderChevronState(
+            currentFileThirdNavTitle,
+            currentThirdNavTitle,
+            elementThirdNavTitle,
+            fileName,
+            elementFileName
+          )}`}
+          aria-hidden="true"
+        />
+      </span>
+    </li>
+  </button>
 )
 
 export const generateLeftNav = (dirData, fileName) => {

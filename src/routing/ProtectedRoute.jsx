@@ -18,6 +18,7 @@ const ProtectedRoute = ({ children, component: WrappedComponent, ...rest }) => {
           children ||
           (WrappedComponent && (
             <Route
+              // eslint-disable-next-line react/jsx-props-no-spreading
               {...rest}
               render={(props) => {
                 const { match } = props
@@ -27,6 +28,7 @@ const ProtectedRoute = ({ children, component: WrappedComponent, ...rest }) => {
                   decodedParams: getDecodedParams(params),
                 }
                 return (
+                  // eslint-disable-next-line react/jsx-props-no-spreading
                   <WrappedComponent {...rest} {...props} match={newMatch} />
                 )
               }}

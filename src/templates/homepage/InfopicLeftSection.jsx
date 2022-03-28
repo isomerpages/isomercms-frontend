@@ -25,7 +25,7 @@ const TemplateInfopicLeftSection = (
     e.target.src = "/placeholder_no_image.png"
   }
 
-  const { data: loadedImageURL, status } = useQuery(
+  const { data: loadedImageURL } = useQuery(
     `${siteName}/${imageUrl}`,
     () => fetchImageURL(siteName, decodeURI(imageUrl)),
     {

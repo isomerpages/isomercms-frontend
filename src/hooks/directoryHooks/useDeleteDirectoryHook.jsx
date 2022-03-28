@@ -1,3 +1,4 @@
+import _ from "lodash"
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
@@ -9,6 +10,7 @@ import { successToast, errorToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG, getMediaDirectoryName } from "utils"
 
+// eslint-disable-next-line import/prefer-default-export
 export function useDeleteDirectoryHook(params, queryParams) {
   const { directoryService } = useContext(ServicesContext)
   const queryClient = useQueryClient()
@@ -16,7 +18,7 @@ export function useDeleteDirectoryHook(params, queryParams) {
     ...queryParams,
     onError: () => {
       errorToast(`Your directory could not be deleted. ${DEFAULT_RETRY_MSG}`)
-      queryParams && queryParams.onError && queryParams.onError()
+      if (queryParams && queryParams.onError) queryParams.onError()
     },
     onSuccess: () => {
       successToast(`Successfully deleted directory`)
@@ -34,19 +36,19 @@ export function useDeleteDirectoryHook(params, queryParams) {
       if (params.subCollectionName)
         queryClient.invalidateQueries([
           DIR_CONTENT_KEY,
-          (({ subCollectionName, ...p }) => p)(params),
+          _.omit(params, "subCollectionName"),
         ])
       else if (params.collectionName)
         queryClient.invalidateQueries([
           DIR_CONTENT_KEY,
-          (({ collectionName, ...p }) => p)(params),
+          _.omit(params, "collectionName"),
         ])
       else if (params.resourceCategoryName)
         queryClient.invalidateQueries([
           DIR_CONTENT_KEY,
-          (({ resourceCategoryName, ...p }) => p)(params),
+          _.omit(params, "resourceCategoryName"),
         ])
-      queryParams && queryParams.onSuccess && queryParams.onSuccess()
+      if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
     },
   })
 }

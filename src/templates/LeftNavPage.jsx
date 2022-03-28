@@ -1,4 +1,3 @@
-import _ from "lodash"
 import PropTypes from "prop-types"
 
 import LeftNav from "templates/pageComponents/LeftNav"

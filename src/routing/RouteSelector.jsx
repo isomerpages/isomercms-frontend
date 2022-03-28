@@ -26,6 +26,7 @@ import RedirectIfLoggedInRoute from "routing/RedirectIfLoggedInRoute"
 export const ProtectedRouteWithProps = (props) => {
   return (
     <Sentry.ErrorBoundary fallback={FallbackComponent}>
+      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <ProtectedRoute {...props} />
     </Sentry.ErrorBoundary>
   )

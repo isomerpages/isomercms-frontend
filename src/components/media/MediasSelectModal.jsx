@@ -3,7 +3,6 @@ import { BreadcrumbItem } from "components/folders/Breadcrumb"
 import LoadingButton from "components/LoadingButton"
 import MediaCard from "components/media/MediaCard"
 import { MediaSearchBar } from "components/media/MediaSearchBar"
-import _ from "lodash"
 import PropTypes from "prop-types"
 import { useState, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
@@ -41,29 +40,26 @@ const MediasSelectModal = ({
   /** ******************************** */
 
   const searchChangeHandler = (event) => {
-    const filterMediaByFileName = (medias, filterTerm) => {
-      const filteredMedias = medias.filter((media) => {
-        if (media.name.toLowerCase().includes(filterTerm.toLowerCase()))
-          return true
-        return false
-      })
-      return filteredMedias
-    }
+    const filterMediaByFileName = (medias, filterTerm) =>
+      medias.filter((media) =>
+        media.name.toLowerCase().includes(filterTerm.toLowerCase())
+      )
 
     const {
       target: { value },
     } = event
-    const filteredMedias = filterMediaByFileName(
+
+    const filteredMediaData = filterMediaByFileName(
       mediasData.filter((medias) => medias.type === "file"),
       value
     )
-    const filteredDirectories = filterMediaByFileName(
+    const filteredDirectoriesData = filterMediaByFileName(
       mediasData.filter((medias) => medias.type === "dir"),
       value
     )
     setMediaSearchTerm(value)
-    setFilteredMedias(filteredMedias)
-    setFilteredDirectories(filteredDirectories)
+    setFilteredMedias(filteredMediaData)
+    setFilteredDirectories(filteredDirectoriesData)
   }
 
   useEffect(() => {
@@ -203,9 +199,5 @@ export default MediasSelectModal
 
 MediasSelectModal.propTypes = {
   onClose: PropTypes.func.isRequired,
-  siteName: PropTypes.string.isRequired,
   onMediaSelect: PropTypes.func.isRequired,
-  type: PropTypes.oneOf(["files", "images"]).isRequired,
-  readFileToStageUpload: PropTypes.func.isRequired,
-  setUploadPath: PropTypes.func.isRequired,
 }
