@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/react"
 import FallbackComponent from "components/FallbackComponent"
+import VerifyUserDetailsModal from "components/VerifyUserDetailsModal"
 import React from "react"
 import { Switch } from "react-router-dom"
 
@@ -32,68 +33,71 @@ export const ProtectedRouteWithProps = (props) => {
 }
 
 export const RouteSelector = () => (
-  <Switch>
-    <RedirectIfLoggedInRoute exact path="/" component={Home} />
-    <ProtectedRouteWithProps
-      exact
-      path={[
-        "/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName/editPage/:fileName",
-        "/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName/editPage/:fileName",
-        "/sites/:siteName/folders/:collectionName/editPage/:fileName",
-        "/sites/:siteName/editPage/:fileName",
-      ]}
-      component={EditPage}
-    />
-    <ProtectedRouteWithProps
-      path={[
-        "/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName",
-        "/sites/:siteName/folders/:collectionName",
-      ]}
-      component={Folders}
-    />
-    <ProtectedRouteWithProps
-      exact
-      path="/sites/:siteName/navbar"
-      component={EditNavBar}
-    />
-    <ProtectedRouteWithProps
-      path={[
-        "/sites/:siteName/media/:mediaRoom/mediaDirectory/:mediaDirectoryName",
-      ]}
-      component={Media}
-    />
-    <ProtectedRouteWithProps
-      path="/sites/:siteName/workspace"
-      component={Workspace}
-    />
-    <ProtectedRouteWithProps
-      path="/sites/:siteName/homepage"
-      component={EditHomepage}
-    />
-    <ProtectedRouteWithProps
-      path="/sites/:siteName/contact-us"
-      component={EditContactUs}
-    />
-    <ProtectedRouteWithProps
-      path="/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName"
-      component={ResourceCategory}
-    />
-    <ProtectedRouteWithProps
-      path={[
-        "/sites/:siteName/resourceRoom/:resourceRoomName",
-        "/sites/:siteName/resourceRoom",
-      ]}
-      component={ResourceRoom}
-    />
-    <ProtectedRouteWithProps
-      path="/sites/:siteName/navbar"
-      component={EditNavBar}
-    />
-    <ProtectedRouteWithProps
-      path="/sites/:siteName/settings"
-      component={Settings}
-    />
-    <ProtectedRouteWithProps exact path="/sites" component={Sites} />
-    <ProtectedRouteWithProps path="/" component={NotFoundPage} />
-  </Switch>
+  <>
+    <Switch>
+      <RedirectIfLoggedInRoute exact path="/" component={Home} />
+      <ProtectedRouteWithProps
+        exact
+        path={[
+          "/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName/editPage/:fileName",
+          "/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName/editPage/:fileName",
+          "/sites/:siteName/folders/:collectionName/editPage/:fileName",
+          "/sites/:siteName/editPage/:fileName",
+        ]}
+        component={EditPage}
+      />
+      <ProtectedRouteWithProps
+        path={[
+          "/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName",
+          "/sites/:siteName/folders/:collectionName",
+        ]}
+        component={Folders}
+      />
+      <ProtectedRouteWithProps
+        exact
+        path="/sites/:siteName/navbar"
+        component={EditNavBar}
+      />
+      <ProtectedRouteWithProps
+        path={[
+          "/sites/:siteName/media/:mediaRoom/mediaDirectory/:mediaDirectoryName",
+        ]}
+        component={Media}
+      />
+      <ProtectedRouteWithProps
+        path="/sites/:siteName/workspace"
+        component={Workspace}
+      />
+      <ProtectedRouteWithProps
+        path="/sites/:siteName/homepage"
+        component={EditHomepage}
+      />
+      <ProtectedRouteWithProps
+        path="/sites/:siteName/contact-us"
+        component={EditContactUs}
+      />
+      <ProtectedRouteWithProps
+        path="/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName"
+        component={ResourceCategory}
+      />
+      <ProtectedRouteWithProps
+        path={[
+          "/sites/:siteName/resourceRoom/:resourceRoomName",
+          "/sites/:siteName/resourceRoom",
+        ]}
+        component={ResourceRoom}
+      />
+      <ProtectedRouteWithProps
+        path="/sites/:siteName/navbar"
+        component={EditNavBar}
+      />
+      <ProtectedRouteWithProps
+        path="/sites/:siteName/settings"
+        component={Settings}
+      />
+      <ProtectedRouteWithProps exact path="/sites" component={Sites} />
+      <ProtectedRouteWithProps path="/" component={NotFoundPage} />
+    </Switch>
+    <VerifyUserDetailsModal />
+  </>
 )

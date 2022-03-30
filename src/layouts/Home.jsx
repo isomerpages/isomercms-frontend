@@ -1,6 +1,5 @@
 import React from "react"
-
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
 export default function Home() {
   return (

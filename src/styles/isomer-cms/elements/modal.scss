@@ -114,6 +114,22 @@
   width: 70%;
 }
 
+.modal-verify-user-details {
+  @extend .modal;
+  height: auto;
+  width: 40%;
+
+  form {
+    margin: 16px 0px;
+  }
+
+  .footer {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
 .sortLabel {
   white-space: nowrap;
   padding-right: 1rem;

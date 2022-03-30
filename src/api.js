@@ -10,6 +10,7 @@ axios.defaults.withCredentials = true
 
 // Constants
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
+const BACKEND_URL_V2 = process.env.REACT_APP_BACKEND_URL_V2
 
 const getDirectoryFile = async (siteName, folderName) => {
   if (!folderName) return undefined
@@ -562,6 +563,29 @@ const deleteMediaSubfolder = async ({ siteName, mediaType, customPath }) => {
   )
 }
 
+// Login
+const getEmailOtp = (email) => {
+  const endpoint = `${BACKEND_URL_V2}/user/email/otp`
+  return axios.post(endpoint, { email })
+}
+
+const verifyEmailOtp = async (email, otp) => {
+  const endpoint = `${BACKEND_URL_V2}/user/email/verifyOtp`
+  const res = await axios.post(endpoint, { email, otp })
+  return res.data
+}
+
+const getMobileNumberOtp = (mobile) => {
+  const endpoint = `${BACKEND_URL_V2}/user/mobile/otp`
+  return axios.post(endpoint, { mobile })
+}
+
+const verifyMobileNumberOtp = async (mobile, otp) => {
+  const endpoint = `${BACKEND_URL_V2}/user/mobile/verifyOtp`
+  const res = await axios.post(endpoint, { mobile, otp })
+  return res.data
+}
+
 export {
   getDirectoryFile,
   setDirectoryFile,
@@ -597,4 +621,8 @@ export {
   createMediaSubfolder,
   renameMediaSubfolder,
   deleteMediaSubfolder,
+  getEmailOtp,
+  verifyEmailOtp,
+  getMobileNumberOtp,
+  verifyMobileNumberOtp,
 }
