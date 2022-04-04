@@ -1,9 +1,6 @@
-import { Link as ChakraLink } from "@chakra-ui/react"
-import { ThemeProvider } from "@opengovsg/design-system-react"
 import axios from "axios"
-import Banner from "components/Banner"
 import Header from "components/Header"
-import React, { Component } from "react"
+import { Component } from "react"
 import { Link } from "react-router-dom"
 
 import { SITES_IS_PRIVATE_KEY } from "constants/constants"
@@ -56,21 +53,6 @@ export default class Sites extends Component {
     const { siteNames } = this.state
     return (
       <>
-        {/* TODO: Move ThemeProvider to root of app during design system refactor. 
-        Refer to issue: https://github.com/isomerpages/isomercms-frontend/issues/782 */}
-        <ThemeProvider>
-          <Banner>
-            From 31 Mar 2022, all users will have to use an agency-issued email
-            to verify their account before making new edits in the CMS. &nbsp;
-            <ChakraLink
-              color="white"
-              href="https://go.gov.sg/isomer-identity"
-              isExternal
-            >
-              Read more
-            </ChakraLink>
-          </Banner>
-        </ThemeProvider>
         <Header showButton={false} />
         <div className={elementStyles.wrapper}>
           <div className={siteStyles.sitesContainer}>
