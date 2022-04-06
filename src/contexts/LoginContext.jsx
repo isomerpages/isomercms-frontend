@@ -5,8 +5,6 @@ import { SITES_IS_PRIVATE_KEY } from "constants/constants"
 
 const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 const LOCAL_STORAGE_USER_ID_KEY = "userId"
-const LOCAL_STORAGE_USER_EMAIL_KEY = "userEmail"
-const LOCAL_STORAGE_USER_CONTACT_NUMBER = "userContactNumber"
 const LOCAL_STORAGE_USER = "user"
 
 const LoginContext = createContext(null)
