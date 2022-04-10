@@ -6,7 +6,7 @@ import MarkdownEditor from "components/pages/MarkdownEditor"
 import PagePreview from "components/pages/PagePreview"
 import DOMPurify from "dompurify"
 import _ from "lodash"
-import marked from "marked"
+import { marked } from "marked"
 import PropTypes from "prop-types"
 import React, { useEffect, useRef, useState } from "react"
 
@@ -111,7 +111,7 @@ const EditPage = ({ match, history }) => {
 
   useEffect(() => {
     async function editorValueToHtml() {
-      const html = marked(editorValue)
+      const html = marked.parse(editorValue)
       const {
         isCspViolation: checkedIsCspViolation,
         sanitisedHtml: CSPSanitisedHtml,
