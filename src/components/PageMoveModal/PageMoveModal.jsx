@@ -1,7 +1,8 @@
 import { Breadcrumb } from "components/folders/Breadcrumb"
 import { MoveMenuBackButton, MoveMenuItem } from "components/move"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
-import React, { useState } from "react"
+import _ from "lodash"
+import { useState } from "react"
 
 import { useGetDirectoryHook } from "hooks/directoryHooks"
 
@@ -9,15 +10,72 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { pageFileNameToTitle, getLastItemType, getNextItemType } from "utils"
 
+// eslint-disable-next-line import/prefer-default-export
 export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
-  const [moveQuery, setMoveQuery] = useState(
-    (({ fileName, ...p }) => p)(queryParams)
-  )
+  const [moveQuery, setMoveQuery] = useState(_.omit(queryParams, "fileName"))
   const [moveTo, setMoveTo] = useState(params)
   const { data: dirData } = useGetDirectoryHook(moveQuery)
 
   const nextItemType = getNextItemType(moveQuery)
   const lastItemType = getLastItemType(moveQuery)
+
+  const MenuItems = () => {
+    // Directories
+    if (dirData && dirData.length) {
+      return (
+        <>
+          {dirData
+            .filter((item) => item.type === "dir")
+            .map((item, itemIndex) => (
+              <MoveMenuItem
+                item={item}
+                id={itemIndex}
+                isItemSelected={moveTo[getLastItemType(moveTo)] === item.name}
+                onItemSelect={() =>
+                  setMoveTo({
+                    ...moveQuery,
+                    [nextItemType]: item.name,
+                  })
+                }
+                onForward={() => {
+                  setMoveTo({
+                    ...moveQuery,
+                    [nextItemType]: item.name,
+                  })
+                  setMoveQuery((prevState) => ({
+                    ...prevState,
+                    [nextItemType]: encodeURIComponent(item.name),
+                  }))
+                }}
+                isResource={!!moveQuery.resourceRoomName}
+              />
+            ))}
+          {/* files */}
+          {dirData
+            .filter((item) => item.type === "file")
+            .map((item, itemIndex) => (
+              <MoveMenuItem
+                item={item}
+                id={itemIndex}
+                isResource={!!moveQuery.resourceRoomName}
+              />
+            ))}
+        </>
+      )
+    }
+
+    return (
+      <div
+        className={`${elementStyles.dropdownItemDisabled} d-flex justify-content-center`}
+      >
+        {dirData ? (
+          "No pages here yet."
+        ) : (
+          <div className="spinner-border text-primary" role="status" />
+        )}
+      </div>
+    )
+  }
 
   return (
     <div className={elementStyles.overlay}>
@@ -45,12 +103,8 @@ export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
             <div className={`${elementStyles.moveModal}`}>
               <MoveMenuBackButton
                 onBack={() => {
-                  setMoveQuery(
-                    (({ [lastItemType]: unused, ...p }) => p)(moveQuery)
-                  )
-                  setMoveTo(
-                    (({ [lastItemType]: unused, ...p }) => p)(moveQuery)
-                  )
+                  setMoveQuery(_.omit(moveQuery, lastItemType))
+                  setMoveTo(_.omit(moveQuery, lastItemType))
                 }}
                 isDisabled={
                   moveQuery.resourceRoomName
@@ -63,61 +117,7 @@ export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
                     : decodeURIComponent(moveQuery[lastItemType])
                 }
               />
-              {dirData && dirData.length ? (
-                <>
-                  {/* directories */}
-                  {dirData
-                    .filter((item) => item.type === "dir")
-                    .map((item, itemIndex) => (
-                      <MoveMenuItem
-                        item={item}
-                        id={itemIndex}
-                        isItemSelected={
-                          moveTo[getLastItemType(moveTo)] === item.name
-                        }
-                        onItemSelect={() =>
-                          setMoveTo({
-                            ...moveQuery,
-                            [nextItemType]: item.name,
-                          })
-                        }
-                        onForward={() => {
-                          setMoveTo({
-                            ...moveQuery,
-                            [nextItemType]: item.name,
-                          })
-                          setMoveQuery((prevState) => ({
-                            ...prevState,
-                            [nextItemType]: encodeURIComponent(item.name),
-                          }))
-                        }}
-                        isResource={!!moveQuery.resourceRoomName}
-                      />
-                    ))}
-                  {/* files */}
-                  {dirData
-                    .filter((item) => item.type === "file")
-                    .map((item, itemIndex) => (
-                      <MoveMenuItem
-                        item={item}
-                        id={itemIndex}
-                        isResource={!!moveQuery.resourceRoomName}
-                      />
-                    ))}
-                </>
-              ) : dirData ? (
-                <div
-                  className={`${elementStyles.dropdownItemDisabled} d-flex justify-content-center`}
-                >
-                  No pages here yet.
-                </div>
-              ) : (
-                <div
-                  className={`${elementStyles.dropdownItemDisabled} d-flex justify-content-center`}
-                >
-                  <div className="spinner-border text-primary" role="status" />
-                </div>
-              )}
+              <MenuItems />
             </div>
             Moving to: <br />
             <Breadcrumb
@@ -133,7 +133,7 @@ export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
             hasDeleteButton={false}
             saveCallback={() =>
               onProceed({
-                target: (({ siteName, fileName, ...p }) => p)(moveTo),
+                target: _.omit(moveTo, ["siteName", "fileName"]),
                 items: [{ name: params.fileName, type: "file" }],
               })
             }

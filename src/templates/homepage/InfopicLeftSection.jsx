@@ -1,5 +1,5 @@
 import PropTypes from "prop-types"
-import React from "react"
+import { forwardRef } from "react"
 import { useQuery } from "react-query"
 
 import { fetchImageURL } from "utils"
@@ -25,7 +25,7 @@ const TemplateInfopicLeftSection = (
     e.target.src = "/placeholder_no_image.png"
   }
 
-  const { data: loadedImageURL, status } = useQuery(
+  const { data: loadedImageURL } = useQuery(
     `${siteName}/${imageUrl}`,
     () => fetchImageURL(siteName, decodeURI(imageUrl)),
     {
@@ -132,7 +132,7 @@ const TemplateInfopicLeftSection = (
   )
 }
 
-export default React.forwardRef(TemplateInfopicLeftSection)
+export default forwardRef(TemplateInfopicLeftSection)
 
 TemplateInfopicLeftSection.propTypes = {
   title: PropTypes.string,

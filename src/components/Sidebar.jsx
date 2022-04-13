@@ -1,6 +1,6 @@
 import axios from "axios"
 import PropTypes from "prop-types"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { Link } from "react-router-dom"
 
@@ -121,7 +121,7 @@ const Sidebar = ({ siteName, currPath }) => {
   }, [lastUpdatedResp])
 
   // Highlight workspace sidebar tab when in collections layout
-  const convertCollectionsPathToWorkspace = (currPath, siteName) => {
+  const convertCollectionsPathToWorkspace = () => {
     const currPathArr = currPath.split("/")
 
     if (currPathArr[3] === "resourceRoom" || currPathArr[3] === "media")
@@ -134,7 +134,7 @@ const Sidebar = ({ siteName, currPath }) => {
     return currPathArr.slice(0, 4).join("/")
   }
 
-  const generateContent = (title, siteName, pathname, isActive) => {
+  const generateContent = (title, pathname, isActive) => {
     switch (title) {
       case "Help":
       case "Guide":
@@ -153,15 +153,16 @@ const Sidebar = ({ siteName, currPath }) => {
         )
       case "Logout":
         return (
-          <a
-            className="px-4 py-3 h-100 w-100 font-weight-bold"
+          <button
+            className={`px-4 py-3 h-100 w-100 font-weight-bold ${elementStyles.logout}`}
             onClick={setRedirectToLogout}
+            type="button"
           >
             Logout
             <div className="float-right">
               <i className={`${typeInfoDict[title].icon}`} />
             </div>
-          </a>
+          </button>
         )
       case "User":
         return (
@@ -193,10 +194,9 @@ const Sidebar = ({ siteName, currPath }) => {
     }
   }
 
-  const generateTab = (title, siteName, pathname) => {
+  const generateTab = (title, pathname) => {
     const isActive =
-      `/sites/${siteName}/${pathname}` ===
-      convertCollectionsPathToWorkspace(currPath, siteName)
+      `/sites/${siteName}/${pathname}` === convertCollectionsPathToWorkspace()
     return (
       <li
         className={`d-flex p-0 ${isActive ? styles.active : ""} ${
@@ -204,7 +204,7 @@ const Sidebar = ({ siteName, currPath }) => {
         }`}
         key={title}
       >
-        {generateContent(title, siteName, pathname, isActive)}
+        {generateContent(title, pathname, isActive)}
       </li>
     )
   }
@@ -223,9 +223,7 @@ const Sidebar = ({ siteName, currPath }) => {
           <ul>
             {sidebarContentPathDict(
               resourceRoomName
-            ).map(({ pathname, title }) =>
-              generateTab(title, siteName, pathname)
-            )}
+            ).map(({ pathname, title }) => generateTab(title, pathname))}
           </ul>
         </div>
       </div>
@@ -233,14 +231,14 @@ const Sidebar = ({ siteName, currPath }) => {
         <hr className="m-0" />
         <ul>
           {sidebarSettingsPathDict.map(({ pathname, title }) =>
-            generateTab(title, siteName, pathname)
+            generateTab(title, pathname)
           )}
         </ul>
       </div>
       <div className={styles.sidebarNavigation}>
         <ul>
           {sidebarUserDict.map(({ pathname, title }) =>
-            generateTab(title, siteName, pathname)
+            generateTab(title, pathname)
           )}
         </ul>
       </div>

@@ -5,7 +5,6 @@ import HeroButton from "components/homepage/HeroButton"
 import HeroDropdown from "components/homepage/HeroDropdown"
 import KeyHighlight from "components/homepage/KeyHighlight"
 import PropTypes from "prop-types"
-import React from "react"
 import { Droppable, Draggable } from "react-beautiful-dnd"
 
 import styles from "styles/App.module.scss"

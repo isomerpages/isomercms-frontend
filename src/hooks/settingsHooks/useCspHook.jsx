@@ -27,7 +27,7 @@ export function useCspHook({ siteName }, queryParams) {
       errorToast(
         `There was a problem trying to load your CSP. ${DEFAULT_RETRY_MSG}`
       )
-      queryParams && queryParams.onError && queryParams.onError()
+      if (queryParams && queryParams.onError) queryParams.onError()
     },
   })
 }

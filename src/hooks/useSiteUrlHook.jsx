@@ -12,7 +12,12 @@ const useSiteUrlHook = () => {
   const setSiteUrl = (newUrl, siteName, type) => {
     const siteUrlObj =
       JSON.parse(localStorage.getItem(LOCAL_STORAGE_SITE_URL)) || {}
-    if (!siteUrlObj.hasOwnProperty(siteName)) siteUrlObj[siteName] = {}
+    // NOTE: See here for why this verbose syntax should be used over
+    // siteUrlObj.hasOwnProperty(siteName)
+    // https://eslint.org/docs/rules/no-prototype-builtins
+    if (!Object.prototype.hasOwnProperty.call(siteUrlObj, siteName)) {
+      siteUrlObj[siteName] = {}
+    }
     siteUrlObj[siteName][type] = newUrl
     localStorage.setItem(
       LOCAL_STORAGE_SITE_URL,
@@ -43,11 +48,11 @@ const useSiteUrlHook = () => {
   }
 
   const retrieveStagingUrl = async (siteName) => {
-    return await retrieveUrl(siteName, "staging")
+    return retrieveUrl(siteName, "staging")
   }
 
   const retrieveSiteUrl = async (siteName) => {
-    return await retrieveUrl(siteName, "site")
+    return retrieveUrl(siteName, "site")
   }
 
   return { retrieveStagingUrl, retrieveSiteUrl }

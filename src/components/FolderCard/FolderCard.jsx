@@ -3,7 +3,7 @@
 
 import { MenuDropdown } from "components/MenuDropdown"
 import PropTypes from "prop-types"
-import React, { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Link, useRouteMatch } from "react-router-dom"
 
 import useRedirectHook from "hooks/useRedirectHook"
@@ -13,6 +13,7 @@ import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
 import { prettifyPageFileName } from "utils"
 
+// eslint-disable-next-line import/prefer-default-export
 export const FolderCard = ({
   displayText,
   itemIndex,
@@ -54,7 +55,7 @@ export const FolderCard = ({
     }
   }
 
-  const generateImage = (pageType) => {
+  const generateImage = () => {
     switch (pageType) {
       case "homepage":
         return "bxs-home-circle"
@@ -125,7 +126,6 @@ export const FolderCard = ({
               ]}
               dropdownRef={dropdownRef}
               menuIndex={itemIndex}
-              tabIndex={2}
               onBlur={() => setCanShowDropdown(false)}
             />
           )}
@@ -144,12 +144,17 @@ export const FolderCard = ({
           {FolderCardContent()}
         </Link>
       ) : (
-        <div
+        <button
           id="folderCard-small"
           className={`${contentStyles.component} ${contentStyles.card} ${
             elementStyles.folderCard
           } ${selectedIndex ? `border border-primary` : ""}`}
           onClick={onClick}
+          // NOTE: This is to prevent isomercms styling from displaying buttons oddly
+          style={{
+            font: "inherit",
+          }}
+          type="button"
         >
           {FolderCardContent()}
           {selectedIndex && (
@@ -157,7 +162,7 @@ export const FolderCard = ({
               <div className={elementStyles.orderCircle}>{selectedIndex}</div>
             </div>
           )}
-        </div>
+        </button>
       )}
     </>
   )
@@ -165,7 +170,6 @@ export const FolderCard = ({
 
 FolderCard.propTypes = {
   displayText: PropTypes.string.isRequired,
-  settingsToggle: PropTypes.func.isRequired,
   itemIndex: PropTypes.number,
   pageType: PropTypes.string.isRequired,
   siteName: PropTypes.string.isRequired,

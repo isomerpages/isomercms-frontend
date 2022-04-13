@@ -41,6 +41,7 @@ Cypress.Commands.add("moveMedia", (mediaTitle, newMediaFolder) => {
       // use cypress-pipe
       .pipe(click)
       .should(($el) => {
+        // eslint-disable-next-line no-unused-expressions
         expect($el).to.not.exist
       })
   }

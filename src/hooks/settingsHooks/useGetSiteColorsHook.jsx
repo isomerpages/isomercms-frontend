@@ -24,7 +24,8 @@ const getSiteColors = async ({ siteName }) => {
   }
 }
 
-export function useSiteColorsHook({ siteName }, queryParams) {
+// eslint-disable-next-line import/prefer-default-export
+export function useGetSiteColorsHook({ siteName }, queryParams) {
   return useQuery(
     [SITE_COLORS_KEY, { siteName }],
     () => getSiteColors({ siteName }),
@@ -33,8 +34,8 @@ export function useSiteColorsHook({ siteName }, queryParams) {
       onError: () => {
         errorToast(
           `There was a problem loading the page theme colors. ${DEFAULT_RETRY_MSG}`
-        ),
-          queryParams && queryParams.onError && queryParams.onError()
+        )
+        if (queryParams && queryParams.onError) queryParams.onError()
       },
     }
   )

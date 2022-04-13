@@ -27,7 +27,7 @@
     "ecmaVersion": 2020,
     "sourceType": "module"
   },
-  "plugins": ["only-warn", "react"],
+  "plugins": ["react"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"],
@@ -36,7 +36,12 @@
     }
   ],
   "rules": {
+    "react/require-default-props": "warn",
+    "import/prefer-default-export": "warn",
+    "react/prop-types": "warn",
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     "no-underscore-dangle": "off",
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
     "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],
     "import/extensions": 0, // Turn off "Missing file extension for ..." error
     "import/order": [

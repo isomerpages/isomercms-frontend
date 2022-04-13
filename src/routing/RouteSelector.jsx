@@ -1,7 +1,6 @@
 import * as Sentry from "@sentry/react"
 import FallbackComponent from "components/FallbackComponent"
 import VerifyUserDetailsModal from "components/VerifyUserDetailsModal"
-import React from "react"
 import { Switch } from "react-router-dom"
 
 // Layouts
@@ -27,6 +26,7 @@ import RedirectIfLoggedInRoute from "routing/RedirectIfLoggedInRoute"
 export const ProtectedRouteWithProps = (props) => {
   return (
     <Sentry.ErrorBoundary fallback={FallbackComponent}>
+      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <ProtectedRoute {...props} />
     </Sentry.ErrorBoundary>
   )

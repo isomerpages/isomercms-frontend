@@ -1,8 +1,6 @@
 import axios from "axios"
 import { DirectoryCreationModal } from "components/DirectoryCreationModal"
-import * as _ from "lodash"
 import PropTypes from "prop-types"
-import React from "react"
 
 import {
   useGetDirectoryHook,
@@ -12,6 +10,7 @@ import {
 // axios settings
 axios.defaults.withCredentials = true
 
+// eslint-disable-next-line import/prefer-default-export
 export const DirectoryCreationScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match
 
@@ -25,25 +24,37 @@ export const DirectoryCreationScreen = ({ match, onClose }) => {
     { enabled: !params.collectionName }
   )
 
+  const getDirsData = () => {
+    if (pagesData) {
+      return dirData || []
+    }
+
+    if (dirData) {
+      return dirData.filter((item) => item.type === "dir")
+    }
+
+    return []
+  }
+
+  const getPagesData = () => {
+    if (pagesData) {
+      return pagesData
+        .filter((item) => item.name !== "contact-us.md")
+        .filter((item) => item.type === "file")
+    }
+
+    if (dirData) {
+      dirData.filter((item) => item.type === "file")
+    }
+
+    return []
+  }
+
   return (
     <DirectoryCreationModal
       showSelectPages={!params.resourceRoomName}
-      dirsData={
-        pagesData
-          ? dirData || []
-          : dirData
-          ? dirData.filter((item) => item.type == "dir")
-          : []
-      }
-      pagesData={
-        pagesData
-          ? pagesData
-              .filter((item) => item.name != "contact-us.md")
-              .filter((item) => item.type == "file")
-          : dirData
-          ? dirData.filter((item) => item.type == "file")
-          : []
-      }
+      dirsData={getDirsData()}
+      pagesData={getPagesData()}
       params={decodedParams}
       onProceed={saveHandler}
       onClose={onClose}

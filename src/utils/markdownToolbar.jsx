@@ -17,7 +17,6 @@ import {
   toggleBlockquote,
   toggleUnorderedList,
   toggleOrderedList,
-  drawLink,
   drawTable,
 } from "easymde"
 

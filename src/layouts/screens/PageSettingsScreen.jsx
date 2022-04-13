@@ -1,6 +1,5 @@
 import { PageSettingsModal } from "components/PageSettingsModal"
 import PropTypes from "prop-types"
-import React from "react"
 
 import { useGetDirectoryHook } from "hooks/directoryHooks"
 import {

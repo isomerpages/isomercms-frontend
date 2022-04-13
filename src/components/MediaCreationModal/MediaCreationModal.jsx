@@ -3,13 +3,13 @@ import {
   MediaSettingsSchema,
   MediaSettingsModal,
 } from "components/MediaSettingsModal"
-import * as _ from "lodash"
-import React, { useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
 import { errorToast } from "utils/toasts"
 import { MEDIA_FILE_MAX_SIZE } from "utils/validators"
 
+// eslint-disable-next-line import/prefer-default-export
 export const MediaCreationModal = ({
   params,
   mediasData = [],
@@ -39,7 +39,6 @@ export const MediaCreationModal = ({
       }
       mediaReader.readAsDataURL(media)
     }
-    event.target.value = ""
   }
 
   useEffect(() => {
@@ -47,6 +46,7 @@ export const MediaCreationModal = ({
   }, [])
 
   return (
+    // eslint-disable-next-line react/jsx-props-no-spreading
     <FormProvider {...methods}>
       <>
         <input

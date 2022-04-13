@@ -1,6 +1,6 @@
 /* eslint-disable arrow-body-style */
 import PropTypes from "prop-types"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
 import { generateLeftNav } from "utils/leftnavGeneration"
 import "styles/isomer-template.scss"
@@ -74,11 +74,5 @@ export const LeftNav = ({ dirData, fileName }) => {
 }
 
 LeftNav.propTypes = {
-  leftNavPages: PropTypes.arrayOf(
-    PropTypes.shape({
-      path: PropTypes.string,
-      fileName: PropTypes.string,
-    })
-  ).isRequired,
   fileName: PropTypes.string.isRequired,
 }

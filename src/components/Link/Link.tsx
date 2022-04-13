@@ -7,5 +7,6 @@ export interface LinkProps extends HTMLAttributes<HTMLAnchorElement> {
 }
 
 export const Link = (props: LinkProps): JSX.Element => {
+  // eslint-disable-next-line react/jsx-props-no-spreading
   return <a className={elementStyles.link} {...props} />
 }

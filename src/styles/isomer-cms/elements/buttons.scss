@@ -28,6 +28,25 @@
   }
 }
 
+.logout {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 16px;
+
+  i {
+    font-size: 16px;
+  }
+
+  color: $isomer-blue;
+}
+
+.textButton {
+  font-size: 14px;
+  color: $isomer-blue;
+  font-weight: normal;
+}
+
 button {
   background: $default-background;
   text-align: center;

@@ -1,7 +1,7 @@
 import FormInput from "components/Form/FormInput"
 import ColorPickerModal from "components/settings/ColorPickerModal"
 import PropTypes from "prop-types"
-import React, { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -67,10 +67,10 @@ const FormFieldColor = ({ value, id, saveChanges }) => {
   const activateColorPicker = (event) => {
     const {
       target: {
-        previousSibling: { value },
+        previousSibling: { value: colourValue },
       },
     } = event
-    setOriginalColor(value)
+    setOriginalColor(colourValue)
     setColorPickerToggle(true)
   }
 
@@ -106,7 +106,9 @@ const FormFieldColor = ({ value, id, saveChanges }) => {
         alwaysDisabled
         className={elementStyles.formColorInput}
       />
-      <div
+      <button
+        type="button"
+        aria-label="Select colour"
         className={elementStyles.formColorBox}
         id={`${id}-box`}
         style={{ background: value }}

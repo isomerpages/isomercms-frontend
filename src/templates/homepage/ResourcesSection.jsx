@@ -1,7 +1,5 @@
 import PropTypes from "prop-types"
-import React from "react"
-
-import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
+import { forwardRef } from "react"
 
 /* eslint
   react/no-array-index-key: 0
@@ -103,4 +101,4 @@ TemplateResourceSection.defaultProps = {
   button: undefined,
 }
 
-export default React.forwardRef(TemplateResourceSection)
+export default forwardRef(TemplateResourceSection)

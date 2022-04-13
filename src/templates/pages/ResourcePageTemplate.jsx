@@ -1,5 +1,4 @@
 import PropTypes from "prop-types"
-import React from "react"
 
 import { PageHeader, PageBody } from "templates/pageComponentsV2"
 
@@ -20,9 +19,6 @@ const ResourcePageTemplate = ({ chunk, pageParams, title }) => {
 
 ResourcePageTemplate.propTypes = {
   chunk: PropTypes.string.isRequired,
-  fileName: PropTypes.string.isRequired,
-  resourceCategoryName: PropTypes.string.isRequired,
-  resourceRoomName: PropTypes.string.isRequired,
 }
 
 export default ResourcePageTemplate

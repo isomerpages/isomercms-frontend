@@ -18,12 +18,12 @@ export function useReorderDirectoryHook(params, queryParams) {
       errorToast(
         `Your directory order could not be saved. ${DEFAULT_RETRY_MSG}`
       )
-      queryParams && queryParams.onError && queryParams.onError()
+      if (queryParams && queryParams.onError) queryParams.onError()
     },
     onSuccess: () => {
       queryClient.invalidateQueries([DIR_CONTENT_KEY, { ...params }])
       successToast("Successfully updated directory order")
-      queryParams && queryParams.onSuccess && queryParams.onSuccess()
+      if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
     },
   })
 }

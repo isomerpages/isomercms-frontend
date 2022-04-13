@@ -1,5 +1,3 @@
-import React from "react"
-
 import { Button } from "./Button"
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -13,6 +11,7 @@ export default {
 }
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
+// eslint-disable-next-line react/jsx-props-no-spreading
 const Template = (args) => <Button {...args} />
 
 export const Primary = Template.bind({})

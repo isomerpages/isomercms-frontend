@@ -1,6 +1,4 @@
-import _ from "lodash"
 import PropTypes from "prop-types"
-import React from "react"
 
 import { PageHeader, PageBody, LeftNav } from "templates/pageComponentsV2"
 
