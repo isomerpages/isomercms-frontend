@@ -12,7 +12,7 @@
 }
 
 .homepageEditorMain {
-  * { 
+  * {
     font-family: "Lato";
   }
   width: calc(100vw - #{$homepage-editor-sidebar-width});
@@ -23,7 +23,7 @@
 }
 
 .contactUsEditorMain {
-  * { 
+  * {
     font-family: "Lato";
   }
   width: calc(100vw - #{$homepage-editor-sidebar-width});
@@ -73,8 +73,16 @@
 }
 
 .pageEditorMain {
-  * { 
+  * {
     font-family: "Lato";
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: revert;
   }
   transform: scale(0.95);
   transform-origin: center;
