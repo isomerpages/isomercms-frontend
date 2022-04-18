@@ -129,7 +129,7 @@ describe("Folders flow", () => {
         .blur()
       cy.contains("Next").click()
 
-      cy.get("div[id^=folderCard-small]")
+      cy.get("button[id^=folderCard-small]")
         .contains(PRETTIFIED_DEFAULT_PAGE_TITLE)
         .click()
       cy.contains("Done").click()
@@ -183,7 +183,7 @@ describe("Folders flow", () => {
       }).as("renameSubfolder")
 
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
-      cy.get("div[id^=settings-]").first().click()
+      cy.get("button[id^=settings-]").trigger("mousedown")
       cy.contains(`Subfolder settings`)
       cy.get("input#newDirectoryName")
         .clear()
@@ -206,9 +206,10 @@ describe("Folders flow", () => {
     // Delete
     it("Should be able to delete a sub-folder with a page", () => {
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
-      cy.get("div[id^=delete-]").first().click()
-      cy.contains("button", "Delete").click()
+      cy.get("button[id^=delete-]").first().trigger("mousedown")
+      cy.get("button[id=modal-delete]").click()
       cy.wait(E2E_DEFAULT_WAIT_TIME)
+
       // Assert
       cy.contains(PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE).should(
         "not.exist"
@@ -217,8 +218,8 @@ describe("Folders flow", () => {
 
     it("Should be able to delete a sub-folder without page", () => {
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
-      cy.get("div[id^=delete-]").first().click()
-      cy.contains("button", "Delete").click()
+      cy.get("button[id^=delete-]").first().trigger("mousedown")
+      cy.get("button[id=modal-delete]").click()
 
       // Assert
       cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE).should("not.exist", {
@@ -308,7 +309,7 @@ describe("Folders flow", () => {
 
       // User should be able edit page details
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
-      cy.get("div[id^=settings-]").first().click()
+      cy.get("button[id^=settings-]").trigger("mousedown")
       cy.get("#title").should("have.value", PRETTIFIED_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       })
@@ -338,7 +339,7 @@ describe("Folders flow", () => {
 
       // User should be able edit page details
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
-      cy.get("div[id^=settings-]").first().click()
+      cy.get("button[id^=settings-]").trigger("mousedown")
       cy.get("#title").should("have.value", PRETTIFIED_EDITED_TEST_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       })
@@ -364,7 +365,7 @@ describe("Folders flow", () => {
     it("Should be able to delete existing page in folder", () => {
       // User should be able to remove the created test page card
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
-      cy.get("div[id^=delete-]").first().click()
+      cy.get("button[id^=delete-]").first().click()
       cy.contains("button", "Delete").click()
       cy.contains("Successfully deleted page", {
         timeout: E2E_EXTENDED_TIMEOUT,
@@ -536,7 +537,7 @@ describe("Folders flow", () => {
     it("Should be able to delete existing page in folder", () => {
       // User should be able to remove the created test page card
       cy.get(".bx-dots-vertical-rounded").parent().first().click()
-      cy.get("div[id^=delete-]").first().click()
+      cy.get("button[id^=delete-]").first().click()
       cy.contains("button", "Delete").click()
       cy.contains("Successfully deleted page", {
         timeout: E2E_EXTENDED_TIMEOUT,
