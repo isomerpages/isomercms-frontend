@@ -280,7 +280,7 @@ describe("Workspace Pages flow", () => {
         .clear()
         .type(TEST_FOLDER_WITH_PAGES_TITLE)
       cy.contains("Next").click()
-      cy.get("div[id^=folderCard-small]").contains(TEST_PAGE_TITLE).click()
+      cy.get("button[id^=folderCard-small]").contains(TEST_PAGE_TITLE).click()
       cy.contains("Done").click()
 
       // Assert
@@ -325,7 +325,7 @@ describe("Workspace Pages flow", () => {
       })
         .should("exist")
         .within(() => cy.get("[id^=settingsIcon]").click())
-      cy.get("div[id^=settings-]").first().click()
+      cy.contains("Edit details").click()
       cy.contains("Folder settings")
       cy.get("input#newDirectoryName")
         .clear()
@@ -356,7 +356,7 @@ describe("Workspace Pages flow", () => {
       })
         .should("exist")
         .within(() => cy.get("[id^=settingsIcon]").click())
-      cy.get("div[id^=delete-]").first().click()
+      cy.get("button[id^=delete-]").first().click()
       cy.contains("button", "Delete").click()
 
       cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, {
@@ -366,7 +366,7 @@ describe("Workspace Pages flow", () => {
       cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE).within(() =>
         cy.get("[id^=settingsIcon]").click()
       )
-      cy.get("div[id^=delete-]").first().click()
+      cy.get("button[id^=delete-]").first().click()
       cy.contains("button", "Delete").click()
 
       cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE, {
