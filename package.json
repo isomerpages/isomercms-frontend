@@ -64,6 +64,7 @@
     "test": "craco test",
     "test:ci": "node scripts/run-e2e.js run",
     "test-e2e": "source .env && node scripts/run-e2e.js run",
+    "reset-e2e": "source .env && node scripts/reset-e2e.js",
     "lint": "eslint --ext .js --ext .jsx --ignore-path .gitignore .",
     "lint-fix": "eslint --ext .js --ext .jsx --ignore-path .gitignore . --fix",
     "format": "npx prettier --check .",
