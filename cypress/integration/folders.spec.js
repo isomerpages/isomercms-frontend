@@ -11,9 +11,14 @@ import {
 } from "../fixtures/constants"
 
 describe("Folders flow", () => {
-  const CMS_BASEURL = Cypress.env("BASEURL")
   const COOKIE_NAME = Cypress.env("COOKIE_NAME")
   const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
+
+  before(() => {
+    cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
+  })
+
+  const CMS_BASEURL = Cypress.env("BASEURL")
   const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
   const DEFAULT_REPO_FOLDER_NAME = "default"
   const PRETTIFIED_DEFAULT_REPO_FOLDER_NAME = deslugifyDirectory(
@@ -95,11 +100,14 @@ describe("Folders flow", () => {
 
   describe("Create subfolder, rename subfolder, delete subfolder from Folders", () => {
     beforeEach(() => {
-      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
+      Cypress.Cookies.preserveOnce(COOKIE_NAME)
       window.localStorage.setItem("userId", "test")
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}`
       )
+      // Wait for 1s for page to become stable.
+      // This is because there's a modal on first paint that gets removed on second paint
+      cy.wait(1 * 1000)
     })
 
     it("Should be able to create a new sub-folder within a valid folder name with no pages", () => {
@@ -182,7 +190,7 @@ describe("Folders flow", () => {
         url: `/v2/sites/e2e-test-repo/collections/${DEFAULT_REPO_FOLDER_NAME}/subcollections/${PARSED_TEST_SUBFOLDER_WITH_PAGES_TITLE}`,
       }).as("renameSubfolder")
 
-      cy.get(".bx-dots-vertical-rounded").parent().first().click()
+      cy.get("button[id^=folderItem-dropdown-]").first().click().should("exist")
       cy.get("button[id^=settings-]").trigger("mousedown")
       cy.contains(`Subfolder settings`)
       cy.get("input#newDirectoryName")
@@ -205,7 +213,7 @@ describe("Folders flow", () => {
 
     // Delete
     it("Should be able to delete a sub-folder with a page", () => {
-      cy.get(".bx-dots-vertical-rounded").parent().first().click()
+      cy.get("button[id^=folderItem-dropdown-]").first().click().should("exist")
       cy.get("button[id^=delete-]").first().trigger("mousedown")
       cy.get("button[id=modal-delete]").click()
       cy.wait(E2E_DEFAULT_WAIT_TIME)
@@ -217,7 +225,7 @@ describe("Folders flow", () => {
     })
 
     it("Should be able to delete a sub-folder without page", () => {
-      cy.get(".bx-dots-vertical-rounded").parent().first().click()
+      cy.get("button[id^=folderItem-dropdown-]").first().click().should("exist")
       cy.get("button[id^=delete-]").first().trigger("mousedown")
       cy.get("button[id=modal-delete]").click()
 
@@ -233,11 +241,14 @@ describe("Folders flow", () => {
 
   describe("Create page, delete page, edit page settings in folder", () => {
     beforeEach(() => {
-      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
+      Cypress.Cookies.preserveOnce(COOKIE_NAME)
       window.localStorage.setItem("userId", "test")
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}`
       )
+      // Wait for 1s for page to become stable.
+      // This is because there's a modal on first paint that gets removed on second paint
+      cy.wait(1 * 1000)
     })
 
     it("Should be able to create a new page with valid title and permalink", () => {
@@ -308,8 +319,12 @@ describe("Folders flow", () => {
       )
 
       // User should be able edit page details
-      cy.get(".bx-dots-vertical-rounded").parent().first().click()
-      cy.get("button[id^=settings-]").trigger("mousedown")
+      cy.get("button[id^=folderItem-dropdown-]")
+        .first()
+        .should("exist")
+        .click()
+        .should("exist")
+      cy.get("button[id^=settings-]").first().trigger("mousedown")
       cy.get("#title").should("have.value", PRETTIFIED_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       })
@@ -338,8 +353,12 @@ describe("Folders flow", () => {
       }).should("exist")
 
       // User should be able edit page details
-      cy.get(".bx-dots-vertical-rounded").parent().first().click()
-      cy.get("button[id^=settings-]").trigger("mousedown")
+      cy.get("button[id^=folderItem-dropdown-]")
+        .first()
+        .should("exist")
+        .click()
+        .should("exist")
+      cy.get("button[id^=settings-]").first().trigger("mousedown")
       cy.get("#title").should("have.value", PRETTIFIED_EDITED_TEST_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       })
@@ -364,9 +383,13 @@ describe("Folders flow", () => {
 
     it("Should be able to delete existing page in folder", () => {
       // User should be able to remove the created test page card
-      cy.get(".bx-dots-vertical-rounded").parent().first().click()
-      cy.get("button[id^=delete-]").first().click()
-      cy.contains("button", "Delete").click()
+      cy.get("button[id^=folderItem-dropdown-]")
+        .first()
+        .should("exist")
+        .click()
+        .should("exist")
+      cy.get("button[data-cy^=delete]").trigger("mousedown")
+      cy.get("button[id^=modal-delete]").click()
       cy.contains("Successfully deleted page", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
@@ -380,7 +403,7 @@ describe("Folders flow", () => {
 
   describe("Create page, delete page, edit page settings in subfolder", () => {
     before(() => {
-      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
+      Cypress.Cookies.preserveOnce(COOKIE_NAME)
       window.localStorage.setItem("userId", "test")
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}`
@@ -404,11 +427,14 @@ describe("Folders flow", () => {
     })
 
     beforeEach(() => {
-      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
+      Cypress.Cookies.preserveOnce(COOKIE_NAME)
       window.localStorage.setItem("userId", "test")
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}/subfolders/${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}`
       )
+      // Wait for 1s for page to become stable.
+      // This is because there's a modal on first paint that gets removed on second paint
+      cy.wait(1 * 1000)
     })
 
     it("Should be able to create a new page with valid title and permalink", () => {
@@ -480,8 +506,8 @@ describe("Folders flow", () => {
       )
 
       // User should be able edit page details
-      cy.get(".bx-dots-vertical-rounded").parent().first().click()
-      cy.get("div[id^=settings-]").first().click()
+      cy.get("button[id^=folderItem-dropdown-]").first().click().should("exist")
+      cy.get("button[id^=settings-]").first().trigger("mousedown")
       cy.get("#title").should("have.value", PRETTIFIED_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       })
@@ -510,8 +536,12 @@ describe("Folders flow", () => {
       }).should("exist")
 
       // User should be able edit page details
-      cy.get(".bx-dots-vertical-rounded").parent().first().click()
-      cy.get("div[id^=settings-]").first().click()
+      cy.get("button[id^=folderItem-dropdown-]")
+        .first()
+        .should("exist")
+        .click()
+        .should("exist")
+      cy.get("button[id^=settings-]").first().trigger("mousedown")
       cy.get("#title").should("have.value", PRETTIFIED_EDITED_TEST_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       })
@@ -536,9 +566,13 @@ describe("Folders flow", () => {
 
     it("Should be able to delete existing page in folder", () => {
       // User should be able to remove the created test page card
-      cy.get(".bx-dots-vertical-rounded").parent().first().click()
-      cy.get("button[id^=delete-]").first().click()
-      cy.contains("button", "Delete").click()
+      cy.get("button[id^=folderItem-dropdown-]")
+        .first()
+        .should("exist")
+        .click()
+        .should("exist")
+      cy.get("button[id^=delete-]").first().trigger("mousedown")
+      cy.get("button[id=modal-delete]").click()
       cy.contains("Successfully deleted page", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
