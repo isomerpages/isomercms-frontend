@@ -1,6 +1,8 @@
 // NOTE: jsx-ally is disabled for this file as the output of this
 // should match jekyll output as closely as possible.
 // As jekyll outputs an <a /> tag like so, this behaviour is preserved here.
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 
 import _ from "lodash"
@@ -152,34 +154,33 @@ const generateThirdNavHeader = (
   fileName,
   elementFileName
 ) => (
-  <button type="button" onClick={accordionHandler}>
-    <li
-      className="third-level-nav-header"
-      key={`${currentThirdNavTitle}-header`}
+  <li
+    className="third-level-nav-header"
+    key={`${currentThirdNavTitle}-header`}
+    onClick={accordionHandler}
+  >
+    <a
+      className={`third-level-nav-header ${calculateThirdNavHeaderState(
+        currentFileThirdNavTitle,
+        currentThirdNavTitle,
+        elementThirdNavTitle,
+        fileName,
+        elementFileName
+      )}`}
     >
-      <span
-        className={`third-level-nav-header ${calculateThirdNavHeaderState(
+      {deslugify(currentThirdNavTitle)}
+      <i
+        className={`sgds-icon is-pulled-right is-size-4 ${calculateThirdNavHeaderChevronState(
           currentFileThirdNavTitle,
           currentThirdNavTitle,
           elementThirdNavTitle,
           fileName,
           elementFileName
         )}`}
-      >
-        {deslugify(currentThirdNavTitle)}
-        <i
-          className={`sgds-icon is-pulled-right is-size-4 ${calculateThirdNavHeaderChevronState(
-            currentFileThirdNavTitle,
-            currentThirdNavTitle,
-            elementThirdNavTitle,
-            fileName,
-            elementFileName
-          )}`}
-          aria-hidden="true"
-        />
-      </span>
-    </li>
-  </button>
+        aria-hidden="true"
+      />
+    </a>
+  </li>
 )
 
 export const generateLeftNav = (dirData, fileName) => {
