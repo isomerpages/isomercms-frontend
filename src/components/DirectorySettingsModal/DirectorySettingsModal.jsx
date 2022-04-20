@@ -88,8 +88,8 @@ export const DirectorySettingsModal = ({
             end: -1,
             splitOn: "/",
             joinOn: "/",
-          })}/${data.newDirectoryName}`
-        : data.newDirectoryName,
+          })}/${data.newDirectoryName.trim()}`
+        : data.newDirectoryName.trim(),
     })
 
   return (

@@ -84,19 +84,23 @@ export const PageSettingsModal = ({
   /** ******************************** */
 
   const onSubmit = (data) => {
+    const trimmedNameData = {
+      ...data,
+      title: data.title.trim(),
+    }
     return onProceed({
       frontMatter:
         pageData && pageData.content
           ? {
               ...pageData.content.frontMatter,
-              ...data,
+              ...trimmedNameData,
             }
-          : data,
+          : trimmedNameData,
       sha: pageData?.sha || "",
       pageBody: pageData?.content?.pageBody || "",
       newFileName: resourceRoomName
-        ? `${data.date}-${data.layout}-${data.title}.md`
-        : `${data.title}.md`,
+        ? `${trimmedNameData.date}-${trimmedNameData.layout}-${trimmedNameData.title}.md`
+        : `${trimmedNameData.title}.md`,
     })
   }
 

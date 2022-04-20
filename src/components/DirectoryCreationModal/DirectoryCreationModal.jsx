@@ -57,8 +57,8 @@ export const DirectoryCreationModal = ({
     return onProceed({
       items: data.items,
       newDirectoryName: mediaDirectoryName
-        ? `${mediaDirectoryName}/${data.newDirectoryName}`
-        : data.newDirectoryName,
+        ? `${mediaDirectoryName}/${data.newDirectoryName.trim()}`
+        : data.newDirectoryName.trim(),
     })
   }
 
