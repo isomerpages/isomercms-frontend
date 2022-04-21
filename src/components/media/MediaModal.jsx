@@ -64,7 +64,7 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
           mediasData={mediasData}
           onProceed={async ({ data }) => {
             await createHandler({ data })
-            onMediaSelect(data)
+            onMediaSelect({ ...data, mediaUrl: data.content })
             setMediaMode("select")
           }}
           onClose={onClose}
