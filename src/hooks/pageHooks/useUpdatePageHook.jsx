@@ -10,14 +10,14 @@ import { errorToast, successToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
-import { retrievePageInfo } from "./utils"
+import { extractPageInfo } from "./utils"
 
 export function useUpdatePageHook(params, queryParams) {
   const queryClient = useQueryClient()
   const { pageService } = useContext(ServicesContext)
   return useMutation(
     (body) => {
-      const { newFileName, sha, frontMatter, pageBody } = retrievePageInfo(body)
+      const { newFileName, sha, frontMatter, pageBody } = extractPageInfo(body)
       return pageService.update(params, {
         newFileName,
         sha,

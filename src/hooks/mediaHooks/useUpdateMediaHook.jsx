@@ -10,7 +10,7 @@ import { errorToast, successToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
-import { retrieveMediaInfo } from "./utils"
+import { extractMediaInfo } from "./utils"
 
 // eslint-disable-next-line import/prefer-default-export
 export function useUpdateMediaHook(params, queryParams) {
@@ -18,7 +18,7 @@ export function useUpdateMediaHook(params, queryParams) {
   const { mediaService } = useContext(ServicesContext)
   return useMutation(
     (body) => {
-      const { newFileName, sha } = retrieveMediaInfo(body)
+      const { newFileName, sha } = extractMediaInfo(body)
       return mediaService.update(params, { newFileName, sha })
     },
     {

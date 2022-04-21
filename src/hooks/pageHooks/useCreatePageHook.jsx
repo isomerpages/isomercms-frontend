@@ -11,7 +11,7 @@ import { errorToast } from "utils/toasts"
 
 import { getRedirectUrl, DEFAULT_RETRY_MSG } from "utils"
 
-import { retrievePageInfo } from "./utils"
+import { extractPageInfo } from "./utils"
 
 // eslint-disable-next-line import/prefer-default-export
 export function useCreatePageHook(params, queryParams) {
@@ -20,7 +20,7 @@ export function useCreatePageHook(params, queryParams) {
   const { setRedirectToPage } = useRedirectHook()
   return useMutation(
     (body) => {
-      const { newFileName, frontMatter } = retrievePageInfo(body)
+      const { newFileName, frontMatter } = extractPageInfo(body)
       return pageService.create(params, { newFileName, frontMatter })
     },
     {

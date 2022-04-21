@@ -10,14 +10,14 @@ import { successToast, errorToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
-import { retrieveMediaInfo } from "./utils"
+import { extractMediaInfo } from "./utils"
 
 export function useCreateMediaHook(params, queryParams) {
   const queryClient = useQueryClient()
   const { mediaService } = useContext(ServicesContext)
   return useMutation(
     (body) => {
-      const { newFileName, content } = retrieveMediaInfo(body)
+      const { newFileName, content } = extractMediaInfo(body)
       return mediaService.create(params, { newFileName, content })
     },
     {

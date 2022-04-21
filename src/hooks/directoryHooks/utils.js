@@ -1,6 +1,6 @@
 import { getMediaDirectoryName } from "utils"
 
-export function retrieveCreateDirectoryInfo({ data, mediaDirectoryName }) {
+export function extractCreateDirectoryInfo({ data, mediaDirectoryName }) {
   return {
     items: data.items,
     newDirectoryName: mediaDirectoryName
@@ -9,7 +9,7 @@ export function retrieveCreateDirectoryInfo({ data, mediaDirectoryName }) {
   }
 }
 
-export function retrieveUpdateDirectoryInfo({ data, mediaDirectoryName }) {
+export function extractUpdateDirectoryInfo({ data, mediaDirectoryName }) {
   return {
     newDirectoryName: mediaDirectoryName
       ? `${getMediaDirectoryName(mediaDirectoryName, {

@@ -1,4 +1,4 @@
-export function retrieveMediaInfo({ data }) {
+export function extractMediaInfo({ data }) {
   return {
     sha: data.sha,
     newFileName: data.name.trim(),

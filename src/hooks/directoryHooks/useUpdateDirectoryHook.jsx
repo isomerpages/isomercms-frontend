@@ -10,14 +10,14 @@ import { successToast, errorToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG, getMediaDirectoryName } from "utils"
 
-import { retrieveUpdateDirectoryInfo } from "./utils"
+import { extractUpdateDirectoryInfo } from "./utils"
 
 export function useUpdateDirectoryHook(params, queryParams) {
   const queryClient = useQueryClient()
   const { directoryService } = useContext(ServicesContext)
   return useMutation(
     (body) => {
-      const { newDirectoryName } = retrieveUpdateDirectoryInfo(body)
+      const { newDirectoryName } = extractUpdateDirectoryInfo(body)
       return directoryService.update(params, { newDirectoryName })
     },
     {

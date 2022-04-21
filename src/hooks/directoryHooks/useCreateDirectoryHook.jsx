@@ -10,7 +10,7 @@ import { errorToast } from "utils/toasts"
 
 import { getRedirectUrl, DEFAULT_RETRY_MSG } from "utils"
 
-import { retrieveCreateDirectoryInfo } from "./utils"
+import { extractCreateDirectoryInfo } from "./utils"
 
 // eslint-disable-next-line import/prefer-default-export
 export function useCreateDirectoryHook(params, queryParams) {
@@ -19,7 +19,7 @@ export function useCreateDirectoryHook(params, queryParams) {
   const { setRedirectToPage } = useRedirectHook()
   return useMutation(
     (body) => {
-      const { newDirectoryName, items } = retrieveCreateDirectoryInfo(body)
+      const { newDirectoryName, items } = extractCreateDirectoryInfo(body)
       return directoryService.create(
         { ...params, isCreate: true },
         { newDirectoryName, items }
