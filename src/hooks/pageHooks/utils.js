@@ -1,4 +1,5 @@
 export function retrievePageInfo({ data, pageData, resourceRoomName }) {
+  if (!data) return pageData
   const trimmedNameData = {
     ...data,
     title: data.title.trim(),
