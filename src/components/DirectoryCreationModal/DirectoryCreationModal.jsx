@@ -55,10 +55,8 @@ export const DirectoryCreationModal = ({
 
   const onSubmit = (data) => {
     return onProceed({
-      items: data.items,
-      newDirectoryName: mediaDirectoryName
-        ? `${mediaDirectoryName}/${data.newDirectoryName}`
-        : data.newDirectoryName,
+      data,
+      mediaDirectoryName,
     })
   }
 

@@ -80,7 +80,7 @@ const EmptyResourceRoom = ({ params }) => {
         saveLabel="Create Resource Room"
         isDisabled={!_.isEmpty(errors)}
         hasDeleteButton={false}
-        saveCallback={handleSubmit((data) => saveHandler(data))}
+        saveCallback={handleSubmit((data) => saveHandler({ data }))}
       />
     </>
   )

@@ -85,18 +85,9 @@ export const PageSettingsModal = ({
 
   const onSubmit = (data) => {
     return onProceed({
-      frontMatter:
-        pageData && pageData.content
-          ? {
-              ...pageData.content.frontMatter,
-              ...data,
-            }
-          : data,
-      sha: pageData?.sha || "",
-      pageBody: pageData?.content?.pageBody || "",
-      newFileName: resourceRoomName
-        ? `${data.date}-${data.layout}-${data.title}.md`
-        : `${data.title}.md`,
+      pageData,
+      data,
+      resourceRoomName,
     })
   }
 

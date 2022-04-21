@@ -219,9 +219,11 @@ const EditPage = ({ match, history }) => {
           if (isXSSViolation) setShowXSSWarning(true)
           else {
             updatePageHandler({
-              frontMatter: pageData.content.frontMatter,
-              sha: currSha,
-              pageBody: editorValue,
+              pageData: {
+                frontMatter: pageData.content.frontMatter,
+                sha: currSha,
+                pageBody: editorValue,
+              },
             })
           }
         }}

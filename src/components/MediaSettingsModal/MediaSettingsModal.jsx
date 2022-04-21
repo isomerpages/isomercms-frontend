@@ -81,9 +81,7 @@ export const MediaSettingsModal = ({
 
   const onSubmit = (data) => {
     return onProceed({
-      ...data,
-      newFileName: data.name,
-      mediaUrl: data.content,
+      data,
     })
   }
 

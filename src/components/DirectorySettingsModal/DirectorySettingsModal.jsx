@@ -83,13 +83,8 @@ export const DirectorySettingsModal = ({
 
   const onSubmit = (data) =>
     onProceed({
-      newDirectoryName: mediaDirectoryName
-        ? `${getMediaDirectoryName(mediaDirectoryName, {
-            end: -1,
-            splitOn: "/",
-            joinOn: "/",
-          })}/${data.newDirectoryName}`
-        : data.newDirectoryName,
+      data,
+      mediaDirectoryName,
     })
 
   return (
