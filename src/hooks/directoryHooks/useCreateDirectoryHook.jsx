@@ -10,13 +10,21 @@ import { errorToast } from "utils/toasts"
 
 import { getRedirectUrl, DEFAULT_RETRY_MSG } from "utils"
 
+import { retrieveCreateDirectoryInfo } from "./utils"
+
 // eslint-disable-next-line import/prefer-default-export
 export function useCreateDirectoryHook(params, queryParams) {
   const queryClient = useQueryClient()
   const { directoryService } = useContext(ServicesContext)
   const { setRedirectToPage } = useRedirectHook()
   return useMutation(
-    (body) => directoryService.create({ ...params, isCreate: true }, body),
+    (body) => {
+      const { newDirectoryName, items } = retrieveCreateDirectoryInfo(body)
+      return directoryService.create(
+        { ...params, isCreate: true },
+        { newDirectoryName, items }
+      )
+    },
     {
       ...queryParams,
       retry: false,
