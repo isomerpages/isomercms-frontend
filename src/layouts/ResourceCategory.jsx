@@ -3,7 +3,6 @@ import Header from "components/Header"
 import PageCard from "components/PageCard"
 import Sidebar from "components/Sidebar"
 import PropTypes from "prop-types"
-import React from "react"
 import { Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 import { useGetDirectoryHook } from "hooks/directoryHooks"
@@ -77,7 +76,7 @@ const ResourceCategory = ({ match, location }) => {
               </button>
               {pagesData
                 ? pagesData
-                    .filter((page) => page.name != "contact-us.md")
+                    .filter((page) => page.name !== "contact-us.md")
                     .map((page, pageIdx) => (
                       <PageCard itemIndex={pageIdx} item={page} />
                     ))

@@ -14,7 +14,7 @@ import ResourceFormFields from "components/ResourceFormFields"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
 import _ from "lodash"
 import PropTypes from "prop-types"
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -85,18 +85,9 @@ export const PageSettingsModal = ({
 
   const onSubmit = (data) => {
     return onProceed({
-      frontMatter:
-        pageData && pageData.content
-          ? {
-              ...pageData.content.frontMatter,
-              ...data,
-            }
-          : data,
-      sha: pageData?.sha || "",
-      pageBody: pageData?.content?.pageBody || "",
-      newFileName: resourceRoomName
-        ? `${data.date}-${data.layout}-${data.title}.md`
-        : `${data.title}.md`,
+      pageData,
+      data,
+      resourceRoomName,
     })
   }
 
@@ -127,6 +118,7 @@ export const PageSettingsModal = ({
                     <FormField
                       placeholder="Page title"
                       id="title"
+                      // eslint-disable-next-line react/jsx-props-no-spreading
                       {...register("title", { required: true })}
                     />
                     <FormError>{errors.title?.message}</FormError>
@@ -143,6 +135,7 @@ export const PageSettingsModal = ({
                         <FormTitle>Page URL</FormTitle>
                         <FormDescription>{siteUrl}</FormDescription>
                         <FormFieldHorizontal
+                          // eslint-disable-next-line react/jsx-props-no-spreading
                           {...register("permalink", { required: true })}
                           id="permalink"
                           placeholder="Page URL"
@@ -183,6 +176,7 @@ export const PageSettingsModal = ({
                     <FormField
                       placeholder="Meta Description (Optional)"
                       id="description"
+                      // eslint-disable-next-line react/jsx-props-no-spreading
                       {...register("description")}
                     />
                     <FormError>{errors.description?.message}</FormError>

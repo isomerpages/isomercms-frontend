@@ -1,5 +1,10 @@
+// NOTE: jsx-ally is disabled for this file as the output of this
+// should match jekyll output as closely as possible.
+// As jekyll outputs an <a /> tag like so, this behaviour is preserved here.
+/* eslint-disable jsx-a11y/anchor-is-valid */
+
 import PropTypes from "prop-types"
-import React from "react"
+import { forwardRef } from "react"
 import { useQuery } from "react-query"
 
 import { fetchImageURL } from "utils"
@@ -115,7 +120,7 @@ const TemplateHeroSection = (
   { hero, siteName, dropdownIsActive, toggleDropdown },
   ref
 ) => {
-  const { data: loadedImageURL, status } = useQuery(
+  const { data: loadedImageURL } = useQuery(
     `${siteName}/${hero.background}`,
     () => fetchImageURL(siteName, decodeURI(hero.background)),
     {
@@ -170,7 +175,7 @@ const TemplateHeroSection = (
   )
 }
 
-export default React.forwardRef(TemplateHeroSection)
+export default forwardRef(TemplateHeroSection)
 
 HeroButton.propTypes = {
   button: PropTypes.string,

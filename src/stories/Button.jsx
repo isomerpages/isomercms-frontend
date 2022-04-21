@@ -1,5 +1,4 @@
 import PropTypes from "prop-types"
-import React from "react"
 import "./button.css"
 
 /**
@@ -16,6 +15,7 @@ export const Button = ({ primary, backgroundColor, size, label, ...props }) => {
         " "
       )}
       style={backgroundColor && { backgroundColor }}
+      // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
     >
       {label}

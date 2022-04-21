@@ -5,11 +5,13 @@ import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
+import _ from "lodash"
 import PropTypes from "prop-types"
-import React from "react"
 import { useForm, useFormContext } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import { getDirectorySettingsType } from "utils/directoryUtils"
 
 import {
   deslugifyDirectory,
@@ -17,7 +19,7 @@ import {
   getMediaDirectoryName,
 } from "utils"
 
-import { DirectorySettingsSchema } from "."
+import { DirectorySettingsSchema } from "./DirectorySettingsSchema"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -71,11 +73,7 @@ export const DirectorySettingsModal = ({
         newDirectoryName: deslugifyDirectory(existingDirectoryName),
       },
       context: {
-        type: mediaDirectoryName
-          ? "mediaDirectoryName"
-          : subCollectionName
-          ? "subCollectionName"
-          : "collectionName",
+        type: getDirectorySettingsType(mediaDirectoryName, subCollectionName),
       },
     })
 
@@ -85,13 +83,8 @@ export const DirectorySettingsModal = ({
 
   const onSubmit = (data) =>
     onProceed({
-      newDirectoryName: mediaDirectoryName
-        ? `${getMediaDirectoryName(mediaDirectoryName, {
-            end: -1,
-            splitOn: "/",
-            joinOn: "/",
-          })}/${data.newDirectoryName}`
-        : data.newDirectoryName,
+      data,
+      mediaDirectoryName,
     })
 
   return (
@@ -109,6 +102,7 @@ export const DirectorySettingsModal = ({
             <FormField
               placeholder="Title"
               id="newDirectoryName"
+              // eslint-disable-next-line react/jsx-props-no-spreading
               {...register("newDirectoryName")}
             />
             <FormError>{errors.newDirectoryName?.message}</FormError>

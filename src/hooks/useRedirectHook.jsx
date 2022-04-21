@@ -1,13 +1,8 @@
-import axios from "axios"
 import { useContext, useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
 
 // Import contexts
 const { LoginContext } = require("contexts/LoginContext")
-
-// constants
-const userIdKey = "userId"
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
 const useRedirectHook = () => {
   const [shouldRedirect, setShouldRedirect] = useState(false)

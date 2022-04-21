@@ -1,5 +1,4 @@
 import PropTypes from "prop-types"
-import React from "react"
 import ToggleButton from "react-toggle-button"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -38,8 +37,8 @@ const FormFieldToggle = ({ title, value, id, onFieldChange }) => (
             />
           }
           value={value}
-          onToggle={(value) =>
-            creatableSelectHandler(onFieldChange, !value, id)
+          onToggle={(previousValue) =>
+            creatableSelectHandler(onFieldChange, !previousValue, id)
           }
         />
       </div>

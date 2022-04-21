@@ -1,8 +1,11 @@
+import _ from "lodash"
+
 export class MoverService {
   constructor({ apiClient }) {
     this.apiClient = apiClient
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getDirectoryEndpoint({
     siteName,
     resourceRoomName,
@@ -43,15 +46,16 @@ export class MoverService {
   }
 
   async move(apiParams, { target, items }) {
-    if (
-      JSON.stringify(target) ===
-      JSON.stringify((({ siteName, ...p }) => p)(apiParams))
-    )
-      return
+    const omittedParams = _.omit(apiParams, "siteName")
+
+    if (JSON.stringify(target) === JSON.stringify(omittedParams)) return
+
     const body = {
       target,
       items,
     }
-    return await this.apiClient.post(this.getDirectoryEndpoint(apiParams), body)
+
+    // eslint-disable-next-line consistent-return
+    return this.apiClient.post(this.getDirectoryEndpoint(apiParams), body)
   }
 }

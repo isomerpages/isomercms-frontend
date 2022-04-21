@@ -1,5 +1,3 @@
-import React from "react"
-
 import { Header } from "./Header"
 
 export default {
@@ -7,6 +5,7 @@ export default {
   component: Header,
 }
 
+// eslint-disable-next-line react/jsx-props-no-spreading
 const Template = (args) => <Header {...args} />
 
 export const LoggedIn = Template.bind({})

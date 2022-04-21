@@ -1,9 +1,9 @@
 import PropTypes from "prop-types"
-import React from "react"
+import { forwardRef } from "react"
 
 import Breadcrumb from "templates/pageComponents/Breadcrumb"
 
-const TemplateContactUsHeader = React.forwardRef(({ agencyName }, ref) => (
+const TemplateContactUsHeader = forwardRef(({ agencyName }, ref) => (
   <section className="bp-section" ref={ref}>
     <div className="bp-container">
       <div className="row is-inverted">

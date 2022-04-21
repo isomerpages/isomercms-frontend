@@ -1,7 +1,6 @@
 import HyperlinkModal from "components/HyperlinkModal"
 import MediaModal from "components/media/MediaModal"
 import PropTypes from "prop-types"
-import React from "react"
 
 const EditorModals = ({ mdeRef, onSave, modalType, onClose, mediaType }) => {
   const onHyperlinkSave = (text, link) => {
@@ -30,7 +29,7 @@ const EditorModals = ({ mdeRef, onSave, modalType, onClose, mediaType }) => {
 
   return (
     <>
-      {modalType == "media" && mediaType && (
+      {modalType === "media" && mediaType && (
         <MediaModal
           onClose={onClose}
           type={mediaType}
@@ -38,7 +37,7 @@ const EditorModals = ({ mdeRef, onSave, modalType, onClose, mediaType }) => {
           showAltTextModal
         />
       )}
-      {modalType == "hyperlink" && (
+      {modalType === "hyperlink" && (
         <HyperlinkModal
           text={mdeRef.current.simpleMde.codemirror.getSelection()}
           onSave={onHyperlinkSave}
@@ -50,7 +49,6 @@ const EditorModals = ({ mdeRef, onSave, modalType, onClose, mediaType }) => {
 }
 
 EditorModals.propTypes = {
-  siteName: PropTypes.string,
   mdeRef: PropTypes.oneOfType([
     // https://stackoverflow.com/questions/48007326/what-is-the-correct-proptype-for-a-ref-in-react
     PropTypes.func,
@@ -59,7 +57,6 @@ EditorModals.propTypes = {
   onSave: PropTypes.func.isRequired,
   modalType: PropTypes.oneOf(["hyperlink", "media"]).isRequired,
   onClose: PropTypes.func.isRequired,
-  insertingMediaType: PropTypes.oneOf(["files", "images"]),
 }
 
 export default EditorModals

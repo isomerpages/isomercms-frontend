@@ -1,9 +1,8 @@
 import { MediaCreationModal } from "components/MediaCreationModal"
-import { useCreateMediaHook } from "hooks/mediaHooks"
 import PropTypes from "prop-types"
-import React from "react"
 
 import { useGetDirectoryHook } from "hooks/directoryHooks"
+import { useCreateMediaHook } from "hooks/mediaHooks"
 
 export const MediaCreationScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match

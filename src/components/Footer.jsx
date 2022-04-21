@@ -1,6 +1,3 @@
-import PropTypes from "prop-types"
-import React from "react"
-
 import Button from "components/Button"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -45,12 +42,5 @@ const Footer = ({
     ) : null}
   </div>
 )
-
-Footer.propTypes = {
-  isDeleteDisabled: PropTypes.bool,
-  isSaveDisabled: PropTypes.bool,
-  deleteCallback: PropTypes.func,
-  saveCallback: PropTypes.func,
-}
 
 export default Footer

@@ -18,9 +18,9 @@ export interface FormMediaInputProps {
 export const FormMediaInput = ({
   placeholder = "",
   value,
-  register = () => {},
+  register = () => ({}),
   id,
-  onClick = () => {},
+  onClick = () => ({}),
   inlineButtonText = "Choose Item",
 }: FormMediaInputProps): JSX.Element => {
   const { isRequired, isDisabled } = useFormControlContext()
@@ -35,6 +35,7 @@ export const FormMediaInput = ({
         value={value}
         id={id}
         autoComplete="off"
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...register(id, { required: isRequired })}
       />
       {inlineButtonText && (

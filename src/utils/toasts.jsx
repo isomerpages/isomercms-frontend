@@ -1,7 +1,5 @@
-import React from "react"
-import { toast } from "react-toastify"
-
 import Toast from "components/Toast"
+import { toast } from "react-toastify"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 

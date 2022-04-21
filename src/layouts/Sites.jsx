@@ -1,9 +1,7 @@
-import { Link as ChakraLink } from "@chakra-ui/react"
-import { ThemeProvider } from "@opengovsg/design-system-react"
 import axios from "axios"
-import Banner from "components/Banner"
 import Header from "components/Header"
-import React, { Component } from "react"
+import _ from "lodash"
+import { Component } from "react"
 import { Link } from "react-router-dom"
 
 import { SITES_IS_PRIVATE_KEY } from "constants/constants"
@@ -11,7 +9,34 @@ import { SITES_IS_PRIVATE_KEY } from "constants/constants"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import siteStyles from "styles/isomer-cms/pages/Sites.module.scss"
 
-export default class Sites extends Component {
+const Sites = ({ siteNames }) => {
+  if (siteNames && siteNames.length > 0)
+    return siteNames.map((siteName) => (
+      <div className={siteStyles.siteContainer} key={siteName.repoName}>
+        <div className={siteStyles.site}>
+          <Link to={`/sites/${siteName.repoName}/workspace`}>
+            <div className={siteStyles.siteImage} />
+            <div className={siteStyles.siteDescription}>
+              <div className={siteStyles.siteName}>{siteName.repoName}</div>
+              <div className={siteStyles.siteInfo}>{siteName.lastUpdated}</div>
+            </div>
+          </Link>
+        </div>
+      </div>
+    ))
+
+  if (siteNames && siteNames.length === 0)
+    return (
+      <div className={siteStyles.infoText}>
+        You do not have access to any sites at the moment. Please contact your
+        system administrator.
+      </div>
+    )
+
+  return <div className={siteStyles.infoText}>Loading sites...</div>
+}
+
+export default class SitesWrapper extends Component {
   _isMounted = false
 
   constructor(props) {
@@ -35,10 +60,11 @@ export default class Sites extends Component {
       window.localStorage.setItem(
         SITES_IS_PRIVATE_KEY,
         JSON.stringify(
-          siteNames.reduce((map, siteName) => {
-            map[siteName.repoName] = siteName.isPrivate
-            return map
-          }, {})
+          siteNames.reduce(
+            (map, siteName) =>
+              _.set(map, siteName.repoName, siteName.isPrivate),
+            {}
+          )
         )
       )
 
@@ -56,21 +82,6 @@ export default class Sites extends Component {
     const { siteNames } = this.state
     return (
       <>
-        {/* TODO: Move ThemeProvider to root of app during design system refactor. 
-        Refer to issue: https://github.com/isomerpages/isomercms-frontend/issues/782 */}
-        <ThemeProvider>
-          <Banner>
-            From 31 Mar 2022, all users will have to use an agency-issued email
-            to verify their account before making new edits in the CMS. &nbsp;
-            <ChakraLink
-              color="white"
-              href="https://go.gov.sg/isomer-identity"
-              isExternal
-            >
-              Read more
-            </ChakraLink>
-          </Banner>
-        </ThemeProvider>
         <Header showButton={false} />
         <div className={elementStyles.wrapper}>
           <div className={siteStyles.sitesContainer}>
@@ -80,35 +91,7 @@ export default class Sites extends Component {
               </div>
             </div>
             <div className={siteStyles.sites}>
-              {siteNames && siteNames.length > 0 ? (
-                siteNames.map((siteName) => (
-                  <div
-                    className={siteStyles.siteContainer}
-                    key={siteName.repoName}
-                  >
-                    <div className={siteStyles.site}>
-                      <Link to={`/sites/${siteName.repoName}/workspace`}>
-                        <div className={siteStyles.siteImage} />
-                        <div className={siteStyles.siteDescription}>
-                          <div className={siteStyles.siteName}>
-                            {siteName.repoName}
-                          </div>
-                          <div className={siteStyles.siteInfo}>
-                            {siteName.lastUpdated}
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                  </div>
-                ))
-              ) : siteNames && siteNames.length === 0 ? (
-                <div className={siteStyles.infoText}>
-                  You do not have access to any sites at the moment. Please
-                  contact your system administrator.
-                </div>
-              ) : (
-                <div className={siteStyles.infoText}>Loading sites...</div>
-              )}
+              <Sites siteNames={siteNames} />
             </div>
           </div>
         </div>

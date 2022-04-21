@@ -1,5 +1,4 @@
 import PropTypes from "prop-types"
-import React from "react"
 
 import { PageHeader, PageBody } from "templates/pageComponentsV2"
 

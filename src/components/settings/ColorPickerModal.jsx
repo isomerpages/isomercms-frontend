@@ -1,5 +1,5 @@
 import PropTypes from "prop-types"
-import React, { useState } from "react"
+import { useState } from "react"
 import { SketchPicker } from "react-color"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -7,7 +7,7 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 const ColorPickerModal = ({ value, onColorSelect, setRealTimeColor }) => {
   // initiate selectedColor as color passed in as props
   const [selectedColor, setSelectedColor] = useState(value)
-  const handleColorSelect = (color, event) => {
+  const handleColorSelect = (color) => {
     setSelectedColor(color)
     setRealTimeColor(color)
   }

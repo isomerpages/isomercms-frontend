@@ -1,5 +1,4 @@
 import PropTypes from "prop-types"
-import React from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -24,6 +23,7 @@ const FormMediaInput = ({
         id={id}
         alwaysDisabled
         className="border-1"
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...register(id, { required: isRequired })}
       />
       {inlineButtonText && (

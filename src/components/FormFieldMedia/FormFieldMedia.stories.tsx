@@ -53,6 +53,7 @@ const BaseComponent = ({
     <FormTitle>{formTitle}</FormTitle>
     <FormDescription>{formDescription}</FormDescription>
     <FormMediaInput
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       register={() => {}}
       placeholder={placeholder}
       id="image"
@@ -64,6 +65,7 @@ const BaseComponent = ({
 )
 
 const Template: ComponentStory<typeof BaseComponent> = (args) => (
+  // eslint-disable-next-line react/jsx-props-no-spreading
   <BaseComponent {...args} />
 )
 

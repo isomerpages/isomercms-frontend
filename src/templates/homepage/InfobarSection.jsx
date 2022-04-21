@@ -1,5 +1,5 @@
 import PropTypes from "prop-types"
-import React from "react"
+import { forwardRef } from "react"
 
 /* eslint
   react/no-array-index-key: 0
@@ -67,4 +67,4 @@ TemplateInfobarSection.defaultProps = {
   description: undefined,
 }
 
-export default React.forwardRef(TemplateInfobarSection)
+export default forwardRef(TemplateInfobarSection)

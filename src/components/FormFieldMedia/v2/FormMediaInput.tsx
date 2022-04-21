@@ -1,8 +1,9 @@
 import { useFormControlContext } from "@chakra-ui/react"
 import { MouseEventHandler } from "react"
-import { RegisterFunc } from "types/forms"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import { RegisterFunc } from "types/forms"
 
 export interface FormMediaInputProps {
   value: string
@@ -18,9 +19,9 @@ export interface FormMediaInputProps {
 export const FormMediaInput = ({
   placeholder = "",
   value,
-  register = () => {},
+  register = () => ({}),
   id,
-  onClick = () => {},
+  onClick = () => ({}),
   inlineButtonText = "Choose Item",
 }: FormMediaInputProps): JSX.Element => {
   const {
@@ -40,6 +41,7 @@ export const FormMediaInput = ({
         required={isRequired}
         className={hasError ? `${elementStyles.error}` : "border-0"}
         disabled
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...register(id, { required: isRequired })}
       />
       {inlineButtonText && (

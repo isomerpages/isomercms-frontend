@@ -5,7 +5,6 @@ import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
-import React from "react"
 import { useFormContext } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -29,8 +28,8 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
         <div className={elementStyles.modalHeader}>
           <h1>Insert media</h1>
           <button
-            type="button"
             mediaType="button"
+            type="button"
             id="closeMediaSettingsModal"
             onClick={onClose}
           >
@@ -96,6 +95,7 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
                   </FormDescription>
                   <FormField
                     placeholder={formTitle}
+                    // eslint-disable-next-line react/jsx-props-no-spreading
                     {...register("altText")}
                     id="altText"
                   />

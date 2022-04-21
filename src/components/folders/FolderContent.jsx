@@ -1,6 +1,5 @@
 import { MenuDropdown } from "components/MenuDropdown"
-import PropTypes from "prop-types"
-import React, { useState, useEffect, useRef } from "react"
+import { useState, useRef } from "react"
 import { Link, useRouteMatch } from "react-router-dom"
 
 import useRedirectHook from "hooks/useRedirectHook"
@@ -20,22 +19,24 @@ const FolderItem = ({ item, itemIndex, isDisabled }) => {
   const dropdownRef = useRef(null)
   const [showDropdown, setShowDropdown] = useState(false)
 
-  const generateLink = ({ type, name }, url) => {
+  const generateLink = () => {
     const encodedName = encodeURIComponent(name)
     return type === "dir"
       ? `${url}/subfolders/${encodedName}`
       : `${url}/editPage/${encodedName}`
   }
 
-  const generateDropdownItems = ({ type, name }, url) => {
+  const generateDropdownItems = () => {
     const encodedName = encodeURIComponent(name)
     const dropdownItems = [
       {
         type: "edit",
         handler: () => {
-          type === "dir"
-            ? setRedirectToPage(`${url}/editDirectorySettings/${encodedName}`)
-            : setRedirectToPage(`${url}/editPageSettings/${encodedName}`)
+          if (type === "dir") {
+            setRedirectToPage(`${url}/editDirectorySettings/${encodedName}`)
+          } else {
+            setRedirectToPage(`${url}/editPageSettings/${encodedName}`)
+          }
         },
       },
       {
@@ -45,9 +46,11 @@ const FolderItem = ({ item, itemIndex, isDisabled }) => {
       {
         type: "delete",
         handler: () => {
-          type === "dir"
-            ? setRedirectToPage(`${url}/deleteDirectory/${encodedName}`)
-            : setRedirectToPage(`${url}/deletePage/${encodedName}`)
+          if (type === "dir") {
+            setRedirectToPage(`${url}/deleteDirectory/${encodedName}`)
+          } else {
+            setRedirectToPage(`${url}/deletePage/${encodedName}`)
+          }
         },
       },
     ]
@@ -55,14 +58,10 @@ const FolderItem = ({ item, itemIndex, isDisabled }) => {
     return dropdownItems.filter((dropdownItem) => dropdownItem.type !== "move")
   }
 
-  useEffect(() => {
-    if (showDropdown) dropdownRef.current.focus()
-  }, [showDropdown])
-
   return (
     <Link
       className={`${contentStyles.component} ${contentStyles.card}`}
-      to={isDisabled ? "#" : generateLink(item, url)}
+      to={!isDisabled && generateLink(item, url)}
     >
       <div
         type="button"
@@ -107,7 +106,6 @@ const FolderItem = ({ item, itemIndex, isDisabled }) => {
                   menuIndex={itemIndex}
                   dropdownItems={generateDropdownItems(item, url)}
                   dropdownRef={dropdownRef}
-                  tabIndex={2}
                   onBlur={() => setShowDropdown(false)}
                 />
               )}
@@ -120,19 +118,29 @@ const FolderItem = ({ item, itemIndex, isDisabled }) => {
 }
 
 const FolderContent = ({ dirData }) => {
-  return (
-    <div className={`${contentStyles.contentContainerFolderColumn} mb-5`}>
-      {dirData && dirData.length ? (
-        dirData.map((item) => <FolderItem key={item.name} item={item} />)
-      ) : dirData && !dirData.length ? (
+  const InnerContent = () => {
+    if (dirData && dirData.length) {
+      return dirData.map((item) => <FolderItem key={item.name} item={item} />)
+    }
+
+    if (dirData) {
+      return (
         <span className="d-flex justify-content-center">
           No pages here yet.
         </span>
-      ) : (
-        <div className="d-flex justify-content-center">
-          <div className="spinner-border text-primary" role="status" />
-        </div>
-      )}
+      )
+    }
+
+    return (
+      <div className="d-flex justify-content-center">
+        <div className="spinner-border text-primary" role="status" />
+      </div>
+    )
+  }
+
+  return (
+    <div className={`${contentStyles.contentContainerFolderColumn} mb-5`}>
+      <InnerContent />
     </div>
   )
 }

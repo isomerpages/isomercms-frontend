@@ -1,27 +1,43 @@
-import React from "react"
 import { Link } from "react-router-dom"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { deslugifyDirectory, isLastItem } from "utils"
 
-const BreadcrumbItem = ({ item, isLast, link, onClick }) => (
+const Arrowed = ({ children }) => (
   <>
-    {link && !isLast ? (
-      <Link to={link}>{item}</Link>
-    ) : onClick && !isLast ? (
-      <Link to="" onClick={onClick}>
-        {item}
-      </Link>
-    ) : !isLast ? (
-      <p>{item}</p>
-    ) : (
-      // underline last item
-      <u className="ml-1">{item}</u>
-    )}
-    {isLast ? "" : " > "}
+    {children}
+    <span className={elementStyles.arrowItem}>{">"}</span>
   </>
 )
+
+const BreadcrumbItem = ({ item, isLast, link, onClick }) => {
+  if (isLast) {
+    return <u>{item}</u>
+  }
+
+  const InnerItem = () => {
+    if (link) {
+      return <Link to={link}>{item}</Link>
+    }
+
+    if (onClick) {
+      return (
+        <button type="button" onClick={onClick}>
+          {item}
+        </button>
+      )
+    }
+
+    return <span>{item}</span>
+  }
+
+  return (
+    <Arrowed>
+      <InnerItem />
+    </Arrowed>
+  )
+}
 
 const Breadcrumb = ({ params, title, isLink }) => {
   const {
