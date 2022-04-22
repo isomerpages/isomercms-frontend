@@ -51,7 +51,7 @@ export const DirectorySettingsModal = ({
   onProceed,
   onClose,
 }) => {
-  const { subCollectionName, mediaDirectoryName } = params
+  const { subCollectionName, resourceRoomName, mediaDirectoryName } = params
   const existingDirectoryName = mediaDirectoryName
     ? getMediaDirectoryName(mediaDirectoryName, { start: -1, splitOn: "/" })
     : params[getLastItemType(params)]
@@ -73,7 +73,11 @@ export const DirectorySettingsModal = ({
         newDirectoryName: deslugifyDirectory(existingDirectoryName),
       },
       context: {
-        type: getDirectorySettingsType(mediaDirectoryName, subCollectionName),
+        type: getDirectorySettingsType(
+          mediaDirectoryName,
+          resourceRoomName,
+          subCollectionName
+        ),
       },
     })
 
