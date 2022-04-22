@@ -31,7 +31,7 @@ const useSiteUrlHook = () => {
       let url
       if (type === "staging") {
         const resp = await axios.get(
-          `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/stagingUrl`
+          `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/stagingUrl`
         )
         url = resp.data.stagingUrl
       }
