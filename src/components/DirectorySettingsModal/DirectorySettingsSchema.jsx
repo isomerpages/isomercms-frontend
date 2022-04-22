@@ -27,7 +27,7 @@ export const DirectorySettingsSchema = (existingTitlesArray = []) =>
         existingTitlesArray,
         "Title is already in use. Please choose a different title."
       )
-      // We only have three possible types (passed from context)
+      // We only have four possible types (passed from context)
       .when("$type", (type, schema) => {
         if (type === "mediaDirectoryName") {
           return schema
@@ -38,7 +38,7 @@ export const DirectorySettingsSchema = (existingTitlesArray = []) =>
               (value) => !mediaSpecialCharactersRegexTest.test(value)
             )
         }
-        if (type === "subCollectionName") {
+        if (type === "subCollectionName" || type === "resourceRoomName") {
           return schema
             .transform((value) => deslugifyDirectory(value))
             .test(
