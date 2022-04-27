@@ -2,12 +2,17 @@ import { DirectoryType } from "types/directory"
 
 const getDirectoryType = (
   mediaDirectoryName: string,
+  resourceRoomName: string,
   collectionName: string,
   subcollectionName: string,
   isCreation = true
 ): DirectoryType => {
   if (mediaDirectoryName) {
     return "mediaDirectoryName"
+  }
+
+  if (resourceRoomName) {
+    return "resourceRoomName"
   }
 
   // NOTE: Subcollections are created from the collections screen,
@@ -31,9 +36,15 @@ const getDirectoryType = (
  */
 export const getDirectoryCreationType = (
   mediaDirectoryName: string,
+  resourceRoomName: string,
   collectionName: string
 ): DirectoryType => {
-  return getDirectoryType(mediaDirectoryName, collectionName, "")
+  return getDirectoryType(
+    mediaDirectoryName,
+    resourceRoomName,
+    collectionName,
+    ""
+  )
 }
 
 /**
@@ -45,7 +56,14 @@ export const getDirectoryCreationType = (
  */
 export const getDirectorySettingsType = (
   mediaDirectoryName: string,
+  resourceRoomName: string,
   subcollectionName: string
 ): DirectoryType => {
-  return getDirectoryType(mediaDirectoryName, "", subcollectionName, false)
+  return getDirectoryType(
+    mediaDirectoryName,
+    resourceRoomName,
+    "",
+    subcollectionName,
+    false
+  )
 }
