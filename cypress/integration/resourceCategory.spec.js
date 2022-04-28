@@ -219,8 +219,7 @@ describe("Resource category page", () => {
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_RENAMED)
     cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK_CHANGED)
     cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE_CHANGED)
-    cy.contains("Save").click()
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
+    cy.contains("Save").click().should("not.exist")
 
     // Asserts
 
