@@ -1,3 +1,5 @@
+import { Flex, HStack, Box, Text } from "@chakra-ui/react"
+import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
 import GenericWarningModal from "components/GenericWarningModal"
 import PropTypes from "prop-types"
@@ -84,70 +86,60 @@ const Header = ({
   return (
     <div className={elementStyles.header}>
       {/* Back button section */}
-      <div className={elementStyles.headerLeft}>
+      <Box float="left" flexBasis="20%">
         {!showButton ? null : (
-          <div>
-            <button
-              className={elementStyles.default}
-              onClick={handleBackNav}
-              type="button"
-            >
-              <i className="bx bx-chevron-left" />
-              {backButtonTextFromParams || backButtonText}
-            </button>
-          </div>
+          <Button
+            variant="clear"
+            colorScheme="black"
+            onClick={handleBackNav}
+            leftIcon={<i className="bx bx-chevron-left" />}
+          >
+            {backButtonTextFromParams || backButtonText}
+          </Button>
         )}
-      </div>
+      </Box>
       {/* Middle section */}
-      <div className={elementStyles.headerCenter}>
+      <Box m="0 auto" overflow="hidden">
         {title ? (
-          <h1>{title}</h1>
+          <Text textStyle="h3">{title}</Text>
         ) : (
-          <div className={elementStyles.logo}>
+          <Box w="180px">
             <img
               src={`${process.env.PUBLIC_URL}/img/logo.svg`}
               alt="Isomer CMS logo"
             />
-          </div>
+          </Box>
         )}
-      </div>
+      </Box>
       {/* Right section */}
-      <div className={elementStyles.headerRight}>
+      <Flex flexBasis="20%" justifyContent="flex-end" alignItems="center">
         {siteNameFromParams || siteName ? (
-          <>
-            <button
-              type="button"
-              className={`${elementStyles.green} float-right text-nowrap`}
-              onClick={handleViewPullRequest}
-            >
-              Pull Request
-            </button>
-            <button
-              type="button"
-              className={`${
-                !stagingUrl ? elementStyles.disabled : elementStyles.blue
-              } float-right text-nowrap`}
+          <HStack>
+            <Button
               onClick={() => setShowStagingWarningModal(true)}
-              disabled={!stagingUrl}
+              variant="outline"
+              colorScheme="primary"
+              isDisabled={!stagingUrl}
             >
               View Staging
-            </button>
-          </>
+            </Button>
+            <Button onClick={handleViewPullRequest}>Pull Request</Button>
+          </HStack>
         ) : (
           <>
             <div className={`${elementStyles.info} mr-3`}>
               Logged in as @{localStorage.getItem(userIdKey)}
             </div>
-            <button
+            <Button
               type="button"
               className={`${elementStyles.blue} float-right text-nowrap`}
               onClick={setRedirectToLogout}
             >
               Log Out
-            </button>
+            </Button>
           </>
         )}
-      </div>
+      </Flex>
       {showBackNavWarningModal && (
         <GenericWarningModal
           displayTitle="Warning"
