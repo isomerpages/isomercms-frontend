@@ -1,7 +1,6 @@
+import { Input } from "@opengovsg/design-system-react"
 import PropTypes from "prop-types"
 import { forwardRef } from "react"
-
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { useFormContext } from "./FormContext"
 
@@ -13,7 +12,6 @@ const FormInput = forwardRef(
       value,
       id,
       placeholder = "",
-      className = "",
       // NOTE: We require this prop because some usage of formInput is not interactive.
       // This means that even if the form itself is active,
       // the input itself is used purely for conveying visual info and is still disabled.
@@ -29,22 +27,17 @@ const FormInput = forwardRef(
     ref
   ) => {
     const { isRequired, hasError, isDisabled } = useFormContext()
-    // NOTE: If there is no error,
-    // default it to "" to prevent it from being a valid classname.
-    const computedClassName = `${className} ${
-      hasError ? elementStyles.error : ""
-    }`
 
     return (
-      <input
+      <Input
         type="text"
         placeholder={placeholder}
+        isInvalid={hasError}
         value={value}
         id={id}
         autoComplete="off"
         required={isRequired}
-        className={computedClassName}
-        disabled={alwaysDisabled || isDisabled}
+        isDisabled={alwaysDisabled || isDisabled}
         onChange={onChange}
         onBlur={onBlur}
         name={name}
@@ -58,7 +51,6 @@ FormInput.propTypes = {
   value: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
-  className: PropTypes.string,
   alwaysDisabled: PropTypes.bool,
   onChange: PropTypes.func,
   onBlur: PropTypes.func,

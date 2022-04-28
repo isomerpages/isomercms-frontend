@@ -1,4 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup"
+import { Input } from "@opengovsg/design-system-react"
 import {
   MediaSettingsSchema,
   MediaSettingsModal,
@@ -49,7 +50,7 @@ export const MediaCreationModal = ({
     // eslint-disable-next-line react/jsx-props-no-spreading
     <FormProvider {...methods}>
       <>
-        <input
+        <Input
           onChange={onMediaUpload}
           ref={inputFile}
           type="file"

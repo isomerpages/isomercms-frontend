@@ -1,5 +1,49 @@
 @import "../elements/variable";
 
+.previewTextStyles {
+  h1 {
+    font-size: 3.375rem;
+    line-height: 4.5rem;
+    font-weight: 400;
+    letter-spacing: -0.022em;
+  }
+
+  h2 {
+    font-size: 2.75rem;
+    line-height: 4rem;
+    font-weight: 400;
+    letter-spacing: -0.022em;
+  }
+
+  h3 {
+    font-size: 2rem;
+    line-height: 3rem;
+    font-weight: 400;
+    letter-spacing: -0.022em;
+  }
+
+  h4 {
+    font-size: 1.625rem;
+    line-height: 2.5rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+
+  h5 {
+    font-size: 1.375rem;
+    line-height: 2rem;
+    font-weight: 400;
+    letter-spacing: -0.018em;
+  }
+
+  h6 {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 400;
+    letter-spacing: -0.011em;
+  }
+}
+
 .homepageEditorSidebar {
   width: $homepage-editor-sidebar-width;
   background: $base-background-light;
@@ -12,6 +56,8 @@
 }
 
 .homepageEditorMain {
+  @extend .previewTextStyles;
+
   * {
     font-family: "Lato";
   }
@@ -23,6 +69,8 @@
 }
 
 .contactUsEditorMain {
+  @extend .previewTextStyles;
+
   * {
     font-family: "Lato";
   }
@@ -73,50 +121,10 @@
 }
 
 .pageEditorMain {
+  @extend .previewTextStyles;
+
   * {
     font-family: "Lato";
-  }
-
-  h1 {
-    font-size: 3.375rem;
-    line-height: 4.5rem;
-    font-weight: 400;
-    letter-spacing: -0.022em;
-  }
-
-  h2 {
-    font-size: 2.75rem;
-    line-height: 4rem;
-    font-weight: 400;
-    letter-spacing: -0.022em;
-  }
-
-  h3 {
-    font-size: 2rem;
-    line-height: 3rem;
-    font-weight: 400;
-    letter-spacing: -0.022em;
-  }
-
-  h4 {
-    font-size: 1.625rem;
-    line-height: 2.5rem;
-    font-weight: 400;
-    letter-spacing: -0.02em;
-  }
-
-  h5 {
-    font-size: 1.375rem;
-    line-height: 2rem;
-    font-weight: 400;
-    letter-spacing: -0.018em;
-  }
-
-  h6 {
-    font-size: 1rem;
-    line-height: 1.5rem;
-    font-weight: 400;
-    letter-spacing: -0.011em;
   }
 
   transform: scale(0.95);

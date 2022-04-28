@@ -1,4 +1,5 @@
 import { useFormControlContext } from "@chakra-ui/react"
+import { Input } from "@opengovsg/design-system-react"
 import { MouseEventHandler } from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -32,7 +33,7 @@ export const FormMediaInput = ({
 
   return (
     <div className="d-flex border">
-      <input
+      <Input
         type="text"
         placeholder={placeholder}
         value={value}
@@ -59,5 +60,3 @@ export const FormMediaInput = ({
     </div>
   )
 }
-
-export default FormMediaInput

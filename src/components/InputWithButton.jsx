@@ -1,7 +1,6 @@
-import cx from "classnames"
+import { Flex, HStack } from "@chakra-ui/react"
+import { Input, Button } from "@opengovsg/design-system-react"
 import PropTypes from "prop-types"
-
-import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
 const InputWithButton = ({
   type,
@@ -13,23 +12,19 @@ const InputWithButton = ({
   isLoading,
   isDisabled,
 }) => (
-  <div className={elementStyles.formInputWithButton}>
-    <input
-      type={type}
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-    />
-    <button
-      type="submit"
-      className={cx(elementStyles.green, {
-        [elementStyles.disabled]: isDisabled,
-      })}
-      disabled={isDisabled}
-    >
-      {isLoading ? loadingText : buttonText}
-    </button>
-  </div>
+  <Flex dir="row">
+    <HStack width="100%" paddingEnd="4px" paddingStart="1px">
+      <Input
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+      />
+      <Button type="submit" colorScheme="primary" isDisabled={isDisabled}>
+        {isLoading ? loadingText : buttonText}
+      </Button>
+    </HStack>
+  </Flex>
 )
 
 InputWithButton.defaultProps = {

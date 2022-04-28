@@ -1,6 +1,6 @@
+import { Flex } from "@chakra-ui/react"
+import { Button } from "@opengovsg/design-system-react"
 import PropTypes from "prop-types"
-
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { useFormContext } from "../Form/FormContext"
 import FormInput from "../Form/FormInput"
@@ -16,29 +16,21 @@ const FormMediaInput = ({
   const { isRequired, isDisabled } = useFormContext()
 
   return (
-    <div className="d-flex">
+    <Flex>
       <FormInput
         placeholder={placeholder}
         value={value}
         id={id}
         alwaysDisabled
-        className="border-1"
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...register(id, { required: isRequired })}
       />
       {inlineButtonText && (
-        <button
-          type="button"
-          className={`${
-            isDisabled ? elementStyles.disabled : elementStyles.blue
-          } text-nowrap`}
-          onClick={onClick}
-          disabled={isDisabled}
-        >
+        <Button colorScheme="primary" onClick={onClick} isDisabled={isDisabled}>
           {inlineButtonText}
-        </button>
+        </Button>
       )}
-    </div>
+    </Flex>
   )
 }
 
