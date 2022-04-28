@@ -1,7 +1,7 @@
 import MediaModal from "components/media/MediaModal"
 import { useState } from "react"
 
-import FormMediaInput, { FormMediaInputProps } from "./FormMediaInput"
+import { FormMediaInput, FormMediaInputProps } from "./FormMediaInput"
 
 interface MediaSaveEvent {
   target: {
@@ -25,7 +25,7 @@ const FormFieldMedia = ({
   placeholder = "",
   type = "images",
   inlineButtonText = "Choose Item",
-  register = () => {},
+  register = () => ({}),
 }: FormFieldMediaProps) => {
   const [isSelectingItem, setIsSelectingItem] = useState(false)
 

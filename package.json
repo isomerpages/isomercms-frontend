@@ -102,12 +102,13 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.14.6",
+    "@babel/core": "^7.17.9",
     "@babel/eslint-parser": "^7.16.3",
     "@cypress/browserify-preprocessor": "^3.0.2",
     "@cypress/webpack-preprocessor": "^5.9.1",
     "@jest/globals": "^27.0.3",
     "@storybook/addon-actions": "^6.4.18",
+    "@storybook/addon-docs": "^6.4.22",
     "@storybook/addon-essentials": "^6.4.18",
     "@storybook/addon-links": "^6.4.18",
     "@storybook/node-logger": "^6.4.18",
@@ -115,9 +116,9 @@
     "@storybook/react": "^6.4.18",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
-    "auto-changelog": "^2.4.0",
     "@tsconfig/recommended": "^1.0.1",
     "@types/react-router-dom": "^5.3.3",
+    "auto-changelog": "^2.4.0",
     "btoa": "^1.2.1",
     "chromatic": "^6.4.3",
     "cypress": "^7.2.0",
@@ -141,6 +142,7 @@
     "react-scripts": "^4.0.3",
     "react-test-renderer": "^17.0.2",
     "storybook-preset-craco": "0.0.6",
+    "ts-jest": "^27.1.4",
     "typescript": "^4.5.5"
   },
   "config": {

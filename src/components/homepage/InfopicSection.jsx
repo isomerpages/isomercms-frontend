@@ -109,7 +109,7 @@ const EditorInfopicSection = ({
             <FormFieldMedia
               value={imageUrl}
               id={`section-${sectionIndex}-infopic-image`}
-              inlineButtonText="Choose Image"
+              inlineButtonText="Select"
             />
             <FormError>{errors.image}</FormError>
           </FormContext>
