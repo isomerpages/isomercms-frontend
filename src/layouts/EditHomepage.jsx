@@ -1,4 +1,5 @@
 /* eslint-disable no-shadow */
+import { Input } from "@opengovsg/design-system-react"
 import axios from "axios"
 import DeleteWarningModal from "components/DeleteWarningModal"
 import Header from "components/Header"
@@ -1197,7 +1198,7 @@ const EditHomepage = ({ match }) => {
                 <p>
                   <b>Site notification</b>
                 </p>
-                <input
+                <Input
                   placeholder="Notification"
                   value={frontMatter.notification}
                   id="site-notification"

@@ -30,7 +30,12 @@ export const DirectoryCreationModal = ({
   onProceed,
   showSelectPages,
 }) => {
-  const { siteName, collectionName, mediaDirectoryName } = params
+  const {
+    siteName,
+    collectionName,
+    resourceRoomName,
+    mediaDirectoryName,
+  } = params
 
   const [isSelectingPages, setIsSelectingPages] = useState(false)
 
@@ -40,7 +45,11 @@ export const DirectoryCreationModal = ({
     mode: "onBlur",
     resolver: yupResolver(DirectorySettingsSchema(existingTitlesArray)),
     context: {
-      type: getDirectoryCreationType(mediaDirectoryName, collectionName),
+      type: getDirectoryCreationType(
+        mediaDirectoryName,
+        resourceRoomName,
+        collectionName
+      ),
     },
   })
 

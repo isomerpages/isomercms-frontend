@@ -1,4 +1,4 @@
-import FormInput from "components/Form/FormInput"
+import { Input } from "@opengovsg/design-system-react"
 import ColorPickerModal from "components/settings/ColorPickerModal"
 import PropTypes from "prop-types"
 import { useCallback, useEffect, useState } from "react"
@@ -98,13 +98,13 @@ const FormFieldColor = ({ value, id, saveChanges }) => {
           elementId={id}
         />
       )}
-      <FormInput
+      <Input
         value={value}
         id={id}
         // This component is purely presentational.
         // It is used to display the hex code and hence, is alwaysDisabled.
-        alwaysDisabled
-        className={elementStyles.formColorInput}
+        isDisabled
+        w="40%"
       />
       <button
         type="button"

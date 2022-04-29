@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@opengovsg/design-system-react"
 import axios from "axios"
 import { useEffect } from "react"
 import { QueryClient, QueryClientProvider } from "react-query"
@@ -15,6 +16,8 @@ import { ServicesProvider } from "contexts/ServicesContext"
 import { RouteSelector } from "routing/RouteSelector"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
+
+import theme from "theme"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -62,7 +65,9 @@ const App = () => {
             className={elementStyles.toastContainer}
           />
           <LoginProvider>
-            <RouteSelector />
+            <ThemeProvider theme={theme}>
+              <RouteSelector />
+            </ThemeProvider>
           </LoginProvider>
         </QueryClientProvider>
       </ServicesProvider>

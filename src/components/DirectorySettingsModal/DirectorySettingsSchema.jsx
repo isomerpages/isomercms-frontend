@@ -6,6 +6,7 @@ import {
   slugifyLowerFalseRegexTest,
   DIRECTORY_SETTINGS_TITLE_MIN_LENGTH,
   DIRECTORY_SETTINGS_TITLE_MAX_LENGTH,
+  resourceCategoryRegexTest,
 } from "utils/validators"
 
 import { deslugifyDirectory } from "utils"
@@ -27,7 +28,7 @@ export const DirectorySettingsSchema = (existingTitlesArray = []) =>
         existingTitlesArray,
         "Title is already in use. Please choose a different title."
       )
-      // We only have three possible types (passed from context)
+      // We only have four possible types (passed from context)
       .when("$type", (type, schema) => {
         if (type === "mediaDirectoryName") {
           return schema
@@ -46,6 +47,13 @@ export const DirectorySettingsSchema = (existingTitlesArray = []) =>
               'Title cannot contain any of the following special characters: ~%^*_+-./`;{}[]"<>',
               (value) => !specialCharactersRegexTest.test(value)
             )
+        }
+        if (type === "resourceRoomName") {
+          return schema.test(
+            "Special characters found",
+            "Title cannot contain any symbols",
+            (value) => resourceCategoryRegexTest.test(value)
+          )
         }
         if (type === "collectionName") {
           return schema
