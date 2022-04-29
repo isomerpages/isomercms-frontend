@@ -6,6 +6,7 @@ import {
   slugifyLowerFalseRegexTest,
   DIRECTORY_SETTINGS_TITLE_MIN_LENGTH,
   DIRECTORY_SETTINGS_TITLE_MAX_LENGTH,
+  resourceCategoryRegexTest,
 } from "utils/validators"
 
 import { deslugifyDirectory } from "utils"
@@ -38,7 +39,7 @@ export const DirectorySettingsSchema = (existingTitlesArray = []) =>
               (value) => !mediaSpecialCharactersRegexTest.test(value)
             )
         }
-        if (type === "subCollectionName" || type === "resourceRoomName") {
+        if (type === "subCollectionName") {
           return schema
             .transform((value) => deslugifyDirectory(value))
             .test(
@@ -46,6 +47,13 @@ export const DirectorySettingsSchema = (existingTitlesArray = []) =>
               'Title cannot contain any of the following special characters: ~%^*_+-./`;{}[]"<>',
               (value) => !specialCharactersRegexTest.test(value)
             )
+        }
+        if (type === "resourceRoomName") {
+          return schema.test(
+            "Special characters found",
+            "Title cannot contain any symbols",
+            (value) => resourceCategoryRegexTest.test(value)
+          )
         }
         if (type === "collectionName") {
           return schema
