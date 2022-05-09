@@ -1,4 +1,5 @@
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import { Button } from "@opengovsg/design-system-react"
+
 import errorStyles from "styles/isomer-cms/pages/Error.module.scss"
 
 function FallbackComponent({ error }) {
@@ -17,13 +18,9 @@ function FallbackComponent({ error }) {
           <br />
           Click below to return to IsomerCMS.
         </div>
-        <button
-          type="button"
-          className={`${errorStyles.errorButton} ${elementStyles.blue}`}
-          onClick={() => window.location.reload()}
-        >
+        <Button onClick={() => window.location.reload()} mt="2rem">
           Back to IsomerCMS
-        </button>
+        </Button>
       </div>
     </>
   )
