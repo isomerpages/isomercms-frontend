@@ -1,4 +1,5 @@
-import LoadingButton from "components/LoadingButton"
+import { HStack } from "@chakra-ui/react"
+import { Button } from "@opengovsg/design-system-react"
 import PropTypes from "prop-types"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -11,23 +12,14 @@ const DeleteWarningModal = ({ onDelete, onCancel, type }) => (
       </div>
       <form className={elementStyles.modalContent}>
         <p>{`Are you sure you want to delete ${type || "this"}?`}</p>
-        <div className={elementStyles.modalButtons}>
-          <LoadingButton
-            id="modal-delete"
-            label="Delete"
-            disabledStyle={elementStyles.disabled}
-            className={elementStyles.warning}
-            callback={onDelete}
-          />
-          <button
-            id="modal-cancel"
-            className={elementStyles.blue}
-            type="button"
-            onClick={onCancel}
-          >
+        <HStack paddingTop="20px" justifyContent="flex-end">
+          <Button id="modal-delete" onClick={onDelete} colorScheme="danger">
+            Delete
+          </Button>
+          <Button id="modal-cancel" onClick={onCancel}>
             Cancel
-          </button>
-        </div>
+          </Button>
+        </HStack>
       </form>
     </div>
   </div>
