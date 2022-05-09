@@ -23,8 +23,6 @@ const EditPageFooter = ({
         optionalCallback={() => setShowDeleteWarning(true)}
         keyCallback={saveCallback}
         keyButtonIsLoading={isSaving}
-        keyButtonText="Save"
-        optionalButtonText="Delete"
       />
     </>
   )

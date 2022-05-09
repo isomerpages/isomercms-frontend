@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup"
+import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
-import Button from "components/Button"
 import FormContext from "components/Form/FormContext"
 import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
@@ -104,11 +104,7 @@ export const MediaSettingsModal = ({
               to upload and link them to your Isomer site.
             </p>
           </div>
-          <Button
-            label="Select file"
-            className={elementStyles.blue}
-            callback={toggleUploadInput}
-          />
+          <Button onClick={toggleUploadInput}>Select file</Button>
           <br />
         </>
       )

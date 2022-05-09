@@ -1,45 +1,31 @@
-import Button from "components/Button"
+import { HStack } from "@chakra-ui/react"
+import { Button } from "@opengovsg/design-system-react"
 
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 const Footer = ({
-  keyButtonText,
   keyCallback,
   isKeyButtonDisabled,
   keyButtonIsLoading,
-  optionalButtonText,
   optionalCallback,
-  isOptionalButtonDisabled,
-  optionalButtonIsLoading,
 }) => (
   <div className={editorStyles.pageEditorFooter}>
-    {optionalCallback ? (
-      <Button
-        label={optionalButtonText}
-        disabledStyle={elementStyles.disabled}
-        disabled={isOptionalButtonDisabled}
-        className={
-          isOptionalButtonDisabled
-            ? elementStyles.disabled
-            : elementStyles.warning
-        }
-        callback={optionalCallback}
-        isLoading={optionalButtonIsLoading}
-      />
-    ) : null}
-    {keyCallback ? (
-      <Button
-        label={keyButtonText}
-        disabledStyle={elementStyles.disabled}
-        disabled={isKeyButtonDisabled}
-        className={
-          isKeyButtonDisabled ? elementStyles.disabled : elementStyles.blue
-        }
-        callback={keyCallback}
-        isLoading={keyButtonIsLoading}
-      />
-    ) : null}
+    <HStack>
+      {optionalCallback && (
+        <Button variant="clear" onClick={optionalCallback}>
+          Cancel
+        </Button>
+      )}
+      {keyCallback && (
+        <Button
+          isDisabled={isKeyButtonDisabled}
+          onClick={keyCallback}
+          isLoading={keyButtonIsLoading}
+        >
+          Save
+        </Button>
+      )}
+    </HStack>
   </div>
 )
 

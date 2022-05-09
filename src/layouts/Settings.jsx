@@ -463,7 +463,6 @@ const Settings = ({ match, location }) => {
             saveSettings()
           }
         }}
-        keyButtonText="Save"
         keyButtonIsLoading={isSavingSettings}
       />
       {showOverwriteWarning && (
