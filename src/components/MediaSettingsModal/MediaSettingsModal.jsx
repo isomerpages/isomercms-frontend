@@ -1,3 +1,4 @@
+import { CloseButton } from "@chakra-ui/react"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
@@ -137,14 +138,7 @@ export const MediaSettingsModal = ({
       <div className={elementStyles.modal}>
         <div className={elementStyles.modalHeader}>
           <h1>{getModalTitle({ isCreate, params })}</h1>
-          <button
-            type="button"
-            mediaType="button"
-            id="closeMediaSettingsModal"
-            onClick={onClose}
-          >
-            <i className="bx bx-x" />
-          </button>
+          <CloseButton onClick={onClose} />
         </div>
         <>
           <p className={elementStyles.formLabel}>
