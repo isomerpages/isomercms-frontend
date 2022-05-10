@@ -1,5 +1,6 @@
 import { titleToPageFileName, slugifyCategory } from "../../src/utils"
 import { E2E_EXTENDED_TIMEOUT } from "../fixtures/constants"
+import waitForDom from "../support/waitForDom"
 
 describe("Move flow", () => {
   const CMS_BASEURL = Cypress.env("BASEURL")
@@ -43,6 +44,7 @@ describe("Move flow", () => {
       cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
       window.localStorage.setItem("userId", "test")
       cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
+      waitForDom()
     })
 
     it("Should be able to navigate from Workspace to subfolder back to Workspace via MoveModal buttons", () => {
@@ -50,8 +52,10 @@ describe("Move flow", () => {
       cy.get(`button[id^="pageCard-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`)
         .should("exist")
         .click()
+      waitForDom()
 
       cy.get("button[id^=move-]").first().click()
+      waitForDom()
       cy.contains(`Move Here`)
 
       cy.get("u")
@@ -73,6 +77,7 @@ describe("Move flow", () => {
       cy.get("button[id^=moveModal-forwardButton-]")
         .eq(1)
         .click({ force: true })
+      waitForDom()
       cy.get("u")
         .first()
         .contains(TITLE_WORKSPACE_TO_FOLDER)
@@ -94,6 +99,7 @@ describe("Move flow", () => {
 
       // Navigate to Move subfolder
       cy.get("button[id^=moveModal-forwardButton-]").click({ force: true })
+      waitForDom()
       cy.get("u")
         .first()
         .contains(TITLE_WORKSPACE_TO_FOLDER)
@@ -119,6 +125,7 @@ describe("Move flow", () => {
 
       // Navigate to Move folder
       cy.get("#moveModal-backButton").click({ force: true })
+      waitForDom()
       cy.get("u")
         .first()
         .contains(TITLE_WORKSPACE_TO_FOLDER)
@@ -140,6 +147,7 @@ describe("Move flow", () => {
 
       // Navigate to Workspace
       cy.get("#moveModal-backButton").click({ force: true })
+      waitForDom()
       cy.get("u")
         .first()
         .contains(TITLE_WORKSPACE_TO_FOLDER)
@@ -161,10 +169,13 @@ describe("Move flow", () => {
       cy.get(`button[id^="pageCard-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`)
         .should("exist")
         .click()
+      waitForDom()
       cy.get("button[id^=move-]").first().click()
+      waitForDom()
       cy.contains(`Move Here`)
 
       cy.contains("button", "Move Here").click()
+      waitForDom()
       cy.contains("File is already in this folder", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
@@ -175,7 +186,9 @@ describe("Move flow", () => {
       cy.get(`button[id^="pageCard-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`)
         .should("exist")
         .click()
+      waitForDom()
       cy.get("button[id^=move-]").first().click()
+      waitForDom()
       cy.contains(`Move Here`)
 
       // Assert
@@ -191,6 +204,7 @@ describe("Move flow", () => {
       cy.get("button[id^=moveModal-forwardButton-]")
         .eq(1)
         .click({ force: true })
+      waitForDom()
 
       // Assert
       cy.get("u")
@@ -213,6 +227,7 @@ describe("Move flow", () => {
         .contains("Workspace")
 
       cy.contains("button", "Move Here").click()
+      waitForDom()
       cy.contains("Successfully moved file", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
@@ -226,6 +241,7 @@ describe("Move flow", () => {
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_REPO_FOLDER_NAME}`
       )
+      waitForDom()
       cy.contains(TITLE_WORKSPACE_TO_FOLDER).should("exist")
     })
 
@@ -236,7 +252,9 @@ describe("Move flow", () => {
       )
         .should("exist")
         .click()
+      waitForDom()
       cy.get("button[id^=move-]").first().click()
+      waitForDom()
       cy.contains(`Move Here`)
 
       // Assert
@@ -259,8 +277,10 @@ describe("Move flow", () => {
       cy.get("button[id^=moveModal-forwardButton-]")
         .eq(1)
         .click({ force: true })
+      waitForDom()
       // Navigate to Move subfolder
       cy.get("button[id^=moveModal-forwardButton-]").click({ force: true })
+      waitForDom()
 
       // Assert
       cy.get("u")
@@ -287,6 +307,7 @@ describe("Move flow", () => {
         .contains("Workspace")
 
       cy.contains("button", "Move Here").click()
+      waitForDom()
       cy.contains("Successfully moved file", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
@@ -300,6 +321,7 @@ describe("Move flow", () => {
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_REPO_FOLDER_NAME}/subfolders/${PARSED_TEST_REPO_SUBFOLDER_NAME}`
       )
+      waitForDom()
       cy.contains(TITLE_WORKSPACE_TO_SUBFOLDER).should("exist")
     })
   })
@@ -321,6 +343,7 @@ describe("Move flow", () => {
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_REPO_FOLDER_NAME}`
       )
+      waitForDom()
     })
 
     it("Should be able to navigate from folder to Workspace to subfolder back to folder via MoveModal buttons", () => {
@@ -330,6 +353,7 @@ describe("Move flow", () => {
       )
         .should("exist")
         .click()
+      waitForDom()
       cy.get("button[id^=move-]").first().trigger("mousedown")
       cy.contains(`Move Here`)
 
@@ -358,6 +382,7 @@ describe("Move flow", () => {
 
       // Navigate to Workspace
       cy.get("#moveModal-backButton").click({ force: true })
+      waitForDom()
       cy.get("u")
         .first()
         .contains(TEST_REPO_FOLDER_NAME)
@@ -388,6 +413,7 @@ describe("Move flow", () => {
       cy.get("button[id^=moveModal-forwardButton-]")
         .eq(1)
         .click({ force: true })
+      waitForDom()
       cy.get("u")
         .eq(1)
         .contains(TITLE_FOLDER_TO_WORKSPACE)
@@ -413,6 +439,7 @@ describe("Move flow", () => {
 
       // Navigate to Move subfolder
       cy.get("button[id^=moveModal-forwardButton-]").click({ force: true })
+      waitForDom()
       cy.get("u")
         .last()
         .contains(TITLE_FOLDER_TO_WORKSPACE)
@@ -431,6 +458,7 @@ describe("Move flow", () => {
 
       // Navigate to Move folder
       cy.get("#moveModal-backButton").click({ force: true })
+      waitForDom()
       cy.get("u")
         .last()
         .contains(TITLE_FOLDER_TO_WORKSPACE)
@@ -451,10 +479,12 @@ describe("Move flow", () => {
       )
         .should("exist")
         .click()
+      waitForDom()
       cy.get("button[id^=move-]").first().trigger("mousedown")
       cy.contains(`Move Here`)
 
       cy.contains("button", "Move Here").click()
+      waitForDom()
       cy.contains("File is already in this folder", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
@@ -467,6 +497,7 @@ describe("Move flow", () => {
       )
         .should("exist")
         .click()
+      waitForDom()
       cy.get("button[id^=move-]").first().trigger("mousedown")
       cy.contains(`Move Here`)
 
@@ -484,6 +515,7 @@ describe("Move flow", () => {
         .contains("Workspace")
 
       cy.get("#moveModal-backButton").click({ force: true })
+      waitForDom()
 
       // Assert
       cy.get("u")
@@ -495,6 +527,7 @@ describe("Move flow", () => {
         .contains("Workspace")
 
       cy.contains("button", "Move Here").click()
+      waitForDom()
       cy.contains("Successfully moved file", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
@@ -506,6 +539,7 @@ describe("Move flow", () => {
       })
       // 2. File is in Workspace
       cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
+      waitForDom()
       cy.contains(TITLE_FOLDER_TO_WORKSPACE).should("exist")
     })
 
@@ -516,6 +550,7 @@ describe("Move flow", () => {
       )
         .should("exist")
         .click()
+      waitForDom()
       cy.get("button[id^=move-]").first().trigger("mousedown")
       cy.contains(`Move Here`)
 
@@ -533,6 +568,7 @@ describe("Move flow", () => {
         .contains("Workspace")
 
       cy.get("button[id^=moveModal-forwardButton-]").click({ force: true })
+      waitForDom()
 
       // Assert
 
@@ -553,6 +589,7 @@ describe("Move flow", () => {
         .contains("Workspace")
 
       cy.contains("button", "Move Here").click()
+      waitForDom()
       cy.contains("Successfully moved file", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
@@ -566,6 +603,7 @@ describe("Move flow", () => {
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_REPO_FOLDER_NAME}/subfolders/${PARSED_TEST_REPO_SUBFOLDER_NAME}`
       )
+      waitForDom()
       cy.contains(TITLE_FOLDER_TO_SUBFOLDER).should("exist")
     })
   })
@@ -587,6 +625,7 @@ describe("Move flow", () => {
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_REPO_FOLDER_NAME}/subfolders/${PARSED_TEST_REPO_SUBFOLDER_NAME}`
       )
+      waitForDom()
     })
 
     it("Should be able to navigate from subfolder to folder to Workspace back to subfolder via MoveModal buttons", () => {
@@ -596,6 +635,7 @@ describe("Move flow", () => {
       )
         .should("exist")
         .click()
+      waitForDom()
       cy.get("button[id^=move-]").first().trigger("mousedown")
       cy.contains(`Move Here`)
 
@@ -617,6 +657,7 @@ describe("Move flow", () => {
 
       // Navigate to Move folder
       cy.get("#moveModal-backButton").click({ force: true })
+      waitForDom()
       cy.get("u")
         .last()
         .contains(TITLE_SUBFOLDER_TO_WORKSPACE)
@@ -631,6 +672,7 @@ describe("Move flow", () => {
 
       // Navigate to Workspace
       cy.get("#moveModal-backButton").click({ force: true })
+      waitForDom()
       cy.get("u")
         .last()
         .contains(TITLE_SUBFOLDER_TO_WORKSPACE)
@@ -643,6 +685,7 @@ describe("Move flow", () => {
       cy.get("button[id^=moveModal-forwardButton-]")
         .eq(1)
         .click({ force: true })
+      waitForDom()
       cy.get("u")
         .last()
         .contains(TITLE_SUBFOLDER_TO_WORKSPACE)
@@ -657,6 +700,7 @@ describe("Move flow", () => {
 
       // Navigate to Move subfolder
       cy.get("button[id^=moveModal-forwardButton-]").click({ force: true })
+      waitForDom()
       cy.get("u")
         .last()
         .contains(TITLE_SUBFOLDER_TO_WORKSPACE)
@@ -681,10 +725,12 @@ describe("Move flow", () => {
       )
         .should("exist")
         .click()
+      waitForDom()
       cy.get("button[id^=move-]").first().trigger("mousedown")
       cy.contains(`Move Here`)
 
       cy.contains("button", "Move Here").click()
+      waitForDom()
       cy.contains("File is already in this folder", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
@@ -697,6 +743,7 @@ describe("Move flow", () => {
       )
         .should("exist")
         .click()
+      waitForDom()
       cy.get("button[id^=move-]").first().trigger("mousedown")
       cy.contains(`Move Here`)
 
@@ -718,6 +765,7 @@ describe("Move flow", () => {
         .contains("Workspace")
 
       cy.get("#moveModal-backButton").click({ force: true })
+      waitForDom()
       // Assert
       cy.get("u")
         .last()
@@ -732,6 +780,7 @@ describe("Move flow", () => {
         .contains("Workspace")
 
       cy.get("#moveModal-backButton").click({ force: true })
+      waitForDom()
       // Assert
       cy.get("u")
         .last()
@@ -742,6 +791,7 @@ describe("Move flow", () => {
         .contains("Workspace")
 
       cy.contains("button", "Move Here").click()
+      waitForDom()
       cy.contains("Successfully moved file", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
@@ -753,6 +803,7 @@ describe("Move flow", () => {
       })
       // 2. File is in Workspace
       cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
+      waitForDom()
       cy.contains(TITLE_SUBFOLDER_TO_WORKSPACE).should("exist")
     })
 
@@ -763,6 +814,7 @@ describe("Move flow", () => {
       )
         .should("exist")
         .click()
+      waitForDom()
       cy.get("button[id^=move-]").first().trigger("mousedown")
       cy.contains(`Move Here`)
 
@@ -783,6 +835,7 @@ describe("Move flow", () => {
         .prev()
         .contains("Workspace")
       cy.get("#moveModal-backButton").click({ force: true })
+      waitForDom()
 
       // Assert
       cy.get("u")
@@ -798,6 +851,7 @@ describe("Move flow", () => {
         .contains("Workspace")
 
       cy.contains("button", "Move Here").click()
+      waitForDom()
       cy.contains("Successfully moved file", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
@@ -811,6 +865,7 @@ describe("Move flow", () => {
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_REPO_FOLDER_NAME}`
       )
+      waitForDom()
       cy.contains(TITLE_SUBFOLDER_TO_FOLDER).should("exist")
     })
   })
@@ -824,11 +879,13 @@ describe("Move flow", () => {
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${PARSED_TEST_REPO_RESOURCE_ROOM_NAME}/resourceCategory/${PARSED_TEST_REPO_RESOURCE_CATEGORY_NAME}`
       )
+      waitForDom()
     })
 
     it("Should be able to navigate from Resource Category to Resource Room back to Resource Category via MoveModal buttons", () => {
       cy.contains(TITLE_RESOURCE_PAGE).should("exist")
       cy.get(`button[id^="pageCard-dropdown-"]`).should("exist").click()
+      waitForDom()
       cy.get("button[id^=move-]").first().trigger("mousedown")
       cy.contains(`Move Here`)
 
@@ -851,6 +908,7 @@ describe("Move flow", () => {
 
       // Navigate to Resource Room
       cy.get("#moveModal-backButton").click({ force: true })
+      waitForDom()
       cy.get("u")
         .last()
         .contains(TITLE_RESOURCE_PAGE)
@@ -866,6 +924,7 @@ describe("Move flow", () => {
       cy.get("button[id^=moveModal-forwardButton-]")
         .eq(1)
         .click({ force: true })
+      waitForDom()
       cy.get("u")
         .last()
         .contains(TITLE_RESOURCE_PAGE)
@@ -886,10 +945,13 @@ describe("Move flow", () => {
     it("Should be able to move page from resource category to itself and show correct success message", () => {
       cy.contains(TITLE_RESOURCE_PAGE).should("exist")
       cy.get(`button[id^="pageCard-dropdown-"]`).should("exist").click()
+      waitForDom()
       cy.get("button[id^=move-]").first().click()
+      waitForDom()
       cy.contains(`Move Here`)
 
       cy.contains("button", "Move Here").click()
+      waitForDom()
       cy.contains("File is already in this folder", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
@@ -898,6 +960,7 @@ describe("Move flow", () => {
     it("Should be able to move page from resource category to another resource category", () => {
       cy.contains(TITLE_RESOURCE_PAGE).should("exist")
       cy.get(`button[id^="pageCard-dropdown-"]`).should("exist").click()
+      waitForDom()
       cy.get("button[id^=move-]").first().trigger("mousedown")
       cy.contains(`Move Here`)
 
@@ -919,6 +982,7 @@ describe("Move flow", () => {
         .contains("Workspace")
       // Navigate to Resource Room
       cy.get("#moveModal-backButton").click({ force: true })
+      waitForDom()
       cy.get("u")
         .last()
         .contains(TITLE_RESOURCE_PAGE)
@@ -935,6 +999,7 @@ describe("Move flow", () => {
       cy.get("button[id^=moveModal-forwardButton-]")
         .eq(0)
         .click({ force: true })
+      waitForDom()
       cy.get("u")
         .last()
         .contains(TITLE_RESOURCE_PAGE)
@@ -952,6 +1017,7 @@ describe("Move flow", () => {
         .contains("Workspace")
 
       cy.contains("button", "Move Here").click()
+      waitForDom()
       cy.contains("Successfully moved file", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
@@ -965,6 +1031,7 @@ describe("Move flow", () => {
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${PARSED_TEST_REPO_RESOURCE_ROOM_NAME}/resourceCategory/${PARSED_TEST_REPO_RESOURCE_CATEGORY_NAME_1}`
       )
+      waitForDom()
       cy.contains(TITLE_RESOURCE_PAGE).should("exist")
     })
   })
