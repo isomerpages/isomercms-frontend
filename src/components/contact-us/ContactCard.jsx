@@ -1,3 +1,4 @@
+import { Button } from "@opengovsg/design-system-react"
 import ContactFields from "components/contact-us/ContactFields"
 import FormContext from "components/Form/FormContext"
 import FormError from "components/Form/FormError"
@@ -67,14 +68,14 @@ const EditorContactCard = ({
             />
           </div>
           <div className={`${elementStyles.inputGroup} pt-5`}>
-            <button
-              type="button"
+            <Button
+              colorScheme="danger"
+              isFullWidth
               id={`${sectionId}-${cardIndex}`}
-              className={`btn-block ${elementStyles.warning}`}
               onClick={deleteHandler}
             >
               Delete section
-            </button>
+            </Button>
           </div>
         </>
       ) : null}

@@ -1,3 +1,4 @@
+import { Button } from "@opengovsg/design-system-react"
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormField from "components/FormField"
 import FormFieldMedia from "components/FormFieldMedia"
@@ -125,14 +126,14 @@ const EditorInfopicSection = ({
           </FormContext>
         </div>
         <div className={elementStyles.inputGroup}>
-          <button
-            type="button"
+          <Button
+            colorScheme="danger"
+            isFullWidth
             id={`section-${sectionIndex}`}
-            className={`ml-auto ${elementStyles.warning}`}
             onClick={deleteHandler}
           >
             Delete section
-          </button>
+          </Button>
         </div>
       </>
     ) : null}

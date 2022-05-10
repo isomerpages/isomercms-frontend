@@ -1,3 +1,4 @@
+import { Button } from "@opengovsg/design-system-react"
 import EditorContactCard from "components/contact-us/ContactCard"
 import EditorLocationCard from "components/contact-us/LocationCard"
 import _ from "lodash"
@@ -111,12 +112,11 @@ const EditorSection = ({
           )}
         </Droppable>
         <div className={`${elementStyles.inputGroup} pt-5`}>
-          <button
-            type="button"
+          <Button
+            isFullWidth
             id={`${sectionId}`}
-            className={`btn-block ${elementStyles.blue}`}
             onClick={createHandler}
-          >{`Add ${sectionId === "contacts" ? "Contact" : "Location"}`}</button>
+          >{`Add ${sectionId === "contacts" ? "Contact" : "Location"}`}</Button>
         </div>
       </>
     ) : null}

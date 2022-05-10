@@ -1,3 +1,4 @@
+import { Button } from "@opengovsg/design-system-react"
 import {
   LocationHoursFields,
   LocationAddressFields,
@@ -93,14 +94,14 @@ const EditorLocationSection = ({
           />
         </div>
         <div className={`${elementStyles.inputGroup} pt-5`}>
-          <button
-            type="button"
+          <Button
+            colorScheme="danger"
+            isFullWidth
             id={`${sectionId}-${cardIndex}`}
-            className={`btn-block ${elementStyles.warning}`}
             onClick={deleteHandler}
           >
             Delete section
-          </button>
+          </Button>
         </div>
       </>
     )}

@@ -1,3 +1,4 @@
+import { Button } from "@opengovsg/design-system-react"
 import { FormError } from "components/Form"
 import FormContext from "components/Form/FormContext"
 import FormTitle from "components/Form/FormTitle"
@@ -101,14 +102,14 @@ const EditorInfobarSection = ({
           </FormContext>
         </div>
         <div className={elementStyles.inputGroup}>
-          <button
-            type="button"
+          <Button
+            colorScheme="danger"
+            isFullWidth
             id={`section-${sectionIndex}`}
-            className={`ml-auto ${elementStyles.warning}`}
             onClick={deleteHandler}
           >
             Delete section
-          </button>
+          </Button>
         </div>
       </>
     ) : null}
