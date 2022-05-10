@@ -1,3 +1,4 @@
+import { CloseButton } from "@chakra-ui/react"
 import { yupResolver } from "@hookform/resolvers/yup"
 import axios from "axios"
 import { FormContext } from "components/Form"
@@ -96,9 +97,7 @@ export const DirectorySettingsModal = ({
       <div className={elementStyles["modal-settings"]}>
         <div className={elementStyles.modalHeader}>
           <h1>{getModalTitle({ isCreate, params })}</h1>
-          <button type="button" onClick={onClose}>
-            <i className="bx bx-x" />
-          </button>
+          <CloseButton onClick={onClose} />
         </div>
         <form className={elementStyles.modalContent}>
           <FormContext hasError={!!errors.newDirectoryName?.message}>

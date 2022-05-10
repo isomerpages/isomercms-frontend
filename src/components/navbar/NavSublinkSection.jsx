@@ -1,3 +1,4 @@
+import { IconButton } from "@opengovsg/design-system-react"
 import { FormError } from "components/Form"
 import FormContext from "components/Form/FormContext"
 import FormTitle from "components/Form/FormTitle"
@@ -28,8 +29,8 @@ const SublinkElem = ({
   >
     <div className={elementStyles.cardHeader}>
       <h2>{title}</h2>
-      <button
-        type="button"
+      <IconButton
+        variant="clear"
         id={`sublink-${linkIndex}-${sublinkIndex}-toggle`}
         onClick={displayHandler}
       >
@@ -39,7 +40,7 @@ const SublinkElem = ({
           }`}
           id={`sublink-${linkIndex}-${sublinkIndex}-icon`}
         />
-      </button>
+      </IconButton>
     </div>
     {shouldDisplay ? (
       <>

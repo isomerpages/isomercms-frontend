@@ -1,4 +1,4 @@
-import { Button } from "@opengovsg/design-system-react"
+import { Button, IconButton } from "@opengovsg/design-system-react"
 import { FormError } from "components/Form"
 import FormContext from "components/Form/FormContext"
 import FormTitle from "components/Form/FormTitle"
@@ -33,9 +33,8 @@ const EditorInfobarSection = ({
   >
     <div className={elementStyles.cardHeader}>
       <h2>Infobar section: {title}</h2>
-      <button
-        className="pl-3"
-        type="button"
+      <IconButton
+        variant="clear"
         id={`section-${sectionIndex}`}
         onClick={displayHandler}
       >
@@ -45,7 +44,7 @@ const EditorInfobarSection = ({
           }`}
           id={`section-${sectionIndex}-icon`}
         />
-      </button>
+      </IconButton>
     </div>
     {shouldDisplay ? (
       <>

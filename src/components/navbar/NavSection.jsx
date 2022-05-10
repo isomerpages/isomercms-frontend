@@ -1,4 +1,4 @@
-import { Button } from "@opengovsg/design-system-react"
+import { Button, IconButton } from "@opengovsg/design-system-react"
 import FormContext from "components/Form/FormContext"
 import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
@@ -81,8 +81,8 @@ const NavElem = ({
     >
       <div className={elementStyles.cardHeader}>
         <h2>{generateTitle()}</h2>
-        <button
-          type="button"
+        <IconButton
+          variant="clear"
           id={`link-${linkIndex}-toggle`}
           onClick={displayHandler}
         >
@@ -92,7 +92,7 @@ const NavElem = ({
             }`}
             id={`link-${linkIndex}-icon`}
           />
-        </button>
+        </IconButton>
       </div>
       {shouldDisplay ? (
         <>

@@ -1,3 +1,4 @@
+import { IconButton } from "@opengovsg/design-system-react"
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormField from "components/FormField"
 import FormFieldMedia from "components/FormFieldMedia"
@@ -47,9 +48,8 @@ const EditorHeroSection = ({
   >
     <div className={elementStyles.cardHeader}>
       <h2>Hero section</h2>
-      <button
-        className="pl-3"
-        type="button"
+      <IconButton
+        variant="clear"
         id={`section-${sectionIndex}`}
         onClick={displayHandler}
       >
@@ -59,7 +59,7 @@ const EditorHeroSection = ({
           }`}
           id={`section-${sectionIndex}-icon`}
         />
-      </button>
+      </IconButton>
     </div>
     {shouldDisplay ? (
       <>

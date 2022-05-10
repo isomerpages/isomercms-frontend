@@ -1,6 +1,6 @@
 // not completely refactored yet, to finish after Media and Resources
 // should create separate display component Card without functionality
-
+import { IconButton } from "@opengovsg/design-system-react"
 import { MenuDropdown } from "components/MenuDropdown"
 import PropTypes from "prop-types"
 import { useEffect, useRef, useState } from "react"
@@ -90,13 +90,8 @@ export const FolderCard = ({
         ""
       ) : (
         <div className="position-relative mt-auto mb-auto">
-          <button
-            className={`${
-              canShowDropdown
-                ? contentStyles.optionsIconFocus
-                : contentStyles.optionsIcon
-            }`}
-            type="button"
+          <IconButton
+            variant="clear"
             id={`settings-folder-${itemIndex}`}
             onClick={(e) => {
               e.preventDefault()
@@ -107,7 +102,7 @@ export const FolderCard = ({
               id={`settingsIcon-${itemIndex}`}
               className="bx bx-dots-vertical-rounded"
             />
-          </button>
+          </IconButton>
           {canShowDropdown && (
             <MenuDropdown
               dropdownItems={[

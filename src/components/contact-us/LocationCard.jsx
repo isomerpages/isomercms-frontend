@@ -1,4 +1,4 @@
-import { Button } from "@opengovsg/design-system-react"
+import { Button, IconButton } from "@opengovsg/design-system-react"
 import {
   LocationHoursFields,
   LocationAddressFields,
@@ -37,8 +37,8 @@ const EditorLocationSection = ({
   >
     <div className={elementStyles.cardHeader}>
       <h2>{title}</h2>
-      <button
-        type="button"
+      <IconButton
+        variant="clear"
         id={`${sectionId}-${cardIndex}`}
         onClick={displayHandler}
       >
@@ -48,7 +48,7 @@ const EditorLocationSection = ({
           }`}
           id={`${sectionId}-${cardIndex}-icon`}
         />
-      </button>
+      </IconButton>
     </div>
     {shouldDisplay && (
       <>

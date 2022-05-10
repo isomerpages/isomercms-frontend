@@ -1,4 +1,4 @@
-import { Button } from "@opengovsg/design-system-react"
+import { Button, IconButton } from "@opengovsg/design-system-react"
 import ContactFields from "components/contact-us/ContactFields"
 import FormContext from "components/Form/FormContext"
 import FormError from "components/Form/FormError"
@@ -33,8 +33,8 @@ const EditorContactCard = ({
     >
       <div className={elementStyles.cardHeader}>
         <h2>{title}</h2>
-        <button
-          type="button"
+        <IconButton
+          variant="clear"
           id={`${sectionId}-${cardIndex}`}
           onClick={displayHandler}
         >
@@ -44,7 +44,7 @@ const EditorContactCard = ({
             }`}
             id={`${sectionId}-${cardIndex}-icon`}
           />
-        </button>
+        </IconButton>
       </div>
       {shouldDisplay ? (
         <>
