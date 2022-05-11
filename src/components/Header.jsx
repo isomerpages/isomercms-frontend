@@ -130,13 +130,7 @@ const Header = ({
             <div className={`${elementStyles.info} mr-3`}>
               Logged in as @{localStorage.getItem(userIdKey)}
             </div>
-            <Button
-              type="button"
-              className={`${elementStyles.blue} float-right text-nowrap`}
-              onClick={setRedirectToLogout}
-            >
-              Log Out
-            </Button>
+            <Button onClick={setRedirectToLogout}>Log Out</Button>
           </>
         )}
       </Flex>
