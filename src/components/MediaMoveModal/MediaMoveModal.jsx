@@ -1,5 +1,5 @@
 import { Breadcrumb } from "components/folders/Breadcrumb"
-import { MoveMenuBackButton, MoveMenuItem } from "components/move"
+import { MoveMenuBackButton, DirMenuItem, FileMenuItem } from "components/move"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
 import _ from "lodash"
 import PropTypes from "prop-types"
@@ -22,47 +22,33 @@ export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
         <>
           {/* directories */}
           {dirData
-            .filter((item) => item.type === "dir")
-            .map((item, itemIndex) => (
-              <MoveMenuItem
-                item={item}
+            .filter(({ type }) => type === "dir")
+            .map(({ name }, itemIndex) => (
+              <DirMenuItem
+                name={name}
                 id={itemIndex}
-                isItemSelected={
-                  getMediaDirectoryName(moveTo.mediaDirectoryName, {
-                    splitOn: "/",
-                  }) === `${moveQuery.mediaDirectoryName}%2F${item.name}`
-                }
-                onItemSelect={() =>
+                onClick={() => {
                   setMoveTo({
                     ...moveQuery,
                     mediaDirectoryName: `${getMediaDirectoryName(
                       moveQuery.mediaDirectoryName,
                       { joinOn: "/", decode: true }
-                    )}/${item.name}`,
-                  })
-                }
-                onForward={() => {
-                  setMoveTo({
-                    ...moveQuery,
-                    mediaDirectoryName: `${getMediaDirectoryName(
-                      moveQuery.mediaDirectoryName,
-                      { joinOn: "/", decode: true }
-                    )}/${item.name}`,
+                    )}/${name}`,
                   })
                   setMoveQuery((prevState) => ({
                     ...prevState,
                     mediaDirectoryName: `${
                       moveQuery.mediaDirectoryName
-                    }%2F${encodeURIComponent(item.name)}`,
+                    }%2F${encodeURIComponent(name)}`,
                   }))
                 }}
               />
             ))}
           {/* files */}
           {dirData
-            .filter((item) => item.type === "file")
-            .map((item, itemIndex) => (
-              <MoveMenuItem item={item} id={itemIndex} />
+            .filter(({ type }) => type === "file")
+            .map(({ name }, itemIndex) => (
+              <FileMenuItem name={name} id={itemIndex} />
             ))}
         </>
       )
