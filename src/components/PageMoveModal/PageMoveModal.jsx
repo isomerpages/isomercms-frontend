@@ -1,5 +1,5 @@
 import { Breadcrumb } from "components/folders/Breadcrumb"
-import { MoveMenuBackButton, MoveMenuItem } from "components/move"
+import { MoveMenuBackButton, DirMenuItem, FileMenuItem } from "components/move"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
 import _ from "lodash"
 import { useState } from "react"
@@ -25,37 +25,29 @@ export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
       return (
         <>
           {dirData
-            .filter((item) => item.type === "dir")
-            .map((item, itemIndex) => (
-              <MoveMenuItem
-                item={item}
+            .filter(({ type }) => type === "dir")
+            .map(({ name }, itemIndex) => (
+              <DirMenuItem
+                name={name}
                 id={itemIndex}
-                isItemSelected={moveTo[getLastItemType(moveTo)] === item.name}
-                onItemSelect={() =>
+                onClick={() => {
                   setMoveTo({
                     ...moveQuery,
-                    [nextItemType]: item.name,
-                  })
-                }
-                onForward={() => {
-                  setMoveTo({
-                    ...moveQuery,
-                    [nextItemType]: item.name,
+                    [nextItemType]: name,
                   })
                   setMoveQuery((prevState) => ({
                     ...prevState,
-                    [nextItemType]: encodeURIComponent(item.name),
+                    [nextItemType]: encodeURIComponent(name),
                   }))
                 }}
-                isResource={!!moveQuery.resourceRoomName}
               />
             ))}
           {/* files */}
           {dirData
-            .filter((item) => item.type === "file")
-            .map((item, itemIndex) => (
-              <MoveMenuItem
-                item={item}
+            .filter(({ type }) => type === "file")
+            .map(({ name }, itemIndex) => (
+              <FileMenuItem
+                name={name}
                 id={itemIndex}
                 isResource={!!moveQuery.resourceRoomName}
               />

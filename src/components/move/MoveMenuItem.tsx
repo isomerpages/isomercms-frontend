@@ -11,7 +11,11 @@ interface FileMenuItemProps {
   isResource: boolean
 }
 
-const FileMenuItem = ({ name, id, isResource = false }: FileMenuItemProps) => {
+export const FileMenuItem = ({
+  name,
+  id,
+  isResource = false,
+}: FileMenuItemProps): JSX.Element => {
   return (
     <div
       id={id}
@@ -20,9 +24,7 @@ const FileMenuItem = ({ name, id, isResource = false }: FileMenuItemProps) => {
         ${elementStyles.dropdownItemDisabled}
       `}
     >
-      <i
-        className={`${elementStyles.dropdownIcon} ${elementStyles.disabledIcon} bx bx-sm bx-file-blank`}
-      />
+      <Box pr="1.5rem" className="bx bx-sm bx-file-blank" />
       {pageFileNameToTitle(name, isResource)}
     </div>
   )
@@ -31,10 +33,14 @@ const FileMenuItem = ({ name, id, isResource = false }: FileMenuItemProps) => {
 interface DirMenuItemProps {
   name: string
   id: string
-  onForward: MouseEventHandler<HTMLButtonElement>
+  onClick: MouseEventHandler<HTMLButtonElement>
 }
 
-const DirMenuItem = ({ name, id, onForward }: DirMenuItemProps) => {
+export const DirMenuItem = ({
+  name,
+  id,
+  onClick,
+}: DirMenuItemProps): JSX.Element => {
   return (
     <>
       <Button
@@ -44,7 +50,7 @@ const DirMenuItem = ({ name, id, onForward }: DirMenuItemProps) => {
         display="flex"
         data-cy={id}
         id={`moveModal-forwardButton-${name}`}
-        onClick={onForward}
+        onClick={onClick}
         leftIcon={<Box pr="1rem" className="bx bx-sm bx-folder" />}
         justifyContent="flex-start"
         _focus={{
@@ -69,29 +75,4 @@ const DirMenuItem = ({ name, id, onForward }: DirMenuItemProps) => {
       </Button>
     </>
   )
-}
-
-interface Item {
-  name: string
-  type: "file" | "dir"
-}
-
-interface MoveMenuItemProps {
-  item: Item
-  id: string
-  onForward: DirMenuItemProps["onForward"]
-  isResource: FileMenuItemProps["isResource"]
-}
-
-// eslint-disable-next-line import/prefer-default-export
-export const MoveMenuItem = ({
-  item,
-  id,
-  onForward,
-  isResource = false,
-}: MoveMenuItemProps): JSX.Element => {
-  const { name, type } = item
-  if (type === "file")
-    return <FileMenuItem name={name} id={id} isResource={isResource} />
-  return <DirMenuItem name={name} id={id} onForward={onForward} />
 }
