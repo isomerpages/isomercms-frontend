@@ -1,5 +1,4 @@
-import { Flex, Box } from "@chakra-ui/react"
-import { Button } from "@opengovsg/design-system-react"
+import { Box, useToken, Text, IconButton, HStack } from "@chakra-ui/react"
 import { MouseEventHandler } from "react"
 
 import { deslugifyDirectory } from "utils"
@@ -16,27 +15,34 @@ export const MoveMenuBackButton = ({
   isDisabled,
   backButtonText,
 }: MoveMenuBackButtonProps): JSX.Element => {
+  const backgroundColour = useToken("colors", "primary.500")
   return (
-    <Button
-      id="moveModal-backButton"
-      onClick={onBack}
-      isDisabled={isDisabled}
+    <Box
+      bg={backgroundColour}
       borderRadius={0}
       top={0}
       position="sticky"
-      // NOTE: Design system button wraps in a box, which means that the Flex component
-      // is unable to stretch to fill the width of the button hence this prop is here
-      justifyContent="flex-start"
       py="0.3rem"
       paddingStart={isDisabled ? "3rem" : "1.5rem"}
       w="100%"
+      textColor="white"
     >
-      <Flex alignItems="center">
+      <HStack spacing="1rem" shouldWrapChildren={false}>
         {!isDisabled && (
-          <Box pr="1.5rem" className="bx bx-sm bx-arrow-back text-white" />
+          // Using chakra iconButton rather than design system to have small size
+          <IconButton
+            id="moveModal-backButton"
+            onClick={onBack}
+            aria-label="back-button"
+            size="sm"
+            icon={<i className="bx bx-sm bx-arrow-back text-white" />}
+          />
         )}
-        {deslugifyDirectory(backButtonText)}
-      </Flex>
-    </Button>
+        {/* NOTE: index.scss sets p to have margin bottom of 5 */}
+        <Text mb={0} fontSize="md">
+          {deslugifyDirectory(backButtonText)}
+        </Text>
+      </HStack>
+    </Box>
   )
 }
