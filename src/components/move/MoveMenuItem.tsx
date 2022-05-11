@@ -1,10 +1,17 @@
 import { Spacer, Box, Flex, Text, Button } from "@chakra-ui/react"
+import { MouseEventHandler } from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { pageFileNameToTitle, deslugifyDirectory } from "utils"
 
-const FileMenuItem = ({ name, id, isResource = false }) => {
+interface FileMenuItemProps {
+  name: string
+  id: string
+  isResource: boolean
+}
+
+const FileMenuItem = ({ name, id, isResource = false }: FileMenuItemProps) => {
   return (
     <div
       id={id}
@@ -21,7 +28,13 @@ const FileMenuItem = ({ name, id, isResource = false }) => {
   )
 }
 
-const DirMenuItem = ({ name, id, onForward }) => {
+interface DirMenuItemProps {
+  name: string
+  id: string
+  onForward: MouseEventHandler<HTMLButtonElement>
+}
+
+const DirMenuItem = ({ name, id, onForward }: DirMenuItemProps) => {
   return (
     <>
       <Button
@@ -58,25 +71,27 @@ const DirMenuItem = ({ name, id, onForward }) => {
   )
 }
 
+interface Item {
+  name: string
+  type: "file" | "dir"
+}
+
+interface MoveMenuItemProps {
+  item: Item
+  id: string
+  onForward: DirMenuItemProps["onForward"]
+  isResource: FileMenuItemProps["isResource"]
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export const MoveMenuItem = ({
   item,
   id,
-  isItemSelected,
-  onItemSelect,
   onForward,
   isResource = false,
-}) => {
+}: MoveMenuItemProps): JSX.Element => {
   const { name, type } = item
   if (type === "file")
     return <FileMenuItem name={name} id={id} isResource={isResource} />
-  return (
-    <DirMenuItem
-      name={name}
-      id={id}
-      isItemSelected={isItemSelected}
-      onItemSelect={onItemSelect}
-      onForward={onForward}
-    />
-  )
+  return <DirMenuItem name={name} id={id} onForward={onForward} />
 }
