@@ -103,12 +103,6 @@
   width: 50%;
 }
 
-.modal-newfolder {
-  @extend .modal;
-  height: 50%;
-  width: 70%;
-}
-
 .modal-verify-user-details {
   @extend .modal;
   height: auto;
@@ -123,9 +117,4 @@
     display: flex;
     justify-content: flex-end;
   }
-}
-
-.sortLabel {
-  white-space: nowrap;
-  padding-right: 1rem;
 }
