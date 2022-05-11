@@ -90,18 +90,6 @@
     }
   }
 
-  .dropdownHeader {
-    @extend .dropdownItem;
-    top: 0;
-    position: sticky;
-    background: $isomer-blue;
-    color: white;
-
-    &:hover {
-      background: $isomer-blue;
-    }
-  }
-
   .dropdownItemButton {
     text-align: right;
     background-color: unset;
