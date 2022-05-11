@@ -1,3 +1,4 @@
+import { Flex, Button, Box } from "@chakra-ui/react"
 import axios from "axios"
 import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
@@ -153,16 +154,18 @@ const Sidebar = ({ siteName, currPath }) => {
         )
       case "Logout":
         return (
-          <button
-            className={`px-4 py-3 h-100 w-100 font-weight-bold ${elementStyles.logout}`}
+          <Button
+            w="100%"
+            variant="clear"
+            fontWeight="bold"
             onClick={setRedirectToLogout}
-            type="button"
+            px={6}
           >
-            Logout
-            <div className="float-right">
-              <i className={`${typeInfoDict[title].icon}`} />
-            </div>
-          </button>
+            <Flex w="100%" justifyContent="space-between" alignItems="center">
+              Logout
+              <Box className="bx bx-log-out-circle" />
+            </Flex>
+          </Button>
         )
       case "User":
         return (
