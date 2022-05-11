@@ -26,6 +26,7 @@ export const MoveMenuBackButton = ({
       paddingStart={isDisabled ? "3rem" : "1.5rem"}
       w="100%"
       textColor="white"
+      zIndex="banner"
     >
       <HStack spacing="1rem" shouldWrapChildren={false}>
         {!isDisabled && (
