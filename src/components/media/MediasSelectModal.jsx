@@ -1,10 +1,9 @@
-import { CloseButton } from "@chakra-ui/react"
-import { Button } from "@opengovsg/design-system-react"
+import { CloseButton, Box } from "@chakra-ui/react"
+import { Button, Searchbar } from "@opengovsg/design-system-react"
 import { FolderCard } from "components/FolderCard"
 import { BreadcrumbItem } from "components/folders/Breadcrumb"
 import LoadingButton from "components/LoadingButton"
 import MediaCard from "components/media/MediaCard"
-import { MediaSearchBar } from "components/media/MediaSearchBar"
 import PropTypes from "prop-types"
 import { useState, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
@@ -33,7 +32,6 @@ const MediasSelectModal = ({
 
   const [filteredMedias, setFilteredMedias] = useState([])
   const [filteredDirectories, setFilteredDirectories] = useState([])
-  const [mediaSearchTerm, setMediaSearchTerm] = useState("")
 
   const { watch, handleSubmit } = useFormContext()
 
@@ -41,15 +39,11 @@ const MediasSelectModal = ({
   /*     handler functions    */
   /** ******************************** */
 
-  const searchChangeHandler = (event) => {
+  const searchChangeHandler = (value) => {
     const filterMediaByFileName = (medias, filterTerm) =>
       medias.filter((media) =>
         media.name.toLowerCase().includes(filterTerm.toLowerCase())
       )
-
-    const {
-      target: { value },
-    } = event
 
     const filteredMediaData = filterMediaByFileName(
       mediasData.filter((medias) => medias.type === "file"),
@@ -59,7 +53,6 @@ const MediasSelectModal = ({
       mediasData.filter((medias) => medias.type === "dir"),
       value
     )
-    setMediaSearchTerm(value)
     setFilteredMedias(filteredMediaData)
     setFilteredDirectories(filteredDirectoriesData)
   }
@@ -79,12 +72,14 @@ const MediasSelectModal = ({
         <div className={elementStyles.modalHeader}>
           <h1 className="pl-5 mr-auto">{`Select ${mediaRoom.slice(0, -1)}`}</h1>
           {/* Search medias */}
-          <MediaSearchBar
-            value={mediaSearchTerm}
-            onSearchChange={searchChangeHandler}
-          />
+          <Box w="33%" px="1rem">
+            <Searchbar isExpanded onSearch={searchChangeHandler} />
+          </Box>
           {/* Upload medias */}
-          <Button onClick={onUpload}> Add new</Button>
+          <Button onClick={onUpload} mr={2}>
+            {" "}
+            Add new
+          </Button>
           <CloseButton onClick={onClose} />
         </div>
         {/* Segment divider  */}
