@@ -26,11 +26,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  .modalButtons {
-    @extend .blue;
-    margin: 10px;
-  }
 }
 
 .breadcrumbText {

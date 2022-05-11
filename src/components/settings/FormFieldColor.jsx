@@ -1,9 +1,9 @@
-import { Input } from "@opengovsg/design-system-react"
+import { Input, Button } from "@opengovsg/design-system-react"
 import ColorPickerModal from "components/settings/ColorPickerModal"
 import PropTypes from "prop-types"
 import { useCallback, useEffect, useState } from "react"
 
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import { varyHexColor } from "utils/colours"
 
 const FormFieldColor = ({ value, id, saveChanges }) => {
   const [originalColor, setOriginalColor] = useState()
@@ -106,12 +106,16 @@ const FormFieldColor = ({ value, id, saveChanges }) => {
         isDisabled
         w="40%"
       />
-      <button
-        type="button"
+      <Button
+        _hover={{
+          backgroundColor: varyHexColor(value, 10),
+        }}
+        _active={{
+          backgroundColor: varyHexColor(value, 20),
+        }}
         aria-label="Select colour"
-        className={elementStyles.formColorBox}
+        bgColor={value}
         id={`${id}-box`}
-        style={{ background: value }}
         onClick={activateColorPicker}
       />
     </>
