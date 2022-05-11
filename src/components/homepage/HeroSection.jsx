@@ -1,4 +1,4 @@
-import { IconButton } from "@opengovsg/design-system-react"
+import { Button, IconButton } from "@opengovsg/design-system-react"
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormField from "components/FormField"
 import FormFieldMedia from "components/FormFieldMedia"
@@ -207,24 +207,14 @@ const EditorHeroSection = ({
                       </>
                     ) : null}
                     {droppableProvided.placeholder}
-                    {highlights.length < MAX_NUM_KEY_HIGHLIGHTS ? (
-                      <button
-                        type="button"
-                        id={`highlight-${highlights.length}-create`}
-                        className={`ml-auto ${elementStyles.blue}`}
-                        onClick={createHandler}
-                      >
-                        Create highlight
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        disabled
-                        className={`ml-auto ${elementStyles.disabled}`}
-                      >
-                        Create highlight
-                      </button>
-                    )}
+                    <Button
+                      onClick={createHandler}
+                      id={`highlight-${highlights.length}-create`}
+                      isDisabled={highlights.length >= MAX_NUM_KEY_HIGHLIGHTS}
+                      isFullWidth
+                    >
+                      Add Highlight
+                    </Button>
                   </div>
                 )}
               </Droppable>

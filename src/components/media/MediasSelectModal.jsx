@@ -1,3 +1,5 @@
+import { CloseButton } from "@chakra-ui/react"
+import { Button } from "@opengovsg/design-system-react"
 import { FolderCard } from "components/FolderCard"
 import { BreadcrumbItem } from "components/folders/Breadcrumb"
 import LoadingButton from "components/LoadingButton"
@@ -82,16 +84,8 @@ const MediasSelectModal = ({
             onSearchChange={searchChangeHandler}
           />
           {/* Upload medias */}
-          <button
-            type="button"
-            className={elementStyles.blue}
-            onClick={onUpload}
-          >
-            Add new
-          </button>
-          <button type="button" onClick={onClose}>
-            <i className="bx bx-x" />
-          </button>
+          <Button onClick={onUpload}> Add new</Button>
+          <CloseButton onClick={onClose} />
         </div>
         {/* Segment divider  */}
         <div className={`${contentStyles.segmentDividerContainer}`}>

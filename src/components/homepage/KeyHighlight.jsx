@@ -1,4 +1,4 @@
-import { IconButton } from "@opengovsg/design-system-react"
+import { Button, IconButton } from "@opengovsg/design-system-react"
 import FormContext from "components/Form/FormContext"
 import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
@@ -74,15 +74,15 @@ const KeyHighlight = ({
           </FormContext>
         </div>
         <div className={elementStyles.inputGroup}>
-          <button
-            type="button"
+          <Button
             id={`highlight-${highlightIndex}-delete`}
-            className={`ml-auto ${elementStyles.warning}`}
             onClick={deleteHandler}
+            colorScheme="danger"
             key={`${highlightIndex}-delete`}
+            isFullWidth
           >
-            Delete highlight
-          </button>
+            Delete Highlight
+          </Button>
         </div>
       </>
     )}
