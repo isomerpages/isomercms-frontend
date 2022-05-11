@@ -1,14 +1,26 @@
 import { Flex, Box } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
+import { MouseEventHandler } from "react"
 
 import { deslugifyDirectory } from "utils"
 
+interface MoveMenuBackButtonProps {
+  isDisabled: boolean
+  backButtonText: string
+  onBack: MouseEventHandler<HTMLButtonElement>
+}
+
 // eslint-disable-next-line import/prefer-default-export
-export const MoveMenuBackButton = ({ onBack, isDisabled, backButtonText }) => {
+export const MoveMenuBackButton = ({
+  onBack,
+  isDisabled,
+  backButtonText,
+}: MoveMenuBackButtonProps): JSX.Element => {
   return (
     <Button
       id="moveModal-backButton"
-      onClick={!isDisabled && onBack}
+      onClick={onBack}
+      isDisabled={isDisabled}
       borderRadius={0}
       top={0}
       position="sticky"
