@@ -148,14 +148,14 @@ const NavElem = ({
             )}
           </div>
           <div className={elementStyles.inputGroup}>
-            <button
-              type="button"
-              id={`link-${linkIndex}-delete`}
-              className={`ml-auto ${elementStyles.warning}`}
+            <Button
               onClick={deleteHandler}
+              id={`link-${linkIndex}-delete`}
+              colorScheme="danger"
+              isFullWidth
             >
               Delete Menu
-            </button>
+            </Button>
           </div>
         </>
       ) : null}
