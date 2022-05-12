@@ -1,34 +1,40 @@
-import { HStack } from "@chakra-ui/react"
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  Text,
+  HStack,
+  Divider,
+} from "@chakra-ui/react"
 import { yupResolver } from "@hookform/resolvers/yup"
+import { ModalCloseButton, Button } from "@opengovsg/design-system-react"
 import axios from "axios"
 import {
   DirectorySettingsSchema,
   DirectorySettingsModal,
 } from "components/DirectorySettingsModal"
 import { FolderCard } from "components/FolderCard"
-import { LoadingButton } from "components/LoadingButton"
 import PropTypes from "prop-types"
 import { useState } from "react"
 import { useFieldArray, useForm, FormProvider } from "react-hook-form"
-
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
-import adminStyles from "styles/isomer-cms/pages/Admin.module.scss"
-import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
 import { getDirectoryCreationType } from "utils/directoryUtils"
 
 import { pageFileNameToTitle } from "utils"
 
+import { useCreateDirectoryHook } from "../../hooks/directoryHooks/useCreateDirectoryHook"
 // axios settings
 axios.defaults.withCredentials = true
 
 // eslint-disable-next-line import/prefer-default-export
 export const DirectoryCreationModal = ({
   params,
-  onClose,
   dirsData,
+  onClose,
   pagesData,
-  onProceed,
   showSelectPages,
 }) => {
   const {
@@ -37,6 +43,8 @@ export const DirectoryCreationModal = ({
     resourceRoomName,
     mediaDirectoryName,
   } = params
+
+  const { mutateAsync: onProceed, isLoading } = useCreateDirectoryHook(params)
 
   const [isSelectingPages, setIsSelectingPages] = useState(false)
 
@@ -124,47 +132,48 @@ export const DirectoryCreationModal = ({
           onClose={onClose}
         />
       )}
-      {showSelectPages && isSelectingPages && (
-        <div className={elementStyles.overlay}>
-          <div className={`${elementStyles.fullscreenWrapper}`}>
-            <div
-              className={`${adminStyles.adminSidebar} ${elementStyles.wrappedContent} bg-transparent`}
-            />
-            <div
-              className={`${contentStyles.mainSection} ${elementStyles.wrappedContent} bg-light`}
-            >
-              {/* Page title */}
-              <div className={contentStyles.sectionHeader}>
-                <h1
-                  className={contentStyles.sectionTitle}
-                >{`Select pages to add into '${methods.watch(
-                  "newDirectoryName"
-                )}'`}</h1>
-              </div>
-              <div className="d-flex justify-content-between w-100">
-                <span>Pages</span>
-              </div>
-              <br />
-              {/* Pages */}
-              <div className={contentStyles.folderContainerBoxes}>
-                <div className={contentStyles.boxesContainer}>
-                  <FolderContents />
-                </div>
-              </div>
-            </div>
-            <div className={contentStyles.sectionFooter}>
-              <HStack w="100%" pt="10px" spacing={2} justifyContent="flex-end">
-                <LoadingButton onClick={onClose} variant="outline">
-                  Cancel
-                </LoadingButton>
-                <LoadingButton onClick={methods.handleSubmit(onSubmit)}>
-                  {fields.length === 0 ? "Skip" : "Done"}
-                </LoadingButton>
-              </HStack>
-            </div>
-          </div>
-        </div>
-      )}
+      <Modal
+        onClose={onClose}
+        size="full"
+        isOpen={showSelectPages && isSelectingPages}
+        scrollBehavior="inside"
+      >
+        <ModalOverlay />
+        <ModalContent overflow="scroll" pt={24.5}>
+          <ModalCloseButton colorScheme="primary" />
+          {/*
+           * NOTE: We have to set padding separately for header/body;
+           * This is because using a box and setting flex = 1 + padding causes the scrollbar to not appear
+           */}
+          <ModalHeader paddingInline={66}>
+            <Text textStyle="display-2">
+              {`Select items to add into '${methods.watch(
+                "newDirectoryName"
+              )}'`}
+            </Text>
+            <Text textStyle="body-2">
+              Pages will be ordered by the order of selection
+            </Text>
+            <Divider mt={8} mb={11.5} />
+          </ModalHeader>
+          <ModalBody px={66}>
+            <FolderContents />
+          </ModalBody>
+          <ModalFooter>
+            <HStack spacing={2}>
+              <Button onClick={onClose} variant="clear">
+                Cancel
+              </Button>
+              <Button
+                isLoading={isLoading}
+                onClick={methods.handleSubmit(onSubmit)}
+              >
+                Save
+              </Button>
+            </HStack>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </FormProvider>
   )
 }

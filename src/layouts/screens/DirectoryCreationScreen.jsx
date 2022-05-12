@@ -2,10 +2,7 @@ import axios from "axios"
 import { DirectoryCreationModal } from "components/DirectoryCreationModal"
 import PropTypes from "prop-types"
 
-import {
-  useGetDirectoryHook,
-  useCreateDirectoryHook,
-} from "hooks/directoryHooks"
+import { useGetDirectoryHook } from "hooks/directoryHooks"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -38,7 +35,6 @@ export const DirectoryCreationScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match
 
   const { data: dirData } = useGetDirectoryHook(params, { initialData: [] })
-  const { mutateAsync: saveHandler } = useCreateDirectoryHook(params)
   const { data: pagesData } = useGetDirectoryHook(
     {
       ...params,
@@ -53,7 +49,6 @@ export const DirectoryCreationScreen = ({ match, onClose }) => {
       dirsData={getDirsData(pagesData, dirData)}
       pagesData={getPagesData(pagesData, dirData)}
       params={decodedParams}
-      onProceed={saveHandler}
       onClose={onClose}
     />
   )
