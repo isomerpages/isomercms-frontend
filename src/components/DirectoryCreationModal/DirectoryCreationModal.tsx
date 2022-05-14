@@ -12,14 +12,22 @@ import {
   useDisclosure,
 } from "@chakra-ui/react"
 import { ModalCloseButton, Button } from "@opengovsg/design-system-react"
+import { ReactChildren } from "react"
+
+export interface DirectoryCreationModalProps {
+  onSubmit: () => void
+  isLoading: boolean
+  directoryTitle: string
+  children: ReactChildren
+}
 
 // eslint-disable-next-line import/prefer-default-export
 export const DirectoryCreationModal = ({
   onSubmit,
-  directoryType,
+  directoryTitle,
   children,
-  isLoading,
-}) => {
+  isLoading = false,
+}: DirectoryCreationModalProps): JSX.Element => {
   const { isOpen, onClose } = useDisclosure()
   return (
     <Modal
@@ -38,7 +46,7 @@ export const DirectoryCreationModal = ({
         <ModalHeader paddingInline="264px">
           <VStack spacing={1.5} align="flex-start">
             <Text textStyle="display-2">
-              {`Select items to add into '${directoryType}'`}
+              {`Select items to add into '${directoryTitle}'`}
             </Text>
             <Text textStyle="body-2">
               Pages will be ordered by the order of selection
