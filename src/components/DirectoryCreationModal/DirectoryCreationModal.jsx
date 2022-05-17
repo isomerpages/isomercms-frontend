@@ -42,7 +42,7 @@ export const DirectoryCreationModal = ({
   const existingTitlesArray = dirsData.map((item) => item.name)
 
   const methods = useForm({
-    mode: "onBlur",
+    mode: "onTouched",
     resolver: yupResolver(DirectorySettingsSchema(existingTitlesArray)),
     context: {
       type: getDirectoryCreationType(

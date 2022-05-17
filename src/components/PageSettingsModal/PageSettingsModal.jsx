@@ -51,8 +51,7 @@ export const PageSettingsModal = ({
     setValue,
     trigger,
   } = useForm({
-    mode: "onBlur",
-    reValidateMode: "onChange",
+    mode: "onTouched",
     resolver: yupResolver(PageSettingsSchema(existingTitlesArray)),
     defaultValues: defaultFrontMatter,
     context: { type: resourceRoomName ? "resourcePage" : "" },
