@@ -202,7 +202,7 @@ const Sidebar = ({ siteName, currPath }) => {
       `/sites/${siteName}/${pathname}` === convertCollectionsPathToWorkspace()
     return (
       <li
-        className={`d-flex p-0 ${isActive ? styles.active : ""} ${
+        className={`d-flex p-1 ${isActive ? styles.active : ""} ${
           pathname === "user" ? styles.noHover : ""
         }`}
         key={title}
