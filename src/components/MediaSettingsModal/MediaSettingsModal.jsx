@@ -146,7 +146,7 @@ export const MediaSettingsModal = ({
           </p>
           <MediaComponent />
           <form className={elementStyles.modalContent}>
-            <div className={elementStyles.modalFormFields}>
+            <div>
               <FormContext hasError={!!errors.name?.message}>
                 <FormTitle>File name</FormTitle>
                 <FormField

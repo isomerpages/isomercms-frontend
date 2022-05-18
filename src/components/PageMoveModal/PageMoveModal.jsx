@@ -79,7 +79,7 @@ export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
           </button>
         </div>
         <div className={elementStyles.modalContent}>
-          <div className={elementStyles.modalFormFields}>
+          <div>
             {`Moving pages to a different folder might lead to user confusion.
             You may wish to change the permalink or references to this page afterwards.`}
             <br />

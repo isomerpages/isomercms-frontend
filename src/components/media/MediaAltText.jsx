@@ -64,7 +64,7 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
               </div>
             )}
             <form className={elementStyles.modalContent}>
-              <div className={elementStyles.modalFormFields}>
+              <div>
                 <FormContext isDisabled>
                   <FormTitle>File name</FormTitle>
                   <FormField

@@ -108,7 +108,7 @@ export const PageSettingsModal = ({
               </center>
             ) : (
               <>
-                <div className={elementStyles.modalFormFields}>
+                <div>
                   {!fileName ? "You may edit page details anytime. " : ""}
                   To edit page content, simply click on the page title. <br />
                   <Breadcrumb params={params} title={watch("title")} />
