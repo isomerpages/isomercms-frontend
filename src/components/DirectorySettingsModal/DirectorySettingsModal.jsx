@@ -110,7 +110,13 @@ export const DirectorySettingsModal = ({
             />
             <FormError>{errors.newDirectoryName?.message}</FormError>
           </FormContext>
-          <HStack w="100%" pt="20px" spacing={2} justifyContent="flex-end">
+          <HStack
+            w="100%"
+            pt="20px"
+            spacing={2}
+            justifyContent="flex-end"
+            paddingInlineEnd={1}
+          >
             <LoadingButton
               onClick={handleSubmit(onSubmit)}
               isDisabled={!_.isEmpty(errors)}
