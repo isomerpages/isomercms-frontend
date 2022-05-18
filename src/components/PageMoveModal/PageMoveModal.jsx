@@ -1,7 +1,7 @@
-import { CloseButton } from "@chakra-ui/react"
+import { CloseButton, HStack } from "@chakra-ui/react"
 import { Breadcrumb } from "components/folders/Breadcrumb"
+import { LoadingButton } from "components/LoadingButton"
 import { MoveMenuBackButton, DirMenuItem, FileMenuItem } from "components/move"
-import SaveDeleteButtons from "components/SaveDeleteButtons"
 import _ from "lodash"
 import { useState } from "react"
 
@@ -10,7 +10,6 @@ import { useGetDirectoryHook } from "hooks/directoryHooks"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { pageFileNameToTitle, getLastItemType, getNextItemType } from "utils"
-
 // eslint-disable-next-line import/prefer-default-export
 export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
   const [moveQuery, setMoveQuery] = useState(_.omit(queryParams, "fileName"))
@@ -119,17 +118,21 @@ export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
               )}
             />
           </div>
-          <SaveDeleteButtons
-            isDisabled={moveTo.resourceRoomName && !moveTo.resourceCategoryName}
-            hasDeleteButton={false}
-            saveCallback={() =>
-              onProceed({
-                target: _.omit(moveTo, ["siteName", "fileName"]),
-                items: [{ name: params.fileName, type: "file" }],
-              })
-            }
-            saveLabel="Move Here"
-          />
+          <HStack w="100%" justify="flex-end" paddingInlineEnd={1}>
+            <LoadingButton
+              onClick={() =>
+                onProceed({
+                  target: _.omit(moveTo, ["siteName", "fileName"]),
+                  items: [{ name: params.fileName, type: "file" }],
+                })
+              }
+              isDisabled={
+                moveTo.resourceRoomName && !moveTo.resourceCategoryName
+              }
+            >
+              Move Here
+            </LoadingButton>
+          </HStack>
         </div>
       </div>
     </div>
