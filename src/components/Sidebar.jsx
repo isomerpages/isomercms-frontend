@@ -1,4 +1,4 @@
-import { Flex, Button, Box } from "@chakra-ui/react"
+import { Flex, Button, Link as ChakraLink, Icon } from "@chakra-ui/react"
 import axios from "axios"
 import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
@@ -17,6 +17,9 @@ import styles from "styles/isomer-cms/pages/Admin.module.scss"
 import { errorToast } from "utils/toasts"
 
 import { getLastUpdated } from "api"
+import { BxBook, BxBuoy, BxLogOutCircle } from "assets/icons"
+
+import { BxCog } from "../assets/icons/BxCog"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -68,17 +71,14 @@ const sidebarUserDict = [
 const typeInfoDict = {
   Help: {
     url: "https://go.gov.sg/isomer-cms-help",
-    icon: "bx bx-buoy",
+    icon: <Icon as={BxBuoy} />,
   },
   Guide: {
     url: "https://go.gov.sg/isomercms-guide/",
-    icon: "bx bx-book",
+    icon: <Icon as={BxBook} />,
   },
   Settings: {
-    icon: "bx bx-cog",
-  },
-  Logout: {
-    icon: "bx bx-log-out-circle",
+    icon: <Icon as={BxCog} />,
   },
 }
 
@@ -135,22 +135,27 @@ const Sidebar = ({ siteName, currPath }) => {
     return currPathArr.slice(0, 4).join("/")
   }
 
-  const generateContent = (title, pathname, isActive) => {
+  const generateContent = (title, pathname) => {
     switch (title) {
       case "Help":
       case "Guide":
         return (
-          <a
-            className={`px-4 py-3 h-100 w-100 font-weight-bold text-dark ${elementStyles.noExtLink}`}
+          <Button
             href={typeInfoDict[title].url}
-            target="_blank"
-            rel="noopener noreferrer"
+            as={ChakraLink}
+            variant="clear"
+            isFullWidth
+            fontWeight="bold"
+            paddingInline={6}
+            paddingBlock={4}
+            textDecorationLine="none"
+            className="text-dark"
           >
-            {title}
-            <div className="float-right">
-              <i className={`text-dark ${typeInfoDict[title].icon}`} />
-            </div>
-          </a>
+            <Flex w="100%" justifyContent="space-between" alignItems="center">
+              {title}
+              {typeInfoDict[title].icon}
+            </Flex>
+          </Button>
         )
       case "Logout":
         return (
@@ -163,7 +168,7 @@ const Sidebar = ({ siteName, currPath }) => {
           >
             <Flex w="100%" justifyContent="space-between" alignItems="center">
               Logout
-              <Box className="bx bx-log-out-circle" />
+              <Icon as={BxLogOutCircle} />
             </Flex>
           </Button>
         )
@@ -176,23 +181,23 @@ const Sidebar = ({ siteName, currPath }) => {
         )
       default:
         return (
-          <Link
-            className={`px-4 py-3 h-100 w-100 font-weight-bold ${
-              isActive ? "" : "text-dark"
-            }`}
+          <Button
+            as={Link}
+            variant="clear"
+            isFullWidth
+            fontWeight="bold"
+            paddingInline={6}
+            paddingBlock={4}
+            className="text-dark"
             to={`/sites/${siteName}/${pathname}`}
           >
-            {title}
-            {title in typeInfoDict && "icon" in typeInfoDict[title] && (
-              <div className="float-right">
-                <i
-                  className={`${isActive ? "" : "text-dark"} ${
-                    typeInfoDict[title].icon
-                  }`}
-                />
-              </div>
-            )}
-          </Link>
+            <Flex w="100%" justifyContent="space-between" alignItems="center">
+              {title}
+              {title in typeInfoDict &&
+                "icon" in typeInfoDict[title] &&
+                typeInfoDict[title].icon}
+            </Flex>
+          </Button>
         )
     }
   }
