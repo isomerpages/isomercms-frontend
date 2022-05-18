@@ -1,4 +1,4 @@
-import { CloseButton } from "@chakra-ui/react"
+import { CloseButton, Flex } from "@chakra-ui/react"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
@@ -6,7 +6,7 @@ import FormContext from "components/Form/FormContext"
 import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
-import SaveDeleteButtons from "components/SaveDeleteButtons"
+import { LoadingButton } from "components/LoadingButton"
 import _ from "lodash"
 import { useEffect } from "react"
 import { useForm, useFormContext } from "react-hook-form"
@@ -158,16 +158,18 @@ export const MediaSettingsModal = ({
                 <FormError>{errors.name?.message}</FormError>
               </FormContext>
             </div>
-            <SaveDeleteButtons
-              saveLabel={!fileName ? "Upload" : "Save"}
-              isSaveDisabled={
-                !fileName
-                  ? !_.isEmpty(errors) || !watch("content")
-                  : !_.isEmpty(errors) || !mediaData?.sha
-              }
-              hasDeleteButton={false}
-              saveCallback={handleSubmit((data) => onSubmit(data))}
-            />
+            <Flex w="100%" dir="row" justifyContent="flex-end" p={1}>
+              <LoadingButton
+                isDisabled={
+                  !fileName
+                    ? !_.isEmpty(errors) || !watch("content")
+                    : !_.isEmpty(errors) || !mediaData?.sha
+                }
+                onClick={handleSubmit((data) => onSubmit(data))}
+              >
+                {!fileName ? "Upload" : "Save"}
+              </LoadingButton>
+            </Flex>
           </form>
         </>
       </div>
