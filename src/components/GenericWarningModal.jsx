@@ -1,3 +1,4 @@
+import { HStack } from "@chakra-ui/react"
 import { LoadingButton } from "components/LoadingButton"
 import parse from "html-react-parser"
 import PropTypes from "prop-types"
@@ -29,24 +30,16 @@ const GenericWarningModal = ({
       <div className={elementStyles.modalContent}>
         <p>{parse(displayText)}</p>
       </div>
-      <div className={elementStyles.modalButtons}>
+      <HStack w="100%" pt="20px" spacing={2} justifyContent="flex-end">
         {cancelText && onCancel && (
-          <LoadingButton
-            label={cancelText}
-            disabledStyle={elementStyles.disabled}
-            className={`${elementStyles.warning}`}
-            callback={onCancel}
-          />
+          <LoadingButton colorScheme="danger" onClick={onCancel}>
+            {cancelText}
+          </LoadingButton>
         )}
         {proceedText && onProceed && (
-          <LoadingButton
-            label={proceedText}
-            disabledStyle={elementStyles.disabled}
-            className={`${elementStyles.blue}`}
-            callback={onProceed}
-          />
+          <LoadingButton onClick={onProceed}>{proceedText}</LoadingButton>
         )}
-      </div>
+      </HStack>
     </div>
   </div>
 )
