@@ -1,7 +1,5 @@
 // eslint-disable-next-line import/prefer-default-export
-export const BxArrowBack = (
-  props: React.SVGProps<SVGSVGElement>
-): JSX.Element => {
+export const BxFolder = (props: React.SVGProps<SVGSVGElement>): JSX.Element => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -10,7 +8,7 @@ export const BxArrowBack = (
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
     >
-      <path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z" />
+      <path d="M20 5h-8.586L9.707 3.293A.997.997 0 0 0 9 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V7c0-1.103-.897-2-2-2zM4 19V7h16l.002 12H4z" />
     </svg>
   )
 }
