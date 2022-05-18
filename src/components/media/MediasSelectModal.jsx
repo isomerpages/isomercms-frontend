@@ -168,13 +168,12 @@ const MediasSelectModal = ({
         <div className={`d-flex ${elementStyles.modalFooter}`}>
           <div className="ml-auto mt-3">
             <LoadingButton
-              label="Select"
               id="selectMedia"
-              disabledStyle={elementStyles.disabled}
-              disabled={!watch("selectedMedia")}
-              className={elementStyles.blue}
-              callback={handleSubmit((data) => onProceed(data))}
-            />
+              isDisabled={!watch("selectedMedia")}
+              onClick={handleSubmit((data) => onProceed(data))}
+            >
+              Select
+            </LoadingButton>
           </div>
         </div>
       </div>
