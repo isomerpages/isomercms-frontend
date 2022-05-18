@@ -1,3 +1,4 @@
+import { HStack } from "@chakra-ui/react"
 import DeleteWarningModal from "components/DeleteWarningModal"
 import GenericWarningModal from "components/GenericWarningModal"
 import Header from "components/Header"
@@ -677,24 +678,25 @@ const EditNavBar = ({ match }) => {
             />
           </div>
           <div className={editorStyles.pageEditorFooter}>
-            {!isEmpty(deletedLinks) && (
+            <HStack w="100%" justify="flex-end">
+              {!isEmpty(deletedLinks) && (
+                <LoadingButton
+                  ml="auto"
+                  variant="clear"
+                  onClick={() => {
+                    setShowDeletedText(true)
+                  }}
+                >
+                  See removed content
+                </LoadingButton>
+              )}
               <LoadingButton
-                label="See removed content"
-                className={`ml-auto ${elementStyles.warning}`}
-                callback={() => {
-                  setShowDeletedText(true)
-                }}
-              />
-            )}
-            <LoadingButton
-              label="Save"
-              disabled={hasErrors()}
-              disabledStyle={elementStyles.disabled}
-              className={
-                hasErrors() ? elementStyles.disabled : elementStyles.blue
-              }
-              callback={() => saveNavData(siteName, originalNav, links, sha)}
-            />
+                isDisabled={hasErrors()}
+                onClick={() => saveNavData(siteName, originalNav, links, sha)}
+              >
+                Save
+              </LoadingButton>
+            </HStack>
           </div>
         </div>
       )}

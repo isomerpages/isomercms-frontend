@@ -1500,15 +1500,9 @@ const EditHomepage = ({ match }) => {
             ))}
           </div>
           <div className={editorStyles.pageEditorFooter}>
-            <LoadingButton
-              label="Save"
-              disabled={hasErrors}
-              disabledStyle={elementStyles.disabled}
-              className={
-                hasErrors || !sha ? elementStyles.disabled : elementStyles.blue
-              }
-              callback={savePage}
-            />
+            <LoadingButton isDisabled={hasErrors} onClick={savePage}>
+              Save
+            </LoadingButton>
           </div>
         </div>
       )}

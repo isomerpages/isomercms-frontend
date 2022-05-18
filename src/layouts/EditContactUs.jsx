@@ -1,4 +1,5 @@
 // TODO: Clean up formatting, semi-colons, PropTypes etc
+import { HStack } from "@chakra-ui/react"
 import axios from "axios"
 import EditorSection from "components/contact-us/Section"
 import DeleteWarningModal from "components/DeleteWarningModal"
@@ -891,26 +892,26 @@ const EditContactUs = ({ match }) => {
             </section>
           </div>
           <div className={editorStyles.pageEditorFooter}>
-            {!isEmpty(deletedFrontMatter) && (
+            <HStack w="100%" justify="flex-end">
+              {!isEmpty(deletedFrontMatter) && (
+                <LoadingButton
+                  ml="auto"
+                  variant="clear"
+                  onClick={() => {
+                    setShowDeletedText(true)
+                  }}
+                >
+                  See removed content
+                </LoadingButton>
+              )}
               <LoadingButton
-                label="See removed content"
-                className={`ml-auto ${elementStyles.warning}`}
-                callback={() => {
-                  setShowDeletedText(true)
-                }}
-              />
-            )}
-            <LoadingButton
-              label="Save"
-              disabled={hasErrors()}
-              disabledStyle={elementStyles.disabled}
-              className={
-                hasErrors() || !frontMatterSha
-                  ? elementStyles.disabled
-                  : elementStyles.blue
-              }
-              callback={savePage}
-            />
+                label="Save"
+                isDisabled={hasErrors()}
+                onClick={savePage}
+              >
+                Save
+              </LoadingButton>
+            </HStack>
           </div>
         </div>
       )}
