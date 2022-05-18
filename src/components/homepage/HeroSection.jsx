@@ -213,7 +213,7 @@ const EditorHeroSection = ({
                       isDisabled={highlights.length >= MAX_NUM_KEY_HIGHLIGHTS}
                       isFullWidth
                     >
-                      Add Highlight
+                      Add highlight
                     </Button>
                   </div>
                 )}

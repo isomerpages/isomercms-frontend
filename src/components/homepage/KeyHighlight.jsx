@@ -81,7 +81,7 @@ const KeyHighlight = ({
             key={`${highlightIndex}-delete`}
             isFullWidth
           >
-            Delete Highlight
+            Delete highlight
           </Button>
         </div>
       </>

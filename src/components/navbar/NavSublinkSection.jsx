@@ -73,7 +73,7 @@ const SublinkElem = ({
             colorScheme="danger"
             isFullWidth
           >
-            Delete Submenu
+            Delete submenu
           </Button>
         </div>
       </>
@@ -138,7 +138,7 @@ const NavSublinkSection = ({
           id={`sublink-${linkIndex}-${sublinks.length}-create`}
           onClick={createHandler}
         >
-          Create Submenu
+          Create submenu
         </Button>
       </div>
     )}

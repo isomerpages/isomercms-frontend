@@ -77,7 +77,6 @@ const MediasSelectModal = ({
           </Box>
           {/* Upload medias */}
           <Button onClick={onUpload} mr={2}>
-            {" "}
             Add new
           </Button>
           <CloseButton onClick={onClose} />
@@ -92,11 +91,10 @@ const MediasSelectModal = ({
             {mediaRoom === "images"
               ? ` 'png', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg'`
               : ` 'pdf'`}
-            , please use{" "}
+            , please use
             <Link to={{ pathname: `https://go.gov.sg` }} target="_blank">
-              {" "}
-              https://go.gov.sg{" "}
-            </Link>{" "}
+              https://go.gov.sg
+            </Link>
             to upload and link them to your Isomer site.
           </p>
         </div>

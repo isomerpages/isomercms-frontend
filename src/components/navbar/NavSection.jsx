@@ -154,7 +154,7 @@ const NavElem = ({
               colorScheme="danger"
               isFullWidth
             >
-              Delete Menu
+              Delete menu
             </Button>
           </div>
         </>
