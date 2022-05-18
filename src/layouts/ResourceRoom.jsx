@@ -6,9 +6,9 @@ import FormContext from "components/Form/FormContext"
 import FormError from "components/Form/FormError"
 import FormField from "components/FormField"
 import Header from "components/Header"
-import SaveDeleteButtons from "components/SaveDeleteButtons"
+import { LoadingButton } from "components/LoadingButton"
 import Sidebar from "components/Sidebar"
-import * as _ from "lodash"
+import _ from "lodash"
 import PropTypes from "prop-types"
 import { useForm } from "react-hook-form"
 import {
@@ -76,12 +76,12 @@ const EmptyResourceRoom = ({ params }) => {
       <div className={contentStyles.segmentDividerContainer}>
         <hr className="invisible w-100 mt-3 mb-3" />
       </div>
-      <SaveDeleteButtons
-        saveLabel="Create Resource Room"
+      <LoadingButton
+        onClick={handleSubmit((data) => saveHandler({ data }))}
         isDisabled={!_.isEmpty(errors)}
-        hasDeleteButton={false}
-        saveCallback={handleSubmit((data) => saveHandler({ data }))}
-      />
+      >
+        Create Resource Room
+      </LoadingButton>
     </>
   )
 }
