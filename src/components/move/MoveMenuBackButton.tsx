@@ -1,6 +1,7 @@
-import { Box, useToken, Text, IconButton, HStack } from "@chakra-ui/react"
+import { Box, useToken, Text, IconButton, HStack, Icon } from "@chakra-ui/react"
 import { MouseEventHandler } from "react"
 
+import { BxArrowBack } from "assets/icons"
 import { deslugifyDirectory } from "utils"
 
 interface MoveMenuBackButtonProps {
@@ -36,7 +37,7 @@ export const MoveMenuBackButton = ({
             onClick={onBack}
             aria-label="back-button"
             size="sm"
-            icon={<i className="bx bx-sm bx-arrow-back text-white" />}
+            icon={<Icon as={BxArrowBack} w="24px" h="24px" />}
           />
         )}
         {/* NOTE: index.scss sets p to have margin bottom of 5 */}
