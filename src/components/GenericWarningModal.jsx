@@ -1,4 +1,4 @@
-import LoadingButton from "components/LoadingButton"
+import { LoadingButton } from "components/LoadingButton"
 import parse from "html-react-parser"
 import PropTypes from "prop-types"
 

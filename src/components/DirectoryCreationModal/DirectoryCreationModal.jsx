@@ -5,7 +5,7 @@ import {
   DirectorySettingsModal,
 } from "components/DirectorySettingsModal"
 import { FolderCard } from "components/FolderCard"
-import LoadingButton from "components/LoadingButton"
+import { LoadingButton } from "components/LoadingButton"
 import PropTypes from "prop-types"
 import { useState } from "react"
 import { useFieldArray, useForm, FormProvider } from "react-hook-form"

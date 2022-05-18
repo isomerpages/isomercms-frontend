@@ -1,4 +1,4 @@
-import LoadingButton from "components/LoadingButton"
+import { LoadingButton } from "components/LoadingButton"
 import PropTypes from "prop-types"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"

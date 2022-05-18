@@ -1,7 +1,7 @@
 import DeleteWarningModal from "components/DeleteWarningModal"
 import GenericWarningModal from "components/GenericWarningModal"
 import Header from "components/Header"
-import LoadingButton from "components/LoadingButton"
+import { LoadingButton } from "components/LoadingButton"
 import NavSection from "components/navbar/NavSection"
 import update from "immutability-helper"
 import _ from "lodash"

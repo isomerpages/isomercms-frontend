@@ -1,6 +1,6 @@
 import { Breadcrumb } from "components/folders/Breadcrumb"
 import { FolderItem } from "components/folders/FolderContent"
-import LoadingButton from "components/LoadingButton"
+import { LoadingButton } from "components/LoadingButton"
 import update from "immutability-helper"
 import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
