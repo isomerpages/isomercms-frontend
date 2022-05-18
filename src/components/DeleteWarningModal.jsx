@@ -12,7 +12,7 @@ const DeleteWarningModal = ({ onDelete, onCancel, type }) => (
       </div>
       <form className={elementStyles.modalContent}>
         <p>{`Are you sure you want to delete ${type || "this"}?`}</p>
-        <HStack paddingTop="20px" justifyContent="flex-end">
+        <HStack paddingTop="20px" justifyContent="flex-end" paddingInline={1}>
           <Button id="modal-delete" onClick={onDelete} colorScheme="danger">
             Delete
           </Button>
