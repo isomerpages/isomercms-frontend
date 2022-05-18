@@ -1,11 +1,12 @@
-import { Spacer, Box, Flex, Text, Button } from "@chakra-ui/react"
+import { Spacer, Flex, Text, Button, Icon } from "@chakra-ui/react"
 import { MouseEventHandler } from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
+import { BxFileBlank, BxFolder, BxChevronRight } from "assets/icons"
 import { pageFileNameToTitle, deslugifyDirectory } from "utils"
 
-interface FileMenuItemProps {
+export interface FileMenuItemProps {
   name: string
   id: string
   isResource: boolean
@@ -24,13 +25,13 @@ export const FileMenuItem = ({
         ${elementStyles.dropdownItemDisabled}
       `}
     >
-      <Box pr="1.5rem" className="bx bx-sm bx-file-blank" />
+      <Icon w="24px" h="24px" as={BxFileBlank} mr="1.5rem" />
       {pageFileNameToTitle(name, isResource)}
     </div>
   )
 }
 
-interface DirMenuItemProps {
+export interface DirMenuItemProps {
   name: string
   id: string
   onClick: MouseEventHandler<HTMLButtonElement>
@@ -51,11 +52,12 @@ export const DirMenuItem = ({
         data-cy={id}
         id={`moveModal-forwardButton-${name}`}
         onClick={onClick}
-        leftIcon={<Box pr="1rem" className="bx bx-sm bx-folder" />}
+        leftIcon={<Icon as={BxFolder} w="24px" h="24px" mr="1rem" />}
         justifyContent="flex-start"
         _focus={{
           boxShadow: 0,
         }}
+        borderRadius={0}
       >
         <Flex w="100%">
           <Text
@@ -67,9 +69,11 @@ export const DirMenuItem = ({
             {deslugifyDirectory(name)}
           </Text>
           <Spacer />
-          <Box
+          <Icon
             id={`moveModal-forwardButton-${name}`}
-            className="bx bx-sm bx-chevron-right"
+            w="24px"
+            h="24px"
+            as={BxChevronRight}
           />
         </Flex>
       </Button>
