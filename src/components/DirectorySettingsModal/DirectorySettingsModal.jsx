@@ -68,7 +68,7 @@ export const DirectorySettingsModal = ({
   } =
     useFormContext() ||
     useForm({
-      mode: "onBlur",
+      mode: "onTouched",
       resolver: yupResolver(DirectorySettingsSchema(existingTitlesArray)),
       defaultValues: {
         newDirectoryName: deslugifyDirectory(existingDirectoryName),

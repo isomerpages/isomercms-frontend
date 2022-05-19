@@ -59,7 +59,7 @@ export const MediaSettingsModal = ({
   } =
     useFormContext() ||
     useForm({
-      mode: "onBlur",
+      mode: "onTouched",
       resolver: yupResolver(MediaSettingsSchema(existingTitlesArray)),
       context: { mediaRoom },
     })

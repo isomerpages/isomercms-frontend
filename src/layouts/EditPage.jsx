@@ -1,7 +1,7 @@
 import axios from "axios"
+import Footer from "components/Footer"
 import GenericWarningModal from "components/GenericWarningModal"
 import Header from "components/Header"
-import EditPageFooter from "components/pages/EditPageFooter"
 import MarkdownEditor from "components/pages/MarkdownEditor"
 import PagePreview from "components/pages/PagePreview"
 import DOMPurify from "dompurify"
@@ -10,11 +10,7 @@ import PropTypes from "prop-types"
 import { useEffect, useRef, useState } from "react"
 
 import { useCollectionHook } from "hooks/collectionHooks"
-import {
-  useGetPageHook,
-  useUpdatePageHook,
-  useDeletePageHook,
-} from "hooks/pageHooks"
+import { useGetPageHook, useUpdatePageHook } from "hooks/pageHooks"
 import { useCspHook, useGetSiteColorsHook } from "hooks/settingsHooks"
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -45,7 +41,7 @@ DOMPurify.setConfig({
   ],
 })
 
-const EditPage = ({ match, history }) => {
+const EditPage = ({ match }) => {
   const { params, decodedParams } = match
   const { siteName } = decodedParams
 
@@ -74,9 +70,6 @@ const EditPage = ({ match, history }) => {
       if (err.response.status === 409) setShowOverwriteWarning(true)
     },
     onSuccess: () => setHasChanges(false),
-  })
-  const { mutateAsync: deletePageHandler } = useDeletePageHook(params, {
-    onSuccess: () => history.goBack(),
   })
 
   const { data: csp } = useCspHook(params)
@@ -208,14 +201,9 @@ const EditPage = ({ match, history }) => {
           dirData={dirData}
         />
       </div>
-      <EditPageFooter
-        isSaveDisabled={isContentViolation}
-        deleteCallback={() =>
-          deletePageHandler({
-            sha: currSha,
-          })
-        }
-        saveCallback={() => {
+      <Footer
+        isKeyButtonDisabled={isContentViolation}
+        keyCallback={() => {
           if (isXSSViolation) setShowXSSWarning(true)
           else {
             updatePageHandler({
@@ -227,7 +215,7 @@ const EditPage = ({ match, history }) => {
             })
           }
         }}
-        isSaving={isSavingPage}
+        keyButtonIsLoading={isSavingPage}
       />
     </>
   )
@@ -245,8 +233,5 @@ EditPage.propTypes = {
       siteName: PropTypes.string,
       fileName: PropTypes.string,
     }),
-  }).isRequired,
-  history: PropTypes.shape({
-    goBack: PropTypes.func,
   }).isRequired,
 }
