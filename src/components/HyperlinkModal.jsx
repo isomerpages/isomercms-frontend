@@ -25,7 +25,7 @@ const HyperlinkModal = ({ onSave, initialText, onClose }) => {
             <CloseButton onClick={onClose} />
           </div>
           <div className={elementStyles.modalContent}>
-            <div className={elementStyles.modalFormFields}>
+            <div>
               <FormContext isRequired>
                 <VStack display="block">
                   <Box>

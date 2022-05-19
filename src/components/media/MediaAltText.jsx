@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react"
+import { Box, CloseButton } from "@chakra-ui/react"
 import axios from "axios"
 import FormContext from "components/Form/FormContext"
 import FormDescription from "components/Form/FormDescription"
@@ -28,14 +28,7 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
       <div className={elementStyles.modal}>
         <div className={elementStyles.modalHeader}>
           <h1>Insert media</h1>
-          <button
-            mediaType="button"
-            type="button"
-            id="closeMediaSettingsModal"
-            onClick={onClose}
-          >
-            <i className="bx bx-x" />
-          </button>
+          <CloseButton id="closeMediaSettingsModal" onClick={onClose} />
         </div>
         {!watch("selectedMedia") ? (
           <center>
@@ -64,7 +57,7 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
               </div>
             )}
             <form className={elementStyles.modalContent}>
-              <div className={elementStyles.modalFormFields}>
+              <div>
                 <FormContext isDisabled>
                   <FormTitle>File name</FormTitle>
                   <FormField

@@ -1,3 +1,4 @@
+import { CloseButton } from "@chakra-ui/react"
 import { yupResolver } from "@hookform/resolvers/yup"
 import axios from "axios"
 import { Breadcrumb } from "components/folders/Breadcrumb"
@@ -97,9 +98,7 @@ export const PageSettingsModal = ({
         <div className={elementStyles["modal-settings"]}>
           <div className={elementStyles.modalHeader}>
             <h1>{!fileName ? "Create new page" : "Page settings"}</h1>
-            <button id="settings-CLOSE" type="button" onClick={onClose}>
-              <i id="settingsIcon-CLOSE" className="bx bx-x" />
-            </button>
+            <CloseButton id="settings-CLOSE" onClick={onClose} />
           </div>
           <div className={elementStyles.modalContent}>
             {fileName && !pageData ? (
@@ -108,7 +107,7 @@ export const PageSettingsModal = ({
               </center>
             ) : (
               <>
-                <div className={elementStyles.modalFormFields}>
+                <div>
                   {!fileName ? "You may edit page details anytime. " : ""}
                   To edit page content, simply click on the page title. <br />
                   <Breadcrumb params={params} title={watch("title")} />

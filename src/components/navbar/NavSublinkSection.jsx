@@ -1,4 +1,4 @@
-import { IconButton } from "@opengovsg/design-system-react"
+import { Button, IconButton } from "@opengovsg/design-system-react"
 import { FormError } from "components/Form"
 import FormContext from "components/Form/FormContext"
 import FormTitle from "components/Form/FormTitle"
@@ -67,14 +67,14 @@ const SublinkElem = ({
           </FormContext>
         </div>
         <div className={elementStyles.inputGroup}>
-          <button
-            type="button"
-            id={`sublink-${linkIndex}-${sublinkIndex}-delete`}
-            className={`ml-auto ${elementStyles.warning}`}
+          <Button
             onClick={deleteHandler}
+            id={`sublink-${linkIndex}-${sublinkIndex}-delete`}
+            colorScheme="danger"
+            isFullWidth
           >
-            Delete Submenu
-          </button>
+            Delete submenu
+          </Button>
         </div>
       </>
     ) : null}
@@ -132,14 +132,14 @@ const NavSublinkSection = ({
           </>
         ) : null}
         {droppableProvided.placeholder}
-        <button
-          type="button"
+        <Button
+          mt={4}
+          isFullWidth
           id={`sublink-${linkIndex}-${sublinks.length}-create`}
-          className={`ml-auto mt-4 ${elementStyles.blue}`}
           onClick={createHandler}
         >
-          Create Submenu
-        </button>
+          Create submenu
+        </Button>
       </div>
     )}
   </Droppable>

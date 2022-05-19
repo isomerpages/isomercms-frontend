@@ -1,3 +1,4 @@
+import { Button } from "@opengovsg/design-system-react"
 import Dropdown from "components/Dropdown"
 import PropTypes from "prop-types"
 import { useState } from "react"
@@ -34,16 +35,9 @@ const NewSectionCreator = ({ createHandler, hasResources }) => {
           onFieldChange={(e) => setNewSectionType(e.target.value)}
         />
         <div>
-          <button
-            type="button"
-            className={
-              newSectionType ? elementStyles.blue : elementStyles.disabled
-            }
-            onClick={onFormSubmit}
-            disabled={!newSectionType}
-          >
+          <Button onClick={onFormSubmit} isDisabled={!newSectionType}>
             Select
-          </button>
+          </Button>
         </div>
       </div>
     </div>

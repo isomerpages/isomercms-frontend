@@ -1,35 +1,3 @@
-.edit {
-  white-space: pre-wrap;
-  border: 1px solid grey;
-  margin: 20px;
-  padding: 10px;
-}
-
 .card {
   padding-top: 40px;
-}
-
-.twoPanes {
-  height: 90vh;
-}
-
-.leftPane {
-  overflow-y: scroll;
-  width: 35%;
-}
-
-.rightPane {
-  overflow-y: scroll;
-  transform: scale(0.65);
-  transform-origin: top left;
-  width: 60%;
-}
-
-.leftPaneHomepage {
-  width: 50%;
-}
-
-.rightPaneHomepage {
-  transform: scale(0.8);
-  transform-origin: top left;
 }

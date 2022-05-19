@@ -1,5 +1,6 @@
+import { CloseButton } from "@chakra-ui/react"
 import { Breadcrumb } from "components/folders/Breadcrumb"
-import { MoveMenuBackButton, MoveMenuItem } from "components/move"
+import { MoveMenuBackButton, DirMenuItem, FileMenuItem } from "components/move"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
 import _ from "lodash"
 import { useState } from "react"
@@ -25,37 +26,29 @@ export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
       return (
         <>
           {dirData
-            .filter((item) => item.type === "dir")
-            .map((item, itemIndex) => (
-              <MoveMenuItem
-                item={item}
+            .filter(({ type }) => type === "dir")
+            .map(({ name }, itemIndex) => (
+              <DirMenuItem
+                name={name}
                 id={itemIndex}
-                isItemSelected={moveTo[getLastItemType(moveTo)] === item.name}
-                onItemSelect={() =>
+                onClick={() => {
                   setMoveTo({
                     ...moveQuery,
-                    [nextItemType]: item.name,
-                  })
-                }
-                onForward={() => {
-                  setMoveTo({
-                    ...moveQuery,
-                    [nextItemType]: item.name,
+                    [nextItemType]: name,
                   })
                   setMoveQuery((prevState) => ({
                     ...prevState,
-                    [nextItemType]: encodeURIComponent(item.name),
+                    [nextItemType]: encodeURIComponent(name),
                   }))
                 }}
-                isResource={!!moveQuery.resourceRoomName}
               />
             ))}
           {/* files */}
           {dirData
-            .filter((item) => item.type === "file")
-            .map((item, itemIndex) => (
-              <MoveMenuItem
-                item={item}
+            .filter(({ type }) => type === "file")
+            .map(({ name }, itemIndex) => (
+              <FileMenuItem
+                name={name}
                 id={itemIndex}
                 isResource={!!moveQuery.resourceRoomName}
               />
@@ -82,12 +75,10 @@ export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
       <div className={elementStyles["modal-settings"]}>
         <div className={elementStyles.modalHeader}>
           <h1>Move page</h1>
-          <button id="settings-CLOSE" type="button" onClick={onClose}>
-            <i id="settingsIcon-CLOSE" className="bx bx-x" />
-          </button>
+          <CloseButton id="settings-CLOSE" onClick={onClose} />
         </div>
         <div className={elementStyles.modalContent}>
-          <div className={elementStyles.modalFormFields}>
+          <div>
             {`Moving pages to a different folder might lead to user confusion.
             You may wish to change the permalink or references to this page afterwards.`}
             <br />
