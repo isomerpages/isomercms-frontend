@@ -1,3 +1,4 @@
+import { IconButton } from "@opengovsg/design-system-react"
 import { MenuDropdown } from "components/MenuDropdown"
 import { useState, useRef } from "react"
 import { Link, useRouteMatch } from "react-router-dom"
@@ -85,22 +86,18 @@ const FolderItem = ({ item, itemIndex, isDisabled }) => {
           ) : null}
           {!isDisabled && (
             <div className="position-relative mt-auto mb-auto">
-              <button
+              <IconButton
                 id={`folderItem-dropdown-${name}`}
-                className={`${
-                  showDropdown
-                    ? contentStyles.optionsIconFocus
-                    : contentStyles.optionsIcon
-                }`}
-                type="button"
+                variant="clear"
                 onClick={(e) => {
                   e.stopPropagation()
                   e.preventDefault()
                   setShowDropdown((prevState) => !prevState)
                 }}
+                onBlur={() => setShowDropdown(false)}
               >
                 <i className="bx bx-dots-vertical-rounded" />
-              </button>
+              </IconButton>
               {showDropdown && (
                 <MenuDropdown
                   menuIndex={itemIndex}

@@ -1,3 +1,4 @@
+import { CloseButton } from "@chakra-ui/react"
 import { Breadcrumb } from "components/folders/Breadcrumb"
 import { MoveMenuBackButton, DirMenuItem, FileMenuItem } from "components/move"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
@@ -74,9 +75,7 @@ export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
       <div className={elementStyles["modal-settings"]}>
         <div className={elementStyles.modalHeader}>
           <h1>Move page</h1>
-          <button id="settings-CLOSE" type="button" onClick={onClose}>
-            <i id="settingsIcon-CLOSE" className="bx bx-x" />
-          </button>
+          <CloseButton id="settings-CLOSE" onClick={onClose} />
         </div>
         <div className={elementStyles.modalContent}>
           <div>
