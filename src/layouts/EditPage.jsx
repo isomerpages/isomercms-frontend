@@ -110,7 +110,7 @@ const EditPage = ({ match, history }) => {
 
   useEffect(() => {
     async function editorValueToHtml() {
-      const html = marked(editorValue)
+      const html = marked.parse(editorValue)
       const {
         isCspViolation: checkedIsCspViolation,
         sanitisedHtml: CSPSanitisedHtml,
