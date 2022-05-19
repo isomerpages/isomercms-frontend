@@ -1,5 +1,4 @@
 import PropTypes from "prop-types"
-import React from "react"
 
 const NavDropdownSection = ({ children, link }) => (
   <div className="navbar-item has-dropdown is-hoverable">
@@ -22,41 +21,29 @@ const TemplateNavBar = ({ links, collectionInfo, resources }) => (
           {links.map((link, linkIndex) => {
             if (link.collection) {
               return (
-                <NavDropdownSection
-                  link={link}
-                  linkIndex={linkIndex}
-                  key={linkIndex}
-                >
+                <NavDropdownSection link={link} linkIndex={linkIndex}>
                   {collectionInfo &&
-                    collectionInfo[link.collection].map(
-                      (collection, collectionIndex) => (
-                        <a
-                          className="navbar-item sub-link"
-                          href="/"
-                          onClick={(event) => event.preventDefault()}
-                          key={`collection-${collectionIndex}`}
-                        >
-                          {collection}
-                        </a>
-                      )
-                    )}
+                    collectionInfo[link.collection].map((collection) => (
+                      <a
+                        className="navbar-item sub-link"
+                        href="/"
+                        onClick={(event) => event.preventDefault()}
+                      >
+                        {collection}
+                      </a>
+                    ))}
                 </NavDropdownSection>
               )
             }
             if (link.resource_room) {
               return (
-                <NavDropdownSection
-                  link={link}
-                  linkIndex={linkIndex}
-                  key={linkIndex}
-                >
+                <NavDropdownSection link={link} linkIndex={linkIndex}>
                   {resources &&
-                    resources.map((resource, resourceIndex) => (
+                    resources.map((resource) => (
                       <a
                         className="navbar-item sub-link"
                         href="/"
                         onClick={(event) => event.preventDefault()}
-                        key={`resource-${resourceIndex}`}
                       >
                         {resource}
                       </a>
@@ -66,18 +53,13 @@ const TemplateNavBar = ({ links, collectionInfo, resources }) => (
             }
             if (link.sublinks) {
               return (
-                <NavDropdownSection
-                  link={link}
-                  linkIndex={linkIndex}
-                  key={linkIndex}
-                >
+                <NavDropdownSection link={link} linkIndex={linkIndex}>
                   {link.sublinks &&
-                    link.sublinks.map((sublink, sublinkIndex) => (
+                    link.sublinks.map((sublink) => (
                       <a
                         className="navbar-item sub-link"
                         href="/"
                         onClick={(event) => event.preventDefault()}
-                        key={`sublink-${sublinkIndex}`}
                       >
                         {sublink.title}
                       </a>
@@ -87,7 +69,7 @@ const TemplateNavBar = ({ links, collectionInfo, resources }) => (
             }
             // Single Page
             return (
-              <li className="navbar-item" key={`link-${linkIndex}`}>
+              <li className="navbar-item">
                 <a
                   className="navbar-item is-uppercase"
                   href="/"
@@ -119,7 +101,6 @@ NavDropdownSection.propTypes = {
       })
     ),
   }).isRequired,
-  linkIndex: PropTypes.number.isRequired,
 }
 
 TemplateNavBar.propTypes = {

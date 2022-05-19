@@ -11,7 +11,7 @@ import LoadingButton from "components/LoadingButton"
 import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
-import React, { useEffect, useState } from "react"
+import { createRef, useEffect, useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 
 import "styles/isomer-template.scss"
@@ -84,13 +84,17 @@ const enumSection = (type, args) => {
       return ContactFieldConstructor()
     case "location_hours_field":
       return LocationHoursFieldConstructor()
+    default:
+      throw new Error(
+        "Unreachable path! Please ensure all possible enums are covered."
+      )
   }
 }
 
 const displayDeletedFrontMatter = (deletedFrontMatter) => {
   let displayText = ""
   const { contacts, locations } = deletedFrontMatter
-  locations.map((location, i) => {
+  locations.forEach((location, i) => {
     if (!isEmpty(location)) {
       displayText += `<br/>In Location <code>${i + 1}</code>: <br/>`
       Object.entries(location).forEach(([key, value]) => {
@@ -168,7 +172,7 @@ const EditContactUs = ({ match }) => {
 
     let content
     let sha
-    let footerContent
+    let newFooterContent
 
     const loadContactUsDetails = async () => {
       // Set page colors
@@ -204,7 +208,7 @@ const EditContactUs = ({ match }) => {
           `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/settings`
         )
         const { feedback } = settingsResp.data
-        footerContent = { feedback }
+        newFooterContent = { feedback }
       } catch (err) {
         errorToast(
           `There was a problem trying to load your contact us page. ${DEFAULT_RETRY_MSG}`
@@ -212,15 +216,16 @@ const EditContactUs = ({ match }) => {
         console.log(err)
       }
 
-      if (!footerContent) return
+      if (!newFooterContent) return
 
       // split the markdown into front matter and content
-      const { frontMatter } = frontMatterParser(content)
+      const { frontMatter: newFrontMatter } = frontMatterParser(content)
 
       // data cleaning for non-comforming data
-      const { sanitisedFrontMatter, deletedFrontMatter } = sanitiseFrontMatter(
-        frontMatter
-      )
+      const {
+        sanitisedFrontMatter,
+        deletedFrontMatter: newDeletedFrontMatter,
+      } = sanitiseFrontMatter(newFrontMatter)
       const { contacts, locations } = sanitisedFrontMatter
       const { contactsErrors, locationsErrors } = validateFrontMatter(
         sanitisedFrontMatter
@@ -237,20 +242,20 @@ const EditContactUs = ({ match }) => {
       }
 
       const sectionsScrollRefs = {
-        header: React.createRef(),
-        feedback: React.createRef(),
-        contacts: React.createRef(),
-        locations: React.createRef(),
+        header: createRef(),
+        feedback: createRef(),
+        contacts: createRef(),
+        locations: createRef(),
       }
 
-      contacts.forEach((_) => {
+      contacts.forEach(() => {
         contactsDisplay.push(false)
-        contactsScrollRefs.push(React.createRef())
+        contactsScrollRefs.push(createRef())
       })
 
-      locations.forEach((_) => {
+      locations.forEach(() => {
         locationsDisplay.push(false)
-        locationsScrollRefs.push(React.createRef())
+        locationsScrollRefs.push(createRef())
       })
 
       if (_isMounted) {
@@ -259,11 +264,11 @@ const EditContactUs = ({ match }) => {
           contacts: contactsScrollRefs,
           locations: locationsScrollRefs,
         })
-        setFooterContent(footerContent)
-        setOriginalFooterContent(_.cloneDeep(footerContent))
+        setFooterContent(newFooterContent)
+        setOriginalFooterContent(_.cloneDeep(newFooterContent))
         setFrontMatter(sanitisedFrontMatter)
-        setOriginalFrontMatter(_.cloneDeep(frontMatter))
-        setDeletedFrontMatter(deletedFrontMatter)
+        setOriginalFrontMatter(_.cloneDeep(newFrontMatter))
+        setDeletedFrontMatter(newDeletedFrontMatter)
         setSanitisedOriginalFrontMatter(_.cloneDeep(sanitisedFrontMatter))
         setFrontMatterSha(sha)
         setDisplaySections({
@@ -490,7 +495,7 @@ const EditContactUs = ({ match }) => {
                 },
               })
               break
-            case "address":
+            case "address": {
               newFrontMatter = update(frontMatter, {
                 [elemType]: {
                   [locationIndex]: {
@@ -511,6 +516,7 @@ const EditContactUs = ({ match }) => {
                 },
               })
               break
+            }
             default:
               newFrontMatter = update(frontMatter, {
                 [elemType]: {
@@ -531,6 +537,10 @@ const EditContactUs = ({ match }) => {
           scrollRefs[elemType][locationIndex].current.scrollIntoView()
           break
         }
+        default:
+          throw new Error(
+            "Unreachable path! Please ensure all possible enums are covered."
+          )
       }
       setFrontMatter(
         _.isUndefined(newFrontMatter) ? frontMatter : newFrontMatter
@@ -571,7 +581,7 @@ const EditContactUs = ({ match }) => {
         $set: modifiedDisplaySections,
       })
       const newScrollRefs = update(scrollRefs, {
-        [id]: { $push: [React.createRef()] },
+        [id]: { $push: [createRef()] },
       })
 
       if (scrollRefs[id].length) {

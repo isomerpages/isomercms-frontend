@@ -1,4 +1,4 @@
-import Button from "components/Button"
+import { Button } from "@opengovsg/design-system-react"
 import { useContext, useEffect, useState } from "react"
 
 import {
@@ -222,12 +222,9 @@ const VerifyUserDetailsModal = () => {
           {renderVerificationStep()}
         </div>
         <div className={elementStyles.footer}>
-          <Button
-            onClick={setRedirectToLogout}
-            type="button"
-            label="Logout"
-            className={elementStyles.blue}
-          />
+          <Button onClick={setRedirectToLogout} variant="outline">
+            Logout
+          </Button>
         </div>
       </div>
     </div>

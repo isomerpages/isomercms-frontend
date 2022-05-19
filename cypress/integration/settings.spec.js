@@ -179,13 +179,13 @@ describe("Settings page", () => {
   }
   it("Should change Primary and Secondary colors and have colors reflected on page previews", () => {
     // Enter RGB values for primary and secondary colors
-    cy.contains("p", "Primary").siblings("div").click()
+    cy.contains("p", "Primary").siblings("button").click()
     cy.contains(/^r/).siblings().clear().type(TEST_PRIMARY_COLOR[0].toString())
     cy.contains(/^g/).siblings().clear().type(TEST_PRIMARY_COLOR[1].toString())
     cy.contains(/^b/).siblings().clear().type(TEST_PRIMARY_COLOR[2].toString())
     cy.contains("button", "Select").click()
 
-    cy.contains("p", "Secondary").siblings("div").click()
+    cy.contains("p", "Secondary").siblings("button").click()
     cy.contains(/^r/)
       .siblings()
       .clear()
@@ -211,13 +211,13 @@ describe("Settings page", () => {
       .siblings("input")
       .should("have.value", hexPrimary)
     cy.contains("p", "Primary")
-      .siblings("div")
+      .siblings("button")
       .should("have.attr", "style", `background: ${rgbPrimary};`)
     cy.contains("p", "Secondary")
       .siblings("input")
       .should("have.value", hexSecondary)
     cy.contains("p", "Secondary")
-      .siblings("div")
+      .siblings("button")
       .should("have.attr", "style", `background: ${rgbSecondary};`)
 
     // Check if page previews reflect color change

@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react"
 import axios from "axios"
 import FormContext from "components/Form/FormContext"
 import FormDescription from "components/Form/FormDescription"
@@ -5,7 +6,6 @@ import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import SaveDeleteButtons from "components/SaveDeleteButtons"
-import React from "react"
 import { useFormContext } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -29,8 +29,8 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
         <div className={elementStyles.modalHeader}>
           <h1>Insert media</h1>
           <button
-            type="button"
             mediaType="button"
+            type="button"
             id="closeMediaSettingsModal"
             onClick={onClose}
           >
@@ -94,11 +94,18 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
                       "Description of file displayed in hyperlink"
                     )}
                   </FormDescription>
-                  <FormField
-                    placeholder={formTitle}
-                    {...register("altText")}
-                    id="altText"
-                  />
+                  {/* NOTE: There's a 2px internal padding as the input has a 2px border
+                   * when focused. This has clipping issues due to a lack of space so the internal
+                   * 2px padding allows the border to display.
+                   */}
+                  <Box px="2px">
+                    <FormField
+                      placeholder={formTitle}
+                      // eslint-disable-next-line react/jsx-props-no-spreading
+                      {...register("altText")}
+                      id="altText"
+                    />
+                  </Box>
                   <FormError>{errors.altText?.message}</FormError>
                 </FormContext>
               </div>

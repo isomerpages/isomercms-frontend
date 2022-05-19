@@ -1,10 +1,11 @@
+import { Button } from "@opengovsg/design-system-react"
 import FormContext from "components/Form/FormContext"
 import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import NavSublinkSection from "components/navbar/NavSublinkSection"
 import PropTypes from "prop-types"
-import React, { useState, useRef } from "react"
+import { useState, useRef } from "react"
 import { Droppable, Draggable } from "react-beautiful-dnd"
 import Select from "react-select"
 
@@ -276,16 +277,14 @@ const NavSection = ({
           placeholder="Select link type..."
           options={sectionCreationOptions}
         />
-        <button
-          type="button"
-          className={
-            newSectionType ? elementStyles.blue : elementStyles.disabled
-          }
+        <Button
           onClick={sectionCreationHandler}
-          disabled={!newSectionType}
+          isDisabled={!newSectionType}
+          variant="solid"
+          colorScheme="primary"
         >
           Create New Menu
-        </button>
+        </Button>
       </div>
       <span className={elementStyles.info}>
         {`Note: you can specify a folder ${

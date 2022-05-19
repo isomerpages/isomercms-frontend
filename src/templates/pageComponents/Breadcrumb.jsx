@@ -1,5 +1,8 @@
+// NOTE: jsx-ally is disabled for this file as the output of this
+// should match jekyll output as closely as possible.
+// As jekyll outputs an <a /> tag like so, this behaviour is preserved here.
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import PropTypes from "prop-types"
-import React from "react"
 
 const Breadcrumb = ({ title, collection, resourceRoomName }) => (
   <nav className="bp-breadcrumb" aria-label="breadcrumbs">

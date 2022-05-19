@@ -5,6 +5,7 @@ export class DirectoryService {
     this.apiClient = apiClient
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getDirectoryEndpoint({
     siteName,
     collectionName,
@@ -100,7 +101,7 @@ export class DirectoryService {
       items,
       newDirectoryName,
     }
-    return await this.apiClient.post(this.getDirectoryEndpoint(apiParams), body)
+    return this.apiClient.post(this.getDirectoryEndpoint(apiParams), body)
   }
 
   async update(apiParams, { newDirectoryName }) {
@@ -128,13 +129,13 @@ export class DirectoryService {
   }
 
   async get(apiParams) {
-    return await this.apiClient
+    return this.apiClient
       .get(this.getDirectoryEndpoint(apiParams))
       .then((res) => res.data)
   }
 
   async delete(apiParams) {
-    return await this.apiClient
+    return this.apiClient
       .delete(this.getDirectoryEndpoint(apiParams))
       .then((res) => res.data)
   }

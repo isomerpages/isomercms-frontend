@@ -5,7 +5,6 @@ import HeroButton from "components/homepage/HeroButton"
 import HeroDropdown from "components/homepage/HeroDropdown"
 import KeyHighlight from "components/homepage/KeyHighlight"
 import PropTypes from "prop-types"
-import React from "react"
 import { Droppable, Draggable } from "react-beautiful-dnd"
 
 import styles from "styles/App.module.scss"
@@ -93,7 +92,7 @@ const EditorHeroSection = ({
           <FormFieldMedia
             value={background}
             id={`section-${sectionIndex}-hero-background`}
-            inlineButtonText="Choose Image"
+            inlineButtonText="Select"
           />
           <FormError>{errors.sections[0].hero.background}</FormError>
         </FormContext>

@@ -6,20 +6,22 @@ import {
 } from "components/DirectorySettingsModal"
 import { FolderCard } from "components/FolderCard"
 import LoadingButton from "components/LoadingButton"
-import * as _ from "lodash"
 import PropTypes from "prop-types"
-import React, { useEffect, useState } from "react"
+import { useState } from "react"
 import { useFieldArray, useForm, FormProvider } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import adminStyles from "styles/isomer-cms/pages/Admin.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
+import { getDirectoryCreationType } from "utils/directoryUtils"
+
 import { pageFileNameToTitle } from "utils"
 
 // axios settings
 axios.defaults.withCredentials = true
 
+// eslint-disable-next-line import/prefer-default-export
 export const DirectoryCreationModal = ({
   params,
   onClose,
@@ -28,7 +30,12 @@ export const DirectoryCreationModal = ({
   onProceed,
   showSelectPages,
 }) => {
-  const { siteName, collectionName, mediaDirectoryName } = params
+  const {
+    siteName,
+    collectionName,
+    resourceRoomName,
+    mediaDirectoryName,
+  } = params
 
   const [isSelectingPages, setIsSelectingPages] = useState(false)
 
@@ -38,11 +45,11 @@ export const DirectoryCreationModal = ({
     mode: "onBlur",
     resolver: yupResolver(DirectorySettingsSchema(existingTitlesArray)),
     context: {
-      type: mediaDirectoryName
-        ? "mediaDirectoryName"
-        : collectionName
-        ? "subCollectionName"
-        : "collectionName",
+      type: getDirectoryCreationType(
+        mediaDirectoryName,
+        resourceRoomName,
+        collectionName
+      ),
     },
   })
 
@@ -57,14 +64,51 @@ export const DirectoryCreationModal = ({
 
   const onSubmit = (data) => {
     return onProceed({
-      items: data.items,
-      newDirectoryName: mediaDirectoryName
-        ? `${mediaDirectoryName}/${data.newDirectoryName}`
-        : data.newDirectoryName,
+      data,
+      mediaDirectoryName,
     })
   }
 
+  // Sub-component used here for clarity
+  const FolderContents = () => {
+    if (pagesData && pagesData.length > 0) {
+      return pagesData.map((pageData, pageIdx) => (
+        <FolderCard
+          displayText={pageFileNameToTitle(pageData.name)}
+          settingsToggle={() => {}}
+          key={pageData.name}
+          pageType="file"
+          siteName={siteName}
+          itemIndex={pageIdx}
+          selectedIndex={
+            fields.findIndex((item) => item.name === pageData.name) !== -1
+              ? fields.findIndex((item) => item.name === pageData.name) + 1
+              : null
+          }
+          onClick={() => {
+            const indexOfItem = fields.findIndex(
+              (item) => item.name === pageData.name
+            )
+
+            if (indexOfItem !== -1) {
+              remove(indexOfItem)
+            } else {
+              append({ name: pageData.name, type: "file" })
+            }
+          }}
+        />
+      ))
+    }
+
+    if (pagesData) {
+      return "There are no pages in this folder."
+    }
+
+    return "Loading Pages..."
+  }
+
   return (
+    // eslint-disable-next-line react/jsx-props-no-spreading
     <FormProvider {...methods}>
       {!isSelectingPages && (
         <DirectorySettingsModal
@@ -103,37 +147,7 @@ export const DirectoryCreationModal = ({
               {/* Pages */}
               <div className={contentStyles.folderContainerBoxes}>
                 <div className={contentStyles.boxesContainer}>
-                  {pagesData && pagesData.length > 0
-                    ? pagesData.map((pageData, pageIdx) => (
-                        <FolderCard
-                          displayText={pageFileNameToTitle(pageData.name)}
-                          settingsToggle={() => {}}
-                          key={pageData.name}
-                          pageType="file"
-                          siteName={siteName}
-                          itemIndex={pageIdx}
-                          selectedIndex={
-                            fields.findIndex(
-                              (item) => item.name === pageData.name
-                            ) != -1
-                              ? fields.findIndex(
-                                  (item) => item.name === pageData.name
-                                ) + 1
-                              : null
-                          }
-                          onClick={() => {
-                            const indexOfItem = fields.findIndex(
-                              (item) => item.name === pageData.name
-                            )
-                            indexOfItem != -1
-                              ? remove(indexOfItem)
-                              : append({ name: pageData.name, type: "file" })
-                          }}
-                        />
-                      ))
-                    : !pagesData
-                    ? "Loading Pages..."
-                    : "There are no pages in this folder."}
+                  <FolderContents />
                 </div>
               </div>
             </div>

@@ -1,12 +1,10 @@
 import axios from "axios"
-import React, { createContext, useEffect, useState, useContext } from "react"
+import { createContext, useEffect, useState, useContext } from "react"
 
 import { SITES_IS_PRIVATE_KEY } from "constants/constants"
 
 const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 const LOCAL_STORAGE_USER_ID_KEY = "userId"
-const LOCAL_STORAGE_USER_EMAIL_KEY = "userEmail"
-const LOCAL_STORAGE_USER_CONTACT_NUMBER = "userContactNumber"
 const LOCAL_STORAGE_USER = "user"
 
 const LoginContext = createContext(null)
@@ -32,22 +30,26 @@ const LoginProvider = ({ children }) => {
 
   const verifyLoginAndSetLocalStorage = async () => {
     const resp = await axios.get(`${BACKEND_URL}/auth/whoami`)
-    const { userId, email, contactNumber } = resp.data
+    const {
+      userId: returnedUserId,
+      email: returnedEmail,
+      contactNumber: returnedContactNumber,
+    } = resp.data
 
-    if (userId) {
-      setUserId(userId)
-      localStorage.setItem(LOCAL_STORAGE_USER_ID_KEY, userId)
+    if (returnedUserId) {
+      setUserId(returnedUserId)
+      localStorage.setItem(LOCAL_STORAGE_USER_ID_KEY, returnedUserId)
     }
 
     const loggedInUser = {}
-    if (email) {
-      setEmail(email)
-      loggedInUser.email = email
+    if (returnedEmail) {
+      setEmail(returnedEmail)
+      loggedInUser.email = returnedEmail
     }
 
-    if (contactNumber) {
-      setContactNumber(contactNumber)
-      loggedInUser.contactNumber = contactNumber
+    if (returnedContactNumber) {
+      setContactNumber(returnedContactNumber)
+      loggedInUser.contactNumber = returnedContactNumber
     }
 
     localStorage.setItem(LOCAL_STORAGE_USER, JSON.stringify(loggedInUser))
@@ -63,10 +65,10 @@ const LoginProvider = ({ children }) => {
 
   // Set interceptors to log users out if an error occurs within the LoginProvider
   axios.interceptors.response.use(
-    function (response) {
+    (response) => {
       return response
     },
-    async function (error) {
+    async (error) => {
       if (error.response && error.response.status === 401) {
         await logout()
       }

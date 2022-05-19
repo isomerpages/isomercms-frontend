@@ -1,9 +1,10 @@
-import React from "react"
+import Spacer from "components/Spacer"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { pageFileNameToTitle, deslugifyDirectory } from "utils"
 
+// eslint-disable-next-line import/prefer-default-export
 export const MoveMenuItem = ({
   item,
   id,
@@ -30,23 +31,29 @@ export const MoveMenuItem = ({
     )
   if (type === "dir")
     return (
-      <div
+      <button
+        type="button"
         id={id}
         data-cy={id}
         onClick={onItemSelect}
         className={`
         ${elementStyles.dropdownItem} 
+        ${elementStyles.dropdownTextButton}
         ${isItemSelected ? elementStyles.dropdownItemFocus : ""}
       `}
       >
         <i className={`${elementStyles.dropdownIcon} bx bx-sm bx-folder`} />
         {deslugifyDirectory(name)}
-        <i
+        <Spacer />
+        <button
+          type="button"
           id={`moveModal-forwardButton-${name}`}
-          className={`${elementStyles.dropdownItemButton} bx bx-sm bx-chevron-right ml-auto`}
+          className={`${elementStyles.dropdownItemButton}`}
           onMouseDown={onForward}
-        />
-      </div>
+        >
+          <i className="bx bx-sm bx-chevron-right ml-auto" />
+        </button>
+      </button>
     )
   return null
 }

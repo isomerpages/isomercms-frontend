@@ -1,13 +1,13 @@
 import { sanitizeUrl } from "@braintree/sanitize-url"
 import PropTypes from "prop-types"
-import React from "react"
+import { forwardRef } from "react"
 
 const LocationHours = ({ operatingHours }) => (
   <div className="col is-6">
     {operatingHours &&
-      operatingHours.map((operation, i) => {
+      operatingHours.map((operation) => {
         return (
-          <p className="margin--top--none" key={i}>
+          <p className="margin--top--none">
             <b>{operation.days}</b>:&nbsp;{operation.time}
             <br />
             {operation.description}
@@ -20,8 +20,8 @@ const LocationHours = ({ operatingHours }) => (
 const LocationAddress = ({ location }) => (
   <div className="col is-6">
     <div>
-      {location.address.map((value, i) => (
-        <p className="content margin--top--none margin--bottom--none" key={i}>
+      {location.address.map((value) => (
+        <p className="content margin--top--none margin--bottom--none">
           {value}
         </p>
       ))}
@@ -49,7 +49,7 @@ const LocationAddress = ({ location }) => (
   </div>
 )
 
-const Location = React.forwardRef(({ location }, ref) => (
+const Location = forwardRef(({ location }, ref) => (
   <div className="row is-multiline margin--bottom" ref={ref}>
     {location.address && location.title && (
       <div className="col is-6 padding--bottom--none">
@@ -71,13 +71,13 @@ const Location = React.forwardRef(({ location }, ref) => (
   </div>
 ))
 
-const TemplateLocationsSection = React.forwardRef(
+const TemplateLocationsSection = forwardRef(
   ({ locations, scrollRefs }, ref) => (
     <div ref={ref}>
       {locations && (
         <>
           {locations.map((location, i) => (
-            <Location location={location} key={i} ref={scrollRefs[i]} />
+            <Location location={location} ref={scrollRefs[i]} />
           ))}
         </>
       )}

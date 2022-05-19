@@ -3,6 +3,7 @@ export class SettingsService {
     this.apiClient = apiClient
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getSettingsEndpoint({ siteName }) {
     return `/sites/${siteName}/settings`
   }
@@ -15,7 +16,7 @@ export class SettingsService {
   }
 
   async get(apiParams) {
-    return await this.apiClient
+    return this.apiClient
       .get(this.getSettingsEndpoint(apiParams))
       .then((res) => res.data)
   }

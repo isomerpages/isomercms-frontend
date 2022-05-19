@@ -3,7 +3,6 @@ import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import PropTypes from "prop-types"
-import React from "react"
 import { Droppable, Draggable } from "react-beautiful-dnd"
 
 import styles from "styles/App.module.scss"

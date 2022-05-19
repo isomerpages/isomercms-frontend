@@ -1,5 +1,3 @@
-import React from "react"
-
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import errorStyles from "styles/isomer-cms/pages/Error.module.scss"
 
@@ -11,7 +9,7 @@ function FallbackComponent({ error }) {
       <div className={errorStyles.errorPageMain}>
         <img
           className={errorStyles.errorImage}
-          alt="Generic Error Image"
+          alt="Generic Error"
           src="/genericError.svg"
         />
         <div className={errorStyles.errorText}>
@@ -20,6 +18,7 @@ function FallbackComponent({ error }) {
           Click below to return to IsomerCMS.
         </div>
         <button
+          type="button"
           className={`${errorStyles.errorButton} ${elementStyles.blue}`}
           onClick={() => window.location.reload()}
         >

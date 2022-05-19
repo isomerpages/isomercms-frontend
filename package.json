@@ -1,6 +1,6 @@
 {
   "name": "isomercms-frontend",
-  "version": "0.5.0",
+  "version": "0.8.0",
   "private": true,
   "dependencies": {
     "@atlaskit/tree": "^7.0.2",
@@ -25,7 +25,6 @@
     "dompurify": "^2.3.0",
     "easymde": "^2.16.1",
     "escape-string-regexp": "^4.0.0",
-    "eslint-plugin-only-warn": "^1.0.2",
     "framer-motion": "^6.2.6",
     "html-react-parser": "^1.2.7",
     "immutability-helper": "^3.0.1",
@@ -65,6 +64,7 @@
     "test": "craco test",
     "test:ci": "node scripts/run-e2e.js run",
     "test-e2e": "source .env && node scripts/run-e2e.js run",
+    "reset-e2e": "source .env && node scripts/reset-e2e.js",
     "lint": "eslint --ext .js --ext .jsx --ignore-path .gitignore .",
     "lint-fix": "eslint --ext .js --ext .jsx --ignore-path .gitignore . --fix",
     "format": "npx prettier --check .",
@@ -102,12 +102,13 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.14.6",
+    "@babel/core": "^7.17.9",
     "@babel/eslint-parser": "^7.16.3",
     "@cypress/browserify-preprocessor": "^3.0.2",
     "@cypress/webpack-preprocessor": "^5.9.1",
     "@jest/globals": "^27.0.3",
     "@storybook/addon-actions": "^6.4.18",
+    "@storybook/addon-docs": "^6.4.22",
     "@storybook/addon-essentials": "^6.4.18",
     "@storybook/addon-links": "^6.4.18",
     "@storybook/node-logger": "^6.4.18",
@@ -115,9 +116,10 @@
     "@storybook/react": "^6.4.18",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
-    "auto-changelog": "^2.4.0",
     "@tsconfig/recommended": "^1.0.1",
+    "@types/invariant": "^2.2.35",
     "@types/react-router-dom": "^5.3.3",
+    "auto-changelog": "^2.4.0",
     "btoa": "^1.2.1",
     "chromatic": "^6.4.3",
     "cypress": "^7.2.0",
@@ -134,6 +136,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "find-webpack": "^2.2.1",
     "husky": "^6.0.0",
+    "invariant": "^2.2.4",
     "lint-staged": "^11.0.0",
     "node-sass": "^4.13.1",
     "pathmodify": "^0.5.0",
@@ -141,6 +144,7 @@
     "react-scripts": "^4.0.3",
     "react-test-renderer": "^17.0.2",
     "storybook-preset-craco": "0.0.6",
+    "ts-jest": "^27.1.4",
     "typescript": "^4.5.5"
   },
   "config": {

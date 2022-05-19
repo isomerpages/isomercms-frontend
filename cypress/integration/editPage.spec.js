@@ -50,7 +50,7 @@ describe("Edit unlinked page", () => {
 
     // Set colour
     cy.visit(`/sites/${TEST_REPO_NAME}/settings`)
-    cy.contains("p", "Primary").siblings("div").click()
+    cy.contains("p", "Primary").siblings("button").click()
     cy.contains(/^r/)
       .siblings()
       .clear()
@@ -393,7 +393,7 @@ describe("Edit resource page", () => {
 
     // Set colour
     cy.visit(`/sites/${TEST_REPO_NAME}/settings`)
-    cy.contains("p", "Secondary").siblings("div").click()
+    cy.contains("p", "Secondary").siblings("button").click()
     cy.contains(/^r/)
       .siblings()
       .clear()

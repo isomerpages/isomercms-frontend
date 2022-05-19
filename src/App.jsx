@@ -1,5 +1,6 @@
+import { ThemeProvider } from "@opengovsg/design-system-react"
 import axios from "axios"
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { BrowserRouter as Router } from "react-router-dom"
 import { ToastContainer } from "react-toastify"
@@ -16,6 +17,8 @@ import { RouteSelector } from "routing/RouteSelector"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
+import theme from "theme"
+
 // axios settings
 axios.defaults.withCredentials = true
 
@@ -23,14 +26,17 @@ axios.defaults.withCredentials = true
 const LOCAL_STORAGE_SITE_COLORS = "isomercms_colors"
 
 const ToastCloseButton = ({ closeToast }) => (
-  <span
+  <button
+    type="button"
+    onClick={closeToast}
     style={{
       display: "inline-flex",
       alignItems: "center",
+      background: "inherit",
     }}
   >
-    <i className="bx bx-x bx-sm" onClick={closeToast} />
-  </span>
+    <i className="bx bx-x bx-sm" />
+  </button>
 )
 
 // react-query client
@@ -43,7 +49,7 @@ const apiClient = axios.create({
   timeout: 100000, // 100 secs
 })
 
-export const App = () => {
+const App = () => {
   useEffect(() => {
     localStorage.removeItem(LOCAL_STORAGE_SITE_COLORS)
   }, [])
@@ -59,7 +65,9 @@ export const App = () => {
             className={elementStyles.toastContainer}
           />
           <LoginProvider>
-            <RouteSelector />
+            <ThemeProvider theme={theme}>
+              <RouteSelector />
+            </ThemeProvider>
           </LoginProvider>
         </QueryClientProvider>
       </ServicesProvider>

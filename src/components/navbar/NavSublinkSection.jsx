@@ -3,7 +3,6 @@ import FormContext from "components/Form/FormContext"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import PropTypes from "prop-types"
-import React from "react"
 import { Droppable, Draggable } from "react-beautiful-dnd"
 
 import styles from "styles/App.module.scss"
@@ -105,19 +104,16 @@ const NavSublinkSection = ({
             {sublinks.map((sublink, sublinkIndex) => (
               <Draggable
                 draggableId={`sublink-${linkIndex}-${sublinkIndex}-draggable`}
-                key={`sublink-${linkIndex}-${sublinkIndex}-draggable`}
                 index={sublinkIndex}
               >
                 {(draggableProvided) => (
                   <div
                     className={styles.card}
-                    key={sublinkIndex}
                     {...draggableProvided.draggableProps}
                     {...draggableProvided.dragHandleProps}
                     ref={draggableProvided.innerRef}
                   >
                     <SublinkElem
-                      key={`sublink-${linkIndex}-${sublinkIndex}`}
                       title={sublink.title}
                       url={sublink.url}
                       linkIndex={linkIndex}

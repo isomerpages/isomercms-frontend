@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react"
+import { forwardRef } from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -11,6 +11,7 @@ const FormFieldHorizontal = forwardRef((args, ref) => (
   <div className={elementStyles.formHorizontal}>
     <FormInput
       className={elementStyles.formHorizontalInput}
+      // eslint-disable-next-line react/jsx-props-no-spreading
       {...args}
       ref={ref}
     />

@@ -1,12 +1,12 @@
+import { Input } from "@opengovsg/design-system-react"
 import PropTypes from "prop-types"
-import React from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 export const MediaSearchBar = ({ value, onSearchChange }) => {
   return (
     <div className={elementStyles.mediaSearchBarContainer}>
-      <input
+      <Input
         type="text"
         placeholder="Search by file name"
         value={value}

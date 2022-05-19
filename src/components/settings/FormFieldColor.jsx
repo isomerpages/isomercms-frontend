@@ -1,7 +1,7 @@
-import FormInput from "components/Form/FormInput"
+import { Input } from "@opengovsg/design-system-react"
 import ColorPickerModal from "components/settings/ColorPickerModal"
 import PropTypes from "prop-types"
-import React, { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -67,10 +67,10 @@ const FormFieldColor = ({ value, id, saveChanges }) => {
   const activateColorPicker = (event) => {
     const {
       target: {
-        previousSibling: { value },
+        previousSibling: { value: colourValue },
       },
     } = event
-    setOriginalColor(value)
+    setOriginalColor(colourValue)
     setColorPickerToggle(true)
   }
 
@@ -98,15 +98,17 @@ const FormFieldColor = ({ value, id, saveChanges }) => {
           elementId={id}
         />
       )}
-      <FormInput
+      <Input
         value={value}
         id={id}
         // This component is purely presentational.
         // It is used to display the hex code and hence, is alwaysDisabled.
-        alwaysDisabled
-        className={elementStyles.formColorInput}
+        isDisabled
+        w="40%"
       />
-      <div
+      <button
+        type="button"
+        aria-label="Select colour"
         className={elementStyles.formColorBox}
         id={`${id}-box`}
         style={{ background: value }}

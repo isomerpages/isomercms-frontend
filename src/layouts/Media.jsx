@@ -5,7 +5,6 @@ import Header from "components/Header"
 import MediaCard from "components/media/MediaCard"
 import Sidebar from "components/Sidebar"
 import PropTypes from "prop-types"
-import React from "react"
 import { ReactQueryDevtools } from "react-query/devtools"
 import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom"
 
@@ -207,5 +206,4 @@ Media.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
-  mediaType: PropTypes.string.isRequired,
 }
