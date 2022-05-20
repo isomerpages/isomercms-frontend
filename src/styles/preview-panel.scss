@@ -1,0 +1,419 @@
+@use "sass:meta";
+
+.preview-panel {
+  @include meta.load-css("./isomer-template.scss");
+  /*! minireset.css v0.0.2 | MIT License | github.com/jgthms/minireset.css */
+  blockquote,
+  body,
+  dd,
+  dl,
+  dt,
+  fieldset,
+  figure,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  hr,
+  html,
+  iframe,
+  legend,
+  li,
+  ol,
+  p,
+  pre,
+  textarea,
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: 100%;
+    font-weight: 400;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    margin: 0;
+  }
+
+  html {
+    box-sizing: border-box;
+  }
+  audio,
+  embed,
+  img,
+  object,
+  video {
+    max-width: 100%;
+  }
+
+  iframe {
+    border: 0;
+  }
+
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  td,
+  th {
+    padding: 0;
+    text-align: left;
+  }
+
+  html {
+    background-color: #fff;
+    font-size: 16px;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    min-width: 300px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    text-rendering: optimizeLegibility;
+    text-size-adjust: 100%;
+  }
+
+  article,
+  aside,
+  figure,
+  footer,
+  header,
+  hgroup,
+  section {
+    display: block;
+  }
+
+  code,
+  pre {
+    -moz-osx-font-smoothing: auto;
+    -webkit-font-smoothing: auto;
+    font-family: monospace;
+  }
+
+  body {
+    color: #484848;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  a {
+    color: #4372d6;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: inherit;
+  }
+
+  a strong {
+    color: currentColor;
+  }
+
+  a:hover {
+    color: #3a79ff;
+  }
+
+  code {
+    background-color: #f5f5f5;
+    color: #ff3860;
+    font-size: 0.875em;
+    font-weight: 400;
+    padding: 0.25em 0.5em 0.25em;
+    white-space: pre-wrap;
+  }
+
+  hr {
+    background-color: #d6d6d6;
+    border: none;
+    display: block;
+    height: 2px;
+    margin-top: 3.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  img {
+    height: auto;
+    max-width: 100%;
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    vertical-align: baseline;
+  }
+
+  small {
+    font-size: 0.875em;
+  }
+
+  span {
+    font-style: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+  }
+
+  strong {
+    color: #323232;
+    font-weight: 700;
+  }
+
+  pre {
+    -webkit-overflow-scrolling: touch;
+    background-color: #f5f5f5;
+    color: #484848;
+    font-size: 0.875em;
+    overflow-x: auto;
+    padding: 1.25rem 1.5rem;
+    white-space: pre;
+    word-wrap: normal;
+  }
+
+  pre code {
+    background-color: transparent;
+    color: currentColor;
+    font-size: 1em;
+    padding: 0;
+  }
+
+  table td,
+  table th {
+    text-align: left;
+    vertical-align: top;
+  }
+
+  table th {
+    color: #323232;
+  }
+
+  table.table-v {
+    width: 100%;
+    margin-bottom: 1.5rem;
+  }
+
+  table.table-v td,
+  table.table-v th {
+    border: 1px solid #f0f0f0;
+    border-width: 0 0 1px;
+    padding: 0.5em 0.75em;
+    vertical-align: top;
+  }
+
+  table.table-v th {
+    color: #323232;
+    text-align: left;
+  }
+
+  table.table-v thead td,
+  table.table-v thead th {
+    border-width: 0 0 2px;
+    color: #323232;
+  }
+
+  table.table-v tfoot td,
+  table.table-v tfoot th {
+    border-width: 2px 0 0;
+    color: #323232;
+  }
+
+  table.table-v tbody td {
+    font-size: 1.25rem;
+    padding: 1.5625rem;
+    padding-bottom: 2rem;
+  }
+
+  table.table-v tbody td:first-child {
+    width: 20%;
+    background-color: #f0f4f6;
+    border-bottom-color: #fff;
+    font-weight: 600;
+  }
+
+  table.table-v tbody tr:last-child td,
+  table.table-v tbody tr:last-child th {
+    border-bottom: solid 1px #f0f0f0;
+  }
+
+  table.table-v tbody tr:first-child td,
+  table.table-v tbody tr:first-child th {
+    border-top: solid 1px #f0f0f0;
+  }
+
+  table.table-h {
+    width: 100%;
+    margin-bottom: 1.5rem;
+  }
+
+  table.table-h td,
+  table.table-h th {
+    border: 1px solid #f0f0f0;
+    border-width: 0 0 1px;
+    padding: 0.5em 0.75em;
+    vertical-align: top;
+  }
+
+  table.table-h th {
+    color: #323232;
+    background-color: #fff;
+    text-align: left;
+    font-weight: 600;
+    font-size: 1.25rem;
+  }
+
+  table.table-h thead td,
+  table.table-h thead th {
+    border-width: 0 0 2px;
+    color: #323232;
+  }
+
+  table.table-h tfoot td,
+  table.table-h tfoot th {
+    border-width: 2px 0 0;
+    color: #323232;
+  }
+
+  table.table-h tbody td {
+    font-size: 1.25rem;
+  }
+
+  table.table-h tbody tr:nth-of-type(odd) {
+    background-color: #f0f4f6;
+  }
+
+  table.table-h tbody tr:last-child td,
+  table.table-h tbody tr:last-child th {
+    border-bottom-width: 0;
+    border-bottom: solid 4px #f0f0f0;
+  }
+
+  a[target="_blank"]:after {
+    display: inline-block;
+    font-family: sgds-icons;
+    content: "";
+    padding-left: 0.25rem;
+    font-weight: 400;
+  }
+
+  li .highlight {
+    font-size: 0.8em;
+    line-height: 1.5;
+  }
+
+  center,
+  li,
+  p {
+    font-size: 1.25rem;
+    line-height: 2rem;
+  }
+
+  small {
+    font-size: 0.9375rem;
+    letter-spacing: 0.2px;
+  }
+
+  b,
+  strong {
+    font-family: inherit;
+    font-weight: 600;
+  }
+
+  h1,
+  h1 center {
+    font-size: 3.375rem;
+    line-height: 3.75rem;
+    letter-spacing: -1.5px;
+    word-wrap: normal;
+  }
+
+  @media screen and (max-width: 1023px) {
+    h1,
+    h1 center {
+      font-size: 3rem;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    h1,
+    h1 center {
+      font-size: 2.75rem;
+    }
+  }
+
+  h2,
+  h2 center {
+    font-size: 2.75rem;
+    line-height: 3.75rem;
+  }
+
+  @media screen and (max-width: 1023px) {
+    h2,
+    h2 center {
+      font-size: 2rem;
+    }
+  }
+
+  h3,
+  h3 center {
+    font-size: 2rem;
+    line-height: 2.8125rem;
+  }
+
+  @media screen and (max-width: 1023px) {
+    h3,
+    h3 center {
+      font-size: 1.75rem;
+    }
+  }
+
+  h4,
+  h4 center {
+    font-size: 1.625rem;
+    line-height: 1.875rem;
+  }
+
+  @media screen and (max-width: 1023px) {
+    h4,
+    h4 center {
+      font-size: 1.5rem;
+    }
+  }
+
+  h5,
+  h5 center {
+    font-size: 1.375rem;
+    line-height: 1.875rem;
+  }
+
+  @media screen and (max-width: 1023px) {
+    h5,
+    h5 center {
+      font-size: 1.375rem;
+    }
+  }
+
+  h6,
+  h6 center {
+    font-size: 1rem;
+    line-height: 1.25rem;
+  }
+
+  @media screen and (max-width: 1023px) {
+    h6,
+    h6 center {
+      font-size: 1rem;
+    }
+  }
+}
