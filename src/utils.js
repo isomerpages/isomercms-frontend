@@ -1,6 +1,7 @@
 // import dependencies
 import axios from "axios"
 import cheerio from "cheerio"
+import classNames from "classnames"
 import { format } from "date-fns-tz"
 import _ from "lodash"
 import { QueryClient } from "react-query"
@@ -612,3 +613,13 @@ export const getDecodedParams = (params) =>
     }
     return acc
   }, {})
+
+export const getClassName = (styles, classes, duplicatedClasses = []) => {
+  // Generates relevant class, with duplicated class names showing up twice
+  const styledClasses = classes.map((className) => styles[className])
+  const styledDuplicatedClasses = duplicatedClasses.map(
+    (className) => styles[className]
+  )
+  // Will be flattened by classNames
+  return classNames(styledClasses, styledDuplicatedClasses, duplicatedClasses)
+}
