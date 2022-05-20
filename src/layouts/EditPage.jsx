@@ -23,7 +23,6 @@ import { createPageStyleSheet } from "utils/siteColorUtils"
 import { prependImageSrc } from "utils"
 
 import "easymde/dist/easymde.min.css"
-import "styles/isomer-template.scss"
 
 // axios settings
 axios.defaults.withCredentials = true
