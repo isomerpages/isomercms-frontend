@@ -3,7 +3,6 @@ import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
 
 import { generateLeftNav } from "templates/utils/leftnavGeneration"
-import "styles/isomer-template.scss"
 
 const LeftNav = ({ leftNavPages, fileName }) => {
   const [leftNavData, setLeftNavData] = useState()

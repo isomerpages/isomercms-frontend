@@ -15,8 +15,6 @@ import PropTypes from "prop-types"
 import { createRef, useEffect, useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 
-import "styles/isomer-template.scss"
-
 // Import hooks
 import useRedirectHook from "hooks/useRedirectHook"
 import useSiteColorsHook from "hooks/useSiteColorsHook"

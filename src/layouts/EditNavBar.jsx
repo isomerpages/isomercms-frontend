@@ -21,8 +21,6 @@ import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import TemplateNavBar from "templates/NavBar"
 
-import "styles/isomer-template.scss"
-
 import { errorToast } from "utils/toasts"
 import { validateLink } from "utils/validators"
 

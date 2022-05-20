@@ -40,8 +40,6 @@ import {
   DEFAULT_RETRY_MSG,
 } from "utils"
 
-import "styles/isomer-template.scss"
-
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
 
