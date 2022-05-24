@@ -5,7 +5,7 @@ import EditPageFooter from "components/pages/EditPageFooter"
 import MarkdownEditor from "components/pages/MarkdownEditor"
 import PagePreview from "components/pages/PagePreview"
 import DOMPurify from "dompurify"
-import marked from "marked"
+import { marked } from "marked"
 import PropTypes from "prop-types"
 import { useEffect, useRef, useState } from "react"
 
