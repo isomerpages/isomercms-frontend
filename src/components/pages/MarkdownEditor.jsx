@@ -1,6 +1,8 @@
 import EditorModals from "components/pages/EditorModals"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import SimpleMDE from "react-simplemde-editor"
+
+import { useMarkdown } from "hooks/useMarkdown"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
@@ -27,6 +29,70 @@ const MarkdownEditor = ({
 }) => {
   const [editorModalType, setEditorModalType] = useState("")
   const [insertingMediaType, setInsertingMediaType] = useState("")
+  const { toMarkdown } = useMarkdown()
+  const options = useMemo(
+    () => ({
+      toolbar: [
+        headingButton,
+        boldButton,
+        italicButton,
+        strikethroughButton,
+        "|",
+        codeButton,
+        quoteButton,
+        unorderedListButton,
+        orderedListButton,
+        "|",
+        {
+          name: "image",
+          action: async () => {
+            setEditorModalType("media")
+            setInsertingMediaType("images")
+          },
+          className: "fa fa-picture-o",
+          title: "Insert Image",
+          default: true,
+        },
+        {
+          name: "file",
+          action: async () => {
+            setEditorModalType("media")
+            setInsertingMediaType("files")
+          },
+          className: "fa fa-file-pdf-o",
+          title: "Insert File",
+          default: true,
+        },
+        {
+          name: "link",
+          action: async () => {
+            setEditorModalType("hyperlink")
+          },
+          className: "fa fa-link",
+          title: "Insert Link",
+          default: true,
+        },
+        tableButton,
+        guideButton,
+      ],
+    }),
+    [editorModalType, insertingMediaType]
+  )
+  const events = useMemo(() => {
+    return {
+      paste: (cm, e) => {
+        const convertedText = toMarkdown(e.clipboardData.getData("text/html"))
+
+        // If parsing the text results in valid markdown, prefer the markdown text.
+        // Otherwise, just go with the default paste.
+        // This works with Ctrl-Shift-V as the OS sanitizes the string prior to paste
+        if (convertedText) {
+          e.preventDefault()
+          cm.replaceSelection(convertedText)
+        }
+      },
+    }
+  })
 
   const StatusIcon = () => {
     if (isDisabled) {
@@ -75,51 +141,8 @@ const MarkdownEditor = ({
           onChange={onChange}
           ref={mdeRef}
           value={value}
-          options={{
-            toolbar: [
-              headingButton,
-              boldButton,
-              italicButton,
-              strikethroughButton,
-              "|",
-              codeButton,
-              quoteButton,
-              unorderedListButton,
-              orderedListButton,
-              "|",
-              {
-                name: "image",
-                action: async () => {
-                  setEditorModalType("media")
-                  setInsertingMediaType("images")
-                },
-                className: "fa fa-picture-o",
-                title: "Insert Image",
-                default: true,
-              },
-              {
-                name: "file",
-                action: async () => {
-                  setEditorModalType("media")
-                  setInsertingMediaType("files")
-                },
-                className: "fa fa-file-pdf-o",
-                title: "Insert File",
-                default: true,
-              },
-              {
-                name: "link",
-                action: async () => {
-                  setEditorModalType("hyperlink")
-                },
-                className: "fa fa-link",
-                title: "Insert Link",
-                default: true,
-              },
-              tableButton,
-              guideButton,
-            ],
-          }}
+          options={options}
+          events={events}
         />
       </div>
     </>
