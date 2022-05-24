@@ -614,7 +614,7 @@ export const getDecodedParams = (params) =>
     return acc
   }, {})
 
-export const getClassName = (styles, classes, duplicatedClasses = []) => {
+export const getClassNames = (styles, classes, duplicatedClasses = []) => {
   // Generates relevant class, with duplicated class names showing up twice
   const styledClasses = classes.map((className) => styles[className])
   const styledDuplicatedClasses = duplicatedClasses.map(
