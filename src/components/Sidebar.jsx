@@ -18,6 +18,7 @@ import { useErrorToast } from "utils/toasts"
 
 import { getLastUpdated } from "api"
 import { BxBook, BxBuoy, BxLogOutCircle } from "assets/icons"
+import { DEFAULT_ERROR_TOAST_MSG } from "utils"
 
 import { BxCog } from "../assets/icons/BxCog"
 
@@ -97,7 +98,7 @@ const Sidebar = ({ siteName, currPath }) => {
       retry: false,
       onError: (err) => {
         console.log(err)
-        errorToast()
+        errorToast({ description: DEFAULT_ERROR_TOAST_MSG })
       },
     }
   )

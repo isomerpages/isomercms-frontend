@@ -19,6 +19,7 @@ export const MediaCreationModal = ({
 }) => {
   const { mediaRoom } = params
   const inputFile = useRef(null)
+  const errorToast = useErrorToast()
 
   const existingTitlesArray = mediasData.map((item) => item.name)
 
@@ -31,7 +32,6 @@ export const MediaCreationModal = ({
   const onMediaUpload = async (event) => {
     const mediaReader = new FileReader()
     const media = event.target?.files[0] || ""
-    const errorToast = useErrorToast()
     if (media.size > MEDIA_FILE_MAX_SIZE) {
       errorToast({
         description: "File size exceeds 5MB. Please upload a different file.",
