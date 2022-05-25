@@ -194,7 +194,17 @@
       font-size: 18px;
       width: 100%;
       text-align: left;
+      line-height: 3.75rem;
     }
+  }
+
+  &.siteNotificationSection {
+    h2 {
+      font-size: 1.25rem;
+      line-height: 2rem;
+      margin-bottom: 5px;
+    }
+    
   }
 
   .cardContent {
