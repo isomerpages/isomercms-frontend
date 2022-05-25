@@ -2,12 +2,16 @@ import { sanitizeUrl } from "@braintree/sanitize-url"
 import PropTypes from "prop-types"
 import { forwardRef } from "react"
 
+import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
+
+import { getClassNames } from "utils"
+
 const LocationHours = ({ operatingHours }) => (
-  <div className="col is-6">
+  <div className={getClassNames(editorStyles, ["col", "is-6"])}>
     {operatingHours &&
       operatingHours.map((operation) => {
         return (
-          <p className="margin--top--none">
+          <p className={getClassNames(editorStyles, ["margin--top--none"])}>
             <b>{operation.days}</b>:&nbsp;{operation.time}
             <br />
             {operation.description}
@@ -18,10 +22,16 @@ const LocationHours = ({ operatingHours }) => (
 )
 
 const LocationAddress = ({ location }) => (
-  <div className="col is-6">
+  <div className={getClassNames(editorStyles, ["col", "is-6"])}>
     <div>
       {location.address.map((value) => (
-        <p className="content margin--top--none margin--bottom--none">
+        <p
+          className={getClassNames(editorStyles, [
+            "content",
+            "margin--top--none",
+            "margin--bottom--none",
+          ])}
+        >
           {value}
         </p>
       ))}
@@ -36,13 +46,24 @@ const LocationAddress = ({ location }) => (
               )
         }
         onClick={(event) => event.preventDefault()}
-        className="bp-sec-button has-text-secondary margin--top"
+        className={getClassNames(
+          editorStyles,
+          ["bp-sec-button", "margin--top"],
+          ["bp-sec-button", "has-text-secondary"]
+        )}
         rel="noopener noreferrer"
         target="_blank"
       >
         <div>
           <span>VIEW MAP</span>
-          <i className="sgds-icon sgds-icon-arrow-right" aria-hidden="true" />
+          <i
+            className={getClassNames(
+              editorStyles,
+              ["sgds-icon", "sgds-icon-arrow-right"],
+              ["sgds-icon"]
+            )}
+            aria-hidden="true"
+          />
         </div>
       </a>
     </div>
@@ -50,16 +71,36 @@ const LocationAddress = ({ location }) => (
 )
 
 const Location = forwardRef(({ location }, ref) => (
-  <div className="row is-multiline margin--bottom" ref={ref}>
+  <div
+    className={getClassNames(editorStyles, [
+      "row",
+      "is-multiline",
+      "margin--bottom",
+    ])}
+    ref={ref}
+  >
     {location.address && location.title && (
-      <div className="col is-6 padding--bottom--none">
+      <div
+        className={getClassNames(editorStyles, [
+          "col",
+          "is-6",
+          "padding--bottom--none",
+        ])}
+      >
         <h5 className="has-text-secondary">
           <b>{location.title}</b>
         </h5>
       </div>
     )}
 
-    <div className="col is-6 padding--bottom--none is-hidden-mobile">
+    <div
+      className={getClassNames(editorStyles, [
+        "col",
+        "is-6",
+        "padding--bottom--none",
+        "is-hidden-mobile",
+      ])}
+    >
       {location.operating_hours && location.operating_hours.length ? (
         <h5 className="has-text-secondary">
           <b>Operating Hours</b>

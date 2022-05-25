@@ -1,6 +1,10 @@
 import PropTypes from "prop-types"
 import { forwardRef } from "react"
 
+import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
+
+import { getClassNames } from "utils"
+
 /* eslint
   react/no-array-index-key: 0
  */
@@ -11,20 +15,43 @@ const TemplateInfobarSection = (
 ) => (
   <div ref={ref}>
     <section
-      className={`bp-section ${
-        sectionIndex % 2 === 1 ? "bg-newssection" : null
-      }`}
+      className={getClassNames(editorStyles, [
+        `bp-section`,
+        sectionIndex % 2 === 1 ? "bg-newssection" : null,
+      ])}
     >
-      <div className="bp-container">
-        <div className="row">
-          <div className="col is-half is-offset-one-quarter has-text-centered padding--top--xl">
+      <div className={editorStyles["bp-container"]}>
+        <div className={editorStyles.row}>
+          <div
+            className={getClassNames(editorStyles, [
+              "col",
+              "is-half",
+              "is-offset-one-quarter",
+              "has-text-centered",
+              "padding--top--xl",
+            ])}
+          >
             {/* Subtitle */}
             {subtitle ? (
-              <p className="padding--bottom eyebrow is-uppercase">{subtitle}</p>
+              <p
+                className={getClassNames(editorStyles, [
+                  "padding--bottom",
+                  "eyebrow",
+                  "is-uppercase",
+                ])}
+              >
+                {subtitle}
+              </p>
             ) : null}
             {/* Title */}
             {title ? (
-              <h1 className="has-text-secondary padding--bottom">
+              <h1
+                className={getClassNames(
+                  editorStyles,
+                  ["padding--bottom"],
+                  ["has-text-secondary"]
+                )}
+              >
                 <b>{title}</b>
               </h1>
             ) : null}
@@ -35,13 +62,36 @@ const TemplateInfobarSection = (
       </div>
       {/* Button */}
       {button ? (
-        <div className="row has-text-centered margin--top padding--bottom">
-          <div className="col is-offset-one-third is-one-third">
-            <div className="bp-sec-button">
+        <div
+          className={getClassNames(editorStyles, [
+            "row",
+            "has-text-centered",
+            "margin--top",
+            "padding--bottom",
+          ])}
+        >
+          <div
+            className={getClassNames(editorStyles, [
+              "col",
+              "is-offset-one-third",
+              "is-one-third",
+            ])}
+          >
+            <div
+              className={getClassNames(
+                editorStyles,
+                ["bp-sec-button"],
+                ["bp-sec-button"]
+              )}
+            >
               <div>
                 <span>{button}</span>
                 <i
-                  className="sgds-icon sgds-icon-arrow-right is-size-4"
+                  className={getClassNames(
+                    editorStyles,
+                    ["sgds-icon", "sgds-icon-arrow-right", "is-size-4"],
+                    ["sgds-icon"]
+                  )}
                   aria-hidden="true"
                 />
               </div>

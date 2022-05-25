@@ -7,7 +7,9 @@ import PropTypes from "prop-types"
 import { forwardRef } from "react"
 import { useQuery } from "react-query"
 
-import { fetchImageURL } from "utils"
+import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
+
+import { fetchImageURL, getClassNames } from "utils"
 
 /* eslint
   react/no-array-index-key: 0
@@ -16,7 +18,13 @@ import { fetchImageURL } from "utils"
 const HeroButton = ({ button }) => (
   <>
     {button ? (
-      <div className="bp-button is-secondary is-uppercase search-button default">
+      <div
+        className={getClassNames(
+          editorStyles,
+          ["bp-button, is-uppercase, search-button, default"],
+          ["is-secondary"]
+        )}
+      >
         {button}
       </div>
     ) : null}
@@ -24,18 +32,27 @@ const HeroButton = ({ button }) => (
 )
 
 const HeroDropdownElem = ({ title }) => (
-  <div className="bp-dropdown-item">
+  <div className={editorStyles["bp-dropdown-item"]}>
     <h5>{title}</h5>
   </div>
 )
 
 const HeroDropdown = ({ title, options, isActive, toggleDropdown }) => (
   <div
-    className={`bp-dropdown margin--top--sm ${isActive ? "is-active" : null}`}
+    className={getClassNames(editorStyles, [
+      "bp-dropdown",
+      "margin--top--sm",
+      `${isActive ? "is-active" : null}`,
+    ])}
   >
-    <div className="bp-dropdown-trigger">
+    <div className={editorStyles["bp-dropdown-trigger"]}>
       <a
-        className="bp-button bp-dropdown-button hero-dropdown is-centered"
+        className={getClassNames(editorStyles, [
+          "bp-button",
+          "bp-dropdown-button",
+          "hero-dropdown",
+          "is-centered",
+        ])}
         role="button"
         tabIndex="0"
         aria-haspopup="true"
@@ -48,20 +65,32 @@ const HeroDropdown = ({ title, options, isActive, toggleDropdown }) => (
             <p>{title}</p>
           </b>
         </span>
-        <span className="icon is-small">
+        <span className={getClassNames(editorStyles, ["icon", "is-small"])}>
           <i
-            className="sgds-icon sgds-icon-chevron-down is-size-4"
+            className={getClassNames(editorStyles, [
+              "sgds-icon",
+              "sgds-icon-chevron-down",
+              "is-size-4",
+            ])}
             aria-hidden="true"
           />
         </span>
       </a>
     </div>
     <div
-      className="bp-dropdown-menu has-text-left"
-      id="hero-dropdown-menu"
+      className={getClassNames(editorStyles, [
+        "bp-dropdown-menu",
+        "has-text-left",
+      ])}
+      id={editorStyles["hero-dropdown-menu"]}
       role="menu"
     >
-      <div className="bp-dropdown-content is-centered">
+      <div
+        className={getClassNames(editorStyles, [
+          "bp-dropdown-content",
+          "is-centered",
+        ])}
+      >
         {options
           ? options.map((option, index) =>
               option.title ? (
@@ -80,17 +109,30 @@ const HeroDropdown = ({ title, options, isActive, toggleDropdown }) => (
 const KeyHighlightElem = ({ title, description }) => (
   <>
     {title || description ? (
-      <div className="col">
-        <div className="is-highlight">
+      <div className={getClassNames(editorStyles, ["col"], ["col"])}>
+        <div className={editorStyles["is-highlight"]}>
           {/* Title */}
           {title ? (
-            <p className="has-text-weight-semibold has-text-white key-highlight-title is-uppercase padding--top--xs">
+            <p
+              className={getClassNames(editorStyles, [
+                "has-text-weight-semibold",
+                "has-text-white",
+                "key-highlight-title",
+                "is-uppercase",
+                "padding--top--xs",
+              ])}
+            >
               {title}
             </p>
           ) : null}
           {/* Description */}
           {description ? (
-            <p className="has-text-white-trans padding--bottom--sm">
+            <p
+              className={getClassNames(editorStyles, [
+                "has-text-white-trans",
+                "padding--bottom--sm",
+              ])}
+            >
               {description}
             </p>
           ) : null}
@@ -101,9 +143,21 @@ const KeyHighlightElem = ({ title, description }) => (
 )
 
 const KeyHighlights = ({ highlights }) => (
-  <section id="key-highlights" className="bp-section is-paddingless">
-    <div className="bp-container">
-      <div className="row is-gapless has-text-centered">
+  <section
+    id={editorStyles["key-highlights"]}
+    className={getClassNames(editorStyles, ["bp-section is-paddingless"])}
+  >
+    <div
+      id="key-highlights"
+      className={getClassNames(editorStyles, ["bp-container"])}
+    >
+      <div
+        className={getClassNames(editorStyles, [
+          "row",
+          "is-gapless",
+          "has-text-centered",
+        ])}
+      >
         {highlights.map(({ title, description }, idx) => (
           <KeyHighlightElem
             title={title}
@@ -136,18 +190,55 @@ const TemplateHeroSection = (
   return (
     <div ref={ref}>
       {/* Main hero banner */}
-      <section className="bp-hero bg-hero" style={heroStyle}>
-        <div className="bp-hero-body">
-          <div className="bp-container margin--top--lg">
-            <div className="row is-vcentered is-centered ma">
-              <div className="col is-9 has-text-centered has-text-white">
-                <h1 className="display padding--bottom--lg margin--none">
-                  <b className="is-hidden-touch">{hero.title}</b>
-                  <b className="is-hidden-desktop">{hero.title}</b>
+      <section
+        className={getClassNames(editorStyles, ["bp-hero", "bg-hero"])}
+        style={heroStyle}
+      >
+        <div className={editorStyles["bp-hero-body"]}>
+          <div
+            className={getClassNames(editorStyles, [
+              "bp-container",
+              "margin--top--lg",
+            ])}
+          >
+            <div
+              className={getClassNames(editorStyles, [
+                "row",
+                "is-vcentered",
+                "is-centered",
+                "ma",
+              ])}
+            >
+              <div
+                className={getClassNames(editorStyles, [
+                  "col",
+                  "is-9",
+                  "has-text-centered",
+                  "has-text-white",
+                ])}
+              >
+                <h1
+                  className={getClassNames(editorStyles, [
+                    "display",
+                    "padding--bottom--lg",
+                    "margin--none",
+                  ])}
+                >
+                  <b className={editorStyles["is-hidden-touch"]}>
+                    {hero.title}
+                  </b>
+                  <b className={editorStyles["is-hidden-desktop"]}>
+                    {hero.title}
+                  </b>
                 </h1>
                 {/* Hero subtitle */}
                 {hero.subtitle ? (
-                  <p className="is-hidden-mobile padding--bottom--lg">
+                  <p
+                    className={getClassNames(editorStyles, [
+                      "is-hidden-mobile",
+                      "padding--bottom--lg",
+                    ])}
+                  >
                     {hero.subtitle}
                   </p>
                 ) : null}

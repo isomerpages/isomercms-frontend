@@ -38,6 +38,7 @@ import {
   frontMatterParser,
   concatFrontMatterMdBody,
   DEFAULT_RETRY_MSG,
+  getClassNames,
 } from "utils"
 
 /* eslint-disable react/jsx-props-no-spreading */
@@ -1192,9 +1193,11 @@ const EditHomepage = ({ match }) => {
         <div className={elementStyles.wrapper}>
           <div className={editorStyles.homepageEditorSidebar}>
             <div>
-              <div className={`${elementStyles.card}`}>
+              <div
+                className={`${elementStyles.card} ${elementStyles.siteNotificationSection}`}
+              >
                 <p>
-                  <b>Site notification</b>
+                  <h2>Site notification</h2>
                 </p>
                 <Input
                   placeholder="Notification"
@@ -1403,16 +1406,44 @@ const EditHomepage = ({ match }) => {
             {/* Isomer Template Pane */}
             {/* Notification */}
             {frontMatter.notification && (
-              <div className="bp-notification bg-secondary is-marginless">
-                <div className="bp-container">
-                  <div className="row">
-                    <div className="col">
-                      <div className="field has-addons bp-notification-flex">
-                        <div className="control has-text-centered has-text-white">
+              <div
+                className={getClassNames(
+                  editorStyles,
+                  ["bp-notification", "is-marginless"],
+                  ["bg-secondary"]
+                )}
+              >
+                <div className={editorStyles["bp-container"]}>
+                  <div className={editorStyles.row}>
+                    <div className={editorStyles.col}>
+                      <div
+                        className={getClassNames(editorStyles, [
+                          "field",
+                          "has-addons",
+                          "bp-notification-flex",
+                        ])}
+                      >
+                        <div
+                          className={getClassNames(editorStyles, [
+                            "control",
+                            "has-text-centered",
+                            "has-text-white",
+                          ])}
+                        >
                           <h6>{frontMatter.notification}</h6>
                         </div>
-                        <div className="button has-text-white">
-                          <span className="sgds-icon sgds-icon-cross" />
+                        <div
+                          className={getClassNames(editorStyles, [
+                            "button",
+                            "has-text-white",
+                          ])}
+                        >
+                          <span
+                            className={getClassNames(editorStyles, [
+                              "sgds-icon",
+                              "sgds-icon-cross",
+                            ])}
+                          />
                         </div>
                       </div>
                     </div>
