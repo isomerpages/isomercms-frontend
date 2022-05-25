@@ -5,7 +5,7 @@ import { DEFAULT_ERROR_TOAST_MSG } from "utils"
 export const useErrorToast = () =>
   useToast({
     description: DEFAULT_ERROR_TOAST_MSG,
-    status: "error",
+    status: "danger",
     duration: 5000,
     isClosable: true,
   })
