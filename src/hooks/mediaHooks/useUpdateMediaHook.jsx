@@ -6,7 +6,7 @@ import { ServicesContext } from "contexts/ServicesContext"
 
 import { DIR_CONTENT_KEY, MEDIA_CONTENT_KEY } from "hooks/queryKeys"
 
-import { errorToast, successToast } from "utils/toasts"
+import { useSuccessToast, useErrorToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
@@ -16,6 +16,8 @@ import { extractMediaInfo } from "./utils"
 export function useUpdateMediaHook(params, queryParams) {
   const queryClient = useQueryClient()
   const { mediaService } = useContext(ServicesContext)
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
   return useMutation(
     (body) => {
       const { newFileName, sha } = extractMediaInfo(body)
@@ -27,7 +29,9 @@ export function useUpdateMediaHook(params, queryParams) {
         queryClient.invalidateQueries([MEDIA_CONTENT_KEY, { ...params }])
       },
       onSuccess: ({ data }) => {
-        successToast(`Successfully updated media file!`)
+        successToast({
+          description: `Successfully updated media file!`,
+        })
         if (params.mediaRoom || params.mediaDirectoryName)
           // update cached media in directory list
           queryClient.setQueryData(
@@ -54,9 +58,9 @@ export function useUpdateMediaHook(params, queryParams) {
       },
       onError: (err) => {
         if (err.response.status !== 409)
-          errorToast(
-            `Your media file could not be updated. ${DEFAULT_RETRY_MSG}`
-          )
+          errorToast({
+            description: `Your media file could not be updated. ${DEFAULT_RETRY_MSG}`,
+          })
         if (queryParams && queryParams.onError) queryParams.onError(err)
       },
     }

@@ -21,7 +21,7 @@ import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import TemplateNavBar from "templates/NavBar"
 
-import { errorToast } from "utils/toasts"
+import { useErrorToast } from "utils/toasts"
 import { validateLink } from "utils/validators"
 
 // Import API
@@ -62,6 +62,8 @@ const EditNavBar = ({ match }) => {
   const [deletedLinks, setDeletedLinks] = useState("")
 
   const [hasChanges, setHasChanges] = useState(false)
+
+  const errorToast = useErrorToast()
 
   const LinkCollectionSectionConstructor = () => ({
     title: "Menu Title",
@@ -127,9 +129,9 @@ const EditNavBar = ({ match }) => {
         if (err.response && err.response.status === 404) {
           setRedirectToNotFound(siteName)
         } else {
-          errorToast(
-            `There was a problem trying to load your data. ${DEFAULT_RETRY_MSG}`
-          )
+          errorToast({
+            description: `There was a problem trying to load your data. ${DEFAULT_RETRY_MSG}`,
+          })
         }
       },
     }
@@ -140,9 +142,9 @@ const EditNavBar = ({ match }) => {
     () => updateNavBarData(siteName, originalNav, links, sha),
     {
       onError: () =>
-        errorToast(
-          `There was a problem trying to save your nav bar. ${DEFAULT_RETRY_MSG}`
-        ),
+        errorToast({
+          description: `There was a problem trying to save your nav bar. ${DEFAULT_RETRY_MSG}`,
+        }),
       onSuccess: () => {
         queryClient.invalidateQueries([NAVIGATION_CONTENT_KEY, siteName])
         window.location.reload()

@@ -7,7 +7,7 @@ import {
 import { useEffect, useRef } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
-import { errorToast } from "utils/toasts"
+import { useErrorToast } from "utils/toasts"
 import { MEDIA_FILE_MAX_SIZE } from "utils/validators"
 
 // eslint-disable-next-line import/prefer-default-export
@@ -31,8 +31,11 @@ export const MediaCreationModal = ({
   const onMediaUpload = async (event) => {
     const mediaReader = new FileReader()
     const media = event.target?.files[0] || ""
+    const errorToast = useErrorToast()
     if (media.size > MEDIA_FILE_MAX_SIZE) {
-      errorToast("File size exceeds 5MB. Please upload a different file.")
+      errorToast({
+        description: "File size exceeds 5MB. Please upload a different file.",
+      })
     } else {
       mediaReader.onload = () => {
         methods.setValue("name", media.name)

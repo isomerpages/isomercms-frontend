@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import { errorToast } from "utils/toasts"
+import { useErrorToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
@@ -12,6 +12,7 @@ const retrieveThirdNavOptions = async (
   collectionName,
   isExistingCollection
 ) => {
+  const errorToast = useErrorToast
   try {
     let thirdNavArr = []
     let allCollectionPages = []
@@ -33,9 +34,9 @@ const retrieveThirdNavOptions = async (
     }
   } catch (err) {
     console.log(err)
-    return errorToast(
-      `There was a problem trying to retrieve data from your repo. ${DEFAULT_RETRY_MSG}`
-    )
+    return errorToast({
+      description: `There was a problem trying to retrieve data from your repo. ${DEFAULT_RETRY_MSG}`,
+    })
   }
 }
 

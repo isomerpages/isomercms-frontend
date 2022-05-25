@@ -29,7 +29,7 @@ import TemplateLocationsSection from "templates/contact-us/LocationsSection"
 
 import sanitiseFrontMatter from "utils/contact-us/dataSanitisers"
 import validateFrontMatter from "utils/contact-us/validators"
-import { errorToast } from "utils/toasts"
+import { useErrorToast } from "utils/toasts"
 import { validateContactType, validateLocationType } from "utils/validators"
 
 import {
@@ -165,6 +165,7 @@ const EditContactUs = ({ match }) => {
     type: "",
   })
   const [showDeletedText, setShowDeletedText] = useState(true)
+  const errorToast = useErrorToast()
 
   useEffect(() => {
     let _isMounted = true
@@ -193,9 +194,9 @@ const EditContactUs = ({ match }) => {
         if (error?.response?.status === 404) {
           setRedirectToNotFound(siteName)
         } else {
-          errorToast(
-            `There was a problem trying to load your contact us page. ${DEFAULT_RETRY_MSG}`
-          )
+          errorToast({
+            description: `There was a problem trying to load your contact us page. ${DEFAULT_RETRY_MSG}`,
+          })
         }
         console.log(error)
       }
@@ -209,9 +210,9 @@ const EditContactUs = ({ match }) => {
         const { feedback } = settingsResp.data
         newFooterContent = { feedback }
       } catch (err) {
-        errorToast(
-          `There was a problem trying to load your contact us page. ${DEFAULT_RETRY_MSG}`
-        )
+        errorToast({
+          description: `There was a problem trying to load your contact us page. ${DEFAULT_RETRY_MSG}`,
+        })
         console.log(err)
       }
 
@@ -752,9 +753,9 @@ const EditContactUs = ({ match }) => {
 
       window.location.reload()
     } catch (err) {
-      errorToast(
-        `There was a problem trying to save your contact us page. ${DEFAULT_RETRY_MSG}`
-      )
+      errorToast({
+        description: `There was a problem trying to save your contact us page. ${DEFAULT_RETRY_MSG}`,
+      })
       console.log(err)
     }
   }
