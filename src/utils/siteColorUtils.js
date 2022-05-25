@@ -48,6 +48,10 @@ const createPageStyleSheet = (repoName, primaryColor, secondaryColor) => {
     `#key-highlights .col { background-color: ${primaryColor} !important;}`,
     0
   )
+  customStyleSheet.insertRule(
+    `#key-highlights .col:hover { background-color: ${primaryColor} !important;}`,
+    0
+  )
 
   // EditHomepage: site notifications - secondary color
   customStyleSheet.insertRule(
