@@ -138,7 +138,7 @@
     "husky": "^6.0.0",
     "invariant": "^2.2.4",
     "lint-staged": "^11.0.0",
-    "node-sass": "^4.14",
+    "node-sass": "^7.0",
     "pathmodify": "^0.5.0",
     "prettier": "2.2.1",
     "react-scripts": "^4.0.3",
