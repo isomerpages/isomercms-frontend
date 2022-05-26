@@ -8,7 +8,7 @@ import EditorInfobarSection from "components/homepage/InfobarSection"
 import EditorInfopicSection from "components/homepage/InfopicSection"
 import NewSectionCreator from "components/homepage/NewSectionCreator"
 import EditorResourcesSection from "components/homepage/ResourcesSection"
-import LoadingButton from "components/LoadingButton"
+import { LoadingButton } from "components/LoadingButton"
 import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
@@ -1500,15 +1500,9 @@ const EditHomepage = ({ match }) => {
             ))}
           </div>
           <div className={editorStyles.pageEditorFooter}>
-            <LoadingButton
-              label="Save"
-              disabled={hasErrors}
-              disabledStyle={elementStyles.disabled}
-              className={
-                hasErrors || !sha ? elementStyles.disabled : elementStyles.blue
-              }
-              callback={savePage}
-            />
+            <LoadingButton isDisabled={hasErrors} onClick={savePage}>
+              Save
+            </LoadingButton>
           </div>
         </div>
       )}

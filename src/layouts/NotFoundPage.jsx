@@ -1,7 +1,7 @@
+import { Button } from "@opengovsg/design-system-react"
 import PropTypes from "prop-types"
 import { Link } from "react-router-dom"
 
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import errorStyles from "styles/isomer-cms/pages/Error.module.scss"
 
 const NotFoundPage = ({ match }) => {
@@ -21,12 +21,7 @@ const NotFoundPage = ({ match }) => {
         </div>
 
         <Link to={siteName ? `/sites/${siteName}/workspace` : "/sites"}>
-          <button
-            type="button"
-            className={`${errorStyles.errorButton} ${elementStyles.blue}`}
-          >
-            Back to IsomerCMS
-          </button>
+          <Button mt="2rem">Back to IsomerCMS</Button>
         </Link>
       </div>
     </>

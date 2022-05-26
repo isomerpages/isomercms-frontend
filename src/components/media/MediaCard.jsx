@@ -1,3 +1,4 @@
+import { IconButton } from "@opengovsg/design-system-react"
 import { MenuDropdown } from "components/MenuDropdown"
 import PropTypes from "prop-types"
 import { useState, useRef, useEffect } from "react"
@@ -90,13 +91,8 @@ const MediaCard = ({
         {/* Settings dropdown */}
         {showSettings && (
           <div className="position-relative mt-auto mb-auto">
-            <button
-              className={`${
-                showDropdown
-                  ? contentStyles.optionsIconFocus
-                  : contentStyles.optionsIcon
-              }`}
-              type="button"
+            <IconButton
+              variant="clear"
               id={`${name}-settings-${mediaItemIndex}`}
               onClick={(e) => {
                 e.stopPropagation()
@@ -105,7 +101,7 @@ const MediaCard = ({
               }}
             >
               <i className="bx bx-dots-vertical-rounded" />
-            </button>
+            </IconButton>
             {showDropdown && (
               <MenuDropdown
                 menuIndex={mediaItemIndex}

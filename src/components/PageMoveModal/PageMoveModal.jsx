@@ -1,6 +1,7 @@
+import { CloseButton, HStack } from "@chakra-ui/react"
 import { Breadcrumb } from "components/folders/Breadcrumb"
-import { MoveMenuBackButton, MoveMenuItem } from "components/move"
-import SaveDeleteButtons from "components/SaveDeleteButtons"
+import { LoadingButton } from "components/LoadingButton"
+import { MoveMenuBackButton, DirMenuItem, FileMenuItem } from "components/move"
 import _ from "lodash"
 import { useState } from "react"
 
@@ -9,7 +10,6 @@ import { useGetDirectoryHook } from "hooks/directoryHooks"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { pageFileNameToTitle, getLastItemType, getNextItemType } from "utils"
-
 // eslint-disable-next-line import/prefer-default-export
 export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
   const [moveQuery, setMoveQuery] = useState(_.omit(queryParams, "fileName"))
@@ -25,37 +25,29 @@ export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
       return (
         <>
           {dirData
-            .filter((item) => item.type === "dir")
-            .map((item, itemIndex) => (
-              <MoveMenuItem
-                item={item}
+            .filter(({ type }) => type === "dir")
+            .map(({ name }, itemIndex) => (
+              <DirMenuItem
+                name={name}
                 id={itemIndex}
-                isItemSelected={moveTo[getLastItemType(moveTo)] === item.name}
-                onItemSelect={() =>
+                onClick={() => {
                   setMoveTo({
                     ...moveQuery,
-                    [nextItemType]: item.name,
-                  })
-                }
-                onForward={() => {
-                  setMoveTo({
-                    ...moveQuery,
-                    [nextItemType]: item.name,
+                    [nextItemType]: name,
                   })
                   setMoveQuery((prevState) => ({
                     ...prevState,
-                    [nextItemType]: encodeURIComponent(item.name),
+                    [nextItemType]: encodeURIComponent(name),
                   }))
                 }}
-                isResource={!!moveQuery.resourceRoomName}
               />
             ))}
           {/* files */}
           {dirData
-            .filter((item) => item.type === "file")
-            .map((item, itemIndex) => (
-              <MoveMenuItem
-                item={item}
+            .filter(({ type }) => type === "file")
+            .map(({ name }, itemIndex) => (
+              <FileMenuItem
+                name={name}
                 id={itemIndex}
                 isResource={!!moveQuery.resourceRoomName}
               />
@@ -82,12 +74,10 @@ export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
       <div className={elementStyles["modal-settings"]}>
         <div className={elementStyles.modalHeader}>
           <h1>Move page</h1>
-          <button id="settings-CLOSE" type="button" onClick={onClose}>
-            <i id="settingsIcon-CLOSE" className="bx bx-x" />
-          </button>
+          <CloseButton id="settings-CLOSE" onClick={onClose} />
         </div>
         <div className={elementStyles.modalContent}>
-          <div className={elementStyles.modalFormFields}>
+          <div>
             {`Moving pages to a different folder might lead to user confusion.
             You may wish to change the permalink or references to this page afterwards.`}
             <br />
@@ -128,17 +118,21 @@ export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
               )}
             />
           </div>
-          <SaveDeleteButtons
-            isDisabled={moveTo.resourceRoomName && !moveTo.resourceCategoryName}
-            hasDeleteButton={false}
-            saveCallback={() =>
-              onProceed({
-                target: _.omit(moveTo, ["siteName", "fileName"]),
-                items: [{ name: params.fileName, type: "file" }],
-              })
-            }
-            saveLabel="Move Here"
-          />
+          <HStack w="100%" justify="flex-end" paddingInlineEnd={1}>
+            <LoadingButton
+              onClick={() =>
+                onProceed({
+                  target: _.omit(moveTo, ["siteName", "fileName"]),
+                  items: [{ name: params.fileName, type: "file" }],
+                })
+              }
+              isDisabled={
+                moveTo.resourceRoomName && !moveTo.resourceCategoryName
+              }
+            >
+              Move Here
+            </LoadingButton>
+          </HStack>
         </div>
       </div>
     </div>

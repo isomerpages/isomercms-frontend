@@ -1,3 +1,4 @@
+import { Button, IconButton } from "@opengovsg/design-system-react"
 import EditorContactCard from "components/contact-us/ContactCard"
 import EditorLocationCard from "components/contact-us/LocationCard"
 import _ from "lodash"
@@ -31,8 +32,8 @@ const EditorSection = ({
   >
     <div className={elementStyles.cardHeader}>
       <h2>{`${_.upperFirst(sectionId)} section`}</h2>
-      <button
-        type="button"
+      <IconButton
+        variant="clear"
         id={`section-${sectionId}`}
         onClick={displayHandler}
       >
@@ -42,7 +43,7 @@ const EditorSection = ({
           }`}
           id={`section-${sectionId}-icon`}
         />
-      </button>
+      </IconButton>
     </div>
     {shouldDisplay ? (
       <>
@@ -111,12 +112,11 @@ const EditorSection = ({
           )}
         </Droppable>
         <div className={`${elementStyles.inputGroup} pt-5`}>
-          <button
-            type="button"
+          <Button
+            isFullWidth
             id={`${sectionId}`}
-            className={`btn-block ${elementStyles.blue}`}
             onClick={createHandler}
-          >{`Add ${sectionId === "contacts" ? "Contact" : "Location"}`}</button>
+          >{`Add ${sectionId === "contacts" ? "Contact" : "Location"}`}</Button>
         </div>
       </>
     ) : null}

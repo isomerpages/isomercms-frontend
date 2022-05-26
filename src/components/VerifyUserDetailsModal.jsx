@@ -1,3 +1,4 @@
+import { Link } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import { useContext, useEffect, useState } from "react"
 
@@ -12,7 +13,6 @@ import useRedirectHook from "../hooks/useRedirectHook"
 import elementStyles from "../styles/isomer-cms/Elements.module.scss"
 
 import InputWithButton from "./InputWithButton"
-import Link from "./Link"
 
 const VerificationStep = {
   GET_EMAIL_OTP: "GET_EMAIL_OTP",
@@ -190,7 +190,7 @@ const VerifyUserDetailsModal = () => {
               all users of Isomer CMS. Only <b>.gov.sg</b> or{" "}
               <b>whitelisted email addresses</b> will be accepted. You must
               verify your email before proceeding.{" "}
-              <Link target="_blank" href="https://go.gov.sg/isomer-identity">
+              <Link isExternal href="https://go.gov.sg/isomer-identity">
                 Read more.
               </Link>
             </div>

@@ -41,12 +41,6 @@
   color: $isomer-blue;
 }
 
-.textButton {
-  font-size: 14px;
-  color: $isomer-blue;
-  font-weight: normal;
-}
-
 button {
   background: $default-background;
   text-align: center;
@@ -111,12 +105,4 @@ button {
   &:last-child {
     margin-right: 0px;
   }
-}
-
-.button-group-left,
-.button-group-right {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
 }

@@ -1,3 +1,4 @@
+import { CloseButton } from "@chakra-ui/react"
 import { ThemeProvider } from "@opengovsg/design-system-react"
 import axios from "axios"
 import { useEffect } from "react"
@@ -26,17 +27,7 @@ axios.defaults.withCredentials = true
 const LOCAL_STORAGE_SITE_COLORS = "isomercms_colors"
 
 const ToastCloseButton = ({ closeToast }) => (
-  <button
-    type="button"
-    onClick={closeToast}
-    style={{
-      display: "inline-flex",
-      alignItems: "center",
-      background: "inherit",
-    }}
-  >
-    <i className="bx bx-x bx-sm" />
-  </button>
+  <CloseButton fontSize="12px" onClick={closeToast} />
 )
 
 // react-query client

@@ -1,3 +1,4 @@
+import { IconButton } from "@opengovsg/design-system-react"
 import axios from "axios"
 import { MenuDropdown } from "components/MenuDropdown"
 import PropTypes from "prop-types"
@@ -87,25 +88,20 @@ const PageCard = ({ item, itemIndex }) => {
         }${resourceType ? `/${resourceType.toUpperCase()}` : ""}`}</p>
       </div>
       <div className="position-relative mt-auto">
-        <button
-          type="button"
+        <IconButton
+          variant="clear"
           id={`pageCard-dropdown-${name}-${itemIndex}`}
           onClick={(e) => {
             e.stopPropagation()
             e.preventDefault()
             setShowDropdown(true)
           }}
-          className={`${
-            showDropdown
-              ? contentStyles.optionsIconFocus
-              : contentStyles.optionsIcon
-          }`}
         >
           <i
             id={`settingsIcon-${itemIndex}`}
             className="bx bx-dots-vertical-rounded"
           />
-        </button>
+        </IconButton>
         {showDropdown && (
           <MenuDropdown
             dropdownItems={generateDropdownItems()}

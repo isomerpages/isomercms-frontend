@@ -1,3 +1,4 @@
+import { CloseButton, HStack } from "@chakra-ui/react"
 import { yupResolver } from "@hookform/resolvers/yup"
 import axios from "axios"
 import { Breadcrumb } from "components/folders/Breadcrumb"
@@ -10,8 +11,8 @@ import {
 import FormField from "components/FormField"
 import FormFieldHorizontal from "components/FormFieldHorizontal"
 import FormFieldMedia from "components/FormFieldMedia"
+import { LoadingButton } from "components/LoadingButton"
 import ResourceFormFields from "components/ResourceFormFields"
-import SaveDeleteButtons from "components/SaveDeleteButtons"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import { useEffect } from "react"
@@ -51,8 +52,7 @@ export const PageSettingsModal = ({
     setValue,
     trigger,
   } = useForm({
-    mode: "onBlur",
-    reValidateMode: "onChange",
+    mode: "onTouched",
     resolver: yupResolver(PageSettingsSchema(existingTitlesArray)),
     defaultValues: defaultFrontMatter,
     context: { type: resourceRoomName ? "resourcePage" : "" },
@@ -97,9 +97,7 @@ export const PageSettingsModal = ({
         <div className={elementStyles["modal-settings"]}>
           <div className={elementStyles.modalHeader}>
             <h1>{!fileName ? "Create new page" : "Page settings"}</h1>
-            <button id="settings-CLOSE" type="button" onClick={onClose}>
-              <i id="settingsIcon-CLOSE" className="bx bx-x" />
-            </button>
+            <CloseButton id="settings-CLOSE" onClick={onClose} />
           </div>
           <div className={elementStyles.modalContent}>
             {fileName && !pageData ? (
@@ -108,7 +106,7 @@ export const PageSettingsModal = ({
               </center>
             ) : (
               <>
-                <div className={elementStyles.modalFormFields}>
+                <div>
                   {!fileName ? "You may edit page details anytime. " : ""}
                   To edit page content, simply click on the page title. <br />
                   <Breadcrumb params={params} title={watch("title")} />
@@ -206,15 +204,23 @@ export const PageSettingsModal = ({
                     <FormError>{errors.image?.message}</FormError>
                   </FormContext>
                 </div>
-                <SaveDeleteButtons
-                  isDisabled={
-                    !fileName
-                      ? !_.isEmpty(errors)
-                      : !_.isEmpty(errors) || !pageData?.sha
-                  }
-                  hasDeleteButton={false}
-                  saveCallback={handleSubmit(onSubmit)}
-                />
+                <HStack
+                  w="100%"
+                  justify="flex-end"
+                  paddingInlineEnd={1}
+                  pt="20px"
+                >
+                  <LoadingButton
+                    onClick={handleSubmit(onSubmit)}
+                    isDisabled={
+                      !fileName
+                        ? !_.isEmpty(errors)
+                        : !_.isEmpty(errors) || !pageData?.sha
+                    }
+                  >
+                    Save
+                  </LoadingButton>
+                </HStack>
               </>
             )}
           </div>

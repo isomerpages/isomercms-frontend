@@ -26,11 +26,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  .modalButtons {
-    @extend .blue;
-    margin: 10px;
-  }
 }
 
 .breadcrumbText {
@@ -77,7 +72,7 @@
   overflow-y: scroll;
 
   .modalContent {
-    padding: 10px 0px 10px 0px;
+    padding-block: 10px;
     height: auto;
     width: 100%;
     display: flex;
@@ -85,14 +80,6 @@
     justify-content: space-between;
     flex: 1;
     overflow-y: scroll;
-  }
-
-  .modalButtons {
-    padding-top: 20px;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    margin-left: auto;
   }
 }
 
@@ -106,12 +93,6 @@
   @extend .modal;
   height: initial;
   width: 50%;
-}
-
-.modal-newfolder {
-  @extend .modal;
-  height: 50%;
-  width: 70%;
 }
 
 .modal-verify-user-details {
@@ -128,9 +109,4 @@
     display: flex;
     justify-content: flex-end;
   }
-}
-
-.sortLabel {
-  white-space: nowrap;
-  padding-right: 1rem;
 }

@@ -1,10 +1,11 @@
+import { CloseButton, HStack } from "@chakra-ui/react"
 import { yupResolver } from "@hookform/resolvers/yup"
 import axios from "axios"
 import { FormContext } from "components/Form"
 import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
-import SaveDeleteButtons from "components/SaveDeleteButtons"
+import { LoadingButton } from "components/LoadingButton"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import { useForm, useFormContext } from "react-hook-form"
@@ -67,7 +68,7 @@ export const DirectorySettingsModal = ({
   } =
     useFormContext() ||
     useForm({
-      mode: "onBlur",
+      mode: "onTouched",
       resolver: yupResolver(DirectorySettingsSchema(existingTitlesArray)),
       defaultValues: {
         newDirectoryName: deslugifyDirectory(existingDirectoryName),
@@ -96,9 +97,7 @@ export const DirectorySettingsModal = ({
       <div className={elementStyles["modal-settings"]}>
         <div className={elementStyles.modalHeader}>
           <h1>{getModalTitle({ isCreate, params })}</h1>
-          <button type="button" onClick={onClose}>
-            <i className="bx bx-x" />
-          </button>
+          <CloseButton onClick={onClose} />
         </div>
         <form className={elementStyles.modalContent}>
           <FormContext hasError={!!errors.newDirectoryName?.message}>
@@ -111,12 +110,20 @@ export const DirectorySettingsModal = ({
             />
             <FormError>{errors.newDirectoryName?.message}</FormError>
           </FormContext>
-          <SaveDeleteButtons
-            saveLabel={isCreate && "Next"}
-            isDisabled={!_.isEmpty(errors)}
-            hasDeleteButton={false}
-            saveCallback={handleSubmit(onSubmit)}
-          />
+          <HStack
+            w="100%"
+            pt="20px"
+            spacing={2}
+            justifyContent="flex-end"
+            paddingInlineEnd={1}
+          >
+            <LoadingButton
+              onClick={handleSubmit(onSubmit)}
+              isDisabled={!_.isEmpty(errors)}
+            >
+              {isCreate ? "Next" : "Save"}
+            </LoadingButton>
+          </HStack>
         </form>
       </div>
     </div>

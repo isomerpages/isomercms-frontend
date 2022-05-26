@@ -61,21 +61,6 @@ p {
   }
 }
 
-.formDropdown {
-  @extend .formHorizontal;
-
-  .formDropdownLabel {
-    @extend .formLabel;
-    width: 25%;
-    margin: 0px;
-    padding: 0px;
-  }
-
-  .formDropdownInput {
-    width: 75%;
-  }
-}
-
 .formColor {
   display: flex;
   width: 50%;
@@ -86,36 +71,6 @@ p {
     @extend .formLabel;
     width: 40%;
     margin: 1px;
-  }
-
-  .formColorBox {
-    float: left;
-    width: 50px;
-    border: 0.5px solid black;
-    border-radius: 0;
-    width: 20%;
-  }
-}
-
-.formSave {
-  position: relative;
-  width: 50%;
-
-  .formSaveButton {
-    position: absolute;
-    right: 0px;
-    bottom: 0px;
-    margin-bottom: 20px;
-  }
-
-  .formSaveButtonActive {
-    @extend .blue;
-    @extend .formSaveButton;
-  }
-
-  .formSaveButtonDisabled {
-    @extend .disabled;
-    @extend .formSaveButton;
   }
 }
 
@@ -153,19 +108,6 @@ input[type="radio"] {
   margin-right: 8px;
 }
 
-.formFixedText {
-  font-size: 14px;
-  margin: 0;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-.formToggleContainer {
-  display: flex;
-  margin-bottom: 5px;
-  margin-top: 5px;
-}
-
 .formToggleThumbIcon {
   align-self: center;
 }
@@ -178,9 +120,4 @@ input[type="radio"] {
 .formToggleThumbIconDisabled {
   @extend .formToggleThumbIcon;
   color: $body-grey;
-}
-
-.formInputWithButton {
-  display: flex;
-  flex-direction: row;
 }
