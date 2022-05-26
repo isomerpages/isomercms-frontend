@@ -1,6 +1,7 @@
+import { HStack } from "@chakra-ui/react"
 import { Breadcrumb } from "components/folders/Breadcrumb"
 import { FolderItem } from "components/folders/FolderContent"
-import LoadingButton from "components/LoadingButton"
+import { LoadingButton } from "components/LoadingButton"
 import update from "immutability-helper"
 import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
@@ -128,21 +129,20 @@ const ReorderingModal = ({ params, dirData, onProceed, onClose }) => {
             </DragDropContext>
           </div>
           <div className={contentStyles.sectionFooter}>
-            <LoadingButton
-              label="Cancel"
-              disabledStyle={elementStyles.disabled}
-              className={`${elementStyles.warning}`}
-              callback={onClose}
-            />
-            <LoadingButton
-              label="Save"
-              className={elementStyles.blue}
-              callback={() =>
-                onProceed({
-                  items: dirOrder,
-                })
-              }
-            />
+            <HStack w="100%" spacing={2} justifyContent="flex-end">
+              <LoadingButton variant="clear" onClick={onClose}>
+                Cancel
+              </LoadingButton>
+              <LoadingButton
+                onClick={() =>
+                  onProceed({
+                    items: dirOrder,
+                  })
+                }
+              >
+                Save
+              </LoadingButton>
+            </HStack>
           </div>
         </div>
       </div>

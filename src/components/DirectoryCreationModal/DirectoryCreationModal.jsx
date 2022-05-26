@@ -1,3 +1,4 @@
+import { HStack } from "@chakra-ui/react"
 import { yupResolver } from "@hookform/resolvers/yup"
 import axios from "axios"
 import {
@@ -5,7 +6,7 @@ import {
   DirectorySettingsModal,
 } from "components/DirectorySettingsModal"
 import { FolderCard } from "components/FolderCard"
-import LoadingButton from "components/LoadingButton"
+import { LoadingButton } from "components/LoadingButton"
 import PropTypes from "prop-types"
 import { useState } from "react"
 import { useFieldArray, useForm, FormProvider } from "react-hook-form"
@@ -152,18 +153,14 @@ export const DirectoryCreationModal = ({
               </div>
             </div>
             <div className={contentStyles.sectionFooter}>
-              <LoadingButton
-                label="Cancel"
-                disabledStyle={elementStyles.disabled}
-                className={`${elementStyles.warning}`}
-                callback={onClose}
-              />
-              <LoadingButton
-                label={fields.length === 0 ? `Skip` : `Done`}
-                disabledStyle={elementStyles.disabled}
-                className={elementStyles.blue}
-                callback={methods.handleSubmit(onSubmit)}
-              />
+              <HStack w="100%" pt="10px" spacing={2} justifyContent="flex-end">
+                <LoadingButton onClick={onClose} variant="outline">
+                  Cancel
+                </LoadingButton>
+                <LoadingButton onClick={methods.handleSubmit(onSubmit)}>
+                  {fields.length === 0 ? "Skip" : "Done"}
+                </LoadingButton>
+              </HStack>
             </div>
           </div>
         </div>

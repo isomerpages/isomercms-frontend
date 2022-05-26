@@ -72,27 +72,21 @@ describe("Files", () => {
       cy.contains(
         "Title cannot contain any of the following special characters"
       )
-      cy.get("button")
-        .contains(/^Upload$/)
-        .should("be.disabled") // necessary as multiple buttons containing Upload on page
-      cy.get("#closeMediaSettingsModal").click()
+      cy.contains("button", /^Upload$/).should("be.disabled") // necessary as multiple buttons containing Upload on page
+      cy.get("[aria-label=Close]").click()
 
       // title should not allow for names without extensions
       cy.uploadMedia(MISSING_EXTENSION, TEST_FILE_PATH, ACTION_DISABLED)
       // ASSERTS
       cy.contains("Title must end with the following extension")
-      cy.get("button")
-        .contains(/^Upload$/)
-        .should("be.disabled") // necessary as multiple buttons containing Upload on page
-      cy.get("#closeMediaSettingsModal").click()
+      cy.contains("button", /^Upload$/).should("be.disabled") // necessary as multiple buttons containing Upload on page
+      cy.get("[aria-label=Close]").click()
 
       // users should not be able to create file with duplicated filename in folder
       cy.uploadMedia(OTHER_FILE_TITLE, TEST_FILE_PATH, ACTION_DISABLED)
       // ASSERTS
       cy.contains("Title is already in use. Please choose a different title.")
-      cy.get("button")
-        .contains(/^Upload$/)
-        .should("be.disabled") // necessary as multiple buttons containing Upload on page
+      cy.contains("button", /^Upload$/).should("be.disabled") // necessary as multiple buttons containing Upload on page
     })
 
     it("Should not be able to edit file and save with invalid title", () => {
@@ -102,27 +96,21 @@ describe("Files", () => {
       cy.contains(
         "Title cannot contain any of the following special characters"
       )
-      cy.get("button")
-        .contains(/^Save$/)
-        .should("be.disabled") // necessary as multiple buttons containing Upload on page
-      cy.get("#closeMediaSettingsModal").click()
-      cy.get("#closeMediaSettingsModal").should("not.exist")
+      cy.contains("button", /^Save$/).should("be.disabled") // necessary as multiple buttons containing Upload on page
+      cy.get("[aria-label=Close]").click()
+      cy.get("[aria-label=Close]").should("not.exist")
 
       // title should not allow for names without extensions
       cy.renameMedia(OTHER_FILE_TITLE, MISSING_EXTENSION, ACTION_DISABLED)
       // ASSERTS
       cy.contains("Title must end with the following extension")
-      cy.get("button")
-        .contains(/^Save$/)
-        .should("be.disabled") // necessary as multiple buttons containing Upload on page
-      cy.get("#closeMediaSettingsModal").click()
-      cy.get("#closeMediaSettingsModal").should("not.exist")
+      cy.contains("button", /^Save$/).should("be.disabled") // necessary as multiple buttons containing Upload on page
+      cy.get("[aria-label=Close]").click()
+      cy.get("[aria-label=Close]").should("not.exist")
 
       cy.renameMedia(OTHER_FILE_TITLE, EXISTING_FILE_TITLE, ACTION_DISABLED)
       cy.contains("Title is already in use. Please choose a different title.")
-      cy.get("button")
-        .contains(/^Save$/)
-        .should("be.disabled") // necessary as multiple buttons containing Upload on page
+      cy.contains("button", /^Save$/).should("be.disabled") // necessary as multiple buttons containing Upload on page
     })
 
     it("Should be able to delete file", () => {

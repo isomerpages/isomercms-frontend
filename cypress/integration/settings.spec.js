@@ -177,7 +177,7 @@ describe("Settings page", () => {
     // eslint-disable-next-line no-bitwise
     return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
   }
-  it("Should change Primary and Secondary colors and have colors reflected on page previews", () => {
+  it.only("Should change Primary and Secondary colors and have colors reflected on page previews", () => {
     // Enter RGB values for primary and secondary colors
     cy.contains("p", "Primary").siblings("button").click()
     cy.contains(/^r/).siblings().clear().type(TEST_PRIMARY_COLOR[0].toString())
@@ -212,13 +212,15 @@ describe("Settings page", () => {
       .should("have.value", hexPrimary)
     cy.contains("p", "Primary")
       .siblings("button")
-      .should("have.attr", "style", `background: ${rgbPrimary};`)
+      .should("have.css", "background-color")
+      .and("eq", rgbPrimary)
     cy.contains("p", "Secondary")
       .siblings("input")
       .should("have.value", hexSecondary)
     cy.contains("p", "Secondary")
       .siblings("button")
-      .should("have.attr", "style", `background: ${rgbSecondary};`)
+      .should("have.css", "background-color")
+      .and("eq", rgbSecondary)
 
     // Check if page previews reflect color change
     cy.visitLoadSettings(`/sites/${TEST_REPO_NAME}/${SAMPLE_PAGE}`)

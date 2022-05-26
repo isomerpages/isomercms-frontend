@@ -1,4 +1,4 @@
-import { CloseButton } from "@chakra-ui/react"
+import { CloseButton, HStack } from "@chakra-ui/react"
 import { yupResolver } from "@hookform/resolvers/yup"
 import axios from "axios"
 import { Breadcrumb } from "components/folders/Breadcrumb"
@@ -11,8 +11,8 @@ import {
 import FormField from "components/FormField"
 import FormFieldHorizontal from "components/FormFieldHorizontal"
 import FormFieldMedia from "components/FormFieldMedia"
+import { LoadingButton } from "components/LoadingButton"
 import ResourceFormFields from "components/ResourceFormFields"
-import SaveDeleteButtons from "components/SaveDeleteButtons"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import { useEffect } from "react"
@@ -204,15 +204,23 @@ export const PageSettingsModal = ({
                     <FormError>{errors.image?.message}</FormError>
                   </FormContext>
                 </div>
-                <SaveDeleteButtons
-                  isDisabled={
-                    !fileName
-                      ? !_.isEmpty(errors)
-                      : !_.isEmpty(errors) || !pageData?.sha
-                  }
-                  hasDeleteButton={false}
-                  saveCallback={handleSubmit(onSubmit)}
-                />
+                <HStack
+                  w="100%"
+                  justify="flex-end"
+                  paddingInlineEnd={1}
+                  pt="20px"
+                >
+                  <LoadingButton
+                    onClick={handleSubmit(onSubmit)}
+                    isDisabled={
+                      !fileName
+                        ? !_.isEmpty(errors)
+                        : !_.isEmpty(errors) || !pageData?.sha
+                    }
+                  >
+                    Save
+                  </LoadingButton>
+                </HStack>
               </>
             )}
           </div>

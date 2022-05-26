@@ -2,7 +2,7 @@ import { CloseButton, Box } from "@chakra-ui/react"
 import { Button, Searchbar } from "@opengovsg/design-system-react"
 import { FolderCard } from "components/FolderCard"
 import { BreadcrumbItem } from "components/folders/Breadcrumb"
-import LoadingButton from "components/LoadingButton"
+import { LoadingButton } from "components/LoadingButton"
 import MediaCard from "components/media/MediaCard"
 import PropTypes from "prop-types"
 import { useState, useEffect } from "react"
@@ -168,13 +168,12 @@ const MediasSelectModal = ({
         <div className={`d-flex ${elementStyles.modalFooter}`}>
           <div className="ml-auto mt-3">
             <LoadingButton
-              label="Select"
               id="selectMedia"
-              disabledStyle={elementStyles.disabled}
-              disabled={!watch("selectedMedia")}
-              className={elementStyles.blue}
-              callback={handleSubmit((data) => onProceed(data))}
-            />
+              isDisabled={!watch("selectedMedia")}
+              onClick={handleSubmit((data) => onProceed(data))}
+            >
+              Select
+            </LoadingButton>
           </div>
         </div>
       </div>
