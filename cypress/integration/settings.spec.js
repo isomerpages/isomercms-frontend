@@ -230,10 +230,10 @@ describe("Settings page", () => {
     // Check if home page reflects color change
     cy.visit(`/sites/${TEST_REPO_NAME}/workspace`) // Somehow colors won't load on homepage if visiting directly
     cy.visitLoadSettings(`/sites/${TEST_REPO_NAME}/${HOMEPAGE}`)
-    cy.get(".bp-notification")
+    cy.get("#notification-bar")
       .first() // Notification bar
       .should("have.css", "background-color", rgbSecondary)
-    cy.get(".bp-section")
+    cy.get("#key-highlights")
       .first() // Hero section
       .should("have.css", "background-color", rgbPrimary)
     cy.get("h1.has-text-secondary").should("have.css", "color", rgbSecondary)

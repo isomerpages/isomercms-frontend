@@ -1407,6 +1407,7 @@ const EditHomepage = ({ match }) => {
             {/* Notification */}
             {frontMatter.notification && (
               <div
+                id="notification-bar"
                 className={getClassNames(
                   editorStyles,
                   ["bp-notification", "is-marginless"],
