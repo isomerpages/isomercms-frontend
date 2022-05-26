@@ -1,6 +1,7 @@
+import { CloseButton, HStack } from "@chakra-ui/react"
 import { Breadcrumb } from "components/folders/Breadcrumb"
-import { MoveMenuBackButton, MoveMenuItem } from "components/move"
-import SaveDeleteButtons from "components/SaveDeleteButtons"
+import { LoadingButton } from "components/LoadingButton"
+import { MoveMenuBackButton, DirMenuItem, FileMenuItem } from "components/move"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import { useState } from "react"
@@ -22,47 +23,33 @@ export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
         <>
           {/* directories */}
           {dirData
-            .filter((item) => item.type === "dir")
-            .map((item, itemIndex) => (
-              <MoveMenuItem
-                item={item}
+            .filter(({ type }) => type === "dir")
+            .map(({ name }, itemIndex) => (
+              <DirMenuItem
+                name={name}
                 id={itemIndex}
-                isItemSelected={
-                  getMediaDirectoryName(moveTo.mediaDirectoryName, {
-                    splitOn: "/",
-                  }) === `${moveQuery.mediaDirectoryName}%2F${item.name}`
-                }
-                onItemSelect={() =>
+                onClick={() => {
                   setMoveTo({
                     ...moveQuery,
                     mediaDirectoryName: `${getMediaDirectoryName(
                       moveQuery.mediaDirectoryName,
                       { joinOn: "/", decode: true }
-                    )}/${item.name}`,
-                  })
-                }
-                onForward={() => {
-                  setMoveTo({
-                    ...moveQuery,
-                    mediaDirectoryName: `${getMediaDirectoryName(
-                      moveQuery.mediaDirectoryName,
-                      { joinOn: "/", decode: true }
-                    )}/${item.name}`,
+                    )}/${name}`,
                   })
                   setMoveQuery((prevState) => ({
                     ...prevState,
                     mediaDirectoryName: `${
                       moveQuery.mediaDirectoryName
-                    }%2F${encodeURIComponent(item.name)}`,
+                    }%2F${encodeURIComponent(name)}`,
                   }))
                 }}
               />
             ))}
           {/* files */}
           {dirData
-            .filter((item) => item.type === "file")
-            .map((item, itemIndex) => (
-              <MoveMenuItem item={item} id={itemIndex} />
+            .filter(({ type }) => type === "file")
+            .map(({ name }, itemIndex) => (
+              <FileMenuItem name={name} id={itemIndex} />
             ))}
         </>
       )
@@ -85,9 +72,7 @@ export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
       <div className={elementStyles["modal-settings"]}>
         <div className={elementStyles.modalHeader}>
           <h1>{`Move ${moveQuery.mediaRoom.slice(0, -1)}`}</h1>
-          <button id="settings-CLOSE" type="button" onClick={onClose}>
-            <i id="settingsIcon-CLOSE" className="bx bx-x" />
-          </button>
+          <CloseButton id="settings-CLOSE" onClick={onClose} />
         </div>
         <div className={elementStyles.modalContent}>
           <div className={elementStyles.modalFormFields}>
@@ -142,16 +127,18 @@ export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
               title={pageFileNameToTitle(params.fileName)}
             />
           </div>
-          <SaveDeleteButtons
-            hasDeleteButton={false}
-            saveCallback={() =>
-              onProceed({
-                target: { directoryName: moveTo.mediaDirectoryName },
-                items: [{ name: params.fileName, type: "file" }],
-              })
-            }
-            saveLabel="Move Here"
-          />
+          <HStack w="100%" justify="flex-end" paddingInlineEnd={1}>
+            <LoadingButton
+              onClick={() =>
+                onProceed({
+                  target: { directoryName: moveTo.mediaDirectoryName },
+                  items: [{ name: params.fileName, type: "file" }],
+                })
+              }
+            >
+              Move Here
+            </LoadingButton>
+          </HStack>
         </div>
       </div>
     </div>

@@ -15,6 +15,10 @@
     justify-content: space-between;
     align-items: center;
     overflow: hidden;
+    // NOTE: This 4px styling is for box shadow on icon buttons
+    // when using design system, buttons have a 4px focus ring, which will get
+    // cut-off early if the container (card header in this case) lacks sufficient padding
+    padding: 4px;
 
     h2 {
       font-size: 20px;
@@ -26,16 +30,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
       padding-right: 1.875rem;
-    }
-
-    .bx {
-      font-size: 30px;
-      color: darken($isomer-blue, 20%);
-    }
-
-    button {
-      padding: 1.875rem;
-      margin: -1.875rem;
     }
   }
 

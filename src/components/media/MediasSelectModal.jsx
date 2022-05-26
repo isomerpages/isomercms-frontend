@@ -1,8 +1,9 @@
+import { CloseButton, Box } from "@chakra-ui/react"
+import { Button, Searchbar } from "@opengovsg/design-system-react"
 import { FolderCard } from "components/FolderCard"
 import { BreadcrumbItem } from "components/folders/Breadcrumb"
-import LoadingButton from "components/LoadingButton"
+import { LoadingButton } from "components/LoadingButton"
 import MediaCard from "components/media/MediaCard"
-import { MediaSearchBar } from "components/media/MediaSearchBar"
 import PropTypes from "prop-types"
 import { useState, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
@@ -31,7 +32,6 @@ const MediasSelectModal = ({
 
   const [filteredMedias, setFilteredMedias] = useState([])
   const [filteredDirectories, setFilteredDirectories] = useState([])
-  const [mediaSearchTerm, setMediaSearchTerm] = useState("")
 
   const { watch, handleSubmit } = useFormContext()
 
@@ -39,15 +39,11 @@ const MediasSelectModal = ({
   /*     handler functions    */
   /** ******************************** */
 
-  const searchChangeHandler = (event) => {
+  const searchChangeHandler = (value) => {
     const filterMediaByFileName = (medias, filterTerm) =>
       medias.filter((media) =>
         media.name.toLowerCase().includes(filterTerm.toLowerCase())
       )
-
-    const {
-      target: { value },
-    } = event
 
     const filteredMediaData = filterMediaByFileName(
       mediasData.filter((medias) => medias.type === "file"),
@@ -57,7 +53,6 @@ const MediasSelectModal = ({
       mediasData.filter((medias) => medias.type === "dir"),
       value
     )
-    setMediaSearchTerm(value)
     setFilteredMedias(filteredMediaData)
     setFilteredDirectories(filteredDirectoriesData)
   }
@@ -77,21 +72,14 @@ const MediasSelectModal = ({
         <div className={elementStyles.modalHeader}>
           <h1 className="pl-5 mr-auto">{`Select ${mediaRoom.slice(0, -1)}`}</h1>
           {/* Search medias */}
-          <MediaSearchBar
-            value={mediaSearchTerm}
-            onSearchChange={searchChangeHandler}
-          />
+          <Box w="33%" px="1rem">
+            <Searchbar isExpanded onSearch={searchChangeHandler} />
+          </Box>
           {/* Upload medias */}
-          <button
-            type="button"
-            className={elementStyles.blue}
-            onClick={onUpload}
-          >
+          <Button onClick={onUpload} mr={2}>
             Add new
-          </button>
-          <button type="button" onClick={onClose}>
-            <i className="bx bx-x" />
-          </button>
+          </Button>
+          <CloseButton onClick={onClose} />
         </div>
         {/* Segment divider  */}
         <div className={`${contentStyles.segmentDividerContainer}`}>
@@ -103,11 +91,10 @@ const MediasSelectModal = ({
             {mediaRoom === "images"
               ? ` 'png', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg'`
               : ` 'pdf'`}
-            , please use{" "}
+            , please use
             <Link to={{ pathname: `https://go.gov.sg` }} target="_blank">
-              {" "}
-              https://go.gov.sg{" "}
-            </Link>{" "}
+              https://go.gov.sg
+            </Link>
             to upload and link them to your Isomer site.
           </p>
         </div>
@@ -181,13 +168,12 @@ const MediasSelectModal = ({
         <div className={`d-flex ${elementStyles.modalFooter}`}>
           <div className="ml-auto mt-3">
             <LoadingButton
-              label="Select"
               id="selectMedia"
-              disabledStyle={elementStyles.disabled}
-              disabled={!watch("selectedMedia")}
-              className={elementStyles.blue}
-              callback={handleSubmit((data) => onProceed(data))}
-            />
+              isDisabled={!watch("selectedMedia")}
+              onClick={handleSubmit((data) => onProceed(data))}
+            >
+              Select
+            </LoadingButton>
           </div>
         </div>
       </div>

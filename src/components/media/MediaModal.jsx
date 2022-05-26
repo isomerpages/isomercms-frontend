@@ -19,7 +19,7 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
   } = useRouteMatch()
 
   const methods = useForm({
-    mode: "onBlur",
+    mode: "onTouched",
     resolver: yupResolver(
       Yup.object({
         altText: Yup.string()

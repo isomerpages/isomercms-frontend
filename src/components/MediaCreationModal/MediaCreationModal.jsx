@@ -23,7 +23,7 @@ export const MediaCreationModal = ({
   const existingTitlesArray = mediasData.map((item) => item.name)
 
   const methods = useForm({
-    mode: "onBlur",
+    mode: "onTouched",
     resolver: yupResolver(MediaSettingsSchema(existingTitlesArray)),
     context: { mediaRoom },
   })

@@ -1,3 +1,4 @@
+import { Button, IconButton } from "@opengovsg/design-system-react"
 import FormContext from "components/Form/FormContext"
 import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
@@ -25,8 +26,8 @@ const HeroDropdownElem = ({
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
       <h2>{title}</h2>
-      <button
-        type="button"
+      <IconButton
+        variant="clear"
         id={`dropdownelem-${dropdownsIndex}-toggle`}
         onClick={displayHandler}
       >
@@ -36,7 +37,7 @@ const HeroDropdownElem = ({
           }`}
           id={`dropdownelem-${dropdownsIndex}-icon`}
         />
-      </button>
+      </IconButton>
     </div>
     {shouldDisplay ? (
       <>
@@ -63,14 +64,14 @@ const HeroDropdownElem = ({
           </FormContext>
         </div>
         <div className={elementStyles.inputGroup}>
-          <button
-            type="button"
+          <Button
+            isFullWidth
+            colorScheme="danger"
             id={`dropdownelem-${dropdownsIndex}-delete`}
-            className={`ml-auto ${elementStyles.warning}`}
             onClick={deleteHandler}
           >
-            Delete dropdown element
-          </button>
+            Delete dropdown option
+          </Button>
         </div>
       </>
     ) : null}
@@ -141,14 +142,13 @@ const HeroDropdown = ({
             </>
           ) : null}
           {droppableProvided.placeholder}
-          <button
-            type="button"
+          <Button
+            isFullWidth
             id={`dropdownelem-${options.length}-create`}
-            className={`ml-auto ${elementStyles.blue}`}
             onClick={createHandler}
           >
-            Create dropdown element
-          </button>
+            Add dropdown option
+          </Button>
         </div>
       )}
     </Droppable>

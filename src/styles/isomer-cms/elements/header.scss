@@ -15,35 +15,4 @@
   padding-left: 30px;
   padding-right: 30px;
   top: 0;
-
-  .logo {
-    img {
-      width: 180px;
-    }
-  }
-
-  .headerCenter {
-    margin: 0 auto;
-    overflow: hidden;
-
-    h1 {
-      font-size: 20px;
-      min-width: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
-
-  .headerLeft {
-    float: left;
-    flex-basis: 20%;
-  }
-
-  .headerRight {
-    display: flex;
-    flex-basis: 20%;
-    justify-content: flex-end;
-    align-items: center;
-  }
 }

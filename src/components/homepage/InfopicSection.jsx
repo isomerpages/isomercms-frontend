@@ -1,3 +1,4 @@
+import { Button, IconButton } from "@opengovsg/design-system-react"
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormField from "components/FormField"
 import FormFieldMedia from "components/FormFieldMedia"
@@ -33,9 +34,8 @@ const EditorInfopicSection = ({
   >
     <div className={elementStyles.cardHeader}>
       <h2>Infopic section: {title}</h2>
-      <button
-        className="pl-3"
-        type="button"
+      <IconButton
+        variant="clear"
         id={`section-${sectionIndex}`}
         onClick={displayHandler}
       >
@@ -45,7 +45,7 @@ const EditorInfopicSection = ({
           }`}
           id={`section-${sectionIndex}-icon`}
         />
-      </button>
+      </IconButton>
     </div>
     {shouldDisplay ? (
       <>
@@ -125,14 +125,14 @@ const EditorInfopicSection = ({
           </FormContext>
         </div>
         <div className={elementStyles.inputGroup}>
-          <button
-            type="button"
+          <Button
+            colorScheme="danger"
+            isFullWidth
             id={`section-${sectionIndex}`}
-            className={`ml-auto ${elementStyles.warning}`}
             onClick={deleteHandler}
           >
             Delete section
-          </button>
+          </Button>
         </div>
       </>
     ) : null}

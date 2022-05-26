@@ -1,3 +1,4 @@
+import { Button } from "@opengovsg/design-system-react"
 import PropTypes from "prop-types"
 import { useState } from "react"
 import { SketchPicker } from "react-color"
@@ -26,13 +27,9 @@ const ColorPickerModal = ({ value, onColorSelect, setRealTimeColor }) => {
           onChange={handleColorSelect}
         />
         {/* Confirm color selection with button */}
-        <button
-          id="colorModalSubmit"
-          className={elementStyles.modalButtons}
-          type="submit"
-        >
+        <Button id="colorModalSubmit" type="submit" mt="10px">
           Select
-        </button>
+        </Button>
       </form>
     </>
   )

@@ -1,3 +1,5 @@
+import { Box, Flex } from "@chakra-ui/react"
+import { Button, Textarea } from "@opengovsg/design-system-react"
 import { FormContext } from "components/Form"
 import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
@@ -36,14 +38,14 @@ const LocationHoursFields = ({
   sectionId,
 }) => {
   return (
-    <div className="mt-4">
+    <Box mt={4}>
       <h6> Operating Hours </h6>
       {operatingHours &&
         operatingHours.map((operations, operationsIndex) => (
           // eslint-disable-next-line react/no-array-index-key
-          <div className="mb-1" key={operationsIndex}>
-            <div className="d-flex flex-row">
-              <div className="w-50 pr-1">
+          <Box key={operationsIndex}>
+            <Flex>
+              <Box w="50%" pr={1}>
                 <FormContext hasError={!!errors[operationsIndex].days}>
                   <FormTitle>Days</FormTitle>
                   <FormField
@@ -54,8 +56,8 @@ const LocationHoursFields = ({
                   />
                   <FormError>{errors[operationsIndex].days}</FormError>
                 </FormContext>
-              </div>
-              <div className="w-50 pl-1">
+              </Box>
+              <Box w="50%" pl={1}>
                 <FormContext hasError={!!errors[operationsIndex].time}>
                   <FormTitle>Hours</FormTitle>
                   <FormField
@@ -66,12 +68,12 @@ const LocationHoursFields = ({
                   />
                   <FormError>{errors[operationsIndex].time}</FormError>
                 </FormContext>
-              </div>
-            </div>
-            <div>
+              </Box>
+            </Flex>
+            <Box>
               <FormContext hasError={!!errors[operationsIndex].description}>
                 <FormTitle>Description</FormTitle>
-                <FormField
+                <Textarea
                   placeholder="Description"
                   id={`${sectionId}-${cardIndex}-operating_hours-${operationsIndex}-description`}
                   value={operations.description}
@@ -79,40 +81,35 @@ const LocationHoursFields = ({
                 />
                 <FormError>{errors[operationsIndex].description}</FormError>
               </FormContext>
-            </div>
-            <button
-              className={`${elementStyles.formFixedText} ${elementStyles.textButton}`}
-              id={`${sectionId}-${cardIndex}-remove_operating_hours-${operationsIndex}`}
-              type="button"
-              onClick={onFieldChange}
-              style={{ font: "none" }}
-            >
-              Remove
-            </button>
-          </div>
+              <Button
+                my="24px"
+                colorScheme="danger"
+                isFullWidth
+                id={`${sectionId}-${cardIndex}-remove_operating_hours-${operationsIndex}`}
+                onClick={onFieldChange}
+              >
+                Delete operating hours
+              </Button>
+            </Box>
+          </Box>
         ))}
-      <div className="mt-3">
+      <Box mt={3}>
         {operatingHours.length < DEFAULT_NUM_OPERATING_FIELDS ? (
-          <button onClick={onFieldChange} type="button">
-            <button
-              className={`${elementStyles.formLabel} ${elementStyles.textButton}`}
-              id={`${sectionId}-${cardIndex}-add_operating_hours`}
-              type="button"
-              style={{
-                fontSize: "16px",
-              }}
-            >
-              Add operating hours
-            </button>
-          </button>
+          <Button
+            isFullWidth
+            onClick={onFieldChange}
+            id={`${sectionId}-${cardIndex}-add_operating_hours`}
+          >
+            Add operating hours
+          </Button>
         ) : (
           <p className={elementStyles.formLabel}>
             {" "}
             Maximum 5 operating hours fields
           </p>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   )
 }
 
@@ -132,14 +129,14 @@ const LocationAddressFields = ({
         addressValue,
         addressIndex // sets default address length
       ) => (
-        <div className="py-1">
+        <Box py={1}>
           <FormField
             placeholder={title}
             id={`${sectionId}-${cardIndex}-address-${addressIndex}`}
             value={addressValue}
             onChange={onFieldChange}
           />
-        </div>
+        </Box>
       ))}
       <FormError>{errorMessage}</FormError>
     </FormContext>

@@ -1,3 +1,4 @@
+import { Button, IconButton } from "@opengovsg/design-system-react"
 import FormContext from "components/Form/FormContext"
 import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
@@ -24,9 +25,8 @@ const KeyHighlight = ({
   <div className={elementStyles.card}>
     <div className={elementStyles.cardHeader}>
       <h2>{title}</h2>
-      <button
-        className="pl-3"
-        type="button"
+      <IconButton
+        variant="clear"
         id={`highlight-${highlightIndex}-toggle`}
         onClick={displayHandler}
       >
@@ -36,7 +36,7 @@ const KeyHighlight = ({
           }`}
           id={`highlight-${highlightIndex}-icon`}
         />
-      </button>
+      </IconButton>
     </div>
     {/* Core highlight fields */}
     {shouldDisplay && (
@@ -74,15 +74,15 @@ const KeyHighlight = ({
           </FormContext>
         </div>
         <div className={elementStyles.inputGroup}>
-          <button
-            type="button"
+          <Button
             id={`highlight-${highlightIndex}-delete`}
-            className={`ml-auto ${elementStyles.warning}`}
             onClick={deleteHandler}
+            colorScheme="danger"
             key={`${highlightIndex}-delete`}
+            isFullWidth
           >
             Delete highlight
-          </button>
+          </Button>
         </div>
       </>
     )}

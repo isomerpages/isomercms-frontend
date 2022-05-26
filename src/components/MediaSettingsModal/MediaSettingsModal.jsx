@@ -1,11 +1,12 @@
+import { CloseButton, Flex } from "@chakra-ui/react"
 import { yupResolver } from "@hookform/resolvers/yup"
+import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
-import Button from "components/Button"
 import FormContext from "components/Form/FormContext"
 import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
-import SaveDeleteButtons from "components/SaveDeleteButtons"
+import { LoadingButton } from "components/LoadingButton"
 import _ from "lodash"
 import { useEffect } from "react"
 import { useForm, useFormContext } from "react-hook-form"
@@ -58,7 +59,7 @@ export const MediaSettingsModal = ({
   } =
     useFormContext() ||
     useForm({
-      mode: "onBlur",
+      mode: "onTouched",
       resolver: yupResolver(MediaSettingsSchema(existingTitlesArray)),
       context: { mediaRoom },
     })
@@ -104,11 +105,7 @@ export const MediaSettingsModal = ({
               to upload and link them to your Isomer site.
             </p>
           </div>
-          <Button
-            label="Select file"
-            className={elementStyles.blue}
-            callback={toggleUploadInput}
-          />
+          <Button onClick={toggleUploadInput}>Select file</Button>
           <br />
         </>
       )
@@ -141,14 +138,7 @@ export const MediaSettingsModal = ({
       <div className={elementStyles.modal}>
         <div className={elementStyles.modalHeader}>
           <h1>{getModalTitle({ isCreate, params })}</h1>
-          <button
-            type="button"
-            mediaType="button"
-            id="closeMediaSettingsModal"
-            onClick={onClose}
-          >
-            <i className="bx bx-x" />
-          </button>
+          <CloseButton onClick={onClose} />
         </div>
         <>
           <p className={elementStyles.formLabel}>
@@ -156,7 +146,7 @@ export const MediaSettingsModal = ({
           </p>
           <MediaComponent />
           <form className={elementStyles.modalContent}>
-            <div className={elementStyles.modalFormFields}>
+            <div>
               <FormContext hasError={!!errors.name?.message}>
                 <FormTitle>File name</FormTitle>
                 <FormField
@@ -168,16 +158,18 @@ export const MediaSettingsModal = ({
                 <FormError>{errors.name?.message}</FormError>
               </FormContext>
             </div>
-            <SaveDeleteButtons
-              saveLabel={!fileName ? "Upload" : "Save"}
-              isSaveDisabled={
-                !fileName
-                  ? !_.isEmpty(errors) || !watch("content")
-                  : !_.isEmpty(errors) || !mediaData?.sha
-              }
-              hasDeleteButton={false}
-              saveCallback={handleSubmit((data) => onSubmit(data))}
-            />
+            <Flex w="100%" dir="row" justifyContent="flex-end" p={1}>
+              <LoadingButton
+                isDisabled={
+                  !fileName
+                    ? !_.isEmpty(errors) || !watch("content")
+                    : !_.isEmpty(errors) || !mediaData?.sha
+                }
+                onClick={handleSubmit((data) => onSubmit(data))}
+              >
+                {!fileName ? "Upload" : "Save"}
+              </LoadingButton>
+            </Flex>
           </form>
         </>
       </div>
