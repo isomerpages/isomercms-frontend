@@ -204,25 +204,6 @@ describe("Edit unlinked page", () => {
 
     cy.contains(`[${LINK_TITLE}](${LINK_URL})`)
   })
-
-  it("Edit page (unlinked) should allow user to delete page", () => {
-    cy.contains(":button", "Delete").click()
-
-    // Cancel works properly in modal
-    cy.get("#modal-cancel").click()
-    cy.get("#modal-cancel").should("not.exist")
-
-    cy.contains(":button", "Delete").click()
-
-    // Test delete in modal
-    cy.get("#modal-delete").should("exist")
-    cy.get("#modal-delete").click()
-    cy.wait(E2E_CHANGE_WAIT_TIME)
-
-    // Assert: page no longer exists
-    cy.visit(`/sites/${TEST_REPO_NAME}/editPage/${TEST_PAGE_TITLE_ENCODED}`)
-    cy.contains("The page you are looking for does not exist anymore.")
-  })
 })
 
 describe("Edit collection page", () => {
@@ -356,27 +337,6 @@ describe("Edit collection page", () => {
     cy.contains(":button", "Save").click()
 
     cy.contains(`[${LINK_TITLE}](${LINK_URL})`)
-  })
-
-  it("Edit page (collection) should allow user to delete page", () => {
-    cy.contains(":button", "Delete").click()
-
-    // Cancel works properly in modal
-    cy.get("#modal-cancel").click()
-    cy.get("#modal-cancel").should("not.exist")
-
-    cy.contains(":button", "Delete").click()
-
-    // Test delete in modal
-    cy.get("#modal-delete").should("exist")
-    cy.get("#modal-delete").click()
-    cy.wait(E2E_CHANGE_WAIT_TIME)
-
-    // Assert: page no longer exists
-    cy.visit(
-      `/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_ENCODED}`
-    )
-    cy.contains("The page you are looking for does not exist anymore.")
   })
 })
 
