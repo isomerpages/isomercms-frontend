@@ -1,4 +1,3 @@
-import { CloseButton } from "@chakra-ui/react"
 import { ThemeProvider } from "@opengovsg/design-system-react"
 import axios from "axios"
 import { useEffect } from "react"
