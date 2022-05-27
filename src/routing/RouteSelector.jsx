@@ -38,7 +38,9 @@ export const ProtectedRouteWithProps = (props) => {
 
 export const RouteSelector = () => (
   <>
-    <Banner variant={BANNER_VARIANT}>{BANNER_MESSAGE}</Banner>
+    {!!BANNER_MESSAGE && (
+      <Banner variant={BANNER_VARIANT}>{BANNER_MESSAGE}</Banner>
+    )}
     <Switch>
       <RedirectIfLoggedInRoute exact path="/" component={Home} />
       <ProtectedRouteWithProps
