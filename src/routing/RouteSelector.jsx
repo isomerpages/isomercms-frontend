@@ -1,3 +1,4 @@
+import { Banner } from "@opengovsg/design-system-react"
 import * as Sentry from "@sentry/react"
 import FallbackComponent from "components/FallbackComponent"
 import VerifyUserDetailsModal from "components/VerifyUserDetailsModal"
@@ -23,6 +24,9 @@ import Workspace from "layouts/Workspace"
 import ProtectedRoute from "routing/ProtectedRoute"
 import RedirectIfLoggedInRoute from "routing/RedirectIfLoggedInRoute"
 
+const { REACT_APP_BANNER_VARIANT: BANNER_VARIANT } = process.env
+const { REACT_APP_BANNER_MESSAGE: BANNER_MESSAGE } = process.env
+
 export const ProtectedRouteWithProps = (props) => {
   return (
     <Sentry.ErrorBoundary fallback={FallbackComponent}>
@@ -34,6 +38,9 @@ export const ProtectedRouteWithProps = (props) => {
 
 export const RouteSelector = () => (
   <>
+    {!!BANNER_MESSAGE && (
+      <Banner variant={BANNER_VARIANT}>{BANNER_MESSAGE}</Banner>
+    )}
     <Switch>
       <RedirectIfLoggedInRoute exact path="/" component={Home} />
       <ProtectedRouteWithProps
