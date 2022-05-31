@@ -7,7 +7,7 @@ import { useQuery } from "react-query"
 import { DIR_CONTENT_KEY } from "hooks/queryKeys"
 import useRedirectHook from "hooks/useRedirectHook"
 
-import { errorToast } from "utils/toasts"
+import { useErrorToast } from "utils/toasts"
 
 import { parseDirectoryFile, DEFAULT_RETRY_MSG } from "utils"
 
@@ -29,6 +29,7 @@ const getDirectoryFile = async ({ siteName, collectionName }) => {
 // eslint-disable-next-line import/prefer-default-export
 export function useCollectionHook(params) {
   const { setRedirectToNotFound } = useRedirectHook()
+  const errorToast = useErrorToast()
   return useQuery([DIR_CONTENT_KEY, params], () => getDirectoryFile(params), {
     retry: false,
     initialData: [],
@@ -36,9 +37,9 @@ export function useCollectionHook(params) {
       if (err.response && err.response.status === 404) {
         setRedirectToNotFound(params.siteName)
       } else {
-        errorToast(
-          `There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`
-        )
+        errorToast({
+          description: `There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`,
+        })
       }
     },
   })

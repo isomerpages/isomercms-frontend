@@ -6,7 +6,7 @@ import { ServicesContext } from "contexts/ServicesContext"
 
 import { DIR_CONTENT_KEY } from "hooks/queryKeys"
 
-import { successToast, errorToast } from "utils/toasts"
+import { useSuccessToast, useErrorToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
@@ -15,6 +15,8 @@ import { extractMediaInfo } from "./utils"
 export function useCreateMediaHook(params, queryParams) {
   const queryClient = useQueryClient()
   const { mediaService } = useContext(ServicesContext)
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
   return useMutation(
     (body) => {
       const { newFileName, content } = extractMediaInfo(body)
@@ -23,7 +25,9 @@ export function useCreateMediaHook(params, queryParams) {
     {
       ...queryParams,
       onSuccess: ({ data }) => {
-        successToast(`Media file successfully uploaded`)
+        successToast({
+          description: `Media file successfully uploaded!`,
+        })
         const newMedia = {
           ...data,
           mediaUrl: data.content,
@@ -42,9 +46,9 @@ export function useCreateMediaHook(params, queryParams) {
         if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
       },
       onError: () => {
-        errorToast(
-          `A new media file could not be created. ${DEFAULT_RETRY_MSG}`
-        )
+        errorToast({
+          description: `A new media file could not be created. ${DEFAULT_RETRY_MSG}`,
+        })
         if (queryParams && queryParams.onError) queryParams.onError()
       },
     }

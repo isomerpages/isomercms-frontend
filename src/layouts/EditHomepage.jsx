@@ -27,7 +27,7 @@ import TemplateInfopicLeftSection from "templates/homepage/InfopicLeftSection"
 import TemplateInfopicRightSection from "templates/homepage/InfopicRightSection"
 import TemplateResourcesSection from "templates/homepage/ResourcesSection"
 
-import { errorToast } from "utils/toasts"
+import { useErrorToast } from "utils/toasts"
 import {
   validateSections,
   validateHighlights,
@@ -148,6 +148,7 @@ const EditHomepage = ({ match }) => {
   })
   const [savedHeroElems, setSavedHeroElems] = useState("")
   const [savedHeroErrors, setSavedHeroErrors] = useState("")
+  const errorToast = useErrorToast()
 
   useEffect(() => {
     let _isMounted = true
@@ -253,9 +254,9 @@ const EditHomepage = ({ match }) => {
       } catch (err) {
         // Set frontMatter to be same to prevent warning message when navigating away
         if (_isMounted) setFrontMatter(originalFrontMatter)
-        errorToast(
-          `There was a problem trying to load your homepage. ${DEFAULT_RETRY_MSG}`
-        )
+        errorToast({
+          description: `There was a problem trying to load your homepage. ${DEFAULT_RETRY_MSG}`,
+        })
         console.log(err)
       }
     }
@@ -1015,9 +1016,9 @@ const EditHomepage = ({ match }) => {
 
       window.location.reload()
     } catch (err) {
-      errorToast(
-        `There was a problem trying to save your homepage. ${DEFAULT_RETRY_MSG}`
-      )
+      errorToast({
+        description: `There was a problem trying to save your homepage. ${DEFAULT_RETRY_MSG}`,
+      })
       console.log(err)
     }
   }

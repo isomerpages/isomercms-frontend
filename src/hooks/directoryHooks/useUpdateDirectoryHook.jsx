@@ -6,7 +6,7 @@ import { ServicesContext } from "contexts/ServicesContext"
 
 import { DIR_CONTENT_KEY } from "hooks/queryKeys"
 
-import { successToast, errorToast } from "utils/toasts"
+import { useSuccessToast, useErrorToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG, getMediaDirectoryName } from "utils"
 
@@ -15,6 +15,8 @@ import { extractUpdateDirectoryInfo } from "./utils"
 export function useUpdateDirectoryHook(params, queryParams) {
   const queryClient = useQueryClient()
   const { directoryService } = useContext(ServicesContext)
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
   return useMutation(
     (body) => {
       const { newDirectoryName } = extractUpdateDirectoryInfo(body)
@@ -23,9 +25,9 @@ export function useUpdateDirectoryHook(params, queryParams) {
     {
       ...queryParams,
       onError: () => {
-        errorToast(
-          `Your directory settings could not be saved. ${DEFAULT_RETRY_MSG}`
-        )
+        errorToast({
+          description: `Your directory settings could not be saved. ${DEFAULT_RETRY_MSG}`,
+        })
         if (queryParams && queryParams.onError) queryParams.onError()
       },
       onSuccess: () => {
@@ -55,7 +57,9 @@ export function useUpdateDirectoryHook(params, queryParams) {
               ),
             },
           ])
-        successToast("Successfully updated directory settings")
+        successToast({
+          description: `Successfully updated directory settings!`,
+        })
         if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
       },
     }

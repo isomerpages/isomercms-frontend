@@ -5,7 +5,7 @@ import { ServicesContext } from "contexts/ServicesContext"
 
 import { DIR_CONTENT_KEY } from "hooks/queryKeys"
 
-import { successToast, errorToast } from "utils/toasts"
+import { useSuccessToast, useErrorToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
@@ -13,19 +13,30 @@ import { DEFAULT_RETRY_MSG } from "utils"
 export function useMoveHook(params, queryParams) {
   const { moverService } = useContext(ServicesContext)
   const queryClient = useQueryClient()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
   return useMutation((body) => moverService.move(params, body), {
     ...queryParams,
     onError: (err) => {
       if (err.response.status === 409)
-        errorToast(
-          "A file of the same name exists in the folder you are moving to. Please rename your file before moving."
-        )
-      else errorToast(`Your file could not be moved. ${DEFAULT_RETRY_MSG}`)
+        errorToast({
+          description: `A file of the same name exists in the folder you are moving to. Please rename your file before moving.`,
+        })
+      else
+        errorToast({
+          description: `Your file could not be moved. ${DEFAULT_RETRY_MSG}`,
+        })
       if (queryParams && queryParams.onError) queryParams.onError()
     },
     onSuccess: (resp) => {
-      if (!resp) successToast("File is already in this folder")
-      else successToast("Successfully moved file")
+      if (!resp)
+        successToast({
+          description: `File is already in this folder`,
+        })
+      else
+        successToast({
+          description: `Successfully moved file`,
+        })
       if (params.mediaRoom || params.collectionName || params.resourceRoomName)
         queryClient.invalidateQueries([
           // invalidates collection pages or resource pages

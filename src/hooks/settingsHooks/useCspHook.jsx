@@ -4,7 +4,7 @@ import { useQuery } from "react-query"
 
 import { CSP_CONTENT_KEY } from "hooks/queryKeys"
 
-import { errorToast } from "utils/toasts"
+import { useErrorToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
@@ -19,14 +19,15 @@ const getCsp = async ({ siteName }) => {
 }
 
 export function useCspHook({ siteName }, queryParams) {
+  const errorToast = useErrorToast()
   return useQuery([CSP_CONTENT_KEY, { siteName }], () => getCsp({ siteName }), {
     ...queryParams,
     retry: false,
     initialData: new Policy(),
     onError: () => {
-      errorToast(
-        `There was a problem trying to load your CSP. ${DEFAULT_RETRY_MSG}`
-      )
+      errorToast({
+        description: `There was a problem trying to load your CSP. ${DEFAULT_RETRY_MSG}`,
+      })
       if (queryParams && queryParams.onError) queryParams.onError()
     },
   })
