@@ -155,9 +155,11 @@ const EditPage = ({ match }) => {
                 setIsXSSViolation(false)
                 setShowXSSWarning(false)
                 updatePageHandler({
-                  frontMatter: pageData.content.frontMatter,
-                  sha: currSha,
-                  pageBody: sanitizedEditorValue,
+                  pageData: {
+                    frontMatter: pageData.content.frontMatter,
+                    sha: currSha,
+                    pageBody: sanitizedEditorValue,
+                  },
                 })
               }}
               onCancel={() => {
@@ -175,9 +177,11 @@ const EditPage = ({ match }) => {
             onProceed={() => {
               setShowOverwriteWarning(false)
               updatePageHandler({
-                frontMatter: pageData.content.frontMatter,
-                sha: pageData.sha,
-                pageBody: editorValue,
+                pageData: {
+                  frontMatter: pageData.content.frontMatter,
+                  sha: pageData.sha,
+                  pageBody: editorValue,
+                },
               })
             }}
             onCancel={() => setShowOverwriteWarning(false)}
