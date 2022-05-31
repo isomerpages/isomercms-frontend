@@ -20,3 +20,9 @@ export const useSuccessToast = () =>
     description: "Success!",
     status: "success",
   })
+
+export const useWarningToast = () =>
+  useToast({
+    ...DEFAULT_TOAST_PROPS,
+    status: "warning",
+  })
