@@ -1,4 +1,5 @@
 import classNames from "classnames"
+import _ from "lodash"
 
 const OVERRIDDEN_CLASS_NAMES = [
   "bp-section",
@@ -21,18 +22,11 @@ interface StylesProps {
 
 export const getClassNames = (styles: StylesProps, classes: string[]) => {
   // Generates relevant class, with classes using the provided styles
-  const styledClasses: string[] = []
-  classes.forEach((className) => {
-    if (UNSTYLED_CLASS_NAMES.includes(className)) {
-      // Styles related to colours - only use the original name so that our colours take precedence
-      styledClasses.push(className)
-    } else if (OVERRIDDEN_CLASS_NAMES.includes(className)) {
-      // Styles which affect our inserted styles - require both our css and the imported css
-      styledClasses.push(className)
-      styledClasses.push(styles[className])
-    } else {
-      styledClasses.push(styles[className])
-    }
-  })
-  return classNames(styledClasses)
+  return classNames(
+    classes
+      .filter((className) => !UNSTYLED_CLASS_NAMES.includes(className))
+      .map((className) => styles[className])
+      .concat(_.intersection(classes, OVERRIDDEN_CLASS_NAMES))
+      .concat(_.intersection(classes, UNSTYLED_CLASS_NAMES))
+  )
 }
