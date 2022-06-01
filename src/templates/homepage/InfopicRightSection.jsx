@@ -4,7 +4,9 @@ import { useQuery } from "react-query"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
-import { fetchImageURL, getClassNames } from "utils"
+import { getClassNames } from "templates/utils/stylingUtils"
+
+import { fetchImageURL } from "utils"
 
 /* eslint
   react/no-array-index-key: 0

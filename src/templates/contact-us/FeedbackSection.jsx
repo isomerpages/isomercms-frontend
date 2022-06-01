@@ -4,7 +4,7 @@ import { forwardRef } from "react"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
-import { getClassNames } from "utils"
+import { getClassNames } from "templates/utils/stylingUtils"
 
 const TemplateFeedbackSection = forwardRef(({ feedback }, ref) => (
   <div ref={ref}>

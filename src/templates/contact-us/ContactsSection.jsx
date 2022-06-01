@@ -5,7 +5,7 @@ import { forwardRef } from "react"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
-import { getClassNames } from "utils"
+import { getClassNames } from "templates/utils/stylingUtils"
 
 const Contact = forwardRef(({ contact }, ref) => (
   <div className={getClassNames(editorStyles, ["col", "is-6"])} ref={ref}>

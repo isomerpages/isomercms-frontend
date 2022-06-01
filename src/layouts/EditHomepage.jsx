@@ -26,6 +26,7 @@ import TemplateInfobarSection from "templates/homepage/InfobarSection"
 import TemplateInfopicLeftSection from "templates/homepage/InfopicLeftSection"
 import TemplateInfopicRightSection from "templates/homepage/InfopicRightSection"
 import TemplateResourcesSection from "templates/homepage/ResourcesSection"
+import { getClassNames } from "templates/utils/stylingUtils"
 
 import { useErrorToast } from "utils/toasts"
 import {
@@ -38,7 +39,6 @@ import {
   frontMatterParser,
   concatFrontMatterMdBody,
   DEFAULT_RETRY_MSG,
-  getClassNames,
 } from "utils"
 
 /* eslint-disable react/jsx-props-no-spreading */

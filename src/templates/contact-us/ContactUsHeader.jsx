@@ -4,8 +4,7 @@ import { forwardRef } from "react"
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import Breadcrumb from "templates/pageComponents/Breadcrumb"
-
-import { getClassNames } from "utils"
+import { getClassNames } from "templates/utils/stylingUtils"
 
 const TemplateContactUsHeader = forwardRef(({ agencyName }, ref) => (
   <section className={getClassNames(editorStyles, ["bp-section"])} ref={ref}>
