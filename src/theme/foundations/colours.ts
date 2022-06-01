@@ -1,6 +1,6 @@
 // Colour schemes available for isomer
 // There aren't any more because it should default to design system's
-export type IsomerColorScheme = "primary" | "secondary"
+export type IsomerColorScheme = "primary" | "secondary" | "text" | "icon"
 
 export const colours: { [k in IsomerColorScheme]: Record<string, string> } = {
   primary: {
@@ -26,5 +26,11 @@ export const colours: { [k in IsomerColorScheme]: Record<string, string> } = {
     700: "#493897",
     800: "#3B2E8A",
     900: "#271E78",
+  },
+  text: {
+    body: "#3D3D3D",
+  },
+  icon: {
+    alt: "#686868",
   },
 }
