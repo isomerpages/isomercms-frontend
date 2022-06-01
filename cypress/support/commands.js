@@ -7,7 +7,7 @@ Cypress.Commands.overwrite("visit", (originalFn, url, options) => {
   // make sure to add a return here!
   originalFn(url, options)
   cy.wait(2 * 1000)
-  return cy.get(`[data-testid="verify-user-modal"]`).should("not.exist")
+  return cy.get(`[data-cy="verify-user-modal"]`).should("not.exist")
 })
 
 Cypress.Commands.add(
