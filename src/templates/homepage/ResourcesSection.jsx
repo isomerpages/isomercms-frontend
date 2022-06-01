@@ -41,7 +41,8 @@ const ResourcePost = () => (
         <div
           className={getClassNames(editorStyles, [
             "is-fluid",
-            "padding--top--md description",
+            "padding--top--md",
+            "description",
           ])}
         >
           <small className={editorStyles["has-text-white"]}>DATE</small>

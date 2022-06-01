@@ -149,7 +149,7 @@ const KeyHighlightElem = ({ title, description }) => (
 const KeyHighlights = ({ highlights }) => (
   <section
     id={editorStyles["key-highlights"]}
-    className={getClassNames(editorStyles, ["bp-section is-paddingless"])}
+    className={getClassNames(editorStyles, ["bp-section", "is-paddingless"])}
   >
     <div
       id="key-highlights"
