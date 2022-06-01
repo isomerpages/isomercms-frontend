@@ -31,6 +31,7 @@ export const colours: { [k in IsomerColorScheme]: Record<string, string> } = {
     body: "#3D3D3D",
   },
   icon: {
+    default: "#276EF1",
     alt: "#686868",
   },
 }
