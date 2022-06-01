@@ -9,6 +9,7 @@ export const ContextMenuButton = ({
   ...props
 }: MenuProps): JSX.Element => {
   const baseColour = useToken("colors", "text.body")
+  const tokenColour = useToken("colors", "icon.default")
 
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
@@ -17,7 +18,7 @@ export const ContextMenuButton = ({
       <MenuButton
         as={IconButton}
         aria-label="Context Menu"
-        icon={<BiDotsVerticalRounded />}
+        icon={<BiDotsVerticalRounded fontSize="1.25rem" fill={tokenColour} />}
         variant="clear"
       />
       <Menu.List color={baseColour}>{children}</Menu.List>
