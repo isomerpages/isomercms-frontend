@@ -1198,7 +1198,9 @@ const EditHomepage = ({ match }) => {
                 className={`${elementStyles.card} ${elementStyles.siteNotificationSection}`}
               >
                 <p>
-                  <h2>Site notification</h2>
+                  <h2 className={elementStyles.notificationHeader}>
+                    Site notification
+                  </h2>
                 </p>
                 <Input
                   placeholder="Notification"
