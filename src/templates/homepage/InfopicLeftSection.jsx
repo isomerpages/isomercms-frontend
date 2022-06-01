@@ -70,31 +70,29 @@ const TemplateInfopicLeftSection = (
                 {subtitle}
               </p>
               <h1
-                className={getClassNames(
-                  editorStyles,
-                  ["padding--bottom"],
-                  ["has-text-secondary"]
-                )}
+                className={getClassNames(editorStyles, [
+                  "padding--bottom",
+                  "has-text-secondary",
+                ])}
               >
                 <b>{title}</b>
               </h1>
               <p>{description}</p>
               <div
-                className={getClassNames(
-                  editorStyles,
-                  ["bp-sec-button", "margin--top padding--bottom"],
-                  ["bp-sec-button"]
-                )}
+                className={getClassNames(editorStyles, [
+                  "bp-sec-button",
+                  "margin--top padding--bottom",
+                ])}
               >
                 {button ? (
                   <div>
                     <span>{button}</span>
                     <i
-                      className={getClassNames(
-                        editorStyles,
-                        ["sgds-icon", "sgds-icon-arrow-right", "is-size-4"],
-                        ["sgds-icon"]
-                      )}
+                      className={getClassNames(editorStyles, [
+                        "sgds-icon",
+                        "sgds-icon-arrow-right",
+                        "is-size-4",
+                      ])}
                       aria-hidden="true"
                     />
                   </div>
@@ -128,31 +126,30 @@ const TemplateInfopicLeftSection = (
                 {subtitle}
               </p>
               <h1
-                className={getClassNames(
-                  editorStyles,
-                  ["padding--bottom"],
-                  ["has-text-secondary"]
-                )}
+                className={getClassNames(editorStyles, [
+                  "padding--bottom",
+                  "has-text-secondary",
+                ])}
               >
                 <b>{title}</b>
               </h1>
               <p>{description}</p>
               <div
-                className={getClassNames(
-                  editorStyles,
-                  ["bp-sec-button", "margin--top", "padding--bottom"],
-                  ["bp-sec-button"]
-                )}
+                className={getClassNames(editorStyles, [
+                  "bp-sec-button",
+                  "margin--top",
+                  "padding--bottom",
+                ])}
               >
                 {button ? (
                   <div>
                     <span>{button}</span>
                     <i
-                      className={getClassNames(
-                        editorStyles,
-                        ["sgds-icon", "sgds-icon-arrow-right", "is-size-4"],
-                        ["sgds-icon"]
-                      )}
+                      className={getClassNames(editorStyles, [
+                        "sgds-icon",
+                        "sgds-icon-arrow-right",
+                        "is-size-4",
+                      ])}
                       aria-hidden="true"
                     />
                   </div>
@@ -203,31 +200,30 @@ const TemplateInfopicLeftSection = (
                 {subtitle}
               </p>
               <h1
-                className={getClassNames(
-                  editorStyles,
-                  ["padding--bottom"],
-                  ["has-text-secondary"]
-                )}
+                className={getClassNames(editorStyles, [
+                  "padding--bottom",
+                  "has-text-secondary",
+                ])}
               >
                 <b>{title}</b>
               </h1>
               <p>{description}</p>
               <div
-                className={getClassNames(
-                  editorStyles,
-                  ["margin--top", "padding--bottom"],
-                  ["bp-sec-button"]
-                )}
+                className={getClassNames(editorStyles, [
+                  "margin--top",
+                  "padding--bottom",
+                  "bp-sec-button",
+                ])}
               >
                 {button ? (
                   <div>
                     <span>{button}</span>
                     <i
-                      className={getClassNames(
-                        editorStyles,
-                        ["sgds-icon", "sgds-icon-arrow-right", "is-size-4"],
-                        ["sgds-icon"]
-                      )}
+                      className={getClassNames(editorStyles, [
+                        "sgds-icon",
+                        "sgds-icon-arrow-right",
+                        "is-size-4",
+                      ])}
                       aria-hidden="true"
                     />
                   </div>

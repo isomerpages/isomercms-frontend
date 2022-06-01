@@ -46,11 +46,10 @@ const TemplateInfobarSection = (
             {/* Title */}
             {title ? (
               <h1
-                className={getClassNames(
-                  editorStyles,
-                  ["padding--bottom"],
-                  ["has-text-secondary"]
-                )}
+                className={getClassNames(editorStyles, [
+                  "padding--bottom",
+                  "has-text-secondary",
+                ])}
               >
                 <b>{title}</b>
               </h1>
@@ -77,21 +76,15 @@ const TemplateInfobarSection = (
               "is-one-third",
             ])}
           >
-            <div
-              className={getClassNames(
-                editorStyles,
-                ["bp-sec-button"],
-                ["bp-sec-button"]
-              )}
-            >
+            <div className={getClassNames(editorStyles, ["bp-sec-button"])}>
               <div>
                 <span>{button}</span>
                 <i
-                  className={getClassNames(
-                    editorStyles,
-                    ["sgds-icon", "sgds-icon-arrow-right", "is-size-4"],
-                    ["sgds-icon"]
-                  )}
+                  className={getClassNames(editorStyles, [
+                    "sgds-icon",
+                    "sgds-icon-arrow-right",
+                    "is-size-4",
+                  ])}
                   aria-hidden="true"
                 />
               </div>

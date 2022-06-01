@@ -24,11 +24,10 @@ const TemplateFeedbackSection = forwardRef(({ feedback }, ref) => (
           ])}
         >
           <h5
-            className={getClassNames(
-              editorStyles,
-              ["has-text-weight-semibold"],
-              ["has-text-secondary"]
-            )}
+            className={getClassNames(editorStyles, [
+              "has-text-weight-semibold",
+              "has-text-secondary",
+            ])}
           >
             Send us your feedback
           </h5>

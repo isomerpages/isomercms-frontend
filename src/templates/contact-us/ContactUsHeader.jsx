@@ -8,30 +8,15 @@ import Breadcrumb from "templates/pageComponents/Breadcrumb"
 import { getClassNames } from "utils"
 
 const TemplateContactUsHeader = forwardRef(({ agencyName }, ref) => (
-  <section
-    className={getClassNames(editorStyles, ["bp-section"], ["bp-section"])}
-    ref={ref}
-  >
-    <div
-      className={getClassNames(
-        editorStyles,
-        ["bp-container"],
-        ["bp-container"]
-      )}
-    >
-      <div
-        className={getClassNames(
-          editorStyles,
-          ["row", "is-inverted"],
-          ["row", "is-inverted"]
-        )}
-      >
+  <section className={getClassNames(editorStyles, ["bp-section"])} ref={ref}>
+    <div className={getClassNames(editorStyles, ["bp-container"])}>
+      <div className={getClassNames(editorStyles, ["row", "is-inverted"])}>
         <div
-          className={getClassNames(
-            editorStyles,
-            ["col", "is-8", "is-offset-2"],
-            ["col", "is-8", "is-offset-2"]
-          )}
+          className={getClassNames(editorStyles, [
+            "col",
+            "is-8",
+            "is-offset-2",
+          ])}
         >
           <Breadcrumb title="Contact Us" />
         </div>
@@ -53,11 +38,10 @@ const TemplateContactUsHeader = forwardRef(({ agencyName }, ref) => (
             Get in touch with
             <br />
             <span
-              className={getClassNames(
-                editorStyles,
-                ["display"],
-                ["has-text-secondary"]
-              )}
+              className={getClassNames(editorStyles, [
+                "display",
+                "has-text-secondary",
+              ])}
             >
               {agencyName}
             </span>

@@ -19,11 +19,13 @@ const HeroButton = ({ button }) => (
   <>
     {button ? (
       <div
-        className={getClassNames(
-          editorStyles,
-          ["bp-button, is-uppercase, search-button, default"],
-          ["is-secondary"]
-        )}
+        className={getClassNames(editorStyles, [
+          "bp-button",
+          "is-uppercase",
+          "search-button",
+          "default",
+          "is-secondary",
+        ])}
       >
         {button}
       </div>
@@ -109,7 +111,7 @@ const HeroDropdown = ({ title, options, isActive, toggleDropdown }) => (
 const KeyHighlightElem = ({ title, description }) => (
   <>
     {title || description ? (
-      <div className={getClassNames(editorStyles, ["col"], ["col"])}>
+      <div className={getClassNames(editorStyles, ["col"])}>
         <div className={editorStyles["is-highlight"]}>
           {/* Title */}
           {title ? (

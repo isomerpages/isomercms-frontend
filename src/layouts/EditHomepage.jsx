@@ -1411,11 +1411,11 @@ const EditHomepage = ({ match }) => {
             {frontMatter.notification && (
               <div
                 id="notification-bar"
-                className={getClassNames(
-                  editorStyles,
-                  ["bp-notification", "is-marginless"],
-                  ["bg-secondary"]
-                )}
+                className={getClassNames(editorStyles, [
+                  "bp-notification",
+                  "is-marginless",
+                  "bg-secondary",
+                ])}
               >
                 <div className={editorStyles["bp-container"]}>
                   <div className={editorStyles.row}>

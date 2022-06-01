@@ -46,22 +46,21 @@ const LocationAddress = ({ location }) => (
               )
         }
         onClick={(event) => event.preventDefault()}
-        className={getClassNames(
-          editorStyles,
-          ["bp-sec-button", "margin--top"],
-          ["bp-sec-button", "has-text-secondary"]
-        )}
+        className={getClassNames(editorStyles, [
+          "bp-sec-button",
+          "margin--top",
+          "has-text-secondary",
+        ])}
         rel="noopener noreferrer"
         target="_blank"
       >
         <div>
           <span>VIEW MAP</span>
           <i
-            className={getClassNames(
-              editorStyles,
-              ["sgds-icon", "sgds-icon-arrow-right"],
-              ["sgds-icon"]
-            )}
+            className={getClassNames(editorStyles, [
+              "sgds-icon",
+              "sgds-icon-arrow-right",
+            ])}
             aria-hidden="true"
           />
         </div>

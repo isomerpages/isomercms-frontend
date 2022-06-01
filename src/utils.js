@@ -19,6 +19,20 @@ axios.defaults.withCredentials = true
 export const DEFAULT_RETRY_MSG =
   "Please try again or check your internet connection"
 export const DEFAULT_ERROR_TOAST_MSG = `Something went wrong. ${DEFAULT_RETRY_MSG}`
+const OVERRIDDEN_CLASS_NAMES = [
+  "bp-section",
+  "bp-container",
+  "bp-sec-button",
+  "is-inverted",
+  "row",
+  "col",
+  "sgds-icon",
+]
+const UNSTYLED_CLASS_NAMES = [
+  "has-text-secondary",
+  "bg-secondary",
+  "is-secondary",
+]
 
 // extracts yaml front matter from a markdown file path
 export function frontMatterParser(content) {
@@ -614,9 +628,20 @@ export const getDecodedParams = (params) =>
     return acc
   }, {})
 
-export const getClassNames = (styles, classes, nonTemplateClasses = []) => {
-  // Generates relevant class, with classes using the provided styles, and nonTemplateClasses retrieved as is
-  const styledClasses = classes.map((className) => styles[className])
-  // Will be flattened by classNames
-  return classNames(styledClasses, nonTemplateClasses)
+export const getClassNames = (styles, classes) => {
+  // Generates relevant class, with classes using the provided styles
+  const styledClasses = []
+  classes.forEach((className) => {
+    if (UNSTYLED_CLASS_NAMES.includes(className)) {
+      // Styles related to colours - only use the original name so that our colours take precedence
+      styledClasses.push(className)
+    } else if (OVERRIDDEN_CLASS_NAMES.includes(className)) {
+      // Styles which affect our inserted styles - require both our css and the imported css
+      styledClasses.push(className)
+      styledClasses.push(styles[className])
+    } else {
+      styledClasses.push(styles[className])
+    }
+  })
+  return classNames(styledClasses)
 }
