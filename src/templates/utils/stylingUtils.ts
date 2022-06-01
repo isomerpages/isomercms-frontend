@@ -15,9 +15,13 @@ const UNSTYLED_CLASS_NAMES = [
   "is-secondary",
 ]
 
-export const getClassNames = (styles, classes) => {
+interface StylesProps {
+  [key: string]: string
+}
+
+export const getClassNames = (styles: StylesProps, classes: string[]) => {
   // Generates relevant class, with classes using the provided styles
-  const styledClasses = []
+  const styledClasses: string[] = []
   classes.forEach((className) => {
     if (UNSTYLED_CLASS_NAMES.includes(className)) {
       // Styles related to colours - only use the original name so that our colours take precedence
