@@ -27,7 +27,7 @@
     "escape-string-regexp": "^4.0.0",
     "framer-motion": "^6.2.6",
     "html-react-parser": "^1.2.7",
-    "immutability-helper": "^3.0.1",
+    "immutability-helper": "^3.1.1",
     "js-base64": "^3.7.2",
     "libphonenumber-js": "^1.9.48",
     "lodash": "^4.17.21",
