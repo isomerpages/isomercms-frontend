@@ -1,4 +1,10 @@
+@use "sass:meta";
+
 @import "../elements/variable";
+
+.preview-styles {
+  @include meta.load-css("../../preview-panel.scss");
+}
 
 .previewTextStyles {
   h1 {
@@ -56,7 +62,7 @@
 }
 
 .homepageEditorMain {
-  @extend .previewTextStyles;
+  @extend .preview-styles;
 
   * {
     font-family: "Lato";
@@ -69,7 +75,7 @@
 }
 
 .contactUsEditorMain {
-  @extend .previewTextStyles;
+  @extend .preview-styles;
 
   * {
     font-family: "Lato";

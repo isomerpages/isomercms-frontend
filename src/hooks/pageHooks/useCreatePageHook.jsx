@@ -7,7 +7,7 @@ import { ServicesContext } from "contexts/ServicesContext"
 import { DIR_CONTENT_KEY } from "hooks/queryKeys"
 import useRedirectHook from "hooks/useRedirectHook"
 
-import { errorToast } from "utils/toasts"
+import { useErrorToast } from "utils/toasts"
 
 import { getRedirectUrl, DEFAULT_RETRY_MSG } from "utils"
 
@@ -18,6 +18,7 @@ export function useCreatePageHook(params, queryParams) {
   const queryClient = useQueryClient()
   const { pageService } = useContext(ServicesContext)
   const { setRedirectToPage } = useRedirectHook()
+  const errorToast = useErrorToast()
   return useMutation(
     (body) => {
       const { newFileName, frontMatter } = extractPageInfo(body)
@@ -43,7 +44,9 @@ export function useCreatePageHook(params, queryParams) {
         if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
       },
       onError: () => {
-        errorToast(`A new page could not be created. ${DEFAULT_RETRY_MSG}`)
+        errorToast({
+          description: `A new page could not be created. ${DEFAULT_RETRY_MSG}`,
+        })
         if (queryParams && queryParams.onError) queryParams.onError()
       },
     }

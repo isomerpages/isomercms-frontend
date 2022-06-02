@@ -1,22 +1,49 @@
 import PropTypes from "prop-types"
 import { forwardRef } from "react"
 
+import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
+
 import Breadcrumb from "templates/pageComponents/Breadcrumb"
+import { getClassNames } from "templates/utils/stylingUtils"
 
 const TemplateContactUsHeader = forwardRef(({ agencyName }, ref) => (
-  <section className="bp-section" ref={ref}>
-    <div className="bp-container">
-      <div className="row is-inverted">
-        <div className="col is-8 is-offset-2">
+  <section className={getClassNames(editorStyles, ["bp-section"])} ref={ref}>
+    <div className={getClassNames(editorStyles, ["bp-container"])}>
+      <div className={getClassNames(editorStyles, ["row", "is-inverted"])}>
+        <div
+          className={getClassNames(editorStyles, [
+            "col",
+            "is-8",
+            "is-offset-2",
+          ])}
+        >
           <Breadcrumb title="Contact Us" />
         </div>
       </div>
-      <div className="row">
-        <div className="col is-8 is-offset-2">
-          <h1 className="display has-text-weight-semibold">
+      <div className={editorStyles.row}>
+        <div
+          className={getClassNames(editorStyles, [
+            "col",
+            "is-8",
+            "is-offset-2",
+          ])}
+        >
+          <h1
+            className={getClassNames(editorStyles, [
+              "display",
+              "has-text-weight-semibold",
+            ])}
+          >
             Get in touch with
             <br />
-            <span className="display has-text-secondary">{agencyName}</span>
+            <span
+              className={getClassNames(editorStyles, [
+                "display",
+                "has-text-secondary",
+              ])}
+            >
+              {agencyName}
+            </span>
           </h1>
         </div>
       </div>

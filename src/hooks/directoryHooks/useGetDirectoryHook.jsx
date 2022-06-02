@@ -7,7 +7,7 @@ import { ServicesContext } from "contexts/ServicesContext"
 import { DIR_CONTENT_KEY, MEDIA_CONTENT_KEY } from "hooks/queryKeys"
 import useRedirectHook from "hooks/useRedirectHook"
 
-import { errorToast } from "utils/toasts"
+import { useErrorToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
@@ -17,6 +17,7 @@ export function useGetDirectoryHook(params, queryParams) {
   const queryClient = useQueryClient()
   const { directoryService } = useContext(ServicesContext)
   const { setRedirectToNotFound } = useRedirectHook()
+  const errorToast = useErrorToast()
   return useQuery(
     [DIR_CONTENT_KEY, _.omit(params, "fileName")],
     () => directoryService.get(params),
@@ -28,9 +29,9 @@ export function useGetDirectoryHook(params, queryParams) {
         if (err.response && err.response.status === 404) {
           setRedirectToNotFound()
         } else {
-          errorToast(
-            `There was a problem retrieving directory contents. ${DEFAULT_RETRY_MSG}`
-          )
+          errorToast({
+            description: `There was a problem retrieving directory contents. ${DEFAULT_RETRY_MSG}`,
+          })
         }
         if (queryParams && queryParams.onError) queryParams.onError(err)
       },

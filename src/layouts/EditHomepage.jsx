@@ -26,8 +26,9 @@ import TemplateInfobarSection from "templates/homepage/InfobarSection"
 import TemplateInfopicLeftSection from "templates/homepage/InfopicLeftSection"
 import TemplateInfopicRightSection from "templates/homepage/InfopicRightSection"
 import TemplateResourcesSection from "templates/homepage/ResourcesSection"
+import { getClassNames } from "templates/utils/stylingUtils"
 
-import { errorToast } from "utils/toasts"
+import { useErrorToast } from "utils/toasts"
 import {
   validateSections,
   validateHighlights,
@@ -39,8 +40,6 @@ import {
   concatFrontMatterMdBody,
   DEFAULT_RETRY_MSG,
 } from "utils"
-
-import "styles/isomer-template.scss"
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -149,6 +148,7 @@ const EditHomepage = ({ match }) => {
   })
   const [savedHeroElems, setSavedHeroElems] = useState("")
   const [savedHeroErrors, setSavedHeroErrors] = useState("")
+  const errorToast = useErrorToast()
 
   useEffect(() => {
     let _isMounted = true
@@ -254,9 +254,9 @@ const EditHomepage = ({ match }) => {
       } catch (err) {
         // Set frontMatter to be same to prevent warning message when navigating away
         if (_isMounted) setFrontMatter(originalFrontMatter)
-        errorToast(
-          `There was a problem trying to load your homepage. ${DEFAULT_RETRY_MSG}`
-        )
+        errorToast({
+          description: `There was a problem trying to load your homepage. ${DEFAULT_RETRY_MSG}`,
+        })
         console.log(err)
       }
     }
@@ -1016,9 +1016,9 @@ const EditHomepage = ({ match }) => {
 
       window.location.reload()
     } catch (err) {
-      errorToast(
-        `There was a problem trying to save your homepage. ${DEFAULT_RETRY_MSG}`
-      )
+      errorToast({
+        description: `There was a problem trying to save your homepage. ${DEFAULT_RETRY_MSG}`,
+      })
       console.log(err)
     }
   }
@@ -1194,9 +1194,13 @@ const EditHomepage = ({ match }) => {
         <div className={elementStyles.wrapper}>
           <div className={editorStyles.homepageEditorSidebar}>
             <div>
-              <div className={`${elementStyles.card}`}>
+              <div
+                className={`${elementStyles.card} ${elementStyles.siteNotificationSection}`}
+              >
                 <p>
-                  <b>Site notification</b>
+                  <h2 className={elementStyles.notificationHeader}>
+                    Site notification
+                  </h2>
                 </p>
                 <Input
                   placeholder="Notification"
@@ -1405,16 +1409,45 @@ const EditHomepage = ({ match }) => {
             {/* Isomer Template Pane */}
             {/* Notification */}
             {frontMatter.notification && (
-              <div className="bp-notification bg-secondary is-marginless">
-                <div className="bp-container">
-                  <div className="row">
-                    <div className="col">
-                      <div className="field has-addons bp-notification-flex">
-                        <div className="control has-text-centered has-text-white">
+              <div
+                id="notification-bar"
+                className={getClassNames(editorStyles, [
+                  "bp-notification",
+                  "is-marginless",
+                  "bg-secondary",
+                ])}
+              >
+                <div className={editorStyles["bp-container"]}>
+                  <div className={editorStyles.row}>
+                    <div className={editorStyles.col}>
+                      <div
+                        className={getClassNames(editorStyles, [
+                          "field",
+                          "has-addons",
+                          "bp-notification-flex",
+                        ])}
+                      >
+                        <div
+                          className={getClassNames(editorStyles, [
+                            "control",
+                            "has-text-centered",
+                            "has-text-white",
+                          ])}
+                        >
                           <h6>{frontMatter.notification}</h6>
                         </div>
-                        <div className="button has-text-white">
-                          <span className="sgds-icon sgds-icon-cross" />
+                        <div
+                          className={getClassNames(editorStyles, [
+                            "button",
+                            "has-text-white",
+                          ])}
+                        >
+                          <span
+                            className={getClassNames(editorStyles, [
+                              "sgds-icon",
+                              "sgds-icon-cross",
+                            ])}
+                          />
                         </div>
                       </div>
                     </div>

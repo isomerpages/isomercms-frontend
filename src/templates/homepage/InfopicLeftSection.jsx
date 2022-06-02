@@ -2,8 +2,11 @@ import PropTypes from "prop-types"
 import { forwardRef } from "react"
 import { useQuery } from "react-query"
 
-import { fetchImageURL } from "utils"
+import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
+import { getClassNames } from "templates/utils/stylingUtils"
+
+import { fetchImageURL } from "utils"
 /* eslint
   react/no-array-index-key: 0
  */
@@ -37,32 +40,67 @@ const TemplateInfopicLeftSection = (
   return (
     <div ref={ref}>
       <section
-        className={`bp-section ${
-          sectionIndex % 2 === 1 ? "bg-newssection" : null
-        }`}
+        className={getClassNames(editorStyles, [
+          `bp-section`,
+          sectionIndex % 2 === 1 ? "bg-newssection" : null,
+        ])}
       >
-        <div className="bp-container">
+        <div className={editorStyles["bp-container"]}>
           {/* For mobile */}
-          <div className="row is-hidden-desktop is-hidden-tablet-only">
-            <div className="col is-half padding--bottom">
-              <p className="padding--bottom eyebrow is-uppercase">{subtitle}</p>
-              <h1 className="has-text-secondary padding--bottom">
+          <div
+            className={getClassNames(editorStyles, [
+              "row",
+              "is-hidden-desktop",
+              "is-hidden-tablet-only",
+            ])}
+          >
+            <div
+              className={getClassNames(editorStyles, [
+                "col",
+                "is-half",
+                "padding--bottom",
+              ])}
+            >
+              <p
+                className={getClassNames(editorStyles, [
+                  "padding--bottom",
+                  "eyebrow",
+                  "is-uppercase",
+                ])}
+              >
+                {subtitle}
+              </p>
+              <h1
+                className={getClassNames(editorStyles, [
+                  "padding--bottom",
+                  "has-text-secondary",
+                ])}
+              >
                 <b>{title}</b>
               </h1>
               <p>{description}</p>
-              <div className="bp-sec-button margin--top padding--bottom">
+              <div
+                className={getClassNames(editorStyles, [
+                  "bp-sec-button",
+                  "margin--top padding--bottom",
+                ])}
+              >
                 {button ? (
                   <div>
                     <span>{button}</span>
                     <i
-                      className="sgds-icon sgds-icon-arrow-right is-size-4"
+                      className={getClassNames(editorStyles, [
+                        "sgds-icon",
+                        "sgds-icon-arrow-right",
+                        "is-size-4",
+                      ])}
                       aria-hidden="true"
                     />
                   </div>
                 ) : null}
               </div>
             </div>
-            <div className="col is-half">
+            <div className={getClassNames(editorStyles, ["col", "is-half"])}>
               <img
                 onError={addDefaultSrc}
                 src={loadedImageURL}
@@ -71,26 +109,63 @@ const TemplateInfopicLeftSection = (
             </div>
           </div>
           {/* For tablet */}
-          <div className="row is-hidden-mobile is-hidden-desktop">
-            <div className="col is-half">
-              <p className="padding--bottom eyebrow is-uppercase">{subtitle}</p>
-              <h1 className="has-text-secondary padding--bottom">
+          <div
+            className={getClassNames(editorStyles, [
+              "row",
+              "is-hidden-mobile",
+              "is-hidden-desktop",
+            ])}
+          >
+            <div className={getClassNames(editorStyles, ["col", "is-half"])}>
+              <p
+                className={getClassNames(editorStyles, [
+                  "padding--bottom",
+                  "eyebrow",
+                  "is-uppercase",
+                ])}
+              >
+                {subtitle}
+              </p>
+              <h1
+                className={getClassNames(editorStyles, [
+                  "padding--bottom",
+                  "has-text-secondary",
+                ])}
+              >
                 <b>{title}</b>
               </h1>
               <p>{description}</p>
-              <div className="bp-sec-button margin--top padding--bottom">
+              <div
+                className={getClassNames(editorStyles, [
+                  "bp-sec-button",
+                  "margin--top",
+                  "padding--bottom",
+                ])}
+              >
                 {button ? (
                   <div>
                     <span>{button}</span>
                     <i
-                      className="sgds-icon sgds-icon-arrow-right is-size-4"
+                      className={getClassNames(editorStyles, [
+                        "sgds-icon",
+                        "sgds-icon-arrow-right",
+                        "is-size-4",
+                      ])}
                       aria-hidden="true"
                     />
                   </div>
                 ) : null}
               </div>
             </div>
-            <div className="col is-half is-half padding--top--xl padding--bottom--xl">
+            <div
+              className={getClassNames(editorStyles, [
+                "col",
+                "is-half",
+                "is-half",
+                "padding--top--xl",
+                "padding--bottom--xl",
+              ])}
+            >
               <img
                 onError={addDefaultSrc}
                 src={loadedImageURL}
@@ -99,26 +174,71 @@ const TemplateInfopicLeftSection = (
             </div>
           </div>
           {/* For desktop */}
-          <div className="row is-hidden-mobile is-hidden-tablet-only">
-            <div className="col is-half padding--top--xl padding--bottom--xl padding--left--xl padding--right--xl">
-              <p className="padding--bottom eyebrow is-uppercase">{subtitle}</p>
-              <h1 className="has-text-secondary padding--bottom">
+          <div
+            className={getClassNames(editorStyles, [
+              "row",
+              "is-hidden-mobile",
+              "is-hidden-tablet-only",
+            ])}
+          >
+            <div
+              className={getClassNames(editorStyles, [
+                "col",
+                "is-half",
+                "padding--top--xl",
+                "padding--bottom--xl",
+                "padding--left--xl",
+                "padding--right--xl",
+              ])}
+            >
+              <p
+                className={getClassNames(editorStyles, [
+                  "padding--bottom",
+                  "eyebrow",
+                  "is-uppercase",
+                ])}
+              >
+                {subtitle}
+              </p>
+              <h1
+                className={getClassNames(editorStyles, [
+                  "padding--bottom",
+                  "has-text-secondary",
+                ])}
+              >
                 <b>{title}</b>
               </h1>
               <p>{description}</p>
-              <div className="bp-sec-button margin--top padding--bottom">
+              <div
+                className={getClassNames(editorStyles, [
+                  "margin--top",
+                  "padding--bottom",
+                  "bp-sec-button",
+                ])}
+              >
                 {button ? (
                   <div>
                     <span>{button}</span>
                     <i
-                      className="sgds-icon sgds-icon-arrow-right is-size-4"
+                      className={getClassNames(editorStyles, [
+                        "sgds-icon",
+                        "sgds-icon-arrow-right",
+                        "is-size-4",
+                      ])}
                       aria-hidden="true"
                     />
                   </div>
                 ) : null}
               </div>
             </div>
-            <div className="col is-half is-half padding--top--xl padding--bottom--xl">
+            <div
+              className={getClassNames(editorStyles, [
+                "col",
+                "is-half",
+                "padding--top--xl",
+                "padding--bottom--xl",
+              ])}
+            >
               <img
                 onError={addDefaultSrc}
                 src={loadedImageURL}
