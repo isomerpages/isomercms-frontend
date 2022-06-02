@@ -16,11 +16,10 @@ const UNSTYLED_CLASS_NAMES = [
   "is-secondary",
 ]
 
-interface StylesProps {
-  [key: string]: string
-}
-
-export const getClassNames = (styles: StylesProps, classes: string[]) => {
+export const getClassNames = (
+  styles: Record<string, string>,
+  classes: string[]
+) => {
   // Generates relevant class, with classes using the provided styles
   return classNames(
     classes
