@@ -1,15 +1,5 @@
 import waitForDom from "./waitForDom"
 
-Cypress.Commands.overwrite("visit", (originalFn, url, options) => {
-  // originalFn is the existing `visit` command that you need to call
-  // and it will receive whatever you pass in here.
-  //
-  // make sure to add a return here!
-  originalFn(url, options)
-  cy.wait(2 * 1000)
-  return cy.get(`[data-cy="verify-user-modal"]`).should("not.exist")
-})
-
 Cypress.Commands.add(
   "clickAndWait",
   {
