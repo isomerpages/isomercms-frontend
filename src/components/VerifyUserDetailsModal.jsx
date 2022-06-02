@@ -213,7 +213,7 @@ const VerifyUserDetailsModal = () => {
   }
 
   return userId && (!loggedInEmail || !loggedInContactNumber) ? (
-    <div data-cy="verify-user-modal" className={elementStyles.overlay}>
+    <div className={elementStyles.overlay}>
       <div className={elementStyles["modal-verify-user-details"]}>
         <div className={elementStyles.modalHeader}>
           <h1>Verify your {isEmailStep() ? "email" : "mobile number"}</h1>
