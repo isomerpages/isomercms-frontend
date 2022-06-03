@@ -1,7 +1,13 @@
 import "@opengovsg/design-system-react/build/fonts/inter.css"
-import { Flex, Icon, Text } from "@chakra-ui/react"
+import { Box, Divider, Flex, Icon, Text } from "@chakra-ui/react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
-import { BiChevronRight, BiEditAlt, BiFolder, BiWrench } from "react-icons/bi"
+import {
+  BiChevronRight,
+  BiEditAlt,
+  BiFolder,
+  BiTrash,
+  BiWrench,
+} from "react-icons/bi"
 
 import { ContextMenuButton } from "./ContextMenuButton"
 import { ContextMenuItem } from "./ContextMenuItem"
@@ -25,6 +31,10 @@ const BaseComponent = (args: TemplateArgs) => {
           <Icon as={BiChevronRight} fontSize="1.25rem" />
         </Flex>
       </ContextMenuItem>
+      <>
+        <Divider />
+        <ContextMenuItem icon={<BiTrash />}>Page settings</ContextMenuItem>
+      </>
     </ContextMenuButton>
   )
 }
@@ -34,8 +44,10 @@ interface TemplateArgs {
 }
 
 const Template: ComponentStory<typeof BaseComponent> = (args: TemplateArgs) => (
-  // eslint-disable-next-line react/jsx-props-no-spreading
-  <BaseComponent {...args} />
+  <Box position="relative" w="100%" h="80px">
+    {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+    <BaseComponent {...args} />
+  </Box>
 )
 
 export const ContextMenu = Template.bind({})

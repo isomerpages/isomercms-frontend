@@ -16,12 +16,20 @@ export const ContextMenuButton = ({
     <Menu {...props}>
       {/* NOTE: Not using design system's menu button as the icon prop cannot be set */}
       <MenuButton
+        position="absolute"
+        bottom="1rem"
+        right="2rem"
         as={IconButton}
         aria-label="Context Menu"
-        icon={<BiDotsVerticalRounded fontSize="1.25rem" fill={tokenColour} />}
+        icon={<BiDotsVerticalRounded fill={tokenColour} />}
         variant="clear"
       />
-      <Menu.List color={baseColour}>{children}</Menu.List>
+      <Menu.List
+        color={baseColour}
+        boxShadow="0px 0px 10px rgba(191, 191, 191, 0.5)"
+      >
+        {children}
+      </Menu.List>
     </Menu>
   )
 }
