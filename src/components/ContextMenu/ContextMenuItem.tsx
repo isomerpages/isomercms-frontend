@@ -24,6 +24,9 @@ export const ContextMenuItem = ({
       {...props}
       iconSpacing="1rem"
       icon={innerIcon}
+      _focus={{
+        boxShadow: "none",
+      }}
     />
   )
 }

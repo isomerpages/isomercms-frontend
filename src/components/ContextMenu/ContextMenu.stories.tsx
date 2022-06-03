@@ -1,5 +1,5 @@
 import "@opengovsg/design-system-react/build/fonts/inter.css"
-import { Box, Divider, Flex, Icon, Text } from "@chakra-ui/react"
+import { Box, Divider, Flex, Icon, Text, HStack } from "@chakra-ui/react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import {
   BiChevronRight,
@@ -22,18 +22,18 @@ const BaseComponent = (args: TemplateArgs) => {
     // eslint-disable-next-line react/jsx-props-no-spreading
     <ContextMenuButton {...args}>
       <ContextMenuItem icon={<BiEditAlt />}>
-        <Text textStyle="body-1">Edit page</Text>
+        <Text>Edit page</Text>
       </ContextMenuItem>
-      <ContextMenuItem icon={<BiWrench />}>Page settings</ContextMenuItem>
+      <ContextMenuItem icon={<BiWrench />}>Page Settings</ContextMenuItem>
       <ContextMenuItem icon={<BiFolder />}>
-        <Flex justify="space-between" alignItems="center">
+        <HStack spacing="4rem" alignItems="center">
           <Text>Move to</Text>
           <Icon as={BiChevronRight} fontSize="1.25rem" />
-        </Flex>
+        </HStack>
       </ContextMenuItem>
       <>
         <Divider />
-        <ContextMenuItem icon={<BiTrash />}>Page settings</ContextMenuItem>
+        <ContextMenuItem icon={<BiTrash />}>Delete</ContextMenuItem>
       </>
     </ContextMenuButton>
   )
