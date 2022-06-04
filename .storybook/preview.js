@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@opengovsg/design-system-react"
-import theme from "../src/theme"
+import theme from "theme"
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
   docs: {
@@ -14,9 +14,9 @@ export const parameters = {
 }
 
 export const decorators = [
-  (storyFn) => (
+  (Story) => (
     <ThemeProvider resetCSS theme={theme}>
-      {storyFn()}
+      <Story />
     </ThemeProvider>
   ),
 ]
