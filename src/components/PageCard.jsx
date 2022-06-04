@@ -1,9 +1,10 @@
+import { LinkOverlay, LinkBox } from "@chakra-ui/react"
 import { IconButton } from "@opengovsg/design-system-react"
 import axios from "axios"
 import { MenuDropdown } from "components/MenuDropdown"
 import PropTypes from "prop-types"
 import { useEffect, useState, useRef } from "react"
-import { Link, useRouteMatch } from "react-router-dom"
+import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -65,24 +66,25 @@ const PageCard = ({ item, itemIndex }) => {
   }
 
   return (
-    <Link
+    <LinkBox
       className={`${contentStyles.component} ${
         resourceType === "file"
           ? contentStyles.cardDisabled
           : contentStyles.card
       } ${elementStyles.card}`}
-      to={generateLink()}
     >
       <div id={itemIndex} className={contentStyles.componentInfo}>
-        <h1
-          className={
-            resourceType === "file"
-              ? contentStyles.componentTitle
-              : contentStyles.componentTitleLink
-          }
-        >
-          {pageFileNameToTitle(name, !!resourceType)}
-        </h1>
+        <LinkOverlay as={RouterLink} to={generateLink()}>
+          <h1
+            className={
+              resourceType === "file"
+                ? contentStyles.componentTitle
+                : contentStyles.componentTitleLink
+            }
+          >
+            {pageFileNameToTitle(name, !!resourceType)}
+          </h1>
+        </LinkOverlay>
         <p className={contentStyles.componentDate}>{`${
           date ? prettifyDate(date) : ""
         }${resourceType ? `/${resourceType.toUpperCase()}` : ""}`}</p>
@@ -111,7 +113,7 @@ const PageCard = ({ item, itemIndex }) => {
           />
         )}
       </div>
-    </Link>
+    </LinkBox>
   )
 }
 
