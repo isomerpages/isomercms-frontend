@@ -1,12 +1,22 @@
-import { LinkOverlay, LinkBox } from "@chakra-ui/react"
-import { IconButton } from "@opengovsg/design-system-react"
+import {
+  LinkOverlay,
+  LinkBox,
+  Divider,
+  HStack,
+  Icon,
+  Text,
+} from "@chakra-ui/react"
 import axios from "axios"
-import { MenuDropdown } from "components/MenuDropdown"
+import { ContextMenuButton, ContextMenuItem } from "components/ContextMenu"
 import PropTypes from "prop-types"
-import { useEffect, useState, useRef } from "react"
+import {
+  BiChevronRight,
+  BiEditAlt,
+  BiFolder,
+  BiTrash,
+  BiWrench,
+} from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
-
-import useRedirectHook from "hooks/useRedirectHook"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
@@ -19,50 +29,23 @@ axios.defaults.withCredentials = true
 
 const PageCard = ({ item, itemIndex }) => {
   const { name, date, resourceType } = item
-  const dropdownRef = useRef(null)
-  const [showDropdown, setShowDropdown] = useState(false)
-
   const {
     url,
     params: { siteName, resourceRoomName },
   } = useRouteMatch()
 
-  const { setRedirectToPage } = useRedirectHook()
+  const encodedName = encodeURIComponent(name)
 
   const generateLink = () => {
     if (resourceType === "file")
       // TODO: implement file preview on CMS
       return "#"
-    const encodedName = encodeURIComponent(name)
     if (resourceType || resourceRoomName) {
       // use resourceRoomName in case resourcePage does not have format Date-Type-Name.md
       // for resourcePages that are not migrated
       return `${url}/editPage/${encodedName}`
     }
     return `/sites/${siteName}/editPage/${encodedName}`
-  }
-
-  useEffect(() => {
-    if (showDropdown) dropdownRef.current.focus()
-  }, [showDropdown])
-
-  const generateDropdownItems = () => {
-    const encodedName = encodeURIComponent(name)
-    return [
-      {
-        type: "edit",
-        handler: () =>
-          setRedirectToPage(`${url}/editPageSettings/${encodedName}`),
-      },
-      {
-        type: "move",
-        handler: () => setRedirectToPage(`${url}/movePage/${encodedName}`),
-      },
-      {
-        type: "delete",
-        handler: () => setRedirectToPage(`${url}/deletePage/${encodedName}`),
-      },
-    ]
   }
 
   return (
@@ -72,9 +55,10 @@ const PageCard = ({ item, itemIndex }) => {
           ? contentStyles.cardDisabled
           : contentStyles.card
       } ${elementStyles.card}`}
+      position="relative"
     >
-      <div id={itemIndex} className={contentStyles.componentInfo}>
-        <LinkOverlay as={RouterLink} to={generateLink()}>
+      <LinkOverlay as={RouterLink} to={generateLink()}>
+        <div id={itemIndex} className={contentStyles.componentInfo}>
           <h1
             className={
               resourceType === "file"
@@ -84,35 +68,47 @@ const PageCard = ({ item, itemIndex }) => {
           >
             {pageFileNameToTitle(name, !!resourceType)}
           </h1>
-        </LinkOverlay>
-        <p className={contentStyles.componentDate}>{`${
-          date ? prettifyDate(date) : ""
-        }${resourceType ? `/${resourceType.toUpperCase()}` : ""}`}</p>
-      </div>
-      <div className="position-relative mt-auto">
-        <IconButton
-          variant="clear"
-          id={`pageCard-dropdown-${name}-${itemIndex}`}
-          onClick={(e) => {
-            e.stopPropagation()
-            e.preventDefault()
-            setShowDropdown(true)
-          }}
+          <p className={contentStyles.componentDate}>{`${
+            date ? prettifyDate(date) : ""
+          }${resourceType ? `/${resourceType.toUpperCase()}` : ""}`}</p>
+        </div>
+      </LinkOverlay>
+      <ContextMenuButton>
+        <ContextMenuItem
+          icon={<BiEditAlt />}
+          as={RouterLink}
+          to={generateLink()}
         >
-          <i
-            id={`settingsIcon-${itemIndex}`}
-            className="bx bx-dots-vertical-rounded"
-          />
-        </IconButton>
-        {showDropdown && (
-          <MenuDropdown
-            dropdownItems={generateDropdownItems()}
-            dropdownRef={dropdownRef}
-            menuIndex={itemIndex}
-            onBlur={() => setShowDropdown(false)}
-          />
-        )}
-      </div>
+          <Text>Edit page</Text>
+        </ContextMenuItem>
+        <ContextMenuItem
+          icon={<BiWrench />}
+          as={RouterLink}
+          to={`${url}/editPageSettings/${encodedName}`}
+        >
+          Page Settings
+        </ContextMenuItem>
+        <ContextMenuItem
+          icon={<BiFolder />}
+          as={RouterLink}
+          to={`${url}/movePage/${encodedName}`}
+        >
+          <HStack spacing="4rem" alignItems="center">
+            <Text>Move to</Text>
+            <Icon as={BiChevronRight} fontSize="1.25rem" />
+          </HStack>
+        </ContextMenuItem>
+        <>
+          <Divider />
+          <ContextMenuItem
+            icon={<BiTrash />}
+            as={RouterLink}
+            to={`${url}/deletePage/${encodedName}`}
+          >
+            Delete
+          </ContextMenuItem>
+        </>
+      </ContextMenuButton>
     </LinkBox>
   )
 }
