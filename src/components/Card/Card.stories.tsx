@@ -1,28 +1,27 @@
-import { Icon, Text, VStack, useToast } from "@chakra-ui/react"
+import { Icon, Text, VStack, useToast, Box } from "@chakra-ui/react"
 import { ComponentMeta, Story } from "@storybook/react"
 import { ContextMenuButton, ContextMenuItem } from "components/ContextMenu"
 import { BiFolder } from "react-icons/bi"
 
 import { CardVariant } from "theme/components/Card"
 
-import { CardBody, CardContent } from "./Card"
+import { CardBody, Card, CardFooter } from "./Card"
 
 const cardMeta = {
   title: "Components/Card",
-  component: CardContent,
-} as ComponentMeta<typeof CardContent>
+  component: Card,
+} as ComponentMeta<typeof Card>
 
 interface TemplateArgs {
   text: string
-  variant: CardVariant
 }
 
-const Template: Story<TemplateArgs> = ({ text, variant }: TemplateArgs) => {
+const SingleCardTemplate: Story<TemplateArgs> = ({ text }: TemplateArgs) => {
   const toast = useToast()
 
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
-    <CardContent
+    <Card
       onClick={() =>
         toast({
           title: "Account created.",
@@ -32,7 +31,7 @@ const Template: Story<TemplateArgs> = ({ text, variant }: TemplateArgs) => {
           isClosable: true,
         })
       }
-      variant={variant}
+      variant="single"
     >
       <CardBody>
         <Icon as={BiFolder} fontSize="1.5rem" fill="icon.alt" />
@@ -43,22 +42,62 @@ const Template: Story<TemplateArgs> = ({ text, variant }: TemplateArgs) => {
       <ContextMenuButton>
         <ContextMenuItem>Something</ContextMenuItem>
       </ContextMenuButton>
-      {/* <VStack spacing="0.875rem" alignItems="flex-start">
-        <Text textStyle="body-1" color="text.label">
-          {text}
-        </Text>
-        <Text textStyle="caption-2" color="text.helper">
-          03 Sep 2021/POST
-        </Text>
-      </VStack> */}
-    </CardContent>
+    </Card>
   )
 }
 
-export const SingleCard = Template.bind({})
+interface MultiCardTemplateArgs extends TemplateArgs {
+  caption: string
+}
+const MultiCardTemplate: Story<MultiCardTemplateArgs> = ({
+  text,
+  caption,
+}: MultiCardTemplateArgs) => {
+  const toast = useToast()
+
+  return (
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <Box position="relative">
+      <Card
+        onClick={() =>
+          toast({
+            title: "Account created.",
+            description: "We've created your account for you.",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          })
+        }
+        variant="multi"
+      >
+        <CardBody>
+          <Icon as={BiFolder} fontSize="1.5rem" fill="icon.alt" />
+          <Text textStyle="body-1" color="text.label">
+            {text}
+          </Text>
+        </CardBody>
+        <CardFooter textAlign="left" ml="2.5rem">
+          <Text textStyle="caption-2" color="text.helper">
+            {caption}
+          </Text>
+        </CardFooter>
+      </Card>
+      <ContextMenuButton>
+        <ContextMenuItem>Something</ContextMenuItem>
+      </ContextMenuButton>
+    </Box>
+  )
+}
+
+export const SingleCard = SingleCardTemplate.bind({})
 SingleCard.args = {
   text: "Folder 1",
-  variant: "single",
+}
+
+export const MultiCard = MultiCardTemplate.bind({})
+MultiCard.args = {
+  text: "Folder 2",
+  caption: "something",
 }
 
 export default cardMeta

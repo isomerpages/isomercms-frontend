@@ -9,30 +9,37 @@ export const CARD_THEME_KEY = "card"
 // is multi-line (has a bottom action drawer)
 export type CardVariant = "single" | "multi"
 
-export const parts = anatomy(CARD_THEME_KEY).parts("container", "content")
+export const parts = anatomy(CARD_THEME_KEY).parts(
+  "container",
+  "body",
+  "footer"
+)
 
 const borderColour = (colours.border.action as Record<string, string>).default
 
 const variantSingle: PartsStyleObject<typeof parts> = {
-  content: {
+  container: {
     gridTemplateColumns: "1fr 2.5rem",
     gridTemplateAreas: "'body button'",
   },
 }
 
 const variantMulti: PartsStyleObject<typeof parts> = {
-  content: {
+  container: {
     gridTemplateColumns: "1fr 2.5rem",
     // This is a 2x2 grid
-    gridTemplateAreas: "'body body' 'caption button'",
+    gridTemplateAreas: "'body body' 'footer button'",
+    gap: "1rem",
+  },
+  footer: {
+    gridArea: "footer",
   },
 }
 
 export const Card: ComponentMultiStyleConfig = {
   parts: parts.keys,
   baseStyle: {
-    container: {},
-    content: {
+    container: {
       display: "grid",
       backgroundColor: "background.action.defaultInverse",
       justifyContent: "flex-start",
@@ -40,6 +47,8 @@ export const Card: ComponentMultiStyleConfig = {
       paddingInlineEnd: "2rem",
       paddingInlineStart: "1.5rem",
       paddingY: "1.5rem",
+      border: "1px solid",
+      borderColor: "border.action.light",
       borderRadius: "4px",
       w: "100%",
       _hover: {
@@ -48,6 +57,13 @@ export const Card: ComponentMultiStyleConfig = {
       _focus: {
         boxShadow: `0 0 0 2px ${borderColour}`,
       },
+    },
+    body: {
+      justifyContent: "flex-start",
+      display: "flex",
+      alignItems: "flex-start",
+      textAlign: "left",
+      gridArea: "body",
     },
   },
   variants: {
