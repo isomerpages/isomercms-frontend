@@ -1,12 +1,11 @@
 // not completely refactored yet, to finish after Media and Resources
 // should create separate display component Card without functionality
-import { IconButton } from "@opengovsg/design-system-react"
-import { MenuDropdown } from "components/MenuDropdown"
+import { LinkOverlay, LinkBox, Divider, Text } from "@chakra-ui/react"
+import { ContextMenuButton, ContextMenuItem } from "components/ContextMenu"
 import PropTypes from "prop-types"
-import { useEffect, useRef, useState } from "react"
-import { Link, useRouteMatch } from "react-router-dom"
-
-import useRedirectHook from "hooks/useRedirectHook"
+import { useMemo } from "react"
+import { BiEditAlt, BiTrash, BiWrench } from "react-icons/bi"
+import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
@@ -24,18 +23,17 @@ export const FolderCard = ({
   onClick,
   hideSettings,
 }) => {
-  const [canShowDropdown, setCanShowDropdown] = useState(false)
-
-  const dropdownRef = useRef(null)
-  const { setRedirectToPage } = useRedirectHook()
+  const shouldShowContextMenu = !(
+    hideSettings ||
+    pageType === "homepage" ||
+    pageType === "contact-us" ||
+    pageType === "nav" ||
+    pageType === "file"
+  )
 
   const { url } = useRouteMatch()
 
-  useEffect(() => {
-    if (canShowDropdown) dropdownRef.current.focus()
-  }, [canShowDropdown])
-
-  const generateLink = () => {
+  const generatedLink = useMemo(() => {
     switch (pageType) {
       case "homepage":
         return `/sites/${siteName}/homepage`
@@ -53,9 +51,9 @@ export const FolderCard = ({
       default:
         return ""
     }
-  }
+  }, [pageType])
 
-  const generateImage = () => {
+  const generatedImage = useMemo(() => {
     switch (pageType) {
       case "homepage":
         return "bxs-home-circle"
@@ -68,76 +66,59 @@ export const FolderCard = ({
       default:
         return "bxs-folder"
     }
-  }
+  }, [pageType])
 
   const FolderCardContent = () => (
     <div id={itemIndex} className={`${contentStyles.folderInfo}`}>
       <i
-        className={`bx bx-md text-dark ${generateImage(pageType)} ${
-          contentStyles.componentIcon
-        }`}
+        className={`bx bx-md text-dark ${generatedImage} ${contentStyles.componentIcon}`}
       />
       <span
         className={`${contentStyles.componentFolderName} align-self-center ml-4 mr-auto`}
       >
         {displayText || prettifyPageFileName(category)}
       </span>
-      {hideSettings ||
-      pageType === "homepage" ||
-      pageType === "contact-us" ||
-      pageType === "nav" ||
-      pageType === "file" ? (
-        ""
-      ) : (
-        <div className="position-relative mt-auto mb-auto">
-          <IconButton
-            variant="clear"
-            id={`settings-folder-${itemIndex}`}
-            onClick={(e) => {
-              e.preventDefault()
-              setCanShowDropdown(true)
-            }}
-          >
-            <i
-              id={`settingsIcon-${itemIndex}`}
-              className="bx bx-dots-vertical-rounded"
-            />
-          </IconButton>
-          {canShowDropdown && (
-            <MenuDropdown
-              dropdownItems={[
-                {
-                  type: "edit",
-                  handler: () =>
-                    setRedirectToPage(
-                      `${url}/editDirectorySettings/${category}`
-                    ),
-                },
-                {
-                  type: "delete",
-                  handler: () =>
-                    setRedirectToPage(`${url}/deleteDirectory/${category}`),
-                },
-              ]}
-              dropdownRef={dropdownRef}
-              menuIndex={itemIndex}
-              onBlur={() => setCanShowDropdown(false)}
-            />
-          )}
-        </div>
-      )}
     </div>
   )
 
   return (
     <>
-      {generateLink() ? (
-        <Link
+      {generatedLink ? (
+        <LinkBox
           className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard}`}
-          to={generateLink()}
         >
-          {FolderCardContent()}
-        </Link>
+          <LinkOverlay as={RouterLink} to={generatedLink}>
+            <FolderCardContent />
+          </LinkOverlay>
+          {shouldShowContextMenu && (
+            <ContextMenuButton>
+              <ContextMenuItem
+                icon={<BiEditAlt />}
+                as={RouterLink}
+                to={generatedLink}
+              >
+                <Text>Edit folder</Text>
+              </ContextMenuItem>
+              <ContextMenuItem
+                icon={<BiWrench />}
+                as={RouterLink}
+                to={`${url}/editDirectorySettings/${category}`}
+              >
+                Folder Settings
+              </ContextMenuItem>
+              <>
+                <Divider />
+                <ContextMenuItem
+                  icon={<BiTrash />}
+                  as={RouterLink}
+                  to={`${url}/deleteDirectory/${category}`}
+                >
+                  Delete
+                </ContextMenuItem>
+              </>
+            </ContextMenuButton>
+          )}
+        </LinkBox>
       ) : (
         <button
           id="folderCard-small"
@@ -151,7 +132,7 @@ export const FolderCard = ({
           }}
           type="button"
         >
-          {FolderCardContent()}
+          <FolderCardContent />
           {selectedIndex && (
             <div className={elementStyles.orderCircleContainer}>
               <div className={elementStyles.orderCircle}>{selectedIndex}</div>
