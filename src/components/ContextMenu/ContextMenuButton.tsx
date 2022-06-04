@@ -4,14 +4,20 @@ import {
   MenuProps,
   useToken,
   forwardRef,
+  MenuButtonProps,
 } from "@chakra-ui/react"
 import { IconButton, Menu } from "@opengovsg/design-system-react"
 import { BiDotsVerticalRounded } from "react-icons/bi"
 
+type ContextMenuButtonProps = MenuProps & { buttonProps?: MenuButtonProps }
+
 // ContextMenuButton is a wrapper over chakra's menu/menubutton specialized to isomer's context (eg: icon)
 // eslint-disable-next-line import/prefer-default-export
-export const ContextMenuButton = forwardRef<MenuProps, "button">(
-  ({ children, ...props }: MenuProps, ref): JSX.Element => {
+export const ContextMenuButton = forwardRef<ContextMenuButtonProps, "button">(
+  (
+    { children, buttonProps, ...props }: ContextMenuButtonProps,
+    ref
+  ): JSX.Element => {
     const baseColour = useToken("colors", "text.body")
     const tokenColour = useToken("colors", "icon.default")
 
@@ -36,6 +42,8 @@ export const ContextMenuButton = forwardRef<MenuProps, "button">(
           }
           variant="clear"
           ref={ref}
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...buttonProps}
         />
         <Menu.List
           color={baseColour}
