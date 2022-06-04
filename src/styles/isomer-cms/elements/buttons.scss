@@ -68,16 +68,6 @@ button {
     margin-top: 2px;
   }
 
-  a {
-    text-decoration: none;
-    color: $isomer-blue;
-
-    &:hover {
-      text-decoration: none;
-      color: $isomer-blue;
-    }
-  }
-
   &.warning {
     @include buttonColor($error-red);
   }
