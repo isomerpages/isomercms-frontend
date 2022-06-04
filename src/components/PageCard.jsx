@@ -118,7 +118,6 @@ const PageCard = ({ item, itemIndex }) => {
 PageCard.propTypes = {
   item: PropTypes.shape({
     date: PropTypes.string,
-    resourceCategoryName: PropTypes.string,
     name: PropTypes.string.isRequired,
     resourceType: PropTypes.oneOf(["file", "post", ""]),
   }),
