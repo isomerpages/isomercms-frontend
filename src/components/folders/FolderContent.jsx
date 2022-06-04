@@ -1,9 +1,22 @@
-import { IconButton } from "@opengovsg/design-system-react"
-import { MenuDropdown } from "components/MenuDropdown"
-import { useState, useRef } from "react"
-import { Link, useRouteMatch } from "react-router-dom"
-
-import useRedirectHook from "hooks/useRedirectHook"
+import {
+  chakra,
+  LinkOverlay,
+  LinkBox,
+  Divider,
+  HStack,
+  Icon,
+  Text,
+} from "@chakra-ui/react"
+import { ContextMenuButton, ContextMenuItem } from "components/ContextMenu"
+import { useMemo } from "react"
+import {
+  BiChevronRight,
+  BiEditAlt,
+  BiFolder,
+  BiTrash,
+  BiWrench,
+} from "react-icons/bi"
+import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
@@ -12,105 +25,100 @@ import { pageFileNameToTitle } from "utils"
 
 // Import styles
 
-const FolderItem = ({ item, itemIndex, isDisabled }) => {
+const FolderItem = ({ item, isDisabled }) => {
   const { url } = useRouteMatch()
-  const { setRedirectToPage } = useRedirectHook()
 
   const { name, type, children } = item
-  const dropdownRef = useRef(null)
-  const [showDropdown, setShowDropdown] = useState(false)
+  const encodedName = encodeURIComponent(name)
 
-  const generateLink = () => {
-    const encodedName = encodeURIComponent(name)
+  const generatedLink = useMemo(() => {
     return type === "dir"
       ? `${url}/subfolders/${encodedName}`
       : `${url}/editPage/${encodedName}`
-  }
-
-  const generateDropdownItems = () => {
-    const encodedName = encodeURIComponent(name)
-    const dropdownItems = [
-      {
-        type: "edit",
-        handler: () => {
-          if (type === "dir") {
-            setRedirectToPage(`${url}/editDirectorySettings/${encodedName}`)
-          } else {
-            setRedirectToPage(`${url}/editPageSettings/${encodedName}`)
-          }
-        },
-      },
-      {
-        type: "move",
-        handler: () => setRedirectToPage(`${url}/movePage/${encodedName}`),
-      },
-      {
-        type: "delete",
-        handler: () => {
-          if (type === "dir") {
-            setRedirectToPage(`${url}/deleteDirectory/${encodedName}`)
-          } else {
-            setRedirectToPage(`${url}/deletePage/${encodedName}`)
-          }
-        },
-      },
-    ]
-    if (type === "file") return dropdownItems
-    return dropdownItems.filter((dropdownItem) => dropdownItem.type !== "move")
-  }
+  }, [encodedName, type, url])
 
   return (
-    <Link
+    <LinkBox
       className={`${contentStyles.component} ${contentStyles.card}`}
-      to={!isDisabled && generateLink(item, url)}
+      position="relative"
     >
-      <div
-        type="button"
-        className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderItem}`}
-      >
-        <div className={contentStyles.contentContainerFolderRow}>
-          {type === "file" ? (
-            <i
-              className={`bx bxs-file-blank ${elementStyles.folderItemIcon}`}
-            />
-          ) : (
-            <i className={`bx bxs-folder ${elementStyles.folderItemIcon}`} />
-          )}
-          <span className={`${elementStyles.folderItemText} mr-auto`}>
-            {pageFileNameToTitle(name)}
-          </span>
-          {children ? (
-            <span className={`${elementStyles.folderItemText} mr-5`}>
-              {children.length} item{children.length === 1 ? "" : "s"}
+      <LinkOverlay as={RouterLink} to={!isDisabled && generatedLink} w="100%">
+        <chakra.button
+          className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderItem}`}
+        >
+          <div className={contentStyles.contentContainerFolderRow}>
+            {type === "file" ? (
+              <i
+                className={`bx bxs-file-blank ${elementStyles.folderItemIcon}`}
+              />
+            ) : (
+              <i className={`bx bxs-folder ${elementStyles.folderItemIcon}`} />
+            )}
+            <span className={`${elementStyles.folderItemText} mr-auto`}>
+              {pageFileNameToTitle(name)}
             </span>
-          ) : null}
-          {!isDisabled && (
-            <div className="position-relative mt-auto mb-auto">
-              <IconButton
-                id={`folderItem-dropdown-${name}`}
-                variant="clear"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  e.preventDefault()
-                  setShowDropdown((prevState) => !prevState)
-                }}
-                onBlur={() => setShowDropdown(false)}
-              >
-                <i className="bx bx-dots-vertical-rounded" />
-              </IconButton>
-              {showDropdown && (
-                <MenuDropdown
-                  menuIndex={itemIndex}
-                  dropdownItems={generateDropdownItems(item, url)}
-                  dropdownRef={dropdownRef}
-                  onBlur={() => setShowDropdown(false)}
-                />
-              )}
-            </div>
+            {children ? (
+              <span className={`${elementStyles.folderItemText} mr-5`}>
+                {children.length} item{children.length === 1 ? "" : "s"}
+              </span>
+            ) : null}
+          </div>
+        </chakra.button>
+      </LinkOverlay>
+      {!isDisabled && (
+        <ContextMenuButton
+          buttonProps={{
+            right: "1.875rem",
+            bottom: "1.875rem",
+          }}
+        >
+          <ContextMenuItem
+            icon={<BiEditAlt />}
+            as={RouterLink}
+            to={generatedLink}
+          >
+            <Text>Edit</Text>
+          </ContextMenuItem>
+          <ContextMenuItem
+            icon={<BiWrench />}
+            as={RouterLink}
+            to={
+              type === "dir"
+                ? `${url}/editDirectorySettings/${encodedName}`
+                : `${url}/editPageSettings/${encodedName}`
+            }
+          >
+            Settings
+          </ContextMenuItem>
+          {type !== "dir" && (
+            <ContextMenuItem
+              icon={<BiFolder />}
+              as={RouterLink}
+              to={`${url}/movePage/${encodedName}`}
+            >
+              <HStack spacing="4rem" alignItems="center">
+                <Text>Move to</Text>
+                <Icon as={BiChevronRight} fontSize="1.25rem" />
+              </HStack>
+            </ContextMenuItem>
           )}
-        </div>
-      </div>
-    </Link>
+          <>
+            <Divider />
+            <ContextMenuItem
+              icon={<BiTrash />}
+              as={RouterLink}
+              to={
+                type === "dir"
+                  ? `${url}/deleteDirectory/${encodedName}`
+                  : `${url}/deletePage/${encodedName}`
+              }
+            >
+              Delete
+            </ContextMenuItem>
+          </>
+        </ContextMenuButton>
+      )}
+    </LinkBox>
   )
 }
 

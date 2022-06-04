@@ -10,6 +10,7 @@ import {
 import axios from "axios"
 import { ContextMenuButton, ContextMenuItem } from "components/ContextMenu"
 import PropTypes from "prop-types"
+import { useMemo } from "react"
 import {
   BiChevronRight,
   BiEditAlt,
@@ -37,7 +38,7 @@ const PageCard = ({ item, itemIndex }) => {
 
   const encodedName = encodeURIComponent(name)
 
-  const generateLink = () => {
+  const generatedLink = useMemo(() => {
     if (resourceType === "file")
       // TODO: implement file preview on CMS
       return "#"
@@ -47,7 +48,7 @@ const PageCard = ({ item, itemIndex }) => {
       return `${url}/editPage/${encodedName}`
     }
     return `/sites/${siteName}/editPage/${encodedName}`
-  }
+  }, [resourceType, resourceRoomName, siteName, encodedName])
 
   return (
     <LinkBox
@@ -58,7 +59,7 @@ const PageCard = ({ item, itemIndex }) => {
       } ${elementStyles.card}`}
       position="relative"
     >
-      <LinkOverlay as={RouterLink} to={generateLink()}>
+      <LinkOverlay as={RouterLink} to={generatedLink}>
         <Flex id={itemIndex} className={contentStyles.componentInfo} h="100%">
           <h1
             className={
@@ -78,7 +79,7 @@ const PageCard = ({ item, itemIndex }) => {
         <ContextMenuItem
           icon={<BiEditAlt />}
           as={RouterLink}
-          to={generateLink()}
+          to={generatedLink}
         >
           <Text>Edit page</Text>
         </ContextMenuItem>
