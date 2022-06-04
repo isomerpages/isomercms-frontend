@@ -1,8 +1,20 @@
 // Colour schemes available for isomer
 // There aren't any more because it should default to design system's
-export type IsomerColorScheme = "primary" | "secondary" | "text" | "icon"
+export type IsomerColorScheme =
+  | "primary"
+  | "secondary"
+  | "text"
+  | "icon"
+  | "background"
+  | "border"
 
-export const colours: { [k in IsomerColorScheme]: Record<string, string> } = {
+type BaseRecord = Record<string, string> | NestedRecord | string
+
+interface NestedRecord {
+  [x: string]: BaseRecord
+}
+
+export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
   primary: {
     50: "#FDFEFF",
     100: "#E6EFFE",
@@ -29,9 +41,22 @@ export const colours: { [k in IsomerColorScheme]: Record<string, string> } = {
   },
   text: {
     body: "#3D3D3D",
+    label: "#2E2E2E",
+    helper: "#848484",
   },
   icon: {
     default: "#276EF1",
     alt: "#686868",
+  },
+  background: {
+    action: {
+      defaultInverse: "#FFFFFF",
+      altInverse: "#F8F9FA",
+    },
+  },
+  border: {
+    action: {
+      default: "#276EF1",
+    },
   },
 }
