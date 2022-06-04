@@ -43,6 +43,7 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
     body: "#3D3D3D",
     label: "#2E2E2E",
     helper: "#848484",
+    description: "#474747",
   },
   icon: {
     default: "#276EF1",
@@ -57,6 +58,10 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
   border: {
     action: {
       default: "#276EF1",
+      light: "#E9E9E9",
+    },
+    divider: {
+      alt: "#E9E9E9",
     },
   },
 }
