@@ -1,4 +1,4 @@
-import { MenuButton, MenuProps, useToken } from "@chakra-ui/react"
+import { Icon, MenuButton, MenuProps, useToken } from "@chakra-ui/react"
 import { IconButton, Menu } from "@opengovsg/design-system-react"
 import { BiDotsVerticalRounded } from "react-icons/bi"
 
@@ -21,7 +21,15 @@ export const ContextMenuButton = ({
         right="2rem"
         as={IconButton}
         aria-label="Context Menu"
-        icon={<BiDotsVerticalRounded fill={tokenColour} />}
+        minH="2.5rem"
+        minW="2.5rem"
+        icon={
+          <Icon
+            as={BiDotsVerticalRounded}
+            fill={tokenColour}
+            fontSize="1.25rem"
+          />
+        }
         variant="clear"
       />
       <Menu.List
