@@ -1,11 +1,11 @@
 @import "../elements/variable";
 
 .adminSidebar {
-  width: $sidebar-width;
+  min-width: $sidebar-width;
   background: white;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
   margin: 0;
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
