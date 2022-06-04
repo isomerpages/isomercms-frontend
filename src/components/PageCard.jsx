@@ -5,6 +5,7 @@ import {
   HStack,
   Icon,
   Text,
+  Flex,
 } from "@chakra-ui/react"
 import axios from "axios"
 import { ContextMenuButton, ContextMenuItem } from "components/ContextMenu"
@@ -58,7 +59,7 @@ const PageCard = ({ item, itemIndex }) => {
       position="relative"
     >
       <LinkOverlay as={RouterLink} to={generateLink()}>
-        <div id={itemIndex} className={contentStyles.componentInfo}>
+        <Flex id={itemIndex} className={contentStyles.componentInfo} h="100%">
           <h1
             className={
               resourceType === "file"
@@ -68,10 +69,10 @@ const PageCard = ({ item, itemIndex }) => {
           >
             {pageFileNameToTitle(name, !!resourceType)}
           </h1>
-          <p className={contentStyles.componentDate}>{`${
+          <Text textStyle="caption-2" color="GrayText">{`${
             date ? prettifyDate(date) : ""
-          }${resourceType ? `/${resourceType.toUpperCase()}` : ""}`}</p>
-        </div>
+          }${resourceType ? `/${resourceType.toUpperCase()}` : ""}`}</Text>
+        </Flex>
       </LinkOverlay>
       <ContextMenuButton>
         <ContextMenuItem
