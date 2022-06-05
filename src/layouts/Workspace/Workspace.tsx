@@ -10,7 +10,6 @@ import {
 } from "@chakra-ui/react"
 import Header from "components/Header"
 import Sidebar from "components/Sidebar"
-import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
 import { BiBulb, BiInfoCircle } from "react-icons/bi"
 import { Switch, useRouteMatch, useHistory } from "react-router-dom"
