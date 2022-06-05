@@ -13,26 +13,37 @@ import {
 } from "@chakra-ui/react"
 import { ModalCloseButton, Button } from "@opengovsg/design-system-react"
 import { ReactChildren } from "react"
+import { useFormContext } from "react-hook-form"
 
 export interface DirectoryCreationModalProps {
   onSubmit: () => void
   isLoading: boolean
   directoryTitle: string
+  directoryType: "files" | "images" | "pages"
   children: ReactChildren
+  isOpen: boolean
+  onClose: () => void
 }
 
-// eslint-disable-next-line import/prefer-default-export
 export const DirectoryCreationModal = ({
   onSubmit,
-  directoryTitle,
+  directoryType,
   children,
+  onClose,
   isLoading = false,
+  isOpen = false,
 }: DirectoryCreationModalProps): JSX.Element => {
-  const { isOpen, onClose } = useDisclosure()
+  const { getValues } = useFormContext()
+
+  const directoryTitle = getValues("newDirectoryName")
+
   return (
     <Modal
       onClose={onClose}
       size="full"
+      // NOTE: This is required so that closing on directory modal works as expected
+      // The modal is open if 1. parent wants it to be opened and 2. it's internally open
+      // If the close button is clicked, 1 is true but 2 is false
       isOpen={isOpen}
       scrollBehavior="inside"
     >
@@ -49,7 +60,7 @@ export const DirectoryCreationModal = ({
               {`Select items to add into '${directoryTitle}'`}
             </Text>
             <Text textStyle="body-2">
-              Pages will be ordered by the order of selection
+              {`${directoryType} will be ordered by the order of selection`}
             </Text>
           </VStack>
         </ModalHeader>
