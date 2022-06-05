@@ -39,7 +39,10 @@
     "react/require-default-props": "off",
     "import/prefer-default-export": "off",
     "react/prop-types": "warn",
-    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+    ],
     "no-underscore-dangle": "off",
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
     "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],
