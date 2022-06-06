@@ -1,29 +1,26 @@
-import { Flex, Text, Icon } from "@chakra-ui/react"
-import { Button, ButtonProps } from "@opengovsg/design-system-react"
-import { BiPlus } from "react-icons/bi"
+import { Flex, Text, FlexProps } from "@chakra-ui/react"
 
-interface SectionHeaderProps
-  extends Omit<ButtonProps, "leftIcon" | "rightIcon" | "iconSpacing"> {
+interface SectionHeaderProps extends FlexProps {
   label: string | JSX.Element
 }
 
-// eslint-disable-next-line import/prefer-default-export
 export const SectionHeader = ({
   label,
+  children,
   ...rest
 }: SectionHeaderProps): JSX.Element => {
   return (
-    <Flex flexDir="row" w="full" justify="space-between">
+    <Flex
+      flexDir="row"
+      w="full"
+      justify="space-between"
+      align="center"
+      {...rest}
+    >
       <Text as="h3" textStyle="h3" color="title.alt">
         {label}
       </Text>
-      <Button
-        variant="outline"
-        /* eslint-disable-next-line react/jsx-props-no-spreading */
-        {...rest}
-        iconSpacing="0.5rem"
-        leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="icon.default" />}
-      />
+      {children}
     </Flex>
   )
 }
