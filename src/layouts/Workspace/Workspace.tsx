@@ -10,7 +10,6 @@ import {
 } from "@chakra-ui/react"
 import Header from "components/Header"
 import Sidebar from "components/Sidebar"
-import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
 import { BiBulb, BiInfoCircle } from "react-icons/bi"
 import { Switch, useRouteMatch, useHistory } from "react-router-dom"
@@ -44,6 +43,7 @@ import {
   SectionCaption,
   FolderCard,
   HomepageCard,
+  CreateButton,
 } from "./components"
 
 const CONTACT_US_TEMPLATE_LAYOUT = "contact_us"
@@ -148,11 +148,12 @@ const Workspace = ({ match, location }: WorkspaceProps): JSX.Element => {
 
           <Section>
             <Box w="100%">
-              <SectionHeader
-                label="Folders"
-                onClick={() => setRedirectToPage(`${url}/createDirectory`)}
-              >
-                Create folder
+              <SectionHeader label="Folders">
+                <CreateButton
+                  onClick={() => setRedirectToPage(`${url}/createDirectory`)}
+                >
+                  Create folder
+                </CreateButton>
               </SectionHeader>
               <SectionCaption label="PRO TIP: " icon={BiBulb}>
                 Folders impact navigation on your site. Organise your workspace
@@ -172,11 +173,12 @@ const Workspace = ({ match, location }: WorkspaceProps): JSX.Element => {
 
           <Section>
             <Box w="100%">
-              <SectionHeader
-                label="Pages"
-                onClick={() => setRedirectToPage(`${url}/createPage`)}
-              >
-                Create page
+              <SectionHeader label="Pages">
+                <CreateButton
+                  onClick={() => setRedirectToPage(`${url}/createPage`)}
+                >
+                  Create page
+                </CreateButton>
               </SectionHeader>
               <SectionCaption label="NOTE: " icon={BiInfoCircle}>
                 Pages here do not belong to any folders
