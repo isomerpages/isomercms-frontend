@@ -2,6 +2,7 @@ import { Banner } from "@opengovsg/design-system-react"
 import * as Sentry from "@sentry/react"
 import FallbackComponent from "components/FallbackComponent"
 import VerifyUserDetailsModal from "components/VerifyUserDetailsModal"
+import { ReactQueryDevtools } from "react-query/devtools"
 import { Switch } from "react-router-dom"
 
 // Layouts
@@ -106,5 +107,8 @@ export const RouteSelector = () => (
       <ProtectedRouteWithProps path="/" component={NotFoundPage} />
     </Switch>
     <VerifyUserDetailsModal />
+    {process.env.REACT_APP_ENV === "LOCAL_DEV" && (
+      <ReactQueryDevtools initialIsOpen={false} />
+    )}
   </>
 )
