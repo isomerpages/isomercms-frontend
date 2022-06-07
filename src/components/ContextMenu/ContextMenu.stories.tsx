@@ -9,33 +9,35 @@ import {
   BiWrench,
 } from "react-icons/bi"
 
-import { ContextMenuButton } from "./ContextMenuButton"
-import { ContextMenuItem } from "./ContextMenuItem"
+import { ContextMenu } from "./ContextMenu"
 
 const contextMenuMeta = {
   title: "Components/Context Menu",
-  component: ContextMenuButton,
-} as ComponentMeta<typeof ContextMenuButton>
+  component: ContextMenu,
+} as ComponentMeta<typeof ContextMenu>
 
 const BaseComponent = (args: TemplateArgs) => {
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
-    <ContextMenuButton {...args}>
-      <ContextMenuItem icon={<BiEditAlt />}>
-        <Text>Edit page</Text>
-      </ContextMenuItem>
-      <ContextMenuItem icon={<BiWrench />}>Page Settings</ContextMenuItem>
-      <ContextMenuItem icon={<BiFolder />}>
-        <HStack spacing="4rem" alignItems="center">
-          <Text>Move to</Text>
-          <Icon as={BiChevronRight} fontSize="1.25rem" />
-        </HStack>
-      </ContextMenuItem>
-      <>
-        <Divider />
-        <ContextMenuItem icon={<BiTrash />}>Delete</ContextMenuItem>
-      </>
-    </ContextMenuButton>
+    <ContextMenu {...args}>
+      <ContextMenu.Button />
+      <ContextMenu.List>
+        <ContextMenu.Item icon={<BiEditAlt />}>
+          <Text>Edit page</Text>
+        </ContextMenu.Item>
+        <ContextMenu.Item icon={<BiWrench />}>Page Settings</ContextMenu.Item>
+        <ContextMenu.Item icon={<BiFolder />}>
+          <HStack spacing="4rem" alignItems="center">
+            <Text>Move to</Text>
+            <Icon as={BiChevronRight} fontSize="1.25rem" />
+          </HStack>
+        </ContextMenu.Item>
+        <>
+          <Divider />
+          <ContextMenu.Item icon={<BiTrash />}>Delete</ContextMenu.Item>
+        </>
+      </ContextMenu.List>
+    </ContextMenu>
   )
 }
 
@@ -50,7 +52,7 @@ const Template: ComponentStory<typeof BaseComponent> = (args: TemplateArgs) => (
   </Box>
 )
 
-export const ContextMenu = Template.bind({})
+export const ClosedContextMenu = Template.bind({})
 export const OpenContextMenu = Template.bind({})
 OpenContextMenu.args = {
   defaultIsOpen: true,
