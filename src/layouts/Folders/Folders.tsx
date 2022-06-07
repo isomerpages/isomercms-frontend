@@ -8,9 +8,7 @@ import {
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import { FolderContent } from "components/folders/FolderContent"
-import PropTypes from "prop-types"
 import { BiBulb, BiSort } from "react-icons/bi"
-import { ReactQueryDevtools } from "react-query/devtools"
 import {
   Switch,
   useRouteMatch,
@@ -33,18 +31,29 @@ import {
 
 import { ProtectedRouteWithProps } from "routing/RouteSelector"
 
-import { deslugifyDirectory, getLastItemType } from "utils"
+import { deslugifyDirectory } from "utils"
 
 import { SiteViewLayout } from "../SiteViewLayout"
 import { Section, SectionHeader, SectionCaption } from "../Workspace/components"
 
 import { FolderBreadcrumbs, MenuDropdownButton } from "./components"
 
-// Import styles
+interface FolderUrlParams {
+  siteName: string
+  collectionName: string
+  subCollectionName?: string
+}
 
-const Folders = ({ match }) => {
+interface FoldersProps {
+  match: {
+    params: FolderUrlParams
+    decodedParams: FolderUrlParams
+  }
+}
+
+const Folders = ({ match }: FoldersProps): JSX.Element => {
   const { params, decodedParams } = match
-  const { subCollectionName } = decodedParams
+  const { collectionName, subCollectionName } = decodedParams
   // NOTE: As isomer does not support recursively nested folders,
   // the depth of folder creation is 1 (parent -> child).
   // Hence, at the subfolder, folder creation is disabled.
@@ -62,11 +71,9 @@ const Folders = ({ match }) => {
         <Section>
           <VStack align="left" spacing="0.375rem">
             <Text as="h2" textStyle="h2">
-              {getLastItemType(decodedParams) === "collectionName"
-                ? deslugifyDirectory(
-                    decodedParams[getLastItemType(decodedParams)]
-                  )
-                : decodedParams[getLastItemType(decodedParams)]}
+              {subCollectionName
+                ? deslugifyDirectory(subCollectionName)
+                : collectionName}
             </Text>
             <FolderBreadcrumbs />
           </VStack>
@@ -106,9 +113,6 @@ const Folders = ({ match }) => {
         </Section>
         {/* main section ends here */}
       </SiteViewLayout>
-      {process.env.REACT_APP_ENV === "LOCAL_DEV" && (
-        <ReactQueryDevtools initialIsOpen={false} />
-      )}
       <Switch>
         <ProtectedRouteWithProps
           path={[`${path}/createDirectory`]}
@@ -149,14 +153,3 @@ const Folders = ({ match }) => {
 }
 
 export default Folders
-
-Folders.propTypes = {
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      siteName: PropTypes.string,
-    }),
-  }).isRequired,
-  location: PropTypes.shape({
-    pathname: PropTypes.string.isRequired,
-  }).isRequired,
-}
