@@ -31,6 +31,7 @@ import {
   DirectoryCreationScreen,
   DirectorySettingsScreen,
 } from "layouts/screens"
+import { SiteViewLayout } from "layouts/SiteViewLayout"
 
 import { ProtectedRouteWithProps } from "routing/RouteSelector"
 
@@ -122,83 +123,71 @@ export const Workspace = ({ match, location }: WorkspaceProps): JSX.Element => {
 
   return (
     <>
-      <Header siteName={siteName} />
-      {/* main bottom section */}
-      <Flex>
-        <Sidebar siteName={siteName} currPath={location.pathname} />
-        <VStack
-          p="2rem"
-          spacing="2rem"
-          bgColor="gray.50"
-          w="100%"
-          divider={<StackDivider borderColor="border.divider.alt" />}
-        >
-          <Section>
-            <Text as="h2" textStyle="h2">
-              My Workspace
-            </Text>
-            <Skeleton isLoaded={!!pagesData} w="full">
-              <SimpleGrid columns={3} spacing="1.5rem">
-                <HomepageCard siteName={siteName} />
-                <NavigationCard siteName={siteName} />
-                {contactUsCard && <ContactCard siteName={siteName} />}
-              </SimpleGrid>
-            </Skeleton>
-          </Section>
+      <SiteViewLayout>
+        <Section>
+          <Text as="h2" textStyle="h2">
+            My Workspace
+          </Text>
+          <Skeleton isLoaded={!!pagesData} w="full">
+            <SimpleGrid columns={3} spacing="1.5rem">
+              <HomepageCard siteName={siteName} />
+              <NavigationCard siteName={siteName} />
+              {contactUsCard && <ContactCard siteName={siteName} />}
+            </SimpleGrid>
+          </Skeleton>
+        </Section>
 
-          <Section>
-            <Box w="100%">
-              <SectionHeader label="Folders">
-                <CreateButton
-                  onClick={() => setRedirectToPage(`${url}/createDirectory`)}
-                >
-                  Create folder
-                </CreateButton>
-              </SectionHeader>
-              <SectionCaption label="PRO TIP: " icon={BiBulb}>
-                Folders impact navigation on your site. Organise your workspace
-                by moving pages into folders.
-              </SectionCaption>
-            </Box>
-            <Skeleton isLoaded={!!pagesData} w="full">
-              <SimpleGrid columns={3} spacing="1.5rem">
-                {dirsData &&
-                  dirsData.length > 0 &&
-                  dirsData.map(({ name }) => (
-                    <FolderCard title={name} siteName={siteName} />
+        <Section>
+          <Box w="100%">
+            <SectionHeader label="Folders">
+              <CreateButton
+                onClick={() => setRedirectToPage(`${url}/createDirectory`)}
+              >
+                Create folder
+              </CreateButton>
+            </SectionHeader>
+            <SectionCaption label="PRO TIP: " icon={BiBulb}>
+              Folders impact navigation on your site. Organise your workspace by
+              moving pages into folders.
+            </SectionCaption>
+          </Box>
+          <Skeleton isLoaded={!!pagesData} w="full">
+            <SimpleGrid columns={3} spacing="1.5rem">
+              {dirsData &&
+                dirsData.length > 0 &&
+                dirsData.map(({ name }) => (
+                  <FolderCard title={name} siteName={siteName} />
+                ))}
+            </SimpleGrid>
+          </Skeleton>
+        </Section>
+
+        <Section>
+          <Box w="100%">
+            <SectionHeader label="Pages">
+              <CreateButton
+                onClick={() => setRedirectToPage(`${url}/createPage`)}
+              >
+                Create page
+              </CreateButton>
+            </SectionHeader>
+            <SectionCaption label="NOTE: " icon={BiInfoCircle}>
+              Pages here do not belong to any folders
+            </SectionCaption>
+          </Box>
+          <Skeleton isLoaded={!!pagesData} w="full">
+            <SimpleGrid columns={3} spacing="1.5rem">
+              {pagesData &&
+                pagesData.length > 0 &&
+                pagesData
+                  .filter((page) => page.name !== "contact-us.md")
+                  .map(({ name, resourceType }) => (
+                    <PageCard title={name} resourceType={resourceType} />
                   ))}
-              </SimpleGrid>
-            </Skeleton>
-          </Section>
-
-          <Section>
-            <Box w="100%">
-              <SectionHeader label="Pages">
-                <CreateButton
-                  onClick={() => setRedirectToPage(`${url}/createPage`)}
-                >
-                  Create page
-                </CreateButton>
-              </SectionHeader>
-              <SectionCaption label="NOTE: " icon={BiInfoCircle}>
-                Pages here do not belong to any folders
-              </SectionCaption>
-            </Box>
-            <Skeleton isLoaded={!!pagesData} w="full">
-              <SimpleGrid columns={3} spacing="1.5rem">
-                {pagesData &&
-                  pagesData.length > 0 &&
-                  pagesData
-                    .filter((page) => page.name !== "contact-us.md")
-                    .map(({ name, resourceType }) => (
-                      <PageCard title={name} resourceType={resourceType} />
-                    ))}
-              </SimpleGrid>
-            </Skeleton>
-          </Section>
-        </VStack>
-        {/* main section ends here */}
-      </Flex>
+            </SimpleGrid>
+          </Skeleton>
+        </Section>
+      </SiteViewLayout>
       <Switch>
         <ProtectedRouteWithProps
           path={[`${path}/createPage`, `${path}/editPageSettings/:fileName`]}
