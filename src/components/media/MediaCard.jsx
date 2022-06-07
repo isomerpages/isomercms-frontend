@@ -8,7 +8,7 @@ import {
   useToken,
   VStack,
 } from "@chakra-ui/react"
-import { ContextMenuButton, ContextMenuItem } from "components/ContextMenu"
+import { ContextMenu } from "components/ContextMenu"
 import PropTypes from "prop-types"
 import { BiChevronRight, BiFolder, BiTrash, BiWrench } from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
@@ -78,35 +78,38 @@ const MediaCard = ({ type, media, onClick, showSettings = true }) => {
         </VStack>
       </chakra.button>
       {showSettings && (
-        <ContextMenuButton>
-          <ContextMenuItem
-            icon={<BiWrench />}
-            as={RouterLink}
-            to={`${url}/editMediaSettings/${encodedName}`}
-          >
-            Image Settings
-          </ContextMenuItem>
-          <ContextMenuItem
-            icon={<BiFolder />}
-            as={RouterLink}
-            to={`${url}/moveMedia/${encodedName}`}
-          >
-            <HStack spacing="4rem" alignItems="center">
-              <Text>Move to</Text>
-              <Icon as={BiChevronRight} fontSize="1.25rem" />
-            </HStack>
-          </ContextMenuItem>
-          <>
-            <Divider />
-            <ContextMenuItem
-              icon={<BiTrash />}
+        <ContextMenu>
+          <ContextMenu.Button />
+          <ContextMenu.List>
+            <ContextMenu.Item
+              icon={<BiWrench />}
               as={RouterLink}
-              to={`${url}/deleteMedia/${encodedName}`}
+              to={`${url}/editMediaSettings/${encodedName}`}
             >
-              Delete
-            </ContextMenuItem>
-          </>
-        </ContextMenuButton>
+              Image Settings
+            </ContextMenu.Item>
+            <ContextMenu.Item
+              icon={<BiFolder />}
+              as={RouterLink}
+              to={`${url}/moveMedia/${encodedName}`}
+            >
+              <HStack spacing="4rem" alignItems="center">
+                <Text>Move to</Text>
+                <Icon as={BiChevronRight} fontSize="1.25rem" />
+              </HStack>
+            </ContextMenu.Item>
+            <>
+              <Divider />
+              <ContextMenu.Item
+                icon={<BiTrash />}
+                as={RouterLink}
+                to={`${url}/deleteMedia/${encodedName}`}
+              >
+                Delete
+              </ContextMenu.Item>
+            </>
+          </ContextMenu.List>
+        </ContextMenu>
       )}
     </Box>
   )

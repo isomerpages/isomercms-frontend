@@ -7,7 +7,7 @@ import {
   Icon,
   Text,
 } from "@chakra-ui/react"
-import { ContextMenuButton, ContextMenuItem } from "components/ContextMenu"
+import { ContextMenu } from "components/ContextMenu"
 import { useMemo } from "react"
 import {
   BiChevronRight,
@@ -66,57 +66,55 @@ const FolderItem = ({ item, isDisabled }) => {
         </chakra.button>
       </LinkOverlay>
       {!isDisabled && (
-        <ContextMenuButton
-          buttonProps={{
-            right: "1.875rem",
-            bottom: "1.875rem",
-          }}
-        >
-          <ContextMenuItem
-            icon={<BiEditAlt />}
-            as={RouterLink}
-            to={generatedLink}
-          >
-            <Text>Edit</Text>
-          </ContextMenuItem>
-          <ContextMenuItem
-            icon={<BiWrench />}
-            as={RouterLink}
-            to={
-              type === "dir"
-                ? `${url}/editDirectorySettings/${encodedName}`
-                : `${url}/editPageSettings/${encodedName}`
-            }
-          >
-            Settings
-          </ContextMenuItem>
-          {type !== "dir" && (
-            <ContextMenuItem
-              icon={<BiFolder />}
+        <ContextMenu>
+          <ContextMenu.Button right="1.875rem" bottom="1.875rem" />
+          <ContextMenu.List>
+            <ContextMenu.Item
+              icon={<BiEditAlt />}
               as={RouterLink}
-              to={`${url}/movePage/${encodedName}`}
+              to={generatedLink}
             >
-              <HStack spacing="4rem" alignItems="center">
-                <Text>Move to</Text>
-                <Icon as={BiChevronRight} fontSize="1.25rem" />
-              </HStack>
-            </ContextMenuItem>
-          )}
-          <>
-            <Divider />
-            <ContextMenuItem
-              icon={<BiTrash />}
+              <Text>Edit</Text>
+            </ContextMenu.Item>
+            <ContextMenu.Item
+              icon={<BiWrench />}
               as={RouterLink}
               to={
                 type === "dir"
-                  ? `${url}/deleteDirectory/${encodedName}`
-                  : `${url}/deletePage/${encodedName}`
+                  ? `${url}/editDirectorySettings/${encodedName}`
+                  : `${url}/editPageSettings/${encodedName}`
               }
             >
-              Delete
-            </ContextMenuItem>
-          </>
-        </ContextMenuButton>
+              Settings
+            </ContextMenu.Item>
+            {type !== "dir" && (
+              <ContextMenu.Item
+                icon={<BiFolder />}
+                as={RouterLink}
+                to={`${url}/movePage/${encodedName}`}
+              >
+                <HStack spacing="4rem" alignItems="center">
+                  <Text>Move to</Text>
+                  <Icon as={BiChevronRight} fontSize="1.25rem" />
+                </HStack>
+              </ContextMenu.Item>
+            )}
+            <>
+              <Divider />
+              <ContextMenu.Item
+                icon={<BiTrash />}
+                as={RouterLink}
+                to={
+                  type === "dir"
+                    ? `${url}/deleteDirectory/${encodedName}`
+                    : `${url}/deletePage/${encodedName}`
+                }
+              >
+                Delete
+              </ContextMenu.Item>
+            </>
+          </ContextMenu.List>
+        </ContextMenu>
       )}
     </LinkBox>
   )
