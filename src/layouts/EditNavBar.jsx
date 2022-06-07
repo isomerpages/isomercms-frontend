@@ -10,7 +10,6 @@ import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useQuery, useMutation, useQueryClient } from "react-query"
-import { ReactQueryDevtools } from "react-query/devtools"
 
 import { NAVIGATION_CONTENT_KEY } from "constants/constants"
 
@@ -699,9 +698,6 @@ const EditNavBar = ({ match }) => {
             </HStack>
           </div>
         </div>
-      )}
-      {process.env.REACT_APP_ENV === "LOCAL_DEV" && (
-        <ReactQueryDevtools initialIsOpen={false} />
       )}
     </>
   )

@@ -5,7 +5,6 @@ import Header from "components/Header"
 import MediaCard from "components/media/MediaCard"
 import Sidebar from "components/Sidebar"
 import PropTypes from "prop-types"
-import { ReactQueryDevtools } from "react-query/devtools"
 import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 import { useGetDirectoryHook } from "hooks/directoryHooks/useGetDirectoryHook"
@@ -153,9 +152,6 @@ const Media = ({ match, location }) => {
         </div>
         {/* main section ends here */}
       </div>
-      {process.env.REACT_APP_ENV === "LOCAL_DEV" && (
-        <ReactQueryDevtools initialIsOpen={false} />
-      )}
       <Switch>
         <ProtectedRouteWithProps
           path={[`${path}/createMedia`]}
