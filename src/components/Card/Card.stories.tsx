@@ -1,9 +1,7 @@
-import { Icon, Text, VStack, useToast, Box } from "@chakra-ui/react"
+import { Icon, Text, useToast, Box } from "@chakra-ui/react"
 import { ComponentMeta, Story } from "@storybook/react"
-import { ContextMenuButton, ContextMenuItem } from "components/ContextMenu"
+import { ContextMenu } from "components/ContextMenu"
 import { BiFolder } from "react-icons/bi"
-
-import { CardVariant } from "theme/components/Card"
 
 import { CardBody, Card, CardFooter } from "./Card"
 
@@ -39,9 +37,12 @@ const SingleCardTemplate: Story<TemplateArgs> = ({ text }: TemplateArgs) => {
           {text}
         </Text>
       </CardBody>
-      <ContextMenuButton>
-        <ContextMenuItem>Something</ContextMenuItem>
-      </ContextMenuButton>
+      <ContextMenu>
+        <ContextMenu.Button />
+        <ContextMenu.List>
+          <ContextMenu.Item>Something</ContextMenu.Item>
+        </ContextMenu.List>
+      </ContextMenu>
     </Card>
   )
 }
@@ -82,9 +83,12 @@ const MultiCardTemplate: Story<MultiCardTemplateArgs> = ({
           </Text>
         </CardFooter>
       </Card>
-      <ContextMenuButton>
-        <ContextMenuItem>Something</ContextMenuItem>
-      </ContextMenuButton>
+      <ContextMenu>
+        <ContextMenu.Button />
+        <ContextMenu.List>
+          <ContextMenu.Item>Something</ContextMenu.Item>
+        </ContextMenu.List>
+      </ContextMenu>
     </Box>
   )
 }
