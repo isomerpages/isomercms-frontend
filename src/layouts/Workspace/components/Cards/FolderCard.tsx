@@ -1,6 +1,6 @@
 import { LinkOverlay, LinkBox, Divider, Text, Icon } from "@chakra-ui/react"
 import { Card, CardBody } from "components/Card"
-import { ContextMenuButton, ContextMenuItem } from "components/ContextMenu"
+import { ContextMenu } from "components/ContextMenu"
 import { BiEditAlt, BiFolder, BiTrash, BiWrench } from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
@@ -27,32 +27,35 @@ export const FolderCard = ({
           </CardBody>
         </Card>
       </LinkOverlay>
-      <ContextMenuButton>
-        <ContextMenuItem
-          icon={<BiEditAlt />}
-          as={RouterLink}
-          to={`/sites/${siteName}/folders/${title}`}
-        >
-          <Text>Edit folder</Text>
-        </ContextMenuItem>
-        <ContextMenuItem
-          icon={<BiWrench />}
-          as={RouterLink}
-          to={`${url}/editDirectorySettings/${title}`}
-        >
-          Folder Settings
-        </ContextMenuItem>
-        <>
-          <Divider />
-          <ContextMenuItem
-            icon={<BiTrash />}
+      <ContextMenu>
+        <ContextMenu.Button />
+        <ContextMenu.List>
+          <ContextMenu.Item
+            icon={<BiEditAlt />}
             as={RouterLink}
-            to={`${url}/deleteDirectory/${title}`}
+            to={`/sites/${siteName}/folders/${title}`}
           >
-            Delete
-          </ContextMenuItem>
-        </>
-      </ContextMenuButton>
+            <Text>Edit folder</Text>
+          </ContextMenu.Item>
+          <ContextMenu.Item
+            icon={<BiWrench />}
+            as={RouterLink}
+            to={`${url}/editDirectorySettings/${title}`}
+          >
+            Folder Settings
+          </ContextMenu.Item>
+          <>
+            <Divider />
+            <ContextMenu.Item
+              icon={<BiTrash />}
+              as={RouterLink}
+              to={`${url}/deleteDirectory/${title}`}
+            >
+              Delete
+            </ContextMenu.Item>
+          </>
+        </ContextMenu.List>
+      </ContextMenu>
     </LinkBox>
   )
 }
