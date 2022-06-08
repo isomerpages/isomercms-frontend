@@ -7,7 +7,7 @@ import {
   Text,
 } from "@chakra-ui/react"
 import { Card, CardBody } from "components/Card"
-import { ContextMenuButton, ContextMenuItem } from "components/ContextMenu"
+import { ContextMenu } from "components/ContextMenu"
 import { useMemo } from "react"
 import {
   BiChevronRight,
@@ -62,42 +62,45 @@ export const PageCard = ({
           </CardBody>
         </Card>
       </LinkOverlay>
-      <ContextMenuButton>
-        <ContextMenuItem
-          icon={<BiEditAlt />}
-          as={RouterLink}
-          to={generatedLink}
-        >
-          <Text>Edit page</Text>
-        </ContextMenuItem>
-        <ContextMenuItem
-          icon={<BiWrench />}
-          as={RouterLink}
-          to={`${url}/editPageSettings/${encodedName}`}
-        >
-          Page Settings
-        </ContextMenuItem>
-        <ContextMenuItem
-          icon={<BiFolder />}
-          as={RouterLink}
-          to={`${url}/movePage/${encodedName}`}
-        >
-          <HStack spacing="4rem" alignItems="center">
-            <Text>Move to</Text>
-            <Icon as={BiChevronRight} fontSize="1.25rem" />
-          </HStack>
-        </ContextMenuItem>
-        <>
-          <Divider />
-          <ContextMenuItem
-            icon={<BiTrash />}
+      <ContextMenu>
+        <ContextMenu.Button />
+        <ContextMenu.List>
+          <ContextMenu.Item
+            icon={<BiEditAlt />}
             as={RouterLink}
-            to={`${url}/deletePage/${encodedName}`}
+            to={generatedLink}
           >
-            Delete
-          </ContextMenuItem>
-        </>
-      </ContextMenuButton>
+            <Text>Edit page</Text>
+          </ContextMenu.Item>
+          <ContextMenu.Item
+            icon={<BiWrench />}
+            as={RouterLink}
+            to={`${url}/editPageSettings/${encodedName}`}
+          >
+            Page Settings
+          </ContextMenu.Item>
+          <ContextMenu.Item
+            icon={<BiFolder />}
+            as={RouterLink}
+            to={`${url}/movePage/${encodedName}`}
+          >
+            <HStack spacing="4rem" alignItems="center">
+              <Text>Move to</Text>
+              <Icon as={BiChevronRight} fontSize="1.25rem" />
+            </HStack>
+          </ContextMenu.Item>
+          <>
+            <Divider />
+            <ContextMenu.Item
+              icon={<BiTrash />}
+              as={RouterLink}
+              to={`${url}/deletePage/${encodedName}`}
+            >
+              Delete
+            </ContextMenu.Item>
+          </>
+        </ContextMenu.List>
+      </ContextMenu>
     </LinkBox>
   )
 }
