@@ -1,5 +1,2 @@
 export * from "./Cards"
-export * from "./Section"
-export * from "./SectionCaption"
-export * from "./SectionHeader"
 export * from "./CreateButton"
