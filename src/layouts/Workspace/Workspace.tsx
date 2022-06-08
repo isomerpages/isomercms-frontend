@@ -1,22 +1,8 @@
 // Import components
-import {
-  SimpleGrid,
-  Box,
-  VStack,
-  StackDivider,
-  Skeleton,
-  Flex,
-  Text,
-} from "@chakra-ui/react"
-import Header from "components/Header"
-import Sidebar from "components/Sidebar"
+import { SimpleGrid, Box, Skeleton, Text } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { BiBulb, BiInfoCircle } from "react-icons/bi"
 import { Switch, useRouteMatch, useHistory } from "react-router-dom"
-
-// Import styles
-
-// Import utils
 
 // Import hooks
 import { useGetDirectoryHook } from "hooks/directoryHooks"
