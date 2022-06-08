@@ -33,8 +33,8 @@ import { ProtectedRouteWithProps } from "routing/RouteSelector"
 
 import { deslugifyDirectory } from "utils"
 
+import { Section, SectionHeader, SectionCaption } from "../components"
 import { SiteViewLayout } from "../SiteViewLayout"
-import { Section, SectionHeader, SectionCaption } from "../Workspace/components"
 
 import { FolderBreadcrumbs, MenuDropdownButton } from "./components"
 

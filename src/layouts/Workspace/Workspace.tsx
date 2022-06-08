@@ -21,13 +21,12 @@ import { SiteViewLayout } from "layouts/SiteViewLayout"
 
 import { ProtectedRouteWithProps } from "routing/RouteSelector"
 
+import { Section, SectionHeader, SectionCaption } from "../components"
+
 import {
   ContactCard,
-  Section,
-  SectionHeader,
   PageCard,
   NavigationCard,
-  SectionCaption,
   FolderCard,
   HomepageCard,
   CreateButton,
