@@ -3,11 +3,10 @@ import {
   IconButton,
   Icon,
   Menu as ChakraMenu,
-  MenuButton,
   Text,
-  MenuList,
 } from "@chakra-ui/react"
 import { Button, Menu } from "@opengovsg/design-system-react"
+import { ContextMenu } from "components/ContextMenu"
 import { useState } from "react"
 import {
   BiChevronDown,
@@ -35,36 +34,40 @@ export const MenuDropdownButton = (): JSX.Element => {
           >
             Create {isCreatePage ? "page" : "folder"}
           </Button>
-          <MenuButton
-            as={IconButton}
-            borderLeftRadius={0}
-            aria-label="Select options"
-            icon={
-              <Icon
-                as={isOpen ? BiChevronUp : BiChevronDown}
-                fontSize="1rem"
-                fill="icon.default"
-              />
-            }
-          />
-          <MenuList>
-            <Menu.Item
-              icon={<BiFileBlank fontSize="1.25rem" fill="icon.alt" />}
-              onClick={() => setIsCreatePage(true)}
-            >
-              <Text textStyle="body-1" fill="text.body">
-                Create Page
-              </Text>
-            </Menu.Item>
-            <Menu.Item
-              icon={<BiFolder fontSize="1.25rem" fill="icon.alt" />}
-              onClick={() => setIsCreatePage(false)}
-            >
-              <Text textStyle="body-1" fill="text.body">
-                Create Folder
-              </Text>
-            </Menu.Item>
-          </MenuList>
+          <ContextMenu>
+            <ContextMenu.Button
+              position="inherit"
+              as={IconButton}
+              borderLeftRadius={0}
+              aria-label="Select options"
+              variant="outline"
+              icon={
+                <Icon
+                  as={isOpen ? BiChevronUp : BiChevronDown}
+                  fontSize="1rem"
+                  fill="icon.default"
+                />
+              }
+            />
+            <ContextMenu.List>
+              <ContextMenu.Item
+                icon={<BiFileBlank fontSize="1.25rem" fill="icon.alt" />}
+                onClick={() => setIsCreatePage(true)}
+              >
+                <Text textStyle="body-1" fill="text.body">
+                  Create Page
+                </Text>
+              </ContextMenu.Item>
+              <ContextMenu.Item
+                icon={<BiFolder fontSize="1.25rem" fill="icon.alt" />}
+                onClick={() => setIsCreatePage(false)}
+              >
+                <Text textStyle="body-1" fill="text.body">
+                  Create Folder
+                </Text>
+              </ContextMenu.Item>
+            </ContextMenu.List>
+          </ContextMenu>
         </ButtonGroup>
       )}
     </ChakraMenu>
