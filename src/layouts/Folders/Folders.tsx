@@ -34,7 +34,7 @@ import { ProtectedRouteWithProps } from "routing/RouteSelector"
 import { deslugifyDirectory } from "utils"
 
 import { Section, SectionHeader, SectionCaption } from "../components"
-import { SiteViewLayout } from "../SiteViewLayout"
+import { SiteViewLayout } from "../layouts"
 
 import { FolderBreadcrumbs, MenuDropdownButton } from "./components"
 

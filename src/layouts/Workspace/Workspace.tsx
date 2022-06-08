@@ -17,11 +17,11 @@ import {
   DirectoryCreationScreen,
   DirectorySettingsScreen,
 } from "layouts/screens"
-import { SiteViewLayout } from "layouts/SiteViewLayout"
 
 import { ProtectedRouteWithProps } from "routing/RouteSelector"
 
 import { Section, SectionHeader, SectionCaption } from "../components"
+import { SiteViewLayout } from "../layouts"
 
 import {
   ContactCard,
