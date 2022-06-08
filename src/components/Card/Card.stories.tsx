@@ -12,6 +12,7 @@ import { ContextMenu } from "components/ContextMenu"
 import { BiFolder } from "react-icons/bi"
 
 import { Card } from "./Card"
+import { CardButton } from "./CardButton"
 
 const cardMeta = {
   title: "Components/Card",
@@ -176,11 +177,7 @@ const MultiCardFullButtonTemplate: Story<MultiCardTemplateArgs> = ({
   const toast = useToast()
   return (
     <Box position="relative">
-      <Card
-        as={chakra.button}
-        display="block"
-        w="100%"
-        textAlign="left"
+      <CardButton
         onClick={() =>
           toast({
             title: "Card button clicked",
@@ -210,7 +207,7 @@ const MultiCardFullButtonTemplate: Story<MultiCardTemplateArgs> = ({
             </Flex>
           </Card.Item>
         </Card.Layout>
-      </Card>
+      </CardButton>
       <ContextMenu>
         <ContextMenu.Button
           bottom="1rem"
