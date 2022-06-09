@@ -9,6 +9,7 @@ import { BrowserRouter as Router } from "react-router-dom"
 // Import contexts
 import { LoginProvider } from "contexts/LoginContext"
 import { ServicesProvider } from "contexts/ServicesContext"
+import { SidebarContextProvider } from "contexts/SidebarContext"
 
 // Import route selector
 import { RouteSelector } from "routing/RouteSelector"
@@ -42,7 +43,9 @@ const App = () => {
         <QueryClientProvider client={queryClient}>
           <LoginProvider>
             <ThemeProvider theme={theme}>
-              <RouteSelector />
+              <SidebarContextProvider>
+                <RouteSelector />
+              </SidebarContextProvider>
             </ThemeProvider>
           </LoginProvider>
         </QueryClientProvider>
