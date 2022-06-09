@@ -1,6 +1,6 @@
 import { Box, Flex, VStack, StackDivider, BoxProps } from "@chakra-ui/react"
 import Header from "components/Header"
-import Sidebar from "components/Sidebar"
+import { Sidebar } from "components/Sidebar"
 import { useLocation, useRouteMatch } from "react-router-dom"
 
 /**
@@ -21,7 +21,7 @@ export const SiteViewLayout = ({
       <Header siteName={siteName} />
       {/* main bottom section */}
       <Flex>
-        <Sidebar siteName={siteName} currPath={pathname} />
+        <Sidebar />
         <VStack
           p="2rem"
           spacing="2rem"

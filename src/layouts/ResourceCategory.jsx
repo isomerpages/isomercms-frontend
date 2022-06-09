@@ -1,7 +1,7 @@
 import { Breadcrumb } from "components/folders/Breadcrumb"
 import Header from "components/Header"
 import PageCard from "components/PageCard"
-import Sidebar from "components/Sidebar"
+import { Sidebar } from "components/Sidebar"
 import PropTypes from "prop-types"
 import { Switch, useRouteMatch, useHistory } from "react-router-dom"
 
@@ -23,7 +23,7 @@ import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 // Import utils
 import { deslugifyDirectory } from "utils"
 
-const ResourceCategory = ({ match, location }) => {
+const ResourceCategory = ({ match }) => {
   const { params, decodedParams } = match
   const {
     resourceRoomName,
@@ -47,7 +47,7 @@ const ResourceCategory = ({ match, location }) => {
       />
       {/* main bottom section */}
       <div className={elementStyles.wrapper}>
-        <Sidebar siteName={siteName} currPath={location.pathname} />
+        <Sidebar />
         {/* main section starts here */}
         <div className={contentStyles.mainSection}>
           {/* Collection title */}

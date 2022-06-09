@@ -6,7 +6,7 @@ import FormFieldToggle from "components/FormFieldToggle"
 import GenericWarningModal from "components/GenericWarningModal"
 import Header from "components/Header"
 import ColorPickerSection from "components/settings/ColorPickerSection"
-import Sidebar from "components/Sidebar"
+import { Sidebar } from "components/Sidebar"
 import Spacing from "components/Spacing/Spacing"
 import _ from "lodash"
 import PropTypes from "prop-types"
@@ -81,7 +81,7 @@ const getTitle = (unprocessedTitle) =>
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ")
 
-const Settings = ({ match, location }) => {
+const Settings = ({ match }) => {
   const { params, decodedParams } = match
   const { siteName } = decodedParams
 
@@ -242,7 +242,7 @@ const Settings = ({ match, location }) => {
       />
       {/* main bottom section */}
       <form className={elementStyles.wrapper}>
-        <Sidebar siteName={siteName} currPath={location.pathname} />
+        <Sidebar />
         {/* main section starts here */}
         <div className={contentStyles.mainSection}>
           <div className={contentStyles.sectionHeader}>
