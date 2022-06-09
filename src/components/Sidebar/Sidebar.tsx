@@ -9,6 +9,7 @@ import {
   Icon,
   HStack,
   Flex,
+  Skeleton,
   Spacer,
 } from "@chakra-ui/react"
 import { Button, ButtonProps } from "@opengovsg/design-system-react"
@@ -21,23 +22,33 @@ import {
   BiFile,
   BiGridAlt,
   BiImage,
+  BiLogOutCircle,
 } from "react-icons/bi"
 import { useParams } from "react-router-dom"
 
-export const Sidebar = () => {
-  //   const { siteName } = useParams<{ siteName: string }>()
-  const siteName = "something"
+import { useLastUpdated } from "../../hooks/useLastUpdated"
+
+export const Sidebar = (): JSX.Element => {
+  const { siteName } = useParams<{ siteName: string }>()
+  const { lastUpdated, isError, isLoading } = useLastUpdated(siteName)
 
   return (
     <Flex w="15rem" bg="white" h="100vh" position="sticky" flexDir="column">
       <Box p="1.5rem">
         <VStack align="flex-start" spacing="0.5rem">
-          <Text as="h4" textStyle="h4" color="text.title.brandSecondary">
+          <Text
+            as="h4"
+            textStyle="h4"
+            color="text.title.brandSecondary"
+            w="100%"
+          >
             {siteName}
           </Text>
-          <Text as="caption" textStyle="caption-2" color="text.description">
-            {siteName}
-          </Text>
+          <Skeleton isLoaded={!isLoading} w="100%">
+            <Text textStyle="caption-2" color="text.description" w="full">
+              {isError ? "Unable to retrieve last updated time" : lastUpdated}
+            </Text>
+          </Skeleton>
         </VStack>
       </Box>
       <Divider color="secondary.100" />
@@ -79,6 +90,20 @@ export const Sidebar = () => {
       >
         <Text textStyle="body-1">Help</Text>
       </SidebarButton>
+      <Divider color="secondary.100" />
+      <VStack spacing="2rem" pt="0.5rem">
+        <SidebarButton isFullWidth display="block">
+          <Flex w="100%">
+            <Text textStyle="body-1">Logout</Text>
+            <Spacer />
+            <Icon as={BiLogOutCircle} fontSize="1.5rem" />
+          </Flex>
+        </SidebarButton>
+        <Box px="1rem" textColor="text.link.disabled" textAlign="left" w="100%">
+          <Text textStyle="body-1">Logged in as</Text>
+          <Text textStyle="body-1">@prestonlimlianjie</Text>
+        </Box>
+      </VStack>
     </Flex>
   )
 }
