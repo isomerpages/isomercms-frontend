@@ -17,7 +17,7 @@ import { useGetSettingsHook, useUpdateSettingsHook } from "hooks/settingsHooks"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
-import { errorToast } from "utils/toasts"
+import { useErrorToast } from "utils/toasts"
 import { validateSocialMedia } from "utils/validators"
 
 import { DEFAULT_RETRY_MSG, getObjectDiff, isEmpty } from "utils"
@@ -97,6 +97,7 @@ const Settings = ({ match, location }) => {
   const [showOverwriteWarning, setShowOverwriteWarning] = useState()
 
   const { data: settingsData } = useGetSettingsHook(params)
+  const errorToast = useErrorToast()
 
   const {
     mutateAsync: updateSettingsHandler,
@@ -225,9 +226,9 @@ const Settings = ({ match, location }) => {
         configSettings,
       })
     } catch (err) {
-      errorToast(
-        `There was a problem trying to save your settings. ${DEFAULT_RETRY_MSG}`
-      )
+      errorToast({
+        description: `There was a problem trying to save your settings. ${DEFAULT_RETRY_MSG}`,
+      })
       console.log(err)
     }
   }

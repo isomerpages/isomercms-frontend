@@ -6,7 +6,7 @@ import { ServicesContext } from "contexts/ServicesContext"
 
 import { DIR_CONTENT_KEY } from "hooks/queryKeys"
 
-import { successToast, errorToast } from "utils/toasts"
+import { useSuccessToast, useErrorToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG, getMediaDirectoryName } from "utils"
 
@@ -14,14 +14,20 @@ import { DEFAULT_RETRY_MSG, getMediaDirectoryName } from "utils"
 export function useDeleteDirectoryHook(params, queryParams) {
   const { directoryService } = useContext(ServicesContext)
   const queryClient = useQueryClient()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
   return useMutation(() => directoryService.delete(params), {
     ...queryParams,
     onError: () => {
-      errorToast(`Your directory could not be deleted. ${DEFAULT_RETRY_MSG}`)
+      errorToast({
+        description: `Your directory could not be deleted. ${DEFAULT_RETRY_MSG}`,
+      })
       if (queryParams && queryParams.onError) queryParams.onError()
     },
     onSuccess: () => {
-      successToast(`Successfully deleted directory`)
+      successToast({
+        description: `Successfully deleted directory!`,
+      })
       if (params.mediaDirectoryName)
         queryClient.invalidateQueries([
           DIR_CONTENT_KEY,

@@ -1,26 +1,28 @@
-import Toast from "components/Toast"
-import { toast } from "react-toastify"
-
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import { useToast } from "@opengovsg/design-system-react"
 
 import { DEFAULT_ERROR_TOAST_MSG } from "utils"
 
-export function errorToast(message) {
-  return toast(
-    <Toast
-      notificationType="error"
-      text={message || DEFAULT_ERROR_TOAST_MSG}
-    />,
-    {
-      className: `${elementStyles.toastError} ${elementStyles.toastLong}`,
-      toastId: "error",
-    }
-  )
+const DEFAULT_TOAST_PROPS = {
+  duration: 5000,
+  isClosable: true,
 }
 
-export function successToast(message) {
-  toast(<Toast notificationType="success" text={message || `Success!`} />, {
-    className: `${elementStyles.toastSuccess}`,
-    toastId: "success",
+export const useErrorToast = () =>
+  useToast({
+    ...DEFAULT_TOAST_PROPS,
+    description: DEFAULT_ERROR_TOAST_MSG,
+    status: "danger",
   })
-}
+
+export const useSuccessToast = () =>
+  useToast({
+    ...DEFAULT_TOAST_PROPS,
+    description: "Success!",
+    status: "success",
+  })
+
+export const useWarningToast = () =>
+  useToast({
+    ...DEFAULT_TOAST_PROPS,
+    status: "warning",
+  })

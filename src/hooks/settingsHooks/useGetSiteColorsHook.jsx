@@ -7,7 +7,7 @@ import {
   DEFAULT_ISOMER_PRIMARY_COLOR,
   DEFAULT_ISOMER_SECONDARY_COLOR,
 } from "utils/siteColorUtils"
-import { errorToast } from "utils/toasts"
+import { useErrorToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
@@ -26,15 +26,16 @@ const getSiteColors = async ({ siteName }) => {
 
 // eslint-disable-next-line import/prefer-default-export
 export function useGetSiteColorsHook({ siteName }, queryParams) {
+  const errorToast = useErrorToast()
   return useQuery(
     [SITE_COLORS_KEY, { siteName }],
     () => getSiteColors({ siteName }),
     {
       ...queryParams,
       onError: () => {
-        errorToast(
-          `There was a problem loading the page theme colors. ${DEFAULT_RETRY_MSG}`
-        )
+        errorToast({
+          description: `There was a problem loading the page theme colors. ${DEFAULT_RETRY_MSG}`,
+        })
         if (queryParams && queryParams.onError) queryParams.onError()
       },
     }

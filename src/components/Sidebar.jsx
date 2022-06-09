@@ -14,10 +14,11 @@ import useSiteUrlHook from "hooks/useSiteUrlHook"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import styles from "styles/isomer-cms/pages/Admin.module.scss"
 
-import { errorToast } from "utils/toasts"
+import { useErrorToast } from "utils/toasts"
 
 import { getLastUpdated } from "api"
 import { BxBook, BxBuoy, BxLogOutCircle } from "assets/icons"
+import { DEFAULT_ERROR_TOAST_MSG } from "utils"
 
 import { BxCog } from "../assets/icons/BxCog"
 
@@ -88,6 +89,7 @@ const Sidebar = ({ siteName, currPath }) => {
   const [siteUrl, setSiteUrl] = useState()
   const { retrieveSiteUrl } = useSiteUrlHook()
   const { data: resourceRoomName } = useGetResourceRoomNameHook({ siteName })
+  const errorToast = useErrorToast()
 
   const { data: lastUpdatedResp } = useQuery(
     [LAST_UPDATED_KEY, siteName],
@@ -96,7 +98,7 @@ const Sidebar = ({ siteName, currPath }) => {
       retry: false,
       onError: (err) => {
         console.log(err)
-        errorToast()
+        errorToast({ description: DEFAULT_ERROR_TOAST_MSG })
       },
     }
   )
