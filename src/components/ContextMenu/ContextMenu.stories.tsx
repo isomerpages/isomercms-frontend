@@ -1,4 +1,3 @@
-import "@opengovsg/design-system-react/build/fonts/inter.css"
 import { Box, Divider, Icon, Text, HStack } from "@chakra-ui/react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import {
