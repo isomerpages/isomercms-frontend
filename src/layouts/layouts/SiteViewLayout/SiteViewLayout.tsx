@@ -6,8 +6,9 @@ import {
   Grid,
   GridProps,
 } from "@chakra-ui/react"
-import Header from "components/Header"
 import { Sidebar } from "components/Sidebar"
+
+import { SiteViewHeader } from "./SiteViewHeader"
 
 const GRID_LAYOUT: Pick<
   GridProps,
@@ -16,7 +17,7 @@ const GRID_LAYOUT: Pick<
   gridTemplateAreas: `"header header" 
                       "sidebar content"`,
   gridTemplateColumns: "15rem 1fr",
-  gridTemplateRows: "5rem 1fr",
+  gridTemplateRows: "4rem 1fr",
 }
 
 /**
@@ -30,15 +31,22 @@ export const SiteViewLayout = ({
   return (
     <>
       <Grid {...GRID_LAYOUT}>
-        <GridItem area="header">
-          <Header />
+        <GridItem
+          area="header"
+          alignSelf="flex-start"
+          position="sticky"
+          top={0}
+          zIndex="sticky"
+        >
+          <SiteViewHeader />
         </GridItem>
         {/* main bottom section */}
         <GridItem
           area="sidebar"
           alignSelf="flex-start"
           position="sticky"
-          top={0}
+          // NOTE: Offset for header height
+          top="4rem"
         >
           <Sidebar />
         </GridItem>
