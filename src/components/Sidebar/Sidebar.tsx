@@ -24,16 +24,55 @@ import {
   BiImage,
   BiLogOutCircle,
 } from "react-icons/bi"
-import { useParams } from "react-router-dom"
+import { useParams, Link as RouterLink, useLocation } from "react-router-dom"
 
-import { useLastUpdated } from "../../hooks/useLastUpdated"
+import { useLastUpdated } from "hooks/useLastUpdated"
+
+type TabSection = "workspace" | "resourceRoom" | "images" | "files" | "settings"
+
+// NOTE: This is a workaround. We should have a context set up and let this all be within 1 page
+// rather than using URL params
+const getSelectedTab = (url: string[]): TabSection => {
+  const mainSection = url[2]
+  if (
+    mainSection === "workspace" ||
+    mainSection === "resourceRoom" ||
+    mainSection === "settings"
+  ) {
+    return mainSection
+  }
+
+  return url[3] as TabSection
+}
+
+const getTabIndex = (section: TabSection) => {
+  switch (section) {
+    case "workspace":
+      return 0
+    case "resourceRoom":
+      return 1
+    case "images":
+      return 2
+    case "files":
+      return 3
+    case "settings":
+      return 4
+    default: {
+      const exception: never = section
+      throw new Error(exception)
+    }
+  }
+}
 
 export const Sidebar = (): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
+  const { pathname } = useLocation<{ pathname: string }>()
   const { lastUpdated, isError, isLoading } = useLastUpdated(siteName)
+  // NOTE: As this is a sub-path, there's a leading / which is converted into an empty string
+  const selectedTab = getSelectedTab(pathname.split("/").filter(Boolean))
 
   return (
-    <Flex w="15rem" bg="white" h="100vh" position="sticky" flexDir="column">
+    <Flex bg="white" h="100vh" flexDir="column" w="15rem">
       <Box p="1.5rem">
         <VStack align="flex-start" spacing="0.5rem">
           <Text
@@ -52,7 +91,12 @@ export const Sidebar = (): JSX.Element => {
         </VStack>
       </Box>
       <Divider color="secondary.100" />
-      <Tabs orientation="vertical" variant="line-vertical">
+      <Tabs
+        orientation="vertical"
+        variant="line-vertical"
+        // NOTE: This is a workaround as routes don't play well with tabs
+        defaultIndex={getTabIndex(selectedTab)}
+      >
         <TabList
           w="100%"
           // NOTE: There's a 2px box-shadow applied on focus.
@@ -62,19 +106,39 @@ export const Sidebar = (): JSX.Element => {
           pb="2px"
           paddingInlineEnd="2px"
         >
-          <Tab>
+          <Tab
+            as={RouterLink}
+            to={`/sites/${siteName}/workspace`}
+            isSelected={selectedTab === "workspace"}
+          >
             <TabLabel icon={BiCubeAlt}>My Workspace</TabLabel>
           </Tab>
-          <Tab>
+          <Tab
+            as={RouterLink}
+            to={`/sites/${siteName}/resourceRoom`}
+            isSelected={selectedTab === "resourceRoom"}
+          >
             <TabLabel icon={BiGridAlt}>Resources</TabLabel>
           </Tab>
-          <Tab>
+          <Tab
+            as={RouterLink}
+            to={`/sites/${siteName}/media/images/mediaDirectory/images`}
+            isSelected={selectedTab === "images"}
+          >
             <TabLabel icon={BiImage}>Images</TabLabel>
           </Tab>
-          <Tab>
+          <Tab
+            as={RouterLink}
+            to={`/sites/${siteName}/media/files/mediaDirectory/files`}
+            isSelected={selectedTab === "files"}
+          >
             <TabLabel icon={BiFile}>Files</TabLabel>
           </Tab>
-          <Tab>
+          <Tab
+            as={RouterLink}
+            to={`/sites/${siteName}/settings`}
+            isSelected={selectedTab === "settings"}
+          >
             <TabLabel icon={BiCog}>Site Settings</TabLabel>
           </Tab>
         </TabList>
