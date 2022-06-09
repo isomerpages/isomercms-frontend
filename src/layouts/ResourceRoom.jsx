@@ -7,7 +7,7 @@ import FormError from "components/Form/FormError"
 import FormField from "components/FormField"
 import Header from "components/Header"
 import { LoadingButton } from "components/LoadingButton"
-import Sidebar from "components/Sidebar"
+import { Sidebar } from "components/Sidebar"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import { useForm } from "react-hook-form"
@@ -86,7 +86,7 @@ const EmptyResourceRoom = ({ params }) => {
   )
 }
 
-const ResourceRoom = ({ match, location }) => {
+const ResourceRoom = ({ match }) => {
   const { params, decodedParams } = match
   const { siteName, resourceRoomName } = params
   const {
@@ -116,7 +116,7 @@ const ResourceRoom = ({ match, location }) => {
           <Header siteName={siteName} />
           {/* main bottom section */}
           <div className={elementStyles.wrapper}>
-            <Sidebar siteName={siteName} currPath={location.pathname} />
+            <Sidebar />
             {/* main section starts here */}
             <div className={contentStyles.mainSection}>
               {/* Page title */}
