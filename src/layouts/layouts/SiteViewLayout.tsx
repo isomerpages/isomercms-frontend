@@ -1,7 +1,7 @@
 import {
   VStack,
   StackDivider,
-  BoxProps,
+  StackProps,
   GridItem,
   Grid,
   GridProps,
@@ -26,7 +26,7 @@ const GRID_LAYOUT: Pick<
 export const SiteViewLayout = ({
   children,
   ...rest
-}: BoxProps): JSX.Element => {
+}: StackProps): JSX.Element => {
   return (
     <>
       <Grid {...GRID_LAYOUT}>
