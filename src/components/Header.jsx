@@ -5,6 +5,9 @@ import GenericWarningModal from "components/GenericWarningModal"
 import PropTypes from "prop-types"
 import { useState, useEffect } from "react"
 
+import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
+
+import { useLocalStorage } from "hooks/useLocalStorage"
 import useRedirectHook from "hooks/useRedirectHook"
 import useSiteUrlHook from "hooks/useSiteUrlHook"
 
@@ -14,9 +17,6 @@ import { getBackButton } from "utils"
 
 // axios settings
 axios.defaults.withCredentials = true
-
-// constants
-const userIdKey = "userId"
 
 const Header = ({
   siteName,
@@ -30,6 +30,7 @@ const Header = ({
 }) => {
   const { setRedirectToLogout, setRedirectToPage } = useRedirectHook()
   const { retrieveStagingUrl } = useSiteUrlHook()
+  const [userId] = useLocalStorage(LOCAL_STORAGE_KEYS.GithubId)
 
   const [showBackNavWarningModal, setShowBackNavWarningModal] = useState(false)
   const [showStagingWarningModal, setShowStagingWarningModal] = useState(false)
@@ -128,7 +129,7 @@ const Header = ({
         ) : (
           <>
             <div className={`${elementStyles.info} mr-3`}>
-              Logged in as @{localStorage.getItem(userIdKey)}
+              Logged in as @{userId}
             </div>
             <Button onClick={setRedirectToLogout}>Log Out</Button>
           </>
