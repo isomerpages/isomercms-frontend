@@ -1,7 +1,23 @@
-import { Box, Flex, VStack, StackDivider, BoxProps } from "@chakra-ui/react"
+import {
+  VStack,
+  StackDivider,
+  BoxProps,
+  GridItem,
+  Grid,
+  GridProps,
+} from "@chakra-ui/react"
 import Header from "components/Header"
 import { Sidebar } from "components/Sidebar"
-import { useLocation, useRouteMatch } from "react-router-dom"
+
+const GRID_LAYOUT: Pick<
+  GridProps,
+  "gridTemplateAreas" | "gridTemplateRows" | "gridTemplateColumns"
+> = {
+  gridTemplateAreas: `"header header" 
+                      "sidebar content"`,
+  gridTemplateColumns: "15rem 1fr",
+  gridTemplateRows: "5rem 1fr",
+}
 
 /**
  * @precondition This component MUST only be used when there is a sitename. \
@@ -11,28 +27,35 @@ export const SiteViewLayout = ({
   children,
   ...rest
 }: BoxProps): JSX.Element => {
-  const {
-    params: { siteName },
-  } = useRouteMatch<{ siteName: string }>()
-  const { pathname } = useLocation()
-
   return (
-    <Box {...rest}>
-      <Header siteName={siteName} />
-      {/* main bottom section */}
-      <Flex>
-        <Sidebar />
-        <VStack
+    <>
+      <Grid {...GRID_LAYOUT}>
+        <GridItem area="header">
+          <Header />
+        </GridItem>
+        {/* main bottom section */}
+        <GridItem
+          area="sidebar"
+          alignSelf="flex-start"
+          position="sticky"
+          top={0}
+        >
+          <Sidebar />
+        </GridItem>
+        <GridItem
+          area="content"
+          as={VStack}
           p="2rem"
           spacing="2rem"
           bgColor="gray.50"
           w="100%"
+          h="100%"
           divider={<StackDivider borderColor="border.divider.alt" />}
+          {...rest}
         >
-          {/* main section ends here */}
           {children}
-        </VStack>
-      </Flex>
-    </Box>
+        </GridItem>
+      </Grid>
+    </>
   )
 }
