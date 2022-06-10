@@ -36,7 +36,7 @@ export const SettingsFormFieldMedia = forwardRef<FormFieldMediaProps, "input">(
 
     return (
       <>
-        <Flex>
+        <Flex w="100%">
           <Input
             isDisabled
             borderRightRadius={0}
