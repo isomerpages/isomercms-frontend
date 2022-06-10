@@ -45,22 +45,15 @@ export const GeneralSettings = ({
         <FormControl isDisabled={isError}>
           <Flex justifyContent="space-between" w="100%">
             <FormLabel>Display government masthead</FormLabel>
-            {/* NOTE: This should be toggle from design system but the component is broken and doesn't display a slider */}
-            <Switch
-              colorScheme="primary"
-              id="is_government"
-              {...register("displayGovMasthead")}
-            />
+            {/* NOTE: This should be toggle from design system 
+                but the component is broken and doesn't display a slider */}
+            <Switch colorScheme="primary" {...register("displayGovMasthead")} />
           </Flex>
         </FormControl>
         <FormControl isDisabled={isError} isRequired>
           <VStack spacing="0.75rem" align="flex-start" w="100%">
             <FormTitle>Shareicon</FormTitle>
-            <SettingsFormFieldMedia
-              {...register("shareicon", { required: false, disabled: true })}
-              name="shareicon"
-              isDisabled={isError}
-            />
+            <SettingsFormFieldMedia name="shareicon" isDisabled={isError} />
           </VStack>
         </FormControl>
       </VStack>

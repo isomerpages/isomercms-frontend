@@ -11,7 +11,7 @@ import MediaModal from "components/media/MediaModal"
 import { useFormContext } from "react-hook-form"
 import { BiUpload } from "react-icons/bi"
 
-interface FormFieldMediaProps extends InputProps {
+interface FormFieldMediaProps extends Omit<InputProps, "onChange"> {
   name: string
 }
 
@@ -38,7 +38,7 @@ export const SettingsFormFieldMedia = forwardRef<FormFieldMediaProps, "input">(
       <>
         <Flex w="100%">
           <Input
-            isDisabled
+            disabled
             borderRightRadius={0}
             value={selectedMedia}
             {...props}
