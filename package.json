@@ -124,6 +124,7 @@
     "@testing-library/react": "^11.2.6",
     "@tsconfig/recommended": "^1.0.1",
     "@types/invariant": "^2.2.35",
+    "@types/react-color": "^3.0.6",
     "@types/react-router-dom": "^5.3.3",
     "@types/turndown": "^5.0.1",
     "auto-changelog": "^2.4.0",
