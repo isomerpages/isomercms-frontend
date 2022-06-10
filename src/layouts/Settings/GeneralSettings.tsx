@@ -54,12 +54,14 @@ export const GeneralSettings = ({
           </Flex>
         </FormControl>
         <FormControl isDisabled={isError} isRequired>
-          <FormTitle>Shareicon</FormTitle>
-          <SettingsFormFieldMedia
-            {...register("shareicon", { required: false, disabled: true })}
-            name="shareicon"
-            isDisabled={isError}
-          />
+          <VStack spacing="0.75rem" align="flex-start" w="100%">
+            <FormTitle>Shareicon</FormTitle>
+            <SettingsFormFieldMedia
+              {...register("shareicon", { required: false, disabled: true })}
+              name="shareicon"
+              isDisabled={isError}
+            />
+          </VStack>
         </FormControl>
       </VStack>
     </Section>
