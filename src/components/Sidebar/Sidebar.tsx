@@ -82,7 +82,14 @@ export const Sidebar = (): JSX.Element => {
   const selectedTab = getSelectedTab(pathname.split("/").filter(Boolean))
   return (
     // NOTE: This is because we reserve height for the header (4rem)
-    <Flex bg="white" h="calc(100vh - 4rem)" flexDir="column" w="15rem">
+    <Flex
+      bg="white"
+      h="calc(100vh - 4rem)"
+      flexDir="column"
+      w="15rem"
+      borderRight="1px solid"
+      borderColor="border.divider.alt"
+    >
       <Box p="1.5rem">
         <VStack align="flex-start" spacing="0.5rem">
           <Text
