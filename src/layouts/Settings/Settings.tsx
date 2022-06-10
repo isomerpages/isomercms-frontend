@@ -16,6 +16,7 @@ import { SiteViewLayout } from "../layouts"
 
 import { GeneralSettings } from "./GeneralSettings"
 import { LogoSettings } from "./LogoSettings"
+import { SocialMediaSettings } from "./SocialMediaSettings"
 
 export const Settings = (): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
@@ -74,6 +75,7 @@ interface SettingsFormProps {
 
 const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
   const methods = useForm({
+    mode: "onTouched",
     defaultValues: settings,
   })
   const { siteName } = useParams<{ siteName: string }>()
@@ -126,6 +128,7 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
           >
             <GeneralSettings isError={isError} />
             <LogoSettings isError={isError} />
+            <SocialMediaSettings isError={isError} />
             <Button type="submit" isLoading={isLoading}>
               Save
             </Button>
