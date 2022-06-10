@@ -20,21 +20,13 @@ export const LogoSettings = ({ isError }: LogoSettingsProp): JSX.Element => {
         <FormControl isDisabled={isError} isRequired>
           <VStack spacing="0.75rem" align="flex-start" w="100%">
             <FormTitle>Agency logo</FormTitle>
-            <SettingsFormFieldMedia
-              {...register("agencyLogo", { required: false, disabled: true })}
-              name="agencyLogo"
-              isDisabled={isError}
-            />
+            <SettingsFormFieldMedia name="agencyLogo" isDisabled={isError} />
           </VStack>
         </FormControl>
         <FormControl isDisabled={isError} isRequired>
           <VStack spacing="0.75rem" align="flex-start" w="100%">
             <FormTitle>Favicon</FormTitle>
-            <SettingsFormFieldMedia
-              {...register("favicon", { required: false, disabled: true })}
-              name="favicon"
-              isDisabled={isError}
-            />
+            <SettingsFormFieldMedia name="favicon" isDisabled={isError} />
           </VStack>
         </FormControl>
       </VStack>
