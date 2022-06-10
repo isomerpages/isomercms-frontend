@@ -14,7 +14,7 @@ export const FooterSettings = ({
 }: FooterSettingsProp): JSX.Element => {
   const { register } = useFormContext()
   return (
-    <Section id="general-fields">
+    <Section id="footer-fields">
       <SectionHeader label="Footer" />
       <VStack spacing="1.5rem" align="flex-start" w="50%">
         {["contact", "feedback", "faq"].map((label) => {
