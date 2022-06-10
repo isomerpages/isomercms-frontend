@@ -101,8 +101,6 @@ const convertfromBe = (backendSettings: BackendSiteSettings): SiteSettings => {
     "socialMediaContent" | "colours" | "showReach" | "displayGovMasthead"
   >
 
-  console.log("BE DATA ", backendSettings)
-
   return {
     ...remainingWithDefault,
     ...toggledValues,

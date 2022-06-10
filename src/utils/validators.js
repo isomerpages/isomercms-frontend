@@ -12,8 +12,8 @@ import {
 // Common regexes and constants
 // ==============
 const PERMALINK_REGEX = "^((/([a-zA-Z0-9]+-)*[a-zA-Z0-9]+)+)/?$"
-const URL_REGEX_PART_1 = "^(https://)?(www.)?("
-const URL_REGEX_PART_2 = ".com/)([a-zA-Z0-9_-]+([/.])?)+$"
+export const URL_REGEX_PREFIX = "^(https://)?(www.)?("
+export const URL_REGEX_SUFFIX = ".com/)([a-zA-Z0-9_-]+([/.])?)+$"
 const TELEGRAM_REGEX = "telegram|t).me/([a-zA-Z0-9_-]+([/.])?)+$"
 const TIKTOK_REGEX = ".com/@)([a-zA-Z0-9_-]+([/.])?)+$"
 const PHONE_REGEX = "^\\+65(6|8|9)[0-9]{7}$"
@@ -923,12 +923,13 @@ const validateResourceRoomName = (value) => {
 // ===================
 const validateSocialMedia = (value, id) => {
   let errorMessage = ""
+  // lower-cased of social media
   const socialMediaRegexTest = RegExp(
-    `${URL_REGEX_PART_1}${id}${URL_REGEX_PART_2}`
+    `${URL_REGEX_PREFIX}${id}${URL_REGEX_SUFFIX}`
   )
 
-  const telegramRegexTest = RegExp(`${URL_REGEX_PART_1}${TELEGRAM_REGEX}`)
-  const tiktokRegexTest = RegExp(`${URL_REGEX_PART_1}${id}${TIKTOK_REGEX}`)
+  const telegramRegexTest = RegExp(`${URL_REGEX_PREFIX}${TELEGRAM_REGEX}`)
+  const tiktokRegexTest = RegExp(`${URL_REGEX_PREFIX}${id}${TIKTOK_REGEX}`)
 
   const customRegex = {
     telegram: telegramRegexTest,
