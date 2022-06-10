@@ -47,8 +47,6 @@ const convertfromFe = ({
     (_value, key) => FE_TO_BE[key]
   )
 
-  console.log("RENAMED", renamedBasicSettings)
-
   return {
     ...renamedBasicSettings,
     social_media: socialMediaContent,
