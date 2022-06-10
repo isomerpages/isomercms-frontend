@@ -5,10 +5,11 @@ import {
   Skeleton,
   StackDivider,
   Flex,
+  FlexProps,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import _ from "lodash"
-import { useEffect, useLayoutEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 import { useParams } from "react-router-dom"
 
@@ -23,6 +24,7 @@ import { Section } from "../components"
 import { SiteViewLayout } from "../layouts"
 
 import { AnalyticsSettings } from "./AnalyticsSettings"
+import { ColourSettings } from "./ColourSettings"
 import { FooterSettings } from "./FooterSettings"
 import { GeneralSettings } from "./GeneralSettings"
 import { LogoSettings } from "./LogoSettings"
@@ -47,9 +49,6 @@ export const Settings = (): JSX.Element => {
     }
   }, [errorToast, isGetSettingsError])
 
-  // just handles the state and splits it for the children
-  // will do skeleton when prior to load
-  // on fail, present a toast and set disabled for all forms to lock editing
   return (
     <SiteViewLayout align="flex-start">
       <Section>
@@ -79,10 +78,6 @@ interface SettingsFormProps {
   isError: boolean
 }
 
-// probably want a settings context to store state
-// original data
-// whether it's disabled
-
 const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
   const { siteName } = useParams<{ siteName: string }>()
   // NOTE: Use a ref to persist the initial value between renders
@@ -104,7 +99,7 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
   const onSubmit = (data: SiteSettings) => {
     updateSettings(data)
   }
-  const { formState, reset } = methods
+  const { formState, reset, getValues } = methods
 
   // NOTE: Because the default values are cached, we need to reset whenever they change
   useEffect(() => {
@@ -112,8 +107,15 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
   }, [reset, formState.dirtyFields, settings])
 
   // Warn on sync mutation on dirty (edited) field
-  useLayoutEffect(() => {
-    const hasDiff = !_.isEqual(settings, initialSettings.current)
+  // this warning should only show for dirty fields
+  useEffect(() => {
+    const { dirtyFields } = formState
+    const dirtyFieldKeys = _.keys(dirtyFields)
+    const hasDiff = !_.isEqual(
+      _.pick(settings, dirtyFieldKeys),
+      _.pick(initialSettings.current, dirtyFieldKeys)
+    )
+
     if (hasDiff) {
       errorToast({
         title: "Error",
@@ -121,17 +123,19 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
           "Your site settings have recently been changed by another user. You can choose to either override their changes, or go back to editing. We recommend you to make a copy of your changes elsewhere, and come back later to reconcile your changes.",
       })
     }
-  }, [errorToast, settings])
+  }, [errorToast, settings, formState.dirtyFields, formState])
 
   // Reset cache on success
   useEffect(() => {
     if (isSuccess) {
-      reset()
+      // Update to the new form state
+      initialSettings.current = getValues()
+      reset(settings)
     }
-  }, [isSuccess, reset])
+  }, [isSuccess, getValues, reset, settings])
 
   // Trigger an error toast informing the user if settings data could not be updated
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (updateSettingsError) {
       const errorMessage =
         updateSettingsError?.response?.status === 409
@@ -145,7 +149,7 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
   }, [errorToast, updateSettingsError])
 
   // Trigger a success toast informing the user if settings data was updated successfully
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (isSuccess) {
       successToast({
         title: "Success!",
@@ -165,30 +169,38 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
           >
             <GeneralSettings isError={isError} />
             <LogoSettings isError={isError} />
+            <ColourSettings isError={isError} />
             <SocialMediaSettings isError={isError} />
             <FooterSettings isError={isError} />
             <AnalyticsSettings isError={isError} />
-            <Flex
-              justify="flex-end"
-              px="2rem"
-              py="0.625rem"
-              bg="white"
-              w="calc(100% + 4rem)"
-              left={0}
-              position="sticky"
-              bottom={0}
-              borderTop="1px solid"
-              borderColor="border.divider.alt"
-              ml="-2rem"
-              mb="-2rem"
-            >
+            <SettingsFooter>
               <Button type="submit" isLoading={isLoading}>
                 Save
               </Button>
-            </Flex>
+            </SettingsFooter>
           </VStack>
         </form>
       </FormProvider>
     </Box>
+  )
+}
+
+const SettingsFooter = (props: FlexProps) => {
+  return (
+    <Flex
+      justify="flex-end"
+      px="2rem"
+      py="0.625rem"
+      bg="white"
+      w="calc(100% + 4rem)"
+      left={0}
+      position="sticky"
+      bottom={0}
+      borderTop="1px solid"
+      borderColor="border.divider.alt"
+      ml="-2rem"
+      mb="-2rem"
+      {...props}
+    />
   )
 }
