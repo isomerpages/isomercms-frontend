@@ -19,7 +19,7 @@ export const SocialMediaSettings = ({
   isError,
 }: SocialMediaSettingsProp): JSX.Element => {
   return (
-    <Section id="general-fields">
+    <Section id="social-media-fields">
       <SectionHeader label="Social Media" />
       <VStack spacing="1.5rem" align="flex-start" w="50%">
         {[

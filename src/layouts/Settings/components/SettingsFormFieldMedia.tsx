@@ -23,7 +23,7 @@ export const SettingsFormFieldMedia = forwardRef<FormFieldMediaProps, "input">(
   ({ name, ...props }: FormFieldMediaProps, ref): JSX.Element => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const { setValue, getValues } = useFormContext()
-    const selectedMedia = getValues(name) as string
+    const selectedMedia: string = getValues(name)
 
     const onMediaSave = ({
       selectedMediaPath,

@@ -13,7 +13,7 @@ export const AnalyticsSettings = ({
 }: AnalyticsSettingsProp): JSX.Element => {
   const { register } = useFormContext()
   return (
-    <Section id="general-fields">
+    <Section id="analytics-fields">
       <SectionHeader label="Analytics" />
       <VStack spacing="1.5rem" align="flex-start" w="50%">
         <FormControl isDisabled={isError}>
