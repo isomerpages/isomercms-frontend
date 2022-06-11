@@ -13,6 +13,7 @@ export const FooterSettings = ({
   isError,
 }: FooterSettingsProp): JSX.Element => {
   const { register } = useFormContext()
+
   return (
     <Section id="footer-fields">
       <SectionHeader label="Footer" />
@@ -35,7 +36,7 @@ export const FooterSettings = ({
             <FormLabel>Show REACH</FormLabel>
             {/* NOTE: This should be toggle from design system but the component is 
                 broken and doesn't display a slider */}
-            <Switch colorScheme="primary" {...register("showReach")} />
+            <Switch {...register("showReach")} />
           </Flex>
         </FormControl>
       </VStack>

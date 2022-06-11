@@ -74,7 +74,6 @@ export const Settings = (): JSX.Element => {
 
 interface SettingsFormProps {
   settings: SiteSettings
-
   isError: boolean
 }
 
@@ -87,6 +86,8 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
     mode: "onTouched",
     defaultValues: settings,
   })
+  const { formState, reset, getValues } = methods
+  const { dirtyFields } = formState
   const successToast = useSuccessToast()
   const {
     mutateAsync: updateSettings,
@@ -95,21 +96,18 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
     isSuccess,
   } = useUpdateSettings(siteName)
   const errorToast = useErrorToast()
-
   const onSubmit = (data: SiteSettings) => {
     updateSettings(data)
   }
-  const { formState, reset, getValues } = methods
 
   // NOTE: Because the default values are cached, we need to reset whenever they change
   useEffect(() => {
     reset(settings, { keepDirtyValues: true, keepDirty: true })
-  }, [reset, formState.dirtyFields, settings])
+  }, [reset, dirtyFields, settings])
 
   // Warn on sync mutation on dirty (edited) field
   // this warning should only show for dirty fields
   useEffect(() => {
-    const { dirtyFields } = formState
     const dirtyFieldKeys = _.keys(dirtyFields)
     const hasDiff = !_.isEqual(
       _.pick(settings, dirtyFieldKeys),
@@ -123,7 +121,7 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
           "Your site settings have recently been changed by another user. You can choose to either override their changes, or go back to editing. We recommend you to make a copy of your changes elsewhere, and come back later to reconcile your changes.",
       })
     }
-  }, [errorToast, settings, formState.dirtyFields, formState])
+  }, [errorToast, settings, dirtyFields])
 
   // Reset cache on success
   useEffect(() => {

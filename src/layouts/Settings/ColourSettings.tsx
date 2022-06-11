@@ -39,7 +39,7 @@ export const ColourSettings = ({
   return (
     <Section id="colour-fields">
       <SectionHeader label="Colours" />
-      <VStack spacing="1.5rem" align="flex-start" w="50%">
+      <VStack spacing="1rem" align="flex-start" w="50%">
         <FormColourPicker
           {...register("primaryColour")}
           label="Primary"
@@ -100,7 +100,7 @@ const FormColourPicker = forwardRef<FormColourPickerProps, "input">(
     return (
       <>
         <HStack justify="flex-start" w="100%" spacing="2rem">
-          <FormLabel>{upperFirst(label)}</FormLabel>
+          <FormLabel w="25%">{upperFirst(label)}</FormLabel>
           <Flex>
             <Input
               disabled
