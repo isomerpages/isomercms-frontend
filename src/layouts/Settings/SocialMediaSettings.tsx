@@ -6,10 +6,28 @@ import {
 } from "@opengovsg/design-system-react"
 import { upperFirst } from "lodash"
 import { useFormContext, useFormState } from "react-hook-form"
+import type { StringKeyOf } from "type-fest"
 
 import { Section, SectionHeader } from "layouts/components"
 
-import { URL_REGEX_PREFIX, URL_REGEX_SUFFIX } from "utils/validators"
+import {
+  URL_REGEX_PREFIX,
+  URL_REGEX_SUFFIX,
+  TIKTOK_REGEX,
+  TELEGRAM_REGEX,
+} from "utils/validators"
+
+import { SiteSettings } from "types/settings"
+
+const SOCIAL_MEDIA_LABELS: StringKeyOf<SiteSettings["socialMediaContent"]>[] = [
+  "facebook",
+  "twitter",
+  "youtube",
+  "instagram",
+  "linkedin",
+  "telegram",
+  "tiktok",
+]
 
 interface SocialMediaSettingsProp {
   isError: boolean
@@ -22,15 +40,7 @@ export const SocialMediaSettings = ({
     <Section id="social-media-fields">
       <SectionHeader label="Social Media" />
       <VStack spacing="1.5rem" align="flex-start" w="50%">
-        {[
-          "facebook",
-          "twitter",
-          "youtube",
-          "instagram",
-          "linkedin",
-          "telegram",
-          "tiktok",
-        ].map((label) => (
+        {SOCIAL_MEDIA_LABELS.map((label) => (
           <ValidatedFormInput label={label} isError={isError} />
         ))}
       </VStack>
@@ -38,7 +48,7 @@ export const SocialMediaSettings = ({
   )
 }
 interface ValidatedFormInputProps {
-  label: string
+  label: StringKeyOf<SiteSettings["socialMediaContent"]>
   isError: boolean
 }
 
@@ -57,7 +67,7 @@ const ValidatedFormInput = ({ label, isError }: ValidatedFormInputProps) => {
         w="100%"
         id="title"
         {...register(`socialMediaContent.${label}`, {
-          pattern: RegExp(`${URL_REGEX_PREFIX}${label}${URL_REGEX_SUFFIX}`),
+          pattern: getRegExp(label),
         })}
       />
       <FormErrorMessage>
@@ -65,4 +75,17 @@ const ValidatedFormInput = ({ label, isError }: ValidatedFormInputProps) => {
       </FormErrorMessage>
     </FormControl>
   )
+}
+
+const getRegExp = (
+  label: StringKeyOf<SiteSettings["socialMediaContent"]>
+): RegExp => {
+  switch (label) {
+    case "telegram":
+      return RegExp(`${URL_REGEX_PREFIX}${TELEGRAM_REGEX}`)
+    case "tiktok":
+      return RegExp(`${URL_REGEX_PREFIX}${label}${TIKTOK_REGEX}`)
+    default:
+      return RegExp(`${URL_REGEX_PREFIX}${label}${URL_REGEX_SUFFIX}`)
+  }
 }
