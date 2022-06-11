@@ -15,6 +15,7 @@ export const GeneralSettings = ({
   isError,
 }: GeneralSettingsProp): JSX.Element => {
   const { register } = useFormContext()
+
   return (
     <Section id="general-fields">
       <SectionHeader label="General" />
@@ -47,7 +48,7 @@ export const GeneralSettings = ({
             <FormLabel>Display government masthead</FormLabel>
             {/* NOTE: This should be toggle from design system 
                 but the component is broken and doesn't display a slider */}
-            <Switch colorScheme="primary" {...register("displayGovMasthead")} />
+            <Switch {...register("displayGovMasthead")} />
           </Flex>
         </FormControl>
         <FormControl isDisabled={isError} isRequired>
