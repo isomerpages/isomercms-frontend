@@ -1,42 +1,26 @@
-import { HStack } from "@chakra-ui/react"
-import { Button } from "@opengovsg/design-system-react"
-import { MouseEventHandler } from "react"
-
-import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
+import { HStack, Flex } from "@chakra-ui/react"
 
 export interface FooterProps {
-  keyCallback: MouseEventHandler<HTMLButtonElement>
-  isKeyButtonDisabled: boolean
-  keyButtonIsLoading: boolean
-  optionalButtonText: string
-  optionalCallback?: MouseEventHandler<HTMLButtonElement>
+  children: JSX.Element
 }
 
-const Footer = ({
-  keyCallback,
-  isKeyButtonDisabled = false,
-  keyButtonIsLoading = false,
-  optionalButtonText = "Cancel",
-  optionalCallback,
-}: FooterProps): JSX.Element => (
-  <div className={editorStyles.pageEditorFooter}>
+const Footer = ({ children }: FooterProps): JSX.Element => (
+  <Flex
+    h="80px"
+    w="100%"
+    pr="30px"
+    position="fixed"
+    background="background.action.defaultInverse"
+    border="1px"
+    borderColor="border.divider.alt"
+    justify="end"
+    align="center"
+    bottom="0"
+  >
     <HStack>
-      {optionalCallback && (
-        <Button variant="clear" onClick={optionalCallback}>
-          {optionalButtonText}
-        </Button>
-      )}
-      {keyCallback && (
-        <Button
-          isDisabled={isKeyButtonDisabled}
-          onClick={keyCallback}
-          isLoading={keyButtonIsLoading}
-        >
-          Save
-        </Button>
-      )}
+      <>{children}</>
     </HStack>
-  </div>
+  </Flex>
 )
 
 export default Footer
