@@ -2,6 +2,7 @@
 import { useDisclosure, Text } from "@chakra-ui/react"
 import { Button, Input } from "@opengovsg/design-system-react"
 import axios from "axios"
+import Footer from "components/Footer"
 import Header from "components/Header"
 import EditorHeroSection from "components/homepage/HeroSection"
 import EditorInfobarSection from "components/homepage/InfobarSection"
@@ -1562,11 +1563,11 @@ const EditHomepage = ({ match }) => {
               </>
             ))}
           </div>
-          <div className={editorStyles.pageEditorFooter}>
+          <Footer>
             <LoadingButton isDisabled={hasErrors} onClick={savePage}>
               Save
             </LoadingButton>
-          </div>
+          </Footer>
         </div>
       )}
     </>

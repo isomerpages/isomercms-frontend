@@ -1,6 +1,8 @@
-import { HStack, useDisclosure, Box, Text } from "@chakra-ui/react"
+import { useDisclosure, Box, Text } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
+import Footer from "components/Footer"
 import Header from "components/Header"
+import { LoadingButton } from "components/LoadingButton"
 import NavSection from "components/navbar/NavSection"
 import { WarningModal } from "components/WarningModal"
 import update from "immutability-helper"
@@ -722,25 +724,23 @@ const EditNavBar = ({ match }) => {
               resources={resources}
             />
           </div>
-          <div className={editorStyles.pageEditorFooter}>
-            <HStack w="100%" justify="flex-end">
-              {!isEmpty(deletedLinks) && (
-                <Button
-                  ml="auto"
-                  variant="clear"
-                  onClick={onRemovedContentWarningOpen}
-                >
-                  See removed content
-                </Button>
-              )}
+          <Footer>
+            {!isEmpty(deletedLinks) && (
               <Button
-                isDisabled={hasErrors()}
-                onClick={() => saveNavData(siteName, originalNav, links, sha)}
+                ml="auto"
+                variant="clear"
+                onClick={onRemovedContentWarningOpen}
               >
-                Save
+                See removed content
               </Button>
-            </HStack>
-          </div>
+            )}
+            <LoadingButton
+              isDisabled={hasErrors()}
+              onClick={() => saveNavData(siteName, originalNav, links, sha)}
+            >
+              Save
+            </LoadingButton>
+          </Footer>
         </div>
       )}
     </>

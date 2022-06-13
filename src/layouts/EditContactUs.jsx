@@ -1,8 +1,9 @@
 // TODO: Clean up formatting, semi-colons, PropTypes etc
-import { HStack, Box, Text, Code, useDisclosure } from "@chakra-ui/react"
+import { Box, Text, Code, useDisclosure } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
 import EditorSection from "components/contact-us/Section"
+import Footer from "components/Footer"
 import FormContext from "components/Form/FormContext"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
@@ -956,26 +957,20 @@ const EditContactUs = ({ match }) => {
               </div>
             </section>
           </div>
-          <div className={editorStyles.pageEditorFooter}>
-            <HStack w="100%" justify="flex-end">
-              {!isEmpty(deletedFrontMatter) && (
-                <LoadingButton
-                  ml="auto"
-                  variant="clear"
-                  onClick={onRemovedContentWarningOpen}
-                >
-                  See removed content
-                </LoadingButton>
-              )}
+          <Footer>
+            {!isEmpty(deletedFrontMatter) && (
               <LoadingButton
-                label="Save"
-                isDisabled={hasErrors()}
-                onClick={savePage}
+                ml="auto"
+                variant="clear"
+                onClick={onRemovedContentWarningOpen}
               >
-                Save
+                See removed content
               </LoadingButton>
-            </HStack>
-          </div>
+            )}
+            <LoadingButton isDisabled={hasErrors()} onClick={savePage}>
+              Save
+            </LoadingButton>
+          </Footer>
         </div>
       )}
     </>
