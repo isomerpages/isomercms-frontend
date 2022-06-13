@@ -254,22 +254,26 @@ const EditPage = ({ match }) => {
           dirData={dirData}
         />
       </div>
-      <Footer
-        isKeyButtonDisabled={isContentViolation}
-        keyCallback={() => {
-          if (isXSSViolation) onXSSWarningModalOpen()
-          else {
-            updatePageHandler({
-              pageData: {
-                frontMatter: pageData.content.frontMatter,
-                sha: currSha,
-                pageBody: editorValue,
-              },
-            })
-          }
-        }}
-        keyButtonIsLoading={isSavingPage}
-      />
+      <Footer>
+        <Button
+          isDisabled={isContentViolation}
+          onClick={() => {
+            if (isXSSViolation) setShowXSSWarning(true)
+            else {
+              updatePageHandler({
+                pageData: {
+                  frontMatter: pageData.content.frontMatter,
+                  sha: currSha,
+                  pageBody: editorValue,
+                },
+              })
+            }
+          }}
+          isLoading={isSavingPage}
+        >
+          Save
+        </Button>
+      </Footer>
     </>
   )
 }
