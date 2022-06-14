@@ -56,7 +56,7 @@ export const PageCard = ({
         <Card variant="single">
           <CardBody>
             <Icon as={BiFileBlank} fontSize="1.5rem" fill="icon.alt" />
-            <Text textStyle="subhead-1" color="text.label">
+            <Text textStyle="subhead-1" color="text.label" noOfLines={1}>
               {pageFileNameToTitle(title, !!resourceType)}
             </Text>
           </CardBody>
