@@ -96,7 +96,11 @@ const Folders = ({ match }: FoldersProps): JSX.Element => {
                 {canCreateFolder ? (
                   <MenuDropdownButton />
                 ) : (
-                  <Button variant="outline" as={RouterLink} to="createPage">
+                  <Button
+                    variant="outline"
+                    as={RouterLink}
+                    to={`${url}/createPage`}
+                  >
                     Create page
                   </Button>
                 )}
