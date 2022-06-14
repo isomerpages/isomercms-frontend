@@ -5,9 +5,9 @@ export const Footer = ({
   children,
 }: PropsWithChildren<Record<never, any>>): JSX.Element => (
   <Flex
-    h="80px"
+    h="5rem"
     w="100%"
-    pr="30px"
+    pr="2rem"
     position="fixed"
     background="background.action.defaultInverse"
     border="1px"
