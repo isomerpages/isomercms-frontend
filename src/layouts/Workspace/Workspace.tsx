@@ -20,7 +20,12 @@ import {
 
 import { ProtectedRouteWithProps } from "routing/RouteSelector"
 
-import { Section, SectionHeader, SectionCaption } from "../components"
+import {
+  Section,
+  SectionHeader,
+  SectionCaption,
+  CreateButton,
+} from "../components"
 import { SiteViewLayout } from "../layouts"
 
 import {
