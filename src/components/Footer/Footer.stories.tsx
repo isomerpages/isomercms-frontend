@@ -23,17 +23,17 @@ const SingleButtonFooterTemplate: Story<TemplateArgs> = ({
 }
 
 interface MultiButtonFooterTemplateArgs extends TemplateArgs {
-  button2Text: string
+  secondButtonText: string
 }
 const MultiButtonFooterTemplate: Story<MultiButtonFooterTemplateArgs> = ({
   buttonText,
-  button2Text,
+  secondButtonText,
 }: MultiButtonFooterTemplateArgs) => {
   return (
     <Footer>
       <>
         <Button>{buttonText}</Button>
-        <Button>{button2Text}</Button>
+        <Button>{secondButtonText}</Button>
       </>
     </Footer>
   )
@@ -46,7 +46,7 @@ SingleButtonFooter.args = {
 export const MultiButtonFooter = MultiButtonFooterTemplate.bind({})
 MultiButtonFooter.args = {
   buttonText: "Button 1",
-  button2Text: "Button 2",
+  secondButtonText: "Button 2",
 }
 
 export default footerMeta
