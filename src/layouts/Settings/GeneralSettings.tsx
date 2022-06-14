@@ -1,4 +1,4 @@
-import { VStack, FormControl, Flex, Switch } from "@chakra-ui/react"
+import { VStack, FormControl, Flex, Switch, Box } from "@chakra-ui/react"
 import { FormLabel, Input, Textarea } from "@opengovsg/design-system-react"
 import { FormTitle } from "components/Form"
 import { useFormContext } from "react-hook-form"
@@ -21,9 +21,12 @@ export const GeneralSettings = ({
       <SectionHeader label="General" />
       <VStack spacing="1.5rem" align="flex-start" w="50%">
         <FormControl isDisabled={isError}>
-          <FormLabel description="This is the text displayed in search results">
-            Site Title
-          </FormLabel>
+          <Box mb="0.75rem">
+            <FormLabel mb={0}>Site Title</FormLabel>
+            <FormLabel.Description color="text.description">
+              This is the text displayed in search results
+            </FormLabel.Description>
+          </Box>
           <Input
             w="100%"
             id="title"
@@ -32,9 +35,12 @@ export const GeneralSettings = ({
           />
         </FormControl>
         <FormControl isDisabled={isError}>
-          <FormLabel description="This description previews in search results">
-            Site Description
-          </FormLabel>
+          <Box mb="0.75rem">
+            <FormLabel mb={0}>Site Description</FormLabel>
+            <FormLabel.Description color="text.description">
+              This description previews in search results
+            </FormLabel.Description>
+          </Box>
           <Textarea
             w="100%"
             minH="9rem"
