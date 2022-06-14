@@ -1,10 +1,9 @@
 import { HStack, Flex } from "@chakra-ui/react"
+import { PropsWithChildren } from "react"
 
-export interface FooterProps {
-  children: JSX.Element
-}
-
-export const Footer = ({ children }: FooterProps): JSX.Element => (
+export const Footer = ({
+  children,
+}: PropsWithChildren<Record<never, any>>): JSX.Element => (
   <Flex
     h="80px"
     w="100%"
@@ -17,8 +16,6 @@ export const Footer = ({ children }: FooterProps): JSX.Element => (
     align="center"
     bottom="0"
   >
-    <HStack>
-      <>{children}</>
-    </HStack>
+    <HStack>{children}</HStack>
   </Flex>
 )
