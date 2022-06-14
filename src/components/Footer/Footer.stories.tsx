@@ -16,7 +16,6 @@ const SingleButtonFooterTemplate: Story<TemplateArgs> = ({
   buttonText,
 }: TemplateArgs) => {
   return (
-    // eslint-disable-next-line react/jsx-props-no-spreading
     <Footer>
       <Button>{buttonText}</Button>
     </Footer>
@@ -31,7 +30,6 @@ const MultiButtonFooterTemplate: Story<MultiButtonFooterTemplateArgs> = ({
   button2Text,
 }: MultiButtonFooterTemplateArgs) => {
   return (
-    // eslint-disable-next-line react/jsx-props-no-spreading
     <Footer>
       <>
         <Button>{buttonText}</Button>
