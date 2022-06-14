@@ -2,7 +2,7 @@ import _, { unionWith, zip } from "lodash"
 import { useQuery, UseQueryResult } from "react-query"
 import type { StringKeyOf } from "type-fest"
 
-import { settingsService } from "services/SettingsService"
+import * as SettingsService from "services/SettingsService"
 
 import {
   BackendSiteSettings,
@@ -125,7 +125,7 @@ export const useGetSettings = (
 ): UseQueryResult<SiteSettings> => {
   return useQuery<SiteSettings>(
     [SETTINGS_CONTENT_KEY, siteName],
-    () => settingsService.get({ siteName }).then(convertfromBe),
+    () => SettingsService.get({ siteName }).then(convertfromBe),
     {
       retry: false,
     }

@@ -2,7 +2,7 @@ import { AxiosError } from "axios"
 import _ from "lodash"
 import { useMutation, UseMutationResult, useQueryClient } from "react-query"
 
-import { settingsService } from "services/SettingsService"
+import * as SettingsService from "services/SettingsService"
 
 import {
   BackendSiteSettings,
@@ -27,7 +27,7 @@ export const useUpdateSettings = (
 ): UseMutationResult<void, AxiosError, SiteSettings> => {
   const queryClient = useQueryClient()
   return useMutation<void, AxiosError, SiteSettings>(
-    (body) => settingsService.update(siteName, convertfromFe(body)),
+    (body) => SettingsService.update(siteName, convertfromFe(body)),
     {
       onSettled: () => {
         queryClient.invalidateQueries([SETTINGS_CONTENT_KEY, siteName])
