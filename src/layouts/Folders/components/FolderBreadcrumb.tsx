@@ -39,26 +39,27 @@ export const FolderBreadcrumbs = (): JSX.Element => {
   return (
     <Breadcrumb spacing="2px" separator={<BiChevronRight color="text.body" />}>
       <BreadcrumbItem>
-        <BreadcrumbLink as={RouterLink} to={`/sites/${siteName}/workspace`}>
-          <Text textStyle="body-2" color="text.body">
-            My Workspace
-          </Text>
+        <BreadcrumbLink
+          textStyle="body-2"
+          color="text.body"
+          as={RouterLink}
+          to={`/sites/${siteName}/workspace`}
+        >
+          My Workspace
         </BreadcrumbLink>
       </BreadcrumbItem>
       {breadcrumbItems.map(({ name, to }, idx) => {
         const hasModifier = idx === breadcrumbItems.length - 1
         return (
           <BreadcrumbItem isLastChild={hasModifier} isCurrentPage={hasModifier}>
-            <BreadcrumbLink as={RouterLink} to={to}>
-              <Text
-                textStyle="body-2"
-                color="text.body"
-                // NOTE: If it's the last child (and the current page), the breadcrumb item
-                // should have an underline. Otherwise, default to chakra's underlying HTML element (p tag)
-                as={hasModifier ? "u" : "p"}
-              >
-                {deslugifyDirectory(name)}
-              </Text>
+            <BreadcrumbLink
+              textStyle="body-2"
+              color="text.body"
+              as={RouterLink}
+              to={to}
+              textDecoration={hasModifier ? "underline" : "inherit"}
+            >
+              {deslugifyDirectory(name)}
             </BreadcrumbLink>
           </BreadcrumbItem>
         )
