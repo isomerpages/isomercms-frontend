@@ -119,24 +119,6 @@
   width: 100%;
 }
 
-.contentContainerBoxes {
-  //this is used in the PageCard page
-  @include cardFormat;
-
-  .boxesContainer {
-    @include cardFormat;
-
-    .card {
-      width: $component-card-width;
-      box-sizing: border-box;
-      height: $component-card-height;
-      margin-right: $component-card-margin;
-      margin-bottom: $component-card-margin;
-      min-width: 250px;
-    }
-  }
-}
-
 .folderContainerBoxes {
   //this is used in the FolderCard page
   @include cardFormat;
