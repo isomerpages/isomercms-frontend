@@ -48,7 +48,7 @@ const PageCard = ({ item, itemIndex }) => {
       return `${url}/editPage/${encodedName}`
     }
     return `/sites/${siteName}/editPage/${encodedName}`
-  }, [resourceType, resourceRoomName, siteName, encodedName])
+  }, [resourceType, resourceRoomName, siteName, encodedName, url])
 
   return (
     <LinkBox

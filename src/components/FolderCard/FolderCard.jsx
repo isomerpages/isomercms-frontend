@@ -51,7 +51,7 @@ export const FolderCard = ({
       default:
         return ""
     }
-  }, [pageType, siteName, category])
+  }, [pageType, siteName, category, url])
 
   const generatedImage = useMemo(() => {
     switch (pageType) {
