@@ -17,6 +17,7 @@ import {
   DirectoryCreationScreen,
   DirectorySettingsScreen,
 } from "layouts/screens"
+import { isDirectoryData, isPageData } from "layouts/utils"
 
 import { ProtectedRouteWithProps } from "routing/RouteSelector"
 
@@ -34,57 +35,23 @@ import {
   NavigationCard,
   FolderCard,
   HomepageCard,
-  CreateButton,
 } from "./components"
 
 const CONTACT_US_TEMPLATE_LAYOUT = "contact_us"
 
-interface WorkspaceProps {
-  match: {
-    params: {
-      siteName: string
-    }
-  }
-  location: {
-    pathname: string
-  }
-}
-
-interface DirectoryData {
-  name: string
-}
-
-const isDirectoryData = (
-  possibleDir: unknown
-): possibleDir is DirectoryData => {
-  return !!(possibleDir as DirectoryData).name
-}
-
-interface PageData {
-  name: string
-  resourceType?: "file" | "post"
-}
-
-const isPageData = (possiblePage: unknown): possiblePage is PageData => {
-  const hasPermissibleResourceType =
-    (possiblePage as PageData).resourceType === "file" ||
-    (possiblePage as PageData).resourceType === "post" ||
-    !(possiblePage as PageData).resourceType
-
-  return !!(possiblePage as PageData).name && hasPermissibleResourceType
-}
-
-export const Workspace = ({ match, location }: WorkspaceProps): JSX.Element => {
-  const { siteName } = match.params
+const Workspace = (): JSX.Element => {
+  const {
+    params: { siteName },
+  } = useRouteMatch<{ siteName: string }>()
   const [contactUsCard, setContactUsCard] = useState<boolean | undefined>()
 
   const { setRedirectToPage } = useRedirectHook()
   const { path, url } = useRouteMatch()
   const history = useHistory()
 
-  const { data: _dirsData } = useGetDirectoryHook(match.params)
+  const { data: _dirsData } = useGetDirectoryHook({ siteName })
   const { data: _pagesData } = useGetDirectoryHook({
-    ...match.params,
+    siteName,
     isUnlinked: true,
   })
   const { data: contactUsPage } = useGetPageHook({
