@@ -1,4 +1,4 @@
-/* eslint-disable no-shadow */
+/* eslint-disable @typescript-eslint/no-shadow */
 import { Input } from "@opengovsg/design-system-react"
 import axios from "axios"
 import DeleteWarningModal from "components/DeleteWarningModal"
