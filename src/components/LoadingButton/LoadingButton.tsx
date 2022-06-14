@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from "@opengovsg/design-system-react"
-import { useState, useEffect, useMemo, useCallback } from "react"
+import { useState } from "react"
 
 // eslint-disable-next-line import/prefer-default-export
 export const LoadingButton = ({
