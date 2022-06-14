@@ -5,9 +5,8 @@ import {
   Menu as ChakraMenu,
   Text,
 } from "@chakra-ui/react"
-import { Button, Menu } from "@opengovsg/design-system-react"
+import { Button } from "@opengovsg/design-system-react"
 import { ContextMenu } from "components/ContextMenu"
-import { useState } from "react"
 import {
   BiChevronDown,
   BiChevronUp,
@@ -18,7 +17,6 @@ import { useRouteMatch, Link as RouterLink } from "react-router-dom"
 
 export const MenuDropdownButton = (): JSX.Element => {
   const { url } = useRouteMatch()
-  const [isCreatePage, setIsCreatePage] = useState(false)
 
   return (
     <ChakraMenu>
@@ -30,9 +28,9 @@ export const MenuDropdownButton = (): JSX.Element => {
             borderRight="0px"
             borderRightRadius={0}
             as={RouterLink}
-            to={isCreatePage ? `${url}/createPage` : `${url}/createDirectory`}
+            to={`${url}/createPage`}
           >
-            Create {isCreatePage ? "page" : "folder"}
+            Create page
           </Button>
           <ContextMenu>
             <ContextMenu.Button
@@ -51,16 +49,18 @@ export const MenuDropdownButton = (): JSX.Element => {
             />
             <ContextMenu.List>
               <ContextMenu.Item
+                as={RouterLink}
+                to={`${url}/createPage`}
                 icon={<BiFileBlank fontSize="1.25rem" fill="icon.alt" />}
-                onClick={() => setIsCreatePage(true)}
               >
                 <Text textStyle="body-1" fill="text.body">
                   Create Page
                 </Text>
               </ContextMenu.Item>
               <ContextMenu.Item
+                as={RouterLink}
+                to={`${url}/createDirectory`}
                 icon={<BiFolder fontSize="1.25rem" fill="icon.alt" />}
-                onClick={() => setIsCreatePage(false)}
               >
                 <Text textStyle="body-1" fill="text.body">
                   Create Folder
