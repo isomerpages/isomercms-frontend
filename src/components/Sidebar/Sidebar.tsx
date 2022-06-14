@@ -1,4 +1,5 @@
 import {
+  forwardRef,
   Box,
   Divider,
   Text,
@@ -11,6 +12,8 @@ import {
   Flex,
   Skeleton,
   Spacer,
+  LinkBox,
+  LinkOverlay,
 } from "@chakra-ui/react"
 import { Button, ButtonProps } from "@opengovsg/design-system-react"
 import { PropsWithChildren } from "react"
@@ -63,7 +66,8 @@ export const Sidebar = (): JSX.Element => {
   )
 
   return (
-    <Flex bg="white" h="100vh" flexDir="column" w="15rem">
+    // NOTE: This is because we reserve height for the header (4rem)
+    <Flex bg="white" h="calc(100vh - 4rem)" flexDir="column" w="15rem">
       <Box p="1.5rem">
         <VStack align="flex-start" spacing="0.5rem">
           <Text
@@ -141,15 +145,20 @@ export const Sidebar = (): JSX.Element => {
       </Tabs>
       <Spacer />
       <Divider color="secondary.100" />
-      <SidebarButton leftIcon={<Icon as={BiBook} fontSize="1.5rem" />}>
-        <Text textStyle="body-1">Guide</Text>
-      </SidebarButton>
-      <SidebarButton
-        leftIcon={<Icon as={BiBuoy} fontSize="1.5rem" />}
-        h="fit-content"
-      >
-        <Text textStyle="body-1">Help</Text>
-      </SidebarButton>
+      <LinkBox>
+        <LinkOverlay href="https://go.gov.sg/isomercms-guide/">
+          <SidebarButton leftIcon={<Icon as={BiBook} fontSize="1.5rem" />}>
+            <Text textStyle="body-1">Guide</Text>
+          </SidebarButton>
+        </LinkOverlay>
+      </LinkBox>
+      <LinkBox>
+        <LinkOverlay href="https://go.gov.sg/isomer-cms-help">
+          <SidebarButton leftIcon={<Icon as={BiBuoy} fontSize="1.5rem" />}>
+            <Text textStyle="body-1">Help</Text>
+          </SidebarButton>
+        </LinkOverlay>
+      </LinkBox>
       <Divider color="secondary.100" />
       <VStack spacing="2rem" pt="0.5rem">
         <SidebarButton isFullWidth display="block">
@@ -185,34 +194,37 @@ const TabLabel = ({
 }
 
 // NOTE: This button should look like a tab item
-const SidebarButton = (props: ButtonProps): JSX.Element => {
-  return (
-    <Button
-      border="2px solid transparent"
-      w="100%"
-      justifyContent="flex-start"
-      variant="clear"
-      py="1rem"
-      // NOTE: The tabs above have 1rem spacing and a 2px divider
-      // This is to ensure vertical alignment
-      px="calc(1rem + 2px)"
-      iconSpacing="1.5rem"
-      borderRadius={0}
-      h="fit-content"
-      color="text.link.disabled"
-      _focus={{
-        borderColor: "border.action.default",
-      }}
-      _selected={{
-        textColor: "text.link.default",
-      }}
-      _hover={{
-        textColor: "text.link.hover",
-      }}
-      _active={{
-        bg: "background.action.infoInverse",
-      }}
-      {...props}
-    />
-  )
-}
+const SidebarButton = forwardRef<ButtonProps, "button">(
+  (props: ButtonProps, ref): JSX.Element => {
+    return (
+      <Button
+        border="2px solid transparent"
+        w="100%"
+        justifyContent="flex-start"
+        variant="clear"
+        py="1rem"
+        // NOTE: The tabs above have 1rem spacing and a 2px divider
+        // This is to ensure vertical alignment
+        px="calc(1rem + 2px)"
+        iconSpacing="1.5rem"
+        borderRadius={0}
+        h="fit-content"
+        color="text.link.disabled"
+        _focus={{
+          borderColor: "border.action.default",
+        }}
+        _selected={{
+          textColor: "text.link.default",
+        }}
+        _hover={{
+          textColor: "text.link.hover",
+        }}
+        _active={{
+          bg: "background.action.infoInverse",
+        }}
+        ref={ref}
+        {...props}
+      />
+    )
+  }
+)
