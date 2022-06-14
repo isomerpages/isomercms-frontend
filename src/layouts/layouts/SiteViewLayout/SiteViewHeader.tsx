@@ -16,7 +16,7 @@ import {
   Skeleton,
   LinkProps,
 } from "@chakra-ui/react"
-import { Button, ButtonProps } from "@opengovsg/design-system-react"
+import { Button, ButtonProps, IconButton } from "@opengovsg/design-system-react"
 import { BiArrowBack } from "react-icons/bi"
 import { Link as RouterLink, useParams } from "react-router-dom"
 
@@ -37,19 +37,20 @@ export const SiteViewHeader = (): JSX.Element => {
         bg="white"
         h="4rem"
       >
-        <Button
-          variant="clear"
-          leftIcon={
-            <Icon as={BiArrowBack} fontSize="1.25rem" fill="icon.secondary" />
-          }
-          iconSpacing="1.25rem"
-          as={RouterLink}
-          to="/sites"
-        >
+        <HStack spacing="1.25rem">
+          <IconButton
+            aria-label="Back to sites"
+            variant="clear"
+            icon={
+              <Icon as={BiArrowBack} fontSize="1.25rem" fill="icon.secondary" />
+            }
+            as={RouterLink}
+            to="/sites"
+          />
           <Text color="text.label" textStyle="body-1">
             All sites
           </Text>
-        </Button>
+        </HStack>
         <Spacer />
         <HStack>
           <Button
@@ -68,7 +69,6 @@ export const SiteViewHeader = (): JSX.Element => {
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-
         <ModalContent>
           <ModalHeader />
           <ModalCloseButton />
