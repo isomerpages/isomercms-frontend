@@ -1,0 +1,1 @@
+export { ResourceRoom } from "./ResourceRoom"
