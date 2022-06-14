@@ -25,6 +25,7 @@ export const ContextMenuItem = forwardRef<ContextMenuItemProps, "button">(
         _focus={{
           boxShadow: "none",
         }}
+        borderRadius={0}
         ref={ref}
       />
     )
