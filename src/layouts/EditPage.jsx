@@ -1,7 +1,7 @@
 import { useDisclosure, Text, Box, Code } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
-import Footer from "components/Footer"
+import { Footer } from "components/Footer"
 import Header from "components/Header"
 import MarkdownEditor from "components/pages/MarkdownEditor"
 import PagePreview from "components/pages/PagePreview"

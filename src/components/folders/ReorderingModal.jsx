@@ -1,6 +1,6 @@
 import { Breadcrumb } from "components/folders/Breadcrumb"
 import { FolderItem } from "components/folders/FolderContent"
-import Footer from "components/Footer"
+import { Footer } from "components/Footer"
 import { LoadingButton } from "components/LoadingButton"
 import update from "immutability-helper"
 import PropTypes from "prop-types"

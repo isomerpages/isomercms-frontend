@@ -2,7 +2,7 @@
 import { useDisclosure, Text } from "@chakra-ui/react"
 import { Button, Input } from "@opengovsg/design-system-react"
 import axios from "axios"
-import Footer from "components/Footer"
+import { Footer } from "components/Footer"
 import Header from "components/Header"
 import EditorHeroSection from "components/homepage/HeroSection"
 import EditorInfobarSection from "components/homepage/InfobarSection"

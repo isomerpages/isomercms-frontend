@@ -5,7 +5,7 @@ import {
   DirectorySettingsModal,
 } from "components/DirectorySettingsModal"
 import { FolderCard } from "components/FolderCard"
-import Footer from "components/Footer"
+import { Footer } from "components/Footer"
 import { LoadingButton } from "components/LoadingButton"
 import PropTypes from "prop-types"
 import { useState } from "react"

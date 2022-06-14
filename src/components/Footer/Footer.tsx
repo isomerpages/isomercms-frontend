@@ -4,7 +4,7 @@ export interface FooterProps {
   children: JSX.Element
 }
 
-const Footer = ({ children }: FooterProps): JSX.Element => (
+export const Footer = ({ children }: FooterProps): JSX.Element => (
   <Flex
     h="80px"
     w="100%"
@@ -22,5 +22,3 @@ const Footer = ({ children }: FooterProps): JSX.Element => (
     </HStack>
   </Flex>
 )
-
-export default Footer

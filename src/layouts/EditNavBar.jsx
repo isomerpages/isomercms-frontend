@@ -1,6 +1,6 @@
 import { useDisclosure, Box, Text } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
-import Footer from "components/Footer"
+import { Footer } from "components/Footer"
 import Header from "components/Header"
 import { LoadingButton } from "components/LoadingButton"
 import NavSection from "components/navbar/NavSection"

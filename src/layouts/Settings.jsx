@@ -1,5 +1,5 @@
 import { Button } from "@opengovsg/design-system-react"
-import Footer from "components/Footer"
+import { Footer } from "components/Footer"
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormFieldHorizontal from "components/FormFieldHorizontal"
 import FormFieldMedia from "components/FormFieldMedia"
