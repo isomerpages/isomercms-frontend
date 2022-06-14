@@ -52,7 +52,7 @@ export const Card = ({ children, ...props }: CardProps): JSX.Element => {
   return (
     <CardContext.Provider value={{ variant, ...buttonBehaviourProps }}>
       <StylesProvider value={styles}>
-        <Box position="relative">
+        <Box position="relative" h="100%">
           <Inner />
         </Box>
       </StylesProvider>
