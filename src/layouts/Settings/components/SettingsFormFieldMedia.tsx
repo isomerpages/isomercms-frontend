@@ -1,11 +1,11 @@
 import {
   InputProps,
   useDisclosure,
-  Flex,
   Input,
   Button,
   Icon,
   forwardRef,
+  HStack,
 } from "@chakra-ui/react"
 import MediaModal from "components/media/MediaModal"
 import { useFormContext } from "react-hook-form"
@@ -36,23 +36,16 @@ export const SettingsFormFieldMedia = forwardRef<FormFieldMediaProps, "input">(
 
     return (
       <>
-        <Flex w="100%">
-          <Input
-            disabled
-            borderRightRadius={0}
-            value={selectedMedia}
-            {...props}
-            ref={ref}
-          />
+        <HStack w="100%" spacing="0.5rem">
+          <Input disabled value={selectedMedia} {...props} ref={ref} />
           <Button
-            borderLeftRadius={0}
             onClick={onOpen}
             leftIcon={<Icon as={BiUpload} fontSize="1.5rem" fill="white" />}
             isDisabled={props.isDisabled}
           >
             Upload Image
           </Button>
-        </Flex>
+        </HStack>
         {isOpen && (
           <MediaModal onClose={onClose} type="images" onProceed={onMediaSave} />
         )}
