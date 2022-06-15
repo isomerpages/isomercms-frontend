@@ -59,8 +59,7 @@ jest.mock("layouts/EditNavBar", () => {
 
 jest.mock("layouts/ResourceRoom", () => {
   return {
-    __esModule: true,
-    default: () => {
+    ResourceRoom: () => {
       return <div>{RESOURCES_LAYOUT_TEXT}</div>
     },
   }
@@ -68,8 +67,7 @@ jest.mock("layouts/ResourceRoom", () => {
 
 jest.mock("layouts/ResourceCategory", () => {
   return {
-    __esModule: true,
-    default: () => {
+    ResourceCategory: () => {
       return <div>{RESOURCES_CATEGORY_LAYOUT_TEXT}</div>
     },
   }
