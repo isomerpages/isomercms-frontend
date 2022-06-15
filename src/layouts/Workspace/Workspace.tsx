@@ -39,7 +39,7 @@ import {
 
 const CONTACT_US_TEMPLATE_LAYOUT = "contact_us"
 
-const Workspace = (): JSX.Element => {
+export const Workspace = (): JSX.Element => {
   const {
     params: { siteName },
   } = useRouteMatch<{ siteName: string }>()
