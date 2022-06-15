@@ -83,7 +83,7 @@ const isPageData = (possiblePage: unknown): possiblePage is PageData => {
   return !!(possiblePage as PageData).name && hasPermissibleResourceType
 }
 
-const Workspace = ({ match, location }: WorkspaceProps): JSX.Element => {
+export const Workspace = ({ match, location }: WorkspaceProps): JSX.Element => {
   const { siteName } = match.params
   const [contactUsCard, setContactUsCard] = useState<boolean | undefined>()
 
@@ -234,5 +234,3 @@ const Workspace = ({ match, location }: WorkspaceProps): JSX.Element => {
     </>
   )
 }
-
-export default Workspace
