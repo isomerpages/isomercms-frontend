@@ -1,1 +1,1 @@
-export { default } from "./Workspace"
+export { Workspace } from "./Workspace"

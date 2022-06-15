@@ -94,10 +94,9 @@ jest.mock("layouts/EditHomepage", () => {
   }
 })
 
-jest.mock("layouts/Workspace/Workspace", () => {
+jest.mock("layouts/Workspace", () => {
   return {
-    __esModule: true,
-    default: () => {
+    Workspace: () => {
       return <div>{WORKSPACE_LAYOUT_TEXT}</div>
     },
   }
