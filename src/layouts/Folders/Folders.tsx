@@ -67,7 +67,7 @@ const Folders = ({ match }: FoldersProps): JSX.Element => {
 
   return (
     <>
-      <SiteViewLayout>
+      <SiteViewLayout overflow="hidden">
         <Section>
           <VStack align="left" spacing="0.375rem">
             <Text as="h2" textStyle="h2">

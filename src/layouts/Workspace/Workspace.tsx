@@ -108,7 +108,7 @@ export const Workspace = ({ match, location }: WorkspaceProps): JSX.Element => {
 
   return (
     <>
-      <SiteViewLayout overflow="auto">
+      <SiteViewLayout overflow="hidden">
         <Section>
           <Text as="h2" textStyle="h2">
             My Workspace
