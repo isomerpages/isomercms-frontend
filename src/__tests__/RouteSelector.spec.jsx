@@ -122,17 +122,7 @@ jest.mock("layouts/EditPage", () => {
 
 jest.mock("layouts/Folders", () => {
   return {
-    __esModule: true,
-    default: () => {
-      return <div>{FOLDERS_LAYOUT_TEXT}</div>
-    },
-  }
-})
-
-jest.mock("layouts/Folders", () => {
-  return {
-    __esModule: true,
-    default: () => {
+    Folders: () => {
       return <div>{FOLDERS_LAYOUT_TEXT}</div>
     },
   }

@@ -51,7 +51,7 @@ interface FoldersProps {
   }
 }
 
-const Folders = ({ match }: FoldersProps): JSX.Element => {
+export const Folders = ({ match }: FoldersProps): JSX.Element => {
   const { params, decodedParams } = match
   const { collectionName, subCollectionName } = decodedParams
   // NOTE: As isomer does not support recursively nested folders,
@@ -155,5 +155,3 @@ const Folders = ({ match }: FoldersProps): JSX.Element => {
     </>
   )
 }
-
-export default Folders
