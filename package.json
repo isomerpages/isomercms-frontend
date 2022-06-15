@@ -142,7 +142,7 @@
     "invariant": "^2.2.4",
     "lint-staged": "^11.0.0",
     "pathmodify": "^0.5.0",
-    "prettier": "2.2.1",
+    "prettier": "2.7.0",
     "react-scripts": "^4.0.3",
     "react-test-renderer": "^17.0.2",
     "storybook-preset-craco": "0.0.6",
