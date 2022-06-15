@@ -27,15 +27,29 @@ import {
   BiImage,
   BiLogOutCircle,
 } from "react-icons/bi"
-import { useParams, Link as RouterLink } from "react-router-dom"
+import { useParams, Link as RouterLink, useLocation } from "react-router-dom"
 
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
 import { useLastUpdated } from "hooks/useLastUpdated"
 import { useLocalStorage } from "hooks/useLocalStorage"
-import { useSidebarContext } from "hooks/useSidebar"
 
 import { TabSection } from "types/sidebar"
+
+// NOTE: This is a workaround. We should have a context set up and let this all be within 1 page
+// rather than using URL params
+const getSelectedTab = (url: string[]): TabSection => {
+  const mainSection = url[2]
+  if (mainSection === "folders" || mainSection === "workspace") {
+    return "workspace"
+  }
+
+  if (mainSection === "resourceRoom" || mainSection === "settings") {
+    return mainSection
+  }
+
+  return url[3] as TabSection
+}
 
 const getTabIndex = (section: TabSection) => {
   switch (section) {
@@ -58,13 +72,14 @@ const getTabIndex = (section: TabSection) => {
 
 export const Sidebar = (): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
+  const { pathname } = useLocation<{ pathname: string }>()
   const { lastUpdated, isError, isLoading } = useLastUpdated(siteName)
-  const { selectedTab, setSelectedTab } = useSidebarContext()
   const [loggedInUser] = useLocalStorage(
     LOCAL_STORAGE_KEYS.GithubId,
     "Unknown user"
   )
-
+  // NOTE: As this is a sub-path, there's a leading / which is converted into an empty string
+  const selectedTab = getSelectedTab(pathname.split("/").filter(Boolean))
   return (
     // NOTE: This is because we reserve height for the header (4rem)
     <Flex bg="white" h="calc(100vh - 4rem)" flexDir="column" w="15rem">
@@ -105,7 +120,6 @@ export const Sidebar = (): JSX.Element => {
             as={RouterLink}
             to={`/sites/${siteName}/workspace`}
             isSelected={selectedTab === "workspace"}
-            onClick={() => setSelectedTab("workspace")}
           >
             <TabLabel icon={BiCubeAlt}>My Workspace</TabLabel>
           </Tab>
@@ -113,7 +127,6 @@ export const Sidebar = (): JSX.Element => {
             as={RouterLink}
             to={`/sites/${siteName}/resourceRoom`}
             isSelected={selectedTab === "resourceRoom"}
-            onClick={() => setSelectedTab("resourceRoom")}
           >
             <TabLabel icon={BiGridAlt}>Resources</TabLabel>
           </Tab>
@@ -121,7 +134,6 @@ export const Sidebar = (): JSX.Element => {
             as={RouterLink}
             to={`/sites/${siteName}/media/images/mediaDirectory/images`}
             isSelected={selectedTab === "images"}
-            onClick={() => setSelectedTab("images")}
           >
             <TabLabel icon={BiImage}>Images</TabLabel>
           </Tab>
@@ -129,7 +141,6 @@ export const Sidebar = (): JSX.Element => {
             as={RouterLink}
             to={`/sites/${siteName}/media/files/mediaDirectory/files`}
             isSelected={selectedTab === "files"}
-            onClick={() => setSelectedTab("files")}
           >
             <TabLabel icon={BiFile}>Files</TabLabel>
           </Tab>
@@ -137,7 +148,6 @@ export const Sidebar = (): JSX.Element => {
             as={RouterLink}
             to={`/sites/${siteName}/settings`}
             isSelected={selectedTab === "settings"}
-            onClick={() => setSelectedTab("settings")}
           >
             <TabLabel icon={BiCog}>Site Settings</TabLabel>
           </Tab>
