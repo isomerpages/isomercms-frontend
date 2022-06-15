@@ -10,7 +10,9 @@
   align-items: center;
   background: rgba(0, 0, 0, 0.7);
   position: fixed;
-  z-index: 100;
+  // NOTE: Set to same z-index as chakra modal's overlay
+  // See here: https://github.com/chakra-ui/chakra-ui/blob/28e10e36d773f609246df375dc6279385d07e0ff/packages/theme/src/foundations/z-index.ts
+  z-index: 1300;
   top: 0;
   left: 0;
 }
