@@ -19,26 +19,28 @@ const LoginConsumer = ({ children }) => {
 }
 
 const LoginProvider = ({ children }) => {
-  const [, setUserId, removeUserId] = useLocalStorage(
-    LOCAL_STORAGE_KEYS.GithubId
+  const [storedUserId, setStoredUserId, removeStoredUserId] = useLocalStorage(
+    LOCAL_STORAGE_KEYS.GithubId,
+    "Unknown user"
+  )
+  const [storedUser, setStoredUser, removeStoredUser] = useLocalStorage(
+    LOCAL_STORAGE_KEYS.User,
+    {}
   )
 
-  const [user, setUser, removeUser] = useLocalStorage(LOCAL_STORAGE_KEYS.User)
   const [, , removeSites] = useLocalStorage(LOCAL_STORAGE_KEYS.SitesIsPrivate)
   const verifyLoginAndSetLocalStorage = async () => {
     const { data } = await axios.get(`${BACKEND_URL}/auth/whoami`)
     const loggedInUser = omitBy(data, isEmpty)
 
-    if (loggedInUser.userId) {
-      setUserId(loggedInUser.userId)
-    }
-    setUser(loggedInUser)
+    setStoredUserId(loggedInUser.userId)
+    setStoredUser(loggedInUser)
   }
 
   const logout = async () => {
     await axios.delete(`${BACKEND_URL}/auth/logout`)
-    removeUserId()
-    removeUser()
+    removeStoredUserId()
+    removeStoredUser()
     removeSites()
   }
 
@@ -60,7 +62,9 @@ const LoginProvider = ({ children }) => {
   }, []) // Run only once
 
   const loginContextData = {
-    ...user,
+    userId: storedUserId,
+    email: storedUser.email,
+    contactNumber: storedUser.contactNumber,
     logout,
     verifyLoginAndSetLocalStorage,
   }
