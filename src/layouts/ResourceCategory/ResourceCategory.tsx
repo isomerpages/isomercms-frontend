@@ -62,7 +62,7 @@ export const ResourceCategory = (): JSX.Element => {
           <Box w="full">
             <SectionHeader label="Pages">
               <CreateButton as={RouterLink} to={`${url}/createPage`}>
-                Create Page
+                Create page
               </CreateButton>
             </SectionHeader>
             <SectionCaption icon={BiBulb} label="PRO TIP: ">
