@@ -111,7 +111,8 @@ describe("Folders flow", () => {
     })
 
     it("Should be able to create a new sub-folder within a valid folder name with no pages", () => {
-      cy.contains("Create new subfolder").click()
+      cy.get('button[aria-label="Select options"]').as("dropdown").click()
+      cy.clickContextMenuItem("@dropdown", "folder")
       cy.get("input#newDirectoryName")
         .clear()
         .type(TEST_SUBFOLDER_NO_PAGES_TITLE)
@@ -130,7 +131,8 @@ describe("Folders flow", () => {
     })
 
     it("Should be able to create a new sub-folder within a valid folder name with one page", () => {
-      cy.contains("Create new subfolder").click()
+      cy.get('button[aria-label="Select options"]').as("dropdown").click()
+      cy.clickContextMenuItem("@dropdown", "folder")
       cy.get("input#newDirectoryName")
         .clear()
         .type(TEST_SUBFOLDER_WITH_PAGES_TITLE)
@@ -150,7 +152,7 @@ describe("Folders flow", () => {
         "include",
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}/subfolders/${PARSED_TEST_SUBFOLDER_WITH_PAGES_TITLE}`
       )
-      cy.contains(PRETTIFIED_DEFAULT_PAGE_TITLE).click()
+      cy.contains("a", PRETTIFIED_DEFAULT_PAGE_TITLE).click()
       cy.get(".CodeMirror-scroll").should("contain", DEFAULT_TEST_PAGE_CONTENT)
     })
 
@@ -159,7 +161,8 @@ describe("Folders flow", () => {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
 
-      cy.contains("Create new subfolder").click()
+      cy.get('button[aria-label="Select options"]').as("dropdown").click()
+      cy.clickContextMenuItem("@dropdown", "folder")
 
       // Cannot use titles shorter than 2 characters or containing symbols ~!@#$%^&*_+-./\`:;~{}()[]"'<>,?
       INVALID_SUBFOLDER_TITLES.forEach((invalidTitle) => {
@@ -180,7 +183,7 @@ describe("Folders flow", () => {
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}/subfolders/${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}`
       )
-      cy.contains("button", "Create new subfolder").should("be.disabled")
+      cy.get('button[aria-label="Select options"]').should("not.exist")
     })
 
     // Rename
@@ -190,8 +193,8 @@ describe("Folders flow", () => {
         url: `/v2/sites/e2e-test-repo/collections/${DEFAULT_REPO_FOLDER_NAME}/subcollections/${PARSED_TEST_SUBFOLDER_WITH_PAGES_TITLE}`,
       }).as("renameSubfolder")
 
-      cy.get("button[id^=folderItem-dropdown-]").first().click().should("exist")
-      cy.get("button[id^=settings-]").trigger("mousedown")
+      cy.contains("a", PRETTIFIED_SUBFOLDER_WITH_PAGES_TITLE).as("folderItem")
+      cy.clickContextMenuItem("@folderItem", "Settings")
       cy.contains(`Subfolder settings`)
       cy.get("input#newDirectoryName")
         .clear()
@@ -201,21 +204,23 @@ describe("Folders flow", () => {
       // Assert
       cy.wait("@renameSubfolder")
       cy.contains("1 item").should("exist")
-      cy.contains(PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE).click()
+      cy.contains("a", PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE).click()
       cy.contains(PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE)
       cy.url().should(
         "include",
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}/subfolders/${PARSED_EDITED_TEST_SUBFOLDER_WITH_PAGES_TITLE}`
       )
-      cy.contains(PRETTIFIED_DEFAULT_PAGE_TITLE).click()
+      cy.contains("a", PRETTIFIED_DEFAULT_PAGE_TITLE).click()
       cy.get(".CodeMirror-scroll").should("contain", DEFAULT_TEST_PAGE_CONTENT)
     })
 
     // Delete
     it("Should be able to delete a sub-folder with a page", () => {
-      cy.get("button[id^=folderItem-dropdown-]").first().click().should("exist")
-      cy.get("button[id^=delete-]").first().trigger("mousedown")
-      cy.get("button[id=modal-delete]").click()
+      cy.contains("a", PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE)
+        .as("folderItem")
+        .should("exist")
+      cy.clickContextMenuItem("@folderItem", "Delete")
+      cy.contains("button", "Delete").click()
       cy.wait(E2E_DEFAULT_WAIT_TIME)
 
       // Assert
@@ -225,9 +230,9 @@ describe("Folders flow", () => {
     })
 
     it("Should be able to delete a sub-folder without page", () => {
-      cy.get("button[id^=folderItem-dropdown-]").first().click().should("exist")
-      cy.get("button[id^=delete-]").first().trigger("mousedown")
-      cy.get("button[id=modal-delete]").click()
+      cy.contains("a", PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE).as("folderItem")
+      cy.clickContextMenuItem("@folderItem", "Delete")
+      cy.contains("button", "Delete").click()
 
       // Assert
       cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE).should("not.exist", {
@@ -253,7 +258,7 @@ describe("Folders flow", () => {
 
     it("Should be able to create a new page with valid title and permalink", () => {
       const DEFAULT_TEST_PAGE_PERMALINK = `/${DEFAULT_REPO_FOLDER_NAME}/permalink`
-      cy.contains("Create new page", { timeout: E2E_EXTENDED_TIMEOUT })
+      cy.contains("Create page", { timeout: E2E_EXTENDED_TIMEOUT })
         .should("exist")
         .click()
       cy.get("#title").clear().type(TEST_PAGE_TITLE)
@@ -285,7 +290,7 @@ describe("Folders flow", () => {
     })
 
     it("Should not be able to create page with invalid title", () => {
-      cy.contains("Create new page", { timeout: E2E_EXTENDED_TIMEOUT })
+      cy.contains("Create page", { timeout: E2E_EXTENDED_TIMEOUT })
         .should("exist")
         .click()
 
@@ -302,7 +307,7 @@ describe("Folders flow", () => {
     })
 
     it("Should not be able to create page with invalid permalink", () => {
-      cy.contains("Create new page", { timeout: E2E_EXTENDED_TIMEOUT })
+      cy.contains("Create page", { timeout: E2E_EXTENDED_TIMEOUT })
         .should("exist")
         .click()
 
@@ -314,17 +319,11 @@ describe("Folders flow", () => {
     })
 
     it("Should be able to edit existing page details with Chinese title and valid permalink", () => {
-      cy.contains(TEST_PAGE_TITLE, { timeout: E2E_EXTENDED_TIMEOUT }).should(
-        "exist"
-      )
+      cy.contains("a", TEST_PAGE_TITLE, { timeout: E2E_EXTENDED_TIMEOUT })
+        .as("pageItem")
+        .should("exist")
+      cy.clickContextMenuItem("@pageItem", "Settings")
 
-      // User should be able edit page details
-      cy.get("button[id^=folderItem-dropdown-]")
-        .first()
-        .should("exist")
-        .click()
-        .should("exist")
-      cy.get("button[id^=settings-]").first().trigger("mousedown")
       cy.get("#title").should("have.value", PRETTIFIED_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       })
@@ -343,22 +342,17 @@ describe("Folders flow", () => {
       }).should("exist")
 
       // 2. Test page content should still be in Edit Page
-      cy.contains(EDITED_TEST_PAGE_TITLE).click()
+      cy.contains("a", EDITED_TEST_PAGE_TITLE).should("exist").click()
       cy.get(".CodeMirror-scroll").should("contain", DEFAULT_TEST_PAGE_CONTENT)
     })
 
     it("Should be able to edit existing page details with Tamil title and valid permalink", () => {
-      cy.contains(EDITED_TEST_PAGE_TITLE, {
+      cy.contains("a", EDITED_TEST_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
-
-      // User should be able edit page details
-      cy.get("button[id^=folderItem-dropdown-]")
-        .first()
+      })
+        .as("pageItem")
         .should("exist")
-        .click()
-        .should("exist")
-      cy.get("button[id^=settings-]").first().trigger("mousedown")
+      cy.clickContextMenuItem("@pageItem", "Settings")
       cy.get("#title").should("have.value", PRETTIFIED_EDITED_TEST_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       })
@@ -377,19 +371,16 @@ describe("Folders flow", () => {
       }).should("exist")
 
       // 2. Test page content should still be in Edit Page
-      cy.contains(EDITED_TEST_PAGE_TITLE_2).click()
+      cy.contains("a", EDITED_TEST_PAGE_TITLE_2).should("exist").click()
       cy.get(".CodeMirror-scroll").should("contain", DEFAULT_TEST_PAGE_CONTENT)
     })
 
     it("Should be able to delete existing page in folder", () => {
       // User should be able to remove the created test page card
-      cy.get("button[id^=folderItem-dropdown-]")
-        .first()
-        .should("exist")
-        .click()
-        .should("exist")
-      cy.get("button[data-cy^=delete]").trigger("mousedown")
-      cy.get("button[id^=modal-delete]").click()
+      cy.contains("a", EDITED_TEST_PAGE_TITLE_2).as("pageItem").should("exist")
+      cy.clickContextMenuItem("@pageItem", "Delete")
+      cy.contains("button", "Delete").click()
+
       cy.contains("Successfully deleted page", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
@@ -401,14 +392,15 @@ describe("Folders flow", () => {
     })
   })
 
-  describe("Create page, delete page, edit page settings in subfolder", () => {
+  describe.only("Create page, delete page, edit page settings in subfolder", () => {
     before(() => {
       Cypress.Cookies.preserveOnce(COOKIE_NAME)
       window.localStorage.setItem("userId", "test")
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}`
       )
-      cy.contains("Create new subfolder").click()
+      cy.get('button[aria-label="Select options"]').as("dropdown").click()
+      cy.clickContextMenuItem("@dropdown", "folder")
       cy.get("input#newDirectoryName")
         .clear()
         .type(TEST_SUBFOLDER_NO_PAGES_TITLE)
@@ -440,7 +432,7 @@ describe("Folders flow", () => {
     it("Should be able to create a new page with valid title and permalink", () => {
       const DEFAULT_TEST_PAGE_PERMALINK = `/${DEFAULT_REPO_FOLDER_NAME}/${SLUGIFIED_PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE}/permalink`
 
-      cy.contains("Create new page", { timeout: E2E_EXTENDED_TIMEOUT })
+      cy.contains("Create page", { timeout: E2E_EXTENDED_TIMEOUT })
         .should("exist")
         .click()
       cy.get("#title").clear().type(TEST_PAGE_TITLE)
@@ -472,7 +464,7 @@ describe("Folders flow", () => {
     })
 
     it("Should not be able to create page with invalid title", () => {
-      cy.contains("Create new page", { timeout: E2E_EXTENDED_TIMEOUT })
+      cy.contains("Create page", { timeout: E2E_EXTENDED_TIMEOUT })
         .should("exist")
         .click()
 
@@ -489,7 +481,7 @@ describe("Folders flow", () => {
     })
 
     it("Should not be able to create page with invalid permalink", () => {
-      cy.contains("Create new page", { timeout: E2E_EXTENDED_TIMEOUT })
+      cy.contains("Create page", { timeout: E2E_EXTENDED_TIMEOUT })
         .should("exist")
         .click()
 
@@ -501,13 +493,10 @@ describe("Folders flow", () => {
     })
 
     it("Should be able to edit existing page details with Chinese title and valid permalink", () => {
-      cy.contains(TEST_PAGE_TITLE, { timeout: E2E_EXTENDED_TIMEOUT }).should(
-        "exist"
-      )
-
-      // User should be able edit page details
-      cy.get("button[id^=folderItem-dropdown-]").first().click().should("exist")
-      cy.get("button[id^=settings-]").first().trigger("mousedown")
+      cy.contains("a", TEST_PAGE_TITLE, { timeout: E2E_EXTENDED_TIMEOUT })
+        .as("pageItem")
+        .should("exist")
+      cy.clickContextMenuItem("@pageItem", "Settings")
       cy.get("#title").should("have.value", PRETTIFIED_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       })
@@ -526,22 +515,17 @@ describe("Folders flow", () => {
       }).should("exist")
 
       // 2. Test page content should still be in Edit Page
-      cy.contains(EDITED_TEST_PAGE_TITLE).click()
+      cy.contains("a", EDITED_TEST_PAGE_TITLE).should("exist").click()
       cy.get(".CodeMirror-scroll").should("contain", DEFAULT_TEST_PAGE_CONTENT)
     })
 
     it("Should be able to edit existing page details with Tamil title and valid permalink", () => {
-      cy.contains(EDITED_TEST_PAGE_TITLE, {
+      cy.contains("a", EDITED_TEST_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
-
-      // User should be able edit page details
-      cy.get("button[id^=folderItem-dropdown-]")
-        .first()
+      })
+        .as("pageItem")
         .should("exist")
-        .click()
-        .should("exist")
-      cy.get("button[id^=settings-]").first().trigger("mousedown")
+      cy.clickContextMenuItem("@pageItem", "Settings")
       cy.get("#title").should("have.value", PRETTIFIED_EDITED_TEST_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       })
@@ -560,19 +544,15 @@ describe("Folders flow", () => {
       }).should("exist")
 
       // 2. Test page content should still be in Edit Page
-      cy.contains(EDITED_TEST_PAGE_TITLE_2).click()
+      cy.contains("a", EDITED_TEST_PAGE_TITLE_2).should("exist").click()
       cy.get(".CodeMirror-scroll").should("contain", DEFAULT_TEST_PAGE_CONTENT)
     })
 
     it("Should be able to delete existing page in folder", () => {
       // User should be able to remove the created test page card
-      cy.get("button[id^=folderItem-dropdown-]")
-        .first()
-        .should("exist")
-        .click()
-        .should("exist")
-      cy.get("button[id^=delete-]").first().trigger("mousedown")
-      cy.get("button[id=modal-delete]").click()
+      cy.contains("a", EDITED_TEST_PAGE_TITLE_2).as("pageItem")
+      cy.clickContextMenuItem("@pageItem", "Delete")
+      cy.contains("button", "Delete").click()
       cy.contains("Successfully deleted page", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
