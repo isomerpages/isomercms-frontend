@@ -4,18 +4,18 @@ import { MouseEventHandler } from "react"
 import { BxArrowBack } from "assets/icons"
 import { deslugifyDirectory } from "utils"
 
-interface MoveMenuBackButtonProps {
+interface MoveMenuHeaderProps {
   isDisabled: boolean
   backButtonText: string
   onBack: MouseEventHandler<HTMLButtonElement>
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export const MoveMenuBackButton = ({
+export const MoveMenuHeader = ({
   onBack,
   isDisabled,
   backButtonText,
-}: MoveMenuBackButtonProps): JSX.Element => {
+}: MoveMenuHeaderProps): JSX.Element => {
   const backgroundColour = useToken("colors", "primary.500")
   return (
     <Box
@@ -37,7 +37,7 @@ export const MoveMenuBackButton = ({
             onClick={onBack}
             aria-label="back-button"
             size="sm"
-            icon={<Icon as={BxArrowBack} w="24px" h="24px" />}
+            icon={<Icon as={BxArrowBack} fontSize="1.5rem" />}
           />
         )}
         {/* NOTE: index.scss sets p to have margin bottom of 5 */}
