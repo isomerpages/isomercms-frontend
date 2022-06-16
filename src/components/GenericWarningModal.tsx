@@ -11,13 +11,21 @@ import {
 } from "@chakra-ui/react"
 import parse from "html-react-parser"
 
-const GenericWarningModal = ({
+interface ModalProps {
+  isOpen: boolean
+  onClose: () => void
+  displayTitle: string
+  displayText: string
+  children: JSX.Element
+}
+
+export const GenericWarningModal = ({
   isOpen,
   onClose,
   displayTitle,
   displayText,
   children,
-}) => (
+}: ModalProps): JSX.Element => (
   <Modal isOpen={isOpen} onClose={onClose}>
     <ModalOverlay />
     <ModalContent>
@@ -34,5 +42,3 @@ const GenericWarningModal = ({
     </ModalContent>
   </Modal>
 )
-
-export default GenericWarningModal
