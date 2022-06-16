@@ -1,12 +1,12 @@
 // TODO: Clean up formatting, semi-colons, PropTypes etc
-import { HStack } from "@chakra-ui/react"
+import { HStack, useDisclosure } from "@chakra-ui/react"
+import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
 import EditorSection from "components/contact-us/Section"
-import DeleteWarningModal from "components/DeleteWarningModal"
 import FormContext from "components/Form/FormContext"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
-import GenericWarningModal from "components/GenericWarningModal"
+import { GenericWarningModal } from "components/GenericWarningModal"
 import Header from "components/Header"
 import { LoadingButton } from "components/LoadingButton"
 import update from "immutability-helper"
@@ -164,8 +164,17 @@ const EditContactUs = ({ match }) => {
     id: null,
     type: "",
   })
-  const [showDeletedText, setShowDeletedText] = useState(true)
   const errorToast = useErrorToast()
+  const {
+    isOpen: isRemovedOpen,
+    onOpen: onRemovedOpen,
+    onClose: onRemovedClose,
+  } = useDisclosure({ defaultIsOpen: true })
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure()
 
   useEffect(() => {
     let _isMounted = true
@@ -774,27 +783,49 @@ const EditContactUs = ({ match }) => {
 
   return (
     <>
-      {showDeletedText && !isEmpty(deletedFrontMatter) && (
+      {!isEmpty(deletedFrontMatter) && (
         <GenericWarningModal
+          isOpen={isRemovedOpen}
+          onClose={onRemovedClose}
           displayTitle="Removed content"
           displayText={`Some of your content has been removed as it is incompatible with the new Isomer format. No changes are permanent unless you press Save on the next page.<br/>${displayDeletedFrontMatter(
             deletedFrontMatter
           )}`}
-          onProceed={() => {
-            setShowDeletedText(false)
-          }}
-          proceedText="Acknowledge"
-        />
+        >
+          <Button onClick={onRemovedClose}>Acknowledge</Button>
+        </GenericWarningModal>
       )}
       {itemPendingForDelete.id && (
-        <DeleteWarningModal
-          onCancel={() => setItemPendingForDelete({ id: null, type: "" })}
-          onDelete={() => {
-            deleteHandler(itemPendingForDelete.id)
+        <GenericWarningModal
+          isOpen={isDeleteOpen}
+          onClose={() => {
             setItemPendingForDelete({ id: null, type: "" })
+            onDeleteClose()
           }}
-          type={itemPendingForDelete.type}
-        />
+          displayTitle={`Delete ${itemPendingForDelete.type} section`}
+          displayText={`Are you sure you want to delete ${itemPendingForDelete.type}?`}
+        >
+          <Button
+            variant="ghost"
+            colorScheme="secondary"
+            onClick={() => {
+              setItemPendingForDelete({ id: null, type: "" })
+              onDeleteClose()
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            colorScheme="danger"
+            onClick={() => {
+              deleteHandler(itemPendingForDelete.id)
+              setItemPendingForDelete({ id: null, type: "" })
+              onDeleteClose()
+            }}
+          >
+            Yes, delete
+          </Button>
+        </GenericWarningModal>
       )}
       <Header
         siteName={siteName}
@@ -834,9 +865,10 @@ const EditContactUs = ({ match }) => {
                   cards={frontMatter.locations}
                   onFieldChange={onFieldChange}
                   createHandler={createHandler}
-                  deleteHandler={(event, type) =>
+                  deleteHandler={(event, type) => {
                     setItemPendingForDelete({ id: event.target.id, type })
-                  }
+                    onDeleteOpen()
+                  }}
                   shouldDisplay={displaySections.sectionsDisplay.locations}
                   displayCards={displaySections.locations}
                   displayHandler={displayHandler}
@@ -848,9 +880,10 @@ const EditContactUs = ({ match }) => {
                   cards={frontMatter.contacts}
                   onFieldChange={onFieldChange}
                   createHandler={createHandler}
-                  deleteHandler={(event, type) =>
+                  deleteHandler={(event, type) => {
                     setItemPendingForDelete({ id: event.target.id, type })
-                  }
+                    onDeleteOpen()
+                  }}
                   shouldDisplay={displaySections.sectionsDisplay.contacts}
                   displayCards={displaySections.contacts}
                   displayHandler={displayHandler}
@@ -896,9 +929,7 @@ const EditContactUs = ({ match }) => {
                 <LoadingButton
                   ml="auto"
                   variant="clear"
-                  onClick={() => {
-                    setShowDeletedText(true)
-                  }}
+                  onClick={onRemovedOpen}
                 >
                   See removed content
                 </LoadingButton>

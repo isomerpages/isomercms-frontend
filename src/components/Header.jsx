@@ -1,7 +1,22 @@
-import { Flex, HStack, Box, Text } from "@chakra-ui/react"
+import {
+  Flex,
+  HStack,
+  Box,
+  Text,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Skeleton,
+  Link,
+  useDisclosure,
+} from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
-import GenericWarningModal from "components/GenericWarningModal"
+import { GenericWarningModal } from "components/GenericWarningModal"
 import PropTypes from "prop-types"
 import { useState, useEffect } from "react"
 
@@ -31,9 +46,17 @@ const Header = ({
   const { setRedirectToLogout, setRedirectToPage } = useRedirectHook()
   const { retrieveStagingUrl } = useSiteUrlHook()
   const [userId] = useLocalStorage(LOCAL_STORAGE_KEYS.GithubId)
+  const {
+    isOpen: isWarningOpen,
+    onOpen: onWarningOpen,
+    onClose: onWarningClose,
+  } = useDisclosure()
+  const {
+    isOpen: isStagingOpen,
+    onOpen: onStagingOpen,
+    onClose: onStagingClose,
+  } = useDisclosure()
 
-  const [showBackNavWarningModal, setShowBackNavWarningModal] = useState(false)
-  const [showStagingWarningModal, setShowStagingWarningModal] = useState(false)
   const [stagingUrl, setStagingUrl] = useState()
 
   const {
@@ -65,8 +88,7 @@ const Header = ({
   }
 
   const handleBackNav = () => {
-    if (isEditPage && !shouldAllowEditPageBackNav)
-      setShowBackNavWarningModal(true)
+    if (isEditPage && !shouldAllowEditPageBackNav) onWarningOpen()
     else toggleBackNav()
   }
 
@@ -77,11 +99,6 @@ const Header = ({
       }/pulls`
       window.open(githubUrl, "_blank")
     }
-  }
-
-  const handleViewStaging = () => {
-    window.open(stagingUrl, "_blank")
-    setShowStagingWarningModal(false)
   }
 
   return (
@@ -117,7 +134,7 @@ const Header = ({
         {siteNameFromParams || siteName ? (
           <HStack>
             <Button
-              onClick={() => setShowStagingWarningModal(true)}
+              onClick={onStagingOpen}
               variant="outline"
               colorScheme="primary"
               isDisabled={!stagingUrl}
@@ -135,28 +152,50 @@ const Header = ({
           </>
         )}
       </Flex>
-      {showBackNavWarningModal && (
-        <GenericWarningModal
-          displayTitle="Warning"
-          displayText="You have unsaved changes. Are you sure you want to navigate away from this page?"
-          onProceed={toggleBackNav}
-          onCancel={() => setShowBackNavWarningModal(false)}
-          proceedText="Yes"
-          cancelText="No"
-        />
-      )}
-      {showStagingWarningModal && (
-        <GenericWarningModal
-          displayTitle=""
-          displayText="Your changes may take some time to be reflected. <br/> Refresh your staging site to see if your changes have been built."
-          displayImg="/publishModal.svg"
-          displayImgAlt="View Staging Modal Image"
-          onProceed={handleViewStaging}
-          onCancel={() => setShowStagingWarningModal(false)}
-          proceedText="Proceed to staging site"
-          cancelText="Cancel"
-        />
-      )}
+      <GenericWarningModal
+        isOpen={isWarningOpen}
+        onClose={onWarningClose}
+        displayTitle="Warning"
+        displayText="You have unsaved changes. Are you sure you want to navigate away from this page?"
+      >
+        <Button colorScheme="danger" onClick={onWarningClose}>
+          No
+        </Button>
+        <Button onClick={toggleBackNav}>Yes</Button>
+      </GenericWarningModal>
+      <Modal isOpen={isStagingOpen} onClose={onStagingClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader />
+          <ModalCloseButton />
+          <ModalBody>
+            <Text textStyle="body-2">
+              Your changes may take some time to be reflected. <br />
+              Refresh your staging site to see if your changes have been built.
+            </Text>
+          </ModalBody>
+          <ModalFooter>
+            <HStack w="100%" spacing={2} justifyContent="flex-end">
+              <Button colorScheme="danger" onClick={onStagingClose}>
+                Cancel
+              </Button>
+              <Skeleton isLoaded={!!stagingUrl}>
+                <Button
+                  as={Link}
+                  textDecoration="none"
+                  _hover={{
+                    textDecoration: "none",
+                    bgColor: "primary.600",
+                  }}
+                  href={stagingUrl}
+                >
+                  <Text color="white">Proceed to staging site</Text>
+                </Button>
+              </Skeleton>
+            </HStack>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   )
 }
