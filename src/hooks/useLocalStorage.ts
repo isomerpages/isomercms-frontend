@@ -1,5 +1,7 @@
 import { useState } from "react"
 
+import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
+
 type useLocalStorageReturn<T> = [
   value: T,
   setValue: (value: T) => void,
@@ -8,7 +10,7 @@ type useLocalStorageReturn<T> = [
 
 // Retrieved from: https://usehooks.com/useLocalStorage/
 export const useLocalStorage = <T>(
-  key: string,
+  key: LOCAL_STORAGE_KEYS,
   initialValue: T
 ): useLocalStorageReturn<T> => {
   // State to store our value
@@ -20,7 +22,6 @@ export const useLocalStorage = <T>(
     try {
       // Get from local storage by key
       const item = window.localStorage.getItem(key)
-      console.log("ITEM", item)
       // Parse stored json or if none return initialValue
       return item ? JSON.parse(item) : initialValue
     } catch (error) {
