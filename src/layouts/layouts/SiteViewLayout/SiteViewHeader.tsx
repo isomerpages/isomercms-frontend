@@ -15,12 +15,16 @@ import {
   useDisclosure,
   Skeleton,
   LinkProps,
+  Center,
+  VStack,
 } from "@chakra-ui/react"
 import { Button, ButtonProps, IconButton } from "@opengovsg/design-system-react"
 import { BiArrowBack } from "react-icons/bi"
 import { Link as RouterLink, useParams } from "react-router-dom"
 
 import { useStagingUrl } from "hooks/settingsHooks"
+
+import { NavImage } from "assets"
 
 export const SiteViewHeader = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -73,14 +77,19 @@ export const SiteViewHeader = (): JSX.Element => {
           <ModalHeader />
           <ModalCloseButton />
           <ModalBody>
-            <Text textStyle="body-2">
-              Your changes may take some time to be reflected. Refresh your
-              staging site to see if your changes have been built.
-            </Text>
+            <VStack spacing="1.5rem">
+              <Center>
+                <NavImage />
+              </Center>
+              <Text textStyle="body-2">
+                Your changes may take some time to be reflected. Refresh your
+                staging site to see if your changes have been built.
+              </Text>
+            </VStack>
           </ModalBody>
           <ModalFooter>
             <HStack w="100%" spacing={2} justifyContent="flex-end">
-              <Button colorScheme="danger" onClick={onClose}>
+              <Button variant="clear" onClick={onClose}>
                 Cancel
               </Button>
               <Skeleton isLoaded={!isLoading}>

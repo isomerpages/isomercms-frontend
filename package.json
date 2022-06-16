@@ -77,7 +77,7 @@
     "cypress:open": "source .env && node scripts/run-e2e.js open",
     "prepare": "husky install",
     "version": "auto-changelog -p && git add CHANGELOG.md",
-    "storybook": "start-storybook -p 6006 -s public",
+    "storybook": "source .env && start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "chromatic": "npx chromatic --project-token=$CHROMATIC_PROJECT_TOKEN"
   },
@@ -145,6 +145,8 @@
     "husky": "^6.0.0",
     "invariant": "^2.2.4",
     "lint-staged": "^11.0.0",
+    "msw": "^0.42.1",
+    "msw-storybook-addon": "^1.6.3",
     "pathmodify": "^0.5.0",
     "prettier": "2.2.1",
     "react-scripts": "^4.0.3",
@@ -164,5 +166,8 @@
       "eslint --fix",
       "prettier --write"
     ]
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }
