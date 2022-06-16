@@ -30,14 +30,8 @@ describe("Move flow", () => {
 
   describe("Move pages out of Workspace", () => {
     const TITLE_WORKSPACE_TO_FOLDER = "Move from Workspace to folder"
-    const FILENAME_WORKSPACE_TO_FOLDER = titleToPageFileName(
-      TITLE_WORKSPACE_TO_FOLDER
-    )
 
     const TITLE_WORKSPACE_TO_SUBFOLDER = "Move from Workspace to subfolder"
-    const FILENAME_WORKSPACE_TO_SUBFOLDER = titleToPageFileName(
-      TITLE_WORKSPACE_TO_SUBFOLDER
-    )
 
     beforeEach(() => {
       cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
@@ -46,12 +40,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to navigate from Workspace to subfolder back to Workspace via MoveModal buttons", () => {
-      cy.contains(TITLE_WORKSPACE_TO_FOLDER).should("exist")
-      cy.get(`button[id^="pageCard-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`)
-        .should("exist")
-        .clickAndWait()
-
-      cy.get("button[id^=move-]").first().clickAndWait()
+      cy.contains("a", TITLE_WORKSPACE_TO_FOLDER).as("pageItem").should("exist")
+      cy.clickContextMenuItem("@pageItem", "Move to")
+      waitForDom()
 
       cy.contains(`Move Here`)
 
@@ -164,13 +155,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move page from Workspace to itself and show correct success message", () => {
-      cy.contains(TITLE_WORKSPACE_TO_FOLDER).should("exist")
-      cy.get(`button[id^="pageCard-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`)
-        .should("exist")
-        .clickAndWait()
-
-      cy.get("button[id^=move-]").first().clickAndWait()
-
+      cy.contains("a", TITLE_WORKSPACE_TO_FOLDER).as("pageItem").should("exist")
+      cy.clickContextMenuItem("@pageItem", "Move to")
+      waitForDom()
       cy.contains(`Move Here`)
 
       cy.contains("button", "Move Here").clickAndWait()
@@ -181,13 +168,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move a page from Workspace to folder", () => {
-      cy.contains(TITLE_WORKSPACE_TO_FOLDER).should("exist")
-      cy.get(`button[id^="pageCard-dropdown-${FILENAME_WORKSPACE_TO_FOLDER}"]`)
-        .should("exist")
-        .clickAndWait()
-
-      cy.get("button[id^=move-]").first().clickAndWait()
-
+      cy.contains("a", TITLE_WORKSPACE_TO_FOLDER).as("pageItem").should("exist")
+      cy.clickContextMenuItem("@pageItem", "Move to")
+      waitForDom()
       cy.contains(`Move Here`)
 
       // Assert
@@ -244,15 +227,11 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move a page from folder to subfolder", () => {
-      cy.contains(TITLE_WORKSPACE_TO_SUBFOLDER).should("exist")
-      cy.get(
-        `button[id^="pageCard-dropdown-${FILENAME_WORKSPACE_TO_SUBFOLDER}"]`
-      )
+      cy.contains("a", TITLE_WORKSPACE_TO_SUBFOLDER)
+        .as("pageItem")
         .should("exist")
-        .clickAndWait()
-
-      cy.get("button[id^=move-]").first().clickAndWait()
-
+      cy.clickContextMenuItem("@pageItem", "Move to")
+      waitForDom()
       cy.contains(`Move Here`)
 
       // Assert
@@ -344,15 +323,12 @@ describe("Move flow", () => {
       )
     })
 
-    it("Should be able to navigate from folder to Workspace to subfolder back to folder via MoveModal buttons", () => {
-      cy.contains(TITLE_FOLDER_TO_WORKSPACE).should("exist")
-      cy.get(
-        `button[id^="folderItem-dropdown-${FILENAME_FOLDER_TO_WORKSPACE}"]`
-      )
+    it.only("Should be able to navigate from folder to Workspace to subfolder back to folder via MoveModal buttons", () => {
+      cy.contains("a", TITLE_FOLDER_TO_WORKSPACE)
+        .as("folderItem")
         .should("exist")
-        .clickAndWait()
-
-      cy.get("button[id^=move-]").first().trigger("mousedown")
+      cy.clickContextMenuItem("@folderItem", "Move to")
+      waitForDom()
       cy.contains(`Move Here`)
 
       cy.get("u")
@@ -383,13 +359,6 @@ describe("Move flow", () => {
 
       cy.get("u")
         .first()
-        .contains(TEST_REPO_FOLDER_NAME)
-        .prev()
-        .contains(">")
-        .prev()
-        .contains("Workspace")
-      cy.get("u")
-        .eq(1)
         .contains(TITLE_FOLDER_TO_WORKSPACE)
         .prev()
         .contains(">")
