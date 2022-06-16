@@ -9,7 +9,6 @@ describe("Files", () => {
   const COOKIE_NAME = Cypress.env("COOKIE_NAME")
   const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
   const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
-  const CUSTOM_TIMEOUT = Cypress.env("CUSTOM_TIMEOUT")
 
   const FILE_TITLE = "singapore.pdf"
   const OTHER_FILE_TITLE = "america.pdf"
@@ -49,10 +48,10 @@ describe("Files", () => {
       cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH)
       // ASSERTS
       cy.wait("@createFile") // should intercept POST request
-      cy.contains(FILE_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist") // file should be contained in Files
+      cy.contains(FILE_TITLE).should("exist") // file should be contained in Files
     })
 
-    it("Should be able to edit an file", () => {
+    it("Should be able to edit a file", () => {
       // Set intercept to listen for POST request on server
       cy.intercept({
         method: "POST",
@@ -62,7 +61,7 @@ describe("Files", () => {
       cy.renameMedia(FILE_TITLE, OTHER_FILE_TITLE)
       // ASSERTS
       cy.wait("@renameFile")
-      cy.contains(OTHER_FILE_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist") // file should be contained in Files
+      cy.contains(OTHER_FILE_TITLE).should("exist") // file should be contained in Files
     })
 
     it("Should not be able to create file with invalid title", () => {
@@ -114,11 +113,11 @@ describe("Files", () => {
     })
 
     it("Should be able to delete file", () => {
-      cy.deleteMedia(OTHER_FILE_TITLE)
+      cy.contains("button", OTHER_FILE_TITLE).as("filePreview")
+      cy.clickContextMenuItem("@filePreview", "Delete")
+      cy.contains("button", "Delete").click()
       // ASSERTS
-      cy.contains(OTHER_FILE_TITLE, { timeout: CUSTOM_TIMEOUT }).should(
-        "not.exist"
-      ) // File name should not exist in Files
+      cy.contains(OTHER_FILE_TITLE).should("not.exist") // File name should not exist in Files
     })
   })
 
@@ -145,35 +144,25 @@ describe("Files", () => {
 
       // ASSERTS
       cy.wait(E2E_DEFAULT_WAIT_TIME)
-      cy.contains(DIRECTORY_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist") // Directory name should be contained in Files
+      cy.contains(DIRECTORY_TITLE).should("exist") // Directory name should be contained in Files
     })
 
     it("Should be able to edit file directory name", () => {
       // User should be able edit directory details
-      const testDirectoryCard = cy
-        .contains(DIRECTORY_TITLE, { timeout: CUSTOM_TIMEOUT })
-        .should("exist")
-      testDirectoryCard
-        .children()
-        .within(() => cy.get("[id^=settings-]").click())
-      cy.get("div[id^=settings-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
+      cy.contains("a", DIRECTORY_TITLE).should("exist").as("folderItem")
+      cy.clickContextMenuItem("@folderItem", "Settings")
       cy.get("#newDirectoryName").clear().type(OTHER_DIRECTORY_TITLE)
       cy.contains("button", "Save").click()
       cy.wait(E2E_CHANGE_WAIT_TIME)
 
       // ASSERTS
-      cy.contains(OTHER_DIRECTORY_TITLE, { timeout: CUSTOM_TIMEOUT }).should(
-        "exist"
-      ) // New file directory name should be contained in Files
+      cy.contains(OTHER_DIRECTORY_TITLE).should("exist") // New file directory name should be contained in Files
     })
 
     it("Should be able to delete file directory", () => {
       // User should be able delete directory
-      const testDirectoryCard = cy.contains(OTHER_DIRECTORY_TITLE)
-      testDirectoryCard
-        .children()
-        .within(() => cy.get("[id^=settings-]").click())
-      cy.get("div[id^=delete-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
+      cy.contains("a", OTHER_DIRECTORY_TITLE).should("exist").as("folderItem")
+      cy.clickContextMenuItem("@folderItem", "Delete")
       cy.contains("button", "Delete").click()
       cy.wait(E2E_CHANGE_WAIT_TIME)
       // ASSERTS
@@ -199,7 +188,7 @@ describe("Files", () => {
 
       // Assert
       cy.wait(E2E_DEFAULT_WAIT_TIME)
-      cy.contains(DIRECTORY_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist")
+      cy.contains(DIRECTORY_TITLE).should("exist")
     })
 
     beforeEach(() => {
@@ -215,27 +204,24 @@ describe("Files", () => {
       cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH)
       // ASSERTS
       cy.wait(E2E_DEFAULT_WAIT_TIME)
-      cy.contains("Media file successfully uploaded", {
-        timeout: CUSTOM_TIMEOUT,
-      }).should("exist")
-      cy.contains(FILE_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist") // file should be contained in Files
+      cy.contains("Media file successfully uploaded").should("exist")
+      cy.contains(FILE_TITLE).should("exist") // file should be contained in Files
     })
 
     it("Should be able to edit an file in file directory", () => {
-      cy.contains(FILE_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist")
+      cy.contains(FILE_TITLE).should("exist")
       cy.renameMedia(FILE_TITLE, OTHER_FILE_TITLE)
       // ASSERTS
       cy.wait(E2E_DEFAULT_WAIT_TIME)
-      cy.contains(OTHER_FILE_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist") // File should be contained in Files
+      cy.contains(OTHER_FILE_TITLE).should("exist") // File should be contained in Files
     })
 
     it("Should be able to delete file from file directory", () => {
-      cy.contains(OTHER_FILE_TITLE, { timeout: CUSTOM_TIMEOUT }).should("exist")
-      cy.deleteMedia(OTHER_FILE_TITLE)
+      cy.contains(OTHER_FILE_TITLE).should("exist").as("fileItem")
+      cy.clickContextMenuItem("@fileItem", "Delete")
+      cy.contains("button", "Delete").click()
       // ASSERTS
-      cy.contains(OTHER_FILE_TITLE, { timeout: CUSTOM_TIMEOUT }).should(
-        "not.exist"
-      ) // File file name should not exist in Files
+      cy.contains(OTHER_FILE_TITLE).should("not.exist") // File file name should not exist in Files
     })
   })
 })
