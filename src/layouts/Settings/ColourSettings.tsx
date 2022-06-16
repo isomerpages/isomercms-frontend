@@ -1,17 +1,11 @@
 import {
   VStack,
-  Box,
   useDisclosure,
   HStack,
   forwardRef,
   Flex,
   Modal,
-  ModalOverlay,
   ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
 } from "@chakra-ui/react"
 import {
   FormLabel,
@@ -41,37 +35,37 @@ export const ColourSettings = ({
       <SectionHeader label="Colours" />
       <VStack spacing="1rem" align="flex-start" w="50%">
         <FormColourPicker
-          {...register("primaryColour")}
+          {...register("colours.primaryColour")}
           label="Primary"
           isDisabled={isError}
         />
         <FormColourPicker
-          {...register("secondaryColour")}
+          {...register("colours.secondaryColour")}
           label="Secondary"
           isDisabled={isError}
         />
         <FormColourPicker
-          {...register("mediaColours.0")}
+          {...register("colours.mediaColours.0")}
           label="Resource 1"
           isDisabled={isError}
         />
         <FormColourPicker
-          {...register("mediaColours.1")}
+          {...register("colours.mediaColours.1")}
           label="Resource 2"
           isDisabled={isError}
         />
         <FormColourPicker
-          {...register("mediaColours.2")}
+          {...register("colours.mediaColours.2")}
           label="Resource 2"
           isDisabled={isError}
         />
         <FormColourPicker
-          {...register("mediaColours.3")}
+          {...register("colours.mediaColours.3")}
           label="Resource 3"
           isDisabled={isError}
         />
         <FormColourPicker
-          {...register("mediaColours.4")}
+          {...register("colours.mediaColours.4")}
           label="Resource 4"
           isDisabled={isError}
         />
@@ -91,11 +85,18 @@ const FormColourPicker = forwardRef<FormColourPickerProps, "input">(
     { name, label, isDisabled, ...rest }: FormColourPickerProps,
     ref
   ): JSX.Element => {
-    const fieldName = `colours.${name}`
     const { isOpen, onOpen, onClose } = useDisclosure()
     const { setValue, getValues } = useFormContext()
-    const initialColour: string = getValues(fieldName)
+    const initialColour: string = getValues(name)
     const [colour, setColour] = useState<string>(initialColour)
+    const [hasSelectedColour, setHasSelectedColour] = useState(false)
+    // Reset colour if user clicks away without selecting so that the button background
+    // will always be in sync with the input hex code
+    const resetColour = () => {
+      if (!hasSelectedColour) {
+        setColour(initialColour)
+      }
+    }
 
     return (
       <>
@@ -123,7 +124,13 @@ const FormColourPicker = forwardRef<FormColourPickerProps, "input">(
             />
           </Flex>
         </HStack>
-        <Modal onClose={onClose} isOpen={isOpen} isCentered>
+        <Modal
+          onClose={onClose}
+          isOpen={isOpen}
+          isCentered
+          onOverlayClick={resetColour}
+          onEsc={resetColour}
+        >
           <ModalContent w="auto">
             <SketchPicker
               width="250px"
@@ -134,7 +141,8 @@ const FormColourPicker = forwardRef<FormColourPickerProps, "input">(
             <Button
               w="100%"
               onClick={() => {
-                setValue(fieldName, colour)
+                setValue(name, colour)
+                setHasSelectedColour(true)
                 onClose()
               }}
             >
