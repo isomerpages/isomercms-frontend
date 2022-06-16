@@ -42,6 +42,9 @@ const LoginProvider = ({ children }) => {
     removeStoredUserId()
     removeStoredUser()
     removeSites()
+    // NOTE: This is REQUIRED (emphasis here) for auto-redirect on removal of stored user id.
+    // This is IN ADDITION to removing the value associated with the key.
+    setStoredUserId(null)
   }
 
   // Set interceptors to log users out if an error occurs within the LoginProvider
