@@ -5,7 +5,7 @@ describe("Login flow", () => {
 
   it("Home page should have login button", () => {
     cy.visit(CMS_BASEURL)
-    cy.get("button").should("have.text", LOGIN_BUTTON_TEXT)
+    cy.contains("button", LOGIN_BUTTON_TEXT).should("exist")
   })
 
   it("Login button should redirect to GitHub login on click", () => {
