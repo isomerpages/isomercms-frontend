@@ -23,11 +23,11 @@ const DEFAULT_BE_STATE = {
   facebook_pixel: "",
   google_analytics: "",
   linkedin_insights: "",
-  is_government: "",
+  is_government: false,
   contact_us: "",
   feedback: "",
   faq: "",
-  show_reach: "",
+  show_reach: false,
   logo: "",
 }
 
