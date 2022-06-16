@@ -1,7 +1,7 @@
 import { CloseButton, HStack } from "@chakra-ui/react"
 import { Breadcrumb } from "components/folders/Breadcrumb"
 import { LoadingButton } from "components/LoadingButton"
-import { MoveMenuBackButton, DirMenuItem, FileMenuItem } from "components/move"
+import { MoveMenuHeader, DirMenuItem, FileMenuItem } from "components/move"
 import _ from "lodash"
 import { useState } from "react"
 
@@ -91,7 +91,7 @@ export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
               )}
             />
             <div className={`${elementStyles.moveModal}`}>
-              <MoveMenuBackButton
+              <MoveMenuHeader
                 onBack={() => {
                   setMoveQuery(_.omit(moveQuery, lastItemType))
                   setMoveTo(_.omit(moveQuery, lastItemType))
