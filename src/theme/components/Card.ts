@@ -28,8 +28,8 @@ const variantMulti: PartsStyleObject<typeof parts> = {
   container: {
     gridTemplateColumns: "1fr 2.5rem",
     // This is a 2x2 grid
-    gridTemplateAreas: "'body body' 'footer button'",
-    gap: "1rem",
+    gridTemplateAreas: "'body button' 'footer button'",
+    gap: "1rem 0rem",
   },
   footer: {
     gridArea: "footer",
@@ -45,7 +45,7 @@ export const Card: ComponentMultiStyleConfig = {
       justifyContent: "flex-start",
       boxSizing: "border-box",
       paddingInlineEnd: "2rem",
-      paddingInlineStart: "1.5rem",
+      paddingInlineStart: "2rem",
       paddingY: "1.5rem",
       border: "1px solid",
       borderColor: "border.action.light",

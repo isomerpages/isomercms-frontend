@@ -33,7 +33,7 @@ const SingleCardTemplate: Story<TemplateArgs> = ({ text }: TemplateArgs) => {
     >
       <CardBody>
         <Icon as={BiFolder} fontSize="1.5rem" fill="icon.alt" />
-        <Text textStyle="body-1" color="text.label">
+        <Text textStyle="body-1" color="text.label" noOfLines={1}>
           {text}
         </Text>
       </CardBody>
@@ -73,12 +73,12 @@ const MultiCardTemplate: Story<MultiCardTemplateArgs> = ({
       >
         <CardBody>
           <Icon as={BiFolder} fontSize="1.5rem" fill="icon.alt" />
-          <Text textStyle="body-1" color="text.label">
+          <Text textStyle="body-1" color="text.label" noOfLines={3}>
             {text}
           </Text>
         </CardBody>
         <CardFooter textAlign="left" ml="2.5rem">
-          <Text textStyle="caption-2" color="text.helper">
+          <Text textStyle="caption-2" color="text.helper" noOfLines={1}>
             {caption}
           </Text>
         </CardFooter>
