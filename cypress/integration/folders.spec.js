@@ -392,7 +392,7 @@ describe("Folders flow", () => {
     })
   })
 
-  describe.only("Create page, delete page, edit page settings in subfolder", () => {
+  describe("Create page, delete page, edit page settings in subfolder", () => {
     before(() => {
       Cypress.Cookies.preserveOnce(COOKIE_NAME)
       window.localStorage.setItem("userId", "test")
