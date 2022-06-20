@@ -92,7 +92,7 @@ export const ResourceCard = ({
             as={RouterLink}
             to={`${url}/editPageSettings/${encodedTitle}`}
           >
-            Page Settings
+            Page settings
           </ContextMenu.Item>
           <ContextMenu.Item
             icon={<BiFolder />}

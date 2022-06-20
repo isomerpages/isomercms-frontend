@@ -42,7 +42,7 @@ export const FolderCard = ({
             as={RouterLink}
             to={`${url}/editDirectorySettings/${title}`}
           >
-            Folder Settings
+            Folder settings
           </ContextMenu.Item>
           <>
             <Divider />
