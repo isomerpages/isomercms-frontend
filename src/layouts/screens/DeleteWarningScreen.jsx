@@ -1,7 +1,7 @@
 import { Button } from "@opengovsg/design-system-react"
 import { GenericWarningModal } from "components/GenericWarningModal"
+import { LoadingButton } from "components/LoadingButton"
 import PropTypes from "prop-types"
-import { useState } from "react"
 
 import { useDeleteDirectoryHook } from "hooks/directoryHooks"
 import { useGetMediaHook, useDeleteMediaHook } from "hooks/mediaHooks"
@@ -14,7 +14,6 @@ import {
 } from "utils"
 
 export const DeleteWarningScreen = ({ match, onClose }) => {
-  const [isOnClickLoading, setIsOnClickLoading] = useState(false)
   const { params, decodedParams } = match
   const { fileName, mediaRoom } = params
   const deleteItemName = params.mediaDirectoryName
@@ -46,16 +45,12 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
         <Button variant="ghost" colorScheme="secondary" onClick={onClose}>
           Cancel
         </Button>
-        <Button
-          isLoading={isOnClickLoading}
+        <LoadingButton
           colorScheme="danger"
-          onClick={() => {
-            setIsOnClickLoading(true)
-            deleteHandler({ sha: fileData.sha })
-          }}
+          onClick={() => deleteHandler({ sha: fileData.sha })}
         >
           Yes, delete
-        </Button>
+        </LoadingButton>
       </GenericWarningModal>
     ) : null
   }
@@ -74,16 +69,9 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
       <Button variant="ghost" colorScheme="secondary" onClick={onClose}>
         Cancel
       </Button>
-      <Button
-        isLoading={isOnClickLoading}
-        colorScheme="danger"
-        onClick={() => {
-          setIsOnClickLoading(true)
-          deleteHandler()
-        }}
-      >
+      <LoadingButton colorScheme="danger" onClick={deleteHandler}>
         Yes, delete
-      </Button>
+      </LoadingButton>
     </GenericWarningModal>
   )
 }
