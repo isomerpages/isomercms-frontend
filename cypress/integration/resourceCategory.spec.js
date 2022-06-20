@@ -237,7 +237,7 @@ describe("Resource category page", () => {
     )
   })
 
-  it.only("Resources category page should allow user to create a new resource page of type file", () => {
+  it("Resources category page should allow user to create a new resource page of type file", () => {
     cy.contains("Create page").click()
     cy.wait(E2E_DEFAULT_WAIT_TIME)
 
@@ -271,7 +271,7 @@ describe("Resource category page", () => {
     cy.contains(`${TEST_PAGE_DATE_PRETTIFIED}/FILE`)
   })
 
-  it.only("Resources category page should allow user to change an existing resource page from post to file", () => {
+  it("Resources category page should allow user to change an existing resource page from post to file", () => {
     cy.contains("a", TEST_PAGE_TITLE_RENAMED, { timeout: E2E_EXTENDED_TIMEOUT })
       .as("pageCard")
       .should("exist")
@@ -293,7 +293,7 @@ describe("Resource category page", () => {
     cy.contains(`${TEST_PAGE_DATE_CHANGED_PRETTIFIED}/FILE`)
   })
 
-  it.only("Resources category page should allow user to change an existing resource page from file to post", () => {
+  it("Resources category page should allow user to change an existing resource page from file to post", () => {
     cy.contains("a", TEST_PAGE_TITLE_RENAMED, { timeout: E2E_EXTENDED_TIMEOUT })
       .as("pageCard")
       .should("exist")
