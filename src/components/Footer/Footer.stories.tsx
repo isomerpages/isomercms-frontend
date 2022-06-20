@@ -31,7 +31,7 @@ const MultiButtonFooterTemplate: Story<MultiButtonFooterTemplateArgs> = ({
 }: MultiButtonFooterTemplateArgs) => {
   return (
     <Footer>
-      <Button>{buttonText}</Button>
+      <Button variant="clear">{buttonText}</Button>
       <Button>{secondButtonText}</Button>
     </Footer>
   )
