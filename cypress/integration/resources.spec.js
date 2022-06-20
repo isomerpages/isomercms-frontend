@@ -32,6 +32,7 @@ describe("Resources page", () => {
     cy.visit(
       `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}`
     )
+    cy.contains("Verify").should("not.exist")
   })
 
   it("Resources page should have resources header", () => {
@@ -40,7 +41,7 @@ describe("Resources page", () => {
 
   it("Resources page should allow user to create a new resource category", () => {
     cy.wait(E2E_DEFAULT_WAIT_TIME)
-    cy.contains("Create new category").click()
+    cy.contains("a", "Create category").click()
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY)
     cy.contains("Next").click()
 
@@ -54,13 +55,13 @@ describe("Resources page", () => {
     )
 
     // 2. If user goes back to Resources, they should be able to see that the folder exists
-    cy.contains("Back to Resources").click()
+    cy.contains("a", "Resources").click()
     cy.contains(TEST_CATEGORY)
   })
 
   it("Resources page should not allow user to create a new resource category with invalid name", () => {
     cy.wait(E2E_DEFAULT_WAIT_TIME)
-    cy.contains("Create new category").click()
+    cy.contains("a", "Create category").click()
 
     // Disabled button for special characters
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_SPECIAL).blur()
@@ -81,7 +82,7 @@ describe("Resources page", () => {
 
   it("Resources page should allow user to create another new resource category", () => {
     cy.wait(E2E_DEFAULT_WAIT_TIME)
-    cy.contains("Create new category").click()
+    cy.contains("a", "Create category").click()
 
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_2)
     cy.contains("Next").click()
@@ -94,14 +95,14 @@ describe("Resources page", () => {
     )
 
     // 2. If user goes back to Resources, they should be able to see that the folder exists
-    cy.contains("Back to Resources").click()
+    cy.contains("a", "Resources").click()
     cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains(TEST_CATEGORY_2)
   })
 
   it("Resources page should not allow user to rename a resource category using an invalid name", () => {
-    cy.contains(TEST_CATEGORY_2).find("[id^=settings-folder]").click()
-    cy.contains(TEST_CATEGORY_2).contains("Edit details").click()
+    cy.contains("a", TEST_CATEGORY_2).as("folderCard")
+    cy.clickContextMenuItem("@folderCard", "settings")
 
     // Disabled button for special characters
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_SPECIAL).blur()
@@ -122,10 +123,10 @@ describe("Resources page", () => {
 
   it("Resources page should allow user to rename a resource category", () => {
     cy.wait(E2E_DEFAULT_WAIT_TIME)
-    cy.contains(TEST_CATEGORY_2).find("[id^=settings-folder]").click()
-    cy.contains(TEST_CATEGORY_2).contains("Edit details").click()
+    cy.contains("a", TEST_CATEGORY_2).as("folderCard")
+    cy.clickContextMenuItem("@folderCard", "settings")
 
-    cy.get("input").clear().type(TEST_CATEGORY_RENAMED)
+    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_RENAMED)
     cy.contains("Save").click()
 
     // Set a wait time because the API takes time
@@ -138,7 +139,7 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to navigate into a resource category", () => {
-    cy.contains(TEST_CATEGORY).click()
+    cy.contains("a", TEST_CATEGORY).click()
     cy.url().should(
       "include",
       `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
@@ -146,17 +147,15 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to delete a resource category", () => {
-    cy.contains(TEST_CATEGORY_RENAMED).find("[id^=settings-folder]").click()
-    cy.contains(TEST_CATEGORY_RENAMED).contains("Delete").click()
+    cy.contains("a", TEST_CATEGORY_RENAMED).as("folderCard")
+    cy.clickContextMenuItem("@folderCard", "Delete")
     cy.contains(":button", "Cancel").click()
 
-    cy.contains(TEST_CATEGORY_RENAMED).find("[id^=settings-folder]").click()
-    cy.contains(TEST_CATEGORY_RENAMED).contains("Delete").click()
+    cy.contains("a", TEST_CATEGORY_RENAMED).as("folderCard")
+    cy.clickContextMenuItem("@folderCard", "Delete")
     cy.contains(":button", "Delete").click()
 
-    // Set a wait time because the API takes time
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
-    cy.contains("Successfully deleted directory")
+    cy.contains("Successfully deleted directory").should("exist")
 
     cy.contains(TEST_CATEGORY_RENAMED).should("not.exist")
   })
