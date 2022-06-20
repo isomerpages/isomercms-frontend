@@ -1,5 +1,7 @@
-import DeleteWarningModal from "components/DeleteWarningModal"
+import { Button } from "@opengovsg/design-system-react"
+import { GenericWarningModal } from "components/GenericWarningModal"
 import PropTypes from "prop-types"
+import { useState } from "react"
 
 import { useDeleteDirectoryHook } from "hooks/directoryHooks"
 import { useGetMediaHook, useDeleteMediaHook } from "hooks/mediaHooks"
@@ -12,6 +14,7 @@ import {
 } from "utils"
 
 export const DeleteWarningScreen = ({ match, onClose }) => {
+  const [isOnClickLoading, setIsOnClickLoading] = useState(false)
   const { params, decodedParams } = match
   const { fileName, mediaRoom } = params
   const deleteItemName = params.mediaDirectoryName
@@ -34,11 +37,26 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
         })
 
     return fileData ? (
-      <DeleteWarningModal
-        onDelete={() => deleteHandler({ sha: fileData.sha })}
-        onCancel={() => onClose()}
-        type={fileName}
-      />
+      <GenericWarningModal
+        isOpen // Modal is always present for delete screens
+        onClose={onClose}
+        displayTitle={`Delete ${fileName}`}
+        displayText={`Are you sure you want to delete ${fileName}?`}
+      >
+        <Button variant="ghost" colorScheme="secondary" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button
+          isLoading={isOnClickLoading}
+          colorScheme="danger"
+          onClick={() => {
+            setIsOnClickLoading(true)
+            deleteHandler({ sha: fileData.sha })
+          }}
+        >
+          Yes, delete
+        </Button>
+      </GenericWarningModal>
     ) : null
   }
 
@@ -47,11 +65,26 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
   })
 
   return (
-    <DeleteWarningModal
-      onDelete={deleteHandler}
-      onCancel={() => onClose()}
-      type={deleteItemName}
-    />
+    <GenericWarningModal
+      isOpen // Modal is always present for delete screens
+      onClose={onClose}
+      displayTitle={`Delete ${deleteItemName}`}
+      displayText={`Are you sure you want to delete ${deleteItemName}?`}
+    >
+      <Button variant="ghost" colorScheme="secondary" onClick={onClose}>
+        Cancel
+      </Button>
+      <Button
+        isLoading={isOnClickLoading}
+        colorScheme="danger"
+        onClick={() => {
+          setIsOnClickLoading(true)
+          deleteHandler()
+        }}
+      >
+        Yes, delete
+      </Button>
+    </GenericWarningModal>
   )
 }
 
