@@ -25,7 +25,7 @@ export const CategoryCard = ({ title }: CategoryCardProps): JSX.Element => {
         <Card variant="single">
           <CardBody>
             <Icon as={BiFolder} fontSize="1.5rem" fill="icon.alt" />
-            <Text textStyle="subhead-1" color="text.label">
+            <Text textStyle="subhead-1" color="text.label" noOfLines={1}>
               {prettifyPageFileName(title)}
             </Text>
           </CardBody>

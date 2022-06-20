@@ -18,5 +18,9 @@ export const isPageData = (possiblePage: unknown): possiblePage is PageData => {
 export const isResourcePageData = (
   possiblePage: unknown
 ): possiblePage is ResourcePageData => {
-  return isPageData(possiblePage) && possiblePage.date !== undefined
+  return (
+    isPageData(possiblePage) &&
+    possiblePage.date !== undefined &&
+    possiblePage.resourceType !== undefined
+  )
 }

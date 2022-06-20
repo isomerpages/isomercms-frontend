@@ -72,13 +72,13 @@ export const ResourceCategory = (): JSX.Element => {
           <Skeleton isLoaded={!isLoading}>
             <SimpleGrid columns={3} spacing="1.5rem">
               {/* NOTE: need to use multiline cards */}
-              {pagesData
-                .filter(
-                  (page: { name: string }) => page.name !== "contact-us.md"
-                )
-                .map(({ name, date }) => (
-                  <ResourceCard title={name} date={date} />
-                ))}
+              {pagesData.map(({ name, date, resourceType }) => (
+                <ResourceCard
+                  title={name}
+                  date={date}
+                  resourceType={resourceType}
+                />
+              ))}
             </SimpleGrid>
           </Skeleton>
         </Section>

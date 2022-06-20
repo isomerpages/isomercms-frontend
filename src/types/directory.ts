@@ -29,6 +29,4 @@ export interface PageData {
   resourceType?: "file" | "post"
 }
 
-export type ResourcePageData = SetRequired<PageData, "date"> & {
-  resourceType: "post"
-}
+export type ResourcePageData = Required<PageData>
