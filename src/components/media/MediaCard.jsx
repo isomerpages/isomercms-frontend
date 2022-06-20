@@ -86,7 +86,7 @@ const MediaCard = ({ type, media, onClick, showSettings = true }) => {
               as={RouterLink}
               to={`${url}/editMediaSettings/${encodedName}`}
             >
-              Image Settings
+              Image settings
             </ContextMenu.Item>
             <ContextMenu.Item
               icon={<BiFolder />}
