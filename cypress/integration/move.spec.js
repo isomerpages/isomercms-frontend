@@ -31,7 +31,6 @@ describe("Move flow", () => {
   beforeEach(() => {
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
     window.localStorage.setItem("userId", "test")
-    cy.contains("Verify your email").should("not.exist")
     waitForDom()
   })
 
@@ -41,6 +40,7 @@ describe("Move flow", () => {
 
     beforeEach(() => {
       cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
+      cy.contains("Verify").should("not.exist")
     })
 
     it("Should be able to navigate from Workspace to subfolder back to Workspace via MoveModal buttons", () => {
@@ -259,6 +259,7 @@ describe("Move flow", () => {
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_REPO_FOLDER_NAME}`
       )
+      cy.contains("Verify").should("not.exist")
     })
 
     it("Should be able to navigate from folder to Workspace to subfolder back to folder via MoveModal buttons", () => {
@@ -447,6 +448,7 @@ describe("Move flow", () => {
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_REPO_FOLDER_NAME}/subfolders/${PARSED_TEST_REPO_SUBFOLDER_NAME}`
       )
+      cy.contains("Verify").should("not.exist")
     })
 
     it("Should be able to navigate from subfolder to folder to Workspace back to subfolder via MoveModal buttons", () => {
@@ -634,6 +636,7 @@ describe("Move flow", () => {
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${PARSED_TEST_REPO_RESOURCE_ROOM_NAME}/resourceCategory/${PARSED_TEST_REPO_RESOURCE_CATEGORY_NAME}`
       )
+      cy.contains("Verify").should("not.exist")
     })
 
     it("Should be able to navigate from Resource Category to Resource Room back to Resource Category via MoveModal buttons", () => {
