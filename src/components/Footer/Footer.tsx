@@ -16,6 +16,6 @@ export const Footer = ({
     align="center"
     bottom="0"
   >
-    <HStack>{children}</HStack>
+    <HStack spacing="1rem">{children}</HStack>
   </Flex>
 )
