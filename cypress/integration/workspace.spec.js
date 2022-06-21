@@ -210,19 +210,19 @@ describe("Workspace Pages flow", () => {
       cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
       window.localStorage.setItem("userId", "test")
       cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
+      cy.contains("Verify").should("not.exist")
     })
 
     it("Test site workspace page should have folders section", () => {
-      cy.contains("Create new folder", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
+      cy.contains("Create folder").should("exist")
     })
 
     // Create
     it("Should be able to create a new folder with valid folder name with no pages", () => {
-      cy.contains("Create new folder", { timeout: E2E_EXTENDED_TIMEOUT })
-        .should("exist")
-        .click()
+      // Arrange
+      cy.contains("Create folder").should("exist").click()
+
+      // Act
       cy.get("input#newDirectoryName").clear().type(TEST_FOLDER_NO_PAGES_TITLE)
       cy.contains("Next").click()
       cy.contains("Skip").click()
@@ -239,8 +239,8 @@ describe("Workspace Pages flow", () => {
     })
 
     it("Should be able to create a new folder with valid folder name with page", () => {
-      // Create test page
-      cy.get("#settings-NEW").click()
+      // Act
+      cy.contains("Create page").should("exist").click()
       cy.get("#title").clear().type(TEST_PAGE_TITLE)
       cy.get("#permalink").clear().type(TEST_PAGE_PERMALNK)
       cy.contains("Save").click()
@@ -256,9 +256,7 @@ describe("Workspace Pages flow", () => {
           cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
         )
 
-      cy.contains("Create new folder", { timeout: E2E_EXTENDED_TIMEOUT })
-        .should("exist")
-        .click()
+      cy.contains("Create folder").should("exist").click()
       cy.get("input#newDirectoryName")
         .clear()
         .type(TEST_FOLDER_WITH_PAGES_TITLE)
@@ -274,9 +272,7 @@ describe("Workspace Pages flow", () => {
         "include",
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_FOLDER_WITH_PAGES_TITLE}`
       )
-      cy.contains(TEST_PAGE_TITLE, { timeout: E2E_EXTENDED_TIMEOUT })
-        .should("exist")
-        .click()
+      cy.contains("a", TEST_PAGE_TITLE).should("exist").click()
       cy.get(".CodeMirror-scroll", { timeout: E2E_EXTENDED_TIMEOUT }).should(
         "contain",
         TEST_PAGE_CONTENT
@@ -286,7 +282,7 @@ describe("Workspace Pages flow", () => {
     it("Should not be able to create a new folder with invalid folder name", () => {
       // Title is too short
       const INVALID_FOLDER_TITLE = "t"
-      cy.contains("Create new folder", { timeout: E2E_EXTENDED_TIMEOUT })
+      cy.contains("Create folder", { timeout: E2E_EXTENDED_TIMEOUT })
         .should("exist")
         .click()
       cy.get("input#newDirectoryName").clear().type(INVALID_FOLDER_TITLE).blur()
@@ -303,55 +299,50 @@ describe("Workspace Pages flow", () => {
     })
 
     it("Should be able to rename a folder", () => {
-      cy.contains(PRETTIFIED_FOLDER_WITH_PAGES_TITLE, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      })
+      cy.contains("a", PRETTIFIED_FOLDER_WITH_PAGES_TITLE)
+        .as("folderItem")
         .should("exist")
-        .within(() => cy.get("[id^=settingsIcon]").click())
-      cy.contains("Edit details").click()
-      cy.contains("Folder settings")
+      cy.clickContextMenuItem("@folderItem", "settings")
       cy.get("input#newDirectoryName")
         .clear()
         .type(EDITED_TEST_FOLDER_WITH_PAGES_TITLE)
       cy.contains("button", "Save").click()
 
       // Assert
-      cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE, {
+      cy.contains("a", PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       })
         .should("exist")
         .click()
-      cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
       cy.url().should(
         "include",
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_EDITED_TEST_FOLDER_WITH_PAGES_TITLE}`
       )
 
-      cy.contains(TEST_PAGE_TITLE).click()
+      cy.contains("a", TEST_PAGE_TITLE).click()
       cy.get(".CodeMirror-scroll").should("contain", TEST_PAGE_CONTENT)
     })
 
     it("Should be able to delete a folder", () => {
-      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      })
+      // Arrange
+      cy.contains("a", PRETTIFIED_FOLDER_NO_PAGES_TITLE)
+        .as("emptyFolderItem")
         .should("exist")
-        .within(() => cy.get("[id^=settingsIcon]").click())
-      cy.get("button[id^=delete-]").first().click()
+      cy.contains("a", PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE).as(
+        "folderItem"
+      )
+
+      // Act
+      cy.clickContextMenuItem("@emptyFolderItem", "Delete")
       cy.contains("button", "Delete").click()
 
+      cy.clickContextMenuItem("@folderItem", "Delete")
+      cy.contains("button", "Delete").click()
+
+      // Assert
       cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("not.exist")
-
-      cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE).within(() =>
-        cy.get("[id^=settingsIcon]").click()
-      )
-      cy.get("button[id^=delete-]").first().click()
-      cy.contains("button", "Delete").click()
-
       cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("not.exist")
