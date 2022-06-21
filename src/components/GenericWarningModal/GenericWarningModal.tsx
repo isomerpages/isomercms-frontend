@@ -3,12 +3,12 @@ import {
   HStack,
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react"
+import { ModalCloseButton } from "@opengovsg/design-system-react"
 import parse from "html-react-parser"
 
 interface ModalProps {
@@ -29,7 +29,9 @@ export const GenericWarningModal = ({
   <Modal isOpen={isOpen} onClose={onClose}>
     <ModalOverlay />
     <ModalContent>
-      <ModalHeader>{displayTitle}</ModalHeader>
+      <ModalHeader>
+        <Text pr="2rem">{displayTitle}</Text>
+      </ModalHeader>
       <ModalCloseButton />
       <ModalBody>
         <Text textStyle="body-2">{parse(displayText)}</Text>
