@@ -34,7 +34,7 @@ import { ResourceCard, ResourceCategoryBreadcrumb } from "./components"
 
 export const ResourceCategory = (): JSX.Element => {
   const { params } = useRouteMatch<ResourceCategoryRouteParams>()
-  const { resourceCategoryName: collectionName } = params
+  const { resourceCategoryName } = params
   const { path, url } = useRouteMatch()
   const history = useHistory()
 
@@ -53,7 +53,7 @@ export const ResourceCategory = (): JSX.Element => {
         <Section>
           <Box>
             <Text as="h2" textStyle="h2">
-              {deslugifyDirectory(collectionName)}
+              {deslugifyDirectory(resourceCategoryName)}
             </Text>
             <ResourceCategoryBreadcrumb />
           </Box>
