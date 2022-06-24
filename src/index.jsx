@@ -3,6 +3,7 @@ import { Integrations } from "@sentry/tracing"
 import ReactDOM from "react-dom"
 
 import "styles/index.scss"
+import "styles/isomer-template.scss"
 import App from "App"
 
 if (
