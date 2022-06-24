@@ -110,6 +110,8 @@ const ButtonLink = (props: ButtonProps & LinkProps) => {
   return (
     <Button
       as={Link}
+      rel="noopener noreferrer"
+      target="_blank"
       textDecoration="none"
       _hover={{
         textDecoration: "none",

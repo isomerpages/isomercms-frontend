@@ -156,14 +156,22 @@ export const Sidebar = (): JSX.Element => {
       <Spacer />
       <Divider color="secondary.100" />
       <LinkBox>
-        <LinkOverlay href="https://go.gov.sg/isomercms-guide/">
+        <LinkOverlay
+          rel="noopener noreferrer"
+          target="_blank"
+          href="https://go.gov.sg/isomercms-guide/"
+        >
           <SidebarButton leftIcon={<Icon as={BiBook} fontSize="1.5rem" />}>
             <Text textStyle="body-1">Guide</Text>
           </SidebarButton>
         </LinkOverlay>
       </LinkBox>
       <LinkBox>
-        <LinkOverlay href="https://go.gov.sg/isomer-cms-help">
+        <LinkOverlay
+          href="https://go.gov.sg/isomer-cms-help"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
           <SidebarButton leftIcon={<Icon as={BiBuoy} fontSize="1.5rem" />}>
             <Text textStyle="body-1">Help</Text>
           </SidebarButton>
