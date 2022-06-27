@@ -642,7 +642,7 @@ const EditNavBar = ({ match }) => {
           displayText={`Are you sure you want to delete ${itemPendingForDelete.type}?`}
         >
           <Button
-            variant="ghost"
+            variant="clear"
             colorScheme="secondary"
             onClick={() => {
               setItemPendingForDelete({ id: null, type: "" })

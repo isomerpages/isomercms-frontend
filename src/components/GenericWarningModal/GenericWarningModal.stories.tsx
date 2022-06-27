@@ -54,7 +54,7 @@ const MultiButtonModalTemplate: Story<MultiButtonModalTemplateArgs> = ({
         displayTitle={displayTitle}
         displayText={displayText}
       >
-        <Button variant="ghost" colorScheme="secondary">
+        <Button variant="clear" colorScheme="secondary">
           {buttonText}
         </Button>
         <Button>{secondButtonText}</Button>

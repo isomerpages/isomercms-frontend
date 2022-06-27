@@ -191,7 +191,7 @@ const EditPage = ({ match }) => {
             <br/><br/>We recommend you to make a copy of your changes elsewhere, and come back later to reconcile your changes.`}
         >
           <Button
-            variant="ghost"
+            variant="clear"
             colorScheme="secondary"
             onClick={onOverwriteClose}
           >

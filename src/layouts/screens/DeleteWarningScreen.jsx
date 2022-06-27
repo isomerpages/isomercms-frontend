@@ -42,7 +42,7 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
         displayTitle={`Delete ${fileName}`}
         displayText={`Are you sure you want to delete ${fileName}?`}
       >
-        <Button variant="ghost" colorScheme="secondary" onClick={onClose}>
+        <Button variant="clear" colorScheme="secondary" onClick={onClose}>
           Cancel
         </Button>
         <LoadingButton
@@ -66,7 +66,7 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
       displayTitle={`Delete ${deleteItemName}`}
       displayText={`Are you sure you want to delete ${deleteItemName}?`}
     >
-      <Button variant="ghost" colorScheme="secondary" onClick={onClose}>
+      <Button variant="clear" colorScheme="secondary" onClick={onClose}>
         Cancel
       </Button>
       <LoadingButton colorScheme="danger" onClick={deleteHandler}>
