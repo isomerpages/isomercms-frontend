@@ -7,7 +7,7 @@ import { ContextMenuItem } from "./ContextMenuItem"
 // NOTE: Need to do this to be able to set properties
 export const ContextMenu = (props: MenuProps): JSX.Element => (
   // eslint-disable-next-line react/jsx-props-no-spreading
-  <ChakraMenu {...props} />
+  <ChakraMenu {...props} placement="bottom-start" />
 )
 
 const ContextMenuList = (props: MenuListProps): JSX.Element => {
