@@ -120,6 +120,33 @@ a {
   font-size: inherit;
 }
 
+a[href$=".pdf"] {
+  position: relative;
+  margin-left: 2.25rem;
+}
+
+a[href$=".pdf"]:before {
+  vertical-align: middle;
+  color: #767676;
+  font-size: 1.75rem;
+  font-family: sgds-icons;
+  content: "";
+  position: absolute;
+  left: -2rem;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+a[href$=".pdf"]:before:hover {
+  text-decoration: none;
+}
+
+a[href$=".pdf"][target="_blank"]:after {
+  content: "";
+  display: none;
+}
+
 a strong {
   color: currentColor;
 }
