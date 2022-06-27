@@ -64,6 +64,7 @@ export const Card: ComponentMultiStyleConfig = {
       alignItems: "flex-start",
       textAlign: "left",
       gridArea: "body",
+      height: "full",
     },
   },
   variants: {
