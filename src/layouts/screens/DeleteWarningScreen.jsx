@@ -1,6 +1,6 @@
 import { Button } from "@opengovsg/design-system-react"
-import { GenericWarningModal } from "components/GenericWarningModal"
 import { LoadingButton } from "components/LoadingButton"
+import { GenericWarningModal } from "components/WarningModal"
 import PropTypes from "prop-types"
 
 import { useDeleteDirectoryHook } from "hooks/directoryHooks"

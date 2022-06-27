@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
-import { GenericWarningModal } from "components/GenericWarningModal"
+import { GenericWarningModal } from "components/WarningModal"
 import PropTypes from "prop-types"
 import { useState, useEffect } from "react"
 

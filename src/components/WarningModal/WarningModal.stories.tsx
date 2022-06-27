@@ -1,7 +1,7 @@
 import { Button, useDisclosure } from "@chakra-ui/react"
 import { Story, ComponentMeta } from "@storybook/react"
 
-import { GenericWarningModal } from "./GenericWarningModal"
+import { GenericWarningModal } from "./WarningModal"
 
 const modalMeta = {
   title: "Components/GenericWarningModal",
