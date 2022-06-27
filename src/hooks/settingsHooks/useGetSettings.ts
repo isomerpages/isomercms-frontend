@@ -1,4 +1,4 @@
-import _ from "lodash"
+import _, { unionWith, zip } from "lodash"
 import { useQuery, UseQueryResult } from "react-query"
 import type { StringKeyOf } from "type-fest"
 
@@ -18,8 +18,8 @@ import { BE_TO_FE } from "./constants"
 const DEFAULT_BE_STATE = {
   title: "",
   description: "",
-  favicon: "",
-  shareicon: "",
+  favicon: "/images/isomer-logo.svg",
+  shareicon: "/images/isomer-logo.svg",
   facebook_pixel: "",
   google_analytics: "",
   linkedin_insights: "",
@@ -28,7 +28,7 @@ const DEFAULT_BE_STATE = {
   feedback: "",
   faq: "",
   show_reach: false,
-  logo: "",
+  logo: "/images/isomer-logo.svg",
 }
 
 const DEFAULT_SOCIAL_MEDIA_SETTINGS: SiteSocialMediaSettings = {
@@ -39,6 +39,12 @@ const DEFAULT_SOCIAL_MEDIA_SETTINGS: SiteSocialMediaSettings = {
   instagram: "",
   telegram: "",
   tiktok: "",
+}
+
+const DEFAULT_COLOUR_SETTINGS: SiteColourSettings = {
+  primaryColour: "#e72a70",
+  secondaryColour: "#38f731",
+  mediaColours: ["#e98691", "#f30c0c", "#2b3033", "#2b3033", "#2b3033"],
 }
 
 const TOGGLED_VALUES = ["is_government", "show_reach"]
@@ -70,11 +76,16 @@ const convertfromBe = (backendSettings: BackendSiteSettings): SiteSettings => {
   }
 
   const colours: SiteColourSettings = {
-    primaryColour: backendSettings.colors["primary-color"],
-    secondaryColour: backendSettings.colors["secondary-color"],
-    mediaColours: backendSettings.colors["media-colors"].map(
-      ({ color }) => color
-    ),
+    primaryColour:
+      backendSettings.colors["primary-color"] ||
+      DEFAULT_COLOUR_SETTINGS.primaryColour,
+    secondaryColour:
+      backendSettings.colors["secondary-color"] ||
+      DEFAULT_COLOUR_SETTINGS.secondaryColour,
+    mediaColours: zip(
+      backendSettings.colors["media-colors"].map(({ color }) => color),
+      DEFAULT_COLOUR_SETTINGS.mediaColours
+    ).map(([beValue, defaultValue]) => beValue || defaultValue!),
   }
 
   const rest = _(backendSettings)
