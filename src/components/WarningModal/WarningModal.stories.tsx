@@ -1,4 +1,4 @@
-import { Button, useDisclosure } from "@chakra-ui/react"
+import { Button, useDisclosure, Text } from "@chakra-ui/react"
 import { Story, ComponentMeta } from "@storybook/react"
 
 import { WarningModal } from "./WarningModal"
@@ -11,7 +11,7 @@ const modalMeta = {
 interface TemplateArgs {
   buttonText: string
   displayTitle: string
-  displayText: string
+  displayText: JSX.Element
 }
 
 const SingleButtonModalTemplate: Story<TemplateArgs> = ({
@@ -67,14 +67,14 @@ export const SingleButtonModal = SingleButtonModalTemplate.bind({})
 SingleButtonModal.args = {
   buttonText: "Button",
   displayTitle: "Modal Title",
-  displayText: "Modal Text",
+  displayText: <Text>Modal Text</Text>,
 }
 export const MultiButtonModal = MultiButtonModalTemplate.bind({})
 MultiButtonModal.args = {
   buttonText: "Button 1",
   secondButtonText: "Button 2",
   displayTitle: "Modal Title",
-  displayText: "Modal Text",
+  displayText: <Text>Modal Text</Text>,
 }
 
 export default modalMeta

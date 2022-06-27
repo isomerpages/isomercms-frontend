@@ -1,4 +1,4 @@
-import { HStack, useDisclosure } from "@chakra-ui/react"
+import { HStack, useDisclosure, Box, Text } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import Header from "components/Header"
 import NavSection from "components/navbar/NavSection"
@@ -626,7 +626,19 @@ const EditNavBar = ({ match }) => {
           isOpen={isRemovedContentWarningOpen}
           onClose={onRemovedContentWarningClose}
           displayTitle="Removed content"
-          displayText={`Some of your content has been removed as they attempt to link to invalid folders. No changes are permanent unless you press Save on the next page.<br/>${deletedLinks}`}
+          displayText={
+            <Box>
+              <Text>
+                Some of your content has been removed as they attempt to link to
+                invalid folders. No changes are permanent unless you press Save
+                on the next page.
+              </Text>
+              <br />
+              {deletedLinks.map((link) => (
+                <Text>{link}</Text>
+              ))}
+            </Box>
+          }
         >
           <Button onClick={onRemovedContentWarningClose}>Acknowledge</Button>
         </WarningModal>
@@ -639,7 +651,11 @@ const EditNavBar = ({ match }) => {
             onDeleteModalClose()
           }}
           displayTitle={`Delete ${itemPendingForDelete.type}`}
-          displayText={`Are you sure you want to delete ${itemPendingForDelete.type}?`}
+          displayText={
+            <Text>
+              Are you sure you want to delete {itemPendingForDelete.type}?
+            </Text>
+          }
         >
           <Button
             variant="clear"

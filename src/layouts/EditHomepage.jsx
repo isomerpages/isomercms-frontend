@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-shadow */
-import { useDisclosure } from "@chakra-ui/react"
+import { useDisclosure, Text } from "@chakra-ui/react"
 import { Button, Input } from "@opengovsg/design-system-react"
 import axios from "axios"
 import Header from "components/Header"
@@ -1180,7 +1180,11 @@ const EditHomepage = ({ match }) => {
             onClose()
           }}
           displayTitle={`Delete ${itemPendingForDelete.type} section`}
-          displayText={`Are you sure you want to delete ${itemPendingForDelete.type}?`}
+          displayText={
+            <Text>
+              Are you sure you want to delete {itemPendingForDelete.type}
+            </Text>
+          }
         >
           <Button
             variant="clear"

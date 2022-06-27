@@ -156,7 +156,12 @@ const Header = ({
         isOpen={isWarningModalOpen}
         onClose={onWarningModalClose}
         displayTitle="Warning"
-        displayText="You have unsaved changes. Are you sure you want to navigate away from this page?"
+        displayText={
+          <Text>
+            You have unsaved changes. Are you sure you want to navigate away
+            from this page?
+          </Text>
+        }
       >
         <Button colorScheme="danger" onClick={onWarningModalClose}>
           No

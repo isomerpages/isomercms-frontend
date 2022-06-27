@@ -1,4 +1,4 @@
-import { useDisclosure } from "@chakra-ui/react"
+import { useDisclosure, Text, Box, Code } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
 import Footer from "components/Footer"
@@ -145,21 +145,36 @@ const EditPage = ({ match }) => {
             onClose={onXSSClose}
             displayTitle="Warning"
             // DOMPurify removed object format taken from https://github.com/cure53/DOMPurify/blob/dd63379e6354f66d4689bb80b30cb43a6d8727c2/src/purify.js
-            displayText={`There is unauthorised JS detected in the following snippet${
-              DOMPurify.removed.length > 1 ? "s" : ""
-            }:
-          ${DOMPurify.removed.map(
-            (elem, i) =>
-              `<br/><code>${i}</code>: <code>${
-                elem.attribute?.textContent || elem.element?.textContent
-                  ? (
-                      elem.attribute?.textContent || elem.element?.textContent
-                    ).replace("<", "&lt;")
-                  : elem
-              }</code>`
-          )}
-          <br/><br/>Before saving, the editor input will be automatically sanitised to prevent security vulnerabilities.
-          <br/><br/>To save the sanitised editor input, press Acknowledge. To return to the editor without sanitising, press Cancel.`}
+            displayText={
+              <Box>
+                <Text>
+                  There is unauthorised JS detected in the following snippet
+                  {DOMPurify.removed.length > 1 ? "s" : ""}:
+                </Text>
+                {DOMPurify.removed.map((elem, i) => (
+                  <>
+                    <br />
+                    <Code>{i + 1}</Code>:
+                    <Code>
+                      {elem.attribute?.textContent || elem.element?.textContent
+                        ? (
+                            elem.attribute?.textContent ||
+                            elem.element?.textContent
+                          ).replace("<", "&lt;")
+                        : elem}
+                    </Code>
+                  </>
+                ))}
+                <br />
+                <br />
+                Before saving, the editor input will be automatically sanitised
+                to prevent security vulnerabilities.
+                <br />
+                <br />
+                To save the sanitised editor input, press Acknowledge. To return
+                to the editor without sanitising, press Cancel.`
+              </Box>
+            }
           >
             <Button colorScheme="danger" onClick={onXSSClose}>
               Cancel
@@ -187,8 +202,20 @@ const EditPage = ({ match }) => {
           isOpen={isOverwriteOpen}
           onClose={onOverwriteClose}
           displayTitle="Override Changes"
-          displayText={`A different version of this page has recently been saved by another user. You can choose to either override their changes, or go back to editing.
-            <br/><br/>We recommend you to make a copy of your changes elsewhere, and come back later to reconcile your changes.`}
+          displayText={
+            <Box>
+              <Text>
+                A different version of this page has recently been saved by
+                another user. You can choose to either override their changes,
+                or go back to editing.
+              </Text>
+              <br />
+              <Text>
+                We recommend you to make a copy of your changes elsewhere, and
+                come back later to reconcile your changes.
+              </Text>
+            </Box>
+          }
         >
           <Button
             variant="clear"

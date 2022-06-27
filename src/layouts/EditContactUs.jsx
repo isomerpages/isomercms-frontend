@@ -1,5 +1,5 @@
 // TODO: Clean up formatting, semi-colons, PropTypes etc
-import { HStack, useDisclosure } from "@chakra-ui/react"
+import { HStack, Box, Text, Code, useDisclosure } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
 import EditorSection from "components/contact-us/Section"
@@ -91,31 +91,51 @@ const enumSection = (type, args) => {
 }
 
 const displayDeletedFrontMatter = (deletedFrontMatter) => {
-  let displayText = ""
+  const displayText = []
   const { contacts, locations } = deletedFrontMatter
   locations.forEach((location, i) => {
     if (!isEmpty(location)) {
-      displayText += `<br/>In Location <code>${i + 1}</code>: <br/>`
+      displayText.push(
+        <>
+          <br />
+          <Text>
+            In Location <Code colorScheme="danger">{i + 1}</Code>:
+          </Text>
+        </>
+      )
       Object.entries(location).forEach(([key, value]) => {
         if (value?.length) {
-          displayText += `    <code>${key}</code> field, <code>${JSON.stringify(
-            value
-          )}</code> is removed </br>`
+          displayText.push(
+            <Text textIndent="1rem">
+              <Code colorScheme="danger">{key}</Code> field,{" "}
+              <Code colorScheme="danger">{JSON.stringify(value)}</Code> is
+              removed
+            </Text>
+          )
         }
+        return null
       })
     }
   })
-  displayText += ""
   contacts.forEach((contact, i) => {
     if (!isEmpty(contact)) {
-      displayText += `<br/>In Contact <code>${i + 1}</code>: <br/>`
+      displayText.push(
+        <>
+          <br />
+          <Text>In Location {i + 1}:</Text>
+        </>
+      )
       contact.content.forEach((obj) => {
         const [key, value] = Object.entries(obj)[0]
-        if (value) {
-          displayText += `    <code>${key}</code> field, <code>${JSON.stringify(
-            value
-          )}</code> is removed <br/>`
-        }
+        if (value)
+          displayText.push(
+            <Text textIndent="1rem">
+              <Code colorScheme="danger">{key}</Code> field,{" "}
+              <Code colorScheme="danger">{JSON.stringify(value)}</Code> is
+              removed
+            </Text>
+          )
+        return null
       })
     }
   })
@@ -788,9 +808,17 @@ const EditContactUs = ({ match }) => {
           isOpen={isRemovedContentWarningOpen}
           onClose={onRemovedContentWarningClose}
           displayTitle="Removed content"
-          displayText={`Some of your content has been removed as it is incompatible with the new Isomer format. No changes are permanent unless you press Save on the next page.<br/>${displayDeletedFrontMatter(
-            deletedFrontMatter
-          )}`}
+          displayText={
+            <Box>
+              <Text>
+                Some of your content has been removed as it is incompatible with
+                the new Isomer format. No changes are permanent unless you press
+                Save on the next page.
+              </Text>
+              <br />
+              <>{displayDeletedFrontMatter(deletedFrontMatter)}</>
+            </Box>
+          }
         >
           <Button onClick={onRemovedContentWarningClose}>Acknowledge</Button>
         </WarningModal>
@@ -803,7 +831,11 @@ const EditContactUs = ({ match }) => {
             onDeleteModalClose()
           }}
           displayTitle={`Delete ${itemPendingForDelete.type} section`}
-          displayText={`Are you sure you want to delete ${itemPendingForDelete.type}?`}
+          displayText={
+            <Text>
+              Are you sure you want to delete {itemPendingForDelete.type}?
+            </Text>
+          }
         >
           <Button
             variant="clear"

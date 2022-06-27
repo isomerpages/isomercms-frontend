@@ -1,3 +1,4 @@
+import { Text } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
@@ -40,7 +41,7 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
         isOpen // Modal is always present for delete screens
         onClose={onClose}
         displayTitle={`Delete ${fileName}`}
-        displayText={`Are you sure you want to delete ${fileName}?`}
+        displayText={<Text>Are you sure you want to delete {fileName}?</Text>}
       >
         <Button variant="clear" colorScheme="secondary" onClick={onClose}>
           Cancel
@@ -64,7 +65,9 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
       isOpen // Modal is always present for delete screens
       onClose={onClose}
       displayTitle={`Delete ${deleteItemName}`}
-      displayText={`Are you sure you want to delete ${deleteItemName}?`}
+      displayText={
+        <Text>Are you sure you want to delete {deleteItemName}?</Text>
+      }
     >
       <Button variant="clear" colorScheme="secondary" onClick={onClose}>
         Cancel
