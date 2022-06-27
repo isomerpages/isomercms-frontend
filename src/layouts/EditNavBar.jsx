@@ -59,14 +59,14 @@ const EditNavBar = ({ match }) => {
   const [deletedLinks, setDeletedLinks] = useState("")
 
   const {
-    isOpen: isRemovedOpen,
-    onOpen: onRemovedOpen,
-    onClose: onRemovedClose,
+    isOpen: isRemovedContentWarningOpen,
+    onOpen: onRemovedContentWarningOpen,
+    onClose: onRemovedContentWarningClose,
   } = useDisclosure({ defaultIsOpen: true })
   const {
-    isOpen: isDeleteOpen,
-    onOpen: onDeleteOpen,
-    onClose: onDeleteClose,
+    isOpen: isDeleteModalOpen,
+    onOpen: onDeleteModalOpen,
+    onClose: onDeleteModalClose,
   } = useDisclosure()
 
   const [hasChanges, setHasChanges] = useState(false)
@@ -623,20 +623,20 @@ const EditNavBar = ({ match }) => {
     <>
       {!isEmpty(deletedLinks) && (
         <GenericWarningModal
-          isOpen={isRemovedOpen}
-          onClose={onRemovedClose}
+          isOpen={isRemovedContentWarningOpen}
+          onClose={onRemovedContentWarningClose}
           displayTitle="Removed content"
           displayText={`Some of your content has been removed as they attempt to link to invalid folders. No changes are permanent unless you press Save on the next page.<br/>${deletedLinks}`}
         >
-          <Button onClick={onRemovedClose}>Acknowledge</Button>
+          <Button onClick={onRemovedContentWarningClose}>Acknowledge</Button>
         </GenericWarningModal>
       )}
       {itemPendingForDelete.id && (
         <GenericWarningModal
-          isOpen={isDeleteOpen}
+          isOpen={isDeleteModalOpen}
           onClose={() => {
             setItemPendingForDelete({ id: null, type: "" })
-            onDeleteClose()
+            onDeleteModalClose()
           }}
           displayTitle={`Delete ${itemPendingForDelete.type}`}
           displayText={`Are you sure you want to delete ${itemPendingForDelete.type}?`}
@@ -646,7 +646,7 @@ const EditNavBar = ({ match }) => {
             colorScheme="secondary"
             onClick={() => {
               setItemPendingForDelete({ id: null, type: "" })
-              onDeleteClose()
+              onDeleteModalClose()
             }}
           >
             Cancel
@@ -656,7 +656,7 @@ const EditNavBar = ({ match }) => {
             onClick={() => {
               deleteHandler(itemPendingForDelete.id)
               setItemPendingForDelete({ id: null, type: "" })
-              onDeleteClose()
+              onDeleteModalClose()
             }}
           >
             Delete
@@ -681,7 +681,7 @@ const EditNavBar = ({ match }) => {
                   options={options}
                   createHandler={createHandler}
                   deleteHandler={(event) => {
-                    onDeleteOpen()
+                    onDeleteModalOpen()
                     setItemPendingForDelete({
                       id: event.target.id,
                       type: "Link",
@@ -711,7 +711,11 @@ const EditNavBar = ({ match }) => {
           <div className={editorStyles.pageEditorFooter}>
             <HStack w="100%" justify="flex-end">
               {!isEmpty(deletedLinks) && (
-                <Button ml="auto" variant="clear" onClick={onRemovedOpen}>
+                <Button
+                  ml="auto"
+                  variant="clear"
+                  onClick={onRemovedContentWarningOpen}
+                >
                   See removed content
                 </Button>
               )}

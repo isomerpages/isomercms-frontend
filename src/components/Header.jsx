@@ -47,14 +47,14 @@ const Header = ({
   const { retrieveStagingUrl } = useSiteUrlHook()
   const [userId] = useLocalStorage(LOCAL_STORAGE_KEYS.GithubId)
   const {
-    isOpen: isWarningOpen,
-    onOpen: onWarningOpen,
-    onClose: onWarningClose,
+    isOpen: isWarningModalOpen,
+    onOpen: onWarningModalOpen,
+    onClose: onWarningModalClose,
   } = useDisclosure()
   const {
-    isOpen: isStagingOpen,
-    onOpen: onStagingOpen,
-    onClose: onStagingClose,
+    isOpen: isStagingModalOpen,
+    onOpen: onStagingModalOpen,
+    onClose: onStagingModalClose,
   } = useDisclosure()
 
   const [stagingUrl, setStagingUrl] = useState()
@@ -88,7 +88,7 @@ const Header = ({
   }
 
   const handleBackNav = () => {
-    if (isEditPage && !shouldAllowEditPageBackNav) onWarningOpen()
+    if (isEditPage && !shouldAllowEditPageBackNav) onWarningModalOpen()
     else toggleBackNav()
   }
 
@@ -134,7 +134,7 @@ const Header = ({
         {siteNameFromParams || siteName ? (
           <HStack>
             <Button
-              onClick={onStagingOpen}
+              onClick={onStagingModalOpen}
               variant="outline"
               colorScheme="primary"
               isDisabled={!stagingUrl}
@@ -153,17 +153,17 @@ const Header = ({
         )}
       </Flex>
       <GenericWarningModal
-        isOpen={isWarningOpen}
-        onClose={onWarningClose}
+        isOpen={isWarningModalOpen}
+        onClose={onWarningModalClose}
         displayTitle="Warning"
         displayText="You have unsaved changes. Are you sure you want to navigate away from this page?"
       >
-        <Button colorScheme="danger" onClick={onWarningClose}>
+        <Button colorScheme="danger" onClick={onWarningModalClose}>
           No
         </Button>
         <Button onClick={toggleBackNav}>Yes</Button>
       </GenericWarningModal>
-      <Modal isOpen={isStagingOpen} onClose={onStagingClose}>
+      <Modal isOpen={isStagingModalOpen} onClose={onStagingModalClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader />
@@ -176,7 +176,7 @@ const Header = ({
           </ModalBody>
           <ModalFooter>
             <HStack w="100%" spacing={2} justifyContent="flex-end">
-              <Button colorScheme="danger" onClick={onStagingClose}>
+              <Button colorScheme="danger" onClick={onStagingModalClose}>
                 Cancel
               </Button>
               <Skeleton isLoaded={!!stagingUrl}>

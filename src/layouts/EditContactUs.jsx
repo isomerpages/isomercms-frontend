@@ -166,14 +166,14 @@ const EditContactUs = ({ match }) => {
   })
   const errorToast = useErrorToast()
   const {
-    isOpen: isRemovedOpen,
-    onOpen: onRemovedOpen,
-    onClose: onRemovedClose,
+    isOpen: isRemovedContentWarningOpen,
+    onOpen: onRemovedContentWarningOpen,
+    onClose: onRemovedContentWarningClose,
   } = useDisclosure({ defaultIsOpen: true })
   const {
-    isOpen: isDeleteOpen,
-    onOpen: onDeleteOpen,
-    onClose: onDeleteClose,
+    isOpen: isDeleteModalOpen,
+    onOpen: onDeleteModalOpen,
+    onClose: onDeleteModalClose,
   } = useDisclosure()
 
   useEffect(() => {
@@ -785,22 +785,22 @@ const EditContactUs = ({ match }) => {
     <>
       {!isEmpty(deletedFrontMatter) && (
         <GenericWarningModal
-          isOpen={isRemovedOpen}
-          onClose={onRemovedClose}
+          isOpen={isRemovedContentWarningOpen}
+          onClose={onRemovedContentWarningClose}
           displayTitle="Removed content"
           displayText={`Some of your content has been removed as it is incompatible with the new Isomer format. No changes are permanent unless you press Save on the next page.<br/>${displayDeletedFrontMatter(
             deletedFrontMatter
           )}`}
         >
-          <Button onClick={onRemovedClose}>Acknowledge</Button>
+          <Button onClick={onRemovedContentWarningClose}>Acknowledge</Button>
         </GenericWarningModal>
       )}
       {itemPendingForDelete.id && (
         <GenericWarningModal
-          isOpen={isDeleteOpen}
+          isOpen={isDeleteModalOpen}
           onClose={() => {
             setItemPendingForDelete({ id: null, type: "" })
-            onDeleteClose()
+            onDeleteModalClose()
           }}
           displayTitle={`Delete ${itemPendingForDelete.type} section`}
           displayText={`Are you sure you want to delete ${itemPendingForDelete.type}?`}
@@ -810,7 +810,7 @@ const EditContactUs = ({ match }) => {
             colorScheme="secondary"
             onClick={() => {
               setItemPendingForDelete({ id: null, type: "" })
-              onDeleteClose()
+              onDeleteModalClose()
             }}
           >
             Cancel
@@ -820,7 +820,7 @@ const EditContactUs = ({ match }) => {
             onClick={() => {
               deleteHandler(itemPendingForDelete.id)
               setItemPendingForDelete({ id: null, type: "" })
-              onDeleteClose()
+              onDeleteModalClose()
             }}
           >
             Yes, delete
@@ -867,7 +867,7 @@ const EditContactUs = ({ match }) => {
                   createHandler={createHandler}
                   deleteHandler={(event, type) => {
                     setItemPendingForDelete({ id: event.target.id, type })
-                    onDeleteOpen()
+                    onDeleteModalOpen()
                   }}
                   shouldDisplay={displaySections.sectionsDisplay.locations}
                   displayCards={displaySections.locations}
@@ -882,7 +882,7 @@ const EditContactUs = ({ match }) => {
                   createHandler={createHandler}
                   deleteHandler={(event, type) => {
                     setItemPendingForDelete({ id: event.target.id, type })
-                    onDeleteOpen()
+                    onDeleteModalOpen()
                   }}
                   shouldDisplay={displaySections.sectionsDisplay.contacts}
                   displayCards={displaySections.contacts}
@@ -929,7 +929,7 @@ const EditContactUs = ({ match }) => {
                 <LoadingButton
                   ml="auto"
                   variant="clear"
-                  onClick={onRemovedOpen}
+                  onClick={onRemovedContentWarningOpen}
                 >
                   See removed content
                 </LoadingButton>
