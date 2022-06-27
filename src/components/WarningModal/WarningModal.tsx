@@ -9,23 +9,22 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react"
 import { ModalCloseButton } from "@opengovsg/design-system-react"
-import parse from "html-react-parser"
+import { PropsWithChildren } from "react"
 
 interface ModalProps {
   isOpen: boolean
   onClose: () => void
   displayTitle: string
-  displayText: string
-  children: JSX.Element | JSX.Element[]
+  displayText: JSX.Element
 }
 
-export const GenericWarningModal = ({
+export const WarningModal = ({
   isOpen,
   onClose,
   displayTitle,
   displayText,
   children,
-}: ModalProps): JSX.Element => (
+}: PropsWithChildren<ModalProps>): JSX.Element => (
   <Modal isOpen={isOpen} onClose={onClose}>
     <ModalOverlay />
     <ModalContent>
@@ -33,9 +32,7 @@ export const GenericWarningModal = ({
         <Text pr="2rem">{displayTitle}</Text>
       </ModalHeader>
       <ModalCloseButton />
-      <ModalBody>
-        <Text textStyle="body-2">{parse(displayText)}</Text>
-      </ModalBody>
+      <ModalBody>{displayText}</ModalBody>
       <ModalFooter>
         <HStack w="100%" spacing={2} justifyContent="flex-end">
           {children}

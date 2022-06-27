@@ -1,12 +1,12 @@
 import { Button, useDisclosure } from "@chakra-ui/react"
 import { Story, ComponentMeta } from "@storybook/react"
 
-import { GenericWarningModal } from "./WarningModal"
+import { WarningModal } from "./WarningModal"
 
 const modalMeta = {
-  title: "Components/GenericWarningModal",
-  component: GenericWarningModal,
-} as ComponentMeta<typeof GenericWarningModal>
+  title: "Components/WarningModal",
+  component: WarningModal,
+} as ComponentMeta<typeof WarningModal>
 
 interface TemplateArgs {
   buttonText: string
@@ -23,14 +23,14 @@ const SingleButtonModalTemplate: Story<TemplateArgs> = ({
   return (
     <>
       <Button onClick={onOpen}>Open Modal</Button>
-      <GenericWarningModal
+      <WarningModal
         isOpen={isOpen}
         onClose={onClose}
         displayTitle={displayTitle}
         displayText={displayText}
       >
         <Button>{buttonText}</Button>
-      </GenericWarningModal>
+      </WarningModal>
     </>
   )
 }
@@ -48,7 +48,7 @@ const MultiButtonModalTemplate: Story<MultiButtonModalTemplateArgs> = ({
   return (
     <>
       <Button onClick={onOpen}>Open Modal</Button>
-      <GenericWarningModal
+      <WarningModal
         isOpen={isOpen}
         onClose={onClose}
         displayTitle={displayTitle}
@@ -58,7 +58,7 @@ const MultiButtonModalTemplate: Story<MultiButtonModalTemplateArgs> = ({
           {buttonText}
         </Button>
         <Button>{secondButtonText}</Button>
-      </GenericWarningModal>
+      </WarningModal>
     </>
   )
 }

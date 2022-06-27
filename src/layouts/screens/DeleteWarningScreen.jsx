@@ -1,6 +1,6 @@
 import { Button } from "@opengovsg/design-system-react"
 import { LoadingButton } from "components/LoadingButton"
-import { GenericWarningModal } from "components/WarningModal"
+import { WarningModal } from "components/WarningModal"
 import PropTypes from "prop-types"
 
 import { useDeleteDirectoryHook } from "hooks/directoryHooks"
@@ -36,7 +36,7 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
         })
 
     return fileData ? (
-      <GenericWarningModal
+      <WarningModal
         isOpen // Modal is always present for delete screens
         onClose={onClose}
         displayTitle={`Delete ${fileName}`}
@@ -51,7 +51,7 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
         >
           Yes, delete
         </LoadingButton>
-      </GenericWarningModal>
+      </WarningModal>
     ) : null
   }
 
@@ -60,7 +60,7 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
   })
 
   return (
-    <GenericWarningModal
+    <WarningModal
       isOpen // Modal is always present for delete screens
       onClose={onClose}
       displayTitle={`Delete ${deleteItemName}`}
@@ -72,7 +72,7 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
       <LoadingButton colorScheme="danger" onClick={deleteHandler}>
         Yes, delete
       </LoadingButton>
-    </GenericWarningModal>
+    </WarningModal>
   )
 }
 

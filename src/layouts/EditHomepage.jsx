@@ -9,7 +9,7 @@ import EditorInfopicSection from "components/homepage/InfopicSection"
 import NewSectionCreator from "components/homepage/NewSectionCreator"
 import EditorResourcesSection from "components/homepage/ResourcesSection"
 import { LoadingButton } from "components/LoadingButton"
-import { GenericWarningModal } from "components/WarningModal"
+import { WarningModal } from "components/WarningModal"
 import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
@@ -1173,7 +1173,7 @@ const EditHomepage = ({ match }) => {
   return (
     <>
       {itemPendingForDelete.id && (
-        <GenericWarningModal
+        <WarningModal
           isOpen={isOpen}
           onClose={() => {
             setItemPendingForDelete({ id: null, type: "" })
@@ -1202,7 +1202,7 @@ const EditHomepage = ({ match }) => {
           >
             Yes, delete
           </Button>
-        </GenericWarningModal>
+        </WarningModal>
       )}
       <Header
         siteName={siteName}

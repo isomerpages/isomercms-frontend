@@ -5,7 +5,7 @@ import Footer from "components/Footer"
 import Header from "components/Header"
 import MarkdownEditor from "components/pages/MarkdownEditor"
 import PagePreview from "components/pages/PagePreview"
-import { GenericWarningModal } from "components/WarningModal"
+import { WarningModal } from "components/WarningModal"
 import DOMPurify from "dompurify"
 import { marked } from "marked"
 import PropTypes from "prop-types"
@@ -140,7 +140,7 @@ const EditPage = ({ match }) => {
       />
       <div className={elementStyles.wrapper}>
         {isXSSViolation && (
-          <GenericWarningModal
+          <WarningModal
             isOpen={isXSSOpen}
             onClose={onXSSClose}
             displayTitle="Warning"
@@ -181,9 +181,9 @@ const EditPage = ({ match }) => {
             >
               Acknowledge
             </Button>
-          </GenericWarningModal>
+          </WarningModal>
         )}
-        <GenericWarningModal
+        <WarningModal
           isOpen={isOverwriteOpen}
           onClose={onOverwriteClose}
           displayTitle="Override Changes"
@@ -212,7 +212,7 @@ const EditPage = ({ match }) => {
           >
             Override
           </Button>
-        </GenericWarningModal>
+        </WarningModal>
         {/* Editor */}
         <MarkdownEditor
           siteName={siteName}

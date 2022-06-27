@@ -8,7 +8,7 @@ import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import Header from "components/Header"
 import { LoadingButton } from "components/LoadingButton"
-import { GenericWarningModal } from "components/WarningModal"
+import { WarningModal } from "components/WarningModal"
 import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
@@ -784,7 +784,7 @@ const EditContactUs = ({ match }) => {
   return (
     <>
       {!isEmpty(deletedFrontMatter) && (
-        <GenericWarningModal
+        <WarningModal
           isOpen={isRemovedContentWarningOpen}
           onClose={onRemovedContentWarningClose}
           displayTitle="Removed content"
@@ -793,10 +793,10 @@ const EditContactUs = ({ match }) => {
           )}`}
         >
           <Button onClick={onRemovedContentWarningClose}>Acknowledge</Button>
-        </GenericWarningModal>
+        </WarningModal>
       )}
       {itemPendingForDelete.id && (
-        <GenericWarningModal
+        <WarningModal
           isOpen={isDeleteModalOpen}
           onClose={() => {
             setItemPendingForDelete({ id: null, type: "" })
@@ -825,7 +825,7 @@ const EditContactUs = ({ match }) => {
           >
             Yes, delete
           </Button>
-        </GenericWarningModal>
+        </WarningModal>
       )}
       <Header
         siteName={siteName}

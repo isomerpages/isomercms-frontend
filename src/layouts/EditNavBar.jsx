@@ -2,7 +2,7 @@ import { HStack, useDisclosure } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import Header from "components/Header"
 import NavSection from "components/navbar/NavSection"
-import { GenericWarningModal } from "components/WarningModal"
+import { WarningModal } from "components/WarningModal"
 import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
@@ -622,17 +622,17 @@ const EditNavBar = ({ match }) => {
   return (
     <>
       {!isEmpty(deletedLinks) && (
-        <GenericWarningModal
+        <WarningModal
           isOpen={isRemovedContentWarningOpen}
           onClose={onRemovedContentWarningClose}
           displayTitle="Removed content"
           displayText={`Some of your content has been removed as they attempt to link to invalid folders. No changes are permanent unless you press Save on the next page.<br/>${deletedLinks}`}
         >
           <Button onClick={onRemovedContentWarningClose}>Acknowledge</Button>
-        </GenericWarningModal>
+        </WarningModal>
       )}
       {itemPendingForDelete.id && (
-        <GenericWarningModal
+        <WarningModal
           isOpen={isDeleteModalOpen}
           onClose={() => {
             setItemPendingForDelete({ id: null, type: "" })
@@ -661,7 +661,7 @@ const EditNavBar = ({ match }) => {
           >
             Delete
           </Button>
-        </GenericWarningModal>
+        </WarningModal>
       )}
       <Header
         siteName={siteName}

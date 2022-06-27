@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
-import { GenericWarningModal } from "components/WarningModal"
+import { WarningModal } from "components/WarningModal"
 import PropTypes from "prop-types"
 import { useState, useEffect } from "react"
 
@@ -152,7 +152,7 @@ const Header = ({
           </>
         )}
       </Flex>
-      <GenericWarningModal
+      <WarningModal
         isOpen={isWarningModalOpen}
         onClose={onWarningModalClose}
         displayTitle="Warning"
@@ -162,7 +162,7 @@ const Header = ({
           No
         </Button>
         <Button onClick={toggleBackNav}>Yes</Button>
-      </GenericWarningModal>
+      </WarningModal>
       <Modal isOpen={isStagingModalOpen} onClose={onStagingModalClose}>
         <ModalOverlay />
         <ModalContent>
