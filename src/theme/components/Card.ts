@@ -27,6 +27,7 @@ const variantSingle: PartsStyleObject<typeof parts> = {
 const variantMulti: PartsStyleObject<typeof parts> = {
   container: {
     gridTemplateColumns: "1fr 2.5rem",
+    gridTemplateRows: "4.5rem 1fr",
     // This is a 2x2 grid
     gridTemplateAreas: "'body button' 'footer button'",
     gap: "1rem 0rem",
