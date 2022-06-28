@@ -139,65 +139,63 @@ const EditPage = ({ match }) => {
         params={decodedParams}
       />
       <div className={elementStyles.wrapper}>
-        {isXSSViolation && (
-          <WarningModal
-            isOpen={isXSSOpen}
-            onClose={onXSSClose}
-            displayTitle="Warning"
-            // DOMPurify removed object format taken from https://github.com/cure53/DOMPurify/blob/dd63379e6354f66d4689bb80b30cb43a6d8727c2/src/purify.js
-            displayText={
-              <Box>
-                <Text>
-                  There is unauthorised JS detected in the following snippet
-                  {DOMPurify.removed.length > 1 ? "s" : ""}:
-                </Text>
-                {DOMPurify.removed.map((elem, i) => (
-                  <>
-                    <br />
-                    <Code>{i + 1}</Code>:
-                    <Code>
-                      {elem.attribute?.textContent || elem.element?.textContent
-                        ? (
-                            elem.attribute?.textContent ||
-                            elem.element?.textContent
-                          ).replace("<", "&lt;")
-                        : elem}
-                    </Code>
-                  </>
-                ))}
-                <br />
-                <br />
-                Before saving, the editor input will be automatically sanitised
-                to prevent security vulnerabilities.
-                <br />
-                <br />
-                To save the sanitised editor input, press Acknowledge. To return
-                to the editor without sanitising, press Cancel.`
-              </Box>
-            }
+        <WarningModal
+          isOpen={isXSSViolation && isXSSOpen}
+          onClose={onXSSClose}
+          displayTitle="Warning"
+          // DOMPurify removed object format taken from https://github.com/cure53/DOMPurify/blob/dd63379e6354f66d4689bb80b30cb43a6d8727c2/src/purify.js
+          displayText={
+            <Box>
+              <Text>
+                There is unauthorised JS detected in the following snippet
+                {DOMPurify.removed.length > 1 ? "s" : ""}:
+              </Text>
+              {DOMPurify.removed.map((elem, i) => (
+                <>
+                  <br />
+                  <Code>{i + 1}</Code>:
+                  <Code>
+                    {elem.attribute?.textContent || elem.element?.textContent
+                      ? (
+                          elem.attribute?.textContent ||
+                          elem.element?.textContent
+                        ).replace("<", "&lt;")
+                      : elem}
+                  </Code>
+                </>
+              ))}
+              <br />
+              <br />
+              Before saving, the editor input will be automatically sanitised to
+              prevent security vulnerabilities.
+              <br />
+              <br />
+              To save the sanitised editor input, press Acknowledge. To return
+              to the editor without sanitising, press Cancel.`
+            </Box>
+          }
+        >
+          <Button colorScheme="danger" onClick={onXSSClose}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              const sanitizedEditorValue = DOMPurify.sanitize(editorValue)
+              setEditorValue(sanitizedEditorValue)
+              setIsXSSViolation(false)
+              updatePageHandler({
+                pageData: {
+                  frontMatter: pageData.content.frontMatter,
+                  sha: currSha,
+                  pageBody: sanitizedEditorValue,
+                },
+              })
+              onXSSClose()
+            }}
           >
-            <Button colorScheme="danger" onClick={onXSSClose}>
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
-                const sanitizedEditorValue = DOMPurify.sanitize(editorValue)
-                setEditorValue(sanitizedEditorValue)
-                setIsXSSViolation(false)
-                updatePageHandler({
-                  pageData: {
-                    frontMatter: pageData.content.frontMatter,
-                    sha: currSha,
-                    pageBody: sanitizedEditorValue,
-                  },
-                })
-                onXSSClose()
-              }}
-            >
-              Acknowledge
-            </Button>
-          </WarningModal>
-        )}
+            Acknowledge
+          </Button>
+        </WarningModal>
         <WarningModal
           isOpen={isOverwriteOpen}
           onClose={onOverwriteClose}

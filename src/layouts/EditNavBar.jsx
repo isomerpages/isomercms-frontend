@@ -643,42 +643,40 @@ const EditNavBar = ({ match }) => {
           <Button onClick={onRemovedContentWarningClose}>Acknowledge</Button>
         </WarningModal>
       )}
-      {itemPendingForDelete.id && (
-        <WarningModal
-          isOpen={isDeleteModalOpen}
-          onClose={() => {
+      <WarningModal
+        isOpen={itemPendingForDelete.id && isDeleteModalOpen}
+        onClose={() => {
+          setItemPendingForDelete({ id: null, type: "" })
+          onDeleteModalClose()
+        }}
+        displayTitle={`Delete ${itemPendingForDelete.type}`}
+        displayText={
+          <Text>
+            Are you sure you want to delete {itemPendingForDelete.type}?
+          </Text>
+        }
+      >
+        <Button
+          variant="clear"
+          colorScheme="secondary"
+          onClick={() => {
             setItemPendingForDelete({ id: null, type: "" })
             onDeleteModalClose()
           }}
-          displayTitle={`Delete ${itemPendingForDelete.type}`}
-          displayText={
-            <Text>
-              Are you sure you want to delete {itemPendingForDelete.type}?
-            </Text>
-          }
         >
-          <Button
-            variant="clear"
-            colorScheme="secondary"
-            onClick={() => {
-              setItemPendingForDelete({ id: null, type: "" })
-              onDeleteModalClose()
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            colorScheme="danger"
-            onClick={() => {
-              deleteHandler(itemPendingForDelete.id)
-              setItemPendingForDelete({ id: null, type: "" })
-              onDeleteModalClose()
-            }}
-          >
-            Delete
-          </Button>
-        </WarningModal>
-      )}
+          Cancel
+        </Button>
+        <Button
+          colorScheme="danger"
+          onClick={() => {
+            deleteHandler(itemPendingForDelete.id)
+            setItemPendingForDelete({ id: null, type: "" })
+            onDeleteModalClose()
+          }}
+        >
+          Delete
+        </Button>
+      </WarningModal>
       <Header
         siteName={siteName}
         title="Navigation Bar"

@@ -1172,42 +1172,40 @@ const EditHomepage = ({ match }) => {
 
   return (
     <>
-      {itemPendingForDelete.id && (
-        <WarningModal
-          isOpen={isOpen}
-          onClose={() => {
+      <WarningModal
+        isOpen={itemPendingForDelete.id && isOpen}
+        onClose={() => {
+          setItemPendingForDelete({ id: null, type: "" })
+          onClose()
+        }}
+        displayTitle={`Delete ${itemPendingForDelete.type} section`}
+        displayText={
+          <Text>
+            Are you sure you want to delete {itemPendingForDelete.type}?
+          </Text>
+        }
+      >
+        <Button
+          variant="clear"
+          colorScheme="secondary"
+          onClick={() => {
             setItemPendingForDelete({ id: null, type: "" })
             onClose()
           }}
-          displayTitle={`Delete ${itemPendingForDelete.type} section`}
-          displayText={
-            <Text>
-              Are you sure you want to delete {itemPendingForDelete.type}
-            </Text>
-          }
         >
-          <Button
-            variant="clear"
-            colorScheme="secondary"
-            onClick={() => {
-              setItemPendingForDelete({ id: null, type: "" })
-              onClose()
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            colorScheme="danger"
-            onClick={() => {
-              deleteHandler(itemPendingForDelete.id)
-              setItemPendingForDelete({ id: null, type: "" })
-              onClose()
-            }}
-          >
-            Yes, delete
-          </Button>
-        </WarningModal>
-      )}
+          Cancel
+        </Button>
+        <Button
+          colorScheme="danger"
+          onClick={() => {
+            deleteHandler(itemPendingForDelete.id)
+            setItemPendingForDelete({ id: null, type: "" })
+            onClose()
+          }}
+        >
+          Yes, delete
+        </Button>
+      </WarningModal>
       <Header
         siteName={siteName}
         title="Homepage"

@@ -93,52 +93,57 @@ const enumSection = (type, args) => {
 const displayDeletedFrontMatter = (deletedFrontMatter) => {
   const displayText = []
   const { contacts, locations } = deletedFrontMatter
-  locations.forEach((location, i) => {
-    if (!isEmpty(location)) {
-      displayText.push(
-        <>
-          <br />
-          <Text>
-            In Location <Code colorScheme="danger">{i + 1}</Code>:
-          </Text>
-        </>
-      )
-      Object.entries(location).forEach(([key, value]) => {
-        if (value?.length) {
-          displayText.push(
-            <Text textIndent="1rem">
-              <Code colorScheme="danger">{key}</Code> field,{" "}
-              <Code colorScheme="danger">{JSON.stringify(value)}</Code> is
-              removed
+  if (locations && !isEmpty(locations)) {
+    locations.forEach((location, i) => {
+      if (!isEmpty(location)) {
+        displayText.push(
+          <>
+            <br />
+            <Text>
+              In Location <Code colorScheme="danger">{i + 1}</Code>:
             </Text>
-          )
-        }
-        return null
-      })
-    }
-  })
-  contacts.forEach((contact, i) => {
-    if (!isEmpty(contact)) {
-      displayText.push(
-        <>
-          <br />
-          <Text>In Location {i + 1}:</Text>
-        </>
-      )
-      contact.content.forEach((obj) => {
-        const [key, value] = Object.entries(obj)[0]
-        if (value)
-          displayText.push(
-            <Text textIndent="1rem">
-              <Code colorScheme="danger">{key}</Code> field,{" "}
-              <Code colorScheme="danger">{JSON.stringify(value)}</Code> is
-              removed
-            </Text>
-          )
-        return null
-      })
-    }
-  })
+          </>
+        )
+        Object.entries(location).forEach(([key, value]) => {
+          if (value?.length) {
+            displayText.push(
+              <Text textIndent="1rem">
+                <Code colorScheme="danger">{key}</Code> field,{" "}
+                <Code colorScheme="danger">{JSON.stringify(value)}</Code> is
+                removed
+              </Text>
+            )
+          }
+          return null
+        })
+      }
+    })
+  }
+  if (contacts && !isEmpty(contacts)) {
+    contacts.forEach((contact, i) => {
+      if (!isEmpty(contact)) {
+        displayText.push(
+          <>
+            <br />
+            <Text>In Location {i + 1}:</Text>
+          </>
+        )
+        contact.content.forEach((obj) => {
+          const [key, value] = Object.entries(obj)[0]
+          if (value)
+            displayText.push(
+              <Text textIndent="1rem">
+                <Code colorScheme="danger">{key}</Code> field,{" "}
+                <Code colorScheme="danger">{JSON.stringify(value)}</Code> is
+                removed
+              </Text>
+            )
+          return null
+        })
+      }
+    })
+  }
+
   return displayText
 }
 
@@ -803,62 +808,58 @@ const EditContactUs = ({ match }) => {
 
   return (
     <>
-      {!isEmpty(deletedFrontMatter) && (
-        <WarningModal
-          isOpen={isRemovedContentWarningOpen}
-          onClose={onRemovedContentWarningClose}
-          displayTitle="Removed content"
-          displayText={
-            <Box>
-              <Text>
-                Some of your content has been removed as it is incompatible with
-                the new Isomer format. No changes are permanent unless you press
-                Save on the next page.
-              </Text>
-              <br />
-              <>{displayDeletedFrontMatter(deletedFrontMatter)}</>
-            </Box>
-          }
-        >
-          <Button onClick={onRemovedContentWarningClose}>Acknowledge</Button>
-        </WarningModal>
-      )}
-      {itemPendingForDelete.id && (
-        <WarningModal
-          isOpen={isDeleteModalOpen}
-          onClose={() => {
+      <WarningModal
+        isOpen={!isEmpty(deletedFrontMatter) && isRemovedContentWarningOpen}
+        onClose={onRemovedContentWarningClose}
+        displayTitle="Removed content"
+        displayText={
+          <Box>
+            <Text>
+              Some of your content has been removed as it is incompatible with
+              the new Isomer format. No changes are permanent unless you press
+              Save on the next page.
+            </Text>
+            <br />
+            <>{displayDeletedFrontMatter(deletedFrontMatter)}</>
+          </Box>
+        }
+      >
+        <Button onClick={onRemovedContentWarningClose}>Acknowledge</Button>
+      </WarningModal>
+      <WarningModal
+        isOpen={itemPendingForDelete.id && isDeleteModalOpen}
+        onClose={() => {
+          setItemPendingForDelete({ id: null, type: "" })
+          onDeleteModalClose()
+        }}
+        displayTitle={`Delete ${itemPendingForDelete.type} section`}
+        displayText={
+          <Text>
+            Are you sure you want to delete {itemPendingForDelete.type}?
+          </Text>
+        }
+      >
+        <Button
+          variant="clear"
+          colorScheme="secondary"
+          onClick={() => {
             setItemPendingForDelete({ id: null, type: "" })
             onDeleteModalClose()
           }}
-          displayTitle={`Delete ${itemPendingForDelete.type} section`}
-          displayText={
-            <Text>
-              Are you sure you want to delete {itemPendingForDelete.type}?
-            </Text>
-          }
         >
-          <Button
-            variant="clear"
-            colorScheme="secondary"
-            onClick={() => {
-              setItemPendingForDelete({ id: null, type: "" })
-              onDeleteModalClose()
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            colorScheme="danger"
-            onClick={() => {
-              deleteHandler(itemPendingForDelete.id)
-              setItemPendingForDelete({ id: null, type: "" })
-              onDeleteModalClose()
-            }}
-          >
-            Yes, delete
-          </Button>
-        </WarningModal>
-      )}
+          Cancel
+        </Button>
+        <Button
+          colorScheme="danger"
+          onClick={() => {
+            deleteHandler(itemPendingForDelete.id)
+            setItemPendingForDelete({ id: null, type: "" })
+            onDeleteModalClose()
+          }}
+        >
+          Yes, delete
+        </Button>
+      </WarningModal>
       <Header
         siteName={siteName}
         title="Contact Us"
