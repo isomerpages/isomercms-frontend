@@ -3,13 +3,6 @@ import {
   HStack,
   Box,
   Text,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Skeleton,
   Link,
   useDisclosure,
@@ -168,39 +161,34 @@ const Header = ({
         </Button>
         <Button onClick={toggleBackNav}>Yes</Button>
       </WarningModal>
-      <Modal isOpen={isStagingModalOpen} onClose={onStagingModalClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader />
-          <ModalCloseButton />
-          <ModalBody>
-            <Text textStyle="body-2">
-              Your changes may take some time to be reflected. <br />
-              Refresh your staging site to see if your changes have been built.
-            </Text>
-          </ModalBody>
-          <ModalFooter>
-            <HStack w="100%" spacing={2} justifyContent="flex-end">
-              <Button colorScheme="danger" onClick={onStagingModalClose}>
-                Cancel
-              </Button>
-              <Skeleton isLoaded={!!stagingUrl}>
-                <Button
-                  as={Link}
-                  textDecoration="none"
-                  _hover={{
-                    textDecoration: "none",
-                    bgColor: "primary.600",
-                  }}
-                  href={stagingUrl}
-                >
-                  <Text color="white">Proceed to staging site</Text>
-                </Button>
-              </Skeleton>
-            </HStack>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <WarningModal
+        isOpen={isStagingModalOpen}
+        onClose={onStagingModalClose}
+        displayTitle=""
+        displayText={
+          <Text textStyle="body-2">
+            Your changes may take some time to be reflected. <br />
+            Refresh your staging site to see if your changes have been built.
+          </Text>
+        }
+      >
+        <Button colorScheme="danger" onClick={onStagingModalClose}>
+          Cancel
+        </Button>
+        <Skeleton isLoaded={!!stagingUrl}>
+          <Button
+            as={Link}
+            textDecoration="none"
+            _hover={{
+              textDecoration: "none",
+              bgColor: "primary.600",
+            }}
+            href={stagingUrl}
+          >
+            <Text color="white">Proceed to staging site</Text>
+          </Button>
+        </Skeleton>
+      </WarningModal>
     </div>
   )
 }
