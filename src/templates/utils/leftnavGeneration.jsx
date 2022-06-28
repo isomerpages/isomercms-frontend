@@ -47,13 +47,13 @@ const calculateThirdNavHeaderChevronState = (
   elementFileName
 ) => {
   if (currentFileThirdNavTitle !== currentThirdNavTitle) {
-    return "sgds-icon-chevron-down"
+    return "bx bx-chevron-down"
   }
   if (
     fileName === elementFileName ||
     currentThirdNavTitle === currentElementThirdNavTitle
   ) {
-    return "sgds-icon-chevron-up"
+    return "bx bx-chevron-up"
   }
   return undefined
 }
@@ -75,8 +75,8 @@ const calculateThirdNavElementState = (
 }
 
 const accordionIconToggle = (accordionIconClass) => {
-  const upChevronIconClassName = "sgds-icon-chevron-up"
-  const downChevronIconClassName = "sgds-icon-chevron-down"
+  const upChevronIconClassName = "bx bx-chevron-up"
+  const downChevronIconClassName = "bx bx-chevron-down"
 
   if (accordionIconClass.includes(upChevronIconClassName)) {
     return accordionIconClass.replace(
