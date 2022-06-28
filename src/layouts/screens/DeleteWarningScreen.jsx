@@ -36,9 +36,9 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
           onSuccess: () => onClose(),
         })
 
-    return fileData ? (
+    return (
       <WarningModal
-        isOpen // Modal is always present for delete screens
+        isOpen={!!fileData}
         onClose={onClose}
         displayTitle={`Delete ${fileName}`}
         displayText={<Text>Are you sure you want to delete {fileName}?</Text>}
@@ -53,7 +53,7 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
           Yes, delete
         </LoadingButton>
       </WarningModal>
-    ) : null
+    )
   }
 
   const { mutateAsync: deleteHandler } = useDeleteDirectoryHook(params, {
@@ -62,7 +62,7 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
 
   return (
     <WarningModal
-      isOpen // Modal is always present for delete screens
+      isOpen={!!deleteItemName} // Modal is always present for delete screens
       onClose={onClose}
       displayTitle={`Delete ${deleteItemName}`}
       displayText={
