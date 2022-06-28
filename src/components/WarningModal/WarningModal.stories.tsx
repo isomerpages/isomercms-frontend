@@ -29,7 +29,7 @@ const SingleButtonModalTemplate: Story<TemplateArgs> = ({
         displayTitle={displayTitle}
         displayText={displayText}
       >
-        <Button>{buttonText}</Button>
+        <Button colorScheme="danger">{buttonText}</Button>
       </WarningModal>
     </>
   )
@@ -57,7 +57,7 @@ const MultiButtonModalTemplate: Story<MultiButtonModalTemplateArgs> = ({
         <Button variant="clear" colorScheme="secondary">
           {buttonText}
         </Button>
-        <Button>{secondButtonText}</Button>
+        <Button colorScheme="danger">{secondButtonText}</Button>
       </WarningModal>
     </>
   )
