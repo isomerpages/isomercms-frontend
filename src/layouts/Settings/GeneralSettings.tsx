@@ -67,8 +67,8 @@ export const GeneralSettings = ({
               <FormTitle>Shareicon</FormTitle>
               <FormLabel.Description useMarkdown color="text.description">
                 This is the preview image that shows when your site url is
-                shared on social media or messaging channels. Learn
-                [more](https://guide.isomer.gov.sg/guide/settings)
+                shared on social media or messaging channels. [Learn
+                more](https://guide.isomer.gov.sg/guide/settings)
               </FormLabel.Description>
             </Box>
             <SettingsFormFieldMedia name="shareicon" isDisabled={isError} />

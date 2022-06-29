@@ -21,8 +21,8 @@ export const LogoSettings = ({ isError }: LogoSettingsProp): JSX.Element => {
               <FormTitle>Agency logo</FormTitle>
               <FormLabel.Description useMarkdown color="text.description">
                 Logo that displays on your navigation bar. Clicking on the logo
-                will also bring the user to the homepage by default. Learn
-                [more](https://guide.isomer.gov.sg/guide/settings)
+                will also bring the user to the homepage by default. [Learn
+                more](https://guide.isomer.gov.sg/guide/settings)
               </FormLabel.Description>
             </Box>
             <SettingsFormFieldMedia name="agencyLogo" isDisabled={isError} />
@@ -33,8 +33,8 @@ export const LogoSettings = ({ isError }: LogoSettingsProp): JSX.Element => {
             <Box>
               <FormTitle>Favicon</FormTitle>
               <FormLabel.Description useMarkdown color="text.description">
-                This is the tiny icon that appears on browser tabs. Learn
-                [more](https://guide.isomer.gov.sg/guide/settings)
+                This is the tiny icon that appears on browser tabs. [Learn
+                more](https://guide.isomer.gov.sg/guide/settings)
               </FormLabel.Description>
             </Box>
             <SettingsFormFieldMedia name="favicon" isDisabled={isError} />
