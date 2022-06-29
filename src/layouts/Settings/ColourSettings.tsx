@@ -4,9 +4,9 @@ import {
   HStack,
   forwardRef,
   Flex,
+  FormControl,
   Modal,
   ModalContent,
-  FormControl,
 } from "@chakra-ui/react"
 import {
   FormLabel,

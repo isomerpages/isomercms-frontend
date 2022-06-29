@@ -33,7 +33,7 @@ export const FooterSettings = ({
             </FormControl>
           )
         })}
-        <FormControl isDisabled={isError}>
+        <FormControl isDisabled={isError} isRequired>
           <Flex justifyContent="space-between" w="100%">
             <FormLabel>Show REACH</FormLabel>
             {/* NOTE: This should be toggle from design system but the component is 

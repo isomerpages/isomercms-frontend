@@ -21,31 +21,34 @@ export const GeneralSettings = ({
     <Section id="general-fields">
       <SectionHeader label="General" />
       <VStack spacing="1.5rem" align="flex-start" w="50%">
-        <FormControl isDisabled={isError}>
+        <FormControl isDisabled={isError} isRequired>
           <Box mb="0.75rem">
             <FormLabel mb={0}>Site Title</FormLabel>
             <FormLabel.Description color="text.description">
-              This is the text displayed in search results
+              This is the title that displays on Google during a search, your
+              site footer, browser tab and when sharing on social media or
+              messaging channels.
             </FormLabel.Description>
           </Box>
           <Input
             w="100%"
             id="title"
             placeholder="Title"
-            {...register("title")}
+            {...register("title", { required: true })}
           />
         </FormControl>
         <FormControl isDisabled={isError}>
           <Box mb="0.75rem">
             <FormLabel mb={0}>Site Description</FormLabel>
             <FormLabel.Description color="text.description">
-              This description previews in search results
+              This description will be displayed when sharing on social media or
+              messaging channels.
             </FormLabel.Description>
           </Box>
           <Textarea
             w="100%"
             minH="9rem"
-            placeholder="Description"
+            placeholder="A Singapore Government site built with Isomer"
             id="description"
             {...register("description")}
           />
@@ -60,7 +63,14 @@ export const GeneralSettings = ({
         </FormControl>
         <FormControl isDisabled={isError} isRequired>
           <VStack spacing="0.75rem" align="flex-start" w="100%">
-            <FormTitle>Shareicon</FormTitle>
+            <Box>
+              <FormTitle>Shareicon</FormTitle>
+              <FormLabel.Description useMarkdown color="text.description">
+                This is the preview image that shows when your site url is
+                shared on social media or messaging channels. [Learn
+                more](https://guide.isomer.gov.sg/guide/settings)
+              </FormLabel.Description>
+            </Box>
             <SettingsFormFieldMedia name="shareicon" isDisabled={isError} />
           </VStack>
         </FormControl>
