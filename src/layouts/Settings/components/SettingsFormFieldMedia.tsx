@@ -8,10 +8,11 @@ import {
   HStack,
 } from "@chakra-ui/react"
 import MediaModal from "components/media/MediaModal"
-import { useFormContext } from "react-hook-form"
+import { useFormContext, Controller } from "react-hook-form"
 import { BiUpload } from "react-icons/bi"
 
-interface FormFieldMediaProps extends Omit<InputProps, "onChange"> {
+interface FormFieldMediaProps extends Omit<InputProps, "onChange" | "name"> {
+  onChange: (value: string) => void
   name: string
 }
 
@@ -19,25 +20,23 @@ interface FormFieldMediaProps extends Omit<InputProps, "onChange"> {
  * @precondition This field MUST be used within a FormProvider from react hook forms
  * @param name When using `{...register(<name>)}`, this prop MUST be set to the same name
  */
-export const SettingsFormFieldMedia = forwardRef<FormFieldMediaProps, "input">(
-  ({ name, ...props }: FormFieldMediaProps, ref): JSX.Element => {
+const SettingsFormFieldMediaBase = forwardRef<FormFieldMediaProps, "input">(
+  ({ onChange, ...props }: FormFieldMediaProps, ref): JSX.Element => {
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const { setValue, getValues } = useFormContext()
-    const selectedMedia: string = getValues(name)
 
     const onMediaSave = ({
       selectedMediaPath,
     }: {
       selectedMediaPath: string
     }) => {
-      setValue(name, selectedMediaPath)
+      onChange(selectedMediaPath)
       onClose()
     }
 
     return (
       <>
         <HStack w="100%" spacing="0.5rem">
-          <Input disabled value={selectedMedia} {...props} ref={ref} />
+          <Input disabled {...props} ref={ref} />
           <Button
             onClick={onOpen}
             leftIcon={<Icon as={BiUpload} fontSize="1.5rem" fill="white" />}
@@ -53,3 +52,19 @@ export const SettingsFormFieldMedia = forwardRef<FormFieldMediaProps, "input">(
     )
   }
 )
+
+export const SettingsFormFieldMedia = ({
+  name,
+  isDisabled,
+}: Pick<FormFieldMediaProps, "name" | "isDisabled">): JSX.Element => {
+  const { control } = useFormContext()
+  return (
+    <Controller
+      name={name}
+      control={control}
+      render={({ field }) => {
+        return <SettingsFormFieldMediaBase {...field} isDisabled={isDisabled} />
+      }}
+    />
+  )
+}

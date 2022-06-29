@@ -1,9 +1,11 @@
-import { VStack, FormControl, Flex, Switch } from "@chakra-ui/react"
+import { VStack, FormControl, Flex } from "@chakra-ui/react"
 import { FormLabel, Input } from "@opengovsg/design-system-react"
 import { upperFirst } from "lodash"
 import { useFormContext } from "react-hook-form"
 
 import { Section, SectionHeader } from "layouts/components"
+
+import { FormToggle } from "./components/FormToggle"
 
 interface FooterSettingsProp {
   isError: boolean
@@ -36,7 +38,7 @@ export const FooterSettings = ({
             <FormLabel>Show REACH</FormLabel>
             {/* NOTE: This should be toggle from design system but the component is 
                 broken and doesn't display a slider */}
-            <Switch {...register("showReach")} />
+            <FormToggle name="showReach" />
           </Flex>
         </FormControl>
       </VStack>
