@@ -60,6 +60,8 @@ export const Card: ComponentMultiStyleConfig = {
       },
     },
     body: {
+      height: "full",
+      overflow: "auto",
       justifyContent: "flex-start",
       display: "flex",
       alignItems: "flex-start",
