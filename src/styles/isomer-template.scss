@@ -695,8 +695,6 @@ a.hero-dropdown {
   background: #869791;
 }
 
-
-
 * {
   box-sizing: inherit;
 }
@@ -705,7 +703,6 @@ a.hero-dropdown {
 :before {
   box-sizing: inherit;
 }
-
 
 .is-clearfix:after {
   clear: both;
@@ -5897,28 +5894,6 @@ a[target="_blank"].is-media-card:after {
   content: "";
 }
 
-a[href$=".pdf"] {
-  position: relative;
-  margin-left: 2.25rem;
-}
-
-a[href$=".pdf"]:before {
-  vertical-align: middle;
-  color: #767676;
-  font-size: 1.75rem;
-  font-family: sgds-icons;
-  content: "";
-  position: absolute;
-  left: -2rem;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-}
-
-a[href$=".pdf"]:before:hover {
-  text-decoration: none;
-}
-
 a[href$=".pdf"].is-download-button,
 a[href$=".pdf"].is-media-card {
   margin-left: 0;
@@ -5927,11 +5902,6 @@ a[href$=".pdf"].is-media-card {
 a[href$=".pdf"].is-download-button:before,
 a[href$=".pdf"].is-media-card:before {
   content: "";
-}
-
-a[href$=".pdf"][target="_blank"]:after {
-  content: "";
-  display: none;
 }
 
 .bp-masthead a:after {
@@ -12118,7 +12088,6 @@ html.has-navbar-fixed-top-widescreen {
   text-decoration: underline;
 }
 
-
 .is-vh-10 {
   height: 10vh;
 }
@@ -13155,6 +13124,7 @@ a.navbar-item {
   border-bottom: 1px dotted #ff0000;
 }
 
-#simplemde-editor-wrapper, .EasyMDEContainer {
-	height: 100%;
+#simplemde-editor-wrapper,
+.EasyMDEContainer {
+  height: 100%;
 }
