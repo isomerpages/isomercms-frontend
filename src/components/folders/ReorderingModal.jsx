@@ -128,7 +128,7 @@ const ReorderingModal = ({ params, dirData, onProceed, onClose }) => {
               </Droppable>
             </DragDropContext>
           </div>
-          <Footer>
+          <Footer styles={{ position: "fixed" }}>
             <LoadingButton variant="clear" onClick={onClose}>
               Cancel
             </LoadingButton>
