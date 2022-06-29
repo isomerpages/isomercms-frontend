@@ -31,7 +31,6 @@ describe("Move flow", () => {
   beforeEach(() => {
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
     window.localStorage.setItem("userId", "test")
-    waitForDom()
   })
 
   describe("Move pages out of Workspace", () => {
@@ -46,7 +45,6 @@ describe("Move flow", () => {
     it("Should be able to navigate from Workspace to subfolder back to Workspace via MoveModal buttons", () => {
       cy.contains("a", TITLE_WORKSPACE_TO_FOLDER).as("pageItem").should("exist")
       cy.clickContextMenuItem("@pageItem", "Move to")
-      waitForDom()
 
       cy.contains(`Move Here`)
 
@@ -65,7 +63,7 @@ describe("Move flow", () => {
       cy.get("button[id^=moveModal-forwardButton-]")
         .eq(1)
         .click({ force: true })
-      waitForDom()
+
       cy.get("u").first().getFirstSiblingAs("moveFolderCurrentBreadcrumb")
       cy.verifyBreadcrumb("@moveFolderCurrentBreadcrumb", [
         "Workspace",
@@ -80,7 +78,7 @@ describe("Move flow", () => {
 
       // Navigate to Move subfolder
       cy.get("button[id^=moveModal-forwardButton-]").click({ force: true })
-      waitForDom()
+
       cy.get("u").first().getFirstSiblingAs("subFolderCurrentBreadcrumb")
       cy.verifyBreadcrumb("@subFolderCurrentBreadcrumb", [
         "Workspace",
@@ -96,7 +94,7 @@ describe("Move flow", () => {
 
       // Navigate to Move folder
       cy.get("#moveModal-backButton").click({ force: true })
-      waitForDom()
+
       cy.get("u").first().getFirstSiblingAs("moveFolderCurrentBreadcrumb")
       cy.verifyBreadcrumb("@moveFolderCurrentBreadcrumb", [
         "Workspace",
@@ -111,7 +109,7 @@ describe("Move flow", () => {
 
       // Navigate to Workspace
       cy.get("#moveModal-backButton").click({ force: true })
-      waitForDom()
+
       cy.get("u").first().getFirstSiblingAs("workspaceCurrentBreadcrumb")
       cy.verifyBreadcrumb("@workspaceCurrentBreadcrumb", [
         "Workspace",
@@ -127,7 +125,7 @@ describe("Move flow", () => {
     it("Should be able to move page from Workspace to itself and show correct success message", () => {
       cy.contains("a", TITLE_WORKSPACE_TO_FOLDER).as("pageItem").should("exist")
       cy.clickContextMenuItem("@pageItem", "Move to")
-      waitForDom()
+
       cy.contains(`Move Here`)
 
       cy.contains("button", "Move Here").clickAndWait()
@@ -140,7 +138,7 @@ describe("Move flow", () => {
     it("Should be able to move a page from Workspace to folder", () => {
       cy.contains("a", TITLE_WORKSPACE_TO_FOLDER).as("pageItem").should("exist")
       cy.clickContextMenuItem("@pageItem", "Move to")
-      waitForDom()
+
       cy.contains(`Move Here`)
 
       // Assert
@@ -192,7 +190,7 @@ describe("Move flow", () => {
         .as("pageItem")
         .should("exist")
       cy.clickContextMenuItem("@pageItem", "Move to")
-      waitForDom()
+
       cy.contains(`Move Here`)
 
       // Assert
@@ -285,7 +283,7 @@ describe("Move flow", () => {
 
       // Navigate to Workspace
       cy.get("#moveModal-backButton").click({ force: true })
-      waitForDom()
+
       cy.get("u").first().getFirstSiblingAs("workspaceBreadcrumb")
       cy.verifyBreadcrumb("@workspaceBreadcrumb", [
         "Workspace",
@@ -302,7 +300,7 @@ describe("Move flow", () => {
       cy.get("button[id^=moveModal-forwardButton-]")
         .eq(1)
         .click({ force: true })
-      waitForDom()
+
       cy.get("u").eq(1).getFirstSiblingAs("moveFolderBreadcrumb")
       cy.verifyBreadcrumb("@moveFolderBreadcrumb", [
         "Workspace",
@@ -318,7 +316,7 @@ describe("Move flow", () => {
 
       // Navigate to Move subfolder
       cy.get("button[id^=moveModal-forwardButton-]").click({ force: true })
-      waitForDom()
+
       cy.get("u").last().getFirstSiblingAs("subFolderBreadcrumb")
       cy.verifyBreadcrumb("@subFolderBreadcrumb", [
         "Workspace",
@@ -329,7 +327,7 @@ describe("Move flow", () => {
 
       // Navigate to Move folder
       cy.get("#moveModal-backButton").click({ force: true })
-      waitForDom()
+
       cy.get("u").last().parent().getFirstSiblingAs("moveBreadcrumb")
       cy.verifyBreadcrumb("@moveBreadcrumb", [
         "Workspace",
@@ -345,7 +343,6 @@ describe("Move flow", () => {
       cy.clickContextMenuItem("@folderItem", "Move to")
       cy.contains("button", "Move Here").click()
 
-      waitForDom()
       cy.contains("File is already in this folder", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
@@ -468,7 +465,7 @@ describe("Move flow", () => {
 
       // Navigate to Move folder
       cy.get("#moveModal-backButton").click({ force: true })
-      waitForDom()
+
       cy.get("u").last().getFirstSiblingAs("moveFolderUpdatedBreadcrumb")
       cy.verifyBreadcrumb("@moveFolderUpdatedBreadcrumb", [
         "Workspace",
@@ -478,7 +475,7 @@ describe("Move flow", () => {
 
       // Navigate to Workspace
       cy.get("#moveModal-backButton").click({ force: true })
-      waitForDom()
+
       cy.get("u").last().getFirstSiblingAs("workspaceUpdatedBreadcrumb")
       cy.verifyBreadcrumb("@workspaceUpdatedBreadcrumb", [
         "Workspace",
@@ -489,7 +486,7 @@ describe("Move flow", () => {
       cy.get("button[id^=moveModal-forwardButton-]")
         .eq(1)
         .click({ force: true })
-      waitForDom()
+
       cy.get("u").last().getFirstSiblingAs("moveFolderUpdatedBreadcrumb")
       cy.verifyBreadcrumb("@moveFolderUpdatedBreadcrumb", [
         "Workspace",
@@ -499,7 +496,7 @@ describe("Move flow", () => {
 
       // Navigate to Move subfolder
       cy.get("button[id^=moveModal-forwardButton-]").click({ force: true })
-      waitForDom()
+
       cy.get("u").last().getFirstSiblingAs("moveSubfolderUpdatedBreadcrumb")
       cy.verifyBreadcrumb("@moveSubfolderUpdatedBreadcrumb", [
         "Workspace",
@@ -599,7 +596,6 @@ describe("Move flow", () => {
       ])
 
       cy.get("#moveModal-backButton").click({ force: true })
-      waitForDom()
 
       // Assert
       cy.get("u").last().getFirstSiblingAs("updatedBreadcrumb")
@@ -655,7 +651,7 @@ describe("Move flow", () => {
 
       // Navigate to Resource Room
       cy.get("#moveModal-backButton").click({ force: true })
-      waitForDom()
+
       cy.get("u").last().getFirstSiblingAs("updatedBreadcrumb")
       cy.verifyBreadcrumb("@updatedBreadcrumb", [
         "Workspace",
@@ -667,7 +663,7 @@ describe("Move flow", () => {
       cy.get("button[id^=moveModal-forwardButton-]")
         .eq(1)
         .click({ force: true })
-      waitForDom()
+
       cy.get("u").last().getFirstSiblingAs("resourceCategoryBreadcrumb")
       cy.verifyBreadcrumb("@resourceCategoryBreadcrumb", [
         "Workspace",
@@ -682,7 +678,6 @@ describe("Move flow", () => {
       cy.clickContextMenuItem("@resourcePage", "Move to")
       cy.contains("button", "Move Here").click()
 
-      waitForDom()
       cy.contains("File is already in this folder", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")
@@ -704,7 +699,7 @@ describe("Move flow", () => {
 
       // Navigate to Resource Room
       cy.get("#moveModal-backButton").click({ force: true })
-      waitForDom()
+
       cy.get("u").last().getFirstSiblingAs("resourceRoomBreadcrumb")
       cy.verifyBreadcrumb("@resourceRoomBreadcrumb", [
         "Workspace",
@@ -716,7 +711,7 @@ describe("Move flow", () => {
       cy.get("button[id^=moveModal-forwardButton-]")
         .eq(0)
         .click({ force: true })
-      waitForDom()
+
       cy.get("u").last().getFirstSiblingAs("resourceCategoryBreadcrumb")
       cy.verifyBreadcrumb("@resourceCategoryBreadcrumb", [
         "Workspace",
