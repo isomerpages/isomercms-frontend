@@ -1,10 +1,11 @@
-import { VStack, FormControl, Flex, Switch, Box } from "@chakra-ui/react"
+import { VStack, FormControl, Flex, Box } from "@chakra-ui/react"
 import { FormLabel, Input, Textarea } from "@opengovsg/design-system-react"
 import { FormTitle } from "components/Form"
 import { useFormContext } from "react-hook-form"
 
 import { Section, SectionHeader } from "layouts/components"
 
+import { FormToggle } from "./components/FormToggle"
 import { SettingsFormFieldMedia } from "./components/SettingsFormFieldMedia"
 
 interface GeneralSettingsProp {
@@ -54,7 +55,7 @@ export const GeneralSettings = ({
             <FormLabel>Display government masthead</FormLabel>
             {/* NOTE: This should be toggle from design system 
                 but the component is broken and doesn't display a slider */}
-            <Switch {...register("displayGovMasthead")} />
+            <FormToggle name="displayGovMasthead" />
           </Flex>
         </FormControl>
         <FormControl isDisabled={isError} isRequired>
