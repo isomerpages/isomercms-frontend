@@ -604,11 +604,3 @@ export const getNextItemType = (params) => {
   }
   return false
 }
-
-export const getDecodedParams = (params) =>
-  Object.entries(params).reduce((acc, [key, value]) => {
-    if (!acc[key]) {
-      acc[key] = decodeURIComponent(value)
-    }
-    return acc
-  }, {})

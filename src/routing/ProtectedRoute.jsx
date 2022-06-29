@@ -3,7 +3,7 @@ import { Redirect, Route } from "react-router-dom"
 
 import { LoginConsumer } from "contexts/LoginContext"
 
-import { getDecodedParams } from "utils"
+import { getDecodedParams } from "utils/decoding"
 
 // Import contexts
 

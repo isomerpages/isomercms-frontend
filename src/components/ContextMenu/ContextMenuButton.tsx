@@ -13,8 +13,6 @@ export const ContextMenuButton = forwardRef<MenuButtonProps, "button">(
         right="2rem"
         as={IconButton}
         aria-label="Context Menu"
-        minH="2.5rem"
-        minW="2.5rem"
         icon={
           <Icon
             as={BiDotsVerticalRounded}

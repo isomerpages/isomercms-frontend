@@ -36,6 +36,8 @@
     }
   ],
   "rules": {
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "error",
     "react/jsx-props-no-spreading": "warn",
     "react/require-default-props": "off",
     "import/prefer-default-export": "off",

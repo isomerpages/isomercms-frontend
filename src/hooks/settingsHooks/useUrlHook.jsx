@@ -23,7 +23,7 @@ export function useSiteUrlHook({ siteName }) {
   })
 }
 
-export function useStagingUrlHook({ siteName }) {
+export function useStagingUrl({ siteName }) {
   return useQuery(
     [STAGING_URL_KEY, { siteName }],
     () => getStagingUrl(siteName),
