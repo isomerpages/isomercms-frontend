@@ -1,4 +1,4 @@
-import { useDisclosure, Text, Box, Code } from "@chakra-ui/react"
+import { useDisclosure, Text, Box, Code, HStack, VStack } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
 import { Footer } from "components/Footer"
@@ -131,14 +131,14 @@ const EditPage = ({ match }) => {
   }, [editorValue])
 
   return (
-    <>
+    <VStack>
       <Header
         title={pageData?.content?.frontMatter?.title || ""}
         shouldAllowEditPageBackNav={!hasChanges}
         isEditPage
         params={decodedParams}
       />
-      <div className={elementStyles.wrapper}>
+      <HStack className={elementStyles.wrapper}>
         <WarningModal
           isOpen={isXSSViolation && isXSSWarningModalOpen}
           onClose={onXSSWarningModalClose}
@@ -253,7 +253,7 @@ const EditPage = ({ match }) => {
           chunk={htmlChunk}
           dirData={dirData}
         />
-      </div>
+      </HStack>
       <Footer>
         <Button
           isDisabled={isContentViolation}
@@ -274,7 +274,7 @@ const EditPage = ({ match }) => {
           Save
         </Button>
       </Footer>
-    </>
+    </VStack>
   )
 }
 

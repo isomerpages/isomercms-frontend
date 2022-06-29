@@ -1,4 +1,4 @@
-import { useDisclosure, Box, Text } from "@chakra-ui/react"
+import { useDisclosure, Box, Text, HStack, VStack } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import { Footer } from "components/Footer"
 import Header from "components/Header"
@@ -679,70 +679,73 @@ const EditNavBar = ({ match }) => {
           Delete
         </Button>
       </WarningModal>
-      <Header
-        siteName={siteName}
-        title="Navigation Bar"
-        shouldAllowEditPageBackNav={!hasChanges}
-        isEditPage
-        backButtonText="Back to My Workspace"
-        backButtonUrl={`/sites/${siteName}/workspace`}
-      />
-      {hasLoaded && (
-        <div className={elementStyles.wrapper}>
-          <div className={editorStyles.homepageEditorSidebar}>
-            <div>
-              <DragDropContext onDragEnd={onDragEnd}>
-                <NavSection
+      <VStack>
+        <Header
+          siteName={siteName}
+          title="Navigation Bar"
+          shouldAllowEditPageBackNav={!hasChanges}
+          isEditPage
+          backButtonText="Back to My Workspace"
+          backButtonUrl={`/sites/${siteName}/workspace`}
+        />
+        {hasLoaded && (
+          <>
+            <HStack className={elementStyles.wrapper}>
+              <div className={editorStyles.homepageEditorSidebar}>
+                <div>
+                  <DragDropContext onDragEnd={onDragEnd}>
+                    <NavSection
+                      links={links}
+                      options={options}
+                      createHandler={createHandler}
+                      deleteHandler={(event) =>
+                        setItemPendingForDelete({
+                          id: event.target.id,
+                          type: "Link",
+                        })
+                      }
+                      onFieldChange={onFieldChange}
+                      displayHandler={displayHandler}
+                      displayLinks={displayLinks}
+                      displaySublinks={displaySublinks}
+                      hasResourceRoom={hasResourceRoom}
+                      hasResources={hasResources}
+                      errors={errors}
+                    />
+                  </DragDropContext>
+                </div>
+              </div>
+              {/* need to change the css here */}
+              <div className={`${editorStyles.contactUsEditorMain} `}>
+                {/* navbar content */}
+                {/* TODO: update collectionInfo */}
+                <TemplateNavBar
                   links={links}
-                  options={options}
-                  createHandler={createHandler}
-                  deleteHandler={(event) => {
-                    onDeleteModalOpen()
-                    setItemPendingForDelete({
-                      id: event.target.id,
-                      type: "Link",
-                    })
-                  }}
-                  onFieldChange={onFieldChange}
-                  displayHandler={displayHandler}
-                  displayLinks={displayLinks}
-                  displaySublinks={displaySublinks}
-                  hasResourceRoom={hasResourceRoom}
-                  hasResources={hasResources}
-                  errors={errors}
+                  collectionInfo={folderDropdowns}
+                  resources={resources}
                 />
-              </DragDropContext>
-            </div>
-          </div>
-          {/* need to change the css here */}
-          <div className={`${editorStyles.contactUsEditorMain} `}>
-            {/* navbar content */}
-            {/* TODO: update collectionInfo */}
-            <TemplateNavBar
-              links={links}
-              collectionInfo={folderDropdowns}
-              resources={resources}
-            />
-          </div>
-          <Footer>
-            {!isEmpty(deletedLinks) && (
-              <Button
-                ml="auto"
-                variant="clear"
-                onClick={onRemovedContentWarningOpen}
+              </div>
+            </HStack>
+            <Footer>
+              {!isEmpty(deletedLinks) && (
+                <Button
+                  ml="auto"
+                  variant="clear"
+                  onClick={onRemovedContentWarningOpen}
+                >
+                  See removed content
+                </Button>
+              )}
+              <LoadingButton
+                isDisabled={hasErrors()}
+                onClick={() => saveNavData(siteName, originalNav, links, sha)}
               >
-                See removed content
-              </Button>
-            )}
-            <LoadingButton
-              isDisabled={hasErrors()}
-              onClick={() => saveNavData(siteName, originalNav, links, sha)}
-            >
-              Save
-            </LoadingButton>
-          </Footer>
-        </div>
-      )}
+                Save
+              </LoadingButton>
+            </Footer>
+          </>
+        )}
+      </VStack>
     </>
   )
 }
