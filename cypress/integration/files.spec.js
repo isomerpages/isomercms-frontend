@@ -150,7 +150,7 @@ describe("Files", () => {
     it("Should be able to edit file directory name", () => {
       // User should be able edit directory details
       cy.contains("a", DIRECTORY_TITLE).should("exist").as("folderItem")
-      cy.clickContextMenuItem("@folderItem", "settings")
+      cy.clickContextMenuItem("@folderItem", "Settings")
       cy.get("#newDirectoryName").clear().type(OTHER_DIRECTORY_TITLE)
       cy.contains("button", "Save").click()
       cy.wait(E2E_CHANGE_WAIT_TIME)

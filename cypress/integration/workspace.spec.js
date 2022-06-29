@@ -145,7 +145,7 @@ describe("Workspace Pages flow", () => {
 
       // Act
       // User should be able edit page details
-      cy.clickContextMenuItem("@pageCard", "settings")
+      cy.clickContextMenuItem("@pageCard", "Settings")
       cy.get("#title").should("have.value", TEST_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       })
@@ -167,7 +167,7 @@ describe("Workspace Pages flow", () => {
 
       // Act
       // User should be able edit page details
-      cy.clickContextMenuItem("@pageCard", "settings")
+      cy.clickContextMenuItem("@pageCard", "Settings")
       cy.get("#title").should("have.value", EDITED_TEST_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       })
@@ -302,7 +302,7 @@ describe("Workspace Pages flow", () => {
       cy.contains("a", PRETTIFIED_FOLDER_WITH_PAGES_TITLE)
         .as("folderItem")
         .should("exist")
-      cy.clickContextMenuItem("@folderItem", "settings")
+      cy.clickContextMenuItem("@folderItem", "Settings")
       cy.get("input#newDirectoryName")
         .clear()
         .type(EDITED_TEST_FOLDER_WITH_PAGES_TITLE)

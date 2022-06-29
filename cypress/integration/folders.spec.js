@@ -194,7 +194,7 @@ describe("Folders flow", () => {
       }).as("renameSubfolder")
 
       cy.contains("a", PRETTIFIED_SUBFOLDER_WITH_PAGES_TITLE).as("folderItem")
-      cy.clickContextMenuItem("@folderItem", "settings")
+      cy.clickContextMenuItem("@folderItem", "Settings")
       cy.contains(`Subfolder settings`)
       cy.get("input#newDirectoryName")
         .clear()
@@ -322,7 +322,7 @@ describe("Folders flow", () => {
       cy.contains("a", TEST_PAGE_TITLE, { timeout: E2E_EXTENDED_TIMEOUT })
         .as("pageItem")
         .should("exist")
-      cy.clickContextMenuItem("@pageItem", "settings")
+      cy.clickContextMenuItem("@pageItem", "Settings")
 
       cy.get("#title").should("have.value", PRETTIFIED_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
@@ -352,7 +352,7 @@ describe("Folders flow", () => {
       })
         .as("pageItem")
         .should("exist")
-      cy.clickContextMenuItem("@pageItem", "settings")
+      cy.clickContextMenuItem("@pageItem", "Settings")
       cy.get("#title").should("have.value", PRETTIFIED_EDITED_TEST_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       })
@@ -496,7 +496,7 @@ describe("Folders flow", () => {
       cy.contains("a", TEST_PAGE_TITLE, { timeout: E2E_EXTENDED_TIMEOUT })
         .as("pageItem")
         .should("exist")
-      cy.clickContextMenuItem("@pageItem", "settings")
+      cy.clickContextMenuItem("@pageItem", "Settings")
       cy.get("#title").should("have.value", PRETTIFIED_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       })
@@ -525,7 +525,7 @@ describe("Folders flow", () => {
       })
         .as("pageItem")
         .should("exist")
-      cy.clickContextMenuItem("@pageItem", "settings")
+      cy.clickContextMenuItem("@pageItem", "Settings")
       cy.get("#title").should("have.value", PRETTIFIED_EDITED_TEST_PAGE_TITLE, {
         timeout: E2E_EXTENDED_TIMEOUT,
       })
