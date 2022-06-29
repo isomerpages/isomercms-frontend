@@ -18,7 +18,7 @@ import ResourceCategory from "layouts/ResourceCategory"
 import ResourceRoom from "layouts/ResourceRoom"
 import Settings from "layouts/Settings"
 import Sites from "layouts/Sites"
-import Workspace from "layouts/Workspace"
+import { Workspace } from "layouts/Workspace"
 
 // ProtectedRoute component
 import ProtectedRoute from "routing/ProtectedRoute"

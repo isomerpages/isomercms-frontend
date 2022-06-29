@@ -1,42 +1,42 @@
 import {
-  LinkOverlay,
-  LinkBox,
   Divider,
   HStack,
   Icon,
+  LinkBox,
+  LinkOverlay,
   Text,
-  Flex,
 } from "@chakra-ui/react"
-import axios from "axios"
+import { Card, CardBody } from "components/Card"
 import { ContextMenu } from "components/ContextMenu"
-import PropTypes from "prop-types"
 import { useMemo } from "react"
 import {
   BiChevronRight,
   BiEditAlt,
+  BiFileBlank,
   BiFolder,
   BiTrash,
   BiWrench,
 } from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
-import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
+import { pageFileNameToTitle } from "utils"
 
-// Import utils
-import { prettifyDate, pageFileNameToTitle } from "utils"
+interface PageCardProps {
+  title: string
+  resourceType?: "file" | "post"
+}
 
-// axios settings
-axios.defaults.withCredentials = true
-
-const PageCard = ({ item, itemIndex }) => {
-  const { name, date, resourceType } = item
+// eslint-disable-next-line import/prefer-default-export
+export const PageCard = ({
+  title,
+  resourceType = undefined,
+}: PageCardProps): JSX.Element => {
   const {
     url,
     params: { siteName, resourceRoomName },
-  } = useRouteMatch()
+  } = useRouteMatch<{ siteName: string; resourceRoomName: string }>()
 
-  const encodedName = encodeURIComponent(name)
+  const encodedName = encodeURIComponent(title)
 
   const generatedLink = useMemo(() => {
     if (resourceType === "file")
@@ -51,29 +51,16 @@ const PageCard = ({ item, itemIndex }) => {
   }, [resourceType, resourceRoomName, siteName, encodedName, url])
 
   return (
-    <LinkBox
-      className={`${contentStyles.component} ${
-        resourceType === "file"
-          ? contentStyles.cardDisabled
-          : contentStyles.card
-      } ${elementStyles.card}`}
-      position="relative"
-    >
+    <LinkBox>
       <LinkOverlay as={RouterLink} to={generatedLink}>
-        <Flex id={itemIndex} className={contentStyles.componentInfo} h="100%">
-          <h1
-            className={
-              resourceType === "file"
-                ? contentStyles.componentTitle
-                : contentStyles.componentTitleLink
-            }
-          >
-            {pageFileNameToTitle(name, !!resourceType)}
-          </h1>
-          <Text textStyle="caption-2" color="GrayText">{`${
-            date ? prettifyDate(date) : ""
-          }${resourceType ? `/${resourceType.toUpperCase()}` : ""}`}</Text>
-        </Flex>
+        <Card variant="single">
+          <CardBody>
+            <Icon as={BiFileBlank} fontSize="1.5rem" fill="icon.alt" />
+            <Text textStyle="subhead-1" color="text.label" noOfLines={1}>
+              {pageFileNameToTitle(title, !!resourceType)}
+            </Text>
+          </CardBody>
+        </Card>
       </LinkOverlay>
       <ContextMenu>
         <ContextMenu.Button />
@@ -117,14 +104,3 @@ const PageCard = ({ item, itemIndex }) => {
     </LinkBox>
   )
 }
-
-PageCard.propTypes = {
-  item: PropTypes.shape({
-    date: PropTypes.string,
-    name: PropTypes.string.isRequired,
-    resourceType: PropTypes.oneOf(["file", "post", ""]),
-  }),
-  itemIndex: PropTypes.number.isRequired,
-}
-
-export default PageCard
