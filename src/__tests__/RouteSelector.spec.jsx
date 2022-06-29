@@ -42,8 +42,7 @@ jest.mock("layouts/Sites", () => {
 
 jest.mock("layouts/Settings", () => {
   return {
-    __esModule: true,
-    default: () => {
+    Settings: () => {
       return <div>{SETTINGS_LAYOUT_TEXT}</div>
     },
   }

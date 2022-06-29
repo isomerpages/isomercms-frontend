@@ -17,7 +17,7 @@ import Media from "layouts/Media"
 import NotFoundPage from "layouts/NotFoundPage"
 import ResourceCategory from "layouts/ResourceCategory"
 import ResourceRoom from "layouts/ResourceRoom"
-import Settings from "layouts/Settings"
+import { Settings } from "layouts/Settings"
 import Sites from "layouts/Sites"
 import { Workspace } from "layouts/Workspace"
 
