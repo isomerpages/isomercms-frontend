@@ -1,11 +1,6 @@
 // NOTE: As Isomer does not have recursively nested folders at present,
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  Text,
-} from "@chakra-ui/react"
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from "@chakra-ui/react"
 import { BiChevronRight } from "react-icons/bi"
 import { useRouteMatch, Link as RouterLink } from "react-router-dom"
 
