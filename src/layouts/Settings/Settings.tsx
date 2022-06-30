@@ -179,9 +179,7 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
             <SocialMediaSettings isError={isError} />
             <FooterSettings isError={isError} />
             <AnalyticsSettings isError={isError} />
-            <Footer
-              styles={{ w: "calc(100% + 4rem)", ml: "-2rem", mb: "-2rem" }}
-            >
+            <Footer w="calc(100% + 4rem)" ml="-2rem" mb="-2rem">
               <Button
                 isLoading={isLoading}
                 onClick={() => {

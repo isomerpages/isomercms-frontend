@@ -3,8 +3,8 @@ import { PropsWithChildren } from "react"
 
 export const Footer = ({
   children,
-  styles,
-}: PropsWithChildren<{ styles?: FlexProps }>): JSX.Element => (
+  ...rest
+}: PropsWithChildren<FlexProps>): JSX.Element => (
   <Flex
     h="5rem"
     w="100%"
@@ -16,7 +16,7 @@ export const Footer = ({
     justify="end"
     align="center"
     bottom="0"
-    {...styles}
+    {...rest}
   >
     <HStack spacing="1rem">{children}</HStack>
   </Flex>
