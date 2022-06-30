@@ -18,14 +18,12 @@ interface WarningModalProps extends ModalProps {
 }
 
 export const WarningModal = ({
-  isOpen,
-  onClose,
   displayTitle,
   displayText,
   children,
   ...rest
 }: PropsWithChildren<WarningModalProps>): JSX.Element => (
-  <Modal isOpen={isOpen} onClose={onClose} {...rest}>
+  <Modal {...rest}>
     <ModalOverlay />
     <ModalContent>
       <ModalHeader>
