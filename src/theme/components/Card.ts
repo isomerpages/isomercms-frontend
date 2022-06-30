@@ -58,6 +58,7 @@ export const Card: ComponentMultiStyleConfig = {
       _focus: {
         boxShadow: `0 0 0 2px ${borderColour}`,
       },
+      overflow: "auto",
     },
     body: {
       height: "full",
