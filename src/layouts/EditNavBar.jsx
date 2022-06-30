@@ -698,12 +698,13 @@ const EditNavBar = ({ match }) => {
                       links={links}
                       options={options}
                       createHandler={createHandler}
-                      deleteHandler={(event) =>
+                      deleteHandler={(event) => {
+                        onDeleteModalOpen()
                         setItemPendingForDelete({
                           id: event.target.id,
                           type: "Link",
                         })
-                      }
+                      }}
                       onFieldChange={onFieldChange}
                       displayHandler={displayHandler}
                       displayLinks={displayLinks}

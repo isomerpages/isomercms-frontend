@@ -1,4 +1,11 @@
-import { useDisclosure, Text, Box, Code, HStack, VStack } from "@chakra-ui/react"
+import {
+  useDisclosure,
+  Text,
+  Box,
+  Code,
+  HStack,
+  VStack,
+} from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
 import { Footer } from "components/Footer"
@@ -258,7 +265,7 @@ const EditPage = ({ match }) => {
         <Button
           isDisabled={isContentViolation}
           onClick={() => {
-            if (isXSSViolation) setShowXSSWarning(true)
+            if (isXSSViolation) onXSSWarningModalOpen()
             else {
               updatePageHandler({
                 pageData: {

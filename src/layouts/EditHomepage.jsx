@@ -1276,12 +1276,13 @@ const EditHomepage = ({ match }) => {
                                     }
                                     onFieldChange={onFieldChange}
                                     createHandler={createHandler}
-                                    deleteHandler={(event, type) =>
+                                    deleteHandler={(event, type) => {
+                                      onOpen()
                                       setItemPendingForDelete({
                                         id: event.target.id,
                                         type,
                                       })
-                                    }
+                                    }}
                                     shouldDisplay={
                                       displaySections[sectionIndex]
                                     }
@@ -1316,12 +1317,13 @@ const EditHomepage = ({ match }) => {
                                         subtitle={section.resources.subtitle}
                                         button={section.resources.button}
                                         sectionIndex={sectionIndex}
-                                        deleteHandler={(event) =>
+                                        deleteHandler={(event) => {
+                                          onOpen()
                                           setItemPendingForDelete({
                                             id: event.target.id,
                                             type: "Resources Section",
                                           })
-                                        }
+                                        }}
                                         onFieldChange={onFieldChange}
                                         shouldDisplay={
                                           displaySections[sectionIndex]
@@ -1359,12 +1361,13 @@ const EditHomepage = ({ match }) => {
                                         button={section.infobar.button}
                                         url={section.infobar.url}
                                         sectionIndex={sectionIndex}
-                                        deleteHandler={(event) =>
+                                        deleteHandler={(event) => {
+                                          onOpen()
                                           setItemPendingForDelete({
                                             id: event.target.id,
                                             type: "Infobar Section",
                                           })
-                                        }
+                                        }}
                                         onFieldChange={onFieldChange}
                                         shouldDisplay={
                                           displaySections[sectionIndex]
@@ -1403,12 +1406,13 @@ const EditHomepage = ({ match }) => {
                                         imageUrl={section.infopic.image}
                                         imageAlt={section.infopic.alt}
                                         sectionIndex={sectionIndex}
-                                        deleteHandler={(event) =>
+                                        deleteHandler={(event) => {
+                                          onOpen()
                                           setItemPendingForDelete({
                                             id: event.target.id,
                                             type: "Infopic Section",
                                           })
-                                        }
+                                        }}
                                         onFieldChange={onFieldChange}
                                         shouldDisplay={
                                           displaySections[sectionIndex]

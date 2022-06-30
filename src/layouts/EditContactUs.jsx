@@ -908,9 +908,10 @@ const EditContactUs = ({ match }) => {
                       cards={frontMatter.locations}
                       onFieldChange={onFieldChange}
                       createHandler={createHandler}
-                      deleteHandler={(event, type) =>
+                      deleteHandler={(event, type) => {
+                        onDeleteModalOpen()
                         setItemPendingForDelete({ id: event.target.id, type })
-                      }
+                      }}
                       shouldDisplay={displaySections.sectionsDisplay.locations}
                       displayCards={displaySections.locations}
                       displayHandler={displayHandler}
@@ -922,9 +923,10 @@ const EditContactUs = ({ match }) => {
                       cards={frontMatter.contacts}
                       onFieldChange={onFieldChange}
                       createHandler={createHandler}
-                      deleteHandler={(event, type) =>
+                      deleteHandler={(event, type) => {
+                        onDeleteModalOpen()
                         setItemPendingForDelete({ id: event.target.id, type })
-                      }
+                      }}
                       shouldDisplay={displaySections.sectionsDisplay.contacts}
                       displayCards={displaySections.contacts}
                       displayHandler={displayHandler}
