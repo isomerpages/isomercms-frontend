@@ -162,6 +162,7 @@ describe("Resource category page", () => {
 
   it("Resource category page should not allow user to rename a resource page using invalid parameters", () => {
     cy.contains("a", TEST_PAGE_TITLE_2, { timeout: E2E_EXTENDED_TIMEOUT })
+      .parent()
       .as("pageCard")
       .should("exist")
 
@@ -203,6 +204,7 @@ describe("Resource category page", () => {
 
   it("Resource category page should allow user to edit a resource page details", () => {
     cy.contains("a", TEST_PAGE_TITLE_2, { timeout: E2E_EXTENDED_TIMEOUT })
+      .parent()
       .as("pageCard")
       .should("exist")
 
@@ -272,7 +274,10 @@ describe("Resource category page", () => {
   })
 
   it("Resources category page should allow user to change an existing resource page from post to file", () => {
-    cy.contains("a", TEST_PAGE_TITLE_RENAMED, { timeout: E2E_EXTENDED_TIMEOUT })
+    cy.contains("a", TEST_PAGE_TITLE_RENAMED, {
+      timeout: E2E_EXTENDED_TIMEOUT,
+    })
+      .parent()
       .as("pageCard")
       .should("exist")
     cy.clickContextMenuItem("@pageCard", "settings")
@@ -293,8 +298,12 @@ describe("Resource category page", () => {
     cy.contains(`${TEST_PAGE_DATE_CHANGED_PRETTIFIED}/FILE`)
   })
 
-  it("Resources category page should allow user to change an existing resource page from file to post", () => {
-    cy.contains("a", TEST_PAGE_TITLE_RENAMED, { timeout: E2E_EXTENDED_TIMEOUT })
+  it.only("Resources category page should allow user to change an existing resource page from file to post", () => {
+    cy.contains("button", TEST_PAGE_TITLE_RENAMED, {
+      timeout: E2E_EXTENDED_TIMEOUT,
+    })
+      .parent()
+      .parent()
       .as("pageCard")
       .should("exist")
     cy.clickContextMenuItem("@pageCard", "settings")
@@ -315,6 +324,7 @@ describe("Resource category page", () => {
 
   it("Resource category page should allow user to delete a page", () => {
     cy.contains("a", TEST_PAGE_TITLE_RENAMED, { timeout: E2E_EXTENDED_TIMEOUT })
+      .parent()
       .as("pageCard")
       .should("exist")
     cy.clickContextMenuItem("@pageCard", "Delete")
