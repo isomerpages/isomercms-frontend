@@ -1,4 +1,18 @@
-import { Text, Box, VStack, Skeleton, StackDivider } from "@chakra-ui/react"
+import {
+  Text,
+  Box,
+  VStack,
+  Skeleton,
+  StackDivider,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import { Footer } from "components/Footer"
 import _ from "lodash"
@@ -168,7 +182,12 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
             <Footer
               styles={{ w: "calc(100% + 4rem)", ml: "-2rem", mb: "-2rem" }}
             >
-              <Button type="submit" isLoading={isLoading}>
+              <Button
+                isLoading={isLoading}
+                onClick={() => {
+                  hasDiff ? onOpen() : onSubmit()
+                }}
+              >
                 Save
               </Button>
             </Footer>
