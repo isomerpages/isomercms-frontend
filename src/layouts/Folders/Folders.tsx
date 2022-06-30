@@ -81,7 +81,7 @@ export const Folders = ({ match }: FoldersProps): JSX.Element => {
         {/* Info segment */}
         <Section>
           <Box w="100%">
-            <SectionHeader label="Items">
+            <SectionHeader label="Order of items">
               <ButtonGroup variant="outline" spacing="1rem">
                 <Button
                   as={RouterLink}
@@ -108,7 +108,7 @@ export const Folders = ({ match }: FoldersProps): JSX.Element => {
             </SectionHeader>
             <SectionCaption label="PRO TIP: " icon={BiBulb}>
               Subfolders appear as side navigation in pages. Create a new
-              sesction by creating a subfolder.
+              section by creating a subfolder.
             </SectionCaption>
           </Box>
           <Skeleton isLoaded={!isLoadingDirectory} w="100%">

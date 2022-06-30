@@ -60,12 +60,13 @@ export const Card: ComponentMultiStyleConfig = {
       },
     },
     body: {
+      height: "full",
+      overflow: "auto",
       justifyContent: "flex-start",
       display: "flex",
       alignItems: "flex-start",
       textAlign: "left",
       gridArea: "body",
-      height: "full",
     },
   },
   variants: {

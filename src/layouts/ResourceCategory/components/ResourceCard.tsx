@@ -12,6 +12,7 @@ import { ContextMenu } from "components/ContextMenu"
 import {
   BiChevronRight,
   BiEditAlt,
+  BiFileBlank,
   BiFolder,
   BiTrash,
   BiWrench,
@@ -24,23 +25,25 @@ import { PageData } from "types/directory"
 import { prettifyDate } from "utils"
 
 interface ResourceCardProps {
+  name: string
   title: string
   date: string
   resourceType: SetRequired<PageData, "resourceType">["resourceType"]
 }
 
 export const ResourceCard = ({
+  name,
   title,
   date,
   resourceType,
 }: ResourceCardProps): JSX.Element => {
   const { url } = useRouteMatch()
-  const encodedTitle = encodeURIComponent(title)
+  const encodedName = encodeURIComponent(name)
   const CardContent = () => (
-    <Card variant="multi" height="100%">
+    <Card variant="multi">
       <CardBody>
         <Icon
-          as={resourceType === "post" ? BiFolder : BxFileArchiveSolid}
+          as={resourceType === "post" ? BiFileBlank : BxFileArchiveSolid}
           fontSize="1.5rem"
           fill="icon.alt"
         />
@@ -65,7 +68,7 @@ export const ResourceCard = ({
       </Box>
     ) : (
       <LinkBox position="relative" h="100%">
-        <LinkOverlay as={RouterLink} to={`${url}/editPage/${encodedTitle}`}>
+        <LinkOverlay as={RouterLink} to={`${url}/editPage/${encodedName}`}>
           <CardContent />
         </LinkOverlay>
       </LinkBox>
@@ -82,7 +85,7 @@ export const ResourceCard = ({
             <ContextMenu.Item
               icon={<BiEditAlt />}
               as={RouterLink}
-              to={`${url}/editPage/${encodedTitle}`}
+              to={`${url}/editPage/${encodedName}`}
             >
               <Text>Edit page</Text>
             </ContextMenu.Item>
@@ -90,14 +93,14 @@ export const ResourceCard = ({
           <ContextMenu.Item
             icon={<BiWrench />}
             as={RouterLink}
-            to={`${url}/editPageSettings/${encodedTitle}`}
+            to={`${url}/editPageSettings/${encodedName}`}
           >
             Page settings
           </ContextMenu.Item>
           <ContextMenu.Item
             icon={<BiFolder />}
             as={RouterLink}
-            to={`${url}/movePage/${encodedTitle}`}
+            to={`${url}/movePage/${encodedName}`}
           >
             <HStack spacing="4rem" alignItems="center">
               <Text>Move to</Text>
@@ -109,7 +112,7 @@ export const ResourceCard = ({
             <ContextMenu.Item
               icon={<BiTrash />}
               as={RouterLink}
-              to={`${url}/deletePage/${encodedTitle}`}
+              to={`${url}/deletePage/${encodedName}`}
             >
               Delete
             </ContextMenu.Item>

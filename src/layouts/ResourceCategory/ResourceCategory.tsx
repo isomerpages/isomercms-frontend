@@ -72,9 +72,10 @@ export const ResourceCategory = (): JSX.Element => {
           <Skeleton isLoaded={!isLoading}>
             <SimpleGrid columns={3} spacing="1.5rem">
               {/* NOTE: need to use multiline cards */}
-              {pagesData.map(({ name, date, resourceType }) => (
+              {pagesData.map(({ name, title, date, resourceType }) => (
                 <ResourceCard
-                  title={name}
+                  name={name}
+                  title={title}
                   date={date}
                   resourceType={resourceType}
                 />

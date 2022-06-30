@@ -21,6 +21,7 @@ export const isResourcePageData = (
   return (
     isPageData(possiblePage) &&
     possiblePage.date !== undefined &&
-    possiblePage.resourceType !== undefined
+    possiblePage.resourceType !== undefined &&
+    possiblePage.title !== undefined
   )
 }
