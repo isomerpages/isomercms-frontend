@@ -636,7 +636,10 @@ describe("Move flow", () => {
     })
 
     it("Should be able to navigate from Resource Category to Resource Room back to Resource Category via MoveModal buttons", () => {
-      cy.contains("a", TITLE_RESOURCE_PAGE).as("resourcePage").should("exist")
+      cy.contains("a", TITLE_RESOURCE_PAGE)
+        .parent()
+        .as("resourcePage")
+        .should("exist")
       cy.clickContextMenuItem("@resourcePage", "Move to")
       cy.contains("button", "Move Here")
 
@@ -674,7 +677,10 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move page from resource category to itself and show correct success message", () => {
-      cy.contains("a", TITLE_RESOURCE_PAGE).as("resourcePage").should("exist")
+      cy.contains("a", TITLE_RESOURCE_PAGE)
+        .parent()
+        .as("resourcePage")
+        .should("exist")
       cy.clickContextMenuItem("@resourcePage", "Move to")
       cy.contains("button", "Move Here").click()
 
@@ -684,7 +690,10 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move page from resource category to another resource category", () => {
-      cy.contains("a", TITLE_RESOURCE_PAGE).as("resourcePage").should("exist")
+      cy.contains("a", TITLE_RESOURCE_PAGE)
+        .parent()
+        .as("resourcePage")
+        .should("exist")
       cy.clickContextMenuItem("@resourcePage", "Move to")
       cy.contains("button", "Move Here")
 
