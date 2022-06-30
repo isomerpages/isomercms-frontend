@@ -55,9 +55,9 @@ const EditPage = ({ match }) => {
   const [isXSSViolation, setIsXSSViolation] = useState(false)
 
   const {
-    isOpen: isXSSOpen,
-    onOpen: onXSSOpen,
-    onClose: onXSSClose,
+    isOpen: isXSSWarningModalOpen,
+    onOpen: onXSSWarningModalOpen,
+    onClose: onXSSWarningModalClose,
   } = useDisclosure()
   const {
     isOpen: isOverwriteOpen,
@@ -140,8 +140,8 @@ const EditPage = ({ match }) => {
       />
       <div className={elementStyles.wrapper}>
         <WarningModal
-          isOpen={isXSSViolation && isXSSOpen}
-          onClose={onXSSClose}
+          isOpen={isXSSViolation && isXSSWarningModalOpen}
+          onClose={onXSSWarningModalClose}
           displayTitle="Warning"
           // DOMPurify removed object format taken from https://github.com/cure53/DOMPurify/blob/dd63379e6354f66d4689bb80b30cb43a6d8727c2/src/purify.js
           displayText={
@@ -175,7 +175,7 @@ const EditPage = ({ match }) => {
             </Box>
           }
         >
-          <Button colorScheme="danger" onClick={onXSSClose}>
+          <Button colorScheme="danger" onClick={onXSSWarningModalClose}>
             Cancel
           </Button>
           <Button
@@ -190,7 +190,7 @@ const EditPage = ({ match }) => {
                   pageBody: sanitizedEditorValue,
                 },
               })
-              onXSSClose()
+              onXSSWarningModalClose()
             }}
           >
             Acknowledge
@@ -257,7 +257,7 @@ const EditPage = ({ match }) => {
       <Footer
         isKeyButtonDisabled={isContentViolation}
         keyCallback={() => {
-          if (isXSSViolation) onXSSOpen()
+          if (isXSSViolation) onXSSWarningModalOpen()
           else {
             updatePageHandler({
               pageData: {
