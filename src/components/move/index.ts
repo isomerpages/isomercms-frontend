@@ -1,2 +1,2 @@
-export { MoveMenuBackButton } from "./MoveMenuBackButton"
+export { MoveMenuHeader } from "./MoveMenuHeader"
 export * from "./MoveMenuItem"

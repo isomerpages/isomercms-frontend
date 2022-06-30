@@ -19,27 +19,32 @@ const LoginConsumer = ({ children }) => {
 }
 
 const LoginProvider = ({ children }) => {
-  const [, setUserId, removeUserId] = useLocalStorage(
-    LOCAL_STORAGE_KEYS.GithubId
+  const [storedUserId, setStoredUserId, removeStoredUserId] = useLocalStorage(
+    LOCAL_STORAGE_KEYS.GithubId,
+    "Unknown user"
+  )
+  const [storedUser, setStoredUser, removeStoredUser] = useLocalStorage(
+    LOCAL_STORAGE_KEYS.User,
+    {}
   )
 
-  const [user, setUser, removeUser] = useLocalStorage(LOCAL_STORAGE_KEYS.User)
   const [, , removeSites] = useLocalStorage(LOCAL_STORAGE_KEYS.SitesIsPrivate)
   const verifyLoginAndSetLocalStorage = async () => {
     const { data } = await axios.get(`${BACKEND_URL}/auth/whoami`)
     const loggedInUser = omitBy(data, isEmpty)
 
-    if (loggedInUser.userId) {
-      setUserId(loggedInUser.userId)
-    }
-    setUser(loggedInUser)
+    setStoredUserId(loggedInUser.userId)
+    setStoredUser(loggedInUser)
   }
 
   const logout = async () => {
     await axios.delete(`${BACKEND_URL}/auth/logout`)
-    removeUserId()
-    removeUser()
+    removeStoredUserId()
+    removeStoredUser()
     removeSites()
+    // NOTE: This is REQUIRED (emphasis here) for auto-redirect on removal of stored user id.
+    // This is IN ADDITION to removing the value associated with the key.
+    setStoredUserId(null)
   }
 
   // Set interceptors to log users out if an error occurs within the LoginProvider
@@ -60,7 +65,9 @@ const LoginProvider = ({ children }) => {
   }, []) // Run only once
 
   const loginContextData = {
-    ...user,
+    userId: storedUserId,
+    email: storedUser.email,
+    contactNumber: storedUser.contactNumber,
     logout,
     verifyLoginAndSetLocalStorage,
   }

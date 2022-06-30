@@ -1,5 +1,3 @@
-import type { SetRequired } from "type-fest"
-
 export type DirectoryType =
   | "mediaDirectoryName"
   | "subCollectionName"
@@ -25,6 +23,7 @@ export interface DirectoryData {
 
 export interface PageData {
   name: string
+  title?: string
   date?: string
   resourceType?: "file" | "post"
 }

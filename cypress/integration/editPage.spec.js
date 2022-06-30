@@ -44,13 +44,22 @@ describe("Edit unlinked page", () => {
   const LINK_TITLE = "link"
   const LINK_URL = "https://www.google.com"
 
+  const E2E_USER = {
+    userId: "test",
+    email: "test@open.gov.sg",
+    contactNumber: "99999999",
+  }
+  const LOCAL_STORAGE_USERID_KEY = "userId"
+  const LOCAL_STORAGE_USER_KEY = "user"
+
   before(() => {
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-    window.localStorage.setItem("userId", "test")
+    window.localStorage.setItem(LOCAL_STORAGE_USER_KEY, E2E_USER)
+    window.localStorage.setItem(LOCAL_STORAGE_USERID_KEY, E2E_USER.userId)
 
     // Set colour
     cy.visit(`/sites/${TEST_REPO_NAME}/settings`)
-    cy.contains("p", "Primary").siblings("button").click()
+    cy.get("button[aria-label='Select colour']").first().click()
     cy.contains(/^r/)
       .siblings()
       .clear()
@@ -69,7 +78,7 @@ describe("Edit unlinked page", () => {
 
     // Set up test resource categories
     cy.visit(`/sites/${TEST_REPO_NAME}/workspace`)
-    cy.contains("Add a new page").click()
+    cy.contains("button", "Create page").click()
     cy.get("#title").clear().type(TEST_UNLINKED_PAGE_TITLE)
     cy.contains("Save").click()
     cy.wait(E2E_CHANGE_WAIT_TIME)
@@ -229,7 +238,7 @@ describe("Edit collection page", () => {
 
     // Set up test collection
     cy.visit(`/sites/${TEST_REPO_NAME}/workspace`)
-    cy.contains("Create new folder").should("exist").click()
+    cy.contains("Create folder").should("exist").click()
     cy.get("input#newDirectoryName").clear().type(TEST_FOLDER_TITLE)
     cy.contains("Next").click()
     cy.contains("Skip").click()
@@ -237,7 +246,7 @@ describe("Edit collection page", () => {
 
     // Set up test collection page
     cy.visit(`/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}`)
-    cy.contains("Create new page").should("exist").click()
+    cy.contains("Create page").should("exist").click()
     cy.get("#title").clear().type(TEST_PAGE_TITLE)
     cy.contains("Save").click()
     cy.wait(E2E_DEFAULT_WAIT_TIME)
@@ -353,7 +362,7 @@ describe("Edit resource page", () => {
 
     // Set colour
     cy.visit(`/sites/${TEST_REPO_NAME}/settings`)
-    cy.contains("p", "Secondary").siblings("button").click()
+    cy.get("button[aria-label='Select colour']").eq(1).click()
     cy.contains(/^r/)
       .siblings()
       .clear()
@@ -373,8 +382,8 @@ describe("Edit resource page", () => {
     // Set up test resource category
     cy.visit(`/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM}`)
     cy.wait(E2E_DEFAULT_WAIT_TIME)
-    cy.contains("Create new category").click()
-    cy.get("input").clear().type(TEST_CATEGORY)
+    cy.contains("Create category").click()
+    cy.get('input[placeholder="Title"]').type(TEST_CATEGORY)
     cy.contains("Next").click()
     cy.wait(E2E_CHANGE_WAIT_TIME)
 
@@ -383,7 +392,7 @@ describe("Edit resource page", () => {
       `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
     )
 
-    cy.contains("Add a new page").click()
+    cy.contains("Create page").click()
     cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE)

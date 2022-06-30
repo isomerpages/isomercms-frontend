@@ -54,7 +54,7 @@ export const MenuDropdownButton = (): JSX.Element => {
                 icon={<BiFileBlank fontSize="1.25rem" fill="icon.alt" />}
               >
                 <Text textStyle="body-1" fill="text.body">
-                  Create Page
+                  Create page
                 </Text>
               </ContextMenu.Item>
               <ContextMenu.Item
@@ -63,7 +63,7 @@ export const MenuDropdownButton = (): JSX.Element => {
                 icon={<BiFolder fontSize="1.25rem" fill="icon.alt" />}
               >
                 <Text textStyle="body-1" fill="text.body">
-                  Create Folder
+                  Create folder
                 </Text>
               </ContextMenu.Item>
             </ContextMenu.List>

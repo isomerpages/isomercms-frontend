@@ -4,6 +4,8 @@ import { ContextMenu } from "components/ContextMenu"
 import { BiEditAlt, BiFolder, BiTrash, BiWrench } from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
+import { prettifyPageFileName } from "utils"
+
 interface FolderCardProps {
   title: string
   siteName: string
@@ -22,7 +24,7 @@ export const FolderCard = ({
           <CardBody>
             <Icon as={BiFolder} fontSize="1.5rem" fill="icon.alt" />
             <Text textStyle="subhead-1" color="text.label" noOfLines={1}>
-              {title}
+              {prettifyPageFileName(title)}
             </Text>
           </CardBody>
         </Card>
@@ -42,7 +44,7 @@ export const FolderCard = ({
             as={RouterLink}
             to={`${url}/editDirectorySettings/${title}`}
           >
-            Folder Settings
+            Folder settings
           </ContextMenu.Item>
           <>
             <Divider />

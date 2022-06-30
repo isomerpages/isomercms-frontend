@@ -121,7 +121,7 @@ export const Workspace = (): JSX.Element => {
 
         <Section>
           <Box w="100%">
-            <SectionHeader label="Pages">
+            <SectionHeader label="Ungrouped Pages">
               <CreateButton
                 onClick={() => setRedirectToPage(`${url}/createPage`)}
               >
@@ -129,7 +129,7 @@ export const Workspace = (): JSX.Element => {
               </CreateButton>
             </SectionHeader>
             <SectionCaption label="NOTE: " icon={BiInfoCircle}>
-              Pages here do not belong to any folders
+              Pages here do not belong to any folders.
             </SectionCaption>
           </Box>
           <Skeleton isLoaded={!!pagesData} w="full">

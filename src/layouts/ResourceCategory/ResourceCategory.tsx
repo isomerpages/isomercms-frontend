@@ -62,19 +62,20 @@ export const ResourceCategory = (): JSX.Element => {
           <Box w="full">
             <SectionHeader label="Pages">
               <CreateButton as={RouterLink} to={`${url}/createPage`}>
-                Create Page
+                Create page
               </CreateButton>
             </SectionHeader>
             <SectionCaption icon={BiBulb} label="PRO TIP: ">
               Organise your workspace by moving pages into folders
             </SectionCaption>
           </Box>
-          <Skeleton isLoaded={!isLoading}>
+          <Skeleton isLoaded={!isLoading} w="100%">
             <SimpleGrid columns={3} spacing="1.5rem">
               {/* NOTE: need to use multiline cards */}
-              {pagesData.map(({ name, date, resourceType }) => (
+              {pagesData.map(({ name, title, date, resourceType }) => (
                 <ResourceCard
-                  title={name}
+                  name={name}
+                  title={title}
                   date={date}
                   resourceType={resourceType}
                 />

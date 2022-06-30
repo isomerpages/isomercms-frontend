@@ -74,10 +74,13 @@ describe("Images", () => {
     })
 
     it("Should be able to delete image from image album", () => {
-      cy.contains(OTHER_IMAGE_TITLE, { timeout: E2E_EXTENDED_TIMEOUT }).should(
-        "exist"
-      )
-      cy.deleteMedia(OTHER_IMAGE_TITLE)
+      cy.contains("button", OTHER_IMAGE_TITLE, {
+        timeout: E2E_EXTENDED_TIMEOUT,
+      })
+        .as("imagePreview")
+        .should("exist")
+      cy.clickContextMenuItem("@imagePreview", "Delete")
+      cy.contains("button", "Delete").click()
       // ASSERTS
       cy.contains(OTHER_IMAGE_TITLE, { timeout: E2E_EXTENDED_TIMEOUT }).should(
         "not.exist"

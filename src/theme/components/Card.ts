@@ -58,14 +58,16 @@ export const Card: ComponentMultiStyleConfig = {
       _focus: {
         boxShadow: `0 0 0 2px ${borderColour}`,
       },
+      overflow: "auto",
     },
     body: {
+      height: "full",
+      overflow: "auto",
       justifyContent: "flex-start",
       display: "flex",
       alignItems: "flex-start",
       textAlign: "left",
       gridArea: "body",
-      height: "full",
     },
   },
   variants: {
