@@ -78,6 +78,7 @@ describe("Settings page", () => {
     cy.get("#title").clear().type(BASE_TITLE)
     cy.contains("div", "Analytics")
       .parent()
+      .parent()
       .find("input")
       .each((elem) => cy.wrap(elem).clear())
     cy.contains("label", "Primary")
