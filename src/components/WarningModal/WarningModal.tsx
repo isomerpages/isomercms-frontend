@@ -7,13 +7,12 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  ModalProps,
 } from "@chakra-ui/react"
 import { ModalCloseButton } from "@opengovsg/design-system-react"
 import { PropsWithChildren } from "react"
 
-interface ModalProps {
-  isOpen: boolean
-  onClose: () => void
+interface WarningModalProps extends ModalProps {
   displayTitle: string
   displayText: JSX.Element
 }
@@ -24,8 +23,9 @@ export const WarningModal = ({
   displayTitle,
   displayText,
   children,
-}: PropsWithChildren<ModalProps>): JSX.Element => (
-  <Modal isOpen={isOpen} onClose={onClose}>
+  ...rest
+}: PropsWithChildren<WarningModalProps>): JSX.Element => (
+  <Modal isOpen={isOpen} onClose={onClose} {...rest}>
     <ModalOverlay />
     <ModalContent>
       <ModalHeader>
