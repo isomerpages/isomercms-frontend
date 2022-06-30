@@ -1,5 +1,3 @@
-import _ from "lodash"
-
 import { BackendSiteSettings } from "types/settings"
 
 import { apiService } from "./ApiService"
@@ -8,7 +6,7 @@ const getSettingsEndpoint = (siteName: string): string => {
   return `/sites/${siteName}/settings`
 }
 
-const get = async ({
+export const get = async ({
   siteName,
 }: {
   siteName: string
@@ -17,8 +15,7 @@ const get = async ({
   return apiService.get<BackendSiteSettings>(endpoint).then((res) => res.data)
 }
 
-// wrap in object with 1 prop of configsettings (?)
-const update = async (
+export const update = async (
   siteName: string,
   // eslint-disable-next-line camelcase
   { facebook_pixel, linkedin_insights, ...rest }: BackendSiteSettings
@@ -32,9 +29,4 @@ const update = async (
   }
 
   return apiService.post(endpoint, renamedSettings)
-}
-
-export const settingsService = {
-  get,
-  update,
 }

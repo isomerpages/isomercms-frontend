@@ -1,6 +1,10 @@
+import { DirectoryInfoProps, DirectoryInfoReturn } from "types/directory"
 import { getMediaDirectoryName } from "utils"
 
-export function extractCreateDirectoryInfo({ data, mediaDirectoryName }) {
+export function extractCreateDirectoryInfo({
+  data,
+  mediaDirectoryName,
+}: DirectoryInfoProps): DirectoryInfoReturn {
   return {
     items: data.items,
     newDirectoryName: mediaDirectoryName
@@ -9,7 +13,10 @@ export function extractCreateDirectoryInfo({ data, mediaDirectoryName }) {
   }
 }
 
-export function extractUpdateDirectoryInfo({ data, mediaDirectoryName }) {
+export function extractUpdateDirectoryInfo({
+  data,
+  mediaDirectoryName,
+}: DirectoryInfoProps): Pick<DirectoryInfoReturn, "newDirectoryName"> {
   return {
     newDirectoryName: mediaDirectoryName
       ? `${getMediaDirectoryName(mediaDirectoryName, {
