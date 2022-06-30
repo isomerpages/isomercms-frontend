@@ -329,7 +329,7 @@ describe("Resource category page", () => {
       .should("exist")
     cy.clickContextMenuItem("@pageCard", "Delete")
 
-    cy.contains("button", "Delete", { timeout: E2E_EXTENDED_TIMEOUT })
+    cy.contains("button", "delete", { timeout: E2E_EXTENDED_TIMEOUT })
       .should("exist")
       .click()
 

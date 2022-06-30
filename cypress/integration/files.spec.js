@@ -115,7 +115,7 @@ describe("Files", () => {
     it("Should be able to delete file", () => {
       cy.contains("button", OTHER_FILE_TITLE).as("filePreview")
       cy.clickContextMenuItem("@filePreview", "Delete")
-      cy.contains("button", "Delete").click()
+      cy.contains("button", "delete").click()
       // ASSERTS
       cy.contains(OTHER_FILE_TITLE).should("not.exist") // File name should not exist in Files
     })
@@ -163,7 +163,7 @@ describe("Files", () => {
       // User should be able delete directory
       cy.contains("a", OTHER_DIRECTORY_TITLE).should("exist").as("folderItem")
       cy.clickContextMenuItem("@folderItem", "Delete")
-      cy.contains("button", "Delete").click()
+      cy.contains("button", "delete").click()
       cy.wait(E2E_CHANGE_WAIT_TIME)
       // ASSERTS
       cy.contains(OTHER_DIRECTORY_TITLE).should("not.exist") // Directory name should not be contained in Files
@@ -219,7 +219,7 @@ describe("Files", () => {
     it("Should be able to delete file from file directory", () => {
       cy.contains(OTHER_FILE_TITLE).should("exist").as("fileItem")
       cy.clickContextMenuItem("@fileItem", "Delete")
-      cy.contains("button", "Delete").click()
+      cy.contains("button", "delete").click()
       // ASSERTS
       cy.contains(OTHER_FILE_TITLE).should("not.exist") // File file name should not exist in Files
     })

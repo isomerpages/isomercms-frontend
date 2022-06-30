@@ -80,7 +80,7 @@ describe("Images", () => {
         .as("imagePreview")
         .should("exist")
       cy.clickContextMenuItem("@imagePreview", "Delete")
-      cy.contains("button", "Delete").click()
+      cy.contains("button", "delete").click()
       // ASSERTS
       cy.contains(OTHER_IMAGE_TITLE, { timeout: E2E_EXTENDED_TIMEOUT }).should(
         "not.exist"
