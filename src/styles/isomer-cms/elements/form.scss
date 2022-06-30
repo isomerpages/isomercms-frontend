@@ -27,15 +27,6 @@ p {
   padding-right: 5px;
 }
 
-.formSectionHeader {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  margin-top: 20px;
-  line-height: 14px;
-  padding-top: 20px;
-}
-
 .formHorizontal {
   display: flex;
   margin-bottom: 5px;
@@ -43,34 +34,6 @@ p {
 
   .formHorizontalInput {
     max-width: 80%;
-  }
-}
-
-.formToggle {
-  @extend .formHorizontal;
-  padding-bottom: 20px;
-
-  .formToggleLabel {
-    @extend .formLabel;
-    width: 25%;
-    margin: 1px;
-  }
-
-  .formToggleInput {
-    width: 75%;
-  }
-}
-
-.formColor {
-  display: flex;
-  width: 50%;
-  margin-bottom: 5px;
-  margin-top: 5px;
-
-  .formColorLabel {
-    @extend .formLabel;
-    width: 40%;
-    margin: 1px;
   }
 }
 
@@ -101,23 +64,4 @@ textarea {
     border: 1px solid $error-red;
     outline: none;
   }
-}
-
-input[type="radio"] {
-  width: auto;
-  margin-right: 8px;
-}
-
-.formToggleThumbIcon {
-  align-self: center;
-}
-
-.formToggleThumbIconEnabled {
-  @extend .formToggleThumbIcon;
-  color: $success;
-}
-
-.formToggleThumbIconDisabled {
-  @extend .formToggleThumbIcon;
-  color: $body-grey;
 }

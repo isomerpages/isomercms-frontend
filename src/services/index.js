@@ -1,5 +1,5 @@
 export { PageService } from "./PageService"
 export { MediaService } from "./MediaService"
-export { DirectoryService } from "./DirectoryService"
+export { DirectoryService } from "./DirectoryService.jsx"
 export { MoverService } from "./MoverService"
-export { SettingsService } from "./SettingsService"
+export { SettingsService } from "./SettingsService.jsx"

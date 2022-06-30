@@ -106,28 +106,6 @@
   }
 }
 
-.contentContainerCards {
-  //this is used in the setting page
-  width: 100%;
-  display: flex;
-  box-sizing: border-box;
-  flex-direction: row;
-  flex-wrap: wrap;
-  background: white;
-  margin-bottom: 50px;
-
-  .cardContainer {
-    // flex: 1 0 calc(25% - 20px);
-    margin: 10px;
-    padding: 10px;
-    width: 45%;
-
-    .card {
-      box-sizing: border-box;
-    }
-  }
-}
-
 .contentContainerFolderRow {
   display: flex;
   flex-direction: row;
@@ -135,33 +113,10 @@
   align-items: center;
 }
 
-.contentContainerFolderRowMargin {
-  @extend .contentContainerFolderRow;
-  margin-bottom: 2.5rem;
-}
-
 .contentContainerFolderColumn {
   display: flex;
   flex-direction: column;
   width: 100%;
-}
-
-.contentContainerBoxes {
-  //this is used in the PageCard page
-  @include cardFormat;
-
-  .boxesContainer {
-    @include cardFormat;
-
-    .card {
-      width: $component-card-width;
-      box-sizing: border-box;
-      height: $component-card-height;
-      margin-right: $component-card-margin;
-      margin-bottom: $component-card-margin;
-      min-width: 250px;
-    }
-  }
 }
 
 .folderContainerBoxes {
@@ -209,13 +164,6 @@
       flex-direction: column;
       justify-content: space-between;
       align-content: center;
-
-      .componentCategory {
-        text-transform: uppercase;
-        color: grey;
-        font-size: 12px;
-        letter-spacing: 0.5px;
-      }
 
       .componentTitle {
         font-size: 16px;
@@ -315,20 +263,4 @@
 
 .segmentDividerContainer {
   width: 100%;
-}
-
-.sectionFooter {
-  height: $footer-height;
-  background: white;
-  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.5);
-  position: absolute;
-  bottom: 0;
-  z-index: 10;
-  width: 100%;
-  box-sizing: border-box;
-  padding-right: 30px;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
 }

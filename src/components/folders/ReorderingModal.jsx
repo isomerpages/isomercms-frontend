@@ -1,6 +1,6 @@
-import { HStack } from "@chakra-ui/react"
 import { Breadcrumb } from "components/folders/Breadcrumb"
 import { FolderItem } from "components/folders/FolderContent"
+import { Footer } from "components/Footer"
 import { LoadingButton } from "components/LoadingButton"
 import update from "immutability-helper"
 import PropTypes from "prop-types"
@@ -128,22 +128,20 @@ const ReorderingModal = ({ params, dirData, onProceed, onClose }) => {
               </Droppable>
             </DragDropContext>
           </div>
-          <div className={contentStyles.sectionFooter}>
-            <HStack w="100%" spacing={2} justifyContent="flex-end">
-              <LoadingButton variant="clear" onClick={onClose}>
-                Cancel
-              </LoadingButton>
-              <LoadingButton
-                onClick={() =>
-                  onProceed({
-                    items: dirOrder,
-                  })
-                }
-              >
-                Save
-              </LoadingButton>
-            </HStack>
-          </div>
+          <Footer position="fixed">
+            <LoadingButton variant="clear" onClick={onClose}>
+              Cancel
+            </LoadingButton>
+            <LoadingButton
+              onClick={() =>
+                onProceed({
+                  items: dirOrder,
+                })
+              }
+            >
+              Save
+            </LoadingButton>
+          </Footer>
         </div>
       </div>
     </>

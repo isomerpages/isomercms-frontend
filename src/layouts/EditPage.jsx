@@ -1,9 +1,18 @@
+import {
+  useDisclosure,
+  Text,
+  Box,
+  Code,
+  HStack,
+  VStack,
+} from "@chakra-ui/react"
+import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
-import Footer from "components/Footer"
-import GenericWarningModal from "components/GenericWarningModal"
+import { Footer } from "components/Footer"
 import Header from "components/Header"
 import MarkdownEditor from "components/pages/MarkdownEditor"
 import PagePreview from "components/pages/PagePreview"
+import { WarningModal } from "components/WarningModal"
 import DOMPurify from "dompurify"
 import { marked } from "marked"
 import PropTypes from "prop-types"
@@ -51,8 +60,17 @@ const EditPage = ({ match }) => {
   const [hasChanges, setHasChanges] = useState(false)
   const [isContentViolation, setIsContentViolation] = useState(false)
   const [isXSSViolation, setIsXSSViolation] = useState(false)
-  const [showXSSWarning, setShowXSSWarning] = useState(false)
-  const [showOverwriteWarning, setShowOverwriteWarning] = useState(false)
+
+  const {
+    isOpen: isXSSWarningModalOpen,
+    onOpen: onXSSWarningModalOpen,
+    onClose: onXSSWarningModalClose,
+  } = useDisclosure()
+  const {
+    isOpen: isOverwriteOpen,
+    onOpen: onOverwriteOpen,
+    onClose: onOverwriteClose,
+  } = useDisclosure()
 
   const { setRedirectToNotFound } = useRedirectHook()
 
@@ -66,7 +84,7 @@ const EditPage = ({ match }) => {
     isLoading: isSavingPage,
   } = useUpdatePageHook(params, {
     onError: (err) => {
-      if (err.response.status === 409) setShowOverwriteWarning(true)
+      if (err.response.status === 409) onOverwriteOpen()
     },
     onSuccess: () => setHasChanges(false),
   })
@@ -120,61 +138,101 @@ const EditPage = ({ match }) => {
   }, [editorValue])
 
   return (
-    <>
+    <VStack>
       <Header
         title={pageData?.content?.frontMatter?.title || ""}
         shouldAllowEditPageBackNav={!hasChanges}
         isEditPage
         params={decodedParams}
       />
-      <div className={elementStyles.wrapper}>
-        {isXSSViolation &&
-          showXSSWarning && ( // to be refactored later
-            <GenericWarningModal
-              displayTitle="Warning"
-              // DOMPurify removed object format taken from https://github.com/cure53/DOMPurify/blob/dd63379e6354f66d4689bb80b30cb43a6d8727c2/src/purify.js
-              displayText={`There is unauthorised JS detected in the following snippet${
-                DOMPurify.removed.length > 1 ? "s" : ""
-              }:
-            ${DOMPurify.removed.map(
-              (elem, i) =>
-                `<br/><code>${i}</code>: <code>${
-                  elem.attribute?.textContent || elem.element?.textContent
-                    ? (
-                        elem.attribute?.textContent || elem.element?.textContent
-                      ).replace("<", "&lt;")
-                    : elem
-                }</code>`
-            )}
-            <br/><br/>Before saving, the editor input will be automatically sanitised to prevent security vulnerabilities.
-            <br/><br/>To save the sanitised editor input, press Acknowledge. To return to the editor without sanitising, press Cancel.`}
-              onProceed={() => {
-                const sanitizedEditorValue = DOMPurify.sanitize(editorValue)
-                setEditorValue(sanitizedEditorValue)
-                setIsXSSViolation(false)
-                setShowXSSWarning(false)
-                updatePageHandler({
-                  pageData: {
-                    frontMatter: pageData.content.frontMatter,
-                    sha: currSha,
-                    pageBody: sanitizedEditorValue,
-                  },
-                })
-              }}
-              onCancel={() => {
-                setShowXSSWarning(false)
-              }}
-              cancelText="Cancel"
-              proceedText="Acknowledge"
-            />
-          )}
-        {showOverwriteWarning && ( // to be refactored later
-          <GenericWarningModal
-            displayTitle="Override Changes"
-            displayText={`A different version of this page has recently been saved by another user. You can choose to either override their changes, or go back to editing.
-              <br/><br/>We recommend you to make a copy of your changes elsewhere, and come back later to reconcile your changes.`}
-            onProceed={() => {
-              setShowOverwriteWarning(false)
+      <HStack className={elementStyles.wrapper}>
+        <WarningModal
+          isOpen={isXSSViolation && isXSSWarningModalOpen}
+          onClose={onXSSWarningModalClose}
+          displayTitle="Warning"
+          // DOMPurify removed object format taken from https://github.com/cure53/DOMPurify/blob/dd63379e6354f66d4689bb80b30cb43a6d8727c2/src/purify.js
+          displayText={
+            <Box>
+              <Text>
+                There is unauthorised JS detected in the following snippet
+                {DOMPurify.removed.length > 1 ? "s" : ""}:
+              </Text>
+              {DOMPurify.removed.map((elem, i) => (
+                <>
+                  <br />
+                  <Code>{i + 1}</Code>:
+                  <Code>
+                    {elem.attribute?.textContent || elem.element?.textContent
+                      ? (
+                          elem.attribute?.textContent ||
+                          elem.element?.textContent
+                        ).replace("<", "&lt;")
+                      : elem}
+                  </Code>
+                </>
+              ))}
+              <br />
+              <br />
+              Before saving, the editor input will be automatically sanitised to
+              prevent security vulnerabilities.
+              <br />
+              <br />
+              To save the sanitised editor input, press Acknowledge. To return
+              to the editor without sanitising, press Cancel.`
+            </Box>
+          }
+        >
+          <Button colorScheme="danger" onClick={onXSSWarningModalClose}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              const sanitizedEditorValue = DOMPurify.sanitize(editorValue)
+              setEditorValue(sanitizedEditorValue)
+              setIsXSSViolation(false)
+              updatePageHandler({
+                pageData: {
+                  frontMatter: pageData.content.frontMatter,
+                  sha: currSha,
+                  pageBody: sanitizedEditorValue,
+                },
+              })
+              onXSSWarningModalClose()
+            }}
+          >
+            Acknowledge
+          </Button>
+        </WarningModal>
+        <WarningModal
+          isOpen={isOverwriteOpen}
+          onClose={onOverwriteClose}
+          displayTitle="Override Changes"
+          displayText={
+            <Box>
+              <Text>
+                A different version of this page has recently been saved by
+                another user. You can choose to either override their changes,
+                or go back to editing.
+              </Text>
+              <br />
+              <Text>
+                We recommend you to make a copy of your changes elsewhere, and
+                come back later to reconcile your changes.
+              </Text>
+            </Box>
+          }
+        >
+          <Button
+            variant="clear"
+            colorScheme="secondary"
+            onClick={onOverwriteClose}
+          >
+            Back to Editing
+          </Button>
+          <Button
+            colorScheme="danger"
+            onClick={() => {
+              onOverwriteClose()
               updatePageHandler({
                 pageData: {
                   frontMatter: pageData.content.frontMatter,
@@ -183,11 +241,10 @@ const EditPage = ({ match }) => {
                 },
               })
             }}
-            onCancel={() => setShowOverwriteWarning(false)}
-            cancelText="Back to Editing"
-            proceedText="Override"
-          />
-        )}
+          >
+            Override
+          </Button>
+        </WarningModal>
         {/* Editor */}
         <MarkdownEditor
           siteName={siteName}
@@ -203,24 +260,28 @@ const EditPage = ({ match }) => {
           chunk={htmlChunk}
           dirData={dirData}
         />
-      </div>
-      <Footer
-        isKeyButtonDisabled={isContentViolation}
-        keyCallback={() => {
-          if (isXSSViolation) setShowXSSWarning(true)
-          else {
-            updatePageHandler({
-              pageData: {
-                frontMatter: pageData.content.frontMatter,
-                sha: currSha,
-                pageBody: editorValue,
-              },
-            })
-          }
-        }}
-        keyButtonIsLoading={isSavingPage}
-      />
-    </>
+      </HStack>
+      <Footer>
+        <Button
+          isDisabled={isContentViolation}
+          onClick={() => {
+            if (isXSSViolation) onXSSWarningModalOpen()
+            else {
+              updatePageHandler({
+                pageData: {
+                  frontMatter: pageData.content.frontMatter,
+                  sha: currSha,
+                  pageBody: editorValue,
+                },
+              })
+            }
+          }}
+          isLoading={isSavingPage}
+        >
+          Save
+        </Button>
+      </Footer>
+    </VStack>
   )
 }
 

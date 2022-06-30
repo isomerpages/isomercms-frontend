@@ -1,16 +1,16 @@
-import { HStack } from "@chakra-ui/react"
-import DeleteWarningModal from "components/DeleteWarningModal"
-import GenericWarningModal from "components/GenericWarningModal"
+import { useDisclosure, Box, Text, HStack, VStack } from "@chakra-ui/react"
+import { Button } from "@opengovsg/design-system-react"
+import { Footer } from "components/Footer"
 import Header from "components/Header"
 import { LoadingButton } from "components/LoadingButton"
 import NavSection from "components/navbar/NavSection"
+import { WarningModal } from "components/WarningModal"
 import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useQuery, useMutation, useQueryClient } from "react-query"
-import { ReactQueryDevtools } from "react-query/devtools"
 
 import { NAVIGATION_CONTENT_KEY } from "constants/constants"
 
@@ -58,8 +58,18 @@ const EditNavBar = ({ match }) => {
     links: [],
     sublinks: [],
   })
-  const [showDeletedText, setShowDeletedText] = useState(true)
   const [deletedLinks, setDeletedLinks] = useState("")
+
+  const {
+    isOpen: isRemovedContentWarningOpen,
+    onOpen: onRemovedContentWarningOpen,
+    onClose: onRemovedContentWarningClose,
+  } = useDisclosure({ defaultIsOpen: true })
+  const {
+    isOpen: isDeleteModalOpen,
+    onOpen: onDeleteModalOpen,
+    onClose: onDeleteModalClose,
+  } = useDisclosure()
 
   const [hasChanges, setHasChanges] = useState(false)
 
@@ -613,82 +623,119 @@ const EditNavBar = ({ match }) => {
 
   return (
     <>
-      {showDeletedText && !isEmpty(deletedLinks) && (
-        <GenericWarningModal
+      {!isEmpty(deletedLinks) && (
+        <WarningModal
+          isOpen={isRemovedContentWarningOpen}
+          onClose={onRemovedContentWarningClose}
           displayTitle="Removed content"
-          displayText={`Some of your content has been removed as they attempt to link to invalid folders. No changes are permanent unless you press Save on the next page.<br/>${deletedLinks}`}
-          onProceed={() => {
-            setShowDeletedText(false)
-          }}
-          proceedText="Acknowledge"
-        />
+          displayText={
+            <Box>
+              <Text>
+                Some of your content has been removed as they attempt to link to
+                invalid folders. No changes are permanent unless you press Save
+                on the next page.
+              </Text>
+              <br />
+              {deletedLinks.map((link) => (
+                <Text>{link}</Text>
+              ))}
+            </Box>
+          }
+        >
+          <Button onClick={onRemovedContentWarningClose}>Acknowledge</Button>
+        </WarningModal>
       )}
-      {itemPendingForDelete.id && (
-        <DeleteWarningModal
-          onCancel={() => setItemPendingForDelete({ id: null, type: "" })}
-          onDelete={() => {
+      <WarningModal
+        isOpen={itemPendingForDelete.id && isDeleteModalOpen}
+        onClose={() => {
+          setItemPendingForDelete({ id: null, type: "" })
+          onDeleteModalClose()
+        }}
+        displayTitle={`Delete ${itemPendingForDelete.type}`}
+        displayText={
+          <Text>
+            Are you sure you want to delete {itemPendingForDelete.type}?
+          </Text>
+        }
+      >
+        <Button
+          variant="clear"
+          colorScheme="secondary"
+          onClick={() => {
+            setItemPendingForDelete({ id: null, type: "" })
+            onDeleteModalClose()
+          }}
+        >
+          Cancel
+        </Button>
+        <Button
+          colorScheme="danger"
+          onClick={() => {
             deleteHandler(itemPendingForDelete.id)
             setItemPendingForDelete({ id: null, type: "" })
+            onDeleteModalClose()
           }}
-          type={itemPendingForDelete.type}
+        >
+          Delete
+        </Button>
+      </WarningModal>
+      <VStack>
+        <Header
+          siteName={siteName}
+          title="Navigation Bar"
+          shouldAllowEditPageBackNav={!hasChanges}
+          isEditPage
+          backButtonText="Back to My Workspace"
+          backButtonUrl={`/sites/${siteName}/workspace`}
         />
-      )}
-      <Header
-        siteName={siteName}
-        title="Navigation Bar"
-        shouldAllowEditPageBackNav={!hasChanges}
-        isEditPage
-        backButtonText="Back to My Workspace"
-        backButtonUrl={`/sites/${siteName}/workspace`}
-      />
-      {hasLoaded && (
-        <div className={elementStyles.wrapper}>
-          <div className={editorStyles.homepageEditorSidebar}>
-            <div>
-              <DragDropContext onDragEnd={onDragEnd}>
-                <NavSection
+        {hasLoaded && (
+          <>
+            <HStack className={elementStyles.wrapper}>
+              <div className={editorStyles.homepageEditorSidebar}>
+                <div>
+                  <DragDropContext onDragEnd={onDragEnd}>
+                    <NavSection
+                      links={links}
+                      options={options}
+                      createHandler={createHandler}
+                      deleteHandler={(event) => {
+                        onDeleteModalOpen()
+                        setItemPendingForDelete({
+                          id: event.target.id,
+                          type: "Link",
+                        })
+                      }}
+                      onFieldChange={onFieldChange}
+                      displayHandler={displayHandler}
+                      displayLinks={displayLinks}
+                      displaySublinks={displaySublinks}
+                      hasResourceRoom={hasResourceRoom}
+                      hasResources={hasResources}
+                      errors={errors}
+                    />
+                  </DragDropContext>
+                </div>
+              </div>
+              {/* need to change the css here */}
+              <div className={`${editorStyles.contactUsEditorMain} `}>
+                {/* navbar content */}
+                {/* TODO: update collectionInfo */}
+                <TemplateNavBar
                   links={links}
-                  options={options}
-                  createHandler={createHandler}
-                  deleteHandler={(event) =>
-                    setItemPendingForDelete({
-                      id: event.target.id,
-                      type: "Link",
-                    })
-                  }
-                  onFieldChange={onFieldChange}
-                  displayHandler={displayHandler}
-                  displayLinks={displayLinks}
-                  displaySublinks={displaySublinks}
-                  hasResourceRoom={hasResourceRoom}
-                  hasResources={hasResources}
-                  errors={errors}
+                  collectionInfo={folderDropdowns}
+                  resources={resources}
                 />
-              </DragDropContext>
-            </div>
-          </div>
-          {/* need to change the css here */}
-          <div className={`${editorStyles.contactUsEditorMain} `}>
-            {/* navbar content */}
-            {/* TODO: update collectionInfo */}
-            <TemplateNavBar
-              links={links}
-              collectionInfo={folderDropdowns}
-              resources={resources}
-            />
-          </div>
-          <div className={editorStyles.pageEditorFooter}>
-            <HStack w="100%" justify="flex-end">
+              </div>
+            </HStack>
+            <Footer>
               {!isEmpty(deletedLinks) && (
-                <LoadingButton
+                <Button
                   ml="auto"
                   variant="clear"
-                  onClick={() => {
-                    setShowDeletedText(true)
-                  }}
+                  onClick={onRemovedContentWarningOpen}
                 >
                   See removed content
-                </LoadingButton>
+                </Button>
               )}
               <LoadingButton
                 isDisabled={hasErrors()}
@@ -696,13 +743,10 @@ const EditNavBar = ({ match }) => {
               >
                 Save
               </LoadingButton>
-            </HStack>
-          </div>
-        </div>
-      )}
-      {process.env.REACT_APP_ENV === "LOCAL_DEV" && (
-        <ReactQueryDevtools initialIsOpen={false} />
-      )}
+            </Footer>
+          </>
+        )}
+      </VStack>
     </>
   )
 }

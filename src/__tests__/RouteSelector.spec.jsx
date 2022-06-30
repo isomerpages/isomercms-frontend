@@ -42,8 +42,7 @@ jest.mock("layouts/Sites", () => {
 
 jest.mock("layouts/Settings", () => {
   return {
-    __esModule: true,
-    default: () => {
+    Settings: () => {
       return <div>{SETTINGS_LAYOUT_TEXT}</div>
     },
   }
@@ -60,8 +59,7 @@ jest.mock("layouts/EditNavBar", () => {
 
 jest.mock("layouts/ResourceRoom", () => {
   return {
-    __esModule: true,
-    default: () => {
+    ResourceRoom: () => {
       return <div>{RESOURCES_LAYOUT_TEXT}</div>
     },
   }
@@ -69,8 +67,7 @@ jest.mock("layouts/ResourceRoom", () => {
 
 jest.mock("layouts/ResourceCategory", () => {
   return {
-    __esModule: true,
-    default: () => {
+    ResourceCategory: () => {
       return <div>{RESOURCES_CATEGORY_LAYOUT_TEXT}</div>
     },
   }
@@ -96,8 +93,7 @@ jest.mock("layouts/EditHomepage", () => {
 
 jest.mock("layouts/Workspace", () => {
   return {
-    __esModule: true,
-    default: () => {
+    Workspace: () => {
       return <div>{WORKSPACE_LAYOUT_TEXT}</div>
     },
   }
@@ -123,17 +119,7 @@ jest.mock("layouts/EditPage", () => {
 
 jest.mock("layouts/Folders", () => {
   return {
-    __esModule: true,
-    default: () => {
-      return <div>{FOLDERS_LAYOUT_TEXT}</div>
-    },
-  }
-})
-
-jest.mock("layouts/Folders", () => {
-  return {
-    __esModule: true,
-    default: () => {
+    Folders: () => {
       return <div>{FOLDERS_LAYOUT_TEXT}</div>
     },
   }
