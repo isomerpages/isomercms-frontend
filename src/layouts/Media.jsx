@@ -3,9 +3,8 @@ import FolderOptionButton from "components/FolderOptionButton"
 import { Breadcrumb } from "components/folders/Breadcrumb"
 import Header from "components/Header"
 import MediaCard from "components/media/MediaCard"
-import Sidebar from "components/Sidebar"
+import { Sidebar } from "components/Sidebar"
 import PropTypes from "prop-types"
-import { ReactQueryDevtools } from "react-query/devtools"
 import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 import { useGetDirectoryHook } from "hooks/directoryHooks/useGetDirectoryHook"
@@ -24,7 +23,7 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
 
-const Media = ({ match, location }) => {
+const Media = ({ match }) => {
   const { params, decodedParams } = match
   const history = useHistory()
   const { path, url } = useRouteMatch()
@@ -37,8 +36,11 @@ const Media = ({ match, location }) => {
     <>
       <Header params={decodedParams} />
       {/* main bottom section */}
-      <div className={elementStyles.wrapper}>
-        <Sidebar siteName={siteName} currPath={location.pathname} />
+      <div
+        className={elementStyles.wrapper}
+        style={{ height: "calc(100vh - 80px)" }}
+      >
+        <Sidebar />
         {/* main section starts here */}
         <div className={contentStyles.mainSection}>
           <div className={contentStyles.sectionHeader}>
@@ -153,9 +155,6 @@ const Media = ({ match, location }) => {
         </div>
         {/* main section ends here */}
       </div>
-      {process.env.REACT_APP_ENV === "LOCAL_DEV" && (
-        <ReactQueryDevtools initialIsOpen={false} />
-      )}
       <Switch>
         <ProtectedRouteWithProps
           path={[`${path}/createMedia`]}

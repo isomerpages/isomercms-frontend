@@ -4,8 +4,6 @@ import { useEffect } from "react"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { BrowserRouter as Router } from "react-router-dom"
 
-// Styles
-
 // Import contexts
 import { LoginProvider } from "contexts/LoginContext"
 import { ServicesProvider } from "contexts/ServicesContext"

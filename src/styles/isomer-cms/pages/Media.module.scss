@@ -55,11 +55,6 @@
     flex: auto;
   }
 
-  .selectedMediaCard,
-  .mediaCard:focus {
-    outline: 2px solid $isomer-blue;
-  }
-
   .mediaCard {
     @include single-site;
     background: white;
@@ -72,10 +67,6 @@
     height: $component-card-height;
     margin-right: $component-card-margin;
     margin-bottom: $component-card-margin;
-    display: flex;
-    flex-direction: column;
-    font: inherit;
-    text-align: left;
 
     .mediaCardPreviewContainer {
       height: 70%;

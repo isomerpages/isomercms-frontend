@@ -1,11 +1,12 @@
 import axios from "axios"
-import { createContext, useEffect, useState, useContext } from "react"
+import { isEmpty, omitBy } from "lodash"
+import { createContext, useEffect, useContext } from "react"
 
-import { SITES_IS_PRIVATE_KEY } from "constants/constants"
+import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
+
+import { useLocalStorage } from "hooks/useLocalStorage"
 
 const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
-const LOCAL_STORAGE_USER_ID_KEY = "userId"
-const LOCAL_STORAGE_USER = "user"
 
 const LoginContext = createContext(null)
 
@@ -18,49 +19,32 @@ const LoginConsumer = ({ children }) => {
 }
 
 const LoginProvider = ({ children }) => {
-  const [userId, setUserId] = useState(
-    localStorage.getItem(LOCAL_STORAGE_USER_ID_KEY)
+  const [storedUserId, setStoredUserId, removeStoredUserId] = useLocalStorage(
+    LOCAL_STORAGE_KEYS.GithubId,
+    "Unknown user"
+  )
+  const [storedUser, setStoredUser, removeStoredUser] = useLocalStorage(
+    LOCAL_STORAGE_KEYS.User,
+    {}
   )
 
-  const storedUser = localStorage.getItem(LOCAL_STORAGE_USER)
-  const user = storedUser ? JSON.parse(storedUser) : {}
-
-  const [email, setEmail] = useState(user.email)
-  const [contactNumber, setContactNumber] = useState(user.contactNumber)
-
+  const [, , removeSites] = useLocalStorage(LOCAL_STORAGE_KEYS.SitesIsPrivate)
   const verifyLoginAndSetLocalStorage = async () => {
-    const resp = await axios.get(`${BACKEND_URL}/auth/whoami`)
-    const {
-      userId: returnedUserId,
-      email: returnedEmail,
-      contactNumber: returnedContactNumber,
-    } = resp.data
+    const { data } = await axios.get(`${BACKEND_URL}/auth/whoami`)
+    const loggedInUser = omitBy(data, isEmpty)
 
-    if (returnedUserId) {
-      setUserId(returnedUserId)
-      localStorage.setItem(LOCAL_STORAGE_USER_ID_KEY, returnedUserId)
-    }
-
-    const loggedInUser = {}
-    if (returnedEmail) {
-      setEmail(returnedEmail)
-      loggedInUser.email = returnedEmail
-    }
-
-    if (returnedContactNumber) {
-      setContactNumber(returnedContactNumber)
-      loggedInUser.contactNumber = returnedContactNumber
-    }
-
-    localStorage.setItem(LOCAL_STORAGE_USER, JSON.stringify(loggedInUser))
+    setStoredUserId(loggedInUser.userId)
+    setStoredUser(loggedInUser)
   }
 
   const logout = async () => {
     await axios.delete(`${BACKEND_URL}/auth/logout`)
-    localStorage.removeItem(LOCAL_STORAGE_USER_ID_KEY)
-    localStorage.removeItem(LOCAL_STORAGE_USER)
-    localStorage.removeItem(SITES_IS_PRIVATE_KEY)
-    setUserId(null)
+    removeStoredUserId()
+    removeStoredUser()
+    removeSites()
+    // NOTE: This is REQUIRED (emphasis here) for auto-redirect on removal of stored user id.
+    // This is IN ADDITION to removing the value associated with the key.
+    setStoredUserId(null)
   }
 
   // Set interceptors to log users out if an error occurs within the LoginProvider
@@ -81,9 +65,9 @@ const LoginProvider = ({ children }) => {
   }, []) // Run only once
 
   const loginContextData = {
-    userId,
-    email,
-    contactNumber,
+    userId: storedUserId,
+    email: storedUser.email,
+    contactNumber: storedUser.contactNumber,
     logout,
     verifyLoginAndSetLocalStorage,
   }

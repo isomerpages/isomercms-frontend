@@ -1,7 +1,8 @@
-/* eslint-disable no-shadow */
-import { Input } from "@opengovsg/design-system-react"
+/* eslint-disable @typescript-eslint/no-shadow */
+import { useDisclosure, Text, HStack, VStack } from "@chakra-ui/react"
+import { Button, Input } from "@opengovsg/design-system-react"
 import axios from "axios"
-import DeleteWarningModal from "components/DeleteWarningModal"
+import { Footer } from "components/Footer"
 import Header from "components/Header"
 import EditorHeroSection from "components/homepage/HeroSection"
 import EditorInfobarSection from "components/homepage/InfobarSection"
@@ -9,6 +10,7 @@ import EditorInfopicSection from "components/homepage/InfopicSection"
 import NewSectionCreator from "components/homepage/NewSectionCreator"
 import EditorResourcesSection from "components/homepage/ResourcesSection"
 import { LoadingButton } from "components/LoadingButton"
+import { WarningModal } from "components/WarningModal"
 import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
@@ -146,6 +148,7 @@ const EditHomepage = ({ match }) => {
     id: "",
     type: "",
   })
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const [savedHeroElems, setSavedHeroElems] = useState("")
   const [savedHeroErrors, setSavedHeroErrors] = useState("")
   const errorToast = useErrorToast()
@@ -1170,375 +1173,414 @@ const EditHomepage = ({ match }) => {
 
   return (
     <>
-      {itemPendingForDelete.id && (
-        <DeleteWarningModal
-          onCancel={() => setItemPendingForDelete({ id: null, type: "" })}
-          onDelete={() => {
+      <WarningModal
+        isOpen={itemPendingForDelete.id && isOpen}
+        onClose={() => {
+          setItemPendingForDelete({ id: null, type: "" })
+          onClose()
+        }}
+        displayTitle={`Delete ${itemPendingForDelete.type} section`}
+        displayText={
+          <Text>
+            Are you sure you want to delete {itemPendingForDelete.type}?
+          </Text>
+        }
+      >
+        <Button
+          variant="clear"
+          colorScheme="secondary"
+          onClick={() => {
+            setItemPendingForDelete({ id: null, type: "" })
+            onClose()
+          }}
+        >
+          Cancel
+        </Button>
+        <Button
+          colorScheme="danger"
+          onClick={() => {
             deleteHandler(itemPendingForDelete.id)
             setItemPendingForDelete({ id: null, type: "" })
+            onClose()
           }}
-          type={itemPendingForDelete.type}
+        >
+          Yes, delete
+        </Button>
+      </WarningModal>
+      <VStack>
+        <Header
+          siteName={siteName}
+          title="Homepage"
+          shouldAllowEditPageBackNav={
+            JSON.stringify(originalFrontMatter) === JSON.stringify(frontMatter)
+          }
+          isEditPage
+          backButtonText="Back to My Workspace"
+          backButtonUrl={`/sites/${siteName}/workspace`}
         />
-      )}
-      <Header
-        siteName={siteName}
-        title="Homepage"
-        shouldAllowEditPageBackNav={
-          JSON.stringify(originalFrontMatter) === JSON.stringify(frontMatter)
-        }
-        isEditPage
-        backButtonText="Back to My Workspace"
-        backButtonUrl={`/sites/${siteName}/workspace`}
-      />
-      {hasLoaded && (
-        <div className={elementStyles.wrapper}>
-          <div className={editorStyles.homepageEditorSidebar}>
-            <div>
-              <div
-                className={`${elementStyles.card} ${elementStyles.siteNotificationSection}`}
-              >
-                <p>
-                  <h2 className={elementStyles.notificationHeader}>
-                    Site notification
-                  </h2>
-                </p>
-                <Input
-                  placeholder="Notification"
-                  value={frontMatter.notification}
-                  id="site-notification"
-                  onChange={onFieldChange}
-                />
-                <span className={elementStyles.info}>
-                  Note: Leave text field empty if you don’t need this
-                  notification bar
-                </span>
-              </div>
+        {hasLoaded && (
+          <>
+            <HStack className={elementStyles.wrapper}>
+              <div className={editorStyles.homepageEditorSidebar}>
+                <div>
+                  <div
+                    className={`${elementStyles.card} ${elementStyles.siteNotificationSection}`}
+                  >
+                    <p>
+                      <h2 className={elementStyles.notificationHeader}>
+                        Site notification
+                      </h2>
+                    </p>
+                    <Input
+                      placeholder="Notification"
+                      value={frontMatter.notification}
+                      id="site-notification"
+                      onChange={onFieldChange}
+                    />
+                    <span className={elementStyles.info}>
+                      Note: Leave text field empty if you don’t need this
+                      notification bar
+                    </span>
+                  </div>
 
-              {/* Homepage section configurations */}
-              <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId="leftPane" type="editor">
-                  {(droppableProvided) => (
-                    <div
-                      ref={droppableProvided.innerRef}
-                      {...droppableProvided.droppableProps}
-                    >
-                      {frontMatter.sections.map((section, sectionIndex) => (
-                        <>
-                          {/* Hero section */}
-                          {section.hero ? (
+                  {/* Homepage section configurations */}
+                  <DragDropContext onDragEnd={onDragEnd}>
+                    <Droppable droppableId="leftPane" type="editor">
+                      {(droppableProvided) => (
+                        <div
+                          ref={droppableProvided.innerRef}
+                          {...droppableProvided.droppableProps}
+                        >
+                          {frontMatter.sections.map((section, sectionIndex) => (
                             <>
-                              <EditorHeroSection
-                                key={`section-${sectionIndex}`}
-                                title={section.hero.title}
-                                subtitle={section.hero.subtitle}
-                                background={section.hero.background}
-                                button={section.hero.button}
-                                url={section.hero.url}
-                                dropdown={
-                                  section.hero.dropdown
-                                    ? section.hero.dropdown
-                                    : null
-                                }
-                                sectionIndex={sectionIndex}
-                                highlights={
-                                  section.hero.key_highlights
-                                    ? section.hero.key_highlights
-                                    : []
-                                }
-                                onFieldChange={onFieldChange}
-                                createHandler={createHandler}
-                                deleteHandler={(event, type) =>
-                                  setItemPendingForDelete({
-                                    id: event.target.id,
-                                    type,
-                                  })
-                                }
-                                shouldDisplay={displaySections[sectionIndex]}
-                                displayHighlights={displayHighlights}
-                                displayDropdownElems={displayDropdownElems}
-                                displayHandler={displayHandler}
-                                onDragEnd={onDragEnd}
-                                errors={errors}
-                                siteName={siteName}
-                                handleHighlightDropdownToggle={
-                                  handleHighlightDropdownToggle
-                                }
-                              />
-                            </>
-                          ) : null}
-
-                          {/* Resources section */}
-                          {section.resources ? (
-                            <Draggable
-                              draggableId={`resources-${sectionIndex}-draggable`}
-                              index={sectionIndex}
-                            >
-                              {(draggableProvided) => (
-                                <div
-                                  {...draggableProvided.draggableProps}
-                                  {...draggableProvided.dragHandleProps}
-                                  ref={draggableProvided.innerRef}
-                                >
-                                  <EditorResourcesSection
+                              {/* Hero section */}
+                              {section.hero ? (
+                                <>
+                                  <EditorHeroSection
                                     key={`section-${sectionIndex}`}
-                                    title={section.resources.title}
-                                    subtitle={section.resources.subtitle}
-                                    button={section.resources.button}
+                                    title={section.hero.title}
+                                    subtitle={section.hero.subtitle}
+                                    background={section.hero.background}
+                                    button={section.hero.button}
+                                    url={section.hero.url}
+                                    dropdown={
+                                      section.hero.dropdown
+                                        ? section.hero.dropdown
+                                        : null
+                                    }
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={(event) =>
-                                      setItemPendingForDelete({
-                                        id: event.target.id,
-                                        type: "Resources Section",
-                                      })
+                                    highlights={
+                                      section.hero.key_highlights
+                                        ? section.hero.key_highlights
+                                        : []
                                     }
                                     onFieldChange={onFieldChange}
+                                    createHandler={createHandler}
+                                    deleteHandler={(event, type) => {
+                                      onOpen()
+                                      setItemPendingForDelete({
+                                        id: event.target.id,
+                                        type,
+                                      })
+                                    }}
                                     shouldDisplay={
                                       displaySections[sectionIndex]
                                     }
+                                    displayHighlights={displayHighlights}
+                                    displayDropdownElems={displayDropdownElems}
                                     displayHandler={displayHandler}
-                                    errors={
-                                      errors.sections[sectionIndex].resources
-                                    }
-                                  />
-                                </div>
-                              )}
-                            </Draggable>
-                          ) : null}
-
-                          {/* Infobar section */}
-                          {section.infobar ? (
-                            <Draggable
-                              draggableId={`infobar-${sectionIndex}-draggable`}
-                              index={sectionIndex}
-                            >
-                              {(draggableProvided) => (
-                                <div
-                                  {...draggableProvided.draggableProps}
-                                  {...draggableProvided.dragHandleProps}
-                                  ref={draggableProvided.innerRef}
-                                >
-                                  <EditorInfobarSection
-                                    key={`section-${sectionIndex}`}
-                                    title={section.infobar.title}
-                                    subtitle={section.infobar.subtitle}
-                                    description={section.infobar.description}
-                                    button={section.infobar.button}
-                                    url={section.infobar.url}
-                                    sectionIndex={sectionIndex}
-                                    deleteHandler={(event) =>
-                                      setItemPendingForDelete({
-                                        id: event.target.id,
-                                        type: "Infobar Section",
-                                      })
-                                    }
-                                    onFieldChange={onFieldChange}
-                                    shouldDisplay={
-                                      displaySections[sectionIndex]
-                                    }
-                                    displayHandler={displayHandler}
-                                    errors={
-                                      errors.sections[sectionIndex].infobar
-                                    }
-                                  />
-                                </div>
-                              )}
-                            </Draggable>
-                          ) : null}
-
-                          {/* Infopic section */}
-                          {section.infopic ? (
-                            <Draggable
-                              draggableId={`infopic-${sectionIndex}-draggable`}
-                              index={sectionIndex}
-                            >
-                              {(draggableProvided) => (
-                                <div
-                                  {...draggableProvided.draggableProps}
-                                  {...draggableProvided.dragHandleProps}
-                                  ref={draggableProvided.innerRef}
-                                >
-                                  <EditorInfopicSection
-                                    key={`section-${sectionIndex}`}
-                                    title={section.infopic.title}
-                                    subtitle={section.infopic.subtitle}
-                                    description={section.infopic.description}
-                                    button={section.infopic.button}
-                                    url={section.infopic.url}
-                                    imageUrl={section.infopic.image}
-                                    imageAlt={section.infopic.alt}
-                                    sectionIndex={sectionIndex}
-                                    deleteHandler={(event) =>
-                                      setItemPendingForDelete({
-                                        id: event.target.id,
-                                        type: "Infopic Section",
-                                      })
-                                    }
-                                    onFieldChange={onFieldChange}
-                                    shouldDisplay={
-                                      displaySections[sectionIndex]
-                                    }
-                                    displayHandler={displayHandler}
-                                    errors={
-                                      errors.sections[sectionIndex].infopic
-                                    }
+                                    onDragEnd={onDragEnd}
+                                    errors={errors}
                                     siteName={siteName}
+                                    handleHighlightDropdownToggle={
+                                      handleHighlightDropdownToggle
+                                    }
                                   />
-                                </div>
-                              )}
-                            </Draggable>
-                          ) : null}
+                                </>
+                              ) : null}
 
-                          {/* Carousel section */}
-                          {/* TO-DO */}
-                        </>
-                      ))}
-                      {droppableProvided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </DragDropContext>
+                              {/* Resources section */}
+                              {section.resources ? (
+                                <Draggable
+                                  draggableId={`resources-${sectionIndex}-draggable`}
+                                  index={sectionIndex}
+                                >
+                                  {(draggableProvided) => (
+                                    <div
+                                      {...draggableProvided.draggableProps}
+                                      {...draggableProvided.dragHandleProps}
+                                      ref={draggableProvided.innerRef}
+                                    >
+                                      <EditorResourcesSection
+                                        key={`section-${sectionIndex}`}
+                                        title={section.resources.title}
+                                        subtitle={section.resources.subtitle}
+                                        button={section.resources.button}
+                                        sectionIndex={sectionIndex}
+                                        deleteHandler={(event) => {
+                                          onOpen()
+                                          setItemPendingForDelete({
+                                            id: event.target.id,
+                                            type: "Resources Section",
+                                          })
+                                        }}
+                                        onFieldChange={onFieldChange}
+                                        shouldDisplay={
+                                          displaySections[sectionIndex]
+                                        }
+                                        displayHandler={displayHandler}
+                                        errors={
+                                          errors.sections[sectionIndex]
+                                            .resources
+                                        }
+                                      />
+                                    </div>
+                                  )}
+                                </Draggable>
+                              ) : null}
 
-              {/* Section creator */}
-              <NewSectionCreator
-                hasResources={hasResources}
-                createHandler={createHandler}
-              />
-            </div>
-          </div>
-          <div className={editorStyles.homepageEditorMain}>
-            {/* Isomer Template Pane */}
-            {/* Notification */}
-            {frontMatter.notification && (
-              <div
-                id="notification-bar"
-                className={getClassNames(editorStyles, [
-                  "bp-notification",
-                  "is-marginless",
-                  "bg-secondary",
-                ])}
-              >
-                <div className={editorStyles["bp-container"]}>
-                  <div className={editorStyles.row}>
-                    <div className={editorStyles.col}>
-                      <div
-                        className={getClassNames(editorStyles, [
-                          "field",
-                          "has-addons",
-                          "bp-notification-flex",
-                        ])}
-                      >
-                        <div
-                          className={getClassNames(editorStyles, [
-                            "control",
-                            "has-text-centered",
-                            "has-text-white",
-                          ])}
-                        >
-                          <h6>{frontMatter.notification}</h6>
+                              {/* Infobar section */}
+                              {section.infobar ? (
+                                <Draggable
+                                  draggableId={`infobar-${sectionIndex}-draggable`}
+                                  index={sectionIndex}
+                                >
+                                  {(draggableProvided) => (
+                                    <div
+                                      {...draggableProvided.draggableProps}
+                                      {...draggableProvided.dragHandleProps}
+                                      ref={draggableProvided.innerRef}
+                                    >
+                                      <EditorInfobarSection
+                                        key={`section-${sectionIndex}`}
+                                        title={section.infobar.title}
+                                        subtitle={section.infobar.subtitle}
+                                        description={
+                                          section.infobar.description
+                                        }
+                                        button={section.infobar.button}
+                                        url={section.infobar.url}
+                                        sectionIndex={sectionIndex}
+                                        deleteHandler={(event) => {
+                                          onOpen()
+                                          setItemPendingForDelete({
+                                            id: event.target.id,
+                                            type: "Infobar Section",
+                                          })
+                                        }}
+                                        onFieldChange={onFieldChange}
+                                        shouldDisplay={
+                                          displaySections[sectionIndex]
+                                        }
+                                        displayHandler={displayHandler}
+                                        errors={
+                                          errors.sections[sectionIndex].infobar
+                                        }
+                                      />
+                                    </div>
+                                  )}
+                                </Draggable>
+                              ) : null}
+
+                              {/* Infopic section */}
+                              {section.infopic ? (
+                                <Draggable
+                                  draggableId={`infopic-${sectionIndex}-draggable`}
+                                  index={sectionIndex}
+                                >
+                                  {(draggableProvided) => (
+                                    <div
+                                      {...draggableProvided.draggableProps}
+                                      {...draggableProvided.dragHandleProps}
+                                      ref={draggableProvided.innerRef}
+                                    >
+                                      <EditorInfopicSection
+                                        key={`section-${sectionIndex}`}
+                                        title={section.infopic.title}
+                                        subtitle={section.infopic.subtitle}
+                                        description={
+                                          section.infopic.description
+                                        }
+                                        button={section.infopic.button}
+                                        url={section.infopic.url}
+                                        imageUrl={section.infopic.image}
+                                        imageAlt={section.infopic.alt}
+                                        sectionIndex={sectionIndex}
+                                        deleteHandler={(event) => {
+                                          onOpen()
+                                          setItemPendingForDelete({
+                                            id: event.target.id,
+                                            type: "Infopic Section",
+                                          })
+                                        }}
+                                        onFieldChange={onFieldChange}
+                                        shouldDisplay={
+                                          displaySections[sectionIndex]
+                                        }
+                                        displayHandler={displayHandler}
+                                        errors={
+                                          errors.sections[sectionIndex].infopic
+                                        }
+                                        siteName={siteName}
+                                      />
+                                    </div>
+                                  )}
+                                </Draggable>
+                              ) : null}
+
+                              {/* Carousel section */}
+                              {/* TO-DO */}
+                            </>
+                          ))}
+                          {droppableProvided.placeholder}
                         </div>
-                        <div
-                          className={getClassNames(editorStyles, [
-                            "button",
-                            "has-text-white",
-                          ])}
-                        >
-                          <span
+                      )}
+                    </Droppable>
+                  </DragDropContext>
+
+                  {/* Section creator */}
+                  <NewSectionCreator
+                    hasResources={hasResources}
+                    createHandler={createHandler}
+                  />
+                </div>
+              </div>
+              <div className={editorStyles.homepageEditorMain}>
+                {/* Isomer Template Pane */}
+                {/* Notification */}
+                {frontMatter.notification && (
+                  <div
+                    id="notification-bar"
+                    className={getClassNames(editorStyles, [
+                      "bp-notification",
+                      "is-marginless",
+                      "bg-secondary",
+                    ])}
+                  >
+                    <div className={editorStyles["bp-container"]}>
+                      <div className={editorStyles.row}>
+                        <div className={editorStyles.col}>
+                          <div
                             className={getClassNames(editorStyles, [
-                              "sgds-icon",
-                              "sgds-icon-cross",
+                              "field",
+                              "has-addons",
+                              "bp-notification-flex",
                             ])}
-                          />
+                          >
+                            <div
+                              className={getClassNames(editorStyles, [
+                                "control",
+                                "has-text-centered",
+                                "has-text-white",
+                              ])}
+                            >
+                              <h6>{frontMatter.notification}</h6>
+                            </div>
+                            <div
+                              className={getClassNames(editorStyles, [
+                                "button",
+                                "has-text-white",
+                              ])}
+                            >
+                              <span
+                                className={getClassNames(editorStyles, [
+                                  "sgds-icon",
+                                  "sgds-icon-cross",
+                                ])}
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
+                {frontMatter.sections.map((section, sectionIndex) => (
+                  <>
+                    {/* Hero section */}
+                    {section.hero ? (
+                      <>
+                        <TemplateHeroSection
+                          key={`section-${sectionIndex}`}
+                          hero={section.hero}
+                          siteName={siteName}
+                          dropdownIsActive={dropdownIsActive}
+                          toggleDropdown={toggleDropdown}
+                          ref={scrollRefs[sectionIndex]}
+                        />
+                      </>
+                    ) : null}
+                    {/* Resources section */}
+                    {section.resources ? (
+                      <>
+                        <TemplateResourcesSection
+                          key={`section-${sectionIndex}`}
+                          title={section.resources.title}
+                          subtitle={section.resources.subtitle}
+                          button={section.resources.button}
+                          sectionIndex={sectionIndex}
+                          ref={scrollRefs[sectionIndex]}
+                        />
+                      </>
+                    ) : null}
+                    {/* Infobar section */}
+                    {section.infobar ? (
+                      <>
+                        <TemplateInfobarSection
+                          key={`section-${sectionIndex}`}
+                          title={section.infobar.title}
+                          subtitle={section.infobar.subtitle}
+                          description={section.infobar.description}
+                          button={section.infobar.button}
+                          sectionIndex={sectionIndex}
+                          ref={scrollRefs[sectionIndex]}
+                        />
+                      </>
+                    ) : null}
+                    {/* Infopic section */}
+                    {section.infopic ? (
+                      <>
+                        {isLeftInfoPic(sectionIndex) ? (
+                          <TemplateInfopicLeftSection
+                            key={`section-${sectionIndex}`}
+                            title={section.infopic.title}
+                            subtitle={section.infopic.subtitle}
+                            description={section.infopic.description}
+                            imageUrl={section.infopic.image}
+                            imageAlt={section.infopic.alt}
+                            button={section.infopic.button}
+                            sectionIndex={sectionIndex}
+                            siteName={siteName}
+                            ref={scrollRefs[sectionIndex]}
+                          />
+                        ) : (
+                          <TemplateInfopicRightSection
+                            key={`section-${sectionIndex}`}
+                            title={section.infopic.title}
+                            subtitle={section.infopic.subtitle}
+                            description={section.infopic.description}
+                            imageUrl={section.infopic.image}
+                            imageAlt={section.infopic.alt}
+                            button={section.infopic.button}
+                            sectionIndex={sectionIndex}
+                            siteName={siteName}
+                            ref={scrollRefs[sectionIndex]}
+                          />
+                        )}
+                      </>
+                    ) : null}
+                  </>
+                ))}
               </div>
-            )}
-            {frontMatter.sections.map((section, sectionIndex) => (
-              <>
-                {/* Hero section */}
-                {section.hero ? (
-                  <>
-                    <TemplateHeroSection
-                      key={`section-${sectionIndex}`}
-                      hero={section.hero}
-                      siteName={siteName}
-                      dropdownIsActive={dropdownIsActive}
-                      toggleDropdown={toggleDropdown}
-                      ref={scrollRefs[sectionIndex]}
-                    />
-                  </>
-                ) : null}
-                {/* Resources section */}
-                {section.resources ? (
-                  <>
-                    <TemplateResourcesSection
-                      key={`section-${sectionIndex}`}
-                      title={section.resources.title}
-                      subtitle={section.resources.subtitle}
-                      button={section.resources.button}
-                      sectionIndex={sectionIndex}
-                      ref={scrollRefs[sectionIndex]}
-                    />
-                  </>
-                ) : null}
-                {/* Infobar section */}
-                {section.infobar ? (
-                  <>
-                    <TemplateInfobarSection
-                      key={`section-${sectionIndex}`}
-                      title={section.infobar.title}
-                      subtitle={section.infobar.subtitle}
-                      description={section.infobar.description}
-                      button={section.infobar.button}
-                      sectionIndex={sectionIndex}
-                      ref={scrollRefs[sectionIndex]}
-                    />
-                  </>
-                ) : null}
-                {/* Infopic section */}
-                {section.infopic ? (
-                  <>
-                    {isLeftInfoPic(sectionIndex) ? (
-                      <TemplateInfopicLeftSection
-                        key={`section-${sectionIndex}`}
-                        title={section.infopic.title}
-                        subtitle={section.infopic.subtitle}
-                        description={section.infopic.description}
-                        imageUrl={section.infopic.image}
-                        imageAlt={section.infopic.alt}
-                        button={section.infopic.button}
-                        sectionIndex={sectionIndex}
-                        siteName={siteName}
-                        ref={scrollRefs[sectionIndex]}
-                      />
-                    ) : (
-                      <TemplateInfopicRightSection
-                        key={`section-${sectionIndex}`}
-                        title={section.infopic.title}
-                        subtitle={section.infopic.subtitle}
-                        description={section.infopic.description}
-                        imageUrl={section.infopic.image}
-                        imageAlt={section.infopic.alt}
-                        button={section.infopic.button}
-                        sectionIndex={sectionIndex}
-                        siteName={siteName}
-                        ref={scrollRefs[sectionIndex]}
-                      />
-                    )}
-                  </>
-                ) : null}
-              </>
-            ))}
-          </div>
-          <div className={editorStyles.pageEditorFooter}>
-            <LoadingButton isDisabled={hasErrors} onClick={savePage}>
-              Save
-            </LoadingButton>
-          </div>
-        </div>
-      )}
+            </HStack>
+            <Footer>
+              <LoadingButton isDisabled={hasErrors} onClick={savePage}>
+                Save
+              </LoadingButton>
+            </Footer>
+          </>
+        )}
+      </VStack>
     </>
   )
 }

@@ -44,13 +44,13 @@ describe("Resource category page", () => {
     // Set up test resource categories
     cy.visit(`/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}`)
     cy.wait(E2E_DEFAULT_WAIT_TIME)
-    cy.contains("Create new category").click()
+    cy.contains("a", "Create category").click()
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY)
     cy.contains("Next").click()
 
     cy.visit(`/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}`)
     cy.wait(E2E_DEFAULT_WAIT_TIME)
-    cy.contains("Create new category").click()
+    cy.contains("a", "Create category").click()
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_2)
     cy.contains("Next").click()
   })
@@ -63,6 +63,7 @@ describe("Resource category page", () => {
     cy.visit(
       `/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
     )
+    cy.contains("Verify").should("not.exist")
   })
 
   it("Resource category page should have name of resource category in header", () => {
@@ -70,7 +71,7 @@ describe("Resource category page", () => {
   })
 
   it("Resources category page should allow user to create a new resource page of type post", () => {
-    cy.contains("Add a new page").click()
+    cy.contains("a", "Create page").click()
 
     cy.wait(E2E_DEFAULT_WAIT_TIME)
 
@@ -99,7 +100,7 @@ describe("Resource category page", () => {
   })
 
   it("Resources page should not allow user to create a new resource category with invalid name", () => {
-    cy.contains("Add a new page").click()
+    cy.contains("a", "Create page").click()
     cy.wait(E2E_DEFAULT_WAIT_TIME)
     // Same name as existing file
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE).blur()
@@ -132,7 +133,7 @@ describe("Resource category page", () => {
   })
 
   it("Resources category page should allow user to create a new resource page of type post", () => {
-    cy.contains("Add a new page").click()
+    cy.contains("a", "Create page").click()
     cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_2)
@@ -160,15 +161,12 @@ describe("Resource category page", () => {
   })
 
   it("Resource category page should not allow user to rename a resource page using invalid parameters", () => {
-    const testPageCard = cy
-      .contains(TEST_PAGE_TITLE_2, { timeout: E2E_EXTENDED_TIMEOUT })
+    cy.contains("a", TEST_PAGE_TITLE_2, { timeout: E2E_EXTENDED_TIMEOUT })
+      .parent()
+      .as("pageCard")
       .should("exist")
 
-    testPageCard
-      .children()
-      .within(() => cy.get("[id^=pageCard-dropdown-]").click())
-
-    cy.get("div[id^=settings-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
+    cy.clickContextMenuItem("@pageCard", "settings")
     cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     // Same name as existing file
@@ -205,15 +203,13 @@ describe("Resource category page", () => {
   })
 
   it("Resource category page should allow user to edit a resource page details", () => {
-    const testPageCard = cy
-      .contains(TEST_PAGE_TITLE_2, { timeout: E2E_EXTENDED_TIMEOUT })
+    cy.contains("a", TEST_PAGE_TITLE_2, { timeout: E2E_EXTENDED_TIMEOUT })
+      .parent()
+      .as("pageCard")
       .should("exist")
 
-    testPageCard
-      .children()
-      .within(() => cy.get("[id^=pageCard-dropdown-]").click())
+    cy.clickContextMenuItem("@pageCard", "settings")
 
-    cy.get("div[id^=settings-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
     cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_RENAMED)
@@ -244,7 +240,7 @@ describe("Resource category page", () => {
   })
 
   it("Resources category page should allow user to create a new resource page of type file", () => {
-    cy.contains("Add a new page").click()
+    cy.contains("Create page").click()
     cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_FILE)
@@ -278,15 +274,13 @@ describe("Resource category page", () => {
   })
 
   it("Resources category page should allow user to change an existing resource page from post to file", () => {
-    const testPageCard = cy
-      .contains(TEST_PAGE_TITLE_RENAMED, { timeout: E2E_EXTENDED_TIMEOUT })
+    cy.contains("a", TEST_PAGE_TITLE_RENAMED, {
+      timeout: E2E_EXTENDED_TIMEOUT,
+    })
+      .parent()
+      .as("pageCard")
       .should("exist")
-
-    testPageCard
-      .children()
-      .within(() => cy.get("[id^=pageCard-dropdown-]").click())
-
-    cy.get("div[id^=settings-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
+    cy.clickContextMenuItem("@pageCard", "settings")
     cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('input[id="radio-file"]').click()
@@ -304,16 +298,16 @@ describe("Resource category page", () => {
     cy.contains(`${TEST_PAGE_DATE_CHANGED_PRETTIFIED}/FILE`)
   })
 
-  it("Resources category page should allow user to change an existing resource page from file to post", () => {
-    const testPageCard = cy
-      .contains(TEST_PAGE_TITLE_RENAMED, { timeout: E2E_EXTENDED_TIMEOUT })
+  it.only("Resources category page should allow user to change an existing resource page from file to post", () => {
+    cy.contains("button", TEST_PAGE_TITLE_RENAMED, {
+      timeout: E2E_EXTENDED_TIMEOUT,
+    })
+      .parent()
+      .parent()
+      .as("pageCard")
       .should("exist")
+    cy.clickContextMenuItem("@pageCard", "settings")
 
-    testPageCard
-      .children()
-      .within(() => cy.get("[id^=pageCard-dropdown-]").click())
-
-    cy.get("div[id^=settings-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
     cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('input[id="radio-post"]').click()
@@ -321,7 +315,7 @@ describe("Resource category page", () => {
     cy.contains("Save").click()
     cy.contains("Successfully updated page").should("exist")
 
-    // New page should be of type FILE with the correct date
+    // New page should be of type POST with the correct date
     cy.reload()
     cy.contains(TEST_PAGE_TITLE_RENAMED).contains(
       `${TEST_PAGE_DATE_CHANGED_PRETTIFIED}/POST`
@@ -329,15 +323,12 @@ describe("Resource category page", () => {
   })
 
   it("Resource category page should allow user to delete a page", () => {
-    const testPageCard = cy
-      .contains(TEST_PAGE_TITLE_RENAMED, { timeout: E2E_EXTENDED_TIMEOUT })
+    cy.contains("a", TEST_PAGE_TITLE_RENAMED, { timeout: E2E_EXTENDED_TIMEOUT })
+      .parent()
+      .as("pageCard")
       .should("exist")
+    cy.clickContextMenuItem("@pageCard", "Delete")
 
-    testPageCard
-      .children()
-      .within(() => cy.get("[id^=pageCard-dropdown-]").click())
-
-    cy.get("div[id^=delete-]").first().click() // .first() is necessary because the get returns multiple elements (refer to MenuDropdown.jsx)
     cy.contains("button", "Delete", { timeout: E2E_EXTENDED_TIMEOUT })
       .should("exist")
       .click()

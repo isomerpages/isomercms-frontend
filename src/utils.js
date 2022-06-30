@@ -291,22 +291,6 @@ export function slugifyLower(str) {
   return slugify(str, { lower: true })
 }
 
-export const getObjectDiff = (obj1, obj2) => {
-  const allkeys = _.union(_.keys(obj1), _.keys(obj2))
-  const difference = _.reduce(
-    allkeys,
-    (result, key) => {
-      const newResult = { ...result }
-      if (!_.isEqual(obj1[key], obj2[key])) {
-        newResult[key] = { obj1: obj1[key], obj2: obj2[key] }
-      }
-      return newResult
-    },
-    {}
-  )
-  return difference
-}
-
 export const parseDirectoryFile = (folderContent) => {
   const decodedContent = yaml.parse(folderContent)
   const collectionKey = Object.keys(decodedContent.collections)[0]
@@ -604,11 +588,3 @@ export const getNextItemType = (params) => {
   }
   return false
 }
-
-export const getDecodedParams = (params) =>
-  Object.entries(params).reduce((acc, [key, value]) => {
-    if (!acc[key]) {
-      acc[key] = decodeURIComponent(value)
-    }
-    return acc
-  }, {})

@@ -1,4 +1,7 @@
-import DeleteWarningModal from "components/DeleteWarningModal"
+import { Text } from "@chakra-ui/react"
+import { Button } from "@opengovsg/design-system-react"
+import { LoadingButton } from "components/LoadingButton"
+import { WarningModal } from "components/WarningModal"
 import PropTypes from "prop-types"
 
 import { useDeleteDirectoryHook } from "hooks/directoryHooks"
@@ -33,13 +36,24 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
           onSuccess: () => onClose(),
         })
 
-    return fileData ? (
-      <DeleteWarningModal
-        onDelete={() => deleteHandler({ sha: fileData.sha })}
-        onCancel={() => onClose()}
-        type={fileName}
-      />
-    ) : null
+    return (
+      <WarningModal
+        isOpen={!!fileData}
+        onClose={onClose}
+        displayTitle={`Delete ${fileName}`}
+        displayText={<Text>Are you sure you want to delete {fileName}?</Text>}
+      >
+        <Button variant="clear" colorScheme="secondary" onClick={onClose}>
+          Cancel
+        </Button>
+        <LoadingButton
+          colorScheme="danger"
+          onClick={() => deleteHandler({ sha: fileData.sha })}
+        >
+          Yes, delete
+        </LoadingButton>
+      </WarningModal>
+    )
   }
 
   const { mutateAsync: deleteHandler } = useDeleteDirectoryHook(params, {
@@ -47,11 +61,21 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
   })
 
   return (
-    <DeleteWarningModal
-      onDelete={deleteHandler}
-      onCancel={() => onClose()}
-      type={deleteItemName}
-    />
+    <WarningModal
+      isOpen={!!deleteItemName} // Modal is always present for delete screens
+      onClose={onClose}
+      displayTitle={`Delete ${deleteItemName}`}
+      displayText={
+        <Text>Are you sure you want to delete {deleteItemName}?</Text>
+      }
+    >
+      <Button variant="clear" colorScheme="secondary" onClick={onClose}>
+        Cancel
+      </Button>
+      <LoadingButton colorScheme="danger" onClick={deleteHandler}>
+        Yes, delete
+      </LoadingButton>
+    </WarningModal>
   )
 }
 
