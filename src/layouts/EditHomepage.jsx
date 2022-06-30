@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-shadow */
-import { Input } from "@opengovsg/design-system-react"
+import { useDisclosure, Text } from "@chakra-ui/react"
+import { Button, Input } from "@opengovsg/design-system-react"
 import axios from "axios"
-import DeleteWarningModal from "components/DeleteWarningModal"
 import Header from "components/Header"
 import EditorHeroSection from "components/homepage/HeroSection"
 import EditorInfobarSection from "components/homepage/InfobarSection"
@@ -9,6 +9,7 @@ import EditorInfopicSection from "components/homepage/InfopicSection"
 import NewSectionCreator from "components/homepage/NewSectionCreator"
 import EditorResourcesSection from "components/homepage/ResourcesSection"
 import { LoadingButton } from "components/LoadingButton"
+import { WarningModal } from "components/WarningModal"
 import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
@@ -146,6 +147,7 @@ const EditHomepage = ({ match }) => {
     id: "",
     type: "",
   })
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const [savedHeroElems, setSavedHeroElems] = useState("")
   const [savedHeroErrors, setSavedHeroErrors] = useState("")
   const errorToast = useErrorToast()
@@ -1170,16 +1172,40 @@ const EditHomepage = ({ match }) => {
 
   return (
     <>
-      {itemPendingForDelete.id && (
-        <DeleteWarningModal
-          onCancel={() => setItemPendingForDelete({ id: null, type: "" })}
-          onDelete={() => {
+      <WarningModal
+        isOpen={itemPendingForDelete.id && isOpen}
+        onClose={() => {
+          setItemPendingForDelete({ id: null, type: "" })
+          onClose()
+        }}
+        displayTitle={`Delete ${itemPendingForDelete.type} section`}
+        displayText={
+          <Text>
+            Are you sure you want to delete {itemPendingForDelete.type}?
+          </Text>
+        }
+      >
+        <Button
+          variant="clear"
+          colorScheme="secondary"
+          onClick={() => {
+            setItemPendingForDelete({ id: null, type: "" })
+            onClose()
+          }}
+        >
+          Cancel
+        </Button>
+        <Button
+          colorScheme="danger"
+          onClick={() => {
             deleteHandler(itemPendingForDelete.id)
             setItemPendingForDelete({ id: null, type: "" })
+            onClose()
           }}
-          type={itemPendingForDelete.type}
-        />
-      )}
+        >
+          Yes, delete
+        </Button>
+      </WarningModal>
       <Header
         siteName={siteName}
         title="Homepage"
@@ -1247,12 +1273,13 @@ const EditHomepage = ({ match }) => {
                                 }
                                 onFieldChange={onFieldChange}
                                 createHandler={createHandler}
-                                deleteHandler={(event, type) =>
+                                deleteHandler={(event, type) => {
+                                  onOpen()
                                   setItemPendingForDelete({
                                     id: event.target.id,
                                     type,
                                   })
-                                }
+                                }}
                                 shouldDisplay={displaySections[sectionIndex]}
                                 displayHighlights={displayHighlights}
                                 displayDropdownElems={displayDropdownElems}
@@ -1285,12 +1312,13 @@ const EditHomepage = ({ match }) => {
                                     subtitle={section.resources.subtitle}
                                     button={section.resources.button}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={(event) =>
+                                    deleteHandler={(event) => {
+                                      onOpen()
                                       setItemPendingForDelete({
                                         id: event.target.id,
                                         type: "Resources Section",
                                       })
-                                    }
+                                    }}
                                     onFieldChange={onFieldChange}
                                     shouldDisplay={
                                       displaySections[sectionIndex]
@@ -1325,12 +1353,13 @@ const EditHomepage = ({ match }) => {
                                     button={section.infobar.button}
                                     url={section.infobar.url}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={(event) =>
+                                    deleteHandler={(event) => {
+                                      onOpen()
                                       setItemPendingForDelete({
                                         id: event.target.id,
                                         type: "Infobar Section",
                                       })
-                                    }
+                                    }}
                                     onFieldChange={onFieldChange}
                                     shouldDisplay={
                                       displaySections[sectionIndex]
@@ -1367,12 +1396,13 @@ const EditHomepage = ({ match }) => {
                                     imageUrl={section.infopic.image}
                                     imageAlt={section.infopic.alt}
                                     sectionIndex={sectionIndex}
-                                    deleteHandler={(event) =>
+                                    deleteHandler={(event) => {
+                                      onOpen()
                                       setItemPendingForDelete({
                                         id: event.target.id,
                                         type: "Infopic Section",
                                       })
-                                    }
+                                    }}
                                     onFieldChange={onFieldChange}
                                     shouldDisplay={
                                       displaySections[sectionIndex]
