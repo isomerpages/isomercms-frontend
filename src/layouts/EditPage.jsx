@@ -1,7 +1,14 @@
-import { useDisclosure, Text, Box, Code } from "@chakra-ui/react"
+import {
+  useDisclosure,
+  Text,
+  Box,
+  Code,
+  HStack,
+  VStack,
+} from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
-import Footer from "components/Footer"
+import { Footer } from "components/Footer"
 import Header from "components/Header"
 import MarkdownEditor from "components/pages/MarkdownEditor"
 import PagePreview from "components/pages/PagePreview"
@@ -131,14 +138,14 @@ const EditPage = ({ match }) => {
   }, [editorValue])
 
   return (
-    <>
+    <VStack>
       <Header
         title={pageData?.content?.frontMatter?.title || ""}
         shouldAllowEditPageBackNav={!hasChanges}
         isEditPage
         params={decodedParams}
       />
-      <div className={elementStyles.wrapper}>
+      <HStack className={elementStyles.wrapper}>
         <WarningModal
           isOpen={isXSSViolation && isXSSWarningModalOpen}
           onClose={onXSSWarningModalClose}
@@ -253,24 +260,28 @@ const EditPage = ({ match }) => {
           chunk={htmlChunk}
           dirData={dirData}
         />
-      </div>
-      <Footer
-        isKeyButtonDisabled={isContentViolation}
-        keyCallback={() => {
-          if (isXSSViolation) onXSSWarningModalOpen()
-          else {
-            updatePageHandler({
-              pageData: {
-                frontMatter: pageData.content.frontMatter,
-                sha: currSha,
-                pageBody: editorValue,
-              },
-            })
-          }
-        }}
-        keyButtonIsLoading={isSavingPage}
-      />
-    </>
+      </HStack>
+      <Footer>
+        <Button
+          isDisabled={isContentViolation}
+          onClick={() => {
+            if (isXSSViolation) onXSSWarningModalOpen()
+            else {
+              updatePageHandler({
+                pageData: {
+                  frontMatter: pageData.content.frontMatter,
+                  sha: currSha,
+                  pageBody: editorValue,
+                },
+              })
+            }
+          }}
+          isLoading={isSavingPage}
+        >
+          Save
+        </Button>
+      </Footer>
+    </VStack>
   )
 }
 

@@ -36,7 +36,10 @@ const Media = ({ match }) => {
     <>
       <Header params={decodedParams} />
       {/* main bottom section */}
-      <div className={elementStyles.wrapper}>
+      <div
+        className={elementStyles.wrapper}
+        style={{ height: "calc(100vh - 80px)" }}
+      >
         <Sidebar />
         {/* main section starts here */}
         <div className={contentStyles.mainSection}>

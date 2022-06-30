@@ -38,7 +38,6 @@ li {
 }
 
 .wrapper {
-  height: calc(100vh - #{$header-height});
   width: 100%;
   position: relative;
   display: flex;
@@ -49,7 +48,6 @@ li {
 
 .fullscreenWrapper {
   @extend .wrapper;
-  top: $header-height/2;
 
   > .wrappedContent {
     height: calc(100vh - #{$header-height} - #{$footer-height});

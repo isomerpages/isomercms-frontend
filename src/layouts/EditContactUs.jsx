@@ -1,8 +1,16 @@
 // TODO: Clean up formatting, semi-colons, PropTypes etc
-import { HStack, Box, Text, Code, useDisclosure } from "@chakra-ui/react"
+import {
+  Box,
+  Text,
+  Code,
+  useDisclosure,
+  HStack,
+  VStack,
+} from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
 import EditorSection from "components/contact-us/Section"
+import { Footer } from "components/Footer"
 import FormContext from "components/Form/FormContext"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
@@ -860,104 +868,106 @@ const EditContactUs = ({ match }) => {
           Yes, delete
         </Button>
       </WarningModal>
-      <Header
-        siteName={siteName}
-        title="Contact Us"
-        shouldAllowEditPageBackNav={hasChanges()}
-        isEditPage
-        backButtonText="Back to My Workspace"
-        backButtonUrl={`/sites/${siteName}/workspace`}
-      />
-      {hasLoaded && (
-        <div className={elementStyles.wrapper}>
-          <div className={editorStyles.homepageEditorSidebar}>
-            <div>
-              <div className={`${elementStyles.card}`}>
-                <div className={elementStyles.cardHeader}>
-                  <h2>Site Settings</h2>
-                </div>
-                <FormContext isRequired>
-                  <FormTitle>Agency Name</FormTitle>
-                  <FormField
-                    placeholder="Agency Name"
-                    id="header-agency_name"
-                    value={frontMatter.agency_name || ""}
-                    onChange={onFieldChange}
-                  />
-                  <FormTitle>Feedback Url</FormTitle>
-                  <FormField
-                    placeholder="Feedback Url"
-                    id="feedback"
-                    value={footerContent.feedback || ""}
-                    onChange={onFieldChange}
-                  />
-                </FormContext>
-              </div>
-              <DragDropContext onDragEnd={onDragEnd}>
-                <EditorSection
-                  cards={frontMatter.locations}
-                  onFieldChange={onFieldChange}
-                  createHandler={createHandler}
-                  deleteHandler={(event, type) => {
-                    setItemPendingForDelete({ id: event.target.id, type })
-                    onDeleteModalOpen()
-                  }}
-                  shouldDisplay={displaySections.sectionsDisplay.locations}
-                  displayCards={displaySections.locations}
-                  displayHandler={displayHandler}
-                  errors={errors.locations}
-                  sectionId="locations"
-                />
-
-                <EditorSection
-                  cards={frontMatter.contacts}
-                  onFieldChange={onFieldChange}
-                  createHandler={createHandler}
-                  deleteHandler={(event, type) => {
-                    setItemPendingForDelete({ id: event.target.id, type })
-                    onDeleteModalOpen()
-                  }}
-                  shouldDisplay={displaySections.sectionsDisplay.contacts}
-                  displayCards={displaySections.contacts}
-                  displayHandler={displayHandler}
-                  errors={errors.contacts}
-                  sectionId="contacts"
-                />
-              </DragDropContext>
-            </div>
-          </div>
-          <div className={`${editorStyles.contactUsEditorMain} `}>
-            {/* contact-us header */}
-            <TemplateContactUsHeader
-              agencyName={frontMatter.agency_name}
-              ref={scrollRefs.sectionsScrollRefs.header}
-            />
-            {/* contact-us content */}
-            <section className="bp-section is-small padding--bottom--lg">
-              <div className="bp-container">
-                <div className="row">
-                  <div className="col is-8 is-offset-2">
-                    <TemplateLocationsSection
-                      locations={frontMatter.locations}
-                      scrollRefs={scrollRefs.locations}
-                      ref={scrollRefs.sectionsScrollRefs.locations}
-                    />
-                    <TemplateContactsSection
-                      contacts={frontMatter.contacts}
-                      scrollRefs={scrollRefs.contacts}
-                      ref={scrollRefs.sectionsScrollRefs.contacts}
-                    />
-                    <TemplateFeedbackSection
-                      feedback={footerContent.feedback}
-                      ref={scrollRefs.sectionsScrollRefs.feedback}
-                    />
+      <VStack>
+        <Header
+          siteName={siteName}
+          title="Contact Us"
+          shouldAllowEditPageBackNav={hasChanges()}
+          isEditPage
+          backButtonText="Back to My Workspace"
+          backButtonUrl={`/sites/${siteName}/workspace`}
+        />
+        {hasLoaded && (
+          <>
+            <HStack className={elementStyles.wrapper}>
+              <div className={editorStyles.homepageEditorSidebar}>
+                <div>
+                  <div className={`${elementStyles.card}`}>
+                    <div className={elementStyles.cardHeader}>
+                      <h2>Site Settings</h2>
+                    </div>
+                    <FormContext isRequired>
+                      <FormTitle>Agency Name</FormTitle>
+                      <FormField
+                        placeholder="Agency Name"
+                        id="header-agency_name"
+                        value={frontMatter.agency_name || ""}
+                        onChange={onFieldChange}
+                      />
+                      <FormTitle>Feedback Url</FormTitle>
+                      <FormField
+                        placeholder="Feedback Url"
+                        id="feedback"
+                        value={footerContent.feedback || ""}
+                        onChange={onFieldChange}
+                      />
+                    </FormContext>
                   </div>
+                  <DragDropContext onDragEnd={onDragEnd}>
+                    <EditorSection
+                      cards={frontMatter.locations}
+                      onFieldChange={onFieldChange}
+                      createHandler={createHandler}
+                      deleteHandler={(event, type) => {
+                        onDeleteModalOpen()
+                        setItemPendingForDelete({ id: event.target.id, type })
+                      }}
+                      shouldDisplay={displaySections.sectionsDisplay.locations}
+                      displayCards={displaySections.locations}
+                      displayHandler={displayHandler}
+                      errors={errors.locations}
+                      sectionId="locations"
+                    />
+
+                    <EditorSection
+                      cards={frontMatter.contacts}
+                      onFieldChange={onFieldChange}
+                      createHandler={createHandler}
+                      deleteHandler={(event, type) => {
+                        onDeleteModalOpen()
+                        setItemPendingForDelete({ id: event.target.id, type })
+                      }}
+                      shouldDisplay={displaySections.sectionsDisplay.contacts}
+                      displayCards={displaySections.contacts}
+                      displayHandler={displayHandler}
+                      errors={errors.contacts}
+                      sectionId="contacts"
+                    />
+                  </DragDropContext>
                 </div>
               </div>
-            </section>
-          </div>
-          <div className={editorStyles.pageEditorFooter}>
-            <HStack w="100%" justify="flex-end">
+              <div className={`${editorStyles.contactUsEditorMain} `}>
+                {/* contact-us header */}
+                <TemplateContactUsHeader
+                  agencyName={frontMatter.agency_name}
+                  ref={scrollRefs.sectionsScrollRefs.header}
+                />
+                {/* contact-us content */}
+                <section className="bp-section is-small padding--bottom--lg">
+                  <div className="bp-container">
+                    <div className="row">
+                      <div className="col is-8 is-offset-2">
+                        <TemplateLocationsSection
+                          locations={frontMatter.locations}
+                          scrollRefs={scrollRefs.locations}
+                          ref={scrollRefs.sectionsScrollRefs.locations}
+                        />
+                        <TemplateContactsSection
+                          contacts={frontMatter.contacts}
+                          scrollRefs={scrollRefs.contacts}
+                          ref={scrollRefs.sectionsScrollRefs.contacts}
+                        />
+                        <TemplateFeedbackSection
+                          feedback={footerContent.feedback}
+                          ref={scrollRefs.sectionsScrollRefs.feedback}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </HStack>
+            <Footer>
               {!isEmpty(deletedFrontMatter) && (
                 <LoadingButton
                   ml="auto"
@@ -967,17 +977,13 @@ const EditContactUs = ({ match }) => {
                   See removed content
                 </LoadingButton>
               )}
-              <LoadingButton
-                label="Save"
-                isDisabled={hasErrors()}
-                onClick={savePage}
-              >
+              <LoadingButton isDisabled={hasErrors()} onClick={savePage}>
                 Save
               </LoadingButton>
-            </HStack>
-          </div>
-        </div>
-      )}
+            </Footer>
+          </>
+        )}
+      </VStack>
     </>
   )
 }

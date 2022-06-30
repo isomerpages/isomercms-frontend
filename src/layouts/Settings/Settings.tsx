@@ -4,7 +4,6 @@ import {
   VStack,
   Skeleton,
   StackDivider,
-  Flex,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -12,10 +11,10 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  FlexProps,
   useDisclosure,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
+import { Footer } from "components/Footer"
 import _ from "lodash"
 import { useEffect, useRef } from "react"
 import { useForm, FormProvider } from "react-hook-form"
@@ -180,7 +179,7 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
             <SocialMediaSettings isError={isError} />
             <FooterSettings isError={isError} />
             <AnalyticsSettings isError={isError} />
-            <SettingsFooter>
+            <Footer w="calc(100% + 4rem)" ml="-2rem" mb="-2rem">
               <Button
                 isLoading={isLoading}
                 onClick={() => {
@@ -189,7 +188,7 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
               >
                 Save
               </Button>
-            </SettingsFooter>
+            </Footer>
           </VStack>
 
           <Modal
@@ -234,25 +233,5 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
         </form>
       </FormProvider>
     </Box>
-  )
-}
-
-const SettingsFooter = (props: FlexProps) => {
-  return (
-    <Flex
-      justify="flex-end"
-      px="2rem"
-      py="0.625rem"
-      bg="white"
-      w="calc(100% + 4rem)"
-      left={0}
-      position="sticky"
-      bottom={0}
-      borderTop="1px solid"
-      borderColor="border.divider.alt"
-      ml="-2rem"
-      mb="-2rem"
-      {...props}
-    />
   )
 }
