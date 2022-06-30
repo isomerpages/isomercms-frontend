@@ -298,7 +298,7 @@ describe("Resource category page", () => {
     cy.contains(`${TEST_PAGE_DATE_CHANGED_PRETTIFIED}/FILE`)
   })
 
-  it.only("Resources category page should allow user to change an existing resource page from file to post", () => {
+  it("Resources category page should allow user to change an existing resource page from file to post", () => {
     cy.contains("button", TEST_PAGE_TITLE_RENAMED, {
       timeout: E2E_EXTENDED_TIMEOUT,
     })
