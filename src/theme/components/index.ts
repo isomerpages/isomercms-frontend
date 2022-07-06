@@ -1,3 +1,4 @@
+import { Breadcrumb } from "./Breadcrumb"
 import { Card, CARD_THEME_KEY } from "./Card"
 import { Tabs } from "./Tabs"
 
@@ -5,4 +6,5 @@ import { Tabs } from "./Tabs"
 export const components = {
   [CARD_THEME_KEY]: Card,
   Tabs,
+  Breadcrumb,
 }
