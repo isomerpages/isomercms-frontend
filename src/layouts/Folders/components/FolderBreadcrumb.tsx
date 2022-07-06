@@ -1,5 +1,3 @@
-// NOTE: As Isomer does not have recursively nested folders at present,
-
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from "@chakra-ui/react"
 import { BiChevronRight } from "react-icons/bi"
 import { useRouteMatch, Link as RouterLink } from "react-router-dom"
@@ -14,7 +12,8 @@ interface FolderUrlParams {
   subCollectionName?: string
 }
 
-// NOTE: A folder breadcrumb is dependent solely on whether the sub folder is present
+// NOTE: As Isomer does not have recursively nested folders at present,
+// A folder breadcrumb is dependent solely on whether the sub folder is present
 export const FolderBreadcrumbs = (): JSX.Element => {
   const { params } = useRouteMatch<FolderUrlParams>()
   const { siteName, collectionName, subCollectionName } = getDecodedParams({
@@ -49,7 +48,7 @@ export const FolderBreadcrumbs = (): JSX.Element => {
           <BreadcrumbItem isLastChild={hasModifier} isCurrentPage={hasModifier}>
             <BreadcrumbLink
               textStyle="body-2"
-              color="text.body"
+              color={hasModifier ? "text.link.default" : "text.body"}
               as={RouterLink}
               to={to}
               textDecoration={hasModifier ? "underline" : "inherit"}

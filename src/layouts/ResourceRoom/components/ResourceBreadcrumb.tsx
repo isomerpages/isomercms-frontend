@@ -18,6 +18,7 @@ export const ResourceBreadcrumb = (): JSX.Element => {
           as={RouterLink}
           textStyle="body-2"
           textDecoration="underline"
+          color="text.link.default"
           to={`/sites/${siteName}/resourceRoom/${resourceRoomName}`}
         >
           {resourceRoomName && deslugifyDirectory(resourceRoomName)}
