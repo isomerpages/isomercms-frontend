@@ -1,6 +1,8 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { MemoryRouter, Redirect, Route } from "react-router-dom"
 
+import { LoginContext } from "contexts/LoginContext"
+
 import { handlers } from "../../mocks/handlers"
 
 import { Sidebar } from "./Sidebar"
@@ -35,7 +37,23 @@ const SidebarMeta = {
 } as ComponentMeta<typeof Sidebar>
 
 const Template: ComponentStory<typeof Sidebar> = () => {
-  return <Sidebar />
+  return (
+    <LoginContext.Provider
+      value={{
+        logout: async () => {
+          return undefined
+        },
+        userId: "username",
+        email: "user@open.gov.sg",
+        contactNumber: "98765432",
+        verifyLoginAndSetLocalStorage: async () => {
+          return undefined
+        },
+      }}
+    >
+      <Sidebar />
+    </LoginContext.Provider>
+  )
 }
 
 export const Default = Template.bind({})
