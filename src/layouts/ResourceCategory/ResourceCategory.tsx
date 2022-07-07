@@ -7,7 +7,7 @@ import {
   Link as RouterLink,
 } from "react-router-dom"
 
-import { useGetDirectoryHook } from "hooks/directoryHooks"
+import { useGetResourceCategory } from "hooks/directoryHooks"
 
 // Import screens
 import {
@@ -22,7 +22,6 @@ import {
   MoveScreen,
   DeleteWarningScreen,
 } from "layouts/screens"
-import { isResourcePageData } from "layouts/utils"
 
 import { ProtectedRouteWithProps } from "routing/RouteSelector"
 
@@ -34,18 +33,15 @@ import { ResourceCard, ResourceCategoryBreadcrumb } from "./components"
 
 export const ResourceCategory = (): JSX.Element => {
   const { params } = useRouteMatch<ResourceCategoryRouteParams>()
-  const { resourceCategoryName } = params
+  const { siteName, resourceRoomName, resourceCategoryName } = params
   const { path, url } = useRouteMatch()
   const history = useHistory()
 
-  const { data: _pagesData, isLoading } = useGetDirectoryHook({
-    ...params,
-  })
-
-  const pagesData =
-    _pagesData && _pagesData.length > 0
-      ? (_pagesData as unknown[]).filter(isResourcePageData)
-      : []
+  const { data: pagesData, isLoading } = useGetResourceCategory(
+    siteName,
+    resourceRoomName,
+    resourceCategoryName
+  )
 
   return (
     <>
@@ -72,7 +68,7 @@ export const ResourceCategory = (): JSX.Element => {
           <Skeleton isLoaded={!isLoading} w="100%">
             <SimpleGrid columns={3} spacing="1.5rem">
               {/* NOTE: need to use multiline cards */}
-              {pagesData.map(({ name, title, date, resourceType }) => (
+              {(pagesData || []).map(({ name, title, date, resourceType }) => (
                 <ResourceCard
                   name={name}
                   title={title}

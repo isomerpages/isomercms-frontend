@@ -1,4 +1,4 @@
-import { DirectoryData, PageData, ResourcePageData } from "types/directory"
+import { DirectoryData, PageData } from "types/directory"
 
 export const isDirectoryData = (
   possibleDir: unknown
@@ -13,15 +13,4 @@ export const isPageData = (possiblePage: unknown): possiblePage is PageData => {
     !(possiblePage as PageData).resourceType
 
   return !!(possiblePage as PageData).name && hasPermissibleResourceType
-}
-
-export const isResourcePageData = (
-  possiblePage: unknown
-): possiblePage is ResourcePageData => {
-  return (
-    isPageData(possiblePage) &&
-    possiblePage.date !== undefined &&
-    possiblePage.resourceType !== undefined &&
-    possiblePage.title !== undefined
-  )
 }
