@@ -18,7 +18,7 @@ import {
 
 // Import components
 
-import { useGetCollection } from "hooks/directoryHooks"
+import { useGetFolders } from "hooks/directoryHooks"
 
 import {
   PageSettingsScreen,
@@ -56,9 +56,7 @@ export const Folders = ({ match }: FoldersProps): JSX.Element => {
   const { path, url } = useRouteMatch()
   const history = useHistory()
 
-  const { data: dirData, isLoading: isLoadingDirectory } = useGetCollection(
-    params
-  )
+  const { data: dirData, isLoading: isLoadingDirectory } = useGetFolders(params)
 
   return (
     <>

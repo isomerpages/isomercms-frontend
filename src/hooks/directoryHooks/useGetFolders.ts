@@ -13,7 +13,7 @@ import { DirectoryData } from "types/directory"
 import { FolderUrlParams } from "types/folders"
 import { DEFAULT_RETRY_MSG } from "utils"
 
-export const useGetCollection = (
+export const useGetFolders = (
   params: FolderUrlParams,
   queryOptions?: Omit<UseQueryOptions<DirectoryData[]>, "queryFn" | "queryKey">
 ): UseQueryResult<DirectoryData[]> => {
