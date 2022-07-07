@@ -1,3 +1,4 @@
+import { useToast } from "@chakra-ui/react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { MemoryRouter, Redirect, Route } from "react-router-dom"
 
@@ -37,11 +38,17 @@ const SidebarMeta = {
 } as ComponentMeta<typeof Sidebar>
 
 const Template: ComponentStory<typeof Sidebar> = () => {
+  const toast = useToast()
   return (
     <LoginContext.Provider
       value={{
         logout: async () => {
-          return undefined
+          toast({
+            title: "User is logged out",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          })
         },
         userId: "username",
         email: "user@open.gov.sg",
