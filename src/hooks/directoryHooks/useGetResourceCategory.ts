@@ -14,11 +14,7 @@ import { ResourceCategoryRouteParams } from "types/resources"
 import { DEFAULT_RETRY_MSG } from "utils"
 
 export const useGetResourceCategory = (
-  {
-    siteName,
-    resourceRoomName,
-    resourceCategoryName,
-  }: ResourceCategoryRouteParams,
+  params: ResourceCategoryRouteParams,
   queryOptions?: Omit<
     UseQueryOptions<ResourcePageData[]>,
     "queryFn" | "queryKey"
@@ -28,13 +24,8 @@ export const useGetResourceCategory = (
   const errorToast = useErrorToast()
 
   return useQuery<ResourcePageData[]>(
-    [RESOURCE_CATEGORY_CONTENT_KEY],
-    () =>
-      DirectoryService.getResourceCategory(
-        siteName,
-        resourceRoomName,
-        resourceCategoryName
-      ),
+    [RESOURCE_CATEGORY_CONTENT_KEY, params],
+    () => DirectoryService.getResourceCategory(params),
     {
       ...queryOptions,
       retry: false,
