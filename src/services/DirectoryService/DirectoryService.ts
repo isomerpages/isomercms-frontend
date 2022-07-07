@@ -1,4 +1,8 @@
-import { DirectoryInfoReturn, DirectoryData } from "types/directory"
+import {
+  DirectoryInfoReturn,
+  DirectoryData,
+  ResourcePageData,
+} from "types/directory"
 
 import { apiService } from "../ApiService"
 
@@ -20,4 +24,13 @@ export const getResourceRoom = (
 ): Promise<DirectoryData[]> => {
   const endpoint = `/sites/${siteName}/resourceRoom/${resourceRoomName}`
   return apiService.get<DirectoryData[]>(endpoint).then(({ data }) => data)
+}
+
+export const getResourceCategory = (
+  siteName: string,
+  resourceRoomName: string,
+  resourceCategoryName: string
+): Promise<ResourcePageData[]> => {
+  const endpoint = `/sites/${siteName}/resourceRoom/${resourceRoomName}/resources/${resourceCategoryName}`
+  return apiService.get<ResourcePageData[]>(endpoint).then(({ data }) => data)
 }
