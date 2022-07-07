@@ -1,5 +1,4 @@
 import axios from "axios"
-import { isEmpty, omitBy } from "lodash"
 import {
   createContext,
   useEffect,
@@ -53,11 +52,12 @@ const LoginProvider = ({
     false
   )
   const verifyLoginAndSetLocalStorage = useCallback(async () => {
-    const { data } = await axios.get(`${BACKEND_URL}/auth/whoami`)
-    const loggedInUser = omitBy(data, isEmpty)
+    const { data: loggedInUser } = await axios.get<LoggedInUser>(
+      `${BACKEND_URL}/auth/whoami`
+    )
 
     setStoredUserId(loggedInUser.userId)
-    setStoredUser((loggedInUser as unknown) as LoggedInUser)
+    setStoredUser(loggedInUser)
   }, [setStoredUser, setStoredUserId])
 
   const logout = async () => {
