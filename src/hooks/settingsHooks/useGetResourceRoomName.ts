@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useQuery, UseQueryResult } from "react-query"
 
-import { RESOURCE_ROOM_NAME_KEY } from "hooks/queryKeys"
+import { RESOURCE_ROOM_NAME_KEY } from "constants/queryKeys"
 
 const getResourceRoomName = async (siteName: string) => {
   const resp = await axios.get<{ resourceRoomName: string }>(

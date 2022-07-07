@@ -4,7 +4,8 @@
 import axios from "axios"
 import { useQuery } from "react-query"
 
-import { DIR_CONTENT_KEY } from "hooks/queryKeys"
+import { DIR_CONTENT_KEY } from "constants/queryKeys"
+
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { useErrorToast } from "utils/toasts"
