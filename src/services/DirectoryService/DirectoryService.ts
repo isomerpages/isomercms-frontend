@@ -1,9 +1,6 @@
 import { DirectoryInfoReturn, DirectoryData } from "types/directory"
-import { ResourceRoomOptions } from "types/resources"
 
 import { apiService } from "../ApiService"
-
-import { getResourcesEndpoint } from "./utils"
 
 export const createResourceRoom = (
   siteName: string,
@@ -19,13 +16,8 @@ export const createResourceRoom = (
 
 export const getResourceRoom = (
   siteName: string,
-  options?: Partial<ResourceRoomOptions>
+  resourceRoomName: string
 ): Promise<DirectoryData[]> => {
-  const endpoint = getResourcesEndpoint(
-    siteName,
-    options?.resourceRoomName,
-    options?.resourceCategoryName,
-    options?.isCreate
-  )
+  const endpoint = `/sites/${siteName}/resourceRoom/${resourceRoomName}`
   return apiService.get<DirectoryData[]>(endpoint).then(({ data }) => data)
 }
