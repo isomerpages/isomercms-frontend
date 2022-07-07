@@ -33,15 +33,11 @@ import { ResourceCard, ResourceCategoryBreadcrumb } from "./components"
 
 export const ResourceCategory = (): JSX.Element => {
   const { params } = useRouteMatch<ResourceCategoryRouteParams>()
-  const { siteName, resourceRoomName, resourceCategoryName } = params
+  const { resourceCategoryName } = params
   const { path, url } = useRouteMatch()
   const history = useHistory()
 
-  const { data: pagesData, isLoading } = useGetResourceCategory(
-    siteName,
-    resourceRoomName,
-    resourceCategoryName
-  )
+  const { data: pagesData, isLoading } = useGetResourceCategory(params)
 
   return (
     <>

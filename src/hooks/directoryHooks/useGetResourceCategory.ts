@@ -10,12 +10,15 @@ import { isAxiosError } from "utils/axios"
 import { useErrorToast } from "utils/toasts"
 
 import { ResourcePageData } from "types/directory"
+import { ResourceCategoryRouteParams } from "types/resources"
 import { DEFAULT_RETRY_MSG } from "utils"
 
 export const useGetResourceCategory = (
-  siteName: string,
-  resourceRoomName: string,
-  resourceCategoryName: string,
+  {
+    siteName,
+    resourceRoomName,
+    resourceCategoryName,
+  }: ResourceCategoryRouteParams,
   queryOptions?: Omit<
     UseQueryOptions<ResourcePageData[]>,
     "queryFn" | "queryKey"
