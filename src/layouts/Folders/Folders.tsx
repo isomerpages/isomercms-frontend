@@ -18,7 +18,7 @@ import {
 
 // Import components
 
-import { useGetDirectoryHook } from "hooks/directoryHooks"
+import { useGetCollection } from "hooks/directoryHooks"
 
 import {
   PageSettingsScreen,
@@ -31,18 +31,13 @@ import {
 
 import { ProtectedRouteWithProps } from "routing/RouteSelector"
 
+import { FolderUrlParams } from "types/folders"
 import { deslugifyDirectory } from "utils"
 
 import { Section, SectionHeader, SectionCaption } from "../components"
 import { SiteViewLayout } from "../layouts"
 
 import { FolderBreadcrumbs, MenuDropdownButton } from "./components"
-
-interface FolderUrlParams {
-  siteName: string
-  collectionName: string
-  subCollectionName?: string
-}
 
 interface FoldersProps {
   match: {
@@ -61,7 +56,7 @@ export const Folders = ({ match }: FoldersProps): JSX.Element => {
   const { path, url } = useRouteMatch()
   const history = useHistory()
 
-  const { data: dirData, isLoading: isLoadingDirectory } = useGetDirectoryHook(
+  const { data: dirData, isLoading: isLoadingDirectory } = useGetCollection(
     params
   )
 

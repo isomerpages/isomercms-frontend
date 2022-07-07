@@ -3,6 +3,7 @@ import {
   DirectoryData,
   ResourcePageData,
 } from "types/directory"
+import { FolderUrlParams } from "types/folders"
 import {
   ResourceCategoryRouteParams,
   ResourcesRouteParams,
@@ -37,4 +38,16 @@ export const getResourceCategory = ({
 }: ResourceCategoryRouteParams): Promise<ResourcePageData[]> => {
   const endpoint = `/sites/${siteName}/resourceRoom/${resourceRoomName}/resources/${resourceCategoryName}`
   return apiService.get<ResourcePageData[]>(endpoint).then(({ data }) => data)
+}
+
+export const getCollection = ({
+  siteName,
+  collectionName,
+  subCollectionName,
+}: FolderUrlParams): Promise<DirectoryData[]> => {
+  let endpoint = `/sites/${siteName}/collections/${collectionName}`
+  if (subCollectionName) {
+    endpoint += `/subcollections/${subCollectionName}`
+  }
+  return apiService.get<DirectoryData[]>(endpoint).then(({ data }) => data)
 }
