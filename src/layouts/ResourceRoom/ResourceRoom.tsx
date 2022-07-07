@@ -21,7 +21,7 @@ import {
   useRouteMatch,
 } from "react-router-dom"
 
-import { useCreateDirectory, useGetDirectoryHook } from "hooks/directoryHooks"
+import { useCreateDirectory, useGetResourceRoom } from "hooks/directoryHooks"
 import { useGetResourceRoomName } from "hooks/settingsHooks/useGetResourceRoomName"
 
 import {
@@ -35,7 +35,6 @@ import {
   DeleteWarningScreen,
   DirectorySettingsScreen,
 } from "layouts/screens"
-import { isDirectoryData } from "layouts/utils"
 
 import { ProtectedRouteWithProps } from "routing/RouteSelector"
 
@@ -51,7 +50,6 @@ import { CategoryCard, ResourceBreadcrumb } from "./components"
 
 const EmptyResourceRoom = () => {
   const params = useParams<ResourceRoomRouteParams>()
-  // NOTE: This is typed as any!!!
   const { siteName } = params
   const { mutateAsync: saveHandler, isLoading, isError } = useCreateDirectory(
     siteName
@@ -133,20 +131,14 @@ export const ResourceRoom = (): JSX.Element => {
     (resourceRoomName && resourceRoomName !== queriedResourceRoomName) ||
     (!resourceRoomName && queriedResourceRoomName)
 
-  // NOTE: dirsData is typed as any!!!
-  const { data: _dirsData, isLoading } = useGetDirectoryHook(
-    { siteName, resourceRoomName },
+  const { data: dirsData, isLoading } = useGetResourceRoom(
+    siteName,
+    { resourceRoomName },
     {
       enabled:
         !!resourceRoomName && queriedResourceRoomName === resourceRoomName,
     }
   )
-  // NOTE: These are obtained from JS files and are potentially unsafe
-  // Do a type-check to narrow down to only those that are permissible and ensure safety
-  const dirsData =
-    _dirsData && _dirsData.length > 0
-      ? (_dirsData as unknown[]).filter(isDirectoryData)
-      : []
 
   return (
     <Route>
@@ -161,7 +153,7 @@ export const ResourceRoom = (): JSX.Element => {
         <EmptyResourceRoom />
       ) : (
         <ResourceRoomContent
-          directoryData={dirsData}
+          directoryData={dirsData || []}
           isLoading={!isLoading && !isResourceRoomNameLoading}
         />
       )}
