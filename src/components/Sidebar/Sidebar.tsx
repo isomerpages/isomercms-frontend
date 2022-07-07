@@ -33,6 +33,7 @@ import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
 import { useLastUpdated } from "hooks/useLastUpdated"
 import { useLocalStorage } from "hooks/useLocalStorage"
+import useRedirectHook from "hooks/useRedirectHook"
 
 import { TabSection } from "types/sidebar"
 
@@ -80,6 +81,7 @@ export const Sidebar = (): JSX.Element => {
   )
   // NOTE: As this is a sub-path, there's a leading / which is converted into an empty string
   const selectedTab = getSelectedTab(pathname.split("/").filter(Boolean))
+  const { setRedirectToLogout } = useRedirectHook()
   return (
     // NOTE: This is because we reserve height for the header (4rem)
     <Flex
@@ -186,7 +188,11 @@ export const Sidebar = (): JSX.Element => {
       </LinkBox>
       <Divider color="secondary.100" />
       <VStack spacing="2rem" pt="0.5rem">
-        <SidebarButton isFullWidth display="block">
+        <SidebarButton
+          isFullWidth
+          display="block"
+          onClick={setRedirectToLogout}
+        >
           <Flex w="100%">
             <Text textStyle="body-1">Logout</Text>
             <Spacer />
