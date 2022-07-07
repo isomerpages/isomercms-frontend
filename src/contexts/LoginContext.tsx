@@ -14,18 +14,15 @@ import { useLocalStorage } from "hooks/useLocalStorage"
 
 const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 
-interface LoginContextProps {
+interface LoggedInUser {
   userId: string
   email: string
   contactNumber: string
-  logout: () => Promise<void>
-  verifyLoginAndSetLocalStorage: () => Promise<void>
 }
 
-interface loggedInUserProps {
-  userId: string
-  email: string
-  contactNumber: string
+interface LoginContextProps extends LoggedInUser {
+  logout: () => Promise<void>
+  verifyLoginAndSetLocalStorage: () => Promise<void>
 }
 
 const LoginContext = createContext<null | LoginContextProps>(null)
@@ -60,7 +57,7 @@ const LoginProvider = ({
     const loggedInUser = omitBy(data, isEmpty)
 
     setStoredUserId(loggedInUser.userId)
-    setStoredUser((loggedInUser as unknown) as loggedInUserProps)
+    setStoredUser((loggedInUser as unknown) as LoggedInUser)
   }, [setStoredUser, setStoredUserId])
 
   const logout = async () => {
