@@ -1,9 +1,4 @@
-import {
-  useQuery,
-  useQueryClient,
-  UseQueryOptions,
-  UseQueryResult,
-} from "react-query"
+import { useQuery, UseQueryOptions, UseQueryResult } from "react-query"
 
 import { RESOURCE_ROOM_CONTENT_KEY } from "constants/queryKeys"
 
@@ -23,7 +18,6 @@ export const useGetResourceRoom = (
   queryOptions?: Omit<UseQueryOptions<DirectoryData[]>, "queryFn" | "queryKey">
 ): UseQueryResult<DirectoryData[]> => {
   const { setRedirectToNotFound } = useRedirectHook()
-  const queryClient = useQueryClient()
   const errorToast = useErrorToast()
 
   return useQuery<DirectoryData[]>(
@@ -42,10 +36,6 @@ export const useGetResourceRoom = (
           })
         }
         queryOptions?.onError?.(err)
-      },
-      onSuccess: (data) => {
-        queryClient.invalidateQueries(RESOURCE_ROOM_CONTENT_KEY)
-        queryOptions?.onSuccess?.(data)
       },
     }
   )
