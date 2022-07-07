@@ -3,6 +3,10 @@ import {
   DirectoryData,
   ResourcePageData,
 } from "types/directory"
+import {
+  ResourceCategoryRouteParams,
+  ResourcesRouteParams,
+} from "types/resources"
 
 import { apiService } from "../ApiService"
 
@@ -18,19 +22,19 @@ export const createResourceRoom = (
   return apiService.post(endpoint, body)
 }
 
-export const getResourceRoom = (
-  siteName: string,
-  resourceRoomName: string
-): Promise<DirectoryData[]> => {
+export const getResourceRoom = ({
+  siteName,
+  resourceRoomName,
+}: ResourcesRouteParams): Promise<DirectoryData[]> => {
   const endpoint = `/sites/${siteName}/resourceRoom/${resourceRoomName}`
   return apiService.get<DirectoryData[]>(endpoint).then(({ data }) => data)
 }
 
-export const getResourceCategory = (
-  siteName: string,
-  resourceRoomName: string,
-  resourceCategoryName: string
-): Promise<ResourcePageData[]> => {
+export const getResourceCategory = ({
+  siteName,
+  resourceRoomName,
+  resourceCategoryName,
+}: ResourceCategoryRouteParams): Promise<ResourcePageData[]> => {
   const endpoint = `/sites/${siteName}/resourceRoom/${resourceRoomName}/resources/${resourceCategoryName}`
   return apiService.get<ResourcePageData[]>(endpoint).then(({ data }) => data)
 }

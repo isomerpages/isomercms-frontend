@@ -14,15 +14,15 @@ import { ResourceRoomRouteParams } from "types/resources"
 import { DEFAULT_RETRY_MSG } from "utils"
 
 export const useGetResourceRoom = (
-  { siteName, resourceRoomName }: ResourceRoomRouteParams,
+  params: ResourceRoomRouteParams,
   queryOptions?: Omit<UseQueryOptions<DirectoryData[]>, "queryFn" | "queryKey">
 ): UseQueryResult<DirectoryData[]> => {
   const { setRedirectToNotFound } = useRedirectHook()
   const errorToast = useErrorToast()
 
   return useQuery<DirectoryData[]>(
-    [RESOURCE_ROOM_CONTENT_KEY],
-    () => DirectoryService.getResourceRoom(siteName, resourceRoomName),
+    [RESOURCE_ROOM_CONTENT_KEY, params],
+    () => DirectoryService.getResourceRoom(params),
     {
       ...queryOptions,
       retry: false,
