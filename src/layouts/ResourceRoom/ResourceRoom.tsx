@@ -132,8 +132,7 @@ export const ResourceRoom = (): JSX.Element => {
     (!resourceRoomName && queriedResourceRoomName)
 
   const { data: dirsData, isLoading } = useGetResourceRoom(
-    siteName,
-    resourceRoomName,
+    { siteName, resourceRoomName },
     {
       enabled:
         !!resourceRoomName && queriedResourceRoomName === resourceRoomName,

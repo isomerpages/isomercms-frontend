@@ -10,11 +10,11 @@ import { isAxiosError } from "utils/axios"
 import { useErrorToast } from "utils/toasts"
 
 import { DirectoryData } from "types/directory"
+import { ResourceRoomRouteParams } from "types/resources"
 import { DEFAULT_RETRY_MSG } from "utils"
 
 export const useGetResourceRoom = (
-  siteName: string,
-  resourceRoomName: string,
+  { siteName, resourceRoomName }: ResourceRoomRouteParams,
   queryOptions?: Omit<UseQueryOptions<DirectoryData[]>, "queryFn" | "queryKey">
 ): UseQueryResult<DirectoryData[]> => {
   const { setRedirectToNotFound } = useRedirectHook()
