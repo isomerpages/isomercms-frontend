@@ -7,7 +7,7 @@ import { QueryClient } from "react-query"
 import slugify from "slugify"
 import yaml from "yaml"
 
-import { SITES_IS_PRIVATE_KEY } from "constants/constants"
+import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
 import { getMediaDetails } from "api"
 
@@ -106,9 +106,9 @@ export async function fetchImageURL(siteName, filePath, shouldLoad = true) {
   if (shouldLoad) {
     const cleanPath = filePath.replace(/^\//, "") // Remove leading / if it exists e.g. /images/example.png -> images/example.png
     // If the image is public, return the link to the raw file, otherwise make a call to the backend API to retrieve the image blob
-    const isPrivate = JSON.parse(localStorage.getItem(SITES_IS_PRIVATE_KEY))[
-      siteName
-    ]
+    const isPrivate = JSON.parse(
+      localStorage.getItem(LOCAL_STORAGE_KEYS.SitesIsPrivate)
+    )[siteName]
     if (!isPrivate) {
       return `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${cleanPath}${
         cleanPath.endsWith(".svg") ? "?sanitize=true" : ""
