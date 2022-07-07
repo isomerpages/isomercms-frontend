@@ -1,9 +1,4 @@
-import {
-  useQuery,
-  useQueryClient,
-  UseQueryOptions,
-  UseQueryResult,
-} from "react-query"
+import { useQuery, UseQueryOptions, UseQueryResult } from "react-query"
 
 import { RESOURCE_CATEGORY_CONTENT_KEY } from "constants/queryKeys"
 
@@ -27,7 +22,6 @@ export const useGetResourceCategory = (
   >
 ): UseQueryResult<ResourcePageData[]> => {
   const { setRedirectToNotFound } = useRedirectHook()
-  const queryClient = useQueryClient()
   const errorToast = useErrorToast()
 
   return useQuery<ResourcePageData[]>(
@@ -51,10 +45,6 @@ export const useGetResourceCategory = (
           })
         }
         queryOptions?.onError?.(err)
-      },
-      onSuccess: (data) => {
-        queryClient.invalidateQueries(RESOURCE_CATEGORY_CONTENT_KEY)
-        queryOptions?.onSuccess?.(data)
       },
     }
   )
