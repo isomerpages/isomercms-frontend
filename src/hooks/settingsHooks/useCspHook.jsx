@@ -2,7 +2,7 @@ import axios from "axios"
 import Policy from "csp-parse"
 import { useQuery } from "react-query"
 
-import { CSP_CONTENT_KEY } from "hooks/queryKeys"
+import { CSP_CONTENT_KEY } from "constants/queryKeys"
 
 import { useErrorToast } from "utils/toasts"
 

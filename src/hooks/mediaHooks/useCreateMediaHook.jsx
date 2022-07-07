@@ -2,9 +2,9 @@ import _ from "lodash"
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
-import { ServicesContext } from "contexts/ServicesContext"
+import { DIR_CONTENT_KEY } from "constants/queryKeys"
 
-import { DIR_CONTENT_KEY } from "hooks/queryKeys"
+import { ServicesContext } from "contexts/ServicesContext"
 
 import { useSuccessToast, useErrorToast } from "utils/toasts"
 

@@ -12,7 +12,8 @@ import { useEffect, useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useQuery, useMutation, useQueryClient } from "react-query"
 
-import { NAVIGATION_CONTENT_KEY } from "hooks/queryKeys"
+import { NAVIGATION_CONTENT_KEY } from "constants/queryKeys"
+
 import useRedirectHook from "hooks/useRedirectHook"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"

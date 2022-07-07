@@ -2,9 +2,10 @@ import _ from "lodash"
 import { useContext } from "react"
 import { useQuery, useQueryClient } from "react-query"
 
+import { DIR_CONTENT_KEY, MEDIA_CONTENT_KEY } from "constants/queryKeys"
+
 import { ServicesContext } from "contexts/ServicesContext"
 
-import { DIR_CONTENT_KEY, MEDIA_CONTENT_KEY } from "hooks/queryKeys"
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { useErrorToast } from "utils/toasts"
