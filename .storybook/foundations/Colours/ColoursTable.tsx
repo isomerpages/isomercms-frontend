@@ -14,7 +14,6 @@ export const ColourTable = ({
   colours,
 }: ColourTableProps): JSX.Element => {
   const theme = useTheme()
-  console.log(theme)
 
   return (
     <Table variant="simple">
