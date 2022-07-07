@@ -38,29 +38,7 @@ const SidebarMeta = {
 } as ComponentMeta<typeof Sidebar>
 
 const Template: ComponentStory<typeof Sidebar> = () => {
-  const toast = useToast()
-  return (
-    <LoginContext.Provider
-      value={{
-        logout: async () => {
-          toast({
-            title: "User is logged out",
-            status: "success",
-            duration: 9000,
-            isClosable: true,
-          })
-        },
-        userId: "username",
-        email: "user@open.gov.sg",
-        contactNumber: "98765432",
-        verifyLoginAndSetLocalStorage: async () => {
-          return undefined
-        },
-      }}
-    >
-      <Sidebar />
-    </LoginContext.Provider>
-  )
+  return <Sidebar />
 }
 
 export const Default = Template.bind({})
@@ -69,4 +47,31 @@ Default.parameters = {
     handlers,
   },
 }
+Default.decorators = [
+  (Story) => {
+    const toast = useToast()
+    return (
+      <LoginContext.Provider
+        value={{
+          logout: async () => {
+            toast({
+              title: "User is logged out",
+              status: "success",
+              duration: 9000,
+              isClosable: true,
+            })
+          },
+          userId: "username",
+          email: "user@open.gov.sg",
+          contactNumber: "98765432",
+          verifyLoginAndSetLocalStorage: async () => {
+            return undefined
+          },
+        }}
+      >
+        <Story />
+      </LoginContext.Provider>
+    )
+  },
+]
 export default SidebarMeta
