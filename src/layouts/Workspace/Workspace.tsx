@@ -5,11 +5,7 @@ import { BiBulb, BiInfoCircle } from "react-icons/bi"
 import { Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 // Import hooks
-import {
-  useGetDirectoryHook,
-  useGetWorkspace,
-  useGetWorkspacePages,
-} from "hooks/directoryHooks"
+import { useGetWorkspace, useGetWorkspacePages } from "hooks/directoryHooks"
 import { useGetPageHook } from "hooks/pageHooks"
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -21,7 +17,6 @@ import {
   DirectoryCreationScreen,
   DirectorySettingsScreen,
 } from "layouts/screens"
-import { isPageData } from "layouts/utils"
 
 import { ProtectedRouteWithProps } from "routing/RouteSelector"
 
@@ -61,12 +56,7 @@ export const Workspace = (): JSX.Element => {
   })
 
   const dirsData = _dirsData || []
-  // NOTE: These are obtained from JS files and are potentially unsafe
-  // Do a type-check to narrow down to only those that are permissible and ensure safety
-  const pagesData =
-    _pagesData && _pagesData.length > 0
-      ? (_pagesData as unknown[]).filter(isPageData)
-      : []
+  const pagesData = _pagesData || []
 
   useEffect(() => {
     if (contactUsPage)
