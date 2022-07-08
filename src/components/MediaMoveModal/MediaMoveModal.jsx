@@ -15,6 +15,7 @@ import { pageFileNameToTitle, getMediaDirectoryName } from "utils"
 export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
   const [moveQuery, setMoveQuery] = useState(_.omit(queryParams, "fileName"))
   const [moveTo, setMoveTo] = useState(params)
+  console.log(params, queryParams)
   const { data: dirData } = useGetDirectoryHook(moveQuery)
 
   const MenuItems = () => {
@@ -150,14 +151,14 @@ export default MediaMoveModal
 MediaMoveModal.propTypes = {
   queryParams: PropTypes.shape({
     siteName: PropTypes.string,
-    collectionName: PropTypes.string,
-    subCollectionName: PropTypes.string,
+    mediaDirectoryName: PropTypes.string,
+    mediaRoom: PropTypes.string,
     fileName: PropTypes.string,
   }).isRequired,
   params: PropTypes.shape({
     siteName: PropTypes.string,
-    collectionName: PropTypes.string,
-    subCollectionName: PropTypes.string,
+    mediaDirectoryName: PropTypes.string,
+    mediaRoom: PropTypes.string,
     fileName: PropTypes.string,
   }).isRequired,
   onProceed: PropTypes.func,
