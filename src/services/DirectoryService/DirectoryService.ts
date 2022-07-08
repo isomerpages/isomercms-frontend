@@ -2,6 +2,7 @@ import {
   DirectoryInfoReturn,
   DirectoryData,
   ResourcePageData,
+  PageData,
 } from "types/directory"
 import { FolderUrlParams } from "types/folders"
 import {
@@ -55,4 +56,9 @@ export const getCollection = ({
 export const getWorkspace = (siteName: string): Promise<DirectoryData[]> => {
   const endpoint = `/sites/${siteName}/collections`
   return apiService.get<DirectoryData[]>(endpoint).then(({ data }) => data)
+}
+
+export const getWorkspacePages = (siteName: string): Promise<PageData[]> => {
+  const endpoint = `/sites/${siteName}/pages`
+  return apiService.get<PageData[]>(endpoint).then(({ data }) => data)
 }
