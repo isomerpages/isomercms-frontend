@@ -3,3 +3,8 @@ export interface FolderUrlParams {
   collectionName: string
   subCollectionName?: string
 }
+
+export interface MediaDirectoryParams {
+  siteName: string
+  mediaDirectoryName: string
+}
