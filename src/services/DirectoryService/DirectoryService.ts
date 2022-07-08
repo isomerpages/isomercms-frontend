@@ -4,7 +4,7 @@ import {
   ResourcePageData,
   PageData,
 } from "types/directory"
-import { FolderUrlParams, MediaDirectoryParams } from "types/folders"
+import { MediaDirectoryParams, PageDirectoryParams } from "types/folders"
 import {
   ResourceCategoryRouteParams,
   ResourcesRouteParams,
@@ -45,16 +45,14 @@ export const getCollection = ({
   siteName,
   collectionName,
   subCollectionName,
-}: FolderUrlParams): Promise<DirectoryData[]> => {
-  let endpoint = `/sites/${siteName}/collections/${collectionName}`
+}: PageDirectoryParams): Promise<DirectoryData[]> => {
+  let endpoint = `/sites/${siteName}/collections`
+  if (collectionName) {
+    endpoint += `/${collectionName}`
+  }
   if (subCollectionName) {
     endpoint += `/subcollections/${subCollectionName}`
   }
-  return apiService.get<DirectoryData[]>(endpoint).then(({ data }) => data)
-}
-
-export const getWorkspace = (siteName: string): Promise<DirectoryData[]> => {
-  const endpoint = `/sites/${siteName}/collections`
   return apiService.get<DirectoryData[]>(endpoint).then(({ data }) => data)
 }
 
