@@ -5,7 +5,7 @@ import { BiBulb, BiInfoCircle } from "react-icons/bi"
 import { Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 // Import hooks
-import { useGetWorkspace, useGetWorkspacePages } from "hooks/directoryHooks"
+import { useGetFolders, useGetWorkspacePages } from "hooks/directoryHooks"
 import { useGetPageHook } from "hooks/pageHooks"
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -48,7 +48,7 @@ export const Workspace = (): JSX.Element => {
   const { path, url } = useRouteMatch()
   const history = useHistory()
 
-  const { data: _dirsData } = useGetWorkspace(siteName)
+  const { data: _dirsData } = useGetFolders({ siteName })
   const { data: _pagesData } = useGetWorkspacePages(siteName)
   const { data: contactUsPage } = useGetPageHook({
     siteName,

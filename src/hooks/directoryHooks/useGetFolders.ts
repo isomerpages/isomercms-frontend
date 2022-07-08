@@ -10,11 +10,11 @@ import { isAxiosError } from "utils/axios"
 import { useErrorToast } from "utils/toasts"
 
 import { DirectoryData } from "types/directory"
-import { FolderUrlParams } from "types/folders"
+import { PageDirectoryParams } from "types/folders"
 import { DEFAULT_RETRY_MSG } from "utils"
 
 export const useGetFolders = (
-  params: FolderUrlParams,
+  params: PageDirectoryParams,
   queryOptions?: Omit<UseQueryOptions<DirectoryData[]>, "queryFn" | "queryKey">
 ): UseQueryResult<DirectoryData[]> => {
   const { setRedirectToNotFound } = useRedirectHook()
