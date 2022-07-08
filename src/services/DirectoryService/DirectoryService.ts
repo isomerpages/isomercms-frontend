@@ -4,7 +4,7 @@ import {
   ResourcePageData,
   PageData,
 } from "types/directory"
-import { FolderUrlParams } from "types/folders"
+import { FolderUrlParams, MediaDirectoryParams } from "types/folders"
 import {
   ResourceCategoryRouteParams,
   ResourcesRouteParams,
@@ -61,4 +61,12 @@ export const getWorkspace = (siteName: string): Promise<DirectoryData[]> => {
 export const getWorkspacePages = (siteName: string): Promise<PageData[]> => {
   const endpoint = `/sites/${siteName}/pages`
   return apiService.get<PageData[]>(endpoint).then(({ data }) => data)
+}
+
+export const getMediaFolders = ({
+  siteName,
+  mediaDirectoryName,
+}: MediaDirectoryParams): Promise<DirectoryData[]> => {
+  const endpoint = `/sites/${siteName}/media/${mediaDirectoryName}`
+  return apiService.get<DirectoryData[]>(endpoint).then(({ data }) => data)
 }
