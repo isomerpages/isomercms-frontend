@@ -6,7 +6,7 @@ import _ from "lodash"
 import PropTypes from "prop-types"
 import { useState } from "react"
 
-import { useGetDirectoryHook } from "hooks/directoryHooks"
+import { useGetMediaFolders } from "hooks/directoryHooks"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -15,8 +15,7 @@ import { pageFileNameToTitle, getMediaDirectoryName } from "utils"
 export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
   const [moveQuery, setMoveQuery] = useState(_.omit(queryParams, "fileName"))
   const [moveTo, setMoveTo] = useState(params)
-  console.log(params, queryParams)
-  const { data: dirData } = useGetDirectoryHook(moveQuery)
+  const { data: dirData } = useGetMediaFolders(moveQuery)
 
   const MenuItems = () => {
     if (dirData && dirData.length)
