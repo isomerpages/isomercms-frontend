@@ -51,3 +51,8 @@ export const getCollection = ({
   }
   return apiService.get<DirectoryData[]>(endpoint).then(({ data }) => data)
 }
+
+export const getWorkspace = (siteName: string): Promise<DirectoryData[]> => {
+  const endpoint = `/sites/${siteName}/collections`
+  return apiService.get<DirectoryData[]>(endpoint).then(({ data }) => data)
+}

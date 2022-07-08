@@ -5,7 +5,7 @@ import { BiBulb, BiInfoCircle } from "react-icons/bi"
 import { Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 // Import hooks
-import { useGetDirectoryHook } from "hooks/directoryHooks"
+import { useGetDirectoryHook, useGetWorkspace } from "hooks/directoryHooks"
 import { useGetPageHook } from "hooks/pageHooks"
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -49,7 +49,7 @@ export const Workspace = (): JSX.Element => {
   const { path, url } = useRouteMatch()
   const history = useHistory()
 
-  const { data: _dirsData } = useGetDirectoryHook({ siteName })
+  const { data: _dirsData } = useGetWorkspace(siteName)
   const { data: _pagesData } = useGetDirectoryHook({
     siteName,
     isUnlinked: true,
@@ -59,12 +59,9 @@ export const Workspace = (): JSX.Element => {
     fileName: "contact-us.md",
   })
 
+  const dirsData = _dirsData || []
   // NOTE: These are obtained from JS files and are potentially unsafe
   // Do a type-check to narrow down to only those that are permissible and ensure safety
-  const dirsData =
-    _dirsData && _dirsData.length > 0
-      ? (_dirsData as unknown[]).filter(isDirectoryData)
-      : []
   const pagesData =
     _pagesData && _pagesData.length > 0
       ? (_pagesData as unknown[]).filter(isPageData)
