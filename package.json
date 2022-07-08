@@ -22,7 +22,7 @@
     "cheerio": "^1.0.0-rc.10",
     "classnames": "^2.3.1",
     "csp-parse": "0.0.2",
-    "cypress-file-upload": "^5.0.7",
+    "cypress-file-upload": "^5.0.8",
     "date-fns": "^2.26.0",
     "date-fns-tz": "^1.1.6",
     "dompurify": "^2.3.8",
