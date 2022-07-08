@@ -5,7 +5,11 @@ import { BiBulb, BiInfoCircle } from "react-icons/bi"
 import { Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 // Import hooks
-import { useGetDirectoryHook, useGetWorkspace } from "hooks/directoryHooks"
+import {
+  useGetDirectoryHook,
+  useGetWorkspace,
+  useGetWorkspacePages,
+} from "hooks/directoryHooks"
 import { useGetPageHook } from "hooks/pageHooks"
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -17,7 +21,7 @@ import {
   DirectoryCreationScreen,
   DirectorySettingsScreen,
 } from "layouts/screens"
-import { isDirectoryData, isPageData } from "layouts/utils"
+import { isPageData } from "layouts/utils"
 
 import { ProtectedRouteWithProps } from "routing/RouteSelector"
 
@@ -50,10 +54,7 @@ export const Workspace = (): JSX.Element => {
   const history = useHistory()
 
   const { data: _dirsData } = useGetWorkspace(siteName)
-  const { data: _pagesData } = useGetDirectoryHook({
-    siteName,
-    isUnlinked: true,
-  })
+  const { data: _pagesData } = useGetWorkspacePages(siteName)
   const { data: contactUsPage } = useGetPageHook({
     siteName,
     fileName: "contact-us.md",
