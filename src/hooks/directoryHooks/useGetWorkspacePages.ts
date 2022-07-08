@@ -20,6 +20,8 @@ export const useGetWorkspacePages = (
   const errorToast = useErrorToast()
 
   return useQuery<PageData[]>(
+    // NOTE: The isUnlinked is required so that the query key is unique;
+    // Otherwise, this would have the same query key as useGetWorkspace
     [DIR_CONTENT_KEY, { siteName, isUnlinked: true }],
     () => DirectoryService.getWorkspacePages(siteName),
     {
