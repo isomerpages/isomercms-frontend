@@ -144,7 +144,7 @@
     "find-webpack": "^2.2.1",
     "husky": "^6.0.0",
     "invariant": "^2.2.4",
-    "lint-staged": "^11.0.0",
+    "lint-staged": "^13.0.3",
     "msw": "^0.42.1",
     "msw-storybook-addon": "^1.6.3",
     "pathmodify": "^0.5.0",
