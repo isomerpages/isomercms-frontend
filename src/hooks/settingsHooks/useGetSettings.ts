@@ -93,8 +93,9 @@ const convertfromBe = (backendSettings: BackendSiteSettings): SiteSettings => {
       ...TOGGLED_VALUES,
       "socialMediaContent",
       "colors",
-      // This property is extra and will lead to errors in validation
+      // These properties are extra and will lead to errors in validation
       "resources_name",
+      "url",
     ])
     .pickBy()
     .value()
