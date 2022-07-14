@@ -1,6 +1,6 @@
 import { useToast } from "@chakra-ui/react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
-import { MemoryRouter, Redirect, Route } from "react-router-dom"
+import { MemoryRouter, Route } from "react-router-dom"
 
 import { LoginContext } from "contexts/LoginContext"
 
@@ -14,8 +14,7 @@ const SidebarMeta = {
   decorators: [
     (Story) => {
       return (
-        <MemoryRouter initialEntries={["/sites/:siteName/"]}>
-          <Redirect to="/sites/storybook/workspace" />
+        <MemoryRouter initialEntries={["/sites/storybook/workspace"]}>
           <Route path="/sites/:siteName/workspace">
             <Story />
           </Route>
@@ -47,31 +46,5 @@ Default.parameters = {
     handlers,
   },
 }
-Default.decorators = [
-  (Story) => {
-    const toast = useToast()
-    return (
-      <LoginContext.Provider
-        value={{
-          logout: async () => {
-            toast({
-              title: "User is logged out",
-              status: "success",
-              duration: 9000,
-              isClosable: true,
-            })
-          },
-          userId: "username",
-          email: "user@open.gov.sg",
-          contactNumber: "98765432",
-          verifyLoginAndSetLocalStorage: async () => {
-            return undefined
-          },
-        }}
-      >
-        <Story />
-      </LoginContext.Provider>
-    )
-  },
-]
+
 export default SidebarMeta
