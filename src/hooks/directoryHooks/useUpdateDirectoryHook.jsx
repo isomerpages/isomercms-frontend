@@ -31,7 +31,6 @@ export function useUpdateDirectoryHook(params, queryParams) {
         if (queryParams && queryParams.onError) queryParams.onError()
       },
       onSuccess: () => {
-        console.log(params)
         if (params.subCollectionName)
           queryClient.invalidateQueries([
             DIR_CONTENT_KEY,
