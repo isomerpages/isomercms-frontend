@@ -29,7 +29,7 @@ import {
   DeleteWarningScreen,
 } from "layouts/screens"
 
-import { ProtectedRouteWithProps } from "routing/RouteSelector"
+import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
 import { FolderUrlParams } from "types/folders"
 import { deslugifyDirectory } from "utils"

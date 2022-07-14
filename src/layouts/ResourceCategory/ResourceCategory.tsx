@@ -23,7 +23,7 @@ import {
   DeleteWarningScreen,
 } from "layouts/screens"
 
-import { ProtectedRouteWithProps } from "routing/RouteSelector"
+import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
 // Import utils
 import { ResourceCategoryRouteParams } from "types/resources"

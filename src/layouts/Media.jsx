@@ -17,7 +17,7 @@ import { MediaCreationScreen } from "layouts/screens/MediaCreationScreen"
 import { MediaSettingsScreen } from "layouts/screens/MediaSettingsScreen"
 import { MoveScreen } from "layouts/screens/MoveScreen"
 
-import { ProtectedRouteWithProps } from "routing/RouteSelector"
+import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
