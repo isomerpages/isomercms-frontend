@@ -18,17 +18,16 @@ import {
   BiWrench,
 } from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
-import type { SetRequired } from "type-fest"
 
 import { BxFileArchiveSolid } from "assets"
-import { PageData } from "types/directory"
+import { ResourcePageData } from "types/directory"
 import { prettifyDate } from "utils"
 
 interface ResourceCardProps {
   name: string
   title: string
   date: string
-  resourceType: SetRequired<PageData, "resourceType">["resourceType"]
+  resourceType: ResourcePageData["resourceType"]
 }
 
 export const ResourceCard = ({
