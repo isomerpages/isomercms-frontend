@@ -12,7 +12,12 @@ import { useErrorToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
-// get directory data
+/**
+ * @deprecated Use the newer hooks that are more focused instead of this hook
+ * @param {Object} params the route params
+ * @param {Object} queryParams the query params for the underlying useQuery hook
+ * @returns
+ */
 // eslint-disable-next-line import/prefer-default-export
 export function useGetDirectoryHook(params, queryParams) {
   const queryClient = useQueryClient()
