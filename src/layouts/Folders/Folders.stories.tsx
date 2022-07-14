@@ -1,8 +1,12 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { MemoryRouter, Route } from "react-router-dom"
 
-import { MOCK_DIR_DATA, MOCK_FOLDER_NAME } from "mocks/constants"
-import { buildDirData, buildFolderData } from "mocks/utils"
+import {
+  MOCK_DIR_DATA,
+  MOCK_FOLDER_NAME,
+  MOCK_PAGES_DATA,
+} from "mocks/constants"
+import { buildFolderData } from "mocks/utils"
 
 import { handlers } from "../../mocks/handlers"
 
@@ -36,7 +40,10 @@ const Template: ComponentStory<typeof Folders> = Folders
 export const Default = Template.bind({})
 Default.parameters = {
   msw: {
-    handlers: [...handlers, buildFolderData(MOCK_DIR_DATA)],
+    handlers: [
+      ...handlers,
+      buildFolderData([...MOCK_DIR_DATA, ...MOCK_PAGES_DATA]),
+    ],
   },
 }
 
@@ -50,7 +57,10 @@ Empty.parameters = {
 export const Loading = Template.bind({})
 Loading.parameters = {
   msw: {
-    handlers: [...handlers, buildFolderData(MOCK_DIR_DATA, "infinite")],
+    handlers: [
+      ...handlers,
+      buildFolderData([...MOCK_DIR_DATA, ...MOCK_PAGES_DATA], "infinite"),
+    ],
   },
 }
 
