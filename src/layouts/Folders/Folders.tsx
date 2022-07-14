@@ -16,8 +16,6 @@ import {
   Link as RouterLink,
 } from "react-router-dom"
 
-// Import components
-
 import { useGetFolders } from "hooks/directoryHooks"
 
 import {
@@ -31,6 +29,8 @@ import {
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
+import { getDecodedParams } from "utils/decoding"
+
 import { FolderUrlParams } from "types/folders"
 import { deslugifyDirectory } from "utils"
 
@@ -39,15 +39,9 @@ import { SiteViewLayout } from "../layouts"
 
 import { FolderBreadcrumbs, MenuDropdownButton } from "./components"
 
-interface FoldersProps {
-  match: {
-    params: FolderUrlParams
-    decodedParams: FolderUrlParams
-  }
-}
-
-export const Folders = ({ match }: FoldersProps): JSX.Element => {
-  const { params, decodedParams } = match
+export const Folders = (): JSX.Element => {
+  const { params } = useRouteMatch<FolderUrlParams>()
+  const decodedParams = getDecodedParams({ ...params })
   const { collectionName, subCollectionName } = decodedParams
   // NOTE: As isomer does not support recursively nested folders,
   // the depth of folder creation is 1 (parent -> child).
