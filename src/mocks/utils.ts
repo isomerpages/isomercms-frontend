@@ -22,7 +22,7 @@ export const buildDirData = apiDataBuilder<DirectoryData[]>(
   "*/sites/:siteName/collections"
 )
 
-export const buildFolderData = apiDataBuilder<DirectoryData[]>(
+export const buildFolderData = apiDataBuilder<(PageData | DirectoryData)[]>(
   "*/sites/:siteName/collections/:collectionName"
 )
 
