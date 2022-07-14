@@ -21,7 +21,7 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
     ? getMediaDirectoryName(params.mediaDirectoryName, { start: -1 })
     : pageFileNameToTitle(
         decodedParams[getLastItemType(decodedParams)],
-        !!params.resourceRoomName
+        !!(params.resourceRoomName && params.fileName)
       )
 
   if (fileName) {
