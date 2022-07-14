@@ -1,12 +1,7 @@
 import { rest } from "msw"
 
-// NOTE: redefining this here (and not using .env values) as storybook will override the env values
-// Only env vars prefixed with STORYBOOK_ will exist in the storybook
-// But because this is outside of storybook, will not exist there.
-const BACKEND_URL = "http://localhost:8081/v1"
-
 export const handlers = [
-  rest.get(`${BACKEND_URL}/sites/:siteName/lastUpdated`, (req, res, ctx) => {
+  rest.get(`*/sites/:siteName/lastUpdated`, (req, res, ctx) => {
     return res(
       ctx.json({
         lastUpdated: "Last updated today",
@@ -14,3 +9,23 @@ export const handlers = [
     )
   }),
 ]
+
+export const contactUsHandler = (
+  showContactUs?: boolean,
+  delay?: number | "infinite"
+): ReturnType<typeof rest["get"]> =>
+  rest.get("/sites/:siteName/pages/contact-us.md", (req, res, ctx) => {
+    return res(
+      delay ? ctx.delay(delay) : ctx.delay(0),
+      ctx.json(
+        showContactUs && {
+          name: "contact-us.md",
+          content: {
+            frontMatter: {
+              layout: "contact_us",
+            },
+          },
+        }
+      )
+    )
+  })
