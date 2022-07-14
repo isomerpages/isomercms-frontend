@@ -123,11 +123,11 @@ const createPageStyleSheet = (repoName, primaryColor, secondaryColor) => {
     0
   )
   customStyleSheet.insertRule(
-    `.sgds-icon-chevron-up:before { color: ${secondaryColor} !important;}`,
+    `.sgds-icon.bx-chevron-up:before { color: ${secondaryColor} !important;}`,
     0
   )
   customStyleSheet.insertRule(
-    `.sgds-icon-chevron-down:before { color: ${secondaryColor} !important;}`,
+    `.sgds-icon.bx-chevron-down:before { color: ${secondaryColor} !important;}`,
     0
   )
 }

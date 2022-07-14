@@ -32,7 +32,7 @@ export const WarningModal = ({
       <ModalCloseButton />
       <ModalBody>{displayText}</ModalBody>
       <ModalFooter>
-        <HStack w="100%" spacing={2} justifyContent="flex-end">
+        <HStack w="100%" spacing={4} justifyContent="flex-end">
           {children}
         </HStack>
       </ModalFooter>

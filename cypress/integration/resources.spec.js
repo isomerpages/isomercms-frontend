@@ -153,7 +153,7 @@ describe("Resources page", () => {
 
     cy.contains("a", TEST_CATEGORY_RENAMED).as("folderCard")
     cy.clickContextMenuItem("@folderCard", "Delete")
-    cy.contains(":button", "Delete").click()
+    cy.contains(":button", "delete").click()
 
     cy.contains("Successfully deleted directory").should("exist")
 

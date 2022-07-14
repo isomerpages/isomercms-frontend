@@ -132,6 +132,9 @@ const FormColourPickerBase = forwardRef<FormColourPickerProps, "input">(
               ref={ref}
             />
             <Button
+              border="1px solid"
+              borderColor="neutral.400"
+              borderLeft={0}
               borderLeftRadius={0}
               isDisabled={isDisabled}
               _hover={{

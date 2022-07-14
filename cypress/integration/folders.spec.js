@@ -220,7 +220,7 @@ describe("Folders flow", () => {
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Delete")
-      cy.contains("button", "Delete").click()
+      cy.contains("button", "delete").click()
       cy.wait(E2E_DEFAULT_WAIT_TIME)
 
       // Assert
@@ -232,7 +232,7 @@ describe("Folders flow", () => {
     it("Should be able to delete a sub-folder without page", () => {
       cy.contains("a", PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE).as("folderItem")
       cy.clickContextMenuItem("@folderItem", "Delete")
-      cy.contains("button", "Delete").click()
+      cy.contains("button", "delete").click()
 
       // Assert
       cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE).should("not.exist", {
@@ -379,7 +379,7 @@ describe("Folders flow", () => {
       // User should be able to remove the created test page card
       cy.contains("a", EDITED_TEST_PAGE_TITLE_2).as("pageItem").should("exist")
       cy.clickContextMenuItem("@pageItem", "Delete")
-      cy.contains("button", "Delete").click()
+      cy.contains("button", "delete").click()
 
       cy.contains("Successfully deleted page", {
         timeout: E2E_EXTENDED_TIMEOUT,
@@ -552,7 +552,7 @@ describe("Folders flow", () => {
       // User should be able to remove the created test page card
       cy.contains("a", EDITED_TEST_PAGE_TITLE_2).as("pageItem")
       cy.clickContextMenuItem("@pageItem", "Delete")
-      cy.contains("button", "Delete").click()
+      cy.contains("button", "delete").click()
       cy.contains("Successfully deleted page", {
         timeout: E2E_EXTENDED_TIMEOUT,
       }).should("exist")

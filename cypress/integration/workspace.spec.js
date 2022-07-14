@@ -196,7 +196,7 @@ describe("Workspace Pages flow", () => {
       // User should be able to remove the created test page card
       cy.contains("a", EDITED_TEST_PAGE_TITLE_2).as("pageCard").should("exist")
       cy.clickContextMenuItem("@pageCard", "Delete")
-      cy.contains("button", "Delete").should("exist").click()
+      cy.contains("button", "delete").should("exist").click()
 
       // Assert
       cy.contains(EDITED_TEST_PAGE_TITLE_2, {
@@ -334,10 +334,10 @@ describe("Workspace Pages flow", () => {
 
       // Act
       cy.clickContextMenuItem("@emptyFolderItem", "Delete")
-      cy.contains("button", "Delete").click()
+      cy.contains("button", "delete").click()
 
       cy.clickContextMenuItem("@folderItem", "Delete")
-      cy.contains("button", "Delete").click()
+      cy.contains("button", "delete").click()
 
       // Assert
       cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, {

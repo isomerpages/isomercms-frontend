@@ -152,7 +152,7 @@ export const DirectoryCreationModal = ({
                 </div>
               </div>
             </div>
-            <Footer>
+            <Footer position="fixed">
               <LoadingButton onClick={onClose} variant="outline">
                 Cancel
               </LoadingButton>
