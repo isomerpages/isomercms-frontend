@@ -18,7 +18,7 @@ import {
   DirectorySettingsScreen,
 } from "layouts/screens"
 
-import { ProtectedRouteWithProps } from "routing/RouteSelector"
+import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
 import {
   Section,
