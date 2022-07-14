@@ -278,8 +278,8 @@ export function titleToPageFileName(title) {
   return `${title}.md`
 }
 
-export function pageFileNameToTitle(pageFileName, isResource = false) {
-  if (isResource) return retrieveResourceFileMetadata(pageFileName).title
+export function pageFileNameToTitle(pageFileName, isResourcePage = false) {
+  if (isResourcePage) return retrieveResourceFileMetadata(pageFileName).title
   return `${pageFileName.split(".md")[0]}`
 }
 
@@ -545,6 +545,7 @@ export const isLastItem = (type, params) => {
 export const getLastItemType = (params) => {
   const types = Object.keys(params)
   const lastItemType = types.filter((type) => isLastItem(type, params))[0]
+  console.log(lastItemType)
   return lastItemType
 }
 
