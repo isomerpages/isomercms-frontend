@@ -1,14 +1,11 @@
 import ReorderingModal from "components/folders/ReorderingModal"
 import PropTypes from "prop-types"
 
-import {
-  useGetDirectoryHook,
-  useReorderDirectoryHook,
-} from "hooks/directoryHooks"
+import { useGetFolders, useReorderDirectoryHook } from "hooks/directoryHooks"
 
 export const ReorderingScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match
-  const { data: dirData } = useGetDirectoryHook(params, { initialData: [] })
+  const { data: dirData } = useGetFolders(params, { initialData: [] })
   const { mutateAsync: reorderHandler } = useReorderDirectoryHook(params, {
     onSettled: onClose,
   })
