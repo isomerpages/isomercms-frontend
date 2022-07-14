@@ -1,6 +1,4 @@
 import { Banner } from "@opengovsg/design-system-react"
-import * as Sentry from "@sentry/react"
-import FallbackComponent from "components/FallbackComponent"
 import VerifyUserDetailsModal from "components/VerifyUserDetailsModal"
 import { ReactQueryDevtools } from "react-query/devtools"
 import { Switch } from "react-router-dom"
@@ -22,20 +20,11 @@ import Sites from "layouts/Sites"
 import { Workspace } from "layouts/Workspace"
 
 // ProtectedRoute component
-import ProtectedRoute from "routing/ProtectedRoute"
+import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 import RedirectIfLoggedInRoute from "routing/RedirectIfLoggedInRoute"
 
 const { REACT_APP_BANNER_VARIANT: BANNER_VARIANT } = process.env
 const { REACT_APP_BANNER_MESSAGE: BANNER_MESSAGE } = process.env
-
-export const ProtectedRouteWithProps = (props) => {
-  return (
-    <Sentry.ErrorBoundary fallback={FallbackComponent}>
-      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-      <ProtectedRoute {...props} />
-    </Sentry.ErrorBoundary>
-  )
-}
 
 export const RouteSelector = () => (
   <>
