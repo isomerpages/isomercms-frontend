@@ -35,3 +35,5 @@ export const MOCK_USER = {
   email: "mockUser@open.gov.sg",
   contactNumber: "98765432",
 }
+
+export const MOCK_FOLDER_NAME = "mock-folder"
