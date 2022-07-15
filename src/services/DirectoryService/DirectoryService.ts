@@ -68,3 +68,13 @@ export const getMediaFolders = ({
   const endpoint = `/sites/${siteName}/media/${mediaDirectoryName}`
   return apiService.get<DirectoryData[]>(endpoint).then(({ data }) => data)
 }
+
+export const getResourceRoomName = async (
+  siteName: string
+): Promise<string> => {
+  const resp = await apiService.get<{ resourceRoomName: string }>(
+    `/sites/${siteName}/resourceRoom`
+  )
+  const { resourceRoomName } = resp.data
+  return resourceRoomName
+}
