@@ -1,8 +1,6 @@
-import { useToast } from "@chakra-ui/react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { rest } from "msw"
 import { MemoryRouter, Route } from "react-router-dom"
-
-import { LoginContext } from "contexts/LoginContext"
 
 import { handlers } from "../../mocks/handlers"
 
@@ -44,6 +42,17 @@ export const Default = Template.bind({})
 Default.parameters = {
   msw: {
     handlers,
+  },
+}
+
+export const Error = Template.bind({})
+Error.parameters = {
+  msw: {
+    handlers: [
+      rest.get(`*/sites/:siteName/lastUpdated`, (req, res, ctx) => {
+        return res.networkError("Failed to retrieve user")
+      }),
+    ],
   },
 }
 
