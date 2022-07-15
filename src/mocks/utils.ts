@@ -2,8 +2,10 @@ import { DefaultBodyType, rest } from "msw"
 
 import { DirectoryData, PageData } from "types/directory"
 
-const apiDataBuilder = (endpoint: string) => (
-  mockData: DefaultBodyType,
+const apiDataBuilder = <T extends DefaultBodyType = DefaultBodyType>(
+  endpoint: string
+) => (
+  mockData: T,
   delay?: number | "infinite"
 ): ReturnType<typeof rest["get"]> => {
   return rest.get(endpoint, (req, res, ctx) => {
@@ -11,19 +13,10 @@ const apiDataBuilder = (endpoint: string) => (
   })
 }
 
-export const buildPagesData = (
-  mockPagesData: PageData[],
-  delay?: number | "infinite"
-): ReturnType<typeof rest["get"]> => {
-  return apiDataBuilder("*/sites/:siteName/pages")(mockPagesData, delay)
-}
+export const buildPagesData = apiDataBuilder<PageData[]>(
+  "*/sites/:siteName/pages"
+)
 
-export const buildDirData = (
-  mockDirData: DirectoryData[],
-  delay?: number | "infinite"
-): ReturnType<typeof rest["get"]> => {
-  return apiDataBuilder("*/sites/:siteName/collections")(mockDirData, delay)
-  return rest.get(`*/sites/:siteName/collections`, (req, res, ctx) => {
-    return res(delay ? ctx.delay(delay) : ctx.delay(0), ctx.json(mockDirData))
-  })
-}
+export const buildDirData = apiDataBuilder<DirectoryData[]>(
+  "*/sites/:siteName/collections"
+)
