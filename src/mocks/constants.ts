@@ -53,3 +53,5 @@ export const MOCK_USER = {
 export const MOCK_FOLDER_NAME = "mock-folder"
 
 export const MOCK_SUBFOLDER_NAME = "mock-subfolder"
+
+export const MOCK_RESOURCE_ROOM_NAME = "mock-resource-room"
