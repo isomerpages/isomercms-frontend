@@ -141,7 +141,7 @@ export const ResourceRoom = (): JSX.Element => {
 
   return (
     <Route>
-      {shouldRedirect && (
+      {!isResourceRoomNameLoading && shouldRedirect && (
         <Redirect
           to={`/sites/${siteName}/resourceRoom/${
             queriedResourceRoomName || ""
