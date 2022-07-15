@@ -22,6 +22,14 @@ export const buildDirData = apiDataBuilder<DirectoryData[]>(
   "*/sites/:siteName/collections"
 )
 
+export const buildResourceRoomName = apiDataBuilder<{
+  resourceRoomName: string
+}>("*/sites/:siteName/resourceRoom")
+
+export const buildResourceRoomData = apiDataBuilder<DirectoryData[]>(
+  "*/sites/:siteName/resourceRoom/:resourceRoomName"
+)
+
 export const buildFolderData = apiDataBuilder<(PageData | DirectoryData)[]>(
   "*/sites/:siteName/collections/:collectionName"
 )
