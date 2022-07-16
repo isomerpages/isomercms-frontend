@@ -61,7 +61,12 @@ export const ResourceCategory = (): JSX.Element => {
               Organise your workspace by moving pages into folders
             </SectionCaption>
           </Box>
-          <Skeleton isLoaded={!isLoading} w="100%">
+          <Skeleton
+            isLoaded={!isLoading}
+            w="100%"
+            h={isLoading ? "10rem" : "fit-content"}
+          >
+            {!pagesData || (!pagesData.length && <Text>No content here</Text>)}
             <SimpleGrid columns={3} spacing="1.5rem">
               {/* NOTE: need to use multiline cards */}
               {(pagesData || []).map(({ name, title, date, resourceType }) => (
