@@ -1,6 +1,7 @@
 import { DefaultBodyType, rest } from "msw"
 
 import { DirectoryData, PageData, ResourcePageData } from "types/directory"
+import { BackendSiteSettings } from "types/settings"
 import { LoggedInUser } from "types/user"
 
 const apiDataBuilder = <T extends DefaultBodyType = DefaultBodyType>(
@@ -28,6 +29,10 @@ export const buildResourceRoomName = apiDataBuilder<{
 
 export const buildResourceRoomData = apiDataBuilder<DirectoryData[]>(
   "*/sites/:siteName/resourceRoom/:resourceRoomName"
+)
+
+export const buildSettingsData = apiDataBuilder<BackendSiteSettings>(
+  "*/sites/:siteName/settings"
 )
 
 export const buildFolderData = apiDataBuilder<(PageData | DirectoryData)[]>(
