@@ -33,3 +33,7 @@ export interface PageData {
 export type ResourcePageData = Required<Omit<PageData, "type">> & {
   resourceType: "file" | "post"
 }
+
+export interface ResourceRoomNameUpdateProps {
+  newDirectoryName: string
+}
