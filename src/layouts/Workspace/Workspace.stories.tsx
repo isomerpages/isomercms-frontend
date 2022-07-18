@@ -20,6 +20,8 @@ const WorkspaceMeta = {
   title: "Pages/Workspace",
   component: Workspace,
   parameters: {
+    // Set delay so mock API requests will get resolved and the UI will render properly
+    chromatic: { delay: 300 },
     msw: {
       handlers,
     },
