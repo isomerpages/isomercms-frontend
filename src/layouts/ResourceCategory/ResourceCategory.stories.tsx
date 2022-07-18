@@ -16,6 +16,8 @@ const ResourceCategoryMeta = {
   title: "Pages/ResourceCategory",
   component: ResourceCategory,
   parameters: {
+    // Set delay so mock API requests will get resolved and the UI will render properly
+    chromatic: { delay: 300 },
     msw: {
       handlers: {
         resourceCategoryData: buildResourceCategoryData(

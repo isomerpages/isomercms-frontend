@@ -12,6 +12,8 @@ const ResourceRoomMeta = {
   title: "Pages/ResourceRoom",
   component: ResourceRoom,
   parameters: {
+    // Set delay so mock API requests will get resolved and the UI will render properly
+    chromatic: { delay: 300 },
     msw: {
       handlers: {
         resourceRoomName: buildResourceRoomName({
