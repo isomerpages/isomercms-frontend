@@ -1,11 +1,27 @@
 import { ThemeProvider, useToast } from "@opengovsg/design-system-react"
 import { initialize, mswDecorator } from "msw-storybook-addon"
 import { QueryClient, QueryClientProvider } from "react-query"
-import { LoginContext } from "contexts/LoginContext"
+import { LoginProvider } from "contexts/LoginContext"
 import theme from "theme"
-import { MOCK_USER } from "mocks/constants"
+import { MINIMAL_VIEWPORTS } from "@storybook/addon-viewport"
+
+const isomerViewports = {
+  GSIB: {
+    name: "GSIB Laptop",
+    styles: {
+      width: "1920px",
+      height: "1080px",
+    },
+  },
+}
 
 export const parameters = {
+  viewport: {
+    viewports: {
+      ...MINIMAL_VIEWPORTS,
+      ...isomerViewports,
+    },
+  },
   actions: { argTypesRegex: "^on[A-Z].*" },
   docs: {
     inlineStories: true,
@@ -24,24 +40,9 @@ initialize()
 const withLoginContext = (Story) => {
   const toast = useToast()
   return (
-    <LoginContext.Provider
-      value={{
-        logout: async () => {
-          toast({
-            title: "User is logged out",
-            status: "success",
-            duration: 9000,
-            isClosable: true,
-          })
-        },
-        ...MOCK_USER,
-        verifyLoginAndSetLocalStorage: async () => {
-          return undefined
-        },
-      }}
-    >
+    <LoginProvider>
       <Story />
-    </LoginContext.Provider>
+    </LoginProvider>
   )
 }
 
