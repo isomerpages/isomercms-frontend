@@ -64,7 +64,11 @@ export const Settings = (): JSX.Element => {
         </Box>
       </Section>
       {/* General fields */}
-      <Skeleton isLoaded={!isGetSettingsLoading} w="100%">
+      <Skeleton
+        isLoaded={!isGetSettingsLoading}
+        w="100%"
+        h={isGetSettingsLoading ? "full" : "fit-content"}
+      >
         {settingsData && (
           <SettingsForm settings={settingsData} isError={isGetSettingsError} />
         )}
