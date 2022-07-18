@@ -1,13 +1,11 @@
 import { rest } from "msw"
 
+import { MOCK_USER } from "./constants"
+import { buildLastUpdated, buildLoginData } from "./utils"
+
 export const handlers = [
-  rest.get(`*/sites/:siteName/lastUpdated`, (req, res, ctx) => {
-    return res(
-      ctx.json({
-        lastUpdated: "Last updated today",
-      })
-    )
-  }),
+  buildLastUpdated({ lastUpdated: "Last updated today" }),
+  buildLoginData(MOCK_USER),
 ]
 
 export const contactUsHandler = (
