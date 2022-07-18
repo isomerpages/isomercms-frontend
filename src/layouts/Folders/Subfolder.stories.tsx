@@ -17,6 +17,8 @@ const FoldersMeta = {
   title: "Pages/Folders",
   component: Folders,
   parameters: {
+    // Set delay so mock API requests will get resolved and the UI will render properly
+    chromatic: { delay: 300 },
     msw: {
       handlers,
     },
