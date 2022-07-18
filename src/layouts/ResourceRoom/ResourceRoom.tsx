@@ -116,7 +116,10 @@ const EmptyResourceRoom = () => {
           >
             <Input
               maxW="50%"
-              {...register("newDirectoryName", { required: true })}
+              {...register("newDirectoryName", {
+                required:
+                  "Please ensure that you have entered a resource room name!",
+              })}
             />
             <FormErrorMessage>
               {errors.newDirectoryName?.message}
@@ -213,6 +216,7 @@ const ResourceRoomContent = ({
     register,
     handleSubmit,
     reset,
+    formState: { errors },
   } = useForm<ResourceRoomNameUpdateProps>({
     mode: "onTouched",
   })
@@ -314,12 +318,21 @@ const ResourceRoomContent = ({
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <FormControl isRequired>
+              <FormControl
+                isRequired
+                isInvalid={!!errors.newDirectoryName?.message}
+              >
                 <FormLabel>Resource room title</FormLabel>
                 <Input
                   placeholder="New resource room name"
-                  {...register("newDirectoryName", { required: true })}
+                  {...register("newDirectoryName", {
+                    required:
+                      "Please ensure that you have entered a resource room name!",
+                  })}
                 />
+                <FormErrorMessage>
+                  {errors.newDirectoryName?.message}
+                </FormErrorMessage>
               </FormControl>
             </ModalBody>
             <ModalFooter>
