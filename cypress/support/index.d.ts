@@ -3,9 +3,6 @@
 declare namespace Cypress {
   interface Chainable {
     clickContextMenuItem(alias: string, menuItemText: string): Chainable<void>
-    clickAndWait(
-      options?: Partial<ClickOptions>
-    ): Chainable<JQuery<HTMLElement>>
     verifyBreadcrumb(alias: string, breadcrumbItems: string[]): Chainable<void>
     getFirstSiblingAs(as: string): Chainable<JQuery<HTMLElement>>
     uploadMedia(
