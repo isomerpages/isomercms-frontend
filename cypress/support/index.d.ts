@@ -15,7 +15,9 @@ declare namespace Cypress {
       mediaPath: string,
       disableAction?: boolean
     ): Chainable<void>
-    moveMedia(mediaTitle: string, newMediaFolder: string)
-    deleteMedia(mediaTitle: string, disableAction?: boolean)
+    moveMedia(mediaTitle: string, newMediaFolder: string): Chainable<void>
+    deleteMedia(mediaTitle: string, disableAction?: boolean): Chainable<void>
+    saveSettings(): Chainable<void>
+    visitLoadSettings(siteName: string, sitePath: string): Chainable<void>
   }
 }

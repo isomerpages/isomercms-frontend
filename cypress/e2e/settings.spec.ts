@@ -46,21 +46,8 @@ describe("Settings page", () => {
   const SAMPLE_PAGE = "editPage/faq.md"
   const HOMEPAGE = "homepage"
 
-  // Reusable save command
-  Cypress.Commands.add("saveSettings", () => {
-    cy.intercept("POST", "/v2/sites/e2e-test-repo/settings").as("awaitSave")
-    cy.contains("button", "Save").click()
-    cy.wait("@awaitSave")
-  })
-
-  // Reusable visit command
-  Cypress.Commands.add("visitLoadSettings", (sitePath) => {
-    cy.intercept("GET", `/v2/sites/${TEST_REPO_NAME}/settings`).as(
-      "awaitSettings"
-    )
-    cy.visit(sitePath)
-    cy.wait("@awaitSettings")
-  })
+  const visitLoadSettings = (sitePath: string) =>
+    cy.visitLoadSettings(TEST_REPO_NAME, sitePath)
 
   Cypress.Cookies.defaults({
     preserve: COOKIE_NAME,
@@ -72,7 +59,7 @@ describe("Settings page", () => {
     cy.contains(TEST_REPO_NAME).click()
 
     window.localStorage.setItem("userId", "test")
-    cy.visitLoadSettings(`/sites/${TEST_REPO_NAME}/settings`)
+    visitLoadSettings(`/sites/${TEST_REPO_NAME}/settings`)
 
     // Reset page input field states
     cy.get("#title").clear().type(BASE_TITLE)
@@ -131,7 +118,7 @@ describe("Settings page", () => {
 
   beforeEach(() => {
     window.localStorage.setItem("userId", "test")
-    cy.visitLoadSettings(`/sites/${TEST_REPO_NAME}/settings`)
+    visitLoadSettings(`/sites/${TEST_REPO_NAME}/settings`)
     // Double check that settings are loaded before running tests cos sometimes the tests run too quickly
     cy.get("#title").should((elem) => {
       expect(elem.val()).to.have.length.greaterThan(0)
@@ -220,7 +207,7 @@ describe("Settings page", () => {
   })
 
   // [r, g, b] -> #RRGGBB
-  function rgbToHex(r, g, b) {
+  const rgbToHex = ([r, g, b, ...rest]: number[]) => {
     // eslint-disable-next-line no-bitwise
     return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
   }
@@ -257,9 +244,9 @@ describe("Settings page", () => {
 
     // Check if selected colors are reflected upon save
     const rgbPrimary = `rgb(${TEST_PRIMARY_COLOR.join(", ")})`
-    const hexPrimary = rgbToHex(...TEST_PRIMARY_COLOR)
+    const hexPrimary = rgbToHex(TEST_PRIMARY_COLOR)
     const rgbSecondary = `rgb(${TEST_SECONDARY_COLOR.join(", ")})`
-    const hexSecondary = rgbToHex(...TEST_SECONDARY_COLOR)
+    const hexSecondary = rgbToHex(TEST_SECONDARY_COLOR)
     cy.contains("label", "Primary")
       .parent()
       .find("input")
@@ -280,13 +267,13 @@ describe("Settings page", () => {
       .and("eq", rgbSecondary)
 
     // Check if page previews reflect color change
-    cy.visitLoadSettings(`/sites/${TEST_REPO_NAME}/${SAMPLE_PAGE}`)
+    visitLoadSettings(`/sites/${TEST_REPO_NAME}/${SAMPLE_PAGE}`)
     cy.get("section.bp-section-pagetitle") // Page title banner
       .should("have.css", "background-color", rgbPrimary)
 
     // Check if home page reflects color change
     cy.visit(`/sites/${TEST_REPO_NAME}/workspace`) // Somehow colors won't load on homepage if visiting directly
-    cy.visitLoadSettings(`/sites/${TEST_REPO_NAME}/${HOMEPAGE}`)
+    visitLoadSettings(`/sites/${TEST_REPO_NAME}/${HOMEPAGE}`)
     cy.get("#notification-bar")
       .first() // Notification bar
       .should("have.css", "background-color", rgbSecondary)
