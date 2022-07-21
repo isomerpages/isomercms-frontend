@@ -20,7 +20,7 @@ describe("Files", () => {
 
   const MISSING_EXTENSION = "singapore"
   const INVALID_CHARACTER = "%%%%.pdf"
-  const ACTION_DISABLED = "true"
+  const ACTION_DISABLED = true
 
   describe("Create file, delete file, edit file settings in Files", () => {
     beforeEach(() => {
