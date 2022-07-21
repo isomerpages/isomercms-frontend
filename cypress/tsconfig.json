@@ -1,9 +1,16 @@
 {
   "compilerOptions": {
+    "sourceMap": true,
+    "outDir": "./dist/",
+    "noImplicitAny": true,
+    "module": "ES2015",
+    "jsx": "react",
     "esModuleInterop": true,
+    "moduleResolution": "node",
     "target": "es5",
     "lib": ["es5", "dom"],
-    "types": ["cypress", "node"]
+    "types": ["cypress", "node"],
+    "resolveJsonModule": true
   },
   "include": ["**/*.ts"]
 }
