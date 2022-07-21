@@ -1,5 +1,5 @@
 import "cypress-file-upload"
-import { slugifyCategory, generateResourceFileName } from "../../src/utils" // 30 seconds
+import { slugifyCategory, generateResourceFileName } from "../../src/utils"
 import {
   E2E_EXTENDED_TIMEOUT,
   E2E_DEFAULT_WAIT_TIME,
