@@ -337,7 +337,7 @@ const ResourceRoomContent = ({
             </ModalBody>
             <ModalFooter>
               <HStack w="100%" spacing={4} justifyContent="flex-end">
-                <Button variant="outline" onClick={onClose}>
+                <Button variant="clear" onClick={onClose}>
                   Cancel
                 </Button>
                 <Button
