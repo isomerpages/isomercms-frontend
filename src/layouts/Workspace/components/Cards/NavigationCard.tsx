@@ -18,7 +18,7 @@ export const NavigationCard = ({
         <Card variant="single">
           <CardBody>
             <Icon as={BiWorld} fontSize="1.5rem" fill="secondary.400" />
-            <Text textStyle="subhead-1" color="text.label">
+            <Text textStyle="subhead-1" color="text.label" noOfLines={1}>
               Navigation Bar
             </Text>
           </CardBody>
