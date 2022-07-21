@@ -21,7 +21,7 @@ const WorkspaceMeta = {
   component: Workspace,
   parameters: {
     // Set delay so mock API requests will get resolved and the UI will render properly
-    chromatic: { delay: 300 },
+    chromatic: { delay: 500 },
     msw: {
       handlers,
     },
