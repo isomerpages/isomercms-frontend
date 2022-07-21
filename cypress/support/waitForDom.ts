@@ -7,7 +7,21 @@ const isJQuery = (u) =>
   typeof u.length === "number" &&
   typeof u.get === "function"
 
-export default function waitForDom(subject = null, options = {}) {
+export interface WaitForDomOptions {
+  /// Number of milliseconds to wait between each successive check of the DOM.
+  delay: number
+  /// Total number of milliseconds that DOM must be stable before succeeding and moving on.
+  /// Should be an integer multiple of `delay` (or it will be rounded up to the next multiple).
+  period: number
+  /// Number of milliseconds to wait on stable DOM before giving up and moving on.
+  timeout: number
+}
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const waitForDom = (
+  subject = null,
+  options: Partial<WaitForDomOptions> = {}
+) => {
   const {
     delay = 100,
     period = 500,
@@ -85,3 +99,5 @@ export default function waitForDom(subject = null, options = {}) {
     })
   })
 }
+
+export default waitForDom

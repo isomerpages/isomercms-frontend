@@ -2,9 +2,7 @@ import waitForDom from "./waitForDom"
 
 Cypress.Commands.add(
   "clickAndWait",
-  {
-    prevSubject: true,
-  },
+  { prevSubject: "element" },
   (subject, options) => {
     // the previous subject is automatically received
     // and the commands arguments are shifted
