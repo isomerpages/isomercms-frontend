@@ -100,7 +100,7 @@ describe("Move flow", () => {
         "Workspace",
         TITLE_WORKSPACE_TO_FOLDER,
       ])
-      cy.get("u").last().getFirstSiblingAs("moveFolderUpdatedBreadcrumb", [])
+      cy.get("u").last().getFirstSiblingAs("moveFolderUpdatedBreadcrumb")
       cy.verifyBreadcrumb("@moveFolderUpdatedBreadcrumb", [
         "Workspace",
         TEST_REPO_FOLDER_NAME,
@@ -128,7 +128,7 @@ describe("Move flow", () => {
 
       cy.contains(`Move Here`)
 
-      cy.contains("button", "Move Here").clickAndWait()
+      cy.contains("button", "Move Here").click()
 
       cy.contains("File is already in this folder", {
         timeout: E2E_EXTENDED_TIMEOUT,
@@ -151,7 +151,7 @@ describe("Move flow", () => {
       // Navigate to Move folder
       cy.get("button[id^=moveModal-forwardButton-]")
         .eq(1)
-        .clickAndWait({ force: true })
+        .click({ force: true })
 
       // Assert
       cy.get("u").first().getFirstSiblingAs("moveFolderCurrentBreadcrumb")
@@ -166,7 +166,7 @@ describe("Move flow", () => {
         TITLE_WORKSPACE_TO_FOLDER,
       ])
 
-      cy.contains("button", "Move Here").clickAndWait()
+      cy.contains("button", "Move Here").click()
 
       cy.contains("Successfully moved file", {
         timeout: E2E_EXTENDED_TIMEOUT,
@@ -208,10 +208,10 @@ describe("Move flow", () => {
       // Navigate to Move folder
       cy.get("button[id^=moveModal-forwardButton-]")
         .eq(1)
-        .clickAndWait({ force: true })
+        .click({ force: true })
 
       // Navigate to Move subfolder
-      cy.get("button[id^=moveModal-forwardButton-]").clickAndWait({
+      cy.get("button[id^=moveModal-forwardButton-]").click({
         force: true,
       })
 
@@ -229,7 +229,7 @@ describe("Move flow", () => {
         TITLE_WORKSPACE_TO_SUBFOLDER,
       ])
 
-      cy.contains("button", "Move Here").clickAndWait()
+      cy.contains("button", "Move Here").click()
 
       cy.contains("Successfully moved file", {
         timeout: E2E_EXTENDED_TIMEOUT,
@@ -363,7 +363,7 @@ describe("Move flow", () => {
         TITLE_FOLDER_TO_WORKSPACE,
       ])
 
-      cy.get("#moveModal-backButton").clickAndWait({ force: true })
+      cy.get("#moveModal-backButton").click({ force: true })
 
       // Assert
       cy.get("u").last().getFirstSiblingAs("movedLocationBreadcrumb")
@@ -372,7 +372,7 @@ describe("Move flow", () => {
         TITLE_FOLDER_TO_WORKSPACE,
       ])
 
-      cy.contains("button", "Move Here").clickAndWait()
+      cy.contains("button", "Move Here").click()
 
       cy.contains("Successfully moved file", {
         timeout: E2E_EXTENDED_TIMEOUT,
@@ -404,7 +404,7 @@ describe("Move flow", () => {
         TITLE_FOLDER_TO_SUBFOLDER,
       ])
 
-      cy.get("button[id^=moveModal-forwardButton-]").clickAndWait({
+      cy.get("button[id^=moveModal-forwardButton-]").click({
         force: true,
       })
 
@@ -417,7 +417,7 @@ describe("Move flow", () => {
         TITLE_FOLDER_TO_SUBFOLDER,
       ])
 
-      cy.contains("button", "Move Here").clickAndWait()
+      cy.contains("button", "Move Here").click()
 
       cy.contains("Successfully moved file", {
         timeout: E2E_EXTENDED_TIMEOUT,
@@ -512,7 +512,7 @@ describe("Move flow", () => {
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Move to")
 
-      cy.contains("button", "Move Here").clickAndWait()
+      cy.contains("button", "Move Here").click()
 
       cy.contains("File is already in this folder", {
         timeout: E2E_EXTENDED_TIMEOUT,
@@ -543,7 +543,7 @@ describe("Move flow", () => {
         TITLE_SUBFOLDER_TO_WORKSPACE,
       ])
 
-      cy.get("#moveModal-backButton").clickAndWait({ force: true })
+      cy.get("#moveModal-backButton").click({ force: true })
 
       // Assert
       cy.get("u").last().getFirstSiblingAs("folderBreadcrumb")
@@ -553,7 +553,7 @@ describe("Move flow", () => {
         TITLE_SUBFOLDER_TO_WORKSPACE,
       ])
 
-      cy.get("#moveModal-backButton").clickAndWait({ force: true })
+      cy.get("#moveModal-backButton").click({ force: true })
 
       // Assert
       cy.get("u").last().getFirstSiblingAs("workspaceBreadcrumb")
@@ -562,7 +562,7 @@ describe("Move flow", () => {
         TITLE_SUBFOLDER_TO_WORKSPACE,
       ])
 
-      cy.contains("button", "Move Here").clickAndWait()
+      cy.contains("button", "Move Here").click()
 
       cy.contains("Successfully moved file", {
         timeout: E2E_EXTENDED_TIMEOUT,
@@ -605,7 +605,7 @@ describe("Move flow", () => {
         TITLE_SUBFOLDER_TO_FOLDER,
       ])
 
-      cy.contains("button", "Move Here").clickAndWait()
+      cy.contains("button", "Move Here").click()
 
       cy.contains("Successfully moved file", {
         timeout: E2E_EXTENDED_TIMEOUT,
@@ -729,7 +729,7 @@ describe("Move flow", () => {
         TITLE_RESOURCE_PAGE,
       ])
 
-      cy.contains("button", "Move Here").clickAndWait()
+      cy.contains("button", "Move Here").click()
 
       cy.contains("Successfully moved file", {
         timeout: E2E_EXTENDED_TIMEOUT,
