@@ -1,9 +1,5 @@
 import "cypress-pipe"
-/** Uses the immediate sibling of the context menu to retrieve the requested dropdown menu item \
- * and fire a click event on it
- * @param {string} alias **NOTE** alias MUST be the full fledged (@...) alias of the IMMEDIATE PRIOR sibling
- * @param {string} menuItemText The text within the menu item to select
- */
+
 Cypress.Commands.add("clickContextMenuItem", (alias, menuItemText) => {
   // NOTE: Context menu is absolutely positioned so we get the sibling first using the alias
   cy.get(alias).next().click()
