@@ -1,31 +1,30 @@
 import {
   Box,
-  Divider,
+  Center,
   FormControl,
+  FormErrorMessage,
+  Icon,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   SimpleGrid,
   Skeleton,
   HStack,
   Text,
   useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
+  VStack,
 } from "@chakra-ui/react"
-import {
-  Button,
-  FormLabel,
-  FormErrorMessage,
-  Input,
-  ModalCloseButton,
-} from "@opengovsg/design-system-react"
+import { Button, FormLabel, Input } from "@opengovsg/design-system-react"
 import { ContextMenu } from "components/ContextMenu"
+import { LoadingButton } from "components/LoadingButton"
 import _ from "lodash"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
-import { BiBulb, BiInfoCircle, BiWrench } from "react-icons/bi"
+import { BiPlus, BiWrench, BiBulb } from "react-icons/bi"
 import {
   Link as RouterLink,
   Redirect,
@@ -44,10 +43,10 @@ import {
 } from "hooks/directoryHooks"
 
 import {
-  Section,
-  SectionHeader,
-  SectionCaption,
   CreateButton,
+  Section,
+  SectionCaption,
+  SectionHeader,
 } from "layouts/components"
 import {
   DirectoryCreationScreen,
@@ -59,6 +58,7 @@ import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
 import { useErrorToast, useSuccessToast } from "utils/toasts"
 
+import { EmptyBoxImage } from "assets"
 import { DirectoryData, DirectoryInfoProps } from "types/directory"
 import { ResourceRoomRouteParams } from "types/resources"
 import { DEFAULT_RETRY_MSG, deslugifyDirectory } from "utils"
@@ -71,21 +71,19 @@ import { CategoryCard, ResourceBreadcrumb } from "./components"
 const EmptyResourceRoom = () => {
   const params = useParams<ResourceRoomRouteParams>()
   const { siteName } = params
-  const { mutateAsync: saveHandler, isLoading, isError } = useCreateDirectory(
-    siteName
-  )
+  const { mutateAsync: saveHandler, isError } = useCreateDirectory(siteName)
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      newDirectoryName: "",
-    },
+  } = useForm<{
+    newDirectoryName: string
+  }>({
+    mode: "onTouched",
   })
 
-  const onSubmit = (data: DirectoryInfoProps["data"]) => {
-    saveHandler({ data })
+  const onSubmit = async (data: DirectoryInfoProps["data"]) => {
+    await saveHandler({ data })
   }
 
   const errorToast = useErrorToast()
@@ -100,44 +98,72 @@ const EmptyResourceRoom = () => {
     }
   }, [errorToast, isError])
 
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
   return (
     <SiteViewLayout>
-      <Box as="form" w="full">
+      <Box as="form" w="full" mt={100}>
         {/* Resource Room does not exist */}
-        <Section align="flex-start">
-          <SectionHeader label="Create Resource Room" />
-          <SectionCaption label="NOTE: " icon={BiInfoCircle}>
-            You must create a Resource Room before you can create Resources.
-          </SectionCaption>
-          {/* Info segment */}
-          <FormControl
-            isRequired
-            isInvalid={!!errors.newDirectoryName?.message}
-          >
-            <Input
-              maxW="50%"
-              // eslint-disable-next-line react/jsx-props-no-spreading
-              {...register("newDirectoryName", {
-                required:
-                  "Please ensure that you have entered a resource room name!",
-              })}
-            />
-            <FormErrorMessage>
-              {errors.newDirectoryName?.message}
-            </FormErrorMessage>
-          </FormControl>
-          {/* Segment divider  */}
-          <Divider color="border.divider.alt" />
+        <VStack spacing={5}>
+          <EmptyBoxImage />
+          <VStack spacing={0}>
+            <Center textStyle="subhead-1">
+              There&apos;s nothing here yet.
+            </Center>
+            <Center textStyle="body-2">
+              Create a resource room to get started.
+            </Center>
+          </VStack>
           <Button
-            type="submit"
-            isLoading={isLoading}
-            onClick={handleSubmit(onSubmit)}
-            isDisabled={!_.isEmpty(errors)}
+            variant="solid"
+            onClick={onOpen}
+            leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
           >
             Create Resource Room
           </Button>
-        </Section>
+        </VStack>
       </Box>
+
+      <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Create resource room</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text textStyle="subhead-1">Resource room title</Text>
+
+            <FormControl
+              isRequired
+              isInvalid={!!errors.newDirectoryName?.message}
+            >
+              <Input
+                marginTop={5}
+                placeholder="Resource room name"
+                {...register("newDirectoryName", {
+                  required: "Please enter resource room name",
+                })}
+              />
+              <FormErrorMessage>
+                {errors.newDirectoryName?.message}
+              </FormErrorMessage>
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button mr={3} variant="link" onClick={onClose}>
+              <Text textStyle="subhead-1" colorScheme="orange">
+                Cancel
+              </Text>
+            </Button>
+            <LoadingButton
+              isDisabled={!_.isEmpty(errors)}
+              type="submit"
+              onClick={handleSubmit(onSubmit)}
+            >
+              Create
+            </LoadingButton>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </SiteViewLayout>
   )
 }

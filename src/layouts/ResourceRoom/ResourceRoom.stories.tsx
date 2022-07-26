@@ -53,6 +53,7 @@ Empty.parameters = {
   msw: {
     handlers: {
       resourceRoomData: buildResourceRoomData([]),
+      resourceRoomName: buildResourceRoomName({ resourceRoomName: "" }),
     },
   },
 }
