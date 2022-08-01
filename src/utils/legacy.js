@@ -7,9 +7,10 @@ import { QueryClient } from "react-query"
 import slugify from "slugify"
 import yaml from "yaml"
 
-import { SITES_IS_PRIVATE_KEY } from "constants/constants"
+import { getMediaDetails } from "../api"
+import { SITES_IS_PRIVATE_KEY } from "../constants/constants"
 
-import { getMediaDetails } from "api"
+import { deslugifyDirectory } from "./deslugify"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -17,7 +18,6 @@ axios.defaults.withCredentials = true
 // Constants
 export const DEFAULT_RETRY_MSG =
   "Please try again or check your internet connection"
-export const DEFAULT_ERROR_TOAST_MSG = `Something went wrong. ${DEFAULT_RETRY_MSG}`
 
 // extracts yaml front matter from a markdown file path
 export function frontMatterParser(content) {
@@ -36,27 +36,6 @@ export function frontMatterParser(content) {
 // of the markdown file
 export function concatFrontMatterMdBody(frontMatter, mdBody) {
   return ["---\n", yaml.stringify(frontMatter), "---\n", mdBody].join("")
-}
-
-// this function deslugifies a string into readable form
-// for example, 'this-is-a-directory' -> 'This Is A Directory'
-export function deslugify(string) {
-  return string
-    .split("-")
-    .map((word) => _.upperFirst(word)) // capitalize first letter
-    .join(" ") // join it back together
-}
-
-// this function converts directories into readable form
-// for example, 'this-is-a-directory' -> 'This Is A Directory'
-export function deslugifyDirectory(dirName) {
-  return deslugify(dirName)
-}
-
-// this function converts file names into readable form
-// for example, 'this-is-a-file.md' -> 'This Is A File'
-export function deslugifyPage(pageName) {
-  return deslugify(pageName.split(".")[0]) // remove the file extension
 }
 
 // takes a string URL and returns true if the link is an internal link
@@ -295,31 +274,6 @@ export const parseDirectoryFile = (folderContent) => {
   const decodedContent = yaml.parse(folderContent)
   const collectionKey = Object.keys(decodedContent.collections)[0]
   return decodedContent.collections[collectionKey]
-}
-
-export const getNavFolderDropdownFromFolderOrder = (folderOrder) => {
-  return folderOrder.reduce((acc, curr) => {
-    const pathArr = curr.split("/") // sample paths: "prize-sponsor.md", "prize-jury/nominating-committee.md"
-
-    if (pathArr.length === 1) {
-      acc.push(deslugifyDirectory(curr.split(".")[0])) // remove file extension
-    }
-
-    if (
-      pathArr.length === 2 &&
-      deslugifyDirectory(pathArr[0]) !== acc[acc.length - 1] &&
-      pathArr[1] !== ".keep"
-    ) {
-      acc.push(deslugifyDirectory(pathArr[0]))
-    }
-
-    return acc
-  }, [])
-}
-
-export const generateImageorFilePath = (customPath, fileName) => {
-  if (customPath) return encodeURIComponent(`${customPath}/${fileName}`)
-  return fileName
 }
 
 export const getRedirectUrl = ({
