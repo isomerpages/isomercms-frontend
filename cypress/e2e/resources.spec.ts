@@ -1,4 +1,5 @@
-import { slugifyCategory } from "../../src/utils"
+import { slugifyCategory } from "utils"
+
 import {
   E2E_DEFAULT_WAIT_TIME,
   E2E_EXTENDED_TIMEOUT,

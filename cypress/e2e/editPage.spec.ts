@@ -3,7 +3,8 @@ import {
   slugifyCategory,
   generateResourceFileName,
   titleToPageFileName,
-} from "../../src/utils"
+} from "utils"
+
 import {
   E2E_CHANGE_WAIT_TIME,
   E2E_DEFAULT_WAIT_TIME,

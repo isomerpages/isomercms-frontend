@@ -4,7 +4,8 @@ import {
   titleToPageFileName,
   pageFileNameToTitle,
   deslugifyDirectory,
-} from "../../src/utils"
+} from "utils"
+
 import {
   E2E_DEFAULT_WAIT_TIME,
   E2E_EXTENDED_TIMEOUT,
