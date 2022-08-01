@@ -104,7 +104,7 @@ export const Sidebar = (): JSX.Element => {
           </Text>
           <Skeleton isLoaded={!isLoading} w="100%">
             <Text textStyle="caption-2" color="text.description" w="full">
-              {isError ? "Unable to retrieve last updated time" : lastUpdated}
+              {isError ? "Unable to retrieve data" : lastUpdated}
             </Text>
           </Skeleton>
         </VStack>
