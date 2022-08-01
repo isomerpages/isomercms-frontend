@@ -1,13 +1,13 @@
 import _ from "lodash"
 import moment from "moment-timezone"
 
+import { deslugifyDirectory } from "./deslugify"
 import {
+  generatePageFileName,
   retrieveResourceFileMetadata,
   slugifyCategory,
   titleToPageFileName,
-  deslugifyDirectory,
-  generatePageFileName,
-} from "utils"
+} from "./legacy"
 
 // Common regexes and constants
 // ==============
