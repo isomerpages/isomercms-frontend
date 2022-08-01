@@ -8,6 +8,7 @@ export const ContextMenuButton = forwardRef<MenuButtonProps, "button">(
   (props: MenuButtonProps, ref): JSX.Element => {
     return (
       <MenuButton
+        zIndex={2}
         position="absolute"
         bottom="1rem"
         right="2rem"

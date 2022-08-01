@@ -1,6 +1,6 @@
 // not completely refactored yet, to finish after Media and Resources
 // should create separate display component Card without functionality
-import { LinkOverlay, LinkBox, Divider, Text } from "@chakra-ui/react"
+import { LinkOverlay, LinkBox, Divider, Text, Box } from "@chakra-ui/react"
 import { ContextMenu } from "components/ContextMenu"
 import PropTypes from "prop-types"
 import { useMemo } from "react"
@@ -84,12 +84,15 @@ export const FolderCard = ({
   return (
     <>
       {generatedLink ? (
-        <LinkBox
+        <Box
+          position="relative"
           className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard}`}
         >
-          <LinkOverlay as={RouterLink} to={generatedLink}>
-            <FolderCardContent />
-          </LinkOverlay>
+          <LinkBox>
+            <LinkOverlay as={RouterLink} to={generatedLink}>
+              <FolderCardContent />
+            </LinkOverlay>
+          </LinkBox>
           {shouldShowContextMenu && (
             <ContextMenu>
               <ContextMenu.Button />
@@ -121,7 +124,7 @@ export const FolderCard = ({
               </ContextMenu.List>
             </ContextMenu>
           )}
-        </LinkBox>
+        </Box>
       ) : (
         <button
           id="folderCard-small"
