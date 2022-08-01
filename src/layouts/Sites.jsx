@@ -50,7 +50,7 @@ export default class SitesWrapper extends Component {
     this._isMounted = true
     try {
       const resp = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/sites`,
+        `${process.env.REACT_APP_BACKEND_URL_V2}/sites`,
         {
           withCredentials: true,
         }

@@ -8,8 +8,8 @@ export default function RedirectIfLoggedInRoute({
   component: WrappedComponent,
   ...rest
 }) {
-  const { userId } = useLoginContext()
-  return userId ? (
+  const { userId, email } = useLoginContext()
+  return userId || email ? (
     <Redirect to="/sites" />
   ) : (
     children ||

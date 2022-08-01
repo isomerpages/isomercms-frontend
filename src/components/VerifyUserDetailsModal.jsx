@@ -212,7 +212,8 @@ const VerifyUserDetailsModal = () => {
     }
   }
 
-  return userId && (!loggedInEmail || !loggedInContactNumber) ? (
+  return (userId || loggedInEmail) &&
+    (!loggedInEmail || !loggedInContactNumber) ? (
     <div className={elementStyles.overlay}>
       <div className={elementStyles["modal-verify-user-details"]}>
         <div className={elementStyles.modalHeader}>
