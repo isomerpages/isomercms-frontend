@@ -586,6 +586,17 @@ const verifyMobileNumberOtp = async (mobile, otp) => {
   return res.data
 }
 
+const sendLoginOtp = async (email) => {
+  const endpoint = `${BACKEND_URL_V2}/auth/login`
+  return axios.post(endpoint, { email })
+}
+
+const verifyLoginOtp = async (email, otp) => {
+  const endpoint = `${BACKEND_URL_V2}/auth/verify`
+  const res = await axios.post(endpoint, { email, otp })
+  return res.data
+}
+
 export {
   getDirectoryFile,
   setDirectoryFile,
@@ -625,4 +636,6 @@ export {
   verifyEmailOtp,
   getMobileNumberOtp,
   verifyMobileNumberOtp,
+  sendLoginOtp,
+  verifyLoginOtp,
 }
