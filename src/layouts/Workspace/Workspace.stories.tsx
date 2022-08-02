@@ -68,12 +68,36 @@ Default.parameters = {
   },
 }
 
-export const Empty = Template.bind({})
-Empty.parameters = {
+export const EmptyPagesAndFolder = Template.bind({})
+EmptyPagesAndFolder.parameters = {
   msw: {
     handlers: [
       ...handlers,
       buildPagesData([]),
+      buildDirData([]),
+      contactUsHandler(true),
+    ],
+  },
+}
+
+export const EmptyPages = Template.bind({})
+EmptyPages.parameters = {
+  msw: {
+    handlers: [
+      ...handlers,
+      buildPagesData([]),
+      buildDirData(MOCK_DIR_DATA),
+      contactUsHandler(true),
+    ],
+  },
+}
+
+export const EmptyFolders = Template.bind({})
+EmptyFolders.parameters = {
+  msw: {
+    handlers: [
+      ...handlers,
+      buildPagesData(MOCK_PAGES_DATA),
       buildDirData([]),
       contactUsHandler(true),
     ],
