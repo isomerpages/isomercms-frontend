@@ -209,7 +209,10 @@ export const LoginPage = (): JSX.Element => {
                 target="_blank"
                 textDecorationLine="none"
                 color="text.link.dark"
-                _hover={{ textDecorationLine: "none" }}
+                _hover={{
+                  color: "text.link.dark",
+                  textDecorationLine: "underline",
+                }}
               >
                 Contact Us
               </Link>
@@ -219,7 +222,10 @@ export const LoginPage = (): JSX.Element => {
                 target="_blank"
                 textDecorationLine="none"
                 color="text.link.dark"
-                _hover={{ textDecorationLine: "none" }}
+                _hover={{
+                  color: "text.link.dark",
+                  textDecorationLine: "underline",
+                }}
               >
                 Guide
               </Link>
@@ -229,7 +235,10 @@ export const LoginPage = (): JSX.Element => {
                 target="_blank"
                 textDecorationLine="none"
                 color="text.link.dark"
-                _hover={{ textDecorationLine: "none" }}
+                _hover={{
+                  color: "text.link.dark",
+                  textDecorationLine: "underline",
+                }}
               >
                 Report vulnerability
               </Link>
