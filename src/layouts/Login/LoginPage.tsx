@@ -1,5 +1,4 @@
 import {
-  Box,
   Divider,
   Flex,
   GridItem,
@@ -9,15 +8,18 @@ import {
   Grid,
   HStack,
   VStack,
-  Icon,
   Tabs,
   TabList,
   TabPanels,
   TabPanel,
 } from "@chakra-ui/react"
-import { Button, GovtMasthead, Tab } from "@opengovsg/design-system-react"
+import {
+  Button,
+  GovtMasthead,
+  Tab,
+  InlineMessage,
+} from "@opengovsg/design-system-react"
 import { useState } from "react"
-import { BiInfoCircle } from "react-icons/bi"
 
 import { useSuccessToast } from "utils/toasts"
 
@@ -113,21 +115,11 @@ export const LoginPage = (): JSX.Element => {
         >
           Rapidly build & launch informational sites
         </Text>
-        <Box p="1rem" bgColor="background.action.infoInverse">
-          <HStack spacing="1rem" w="100%">
-            <Icon
-              as={BiInfoCircle}
-              type="solid"
-              fill="icon.default"
-              fontSize="1rem"
-            />
-            <Text>
-              We’re moving in phases from GitHub IDs to email addresses as the
-              login method. If you can’t log in with your GitHub ID, please use
-              your email address.
-            </Text>
-          </HStack>
-        </Box>
+        <InlineMessage textColor="text.body">
+          We’re moving in phases from GitHub IDs to email addresses as the login
+          method. If you can’t log in with your GitHub ID, please use your email
+          address.
+        </InlineMessage>
         <Tabs width="100%">
           <TabList>
             <Tab>Github Login</Tab>
