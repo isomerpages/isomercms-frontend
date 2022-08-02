@@ -133,7 +133,7 @@ export const LoginPage = (): JSX.Element => {
             <Tab>Github Login</Tab>
             <Tab>Email Login</Tab>
           </TabList>
-          <TabPanels pt="2rem" minHeight="11rem">
+          <TabPanels pt="2rem">
             <TabPanel>
               <Button
                 as={Link}
@@ -161,6 +161,26 @@ export const LoginPage = (): JSX.Element => {
             </TabPanel>
           </TabPanels>
         </Tabs>
+        <Text color="text.helper" fontSize="0.625rem">
+          By clicking “Log in”, you are acknowledging and agreeing to Isomer’s{" "}
+          <Link
+            // href="https://go.gov.sg/isomercms-guide/"
+            rel="noopener noreferrer"
+            target="_blank"
+            fontSize="0.625rem"
+          >
+            Terms of Use
+          </Link>
+          {" and our "}
+          <Link
+            // href="https://go.gov.sg/isomercms-guide/"
+            rel="noopener noreferrer"
+            target="_blank"
+            fontSize="0.625rem"
+          >
+            Privacy policy
+          </Link>
+        </Text>
       </VStack>
     )
   }
@@ -196,6 +216,8 @@ export const LoginPage = (): JSX.Element => {
                 rel="noopener noreferrer"
                 target="_blank"
                 textDecorationLine="none"
+                color="text.link.dark"
+                _hover={{ textDecorationLine: "none" }}
               >
                 Contact Us
               </Link>
@@ -204,14 +226,18 @@ export const LoginPage = (): JSX.Element => {
                 rel="noopener noreferrer"
                 target="_blank"
                 textDecorationLine="none"
+                color="text.link.dark"
+                _hover={{ textDecorationLine: "none" }}
               >
                 Guide
               </Link>
-              <Text>Privacy</Text>
-              <Text>Terms of use</Text>
               <Link
                 href="https://www.tech.gov.sg/report_vulnerability/"
+                rel="noopener noreferrer"
+                target="_blank"
                 textDecorationLine="none"
+                color="text.link.dark"
+                _hover={{ textDecorationLine: "none" }}
               >
                 Report vulnerability
               </Link>
