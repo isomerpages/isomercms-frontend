@@ -1,0 +1,263 @@
+import {
+  SimpleGrid,
+  Box,
+  Skeleton,
+  Text,
+  Button,
+  Center,
+  Icon,
+  VStack,
+  IconButton,
+  Menu as ChakraMenu,
+  ButtonGroup,
+} from "@chakra-ui/react"
+import { ContextMenu } from "components/ContextMenu"
+import {
+  BiBulb,
+  BiChevronDown,
+  BiChevronUp,
+  BiFileBlank,
+  BiFolder,
+  BiInfoCircle,
+  BiPlus,
+} from "react-icons/bi"
+import { Link } from "react-router-dom"
+
+import useRedirectHook from "hooks/useRedirectHook"
+
+import { EmptyBoxImage } from "assets"
+import { DirectoryData, PageData } from "types/directory"
+
+import {
+  Section,
+  SectionHeader,
+  SectionCaption,
+  CreateButton,
+} from "../components"
+
+import { PageCard, FolderCard } from "./components"
+
+export const Folders = (props: {
+  siteName: string
+  pagesData: PageData[]
+  url: string
+  dirsData: DirectoryData[]
+}): JSX.Element => {
+  const { setRedirectToPage } = useRedirectHook()
+  const { siteName, pagesData, url, dirsData } = props
+
+  return (
+    <>
+      <Section>
+        <Box w="100%">
+          <SectionHeader label="Folders">
+            <CreateButton
+              onClick={() => setRedirectToPage(`${url}/createDirectory`)}
+            >
+              Create folder
+            </CreateButton>
+          </SectionHeader>
+          <SectionCaption label="PRO TIP: " icon={BiBulb}>
+            Folders impact navigation on your site. Organise your workspace by
+            moving pages into folders.
+          </SectionCaption>
+        </Box>
+        <Skeleton isLoaded={!!pagesData} w="full">
+          <SimpleGrid columns={3} spacing="1.5rem">
+            {dirsData &&
+              dirsData.length > 0 &&
+              dirsData.map(({ name }) => (
+                <FolderCard title={name} siteName={siteName} />
+              ))}
+          </SimpleGrid>
+        </Skeleton>
+      </Section>
+    </>
+  )
+}
+
+export const UngroupedPages = (props: {
+  pagesData: PageData[]
+  url: string
+}): JSX.Element => {
+  const { pagesData, url } = props
+  const { setRedirectToPage } = useRedirectHook()
+  return (
+    <>
+      <Section>
+        <Box w="100%">
+          <SectionHeader label="Ungrouped Pages">
+            <CreateButton
+              onClick={() => setRedirectToPage(`${url}/createPage`)}
+            >
+              Create page
+            </CreateButton>
+          </SectionHeader>
+          <SectionCaption label="NOTE: " icon={BiInfoCircle}>
+            Pages here do not belong to any folders.
+          </SectionCaption>
+        </Box>
+        <Skeleton isLoaded={!!pagesData} w="full">
+          <SimpleGrid columns={3} spacing="1.5rem">
+            {pagesData &&
+              pagesData.length > 0 &&
+              pagesData
+                .filter((page) => page.name !== "contact-us.md")
+                .map(({ name, resourceType }) => (
+                  <PageCard title={name} resourceType={resourceType} />
+                ))}
+          </SimpleGrid>
+        </Skeleton>
+      </Section>
+    </>
+  )
+}
+
+export const EmptyFolder = (props: { url: string }): JSX.Element => {
+  const { url } = props
+  return (
+    <>
+      <Box as="form" w="full">
+        {/* Resource Room does not exist */}
+        <VStack spacing={5}>
+          <EmptyBoxImage />
+          <VStack spacing={0}>
+            <Center textStyle="subhead-1">
+              {" There's nothing here yet. "}
+            </Center>
+            <Center textStyle="body-2">
+              Create a new item to get started.
+            </Center>
+          </VStack>
+
+          <ButtonGroup isAttached variant="outline">
+            {/* NOTE: This is to avoid the 2 joined buttons both having 1px padding,
+        which results in a larger border at the attached area. */}
+            <Button
+              as={Link}
+              to={`${url}/createDirectory`}
+              variant="solid"
+              leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
+            >
+              Create Folder
+            </Button>
+          </ButtonGroup>
+        </VStack>
+      </Box>
+    </>
+  )
+}
+
+export const EmptyPage = (props: { url: string }): JSX.Element => {
+  const { url } = props
+  return (
+    <>
+      <Box as="form" w="full">
+        {/* Resource Room does not exist */}
+        <VStack spacing={5}>
+          <EmptyBoxImage />
+          <VStack spacing={0}>
+            <Center textStyle="subhead-1">
+              There&apos;s nothing here yet.
+            </Center>
+            <Center textStyle="body-2">
+              Create a new item to get started.
+            </Center>
+          </VStack>
+          <ChakraMenu>
+            {() => (
+              <ButtonGroup isAttached variant="outline">
+                {/* NOTE: This is to avoid the 2 joined buttons both having 1px padding,
+            which results in a larger border at the attached area. */}
+                <Button
+                  as={Link}
+                  to={`${url}/createPage`}
+                  variant="solid"
+                  leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
+                >
+                  Create page
+                </Button>
+              </ButtonGroup>
+            )}
+          </ChakraMenu>
+        </VStack>
+      </Box>
+    </>
+  )
+}
+
+export const EmptyPageAndFolder = (props: { url: string }): JSX.Element => {
+  const { url } = props
+  return (
+    <>
+      <Box as="form" w="full">
+        {/* Resource Room does not exist */}
+        <VStack spacing={5}>
+          <EmptyBoxImage />
+          <VStack spacing={0}>
+            <Center textStyle="subhead-1">
+              There&apos;s nothing here yet.
+            </Center>
+            <Center textStyle="body-2">
+              Create a new item to get started.
+            </Center>
+          </VStack>
+          <ChakraMenu>
+            {/* <ContextMenu> */}
+            {({ isOpen }) => (
+              <ButtonGroup isAttached variant="outline">
+                {/* NOTE: This is to avoid the 2 joined buttons both having 1px padding,
+            which results in a larger border at the attached area. */}
+                <Button
+                  borderRight="0px"
+                  borderRightRadius={0}
+                  as={Link}
+                  to={`${url}/createPage`}
+                  variant="solid"
+                  leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
+                >
+                  Create page
+                </Button>
+                <ContextMenu.Button
+                  position="inherit"
+                  as={IconButton}
+                  borderLeftRadius={0}
+                  aria-label="Select options"
+                  variant="solid"
+                  icon={
+                    <Icon
+                      as={isOpen ? BiChevronUp : BiChevronDown}
+                      fontSize="1rem"
+                      fill="white"
+                    />
+                  }
+                />
+                <ContextMenu.List>
+                  <ContextMenu.Item
+                    as={Link}
+                    to={`${url}/createPage`}
+                    icon={<BiFileBlank fontSize="1.25rem" fill="icon.alt" />}
+                  >
+                    <Text textStyle="body-1" fill="text.body">
+                      Create page
+                    </Text>
+                  </ContextMenu.Item>
+                  <ContextMenu.Item
+                    as={Link}
+                    to={`${url}/createDirectory`}
+                    icon={<BiFolder fontSize="1.25rem" fill="icon.alt" />}
+                  >
+                    <Text textStyle="body-1" fill="text.body">
+                      Create folder
+                    </Text>
+                  </ContextMenu.Item>
+                </ContextMenu.List>
+              </ButtonGroup>
+            )}
+            {/* </ContextMenu> */}
+          </ChakraMenu>
+        </VStack>
+      </Box>
+    </>
+  )
+}
