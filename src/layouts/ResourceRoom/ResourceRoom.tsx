@@ -139,6 +139,7 @@ const EmptyResourceRoom = () => {
               <Input
                 marginTop={5}
                 placeholder="Resource room name"
+                // eslint-disable-next-line react/jsx-props-no-spreading
                 {...register("newDirectoryName", {
                   required: "Please enter resource room name",
                 })}
