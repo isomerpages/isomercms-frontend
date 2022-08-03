@@ -202,8 +202,7 @@ export const EmptyPageAndFolder = (props: { url: string }): JSX.Element => {
               Create a new item to get started.
             </Center>
           </VStack>
-          <ChakraMenu>
-            {/* <ContextMenu> */}
+          <ContextMenu placement="bottom-end" offset={[0, 0]}>
             {({ isOpen }) => (
               <ButtonGroup isAttached variant="outline">
                 {/* NOTE: This is to avoid the 2 joined buttons both having 1px padding,
@@ -213,8 +212,7 @@ export const EmptyPageAndFolder = (props: { url: string }): JSX.Element => {
                   borderRightRadius={0}
                   as={Link}
                   to={`${url}/createPage`}
-                  variant="solid"
-                  leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
+                  variant={isOpen ? "outline" : "solid"}
                 >
                   Create page
                 </Button>
@@ -223,16 +221,17 @@ export const EmptyPageAndFolder = (props: { url: string }): JSX.Element => {
                   as={IconButton}
                   borderLeftRadius={0}
                   aria-label="Select options"
-                  variant="solid"
+                  variant={isOpen ? "outline" : "solid"}
+                  _active={{ bg: "white" }}
                   icon={
                     <Icon
                       as={isOpen ? BiChevronUp : BiChevronDown}
                       fontSize="1rem"
-                      fill="white"
+                      fill={isOpen ? "blue" : "white"}
                     />
                   }
                 />
-                <ContextMenu.List>
+                <ContextMenu.List minWidth={150}>
                   <ContextMenu.Item
                     as={Link}
                     to={`${url}/createPage`}
@@ -254,8 +253,7 @@ export const EmptyPageAndFolder = (props: { url: string }): JSX.Element => {
                 </ContextMenu.List>
               </ButtonGroup>
             )}
-            {/* </ContextMenu> */}
-          </ChakraMenu>
+          </ContextMenu>
         </VStack>
       </Box>
     </>
