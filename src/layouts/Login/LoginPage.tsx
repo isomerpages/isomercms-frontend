@@ -156,7 +156,7 @@ export const LoginPage = (): JSX.Element => {
         <Text color="text.helper" fontSize="0.625rem">
           By clicking “Log in”, you are acknowledging and agreeing to Isomer’s{" "}
           <Link
-            // href="https://go.gov.sg/isomercms-guide/"
+            href="https://guide.isomer.gov.sg/terms-and-privacy/terms-of-use"
             rel="noopener noreferrer"
             target="_blank"
             fontSize="0.625rem"
@@ -165,7 +165,7 @@ export const LoginPage = (): JSX.Element => {
           </Link>
           {" and our "}
           <Link
-            // href="https://go.gov.sg/isomercms-guide/"
+            href="https://guide.isomer.gov.sg/terms-and-privacy/privacy-statement"
             rel="noopener noreferrer"
             target="_blank"
             fontSize="0.625rem"
