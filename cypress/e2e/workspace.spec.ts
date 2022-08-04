@@ -1,21 +1,21 @@
 import { slugifyCategory, titleToPageFileName, deslugifyDirectory } from "utils"
 
+import {
+  CMS_BASEURL,
+  TEST_REPO_NAME,
+  Interceptors,
+} from "../fixtures/constants"
+
 describe("Workspace Pages flow", () => {
   beforeEach(() => {
-    // NOTE: Interceptors are set up for requests hitting the network
-    // This is because the network round trip time might be extremely long
-    // and using the inbuilt assertion for buttons might timeout (>4s)
-    // even when the request is successful.
-    // This waits on the request till it succeeds or timeouts (>30s).
-    // Refer here for default wait times: https://docs.cypress.io/guides/references/configuration#Timeouts
-    cy.intercept("POST", "/v2/**").as("saveRequest")
-    cy.intercept("DELETE", "/v2/**").as("deleteRequest")
-  })
+    cy.setSessionDefaults()
+    cy.setupDefaultInterceptors()
 
-  const CMS_BASEURL = Cypress.env("BASEURL")
-  const COOKIE_NAME = Cypress.env("COOKIE_NAME")
-  const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
-  const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
+    cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`).wait(
+      Interceptors.GET
+    )
+    cy.contains("Verify").should("not.exist")
+  })
   const TEST_PAGE_PERMALNK = "/test-permalink"
 
   const TEST_PAGE_TITLE = "test title"
@@ -52,13 +52,6 @@ describe("Workspace Pages flow", () => {
   )
 
   describe("Create page, delete page, edit page settings in Workspace", () => {
-    beforeEach(() => {
-      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-      window.localStorage.setItem("userId", "test")
-      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
-      cy.contains("Verify").should("not.exist")
-    })
-
     it("Test site workspace page should have unlinked pages section", () => {
       cy.contains("Create page")
     })
@@ -69,7 +62,7 @@ describe("Workspace Pages flow", () => {
       cy.get("#title").clear().type(TEST_PAGE_TITLE)
       cy.get("#permalink").clear().type(TEST_PAGE_PERMALNK)
       cy.contains("Save").click()
-      cy.wait("@saveRequest")
+      cy.wait(Interceptors.POST)
         .its("request.body")
         .should("deep.equal", {
           content: {
@@ -153,7 +146,7 @@ describe("Workspace Pages flow", () => {
       cy.get("#title").should("have.value", TEST_PAGE_TITLE)
       cy.get("#title").clear().type(EDITED_TEST_PAGE_TITLE)
       cy.contains("button", "Save").click()
-      cy.wait("@saveRequest")
+      cy.wait(Interceptors.POST)
 
       // Assert
       // New page title should be reflected in the Workspace
@@ -174,7 +167,7 @@ describe("Workspace Pages flow", () => {
       cy.get("#title").should("have.value", EDITED_TEST_PAGE_TITLE)
       cy.get("#title").clear().type(EDITED_TEST_PAGE_TITLE_2)
       cy.contains("button", "Save").click()
-      cy.wait("@saveRequest")
+      cy.wait(Interceptors.POST)
 
       // Asserts
       // Should show modal
@@ -197,7 +190,7 @@ describe("Workspace Pages flow", () => {
         .should("exist")
       cy.clickContextMenuItem("@pageCard", "Delete")
       cy.contains("button", "delete").should("exist").click()
-      cy.wait("@deleteRequest")
+      cy.wait(Interceptors.DELETE)
 
       // Assert
       cy.contains(EDITED_TEST_PAGE_TITLE_2).should("not.exist")
@@ -205,13 +198,6 @@ describe("Workspace Pages flow", () => {
   })
 
   describe("Create folder, rename folder, and delete folder from Workspace", () => {
-    beforeEach(() => {
-      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-      window.localStorage.setItem("userId", "test")
-      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
-      cy.contains("Verify").should("not.exist")
-    })
-
     it("Test site workspace page should have folders section", () => {
       cy.contains("Create folder").should("exist")
     })
@@ -241,12 +227,12 @@ describe("Workspace Pages flow", () => {
       cy.get("#title").clear().type(TEST_PAGE_TITLE)
       cy.get("#permalink").clear().type(TEST_PAGE_PERMALNK)
       cy.contains("Save").click()
-      cy.wait("@saveRequest")
+      cy.wait(Interceptors.POST)
 
       // Create test page content
       cy.get(".CodeMirror-scroll").type(TEST_PAGE_CONTENT)
       cy.contains("Save").click()
-      cy.wait("@saveRequest")
+      cy.wait(Interceptors.POST)
       cy.contains("Successfully updated page")
         .should("exist")
         .then(() =>
@@ -299,7 +285,7 @@ describe("Workspace Pages flow", () => {
         .clear()
         .type(EDITED_TEST_FOLDER_WITH_PAGES_TITLE)
       cy.contains("button", "Save").click()
-      cy.wait("@saveRequest")
+      cy.wait(Interceptors.POST)
 
       // Assert
       cy.contains("button", PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE)
@@ -324,9 +310,24 @@ describe("Workspace Pages flow", () => {
       cy.clickContextMenuItem("@emptyFolderItem", "Delete")
       cy.contains("button", "delete").click()
 
+      cy.wait(Interceptors.DELETE)
+
+      // Assert
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).should("not.exist")
+    })
+
+    it("Should be able to delete a folder with pages", () => {
+      // Arrange
+      cy.contains("button", PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE)
+        .parent()
+        .parent()
+        .as("folderItem")
+        .should("exist")
+
       // Act
       cy.clickContextMenuItem("@folderItem", "Delete")
       cy.contains("button", "delete").click()
+      cy.wait(Interceptors.DELETE)
 
       // Assert
       cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE).should("not.exist")
