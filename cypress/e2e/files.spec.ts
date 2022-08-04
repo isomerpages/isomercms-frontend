@@ -1,8 +1,5 @@
 import "cypress-file-upload"
-import {
-  E2E_DEFAULT_WAIT_TIME,
-  E2E_CHANGE_WAIT_TIME,
-} from "../fixtures/constants"
+import { E2E_DEFAULT_WAIT_TIME } from "../fixtures/constants"
 
 describe("Files", () => {
   Cypress.config("baseUrl", Cypress.env("BASEURL"))
@@ -46,6 +43,7 @@ describe("Files", () => {
       }).as("createFile")
 
       cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH)
+
       // ASSERTS
       cy.wait("@createFile") // should intercept POST request
       cy.contains(FILE_TITLE).should("exist") // file should be contained in Files
@@ -57,8 +55,8 @@ describe("Files", () => {
         method: "POST",
         url: `/v2/sites/${TEST_REPO_NAME}/media/files/pages/${FILE_TITLE}`,
       }).as("renameFile")
-
       cy.renameMedia(FILE_TITLE, OTHER_FILE_TITLE)
+
       // ASSERTS
       cy.wait("@renameFile")
       cy.contains(OTHER_FILE_TITLE).should("exist") // file should be contained in Files
@@ -67,6 +65,7 @@ describe("Files", () => {
     it("Should not be able to create file with invalid title", () => {
       // should not be able to save with invalid characters in title
       cy.uploadMedia(INVALID_CHARACTER, TEST_FILE_PATH, ACTION_DISABLED)
+
       // ASSERTS
       cy.contains(
         "Title cannot contain any of the following special characters"
@@ -141,19 +140,22 @@ describe("Files", () => {
       cy.get("button")
         .contains(/^Skip$/)
         .click()
+        .should("not.exist")
 
       // ASSERTS
-      cy.wait(E2E_DEFAULT_WAIT_TIME)
       cy.contains(DIRECTORY_TITLE).should("exist") // Directory name should be contained in Files
     })
 
     it("Should be able to edit file directory name", () => {
       // User should be able edit directory details
-      cy.contains("a", DIRECTORY_TITLE).should("exist").as("folderItem")
+      cy.contains("div", DIRECTORY_TITLE)
+        .parent()
+        .parent()
+        .should("exist")
+        .as("folderItem")
       cy.clickContextMenuItem("@folderItem", "settings")
       cy.get("#newDirectoryName").clear().type(OTHER_DIRECTORY_TITLE)
-      cy.contains("button", "Save").click()
-      cy.wait(E2E_CHANGE_WAIT_TIME)
+      cy.contains("button", "Save").click().should("not.exist")
 
       // ASSERTS
       cy.contains(OTHER_DIRECTORY_TITLE).should("exist") // New file directory name should be contained in Files
@@ -161,16 +163,20 @@ describe("Files", () => {
 
     it("Should be able to delete file directory", () => {
       // User should be able delete directory
-      cy.contains("a", OTHER_DIRECTORY_TITLE).should("exist").as("folderItem")
+      cy.contains("div", OTHER_DIRECTORY_TITLE)
+        .parent()
+        .parent()
+        .should("exist")
+        .as("folderItem")
       cy.clickContextMenuItem("@folderItem", "Delete")
-      cy.contains("button", "delete").click()
-      cy.wait(E2E_CHANGE_WAIT_TIME)
+      cy.contains("button", "delete").click().should("not.exist")
+
       // ASSERTS
       cy.contains(OTHER_DIRECTORY_TITLE).should("not.exist") // Directory name should not be contained in Files
     })
   })
 
-  describe("Create file, delete file, edit file settings, and move files in file directories", () => {
+  describe.only("Create file, delete file, edit file settings, and move files in file directories", () => {
     before(() => {
       cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
       window.localStorage.setItem("userId", "test")
@@ -185,9 +191,9 @@ describe("Files", () => {
       cy.get("button")
         .contains(/^Skip$/)
         .click()
+        .should("not.exist")
 
       // Assert
-      cy.wait(E2E_DEFAULT_WAIT_TIME)
       cy.contains(DIRECTORY_TITLE).should("exist")
     })
 
@@ -202,8 +208,8 @@ describe("Files", () => {
 
     it("Should be able to add file to file directory", () => {
       cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH)
+
       // ASSERTS
-      cy.wait(E2E_DEFAULT_WAIT_TIME)
       cy.contains("Media file successfully uploaded").should("exist")
       cy.contains(FILE_TITLE).should("exist") // file should be contained in Files
     })
@@ -211,15 +217,17 @@ describe("Files", () => {
     it("Should be able to edit an file in file directory", () => {
       cy.contains(FILE_TITLE).should("exist")
       cy.renameMedia(FILE_TITLE, OTHER_FILE_TITLE)
+
       // ASSERTS
-      cy.wait(E2E_DEFAULT_WAIT_TIME)
       cy.contains(OTHER_FILE_TITLE).should("exist") // File should be contained in Files
+      cy.contains("Successfully updated media file!").should("exist")
     })
 
     it("Should be able to delete file from file directory", () => {
-      cy.contains(OTHER_FILE_TITLE).should("exist").as("fileItem")
+      cy.contains(OTHER_FILE_TITLE).as("fileItem")
       cy.clickContextMenuItem("@fileItem", "Delete")
-      cy.contains("button", "delete").click()
+      cy.contains("button", "delete").click().should("not.exist")
+
       // ASSERTS
       cy.contains(OTHER_FILE_TITLE).should("not.exist") // File file name should not exist in Files
     })

@@ -6,10 +6,7 @@ import {
   deslugifyDirectory,
 } from "utils"
 
-import {
-  E2E_DEFAULT_WAIT_TIME,
-  E2E_EXTENDED_TIMEOUT,
-} from "../fixtures/constants"
+import { E2E_EXTENDED_TIMEOUT } from "../fixtures/constants"
 
 describe("Folders flow", () => {
   const COOKIE_NAME = Cypress.env("COOKIE_NAME")
@@ -106,9 +103,8 @@ describe("Folders flow", () => {
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}`
       )
-      // Wait for 1s for page to become stable.
-      // This is because there's a modal on first paint that gets removed on second paint
-      cy.wait(1 * 1000)
+
+      cy.contains("Verify").should("not.exist")
     })
 
     it("Should be able to create a new sub-folder within a valid folder name with no pages", () => {
@@ -194,7 +190,10 @@ describe("Folders flow", () => {
         url: `/v2/sites/e2e-test-repo/collections/${DEFAULT_REPO_FOLDER_NAME}/subcollections/${PARSED_TEST_SUBFOLDER_WITH_PAGES_TITLE}`,
       }).as("renameSubfolder")
 
-      cy.contains("a", PRETTIFIED_SUBFOLDER_WITH_PAGES_TITLE).as("folderItem")
+      cy.contains("button", PRETTIFIED_SUBFOLDER_WITH_PAGES_TITLE)
+        .parent()
+        .parent()
+        .as("folderItem")
       cy.clickContextMenuItem("@folderItem", "Settings")
       cy.contains(`Subfolder settings`)
       cy.get("input#newDirectoryName")
@@ -217,12 +216,13 @@ describe("Folders flow", () => {
 
     // Delete
     it("Should be able to delete a sub-folder with a page", () => {
-      cy.contains("a", PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE)
+      cy.contains("button", PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Delete")
-      cy.contains("button", "delete").click()
-      cy.wait(E2E_DEFAULT_WAIT_TIME)
+      cy.contains("button", "delete").click().should("not.exist")
 
       // Assert
       cy.contains(PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE).should(
@@ -231,17 +231,16 @@ describe("Folders flow", () => {
     })
 
     it("Should be able to delete a sub-folder without page", () => {
-      cy.contains("a", PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE).as("folderItem")
+      cy.contains("button", PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE)
+        .parent()
+        .parent()
+        .as("folderItem")
       cy.clickContextMenuItem("@folderItem", "Delete")
-      cy.contains("button", "delete").click()
+      cy.contains("button", "delete").click().should("not.exist")
 
       // Assert
-      cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE).should("not.exist", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      })
-      cy.contains("No pages here yet.", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
+      cy.contains(PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE).should("not.exist")
+      cy.contains("No pages here yet.").should("exist")
     })
   })
 
@@ -252,9 +251,8 @@ describe("Folders flow", () => {
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}`
       )
-      // Wait for 1s for page to become stable.
-      // This is because there's a modal on first paint that gets removed on second paint
-      cy.wait(1 * 1000)
+
+      cy.contains("Verify").should("not.exist")
     })
 
     it("Should be able to create a new page with valid title and permalink", () => {
@@ -320,7 +318,9 @@ describe("Folders flow", () => {
     })
 
     it("Should be able to edit existing page details with Chinese title and valid permalink", () => {
-      cy.contains("a", TEST_PAGE_TITLE, { timeout: E2E_EXTENDED_TIMEOUT })
+      cy.contains("button", TEST_PAGE_TITLE)
+        .parent()
+        .parent()
         .as("pageItem")
         .should("exist")
       cy.clickContextMenuItem("@pageItem", "Settings")
@@ -348,9 +348,9 @@ describe("Folders flow", () => {
     })
 
     it("Should be able to edit existing page details with Tamil title and valid permalink", () => {
-      cy.contains("a", EDITED_TEST_PAGE_TITLE, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      })
+      cy.contains("button", EDITED_TEST_PAGE_TITLE)
+        .parent()
+        .parent()
         .as("pageItem")
         .should("exist")
       cy.clickContextMenuItem("@pageItem", "Settings")
@@ -378,7 +378,11 @@ describe("Folders flow", () => {
 
     it("Should be able to delete existing page in folder", () => {
       // User should be able to remove the created test page card
-      cy.contains("a", EDITED_TEST_PAGE_TITLE_2).as("pageItem").should("exist")
+      cy.contains("button", EDITED_TEST_PAGE_TITLE_2)
+        .parent()
+        .parent()
+        .as("pageItem")
+        .should("exist")
       cy.clickContextMenuItem("@pageItem", "Delete")
       cy.contains("button", "delete").click()
 
@@ -425,9 +429,8 @@ describe("Folders flow", () => {
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}/subfolders/${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}`
       )
-      // Wait for 1s for page to become stable.
-      // This is because there's a modal on first paint that gets removed on second paint
-      cy.wait(1 * 1000)
+
+      cy.contains("Verify").should("not.exist")
     })
 
     it("Should be able to create a new page with valid title and permalink", () => {
@@ -494,7 +497,9 @@ describe("Folders flow", () => {
     })
 
     it("Should be able to edit existing page details with Chinese title and valid permalink", () => {
-      cy.contains("a", TEST_PAGE_TITLE, { timeout: E2E_EXTENDED_TIMEOUT })
+      cy.contains("button", TEST_PAGE_TITLE)
+        .parent()
+        .parent()
         .as("pageItem")
         .should("exist")
       cy.clickContextMenuItem("@pageItem", "Settings")
@@ -521,9 +526,9 @@ describe("Folders flow", () => {
     })
 
     it("Should be able to edit existing page details with Tamil title and valid permalink", () => {
-      cy.contains("a", EDITED_TEST_PAGE_TITLE, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      })
+      cy.contains("button", EDITED_TEST_PAGE_TITLE)
+        .parent()
+        .parent()
         .as("pageItem")
         .should("exist")
       cy.clickContextMenuItem("@pageItem", "Settings")
@@ -551,7 +556,10 @@ describe("Folders flow", () => {
 
     it("Should be able to delete existing page in folder", () => {
       // User should be able to remove the created test page card
-      cy.contains("a", EDITED_TEST_PAGE_TITLE_2).as("pageItem")
+      cy.contains("button", EDITED_TEST_PAGE_TITLE_2)
+        .parent()
+        .parent()
+        .as("pageItem")
       cy.clickContextMenuItem("@pageItem", "Delete")
       cy.contains("button", "delete").click()
       cy.contains("Successfully deleted page", {
