@@ -22,6 +22,11 @@ declare namespace Cypress {
     getFirstSiblingAs(as: string): Chainable<JQuery<HTMLElement>>
     setDefaultPrimaryColour(): Chainable<void>
     setSessionDefaults(): Chainable<void>
+    /**
+     * Setup the default interceptors for post/get/delete requests.
+     * These interceptors are aliased to the Interceptors enum.
+     */
+    setupDefaultInterceptors(): void
     uploadMedia(
       mediaTitle: string,
       mediaPath: string,
