@@ -27,6 +27,7 @@ declare namespace Cypress {
      * These interceptors are aliased to the `Interceptors` enum.
      */
     setupDefaultInterceptors(): void
+    createResourceCategory(name: string): Chainable<void>
     uploadMedia(
       mediaTitle: string,
       mediaPath: string,
