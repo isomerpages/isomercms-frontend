@@ -115,7 +115,7 @@ export const LoginPage = (): JSX.Element => {
         >
           Rapidly build & launch informational sites
         </Text>
-        <InlineMessage textColor="text.body">
+        <InlineMessage>
           We’re moving in phases from GitHub IDs to email addresses as the login
           method. If you can’t log in with your GitHub ID, please use your email
           address.
