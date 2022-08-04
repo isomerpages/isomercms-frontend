@@ -1,7 +1,6 @@
 import "cypress-pipe"
 import { E2E_DEFAULT_WAIT_TIME } from "../fixtures/constants"
 
-const click = ($el) => $el.click()
 const CUSTOM_TIMEOUT = 30000 // 30 seconds
 
 Cypress.Commands.add("uploadMedia", (mediaTitle, mediaPath, disableAction) => {
@@ -12,6 +11,7 @@ Cypress.Commands.add("uploadMedia", (mediaTitle, mediaPath, disableAction) => {
     cy.get("button")
       .contains(/^Upload$/)
       .click() // necessary as multiple buttons containing Upload on page
+      .should("not.exist")
 })
 
 Cypress.Commands.add(
@@ -20,7 +20,8 @@ Cypress.Commands.add(
     cy.contains(mediaTitle).click()
     cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.get("#name").clear().type(newMediaTitle).blur()
-    if (!disableAction) cy.get("button").contains("Save").click()
+    if (!disableAction)
+      cy.get("button").contains("Save").click().should("not.exist")
   }
 )
 
@@ -39,7 +40,7 @@ Cypress.Commands.add("moveMedia", (mediaTitle, newMediaFolder) => {
       .should("be.visible")
       // breadcrumb elements in FileMoveMenuDropdown are flaky, so we need to
       // use cypress-pipe
-      .pipe(click)
+      .pipe(($el) => $el.trigger("click"))
       .should(($el) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         expect($el).to.not.exist
