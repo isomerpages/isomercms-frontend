@@ -20,6 +20,8 @@ declare namespace Cypress {
      * @param {string} as The alias that should be given to the first sibling
      */
     getFirstSiblingAs(as: string): Chainable<JQuery<HTMLElement>>
+    setDefaultPrimaryColour(): Chainable<void>
+    setSessionDefaults(): Chainable<void>
     uploadMedia(
       mediaTitle: string,
       mediaPath: string,
