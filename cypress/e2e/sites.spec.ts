@@ -1,31 +1,20 @@
-import { E2E_DEFAULT_WAIT_TIME } from "../fixtures/constants"
+import { CMS_BASEURL, TEST_REPO_NAME } from "../fixtures/constants"
 
 describe("Sites page", () => {
-  const CMS_BASEURL = Cypress.env("BASEURL")
-  const COOKIE_NAME = Cypress.env("COOKIE_NAME")
-  const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
-  const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
-
-  before(() => {
-    cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-  })
-
   beforeEach(() => {
-    // Before each test, we can automatically preserve the cookie.
-    // This means it will not be cleared before the NEXT test starts.
-    Cypress.Cookies.preserveOnce(COOKIE_NAME)
+    cy.setSessionDefaults()
+    // NOTE: This is to v1 so we are redefining it here
+    cy.intercept("GET", "/v1/**").as("getRequest")
   })
 
   it("Sites page should have sites header", () => {
-    cy.visit(`${CMS_BASEURL}/sites`)
+    cy.visit(`${CMS_BASEURL}/sites`).wait("@getRequest")
     cy.contains("Sites")
   })
 
   it("Sites page should allow user to click into a test site repo", () => {
-    cy.visit(`${CMS_BASEURL}/sites`)
+    cy.visit(`${CMS_BASEURL}/sites`).wait("@getRequest")
 
-    // Set a wait time because the API takes time
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains(TEST_REPO_NAME).click()
     cy.url().should(
       "include",
