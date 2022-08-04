@@ -1,8 +1,4 @@
-import {
-  COOKIE_NAME,
-  TEST_PRIMARY_COLOR,
-  TEST_REPO_NAME,
-} from "../fixtures/constants"
+import { TEST_PRIMARY_COLOR, TEST_REPO_NAME } from "../fixtures/constants"
 
 describe("Settings page", () => {
   const BASE_TITLE = "TEST"
@@ -47,10 +43,6 @@ describe("Settings page", () => {
 
   const visitLoadSettings = (sitePath: string) =>
     cy.visitLoadSettings(TEST_REPO_NAME, sitePath)
-
-  Cypress.Cookies.defaults({
-    preserve: COOKIE_NAME,
-  })
 
   before(() => {
     cy.setSessionDefaults()
