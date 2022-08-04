@@ -2,7 +2,6 @@ import "cypress-file-upload"
 import { E2E_DEFAULT_WAIT_TIME } from "../fixtures/constants"
 
 describe("Files", () => {
-  Cypress.config("baseUrl", Cypress.env("BASEURL"))
   const COOKIE_NAME = Cypress.env("COOKIE_NAME")
   const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
   const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")

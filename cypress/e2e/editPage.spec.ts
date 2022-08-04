@@ -7,9 +7,6 @@ import {
 
 import { Interceptors } from "../fixtures/constants"
 
-Cypress.config("baseUrl", Cypress.env("BASEURL"))
-Cypress.config("defaultCommandTimeout", 5000)
-
 // Constants
 const CMS_BASEURL = Cypress.env("BASEURL")
 const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")

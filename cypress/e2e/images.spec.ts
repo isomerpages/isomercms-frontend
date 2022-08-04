@@ -6,7 +6,6 @@ import {
 } from "../fixtures/constants"
 
 describe("Images", () => {
-  Cypress.config("baseUrl", Cypress.env("BASEURL"))
   const COOKIE_NAME = Cypress.env("COOKIE_NAME")
   const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
   const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")

@@ -7,13 +7,10 @@ import {
 } from "../fixtures/constants"
 
 describe("Resource category page", () => {
-  Cypress.config("defaultCommandTimeout", 5000)
-
   const CMS_BASEURL = Cypress.env("BASEURL")
   const COOKIE_NAME = Cypress.env("COOKIE_NAME")
   const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
   const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
-  Cypress.config("baseUrl", Cypress.env("BASEURL"))
 
   const TEST_RESOURCE_ROOM_NAME = "resources"
   const TEST_CATEGORY = "Test Page Folder"

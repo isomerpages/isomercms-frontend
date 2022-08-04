@@ -14,6 +14,15 @@ export default defineConfig({
 
   e2e: {
     specPattern: "cypress/e2e/**/*.{js,jsx,ts,tsx}",
+    setupNodeEvents: (on, config) => {
+      // NOTE: Disabling as cypress docs give this form
+      // Refer here: https://docs.cypress.io/api/plugins/configuration-api#Usage
+      // eslint-disable-next-line no-param-reassign
+      config.baseUrl = process.env.CYPRESS_BASEURL || ""
+
+      // IMPORTANT return the updated config object
+      return config
+    },
   },
 
   component: {

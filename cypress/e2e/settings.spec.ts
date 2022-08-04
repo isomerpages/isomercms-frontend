@@ -5,9 +5,6 @@ import {
 } from "../fixtures/constants"
 
 describe("Settings page", () => {
-  Cypress.config("baseUrl", Cypress.env("BASEURL"))
-  Cypress.config("defaultCommandTimeout", 6000)
-
   const BASE_TITLE = "TEST"
   const BASE_PRIMARY_COLOR = "#6031b6"
   const BASE_SECONDARY_COLOR = "#4372d6"
