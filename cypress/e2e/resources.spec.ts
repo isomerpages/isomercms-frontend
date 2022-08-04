@@ -1,16 +1,10 @@
 import { slugifyCategory } from "utils"
 
-import {
-  E2E_DEFAULT_WAIT_TIME,
-  E2E_EXTENDED_TIMEOUT,
-  E2E_CHANGE_WAIT_TIME,
-} from "../fixtures/constants"
-
 describe("Resources page", () => {
-  const CMS_BASEURL = Cypress.env("BASEURL")
-  const COOKIE_NAME = Cypress.env("COOKIE_NAME")
-  const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
-  const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
+  const CMS_BASEURL: string = Cypress.env("BASEURL")
+  const COOKIE_NAME: string = Cypress.env("COOKIE_NAME")
+  const COOKIE_VALUE: string = Cypress.env("COOKIE_VALUE")
+  const TEST_REPO_NAME: string = Cypress.env("TEST_REPO_NAME")
   const TEST_RESOURCE_ROOM_NAME = "resources"
 
   const TEST_CATEGORY = "Test Folder"
@@ -26,6 +20,15 @@ describe("Resources page", () => {
   })
 
   beforeEach(() => {
+    // NOTE: Interceptors are set up for requests hitting the network
+    // This is because the network round trip time might be extremely long
+    // and using the inbuilt assertion for buttons might timeout (>4s)
+    // even when the request is successful.
+    // This waits on the request till it succeeds or timeouts (>30s).
+    // Refer here for default wait times: https://docs.cypress.io/guides/references/configuration#Timeouts
+    cy.intercept("POST", "/v2/**").as("saveRequest")
+    cy.intercept("DELETE", "/v2/**").as("deleteRequest")
+
     // Before each test, we can automatically preserve the cookie.
     // This means it will not be cleared before the NEXT test starts.
     Cypress.Cookies.preserveOnce(COOKIE_NAME)
@@ -41,12 +44,11 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to create a new resource category", () => {
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains("a", "Create category").click()
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY)
     cy.contains("Next").click()
 
-    cy.wait(E2E_CHANGE_WAIT_TIME)
+    cy.wait("@saveRequest")
 
     // Asserts
     // 1. Redirect to newly created folder
@@ -61,7 +63,6 @@ describe("Resources page", () => {
   })
 
   it("Resources page should not allow user to create a new resource category with invalid name", () => {
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains("a", "Create category").click()
 
     // Disabled button for special characters
@@ -82,11 +83,12 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to create another new resource category", () => {
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains("a", "Create category").click()
 
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_2)
     cy.contains("Next").click()
+
+    cy.wait("@saveRequest")
 
     // Asserts
     // 1. Redirect to newly created folder
@@ -96,8 +98,7 @@ describe("Resources page", () => {
     )
 
     // 2. If user goes back to Resources, they should be able to see that the folder exists
-    cy.contains("a", "Resources").click()
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
+    cy.contains("a", "Resources").click().should("not.exist")
     cy.contains(TEST_CATEGORY_2)
   })
 
@@ -123,18 +124,14 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to rename a resource category", () => {
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
-    cy.contains("button", TEST_CATEGORY_2).parent().parent().as("folderCard")
+    cy.contains("a", TEST_CATEGORY_2).as("folderCard")
     cy.clickContextMenuItem("@folderCard", "settings")
 
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_RENAMED)
     cy.contains("Save").click()
+    cy.wait("@saveRequest")
 
-    // Set a wait time because the API takes time
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
-    cy.contains("Successfully updated directory settings", {
-      timeout: E2E_EXTENDED_TIMEOUT,
-    }).should("exist")
+    cy.contains("Successfully updated directory settings").should("exist")
 
     cy.contains(TEST_CATEGORY_RENAMED)
   })
@@ -163,6 +160,8 @@ describe("Resources page", () => {
       .as("folderCard")
     cy.clickContextMenuItem("@folderCard", "Delete")
     cy.contains(":button", "delete").click()
+
+    cy.wait("@deleteRequest")
 
     cy.contains("Successfully deleted directory").should("exist")
 
