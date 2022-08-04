@@ -24,7 +24,7 @@ declare namespace Cypress {
     setSessionDefaults(): Chainable<void>
     /**
      * Setup the default interceptors for post/get/delete requests.
-     * These interceptors are aliased to the Interceptors enum.
+     * These interceptors are aliased to the `Interceptors` enum.
      */
     setupDefaultInterceptors(): void
     uploadMedia(

@@ -5,11 +5,13 @@ import {
   titleToPageFileName,
 } from "utils"
 
-import { Interceptors } from "../fixtures/constants"
+import {
+  CMS_BASEURL,
+  Interceptors,
+  TEST_REPO_NAME,
+} from "../fixtures/constants"
 
 // Constants
-const CMS_BASEURL = Cypress.env("BASEURL")
-const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
 
 const PRIMARY_COLOUR = "rgb(255, 0, 0)"
 const SECONDARY_COLOUR = "rgb(0, 255, 0)"

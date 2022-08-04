@@ -22,3 +22,5 @@ export enum Interceptors {
   POST = "@postRequest",
   DELETE = "@deleteRequest",
 }
+
+export const CMS_BASEURL: string | undefined = Cypress.env("BASEURL")
