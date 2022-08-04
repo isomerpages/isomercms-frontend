@@ -44,7 +44,11 @@ describe("Move flow", () => {
     })
 
     it("Should be able to navigate from Workspace to subfolder back to Workspace via MoveModal buttons", () => {
-      cy.contains("a", TITLE_WORKSPACE_TO_FOLDER).as("pageItem").should("exist")
+      cy.contains("button", TITLE_WORKSPACE_TO_FOLDER)
+        .parent()
+        .parent()
+        .as("pageItem")
+        .should("exist")
       cy.clickContextMenuItem("@pageItem", "Move to")
 
       cy.contains(`Move Here`)
@@ -124,7 +128,11 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move page from Workspace to itself and show correct success message", () => {
-      cy.contains("a", TITLE_WORKSPACE_TO_FOLDER).as("pageItem").should("exist")
+      cy.contains("button", TITLE_WORKSPACE_TO_FOLDER)
+        .parent()
+        .parent()
+        .as("pageItem")
+        .should("exist")
       cy.clickContextMenuItem("@pageItem", "Move to")
 
       cy.contains(`Move Here`)
@@ -137,7 +145,11 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move a page from Workspace to folder", () => {
-      cy.contains("a", TITLE_WORKSPACE_TO_FOLDER).as("pageItem").should("exist")
+      cy.contains("button", TITLE_WORKSPACE_TO_FOLDER)
+        .parent()
+        .parent()
+        .as("pageItem")
+        .should("exist")
       cy.clickContextMenuItem("@pageItem", "Move to")
 
       cy.contains(`Move Here`)
@@ -187,7 +199,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move a page from folder to subfolder", () => {
-      cy.contains("a", TITLE_WORKSPACE_TO_SUBFOLDER)
+      cy.contains("button", TITLE_WORKSPACE_TO_SUBFOLDER)
+        .parent()
+        .parent()
         .as("pageItem")
         .should("exist")
       cy.clickContextMenuItem("@pageItem", "Move to")
@@ -262,7 +276,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to navigate from folder to Workspace to subfolder back to folder via MoveModal buttons", () => {
-      cy.contains("a", TITLE_FOLDER_TO_WORKSPACE)
+      cy.contains("button", TITLE_FOLDER_TO_WORKSPACE)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Move to")
@@ -338,7 +354,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move page from folder to itself and show correct success message", () => {
-      cy.contains("a", TITLE_FOLDER_TO_WORKSPACE)
+      cy.contains("button", TITLE_FOLDER_TO_WORKSPACE)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Move to")
@@ -350,7 +368,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move a page from folder to Workspace", () => {
-      cy.contains("a", TITLE_FOLDER_TO_WORKSPACE)
+      cy.contains("button", TITLE_FOLDER_TO_WORKSPACE)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Move to")
@@ -391,7 +411,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move a page from folder to subfolder", () => {
-      cy.contains("a", TITLE_FOLDER_TO_SUBFOLDER)
+      cy.contains("button", TITLE_FOLDER_TO_SUBFOLDER)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Move to")
@@ -450,7 +472,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to navigate from subfolder to folder to Workspace back to subfolder via MoveModal buttons", () => {
-      cy.contains("a", TITLE_SUBFOLDER_TO_WORKSPACE)
+      cy.contains("button", TITLE_SUBFOLDER_TO_WORKSPACE)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Move to")
@@ -508,7 +532,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move page from subfolder to itself and show correct success message", () => {
-      cy.contains("a", TITLE_SUBFOLDER_TO_WORKSPACE)
+      cy.contains("button", TITLE_SUBFOLDER_TO_WORKSPACE)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Move to")
@@ -521,7 +547,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move a page from subfolder to Workspace", () => {
-      cy.contains("a", TITLE_SUBFOLDER_TO_WORKSPACE)
+      cy.contains("button", TITLE_SUBFOLDER_TO_WORKSPACE)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Move to")
@@ -581,7 +609,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move a page from subfolder to folder", () => {
-      cy.contains("a", TITLE_SUBFOLDER_TO_FOLDER)
+      cy.contains("button", TITLE_SUBFOLDER_TO_FOLDER)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Move to")
@@ -637,7 +667,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to navigate from Resource Category to Resource Room back to Resource Category via MoveModal buttons", () => {
-      cy.contains("a", TITLE_RESOURCE_PAGE)
+      cy.contains("button", TITLE_RESOURCE_PAGE)
+        .parent()
+        .parent()
         .parent()
         .as("resourcePage")
         .should("exist")
@@ -678,7 +710,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move page from resource category to itself and show correct success message", () => {
-      cy.contains("a", TITLE_RESOURCE_PAGE)
+      cy.contains("button", TITLE_RESOURCE_PAGE)
+        .parent()
+        .parent()
         .parent()
         .as("resourcePage")
         .should("exist")
@@ -691,7 +725,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move page from resource category to another resource category", () => {
-      cy.contains("a", TITLE_RESOURCE_PAGE)
+      cy.contains("button", TITLE_RESOURCE_PAGE)
+        .parent()
+        .parent()
         .parent()
         .as("resourcePage")
         .should("exist")

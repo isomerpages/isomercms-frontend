@@ -8,9 +8,9 @@ export default defineConfig({
 
   // NOTE: Cypress keeps 50 tests in memory by default;
   // Unfortunately, this leads to OOM issues occasionally.
-  // This has been reduced to 10 to help with the OOM issues.
+  // This has been reduced to 5 to help with the OOM issues.
   // Refer here: https://docs.cypress.io/guides/references/configuration#Global for details.
-  numTestsKeptInMemory: 10,
+  numTestsKeptInMemory: 5,
 
   e2e: {
     specPattern: "cypress/e2e/**/*.{js,jsx,ts,tsx}",
