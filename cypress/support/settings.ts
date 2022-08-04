@@ -4,6 +4,7 @@ import {
   E2E_USER,
   LOCAL_STORAGE_USERID_KEY,
   LOCAL_STORAGE_USER_KEY,
+  TEST_PRIMARY_COLOR,
   TEST_REPO_NAME,
 } from "../fixtures/constants"
 
@@ -21,7 +22,6 @@ Cypress.Commands.add("visitLoadSettings", (siteName, sitePath) => {
 })
 
 Cypress.Commands.add("setDefaultPrimaryColour", () => {
-  const TEST_PRIMARY_COLOR_VALUES = [255, 0, 0]
   cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
 
   window.localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(E2E_USER))
@@ -29,20 +29,11 @@ Cypress.Commands.add("setDefaultPrimaryColour", () => {
 
   cy.visit(`/sites/${TEST_REPO_NAME}/settings`)
   cy.get("button[aria-label='Select colour']").first().click()
-  cy.contains(/^r/)
-    .siblings()
-    .clear()
-    .type(TEST_PRIMARY_COLOR_VALUES[0].toString())
+  cy.contains(/^r/).siblings().clear().type(TEST_PRIMARY_COLOR[0].toString())
 
-  cy.contains(/^g/)
-    .siblings()
-    .clear()
-    .type(TEST_PRIMARY_COLOR_VALUES[1].toString())
+  cy.contains(/^g/).siblings().clear().type(TEST_PRIMARY_COLOR[1].toString())
 
-  cy.contains(/^b/)
-    .siblings()
-    .clear()
-    .type(TEST_PRIMARY_COLOR_VALUES[2].toString())
+  cy.contains(/^b/).siblings().clear().type(TEST_PRIMARY_COLOR[2].toString())
   cy.contains("button", "Select").click()
 
   cy.saveSettings()

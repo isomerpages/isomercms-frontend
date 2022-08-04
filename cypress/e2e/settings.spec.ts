@@ -1,7 +1,10 @@
+import {
+  COOKIE_NAME,
+  TEST_PRIMARY_COLOR,
+  TEST_REPO_NAME,
+} from "../fixtures/constants"
+
 describe("Settings page", () => {
-  const COOKIE_NAME = Cypress.env("COOKIE_NAME")
-  const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
-  const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
   Cypress.config("baseUrl", Cypress.env("BASEURL"))
   Cypress.config("defaultCommandTimeout", 6000)
 
@@ -29,7 +32,6 @@ describe("Settings page", () => {
   const TEST_FACEBOOK_PIXEL_ID = "12345"
   const TEST_GOOGLE_ANALYTICS_ID = "UA-39345131-3"
   const TEST_LINKEDIN_INSIGHTS_ID = "1234567"
-  const TEST_PRIMARY_COLOR = [255, 0, 0] // ([R, G, B])
   const TEST_SECONDARY_COLOR = [0, 255, 0] // ([R, G, B])
   const TEST_FACEBOOK_LINK = "https://www.facebook.com/testfb"
   const TEST_LINKEDIN_LINK = "https://www.linkedin.com/company/testagency"
@@ -54,11 +56,10 @@ describe("Settings page", () => {
   })
 
   before(() => {
-    cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
+    cy.setSessionDefaults()
     cy.visit("/sites")
     cy.contains(TEST_REPO_NAME).click()
 
-    window.localStorage.setItem("userId", "test")
     visitLoadSettings(`/sites/${TEST_REPO_NAME}/settings`)
 
     // Reset page input field states
@@ -117,7 +118,7 @@ describe("Settings page", () => {
   })
 
   beforeEach(() => {
-    window.localStorage.setItem("userId", "test")
+    cy.setSessionDefaults()
     visitLoadSettings(`/sites/${TEST_REPO_NAME}/settings`)
     // Double check that settings are loaded before running tests cos sometimes the tests run too quickly
     cy.get("#title").should((elem) => {
@@ -159,16 +160,16 @@ describe("Settings page", () => {
     cy.get("@showReach").should("not.be.checked")
   })
 
-  it("Should change Logos and have change reflect correctly on save", () => {
+  it.only("Should change Logos and have change reflect correctly on save", () => {
     cy.get("button:contains(Upload Image)").each((el, index) => {
       cy.wrap(el).click()
       cy.contains(TEST_LOGO_IMAGES[index]).click()
       cy.contains("button", "Select").should("not.be.disabled").click()
     })
 
-    cy.saveSettings() // Save
+    cy.saveSettings()
 
-    cy.contains("p", "Shareicon")
+    cy.contains(IMAGE_DIR + TEST_LOGO_IMAGES[0])
       .next()
       .find("input")
       .should("have.value", IMAGE_DIR + TEST_LOGO_IMAGES[0])
