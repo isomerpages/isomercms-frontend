@@ -1,4 +1,4 @@
-import { TextProps, Text, Flex, Icon, Box, HStack } from "@chakra-ui/react"
+import { TextProps, Text, Icon, HStack } from "@chakra-ui/react"
 
 interface SectionCaptionProps extends TextProps {
   icon: (props: React.SVGProps<SVGSVGElement>) => JSX.Element
