@@ -160,7 +160,7 @@ describe("Settings page", () => {
     cy.get("@showReach").should("not.be.checked")
   })
 
-  it.only("Should change Logos and have change reflect correctly on save", () => {
+  it("Should change Logos and have change reflect correctly on save", () => {
     cy.get("button:contains(Upload Image)").each((el, index) => {
       cy.wrap(el).click()
       cy.contains(TEST_LOGO_IMAGES[index]).click()

@@ -51,7 +51,7 @@ describe("Workspace Pages flow", () => {
     PARSED_EDITED_TEST_FOLDER_WITH_PAGES_TITLE
   )
 
-  describe.only("Create page, delete page, edit page settings in Workspace", () => {
+  describe("Create page, delete page, edit page settings in Workspace", () => {
     beforeEach(() => {
       cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
       window.localStorage.setItem("userId", "test")
