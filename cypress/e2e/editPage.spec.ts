@@ -5,6 +5,8 @@ import {
   titleToPageFileName,
 } from "utils"
 
+import { Interceptors } from "../fixtures/constants"
+
 Cypress.config("baseUrl", Cypress.env("BASEURL"))
 Cypress.config("defaultCommandTimeout", 5000)
 
@@ -16,16 +18,7 @@ const PRIMARY_COLOUR = "rgb(255, 0, 0)"
 const SECONDARY_COLOUR = "rgb(0, 255, 0)"
 describe("editPage.spec", () => {
   beforeEach(() => {
-    // NOTE: Interceptors are set up for requests hitting the network
-    // This is because the network round trip time might be extremely long
-    // and using the inbuilt assertion for buttons might timeout (>4s)
-    // even when the request is successful.
-    // This waits on the request till it succeeds or timeouts (>30s).
-    // Refer here for default wait times: https://docs.cypress.io/guides/references/configuration#Timeouts
-    cy.intercept("POST", "/v2/**").as("saveRequest")
-    cy.intercept("DELETE", "/v2/**").as("deleteRequest")
-    cy.intercept("GET", "/v2/**").as("getRequest")
-
+    cy.setupDefaultInterceptors()
     cy.setSessionDefaults()
   })
 
@@ -53,16 +46,17 @@ describe("editPage.spec", () => {
     before(() => {
       cy.setDefaultPrimaryColour()
 
-      // Set up test resource categories
       // NOTE: We need to repeat the interceptor here as
       // cypress resolves by type before nesting level.
       // Hence, the alias here will not be resolved as the `before` hook
       // will be resolved before the outer `beforeEach`
-      cy.intercept("POST", "/v2/**").as("saveRequest")
+      cy.setupDefaultInterceptors()
+
+      // Set up test resource categories
       cy.visit(`/sites/${TEST_REPO_NAME}/workspace`)
       cy.contains("button", "Create page").click()
       cy.get("#title").clear().type(TEST_UNLINKED_PAGE_TITLE)
-      cy.contains("Save").click().wait("@saveRequest")
+      cy.contains("Save").click().wait(Interceptors.POST)
     })
 
     beforeEach(() => {
@@ -122,7 +116,7 @@ describe("editPage.spec", () => {
     })
 
     it("Edit page (unlinked) should allow user to add existing image", () => {
-      cy.get(".image").click().wait("@getRequest")
+      cy.get(".image").click().wait(Interceptors.GET)
       cy.contains(DEFAULT_IMAGE_TITLE).click()
       cy.contains(":button", "Select").click()
 
@@ -133,7 +127,7 @@ describe("editPage.spec", () => {
     })
 
     it("Edit page (unlinked) should allow user to upload and add new image", () => {
-      cy.get(".image").click().wait("@getRequest")
+      cy.get(".image").click().wait(Interceptors.GET)
       cy.contains(":button", "Add new").click()
 
       cy.get("#file-upload").attachFile(ADDED_IMAGE_PATH)
@@ -141,7 +135,7 @@ describe("editPage.spec", () => {
       cy.get("button")
         .contains(/^Upload$/)
         .click()
-        .wait("@saveRequest")
+        .wait(Interceptors.POST)
 
       cy.contains(":button", "Select").click()
 
@@ -152,7 +146,7 @@ describe("editPage.spec", () => {
     })
 
     it("Edit page (unlinked) should allow user to upload and add new file", () => {
-      cy.get(".file").click().wait("@getRequest")
+      cy.get(".file").click().wait(Interceptors.GET)
       cy.contains(":button", "Add new").click()
 
       cy.get("#file-upload").attachFile(ADDED_FILE_PATH)
@@ -160,7 +154,7 @@ describe("editPage.spec", () => {
       cy.get("button")
         .contains(/^Upload$/)
         .click()
-        .wait("@saveRequest")
+        .wait(Interceptors.POST)
 
       cy.contains(":button", "Select").click()
 
@@ -171,7 +165,7 @@ describe("editPage.spec", () => {
     })
 
     it("Edit page (unlinked) should allow user to add existing file", () => {
-      cy.get(".file").click().wait("@getRequest")
+      cy.get(".file").click().wait(Interceptors.GET)
       cy.contains(ADDED_FILE_TITLE).click()
       cy.contains(":button", "Select").click()
 
@@ -216,7 +210,7 @@ describe("editPage.spec", () => {
       // cypress resolves by type before nesting level.
       // Hence, the alias here will not be resolved as the `before` hook
       // will be resolved before the outer `beforeEach`
-      cy.intercept("POST", "/v2/**").as("saveRequest")
+      cy.setupDefaultInterceptors()
 
       // Set up test collection
       cy.visit(`/sites/${TEST_REPO_NAME}/workspace`)
@@ -225,7 +219,7 @@ describe("editPage.spec", () => {
       cy.contains("Next").click()
       cy.contains("Skip").click()
 
-      cy.wait("@saveRequest")
+      cy.wait(Interceptors.POST)
 
       // Set up test collection page
       cy.visit(
@@ -235,13 +229,13 @@ describe("editPage.spec", () => {
       cy.get("#title").clear().type(TEST_PAGE_TITLE)
       cy.contains("Save").click()
 
-      cy.wait("@saveRequest")
+      cy.wait(Interceptors.POST)
     })
 
     beforeEach(() => {
       cy.visit(
         `/sites/${TEST_REPO_NAME}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_ENCODED}`
-      ).wait("@getRequest")
+      ).wait(Interceptors.GET)
     })
 
     it("Edit page (collection) should have correct colour", () => {
@@ -340,33 +334,32 @@ describe("editPage.spec", () => {
     before(() => {
       cy.setDefaultPrimaryColour()
 
-      // Set up test resource categories
       // NOTE: We need to repeat the interceptor here as
       // cypress resolves by type before nesting level.
       // Hence, the alias here will not be resolved as the `before` hook
       // will be resolved before the outer `beforeEach`
-      cy.intercept("POST", "/v2/**").as("saveRequest")
-      cy.intercept("GET", "/v2/**").as("getRequest")
+      cy.setupDefaultInterceptors()
 
+      // Set up test resource categories
       // Set up test resource category
       cy.visit(
         `/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM}`
-      ).wait("@getRequest")
+      ).wait(Interceptors.GET)
       cy.contains("Create category").click()
       cy.get('input[placeholder="Title"]').type(TEST_CATEGORY)
       cy.contains("Next").click()
 
-      cy.wait("@saveRequest")
+      cy.wait(Interceptors.POST)
 
       // Set up test resource page
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
       )
-      cy.contains("Create page").click().wait("@getRequest")
+      cy.contains("Create page").click().wait(Interceptors.GET)
 
       cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE)
       cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE)
-      cy.contains("Save").click().wait("@saveRequest")
+      cy.contains("Save").click().wait(Interceptors.POST)
     })
 
     beforeEach(() => {
