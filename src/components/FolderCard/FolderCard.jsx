@@ -87,9 +87,16 @@ export const FolderCard = ({
         <Box
           position="relative"
           className={`${contentStyles.component} ${contentStyles.card} ${elementStyles.folderCard}`}
+          p={0}
         >
-          <LinkBox>
-            <LinkOverlay as={RouterLink} to={generatedLink}>
+          <LinkBox w="100%" p="1rem">
+            <LinkOverlay
+              as={RouterLink}
+              to={generatedLink}
+              _hover={{
+                textColor: "inherit",
+              }}
+            >
               <FolderCardContent />
             </LinkOverlay>
           </LinkBox>
