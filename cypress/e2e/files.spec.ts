@@ -1,11 +1,7 @@
 import "cypress-file-upload"
-import { E2E_DEFAULT_WAIT_TIME } from "../fixtures/constants"
+import { Interceptors, TEST_REPO_NAME } from "../fixtures/constants"
 
 describe("Files", () => {
-  const COOKIE_NAME = Cypress.env("COOKIE_NAME")
-  const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
-  const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
-
   const FILE_TITLE = "singapore.pdf"
   const OTHER_FILE_TITLE = "america.pdf"
   const EXISTING_FILE_TITLE = "New Uber BrandSystem QuickGuide.pdf"
@@ -20,11 +16,13 @@ describe("Files", () => {
 
   describe("Create file, delete file, edit file settings in Files", () => {
     beforeEach(() => {
-      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-      window.localStorage.setItem("userId", "test")
+      cy.setSessionDefaults()
+      cy.setupDefaultInterceptors()
 
-      cy.visit(`/sites/${TEST_REPO_NAME}/media/files/mediaDirectory/files`)
-      cy.wait(E2E_DEFAULT_WAIT_TIME)
+      cy.visit(
+        `/sites/${TEST_REPO_NAME}/media/files/mediaDirectory/files`
+      ).wait(Interceptors.GET)
+      cy.contains("Verify").should("not.exist")
     })
 
     it("Files should contain Directories and Ungrouped Files", () => {
@@ -35,29 +33,16 @@ describe("Files", () => {
     })
 
     it("Should be able to create new file with valid title", () => {
-      // Set intercept to listen for POST request on server
-      cy.intercept({
-        method: "POST",
-        url: `/v2/sites/${TEST_REPO_NAME}/media/files/pages`,
-      }).as("createFile")
-
-      cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH)
+      cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH).wait(Interceptors.POST)
 
       // ASSERTS
-      cy.wait("@createFile") // should intercept POST request
       cy.contains(FILE_TITLE).should("exist") // file should be contained in Files
     })
 
     it("Should be able to edit a file", () => {
-      // Set intercept to listen for POST request on server
-      cy.intercept({
-        method: "POST",
-        url: `/v2/sites/${TEST_REPO_NAME}/media/files/pages/${FILE_TITLE}`,
-      }).as("renameFile")
       cy.renameMedia(FILE_TITLE, OTHER_FILE_TITLE)
 
       // ASSERTS
-      cy.wait("@renameFile")
       cy.contains(OTHER_FILE_TITLE).should("exist") // file should be contained in Files
     })
 
@@ -74,6 +59,7 @@ describe("Files", () => {
 
       // title should not allow for names without extensions
       cy.uploadMedia(MISSING_EXTENSION, TEST_FILE_PATH, ACTION_DISABLED)
+
       // ASSERTS
       cy.contains("Title must end with the following extension")
       cy.contains("button", /^Upload$/).should("be.disabled") // necessary as multiple buttons containing Upload on page
@@ -81,6 +67,7 @@ describe("Files", () => {
 
       // users should not be able to create file with duplicated filename in folder
       cy.uploadMedia(OTHER_FILE_TITLE, TEST_FILE_PATH, ACTION_DISABLED)
+
       // ASSERTS
       cy.contains("Title is already in use. Please choose a different title.")
       cy.contains("button", /^Upload$/).should("be.disabled") // necessary as multiple buttons containing Upload on page
@@ -99,6 +86,7 @@ describe("Files", () => {
 
       // title should not allow for names without extensions
       cy.renameMedia(OTHER_FILE_TITLE, MISSING_EXTENSION, ACTION_DISABLED)
+
       // ASSERTS
       cy.contains("Title must end with the following extension")
       cy.contains("button", /^Save$/).should("be.disabled") // necessary as multiple buttons containing Upload on page
@@ -113,7 +101,8 @@ describe("Files", () => {
     it("Should be able to delete file", () => {
       cy.contains("button", OTHER_FILE_TITLE).as("filePreview")
       cy.clickContextMenuItem("@filePreview", "Delete")
-      cy.contains("button", "delete").click()
+      cy.contains("button", "delete").click().wait(Interceptors.DELETE)
+
       // ASSERTS
       cy.contains(OTHER_FILE_TITLE).should("not.exist") // File name should not exist in Files
     })
@@ -121,14 +110,16 @@ describe("Files", () => {
 
   describe("Create file directory, delete file directory, edit file directory settings in Files", () => {
     beforeEach(() => {
-      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-      window.localStorage.setItem("userId", "test")
+      cy.setSessionDefaults()
+      cy.setupDefaultInterceptors()
 
-      cy.visit(`/sites/${TEST_REPO_NAME}/media/files/mediaDirectory/files`)
+      cy.visit(
+        `/sites/${TEST_REPO_NAME}/media/files/mediaDirectory/files`
+      ).wait(Interceptors.GET)
+      cy.contains("Verify").should("not.exist")
     })
 
     it("Should be able to create new file directory", () => {
-      // Set intercept to listen for POST request on server
       cy.contains("Create new directory").click()
       cy.get("#newDirectoryName").clear().type(DIRECTORY_TITLE)
 
@@ -177,8 +168,7 @@ describe("Files", () => {
 
   describe("Create file, delete file, edit file settings, and move files in file directories", () => {
     before(() => {
-      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-      window.localStorage.setItem("userId", "test")
+      cy.setSessionDefaults()
 
       cy.visit(`/sites/${TEST_REPO_NAME}/media/files/mediaDirectory/files`)
       cy.contains("Create new directory").click()
@@ -197,16 +187,16 @@ describe("Files", () => {
     })
 
     beforeEach(() => {
-      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-      window.localStorage.setItem("userId", "test")
-
+      cy.setSessionDefaults()
+      cy.setupDefaultInterceptors()
       cy.visit(
         `/sites/${TEST_REPO_NAME}/media/files/mediaDirectory/files%2F${DIRECTORY_TITLE}`
       )
+      cy.contains("Verify").should("not.exist")
     })
 
     it("Should be able to add file to file directory", () => {
-      cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH)
+      cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH).wait(Interceptors.POST)
 
       // ASSERTS
       cy.contains("Media file successfully uploaded").should("exist")
