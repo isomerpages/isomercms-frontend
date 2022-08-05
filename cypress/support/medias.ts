@@ -1,7 +1,4 @@
 import "cypress-pipe"
-import { E2E_DEFAULT_WAIT_TIME } from "../fixtures/constants"
-
-const CUSTOM_TIMEOUT = 30000 // 30 seconds
 
 Cypress.Commands.add("uploadMedia", (mediaTitle, mediaPath, disableAction) => {
   cy.contains(`Upload new`).click().get("#file-upload").attachFile(mediaPath)
@@ -18,8 +15,7 @@ Cypress.Commands.add(
   "renameMedia",
   (mediaTitle, newMediaTitle, disableAction) => {
     cy.contains(mediaTitle).click()
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
-    cy.get("#name").clear().type(newMediaTitle).blur()
+    cy.get("#name").should("exist").clear().type(newMediaTitle).blur()
     if (!disableAction)
       cy.get("button").contains("Save").click().should("not.exist")
   }
@@ -30,13 +26,14 @@ Cypress.Commands.add("moveMedia", (mediaTitle, newMediaFolder) => {
   cy.contains("Move to").click()
   cy.get("[data-cy=menu-dropdown]").children().should("have.length.gt", 3) // assert that "Move to" options have loaded
   if (newMediaFolder) {
-    cy.get(`[data-cy=${newMediaFolder}]`, { timeout: CUSTOM_TIMEOUT })
+    cy.get(`[data-cy=${newMediaFolder}]`)
+      .should("exist")
       .should("have.length.gte", 1)
       .should("be.visible")
       .first()
       .click()
   } else {
-    cy.get(`[id^="breadcrumbItem-0"]`, { timeout: CUSTOM_TIMEOUT })
+    cy.get(`[id^="breadcrumbItem-0"]`)
       .should("be.visible")
       // breadcrumb elements in FileMoveMenuDropdown are flaky, so we need to
       // use cypress-pipe
