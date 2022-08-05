@@ -115,8 +115,10 @@ describe("editPage.spec", () => {
     })
 
     it("Edit page (unlinked) should allow user to add existing image", () => {
-      cy.get(".image").click().wait(Interceptors.GET)
-      cy.contains(DEFAULT_IMAGE_TITLE).click()
+      // NOTE: Multiple GET requests are fired off and hence, unable to use default GET to match
+      cy.intercept("**/images").as("getImages")
+      cy.get(".image").click().wait("@getImages")
+      cy.contains(DEFAULT_IMAGE_TITLE).should("exist").click()
       cy.contains(":button", "Select").click()
 
       cy.get("#altText").clear().type("Hello World")
@@ -184,7 +186,7 @@ describe("editPage.spec", () => {
     })
   })
 
-  describe("Edit collection page", () => {
+  describe.only("Edit collection page", () => {
     const TEST_FOLDER_TITLE = "Test Edit Collection Category"
     const TEST_FOLDER_TITLE_SLUGIFIED = slugifyCategory(TEST_FOLDER_TITLE)
 
@@ -293,7 +295,9 @@ describe("editPage.spec", () => {
     })
 
     it("Edit page (collection) should allow user to add existing image", () => {
-      cy.get(".image").click()
+      // NOTE: Multiple GET requests are fired off and hence, unable to use default GET to match
+      cy.intercept("**/images").as("getImages")
+      cy.get(".image").click().wait("@getImages")
       cy.contains(DEFAULT_IMAGE_TITLE).click()
       cy.contains(":button", "Select").click()
 
