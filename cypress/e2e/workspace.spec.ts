@@ -138,7 +138,11 @@ describe("Workspace Pages flow", () => {
 
     it("Should be able to edit existing page details with Chinese title and valid permalink", () => {
       // Arrange
-      cy.contains("a", TEST_PAGE_TITLE).as("pageCard").should("exist")
+      cy.contains("button", TEST_PAGE_TITLE)
+        .parent()
+        .parent()
+        .as("pageCard")
+        .should("exist")
 
       // Act
       // User should be able edit page details
@@ -160,7 +164,11 @@ describe("Workspace Pages flow", () => {
 
     it("Should be able to edit existing page details with Tamil title and valid permalink", () => {
       // Arrange
-      cy.contains("a", EDITED_TEST_PAGE_TITLE).as("pageCard").should("exist")
+      cy.contains("button", EDITED_TEST_PAGE_TITLE)
+        .parent()
+        .parent()
+        .as("pageCard")
+        .should("exist")
 
       // Act
       // User should be able edit page details
@@ -191,7 +199,11 @@ describe("Workspace Pages flow", () => {
 
       // Act
       // User should be able to remove the created test page card
-      cy.contains("a", EDITED_TEST_PAGE_TITLE_2).as("pageCard").should("exist")
+      cy.contains("button", EDITED_TEST_PAGE_TITLE_2)
+        .parent()
+        .parent()
+        .as("pageCard")
+        .should("exist")
       cy.clickContextMenuItem("@pageCard", "Delete")
       cy.contains("button", "delete").should("exist").click()
 
@@ -296,7 +308,9 @@ describe("Workspace Pages flow", () => {
     })
 
     it("Should be able to rename a folder", () => {
-      cy.contains("a", PRETTIFIED_FOLDER_WITH_PAGES_TITLE)
+      cy.contains("button", PRETTIFIED_FOLDER_WITH_PAGES_TITLE)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "settings")
@@ -320,29 +334,36 @@ describe("Workspace Pages flow", () => {
       cy.get(".CodeMirror-scroll").should("contain", TEST_PAGE_CONTENT)
     })
 
-    it("Should be able to delete a folder", () => {
+    it("Should be able to delete a folder with no pages", () => {
       // Arrange
-      cy.contains("a", PRETTIFIED_FOLDER_NO_PAGES_TITLE)
+      cy.contains("button", PRETTIFIED_FOLDER_NO_PAGES_TITLE)
+        .parent()
+        .parent()
         .as("emptyFolderItem")
         .should("exist")
-      cy.contains("a", PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE).as(
-        "folderItem"
-      )
 
       // Act
       cy.clickContextMenuItem("@emptyFolderItem", "Delete")
-      cy.contains("button", "delete").click()
-
-      cy.clickContextMenuItem("@folderItem", "Delete")
-      cy.contains("button", "delete").click()
+      cy.contains("button", "delete").click().should("not.exist")
 
       // Assert
-      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("not.exist")
-      cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("not.exist")
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).should("not.exist")
+    })
+
+    it("Should be able to delete a folder with pages", () => {
+      // Arrange
+      cy.contains("button", PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE)
+        .parent()
+        .parent()
+        .as("folderItem")
+        .should("exist")
+
+      // Act
+      cy.clickContextMenuItem("@folderItem", "Delete")
+      cy.contains("button", "delete").click().should("not.exist")
+
+      // Assert
+      cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE).should("not.exist")
     })
   })
 })

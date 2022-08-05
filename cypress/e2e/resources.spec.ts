@@ -102,7 +102,7 @@ describe("Resources page", () => {
   })
 
   it("Resources page should not allow user to rename a resource category using an invalid name", () => {
-    cy.contains("a", TEST_CATEGORY_2).as("folderCard")
+    cy.contains("button", TEST_CATEGORY_2).parent().parent().as("folderCard")
     cy.clickContextMenuItem("@folderCard", "settings")
 
     // Disabled button for special characters
@@ -124,7 +124,7 @@ describe("Resources page", () => {
 
   it("Resources page should allow user to rename a resource category", () => {
     cy.wait(E2E_DEFAULT_WAIT_TIME)
-    cy.contains("a", TEST_CATEGORY_2).as("folderCard")
+    cy.contains("button", TEST_CATEGORY_2).parent().parent().as("folderCard")
     cy.clickContextMenuItem("@folderCard", "settings")
 
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_RENAMED)
@@ -148,11 +148,19 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to delete a resource category", () => {
-    cy.contains("a", TEST_CATEGORY_RENAMED).as("folderCard")
+    cy.contains("button", TEST_CATEGORY_RENAMED)
+      .parent()
+      .parent()
+      .should("exist")
+      .as("folderCard")
     cy.clickContextMenuItem("@folderCard", "Delete")
     cy.contains(":button", "Cancel").click()
 
-    cy.contains("a", TEST_CATEGORY_RENAMED).as("folderCard")
+    cy.contains("button", TEST_CATEGORY_RENAMED)
+      .parent()
+      .parent()
+      .should("exist")
+      .as("folderCard")
     cy.clickContextMenuItem("@folderCard", "Delete")
     cy.contains(":button", "delete").click()
 

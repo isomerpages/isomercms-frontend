@@ -176,7 +176,7 @@ describe("Files", () => {
     })
   })
 
-  describe.only("Create file, delete file, edit file settings, and move files in file directories", () => {
+  describe("Create file, delete file, edit file settings, and move files in file directories", () => {
     before(() => {
       cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
       window.localStorage.setItem("userId", "test")
