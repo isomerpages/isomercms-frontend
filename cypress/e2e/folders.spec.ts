@@ -305,7 +305,7 @@ describe("Folders flow", () => {
 
       // Asserts
       // 1. New page title should be reflected in Folders
-      cy.reload()
+      cy.reload().wait(Interceptors.GET)
       cy.contains(EDITED_TEST_PAGE_TITLE).should("exist")
 
       // 2. Test page content should still be in Edit Page
@@ -328,7 +328,7 @@ describe("Folders flow", () => {
 
       // Asserts
       // 1. New page title should be reflected in Folders
-      cy.reload()
+      cy.reload().wait(Interceptors.GET)
       cy.contains(EDITED_TEST_PAGE_TITLE_2).should("exist")
 
       // 2. Test page content should still be in Edit Page
@@ -348,7 +348,7 @@ describe("Folders flow", () => {
 
       cy.contains("Successfully deleted page").should("exist")
 
-      cy.reload()
+      cy.reload().wait(Interceptors.GET)
       cy.contains(EDITED_TEST_PAGE_TITLE).should("not.exist")
     })
   })
@@ -455,7 +455,7 @@ describe("Folders flow", () => {
 
       // Asserts
       // 1. New page title should be reflected in Folders
-      cy.reload()
+      cy.reload().wait(Interceptors.GET)
       cy.contains(EDITED_TEST_PAGE_TITLE).should("exist")
 
       // 2. Test page content should still be in Edit Page
@@ -478,7 +478,7 @@ describe("Folders flow", () => {
 
       // Asserts
       // 1. New page title should be reflected in Folders
-      cy.reload()
+      cy.reload().wait(Interceptors.GET)
       cy.contains(EDITED_TEST_PAGE_TITLE_2).should("exist")
 
       // 2. Test page content should still be in Edit Page
@@ -496,7 +496,7 @@ describe("Folders flow", () => {
       cy.contains("button", "delete").click().wait(Interceptors.DELETE)
       cy.contains("Successfully deleted page").should("exist")
 
-      cy.reload()
+      cy.reload().wait(Interceptors.GET)
       cy.contains(EDITED_TEST_PAGE_TITLE).should("not.exist")
     })
   })

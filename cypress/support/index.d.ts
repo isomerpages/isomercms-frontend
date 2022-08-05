@@ -33,11 +33,12 @@ declare namespace Cypress {
       mediaPath: string,
       disableAction?: boolean
     ): Chainable<void>
-    renameMedia(
+    renameUngroupedMedia(
       mediaTitle: string,
       mediaPath: string,
       disableAction?: boolean
     ): Chainable<void>
+    renameDirectoryMedia(mediaTitle: string, mediaPath: string): Chainable<void>
     moveMedia(mediaTitle: string, newMediaFolder: string): Chainable<void>
     deleteMedia(mediaTitle: string, disableAction?: boolean): Chainable<void>
     saveSettings(): Chainable<void>

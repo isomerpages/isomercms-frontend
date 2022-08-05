@@ -40,7 +40,7 @@ describe("Images", () => {
     })
 
     it("Should be able to add image to image album", () => {
-      cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH).wait(Interceptors.POST)
+      cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH)
 
       // ASSERTS
       cy.contains("Media file successfully uploaded").should("exist")
@@ -49,7 +49,9 @@ describe("Images", () => {
 
     it("Should be able to edit an image in image album", () => {
       cy.contains(IMAGE_TITLE).should("exist")
-      cy.renameMedia(IMAGE_TITLE, OTHER_IMAGE_TITLE).wait(Interceptors.POST)
+      cy.renameUngroupedMedia(IMAGE_TITLE, OTHER_IMAGE_TITLE).wait(
+        Interceptors.POST
+      )
 
       // ASSERTS
       cy.contains(OTHER_IMAGE_TITLE).should("exist") // Image should be contained in Images

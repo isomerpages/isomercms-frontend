@@ -186,7 +186,7 @@ describe("editPage.spec", () => {
     })
   })
 
-  describe.only("Edit collection page", () => {
+  describe("Edit collection page", () => {
     const TEST_FOLDER_TITLE = "Test Edit Collection Category"
     const TEST_FOLDER_TITLE_SLUGIFIED = slugifyCategory(TEST_FOLDER_TITLE)
 
