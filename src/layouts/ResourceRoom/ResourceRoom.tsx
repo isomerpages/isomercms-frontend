@@ -324,7 +324,23 @@ const ResourceRoomContent = ({
           </Box>
           <Skeleton isLoaded={isLoading} w="100%">
             {directoryData.length === 0 ? (
-              <Text>No Categories.</Text>
+              <VStack spacing={5}>
+                <EmptyBoxImage />
+                <VStack spacing={0}>
+                  <Center textStyle="subhead-1">
+                    There&apos;s nothing here yet.
+                  </Center>
+                  <Center textStyle="body-2">
+                    Create a resource category to get started.
+                  </Center>
+                </VStack>
+                <Button
+                  variant="solid"
+                  as={RouterLink}
+                  to={`${url}/createDirectory`}
+                  leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
+                />
+              </VStack>
             ) : (
               directoryData &&
               directoryData.length > 0 && (
