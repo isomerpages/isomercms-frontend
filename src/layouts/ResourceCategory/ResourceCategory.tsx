@@ -48,7 +48,7 @@ export const ResourceCategory = (): JSX.Element => {
   const history = useHistory()
 
   const { data: pagesData, isLoading } = useGetResourceCategory(params)
-
+  const isPagesEmpty = !pagesData?.length
   return (
     <>
       <SiteViewLayout>
@@ -61,45 +61,44 @@ export const ResourceCategory = (): JSX.Element => {
           </Box>
         </Section>
         <Section>
-          <Box w="full">
-            <SectionHeader label="Resource Pages">
-              <CreateButton as={RouterLink} to={`${url}/createPage`}>
-                Create page
-              </CreateButton>
-            </SectionHeader>
-            <SectionCaption icon={BiBulb} label="NOTE: ">
-              Pages are automatically ordered by latest date.
-            </SectionCaption>
-          </Box>
+          {!isPagesEmpty && (
+            <Box w="full">
+              <SectionHeader label="Resource Pages">
+                <CreateButton as={RouterLink} to={`${url}/createPage`}>
+                  Create page
+                </CreateButton>
+              </SectionHeader>
+              <SectionCaption icon={BiBulb} label="NOTE: ">
+                Pages are automatically ordered by latest date.
+              </SectionCaption>
+            </Box>
+          )}
           <Skeleton
             isLoaded={!isLoading}
             w="100%"
             h={isLoading ? "10rem" : "fit-content"}
           >
-            {!pagesData ||
-              (!pagesData.length && (
-                <VStack spacing={5}>
-                  <EmptyBoxImage />
-                  <VStack spacing={0}>
-                    <Center textStyle="subhead-1">
-                      There&apos;s nothing here yet.
-                    </Center>
-                    <Center textStyle="body-2">
-                      Create a page to get started.
-                    </Center>
-                  </VStack>
-                  <Button
-                    variant="solid"
-                    as={RouterLink}
-                    to={`${url}/createPage`}
-                    leftIcon={
-                      <Icon as={BiPlus} fontSize="1.5rem" fill="white" />
-                    }
-                  >
-                    Create Resource Page
-                  </Button>
+            {isPagesEmpty && (
+              <VStack spacing={5}>
+                <EmptyBoxImage />
+                <VStack spacing={0}>
+                  <Center textStyle="subhead-1">
+                    There&apos;s nothing here yet.
+                  </Center>
+                  <Center textStyle="body-2">
+                    Create a resource page to get started.
+                  </Center>
                 </VStack>
-              ))}
+                <Button
+                  variant="solid"
+                  as={RouterLink}
+                  to={`${url}/createPage`}
+                  leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
+                >
+                  Create Page
+                </Button>
+              </VStack>
+            )}
             <SimpleGrid columns={3} spacing="1.5rem">
               {/* NOTE: need to use multiline cards */}
               {(pagesData || []).map(({ name, title, date, resourceType }) => (

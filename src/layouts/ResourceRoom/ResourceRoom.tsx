@@ -310,18 +310,21 @@ const ResourceRoomContent = ({
             <ResourceBreadcrumb />
           </Box>
         </Section>
+        <Section />
         <Section>
-          <Box w="full">
-            <SectionHeader label="Resource Categories">
-              <CreateButton as={RouterLink} to={`${url}/createDirectory`}>
-                Create category
-              </CreateButton>
-            </SectionHeader>
-            <SectionCaption icon={BiBulb} label="PRO TIP: ">
-              Categories impact navigation on your site. Organise your resources
-              by creating categories.
-            </SectionCaption>
-          </Box>
+          {directoryData.length !== 0 && (
+            <Box w="full">
+              <SectionHeader label="Resource Categories">
+                <CreateButton as={RouterLink} to={`${url}/createDirectory`}>
+                  Create category
+                </CreateButton>
+              </SectionHeader>
+              <SectionCaption icon={BiBulb} label="PRO TIP: ">
+                Categories impact navigation on your site. Organise your
+                resources by creating categories.
+              </SectionCaption>
+            </Box>
+          )}
           <Skeleton isLoaded={isLoading} w="100%">
             {directoryData.length === 0 ? (
               <VStack spacing={5}>
@@ -334,12 +337,6 @@ const ResourceRoomContent = ({
                     Create a resource category to get started.
                   </Center>
                 </VStack>
-                <Button
-                  variant="solid"
-                  as={RouterLink}
-                  to={`${url}/createDirectory`}
-                  leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
-                />
               </VStack>
             ) : (
               directoryData &&
