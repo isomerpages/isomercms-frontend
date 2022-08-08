@@ -22,6 +22,14 @@ export const buildDirData = apiDataBuilder<DirectoryData[]>(
   "*/sites/:siteName/collections"
 )
 
+export const buildFolderData = apiDataBuilder<(PageData | DirectoryData)[]>(
+  "*/sites/:siteName/collections/:collectionName"
+)
+
+export const buildSubfolderData = apiDataBuilder<(PageData | DirectoryData)[]>(
+  "*/sites/:siteName/collections/:collectionName/subcollections/:subCollectionName"
+)
+
 export const buildLoginData = apiDataBuilder<LoggedInUser>("*/auth/whoami")
 
 export const buildLastUpdated = apiDataBuilder<{ lastUpdated: string }>(
