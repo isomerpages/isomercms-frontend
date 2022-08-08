@@ -49,9 +49,7 @@ describe("Images", () => {
 
     it("Should be able to edit an image in image album", () => {
       cy.contains(IMAGE_TITLE).should("exist")
-      cy.renameUngroupedMedia(IMAGE_TITLE, OTHER_IMAGE_TITLE).wait(
-        Interceptors.POST
-      )
+      cy.renameDirectoryMedia(IMAGE_TITLE, OTHER_IMAGE_TITLE)
 
       // ASSERTS
       cy.contains(OTHER_IMAGE_TITLE).should("exist") // Image should be contained in Images

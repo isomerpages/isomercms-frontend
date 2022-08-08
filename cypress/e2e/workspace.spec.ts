@@ -302,7 +302,10 @@ describe("Workspace Pages flow", () => {
 
     it("Should be able to delete a folder with no pages", () => {
       // Arrange
-      cy.contains("a", PRETTIFIED_FOLDER_NO_PAGES_TITLE)
+      cy.contains("button", PRETTIFIED_FOLDER_NO_PAGES_TITLE)
+        .parent()
+        .parent()
+        .as("folderItem")
         .as("emptyFolderItem")
         .should("exist")
 

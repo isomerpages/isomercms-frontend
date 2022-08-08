@@ -111,7 +111,11 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to rename a resource category", () => {
-    cy.contains("a", TEST_CATEGORY_2).as("folderCard")
+    cy.contains("button", TEST_CATEGORY_2)
+      .parent()
+      .parent()
+      .should("exist")
+      .as("folderCard")
     cy.clickContextMenuItem("@folderCard", "settings")
 
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_RENAMED)

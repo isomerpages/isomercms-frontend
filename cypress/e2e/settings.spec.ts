@@ -158,15 +158,15 @@ describe("Settings page", () => {
 
     cy.saveSettings()
 
-    cy.contains(IMAGE_DIR + TEST_LOGO_IMAGES[0])
+    cy.contains("div", "Shareicon")
       .next()
       .find("input")
       .should("have.value", IMAGE_DIR + TEST_LOGO_IMAGES[0])
-    cy.contains("p", "Agency logo")
+    cy.contains("div", "Agency logo")
       .next()
       .find("input")
       .should("have.value", IMAGE_DIR + TEST_LOGO_IMAGES[1])
-    cy.contains("p", "Favicon")
+    cy.contains("div", "Favicon")
       .next()
       .find("input")
       .should("have.value", IMAGE_DIR + TEST_LOGO_IMAGES[2])
