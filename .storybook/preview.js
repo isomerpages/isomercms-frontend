@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "react-query"
 import { LoginProvider } from "contexts/LoginContext"
 import theme from "theme"
 import { MINIMAL_VIEWPORTS } from "@storybook/addon-viewport"
+import { handlers } from "../src/mocks/handlers"
 
 const isomerViewports = {
   GSIB: {
@@ -16,6 +17,9 @@ const isomerViewports = {
 }
 
 export const parameters = {
+  msw: {
+    handlers,
+  },
   viewport: {
     viewports: {
       ...MINIMAL_VIEWPORTS,
