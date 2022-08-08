@@ -170,6 +170,7 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
             align="flex-start"
             spacing="2rem"
             divider={<StackDivider borderColor="border.divider.alt" />}
+            mb="7.125rem"
           >
             <GeneralSettings isError={isError} />
             <LogoSettings isError={isError} />
@@ -177,17 +178,25 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
             <SocialMediaSettings isError={isError} />
             <FooterSettings isError={isError} />
             <AnalyticsSettings isError={isError} />
-            <Footer w="calc(100% + 4rem)" ml="-2rem" mb="-2rem">
-              <Button
-                isLoading={isLoading}
-                onClick={() => {
-                  hasDiff ? onOpen() : onSubmit()
-                }}
-              >
-                Save
-              </Button>
-            </Footer>
           </VStack>
+          <Footer
+            w="calc(100% + 4rem)"
+            ml="-2rem"
+            mb="-2rem"
+            // NOTE: Borders at left/bottom are already provided by sidebar and layout.
+            // Hence, omit the border at those areas to ensure correct border sizing.
+            borderLeft={0}
+            borderBottom={0}
+          >
+            <Button
+              isLoading={isLoading}
+              onClick={() => {
+                hasDiff ? onOpen() : onSubmit()
+              }}
+            >
+              Save
+            </Button>
+          </Footer>
           <WarningModal
             isCentered
             // NOTE: The second conditional is required as the wrapped method by react hook form
