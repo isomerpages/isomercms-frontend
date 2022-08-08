@@ -45,7 +45,7 @@ export const getCollection = ({
   siteName,
   collectionName,
   subCollectionName,
-}: PageDirectoryParams): Promise<DirectoryData[]> => {
+}: PageDirectoryParams): Promise<(PageData | DirectoryData)[]> => {
   let endpoint = `/sites/${siteName}/collections`
   if (collectionName) {
     endpoint += `/${collectionName}`

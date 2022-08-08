@@ -7,7 +7,6 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
-import { FolderContent } from "components/folders/FolderContent"
 import { BiBulb, BiSort } from "react-icons/bi"
 import {
   Switch,
@@ -15,8 +14,6 @@ import {
   useHistory,
   Link as RouterLink,
 } from "react-router-dom"
-
-// Import components
 
 import { useGetFolders } from "hooks/directoryHooks"
 
@@ -31,23 +28,25 @@ import {
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
+import { getDecodedParams } from "utils/decoding"
+
 import { FolderUrlParams } from "types/folders"
+import { isDirData } from "types/utils"
 import { deslugifyDirectory } from "utils"
 
 import { Section, SectionHeader, SectionCaption } from "../components"
 import { SiteViewLayout } from "../layouts"
 
-import { FolderBreadcrumbs, MenuDropdownButton } from "./components"
+import {
+  FolderBreadcrumbs,
+  MenuDropdownButton,
+  FolderCard,
+  PageCard,
+} from "./components"
 
-interface FoldersProps {
-  match: {
-    params: FolderUrlParams
-    decodedParams: FolderUrlParams
-  }
-}
-
-export const Folders = ({ match }: FoldersProps): JSX.Element => {
-  const { params, decodedParams } = match
+export const Folders = (): JSX.Element => {
+  const { params } = useRouteMatch<FolderUrlParams>()
+  const decodedParams = getDecodedParams({ ...params })
   const { collectionName, subCollectionName } = decodedParams
   // NOTE: As isomer does not support recursively nested folders,
   // the depth of folder creation is 1 (parent -> child).
@@ -57,6 +56,7 @@ export const Folders = ({ match }: FoldersProps): JSX.Element => {
   const history = useHistory()
 
   const { data: dirData, isLoading: isLoadingDirectory } = useGetFolders(params)
+  const hasDirContent = dirData && dirData.length
 
   return (
     <>
@@ -66,7 +66,7 @@ export const Folders = ({ match }: FoldersProps): JSX.Element => {
             <Text as="h2" textStyle="h2">
               {subCollectionName
                 ? deslugifyDirectory(subCollectionName)
-                : collectionName}
+                : deslugifyDirectory(collectionName)}
             </Text>
             <FolderBreadcrumbs />
           </VStack>
@@ -104,8 +104,27 @@ export const Folders = ({ match }: FoldersProps): JSX.Element => {
               section by creating a subfolder.
             </SectionCaption>
           </Box>
-          <Skeleton isLoaded={!isLoadingDirectory} w="100%">
-            <FolderContent dirData={dirData} />
+          <Skeleton
+            isLoaded={!isLoadingDirectory}
+            w="100%"
+            h={isLoadingDirectory ? "4.5rem" : "fit-content"}
+          >
+            {hasDirContent ? (
+              <VStack spacing="1.5rem" w="full" align="flex-start">
+                {dirData.map((props) => {
+                  return isDirData(props) ? (
+                    <FolderCard
+                      name={props.name}
+                      dirContent={props.children || []}
+                    />
+                  ) : (
+                    <PageCard name={props.name} />
+                  )
+                })}
+              </VStack>
+            ) : (
+              <Text> No pages here yet.</Text>
+            )}
           </Skeleton>
         </Section>
         {/* main section ends here */}

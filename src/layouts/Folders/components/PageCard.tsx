@@ -1,56 +1,51 @@
 import {
-  Divider,
-  HStack,
-  Icon,
   LinkBox,
   LinkOverlay,
+  HStack,
+  Icon,
+  Divider,
   Text,
 } from "@chakra-ui/react"
 import { Card, CardBody } from "components/Card"
 import { ContextMenu } from "components/ContextMenu"
 import { useMemo } from "react"
 import {
-  BiChevronRight,
   BiEditAlt,
-  BiFileBlank,
-  BiFolder,
-  BiTrash,
   BiWrench,
+  BiFolder,
+  BiChevronRight,
+  BiTrash,
+  BiFileBlank,
 } from "react-icons/bi"
-import { Link as RouterLink, useRouteMatch } from "react-router-dom"
+import { useRouteMatch, Link as RouterLink } from "react-router-dom"
 
 import { pageFileNameToTitle } from "utils"
 
 interface PageCardProps {
-  title: string
+  name: string
 }
 
-// eslint-disable-next-line import/prefer-default-export
-export const PageCard = ({ title }: PageCardProps): JSX.Element => {
-  const {
-    url,
-    params: { siteName },
-  } = useRouteMatch<{ siteName: string; resourceRoomName: string }>()
+export const PageCard = ({ name }: PageCardProps): JSX.Element => {
+  const { url } = useRouteMatch()
 
-  const encodedName = encodeURIComponent(title)
+  const encodedName = encodeURIComponent(name)
 
   const generatedLink = useMemo(() => {
-    return `/sites/${siteName}/editPage/${encodedName}`
-  }, [siteName, encodedName])
+    return `${url}/editPage/${encodedName}`
+  }, [encodedName, url])
 
   return (
-    <Card variant="single">
-      <LinkBox>
-        <LinkOverlay as={RouterLink} to={generatedLink}>
-          <CardBody>
+    <LinkBox position="relative" w="full">
+      <LinkOverlay as={RouterLink} to={generatedLink} w="100%">
+        <Card variant="single">
+          <CardBody alignItems="center">
             <Icon as={BiFileBlank} fontSize="1.5rem" fill="icon.alt" />
             <Text textStyle="subhead-1" color="text.label" noOfLines={1}>
-              {pageFileNameToTitle(title)}
+              {pageFileNameToTitle(name)}
             </Text>
           </CardBody>
-        </LinkOverlay>
-      </LinkBox>
-
+        </Card>
+      </LinkOverlay>
       <ContextMenu>
         <ContextMenu.Button />
         <ContextMenu.List>
@@ -59,14 +54,14 @@ export const PageCard = ({ title }: PageCardProps): JSX.Element => {
             as={RouterLink}
             to={generatedLink}
           >
-            <Text>Edit page</Text>
+            <Text>Edit</Text>
           </ContextMenu.Item>
           <ContextMenu.Item
             icon={<BiWrench />}
             as={RouterLink}
             to={`${url}/editPageSettings/${encodedName}`}
           >
-            Page settings
+            Settings
           </ContextMenu.Item>
           <ContextMenu.Item
             icon={<BiFolder />}
@@ -78,18 +73,16 @@ export const PageCard = ({ title }: PageCardProps): JSX.Element => {
               <Icon as={BiChevronRight} fontSize="1.25rem" />
             </HStack>
           </ContextMenu.Item>
-          <>
-            <Divider />
-            <ContextMenu.Item
-              icon={<BiTrash />}
-              as={RouterLink}
-              to={`${url}/deletePage/${encodedName}`}
-            >
-              Delete
-            </ContextMenu.Item>
-          </>
+          <Divider />
+          <ContextMenu.Item
+            icon={<BiTrash />}
+            as={RouterLink}
+            to={`${url}/deletePage/${encodedName}`}
+          >
+            Delete
+          </ContextMenu.Item>
         </ContextMenu.List>
       </ContextMenu>
-    </Card>
+    </LinkBox>
   )
 }
