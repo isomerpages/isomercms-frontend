@@ -30,6 +30,14 @@ export interface PageData {
   type: "file"
 }
 
+export interface MediaData {
+  mediaPath: string
+  mediaUrl: string
+  name: string
+  sha: string
+  type: "file"
+}
+
 export type ResourcePageData = Required<Omit<PageData, "type">> & {
   resourceType: "file" | "post"
 }
