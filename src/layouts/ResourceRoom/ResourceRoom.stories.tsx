@@ -35,9 +35,7 @@ const ResourceRoomMeta = {
           <Route path="/sites/:siteName/resourceRoom/:resourceRoomName">
             <Story />
           </Route>
-          <Route path="/sites/:siteName/resourceRoom/">
-            <Story />
-          </Route>
+          )
         </MemoryRouter>
       )
     },
@@ -57,6 +55,21 @@ Empty.parameters = {
     },
   },
 }
+Empty.decorators = [
+  (Story) => {
+    return (
+      <MemoryRouter
+        initialEntries={[
+          `/sites/storybook/resourceRoom/${MOCK_RESOURCE_ROOM_NAME}`,
+        ]}
+      >
+        <Route path="/sites/:siteName/resourceRoom/">
+          <Story />
+        </Route>
+      </MemoryRouter>
+    )
+  },
+]
 
 export const EmptyCategory = Template.bind({})
 EmptyCategory.parameters = {
@@ -83,15 +96,4 @@ Loading.parameters = {
   },
 }
 
-export const LoadingResourceRoomContent = Template.bind({})
-LoadingResourceRoomContent.parameters = {
-  msw: {
-    handlers: {
-      resourceRoomName: buildResourceRoomName({
-        resourceRoomName: "storybook",
-      }),
-      resourceRoomData: buildResourceRoomData([], "infinite"),
-    },
-  },
-}
 export default ResourceRoomMeta
