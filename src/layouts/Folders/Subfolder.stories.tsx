@@ -45,10 +45,7 @@ const Template: ComponentStory<typeof Folders> = Folders
 export const Subfolder = Template.bind({})
 Subfolder.parameters = {
   msw: {
-    handlers: [
-      ...handlers,
-      buildSubfolderData([...MOCK_DIR_DATA, ...MOCK_PAGES_DATA]),
-    ],
+    handlers: [...handlers, buildSubfolderData([...MOCK_PAGES_DATA])],
   },
 }
 
