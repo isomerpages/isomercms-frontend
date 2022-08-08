@@ -1,4 +1,4 @@
-import { VStack } from "@chakra-ui/react"
+import { Text, Link, VStack } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 
 const Home = (): JSX.Element => {
@@ -22,6 +22,26 @@ const Home = (): JSX.Element => {
       >
         Login with GitHub
       </Button>
+      <Text color="text.helper" fontSize="0.625rem" pt="1rem">
+        By clicking “Log in”, you are acknowledging and agreeing to Isomer’s{" "}
+        <Link
+          href="https://guide.isomer.gov.sg/terms-and-privacy/terms-of-use"
+          rel="noopener noreferrer"
+          target="_blank"
+          fontSize="0.625rem"
+        >
+          Terms of Use
+        </Link>
+        {" and our "}
+        <Link
+          href="https://guide.isomer.gov.sg/terms-and-privacy/privacy-statement"
+          rel="noopener noreferrer"
+          target="_blank"
+          fontSize="0.625rem"
+        >
+          Privacy policy
+        </Link>
+      </Text>
     </VStack>
   )
 }
