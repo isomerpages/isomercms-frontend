@@ -45,6 +45,7 @@ const Template: ComponentStory<typeof Folders> = Folders
 export const Subfolder = Template.bind({})
 Subfolder.parameters = {
   msw: {
+    // NOTE: Subfolders do not have directories, only pages
     handlers: [...handlers, buildSubfolderData([...MOCK_PAGES_DATA])],
   },
 }
