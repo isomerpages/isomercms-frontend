@@ -80,8 +80,6 @@ export const ResourceCategory = (): JSX.Element => {
             </SimpleGrid>
           </Skeleton>
         </Section>
-        {/* NOTE: This is needed for the divider to show */}
-        <Box display="none" />
       </SiteViewLayout>
       {/* main section ends here */}
       <Switch>
