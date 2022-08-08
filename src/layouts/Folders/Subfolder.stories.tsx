@@ -2,7 +2,6 @@ import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { MemoryRouter, Route } from "react-router-dom"
 
 import {
-  MOCK_DIR_DATA,
   MOCK_FOLDER_NAME,
   MOCK_PAGES_DATA,
   MOCK_SUBFOLDER_NAME,
