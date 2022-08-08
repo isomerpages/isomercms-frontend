@@ -3,9 +3,7 @@ import { Button } from "@opengovsg/design-system-react"
 import { FolderCard } from "components/FolderCard"
 import FolderOptionButton from "components/FolderOptionButton"
 import Header from "components/Header"
-import MediaCard from "components/media/MediaCard"
 import { Sidebar } from "components/Sidebar"
-import PropTypes from "prop-types"
 import { BiBulb, BiUpload } from "react-icons/bi"
 import {
   Link,
@@ -33,23 +31,26 @@ import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
 
 import { getDecodedParams } from "utils/decoding"
 
+import { DirectoryData, MediaData } from "types/directory"
+
 import {
   CreateButton,
   Section,
   SectionCaption,
   SectionHeader,
-} from "./components"
-import { SiteViewLayout } from "./layouts"
+} from "../components"
+import { SiteViewLayout } from "../layouts"
+
+import { MediaDirectoryCard } from "./components"
 
 const Media = (): JSX.Element => {
   const history = useHistory()
   const { params, path, url } = useRouteMatch<{
     siteName: string
-    mediaRoom: string
+    mediaRoom: "files" | "images"
     mediaDirectoryName: string
   }>()
-  const decodedParams = getDecodedParams(params)
-  const { siteName, mediaRoom: mediaType, mediaDirectoryName } = params
+  const { mediaRoom: mediaType } = params
   const { setRedirectToPage } = useRedirectHook()
 
   const { data: mediasData } = useGetMediaFolders(params)
@@ -57,8 +58,6 @@ const Media = (): JSX.Element => {
   return (
     <>
       <SiteViewLayout overflow="hidden">
-        {/* main bottom section */}
-        {/* main section starts here */}
         <Section>
           <Box>
             <Text as="h2" textStyle="h2">
@@ -67,18 +66,20 @@ const Media = (): JSX.Element => {
             {/* TODO: create breadcrumb for media  */}
           </Box>
         </Section>
-
         <Section>
           <SectionHeader label="Albums">
             <CreateButton as={Link} to={`${url}/createMedia`}>
               {`Create ${mediaType === "images" ? "album" : "directory"}`}
             </CreateButton>
           </SectionHeader>
-          <SimpleGrid>
-            <Box h="100px" w="100px" bg="blue" />
+          <SimpleGrid w="100%" columns={3} spacing="1.5rem">
+            {mediasData
+              ?.filter((media) => (media as DirectoryData).type === "dir")
+              .map(({ name }) => {
+                return <MediaDirectoryCard title={name} />
+              })}
           </SimpleGrid>
         </Section>
-
         <Section>
           <Box w="100%">
             <SectionHeader label="Ungrouped Images">
@@ -106,12 +107,14 @@ const Media = (): JSX.Element => {
               to upload and link them to your Isomer site.
             </SectionCaption>
           </Box>
-          <SimpleGrid>
-            <Box h="100px" w="100px" bg="blue" />
+          <SimpleGrid columns={3} spacing="1.5rem">
+            {mediasData
+              ?.filter((media) => (media as MediaData).sha !== undefined)
+              .map(({ name }) => {
+                return <MediaDirectoryCard title={name} />
+              })}
           </SimpleGrid>
         </Section>
-
-        {/* main section ends here */}
       </SiteViewLayout>
       <Switch>
         <ProtectedRouteWithProps
@@ -153,16 +156,3 @@ const Media = (): JSX.Element => {
 }
 
 export default Media
-
-Media.propTypes = {
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      siteName: PropTypes.string,
-      mediaDirectoryName: PropTypes.string,
-      mediaRoom: PropTypes.string,
-    }),
-  }).isRequired,
-  location: PropTypes.shape({
-    pathname: PropTypes.string.isRequired,
-  }).isRequired,
-}
