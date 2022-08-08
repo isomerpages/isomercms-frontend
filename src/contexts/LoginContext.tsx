@@ -11,13 +11,9 @@ import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
 import { useLocalStorage } from "hooks/useLocalStorage"
 
-const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
+import { LoggedInUser } from "types/user"
 
-interface LoggedInUser {
-  userId: string
-  email: string
-  contactNumber: string
-}
+const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
 
 interface LoginContextProps extends LoggedInUser {
   logout: () => Promise<void>
