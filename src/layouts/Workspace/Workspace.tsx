@@ -130,7 +130,7 @@ const WorkspacePage = (): JSX.Element => {
               pagesData.length > 0 &&
               pagesData
                 .filter((page) => page.name !== "contact-us.md")
-                .map(({ name, resourceType }) => <PageCard title={name} />)}
+                .map(({ name }) => <PageCard title={name} />)}
           </SimpleGrid>
         </Skeleton>
       </Section>
