@@ -38,6 +38,9 @@ declare namespace Cypress {
       mediaPath: string,
       disableAction?: boolean
     ): Chainable<void>
+    /**
+     * Renames media files that are part of a directory
+     */
     renameDirectoryMedia(mediaTitle: string, mediaPath: string): Chainable<void>
     moveMedia(mediaTitle: string, newMediaFolder: string): Chainable<void>
     deleteMedia(mediaTitle: string, disableAction?: boolean): Chainable<void>
