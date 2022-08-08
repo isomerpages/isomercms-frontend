@@ -31,7 +31,7 @@ export const MOCK_DIR_DATA = [
 ]
 
 export const MOCK_USER = {
-  userId: "username",
-  email: "user@open.gov.sg",
+  userId: "mockUser",
+  email: "mockUser@open.gov.sg",
   contactNumber: "98765432",
 }

@@ -1,6 +1,7 @@
 import { DefaultBodyType, rest } from "msw"
 
 import { DirectoryData, PageData } from "types/directory"
+import { LoggedInUser } from "types/user"
 
 const apiDataBuilder = <T extends DefaultBodyType = DefaultBodyType>(
   endpoint: string
@@ -19,4 +20,10 @@ export const buildPagesData = apiDataBuilder<PageData[]>(
 
 export const buildDirData = apiDataBuilder<DirectoryData[]>(
   "*/sites/:siteName/collections"
+)
+
+export const buildLoginData = apiDataBuilder<LoggedInUser>("*/auth/whoami")
+
+export const buildLastUpdated = apiDataBuilder<{ lastUpdated: string }>(
+  "*/sites/:siteName/lastUpdated"
 )

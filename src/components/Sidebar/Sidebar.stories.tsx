@@ -1,6 +1,8 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
-import { rest } from "msw"
 import { MemoryRouter, Route } from "react-router-dom"
+
+import { MOCK_USER } from "mocks/constants"
+import { buildLastUpdated, buildLoginData } from "mocks/utils"
 
 import { handlers } from "../../mocks/handlers"
 
@@ -9,6 +11,11 @@ import { Sidebar } from "./Sidebar"
 const SidebarMeta = {
   title: "Components/Sidebar",
   component: Sidebar,
+  parameters: {
+    chromatic: {
+      delay: 500,
+    },
+  },
   decorators: [
     (Story) => {
       return (
@@ -49,9 +56,17 @@ export const Error = Template.bind({})
 Error.parameters = {
   msw: {
     handlers: [
-      rest.get(`*/sites/:siteName/lastUpdated`, (req, res, ctx) => {
-        return res.networkError("Failed to retrieve user")
-      }),
+      buildLoginData({ userId: "Unknown user", email: "", contactNumber: "" }),
+    ],
+  },
+}
+
+export const Loading = Template.bind({})
+Loading.parameters = {
+  msw: {
+    handlers: [
+      buildLastUpdated({ lastUpdated: "Last updated today" }, "infinite"),
+      buildLoginData(MOCK_USER),
     ],
   },
 }
