@@ -26,8 +26,7 @@ const Home = (): JSX.Element => {
         By clicking “Log in”, you are acknowledging and agreeing to Isomer’s{" "}
         <Link
           href="https://guide.isomer.gov.sg/terms-and-privacy/terms-of-use"
-          rel="noopener noreferrer"
-          target="_blank"
+          isExternal
           fontSize="0.625rem"
         >
           Terms of Use
@@ -35,8 +34,7 @@ const Home = (): JSX.Element => {
         {" and our "}
         <Link
           href="https://guide.isomer.gov.sg/terms-and-privacy/privacy-statement"
-          rel="noopener noreferrer"
-          target="_blank"
+          isExternal
           fontSize="0.625rem"
         >
           Privacy policy
