@@ -41,7 +41,7 @@ export const Folders = (props: {
   siteName: string
   pagesData: PageData[]
   url: string
-  dirsData: DirectoryData[]
+  dirsData: (PageData | DirectoryData)[]
 }): JSX.Element => {
   const { setRedirectToPage } = useRedirectHook()
   const { siteName, pagesData, url, dirsData } = props
@@ -103,9 +103,7 @@ export const UngroupedPages = (props: {
               pagesData.length > 0 &&
               pagesData
                 .filter((page) => page.name !== "contact-us.md")
-                .map(({ name, resourceType }) => (
-                  <PageCard title={name} resourceType={resourceType} />
-                ))}
+                .map(({ name }) => <PageCard title={name} />)}
           </SimpleGrid>
         </Skeleton>
       </Section>
