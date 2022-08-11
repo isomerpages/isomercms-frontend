@@ -61,7 +61,7 @@ import { useErrorToast, useSuccessToast } from "utils/toasts"
 
 import { DirectoryData, DirectoryInfoProps } from "types/directory"
 import { ResourceRoomRouteParams } from "types/resources"
-import { DEFAULT_RETRY_MSG } from "utils"
+import { DEFAULT_RETRY_MSG, deslugifyDirectory } from "utils"
 
 import { ResourceRoomNameUpdateProps } from "../../types/directory"
 import { SiteViewLayout } from "../layouts"
@@ -219,6 +219,11 @@ const ResourceRoomContent = ({
     formState: { errors },
   } = useForm<ResourceRoomNameUpdateProps>({
     mode: "onTouched",
+    defaultValues: {
+      // NOTE: We need to deslugify this as the name
+      // is slugified by default to enable the backend to parse it.
+      newDirectoryName: deslugifyDirectory(resourceRoomName),
+    },
   })
   const {
     mutateAsync: updateResourceRoomName,
