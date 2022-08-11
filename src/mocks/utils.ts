@@ -18,6 +18,10 @@ import {
   SiteDashboardInfo,
   SiteDashboardReviewRequest,
 } from "types/siteDashboard"
+  CollaboratorData,
+  CollaboratorRoleData,
+  SiteMemberModel,
+} from "types/collaborators"
 import { LoggedInUser } from "types/user"
 
 const apiDataBuilder = <T extends DefaultBodyType = DefaultBodyType>(
