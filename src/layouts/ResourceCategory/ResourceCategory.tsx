@@ -48,7 +48,7 @@ export const ResourceCategory = (): JSX.Element => {
   const history = useHistory()
 
   const { data: pagesData, isLoading } = useGetResourceCategory(params)
-  const isPagesEmpty = !pagesData?.length
+  const arePagesEmpty = !pagesData?.length
   return (
     <>
       <SiteViewLayout>
@@ -61,7 +61,11 @@ export const ResourceCategory = (): JSX.Element => {
           </Box>
         </Section>
         <Section>
-          {!isPagesEmpty && (
+          {/* 
+              There is no loading state for this as '!arePagesEmpty' will only evulate to 
+              true after we have received data from the API call.
+           */}
+          {!arePagesEmpty && (
             <Box w="full">
               <SectionHeader label="Resource Pages">
                 <CreateButton as={RouterLink} to={`${url}/createPage`}>
@@ -78,19 +82,20 @@ export const ResourceCategory = (): JSX.Element => {
             w="100%"
             h={isLoading ? "10rem" : "fit-content"}
           >
-            {isPagesEmpty && (
+            {arePagesEmpty && (
               <VStack spacing={5}>
                 <EmptyBoxImage />
-                <VStack spacing={0}>
-                  <Center textStyle="subhead-1">
-                    There&apos;s nothing here yet.
-                  </Center>
-                  <Center textStyle="body-2">
-                    Create a resource page to get started.
-                  </Center>
-                </VStack>
+                <Center>
+                  <VStack spacing={0}>
+                    <Text textStyle="subhead-1">
+                      There&apos;s nothing here yet.
+                    </Text>
+                    <Text textStyle="body-2">
+                      Create a resource page to get started.
+                    </Text>
+                  </VStack>
+                </Center>
                 <Button
-                  variant="solid"
                   as={RouterLink}
                   to={`${url}/createPage`}
                   leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}

@@ -1,5 +1,5 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
-import { MemoryRouter, Route } from "react-router-dom"
+import { MemoryRouter, Route, Switch } from "react-router-dom"
 
 import { MOCK_DIR_DATA, MOCK_RESOURCE_ROOM_NAME } from "mocks/constants"
 import { buildResourceRoomData, buildResourceRoomName } from "mocks/utils"
@@ -32,10 +32,14 @@ const ResourceRoomMeta = {
             `/sites/storybook/resourceRoom/${MOCK_RESOURCE_ROOM_NAME}`,
           ]}
         >
-          <Route path="/sites/:siteName/resourceRoom/:resourceRoomName">
-            <Story />
-          </Route>
-          )
+          <Switch>
+            <Route path="/sites/:siteName/resourceRoom/:resourceRoomName">
+              <Story />
+            </Route>
+            <Route path="/sites/:siteName/resourceRoom/">
+              <Story />
+            </Route>
+          </Switch>
         </MemoryRouter>
       )
     },
@@ -55,21 +59,6 @@ Empty.parameters = {
     },
   },
 }
-Empty.decorators = [
-  (Story) => {
-    return (
-      <MemoryRouter
-        initialEntries={[
-          `/sites/storybook/resourceRoom/${MOCK_RESOURCE_ROOM_NAME}`,
-        ]}
-      >
-        <Route path="/sites/:siteName/resourceRoom/">
-          <Story />
-        </Route>
-      </MemoryRouter>
-    )
-  },
-]
 
 export const EmptyCategory = Template.bind({})
 EmptyCategory.parameters = {

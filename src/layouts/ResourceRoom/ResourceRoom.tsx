@@ -26,6 +26,7 @@ import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { BiPlus, BiWrench, BiBulb } from "react-icons/bi"
 import {
+  Link,
   Link as RouterLink,
   Redirect,
   Route,
@@ -102,27 +103,26 @@ const EmptyResourceRoom = () => {
 
   return (
     <SiteViewLayout>
-      <Box as="form" w="full" mt={100}>
+      <Center as="form" mt="6rem">
         {/* Resource Room does not exist */}
         <VStack spacing={5}>
           <EmptyBoxImage />
-          <VStack spacing={0}>
-            <Center textStyle="subhead-1">
-              There&apos;s nothing here yet.
-            </Center>
-            <Center textStyle="body-2">
-              Create a resource room to get started.
-            </Center>
-          </VStack>
+          <Center>
+            <VStack spacing={0}>
+              <Text textStyle="subhead-1">There&apos;s nothing here yet.</Text>
+              <Text textStyle="body-2">
+                Create a resource room to get started.
+              </Text>
+            </VStack>
+          </Center>
           <Button
-            variant="solid"
             onClick={onOpen}
             leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
           >
             Create Resource Room
           </Button>
         </VStack>
-      </Box>
+      </Center>
 
       <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -151,9 +151,7 @@ const EmptyResourceRoom = () => {
           </ModalBody>
           <ModalFooter>
             <Button mr={3} variant="link" onClick={onClose}>
-              <Text textStyle="subhead-1" colorScheme="orange">
-                Cancel
-              </Text>
+              <Text textStyle="subhead-1">Cancel</Text>
             </Button>
             <LoadingButton
               isDisabled={!_.isEmpty(errors)}
@@ -310,7 +308,6 @@ const ResourceRoomContent = ({
             <ResourceBreadcrumb />
           </Box>
         </Section>
-        <Section />
         <Section>
           {directoryData.length !== 0 && (
             <Box w="full">
@@ -329,14 +326,23 @@ const ResourceRoomContent = ({
             {directoryData.length === 0 ? (
               <VStack spacing={5}>
                 <EmptyBoxImage />
-                <VStack spacing={0}>
-                  <Center textStyle="subhead-1">
-                    There&apos;s nothing here yet.
-                  </Center>
-                  <Center textStyle="body-2">
-                    Create a resource category to get started.
-                  </Center>
-                </VStack>
+                <Center>
+                  <VStack spacing={0}>
+                    <Text textStyle="subhead-1">
+                      There&apos;s nothing here yet.
+                    </Text>
+                    <Text textStyle="body-2">
+                      Create a resource category to get started.
+                    </Text>
+                  </VStack>
+                </Center>
+                <Button
+                  as={RouterLink}
+                  to={`${url}/createDirectory`}
+                  leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
+                >
+                  Create Category
+                </Button>
               </VStack>
             ) : (
               directoryData &&
