@@ -61,7 +61,7 @@ export const getWorkspacePages = (siteName: string): Promise<PageData[]> => {
   return apiService.get<PageData[]>(endpoint).then(({ data }) => data)
 }
 
-export const getMediaFolders = ({
+export const getMediaData = ({
   siteName,
   mediaDirectoryName,
 }: MediaDirectoryParams): Promise<DirectoryData[]> => {

@@ -41,7 +41,7 @@ import {
 } from "../components"
 import { SiteViewLayout } from "../layouts"
 
-import { MediaDirectoryCard } from "./components"
+import { MediaDirectoryCard, MediaPreviewCard } from "./components"
 
 const Media = (): JSX.Element => {
   const history = useHistory()
@@ -107,11 +107,12 @@ const Media = (): JSX.Element => {
               to upload and link them to your Isomer site.
             </SectionCaption>
           </Box>
-          <SimpleGrid columns={3} spacing="1.5rem">
+          <SimpleGrid columns={3} spacing="1.5rem" w="100%">
             {mediasData
               ?.filter((media) => (media as MediaData).sha !== undefined)
-              .map(({ name }) => {
-                return <MediaDirectoryCard title={name} />
+              .map((x) => x as MediaData)
+              .map(({ name, mediaUrl }) => {
+                return <MediaPreviewCard name={name} mediaUrl={mediaUrl} />
               })}
           </SimpleGrid>
         </Section>
