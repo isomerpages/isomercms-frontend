@@ -124,7 +124,7 @@ const EmptyResourceRoom = () => {
         </VStack>
       </Center>
 
-      <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Create resource room</ModalHeader>
