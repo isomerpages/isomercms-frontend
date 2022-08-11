@@ -1,6 +1,4 @@
-export const EmptyBoxImage = (
-  props: React.SVGProps<SVGSVGElement>
-): JSX.Element => {
+export const EmptyBoxImage = (): JSX.Element => {
   return (
     <svg
       width="256"

@@ -119,14 +119,12 @@ export const EmptyFolder = (props: { url: string }): JSX.Element => {
         {/* Resource Room does not exist */}
         <VStack spacing={5}>
           <EmptyBoxImage />
-          <VStack spacing={0}>
-            <Center textStyle="subhead-1">
-              {" There's nothing here yet. "}
-            </Center>
-            <Center textStyle="body-2">
-              Create a new item to get started.
-            </Center>
-          </VStack>
+          <Center>
+            <VStack spacing={0}>
+              <Text textStyle="subhead-1">{" There's nothing here yet. "}</Text>
+              <Text textStyle="body-2">Create a new item to get started.</Text>
+            </VStack>
+          </Center>
 
           <ButtonGroup isAttached variant="outline">
             {/* NOTE: This is to avoid the 2 joined buttons both having 1px padding,
@@ -134,7 +132,6 @@ export const EmptyFolder = (props: { url: string }): JSX.Element => {
             <Button
               as={Link}
               to={`${url}/createDirectory`}
-              variant="solid"
               leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
             >
               Create Folder
@@ -154,14 +151,12 @@ export const EmptyPage = (props: { url: string }): JSX.Element => {
         {/* Resource Room does not exist */}
         <VStack spacing={5}>
           <EmptyBoxImage />
-          <VStack spacing={0}>
-            <Center textStyle="subhead-1">
-              There&apos;s nothing here yet.
-            </Center>
-            <Center textStyle="body-2">
-              Create a new item to get started.
-            </Center>
-          </VStack>
+          <Center>
+            <VStack spacing={0}>
+              <Text textStyle="subhead-1">There&apos;s nothing here yet.</Text>
+              <Text textStyle="body-2">Create a new item to get started.</Text>
+            </VStack>
+          </Center>
           <ChakraMenu>
             {() => (
               <ButtonGroup isAttached variant="outline">
@@ -170,7 +165,6 @@ export const EmptyPage = (props: { url: string }): JSX.Element => {
                 <Button
                   as={Link}
                   to={`${url}/createPage`}
-                  variant="solid"
                   leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
                 >
                   Create page
@@ -192,14 +186,12 @@ export const EmptyPageAndFolder = (props: { url: string }): JSX.Element => {
         {/* Resource Room does not exist */}
         <VStack spacing={5}>
           <EmptyBoxImage />
-          <VStack spacing={0}>
-            <Center textStyle="subhead-1">
-              There&apos;s nothing here yet.
-            </Center>
-            <Center textStyle="body-2">
-              Create a new item to get started.
-            </Center>
-          </VStack>
+          <Center>
+            <VStack spacing={0}>
+              <Text textStyle="subhead-1">There&apos;s nothing here yet.</Text>
+              <Text textStyle="body-2">Create a new item to get started.</Text>
+            </VStack>
+          </Center>
           <ContextMenu placement="bottom-end" offset={[0, 0]}>
             {({ isOpen }) => (
               <ButtonGroup isAttached variant="outline">
