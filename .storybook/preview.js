@@ -18,7 +18,9 @@ const isomerViewports = {
 
 export const parameters = {
   msw: {
-    handlers,
+    handlers: {
+      default: handlers,
+    },
   },
   viewport: {
     viewports: {
