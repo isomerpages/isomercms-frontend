@@ -2,6 +2,11 @@ import { DefaultBodyType, rest } from "msw"
 
 import { DirectoryData, PageData, ResourcePageData } from "types/directory"
 import { BackendSiteSettings } from "types/settings"
+import {
+  CollaboratorData,
+  CollaboratorRoleData,
+  SiteMemberModel,
+} from "types/collaborators"
 import { LoggedInUser } from "types/user"
 
 const apiDataBuilder = <T extends DefaultBodyType = DefaultBodyType>(
@@ -43,6 +48,14 @@ export const buildSubfolderData = apiDataBuilder<(PageData | DirectoryData)[]>(
   "*/sites/:siteName/collections/:collectionName/subcollections/:subCollectionName"
 )
 
+export const buildCollaboratorRoleData = apiDataBuilder<CollaboratorRoleData>(
+  "*/sites/:siteName/collaborators/role"
+)
+
+export const buildCollaboratorData = apiDataBuilder<CollaboratorData>(
+  "*/sites/:siteName/collaborators"
+)
+
 export const buildLoginData = apiDataBuilder<LoggedInUser>("*/auth/whoami")
 
 export const buildLastUpdated = apiDataBuilder<{ lastUpdated: string }>(
@@ -52,3 +65,11 @@ export const buildLastUpdated = apiDataBuilder<{ lastUpdated: string }>(
 export const buildResourceCategoryData = apiDataBuilder<ResourcePageData[]>(
   "/*sites/:siteName/resourceRoom/:resourceRoomName/resources/:resourceCategoryName"
 )
+
+export const addContributorCollaborator = () =>
+  rest.post("*/sites/:siteName/collaborators", (req, res, ctx) => {
+    return res(
+      ctx.status(422),
+      ctx.json({ error: { message: "Acknowledgement required" } })
+    )
+  })
