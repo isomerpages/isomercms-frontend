@@ -1,6 +1,5 @@
 import { CollaboratorModalState } from "components/CollaboratorModal/constants"
-import { createContext, useContext } from "react"
-import type { Dispatch, SetStateAction } from "react"
+import { createContext, useContext, Dispatch, SetStateAction } from "react"
 
 interface CollaboratorModalProps {
   newCollaboratorEmail: string
