@@ -1,6 +1,11 @@
 import { DefaultBodyType, rest } from "msw"
 
 import {
+  CollaboratorData,
+  CollaboratorRoleData,
+  SiteMemberModel,
+} from "types/collaborators"
+import {
   DirectoryData,
   PageData,
   ResourcePageData,
@@ -80,6 +85,15 @@ export const buildLoginData = apiDataBuilder<LoggedInUser>(
   "*/auth/whoami",
   "get"
 )
+export const buildCollaboratorRoleData = apiDataBuilder<CollaboratorRoleData>(
+  "*/sites/:siteName/collaborators/role",
+  "get"
+)
+
+export const buildCollaboratorData = apiDataBuilder<CollaboratorData>(
+  "*/sites/:siteName/collaborators",
+  "get"
+)
 
 export const buildLastUpdated = apiDataBuilder<{ lastUpdated: string }>(
   "*/sites/:siteName/lastUpdated",
@@ -113,3 +127,11 @@ export const buildGetStagingUrlData = apiDataBuilder<{ stagingUrl: string }>(
   "*/sites/:siteName/stagingUrl",
   "get"
 )
+
+export const addContributorCollaborator = () =>
+  rest.post("*/sites/:siteName/collaborators", (req, res, ctx) => {
+    return res(
+      ctx.status(422),
+      ctx.json({ error: { message: "Acknowledgement required" } })
+    )
+  })
