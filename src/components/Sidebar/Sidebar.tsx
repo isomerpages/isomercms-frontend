@@ -22,7 +22,7 @@ import {
   BiBuoy,
   BiCog,
   BiCubeAlt,
-  BiFileBlank,
+  BiFile,
   BiGridAlt,
   BiImage,
   BiLogOutCircle,
@@ -147,7 +147,7 @@ export const Sidebar = (): JSX.Element => {
             to={`/sites/${siteName}/media/files/mediaDirectory/files`}
             isSelected={selectedTab === "files"}
           >
-            <TabLabel icon={BiFileBlank}>Files</TabLabel>
+            <TabLabel icon={BiFile}>Files</TabLabel>
           </Tab>
           <Tab
             as={RouterLink}
