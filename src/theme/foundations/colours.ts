@@ -63,6 +63,7 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
     warning: "#E2B73E",
     default: "#276EF1",
     alt: "#686868",
+    danger: "#C03434",
   },
   background: {
     action: {
