@@ -10,6 +10,8 @@ import yaml from "yaml"
 import { getMediaDetails } from "../api"
 import { LOCAL_STORAGE_KEYS } from "../constants/localStorage"
 
+import { getMediaDetails } from "api"
+
 import { deslugifyDirectory } from "./deslugify"
 
 // axios settings
@@ -499,7 +501,6 @@ export const isLastItem = (type, params) => {
 export const getLastItemType = (params) => {
   const types = Object.keys(params)
   const lastItemType = types.filter((type) => isLastItem(type, params))[0]
-  console.log(lastItemType)
   return lastItemType
 }
 
