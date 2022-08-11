@@ -41,7 +41,11 @@ import {
 } from "../components"
 import { SiteViewLayout } from "../layouts"
 
-import { MediaDirectoryCard, MediaPreviewCard } from "./components"
+import {
+  MediaDirectoryCard,
+  ImagePreviewCard,
+  FilePreviewCard,
+} from "./components"
 
 const Media = (): JSX.Element => {
   const history = useHistory()
@@ -111,8 +115,11 @@ const Media = (): JSX.Element => {
             {mediasData
               ?.filter((media) => (media as MediaData).sha !== undefined)
               .map((x) => x as MediaData)
-              .map(({ name, mediaUrl }) => {
-                return <MediaPreviewCard name={name} mediaUrl={mediaUrl} />
+              .map(({ name, mediaUrl, ...rest }) => {
+                if (mediaType === "images") {
+                  return <ImagePreviewCard name={name} mediaUrl={mediaUrl} />
+                }
+                return <FilePreviewCard name={name} />
               })}
           </SimpleGrid>
         </Section>
