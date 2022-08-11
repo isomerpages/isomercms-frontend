@@ -1,2 +1,3 @@
 export * from "./MediaDirectoryCard"
-export * from "./MediaPreviewCard"
+export * from "./ImagePreviewCard"
+export * from "./FilePreviewCard"
