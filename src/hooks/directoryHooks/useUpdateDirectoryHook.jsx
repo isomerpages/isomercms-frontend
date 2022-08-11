@@ -42,7 +42,7 @@ export function useUpdateDirectoryHook(params, queryParams) {
             _.omit(params, "collectionName"),
           ])
         else if (params.resourceCategoryName)
-          queryClient.invalidateQueries([RESOURCE_ROOM_CONTENT_KEY])
+          queryClient.invalidateQueries([RESOURCE_ROOM_CONTENT_KEY, params])
         else if (params.mediaDirectoryName)
           queryClient.invalidateQueries([
             DIR_CONTENT_KEY,

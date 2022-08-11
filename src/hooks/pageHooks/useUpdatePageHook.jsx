@@ -44,7 +44,7 @@ export function useUpdatePageHook(params, queryParams) {
             _.omit(params, "fileName"),
           ])
         else if (params.resourceRoomName) {
-          queryClient.invalidateQueries(RESOURCE_CATEGORY_CONTENT_KEY)
+          queryClient.invalidateQueries([RESOURCE_CATEGORY_CONTENT_KEY, params])
         } else
           queryClient.invalidateQueries([
             DIR_CONTENT_KEY,
