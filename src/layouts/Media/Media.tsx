@@ -1,17 +1,8 @@
-import { SimpleGrid, Box, Skeleton, Text } from "@chakra-ui/react"
+import { SimpleGrid, Box, Text } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
-import { FolderCard } from "components/FolderCard"
-import FolderOptionButton from "components/FolderOptionButton"
-import Header from "components/Header"
-import { Sidebar } from "components/Sidebar"
+import _ from "lodash"
 import { BiBulb, BiUpload } from "react-icons/bi"
-import {
-  Link,
-  Switch,
-  useRouteMatch,
-  useHistory,
-  match,
-} from "react-router-dom"
+import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 import { useGetMediaFolders } from "hooks/directoryHooks"
 import useRedirectHook from "hooks/useRedirectHook"
@@ -24,12 +15,6 @@ import { MediaSettingsScreen } from "layouts/screens/MediaSettingsScreen"
 import { MoveScreen } from "layouts/screens/MoveScreen"
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
-
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
-import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
-import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
-
-import { getDecodedParams } from "utils/decoding"
 
 import { DirectoryData, MediaData } from "types/directory"
 
@@ -45,6 +30,7 @@ import {
   MediaDirectoryCard,
   ImagePreviewCard,
   FilePreviewCard,
+  MediaBreadcrumbs,
 } from "./components"
 
 const Media = (): JSX.Element => {
@@ -56,7 +42,6 @@ const Media = (): JSX.Element => {
   }>()
   const { mediaRoom: mediaType } = params
   const { setRedirectToPage } = useRedirectHook()
-
   const { data: mediasData } = useGetMediaFolders(params)
 
   return (
@@ -65,9 +50,9 @@ const Media = (): JSX.Element => {
         <Section>
           <Box>
             <Text as="h2" textStyle="h2">
-              {mediaType[0].toUpperCase() + mediaType.substring(1)}
+              {_.upperFirst(mediaType)}
             </Text>
-            {/* TODO: create breadcrumb for media  */}
+            <MediaBreadcrumbs />
           </Box>
         </Section>
         <Section>
@@ -115,7 +100,7 @@ const Media = (): JSX.Element => {
             {mediasData
               ?.filter((media) => (media as MediaData).sha !== undefined)
               .map((x) => x as MediaData)
-              .map(({ name, mediaUrl, ...rest }) => {
+              .map(({ name, mediaUrl }) => {
                 if (mediaType === "images") {
                   return <ImagePreviewCard name={name} mediaUrl={mediaUrl} />
                 }
