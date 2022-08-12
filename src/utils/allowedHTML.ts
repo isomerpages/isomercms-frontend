@@ -3,14 +3,19 @@
  * character limit.
  *
  */
-
-const iFrameRegrexTest = new RegExp("(<iframe.*/iframe>)", "gm")
+const regrexTests = [
+  new RegExp("(<iframe.*/iframe>)", "gm"),
+  new RegExp("(<div.*/div>)", "gm"),
+]
 
 /**
  * @param text raw text input by user
  * @returns the character length after removing specifc HTML tags
  */
 export const getLengthWithoutTags = (text: string): number => {
-  const removeIFrameTags = text.replace(iFrameRegrexTest, "")
-  return removeIFrameTags.length
+  let finalText = text
+  for (const regrexTest of regrexTests) {
+    finalText = finalText.replace(regrexTest, "")
+  }
+  return finalText.length
 }
