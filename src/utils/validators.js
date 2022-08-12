@@ -562,7 +562,7 @@ const validateContactType = (contactType, value) => {
       break
     }
     case "other": {
-      if (getLengthWithoutTags(value) > CONTACT_DESCRIPTION_MAX_LENGTH) {
+      if (value.length > CONTACT_DESCRIPTION_MAX_LENGTH) {
         errorMessage = `Description should be shorter than ${CONTACT_DESCRIPTION_MAX_LENGTH} characters.`
       }
       break
@@ -642,9 +642,7 @@ const validateLocationType = (locationType, value) => {
       break
     }
     case "description": {
-      if (
-        getLengthWithoutTags(value) > LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH
-      ) {
+      if (value.length > LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH) {
         errorMessage = `Description should be shorter than ${LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH} characters.`
       }
       break

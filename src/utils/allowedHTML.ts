@@ -1,12 +1,8 @@
 /**
- * Defines the list of allowed HTML tags that do not count towards the total
+ * HTML tag that do not count towards the total
  * character limit.
- *
  */
-const regrexTests = [
-  new RegExp("(<iframe.*/iframe>)", "gm"),
-  new RegExp("(<div.*/div>)", "gm"),
-]
+const IFRAME_TAG_REGEX = new RegExp("(<iframe.*/iframe>)", "gm")
 
 /**
  * @param text raw text input by user
@@ -14,8 +10,8 @@ const regrexTests = [
  */
 export const getLengthWithoutTags = (text: string): number => {
   let finalText = text
-  for (const regrexTest of regrexTests) {
-    finalText = finalText.replace(regrexTest, "")
-  }
+
+  finalText = finalText.replace(IFRAME_TAG_REGEX, "")
+
   return finalText.length
 }
