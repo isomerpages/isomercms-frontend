@@ -41,6 +41,7 @@ export const ImagePreviewCard = ({
     <Box position="relative">
       <Grid
         as={chakra.button}
+        overflowY="hidden"
         __css={styles.container}
         p={0}
         gridTemplateRows="1fr 4.5rem"
