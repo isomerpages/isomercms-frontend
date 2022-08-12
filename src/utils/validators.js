@@ -9,6 +9,8 @@ import {
   generatePageFileName,
 } from "utils"
 
+import { getLengthWithoutTags } from "./allowedHTML"
+
 // Common regexes and constants
 // ==============
 const PERMALINK_REGEX = "^((/([a-zA-Z0-9]+-)*[a-zA-Z0-9]+)+)/?$"
@@ -560,7 +562,7 @@ const validateContactType = (contactType, value) => {
       break
     }
     case "other": {
-      if (value.length > CONTACT_DESCRIPTION_MAX_LENGTH) {
+      if (getLengthWithoutTags(value) > CONTACT_DESCRIPTION_MAX_LENGTH) {
         errorMessage = `Description should be shorter than ${CONTACT_DESCRIPTION_MAX_LENGTH} characters.`
       }
       break
@@ -640,7 +642,9 @@ const validateLocationType = (locationType, value) => {
       break
     }
     case "description": {
-      if (value.length > LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH) {
+      if (
+        getLengthWithoutTags(value) > LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH
+      ) {
         errorMessage = `Description should be shorter than ${LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH} characters.`
       }
       break
