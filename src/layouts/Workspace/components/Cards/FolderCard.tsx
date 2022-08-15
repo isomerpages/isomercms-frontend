@@ -18,19 +18,20 @@ export const FolderCard = ({
   const { url } = useRouteMatch()
 
   return (
-    <LinkBox>
-      <LinkOverlay as={RouterLink} to={`/sites/${siteName}/folders/${title}`}>
-        <Card variant="single">
+    <Card variant="single">
+      <LinkBox position="relative">
+        <LinkOverlay as={RouterLink} to={`/sites/${siteName}/folders/${title}`}>
           <CardBody>
             <Icon as={BiFolder} fontSize="1.5rem" fill="icon.alt" />
             <Text textStyle="subhead-1" color="text.label" noOfLines={1}>
               {prettifyPageFileName(title)}
             </Text>
           </CardBody>
-        </Card>
-      </LinkOverlay>
+        </LinkOverlay>
+      </LinkBox>
+
       <ContextMenu>
-        <ContextMenu.Button />
+        <ContextMenu.Button position="absolute" />
         <ContextMenu.List>
           <ContextMenu.Item
             icon={<BiEditAlt />}
@@ -58,6 +59,6 @@ export const FolderCard = ({
           </>
         </ContextMenu.List>
       </ContextMenu>
-    </LinkBox>
+    </Card>
   )
 }

@@ -6,6 +6,7 @@ import {
   HStack,
   Icon,
   Text,
+  Box,
 } from "@chakra-ui/react"
 import { ContextMenu } from "components/ContextMenu"
 import { useMemo } from "react"
@@ -38,33 +39,38 @@ const FolderItem = ({ item, isDisabled }) => {
   }, [encodedName, type, url])
 
   return (
-    <LinkBox
+    <Box
+      w="100%"
       className={`${contentStyles.component} ${contentStyles.card}`}
       position="relative"
     >
-      <LinkOverlay as={RouterLink} to={!isDisabled && generatedLink} w="100%">
-        <chakra.button
-          className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderItem}`}
-        >
-          <div className={contentStyles.contentContainerFolderRow}>
-            {type === "file" ? (
-              <i
-                className={`bx bxs-file-blank ${elementStyles.folderItemIcon}`}
-              />
-            ) : (
-              <i className={`bx bxs-folder ${elementStyles.folderItemIcon}`} />
-            )}
-            <span className={`${elementStyles.folderItemText} mr-auto`}>
-              {pageFileNameToTitle(name)}
-            </span>
-            {children ? (
-              <span className={`${elementStyles.folderItemText} mr-5`}>
-                {children.length} item{children.length === 1 ? "" : "s"}
+      <LinkBox w="100%">
+        <LinkOverlay as={RouterLink} to={!isDisabled && generatedLink}>
+          <chakra.button
+            className={`${elementStyles.card} ${contentStyles.card} ${elementStyles.folderItem}`}
+          >
+            <div className={contentStyles.contentContainerFolderRow}>
+              {type === "file" ? (
+                <i
+                  className={`bx bxs-file-blank ${elementStyles.folderItemIcon}`}
+                />
+              ) : (
+                <i
+                  className={`bx bxs-folder ${elementStyles.folderItemIcon}`}
+                />
+              )}
+              <span className={`${elementStyles.folderItemText} mr-auto`}>
+                {pageFileNameToTitle(name)}
               </span>
-            ) : null}
-          </div>
-        </chakra.button>
-      </LinkOverlay>
+              {children ? (
+                <span className={`${elementStyles.folderItemText} mr-5`}>
+                  {children.length} item{children.length === 1 ? "" : "s"}
+                </span>
+              ) : null}
+            </div>
+          </chakra.button>
+        </LinkOverlay>
+      </LinkBox>
       {!isDisabled && (
         <ContextMenu>
           <ContextMenu.Button right="1.875rem" bottom="1.875rem" />
@@ -116,7 +122,7 @@ const FolderItem = ({ item, isDisabled }) => {
           </ContextMenu.List>
         </ContextMenu>
       )}
-    </LinkBox>
+    </Box>
   )
 }
 
