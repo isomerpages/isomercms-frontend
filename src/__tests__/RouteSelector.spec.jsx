@@ -147,6 +147,7 @@ const LoggedInContextProvider = ({ children }) => {
   const loggedInContextData = {
     userId: "test-user",
     email: "test-email",
+    accountName: "test-user",
     logout: jest.fn(),
   }
 
@@ -161,6 +162,7 @@ const NotLoggedInContextProvider = ({ children }) => {
   const notLoggedInContextData = {
     userId: null,
     email: null,
+    accountName: null,
     logout: jest.fn(),
   }
 
