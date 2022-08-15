@@ -1,7 +1,6 @@
 import { HStack, FormControl, FormErrorMessage } from "@chakra-ui/react"
 import { Button, FormLabel, Input } from "@opengovsg/design-system-react"
-import { useCallback } from "react"
-import { useForm, FormProvider } from "react-hook-form"
+import { useForm } from "react-hook-form"
 
 export type LoginProps = {
   email: string
@@ -11,15 +10,13 @@ interface LoginFormProps {
   onSubmit: (inputs: LoginProps) => Promise<void>
 }
 
+const validateEmail = (value: string) =>
+  value.length > 0 || "Please enter a valid email."
+
 export const LoginForm = ({ onSubmit }: LoginFormProps): JSX.Element => {
   const { handleSubmit, register, formState, setError } = useForm<LoginProps>({
     mode: "onBlur",
   })
-
-  const validateEmail = useCallback(
-    (value: string) => value.length > 0 || "Please enter a valid email.",
-    []
-  )
 
   const onSubmitForm = async (inputs: LoginProps) => {
     return onSubmit(inputs).catch((err) => {

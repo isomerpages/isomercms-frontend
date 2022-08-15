@@ -1,7 +1,7 @@
 import { HStack, FormControl, FormErrorMessage } from "@chakra-ui/react"
 import { Button, FormLabel, Input } from "@opengovsg/design-system-react"
-import { useCallback, useEffect, useState } from "react"
-import { useForm, FormProvider } from "react-hook-form"
+import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
 
 export type OtpProps = {
   otp: string
@@ -15,6 +15,9 @@ interface OtpFormProps {
 
 const OTP_TIMER_INTERVAL = 60
 
+const validateOtp = (value: string) =>
+  value.length === 6 || "Please enter a 6 digit OTP."
+
 export const OtpForm = ({
   email,
   onSubmit,
@@ -24,11 +27,6 @@ export const OtpForm = ({
   const { handleSubmit, register, formState, setError } = useForm<OtpProps>({
     mode: "onBlur",
   })
-
-  const validateOtp = useCallback(
-    (value: string) => value.length === 6 || "Please enter a 6 digit OTP.",
-    []
-  )
 
   const onSubmitForm = async (inputs: OtpProps) => {
     return onSubmit(inputs).catch((err) => {
