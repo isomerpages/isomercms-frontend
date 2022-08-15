@@ -12,10 +12,9 @@ interface LoginFormProps {
 }
 
 export const LoginForm = ({ onSubmit }: LoginFormProps): JSX.Element => {
-  const methods = useForm<LoginProps>({
+  const { handleSubmit, register, formState, setError } = useForm<LoginProps>({
     mode: "onBlur",
   })
-  const { handleSubmit, register, formState, setError } = methods
 
   const validateEmail = useCallback(
     (value: string) => value.length > 0 || "Please enter a valid email.",
@@ -32,37 +31,33 @@ export const LoginForm = ({ onSubmit }: LoginFormProps): JSX.Element => {
   }
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmitForm)}>
-        <FormControl
-          isInvalid={!!formState.errors.email}
-          isReadOnly={formState.isSubmitting}
-        >
-          <FormLabel isRequired htmlFor="email">
-            Log in with a .gov.sg or other whitelisted email address
-          </FormLabel>
-          <Input
-            autoComplete="email"
-            autoFocus
-            placeholder="e.g. jane@data.gov.sg"
-            id="email"
-            type="email"
-            {...register("email", {
-              validate: validateEmail,
-            })}
-          />
-          {formState.errors.email && (
-            <FormErrorMessage>
-              {formState.errors.email.message}
-            </FormErrorMessage>
-          )}
-          <HStack mt="1rem" alignItems="center" gap="2.5rem">
-            <Button type="submit" isLoading={formState.isSubmitting}>
-              Log in
-            </Button>
-          </HStack>
-        </FormControl>
-      </form>
-    </FormProvider>
+    <form onSubmit={handleSubmit(onSubmitForm)}>
+      <FormControl
+        isInvalid={!!formState.errors.email}
+        isReadOnly={formState.isSubmitting}
+      >
+        <FormLabel isRequired htmlFor="email">
+          Log in with a .gov.sg or other whitelisted email address
+        </FormLabel>
+        <Input
+          autoComplete="email"
+          autoFocus
+          placeholder="e.g. jane@data.gov.sg"
+          id="email"
+          type="email"
+          {...register("email", {
+            validate: validateEmail,
+          })}
+        />
+        {formState.errors.email && (
+          <FormErrorMessage>{formState.errors.email.message}</FormErrorMessage>
+        )}
+        <HStack mt="1rem" alignItems="center" gap="2.5rem">
+          <Button type="submit" isLoading={formState.isSubmitting}>
+            Log in
+          </Button>
+        </HStack>
+      </FormControl>
+    </form>
   )
 }
