@@ -1,4 +1,4 @@
-import { SimpleGrid, Box, Text } from "@chakra-ui/react"
+import { SimpleGrid, Box, Text, Skeleton } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { BiBulb, BiUpload } from "react-icons/bi"
@@ -15,7 +15,7 @@ import { MoveScreen } from "layouts/screens/MoveScreen"
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
-import { isDirectoryData, isMediaData } from "types/directory"
+import { isDirData, isMediaData } from "types/utils"
 
 import {
   CreateButton,
@@ -64,7 +64,7 @@ export const Media = (): JSX.Element => {
     mediaDirectoryName: string
   }>()
   const { mediaRoom: mediaType } = params
-  const { data: mediasData } = useGetMediaFolders(params)
+  const { data: mediasData, isLoading } = useGetMediaFolders(params)
   const {
     singularMediaLabel,
     pluralMediaLabel,
@@ -88,11 +88,17 @@ export const Media = (): JSX.Element => {
               {`Create ${directoryLabel}`}
             </CreateButton>
           </SectionHeader>
-          <SimpleGrid w="100%" columns={3} spacing="1.5rem">
-            {mediasData?.filter(isDirectoryData).map(({ name }) => {
-              return <MediaDirectoryCard title={name} />
-            })}
-          </SimpleGrid>
+          <Skeleton
+            w="100%"
+            h={isLoading ? "4.5rem" : "fit-content"}
+            isLoaded={!isLoading}
+          >
+            <SimpleGrid w="100%" columns={3} spacing="1.5rem">
+              {mediasData?.filter(isDirData).map(({ name }) => {
+                return <MediaDirectoryCard title={name} />
+              })}
+            </SimpleGrid>
+          </Skeleton>
         </Section>
         <Section>
           <Box w="100%">
@@ -122,14 +128,20 @@ export const Media = (): JSX.Element => {
               to upload and link them to your Isomer site.
             </SectionCaption>
           </Box>
-          <SimpleGrid columns={3} spacing="1.5rem" w="100%">
-            {mediasData?.filter(isMediaData).map(({ name, mediaUrl }) => {
-              if (mediaType === "images") {
-                return <ImagePreviewCard name={name} mediaUrl={mediaUrl} />
-              }
-              return <FilePreviewCard name={name} />
-            })}
-          </SimpleGrid>
+          <Skeleton
+            w="100%"
+            h={isLoading ? "4.5rem" : "fit-content"}
+            isLoaded={!isLoading}
+          >
+            <SimpleGrid columns={3} spacing="1.5rem" w="100%">
+              {mediasData?.filter(isMediaData).map(({ name, mediaUrl }) => {
+                if (mediaType === "images") {
+                  return <ImagePreviewCard name={name} mediaUrl={mediaUrl} />
+                }
+                return <FilePreviewCard name={name} />
+              })}
+            </SimpleGrid>
+          </Skeleton>
         </Section>
       </SiteViewLayout>
       <Switch>
