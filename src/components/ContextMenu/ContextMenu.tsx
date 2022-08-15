@@ -13,6 +13,7 @@ export const ContextMenu = (props: MenuProps): JSX.Element => (
 const ContextMenuList = (props: MenuListProps): JSX.Element => {
   return (
     <Menu.List
+      zIndex={3}
       color="text.body"
       boxShadow="0px 0px 10px rgba(191, 191, 191, 0.5)"
       // eslint-disable-next-line react/jsx-props-no-spreading

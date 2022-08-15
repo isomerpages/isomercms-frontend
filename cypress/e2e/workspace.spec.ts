@@ -1,15 +1,21 @@
 import { slugifyCategory, titleToPageFileName, deslugifyDirectory } from "utils"
 
 import {
-  E2E_DEFAULT_WAIT_TIME,
-  E2E_EXTENDED_TIMEOUT,
+  CMS_BASEURL,
+  TEST_REPO_NAME,
+  Interceptors,
 } from "../fixtures/constants"
 
 describe("Workspace Pages flow", () => {
-  const CMS_BASEURL = Cypress.env("BASEURL")
-  const COOKIE_NAME = Cypress.env("COOKIE_NAME")
-  const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
-  const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
+  beforeEach(() => {
+    cy.setSessionDefaults()
+    cy.setupDefaultInterceptors()
+
+    cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`).wait(
+      Interceptors.GET
+    )
+    cy.contains("Verify").should("not.exist")
+  })
   const TEST_PAGE_PERMALNK = "/test-permalink"
 
   const TEST_PAGE_TITLE = "test title"
@@ -46,13 +52,6 @@ describe("Workspace Pages flow", () => {
   )
 
   describe("Create page, delete page, edit page settings in Workspace", () => {
-    beforeEach(() => {
-      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-      window.localStorage.setItem("userId", "test")
-      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
-      cy.contains("Verify").should("not.exist")
-    })
-
     it("Test site workspace page should have unlinked pages section", () => {
       cy.contains("Create page")
     })
@@ -62,9 +61,8 @@ describe("Workspace Pages flow", () => {
       cy.contains("button", "Create page").click()
       cy.get("#title").clear().type(TEST_PAGE_TITLE)
       cy.get("#permalink").clear().type(TEST_PAGE_PERMALNK)
-      cy.intercept("POST", "/v2/**").as("awaitSave")
       cy.contains("Save").click()
-      cy.wait("@awaitSave")
+      cy.wait(Interceptors.POST)
         .its("request.body")
         .should("deep.equal", {
           content: {
@@ -83,9 +81,7 @@ describe("Workspace Pages flow", () => {
         "include",
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/editPage/${TEST_PAGE_ENCODED}`
       )
-      cy.contains(TEST_PAGE_TITLE, { timeout: E2E_EXTENDED_TIMEOUT }).should(
-        "exist"
-      )
+      cy.contains(TEST_PAGE_TITLE).should("exist")
 
       // 2. If user goes back to the workspace, they should be able to see that the page exists
       cy.contains("Back to Workspace").should("exist").click()
@@ -138,78 +134,70 @@ describe("Workspace Pages flow", () => {
 
     it("Should be able to edit existing page details with Chinese title and valid permalink", () => {
       // Arrange
-      cy.contains("a", TEST_PAGE_TITLE).as("pageCard").should("exist")
+      cy.contains("button", TEST_PAGE_TITLE)
+        .parent()
+        .parent()
+        .as("pageCard")
+        .should("exist")
 
       // Act
       // User should be able edit page details
       cy.clickContextMenuItem("@pageCard", "settings")
-      cy.get("#title").should("have.value", TEST_PAGE_TITLE, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      })
+      cy.get("#title").should("have.value", TEST_PAGE_TITLE)
       cy.get("#title").clear().type(EDITED_TEST_PAGE_TITLE)
       cy.contains("button", "Save").click()
+      cy.wait(Interceptors.POST)
 
       // Assert
       // New page title should be reflected in the Workspace
-      cy.contains(EDITED_TEST_PAGE_TITLE, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
-
-      cy.wait(E2E_DEFAULT_WAIT_TIME)
+      cy.contains(EDITED_TEST_PAGE_TITLE).should("exist")
     })
 
     it("Should be able to edit existing page details with Tamil title and valid permalink", () => {
       // Arrange
-      cy.contains("a", EDITED_TEST_PAGE_TITLE).as("pageCard").should("exist")
+      cy.contains("button", EDITED_TEST_PAGE_TITLE)
+        .parent()
+        .parent()
+        .as("pageCard")
+        .should("exist")
 
       // Act
       // User should be able edit page details
       cy.clickContextMenuItem("@pageCard", "settings")
-      cy.get("#title").should("have.value", EDITED_TEST_PAGE_TITLE, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      })
+      cy.get("#title").should("have.value", EDITED_TEST_PAGE_TITLE)
       cy.get("#title").clear().type(EDITED_TEST_PAGE_TITLE_2)
       cy.contains("button", "Save").click()
+      cy.wait(Interceptors.POST)
 
       // Asserts
       // Should show modal
-      cy.contains("Successfully updated page!", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
+      cy.contains("Successfully updated page!").should("exist")
       // New page title should be reflected in Folders
-      cy.contains(EDITED_TEST_PAGE_TITLE_2, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
+      cy.contains(EDITED_TEST_PAGE_TITLE_2).should("exist")
     })
 
     it("Should be able to delete existing page on workspace", () => {
       // Arrange
       // Ensure that the frontend has been updated
-      cy.contains(EDITED_TEST_PAGE_TITLE, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("not.exist")
+      cy.contains(EDITED_TEST_PAGE_TITLE).should("not.exist")
 
       // Act
       // User should be able to remove the created test page card
-      cy.contains("a", EDITED_TEST_PAGE_TITLE_2).as("pageCard").should("exist")
+      cy.contains("button", EDITED_TEST_PAGE_TITLE_2)
+        .parent()
+        .parent()
+        .as("pageCard")
+        .should("exist")
       cy.clickContextMenuItem("@pageCard", "Delete")
       cy.contains("button", "delete").should("exist").click()
+      cy.wait(Interceptors.DELETE)
 
       // Assert
-      cy.contains(EDITED_TEST_PAGE_TITLE_2, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("not.exist")
+      cy.contains(EDITED_TEST_PAGE_TITLE_2).should("not.exist")
     })
   })
 
   describe("Create folder, rename folder, and delete folder from Workspace", () => {
-    beforeEach(() => {
-      cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-      window.localStorage.setItem("userId", "test")
-      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
-      cy.contains("Verify").should("not.exist")
-    })
-
     it("Test site workspace page should have folders section", () => {
       cy.contains("Create folder").should("exist")
     })
@@ -225,9 +213,7 @@ describe("Workspace Pages flow", () => {
       cy.contains("Skip").click()
 
       // Assert
-      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).should("exist")
       cy.url().should(
         "include",
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_FOLDER_NO_PAGES_TITLE}`
@@ -241,13 +227,13 @@ describe("Workspace Pages flow", () => {
       cy.get("#title").clear().type(TEST_PAGE_TITLE)
       cy.get("#permalink").clear().type(TEST_PAGE_PERMALNK)
       cy.contains("Save").click()
+      cy.wait(Interceptors.POST)
 
       // Create test page content
       cy.get(".CodeMirror-scroll").type(TEST_PAGE_CONTENT)
       cy.contains("Save").click()
-      cy.contains("Successfully updated page", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      })
+      cy.wait(Interceptors.POST)
+      cy.contains("Successfully updated page")
         .should("exist")
         .then(() =>
           cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
@@ -262,26 +248,19 @@ describe("Workspace Pages flow", () => {
       cy.contains("Done").click()
 
       // Assert
-      cy.contains(PRETTIFIED_FOLDER_WITH_PAGES_TITLE, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
+      cy.contains(PRETTIFIED_FOLDER_WITH_PAGES_TITLE).should("exist")
       cy.url().should(
         "include",
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_FOLDER_WITH_PAGES_TITLE}`
       )
       cy.contains("a", TEST_PAGE_TITLE).should("exist").click()
-      cy.get(".CodeMirror-scroll", { timeout: E2E_EXTENDED_TIMEOUT }).should(
-        "contain",
-        TEST_PAGE_CONTENT
-      )
+      cy.get(".CodeMirror-scroll").should("contain", TEST_PAGE_CONTENT)
     })
 
     it("Should not be able to create a new folder with invalid folder name", () => {
       // Title is too short
       const INVALID_FOLDER_TITLE = "t"
-      cy.contains("Create folder", { timeout: E2E_EXTENDED_TIMEOUT })
-        .should("exist")
-        .click()
+      cy.contains("Create folder").should("exist").click()
       cy.get("input#newDirectoryName").clear().type(INVALID_FOLDER_TITLE).blur()
       cy.contains("Title must be longer than 2 characters")
       cy.contains("button", "Next").should("be.disabled")
@@ -296,7 +275,9 @@ describe("Workspace Pages flow", () => {
     })
 
     it("Should be able to rename a folder", () => {
-      cy.contains("a", PRETTIFIED_FOLDER_WITH_PAGES_TITLE)
+      cy.contains("button", PRETTIFIED_FOLDER_WITH_PAGES_TITLE)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "settings")
@@ -304,11 +285,10 @@ describe("Workspace Pages flow", () => {
         .clear()
         .type(EDITED_TEST_FOLDER_WITH_PAGES_TITLE)
       cy.contains("button", "Save").click()
+      cy.wait(Interceptors.POST)
 
       // Assert
-      cy.contains("a", PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      })
+      cy.contains("button", PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE)
         .should("exist")
         .click()
       cy.url().should(
@@ -320,29 +300,40 @@ describe("Workspace Pages flow", () => {
       cy.get(".CodeMirror-scroll").should("contain", TEST_PAGE_CONTENT)
     })
 
-    it("Should be able to delete a folder", () => {
+    it("Should be able to delete a folder with no pages", () => {
       // Arrange
-      cy.contains("a", PRETTIFIED_FOLDER_NO_PAGES_TITLE)
+      cy.contains("button", PRETTIFIED_FOLDER_NO_PAGES_TITLE)
+        .parent()
+        .parent()
+        .as("folderItem")
         .as("emptyFolderItem")
         .should("exist")
-      cy.contains("a", PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE).as(
-        "folderItem"
-      )
 
       // Act
       cy.clickContextMenuItem("@emptyFolderItem", "Delete")
       cy.contains("button", "delete").click()
 
-      cy.clickContextMenuItem("@folderItem", "Delete")
-      cy.contains("button", "delete").click()
+      cy.wait(Interceptors.DELETE)
 
       // Assert
-      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("not.exist")
-      cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE, {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("not.exist")
+      cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).should("not.exist")
+    })
+
+    it("Should be able to delete a folder with pages", () => {
+      // Arrange
+      cy.contains("button", PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE)
+        .parent()
+        .parent()
+        .as("folderItem")
+        .should("exist")
+
+      // Act
+      cy.clickContextMenuItem("@folderItem", "Delete")
+      cy.contains("button", "delete").click()
+      cy.wait(Interceptors.DELETE)
+
+      // Assert
+      cy.contains(PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE).should("not.exist")
     })
   })
 })

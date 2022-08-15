@@ -1,10 +1,6 @@
-describe("Settings page", () => {
-  const COOKIE_NAME = Cypress.env("COOKIE_NAME")
-  const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
-  const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
-  Cypress.config("baseUrl", Cypress.env("BASEURL"))
-  Cypress.config("defaultCommandTimeout", 6000)
+import { TEST_PRIMARY_COLOR, TEST_REPO_NAME } from "../fixtures/constants"
 
+describe("Settings page", () => {
   const BASE_TITLE = "TEST"
   const BASE_PRIMARY_COLOR = "#6031b6"
   const BASE_SECONDARY_COLOR = "#4372d6"
@@ -29,7 +25,6 @@ describe("Settings page", () => {
   const TEST_FACEBOOK_PIXEL_ID = "12345"
   const TEST_GOOGLE_ANALYTICS_ID = "UA-39345131-3"
   const TEST_LINKEDIN_INSIGHTS_ID = "1234567"
-  const TEST_PRIMARY_COLOR = [255, 0, 0] // ([R, G, B])
   const TEST_SECONDARY_COLOR = [0, 255, 0] // ([R, G, B])
   const TEST_FACEBOOK_LINK = "https://www.facebook.com/testfb"
   const TEST_LINKEDIN_LINK = "https://www.linkedin.com/company/testagency"
@@ -49,16 +44,11 @@ describe("Settings page", () => {
   const visitLoadSettings = (sitePath: string) =>
     cy.visitLoadSettings(TEST_REPO_NAME, sitePath)
 
-  Cypress.Cookies.defaults({
-    preserve: COOKIE_NAME,
-  })
-
   before(() => {
-    cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
+    cy.setSessionDefaults()
     cy.visit("/sites")
     cy.contains(TEST_REPO_NAME).click()
 
-    window.localStorage.setItem("userId", "test")
     visitLoadSettings(`/sites/${TEST_REPO_NAME}/settings`)
 
     // Reset page input field states
@@ -117,7 +107,7 @@ describe("Settings page", () => {
   })
 
   beforeEach(() => {
-    window.localStorage.setItem("userId", "test")
+    cy.setSessionDefaults()
     visitLoadSettings(`/sites/${TEST_REPO_NAME}/settings`)
     // Double check that settings are loaded before running tests cos sometimes the tests run too quickly
     cy.get("#title").should((elem) => {
@@ -166,17 +156,17 @@ describe("Settings page", () => {
       cy.contains("button", "Select").should("not.be.disabled").click()
     })
 
-    cy.saveSettings() // Save
+    cy.saveSettings()
 
-    cy.contains("p", "Shareicon")
+    cy.contains("div", "Shareicon")
       .next()
       .find("input")
       .should("have.value", IMAGE_DIR + TEST_LOGO_IMAGES[0])
-    cy.contains("p", "Agency logo")
+    cy.contains("div", "Agency logo")
       .next()
       .find("input")
       .should("have.value", IMAGE_DIR + TEST_LOGO_IMAGES[1])
-    cy.contains("p", "Favicon")
+    cy.contains("div", "Favicon")
       .next()
       .find("input")
       .should("have.value", IMAGE_DIR + TEST_LOGO_IMAGES[2])

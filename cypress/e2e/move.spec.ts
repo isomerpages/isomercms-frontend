@@ -1,13 +1,12 @@
 import { slugifyCategory } from "utils"
 
-import { E2E_EXTENDED_TIMEOUT } from "../fixtures/constants"
+import {
+  CMS_BASEURL,
+  Interceptors,
+  TEST_REPO_NAME,
+} from "../fixtures/constants"
 
 describe("Move flow", () => {
-  const CMS_BASEURL = Cypress.env("BASEURL")
-  const COOKIE_NAME = Cypress.env("COOKIE_NAME")
-  const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
-  const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
-
   const TEST_REPO_FOLDER_NAME = "Move Folder"
   const PARSED_TEST_REPO_FOLDER_NAME = slugifyCategory(TEST_REPO_FOLDER_NAME)
 
@@ -30,8 +29,8 @@ describe("Move flow", () => {
   )
 
   beforeEach(() => {
-    cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-    window.localStorage.setItem("userId", "test")
+    cy.setupDefaultInterceptors()
+    cy.setSessionDefaults()
   })
 
   describe("Move pages out of Workspace", () => {
@@ -44,7 +43,11 @@ describe("Move flow", () => {
     })
 
     it("Should be able to navigate from Workspace to subfolder back to Workspace via MoveModal buttons", () => {
-      cy.contains("a", TITLE_WORKSPACE_TO_FOLDER).as("pageItem").should("exist")
+      cy.contains("button", TITLE_WORKSPACE_TO_FOLDER)
+        .parent()
+        .parent()
+        .as("pageItem")
+        .should("exist")
       cy.clickContextMenuItem("@pageItem", "Move to")
 
       cy.contains(`Move Here`)
@@ -124,20 +127,26 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move page from Workspace to itself and show correct success message", () => {
-      cy.contains("a", TITLE_WORKSPACE_TO_FOLDER).as("pageItem").should("exist")
+      cy.contains("button", TITLE_WORKSPACE_TO_FOLDER)
+        .parent()
+        .parent()
+        .as("pageItem")
+        .should("exist")
       cy.clickContextMenuItem("@pageItem", "Move to")
 
       cy.contains(`Move Here`)
 
       cy.contains("button", "Move Here").click()
 
-      cy.contains("File is already in this folder", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
+      cy.contains("File is already in this folder").should("exist")
     })
 
     it("Should be able to move a page from Workspace to folder", () => {
-      cy.contains("a", TITLE_WORKSPACE_TO_FOLDER).as("pageItem").should("exist")
+      cy.contains("button", TITLE_WORKSPACE_TO_FOLDER)
+        .parent()
+        .parent()
+        .as("pageItem")
+        .should("exist")
       cy.clickContextMenuItem("@pageItem", "Move to")
 
       cy.contains(`Move Here`)
@@ -167,17 +176,13 @@ describe("Move flow", () => {
         TITLE_WORKSPACE_TO_FOLDER,
       ])
 
-      cy.contains("button", "Move Here").click()
+      cy.contains("button", "Move Here").click().wait(Interceptors.POST)
 
-      cy.contains("Successfully moved file", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
+      cy.contains("Successfully moved file").should("exist")
 
       // Assert
       // 1. File is not in folder
-      cy.contains(TITLE_WORKSPACE_TO_FOLDER).should("not.exist", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      })
+      cy.contains(TITLE_WORKSPACE_TO_FOLDER).should("not.exist")
       // 2. File is in folder
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_REPO_FOLDER_NAME}`
@@ -187,7 +192,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move a page from folder to subfolder", () => {
-      cy.contains("a", TITLE_WORKSPACE_TO_SUBFOLDER)
+      cy.contains("button", TITLE_WORKSPACE_TO_SUBFOLDER)
+        .parent()
+        .parent()
         .as("pageItem")
         .should("exist")
       cy.clickContextMenuItem("@pageItem", "Move to")
@@ -230,17 +237,13 @@ describe("Move flow", () => {
         TITLE_WORKSPACE_TO_SUBFOLDER,
       ])
 
-      cy.contains("button", "Move Here").click()
+      cy.contains("button", "Move Here").click().wait(Interceptors.POST)
 
-      cy.contains("Successfully moved file", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
+      cy.contains("Successfully moved file").should("exist")
 
       // Assert
       // 1. File is not in Workspace
-      cy.contains(TITLE_WORKSPACE_TO_SUBFOLDER).should("not.exist", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      })
+      cy.contains(TITLE_WORKSPACE_TO_SUBFOLDER).should("not.exist")
       // 2. File is in subfolder
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_REPO_FOLDER_NAME}/subfolders/${PARSED_TEST_REPO_SUBFOLDER_NAME}`
@@ -262,7 +265,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to navigate from folder to Workspace to subfolder back to folder via MoveModal buttons", () => {
-      cy.contains("a", TITLE_FOLDER_TO_WORKSPACE)
+      cy.contains("button", TITLE_FOLDER_TO_WORKSPACE)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Move to")
@@ -338,19 +343,21 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move page from folder to itself and show correct success message", () => {
-      cy.contains("a", TITLE_FOLDER_TO_WORKSPACE)
+      cy.contains("button", TITLE_FOLDER_TO_WORKSPACE)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Move to")
       cy.contains("button", "Move Here").click()
 
-      cy.contains("File is already in this folder", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
+      cy.contains("File is already in this folder").should("exist")
     })
 
     it("Should be able to move a page from folder to Workspace", () => {
-      cy.contains("a", TITLE_FOLDER_TO_WORKSPACE)
+      cy.contains("button", TITLE_FOLDER_TO_WORKSPACE)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Move to")
@@ -373,17 +380,13 @@ describe("Move flow", () => {
         TITLE_FOLDER_TO_WORKSPACE,
       ])
 
-      cy.contains("button", "Move Here").click()
+      cy.contains("button", "Move Here").click().wait(Interceptors.POST)
 
-      cy.contains("Successfully moved file", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
+      cy.contains("Successfully moved file").should("exist")
 
       // Assert
       // 1. File is not in folder
-      cy.contains(TITLE_FOLDER_TO_WORKSPACE).should("not.exist", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      })
+      cy.contains(TITLE_FOLDER_TO_WORKSPACE).should("not.exist")
       // 2. File is in Workspace
       cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
 
@@ -391,7 +394,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move a page from folder to subfolder", () => {
-      cy.contains("a", TITLE_FOLDER_TO_SUBFOLDER)
+      cy.contains("button", TITLE_FOLDER_TO_SUBFOLDER)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Move to")
@@ -418,17 +423,13 @@ describe("Move flow", () => {
         TITLE_FOLDER_TO_SUBFOLDER,
       ])
 
-      cy.contains("button", "Move Here").click()
+      cy.contains("button", "Move Here").click().wait(Interceptors.POST)
 
-      cy.contains("Successfully moved file", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
+      cy.contains("Successfully moved file").should("exist")
 
       // Assert
       // 1. File is not in folder
-      cy.contains(TITLE_FOLDER_TO_SUBFOLDER).should("not.exist", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      })
+      cy.contains(TITLE_FOLDER_TO_SUBFOLDER).should("not.exist")
       // 2. File is in subfolder
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_REPO_FOLDER_NAME}/subfolders/${PARSED_TEST_REPO_SUBFOLDER_NAME}`
@@ -450,7 +451,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to navigate from subfolder to folder to Workspace back to subfolder via MoveModal buttons", () => {
-      cy.contains("a", TITLE_SUBFOLDER_TO_WORKSPACE)
+      cy.contains("button", TITLE_SUBFOLDER_TO_WORKSPACE)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Move to")
@@ -508,20 +511,22 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move page from subfolder to itself and show correct success message", () => {
-      cy.contains("a", TITLE_SUBFOLDER_TO_WORKSPACE)
+      cy.contains("button", TITLE_SUBFOLDER_TO_WORKSPACE)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Move to")
 
       cy.contains("button", "Move Here").click()
 
-      cy.contains("File is already in this folder", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
+      cy.contains("File is already in this folder").should("exist")
     })
 
     it("Should be able to move a page from subfolder to Workspace", () => {
-      cy.contains("a", TITLE_SUBFOLDER_TO_WORKSPACE)
+      cy.contains("button", TITLE_SUBFOLDER_TO_WORKSPACE)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Move to")
@@ -563,17 +568,13 @@ describe("Move flow", () => {
         TITLE_SUBFOLDER_TO_WORKSPACE,
       ])
 
-      cy.contains("button", "Move Here").click()
+      cy.contains("button", "Move Here").click().wait(Interceptors.POST)
 
-      cy.contains("Successfully moved file", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
+      cy.contains("Successfully moved file").should("exist")
 
       // Assert
       // 1. File is not in subfolder
-      cy.contains(TITLE_SUBFOLDER_TO_WORKSPACE).should("not.exist", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      })
+      cy.contains(TITLE_SUBFOLDER_TO_WORKSPACE).should("not.exist")
       // 2. File is in Workspace
       cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
 
@@ -581,7 +582,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move a page from subfolder to folder", () => {
-      cy.contains("a", TITLE_SUBFOLDER_TO_FOLDER)
+      cy.contains("button", TITLE_SUBFOLDER_TO_FOLDER)
+        .parent()
+        .parent()
         .as("folderItem")
         .should("exist")
       cy.clickContextMenuItem("@folderItem", "Move to")
@@ -606,17 +609,13 @@ describe("Move flow", () => {
         TITLE_SUBFOLDER_TO_FOLDER,
       ])
 
-      cy.contains("button", "Move Here").click()
+      cy.contains("button", "Move Here").click().wait(Interceptors.POST)
 
-      cy.contains("Successfully moved file", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
+      cy.contains("Successfully moved file").should("exist")
 
       // Assert
       // 1. File is not in subfolder
-      cy.contains(TITLE_SUBFOLDER_TO_FOLDER).should("not.exist", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      })
+      cy.contains(TITLE_SUBFOLDER_TO_FOLDER).should("not.exist")
       // 2. File is in Workspace
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_REPO_FOLDER_NAME}`
@@ -637,7 +636,9 @@ describe("Move flow", () => {
     })
 
     it("Should be able to navigate from Resource Category to Resource Room back to Resource Category via MoveModal buttons", () => {
-      cy.contains("a", TITLE_RESOURCE_PAGE)
+      cy.contains("button", TITLE_RESOURCE_PAGE)
+        .parent()
+        .parent()
         .parent()
         .as("resourcePage")
         .should("exist")
@@ -678,20 +679,22 @@ describe("Move flow", () => {
     })
 
     it("Should be able to move page from resource category to itself and show correct success message", () => {
-      cy.contains("a", TITLE_RESOURCE_PAGE)
+      cy.contains("button", TITLE_RESOURCE_PAGE)
+        .parent()
+        .parent()
         .parent()
         .as("resourcePage")
         .should("exist")
       cy.clickContextMenuItem("@resourcePage", "Move to")
       cy.contains("button", "Move Here").click()
 
-      cy.contains("File is already in this folder", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
+      cy.contains("File is already in this folder").should("exist")
     })
 
     it("Should be able to move page from resource category to another resource category", () => {
-      cy.contains("a", TITLE_RESOURCE_PAGE)
+      cy.contains("button", TITLE_RESOURCE_PAGE)
+        .parent()
+        .parent()
         .parent()
         .as("resourcePage")
         .should("exist")
@@ -730,17 +733,13 @@ describe("Move flow", () => {
         TITLE_RESOURCE_PAGE,
       ])
 
-      cy.contains("button", "Move Here").click()
+      cy.contains("button", "Move Here").click().wait(Interceptors.POST)
 
-      cy.contains("Successfully moved file", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      }).should("exist")
+      cy.contains("Successfully moved file").should("exist")
 
       // Assert
       // 1. File is not in resource category
-      cy.contains(TITLE_RESOURCE_PAGE).should("not.exist", {
-        timeout: E2E_EXTENDED_TIMEOUT,
-      })
+      cy.contains(TITLE_RESOURCE_PAGE).should("not.exist")
       // 2. File is in resource category 1
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${PARSED_TEST_REPO_RESOURCE_ROOM_NAME}/resourceCategory/${PARSED_TEST_REPO_RESOURCE_CATEGORY_NAME_1}`

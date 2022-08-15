@@ -2,7 +2,7 @@
 
 declare namespace Cypress {
   interface Chainable {
-    /** Uses the immediate sibling of the context menu to retrieve the requested dropdown menu item \
+    /** Uses the immediate sibling of the context menu to retrieve the requested dropdown menu item
      * and fire a click event on it
      * @param {string} alias **NOTE** alias MUST be the full fledged (@...) alias of the IMMEDIATE PRIOR sibling
      * @param {string} menuItemText The text within the menu item to select
@@ -20,16 +20,28 @@ declare namespace Cypress {
      * @param {string} as The alias that should be given to the first sibling
      */
     getFirstSiblingAs(as: string): Chainable<JQuery<HTMLElement>>
+    setDefaultPrimaryColour(): Chainable<void>
+    setSessionDefaults(): Chainable<void>
+    /**
+     * Setup the default interceptors for post/get/delete requests.
+     * These interceptors are aliased to the `Interceptors` enum.
+     */
+    setupDefaultInterceptors(): void
+    createResourceCategory(name: string): Chainable<void>
     uploadMedia(
       mediaTitle: string,
       mediaPath: string,
       disableAction?: boolean
     ): Chainable<void>
-    renameMedia(
+    renameUngroupedMedia(
       mediaTitle: string,
       mediaPath: string,
       disableAction?: boolean
     ): Chainable<void>
+    /**
+     * Renames media files that are part of a directory
+     */
+    renameDirectoryMedia(mediaTitle: string, mediaPath: string): Chainable<void>
     moveMedia(mediaTitle: string, newMediaFolder: string): Chainable<void>
     deleteMedia(mediaTitle: string, disableAction?: boolean): Chainable<void>
     saveSettings(): Chainable<void>
