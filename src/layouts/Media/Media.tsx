@@ -16,7 +16,12 @@ import { MoveScreen } from "layouts/screens/MoveScreen"
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
-import { DirectoryData, MediaData } from "types/directory"
+import {
+  DirectoryData,
+  isDirectoryData,
+  isMediaData,
+  MediaData,
+} from "types/directory"
 
 import {
   CreateButton,
@@ -33,6 +38,30 @@ import {
   MediaBreadcrumbs,
 } from "./components"
 
+interface MediaLabels {
+  singularMediaLabel: "file" | "image"
+  pluralMediaLabel: "files" | "images"
+  directoryLabel: "directory" | "album"
+}
+
+// Utility method to help ease over the various labels associated
+// with the media type so that we can avoid repeated conditionals
+const getMediaLabels = (mediaType: "files" | "images"): MediaLabels => {
+  if (mediaType === "files") {
+    return {
+      singularMediaLabel: "file",
+      pluralMediaLabel: "files",
+      directoryLabel: "directory",
+    }
+  }
+
+  return {
+    singularMediaLabel: "image",
+    pluralMediaLabel: "images",
+    directoryLabel: "album",
+  }
+}
+
 const Media = (): JSX.Element => {
   const history = useHistory()
   const { params, path, url } = useRouteMatch<{
@@ -43,6 +72,11 @@ const Media = (): JSX.Element => {
   const { mediaRoom: mediaType } = params
   const { setRedirectToPage } = useRedirectHook()
   const { data: mediasData } = useGetMediaFolders(params)
+  const {
+    singularMediaLabel,
+    pluralMediaLabel,
+    directoryLabel,
+  } = getMediaLabels(mediaType)
 
   return (
     <>
@@ -58,15 +92,13 @@ const Media = (): JSX.Element => {
         <Section>
           <SectionHeader label="Albums">
             <CreateButton as={Link} to={`${url}/createMedia`}>
-              {`Create ${mediaType === "images" ? "album" : "directory"}`}
+              {`Create ${directoryLabel}`}
             </CreateButton>
           </SectionHeader>
           <SimpleGrid w="100%" columns={3} spacing="1.5rem">
-            {mediasData
-              ?.filter((media) => (media as DirectoryData).type === "dir")
-              .map(({ name }) => {
-                return <MediaDirectoryCard title={name} />
-              })}
+            {mediasData?.filter(isDirectoryData).map(({ name }) => {
+              return <MediaDirectoryCard title={name} />
+            })}
           </SimpleGrid>
         </Section>
         <Section>
@@ -78,13 +110,14 @@ const Media = (): JSX.Element => {
                 leftIcon={<BiUpload fontSize="1.5rem" />}
                 variant="outline"
               >
-                {`Upload ${mediaType === "images" ? "image" : "file"}`}
+                {`Upload ${singularMediaLabel}`}
               </Button>
             </SectionHeader>
             <SectionCaption label="PRO TIP: " icon={BiBulb}>
-              Upload {mediaType} here to link to them in pages and resources.
-              The maximum {mediaType.slice(0, -1)} size allowed is 5MB. <br />
-              For {mediaType} other than
+              Upload {pluralMediaLabel} here to link to them in pages and
+              resources. The maximum {singularMediaLabel} size allowed is 5MB.{" "}
+              <br />
+              For {pluralMediaLabel} other than
               {mediaType === "images"
                 ? ` 'png', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg'`
                 : ` 'pdf'`}
@@ -97,15 +130,12 @@ const Media = (): JSX.Element => {
             </SectionCaption>
           </Box>
           <SimpleGrid columns={3} spacing="1.5rem" w="100%">
-            {mediasData
-              ?.filter((media) => (media as MediaData).sha !== undefined)
-              .map((x) => x as MediaData)
-              .map(({ name, mediaUrl }) => {
-                if (mediaType === "images") {
-                  return <ImagePreviewCard name={name} mediaUrl={mediaUrl} />
-                }
-                return <FilePreviewCard name={name} />
-              })}
+            {mediasData?.filter(isMediaData).map(({ name, mediaUrl }) => {
+              if (mediaType === "images") {
+                return <ImagePreviewCard name={name} mediaUrl={mediaUrl} />
+              }
+              return <FilePreviewCard name={name} />
+            })}
           </SimpleGrid>
         </Section>
       </SiteViewLayout>
