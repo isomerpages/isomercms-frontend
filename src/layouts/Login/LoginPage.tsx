@@ -74,7 +74,7 @@ const LoginContent = (): JSX.Element => {
   const { mutateAsync: verifyLoginOtp, error: verifyError } = useVerifyOtp()
 
   const successToast = useSuccessToast()
-  const [email, setEmail] = useState<string>()
+  const [email, setEmail] = useState<string>("")
   const [loginErrorMessage, setLoginErrorMessage] = useState("")
   const [verifyErrorMessage, setVerifyErrorMessage] = useState("")
 
@@ -88,21 +88,11 @@ const LoginContent = (): JSX.Element => {
   }
 
   const handleVerifyOtp = async ({ otp }: OtpProps) => {
-    // Should not happen, since OtpForm component is only shown when there is
-    // already an email state set.
-    if (!email) {
-      throw new Error("Something went wrong")
-    }
     await verifyLoginOtp({ email, otp })
     window.location.reload()
   }
 
   const handleResendOtp = async () => {
-    // Should not happen, since OtpForm component is only shown when there is
-    // already an email state set.
-    if (!email) {
-      throw new Error("Something went wrong")
-    }
     await sendLoginOtp({ email })
     successToast({
       description: `OTP sent to ${email}!`,
