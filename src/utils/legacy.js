@@ -10,8 +10,6 @@ import yaml from "yaml"
 import { getMediaDetails } from "../api"
 import { LOCAL_STORAGE_KEYS } from "../constants/localStorage"
 
-import { getMediaDetails } from "api"
-
 import { deslugifyDirectory } from "./deslugify"
 
 // axios settings
