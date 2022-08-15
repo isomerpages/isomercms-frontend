@@ -99,6 +99,7 @@ const LoginProvider = ({
     contactNumber: storedUser.contactNumber,
     logout,
     verifyLoginAndSetLocalStorage,
+    accountName: storedUserId || storedUserEmail,
   }
 
   return (

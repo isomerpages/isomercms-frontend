@@ -11,8 +11,8 @@ import { getDecodedParams } from "utils/decoding"
 axios.defaults.withCredentials = true
 
 const ProtectedRoute = ({ children, component: WrappedComponent, ...rest }) => {
-  const { userId, email } = useLoginContext()
-  return userId || email ? (
+  const { accountName } = useLoginContext()
+  return accountName ? (
     children ||
       (WrappedComponent && (
         <Route

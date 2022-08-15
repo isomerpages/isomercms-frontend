@@ -23,10 +23,10 @@ const VerificationStep = {
 
 const VerifyUserDetailsModal = () => {
   const {
-    userId,
     email: loggedInEmail,
     contactNumber: loggedInContactNumber,
     verifyLoginAndSetLocalStorage,
+    accountName,
   } = useContext(LoginContext)
   const { setRedirectToLogout } = useRedirectHook()
 
@@ -212,8 +212,7 @@ const VerifyUserDetailsModal = () => {
     }
   }
 
-  return (userId || loggedInEmail) &&
-    (!loggedInEmail || !loggedInContactNumber) ? (
+  return accountName && (!loggedInEmail || !loggedInContactNumber) ? (
     <div className={elementStyles.overlay}>
       <div className={elementStyles["modal-verify-user-details"]}>
         <div className={elementStyles.modalHeader}>
