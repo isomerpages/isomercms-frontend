@@ -6,9 +6,9 @@ import { handlers } from "../../mocks/handlers"
 
 import { LoginPage } from "./LoginPage"
 
-const SEND_OTP_ENDPOINT = `${process.env.BACKEND_URL_V2}/auth/login`
-const VERIFY_OTP_ENDPOINT = `${process.env.BACKEND_URL_V2}/auth/verify`
-const LOGOUT_ENDPOINT = `${process.env.BACKEND_URL_V2}/auth/logout`
+const SEND_OTP_ENDPOINT = `**/auth/login`
+const VERIFY_OTP_ENDPOINT = `**/auth/verify`
+const LOGOUT_ENDPOINT = `**/auth/logout`
 
 const LoginPageMeta = {
   title: "Pages/LoginPage",
@@ -28,7 +28,6 @@ const LoginPageMeta = {
             <Story />
           </Route>
         </MemoryRouter>
-        // </ServicesContext.Provider>
       )
     },
   ],
