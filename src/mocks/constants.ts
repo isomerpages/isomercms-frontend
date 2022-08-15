@@ -1,4 +1,9 @@
-import { DirectoryData, PageData, ResourcePageData } from "types/directory"
+import {
+  DirectoryData,
+  MediaData,
+  PageData,
+  ResourcePageData,
+} from "types/directory"
 import { BackendSiteSettings } from "types/settings"
 
 export const MOCK_PAGES_DATA: PageData[] = [
@@ -78,6 +83,37 @@ export const MOCK_USER = {
   email: "mockUser@open.gov.sg",
   contactNumber: "98765432",
 }
+
+const MOCK_MEDIA_ITEM_DATA: MediaData[] = [
+  {
+    mediaPath: "/some/thing",
+    mediaUrl:
+      "https://www.thebrandingjournal.com/wp-content/uploads/2014/06/20-Funny-Shocked-Cat-Memes-3.jpg",
+    name: "shocked cat",
+    sha: "sha",
+    type: "file",
+  },
+  {
+    mediaPath: "/some/thing",
+    mediaUrl:
+      "https://uploads.dailydot.com/2018/10/olli-the-polite-cat.jpg?auto=compress&fm=pjpg",
+    name: "polite cat",
+    sha: "sha",
+    type: "file",
+  },
+  {
+    mediaPath: "/some/thing",
+    mediaUrl: "https://img-9gag-fun.9cache.com/photo/a2W12m9_700bwp.webp",
+    name: "screaming cat",
+    sha: "sha",
+    type: "file",
+  },
+]
+
+export const MOCK_MEDIA_DATA: (MediaData | DirectoryData)[] = [
+  ...MOCK_DIR_DATA,
+  ...MOCK_MEDIA_ITEM_DATA,
+]
 
 export const MOCK_BE_SETTINGS: BackendSiteSettings = {
   title: "isomer",
