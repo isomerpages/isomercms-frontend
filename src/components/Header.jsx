@@ -37,7 +37,7 @@ const Header = ({
 }) => {
   const { setRedirectToLogout, setRedirectToPage } = useRedirectHook()
   const { retrieveStagingUrl } = useSiteUrlHook()
-  const { accountName } = useLoginContext()
+  const { userId, accountName } = useLoginContext()
   const {
     isOpen: isWarningModalOpen,
     onOpen: onWarningModalOpen,
@@ -138,7 +138,7 @@ const Header = ({
         ) : (
           <>
             <div className={`${elementStyles.info} mr-3`}>
-              Logged in as {`@${accountName}`}
+              Logged in as {`${userId ? "@" : ""}${accountName}`}
             </div>
             <Button onClick={setRedirectToLogout}>Log Out</Button>
           </>
