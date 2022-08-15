@@ -1,7 +1,7 @@
 import { MediaCreationModal } from "components/MediaCreationModal"
 import PropTypes from "prop-types"
 
-import { useGetDirectoryHook } from "hooks/directoryHooks"
+import { useGetMediaFolders } from "hooks/directoryHooks"
 import { useCreateMediaHook } from "hooks/mediaHooks"
 
 export const MediaCreationScreen = ({ match, onClose }) => {
@@ -10,7 +10,7 @@ export const MediaCreationScreen = ({ match, onClose }) => {
   const { mutateAsync: createHandler } = useCreateMediaHook(params, {
     onSuccess: () => onClose(),
   })
-  const { data: mediasData } = useGetDirectoryHook(params, { initialData: [] })
+  const { data: mediasData } = useGetMediaFolders(params, { initialData: [] })
 
   return (
     <MediaCreationModal

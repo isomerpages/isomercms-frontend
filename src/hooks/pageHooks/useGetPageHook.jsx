@@ -1,9 +1,9 @@
 import { useContext } from "react"
 import { useQuery } from "react-query"
 
-import { ServicesContext } from "contexts/ServicesContext"
+import { PAGE_CONTENT_KEY } from "constants/queryKeys"
 
-import { PAGE_CONTENT_KEY } from "hooks/queryKeys"
+import { ServicesContext } from "contexts/ServicesContext"
 
 import { useErrorToast } from "utils/toasts"
 

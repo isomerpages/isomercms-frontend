@@ -1,9 +1,9 @@
 import { AxiosError } from "axios"
 import { useMutation, UseMutationResult, useQueryClient } from "react-query"
 
-import { DIR_CONTENT_KEY, RESOURCE_ROOM_NAME_KEY } from "hooks/queryKeys"
+import { DIR_CONTENT_KEY, RESOURCE_ROOM_NAME_KEY } from "constants/queryKeys"
 
-import * as DirectoryService from "services/DirectoryService"
+import * as DirectoryService from "services/DirectoryService/index"
 
 import { DirectoryInfoProps } from "types/directory"
 

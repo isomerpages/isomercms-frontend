@@ -10,3 +10,9 @@ export interface ResourceRoomRouteParams {
 export interface ResourceCategoryRouteParams extends ResourceRoomRouteParams {
   resourceCategoryName: string
 }
+
+export interface ResourceRoomOptions {
+  resourceRoomName: string
+  resourceCategoryName: string
+  isCreate: boolean
+}

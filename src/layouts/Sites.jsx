@@ -4,7 +4,7 @@ import _ from "lodash"
 import { Component } from "react"
 import { Link } from "react-router-dom"
 
-import { SITES_IS_PRIVATE_KEY } from "constants/constants"
+import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import siteStyles from "styles/isomer-cms/pages/Sites.module.scss"
@@ -58,7 +58,7 @@ export default class SitesWrapper extends Component {
       const { siteNames } = resp.data
 
       window.localStorage.setItem(
-        SITES_IS_PRIVATE_KEY,
+        LOCAL_STORAGE_KEYS.SitesIsPrivate,
         JSON.stringify(
           siteNames.reduce(
             (map, siteName) =>

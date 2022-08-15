@@ -8,7 +8,7 @@ import { useForm, FormProvider } from "react-hook-form"
 import { useRouteMatch } from "react-router-dom"
 import * as Yup from "yup"
 
-import { useGetDirectoryHook } from "hooks/directoryHooks/useGetDirectoryHook"
+import { useGetMediaFolders } from "hooks/directoryHooks"
 import { useCreateMediaHook } from "hooks/mediaHooks/useCreateMediaHook"
 
 import { getMediaDirectoryName } from "utils"
@@ -36,7 +36,7 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
     mediaDirectoryName: type,
   })
 
-  const { data: mediasData } = useGetDirectoryHook(queryParams)
+  const { data: mediasData } = useGetMediaFolders(queryParams)
   const { mutateAsync: createHandler } = useCreateMediaHook(queryParams)
 
   const onMediaSelect = (media) => {

@@ -1,6 +1,8 @@
-import _, { unionWith, zip } from "lodash"
+import _, { zip } from "lodash"
 import { useQuery, UseQueryResult } from "react-query"
 import type { StringKeyOf } from "type-fest"
+
+import { SETTINGS_CONTENT_KEY } from "constants/queryKeys"
 
 import * as SettingsService from "services/SettingsService"
 
@@ -10,8 +12,6 @@ import {
   SiteSettings,
   SiteSocialMediaSettings,
 } from "types/settings"
-
-import { SETTINGS_CONTENT_KEY } from "../queryKeys"
 
 import { BE_TO_FE } from "./constants"
 

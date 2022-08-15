@@ -2,16 +2,22 @@ import _ from "lodash"
 import { useContext } from "react"
 import { useQuery, useQueryClient } from "react-query"
 
+import { DIR_CONTENT_KEY, MEDIA_CONTENT_KEY } from "constants/queryKeys"
+
 import { ServicesContext } from "contexts/ServicesContext"
 
-import { DIR_CONTENT_KEY, MEDIA_CONTENT_KEY } from "hooks/queryKeys"
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { useErrorToast } from "utils/toasts"
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
-// get directory data
+/**
+ * @deprecated Use the newer hooks that are more focused instead of this hook
+ * @param {Object} params the route params
+ * @param {Object} queryParams the query params for the underlying useQuery hook
+ * @returns
+ */
 // eslint-disable-next-line import/prefer-default-export
 export function useGetDirectoryHook(params, queryParams) {
   const queryClient = useQueryClient()
