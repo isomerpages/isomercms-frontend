@@ -135,7 +135,7 @@ export const LoginPage = (): JSX.Element => {
                   textDecoration: "none",
                   bgColor: "primary.600",
                 }}
-                href={`${process.env.REACT_APP_BACKEND_URL}/auth/github-redirect`}
+                href={`${process.env.REACT_APP_BACKEND_URL_V2}/auth/github-redirect`}
               >
                 <Text color="white">Log in with GitHub</Text>
               </Button>
