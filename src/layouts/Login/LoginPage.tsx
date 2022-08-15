@@ -4,7 +4,6 @@ import {
   GridItem,
   GridProps,
   Text,
-  Link,
   Grid,
   HStack,
   VStack,
@@ -18,6 +17,7 @@ import {
   GovtMasthead,
   Tab,
   InlineMessage,
+  Link,
 } from "@opengovsg/design-system-react"
 import { useState } from "react"
 
