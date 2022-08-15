@@ -23,6 +23,18 @@ const OTP_TIMER_INTERVAL = 60
 const validateOtp = (value: string) =>
   value.length === 6 || "Please enter a 6 digit OTP."
 
+const getOtpResendMessage = (remainingTime: number): string => {
+  if (remainingTime === 0) {
+    return "Resend OTP"
+  }
+
+  if (remainingTime === 1) {
+    return "Resend OTP in 1s"
+  }
+
+  return `Resend OTP in ${remainingTime}s`
+}
+
 export const OtpForm = ({
   email,
   onSubmit,
@@ -77,7 +89,7 @@ export const OtpForm = ({
         {formState.errors.otp && (
           <FormErrorMessage>{formState.errors.otp.message}</FormErrorMessage>
         )}
-        <HStack mt="1rem" alignItems="center" gap="2.5rem">
+        <HStack mt="1rem" alignItems="center" spacing="2.5rem">
           <Button type="submit" isLoading={formState.isSubmitting}>
             Log in
           </Button>
@@ -89,9 +101,7 @@ export const OtpForm = ({
               onResendOtp()
             }}
           >
-            {`Resend OTP${
-              timer > 0 ? ` in ${timer} second${timer === 1 ? "" : "s"}` : ""
-            }`}
+            {getOtpResendMessage(timer)}
           </Button>
         </HStack>
       </FormControl>
