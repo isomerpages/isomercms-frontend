@@ -8,7 +8,6 @@ import {
   Icon,
   VStack,
   IconButton,
-  Menu as ChakraMenu,
   ButtonGroup,
 } from "@chakra-ui/react"
 import { ContextMenu } from "components/ContextMenu"
@@ -19,7 +18,6 @@ import {
   BiFileBlank,
   BiFolder,
   BiInfoCircle,
-  BiPlus,
 } from "react-icons/bi"
 import { Link } from "react-router-dom"
 
@@ -113,6 +111,7 @@ export const UngroupedPages = (props: {
 
 export const EmptyFolder = (props: { url: string }): JSX.Element => {
   const { url } = props
+  const { setRedirectToPage } = useRedirectHook()
   return (
     <>
       <Box as="form" w="full">
@@ -126,17 +125,11 @@ export const EmptyFolder = (props: { url: string }): JSX.Element => {
             </VStack>
           </Center>
 
-          <ButtonGroup isAttached variant="outline">
-            {/* NOTE: This is to avoid the 2 joined buttons both having 1px padding,
-        which results in a larger border at the attached area. */}
-            <Button
-              as={Link}
-              to={`${url}/createDirectory`}
-              leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
-            >
-              Create Folder
-            </Button>
-          </ButtonGroup>
+          <CreateButton
+            onClick={() => setRedirectToPage(`${url}/createDirectory`)}
+          >
+            Create folder
+          </CreateButton>
         </VStack>
       </Box>
     </>
@@ -145,6 +138,7 @@ export const EmptyFolder = (props: { url: string }): JSX.Element => {
 
 export const EmptyPage = (props: { url: string }): JSX.Element => {
   const { url } = props
+  const { setRedirectToPage } = useRedirectHook()
   return (
     <>
       <Box as="form" w="full">
@@ -157,21 +151,9 @@ export const EmptyPage = (props: { url: string }): JSX.Element => {
               <Text textStyle="body-2">Create a new item to get started.</Text>
             </VStack>
           </Center>
-          <ChakraMenu>
-            {() => (
-              <ButtonGroup isAttached variant="outline">
-                {/* NOTE: This is to avoid the 2 joined buttons both having 1px padding,
-            which results in a larger border at the attached area. */}
-                <Button
-                  as={Link}
-                  to={`${url}/createPage`}
-                  leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
-                >
-                  Create page
-                </Button>
-              </ButtonGroup>
-            )}
-          </ChakraMenu>
+          <CreateButton onClick={() => setRedirectToPage(`${url}/createPage`)}>
+            Create page
+          </CreateButton>
         </VStack>
       </Box>
     </>
