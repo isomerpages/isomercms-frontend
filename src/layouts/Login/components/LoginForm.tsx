@@ -3,16 +3,16 @@ import { Button, FormLabel, Input } from "@opengovsg/design-system-react"
 import { useCallback } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
-export type LoginFormInputs = {
+export type LoginProps = {
   email: string
 }
 
 interface LoginFormProps {
-  onSubmit: (inputs: LoginFormInputs) => Promise<void>
+  onSubmit: (inputs: LoginProps) => Promise<void>
 }
 
 export const LoginForm = ({ onSubmit }: LoginFormProps): JSX.Element => {
-  const methods = useForm<LoginFormInputs>({
+  const methods = useForm<LoginProps>({
     mode: "onBlur",
   })
   const { handleSubmit, register, formState, setError } = methods
@@ -22,7 +22,7 @@ export const LoginForm = ({ onSubmit }: LoginFormProps): JSX.Element => {
     []
   )
 
-  const onSubmitForm = async (inputs: LoginFormInputs) => {
+  const onSubmitForm = async (inputs: LoginProps) => {
     return onSubmit(inputs).catch((err) => {
       const {
         error: { message },

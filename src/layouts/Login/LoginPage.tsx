@@ -26,16 +26,7 @@ import { useSuccessToast } from "utils/toasts"
 import { sendLoginOtp, verifyLoginOtp } from "api"
 import { IsomerLogo, LoginImage, OGPLogo } from "assets"
 
-import {
-  LoginForm,
-  LoginFormInputs,
-  OtpForm,
-  OtpFormInputs,
-} from "./components"
-
-export type LoginOtpData = {
-  email: string
-}
+import { LoginForm, LoginProps, OtpForm, OtpProps } from "./components"
 
 const LOGIN_GRID_LAYOUT: Pick<
   GridProps,
@@ -59,7 +50,7 @@ export const LoginPage = (): JSX.Element => {
   const LoginContent = (): JSX.Element => {
     const [email, setEmail] = useState<string>()
 
-    const handleSendOtp = async ({ email: emailInput }: LoginFormInputs) => {
+    const handleSendOtp = async ({ email: emailInput }: LoginProps) => {
       const trimmedEmail = emailInput.trim()
       try {
         await sendLoginOtp(trimmedEmail)
@@ -73,7 +64,7 @@ export const LoginPage = (): JSX.Element => {
       setEmail(trimmedEmail)
     }
 
-    const handleVerifyOtp = async ({ otp }: OtpFormInputs) => {
+    const handleVerifyOtp = async ({ otp }: OtpProps) => {
       // Should not happen, since OtpForm component is only shown when there is
       // already an email state set.
       if (!email) {
@@ -107,12 +98,7 @@ export const LoginPage = (): JSX.Element => {
 
     return (
       <VStack gap="2.5rem" alignItems="start" width="65%">
-        <Text
-          fontSize="2.5rem"
-          color="primary.500"
-          fontWeight="600"
-          lineHeight="1"
-        >
+        <Text fontSize="2.5rem" color="text.title.brand" textStyle="display-2">
           Rapidly build & launch informational sites
         </Text>
         <InlineMessage>

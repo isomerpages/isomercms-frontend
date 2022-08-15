@@ -3,13 +3,13 @@ import { Button, FormLabel, Input } from "@opengovsg/design-system-react"
 import { useCallback, useEffect, useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
-export type OtpFormInputs = {
+export type OtpProps = {
   otp: string
 }
 
 interface OtpFormProps {
   email: string
-  onSubmit: (inputs: OtpFormInputs) => Promise<void>
+  onSubmit: (inputs: OtpProps) => Promise<void>
   onResendOtp: () => Promise<void>
 }
 
@@ -21,7 +21,7 @@ export const OtpForm = ({
   onResendOtp,
 }: OtpFormProps): JSX.Element => {
   const [timer, setTimer] = useState(OTP_TIMER_INTERVAL)
-  const methods = useForm<OtpFormInputs>({
+  const methods = useForm<OtpProps>({
     mode: "onBlur",
   })
   const { handleSubmit, register, formState, setError } = methods
@@ -31,7 +31,7 @@ export const OtpForm = ({
     []
   )
 
-  const onSubmitForm = async (inputs: OtpFormInputs) => {
+  const onSubmitForm = async (inputs: OtpProps) => {
     return onSubmit(inputs).catch((err) => {
       const {
         error: { message },
