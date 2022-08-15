@@ -5,7 +5,6 @@ import { BiBulb, BiUpload } from "react-icons/bi"
 import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 import { useGetMediaFolders } from "hooks/directoryHooks"
-import useRedirectHook from "hooks/useRedirectHook"
 
 import { DeleteWarningScreen } from "layouts/screens/DeleteWarningScreen"
 import { DirectoryCreationScreen } from "layouts/screens/DirectoryCreationScreen"
@@ -16,12 +15,7 @@ import { MoveScreen } from "layouts/screens/MoveScreen"
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
-import {
-  DirectoryData,
-  isDirectoryData,
-  isMediaData,
-  MediaData,
-} from "types/directory"
+import { isDirectoryData, isMediaData } from "types/directory"
 
 import {
   CreateButton,
@@ -62,7 +56,7 @@ const getMediaLabels = (mediaType: "files" | "images"): MediaLabels => {
   }
 }
 
-const Media = (): JSX.Element => {
+export const Media = (): JSX.Element => {
   const history = useHistory()
   const { params, path, url } = useRouteMatch<{
     siteName: string
@@ -70,7 +64,6 @@ const Media = (): JSX.Element => {
     mediaDirectoryName: string
   }>()
   const { mediaRoom: mediaType } = params
-  const { setRedirectToPage } = useRedirectHook()
   const { data: mediasData } = useGetMediaFolders(params)
   const {
     singularMediaLabel,
@@ -177,5 +170,3 @@ const Media = (): JSX.Element => {
     </>
   )
 }
-
-export default Media

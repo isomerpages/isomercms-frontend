@@ -1,1 +1,1 @@
-export { default } from "./Media"
+export { Media } from "./Media"
