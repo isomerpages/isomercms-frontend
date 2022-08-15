@@ -1,6 +1,6 @@
 import { DefaultBodyType, rest } from "msw"
 
-import { DirectoryData, PageData } from "types/directory"
+import { DirectoryData, PageData, ResourcePageData } from "types/directory"
 import { LoggedInUser } from "types/user"
 
 const apiDataBuilder = <T extends DefaultBodyType = DefaultBodyType>(
@@ -22,6 +22,14 @@ export const buildDirData = apiDataBuilder<DirectoryData[]>(
   "*/sites/:siteName/collections"
 )
 
+export const buildResourceRoomName = apiDataBuilder<{
+  resourceRoomName: string
+}>("*/sites/:siteName/resourceRoom")
+
+export const buildResourceRoomData = apiDataBuilder<DirectoryData[]>(
+  "*/sites/:siteName/resourceRoom/:resourceRoomName"
+)
+
 export const buildFolderData = apiDataBuilder<(PageData | DirectoryData)[]>(
   "*/sites/:siteName/collections/:collectionName"
 )
@@ -34,4 +42,8 @@ export const buildLoginData = apiDataBuilder<LoggedInUser>("*/auth/whoami")
 
 export const buildLastUpdated = apiDataBuilder<{ lastUpdated: string }>(
   "*/sites/:siteName/lastUpdated"
+)
+
+export const buildResourceCategoryData = apiDataBuilder<ResourcePageData[]>(
+  "/*sites/:siteName/resourceRoom/:resourceRoomName/resources/:resourceCategoryName"
 )

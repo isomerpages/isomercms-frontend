@@ -34,7 +34,12 @@ import { FolderUrlParams } from "types/folders"
 import { isDirData } from "types/utils"
 import { deslugifyDirectory } from "utils"
 
-import { Section, SectionHeader, SectionCaption } from "../components"
+import {
+  Section,
+  SectionHeader,
+  SectionCaption,
+  CreateButton,
+} from "../components"
 import { SiteViewLayout } from "../layouts"
 
 import {
@@ -89,13 +94,9 @@ export const Folders = (): JSX.Element => {
                 {canCreateFolder ? (
                   <MenuDropdownButton />
                 ) : (
-                  <Button
-                    variant="outline"
-                    as={RouterLink}
-                    to={`${url}/createPage`}
-                  >
+                  <CreateButton as={RouterLink} to={`${url}/createPage`}>
                     Create page
-                  </Button>
+                  </CreateButton>
                 )}
               </ButtonGroup>
             </SectionHeader>

@@ -30,6 +30,6 @@ export interface PageData {
   type: "file"
 }
 
-export type ResourcePageData = Required<Omit<PageData, "pageType">> & {
+export type ResourcePageData = Required<Omit<PageData, "type">> & {
   resourceType: "file" | "post"
 }
