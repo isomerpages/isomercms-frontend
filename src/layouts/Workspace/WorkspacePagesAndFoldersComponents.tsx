@@ -23,7 +23,7 @@ import { Link } from "react-router-dom"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
-import { EmptyBoxImage } from "assets"
+import { EmptyBoxImage } from "assets/images/EmptyBoxImage"
 import { DirectoryData, PageData } from "types/directory"
 
 import {
@@ -184,7 +184,7 @@ export const EmptyPageAndFolder = (props: { url: string }): JSX.Element => {
                   borderRightRadius={0}
                   as={Link}
                   to={`${url}/createPage`}
-                  variant={isOpen ? "outline" : "solid"}
+                  variant="outline"
                 >
                   Create page
                 </Button>
@@ -193,13 +193,13 @@ export const EmptyPageAndFolder = (props: { url: string }): JSX.Element => {
                   as={IconButton}
                   borderLeftRadius={0}
                   aria-label="Select options"
-                  variant={isOpen ? "outline" : "solid"}
+                  variant="outline"
                   _active={{ bg: "white" }}
                   icon={
                     <Icon
                       as={isOpen ? BiChevronUp : BiChevronDown}
                       fontSize="1rem"
-                      fill={isOpen ? "blue" : "white"}
+                      fill="blue"
                     />
                   }
                 />
