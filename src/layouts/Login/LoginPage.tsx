@@ -19,7 +19,7 @@ import {
   InlineMessage,
   Link,
 } from "@opengovsg/design-system-react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, PropsWithChildren } from "react"
 
 import { useLogin, useVerifyOtp } from "hooks/loginHooks"
 
@@ -44,6 +44,29 @@ const LOGIN_GRID_LAYOUT: Pick<
   height: "100%",
   width: "100%",
 }
+
+interface FooterLinkProps {
+  link: string
+}
+
+const FooterLink = ({
+  link,
+  children,
+}: PropsWithChildren<FooterLinkProps>): JSX.Element => (
+  <Link
+    href={link}
+    rel="noopener noreferrer"
+    target="_blank"
+    textDecorationLine="none"
+    color="text.link.dark"
+    _hover={{
+      color: "text.link.dark",
+      textDecorationLine: "underline",
+    }}
+  >
+    {children}
+  </Link>
+)
 
 const LoginContent = (): JSX.Element => {
   const { mutateAsync: sendLoginOtp, error: loginError } = useLogin()
@@ -193,45 +216,15 @@ export const LoginPage = (): JSX.Element => (
       <GridItem area="links" bgColor="white">
         <Flex h="100%" alignItems="center" justifyContent="center">
           <HStack fontSize="0.75rem" gap="1.5rem">
-            <Link
-              href="https://form.gov.sg/#!/5dc80f7c03b2790012428dc5"
-              rel="noopener noreferrer"
-              target="_blank"
-              textDecorationLine="none"
-              color="text.link.dark"
-              _hover={{
-                color: "text.link.dark",
-                textDecorationLine: "underline",
-              }}
-            >
+            <FooterLink link="https://form.gov.sg/#!/5dc80f7c03b2790012428dc5">
               Contact Us
-            </Link>
-            <Link
-              href="https://go.gov.sg/isomercms-guide/"
-              rel="noopener noreferrer"
-              target="_blank"
-              textDecorationLine="none"
-              color="text.link.dark"
-              _hover={{
-                color: "text.link.dark",
-                textDecorationLine: "underline",
-              }}
-            >
+            </FooterLink>
+            <FooterLink link="https://go.gov.sg/isomercms-guide/">
               Guide
-            </Link>
-            <Link
-              href="https://www.tech.gov.sg/report_vulnerability/"
-              rel="noopener noreferrer"
-              target="_blank"
-              textDecorationLine="none"
-              color="text.link.dark"
-              _hover={{
-                color: "text.link.dark",
-                textDecorationLine: "underline",
-              }}
-            >
+            </FooterLink>
+            <FooterLink link="https://www.tech.gov.sg/report_vulnerability/">
               Report vulnerability
-            </Link>
+            </FooterLink>
           </HStack>
         </Flex>
       </GridItem>
