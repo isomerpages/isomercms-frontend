@@ -1,4 +1,4 @@
-import { HStack, FormControl } from "@chakra-ui/react"
+import { FormControl } from "@chakra-ui/react"
 import {
   Button,
   FormLabel,
@@ -54,11 +54,9 @@ export const LoginForm = ({ onSubmit }: LoginFormProps): JSX.Element => {
         {formState.errors.email && (
           <FormErrorMessage>{formState.errors.email.message}</FormErrorMessage>
         )}
-        <HStack mt="1rem" alignItems="center" gap="2.5rem">
-          <Button type="submit" isLoading={formState.isSubmitting}>
-            Log in
-          </Button>
-        </HStack>
+        <Button mt="1rem" type="submit" isLoading={formState.isSubmitting}>
+          Log in
+        </Button>
       </FormControl>
     </form>
   )
