@@ -1,16 +1,12 @@
 import { slugifyCategory } from "utils"
 
 import {
-  E2E_DEFAULT_WAIT_TIME,
-  E2E_EXTENDED_TIMEOUT,
-  E2E_CHANGE_WAIT_TIME,
+  CMS_BASEURL,
+  Interceptors,
+  TEST_REPO_NAME,
 } from "../fixtures/constants"
 
 describe("Resources page", () => {
-  const CMS_BASEURL = Cypress.env("BASEURL")
-  const COOKIE_NAME = Cypress.env("COOKIE_NAME")
-  const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
-  const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
   const TEST_RESOURCE_ROOM_NAME = "resources"
 
   const TEST_CATEGORY = "Test Folder"
@@ -21,18 +17,12 @@ describe("Resources page", () => {
   const TEST_CATEGORY_SHORT = "T"
   const TEST_CATEGORY_RENAMED = "Renamed Folder"
 
-  before(() => {
-    cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-  })
-
   beforeEach(() => {
-    // Before each test, we can automatically preserve the cookie.
-    // This means it will not be cleared before the NEXT test starts.
-    Cypress.Cookies.preserveOnce(COOKIE_NAME)
-    window.localStorage.setItem("userId", "test")
+    cy.setupDefaultInterceptors()
+    cy.setSessionDefaults()
     cy.visit(
       `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}`
-    )
+    ).wait(Interceptors.GET)
     cy.contains("Verify").should("not.exist")
   })
 
@@ -41,12 +31,11 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to create a new resource category", () => {
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains("a", "Create category").click()
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY)
     cy.contains("Next").click()
 
-    cy.wait(E2E_CHANGE_WAIT_TIME)
+    cy.wait(Interceptors.POST)
 
     // Asserts
     // 1. Redirect to newly created folder
@@ -61,7 +50,6 @@ describe("Resources page", () => {
   })
 
   it("Resources page should not allow user to create a new resource category with invalid name", () => {
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains("a", "Create category").click()
 
     // Disabled button for special characters
@@ -82,11 +70,12 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to create another new resource category", () => {
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
     cy.contains("a", "Create category").click()
 
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_2)
     cy.contains("Next").click()
+
+    cy.wait(Interceptors.POST)
 
     // Asserts
     // 1. Redirect to newly created folder
@@ -96,8 +85,7 @@ describe("Resources page", () => {
     )
 
     // 2. If user goes back to Resources, they should be able to see that the folder exists
-    cy.contains("a", "Resources").click()
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
+    cy.contains("a", "Resources").click().should("not.exist")
     cy.contains(TEST_CATEGORY_2)
   })
 
@@ -123,18 +111,18 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to rename a resource category", () => {
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
-    cy.contains("button", TEST_CATEGORY_2).parent().parent().as("folderCard")
+    cy.contains("button", TEST_CATEGORY_2)
+      .parent()
+      .parent()
+      .should("exist")
+      .as("folderCard")
     cy.clickContextMenuItem("@folderCard", "settings")
 
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_RENAMED)
     cy.contains("Save").click()
+    cy.wait(Interceptors.POST)
 
-    // Set a wait time because the API takes time
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
-    cy.contains("Successfully updated directory settings", {
-      timeout: E2E_EXTENDED_TIMEOUT,
-    }).should("exist")
+    cy.contains("Successfully updated directory settings").should("exist")
 
     cy.contains(TEST_CATEGORY_RENAMED)
   })
@@ -163,6 +151,8 @@ describe("Resources page", () => {
       .as("folderCard")
     cy.clickContextMenuItem("@folderCard", "Delete")
     cy.contains(":button", "delete").click()
+
+    cy.wait(Interceptors.DELETE)
 
     cy.contains("Successfully deleted directory").should("exist")
 

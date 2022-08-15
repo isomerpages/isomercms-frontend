@@ -2,19 +2,12 @@ import "cypress-file-upload"
 import { slugifyCategory, generateResourceFileName } from "utils"
 
 import {
-  E2E_EXTENDED_TIMEOUT,
-  E2E_DEFAULT_WAIT_TIME,
+  CMS_BASEURL,
+  TEST_REPO_NAME,
+  Interceptors,
 } from "../fixtures/constants"
 
 describe("Resource category page", () => {
-  Cypress.config("defaultCommandTimeout", 5000)
-
-  const CMS_BASEURL = Cypress.env("BASEURL")
-  const COOKIE_NAME = Cypress.env("COOKIE_NAME")
-  const COOKIE_VALUE = Cypress.env("COOKIE_VALUE")
-  const TEST_REPO_NAME = Cypress.env("TEST_REPO_NAME")
-  Cypress.config("baseUrl", Cypress.env("BASEURL"))
-
   const TEST_RESOURCE_ROOM_NAME = "resources"
   const TEST_CATEGORY = "Test Page Folder"
   const TEST_CATEGORY_2 = "Another Page Folder"
@@ -39,28 +32,21 @@ describe("Resource category page", () => {
   const FILE_TITLE = "singapore.pdf"
 
   before(() => {
-    cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-    window.localStorage.setItem("userId", "test")
+    cy.setupDefaultInterceptors()
+    cy.setSessionDefaults()
 
     // Set up test resource categories
-    cy.visit(`/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}`)
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
-    cy.contains("a", "Create category").click()
-    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY)
-    cy.contains("Next").click()
-
-    cy.visit(`/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}`)
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
-    cy.contains("a", "Create category").click()
-    cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_2)
-    cy.contains("Next").click()
+    cy.visit(`/sites/${TEST_REPO_NAME}/resourceRoom/resources`).wait(
+      Interceptors.GET
+    )
+    cy.createResourceCategory(TEST_CATEGORY)
+    cy.get("nav").contains("a", "Resources").should("exist").click()
+    cy.createResourceCategory(TEST_CATEGORY_2)
   })
 
   beforeEach(() => {
-    // Before each test, we can automatically preserve the cookie.
-    // This means it will not be cleared before the NEXT test starts.
-    cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-    window.localStorage.setItem("userId", "test")
+    cy.setupDefaultInterceptors()
+    cy.setSessionDefaults()
     cy.visit(
       `/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
     )
@@ -74,12 +60,10 @@ describe("Resource category page", () => {
   it("Resources category page should allow user to create a new resource page of type post", () => {
     cy.contains("a", "Create page").click()
 
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
-
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE)
     cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK)
     cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE)
-    cy.contains("Save").click()
+    cy.contains("Save").click().wait(Interceptors.POST)
 
     // Asserts
     // 1. Redirect to newly created page
@@ -102,7 +86,6 @@ describe("Resource category page", () => {
 
   it("Resources page should not allow user to create a new resource category with invalid name", () => {
     cy.contains("a", "Create page").click()
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
     // Same name as existing file
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE).blur()
     cy.contains("Save").should("be.disabled")
@@ -135,7 +118,6 @@ describe("Resource category page", () => {
 
   it("Resources category page should allow user to create a new resource page of type post", () => {
     cy.contains("a", "Create page").click()
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_2)
     cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK)
@@ -162,13 +144,9 @@ describe("Resource category page", () => {
   })
 
   it("Resource category page should not allow user to rename a resource page using invalid parameters", () => {
-    cy.contains("a", TEST_PAGE_TITLE_2, { timeout: E2E_EXTENDED_TIMEOUT })
-      .parent()
-      .as("pageCard")
-      .should("exist")
+    cy.contains("a", TEST_PAGE_TITLE_2).parent().as("pageCard").should("exist")
 
     cy.clickContextMenuItem("@pageCard", "settings")
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     // Same name as existing file
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE).blur()
@@ -204,14 +182,9 @@ describe("Resource category page", () => {
   })
 
   it("Resource category page should allow user to edit a resource page details", () => {
-    cy.contains("a", TEST_PAGE_TITLE_2, { timeout: E2E_EXTENDED_TIMEOUT })
-      .parent()
-      .as("pageCard")
-      .should("exist")
+    cy.contains("a", TEST_PAGE_TITLE_2).parent().as("pageCard").should("exist")
 
     cy.clickContextMenuItem("@pageCard", "settings")
-
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_RENAMED)
     cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK_CHANGED)
@@ -242,7 +215,6 @@ describe("Resource category page", () => {
 
   it("Resources category page should allow user to create a new resource page of type file", () => {
     cy.contains("Create page").click()
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_FILE)
     cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE)
@@ -256,11 +228,9 @@ describe("Resource category page", () => {
     cy.get("button")
       .contains(/^Upload$/)
       .click()
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
 
     cy.get('button[id="selectMedia"]').click()
-    cy.contains("Save").click()
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
+    cy.contains("Save").click().wait(Interceptors.POST)
 
     // Asserts
     // 1. Should not redirect
@@ -275,15 +245,11 @@ describe("Resource category page", () => {
   })
 
   it("Resources category page should allow user to change an existing resource page from post to file", () => {
-    cy.contains("a", TEST_PAGE_TITLE_RENAMED, {
-      timeout: E2E_EXTENDED_TIMEOUT,
-    })
+    cy.contains("a", TEST_PAGE_TITLE_RENAMED)
       .parent()
       .as("pageCard")
       .should("exist")
     cy.clickContextMenuItem("@pageCard", "settings")
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
-
     cy.get('input[id="radio-file"]').click()
 
     cy.contains(":button", "Select File").click()
@@ -291,7 +257,7 @@ describe("Resource category page", () => {
     cy.contains(FILE_TITLE).click()
     cy.get('button[id="selectMedia"]').click()
 
-    cy.contains("Save").click()
+    cy.contains("Save").click().wait(Interceptors.POST)
 
     // New page should be of type FILE with the correct date
     // cy.contains("Successfully updated select file").should("exist")
@@ -300,20 +266,16 @@ describe("Resource category page", () => {
   })
 
   it("Resources category page should allow user to change an existing resource page from file to post", () => {
-    cy.contains("button", TEST_PAGE_TITLE_RENAMED, {
-      timeout: E2E_EXTENDED_TIMEOUT,
-    })
+    cy.contains("button", TEST_PAGE_TITLE_RENAMED)
       .parent()
       .parent()
       .as("pageCard")
       .should("exist")
     cy.clickContextMenuItem("@pageCard", "settings")
 
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
-
     cy.get('input[id="radio-post"]').click()
 
-    cy.contains("Save").click()
+    cy.contains("Save").click().wait(Interceptors.POST)
     cy.contains("Successfully updated page").should("exist")
 
     // New page should be of type POST with the correct date
@@ -324,19 +286,18 @@ describe("Resource category page", () => {
   })
 
   it("Resource category page should allow user to delete a page", () => {
-    cy.contains("a", TEST_PAGE_TITLE_RENAMED, { timeout: E2E_EXTENDED_TIMEOUT })
+    cy.contains("a", TEST_PAGE_TITLE_RENAMED)
       .parent()
       .as("pageCard")
       .should("exist")
     cy.clickContextMenuItem("@pageCard", "Delete")
 
-    cy.contains("button", "delete", { timeout: E2E_EXTENDED_TIMEOUT })
+    cy.contains("button", "delete")
       .should("exist")
       .click()
+      .wait(Interceptors.DELETE)
 
-    // Set a wait time because the API takes time
-    cy.wait(E2E_DEFAULT_WAIT_TIME)
-    cy.contains("Successfully deleted page")
+    cy.contains("Successfully deleted page").should("exist")
     cy.contains(TEST_PAGE_TITLE_RENAMED).should("not.exist")
   })
 })
