@@ -16,6 +16,7 @@ interface OtpFormProps {
   email: string
   onSubmit: (inputs: OtpProps) => Promise<void>
   onResendOtp: () => Promise<void>
+  errorMessage: string
 }
 
 const OTP_TIMER_INTERVAL = 60
@@ -39,23 +40,20 @@ export const OtpForm = ({
   email,
   onSubmit,
   onResendOtp,
+  errorMessage,
 }: OtpFormProps): JSX.Element => {
   const [timer, setTimer] = useState(OTP_TIMER_INTERVAL)
   const { handleSubmit, register, formState, setError } = useForm<OtpProps>({
     mode: "onBlur",
   })
 
-  const onSubmitForm = async (inputs: OtpProps) => {
-    return onSubmit(inputs).catch((err) => {
-      const {
-        error: { message },
-      } = err.response.data
+  useEffect(() => {
+    if (errorMessage)
       setError("otp", {
         type: "server",
-        message,
+        message: errorMessage,
       })
-    })
-  }
+  }, [errorMessage, setError])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -65,7 +63,7 @@ export const OtpForm = ({
   }, [timer])
 
   return (
-    <form onSubmit={handleSubmit(onSubmitForm)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <FormControl
         isInvalid={!!formState.errors.otp}
         isReadOnly={formState.isSubmitting}

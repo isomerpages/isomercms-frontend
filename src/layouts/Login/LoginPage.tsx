@@ -19,11 +19,12 @@ import {
   InlineMessage,
   Link,
 } from "@opengovsg/design-system-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+
+import { useLogin, useVerifyOtp } from "hooks/loginHooks"
 
 import { useSuccessToast } from "utils/toasts"
 
-import { sendLoginOtp, verifyLoginOtp } from "api"
 import { IsomerLogo, LoginImage, OGPLogo } from "assets"
 
 import { LoginForm, LoginProps, OtpForm, OtpProps } from "./components"
@@ -45,17 +46,18 @@ const LOGIN_GRID_LAYOUT: Pick<
 }
 
 const LoginContent = (): JSX.Element => {
+  const { mutateAsync: sendLoginOtp, error: loginError } = useLogin()
+
+  const { mutateAsync: verifyLoginOtp, error: verifyError } = useVerifyOtp()
+
   const successToast = useSuccessToast()
   const [email, setEmail] = useState<string>()
+  const [loginErrorMessage, setLoginErrorMessage] = useState("")
+  const [verifyErrorMessage, setVerifyErrorMessage] = useState("")
 
   const handleSendOtp = async ({ email: emailInput }: LoginProps) => {
     const trimmedEmail = emailInput.trim()
-    try {
-      await sendLoginOtp(trimmedEmail)
-    } catch (err) {
-      console.log(err)
-      throw err
-    }
+    await sendLoginOtp({ email: trimmedEmail })
     successToast({
       description: `OTP sent to ${trimmedEmail}`,
     })
@@ -68,12 +70,7 @@ const LoginContent = (): JSX.Element => {
     if (!email) {
       throw new Error("Something went wrong")
     }
-    try {
-      await verifyLoginOtp(email, otp)
-    } catch (err) {
-      console.log(err)
-      throw err
-    }
+    await verifyLoginOtp({ email, otp })
     window.location.reload()
   }
 
@@ -83,16 +80,21 @@ const LoginContent = (): JSX.Element => {
     if (!email) {
       throw new Error("Something went wrong")
     }
-    try {
-      await sendLoginOtp(email)
-    } catch (err) {
-      console.log(err)
-      throw err
-    }
+    await sendLoginOtp({ email })
     successToast({
       description: `OTP sent to ${email}!`,
     })
   }
+
+  useEffect(() => {
+    const errorMessage = loginError?.response?.data?.error?.message
+    setLoginErrorMessage(errorMessage)
+  }, [loginError])
+
+  useEffect(() => {
+    const errorMessage = verifyError?.response?.data?.error?.message
+    setVerifyErrorMessage(errorMessage)
+  }, [verifyError])
 
   return (
     <VStack gap="2.5rem" alignItems="start" width="65%">
@@ -130,9 +132,13 @@ const LoginContent = (): JSX.Element => {
                 email={email}
                 onSubmit={handleVerifyOtp}
                 onResendOtp={handleResendOtp}
+                errorMessage={verifyErrorMessage || loginErrorMessage}
               />
             ) : (
-              <LoginForm onSubmit={handleSendOtp} />
+              <LoginForm
+                onSubmit={handleSendOtp}
+                errorMessage={loginErrorMessage}
+              />
             )}
           </TabPanel>
         </TabPanels>

@@ -5,6 +5,7 @@ import {
   Input,
   FormErrorMessage,
 } from "@opengovsg/design-system-react"
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 
 export type LoginProps = {
@@ -13,27 +14,29 @@ export type LoginProps = {
 
 interface LoginFormProps {
   onSubmit: (inputs: LoginProps) => Promise<void>
+  errorMessage: string
 }
 
 const validateEmail = (value: string) =>
   value.length > 0 || "Please enter a valid email."
 
-export const LoginForm = ({ onSubmit }: LoginFormProps): JSX.Element => {
+export const LoginForm = ({
+  onSubmit,
+  errorMessage,
+}: LoginFormProps): JSX.Element => {
   const { handleSubmit, register, formState, setError } = useForm<LoginProps>({
     mode: "onBlur",
   })
-
-  const onSubmitForm = async (inputs: LoginProps) => {
-    return onSubmit(inputs).catch((err) => {
-      const {
-        error: { message },
-      } = err.response.data
-      setError("email", { type: "server", message })
-    })
-  }
+  useEffect(() => {
+    if (errorMessage)
+      setError("email", {
+        type: "server",
+        message: errorMessage,
+      })
+  }, [errorMessage, setError])
 
   return (
-    <form onSubmit={handleSubmit(onSubmitForm)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <FormControl
         isInvalid={!!formState.errors.email}
         isReadOnly={formState.isSubmitting}
@@ -51,9 +54,7 @@ export const LoginForm = ({ onSubmit }: LoginFormProps): JSX.Element => {
             validate: validateEmail,
           })}
         />
-        {formState.errors.email && (
-          <FormErrorMessage>{formState.errors.email.message}</FormErrorMessage>
-        )}
+        {errorMessage && <FormErrorMessage>{errorMessage}</FormErrorMessage>}
         <Button mt="1rem" type="submit" isLoading={formState.isSubmitting}>
           Log in
         </Button>
