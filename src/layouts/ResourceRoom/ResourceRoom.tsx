@@ -102,7 +102,9 @@ const EmptyResourceRoom = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
-    <SiteViewLayout>
+    <SiteViewLayout
+      divider={undefined} // to remove bottom divider line
+    >
       <Center as="form" mt="6rem">
         {/* Resource Room does not exist */}
         <VStack spacing={5}>
