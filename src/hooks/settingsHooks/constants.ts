@@ -21,6 +21,7 @@ export const BE_TO_FE: {
   show_reach: "showReach",
   logo: "agencyLogo",
   social_media: "socialMediaContent",
+  url: "url",
 }
 
 export const FE_TO_BE = invert(BE_TO_FE)

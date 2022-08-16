@@ -53,6 +53,20 @@ export const GeneralSettings = ({
             {...register("description")}
           />
         </FormControl>
+        <FormControl isDisabled={isError} isRequired>
+          <Box mb="0.75rem">
+            <FormLabel mb={0}>Site URL</FormLabel>
+            <FormLabel.Description color="text.description">
+              This is the URL that the Isomer site will be published to.
+            </FormLabel.Description>
+          </Box>
+          <Input
+            w="100%"
+            id="url"
+            placeholder="https://"
+            {...register("url", { required: true })}
+          />
+        </FormControl>
         <FormControl isDisabled={isError}>
           <Flex justifyContent="space-between" w="100%">
             <FormLabel>Display government masthead</FormLabel>
