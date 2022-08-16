@@ -16,6 +16,8 @@ export const URL_REGEX_PREFIX = "^(https://)?(www.)?("
 export const URL_REGEX_SUFFIX = ".com/)([a-zA-Z0-9_-]+([/.])?)+$"
 export const TELEGRAM_REGEX = "telegram|t).me/([a-zA-Z0-9_-]+([/.])?)+$"
 export const TIKTOK_REGEX = ".com/@)([a-zA-Z0-9_-]+([/.])?)+$"
+export const DOMAIN_NAME_REGEX =
+  "(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]"
 const PHONE_REGEX = "^\\+65(6|8|9)[0-9]{7}$"
 const EMAIL_REGEX =
   '^(([^<>()\\[\\]\\.,;:\\s@\\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\\"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z-0-9]+\\.)+[a-zA-Z]{2,}))$'
