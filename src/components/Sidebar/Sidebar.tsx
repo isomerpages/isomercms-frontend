@@ -197,9 +197,7 @@ export const Sidebar = (): JSX.Element => {
         </SidebarButton>
         <Box px="1rem" textColor="text.link.disabled" textAlign="left" w="100%">
           <Text textStyle="body-1">Logged in as</Text>
-          <Text textStyle="body-1">
-            {`${userId ? "@" : ""}${accountName}`}|
-          </Text>
+          <Text textStyle="body-1">{`${userId ? "@" : ""}${accountName}`}</Text>
         </Box>
       </VStack>
     </Flex>
