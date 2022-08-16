@@ -5,7 +5,7 @@ import { SITE_URL_KEY, STAGING_URL_KEY } from "constants/queryKeys"
 
 const getStagingUrl = async (siteName) => {
   const resp = await axios.get(
-    `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/stagingUrl`
+    `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/stagingUrl`
   )
   return resp.data.stagingUrl
 }
