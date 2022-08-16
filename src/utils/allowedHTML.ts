@@ -9,5 +9,5 @@ const IFRAME_TAG_REGEX = new RegExp("(<iframe.*/iframe>)", "gm")
  * @returns the character length after removing specifc HTML tags
  */
 export const getLengthWithoutTags = (text: string): number => {
- return text.replace(IFRAME_TAG_REGEX, "").length
+  return text.replace(IFRAME_TAG_REGEX, "").length
 }
