@@ -33,26 +33,31 @@ export const FolderCard = ({
   }, [encodedName, url])
 
   return (
-    <LinkBox position="relative" w="full">
-      <LinkOverlay as={RouterLink} to={generatedLink} w="100%">
-        <Card variant="single">
-          <CardBody alignItems="center">
-            <Icon as={BiFolder} fontSize="1.5rem" fill="icon.alt" />
-            <Text textStyle="subhead-1" color="text.label" noOfLines={1}>
-              {pageFileNameToTitle(name)}
-            </Text>
-            <Spacer />
-            <Text textStyle="body-2" whiteSpace="nowrap">
-              {`${dirContent.length} item${dirContent.length === 1 ? "" : "s"}`}
-            </Text>
-            {/* 
+    <Box position="relative" w="full">
+      <Card variant="single">
+        <LinkBox>
+          <LinkOverlay as={RouterLink} to={generatedLink}>
+            <CardBody alignItems="center">
+              <Icon as={BiFolder} fontSize="1.5rem" fill="icon.alt" />
+              <Text textStyle="subhead-1" color="text.label" noOfLines={1}>
+                {pageFileNameToTitle(name)}
+              </Text>
+              <Spacer />
+              <Text textStyle="body-2" whiteSpace="nowrap">
+                {`${dirContent.length} item${
+                  dirContent.length === 1 ? "" : "s"
+                }`}
+              </Text>
+              {/* 
             NOTE: This is a workaround as our card component uses a HStack to orient elements with 1 rem spacing.
             As we require 1.5 rem gap between text and the context menu button, this equates to a box width of 0.5 rem.
             */}
-            <Box w="0.5rem" />
-          </CardBody>
-        </Card>
-      </LinkOverlay>
+              <Box w="0.5rem" />
+            </CardBody>
+          </LinkOverlay>
+        </LinkBox>
+      </Card>
+
       <ContextMenu>
         <ContextMenu.Button />
         <ContextMenu.List>
@@ -80,6 +85,6 @@ export const FolderCard = ({
           </ContextMenu.Item>
         </ContextMenu.List>
       </ContextMenu>
-    </LinkBox>
+    </Box>
   )
 }
