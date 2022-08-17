@@ -174,7 +174,7 @@ describe("Folders flow", () => {
 
     // Rename
     it("Should be able to rename a sub-folder", () => {
-      cy.contains("button", PRETTIFIED_SUBFOLDER_WITH_PAGES_TITLE)
+      cy.contains("a", PRETTIFIED_SUBFOLDER_WITH_PAGES_TITLE)
         .parent()
         .parent()
         .as("folderItem")
@@ -199,7 +199,7 @@ describe("Folders flow", () => {
 
     // Delete
     it("Should be able to delete a sub-folder with a page", () => {
-      cy.contains("button", PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE)
+      cy.contains("a", PRETTIFIED_EDITED_SUBFOLDER_WITH_PAGES_TITLE)
         .parent()
         .parent()
         .as("folderItem")
@@ -214,7 +214,7 @@ describe("Folders flow", () => {
     })
 
     it("Should be able to delete a sub-folder without page", () => {
-      cy.contains("button", PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE)
+      cy.contains("a", PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE)
         .parent()
         .parent()
         .as("folderItem")
@@ -353,7 +353,7 @@ describe("Folders flow", () => {
     })
   })
 
-  describe("Create page, delete page, edit page settings in subfolder", () => {
+  describe.only("Create page, delete page, edit page settings in subfolder", () => {
     before(() => {
       cy.setupDefaultInterceptors()
       cy.setSessionDefaults()
