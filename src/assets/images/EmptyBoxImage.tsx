@@ -1,4 +1,6 @@
-export const EmptyBoxImage = (): JSX.Element => {
+export const EmptyBoxImage = (
+  props: React.SVGProps<SVGSVGElement>
+): JSX.Element => {
   return (
     <svg
       width="256"
@@ -6,6 +8,7 @@ export const EmptyBoxImage = (): JSX.Element => {
       viewBox="0 0 256 120"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         d="M208.97 13H50.2371V106.45H208.97V13Z"
