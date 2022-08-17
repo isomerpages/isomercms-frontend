@@ -23,12 +23,14 @@ export const MediaBreadcrumbs = (): JSX.Element => {
       {directories
         .slice(1)
         .reduce(
-          (acc, cur) => {
-            const prev = acc[acc.length - 1]
-            const directoryUrl = `${prev.url}%2F${cur}`
-            const displayedDirectoryName = deslugifyDirectory(cur)
+          (mediaDirectoriesInfo, currentMediaDirectoryInfo) => {
+            const prev = mediaDirectoriesInfo[mediaDirectoriesInfo.length - 1]
+            const directoryUrl = `${prev.url}%2F${currentMediaDirectoryInfo}`
+            const displayedDirectoryName = deslugifyDirectory(
+              currentMediaDirectoryInfo
+            )
             return [
-              ...acc,
+              ...mediaDirectoriesInfo,
               {
                 name: displayedDirectoryName,
                 url: directoryUrl,
