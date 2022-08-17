@@ -9,6 +9,8 @@ import {
   titleToPageFileName,
 } from "./legacy"
 
+import { getLengthWithoutTags } from "./allowedHTML"
+
 // Common regexes and constants
 // ==============
 const PERMALINK_REGEX = "^((/([a-zA-Z0-9]+-)*[a-zA-Z0-9]+)+)/?$"
@@ -380,7 +382,7 @@ const validateInfobarSection = (sectionError, sectionType, field, value) => {
         errorMessage = `The description should be longer than ${INFOBAR_DESCRIPTION_MIN_LENGTH} characters.`
       }
       // Description is too long
-      if (value.length > INFOBAR_DESCRIPTION_MAX_LENGTH) {
+      if (getLengthWithoutTags(value) > INFOBAR_DESCRIPTION_MAX_LENGTH) {
         errorMessage = `The description should be shorter than ${INFOBAR_DESCRIPTION_MAX_LENGTH} characters.`
       }
       break
