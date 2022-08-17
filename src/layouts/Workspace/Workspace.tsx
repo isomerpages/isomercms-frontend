@@ -19,6 +19,8 @@ import {
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
+import { isDirData } from "types/utils"
+
 import {
   Section,
   SectionHeader,
@@ -60,7 +62,7 @@ const WorkspacePage = (): JSX.Element => {
   const hasContactUsCard =
     contactUsPage?.content?.frontMatter?.layout === CONTACT_US_TEMPLATE_LAYOUT
 
-  const dirsData = _dirsData || []
+  const dirsData = _dirsData?.filter(isDirData) || []
   const pagesData = _pagesData || []
 
   return (
