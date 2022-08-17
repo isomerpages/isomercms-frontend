@@ -46,7 +46,7 @@ export const MediaDirectoryCard = ({
           <ContextMenu.Item
             icon={<BiEditAlt />}
             as={RouterLink}
-            to={`/sites/${siteName}/folders/${title}`}
+            to={`/sites/${siteName}/media/images/mediaDirectory/images%2F${title}`}
           >
             <Text>Edit folder</Text>
           </ContextMenu.Item>

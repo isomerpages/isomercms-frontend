@@ -84,7 +84,7 @@ export const Media = (): JSX.Element => {
         </Section>
         <Section>
           <SectionHeader label="Albums">
-            <CreateButton as={Link} to={`${url}/createMedia`}>
+            <CreateButton as={Link} to={`${url}/createDirectory`}>
               {`Create ${directoryLabel}`}
             </CreateButton>
           </SectionHeader>
