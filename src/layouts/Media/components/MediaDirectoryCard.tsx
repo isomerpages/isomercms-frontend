@@ -46,14 +46,14 @@ export const MediaDirectoryCard = ({
           <ContextMenu.Item
             icon={<BiEditAlt />}
             as={RouterLink}
-            to={`/sites/${siteName}/media/images/mediaDirectory/images%2F${title}`}
+            to={`/sites/${siteName}/media/${mediaType}/mediaDirectory/${encodedDirectoryPath}`}
           >
             <Text>Edit folder</Text>
           </ContextMenu.Item>
           <ContextMenu.Item
             icon={<BiWrench />}
             as={RouterLink}
-            to={`${url}/editDirectorySettings/${title}`}
+            to={`${url}/editDirectorySettings/${encodedDirectoryPath}`}
           >
             Folder settings
           </ContextMenu.Item>
@@ -62,7 +62,7 @@ export const MediaDirectoryCard = ({
             <ContextMenu.Item
               icon={<BiTrash />}
               as={RouterLink}
-              to={`${url}/deleteDirectory/${title}`}
+              to={`${url}/deleteDirectory/${encodedDirectoryPath}`}
             >
               Delete
             </ContextMenu.Item>
