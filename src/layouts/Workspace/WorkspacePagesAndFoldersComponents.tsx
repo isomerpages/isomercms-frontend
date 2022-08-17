@@ -39,7 +39,7 @@ export const Folders = (props: {
   siteName: string
   pagesData: PageData[]
   url: string
-  dirsData: (PageData | DirectoryData)[]
+  dirsData: DirectoryData[]
 }): JSX.Element => {
   const { setRedirectToPage } = useRedirectHook()
   const { siteName, pagesData, url, dirsData } = props
