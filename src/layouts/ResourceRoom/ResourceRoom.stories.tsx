@@ -35,6 +35,9 @@ const ResourceRoomMeta = {
           <Route path="/sites/:siteName/resourceRoom/:resourceRoomName">
             <Story />
           </Route>
+          <Route path="/sites/:siteName/resourceRoom/">
+            <Story />
+          </Route>
         </MemoryRouter>
       )
     },
@@ -54,6 +57,16 @@ Empty.parameters = {
   },
 }
 
+export const NoResourceRoom = Template.bind({})
+NoResourceRoom.parameters = {
+  msw: {
+    handlers: {
+      resourceRoomData: buildResourceRoomData([]),
+      resourceRoomName: buildResourceRoomName({ resourceRoomName: "" }),
+    },
+  },
+}
+
 export const Loading = Template.bind({})
 Loading.parameters = {
   msw: {
@@ -67,4 +80,15 @@ Loading.parameters = {
   },
 }
 
+export const LoadingResourceRoomContent = Template.bind({})
+LoadingResourceRoomContent.parameters = {
+  msw: {
+    handlers: {
+      resourceRoomName: buildResourceRoomName({
+        resourceRoomName: "storybook",
+      }),
+      resourceRoomData: buildResourceRoomData([], "infinite"),
+    },
+  },
+}
 export default ResourceRoomMeta
