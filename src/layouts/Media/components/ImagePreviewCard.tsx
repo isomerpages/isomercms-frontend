@@ -105,7 +105,6 @@ export const ImagePreviewCard = ({
             as={RouterLink}
             to={`${url}/moveMedia/${encodedName}`}
           >
-            --
             <HStack spacing="4rem" alignItems="center">
               <Text>Move to</Text>
               <Icon as={BiChevronRight} fontSize="1.25rem" />
