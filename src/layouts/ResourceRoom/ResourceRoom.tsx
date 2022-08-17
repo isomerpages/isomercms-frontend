@@ -171,14 +171,16 @@ export const ResourceRoom = (): JSX.Element => {
           }`}
         />
       )}
-      {!isResourceRoomNameLoading && !resourceRoomName ? (
-        <EmptyResourceRoom />
-      ) : (
-        <ResourceRoomContent
-          directoryData={dirsData || []}
-          isLoading={!isLoading && !isResourceRoomNameLoading}
-        />
-      )}
+      <Skeleton isLoaded={!isResourceRoomNameLoading}>
+        {resourceRoomName ? (
+          <ResourceRoomContent
+            directoryData={dirsData || []}
+            isLoading={!isLoading && !isResourceRoomNameLoading}
+          />
+        ) : (
+          <EmptyResourceRoom />
+        )}
+      </Skeleton>
       <Switch>
         <ProtectedRouteWithProps
           path={[`${path}/createDirectory`]}
