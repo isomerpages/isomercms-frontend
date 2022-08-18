@@ -153,7 +153,10 @@ export const EmptyPageAndFolder = (props: { url: string }): JSX.Element => {
             <Text textStyle="body-2">Create a new item to get started.</Text>
           </VStack>
         </Center>
-        <ContextMenu placement="bottom-end" offset={[0, 0]}>
+        <ContextMenu
+          placement="bottom-end"
+          offset={[0, 0]} // to prevent weird gap between the dropdown menu and button
+        >
           {({ isOpen }) => (
             <ButtonGroup isAttached variant="outline">
               {/* NOTE: This is to avoid the 2 joined buttons both having 1px padding,
