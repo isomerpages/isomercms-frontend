@@ -118,7 +118,7 @@ describe("Utils test", () => {
 
     it("should be a CSP violation if the script source is not safe", async () => {
       const exampleContentWithHttpScript = `<script src="http://www.instagram.com/embed.js" async></script>`
-      const exampleContentWithRelativeScript = `<script src="https://www.example.com/evil.js"></script>`
+      const exampleContentWithNonTrustedScript = `<script src="https://www.example.com/evil.js"></script>`
       const exampleContentWithDataScript = `<script src="data:text/javascript;base64,ZXhwbG9yZQ==" async></script>`
 
       expect(checkCSP(cspPolicy, exampleContentWithHttpScript)).toHaveProperty(
@@ -126,7 +126,7 @@ describe("Utils test", () => {
         true
       )
       expect(
-        checkCSP(cspPolicy, exampleContentWithRelativeScript)
+        checkCSP(cspPolicy, exampleContentWithNonTrustedScript)
       ).toHaveProperty("isCspViolation", true)
       expect(checkCSP(cspPolicy, exampleContentWithDataScript)).toHaveProperty(
         "isCspViolation",
