@@ -29,9 +29,9 @@ import {
   SectionHeader,
   SectionCaption,
   CreateButton,
-} from "../components"
+} from "../../components"
 
-import { PageCard, FolderCard } from "./components"
+import { PageCard, FolderCard } from "."
 
 export const WorkspaceFolders = (props: {
   siteName: string
@@ -185,7 +185,7 @@ export const EmptyPageAndFolder = (props: { url: string }): JSX.Element => {
                   />
                 }
               />
-              <ContextMenu.List minWidth={150}>
+              <ContextMenu.List minWidth="10rem">
                 <ContextMenu.Item
                   as={Link}
                   to={`${url}/createPage`}

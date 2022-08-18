@@ -10,7 +10,7 @@ import {
   UngroupedPages,
   WorkspaceFolders,
   EmptyPage,
-} from "./WorkspacePagesAndFoldersComponents"
+} from "./components/WorkspacePagesAndFoldersComponents"
 
 export const FoldersAndPagesController = (props: {
   siteName: string
