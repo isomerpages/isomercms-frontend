@@ -62,7 +62,7 @@ export const ResourceCategory = (): JSX.Element => {
         </Section>
         <Section>
           {/* 
-              There is no loading state for this as '!arePagesEmpty' will only evulate to 
+              There is no loading state for this as '!arePagesEmpty' will only evaluate to 
               true after we have received data from the API call.
            */}
           {!arePagesEmpty && (
