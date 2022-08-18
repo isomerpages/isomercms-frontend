@@ -1,6 +1,7 @@
 import _ from "lodash"
 import moment from "moment-timezone"
 
+import { getLengthWithoutTags } from "./allowedHTML"
 import { deslugifyDirectory } from "./deslugify"
 import {
   generatePageFileName,
@@ -8,8 +9,6 @@ import {
   slugifyCategory,
   titleToPageFileName,
 } from "./legacy"
-
-import { getLengthWithoutTags } from "./allowedHTML"
 
 // Common regexes and constants
 // ==============
