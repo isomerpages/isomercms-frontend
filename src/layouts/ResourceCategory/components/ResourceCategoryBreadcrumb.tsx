@@ -33,6 +33,7 @@ export const ResourceCategoryBreadcrumb = (): JSX.Element => {
           as={RouterLink}
           textStyle="body-2"
           textDecoration="underline"
+          color="text.link.default"
           to={`/sites/${siteName}/resourceRoom/${resourceRoomName}/resourceCategory/${resourceCategoryName}`}
         >
           {deslugifyDirectory(resourceCategoryName)}

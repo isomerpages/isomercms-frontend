@@ -17,7 +17,7 @@ export const AnalyticsSettings = ({
     <Section id="analytics-fields">
       <VStack align="flex-start" spacing="0.5rem">
         <SectionHeader label="Analytics" />
-        <SectionCaption label="NOTE: " icon={BiInfoCircle}>
+        <SectionCaption label="" icon={BiInfoCircle}>
           For Analytics set up, refer to our guide{" "}
           <Link
             href="https://guide.isomer.gov.sg/analytics-and-tracking/google-analytics"

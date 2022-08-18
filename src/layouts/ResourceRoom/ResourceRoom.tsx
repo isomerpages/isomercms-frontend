@@ -10,7 +10,7 @@ import { Button, FormErrorMessage, Input } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
-import { BiInfoCircle } from "react-icons/bi"
+import { BiBulb, BiInfoCircle } from "react-icons/bi"
 import {
   Link as RouterLink,
   Redirect,
@@ -36,7 +36,7 @@ import {
   DirectorySettingsScreen,
 } from "layouts/screens"
 
-import { ProtectedRouteWithProps } from "routing/RouteSelector"
+import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
 import { useErrorToast } from "utils/toasts"
 
@@ -141,7 +141,7 @@ export const ResourceRoom = (): JSX.Element => {
 
   return (
     <Route>
-      {shouldRedirect && (
+      {!isResourceRoomNameLoading && shouldRedirect && (
         <Redirect
           to={`/sites/${siteName}/resourceRoom/${
             queriedResourceRoomName || ""
@@ -199,11 +199,17 @@ const ResourceRoomContent = ({
         </Box>
       </Section>
       <Section>
-        <SectionHeader label="Categories">
-          <CreateButton as={RouterLink} to={`${url}/createDirectory`}>
-            Create category
-          </CreateButton>
-        </SectionHeader>
+        <Box w="full">
+          <SectionHeader label="Resource Categories">
+            <CreateButton as={RouterLink} to={`${url}/createDirectory`}>
+              Create category
+            </CreateButton>
+          </SectionHeader>
+          <SectionCaption icon={BiBulb} label="PRO TIP: ">
+            Categories impact navigation on your site. Organise your resources
+            by creating categories.
+          </SectionCaption>
+        </Box>
         <Skeleton isLoaded={isLoading} w="100%">
           {directoryData.length === 0 ? (
             <Text>No Categories.</Text>

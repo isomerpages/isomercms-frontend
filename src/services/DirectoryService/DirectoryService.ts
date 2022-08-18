@@ -45,7 +45,7 @@ export const getCollection = ({
   siteName,
   collectionName,
   subCollectionName,
-}: PageDirectoryParams): Promise<DirectoryData[]> => {
+}: PageDirectoryParams): Promise<(PageData | DirectoryData)[]> => {
   let endpoint = `/sites/${siteName}/collections`
   if (collectionName) {
     endpoint += `/${collectionName}`
@@ -67,4 +67,14 @@ export const getMediaFolders = ({
 }: MediaDirectoryParams): Promise<DirectoryData[]> => {
   const endpoint = `/sites/${siteName}/media/${mediaDirectoryName}`
   return apiService.get<DirectoryData[]>(endpoint).then(({ data }) => data)
+}
+
+export const getResourceRoomName = async (
+  siteName: string
+): Promise<string> => {
+  const resp = await apiService.get<{ resourceRoomName: string }>(
+    `/sites/${siteName}/resourceRoom`
+  )
+  const { resourceRoomName } = resp.data
+  return resourceRoomName
 }

@@ -24,8 +24,6 @@ import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
 import { pageFileNameToTitle } from "utils"
 
-// Import styles
-
 const FolderItem = ({ item, isDisabled }) => {
   const { url } = useRouteMatch()
 
@@ -126,32 +124,4 @@ const FolderItem = ({ item, isDisabled }) => {
   )
 }
 
-const FolderContent = ({ dirData }) => {
-  const InnerContent = () => {
-    if (dirData && dirData.length) {
-      return dirData.map((item) => <FolderItem key={item.name} item={item} />)
-    }
-
-    if (dirData) {
-      return (
-        <span className="d-flex justify-content-center">
-          No pages here yet.
-        </span>
-      )
-    }
-
-    return (
-      <div className="d-flex justify-content-center">
-        <div className="spinner-border text-primary" role="status" />
-      </div>
-    )
-  }
-
-  return (
-    <div className={`${contentStyles.contentContainerFolderColumn} mb-5`}>
-      <InnerContent />
-    </div>
-  )
-}
-
-export { FolderContent, FolderItem }
+export { FolderItem }
