@@ -21,8 +21,6 @@ import {
 } from "react-icons/bi"
 import { Link } from "react-router-dom"
 
-import useRedirectHook from "hooks/useRedirectHook"
-
 import { EmptyBoxImage } from "assets/images/EmptyBoxImage"
 import { DirectoryData, PageData } from "types/directory"
 
@@ -41,36 +39,31 @@ export const WorkspaceFolders = (props: {
   url: string
   dirsData: DirectoryData[]
 }): JSX.Element => {
-  const { setRedirectToPage } = useRedirectHook()
   const { siteName, pagesData, url, dirsData } = props
 
   return (
-    <>
-      <Section>
-        <Box w="100%">
-          <SectionHeader label="Folders">
-            <CreateButton
-              onClick={() => setRedirectToPage(`${url}/createDirectory`)}
-            >
-              Create folder
-            </CreateButton>
-          </SectionHeader>
-          <SectionCaption label="PRO TIP: " icon={BiBulb}>
-            Folders impact navigation on your site. Organise your workspace by
-            moving pages into folders.
-          </SectionCaption>
-        </Box>
-        <Skeleton isLoaded={!!pagesData} w="full">
-          <SimpleGrid columns={3} spacing="1.5rem">
-            {dirsData &&
-              dirsData.length > 0 &&
-              dirsData.map(({ name }) => (
-                <FolderCard title={name} siteName={siteName} />
-              ))}
-          </SimpleGrid>
-        </Skeleton>
-      </Section>
-    </>
+    <Section>
+      <Box w="100%">
+        <SectionHeader label="Folders">
+          <CreateButton as={Link} to={`${url}/createDirectory`}>
+            Create folder
+          </CreateButton>
+        </SectionHeader>
+        <SectionCaption label="PRO TIP: " icon={BiBulb}>
+          Folders impact navigation on your site. Organise your workspace by
+          moving pages into folders.
+        </SectionCaption>
+      </Box>
+      <Skeleton isLoaded={!!pagesData} w="full">
+        <SimpleGrid columns={3} spacing="1.5rem">
+          {dirsData &&
+            dirsData.length > 0 &&
+            dirsData.map(({ name }) => (
+              <FolderCard title={name} siteName={siteName} />
+            ))}
+        </SimpleGrid>
+      </Skeleton>
+    </Section>
   )
 }
 
@@ -79,12 +72,11 @@ export const UngroupedPages = (props: {
   url: string
 }): JSX.Element => {
   const { pagesData, url } = props
-  const { setRedirectToPage } = useRedirectHook()
   return (
     <Section>
       <Box w="100%">
         <SectionHeader label="Ungrouped Pages">
-          <CreateButton onClick={() => setRedirectToPage(`${url}/createPage`)}>
+          <CreateButton as={Link} to={`${url}/createPage`}>
             Create page
           </CreateButton>
         </SectionHeader>
@@ -107,7 +99,6 @@ export const UngroupedPages = (props: {
 
 export const EmptyFolder = (props: { url: string }): JSX.Element => {
   const { url } = props
-  const { setRedirectToPage } = useRedirectHook()
   return (
     <Box as="form" w="full">
       {/* Resource Room does not exist */}
@@ -120,9 +111,7 @@ export const EmptyFolder = (props: { url: string }): JSX.Element => {
           </VStack>
         </Center>
 
-        <CreateButton
-          onClick={() => setRedirectToPage(`${url}/createDirectory`)}
-        >
+        <CreateButton as={Link} to={`${url}/createDirectory`}>
           Create folder
         </CreateButton>
       </VStack>
@@ -132,7 +121,6 @@ export const EmptyFolder = (props: { url: string }): JSX.Element => {
 
 export const EmptyPage = (props: { url: string }): JSX.Element => {
   const { url } = props
-  const { setRedirectToPage } = useRedirectHook()
 
   return (
     <Box as="form" w="full">
@@ -144,7 +132,7 @@ export const EmptyPage = (props: { url: string }): JSX.Element => {
             <Text textStyle="body-2">Create a new item to get started.</Text>
           </VStack>
         </Center>
-        <CreateButton onClick={() => setRedirectToPage(`${url}/createPage`)}>
+        <CreateButton as={Link} to={`${url}/createPage`}>
           Create page
         </CreateButton>
       </VStack>
