@@ -8,7 +8,7 @@ import {
   EmptyPageAndFolder,
   EmptyFolder,
   UngroupedPages,
-  Folders,
+  WorkspaceFolders,
   EmptyPage,
 } from "./WorkspacePagesAndFoldersComponents"
 
@@ -58,7 +58,7 @@ export const FoldersAndPagesController = (props: {
         h="100%"
         divider={<StackDivider borderColor="border.divider.alt" />}
       >
-        <Folders
+        <WorkspaceFolders
           siteName={siteName}
           pagesData={pagesData}
           url={url}
@@ -79,7 +79,7 @@ export const FoldersAndPagesController = (props: {
       h="100%"
       divider={<StackDivider borderColor="border.divider.alt" />}
     >
-      <Folders
+      <WorkspaceFolders
         siteName={siteName}
         pagesData={pagesData}
         url={url}

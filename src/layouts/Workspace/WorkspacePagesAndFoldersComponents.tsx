@@ -35,7 +35,7 @@ import {
 
 import { PageCard, FolderCard } from "./components"
 
-export const Folders = (props: {
+export const WorkspaceFolders = (props: {
   siteName: string
   pagesData: PageData[]
   url: string
