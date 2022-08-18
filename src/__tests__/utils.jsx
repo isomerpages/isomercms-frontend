@@ -1,4 +1,7 @@
+import Policy from "csp-parse"
 import { format } from "date-fns-tz"
+
+import checkCSP from "../utils/cspUtils"
 
 const { getDefaultFrontMatter } = require("../utils")
 
@@ -92,6 +95,43 @@ describe("Utils test", () => {
         date: exampleDate,
         layout: exampleLayout,
       })
+    })
+  })
+
+  describe("checkCSP should return the correct decision", () => {
+    const cspPolicy = new Policy(
+      "default-src 'self'; script-src 'self' blob: https://www.instagram.com; object-src 'self'; style-src 'self' 'unsafe-inline'; img-src *; media-src *; frame-src https://form.gov.sg/; frame-ancestors 'none'; font-src * data:; connect-src 'self';"
+    )
+
+    it("should not be a CSP violation if the script source is safe", async () => {
+      const exampleContentWithHttpsScript = `<script src="https://www.instagram.com/embed.js" async></script>`
+      const exampleContentWithProtocolRelativeScript = `<script src="//www.instagram.com/embed.js" async></script>`
+
+      expect(checkCSP(cspPolicy, exampleContentWithHttpsScript)).toHaveProperty(
+        "isCspViolation",
+        false
+      )
+      expect(
+        checkCSP(cspPolicy, exampleContentWithProtocolRelativeScript)
+      ).toHaveProperty("isCspViolation", false)
+    })
+
+    it("should be a CSP violation if the script source is not safe", async () => {
+      const exampleContentWithHttpScript = `<script src="http://www.instagram.com/embed.js" async></script>`
+      const exampleContentWithRelativeScript = `<script src="https://www.example.com/evil.js"></script>`
+      const exampleContentWithDataScript = `<script src="data:text/javascript;base64,ZXhwbG9yZQ==" async></script>`
+
+      expect(checkCSP(cspPolicy, exampleContentWithHttpScript)).toHaveProperty(
+        "isCspViolation",
+        true
+      )
+      expect(
+        checkCSP(cspPolicy, exampleContentWithRelativeScript)
+      ).toHaveProperty("isCspViolation", true)
+      expect(checkCSP(cspPolicy, exampleContentWithDataScript)).toHaveProperty(
+        "isCspViolation",
+        true
+      )
     })
   })
 })

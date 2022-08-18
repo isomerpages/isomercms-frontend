@@ -21,7 +21,11 @@ function toRegExp(string) {
     "\\*",
     "[a-z0-9-]*"
   ) // convert wildcards
-  const RegExpString = RegExp(wildcardEscapedStrippedString) // converts to RegExp
+  const relativeWildcardEscapedStrippedString = wildcardEscapedStrippedString.replace(
+    "https://",
+    "^(https:)?//"
+  ) // support protocol-relative URLs without supporting http://
+  const RegExpString = RegExp(relativeWildcardEscapedStrippedString) // converts to RegExp
   return RegExpString
 }
 

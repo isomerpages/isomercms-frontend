@@ -130,6 +130,10 @@ const EditPage = ({ match }) => {
         siteName,
         DOMCSPSanitisedHtml
       )
+      DOMPurify.removed = DOMPurify.removed.filter(
+        (el) =>
+          !(el.element.tagName === "SCRIPT" && el.element.hasAttribute("src"))
+      )
       setIsXSSViolation(DOMPurify.removed.length > 0)
       setIsContentViolation(checkedIsCspViolation)
       setHtmlChunk(processedChunk)
