@@ -105,6 +105,7 @@ describe("Utils test", () => {
 
     it("should not be a CSP violation if the script source is safe", async () => {
       const exampleContentWithHttpsScript = `<script src="https://www.instagram.com/embed.js" async></script>`
+      // Check against protocol-relative URLs as well
       const exampleContentWithProtocolRelativeScript = `<script src="//www.instagram.com/embed.js" async></script>`
 
       expect(checkCSP(cspPolicy, exampleContentWithHttpsScript)).toHaveProperty(
