@@ -17,6 +17,17 @@ export const URL_REGEX_PREFIX = "^(https://)?(www.)?("
 export const URL_REGEX_SUFFIX = ".com/)([a-zA-Z0-9_-]+([/.])?)+$"
 export const TELEGRAM_REGEX = "telegram|t).me/([a-zA-Z0-9_-]+([/.])?)+$"
 export const TIKTOK_REGEX = ".com/@)([a-zA-Z0-9_-]+([/.])?)+$"
+// Domain name regex (source: https://regexr.com/3au3g and https://stackoverflow.com/a/30007882)
+// 1. The first group (up till the "+") matches each segment of the domain (split by ".")
+//    a. Each segment of the domain must start and end with an alphanumeric character
+//    b. Each segment of the domain can contain at most 63 characters (hence the upper bound of 61 characters)
+//    c. Each segment of the domain can contain dashes within it
+//    d. Each segment of the domain must contain at least 1 character (the first "[a-z0-9]")
+// 2. The "+" ensures that we match a second-level domain and above
+// 3. The last section after "+" is to match the TLD segment of the domain
+// 4. The "^" and "$" ensures that we are matching the whole string (to prevent the user from adding "https://")
+export const DOMAIN_NAME_REGEX =
+  "^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$"
 const PHONE_REGEX = "^\\+65(6|8|9)[0-9]{7}$"
 const EMAIL_REGEX =
   '^(([^<>()\\[\\]\\.,;:\\s@\\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\\"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z-0-9]+\\.)+[a-zA-Z]{2,}))$'

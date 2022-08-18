@@ -29,6 +29,7 @@ const DEFAULT_BE_STATE = {
   faq: "",
   show_reach: false,
   logo: "/images/isomer-logo.svg",
+  url: "",
 }
 
 const DEFAULT_SOCIAL_MEDIA_SETTINGS: SiteSocialMediaSettings = {
@@ -89,14 +90,7 @@ const convertfromBe = (backendSettings: BackendSiteSettings): SiteSettings => {
   }
 
   const rest = _(backendSettings)
-    .omit([
-      ...TOGGLED_VALUES,
-      "socialMediaContent",
-      "colors",
-      // These properties are extra and will lead to errors in validation
-      "resources_name",
-      "url",
-    ])
+    .omit([...TOGGLED_VALUES, "socialMediaContent", "colors"])
     .pickBy()
     .value()
 
