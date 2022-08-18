@@ -132,7 +132,11 @@ const EditPage = ({ match }) => {
       )
       DOMPurify.removed = DOMPurify.removed.filter(
         (el) =>
-          !(el.element.tagName === "SCRIPT" && el.element.hasAttribute("src"))
+          !(
+            el.element.tagName === "SCRIPT" &&
+            el.element.hasAttribute("src") &&
+            el.element.innerHTML === ""
+          )
       )
       setIsXSSViolation(DOMPurify.removed.length > 0)
       setIsContentViolation(checkedIsCspViolation)
