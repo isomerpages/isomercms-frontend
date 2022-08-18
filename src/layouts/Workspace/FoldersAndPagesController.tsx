@@ -1,8 +1,8 @@
 import { VStack, GridItem, StackDivider } from "@chakra-ui/react"
 
-import { useGetFolders } from "hooks/directoryHooks"
+import { useGetFoldersAndPages } from "hooks/directoryHooks"
 
-import { PageData } from "types/directory"
+import { DirectoryData, PageData } from "types/directory"
 
 import {
   EmptyPageAndFolder,
@@ -18,7 +18,7 @@ export const FoldersAndPagesController = (props: {
   pagesData: PageData[]
 }): JSX.Element => {
   const { siteName, url, pagesData } = props
-  const { data: _dirsData } = useGetFolders({ siteName })
+  const { data: _dirsData } = useGetFoldersAndPages({ siteName })
   const dirsData = _dirsData || []
   const isPagesEmpty =
     pagesData.filter((page) => page.name !== "contact-us.md").length === 0

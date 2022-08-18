@@ -15,7 +15,7 @@ import {
   Link as RouterLink,
 } from "react-router-dom"
 
-import { useGetFolders } from "hooks/directoryHooks"
+import { useGetFoldersAndPages } from "hooks/directoryHooks"
 
 import {
   PageSettingsScreen,
@@ -60,7 +60,10 @@ export const Folders = (): JSX.Element => {
   const { path, url } = useRouteMatch()
   const history = useHistory()
 
-  const { data: dirData, isLoading: isLoadingDirectory } = useGetFolders(params)
+  const {
+    data: dirData,
+    isLoading: isLoadingDirectory,
+  } = useGetFoldersAndPages(params)
   const hasDirContent = dirData && dirData.length
 
   return (
