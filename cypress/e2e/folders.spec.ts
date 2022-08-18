@@ -353,7 +353,7 @@ describe("Folders flow", () => {
     })
   })
 
-  describe.only("Create page, delete page, edit page settings in subfolder", () => {
+  describe("Create page, delete page, edit page settings in subfolder", () => {
     before(() => {
       cy.setupDefaultInterceptors()
       cy.setSessionDefaults()
