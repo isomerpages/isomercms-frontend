@@ -18,8 +18,10 @@ export const FoldersAndPagesController = (props: {
   pagesData: PageData[]
 }): JSX.Element => {
   const { siteName, url, pagesData } = props
-  const { data: _dirsData } = useGetFoldersAndPages({ siteName })
-  const dirsData = _dirsData || []
+  const { data: _dirsAndPagesData } = useGetFoldersAndPages({ siteName })
+  const dirsData = (_dirsAndPagesData || []).filter((data) => {
+    return data.type === "dir" // only get directories and not pages
+  }) as DirectoryData[]
   const isPagesEmpty =
     pagesData.filter((page) => page.name !== "contact-us.md").length === 0
   const isFoldersEmpty = !dirsData || dirsData.length === 0
