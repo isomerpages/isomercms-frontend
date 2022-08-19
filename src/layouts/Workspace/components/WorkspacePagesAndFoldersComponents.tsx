@@ -3,23 +3,13 @@ import {
   Box,
   Skeleton,
   Text,
-  Button,
   Center,
-  Icon,
   VStack,
-  IconButton,
-  ButtonGroup,
 } from "@chakra-ui/react"
-import { ContextMenu } from "components/ContextMenu"
-import {
-  BiBulb,
-  BiChevronDown,
-  BiChevronUp,
-  BiFileBlank,
-  BiFolder,
-  BiInfoCircle,
-} from "react-icons/bi"
+import { BiBulb, BiInfoCircle } from "react-icons/bi"
 import { Link } from "react-router-dom"
+
+import { MenuDropdownButton } from "layouts/Folders/components"
 
 import { EmptyBoxImage } from "assets/images/EmptyBoxImage"
 import { DirectoryData, PageData } from "types/directory"
@@ -140,8 +130,7 @@ export const EmptyPage = (props: { url: string }): JSX.Element => {
   )
 }
 
-export const EmptyPageAndFolder = (props: { url: string }): JSX.Element => {
-  const { url } = props
+export const EmptyPageAndFolder = (): JSX.Element => {
   return (
     <Box as="form" w="full">
       {/* Resource Room does not exist */}
@@ -153,61 +142,7 @@ export const EmptyPageAndFolder = (props: { url: string }): JSX.Element => {
             <Text textStyle="body-2">Create a new item to get started.</Text>
           </VStack>
         </Center>
-        <ContextMenu
-          placement="bottom-end"
-          offset={[0, 0]} // to prevent weird gap between the dropdown menu and button
-        >
-          {({ isOpen }) => (
-            <ButtonGroup isAttached variant="outline">
-              {/* NOTE: This is to avoid the 2 joined buttons both having 1px padding,
-            which results in a larger border at the attached area. */}
-              <Button
-                borderRight="0px"
-                borderRightRadius={0}
-                as={Link}
-                to={`${url}/createPage`}
-                variant="outline"
-              >
-                Create page
-              </Button>
-              <ContextMenu.Button
-                position="inherit"
-                as={IconButton}
-                borderLeftRadius={0}
-                aria-label="Select options"
-                variant="outline"
-                _active={{ bg: "white" }}
-                icon={
-                  <Icon
-                    as={isOpen ? BiChevronUp : BiChevronDown}
-                    fontSize="1rem"
-                    fill="blue"
-                  />
-                }
-              />
-              <ContextMenu.List minWidth="10rem">
-                <ContextMenu.Item
-                  as={Link}
-                  to={`${url}/createPage`}
-                  icon={<BiFileBlank fontSize="1.25rem" fill="icon.alt" />}
-                >
-                  <Text textStyle="body-1" fill="text.body">
-                    Create page
-                  </Text>
-                </ContextMenu.Item>
-                <ContextMenu.Item
-                  as={Link}
-                  to={`${url}/createDirectory`}
-                  icon={<BiFolder fontSize="1.25rem" fill="icon.alt" />}
-                >
-                  <Text textStyle="body-1" fill="text.body">
-                    Create folder
-                  </Text>
-                </ContextMenu.Item>
-              </ContextMenu.List>
-            </ButtonGroup>
-          )}
-        </ContextMenu>
+        <MenuDropdownButton />
       </VStack>
     </Box>
   )

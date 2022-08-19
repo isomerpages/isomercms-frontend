@@ -1,5 +1,3 @@
-import { VStack, GridItem, StackDivider } from "@chakra-ui/react"
-
 import { useGetFoldersAndPages } from "hooks/directoryHooks"
 
 import { ContentGridLayout } from "layouts/layouts"
@@ -29,7 +27,7 @@ export const FoldersAndPagesController = (props: {
   const isFoldersEmpty = !dirsData || dirsData.length === 0
 
   if (isPagesEmpty && isFoldersEmpty) {
-    return <EmptyPageAndFolder url={url} />
+    return <EmptyPageAndFolder />
   }
 
   if (isFoldersEmpty) {
