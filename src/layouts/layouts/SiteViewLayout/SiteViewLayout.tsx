@@ -50,20 +50,29 @@ export const SiteViewLayout = ({
         >
           <Sidebar />
         </GridItem>
-        <GridItem
-          area="content"
-          as={VStack}
-          p="2rem"
-          spacing="2rem"
-          bgColor="gray.50"
-          w="100%"
-          h="100%"
-          divider={<StackDivider borderColor="border.divider.alt" />}
-          {...rest}
-        >
-          {children}
-        </GridItem>
+        <ContentGridLayout>{children}</ContentGridLayout>
       </Grid>
     </>
+  )
+}
+
+export const ContentGridLayout = ({
+  children,
+  ...rest
+}: StackProps): JSX.Element => {
+  return (
+    <GridItem
+      area="content"
+      as={VStack}
+      p="2rem"
+      spacing="2rem"
+      bgColor="gray.50"
+      w="100%"
+      h="100%"
+      divider={<StackDivider borderColor="border.divider.alt" />}
+      {...rest}
+    >
+      {children}
+    </GridItem>
   )
 }

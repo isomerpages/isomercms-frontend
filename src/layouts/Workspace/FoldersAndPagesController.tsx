@@ -2,6 +2,8 @@ import { VStack, GridItem, StackDivider } from "@chakra-ui/react"
 
 import { useGetFoldersAndPages } from "hooks/directoryHooks"
 
+import { ContentGridLayout } from "layouts/layouts"
+
 import { DirectoryData, PageData } from "types/directory"
 
 import {
@@ -32,32 +34,16 @@ export const FoldersAndPagesController = (props: {
 
   if (isFoldersEmpty) {
     return (
-      <GridItem
-        area="content"
-        as={VStack}
-        spacing="2rem"
-        bgColor="gray.50"
-        w="100%"
-        h="100%"
-        divider={<StackDivider borderColor="border.divider.alt" />}
-      >
+      <ContentGridLayout>
         <EmptyFolder url={url} />
         <UngroupedPages pagesData={pagesData} url={url} />
-      </GridItem>
+      </ContentGridLayout>
     )
   }
 
   if (isPagesEmpty) {
     return (
-      <GridItem
-        area="content"
-        as={VStack}
-        spacing="2rem"
-        bgColor="gray.50"
-        w="100%"
-        h="100%"
-        divider={<StackDivider borderColor="border.divider.alt" />}
-      >
+      <ContentGridLayout>
         <WorkspaceFolders
           siteName={siteName}
           pagesData={pagesData}
@@ -65,20 +51,12 @@ export const FoldersAndPagesController = (props: {
           dirsData={dirsData}
         />
         <EmptyPage url={url} />
-      </GridItem>
+      </ContentGridLayout>
     )
   }
 
   return (
-    <GridItem
-      area="content"
-      as={VStack}
-      spacing="2rem"
-      bgColor="gray.50"
-      w="100%"
-      h="100%"
-      divider={<StackDivider borderColor="border.divider.alt" />}
-    >
+    <ContentGridLayout>
       <WorkspaceFolders
         siteName={siteName}
         pagesData={pagesData}
@@ -86,6 +64,6 @@ export const FoldersAndPagesController = (props: {
         dirsData={dirsData}
       />
       <UngroupedPages pagesData={pagesData} url={url} />
-    </GridItem>
+    </ContentGridLayout>
   )
 }
