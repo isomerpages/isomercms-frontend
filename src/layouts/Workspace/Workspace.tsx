@@ -19,10 +19,18 @@ import {
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
-import { SiteViewLayout } from "../layouts"
+import { DirectoryData } from "types/directory"
 
-import { MainPages } from "./components/WorkspacePagesAndFoldersComponents"
-import { FoldersAndPagesController } from "./FoldersAndPagesController"
+import { ContentGridLayout, SiteViewLayout } from "../layouts"
+
+import {
+  EmptyFolder,
+  EmptyPage,
+  EmptyPageAndFolder,
+  MainPages,
+  UngroupedPages,
+  WorkspaceFolders,
+} from "./components/WorkspacePagesAndFoldersComponents"
 
 const WorkspacePage = (): JSX.Element => {
   const {
@@ -37,16 +45,42 @@ const WorkspacePage = (): JSX.Element => {
 
   const pagesData = _pagesData || []
 
+  const { data: _dirsAndPagesData } = useGetFoldersAndPages({ siteName })
+  const dirsData = (_dirsAndPagesData || []).filter((data) => {
+    return data.type === "dir" // only get directories and not pages
+  }) as DirectoryData[]
+  const isPagesEmpty =
+    pagesData.filter((page) => page.name !== "contact-us.md").length === 0
+  const isFoldersEmpty = !dirsData || dirsData.length === 0
+
+  const isBothPagesAndFoldersEmpty = isFoldersEmpty && isPagesEmpty
+
   return (
     <>
       <SiteViewLayout overflow="hidden">
         <MainPages siteName={siteName} isLoading={!!pagesData} />
         <Skeleton isLoaded={!isDirLoading} w="100%">
-          <FoldersAndPagesController
-            siteName={siteName}
-            url={url}
-            pagesData={pagesData}
-          />
+          {isBothPagesAndFoldersEmpty ? (
+            <EmptyPageAndFolder />
+          ) : (
+            <ContentGridLayout>
+              {isFoldersEmpty ? (
+                <EmptyFolder url={url} />
+              ) : (
+                <WorkspaceFolders
+                  siteName={siteName}
+                  pagesData={pagesData}
+                  url={url}
+                  dirsData={dirsData}
+                />
+              )}
+              {isPagesEmpty ? (
+                <EmptyPage url={url} />
+              ) : (
+                <UngroupedPages pagesData={pagesData} url={url} />
+              )}
+            </ContentGridLayout>
+          )}
         </Skeleton>
       </SiteViewLayout>
     </>
