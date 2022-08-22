@@ -1,14 +1,5 @@
 // Import components
-import {
-  Box,
-  GridItem,
-  SimpleGrid,
-  Skeleton,
-  StackDivider,
-  Text,
-  VStack,
-} from "@chakra-ui/react"
-import { BiBulb, BiInfoCircle } from "react-icons/bi"
+import { Skeleton } from "@chakra-ui/react"
 import { Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 // Import hooks
@@ -16,8 +7,6 @@ import {
   useGetFoldersAndPages,
   useGetWorkspacePages,
 } from "hooks/directoryHooks"
-import { useGetPageHook } from "hooks/pageHooks"
-import useRedirectHook from "hooks/useRedirectHook"
 
 // Import screens
 import {
@@ -30,31 +19,10 @@ import {
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
-import { DirectoryData, PageData } from "types/directory"
-
-import {
-  CreateButton,
-  Section,
-  SectionCaption,
-  SectionHeader,
-} from "../components"
 import { SiteViewLayout } from "../layouts"
 
-import {
-  PageCard,
-  FolderCard,
-  NavigationCard,
-  HomepageCard,
-  ContactCard,
-} from "./components"
-import {
-  EmptyFolder,
-  EmptyPage,
-  EmptyPageAndFolder,
-} from "./components/WorkspacePagesAndFoldersComponents"
+import { MainPages } from "./components/WorkspacePagesAndFoldersComponents"
 import { FoldersAndPagesController } from "./FoldersAndPagesController"
-
-const CONTACT_US_TEMPLATE_LAYOUT = "contact_us"
 
 const WorkspacePage = (): JSX.Element => {
   const {
@@ -82,184 +50,6 @@ const WorkspacePage = (): JSX.Element => {
         </Skeleton>
       </SiteViewLayout>
     </>
-  )
-}
-
-// refers to the homepage, navigation bar and contact us pages.
-export const MainPages = (props: {
-  siteName: string
-  pagesData: PageData[]
-}): JSX.Element => {
-  const { siteName, pagesData } = props
-  const { data: contactUsPage } = useGetPageHook({
-    siteName,
-    fileName: "contact-us.md",
-  })
-  const hasContactUsCard =
-    contactUsPage?.content?.frontMatter?.layout === CONTACT_US_TEMPLATE_LAYOUT
-  return (
-    <Section>
-      <Text as="h2" textStyle="h2">
-        My Workspace
-      </Text>
-      <Skeleton isLoaded={!!pagesData} w="full">
-        <SimpleGrid columns={3} spacing="1.5rem">
-          <HomepageCard siteName={siteName} />
-          <NavigationCard siteName={siteName} />
-          {hasContactUsCard && <ContactCard siteName={siteName} />}
-        </SimpleGrid>
-      </Skeleton>
-    </Section>
-  )
-}
-
-export const Folders = (props: {
-  siteName: string
-  pagesData: (PageData | DirectoryData)[]
-  url: string
-  dirsData: (PageData | DirectoryData)[]
-}): JSX.Element => {
-  const { setRedirectToPage } = useRedirectHook()
-  const { siteName, pagesData, url, dirsData } = props
-
-  return (
-    <>
-      <Section>
-        <Box w="100%">
-          <SectionHeader label="Folders">
-            <CreateButton
-              onClick={() => setRedirectToPage(`${url}/createDirectory`)}
-            >
-              Create folder
-            </CreateButton>
-          </SectionHeader>
-          <SectionCaption label="PRO TIP: " icon={BiBulb}>
-            Folders impact navigation on your site. Organise your workspace by
-            moving pages into folders.
-          </SectionCaption>
-        </Box>
-        <Skeleton isLoaded={!!pagesData} w="full">
-          <SimpleGrid columns={3} spacing="1.5rem">
-            {dirsData &&
-              dirsData.length > 0 &&
-              dirsData.map(({ name }) => (
-                <FolderCard title={name} siteName={siteName} />
-              ))}
-          </SimpleGrid>
-        </Skeleton>
-      </Section>
-    </>
-  )
-}
-
-export const UngroupedPages = (props: {
-  pagesData: (PageData | DirectoryData)[]
-  url: string
-}): JSX.Element => {
-  const { pagesData, url } = props
-  const { setRedirectToPage } = useRedirectHook()
-  return (
-    <>
-      <Section>
-        <Box w="100%">
-          <SectionHeader label="Ungrouped Pages">
-            <CreateButton
-              onClick={() => setRedirectToPage(`${url}/createPage`)}
-            >
-              Create page
-            </CreateButton>
-          </SectionHeader>
-          <SectionCaption label="NOTE: " icon={BiInfoCircle}>
-            Pages here do not belong to any folders.
-          </SectionCaption>
-        </Box>
-        <Skeleton isLoaded={!!pagesData} w="full">
-          <SimpleGrid columns={3} spacing="1.5rem">
-            {pagesData &&
-              pagesData.length > 0 &&
-              pagesData
-                .filter((page) => page.name !== "contact-us.md")
-                .map(({ name }) => <PageCard title={name} />)}
-          </SimpleGrid>
-        </Skeleton>
-      </Section>
-    </>
-  )
-}
-
-export const FoldersAndUngroupedPagesController = (props: {
-  siteName: string
-  url: string
-  pagesData: (PageData | DirectoryData)[]
-}): JSX.Element => {
-  const { siteName, url, pagesData } = props
-  const { data: _dirsData } = useGetFoldersAndPages({ siteName })
-  const dirsData = _dirsData || []
-  const isPagesEmpty =
-    pagesData.filter((page) => page.name !== "contact-us.md").length === 0
-  const isFoldersEmpty = !dirsData || dirsData.length === 0
-
-  if (isPagesEmpty && isFoldersEmpty) {
-    return <EmptyPageAndFolder />
-  }
-
-  if (isFoldersEmpty) {
-    return (
-      <GridItem
-        area="content"
-        as={VStack}
-        spacing="2rem"
-        bgColor="gray.50"
-        w="100%"
-        h="100%"
-        divider={<StackDivider borderColor="border.divider.alt" />}
-      >
-        <EmptyFolder url={url} />
-        <UngroupedPages pagesData={pagesData} url={url} />
-      </GridItem>
-    )
-  }
-
-  if (isPagesEmpty) {
-    return (
-      <GridItem
-        area="content"
-        as={VStack}
-        spacing="2rem"
-        bgColor="gray.50"
-        w="100%"
-        h="100%"
-        divider={<StackDivider borderColor="border.divider.alt" />}
-      >
-        <Folders
-          siteName={siteName}
-          pagesData={pagesData}
-          url={url}
-          dirsData={dirsData}
-        />
-        <EmptyPage url={url} />
-      </GridItem>
-    )
-  }
-
-  return (
-    <GridItem
-      area="content"
-      as={VStack}
-      spacing="2rem"
-      bgColor="gray.50"
-      w="100%"
-      h="100%"
-      divider={<StackDivider borderColor="border.divider.alt" />}
-    >
-      <Folders
-        siteName={siteName}
-        pagesData={pagesData}
-        url={url}
-        dirsData={dirsData}
-      />
-      <UngroupedPages pagesData={pagesData} url={url} />
-    </GridItem>
   )
 }
 
