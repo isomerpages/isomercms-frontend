@@ -35,7 +35,7 @@ const CONTACT_US_TEMPLATE_LAYOUT = "contact_us"
 
 export interface MainPagesProps {
   siteName: string
-  pagesData: PageData[]
+  isLoading: boolean
 }
 
 export interface WorkspaceFoldersProps {
@@ -179,7 +179,7 @@ export const EmptyPageAndFolder = (): JSX.Element => {
  */
 export const MainPages = ({
   siteName,
-  pagesData,
+  isLoading,
 }: MainPagesProps): JSX.Element => {
   const { data: contactUsPage } = useGetPageHook({
     siteName,
@@ -192,7 +192,7 @@ export const MainPages = ({
       <Text as="h2" textStyle="h2">
         My Workspace
       </Text>
-      <Skeleton isLoaded={!!pagesData} w="full">
+      <Skeleton isLoaded={!!isLoading} w="full">
         <SimpleGrid columns={3} spacing="1.5rem">
           <HomepageCard siteName={siteName} />
           <NavigationCard siteName={siteName} />
