@@ -19,6 +19,7 @@ import {
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
+import { PageData } from "types/directory"
 import { isDirData } from "types/utils"
 
 import {
@@ -36,6 +37,7 @@ import {
   FolderCard,
   HomepageCard,
 } from "./components"
+import { FoldersAndPagesController } from "./FoldersAndPagesController"
 
 const CONTACT_US_TEMPLATE_LAYOUT = "contact_us"
 
@@ -66,77 +68,46 @@ const WorkspacePage = (): JSX.Element => {
   const pagesData = _pagesData || []
 
   return (
-    <SiteViewLayout overflow="hidden">
-      <Section>
-        <Text as="h2" textStyle="h2">
-          My Workspace
-        </Text>
-        <Skeleton isLoaded={!isContactUsLoading} w="full">
-          <SimpleGrid columns={3} spacing="1.5rem">
-            <HomepageCard siteName={siteName} />
-            <NavigationCard siteName={siteName} />
-            {hasContactUsCard && <ContactCard siteName={siteName} />}
-          </SimpleGrid>
+    <>
+      <SiteViewLayout overflow="hidden">
+        <MainPages siteName={siteName} pagesData={pagesData} />
+        <Skeleton isLoaded={!isDirLoading} w="100%">
+          <FoldersAndPagesController
+            siteName={siteName}
+            url={url}
+            pagesData={pagesData}
+          />
         </Skeleton>
-      </Section>
+      </SiteViewLayout>
+    </>
+  )
+}
 
-      <Section>
-        <Box w="100%">
-          <SectionHeader label="Folders">
-            <CreateButton
-              onClick={() => setRedirectToPage(`${url}/createDirectory`)}
-            >
-              Create folder
-            </CreateButton>
-          </SectionHeader>
-          <SectionCaption label="PRO TIP: " icon={BiBulb}>
-            Folders impact navigation on your site. Organise your workspace by
-            moving pages into folders.
-          </SectionCaption>
-        </Box>
-        <Skeleton
-          isLoaded={!isDirLoading}
-          w="full"
-          h={isDirLoading ? "4.5rem" : "fit-content"}
-        >
-          <SimpleGrid columns={3} spacing="1.5rem">
-            {dirsData &&
-              dirsData.length > 0 &&
-              dirsData.map(({ name }) => (
-                <FolderCard title={name} siteName={siteName} />
-              ))}
-          </SimpleGrid>
-        </Skeleton>
-      </Section>
-
-      <Section>
-        <Box w="100%">
-          <SectionHeader label="Ungrouped Pages">
-            <CreateButton
-              onClick={() => setRedirectToPage(`${url}/createPage`)}
-            >
-              Create page
-            </CreateButton>
-          </SectionHeader>
-          <SectionCaption label="NOTE: " icon={BiInfoCircle}>
-            Pages here do not belong to any folders.
-          </SectionCaption>
-        </Box>
-        <Skeleton
-          isLoaded={!isPagesLoading}
-          w="full"
-          h={isDirLoading ? "4.5rem" : "fit-content"}
-        >
-          <SimpleGrid columns={3} spacing="1.5rem">
-            {pagesData &&
-              pagesData.length > 0 &&
-              pagesData
-                .filter((page) => page.name !== "contact-us.md")
-                .map(({ name }) => <PageCard title={name} />)}
-          </SimpleGrid>
-        </Skeleton>
-      </Section>
-    </SiteViewLayout>
+// refers to the homepage, navigation bar and contact us pages.
+export const MainPages = (props: {
+  siteName: string
+  pagesData: PageData[]
+}): JSX.Element => {
+  const { siteName, pagesData } = props
+  const { data: contactUsPage } = useGetPageHook({
+    siteName,
+    fileName: "contact-us.md",
+  })
+  const hasContactUsCard =
+    contactUsPage?.content?.frontMatter?.layout === CONTACT_US_TEMPLATE_LAYOUT
+  return (
+    <Section>
+      <Text as="h2" textStyle="h2">
+        My Workspace
+      </Text>
+      <Skeleton isLoaded={!!pagesData} w="full">
+        <SimpleGrid columns={3} spacing="1.5rem">
+          <HomepageCard siteName={siteName} />
+          <NavigationCard siteName={siteName} />
+          {hasContactUsCard && <ContactCard siteName={siteName} />}
+        </SimpleGrid>
+      </Skeleton>
+    </Section>
   )
 }
 
