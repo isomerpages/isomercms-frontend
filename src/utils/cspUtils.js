@@ -21,10 +21,15 @@ function toRegExp(string) {
     "\\*",
     "[a-z0-9-]*"
   ) // convert wildcards
+
+  // Support protocol-relative URLs without supporting http://
+  // NOTE: Our CSP policy has all URLs as absolute URLs with https://, this
+  // replacement is necessary to allow users to specify protocol-relative URLs
+  // Our Isomer sites are served over https, so this is not a problem
   const relativeWildcardEscapedStrippedString = wildcardEscapedStrippedString.replace(
     "https://",
     "^(https:)?//"
-  ) // support protocol-relative URLs without supporting http://
+  )
   const RegExpString = RegExp(relativeWildcardEscapedStrippedString) // converts to RegExp
   return RegExpString
 }

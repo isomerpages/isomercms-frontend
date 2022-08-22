@@ -130,6 +130,11 @@ const EditPage = ({ match }) => {
         siteName,
         DOMCSPSanitisedHtml
       )
+
+      // NOTE: This is a hack to get around the fact that the DOMPurify library
+      // doesn't allow the <script> tag. Script sources are defined by our CSP
+      // policy, and inline-scripts are not allowed by our CSP policy as well.
+      // This will allow the user to save but not preview the script.
       DOMPurify.removed = DOMPurify.removed.filter(
         (el) =>
           !(
@@ -138,6 +143,7 @@ const EditPage = ({ match }) => {
             el.element.innerHTML === ""
           )
       )
+
       setIsXSSViolation(DOMPurify.removed.length > 0)
       setIsContentViolation(checkedIsCspViolation)
       setHtmlChunk(processedChunk)
