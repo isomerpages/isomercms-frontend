@@ -40,7 +40,7 @@ const WorkspacePage = (): JSX.Element => {
   return (
     <>
       <SiteViewLayout overflow="hidden">
-        <MainPages siteName={siteName} pagesData={pagesData} />
+        <MainPages siteName={siteName} isLoading={!!pagesData} />
         <Skeleton isLoaded={!isDirLoading} w="100%">
           <FoldersAndPagesController
             siteName={siteName}
