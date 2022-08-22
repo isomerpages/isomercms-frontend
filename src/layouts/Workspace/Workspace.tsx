@@ -12,7 +12,10 @@ import { BiBulb, BiInfoCircle } from "react-icons/bi"
 import { Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 // Import hooks
-import { useGetFolders, useGetWorkspacePages } from "hooks/directoryHooks"
+import {
+  useGetFoldersAndPages,
+  useGetWorkspacePages,
+} from "hooks/directoryHooks"
 import { useGetPageHook } from "hooks/pageHooks"
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -28,7 +31,6 @@ import {
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
 import { DirectoryData, PageData } from "types/directory"
-import { isDirData } from "types/utils"
 
 import {
   CreateButton,
@@ -45,12 +47,12 @@ import {
   HomepageCard,
   ContactCard,
 } from "./components"
-import { FoldersAndPagesController } from "./FoldersAndPagesController"
 import {
-  EmptyPageAndFolder,
   EmptyFolder,
   EmptyPage,
-} from "./WorkspacePagesAndFoldersComponents"
+  EmptyPageAndFolder,
+} from "./components/WorkspacePagesAndFoldersComponents"
+import { FoldersAndPagesController } from "./FoldersAndPagesController"
 
 const CONTACT_US_TEMPLATE_LAYOUT = "contact_us"
 
@@ -60,24 +62,11 @@ const WorkspacePage = (): JSX.Element => {
     url,
   } = useRouteMatch<{ siteName: string }>()
 
-  const { setRedirectToPage } = useRedirectHook()
-  const { data: _dirsData, isLoading: isDirLoading } = useGetFolders({
+  const { isLoading: isDirLoading } = useGetFoldersAndPages({
     siteName,
   })
-  const { data: _pagesData, isLoading: isPagesLoading } = useGetWorkspacePages(
-    siteName
-  )
-  const { data: contactUsPage, isLoading: isContactUsLoading } = useGetPageHook(
-    {
-      siteName,
-      fileName: "contact-us.md",
-    }
-  )
+  const { data: _pagesData } = useGetWorkspacePages(siteName)
 
-  const hasContactUsCard =
-    contactUsPage?.content?.frontMatter?.layout === CONTACT_US_TEMPLATE_LAYOUT
-
-  const dirsData = _dirsData?.filter(isDirData) || []
   const pagesData = _pagesData || []
 
   return (
@@ -204,14 +193,14 @@ export const FoldersAndUngroupedPagesController = (props: {
   pagesData: (PageData | DirectoryData)[]
 }): JSX.Element => {
   const { siteName, url, pagesData } = props
-  const { data: _dirsData } = useGetFolders({ siteName })
+  const { data: _dirsData } = useGetFoldersAndPages({ siteName })
   const dirsData = _dirsData || []
   const isPagesEmpty =
     pagesData.filter((page) => page.name !== "contact-us.md").length === 0
   const isFoldersEmpty = !dirsData || dirsData.length === 0
 
   if (isPagesEmpty && isFoldersEmpty) {
-    return <EmptyPageAndFolder url={url} />
+    return <EmptyPageAndFolder />
   }
 
   if (isFoldersEmpty) {
