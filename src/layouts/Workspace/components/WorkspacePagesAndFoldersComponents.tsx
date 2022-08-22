@@ -9,6 +9,8 @@ import {
 import { BiBulb, BiInfoCircle } from "react-icons/bi"
 import { Link } from "react-router-dom"
 
+import { useGetPageHook } from "hooks/pageHooks"
+
 import { MenuDropdownButton } from "layouts/Folders/components"
 
 import { EmptyBoxImage } from "assets/images/EmptyBoxImage"
@@ -21,16 +23,39 @@ import {
   CreateButton,
 } from "../../components"
 
-import { PageCard, FolderCard } from "."
+import {
+  PageCard,
+  FolderCard,
+  ContactCard,
+  HomepageCard,
+  NavigationCard,
+} from "."
 
-export const WorkspaceFolders = (props: {
+const CONTACT_US_TEMPLATE_LAYOUT = "contact_us"
+
+export interface MainPagesProps {
+  siteName: string
+  pagesData: PageData[]
+}
+
+export interface WorkspaceFoldersProps {
   siteName: string
   pagesData: PageData[]
   url: string
   dirsData: DirectoryData[]
-}): JSX.Element => {
-  const { siteName, pagesData, url, dirsData } = props
+}
 
+export interface UngroupedPagesProps {
+  pagesData: PageData[]
+  url: string
+}
+
+export const WorkspaceFolders = ({
+  siteName,
+  pagesData,
+  url,
+  dirsData,
+}: WorkspaceFoldersProps): JSX.Element => {
   return (
     <Section>
       <Box w="100%">
@@ -57,11 +82,10 @@ export const WorkspaceFolders = (props: {
   )
 }
 
-export const UngroupedPages = (props: {
-  pagesData: PageData[]
-  url: string
-}): JSX.Element => {
-  const { pagesData, url } = props
+export const UngroupedPages = ({
+  pagesData,
+  url,
+}: UngroupedPagesProps): JSX.Element => {
   return (
     <Section>
       <Box w="100%">
@@ -145,5 +169,36 @@ export const EmptyPageAndFolder = (): JSX.Element => {
         <MenuDropdownButton />
       </VStack>
     </Box>
+  )
+}
+
+/**
+ * Represents homepage, navigation bar and contact us pages.
+ * @param MainPagesProps pagesData : list of all pages for a site
+ * @returns JSX element that contains the 3 cards to represent the 3 pages
+ */
+export const MainPages = ({
+  siteName,
+  pagesData,
+}: MainPagesProps): JSX.Element => {
+  const { data: contactUsPage } = useGetPageHook({
+    siteName,
+    fileName: "contact-us.md",
+  })
+  const hasContactUsCard =
+    contactUsPage?.content?.frontMatter?.layout === CONTACT_US_TEMPLATE_LAYOUT
+  return (
+    <Section>
+      <Text as="h2" textStyle="h2">
+        My Workspace
+      </Text>
+      <Skeleton isLoaded={!!pagesData} w="full">
+        <SimpleGrid columns={3} spacing="1.5rem">
+          <HomepageCard siteName={siteName} />
+          <NavigationCard siteName={siteName} />
+          {hasContactUsCard && <ContactCard siteName={siteName} />}
+        </SimpleGrid>
+      </Skeleton>
+    </Section>
   )
 }
