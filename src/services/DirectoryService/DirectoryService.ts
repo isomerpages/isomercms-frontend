@@ -3,6 +3,7 @@ import {
   DirectoryData,
   ResourcePageData,
   PageData,
+  ResourceRoomNameUpdateProps,
 } from "types/directory"
 import { MediaDirectoryParams, PageDirectoryParams } from "types/folders"
 import {
@@ -77,4 +78,13 @@ export const getResourceRoomName = async (
   )
   const { resourceRoomName } = resp.data
   return resourceRoomName
+}
+
+export const updateResourceRoomName = async (
+  siteName: string,
+  resourceRoomName: string,
+  body: ResourceRoomNameUpdateProps
+): Promise<void> => {
+  const endpoint = `/sites/${siteName}/resourceRoom/${resourceRoomName}`
+  return apiService.post(endpoint, body)
 }
