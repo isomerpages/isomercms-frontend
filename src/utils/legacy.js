@@ -1,6 +1,6 @@
 // import dependencies
 import axios from "axios"
-import cheerio from "cheerio"
+import * as cheerio from "cheerio"
 import { format } from "date-fns-tz"
 import _ from "lodash"
 import { QueryClient } from "react-query"

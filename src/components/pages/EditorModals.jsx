@@ -1,6 +1,13 @@
 import HyperlinkModal from "components/HyperlinkModal"
+import InstagramModal from "components/InstagramModal"
 import MediaModal from "components/media/MediaModal"
 import PropTypes from "prop-types"
+
+import {
+  getInstagramEmbedTag,
+  processInstagramEmbedToTag,
+  INSTAGRAM_POST_URL_REGEX,
+} from "utils"
 
 const EditorModals = ({ mdeRef, onSave, modalType, onClose, mediaType }) => {
   const onHyperlinkSave = (text, link) => {
@@ -27,6 +34,29 @@ const EditorModals = ({ mdeRef, onSave, modalType, onClose, mediaType }) => {
     onClose()
   }
 
+  const onInstagramEmbedSave = (type, value) => {
+    const cm = mdeRef.current.simpleMde.codemirror
+
+    if (type === "postUrl") {
+      // value should be of type { postUrl: string, isCaptioned: boolean }
+      const { postUrl, isCaptioned } = value
+      if (RegExp(INSTAGRAM_POST_URL_REGEX).test(postUrl)) {
+        const postId = postUrl.split("/p/")[1].split("/")[0]
+        const embedTag = getInstagramEmbedTag(postId, isCaptioned)
+        cm.replaceSelection(embedTag)
+      }
+    } else if (type === "embedCode") {
+      // value should be of type { embedCode: string }
+      const { embedCode } = value
+      const embedTag = processInstagramEmbedToTag(embedCode)
+      cm.replaceSelection(embedTag)
+    }
+
+    // set state so that rerender is triggered and image is shown
+    onSave(mdeRef.current.simpleMde.codemirror.getValue())
+    onClose()
+  }
+
   return (
     <>
       {modalType === "media" && mediaType && (
@@ -44,6 +74,9 @@ const EditorModals = ({ mdeRef, onSave, modalType, onClose, mediaType }) => {
           onClose={onClose}
         />
       )}
+      {modalType === "instagram" && (
+        <InstagramModal onSave={onInstagramEmbedSave} onClose={onClose} />
+      )}
     </>
   )
 }
@@ -55,7 +88,7 @@ EditorModals.propTypes = {
     PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
   ]),
   onSave: PropTypes.func.isRequired,
-  modalType: PropTypes.oneOf(["hyperlink", "media"]).isRequired,
+  modalType: PropTypes.oneOf(["hyperlink", "media", "instagram"]).isRequired,
   onClose: PropTypes.func.isRequired,
 }
 

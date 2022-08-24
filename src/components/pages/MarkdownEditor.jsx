@@ -19,6 +19,8 @@ import {
   guideButton,
 } from "utils/markdownToolbar"
 
+import { processInstagramEmbedToTag } from "utils"
+
 const MarkdownEditor = ({
   siteName,
   mdeRef,
@@ -73,6 +75,15 @@ const MarkdownEditor = ({
           default: true,
         },
         tableButton,
+        {
+          name: "instagram",
+          action: async () => {
+            setEditorModalType("instagram")
+          },
+          className: "fa fa-instagram",
+          title: "Insert Instagram post",
+          default: true,
+        },
         guideButton,
       ],
     }),
@@ -81,7 +92,20 @@ const MarkdownEditor = ({
   const events = useMemo(() => {
     return {
       paste: (cm, e) => {
-        const convertedText = toMarkdown(e.clipboardData.getData("text/html"))
+        const pasteText = e.clipboardData.getData("text/plain")
+        const processedPasteText = processInstagramEmbedToTag(pasteText)
+
+        // If the paste text contains an Instagram embed, replace the paste text
+        // with the processed paste text.
+        // Note: This will prevent further processing of the paste text, as
+        // custom HTML tags will be removed by Turndown
+        if (processedPasteText !== pasteText) {
+          e.preventDefault()
+          cm.replaceSelection(processedPasteText)
+          return
+        }
+
+        const convertedText = toMarkdown(pasteText)
 
         // If parsing the text results in valid markdown, prefer the markdown text.
         // Otherwise, just go with the default paste.

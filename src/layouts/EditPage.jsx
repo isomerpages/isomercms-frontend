@@ -27,9 +27,14 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 // Isomer utils
 import checkCSP from "utils/cspUtils"
+import { CUSTOM_HTML_TAGS, CUSTOM_HTML_ATTRIBUTES } from "utils/customHTML"
 import { createPageStyleSheet } from "utils/siteColorUtils"
 
-import { prependImageSrc } from "utils"
+import {
+  prependImageSrc,
+  processInstagramEmbedToTag,
+  processInstagramTagToEmbed,
+} from "utils"
 
 import "easymde/dist/easymde.min.css"
 
@@ -37,7 +42,7 @@ import "easymde/dist/easymde.min.css"
 axios.defaults.withCredentials = true
 
 DOMPurify.setConfig({
-  ADD_TAGS: ["iframe", "#comment"],
+  ADD_TAGS: ["iframe", "#comment"].concat(CUSTOM_HTML_TAGS),
   ADD_ATTR: [
     "allow",
     "allowfullscreen",
@@ -46,7 +51,7 @@ DOMPurify.setConfig({
     "marginheight",
     "marginwidth",
     "target",
-  ],
+  ].concat(CUSTOM_HTML_ATTRIBUTES),
 })
 
 const EditPage = ({ match }) => {
@@ -108,7 +113,11 @@ const EditPage = ({ match }) => {
 
   useEffect(() => {
     if (pageData && !hasChanges) {
-      setEditorValue(pageData.content.pageBody.trim())
+      // Convert some of the regular HTML to custom HTML tags
+      const processedEditorValue = processInstagramEmbedToTag(
+        pageData.content.pageBody.trim()
+      )
+      setEditorValue(processedEditorValue)
       setCurrSha(pageData.sha)
     }
   }, [pageData])
@@ -126,9 +135,13 @@ const EditPage = ({ match }) => {
         sanitisedHtml: CSPSanitisedHtml,
       } = checkCSP(csp, html)
       const DOMCSPSanitisedHtml = DOMPurify.sanitize(CSPSanitisedHtml)
+      // Convert custom HTML tags to regular HTML before saving
+      const DOMCSPSanitisedCustomHtml = processInstagramTagToEmbed(
+        DOMCSPSanitisedHtml
+      )
       const processedChunk = await prependImageSrc(
         siteName,
-        DOMCSPSanitisedHtml
+        DOMCSPSanitisedCustomHtml
       )
       setIsXSSViolation(DOMPurify.removed.length > 0)
       setIsContentViolation(checkedIsCspViolation)
@@ -189,12 +202,16 @@ const EditPage = ({ match }) => {
             onClick={() => {
               const sanitizedEditorValue = DOMPurify.sanitize(editorValue)
               setEditorValue(sanitizedEditorValue)
+              // Convert custom HTML tags to regular HTML before saving
+              const sanitizedMarkdownValue = processInstagramTagToEmbed(
+                sanitizedEditorValue
+              )
               setIsXSSViolation(false)
               updatePageHandler({
                 pageData: {
                   frontMatter: pageData.content.frontMatter,
                   sha: currSha,
-                  pageBody: sanitizedEditorValue,
+                  pageBody: sanitizedMarkdownValue,
                 },
               })
               onXSSWarningModalClose()
@@ -233,11 +250,13 @@ const EditPage = ({ match }) => {
             colorScheme="danger"
             onClick={() => {
               onOverwriteClose()
+              // Convert custom HTML tags to regular HTML before saving
+              const markdownValue = processInstagramTagToEmbed(editorValue)
               updatePageHandler({
                 pageData: {
                   frontMatter: pageData.content.frontMatter,
                   sha: pageData.sha,
-                  pageBody: editorValue,
+                  pageBody: markdownValue,
                 },
               })
             }}
@@ -267,11 +286,13 @@ const EditPage = ({ match }) => {
           onClick={() => {
             if (isXSSViolation) onXSSWarningModalOpen()
             else {
+              // Convert custom HTML tags to regular HTML before saving
+              const markdownValue = processInstagramTagToEmbed(editorValue)
               updatePageHandler({
                 pageData: {
                   frontMatter: pageData.content.frontMatter,
                   sha: currSha,
-                  pageBody: editorValue,
+                  pageBody: markdownValue,
                 },
               })
             }

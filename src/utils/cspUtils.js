@@ -1,7 +1,7 @@
 // Supported CSP checks are img-src, frame-src, media-src, object-src script-src-elem
 // Supported fallbacks are child-src, script-src, and default-src
 
-import cheerio from "cheerio"
+import * as cheerio from "cheerio"
 import escapeStringRegexp from "escape-string-regexp"
 import _ from "lodash"
 
