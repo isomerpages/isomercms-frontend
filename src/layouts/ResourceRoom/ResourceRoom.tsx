@@ -20,6 +20,7 @@ import {
 } from "@chakra-ui/react"
 import { Button, FormLabel, Input } from "@opengovsg/design-system-react"
 import { ContextMenu } from "components/ContextMenu"
+import { EmptyArea } from "components/EmptyArea"
 import { LoadingButton } from "components/LoadingButton"
 import _ from "lodash"
 import { useEffect } from "react"
@@ -106,23 +107,18 @@ const EmptyResourceRoom = () => {
     >
       <Center as="form" mt="6rem">
         {/* Resource Room does not exist */}
-        <VStack spacing={5}>
-          <EmptyBoxImage />
-          <Center>
-            <VStack spacing={0}>
-              <Text textStyle="subhead-1">There&apos;s nothing here yet.</Text>
-              <Text textStyle="body-2">
-                Create a resource room to get started.
-              </Text>
-            </VStack>
-          </Center>
-          <Button
-            onClick={onOpen}
-            leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
-          >
-            Create Resource Room
-          </Button>
-        </VStack>
+        <EmptyArea
+          isItemEmpty
+          actionButton={
+            <Button
+              onClick={onOpen}
+              leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
+            >
+              Create Resource Room
+            </Button>
+          }
+          subText="Create a resource room to get started."
+        />
       </Center>
 
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -324,19 +320,9 @@ const ResourceRoomContent = ({
             </Box>
           )}
           <Skeleton isLoaded={isLoading} w="100%">
-            {directoryData.length === 0 ? (
-              <VStack spacing={5}>
-                <EmptyBoxImage />
-                <Center>
-                  <VStack spacing={0}>
-                    <Text textStyle="subhead-1">
-                      There&apos;s nothing here yet.
-                    </Text>
-                    <Text textStyle="body-2">
-                      Create a resource category to get started.
-                    </Text>
-                  </VStack>
-                </Center>
+            <EmptyArea
+              isItemEmpty={!directoryData?.length}
+              actionButton={
                 <Button
                   as={RouterLink}
                   to={`${url}/createDirectory`}
@@ -344,17 +330,15 @@ const ResourceRoomContent = ({
                 >
                   Create Category
                 </Button>
-              </VStack>
-            ) : (
-              directoryData &&
-              directoryData.length > 0 && (
-                <SimpleGrid columns={3} spacing="1.5rem">
-                  {directoryData.map(({ name }) => (
-                    <CategoryCard title={name} />
-                  ))}
-                </SimpleGrid>
-              )
-            )}
+              }
+              subText="Create a resource category to get started."
+            >
+              <SimpleGrid columns={3} spacing="1.5rem">
+                {directoryData.map(({ name }) => (
+                  <CategoryCard title={name} />
+                ))}
+              </SimpleGrid>
+            </EmptyArea>
           </Skeleton>
         </Section>
       </SiteViewLayout>

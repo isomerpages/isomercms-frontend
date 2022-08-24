@@ -1,13 +1,5 @@
-import {
-  Box,
-  Text,
-  Skeleton,
-  SimpleGrid,
-  Button,
-  Center,
-  Icon,
-  VStack,
-} from "@chakra-ui/react"
+import { Box, Text, Skeleton, SimpleGrid, Button, Icon } from "@chakra-ui/react"
+import { EmptyArea } from "components/EmptyArea"
 import { BiBulb, BiPlus } from "react-icons/bi"
 import {
   Switch,
@@ -35,7 +27,6 @@ import {
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
 // Import utils
-import { EmptyBoxImage } from "assets"
 import { ResourceCategoryRouteParams } from "types/resources"
 import { deslugifyDirectory } from "utils"
 
@@ -82,19 +73,9 @@ export const ResourceCategory = (): JSX.Element => {
             w="100%"
             h={isLoading ? "10rem" : "fit-content"}
           >
-            {arePagesEmpty && (
-              <VStack spacing={5}>
-                <EmptyBoxImage />
-                <Center>
-                  <VStack spacing={0}>
-                    <Text textStyle="subhead-1">
-                      There&apos;s nothing here yet.
-                    </Text>
-                    <Text textStyle="body-2">
-                      Create a resource page to get started.
-                    </Text>
-                  </VStack>
-                </Center>
+            <EmptyArea
+              isItemEmpty={arePagesEmpty}
+              actionButton={
                 <Button
                   as={RouterLink}
                   to={`${url}/createPage`}
@@ -102,8 +83,10 @@ export const ResourceCategory = (): JSX.Element => {
                 >
                   Create Page
                 </Button>
-              </VStack>
-            )}
+              }
+              subText="Create a resource page to get started."
+            />
+
             <SimpleGrid columns={3} spacing="1.5rem">
               {/* NOTE: need to use multiline cards */}
               {(pagesData || []).map(({ name, title, date, resourceType }) => (
