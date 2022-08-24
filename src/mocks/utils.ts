@@ -1,15 +1,11 @@
 import { DefaultBodyType, rest } from "msw"
 
+import { CollaboratorData, CollaboratorRoleData } from "types/collaborators"
 import {
-  CollaboratorData,
-  CollaboratorRoleData,
-  SiteMemberModel,
-} from "types/collaborators"
-import {
+  MediaData,
   DirectoryData,
   PageData,
   ResourcePageData,
-  MediaData,
 } from "types/directory"
 import { NotificationData } from "types/notifications"
 import { BackendSiteSettings } from "types/settings"
