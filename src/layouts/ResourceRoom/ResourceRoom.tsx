@@ -16,7 +16,6 @@ import {
   HStack,
   Text,
   useDisclosure,
-  VStack,
 } from "@chakra-ui/react"
 import { Button, FormLabel, Input } from "@opengovsg/design-system-react"
 import { ContextMenu } from "components/ContextMenu"
@@ -59,7 +58,6 @@ import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
 import { useErrorToast, useSuccessToast } from "utils/toasts"
 
-import { EmptyBoxImage } from "assets"
 import { DirectoryData, DirectoryInfoProps } from "types/directory"
 import { ResourceRoomRouteParams } from "types/resources"
 import { DEFAULT_RETRY_MSG, deslugifyDirectory } from "utils"
