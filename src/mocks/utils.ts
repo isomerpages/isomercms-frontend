@@ -22,6 +22,8 @@ import {
   CollaboratorRoleData,
   SiteMemberModel,
 } from "types/collaborators"
+import { DirectoryData, PageData, ResourcePageData } from "types/directory"
+import { BackendSiteSettings } from "types/settings"
 import { LoggedInUser } from "types/user"
 
 const apiDataBuilder = <T extends DefaultBodyType = DefaultBodyType>(
