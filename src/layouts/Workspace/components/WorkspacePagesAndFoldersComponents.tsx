@@ -1,19 +1,9 @@
-import {
-  SimpleGrid,
-  Box,
-  Skeleton,
-  Text,
-  Center,
-  VStack,
-} from "@chakra-ui/react"
+import { SimpleGrid, Box, Skeleton, Text } from "@chakra-ui/react"
 import { BiBulb, BiInfoCircle } from "react-icons/bi"
 import { Link } from "react-router-dom"
 
 import { useGetPageHook } from "hooks/pageHooks"
 
-import { MenuDropdownButton } from "layouts/Folders/components"
-
-import { EmptyBoxImage } from "assets/images/EmptyBoxImage"
 import { DirectoryData, PageData } from "types/directory"
 
 import {
@@ -108,67 +98,6 @@ export const UngroupedPages = ({
         </SimpleGrid>
       </Skeleton>
     </Section>
-  )
-}
-
-export const EmptyFolder = (props: { url: string }): JSX.Element => {
-  const { url } = props
-  return (
-    <Box as="form" w="full">
-      {/* Resource Room does not exist */}
-      <VStack spacing={5}>
-        <EmptyBoxImage />
-        <Center>
-          <VStack spacing={0}>
-            <Text textStyle="subhead-1">{" There's nothing here yet. "}</Text>
-            <Text textStyle="body-2">Create a new item to get started.</Text>
-          </VStack>
-        </Center>
-
-        <CreateButton as={Link} to={`${url}/createDirectory`}>
-          Create folder
-        </CreateButton>
-      </VStack>
-    </Box>
-  )
-}
-
-export const EmptyPage = (props: { url: string }): JSX.Element => {
-  const { url } = props
-
-  return (
-    <Box as="form" w="full">
-      <VStack spacing={5}>
-        <EmptyBoxImage />
-        <Center>
-          <VStack spacing={0}>
-            <Text textStyle="subhead-1">There&apos;s nothing here yet.</Text>
-            <Text textStyle="body-2">Create a new item to get started.</Text>
-          </VStack>
-        </Center>
-        <CreateButton as={Link} to={`${url}/createPage`}>
-          Create page
-        </CreateButton>
-      </VStack>
-    </Box>
-  )
-}
-
-export const EmptyPageAndFolder = (): JSX.Element => {
-  return (
-    <Box as="form" w="full">
-      {/* Resource Room does not exist */}
-      <VStack spacing={5}>
-        <EmptyBoxImage />
-        <Center>
-          <VStack spacing={0}>
-            <Text textStyle="subhead-1">There&apos;s nothing here yet.</Text>
-            <Text textStyle="body-2">Create a new item to get started.</Text>
-          </VStack>
-        </Center>
-        <MenuDropdownButton />
-      </VStack>
-    </Box>
   )
 }
 

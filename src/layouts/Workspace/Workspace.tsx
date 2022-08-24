@@ -1,6 +1,7 @@
 // Import components
 import { Skeleton } from "@chakra-ui/react"
-import { Switch, useRouteMatch, useHistory } from "react-router-dom"
+import { EmptyArea } from "components/EmptyArea"
+import { Switch, useRouteMatch, useHistory, Link } from "react-router-dom"
 
 // Import hooks
 import {
@@ -9,6 +10,8 @@ import {
 } from "hooks/directoryHooks"
 
 // Import screens
+import { CreateButton } from "layouts/components"
+import { MenuDropdownButton } from "layouts/Folders/components/MenuDropdownButton"
 import {
   PageSettingsScreen,
   MoveScreen,
@@ -19,10 +22,15 @@ import {
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
-import { SiteViewLayout } from "../layouts"
+import { DirectoryData } from "types/directory"
 
-import { MainPages } from "./components/WorkspacePagesAndFoldersComponents"
-import { FoldersAndPagesController } from "./FoldersAndPagesController"
+import { ContentGridLayout, SiteViewLayout } from "../layouts"
+
+import {
+  MainPages,
+  UngroupedPages,
+  WorkspaceFolders,
+} from "./components/WorkspacePagesAndFoldersComponents"
 
 const WorkspacePage = (): JSX.Element => {
   const {
@@ -30,26 +38,60 @@ const WorkspacePage = (): JSX.Element => {
     url,
   } = useRouteMatch<{ siteName: string }>()
 
-  const { isLoading: isDirLoading } = useGetFoldersAndPages({
+  const {
+    isLoading: isDirLoading,
+    data: _dirsAndPagesData,
+  } = useGetFoldersAndPages({
     siteName,
   })
   const { data: _pagesData } = useGetWorkspacePages(siteName)
 
   const pagesData = _pagesData || []
+  const dirsData = (_dirsAndPagesData || []).filter((data) => {
+    return data.type === "dir" // only get directories and not pages
+  }) as DirectoryData[]
+  const isPagesEmpty =
+    pagesData.filter((page) => page.name !== "contact-us.md").length === 0
+  const isFoldersEmpty = !dirsData || dirsData.length === 0
 
   return (
-    <>
-      <SiteViewLayout overflow="hidden">
-        <MainPages siteName={siteName} isLoading={!!pagesData} />
-        <Skeleton isLoaded={!isDirLoading} w="100%">
-          <FoldersAndPagesController
-            siteName={siteName}
-            url={url}
-            pagesData={pagesData}
-          />
-        </Skeleton>
-      </SiteViewLayout>
-    </>
+    <SiteViewLayout overflow="hidden">
+      <MainPages siteName={siteName} isLoading={!!pagesData} />
+      <Skeleton isLoaded={!isDirLoading} w="100%">
+        <EmptyArea
+          isItemEmpty={isFoldersEmpty && isPagesEmpty}
+          actionButton={<MenuDropdownButton />}
+        >
+          <ContentGridLayout>
+            <EmptyArea
+              isItemEmpty={isFoldersEmpty}
+              actionButton={
+                <CreateButton as={Link} to={`${url}/createDirectory`}>
+                  Create folder
+                </CreateButton>
+              }
+            >
+              <WorkspaceFolders
+                siteName={siteName}
+                pagesData={pagesData}
+                url={url}
+                dirsData={dirsData}
+              />
+            </EmptyArea>
+            <EmptyArea
+              isItemEmpty={isPagesEmpty}
+              actionButton={
+                <CreateButton as={Link} to={`${url}/createPage`}>
+                  Create page
+                </CreateButton>
+              }
+            >
+              <UngroupedPages pagesData={pagesData} url="" />
+            </EmptyArea>
+          </ContentGridLayout>
+        </EmptyArea>
+      </Skeleton>
+    </SiteViewLayout>
   )
 }
 
