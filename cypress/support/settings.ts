@@ -1,4 +1,5 @@
 import {
+  BASE_SEO_LINK,
   COOKIE_NAME,
   COOKIE_VALUE,
   E2E_USER,
@@ -21,7 +22,8 @@ Cypress.Commands.add("visitLoadSettings", (siteName, sitePath) => {
   cy.wait("@awaitSettings")
 })
 
-Cypress.Commands.add("setDefaultPrimaryColour", () => {
+// TODO: need to add default values for SEO
+Cypress.Commands.add("setDefaultSettings", () => {
   cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
 
   window.localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(E2E_USER))
@@ -34,7 +36,15 @@ Cypress.Commands.add("setDefaultPrimaryColour", () => {
   cy.contains(/^g/).siblings().clear().type(TEST_PRIMARY_COLOR[1].toString())
 
   cy.contains(/^b/).siblings().clear().type(TEST_PRIMARY_COLOR[2].toString())
+
   cy.contains("button", "Select").click()
+
+  cy.contains("label", "SEO")
+    .parent()
+    .parent()
+    .find("input")
+    .clear()
+    .type(BASE_SEO_LINK)
 
   cy.saveSettings()
 })
