@@ -22,7 +22,6 @@ Cypress.Commands.add("visitLoadSettings", (siteName, sitePath) => {
   cy.wait("@awaitSettings")
 })
 
-// TODO: need to add default values for SEO
 Cypress.Commands.add("setDefaultSettings", () => {
   cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
 
