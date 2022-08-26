@@ -1,4 +1,8 @@
-import { TEST_PRIMARY_COLOR, TEST_REPO_NAME } from "../fixtures/constants"
+import {
+  TEST_PRIMARY_COLOR,
+  TEST_REPO_NAME,
+  BASE_SEO_LINK,
+} from "../fixtures/constants"
 
 describe("Settings page", () => {
   const BASE_TITLE = "TEST"
@@ -58,6 +62,11 @@ describe("Settings page", () => {
       .parent()
       .find("input")
       .each((elem) => cy.wrap(elem).clear())
+    cy.contains("label", "SEO")
+      .parent()
+      .parent()
+      .find("input")
+      .type(BASE_SEO_LINK)
     cy.contains("label", "Primary")
       .parent()
       .find('button[aria-label="Select colour"]')
@@ -122,6 +131,40 @@ describe("Settings page", () => {
     cy.saveSettings()
 
     cy.get("#title").should("have.value", TEST_TITLE)
+  })
+
+  it("should be able to update the SEO to a valid value", () => {
+    // Arrange
+    const expected = "www.space.open.gov.sg"
+    cy.contains("label", "SEO").parent().parent().find("input").as("seoInput")
+
+    // Act
+    cy.get("@seoInput").clear().type(expected)
+
+    // Assert
+    cy.saveSettings()
+    cy.get("@seoInput").should("have.value", expected)
+  })
+
+  it("should not be able to input the protocol at the beginning of the url", () => {
+    // Arrange
+    const INVALID_SEO_INPUTS = [
+      `https://${BASE_SEO_LINK}`,
+      `http://${BASE_SEO_LINK}`,
+    ]
+    cy.contains("label", "SEO").parent().parent().find("input").as("seoInput")
+
+    INVALID_SEO_INPUTS.forEach((invalidInput) => {
+      // Act
+      // NOTE: We need to blur for the error message to show
+      // as the validation mode is after the first unfocus
+      cy.get("@seoInput").clear().type(invalidInput).blur()
+
+      // Assert
+      cy.contains("The web domain you have entered is not valid").should(
+        "exist"
+      )
+    })
   })
 
   it("Should toggle Masthead and Show Reach buttons and have change reflect correctly on save", () => {
