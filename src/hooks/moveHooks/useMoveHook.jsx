@@ -32,7 +32,6 @@ export function useMoveHook(params, queryParams) {
       if (queryParams && queryParams.onError) queryParams.onError()
     },
     onSuccess: (resp) => {
-      console.log(params)
       if (!resp)
         successToast({
           description: `File is already in this folder`,
