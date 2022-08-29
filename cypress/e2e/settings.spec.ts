@@ -167,6 +167,34 @@ describe("Settings page", () => {
     })
   })
 
+  it("should not allow URLs with subdomains for the SEO URL", () => {
+    // Arrange
+    const urlWithSubdomain = "www.open.gov.sg/sub"
+    cy.contains("label", "SEO").parent().parent().find("input").as("seoInput")
+
+    // Act
+    cy.get("@seoInput").clear().type(urlWithSubdomain).blur()
+
+    // Assert
+    cy.contains("The web domain you have entered is not valid").should("exist")
+  })
+
+  it("should not allow malformed URLs for the SEO URL", () => {
+    // Arrange
+    const MALFORMED_URLS = ["www.open.", "open"]
+    cy.contains("label", "SEO").parent().parent().find("input").as("seoInput")
+
+    MALFORMED_URLS.forEach((malformedUrl) => {
+      // Act
+      cy.get("@seoInput").clear().type(malformedUrl).blur()
+
+      // Assert
+      cy.contains("The web domain you have entered is not valid").should(
+        "exist"
+      )
+    })
+  })
+
   it("Should toggle Masthead and Show Reach buttons and have change reflect correctly on save", () => {
     // Arrange
     // NOTE: Initial state is display govt masthead off and show reach on
