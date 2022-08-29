@@ -6,7 +6,7 @@ import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 import { pageFileNameToTitle } from "utils"
 
 const FolderItem = ({ item }) => {
-  const { name } = item
+  const { name, type } = item
 
   return (
     <Box
@@ -16,7 +16,13 @@ const FolderItem = ({ item }) => {
     >
       <Box className={`${elementStyles.card} ${elementStyles.folderItem}`}>
         <div className={contentStyles.contentContainerFolderRow}>
-          <i className={`bx bxs-file-blank ${elementStyles.folderItemIcon}`} />
+          {type === "file" ? (
+            <i
+              className={`bx bxs-file-blank ${elementStyles.folderItemIcon}`}
+            />
+          ) : (
+            <i className={`bx bxs-folder ${elementStyles.folderItemIcon}`} />
+          )}
           <span className={`${elementStyles.folderItemText} mr-auto`}>
             {pageFileNameToTitle(name)}
           </span>
