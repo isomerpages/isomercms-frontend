@@ -2,6 +2,8 @@ import { AxiosError } from "axios"
 import _ from "lodash"
 import { useMutation, UseMutationResult, useQueryClient } from "react-query"
 
+import { SETTINGS_CONTENT_KEY } from "constants/queryKeys"
+
 import * as SettingsService from "services/SettingsService"
 
 import {
@@ -9,8 +11,6 @@ import {
   SiteColourSettings,
   SiteSettings,
 } from "types/settings"
-
-import { SETTINGS_CONTENT_KEY } from "../queryKeys"
 
 import { FE_TO_BE } from "./constants"
 

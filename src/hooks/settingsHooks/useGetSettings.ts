@@ -1,6 +1,8 @@
-import _, { unionWith, zip } from "lodash"
+import _, { zip } from "lodash"
 import { useQuery, UseQueryResult } from "react-query"
 import type { StringKeyOf } from "type-fest"
+
+import { SETTINGS_CONTENT_KEY } from "constants/queryKeys"
 
 import * as SettingsService from "services/SettingsService"
 
@@ -10,8 +12,6 @@ import {
   SiteSettings,
   SiteSocialMediaSettings,
 } from "types/settings"
-
-import { SETTINGS_CONTENT_KEY } from "../queryKeys"
 
 import { BE_TO_FE } from "./constants"
 
@@ -29,6 +29,7 @@ const DEFAULT_BE_STATE = {
   faq: "",
   show_reach: false,
   logo: "/images/isomer-logo.svg",
+  url: "",
 }
 
 const DEFAULT_SOCIAL_MEDIA_SETTINGS: SiteSocialMediaSettings = {
@@ -89,14 +90,7 @@ const convertfromBe = (backendSettings: BackendSiteSettings): SiteSettings => {
   }
 
   const rest = _(backendSettings)
-    .omit([
-      ...TOGGLED_VALUES,
-      "socialMediaContent",
-      "colors",
-      // These properties are extra and will lead to errors in validation
-      "resources_name",
-      "url",
-    ])
+    .omit([...TOGGLED_VALUES, "socialMediaContent", "colors"])
     .pickBy()
     .value()
 

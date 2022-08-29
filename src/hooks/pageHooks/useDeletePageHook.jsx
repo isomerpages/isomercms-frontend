@@ -2,9 +2,12 @@ import _ from "lodash"
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
-import { ServicesContext } from "contexts/ServicesContext"
+import {
+  DIR_CONTENT_KEY,
+  RESOURCE_CATEGORY_CONTENT_KEY,
+} from "constants/queryKeys"
 
-import { DIR_CONTENT_KEY } from "hooks/queryKeys"
+import { ServicesContext } from "contexts/ServicesContext"
 
 import { useSuccessToast, useErrorToast } from "utils/toasts"
 
@@ -28,13 +31,18 @@ export function useDeletePageHook(params, queryParams) {
       successToast({
         description: `Successfully deleted page!`,
       })
-      if (params.collectionName || params.resourceRoomName)
+      if (params.collectionName)
         queryClient.invalidateQueries([
           // invalidates collection pages or resource pages
           DIR_CONTENT_KEY,
           _.omit(params, "fileName"),
         ])
-      else
+      else if (params.resourceRoomName) {
+        queryClient.invalidateQueries([
+          RESOURCE_CATEGORY_CONTENT_KEY,
+          _.omit(params, "fileName"),
+        ])
+      } else
         queryClient.invalidateQueries([
           DIR_CONTENT_KEY,
           { siteName: params.siteName, isUnlinked: true },

@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useQuery } from "react-query"
 
-import { SITE_COLORS_KEY } from "hooks/queryKeys"
+import { SITE_COLORS_KEY } from "constants/queryKeys"
 
 import {
   DEFAULT_ISOMER_PRIMARY_COLOR,

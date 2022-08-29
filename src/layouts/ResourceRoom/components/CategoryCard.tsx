@@ -20,17 +20,17 @@ export const CategoryCard = ({ title }: CategoryCardProps): JSX.Element => {
   const generatedLink = `${url}/resourceCategory/${title}`
 
   return (
-    <LinkBox>
-      <LinkOverlay as={RouterLink} to={generatedLink}>
-        <Card variant="single">
+    <Card variant="single">
+      <LinkBox>
+        <LinkOverlay as={RouterLink} to={generatedLink}>
           <CardBody>
             <Icon as={BiFolder} fontSize="1.5rem" fill="icon.alt" />
             <Text textStyle="subhead-1" color="text.label" noOfLines={1}>
               {prettifyPageFileName(title)}
             </Text>
           </CardBody>
-        </Card>
-      </LinkOverlay>
+        </LinkOverlay>
+      </LinkBox>
       <ContextMenu>
         <ContextMenu.Button />
         <ContextMenu.List>
@@ -60,6 +60,6 @@ export const CategoryCard = ({ title }: CategoryCardProps): JSX.Element => {
           </>
         </ContextMenu.List>
       </ContextMenu>
-    </LinkBox>
+    </Card>
   )
 }

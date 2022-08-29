@@ -3,7 +3,7 @@ import axios from "axios"
 import {
   getNavFolderDropdownFromFolderOrder,
   generateImageorFilePath,
-} from "utils"
+} from "./utils/generate"
 
 // axios settings
 axios.defaults.withCredentials = true

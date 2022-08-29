@@ -1,8 +1,8 @@
-import { useToast } from "@chakra-ui/react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
-import { MemoryRouter, Redirect, Route } from "react-router-dom"
+import { MemoryRouter, Route } from "react-router-dom"
 
-import { LoginContext } from "contexts/LoginContext"
+import { MOCK_USER } from "mocks/constants"
+import { buildLastUpdated, buildLoginData } from "mocks/utils"
 
 import { handlers } from "../../mocks/handlers"
 
@@ -11,11 +11,15 @@ import { Sidebar } from "./Sidebar"
 const SidebarMeta = {
   title: "Components/Sidebar",
   component: Sidebar,
+  parameters: {
+    chromatic: {
+      delay: 500,
+    },
+  },
   decorators: [
     (Story) => {
       return (
-        <MemoryRouter initialEntries={["/sites/:siteName/"]}>
-          <Redirect to="/sites/storybook/workspace" />
+        <MemoryRouter initialEntries={["/sites/storybook/workspace"]}>
           <Route path="/sites/:siteName/workspace">
             <Story />
           </Route>
@@ -47,31 +51,24 @@ Default.parameters = {
     handlers,
   },
 }
-Default.decorators = [
-  (Story) => {
-    const toast = useToast()
-    return (
-      <LoginContext.Provider
-        value={{
-          logout: async () => {
-            toast({
-              title: "User is logged out",
-              status: "success",
-              duration: 9000,
-              isClosable: true,
-            })
-          },
-          userId: "username",
-          email: "user@open.gov.sg",
-          contactNumber: "98765432",
-          verifyLoginAndSetLocalStorage: async () => {
-            return undefined
-          },
-        }}
-      >
-        <Story />
-      </LoginContext.Provider>
-    )
+
+export const Error = Template.bind({})
+Error.parameters = {
+  msw: {
+    handlers: [
+      buildLoginData({ userId: "Unknown user", email: "", contactNumber: "" }),
+    ],
   },
-]
+}
+
+export const Loading = Template.bind({})
+Loading.parameters = {
+  msw: {
+    handlers: [
+      buildLastUpdated({ lastUpdated: "Last updated today" }, "infinite"),
+      buildLoginData(MOCK_USER),
+    ],
+  },
+}
+
 export default SidebarMeta

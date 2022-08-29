@@ -23,45 +23,34 @@ import { pageFileNameToTitle } from "utils"
 
 interface PageCardProps {
   title: string
-  resourceType?: "file" | "post"
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export const PageCard = ({
-  title,
-  resourceType = undefined,
-}: PageCardProps): JSX.Element => {
+export const PageCard = ({ title }: PageCardProps): JSX.Element => {
   const {
     url,
-    params: { siteName, resourceRoomName },
+    params: { siteName },
   } = useRouteMatch<{ siteName: string; resourceRoomName: string }>()
 
   const encodedName = encodeURIComponent(title)
 
   const generatedLink = useMemo(() => {
-    if (resourceType === "file")
-      // TODO: implement file preview on CMS
-      return "#"
-    if (resourceType || resourceRoomName) {
-      // use resourceRoomName in case resourcePage does not have format Date-Type-Name.md
-      // for resourcePages that are not migrated
-      return `${url}/editPage/${encodedName}`
-    }
     return `/sites/${siteName}/editPage/${encodedName}`
-  }, [resourceType, resourceRoomName, siteName, encodedName, url])
+  }, [siteName, encodedName])
 
   return (
-    <LinkBox>
-      <LinkOverlay as={RouterLink} to={generatedLink}>
-        <Card variant="single">
+    <Card variant="single">
+      <LinkBox>
+        <LinkOverlay as={RouterLink} to={generatedLink}>
           <CardBody>
             <Icon as={BiFileBlank} fontSize="1.5rem" fill="icon.alt" />
             <Text textStyle="subhead-1" color="text.label" noOfLines={1}>
-              {pageFileNameToTitle(title, !!resourceType)}
+              {pageFileNameToTitle(title)}
             </Text>
           </CardBody>
-        </Card>
-      </LinkOverlay>
+        </LinkOverlay>
+      </LinkBox>
+
       <ContextMenu>
         <ContextMenu.Button />
         <ContextMenu.List>
@@ -101,6 +90,6 @@ export const PageCard = ({
           </>
         </ContextMenu.List>
       </ContextMenu>
-    </LinkBox>
+    </Card>
   )
 }

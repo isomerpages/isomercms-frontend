@@ -1,8 +1,8 @@
 import { useQuery } from "react-query"
 
-import { getLastUpdated } from "api"
+import { LAST_UPDATED_KEY } from "constants/queryKeys"
 
-import { LAST_UPDATED_KEY } from "./queryKeys"
+import { getLastUpdated } from "api"
 
 interface useLastUpdatedReturn {
   lastUpdated?: string

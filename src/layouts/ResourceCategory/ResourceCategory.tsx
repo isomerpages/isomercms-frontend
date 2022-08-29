@@ -7,7 +7,7 @@ import {
   Link as RouterLink,
 } from "react-router-dom"
 
-import { useGetDirectoryHook } from "hooks/directoryHooks"
+import { useGetResourceCategory } from "hooks/directoryHooks"
 
 // Import screens
 import {
@@ -22,9 +22,8 @@ import {
   MoveScreen,
   DeleteWarningScreen,
 } from "layouts/screens"
-import { isResourcePageData } from "layouts/utils"
 
-import { ProtectedRouteWithProps } from "routing/RouteSelector"
+import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
 // Import utils
 import { ResourceCategoryRouteParams } from "types/resources"
@@ -38,14 +37,7 @@ export const ResourceCategory = (): JSX.Element => {
   const { path, url } = useRouteMatch()
   const history = useHistory()
 
-  const { data: _pagesData, isLoading } = useGetDirectoryHook({
-    ...params,
-  })
-
-  const pagesData =
-    _pagesData && _pagesData.length > 0
-      ? (_pagesData as unknown[]).filter(isResourcePageData)
-      : []
+  const { data: pagesData, isLoading } = useGetResourceCategory(params)
 
   return (
     <>
@@ -60,19 +52,24 @@ export const ResourceCategory = (): JSX.Element => {
         </Section>
         <Section>
           <Box w="full">
-            <SectionHeader label="Pages">
+            <SectionHeader label="Resource Pages">
               <CreateButton as={RouterLink} to={`${url}/createPage`}>
                 Create page
               </CreateButton>
             </SectionHeader>
-            <SectionCaption icon={BiBulb} label="PRO TIP: ">
-              Organise your workspace by moving pages into folders
+            <SectionCaption icon={BiBulb} label="NOTE: ">
+              Pages are automatically ordered by latest date.
             </SectionCaption>
           </Box>
-          <Skeleton isLoaded={!isLoading} w="100%">
+          <Skeleton
+            isLoaded={!isLoading}
+            w="100%"
+            h={isLoading ? "10rem" : "fit-content"}
+          >
+            {!pagesData || (!pagesData.length && <Text>No content here</Text>)}
             <SimpleGrid columns={3} spacing="1.5rem">
               {/* NOTE: need to use multiline cards */}
-              {pagesData.map(({ name, title, date, resourceType }) => (
+              {(pagesData || []).map(({ name, title, date, resourceType }) => (
                 <ResourceCard
                   name={name}
                   title={title}
@@ -83,8 +80,6 @@ export const ResourceCategory = (): JSX.Element => {
             </SimpleGrid>
           </Skeleton>
         </Section>
-        {/* NOTE: This is needed for the divider to show */}
-        <Box display="none" />
       </SiteViewLayout>
       {/* main section ends here */}
       <Switch>

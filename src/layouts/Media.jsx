@@ -7,7 +7,7 @@ import { Sidebar } from "components/Sidebar"
 import PropTypes from "prop-types"
 import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom"
 
-import { useGetDirectoryHook } from "hooks/directoryHooks/useGetDirectoryHook"
+import { useGetMediaFolders } from "hooks/directoryHooks"
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { DeleteWarningScreen } from "layouts/screens/DeleteWarningScreen"
@@ -17,7 +17,7 @@ import { MediaCreationScreen } from "layouts/screens/MediaCreationScreen"
 import { MediaSettingsScreen } from "layouts/screens/MediaSettingsScreen"
 import { MoveScreen } from "layouts/screens/MoveScreen"
 
-import { ProtectedRouteWithProps } from "routing/RouteSelector"
+import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
@@ -30,7 +30,7 @@ const Media = ({ match }) => {
   const { siteName, mediaRoom: mediaType, mediaDirectoryName } = match.params
   const { setRedirectToPage } = useRedirectHook()
 
-  const { data: mediasData } = useGetDirectoryHook(params)
+  const { data: mediasData } = useGetMediaFolders(params)
 
   return (
     <>
@@ -200,6 +200,8 @@ Media.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
       siteName: PropTypes.string,
+      mediaDirectoryName: PropTypes.string,
+      mediaRoom: PropTypes.string,
     }),
   }).isRequired,
   location: PropTypes.shape({

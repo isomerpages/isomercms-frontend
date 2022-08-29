@@ -2,9 +2,9 @@ import _ from "lodash"
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
-import { ServicesContext } from "contexts/ServicesContext"
+import { DIR_CONTENT_KEY, RESOURCE_ROOM_CONTENT_KEY } from "constants/queryKeys"
 
-import { DIR_CONTENT_KEY } from "hooks/queryKeys"
+import { ServicesContext } from "contexts/ServicesContext"
 
 import { useSuccessToast, useErrorToast } from "utils/toasts"
 
@@ -42,10 +42,7 @@ export function useUpdateDirectoryHook(params, queryParams) {
             _.omit(params, "collectionName"),
           ])
         else if (params.resourceCategoryName)
-          queryClient.invalidateQueries([
-            DIR_CONTENT_KEY,
-            _.omit(params, "resourceCategoryName"),
-          ])
+          queryClient.invalidateQueries([RESOURCE_ROOM_CONTENT_KEY, params])
         else if (params.mediaDirectoryName)
           queryClient.invalidateQueries([
             DIR_CONTENT_KEY,

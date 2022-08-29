@@ -1,9 +1,23 @@
-import { VStack, FormControl, Flex, Box } from "@chakra-ui/react"
-import { FormLabel, Input, Textarea } from "@opengovsg/design-system-react"
+import {
+  VStack,
+  FormControl,
+  Flex,
+  Box,
+  InputLeftAddon,
+  InputGroup,
+} from "@chakra-ui/react"
+import {
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Textarea,
+} from "@opengovsg/design-system-react"
 import { FormTitle } from "components/Form"
-import { useFormContext } from "react-hook-form"
+import { useFormContext, useFormState } from "react-hook-form"
 
 import { Section, SectionHeader } from "layouts/components"
+
+import { DOMAIN_NAME_REGEX } from "utils/validators"
 
 import { FormToggle } from "./components/FormToggle"
 import { SettingsFormFieldMedia } from "./components/SettingsFormFieldMedia"
@@ -16,6 +30,7 @@ export const GeneralSettings = ({
   isError,
 }: GeneralSettingsProp): JSX.Element => {
   const { register } = useFormContext()
+  const { errors } = useFormState()
 
   return (
     <Section id="general-fields">
@@ -52,6 +67,30 @@ export const GeneralSettings = ({
             id="description"
             {...register("description")}
           />
+        </FormControl>
+        <FormControl isDisabled={isError} isRequired isInvalid={errors.url}>
+          <Box mb="0.75rem">
+            <FormLabel mb={0}>Search Engine Optimisation (SEO)</FormLabel>
+            <FormLabel.Description color="text.description">
+              Enter the web domain of your live site, to improve its position on
+              search result pages.
+            </FormLabel.Description>
+          </Box>
+          <InputGroup>
+            <InputLeftAddon>https://</InputLeftAddon>
+            <Input
+              w="100%"
+              id="url"
+              placeholder="www.open.gov.sg"
+              {...register("url", {
+                required: true,
+                pattern: RegExp(DOMAIN_NAME_REGEX),
+              })}
+            />
+          </InputGroup>
+          <FormErrorMessage>
+            The web domain you have entered is not valid.
+          </FormErrorMessage>
         </FormControl>
         <FormControl isDisabled={isError}>
           <Flex justifyContent="space-between" w="100%">

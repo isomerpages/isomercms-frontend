@@ -6,7 +6,7 @@ export const Footer = ({
   ...rest
 }: PropsWithChildren<FlexProps>): JSX.Element => (
   <Flex
-    h="5rem"
+    h="4rem"
     w="100%"
     pr="2rem"
     position="sticky"

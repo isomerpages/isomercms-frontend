@@ -32,9 +32,7 @@ export class DirectoryService {
     if (mediaDirectoryName) {
       let endpoint = `/sites/${siteName}/media`
       if (isCreate) return endpoint
-      if (mediaDirectoryName) {
-        endpoint += `/${mediaDirectoryName}`
-      }
+      endpoint += `/${mediaDirectoryName}`
       return endpoint
     }
 
