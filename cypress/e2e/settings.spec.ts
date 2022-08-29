@@ -167,7 +167,7 @@ describe("Settings page", () => {
     })
   })
 
-  it("should not allow URLs with subdomains for the SEO URL", () => {
+  it("should not allow URLs with sub-directories for the SEO URL", () => {
     // Arrange
     const urlWithSubdomain = "www.open.gov.sg/sub"
     cy.contains("label", "SEO").parent().parent().find("input").as("seoInput")
