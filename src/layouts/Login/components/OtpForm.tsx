@@ -29,10 +29,6 @@ const getOtpResendMessage = (remainingTime: number): string => {
     return "Resend OTP"
   }
 
-  if (remainingTime === 1) {
-    return "Resend OTP in 1s"
-  }
-
   return `Resend OTP in ${remainingTime}s`
 }
 
