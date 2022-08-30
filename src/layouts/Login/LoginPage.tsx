@@ -162,7 +162,6 @@ const LoginContent = (): JSX.Element => {
           href="https://guide.isomer.gov.sg/terms-and-privacy/terms-of-use"
           rel="noopener noreferrer"
           target="_blank"
-          fontSize="0.625rem"
         >
           Terms of Use
         </Link>
@@ -171,7 +170,6 @@ const LoginContent = (): JSX.Element => {
           href="https://guide.isomer.gov.sg/terms-and-privacy/privacy-statement"
           rel="noopener noreferrer"
           target="_blank"
-          fontSize="0.625rem"
         >
           Privacy policy
         </Link>
