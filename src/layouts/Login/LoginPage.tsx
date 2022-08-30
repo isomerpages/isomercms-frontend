@@ -157,7 +157,7 @@ const LoginContent = (): JSX.Element => {
         </TabPanels>
       </Tabs>
       <Text color="text.helper" fontSize="0.625rem">
-        By clicking “Log in”, you are acknowledging and agreeing to Isomer’s{" "}
+        By clicking ‘Log in’, you are acknowledging and agreeing to Isomer’s{" "}
         <Link
           href="https://guide.isomer.gov.sg/terms-and-privacy/terms-of-use"
           rel="noopener noreferrer"
