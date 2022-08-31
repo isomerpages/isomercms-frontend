@@ -5,8 +5,10 @@ import {
   Input,
   FormErrorMessage,
 } from "@opengovsg/design-system-react"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
+
+import { useTimer } from "hooks/useTimer"
 
 export type OtpProps = {
   otp: string
@@ -38,7 +40,7 @@ export const OtpForm = ({
   onResendOtp,
   errorMessage,
 }: OtpFormProps): JSX.Element => {
-  const [timer, setTimer] = useState(OTP_TIMER_INTERVAL)
+  const { timer, setTimer } = useTimer(OTP_TIMER_INTERVAL)
   const { handleSubmit, register, formState, setError } = useForm<OtpProps>({
     mode: "onBlur",
   })
@@ -50,13 +52,6 @@ export const OtpForm = ({
         message: errorMessage,
       })
   }, [errorMessage, setError])
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (timer > 0) setTimer(timer - 1)
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [timer])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
