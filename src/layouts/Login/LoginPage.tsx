@@ -55,8 +55,7 @@ const FooterLink = ({
 }: PropsWithChildren<FooterLinkProps>): JSX.Element => (
   <Link
     href={link}
-    rel="noopener noreferrer"
-    target="_blank"
+    isExternal
     textDecorationLine="none"
     color="text.link.dark"
     _hover={{
@@ -160,16 +159,14 @@ const LoginContent = (): JSX.Element => {
         By clicking ‘Log in’, you are acknowledging and agreeing to Isomer’s{" "}
         <Link
           href="https://guide.isomer.gov.sg/terms-and-privacy/terms-of-use"
-          rel="noopener noreferrer"
-          target="_blank"
+          isExternal
         >
           Terms of Use
         </Link>
         {" and our "}
         <Link
           href="https://guide.isomer.gov.sg/terms-and-privacy/privacy-statement"
-          rel="noopener noreferrer"
-          target="_blank"
+          isExternal
         >
           Privacy policy
         </Link>
