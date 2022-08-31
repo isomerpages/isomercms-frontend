@@ -36,7 +36,7 @@
     "libphonenumber-js": "^1.9.48",
     "lodash": "^4.17.21",
     "marked": "^4.0.12",
-    "moment-timezone": "^0.5.33",
+    "moment-timezone": "^0.5.35",
     "prop-types": "^15.8.1",
     "react": "^16.14.0",
     "react-beautiful-dnd": "^12.0.0",
