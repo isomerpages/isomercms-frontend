@@ -77,7 +77,7 @@ export const MOCK_USER = {
   userId: "mockUser",
   email: "mockUser@open.gov.sg",
   contactNumber: "98765432",
-  accountName: "mockUser",
+  displayedName: "mockUser",
 }
 
 export const MOCK_BE_SETTINGS: BackendSiteSettings = {

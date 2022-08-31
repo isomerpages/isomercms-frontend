@@ -60,7 +60,7 @@ Error.parameters = {
         userId: "Unknown user",
         email: "",
         contactNumber: "",
-        accountName: "Unknown user",
+        displayedName: "Unknown user",
       }),
     ],
   },
