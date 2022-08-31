@@ -94,7 +94,7 @@ const LoginContent = (): JSX.Element => {
   const handleResendOtp = async () => {
     await sendLoginOtp({ email })
     successToast({
-      description: `OTP sent to ${email}!`,
+      description: `OTP sent to ${email}`,
     })
   }
 
