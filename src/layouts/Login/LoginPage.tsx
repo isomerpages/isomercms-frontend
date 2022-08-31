@@ -19,10 +19,11 @@ import {
   InlineMessage,
   Link,
 } from "@opengovsg/design-system-react"
-import { useEffect, useState, PropsWithChildren } from "react"
+import { useState, PropsWithChildren } from "react"
 
 import { useLogin, useVerifyOtp } from "hooks/loginHooks"
 
+import { getAxiosErrorMessage } from "utils/axios"
 import { useSuccessToast } from "utils/toasts"
 
 import { IsomerLogo, LoginImage, OGPLogo } from "assets"
@@ -74,8 +75,6 @@ const LoginContent = (): JSX.Element => {
 
   const successToast = useSuccessToast()
   const [email, setEmail] = useState<string>("")
-  const [loginErrorMessage, setLoginErrorMessage] = useState("")
-  const [verifyErrorMessage, setVerifyErrorMessage] = useState("")
 
   const handleSendOtp = async ({ email: emailInput }: LoginProps) => {
     const trimmedEmail = emailInput.trim()
@@ -97,16 +96,6 @@ const LoginContent = (): JSX.Element => {
       description: `OTP sent to ${email}`,
     })
   }
-
-  useEffect(() => {
-    const errorMessage = loginError?.response?.data?.error?.message
-    setLoginErrorMessage(errorMessage)
-  }, [loginError])
-
-  useEffect(() => {
-    const errorMessage = verifyError?.response?.data?.error?.message
-    setVerifyErrorMessage(errorMessage)
-  }, [verifyError])
 
   return (
     <VStack gap="2.5rem" alignItems="start" width="65%">
@@ -144,12 +133,15 @@ const LoginContent = (): JSX.Element => {
                 email={email}
                 onSubmit={handleVerifyOtp}
                 onResendOtp={handleResendOtp}
-                errorMessage={verifyErrorMessage || loginErrorMessage}
+                errorMessage={
+                  getAxiosErrorMessage(verifyError) ||
+                  getAxiosErrorMessage(loginError)
+                }
               />
             ) : (
               <LoginForm
                 onSubmit={handleSendOtp}
-                errorMessage={loginErrorMessage}
+                errorMessage={getAxiosErrorMessage(loginError)}
               />
             )}
           </TabPanel>
