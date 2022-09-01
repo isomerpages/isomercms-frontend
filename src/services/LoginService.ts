@@ -10,8 +10,7 @@ export const sendLoginOtp = async ({ email }: LoginParams): Promise<void> => {
 export const verifyLoginOtp = async ({
   email,
   otp,
-}: VerifyOtpParams): Promise<any> => {
+}: VerifyOtpParams): Promise<void> => {
   const endpoint = `/auth/verify`
-  const res = await apiService.post(endpoint, { email, otp })
-  return res.data
+  return apiService.post(endpoint, { email, otp })
 }
