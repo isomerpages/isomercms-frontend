@@ -75,9 +75,7 @@ export const OtpForm = ({
             validate: validateOtp,
           })}
         />
-        {formState.errors.otp && (
-          <FormErrorMessage>{formState.errors.otp.message}</FormErrorMessage>
-        )}
+        <FormErrorMessage>{formState.errors.otp?.message}</FormErrorMessage>
         <HStack mt="1rem" alignItems="center" spacing="2.5rem">
           <Button type="submit" isLoading={formState.isSubmitting}>
             Log in
