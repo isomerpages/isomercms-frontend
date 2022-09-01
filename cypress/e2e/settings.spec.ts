@@ -146,6 +146,20 @@ describe("Settings page", () => {
     cy.get("@seoInput").should("have.value", expected)
   })
 
+  it("should be able to update the SEO to a valid value with trailing slash", () => {
+    // Arrange
+    const expected = "www.space.open.gov.sg"
+    const input = `${expected}/`
+    cy.contains("label", "SEO").parent().parent().find("input").as("seoInput")
+
+    // Act
+    cy.get("@seoInput").clear().type(input)
+
+    // Assert
+    cy.saveSettings()
+    cy.get("@seoInput").should("have.value", expected)
+  })
+
   it("should not be able to input the protocol at the beginning of the url", () => {
     // Arrange
     const INVALID_SEO_INPUTS = [
@@ -181,7 +195,7 @@ describe("Settings page", () => {
 
   it("should not allow malformed URLs for the SEO URL", () => {
     // Arrange
-    const MALFORMED_URLS = ["www.open.", "open"]
+    const MALFORMED_URLS = ["www.open.", "open", "open.gov.sg//"]
     cy.contains("label", "SEO").parent().parent().find("input").as("seoInput")
 
     MALFORMED_URLS.forEach((malformedUrl) => {
