@@ -32,7 +32,7 @@ export const RouteSelector = () => (
       <Banner variant={BANNER_VARIANT}>{BANNER_MESSAGE}</Banner>
     )}
     <Switch>
-      <RedirectIfLoggedInRoute exact path="/" component={LoginPage} />
+      <RedirectIfLoggedInRoute exact path="/" unauthedComponent={LoginPage} />
       <ProtectedRouteWithProps
         exact
         path={[

@@ -5,7 +5,7 @@ const { useLoginContext } = require("contexts/LoginContext")
 
 export default function RedirectIfLoggedInRoute({
   children,
-  component: WrappedComponent,
+  unauthedComponent: WrappedComponent,
   ...rest
 }) {
   const { displayedName } = useLoginContext()
