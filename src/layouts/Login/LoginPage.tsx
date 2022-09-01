@@ -134,8 +134,8 @@ const LoginContent = (): JSX.Element => {
                 onSubmit={handleVerifyOtp}
                 onResendOtp={handleResendOtp}
                 errorMessage={
-                  getAxiosErrorMessage(verifyError) ||
-                  getAxiosErrorMessage(loginError)
+                  getAxiosErrorMessage(loginError) ||
+                  getAxiosErrorMessage(verifyError)
                 }
               />
             ) : (
