@@ -47,6 +47,14 @@ const convertfromFe = ({
     (_value, key) => FE_TO_BE[key]
   )
 
+  // Remove trailing slash in site URL if present
+  if (
+    "url" in renamedBasicSettings &&
+    (<string>renamedBasicSettings.url).endsWith("/")
+  ) {
+    renamedBasicSettings.url = (<string>renamedBasicSettings.url).slice(0, -1)
+  }
+
   return {
     ...renamedBasicSettings,
     social_media: socialMediaContent,
