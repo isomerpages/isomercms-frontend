@@ -69,7 +69,7 @@ export const OtpForm = ({
           autoComplete="one-time-code"
           {...register("otp", {
             pattern: {
-              value: /^[0-9\b]+$/,
+              value: /^[0-9\b]+$/, // \b is a word boundary - link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Assertions
               message: "Only numbers are allowed.",
             },
             validate: validateOtp,
