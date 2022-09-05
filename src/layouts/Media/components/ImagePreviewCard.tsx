@@ -36,6 +36,7 @@ export const ImagePreviewCard = ({
   const styles = useMultiStyleConfig(CARD_THEME_KEY, {})
   const encodedName = encodeURIComponent(name)
   const { setRedirectToPage } = useRedirectHook()
+  const fileExt = mediaUrl.split(".").pop()
 
   return (
     <Box position="relative">
@@ -57,7 +58,7 @@ export const ImagePreviewCard = ({
           <Center>
             <Image
               align="center"
-              boxSize="15rem"
+              height="15rem"
               src={mediaUrl}
               fallbackSrc="/placeholder_no_image.png"
             />
@@ -83,7 +84,7 @@ export const ImagePreviewCard = ({
             >
               <Text textStyle="subhead-1">{name}</Text>
               <Text textColor="text.helper" textStyle="caption-1">
-                another
+                {fileExt}
               </Text>
             </VStack>
             <Box gridArea="button" />
