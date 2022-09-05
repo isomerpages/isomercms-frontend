@@ -17,8 +17,7 @@ import {
 import { FormLabel } from "@opengovsg/design-system-react"
 import axios from "axios"
 import FormField from "components/FormField"
-import PropTypes from "prop-types"
-import { useState } from "react"
+import { SetStateAction, useState } from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -27,13 +26,33 @@ import { INSTAGRAM_POST_URL_REGEX } from "utils/validators"
 import FormContext from "./Form/FormContext"
 import FormTitle from "./Form/FormTitle"
 
+type InstagramModalPostUrlProps = {
+  postUrl: string
+  isCaptioned: boolean
+}
+
+type InstagramModalEmbedCodeProps = {
+  embedCode: string
+}
+
+type InstagramModalProps = {
+  onSave: (
+    type: string,
+    value: InstagramModalPostUrlProps | InstagramModalEmbedCodeProps
+  ) => void
+  onClose: () => void
+}
+
 // axios settings
 axios.defaults.withCredentials = true
 
-const InstagramModal = ({ onSave, onClose }) => {
-  const [postUrl, setPostUrl] = useState("")
-  const [isCaptioned, setCaptioned] = useState(false)
-  const [embedCode, setEmbedCode] = useState("")
+const InstagramModal = ({
+  onSave,
+  onClose,
+}: InstagramModalProps): JSX.Element => {
+  const [postUrl, setPostUrl] = useState<string>("")
+  const [isCaptioned, setCaptioned] = useState<boolean>(false)
+  const [embedCode, setEmbedCode] = useState<string>("")
 
   return (
     <>
@@ -59,18 +78,18 @@ const InstagramModal = ({ onSave, onClose }) => {
                         <Box>
                           <FormControl
                             isInvalid={
-                              postUrl &&
+                              !!postUrl &&
                               !RegExp(INSTAGRAM_POST_URL_REGEX).test(postUrl)
                             }
                           >
                             <FormTitle>URL to Instagram post</FormTitle>
                             <FormField
-                              placeholder="https://www.instagram.com/p/..."
                               id="code"
+                              placeholder="https://www.instagram.com/p/..."
                               value={postUrl}
-                              onChange={(event) =>
-                                setPostUrl(event.target.value)
-                              }
+                              onChange={(event: {
+                                target: { value: SetStateAction<string> }
+                              }) => setPostUrl(event.target.value)}
                               width="50%"
                               isRequired
                             />
@@ -148,8 +167,3 @@ const InstagramModal = ({ onSave, onClose }) => {
 }
 
 export default InstagramModal
-
-InstagramModal.propTypes = {
-  onSave: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-}

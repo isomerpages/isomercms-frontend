@@ -1,12 +1,23 @@
+import type { InputProps } from "@chakra-ui/react"
 import { Input } from "@opengovsg/design-system-react"
-import PropTypes from "prop-types"
+import type { ChangeEventHandler, ForwardedRef, LegacyRef } from "react"
 import { forwardRef } from "react"
 
 import { useFormContext } from "./FormContext"
 
+export type FormInputProps = InputProps & {
+  value: string
+  id: string
+  placeholder?: string
+  alwaysDisabled?: boolean
+  onChange?: ChangeEventHandler<HTMLInputElement>
+  onBlur?: ChangeEventHandler<HTMLInputElement>
+  name?: string
+}
+
 // NOTE: Read about forwardRef here: https://reactjs.org/docs/forwarding-refs.html
 // We do this to pass refs properly rather than just prop threading
-const FormInput = forwardRef(
+const FormInput = forwardRef<InputProps, FormInputProps>(
   (
     {
       value,
@@ -20,11 +31,13 @@ const FormInput = forwardRef(
       // Hence, the returned values from register are passed here rather than having a register prop.
       // This also helps ambiguous situations where onChange and register are both passed.
       // Refer here for info on register: https://react-hook-form.com/api/useform/register
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       onChange = () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       onBlur = () => {},
       name = "",
-    },
-    ref
+    }: FormInputProps,
+    ref: ForwardedRef<InputProps>
   ) => {
     const { isRequired, hasError, isDisabled } = useFormContext()
 
@@ -41,20 +54,10 @@ const FormInput = forwardRef(
         onChange={onChange}
         onBlur={onBlur}
         name={name}
-        ref={ref}
+        ref={ref as LegacyRef<HTMLInputElement>}
       />
     )
   }
 )
-
-FormInput.propTypes = {
-  value: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
-  placeholder: PropTypes.string,
-  alwaysDisabled: PropTypes.bool,
-  onChange: PropTypes.func,
-  onBlur: PropTypes.func,
-  name: PropTypes.string,
-}
 
 export default FormInput
