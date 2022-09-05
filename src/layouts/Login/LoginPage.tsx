@@ -1,4 +1,5 @@
 import {
+  Box,
   Divider,
   Flex,
   GridItem,
@@ -194,17 +195,19 @@ export const LoginPage = (): JSX.Element => (
       </GridItem>
       <GridItem area="links" bgColor="white">
         <Flex h="100%" alignItems="center" justifyContent="center">
-          <HStack fontSize="0.75rem" gap="1.5rem">
-            <FooterLink link="https://form.gov.sg/#!/5dc80f7c03b2790012428dc5">
-              Contact Us
-            </FooterLink>
-            <FooterLink link="https://go.gov.sg/isomercms-guide/">
-              Guide
-            </FooterLink>
-            <FooterLink link="https://www.tech.gov.sg/report_vulnerability/">
-              Report vulnerability
-            </FooterLink>
-          </HStack>
+          <Box w="65%">
+            <HStack fontSize="0.75rem" gap="1.5rem" justifyContent="end">
+              <FooterLink link="https://form.gov.sg/#!/5dc80f7c03b2790012428dc5">
+                Contact Us
+              </FooterLink>
+              <FooterLink link="https://go.gov.sg/isomercms-guide/">
+                Guide
+              </FooterLink>
+              <FooterLink link="https://www.tech.gov.sg/report_vulnerability/">
+                Report vulnerability
+              </FooterLink>
+            </HStack>
+          </Box>
         </Flex>
       </GridItem>
     </Grid>
