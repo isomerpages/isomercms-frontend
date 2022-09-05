@@ -69,6 +69,9 @@ export const processInstagramTagToEmbed = (html: string): string => {
   const $ = cheerio.load(html, null, false)
   $("instagram-post").each((i: number, el: Element) => {
     const postId = $(el).attr("post-id")
+
+    // Check if captioned is present as a standalone attribute or if
+    // captioned is assigned a string value that is not false
     const isCaptioned = !!(
       ($(el).attr("captioned") || $(el).attr("captioned") === "") &&
       $(el).attr("captioned") !== "false"
@@ -93,6 +96,9 @@ export const processInstagramEmbedToTag = (html: string): string => {
   $("blockquote.instagram-media").each((i: number, el: Element) => {
     const postUrl = $(el).attr("data-instgrm-permalink")
     const postId = postUrl?.split("/p/")[1].split("/")[0]
+
+    // Check if data-instgrm-captioned is present as a standalone attribute
+    // or if data-instgrm-captioned is assigned a string value that is not false
     const isCaptioned = !!(
       ($(el).attr("data-instgrm-captioned") ||
         $(el).attr("data-instgrm-captioned") === "") &&

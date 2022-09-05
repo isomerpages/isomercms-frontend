@@ -74,8 +74,7 @@ const InstagramModal = ({
                   <TabPanel>
                     <VStack display="block">
                       <FormContext isRequired>
-                        <Box />
-                        <Box>
+                        <Box pt={3}>
                           <FormControl
                             isInvalid={
                               !!postUrl &&
@@ -131,8 +130,7 @@ const InstagramModal = ({
                   <TabPanel>
                     <VStack display="block">
                       <FormContext>
-                        <Box />
-                        <Box>
+                        <Box pt={3}>
                           <FormControl isRequired>
                             <FormTitle>Instagram embed code</FormTitle>
                             <Textarea
