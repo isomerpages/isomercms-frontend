@@ -42,10 +42,10 @@ const CONTACT_US_TEMPLATE_LAYOUT = "contact_us"
 const WorkspacePage = (): JSX.Element => {
   const {
     params: { siteName },
+    url,
   } = useRouteMatch<{ siteName: string }>()
 
   const { setRedirectToPage } = useRedirectHook()
-  const { url } = useRouteMatch()
   const { data: _dirsData, isLoading: isDirLoading } = useGetFolders({
     siteName,
   })
