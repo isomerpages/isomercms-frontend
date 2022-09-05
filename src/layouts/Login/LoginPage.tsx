@@ -114,7 +114,7 @@ const LoginContent = (): JSX.Element => {
           <Tab>Github Login</Tab>
           <Tab>Email Login</Tab>
         </TabList>
-        <TabPanels pt="2rem">
+        <TabPanels pt="2rem" minHeight="16.5rem">
           <TabPanel>
             <Button
               as={Link}
@@ -147,24 +147,24 @@ const LoginContent = (): JSX.Element => {
               />
             )}
           </TabPanel>
+          <Text color="text.helper" fontSize="0.625rem" pt="2rem">
+            By clicking ‘Log in’, you are acknowledging and agreeing to Isomer’s{" "}
+            <Link
+              href="https://guide.isomer.gov.sg/terms-and-privacy/terms-of-use"
+              isExternal
+            >
+              Terms of Use
+            </Link>
+            {" and our "}
+            <Link
+              href="https://guide.isomer.gov.sg/terms-and-privacy/privacy-statement"
+              isExternal
+            >
+              Privacy policy
+            </Link>
+          </Text>
         </TabPanels>
       </Tabs>
-      <Text color="text.helper" fontSize="0.625rem">
-        By clicking ‘Log in’, you are acknowledging and agreeing to Isomer’s{" "}
-        <Link
-          href="https://guide.isomer.gov.sg/terms-and-privacy/terms-of-use"
-          isExternal
-        >
-          Terms of Use
-        </Link>
-        {" and our "}
-        <Link
-          href="https://guide.isomer.gov.sg/terms-and-privacy/privacy-statement"
-          isExternal
-        >
-          Privacy policy
-        </Link>
-      </Text>
     </VStack>
   )
 }
