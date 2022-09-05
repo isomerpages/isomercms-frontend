@@ -95,8 +95,7 @@ const MOCK_MEDIA_ITEM_DATA: MediaData[] = [
   },
   {
     mediaPath: "/some/thing",
-    mediaUrl:
-      "https://uploads.dailydot.com/2018/10/olli-the-polite-cat.jpg?auto=compress&fm=pjpg",
+    mediaUrl: "https://uploads.dailydot.com/2018/10/olli-the-polite-cat.jpg",
     name: "polite cat",
     sha: "sha",
     type: "file",
@@ -105,6 +104,22 @@ const MOCK_MEDIA_ITEM_DATA: MediaData[] = [
     mediaPath: "/some/thing",
     mediaUrl: "https://img-9gag-fun.9cache.com/photo/a2W12m9_700bwp.webp",
     name: "screaming cat",
+    sha: "sha",
+    type: "file",
+  },
+  {
+    mediaPath: "/some/thing",
+    mediaUrl:
+      "https://cdn.pixabay.com/photo/2012/08/27/14/19/mountains-55067__340.png",
+    name: "some mountain",
+    sha: "sha",
+    type: "file",
+  },
+  {
+    mediaPath: "/some/thing",
+    mediaUrl:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8cG9ydHJhaXR8ZW58MHx8MHx8&w=1000&q=80.png",
+    name: "pearly",
     sha: "sha",
     type: "file",
   },
