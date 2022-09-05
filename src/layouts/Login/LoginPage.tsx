@@ -180,7 +180,7 @@ export const LoginPage = (): JSX.Element => (
         </Flex>
       </GridItem>
       <GridItem area="content" bgColor="white">
-        <Flex h="100%" maxW="65rem" alignItems="center" justifyContent="center">
+        <Flex h="100%" maxW="54rem" alignItems="center" justifyContent="center">
           <LoginContent />
         </Flex>
       </GridItem>
