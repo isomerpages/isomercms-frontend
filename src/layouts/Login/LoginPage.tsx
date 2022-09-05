@@ -78,7 +78,7 @@ const LoginContent = (): JSX.Element => {
 
   const handleSendOtp = async ({ email: emailInput }: LoginProps) => {
     const trimmedEmail = emailInput.trim()
-    await sendLoginOtp({ email: trimmedEmail })
+    await sendLoginOtp({ email: trimmedEmail }) // Non-2xx responses will be caught by axios and thrown as error
     successToast({
       description: `OTP sent to ${trimmedEmail}`,
     })
