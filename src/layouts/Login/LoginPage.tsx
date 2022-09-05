@@ -20,6 +20,7 @@ import {
   Link,
 } from "@opengovsg/design-system-react"
 import { useState, PropsWithChildren } from "react"
+import { useHistory } from "react-router-dom"
 
 import { useLogin, useVerifyOtp } from "hooks/loginHooks"
 
@@ -75,6 +76,7 @@ const LoginContent = (): JSX.Element => {
 
   const successToast = useSuccessToast()
   const [email, setEmail] = useState<string>("")
+  const history = useHistory()
 
   const handleSendOtp = async ({ email: emailInput }: LoginProps) => {
     const trimmedEmail = emailInput.trim()
@@ -87,7 +89,7 @@ const LoginContent = (): JSX.Element => {
 
   const handleVerifyOtp = async ({ otp }: OtpProps) => {
     await verifyLoginOtp({ email, otp })
-    window.location.reload()
+    history.replace("/sites")
   }
 
   const handleResendOtp = async () => {
