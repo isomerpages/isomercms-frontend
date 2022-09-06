@@ -22,14 +22,10 @@ export const CUSTOM_HTML_ATTRIBUTES: string[] = [
  * @returns the Instagram post HTML embed code
  */
 export const getInstagramEmbedCode = (
-  postId: string | undefined,
+  postId: string,
   isCaptioned: boolean
 ): string => {
   const extraAttr = isCaptioned ? "data-instgrm-captioned" : ""
-
-  if (!postId) {
-    return ""
-  }
 
   // Note: This embed code is modified from the original Instagram embed code
   // by removing the <p> tag that says "A post shared by...", as it is not
@@ -46,14 +42,10 @@ export const getInstagramEmbedCode = (
  * @returns the Instagram post custom HTML tag code
  */
 export const getInstagramEmbedTag = (
-  postId: string | undefined,
+  postId: string,
   isCaptioned: boolean
 ): string => {
   const extraAttr = isCaptioned ? " captioned" : ""
-
-  if (!postId) {
-    return ""
-  }
 
   return `<instagram-post post-id="${postId}" ${extraAttr}></instagram-post>`
 }
@@ -73,11 +65,14 @@ export const processInstagramTagToEmbed = (html: string): string => {
     // Check if captioned is present as a standalone attribute or if
     // captioned is assigned a string value that is not false
     const isCaptioned = !!(
-      ($(el).attr("captioned") || $(el).attr("captioned") === "") &&
-      $(el).attr("captioned") !== "false"
+      ($(el).attr("captioned") && $(el).attr("captioned") !== "false") ||
+      $(el).attr("captioned") === ""
     )
-    const embedHtml = getInstagramEmbedCode(postId, isCaptioned)
-    $(el).replaceWith(embedHtml)
+
+    if (postId) {
+      const embedHtml = getInstagramEmbedCode(postId, isCaptioned)
+      $(el).replaceWith(embedHtml)
+    }
   })
 
   return $.html()
@@ -100,12 +95,15 @@ export const processInstagramEmbedToTag = (html: string): string => {
     // Check if data-instgrm-captioned is present as a standalone attribute
     // or if data-instgrm-captioned is assigned a string value that is not false
     const isCaptioned = !!(
-      ($(el).attr("data-instgrm-captioned") ||
-        $(el).attr("data-instgrm-captioned") === "") &&
-      $(el).attr("data-instgrm-captioned") !== "false"
+      ($(el).attr("data-instgrm-captioned") &&
+        $(el).attr("data-instgrm-captioned") !== "false") ||
+      $(el).attr("data-instgrm-captioned") === ""
     )
-    const tagHtml = getInstagramEmbedTag(postId, isCaptioned)
-    $(el).replaceWith(tagHtml)
+
+    if (postId) {
+      const tagHtml = getInstagramEmbedTag(postId, isCaptioned)
+      $(el).replaceWith(tagHtml)
+    }
   })
 
   // Remove <script> tags as well if present
