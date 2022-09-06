@@ -2,7 +2,11 @@ import _ from "lodash"
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
-import { DIR_CONTENT_KEY } from "constants/queryKeys"
+import {
+  DIR_CONTENT_KEY,
+  RESOURCE_ROOM_CONTENT_KEY,
+  RESOURCE_CATEGORY_CONTENT_KEY,
+} from "constants/queryKeys"
 
 import { ServicesContext } from "contexts/ServicesContext"
 
@@ -49,11 +53,16 @@ export function useDeleteDirectoryHook(params, queryParams) {
           DIR_CONTENT_KEY,
           _.omit(params, "collectionName"),
         ])
-      else if (params.resourceCategoryName)
+      else if (params.resourceCategoryName) {
         queryClient.invalidateQueries([
-          DIR_CONTENT_KEY,
+          RESOURCE_CATEGORY_CONTENT_KEY,
+          _.omit(params, "resourceRoomName"),
+        ])
+        queryClient.invalidateQueries([
+          RESOURCE_ROOM_CONTENT_KEY,
           _.omit(params, "resourceCategoryName"),
         ])
+      }
       if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
     },
   })

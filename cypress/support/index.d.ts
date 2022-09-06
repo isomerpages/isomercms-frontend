@@ -20,7 +20,12 @@ declare namespace Cypress {
      * @param {string} as The alias that should be given to the first sibling
      */
     getFirstSiblingAs(as: string): Chainable<JQuery<HTMLElement>>
-    setDefaultPrimaryColour(): Chainable<void>
+    /**
+     * Sets default primary colour as well as the SEO field.
+     * The SEO field has to be set as there is no default given.
+     * This is to avoid adversely impacting the SEO of the site.
+     */
+    setDefaultSettings(): Chainable<void>
     setSessionDefaults(): Chainable<void>
     /**
      * Setup the default interceptors for post/get/delete requests.

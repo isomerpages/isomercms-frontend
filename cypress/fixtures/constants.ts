@@ -17,3 +17,5 @@ export enum Interceptors {
 }
 
 export const CMS_BASEURL: string | undefined = Cypress.env("BASEURL")
+
+export const BASE_SEO_LINK = "www.open.gov.sg"

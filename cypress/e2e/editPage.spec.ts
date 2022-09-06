@@ -43,7 +43,7 @@ describe("editPage.spec", () => {
     const LINK_URL = "https://www.google.com"
 
     before(() => {
-      cy.setDefaultPrimaryColour()
+      cy.setDefaultSettings()
 
       // NOTE: We need to repeat the interceptor here as
       // cypress resolves by type before nesting level.
@@ -335,7 +335,7 @@ describe("editPage.spec", () => {
     const TEST_PAGE_DATE = "2021-05-17"
 
     before(() => {
-      cy.setDefaultPrimaryColour()
+      cy.setDefaultSettings()
 
       // NOTE: We need to repeat the interceptor here as
       // cypress resolves by type before nesting level.

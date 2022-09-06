@@ -4,7 +4,7 @@ import { Footer } from "components/Footer"
 import { LoadingButton } from "components/LoadingButton"
 import update from "immutability-helper"
 import PropTypes from "prop-types"
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 import { Droppable, Draggable, DragDropContext } from "react-beautiful-dnd"
 
 // Import styles
@@ -18,10 +18,6 @@ import { deslugifyDirectory } from "utils"
 const ReorderingModal = ({ params, dirData, onProceed, onClose }) => {
   const { collectionName, subCollectionName } = params
   const [dirOrder, setDirOrder] = useState([])
-
-  /** ******************************** */
-  /*     useEffects to load data     */
-  /** ******************************** */
 
   useEffect(() => {
     if (dirData) setDirOrder(dirData)
@@ -116,7 +112,6 @@ const ReorderingModal = ({ params, dirData, onProceed, onClose }) => {
                               key={folderContentItem.name}
                               item={folderContentItem}
                               itemIndex={folderContentIndex}
-                              isDisabled
                             />
                           </div>
                         )}
