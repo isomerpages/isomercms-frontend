@@ -19,6 +19,8 @@ import { Section, SectionHeader } from "layouts/components"
 
 import { DOMAIN_NAME_REGEX } from "utils/validators"
 
+import type { SiteInfo } from "types/settings"
+
 import { FormToggle } from "./components/FormToggle"
 import { SettingsFormFieldMedia } from "./components/SettingsFormFieldMedia"
 
@@ -30,7 +32,7 @@ export const GeneralSettings = ({
   isError,
 }: GeneralSettingsProp): JSX.Element => {
   const { register } = useFormContext()
-  const { errors } = useFormState()
+  const { errors } = useFormState<SiteInfo>()
 
   return (
     <Section id="general-fields">
@@ -68,7 +70,7 @@ export const GeneralSettings = ({
             {...register("description")}
           />
         </FormControl>
-        <FormControl isDisabled={isError} isRequired isInvalid={errors.url}>
+        <FormControl isDisabled={isError} isRequired isInvalid={!!errors.url}>
           <Box mb="0.75rem">
             <FormLabel mb={0}>Search Engine Optimisation (SEO)</FormLabel>
             <FormLabel.Description color="text.description">
