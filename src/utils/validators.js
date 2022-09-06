@@ -12,7 +12,8 @@ import {
 
 // Common regexes and constants
 // ==============
-const PERMALINK_REGEX = "^((/([a-zA-Z0-9]+-)*[a-zA-Z0-9]+)+)/?$"
+const INTERNAL_PERMALINK_REGEX = "^((/([a-zA-Z0-9]+-)*[a-zA-Z0-9]+)+)/?$"
+const EXTERNAL_PERMALINK_REGEX = "^https://"
 export const URL_REGEX_PREFIX = "^(https://)?(www.)?("
 export const URL_REGEX_SUFFIX = ".com/)([a-zA-Z0-9_-]+([/.])?)+$"
 export const TELEGRAM_REGEX = "telegram|t).me/([a-zA-Z0-9_-]+([/.])?)+$"
@@ -35,7 +36,10 @@ const DATE_REGEX = "^([0-9]{4}-[0-9]{2}-[0-9]{2})$"
 const ALPHABETS_ONLY_REGEX = '^[a-zA-Z" "\\._-]+$'
 const ALPHANUMERICS_ONLY_REGEX = '^[a-zA-Z0-9" "\\._-]+$'
 
-export const permalinkRegexTest = RegExp(PERMALINK_REGEX)
+export const permalinkRegexTest = RegExp(INTERNAL_PERMALINK_REGEX)
+export const resourcePermalinkRegexText = RegExp(
+  `(${INTERNAL_PERMALINK_REGEX})|(${EXTERNAL_PERMALINK_REGEX})`
+)
 export const phoneRegexTest = RegExp(PHONE_REGEX)
 export const emailRegexTest = RegExp(EMAIL_REGEX)
 export const dateRegexTest = RegExp(DATE_REGEX)
