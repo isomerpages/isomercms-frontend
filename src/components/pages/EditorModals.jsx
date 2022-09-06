@@ -1,5 +1,5 @@
 import HyperlinkModal from "components/HyperlinkModal"
-import InstagramModal from "components/InstagramModal"
+import InstagramModal, { InstagramModalTabs } from "components/InstagramModal"
 import MediaModal from "components/media/MediaModal"
 import PropTypes from "prop-types"
 
@@ -37,15 +37,17 @@ const EditorModals = ({ mdeRef, onSave, modalType, onClose, mediaType }) => {
   const onInstagramEmbedSave = (type, value) => {
     const cm = mdeRef.current.simpleMde.codemirror
 
-    if (type === "postUrl") {
+    if (type === InstagramModalTabs.PostUrl) {
       // value should be of type { postUrl: string, isCaptioned: boolean }
       const { postUrl, isCaptioned } = value
       if (RegExp(INSTAGRAM_POST_URL_REGEX).test(postUrl)) {
+        // postUrl is like https://www.instagram.com/p/ChBcfUHPbjb/
+        // we need to extract the post ID (the segment after "/p/")
         const postId = postUrl.split("/p/")[1].split("/")[0]
         const embedTag = getInstagramEmbedTag(postId, isCaptioned)
         cm.replaceSelection(embedTag)
       }
-    } else if (type === "embedCode") {
+    } else if (type === InstagramModalTabs.EmbedCode) {
       // value should be of type { embedCode: string }
       const { embedCode } = value
       const embedTag = processInstagramEmbedToTag(embedCode)

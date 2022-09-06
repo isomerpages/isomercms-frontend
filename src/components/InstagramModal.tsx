@@ -1,11 +1,8 @@
 import {
-  CloseButton,
   VStack,
-  Box,
   Button,
   Flex,
   FormControl,
-  FormErrorMessage,
   Switch,
   Tabs,
   Tab,
@@ -13,13 +10,22 @@ import {
   TabPanels,
   TabPanel,
   Textarea,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
 } from "@chakra-ui/react"
-import { FormLabel } from "@opengovsg/design-system-react"
-import axios from "axios"
+import {
+  FormErrorMessage,
+  FormLabel,
+  ModalCloseButton,
+} from "@opengovsg/design-system-react"
 import FormField from "components/FormField"
-import { SetStateAction, useState } from "react"
-
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
+import type { SetStateAction } from "react"
+import { useState } from "react"
 
 import { INSTAGRAM_POST_URL_REGEX } from "utils/validators"
 
@@ -37,130 +43,135 @@ type InstagramModalEmbedCodeProps = {
 
 type InstagramModalProps = {
   onSave: (
-    type: string,
-    value: InstagramModalPostUrlProps | InstagramModalEmbedCodeProps
+    type: InstagramModalTabs,
+    value: InstagramModalPostUrlProps | InstagramModalEmbedCodeProps | undefined
   ) => void
   onClose: () => void
 }
 
-// axios settings
-axios.defaults.withCredentials = true
+export enum InstagramModalTabs {
+  PostUrl = 0,
+  EmbedCode = 1,
+}
 
 const InstagramModal = ({
   onSave,
   onClose,
 }: InstagramModalProps): JSX.Element => {
+  const [tabIndex, setTabIndex] = useState<number>(InstagramModalTabs.PostUrl)
   const [postUrl, setPostUrl] = useState<string>("")
   const [isCaptioned, setCaptioned] = useState<boolean>(false)
   const [embedCode, setEmbedCode] = useState<string>("")
 
-  return (
-    <>
-      <div className={elementStyles.overlay}>
-        <div className={elementStyles["modal-settings"]}>
-          <div className={elementStyles.modalHeader}>
-            <h1>Insert Instagram post</h1>
-            <CloseButton onClick={onClose} />
-          </div>
-          <div className={elementStyles.modalContent}>
-            <div>
-              <Tabs>
-                <TabList>
-                  <Tab>Post URL</Tab>
-                  <Tab>Embed Code</Tab>
-                </TabList>
+  // TODO: This hook should be used for all other modals
+  const { isOpen } = useDisclosure({ defaultIsOpen: true })
 
-                <TabPanels>
-                  <TabPanel>
-                    <VStack display="block">
-                      <FormContext isRequired>
-                        <Box pt={3}>
-                          <FormControl
-                            isInvalid={
-                              !!postUrl &&
-                              !RegExp(INSTAGRAM_POST_URL_REGEX).test(postUrl)
-                            }
-                          >
-                            <FormTitle>URL to Instagram post</FormTitle>
-                            <FormField
-                              id="code"
-                              placeholder="https://www.instagram.com/p/..."
-                              value={postUrl}
-                              onChange={(event: {
-                                target: { value: SetStateAction<string> }
-                              }) => setPostUrl(event.target.value)}
-                              width="50%"
-                              isRequired
-                            />
-                            <FormErrorMessage>
-                              The URL you have entered is not valid.
-                            </FormErrorMessage>
-                          </FormControl>
-                        </Box>
-                        <Box>
-                          <Flex justifyContent="space-between" w="100%">
-                            <FormLabel>Include post caption</FormLabel>
-                            <Switch
-                              id="isCaptioned"
-                              onChange={(event) =>
-                                setCaptioned(event.target.checked)
-                              }
-                            />
-                          </Flex>
-                        </Box>
-                        <Flex justifyContent="end">
-                          <Button
-                            isDisabled={
-                              !postUrl ||
-                              !RegExp(INSTAGRAM_POST_URL_REGEX).test(postUrl)
-                            }
-                            onClick={() =>
-                              onSave("postUrl", {
-                                postUrl,
-                                isCaptioned,
-                              })
-                            }
-                          >
-                            Save
-                          </Button>
-                        </Flex>
-                      </FormContext>
-                    </VStack>
-                  </TabPanel>
-                  <TabPanel>
-                    <VStack display="block">
-                      <FormContext>
-                        <Box pt={3}>
-                          <FormControl isRequired>
-                            <FormTitle>Instagram embed code</FormTitle>
-                            <Textarea
-                              placeholder='<blockquote class="instagram-media"...'
-                              id="code"
-                              value={embedCode}
-                              onChange={(event) =>
-                                setEmbedCode(event.target.value)
-                              }
-                            />
-                          </FormControl>
-                        </Box>
-                        <Flex justifyContent="end">
-                          <Button
-                            isDisabled={!embedCode}
-                            onClick={() => onSave("embedCode", { embedCode })}
-                          >
-                            Save
-                          </Button>
-                        </Flex>
-                      </FormContext>
-                    </VStack>
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+  const getInstagramModalDto = (
+    index: InstagramModalTabs
+  ): InstagramModalPostUrlProps | InstagramModalEmbedCodeProps | undefined => {
+    if (index === InstagramModalTabs.PostUrl) {
+      return {
+        postUrl,
+        isCaptioned,
+      }
+    }
+    if (index === InstagramModalTabs.EmbedCode) {
+      return {
+        embedCode,
+      }
+    }
+    return undefined
+  }
+
+  const isInputValid = (index: InstagramModalTabs): boolean => {
+    if (index === InstagramModalTabs.PostUrl) {
+      return RegExp(INSTAGRAM_POST_URL_REGEX).test(postUrl)
+    }
+    if (index === InstagramModalTabs.EmbedCode) {
+      return embedCode.length > 0
+    }
+    return false
+  }
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Insert Instagram post</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Tabs onChange={(index) => setTabIndex(index)}>
+            <TabList>
+              <Tab>Post URL</Tab>
+              <Tab>Embed Code</Tab>
+            </TabList>
+
+            <TabPanels>
+              <TabPanel>
+                <VStack display="block">
+                  <FormContext isRequired>
+                    <FormControl
+                      isInvalid={
+                        !!postUrl &&
+                        !RegExp(INSTAGRAM_POST_URL_REGEX).test(postUrl)
+                      }
+                    >
+                      <FormTitle>URL to Instagram post</FormTitle>
+                      <FormField
+                        id="code"
+                        placeholder="https://www.instagram.com/p/..."
+                        value={postUrl}
+                        onChange={(event: {
+                          target: { value: SetStateAction<string> }
+                        }) => setPostUrl(event.target.value)}
+                        width="50%"
+                        isRequired
+                      />
+                      <FormErrorMessage>
+                        The URL you have entered is not valid.
+                      </FormErrorMessage>
+                    </FormControl>
+                    <Flex justifyContent="space-between" w="100%">
+                      <FormLabel>Include post caption</FormLabel>
+                      <Switch
+                        id="isCaptioned"
+                        onChange={() => setCaptioned(!isCaptioned)}
+                      />
+                    </Flex>
+                  </FormContext>
+                </VStack>
+              </TabPanel>
+              <TabPanel>
+                <VStack display="block">
+                  <FormContext isRequired>
+                    <FormControl>
+                      <FormTitle>Instagram embed code</FormTitle>
+                      <Textarea
+                        placeholder='<blockquote class="instagram-media"...'
+                        id="code"
+                        value={embedCode}
+                        onChange={(event) => setEmbedCode(event.target.value)}
+                      />
+                    </FormControl>
+                  </FormContext>
+                </VStack>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </ModalBody>
+        <ModalFooter>
+          <Button variant="ghost" mr={3} onClick={onClose}>
+            Cancel
+          </Button>
+          <Button
+            isDisabled={!isInputValid(tabIndex)}
+            onClick={() => onSave(tabIndex, getInstagramModalDto(tabIndex))}
+          >
+            Save
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   )
 }
 
