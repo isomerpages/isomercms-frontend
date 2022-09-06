@@ -209,6 +209,17 @@ describe("Settings page", () => {
     })
   })
 
+  it("should not allow SEO URL field to be empty", () => {
+    // Arrange
+    cy.contains("label", "SEO").parent().parent().find("input").as("seoInput")
+
+    // Act
+    cy.get("@seoInput").clear().blur()
+
+    // Assert
+    cy.contains("This field cannot be left blank").should("exist")
+  })
+
   it("Should toggle Masthead and Show Reach buttons and have change reflect correctly on save", () => {
     // Arrange
     // NOTE: Initial state is display govt masthead off and show reach on
