@@ -51,13 +51,13 @@ export const SiteViewLayout = ({
         >
           <Sidebar />
         </GridItem>
-        <ContentGridLayout>{children}</ContentGridLayout>
+        <SiteViewContent>{children}</SiteViewContent>
       </Grid>
     </>
   )
 }
 
-export const ContentGridLayout = ({
+export const SiteViewContent = ({
   children,
   ...rest
 }: StackProps): JSX.Element => {

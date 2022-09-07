@@ -22,16 +22,13 @@ import {
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
-import { DirectoryData } from "types/directory"
 import { isDirData } from "types/utils"
 
-import { ContentGridLayout, SiteViewLayout } from "../layouts"
+import { SiteViewContent, SiteViewLayout } from "../layouts"
 
-import {
-  MainPages,
-  UngroupedPages,
-  WorkspaceFolders,
-} from "./components/WorkspacePagesAndFoldersComponents"
+import { MainPages } from "./components/MainPagesComponent"
+import { UngroupedPages } from "./components/UngroupedPagesComponent"
+import { WorkspaceFolders } from "./components/WorkspaceFolderComponent"
 
 const WorkspacePage = (): JSX.Element => {
   const {
@@ -61,7 +58,7 @@ const WorkspacePage = (): JSX.Element => {
           isItemEmpty={isFoldersEmpty && isPagesEmpty}
           actionButton={<MenuDropdownButton />}
         >
-          <ContentGridLayout>
+          <SiteViewContent>
             <EmptyArea
               isItemEmpty={isFoldersEmpty}
               actionButton={
@@ -87,7 +84,7 @@ const WorkspacePage = (): JSX.Element => {
             >
               <UngroupedPages pagesData={pagesData} url="" />
             </EmptyArea>
-          </ContentGridLayout>
+          </SiteViewContent>
         </EmptyArea>
       </Skeleton>
     </SiteViewLayout>
