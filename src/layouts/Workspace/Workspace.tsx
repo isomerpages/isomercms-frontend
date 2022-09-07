@@ -23,6 +23,7 @@ import {
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
 import { DirectoryData } from "types/directory"
+import { isDirData } from "types/utils"
 
 import { ContentGridLayout, SiteViewLayout } from "../layouts"
 
@@ -47,9 +48,7 @@ const WorkspacePage = (): JSX.Element => {
   const { data: _pagesData } = useGetWorkspacePages(siteName)
 
   const pagesData = _pagesData || []
-  const dirsData = (_dirsAndPagesData || []).filter((data) => {
-    return data.type === "dir" // only get directories and not pages
-  }) as DirectoryData[]
+  const dirsData = (_dirsAndPagesData || []).filter(isDirData)
   const isPagesEmpty =
     pagesData.filter((page) => page.name !== "contact-us.md").length === 0
   const isFoldersEmpty = !dirsData || dirsData.length === 0
