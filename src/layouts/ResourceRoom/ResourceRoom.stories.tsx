@@ -60,8 +60,8 @@ Empty.parameters = {
   },
 }
 
-export const EmptyResoruceCategory = Template.bind({})
-EmptyResoruceCategory.parameters = {
+export const EmptyResourceCategory = Template.bind({})
+EmptyResourceCategory.parameters = {
   msw: {
     handlers: {
       resourceRoomData: buildResourceRoomData([]),
