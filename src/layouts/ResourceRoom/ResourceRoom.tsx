@@ -20,7 +20,6 @@ import {
 import { Button, FormLabel, Input } from "@opengovsg/design-system-react"
 import { ContextMenu } from "components/ContextMenu"
 import { EmptyArea } from "components/EmptyArea"
-import { LoadingButton } from "components/LoadingButton"
 import _ from "lodash"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
@@ -70,7 +69,9 @@ import { CategoryCard, ResourceBreadcrumb } from "./components"
 const EmptyResourceRoom = () => {
   const params = useParams<ResourceRoomRouteParams>()
   const { siteName } = params
-  const { mutateAsync: saveHandler, isError } = useCreateDirectory(siteName)
+  const { mutateAsync: saveHandler, isError, isLoading } = useCreateDirectory(
+    siteName
+  )
   const {
     register,
     handleSubmit,
@@ -148,13 +149,14 @@ const EmptyResourceRoom = () => {
             <Button mr={3} variant="link" onClick={onClose}>
               <Text textStyle="subhead-1">Cancel</Text>
             </Button>
-            <LoadingButton
+            <Button
               isDisabled={!_.isEmpty(errors)}
               type="submit"
               onClick={handleSubmit(onSubmit)}
+              isLoading={isLoading}
             >
               Create
-            </LoadingButton>
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
