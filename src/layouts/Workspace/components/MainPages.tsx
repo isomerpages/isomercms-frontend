@@ -8,6 +8,11 @@ import { CONTACT_US_TEMPLATE_LAYOUT } from "./WorkspaceFolder"
 
 import { ContactCard, HomepageCard, NavigationCard } from "."
 
+export interface MainPagesProps {
+  siteName: string
+  isLoading: boolean
+}
+
 /**
  * Represents homepage, navigation bar and contact us pages.
  * @param MainPagesProps pagesData : list of all pages for a site
@@ -38,9 +43,4 @@ export const MainPages = ({
       </Skeleton>
     </Section>
   )
-}
-
-export interface MainPagesProps {
-  siteName: string
-  isLoading: boolean
 }
