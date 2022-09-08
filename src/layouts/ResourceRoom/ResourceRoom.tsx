@@ -146,7 +146,7 @@ const EmptyResourceRoom = () => {
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button mr={3} variant="link" onClick={onClose}>
+            <Button mr={3} variant="clear" onClick={onClose}>
               <Text textStyle="subhead-1">Cancel</Text>
             </Button>
             <Button
