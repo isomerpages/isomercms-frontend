@@ -101,25 +101,24 @@ const EmptyResourceRoom = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
-    <SiteViewLayout
-      divider={undefined} // to remove bottom divider line
-    >
-      <Center as="form" mt="6rem">
-        {/* Resource Room does not exist */}
-        <EmptyArea
-          isItemEmpty
-          actionButton={
-            <Button
-              onClick={onOpen}
-              leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
-            >
-              Create Resource Room
-            </Button>
-          }
-          subText="Create a resource room to get started."
-        />
-      </Center>
-
+    <>
+      <SiteViewLayout>
+        <Center as="form" mt="6rem">
+          {/* Resource Room does not exist */}
+          <EmptyArea
+            isItemEmpty
+            actionButton={
+              <Button
+                onClick={onOpen}
+                leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
+              >
+                Create Resource Room
+              </Button>
+            }
+            subText="Create a resource room to get started."
+          />
+        </Center>
+      </SiteViewLayout>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -160,7 +159,7 @@ const EmptyResourceRoom = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </SiteViewLayout>
+    </>
   )
 }
 
