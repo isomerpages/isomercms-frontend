@@ -26,9 +26,9 @@ import { isDirData } from "types/utils"
 
 import { SiteViewContent, SiteViewLayout } from "../layouts"
 
-import { MainPages } from "./components/MainPagesComponent"
-import { UngroupedPages } from "./components/UngroupedPagesComponent"
-import { WorkspaceFolders } from "./components/WorkspaceFolderComponent"
+import { MainPages } from "./components/MainPages"
+import { UngroupedPages } from "./components/UngroupedPages"
+import { WorkspaceFolders } from "./components/WorkspaceFolder"
 
 const WorkspacePage = (): JSX.Element => {
   const {

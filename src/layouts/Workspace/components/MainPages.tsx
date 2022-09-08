@@ -4,7 +4,7 @@ import { useGetPageHook } from "hooks/pageHooks"
 
 import { Section } from "../../components"
 
-import { CONTACT_US_TEMPLATE_LAYOUT } from "./WorkspaceFolderComponent"
+import { CONTACT_US_TEMPLATE_LAYOUT } from "./WorkspaceFolder"
 
 import { ContactCard, HomepageCard, NavigationCard } from "."
 
