@@ -147,6 +147,13 @@ export const PageSettingsModal = ({
                   >
                     <Box mb="0.75rem">
                       <FormLabel mb={0}>Page URL</FormLabel>
+                      {resourceRoomName && (
+                        <FormLabel.Description color="text.description">
+                          Enter what you want to link to (e.g. /page-url for
+                          pages on your site, or https://www.url.com for
+                          external websites).
+                        </FormLabel.Description>
+                      )}
                       <FormLabel.Description color="text.description">
                         {siteUrl}
                       </FormLabel.Description>
