@@ -48,6 +48,8 @@ DOMPurify.setConfig({
     "target",
     "async",
   ],
+  // required in case <script> tag appears as the first line of the markdown
+  FORCE_BODY: true,
 })
 DOMPurify.addHook("uponSanitizeElement", (node, data) => {
   // Allow script tags if it has a src attribute
@@ -150,6 +152,11 @@ const EditPage = ({ match }) => {
       const processedChunk = await prependImageSrc(
         siteName,
         DOMCSPSanitisedHtml
+      )
+
+      // Using FORCE_BODY adds a fake <remove></remove>
+      DOMPurify.removed = DOMPurify.removed.filter(
+        (el) => el.element.tagName !== "REMOVE"
       )
 
       setIsXSSViolation(DOMPurify.removed.length > 0)

@@ -221,10 +221,7 @@ describe("editPage.spec", () => {
     })
 
     it("Edit page (unlinked) should not allow users to add inline scripts", () => {
-      // Note: DOMPurify has a bug where removing tags which are at the
-      // start will not be removed even though it should be. Hence, we
-      // prepend some text before the inline script.
-      cy.get(".CodeMirror-scroll").type(`Test ${TEST_INLINE_SCRIPT}`)
+      cy.get(".CodeMirror-scroll").type(TEST_INLINE_SCRIPT)
       cy.contains(":button", "Save").click()
 
       // Asserts
