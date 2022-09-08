@@ -37,7 +37,7 @@ import "easymde/dist/easymde.min.css"
 axios.defaults.withCredentials = true
 
 DOMPurify.setConfig({
-  ADD_TAGS: ["iframe", "#comment"],
+  ADD_TAGS: ["iframe", "#comment", "script"],
   ADD_ATTR: [
     "allow",
     "allowfullscreen",
@@ -46,7 +46,28 @@ DOMPurify.setConfig({
     "marginheight",
     "marginwidth",
     "target",
+    "async",
   ],
+})
+DOMPurify.addHook("uponSanitizeElement", (node, data) => {
+  // Allow script tags if it has a src attribute
+  // Script sources are handled by our CSP sanitiser
+  if (data.tagName === "script") {
+    if (!(node.hasAttribute("src") && node.innerHTML === "")) {
+      // Adapted from https://github.com/cure53/DOMPurify/blob/e0970d88053c1c564b6ccd633b4af7e7d9a10375/src/purify.js#L719-L736
+      DOMPurify.removed.push({ element: node })
+      try {
+        node.parentNode.removeChild(node)
+      } catch (e) {
+        try {
+          // eslint-disable-next-line no-param-reassign
+          node.outerHTML = ""
+        } catch (ex) {
+          node.remove()
+        }
+      }
+    }
+  }
 })
 
 const EditPage = ({ match }) => {
@@ -131,19 +152,6 @@ const EditPage = ({ match }) => {
         DOMCSPSanitisedHtml
       )
 
-      // NOTE: This is a hack to get around the fact that the DOMPurify library
-      // doesn't allow the <script> tag. Script sources are defined by our CSP
-      // policy, and inline-scripts are not allowed by our CSP policy as well.
-      // This will allow the user to save but not preview the script.
-      DOMPurify.removed = DOMPurify.removed.filter(
-        (el) =>
-          !(
-            el.element.tagName === "SCRIPT" &&
-            el.element.hasAttribute("src") &&
-            el.element.innerHTML === ""
-          )
-      )
-
       setIsXSSViolation(DOMPurify.removed.length > 0)
       setIsContentViolation(checkedIsCspViolation)
       setHtmlChunk(processedChunk)
@@ -176,12 +184,9 @@ const EditPage = ({ match }) => {
                   <br />
                   <Code>{i + 1}</Code>:
                   <Code>
-                    {elem.attribute?.textContent || elem.element?.textContent
-                      ? (
-                          elem.attribute?.textContent ||
-                          elem.element?.textContent
-                        ).replace("<", "&lt;")
-                      : elem}
+                    {elem.attribute?.nodeName ||
+                      elem.element?.outerHTML ||
+                      elem}
                   </Code>
                 </>
               ))}
