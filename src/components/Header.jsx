@@ -13,9 +13,8 @@ import { WarningModal } from "components/WarningModal"
 import PropTypes from "prop-types"
 import { useState, useEffect } from "react"
 
-import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
+import { useLoginContext } from "contexts/LoginContext"
 
-import { useLocalStorage } from "hooks/useLocalStorage"
 import useRedirectHook from "hooks/useRedirectHook"
 import useSiteUrlHook from "hooks/useSiteUrlHook"
 
@@ -38,7 +37,7 @@ const Header = ({
 }) => {
   const { setRedirectToLogout, setRedirectToPage } = useRedirectHook()
   const { retrieveStagingUrl } = useSiteUrlHook()
-  const [userId] = useLocalStorage(LOCAL_STORAGE_KEYS.GithubId)
+  const { userId } = useLoginContext()
   const {
     isOpen: isWarningModalOpen,
     onOpen: onWarningModalOpen,

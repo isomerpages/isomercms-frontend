@@ -9,18 +9,21 @@ import * as DirectoryService from "services/DirectoryService/index"
 import { isAxiosError } from "utils/axios"
 import { useErrorToast } from "utils/toasts"
 
-import { DirectoryData } from "types/directory"
+import { DirectoryData, PageData } from "types/directory"
 import { PageDirectoryParams } from "types/folders"
 import { DEFAULT_RETRY_MSG } from "utils"
 
 export const useGetFolders = (
   params: PageDirectoryParams,
-  queryOptions?: Omit<UseQueryOptions<DirectoryData[]>, "queryFn" | "queryKey">
-): UseQueryResult<DirectoryData[]> => {
+  queryOptions?: Omit<
+    UseQueryOptions<(PageData | DirectoryData)[]>,
+    "queryFn" | "queryKey"
+  >
+): UseQueryResult<(PageData | DirectoryData)[]> => {
   const { setRedirectToNotFound } = useRedirectHook()
   const errorToast = useErrorToast()
 
-  return useQuery<DirectoryData[]>(
+  return useQuery<(PageData | DirectoryData)[]>(
     [DIR_CONTENT_KEY, params],
     () => DirectoryService.getCollection(params),
     {

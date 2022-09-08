@@ -4,13 +4,28 @@ import {
   FormControl,
   SimpleGrid,
   Skeleton,
+  HStack,
   Text,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
 } from "@chakra-ui/react"
-import { Button, FormErrorMessage, Input } from "@opengovsg/design-system-react"
+import {
+  Button,
+  FormLabel,
+  FormErrorMessage,
+  Input,
+  ModalCloseButton,
+} from "@opengovsg/design-system-react"
+import { ContextMenu } from "components/ContextMenu"
 import _ from "lodash"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
-import { BiInfoCircle } from "react-icons/bi"
+import { BiBulb, BiInfoCircle, BiWrench } from "react-icons/bi"
 import {
   Link as RouterLink,
   Redirect,
@@ -21,8 +36,12 @@ import {
   useRouteMatch,
 } from "react-router-dom"
 
-import { useCreateDirectory, useGetResourceRoom } from "hooks/directoryHooks"
-import { useGetResourceRoomName } from "hooks/settingsHooks/useGetResourceRoomName"
+import {
+  useCreateDirectory,
+  useGetResourceRoom,
+  useGetResourceRoomName,
+  useUpdateResourceRoomName,
+} from "hooks/directoryHooks"
 
 import {
   Section,
@@ -36,14 +55,15 @@ import {
   DirectorySettingsScreen,
 } from "layouts/screens"
 
-import { ProtectedRouteWithProps } from "routing/RouteSelector"
+import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
-import { useErrorToast } from "utils/toasts"
+import { useErrorToast, useSuccessToast } from "utils/toasts"
 
 import { DirectoryData, DirectoryInfoProps } from "types/directory"
 import { ResourceRoomRouteParams } from "types/resources"
-import { DEFAULT_RETRY_MSG } from "utils"
+import { DEFAULT_RETRY_MSG, deslugifyDirectory } from "utils"
 
+import { ResourceRoomNameUpdateProps } from "../../types/directory"
 import { SiteViewLayout } from "../layouts"
 
 import { CategoryCard, ResourceBreadcrumb } from "./components"
@@ -96,7 +116,10 @@ const EmptyResourceRoom = () => {
           >
             <Input
               maxW="50%"
-              {...register("newDirectoryName", { required: true })}
+              {...register("newDirectoryName", {
+                required:
+                  "Please ensure that you have entered a resource room name!",
+              })}
             />
             <FormErrorMessage>
               {errors.newDirectoryName?.message}
@@ -141,21 +164,23 @@ export const ResourceRoom = (): JSX.Element => {
 
   return (
     <Route>
-      {shouldRedirect && (
+      {!isResourceRoomNameLoading && shouldRedirect && (
         <Redirect
           to={`/sites/${siteName}/resourceRoom/${
             queriedResourceRoomName || ""
           }`}
         />
       )}
-      {!isResourceRoomNameLoading && !resourceRoomName ? (
-        <EmptyResourceRoom />
-      ) : (
-        <ResourceRoomContent
-          directoryData={dirsData || []}
-          isLoading={!isLoading && !isResourceRoomNameLoading}
-        />
-      )}
+      <Skeleton isLoaded={!isResourceRoomNameLoading}>
+        {resourceRoomName ? (
+          <ResourceRoomContent
+            directoryData={dirsData || []}
+            isLoading={!isLoading && !isResourceRoomNameLoading}
+          />
+        ) : (
+          <EmptyResourceRoom />
+        )}
+      </Skeleton>
       <Switch>
         <ProtectedRouteWithProps
           path={[`${path}/createDirectory`]}
@@ -187,38 +212,152 @@ const ResourceRoomContent = ({
   isLoading,
 }: ResourceRoomContentProps): JSX.Element => {
   const { url } = useRouteMatch()
+  const { siteName, resourceRoomName } = useParams<ResourceRoomRouteParams>()
+  const { isOpen, onClose, onOpen } = useDisclosure()
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ResourceRoomNameUpdateProps>({
+    mode: "onTouched",
+    defaultValues: {
+      // NOTE: We need to deslugify this as the name
+      // is slugified by default to enable the backend to parse it.
+      newDirectoryName: deslugifyDirectory(resourceRoomName),
+    },
+  })
+  const {
+    mutateAsync: updateResourceRoomName,
+    isLoading: isUpdateResourceRoomNameLoading,
+    isError: isUpdateResourceRoomNameError,
+    isSuccess: isUpdateResourceRoomNameSuccess,
+  } = useUpdateResourceRoomName(siteName, resourceRoomName)
+  const errorToast = useErrorToast()
+  const successToast = useSuccessToast()
+
+  useEffect(() => {
+    if (isUpdateResourceRoomNameError) {
+      errorToast({
+        title: "",
+        description:
+          "Unable to update resource room settings, please try again later!",
+      })
+    }
+  }, [errorToast, isUpdateResourceRoomNameError])
+
+  useEffect(() => {
+    if (isUpdateResourceRoomNameSuccess) {
+      successToast({
+        title: "",
+        description: `Updated resource room settings successfully.`,
+      })
+      reset()
+    }
+  }, [isUpdateResourceRoomNameSuccess, reset, successToast])
 
   return (
-    <SiteViewLayout>
-      <Section>
-        <Box>
-          <Text as="h2" textStyle="h2">
-            Resources
-          </Text>
-          <ResourceBreadcrumb />
-        </Box>
-      </Section>
-      <Section>
-        <SectionHeader label="Categories">
-          <CreateButton as={RouterLink} to={`${url}/createDirectory`}>
-            Create category
-          </CreateButton>
-        </SectionHeader>
-        <Skeleton isLoaded={isLoading} w="100%">
-          {directoryData.length === 0 ? (
-            <Text>No Categories.</Text>
-          ) : (
-            directoryData &&
-            directoryData.length > 0 && (
-              <SimpleGrid columns={3} spacing="1.5rem">
-                {directoryData.map(({ name }) => (
-                  <CategoryCard title={name} />
-                ))}
-              </SimpleGrid>
-            )
-          )}
-        </Skeleton>
-      </Section>
-    </SiteViewLayout>
+    <>
+      <SiteViewLayout>
+        <Section>
+          <Box>
+            <HStack spacing="0.25rem" alignItems="center">
+              <Text as="h2" textStyle="h2">
+                Resources
+              </Text>
+              <ContextMenu>
+                <ContextMenu.Button position="relative" bottom={0} right={0} />
+                <ContextMenu.List>
+                  <ContextMenu.Item
+                    icon={<BiWrench fill="icon.alt" />}
+                    onClick={onOpen}
+                  >
+                    <Text mr="3.5rem" color="text.body">
+                      Room settings
+                    </Text>
+                  </ContextMenu.Item>
+                </ContextMenu.List>
+              </ContextMenu>
+            </HStack>
+            <ResourceBreadcrumb />
+          </Box>
+        </Section>
+        <Section>
+          <Box w="full">
+            <SectionHeader label="Resource Categories">
+              <CreateButton as={RouterLink} to={`${url}/createDirectory`}>
+                Create category
+              </CreateButton>
+            </SectionHeader>
+            <SectionCaption icon={BiBulb} label="PRO TIP: ">
+              Categories impact navigation on your site. Organise your resources
+              by creating categories.
+            </SectionCaption>
+          </Box>
+          <Skeleton isLoaded={isLoading} w="100%">
+            {directoryData.length === 0 ? (
+              <Text>No Categories.</Text>
+            ) : (
+              directoryData &&
+              directoryData.length > 0 && (
+                <SimpleGrid columns={3} spacing="1.5rem">
+                  {directoryData.map(({ name }) => (
+                    <CategoryCard title={name} />
+                  ))}
+                </SimpleGrid>
+              )
+            )}
+          </Skeleton>
+        </Section>
+      </SiteViewLayout>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <form
+            onSubmit={handleSubmit(async (data) => {
+              await updateResourceRoomName(data)
+              onClose()
+            })}
+          >
+            <ModalHeader>
+              <Text>Edit resource room settings</Text>
+            </ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <FormControl
+                isRequired
+                isInvalid={!!errors.newDirectoryName?.message}
+              >
+                <FormLabel>Resource room title</FormLabel>
+                <Input
+                  placeholder="New resource room name"
+                  {...register("newDirectoryName", {
+                    required:
+                      "Please ensure that you have entered a resource room name!",
+                  })}
+                />
+                <FormErrorMessage>
+                  {errors.newDirectoryName?.message}
+                </FormErrorMessage>
+              </FormControl>
+            </ModalBody>
+            <ModalFooter>
+              <HStack w="100%" spacing={4} justifyContent="flex-end">
+                <Button variant="clear" onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  isLoading={isUpdateResourceRoomNameLoading}
+                >
+                  Save
+                </Button>
+              </HStack>
+            </ModalFooter>
+          </form>
+        </ModalContent>
+      </Modal>
+    </>
   )
 }

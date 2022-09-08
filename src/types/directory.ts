@@ -19,13 +19,29 @@ export interface DirectoryInfoReturn {
 
 export interface DirectoryData {
   name: string
+  type: "dir"
+  children: string[]
 }
 
 export interface PageData {
   name: string
   title?: string
   date?: string
-  resourceType?: "file" | "post"
+  type: "file"
 }
 
-export type ResourcePageData = Required<PageData>
+export interface MediaData {
+  mediaPath: string
+  mediaUrl: string
+  name: string
+  sha: string
+  type: "file"
+}
+
+export type ResourcePageData = Required<Omit<PageData, "type">> & {
+  resourceType: "file" | "post"
+}
+
+export interface ResourceRoomNameUpdateProps {
+  newDirectoryName: string
+}

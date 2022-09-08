@@ -1,7 +1,10 @@
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
-import { DIR_CONTENT_KEY } from "constants/queryKeys"
+import {
+  DIR_CONTENT_KEY,
+  RESOURCE_CATEGORY_CONTENT_KEY,
+} from "constants/queryKeys"
 
 import { ServicesContext } from "contexts/ServicesContext"
 
@@ -37,13 +40,15 @@ export function useMoveHook(params, queryParams) {
         successToast({
           description: `Successfully moved file`,
         })
-      if (params.mediaRoom || params.collectionName || params.resourceRoomName)
+      if (params.mediaRoom || params.collectionName)
         queryClient.invalidateQueries([
           // invalidates collection pages or resource pages
           DIR_CONTENT_KEY,
           { ...params },
         ])
-      else
+      else if (params.resourceCategoryName) {
+        queryClient.invalidateQueries([RESOURCE_CATEGORY_CONTENT_KEY, params])
+      } else
         queryClient.invalidateQueries([
           DIR_CONTENT_KEY,
           { ...params, isUnlinked: true },

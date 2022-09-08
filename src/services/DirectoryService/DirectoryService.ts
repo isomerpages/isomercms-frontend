@@ -3,6 +3,7 @@ import {
   DirectoryData,
   ResourcePageData,
   PageData,
+  ResourceRoomNameUpdateProps,
 } from "types/directory"
 import { MediaDirectoryParams, PageDirectoryParams } from "types/folders"
 import {
@@ -45,7 +46,7 @@ export const getCollection = ({
   siteName,
   collectionName,
   subCollectionName,
-}: PageDirectoryParams): Promise<DirectoryData[]> => {
+}: PageDirectoryParams): Promise<(PageData | DirectoryData)[]> => {
   let endpoint = `/sites/${siteName}/collections`
   if (collectionName) {
     endpoint += `/${collectionName}`
@@ -61,10 +62,29 @@ export const getWorkspacePages = (siteName: string): Promise<PageData[]> => {
   return apiService.get<PageData[]>(endpoint).then(({ data }) => data)
 }
 
-export const getMediaFolders = ({
+export const getMediaData = ({
   siteName,
   mediaDirectoryName,
 }: MediaDirectoryParams): Promise<DirectoryData[]> => {
   const endpoint = `/sites/${siteName}/media/${mediaDirectoryName}`
   return apiService.get<DirectoryData[]>(endpoint).then(({ data }) => data)
+}
+
+export const getResourceRoomName = async (
+  siteName: string
+): Promise<string> => {
+  const resp = await apiService.get<{ resourceRoomName: string }>(
+    `/sites/${siteName}/resourceRoom`
+  )
+  const { resourceRoomName } = resp.data
+  return resourceRoomName
+}
+
+export const updateResourceRoomName = async (
+  siteName: string,
+  resourceRoomName: string,
+  body: ResourceRoomNameUpdateProps
+): Promise<void> => {
+  const endpoint = `/sites/${siteName}/resourceRoom/${resourceRoomName}`
+  return apiService.post(endpoint, body)
 }

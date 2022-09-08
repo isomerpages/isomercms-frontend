@@ -22,17 +22,16 @@ import {
   BiBuoy,
   BiCog,
   BiCubeAlt,
-  BiFileBlank,
+  BiFile,
   BiGridAlt,
   BiImage,
   BiLogOutCircle,
 } from "react-icons/bi"
 import { useParams, Link as RouterLink, useLocation } from "react-router-dom"
 
-import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
+import { useLoginContext } from "contexts/LoginContext"
 
 import { useLastUpdated } from "hooks/useLastUpdated"
-import { useLocalStorage } from "hooks/useLocalStorage"
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { TabSection } from "types/sidebar"
@@ -75,10 +74,7 @@ export const Sidebar = (): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
   const { pathname } = useLocation<{ pathname: string }>()
   const { lastUpdated, isError, isLoading } = useLastUpdated(siteName)
-  const [loggedInUser] = useLocalStorage(
-    LOCAL_STORAGE_KEYS.GithubId,
-    "Unknown user"
-  )
+  const { userId } = useLoginContext()
   // NOTE: As this is a sub-path, there's a leading / which is converted into an empty string
   const selectedTab = getSelectedTab(pathname.split("/").filter(Boolean))
   const { setRedirectToLogout } = useRedirectHook()
@@ -102,9 +98,9 @@ export const Sidebar = (): JSX.Element => {
           >
             {siteName}
           </Text>
-          <Skeleton isLoaded={!isLoading} w="100%">
+          <Skeleton isLoaded={!isLoading} w="100%" h="16px">
             <Text textStyle="caption-2" color="text.description" w="full">
-              {isError ? "Unable to retrieve last updated time" : lastUpdated}
+              {isError ? "Unable to retrieve data" : lastUpdated}
             </Text>
           </Skeleton>
         </VStack>
@@ -151,7 +147,7 @@ export const Sidebar = (): JSX.Element => {
             to={`/sites/${siteName}/media/files/mediaDirectory/files`}
             isSelected={selectedTab === "files"}
           >
-            <TabLabel icon={BiFileBlank}>Files</TabLabel>
+            <TabLabel icon={BiFile}>Files</TabLabel>
           </Tab>
           <Tab
             as={RouterLink}
@@ -201,7 +197,7 @@ export const Sidebar = (): JSX.Element => {
         </SidebarButton>
         <Box px="1rem" textColor="text.link.disabled" textAlign="left" w="100%">
           <Text textStyle="body-1">Logged in as</Text>
-          <Text textStyle="body-1">@{loggedInUser}</Text>
+          <Text textStyle="body-1">@{userId}</Text>
         </Box>
       </VStack>
     </Flex>

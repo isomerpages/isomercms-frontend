@@ -3,6 +3,7 @@ export interface SiteInfo {
   description: string
   displayGovMasthead: boolean
   shareicon: string
+  url: string
 }
 
 export interface SiteLogoSettings {
@@ -74,6 +75,7 @@ export interface BackendSiteSettings {
   favicon?: string
   // eslint-disable-next-line camelcase
   social_media?: BackendSiteSocialMedia
+  url?: string
 }
 
 interface BackendSiteColours {
