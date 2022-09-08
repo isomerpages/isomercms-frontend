@@ -23,6 +23,11 @@ describe("editPage.spec", () => {
 
   describe("Edit unlinked page", () => {
     const TEST_PAGE_CONTENT = "lorem ipsum"
+    const TEST_INSTAGRAM_EMBED_SCRIPT =
+      '<script async src="//www.instagram.com/embed.js"></script>'
+    const TEST_UNTRUSTED_SCRIPT =
+      '<script src="https://www.example.com/evil.js"></script>'
+    const TEST_INLINE_SCRIPT = '<script>alert("hello")</script>'
 
     const TEST_UNLINKED_PAGE_TITLE = "Test Unlinked Page"
     const TEST_UNLINKED_PAGE_FILENAME = titleToPageFileName(
@@ -183,6 +188,55 @@ describe("editPage.spec", () => {
       cy.contains(":button", "Save").click()
 
       cy.contains(`[${LINK_TITLE}](${LINK_URL})`)
+    })
+
+    it("Edit page (unlinked) should allow users to add Instagram embed script", () => {
+      cy.get(".CodeMirror-scroll").type(TEST_INSTAGRAM_EMBED_SCRIPT)
+      cy.contains(":button", "Save").click()
+
+      // Asserts
+      // 1. Toast
+      cy.contains("Successfully updated page")
+
+      // 2. Content is there even after refreshing
+      cy.reload()
+      cy.contains(TEST_INSTAGRAM_EMBED_SCRIPT).should("exist")
+    })
+
+    it("Edit page (unlinked) should not allow users to add untrusted external scripts", () => {
+      cy.get(".CodeMirror-scroll").type(TEST_UNTRUSTED_SCRIPT)
+
+      // Asserts
+      // 1. Save button is disabled
+      cy.contains(":button", "Save").should("be.disabled")
+
+      // 2. CSP warning appears
+      cy.contains(
+        "Intended <script> content violates Content Security Policy and therefore could not be displayed. Isomer does not support display of any forbidden resources."
+      ).should("exist")
+
+      // 3. Content is not saved
+      cy.reload()
+      cy.contains(TEST_UNTRUSTED_SCRIPT).should("not.exist")
+    })
+
+    it("Edit page (unlinked) should not allow users to add inline scripts", () => {
+      // Note: DOMPurify has a bug where removing tags which are at the
+      // start will not be removed even though it should be. Hence, we
+      // prepend some text before the inline script.
+      cy.get(".CodeMirror-scroll").type(`Test ${TEST_INLINE_SCRIPT}`)
+      cy.contains(":button", "Save").click()
+
+      // Asserts
+      // 1. XSS warning modal is shown
+      cy.contains(
+        "There is unauthorised JS detected in the following snippet"
+      ).should("exist")
+
+      // 2. Content is not saved
+      cy.contains(":button", "Acknowledge").click()
+      cy.reload()
+      cy.contains(TEST_INLINE_SCRIPT).should("not.exist")
     })
   })
 
