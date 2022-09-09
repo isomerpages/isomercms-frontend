@@ -15,7 +15,7 @@ describe("Images", () => {
       cy.setupDefaultInterceptors()
 
       cy.visit(`/sites/${TEST_REPO_NAME}/media/images/mediaDirectory/images`)
-      cy.contains("Create new album").click()
+      cy.contains("Create album").click()
       cy.get("#newDirectoryName").clear().type(ALBUM_TITLE)
       cy.get("button")
         .contains(/^Next$/)
@@ -59,7 +59,7 @@ describe("Images", () => {
       cy.contains("button", OTHER_IMAGE_TITLE)
         .as("imagePreview")
         .should("exist")
-      cy.clickContextMenuItem("@imagePreview", "Delete")
+      cy.clickContextMenuItem("@imagePreview", "Delete image")
       cy.contains("button", "delete").click().wait(Interceptors.DELETE)
 
       // ASSERTS

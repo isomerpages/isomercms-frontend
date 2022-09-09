@@ -28,8 +28,8 @@ describe("Files", () => {
     it("Files should contain Directories and Ungrouped Files", () => {
       cy.contains("Directories")
       cy.contains("Ungrouped files")
-      cy.contains("Upload new file")
-      cy.contains("Create new directory")
+      cy.contains("Upload file")
+      cy.contains("Create directory")
     })
 
     it("Should be able to create new file with valid title", () => {
@@ -112,8 +112,8 @@ describe("Files", () => {
     })
 
     it("Should be able to delete file", () => {
-      cy.contains("button", OTHER_FILE_TITLE).as("filePreview")
-      cy.clickContextMenuItem("@filePreview", "Delete")
+      cy.contains("div", OTHER_FILE_TITLE).as("filePreview")
+      cy.clickContextMenuItem("@filePreview", "Delete file")
       cy.contains("button", "delete").click().wait(Interceptors.DELETE)
 
       // ASSERTS
@@ -133,7 +133,7 @@ describe("Files", () => {
     })
 
     it("Should be able to create new file directory", () => {
-      cy.contains("Create new directory").click()
+      cy.contains("Create directory").click()
       cy.get("#newDirectoryName").clear().type(DIRECTORY_TITLE)
 
       cy.get("button")
