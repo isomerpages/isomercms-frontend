@@ -36,7 +36,7 @@ export const ImagePreviewCard = ({
   const styles = useMultiStyleConfig(CARD_THEME_KEY, {})
   const encodedName = encodeURIComponent(name)
   const { setRedirectToPage } = useRedirectHook()
-  const fileExt = mediaUrl.split(".").pop()
+  const fileExt = mediaUrl.split(".").pop()?.split("?").shift()
 
   return (
     <Box position="relative">

@@ -102,7 +102,9 @@ export const Media = (): JSX.Element => {
         </Section>
         <Section>
           <Box w="100%">
-            <SectionHeader label="Ungrouped Images">
+            <SectionHeader
+              label={`Ungrouped ${_.upperFirst(pluralMediaLabel)}`}
+            >
               <Button
                 as={Link}
                 to={`${url}/createMedia`}
