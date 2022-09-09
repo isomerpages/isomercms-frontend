@@ -150,7 +150,6 @@ const EmptyResourceRoom = () => {
             </Button>
             <Button
               isDisabled={!_.isEmpty(errors)}
-              type="submit"
               onClick={handleSubmit(onSubmit)}
               isLoading={isLoading}
             >
