@@ -35,7 +35,8 @@ import {
 interface MediaLabels {
   singularMediaLabel: "file" | "image"
   pluralMediaLabel: "files" | "images"
-  directoryLabel: "directory" | "album"
+  singularDirectoryLabel: "directory" | "album"
+  pluralDirectoryLabel: "directories" | "albums"
 }
 
 // Utility method to help ease over the various labels associated
@@ -45,14 +46,16 @@ const getMediaLabels = (mediaType: "files" | "images"): MediaLabels => {
     return {
       singularMediaLabel: "file",
       pluralMediaLabel: "files",
-      directoryLabel: "directory",
+      singularDirectoryLabel: "directory",
+      pluralDirectoryLabel: "directories",
     }
   }
 
   return {
     singularMediaLabel: "image",
     pluralMediaLabel: "images",
-    directoryLabel: "album",
+    singularDirectoryLabel: "album",
+    pluralDirectoryLabel: "albums",
   }
 }
 
@@ -68,7 +71,8 @@ export const Media = (): JSX.Element => {
   const {
     singularMediaLabel,
     pluralMediaLabel,
-    directoryLabel,
+    singularDirectoryLabel,
+    pluralDirectoryLabel,
   } = getMediaLabels(mediaType)
 
   return (
@@ -83,9 +87,9 @@ export const Media = (): JSX.Element => {
           </Box>
         </Section>
         <Section>
-          <SectionHeader label="Albums">
+          <SectionHeader label={_.upperFirst(pluralDirectoryLabel)}>
             <CreateButton as={Link} to={`${url}/createDirectory`}>
-              {`Create ${directoryLabel}`}
+              {`Create ${singularDirectoryLabel}`}
             </CreateButton>
           </SectionHeader>
           <Skeleton
@@ -102,9 +106,7 @@ export const Media = (): JSX.Element => {
         </Section>
         <Section>
           <Box w="100%">
-            <SectionHeader
-              label={`Ungrouped ${_.upperFirst(pluralMediaLabel)}`}
-            >
+            <SectionHeader label={`Ungrouped ${pluralMediaLabel}`}>
               <Button
                 as={Link}
                 to={`${url}/createMedia`}
