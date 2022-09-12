@@ -112,7 +112,11 @@ describe("Files", () => {
     })
 
     it("Should be able to delete file", () => {
-      cy.contains("button", OTHER_FILE_TITLE).as("filePreview")
+      cy.contains("button", OTHER_FILE_TITLE)
+        .parent()
+        .parent()
+        .parent()
+        .as("filePreview")
       cy.clickContextMenuItem("@filePreview", "Delete file")
       cy.contains("button", "delete").click().wait(Interceptors.DELETE)
 
@@ -154,6 +158,7 @@ describe("Files", () => {
       cy.contains("div", DIRECTORY_TITLE)
         .parent()
         .parent()
+        .parent()
         .should("exist")
         .as("folderItem")
       cy.clickContextMenuItem("@folderItem", "settings").wait(Interceptors.GET)
@@ -167,6 +172,7 @@ describe("Files", () => {
     it("Should be able to delete file directory", () => {
       // User should be able delete directory
       cy.contains("div", OTHER_DIRECTORY_TITLE)
+        .parent()
         .parent()
         .parent()
         .should("exist")
@@ -226,7 +232,7 @@ describe("Files", () => {
     })
 
     it("Should be able to delete file from file directory", () => {
-      cy.contains(OTHER_FILE_TITLE).as("fileItem")
+      cy.contains(OTHER_FILE_TITLE).parent().parent().parent().as("fileItem")
       cy.clickContextMenuItem("@fileItem", "Delete")
       cy.contains("button", "delete").click().should("not.exist")
 
