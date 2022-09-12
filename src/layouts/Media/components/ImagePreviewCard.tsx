@@ -13,12 +13,27 @@ import {
   HStack,
 } from "@chakra-ui/react"
 import { ContextMenu } from "components/ContextMenu"
+import _ from "lodash"
 import { BiChevronRight, BiEditAlt, BiFolder, BiTrash } from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { CARD_THEME_KEY } from "theme/components/Card"
+
+const getFileExt = (mediaUrl: string): string => {
+  // NOTE: If it starts with data, the image is within a private repo.
+  // Hence, we will extract the portion after the specifier
+  // till the terminating semi-colon for use as the extension
+  if (mediaUrl.startsWith("data:image/")) {
+    return _.takeWhile(mediaUrl.slice(11), (char) => char !== ";").join("")
+  }
+
+  // Otherwise, this will point to a publicly accessible github url
+  return (
+    mediaUrl.split(".").pop()?.split("?").shift() || "Unknown file extension"
+  )
+}
 
 interface ImagePreviewCardProps {
   name: string
@@ -36,7 +51,7 @@ export const ImagePreviewCard = ({
   const styles = useMultiStyleConfig(CARD_THEME_KEY, {})
   const encodedName = encodeURIComponent(name)
   const { setRedirectToPage } = useRedirectHook()
-  const fileExt = mediaUrl.split(".").pop()?.split("?").shift()
+  const fileExt = getFileExt(mediaUrl)
 
   return (
     <Box position="relative">
