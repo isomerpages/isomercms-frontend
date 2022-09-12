@@ -112,7 +112,7 @@ describe("Files", () => {
     })
 
     it("Should be able to delete file", () => {
-      cy.contains("div", OTHER_FILE_TITLE).as("filePreview")
+      cy.contains("button", OTHER_FILE_TITLE).as("filePreview")
       cy.clickContextMenuItem("@filePreview", "Delete file")
       cy.contains("button", "delete").click().wait(Interceptors.DELETE)
 
