@@ -184,7 +184,7 @@ describe("Files", () => {
       cy.setSessionDefaults()
 
       cy.visit(`/sites/${TEST_REPO_NAME}/media/files/mediaDirectory/files`)
-      cy.contains("Create new directory").click()
+      cy.contains("Create directory").click()
       cy.get("#newDirectoryName").clear().type(DIRECTORY_TITLE)
       cy.get("button")
         .contains(/^Next$/)
