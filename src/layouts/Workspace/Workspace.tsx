@@ -1,14 +1,17 @@
 // Import components
-import { SimpleGrid, Box, Skeleton, Text } from "@chakra-ui/react"
-import { BiBulb, BiInfoCircle } from "react-icons/bi"
-import { Switch, useRouteMatch, useHistory } from "react-router-dom"
+import { Skeleton } from "@chakra-ui/react"
+import { EmptyArea } from "components/EmptyArea"
+import { Switch, useRouteMatch, useHistory, Link } from "react-router-dom"
 
 // Import hooks
-import { useGetFolders, useGetWorkspacePages } from "hooks/directoryHooks"
-import { useGetPageHook } from "hooks/pageHooks"
-import useRedirectHook from "hooks/useRedirectHook"
+import {
+  useGetFoldersAndPages,
+  useGetWorkspacePages,
+} from "hooks/directoryHooks"
 
 // Import screens
+import { CreateButton } from "layouts/components"
+import { MenuDropdownButton } from "layouts/Folders/components/MenuDropdownButton"
 import {
   PageSettingsScreen,
   MoveScreen,
@@ -21,23 +24,11 @@ import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
 import { isDirData } from "types/utils"
 
-import {
-  Section,
-  SectionHeader,
-  SectionCaption,
-  CreateButton,
-} from "../components"
-import { SiteViewLayout } from "../layouts"
+import { SiteViewContent, SiteViewLayout } from "../layouts"
 
-import {
-  ContactCard,
-  PageCard,
-  NavigationCard,
-  FolderCard,
-  HomepageCard,
-} from "./components"
-
-const CONTACT_US_TEMPLATE_LAYOUT = "contact_us"
+import { MainPages } from "./components/MainPages"
+import { UngroupedPages } from "./components/UngroupedPages"
+import { WorkspaceFolders } from "./components/WorkspaceFolder"
 
 const WorkspacePage = (): JSX.Element => {
   const {
@@ -45,97 +36,57 @@ const WorkspacePage = (): JSX.Element => {
     url,
   } = useRouteMatch<{ siteName: string }>()
 
-  const { setRedirectToPage } = useRedirectHook()
-  const { data: _dirsData, isLoading: isDirLoading } = useGetFolders({
+  const {
+    isLoading: isDirLoading,
+    data: _dirsAndPagesData,
+  } = useGetFoldersAndPages({
     siteName,
   })
-  const { data: _pagesData, isLoading: isPagesLoading } = useGetWorkspacePages(
-    siteName
-  )
-  const { data: contactUsPage, isLoading: isContactUsLoading } = useGetPageHook(
-    {
-      siteName,
-      fileName: "contact-us.md",
-    }
-  )
+  const { data: _pagesData } = useGetWorkspacePages(siteName)
 
-  const hasContactUsCard =
-    contactUsPage?.content?.frontMatter?.layout === CONTACT_US_TEMPLATE_LAYOUT
-
-  const dirsData = _dirsData?.filter(isDirData) || []
   const pagesData = _pagesData || []
+  const dirsData = (_dirsAndPagesData || []).filter(isDirData)
+  const isPagesEmpty =
+    pagesData.filter((page) => page.name !== "contact-us.md").length === 0
+  const isFoldersEmpty = !dirsData || dirsData.length === 0
 
   return (
     <SiteViewLayout overflow="hidden">
-      <Section>
-        <Text as="h2" textStyle="h2">
-          My Workspace
-        </Text>
-        <Skeleton isLoaded={!isContactUsLoading} w="full">
-          <SimpleGrid columns={3} spacing="1.5rem">
-            <HomepageCard siteName={siteName} />
-            <NavigationCard siteName={siteName} />
-            {hasContactUsCard && <ContactCard siteName={siteName} />}
-          </SimpleGrid>
-        </Skeleton>
-      </Section>
-
-      <Section>
-        <Box w="100%">
-          <SectionHeader label="Folders">
-            <CreateButton
-              onClick={() => setRedirectToPage(`${url}/createDirectory`)}
-            >
-              Create folder
-            </CreateButton>
-          </SectionHeader>
-          <SectionCaption label="PRO TIP: " icon={BiBulb}>
-            Folders impact navigation on your site. Organise your workspace by
-            moving pages into folders.
-          </SectionCaption>
-        </Box>
-        <Skeleton
-          isLoaded={!isDirLoading}
-          w="full"
-          h={isDirLoading ? "4.5rem" : "fit-content"}
+      <MainPages siteName={siteName} isLoading={!!pagesData} />
+      <Skeleton isLoaded={!isDirLoading} w="100%">
+        <EmptyArea
+          isItemEmpty={isFoldersEmpty && isPagesEmpty}
+          actionButton={<MenuDropdownButton />}
         >
-          <SimpleGrid columns={3} spacing="1.5rem">
-            {dirsData &&
-              dirsData.length > 0 &&
-              dirsData.map(({ name }) => (
-                <FolderCard title={name} siteName={siteName} />
-              ))}
-          </SimpleGrid>
-        </Skeleton>
-      </Section>
-
-      <Section>
-        <Box w="100%">
-          <SectionHeader label="Ungrouped Pages">
-            <CreateButton
-              onClick={() => setRedirectToPage(`${url}/createPage`)}
+          <SiteViewContent>
+            <EmptyArea
+              isItemEmpty={isFoldersEmpty}
+              actionButton={
+                <CreateButton as={Link} to={`${url}/createDirectory`}>
+                  Create folder
+                </CreateButton>
+              }
             >
-              Create page
-            </CreateButton>
-          </SectionHeader>
-          <SectionCaption label="NOTE: " icon={BiInfoCircle}>
-            Pages here do not belong to any folders.
-          </SectionCaption>
-        </Box>
-        <Skeleton
-          isLoaded={!isPagesLoading}
-          w="full"
-          h={isDirLoading ? "4.5rem" : "fit-content"}
-        >
-          <SimpleGrid columns={3} spacing="1.5rem">
-            {pagesData &&
-              pagesData.length > 0 &&
-              pagesData
-                .filter((page) => page.name !== "contact-us.md")
-                .map(({ name }) => <PageCard title={name} />)}
-          </SimpleGrid>
-        </Skeleton>
-      </Section>
+              <WorkspaceFolders
+                siteName={siteName}
+                pagesData={pagesData}
+                url={url}
+                dirsData={dirsData}
+              />
+            </EmptyArea>
+            <EmptyArea
+              isItemEmpty={isPagesEmpty}
+              actionButton={
+                <CreateButton as={Link} to={`${url}/createPage`}>
+                  Create page
+                </CreateButton>
+              }
+            >
+              <UngroupedPages pagesData={pagesData} url="" />
+            </EmptyArea>
+          </SiteViewContent>
+        </EmptyArea>
+      </Skeleton>
     </SiteViewLayout>
   )
 }
