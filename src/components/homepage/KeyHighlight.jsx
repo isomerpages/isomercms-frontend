@@ -79,7 +79,7 @@ const KeyHighlight = ({
             onClick={deleteHandler}
             colorScheme="danger"
             key={`${highlightIndex}-delete`}
-            isFullWidth
+            w="100%"
           >
             Delete highlight
           </Button>

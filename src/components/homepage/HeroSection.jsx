@@ -211,7 +211,7 @@ const EditorHeroSection = ({
                       onClick={createHandler}
                       id={`highlight-${highlights.length}-create`}
                       isDisabled={highlights.length >= MAX_NUM_KEY_HIGHLIGHTS}
-                      isFullWidth
+                      w="100%"
                     >
                       Add highlight
                     </Button>

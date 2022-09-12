@@ -65,7 +65,7 @@ const HeroDropdownElem = ({
         </div>
         <div className={elementStyles.inputGroup}>
           <Button
-            isFullWidth
+            w="100%"
             colorScheme="danger"
             id={`dropdownelem-${dropdownsIndex}-delete`}
             onClick={deleteHandler}
@@ -143,7 +143,6 @@ const HeroDropdown = ({
           ) : null}
           {droppableProvided.placeholder}
           <Button
-            isFullWidth
             id={`dropdownelem-${options.length}-create`}
             onClick={createHandler}
           >

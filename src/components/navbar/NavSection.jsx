@@ -152,7 +152,7 @@ const NavElem = ({
               onClick={deleteHandler}
               id={`link-${linkIndex}-delete`}
               colorScheme="danger"
-              isFullWidth
+              w="100%"
             >
               Delete menu
             </Button>

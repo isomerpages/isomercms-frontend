@@ -1,9 +1,11 @@
 import * as Sentry from "@sentry/react"
 import { Integrations } from "@sentry/tracing"
-import ReactDOM from "react-dom"
+import React from "react"
+import { createRoot } from "react-dom/client"
 
 import "styles/index.scss"
 import "styles/isomer-template.scss"
+
 import App from "App"
 
 if (
@@ -19,5 +21,10 @@ if (
     tracesSampleRate: 1.0,
   })
 }
-
-ReactDOM.render(<App />, document.getElementById("root"))
+const container = document.getElementById("root")
+const root = createRoot(container)
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+)

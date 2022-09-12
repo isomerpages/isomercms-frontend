@@ -127,7 +127,7 @@ const EditorInfopicSection = ({
         <div className={elementStyles.inputGroup}>
           <Button
             colorScheme="danger"
-            isFullWidth
+            w="100%"
             id={`section-${sectionIndex}`}
             onClick={deleteHandler}
           >

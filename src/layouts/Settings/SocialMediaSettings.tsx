@@ -17,7 +17,7 @@ import {
   TELEGRAM_REGEX,
 } from "utils/validators"
 
-import { SiteSettings } from "types/settings"
+import { SiteSettings, SiteSocialMediaSettings } from "types/settings"
 
 interface SocialMediaField {
   label: StringKeyOf<SiteSettings["socialMediaContent"]>
@@ -68,7 +68,9 @@ const ValidatedFormInput = ({
 }: ValidatedFormInputProps) => {
   const displayedLabel = upperFirst(label)
   const { register } = useFormContext()
-  const { errors } = useFormState()
+  const { errors } = useFormState<{
+    socialMediaContent: SiteSocialMediaSettings
+  }>()
   const isInvalid =
     errors.socialMediaContent && !!errors.socialMediaContent[label]
 
