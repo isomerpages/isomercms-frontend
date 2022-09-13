@@ -18,14 +18,18 @@ export const get = async ({
 export const update = async (
   siteName: string,
   // eslint-disable-next-line camelcase
-  { facebook_pixel, linkedin_insights, ...rest }: BackendSiteSettings
+  {
+    facebook_pixel: pixel,
+    linkedin_insights: insights,
+    ...rest
+  }: BackendSiteSettings
 ): Promise<void> => {
   const endpoint = getSettingsEndpoint(siteName)
   // Isomer templates for these keys utilize kebab case and they need to be changed accordingly
   const renamedSettings = {
     ...rest,
-    "facebook-pixel": facebook_pixel,
-    "linkedin-insights": linkedin_insights,
+    "facebook-pixel": pixel,
+    "linkedin-insights": insights,
   }
 
   return apiService.post(endpoint, renamedSettings)
