@@ -5,7 +5,7 @@ import { EmptyBoxImage } from "assets"
 
 export interface EmptyAreaOption extends HTMLChakraProps<"div"> {
   isItemEmpty: boolean
-  actionButton: ReactFragment
+  actionButton: JSX.Element
   mainText?: string
   subText?: string
 }

@@ -51,7 +51,7 @@ export const SiteViewLayout = ({
         >
           <Sidebar />
         </GridItem>
-        <SiteViewContent>{children}</SiteViewContent>
+        <SiteViewContent p="2rem">{children}</SiteViewContent>
       </Grid>
     </>
   )
@@ -65,7 +65,6 @@ export const SiteViewContent = ({
     <GridItem
       area="content"
       as={VStack}
-      p="2rem"
       spacing="2rem"
       bgColor="gray.50"
       w="100%"
