@@ -32,7 +32,14 @@ export const MenuDropdownButton = (): JSX.Element => {
           >
             Create page
           </Button>
-          <ContextMenu>
+          <ContextMenu
+            placement="bottom-end"
+            /** This positions it (x, y) units away relative from the base position
+             * to prevent weird gap between the dropdown menu and button
+             */
+
+            offset={[0, 0]}
+          >
             <ContextMenu.Button
               position="inherit"
               as={IconButton}

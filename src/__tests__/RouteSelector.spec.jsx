@@ -110,7 +110,7 @@ jest.mock("layouts/Workspace", () => {
 jest.mock("layouts/Media", () => {
   return {
     __esModule: true,
-    default: () => {
+    Media: () => {
       return <div>{MEDIA_LAYOUT_TEXT}</div>
     },
   }
