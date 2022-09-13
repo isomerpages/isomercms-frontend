@@ -83,6 +83,7 @@ export const ReviewRequestForm = (): JSX.Element => {
           name="multi"
           values={reviewers}
           items={INITIAL_COMBOBOX_ITEMS}
+          placeholder="Select Admins to add as reviewers"
         />
       </FormControl>
     </VStack>
