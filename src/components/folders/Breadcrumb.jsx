@@ -52,13 +52,11 @@ const Breadcrumb = ({ params, title, isLink }) => {
   const newParams = { ...params, fileName: title }
   return (
     <div className={elementStyles.breadcrumb}>
-      {
-        <BreadcrumbItem
-          item="Workspace"
-          isLast={isLastItem("siteName", newParams)}
-          link={isLink && `/sites/${siteName}/workspace`}
-        />
-      }
+      <BreadcrumbItem
+        item="Workspace"
+        isLast={isLastItem("siteName", newParams)}
+        link={isLink && `/sites/${siteName}/workspace`}
+      />
       {collectionName ? (
         <BreadcrumbItem
           item={deslugifyDirectory(collectionName)}

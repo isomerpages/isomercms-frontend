@@ -1,5 +1,4 @@
 import { Box, Center, VStack, Text, HTMLChakraProps } from "@chakra-ui/react"
-import { ReactFragment } from "react"
 
 import { EmptyBoxImage } from "assets"
 
