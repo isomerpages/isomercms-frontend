@@ -54,19 +54,20 @@ DOMPurify.setConfig({
 DOMPurify.addHook("uponSanitizeElement", (node, data) => {
   // Allow script tags if it has a src attribute
   // Script sources are handled by our CSP sanitiser
-  if (data.tagName === "script") {
-    if (!(node.hasAttribute("src") && node.innerHTML === "")) {
-      // Adapted from https://github.com/cure53/DOMPurify/blob/e0970d88053c1c564b6ccd633b4af7e7d9a10375/src/purify.js#L719-L736
-      DOMPurify.removed.push({ element: node })
+  if (
+    data.tagName === "script" &&
+    !(node.hasAttribute("src") && node.innerHTML === "")
+  ) {
+    // Adapted from https://github.com/cure53/DOMPurify/blob/e0970d88053c1c564b6ccd633b4af7e7d9a10375/src/purify.js#L719-L736
+    DOMPurify.removed.push({ element: node })
+    try {
+      node.parentNode.removeChild(node)
+    } catch (e) {
       try {
-        node.parentNode.removeChild(node)
-      } catch (e) {
-        try {
-          // eslint-disable-next-line no-param-reassign
-          node.outerHTML = ""
-        } catch (ex) {
-          node.remove()
-        }
+        // eslint-disable-next-line no-param-reassign
+        node.outerHTML = ""
+      } catch (ex) {
+        node.remove()
       }
     }
   }
@@ -156,7 +157,7 @@ const EditPage = ({ match }) => {
 
       // Using FORCE_BODY adds a fake <remove></remove>
       DOMPurify.removed = DOMPurify.removed.filter(
-        (el) => el.element.tagName !== "REMOVE"
+        (el) => el.element?.tagName !== "REMOVE"
       )
 
       setIsXSSViolation(DOMPurify.removed.length > 0)
