@@ -82,7 +82,7 @@ const WorkspacePage = (): JSX.Element => {
                 </CreateButton>
               }
             >
-              <UngroupedPages pagesData={pagesData} url="" />
+              <UngroupedPages pagesData={pagesData} url={url} />
             </EmptyArea>
           </SiteViewContent>
         </EmptyArea>
