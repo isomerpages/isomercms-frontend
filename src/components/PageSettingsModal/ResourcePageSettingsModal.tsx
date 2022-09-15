@@ -38,12 +38,9 @@ import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import slugify from "slugify"
 
-import { DOMAIN_NAME_REGEX, pageFileNameToTitle } from "utils"
+import { pageFileNameToTitle } from "utils"
 
 import { PageSettingsSchema } from "./PageSettingsSchema"
-
-// axios settings
-axios.defaults.withCredentials = true
 
 interface ResourceModalParams {
   siteName: string
@@ -155,7 +152,6 @@ export const ResourcePageSettingsModal = ({
     mode: "onTouched",
     resolver: yupResolver(PageSettingsSchema(existingTitlesArray)),
     defaultValues: defaultFrontMatter,
-    context: "resourcePage",
   })
 
   /** ******************************** */

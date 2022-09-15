@@ -18,7 +18,6 @@ import {
   FormLabel,
   ModalCloseButton,
 } from "@opengovsg/design-system-react"
-import axios from "axios"
 import { Breadcrumb } from "components/folders/Breadcrumb"
 import {
   FormContext,
@@ -28,20 +27,53 @@ import {
 } from "components/Form"
 import FormFieldMedia from "components/FormFieldMedia"
 import { LoadingButton } from "components/LoadingButton"
-import ResourceFormFields from "components/ResourceFormFields"
 import _ from "lodash"
-import PropTypes from "prop-types"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
-
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { getDefaultFrontMatter, pageFileNameToTitle } from "utils"
 
 import { PageSettingsSchema } from "./PageSettingsSchema"
 
-// axios settings
-axios.defaults.withCredentials = true
+interface PageModalParams {
+  siteName: string
+  fileName: string
+  collectionName: string
+  subCollectionName: string
+}
+
+interface PageFrontMatter {
+  title: string
+  permalink: string
+  // eslint-disable-next-line camelcase
+  third_nav_title?: string
+  description?: string
+  image?: string
+}
+
+interface PageParams {
+  content: {
+    frontMatter: PageFrontMatter
+    pageBody?: string
+  }
+  sha: string
+  name: string
+}
+
+interface PageSettingsModalParams {
+  params: PageModalParams
+  pageData?: PageParams
+  onProceed: ({
+    pageData,
+    data,
+  }: {
+    pageData?: PageParams
+    data: PageFrontMatter
+  }) => void
+  pagesData: PageParams[]
+  siteUrl: string
+  onClose: () => void
+}
 
 // eslint-disable-next-line import/prefer-default-export
 export const PageSettingsModal = ({
@@ -51,12 +83,12 @@ export const PageSettingsModal = ({
   pagesData,
   siteUrl,
   onClose,
-}) => {
-  const { fileName, resourceRoomName } = params
+}: PageSettingsModalParams) => {
+  const { fileName } = params
 
   const existingTitlesArray = pagesData
     .filter((page) => page.name !== fileName)
-    .map((page) => pageFileNameToTitle(page.name, !!params.resourceRoomName))
+    .map((page) => pageFileNameToTitle(page.name))
 
   const defaultFrontMatter = getDefaultFrontMatter(params, existingTitlesArray)
 
@@ -66,12 +98,10 @@ export const PageSettingsModal = ({
     handleSubmit,
     formState: { errors },
     setValue,
-    trigger,
-  } = useForm({
+  } = useForm<PageFrontMatter>({
     mode: "onTouched",
     resolver: yupResolver(PageSettingsSchema(existingTitlesArray)),
     defaultValues: defaultFrontMatter,
-    context: { type: resourceRoomName ? "resourcePage" : "" },
   })
 
   /** ******************************** */
@@ -80,30 +110,23 @@ export const PageSettingsModal = ({
 
   useEffect(() => {
     if (fileName && pageData && pageData.content) {
-      Object.entries(pageData.content.frontMatter).forEach(([key, value]) =>
-        setValue(key, value, {
-          shouldValidate: true,
-        })
+      Object.entries(pageData.content.frontMatter).forEach(
+        ([key, value]: any) =>
+          setValue(key, value, {
+            shouldValidate: true,
+          })
       )
-      if (pageData.content.frontMatter.file_url) {
-        // backwards compatible with previous resource files
-        setValue("layout", "file", {
-          shouldValidate: true,
-        })
-        setValue("permalink", undefined)
-      }
     }
-  }, [pageData, setValue])
+  }, [fileName, pageData, setValue])
 
   /** ******************************** */
   /*     handler functions    */
   /** ******************************** */
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: PageFrontMatter) => {
     return onProceed({
       pageData,
       data,
-      resourceRoomName,
     })
   }
 
@@ -124,7 +147,11 @@ export const PageSettingsModal = ({
             <Box>
               {!fileName ? "You may edit page details anytime. " : ""}
               To edit page content, simply click on the page title. <br />
-              <Breadcrumb params={params} title={watch("title")} />
+              <Breadcrumb
+                params={params}
+                title={watch("title")}
+                isLink={false}
+              />
               {/* Title */}
               <FormControl isRequired isInvalid={!!errors.title?.message}>
                 <FormLabel>Page title</FormLabel>
@@ -138,44 +165,22 @@ export const PageSettingsModal = ({
               </FormControl>
               <br />
               {/* Permalink */}
-              {watch("layout") !== "file" && (
-                <>
-                  <FormControl
-                    isInvalid={!!errors.permalink?.message}
-                    isRequired
-                    isDisabled={watch("layout") === "file"}
-                  >
-                    <Box mb="0.75rem">
-                      <FormLabel mb={0}>Page URL</FormLabel>
-                      <FormLabel.Description color="text.description">
-                        {siteUrl}
-                      </FormLabel.Description>
-                    </Box>
-                    <Input
-                      // eslint-disable-next-line react/jsx-props-no-spreading
-                      {...register("permalink", { required: true })}
-                      id="permalink"
-                      placeholder="Page URL"
-                    />
-                    <FormErrorMessage>
-                      {errors.permalink?.message}
-                    </FormErrorMessage>
-                  </FormControl>
-                  <br />
-                </>
-              )}
-              {resourceRoomName && (
-                <>
-                  <p className={elementStyles.formLabel}>Resources details</p>
-                  <ResourceFormFields
-                    register={register}
-                    errors={errors}
-                    watch={watch}
-                    setValue={setValue}
-                    trigger={trigger}
-                  />
-                </>
-              )}
+              <FormControl isInvalid={!!errors.permalink?.message} isRequired>
+                <Box mb="0.75rem">
+                  <FormLabel mb={0}>Page URL</FormLabel>
+                  <FormLabel.Description color="text.description">
+                    {siteUrl}
+                  </FormLabel.Description>
+                </Box>
+                <Input
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  {...register("permalink", { required: true })}
+                  id="permalink"
+                  placeholder="Page URL"
+                />
+                <FormErrorMessage>{errors.permalink?.message}</FormErrorMessage>
+              </FormControl>
+              <br />
               <br />
               <Text textStyle="h4">Page details</Text>
               <FormControl isInvalid={!!errors.description?.message}>
@@ -240,8 +245,4 @@ export const PageSettingsModal = ({
       </ModalContent>
     </Modal>
   )
-}
-
-PageSettingsModal.propTypes = {
-  onClose: PropTypes.func.isRequired,
 }
