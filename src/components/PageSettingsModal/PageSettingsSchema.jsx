@@ -32,9 +32,12 @@ export const PageSettingsSchema = (existingTitlesArray = []) =>
         "Title is already in use. Please choose a different title.",
         (value) => !_.includes(existingTitlesArray, value)
       ),
-    permalink: Yup.string().when("layout", (layout, schema) =>
-      layout !== "file"
-        ? schema
+    permalink: Yup.string().when("layout", (layout, schema) => {
+      switch (layout) {
+        case "file":
+          return schema
+        default:
+          return schema
             .required("Permalink is required")
             .min(
               PAGE_SETTINGS_PERMALINK_MIN_LENGTH,
@@ -48,26 +51,22 @@ export const PageSettingsSchema = (existingTitlesArray = []) =>
               permalinkRegexTest,
               "Permalink should start with a slash, and contain alphanumeric characters separated by hyphens and slashes only"
             )
-        : schema
-    ),
-    layout: Yup.string().when("$type", (type, schema) =>
-      type === "resourcePage"
-        ? schema
-            .required("Resource type must be selected")
-            .oneOf(["file", "post"])
-        : schema
-    ),
-    date: Yup.string().when("$type", (type, schema) =>
-      type === "resourcePage"
-        ? schema
-            .required("Date is required")
-            .test(
-              "Date cannot be in the future",
-              "Date cannot be in the future",
-              (value) => new Date(value) <= new Date()
-            )
-        : schema
-    ),
+      }
+    }),
+    layout: Yup.string().oneOf(["file", "post", "external"]),
+    date: Yup.date()
+      .typeError("Date format provided is invalid")
+      .when("layout", (layout, schema) =>
+        layout
+          ? schema
+              .required("Date is required")
+              .test(
+                "Date cannot be in the future",
+                "Date cannot be in the future",
+                (value) => new Date(value) <= new Date()
+              )
+          : schema
+      ),
     file_url: Yup.string().when("layout", (layout, schema) =>
       layout === "file" ? schema.required("File url is required") : schema
     ),
