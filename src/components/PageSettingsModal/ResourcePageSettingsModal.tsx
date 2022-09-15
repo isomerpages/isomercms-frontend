@@ -387,7 +387,7 @@ export const ResourcePageSettingsModal = ({
                     <InputLeftAddon>https://</InputLeftAddon>
                     <Input
                       w="100%"
-                      id="url"
+                      id="link"
                       placeholder="www.open.gov.sg"
                       {...register("permalink", {
                         required: true,
