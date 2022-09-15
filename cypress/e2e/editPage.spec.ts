@@ -53,7 +53,7 @@ describe("editPage.spec", () => {
 
       // Set up test resource categories
       cy.visit(`/sites/${TEST_REPO_NAME}/workspace`)
-      cy.contains("button", "Create page").click()
+      cy.contains("a", "Create page").click({ force: true })
       cy.get("#title").clear().type(TEST_UNLINKED_PAGE_TITLE)
       cy.contains("Save").click().wait(Interceptors.POST)
     })
@@ -215,7 +215,7 @@ describe("editPage.spec", () => {
 
       // Set up test collection
       cy.visit(`/sites/${TEST_REPO_NAME}/workspace`)
-      cy.contains("Create folder").should("exist").click()
+      cy.contains("a", "Create folder").should("exist").click({ force: true })
       cy.get("input#newDirectoryName").clear().type(TEST_FOLDER_TITLE)
       cy.contains("Next").click()
       cy.contains("Skip").click()
