@@ -47,6 +47,16 @@ const convertfromFe = ({
     (_value, key) => FE_TO_BE[key]
   )
 
+  // Remove trailing slash in site URL if present
+  if (
+    !!renamedBasicSettings.url &&
+    // This is a safe cast as the `url` key gets mapped into a string
+    // if it is present and the property is also a string
+    (renamedBasicSettings.url as string).endsWith("/")
+  ) {
+    renamedBasicSettings.url = (renamedBasicSettings.url as string).slice(0, -1)
+  }
+
   return {
     ...renamedBasicSettings,
     social_media: socialMediaContent,

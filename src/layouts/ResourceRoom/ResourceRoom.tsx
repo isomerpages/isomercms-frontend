@@ -116,6 +116,7 @@ const EmptyResourceRoom = () => {
           >
             <Input
               maxW="50%"
+              // eslint-disable-next-line react/jsx-props-no-spreading
               {...register("newDirectoryName", {
                 required:
                   "Please ensure that you have entered a resource room name!",
@@ -332,6 +333,7 @@ const ResourceRoomContent = ({
                 <FormLabel>Resource room title</FormLabel>
                 <Input
                   placeholder="New resource room name"
+                  // eslint-disable-next-line react/jsx-props-no-spreading
                   {...register("newDirectoryName", {
                     required:
                       "Please ensure that you have entered a resource room name!",

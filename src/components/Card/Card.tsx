@@ -30,7 +30,7 @@ const CardContext = createContext<CardContextProps | undefined>(undefined)
 const useCardContext = (): CardContextProps => {
   const context = useContext(CardContext)
   if (!context) {
-    throw new Error("useCalendar must be used within a CardProvider")
+    throw new Error("useCard must be used within a CardProvider")
   }
 
   return context

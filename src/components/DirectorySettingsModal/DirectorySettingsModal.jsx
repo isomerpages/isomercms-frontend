@@ -27,6 +27,7 @@ axios.defaults.withCredentials = true
 
 const getModalTitle = ({ isCreate, params }) => {
   const {
+    mediaRoom,
     subCollectionName,
     collectionName,
     resourceRoomName,
@@ -35,12 +36,14 @@ const getModalTitle = ({ isCreate, params }) => {
   if (isCreate) {
     if (resourceRoomName) return "Create new resource category"
     if (collectionName) return "Create new subfolder"
-    if (mediaDirectoryName) return "Create new directory"
+    if (mediaDirectoryName)
+      return `Create new ${mediaRoom === "images" ? "album" : "directory"}`
     return "Create new folder"
   }
   if (resourceRoomName) return "Resource category settings"
   if (subCollectionName) return "Subfolder settings"
-  if (mediaDirectoryName) return "Directory settings"
+  if (mediaDirectoryName)
+    return `${mediaRoom === "images" ? "Album" : "Directory"} settings`
   return "Folder settings"
 }
 

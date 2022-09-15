@@ -30,6 +30,7 @@ export const SiteViewLayout = ({
 }: StackProps): JSX.Element => {
   return (
     <>
+      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <Grid {...GRID_LAYOUT}>
         <GridItem
           area="header"
@@ -50,20 +51,29 @@ export const SiteViewLayout = ({
         >
           <Sidebar />
         </GridItem>
-        <GridItem
-          area="content"
-          as={VStack}
-          p="2rem"
-          spacing="2rem"
-          bgColor="gray.50"
-          w="100%"
-          h="100%"
-          divider={<StackDivider borderColor="border.divider.alt" />}
-          {...rest}
-        >
-          {children}
-        </GridItem>
+        <SiteViewContent p="2rem">{children}</SiteViewContent>
       </Grid>
     </>
+  )
+}
+
+export const SiteViewContent = ({
+  children,
+  ...rest
+}: StackProps): JSX.Element => {
+  return (
+    <GridItem
+      area="content"
+      as={VStack}
+      spacing="2rem"
+      bgColor="gray.50"
+      w="100%"
+      h="100%"
+      divider={<StackDivider borderColor="border.divider.alt" />}
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...rest}
+    >
+      {children}
+    </GridItem>
   )
 }
