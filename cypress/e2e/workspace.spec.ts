@@ -223,6 +223,10 @@ describe("Workspace Pages flow", () => {
 
     it("Should be able to create a new folder with valid folder name with page", () => {
       // Act
+      // NOTE: Sentinel value to guarantee that the data has loaded
+      cy.contains("Folders impact navigation on your site.").should(
+        "be.visible"
+      )
       cy.contains("Create page").should("exist").click()
       cy.get("#title").clear().type(TEST_PAGE_TITLE)
       cy.get("#permalink").clear().type(TEST_PAGE_PERMALNK)
@@ -233,11 +237,15 @@ describe("Workspace Pages flow", () => {
       cy.get(".CodeMirror-scroll").type(TEST_PAGE_CONTENT)
       cy.contains("Save").click()
       cy.wait(Interceptors.POST)
-      cy.contains("Successfully updated page")
-        .should("exist")
-        .then(() =>
-          cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`)
-        )
+      cy.contains("Successfully updated page").should("exist")
+
+      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`).wait(
+        Interceptors.GET
+      )
+      // NOTE: Sentinel value to guarantee that the data has loaded
+      cy.contains("Folders impact navigation on your site.").should(
+        "be.visible"
+      )
 
       cy.contains("Create folder").should("exist").click()
       cy.get("input#newDirectoryName")
@@ -245,7 +253,7 @@ describe("Workspace Pages flow", () => {
         .type(TEST_FOLDER_WITH_PAGES_TITLE)
       cy.contains("Next").click()
       cy.get("button[id^=folderCard-small]").contains(TEST_PAGE_TITLE).click()
-      cy.contains("Done").click()
+      cy.contains("Done").click().wait(Interceptors.POST)
 
       // Assert
       cy.contains(PRETTIFIED_FOLDER_WITH_PAGES_TITLE).should("exist")
@@ -302,10 +310,12 @@ describe("Workspace Pages flow", () => {
 
     it("Should be able to delete a folder with no pages", () => {
       // Arrange
+      // NOTE: Sentinel value to guarantee that the data has loaded
+      cy.contains("Folders impact navigation on your site.").should(
+        "be.visible"
+      )
       cy.contains("a", PRETTIFIED_FOLDER_NO_PAGES_TITLE)
         .parent()
-        .parent()
-        .as("folderItem")
         .as("emptyFolderItem")
         .should("exist")
 
@@ -321,6 +331,10 @@ describe("Workspace Pages flow", () => {
 
     it("Should be able to delete a folder with pages", () => {
       // Arrange
+      // NOTE: Sentinel value to guarantee that the data has loaded
+      cy.contains("Folders impact navigation on your site.").should(
+        "be.visible"
+      )
       cy.contains("button", PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE)
         .parent()
         .parent()
