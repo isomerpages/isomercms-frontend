@@ -15,6 +15,7 @@ describe("Resource category page", () => {
 
   const TEST_PAGE_TITLE = "Resource Page"
   const TEST_PAGE_TITLE_FILE = "File Page"
+  const TEST_PAGE_TITLE_LINK = "Link Page"
   const TEST_PAGE_TITLE_RENAMED = "Renamed Page"
   const TEST_PAGE_TITLE_2 = "Another Resource"
   const TEST_PAGE_PERMALINK = "/test-permalink"
@@ -27,6 +28,8 @@ describe("Resource category page", () => {
   const TEST_PAGE_PERMALINK_SPECIAL = "/test permalink"
   const TEST_PAGE_DATE_INVALID_FORMAT = "20210517"
   const TEST_PAGE_DATE_INVALID_DATE = "2021-05-40"
+
+  const TEST_EXTERNAL_LINK = "google.com"
 
   const TEST_FILE_PATH = "files/singapore.pdf"
   const FILE_TITLE = "singapore.pdf"
@@ -81,7 +84,9 @@ describe("Resource category page", () => {
     cy.contains(TEST_PAGE_TITLE)
 
     // 3. New page should be of type POST with the correct date
-    cy.contains("button",TEST_PAGE_TITLE).contains(`${TEST_PAGE_DATE_PRETTIFIED}/POST`)
+    cy.contains("button", TEST_PAGE_TITLE).contains(
+      `${TEST_PAGE_DATE_PRETTIFIED}/POST`
+    )
   })
 
   it("Resources page should not allow user to create a new resource category with invalid name", () => {
@@ -140,7 +145,8 @@ describe("Resource category page", () => {
     cy.contains(TEST_PAGE_TITLE_2)
 
     // 3. New page should be of type POST with the correct date
-    cy.contains(TEST_PAGE_TITLE_2).contains(`${TEST_PAGE_DATE_PRETTIFIED}/POST`)
+    cy.contains(TEST_PAGE_TITLE_2)
+    cy.contains(`${TEST_PAGE_DATE_PRETTIFIED}/POST`)
   })
 
   it("Resource category page should not allow user to rename a resource page using invalid parameters", () => {
@@ -218,7 +224,7 @@ describe("Resource category page", () => {
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_FILE)
     cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE)
-    cy.get('input[id="radio-file"]').click().blur()
+    cy.get("#layout").select("file")
 
     cy.contains(":button", "Select File").click()
     cy.contains(":button", "Add new").click()
@@ -250,7 +256,7 @@ describe("Resource category page", () => {
       .as("pageCard")
       .should("exist")
     cy.clickContextMenuItem("@pageCard", "settings")
-    cy.get('input[id="radio-file"]').click()
+    cy.get("#layout").select("file")
 
     cy.contains(":button", "Select File").click()
 
@@ -273,7 +279,8 @@ describe("Resource category page", () => {
       .should("exist")
     cy.clickContextMenuItem("@pageCard", "settings")
 
-    cy.get('input[id="radio-post"]').click()
+    cy.get("#layout").select("post")
+    cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK)
 
     cy.contains("Save").click().wait(Interceptors.POST)
     cy.contains("Successfully updated page").should("exist")
@@ -299,5 +306,28 @@ describe("Resource category page", () => {
 
     cy.contains("Successfully deleted page").should("exist")
     cy.contains(TEST_PAGE_TITLE_RENAMED).should("not.exist")
+  })
+
+  it("Resources category page should allow user to create a new resource page of type link", () => {
+    cy.contains("Create page").click()
+
+    cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_LINK)
+    cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE)
+    cy.get("#layout").select("link")
+
+    cy.get('input[id="link"]').clear().type(TEST_EXTERNAL_LINK).blur()
+
+    cy.contains("Save").click().wait(Interceptors.POST)
+
+    // Asserts
+    // 1. Should not redirect
+    cy.url().should(
+      "include",
+      `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
+    )
+
+    // 2. New page should be of type LINK with the correct date
+    cy.contains(TEST_PAGE_TITLE_FILE)
+    cy.contains(`${TEST_PAGE_DATE_PRETTIFIED}/LINK`)
   })
 })
