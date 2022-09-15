@@ -57,7 +57,7 @@ export const PageSettingsSchema = (existingTitlesArray = []) =>
     }),
     layout: Yup.string().oneOf(["file", "post", "link"]),
     date: Yup.date()
-      .typeError("Date format provided is invalid")
+      .typeError("Date must be formatted as YYYY-MM-DD")
       .when("layout", (layout, schema) =>
         layout
           ? schema
