@@ -36,6 +36,8 @@ export const PageSettingsSchema = (existingTitlesArray = []) =>
       switch (layout) {
         case "file":
           return schema
+        case "external":
+          return schema.required("Permalink is required")
         default:
           return schema
             .required("Permalink is required")

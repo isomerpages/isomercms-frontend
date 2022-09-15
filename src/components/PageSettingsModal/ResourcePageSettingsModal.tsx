@@ -11,7 +11,10 @@ import {
   Center,
   Spinner,
   FormControl,
-  useDisclosure,
+  InputLeftAddon,
+  InputGroup,
+  Select,
+  Divider,
 } from "@chakra-ui/react"
 import { yupResolver } from "@hookform/resolvers/yup"
 import {
@@ -29,18 +32,13 @@ import {
 } from "components/Form"
 import FormFieldMedia from "components/FormFieldMedia"
 import { LoadingButton } from "components/LoadingButton"
-import MediaModal from "components/media/MediaModal"
-import ResourceFormFields from "components/ResourceFormFields"
 import { format } from "date-fns-tz"
 import _ from "lodash"
-import PropTypes from "prop-types"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import slugify from "slugify"
 
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
-
-import { getDefaultFrontMatter, pageFileNameToTitle } from "utils"
+import { DOMAIN_NAME_REGEX, pageFileNameToTitle } from "utils"
 
 import { PageSettingsSchema } from "./PageSettingsSchema"
 
@@ -133,11 +131,6 @@ export const ResourcePageSettingsModal = ({
   onClose,
 }: ResourcePageSettingsModalParams): JSX.Element => {
   const { fileName, resourceRoomName, resourceCategoryName } = params
-  const {
-    isOpen: isMediaOpen,
-    onClose: onMediaClose,
-    onOpen: onMediaOpen,
-  } = useDisclosure()
 
   const existingTitlesArray = pagesData
     .filter((page: ResourcePageParams) => page.name !== fileName)
@@ -150,7 +143,6 @@ export const ResourcePageSettingsModal = ({
     resourceCategoryName,
     existingTitlesArray
   )
-  // getDefaultFrontMatter(params, existingTitlesArray)
 
   const {
     register,
@@ -159,7 +151,7 @@ export const ResourcePageSettingsModal = ({
     formState: { errors },
     setValue,
     trigger,
-  } = useForm({
+  } = useForm<ResourcePageFrontMatter>({
     mode: "onTouched",
     resolver: yupResolver(PageSettingsSchema(existingTitlesArray)),
     defaultValues: defaultFrontMatter,
@@ -185,6 +177,13 @@ export const ResourcePageSettingsModal = ({
         })
         setValue("permalink", "")
       }
+      if (pageData.content.frontMatter.layout === "external") {
+        // remove https:// from resource pages with external permalinks
+        setValue(
+          "permalink",
+          pageData.content.frontMatter.permalink.replace("https://", "")
+        )
+      }
     }
   }, [fileName, pageData, setValue])
 
@@ -193,9 +192,16 @@ export const ResourcePageSettingsModal = ({
   /** ******************************** */
 
   const onSubmit = (data: ResourcePageFrontMatter) => {
+    const processedData = {
+      ...data,
+      date: format(data.date, "yyyy-MM-dd"),
+    }
+    if (data.layout === "external") {
+      processedData.permalink = `https://${processedData.permalink}`
+    }
     return onProceed({
       pageData,
-      data,
+      data: processedData,
       resourceRoomName,
     })
   }
@@ -206,7 +212,9 @@ export const ResourcePageSettingsModal = ({
       <ModalContent>
         <ModalCloseButton id="settings-CLOSE" />
         <ModalHeader>
-          <Text as="h1">{!fileName ? "Create new page" : "Page settings"}</Text>
+          <Text as="h1">
+            {!fileName ? "Create new resource page" : "Resource page settings"}
+          </Text>
         </ModalHeader>
         <ModalBody>
           {fileName && !pageData ? (
@@ -215,13 +223,29 @@ export const ResourcePageSettingsModal = ({
             </Center>
           ) : (
             <Box>
-              {!fileName ? "You may edit page details anytime. " : ""}
-              To edit page content, simply click on the page title. <br />
               <Breadcrumb
                 params={params}
                 title={watch("title")}
                 isLink={false}
               />
+              {/* Resource Type */}
+              <FormControl isRequired isInvalid={!!errors.layout?.message}>
+                <Box mb="0.75rem">
+                  <FormLabel mb={0}>Resource Type</FormLabel>
+                </Box>
+                <Select
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  {...register("layout", { required: true })}
+                  id="layout"
+                  value={watch("layout")}
+                >
+                  <option value="post">Post Content</option>
+                  <option value="file">Downloadable File</option>
+                  <option value="external">External Link</option>
+                </Select>
+                <FormErrorMessage>{errors.layout?.message}</FormErrorMessage>
+              </FormControl>
+              <Divider mt="2rem" mb="1rem" />
               {/* Title */}
               <FormControl isRequired isInvalid={!!errors.title?.message}>
                 <FormLabel>Page title</FormLabel>
@@ -234,9 +258,9 @@ export const ResourcePageSettingsModal = ({
                 <FormErrorMessage>{errors.title?.message}</FormErrorMessage>
               </FormControl>
               <br />
-              {/* Permalink */}
-              {watch("layout") !== "file" && (
+              {watch("layout") === "post" && (
                 <>
+                  {/* Permalink */}
                   <FormControl
                     isInvalid={!!errors.permalink?.message}
                     isRequired
@@ -261,59 +285,125 @@ export const ResourcePageSettingsModal = ({
                   <br />
                 </>
               )}
-              <Text textStyle="h4">Resources details</Text>
-              <ResourceFormFields
-                register={register}
-                errors={errors}
-                watch={watch}
-                setValue={setValue}
-                trigger={trigger}
-              />
-              <Text textStyle="h4">Page details</Text>
-              <FormControl isInvalid={!!errors.description?.message}>
+              {/* Date */}
+              <FormControl isRequired isInvalid={!!errors.date?.message}>
                 <Box mb="0.75rem">
-                  <FormLabel mb={0} textColor="text.label">
-                    Meta Description
-                  </FormLabel>
+                  <FormLabel mb={0}>Date (YYYY-MM-DD)</FormLabel>
                   <FormLabel.Description useMarkdown color="text.description">
-                    Description snippet shown in search results. [Learn
-                    more](https://go.gov.sg/isomer-meta)
+                    Resources are organised by latest date in your site.
                   </FormLabel.Description>
                 </Box>
                 <Input
-                  placeholder="Meta Description (Optional)"
-                  id="description"
                   // eslint-disable-next-line react/jsx-props-no-spreading
-                  {...register("description")}
+                  {...register("date", { required: true })}
+                  id="date"
+                  placeholder="Date (YYYY-MM-DD)"
                 />
-                <FormErrorMessage>
-                  {errors.description?.message}
-                </FormErrorMessage>
+                <FormErrorMessage>{errors.date?.message}</FormErrorMessage>
               </FormControl>
-              <br />
-              <FormContext
-                hasError={!!errors.image?.message}
-                onFieldChange={(e) => setValue("image", e.target.value)}
-              >
-                <FormTitle>Meta Image URL (Optional)</FormTitle>
-                <FormDescription>
-                  Image shown when link is shared on social media.{" "}
-                  <a
-                    href="https://go.gov.sg/isomer-meta"
-                    target="_blank"
-                    rel="noreferrer"
+              <Divider mt="2rem" mb="1rem" />
+              {/* File URL */}
+              {watch("layout") === "file" && (
+                <>
+                  <FormContext
+                    hasError={!!errors.file_url?.message}
+                    onFieldChange={(e) => {
+                      setValue("file_url", e.target.value)
+                      trigger("file_url")
+                    }}
                   >
-                    Learn more
-                  </a>
-                </FormDescription>
-                <FormFieldMedia
-                  register={register}
-                  placeholder="Meta Image URL (Optional)"
-                  id="image"
-                  inlineButtonText="Select Image"
-                />
-                <FormError>{errors.image?.message}</FormError>
-              </FormContext>
+                    <FormTitle>File</FormTitle>
+                    <FormLabel.Description useMarkdown color="text.description">
+                      The maximum file size allowed is 5MB.
+                    </FormLabel.Description>
+                    <FormFieldMedia
+                      placeholder="Select File"
+                      register={register}
+                      id="file_url"
+                      type="files"
+                      inlineButtonText="Select File"
+                    />
+                    <FormError>{errors.file_url?.message}</FormError>
+                  </FormContext>
+                </>
+              )}
+              {watch("layout") === "post" && (
+                <>
+                  {/* SEO fields */}
+                  <FormControl isInvalid={!!errors.description?.message}>
+                    <Box mb="0.75rem">
+                      <FormLabel mb={0} textColor="text.label">
+                        Meta Description
+                      </FormLabel>
+                      <FormLabel.Description
+                        useMarkdown
+                        color="text.description"
+                      >
+                        Description snippet shown in search results. [Learn
+                        more](https://go.gov.sg/isomer-meta)
+                      </FormLabel.Description>
+                    </Box>
+                    <Input
+                      placeholder="Meta Description (Optional)"
+                      id="description"
+                      // eslint-disable-next-line react/jsx-props-no-spreading
+                      {...register("description")}
+                    />
+                    <FormErrorMessage>
+                      {errors.description?.message}
+                    </FormErrorMessage>
+                  </FormControl>
+                  <br />
+                  <FormContext
+                    hasError={!!errors.image?.message}
+                    onFieldChange={(e) => setValue("image", e.target.value)}
+                  >
+                    <FormTitle>Meta Image URL (Optional)</FormTitle>
+                    <FormDescription>
+                      Image shown when link is shared on social media.{" "}
+                      <a
+                        href="https://go.gov.sg/isomer-meta"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Learn more
+                      </a>
+                    </FormDescription>
+                    <FormFieldMedia
+                      register={register}
+                      placeholder="Meta Image URL (Optional)"
+                      id="image"
+                      inlineButtonText="Select Image"
+                    />
+                    <FormError>{errors.image?.message}</FormError>
+                  </FormContext>
+                </>
+              )}
+              {watch("layout") === "external" && (
+                <FormControl isRequired isInvalid={!!errors.permalink}>
+                  <Box mb="0.75rem">
+                    <FormLabel mb={0}>Link</FormLabel>
+                    <FormLabel.Description color="text.description">
+                      When users click on this resource tile, they will be
+                      redirected to this link.
+                    </FormLabel.Description>
+                  </Box>
+                  <InputGroup>
+                    <InputLeftAddon>https://</InputLeftAddon>
+                    <Input
+                      w="100%"
+                      id="url"
+                      placeholder="www.open.gov.sg"
+                      {...register("permalink", {
+                        required: true,
+                      })}
+                    />
+                  </InputGroup>
+                  <FormErrorMessage>
+                    {errors.permalink?.message}
+                  </FormErrorMessage>
+                </FormControl>
+              )}
             </Box>
           )}
         </ModalBody>

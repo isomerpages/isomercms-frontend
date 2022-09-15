@@ -182,7 +182,7 @@ export function retrieveResourceFileMetadata(fileName) {
   const tokenArray = fileNameArray.split("-")
   const date = tokenArray.slice(0, 3).join("-")
 
-  const type = ["file", "post"].includes(tokenArray[3])
+  const type = ["file", "post", "external"].includes(tokenArray[3])
     ? tokenArray[3]
     : undefined
 
