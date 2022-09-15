@@ -36,7 +36,7 @@ export const PageSettingsSchema = (existingTitlesArray = []) =>
       switch (layout) {
         case "file":
           return schema
-        case "external":
+        case "link":
           return schema.required("Permalink is required")
         default:
           return schema
@@ -55,7 +55,7 @@ export const PageSettingsSchema = (existingTitlesArray = []) =>
             )
       }
     }),
-    layout: Yup.string().oneOf(["file", "post", "external"]),
+    layout: Yup.string().oneOf(["file", "post", "link"]),
     date: Yup.date()
       .typeError("Date format provided is invalid")
       .when("layout", (layout, schema) =>

@@ -177,7 +177,7 @@ export const ResourcePageSettingsModal = ({
         })
         setValue("permalink", "")
       }
-      if (pageData.content.frontMatter.layout === "external") {
+      if (pageData.content.frontMatter.layout === "link") {
         // remove https:// from resource pages with external permalinks
         setValue(
           "permalink",
@@ -196,7 +196,7 @@ export const ResourcePageSettingsModal = ({
       ...data,
       date: format(data.date, "yyyy-MM-dd"),
     }
-    if (data.layout === "external") {
+    if (data.layout === "link") {
       processedData.permalink = `https://${processedData.permalink}`
     }
     return onProceed({
@@ -241,7 +241,7 @@ export const ResourcePageSettingsModal = ({
                 >
                   <option value="post">Post Content</option>
                   <option value="file">Downloadable File</option>
-                  <option value="external">External Link</option>
+                  <option value="link">External Link</option>
                 </Select>
                 <FormErrorMessage>{errors.layout?.message}</FormErrorMessage>
               </FormControl>
@@ -379,7 +379,7 @@ export const ResourcePageSettingsModal = ({
                   </FormContext>
                 </>
               )}
-              {watch("layout") === "external" && (
+              {watch("layout") === "link" && (
                 <FormControl isRequired isInvalid={!!errors.permalink}>
                   <Box mb="0.75rem">
                     <FormLabel mb={0}>Link</FormLabel>
