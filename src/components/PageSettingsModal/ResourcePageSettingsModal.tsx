@@ -190,7 +190,6 @@ export const ResourcePageSettingsModal = ({
   const onSubmit = (data: ResourcePageFrontMatter) => {
     const processedData = {
       ...data,
-      date: format(data.date, "yyyy-MM-dd"),
     }
     if (data.layout === "link") {
       processedData.permalink = `https://${processedData.permalink}`

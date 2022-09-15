@@ -4,6 +4,7 @@ import * as Yup from "yup"
 import {
   permalinkRegexTest,
   specialCharactersRegexTest,
+  dateRegexTest,
   PAGE_SETTINGS_PERMALINK_MIN_LENGTH,
   PAGE_SETTINGS_PERMALINK_MAX_LENGTH,
   PAGE_SETTINGS_TITLE_MIN_LENGTH,
@@ -56,12 +57,13 @@ export const PageSettingsSchema = (existingTitlesArray = []) =>
       }
     }),
     layout: Yup.string().oneOf(["file", "post", "link"]),
-    date: Yup.date()
+    date: Yup.string()
       .typeError("Date must be formatted as YYYY-MM-DD")
       .when("layout", (layout, schema) =>
         layout
           ? schema
               .required("Date is required")
+              .matches(dateRegexTest, "Date must be formatted as YYYY-MM-DD")
               .test(
                 "Date cannot be in the future",
                 "Date cannot be in the future",
