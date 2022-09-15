@@ -18,6 +18,13 @@ export const MediaSettingsSchema = (existingTitlesArray = []) =>
         'Title cannot contain any of the following special characters: ~%^*+#?./`;{}[]"<>',
         (value) => !mediaSpecialCharactersRegexTest.test(value.split(".")[0])
       )
+      .test(
+        "File not supported",
+        "Title cannot contain any '.' apart from file extension",
+        (value) => {
+          return (value.match(/\./g) || []).length <= 1
+        }
+      )
       .min(
         MEDIA_SETTINGS_TITLE_MIN_LENGTH,
         `Title must be longer than ${MEDIA_SETTINGS_TITLE_MIN_LENGTH} characters`
