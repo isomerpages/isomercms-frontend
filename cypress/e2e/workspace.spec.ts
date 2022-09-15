@@ -210,7 +210,7 @@ describe("Workspace Pages flow", () => {
       // Act
       cy.get("input#newDirectoryName").clear().type(TEST_FOLDER_NO_PAGES_TITLE)
       cy.contains("Next").click()
-      cy.contains("Button", "Skip").click()
+      cy.contains("button", "Skip").click()
 
       // Assert
       cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).should("exist")
