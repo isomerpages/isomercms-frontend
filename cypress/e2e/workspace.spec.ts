@@ -58,7 +58,7 @@ describe("Workspace Pages flow", () => {
 
     it("Should be able to create a new page with valid title and permalink", () => {
       // Act
-      cy.contains("button", "Create page").click()
+      cy.contains("a", "Create page").click()
       cy.get("#title").clear().type(TEST_PAGE_TITLE)
       cy.get("#permalink").clear().type(TEST_PAGE_PERMALNK)
       cy.contains("Save").click()
@@ -103,7 +103,7 @@ describe("Workspace Pages flow", () => {
       ]
 
       // Act
-      cy.contains("button", "Create page").click()
+      cy.contains("a", "Create page").click()
       // Cannot use titles shorter than 4 characters or containing symbols ~!@#$%^&*_+-./\`:;~{}()[]"'<>,?
       INVALID_TEST_PAGE_TITLES.forEach((invalidTitle) => {
         cy.get("#title").clear().type(invalidTitle).blur()
@@ -122,7 +122,7 @@ describe("Workspace Pages flow", () => {
       const INVALID_TEST_PAGE_PERMALINKS = ["/12", "test-", "/abcd?"]
 
       // Act
-      cy.contains("button", "Create page").click()
+      cy.contains("a", "Create page").click()
 
       // Assert
       // Permalink needs to be longer than 4 characters, should start with a slash, and contain alphanumeric characters separated by hyphens and slashes only
@@ -210,7 +210,7 @@ describe("Workspace Pages flow", () => {
       // Act
       cy.get("input#newDirectoryName").clear().type(TEST_FOLDER_NO_PAGES_TITLE)
       cy.contains("Next").click()
-      cy.contains("Skip").click()
+      cy.contains("Button", "Skip").click()
 
       // Assert
       cy.contains(PRETTIFIED_FOLDER_NO_PAGES_TITLE).should("exist")
@@ -302,7 +302,7 @@ describe("Workspace Pages flow", () => {
 
     it("Should be able to delete a folder with no pages", () => {
       // Arrange
-      cy.contains("button", PRETTIFIED_FOLDER_NO_PAGES_TITLE)
+      cy.contains("a", PRETTIFIED_FOLDER_NO_PAGES_TITLE)
         .parent()
         .parent()
         .as("folderItem")
