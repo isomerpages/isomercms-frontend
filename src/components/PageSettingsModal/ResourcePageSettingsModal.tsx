@@ -22,7 +22,6 @@ import {
   FormLabel,
   ModalCloseButton,
 } from "@opengovsg/design-system-react"
-import axios from "axios"
 import { Breadcrumb } from "components/folders/Breadcrumb"
 import {
   FormContext,
@@ -264,7 +263,7 @@ export const ResourcePageSettingsModal = ({
                     <Box mb="0.75rem">
                       <FormLabel mb={0}>Page URL</FormLabel>
                       <FormLabel.Description color="text.description">
-                        {siteUrl}
+                        {`${siteUrl}${watch("permalink")}`}
                       </FormLabel.Description>
                     </Box>
                     <Input
