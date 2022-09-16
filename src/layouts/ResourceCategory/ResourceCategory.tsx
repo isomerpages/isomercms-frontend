@@ -81,7 +81,7 @@ export const ResourceCategory = (): JSX.Element => {
                   to={`${url}/createPage`}
                   leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
                 >
-                  Create Page
+                  Create page
                 </Button>
               }
               subText="Create a resource page to get started."

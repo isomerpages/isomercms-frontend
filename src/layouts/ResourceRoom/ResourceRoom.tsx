@@ -326,7 +326,7 @@ const ResourceRoomContent = ({
                   to={`${url}/createDirectory`}
                   leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
                 >
-                  Create Category
+                  Create category
                 </Button>
               }
               subText="Create a resource category to get started."
