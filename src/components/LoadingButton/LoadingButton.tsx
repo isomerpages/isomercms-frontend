@@ -1,6 +1,9 @@
 import { Button, ButtonProps } from "@opengovsg/design-system-react"
 import { useState } from "react"
 
+/**
+ * @deprecated This is legacy code, use chakraUI's button and pass in the isLoading prop instead
+ */
 // eslint-disable-next-line import/prefer-default-export
 export const LoadingButton = ({
   onClick,

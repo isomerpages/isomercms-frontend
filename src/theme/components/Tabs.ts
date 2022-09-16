@@ -3,7 +3,7 @@ import { ComponentMultiStyleConfig } from "@chakra-ui/react"
 export const Tabs: Pick<ComponentMultiStyleConfig, "variants"> = {
   variants: {
     "line-vertical": (props) => {
-      const { colorScheme: c, orientation } = props
+      const { orientation } = props
       const borderProp =
         orientation === "vertical" ? "borderStart" : "borderBottom"
 
