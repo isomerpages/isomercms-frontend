@@ -3,7 +3,6 @@
   "version": "0.14.0",
   "private": true,
   "dependencies": {
-    "@atlaskit/tree": "^7.0.2",
     "@braintree/sanitize-url": "^6.0.0",
     "@chakra-ui/react": "^2.0.0",
     "@chakra-ui/theme": "^2.0.3",
@@ -154,7 +153,6 @@
     "prettier": "2.2.1",
     "react-scripts": "5.0.0",
     "react-test-renderer": "^17.0.2",
-    "storybook-preset-craco": "0.0.6",
     "ts-jest": "^27.1.4",
     "tsconfig-paths": "^4.0.0",
     "type-fest": "^2.16.0",
