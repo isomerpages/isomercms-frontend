@@ -43,6 +43,7 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
     body: "#3D3D3D",
     label: "#2E2E2E",
     helper: "#848484",
+    placeholder: "#A0A0A0",
     description: "#474747",
     title: {
       brandSecondary: "#3C4764",
