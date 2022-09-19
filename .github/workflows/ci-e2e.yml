@@ -3,6 +3,12 @@ name: ci-e2e
 on:
   pull_request:
     branches: [master]
+  workflow_dispatch:
+
+# Required for allowing PRs to master branch to be of highest priority
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
 
 jobs:
   install:

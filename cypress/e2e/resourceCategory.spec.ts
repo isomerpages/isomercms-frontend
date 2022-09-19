@@ -58,7 +58,7 @@ describe("Resource category page", () => {
   })
 
   it("Resources category page should allow user to create a new resource page of type post", () => {
-    cy.contains("a", "Create page").click()
+    cy.contains("a", "Create page").should("be.visible").click()
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE)
     cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK)
@@ -81,11 +81,11 @@ describe("Resource category page", () => {
     cy.contains(TEST_PAGE_TITLE)
 
     // 3. New page should be of type POST with the correct date
-    cy.contains(TEST_PAGE_TITLE).contains(`${TEST_PAGE_DATE_PRETTIFIED}/POST`)
+    cy.contains("button",TEST_PAGE_TITLE).contains(`${TEST_PAGE_DATE_PRETTIFIED}/POST`)
   })
 
   it("Resources page should not allow user to create a new resource category with invalid name", () => {
-    cy.contains("a", "Create page").click()
+    cy.contains("a", "Create page").should("be.visible").click()
     // Same name as existing file
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE).blur()
     cy.contains("Save").should("be.disabled")
@@ -117,7 +117,7 @@ describe("Resource category page", () => {
   })
 
   it("Resources category page should allow user to create a new resource page of type post", () => {
-    cy.contains("a", "Create page").click()
+    cy.contains("a", "Create page").should("be.visible").click()
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_2)
     cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK)
@@ -214,7 +214,7 @@ describe("Resource category page", () => {
   })
 
   it("Resources category page should allow user to create a new resource page of type file", () => {
-    cy.contains("Create page").click()
+    cy.contains("Create page").should("be.visible").click()
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_FILE)
     cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE)
