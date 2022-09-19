@@ -50,7 +50,7 @@ const DEFAULT_COLOUR_SETTINGS: SiteColourSettings = {
 
 const TOGGLED_VALUES = ["is_government", "show_reach"]
 
-const convertfromBe = (backendSettings: BackendSiteSettings): SiteSettings => {
+const convertFromBe = (backendSettings: BackendSiteSettings): SiteSettings => {
   const toggledValues: Pick<
     SiteSettings,
     "displayGovMasthead" | "showReach"
@@ -120,7 +120,7 @@ export const useGetSettings = (
 ): UseQueryResult<SiteSettings> => {
   return useQuery<SiteSettings>(
     [SETTINGS_CONTENT_KEY, siteName],
-    () => SettingsService.get({ siteName }).then(convertfromBe),
+    () => SettingsService.get({ siteName }).then(convertFromBe),
     {
       retry: false,
     }

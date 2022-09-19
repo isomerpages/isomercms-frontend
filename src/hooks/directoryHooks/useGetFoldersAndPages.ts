@@ -13,7 +13,7 @@ import { DirectoryData, PageData } from "types/directory"
 import { PageDirectoryParams } from "types/folders"
 import { DEFAULT_RETRY_MSG } from "utils"
 
-export const useGetFolders = (
+export const useGetFoldersAndPages = (
   params: PageDirectoryParams,
   queryOptions?: Omit<
     UseQueryOptions<(PageData | DirectoryData)[]>,

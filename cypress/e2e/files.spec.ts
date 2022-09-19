@@ -28,8 +28,8 @@ describe("Files", () => {
     it("Files should contain Directories and Ungrouped Files", () => {
       cy.contains("Directories")
       cy.contains("Ungrouped files")
-      cy.contains("Upload new file")
-      cy.contains("Create new directory")
+      cy.contains("Upload file")
+      cy.contains("Create directory")
     })
 
     it("Should be able to create new file with valid title", () => {
@@ -112,8 +112,12 @@ describe("Files", () => {
     })
 
     it("Should be able to delete file", () => {
-      cy.contains("button", OTHER_FILE_TITLE).as("filePreview")
-      cy.clickContextMenuItem("@filePreview", "Delete")
+      cy.contains("button", OTHER_FILE_TITLE)
+        .parent()
+        .parent()
+        .parent()
+        .as("filePreview")
+      cy.clickContextMenuItem("@filePreview", "Delete file")
       cy.contains("button", "delete").click().wait(Interceptors.DELETE)
 
       // ASSERTS
@@ -133,7 +137,7 @@ describe("Files", () => {
     })
 
     it("Should be able to create new file directory", () => {
-      cy.contains("Create new directory").click()
+      cy.contains("Create directory").click()
       cy.get("#newDirectoryName").clear().type(DIRECTORY_TITLE)
 
       cy.get("button")
@@ -154,6 +158,7 @@ describe("Files", () => {
       cy.contains("div", DIRECTORY_TITLE)
         .parent()
         .parent()
+        .parent()
         .should("exist")
         .as("folderItem")
       cy.clickContextMenuItem("@folderItem", "settings").wait(Interceptors.GET)
@@ -167,6 +172,7 @@ describe("Files", () => {
     it("Should be able to delete file directory", () => {
       // User should be able delete directory
       cy.contains("div", OTHER_DIRECTORY_TITLE)
+        .parent()
         .parent()
         .parent()
         .should("exist")
@@ -184,7 +190,7 @@ describe("Files", () => {
       cy.setSessionDefaults()
 
       cy.visit(`/sites/${TEST_REPO_NAME}/media/files/mediaDirectory/files`)
-      cy.contains("Create new directory").click()
+      cy.contains("Create directory").click()
       cy.get("#newDirectoryName").clear().type(DIRECTORY_TITLE)
       cy.get("button")
         .contains(/^Next$/)
@@ -226,7 +232,7 @@ describe("Files", () => {
     })
 
     it("Should be able to delete file from file directory", () => {
-      cy.contains(OTHER_FILE_TITLE).as("fileItem")
+      cy.contains(OTHER_FILE_TITLE).parent().parent().parent().as("fileItem")
       cy.clickContextMenuItem("@fileItem", "Delete")
       cy.contains("button", "delete").click().should("not.exist")
 

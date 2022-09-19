@@ -27,7 +27,10 @@ export const FilePreviewCard = ({
   return (
     <Box position="relative" h="100%">
       <LinkBox position="relative" h="100%">
-        <LinkOverlay as={RouterLink} to={`${url}/editPage/${encodedName}`}>
+        <LinkOverlay
+          as={RouterLink}
+          to={`${url}/editMediaSettings/${encodedName}`}
+        >
           <Card variant="multi">
             <CardBody>
               <Icon as={BxFileArchiveSolid} fontSize="1.5rem" fill="icon.alt" />
@@ -65,7 +68,7 @@ export const FilePreviewCard = ({
               as={RouterLink}
               to={`${url}/deleteMedia/${encodedName}`}
             >
-              Delete page
+              Delete file
             </ContextMenu.Item>
           </>
         </ContextMenu.List>
