@@ -17,13 +17,20 @@ import {
 import { Button, ModalCloseButton, Tab } from "@opengovsg/design-system-react"
 
 import { EditedItemProps, RequestOverview } from "./RequestOverview"
-import { ReviewRequestForm } from "./ReviewRequestForm"
+import { ReviewRequestForm, ReviewRequestFormProps } from "./ReviewRequestForm"
 
-export const ReviewRequestModal = (props: ModalProps): JSX.Element => {
-  const { onClose } = props
+export type ReviewRequestModalProps = ModalProps &
+  ReviewRequestFormProps & { items: EditedItemProps[] }
+
+export const ReviewRequestModal = ({
+  admins,
+  items,
+  ...rest
+}: ReviewRequestModalProps): JSX.Element => {
+  const { onClose } = rest
   return (
     <form>
-      <Modal {...props} size="full">
+      <Modal {...rest} size="full">
         <ModalOverlay />
         <ModalContent>
           {/* 
@@ -72,10 +79,10 @@ export const ReviewRequestModal = (props: ModalProps): JSX.Element => {
 
               <TabPanels>
                 <TabPanel>
-                  <ReviewRequestForm />
+                  <ReviewRequestForm admins={admins} />
                 </TabPanel>
                 <TabPanel>
-                  <RequestOverview items={MOCK_ITEMS} />
+                  <RequestOverview items={items} />
                 </TabPanel>
               </TabPanels>
             </Tabs>
@@ -93,14 +100,3 @@ export const ReviewRequestModal = (props: ModalProps): JSX.Element => {
     </form>
   )
 }
-
-const MOCK_ITEMS: EditedItemProps[] = [
-  {
-    type: ["page"],
-    name: "some file",
-    path: ["asdfasdf"],
-    url: "www.google.com",
-    lastEditedBy: "asdf",
-    lastEditedTime: 129823104823094,
-  },
-]

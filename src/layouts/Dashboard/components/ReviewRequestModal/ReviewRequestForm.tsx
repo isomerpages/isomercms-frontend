@@ -2,7 +2,7 @@ import { VStack, FormControl } from "@chakra-ui/react"
 import { FormLabel, Input, Textarea } from "@opengovsg/design-system-react"
 import Select from "react-select"
 
-interface ReviewRequestFormProps {
+export interface ReviewRequestFormProps {
   admins: {
     value: string
     label: string
