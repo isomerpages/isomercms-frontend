@@ -125,6 +125,7 @@
     "@types/invariant": "^2.2.35",
     "@types/react-color": "^3.0.6",
     "@types/react-router-dom": "^5.3.3",
+    "@types/react-select": "^5.0.1",
     "@types/turndown": "^5.0.1",
     "auto-changelog": "^2.4.0",
     "btoa": "^1.2.1",
