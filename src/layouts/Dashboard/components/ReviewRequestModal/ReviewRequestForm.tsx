@@ -1,56 +1,18 @@
 import { VStack, FormControl } from "@chakra-ui/react"
-import {
-  FormLabel,
-  Input,
-  Textarea,
-  ComboboxItem,
-  MultiSelect,
-} from "@opengovsg/design-system-react"
-import { useState } from "react"
+import { FormLabel, Input, Textarea } from "@opengovsg/design-system-react"
+import Select from "react-select"
 
-const INITIAL_COMBOBOX_ITEMS: ComboboxItem[] = [
-  {
-    value: "A",
-    label: "A",
-  },
-  {
-    value: "What happens when the label is fairly long",
-    label: "What happens when the label is fairly long",
-  },
-  {
-    value: "C",
-    label: "C",
-  },
-  {
-    value: "D",
-    label: "D",
-  },
-  {
-    value: "A1",
-    label: "A1",
-  },
-  {
-    value: "B2",
-    label: "B2",
-  },
-  {
-    value: "Bat3",
-    label: "Bat3",
-  },
-  {
-    value: "C4",
-    label: "C4",
-  },
-  {
-    value: "D5",
-    label: "D5",
-    disabled: true,
-  },
-]
+interface ReviewRequestFormProps {
+  admins: {
+    value: string
+    label: string
+  }[]
+}
 
-export const ReviewRequestForm = (): JSX.Element => {
+export const ReviewRequestForm = ({
+  admins,
+}: ReviewRequestFormProps): JSX.Element => {
   // TODO: add a fetch for the admins of this repo
-  const [reviewers, setReviewers] = useState<string[]>([])
   return (
     <VStack align="flex-start" spacing="1.5rem" mt="2rem">
       <FormControl isRequired>
@@ -78,13 +40,7 @@ export const ReviewRequestForm = (): JSX.Element => {
           Your changes can be published when at least **one** reviewer approves
           your request
         </FormLabel.Description>
-        <MultiSelect
-          onChange={setReviewers}
-          name="multi"
-          values={reviewers}
-          items={INITIAL_COMBOBOX_ITEMS}
-          placeholder="Select Admins to add as reviewers"
-        />
+        <Select options={admins} isMulti />
       </FormControl>
     </VStack>
   )
