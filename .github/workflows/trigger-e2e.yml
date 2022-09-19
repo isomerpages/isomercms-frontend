@@ -55,6 +55,7 @@ jobs:
         id: check
         with:
           trigger: "${{ env.ISOMER_TRIGGER_COMMENT }}"
+          prefix_only: "true"
           reaction: "+1"
 
       - name: Set environment variable to run e2e tests (for PR comment)
