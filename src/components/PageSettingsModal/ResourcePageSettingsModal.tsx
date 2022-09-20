@@ -207,7 +207,7 @@ export const ResourcePageSettingsModal = ({
         <ModalCloseButton id="settings-CLOSE" />
         <ModalHeader>
           <Text as="h1">
-            {!fileName ? "Create new resource page" : "Resource page settings"}
+            {fileName ? "Resource page settings" : "Create new resource page"}
           </Text>
         </ModalHeader>
         <ModalBody>
