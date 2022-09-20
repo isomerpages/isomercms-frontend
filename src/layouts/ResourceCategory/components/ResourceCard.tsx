@@ -37,6 +37,7 @@ const getIcon = (resourceType: string): JSX.Element => {
       return <Icon as={BiFileBlank} fontSize="1.5rem" fill="icon.alt" />
     case "link":
       return <Icon as={BiLink} fontSize="1.5rem" fill="icon.alt" />
+    case "file":
     default:
       return <Icon as={BxFileArchiveSolid} fontSize="1.5rem" fill="icon.alt" />
   }
