@@ -178,9 +178,10 @@ export const ResourcePageSettingsModal = ({
           "permalink",
           pageData.content.frontMatter.permalink.replace("https://", "")
         )
+        trigger("permalink")
       }
     }
-  }, [fileName, pageData, setValue])
+  }, [fileName, pageData, setValue, trigger])
 
   /** ******************************** */
   /*     handler functions    */
@@ -223,7 +224,13 @@ export const ResourcePageSettingsModal = ({
                 isLink={false}
               />
               {/* Resource Type */}
-              <FormControl isRequired isInvalid={!!errors.layout?.message}>
+              <FormControl
+                isRequired
+                isInvalid={!!errors.layout?.message}
+                onChange={() => {
+                  trigger("permalink")
+                }}
+              >
                 <Box mb="0.75rem">
                   <FormLabel mb={0}>Resource Type</FormLabel>
                 </Box>
