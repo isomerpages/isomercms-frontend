@@ -61,13 +61,22 @@ const getIcon = (iconTypes: EditedItemProps["type"]): JSX.Element => {
   const iconType = iconTypes[0]
   switch (iconType) {
     case "nav": {
-      return <Icon as={BiWorld} />
+      return (
+        <Icon ml="0.75rem" fontSize="1.25rem" fill="icon.alt" as={BiWorld} />
+      )
     }
     case "file": {
-      return <Icon as={BxFileArchiveSolid} />
+      return (
+        <Icon
+          ml="0.75rem"
+          fontSize="1.25rem"
+          fill="icon.alt"
+          as={BxFileArchiveSolid}
+        />
+      )
     }
     case "setting": {
-      return <Icon as={BiCog} />
+      return <Icon ml="0.75rem" fontSize="1.25rem" fill="icon.alt" as={BiCog} />
     }
     case "page": {
       return (
@@ -80,7 +89,9 @@ const getIcon = (iconTypes: EditedItemProps["type"]): JSX.Element => {
       )
     }
     case "image": {
-      return <Icon as={BiImage} />
+      return (
+        <Icon ml="0.75rem" fontSize="1.25rem" fill="icon.alt" as={BiImage} />
+      )
     }
     default: {
       // NOTE: This is done to ensure exhaustive type matching
@@ -111,14 +122,17 @@ const EditedItem = ({
 }: EditedItemProps): JSX.Element => {
   const theme = useTheme()
   return (
-    <Tr>
+    <Tr overflowX="auto">
       <Td>{getIcon(type)}</Td>
       <Td>
         <VStack align="flex-start">
-          <Text textStyle="subhead-2" textColor="text.label">
+          <Text textStyle="subhead-2" textColor="text.label" noOfLines={1}>
             {name}
           </Text>
           <Breadcrumb
+            as={Text}
+            textOverflow="ellipsis"
+            overflowX="auto"
             spacing="2px"
             separator={<BiChevronRight color={theme.colors.text.helper} />}
           >
@@ -171,7 +185,13 @@ const LastEditedMeta = ({
   const { date, time } = getDateTimeFromUnixTime(lastEditedTime)
   return (
     <HStack>
-      <Avatar name={lastEditedBy} />
+      <Avatar
+        bg="primary.100"
+        name={lastEditedBy.slice(0, 2).split("").join(" ")}
+        textStyle="caption-2"
+        textColor="primary.400"
+        size="sm"
+      />
       <VStack align="flex-start">
         <Text textStyle="caption-2" textColor="text.helper">
           {date}
@@ -184,11 +204,13 @@ const LastEditedMeta = ({
   )
 }
 
+export interface RequestOverviewProps {
+  items: EditedItemProps[]
+}
+
 export const RequestOverview = ({
   items,
-}: {
-  items: EditedItemProps[]
-}): JSX.Element => {
+}: RequestOverviewProps): JSX.Element => {
   const {
     isExpanded,
     inputRef,
@@ -219,44 +241,42 @@ export const RequestOverview = ({
         />
       </Flex>
       <Box borderWidth="1px" borderRadius="8px" w="100%" borderColor="gray.100">
-        <TableContainer w="100%">
-          <Table>
-            <Thead>
-              <Tr>
-                <Th>
+        <Table w="100%">
+          <Thead>
+            <Tr>
+              <Th w="3rem">
+                <IconButton
+                  aria-label="sort by file type"
+                  icon={<BiFilterAlt />}
+                  variant="link"
+                />
+              </Th>
+              <Th textTransform="capitalize">
+                <Text textStyle="subhead-2" textColor="text.label">
+                  Item name
+                </Text>
+              </Th>
+              <Th textTransform="capitalize" w="12.5rem">
+                <HStack spacing="0.25rem">
+                  <Text textStyle="subhead-2" textColor="text.label">
+                    Last edited
+                  </Text>
                   <IconButton
-                    aria-label="sort by file type"
-                    icon={<BiFilterAlt />}
+                    icon={<BiSort fontSize="1rem" />}
+                    aria-label="view file changes"
                     variant="link"
                   />
-                </Th>
-                <Th textTransform="capitalize">
-                  <Text textStyle="subhead-2" textColor="text.label">
-                    Item name
-                  </Text>
-                </Th>
-                <Th textTransform="capitalize">
-                  <HStack spacing="0.25rem">
-                    <Text textStyle="subhead-2" textColor="text.label">
-                      Last edited
-                    </Text>
-                    <IconButton
-                      icon={<BiSort fontSize="1rem" />}
-                      aria-label="view file changes"
-                      variant="link"
-                    />
-                  </HStack>
-                </Th>
-                <Th />
-              </Tr>
-            </Thead>
-            <Tbody>
-              {items.map((props) => (
-                <EditedItem {...props} />
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
+                </HStack>
+              </Th>
+              <Th w="10rem" />
+            </Tr>
+          </Thead>
+          <Tbody>
+            {items.map((props) => (
+              <EditedItem {...props} />
+            ))}
+          </Tbody>
+        </Table>
       </Box>
     </VStack>
   )

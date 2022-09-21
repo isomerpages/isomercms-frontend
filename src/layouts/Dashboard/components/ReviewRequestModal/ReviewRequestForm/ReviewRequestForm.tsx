@@ -12,7 +12,6 @@ export interface ReviewRequestFormProps {
 export const ReviewRequestForm = ({
   admins,
 }: ReviewRequestFormProps): JSX.Element => {
-  // TODO: add a fetch for the admins of this repo
   return (
     <VStack align="flex-start" spacing="1.5rem" mt="2rem">
       <FormControl isRequired>
