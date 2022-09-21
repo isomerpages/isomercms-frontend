@@ -1,3 +1,5 @@
+import { EditedItemProps } from "layouts/Dashboard/components/ReviewRequestModal/RequestOverview"
+
 import {
   DirectoryData,
   MediaData,
@@ -186,3 +188,69 @@ export const MOCK_SUBFOLDER_NAME = "mock-subfolder"
 export const MOCK_RESOURCE_ROOM_NAME = "mock-resource-room"
 
 export const MOCK_RESOURCE_CATEGORY_NAME = "mock-resource-category"
+
+export const MOCK_ITEMS: EditedItemProps[] = [
+  {
+    type: ["page"],
+    name: "some file",
+    path: ["some", "thing"],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 129823104823094,
+  },
+  {
+    type: ["nav"],
+    name: "some file",
+    path: ["some", "thing"],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 129823104823094,
+  },
+  {
+    type: ["file"],
+    name: "some file",
+    path: ["some", "thing"],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 129823104823094,
+  },
+  {
+    type: ["setting"],
+    name:
+      "some file with an extremely long title that probably can't fit into a single line and we have to truncate this somehow. so we will hopefully display an ellipsis over it",
+    // NOTE: We don't have arbitrary nested folders.
+    // We only have depth = 2 for our folders.
+    path: [
+      "something extremely long that",
+      "might not be able to fit into a single line",
+      "so we have to truncate it to show an ellipsis at the end",
+    ],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 129823104823094,
+  },
+  {
+    type: ["image"],
+    name: "some file",
+    path: ["some", "thing"],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 129823104823094,
+  },
+]
+
+export const MOCK_ADMINS = [
+  {
+    value: "a cat",
+    label: "Cat",
+  },
+  {
+    value: "Someone",
+    label: "Unknown",
+  },
+  {
+    value: "a long label",
+    label:
+      "an extremely long label, so long that it should overflow. so let us see if it truly does. if it is so long, should it be called a paralabel? as it is a paragraph label.",
+  },
+]

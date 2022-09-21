@@ -20,7 +20,7 @@ import {
 import { Story, ComponentMeta } from "@storybook/react"
 import _ from "lodash"
 
-import { MOCK_ADMINS } from "../ReviewRequestModal.stories"
+import { MOCK_ADMINS } from "mocks/constants"
 
 import { ReviewRequestForm, ReviewRequestFormProps } from "./ReviewRequestForm"
 
