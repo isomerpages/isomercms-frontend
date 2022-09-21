@@ -8,11 +8,11 @@ import {
 } from "./ReviewRequestModal"
 
 const modalMeta = {
-  title: "Components/ReviewRequestModal",
+  title: "Components/ReviewRequestModal/Modal",
   component: ReviewRequestModal,
 } as ComponentMeta<typeof ReviewRequestModal>
 
-const MOCK_ITEMS: EditedItemProps[] = [
+export const MOCK_ITEMS: EditedItemProps[] = [
   {
     type: ["page"],
     name: "some file",
@@ -21,9 +21,48 @@ const MOCK_ITEMS: EditedItemProps[] = [
     lastEditedBy: "asdf",
     lastEditedTime: 129823104823094,
   },
+  {
+    type: ["nav"],
+    name: "some file",
+    path: ["some", "thing"],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 129823104823094,
+  },
+  {
+    type: ["file"],
+    name: "some file",
+    path: ["some", "thing"],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 129823104823094,
+  },
+  {
+    type: ["setting"],
+    name:
+      "some file with an extremely long title that probably can't fit into a single line and we have to truncate this somehow. so we will hopefully display an ellipsis over it",
+    // NOTE: We don't have arbitrary nested folders.
+    // We only have depth = 2 for our folders.
+    path: [
+      "something extremely long that",
+      "might not be able to fit into a single line",
+      "so we have to truncate it to show an ellipsis at the end",
+    ],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 129823104823094,
+  },
+  {
+    type: ["image"],
+    name: "some file",
+    path: ["some", "thing"],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 129823104823094,
+  },
 ]
 
-const MOCK_ADMINS = [
+export const MOCK_ADMINS = [
   {
     value: "a cat",
     label: "Cat",
@@ -36,10 +75,7 @@ const MOCK_ADMINS = [
 
 type TemplateProps = Pick<ReviewRequestModalProps, "admins" | "items">
 
-const SingleButtonModalTemplate: Story<TemplateProps> = ({
-  admins,
-  items,
-}: TemplateProps) => {
+const Template: Story<TemplateProps> = ({ admins, items }: TemplateProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true })
   return (
     <>
@@ -55,8 +91,9 @@ const SingleButtonModalTemplate: Story<TemplateProps> = ({
     </>
   )
 }
-export const SingleButtonModal = SingleButtonModalTemplate.bind({})
-SingleButtonModal.args = {
+
+export const Playground = Template.bind({})
+Playground.args = {
   items: MOCK_ITEMS,
   admins: MOCK_ADMINS,
 }
