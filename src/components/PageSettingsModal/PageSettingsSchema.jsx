@@ -4,6 +4,7 @@ import * as Yup from "yup"
 import {
   permalinkRegexTest,
   specialCharactersRegexTest,
+  dateRegexTest,
   PAGE_SETTINGS_PERMALINK_MIN_LENGTH,
   PAGE_SETTINGS_PERMALINK_MAX_LENGTH,
   PAGE_SETTINGS_TITLE_MIN_LENGTH,
@@ -32,9 +33,14 @@ export const PageSettingsSchema = (existingTitlesArray = []) =>
         "Title is already in use. Please choose a different title.",
         (value) => !_.includes(existingTitlesArray, value)
       ),
-    permalink: Yup.string().when("layout", (layout, schema) =>
-      layout !== "file"
-        ? schema
+    permalink: Yup.string().when("layout", (layout, schema) => {
+      switch (layout) {
+        case "file":
+          return schema
+        case "link":
+          return schema.required("Permalink is required")
+        default:
+          return schema
             .required("Permalink is required")
             .min(
               PAGE_SETTINGS_PERMALINK_MIN_LENGTH,
@@ -48,26 +54,23 @@ export const PageSettingsSchema = (existingTitlesArray = []) =>
               permalinkRegexTest,
               "Permalink should start with a slash, and contain alphanumeric characters separated by hyphens and slashes only"
             )
-        : schema
-    ),
-    layout: Yup.string().when("$type", (type, schema) =>
-      type === "resourcePage"
-        ? schema
-            .required("Resource type must be selected")
-            .oneOf(["file", "post"])
-        : schema
-    ),
-    date: Yup.string().when("$type", (type, schema) =>
-      type === "resourcePage"
-        ? schema
-            .required("Date is required")
-            .test(
-              "Date cannot be in the future",
-              "Date cannot be in the future",
-              (value) => new Date(value) <= new Date()
-            )
-        : schema
-    ),
+      }
+    }),
+    layout: Yup.string().oneOf(["file", "post", "link"]),
+    date: Yup.string()
+      .typeError("Date must be formatted as YYYY-MM-DD")
+      .when("layout", (layout, schema) =>
+        layout
+          ? schema
+              .required("Date is required")
+              .matches(dateRegexTest, "Date must be formatted as YYYY-MM-DD")
+              .test(
+                "Date cannot be in the future",
+                "Date cannot be in the future",
+                (value) => new Date(value) <= new Date()
+              )
+          : schema
+      ),
     file_url: Yup.string().when("layout", (layout, schema) =>
       layout === "file" ? schema.required("File url is required") : schema
     ),

@@ -182,7 +182,7 @@ export function retrieveResourceFileMetadata(fileName) {
   const tokenArray = fileNameArray.split("-")
   const date = tokenArray.slice(0, 3).join("-")
 
-  const type = ["file", "post"].includes(tokenArray[3])
+  const type = ["file", "post", "link"].includes(tokenArray[3])
     ? tokenArray[3]
     : undefined
 
@@ -313,7 +313,7 @@ export const getRedirectUrl = ({
       return `/sites/${siteName}/resourceRoom/${resourceRoomName}/resourceCategory/${encodeURIComponent(
         resourceCategoryName
       )}${
-        fileName.split("-")[3] === "file"
+        fileName.split("-")[3] === "file" || fileName.split("-")[3] === "link"
           ? ""
           : `/editPage/${encodeURIComponent(fileName)}`
       }`
