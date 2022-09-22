@@ -7,7 +7,7 @@ const FormControlContext = createContext(undefined)
 // State is held here to avoid prop-threading and to ensure that the leaf components
 // only have display logic associated with them.
 const FormContext = ({
-  onFieldChange = () => {},
+  onFieldChange = (..._args) => {},
   hasError = false,
   isRequired = false,
   isDisabled = false,

@@ -14,6 +14,7 @@ import {
   BiEditAlt,
   BiFileBlank,
   BiFolder,
+  BiLink,
   BiTrash,
   BiWrench,
 } from "react-icons/bi"
@@ -30,6 +31,18 @@ interface ResourceCardProps {
   resourceType: ResourcePageData["resourceType"]
 }
 
+const getIcon = (resourceType: string): JSX.Element => {
+  switch (resourceType) {
+    case "post":
+      return <Icon as={BiFileBlank} fontSize="1.5rem" fill="icon.alt" />
+    case "link":
+      return <Icon as={BiLink} fontSize="1.5rem" fill="icon.alt" />
+    case "file":
+    default:
+      return <Icon as={BxFileArchiveSolid} fontSize="1.5rem" fill="icon.alt" />
+  }
+}
+
 export const ResourceCard = ({
   name,
   title,
@@ -41,11 +54,7 @@ export const ResourceCard = ({
   const CardContent = () => (
     <Card variant="multi">
       <CardBody>
-        <Icon
-          as={resourceType === "post" ? BiFileBlank : BxFileArchiveSolid}
-          fontSize="1.5rem"
-          fill="icon.alt"
-        />
+        {getIcon(resourceType)}
         <Text textStyle="body-1" color="text.label" noOfLines={3}>
           {title}
         </Text>
@@ -58,7 +67,7 @@ export const ResourceCard = ({
     </Card>
   )
   const RenderedCard = () =>
-    resourceType === "file" ? (
+    resourceType === "file" || resourceType === "link" ? (
       // NOTE: This is a workaround as the base card has styling for pointer events on it.
       // This is to avoid triggering hover/focus states on mouseover so that users
       // are aware that this cannot be interacted with.

@@ -42,6 +42,10 @@ Closes [insert issue #]
 
 <!-- What tests should be run to confirm functionality? -->
 
+- [ ] Unit tests (using `npm run tests`)
+- [ ] e2e tests (comment on this PR with the text `!run e2e`)
+- [ ] Smoke tests
+
 ## Deploy Notes
 
 <!-- Notes regarding deployment of the contained body of work.  -->

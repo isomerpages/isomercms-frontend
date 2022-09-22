@@ -1,11 +1,10 @@
 import { Box, Center, VStack, Text, HTMLChakraProps } from "@chakra-ui/react"
-import { ReactFragment } from "react"
 
 import { EmptyBoxImage } from "assets"
 
-export interface EmptyAreaOption extends HTMLChakraProps<"div"> {
+export interface EmptyAreaProps extends HTMLChakraProps<"div"> {
   isItemEmpty: boolean
-  actionButton: ReactFragment
+  actionButton: JSX.Element
   mainText?: string
   subText?: string
 }
@@ -16,13 +15,14 @@ export const EmptyArea = ({
   actionButton,
   children,
   isItemEmpty,
-}: EmptyAreaOption): JSX.Element => {
+  ...rest
+}: EmptyAreaProps): JSX.Element => {
   return (
     <>
       {isItemEmpty ? (
-        <Box as="form" w="full">
+        <Box w="full">
           {/* Resource Room does not exist */}
-          <VStack spacing={5}>
+          <VStack spacing={5} {...rest}>
             <EmptyBoxImage />
             <Center>
               <VStack spacing={0}>

@@ -1,4 +1,5 @@
 import { PageSettingsModal } from "components/PageSettingsModal"
+import { ResourcePageSettingsModal } from "components/PageSettingsModal/ResourcePageSettingsModal"
 import PropTypes from "prop-types"
 
 import { useGetDirectoryHook } from "hooks/directoryHooks"
@@ -12,7 +13,7 @@ import { useSiteUrlHook } from "hooks/settingsHooks"
 export const PageSettingsScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match
 
-  const { fileName } = params
+  const { fileName, resourceRoomName } = params
   const { data: pageData } = useGetPageHook(params, { enabled: !!fileName })
   const { mutateAsync: updateHandler } = useUpdatePageHook(params, {
     onSuccess: () => onClose(),
@@ -27,7 +28,16 @@ export const PageSettingsScreen = ({ match, onClose }) => {
   )
   const { data: siteUrl } = useSiteUrlHook(params)
 
-  return (
+  return resourceRoomName ? (
+    <ResourcePageSettingsModal
+      params={decodedParams}
+      onClose={onClose}
+      pageData={pageData}
+      onProceed={fileName ? updateHandler : createHandler}
+      pagesData={dirData ? dirData.filter((item) => item.type === "file") : []}
+      siteUrl={siteUrl}
+    />
+  ) : (
     <PageSettingsModal
       params={decodedParams}
       onClose={onClose}
