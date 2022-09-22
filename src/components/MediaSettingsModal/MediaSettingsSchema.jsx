@@ -20,7 +20,7 @@ export const MediaSettingsSchema = (existingTitlesArray = []) =>
       )
       .test(
         "File not supported",
-        "Title cannot contain any '.' apart from file extension",
+        "File names cannot contain dots, except the extension at the end (e.g. '.png' or '.pdf')",
         (value) => {
           return (value.match(/\./g) || []).length <= 1
         }
