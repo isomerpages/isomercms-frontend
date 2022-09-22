@@ -9,7 +9,6 @@ import {
   Tr,
   Th,
   Td,
-  TableContainer,
   HStack,
   Icon,
   Spacer,
@@ -25,6 +24,13 @@ import {
   useSearchbar,
 } from "@opengovsg/design-system-react"
 import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  Row,
+  useReactTable,
+} from "@tanstack/react-table"
+import {
   BiGitCompare,
   BiWorld,
   BiFileBlank,
@@ -35,6 +41,7 @@ import {
   BiFilterAlt,
   BiChevronRight,
 } from "react-icons/bi"
+import { TableVirtuoso } from "react-virtuoso"
 
 import { BxFileArchiveSolid } from "assets"
 
@@ -112,65 +119,31 @@ export interface EditedItemProps {
   lastEditedTime: number
 }
 
-const EditedItem = ({
-  type,
-  name,
-  path,
-  url,
-  lastEditedBy,
-  lastEditedTime,
-}: EditedItemProps): JSX.Element => {
+const ItemName = ({ name, path }: Pick<EditedItemProps, "name" | "path">) => {
   const theme = useTheme()
   return (
-    <Tr overflowX="auto">
-      <Td>{getIcon(type)}</Td>
-      <Td>
-        <VStack align="flex-start">
-          <Text textStyle="subhead-2" textColor="text.label" noOfLines={1}>
-            {name}
-          </Text>
-          <Breadcrumb
-            as={Text}
-            textOverflow="ellipsis"
-            overflowX="auto"
-            spacing="2px"
-            separator={<BiChevronRight color={theme.colors.text.helper} />}
-          >
-            {path.map((item) => {
-              return (
-                <BreadcrumbItem>
-                  <Text textStyle="caption-2" textColor="text.helper">
-                    {item}
-                  </Text>
-                </BreadcrumbItem>
-              )
-            })}
-          </Breadcrumb>
-        </VStack>
-      </Td>
-      <Td>
-        <LastEditedMeta
-          lastEditedBy={lastEditedBy}
-          lastEditedTime={lastEditedTime}
-        />
-      </Td>
-      <Td>
-        <HStack spacing="0.25rem">
-          <Link href={url}>
-            <IconButton
-              icon={<BiGitCompare />}
-              aria-label="view file on staging"
-              variant="link"
-            />
-          </Link>
-          <IconButton
-            icon={<BiShow />}
-            aria-label="view file changes"
-            variant="link"
-          />
-        </HStack>
-      </Td>
-    </Tr>
+    <VStack align="flex-start">
+      <Text textStyle="subhead-2" textColor="text.label" noOfLines={1}>
+        {name}
+      </Text>
+      <Breadcrumb
+        as={Text}
+        textOverflow="ellipsis"
+        overflowX="auto"
+        spacing="2px"
+        separator={<BiChevronRight color={theme.colors.text.helper} />}
+      >
+        {path.map((item) => {
+          return (
+            <BreadcrumbItem>
+              <Text textStyle="caption-2" textColor="text.helper">
+                {item}
+              </Text>
+            </BreadcrumbItem>
+          )
+        })}
+      </Breadcrumb>
+    </VStack>
   )
 }
 
@@ -217,6 +190,88 @@ export const RequestOverview = ({
     handleExpansion,
     handleCollapse,
   } = useSearchbar({})
+  const columnHelper = createColumnHelper<EditedItemProps>()
+
+  const columns = [
+    columnHelper.display({
+      id: "filter",
+      header: () => (
+        <Th w="3rem">
+          <IconButton
+            aria-label="sort by file type"
+            icon={<BiFilterAlt />}
+            variant="link"
+          />
+        </Th>
+      ),
+      cell: (props) => getIcon(props.row.original.type),
+    }),
+    columnHelper.accessor((row) => `${row.name} ${row.path}`, {
+      id: "itemName",
+      cell: ({ row }) => (
+        <ItemName name={row.original.name} path={row.original.path} />
+      ),
+      header: () => (
+        <Th textTransform="capitalize">
+          <Text textStyle="subhead-2" textColor="text.label">
+            Item name
+          </Text>
+        </Th>
+      ),
+    }),
+    columnHelper.accessor(
+      (row) => `${row.lastEditedBy} ${row.lastEditedTime}`,
+      {
+        id: "lastEdited",
+        header: () => (
+          <Th textTransform="capitalize" w="12.5rem">
+            <HStack spacing="0.25rem">
+              <Text textStyle="subhead-2" textColor="text.label">
+                Last edited
+              </Text>
+              <IconButton
+                icon={<BiSort fontSize="1rem" />}
+                aria-label="view file changes"
+                variant="link"
+              />
+            </HStack>
+          </Th>
+        ),
+        cell: ({ row }) => (
+          <LastEditedMeta
+            lastEditedBy={row.original.lastEditedBy}
+            lastEditedTime={row.original.lastEditedTime}
+          />
+        ),
+      }
+    ),
+    columnHelper.display({
+      id: "actions",
+      header: () => <Th w="10rem" />,
+      cell: ({ row }) => (
+        <HStack spacing="0.25rem">
+          <Link href={row.original.url}>
+            <IconButton
+              icon={<BiGitCompare />}
+              aria-label="view file on staging"
+              variant="link"
+            />
+          </Link>
+          <IconButton
+            icon={<BiShow />}
+            aria-label="view file changes"
+            variant="link"
+          />
+        </HStack>
+      ),
+    }),
+  ]
+
+  const table = useReactTable({
+    data: items,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  })
 
   return (
     <VStack spacing="1rem" mt="1rem">
@@ -240,43 +295,40 @@ export const RequestOverview = ({
           onBlur={handleCollapse}
         />
       </Flex>
-      <Box borderWidth="1px" borderRadius="8px" w="100%" borderColor="gray.100">
-        <Table w="100%">
-          <Thead>
+      <Box w="100%" borderWidth="1px" borderRadius="8px" borderColor="gray.100">
+        <TableVirtuoso
+          style={{ height: 400, borderRadius: "8px" }}
+          data={items}
+          totalCount={items.length}
+          components={{
+            Table,
+            TableBody: Tbody,
+            TableRow: Tr,
+            TableHead: (props) => <Thead {...props} bg="neutral.100" />,
+          }}
+          fixedHeaderContent={() => (
             <Tr>
-              <Th w="3rem">
-                <IconButton
-                  aria-label="sort by file type"
-                  icon={<BiFilterAlt />}
-                  variant="link"
-                />
-              </Th>
-              <Th textTransform="capitalize">
-                <Text textStyle="subhead-2" textColor="text.label">
-                  Item name
-                </Text>
-              </Th>
-              <Th textTransform="capitalize" w="12.5rem">
-                <HStack spacing="0.25rem">
-                  <Text textStyle="subhead-2" textColor="text.label">
-                    Last edited
-                  </Text>
-                  <IconButton
-                    icon={<BiSort fontSize="1rem" />}
-                    aria-label="view file changes"
-                    variant="link"
-                  />
-                </HStack>
-              </Th>
-              <Th w="10rem" />
+              {table
+                .getFlatHeaders()
+                .map((header) =>
+                  flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )
+                )}
             </Tr>
-          </Thead>
-          <Tbody>
-            {items.map((props) => (
-              <EditedItem {...props} />
-            ))}
-          </Tbody>
-        </Table>
+          )}
+          itemContent={(index) => {
+            const row: Row<EditedItemProps> = table.getRowModel().rows[index]
+            return row
+              .getVisibleCells()
+              .map((cell) => (
+                <Td key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </Td>
+              ))
+          }}
+        />
       </Box>
     </VStack>
   )
