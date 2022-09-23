@@ -203,15 +203,15 @@ export const MOCK_ITEMS: EditedItemProps[] = [
     path: ["some", "thing"],
     url: "www.google.com",
     lastEditedBy: "asdf",
-    lastEditedTime: 129823104823094,
+    lastEditedTime: 129823104094,
   },
   {
     type: ["nav"],
-    name: "some file",
+    name: "another file",
     path: ["some", "thing"],
     url: "www.google.com",
     lastEditedBy: "asdf",
-    lastEditedTime: 129823104823094,
+    lastEditedTime: 823104823094,
   },
   {
     type: ["file"],
@@ -234,7 +234,7 @@ export const MOCK_ITEMS: EditedItemProps[] = [
     ],
     url: "www.google.com",
     lastEditedBy: "asdf",
-    lastEditedTime: 129823104823094,
+    lastEditedTime: 129823094,
   },
   {
     type: ["image"],
@@ -242,7 +242,7 @@ export const MOCK_ITEMS: EditedItemProps[] = [
     path: ["some", "thing"],
     url: "www.google.com",
     lastEditedBy: "asdf",
-    lastEditedTime: 129823104823094,
+    lastEditedTime: 129823094,
   },
 ]
 

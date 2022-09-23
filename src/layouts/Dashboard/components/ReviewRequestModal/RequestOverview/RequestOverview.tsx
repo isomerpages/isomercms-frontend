@@ -22,14 +22,18 @@ import {
   Searchbar,
   IconButton,
   useSearchbar,
+  Button,
 } from "@opengovsg/design-system-react"
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getSortedRowModel,
   Row,
+  SortingState,
   useReactTable,
 } from "@tanstack/react-table"
+import { useState } from "react"
 import {
   BiGitCompare,
   BiWorld,
@@ -40,19 +44,24 @@ import {
   BiSort,
   BiFilterAlt,
   BiChevronRight,
+  BiChevronDown,
 } from "react-icons/bi"
 import { TableVirtuoso } from "react-virtuoso"
 
 import { BxFileArchiveSolid } from "assets"
 import { extractInitials, getDateTimeFromUnixTime } from "utils"
 
+const ICON_STYLE_PROPS = {
+  ml: "0.75rem",
+  fontSize: "1.25rem",
+  fill: "icon.alt",
+}
+
 const getIcon = (iconTypes: EditedItemProps["type"]): JSX.Element => {
   const iconType = iconTypes[0]
   switch (iconType) {
     case "nav": {
-      return (
-        <Icon ml="0.75rem" fontSize="1.25rem" fill="icon.alt" as={BiWorld} />
-      )
+      return <Icon {...ICON_STYLE_PROPS} as={BiWorld} />
     }
     case "file": {
       return (
@@ -65,22 +74,13 @@ const getIcon = (iconTypes: EditedItemProps["type"]): JSX.Element => {
       )
     }
     case "setting": {
-      return <Icon ml="0.75rem" fontSize="1.25rem" fill="icon.alt" as={BiCog} />
+      return <Icon {...ICON_STYLE_PROPS} as={BiCog} />
     }
     case "page": {
-      return (
-        <Icon
-          ml="0.75rem"
-          fontSize="1.25rem"
-          fill="icon.alt"
-          as={BiFileBlank}
-        />
-      )
+      return <Icon {...ICON_STYLE_PROPS} as={BiFileBlank} />
     }
     case "image": {
-      return (
-        <Icon ml="0.75rem" fontSize="1.25rem" fill="icon.alt" as={BiImage} />
-      )
+      return <Icon {...ICON_STYLE_PROPS} as={BiImage} />
     }
     default: {
       // NOTE: This is done to ensure exhaustive type matching
@@ -173,51 +173,53 @@ export const RequestOverview = ({
     handleCollapse,
   } = useSearchbar({})
   const columnHelper = createColumnHelper<EditedItemProps>()
+  const [sorting, setSorting] = useState<SortingState>([])
 
   const columns = [
     columnHelper.display({
       id: "filter",
       header: () => (
-        <Th w="3rem">
-          <IconButton
-            aria-label="filter by file type"
-            icon={<BiFilterAlt />}
-            variant="link"
-          />
-        </Th>
+        <Icon
+          fontSize="1.25rem"
+          aria-label="sort by file type"
+          as={BiFilterAlt}
+        />
       ),
       cell: (props) => getIcon(props.row.original.type),
     }),
     columnHelper.accessor((row) => `${row.name} ${row.path}`, {
       id: "itemName",
+      sortingFn: "textCaseSensitive",
       cell: ({ row }) => (
         <ItemName name={row.original.name} path={row.original.path} />
       ),
       header: () => (
-        <Th textTransform="capitalize">
-          <Text textStyle="subhead-2" textColor="text.label">
+        <HStack w="28rem" spacing="0.5rem">
+          <Text
+            textAlign="left"
+            textTransform="capitalize"
+            textStyle="subhead-2"
+            textColor="text.label"
+          >
             Item name
           </Text>
-        </Th>
+          <BiChevronDown fontSize="1rem" />
+        </HStack>
       ),
     }),
     columnHelper.accessor(
       (row) => `${row.lastEditedBy} ${row.lastEditedTime}`,
       {
         id: "lastEdited",
+        // TODO: need to convert base into dt objects to enable this sorting
+        sortingFn: "datetime",
         header: () => (
-          <Th textTransform="capitalize" w="12.5rem">
-            <HStack spacing="0.25rem">
-              <Text textStyle="subhead-2" textColor="text.label">
-                Last edited
-              </Text>
-              <IconButton
-                icon={<BiSort fontSize="1rem" />}
-                aria-label="sort by file type"
-                variant="link"
-              />
-            </HStack>
-          </Th>
+          <HStack w="9rem" textTransform="capitalize" spacing="0.5rem">
+            <Text textStyle="subhead-2" textColor="text.label">
+              Last edited
+            </Text>
+            <BiSort fontSize="1rem" />
+          </HStack>
         ),
         cell: ({ row }) => (
           <LastEditedMeta
@@ -229,7 +231,7 @@ export const RequestOverview = ({
     ),
     columnHelper.display({
       id: "actions",
-      header: () => <Th w="10rem" />,
+      header: () => null,
       cell: ({ row }) => (
         <HStack spacing="0.25rem">
           <Link href={row.original.url}>
@@ -252,7 +254,12 @@ export const RequestOverview = ({
   const table = useReactTable({
     data: items,
     columns,
+    state: {
+      sorting,
+    },
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   })
 
   return (
@@ -279,7 +286,10 @@ export const RequestOverview = ({
       </Flex>
       <Box w="100%" borderWidth="1px" borderRadius="8px" borderColor="gray.100">
         <TableVirtuoso
-          style={{ height: 400, borderRadius: "8px" }}
+          style={{
+            height: 400,
+            borderRadius: "8px",
+          }}
           data={items}
           totalCount={items.length}
           components={{
@@ -288,18 +298,25 @@ export const RequestOverview = ({
             TableRow: Tr,
             TableHead: (props) => <Thead {...props} bg="neutral.100" />,
           }}
-          fixedHeaderContent={() => (
-            <Tr>
-              {table
-                .getFlatHeaders()
-                .map((header) =>
-                  flexRender(
+          fixedHeaderContent={() =>
+            table.getFlatHeaders().map((header) => (
+              <Th key={header.id}>
+                <Button
+                  p={0}
+                  variant="link"
+                  _hover={{
+                    textDecoration: "none",
+                  }}
+                  onClick={header.column.getToggleSortingHandler()}
+                >
+                  {flexRender(
                     header.column.columnDef.header,
                     header.getContext()
-                  )
-                )}
-            </Tr>
-          )}
+                  )}
+                </Button>
+              </Th>
+            ))
+          }
           itemContent={(index) => {
             const row: Row<EditedItemProps> = table.getRowModel().rows[index]
             return row
