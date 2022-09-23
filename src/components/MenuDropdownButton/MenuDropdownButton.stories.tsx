@@ -2,7 +2,6 @@ import { Icon, Text } from "@chakra-ui/react"
 import { ThemeButtonVariant } from "@opengovsg/design-system-react/build/theme/components/Button"
 import { ComponentMeta, Story } from "@storybook/react"
 import { BiFileBlank, BiFolder } from "react-icons/bi"
-import { Link as RouterLink } from "react-router-dom"
 
 import { MenuDropdownButton, MenuDropdownItem } from "./MenuDropdownButton"
 
@@ -55,7 +54,6 @@ buttonWithoutIcons.args = {
 export const buttonWithIcons = menuDropdownButtonTemplate.bind({})
 buttonWithIcons.args = {
   mainButtonText: "Create page",
-
   variant: "outline",
   items: (
     <>
