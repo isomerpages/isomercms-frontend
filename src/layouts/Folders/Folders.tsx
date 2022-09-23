@@ -7,7 +7,11 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
-import { BiBulb, BiSort } from "react-icons/bi"
+import {
+  MenuDropdownButton,
+  MenuDropdownItem,
+} from "components/MenuDropdownButton"
+import { BiBulb, BiFileBlank, BiFolder, BiSort } from "react-icons/bi"
 import {
   Switch,
   useRouteMatch,
@@ -42,12 +46,7 @@ import {
 } from "../components"
 import { SiteViewLayout } from "../layouts"
 
-import {
-  FolderBreadcrumbs,
-  MenuDropdownButton,
-  FolderCard,
-  PageCard,
-} from "./components"
+import { FolderBreadcrumbs, FolderCard, PageCard } from "./components"
 
 export const Folders = (): JSX.Element => {
   const { params } = useRouteMatch<FolderUrlParams>()
@@ -95,7 +94,43 @@ export const Folders = (): JSX.Element => {
                   Reorder items
                 </Button>
                 {canCreateFolder ? (
-                  <MenuDropdownButton />
+                  <MenuDropdownButton
+                    variant="outline"
+                    mainButtonText="Create page"
+                    as={RouterLink}
+                    to={`${url}/createPage`}
+                  >
+                    <MenuDropdownItem
+                      as={RouterLink}
+                      to={`${url}/createPage`}
+                      icon={
+                        <Icon
+                          as={BiFileBlank}
+                          fontSize="1.25rem"
+                          fill="icon.alt"
+                        />
+                      }
+                    >
+                      <Text textStyle="body-1" fill="text.body">
+                        Create page
+                      </Text>
+                    </MenuDropdownItem>
+                    <MenuDropdownItem
+                      as={RouterLink}
+                      to={`${url}/createDirectory`}
+                      icon={
+                        <Icon
+                          as={BiFolder}
+                          fontSize="1.25rem"
+                          fill="icon.alt"
+                        />
+                      }
+                    >
+                      <Text textStyle="body-1" fill="text.body">
+                        Create folder
+                      </Text>
+                    </MenuDropdownItem>
+                  </MenuDropdownButton>
                 ) : (
                   <CreateButton as={RouterLink} to={`${url}/createPage`}>
                     Create page
