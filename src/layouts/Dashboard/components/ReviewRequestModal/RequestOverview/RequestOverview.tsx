@@ -17,6 +17,10 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   useTheme,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react"
 import {
   Searchbar,
@@ -25,9 +29,11 @@ import {
   Button,
 } from "@opengovsg/design-system-react"
 import {
+  ColumnFiltersState,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getSortedRowModel,
   Row,
   SortingState,
@@ -45,6 +51,7 @@ import {
   BiFilterAlt,
   BiChevronRight,
   BiChevronDown,
+  BiCompass,
 } from "react-icons/bi"
 import { TableVirtuoso } from "react-virtuoso"
 
@@ -64,14 +71,7 @@ const getIcon = (iconTypes: EditedItemProps["type"]): JSX.Element => {
       return <Icon {...ICON_STYLE_PROPS} as={BiWorld} />
     }
     case "file": {
-      return (
-        <Icon
-          ml="0.75rem"
-          fontSize="1.25rem"
-          fill="icon.alt"
-          as={BxFileArchiveSolid}
-        />
-      )
+      return <Icon {...ICON_STYLE_PROPS} as={BxFileArchiveSolid} />
     }
     case "setting": {
       return <Icon {...ICON_STYLE_PROPS} as={BiCog} />
@@ -173,19 +173,66 @@ export const RequestOverview = ({
     handleCollapse,
   } = useSearchbar({})
   const columnHelper = createColumnHelper<EditedItemProps>()
+  const theme = useTheme()
   const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
   const columns = [
-    columnHelper.display({
-      id: "filter",
-      header: () => (
-        <Icon
-          fontSize="1.25rem"
-          aria-label="sort by file type"
-          as={BiFilterAlt}
-        />
+    columnHelper.accessor((row) => row.type, {
+      id: "type",
+      header: ({ column }) => (
+        <Menu>
+          <MenuButton
+            as={IconButton}
+            variant="clear"
+            icon={<BiFilterAlt />}
+            fontSize="1.25rem"
+            aria-label="sort by file type"
+          />
+          <MenuList>
+            <MenuItem
+              icon={
+                // NOTE: Using an Icon component to hook into design system results in a
+                // slightly off center icon, which is why using the base component itself
+                // from react-icons + using the theme is preferred.
+                <BiFileBlank fontSize="1rem" fill={theme.colors.icon.alt} />
+              }
+              iconSpacing="0.5rem"
+              onClick={() => {
+                column.setFilterValue(["page", "image", "file"])
+              }}
+            >
+              <Text textStyle="subhead-2" textColor="text.body">
+                Pages
+              </Text>
+            </MenuItem>
+            <MenuItem
+              iconSpacing="0.5rem"
+              icon={<BiCog fontSize="1rem" fill={theme.colors.icon.alt} />}
+              onClick={() => {
+                column.setFilterValue(["setting"])
+              }}
+            >
+              <Text textStyle="subhead-2" textColor="text.body">
+                Settings
+              </Text>
+            </MenuItem>
+            <MenuItem
+              icon={<BiCompass fontSize="1rem" fill={theme.colors.icon.alt} />}
+              iconSpacing="0.5rem"
+              onClick={() => {
+                column.setFilterValue(["nav"])
+              }}
+            >
+              <Text textStyle="subhead-2" textColor="text.body">
+                Navigation
+              </Text>
+            </MenuItem>
+          </MenuList>
+        </Menu>
       ),
       cell: (props) => getIcon(props.row.original.type),
+      filterFn: "arrIncludesSome",
     }),
     columnHelper.accessor((row) => `${row.name} ${row.path}`, {
       id: "itemName",
@@ -193,42 +240,61 @@ export const RequestOverview = ({
       cell: ({ row }) => (
         <ItemName name={row.original.name} path={row.original.path} />
       ),
-      header: () => (
-        <HStack w="28rem" spacing="0.5rem">
-          <Text
-            textAlign="left"
-            textTransform="capitalize"
-            textStyle="subhead-2"
-            textColor="text.label"
-          >
-            Item name
-          </Text>
-          <BiChevronDown fontSize="1rem" />
-        </HStack>
+      // NOTE: This is case insensitive and will search through both name + path
+      // This is due to the accessor returning a composite string.
+      // Do note that the path will be joined using a , so for composite search paths
+      // like: /some/folder, the correct search term would be some,folder.
+      filterFn: "includesString",
+      header: ({ column }) => (
+        <Button
+          ml="-0.25rem"
+          variant="link"
+          _hover={{
+            textDecoration: "none",
+          }}
+          onClick={column.getToggleSortingHandler()}
+        >
+          <HStack w="28rem" spacing="0.5rem">
+            <Text
+              textAlign="left"
+              textTransform="capitalize"
+              textStyle="subhead-2"
+              textColor="text.label"
+            >
+              Item name
+            </Text>
+            <BiChevronDown fontSize="1rem" />
+          </HStack>
+        </Button>
       ),
     }),
-    columnHelper.accessor(
-      (row) => `${row.lastEditedBy} ${row.lastEditedTime}`,
-      {
-        id: "lastEdited",
-        // TODO: need to convert base into dt objects to enable this sorting
-        sortingFn: "datetime",
-        header: () => (
+    columnHelper.accessor((row) => new Date(row.lastEditedTime), {
+      id: "lastEdited",
+      sortingFn: "datetime",
+      header: ({ column }) => (
+        <Button
+          ml="-0.25rem"
+          variant="link"
+          _hover={{
+            textDecoration: "none",
+          }}
+          onClick={column.getToggleSortingHandler()}
+        >
           <HStack w="9rem" textTransform="capitalize" spacing="0.5rem">
             <Text textStyle="subhead-2" textColor="text.label">
               Last edited
             </Text>
             <BiSort fontSize="1rem" />
           </HStack>
-        ),
-        cell: ({ row }) => (
-          <LastEditedMeta
-            lastEditedBy={row.original.lastEditedBy}
-            lastEditedTime={row.original.lastEditedTime}
-          />
-        ),
-      }
-    ),
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <LastEditedMeta
+          lastEditedBy={row.original.lastEditedBy}
+          lastEditedTime={row.original.lastEditedTime}
+        />
+      ),
+    }),
     columnHelper.display({
       id: "actions",
       header: () => null,
@@ -255,11 +321,14 @@ export const RequestOverview = ({
     data: items,
     columns,
     state: {
+      columnFilters,
       sorting,
     },
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
   })
 
   return (
@@ -278,9 +347,7 @@ export const RequestOverview = ({
           ref={inputRef}
           onSearchIconClick={handleExpansion}
           isExpanded={isExpanded}
-          onSearch={() => {
-            console.log("hi")
-          }}
+          onSearch={table.getColumn("itemName").setFilterValue}
           onBlur={handleCollapse}
         />
       </Flex>
@@ -290,7 +357,10 @@ export const RequestOverview = ({
             height: 400,
             borderRadius: "8px",
           }}
-          data={items}
+          // NOTE: Pass in only the list of filtered rows.
+          // This is to ensure that no indexing error occurs
+          // Eg: we filter so that only 1 item remains but render index is >1
+          data={table.getFilteredRowModel().rows}
           totalCount={items.length}
           components={{
             Table,
@@ -299,26 +369,21 @@ export const RequestOverview = ({
             TableHead: (props) => <Thead {...props} bg="neutral.100" />,
           }}
           fixedHeaderContent={() =>
-            table.getFlatHeaders().map((header) => (
-              <Th key={header.id}>
-                <Button
-                  p={0}
-                  variant="link"
-                  _hover={{
-                    textDecoration: "none",
-                  }}
-                  onClick={header.column.getToggleSortingHandler()}
-                >
+            table
+              .getFlatHeaders()
+              .map((header) => (
+                <Th key={header.id}>
                   {flexRender(
                     header.column.columnDef.header,
                     header.getContext()
                   )}
-                </Button>
-              </Th>
-            ))
+                </Th>
+              ))
           }
           itemContent={(index) => {
             const row: Row<EditedItemProps> = table.getRowModel().rows[index]
+            // NOTE: This is guaranteed to exist because the table will filter
+            // so that the index we're referencing is within the filtered items.
             return row
               .getVisibleCells()
               .map((cell) => (

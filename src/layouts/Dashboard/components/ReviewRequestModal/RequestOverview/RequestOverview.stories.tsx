@@ -22,7 +22,7 @@ import { MOCK_ITEMS } from "mocks/constants"
 
 import { RequestOverview, RequestOverviewProps } from "./RequestOverview"
 
-const formMeta = {
+const overviewMeta = {
   title: "Components/ReviewRequestModal/Overview",
   component: RequestOverview,
 } as ComponentMeta<typeof RequestOverview>
@@ -99,8 +99,8 @@ const Template: Story<RequestOverviewProps> = ({ items }) => {
   )
 }
 
-export const ManyEditors = Template.bind({})
-ManyEditors.args = {
+export const ManyEdits = Template.bind({})
+ManyEdits.args = {
   items: _.times(100, () => MOCK_ITEMS).flat(),
 }
 
@@ -109,4 +109,4 @@ Playground.args = {
   items: MOCK_ITEMS,
 }
 
-export default formMeta
+export default overviewMeta
