@@ -1,35 +1,50 @@
-import { ModalHeader, ModalBody, Text, Stack } from "@chakra-ui/react"
+import {
+  ModalHeader,
+  ModalBody,
+  Text,
+  Stack,
+  useModalContext,
+} from "@chakra-ui/react"
 import { Button, ModalCloseButton } from "@opengovsg/design-system-react"
 import { useCollaboratorModalContext } from "components/CollaboratorModal/CollaboratorModalContext"
-import { CollaboratorModalState } from "components/CollaboratorModal/constants"
 
+import { useLoginContext } from "contexts/LoginContext"
+
+import { useDeleteCollaboratorHook } from "hooks/collaboratorHooks"
 import useRedirectHook from "hooks/useRedirectHook"
 
-const RemoveCollaboratorSubmodal = () => {
+const TEXT_FONT_SIZE = "14px"
+
+const RemoveCollaboratorSubmodal = ({
+  siteName,
+}: {
+  siteName: string
+}): JSX.Element => {
   return (
     <>
       <ModalHeader>Remove collaborator?</ModalHeader>
       <ModalCloseButton />
       <ModalBody>
-        <RemoveCollaboratorSubmodalContent />
+        <RemoveCollaboratorSubmodalContent siteName={siteName} />
       </ModalBody>
     </>
   )
 }
-const RemoveCollaboratorSubmodalContent = () => {
-  const {
-    closeModal,
-    setModalState,
-    deleteCollaboratorTarget,
-    setDeleteCollaboratorTarget,
-    handleDeleteCollaborator,
-    localUser,
-  } = useCollaboratorModalContext()
+const RemoveCollaboratorSubmodalContent = ({
+  siteName,
+}: {
+  siteName: string
+}) => {
+  const { deleteCollaboratorTarget } = useCollaboratorModalContext()
   const { setRedirectToPage } = useRedirectHook()
-  const TEXT_FONT_SIZE = "14px"
+  const { email } = useLoginContext()
+  const userIsDeletingThemselves = email === deleteCollaboratorTarget?.email
+  const { onClose } = useModalContext()
 
-  const userIsDeletingThemselves =
-    localUser.email === deleteCollaboratorTarget?.email
+  const { mutateAsync: deleteCollaborator } = useDeleteCollaboratorHook(
+    siteName
+  )
+
   return (
     <>
       {userIsDeletingThemselves ? (
@@ -51,25 +66,17 @@ const RemoveCollaboratorSubmodalContent = () => {
       )}
 
       <Stack spacing={4} direction="row" justify="right" mt="36px">
-        <Button
-          variant="clear"
-          color="secondary"
-          onClick={() => {
-            setModalState(CollaboratorModalState.Default)
-            setDeleteCollaboratorTarget({})
-            closeModal()
-          }}
-        >
+        <Button variant="clear" color="secondary" onClick={onClose}>
           Cancel
         </Button>
         <Button
           colorScheme="danger"
-          onClick={() => {
+          onClick={async () => {
             if (userIsDeletingThemselves) {
               setRedirectToPage(`/sites`)
             }
-            setModalState(CollaboratorModalState.Default)
-            handleDeleteCollaborator(deleteCollaboratorTarget.id)
+            await deleteCollaborator(deleteCollaboratorTarget.id)
+            onClose()
           }}
         >
           {userIsDeletingThemselves ? "Remove myself" : "Remove collaborator"}

@@ -2,31 +2,18 @@ import { CollaboratorModalState } from "components/CollaboratorModal/constants"
 import { createContext, useContext, Dispatch, SetStateAction } from "react"
 
 interface CollaboratorModalProps {
-  newCollaboratorEmail: string
-  setNewCollaboratorEmail: Dispatch<SetStateAction<string>>
-  addCollaboratorError: string
-  setAddCollaboratorError: Dispatch<SetStateAction<string>>
-  modalState: CollaboratorModalState
-  setModalState: Dispatch<SetStateAction<CollaboratorModalState>>
-  isAcknowledged: boolean
-  setIsAcknowledged: Dispatch<SetStateAction<boolean>>
+  setModalState: (state: CollaboratorModalState) => void
   collaboratorData: any // TODO
   collaboratorRoleData: { role: string } // TODO
-  addCollaborator: any // TODO
-  deleteCollaborator: any // TODO
-  handleAddCollaborator: any // TODO
-  handleDeleteCollaborator: any // TODO
-  isModalOpen: boolean
-  closeModal: () => void
-  localUser: any // TODO
   deleteCollaboratorTarget: any // TODO
   setDeleteCollaboratorTarget: Dispatch<SetStateAction<any>> // TODO
 }
+
 const CollaboratorModalContext = createContext<
   CollaboratorModalProps | undefined
 >(undefined)
 
-const useCollaboratorModalContext = () => {
+const useCollaboratorModalContext = (): CollaboratorModalProps => {
   const collaboratorModalContext = useContext(CollaboratorModalContext)
   if (!collaboratorModalContext) {
     throw new Error(
