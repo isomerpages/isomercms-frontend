@@ -66,7 +66,7 @@ const RemoveCollaboratorSubmodalContent = () => {
           colorScheme="danger"
           onClick={() => {
             if (userIsDeletingThemselves) {
-              setRedirectToPage(`http://localhost:3000/sites`)
+              setRedirectToPage(`/sites`)
             }
             setModalState(CollaboratorModalState.Default)
             handleDeleteCollaborator(deleteCollaboratorTarget.id)
