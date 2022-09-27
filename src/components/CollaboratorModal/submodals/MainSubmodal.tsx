@@ -161,8 +161,9 @@ export const MainSubmodal = ({
         <LoadingButton
           mt="16px"
           isDisabled={
-            (!!addCollaboratorError &&
-              errorMessage !== ACK_REQUIRED_ERROR_MESSAGE) ||
+            // Made this more specific for readability
+            newCollaboratorEmail === "" ||
+            addCollaboratorError !== "" ||
             collaboratorRoleData?.role !== "ADMIN"
           }
           type="submit"
