@@ -12,13 +12,13 @@ import {
   Input,
 } from "@chakra-ui/react"
 import {
-  Button,
   IconButton,
   ModalCloseButton,
   FormErrorMessage,
   FormLabel,
 } from "@opengovsg/design-system-react"
 import { useCollaboratorModalContext } from "components/CollaboratorModal/CollaboratorModalContext"
+import { LoadingButton } from "components/LoadingButton"
 import { BiTrash } from "react-icons/bi"
 
 import { CollaboratorModalState } from "../constants"
@@ -126,7 +126,7 @@ const MainSubmodal = () => {
           />
           <FormErrorMessage>{addCollaboratorError}</FormErrorMessage>
         </FormControl>
-        <Button
+        <LoadingButton
           mt="16px"
           isDisabled={
             !!addCollaboratorError || collaboratorRoleData?.role !== "ADMIN"
@@ -134,7 +134,7 @@ const MainSubmodal = () => {
           onClick={handleAddCollaborator}
         >
           Add collaborator
-        </Button>
+        </LoadingButton>
         <CollaboratorListSection />
       </ModalBody>
       <ModalFooter />
