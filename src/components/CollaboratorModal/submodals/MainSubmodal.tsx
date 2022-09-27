@@ -2,7 +2,6 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  Center,
   Grid,
   GridItem,
   Text,
