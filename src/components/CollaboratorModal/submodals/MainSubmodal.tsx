@@ -100,6 +100,7 @@ const CollaboratorListSection = () => {
 
 const MainSubmodal = () => {
   const {
+    newCollaboratorEmail,
     setNewCollaboratorEmail,
     collaboratorRoleData,
     handleAddCollaborator,
@@ -128,7 +129,10 @@ const MainSubmodal = () => {
         <LoadingButton
           mt="16px"
           isDisabled={
-            !!addCollaboratorError || collaboratorRoleData?.role !== "ADMIN"
+            // Made this more specific for readability
+            newCollaboratorEmail === "" ||
+            addCollaboratorError !== "" ||
+            collaboratorRoleData?.role !== "ADMIN"
           }
           onClick={handleAddCollaborator}
         >
