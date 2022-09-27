@@ -87,7 +87,9 @@ const AcknowledgementSubmodalContent = () => {
       <Checkbox onChange={() => setIsAcknowledged(!isAcknowledged)}>
         <Text color="text.body" fontSize="16px">
           <Text as="span">I agree to Isomer&lsquo;s</Text>{" "}
-          <Link href={TERMS_OF_USE_LINK}>Terms of Use</Link>
+          <Link href={TERMS_OF_USE_LINK} target="_blank">
+            Terms of Use
+          </Link>
         </Text>
       </Checkbox>
       <Stack spacing={4} direction="row" justify="right">
