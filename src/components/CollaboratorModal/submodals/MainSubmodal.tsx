@@ -44,7 +44,6 @@ const CollaboratorListSection = () => {
   return (
     <Box m="10px" mt="40px">
       {collaboratorData &&
-        collaboratorData &&
         // TODO: remove any type - requires moving shared types from the backend repo
         collaboratorData.collaborators.map((collaborator: any) => (
           <>
