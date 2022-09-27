@@ -1,6 +1,12 @@
+import { AxiosError } from "axios"
 import { CollaboratorModalState } from "components/CollaboratorModal/constants"
 import { Dispatch, SetStateAction } from "react"
-import { useQuery, useMutation, useQueryClient } from "react-query"
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  UseMutationResult,
+} from "react-query"
 
 import {
   LIST_COLLABORATORS_KEY,
@@ -13,6 +19,7 @@ import * as CollaboratorService from "services/CollaboratorService"
 
 import { useSuccessToast, useErrorToast } from "utils/toasts"
 
+import { CollaboratorError } from "types/collaborators"
 import { DEFAULT_RETRY_MSG } from "utils"
 
 export const useListCollaboratorsHook = (siteName: string) => {
@@ -80,39 +87,23 @@ export const useDeleteCollaboratorHook = (siteName: string) => {
 }
 
 export const useAddCollaboratorHook = (
-  siteName: string,
-  setAddCollaboratorError: Dispatch<SetStateAction<string>>,
-  setModalState: Dispatch<SetStateAction<CollaboratorModalState>>,
-  isAcknowledged: boolean,
-  setIsAcknowledged: Dispatch<SetStateAction<boolean>>
-) => {
+  siteName: string
+): UseMutationResult<
+  void,
+  AxiosError<{ error: CollaboratorError }>,
+  { newCollaboratorEmail: string; isAcknowledged: boolean }
+> => {
   const queryClient = useQueryClient()
-  const successToast = useSuccessToast()
-  const ACK_REQUIRED_ERROR_MESSAGE = "Acknowledgement required"
   return useMutation(
-    (email: string) =>
-      CollaboratorService.addCollaborator(siteName, email, isAcknowledged),
+    ({ newCollaboratorEmail, isAcknowledged }) =>
+      CollaboratorService.addCollaborator(
+        siteName,
+        newCollaboratorEmail,
+        isAcknowledged
+      ),
     {
       onSuccess: () => {
         queryClient.invalidateQueries([LIST_COLLABORATORS_KEY, siteName])
-        successToast({ description: "Collaborator added successfully" })
-        setAddCollaboratorError("")
-        setModalState(CollaboratorModalState.Default)
-        setIsAcknowledged(false)
-      },
-      onError: (error: any) => {
-        const {
-          code: errStatusCode,
-          message: errMessage,
-        } = error?.response?.data?.error
-        setIsAcknowledged(false)
-        if (errMessage === ACK_REQUIRED_ERROR_MESSAGE) {
-          setModalState(CollaboratorModalState.Acknowledgement)
-        } else {
-          setAddCollaboratorError(
-            errStatusCode === 500 ? DEFAULT_RETRY_MSG : errMessage
-          )
-        }
       },
     }
   )

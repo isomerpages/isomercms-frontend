@@ -1,5 +1,3 @@
-import { string } from "prop-types"
-
 // TODO: Replace with actual model types in backend
 
 export interface SiteModel {
@@ -45,4 +43,9 @@ export type CollaboratorData = {
 }
 export type CollaboratorRoleData = {
   role: SiteMemberModel["role"]
+}
+
+export interface CollaboratorError {
+  code: number
+  message: string
 }
