@@ -71,9 +71,9 @@ const RemoveCollaboratorSubmodalContent = ({
         </Button>
         <Button
           colorScheme="danger"
-          onClick={async () => {
-            if (isUserDeletingThemselves) {
-              setRedirectToPage(`http://localhost:3000/sites`)
+          onClick={() => {
+            if (userIsDeletingThemselves) {
+              setRedirectToPage(`/sites`)
             }
             await deleteCollaborator(deleteCollaboratorTarget.id)
             onClose()
