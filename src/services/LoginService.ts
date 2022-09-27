@@ -12,6 +12,5 @@ export const verifyLoginOtp = async ({
   otp,
 }: VerifyOtpParams): Promise<void> => {
   const endpoint = `/auth/verify`
-  const res = await apiService.post(endpoint, { email, otp })
-  return res.data
+  return apiService.post(endpoint, { email, otp })
 }

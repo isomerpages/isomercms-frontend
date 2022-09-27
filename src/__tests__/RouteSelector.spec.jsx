@@ -110,7 +110,7 @@ jest.mock("layouts/Workspace", () => {
 jest.mock("layouts/Media", () => {
   return {
     __esModule: true,
-    default: () => {
+    Media: () => {
       return <div>{MEDIA_LAYOUT_TEXT}</div>
     },
   }
@@ -147,7 +147,7 @@ const LoggedInContextProvider = ({ children }) => {
   const loggedInContextData = {
     userId: "test-user",
     email: "test-email",
-    accountName: "test-user",
+    displayedName: "test-user",
     logout: jest.fn(),
   }
 
@@ -162,7 +162,7 @@ const NotLoggedInContextProvider = ({ children }) => {
   const notLoggedInContextData = {
     userId: null,
     email: null,
-    accountName: null,
+    displayedName: null,
     logout: jest.fn(),
   }
 

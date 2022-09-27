@@ -1,6 +1,8 @@
 import { AxiosError } from "axios"
 import { useMutation, UseMutationResult } from "react-query"
 
+import { useLoginContext } from "contexts/LoginContext"
+
 import * as LoginService from "services/LoginService"
 
 import { VerifyOtpParams } from "types/login"
@@ -10,7 +12,11 @@ export const useVerifyOtp = (): UseMutationResult<
   AxiosError,
   VerifyOtpParams
 > => {
-  return useMutation<void, AxiosError, VerifyOtpParams>((body) =>
-    LoginService.verifyLoginOtp(body)
+  const { verifyLoginAndSetLocalStorage } = useLoginContext()
+  return useMutation<void, AxiosError, VerifyOtpParams>(
+    (body) => LoginService.verifyLoginOtp(body),
+    {
+      onSuccess: verifyLoginAndSetLocalStorage,
+    }
   )
 }

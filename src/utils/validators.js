@@ -27,7 +27,7 @@ export const TIKTOK_REGEX = ".com/@)([a-zA-Z0-9_-]+([/.])?)+$"
 // 3. The last section after "+" is to match the TLD segment of the domain
 // 4. The "^" and "$" ensures that we are matching the whole string (to prevent the user from adding "https://")
 export const DOMAIN_NAME_REGEX =
-  "^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$"
+  "^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]\\/?$"
 const PHONE_REGEX = "^\\+65(6|8|9)[0-9]{7}$"
 const EMAIL_REGEX =
   '^(([^<>()\\[\\]\\.,;:\\s@\\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\\"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z-0-9]+\\.)+[a-zA-Z]{2,}))$'

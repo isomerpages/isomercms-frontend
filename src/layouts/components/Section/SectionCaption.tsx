@@ -1,4 +1,4 @@
-import { TextProps, Text, Flex, Icon, Box, HStack } from "@chakra-ui/react"
+import { TextProps, Text, Icon, HStack } from "@chakra-ui/react"
 
 interface SectionCaptionProps extends TextProps {
   icon: (props: React.SVGProps<SVGSVGElement>) => JSX.Element
@@ -11,8 +11,8 @@ export const SectionCaption = ({
   ...rest
 }: SectionCaptionProps): JSX.Element => {
   return (
-    <HStack spacing="0.25rem" w="100%">
-      <Icon as={icon} fill="icon.alt" fontSize="1rem" />
+    <HStack spacing="0.25rem" w="100%" alignItems="flex-start">
+      <Icon as={icon} fill="icon.alt" fontSize="1.25rem" />
       <Text as="p" color="text.description">
         <Text textStyle="subhead-3" as="span">
           {label}

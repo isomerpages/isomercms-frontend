@@ -2,7 +2,7 @@ import "cypress-pipe"
 import { Interceptors } from "../fixtures/constants"
 
 Cypress.Commands.add("uploadMedia", (mediaTitle, mediaPath, disableAction) => {
-  cy.contains(`Upload new`).click().get("#file-upload").attachFile(mediaPath)
+  cy.contains(`Upload`).click().get("#file-upload").attachFile(mediaPath)
 
   cy.get("#name").clear().type(mediaTitle).blur()
   if (!disableAction)

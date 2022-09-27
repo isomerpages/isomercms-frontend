@@ -1,4 +1,5 @@
 import {
+  Box,
   Divider,
   Flex,
   GridItem,
@@ -19,10 +20,12 @@ import {
   InlineMessage,
   Link,
 } from "@opengovsg/design-system-react"
-import { useEffect, useState, PropsWithChildren } from "react"
+import { useState, PropsWithChildren } from "react"
+import { useHistory } from "react-router-dom"
 
 import { useLogin, useVerifyOtp } from "hooks/loginHooks"
 
+import { getAxiosErrorMessage } from "utils/axios"
 import { useSuccessToast } from "utils/toasts"
 
 import { IsomerLogo, LoginImage, OGPLogo } from "assets"
@@ -55,8 +58,7 @@ const FooterLink = ({
 }: PropsWithChildren<FooterLinkProps>): JSX.Element => (
   <Link
     href={link}
-    rel="noopener noreferrer"
-    target="_blank"
+    isExternal
     textDecorationLine="none"
     color="text.link.dark"
     _hover={{
@@ -75,12 +77,11 @@ const LoginContent = (): JSX.Element => {
 
   const successToast = useSuccessToast()
   const [email, setEmail] = useState<string>("")
-  const [loginErrorMessage, setLoginErrorMessage] = useState("")
-  const [verifyErrorMessage, setVerifyErrorMessage] = useState("")
+  const history = useHistory()
 
   const handleSendOtp = async ({ email: emailInput }: LoginProps) => {
     const trimmedEmail = emailInput.trim()
-    await sendLoginOtp({ email: trimmedEmail })
+    await sendLoginOtp({ email: trimmedEmail }) // Non-2xx responses will be caught by axios and thrown as error
     successToast({
       description: `OTP sent to ${trimmedEmail}`,
     })
@@ -89,25 +90,15 @@ const LoginContent = (): JSX.Element => {
 
   const handleVerifyOtp = async ({ otp }: OtpProps) => {
     await verifyLoginOtp({ email, otp })
-    window.location.reload()
+    history.replace("/sites")
   }
 
   const handleResendOtp = async () => {
     await sendLoginOtp({ email })
     successToast({
-      description: `OTP sent to ${email}!`,
+      description: `OTP sent to ${email}`,
     })
   }
-
-  useEffect(() => {
-    const errorMessage = loginError?.response?.data?.error?.message
-    setLoginErrorMessage(errorMessage)
-  }, [loginError])
-
-  useEffect(() => {
-    const errorMessage = verifyError?.response?.data?.error?.message
-    setVerifyErrorMessage(errorMessage)
-  }, [verifyError])
 
   return (
     <VStack gap="2.5rem" alignItems="start" width="65%">
@@ -124,7 +115,7 @@ const LoginContent = (): JSX.Element => {
           <Tab>Github Login</Tab>
           <Tab>Email Login</Tab>
         </TabList>
-        <TabPanels pt="2rem">
+        <TabPanels pt="2rem" minHeight="16.5rem">
           <TabPanel>
             <Button
               as={Link}
@@ -145,37 +136,36 @@ const LoginContent = (): JSX.Element => {
                 email={email}
                 onSubmit={handleVerifyOtp}
                 onResendOtp={handleResendOtp}
-                errorMessage={verifyErrorMessage || loginErrorMessage}
+                errorMessage={
+                  getAxiosErrorMessage(loginError) ||
+                  getAxiosErrorMessage(verifyError)
+                }
               />
             ) : (
               <LoginForm
                 onSubmit={handleSendOtp}
-                errorMessage={loginErrorMessage}
+                errorMessage={getAxiosErrorMessage(loginError)}
               />
             )}
           </TabPanel>
+          <Text color="text.helper" fontSize="0.625rem" pt="2rem">
+            By clicking ‘Log in’, you are acknowledging and agreeing to Isomer’s{" "}
+            <Link
+              href="https://guide.isomer.gov.sg/terms-and-privacy/terms-of-use"
+              isExternal
+            >
+              Terms of Use
+            </Link>
+            {" and our "}
+            <Link
+              href="https://guide.isomer.gov.sg/terms-and-privacy/privacy-statement"
+              isExternal
+            >
+              Privacy policy
+            </Link>
+          </Text>
         </TabPanels>
       </Tabs>
-      <Text color="text.helper" fontSize="0.625rem">
-        By clicking “Log in”, you are acknowledging and agreeing to Isomer’s{" "}
-        <Link
-          href="https://guide.isomer.gov.sg/terms-and-privacy/terms-of-use"
-          rel="noopener noreferrer"
-          target="_blank"
-          fontSize="0.625rem"
-        >
-          Terms of Use
-        </Link>
-        {" and our "}
-        <Link
-          href="https://guide.isomer.gov.sg/terms-and-privacy/privacy-statement"
-          rel="noopener noreferrer"
-          target="_blank"
-          fontSize="0.625rem"
-        >
-          Privacy policy
-        </Link>
-      </Text>
     </VStack>
   )
 }
@@ -190,7 +180,7 @@ export const LoginPage = (): JSX.Element => (
         </Flex>
       </GridItem>
       <GridItem area="content" bgColor="white">
-        <Flex h="100%" alignItems="center" justifyContent="center">
+        <Flex h="100%" maxW="54rem" alignItems="center" justifyContent="center">
           <LoginContent />
         </Flex>
       </GridItem>
@@ -205,17 +195,19 @@ export const LoginPage = (): JSX.Element => (
       </GridItem>
       <GridItem area="links" bgColor="white">
         <Flex h="100%" alignItems="center" justifyContent="center">
-          <HStack fontSize="0.75rem" gap="1.5rem">
-            <FooterLink link="https://form.gov.sg/#!/5dc80f7c03b2790012428dc5">
-              Contact Us
-            </FooterLink>
-            <FooterLink link="https://go.gov.sg/isomercms-guide/">
-              Guide
-            </FooterLink>
-            <FooterLink link="https://www.tech.gov.sg/report_vulnerability/">
-              Report vulnerability
-            </FooterLink>
-          </HStack>
+          <Box w="65%">
+            <HStack fontSize="0.75rem" gap="1.5rem" justifyContent="end">
+              <FooterLink link="https://form.gov.sg/#!/5dc80f7c03b2790012428dc5">
+                Contact Us
+              </FooterLink>
+              <FooterLink link="https://go.gov.sg/isomercms-guide/">
+                Guide
+              </FooterLink>
+              <FooterLink link="https://www.tech.gov.sg/report_vulnerability/">
+                Report vulnerability
+              </FooterLink>
+            </HStack>
+          </Box>
         </Flex>
       </GridItem>
     </Grid>

@@ -12,7 +12,7 @@ import EditNavBar from "layouts/EditNavBar"
 import EditPage from "layouts/EditPage"
 import { Folders } from "layouts/Folders"
 import { LoginPage } from "layouts/Login"
-import Media from "layouts/Media"
+import { Media } from "layouts/Media"
 import NotFoundPage from "layouts/NotFoundPage"
 import { ResourceCategory } from "layouts/ResourceCategory"
 import { ResourceRoom } from "layouts/ResourceRoom"
@@ -33,7 +33,7 @@ export const RouteSelector = () => (
       <Banner variant={BANNER_VARIANT}>{BANNER_MESSAGE}</Banner>
     )}
     <Switch>
-      <RedirectIfLoggedInRoute exact path="/" component={LoginPage} />
+      <RedirectIfLoggedInRoute exact path="/" unauthedComponent={LoginPage} />
       <ProtectedRouteWithProps
         exact
         path={[

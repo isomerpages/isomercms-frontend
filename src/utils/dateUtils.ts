@@ -1,3 +1,7 @@
+/**
+ * Converts a date/time string retrieved from Github to human readable string representing time difference.
+ * e.g. 2022-08-24T08:30:46Z to Updated today
+ */
 export const convertUtcToTimeDiff = (lastUpdatedTime: string): string => {
   const gapInUpdate = new Date().getTime() - new Date(lastUpdatedTime).getTime()
   const numDaysAgo = Math.floor(gapInUpdate / (1000 * 60 * 60 * 24))

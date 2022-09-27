@@ -5,7 +5,12 @@ import {
   CollaboratorRoleData,
   SiteMemberModel,
 } from "types/collaborators"
-import { DirectoryData, PageData, ResourcePageData } from "types/directory"
+import {
+  DirectoryData,
+  PageData,
+  ResourcePageData,
+  MediaData,
+} from "types/directory"
 import { BackendSiteSettings } from "types/settings"
 import { LoggedInUser } from "types/user"
 
@@ -63,7 +68,11 @@ export const buildLastUpdated = apiDataBuilder<{ lastUpdated: string }>(
 )
 
 export const buildResourceCategoryData = apiDataBuilder<ResourcePageData[]>(
-  "/*sites/:siteName/resourceRoom/:resourceRoomName/resources/:resourceCategoryName"
+  "*/sites/:siteName/resourceRoom/:resourceRoomName/resources/:resourceCategoryName"
+)
+
+export const buildMediaData = apiDataBuilder<(MediaData | DirectoryData)[]>(
+  "*/sites/:siteName/media/:mediaDirectoryName"
 )
 
 export const addContributorCollaborator = () =>

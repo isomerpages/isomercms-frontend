@@ -54,7 +54,7 @@ export const LoginForm = ({
             validate: validateEmail,
           })}
         />
-        {errorMessage && <FormErrorMessage>{errorMessage}</FormErrorMessage>}
+        <FormErrorMessage>{formState.errors.email?.message}</FormErrorMessage>
         <Button mt="1rem" type="submit" isLoading={formState.isSubmitting}>
           Log in
         </Button>
