@@ -123,6 +123,9 @@ const MainSubmodal = () => {
               setNewCollaboratorEmail(event.target.value)
               setAddCollaboratorError("")
             }}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") handleAddCollaborator()
+            }}
           />
           <FormErrorMessage>{addCollaboratorError}</FormErrorMessage>
         </FormControl>
