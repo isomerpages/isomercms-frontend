@@ -4,19 +4,17 @@ import {
   ModalContent,
   ModalHeader,
   VStack,
-  ModalCloseButton,
   ModalBody,
   Tabs,
   TabList,
-  Tab,
   TabPanels,
   TabPanel,
   Divider,
   Text,
   ModalFooter,
-  Button,
   useDisclosure,
 } from "@chakra-ui/react"
+import { ModalCloseButton, Button, Tab } from "@opengovsg/design-system-react"
 import { Story, ComponentMeta } from "@storybook/react"
 import _ from "lodash"
 
