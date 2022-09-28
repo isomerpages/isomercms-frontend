@@ -1,5 +1,19 @@
-import { HStack, VStack, Text, Box, Avatar, Icon } from "@chakra-ui/react"
-import { IconButton, Button } from "@opengovsg/design-system-react"
+import {
+  HStack,
+  VStack,
+  Text,
+  Box,
+  Avatar,
+  Flex,
+  Spacer,
+  useClipboard,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverBody,
+  PopoverArrow,
+} from "@chakra-ui/react"
+import { IconButton } from "@opengovsg/design-system-react"
 import {
   MenuDropdownButton,
   MenuDropdownItem,
@@ -7,63 +21,96 @@ import {
 import { useState } from "react"
 import { BiLink } from "react-icons/bi"
 
+import { MOCK_ITEMS } from "mocks/constants"
 import { extractInitials, getDateTimeFromUnixTime } from "utils"
+
+import { RequestOverview } from "./components/RequestOverview"
 
 const useGetPullRequest = (siteName: string) => {
   return {
     title: "Update STCCED hyperlink, customs duty",
     requestor: "seaerchin",
     reviewers: ["nat mae tan", "jiachin er"],
+    changedItems: MOCK_ITEMS,
   }
 }
 
 export interface ReviewRequestDashboardProps {
   siteName: string
+  reviewUrl: string
 }
 export const ReviewRequestDashboard = ({
   siteName,
+  reviewUrl,
 }: ReviewRequestDashboardProps): JSX.Element => {
-  const { title, requestor, reviewers } = useGetPullRequest(siteName)
+  const { title, requestor, reviewers, changedItems } = useGetPullRequest(
+    siteName
+  )
+  const { onCopy, hasCopied } = useClipboard(reviewUrl)
+
   return (
-    <VStack
-      bg="blue.50"
-      pl="9.25rem"
-      pr="2rem"
-      pt="2rem"
-      pb="1.5rem"
-      spacing="0.75rem"
-      align="flex-start"
-    >
-      <HStack spacing="2rem">
-        <HStack spacing="0.25rem">
-          <Text textStyle="h5">{title}</Text>
-          <IconButton
-            icon={<BiLink />}
-            variant="clear"
-            aria-label="link to pull request"
-          />
-        </HStack>
-        <ApprovalButton />
-      </HStack>
-      <SecondaryDetails
-        requestor={requestor}
-        reviewers={reviewers}
-        reviewRequestedTime={new Date()}
-      />
-    </VStack>
+    <Box bg="white" w="100%" h="100%">
+      <VStack
+        bg="blue.50"
+        pl="9.25rem"
+        pr="2rem"
+        pt="2rem"
+        pb="1.5rem"
+        spacing="0.75rem"
+        align="flex-start"
+      >
+        <Flex w="100%">
+          <HStack spacing="0.25rem">
+            <Text textStyle="h5">{title}</Text>
+            {/* Closes after 1.5s and does not refocus on the button to avoid the outline */}
+            <Popover returnFocusOnClose={false} isOpen={hasCopied}>
+              <PopoverTrigger>
+                <IconButton
+                  icon={<BiLink />}
+                  variant="clear"
+                  aria-label="link to pull request"
+                  onClick={onCopy}
+                />
+              </PopoverTrigger>
+              <PopoverContent
+                bg="background.action.alt"
+                _focus={{
+                  boxShadow: "none",
+                }}
+                w="fit-content"
+              >
+                <PopoverArrow bg="background.action.alt" />
+                <PopoverBody>
+                  <Text textStyle="body-2" color="text.inverse">
+                    Link copied!
+                  </Text>
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+          </HStack>
+          <Spacer />
+          <ApprovalButton />
+        </Flex>
+        <SecondaryDetails
+          requestor={requestor}
+          reviewers={reviewers}
+          reviewRequestedTime={new Date()}
+        />
+      </VStack>
+      <Box pl="9.25rem" pr="2rem">
+        <RequestOverview items={changedItems} />
+      </Box>
+    </Box>
   )
 }
 
-// NOTE: Utility component exists to soothe over state management of colours
+// NOTE: Utility component exists to soothe over state management
 const ApprovalButton = (): JSX.Element => {
   const [isApproved, setIsApproved] = useState(false)
-  const bgColour = isApproved
-    ? "background.action.success"
-    : "background.action.default"
 
   return (
     <MenuDropdownButton
-      bg={bgColour}
+      colorScheme={isApproved ? "success" : "primary"}
       mainButtonText={isApproved ? "Approved" : "Pending Review"}
       variant="solid"
     >
