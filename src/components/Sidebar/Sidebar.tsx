@@ -74,7 +74,7 @@ export const Sidebar = (): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
   const { pathname } = useLocation<{ pathname: string }>()
   const { lastUpdated, isError, isLoading } = useLastUpdated(siteName)
-  const { userId } = useLoginContext()
+  const { displayedName } = useLoginContext()
   // NOTE: As this is a sub-path, there's a leading / which is converted into an empty string
   const selectedTab = getSelectedTab(pathname.split("/").filter(Boolean))
   const { setRedirectToLogout } = useRedirectHook()
@@ -196,8 +196,7 @@ export const Sidebar = (): JSX.Element => {
           </Flex>
         </SidebarButton>
         <Box px="1rem" textColor="text.link.disabled" textAlign="left" w="100%">
-          <Text textStyle="body-1">Logged in as</Text>
-          <Text textStyle="body-1">@{userId}</Text>
+          <Text textStyle="body-1">Logged in as {`${displayedName}`}</Text>
         </Box>
       </VStack>
     </Flex>

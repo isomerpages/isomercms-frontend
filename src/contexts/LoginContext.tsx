@@ -13,7 +13,7 @@ import { useLocalStorage } from "hooks/useLocalStorage"
 
 import { LoggedInUser } from "types/user"
 
-const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
+const { REACT_APP_BACKEND_URL_V2: BACKEND_URL } = process.env
 
 interface LoginContextProps extends LoggedInUser {
   logout: () => Promise<void>
@@ -42,6 +42,11 @@ const LoginProvider = ({
     setStoredUser,
     removeStoredUser,
   ] = useLocalStorage(LOCAL_STORAGE_KEYS.User, { email: "", contactNumber: "" })
+  const [
+    storedUserEmail,
+    setStoredUserEmail,
+    removeStoredUserEmail,
+  ] = useLocalStorage(LOCAL_STORAGE_KEYS.Email, "Unknown email")
 
   const [, , removeSites] = useLocalStorage(
     LOCAL_STORAGE_KEYS.SitesIsPrivate,
@@ -54,16 +59,19 @@ const LoginProvider = ({
 
     setStoredUserId(loggedInUser.userId)
     setStoredUser(loggedInUser)
-  }, [setStoredUser, setStoredUserId])
+    setStoredUserEmail(loggedInUser.email)
+  }, [setStoredUser, setStoredUserEmail, setStoredUserId])
 
   const logout = async () => {
     await axios.delete(`${BACKEND_URL}/auth/logout`)
     removeStoredUserId()
     removeStoredUser()
+    removeStoredUserEmail()
     removeSites()
     // NOTE: This is REQUIRED (emphasis here) for auto-redirect on removal of stored user id.
     // This is IN ADDITION to removing the value associated with the key.
     setStoredUserId("")
+    setStoredUserEmail("")
   }
 
   // Set interceptors to log users out if an error occurs within the LoginProvider
@@ -87,10 +95,13 @@ const LoginProvider = ({
 
   const loginContextData = {
     userId: storedUserId,
-    email: storedUser.email,
+    email: storedUserEmail,
     contactNumber: storedUser.contactNumber,
     logout,
     verifyLoginAndSetLocalStorage,
+    displayedName: `${storedUserId ? "@" : ""}${
+      storedUserId || storedUserEmail
+    }`,
   }
 
   return (

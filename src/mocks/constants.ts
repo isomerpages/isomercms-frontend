@@ -88,6 +88,7 @@ export const MOCK_USER = {
   userId: "mockUser",
   email: "mockUser@open.gov.sg",
   contactNumber: "98765432",
+  displayedName: "mockUser",
 }
 
 const MOCK_MEDIA_ITEM_DATA: MediaData[] = [
