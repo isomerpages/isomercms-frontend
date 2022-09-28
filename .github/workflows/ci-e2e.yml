@@ -90,6 +90,7 @@ jobs:
       USERNAME: ${{secrets.USERNAME}}
       PERSONAL_ACCESS_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
       E2E_COMMIT_HASH: ${{secrets.E2E_COMMIT_HASH}}
+      GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
     steps:
       - uses: actions/checkout@v2
