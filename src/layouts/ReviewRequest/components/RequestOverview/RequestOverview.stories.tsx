@@ -23,7 +23,7 @@ import { MOCK_ITEMS } from "mocks/constants"
 import { RequestOverview, RequestOverviewProps } from "./RequestOverview"
 
 const overviewMeta = {
-  title: "Components/ReviewRequestModal/Overview",
+  title: "Components/ReviewRequest/Modal Overview",
   component: RequestOverview,
 } as ComponentMeta<typeof RequestOverview>
 

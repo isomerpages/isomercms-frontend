@@ -9,7 +9,7 @@ import {
 } from "./ReviewRequestModal"
 
 const modalMeta = {
-  title: "Components/ReviewRequestModal/Modal",
+  title: "Components/ReviewRequest/Modal",
   component: ReviewRequestModal,
 } as ComponentMeta<typeof ReviewRequestModal>
 type TemplateProps = Pick<ReviewRequestModalProps, "admins" | "items">
