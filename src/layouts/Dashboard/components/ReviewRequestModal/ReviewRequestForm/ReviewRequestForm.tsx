@@ -39,7 +39,11 @@ export const ReviewRequestForm = ({
           Your changes can be published when at least **one** reviewer approves
           your request
         </FormLabel.Description>
-        <Select options={admins} isMulti />
+        <Select
+          options={admins}
+          isMulti
+          placeholder="Select Admins to add as reviewers"
+        />
       </FormControl>
     </VStack>
   )
