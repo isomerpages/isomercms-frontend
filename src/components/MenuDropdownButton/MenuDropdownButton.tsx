@@ -65,6 +65,12 @@ export const MenuDropdownButton = forwardRef<MenuDropdownButtonProps, "button">(
                 borderLeftRadius={0}
                 aria-label="Select options"
                 variant={buttonVariant}
+                bg={
+                  props.bg ||
+                  props.background ||
+                  props.backgroundColor ||
+                  "inherit"
+                }
                 icon={
                   <Icon
                     as={isOpen ? BiChevronUp : BiChevronDown}
