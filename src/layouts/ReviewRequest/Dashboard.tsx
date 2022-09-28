@@ -21,31 +21,26 @@ import {
 import { useState } from "react"
 import { BiLink } from "react-icons/bi"
 
-import { MOCK_ITEMS } from "mocks/constants"
 import { extractInitials, getDateTimeFromUnixTime } from "utils"
 
-import { RequestOverview } from "./components/RequestOverview"
-
-const useGetPullRequest = (siteName: string) => {
-  return {
-    title: "Update STCCED hyperlink, customs duty",
-    requestor: "seaerchin",
-    reviewers: ["nat mae tan", "jiachin er"],
-    changedItems: MOCK_ITEMS,
-  }
-}
+import { RequestOverview, EditedItemProps } from "./components/RequestOverview"
 
 export interface ReviewRequestDashboardProps {
   siteName: string
   reviewUrl: string
+  title: string
+  requestor: string
+  reviewers: string[]
+  changedItems: EditedItemProps[]
 }
 export const ReviewRequestDashboard = ({
   siteName,
   reviewUrl,
+  title,
+  requestor,
+  reviewers,
+  changedItems,
 }: ReviewRequestDashboardProps): JSX.Element => {
-  const { title, requestor, reviewers, changedItems } = useGetPullRequest(
-    siteName
-  )
   const { onCopy, hasCopied } = useClipboard(reviewUrl)
 
   return (
