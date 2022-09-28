@@ -44,6 +44,7 @@ import {
 import { TableVirtuoso } from "react-virtuoso"
 
 import { BxFileArchiveSolid } from "assets"
+import { extractInitials } from "utils"
 
 interface DisplayedDateTime {
   date: string
@@ -160,7 +161,7 @@ const LastEditedMeta = ({
     <HStack>
       <Avatar
         bg="primary.100"
-        name={lastEditedBy.slice(0, 2).split("").join(" ")}
+        name={extractInitials(lastEditedBy)}
         textStyle="caption-2"
         textColor="primary.400"
         size="sm"
@@ -198,7 +199,7 @@ export const RequestOverview = ({
       header: () => (
         <Th w="3rem">
           <IconButton
-            aria-label="sort by file type"
+            aria-label="filter by file type"
             icon={<BiFilterAlt />}
             variant="link"
           />
@@ -231,7 +232,7 @@ export const RequestOverview = ({
               </Text>
               <IconButton
                 icon={<BiSort fontSize="1rem" />}
-                aria-label="view file changes"
+                aria-label="sort by file type"
                 variant="link"
               />
             </HStack>
@@ -281,7 +282,7 @@ export const RequestOverview = ({
             <b>{items.length}</b> item(s) for review
           </Text>
           <Text textStyle="caption-2" textColor="text.placeholder">
-            Items below have been identified to have changes
+            Item(s) below have been identified to have changes
           </Text>
         </Box>
         <Spacer />
