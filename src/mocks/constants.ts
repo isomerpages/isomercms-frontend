@@ -253,7 +253,8 @@ export const MOCK_ITEMS: EditedItemProps[] = [
     lastEditedTime: 129823094,
   },
   {
-    // NOTE: This has 2 types - we tiebreak by using the first item in the array.
+    // NOTE: This has 2 types - we tiebreak by using the first item in the array for the icon.
+    // For the filtering, it should appear in both.
     type: ["nav", "setting"],
     name: "a file with two types",
     path: ["another", "path"],
