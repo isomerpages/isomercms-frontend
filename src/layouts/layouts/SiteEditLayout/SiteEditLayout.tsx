@@ -6,20 +6,25 @@ import {
   Grid,
   GridProps,
 } from "@chakra-ui/react"
+import { Sidebar } from "components/Sidebar"
 
-import { SiteViewHeader } from "./SiteViewHeader"
+import { SiteEditHeader } from "./SiteEditHeader"
 
 const GRID_LAYOUT: Pick<
   GridProps,
   "gridTemplateAreas" | "gridTemplateRows" | "gridTemplateColumns"
 > = {
-  gridTemplateAreas: `"header"
-                      "content"`,
-  gridTemplateColumns: "1fr",
+  gridTemplateAreas: `"header header"
+                      "sidebar content"`,
+  gridTemplateColumns: "15rem 1fr",
   gridTemplateRows: "4rem 1fr",
 }
 
-export const SiteViewLayout = ({ children }: StackProps): JSX.Element => {
+/**
+ * @precondition This component MUST only be used when there is a sitename. \
+ * This means that this component has to be used within the main CMS section after clicking the site card
+ */
+export const SiteEditLayout = ({ children }: StackProps): JSX.Element => {
   return (
     <>
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
@@ -31,16 +36,25 @@ export const SiteViewLayout = ({ children }: StackProps): JSX.Element => {
           top={0}
           zIndex="sticky"
         >
-          <SiteViewHeader />
+          <SiteEditHeader />
         </GridItem>
         {/* main bottom section */}
-        <SiteViewContent p="2rem">{children}</SiteViewContent>
+        <GridItem
+          area="sidebar"
+          alignSelf="flex-start"
+          position="sticky"
+          // NOTE: Offset for header height
+          top="4rem"
+        >
+          <Sidebar />
+        </GridItem>
+        <SiteEditContent p="2rem">{children}</SiteEditContent>
       </Grid>
     </>
   )
 }
 
-export const SiteViewContent = ({
+export const SiteEditContent = ({
   children,
   ...rest
 }: StackProps): JSX.Element => {
