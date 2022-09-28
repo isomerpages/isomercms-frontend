@@ -55,6 +55,7 @@ import {
   BiChevronDown,
   BiCompass,
   BiCheck,
+  BiEditAlt,
 } from "react-icons/bi"
 import { TableVirtuoso } from "react-virtuoso"
 
@@ -164,10 +165,15 @@ const LastEditedMeta = ({
 
 export interface RequestOverviewProps {
   items: EditedItemProps[]
+  // NOTE: An alternative way to do this would be to allow consumers to pass in the header
+  // and let it have the same shape as react-table's header.
+  // However, this component seems limited in scope so the easier way out was chosen.
+  allowEditing?: boolean
 }
 
 export const RequestOverview = ({
   items,
+  allowEditing,
 }: RequestOverviewProps): JSX.Element => {
   const {
     isExpanded,
@@ -335,6 +341,15 @@ export const RequestOverview = ({
       header: () => null,
       cell: ({ row }) => (
         <HStack spacing="0.25rem">
+          {allowEditing && (
+            <Link href="www.google.com">
+              <IconButton
+                icon={<BiEditAlt />}
+                aria-label="edit file"
+                variant="link"
+              />
+            </Link>
+          )}
           <Link href={row.original.url}>
             <IconButton
               icon={<BiGitCompare />}
