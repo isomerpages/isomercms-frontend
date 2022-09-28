@@ -16,8 +16,8 @@ import {
 } from "@chakra-ui/react"
 import { Button, ModalCloseButton, Tab } from "@opengovsg/design-system-react"
 
-import { EditedItemProps, RequestOverview } from "./RequestOverview"
-import { ReviewRequestForm, ReviewRequestFormProps } from "./ReviewRequestForm"
+import { EditedItemProps, RequestOverview } from "../RequestOverview"
+import { ReviewRequestForm, ReviewRequestFormProps } from "../ReviewRequestForm"
 
 export type ReviewRequestModalProps = ModalProps &
   ReviewRequestFormProps & { items: EditedItemProps[] }
