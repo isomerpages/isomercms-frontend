@@ -15,6 +15,7 @@ const Template = ReviewRequestDashboard
 export const Playground: Story<ReviewRequestDashboardProps> = Template.bind({})
 Playground.args = {
   siteName: "MOCK_ADMINS",
+  reviewUrl: "Copied to your clipboard kekw",
 }
 
 export default dashboardMeta
