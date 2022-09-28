@@ -51,7 +51,7 @@ interface ResourceModalParams {
 interface ResourcePageFrontMatter {
   layout: string
   title: string
-  permalink: string
+  permalink?: string
   date: string
   // eslint-disable-next-line camelcase
   file_url?: string
@@ -172,7 +172,10 @@ export const ResourcePageSettingsModal = ({
         })
         setValue("permalink", "")
       }
-      if (pageData.content.frontMatter.layout === "link") {
+      if (
+        pageData.content.frontMatter.layout === "link" &&
+        pageData.content.frontMatter.permalink
+      ) {
         // remove https:// from resource pages with external permalinks
         setValue(
           "permalink",
@@ -191,7 +194,9 @@ export const ResourcePageSettingsModal = ({
     const processedData = {
       ...data,
     }
-    if (data.layout === "link") {
+    if (data.layout === "file") {
+      delete processedData.permalink
+    } else if (data.layout === "link") {
       processedData.permalink = `https://${processedData.permalink}`
     }
     return onProceed({
