@@ -56,7 +56,12 @@ export const Error = Template.bind({})
 Error.parameters = {
   msw: {
     handlers: [
-      buildLoginData({ userId: "Unknown user", email: "", contactNumber: "" }),
+      buildLoginData({
+        userId: "Unknown user",
+        email: "",
+        contactNumber: "",
+        displayedName: "Unknown user",
+      }),
     ],
   },
 }
