@@ -44,25 +44,12 @@ import {
 import { TableVirtuoso } from "react-virtuoso"
 
 import { BxFileArchiveSolid } from "assets"
-import { extractInitials } from "utils"
+import { extractInitials, getDateTimeFromUnixTime } from "utils"
 
-interface DisplayedDateTime {
-  date: string
-  time: string
-}
-
-const getDateTimeFromUnixTime = (unixTime: number): DisplayedDateTime => {
-  const date = new Date(unixTime)
-  return {
-    date: date.toLocaleDateString("en-GB", {
-      month: "short",
-      year: "numeric",
-      day: "numeric",
-    }),
-    time: date.toLocaleTimeString("en-GB", {
-      timeStyle: "short",
-    }),
-  }
+const ICON_STYLE_PROPS = {
+  ml: "0.75rem",
+  fontSize: "1.25rem",
+  fill: "icon.alt",
 }
 
 const getIcon = (iconTypes: EditedItemProps["type"]): JSX.Element => {
