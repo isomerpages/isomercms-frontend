@@ -46,12 +46,6 @@ import { TableVirtuoso } from "react-virtuoso"
 import { BxFileArchiveSolid } from "assets"
 import { extractInitials, getDateTimeFromUnixTime } from "utils"
 
-const ICON_STYLE_PROPS = {
-  ml: "0.75rem",
-  fontSize: "1.25rem",
-  fill: "icon.alt",
-}
-
 const getIcon = (iconTypes: EditedItemProps["type"]): JSX.Element => {
   const iconType = iconTypes[0]
   switch (iconType) {
