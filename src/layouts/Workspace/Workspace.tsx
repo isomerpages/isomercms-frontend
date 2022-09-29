@@ -1,6 +1,11 @@
 // Import components
-import { Skeleton } from "@chakra-ui/react"
+import { Icon, Skeleton, Text } from "@chakra-ui/react"
 import { EmptyArea } from "components/EmptyArea"
+import {
+  MenuDropdownButton,
+  MenuDropdownItem,
+} from "components/MenuDropdownButton"
+import { BiFolder, BiFileBlank } from "react-icons/bi"
 import { Switch, useRouteMatch, useHistory, Link } from "react-router-dom"
 
 // Import hooks
@@ -11,7 +16,6 @@ import {
 
 // Import screens
 import { CreateButton } from "layouts/components"
-import { MenuDropdownButton } from "layouts/Folders/components/MenuDropdownButton"
 import {
   PageSettingsScreen,
   MoveScreen,
@@ -56,7 +60,35 @@ const WorkspacePage = (): JSX.Element => {
       <Skeleton isLoaded={!isDirLoading} w="100%">
         <EmptyArea
           isItemEmpty={isFoldersEmpty && isPagesEmpty}
-          actionButton={<MenuDropdownButton />}
+          actionButton={
+            <MenuDropdownButton
+              variant="outline"
+              mainButtonText="Create page"
+              as={Link}
+              to={`${url}/createPage`}
+            >
+              <MenuDropdownItem
+                as={Link}
+                to={`${url}/createPage`}
+                icon={
+                  <Icon as={BiFileBlank} fontSize="1.25rem" fill="icon.alt" />
+                }
+              >
+                <Text textStyle="body-1" fill="text.body">
+                  Create page
+                </Text>
+              </MenuDropdownItem>
+              <MenuDropdownItem
+                as={Link}
+                to={`${url}/createDirectory`}
+                icon={<Icon as={BiFolder} fontSize="1.25rem" fill="icon.alt" />}
+              >
+                <Text textStyle="body-1" fill="text.body">
+                  Create folder
+                </Text>
+              </MenuDropdownItem>
+            </MenuDropdownButton>
+          }
         >
           <SiteViewContent>
             <EmptyArea

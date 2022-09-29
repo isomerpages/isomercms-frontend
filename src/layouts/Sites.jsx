@@ -9,6 +9,8 @@ import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import siteStyles from "styles/isomer-cms/pages/Sites.module.scss"
 
+import { convertUtcToTimeDiff } from "utils/dateUtils"
+
 const Sites = ({ siteNames }) => {
   if (siteNames && siteNames.length > 0)
     return siteNames.map((siteName) => (
@@ -18,7 +20,9 @@ const Sites = ({ siteNames }) => {
             <div className={siteStyles.siteImage} />
             <div className={siteStyles.siteDescription}>
               <div className={siteStyles.siteName}>{siteName.repoName}</div>
-              <div className={siteStyles.siteInfo}>{siteName.lastUpdated}</div>
+              <div className={siteStyles.siteInfo}>
+                {convertUtcToTimeDiff(siteName.lastUpdated)}
+              </div>
             </div>
           </Link>
         </div>
@@ -50,7 +54,7 @@ export default class SitesWrapper extends Component {
     this._isMounted = true
     try {
       const resp = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/sites`,
+        `${process.env.REACT_APP_BACKEND_URL_V2}/sites`,
         {
           withCredentials: true,
         }

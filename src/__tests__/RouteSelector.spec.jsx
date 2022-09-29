@@ -22,7 +22,15 @@ const FOLDERS_LAYOUT_TEXT = "Folders layout mock text"
 const NOT_FOUND_LAYOUT_TEXT = "Route does not exist"
 
 // Layout mocks
-jest.mock("layouts/Home", () => {
+jest.mock("layouts/Login", () => {
+  return {
+    LoginPage: () => {
+      return <div>{HOME_LAYOUT_TEXT}</div>
+    },
+  }
+})
+
+jest.mock("layouts/Login/LoginPage", () => {
   return {
     __esModule: true,
     default: () => {
@@ -138,6 +146,8 @@ jest.mock("layouts/NotFoundPage", () => {
 const LoggedInContextProvider = ({ children }) => {
   const loggedInContextData = {
     userId: "test-user",
+    email: "test-email",
+    displayedName: "test-user",
     logout: jest.fn(),
   }
 
@@ -151,6 +161,8 @@ const LoggedInContextProvider = ({ children }) => {
 const NotLoggedInContextProvider = ({ children }) => {
   const notLoggedInContextData = {
     userId: null,
+    email: null,
+    displayedName: null,
     logout: jest.fn(),
   }
 

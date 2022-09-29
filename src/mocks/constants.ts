@@ -54,6 +54,12 @@ export const MOCK_RESOURCE_CATEGORY_PAGES_DATA: ResourcePageData[] = [
     date: "2000-01-02",
     resourceType: "file",
   },
+  {
+    name: "extra page",
+    title: "this is an external link",
+    date: "2020-01-02",
+    resourceType: "link",
+  },
 ]
 
 export const MOCK_DIR_DATA: DirectoryData[] = [
@@ -84,6 +90,7 @@ export const MOCK_USER = {
   userId: "mockUser",
   email: "mockUser@open.gov.sg",
   contactNumber: "98765432",
+  displayedName: "mockUser",
 }
 
 const MOCK_MEDIA_ITEM_DATA: MediaData[] = [
