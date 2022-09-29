@@ -37,6 +37,7 @@ export const MenuDropdownButton = forwardRef<MenuDropdownButtonProps, "button">(
               borderRight="0px"
               borderRightRadius={0}
               ref={ref}
+              // eslint-disable-next-line react/jsx-props-no-spreading
               {..._.omit(props, "children")}
             >
               {props.mainButtonText}
@@ -62,6 +63,8 @@ export const MenuDropdownButton = forwardRef<MenuDropdownButtonProps, "button">(
                     fill="icon.default"
                   />
                 }
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                {..._.pick(props, "isDisabled")}
               />
               <ContextMenu.List>{props.children}</ContextMenu.List>
             </ContextMenu>
