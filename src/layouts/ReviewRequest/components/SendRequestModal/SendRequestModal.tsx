@@ -36,12 +36,12 @@ const generateEmailToAdmins = (
   const to = admins[0].value
   const cc = admins.slice(1).map(({ value }) => value)
   const subject = `New review request for ${siteName}`
+  // NOTE: %0D is a newline. Using \n does not work, possibly because
+  // the body portion is interpreted as text/plain
   const body = `I’ve asked you to review changes to my site!%0D%0D
 
 Request title: ${reviewTitle}%0D
 View it on IsomerCMS: ${reviewUrl}`
-
-  console.log(to, cc)
 
   return `mailto:${to}${cc.length > 0 ? `?cc=${cc}` : ""}&subject=${encodeURI(
     subject
