@@ -354,7 +354,7 @@ export const RequestOverview = ({
       <Box w="100%" borderWidth="1px" borderRadius="8px" borderColor="gray.100">
         <TableVirtuoso
           style={{
-            height: 400,
+            height: "25rem",
             borderRadius: "8px",
           }}
           // NOTE: Pass in only the list of filtered rows.
