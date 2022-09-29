@@ -60,6 +60,7 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
     },
   },
   icon: {
+    warning: "#E2B73E",
     default: "#276EF1",
     alt: "#686868",
     danger: "#C03434",
@@ -69,6 +70,7 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
       default: "#2164DA",
       success: "#00774E",
       defaultInverse: "#FFFFFF",
+      warningInverse: "#FFFAE1",
       alt: "#5D6785",
       altInverse: "#F8F9FA",
       infoInverse: "#F7F9FE",
