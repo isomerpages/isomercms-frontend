@@ -413,22 +413,26 @@ export const RequestOverview = ({
           data={table.getFilteredRowModel().rows}
           totalCount={items.length}
           components={{
-            Table,
+            Table: (props) => (
+              <Table {...props} __css={{ borderCollapse: "separate" }} />
+            ),
             TableBody: Tbody,
             TableRow: Tr,
             TableHead: (props) => <Thead {...props} bg="neutral.100" />,
           }}
           fixedHeaderContent={() =>
-            table
-              .getFlatHeaders()
-              .map((header) => (
-                <Th key={header.id}>
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                </Th>
-              ))
+            table.getFlatHeaders().map((header) => (
+              <Th
+                key={header.id}
+                borderBottom="1px solid"
+                borderColor="gray.100"
+              >
+                {flexRender(
+                  header.column.columnDef.header,
+                  header.getContext()
+                )}
+              </Th>
+            ))
           }
           itemContent={(index) => {
             const row: Row<EditedItemProps> = table.getRowModel().rows[index]
