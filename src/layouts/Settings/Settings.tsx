@@ -22,7 +22,7 @@ import { SiteSettings } from "types/settings"
 import { DEFAULT_RETRY_MSG } from "utils"
 
 import { Section } from "../components"
-import { SiteViewLayout } from "../layouts"
+import { SiteEditLayout } from "../layouts"
 
 import { AnalyticsSettings } from "./AnalyticsSettings"
 import { ColourSettings } from "./ColourSettings"
@@ -51,7 +51,7 @@ export const Settings = (): JSX.Element => {
   }, [errorToast, isGetSettingsError])
 
   return (
-    <SiteViewLayout align="flex-start">
+    <SiteEditLayout align="flex-start">
       <Section>
         <Box>
           <Text as="h2" textStyle="h2">
@@ -73,7 +73,7 @@ export const Settings = (): JSX.Element => {
           <SettingsForm settings={settingsData} isError={isGetSettingsError} />
         )}
       </Skeleton>
-    </SiteViewLayout>
+    </SiteEditLayout>
   )
 }
 
