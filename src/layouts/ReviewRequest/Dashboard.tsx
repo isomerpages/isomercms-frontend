@@ -93,7 +93,7 @@ export const ReviewRequestDashboard = ({
         />
       </VStack>
       <Box pl="9.25rem" pr="2rem">
-        <RequestOverview items={changedItems} />
+        <RequestOverview items={changedItems} allowEditing />
       </Box>
     </Box>
   )
