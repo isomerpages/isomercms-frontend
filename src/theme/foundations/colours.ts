@@ -67,6 +67,7 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
       altInverse: "#F8F9FA",
       infoInverse: "#F7F9FE",
       success: "#00774E",
+      warning: "#FFEA78",
     },
   },
   border: {

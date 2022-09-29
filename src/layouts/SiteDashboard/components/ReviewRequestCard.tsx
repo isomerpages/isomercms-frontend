@@ -36,15 +36,20 @@ export const ReviewRequestCard = ({
       }
     >
       {reviewRequest.status === ReviewRequestStatus.PENDING &&
+        // TODO: To check the logged in user's email address instead
         reviewRequest.author !== userId && (
-          <Badge variant="solid" colorScheme="warning">
+          <Badge
+            variant="solid"
+            textColor="text.body"
+            bgColor="background.action.warning"
+          >
             Review required
           </Badge>
         )}
       {reviewRequest.status === ReviewRequestStatus.APPROVED && (
         <>
           <Box paddingBottom="0.5rem">
-            <InlineMessage>
+            <InlineMessage variant="info" textStyle="body-2">
               This request is ready to be published! Publish now to unlock
               editing for the rest of your site.
             </InlineMessage>

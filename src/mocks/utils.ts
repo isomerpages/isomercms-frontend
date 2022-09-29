@@ -47,7 +47,7 @@ export const buildSettingsData = apiDataBuilder<BackendSiteSettings>(
 
 export const buildSiteDashboardReviewRequests = apiDataBuilder<
   SiteDashboardReviewRequest[]
->("/sites/:siteName/review/summary")
+>("*/sites/:siteName/review/summary")
 
 // TODO: To be replaced with collaborators PR
 export const buildSiteDashboardCollaboratorsStatistics = apiDataBuilder<CollaboratorsStats>(
@@ -55,7 +55,7 @@ export const buildSiteDashboardCollaboratorsStatistics = apiDataBuilder<Collabor
 )
 
 export const buildSiteDashboardInfo = apiDataBuilder<SiteDashboardInfo>(
-  "/sites/:siteName/info"
+  "*/sites/:siteName/info"
 )
 
 export const buildFolderData = apiDataBuilder<(PageData | DirectoryData)[]>(

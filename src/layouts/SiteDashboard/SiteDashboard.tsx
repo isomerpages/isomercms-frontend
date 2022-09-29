@@ -123,15 +123,16 @@ export const SiteDashboard = (): JSX.Element => {
                 </DisplayCardCaption>
               </DisplayCardHeader>
               <DisplayCardContent>
-                <Skeleton isLoaded={!isReviewRequestsLoading} w="100%">
-                  {isReviewRequestsError || reviewRequests?.length === 0 ? (
-                    <EmptyReviewRequest />
-                  ) : (
-                    reviewRequests?.map((reviewRequest) => (
-                      <ReviewRequestCard reviewRequest={reviewRequest} />
-                    ))
-                  )}
-                </Skeleton>
+                {isReviewRequestsLoading && (
+                  <Skeleton w="100%" height="16rem" />
+                )}
+                {isReviewRequestsError || reviewRequests?.length === 0 ? (
+                  <EmptyReviewRequest />
+                ) : (
+                  reviewRequests?.map((reviewRequest) => (
+                    <ReviewRequestCard reviewRequest={reviewRequest} />
+                  ))
+                )}
               </DisplayCardContent>
             </DisplayCard>
           </Box>
@@ -145,8 +146,12 @@ export const SiteDashboard = (): JSX.Element => {
               <Box w="100%">
                 <SiteDashboardHumanImage />
                 <DisplayCard variant="onlyContent">
-                  <DisplayCardContent>
-                    <VStack spacing="0.5rem" alignItems="left">
+                  <DisplayCardContent overflow="hidden">
+                    <VStack
+                      spacing="0.5rem"
+                      alignItems="left"
+                      whiteSpace="nowrap"
+                    >
                       <Skeleton isLoaded={!isSiteInfoLoading} w="100%">
                         <Text textStyle="caption-2" color="text.helper">
                           <b>Last saved</b>{" "}

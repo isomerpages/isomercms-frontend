@@ -205,12 +205,12 @@ export const MOCK_SITE_DASHBOARD_REVIEW_REQUESTS: SiteDashboardReviewRequest[] =
     id: 150,
     title: "Update STCCED hyperlink, customs duty and other fees 6/7/22 3:43PM",
     description:
-      "Added new section to homepage for upcoming event.\n\nPlease review by 12 Jan!",
+      "Added new section to homepage for upcoming event.\n\nPlease review by 12 Jan! Added new section to homepage for upcoming event. Please review by 12 Jan! Added new section to homepage for upcoming event. Please review by 12 Jan!",
     author: "audrey@open.gov.sg",
     status: ReviewRequestStatus.PENDING,
     changedFiles: 10,
     newComments: 1,
-    firstView: true,
+    firstView: false,
     createdAt: 1654587801,
   },
 ]
