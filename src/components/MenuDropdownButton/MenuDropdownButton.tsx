@@ -19,7 +19,7 @@ interface MenuDropdownButtonProps extends ButtonProps {
 // However, for solid background, return icon.inverse so that the chevron is clear.
 const computeIconFill = (variant: ButtonProps["variant"]): string => {
   if (variant === "solid") {
-    return "icon.inverse  "
+    return "icon.inverse"
   }
 
   return "icon.default"
