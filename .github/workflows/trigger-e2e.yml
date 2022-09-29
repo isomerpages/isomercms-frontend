@@ -44,6 +44,7 @@ jobs:
       - name: Check if user is part of Isomer core team
         uses: tspascoal/get-user-teams-membership@v1
         id: checkUserMember
+        continue-on-error: true
         with:
           username: ${{ github.actor }}
           team: ${{ env.ISOMER_CORE_TEAM_SLUG }}
@@ -137,7 +138,7 @@ jobs:
 
       - name: Dispatch e2e test suite workflow run
         if: ${{ env.ISOMER_CAN_RUN_E2E == 'true' }}
-        run: gh workflow run ${{ env.ISOMER_E2E_WORKFLOW_NAME }}
+        run: gh workflow run ${{ env.ISOMER_E2E_WORKFLOW_NAME }} -f issueNumber=${{ env.ISOMER_PULL_NUMBER }}
         env:
           # The original GITHUB_TOKEN cannot perform workflow dispatch
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
