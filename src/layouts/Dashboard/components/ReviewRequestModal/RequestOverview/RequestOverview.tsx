@@ -39,6 +39,7 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table"
+import _ from "lodash"
 import { useState } from "react"
 import {
   BiGitCompare,
@@ -52,6 +53,7 @@ import {
   BiChevronRight,
   BiChevronDown,
   BiCompass,
+  BiCheck,
 } from "react-icons/bi"
 import { TableVirtuoso } from "react-virtuoso"
 
@@ -191,6 +193,7 @@ export const RequestOverview = ({
           />
           <MenuList>
             <MenuItem
+              minW="10rem"
               icon={
                 // NOTE: Using an Icon component to hook into design system results in a
                 // slightly off center icon, which is why using the base component itself
@@ -202,31 +205,53 @@ export const RequestOverview = ({
                 column.setFilterValue(["page", "image", "file"])
               }}
             >
-              <Text textStyle="subhead-2" textColor="text.body">
-                Pages
-              </Text>
+              <Flex align="center">
+                <Text textStyle="subhead-2" textColor="text.body">
+                  Pages
+                </Text>
+                <Spacer />
+                {_.isEqual(column.getFilterValue(), [
+                  "page",
+                  "image",
+                  "file",
+                ]) && <Icon as={BiCheck} fill="icon.default" fontSize="1rem" />}
+              </Flex>
             </MenuItem>
             <MenuItem
+              minW="10rem"
               iconSpacing="0.5rem"
               icon={<BiCog fontSize="1rem" fill={theme.colors.icon.alt} />}
               onClick={() => {
                 column.setFilterValue(["setting"])
               }}
             >
-              <Text textStyle="subhead-2" textColor="text.body">
-                Settings
-              </Text>
+              <Flex align="center">
+                <Text textStyle="subhead-2" textColor="text.body">
+                  Settings
+                </Text>
+                <Spacer />
+                {_.isEqual(column.getFilterValue(), ["setting"]) && (
+                  <Icon as={BiCheck} fill="icon.default" fontSize="1rem" />
+                )}
+              </Flex>
             </MenuItem>
             <MenuItem
+              minW="10rem"
               icon={<BiCompass fontSize="1rem" fill={theme.colors.icon.alt} />}
               iconSpacing="0.5rem"
               onClick={() => {
                 column.setFilterValue(["nav"])
               }}
             >
-              <Text textStyle="subhead-2" textColor="text.body">
-                Navigation
-              </Text>
+              <Flex align="center">
+                <Text textStyle="subhead-2" textColor="text.body">
+                  Navigation
+                </Text>
+                <Spacer />
+                {_.isEqual(column.getFilterValue(), ["nav"]) && (
+                  <Icon as={BiCheck} fill="icon.default" fontSize="1rem" />
+                )}
+              </Flex>
             </MenuItem>
           </MenuList>
         </Menu>
