@@ -12,29 +12,29 @@ import {
   PopoverContent,
   PopoverBody,
   PopoverArrow,
+  IconButton,
 } from "@chakra-ui/react"
-import { IconButton } from "@opengovsg/design-system-react"
 import {
   MenuDropdownButton,
   MenuDropdownItem,
 } from "components/MenuDropdownButton"
 import { useState } from "react"
-import { BiLink } from "react-icons/bi"
+import { BiLink, BiPlus } from "react-icons/bi"
 
 import { extractInitials, getDateTimeFromUnixTime } from "utils"
 
 import { RequestOverview, EditedItemProps } from "./components/RequestOverview"
 
 export interface ReviewRequestDashboardProps {
-  siteName: string
   reviewUrl: string
   title: string
   requestor: string
   reviewers: string[]
+  reviewRequestedTime: Date
   changedItems: EditedItemProps[]
 }
 export const ReviewRequestDashboard = ({
-  siteName,
+  reviewRequestedTime,
   reviewUrl,
   title,
   requestor,
@@ -89,7 +89,7 @@ export const ReviewRequestDashboard = ({
         <SecondaryDetails
           requestor={requestor}
           reviewers={reviewers}
-          reviewRequestedTime={new Date()}
+          reviewRequestedTime={reviewRequestedTime}
         />
       </VStack>
       <Box pl="9.25rem" pr="2rem">
@@ -133,9 +133,7 @@ const SecondaryDetails = ({
   reviewers,
   reviewRequestedTime,
 }: SecondaryDetailsProps) => {
-  const { date, time } = getDateTimeFromUnixTime(
-    reviewRequestedTime.getTime() / 1000
-  )
+  const { date, time } = getDateTimeFromUnixTime(reviewRequestedTime.getTime())
   return (
     <VStack spacing="0.5rem" align="flex-start">
       <Text textStyle="caption-2" textColor="text.helper">
@@ -146,12 +144,13 @@ const SecondaryDetails = ({
           Reviewers
         </Text>
         <Box>
-          {reviewers.map((name) => {
+          {reviewers.map((name, index) => {
             const initials = extractInitials(name)
             return (
               <Avatar
+                zIndex={reviewers.length - index}
                 border="1px solid white"
-                mr="-0.25rem"
+                ml="-0.25rem"
                 bg="primary.100"
                 name={initials}
                 textStyle="caption-1"
@@ -160,6 +159,17 @@ const SecondaryDetails = ({
               />
             )
           })}
+          {/* NOTE: Not using design system IconButton as we require sm size */}
+          <IconButton
+            icon={<BiPlus />}
+            aria-label="Add Reviewer"
+            variant="outline"
+            borderRadius="50%"
+            fontSize="1rem"
+            size="sm"
+            ml="-0.25rem"
+            bg="blue.50"
+          />
         </Box>
       </HStack>
     </VStack>

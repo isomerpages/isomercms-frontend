@@ -16,7 +16,7 @@ const Template = ReviewRequestDashboard
 
 export const Playground: Story<ReviewRequestDashboardProps> = Template.bind({})
 Playground.args = {
-  siteName: "MOCK_ADMINS",
+  reviewRequestedTime: new Date(),
   reviewUrl: "Copied to your clipboard kekw",
   title: "Update STCCED hyperlink, customs duty",
   requestor: "seaerchin",
