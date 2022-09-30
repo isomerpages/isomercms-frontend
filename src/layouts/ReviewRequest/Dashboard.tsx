@@ -106,12 +106,12 @@ const ApprovalButton = (): JSX.Element => {
   return (
     <MenuDropdownButton
       colorScheme={isApproved ? "success" : "primary"}
-      mainButtonText={isApproved ? "Approved" : "Pending Review"}
+      mainButtonText={isApproved ? "Approved" : "In review"}
       variant="solid"
     >
       <MenuDropdownItem onClick={() => setIsApproved(false)}>
         <Text textStyle="body-1" textColor="text.body" w="100%">
-          Pending review
+          In review
         </Text>
       </MenuDropdownItem>
       <MenuDropdownItem onClick={() => setIsApproved(true)}>
