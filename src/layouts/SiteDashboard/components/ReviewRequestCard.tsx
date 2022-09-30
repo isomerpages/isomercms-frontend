@@ -82,9 +82,13 @@ export const ReviewRequestCard = ({
         >
           <Text textStyle="subhead-1">
             View <b>{reviewRequest.changedFiles}</b> changed{" "}
-            {reviewRequest.changedFiles === 1 ? "item" : "items"},{" "}
-            <b>{reviewRequest.newComments}</b> new{" "}
-            {reviewRequest.newComments === 1 ? "comment" : "comments"}
+            {reviewRequest.changedFiles === 1 ? "item" : "items"}
+            {reviewRequest.newComments > 0 && (
+              <>
+                , <b>{reviewRequest.newComments}</b> new{" "}
+                {reviewRequest.newComments === 1 ? "comment" : "comments"}
+              </>
+            )}
           </Text>
           <Icon as={BiRightArrowAlt} fontSize="1.5rem" />
         </HStack>
