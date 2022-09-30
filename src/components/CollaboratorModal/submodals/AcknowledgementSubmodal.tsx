@@ -15,6 +15,8 @@ import {
 } from "@opengovsg/design-system-react"
 import { useFormContext } from "react-hook-form"
 
+import { TEXT_FONT_SIZE } from "../constants"
+
 const AcknowledgementSubmodal = (): JSX.Element => {
   return (
     <>
@@ -26,9 +28,6 @@ const AcknowledgementSubmodal = (): JSX.Element => {
     </>
   )
 }
-
-const TEXT_FONT_SIZE = "14px"
-const TERMS_OF_USE_LINK = "https://v2.isomer.gov.sg" // TODO: Update this when we get it
 
 const AcknowledgementSubmodalContent = () => {
   const { watch, register, getValues } = useFormContext()
