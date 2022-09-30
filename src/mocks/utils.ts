@@ -135,8 +135,5 @@ export const buildGetStagingUrlData = apiDataBuilder<{ stagingUrl: string }>(
 
 export const addContributorCollaborator = () =>
   rest.post("*/sites/:siteName/collaborators", (req, res, ctx) => {
-    return res(
-      ctx.status(422),
-      ctx.json({ error: { message: "Acknowledgement required" } })
-    )
+    return res(ctx.json({ error: { message: "Acknowledgement required" } }))
   })

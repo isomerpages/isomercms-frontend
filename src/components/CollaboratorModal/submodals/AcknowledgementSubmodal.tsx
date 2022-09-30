@@ -17,6 +17,8 @@ import { useFormContext } from "react-hook-form"
 
 import { TEXT_FONT_SIZE } from "../constants"
 
+const TERMS_OF_USE_LINK = "https://v2.isomer.gov.sg" // TODO: Update this when we get it
+
 const AcknowledgementSubmodal = (): JSX.Element => {
   return (
     <>
