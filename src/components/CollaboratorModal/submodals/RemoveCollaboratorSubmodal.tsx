@@ -13,7 +13,7 @@ import { useLoginContext } from "contexts/LoginContext"
 import { useDeleteCollaboratorHook } from "hooks/collaboratorHooks"
 import useRedirectHook from "hooks/useRedirectHook"
 
-const TEXT_FONT_SIZE = "14px"
+import { TEXT_FONT_SIZE } from "../constants"
 
 const RemoveCollaboratorSubmodal = ({
   siteName,
