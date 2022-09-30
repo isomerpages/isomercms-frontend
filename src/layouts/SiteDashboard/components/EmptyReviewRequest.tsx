@@ -3,14 +3,14 @@ import { Button } from "@opengovsg/design-system-react"
 import { DisplayCard, DisplayCardContent } from "components/DisplayCard"
 import { BiCheckCircle } from "react-icons/bi"
 
-import { EmptyBoxPlainImage } from "assets"
+import { EmptyWhiteBoxImage } from "assets"
 
 export const EmptyReviewRequest = (): JSX.Element => {
   return (
     <DisplayCard variant="onlyContent" w="100%">
       <DisplayCardContent justifyContent="center" alignItems="center">
         <VStack spacing="1rem" py="2.15rem">
-          <EmptyBoxPlainImage />
+          <EmptyWhiteBoxImage />
           <Text textStyle="caption-2" color="text.helper">
             There are no pending reviews.
           </Text>

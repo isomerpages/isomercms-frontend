@@ -1,4 +1,4 @@
-export const EmptyBoxPlainImage = (
+export const EmptyWhiteBoxImage = (
   props: React.SVGProps<SVGSVGElement>
 ): JSX.Element => {
   return (
