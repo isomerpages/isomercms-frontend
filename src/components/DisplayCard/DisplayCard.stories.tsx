@@ -1,4 +1,4 @@
-import { Icon, Box } from "@chakra-ui/react"
+import { Icon, Text } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import { ComponentMeta, Story } from "@storybook/react"
 import { BiChevronDownCircle, BiCog, BiBulb, BiGroup } from "react-icons/bi"
@@ -43,12 +43,10 @@ const onlyHeaderTemplate: Story<onlyHeaderDisplayCardTemplateArgs> = ({
   return (
     <DisplayCard variant="onlyHeader">
       <DisplayCardHeader button={button}>
-        <Box>
-          <DisplayCardTitle icon={icon} hasUnderline={hasUnderline}>
-            {title}
-          </DisplayCardTitle>
-          {caption && <DisplayCardCaption>{caption}</DisplayCardCaption>}
-        </Box>
+        <DisplayCardTitle icon={icon} hasUnderline={hasUnderline}>
+          {title}
+        </DisplayCardTitle>
+        <DisplayCardCaption>{caption}</DisplayCardCaption>
       </DisplayCardHeader>
     </DisplayCard>
   )
@@ -81,7 +79,7 @@ const headerAndContentTemplate: Story<FullDisplayCardTemplateArgs> = ({
         <DisplayCardTitle icon={icon} hasUnderline={hasUnderline}>
           {title}
         </DisplayCardTitle>
-        {caption && <DisplayCardCaption>{caption}</DisplayCardCaption>}
+        <DisplayCardCaption>{caption}</DisplayCardCaption>
       </DisplayCardHeader>
       <DisplayCardContent>{content}</DisplayCardContent>
       {footer && <DisplayCardFooter>{footer}</DisplayCardFooter>}
@@ -108,7 +106,11 @@ onlyHeaderWithButton.args = {
   title: "Site settings",
   caption: "Manage site footer, links, logos, and more",
   icon: <Icon as={BiCog} fontSize="1.5rem" />,
-  button: <Button variant="reverse">Manage</Button>,
+  button: (
+    <Text textStyle="subhead-1" color="text.title.brand" marginRight="1rem">
+      Manage
+    </Text>
+  ),
 }
 
 export const onlyContent = onlyContentTemplate.bind({})
@@ -137,7 +139,11 @@ fullDisplayCard.args = {
   hasUnderline: true,
   caption: "#123 created by john@example.com on 1 January 2021, 12:00PM",
   icon: <Icon as={BiGroup} fontSize="1.5rem" />,
-  button: <Button variant="reverse">Manage</Button>,
+  button: (
+    <Text textStyle="subhead-1" color="text.title.brand" marginRight="1rem">
+      Manage
+    </Text>
+  ),
   content: "This is the content of the card",
   footer: "This is the footer of the card",
 }
