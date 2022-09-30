@@ -1,6 +1,4 @@
 import { AxiosError } from "axios"
-import { CollaboratorModalState } from "components/CollaboratorModal/constants"
-import { Dispatch, SetStateAction } from "react"
 import {
   useQuery,
   useMutation,
