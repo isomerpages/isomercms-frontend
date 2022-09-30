@@ -14,6 +14,7 @@ import {
   SiteDashboardInfo,
   SiteDashboardReviewRequest,
 } from "types/siteDashboard"
+import { LoggedInUser } from "types/user"
 
 export const MOCK_PAGES_DATA: PageData[] = [
   {
@@ -93,7 +94,7 @@ export const MOCK_DIR_DATA: DirectoryData[] = [
   },
 ]
 
-export const MOCK_USER = {
+export const MOCK_USER: LoggedInUser = {
   userId: "mockUser",
   email: "mockUser@open.gov.sg",
   contactNumber: "98765432",

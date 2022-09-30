@@ -100,6 +100,7 @@ export const CollaboratorModal = ({
   useEffect(() => {
     if (addCollaboratorSuccess) {
       successToast({ description: "Collaborator added successfully" })
+      setModalState(CollaboratorModalState.Default)
     }
   }, [addCollaboratorSuccess, successToast])
 
@@ -130,9 +131,9 @@ export const CollaboratorModal = ({
           <ModalContent>
             <FormProvider {...collaboratorFormMethods}>
               <form
-                onSubmit={collaboratorFormMethods.handleSubmit((data) =>
-                  addCollaborator(data)
-                )}
+                onSubmit={collaboratorFormMethods.handleSubmit(async (data) => {
+                  await addCollaborator(data)
+                })}
               >
                 {renderModalContent(modalState)}
               </form>
