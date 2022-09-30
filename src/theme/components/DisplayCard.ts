@@ -19,7 +19,19 @@ export const parts = anatomy(DISPLAY_CARD_THEME_KEY).parts(
   "footer"
 )
 
-const variantHasContent: PartsStyleObject<typeof parts> = {
+const variantOnlyHeader: PartsStyleObject<typeof parts> = {}
+
+const variantOnlyContent: PartsStyleObject<typeof parts> = {
+  container: {
+    paddingY: "1rem",
+  },
+  content: {
+    display: "flex",
+    overflow: "auto",
+  },
+}
+
+const variantHeaderAndContent: PartsStyleObject<typeof parts> = {
   header: {
     paddingBottom: "0.5rem",
   },
@@ -29,18 +41,6 @@ const variantHasContent: PartsStyleObject<typeof parts> = {
     justifyContent: "flex-start",
     alignItems: "flex-start",
     textAlign: "left",
-  },
-}
-
-const variantNoContent: PartsStyleObject<typeof parts> = {}
-
-const variantOnlyContent: PartsStyleObject<typeof parts> = {
-  container: {
-    paddingY: "1rem",
-  },
-  content: {
-    display: "flex",
-    overflow: "auto",
   },
 }
 
@@ -94,9 +94,9 @@ export const DisplayCard: ComponentMultiStyleConfig = {
     },
   },
   variants: {
-    hasContent: variantHasContent,
-    noContent: variantNoContent,
+    onlyHeader: variantOnlyHeader,
     onlyContent: variantOnlyContent,
+    headerAndContent: variantHeaderAndContent,
   },
   defaultProps: {
     variant: "noContent",

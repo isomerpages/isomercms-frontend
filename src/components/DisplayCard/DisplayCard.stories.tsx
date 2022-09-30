@@ -25,13 +25,13 @@ interface onlyHeaderDisplayCardTemplateArgs {
   button?: JSX.Element
 }
 
-interface OnlyContentDisplayCardTemplateArgs {
+interface onlyContentDisplayCardTemplateArgs {
   content: string
   footer?: string
 }
 
 type FullDisplayCardTemplateArgs = onlyHeaderDisplayCardTemplateArgs &
-  OnlyContentDisplayCardTemplateArgs
+  onlyContentDisplayCardTemplateArgs
 
 const onlyHeaderTemplate: Story<onlyHeaderDisplayCardTemplateArgs> = ({
   title,
@@ -54,10 +54,10 @@ const onlyHeaderTemplate: Story<onlyHeaderDisplayCardTemplateArgs> = ({
   )
 }
 
-const onlyContentTemplate: Story<OnlyContentDisplayCardTemplateArgs> = ({
+const onlyContentTemplate: Story<onlyContentDisplayCardTemplateArgs> = ({
   content,
   footer,
-}: OnlyContentDisplayCardTemplateArgs) => {
+}: onlyContentDisplayCardTemplateArgs) => {
   return (
     <DisplayCard variant="onlyContent">
       <DisplayCardContent>{content}</DisplayCardContent>
