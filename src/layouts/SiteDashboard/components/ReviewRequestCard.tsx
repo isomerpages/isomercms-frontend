@@ -24,7 +24,7 @@ export const ReviewRequestCard = ({
   reviewRequest: SiteDashboardReviewRequest
 }): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
-  const { userId } = useLoginContext()
+  const { email } = useLoginContext()
 
   return (
     <DisplayCard
@@ -36,8 +36,7 @@ export const ReviewRequestCard = ({
       }
     >
       {reviewRequest.status === ReviewRequestStatus.PENDING &&
-        // TODO: To check the logged in user's email address instead
-        reviewRequest.author !== userId && (
+        reviewRequest.author !== email && (
           <Badge
             variant="solid"
             textColor="text.body"
