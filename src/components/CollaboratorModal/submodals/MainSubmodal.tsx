@@ -24,7 +24,7 @@ import { BiTrash } from "react-icons/bi"
 import { useLoginContext } from "contexts/LoginContext"
 
 import { CollaboratorError } from "types/collaborators"
-import { DEFAULT_RETRY_MSG } from "utils"
+import { DEFAULT_RETRY_MSG, emailRegexTest } from "utils"
 
 import {
   CollaboratorModalState,
@@ -123,12 +123,17 @@ export const MainSubmodal = ({
   addCollaboratorError,
 }: MainSubmodalProps): JSX.Element => {
   const { collaboratorRoleData } = useCollaboratorModalContext()
-  const { register } = useFormContext<{
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<{
     newCollaboratorEmail: string
     isAcknowledged: boolean
   }>()
 
   const errorMessage = extractErrorMessage(addCollaboratorError)
+
+  const hasError = !!(errorMessage || errors.newCollaboratorEmail)
 
   return (
     <>
@@ -137,13 +142,21 @@ export const MainSubmodal = ({
       <ModalBody>
         <FormControl
           isRequired
-          isInvalid={!!addCollaboratorError}
+          isInvalid={hasError}
           isDisabled={collaboratorRoleData?.role !== "ADMIN"}
         >
           <FormLabel>Only admins can add or remove collaborators</FormLabel>
-
-          <Input {...register("newCollaboratorEmail")} />
-          <FormErrorMessage>{errorMessage}</FormErrorMessage>
+          <Input
+            {...register("newCollaboratorEmail", {
+              pattern: {
+                value: emailRegexTest,
+                message: "Please ensure that you have entered a valid email!",
+              },
+            })}
+          />
+          <FormErrorMessage>
+            {errors.newCollaboratorEmail?.message || errorMessage}
+          </FormErrorMessage>
         </FormControl>
         <LoadingButton
           mt="16px"
