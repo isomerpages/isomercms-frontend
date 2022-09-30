@@ -38,7 +38,7 @@ const RemoveCollaboratorSubmodalContent = ({
   const { deleteCollaboratorTarget } = useCollaboratorModalContext()
   const { setRedirectToPage } = useRedirectHook()
   const { email } = useLoginContext()
-  const userIsDeletingThemselves = email === deleteCollaboratorTarget?.email
+  const isUserDeletingThemselves = email === deleteCollaboratorTarget?.email
   const { onClose } = useModalContext()
 
   const { mutateAsync: deleteCollaborator } = useDeleteCollaboratorHook(
@@ -47,7 +47,7 @@ const RemoveCollaboratorSubmodalContent = ({
 
   return (
     <>
-      {userIsDeletingThemselves ? (
+      {isUserDeletingThemselves ? (
         <Text>
           Once you remove yourself as a collaborator, you will no longer be able
           to make any changes to this site.
@@ -72,14 +72,14 @@ const RemoveCollaboratorSubmodalContent = ({
         <Button
           colorScheme="danger"
           onClick={async () => {
-            if (userIsDeletingThemselves) {
-              setRedirectToPage(`/sites`)
+            if (isUserDeletingThemselves) {
+              setRedirectToPage(`http://localhost:3000/sites`)
             }
             await deleteCollaborator(deleteCollaboratorTarget.id)
             onClose()
           }}
         >
-          {userIsDeletingThemselves ? "Remove myself" : "Remove collaborator"}
+          {isUserDeletingThemselves ? "Remove myself" : "Remove collaborator"}
         </Button>
       </Stack>
     </>
