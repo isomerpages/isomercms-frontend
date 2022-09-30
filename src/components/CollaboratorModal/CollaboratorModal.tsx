@@ -40,7 +40,7 @@ export const CollaboratorModal = ({
     CollaboratorModalState.Default
   )
 
-  const methods = useForm({
+  const collaboratorFormMethods = useForm({
     mode: "onTouched",
     defaultValues: {
       newCollaboratorEmail: "",
@@ -120,7 +120,7 @@ export const CollaboratorModal = ({
         <Modal
           isOpen={isOpen}
           onClose={() => {
-            methods.reset()
+            collaboratorFormMethods.reset()
             setModalState(CollaboratorModalState.Default)
             setDeleteCollaboratorTarget(undefined)
             onClose()
@@ -128,9 +128,11 @@ export const CollaboratorModal = ({
         >
           <ModalOverlay />
           <ModalContent>
-            <FormProvider {...methods}>
+            <FormProvider {...collaboratorFormMethods}>
               <form
-                onSubmit={methods.handleSubmit((data) => addCollaborator(data))}
+                onSubmit={collaboratorFormMethods.handleSubmit((data) =>
+                  addCollaborator(data)
+                )}
               >
                 {renderModalContent(modalState)}
               </form>
