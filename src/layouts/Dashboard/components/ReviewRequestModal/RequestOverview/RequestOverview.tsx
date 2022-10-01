@@ -29,6 +29,7 @@ import {
   Button,
 } from "@opengovsg/design-system-react"
 import {
+  Column,
   ColumnFiltersState,
   createColumnHelper,
   flexRender,
@@ -179,6 +180,15 @@ export const RequestOverview = ({
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
+  const handleFilter = <T, U>(filter: unknown, column: Column<T, U>) => {
+    const curFilterValue = column.getFilterValue()
+    if (_.isEqual(curFilterValue, filter)) {
+      table.resetColumnFilters()
+    } else {
+      column.setFilterValue(filter)
+    }
+  }
+
   const columns = [
     columnHelper.accessor((row) => row.type, {
       id: "type",
@@ -202,7 +212,7 @@ export const RequestOverview = ({
               }
               iconSpacing="0.5rem"
               onClick={() => {
-                column.setFilterValue(["page", "image", "file"])
+                handleFilter(["page", "image", "file"], column)
               }}
             >
               <Flex align="center">
@@ -222,7 +232,7 @@ export const RequestOverview = ({
               iconSpacing="0.5rem"
               icon={<BiCog fontSize="1rem" fill={theme.colors.icon.alt} />}
               onClick={() => {
-                column.setFilterValue(["setting"])
+                handleFilter(["setting"], column)
               }}
             >
               <Flex align="center">
@@ -240,7 +250,7 @@ export const RequestOverview = ({
               icon={<BiCompass fontSize="1rem" fill={theme.colors.icon.alt} />}
               iconSpacing="0.5rem"
               onClick={() => {
-                column.setFilterValue(["nav"])
+                handleFilter(["nav"], column)
               }}
             >
               <Flex align="center">
