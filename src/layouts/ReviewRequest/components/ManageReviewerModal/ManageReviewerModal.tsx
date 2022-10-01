@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react"
 import { Button, ModalCloseButton } from "@opengovsg/design-system-react"
 import _ from "lodash"
-import Select from "react-select"
+import Select, { PropsValue, useStateManager } from "react-select"
 
 import { User } from "types/reviewRequest"
 
@@ -20,13 +20,36 @@ export interface ManageReviewerModalProps extends ModalProps {
   admins: User[]
 }
 
+// NOTE: This is with reference to
+// https://github.com/JedWatson/react-select/blob/master/packages/react-select/src/types.ts
+// The initial type is PropsValue, which is either a single value or a multi-value.
+// We need to narrow the type ourself to prove to the TS compiler that this is a list.
+const isList = (admins: PropsValue<unknown>): admins is unknown[] => {
+  // NOTE: Required as SingleValue can be null
+  if (!admins) {
+    return false
+  }
+
+  return !!(admins as User[]).length
+}
+
 export const ManageReviewerModal = ({
   selectedAdmins,
   admins,
   ...props
 }: ManageReviewerModalProps): JSX.Element => {
   const { onClose } = props
-  const remainingAdmins = _.difference(admins, selectedAdmins)
+  const { value: updatedSelectedAdmins, ...rest } = useStateManager({
+    defaultValue: selectedAdmins,
+    options: admins,
+    isMulti: true,
+    isClearable: false,
+  })
+
+  const selectedAdminsList = isList(updatedSelectedAdmins)
+    ? updatedSelectedAdmins
+    : []
+  const remainingAdmins = _.difference(admins, selectedAdminsList)
 
   return (
     <Modal {...props}>
@@ -45,10 +68,8 @@ export const ManageReviewerModal = ({
               Add or remove Admins who can approve this request
             </Text>
             <Select
-              defaultValue={selectedAdmins}
-              options={admins}
-              isMulti
-              isClearable={false}
+              value={updatedSelectedAdmins}
+              {...rest}
               components={{
                 Input: () =>
                   remainingAdmins.length > 0 ? (
@@ -61,16 +82,17 @@ export const ManageReviewerModal = ({
                   ) : null,
               }}
               styles={{
-                // NOTE: Setting fixed height so that it is same size as button
+                // NOTE: Setting minimum height so that it is same size as button
                 container: (base) => ({
                   ...base,
                   width: "100%",
-                  height: "2.75rem",
+                  minHeight: "2.75rem",
                 }),
                 control: (base) => ({ ...base, height: "100%" }),
                 // NOTE: Don't allow removal if there is only 1 selected admin
-                multiValueRemove: (base, state) => {
-                  return { ...base, display: "none" }
+                multiValueRemove: (base) => {
+                  const canRemove = selectedAdminsList.length > 1
+                  return { ...base, display: canRemove ? "inherit" : "none" }
                 },
               }}
             />
