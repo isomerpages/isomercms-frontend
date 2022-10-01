@@ -2,6 +2,8 @@ import { useDisclosure } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import { ComponentMeta, Story } from "@storybook/react"
 
+import { MOCK_ADMINS } from "mocks/constants"
+
 import {
   ManageReviewerModal,
   ManageReviewerModalProps,
@@ -35,5 +37,9 @@ const Template: Story<TemplateProps> = ({
 }
 
 export const Playground = Template.bind({})
+Playground.args = {
+  admins: MOCK_ADMINS,
+  selectedAdmins: [MOCK_ADMINS[0]],
+}
 
 export default modalMeta
