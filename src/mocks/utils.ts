@@ -12,6 +12,11 @@ import {
   MediaData,
 } from "types/directory"
 import { BackendSiteSettings } from "types/settings"
+import {
+  CollaboratorsStats,
+  SiteDashboardInfo,
+  SiteDashboardReviewRequest,
+} from "types/siteDashboard"
 import { LoggedInUser } from "types/user"
 
 const apiDataBuilder = <T extends DefaultBodyType = DefaultBodyType>(
@@ -43,6 +48,19 @@ export const buildResourceRoomData = apiDataBuilder<DirectoryData[]>(
 
 export const buildSettingsData = apiDataBuilder<BackendSiteSettings>(
   "*/sites/:siteName/settings"
+)
+
+export const buildSiteDashboardReviewRequests = apiDataBuilder<
+  SiteDashboardReviewRequest[]
+>("*/sites/:siteName/review/summary")
+
+// TODO: To be replaced with collaborators PR
+export const buildSiteDashboardCollaboratorsStatistics = apiDataBuilder<CollaboratorsStats>(
+  "*/sites/:siteName/collaborators/statistics"
+)
+
+export const buildSiteDashboardInfo = apiDataBuilder<SiteDashboardInfo>(
+  "*/sites/:siteName/info"
 )
 
 export const buildFolderData = apiDataBuilder<(PageData | DirectoryData)[]>(

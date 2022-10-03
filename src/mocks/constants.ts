@@ -1,3 +1,5 @@
+import { EditedItemProps } from "layouts/ReviewRequest/components/RequestOverview"
+
 import {
   DirectoryData,
   MediaData,
@@ -5,6 +7,12 @@ import {
   ResourcePageData,
 } from "types/directory"
 import { BackendSiteSettings } from "types/settings"
+import {
+  CollaboratorsStats,
+  ReviewRequestStatus,
+  SiteDashboardInfo,
+  SiteDashboardReviewRequest,
+} from "types/siteDashboard"
 
 export const MOCK_PAGES_DATA: PageData[] = [
   {
@@ -51,6 +59,12 @@ export const MOCK_RESOURCE_CATEGORY_PAGES_DATA: ResourcePageData[] = [
     title: "this is an extra page",
     date: "2000-01-02",
     resourceType: "file",
+  },
+  {
+    name: "extra page",
+    title: "this is an external link",
+    date: "2020-01-02",
+    resourceType: "link",
   },
 ]
 
@@ -258,3 +272,115 @@ export const MOCK_COLLABORATORS = {
     },
   },
 }
+export const MOCK_SITE_DASHBOARD_REVIEW_REQUESTS: SiteDashboardReviewRequest[] = [
+  {
+    id: 150,
+    title: "Update STCCED hyperlink, customs duty and other fees 6/7/22 3:43PM",
+    description:
+      "Added new section to homepage for upcoming event.\n\nPlease review by 12 Jan! Added new section to homepage for upcoming event. Please review by 12 Jan! Added new section to homepage for upcoming event. Please review by 12 Jan!",
+    author: "audrey@open.gov.sg",
+    status: ReviewRequestStatus.PENDING,
+    changedFiles: 10,
+    newComments: 1,
+    firstView: false,
+    createdAt: 1654587801,
+  },
+]
+
+export const MOCK_SITE_DASHBOARD_COLLABORATORS_STATISTICS: CollaboratorsStats = {
+  total: 10,
+  inactive: 8,
+}
+
+export const MOCK_SITE_DASHBOARD_INFO: SiteDashboardInfo = {
+  savedAt: 1642559061,
+  savedBy: "Siti_Julaiha_ASMURI@hdb.gov.sg",
+  publishedAt: 1642559061,
+  publishedBy: "Siti_Julaiha_ASMURI@hdb.gov.sg",
+  stagingUrl: "https://opengovsg-test-staging.netlify.app",
+  siteUrl: "https://www.open.gov.sg",
+}
+
+export const MOCK_ITEMS: EditedItemProps[] = [
+  {
+    type: ["page"],
+    name: "A page",
+    path: ["some", "thing"],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 129823104094,
+  },
+  {
+    type: ["nav"],
+    name: "A nav",
+    path: ["some", "thing"],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 823104823094,
+  },
+  {
+    type: ["file"],
+    name: "a file",
+    path: ["some", "thing"],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 129823104823094,
+  },
+  {
+    type: ["setting"],
+    name:
+      "A setting with an extremely long title that probably can't fit into a single line and we have to truncate this somehow. so we will hopefully display an ellipsis over it",
+    // NOTE: We don't have arbitrary nested folders.
+    // We only have depth = 2 for our folders.
+    path: [
+      "something extremely long that",
+      "might not be able to fit into a single line",
+      "so we have to truncate it to show an ellipsis at the end",
+    ],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 129823094,
+  },
+  {
+    type: ["setting"],
+    name: "a normal setting",
+    path: ["some", "thing"],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 12123498294,
+  },
+  {
+    type: ["image"],
+    name: "some file",
+    path: ["some", "thing"],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 129823094,
+  },
+  {
+    // NOTE: This has 2 types - we tiebreak by using the first item in the array for the icon.
+    // For the filtering, it should appear in both.
+    type: ["nav", "setting"],
+    name: "a file with two types",
+    path: ["another", "path"],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 129823094,
+  },
+]
+
+export const MOCK_ADMINS = [
+  {
+    value: "cat@cat.sg",
+    label: "Cat",
+  },
+  {
+    value: "Someone@anonymous.sg",
+    label: "Unknown",
+  },
+  {
+    value: "aLongLabel@tooLongFor.me",
+    label:
+      "an extremely long label, so long that it should overflow. so let us see if it truly does. if it is so long, should it be called a paralabel? as it is a paragraph label.",
+  },
+]

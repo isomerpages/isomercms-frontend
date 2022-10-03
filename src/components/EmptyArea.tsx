@@ -1,6 +1,6 @@
 import { Box, Center, VStack, Text, HTMLChakraProps } from "@chakra-ui/react"
 
-import { EmptyBoxImage } from "assets"
+import { EmptyBlueBoxImage } from "assets"
 
 export interface EmptyAreaProps extends HTMLChakraProps<"div"> {
   isItemEmpty: boolean
@@ -23,7 +23,7 @@ export const EmptyArea = ({
         <Box w="full">
           {/* Resource Room does not exist */}
           <VStack spacing={5} {...rest}>
-            <EmptyBoxImage />
+            <EmptyBlueBoxImage />
             <Center>
               <VStack spacing={0}>
                 <Text textStyle="subhead-1">

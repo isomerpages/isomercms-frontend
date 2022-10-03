@@ -41,9 +41,13 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
   },
   text: {
     body: "#3D3D3D",
+    inverse: "#FFFFFF",
     label: "#2E2E2E",
     helper: "#848484",
+    placeholder: "#A0A0A0",
     description: "#474747",
+    danger: "#C03434",
+    success: "#00774E",
     title: {
       brand: "#2164DA",
       brandSecondary: "#3C4764",
@@ -62,12 +66,19 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
   },
   background: {
     action: {
+      default: "#2164DA",
+      success: "#00774E",
       defaultInverse: "#FFFFFF",
+      alt: "#5D6785",
       altInverse: "#F8F9FA",
       infoInverse: "#F7F9FE",
+      warning: "#FFEA78",
     },
   },
   border: {
+    input: {
+      default: "#BFBFBF",
+    },
     action: {
       default: "#276EF1",
       light: "#E9E9E9",

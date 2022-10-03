@@ -14,7 +14,14 @@ const FormFieldMedia = ({
   placeholder = "",
   type = "images",
   inlineButtonText = "Choose Item",
-  register = () => {},
+  register = (_args) => {},
+}: {
+  value?: string,
+  id?: string,
+  placeholder?: string,
+  type?: string,
+  inlineButtonText?: string,
+  register: (_args: any) => void,
 }) => {
   const [isSelectingItem, setIsSelectingItem] = useState(false)
   const { onFieldChange } = useFormContext()

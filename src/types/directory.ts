@@ -39,7 +39,7 @@ export interface MediaData {
 }
 
 export type ResourcePageData = Required<Omit<PageData, "type">> & {
-  resourceType: "file" | "post"
+  resourceType: "file" | "post" | "link"
 }
 
 export interface ResourceRoomNameUpdateProps {

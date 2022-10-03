@@ -162,12 +162,9 @@ const EditPage = ({ match }) => {
                   <br />
                   <Code>{i + 1}</Code>:
                   <Code>
-                    {elem.attribute?.textContent || elem.element?.textContent
-                      ? (
-                          elem.attribute?.textContent ||
-                          elem.element?.textContent
-                        ).replace("<", "&lt;")
-                      : elem}
+                    {elem.attribute?.nodeName ||
+                      elem.element?.outerHTML ||
+                      elem}
                   </Code>
                 </>
               ))}

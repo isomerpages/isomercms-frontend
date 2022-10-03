@@ -4,4 +4,11 @@ export const InlineMessage = {
       color: "text.body",
     },
   },
+  variants: {
+    info: {
+      messagebox: {
+        backgroundColor: "background.action.infoInverse",
+      },
+    },
+  },
 }

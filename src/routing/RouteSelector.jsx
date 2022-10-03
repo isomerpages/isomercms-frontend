@@ -17,6 +17,7 @@ import NotFoundPage from "layouts/NotFoundPage"
 import { ResourceCategory } from "layouts/ResourceCategory"
 import { ResourceRoom } from "layouts/ResourceRoom"
 import { Settings } from "layouts/Settings"
+import { SiteDashboard } from "layouts/SiteDashboard"
 import Sites from "layouts/Sites"
 import { Workspace } from "layouts/Workspace"
 
@@ -61,6 +62,10 @@ export const RouteSelector = () => (
           "/sites/:siteName/media/:mediaRoom/mediaDirectory/:mediaDirectoryName",
         ]}
         component={Media}
+      />
+      <ProtectedRouteWithProps
+        path="/sites/:siteName/dashboard"
+        component={SiteDashboard}
       />
       <ProtectedRouteWithProps
         path="/sites/:siteName/workspace"
