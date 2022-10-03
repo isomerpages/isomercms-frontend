@@ -30,7 +30,7 @@ import { useStagingUrl } from "hooks/settingsHooks"
 
 import { NavImage } from "assets"
 
-export const SiteViewHeader = (): JSX.Element => {
+export const SiteEditHeader = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { siteName } = useParams<{ siteName: string }>()
   const { data: stagingUrl, isLoading } = useStagingUrl({ siteName })
