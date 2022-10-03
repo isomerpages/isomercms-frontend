@@ -9,13 +9,7 @@ import {
   useStyles,
   VStack,
 } from "@chakra-ui/react"
-import type {
-  BoxProps,
-  omitThemingProps,
-  StackProps,
-  TextProps,
-} from "@chakra-ui/react"
-import { createContext } from "react"
+import type { BoxProps, StackProps, TextProps } from "@chakra-ui/react"
 
 import {
   DisplayCardVariant,
@@ -35,36 +29,25 @@ interface DisplayCardTitleProps extends TextProps {
   hasDivider?: boolean
 }
 
-interface DisplayCardContextProps extends ReturnType<typeof omitThemingProps> {
-  variant: DisplayCardVariant
-}
-
-const DisplayCardContext = createContext<DisplayCardContextProps | undefined>(
-  undefined
-)
-
 export const DisplayCard = ({
   bgColor = "background.action.defaultInverse",
   children,
   ...props
 }: DisplayCardProps): JSX.Element => {
-  const variant = props.variant ?? "header"
   const styles = useMultiStyleConfig(DISPLAY_CARD_THEME_KEY, props)
 
   return (
-    <DisplayCardContext.Provider value={{ variant }}>
-      <StylesProvider value={styles}>
-        <VStack
-          position="relative"
-          h="100%"
-          spacing="1rem"
-          bgColor={bgColor}
-          {...(styles.container as StackProps)}
-        >
-          {children}
-        </VStack>
-      </StylesProvider>
-    </DisplayCardContext.Provider>
+    <StylesProvider value={styles}>
+      <VStack
+        position="relative"
+        h="100%"
+        spacing="1rem"
+        bgColor={bgColor}
+        {...(styles.container as StackProps)}
+      >
+        {children}
+      </VStack>
+    </StylesProvider>
   )
 }
 
