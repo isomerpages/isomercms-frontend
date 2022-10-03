@@ -1,4 +1,4 @@
-import { EditedItemProps } from "layouts/Dashboard/components/ReviewRequestModal/RequestOverview"
+import { EditedItemProps } from "layouts/ReviewRequest/components/RequestOverview"
 
 import {
   DirectoryData,

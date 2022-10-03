@@ -15,6 +15,16 @@ interface MenuDropdownButtonProps extends ButtonProps {
   mainButtonText: string
 }
 
+// NOTE: For icon buttons where the bg is clear, icon.default won't clash with the background
+// However, for solid background, return icon.inverse so that the chevron is clear.
+const computeIconFill = (variant: ButtonProps["variant"]): string => {
+  if (variant === "solid") {
+    return "icon.inverse"
+  }
+
+  return "icon.default"
+}
+
 /**
  * The button props and mainButtonText props are passed to the main button.
  * The children props are passed to the context menu and should be a list of
@@ -56,11 +66,12 @@ export const MenuDropdownButton = forwardRef<MenuDropdownButtonProps, "button">(
                 borderLeftRadius={0}
                 aria-label="Select options"
                 variant={buttonVariant}
+                colorScheme={props.colorScheme}
                 icon={
                   <Icon
                     as={isOpen ? BiChevronUp : BiChevronDown}
                     fontSize="1rem"
-                    fill="icon.default"
+                    fill={computeIconFill(buttonVariant)}
                   />
                 }
                 // eslint-disable-next-line react/jsx-props-no-spreading

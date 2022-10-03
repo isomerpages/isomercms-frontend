@@ -47,6 +47,7 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
     placeholder: "#A0A0A0",
     description: "#474747",
     danger: "#C03434",
+    success: "#00774E",
     title: {
       brand: "#2164DA",
       brandSecondary: "#3C4764",
@@ -64,10 +65,12 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
   },
   background: {
     action: {
+      default: "#2164DA",
+      success: "#00774E",
       defaultInverse: "#FFFFFF",
+      alt: "#5D6785",
       altInverse: "#F8F9FA",
       infoInverse: "#F7F9FE",
-      success: "#00774E",
       warning: "#FFEA78",
     },
   },
