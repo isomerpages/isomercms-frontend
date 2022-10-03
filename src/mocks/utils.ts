@@ -6,6 +6,7 @@ import {
   ResourcePageData,
   MediaData,
 } from "types/directory"
+import { NotificationData } from "types/notifications"
 import { BackendSiteSettings } from "types/settings"
 import {
   CollaboratorsStats,
@@ -15,34 +16,50 @@ import {
 import { LoggedInUser } from "types/user"
 
 const apiDataBuilder = <T extends DefaultBodyType = DefaultBodyType>(
-  endpoint: string
+  endpoint: string,
+  requestType: "get" | "post"
 ) => (
   mockData: T,
   delay?: number | "infinite"
-): ReturnType<typeof rest["get"]> => {
-  return rest.get(endpoint, (req, res, ctx) => {
-    return res(delay ? ctx.delay(delay) : ctx.delay(0), ctx.json(mockData))
-  })
+): ReturnType<typeof rest["get"] | typeof rest["post"]> => {
+  switch (requestType) {
+    case "post":
+      return rest.post(endpoint, (req, res, ctx) => {
+        return res(delay ? ctx.delay(delay) : ctx.delay(0), ctx.json(mockData))
+      })
+    case "get":
+      return rest.get(endpoint, (req, res, ctx) => {
+        return res(delay ? ctx.delay(delay) : ctx.delay(0), ctx.json(mockData))
+      })
+    default:
+      return rest.get(endpoint, (req, res, ctx) => {
+        return res(delay ? ctx.delay(delay) : ctx.delay(0), ctx.json(mockData))
+      })
+  }
 }
 
 export const buildPagesData = apiDataBuilder<PageData[]>(
-  "*/sites/:siteName/pages"
+  "*/sites/:siteName/pages",
+  "get"
 )
 
 export const buildDirData = apiDataBuilder<DirectoryData[]>(
-  "*/sites/:siteName/collections"
+  "*/sites/:siteName/collections",
+  "get"
 )
 
 export const buildResourceRoomName = apiDataBuilder<{
   resourceRoomName: string
-}>("*/sites/:siteName/resourceRoom")
+}>("*/sites/:siteName/resourceRoom", "get")
 
 export const buildResourceRoomData = apiDataBuilder<DirectoryData[]>(
-  "*/sites/:siteName/resourceRoom/:resourceRoomName"
+  "*/sites/:siteName/resourceRoom/:resourceRoomName",
+  "get"
 )
 
 export const buildSettingsData = apiDataBuilder<BackendSiteSettings>(
-  "*/sites/:siteName/settings"
+  "*/sites/:siteName/settings",
+  "get"
 )
 
 export const buildSiteDashboardReviewRequests = apiDataBuilder<
@@ -59,23 +76,49 @@ export const buildSiteDashboardInfo = apiDataBuilder<SiteDashboardInfo>(
 )
 
 export const buildFolderData = apiDataBuilder<(PageData | DirectoryData)[]>(
-  "*/sites/:siteName/collections/:collectionName"
+  "*/sites/:siteName/collections/:collectionName",
+  "get"
 )
 
 export const buildSubfolderData = apiDataBuilder<(PageData | DirectoryData)[]>(
-  "*/sites/:siteName/collections/:collectionName/subcollections/:subCollectionName"
+  "*/sites/:siteName/collections/:collectionName/subcollections/:subCollectionName",
+  "get"
 )
 
-export const buildLoginData = apiDataBuilder<LoggedInUser>("*/auth/whoami")
+export const buildLoginData = apiDataBuilder<LoggedInUser>(
+  "*/auth/whoami",
+  "get"
+)
 
 export const buildLastUpdated = apiDataBuilder<{ lastUpdated: string }>(
-  "*/sites/:siteName/lastUpdated"
+  "*/sites/:siteName/lastUpdated",
+  "get"
 )
 
 export const buildResourceCategoryData = apiDataBuilder<ResourcePageData[]>(
-  "*/sites/:siteName/resourceRoom/:resourceRoomName/resources/:resourceCategoryName"
+  "*/sites/:siteName/resourceRoom/:resourceRoomName/resources/:resourceCategoryName",
+  "get"
 )
 
 export const buildMediaData = apiDataBuilder<(MediaData | DirectoryData)[]>(
-  "*/sites/:siteName/media/:mediaDirectoryName"
+  "*/sites/:siteName/media/:mediaDirectoryName",
+  "get"
+)
+
+export const buildRecentNotificationData = apiDataBuilder<NotificationData[]>(
+  "*/sites/:siteName/notifications",
+  "get"
+)
+
+export const buildAllNotificationData = apiDataBuilder<NotificationData[]>(
+  "*/sites/:siteName/notifications/allNotifications",
+  "get"
+)
+export const buildMarkNotificationsAsReadData = apiDataBuilder<
+  NotificationData[]
+>("*/sites/:siteName/notifications", "post")
+
+export const buildGetStagingUrlData = apiDataBuilder<{ stagingUrl: string }>(
+  "*/sites/:siteName/stagingUrl",
+  "get"
 )
