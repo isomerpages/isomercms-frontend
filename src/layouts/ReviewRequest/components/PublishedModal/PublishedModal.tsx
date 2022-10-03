@@ -54,7 +54,7 @@ export const PublishedModal = (props: ModalProps): JSX.Element => {
           >
             Go to live site
           </Button>
-          <Button>Publish now</Button>
+          <Button>Back to Site Dashboard</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
