@@ -24,6 +24,10 @@ import Select from "react-select"
 
 import { User } from "types/reviewRequest"
 
+// NOTE: %0D%0A is a newline. Using \n does not work, possibly because
+// the body portion is interpreted as text/plain
+const EMAIL_NEWLINE = "%0D%0A"
+
 const generateEmailToAdmins = (
   admins: User[],
   siteName: string,
@@ -36,11 +40,9 @@ const generateEmailToAdmins = (
   const to = admins[0].value
   const cc = admins.slice(1).map(({ value }) => value)
   const subject = `New review request for ${siteName}`
-  // NOTE: %0D%0A is a newline. Using \n does not work, possibly because
-  // the body portion is interpreted as text/plain
-  const body = `I’ve asked you to review changes to my site!%0D%0A%0D%0A
+  const body = `I’ve asked you to review changes to my site!${EMAIL_NEWLINE}${EMAIL_NEWLINE}
 
-Request title: ${reviewTitle}%0D%0A
+Request title: ${reviewTitle}${EMAIL_NEWLINE}
 View it on IsomerCMS: ${reviewUrl}`
 
   return `mailto:${to}${cc.length > 0 ? `?cc=${cc}` : ""}&subject=${encodeURI(
