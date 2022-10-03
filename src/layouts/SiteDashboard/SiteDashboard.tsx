@@ -177,15 +177,16 @@ export const SiteDashboard = (): JSX.Element => {
               <DisplayCard variant="full">
                 <DisplayCardHeader
                   button={
-                    <Text
+                    <Button
+                      variant="link"
                       textStyle="subhead-1"
                       color="text.title.brand"
-                      marginRight="1rem"
+                      marginRight="0.75rem"
                       as={RouterLink}
                       to="/sites"
                     >
                       Manage
-                    </Text>
+                    </Button>
                   }
                 >
                   <DisplayCardTitle
