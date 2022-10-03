@@ -181,24 +181,6 @@ export const NotificationMenu = ({
                       {notification.message}
                     </NotificationMenuItem>
                   ))}
-                <NotificationMenuItem
-                  icon={<BiBell />}
-                  link="/sites"
-                  time="1mo"
-                  isRead={false}
-                >
-                  Hi
-                </NotificationMenuItem>
-                <NotificationMenuItem
-                  name="Blah"
-                  link="/sites"
-                  time="1m"
-                  isRead
-                >
-                  Hi asudhkasdjh askhd aksdhas jdksah ksahk ahkjs adkjash
-                  dksahdk hasjkd hakjhd kashd kasdkjaskdhask jkashd kahskd haskd
-                  aksd kjash ksah
-                </NotificationMenuItem>
                 {recentNotificationData &&
                 recentNotificationData.length === 0 ? (
                   <ContextMenuItem color="text.helper">
