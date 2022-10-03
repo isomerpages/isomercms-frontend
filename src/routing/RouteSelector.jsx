@@ -72,7 +72,7 @@ export const RouteSelector = () => (
         component={Workspace}
       />
       <ProtectedRouteWithProps
-        path="/sites/:siteName/dashboard"
+        path="/sites/:siteName/simple-dashboard"
         component={Dashboard}
       />
       <ProtectedRouteWithProps
