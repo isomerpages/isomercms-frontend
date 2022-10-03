@@ -23,7 +23,7 @@ import { MOCK_ADMINS } from "mocks/constants"
 import { ReviewRequestForm, ReviewRequestFormProps } from "./ReviewRequestForm"
 
 const formMeta = {
-  title: "Components/ReviewRequestModal/Form",
+  title: "Components/ReviewRequest/Modal Form",
   component: ReviewRequestForm,
 } as ComponentMeta<typeof ReviewRequestForm>
 

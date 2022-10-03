@@ -3,14 +3,13 @@ import { Story, ComponentMeta } from "@storybook/react"
 
 import { MOCK_ITEMS, MOCK_ADMINS } from "mocks/constants"
 
-import { EditedItemProps } from "./RequestOverview"
 import {
   ReviewRequestModal,
   ReviewRequestModalProps,
 } from "./ReviewRequestModal"
 
 const modalMeta = {
-  title: "Components/ReviewRequestModal/Modal",
+  title: "Components/ReviewRequest/Modal",
   component: ReviewRequestModal,
 } as ComponentMeta<typeof ReviewRequestModal>
 type TemplateProps = Pick<ReviewRequestModalProps, "admins" | "items">
