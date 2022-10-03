@@ -16,7 +16,15 @@ import { useLoginContext } from "contexts/LoginContext"
 import {
   ReviewRequestStatus,
   SiteDashboardReviewRequest,
-} from "types/sitedashboard"
+} from "types/siteDashboard"
+
+const getSingularPlural = (count: number, word: string) => {
+  return (
+    <>
+      <b>{count}</b> {count === 1 ? word : `${word}s`}
+    </>
+  )
+}
 
 export const ReviewRequestCard = ({
   reviewRequest,
@@ -28,7 +36,7 @@ export const ReviewRequestCard = ({
 
   return (
     <DisplayCard
-      variant="headerAndContent"
+      variant="full"
       bgColor={
         reviewRequest.firstView
           ? "background.action.infoInverse"
@@ -63,7 +71,7 @@ export const ReviewRequestCard = ({
         </>
       )}
       <DisplayCardHeader>
-        <DisplayCardTitle hasUnderline noOfLines={1}>
+        <DisplayCardTitle hasDivider noOfLines={1}>
           {reviewRequest.title}
         </DisplayCardTitle>
         <DisplayCardCaption>
@@ -81,12 +89,10 @@ export const ReviewRequestCard = ({
           color="text.title.brand"
         >
           <Text textStyle="subhead-1">
-            View <b>{reviewRequest.changedFiles}</b> changed{" "}
-            {reviewRequest.changedFiles === 1 ? "item" : "items"}
+            View {getSingularPlural(reviewRequest.changedFiles, "changed file")}
             {reviewRequest.newComments > 0 && (
               <>
-                , <b>{reviewRequest.newComments}</b> new{" "}
-                {reviewRequest.newComments === 1 ? "comment" : "comments"}
+                , {getSingularPlural(reviewRequest.newComments, "new comment")}
               </>
             )}
           </Text>

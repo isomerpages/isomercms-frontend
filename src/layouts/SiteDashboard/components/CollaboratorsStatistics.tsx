@@ -1,6 +1,6 @@
 import { Text, VStack } from "@chakra-ui/react"
 
-import type { CollaboratorsStats } from "types/sitedashboard"
+import type { CollaboratorsStats } from "types/siteDashboard"
 
 export const CollaboratorsStatistics = ({
   statistics,

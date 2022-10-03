@@ -5,7 +5,7 @@ import { SITE_DASHBOARD_INFO_KEY } from "constants/queryKeys"
 
 import * as SiteDashboardService from "services/SiteDashboardService"
 
-import type { SiteDashboardInfo } from "types/sitedashboard"
+import type { SiteDashboardInfo } from "types/siteDashboard"
 
 export const useGetSiteInfo = (
   siteName: string

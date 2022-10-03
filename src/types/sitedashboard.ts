@@ -22,9 +22,9 @@ export type SiteDashboardReviewRequest = {
 
 export type SiteDashboardInfo = {
   savedAt: number // Unix timestamp
-  savedBy: any // TODO: To change to user
+  savedBy: unknown // TODO: To change to user
   publishedAt: number // Unix timestamp
-  publishedBy: any // TODO: To change to user
+  publishedBy: unknown // TODO: To change to user
   stagingUrl: string
   siteUrl: string
 }

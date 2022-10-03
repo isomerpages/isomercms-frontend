@@ -5,7 +5,7 @@ import { SITE_DASHBOARD_COLLABORATORS_KEY } from "constants/queryKeys"
 
 import * as SiteDashboardService from "services/SiteDashboardService"
 
-import { CollaboratorsStats } from "types/sitedashboard"
+import { CollaboratorsStats } from "types/siteDashboard"
 
 export const useGetCollaboratorsStatistics = (
   siteName: string

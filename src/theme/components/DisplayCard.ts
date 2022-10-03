@@ -5,10 +5,7 @@ export const DISPLAY_CARD_THEME_KEY = "displayCard"
 
 // Determines whether the display card has content, or only contains the title,
 // subtitle, icon and any action button, or only contains the content
-export type DisplayCardVariant =
-  | "onlyHeader"
-  | "onlyContent"
-  | "headerAndContent"
+export type DisplayCardVariant = "header" | "content" | "full"
 
 export const parts = anatomy(DISPLAY_CARD_THEME_KEY).parts(
   "container",
@@ -19,9 +16,9 @@ export const parts = anatomy(DISPLAY_CARD_THEME_KEY).parts(
   "footer"
 )
 
-const variantOnlyHeader: PartsStyleObject<typeof parts> = {}
+const variantHeader: PartsStyleObject<typeof parts> = {}
 
-const variantOnlyContent: PartsStyleObject<typeof parts> = {
+const variantContent: PartsStyleObject<typeof parts> = {
   container: {
     paddingY: "1rem",
   },
@@ -31,7 +28,7 @@ const variantOnlyContent: PartsStyleObject<typeof parts> = {
   },
 }
 
-const variantHeaderAndContent: PartsStyleObject<typeof parts> = {
+const variantFull: PartsStyleObject<typeof parts> = {
   header: {
     paddingBottom: "0.5rem",
   },
@@ -94,11 +91,11 @@ export const DisplayCard: ComponentMultiStyleConfig = {
     },
   },
   variants: {
-    onlyHeader: variantOnlyHeader,
-    onlyContent: variantOnlyContent,
-    headerAndContent: variantHeaderAndContent,
+    header: variantHeader,
+    content: variantContent,
+    full: variantFull,
   },
   defaultProps: {
-    variant: "noContent",
+    variant: "header",
   },
 }

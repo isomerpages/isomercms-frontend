@@ -5,7 +5,7 @@ import { SITE_DASHBOARD_REVIEW_REQUEST_KEY } from "constants/queryKeys"
 
 import * as SiteDashboardService from "services/SiteDashboardService"
 
-import type { SiteDashboardReviewRequest } from "types/sitedashboard"
+import type { SiteDashboardReviewRequest } from "types/siteDashboard"
 
 export const useGetReviewRequests = (
   siteName: string

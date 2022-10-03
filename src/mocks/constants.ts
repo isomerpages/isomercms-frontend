@@ -10,7 +10,7 @@ import {
   ReviewRequestStatus,
   SiteDashboardInfo,
   SiteDashboardReviewRequest,
-} from "types/sitedashboard"
+} from "types/siteDashboard"
 
 export const MOCK_PAGES_DATA: PageData[] = [
   {

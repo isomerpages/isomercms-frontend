@@ -5,7 +5,6 @@ import {
   Heading,
   HStack,
   Icon,
-  Link,
   Skeleton,
   Spacer,
   Text,
@@ -60,7 +59,7 @@ export const SiteDashboard = (): JSX.Element => {
   } = useGetCollaboratorsStatistics(siteName)
 
   return (
-    <SiteViewLayout overflow="hidden" px="10">
+    <SiteViewLayout overflow="hidden">
       <Container maxW="container.xl" minH="100vh">
         {/* Heading section */}
         <Flex px="4rem">
@@ -108,10 +107,10 @@ export const SiteDashboard = (): JSX.Element => {
         </Flex>
 
         {/* Content */}
-        <Flex px="4rem" pt="5" gap="2">
+        <Flex px="4rem" pt="1.25rem" gap="0.5rem">
           {/* Left column */}
           <Box w="60%">
-            <DisplayCard variant="headerAndContent">
+            <DisplayCard variant="full">
               <DisplayCardHeader>
                 <DisplayCardTitle
                   icon={<Icon as={BiCheckCircle} fontSize="1.5rem" />}
@@ -145,7 +144,7 @@ export const SiteDashboard = (): JSX.Element => {
               {/* Human image and last saved/published */}
               <Box w="100%">
                 <SiteDashboardHumanImage />
-                <DisplayCard variant="onlyContent">
+                <DisplayCard variant="content">
                   <DisplayCardContent overflow="hidden">
                     <VStack
                       spacing="0.5rem"
@@ -175,7 +174,7 @@ export const SiteDashboard = (): JSX.Element => {
               </Box>
 
               {/* Site collaborators display card */}
-              <DisplayCard variant="headerAndContent">
+              <DisplayCard variant="full">
                 <DisplayCardHeader
                   button={
                     <Text
@@ -216,18 +215,19 @@ export const SiteDashboard = (): JSX.Element => {
               </DisplayCard>
 
               {/* Site settings display card */}
-              <DisplayCard variant="onlyHeader">
+              <DisplayCard variant="header">
                 <DisplayCardHeader
                   button={
-                    <Text
+                    <Button
+                      variant="link"
                       textStyle="subhead-1"
                       color="text.title.brand"
-                      marginRight="1rem"
+                      marginRight="0.75rem"
                       as={RouterLink}
                       to={`/sites/${siteName}/settings`}
                     >
                       Manage
-                    </Text>
+                    </Button>
                   }
                 >
                   <DisplayCardTitle

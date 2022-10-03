@@ -2,7 +2,7 @@ import {
   CollaboratorsStats,
   SiteDashboardInfo,
   SiteDashboardReviewRequest,
-} from "types/sitedashboard"
+} from "types/siteDashboard"
 
 import { apiService } from "./ApiService"
 

@@ -17,33 +17,33 @@ const displayCardMeta = {
   component: DisplayCard,
 } as ComponentMeta<typeof DisplayCard>
 
-interface onlyHeaderDisplayCardTemplateArgs {
+interface HeaderDisplayCardTemplateArgs {
   title: string
-  hasUnderline?: boolean
+  hasDivider?: boolean
   caption?: string
   icon?: JSX.Element
   button?: JSX.Element
 }
 
-interface onlyContentDisplayCardTemplateArgs {
+interface ContentDisplayCardTemplateArgs {
   content: string
   footer?: string
 }
 
-type FullDisplayCardTemplateArgs = onlyHeaderDisplayCardTemplateArgs &
-  onlyContentDisplayCardTemplateArgs
+type FullDisplayCardTemplateArgs = HeaderDisplayCardTemplateArgs &
+  ContentDisplayCardTemplateArgs
 
-const onlyHeaderTemplate: Story<onlyHeaderDisplayCardTemplateArgs> = ({
+const headerTemplate: Story<HeaderDisplayCardTemplateArgs> = ({
   title,
-  hasUnderline,
+  hasDivider,
   caption,
   icon,
   button,
-}: onlyHeaderDisplayCardTemplateArgs) => {
+}: HeaderDisplayCardTemplateArgs) => {
   return (
-    <DisplayCard variant="onlyHeader">
+    <DisplayCard variant="header">
       <DisplayCardHeader button={button}>
-        <DisplayCardTitle icon={icon} hasUnderline={hasUnderline}>
+        <DisplayCardTitle icon={icon} hasDivider={hasDivider}>
           {title}
         </DisplayCardTitle>
         <DisplayCardCaption>{caption}</DisplayCardCaption>
@@ -52,21 +52,21 @@ const onlyHeaderTemplate: Story<onlyHeaderDisplayCardTemplateArgs> = ({
   )
 }
 
-const onlyContentTemplate: Story<onlyContentDisplayCardTemplateArgs> = ({
+const contentTemplate: Story<ContentDisplayCardTemplateArgs> = ({
   content,
   footer,
-}: onlyContentDisplayCardTemplateArgs) => {
+}: ContentDisplayCardTemplateArgs) => {
   return (
-    <DisplayCard variant="onlyContent">
+    <DisplayCard variant="content">
       <DisplayCardContent>{content}</DisplayCardContent>
       {footer && <DisplayCardFooter>{footer}</DisplayCardFooter>}
     </DisplayCard>
   )
 }
 
-const headerAndContentTemplate: Story<FullDisplayCardTemplateArgs> = ({
+const fullTemplate: Story<FullDisplayCardTemplateArgs> = ({
   title,
-  hasUnderline,
+  hasDivider,
   caption,
   icon,
   button,
@@ -74,9 +74,9 @@ const headerAndContentTemplate: Story<FullDisplayCardTemplateArgs> = ({
   footer,
 }: FullDisplayCardTemplateArgs) => {
   return (
-    <DisplayCard variant="headerAndContent">
+    <DisplayCard variant="full">
       <DisplayCardHeader button={button}>
-        <DisplayCardTitle icon={icon} hasUnderline={hasUnderline}>
+        <DisplayCardTitle icon={icon} hasDivider={hasDivider}>
           {title}
         </DisplayCardTitle>
         <DisplayCardCaption>{caption}</DisplayCardCaption>
@@ -87,44 +87,49 @@ const headerAndContentTemplate: Story<FullDisplayCardTemplateArgs> = ({
   )
 }
 
-export const onlyHeader = onlyHeaderTemplate.bind({})
+export const onlyHeader = headerTemplate.bind({})
 onlyHeader.args = {
   title: "Card title",
   caption: "Card caption",
   icon: <Icon as={BiBulb} fontSize="1.5rem" />,
 }
 
-export const onlyHeaderWithUnderline = onlyHeaderTemplate.bind({})
-onlyHeaderWithUnderline.args = {
+export const headerWithUnderline = headerTemplate.bind({})
+headerWithUnderline.args = {
   title: "Card title",
   caption: "Card caption",
-  hasUnderline: true,
+  hasDivider: true,
 }
 
-export const onlyHeaderWithButton = onlyHeaderTemplate.bind({})
-onlyHeaderWithButton.args = {
+export const headerWithButton = headerTemplate.bind({})
+headerWithButton.args = {
   title: "Site settings",
   caption: "Manage site footer, links, logos, and more",
   icon: <Icon as={BiCog} fontSize="1.5rem" />,
   button: (
-    <Text textStyle="subhead-1" color="text.title.brand" marginRight="1rem">
+    <Button
+      variant="link"
+      textStyle="subhead-1"
+      color="text.title.brand"
+      marginRight="0.75rem"
+    >
       Manage
-    </Text>
+    </Button>
   ),
 }
 
-export const onlyContent = onlyContentTemplate.bind({})
+export const onlyContent = contentTemplate.bind({})
 onlyContent.args = {
   content: "This is the content of the card",
 }
 
-export const onlyContentWithFooter = onlyContentTemplate.bind({})
-onlyContentWithFooter.args = {
+export const contentWithFooter = contentTemplate.bind({})
+contentWithFooter.args = {
   content: "This is the content of the card",
   footer: "This is the footer of the card",
 }
 
-export const headerAndContent = headerAndContentTemplate.bind({})
+export const headerAndContent = fullTemplate.bind({})
 headerAndContent.args = {
   title: "Pending reviews",
   caption: "Changes to be approved before they can be published",
@@ -133,16 +138,21 @@ headerAndContent.args = {
   footer: "This is the footer of the card",
 }
 
-export const fullDisplayCard = headerAndContentTemplate.bind({})
+export const fullDisplayCard = fullTemplate.bind({})
 fullDisplayCard.args = {
   title: "This is a review request title",
-  hasUnderline: true,
+  hasDivider: true,
   caption: "#123 created by john@example.com on 1 January 2021, 12:00PM",
   icon: <Icon as={BiGroup} fontSize="1.5rem" />,
   button: (
-    <Text textStyle="subhead-1" color="text.title.brand" marginRight="1rem">
+    <Button
+      variant="link"
+      textStyle="subhead-1"
+      color="text.title.brand"
+      marginRight="0.75rem"
+    >
       Manage
-    </Text>
+    </Button>
   ),
   content: "This is the content of the card",
   footer: "This is the footer of the card",

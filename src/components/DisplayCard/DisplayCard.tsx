@@ -32,7 +32,7 @@ interface DisplayCardHeaderProps extends BoxProps {
 
 interface DisplayCardTitleProps extends TextProps {
   icon?: JSX.Element
-  hasUnderline?: boolean
+  hasDivider?: boolean
 }
 
 interface DisplayCardContextProps extends ReturnType<typeof omitThemingProps> {
@@ -48,7 +48,7 @@ export const DisplayCard = ({
   children,
   ...props
 }: DisplayCardProps): JSX.Element => {
-  const variant = props.variant ?? "onlyHeader"
+  const variant = props.variant ?? "header"
   const styles = useMultiStyleConfig(DISPLAY_CARD_THEME_KEY, props)
 
   return (
@@ -86,7 +86,7 @@ export const DisplayCardHeader = ({
 export const DisplayCardTitle = ({
   children,
   icon,
-  hasUnderline,
+  hasDivider,
   ...props
 }: DisplayCardTitleProps): JSX.Element => {
   const styles = useStyles()
@@ -99,7 +99,7 @@ export const DisplayCardTitle = ({
         </Text>
         {icon}
       </HStack>
-      {hasUnderline && <Divider my="0.75rem" />}
+      {hasDivider && <Divider my="0.75rem" />}
     </>
   )
 }
