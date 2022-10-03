@@ -62,6 +62,7 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
   icon: {
     default: "#276EF1",
     alt: "#686868",
+    danger: "#C03434",
   },
   background: {
     action: {
