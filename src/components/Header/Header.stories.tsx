@@ -3,7 +3,11 @@ import { MemoryRouter, Route } from "react-router-dom"
 
 import { SiteEditHeader } from "layouts/layouts/SiteEditLayout"
 
-import { buildAllNotificationData, buildGetStagingUrlData } from "mocks/utils"
+import {
+  buildRecentNotificationData,
+  buildAllNotificationData,
+  buildGetStagingUrlData,
+} from "mocks/utils"
 
 import { handlers } from "../../mocks/handlers"
 
@@ -46,6 +50,17 @@ export const LoadingAll = Template.bind({})
 LoadingAll.parameters = {
   msw: {
     handlers: [buildAllNotificationData([], "infinite"), ...handlers],
+  },
+}
+
+export const NoNotifications = Template.bind({})
+NoNotifications.parameters = {
+  msw: {
+    handlers: [
+      buildRecentNotificationData([]),
+      buildAllNotificationData([]),
+      ...handlers,
+    ],
   },
 }
 
