@@ -28,7 +28,7 @@ import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
 import { isDirData } from "types/utils"
 
-import { SiteViewContent, SiteViewLayout } from "../layouts"
+import { SiteViewContent, SiteEditLayout } from "../layouts"
 
 import { MainPages } from "./components/MainPages"
 import { UngroupedPages } from "./components/UngroupedPages"
@@ -55,7 +55,7 @@ const WorkspacePage = (): JSX.Element => {
   const isFoldersEmpty = !dirsData || dirsData.length === 0
 
   return (
-    <SiteViewLayout overflow="hidden">
+    <SiteEditLayout overflow="hidden">
       <MainPages siteName={siteName} isLoading={!!pagesData} />
       <Skeleton isLoaded={!isDirLoading} w="100%">
         <EmptyArea
@@ -119,7 +119,7 @@ const WorkspacePage = (): JSX.Element => {
           </SiteViewContent>
         </EmptyArea>
       </Skeleton>
-    </SiteViewLayout>
+    </SiteEditLayout>
   )
 }
 

@@ -7,6 +7,12 @@ import {
   ResourcePageData,
 } from "types/directory"
 import { BackendSiteSettings } from "types/settings"
+import {
+  CollaboratorsStats,
+  ReviewRequestStatus,
+  SiteDashboardInfo,
+  SiteDashboardReviewRequest,
+} from "types/siteDashboard"
 
 export const MOCK_PAGES_DATA: PageData[] = [
   {
@@ -195,6 +201,35 @@ export const MOCK_SUBFOLDER_NAME = "mock-subfolder"
 export const MOCK_RESOURCE_ROOM_NAME = "mock-resource-room"
 
 export const MOCK_RESOURCE_CATEGORY_NAME = "mock-resource-category"
+
+export const MOCK_SITE_DASHBOARD_REVIEW_REQUESTS: SiteDashboardReviewRequest[] = [
+  {
+    id: 150,
+    title: "Update STCCED hyperlink, customs duty and other fees 6/7/22 3:43PM",
+    description:
+      "Added new section to homepage for upcoming event.\n\nPlease review by 12 Jan! Added new section to homepage for upcoming event. Please review by 12 Jan! Added new section to homepage for upcoming event. Please review by 12 Jan!",
+    author: "audrey@open.gov.sg",
+    status: ReviewRequestStatus.PENDING,
+    changedFiles: 10,
+    newComments: 1,
+    firstView: false,
+    createdAt: 1654587801,
+  },
+]
+
+export const MOCK_SITE_DASHBOARD_COLLABORATORS_STATISTICS: CollaboratorsStats = {
+  total: 10,
+  inactive: 8,
+}
+
+export const MOCK_SITE_DASHBOARD_INFO: SiteDashboardInfo = {
+  savedAt: 1642559061,
+  savedBy: "Siti_Julaiha_ASMURI@hdb.gov.sg",
+  publishedAt: 1642559061,
+  publishedBy: "Siti_Julaiha_ASMURI@hdb.gov.sg",
+  stagingUrl: "https://opengovsg-test-staging.netlify.app",
+  siteUrl: "https://www.open.gov.sg",
+}
 
 export const MOCK_ITEMS: EditedItemProps[] = [
   {
