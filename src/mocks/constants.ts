@@ -199,23 +199,23 @@ export const MOCK_RESOURCE_CATEGORY_NAME = "mock-resource-category"
 export const MOCK_ITEMS: EditedItemProps[] = [
   {
     type: ["page"],
-    name: "some file",
+    name: "A page",
     path: ["some", "thing"],
     url: "www.google.com",
     lastEditedBy: "asdf",
-    lastEditedTime: 129823104823094,
+    lastEditedTime: 129823104094,
   },
   {
     type: ["nav"],
-    name: "some file",
+    name: "A nav",
     path: ["some", "thing"],
     url: "www.google.com",
     lastEditedBy: "asdf",
-    lastEditedTime: 129823104823094,
+    lastEditedTime: 823104823094,
   },
   {
     type: ["file"],
-    name: "some file",
+    name: "a file",
     path: ["some", "thing"],
     url: "www.google.com",
     lastEditedBy: "asdf",
@@ -224,7 +224,7 @@ export const MOCK_ITEMS: EditedItemProps[] = [
   {
     type: ["setting"],
     name:
-      "some file with an extremely long title that probably can't fit into a single line and we have to truncate this somehow. so we will hopefully display an ellipsis over it",
+      "A setting with an extremely long title that probably can't fit into a single line and we have to truncate this somehow. so we will hopefully display an ellipsis over it",
     // NOTE: We don't have arbitrary nested folders.
     // We only have depth = 2 for our folders.
     path: [
@@ -234,7 +234,15 @@ export const MOCK_ITEMS: EditedItemProps[] = [
     ],
     url: "www.google.com",
     lastEditedBy: "asdf",
-    lastEditedTime: 129823104823094,
+    lastEditedTime: 129823094,
+  },
+  {
+    type: ["setting"],
+    name: "a normal setting",
+    path: ["some", "thing"],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 12123498294,
   },
   {
     type: ["image"],
@@ -242,7 +250,17 @@ export const MOCK_ITEMS: EditedItemProps[] = [
     path: ["some", "thing"],
     url: "www.google.com",
     lastEditedBy: "asdf",
-    lastEditedTime: 129823104823094,
+    lastEditedTime: 129823094,
+  },
+  {
+    // NOTE: This has 2 types - we tiebreak by using the first item in the array for the icon.
+    // For the filtering, it should appear in both.
+    type: ["nav", "setting"],
+    name: "a file with two types",
+    path: ["another", "path"],
+    url: "www.google.com",
+    lastEditedBy: "asdf",
+    lastEditedTime: 129823094,
   },
 ]
 
