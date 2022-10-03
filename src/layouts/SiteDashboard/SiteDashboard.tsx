@@ -59,7 +59,7 @@ export const SiteDashboard = (): JSX.Element => {
   } = useGetCollaboratorsStatistics(siteName)
 
   return (
-    <SiteViewLayout overflow="hidden">
+    <SiteViewLayout siteName={siteName} overflow="hidden">
       <Container maxW="container.xl" minH="100vh">
         {/* Heading section */}
         <Flex px="4rem">

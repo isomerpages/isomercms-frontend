@@ -9,17 +9,22 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalFooter,
+  Link,
   ModalHeader,
   ModalOverlay,
   useDisclosure,
   Skeleton,
+  LinkProps,
   Center,
   VStack,
 } from "@chakra-ui/react"
-import { Button, IconButton } from "@opengovsg/design-system-react"
-import { ButtonLink } from "components/ButtonLink"
+import { Button, ButtonProps, IconButton } from "@opengovsg/design-system-react"
+import { AvatarMenu } from "components/Header/AvatarMenu"
+import { NotificationMenu } from "components/Header/NotificationMenu"
 import { BiArrowBack } from "react-icons/bi"
 import { Link as RouterLink, useParams } from "react-router-dom"
+
+import { useLoginContext } from "contexts/LoginContext"
 
 import { useStagingUrl } from "hooks/settingsHooks"
 
@@ -29,6 +34,7 @@ export const SiteEditHeader = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { siteName } = useParams<{ siteName: string }>()
   const { data: stagingUrl, isLoading } = useStagingUrl({ siteName })
+  const { displayedName } = useLoginContext()
 
   return (
     <>
@@ -67,6 +73,8 @@ export const SiteEditHeader = (): JSX.Element => {
           <ButtonLink href={`https://github.com/isomerpages/${siteName}/pulls`}>
             <Text color="white">Pull Request</Text>
           </ButtonLink>
+          <NotificationMenu siteName={siteName} />
+          <AvatarMenu name={displayedName} />
         </HStack>
       </Flex>
 
@@ -101,5 +109,22 @@ export const SiteEditHeader = (): JSX.Element => {
         </ModalContent>
       </Modal>
     </>
+  )
+}
+
+// NOTE: This button exists just to ensure that the text won't have an underline displayed
+const ButtonLink = (props: ButtonProps & LinkProps) => {
+  return (
+    <Button
+      as={Link}
+      rel="noopener noreferrer"
+      target="_blank"
+      textDecoration="none"
+      _hover={{
+        textDecoration: "none",
+        bgColor: "primary.600",
+      }}
+      {...props}
+    />
   )
 }
