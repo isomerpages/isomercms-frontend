@@ -73,6 +73,9 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
     },
   },
   border: {
+    input: {
+      default: "#BFBFBF",
+    },
     action: {
       default: "#276EF1",
       light: "#E9E9E9",

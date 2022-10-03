@@ -266,15 +266,15 @@ export const MOCK_ITEMS: EditedItemProps[] = [
 
 export const MOCK_ADMINS = [
   {
-    value: "a cat",
+    value: "cat@cat.sg",
     label: "Cat",
   },
   {
-    value: "Someone",
+    value: "Someone@anonymous.sg",
     label: "Unknown",
   },
   {
-    value: "a long label",
+    value: "aLongLabel@tooLongFor.me",
     label:
       "an extremely long label, so long that it should overflow. so let us see if it truly does. if it is so long, should it be called a paralabel? as it is a paragraph label.",
   },

@@ -2,11 +2,10 @@ import { VStack, FormControl } from "@chakra-ui/react"
 import { FormLabel, Input, Textarea } from "@opengovsg/design-system-react"
 import Select from "react-select"
 
+import { User } from "types/reviewRequest"
+
 export interface ReviewRequestFormProps {
-  admins: {
-    value: string
-    label: string
-  }[]
+  admins: User[]
 }
 
 export const ReviewRequestForm = ({
