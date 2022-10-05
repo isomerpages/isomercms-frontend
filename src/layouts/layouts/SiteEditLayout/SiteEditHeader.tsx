@@ -9,16 +9,15 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalFooter,
-  Link,
   ModalHeader,
   ModalOverlay,
   useDisclosure,
   Skeleton,
-  LinkProps,
   Center,
   VStack,
 } from "@chakra-ui/react"
-import { Button, ButtonProps, IconButton } from "@opengovsg/design-system-react"
+import { Button, IconButton } from "@opengovsg/design-system-react"
+import { ButtonLink } from "components/ButtonLink"
 import { AvatarMenu } from "components/Header/AvatarMenu"
 import { NotificationMenu } from "components/Header/NotificationMenu"
 import { BiArrowBack } from "react-icons/bi"
@@ -109,22 +108,5 @@ export const SiteEditHeader = (): JSX.Element => {
         </ModalContent>
       </Modal>
     </>
-  )
-}
-
-// NOTE: This button exists just to ensure that the text won't have an underline displayed
-const ButtonLink = (props: ButtonProps & LinkProps) => {
-  return (
-    <Button
-      as={Link}
-      rel="noopener noreferrer"
-      target="_blank"
-      textDecoration="none"
-      _hover={{
-        textDecoration: "none",
-        bgColor: "primary.600",
-      }}
-      {...props}
-    />
   )
 }
