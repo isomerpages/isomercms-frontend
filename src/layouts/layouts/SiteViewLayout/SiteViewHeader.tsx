@@ -7,7 +7,6 @@ import { Link as RouterLink } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 
-// TODO: This is a temporary header for a site view page
 export const SiteViewHeader = (siteName: string): JSX.Element => {
   const { displayedName } = useLoginContext()
   return (
