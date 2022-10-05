@@ -65,7 +65,7 @@ export const ContactVerificationModal = ({
         <ModalCloseButton />
         <ModalHeader color="text.label">Edit emergency contact</ModalHeader>
         <ModalBody whiteSpace="pre-line" pb="3.25rem">
-          <Text color="text.description">
+          <Text color="text.description" pb="1rem">
             Update your mobile number and verify it so we can contact you in the
             unlikely case of an urgent issue. This number can be changed at any
             time in your user settings.
