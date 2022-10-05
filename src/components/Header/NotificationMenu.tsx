@@ -29,7 +29,6 @@ const NotificationMenuButton = (props: MenuButtonProps): JSX.Element => {
       px="0"
       iconSpacing="0.5rem"
       rightIcon={undefined}
-      // color="secondary.300"
       _focus={{}}
       {...props}
     />

@@ -30,7 +30,6 @@ const AvatarMenuButton = (props: MenuButtonProps): JSX.Element => {
       variant="clear"
       px="0"
       iconSpacing="0.5rem"
-      // color="secondary.300"
       _focus={{}}
       {...props}
     />
