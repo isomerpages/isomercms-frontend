@@ -19,7 +19,8 @@ import {
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { convertDateToTimeDiff } from "utils/dateUtils"
-import { getAvatarName, getNotificationIcon } from "utils/notificationUtils"
+import { getNotificationIcon } from "utils/notificationUtils"
+import { extractInitials } from "utils/text"
 
 const NotificationMenuButton = (props: MenuButtonProps): JSX.Element => {
   return (
@@ -58,7 +59,7 @@ export const NotificationMenuItem = ({
       onClick={() => setRedirectToPage(link)}
     >
       <Flex w="100%">
-        <Avatar icon={icon || <></>} name={name ? getAvatarName(name) : ""} />
+        <Avatar icon={icon || <></>} name={name ? extractInitials(name) : ""} />
         <Text
           w="100%"
           pl="1rem"

@@ -1,2 +1,4 @@
-export const extractInitials = (name: string): string =>
-  name.slice(0, 2).split("").join(" ")
+export const extractInitials = (name: string): string => {
+  const processedName = name.replace(/^@/, "")
+  return processedName.slice(0, 2).split("").join(" ")
+}

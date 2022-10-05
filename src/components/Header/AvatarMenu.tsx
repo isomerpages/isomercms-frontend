@@ -14,7 +14,7 @@ import { BiLogOutCircle, BiUser } from "react-icons/bi"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
-import { getAvatarName } from "utils/notificationUtils"
+import { extractInitials } from "utils/text"
 
 import { ContactVerificationModal } from "./ContactModal/ContactVerificationModal"
 
@@ -64,7 +64,7 @@ export const AvatarMenu = ({
         <>
           <AvatarMenuButton>
             <Avatar
-              name={name ? getAvatarName(name) : ""}
+              name={name ? extractInitials(name) : ""}
               boxShadow={
                 isOpen
                   ? `0 0 0 4px var(--chakra-colors-primary-300)`
