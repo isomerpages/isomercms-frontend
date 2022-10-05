@@ -64,6 +64,7 @@ export const AvatarMenu = ({
         <>
           <AvatarMenuButton>
             <Avatar
+              fontSize="0.875rem"
               name={name ? extractInitials(name) : ""}
               boxShadow={
                 isOpen
