@@ -103,12 +103,10 @@ export const AvatarMenu = ({
               </Text>
             </ContextMenuItem>
           </Menu.List>
-          {isVerificationModalOpen && (
-            <ContactVerificationModal
-              isOpen={isVerificationModalOpen}
-              onClose={onVerificationModalClose}
-            />
-          )}
+          <ContactVerificationModal
+            isOpen={isVerificationModalOpen}
+            onClose={onVerificationModalClose}
+          />
         </>
       )}
     </Menu>
