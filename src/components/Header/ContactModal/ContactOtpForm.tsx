@@ -18,9 +18,6 @@ interface ContactFormProps {
   errorMessage: string
 }
 
-const validateOtp = (value: string) =>
-  value.length === 6 || "Please enter a 6 digit OTP."
-
 export const ContactOtpForm = ({
   contactNumber,
   onSubmit,
@@ -60,7 +57,8 @@ export const ContactOtpForm = ({
               value: /^[0-9\b]+$/, // \b is a word boundary - link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Assertions
               message: "Only numbers are allowed.",
             },
-            validate: validateOtp,
+            maxLength: { value: 6, message: "Please enter a 6 digit OTP." },
+            minLength: { value: 6, message: "Please enter a 6 digit OTP." },
           })}
         />
         <FormErrorMessage>{formState.errors.otp?.message}</FormErrorMessage>
