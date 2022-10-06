@@ -14,7 +14,9 @@ import { Button, ModalCloseButton } from "@opengovsg/design-system-react"
 
 import { ToastImage } from "assets"
 
-export const ApprovedModal = (props: ModalProps): JSX.Element => {
+export const ApprovedModal = (
+  props: Omit<ModalProps, "children">
+): JSX.Element => {
   const { onClose } = props
 
   return (

@@ -15,7 +15,7 @@ import Select, { PropsValue, useStateManager } from "react-select"
 
 import { User } from "types/reviewRequest"
 
-export interface ManageReviewerModalProps extends ModalProps {
+export interface ManageReviewerModalProps extends Omit<ModalProps, "children"> {
   selectedAdmins: User[]
   admins: User[]
 }
