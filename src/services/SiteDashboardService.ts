@@ -18,8 +18,8 @@ export const getReviewRequests = async (
 ): Promise<SiteDashboardReviewRequest[]> => {
   const endpoint = `/sites/${siteName}/review/summary`
   return apiService
-    .get<SiteDashboardReviewRequest[]>(endpoint)
-    .then((res) => res.data)
+    .get<{ reviews: SiteDashboardReviewRequest[] }>(endpoint)
+    .then(({ data }) => data.reviews)
 }
 
 // TODO: To update when collaborators PR is merged
