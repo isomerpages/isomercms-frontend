@@ -13,6 +13,7 @@ import {
   PopoverBody,
   PopoverArrow,
   IconButton,
+  useDisclosure,
 } from "@chakra-ui/react"
 import {
   MenuDropdownButton,
@@ -20,106 +21,122 @@ import {
 } from "components/MenuDropdownButton"
 import { useState } from "react"
 import { BiLink, BiPlus } from "react-icons/bi"
+import { useParams } from "react-router-dom"
+
+import { useGetReviewRequest } from "hooks/reviewHooks/useGetReviewRequest"
 
 import { extractInitials, getDateTimeFromUnixTime } from "utils"
 
-import { RequestOverview, EditedItemProps } from "./components/RequestOverview"
+import { SiteViewHeader } from "../layouts/SiteViewLayout/SiteViewHeader"
 
-export interface ReviewRequestDashboardProps {
-  reviewUrl: string
-  title: string
-  requestor: string
-  reviewers: string[]
-  reviewRequestedTime: Date
-  changedItems: EditedItemProps[]
-}
-export const ReviewRequestDashboard = ({
-  reviewRequestedTime,
-  reviewUrl,
-  title,
-  requestor,
-  reviewers,
-  changedItems,
-}: ReviewRequestDashboardProps): JSX.Element => {
-  const { onCopy, hasCopied } = useClipboard(reviewUrl)
+import { ManageReviewerModal } from "./components"
+import { ApprovedModal } from "./components/ApprovedModal"
+import { RequestOverview } from "./components/RequestOverview"
+
+export const ReviewRequestDashboard = (): JSX.Element => {
+  const { siteName, reviewId } = useParams<{
+    siteName: string
+    reviewId: string
+  }>()
+  // TODO!: Refactor so that loading is not a concern here
+  const { data } = useGetReviewRequest(siteName, parseInt(reviewId, 10))
+
+  // TODO!: redirect to /sites if cannot parse reviewId as string
+  const { onCopy, hasCopied } = useClipboard(data?.reviewUrl || "")
 
   return (
-    <Box bg="white" w="100%" h="100%">
-      <VStack
-        bg="blue.50"
-        pl="9.25rem"
-        pr="2rem"
-        pt="2rem"
-        pb="1.5rem"
-        spacing="0.75rem"
-        align="flex-start"
-      >
-        <Flex w="100%">
-          <HStack spacing="0.25rem">
-            <Text textStyle="h5">{title}</Text>
-            {/* Closes after 1.5s and does not refocus on the button to avoid the outline */}
-            <Popover returnFocusOnClose={false} isOpen={hasCopied}>
-              <PopoverTrigger>
-                <IconButton
-                  icon={<BiLink />}
-                  variant="clear"
-                  aria-label="link to pull request"
-                  onClick={onCopy}
-                />
-              </PopoverTrigger>
-              <PopoverContent
-                bg="background.action.alt"
-                _focus={{
-                  boxShadow: "none",
-                }}
-                w="fit-content"
-              >
-                <PopoverArrow bg="background.action.alt" />
-                <PopoverBody>
-                  <Text textStyle="body-2" color="text.inverse">
-                    Link copied!
-                  </Text>
-                </PopoverBody>
-              </PopoverContent>
-            </Popover>
-          </HStack>
-          <Spacer />
-          <ApprovalButton />
-        </Flex>
-        <SecondaryDetails
-          requestor={requestor}
-          reviewers={reviewers}
-          reviewRequestedTime={reviewRequestedTime}
-        />
-      </VStack>
-      <Box pl="9.25rem" pr="2rem">
-        <RequestOverview items={changedItems} allowEditing />
+    <>
+      <SiteViewHeader />
+      <Box bg="white" w="100%" h="100vh">
+        <VStack
+          bg="blue.50"
+          pl="9.25rem"
+          pr="2rem"
+          pt="2rem"
+          pb="1.5rem"
+          spacing="0.75rem"
+          align="flex-start"
+        >
+          <Flex w="100%">
+            <HStack spacing="0.25rem">
+              <Text textStyle="h5">{data?.title || ""}</Text>
+              {/* Closes after 1.5s and does not refocus on the button to avoid the outline */}
+              <Popover returnFocusOnClose={false} isOpen={hasCopied}>
+                <PopoverTrigger>
+                  <IconButton
+                    icon={<BiLink />}
+                    variant="clear"
+                    aria-label="link to pull request"
+                    onClick={onCopy}
+                  />
+                </PopoverTrigger>
+                <PopoverContent
+                  bg="background.action.alt"
+                  _focus={{
+                    boxShadow: "none",
+                  }}
+                  w="fit-content"
+                >
+                  <PopoverArrow bg="background.action.alt" />
+                  <PopoverBody>
+                    <Text textStyle="body-2" color="text.inverse">
+                      Link copied!
+                    </Text>
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
+            </HStack>
+            <Spacer />
+            <ApprovalButton />
+          </Flex>
+          <SecondaryDetails
+            requestor={data?.requestor || ""}
+            reviewers={data?.reviewers || []}
+            reviewRequestedTime={
+              data?.reviewRequestedTime
+                ? new Date(data?.reviewRequestedTime)
+                : new Date()
+            }
+          />
+        </VStack>
+        <Box pl="9.25rem" pr="2rem">
+          <RequestOverview items={data?.changedItems || []} allowEditing />
+        </Box>
       </Box>
-    </Box>
+    </>
   )
 }
 
 // NOTE: Utility component exists to soothe over state management
 const ApprovalButton = (): JSX.Element => {
   const [isApproved, setIsApproved] = useState(false)
+  const { onOpen, isOpen, onClose } = useDisclosure()
 
   return (
-    <MenuDropdownButton
-      colorScheme={isApproved ? "success" : "primary"}
-      mainButtonText={isApproved ? "Approved" : "In review"}
-      variant="solid"
-    >
-      <MenuDropdownItem onClick={() => setIsApproved(false)}>
-        <Text textStyle="body-1" textColor="text.body" w="100%">
-          In review
-        </Text>
-      </MenuDropdownItem>
-      <MenuDropdownItem onClick={() => setIsApproved(true)}>
-        <Text textStyle="body-1" textColor="text.success" w="100%">
-          Approved
-        </Text>
-      </MenuDropdownItem>
-    </MenuDropdownButton>
+    <>
+      <MenuDropdownButton
+        colorScheme={isApproved ? "success" : "primary"}
+        mainButtonText={isApproved ? "Approved" : "In review"}
+        variant="solid"
+      >
+        <MenuDropdownItem onClick={() => setIsApproved(false)}>
+          <Text textStyle="body-1" textColor="text.body" w="100%">
+            In review
+          </Text>
+        </MenuDropdownItem>
+        <MenuDropdownItem
+          onClick={() => {
+            setIsApproved(true)
+            onOpen()
+          }}
+        >
+          <Text textStyle="body-1" textColor="text.success" w="100%">
+            Approved
+          </Text>
+        </MenuDropdownItem>
+      </MenuDropdownButton>
+      <ApprovedModal isOpen={isOpen} onClose={onClose} />
+    </>
   )
 }
 
@@ -134,6 +151,14 @@ const SecondaryDetails = ({
   reviewRequestedTime,
 }: SecondaryDetailsProps) => {
   const { date, time } = getDateTimeFromUnixTime(reviewRequestedTime.getTime())
+  const props = useDisclosure()
+  const selectedAdmins = reviewers.map((reviewer) => {
+    return {
+      value: reviewer,
+      label: reviewer,
+    }
+  })
+
   return (
     <VStack spacing="0.5rem" align="flex-start">
       <Text textStyle="caption-2" textColor="text.helper">
@@ -169,6 +194,13 @@ const SecondaryDetails = ({
             size="sm"
             ml="-0.25rem"
             bg="blue.50"
+            onClick={props.onOpen}
+          />
+          <ManageReviewerModal
+            {...props}
+            selectedAdmins={selectedAdmins}
+            // TODO!
+            admins={[]}
           />
         </Box>
       </HStack>
