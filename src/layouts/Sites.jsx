@@ -16,7 +16,7 @@ const Sites = ({ siteNames }) => {
     return siteNames.map((siteName) => (
       <div className={siteStyles.siteContainer} key={siteName.repoName}>
         <div className={siteStyles.site}>
-          <Link to={`/sites/${siteName.repoName}/workspace`}>
+          <Link to={`/sites/${siteName.repoName}/dashboard`}>
             <div className={siteStyles.siteImage} />
             <div className={siteStyles.siteDescription}>
               <div className={siteStyles.siteName}>{siteName.repoName}</div>
