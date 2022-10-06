@@ -15,24 +15,73 @@ import {
   Divider,
 } from "@chakra-ui/react"
 import { Button, ModalCloseButton, Tab } from "@opengovsg/design-system-react"
+import { useEffect } from "react"
+import { FormProvider, useForm } from "react-hook-form"
+import { useParams } from "react-router-dom"
 
-import { EditedItemProps, RequestOverview } from "../RequestOverview"
-import { ReviewRequestForm, ReviewRequestFormProps } from "../ReviewRequestForm"
+import { useCreateReviewRequest } from "hooks/reviewHooks/useCreateReviewRequest"
+import { useDiff } from "hooks/reviewHooks/useDiff"
+import { useGetCollaborators } from "hooks/reviewHooks/useGetCollaborators"
 
-export type ReviewRequestModalProps = ModalProps &
-  ReviewRequestFormProps & { items: EditedItemProps[] }
+import { useSuccessToast } from "utils/toasts"
 
-export const ReviewRequestModal = ({
-  admins,
-  items,
-  ...rest
-}: ReviewRequestModalProps): JSX.Element => {
-  const { onClose } = rest
+import { ReviewRequestInfo } from "types/reviewRequest"
+import { useErrorToast } from "utils"
+
+import { RequestOverview } from "../RequestOverview"
+import { ReviewRequestForm } from "../ReviewRequestForm"
+
+export const ReviewRequestModal = (
+  props: Omit<ModalProps, "children">
+): JSX.Element => {
+  const errorToast = useErrorToast()
+  const successToast = useSuccessToast()
+
+  const { onClose } = props
+  const { siteName } = useParams<{ siteName: string }>()
+  const { data: items } = useDiff(siteName)
+  const { data: collaborators } = useGetCollaborators(siteName)
+  const {
+    mutateAsync: createReviewRequest,
+    isLoading,
+    isError,
+    isSuccess,
+    error,
+  } = useCreateReviewRequest(siteName)
+
+  const methods = useForm<Required<ReviewRequestInfo>>({
+    mode: "onTouched",
+  })
+  const onSubmit = methods.handleSubmit((data) => {
+    createReviewRequest(data)
+  })
+
+  // Trigger an error toast informing the user
+  // if review request not created
+  useEffect(() => {
+    if (isError) {
+      const errorMessage =
+        error.response?.data.message || "Review request could not be created!"
+      errorToast({
+        description: errorMessage,
+      })
+    }
+  }, [error, errorToast, isError])
+
+  // Trigger a success toast informing the user if review created successfully
+  useEffect(() => {
+    if (isSuccess) {
+      successToast({
+        description: "Review request submitted",
+      })
+    }
+  }, [isSuccess, successToast])
+
   return (
-    <form>
-      <Modal {...rest} size="full">
-        <ModalOverlay />
-        <ModalContent>
+    <Modal {...props} size="full">
+      <ModalOverlay />
+      <ModalContent>
+        <form onSubmit={onSubmit}>
           {/* 
           NOTE: padding has to be used as the base component from Chakra uses it to set padding.
           Not using it (and using pt etc) would result in the property being overwritten to the default.
@@ -79,10 +128,21 @@ export const ReviewRequestModal = ({
 
               <TabPanels>
                 <TabPanel>
-                  <ReviewRequestForm admins={admins} />
+                  <FormProvider {...methods}>
+                    <ReviewRequestForm
+                      admins={
+                        collaborators
+                          ?.filter(({ role }) => role === "ADMIN")
+                          .map(({ email }) => ({
+                            value: email,
+                            label: email,
+                          })) || []
+                      }
+                    />
+                  </FormProvider>
                 </TabPanel>
                 <TabPanel>
-                  <RequestOverview items={items} />
+                  <RequestOverview items={items || []} />
                 </TabPanel>
               </TabPanels>
             </Tabs>
@@ -93,10 +153,12 @@ export const ReviewRequestModal = ({
             <Button variant="clear" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button>Submit Review</Button>
+            <Button isLoading={isLoading} type="submit">
+              Submit Review
+            </Button>
           </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </form>
+        </form>
+      </ModalContent>
+    </Modal>
   )
 }
