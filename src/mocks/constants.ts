@@ -1,5 +1,3 @@
-import { EditedItemProps } from "layouts/ReviewRequest/components/RequestOverview"
-
 import { CollaboratorDto } from "types/collaborators"
 import {
   DirectoryData,
@@ -8,6 +6,7 @@ import {
   ResourcePageData,
 } from "types/directory"
 import { NotificationData } from "types/notifications"
+import { EditedItemProps } from "types/reviewRequest"
 import { BackendSiteSettings } from "types/settings"
 import {
   CollaboratorsStats,
