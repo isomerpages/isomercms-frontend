@@ -3,3 +3,7 @@ export interface MiddlewareError {
   message: string
   name?: string
 }
+
+export interface ErrorDto {
+  message: string
+}
