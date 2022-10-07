@@ -19,6 +19,8 @@ import { useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { useParams } from "react-router-dom"
 
+import { useLoginContext } from "contexts/LoginContext"
+
 import { useCreateReviewRequest } from "hooks/reviewHooks/useCreateReviewRequest"
 import { useDiff } from "hooks/reviewHooks/useDiff"
 import { useGetCollaborators } from "hooks/reviewHooks/useGetCollaborators"
@@ -34,6 +36,7 @@ import { ReviewRequestForm } from "../ReviewRequestForm"
 export const ReviewRequestModal = (
   props: Omit<ModalProps, "children">
 ): JSX.Element => {
+  const { email: adminEmail } = useLoginContext()
   const errorToast = useErrorToast()
   const successToast = useSuccessToast()
 
@@ -132,7 +135,11 @@ export const ReviewRequestModal = (
                     <ReviewRequestForm
                       admins={
                         collaborators
-                          ?.filter(({ role }) => role === "ADMIN")
+                          ?.filter(
+                            ({ role, email: collaboratorEmail }) =>
+                              role === "ADMIN" &&
+                              collaboratorEmail !== adminEmail
+                          )
                           .map(({ email }) => ({
                             value: email,
                             label: email,
