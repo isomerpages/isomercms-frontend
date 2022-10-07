@@ -76,6 +76,9 @@ export const SiteDashboard = (): JSX.Element => {
       setRedirectToPage(`/sites/${siteName}/workspace`)
     }
   })
+  const validReviewRequests = reviewRequests?.filter(
+    ({ status }) => status === "OPEN" || status === "APPROVED"
+  )
 
   return (
     <SiteViewLayout overflow="hidden">
@@ -144,10 +147,10 @@ export const SiteDashboard = (): JSX.Element => {
                 {isReviewRequestsLoading && (
                   <Skeleton w="100%" height="16rem" />
                 )}
-                {isReviewRequestsError || reviewRequests?.length === 0 ? (
+                {isReviewRequestsError || validReviewRequests?.length === 0 ? (
                   <EmptyReviewRequest />
                 ) : (
-                  reviewRequests?.map((reviewRequest) => (
+                  validReviewRequests?.map((reviewRequest) => (
                     <ReviewRequestCard reviewRequest={reviewRequest} />
                   ))
                 )}
