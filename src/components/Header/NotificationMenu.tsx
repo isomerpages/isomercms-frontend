@@ -144,7 +144,7 @@ export const NotificationMenu = ({
             marginTop="0.375rem"
             w="22.5rem"
             maxHeight="30rem"
-            overflow="scroll"
+            overflowY="scroll"
             {...menuListProps}
           >
             {displayAll && allNotificationData ? (
