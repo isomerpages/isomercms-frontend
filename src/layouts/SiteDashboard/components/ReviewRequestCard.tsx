@@ -41,7 +41,7 @@ export const ReviewRequestCard = ({
           : "background.action.defaultInverse"
       }
     >
-      {reviewRequest.status === ReviewRequestStatus.PENDING &&
+      {reviewRequest.status === ReviewRequestStatus.OPEN &&
         reviewRequest.author !== email && (
           <Badge
             variant="solid"
