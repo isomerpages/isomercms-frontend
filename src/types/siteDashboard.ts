@@ -1,7 +1,4 @@
-export enum ReviewRequestStatus {
-  PENDING = "PENDING",
-  APPROVED = "APPROVED",
-}
+import { ReviewRequestStatus } from "./reviewRequest"
 
 export type CollaboratorsStats = {
   total: number

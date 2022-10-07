@@ -15,10 +15,8 @@ import { useLoginContext } from "contexts/LoginContext"
 
 import { getDateTimeFromUnixTime } from "utils/date"
 
-import {
-  ReviewRequestStatus,
-  SiteDashboardReviewRequest,
-} from "types/siteDashboard"
+import { ReviewRequestStatus } from "types/reviewRequest"
+import { SiteDashboardReviewRequest } from "types/siteDashboard"
 
 const getSingularPlural = (count: number, word: string) => {
   return (
