@@ -55,8 +55,9 @@ export const ReviewRequestModal = (
   const methods = useForm<Required<ReviewRequestInfo>>({
     mode: "onTouched",
   })
-  const onSubmit = methods.handleSubmit((data) => {
-    createReviewRequest(data)
+  const onSubmit = methods.handleSubmit(async (data) => {
+    await createReviewRequest(data)
+    onClose()
   })
 
   // Trigger an error toast informing the user

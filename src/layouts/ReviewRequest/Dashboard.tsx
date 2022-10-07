@@ -19,12 +19,14 @@ import {
   MenuDropdownButton,
   MenuDropdownItem,
 } from "components/MenuDropdownButton"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BiLink, BiPlus } from "react-icons/bi"
 import { useParams } from "react-router-dom"
 
 import { useGetReviewRequest } from "hooks/reviewHooks/useGetReviewRequest"
+import useRedirectHook from "hooks/useRedirectHook"
 
+import { ReviewRequestStatus } from "types/reviewRequest"
 import { extractInitials, getDateTimeFromUnixTime } from "utils"
 
 import { SiteViewHeader } from "../layouts/SiteViewLayout/SiteViewHeader"
@@ -38,11 +40,24 @@ export const ReviewRequestDashboard = (): JSX.Element => {
     siteName: string
     reviewId: string
   }>()
+  const { setRedirectToPage } = useRedirectHook()
   // TODO!: Refactor so that loading is not a concern here
   const { data } = useGetReviewRequest(siteName, parseInt(reviewId, 10))
 
   // TODO!: redirect to /sites if cannot parse reviewId as string
+  // this happens when the review is published or requestor closes it
   const { onCopy, hasCopied } = useClipboard(data?.reviewUrl || "")
+
+  const reviewStatus = data?.status
+
+  useEffect(() => {
+    if (
+      reviewStatus === ReviewRequestStatus.CLOSED ||
+      reviewStatus === ReviewRequestStatus.MERGED
+    ) {
+      setRedirectToPage(`/sites/${siteName}/dashboard`)
+    }
+  }, [reviewStatus, setRedirectToPage, siteName])
 
   return (
     <>
