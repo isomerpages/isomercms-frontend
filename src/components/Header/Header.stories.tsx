@@ -3,6 +3,7 @@ import { MemoryRouter, Route } from "react-router-dom"
 
 import { SiteEditHeader } from "layouts/layouts/SiteEditLayout"
 
+import { MOCK_ALL_NOTIFICATION_DATA } from "mocks/constants"
 import {
   buildRecentNotificationData,
   buildAllNotificationData,
@@ -59,6 +60,19 @@ NoNotifications.parameters = {
     handlers: [
       buildRecentNotificationData([]),
       buildAllNotificationData([]),
+      ...handlers,
+    ],
+  },
+}
+
+export const ManyNotifications = Template.bind({})
+ManyNotifications.parameters = {
+  msw: {
+    handlers: [
+      buildAllNotificationData([
+        ...MOCK_ALL_NOTIFICATION_DATA,
+        ...MOCK_ALL_NOTIFICATION_DATA,
+      ]),
       ...handlers,
     ],
   },
