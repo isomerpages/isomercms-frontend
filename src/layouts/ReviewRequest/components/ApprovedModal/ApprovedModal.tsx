@@ -11,6 +11,9 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { Button, ModalCloseButton } from "@opengovsg/design-system-react"
+import { useParams } from "react-router-dom"
+
+import { useMergeReviewRequest } from "hooks/reviewHooks/useMergeReviewRequest"
 
 import { ToastImage } from "assets"
 
@@ -18,6 +21,18 @@ export const ApprovedModal = (
   props: Omit<ModalProps, "children">
 ): JSX.Element => {
   const { onClose } = props
+  const { siteName, reviewId } = useParams<{
+    siteName: string
+    reviewId: string
+  }>()
+  const {
+    mutateAsync: mergeReviewRequest,
+    isLoading,
+    // TODO!
+    isSuccess,
+    isError,
+  } = useMergeReviewRequest(siteName, parseInt(reviewId, 10))
+  // TODO! make be change the status to approved
 
   return (
     <Modal {...props}>
@@ -56,7 +71,15 @@ export const ApprovedModal = (
           >
             Publish later
           </Button>
-          <Button>Publish now</Button>
+          <Button
+            isLoading={isLoading}
+            onClick={async () => {
+              await mergeReviewRequest()
+              onClose()
+            }}
+          >
+            Publish now
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
