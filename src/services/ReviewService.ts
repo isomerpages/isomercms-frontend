@@ -41,3 +41,11 @@ export const getReviewRequest = async (
     .get<{ reviewRequest: ReviewRequest }>(endpoint)
     .then(({ data }) => data.reviewRequest)
 }
+
+export const mergeReviewRequest = async (
+  siteName: string,
+  prNumber: number
+): Promise<void> => {
+  const endpoint = `/sites/${siteName}/review/${prNumber}/merge`
+  return apiService.put(endpoint)
+}
