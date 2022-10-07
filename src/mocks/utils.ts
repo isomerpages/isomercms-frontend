@@ -17,25 +17,14 @@ import { LoggedInUser } from "types/user"
 
 const apiDataBuilder = <T extends DefaultBodyType = DefaultBodyType>(
   endpoint: string,
-  requestType: "get" | "post"
+  requestType: "get" | "post" | "delete"
 ) => (
   mockData: T,
   delay?: number | "infinite"
 ): ReturnType<typeof rest["get"] | typeof rest["post"]> => {
-  switch (requestType) {
-    case "post":
-      return rest.post(endpoint, (req, res, ctx) => {
-        return res(delay ? ctx.delay(delay) : ctx.delay(0), ctx.json(mockData))
-      })
-    case "get":
-      return rest.get(endpoint, (req, res, ctx) => {
-        return res(delay ? ctx.delay(delay) : ctx.delay(0), ctx.json(mockData))
-      })
-    default:
-      return rest.get(endpoint, (req, res, ctx) => {
-        return res(delay ? ctx.delay(delay) : ctx.delay(0), ctx.json(mockData))
-      })
-  }
+  return rest[requestType](endpoint, (req, res, ctx) => {
+    return res(delay ? ctx.delay(delay) : ctx.delay(0), ctx.json(mockData))
+  })
 }
 
 export const buildPagesData = apiDataBuilder<PageData[]>(
