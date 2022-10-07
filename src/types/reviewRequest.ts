@@ -1,3 +1,10 @@
+export enum ReviewRequestStatus {
+  OPEN = "OPEN",
+  APPROVED = "APPROVED",
+  MERGED = "MERGED",
+  CLOSED = "CLOSED",
+}
+
 export interface User {
   value: string
   label: string
@@ -32,6 +39,7 @@ export interface ReviewRequestDto extends Omit<ReviewRequestInfo, "reviewers"> {
 export interface ReviewRequest {
   reviewUrl: string
   title: string
+  status: ReviewRequestStatus
   requestor: string
   reviewers: string[]
   reviewRequestedTime: number
