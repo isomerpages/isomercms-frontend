@@ -123,7 +123,7 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
           <DrawerBody
             fontSize="0.875rem"
             whiteSpace="pre-line"
-            color="secondary.500"
+            color="text.body"
           >
             <Stack spacing="2rem" height="100%">
               <Text color="text.helper">
