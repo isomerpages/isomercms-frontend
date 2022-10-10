@@ -19,7 +19,7 @@ import {
   MenuDropdownButton,
   MenuDropdownItem,
 } from "components/MenuDropdownButton"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { BiLink, BiPlus } from "react-icons/bi"
 import { useParams } from "react-router-dom"
 
@@ -36,10 +36,9 @@ import { getAxiosErrorMessage } from "utils/axios"
 import { ReviewRequestStatus } from "types/reviewRequest"
 import { extractInitials, getDateTimeFromUnixTime, useErrorToast } from "utils"
 
-import { SiteViewHeader } from "../layouts/SiteViewLayout/SiteViewHeader"
-
 import { CancelRequestModal, ManageReviewerModal } from "./components"
 import { ApprovedModal } from "./components/ApprovedModal"
+import { CommentsDrawer } from "./components/Comments/CommentsDrawer"
 import { PublishedModal } from "./components/PublishedModal"
 import { RequestOverview } from "./components/RequestOverview"
 
@@ -74,16 +73,21 @@ export const ReviewRequestDashboard = (): JSX.Element => {
   }, [reviewStatus, setRedirectToPage, siteName])
 
   return (
-    <>
-      <Box bg="white" w="100%" h="100vh">
+    <Box bg="white" w="100%" h="100%">
+      <HStack
+        h="10.5rem"
+        display="flex"
+        bg="blue.50"
+        justifyContent="space-between"
+      >
         <VStack
-          bg="blue.50"
           pl="9.25rem"
           pr="2rem"
           pt="2rem"
           pb="1.5rem"
           spacing="0.75rem"
           align="flex-start"
+          w="100%"
         >
           <Flex w="100%">
             <HStack spacing="0.25rem">
@@ -136,11 +140,14 @@ export const ReviewRequestDashboard = (): JSX.Element => {
             }
           />
         </VStack>
-        <Box pl="9.25rem" pr="2rem">
-          <RequestOverview items={data?.changedItems || []} allowEditing />
-        </Box>
+        <Flex h="100%" w="7.25rem" pt="2rem" justifyContent="end">
+          <CommentsDrawer siteName="siteName" requestId={1} />
+        </Flex>
+      </HStack>
+      <Box pl="9.25rem" pr="2rem">
+        <RequestOverview items={data?.changedItems || []} allowEditing />
       </Box>
-    </>
+    </Box>
   )
 }
 
