@@ -23,6 +23,7 @@ import { BiLink, BiPlus } from "react-icons/bi"
 
 import { extractInitials, getDateTimeFromUnixTime } from "utils"
 
+import { CommentsDrawer } from "./components/Comments/CommentsDrawer"
 import { RequestOverview, EditedItemProps } from "./components/RequestOverview"
 
 export interface ReviewRequestDashboardProps {
@@ -45,54 +46,64 @@ export const ReviewRequestDashboard = ({
 
   return (
     <Box bg="white" w="100%" h="100%">
-      <VStack
+      <HStack
+        h="10.5rem"
+        display="flex"
         bg="blue.50"
-        pl="9.25rem"
-        pr="2rem"
-        pt="2rem"
-        pb="1.5rem"
-        spacing="0.75rem"
-        align="flex-start"
+        justifyContent="space-between"
       >
-        <Flex w="100%">
-          <HStack spacing="0.25rem">
-            <Text textStyle="h5">{title}</Text>
-            {/* Closes after 1.5s and does not refocus on the button to avoid the outline */}
-            <Popover returnFocusOnClose={false} isOpen={hasCopied}>
-              <PopoverTrigger>
-                <IconButton
-                  icon={<BiLink />}
-                  variant="clear"
-                  aria-label="link to pull request"
-                  onClick={onCopy}
-                />
-              </PopoverTrigger>
-              <PopoverContent
-                bg="background.action.alt"
-                _focus={{
-                  boxShadow: "none",
-                }}
-                w="fit-content"
-              >
-                <PopoverArrow bg="background.action.alt" />
-                <PopoverBody>
-                  <Text textStyle="body-2" color="text.inverse">
-                    Link copied!
-                  </Text>
-                </PopoverBody>
-              </PopoverContent>
-            </Popover>
-          </HStack>
-          <Spacer />
-          <ApprovalButton />
+        <VStack
+          pl="9.25rem"
+          pr="2rem"
+          pt="2rem"
+          pb="1.5rem"
+          spacing="0.75rem"
+          align="flex-start"
+          w="100%"
+        >
+          <Flex w="100%">
+            <HStack spacing="0.25rem">
+              <Text textStyle="h5">{title}</Text>
+              {/* Closes after 1.5s and does not refocus on the button to avoid the outline */}
+              <Popover returnFocusOnClose={false} isOpen={hasCopied}>
+                <PopoverTrigger>
+                  <IconButton
+                    icon={<BiLink />}
+                    variant="clear"
+                    aria-label="link to pull request"
+                    onClick={onCopy}
+                  />
+                </PopoverTrigger>
+                <PopoverContent
+                  bg="background.action.alt"
+                  _focus={{
+                    boxShadow: "none",
+                  }}
+                  w="fit-content"
+                >
+                  <PopoverArrow bg="background.action.alt" />
+                  <PopoverBody>
+                    <Text textStyle="body-2" color="text.inverse">
+                      Link copied!
+                    </Text>
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
+            </HStack>
+            <Spacer />
+            <ApprovalButton />
+          </Flex>
+          <SecondaryDetails
+            requestor={requestor}
+            reviewers={reviewers}
+            reviewRequestedTime={reviewRequestedTime}
+          />
+        </VStack>
+        <Flex h="100%" w="7.25rem" pt="2rem" justifyContent="end">
+          <CommentsDrawer siteName="siteName" requestId={1} />
         </Flex>
-        <SecondaryDetails
-          requestor={requestor}
-          reviewers={reviewers}
-          reviewRequestedTime={reviewRequestedTime}
-        />
-      </VStack>
-      <Box pl="9.25rem" pr="2rem">
+      </HStack>
+      <Box px="9.25rem">
         <RequestOverview items={changedItems} allowEditing />
       </Box>
     </Box>
