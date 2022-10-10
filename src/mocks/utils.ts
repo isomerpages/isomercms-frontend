@@ -1,6 +1,7 @@
 import { DefaultBodyType, rest, RestContext, ResponseTransformer } from "msw"
 
 import { CollaboratorData, CollaboratorRole } from "types/collaborators"
+import { CommentData } from "types/comments"
 import {
   MediaData,
   DirectoryData,
@@ -151,4 +152,8 @@ export const buildContributor = (
 export const buildRemoveContributor = apiDataBuilder(
   "*/sites/:siteName/collaborators/:collaboratorId",
   "delete"
+)
+
+export const buildCommentsData = apiDataBuilder<CommentData[]>(
+  "*/sites/:siteName/review/:requestId/comments"
 )

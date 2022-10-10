@@ -409,3 +409,31 @@ export const MOCK_COLLABORATORS: Record<string, CollaboratorDto> = {
     SiteMember: { role: "ADMIN" },
   },
 }
+
+export const MOCK_COMMENTS_DATA = [
+  {
+    message: "old comment",
+    createdAt: 129823094,
+    email: "cat@cat.sg",
+    isNew: false,
+  },
+  {
+    message: "another comment",
+    createdAt: 92169883094,
+    email: "someone@else.sg",
+    isNew: false,
+  },
+  {
+    message:
+      "an extremely long comment, so long that it should take up more space than normal. so let us see if it truly does. if it is so long, should it be called a paracomment? as it is a paragraph comment.",
+    createdAt: 995189923094,
+    email: "aLongLabel@tooLongFor.me",
+    isNew: false,
+  },
+  {
+    message: "new comment",
+    createdAt: 1591239823094,
+    email: "cat@cat.sg",
+    isNew: true,
+  },
+]
