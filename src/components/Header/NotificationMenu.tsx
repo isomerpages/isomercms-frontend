@@ -136,7 +136,7 @@ export const NotificationMenu = ({
                   : undefined
               }
             >
-              {hasNotification && <AvatarBadge boxSize="1.25em" bg="red.500" />}
+              {hasNotification && <AvatarBadge boxSize="1em" bg="red.500" />}
             </Avatar>
           </NotificationMenuButton>
           <Menu.List
