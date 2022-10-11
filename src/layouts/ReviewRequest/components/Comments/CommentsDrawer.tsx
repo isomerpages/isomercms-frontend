@@ -109,8 +109,13 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
             colorScheme="secondary"
             top="1.25rem"
           />
-          <DrawerHeader fontSize="1.5rem" color="text.title.alt">
-            Comments
+          <DrawerHeader>
+            <Text fontSize="1.5rem" color="text.title.alt">
+              Comments
+            </Text>
+            <Text fontWeight="normal" fontSize="0.875rem" color="text.helper">
+              Comments apply to all items in this Review request
+            </Text>
           </DrawerHeader>
           <DrawerBody
             fontSize="0.875rem"
@@ -118,9 +123,6 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
             color="text.body"
           >
             <Stack spacing="2rem" height="100%">
-              <Text color="text.helper">
-                Comments apply to all items in this Review request
-              </Text>
               <Skeleton isLoaded={!isCommentsLoading} flex={1}>
                 {commentsData && commentsData.length > 0 ? (
                   commentsData.map((comment) => (
@@ -143,10 +145,12 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
                   </Center>
                 )}
               </Skeleton>
-              <Divider borderColor="border.divider.alt" />
-              <SendCommentForm siteName={siteName} requestId={requestId} />
             </Stack>
           </DrawerBody>
+          <Divider borderColor="border.divider.alt" />
+          <Box px="1.5rem" pt="1rem">
+            <SendCommentForm siteName={siteName} requestId={requestId} />
+          </Box>
         </DrawerContent>
       </Drawer>
     </>
