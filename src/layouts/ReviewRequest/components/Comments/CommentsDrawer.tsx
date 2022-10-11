@@ -42,7 +42,11 @@ const CommentItem = ({
 }: PropsWithChildren<CommentItemProps>): JSX.Element => {
   const { date, time } = getDateTimeFromUnixTime(commentTime)
   return (
-    <Box backgroundColor={isNew ? "blue.100" : "blue.50"} p="1rem" mb="1rem">
+    <Box
+      backgroundColor={isNew ? "primary.100" : "primary.50"}
+      p="1rem"
+      mb="1rem"
+    >
       <HStack
         fontSize="0.625rem"
         color="text.helper"
@@ -90,6 +94,7 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
         icon={<BiCommentDetail />}
         variant="clear"
         boxShadow="0 0 0 2px var(--chakra-colors-gray-100)"
+        borderRadius="4px"
       />
       <Drawer
         isOpen={isCommentsOpen}

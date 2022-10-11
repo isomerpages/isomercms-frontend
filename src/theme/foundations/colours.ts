@@ -16,7 +16,7 @@ interface NestedRecord {
 
 export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
   primary: {
-    50: "#FDFEFF",
+    50: "#F8FAFE",
     100: "#E6EFFE",
     200: "#ADC9FA",
     300: "#7CA9F7",
