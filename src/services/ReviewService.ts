@@ -47,5 +47,5 @@ export const mergeReviewRequest = async (
   prNumber: number
 ): Promise<void> => {
   const endpoint = `/sites/${siteName}/review/${prNumber}/merge`
-  return apiService.put(endpoint)
+  return apiService.post(endpoint)
 }
