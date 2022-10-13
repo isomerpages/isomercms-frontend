@@ -24,7 +24,7 @@ export const ReviewRequestAlert = ({
       <p>
         There’s a Review request pending approval. Any changes you make now will
         be added to the existing Review request, and published with the changes
-        in it.&nbsp; <Link href="https://www.google.com">View request</Link>
+        in it.&nbsp; <Link href={reviewRequestUrl}>View request</Link>
       </p>
     </Alert>
   )
