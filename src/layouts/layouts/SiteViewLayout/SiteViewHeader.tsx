@@ -3,12 +3,13 @@ import { IconButton } from "@opengovsg/design-system-react"
 import { AvatarMenu } from "components/Header/AvatarMenu"
 import { NotificationMenu } from "components/Header/NotificationMenu"
 import { BiArrowBack } from "react-icons/bi"
-import { Link as RouterLink } from "react-router-dom"
+import { Link as RouterLink, useParams } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 
-export const SiteViewHeader = (siteName: string): JSX.Element => {
+export const SiteViewHeader = (): JSX.Element => {
   const { displayedName } = useLoginContext()
+  const { siteName } = useParams<{ siteName: string }>()
   return (
     <Flex
       py="0.625rem"
