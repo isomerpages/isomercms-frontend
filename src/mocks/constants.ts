@@ -6,6 +6,7 @@ import {
   PageData,
   ResourcePageData,
 } from "types/directory"
+import { NotificationData } from "types/notifications"
 import { BackendSiteSettings } from "types/settings"
 import {
   CollaboratorsStats,
@@ -382,5 +383,69 @@ export const MOCK_ADMINS = [
     value: "aLongLabel@tooLongFor.me",
     label:
       "an extremely long label, so long that it should overflow. so let us see if it truly does. if it is so long, should it be called a paralabel? as it is a paragraph label.",
+  },
+]
+
+export const MOCK_NOTIFICATION_DATA: NotificationData[] = [
+  {
+    message: "first unread notification",
+    createdAt: "2022-10-03 04:45:38.087",
+    link: "/",
+    isRead: false,
+    sourceUsername: "User1",
+    type: "type",
+  },
+  {
+    message: "another notification",
+    createdAt: "2022-09-03 04:45:38.087",
+    link: "/",
+    isRead: false,
+    sourceUsername: "AnotherUser",
+    type: "type",
+  },
+  {
+    message:
+      "some notification with an extremely long name that cannot fit inside the textbox. in fact, it's so long that it should be a paragraph and perhaps a novel.",
+    createdAt: "2022-10-01 04:45:38.087",
+    link: "/",
+    isRead: false,
+    sourceUsername: "ThirdUser",
+    type: "type",
+  },
+  {
+    message: "Non-user notification",
+    createdAt: "2022-09-23 04:45:38.087",
+    link: "/",
+    isRead: false,
+    sourceUsername: "",
+    type: "type",
+  },
+  {
+    message: "another notification",
+    createdAt: "2022-09-03 04:45:38.087",
+    link: "/",
+    isRead: false,
+    sourceUsername: "AnotherUser",
+    type: "type",
+  },
+  {
+    message: "another notification",
+    createdAt: "2022-09-03 04:45:38.087",
+    link: "/",
+    isRead: false,
+    sourceUsername: "AnotherUser",
+    type: "type",
+  },
+]
+
+export const MOCK_ALL_NOTIFICATION_DATA: NotificationData[] = [
+  ...MOCK_NOTIFICATION_DATA,
+  {
+    message: "even more notification",
+    createdAt: "2022-09-23 04:45:38.087",
+    link: "/",
+    isRead: true,
+    sourceUsername: "EvenMore",
+    type: "type",
   },
 ]

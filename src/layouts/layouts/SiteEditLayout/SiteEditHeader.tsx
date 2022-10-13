@@ -18,8 +18,12 @@ import {
 } from "@chakra-ui/react"
 import { Button, IconButton } from "@opengovsg/design-system-react"
 import { ButtonLink } from "components/ButtonLink"
+import { AvatarMenu } from "components/Header/AvatarMenu"
+import { NotificationMenu } from "components/Header/NotificationMenu"
 import { BiArrowBack } from "react-icons/bi"
 import { Link as RouterLink, useParams } from "react-router-dom"
+
+import { useLoginContext } from "contexts/LoginContext"
 
 import { useStagingUrl } from "hooks/settingsHooks"
 
@@ -29,6 +33,7 @@ export const SiteEditHeader = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { siteName } = useParams<{ siteName: string }>()
   const { data: stagingUrl, isLoading } = useStagingUrl({ siteName })
+  const { displayedName } = useLoginContext()
 
   return (
     <>
@@ -67,6 +72,8 @@ export const SiteEditHeader = (): JSX.Element => {
           <ButtonLink href={`https://github.com/isomerpages/${siteName}/pulls`}>
             <Text color="white">Pull Request</Text>
           </ButtonLink>
+          <NotificationMenu siteName={siteName} />
+          <AvatarMenu name={displayedName} />
         </HStack>
       </Flex>
 
