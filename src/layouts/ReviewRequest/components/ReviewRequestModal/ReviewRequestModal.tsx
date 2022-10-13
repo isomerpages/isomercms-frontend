@@ -161,7 +161,13 @@ export const ReviewRequestModal = (
             <Button variant="clear" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button isLoading={isLoading} type="submit">
+            <Button
+              isLoading={isLoading}
+              type="submit"
+              // NOTE: Disallow creation if no item changed
+              // as GitHub will prevent PR creation.
+              isDisabled={!items || items.length === 0}
+            >
               Submit Review
             </Button>
           </ModalFooter>
