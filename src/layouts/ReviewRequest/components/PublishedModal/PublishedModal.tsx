@@ -10,15 +10,38 @@ import {
   Box,
   VStack,
 } from "@chakra-ui/react"
-import { Button, ModalCloseButton } from "@opengovsg/design-system-react"
+import { Button, ModalCloseButton, Link } from "@opengovsg/design-system-react"
+import { useQueryClient } from "react-query"
+import { useParams } from "react-router-dom"
+
+import { invalidateMergeRelatedQueries } from "hooks/reviewHooks"
+import { useGetSiteUrl } from "hooks/settingsHooks"
 
 import { RocketBlastOffImage } from "assets"
 
-export const PublishedModal = (props: ModalProps): JSX.Element => {
+export const PublishedModal = (
+  props: Omit<ModalProps, "children">
+): JSX.Element => {
   const { onClose } = props
+  const queryClient = useQueryClient()
+  const { siteName, reviewId: prNumber } = useParams<{
+    siteName: string
+    reviewId: string
+  }>()
+  const { data: siteUrl, isLoading } = useGetSiteUrl(siteName)
 
   return (
-    <Modal {...props}>
+    <Modal
+      {...props}
+      onCloseComplete={() => {
+        invalidateMergeRelatedQueries(
+          queryClient,
+          siteName,
+          // TODO!: redirect if invalid
+          parseInt(prNumber, 10)
+        )
+      }}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader bg="secondary.100" p={0}>
@@ -46,15 +69,17 @@ export const PublishedModal = (props: ModalProps): JSX.Element => {
 
         <ModalFooter>
           <Button
-            variant="clear"
+            variant="link"
             mr="1rem"
-            onClick={onClose}
             colorScheme="primary"
             textColor="text.title.brandSecondary"
+            as={Link}
+            href={`https://${siteUrl}`}
+            isLoading={isLoading}
           >
             Go to live site
           </Button>
-          <Button>Back to Site Dashboard</Button>
+          <Button onClick={onClose}>Back to Site Dashboard</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
