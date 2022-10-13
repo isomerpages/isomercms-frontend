@@ -39,17 +39,6 @@ export const ManageReviewerModal = ({
   ...props
 }: ManageReviewerModalProps): JSX.Element => {
   const { onClose } = props
-  const { value: updatedSelectedAdmins, ...rest } = useStateManager({
-    defaultValue: selectedAdmins,
-    options: admins,
-    isMulti: true,
-    isClearable: false,
-  })
-
-  const selectedAdminsList = isList(updatedSelectedAdmins)
-    ? updatedSelectedAdmins
-    : []
-  const remainingAdmins = _.difference(admins, selectedAdminsList)
 
   return (
     <Modal {...props}>
@@ -67,34 +56,9 @@ export const ManageReviewerModal = ({
             <Text textStyle="subhead-1">
               Add or remove Admins who can approve this request
             </Text>
-            <Select
-              value={updatedSelectedAdmins}
-              {...rest}
-              components={{
-                Input: () =>
-                  remainingAdmins.length > 0 ? (
-                    <Text
-                      ml="0.25rem"
-                      textDecoration="underline"
-                      color="text.link.default"
-                      textStyle="body-2"
-                    >{`+${remainingAdmins.length} more`}</Text>
-                  ) : null,
-              }}
-              styles={{
-                // NOTE: Setting minimum height so that it is same size as button
-                container: (base) => ({
-                  ...base,
-                  width: "100%",
-                  minHeight: "2.75rem",
-                }),
-                control: (base) => ({ ...base, height: "100%" }),
-                // NOTE: Don't allow removal if there is only 1 selected admin
-                multiValueRemove: (base) => {
-                  const canRemove = selectedAdminsList.length > 1
-                  return { ...base, display: canRemove ? "inherit" : "none" }
-                },
-              }}
+            <AdminsMultiSelect
+              admins={admins}
+              selectedAdmins={selectedAdmins}
             />
           </VStack>
         </ModalBody>
@@ -107,5 +71,54 @@ export const ManageReviewerModal = ({
         </ModalFooter>
       </ModalContent>
     </Modal>
+  )
+}
+
+const AdminsMultiSelect = ({
+  admins,
+  selectedAdmins,
+}: Pick<ManageReviewerModalProps, "admins" | "selectedAdmins">) => {
+  const { value: updatedSelectedAdmins, ...rest } = useStateManager({
+    defaultValue: selectedAdmins,
+    options: admins,
+    isMulti: true,
+    isClearable: false,
+  })
+
+  const selectedAdminsList = isList(updatedSelectedAdmins)
+    ? updatedSelectedAdmins
+    : []
+  const remainingAdmins = _.difference(admins, selectedAdminsList)
+
+  return (
+    <Select
+      value={updatedSelectedAdmins}
+      {...rest}
+      components={{
+        Input: () =>
+          remainingAdmins.length > 1 ? (
+            <Text
+              ml="0.25rem"
+              textDecoration="underline"
+              color="text.link.default"
+              textStyle="body-2"
+            >{`+${remainingAdmins.length - 1} more`}</Text>
+          ) : null,
+      }}
+      styles={{
+        // NOTE: Setting minimum height so that it is same size as button
+        container: (base) => ({
+          ...base,
+          width: "100%",
+          minHeight: "2.75rem",
+        }),
+        control: (base) => ({ ...base, height: "100%" }),
+        // NOTE: Don't allow removal if there is only 1 selected admin
+        multiValueRemove: (base) => {
+          const canRemove = selectedAdminsList.length > 1
+          return { ...base, display: canRemove ? "inherit" : "none" }
+        },
+      }}
+    />
   )
 }
