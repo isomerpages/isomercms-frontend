@@ -49,3 +49,19 @@ export const mergeReviewRequest = async (
   const endpoint = `/sites/${siteName}/review/${prNumber}/merge`
   return apiService.post(endpoint)
 }
+
+export const approveReviewRequest = async (
+  siteName: string,
+  prNumber: number
+): Promise<void> => {
+  const endpoint = `/sites/${siteName}/review/${prNumber}/approve`
+  return apiService.post(endpoint)
+}
+
+export const cancelReviewRequest = async (
+  siteName: string,
+  prNumber: number
+): Promise<void> => {
+  const endpoint = `/sites/${siteName}/review/${prNumber}`
+  return apiService.delete(endpoint)
+}
