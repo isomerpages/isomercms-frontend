@@ -9,9 +9,39 @@ import {
   Text,
 } from "@chakra-ui/react"
 import { Button, ModalCloseButton } from "@opengovsg/design-system-react"
+import { useEffect } from "react"
+import { useParams } from "react-router-dom"
 
-export const CancelRequestModal = (props: ModalProps): JSX.Element => {
+import { useCancelReviewRequest } from "hooks/reviewHooks/useCancelReviewRequest"
+
+import { getAxiosErrorMessage } from "utils/axios"
+
+import { useErrorToast } from "utils"
+
+export const CancelRequestModal = (
+  props: Omit<ModalProps, "children">
+): JSX.Element => {
   const { onClose } = props
+  const { siteName, reviewId } = useParams<{
+    siteName: string
+    reviewId: string
+  }>()
+  const prNumber = parseInt(reviewId, 10)
+  const {
+    mutateAsync: cancelReviewRequest,
+    isLoading,
+    isError,
+    error,
+  } = useCancelReviewRequest(siteName, prNumber)
+  const errorToast = useErrorToast()
+
+  useEffect(() => {
+    if (isError) {
+      errorToast({
+        description: getAxiosErrorMessage(error),
+      })
+    }
+  }, [error, errorToast, isError])
 
   return (
     <Modal {...props}>
@@ -40,7 +70,16 @@ export const CancelRequestModal = (props: ModalProps): JSX.Element => {
           >
             Go back
           </Button>
-          <Button colorScheme="danger">Yes, cancel</Button>
+          <Button
+            isLoading={isLoading}
+            colorScheme="danger"
+            onClick={async () => {
+              await cancelReviewRequest()
+              onClose()
+            }}
+          >
+            Yes, cancel
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
