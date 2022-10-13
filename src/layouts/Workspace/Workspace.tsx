@@ -1,5 +1,5 @@
 // Import components
-import { Icon, Skeleton, Text } from "@chakra-ui/react"
+import { Icon, Skeleton, Text, VStack } from "@chakra-ui/react"
 import { EmptyArea } from "components/EmptyArea"
 import {
   MenuDropdownButton,
@@ -13,8 +13,8 @@ import {
   useGetFoldersAndPages,
   useGetWorkspacePages,
 } from "hooks/directoryHooks"
+import { useGetReviewRequests } from "hooks/siteDashboardHooks"
 
-// Import screens
 import { CreateButton } from "layouts/components"
 import {
   PageSettingsScreen,
@@ -26,10 +26,12 @@ import {
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
+import { ReviewRequestStatus } from "types/reviewRequest"
 import { isDirData } from "types/utils"
 
 import { SiteViewContent, SiteEditLayout } from "../layouts"
 
+import { ReviewRequestAlert } from "./components"
 import { MainPages } from "./components/MainPages"
 import { UngroupedPages } from "./components/UngroupedPages"
 import { WorkspaceFolders } from "./components/WorkspaceFolder"
@@ -53,10 +55,28 @@ const WorkspacePage = (): JSX.Element => {
   const isPagesEmpty =
     pagesData.filter((page) => page.name !== "contact-us.md").length === 0
   const isFoldersEmpty = !dirsData || dirsData.length === 0
+  const {
+    data: reviewRequests,
+    // TODO: fallback for when we can't fetch review requests data
+    // should we inform the user?
+    isError: isReviewRequestsError,
+    isLoading: isReviewRequestsLoading,
+  } = useGetReviewRequests(siteName)
+  const hasOpenReviewRequests =
+    reviewRequests &&
+    reviewRequests?.filter(({ status }) => status === ReviewRequestStatus.OPEN)
+      .length > 0
 
   return (
     <SiteEditLayout overflow="hidden">
-      <MainPages siteName={siteName} isLoading={!!pagesData} />
+      <VStack spacing="2rem" w="100%" alignItems="start">
+        {hasOpenReviewRequests && (
+          <ReviewRequestAlert
+            reviewRequestUrl={`/sites/${siteName}/dashboard`}
+          />
+        )}
+        <MainPages siteName={siteName} isLoading={!!pagesData} />
+      </VStack>
       <Skeleton isLoaded={!isDirLoading} w="100%">
         <EmptyArea
           isItemEmpty={isFoldersEmpty && isPagesEmpty}
