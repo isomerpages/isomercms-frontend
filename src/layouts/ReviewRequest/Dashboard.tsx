@@ -23,32 +23,46 @@ import { useEffect, useState } from "react"
 import { BiLink, BiPlus } from "react-icons/bi"
 import { useParams } from "react-router-dom"
 
+import { useRoleContext } from "contexts/RoleContext"
+
+import { useApproveReviewRequest } from "hooks/reviewHooks/useApproveReviewRequest"
+import { useGetCollaborators } from "hooks/reviewHooks/useGetCollaborators"
 import { useGetReviewRequest } from "hooks/reviewHooks/useGetReviewRequest"
+import { useMergeReviewRequest } from "hooks/reviewHooks/useMergeReviewRequest"
 import useRedirectHook from "hooks/useRedirectHook"
 
+import { getAxiosErrorMessage } from "utils/axios"
+
 import { ReviewRequestStatus } from "types/reviewRequest"
-import { extractInitials, getDateTimeFromUnixTime } from "utils"
+import { extractInitials, getDateTimeFromUnixTime, useErrorToast } from "utils"
 
 import { SiteViewHeader } from "../layouts/SiteViewLayout/SiteViewHeader"
 
-import { ManageReviewerModal } from "./components"
+import { CancelRequestModal, ManageReviewerModal } from "./components"
 import { ApprovedModal } from "./components/ApprovedModal"
+import { PublishedModal } from "./components/PublishedModal"
 import { RequestOverview } from "./components/RequestOverview"
 
 export const ReviewRequestDashboard = (): JSX.Element => {
+  const { role } = useRoleContext()
   const { siteName, reviewId } = useParams<{
     siteName: string
     reviewId: string
   }>()
   const { setRedirectToPage } = useRedirectHook()
   // TODO!: Refactor so that loading is not a concern here
-  const { data } = useGetReviewRequest(siteName, parseInt(reviewId, 10))
-
+  const { data, isLoading: isGetReviewRequestLoading } = useGetReviewRequest(
+    siteName,
+    parseInt(reviewId, 10)
+  )
+  const { data: collaborators, isLoading, isError } = useGetCollaborators(
+    siteName
+  )
   // TODO!: redirect to /sites if cannot parse reviewId as string
-  // this happens when the review is published or requestor closes it
   const { onCopy, hasCopied } = useClipboard(data?.reviewUrl || "")
 
   const reviewStatus = data?.status
+  const isApproved = reviewStatus === ReviewRequestStatus.APPROVED
 
   useEffect(() => {
     if (
@@ -102,7 +116,11 @@ export const ReviewRequestDashboard = (): JSX.Element => {
               </Popover>
             </HStack>
             <Spacer />
-            <ApprovalButton />
+            {role === "requestor" ? (
+              <CancelRequestButton isApproved={isApproved} />
+            ) : (
+              <ApprovalButton />
+            )}
           </Flex>
           <SecondaryDetails
             requestor={data?.requestor || ""}
@@ -111,6 +129,11 @@ export const ReviewRequestDashboard = (): JSX.Element => {
               data?.reviewRequestedTime
                 ? new Date(data?.reviewRequestedTime)
                 : new Date()
+            }
+            admins={
+              collaborators
+                ?.filter((user) => user.role === "ADMIN")
+                .map(({ email }) => email) || []
             }
           />
         </VStack>
@@ -122,10 +145,69 @@ export const ReviewRequestDashboard = (): JSX.Element => {
   )
 }
 
+interface CancelRequestButtonProps {
+  isApproved: boolean
+}
+
+const CancelRequestButton = ({
+  isApproved,
+}: CancelRequestButtonProps): JSX.Element => {
+  const { onOpen, isOpen, onClose } = useDisclosure()
+  const { role, isLoading } = useRoleContext()
+  const buttonText = isApproved ? "Approved" : "In review"
+
+  return (
+    <>
+      <MenuDropdownButton
+        colorScheme={isApproved ? "success" : "primary"}
+        mainButtonText={buttonText}
+        variant="solid"
+        isLoading={isLoading}
+        isDisabled={role !== "requestor"}
+      >
+        <MenuDropdownItem onClick={onOpen}>
+          <Text textStyle="body-1" textColor="text.danger" w="100%">
+            Cancel request
+          </Text>
+        </MenuDropdownItem>
+      </MenuDropdownButton>
+      <CancelRequestModal isOpen={isOpen} onClose={onClose} />
+    </>
+  )
+}
+
 // NOTE: Utility component exists to soothe over state management
 const ApprovalButton = (): JSX.Element => {
   const [isApproved, setIsApproved] = useState(false)
+  const { role, isLoading } = useRoleContext()
   const { onOpen, isOpen, onClose } = useDisclosure()
+  const errorToast = useErrorToast()
+  const { siteName, reviewId } = useParams<{
+    siteName: string
+    reviewId: string
+  }>()
+  const prNumber = parseInt(reviewId, 10)
+  const {
+    mutateAsync: mergeReviewRequest,
+    isLoading: isMergingReviewRequest,
+    isSuccess: isReviewRequestMerged,
+    // TODO!
+    isError: isMergeError,
+  } = useMergeReviewRequest(siteName, prNumber, false)
+  // TODO! make be change the status to approved
+  const {
+    mutateAsync: approveReviewRequest,
+    isError,
+    error,
+  } = useApproveReviewRequest(siteName, prNumber)
+
+  useEffect(() => {
+    if (isError) {
+      errorToast({
+        description: getAxiosErrorMessage(error),
+      })
+    }
+  }, [error, errorToast, isError])
 
   return (
     <>
@@ -133,6 +215,8 @@ const ApprovalButton = (): JSX.Element => {
         colorScheme={isApproved ? "success" : "primary"}
         mainButtonText={isApproved ? "Approved" : "In review"}
         variant="solid"
+        isDisabled={role !== "reviewer"}
+        isLoading={isLoading}
       >
         <MenuDropdownItem onClick={() => setIsApproved(false)}>
           <Text textStyle="body-1" textColor="text.body" w="100%">
@@ -140,7 +224,8 @@ const ApprovalButton = (): JSX.Element => {
           </Text>
         </MenuDropdownItem>
         <MenuDropdownItem
-          onClick={() => {
+          onClick={async () => {
+            await approveReviewRequest()
             setIsApproved(true)
             onOpen()
           }}
@@ -150,7 +235,16 @@ const ApprovalButton = (): JSX.Element => {
           </Text>
         </MenuDropdownItem>
       </MenuDropdownButton>
-      <ApprovedModal isOpen={isOpen} onClose={onClose} />
+      {isReviewRequestMerged ? (
+        <PublishedModal isOpen={isOpen} onClose={onClose} />
+      ) : (
+        <ApprovedModal
+          isOpen={isOpen}
+          onClose={onClose}
+          onClick={mergeReviewRequest}
+          isLoading={isMergingReviewRequest}
+        />
+      )}
     </>
   )
 }
@@ -159,11 +253,13 @@ interface SecondaryDetailsProps {
   requestor: string
   reviewers: string[]
   reviewRequestedTime: Date
+  admins: string[]
 }
 const SecondaryDetails = ({
   requestor,
   reviewers,
   reviewRequestedTime,
+  admins,
 }: SecondaryDetailsProps) => {
   const { date, time } = getDateTimeFromUnixTime(reviewRequestedTime.getTime())
   const props = useDisclosure()
@@ -173,6 +269,12 @@ const SecondaryDetails = ({
       label: reviewer,
     }
   })
+  const allAdmins = admins
+    .filter((admin) => admin !== requestor)
+    .map((admin) => ({
+      value: admin,
+      label: admin,
+    }))
 
   return (
     <VStack spacing="0.5rem" align="flex-start">
@@ -215,7 +317,7 @@ const SecondaryDetails = ({
             {...props}
             selectedAdmins={selectedAdmins}
             // TODO!
-            admins={[]}
+            admins={allAdmins}
           />
         </Box>
       </HStack>
