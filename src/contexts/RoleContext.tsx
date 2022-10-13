@@ -1,6 +1,10 @@
 import { createContext, useContext, PropsWithChildren } from "react"
 import { useParams } from "react-router-dom"
 
+import { useGetReviewRequest } from "hooks/reviewHooks"
+
+import { useLoginContext } from "./LoginContext"
+
 interface RoleContextProps {
   role: "reviewer" | "requestor" | "collaborator"
   isLoading?: boolean
@@ -16,6 +20,22 @@ export const useRoleContext = (): RoleContextProps => {
   return RoleContextData
 }
 
+const getRole = (
+  email: string,
+  requestor?: string,
+  reviewers?: string[]
+): RoleContextProps["role"] => {
+  if (requestor === email) {
+    return "requestor"
+  }
+
+  if (reviewers?.includes(email)) {
+    return "reviewer"
+  }
+
+  return "collaborator"
+}
+
 export const RoleProvider = ({
   children,
 }: PropsWithChildren<Record<string, never>>): JSX.Element => {
@@ -23,23 +43,18 @@ export const RoleProvider = ({
     siteName: string
     reviewId: string
   }>()
-  const { isLoading, role } = useGetRole(siteName, reviewId)
+  const { email } = useLoginContext()
+  const prNumber = parseInt(reviewId, 10)
+  const { data, isLoading } = useGetReviewRequest(siteName, prNumber)
+  const role = getRole(email, data?.requestor, data?.reviewers)
   return (
-    <RoleContext.Provider value={{ role, isLoading }}>
+    <RoleContext.Provider
+      value={{
+        role,
+        isLoading,
+      }}
+    >
       {children}
     </RoleContext.Provider>
   )
-}
-
-const useGetRole = (
-  siteName: string,
-  reviewId: string
-): {
-  isLoading?: boolean
-  role: RoleContextProps["role"]
-} => {
-  return {
-    isLoading: false,
-    role: "reviewer",
-  }
 }
