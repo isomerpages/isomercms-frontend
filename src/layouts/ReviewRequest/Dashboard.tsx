@@ -19,7 +19,7 @@ import {
   MenuDropdownButton,
   MenuDropdownItem,
 } from "components/MenuDropdownButton"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { BiLink, BiPlus } from "react-icons/bi"
 import { useParams } from "react-router-dom"
 
@@ -75,7 +75,6 @@ export const ReviewRequestDashboard = (): JSX.Element => {
 
   return (
     <>
-      <SiteViewHeader />
       <Box bg="white" w="100%" h="100vh">
         <VStack
           bg="blue.50"
@@ -116,11 +115,8 @@ export const ReviewRequestDashboard = (): JSX.Element => {
               </Popover>
             </HStack>
             <Spacer />
-            {role === "requestor" ? (
-              <CancelRequestButton isApproved={isApproved} />
-            ) : (
-              <ApprovalButton />
-            )}
+            <CancelRequestButton isApproved={isApproved} />
+            <ApprovalButton isApproved={isApproved} />
           </Flex>
           <SecondaryDetails
             requestor={data?.requestor || ""}
@@ -145,13 +141,13 @@ export const ReviewRequestDashboard = (): JSX.Element => {
   )
 }
 
-interface CancelRequestButtonProps {
+interface RequestButtonProps {
   isApproved: boolean
 }
 
 const CancelRequestButton = ({
   isApproved,
-}: CancelRequestButtonProps): JSX.Element => {
+}: RequestButtonProps): JSX.Element => {
   const { onOpen, isOpen, onClose } = useDisclosure()
   const { role, isLoading } = useRoleContext()
   const buttonText = isApproved ? "Approved" : "In review"
@@ -177,8 +173,14 @@ const CancelRequestButton = ({
 }
 
 // NOTE: Utility component exists to soothe over state management
-const ApprovalButton = (): JSX.Element => {
-  const [isApproved, setIsApproved] = useState(false)
+const ApprovalButton = ({
+  isApproved: defaultIsApproved,
+}: RequestButtonProps): JSX.Element => {
+  const [isApproved, setIsApproved] = useState<boolean | null>(null)
+  // NOTE: We use a computed approval one because
+  // the `useState` above captures a stale value.
+  // This leads to the button not updating when the status is finally fetched.
+  const computedApproval = isApproved === null ? defaultIsApproved : isApproved
   const { role, isLoading } = useRoleContext()
   const { onOpen, isOpen, onClose } = useDisclosure()
   const errorToast = useErrorToast()
@@ -212,8 +214,8 @@ const ApprovalButton = (): JSX.Element => {
   return (
     <>
       <MenuDropdownButton
-        colorScheme={isApproved ? "success" : "primary"}
-        mainButtonText={isApproved ? "Approved" : "In review"}
+        colorScheme={computedApproval ? "success" : "primary"}
+        mainButtonText={computedApproval ? "Approved" : "In review"}
         variant="solid"
         isDisabled={role !== "reviewer"}
         isLoading={isLoading}
