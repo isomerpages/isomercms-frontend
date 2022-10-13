@@ -1,3 +1,6 @@
+export interface ContactOtpProps {
+  otp: string
+}
 export interface ContactParams {
   mobile: string
 }

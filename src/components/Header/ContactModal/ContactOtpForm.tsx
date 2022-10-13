@@ -8,9 +8,7 @@ import {
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 
-export interface ContactOtpProps {
-  otp: string
-}
+import { ContactOtpProps } from "types/contact"
 
 interface ContactFormProps {
   contactNumber: string
