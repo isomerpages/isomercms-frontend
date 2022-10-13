@@ -13,10 +13,8 @@ import { Link, useParams } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 
-import {
-  ReviewRequestStatus,
-  SiteDashboardReviewRequest,
-} from "types/siteDashboard"
+import { ReviewRequestStatus } from "types/reviewRequest"
+import { SiteDashboardReviewRequest } from "types/siteDashboard"
 
 const getSingularPlural = (count: number, word: string) => {
   return (
@@ -43,7 +41,7 @@ export const ReviewRequestCard = ({
           : "background.action.defaultInverse"
       }
     >
-      {reviewRequest.status === ReviewRequestStatus.PENDING &&
+      {reviewRequest.status === ReviewRequestStatus.OPEN &&
         reviewRequest.author !== email && (
           <Badge
             variant="solid"

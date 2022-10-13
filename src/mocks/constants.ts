@@ -1,5 +1,3 @@
-import { EditedItemProps } from "layouts/ReviewRequest/components/RequestOverview"
-
 import {
   DirectoryData,
   MediaData,
@@ -7,10 +5,10 @@ import {
   ResourcePageData,
 } from "types/directory"
 import { NotificationData } from "types/notifications"
+import { EditedItemProps, ReviewRequestStatus } from "types/reviewRequest"
 import { BackendSiteSettings } from "types/settings"
 import {
   CollaboratorsStats,
-  ReviewRequestStatus,
   SiteDashboardInfo,
   SiteDashboardReviewRequest,
 } from "types/siteDashboard"
@@ -280,7 +278,7 @@ export const MOCK_SITE_DASHBOARD_REVIEW_REQUESTS: SiteDashboardReviewRequest[] =
     description:
       "Added new section to homepage for upcoming event.\n\nPlease review by 12 Jan! Added new section to homepage for upcoming event. Please review by 12 Jan! Added new section to homepage for upcoming event. Please review by 12 Jan!",
     author: "audrey@open.gov.sg",
-    status: ReviewRequestStatus.PENDING,
+    status: ReviewRequestStatus.OPEN,
     changedFiles: 10,
     newComments: 1,
     firstView: false,
