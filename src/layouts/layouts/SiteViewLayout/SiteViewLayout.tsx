@@ -19,10 +19,7 @@ const GRID_LAYOUT: Pick<
   gridTemplateRows: "4rem 1fr",
 }
 
-export const SiteViewLayout = ({
-  siteName,
-  children,
-}: StackProps & { siteName: string }): JSX.Element => {
+export const SiteViewLayout = ({ children }: StackProps): JSX.Element => {
   return (
     <>
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
@@ -34,7 +31,7 @@ export const SiteViewLayout = ({
           top={0}
           zIndex="sticky"
         >
-          <SiteViewHeader siteName={siteName} />
+          <SiteViewHeader />
         </GridItem>
         {/* main bottom section */}
         <SiteViewContent p="2rem">{children}</SiteViewContent>

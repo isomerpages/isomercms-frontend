@@ -63,7 +63,7 @@ export const SiteDashboard = (): JSX.Element => {
   )
 
   return (
-    <SiteViewLayout siteName={siteName} overflow="hidden">
+    <SiteViewLayout overflow="hidden">
       <Container maxW="container.xl" minH="100vh">
         {/* Heading section */}
         <Flex px="4rem">
