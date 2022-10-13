@@ -5,6 +5,8 @@ import { Switch } from "react-router-dom"
 
 // Layouts
 
+import { RoleProvider } from "contexts/RoleContext"
+
 import Dashboard from "layouts/Dashboard"
 import EditContactUs from "layouts/EditContactUs"
 import EditHomepage from "layouts/EditHomepage"
@@ -70,7 +72,11 @@ export const RouteSelector = () => (
       />
       <ProtectedRouteWithProps
         path="/sites/:siteName/review/:reviewId"
-        component={ReviewRequestDashboard}
+        component={() => (
+          <RoleProvider>
+            <ReviewRequestDashboard />
+          </RoleProvider>
+        )}
       />
       <ProtectedRouteWithProps
         path="/sites/:siteName/workspace"
