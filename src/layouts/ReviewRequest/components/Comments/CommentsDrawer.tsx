@@ -46,6 +46,7 @@ const CommentItem = ({
       backgroundColor={isNew ? "primary.100" : "primary.50"}
       p="1rem"
       mb="1rem"
+      borderRadius="4px"
     >
       <HStack
         fontSize="0.625rem"
