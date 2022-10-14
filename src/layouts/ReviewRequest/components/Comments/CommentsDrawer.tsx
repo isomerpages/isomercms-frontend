@@ -94,8 +94,8 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
         aria-label="Open comments"
         icon={<BiCommentDetail />}
         variant="clear"
-        boxShadow="0 0 0 2px var(--chakra-colors-gray-100)"
-        borderRadius="4px"
+        boxShadow="0 0 4px var(--chakra-colors-gray-100)"
+        borderRadius="4px 0 0 4px"
       />
       <Drawer
         isOpen={isCommentsOpen}
