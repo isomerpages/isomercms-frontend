@@ -1,4 +1,12 @@
-import { Flex, Icon, Spacer, Text, HStack } from "@chakra-ui/react"
+import {
+  Flex,
+  Icon,
+  Spacer,
+  Text,
+  HStack,
+  LinkBox,
+  LinkOverlay,
+} from "@chakra-ui/react"
 import { IconButton } from "@opengovsg/design-system-react"
 import { AvatarMenu } from "components/Header/AvatarMenu"
 import { NotificationMenu } from "components/Header/NotificationMenu"
@@ -35,6 +43,13 @@ export const SiteViewHeader = (): JSX.Element => {
       </HStack>
       <Spacer />
       <HStack>
+        <LinkBox position="relative">
+          <LinkOverlay as={RouterLink} to="https://guide.isomer.gov.sg/">
+            <Text color="text.link.dark" noOfLines={1}>
+              Get help
+            </Text>
+          </LinkOverlay>
+        </LinkBox>
         <NotificationMenu siteName={siteName} />
         <AvatarMenu name={displayedName} />
       </HStack>
