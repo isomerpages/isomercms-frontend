@@ -61,6 +61,7 @@ export const SiteEditHeader = (): JSX.Element => {
         </HStack>
         <Spacer />
         <HStack>
+          <NotificationMenu siteName={siteName} />
           <Button
             onClick={onOpen}
             variant="outline"
@@ -72,8 +73,6 @@ export const SiteEditHeader = (): JSX.Element => {
           <ButtonLink href={`https://github.com/isomerpages/${siteName}/pulls`}>
             <Text color="white">Pull Request</Text>
           </ButtonLink>
-          <NotificationMenu siteName={siteName} />
-          <AvatarMenu name={displayedName} />
         </HStack>
       </Flex>
 
