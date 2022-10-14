@@ -681,7 +681,6 @@ const EditNavBar = ({ match }) => {
       </WarningModal>
       <VStack>
         <Header
-          siteName={siteName}
           title="Navigation Bar"
           shouldAllowEditPageBackNav={!hasChanges}
           isEditPage
