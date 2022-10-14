@@ -56,7 +56,7 @@ export const SiteEditHeader = (): JSX.Element => {
             to="/sites"
           />
           <Text color="text.label" textStyle="body-1">
-            All sites
+            My sites
           </Text>
         </HStack>
         <Spacer />
