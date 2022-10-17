@@ -23,6 +23,7 @@ import {
   MenuDropdownButton,
   MenuDropdownItem,
 } from "components/MenuDropdownButton"
+import _ from "lodash"
 import { useEffect } from "react"
 import { BiCheckCircle, BiCog, BiEditAlt, BiGroup } from "react-icons/bi"
 import { useParams, Link as RouterLink } from "react-router-dom"
@@ -118,6 +119,11 @@ export const SiteDashboard = (): JSX.Element => {
             </MenuDropdownButton>
             <Button
               as={RouterLink}
+              isLoading={isReviewRequestsLoading}
+              isDisabled={_.some(
+                validReviewRequests,
+                ({ status }) => status === "APPROVED"
+              )}
               to={`/sites/${siteName}/workspace`}
               leftIcon={
                 <Icon as={BiEditAlt} fontSize="1.35rem" color="white" />
