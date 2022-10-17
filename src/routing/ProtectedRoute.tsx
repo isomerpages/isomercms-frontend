@@ -21,11 +21,12 @@ export const ProtectedRoute = ({
   ...rest
 }: RouteProps): JSX.Element => {
   const { displayedName } = useLoginContext()
+
   if (displayedName && children) {
     return <Route {...rest}>{children}</Route>
   }
 
-  if (WrappedComponent) {
+  if (displayedName && WrappedComponent) {
     return (
       <Route
         // eslint-disable-next-line react/jsx-props-no-spreading
