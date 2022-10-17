@@ -29,9 +29,7 @@ const Template: Story<TemplateProps> = ({
         admins={admins}
         isOpen={isOpen}
         onClose={onClose}
-      >
-        <Button colorScheme="danger">Click me</Button>
-      </ManageReviewerModal>
+      />
     </>
   )
 }

@@ -50,7 +50,7 @@ View it on IsomerCMS: ${reviewUrl}`
   )}&body=${body}`
 }
 
-export interface SendRequestModalProps extends ModalProps {
+export interface SendRequestModalProps extends Omit<ModalProps, "children"> {
   admins: User[]
   reviewUrl: string
   reviewTitle: string

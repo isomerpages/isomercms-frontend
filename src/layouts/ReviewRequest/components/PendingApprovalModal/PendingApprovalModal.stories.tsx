@@ -14,9 +14,7 @@ const Template: Story<never> = () => {
   return (
     <>
       <Button onClick={onOpen}>Open Modal</Button>
-      <PendingApprovalModal isOpen={isOpen} onClose={onClose}>
-        <Button colorScheme="danger">Click me</Button>
-      </PendingApprovalModal>
+      <PendingApprovalModal isOpen={isOpen} onClose={onClose} />
     </>
   )
 }

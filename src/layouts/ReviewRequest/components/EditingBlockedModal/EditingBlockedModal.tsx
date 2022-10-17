@@ -10,7 +10,9 @@ import {
 } from "@chakra-ui/react"
 import { Button, ModalCloseButton } from "@opengovsg/design-system-react"
 
-export const EditingBlockedModal = (props: ModalProps): JSX.Element => {
+export const EditingBlockedModal = (
+  props: Omit<ModalProps, "children">
+): JSX.Element => {
   const { onClose } = props
 
   return (

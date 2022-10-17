@@ -31,9 +31,7 @@ const Template: Story<TemplateProps> = ({
         reviewUrl={reviewUrl}
         reviewTitle={reviewTitle}
         siteName={siteName}
-      >
-        <Button colorScheme="danger">Click me</Button>
-      </SendRequestModal>
+      />
     </>
   )
 }
