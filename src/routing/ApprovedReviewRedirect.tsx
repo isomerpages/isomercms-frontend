@@ -1,7 +1,6 @@
-import { Center } from "@chakra-ui/react"
-import { Spinner } from "@opengovsg/design-system-react"
-import { useEffect } from "react"
-import { Redirect, RouteProps, useParams } from "react-router-dom"
+import { Greyscale } from "components/Greyscale"
+import { PropsWithChildren, useEffect } from "react"
+import { Redirect, RedirectProps, useParams } from "react-router-dom"
 
 import { useGetReviewRequests } from "hooks/siteDashboardHooks"
 
@@ -12,7 +11,7 @@ import { useErrorToast, useWarningToast } from "utils"
 export const ApprovedReviewRedirect = ({
   children,
   ...rest
-}: RouteProps): JSX.Element => {
+}: PropsWithChildren<Omit<RedirectProps, "to">>): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
   const {
     data: reviewRequests,
@@ -45,21 +44,17 @@ export const ApprovedReviewRedirect = ({
     }
   }, [hasApprovedReviewRequest, warningToast])
 
-  return isLoading || !reviewRequests ? (
-    <Center w="100%" h="100vh">
-      <Spinner fontSize="1.5rem" />
-    </Center>
-  ) : (
-    <>
+  return (
+    <Greyscale isActive={isLoading || !reviewRequests}>
       {/*
        * If we fail to retrieve the list of review requests,
        * we take the conservative route and prevent the user from editing.
        */}
       {(hasApprovedReviewRequest || isError) && (
-        <Redirect to={`/sites/${siteName}/dashboard`} />
+        <Redirect {...rest} to={`/sites/${siteName}/dashboard`} />
       )}
       {children}
-    </>
+    </Greyscale>
   )
 }
 
