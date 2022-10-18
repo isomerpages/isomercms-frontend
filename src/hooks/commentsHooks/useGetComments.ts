@@ -1,3 +1,4 @@
+import { AxiosError } from "axios"
 import { useQuery } from "react-query"
 import type { UseQueryResult } from "react-query"
 
@@ -10,8 +11,11 @@ import { CommentData, CommentProps } from "types/comments"
 export const useGetComments = ({
   siteName,
   requestId,
-}: CommentProps): UseQueryResult<CommentData[]> => {
-  return useQuery<CommentData[]>(
+}: CommentProps): UseQueryResult<
+  CommentData[],
+  AxiosError<{ message: string }>
+> => {
+  return useQuery<CommentData[], AxiosError<{ message: string }>>(
     [COMMENTS_KEY, siteName],
     () => CommentsService.getComments({ siteName, requestId }),
     {

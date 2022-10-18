@@ -7,10 +7,10 @@ import { UpdateCommentProps } from "types/comments"
 
 export const useUpdateComments = (): UseMutationResult<
   void,
-  AxiosError,
+  AxiosError<{ message: string }>,
   UpdateCommentProps
 > => {
-  return useMutation<void, AxiosError, UpdateCommentProps>(
+  return useMutation<void, AxiosError<{ message: string }>, UpdateCommentProps>(
     ({ siteName, requestId, message }) =>
       CommentsService.updateComments({ siteName, requestId, message })
   )
