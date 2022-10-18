@@ -53,14 +53,16 @@ export const SendCommentForm = ({
       <FormControl
         isInvalid={!!formState.errors.comment}
         isReadOnly={formState.isSubmitting}
+        pb="1.5rem"
       >
-        <HStack pb="1.5rem">
+        <HStack>
           <Input
             placeholder="Leave a comment"
             autoFocus
             id="comment"
             {...register("comment", {
-              minLength: { value: 1, message: "Please enter a comment." },
+              minLength: 1,
+              required: { value: true, message: "Please enter a comment." },
             })}
           />
           <IconButton
@@ -69,6 +71,7 @@ export const SendCommentForm = ({
             aria-label="link to send comment"
             type="submit"
             isLoading={formState.isSubmitting}
+            disabled={!formState.isValid}
           />
         </HStack>
         <FormErrorMessage>{formState.errors.comment?.message}</FormErrorMessage>
