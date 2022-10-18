@@ -5,26 +5,28 @@ import { useGetReviewRequest } from "hooks/reviewHooks"
 
 import { useLoginContext } from "./LoginContext"
 
-interface RoleContextProps {
+interface ReviewRequestRoleContextProps {
   role: "reviewer" | "requestor" | "collaborator"
   isLoading?: boolean
 }
 
-const RoleContext = createContext<null | RoleContextProps>(null)
+const ReviewRequestRoleContext = createContext<null | ReviewRequestRoleContextProps>(
+  null
+)
 
-export const useRoleContext = (): RoleContextProps => {
-  const RoleContextData = useContext(RoleContext)
+export const useReviewRequestRoleContext = (): ReviewRequestRoleContextProps => {
+  const RoleContextData = useContext(ReviewRequestRoleContext)
   if (!RoleContextData)
     throw new Error("useRoleContext must be used within an RoleProvider")
 
   return RoleContextData
 }
 
-const getRole = (
+const getReviewRequestRole = (
   email: string,
   requestor?: string,
   reviewers?: string[]
-): RoleContextProps["role"] => {
+): ReviewRequestRoleContextProps["role"] => {
   if (requestor === email) {
     return "requestor"
   }
@@ -36,7 +38,7 @@ const getRole = (
   return "collaborator"
 }
 
-export const RoleProvider = ({
+export const ReviewRequestRoleProvider = ({
   children,
 }: PropsWithChildren<Record<string, never>>): JSX.Element => {
   const { siteName, reviewId } = useParams<{
@@ -46,15 +48,15 @@ export const RoleProvider = ({
   const { email } = useLoginContext()
   const prNumber = parseInt(reviewId, 10)
   const { data, isLoading } = useGetReviewRequest(siteName, prNumber)
-  const role = getRole(email, data?.requestor, data?.reviewers)
+  const role = getReviewRequestRole(email, data?.requestor, data?.reviewers)
   return (
-    <RoleContext.Provider
+    <ReviewRequestRoleContext.Provider
       value={{
         role,
         isLoading,
       }}
     >
       {children}
-    </RoleContext.Provider>
+    </ReviewRequestRoleContext.Provider>
   )
 }

@@ -23,7 +23,7 @@ import { useEffect, useRef, useState } from "react"
 import { BiLink, BiPlus } from "react-icons/bi"
 import { useParams } from "react-router-dom"
 
-import { useRoleContext } from "contexts/RoleContext"
+import { useReviewRequestRoleContext } from "contexts/ReviewRequestRoleContext"
 
 import { useApproveReviewRequest } from "hooks/reviewHooks/useApproveReviewRequest"
 import { useGetCollaborators } from "hooks/reviewHooks/useGetCollaborators"
@@ -44,7 +44,7 @@ import { PublishedModal } from "./components/PublishedModal"
 import { RequestOverview } from "./components/RequestOverview"
 
 export const ReviewRequestDashboard = (): JSX.Element => {
-  const { role } = useRoleContext()
+  const { role } = useReviewRequestRoleContext()
   const { siteName, reviewId } = useParams<{
     siteName: string
     reviewId: string
@@ -149,7 +149,7 @@ const CancelRequestButton = ({
   isApproved,
 }: RequestButtonProps): JSX.Element => {
   const { onOpen, isOpen, onClose } = useDisclosure()
-  const { role, isLoading } = useRoleContext()
+  const { role, isLoading } = useReviewRequestRoleContext()
   const buttonText = isApproved ? "Approved" : "In review"
 
   return (
@@ -181,7 +181,7 @@ const ApprovalButton = ({
   // the `useState` above captures a stale value.
   // This leads to the button not updating when the status is finally fetched.
   const computedApproval = isApproved === null ? defaultIsApproved : isApproved
-  const { role, isLoading } = useRoleContext()
+  const { role, isLoading } = useReviewRequestRoleContext()
   const { onOpen, isOpen, onClose } = useDisclosure()
   const errorToast = useErrorToast()
   const { siteName, reviewId } = useParams<{
