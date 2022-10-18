@@ -115,8 +115,11 @@ export const ReviewRequestDashboard = (): JSX.Element => {
               </Popover>
             </HStack>
             <Spacer />
-            <CancelRequestButton isApproved={isApproved} />
-            <ApprovalButton isApproved={isApproved} />
+            {role === "requestor" ? (
+              <CancelRequestButton isApproved={isApproved} />
+            ) : (
+              <ApprovalButton isApproved={isApproved} />
+            )}
           </Flex>
           <SecondaryDetails
             requestor={data?.requestor || ""}
