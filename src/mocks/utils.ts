@@ -155,5 +155,11 @@ export const buildRemoveContributor = apiDataBuilder(
 )
 
 export const buildCommentsData = apiDataBuilder<CommentData[]>(
-  "*/sites/:siteName/review/:requestId/comments"
+  "*/sites/:siteName/review/:requestId/comments",
+  "get"
+)
+
+export const buildMarkCommentsAsReadData = apiDataBuilder<CommentData[]>(
+  "*/sites/:siteName/review/:requestId/comments/viewedComments",
+  "post"
 )
