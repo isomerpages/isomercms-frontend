@@ -8,19 +8,20 @@ import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { BiSend } from "react-icons/bi"
 
+import { useUpdateComments } from "hooks/commentsHooks"
+
+import { getAxiosErrorMessage } from "utils/axios"
+
+import { CommentProps } from "types/comments"
+
 export interface CommentFormProps {
   comment: string
 }
 
-interface SendContactFormProps {
-  onSubmit: (inputs: CommentFormProps) => Promise<void>
-  errorMessage: string
-}
-
 export const SendCommentForm = ({
-  onSubmit,
-  errorMessage,
-}: SendContactFormProps) => {
+  siteName,
+  requestId,
+}: CommentProps): JSX.Element => {
   const {
     handleSubmit,
     register,
@@ -30,16 +31,25 @@ export const SendCommentForm = ({
     mode: "onBlur",
   })
 
+  const {
+    mutateAsync: updateNotifications,
+    error: updateNotificationsError,
+  } = useUpdateComments()
+
+  const handleUpdateNotifications = async ({ comment }: CommentFormProps) => {
+    await updateNotifications({ siteName, requestId, message: comment })
+  }
+
   useEffect(() => {
-    if (errorMessage)
+    if (updateNotificationsError)
       setError("comment", {
         type: "server",
-        message: errorMessage,
+        message: getAxiosErrorMessage(updateNotificationsError),
       })
-  }, [errorMessage, setError])
+  }, [setError, updateNotificationsError])
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(handleUpdateNotifications)}>
       <FormControl
         isInvalid={!!formState.errors.comment}
         isReadOnly={formState.isSubmitting}
