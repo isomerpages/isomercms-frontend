@@ -1,10 +1,23 @@
-import { Flex, Icon, Spacer, Text, HStack } from "@chakra-ui/react"
+import {
+  Flex,
+  Icon,
+  Spacer,
+  Text,
+  HStack,
+  LinkBox,
+  LinkOverlay,
+} from "@chakra-ui/react"
 import { IconButton } from "@opengovsg/design-system-react"
-import { BiArrowBack, BiBell } from "react-icons/bi"
-import { Link as RouterLink } from "react-router-dom"
+import { AvatarMenu } from "components/Header/AvatarMenu"
+import { NotificationMenu } from "components/Header/NotificationMenu"
+import { BiArrowBack } from "react-icons/bi"
+import { Link as RouterLink, useParams } from "react-router-dom"
 
-// TODO: This is a temporary header for a site view page
+import { useLoginContext } from "contexts/LoginContext"
+
 export const SiteViewHeader = (): JSX.Element => {
+  const { displayedName } = useLoginContext()
+  const { siteName } = useParams<{ siteName: string }>()
   return (
     <Flex
       py="0.625rem"
@@ -30,11 +43,15 @@ export const SiteViewHeader = (): JSX.Element => {
       </HStack>
       <Spacer />
       <HStack>
-        <IconButton
-          aria-label="Notifications"
-          variant="clear"
-          icon={<Icon as={BiBell} fontSize="1.25rem" fill="icon.secondary" />}
-        />
+        <LinkBox position="relative">
+          <LinkOverlay as={RouterLink} to="https://guide.isomer.gov.sg/">
+            <Text color="text.link.dark" noOfLines={1}>
+              Get help
+            </Text>
+          </LinkOverlay>
+        </LinkBox>
+        <NotificationMenu siteName={siteName} />
+        <AvatarMenu name={displayedName} />
       </HStack>
     </Flex>
   )

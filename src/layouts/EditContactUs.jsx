@@ -870,7 +870,6 @@ const EditContactUs = ({ match }) => {
       </WarningModal>
       <VStack>
         <Header
-          siteName={siteName}
           title="Contact Us"
           shouldAllowEditPageBackNav={hasChanges()}
           isEditPage

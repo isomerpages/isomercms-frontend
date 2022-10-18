@@ -1,11 +1,24 @@
 import { rest } from "msw"
 
-import { MOCK_USER } from "./constants"
-import { buildLastUpdated, buildLoginData } from "./utils"
+import {
+  MOCK_NOTIFICATION_DATA,
+  MOCK_ALL_NOTIFICATION_DATA,
+  MOCK_USER,
+} from "./constants"
+import {
+  buildAllNotificationData,
+  buildLastUpdated,
+  buildLoginData,
+  buildMarkNotificationsAsReadData,
+  buildRecentNotificationData,
+} from "./utils"
 
 export const handlers = [
   buildLastUpdated({ lastUpdated: "Last updated today" }),
   buildLoginData(MOCK_USER),
+  buildRecentNotificationData(MOCK_NOTIFICATION_DATA),
+  buildAllNotificationData(MOCK_ALL_NOTIFICATION_DATA),
+  buildMarkNotificationsAsReadData([]),
 ]
 
 export const contactUsHandler = (

@@ -1,5 +1,5 @@
 import axios from "axios"
-import Header from "components/Header"
+import { AllSitesHeader } from "components/Header/AllSitesHeader"
 import _ from "lodash"
 import { Component } from "react"
 import { Link } from "react-router-dom"
@@ -86,7 +86,7 @@ export default class SitesWrapper extends Component {
     const { siteNames } = this.state
     return (
       <>
-        <Header showButton={false} />
+        <AllSitesHeader />
         <div className={elementStyles.wrapper}>
           <div className={siteStyles.sitesContainer}>
             <div className={siteStyles.sectionHeader}>
