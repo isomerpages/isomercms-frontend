@@ -59,7 +59,9 @@ export const SendCommentForm = ({
             placeholder="Leave a comment"
             autoFocus
             id="comment"
-            {...register("comment")}
+            {...register("comment", {
+              minLength: { value: 1, message: "Please enter a comment." },
+            })}
           />
           <IconButton
             icon={<BiSend />}
