@@ -100,6 +100,7 @@ export const ReviewRequestDashboard = ({
           />
         </VStack>
         <Flex h="100%" w="7.25rem" pt="2rem" justifyContent="end">
+          {/* TODO: swap this to a slide out component and not a drawer */}
           <CommentsDrawer siteName="siteName" requestId={1} />
         </Flex>
       </HStack>
