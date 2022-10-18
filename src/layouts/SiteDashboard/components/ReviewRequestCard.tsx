@@ -13,6 +13,8 @@ import { Link, useParams } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 
+import { getDateTimeFromUnixTime } from "utils/date"
+
 import {
   ReviewRequestStatus,
   SiteDashboardReviewRequest,
@@ -33,6 +35,7 @@ export const ReviewRequestCard = ({
 }): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
   const { email } = useLoginContext()
+  const { date, time } = getDateTimeFromUnixTime(reviewRequest.createdAt)
 
   return (
     <DisplayCard
@@ -75,8 +78,8 @@ export const ReviewRequestCard = ({
           {reviewRequest.title}
         </DisplayCardTitle>
         <DisplayCardCaption>
-          #{reviewRequest.id} created by {reviewRequest.author} on{" "}
-          {reviewRequest.createdAt}
+          #{reviewRequest.id} created by {reviewRequest.author} on {date},{" "}
+          {time}
         </DisplayCardCaption>
       </DisplayCardHeader>
       <DisplayCardContent>

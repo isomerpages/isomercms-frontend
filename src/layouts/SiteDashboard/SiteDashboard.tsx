@@ -32,6 +32,8 @@ import {
   useGetCollaboratorsStatistics,
 } from "hooks/siteDashboardHooks"
 
+import { getDateTimeFromUnixTime } from "utils/date"
+
 import { SiteDashboardHumanImage } from "assets"
 
 import { SiteViewLayout } from "../layouts"
@@ -57,6 +59,8 @@ export const SiteDashboard = (): JSX.Element => {
     isError: isCollaboratorsStatisticsError,
     isLoading: isCollaboratorsStatisticsLoading,
   } = useGetCollaboratorsStatistics(siteName)
+
+  const { savedAt, savedBy, publishedAt, publishedBy } = siteInfo || {}
 
   return (
     <SiteViewLayout overflow="hidden">
@@ -156,7 +160,9 @@ export const SiteDashboard = (): JSX.Element => {
                           <b>Last saved</b>{" "}
                           {isSiteInfoError
                             ? "Unable to retrieve data"
-                            : `${siteInfo?.savedAt}, ${siteInfo?.savedBy}`}
+                            : `${
+                                getDateTimeFromUnixTime(savedAt).date
+                              }, ${savedBy}`}
                         </Text>
                       </Skeleton>
 
@@ -165,7 +171,9 @@ export const SiteDashboard = (): JSX.Element => {
                           <b>Last published</b>{" "}
                           {isSiteInfoError
                             ? "Unable to retrieve data"
-                            : `${siteInfo?.publishedAt}, ${siteInfo?.publishedBy}`}
+                            : `${
+                                getDateTimeFromUnixTime(publishedAt).date
+                              }, ${publishedBy}`}
                         </Text>
                       </Skeleton>
                     </VStack>
