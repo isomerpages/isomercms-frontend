@@ -69,7 +69,10 @@ export type CommentsDrawerProps = Pick<
   "onClose" | "isOpen"
 >
 
-export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
+export const CommentsDrawer = ({
+  siteName,
+  requestId,
+}: CommentProps): JSX.Element => {
   const {
     isOpen: isCommentsOpen,
     onOpen: onCommentsOpen,
@@ -89,7 +92,7 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
         backgroundColor="background.action.defaultInverse"
         onClick={() => {
           onCommentsOpen()
-          // updateReadComments({ siteName, requestId })
+          updateReadComments({ siteName, requestId })
         }}
         aria-label="Open comments"
         icon={<BiCommentDetail />}

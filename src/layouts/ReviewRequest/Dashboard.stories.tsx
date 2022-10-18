@@ -1,6 +1,9 @@
 import { ComponentMeta, Story } from "@storybook/react"
 
 import { MOCK_ITEMS } from "mocks/constants"
+import { buildMarkCommentsAsReadData } from "mocks/utils"
+
+import { handlers } from "../../mocks/handlers"
 
 import {
   ReviewRequestDashboard,
@@ -22,6 +25,11 @@ Playground.args = {
   requestor: "seaerchin",
   reviewers: ["nat mae tan", "jiachin er"],
   changedItems: MOCK_ITEMS,
+}
+Playground.parameters = {
+  msw: {
+    handlers: [...handlers, buildMarkCommentsAsReadData([])],
+  },
 }
 
 export default dashboardMeta

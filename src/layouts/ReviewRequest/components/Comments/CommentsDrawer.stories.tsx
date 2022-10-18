@@ -3,7 +3,7 @@ import { MemoryRouter, Route } from "react-router-dom"
 
 import { MOCK_COMMENTS_DATA } from "mocks/constants"
 import { handlers } from "mocks/handlers"
-import { buildCommentsData } from "mocks/utils"
+import { buildCommentsData, buildMarkCommentsAsReadData } from "mocks/utils"
 
 import { CommentsDrawer } from "./CommentsDrawer"
 
@@ -35,21 +35,33 @@ const Template: ComponentStory<typeof CommentsDrawer> = () => {
 export const Default = Template.bind({})
 Default.parameters = {
   msw: {
-    handlers: [...handlers, buildCommentsData(MOCK_COMMENTS_DATA)],
+    handlers: [
+      ...handlers,
+      buildCommentsData(MOCK_COMMENTS_DATA),
+      buildMarkCommentsAsReadData([]),
+    ],
   },
 }
 
 export const Loading = Template.bind({})
 Loading.parameters = {
   msw: {
-    handlers: [...handlers, buildCommentsData([], "infinite")],
+    handlers: [
+      ...handlers,
+      buildCommentsData([], "infinite"),
+      buildMarkCommentsAsReadData([]),
+    ],
   },
 }
 
 export const NoComments = Template.bind({})
 NoComments.parameters = {
   msw: {
-    handlers: [...handlers, buildCommentsData([])],
+    handlers: [
+      ...handlers,
+      buildCommentsData([]),
+      buildMarkCommentsAsReadData([]),
+    ],
   },
 }
 
@@ -62,6 +74,7 @@ ManyComments.parameters = {
         ...MOCK_COMMENTS_DATA,
         ...MOCK_COMMENTS_DATA,
       ]),
+      buildMarkCommentsAsReadData([]),
       ...handlers,
     ],
   },
