@@ -136,7 +136,7 @@ export const NotificationMenu = ({
                   : undefined
               }
             >
-              {hasNotification && <AvatarBadge boxSize="1.25em" bg="red.500" />}
+              {hasNotification && <AvatarBadge boxSize="1rem" bg="red.500" />}
             </Avatar>
           </NotificationMenuButton>
           <Menu.List
@@ -144,7 +144,7 @@ export const NotificationMenu = ({
             marginTop="0.375rem"
             w="22.5rem"
             maxHeight="30rem"
-            overflow="scroll"
+            overflowY="scroll"
             {...menuListProps}
           >
             {displayAll && allNotificationData ? (
