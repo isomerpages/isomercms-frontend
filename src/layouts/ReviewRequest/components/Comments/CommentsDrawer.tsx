@@ -19,19 +19,14 @@ import { IconButton } from "@opengovsg/design-system-react"
 import { PropsWithChildren } from "react"
 import { BiCommentDetail } from "react-icons/bi"
 
-import {
-  useGetComments,
-  useUpdateComments,
-  useUpdateReadComments,
-} from "hooks/commentsHooks"
+import { useGetComments, useUpdateReadComments } from "hooks/commentsHooks"
 
-import { getAxiosErrorMessage } from "utils/axios"
 import { getDateTimeFromUnixTime } from "utils/date"
 
 import { EmptyChatImage } from "assets/images/EmptyChatImage"
 import { CommentProps } from "types/comments"
 
-import { CommentFormProps, SendCommentForm } from "./SendCommentForm"
+import { SendCommentForm } from "./SendCommentForm"
 
 export interface CommentItemProps {
   commenterName: string
@@ -82,14 +77,6 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
   })
 
   const { mutateAsync: updateReadComments } = useUpdateReadComments()
-  const {
-    mutateAsync: updateNotifications,
-    error: updateNotificationsError,
-  } = useUpdateComments()
-
-  const handleUpdateNotifications = async ({ comment }: CommentFormProps) => {
-    await updateNotifications({ siteName, requestId, message: comment })
-  }
 
   return (
     <>
@@ -152,10 +139,7 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
                 )}
               </Skeleton>
               <Divider borderColor="border.divider.alt" />
-              <SendCommentForm
-                onSubmit={handleUpdateNotifications}
-                errorMessage={getAxiosErrorMessage(updateNotificationsError)}
-              />
+              <SendCommentForm siteName={siteName} requestId={requestId} />
             </Stack>
           </DrawerBody>
         </DrawerContent>
