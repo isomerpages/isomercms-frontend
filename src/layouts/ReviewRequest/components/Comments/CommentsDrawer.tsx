@@ -16,7 +16,7 @@ import {
   Skeleton,
 } from "@chakra-ui/react"
 import { IconButton } from "@opengovsg/design-system-react"
-import { PropsWithChildren } from "react"
+import { PropsWithChildren, useEffect } from "react"
 import { BiCommentDetail } from "react-icons/bi"
 
 import {
@@ -76,7 +76,11 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
     onClose: onCommentsClose,
   } = useDisclosure()
 
-  const { data: commentsData, isLoading: isCommentsLoading } = useGetComments({
+  const {
+    data: commentsData,
+    isLoading: isCommentsLoading,
+    refetch: refetchRecentNotificationData,
+  } = useGetComments({
     siteName,
     requestId,
   })
@@ -90,6 +94,11 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
   const handleUpdateNotifications = async ({ comment }: CommentFormProps) => {
     await updateNotifications({ siteName, requestId, message: comment })
   }
+
+  useEffect(() => {
+    refetchRecentNotificationData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>
