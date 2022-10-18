@@ -28,7 +28,7 @@ import {
 import { getAxiosErrorMessage } from "utils/axios"
 import { getDateTimeFromUnixTime } from "utils/date"
 
-import { ChatImage } from "assets/images/ChatImage"
+import { EmptyChatImage } from "assets/images/EmptyChatImage"
 import { CommentProps } from "types/comments"
 
 import { CommentFormProps, SendCommentForm } from "./SendCommentForm"
@@ -147,7 +147,7 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
                     justifyContent="center"
                     alignItems="center"
                   >
-                    <ChatImage />
+                    <EmptyChatImage />
                   </Flex>
                 )}
               </Skeleton>

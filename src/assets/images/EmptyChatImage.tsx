@@ -1,4 +1,4 @@
-export const ChatImage = (
+export const EmptyChatImage = (
   props: React.SVGProps<SVGSVGElement>
 ): JSX.Element => {
   return (
