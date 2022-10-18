@@ -9,14 +9,14 @@ import {
   Stack,
   UseDisclosureReturn,
   Text,
-  Flex,
+  Center,
   Divider,
   HStack,
   useDisclosure,
   Skeleton,
 } from "@chakra-ui/react"
 import { IconButton } from "@opengovsg/design-system-react"
-import { PropsWithChildren, useEffect } from "react"
+import { PropsWithChildren } from "react"
 import { BiCommentDetail } from "react-icons/bi"
 
 import {
@@ -141,14 +141,14 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
                     </CommentItem>
                   ))
                 ) : (
-                  <Flex
+                  <Center
                     flex={1}
                     h="100%"
                     justifyContent="center"
                     alignItems="center"
                   >
                     <EmptyChatImage />
-                  </Flex>
+                  </Center>
                 )}
               </Skeleton>
               <Divider borderColor="border.divider.alt" />
