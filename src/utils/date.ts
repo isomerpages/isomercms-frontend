@@ -13,7 +13,7 @@ export const getDateTimeFromUnixTime = (
       year: "numeric",
       day: "numeric",
     }),
-    time: date.toLocaleTimeString("en-GB", {
+    time: date.toLocaleTimeString("en-US", {
       timeStyle: "short",
     }),
   }

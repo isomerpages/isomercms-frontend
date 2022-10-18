@@ -6,8 +6,10 @@ import {
   MOCK_SITE_DASHBOARD_COLLABORATORS_STATISTICS,
   MOCK_SITE_DASHBOARD_INFO,
   MOCK_SITE_DASHBOARD_REVIEW_REQUESTS,
+  MOCK_USER,
 } from "mocks/constants"
 import {
+  buildLoginData,
   buildSiteDashboardCollaboratorsStatistics,
   buildSiteDashboardInfo,
   buildSiteDashboardReviewRequests,
@@ -41,6 +43,7 @@ const SiteDashboardMeta = {
         collaboratorsStatistics: buildSiteDashboardCollaboratorsStatistics(
           MOCK_SITE_DASHBOARD_COLLABORATORS_STATISTICS
         ),
+        loginData: buildLoginData(_.set(MOCK_USER, "userId", "")),
       },
     },
   },

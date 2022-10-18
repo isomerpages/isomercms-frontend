@@ -23,14 +23,20 @@ import {
   MenuDropdownButton,
   MenuDropdownItem,
 } from "components/MenuDropdownButton"
+import { useEffect } from "react"
 import { BiCheckCircle, BiCog, BiEditAlt, BiGroup } from "react-icons/bi"
 import { useParams, Link as RouterLink } from "react-router-dom"
+
+import { useLoginContext } from "contexts/LoginContext"
 
 import {
   useGetSiteInfo,
   useGetReviewRequests,
   useGetCollaboratorsStatistics,
 } from "hooks/siteDashboardHooks"
+import useRedirectHook from "hooks/useRedirectHook"
+
+import { getDateTimeFromUnixTime } from "utils/date"
 
 import { SiteDashboardHumanImage } from "assets"
 
@@ -42,6 +48,9 @@ import { ReviewRequestCard } from "./components/ReviewRequestCard"
 
 export const SiteDashboard = (): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
+  const { setRedirectToPage } = useRedirectHook()
+  const { userId } = useLoginContext()
+
   const {
     data: siteInfo,
     isError: isSiteInfoError,
@@ -57,6 +66,16 @@ export const SiteDashboard = (): JSX.Element => {
     isError: isCollaboratorsStatisticsError,
     isLoading: isCollaboratorsStatisticsLoading,
   } = useGetCollaboratorsStatistics(siteName)
+
+  const savedAt = getDateTimeFromUnixTime(siteInfo?.savedAt || 0)
+  const publishedAt = getDateTimeFromUnixTime(siteInfo?.publishedAt || 0)
+
+  useEffect(() => {
+    // GitHub users should not be able to access this page
+    if (userId !== "Unknown user" && !!userId) {
+      setRedirectToPage(`/sites/${siteName}/workspace`)
+    }
+  })
 
   return (
     <SiteViewLayout overflow="hidden">
@@ -156,7 +175,7 @@ export const SiteDashboard = (): JSX.Element => {
                           <b>Last saved</b>{" "}
                           {isSiteInfoError
                             ? "Unable to retrieve data"
-                            : `${siteInfo?.savedAt}, ${siteInfo?.savedBy}`}
+                            : `${savedAt.date}, ${siteInfo?.savedBy}`}
                         </Text>
                       </Skeleton>
 
@@ -165,7 +184,7 @@ export const SiteDashboard = (): JSX.Element => {
                           <b>Last published</b>{" "}
                           {isSiteInfoError
                             ? "Unable to retrieve data"
-                            : `${siteInfo?.publishedAt}, ${siteInfo?.publishedBy}`}
+                            : `${publishedAt.date}, ${siteInfo?.publishedBy}`}
                         </Text>
                       </Skeleton>
                     </VStack>

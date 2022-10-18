@@ -224,9 +224,9 @@ export const MOCK_SITE_DASHBOARD_COLLABORATORS_STATISTICS: CollaboratorsStats = 
 }
 
 export const MOCK_SITE_DASHBOARD_INFO: SiteDashboardInfo = {
-  savedAt: 1642559061,
+  savedAt: 1642559061000,
   savedBy: "Siti_Julaiha_ASMURI@hdb.gov.sg",
-  publishedAt: 1642559061,
+  publishedAt: 1642559061000,
   publishedBy: "Siti_Julaiha_ASMURI@hdb.gov.sg",
   stagingUrl: "https://opengovsg-test-staging.netlify.app",
   siteUrl: "https://www.open.gov.sg",
