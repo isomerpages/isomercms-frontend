@@ -23,6 +23,6 @@ export const updateReadComments = async ({
   siteName,
   requestId,
 }: CommentProps): Promise<void> => {
-  const endpoint = `/sites/${siteName}/review/${requestId}/comments/readComments`
+  const endpoint = `/sites/${siteName}/review/${requestId}/comments/viewedComments`
   return apiService.post(endpoint)
 }
