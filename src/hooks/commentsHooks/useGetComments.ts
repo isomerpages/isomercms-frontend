@@ -16,7 +16,7 @@ export const useGetComments = ({
     () => CommentsService.getComments({ siteName, requestId }),
     {
       retry: false,
-      enabled: false, // Manually triggered
+      refetchOnWindowFocus: false,
     }
   )
 }
