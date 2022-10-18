@@ -76,11 +76,7 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
     onClose: onCommentsClose,
   } = useDisclosure()
 
-  const {
-    data: commentsData,
-    isLoading: isCommentsLoading,
-    refetch: refetchRecentNotificationData,
-  } = useGetComments({
+  const { data: commentsData, isLoading: isCommentsLoading } = useGetComments({
     siteName,
     requestId,
   })
@@ -94,11 +90,6 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
   const handleUpdateNotifications = async ({ comment }: CommentFormProps) => {
     await updateNotifications({ siteName, requestId, message: comment })
   }
-
-  useEffect(() => {
-    refetchRecentNotificationData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   return (
     <>
