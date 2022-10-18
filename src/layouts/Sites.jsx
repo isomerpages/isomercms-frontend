@@ -6,17 +6,23 @@ import { Link } from "react-router-dom"
 
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
+import { useLoginContext } from "contexts/LoginContext"
+
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import siteStyles from "styles/isomer-cms/pages/Sites.module.scss"
 
 import { convertUtcToTimeDiff } from "utils/dateUtils"
 
 const Sites = ({ siteNames }) => {
+  const { userId } = useLoginContext()
+  const isEmailLoginUser = !userId
+  const urlLink = isEmailLoginUser ? "dashboard" : "workspace"
+
   if (siteNames && siteNames.length > 0)
     return siteNames.map((siteName) => (
       <div className={siteStyles.siteContainer} key={siteName.repoName}>
         <div className={siteStyles.site}>
-          <Link to={`/sites/${siteName.repoName}/workspace`}>
+          <Link to={`/sites/${siteName.repoName}/${urlLink}`}>
             <div className={siteStyles.siteImage} />
             <div className={siteStyles.siteDescription}>
               <div className={siteStyles.siteName}>{siteName.repoName}</div>
