@@ -27,6 +27,7 @@ export const SendCommentForm = ({
     register,
     formState,
     setError,
+    clearErrors,
   } = useForm<CommentFormProps>({
     mode: "onBlur",
   })
@@ -46,7 +47,8 @@ export const SendCommentForm = ({
         type: "server",
         message: getAxiosErrorMessage(updateNotificationsError),
       })
-  }, [setError, updateNotificationsError])
+    else clearErrors()
+  }, [clearErrors, setError, updateNotificationsError])
 
   return (
     <form onSubmit={handleSubmit(handleUpdateNotifications)}>
