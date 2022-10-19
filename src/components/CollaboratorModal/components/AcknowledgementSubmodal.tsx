@@ -12,7 +12,11 @@ import { TEXT_FONT_SIZE } from "../constants"
 
 const TERMS_OF_USE_LINK = "https://v2.isomer.gov.sg" // TODO: Update this when we get it
 
-export const AcknowledgementSubmodalContent = (): JSX.Element => {
+export const AcknowledgementSubmodalContent = ({
+  isLoading,
+}: {
+  isLoading: boolean
+}): JSX.Element => {
   const { watch, register, getValues } = useFormContext()
   const isAcknowledged = watch("isAcknowledged")
   const newCollaboratorEmail = getValues("newCollaboratorEmail")
@@ -77,7 +81,11 @@ export const AcknowledgementSubmodalContent = (): JSX.Element => {
         <Button variant="clear" color="secondary" onClick={onClose}>
           Cancel
         </Button>
-        <Button isDisabled={!isAcknowledged} type="submit">
+        <Button
+          isDisabled={!isAcknowledged}
+          type="submit"
+          isLoading={isLoading}
+        >
           Continue
         </Button>
       </Stack>
