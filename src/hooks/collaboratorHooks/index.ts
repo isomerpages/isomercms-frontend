@@ -4,6 +4,7 @@ import {
   useMutation,
   useQueryClient,
   UseMutationResult,
+  UseQueryResult,
 } from "react-query"
 
 import {
@@ -17,17 +18,27 @@ import * as CollaboratorService from "services/CollaboratorService"
 
 import { useSuccessToast, useErrorToast } from "utils/toasts"
 
-import { CollaboratorError } from "types/collaborators"
+import {
+  Collaborator,
+  CollaboratorError,
+  CollaboratorRole,
+  SiteMemberRole,
+} from "types/collaborators"
 import { DEFAULT_RETRY_MSG } from "utils"
 
-export const useListCollaboratorsHook = (siteName: string) => {
+export const useListCollaboratorsHook = (
+  siteName: string
+): UseQueryResult<Collaborator[], AxiosError<unknown>> => {
   const errorToast = useErrorToast()
   const { setRedirectToPage } = useRedirectHook()
   return useQuery(
     [LIST_COLLABORATORS_KEY, siteName],
-    () => CollaboratorService.listCollaborators(siteName),
+    () =>
+      CollaboratorService.listCollaborators(siteName).then((data) => {
+        return data.collaborators
+      }),
     {
-      onError: (err: any) => {
+      onError: (err) => {
         if (err?.response?.status === 403) {
           // This is to cater for the case where the user
           // deletes themselves from the site's collaborators list
@@ -42,11 +53,16 @@ export const useListCollaboratorsHook = (siteName: string) => {
   )
 }
 
-export const useGetCollaboratorRoleHook = (siteName: string) => {
+export const useGetCollaboratorRoleHook = (
+  siteName: string
+): UseQueryResult<SiteMemberRole> => {
   const errorToast = useErrorToast()
   return useQuery(
     [GET_COLLABORATOR_ROLE_KEY, siteName],
-    () => CollaboratorService.getRole(siteName),
+    () =>
+      CollaboratorService.getRole(siteName).then((data) => {
+        return data.role
+      }),
     {
       onError: () => {
         errorToast({
@@ -57,7 +73,9 @@ export const useGetCollaboratorRoleHook = (siteName: string) => {
   )
 }
 
-export const useDeleteCollaboratorHook = (siteName: string) => {
+export const useDeleteCollaboratorHook = (
+  siteName: string
+): UseMutationResult<void, AxiosError<unknown>, string> => {
   const queryClient = useQueryClient()
   const successToast = useSuccessToast()
   const errorToast = useErrorToast()
@@ -69,7 +87,7 @@ export const useDeleteCollaboratorHook = (siteName: string) => {
         queryClient.invalidateQueries([LIST_COLLABORATORS_KEY, siteName])
         successToast({ description: "Collaborator removed successfully" })
       },
-      onError: (err: any) => {
+      onError: (err) => {
         if (err?.response?.status === 422) {
           errorToast({
             description: `You can't be removed, because sites need at least one Admin`,
