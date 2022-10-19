@@ -32,7 +32,7 @@ import { useLoginContext } from "contexts/LoginContext"
 
 import * as CollaboratorHooks from "hooks/collaboratorHooks"
 
-import { CollaboratorError } from "types/collaborators"
+import { Collaborator, CollaboratorError } from "types/collaborators"
 import { DEFAULT_RETRY_MSG, useSuccessToast } from "utils"
 
 import { ACK_REQUIRED_ERROR_MESSAGE } from "../constants"
@@ -49,17 +49,6 @@ const numDaysAgo = (previousDateTime: string): number => {
   )
 }
 
-type SiteMemberRole = "CONTRIBUTOR" | "ADMIN"
-
-export interface Collaborator {
-  id: string
-  email: string
-  lastLoggedIn: string
-  SiteMember: {
-    role: SiteMemberRole
-  }
-}
-
 interface CollaboratorListProps {
   onDelete: (user: Collaborator) => void
 }
@@ -68,16 +57,16 @@ const CollaboratorListSection = ({ onDelete }: CollaboratorListProps) => {
   const { email } = useLoginContext()
   const { siteName } = useParams<{ siteName: string }>()
   // TODO!: Loading state and error toasts
-  const { data: collaboratorData } = CollaboratorHooks.useListCollaboratorsHook(
+  const { data: collaborators } = CollaboratorHooks.useListCollaboratorsHook(
     siteName
   )
   const { isDisabled } = useFormControlContext()
 
   return (
     <Box m="10px" mt="40px">
-      {collaboratorData &&
+      {collaborators &&
         // TODO: remove any type - requires moving shared types from the backend repo
-        collaboratorData.collaborators.map((collaborator: Collaborator) => (
+        collaborators.map((collaborator: Collaborator) => (
           <>
             <Grid
               templateColumns="repeat(11, 1fr)"
@@ -103,7 +92,7 @@ const CollaboratorListSection = ({ onDelete }: CollaboratorListProps) => {
               <GridItem colSpan={2}>
                 <Box display="flex" alignItems="center" h="100%">
                   <Text textTransform="capitalize">
-                    {_.capitalize(collaborator.SiteMember.role)}
+                    {_.capitalize(collaborator.role)}
                   </Text>
                 </Box>
               </GridItem>
@@ -153,9 +142,7 @@ export const MainSubmodal = ({
     isLoading: isAddCollaboratorLoading,
     reset,
   } = CollaboratorHooks.useAddCollaboratorHook(siteName)
-  const {
-    data: collaboratorRoleData,
-  } = CollaboratorHooks.useGetCollaboratorRoleHook(siteName)
+  const { data: role } = CollaboratorHooks.useGetCollaboratorRoleHook(siteName)
 
   const errorMessage = extractErrorMessage(
     addCollaboratorError?.response?.data.error
@@ -187,7 +174,7 @@ export const MainSubmodal = ({
     }
   }, [addCollaboratorSuccess, successToast])
 
-  const isDisabled = collaboratorRoleData?.role !== "ADMIN"
+  const isDisabled = role !== "ADMIN"
 
   return (
     <Modal
