@@ -218,10 +218,9 @@ const ApprovalButton = ({
     mutateAsync: mergeReviewRequest,
     isLoading: isMergingReviewRequest,
     isSuccess: isReviewRequestMerged,
-    // TODO!
+    // TODO! - display error toast on merge failure
     isError: isMergeError,
   } = useMergeReviewRequest(siteName, prNumber, false)
-  // TODO! make be change the status to approved
   const {
     mutateAsync: approveReviewRequest,
     isError: isApproveReviewRequestError,
@@ -362,7 +361,6 @@ const SecondaryDetails = ({
           <ManageReviewerModal
             {...props}
             selectedAdmins={selectedAdmins}
-            // TODO!
             admins={allAdmins}
           />
         </Box>
