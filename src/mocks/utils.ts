@@ -1,10 +1,6 @@
 import { DefaultBodyType, rest, RestContext, ResponseTransformer } from "msw"
 
-import {
-  CollaboratorData,
-  CollaboratorRoleData,
-  SiteMemberModel,
-} from "types/collaborators"
+import { CollaboratorData, CollaboratorRole } from "types/collaborators"
 import {
   DirectoryData,
   PageData,
