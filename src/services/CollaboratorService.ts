@@ -1,17 +1,25 @@
+import { CollaboratorDto, CollaboratorRole } from "types/collaborators"
+
 import { apiService } from "./ApiService"
 
 const getCollaboratorEndpoint = (siteName: string): string => {
   return `/sites/${siteName}/collaborators`
 }
 
-export const getRole = async (siteName: string): Promise<any> => {
+export const getRole = async (
+  siteName: string
+): Promise<{ role: CollaboratorRole }> => {
   const endpoint = `${getCollaboratorEndpoint(siteName)}/role`
   return apiService.get(endpoint).then((res) => res.data)
 }
 
-export const listCollaborators = async (siteName: string): Promise<any> => {
+export const listCollaborators = async (
+  siteName: string
+): Promise<{ collaborators: CollaboratorDto[] }> => {
   const endpoint = getCollaboratorEndpoint(siteName)
-  return apiService.get(endpoint).then((res) => res.data)
+  return apiService
+    .get<{ collaborators: CollaboratorDto[] }>(endpoint)
+    .then((res) => res.data)
 }
 
 export const addCollaborator = async (
