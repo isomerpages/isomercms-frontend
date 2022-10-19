@@ -1,5 +1,6 @@
 import { AxiosError } from "axios"
 import { useMutation, UseMutationResult, useQueryClient } from "react-query"
+import type { SetOptional } from "type-fest"
 
 import { REVIEW_REQUEST_QUERY_KEY } from "constants/queryKeys"
 
@@ -14,16 +15,22 @@ export const useUpdateReviewRequest = (
 ): UseMutationResult<
   void,
   AxiosError<ErrorDto | MiddlewareErrorDto>,
-  ReviewRequestInfo
+  SetOptional<ReviewRequestInfo, "title">
 > => {
   const queryClient = useQueryClient()
-  return useMutation((data) => updateReviewRequest(siteName, prNumber, data), {
-    onSettled: () => {
-      queryClient.invalidateQueries([
-        REVIEW_REQUEST_QUERY_KEY,
-        siteName,
-        prNumber,
-      ])
-    },
-  })
+  return useMutation(
+    ({ reviewers }) =>
+      updateReviewRequest(siteName, prNumber, {
+        reviewers: reviewers.map(({ value }) => value),
+      }),
+    {
+      onSettled: () => {
+        queryClient.invalidateQueries([
+          REVIEW_REQUEST_QUERY_KEY,
+          siteName,
+          prNumber,
+        ])
+      },
+    }
+  )
 }

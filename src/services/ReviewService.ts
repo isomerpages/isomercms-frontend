@@ -1,9 +1,9 @@
 import {
   EditedItemProps,
   ReviewRequest,
-  ReviewRequestDto,
-  ReviewRequestInfo,
+  CreateReviewRequestDto,
   UserDto,
+  UpdateReviewRequestDto,
 } from "types/reviewRequest"
 
 import { apiService } from "./ApiService"
@@ -35,7 +35,7 @@ export const getCollaborators = async (
 
 export const createReviewRequest = async (
   siteName: string,
-  reviewData: ReviewRequestDto
+  reviewData: CreateReviewRequestDto
 ): Promise<number> => {
   const endpoint = `/sites/${siteName}/review/request`
   return apiService.post<number>(endpoint, reviewData).then(({ data }) => data)
@@ -93,7 +93,7 @@ export const getSiteUrl = async (siteName: string): Promise<string> => {
 export const updateReviewRequest = async (
   siteName: string,
   prNumber: number,
-  updatedReviewRequestInfo: ReviewRequestInfo
+  updatedReviewRequestInfo: UpdateReviewRequestDto
 ): Promise<void> => {
   const endpoint = `/sites/${siteName}/review/${prNumber}`
   return apiService.post(endpoint, updatedReviewRequestInfo)
