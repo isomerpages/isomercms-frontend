@@ -7,3 +7,11 @@ export interface MiddlewareError {
 export interface ErrorDto {
   message: string
 }
+
+export interface MiddlewareErrorDto {
+  error: {
+    code: number
+    message: string
+    name?: string
+  }
+}
