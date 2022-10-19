@@ -3,87 +3,87 @@ import {
   ModalBody,
   Text,
   Stack,
-  useModalContext,
+  ModalProps,
+  ModalOverlay,
+  Modal,
+  ModalContent,
 } from "@chakra-ui/react"
 import { Button, ModalCloseButton } from "@opengovsg/design-system-react"
-import { useCollaboratorModalContext } from "components/CollaboratorModal/CollaboratorModalContext"
+import { useParams } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 
 import { useDeleteCollaboratorHook } from "hooks/collaboratorHooks"
-import useRedirectHook from "hooks/useRedirectHook"
 
 import { TEXT_FONT_SIZE } from "../constants"
 
-const RemoveCollaboratorSubmodal = ({
-  siteName,
-}: {
-  siteName: string
-}): JSX.Element => {
-  return (
-    <>
-      <ModalHeader>Remove collaborator?</ModalHeader>
-      <ModalCloseButton />
-      <ModalBody>
-        <RemoveCollaboratorSubmodalContent siteName={siteName} />
-      </ModalBody>
-    </>
-  )
+import { Collaborator } from "./MainSubmodal"
+
+interface RemoveCollaboratorSubmodalProps extends Omit<ModalProps, "children"> {
+  userToDelete: Collaborator
+  onDeleteComplete: () => void
 }
-const RemoveCollaboratorSubmodalContent = ({
-  siteName,
-}: {
-  siteName: string
-}) => {
-  const { deleteCollaboratorTarget } = useCollaboratorModalContext()
-  const { setRedirectToPage } = useRedirectHook()
+
+export const RemoveCollaboratorSubmodal = ({
+  userToDelete,
+  onDeleteComplete,
+  ...props
+}: RemoveCollaboratorSubmodalProps): JSX.Element => {
   const { email } = useLoginContext()
-  const isUserDeletingThemselves = email === deleteCollaboratorTarget?.email
-  const { onClose } = useModalContext()
+  const { siteName } = useParams<{ siteName: string }>()
+  const isUserDeletingThemselves = email === userToDelete?.email
+  const { onClose } = props
 
   const { mutateAsync: deleteCollaborator } = useDeleteCollaboratorHook(
     siteName
   )
 
   return (
-    <>
-      {isUserDeletingThemselves ? (
-        <Text>
-          Once you remove yourself as a collaborator, you will no longer be able
-          to make any changes to this site.
-        </Text>
-      ) : (
-        <Text fontSize={TEXT_FONT_SIZE}>
-          <Text as="span">Once you remove</Text>
-          <Text color="danger.700" as="strong">
-            {" "}
-            {deleteCollaboratorTarget?.email}{" "}
-          </Text>
-          <Text as="span">
-            from this site, they will no longer be able to make any changes.
-          </Text>
-        </Text>
-      )}
+    <Modal {...props}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Remove collaborator?</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody mb="44px">
+          {isUserDeletingThemselves ? (
+            <Text>
+              Once you remove yourself as a collaborator, you will no longer be
+              able to make any changes to this site.
+            </Text>
+          ) : (
+            <Text fontSize={TEXT_FONT_SIZE}>
+              <Text as="span">Once you remove</Text>
+              <Text color="danger.700" as="strong">
+                {" "}
+                {userToDelete?.email}{" "}
+              </Text>
+              <Text as="span">
+                from this site, they will no longer be able to make any changes.
+              </Text>
+            </Text>
+          )}
 
-      <Stack spacing={4} direction="row" justify="right" mt="36px">
-        <Button variant="clear" color="secondary" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button
-          colorScheme="danger"
-          onClick={async () => {
-            if (isUserDeletingThemselves) {
-              setRedirectToPage(`http://localhost:3000/sites`)
-            }
-            await deleteCollaborator(deleteCollaboratorTarget.id)
-            onClose()
-          }}
-        >
-          {isUserDeletingThemselves ? "Remove myself" : "Remove collaborator"}
-        </Button>
-      </Stack>
-    </>
+          <Stack spacing={4} direction="row" justify="right" mt="36px">
+            <Button variant="clear" color="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button
+              colorScheme="danger"
+              isDisabled={!userToDelete}
+              onClick={async () => {
+                // NOTE: As we disable this if the userToDelete is empty,
+                // this is a safe assertion
+                await deleteCollaborator(userToDelete.id)
+                onDeleteComplete()
+              }}
+            >
+              {isUserDeletingThemselves
+                ? "Remove myself"
+                : "Remove collaborator"}
+            </Button>
+          </Stack>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   )
 }
-
-export { RemoveCollaboratorSubmodal }
