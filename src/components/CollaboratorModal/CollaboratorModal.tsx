@@ -1,6 +1,5 @@
 import { ModalProps } from "@chakra-ui/react"
 import {
-  Collaborator,
   MainSubmodal,
   RemoveCollaboratorSubmodal,
 } from "components/CollaboratorModal/components"
@@ -9,6 +8,8 @@ import { useState } from "react"
 import { useLoginContext } from "contexts/LoginContext"
 
 import useRedirectHook from "hooks/useRedirectHook"
+
+import { Collaborator } from "types/collaborators"
 
 // eslint-disable-next-line import/prefer-default-export
 export const CollaboratorModal = (

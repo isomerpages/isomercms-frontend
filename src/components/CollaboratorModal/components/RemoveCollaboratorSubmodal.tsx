@@ -15,9 +15,9 @@ import { useLoginContext } from "contexts/LoginContext"
 
 import { useDeleteCollaboratorHook } from "hooks/collaboratorHooks"
 
-import { TEXT_FONT_SIZE } from "../constants"
+import { Collaborator } from "types/collaborators"
 
-import { Collaborator } from "./MainSubmodal"
+import { TEXT_FONT_SIZE } from "../constants"
 
 interface RemoveCollaboratorSubmodalProps extends Omit<ModalProps, "children"> {
   userToDelete: Collaborator
@@ -34,9 +34,10 @@ export const RemoveCollaboratorSubmodal = ({
   const isUserDeletingThemselves = email === userToDelete?.email
   const { onClose } = props
 
-  const { mutateAsync: deleteCollaborator } = useDeleteCollaboratorHook(
-    siteName
-  )
+  const {
+    mutateAsync: deleteCollaborator,
+    isLoading: isDeleteCollaboratorLoading,
+  } = useDeleteCollaboratorHook(siteName)
 
   return (
     <Modal {...props}>
@@ -70,6 +71,7 @@ export const RemoveCollaboratorSubmodal = ({
             <Button
               colorScheme="danger"
               isDisabled={!userToDelete}
+              isLoading={isDeleteCollaboratorLoading}
               onClick={async () => {
                 // NOTE: As we disable this if the userToDelete is empty,
                 // this is a safe assertion
