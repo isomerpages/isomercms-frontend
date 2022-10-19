@@ -52,11 +52,12 @@ export const ReviewRequestDashboard = (): JSX.Element => {
     siteName: string
     reviewId: string
   }>()
+  const prNumber = parseInt(reviewId, 10)
   const { setRedirectToPage } = useRedirectHook()
   // TODO!: Refactor so that loading is not a concern here
   const { data, isLoading: isGetReviewRequestLoading } = useGetReviewRequest(
     siteName,
-    parseInt(reviewId, 10)
+    prNumber
   )
   const { data: collaborators, isLoading, isError } = useGetCollaborators(
     siteName
@@ -69,7 +70,6 @@ export const ReviewRequestDashboard = (): JSX.Element => {
 
   const reviewStatus = data?.status
   const isApproved = reviewStatus === ReviewRequestStatus.APPROVED
-
   useEffect(() => {
     if (
       reviewStatus === ReviewRequestStatus.CLOSED ||
