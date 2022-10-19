@@ -1,6 +1,6 @@
 import { DefaultBodyType, rest, RestContext, ResponseTransformer } from "msw"
 
-import { CollaboratorData, CollaboratorRoleData } from "types/collaborators"
+import { CollaboratorData, CollaboratorRole } from "types/collaborators"
 import {
   MediaData,
   DirectoryData,
@@ -92,9 +92,9 @@ export const buildLoginData = apiDataBuilder<LoggedInUser>(
   "*/auth/whoami",
   "get"
 )
-export const buildCollaboratorRoleData = apiDataBuilder<CollaboratorRoleData>(
-  "*/sites/:siteName/collaborators/role",
-  "get"
+
+export const buildCollaboratorRoleData = apiDataBuilder<CollaboratorRole>(
+  "*/sites/:siteName/collaborators/role"
 )
 
 export const buildCollaboratorData = apiDataBuilder<CollaboratorData>(
