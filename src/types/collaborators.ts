@@ -1,48 +1,28 @@
-// TODO: Replace with actual model types in backend
+export type SiteMemberRole = "CONTRIBUTOR" | "ADMIN"
 
-export interface SiteModel {
-  id: number
-  name: string
-  apiTokenName: string
-  siteStatus: string // TODO: This is really a SiteStatus enum but I didn't want to replicate this in the frontend
-  jobStatus: string // TODO: This is also an enum
-  createdAt: Date
-  updatedAt: Date
-  deletedAt?: Date
-  /* eslint-disable-next-line */
-  site_members: Array<UserModel & { SiteMember: SiteMemberModel }>
-  repo?: any // TODO: Repo
-  deployment?: any // TODO: Deployment
-  creatorId: number
-  /* eslint-disable-next-line */
-  site_creator: UserModel
+export interface CollaboratorDto {
+  id: string
+  email: string
+  githubId?: string
+  lastLoggedIn: string
+  contactNumber?: number
+  SiteMember: {
+    role: SiteMemberRole
+  }
 }
 
-export interface SiteMemberModel {
-  userId: number
-  siteId: string
-  role: string
-  createdAt: Date
-  updatedAt: Date
-}
-export interface UserModel {
-  id: number
-  email: string | null
-  githubId: string
-  contactNumber: string | null
-  lastLoggedIn: Date
-  createdAt: Date
-  updatedAt: Date
-  deletedAt?: Date
-  sites: Array<SiteModel & { SiteMember: SiteMemberModel }>
-  sitesCreated?: SiteModel[]
+// NOTE: Prior to data being given to the UI,
+// massage over the shape so it's easier to work with
+export interface Collaborator extends Omit<CollaboratorDto, "SiteMember"> {
+  role: SiteMemberRole
 }
 
 export type CollaboratorData = {
-  collaborators: Array<UserModel & { SiteMember: SiteMemberModel }>
+  collaborators: Collaborator[]
 }
-export type CollaboratorRoleData = {
-  role: SiteMemberModel["role"]
+
+export type CollaboratorRole = {
+  role: SiteMemberRole
 }
 
 export interface CollaboratorError {
