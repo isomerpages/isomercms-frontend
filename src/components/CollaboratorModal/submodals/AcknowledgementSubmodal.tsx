@@ -1,37 +1,18 @@
 import {
-  ModalHeader,
-  ModalBody,
   Text,
   UnorderedList,
   ListItem,
   Stack,
   useModalContext,
 } from "@chakra-ui/react"
-import {
-  Button,
-  ModalCloseButton,
-  Link,
-  Checkbox,
-} from "@opengovsg/design-system-react"
+import { Button, Link, Checkbox } from "@opengovsg/design-system-react"
 import { useFormContext } from "react-hook-form"
 
 import { TEXT_FONT_SIZE } from "../constants"
 
 const TERMS_OF_USE_LINK = "https://v2.isomer.gov.sg" // TODO: Update this when we get it
 
-const AcknowledgementSubmodal = (): JSX.Element => {
-  return (
-    <>
-      <ModalHeader>Acknowledge Terms of Use to continue</ModalHeader>
-      <ModalCloseButton />
-      <ModalBody>
-        <AcknowledgementSubmodalContent />
-      </ModalBody>
-    </>
-  )
-}
-
-const AcknowledgementSubmodalContent = () => {
+export const AcknowledgementSubmodalContent = (): JSX.Element => {
   const { watch, register, getValues } = useFormContext()
   const isAcknowledged = watch("isAcknowledged")
   const newCollaboratorEmail = getValues("newCollaboratorEmail")
@@ -103,5 +84,3 @@ const AcknowledgementSubmodalContent = () => {
     </>
   )
 }
-
-export { AcknowledgementSubmodal }
