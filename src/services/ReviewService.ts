@@ -2,6 +2,7 @@ import {
   EditedItemProps,
   ReviewRequest,
   ReviewRequestDto,
+  ReviewRequestInfo,
   UserDto,
 } from "types/reviewRequest"
 
@@ -87,4 +88,13 @@ export const getSiteUrl = async (siteName: string): Promise<string> => {
   return apiService
     .get<{ siteUrl: string }>(endpoint)
     .then(({ data }) => data.siteUrl)
+}
+
+export const updateReviewRequest = async (
+  siteName: string,
+  prNumber: number,
+  updatedReviewRequestInfo: ReviewRequestInfo
+): Promise<void> => {
+  const endpoint = `/sites/${siteName}/review/${prNumber}`
+  return apiService.post(endpoint, updatedReviewRequestInfo)
 }
