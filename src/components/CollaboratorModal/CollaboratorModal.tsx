@@ -3,7 +3,7 @@ import {
   Collaborator,
   MainSubmodal,
   RemoveCollaboratorSubmodal,
-} from "components/CollaboratorModal/submodals"
+} from "components/CollaboratorModal/components"
 import { useState } from "react"
 
 import { useLoginContext } from "contexts/LoginContext"
