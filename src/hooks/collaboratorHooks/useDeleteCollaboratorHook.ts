@@ -4,11 +4,12 @@ import { UseMutationResult, useQueryClient, useMutation } from "react-query"
 import { LIST_COLLABORATORS_KEY } from "constants/queryKeys"
 
 import { CollaboratorService } from "services"
+import { MiddlewareError } from "types/error"
 import { useSuccessToast, useErrorToast, DEFAULT_RETRY_MSG } from "utils"
 
 export const useDeleteCollaboratorHook = (
   siteName: string
-): UseMutationResult<void, AxiosError<unknown>, string> => {
+): UseMutationResult<void, AxiosError<MiddlewareError>, string> => {
   const queryClient = useQueryClient()
   const successToast = useSuccessToast()
   const errorToast = useErrorToast()
