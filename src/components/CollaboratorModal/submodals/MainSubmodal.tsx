@@ -9,27 +9,35 @@ import {
   Divider,
   FormControl,
   Input,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalProps,
+  useFormControlContext,
 } from "@chakra-ui/react"
 import {
   IconButton,
   ModalCloseButton,
   FormErrorMessage,
   FormLabel,
+  Button,
 } from "@opengovsg/design-system-react"
-import { useCollaboratorModalContext } from "components/CollaboratorModal/CollaboratorModalContext"
-import { LoadingButton } from "components/LoadingButton"
-import { useFormContext } from "react-hook-form"
+import _ from "lodash"
+import { useEffect, useState } from "react"
+import { FormProvider, useForm } from "react-hook-form"
 import { BiTrash } from "react-icons/bi"
+import { useParams } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 
-import { CollaboratorError } from "types/collaborators"
-import { DEFAULT_RETRY_MSG, emailRegexTest } from "utils"
+import * as CollaboratorHooks from "hooks/collaboratorHooks"
 
-import {
-  CollaboratorModalState,
-  ACK_REQUIRED_ERROR_MESSAGE,
-} from "../constants"
+import { CollaboratorError } from "types/collaborators"
+import { DEFAULT_RETRY_MSG, useSuccessToast } from "utils"
+
+import { ACK_REQUIRED_ERROR_MESSAGE } from "../constants"
+
+import { AcknowledgementSubmodalContent } from "./AcknowledgementSubmodal"
 
 const LAST_LOGGED_IN_THRESHOLD_IN_DAYS = 60
 
@@ -41,20 +49,35 @@ const numDaysAgo = (previousDateTime: string): number => {
   )
 }
 
-const CollaboratorListSection = () => {
-  const {
-    collaboratorData,
-    collaboratorRoleData,
-    setDeleteCollaboratorTarget,
-    setModalState,
-  } = useCollaboratorModalContext()
+type SiteMemberRole = "CONTRIBUTOR" | "ADMIN"
+
+export interface Collaborator {
+  id: string
+  email: string
+  lastLoggedIn: string
+  SiteMember: {
+    role: SiteMemberRole
+  }
+}
+
+interface CollaboratorListProps {
+  onDelete: (user: Collaborator) => void
+}
+
+const CollaboratorListSection = ({ onDelete }: CollaboratorListProps) => {
   const { email } = useLoginContext()
+  const { siteName } = useParams<{ siteName: string }>()
+  // TODO!: Loading state and error toasts
+  const { data: collaboratorData } = CollaboratorHooks.useListCollaboratorsHook(
+    siteName
+  )
+  const { isDisabled } = useFormControlContext()
 
   return (
     <Box m="10px" mt="40px">
       {collaboratorData &&
         // TODO: remove any type - requires moving shared types from the backend repo
-        collaboratorData.collaborators.map((collaborator: any) => (
+        collaboratorData.collaborators.map((collaborator: Collaborator) => (
           <>
             <Grid
               templateColumns="repeat(11, 1fr)"
@@ -80,7 +103,7 @@ const CollaboratorListSection = () => {
               <GridItem colSpan={2}>
                 <Box display="flex" alignItems="center" h="100%">
                   <Text textTransform="capitalize">
-                    {collaborator.SiteMember.role}
+                    {_.capitalize(collaborator.SiteMember.role)}
                   </Text>
                 </Box>
               </GridItem>
@@ -90,13 +113,10 @@ const CollaboratorListSection = () => {
                     aria-label="Delete collaborator button"
                     variant="clear"
                     colorScheme="danger"
-                    onClick={() => {
-                      setModalState(CollaboratorModalState.RemoveCollaborator)
-                      setDeleteCollaboratorTarget(collaborator)
-                    }}
+                    onClick={() => onDelete(collaborator)}
                     id={`delete-${collaborator.id}`}
                     icon={<BiTrash color="icon.danger" />}
-                    isDisabled={collaboratorRoleData?.role !== "ADMIN"}
+                    isDisabled={isDisabled}
                   />
                 </Box>
               </GridItem>
@@ -109,70 +129,127 @@ const CollaboratorListSection = () => {
 }
 
 const extractErrorMessage = (props: CollaboratorError | undefined): string => {
-  if (!props) return DEFAULT_RETRY_MSG
+  if (!props || props?.code === 500) return DEFAULT_RETRY_MSG
 
-  const { code, message } = props
-  return code === 500 ? DEFAULT_RETRY_MSG : message
+  return props.message
 }
 
-interface MainSubmodalProps {
-  addCollaboratorError?: CollaboratorError
+interface MainSubmodalProps extends Omit<ModalProps, "children"> {
+  onDelete: (user: Collaborator) => void
 }
 
 export const MainSubmodal = ({
-  addCollaboratorError,
+  onDelete,
+  ...props
 }: MainSubmodalProps): JSX.Element => {
-  const { collaboratorRoleData } = useCollaboratorModalContext()
+  const { siteName } = useParams<{ siteName: string }>()
+  const [showAck, setShowAck] = useState(false)
+  const successToast = useSuccessToast()
   const {
-    register,
-    formState: { errors },
-  } = useFormContext<{
-    newCollaboratorEmail: string
-    isAcknowledged: boolean
-  }>()
+    mutateAsync: addCollaborator,
+    error: addCollaboratorError,
+    isSuccess: addCollaboratorSuccess,
+    isError: isAddCollaboratorError,
+    isLoading: isAddCollaboratorLoading,
+    reset,
+  } = CollaboratorHooks.useAddCollaboratorHook(siteName)
+  const {
+    data: collaboratorRoleData,
+  } = CollaboratorHooks.useGetCollaboratorRoleHook(siteName)
 
-  const errorMessage = extractErrorMessage(addCollaboratorError)
+  const errorMessage = extractErrorMessage(
+    addCollaboratorError?.response?.data.error
+  )
 
-  const hasError = !!(errorMessage || errors.newCollaboratorEmail)
+  const collaboratorFormMethods = useForm({
+    mode: "onTouched",
+    defaultValues: {
+      newCollaboratorEmail: "",
+      isAcknowledged: false,
+    },
+  })
+
+  // Show acknowledgement modal if user does not have a trusted email
+  useEffect(() => {
+    // No error message implies no error
+    if (!addCollaboratorError?.response?.data?.error) return
+
+    const { message: errMessage } = addCollaboratorError?.response?.data?.error
+
+    if (errMessage === ACK_REQUIRED_ERROR_MESSAGE) {
+      setShowAck(true)
+    }
+  }, [addCollaboratorError])
+
+  useEffect(() => {
+    if (addCollaboratorSuccess) {
+      successToast({ description: "Collaborator added successfully" })
+    }
+  }, [addCollaboratorSuccess, successToast])
+
+  const isDisabled = collaboratorRoleData?.role !== "ADMIN"
 
   return (
-    <>
-      <ModalHeader>Manage collaborators</ModalHeader>
-      <ModalCloseButton />
-      <ModalBody>
-        <FormControl
-          isRequired
-          isInvalid={hasError}
-          isDisabled={collaboratorRoleData?.role !== "ADMIN"}
-        >
-          <FormLabel>Only admins can add or remove collaborators</FormLabel>
-          <Input
-            {...register("newCollaboratorEmail", {
-              pattern: {
-                value: emailRegexTest,
-                message: "Please ensure that you have entered a valid email!",
-              },
+    <Modal
+      onCloseComplete={() => {
+        reset()
+        collaboratorFormMethods.reset()
+        setShowAck(false)
+        props.onCloseComplete?.()
+      }}
+      {...props}
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <FormProvider {...collaboratorFormMethods}>
+          <form
+            onSubmit={collaboratorFormMethods.handleSubmit(async (data) => {
+              await addCollaborator(data)
+              // This could have been reached after acknowledgement
+              // if the added person is not whitelisted.
+              setShowAck(false)
             })}
-          />
-          <FormErrorMessage>
-            {errors.newCollaboratorEmail?.message || errorMessage}
-          </FormErrorMessage>
-        </FormControl>
-        <LoadingButton
-          mt="16px"
-          isDisabled={
-            // Made this more specific for readability
-            newCollaboratorEmail === "" ||
-            addCollaboratorError !== "" ||
-            collaboratorRoleData?.role !== "ADMIN"
-          }
-          type="submit"
-        >
-          Add collaborator
-        </LoadingButton>
-        <CollaboratorListSection />
-      </ModalBody>
-      <ModalFooter />
-    </>
+          >
+            <ModalHeader>
+              {showAck
+                ? "Acknowledge Terms of Use to continue"
+                : "Manage collaborators"}
+            </ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              {showAck ? (
+                <AcknowledgementSubmodalContent />
+              ) : (
+                <FormControl
+                  isRequired
+                  isInvalid={isAddCollaboratorError}
+                  isDisabled={isDisabled}
+                >
+                  <FormLabel>
+                    Only admins can add or remove collaborators
+                  </FormLabel>
+                  <Input
+                    {...collaboratorFormMethods.register(
+                      "newCollaboratorEmail"
+                    )}
+                  />
+                  <FormErrorMessage>{errorMessage}</FormErrorMessage>
+                  <Button
+                    isLoading={isAddCollaboratorLoading}
+                    isDisabled={isDisabled}
+                    mt="16px"
+                    type="submit"
+                  >
+                    Add collaborator
+                  </Button>
+                  <CollaboratorListSection onDelete={onDelete} />
+                </FormControl>
+              )}
+            </ModalBody>
+            <ModalFooter />
+          </form>
+        </FormProvider>
+      </ModalContent>
+    </Modal>
   )
 }
