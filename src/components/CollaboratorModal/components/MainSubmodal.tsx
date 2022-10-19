@@ -1,6 +1,5 @@
 import {
   ModalHeader,
-  ModalFooter,
   ModalBody,
   Grid,
   GridItem,
@@ -14,6 +13,8 @@ import {
   ModalContent,
   ModalProps,
   useFormControlContext,
+  Skeleton,
+  Stack,
 } from "@chakra-ui/react"
 import {
   IconButton,
@@ -32,7 +33,8 @@ import { useLoginContext } from "contexts/LoginContext"
 
 import * as CollaboratorHooks from "hooks/collaboratorHooks"
 
-import { Collaborator, CollaboratorError } from "types/collaborators"
+import { Collaborator } from "types/collaborators"
+import { MiddlewareError } from "types/error"
 import { DEFAULT_RETRY_MSG, useSuccessToast } from "utils"
 
 import { ACK_REQUIRED_ERROR_MESSAGE } from "../constants"
@@ -56,68 +58,74 @@ interface CollaboratorListProps {
 const CollaboratorListSection = ({ onDelete }: CollaboratorListProps) => {
   const { email } = useLoginContext()
   const { siteName } = useParams<{ siteName: string }>()
-  // TODO!: Loading state and error toasts
-  const { data: collaborators } = CollaboratorHooks.useListCollaboratorsHook(
-    siteName
-  )
+  const {
+    data: collaborators,
+    isError,
+  } = CollaboratorHooks.useListCollaboratorsHook(siteName)
   const { isDisabled } = useFormControlContext()
 
   return (
-    <Box m="10px" mt="40px">
-      {collaborators &&
-        // TODO: remove any type - requires moving shared types from the backend repo
-        collaborators.map((collaborator: Collaborator) => (
-          <>
-            <Grid
-              templateColumns="repeat(11, 1fr)"
-              h="56px"
-              key={`collaborator-${collaborator.id}`}
-            >
-              <GridItem colSpan={8}>
-                <Box display="flex" alignItems="center" h="100%">
-                  <Text>{collaborator.email}</Text>
-                  <Text pl="4px" color="gray.500">
-                    {email === collaborator.email ? "(You)" : null}
+    <Box mt="40px">
+      {collaborators?.map((collaborator: Collaborator) => (
+        <>
+          <Grid
+            templateColumns="repeat(11, 1fr)"
+            h="56px"
+            key={`collaborator-${collaborator.id}`}
+          >
+            <GridItem colSpan={8}>
+              <Box display="flex" alignItems="center" h="100%">
+                <Text>{collaborator.email}</Text>
+                <Text pl="4px" color="gray.500">
+                  {email === collaborator.email ? "(You)" : null}
+                </Text>
+                {numDaysAgo(collaborator.lastLoggedIn) >=
+                  LAST_LOGGED_IN_THRESHOLD_IN_DAYS && (
+                  <Text pl="4px" color="danger.500">
+                    {`(Last logged in ${numDaysAgo(
+                      collaborator.lastLoggedIn
+                    )} days ago)`}
                   </Text>
-                  {numDaysAgo(collaborator.lastLoggedIn) >=
-                    LAST_LOGGED_IN_THRESHOLD_IN_DAYS && (
-                    <Text pl="4px" color="danger.500">
-                      {`(Last logged in ${numDaysAgo(
-                        collaborator.lastLoggedIn
-                      )} days ago)`}
-                    </Text>
-                  )}
-                </Box>
-              </GridItem>
-              <GridItem colSpan={2}>
-                <Box display="flex" alignItems="center" h="100%">
-                  <Text textTransform="capitalize">
-                    {_.capitalize(collaborator.role)}
-                  </Text>
-                </Box>
-              </GridItem>
-              <GridItem colSpan={1}>
-                <Box display="flex" alignItems="center" h="100%">
-                  <IconButton
-                    aria-label="Delete collaborator button"
-                    variant="clear"
-                    colorScheme="danger"
-                    onClick={() => onDelete(collaborator)}
-                    id={`delete-${collaborator.id}`}
-                    icon={<BiTrash color="icon.danger" />}
-                    isDisabled={isDisabled}
-                  />
-                </Box>
-              </GridItem>
-            </Grid>
-            <Divider />
-          </>
-        ))}
+                )}
+              </Box>
+            </GridItem>
+            <GridItem colSpan={2}>
+              <Box display="flex" alignItems="center" h="100%">
+                <Text textTransform="capitalize">
+                  {_.capitalize(collaborator.role)}
+                </Text>
+              </Box>
+            </GridItem>
+            <GridItem colSpan={1}>
+              <Box display="flex" alignItems="center" h="100%">
+                <IconButton
+                  aria-label="Delete collaborator button"
+                  variant="clear"
+                  colorScheme="danger"
+                  onClick={() => onDelete(collaborator)}
+                  id={`delete-${collaborator.id}`}
+                  icon={<BiTrash color="icon.danger" />}
+                  isDisabled={isDisabled || isError}
+                />
+              </Box>
+            </GridItem>
+          </Grid>
+          <Divider />
+        </>
+      )) ?? (
+        <Stack>
+          {Array(3)
+            .fill(null)
+            .map(() => (
+              <Skeleton height="2rem" />
+            ))}
+        </Stack>
+      )}
     </Box>
   )
 }
 
-const extractErrorMessage = (props: CollaboratorError | undefined): string => {
+const extractErrorMessage = (props: MiddlewareError | undefined): string => {
   if (!props || props?.code === 500) return DEFAULT_RETRY_MSG
 
   return props.message
@@ -171,8 +179,9 @@ export const MainSubmodal = ({
   useEffect(() => {
     if (addCollaboratorSuccess) {
       successToast({ description: "Collaborator added successfully" })
+      collaboratorFormMethods.reset()
     }
-  }, [addCollaboratorSuccess, successToast])
+  }, [addCollaboratorSuccess, collaboratorFormMethods, successToast])
 
   const isDisabled = role !== "ADMIN"
 
@@ -180,7 +189,6 @@ export const MainSubmodal = ({
     <Modal
       onCloseComplete={() => {
         reset()
-        collaboratorFormMethods.reset()
         setShowAck(false)
         props.onCloseComplete?.()
       }}
@@ -203,9 +211,11 @@ export const MainSubmodal = ({
                 : "Manage collaborators"}
             </ModalHeader>
             <ModalCloseButton />
-            <ModalBody>
+            <ModalBody mb="3.25rem">
               {showAck ? (
-                <AcknowledgementSubmodalContent />
+                <AcknowledgementSubmodalContent
+                  isLoading={isAddCollaboratorLoading}
+                />
               ) : (
                 <FormControl
                   isRequired
@@ -233,7 +243,6 @@ export const MainSubmodal = ({
                 </FormControl>
               )}
             </ModalBody>
-            <ModalFooter />
           </form>
         </FormProvider>
       </ModalContent>
