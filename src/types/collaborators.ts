@@ -24,8 +24,3 @@ export type CollaboratorData = {
 export type CollaboratorRole = {
   role: SiteMemberRole
 }
-
-export interface CollaboratorError {
-  code: number
-  message: string
-}
