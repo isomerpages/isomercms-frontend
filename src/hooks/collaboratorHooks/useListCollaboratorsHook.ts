@@ -7,11 +7,12 @@ import useRedirectHook from "hooks/useRedirectHook"
 
 import { CollaboratorService } from "services"
 import { Collaborator } from "types/collaborators"
+import { MiddlewareError } from "types/error"
 import { useErrorToast, DEFAULT_RETRY_MSG } from "utils"
 
 export const useListCollaboratorsHook = (
   siteName: string
-): UseQueryResult<Collaborator[], AxiosError<unknown>> => {
+): UseQueryResult<Collaborator[], AxiosError<MiddlewareError>> => {
   const errorToast = useErrorToast()
   const { setRedirectToPage } = useRedirectHook()
   return useQuery(
