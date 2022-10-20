@@ -24,7 +24,7 @@ import {
   Button,
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { BiTrash } from "react-icons/bi"
 import { useParams } from "react-router-dom"
@@ -35,7 +35,7 @@ import * as CollaboratorHooks from "hooks/collaboratorHooks"
 
 import { Collaborator } from "types/collaborators"
 import { MiddlewareError } from "types/error"
-import { DEFAULT_RETRY_MSG, emailRegexTest, useSuccessToast } from "utils"
+import { DEFAULT_RETRY_MSG, useSuccessToast } from "utils"
 
 import { ACK_REQUIRED_ERROR_MESSAGE } from "../constants"
 
