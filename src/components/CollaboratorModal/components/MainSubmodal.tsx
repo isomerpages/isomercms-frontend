@@ -66,53 +66,54 @@ const CollaboratorListSection = ({ onDelete }: CollaboratorListProps) => {
 
   return (
     <Box mt="2.5rem">
-      {collaborators?.map((collaborator: Collaborator) => (
-        <>
-          <Grid
-            templateColumns="repeat(11, 1fr)"
-            h="3.5rem"
-            key={`collaborator-${collaborator.id}`}
-          >
-            <GridItem colSpan={8}>
-              <Box display="flex" alignItems="center" h="100%">
-                <Text>{collaborator.email}</Text>
-                <Text pl="0.25rem" color="gray.500">
-                  {email === collaborator.email ? "(You)" : null}
-                </Text>
-                {numDaysAgo(collaborator.lastLoggedIn) >=
-                  LAST_LOGGED_IN_THRESHOLD_IN_DAYS && (
-                  <Text pl="0.25rem" color="danger.500">
-                    {`(Last logged in ${numDaysAgo(
-                      collaborator.lastLoggedIn
-                    )} days ago)`}
+      {collaborators?.map((collaborator: Collaborator) => {
+        const numDaysSinceLastLogin = numDaysAgo(collaborator.lastLoggedIn)
+        return (
+          <>
+            <Grid
+              templateColumns="repeat(11, 1fr)"
+              h="3.5rem"
+              key={`collaborator-${collaborator.id}`}
+            >
+              <GridItem colSpan={8}>
+                <Box display="flex" alignItems="center" h="100%">
+                  <Text>{collaborator.email}</Text>
+                  <Text pl="0.25rem" color="gray.500">
+                    {email === collaborator.email ? "(You)" : null}
                   </Text>
-                )}
-              </Box>
-            </GridItem>
-            <GridItem colSpan={2}>
-              <Box display="flex" alignItems="center" h="100%">
-                <Text>{_.capitalize(collaborator.role)}</Text>
-              </Box>
-            </GridItem>
-            <GridItem colSpan={1}>
-              <Box display="flex" alignItems="center" h="100%">
-                <IconButton
-                  aria-label="Delete collaborator button"
-                  variant="clear"
-                  colorScheme="danger"
-                  onClick={() => onDelete(collaborator)}
-                  id={`delete-${collaborator.id}`}
-                  icon={<BiTrash color="icon.danger" />}
-                  isDisabled={
-                    isDisabled || isError || collaborators.length <= 1
-                  }
-                />
-              </Box>
-            </GridItem>
-          </Grid>
-          <Divider />
-        </>
-      )) ?? (
+                  {numDaysAgo(collaborator.lastLoggedIn) >=
+                    LAST_LOGGED_IN_THRESHOLD_IN_DAYS && (
+                    <Text pl="0.25rem" color="danger.500">
+                      {`(Last logged in ${numDaysSinceLastLogin} days ago)`}
+                    </Text>
+                  )}
+                </Box>
+              </GridItem>
+              <GridItem colSpan={2}>
+                <Box display="flex" alignItems="center" h="100%">
+                  <Text>{_.capitalize(collaborator.role)}</Text>
+                </Box>
+              </GridItem>
+              <GridItem colSpan={1}>
+                <Box display="flex" alignItems="center" h="100%">
+                  <IconButton
+                    aria-label="Delete collaborator button"
+                    variant="clear"
+                    colorScheme="danger"
+                    onClick={() => onDelete(collaborator)}
+                    id={`delete-${collaborator.id}`}
+                    icon={<BiTrash color="icon.danger" />}
+                    isDisabled={
+                      isDisabled || isError || collaborators.length <= 1
+                    }
+                  />
+                </Box>
+              </GridItem>
+            </Grid>
+            <Divider />
+          </>
+        )
+      }) ?? (
         <Stack>
           {Array(3)
             .fill(null)
