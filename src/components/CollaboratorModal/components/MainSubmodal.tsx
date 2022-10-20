@@ -35,7 +35,7 @@ import * as CollaboratorHooks from "hooks/collaboratorHooks"
 
 import { Collaborator } from "types/collaborators"
 import { MiddlewareError } from "types/error"
-import { DEFAULT_RETRY_MSG, useSuccessToast } from "utils"
+import { DEFAULT_RETRY_MSG, emailRegexTest, useSuccessToast } from "utils"
 
 import { ACK_REQUIRED_ERROR_MESSAGE } from "../constants"
 
@@ -164,6 +164,10 @@ export const MainSubmodal = ({
     },
   })
 
+  const { watch } = collaboratorFormMethods
+
+  const curCollaboratorValue = watch("newCollaboratorEmail")
+
   // Show acknowledgement modal if user does not have a trusted email
   useEffect(() => {
     // No error message implies no error
@@ -227,13 +231,17 @@ export const MainSubmodal = ({
                   </FormLabel>
                   <Input
                     {...collaboratorFormMethods.register(
-                      "newCollaboratorEmail"
+                      "newCollaboratorEmail",
+                      {
+                        required: true,
+                      }
                     )}
                   />
                   <FormErrorMessage>{errorMessage}</FormErrorMessage>
                   <Button
                     isLoading={isAddCollaboratorLoading}
-                    isDisabled={isDisabled}
+                    // NOTE: Setting this on the `FormControl` disables the whole form
+                    isDisabled={isDisabled || !curCollaboratorValue}
                     mt="16px"
                     type="submit"
                   >
