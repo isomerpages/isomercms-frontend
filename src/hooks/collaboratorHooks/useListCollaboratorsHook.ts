@@ -19,7 +19,10 @@ export const useListCollaboratorsHook = (
     [LIST_COLLABORATORS_KEY, siteName],
     () =>
       CollaboratorService.listCollaborators(siteName).then((data) => {
-        return data.collaborators
+        return data.collaborators.map(({ SiteMember, ...rest }) => ({
+          ...rest,
+          role: SiteMember.role,
+        }))
       }),
     {
       onError: (err) => {
