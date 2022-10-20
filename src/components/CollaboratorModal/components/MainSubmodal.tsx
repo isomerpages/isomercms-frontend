@@ -140,7 +140,6 @@ export const MainSubmodal = ({
   ...props
 }: MainSubmodalProps): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
-  const [showAck, setShowAck] = useState(false)
   const successToast = useSuccessToast()
   const {
     mutateAsync: addCollaborator,
@@ -155,6 +154,8 @@ export const MainSubmodal = ({
   const errorMessage = extractErrorMessage(
     addCollaboratorError?.response?.data.error
   )
+  const showAckModal = errorMessage === ACK_REQUIRED_ERROR_MESSAGE
+  const isDisabled = role !== "ADMIN"
 
   const collaboratorFormMethods = useForm({
     mode: "onTouched",
@@ -164,21 +165,9 @@ export const MainSubmodal = ({
     },
   })
 
-  const { watch } = collaboratorFormMethods
-
-  const curCollaboratorValue = watch("newCollaboratorEmail")
-
-  // Show acknowledgement modal if user does not have a trusted email
-  useEffect(() => {
-    // No error message implies no error
-    if (!addCollaboratorError?.response?.data?.error) return
-
-    const { message: errMessage } = addCollaboratorError?.response?.data?.error
-
-    if (errMessage === ACK_REQUIRED_ERROR_MESSAGE) {
-      setShowAck(true)
-    }
-  }, [addCollaboratorError])
+  const curCollaboratorValue = collaboratorFormMethods.watch(
+    "newCollaboratorEmail"
+  )
 
   useEffect(() => {
     if (addCollaboratorSuccess) {
@@ -187,14 +176,12 @@ export const MainSubmodal = ({
     }
   }, [addCollaboratorSuccess, collaboratorFormMethods, successToast])
 
-  const isDisabled = role !== "ADMIN"
-
   return (
     <Modal
       {...props}
       onCloseComplete={() => {
         reset()
-        setShowAck(false)
+        collaboratorFormMethods.resetField("isAcknowledged")
         props.onCloseComplete?.()
       }}
     >
@@ -204,19 +191,16 @@ export const MainSubmodal = ({
           <form
             onSubmit={collaboratorFormMethods.handleSubmit(async (data) => {
               await addCollaborator(data)
-              // This could have been reached after acknowledgement
-              // if the added person is not whitelisted.
-              setShowAck(false)
             })}
           >
             <ModalHeader>
-              {showAck
+              {showAckModal
                 ? "Acknowledge Terms of Use to continue"
                 : "Manage collaborators"}
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody mb="3.25rem">
-              {showAck ? (
+              {showAckModal ? (
                 <AcknowledgementSubmodalContent
                   isLoading={isAddCollaboratorLoading}
                 />
