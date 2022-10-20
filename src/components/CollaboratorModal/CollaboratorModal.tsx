@@ -18,6 +18,7 @@ export const CollaboratorModal = (
   const [deleteCollaboratorTarget, setDeleteCollaboratorTarget] = useState<
     Collaborator | undefined
   >(undefined)
+  const { onCloseComplete } = props
   const [showDelete, setShowDelete] = useState(false)
   const { email } = useLoginContext()
   const isUserDeletingThemselves = email === deleteCollaboratorTarget?.email
@@ -27,6 +28,10 @@ export const CollaboratorModal = (
     <RemoveCollaboratorSubmodal
       {...props}
       userToDelete={deleteCollaboratorTarget}
+      onCloseComplete={() => {
+        setShowDelete(false)
+        onCloseComplete?.()
+      }}
       onDeleteComplete={() => {
         setShowDelete(false)
         if (isUserDeletingThemselves) {

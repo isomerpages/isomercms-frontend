@@ -91,9 +91,7 @@ const CollaboratorListSection = ({ onDelete }: CollaboratorListProps) => {
             </GridItem>
             <GridItem colSpan={2}>
               <Box display="flex" alignItems="center" h="100%">
-                <Text textTransform="capitalize">
-                  {_.capitalize(collaborator.role)}
-                </Text>
+                <Text>{_.capitalize(collaborator.role)}</Text>
               </Box>
             </GridItem>
             <GridItem colSpan={1}>
@@ -105,7 +103,9 @@ const CollaboratorListSection = ({ onDelete }: CollaboratorListProps) => {
                   onClick={() => onDelete(collaborator)}
                   id={`delete-${collaborator.id}`}
                   icon={<BiTrash color="icon.danger" />}
-                  isDisabled={isDisabled || isError}
+                  isDisabled={
+                    isDisabled || isError || collaborators.length <= 1
+                  }
                 />
               </Box>
             </GridItem>
@@ -187,12 +187,12 @@ export const MainSubmodal = ({
 
   return (
     <Modal
+      {...props}
       onCloseComplete={() => {
         reset()
         setShowAck(false)
         props.onCloseComplete?.()
       }}
-      {...props}
     >
       <ModalOverlay />
       <ModalContent>
