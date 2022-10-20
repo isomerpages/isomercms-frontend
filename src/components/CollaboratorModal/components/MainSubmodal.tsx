@@ -65,23 +65,23 @@ const CollaboratorListSection = ({ onDelete }: CollaboratorListProps) => {
   const { isDisabled } = useFormControlContext()
 
   return (
-    <Box mt="40px">
+    <Box mt="2.5rem">
       {collaborators?.map((collaborator: Collaborator) => (
         <>
           <Grid
             templateColumns="repeat(11, 1fr)"
-            h="56px"
+            h="3.5rem"
             key={`collaborator-${collaborator.id}`}
           >
             <GridItem colSpan={8}>
               <Box display="flex" alignItems="center" h="100%">
                 <Text>{collaborator.email}</Text>
-                <Text pl="4px" color="gray.500">
+                <Text pl="0.25rem" color="gray.500">
                   {email === collaborator.email ? "(You)" : null}
                 </Text>
                 {numDaysAgo(collaborator.lastLoggedIn) >=
                   LAST_LOGGED_IN_THRESHOLD_IN_DAYS && (
-                  <Text pl="4px" color="danger.500">
+                  <Text pl="0.25rem" color="danger.500">
                     {`(Last logged in ${numDaysAgo(
                       collaborator.lastLoggedIn
                     )} days ago)`}
@@ -242,7 +242,7 @@ export const MainSubmodal = ({
                     isLoading={isAddCollaboratorLoading}
                     // NOTE: Setting this on the `FormControl` disables the whole form
                     isDisabled={isDisabled || !curCollaboratorValue}
-                    mt="16px"
+                    mt="1rem"
                     type="submit"
                   >
                     Add collaborator
