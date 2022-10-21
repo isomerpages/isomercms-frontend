@@ -18,7 +18,7 @@ export interface Collaborator extends Omit<CollaboratorDto, "SiteMember"> {
 }
 
 export type CollaboratorData = {
-  collaborators: Collaborator[]
+  collaborators: CollaboratorDto[]
 }
 
 export type CollaboratorRole = {

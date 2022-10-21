@@ -12,7 +12,6 @@ import {
   buildLoginData,
   buildRemoveContributor,
 } from "mocks/utils"
-import { CollaboratorData } from "types/collaborators"
 
 const collaboratorModalMeta = {
   title: "Components/CollaboratorModal",
@@ -106,7 +105,7 @@ AdminAddContributor.parameters = {
       ...handlers,
       buildLoginData(MOCK_USER),
       buildRemoveContributor(null),
-      buildCollaboratorData(({
+      buildCollaboratorData({
         collaborators: [
           // Email override so that the modal can display the "(You)" text depending on
           // the LoggedInUser
@@ -115,7 +114,7 @@ AdminAddContributor.parameters = {
           MOCK_COLLABORATORS.CONTRIBUTOR_1,
           MOCK_COLLABORATORS.CONTRIBUTOR_2,
         ],
-      } as unknown) as CollaboratorData),
+      }),
       buildCollaboratorRoleData({ role: "ADMIN" }),
       buildContributor(true),
     ],
