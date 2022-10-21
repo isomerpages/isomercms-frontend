@@ -1,10 +1,11 @@
-import { DefaultBodyType, rest } from "msw"
+import { DefaultBodyType, rest, RestContext, ResponseTransformer } from "msw"
 
+import { CollaboratorData, CollaboratorRole } from "types/collaborators"
 import {
+  MediaData,
   DirectoryData,
   PageData,
   ResourcePageData,
-  MediaData,
 } from "types/directory"
 import { NotificationData } from "types/notifications"
 import { BackendSiteSettings } from "types/settings"
@@ -15,17 +16,28 @@ import {
 } from "types/siteDashboard"
 import { LoggedInUser } from "types/user"
 
+type HttpVerb = "get" | "post" | "delete"
+
 const apiDataBuilder = <T extends DefaultBodyType = DefaultBodyType>(
   endpoint: string,
-  requestType: "get" | "post" | "delete"
-) => (
-  mockData: T,
-  delay?: number | "infinite"
-): ReturnType<typeof rest["get"] | typeof rest["post"]> => {
-  return rest[requestType](endpoint, (req, res, ctx) => {
-    return res(delay ? ctx.delay(delay) : ctx.delay(0), ctx.json(mockData))
-  })
-}
+  reqType: HttpVerb = "get"
+) =>
+  // NOTE: Should expose `transforms` rather than `mockData` + `delay`
+  (
+    mockData: T,
+    delay?: number | "infinite",
+    ...transforms: ((
+      ctx: Omit<RestContext, "json" | "delay">
+    ) => ResponseTransformer)[]
+  ): ReturnType<typeof rest[HttpVerb]> => {
+    return rest[reqType](endpoint, (req, res, ctx) => {
+      return res(
+        ...transforms.map((t) => t(ctx)),
+        delay ? ctx.delay(delay) : ctx.delay(0),
+        ctx.json(mockData)
+      )
+    })
+  }
 
 export const buildPagesData = apiDataBuilder<PageData[]>(
   "*/sites/:siteName/pages",
@@ -81,6 +93,15 @@ export const buildLoginData = apiDataBuilder<LoggedInUser>(
   "get"
 )
 
+export const buildCollaboratorRoleData = apiDataBuilder<CollaboratorRole>(
+  "*/sites/:siteName/collaborators/role"
+)
+
+export const buildCollaboratorData = apiDataBuilder<CollaboratorData>(
+  "*/sites/:siteName/collaborators",
+  "get"
+)
+
 export const buildLastUpdated = apiDataBuilder<{ lastUpdated: string }>(
   "*/sites/:siteName/lastUpdated",
   "get"
@@ -112,4 +133,22 @@ export const buildMarkNotificationsAsReadData = apiDataBuilder<
 export const buildGetStagingUrlData = apiDataBuilder<{ stagingUrl: string }>(
   "*/sites/:siteName/stagingUrl",
   "get"
+)
+
+export const buildContributor = (
+  shouldError = false
+): ReturnType<ReturnType<typeof apiDataBuilder>> =>
+  apiDataBuilder("*/sites/:siteName/collaborators", "post")(
+    shouldError && {
+      error: {
+        message: "Acknowledgement required",
+      },
+    },
+    undefined,
+    (ctx) => ctx.status(shouldError ? 404 : 200)
+  )
+
+export const buildRemoveContributor = apiDataBuilder(
+  "*/sites/:siteName/collaborators/:collaboratorId",
+  "delete"
 )

@@ -5,6 +5,7 @@ import { Switch } from "react-router-dom"
 
 // Layouts
 
+import Dashboard from "layouts/Dashboard"
 import EditContactUs from "layouts/EditContactUs"
 import EditHomepage from "layouts/EditHomepage"
 import EditNavBar from "layouts/EditNavBar"
@@ -69,6 +70,10 @@ export const RouteSelector = () => (
       <ProtectedRouteWithProps
         path="/sites/:siteName/workspace"
         component={Workspace}
+      />
+      <ProtectedRouteWithProps
+        path="/sites/:siteName/simple-dashboard"
+        component={Dashboard}
       />
       <ProtectedRouteWithProps
         path="/sites/:siteName/homepage"

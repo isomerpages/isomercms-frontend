@@ -1,5 +1,6 @@
 import { EditedItemProps } from "layouts/ReviewRequest/components/RequestOverview"
 
+import { CollaboratorDto } from "types/collaborators"
 import {
   DirectoryData,
   MediaData,
@@ -14,6 +15,7 @@ import {
   SiteDashboardInfo,
   SiteDashboardReviewRequest,
 } from "types/siteDashboard"
+import { LoggedInUser } from "types/user"
 
 export const MOCK_PAGES_DATA: PageData[] = [
   {
@@ -93,7 +95,7 @@ export const MOCK_DIR_DATA: DirectoryData[] = [
   },
 ]
 
-export const MOCK_USER = {
+export const MOCK_USER: LoggedInUser = {
   userId: "mockUser",
   email: "mockUser@open.gov.sg",
   contactNumber: "98765432",
@@ -379,3 +381,33 @@ export const MOCK_ALL_NOTIFICATION_DATA: NotificationData[] = [
     type: "type",
   },
 ]
+
+export const MOCK_COLLABORATORS: Record<string, CollaboratorDto> = {
+  CONTRIBUTOR_1: {
+    id: "1",
+    email: "test1@vendor.sg",
+    lastLoggedIn: "2022-03-20T07:41:09.661Z",
+    SiteMember: { role: "CONTRIBUTOR" },
+  },
+  CONTRIBUTOR_2: {
+    id: "4",
+    email: "test4@vendor.sg",
+    githubId: "test4",
+    lastLoggedIn: "2022-04-30T07:41:09.661Z",
+    SiteMember: { role: "CONTRIBUTOR" },
+  },
+  ADMIN_1: {
+    id: "2",
+    email: "test2@test.gov.sg",
+    githubId: "test2",
+    lastLoggedIn: "2022-07-30T07:41:09.661Z",
+    SiteMember: { role: "ADMIN" },
+  },
+  ADMIN_2: {
+    id: "3",
+    email: "test3@test.gov.sg",
+    githubId: "test3",
+    lastLoggedIn: "2022-06-30T07:41:09.661Z",
+    SiteMember: { role: "ADMIN" },
+  },
+}
