@@ -5,6 +5,8 @@ import { Switch } from "react-router-dom"
 
 // Layouts
 
+import { ReviewRequestRoleProvider } from "contexts/ReviewRequestRoleContext"
+
 import Dashboard from "layouts/Dashboard"
 import EditContactUs from "layouts/EditContactUs"
 import EditHomepage from "layouts/EditHomepage"
@@ -16,6 +18,7 @@ import { Media } from "layouts/Media"
 import NotFoundPage from "layouts/NotFoundPage"
 import { ResourceCategory } from "layouts/ResourceCategory"
 import { ResourceRoom } from "layouts/ResourceRoom"
+import { ReviewRequestDashboard } from "layouts/ReviewRequest/Dashboard"
 import { Settings } from "layouts/Settings"
 import { SiteDashboard } from "layouts/SiteDashboard"
 import Sites from "layouts/Sites"
@@ -66,6 +69,14 @@ export const RouteSelector = () => (
       <ProtectedRouteWithProps
         path="/sites/:siteName/dashboard"
         component={SiteDashboard}
+      />
+      <ProtectedRouteWithProps
+        path="/sites/:siteName/review/:reviewId"
+        component={() => (
+          <ReviewRequestRoleProvider>
+            <ReviewRequestDashboard />
+          </ReviewRequestRoleProvider>
+        )}
       />
       <ProtectedRouteWithProps
         path="/sites/:siteName/workspace"

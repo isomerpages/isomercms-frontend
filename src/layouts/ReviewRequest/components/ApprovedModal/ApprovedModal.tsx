@@ -14,10 +14,18 @@ import { Button, ModalCloseButton } from "@opengovsg/design-system-react"
 
 import { ToastImage } from "assets"
 
-export const ApprovedModal = (
-  props: Omit<ModalProps, "children">
-): JSX.Element => {
+interface ApprovedModalProps extends Omit<ModalProps, "children"> {
+  onClick: () => void
+  isLoading?: boolean
+}
+
+export const ApprovedModal = ({
+  isLoading,
+  onClick,
+  ...props
+}: ApprovedModalProps): JSX.Element => {
   const { onClose } = props
+
   return (
     <Modal {...props}>
       <ModalOverlay />
@@ -55,7 +63,9 @@ export const ApprovedModal = (
           >
             Publish later
           </Button>
-          <Button>Publish now</Button>
+          <Button isLoading={isLoading} onClick={onClick}>
+            Publish now
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
