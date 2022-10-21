@@ -77,13 +77,13 @@ const CollaboratorListSection = ({ onDelete }: CollaboratorListProps) => {
             >
               <GridItem colSpan={8}>
                 <Box display="flex" alignItems="center" h="100%">
-                  <Text>{collaborator.email}</Text>
-                  <Text pl="0.25rem" color="gray.500">
+                  <Text textStyle="body-2">{collaborator.email}</Text>
+                  <Text textStyle="body-2" pl="0.25rem" color="gray.500">
                     {email === collaborator.email ? "(You)" : null}
                   </Text>
                   {numDaysAgo(collaborator.lastLoggedIn) >=
                     LAST_LOGGED_IN_THRESHOLD_IN_DAYS && (
-                    <Text pl="0.25rem" color="danger.500">
+                    <Text pl="0.25rem" textStyle="body-2" color="danger.500">
                       {`(Last logged in ${numDaysSinceLastLogin} days ago)`}
                     </Text>
                   )}
@@ -215,6 +215,7 @@ export const MainSubmodal = ({
                     Only admins can add or remove collaborators
                   </FormLabel>
                   <Input
+                    placeholder="name@email.com"
                     {...collaboratorFormMethods.register(
                       "newCollaboratorEmail",
                       {
