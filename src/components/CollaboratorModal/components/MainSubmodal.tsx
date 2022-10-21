@@ -91,7 +91,9 @@ const CollaboratorListSection = ({ onDelete }: CollaboratorListProps) => {
               </GridItem>
               <GridItem colSpan={2}>
                 <Box display="flex" alignItems="center" h="100%">
-                  <Text>{_.capitalize(collaborator.role)}</Text>
+                  <Text textStyle="body-2" textColor="text.body">
+                    {_.capitalize(collaborator.role)}
+                  </Text>
                 </Box>
               </GridItem>
               <GridItem colSpan={1}>
