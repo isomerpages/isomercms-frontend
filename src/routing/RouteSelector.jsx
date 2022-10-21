@@ -60,7 +60,10 @@ export const RouteSelector = () => (
           "/sites/:siteName/folders/:collectionName",
         ]}
       >
-        <Folders />
+        {" "}
+        <ApprovedReviewRedirect>
+          <Folders />
+        </ApprovedReviewRedirect>
       </ProtectedRouteWithProps>
 
       <ProtectedRouteWithProps
@@ -74,7 +77,10 @@ export const RouteSelector = () => (
           "/sites/:siteName/media/:mediaRoom/mediaDirectory/:mediaDirectoryName",
         ]}
       >
-        <Media />
+        {" "}
+        <ApprovedReviewRedirect>
+          <Media />
+        </ApprovedReviewRedirect>
       </ProtectedRouteWithProps>
 
       <ProtectedRouteWithProps path="/sites/:siteName/dashboard">
@@ -104,7 +110,9 @@ export const RouteSelector = () => (
       />
 
       <ProtectedRouteWithProps path="/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName">
-        <ResourceCategory />
+        <ApprovedReviewRedirect>
+          <ResourceCategory />
+        </ApprovedReviewRedirect>
       </ProtectedRouteWithProps>
 
       <ProtectedRouteWithProps
@@ -113,7 +121,9 @@ export const RouteSelector = () => (
           "/sites/:siteName/resourceRoom",
         ]}
       >
-        <ResourceRoom />
+        <ApprovedReviewRedirect>
+          <ResourceRoom />
+        </ApprovedReviewRedirect>
       </ProtectedRouteWithProps>
 
       <ProtectedRouteWithProps
@@ -122,7 +132,9 @@ export const RouteSelector = () => (
       />
 
       <ProtectedRouteWithProps path="/sites/:siteName/settings">
-        <Settings />
+        <ApprovedReviewRedirect>
+          <Settings />
+        </ApprovedReviewRedirect>
       </ProtectedRouteWithProps>
 
       <ProtectedRouteWithProps exact path="/sites" component={Sites} />
