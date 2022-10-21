@@ -49,7 +49,12 @@ const Sites = ({ siteNames }) => {
 export default class SitesWrapper extends Component {
   _isMounted = false
 
-  constructor(props) {}
+  constructor(props) {
+    super(props)
+    this.state = {
+      siteNames: null,
+    }
+  }
 
   async componentDidMount() {
     this._isMounted = true
