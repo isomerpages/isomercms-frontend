@@ -1,42 +1,27 @@
 import {
-  ModalHeader,
-  ModalBody,
   Text,
   UnorderedList,
   ListItem,
   Stack,
+  useModalContext,
 } from "@chakra-ui/react"
-import {
-  Button,
-  ModalCloseButton,
-  Link,
-  Checkbox,
-} from "@opengovsg/design-system-react"
-import { useCollaboratorModalContext } from "components/CollaboratorModal/CollaboratorModalContext"
-import { CollaboratorModalState } from "components/CollaboratorModal/constants"
+import { Button, Link, Checkbox } from "@opengovsg/design-system-react"
+import { useFormContext } from "react-hook-form"
 
-const AcknowledgementSubmodal = () => {
-  return (
-    <>
-      <ModalHeader>Acknowledge Terms of Use to continue</ModalHeader>
-      <ModalCloseButton />
-      <ModalBody>
-        <AcknowledgementSubmodalContent />
-      </ModalBody>
-    </>
-  )
-}
-const AcknowledgementSubmodalContent = () => {
-  const {
-    newCollaboratorEmail,
-    isAcknowledged,
-    setIsAcknowledged,
-    handleAddCollaborator,
-    closeModal,
-    setModalState,
-  } = useCollaboratorModalContext()
-  const TEXT_FONT_SIZE = "14px"
-  const TERMS_OF_USE_LINK = "https://v2.isomer.gov.sg" // TODO: Update this when we get it
+import { TEXT_FONT_SIZE } from "../constants"
+
+const TERMS_OF_USE_LINK = "https://v2.isomer.gov.sg" // TODO: Update this when we get it
+
+export const AcknowledgementSubmodalContent = ({
+  isLoading,
+}: {
+  isLoading: boolean
+}): JSX.Element => {
+  const { watch, register, getValues } = useFormContext()
+  const isAcknowledged = watch("isAcknowledged")
+  const newCollaboratorEmail = getValues("newCollaboratorEmail")
+
+  const { onClose } = useModalContext()
 
   return (
     <>
@@ -84,7 +69,7 @@ const AcknowledgementSubmodalContent = () => {
         </Text>
       </Text>
       <br />
-      <Checkbox onChange={() => setIsAcknowledged(!isAcknowledged)}>
+      <Checkbox {...register("isAcknowledged")}>
         <Text color="text.body" fontSize="16px">
           <Text as="span">I agree to Isomer&lsquo;s</Text>{" "}
           <Link href={TERMS_OF_USE_LINK} target="_blank">
@@ -93,23 +78,17 @@ const AcknowledgementSubmodalContent = () => {
         </Text>
       </Checkbox>
       <Stack spacing={4} direction="row" justify="right">
-        <Button
-          variant="clear"
-          color="secondary"
-          onClick={() => {
-            setModalState(CollaboratorModalState.Default)
-            setIsAcknowledged(false)
-            closeModal()
-          }}
-        >
+        <Button variant="clear" color="secondary" onClick={onClose}>
           Cancel
         </Button>
-        <Button isDisabled={!isAcknowledged} onClick={handleAddCollaborator}>
+        <Button
+          isDisabled={!isAcknowledged}
+          type="submit"
+          isLoading={isLoading}
+        >
           Continue
         </Button>
       </Stack>
     </>
   )
 }
-
-export { AcknowledgementSubmodal }

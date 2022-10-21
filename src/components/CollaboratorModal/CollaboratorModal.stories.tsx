@@ -1,3 +1,4 @@
+import { Button, useDisclosure } from "@chakra-ui/react"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
 import { CollaboratorModal } from "components/CollaboratorModal/index"
 import { MemoryRouter, Route } from "react-router-dom"
@@ -5,12 +6,12 @@ import { MemoryRouter, Route } from "react-router-dom"
 import { MOCK_COLLABORATORS, MOCK_USER } from "mocks/constants"
 import { handlers } from "mocks/handlers"
 import {
-  addContributorCollaborator,
   buildCollaboratorData,
   buildCollaboratorRoleData,
+  buildContributor,
   buildLoginData,
+  buildRemoveContributor,
 } from "mocks/utils"
-import { CollaboratorData } from "types/collaborators"
 
 const collaboratorModalMeta = {
   title: "Components/CollaboratorModal",
@@ -35,15 +36,26 @@ const collaboratorModalMeta = {
   ],
 } as ComponentMeta<typeof CollaboratorModal>
 
-const Template: ComponentStory<typeof CollaboratorModal> = CollaboratorModal
+// TODO!: add stories for the submodals
+// the sub modals won't show up on chromatic when changes are made at present.
+const Template: ComponentStory<typeof CollaboratorModal> = () => {
+  const props = useDisclosure({ defaultIsOpen: true })
+  return (
+    <>
+      <Button onClick={props.onOpen}>Open collaborators</Button>
+      <CollaboratorModal {...props} />
+    </>
+  )
+}
 
 export const AdminMain = Template.bind({})
 AdminMain.parameters = {
   msw: {
     handlers: [
       ...handlers,
+      buildRemoveContributor(null),
       buildLoginData(MOCK_USER),
-      buildCollaboratorData(({
+      buildCollaboratorData({
         collaborators: [
           // Email override so that the modal can display the "(You)" text depending on
           // the LoggedInUser
@@ -52,13 +64,11 @@ AdminMain.parameters = {
           MOCK_COLLABORATORS.CONTRIBUTOR_1,
           MOCK_COLLABORATORS.CONTRIBUTOR_2,
         ],
-      } as unknown) as CollaboratorData),
+      }),
       buildCollaboratorRoleData({ role: "ADMIN" }),
+      buildContributor(),
     ],
   },
-}
-AdminMain.args = {
-  siteName: "default",
 }
 
 export const ContributorMain = Template.bind({})
@@ -67,7 +77,7 @@ ContributorMain.parameters = {
     handlers: [
       ...handlers,
       buildLoginData(MOCK_USER),
-      buildCollaboratorData(({
+      buildCollaboratorData({
         collaborators: [
           MOCK_COLLABORATORS.ADMIN_2,
           MOCK_COLLABORATORS.ADMIN_1,
@@ -78,17 +88,14 @@ ContributorMain.parameters = {
             email: MOCK_USER.email,
             // Setting lastLoggedIn as now since that must be true
             // because the user is seeing this modal
-            lastLoggedIn: new Date(),
+            lastLoggedIn: new Date().toString(),
           },
           MOCK_COLLABORATORS.CONTRIBUTOR_2,
         ],
-      } as unknown) as CollaboratorData),
+      }),
       buildCollaboratorRoleData({ role: "CONTRIBUTOR" }),
     ],
   },
-}
-ContributorMain.args = {
-  siteName: "default",
 }
 
 export const AdminAddContributor = Template.bind({})
@@ -97,7 +104,8 @@ AdminAddContributor.parameters = {
     handlers: [
       ...handlers,
       buildLoginData(MOCK_USER),
-      buildCollaboratorData(({
+      buildRemoveContributor(null),
+      buildCollaboratorData({
         collaborators: [
           // Email override so that the modal can display the "(You)" text depending on
           // the LoggedInUser
@@ -106,13 +114,10 @@ AdminAddContributor.parameters = {
           MOCK_COLLABORATORS.CONTRIBUTOR_1,
           MOCK_COLLABORATORS.CONTRIBUTOR_2,
         ],
-      } as unknown) as CollaboratorData),
+      }),
       buildCollaboratorRoleData({ role: "ADMIN" }),
-      addContributorCollaborator(),
+      buildContributor(true),
     ],
   },
-}
-AdminAddContributor.args = {
-  siteName: "default",
 }
 export default collaboratorModalMeta

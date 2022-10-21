@@ -1,6 +1,6 @@
-import { DefaultBodyType, rest } from "msw"
+import { DefaultBodyType, rest, RestContext, ResponseTransformer } from "msw"
 
-import { CollaboratorData, CollaboratorRoleData } from "types/collaborators"
+import { CollaboratorData, CollaboratorRole } from "types/collaborators"
 import {
   MediaData,
   DirectoryData,
@@ -16,17 +16,28 @@ import {
 } from "types/siteDashboard"
 import { LoggedInUser } from "types/user"
 
+type HttpVerb = "get" | "post" | "delete"
+
 const apiDataBuilder = <T extends DefaultBodyType = DefaultBodyType>(
   endpoint: string,
-  requestType: "get" | "post" | "delete"
-) => (
-  mockData: T,
-  delay?: number | "infinite"
-): ReturnType<typeof rest["get"] | typeof rest["post"]> => {
-  return rest[requestType](endpoint, (req, res, ctx) => {
-    return res(delay ? ctx.delay(delay) : ctx.delay(0), ctx.json(mockData))
-  })
-}
+  reqType: HttpVerb = "get"
+) =>
+  // NOTE: Should expose `transforms` rather than `mockData` + `delay`
+  (
+    mockData: T,
+    delay?: number | "infinite",
+    ...transforms: ((
+      ctx: Omit<RestContext, "json" | "delay">
+    ) => ResponseTransformer)[]
+  ): ReturnType<typeof rest[HttpVerb]> => {
+    return rest[reqType](endpoint, (req, res, ctx) => {
+      return res(
+        ...transforms.map((t) => t(ctx)),
+        delay ? ctx.delay(delay) : ctx.delay(0),
+        ctx.json(mockData)
+      )
+    })
+  }
 
 export const buildPagesData = apiDataBuilder<PageData[]>(
   "*/sites/:siteName/pages",
@@ -81,9 +92,9 @@ export const buildLoginData = apiDataBuilder<LoggedInUser>(
   "*/auth/whoami",
   "get"
 )
-export const buildCollaboratorRoleData = apiDataBuilder<CollaboratorRoleData>(
-  "*/sites/:siteName/collaborators/role",
-  "get"
+
+export const buildCollaboratorRoleData = apiDataBuilder<CollaboratorRole>(
+  "*/sites/:siteName/collaborators/role"
 )
 
 export const buildCollaboratorData = apiDataBuilder<CollaboratorData>(
@@ -124,10 +135,20 @@ export const buildGetStagingUrlData = apiDataBuilder<{ stagingUrl: string }>(
   "get"
 )
 
-export const addContributorCollaborator = () =>
-  rest.post("*/sites/:siteName/collaborators", (req, res, ctx) => {
-    return res(
-      ctx.status(422),
-      ctx.json({ error: { message: "Acknowledgement required" } })
-    )
-  })
+export const buildContributor = (
+  shouldError = false
+): ReturnType<ReturnType<typeof apiDataBuilder>> =>
+  apiDataBuilder("*/sites/:siteName/collaborators", "post")(
+    shouldError && {
+      error: {
+        message: "Acknowledgement required",
+      },
+    },
+    undefined,
+    (ctx) => ctx.status(shouldError ? 404 : 200)
+  )
+
+export const buildRemoveContributor = apiDataBuilder(
+  "*/sites/:siteName/collaborators/:collaboratorId",
+  "delete"
+)
