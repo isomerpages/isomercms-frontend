@@ -1,6 +1,6 @@
 import { EditedItemProps } from "layouts/ReviewRequest/components/RequestOverview"
 
-import { Collaborator } from "types/collaborators"
+import { CollaboratorDto } from "types/collaborators"
 import {
   DirectoryData,
   MediaData,
@@ -382,32 +382,32 @@ export const MOCK_ALL_NOTIFICATION_DATA: NotificationData[] = [
   },
 ]
 
-export const MOCK_COLLABORATORS: Record<string, Collaborator> = {
+export const MOCK_COLLABORATORS: Record<string, CollaboratorDto> = {
   CONTRIBUTOR_1: {
     id: "1",
     email: "test1@vendor.sg",
     lastLoggedIn: "2022-03-20T07:41:09.661Z",
-    role: "CONTRIBUTOR",
+    SiteMember: { role: "CONTRIBUTOR" },
   },
   CONTRIBUTOR_2: {
     id: "4",
     email: "test4@vendor.sg",
     githubId: "test4",
     lastLoggedIn: "2022-04-30T07:41:09.661Z",
-    role: "CONTRIBUTOR",
+    SiteMember: { role: "CONTRIBUTOR" },
   },
   ADMIN_1: {
     id: "2",
     email: "test2@test.gov.sg",
     githubId: "test2",
     lastLoggedIn: "2022-07-30T07:41:09.661Z",
-    role: "ADMIN",
+    SiteMember: { role: "ADMIN" },
   },
   ADMIN_2: {
     id: "3",
     email: "test3@test.gov.sg",
     githubId: "test3",
     lastLoggedIn: "2022-06-30T07:41:09.661Z",
-    role: "ADMIN",
+    SiteMember: { role: "ADMIN" },
   },
 }

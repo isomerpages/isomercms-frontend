@@ -78,7 +78,7 @@ ContributorMain.parameters = {
     handlers: [
       ...handlers,
       buildLoginData(MOCK_USER),
-      buildCollaboratorData(({
+      buildCollaboratorData({
         collaborators: [
           MOCK_COLLABORATORS.ADMIN_2,
           MOCK_COLLABORATORS.ADMIN_1,
@@ -89,11 +89,11 @@ ContributorMain.parameters = {
             email: MOCK_USER.email,
             // Setting lastLoggedIn as now since that must be true
             // because the user is seeing this modal
-            lastLoggedIn: new Date(),
+            lastLoggedIn: new Date().toString(),
           },
           MOCK_COLLABORATORS.CONTRIBUTOR_2,
         ],
-      } as unknown) as CollaboratorData),
+      }),
       buildCollaboratorRoleData({ role: "CONTRIBUTOR" }),
     ],
   },
