@@ -81,6 +81,8 @@ export const ReviewRequestModal = (
     }
   }, [isSuccess, successToast])
 
+  const selectedReviewers = methods.watch("reviewers")
+
   return (
     <Modal {...props} size="full">
       <ModalOverlay />
@@ -166,7 +168,13 @@ export const ReviewRequestModal = (
               type="submit"
               // NOTE: Disallow creation if no item changed
               // as GitHub will prevent PR creation.
-              isDisabled={!items || items.length === 0}
+              // We also disallow creation if no admins are selected.
+              isDisabled={
+                !items ||
+                items.length === 0 ||
+                !selectedReviewers ||
+                selectedReviewers.length === 0
+              }
             >
               Submit Review
             </Button>
