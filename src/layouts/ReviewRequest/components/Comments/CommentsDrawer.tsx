@@ -42,7 +42,12 @@ const CommentItem = ({
 }: PropsWithChildren<CommentItemProps>): JSX.Element => {
   const { date, time } = getDateTimeFromUnixTime(commentTime)
   return (
-    <Box backgroundColor={isNew ? "blue.100" : "blue.50"} p="1rem" mb="1rem">
+    <Box
+      backgroundColor={isNew ? "primary.100" : "primary.50"}
+      p="1rem"
+      mb="1rem"
+      borderRadius="4px"
+    >
       <HStack
         fontSize="0.625rem"
         color="text.helper"
@@ -64,7 +69,10 @@ export type CommentsDrawerProps = Pick<
   "onClose" | "isOpen"
 >
 
-export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
+export const CommentsDrawer = ({
+  siteName,
+  requestId,
+}: CommentProps): JSX.Element => {
   const {
     isOpen: isCommentsOpen,
     onOpen: onCommentsOpen,
@@ -84,12 +92,13 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
         backgroundColor="background.action.defaultInverse"
         onClick={() => {
           onCommentsOpen()
-          // updateReadComments({ siteName, requestId })
+          updateReadComments({ siteName, requestId })
         }}
         aria-label="Open comments"
         icon={<BiCommentDetail />}
         variant="clear"
-        boxShadow="0 0 0 2px var(--chakra-colors-gray-100)"
+        boxShadow="0 0 4px var(--chakra-colors-gray-100)"
+        borderRadius="4px 0 0 4px"
       />
       <Drawer
         isOpen={isCommentsOpen}
@@ -104,8 +113,13 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
             colorScheme="secondary"
             top="1.25rem"
           />
-          <DrawerHeader fontSize="1.5rem" color="text.title.alt">
-            Comments
+          <DrawerHeader>
+            <Text fontSize="1.5rem" color="text.title.alt">
+              Comments
+            </Text>
+            <Text fontWeight="normal" fontSize="0.875rem" color="text.helper">
+              Comments apply to all items in this Review request
+            </Text>
           </DrawerHeader>
           <DrawerBody
             fontSize="0.875rem"
@@ -113,9 +127,6 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
             color="text.body"
           >
             <Stack spacing="2rem" height="100%">
-              <Text color="text.helper">
-                Comments apply to all items in this Review request
-              </Text>
               <Skeleton isLoaded={!isCommentsLoading} flex={1}>
                 {commentsData && commentsData.length > 0 ? (
                   commentsData.map((comment) => (
@@ -138,10 +149,12 @@ export const CommentsDrawer = ({ siteName, requestId }: CommentProps) => {
                   </Center>
                 )}
               </Skeleton>
-              <Divider borderColor="border.divider.alt" />
-              <SendCommentForm siteName={siteName} requestId={requestId} />
             </Stack>
           </DrawerBody>
+          <Divider borderColor="border.divider.alt" />
+          <Box px="1.5rem" pt="1rem">
+            <SendCommentForm siteName={siteName} requestId={requestId} />
+          </Box>
         </DrawerContent>
       </Drawer>
     </>
