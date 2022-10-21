@@ -46,12 +46,15 @@ export const ApprovedReviewRedirect = ({
 
   return (
     <Greyscale isActive={isLoading || !reviewRequests}>
+      {hasApprovedReviewRequest && (
+        <Redirect {...rest} to={`/sites/${siteName}/dashboard`} />
+      )}
       {/*
        * If we fail to retrieve the list of review requests,
        * we take the conservative route and prevent the user from editing.
        */}
-      {(hasApprovedReviewRequest || isError) && (
-        <Redirect {...rest} to={`/sites/${siteName}/dashboard`} />
+      {!hasApprovedReviewRequest && isError && (
+        <Redirect {...rest} to="/sites" />
       )}
       {children}
     </Greyscale>
