@@ -8,10 +8,12 @@ import {
   Skeleton,
   Spacer,
   Text,
+  useDisclosure,
   VStack,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import { ButtonLink } from "components/ButtonLink"
+import { CollaboratorModal } from "components/CollaboratorModal"
 import {
   DisplayCard,
   DisplayCardCaption,
@@ -48,6 +50,11 @@ import { EmptyReviewRequest } from "./components/EmptyReviewRequest"
 import { ReviewRequestCard } from "./components/ReviewRequestCard"
 
 export const SiteDashboard = (): JSX.Element => {
+  const {
+    isOpen: isCollaboratorsModalOpen,
+    onOpen: onCollaboratorsModalOpen,
+    onClose: onCollaboratorsModalClose,
+  } = useDisclosure()
   const { siteName } = useParams<{ siteName: string }>()
   const { setRedirectToPage } = useRedirectHook()
   const { userId } = useLoginContext()
@@ -210,8 +217,7 @@ export const SiteDashboard = (): JSX.Element => {
                       textStyle="subhead-1"
                       color="text.title.brand"
                       marginRight="0.75rem"
-                      as={RouterLink}
-                      to="/sites"
+                      onClick={onCollaboratorsModalOpen}
                     >
                       Manage
                     </Button>
@@ -272,6 +278,11 @@ export const SiteDashboard = (): JSX.Element => {
             </VStack>
           </Box>
         </Flex>
+
+        <CollaboratorModal
+          isOpen={isCollaboratorsModalOpen}
+          onClose={onCollaboratorsModalClose}
+        />
       </Container>
     </SiteViewLayout>
   )

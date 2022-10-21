@@ -7,7 +7,6 @@ import { Switch } from "react-router-dom"
 
 import { ReviewRequestRoleProvider } from "contexts/ReviewRequestRoleContext"
 
-import Dashboard from "layouts/Dashboard"
 import EditContactUs from "layouts/EditContactUs"
 import EditHomepage from "layouts/EditHomepage"
 import EditNavBar from "layouts/EditNavBar"
@@ -83,9 +82,9 @@ export const RouteSelector = () => (
       </ProtectedRouteWithProps>
 
       <ProtectedRouteWithProps path="/sites/:siteName/review/:reviewId">
-        <RoleProvider>
+        <ReviewRequestRoleProvider>
           <ReviewRequestDashboard />
-        </RoleProvider>
+        </ReviewRequestRoleProvider>
       </ProtectedRouteWithProps>
 
       <ProtectedRouteWithProps path="/sites/:siteName/workspace">
@@ -94,10 +93,6 @@ export const RouteSelector = () => (
         </ApprovedReviewRedirect>
       </ProtectedRouteWithProps>
 
-      <ProtectedRouteWithProps
-        path="/sites/:siteName/simple-dashboard"
-        component={Dashboard}
-      />
       <ProtectedRouteWithProps
         path="/sites/:siteName/homepage"
         component={injectApprovalRedirect(EditHomepage)}
