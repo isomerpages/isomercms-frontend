@@ -131,7 +131,7 @@ export const CommentsDrawer = ({
                 {commentsData && commentsData.length > 0 ? (
                   commentsData.map((comment) => (
                     <CommentItem
-                      commenterName={comment.email}
+                      commenterName={comment.user}
                       commentTime={comment.createdAt}
                       isNew={comment.isNew}
                     >
