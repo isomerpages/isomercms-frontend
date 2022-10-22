@@ -7,12 +7,13 @@ import {
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { BiSend } from "react-icons/bi"
+import { QueryObserverResult } from "react-query"
 
 import { useUpdateComments } from "hooks/commentsHooks"
 
 import { getAxiosErrorMessage } from "utils/axios"
 
-import { CommentProps } from "types/comments"
+import { CommentData, CommentProps } from "types/comments"
 
 export interface CommentFormProps {
   comment: string
@@ -21,13 +22,17 @@ export interface CommentFormProps {
 export const SendCommentForm = ({
   siteName,
   requestId,
-}: CommentProps): JSX.Element => {
+  refetchData,
+}: CommentProps & {
+  refetchData: () => Promise<QueryObserverResult<CommentData[]>>
+}): JSX.Element => {
   const {
     handleSubmit,
     register,
     formState,
     setError,
     clearErrors,
+    resetField,
   } = useForm<CommentFormProps>({
     mode: "onBlur",
   })
@@ -39,6 +44,8 @@ export const SendCommentForm = ({
 
   const handleUpdateNotifications = async ({ comment }: CommentFormProps) => {
     await updateNotifications({ siteName, requestId, message: comment })
+    await refetchData()
+    resetField("comment")
   }
 
   useEffect(() => {
