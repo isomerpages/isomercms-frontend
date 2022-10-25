@@ -60,7 +60,6 @@ export const RouteSelector = () => (
           "/sites/:siteName/folders/:collectionName",
         ]}
       >
-        {" "}
         <ApprovedReviewRedirect>
           <Folders />
         </ApprovedReviewRedirect>
@@ -77,7 +76,6 @@ export const RouteSelector = () => (
           "/sites/:siteName/media/:mediaRoom/mediaDirectory/:mediaDirectoryName",
         ]}
       >
-        {" "}
         <ApprovedReviewRedirect>
           <Media />
         </ApprovedReviewRedirect>
