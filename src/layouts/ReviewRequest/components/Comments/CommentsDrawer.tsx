@@ -79,11 +79,7 @@ export const CommentsDrawer = ({
     onClose: onCommentsClose,
   } = useDisclosure()
 
-  const {
-    data: commentsData,
-    isLoading: isCommentsLoading,
-    refetch: refetchCommentsData,
-  } = useGetComments({
+  const { data: commentsData, isLoading: isCommentsLoading } = useGetComments({
     siteName,
     requestId,
   })
@@ -160,7 +156,6 @@ export const CommentsDrawer = ({
             <SendCommentForm siteName={siteName} requestId={requestId} />
           </Box>
         </DrawerContent>
-        refetchData={refetchCommentsData}
       </Drawer>
     </>
   )
