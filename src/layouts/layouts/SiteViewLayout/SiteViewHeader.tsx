@@ -11,12 +11,14 @@ import { IconButton } from "@opengovsg/design-system-react"
 import { AvatarMenu } from "components/Header/AvatarMenu"
 import { NotificationMenu } from "components/Header/NotificationMenu"
 import { BiArrowBack } from "react-icons/bi"
-import { Link as RouterLink, useParams } from "react-router-dom"
+import { Link as RouterLink, useLocation, useParams } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 
 export const SiteViewHeader = (): JSX.Element => {
   const { displayedName } = useLoginContext()
+  const { pathname } = useLocation()
+  const isAtSiteDashboard = pathname.endsWith("dashboard")
   const { siteName } = useParams<{ siteName: string }>()
   return (
     <Flex
@@ -29,16 +31,16 @@ export const SiteViewHeader = (): JSX.Element => {
     >
       <HStack spacing="1.25rem">
         <IconButton
-          aria-label="Back to My sites"
+          aria-label="Back to site dashboard"
           variant="clear"
           icon={
             <Icon as={BiArrowBack} fontSize="1.25rem" fill="icon.secondary" />
           }
           as={RouterLink}
-          to="/sites"
+          to={isAtSiteDashboard ? "/sites" : `/sites/${siteName}/dashboard`}
         />
         <Text color="text.label" textStyle="body-1">
-          Back to My sites
+          {isAtSiteDashboard ? "My sites" : "Site dashboard"}
         </Text>
       </HStack>
       <Spacer />
