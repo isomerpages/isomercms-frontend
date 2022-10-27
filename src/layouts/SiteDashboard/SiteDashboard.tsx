@@ -83,7 +83,8 @@ export const SiteDashboard = (): JSX.Element => {
     if (userId !== "Unknown user" && !!userId) {
       setRedirectToPage(`/sites/${siteName}/workspace`)
     }
-  })
+  }, [userId, siteName, setRedirectToPage])
+
   const validReviewRequests = reviewRequests?.filter(
     ({ status }) => status === "OPEN" || status === "APPROVED"
   )
