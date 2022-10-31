@@ -22,10 +22,16 @@ export const getReviewRequests = async (
     .then(({ data }) => data.reviews)
 }
 
-// TODO: To update when collaborators PR is merged
 export const getCollaboratorsStatistics = async (
   siteName: string
 ): Promise<CollaboratorsStats> => {
   const endpoint = `/sites/${siteName}/collaborators/statistics`
   return apiService.get<CollaboratorsStats>(endpoint).then((res) => res.data)
+}
+
+export const updateViewedReviewRequests = async (
+  siteName: string
+): Promise<void> => {
+  const endpoint = `/sites/${siteName}/review/viewed`
+  return apiService.post(endpoint)
 }

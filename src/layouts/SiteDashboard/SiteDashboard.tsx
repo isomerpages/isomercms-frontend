@@ -36,6 +36,7 @@ import {
   useGetSiteInfo,
   useGetReviewRequests,
   useGetCollaboratorsStatistics,
+  useUpdateViewedReviewRequests,
 } from "hooks/siteDashboardHooks"
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -74,6 +75,9 @@ export const SiteDashboard = (): JSX.Element => {
     isError: isCollaboratorsStatisticsError,
     isLoading: isCollaboratorsStatisticsLoading,
   } = useGetCollaboratorsStatistics(siteName)
+  const {
+    mutateAsync: updateViewedReviewRequests,
+  } = useUpdateViewedReviewRequests()
 
   const savedAt = getDateTimeFromUnixTime(siteInfo?.savedAt || 0)
   const publishedAt = getDateTimeFromUnixTime(siteInfo?.publishedAt || 0)
@@ -83,7 +87,9 @@ export const SiteDashboard = (): JSX.Element => {
     if (userId !== "Unknown user" && !!userId) {
       setRedirectToPage(`/sites/${siteName}/workspace`)
     }
-  })
+
+    updateViewedReviewRequests({ siteName })
+  }, [setRedirectToPage, siteName, updateViewedReviewRequests, userId])
   const validReviewRequests = reviewRequests?.filter(
     ({ status }) => status === "OPEN" || status === "APPROVED"
   )
