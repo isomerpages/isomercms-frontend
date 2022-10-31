@@ -40,7 +40,7 @@ export interface CreateReviewRequestDto
 }
 
 export type UpdateReviewRequestDto = SetOptional<
-  Partial<CreateReviewRequestDto>,
+  CreateReviewRequestDto,
   "title"
 >
 
