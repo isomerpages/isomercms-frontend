@@ -29,6 +29,7 @@ import { useApproveReviewRequest } from "hooks/reviewHooks/useApproveReviewReque
 import { useGetCollaborators } from "hooks/reviewHooks/useGetCollaborators"
 import { useGetReviewRequest } from "hooks/reviewHooks/useGetReviewRequest"
 import { useMergeReviewRequest } from "hooks/reviewHooks/useMergeReviewRequest"
+import { useUpdateReviewRequestViewed } from "hooks/reviewHooks/useUpdateReviewRequestViewed"
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { getAxiosErrorMessage } from "utils/axios"
@@ -57,6 +58,9 @@ export const ReviewRequestDashboard = (): JSX.Element => {
   const { data: collaborators, isLoading, isError } = useGetCollaborators(
     siteName
   )
+  const {
+    mutateAsync: updateReviewRequestViewed,
+  } = useUpdateReviewRequestViewed()
   // TODO!: redirect to /sites if cannot parse reviewId as string
   const { onCopy, hasCopied } = useClipboard(data?.reviewUrl || "")
 
@@ -71,6 +75,10 @@ export const ReviewRequestDashboard = (): JSX.Element => {
       setRedirectToPage(`/sites/${siteName}/dashboard`)
     }
   }, [reviewStatus, setRedirectToPage, siteName])
+
+  useEffect(() => {
+    updateReviewRequestViewed({ siteName, prNumber: parseInt(reviewId, 10) })
+  }, [reviewId, siteName, updateReviewRequestViewed])
 
   return (
     <Box bg="white" w="100%" h="100%">
