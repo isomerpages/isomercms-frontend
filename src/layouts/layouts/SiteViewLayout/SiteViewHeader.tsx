@@ -31,7 +31,9 @@ export const SiteViewHeader = (): JSX.Element => {
     >
       <HStack spacing="1.25rem">
         <IconButton
-          aria-label="Back to site dashboard"
+          aria-label={`Back to ${
+            isAtSiteDashboard ? "my sites" : "site dashboard"
+          }`}
           variant="clear"
           icon={
             <Icon as={BiArrowBack} fontSize="1.25rem" fill="icon.secondary" />
