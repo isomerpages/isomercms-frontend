@@ -65,3 +65,10 @@ export const cancelReviewRequest = async (
   const endpoint = `/sites/${siteName}/review/${prNumber}`
   return apiService.delete(endpoint)
 }
+
+export const getSiteUrl = async (siteName: string): Promise<string> => {
+  const endpoint = `/sites/${siteName}/siteUrl`
+  return apiService
+    .get<{ siteUrl: string }>(endpoint)
+    .then(({ data }) => data.siteUrl)
+}
