@@ -7,6 +7,14 @@ import {
 
 import { apiService } from "./ApiService"
 
+export const unapproveReviewRequest = async (
+  siteName: string,
+  prNumber: number
+): Promise<void> => {
+  const endpoint = `/sites/${siteName}/review/${prNumber}/approve`
+  await apiService.delete(endpoint)
+}
+
 export const getDiff = async (siteName: string): Promise<EditedItemProps[]> => {
   const endpoint = `/sites/${siteName}/review/compare`
   const { items } = await apiService
