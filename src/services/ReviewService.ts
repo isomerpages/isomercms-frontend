@@ -74,6 +74,14 @@ export const cancelReviewRequest = async (
   return apiService.delete(endpoint)
 }
 
+export const updateReviewRequestViewed = async (
+  siteName: string,
+  prNumber: number
+): Promise<void> => {
+  const endpoint = `/sites/${siteName}/review/${prNumber}/viewed`
+  return apiService.post(endpoint)
+}
+
 export const getSiteUrl = async (siteName: string): Promise<string> => {
   const endpoint = `/sites/${siteName}/siteUrl`
   return apiService
