@@ -55,6 +55,7 @@ export const ReviewRequestDashboard = (): JSX.Element => {
     reviewId: string
   }>()
   const { setRedirectToPage } = useRedirectHook()
+  const { onOpen, isOpen, onClose } = useDisclosure()
   // TODO!: redirect to /sites if cannot parse reviewId as string
   const prNumber = parseInt(reviewId, 10)
   // TODO!: Refactor so that loading is not a concern here
@@ -173,17 +174,23 @@ export const ReviewRequestDashboard = (): JSX.Element => {
         <Box pl="9.25rem" pr="2rem">
           <RequestOverview items={data?.changedItems || []} allowEditing />
         </Box>
+        {isApproved && (
+          <Footer>
+            <Button
+              onClick={async () => {
+                await mergeReviewRequest()
+                onOpen()
+              }}
+              isLoading={isMergingReviewRequest}
+            >
+              Publish Now
+            </Button>
+          </Footer>
+        )}
+        {isReviewRequestMerged && (
+          <PublishedModal isOpen={isOpen} onClose={onClose} />
+        )}
       </Box>
-      {isApproved && (
-        <Footer>
-          <Button
-            onClick={mergeReviewRequest}
-            isLoading={isMergingReviewRequest}
-          >
-            Publish Now
-          </Button>
-        </Footer>
-      )}
     </>
   )
 }
