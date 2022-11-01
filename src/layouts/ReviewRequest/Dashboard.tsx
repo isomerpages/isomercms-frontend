@@ -25,12 +25,15 @@ import { useParams } from "react-router-dom"
 
 import { useReviewRequestRoleContext } from "contexts/ReviewRequestRoleContext"
 
+import { useUnapproveReviewRequest } from "hooks/reviewHooks"
 import { useApproveReviewRequest } from "hooks/reviewHooks/useApproveReviewRequest"
 import { useGetCollaborators } from "hooks/reviewHooks/useGetCollaborators"
 import { useGetReviewRequest } from "hooks/reviewHooks/useGetReviewRequest"
 import { useMergeReviewRequest } from "hooks/reviewHooks/useMergeReviewRequest"
 import { useUpdateReviewRequestViewed } from "hooks/reviewHooks/useUpdateReviewRequestViewed"
 import useRedirectHook from "hooks/useRedirectHook"
+
+import { SiteViewHeader } from "layouts/layouts/SiteViewLayout/SiteViewHeader"
 
 import { getAxiosErrorMessage } from "utils/axios"
 
@@ -81,82 +84,85 @@ export const ReviewRequestDashboard = (): JSX.Element => {
   }, [reviewId, siteName, updateReviewRequestViewed])
 
   return (
-    <Box bg="white" w="100%" h="100%">
-      <HStack
-        h="10.5rem"
-        display="flex"
-        bg="blue.50"
-        justifyContent="space-between"
-      >
-        <VStack
-          pl="9.25rem"
-          pr="2rem"
-          pt="2rem"
-          pb="1.5rem"
-          spacing="0.75rem"
-          align="flex-start"
-          w="100%"
+    <>
+      <SiteViewHeader />
+      <Box bg="white" w="100%" minH="100vh">
+        <HStack
+          h="10.5rem"
+          display="flex"
+          bg="blue.50"
+          justifyContent="space-between"
         >
-          <Flex w="100%">
-            <HStack spacing="0.25rem">
-              <Text textStyle="h5">{data?.title || ""}</Text>
-              {/* Closes after 1.5s and does not refocus on the button to avoid the outline */}
-              <Popover returnFocusOnClose={false} isOpen={hasCopied}>
-                <PopoverTrigger>
-                  <IconButton
-                    icon={<BiLink />}
-                    variant="clear"
-                    aria-label="link to pull request"
-                    onClick={onCopy}
-                  />
-                </PopoverTrigger>
-                <PopoverContent
-                  bg="background.action.alt"
-                  _focus={{
-                    boxShadow: "none",
-                  }}
-                  w="fit-content"
-                >
-                  <PopoverArrow bg="background.action.alt" />
-                  <PopoverBody>
-                    <Text textStyle="body-2" color="text.inverse">
-                      Link copied!
-                    </Text>
-                  </PopoverBody>
-                </PopoverContent>
-              </Popover>
-            </HStack>
-            <Spacer />
-            {role === "requestor" ? (
-              <CancelRequestButton isApproved={isApproved} />
-            ) : (
-              <ApprovalButton isApproved={isApproved} />
-            )}
+          <VStack
+            pl="9.25rem"
+            pr="2rem"
+            pt="2rem"
+            pb="1.5rem"
+            spacing="0.75rem"
+            align="flex-start"
+            w="100%"
+          >
+            <Flex w="100%">
+              <HStack spacing="0.25rem">
+                <Text textStyle="h5">{data?.title || ""}</Text>
+                {/* Closes after 1.5s and does not refocus on the button to avoid the outline */}
+                <Popover returnFocusOnClose={false} isOpen={hasCopied}>
+                  <PopoverTrigger>
+                    <IconButton
+                      icon={<BiLink />}
+                      variant="clear"
+                      aria-label="link to pull request"
+                      onClick={onCopy}
+                    />
+                  </PopoverTrigger>
+                  <PopoverContent
+                    bg="background.action.alt"
+                    _focus={{
+                      boxShadow: "none",
+                    }}
+                    w="fit-content"
+                  >
+                    <PopoverArrow bg="background.action.alt" />
+                    <PopoverBody>
+                      <Text textStyle="body-2" color="text.inverse">
+                        Link copied!
+                      </Text>
+                    </PopoverBody>
+                  </PopoverContent>
+                </Popover>
+              </HStack>
+              <Spacer />
+              {role === "requestor" ? (
+                <CancelRequestButton isApproved={isApproved} />
+              ) : (
+                <ApprovalButton isApproved={isApproved} />
+              )}
+            </Flex>
+            <SecondaryDetails
+              requestor={data?.requestor || ""}
+              reviewers={data?.reviewers || []}
+              reviewRequestedTime={
+                data?.reviewRequestedTime
+                  ? new Date(data?.reviewRequestedTime)
+                  : new Date()
+              }
+              admins={
+                collaborators
+                  ?.filter((user) => user.role === "ADMIN")
+                  .map(({ email }) => email) || []
+              }
+            />
+          </VStack>
+          <Flex h="100%" w="7.25rem" pt="2rem" justifyContent="end">
+            {/* TODO: swap this to a slide out component and not a drawer */}
+            <CommentsDrawer siteName="siteName" requestId={1} />
           </Flex>
-          <SecondaryDetails
-            requestor={data?.requestor || ""}
-            reviewers={data?.reviewers || []}
-            reviewRequestedTime={
-              data?.reviewRequestedTime
-                ? new Date(data?.reviewRequestedTime)
-                : new Date()
-            }
-            admins={
-              collaborators
-                ?.filter((user) => user.role === "ADMIN")
-                .map(({ email }) => email) || []
-            }
-          />
-        </VStack>
-        <Flex h="100%" w="7.25rem" pt="2rem" justifyContent="end">
-          {/* TODO: swap this to a slide out component and not a drawer */}
-          <CommentsDrawer siteName="siteName" requestId={1} />
-        </Flex>
-      </HStack>
-      <Box pl="9.25rem" pr="2rem">
-        <RequestOverview items={data?.changedItems || []} allowEditing />
+        </HStack>
+        <Box pl="9.25rem" pr="2rem">
+          <RequestOverview items={data?.changedItems || []} allowEditing />
+        </Box>
       </Box>
-    </Box>
+    </>
   )
 }
 
@@ -218,17 +224,31 @@ const ApprovalButton = ({
   // TODO! make be change the status to approved
   const {
     mutateAsync: approveReviewRequest,
-    isError,
-    error,
+    isError: isApproveReviewRequestError,
+    error: approveReviewRequestError,
   } = useApproveReviewRequest(siteName, prNumber)
 
+  const {
+    mutateAsync: unapproveReviewRequest,
+    isError: isUnapproveReviewRequestError,
+    error: unapproveReviewRequestError,
+  } = useUnapproveReviewRequest(siteName, prNumber)
+
   useEffect(() => {
-    if (isError) {
+    if (isUnapproveReviewRequestError) {
       errorToast({
-        description: getAxiosErrorMessage(error),
+        description: getAxiosErrorMessage(unapproveReviewRequestError),
       })
     }
-  }, [error, errorToast, isError])
+  }, [unapproveReviewRequestError, errorToast, isUnapproveReviewRequestError])
+
+  useEffect(() => {
+    if (isApproveReviewRequestError) {
+      errorToast({
+        description: getAxiosErrorMessage(approveReviewRequestError),
+      })
+    }
+  }, [approveReviewRequestError, errorToast, isApproveReviewRequestError])
 
   return (
     <>
@@ -239,7 +259,12 @@ const ApprovalButton = ({
         isDisabled={role !== "reviewer"}
         isLoading={isLoading}
       >
-        <MenuDropdownItem onClick={() => setIsApproved(false)}>
+        <MenuDropdownItem
+          onClick={async () => {
+            await unapproveReviewRequest()
+            setIsApproved(false)
+          }}
+        >
           <Text textStyle="body-1" textColor="text.body" w="100%">
             In review
           </Text>

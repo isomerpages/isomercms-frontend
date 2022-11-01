@@ -74,7 +74,7 @@ export const PublishedModal = (
             colorScheme="primary"
             textColor="text.title.brandSecondary"
             as={Link}
-            href={`https://${siteUrl}`}
+            href={siteUrl}
             isLoading={isLoading}
           >
             Go to live site

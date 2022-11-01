@@ -64,7 +64,7 @@ const WorkspacePage = (): JSX.Element => {
   } = useGetReviewRequests(siteName)
   const hasOpenReviewRequests =
     reviewRequests &&
-    reviewRequests?.filter(({ status }) => status === ReviewRequestStatus.OPEN)
+    reviewRequests.filter(({ status }) => status === ReviewRequestStatus.OPEN)
       .length > 0
 
   return (
