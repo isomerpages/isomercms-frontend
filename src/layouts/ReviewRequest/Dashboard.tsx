@@ -54,6 +54,7 @@ export const ReviewRequestDashboard = (): JSX.Element => {
     siteName: string
     reviewId: string
   }>()
+  const prNumber = parseInt(reviewId, 10)
   const { setRedirectToPage } = useRedirectHook()
   const { onOpen, isOpen, onClose } = useDisclosure()
   // TODO!: redirect to /sites if cannot parse reviewId as string
@@ -82,7 +83,6 @@ export const ReviewRequestDashboard = (): JSX.Element => {
 
   const reviewStatus = data?.status
   const isApproved = reviewStatus === ReviewRequestStatus.APPROVED
-
   useEffect(() => {
     if (
       reviewStatus === ReviewRequestStatus.CLOSED ||
@@ -247,7 +247,7 @@ const ApprovalButton = ({
     mutateAsync: mergeReviewRequest,
     isLoading: isMergingReviewRequest,
     isSuccess: isReviewRequestMerged,
-    // TODO!
+    // TODO! - display error toast on merge failure
     isError: isMergeError,
   } = useMergeReviewRequest(siteName, prNumber, false)
   const {

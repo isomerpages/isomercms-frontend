@@ -1,3 +1,5 @@
+import type { SetOptional } from "type-fest"
+
 export enum ReviewRequestStatus {
   OPEN = "OPEN",
   APPROVED = "APPROVED",
@@ -32,9 +34,15 @@ export interface ReviewRequestInfo {
   reviewers: User[]
 }
 
-export interface ReviewRequestDto extends Omit<ReviewRequestInfo, "reviewers"> {
+export interface CreateReviewRequestDto
+  extends Omit<ReviewRequestInfo, "reviewers"> {
   reviewers: string[]
 }
+
+export type UpdateReviewRequestDto = SetOptional<
+  CreateReviewRequestDto,
+  "title"
+>
 
 export interface ReviewRequest {
   reviewUrl: string
