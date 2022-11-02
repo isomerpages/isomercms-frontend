@@ -54,7 +54,6 @@ export const ReviewRequestDashboard = (): JSX.Element => {
     siteName: string
     reviewId: string
   }>()
-  const prNumber = parseInt(reviewId, 10)
   const { setRedirectToPage } = useRedirectHook()
   const { onOpen, isOpen, onClose } = useDisclosure()
   // TODO!: redirect to /sites if cannot parse reviewId as string
