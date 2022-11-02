@@ -18,7 +18,6 @@ import {
 } from "@chakra-ui/react"
 import { Button, IconButton } from "@opengovsg/design-system-react"
 import { ButtonLink } from "components/ButtonLink"
-import { AvatarMenu } from "components/Header/AvatarMenu"
 import { NotificationMenu } from "components/Header/NotificationMenu"
 import { BiArrowBack } from "react-icons/bi"
 import { Link as RouterLink, useParams } from "react-router-dom"
@@ -33,7 +32,10 @@ export const SiteEditHeader = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { siteName } = useParams<{ siteName: string }>()
   const { data: stagingUrl, isLoading } = useStagingUrl({ siteName })
-  const { displayedName } = useLoginContext()
+  const { userId } = useLoginContext()
+  // NOTE: Even if we have an unknown user, we assume that it is github
+  // and avoid showing new features.
+  const isGithubUser = !!userId
 
   return (
     <>
@@ -47,16 +49,18 @@ export const SiteEditHeader = (): JSX.Element => {
       >
         <HStack spacing="1.25rem">
           <IconButton
-            aria-label="Back to sites"
+            aria-label={`Back to ${
+              isGithubUser ? "my sites" : "site dashboard"
+            }`}
             variant="clear"
             icon={
               <Icon as={BiArrowBack} fontSize="1.25rem" fill="icon.secondary" />
             }
             as={RouterLink}
-            to="/sites"
+            to={isGithubUser ? "/sites" : `/sites/${siteName}/dashboard`}
           />
           <Text color="text.label" textStyle="body-1">
-            My sites
+            {isGithubUser ? "My sites" : "Site dashboard"}
           </Text>
         </HStack>
         <Spacer />
