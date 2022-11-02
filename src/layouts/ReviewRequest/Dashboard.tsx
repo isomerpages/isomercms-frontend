@@ -15,6 +15,8 @@ import {
   IconButton,
   useDisclosure,
 } from "@chakra-ui/react"
+import { Button } from "@opengovsg/design-system-react"
+import { Footer } from "components/Footer"
 import {
   MenuDropdownButton,
   MenuDropdownItem,
@@ -53,10 +55,13 @@ export const ReviewRequestDashboard = (): JSX.Element => {
     reviewId: string
   }>()
   const { setRedirectToPage } = useRedirectHook()
+  const { onOpen, isOpen, onClose } = useDisclosure()
+  // TODO!: redirect to /sites if cannot parse reviewId as string
+  const prNumber = parseInt(reviewId, 10)
   // TODO!: Refactor so that loading is not a concern here
   const { data, isLoading: isGetReviewRequestLoading } = useGetReviewRequest(
     siteName,
-    parseInt(reviewId, 10)
+    prNumber
   )
   const { data: collaborators, isLoading, isError } = useGetCollaborators(
     siteName
@@ -65,6 +70,14 @@ export const ReviewRequestDashboard = (): JSX.Element => {
     mutateAsync: updateReviewRequestViewed,
   } = useUpdateReviewRequestViewed()
   // TODO!: redirect to /sites if cannot parse reviewId as string
+  const {
+    mutateAsync: mergeReviewRequest,
+    isLoading: isMergingReviewRequest,
+    isSuccess: isReviewRequestMerged,
+    // TODO!
+    isError: isMergeError,
+  } = useMergeReviewRequest(siteName, prNumber, false)
+
   const { onCopy, hasCopied } = useClipboard(data?.reviewUrl || "")
 
   const reviewStatus = data?.status
@@ -161,6 +174,22 @@ export const ReviewRequestDashboard = (): JSX.Element => {
         <Box pl="9.25rem" pr="2rem">
           <RequestOverview items={data?.changedItems || []} allowEditing />
         </Box>
+        {isApproved && (
+          <Footer>
+            <Button
+              onClick={async () => {
+                await mergeReviewRequest()
+                onOpen()
+              }}
+              isLoading={isMergingReviewRequest}
+            >
+              Publish now
+            </Button>
+          </Footer>
+        )}
+        {isReviewRequestMerged && (
+          <PublishedModal isOpen={isOpen} onClose={onClose} />
+        )}
       </Box>
     </>
   )
@@ -221,7 +250,6 @@ const ApprovalButton = ({
     // TODO!
     isError: isMergeError,
   } = useMergeReviewRequest(siteName, prNumber, false)
-  // TODO! make be change the status to approved
   const {
     mutateAsync: approveReviewRequest,
     isError: isApproveReviewRequestError,
@@ -362,7 +390,6 @@ const SecondaryDetails = ({
           <ManageReviewerModal
             {...props}
             selectedAdmins={selectedAdmins}
-            // TODO!
             admins={allAdmins}
           />
         </Box>
