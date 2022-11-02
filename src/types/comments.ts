@@ -10,6 +10,6 @@ export type UpdateCommentProps = CommentProps & {
 export interface CommentData {
   message: string
   createdAt: number
-  email: string
+  user: string
   isNew: boolean
 }
