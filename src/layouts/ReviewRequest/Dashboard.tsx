@@ -183,7 +183,7 @@ export const ReviewRequestDashboard = (): JSX.Element => {
               }}
               isLoading={isMergingReviewRequest}
             >
-              Publish Now
+              Publish now
             </Button>
           </Footer>
         )}
