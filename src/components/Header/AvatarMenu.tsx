@@ -72,7 +72,12 @@ export const AvatarMenu = ({
               }
             />
           </AvatarMenuButton>
-          <Menu.List role="menu" marginTop="0.375rem" {...menuListProps}>
+          <Menu.List
+            role="menu"
+            marginTop="0.375rem"
+            zIndex={10}
+            {...menuListProps}
+          >
             <Box
               display="flex"
               alignItems="center"
