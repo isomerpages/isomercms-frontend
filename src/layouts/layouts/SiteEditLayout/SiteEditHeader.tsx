@@ -65,7 +65,7 @@ export const SiteEditHeader = (): JSX.Element => {
         </HStack>
         <Spacer />
         <HStack>
-          <NotificationMenu siteName={siteName} />
+          <NotificationMenu />
           <Button
             onClick={onOpen}
             variant="outline"

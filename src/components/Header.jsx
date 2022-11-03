@@ -112,7 +112,7 @@ const Header = ({
           </Flex>
         ) : null}
         <HStack flex={1} justifyContent="flex-end">
-          <NotificationMenu siteName={siteName} />
+          <NotificationMenu />
           <Button
             onClick={onOpen}
             variant="outline"

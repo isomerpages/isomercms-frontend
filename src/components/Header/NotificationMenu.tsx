@@ -10,6 +10,7 @@ import { Menu, Spinner } from "@opengovsg/design-system-react"
 import { ContextMenuItem } from "components/ContextMenu/ContextMenuItem"
 import { PropsWithChildren, useEffect, useState } from "react"
 import { BiBell, BiDownArrowAlt } from "react-icons/bi"
+import { useParams } from "react-router-dom"
 
 import {
   useGetAllNotifications,
@@ -82,15 +83,8 @@ export const NotificationMenuItem = ({
   )
 }
 
-interface NotificationMenuProps {
-  siteName: string
-  menuListProps?: MenuListProps
-}
-
-export const NotificationMenu = ({
-  siteName,
-  menuListProps,
-}: NotificationMenuProps): JSX.Element => {
+export const NotificationMenu = (props: MenuListProps): JSX.Element => {
+  const { siteName } = useParams<{ siteName: string }>()
   const [displayAll, setDisplayAll] = useState(false)
   const [hasNotification, setHasNotification] = useState(false)
   const {
@@ -146,7 +140,7 @@ export const NotificationMenu = ({
             maxHeight="30rem"
             overflowY="scroll"
             zIndex="sticky"
-            {...menuListProps}
+            {...props}
           >
             {displayAll && allNotificationData ? (
               <>
