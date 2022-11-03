@@ -81,7 +81,7 @@ export const SendCommentForm = ({
             aria-label="link to send comment"
             type="submit"
             isLoading={formState.isSubmitting}
-            disabled={!formState.isValid}
+            isDisabled={!formState.isValid}
           />
         </HStack>
         <FormErrorMessage>{formState.errors.comment?.message}</FormErrorMessage>
