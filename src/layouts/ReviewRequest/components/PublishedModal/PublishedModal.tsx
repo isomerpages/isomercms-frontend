@@ -74,6 +74,8 @@ export const PublishedModal = (
             colorScheme="primary"
             textColor="text.title.brandSecondary"
             as={Link}
+            rel="noopener noreferrer"
+            target="_blank"
             href={siteUrl}
             isLoading={isLoading}
           >
