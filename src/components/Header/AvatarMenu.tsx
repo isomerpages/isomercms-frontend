@@ -75,7 +75,7 @@ export const AvatarMenu = ({
           <Menu.List
             role="menu"
             marginTop="0.375rem"
-            zIndex={10}
+            zIndex="sticky"
             {...menuListProps}
           >
             <Box
