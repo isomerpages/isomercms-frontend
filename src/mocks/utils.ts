@@ -9,6 +9,7 @@ import {
   ResourcePageData,
 } from "types/directory"
 import { NotificationData } from "types/notifications"
+import { ReviewRequest } from "types/reviewRequest"
 import { BackendSiteSettings } from "types/settings"
 import {
   CollaboratorsStats,
@@ -163,3 +164,7 @@ export const buildMarkCommentsAsReadData = apiDataBuilder<CommentData[]>(
   "*/sites/:siteName/review/:requestId/comments/viewedComments",
   "post"
 )
+
+export const buildReviewRequestData = apiDataBuilder<{
+  reviewRequest: ReviewRequest
+}>("*/sites/:siteName/review/:reviewId")
