@@ -1,8 +1,12 @@
 import { useDisclosure } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import { ComponentMeta, Story } from "@storybook/react"
+import { MemoryRouter, Route } from "react-router-dom"
 
-import { MOCK_ADMINS } from "mocks/constants"
+import { ReviewRequestRoleProvider } from "contexts/ReviewRequestRoleContext"
+
+import { MOCK_ADMINS, MOCK_REVIEW_REQUEST } from "mocks/constants"
+import { buildReviewRequestData } from "mocks/utils"
 
 import {
   ManageReviewerModal,
@@ -12,6 +16,28 @@ import {
 const modalMeta = {
   title: "Components/ReviewRequest/Manage Reviewer Modal",
   component: ManageReviewerModal,
+  decorators: [
+    (StoryFn) => {
+      return (
+        <MemoryRouter initialEntries={["/sites/storybook/review/1"]}>
+          <Route path="/sites/:siteName/review/:reviewId">
+            <ReviewRequestRoleProvider>
+              <StoryFn />
+            </ReviewRequestRoleProvider>
+          </Route>
+        </MemoryRouter>
+      )
+    },
+  ],
+  parameters: {
+    msw: {
+      handlers: {
+        reviewRequests: buildReviewRequestData({
+          reviewRequest: MOCK_REVIEW_REQUEST,
+        }),
+      },
+    },
+  },
 } as ComponentMeta<typeof ManageReviewerModal>
 
 type TemplateProps = Pick<ManageReviewerModalProps, "selectedAdmins" | "admins">
