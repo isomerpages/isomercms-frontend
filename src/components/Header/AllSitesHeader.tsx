@@ -8,7 +8,6 @@ import {
   Text,
 } from "@chakra-ui/react"
 import { AvatarMenu } from "components/Header/AvatarMenu"
-import { Link as RouterLink } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 
