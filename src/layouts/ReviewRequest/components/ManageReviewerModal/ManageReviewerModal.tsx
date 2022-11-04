@@ -16,6 +16,8 @@ import { Controller, FormProvider, useForm } from "react-hook-form"
 import { useParams } from "react-router-dom"
 import Select from "react-select"
 
+import { useReviewRequestRoleContext } from "contexts/ReviewRequestRoleContext"
+
 import { useUpdateReviewRequest } from "hooks/reviewHooks/useUpdateReviewRequest"
 
 import { getAxiosErrorMessage } from "utils/axios"
@@ -41,6 +43,7 @@ export const ManageReviewerModal = ({
   const prNumber = parseInt(reviewId, 10)
   const successToast = useSuccessToast()
   const errorToast = useErrorToast()
+  const { role } = useReviewRequestRoleContext()
 
   const {
     mutateAsync: updateReviewRequest,
@@ -104,6 +107,7 @@ export const ManageReviewerModal = ({
           </Button>
           <Button
             isLoading={isUpdateReviewRequestLoading}
+            isDisabled={role !== "requestor"}
             type="submit"
             onClick={onSubmit}
           >
