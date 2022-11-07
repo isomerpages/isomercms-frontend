@@ -6,7 +6,11 @@ import {
   ResourcePageData,
 } from "types/directory"
 import { NotificationData } from "types/notifications"
-import { EditedItemProps, ReviewRequestStatus } from "types/reviewRequest"
+import {
+  EditedItemProps,
+  ReviewRequestStatus,
+  ReviewRequest,
+} from "types/reviewRequest"
 import { BackendSiteSettings } from "types/settings"
 import {
   CollaboratorsStats,
@@ -437,3 +441,22 @@ export const MOCK_COMMENTS_DATA = [
     isNew: true,
   },
 ]
+
+const MOCK_EDITED_ITEM: EditedItemProps = {
+  type: ["file"],
+  name: "mock item",
+  path: ["some", "path"],
+  url: "isomer.sg",
+  lastEditedBy: "a user",
+  lastEditedTime: Date.now(),
+}
+
+export const MOCK_REVIEW_REQUEST: ReviewRequest = {
+  reviewUrl: "www.google.com",
+  title: "Mock Review Request",
+  status: ReviewRequestStatus.OPEN,
+  requestor: MOCK_USER.email,
+  reviewers: Array(20).fill("mock reviewer"),
+  reviewRequestedTime: Date.now(),
+  changedItems: Array(20).fill(MOCK_EDITED_ITEM),
+}

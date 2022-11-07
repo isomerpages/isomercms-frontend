@@ -336,6 +336,7 @@ const SecondaryDetails = ({
 }: SecondaryDetailsProps) => {
   const { date, time } = getDateTimeFromUnixTime(reviewRequestedTime.getTime())
   const props = useDisclosure()
+  const { role } = useReviewRequestRoleContext()
   const selectedAdmins = reviewers.map((reviewer) => {
     return {
       value: reviewer,
@@ -384,6 +385,7 @@ const SecondaryDetails = ({
             size="sm"
             ml="-0.25rem"
             bg="blue.50"
+            isDisabled={role !== "requestor"}
             onClick={props.onOpen}
           />
           <ManageReviewerModal

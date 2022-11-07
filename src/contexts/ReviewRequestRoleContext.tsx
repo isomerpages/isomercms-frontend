@@ -40,7 +40,7 @@ const getReviewRequestRole = (
 
 export const ReviewRequestRoleProvider = ({
   children,
-}: PropsWithChildren<Record<string, never>>): JSX.Element => {
+}: PropsWithChildren<Record<string, unknown>>): JSX.Element => {
   const { siteName, reviewId } = useParams<{
     siteName: string
     reviewId: string
