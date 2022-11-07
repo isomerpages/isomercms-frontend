@@ -8,7 +8,6 @@ import {
   Text,
 } from "@chakra-ui/react"
 import { AvatarMenu } from "components/Header/AvatarMenu"
-import { Link as RouterLink } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 
@@ -32,7 +31,7 @@ export const AllSitesHeader = (): JSX.Element => {
       <Spacer />
       <HStack spacing="2rem">
         <LinkBox position="relative">
-          <LinkOverlay as={RouterLink} to="https://guide.isomer.gov.sg/">
+          <LinkOverlay href="https://guide.isomer.gov.sg/" isExternal>
             <Text color="text.link.dark" noOfLines={1}>
               Get help
             </Text>

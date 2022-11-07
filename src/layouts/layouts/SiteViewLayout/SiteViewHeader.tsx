@@ -48,7 +48,7 @@ export const SiteViewHeader = (): JSX.Element => {
       <Spacer />
       <HStack>
         <LinkBox position="relative">
-          <LinkOverlay as={RouterLink} to="https://guide.isomer.gov.sg/">
+          <LinkOverlay href="https://guide.isomer.gov.sg/" isExternal>
             <Text color="text.link.dark" noOfLines={1}>
               Get help
             </Text>
