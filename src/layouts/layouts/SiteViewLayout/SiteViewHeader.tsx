@@ -54,7 +54,7 @@ export const SiteViewHeader = (): JSX.Element => {
             </Text>
           </LinkOverlay>
         </LinkBox>
-        <NotificationMenu siteName={siteName} />
+        <NotificationMenu />
         <AvatarMenu name={displayedName} />
       </HStack>
     </Flex>
