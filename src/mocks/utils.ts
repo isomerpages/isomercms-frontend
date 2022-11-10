@@ -69,7 +69,6 @@ export const buildSiteDashboardReviewRequests = apiDataBuilder<
   SiteDashboardReviewRequest[]
 >("*/sites/:siteName/review/summary", "get")
 
-// TODO: To be replaced with collaborators PR
 export const buildSiteDashboardCollaboratorsStatistics = apiDataBuilder<CollaboratorsStats>(
   "*/sites/:siteName/collaborators/statistics",
   "get"
