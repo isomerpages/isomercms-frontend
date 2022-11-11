@@ -14,13 +14,14 @@ const isBackendError = (
 }
 
 export const getAxiosErrorMessage = (
-  error: null | AxiosError<ErrorDto> | AxiosError
+  error: null | AxiosError<ErrorDto> | AxiosError,
+  defaultErrorMessage = DEFAULT_RETRY_MSG
 ): string => {
   if (!error) return ""
 
   if (isBackendError(error)) {
-    return error.response?.data.message || DEFAULT_RETRY_MSG
+    return error.response?.data.message || defaultErrorMessage
   }
 
-  return error.response?.data?.error?.message || DEFAULT_RETRY_MSG
+  return error.response?.data?.error?.message || defaultErrorMessage
 }
