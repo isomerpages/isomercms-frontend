@@ -5,10 +5,14 @@ import { LIST_COLLABORATORS_KEY } from "constants/queryKeys"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
+import { getAxiosErrorMessage } from "utils/axios"
+
 import { CollaboratorService } from "services"
 import { Collaborator } from "types/collaborators"
 import { MiddlewareError } from "types/error"
 import { useErrorToast, DEFAULT_RETRY_MSG } from "utils"
+
+const EXCEPTION_ERROR_MESSAGE = `The list of collaborators could not be retrieved. ${DEFAULT_RETRY_MSG}`
 
 export const useListCollaborators = (
   siteName: string
@@ -19,10 +23,7 @@ export const useListCollaborators = (
     [LIST_COLLABORATORS_KEY, siteName],
     () =>
       CollaboratorService.listCollaborators(siteName).then((data) => {
-        return data.collaborators.map(({ SiteMember, ...rest }) => ({
-          ...rest,
-          role: SiteMember.role,
-        }))
+        return data.collaborators
       }),
     {
       onError: (err) => {
@@ -32,7 +33,7 @@ export const useListCollaborators = (
           setRedirectToPage("/sites")
         } else {
           errorToast({
-            description: `The list of collaborators could not be retrieved. ${DEFAULT_RETRY_MSG}`,
+            description: getAxiosErrorMessage(err, EXCEPTION_ERROR_MESSAGE),
           })
         }
       },
