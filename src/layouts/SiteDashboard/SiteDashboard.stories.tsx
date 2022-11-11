@@ -10,6 +10,7 @@ import {
 } from "mocks/constants"
 import { updateViewedReviewRequestsHandler } from "mocks/handlers"
 import {
+  buildCollaboratorData,
   buildCollaboratorRoleData,
   buildLoginData,
   buildSiteDashboardCollaboratorsStatistics,
@@ -48,6 +49,7 @@ const SiteDashboardMeta = {
         loginData: buildLoginData(_.set(MOCK_USER, "userId", "")),
         role: buildCollaboratorRoleData({ role: "ADMIN" }),
         viewed: updateViewedReviewRequestsHandler,
+        collaborators: buildCollaboratorData({ collaborators: [] }),
       },
     },
   },
