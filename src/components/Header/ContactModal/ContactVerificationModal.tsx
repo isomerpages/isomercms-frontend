@@ -15,9 +15,10 @@ import { useUpdateContact, useVerifyContact } from "hooks/miscHooks"
 
 import { getAxiosErrorMessage } from "utils/axios"
 
+import { ContactOtpProps } from "types/contact"
 import { useSuccessToast } from "utils"
 
-import { ContactOtpProps, ContactOtpForm } from "./ContactOtpForm"
+import { ContactOtpForm } from "./ContactOtpForm"
 import { ContactProps, ContactSettingsForm } from "./ContactSettingsForm"
 
 interface ContactVerificationModalProps {
