@@ -104,7 +104,6 @@ NewPendingReview.parameters = {
 }
 
 export const ReviewRequired = Template.bind({})
-ReviewRequired.parameters = {}
 
 export const RequestApproved = Template.bind({})
 RequestApproved.parameters = {
