@@ -61,7 +61,7 @@ const CollaboratorListSection = ({ onDelete }: CollaboratorListProps) => {
   const {
     data: collaborators,
     isError,
-  } = CollaboratorHooks.useListCollaboratorsHook(siteName)
+  } = CollaboratorHooks.useListCollaborators(siteName)
   const { isDisabled } = useFormControlContext()
 
   return (

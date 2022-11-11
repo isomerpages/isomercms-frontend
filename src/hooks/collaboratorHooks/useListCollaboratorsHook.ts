@@ -10,7 +10,7 @@ import { Collaborator } from "types/collaborators"
 import { MiddlewareError } from "types/error"
 import { useErrorToast, DEFAULT_RETRY_MSG } from "utils"
 
-export const useListCollaboratorsHook = (
+export const useListCollaborators = (
   siteName: string
 ): UseQueryResult<Collaborator[], AxiosError<MiddlewareError>> => {
   const errorToast = useErrorToast()

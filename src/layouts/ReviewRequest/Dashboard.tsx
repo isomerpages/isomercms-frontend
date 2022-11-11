@@ -27,7 +27,7 @@ import { useParams } from "react-router-dom"
 
 import { useReviewRequestRoleContext } from "contexts/ReviewRequestRoleContext"
 
-import { useListCollaboratorsHook } from "hooks/collaboratorHooks"
+import { useListCollaborators } from "hooks/collaboratorHooks"
 import { useUnapproveReviewRequest } from "hooks/reviewHooks"
 import { useApproveReviewRequest } from "hooks/reviewHooks/useApproveReviewRequest"
 import { useGetReviewRequest } from "hooks/reviewHooks/useGetReviewRequest"
@@ -63,7 +63,7 @@ export const ReviewRequestDashboard = (): JSX.Element => {
     siteName,
     prNumber
   )
-  const { data: collaborators, isLoading, isError } = useListCollaboratorsHook(
+  const { data: collaborators, isLoading, isError } = useListCollaborators(
     siteName
   )
   const {
