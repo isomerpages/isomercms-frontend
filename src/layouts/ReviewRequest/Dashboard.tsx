@@ -14,6 +14,7 @@ import {
   PopoverArrow,
   IconButton,
   useDisclosure,
+  Skeleton,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import { Footer } from "components/Footer"
@@ -58,7 +59,6 @@ export const ReviewRequestDashboard = (): JSX.Element => {
   const { onOpen, isOpen, onClose } = useDisclosure()
   // TODO!: redirect to /sites if cannot parse reviewId as string
   const prNumber = parseInt(reviewId, 10)
-  // TODO!: Refactor so that loading is not a concern here
   const { data, isLoading: isGetReviewRequestLoading } = useGetReviewRequest(
     siteName,
     prNumber
@@ -69,7 +69,6 @@ export const ReviewRequestDashboard = (): JSX.Element => {
   const {
     mutateAsync: updateReviewRequestViewed,
   } = useUpdateReviewRequestViewed()
-  // TODO!: redirect to /sites if cannot parse reviewId as string
   const {
     mutateAsync: mergeReviewRequest,
     isLoading: isMergingReviewRequest,
@@ -92,8 +91,8 @@ export const ReviewRequestDashboard = (): JSX.Element => {
   }, [reviewStatus, setRedirectToPage, siteName])
 
   useEffect(() => {
-    updateReviewRequestViewed({ siteName, prNumber: parseInt(reviewId, 10) })
-  }, [reviewId, siteName, updateReviewRequestViewed])
+    updateReviewRequestViewed({ siteName, prNumber })
+  }, [prNumber, siteName, updateReviewRequestViewed])
 
   return (
     <>
@@ -116,7 +115,13 @@ export const ReviewRequestDashboard = (): JSX.Element => {
           >
             <Flex w="100%">
               <HStack spacing="0.25rem">
-                <Text textStyle="h5">{data?.title || ""}</Text>
+                <Skeleton
+                  isLoaded={!isGetReviewRequestLoading}
+                  minW="10rem"
+                  minH="1rem"
+                >
+                  <Text textStyle="h5">{data?.title}</Text>
+                </Skeleton>
                 {/* Closes after 1.5s and does not refocus on the button to avoid the outline */}
                 <Popover returnFocusOnClose={false} isOpen={hasCopied}>
                   <PopoverTrigger>
@@ -125,6 +130,7 @@ export const ReviewRequestDashboard = (): JSX.Element => {
                       variant="clear"
                       aria-label="link to pull request"
                       onClick={onCopy}
+                      isLoading={isGetReviewRequestLoading}
                     />
                   </PopoverTrigger>
                   <PopoverContent
@@ -171,7 +177,9 @@ export const ReviewRequestDashboard = (): JSX.Element => {
           </Flex>
         </HStack>
         <Box pl="9.25rem" pr="2rem">
-          <RequestOverview items={data?.changedItems || []} allowEditing />
+          <Skeleton isLoaded={!isGetReviewRequestLoading}>
+            <RequestOverview items={data?.changedItems || []} allowEditing />
+          </Skeleton>
         </Box>
         {isApproved && (
           <Footer>
