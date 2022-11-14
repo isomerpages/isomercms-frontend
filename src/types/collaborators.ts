@@ -3,12 +3,8 @@ export type SiteMemberRole = "CONTRIBUTOR" | "ADMIN"
 export interface CollaboratorDto {
   id: string
   email: string
-  githubId?: string
   lastLoggedIn: string
-  contactNumber?: number
-  SiteMember: {
-    role: SiteMemberRole
-  }
+  role: SiteMemberRole
 }
 
 // NOTE: Prior to data being given to the UI,
