@@ -65,11 +65,10 @@ export const buildSettingsData = apiDataBuilder<BackendSiteSettings>(
   "get"
 )
 
-export const buildSiteDashboardReviewRequests = apiDataBuilder<
-  SiteDashboardReviewRequest[]
->("*/sites/:siteName/review/summary", "get")
+export const buildSiteDashboardReviewRequests = apiDataBuilder<{
+  reviews: SiteDashboardReviewRequest[]
+}>("*/sites/:siteName/review/summary")
 
-// TODO: To be replaced with collaborators PR
 export const buildSiteDashboardCollaboratorsStatistics = apiDataBuilder<CollaboratorsStats>(
   "*/sites/:siteName/collaborators/statistics",
   "get"

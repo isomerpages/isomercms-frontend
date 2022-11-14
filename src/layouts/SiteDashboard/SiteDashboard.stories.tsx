@@ -8,7 +8,10 @@ import {
   MOCK_SITE_DASHBOARD_REVIEW_REQUESTS,
   MOCK_USER,
 } from "mocks/constants"
+import { updateViewedReviewRequestsHandler } from "mocks/handlers"
 import {
+  buildCollaboratorData,
+  buildCollaboratorRoleData,
   buildLoginData,
   buildSiteDashboardCollaboratorsStatistics,
   buildSiteDashboardInfo,
@@ -36,14 +39,17 @@ const SiteDashboardMeta = {
     chromatic: { delay: 500 },
     msw: {
       handlers: {
-        reviewRequests: buildSiteDashboardReviewRequests(
-          MOCK_SITE_DASHBOARD_REVIEW_REQUESTS
-        ),
+        reviewRequests: buildSiteDashboardReviewRequests({
+          reviews: MOCK_SITE_DASHBOARD_REVIEW_REQUESTS,
+        }),
         siteInfo: buildSiteDashboardInfo(MOCK_SITE_DASHBOARD_INFO),
         collaboratorsStatistics: buildSiteDashboardCollaboratorsStatistics(
           MOCK_SITE_DASHBOARD_COLLABORATORS_STATISTICS
         ),
         loginData: buildLoginData(_.set(MOCK_USER, "userId", "")),
+        role: buildCollaboratorRoleData({ role: "ADMIN" }),
+        viewed: updateViewedReviewRequestsHandler,
+        collaborators: buildCollaboratorData({ collaborators: [] }),
       },
     },
   },
@@ -66,7 +72,10 @@ export const Loading = Template.bind({})
 Loading.parameters = {
   msw: {
     handlers: {
-      reviewRequests: buildSiteDashboardReviewRequests([], "infinite"),
+      reviewRequests: buildSiteDashboardReviewRequests(
+        { reviews: [] },
+        "infinite"
+      ),
       siteInfo: buildSiteDashboardInfo(MOCK_SITE_DASHBOARD_INFO, "infinite"),
       collaboratorsStatistics: buildSiteDashboardCollaboratorsStatistics(
         MOCK_SITE_DASHBOARD_COLLABORATORS_STATISTICS,
@@ -80,7 +89,7 @@ export const NoRequests = Template.bind({})
 NoRequests.parameters = {
   msw: {
     handlers: {
-      reviewRequests: buildSiteDashboardReviewRequests([]),
+      reviewRequests: buildSiteDashboardReviewRequests({ reviews: [] }),
     },
   },
 }
@@ -89,27 +98,22 @@ export const NewPendingReview = Template.bind({})
 NewPendingReview.parameters = {
   msw: {
     handlers: {
-      reviewRequests: buildSiteDashboardReviewRequests(
-        mockReviewRequestsNewPendingReview
-      ),
+      reviewRequests: buildSiteDashboardReviewRequests({
+        reviews: mockReviewRequestsNewPendingReview,
+      }),
     },
   },
 }
 
 export const ReviewRequired = Template.bind({})
-ReviewRequired.parameters = {
-  msw: {
-    handlers: {},
-  },
-}
 
 export const RequestApproved = Template.bind({})
 RequestApproved.parameters = {
   msw: {
     handlers: {
-      reviewRequests: buildSiteDashboardReviewRequests(
-        mockReviewRequestsApproved
-      ),
+      reviewRequests: buildSiteDashboardReviewRequests({
+        reviews: mockReviewRequestsApproved,
+      }),
     },
   },
 }

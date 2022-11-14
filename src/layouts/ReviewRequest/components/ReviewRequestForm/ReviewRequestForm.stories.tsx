@@ -17,8 +17,10 @@ import {
 import { ModalCloseButton, Button, Tab } from "@opengovsg/design-system-react"
 import { Story, ComponentMeta } from "@storybook/react"
 import _ from "lodash"
+import { useForm, FormProvider } from "react-hook-form"
 
 import { MOCK_ADMINS } from "mocks/constants"
+import { ReviewRequestInfo } from "types/reviewRequest"
 
 import { ReviewRequestForm, ReviewRequestFormProps } from "./ReviewRequestForm"
 
@@ -28,6 +30,9 @@ const formMeta = {
 } as ComponentMeta<typeof ReviewRequestForm>
 
 const Template: Story<ReviewRequestFormProps> = ({ admins }) => {
+  const methods = useForm<Required<ReviewRequestInfo>>({
+    mode: "onTouched",
+  })
   const props = useDisclosure({ defaultIsOpen: true })
   return (
     <Modal {...props} size="full">
@@ -80,7 +85,9 @@ const Template: Story<ReviewRequestFormProps> = ({ admins }) => {
 
             <TabPanels>
               <TabPanel>
-                <ReviewRequestForm admins={admins} />
+                <FormProvider {...methods}>
+                  <ReviewRequestForm admins={admins} />
+                </FormProvider>
               </TabPanel>
             </TabPanels>
           </Tabs>

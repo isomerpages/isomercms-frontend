@@ -1,35 +1,56 @@
 import { ComponentMeta, Story } from "@storybook/react"
+import { MemoryRouter, Route } from "react-router-dom"
 
-import { MOCK_ITEMS } from "mocks/constants"
-import { buildMarkCommentsAsReadData } from "mocks/utils"
+import { ReviewRequestRoleProvider } from "contexts/ReviewRequestRoleContext"
 
-import { handlers } from "../../mocks/handlers"
-
+import { MOCK_COLLABORATORS, MOCK_REVIEW_REQUEST } from "mocks/constants"
 import {
-  ReviewRequestDashboard,
-  ReviewRequestDashboardProps,
-} from "./Dashboard"
+  buildCollaboratorData,
+  buildCommentsData,
+  buildMarkCommentsAsReadData,
+  buildReviewRequestData,
+} from "mocks/utils"
+
+import { markReviewRequestAsViewedHandler } from "../../mocks/handlers"
+
+import { ReviewRequestDashboard } from "./Dashboard"
 
 const dashboardMeta = {
   title: "Components/ReviewRequest/Dashboard",
   component: ReviewRequestDashboard,
+  parameters: {
+    msw: {
+      handlers: {
+        reviewRequest: buildReviewRequestData({
+          reviewRequest: MOCK_REVIEW_REQUEST,
+        }),
+        viewed: markReviewRequestAsViewedHandler,
+        comments: [buildMarkCommentsAsReadData([]), buildCommentsData([])],
+        collaborators: buildCollaboratorData({
+          collaborators: [
+            MOCK_COLLABORATORS.ADMIN_1,
+            MOCK_COLLABORATORS.CONTRIBUTOR_1,
+            MOCK_COLLABORATORS.CONTRIBUTOR_2,
+          ],
+        }),
+      },
+    },
+  },
+  decorators: [
+    (StoryFn) => (
+      <MemoryRouter initialEntries={["/sites/storybook/review/1"]}>
+        <Route path="/sites/:siteName/review/:reviewId">
+          <ReviewRequestRoleProvider>
+            <StoryFn />
+          </ReviewRequestRoleProvider>
+        </Route>
+      </MemoryRouter>
+    ),
+  ],
 } as ComponentMeta<typeof ReviewRequestDashboard>
 
 const Template = ReviewRequestDashboard
 
-export const Playground: Story<ReviewRequestDashboardProps> = Template.bind({})
-Playground.args = {
-  reviewRequestedTime: new Date(),
-  reviewUrl: "Copied to your clipboard kekw",
-  title: "Update STCCED hyperlink, customs duty",
-  requestor: "seaerchin",
-  reviewers: ["nat mae tan", "jiachin er"],
-  changedItems: MOCK_ITEMS,
-}
-Playground.parameters = {
-  msw: {
-    handlers: [...handlers, buildMarkCommentsAsReadData([])],
-  },
-}
+export const Playground: Story = Template.bind({})
 
 export default dashboardMeta

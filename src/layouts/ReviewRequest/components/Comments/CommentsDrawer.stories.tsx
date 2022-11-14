@@ -1,5 +1,4 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
-import { MemoryRouter, Route } from "react-router-dom"
 
 import { MOCK_COMMENTS_DATA } from "mocks/constants"
 import { handlers } from "mocks/handlers"
@@ -15,17 +14,6 @@ const CommentsDrawerMeta = {
       delay: 500,
     },
   },
-  decorators: [
-    (Story) => {
-      return (
-        <MemoryRouter initialEntries={["/sites/storybook/commentsDrawer"]}>
-          <Route path="/sites/:siteName/commentsDrawer">
-            <Story />
-          </Route>
-        </MemoryRouter>
-      )
-    },
-  ],
 } as ComponentMeta<typeof CommentsDrawer>
 
 const Template: ComponentStory<typeof CommentsDrawer> = () => {

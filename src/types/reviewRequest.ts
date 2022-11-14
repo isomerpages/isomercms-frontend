@@ -23,11 +23,6 @@ export interface EditedItemProps {
   lastEditedTime: number
 }
 
-export interface UserDto {
-  role: "ADMIN" | "CONTRIBUTOR"
-  email: string
-}
-
 export interface ReviewRequestInfo {
   title: string
   description?: string

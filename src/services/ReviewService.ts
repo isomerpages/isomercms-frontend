@@ -2,7 +2,6 @@ import {
   EditedItemProps,
   ReviewRequest,
   CreateReviewRequestDto,
-  UserDto,
   UpdateReviewRequestDto,
 } from "types/reviewRequest"
 
@@ -23,14 +22,6 @@ export const getDiff = async (siteName: string): Promise<EditedItemProps[]> => {
     .then(({ data }) => data)
 
   return items
-}
-export const getCollaborators = async (
-  siteName: string
-): Promise<UserDto[]> => {
-  const endpoint = `/sites/${siteName}/collaborators`
-  return apiService
-    .get<{ collaborators: UserDto[] }>(endpoint)
-    .then(({ data }) => data.collaborators)
 }
 
 export const createReviewRequest = async (

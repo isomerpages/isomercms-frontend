@@ -21,9 +21,9 @@ import { useParams } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 
+import { useListCollaboratorsHook } from "hooks/collaboratorHooks"
 import { useCreateReviewRequest } from "hooks/reviewHooks/useCreateReviewRequest"
 import { useDiff } from "hooks/reviewHooks/useDiff"
-import { useGetCollaborators } from "hooks/reviewHooks/useGetCollaborators"
 
 import { useSuccessToast } from "utils/toasts"
 
@@ -43,7 +43,7 @@ export const ReviewRequestModal = (
   const { onClose } = props
   const { siteName } = useParams<{ siteName: string }>()
   const { data: items } = useDiff(siteName)
-  const { data: collaborators } = useGetCollaborators(siteName)
+  const { data: collaborators } = useListCollaboratorsHook(siteName)
   const {
     mutateAsync: createReviewRequest,
     isLoading,

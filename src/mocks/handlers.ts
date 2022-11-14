@@ -40,3 +40,17 @@ export const contactUsHandler = (
       )
     )
   })
+
+export const updateViewedReviewRequestsHandler = rest.post(
+  "*/sites/:siteName/review/viewed",
+  (req, res, ctx) => {
+    return res(ctx.status(200))
+  }
+)
+
+export const markReviewRequestAsViewedHandler = rest.post(
+  "*/sites/:siteName/review/:reviewId/viewed",
+  (req, res, ctx) => {
+    return res(ctx.status(200))
+  }
+)

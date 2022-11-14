@@ -1,33 +1,39 @@
 import { Button, useDisclosure } from "@chakra-ui/react"
 import { Story, ComponentMeta } from "@storybook/react"
+import { MemoryRouter, Route } from "react-router-dom"
 
-import { MOCK_ITEMS, MOCK_ADMINS } from "mocks/constants"
+import { MOCK_ITEMS, MOCK_ADMINS, MOCK_COLLABORATORS } from "mocks/constants"
+import { buildCollaboratorData } from "mocks/utils"
 
-import {
-  ReviewRequestModal,
-  ReviewRequestModalProps,
-} from "./ReviewRequestModal"
+import { ReviewRequestModal } from "./ReviewRequestModal"
 
 const modalMeta = {
   title: "Components/ReviewRequest/Modal",
   component: ReviewRequestModal,
+  parameters: {
+    msw: {
+      handlers: {
+        collaborators: buildCollaboratorData({
+          collaborators: [
+            MOCK_COLLABORATORS.ADMIN_1,
+            MOCK_COLLABORATORS.CONTRIBUTOR_1,
+            MOCK_COLLABORATORS.CONTRIBUTOR_2,
+          ],
+        }),
+      },
+    },
+  },
 } as ComponentMeta<typeof ReviewRequestModal>
-type TemplateProps = Pick<ReviewRequestModalProps, "admins" | "items">
 
-const Template: Story<TemplateProps> = ({ admins, items }: TemplateProps) => {
+const Template: Story = () => {
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true })
   return (
-    <>
-      <Button onClick={onOpen}>Open Modal</Button>
-      <ReviewRequestModal
-        admins={admins}
-        items={items}
-        isOpen={isOpen}
-        onClose={onClose}
-      >
-        <Button colorScheme="danger">Click me</Button>
-      </ReviewRequestModal>
-    </>
+    <MemoryRouter initialEntries={["/sites/storybook"]}>
+      <Route path="/sites/:siteName">
+        <Button onClick={onOpen}>Open Modal</Button>
+        <ReviewRequestModal isOpen={isOpen} onClose={onClose} />
+      </Route>
+    </MemoryRouter>
   )
 }
 
