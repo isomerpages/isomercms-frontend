@@ -63,6 +63,8 @@ import { BxFileArchiveSolid } from "assets"
 import { EditedItemProps } from "types/reviewRequest"
 import { extractInitials, getDateTimeFromUnixTime } from "utils"
 
+import { DiffView } from "../DiffView"
+
 const ICON_STYLE_PROPS = {
   ml: "0.75rem",
   fontSize: "1.25rem",
@@ -164,6 +166,36 @@ export const RequestOverview = ({
   items,
   allowEditing,
 }: RequestOverviewProps): JSX.Element => {
+  const [fileName, setFileName] = useState("")
+  const [path, setPath] = useState<string[]>([])
+  return fileName ? (
+    <DiffView
+      fileName={fileName}
+      path={path}
+      onClick={() => {
+        setFileName("")
+        setPath([])
+      }}
+    />
+  ) : (
+    <RequestOverviewTable
+      onClick={(name, filePath) => {
+        setFileName(name)
+        setPath(filePath)
+      }}
+      items={items}
+      allowEditing={allowEditing}
+    />
+  )
+}
+
+const RequestOverviewTable = ({
+  onClick,
+  items,
+  allowEditing,
+}: {
+  onClick: (name: string, filePath: string[]) => void
+} & RequestOverviewProps) => {
   const {
     isExpanded,
     inputRef,
@@ -392,9 +424,7 @@ export const RequestOverview = ({
             icon={<BiShow />}
             aria-label="view file changes"
             variant="link"
-            // TODO (#IS-54): Remove the `display="none"` when
-            // diff view is merged (#1158).
-            display="none"
+            onClick={() => onClick(row.original.name, row.original.path)}
           />
         </HStack>
       ),

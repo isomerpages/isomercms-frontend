@@ -1,15 +1,5 @@
-import {
-  Box,
-  Flex,
-  Spacer,
-  VStack,
-  Text,
-  HStack,
-  Heading,
-  useToken,
-  useTheme,
-} from "@chakra-ui/react"
-import { Button, IconButton, Link } from "@opengovsg/design-system-react"
+import { Box, Flex, Spacer, VStack, Text, Heading } from "@chakra-ui/react"
+import { Button, Link } from "@opengovsg/design-system-react"
 import ReactDiffViewer, { DiffMethod } from "react-diff-viewer"
 import { BiLeftArrowAlt } from "react-icons/bi"
 
@@ -33,22 +23,24 @@ if(a === 10) {
 }
 `
 
-const generateStagingLink = (fileName: string): string =>
+const generateStagingLink = (fileName: string, path: string[]): string =>
   "https://www.google.com"
 
-const StatusBar = ({
-  fileName,
-}: Pick<DiffViewProps, "fileName">): JSX.Element => {
+const StatusBar = ({ fileName, onClick, path }: DiffViewProps): JSX.Element => {
   return (
     <Flex dir="row" w="100%" alignItems="center">
-      <Button variant="clear" leftIcon={<BiLeftArrowAlt fontSize="1.5rem" />}>
+      <Button
+        variant="clear"
+        leftIcon={<BiLeftArrowAlt fontSize="1.5rem" />}
+        onClick={onClick}
+      >
         Back to review request
       </Button>
       <Spacer />
       <Box>
         <Link
           isExternal
-          href={generateStagingLink(fileName)}
+          href={generateStagingLink(fileName, path)}
           textDecorationLine="none"
           textStyle="subhead-1"
         >
@@ -62,11 +54,16 @@ const StatusBar = ({
 export interface DiffViewProps {
   fileName: string
   path: string[]
+  onClick: () => void
 }
 
-export const DiffView = ({ fileName, path }: DiffViewProps): JSX.Element => {
+export const DiffView = ({
+  fileName,
+  path,
+  onClick,
+}: DiffViewProps): JSX.Element => {
   return (
-    <VStack spacing="1.5rem" align="flex-start">
+    <VStack spacing="1.5rem" align="flex-start" mt="1.5rem">
       <VStack spacing="0.625rem" align="flex-start" w="100%">
         <Heading
           as="h2"
@@ -76,7 +73,7 @@ export const DiffView = ({ fileName, path }: DiffViewProps): JSX.Element => {
           Review proposed changes on the right
         </Text>
       </VStack>
-      <StatusBar fileName={fileName} />
+      <StatusBar fileName={fileName} onClick={onClick} path={path} />
       <Box
         border="1px solid"
         borderColor="border.input.default"
