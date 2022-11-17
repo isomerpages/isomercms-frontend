@@ -1,5 +1,6 @@
 import "../tests/TestDecoder.mock"
 import { render, screen } from "@testing-library/react"
+import { QueryClient, QueryClientProvider } from "react-query"
 import { MemoryRouter } from "react-router-dom"
 import "@testing-library/jest-dom/extend-expect"
 
@@ -142,19 +143,23 @@ jest.mock("layouts/NotFoundPage", () => {
   }
 })
 
+const queryClient = new QueryClient()
+
 // Context mocks
 const LoggedInContextProvider = ({ children }) => {
   const loggedInContextData = {
-    userId: "test-user",
+    userId: "",
     email: "test-email",
     displayedName: "test-user",
     logout: jest.fn(),
   }
 
   return (
-    <LoginContext.Provider value={loggedInContextData}>
-      {children}
-    </LoginContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <LoginContext.Provider value={loggedInContextData}>
+        {children}
+      </LoginContext.Provider>
+    </QueryClientProvider>
   )
 }
 
@@ -167,9 +172,11 @@ const NotLoggedInContextProvider = ({ children }) => {
   }
 
   return (
-    <LoginContext.Provider value={notLoggedInContextData}>
-      {children}
-    </LoginContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <LoginContext.Provider value={notLoggedInContextData}>
+        {children}
+      </LoginContext.Provider>
+    </QueryClientProvider>
   )
 }
 
