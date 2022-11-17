@@ -1,7 +1,10 @@
 import { Box, Flex, Spacer, VStack, Text, Heading } from "@chakra-ui/react"
 import { Button, Link } from "@opengovsg/design-system-react"
 import { useEffect } from "react"
-import ReactDiffViewer, { DiffMethod } from "react-diff-viewer"
+import ReactDiffViewer, {
+  DiffMethod,
+  ReactDiffViewerProps,
+} from "react-diff-viewer"
 import { BiLeftArrowAlt } from "react-icons/bi"
 import { useParams } from "react-router-dom"
 
@@ -10,6 +13,40 @@ import { useBlob } from "hooks/githubHooks/useBlob"
 import { getAxiosErrorMessage } from "utils/axios"
 
 import { useErrorToast } from "utils"
+
+export const DiffViewer = ({
+  oldValue,
+  newValue,
+  ...props
+}: ReactDiffViewerProps): JSX.Element => {
+  return (
+    <ReactDiffViewer
+      oldValue={oldValue}
+      newValue={newValue}
+      splitView
+      // NOTE: Using words and not chars because chars will
+      // make it look as though there's an extra space inserted
+      // in (see: `b` vs `boo`)
+      compareMethod={DiffMethod.WORDS}
+      styles={{
+        content: {
+          width: "45%",
+        },
+        diffContainer: {
+          width: "100%",
+          tableLayout: "fixed",
+        },
+        codeFoldGutter: {
+          width: "3.125rem",
+        },
+        marker: {
+          width: "2rem",
+        },
+      }}
+      {...props}
+    />
+  )
+}
 
 // TODO
 const generateStagingLink = (fileName: string, path: string[]): string =>
@@ -99,30 +136,7 @@ export const DiffView = ({
             {fileName}
           </Text>
         </Flex>
-        <ReactDiffViewer
-          oldValue={data?.old || ""}
-          newValue={data?.new || ""}
-          splitView
-          // NOTE: Using words and not chars because chars will
-          // make it look as though there's an extra space inserted
-          // in (see: `b` vs `boo`)
-          compareMethod={DiffMethod.WORDS}
-          styles={{
-            content: {
-              width: "45%",
-            },
-            diffContainer: {
-              width: "100%",
-              tableLayout: "fixed",
-            },
-            codeFoldGutter: {
-              width: "3.125rem",
-            },
-            marker: {
-              width: "2rem",
-            },
-          }}
-        />
+        <DiffViewer oldValue={data?.old || ""} newValue={data?.new || ""} />
       </Box>
     </VStack>
   )
