@@ -1,10 +1,15 @@
 import { Box, Flex, Spacer, VStack, Text, Heading } from "@chakra-ui/react"
 import { Button, Link } from "@opengovsg/design-system-react"
+import { useEffect } from "react"
 import ReactDiffViewer, { DiffMethod } from "react-diff-viewer"
 import { BiLeftArrowAlt } from "react-icons/bi"
 import { useParams } from "react-router-dom"
 
 import { useBlob } from "hooks/githubHooks/useBlob"
+
+import { getAxiosErrorMessage } from "utils/axios"
+
+import { useErrorToast } from "utils"
 
 // TODO
 const generateStagingLink = (fileName: string, path: string[]): string =>
@@ -51,7 +56,19 @@ export const DiffView = ({
     siteName: string
   }>()
   const prNumber = parseInt(reviewId, 10)
-  const { data } = useBlob(siteName, `${path.join("/")}/${fileName}`, prNumber)
+  const errorToast = useErrorToast()
+  const { data, error, isError } = useBlob(
+    siteName,
+    `${path.join("/")}/${fileName}`,
+    prNumber
+  )
+
+  useEffect(() => {
+    if (isError) {
+      errorToast({ description: getAxiosErrorMessage(error) })
+    }
+  }, [error, errorToast, isError])
+
   return (
     <VStack spacing="1.5rem" align="flex-start" mt="1.5rem">
       <VStack spacing="0.625rem" align="flex-start" w="100%">
