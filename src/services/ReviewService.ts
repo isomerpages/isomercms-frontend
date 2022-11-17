@@ -3,6 +3,7 @@ import {
   ReviewRequest,
   CreateReviewRequestDto,
   UpdateReviewRequestDto,
+  BlobDiff,
 } from "types/reviewRequest"
 
 import { apiService } from "./ApiService"
@@ -28,10 +29,10 @@ export const getBlob = async (
   siteName: string,
   path: string,
   prNumber: number
-): Promise<Record<string, string>> => {
+): Promise<BlobDiff> => {
   const endpoint = `/sites/${siteName}/review/${prNumber}/blob`
   return apiService
-    .get<Record<string, string>>(endpoint, { params: { path } })
+    .get<BlobDiff>(endpoint, { params: { path } })
     .then(({ data }) => data)
 }
 

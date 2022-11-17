@@ -68,3 +68,8 @@ export interface ReviewRequest {
   reviewRequestedTime: number
   changedItems: EditedItemProps[]
 }
+
+export interface BlobDiff {
+  old: string
+  new: string
+}
