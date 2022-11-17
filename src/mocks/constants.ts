@@ -1,3 +1,5 @@
+import _ from "lodash"
+
 import { CollaboratorDto } from "types/collaborators"
 import { CommentData } from "types/comments"
 import {
@@ -478,3 +480,22 @@ export const MOCK_SITES_DATA: SiteDataRequest = {
     },
   ],
 }
+// 100 lines of random characters, where each line is [0, 100] characters long
+// ASCII 48 - 122 is [a-zA-Z0-9] and some punctuation
+const generateDiffValues = () =>
+  Array(100)
+    .fill([])
+    .map(() => {
+      const length = _.random(0, 100)
+      return Array(length)
+        .fill("")
+        .map(() => {
+          const char = _.random(48, 122)
+          return String.fromCharCode(char)
+        })
+        .join("")
+    })
+    .join("\n")
+
+export const OLD_DIFF_VALUE = generateDiffValues()
+export const NEW_DIFF_VALUE = generateDiffValues()
