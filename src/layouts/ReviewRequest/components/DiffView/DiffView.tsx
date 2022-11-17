@@ -116,7 +116,10 @@ export const DiffView = ({
               tableLayout: "fixed",
             },
             codeFoldGutter: {
-              width: "50px",
+              width: "3.125rem",
+            },
+            marker: {
+              width: "2rem",
             },
           }}
         />
