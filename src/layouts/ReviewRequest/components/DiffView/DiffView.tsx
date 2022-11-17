@@ -2,27 +2,11 @@ import { Box, Flex, Spacer, VStack, Text, Heading } from "@chakra-ui/react"
 import { Button, Link } from "@opengovsg/design-system-react"
 import ReactDiffViewer, { DiffMethod } from "react-diff-viewer"
 import { BiLeftArrowAlt } from "react-icons/bi"
+import { useParams } from "react-router-dom"
 
-const oldCode = `
-const a = 10
-const b = 10
-const c = () => console.log('foo')
+import { useBlob } from "hooks/githubHooks/useBlob"
 
-if(a > 10) {
-  console.log('bar')
-}
-
-console.log('done')
-`
-const newCode = `
-const a = 10
-const boo = 10
-
-if(a === 10) {
-  console.log('bar')
-}
-`
-
+// TODO
 const generateStagingLink = (fileName: string, path: string[]): string =>
   "https://www.google.com"
 
@@ -62,6 +46,12 @@ export const DiffView = ({
   path,
   onClick,
 }: DiffViewProps): JSX.Element => {
+  const { reviewId, siteName } = useParams<{
+    reviewId: string
+    siteName: string
+  }>()
+  const prNumber = parseInt(reviewId, 10)
+  const { data } = useBlob(siteName, `${path.join("/")}/${fileName}`, prNumber)
   return (
     <VStack spacing="1.5rem" align="flex-start" mt="1.5rem">
       <VStack spacing="0.625rem" align="flex-start" w="100%">
@@ -93,13 +83,25 @@ export const DiffView = ({
           </Text>
         </Flex>
         <ReactDiffViewer
-          oldValue={oldCode}
-          newValue={newCode}
+          oldValue={data?.old || ""}
+          newValue={data?.new || ""}
           splitView
           // NOTE: Using words and not chars because chars will
           // make it look as though there's an extra space inserted
           // in (see: `b` vs `boo`)
           compareMethod={DiffMethod.WORDS}
+          styles={{
+            content: {
+              width: "45%",
+            },
+            diffContainer: {
+              width: "100%",
+              tableLayout: "fixed",
+            },
+            codeFoldGutter: {
+              width: "50px",
+            },
+          }}
         />
       </Box>
     </VStack>
