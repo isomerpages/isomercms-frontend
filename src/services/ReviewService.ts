@@ -24,6 +24,17 @@ export const getDiff = async (siteName: string): Promise<EditedItemProps[]> => {
   return items
 }
 
+export const getBlob = async (
+  siteName: string,
+  path: string,
+  prNumber: number
+): Promise<Record<string, string>> => {
+  const endpoint = `/sites/${siteName}/review/${prNumber}/blob`
+  return apiService
+    .get<Record<string, string>>(endpoint, { params: { path } })
+    .then(({ data }) => data)
+}
+
 export const createReviewRequest = async (
   siteName: string,
   reviewData: CreateReviewRequestDto
