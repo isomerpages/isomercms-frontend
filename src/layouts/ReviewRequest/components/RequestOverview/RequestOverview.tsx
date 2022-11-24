@@ -57,7 +57,10 @@ import {
   BiCheck,
   BiEditAlt,
 } from "react-icons/bi"
+import { useParams } from "react-router-dom"
 import { TableVirtuoso } from "react-virtuoso"
+
+import { useStagingUrl } from "hooks/settingsHooks"
 
 import { BxFileArchiveSolid } from "assets"
 import { EditedItemProps } from "types/reviewRequest"
@@ -172,9 +175,11 @@ export const RequestOverview = ({
     handleCollapse,
   } = useSearchbar({})
   const columnHelper = createColumnHelper<EditedItemProps>()
+  const { siteName } = useParams<{ siteName: string }>()
   const theme = useTheme()
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const { data: stagingUrl } = useStagingUrl({ siteName })
 
   const handleFilter = <T, U>(filter: unknown, column: Column<T, U>) => {
     const curFilterValue = column.getFilterValue()
@@ -337,7 +342,7 @@ export const RequestOverview = ({
       ),
     }),
     columnHelper.display({
-      id: "actions",
+      id: "action",
       header: () => (
         <Th
           borderBottom="1px solid"
@@ -351,8 +356,19 @@ export const RequestOverview = ({
       cell: ({ row }) => (
         <HStack spacing="0.25rem" display="none">
           {allowEditing && (
-            <Link href="www.google.com">
+            <Link
+              // NOTE: Pass `undefined` to avoid users being able to click
+              // despite being visually disabled.
+              href={
+                row.original.url
+                  ? // NOTE: Permalinks are enforced to start with a `/` by our CMS
+                    `${stagingUrl}${row.original.url}`
+                  : undefined
+              }
+              isExternal
+            >
               <IconButton
+                isDisabled={!row.original.url}
                 icon={<BiEditAlt />}
                 aria-label="edit file"
                 variant="link"
