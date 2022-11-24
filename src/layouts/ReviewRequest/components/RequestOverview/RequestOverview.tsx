@@ -57,7 +57,10 @@ import {
   BiCheck,
   BiEditAlt,
 } from "react-icons/bi"
+import { useParams } from "react-router-dom"
 import { TableVirtuoso } from "react-virtuoso"
+
+import { useStagingUrl } from "hooks/settingsHooks"
 
 import { BxFileArchiveSolid } from "assets"
 import { EditedItemProps } from "types/reviewRequest"
@@ -171,9 +174,11 @@ export const RequestOverview = ({
     handleCollapse,
   } = useSearchbar({})
   const columnHelper = createColumnHelper<EditedItemProps>()
+  const { siteName } = useParams<{ siteName: string }>()
   const theme = useTheme()
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const { data: stagingUrl } = useStagingUrl({ siteName })
 
   const handleFilter = <T, U>(filter: unknown, column: Column<T, U>) => {
     const curFilterValue = column.getFilterValue()
