@@ -362,7 +362,7 @@ export const RequestOverview = ({
               href={
                 row.original.url
                   ? // NOTE: Permalinks are enforced to start with a `/` by our CMS
-                    `${stagingUrl}${row.original.url}`
+                    row.original.url
                   : undefined
               }
               isExternal
