@@ -31,7 +31,7 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to create a new resource category", () => {
-    cy.contains("a", "Create category").click()
+    cy.contains("a", "Create category").should("be.visible").click()
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY)
     cy.contains("Next").click()
 
@@ -50,7 +50,7 @@ describe("Resources page", () => {
   })
 
   it("Resources page should not allow user to create a new resource category with invalid name", () => {
-    cy.contains("a", "Create category").click()
+    cy.contains("a", "Create category").should("be.visible").click()
 
     // Disabled button for special characters
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_SPECIAL).blur()
@@ -70,7 +70,7 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to create another new resource category", () => {
-    cy.contains("a", "Create category").click()
+    cy.contains("a", "Create category").should("be.visible").click()
 
     cy.get("input#newDirectoryName").clear().type(TEST_CATEGORY_2)
     cy.contains("Next").click()
@@ -128,7 +128,7 @@ describe("Resources page", () => {
   })
 
   it("Resources page should allow user to navigate into a resource category", () => {
-    cy.contains("a", TEST_CATEGORY).click()
+    cy.contains("a", TEST_CATEGORY).should("be.visible").click()
     cy.url().should(
       "include",
       `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
