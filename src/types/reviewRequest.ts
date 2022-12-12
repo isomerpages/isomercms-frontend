@@ -70,6 +70,6 @@ export interface ReviewRequest {
 }
 
 export interface BlobDiff {
-  old: string
-  new: string
+  oldValue: string
+  newValue: string
 }

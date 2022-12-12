@@ -136,7 +136,10 @@ export const DiffView = ({
             {fileName}
           </Text>
         </Flex>
-        <DiffViewer oldValue={data?.old || ""} newValue={data?.new || ""} />
+        <DiffViewer
+          oldValue={data?.oldValue || ""}
+          newValue={data?.newValue || ""}
+        />
       </Box>
     </VStack>
   )
