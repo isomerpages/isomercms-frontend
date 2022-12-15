@@ -156,20 +156,30 @@ export const ReviewRequestDashboard = (): JSX.Element => {
                 <ApprovalButton isApproved={isApproved} />
               )}
             </Flex>
-            <SecondaryDetails
-              requestor={data?.requestor || ""}
-              reviewers={data?.reviewers || []}
-              reviewRequestedTime={
-                data?.reviewRequestedTime
-                  ? new Date(data?.reviewRequestedTime)
-                  : new Date()
+            <Skeleton
+              isLoaded={
+                !!(
+                  data?.requestor &&
+                  data?.reviewers &&
+                  data?.reviewRequestedTime
+                )
               }
-              admins={
-                collaborators
-                  ?.filter((user) => user.role === "ADMIN")
-                  .map(({ email }) => email) || []
-              }
-            />
+            >
+              <SecondaryDetails
+                requestor={data?.requestor || ""}
+                reviewers={data?.reviewers || []}
+                reviewRequestedTime={
+                  data?.reviewRequestedTime
+                    ? new Date(data?.reviewRequestedTime)
+                    : new Date()
+                }
+                admins={
+                  collaborators
+                    ?.filter((user) => user.role === "ADMIN")
+                    .map(({ email }) => email) || []
+                }
+              />
+            </Skeleton>
           </VStack>
           <Flex h="100%" w="7.25rem" pt="2rem" justifyContent="end">
             {/* TODO: swap this to a slide out component and not a drawer */}
