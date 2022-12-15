@@ -16,7 +16,7 @@ import { markReviewRequestAsViewedHandler } from "../../mocks/handlers"
 import { ReviewRequestDashboard } from "./Dashboard"
 
 const dashboardMeta = {
-  title: "Components/ReviewRequest/Dashboard",
+  title: "Pages/ReviewRequest",
   component: ReviewRequestDashboard,
   parameters: {
     msw: {
@@ -51,6 +51,19 @@ const dashboardMeta = {
 
 const Template = ReviewRequestDashboard
 
-export const Playground: Story = Template.bind({})
+export const Default: Story = Template.bind({})
 
+export const Loading: Story = Template.bind({})
+Loading.parameters = {
+  msw: {
+    handlers: {
+      reviewRequest: buildReviewRequestData(
+        {
+          reviewRequest: MOCK_REVIEW_REQUEST,
+        },
+        "infinite"
+      ),
+    },
+  },
+}
 export default dashboardMeta
