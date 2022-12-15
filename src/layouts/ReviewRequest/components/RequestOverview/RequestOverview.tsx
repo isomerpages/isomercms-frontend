@@ -168,8 +168,10 @@ export const RequestOverview = ({
 }: RequestOverviewProps): JSX.Element => {
   const [fileName, setFileName] = useState("")
   const [path, setPath] = useState<string[]>([])
+  const [title, setTitle] = useState("")
   return fileName ? (
     <DiffView
+      title={title}
       fileName={fileName}
       path={path}
       onClick={() => {
@@ -179,9 +181,10 @@ export const RequestOverview = ({
     />
   ) : (
     <RequestOverviewTable
-      onClick={(name, filePath) => {
+      onClick={(displayedName, name, filePath) => {
         setFileName(name)
         setPath(filePath)
+        setTitle(displayedName)
       }}
       items={items}
       allowEditing={allowEditing}
@@ -194,7 +197,7 @@ const RequestOverviewTable = ({
   items,
   allowEditing,
 }: {
-  onClick: (name: string, filePath: string[]) => void
+  onClick: (title: string, name: string, filePath: string[]) => void
 } & RequestOverviewProps) => {
   const {
     isExpanded,
@@ -424,7 +427,9 @@ const RequestOverviewTable = ({
             icon={<BiShow />}
             aria-label="view file changes"
             variant="link"
-            onClick={() => onClick(row.original.name, row.original.path)}
+            onClick={() =>
+              onClick(row.original.title, row.original.name, row.original.path)
+            }
           />
         </HStack>
       ),

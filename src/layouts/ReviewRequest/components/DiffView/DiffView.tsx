@@ -80,6 +80,7 @@ const StatusBar = ({ fileName, onClick, path }: DiffViewProps): JSX.Element => {
 export interface DiffViewProps {
   fileName: string
   path: string[]
+  title: string
   onClick: () => void
 }
 
@@ -87,6 +88,7 @@ export const DiffView = ({
   fileName,
   path,
   onClick,
+  title,
 }: DiffViewProps): JSX.Element => {
   const { reviewId, siteName } = useParams<{
     reviewId: string
@@ -117,7 +119,12 @@ export const DiffView = ({
           Review proposed changes on the right
         </Text>
       </VStack>
-      <StatusBar fileName={fileName} onClick={onClick} path={path} />
+      <StatusBar
+        fileName={fileName}
+        onClick={onClick}
+        path={path}
+        title={title}
+      />
       <Box
         border="1px solid"
         borderColor="border.input.default"
