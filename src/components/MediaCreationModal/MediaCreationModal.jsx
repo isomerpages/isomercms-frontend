@@ -26,7 +26,7 @@ export const MediaCreationModal = ({
   const methods = useForm({
     mode: "onTouched",
     resolver: yupResolver(MediaSettingsSchema(existingTitlesArray)),
-    context: { mediaRoom },
+    context: { mediaRoom, isCreate: true },
   })
 
   const onMediaUpload = async (event) => {
