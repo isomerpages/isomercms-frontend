@@ -21,6 +21,6 @@ export const getFileExt = (mediaUrl: string): string | undefined => {
  * @param name the qualified filename of the data
  * @returns
  */
-export const getFileName = (name: string): string | undefined => {
-  return name.split(".").at(0)
+export const getFileName = (name: string): string => {
+  return name.split(".").slice(0, -1).join(".")
 }
