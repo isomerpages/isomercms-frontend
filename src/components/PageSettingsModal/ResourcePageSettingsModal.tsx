@@ -55,6 +55,7 @@ interface ResourcePageFrontMatter {
   date: string
   // eslint-disable-next-line camelcase
   file_url?: string
+  external?: string
   description?: string
   image?: string
 }
@@ -172,16 +173,21 @@ export const ResourcePageSettingsModal = ({
         })
         setValue("permalink", "")
       }
-      if (
-        pageData.content.frontMatter.layout === "link" &&
-        pageData.content.frontMatter.permalink
-      ) {
-        // remove https:// from resource pages with external permalinks
-        setValue(
-          "permalink",
-          pageData.content.frontMatter.permalink.replace("https://", "")
-        )
+      if (pageData.content.frontMatter.layout === "link") {
+        if (pageData.content.frontMatter.permalink) {
+          // backwards compatible with previous link files
+          setValue(
+            "external",
+            pageData.content.frontMatter.permalink.replace("https://", "")
+          )
+        } else if (pageData.content.frontMatter.external) {
+          setValue(
+            "external",
+            pageData.content.frontMatter.external.replace("https://", "")
+          )
+        }
         trigger("permalink")
+        trigger("external")
       }
     }
   }, [fileName, pageData, setValue, trigger])
@@ -197,7 +203,8 @@ export const ResourcePageSettingsModal = ({
     if (data.layout === "file") {
       delete processedData.permalink
     } else if (data.layout === "link") {
-      processedData.permalink = `https://${processedData.permalink}`
+      delete processedData.permalink
+      processedData.external = `https://${processedData.external}`
     }
     return onProceed({
       pageData,
@@ -234,6 +241,7 @@ export const ResourcePageSettingsModal = ({
                 isInvalid={!!errors.layout?.message}
                 onChange={() => {
                   trigger("permalink")
+                  trigger("external")
                 }}
               >
                 <Box mb="0.75rem">
@@ -386,7 +394,7 @@ export const ResourcePageSettingsModal = ({
                 </>
               )}
               {watch("layout") === "link" && (
-                <FormControl isRequired isInvalid={!!errors.permalink}>
+                <FormControl isRequired isInvalid={!!errors.external}>
                   <Box mb="0.75rem">
                     <FormLabel mb={0}>Link</FormLabel>
                     <FormLabel.Description color="text.description">
@@ -400,7 +408,7 @@ export const ResourcePageSettingsModal = ({
                       w="100%"
                       id="link"
                       placeholder="www.open.gov.sg"
-                      {...register("permalink", {
+                      {...register("external", {
                         required: true,
                       })}
                     />
