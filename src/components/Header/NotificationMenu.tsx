@@ -12,6 +12,8 @@ import { PropsWithChildren, useEffect, useState } from "react"
 import { BiBell, BiDownArrowAlt } from "react-icons/bi"
 import { useParams } from "react-router-dom"
 
+import { useLoginContext } from "contexts/LoginContext"
+
 import {
   useGetAllNotifications,
   useGetNotifications,
@@ -84,6 +86,7 @@ export const NotificationMenuItem = ({
 }
 
 export const NotificationMenu = (props: MenuListProps): JSX.Element => {
+  const { userId } = useLoginContext()
   const { siteName } = useParams<{ siteName: string }>()
   const [displayAll, setDisplayAll] = useState(false)
   const [hasNotification, setHasNotification] = useState(false)
@@ -111,7 +114,9 @@ export const NotificationMenu = (props: MenuListProps): JSX.Element => {
         recentNotificationData.some((notification) => !notification.isRead)
       )
   }, [recentNotificationData])
-  return (
+  return userId ? (
+    <></>
+  ) : (
     <Menu autoSelect={false}>
       {({ isOpen }) => (
         <>
