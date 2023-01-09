@@ -36,9 +36,8 @@ export const PageSettingsSchema = (existingTitlesArray = []) =>
     permalink: Yup.string().when("layout", (layout, schema) => {
       switch (layout) {
         case "file":
-          return schema
         case "link":
-          return schema.required("Permalink is required")
+          return schema
         default:
           return schema
             .required("Permalink is required")
@@ -73,5 +72,8 @@ export const PageSettingsSchema = (existingTitlesArray = []) =>
       ),
     file_url: Yup.string().when("layout", (layout, schema) =>
       layout === "file" ? schema.required("File url is required") : schema
+    ),
+    external: Yup.string().when("layout", (layout, schema) =>
+      layout === "link" ? schema.required("Link is required") : schema
     ),
   })
