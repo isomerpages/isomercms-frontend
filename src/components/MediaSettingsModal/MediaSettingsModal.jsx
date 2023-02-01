@@ -95,7 +95,7 @@ export const MediaSettingsModal = ({
             <p>
               For {mediaRoom} other than
               {mediaRoom === "images"
-                ? ` 'png', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg'`
+                ? ` 'png', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg', 'webp'`
                 : ` 'pdf'`}
               , please use{" "}
               <Link to={{ pathname: `https://go.gov.sg` }} target="_blank">

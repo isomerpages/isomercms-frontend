@@ -38,7 +38,7 @@ export const MediaSettingsSchema = (existingTitlesArray = []) =>
         if (mediaRoom === "images") {
           return schema.test(
             "Special characters found",
-            "Title must end with one of the following extensions: 'png', 'jpeg', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg'",
+            "Title must end with one of the following extensions: 'png', 'jpeg', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg', 'webp'",
             (value) => imagesSuffixRegexTest.test(value)
           )
         }

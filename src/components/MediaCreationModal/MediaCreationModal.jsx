@@ -60,7 +60,7 @@ export const MediaCreationModal = ({
           id="file-upload"
           accept={
             mediaRoom === "images"
-              ? "image/jpeg, image/png, image/gif, image/svg+xml, image/tiff, image/bmp, image/x-icon"
+              ? "image/jpeg, image/png, image/gif, image/svg+xml, image/tiff, image/bmp, image/x-icon, image/webp"
               : "application/pdf"
           }
           hidden

@@ -48,7 +48,7 @@ export const slugifyLowerFalseRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
 export const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX)
 export const specialCharactersRegexTest = /[~%^*_+\-./\\`;~{}[\]"<>]/
 export const mediaSpecialCharactersRegexTest = /[~%^?*+#./\\`;~{}[\]"<>]/
-export const imagesSuffixRegexTest = /^.+\.(svg|jpg|jpeg|png|gif|tif|bmp|ico)$/
+export const imagesSuffixRegexTest = /^.+\.(svg|jpg|jpeg|png|gif|tif|bmp|ico|webp)$/
 export const filesSuffixRegexTest = /^.+\.(pdf)$/
 
 const ISOMER_TEMPLATE_PROTECTED_DIRS = [
