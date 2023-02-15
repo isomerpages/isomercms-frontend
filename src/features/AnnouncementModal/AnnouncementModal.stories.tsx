@@ -20,7 +20,8 @@ const Template: Story = () => (
   <AnnouncementModal
     onClose={onClose}
     isOpen
-    announcements={ANNOUNCEMENTS[0]}
+    announcements={ANNOUNCEMENTS[0].announcements}
+    link={ANNOUNCEMENTS[0].link}
   />
 )
 

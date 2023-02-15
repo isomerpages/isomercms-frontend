@@ -10,13 +10,14 @@ import {
   Text,
   ModalBody,
   Stack,
+  Link,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import { ProgressIndicator } from "components/ProgressIndicator"
 import { useCallback, useMemo, useState } from "react"
 import { BiRightArrowAlt } from "react-icons/bi"
 
-import { useAnnouncement } from "hooks/useAnnouncement"
+import { useAnnouncements } from "hooks/useAnnouncement"
 
 import { Announcement } from "types/announcements"
 
@@ -26,15 +27,17 @@ interface AnnouncementModalProps {
   isOpen: boolean
   onClose: () => void
   announcements: Announcement[]
+  link: string
 }
 
 export const AnnouncementModal = ({
   isOpen,
   announcements,
   onClose,
+  link,
 }: AnnouncementModalProps): JSX.Element => {
   const [currActiveIdx, setCurrActiveIdx] = useState<number>(0)
-  const { setLastSeenAnnouncement } = useAnnouncement()
+  const { setLastSeenAnnouncement } = useAnnouncements()
   const isLastAnnouncement = useMemo(
     () => currActiveIdx === announcements.length - 1,
     [announcements.length, currActiveIdx]
@@ -96,18 +99,21 @@ export const AnnouncementModal = ({
               currActiveIdx={currActiveIdx}
               onClick={setCurrActiveIdx}
             />
-            <Flex gap="1rem">
-              {isLastAnnouncement ? (
+            {isLastAnnouncement ? (
+              <Flex gap="1.5rem" alignItems="center">
+                <Link isExternal href={link}>
+                  See release notes
+                </Link>
                 <Button onClick={handleNextClick}>Done</Button>
-              ) : (
-                <Button
-                  rightIcon={<BiRightArrowAlt size="1.5rem" />}
-                  onClick={handleNextClick}
-                >
-                  Next
-                </Button>
-              )}
-            </Flex>
+              </Flex>
+            ) : (
+              <Button
+                rightIcon={<BiRightArrowAlt size="1.5rem" />}
+                onClick={handleNextClick}
+              >
+                Next
+              </Button>
+            )}
           </Stack>
         </ModalFooter>
       </ModalContent>

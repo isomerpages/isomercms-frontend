@@ -3,16 +3,15 @@ import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 import { useLoginContext } from "contexts/LoginContext"
 
 import { ANNOUNCEMENTS } from "features/AnnouncementModal/Announcements"
-import { Announcement } from "types/announcements"
+import { Announcements } from "types/announcements"
 
 import { useLocalStorage } from "./useLocalStorage"
 
-interface UseAnnouncementReturn {
-  announcements?: Announcement[]
+interface UseAnnouncementsReturn extends Partial<Announcements> {
   setLastSeenAnnouncement: () => void
 }
 
-export const useAnnouncement = (): UseAnnouncementReturn => {
+export const useAnnouncements = (): UseAnnouncementsReturn => {
   const { email } = useLoginContext()
   const [
     lastSeenAnnouncementsStore,
@@ -28,13 +27,14 @@ export const useAnnouncement = (): UseAnnouncementReturn => {
     lastSeenAnnouncementsStore[email] ?? ANNOUNCEMENTS.length - 1
   // NOTE: If the user has seen all existing announcements, this will return `undefined`.
   // The caller has to check for this and not render if so.
-  const announcements = ANNOUNCEMENTS.at(lastSeenAnnouncementVersion)
+  const possibleAnnouncements = ANNOUNCEMENTS.at(lastSeenAnnouncementVersion)
 
   return {
-    announcements,
+    announcements: possibleAnnouncements?.announcements,
     setLastSeenAnnouncement: () => {
       lastSeenAnnouncementsStore[email] = lastSeenAnnouncementVersion + 1
       setLastSeenAnnouncementsStore(lastSeenAnnouncementsStore)
     },
+    link: possibleAnnouncements?.link,
   }
 }

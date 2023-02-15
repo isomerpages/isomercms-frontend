@@ -7,3 +7,8 @@ export type Announcement = {
   image: (props: React.SVGProps<SVGSVGElement>) => JSX.Element
   tags: TagVariant[]
 }
+
+export type Announcements = {
+  link: string
+  announcements: Announcement[]
+}
