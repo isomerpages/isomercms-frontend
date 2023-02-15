@@ -23,7 +23,7 @@ export const MediaCreationModal = ({
   const inputFile = useRef(null)
   const errorToast = useErrorToast()
 
-  const existingTitlesArray = mediasData.map((item) => item.name)
+  const existingTitlesArray = mediasData.map((item) => getFileName(item.name))
   const [fileExt, setFileExt] = useState("")
 
   const methods = useForm({
