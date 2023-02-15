@@ -1,5 +1,7 @@
 import * as Yup from "yup"
 
+import { ALLOWED_FILE_TYPES, ALLOWED_IMAGE_TYPES } from "constants/media"
+
 import {
   imagesSuffixRegexTest,
   filesSuffixRegexTest,
@@ -38,14 +40,18 @@ export const MediaSettingsSchema = (existingTitlesArray = []) =>
         if (mediaRoom === "images") {
           return schema.test(
             "Special characters found",
-            "Title must end with one of the following extensions: 'png', 'jpeg', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg', 'webp'",
+            `Title must end with one of the following extensions: ${ALLOWED_IMAGE_TYPES.map(
+              (imgType) => `'${imgType}'`
+            ).join(", ")}`,
             (value) => imagesSuffixRegexTest.test(value)
           )
         }
         if (mediaRoom === "files") {
           return schema.test(
             "Special characters found",
-            "Title must end with the following extensions: 'pdf'",
+            `Title must end with the following extensions: ${ALLOWED_FILE_TYPES.map(
+              (fileType) => `'${fileType}'`
+            ).join(", ")}`,
             (value) => filesSuffixRegexTest.test(value)
           )
         }

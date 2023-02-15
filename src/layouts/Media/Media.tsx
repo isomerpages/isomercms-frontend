@@ -4,6 +4,8 @@ import _ from "lodash"
 import { BiBulb, BiUpload } from "react-icons/bi"
 import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom"
 
+import { ALLOWED_FILE_TYPES, ALLOWED_IMAGE_TYPES } from "constants/media"
+
 import { useGetMediaFolders } from "hooks/directoryHooks"
 
 import { DeleteWarningScreen } from "layouts/screens/DeleteWarningScreen"
@@ -122,8 +124,12 @@ export const Media = (): JSX.Element => {
               <br />
               For {pluralMediaLabel} other than
               {mediaType === "images"
-                ? ` 'png', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg', 'webp'`
-                : ` 'pdf'`}
+                ? ` ${ALLOWED_IMAGE_TYPES.map((imgType) => `'${imgType}'`).join(
+                    ", "
+                  )}`
+                : ` ${ALLOWED_FILE_TYPES.map(
+                    (fileType) => `'${fileType}'`
+                  ).join(", ")}`}
               , please use
               <Link to={{ pathname: `https://go.gov.sg` }} target="_blank">
                 {" "}

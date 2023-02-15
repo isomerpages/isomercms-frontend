@@ -12,6 +12,8 @@ import { useEffect } from "react"
 import { useForm, useFormContext } from "react-hook-form"
 import { Link } from "react-router-dom"
 
+import { ALLOWED_FILE_TYPES, ALLOWED_IMAGE_TYPES } from "constants/media"
+
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
@@ -95,8 +97,12 @@ export const MediaSettingsModal = ({
             <p>
               For {mediaRoom} other than
               {mediaRoom === "images"
-                ? ` 'png', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg', 'webp'`
-                : ` 'pdf'`}
+                ? ` ${ALLOWED_IMAGE_TYPES.map((imgType) => `'${imgType}'`).join(
+                    ", "
+                  )}`
+                : ` ${ALLOWED_FILE_TYPES.map(
+                    (fileType) => `'${fileType}'`
+                  ).join(", ")}`}
               , please use{" "}
               <Link to={{ pathname: `https://go.gov.sg` }} target="_blank">
                 {" "}

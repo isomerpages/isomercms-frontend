@@ -7,6 +7,8 @@ import {
 import { useEffect, useRef } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
+import { ALLOWED_FILE_TYPES, ALLOWED_IMAGE_TYPES } from "constants/media"
+
 import { useErrorToast } from "utils/toasts"
 import { MEDIA_FILE_MAX_SIZE } from "utils/validators"
 
@@ -60,8 +62,12 @@ export const MediaCreationModal = ({
           id="file-upload"
           accept={
             mediaRoom === "images"
-              ? "image/jpeg, image/png, image/gif, image/svg+xml, image/tiff, image/bmp, image/x-icon, image/webp"
-              : "application/pdf"
+              ? ALLOWED_IMAGE_TYPES.map((imgType) => `image/${imgType}`).join(
+                  ", "
+                )
+              : ALLOWED_FILE_TYPES.map(
+                  (fileType) => `application/${fileType}`
+                ).join(", ")
           }
           hidden
         />
