@@ -86,7 +86,7 @@ export const MediaSettingsModal = ({
     return onProceed({
       data: {
         ...rest,
-        name: `${name}.${fileExt}`,
+        name: `${name}${fileExt ? `.${fileExt}` : ""}`,
       },
     })
   }
