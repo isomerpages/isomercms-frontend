@@ -4,11 +4,13 @@ import {
   MediaSettingsSchema,
   MediaSettingsModal,
 } from "components/MediaSettingsModal"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
 import { useErrorToast } from "utils/toasts"
 import { MEDIA_FILE_MAX_SIZE } from "utils/validators"
+
+import { getFileExt, getFileName } from "utils"
 
 // eslint-disable-next-line import/prefer-default-export
 export const MediaCreationModal = ({
@@ -22,6 +24,7 @@ export const MediaCreationModal = ({
   const errorToast = useErrorToast()
 
   const existingTitlesArray = mediasData.map((item) => item.name)
+  const [fileExt, setFileExt] = useState("")
 
   const methods = useForm({
     mode: "onTouched",
@@ -38,7 +41,9 @@ export const MediaCreationModal = ({
       })
     } else {
       mediaReader.onload = () => {
-        methods.setValue("name", media.name)
+        const fileName = getFileName(media.name)
+        setFileExt(getFileExt(media.name))
+        methods.setValue("name", fileName)
         methods.setValue("content", mediaReader.result)
       }
       mediaReader.readAsDataURL(media)
@@ -68,7 +73,14 @@ export const MediaCreationModal = ({
         <MediaSettingsModal
           params={params}
           mediasData={mediasData}
-          onProceed={onProceed}
+          onProceed={(submissionData) => {
+            return onProceed({
+              data: {
+                ...submissionData.data,
+                name: `${submissionData.data.name}.${fileExt}`,
+              },
+            })
+          }}
           mediaRoom={mediaRoom}
           onClose={onClose}
           toggleUploadInput={() => inputFile.current.click()}
