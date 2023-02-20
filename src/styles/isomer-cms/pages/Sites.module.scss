@@ -1,8 +1,6 @@
 @import "../elements/variable";
 
 @mixin single-site {
-  margin-left: $site-margin-horizontal;
-  margin-right: $site-margin-horizontal;
   margin-top: $site-margin-vertical;
   margin-bottom: $site-margin-vertical;
   height: $site-height;
@@ -12,16 +10,20 @@
 
 .sitesContainer {
   width: 100%;
+  max-width: $sites-container-width;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
 
   .sectionHeader {
-    width: $sites-container-width;
-    margin-left: $site-margin-horizontal * 2;
+
 
     .sectionTitle {
       font-size: 28px;
@@ -32,22 +34,21 @@
 
   .sites {
     display: flex;
-    flex-direction: rows;
+    flex-direction: row;
     justify-content: flex-start;
     align-items: flex-start;
     flex-wrap: wrap;
-    width: $sites-container-width;
+    column-gap: 32px;
 
     .infoText {
       margin-top: $site-margin-vertical;
-      margin-left: $site-margin-horizontal;
     }
 
     .siteContainer {
       // width: 33.33%;
       box-sizing: border-box;
       display: flex;
-      flex-direction: rows;
+      flex-direction: row;
       justify-content: center;
       align-items: center;
 
