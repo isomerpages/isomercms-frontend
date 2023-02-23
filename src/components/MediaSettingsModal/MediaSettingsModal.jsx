@@ -64,6 +64,7 @@ export const MediaSettingsModal = ({
       context: { mediaRoom, isCreate },
     })
 
+  // fileExt is blank for newly created files - mediaData is undefined for the create flow
   const fileExt = getFileExt(mediaData?.name || "")
 
   /** ******************************** */
@@ -86,6 +87,7 @@ export const MediaSettingsModal = ({
     return onProceed({
       data: {
         ...rest,
+        // Period is appended only if fileExt exists, otherwise MediaCreationModal handles the period and extension appending
         name: `${name}${fileExt ? `.${fileExt}` : ""}`,
       },
     })
