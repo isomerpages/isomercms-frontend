@@ -1,8 +1,6 @@
 import * as Yup from "yup"
 
 import {
-  imagesSuffixRegexTest,
-  filesSuffixRegexTest,
   mediaSpecialCharactersRegexTest,
   MEDIA_SETTINGS_TITLE_MIN_LENGTH,
   MEDIA_SETTINGS_TITLE_MAX_LENGTH,
@@ -40,29 +38,15 @@ export const MediaSettingsSchema = (existingTitlesArray = []) =>
       )
       // When this is called, mediaRoom is one of either images or files
       .when(["$mediaRoom", "$isCreate"], (mediaRoom, isCreate, schema) => {
-        if (isCreate && mediaRoom === "images") {
-          return schema.test(
-            "Special characters found",
-            "Title must end with one of the following extensions: 'png', 'jpeg', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg'",
-            (value) => imagesSuffixRegexTest.test(value)
-          )
-        }
-        if (isCreate && mediaRoom === "files") {
-          return schema.test(
-            "Special characters found",
-            "Title must end with the following extensions: 'pdf'",
-            (value) => filesSuffixRegexTest.test(value)
-          )
-        }
-
         return schema.test(
           "Invalid case",
           "This is an invalid value for the mediaRoom type!",
           () => mediaRoom === "files" || mediaRoom === "images"
         )
       })
+      .lowercase()
       .notOneOf(
-        existingTitlesArray,
+        existingTitlesArray.map((title) => title.toLowerCase()),
         "Title is already in use. Please choose a different title."
       ),
   })
