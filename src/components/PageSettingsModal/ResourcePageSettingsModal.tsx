@@ -107,7 +107,7 @@ const generateDefaultFrontMatter = (
   const resourceCategoryPermalink = slugify(resourceCategoryName)
     ? `${slugify(resourceCategoryName)}`
     : "unrecognised/"
-  const examplePermalink = `/${resourceRoomPermalink}/${resourceCategoryPermalink}/permalink`
+  const examplePermalink = `/${resourceRoomPermalink}/${resourceCategoryPermalink}/permalink`.toLowerCase()
   return {
     title: exampleTitle,
     permalink: examplePermalink,

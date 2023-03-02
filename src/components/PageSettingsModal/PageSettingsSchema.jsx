@@ -53,6 +53,9 @@ export const PageSettingsSchema = (existingTitlesArray = []) =>
               permalinkRegexTest,
               "Permalink should start with a slash, and contain alphanumeric characters separated by hyphens and slashes only"
             )
+            .test("is-lowercase", "Permalink must be lowercase", (value) => {
+              return value === value.toLowerCase()
+            })
       }
     }),
     layout: Yup.string().oneOf(["file", "post", "link"]),
