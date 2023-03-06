@@ -15,6 +15,7 @@ import {
 const PERMALINK_REGEX = "^((/([a-zA-Z0-9]+-)*[a-zA-Z0-9]+)+)/?$"
 export const URL_REGEX_PREFIX = "^(https://)?(www.)?("
 export const URL_REGEX_SUFFIX = ".com/)([a-zA-Z0-9_-]+([/.])?)+$"
+export const YOUTUBE_REGEX = ".com/(@)?)([a-zA-Z0-9_-]+([/.])?)+$"
 export const TELEGRAM_REGEX = "telegram|t).me/([a-zA-Z0-9_-]+([/.])?)+$"
 export const TIKTOK_REGEX = ".com/@)([a-zA-Z0-9_-]+([/.])?)+$"
 // Domain name regex (source: https://regexr.com/3au3g and https://stackoverflow.com/a/30007882)
@@ -46,7 +47,7 @@ export const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/
 export const RESOURCE_CATEGORY_REGEX = "^([a-zA-Z0-9]*[- ]?)+$"
 export const slugifyLowerFalseRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
 export const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX)
-export const specialCharactersRegexTest = /[~%^*_+\-./\\`;~{}[\]"<>]/
+export const specialCharactersRegexTest = /[~%^*_+./\\`;~{}[\]"<>]/
 export const mediaSpecialCharactersRegexTest = /[~%^?*+#./\\`;~{}[\]"<>]/
 export const imagesSuffixRegexTest = /^.+\.(svg|jpg|jpeg|png|gif|tif|bmp|ico)$/
 export const filesSuffixRegexTest = /^.+\.(pdf)$/
