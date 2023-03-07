@@ -4,6 +4,8 @@ import PropTypes from "prop-types"
 import { useGetMediaFolders } from "hooks/directoryHooks"
 import { useGetMediaHook, useUpdateMediaHook } from "hooks/mediaHooks"
 
+import { getFileName } from "utils"
+
 export const MediaSettingsScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match
   const { data: mediaData } = useGetMediaHook(params)
@@ -17,7 +19,10 @@ export const MediaSettingsScreen = ({ match, onClose }) => {
       params={decodedParams}
       onClose={onClose}
       mediaData={mediaData}
-      mediasData={mediasData}
+      mediasData={mediasData.map(({ name, ...rest }) => ({
+        name: getFileName(name),
+        ...rest,
+      }))}
       onProceed={updateHandler}
     />
   )

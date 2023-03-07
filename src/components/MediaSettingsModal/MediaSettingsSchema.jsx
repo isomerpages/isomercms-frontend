@@ -1,8 +1,6 @@
 import * as Yup from "yup"
 
 import {
-  imagesSuffixRegexTest,
-  filesSuffixRegexTest,
   mediaSpecialCharactersRegexTest,
   MEDIA_SETTINGS_TITLE_MIN_LENGTH,
   MEDIA_SETTINGS_TITLE_MAX_LENGTH,
@@ -13,10 +11,15 @@ export const MediaSettingsSchema = (existingTitlesArray = []) =>
   Yup.object().shape({
     name: Yup.string()
       .required("Title is required")
-      .test(
-        "Special characters found",
-        'Title cannot contain any of the following special characters: ~%^*+#?./`;{}[]"<>',
-        (value) => !mediaSpecialCharactersRegexTest.test(value.split(".")[0])
+      .when("$isCreate", (isCreate, schema) =>
+        schema.test(
+          "Special characters found",
+          'Title cannot contain any of the following special characters: ~%^*+#?./`;{}[]"<>',
+          (value) => {
+            const prefix = isCreate ? value.split(".")[0] : value
+            return !mediaSpecialCharactersRegexTest.test(prefix)
+          }
+        )
       )
       .test(
         "File not supported",
@@ -34,30 +37,16 @@ export const MediaSettingsSchema = (existingTitlesArray = []) =>
         `Title must be shorter than ${MEDIA_SETTINGS_TITLE_MAX_LENGTH} characters`
       )
       // When this is called, mediaRoom is one of either images or files
-      .when("$mediaRoom", (mediaRoom, schema) => {
-        if (mediaRoom === "images") {
-          return schema.test(
-            "Special characters found",
-            "Title must end with one of the following extensions: 'png', 'jpeg', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg'",
-            (value) => imagesSuffixRegexTest.test(value)
-          )
-        }
-        if (mediaRoom === "files") {
-          return schema.test(
-            "Special characters found",
-            "Title must end with the following extensions: 'pdf'",
-            (value) => filesSuffixRegexTest.test(value)
-          )
-        }
-
+      .when(["$mediaRoom", "$isCreate"], (mediaRoom, isCreate, schema) => {
         return schema.test(
           "Invalid case",
           "This is an invalid value for the mediaRoom type!",
-          () => false
+          () => mediaRoom === "files" || mediaRoom === "images"
         )
       })
+      .lowercase()
       .notOneOf(
-        existingTitlesArray,
+        existingTitlesArray.map((title) => title.toLowerCase()),
         "Title is already in use. Please choose a different title."
       ),
   })
