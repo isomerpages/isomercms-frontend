@@ -5,6 +5,7 @@ import {
   useContext,
   PropsWithChildren,
   useCallback,
+  useState,
 } from "react"
 
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
@@ -33,45 +34,29 @@ const useLoginContext = (): LoginContextProps => {
 const LoginProvider = ({
   children,
 }: PropsWithChildren<Record<string, never>>): JSX.Element => {
-  const [storedUserId, setStoredUserId, removeStoredUserId] = useLocalStorage(
-    LOCAL_STORAGE_KEYS.GithubId,
-    "Unknown user"
-  )
-  const [
-    storedUser,
-    setStoredUser,
-    removeStoredUser,
-  ] = useLocalStorage(LOCAL_STORAGE_KEYS.User, { email: "", contactNumber: "" })
-  const [
-    storedUserEmail,
-    setStoredUserEmail,
-    removeStoredUserEmail,
-  ] = useLocalStorage(LOCAL_STORAGE_KEYS.Email, "Unknown email")
-
   const [, , removeSites] = useLocalStorage(
     LOCAL_STORAGE_KEYS.SitesIsPrivate,
     false
   )
+  const [storedUserId, setStoredUserId] = useState("")
+  const [storedUserContact, setStoredUserContact] = useState("")
+  const [storedUserEmail, setStoredUserEmail] = useState("")
   const verifyLoginAndSetLocalStorage = useCallback(async () => {
     const { data: loggedInUser } = await axios.get<LoggedInUser>(
       `${BACKEND_URL}/auth/whoami`
     )
 
     setStoredUserId(loggedInUser.userId)
-    setStoredUser(loggedInUser)
+    setStoredUserContact(loggedInUser.contactNumber)
     setStoredUserEmail(loggedInUser.email)
-  }, [setStoredUser, setStoredUserEmail, setStoredUserId])
+  }, [setStoredUserContact, setStoredUserEmail, setStoredUserId])
 
   const logout = async () => {
     await axios.delete(`${BACKEND_URL}/auth/logout`)
-    removeStoredUserId()
-    removeStoredUser()
-    removeStoredUserEmail()
-    removeSites()
-    // NOTE: This is REQUIRED (emphasis here) for auto-redirect on removal of stored user id.
-    // This is IN ADDITION to removing the value associated with the key.
     setStoredUserId("")
+    setStoredUserContact("")
     setStoredUserEmail("")
+    removeSites()
   }
 
   // Set interceptors to log users out if an error occurs within the LoginProvider
@@ -96,7 +81,7 @@ const LoginProvider = ({
   const loginContextData = {
     userId: storedUserId,
     email: storedUserEmail,
-    contactNumber: storedUser.contactNumber,
+    contactNumber: storedUserContact,
     logout,
     verifyLoginAndSetLocalStorage,
     displayedName: `${storedUserId ? "@" : ""}${
