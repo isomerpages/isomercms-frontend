@@ -42,6 +42,7 @@
     "react/require-default-props": "off",
     "import/prefer-default-export": "off",
     "react/prop-types": "warn",
+    "no-param-reassign": "warn",
     "no-unused-vars": [
       "error",
       { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
