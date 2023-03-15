@@ -32,7 +32,7 @@
     {
       "files": ["*.ts", "*.tsx"],
       "parser": "@typescript-eslint/parser",
-      "extends": ["react-app", "plugin:@typescript-eslint/recommended"]
+      "extends": ["plugin:@typescript-eslint/recommended"]
     }
   ],
   "rules": {
