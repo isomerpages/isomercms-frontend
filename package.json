@@ -2,6 +2,9 @@
   "name": "isomercms-frontend",
   "version": "0.16.1",
   "private": true,
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "dependencies": {
     "@atlaskit/tree": "^7.0.2",
     "@braintree/sanitize-url": "^6.0.0",
