@@ -1,5 +1,5 @@
-export const COOKIE_NAME: string | undefined = Cypress.env("COOKIE_NAME")
-export const COOKIE_VALUE: string | undefined = Cypress.env("COOKIE_VALUE")
+export const COOKIE_NAME: string = Cypress.env("COOKIE_NAME") || ""
+export const COOKIE_VALUE: string = Cypress.env("COOKIE_VALUE") || ""
 export const E2E_USER = {
   userId: "test",
   email: "test@open.gov.sg",
