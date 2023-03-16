@@ -67,7 +67,8 @@ const BaseComponent = ({
       isDisabled={isDisabled}
     >
       <FormLabel>{formTitle}</FormLabel>
-      <FormFieldMessage>{formDescription}</FormFieldMessage>
+      {/* TODO: commenting this out as the intrinsic properties are not matching */}
+      {/* <FormFieldMessage>{formDescription}</FormFieldMessage> */}
       <MediaComponent
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         register={() => {}}
