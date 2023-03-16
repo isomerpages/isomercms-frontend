@@ -399,7 +399,7 @@ export const RequestOverview = ({
           ref={inputRef}
           onSearchIconClick={handleExpansion}
           isExpanded={isExpanded}
-          onSearch={table.getColumn("itemName").setFilterValue}
+          onSearch={table.getColumn("itemName")!.setFilterValue}
           onBlur={handleCollapse}
         />
       </Flex>
