@@ -63,7 +63,7 @@ describe("Utils test", () => {
         resourceRoomName,
         resourceCategoryName,
       }
-      const examplePermalink = `/${resourceRoomName}/${resourceCategoryName}/permalink`
+      const examplePermalink = `/${resourceRoomName}/${resourceCategoryName}/permalink`.toLowerCase()
 
       expect(getDefaultFrontMatter(params, [])).toMatchObject({
         title: exampleTitle,
@@ -79,7 +79,7 @@ describe("Utils test", () => {
         resourceCategoryName,
       }
       const exampleResourceTitle = `${exampleDate}-${exampleLayout}-${exampleTitle}`
-      const examplePermalink = `/${resourceRoomName}/${resourceCategoryName}/permalink`
+      const examplePermalink = `/${resourceRoomName}/${resourceCategoryName}/permalink`.toLowerCase()
 
       expect(
         getDefaultFrontMatter(params, [
