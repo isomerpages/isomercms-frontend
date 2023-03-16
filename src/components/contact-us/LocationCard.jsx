@@ -96,7 +96,7 @@ const EditorLocationSection = ({
         <div className={`${elementStyles.inputGroup} pt-5`}>
           <Button
             colorScheme="danger"
-            isFullWidth
+            w="100%"
             id={`${sectionId}-${cardIndex}`}
             onClick={deleteHandler}
           >
