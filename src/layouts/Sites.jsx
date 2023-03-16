@@ -1,3 +1,5 @@
+import { LinkBox, LinkOverlay, HStack, Text, VStack } from "@chakra-ui/react"
+import { InlineMessage } from "@opengovsg/design-system-react"
 import axios from "axios"
 import { AllSitesHeader } from "components/Header/AllSitesHeader"
 import _ from "lodash"
@@ -12,6 +14,8 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import siteStyles from "styles/isomer-cms/pages/Sites.module.scss"
 
 import { convertUtcToTimeDiff } from "utils/dateUtils"
+
+import { EmptySitesImage } from "assets"
 
 const Sites = ({ siteNames }) => {
   const { userId } = useLoginContext()
@@ -37,10 +41,30 @@ const Sites = ({ siteNames }) => {
 
   if (siteNames && siteNames.length === 0)
     return (
-      <div className={siteStyles.infoText}>
-        You do not have access to any sites at the moment. Please contact your
-        system administrator.
-      </div>
+      <VStack pt="2.5rem" w="full" gap="4rem">
+        <InlineMessage variant="warning" w="full">
+          {`If your sites aren’t showing, please try logging in with your ${
+            isEmailLoginUser ? "GitHub ID" : "email"
+          } for now.`}
+        </InlineMessage>
+        <EmptySitesImage />
+        <VStack gap="2rem" color="base.content.default">
+          <VStack spacing="0">
+            <Text fontWeight={500} color="base.content.dark">
+              You’ve not been added as a collaborator to any Isomer site yet.
+            </Text>
+            <Text>Get a colleague to add you as a collaborator.</Text>
+          </VStack>
+          <HStack>
+            <Text>Any question? Contact us at</Text>
+            <LinkBox ml="0">
+              <LinkOverlay href="mailto:support@isomer.gov.sg" isExternal>
+                <Text as="u">support@isomer.gov.sg</Text>
+              </LinkOverlay>
+            </LinkBox>
+          </HStack>
+        </VStack>
+      </VStack>
     )
 
   return <div className={siteStyles.infoText}>Loading sites...</div>
@@ -97,7 +121,9 @@ export default class SitesWrapper extends Component {
           <div className={siteStyles.sitesContainer}>
             <div className={siteStyles.sectionHeader}>
               <div className={siteStyles.sectionTitle}>
-                <b>Sites</b>
+                <Text color="base.content.dark" as="strong">
+                  My Sites
+                </Text>
               </div>
             </div>
             <div className={siteStyles.sites}>
