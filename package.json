@@ -42,10 +42,10 @@
     "marked": "^4.0.12",
     "moment-timezone": "^0.5.35",
     "prop-types": "^15.8.1",
-    "react": "^18.0.0",
+    "react": "^18.2.0",
     "react-beautiful-dnd": "^12.0.0",
     "react-color": "^2.19.3",
-    "react-dom": "^18.0.0",
+    "react-dom": "^18.2.0",
     "react-hook-form": "^7.32.0",
     "react-icons": "^4.4.0",
     "react-input-mask": "^2.0.4",
@@ -68,7 +68,7 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "start": "source .env.development.local && react-scripts start",
+    "start": "source .env && react-scripts start",
     "dev": "source .env && react-scripts start",
     "build": "react-scripts build",
     "release": "npm version $npm_config_isomer_update && git push --tags",
