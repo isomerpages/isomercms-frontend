@@ -132,6 +132,7 @@
     "@types/react-color": "^3.0.6",
     "@types/react-router-dom": "^5.3.3",
     "@types/turndown": "^5.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
     "@typescript-eslint/parser": "^5.55.0",
     "auto-changelog": "^2.4.0",
     "babel-eslint": "^10.1.0",
