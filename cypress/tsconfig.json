@@ -14,7 +14,7 @@
     "allowJs": true,
     "baseUrl": "../src",
     "paths": {
-      "utils": ["utils/index"]
+      "utils": ["../src/utils/index"]
     }
   },
   "include": ["**/*.ts"]
