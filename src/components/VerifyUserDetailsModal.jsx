@@ -25,7 +25,7 @@ const VerifyUserDetailsModal = () => {
   const {
     email: loggedInEmail,
     contactNumber: loggedInContactNumber,
-    verifyLoginAndSetLocalStorage,
+    verifyLoginAndGetUserDetails,
     displayedName,
   } = useContext(LoginContext)
   const { setRedirectToLogout } = useRedirectHook()
@@ -104,7 +104,7 @@ const VerifyUserDetailsModal = () => {
       setMobileNumber("")
       setOtp("")
 
-      await verifyLoginAndSetLocalStorage()
+      await verifyLoginAndGetUserDetails()
     } catch (err) {
       setError("Invalid OTP. Failed to verify OTP.")
     } finally {

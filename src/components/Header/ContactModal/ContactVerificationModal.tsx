@@ -38,7 +38,7 @@ export const ContactVerificationModal = ({
     error: verifyError,
   } = useVerifyContact()
 
-  const { verifyLoginAndSetLocalStorage } = useLoginContext()
+  const { verifyLoginAndGetUserDetails } = useLoginContext()
 
   const [mobile, setMobile] = useState<string>("")
 
@@ -56,7 +56,7 @@ export const ContactVerificationModal = ({
     successToast({
       description: `Successfully changed contact number to ${mobile}!`,
     })
-    verifyLoginAndSetLocalStorage()
+    verifyLoginAndGetUserDetails()
   }
 
   return (

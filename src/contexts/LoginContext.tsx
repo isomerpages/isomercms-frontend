@@ -18,7 +18,7 @@ const { REACT_APP_BACKEND_URL_V2: BACKEND_URL } = process.env
 
 interface LoginContextProps extends LoggedInUser {
   logout: () => Promise<void>
-  verifyLoginAndSetLocalStorage: () => Promise<void>
+  verifyLoginAndGetUserDetails: () => Promise<void>
 }
 
 const LoginContext = createContext<null | LoginContextProps>(null)
@@ -41,7 +41,7 @@ const LoginProvider = ({
   const [storedUserId, setStoredUserId] = useState("")
   const [storedUserContact, setStoredUserContact] = useState("")
   const [storedUserEmail, setStoredUserEmail] = useState("")
-  const verifyLoginAndSetLocalStorage = useCallback(async () => {
+  const verifyLoginAndGetUserDetails = useCallback(async () => {
     const { data: loggedInUser } = await axios.get<LoggedInUser>(
       `${BACKEND_URL}/auth/whoami`
     )
@@ -73,7 +73,7 @@ const LoginProvider = ({
   )
 
   useEffect(() => {
-    verifyLoginAndSetLocalStorage()
+    verifyLoginAndGetUserDetails()
     // Dependency array must be empty here - the pointer to the verify callback method doesn't seem to be stable so this useEffect would be called repeatedly
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Run only once
@@ -83,7 +83,7 @@ const LoginProvider = ({
     email: storedUserEmail,
     contactNumber: storedUserContact,
     logout,
-    verifyLoginAndSetLocalStorage,
+    verifyLoginAndGetUserDetails,
     displayedName: `${storedUserId ? "@" : ""}${
       storedUserId || storedUserEmail
     }`,
