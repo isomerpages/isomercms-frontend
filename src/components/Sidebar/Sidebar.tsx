@@ -184,11 +184,7 @@ export const Sidebar = (): JSX.Element => {
       </LinkBox>
       <Divider color="secondary.100" />
       <VStack spacing="2rem" pt="0.5rem">
-        <SidebarButton
-          isFullWidth
-          display="block"
-          onClick={setRedirectToLogout}
-        >
+        <SidebarButton w="100%" display="block" onClick={setRedirectToLogout}>
           <Flex w="100%">
             <Text textStyle="body-1">Logout</Text>
             <Spacer />
