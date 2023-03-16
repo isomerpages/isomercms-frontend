@@ -14,7 +14,11 @@ const Template: Story<never> = () => {
   return (
     <>
       <Button onClick={onOpen}>Open Modal</Button>
-      <ApprovedModal isOpen={isOpen} onClose={onClose} />
+      <ApprovedModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onClick={() => console.log("Clicked")}
+      />
     </>
   )
 }
