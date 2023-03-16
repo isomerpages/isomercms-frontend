@@ -70,8 +70,10 @@ const ValidatedFormInput = ({
   const displayedLabel = upperFirst(label)
   const { register } = useFormContext()
   const { errors } = useFormState()
-  const isInvalid =
-    errors.socialMediaContent && !!errors.socialMediaContent[label]
+
+  // TODO: Making this any due to type conflicts
+  const socialMediaContent: any = errors.socialMediaContent
+  const isInvalid = socialMediaContent && !!socialMediaContent[label]
 
   return (
     <FormControl isDisabled={isError} isInvalid={isInvalid}>
