@@ -1,6 +1,7 @@
 export * from "./NavImage"
 export * from "./LoginImage"
 export * from "./OGPLogo"
+export * from "./OGPLogoNoText"
 export * from "./IsomerLogo"
 export * from "./EmptyBlueBoxImage"
 export * from "./EmptyWhiteBoxImage"

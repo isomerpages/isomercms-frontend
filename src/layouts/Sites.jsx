@@ -1,4 +1,11 @@
-import { LinkBox, LinkOverlay, HStack, Text, VStack } from "@chakra-ui/react"
+import {
+  LinkBox,
+  LinkOverlay,
+  HStack,
+  Text,
+  VStack,
+  Flex,
+} from "@chakra-ui/react"
 import { InlineMessage } from "@opengovsg/design-system-react"
 import axios from "axios"
 import { AllSitesHeader } from "components/Header/AllSitesHeader"
@@ -15,7 +22,7 @@ import siteStyles from "styles/isomer-cms/pages/Sites.module.scss"
 
 import { convertUtcToTimeDiff } from "utils/dateUtils"
 
-import { EmptySitesImage } from "assets"
+import { EmptySitesImage, OGPLogoNoText } from "assets"
 
 const Sites = ({ siteNames }) => {
   const { userId } = useLoginContext()
@@ -27,13 +34,23 @@ const Sites = ({ siteNames }) => {
       <div className={siteStyles.siteContainer} key={siteName.repoName}>
         <div className={siteStyles.site}>
           <Link to={`/sites/${siteName.repoName}/${urlLink}`}>
-            <div className={siteStyles.siteImage} />
-            <div className={siteStyles.siteDescription}>
-              <div className={siteStyles.siteName}>{siteName.repoName}</div>
-              <div className={siteStyles.siteInfo}>
+            <Flex w="full" h="70%" justifyContent="center" alignItems="center">
+              <OGPLogoNoText height="30%" />
+            </Flex>
+            <VStack
+              w="full"
+              h="30%"
+              justifyContent="center"
+              alignItems="start"
+              backgroundColor="interaction.mainLight.default"
+              pl="1rem"
+              borderRadius="0px 0px 4px 4px"
+            >
+              <Text fontSize="0.9em">{siteName.repoName}</Text>
+              <Text fontSize="0.6em" color="base.content.light">
                 {convertUtcToTimeDiff(siteName.lastUpdated)}
-              </div>
-            </div>
+              </Text>
+            </VStack>
           </Link>
         </div>
       </div>
