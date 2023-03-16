@@ -113,7 +113,7 @@ const EditorSection = ({
         </Droppable>
         <div className={`${elementStyles.inputGroup} pt-5`}>
           <Button
-            isFullWidth
+            w="100%"
             id={`${sectionId}`}
             onClick={createHandler}
           >{`Add ${sectionId === "contacts" ? "Contact" : "Location"}`}</Button>
