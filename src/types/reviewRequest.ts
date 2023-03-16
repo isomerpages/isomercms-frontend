@@ -18,7 +18,8 @@ export interface EditedItemProps {
   type: FileType[]
   name: string
   path: string[]
-  url: string
+  stagingUrl: string
+  fileUrl: string
   lastEditedBy: string
   lastEditedTime: number
 }

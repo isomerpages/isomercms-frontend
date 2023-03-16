@@ -360,22 +360,22 @@ export const RequestOverview = ({
               // NOTE: Pass `undefined` to avoid users being able to click
               // despite being visually disabled.
               href={
-                row.original.url
+                row.original.fileUrl
                   ? // NOTE: Permalinks are enforced to start with a `/` by our CMS
-                    row.original.url
+                    row.original.fileUrl
                   : undefined
               }
               isExternal
             >
               <IconButton
-                isDisabled={!row.original.url}
+                isDisabled={!row.original.fileUrl}
                 icon={<BiEditAlt />}
                 aria-label="edit file"
                 variant="link"
               />
             </Link>
           )}
-          <Link href={row.original.url}>
+          <Link href={row.original.stagingUrl}>
             <IconButton
               icon={<BiGitCompare />}
               aria-label="view file on staging"
