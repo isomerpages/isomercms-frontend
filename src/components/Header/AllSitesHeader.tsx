@@ -7,6 +7,7 @@ import {
   LinkOverlay,
   Text,
 } from "@chakra-ui/react"
+
 import { AvatarMenu } from "components/Header/AvatarMenu"
 
 import { ISOMER_GUIDE_LINK } from "constants/config"

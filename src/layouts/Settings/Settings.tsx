@@ -7,12 +7,13 @@ import {
   useDisclosure,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
-import { Footer } from "components/Footer"
-import { WarningModal } from "components/WarningModal"
 import _ from "lodash"
 import { useEffect, useRef } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 import { useParams } from "react-router-dom"
+
+import { Footer } from "components/Footer"
+import { WarningModal } from "components/WarningModal"
 
 import { useGetSettings, useUpdateSettings } from "hooks/settingsHooks"
 

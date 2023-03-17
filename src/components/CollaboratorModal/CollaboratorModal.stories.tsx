@@ -1,7 +1,8 @@
 import { Button, useDisclosure } from "@chakra-ui/react"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
-import { CollaboratorModal } from "components/CollaboratorModal/index"
 import { MemoryRouter, Route } from "react-router-dom"
+
+import { CollaboratorModal } from "components/CollaboratorModal/index"
 
 import { MOCK_COLLABORATORS, MOCK_USER } from "mocks/constants"
 import { handlers } from "mocks/handlers"
