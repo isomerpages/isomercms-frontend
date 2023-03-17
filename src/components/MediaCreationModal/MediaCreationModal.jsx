@@ -1,11 +1,12 @@
 import { yupResolver } from "@hookform/resolvers/yup"
 import { Input } from "@opengovsg/design-system-react"
+import { useEffect, useRef, useState } from "react"
+import { useForm, FormProvider } from "react-hook-form"
+
 import {
   MediaSettingsSchema,
   MediaSettingsModal,
 } from "components/MediaSettingsModal"
-import { useEffect, useRef, useState } from "react"
-import { useForm, FormProvider } from "react-hook-form"
 
 import { useErrorToast } from "utils/toasts"
 import { MEDIA_FILE_MAX_SIZE } from "utils/validators"
