@@ -1,7 +1,8 @@
 import { LinkOverlay, LinkBox, Text, Icon } from "@chakra-ui/react"
-import { Card, CardBody } from "components/Card"
 import { BiPhone } from "react-icons/bi"
 import { Link as RouterLink } from "react-router-dom"
+
+import { Card, CardBody } from "components/Card"
 
 interface ContactCardProps {
   siteName: string

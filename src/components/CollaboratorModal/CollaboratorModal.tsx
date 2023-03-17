@@ -1,9 +1,10 @@
 import { ModalProps } from "@chakra-ui/react"
+import { useState } from "react"
+
 import {
   MainSubmodal,
   RemoveCollaboratorSubmodal,
 } from "components/CollaboratorModal/components"
-import { useState } from "react"
 
 import { useLoginContext } from "contexts/LoginContext"
 

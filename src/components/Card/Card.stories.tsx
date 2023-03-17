@@ -1,7 +1,8 @@
 import { Icon, Text, useToast, Box } from "@chakra-ui/react"
 import { ComponentMeta, Story } from "@storybook/react"
-import { ContextMenu } from "components/ContextMenu"
 import { BiFolder } from "react-icons/bi"
+
+import { ContextMenu } from "components/ContextMenu"
 
 import { CardBody, Card, CardFooter } from "./Card"
 

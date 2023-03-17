@@ -12,9 +12,10 @@ import {
   Center,
   HStack,
 } from "@chakra-ui/react"
-import { ContextMenu } from "components/ContextMenu"
 import { BiChevronRight, BiEditAlt, BiFolder, BiTrash } from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
+
+import { ContextMenu } from "components/ContextMenu"
 
 import useRedirectHook from "hooks/useRedirectHook"
 

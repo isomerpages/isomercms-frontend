@@ -1,6 +1,7 @@
 import * as Sentry from "@sentry/react"
-import FallbackComponent from "components/FallbackComponent"
 import { RouteProps as BaseRouteProps } from "react-router-dom"
+
+import FallbackComponent from "components/FallbackComponent"
 
 import { ProtectedRoute } from "./ProtectedRoute"
 

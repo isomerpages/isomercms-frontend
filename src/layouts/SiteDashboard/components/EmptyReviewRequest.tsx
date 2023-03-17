@@ -1,7 +1,8 @@
 import { VStack, Icon, Text, useDisclosure } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
-import { DisplayCard, DisplayCardContent } from "components/DisplayCard"
 import { BiCheckCircle } from "react-icons/bi"
+
+import { DisplayCard, DisplayCardContent } from "components/DisplayCard"
 
 import { ReviewRequestModal } from "layouts/ReviewRequest"
 

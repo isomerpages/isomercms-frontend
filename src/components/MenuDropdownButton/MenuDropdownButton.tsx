@@ -7,9 +7,10 @@ import {
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import type { ButtonProps } from "@opengovsg/design-system-react"
-import { ContextMenu } from "components/ContextMenu"
 import _ from "lodash"
 import { BiChevronDown, BiChevronUp } from "react-icons/bi"
+
+import { ContextMenu } from "components/ContextMenu"
 
 interface MenuDropdownButtonProps extends ButtonProps {
   mainButtonText: string

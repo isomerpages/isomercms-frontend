@@ -8,10 +8,11 @@ import {
   LinkOverlay,
 } from "@chakra-ui/react"
 import { IconButton } from "@opengovsg/design-system-react"
-import { AvatarMenu } from "components/Header/AvatarMenu"
-import { NotificationMenu } from "components/Header/NotificationMenu"
 import { BiArrowBack } from "react-icons/bi"
 import { Link as RouterLink, useLocation, useParams } from "react-router-dom"
+
+import { AvatarMenu } from "components/Header/AvatarMenu"
+import { NotificationMenu } from "components/Header/NotificationMenu"
 
 import { useLoginContext } from "contexts/LoginContext"
 
