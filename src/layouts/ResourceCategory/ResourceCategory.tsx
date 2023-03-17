@@ -1,5 +1,4 @@
 import { Box, Text, Skeleton, SimpleGrid, Button, Icon } from "@chakra-ui/react"
-import { EmptyArea } from "components/EmptyArea"
 import { BiBulb, BiPlus } from "react-icons/bi"
 import {
   Switch,
@@ -7,6 +6,8 @@ import {
   useHistory,
   Link as RouterLink,
 } from "react-router-dom"
+
+import { EmptyArea } from "components/EmptyArea"
 
 import { useGetResourceCategory } from "hooks/directoryHooks"
 
