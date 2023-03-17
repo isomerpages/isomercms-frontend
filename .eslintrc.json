@@ -27,7 +27,7 @@
     "ecmaVersion": 2020,
     "sourceType": "module"
   },
-  "plugins": ["react"],
+  "plugins": ["react", "react-hooks"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"],
