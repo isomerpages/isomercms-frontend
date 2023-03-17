@@ -1,7 +1,8 @@
-import { MediaMoveModal } from "components/MediaMoveModal"
-import { PageMoveModal } from "components/PageMoveModal"
 import _ from "lodash"
 import PropTypes from "prop-types"
+
+import { MediaMoveModal } from "components/MediaMoveModal"
+import { PageMoveModal } from "components/PageMoveModal"
 
 import { useMoveHook } from "hooks/moveHooks"
 

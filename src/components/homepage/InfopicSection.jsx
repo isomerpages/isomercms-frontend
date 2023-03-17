@@ -1,8 +1,9 @@
 import { Button, IconButton } from "@opengovsg/design-system-react"
+import PropTypes from "prop-types"
+
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormField from "components/FormField"
 import FormFieldMedia from "components/FormFieldMedia"
-import PropTypes from "prop-types"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
