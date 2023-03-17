@@ -30,9 +30,6 @@ jobs:
             ${{ runner.OS }}-
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      # Uninstall when you're done
-      # - name: Clean up
-      #   run: npm uninstall -g yarn
 
   lint:
     needs: install
@@ -54,8 +51,10 @@ jobs:
           key: ${{ runner.OS }}-node-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - run: yarn run lint-fix
-      - run: yarn run format-fix
+      - name: Run eslint fix
+        run: yarn run lint-fix
+      - name: Run prettier fix
+        run: yarn run format-fix
 
   build:
     needs: lint
@@ -79,7 +78,8 @@ jobs:
           key: ${{ runner.OS }}-node-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - run: yarn run build
+      - name: Run build
+        run: yarn build
 
   test:
     needs: build
@@ -111,4 +111,5 @@ jobs:
           key: ${{ runner.OS }}-node-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - run: yarn run test
+      - name: Run tests
+        run: yarn run test
