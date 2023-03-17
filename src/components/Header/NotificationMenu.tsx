@@ -7,10 +7,11 @@ import {
   Text,
 } from "@chakra-ui/react"
 import { Menu, Spinner } from "@opengovsg/design-system-react"
-import { ContextMenuItem } from "components/ContextMenu/ContextMenuItem"
 import { PropsWithChildren, useEffect, useState } from "react"
 import { BiBell, BiDownArrowAlt } from "react-icons/bi"
 import { useParams } from "react-router-dom"
+
+import { ContextMenuItem } from "components/ContextMenu/ContextMenuItem"
 
 import { useLoginContext } from "contexts/LoginContext"
 
