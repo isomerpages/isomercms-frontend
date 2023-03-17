@@ -3,7 +3,7 @@ import {
   slugifyCategory,
   generateResourceFileName,
   titleToPageFileName,
-} from "utils"
+} from "utils/legacyUtils"
 
 import {
   CMS_BASEURL,
@@ -12,9 +12,9 @@ import {
 } from "../fixtures/constants"
 
 // Constants
-
 const PRIMARY_COLOUR = "rgb(255, 0, 0)"
 const SECONDARY_COLOUR = "rgb(0, 255, 0)"
+
 describe("editPage.spec", () => {
   beforeEach(() => {
     cy.setupDefaultInterceptors()

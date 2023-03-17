@@ -1,5 +1,5 @@
 import "cypress-file-upload"
-import { slugifyCategory, generateResourceFileName } from "utils"
+import { generateResourceFileName, slugifyCategory } from "utils/legacyUtils"
 
 import {
   CMS_BASEURL,
