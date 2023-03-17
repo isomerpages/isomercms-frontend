@@ -8,6 +8,13 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
+import axios from "axios"
+import update from "immutability-helper"
+import _ from "lodash"
+import PropTypes from "prop-types"
+import { createRef, useEffect, useState } from "react"
+import { DragDropContext } from "react-beautiful-dnd"
+
 import EditorSection from "components/contact-us/Section"
 import { Footer } from "components/Footer"
 import FormContext from "components/Form/FormContext"
@@ -16,18 +23,9 @@ import FormField from "components/FormField"
 import Header from "components/Header"
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
-import update from "immutability-helper"
-import _ from "lodash"
-import PropTypes from "prop-types"
-import { createRef, useEffect, useState } from "react"
-import { DragDropContext } from "react-beautiful-dnd"
 
 // Import hooks
-import {
-  useGetContactUsHook,
-  useUpdateContactUsHook,
-} from "hooks/directoryHooks/contactUsHooks"
-import { useGetSettings, useUpdateSettings } from "hooks/settingsHooks"
+import useRedirectHook from "hooks/useRedirectHook"
 import useSiteColorsHook from "hooks/useSiteColorsHook"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -43,7 +41,12 @@ import validateFrontMatter from "utils/contact-us/validators"
 import { useErrorToast } from "utils/toasts"
 import { validateContactType, validateLocationType } from "utils/validators"
 
-import { DEFAULT_RETRY_MSG, isEmpty } from "utils"
+import {
+  DEFAULT_RETRY_MSG,
+  frontMatterParser,
+  concatFrontMatterMdBody,
+  isEmpty,
+} from "utils"
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -155,6 +158,7 @@ const displayDeletedFrontMatter = (deletedFrontMatter) => {
 
 const EditContactUs = ({ match }) => {
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
+  const { setRedirectToNotFound } = useRedirectHook()
 
   const { siteName } = match.params
   const [hasLoaded, setHasLoaded] = useState(false)
@@ -205,16 +209,13 @@ const EditContactUs = ({ match }) => {
     onOpen: onDeleteModalOpen,
     onClose: onDeleteModalClose,
   } = useDisclosure()
-  const { data: contactUsDetails } = useGetContactUsHook(siteName)
-  const { data: settingsData } = useGetSettings(siteName)
-
-  const { mutateAsync: updateContactUs } = useUpdateContactUsHook(siteName)
-  const { mutateAsync: updateSettings } = useUpdateSettings(siteName)
 
   useEffect(() => {
-    if (!contactUsDetails || !settingsData) return
+    let _isMounted = true
 
-    const { content, sha } = contactUsDetails
+    let content
+    let sha
+    let newFooterContent
 
     const loadContactUsDetails = async () => {
       // Set page colors
@@ -225,11 +226,43 @@ const EditContactUs = ({ match }) => {
         console.log(err)
       }
 
-      const { feedback } = settingsData
-      const newFooterContent = { feedback }
+      try {
+        const contactUsResp = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/contact-us.md`
+        )
+        const { content: pageContent, sha: pageSha } = contactUsResp.data
+        content = pageContent
+        sha = pageSha
+      } catch (error) {
+        if (error?.response?.status === 404) {
+          setRedirectToNotFound(siteName)
+        } else {
+          errorToast({
+            description: `There was a problem trying to load your contact us page. ${DEFAULT_RETRY_MSG}`,
+          })
+        }
+        console.log(error)
+      }
+
+      if (!content) return
+
+      try {
+        const settingsResp = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/settings`
+        )
+        const { feedback } = settingsResp.data
+        newFooterContent = { feedback }
+      } catch (err) {
+        errorToast({
+          description: `There was a problem trying to load your contact us page. ${DEFAULT_RETRY_MSG}`,
+        })
+        console.log(err)
+      }
+
+      if (!newFooterContent) return
 
       // split the markdown into front matter and content
-      const { frontMatter: newFrontMatter } = content
+      const { frontMatter: newFrontMatter } = frontMatterParser(content)
 
       // data cleaning for non-comforming data
       const {
@@ -268,32 +301,38 @@ const EditContactUs = ({ match }) => {
         locationsScrollRefs.push(createRef())
       })
 
-      setScrollRefs({
-        sectionsScrollRefs,
-        contacts: contactsScrollRefs,
-        locations: locationsScrollRefs,
-      })
-      setFooterContent(newFooterContent)
-      setOriginalFooterContent(_.cloneDeep(newFooterContent))
-      setFrontMatter(sanitisedFrontMatter)
-      setOriginalFrontMatter(_.cloneDeep(newFrontMatter))
-      setDeletedFrontMatter(newDeletedFrontMatter)
-      setSanitisedOriginalFrontMatter(_.cloneDeep(sanitisedFrontMatter))
-      setFrontMatterSha(sha)
-      setDisplaySections({
-        sectionsDisplay,
-        contacts: contactsDisplay,
-        locations: locationsDisplay,
-      })
-      setErrors({
-        contacts: contactsErrors,
-        locations: locationsErrors,
-      })
-      setHasLoaded(true)
+      if (_isMounted) {
+        setScrollRefs({
+          sectionsScrollRefs,
+          contacts: contactsScrollRefs,
+          locations: locationsScrollRefs,
+        })
+        setFooterContent(newFooterContent)
+        setOriginalFooterContent(_.cloneDeep(newFooterContent))
+        setFrontMatter(sanitisedFrontMatter)
+        setOriginalFrontMatter(_.cloneDeep(newFrontMatter))
+        setDeletedFrontMatter(newDeletedFrontMatter)
+        setSanitisedOriginalFrontMatter(_.cloneDeep(sanitisedFrontMatter))
+        setFrontMatterSha(sha)
+        setDisplaySections({
+          sectionsDisplay,
+          contacts: contactsDisplay,
+          locations: locationsDisplay,
+        })
+        setErrors({
+          contacts: contactsErrors,
+          locations: locationsErrors,
+        })
+        setHasLoaded(true)
+      }
     }
 
     loadContactUsDetails()
-  }, [contactUsDetails, settingsData])
+
+    return () => {
+      _isMounted = false
+    }
+  }, [])
 
   const onDragEnd = (result) => {
     const { source, destination, type } = result
@@ -719,11 +758,21 @@ const EditContactUs = ({ match }) => {
       if (!filteredFrontMatter.locations.length)
         delete filteredFrontMatter.locations
 
+      const content = concatFrontMatterMdBody(filteredFrontMatter, "")
+
+      const frontMatterParams = {
+        content,
+        sha: frontMatterSha,
+      }
+
       if (JSON.stringify(originalFrontMatter) !== JSON.stringify(frontMatter)) {
-        await updateContactUs({
-          frontMatter: filteredFrontMatter,
-          sha: frontMatterSha,
-        })
+        await axios.post(
+          `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/pages/contact-us.md`,
+          frontMatterParams,
+          {
+            withCredentials: true,
+          }
+        )
       }
 
       // Update settings
@@ -736,11 +785,16 @@ const EditContactUs = ({ match }) => {
       if (
         JSON.stringify(footerContent) !== JSON.stringify(originalFooterContent)
       ) {
-        await updateSettings({
-          ...settingsData,
-          ...footerParams,
-        })
+        await axios.post(
+          `${process.env.REACT_APP_BACKEND_URL_V2}/sites/${siteName}/settings`,
+          footerParams,
+          {
+            withCredentials: true,
+          }
+        )
       }
+
+      window.location.reload()
     } catch (err) {
       errorToast({
         description: `There was a problem trying to save your contact us page. ${DEFAULT_RETRY_MSG}`,

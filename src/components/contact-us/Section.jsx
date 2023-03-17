@@ -1,9 +1,10 @@
 import { Button, IconButton } from "@opengovsg/design-system-react"
-import EditorContactCard from "components/contact-us/ContactCard"
-import EditorLocationCard from "components/contact-us/LocationCard"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import { Droppable, Draggable } from "react-beautiful-dnd"
+
+import EditorContactCard from "components/contact-us/ContactCard"
+import EditorLocationCard from "components/contact-us/LocationCard"
 
 import styles from "styles/App.module.scss"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -112,11 +113,9 @@ const EditorSection = ({
           )}
         </Droppable>
         <div className={`${elementStyles.inputGroup} pt-5`}>
-          <Button
-            w="100%"
-            id={`${sectionId}`}
-            onClick={createHandler}
-          >{`Add ${sectionId === "contacts" ? "Contact" : "Location"}`}</Button>
+          <Button w="100%" id={`${sectionId}`} onClick={createHandler}>{`Add ${
+            sectionId === "contacts" ? "Contact" : "Location"
+          }`}</Button>
         </div>
       </>
     ) : null}

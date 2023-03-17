@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import { useDisclosure, Text, HStack, VStack } from "@chakra-ui/react"
 import { Button, Input } from "@opengovsg/design-system-react"
+import axios from "axios"
+import update from "immutability-helper"
+import _ from "lodash"
+import PropTypes from "prop-types"
+import { useEffect, createRef, useState } from "react"
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
+
 import { Footer } from "components/Footer"
 import Header from "components/Header"
 import EditorHeroSection from "components/homepage/HeroSection"
@@ -10,15 +17,8 @@ import NewSectionCreator from "components/homepage/NewSectionCreator"
 import EditorResourcesSection from "components/homepage/ResourcesSection"
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
-import update from "immutability-helper"
-import _ from "lodash"
-import PropTypes from "prop-types"
-import { useEffect, createRef, useState } from "react"
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
 // Import hooks
-import { useGetHomepageHook } from "hooks/homepageHooks"
-import { useUpdateHomepageHook } from "hooks/homepageHooks/useUpdateHomepageHook"
 import useSiteColorsHook from "hooks/useSiteColorsHook"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -38,7 +38,11 @@ import {
   validateDropdownElems,
 } from "utils/validators"
 
-import { DEFAULT_RETRY_MSG } from "utils"
+import {
+  frontMatterParser,
+  concatFrontMatterMdBody,
+  DEFAULT_RETRY_MSG,
+} from "utils"
 
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
@@ -148,15 +152,12 @@ const EditHomepage = ({ match }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [savedHeroElems, setSavedHeroElems] = useState("")
   const [savedHeroErrors, setSavedHeroErrors] = useState("")
-  const { data: homepageData } = useGetHomepageHook(siteName)
-  const { mutateAsync: updateHomepageHandler } = useUpdateHomepageHook(siteName)
-
   const errorToast = useErrorToast()
 
   useEffect(() => {
-    if (!homepageData) return
+    let _isMounted = true
     const loadPageDetails = async () => {
-      // Set page colors
+      // // Set page colors
       try {
         await retrieveSiteColors(siteName)
         generatePageStyleSheet(siteName)
@@ -165,10 +166,14 @@ const EditHomepage = ({ match }) => {
       }
 
       try {
-        const {
-          content: { frontMatter },
-          sha,
-        } = homepageData
+        const resp = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/homepage`,
+          {
+            withCredentials: true,
+          }
+        )
+        const { content, sha } = resp.data
+        const { frontMatter } = frontMatterParser(content)
         // Compute hasResources and set displaySections
         let hasResources = false
         const displaySections = []
@@ -238,19 +243,21 @@ const EditHomepage = ({ match }) => {
           dropdownElems: dropdownElemsErrors,
         }
 
-        setFrontMatter(frontMatter)
-        setOriginalFrontMatter(_.cloneDeep(frontMatter))
-        setSha(sha)
-        setHasResources(hasResources)
-        setDisplaySections(displaySections)
-        setDisplayDropdownElems(displayDropdownElems)
-        setDisplayHighlights(displayHighlights)
-        setErrors(errors)
-        setHasLoaded(true)
-        setScrollRefs(scrollRefs)
+        if (_isMounted) {
+          setFrontMatter(frontMatter)
+          setOriginalFrontMatter(_.cloneDeep(frontMatter))
+          setSha(sha)
+          setHasResources(hasResources)
+          setDisplaySections(displaySections)
+          setDisplayDropdownElems(displayDropdownElems)
+          setDisplayHighlights(displayHighlights)
+          setErrors(errors)
+          setHasLoaded(true)
+          setScrollRefs(scrollRefs)
+        }
       } catch (err) {
         // Set frontMatter to be same to prevent warning message when navigating away
-        setFrontMatter(originalFrontMatter)
+        if (_isMounted) setFrontMatter(originalFrontMatter)
         errorToast({
           description: `There was a problem trying to load your homepage. ${DEFAULT_RETRY_MSG}`,
         })
@@ -259,7 +266,10 @@ const EditHomepage = ({ match }) => {
     }
 
     loadPageDetails()
-  }, [homepageData])
+    return () => {
+      _isMounted = false
+    }
+  }, [])
 
   useEffect(() => {
     if (scrollRefs.length > 0) {
@@ -979,6 +989,7 @@ const EditHomepage = ({ match }) => {
 
   const savePage = async () => {
     try {
+      const { siteName } = match.params
       const filteredFrontMatter = _.cloneDeep(frontMatter)
       // Filter out components which have no input
       filteredFrontMatter.sections = frontMatter.sections.map((section) => {
@@ -992,16 +1003,22 @@ const EditHomepage = ({ match }) => {
         })
         return newSection
       })
+      const content = concatFrontMatterMdBody(filteredFrontMatter, "")
 
       const params = {
-        content: {
-          frontMatter: filteredFrontMatter,
-          pageBody: "",
-        },
+        content,
         sha,
       }
 
-      await updateHomepageHandler(params)
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/homepage`,
+        params,
+        {
+          withCredentials: true,
+        }
+      )
+
+      window.location.reload()
     } catch (err) {
       errorToast({
         description: `There was a problem trying to save your homepage. ${DEFAULT_RETRY_MSG}`,

@@ -1,6 +1,7 @@
-import EditorModals from "components/pages/EditorModals"
 import { useMemo, useState } from "react"
 import SimpleMDE from "react-simplemde-editor"
+
+import EditorModals from "components/pages/EditorModals"
 
 import { useMarkdown } from "hooks/useMarkdown"
 

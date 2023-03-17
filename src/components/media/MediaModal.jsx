@@ -1,12 +1,13 @@
 import { yupResolver } from "@hookform/resolvers/yup"
-import { MediaAltText } from "components/media/MediaAltText"
-import MediasSelectModal from "components/media/MediasSelectModal"
-import { MediaCreationModal } from "components/MediaCreationModal/MediaCreationModal"
 import PropTypes from "prop-types"
 import { useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 import { useRouteMatch } from "react-router-dom"
 import * as Yup from "yup"
+
+import { MediaAltText } from "components/media/MediaAltText"
+import MediasSelectModal from "components/media/MediasSelectModal"
+import { MediaCreationModal } from "components/MediaCreationModal/MediaCreationModal"
 
 import { useGetMediaFolders } from "hooks/directoryHooks"
 import { useCreateMediaHook } from "hooks/mediaHooks/useCreateMediaHook"
