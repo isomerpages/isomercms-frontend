@@ -71,9 +71,11 @@ const ValidatedFormInput = ({
   const { register } = useFormContext()
   const { errors } = useFormState()
 
-  // TODO: Making this any due to type conflicts
-  const socialMediaContent: any = errors.socialMediaContent
-  const isInvalid = socialMediaContent && !!socialMediaContent[label]
+  // TODO: Marking this any due to type conflicts
+  const isInvalid =
+    /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+    // @ts-ignore implicit any type error
+    errors.socialMediaContent && !!errors.socialMediaContent[label]
 
   return (
     <FormControl isDisabled={isError} isInvalid={isInvalid}>
