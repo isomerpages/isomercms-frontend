@@ -44,6 +44,7 @@
     "@typescript-eslint/ban-ts-comment": "off",
     "react/prop-types": "warn",
     "no-param-reassign": "warn",
+    "no-use-before-define": "warn",
     "no-unused-vars": [
       "error",
       { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
