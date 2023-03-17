@@ -1,4 +1,4 @@
-import { slugifyCategory } from "utils"
+import { slugifyCategory } from "utils/legacyUtils"
 
 import {
   CMS_BASEURL,
