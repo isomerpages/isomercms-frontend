@@ -73,7 +73,7 @@
   },
   "scripts": {
     "start": "source .env && react-scripts start",
-    "dev": "source .env && react-scripts start",
+    "dev": "source .env && GENERATE_SOURCEMAP=false react-scripts start",
     "build": "react-scripts build",
     "release": "npm version $npm_config_isomer_update && git push --tags",
     "test": "craco test",
