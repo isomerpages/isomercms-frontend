@@ -18,11 +18,12 @@ import {
 } from "@chakra-ui/react"
 import { Button, IconButton } from "@opengovsg/design-system-react"
 import axios from "axios"
+import PropTypes from "prop-types"
+import { BiArrowBack } from "react-icons/bi"
+
 import { ButtonLink } from "components/ButtonLink"
 import { NotificationMenu } from "components/Header/NotificationMenu"
 import { WarningModal } from "components/WarningModal"
-import PropTypes from "prop-types"
-import { BiArrowBack } from "react-icons/bi"
 
 import { useStagingUrl } from "hooks/settingsHooks"
 import useRedirectHook from "hooks/useRedirectHook"
