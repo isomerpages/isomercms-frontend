@@ -21,12 +21,15 @@ pull_request_rules:
       merge:
         method: squash
 
-  - name: Close stale PRs (>1 month since last activity)
+  - name: Ping isomer members for stale PRs (>1 month since last activity)
     conditions:
       - updated-at>30 days ago
     actions:
-      close:
-        message: This pull request has been closed as it has been a month since the most recent activity on it.
+      request_reviews:
+        teams:
+          - "@isomerpages/iso-engineers"
+      comment:
+        message: This pull request has been stale for more than 30 days! Could someone please take a look at it @isomerpages/iso-engineers
 
   - name: Automatically delete branches after they have been merged
     conditions:
