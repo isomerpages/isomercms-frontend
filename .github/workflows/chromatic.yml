@@ -17,7 +17,10 @@ jobs:
     environment: staging
     # Job steps
     steps:
-      - uses: actions/checkout@v1
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Required to retrieve git history
       # This extra step is not in the original chromatic workflow.
       # This is to use a specific version of node (14.x), because the default is 16.x,
       # which is not compatible with sass
