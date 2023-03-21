@@ -18,6 +18,7 @@ import {
   SiteDashboardInfo,
   SiteDashboardReviewRequest,
 } from "types/siteDashboard"
+import { SiteDataRequest } from "types/sites"
 import { LoggedInUser } from "types/user"
 
 export const MOCK_PAGES_DATA: PageData[] = [
@@ -457,4 +458,35 @@ export const MOCK_REVIEW_REQUEST: ReviewRequest = {
   reviewers: Array(20).fill("mock reviewer"),
   reviewRequestedTime: Date.now(),
   changedItems: Array(20).fill(MOCK_EDITED_ITEM),
+}
+
+export const MOCK_SITES_DATA: SiteDataRequest = {
+  siteNames: [
+    {
+      lastUpdated: "2022-12-24T08:30:46Z",
+      permissions: "write",
+      repoName: "mockRepo",
+      isPrivate: false,
+    },
+    {
+      lastUpdated: "2022-08-24T08:30:46Z",
+      permissions: "write",
+      repoName: "mockRepo2",
+      isPrivate: false,
+    },
+    {
+      lastUpdated: new Date(
+        new Date().getTime() - 24 * 60 * 60 * 1000
+      ).toISOString(),
+      permissions: "write",
+      repoName: "mockRepo3",
+      isPrivate: false,
+    },
+    {
+      lastUpdated: new Date().toISOString(),
+      permissions: "write",
+      repoName: "mockRepo4",
+      isPrivate: false,
+    },
+  ],
 }
