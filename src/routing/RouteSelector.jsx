@@ -20,7 +20,7 @@ import { ResourceRoom } from "layouts/ResourceRoom"
 import { ReviewRequestDashboard } from "layouts/ReviewRequest/Dashboard"
 import { Settings } from "layouts/Settings"
 import { SiteDashboard } from "layouts/SiteDashboard"
-import Sites from "layouts/Sites"
+import { Sites } from "layouts/Sites"
 import { Workspace } from "layouts/Workspace"
 
 // ProtectedRoute component
