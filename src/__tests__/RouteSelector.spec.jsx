@@ -42,8 +42,7 @@ jest.mock("layouts/Login/LoginPage", () => {
 
 jest.mock("layouts/Sites", () => {
   return {
-    __esModule: true,
-    default: () => {
+    Sites: () => {
       return <div>{SITES_LAYOUT_TEXT}</div>
     },
   }
