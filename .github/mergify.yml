@@ -27,7 +27,7 @@ pull_request_rules:
 
   - name: Ping isomer members for stale PRs (>1 month since last activity)
     conditions:
-      - updated-at>30 days ago
+      - updated-at<30 days ago
     actions:
       request_reviews:
         teams:
