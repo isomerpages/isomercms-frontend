@@ -1,4 +1,5 @@
 import {
+  Divider,
   LinkBox,
   LinkOverlay,
   HStack,
@@ -74,6 +75,7 @@ const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
               >
                 <OGPLogoNoText height="30%" />
               </Flex>
+              <Divider />
               <VStack
                 w="full"
                 h="30%"
