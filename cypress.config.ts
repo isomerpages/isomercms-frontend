@@ -36,7 +36,6 @@ export default defineConfig({
                     loader: "babel-loader",
                     options: {
                       presets: ["@babel/typescript"],
-                      // presets: [["@babel/preset-env", { targets: "defaults" }]],
                       plugins: ["@babel/plugin-transform-runtime"],
                     },
                   },
