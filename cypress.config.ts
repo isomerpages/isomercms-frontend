@@ -20,7 +20,7 @@ module.exports = defineConfig({
             devtool: "eval-source-map",
             resolve: {
               alias: {
-                utils: path.resolve(__dirname, "src/utils/index"),
+                utils: path.resolve(__dirname, "src/utils"),
               },
               extensions: [".ts", ".js", ".jsx", ".tsx"],
               fallback: {
