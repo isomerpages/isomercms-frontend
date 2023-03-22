@@ -55,7 +55,7 @@ const FormFieldMedia = ({
 export default FormFieldMedia
 
 FormFieldMedia.propTypes = {
-  value: PropTypes.string.isRequired,
+  value: PropTypes.string,
   id: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
   type: PropTypes.oneOf(["files", "images"]),
