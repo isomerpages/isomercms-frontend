@@ -31,43 +31,9 @@ const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
   const isEmailLoginUser = !userId
   const urlLink = isEmailLoginUser ? "dashboard" : "workspace"
 
-  if (siteNames && siteNames.length > 0)
-    return (
-      <>
-        {siteNames.map((siteName) => (
-          <div className={siteStyles.siteContainer} key={siteName.repoName}>
-            <div className={siteStyles.site}>
-              <Link to={`/sites/${siteName.repoName}/${urlLink}`}>
-                <Flex
-                  w="full"
-                  h="70%"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <OGPLogoNoText height="30%" />
-                </Flex>
-                <VStack
-                  w="full"
-                  h="30%"
-                  justifyContent="center"
-                  alignItems="start"
-                  backgroundColor="interaction.mainLight.default"
-                  pl="1rem"
-                  borderRadius="0px 0px 4px 4px"
-                >
-                  <Text fontSize="0.9em">{siteName.repoName}</Text>
-                  <Text fontSize="0.6em" color="base.content.light">
-                    {convertUtcToTimeDiff(siteName.lastUpdated)}
-                  </Text>
-                </VStack>
-              </Link>
-            </div>
-          </div>
-        ))}
-      </>
-    )
-
-  if (siteNames && siteNames.length === 0)
+  if (!siteNames)
+    return <div className={siteStyles.infoText}>Loading sites...</div>
+  if (siteNames.length === 0)
     return (
       <VStack pt="2.5rem" w="full" gap="4rem">
         <InlineMessage variant="warning" w="full">
@@ -94,8 +60,40 @@ const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
         </VStack>
       </VStack>
     )
-
-  return <div className={siteStyles.infoText}>Loading sites...</div>
+  return (
+    <>
+      {siteNames.map((siteName) => (
+        <div className={siteStyles.siteContainer} key={siteName.repoName}>
+          <div className={siteStyles.site}>
+            <Link to={`/sites/${siteName.repoName}/${urlLink}`}>
+              <Flex
+                w="full"
+                h="70%"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <OGPLogoNoText height="30%" />
+              </Flex>
+              <VStack
+                w="full"
+                h="30%"
+                justifyContent="center"
+                alignItems="start"
+                backgroundColor="interaction.mainLight.default"
+                pl="1rem"
+                borderRadius="0px 0px 4px 4px"
+              >
+                <Text fontSize="0.9em">{siteName.repoName}</Text>
+                <Text fontSize="0.6em" color="base.content.light">
+                  {convertUtcToTimeDiff(siteName.lastUpdated)}
+                </Text>
+              </VStack>
+            </Link>
+          </div>
+        </div>
+      ))}
+    </>
+  )
 }
 
 export const Sites = (): JSX.Element => {
