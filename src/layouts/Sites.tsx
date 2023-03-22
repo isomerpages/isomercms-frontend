@@ -51,7 +51,7 @@ const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
             <Text>Get a colleague to add you as a collaborator.</Text>
           </VStack>
           <HStack>
-            <Text>Any question? Contact us at</Text>
+            <Text>Any questions? Contact us at</Text>
             <LinkBox ml="0">
               <LinkOverlay href="mailto:support@isomer.gov.sg" isExternal>
                 <Text as="u">support@isomer.gov.sg</Text>
