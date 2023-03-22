@@ -72,8 +72,7 @@ const ICON_STYLE_PROPS = {
   fill: "icon.alt",
 }
 
-const getIcon = (iconTypes: EditedItemProps["type"]): JSX.Element => {
-  const iconType = iconTypes[0]
+const getIcon = (iconType: EditedItemProps["type"]): JSX.Element => {
   switch (iconType) {
     case "nav": {
       return <Icon {...ICON_STYLE_PROPS} as={BiWorld} />
@@ -360,7 +359,7 @@ export const RequestOverview = ({
               // NOTE: Pass `undefined` to avoid users being able to click
               // despite being visually disabled.
               href={
-                row.original.fileUrl
+                row.original.type === "page" && row.original.fileUrl
                   ? // NOTE: Permalinks are enforced to start with a `/` by our CMS
                     row.original.fileUrl
                   : undefined
@@ -368,18 +367,30 @@ export const RequestOverview = ({
               isExternal
             >
               <IconButton
-                isDisabled={!row.original.fileUrl}
+                isDisabled={
+                  !(row.original.type === "page" && row.original.fileUrl)
+                }
                 icon={<BiEditAlt />}
                 aria-label="edit file"
                 variant="link"
               />
             </Link>
           )}
-          <Link href={row.original.stagingUrl}>
+          <Link
+            href={
+              row.original.type === "page" && row.original.stagingUrl
+                ? // NOTE: Permalinks are enforced to start with a `/` by our CMS
+                  row.original.stagingUrl
+                : undefined
+            }
+          >
             <IconButton
               icon={<BiGitCompare />}
               aria-label="view file on staging"
               variant="link"
+              isDisabled={
+                !(row.original.type === "page" && row.original.fileUrl)
+              }
             />
           </Link>
           <IconButton
