@@ -3,7 +3,7 @@ import path from "path"
 import wp from "@cypress/webpack-preprocessor"
 import { defineConfig } from "cypress"
 
-module.exports = defineConfig({
+export default defineConfig({
   chromeWebSecurity: false,
   viewportHeight: 768,
   viewportWidth: 1366,
