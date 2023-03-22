@@ -24,7 +24,7 @@ import siteStyles from "styles/isomer-cms/pages/Sites.module.scss"
 
 import { convertUtcToTimeDiff } from "utils/dateUtils"
 
-import { EmptySitesImage, OGPLogoNoText } from "assets"
+import { EmptySitesImage, IsomerLogoNoText } from "assets"
 import { SiteData } from "types/sites"
 
 const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
@@ -73,7 +73,7 @@ const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
                 justifyContent="center"
                 alignItems="center"
               >
-                <OGPLogoNoText height="30%" />
+                <IsomerLogoNoText height="30%" />
               </Flex>
               <Divider />
               <VStack
