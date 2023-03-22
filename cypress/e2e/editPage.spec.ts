@@ -3,7 +3,7 @@ import {
   slugifyCategory,
   generateResourceFileName,
   titleToPageFileName,
-} from "utils/legacyUtils"
+} from "utils/fileNameUtils"
 
 import {
   CMS_BASEURL,

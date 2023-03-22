@@ -1,7 +1,7 @@
 import slugify from "slugify"
 
 import { deslugifyDirectory } from "utils/deslugify"
-import { titleToPageFileName, pageFileNameToTitle } from "utils/legacyUtils"
+import { titleToPageFileName, pageFileNameToTitle } from "utils/fileNameUtils"
 
 import {
   CMS_BASEURL,
