@@ -65,6 +65,7 @@ export const AvatarMenu = ({
             <Avatar
               fontSize="0.875rem"
               name={name ? extractInitials(name) : ""}
+              background="primary.500"
               boxShadow={
                 isOpen
                   ? `0 0 0 4px var(--chakra-colors-primary-300)`

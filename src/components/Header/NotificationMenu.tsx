@@ -61,7 +61,11 @@ export const NotificationMenuItem = ({
       onClick={() => setRedirectToPage(link)}
     >
       <Flex w="100%">
-        <Avatar icon={icon || <></>} name={name ? extractInitials(name) : ""} />
+        <Avatar
+          icon={icon || <></>}
+          name={name ? extractInitials(name) : ""}
+          background="primary.500"
+        />
         <Text
           w="100%"
           pl="1rem"
