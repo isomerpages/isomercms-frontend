@@ -8,7 +8,7 @@ export type Announcement = {
   tags: TagVariant[]
 }
 
-export type Announcements = {
+export type AnnouncementBatch = {
   link: string
   announcements: Announcement[]
 }

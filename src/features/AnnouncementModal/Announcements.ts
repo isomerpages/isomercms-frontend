@@ -1,9 +1,9 @@
 import { IsomerThumbsUp } from "assets"
 import { IsomerWaitingLine } from "assets/images/IsomerWaitingLine"
-import { Announcements } from "types/announcements"
+import { AnnouncementBatch } from "types/announcements"
 
 // TODO: Add link
-export const ANNOUNCEMENTS: Announcements[] = [
+export const ANNOUNCEMENT_BATCH: AnnouncementBatch[] = [
   {
     link: "",
     announcements: [

@@ -2,12 +2,12 @@ import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
 import { useLoginContext } from "contexts/LoginContext"
 
-import { ANNOUNCEMENTS } from "features/AnnouncementModal/Announcements"
-import { Announcements } from "types/announcements"
+import { ANNOUNCEMENT_BATCH } from "features/AnnouncementModal/Announcements"
+import { AnnouncementBatch } from "types/announcements"
 
 import { useLocalStorage } from "./useLocalStorage"
 
-interface UseAnnouncementsReturn extends Partial<Announcements> {
+interface UseAnnouncementsReturn extends Partial<AnnouncementBatch> {
   setLastSeenAnnouncement: () => void
 }
 
@@ -24,10 +24,12 @@ export const useAnnouncements = (): UseAnnouncementsReturn => {
   // TODO: determine version update strategy
   // For now, we will always show the latest version if the user has no prior record
   const lastSeenAnnouncementVersion =
-    lastSeenAnnouncementsStore[email] ?? ANNOUNCEMENTS.length - 1
+    lastSeenAnnouncementsStore[email] ?? ANNOUNCEMENT_BATCH.length - 1
   // NOTE: If the user has seen all existing announcements, this will return `undefined`.
   // The caller has to check for this and not render if so.
-  const possibleAnnouncements = ANNOUNCEMENTS.at(lastSeenAnnouncementVersion)
+  const possibleAnnouncements = ANNOUNCEMENT_BATCH.at(
+    lastSeenAnnouncementVersion
+  )
 
   return {
     announcements: possibleAnnouncements?.announcements,

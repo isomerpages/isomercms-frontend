@@ -1,7 +1,7 @@
 import { Meta, Story } from "@storybook/react"
 
 import { AnnouncementModal } from "./AnnouncementModal"
-import { ANNOUNCEMENTS } from "./Announcements"
+import { ANNOUNCEMENT_BATCH } from "./Announcements"
 
 export default {
   title: "Pages/Announcement Modal",
@@ -20,8 +20,8 @@ const Template: Story = () => (
   <AnnouncementModal
     onClose={onClose}
     isOpen
-    announcements={ANNOUNCEMENTS[0].announcements}
-    link={ANNOUNCEMENTS[0].link}
+    announcements={ANNOUNCEMENT_BATCH[0].announcements}
+    link={ANNOUNCEMENT_BATCH[0].link}
   />
 )
 
