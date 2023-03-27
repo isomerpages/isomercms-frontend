@@ -42,11 +42,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18.x"
-          cache: "yarn"
-      - name: Setup yarn
-        run: npm install -g yarn
+          cache: "npm"
       - name: Install dependencies
-        run: yarn install
+        run: npm ci
         # 👇 Adds Chromatic as a step in the workflow
       - name: Publish to Chromatic
         uses: chromaui/action@v1
