@@ -28,7 +28,7 @@ export type WithEditMeta<T> = T & {
 export interface EditedPageDto extends BaseEditedItemDto {
   type: "page"
   stagingUrl: string
-  fileUrl: string
+  cmsFileUrl: string
 }
 
 export interface EditedConfigDto extends BaseEditedItemDto {

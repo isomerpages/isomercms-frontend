@@ -354,16 +354,16 @@ export const RequestOverview = ({
               // NOTE: Pass `undefined` to avoid users being able to click
               // despite being visually disabled.
               href={
-                row.original.type === "page" && row.original.fileUrl
+                row.original.type === "page" && row.original.cmsFileUrl
                   ? // NOTE: Permalinks are enforced to start with a `/` by our CMS
-                    row.original.fileUrl
+                    row.original.cmsFileUrl
                   : undefined
               }
               isExternal
             >
               <IconButton
                 isDisabled={
-                  !(row.original.type === "page" && row.original.fileUrl)
+                  !(row.original.type === "page" && row.original.cmsFileUrl)
                 }
                 icon={<BiEditAlt />}
                 aria-label="edit file"
@@ -384,7 +384,7 @@ export const RequestOverview = ({
               aria-label="view file on staging"
               variant="link"
               isDisabled={
-                !(row.original.type === "page" && row.original.fileUrl)
+                !(row.original.type === "page" && row.original.cmsFileUrl)
               }
             />
           </Link>
@@ -428,7 +428,7 @@ export const RequestOverview = ({
           ref={inputRef}
           onSearchIconClick={handleExpansion}
           isExpanded={isExpanded}
-          onSearch={table.getColumn("itemName").setFilterValue}
+          onSearch={table.getColumn("itemName")!.setFilterValue}
           onBlur={handleCollapse}
         />
       </Flex>
