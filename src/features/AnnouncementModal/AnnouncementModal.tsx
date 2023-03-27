@@ -13,9 +13,10 @@ import {
   Link,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
-import { ProgressIndicator } from "components/ProgressIndicator"
-import { useCallback, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { BiRightArrowAlt } from "react-icons/bi"
+
+import { ProgressIndicator } from "components/ProgressIndicator"
 
 import { useAnnouncements } from "hooks/useAnnouncement"
 
@@ -43,25 +44,23 @@ export const AnnouncementModal = ({
     [announcements.length, currActiveIdx]
   )
 
-  const handleNextClick = useCallback(() => {
+  const handleNextClick = () => {
     if (isLastAnnouncement) {
       onClose()
       setLastSeenAnnouncement()
     }
 
     setCurrActiveIdx(Math.min(currActiveIdx + 1, announcements.length - 1))
-  }, [
-    announcements.length,
-    currActiveIdx,
-    isLastAnnouncement,
-    onClose,
-    setLastSeenAnnouncement,
-  ])
+  }
 
   const { title, description, image, tags } = announcements[currActiveIdx]
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="md">
+    <Modal
+      isOpen={isOpen && announcements.length > 0}
+      onClose={onClose}
+      size="md"
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
