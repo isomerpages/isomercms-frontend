@@ -16,4 +16,11 @@ module.exports = {
   core: {
     builder: "webpack5",
   },
+  docs: {
+    autodocs: true,
+  },
+  features: {
+    storyStoreV7: true,
+    previewMdx2: true,
+  },
 }
