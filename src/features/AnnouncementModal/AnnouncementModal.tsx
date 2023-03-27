@@ -13,10 +13,9 @@ import {
   Link,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
+import { ProgressIndicator } from "components/ProgressIndicator"
 import { useMemo, useState } from "react"
 import { BiRightArrowAlt } from "react-icons/bi"
-
-import { ProgressIndicator } from "components/ProgressIndicator"
 
 import { useAnnouncements } from "hooks/useAnnouncement"
 
@@ -64,7 +63,7 @@ export const AnnouncementModal = ({
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <Image bg="base.canvas.brandLight" pt="4.5rem" as={image} />
+        <Image bg="base.canvas.brandLight" mt="4.5rem" as={image} />
         <ModalHeader>
           {tags.map((tagVariant) => {
             switch (tagVariant) {
