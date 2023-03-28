@@ -62,6 +62,7 @@ export const NotificationMenuItem = ({
     >
       <Flex w="100%">
         <Avatar
+          size="sm"
           icon={icon || <></>}
           name={name ? extractInitials(name) : ""}
           background="primary.500"
@@ -132,6 +133,7 @@ export const NotificationMenu = (props: MenuListProps): JSX.Element => {
           >
             <Avatar
               icon={<BiBell />}
+              size="sm"
               bg="white"
               boxShadow={
                 isOpen
@@ -139,7 +141,9 @@ export const NotificationMenu = (props: MenuListProps): JSX.Element => {
                   : undefined
               }
             >
-              {hasNotification && <AvatarBadge boxSize="1rem" bg="red.500" />}
+              {hasNotification && (
+                <AvatarBadge boxSize="0.75rem" bg="red.500" />
+              )}
             </Avatar>
           </NotificationMenuButton>
           <Menu.List
