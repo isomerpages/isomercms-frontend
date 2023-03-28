@@ -11,6 +11,7 @@ import {
   ModalBody,
   Stack,
   Link,
+  Box,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import { ProgressIndicator } from "components/ProgressIndicator"
@@ -63,7 +64,8 @@ export const AnnouncementModal = ({
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <Image bg="base.canvas.brandLight" mt="4.5rem" as={image} />
+        <Box width="100%" h="4.5rem" bg="base.canvas.brandLight" />
+        <Image bg="base.canvas.brandLight" as={image} />
         <ModalHeader>
           {tags.map((tagVariant) => {
             switch (tagVariant) {
