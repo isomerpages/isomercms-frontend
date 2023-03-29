@@ -66,6 +66,7 @@ export const NotificationMenuItem = ({
           icon={icon || <></>}
           name={name ? extractInitials(name) : ""}
           background="primary.500"
+          textColor="white"
         />
         <Text
           w="100%"

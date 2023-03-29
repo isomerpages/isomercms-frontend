@@ -66,6 +66,7 @@ export const AvatarMenu = ({
               size="sm"
               name={name ? extractInitials(name) : ""}
               background="primary.500"
+              textColor="white"
               boxShadow={
                 isOpen
                   ? `0 0 0 4px var(--chakra-colors-primary-300)`
