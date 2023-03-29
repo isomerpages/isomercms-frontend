@@ -19,17 +19,24 @@ import {
 import { Button, IconButton } from "@opengovsg/design-system-react"
 import { ButtonLink } from "components/ButtonLink"
 import { NotificationMenu } from "components/Header/NotificationMenu"
-import { BiArrowBack } from "react-icons/bi"
+import { BiArrowBack, BiCheckCircle } from "react-icons/bi"
 import { Link as RouterLink, useParams } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 
 import { useStagingUrl } from "hooks/settingsHooks"
 
+import { ReviewRequestModal } from "layouts/ReviewRequest"
+
 import { NavImage } from "assets"
 
 export const SiteEditHeader = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const {
+    isOpen: isReviewRequestModalOpen,
+    onOpen: onReviewRequestModalOpen,
+    onClose: onReviewRequestModalClose,
+  } = useDisclosure()
   const { siteName } = useParams<{ siteName: string }>()
   const { data: stagingUrl, isLoading } = useStagingUrl({ siteName })
   const { userId } = useLoginContext()
@@ -74,9 +81,21 @@ export const SiteEditHeader = (): JSX.Element => {
           >
             View Staging
           </Button>
-          <ButtonLink href={`https://github.com/isomerpages/${siteName}/pulls`}>
-            <Text color="white">Pull Request</Text>
-          </ButtonLink>
+          {userId ? (
+            // Github user
+            <ButtonLink
+              href={`https://github.com/isomerpages/${siteName}/pulls`}
+            >
+              <Text color="white">Pull Request</Text>
+            </ButtonLink>
+          ) : (
+            <Button
+              leftIcon={<Icon as={BiCheckCircle} fontSize="1.25rem" />}
+              onClick={onReviewRequestModalOpen}
+            >
+              Request a Review
+            </Button>
+          )}
         </HStack>
       </Flex>
 
@@ -110,6 +129,10 @@ export const SiteEditHeader = (): JSX.Element => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <ReviewRequestModal
+        isOpen={isReviewRequestModalOpen}
+        onClose={onReviewRequestModalClose}
+      />
     </>
   )
 }

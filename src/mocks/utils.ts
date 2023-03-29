@@ -16,6 +16,7 @@ import {
   SiteDashboardInfo,
   SiteDashboardReviewRequest,
 } from "types/siteDashboard"
+import { SiteDataRequest } from "types/sites"
 import { LoggedInUser } from "types/user"
 
 type HttpVerb = "get" | "post" | "delete"
@@ -167,3 +168,8 @@ export const buildMarkCommentsAsReadData = apiDataBuilder<CommentData[]>(
 export const buildReviewRequestData = apiDataBuilder<{
   reviewRequest: ReviewRequest
 }>("*/sites/:siteName/review/:reviewId")
+
+export const buildAllSitesData = apiDataBuilder<SiteDataRequest>(
+  "*/sites",
+  "get"
+)
