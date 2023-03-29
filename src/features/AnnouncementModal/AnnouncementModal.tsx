@@ -64,7 +64,12 @@ export const AnnouncementModal = ({
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <Box width="100%" h="4.5rem" bg="base.canvas.brandLight" />
+        <Box
+          width="100%"
+          h="4.5rem"
+          bg="base.canvas.brandLight"
+          borderRadius="4px"
+        />
         <Image bg="base.canvas.brandLight" as={image} />
         <ModalHeader>
           {tags.map((tagVariant) => {
