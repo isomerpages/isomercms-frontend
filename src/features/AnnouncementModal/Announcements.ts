@@ -2,10 +2,9 @@ import { IsomerThumbsUp } from "assets"
 import { IsomerWaitingLine } from "assets/images/IsomerWaitingLine"
 import { AnnouncementBatch } from "types/announcements"
 
-// TODO: Add link
 export const ANNOUNCEMENT_BATCH: AnnouncementBatch[] = [
   {
-    link: "",
+    link: "https://guide.isomer.gov.sg/updates",
     announcements: [
       {
         title: "Control who can edit your website",

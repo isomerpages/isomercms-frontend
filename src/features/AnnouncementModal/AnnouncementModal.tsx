@@ -46,19 +46,24 @@ export const AnnouncementModal = ({
 
   const handleNextClick = () => {
     if (isLastAnnouncement) {
-      onClose()
       setLastSeenAnnouncement()
+      onClose()
     }
 
     setCurrActiveIdx(Math.min(currActiveIdx + 1, announcements.length - 1))
   }
+
+  if (announcements.length < 1) return <></>
 
   const { title, description, image, tags } = announcements[currActiveIdx]
 
   return (
     <Modal
       isOpen={isOpen && announcements.length > 0}
-      onClose={onClose}
+      onClose={() => {
+        setLastSeenAnnouncement()
+        onClose()
+      }}
       size="md"
     >
       <ModalOverlay />
