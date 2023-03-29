@@ -169,6 +169,7 @@ export const RequestOverview = ({
   const [fileName, setFileName] = useState("")
   const [path, setPath] = useState<string[]>([])
   const [title, setTitle] = useState("")
+  const [itemStagingUrl, setItemStagingUrl] = useState<string | false>("")
   return fileName ? (
     <DiffView
       title={title}
@@ -178,13 +179,15 @@ export const RequestOverview = ({
         setFileName("")
         setPath([])
       }}
+      stagingUrl={itemStagingUrl}
     />
   ) : (
     <RequestOverviewTable
-      onClick={(displayedName, name, filePath) => {
+      onClick={(displayedName, name, filePath, selectedItemStagingUrl) => {
         setFileName(name)
         setPath(filePath)
         setTitle(displayedName)
+        setItemStagingUrl(selectedItemStagingUrl)
       }}
       items={items}
       allowEditing={allowEditing}
@@ -197,7 +200,12 @@ const RequestOverviewTable = ({
   items,
   allowEditing,
 }: {
-  onClick: (title: string, name: string, filePath: string[]) => void
+  onClick: (
+    title: string,
+    name: string,
+    filePath: string[],
+    itemStagingUrl: string | false
+  ) => void
 } & RequestOverviewProps) => {
   const {
     isExpanded,
@@ -419,7 +427,7 @@ const RequestOverviewTable = ({
               aria-label="view file on staging"
               variant="link"
               isDisabled={
-                !(row.original.type === "page" && row.original.cmsFileUrl)
+                !(row.original.type === "page" && row.original.stagingUrl)
               }
             />
           </Link>
@@ -428,7 +436,12 @@ const RequestOverviewTable = ({
             aria-label="view file changes"
             variant="link"
             onClick={() =>
-              onClick(row.original.title, row.original.name, row.original.path)
+              onClick(
+                row.original.title,
+                row.original.name,
+                row.original.path,
+                row.original.type === "page" && row.original.stagingUrl
+              )
             }
           />
         </HStack>

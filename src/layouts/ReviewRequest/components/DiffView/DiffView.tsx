@@ -48,11 +48,7 @@ export const DiffViewer = ({
   )
 }
 
-// TODO
-const generateStagingLink = (fileName: string, path: string[]): string =>
-  "https://www.google.com"
-
-const StatusBar = ({ fileName, onClick, path }: DiffViewProps): JSX.Element => {
+const StatusBar = ({ onClick, stagingUrl }: DiffViewProps): JSX.Element => {
   return (
     <Flex dir="row" w="100%" alignItems="center">
       <Button
@@ -63,16 +59,15 @@ const StatusBar = ({ fileName, onClick, path }: DiffViewProps): JSX.Element => {
         Back to review request
       </Button>
       <Spacer />
-      <Box>
-        <Link
-          isExternal
-          href={generateStagingLink(fileName, path)}
-          textDecorationLine="none"
-          textStyle="subhead-1"
-        >
-          Open page in staging
-        </Link>
-      </Box>
+      <Link
+        isExternal
+        isDisabled={!stagingUrl}
+        href={stagingUrl || ""}
+        textDecorationLine="none"
+        textStyle="subhead-1"
+      >
+        Open page in staging
+      </Link>
     </Flex>
   )
 }
@@ -82,6 +77,7 @@ export interface DiffViewProps {
   path: string[]
   title: string
   onClick: () => void
+  stagingUrl: string | false
 }
 
 export const DiffView = ({
@@ -89,6 +85,7 @@ export const DiffView = ({
   path,
   onClick,
   title,
+  stagingUrl,
 }: DiffViewProps): JSX.Element => {
   const { reviewId, siteName } = useParams<{
     reviewId: string
@@ -124,6 +121,7 @@ export const DiffView = ({
         onClick={onClick}
         path={path}
         title={title}
+        stagingUrl={stagingUrl}
       />
       <Box
         border="1px solid"
