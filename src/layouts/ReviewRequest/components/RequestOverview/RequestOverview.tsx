@@ -339,10 +339,17 @@ export const RequestOverview = ({
     columnHelper.display({
       id: "actions",
       header: () => (
-        <Th borderBottom="1px solid" borderColor="gray.100" w="10rem" />
+        <Th
+          borderBottom="1px solid"
+          borderColor="gray.100"
+          w="10rem"
+          // NOTE: This line and the `display="none"` on the `HStack`
+          // should be removed once buttons are in on backend
+          display="none"
+        />
       ),
       cell: ({ row }) => (
-        <HStack spacing="0.25rem">
+        <HStack spacing="0.25rem" display="none">
           {allowEditing && (
             <Link href="www.google.com">
               <IconButton
