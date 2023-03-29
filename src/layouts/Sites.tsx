@@ -10,7 +10,7 @@ import {
 import { InlineMessage } from "@opengovsg/design-system-react"
 import { AllSitesHeader } from "components/Header/AllSitesHeader"
 import _ from "lodash"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
@@ -18,6 +18,7 @@ import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 import { useLoginContext } from "contexts/LoginContext"
 
 import { useGetAllSites } from "hooks/allSitesHooks"
+import { useAnnouncements } from "hooks/useAnnouncement"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import siteStyles from "styles/isomer-cms/pages/Sites.module.scss"
@@ -25,6 +26,7 @@ import siteStyles from "styles/isomer-cms/pages/Sites.module.scss"
 import { convertUtcToTimeDiff } from "utils/dateUtils"
 
 import { EmptySitesImage, IsomerLogoNoText } from "assets"
+import { AnnouncementModal } from "features/AnnouncementModal/AnnouncementModal"
 import { SiteData } from "types/sites"
 
 const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
@@ -101,7 +103,8 @@ const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
 export const Sites = (): JSX.Element => {
   const { email } = useLoginContext()
   const { data: siteRequestData } = useGetAllSites(email)
-
+  const { announcements, link } = useAnnouncements()
+  const [isOpen, setIsOpen] = useState(announcements.length > 0 && !!email)
   useEffect(() => {
     if (!siteRequestData) return
     const siteData = siteRequestData.siteNames
@@ -119,6 +122,14 @@ export const Sites = (): JSX.Element => {
 
   return (
     <>
+      {announcements.length > 0 && (
+        <AnnouncementModal
+          isOpen={isOpen}
+          announcements={announcements}
+          link={link}
+          onClose={() => setIsOpen(false)}
+        />
+      )}
       <AllSitesHeader />
       <div className={elementStyles.wrapper}>
         <div className={siteStyles.sitesContainer}>

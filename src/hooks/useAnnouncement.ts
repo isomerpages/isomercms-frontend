@@ -7,7 +7,7 @@ import { AnnouncementBatch } from "types/announcements"
 
 import { useLocalStorage } from "./useLocalStorage"
 
-interface UseAnnouncementsReturn extends Partial<AnnouncementBatch> {
+interface UseAnnouncementsReturn extends AnnouncementBatch {
   setLastSeenAnnouncement: () => void
 }
 
@@ -32,11 +32,11 @@ export const useAnnouncements = (): UseAnnouncementsReturn => {
   )
 
   return {
-    announcements: possibleAnnouncements?.announcements,
+    announcements: possibleAnnouncements?.announcements || [],
     setLastSeenAnnouncement: () => {
       lastSeenAnnouncementsStore[email] = lastSeenAnnouncementVersion + 1
       setLastSeenAnnouncementsStore(lastSeenAnnouncementsStore)
     },
-    link: possibleAnnouncements?.link,
+    link: possibleAnnouncements?.link || "",
   }
 }
