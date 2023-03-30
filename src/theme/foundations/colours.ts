@@ -62,6 +62,14 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
       dark: "#3D3D3D",
     },
   },
+  base: {
+    canvas: {
+      brandLight: "#F8FAFE",
+    },
+    content: {
+      default: "#3C4764",
+    },
+  },
   icon: {
     warning: "#E2B73E",
     default: "#276EF1",
