@@ -5,6 +5,7 @@ import {
   useContext,
   PropsWithChildren,
   useCallback,
+  useState,
 } from "react"
 
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
@@ -13,11 +14,12 @@ import { useLocalStorage } from "hooks/useLocalStorage"
 
 import { LoggedInUser } from "types/user"
 
-const { REACT_APP_BACKEND_URL: BACKEND_URL } = process.env
+const { REACT_APP_BACKEND_URL_V2: BACKEND_URL } = process.env
 
 interface LoginContextProps extends LoggedInUser {
+  isLoading: boolean
   logout: () => Promise<void>
-  verifyLoginAndSetLocalStorage: () => Promise<void>
+  verifyLoginAndGetUserDetails: () => Promise<void>
 }
 
 const LoginContext = createContext<null | LoginContextProps>(null)
@@ -33,37 +35,31 @@ const useLoginContext = (): LoginContextProps => {
 const LoginProvider = ({
   children,
 }: PropsWithChildren<Record<string, never>>): JSX.Element => {
-  const [storedUserId, setStoredUserId, removeStoredUserId] = useLocalStorage(
-    LOCAL_STORAGE_KEYS.GithubId,
-    "Unknown user"
-  )
-  const [
-    storedUser,
-    setStoredUser,
-    removeStoredUser,
-  ] = useLocalStorage(LOCAL_STORAGE_KEYS.User, { email: "", contactNumber: "" })
-
   const [, , removeSites] = useLocalStorage(
     LOCAL_STORAGE_KEYS.SitesIsPrivate,
     false
   )
-  const verifyLoginAndSetLocalStorage = useCallback(async () => {
+  const [isLoading, setIsLoading] = useState(true)
+  const [storedUserId, setStoredUserId] = useState("")
+  const [storedUserContact, setStoredUserContact] = useState("")
+  const [storedUserEmail, setStoredUserEmail] = useState("")
+  const verifyLoginAndGetUserDetails = useCallback(async () => {
     const { data: loggedInUser } = await axios.get<LoggedInUser>(
       `${BACKEND_URL}/auth/whoami`
     )
 
     setStoredUserId(loggedInUser.userId)
-    setStoredUser(loggedInUser)
-  }, [setStoredUser, setStoredUserId])
+    setStoredUserContact(loggedInUser.contactNumber)
+    setStoredUserEmail(loggedInUser.email)
+    setIsLoading(false)
+  }, [setStoredUserContact, setStoredUserEmail, setStoredUserId])
 
   const logout = async () => {
     await axios.delete(`${BACKEND_URL}/auth/logout`)
-    removeStoredUserId()
-    removeStoredUser()
-    removeSites()
-    // NOTE: This is REQUIRED (emphasis here) for auto-redirect on removal of stored user id.
-    // This is IN ADDITION to removing the value associated with the key.
     setStoredUserId("")
+    setStoredUserContact("")
+    setStoredUserEmail("")
+    removeSites()
   }
 
   // Set interceptors to log users out if an error occurs within the LoginProvider
@@ -80,17 +76,21 @@ const LoginProvider = ({
   )
 
   useEffect(() => {
-    verifyLoginAndSetLocalStorage()
+    verifyLoginAndGetUserDetails()
     // Dependency array must be empty here - the pointer to the verify callback method doesn't seem to be stable so this useEffect would be called repeatedly
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Run only once
 
   const loginContextData = {
+    isLoading,
     userId: storedUserId,
-    email: storedUser.email,
-    contactNumber: storedUser.contactNumber,
+    email: storedUserEmail,
+    contactNumber: storedUserContact,
     logout,
-    verifyLoginAndSetLocalStorage,
+    verifyLoginAndGetUserDetails,
+    displayedName: `${storedUserId ? "@" : ""}${
+      storedUserId || storedUserEmail
+    }`,
   }
 
   return (

@@ -43,5 +43,10 @@ export const Tabs: Pick<ComponentMultiStyleConfig, "variants"> = {
         },
       }
     },
+    "line-light": {
+      tab: {
+        color: "text.link.disabled",
+      },
+    },
   },
 }

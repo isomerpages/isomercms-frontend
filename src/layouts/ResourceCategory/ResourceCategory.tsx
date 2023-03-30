@@ -17,7 +17,7 @@ import {
   SectionCaption,
   SectionHeader,
 } from "layouts/components"
-import { SiteViewLayout } from "layouts/layouts"
+import { SiteEditLayout } from "layouts/layouts"
 import {
   PageSettingsScreen,
   MoveScreen,
@@ -42,7 +42,7 @@ export const ResourceCategory = (): JSX.Element => {
   const arePagesEmpty = !pagesData?.length
   return (
     <>
-      <SiteViewLayout>
+      <SiteEditLayout>
         <Section>
           <Box>
             <Text as="h2" textStyle="h2">
@@ -100,7 +100,7 @@ export const ResourceCategory = (): JSX.Element => {
             </SimpleGrid>
           </Skeleton>
         </Section>
-      </SiteViewLayout>
+      </SiteEditLayout>
       {/* main section ends here */}
       <Switch>
         <ProtectedRouteWithProps

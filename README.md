@@ -14,6 +14,30 @@ npm install
 npm run start
 ```
 
+### Setting up GitGuardian
+
+To setup, follow these instructions:
+
+1. Install GitGuardian
+
+```
+brew install gitguardian/tap/ggshield
+```
+
+2. Add the API Key to your `.env` file
+
+```
+# Service API key from GitGuardian account
+export GITGUARDIAN_API_KEY=abc123
+```
+
+Notes:
+
+Only if necessary,
+
+- To skip all pre-commit hooks, use `$ git commit -m "commit message" -n`
+- To skip only GitGuardian’s hook, use `$ SKIP=ggshield git commit -m "commit message"`
+
 ### Running end-to-end tests using Cypress
 
 Add the following Cypress environment variables:
@@ -43,8 +67,11 @@ npm run cypress:open
 ```
 
 ### Release
+
 Run the following on the release branch to tag and push changes automatically:
+
 ```
 npm run release --isomer_update=<versionType>
 ```
+
 where versionType corresponds to npm version types. This only works on non-Windows platforms, for Windows, modify the release script to use %npm_config_update% instead of $npm_config_update.

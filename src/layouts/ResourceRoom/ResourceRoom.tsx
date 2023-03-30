@@ -62,7 +62,7 @@ import { ResourceRoomRouteParams } from "types/resources"
 import { DEFAULT_RETRY_MSG, deslugifyDirectory } from "utils"
 
 import { ResourceRoomNameUpdateProps } from "../../types/directory"
-import { SiteViewLayout } from "../layouts"
+import { SiteEditLayout } from "../layouts"
 
 import { CategoryCard, ResourceBreadcrumb } from "./components"
 
@@ -102,7 +102,7 @@ const EmptyResourceRoom = () => {
 
   return (
     <>
-      <SiteViewLayout>
+      <SiteEditLayout>
         <Center as="form" mt="6rem">
           {/* Resource Room does not exist */}
           <EmptyArea
@@ -118,7 +118,7 @@ const EmptyResourceRoom = () => {
             subText="Create a resource room to get started."
           />
         </Center>
-      </SiteViewLayout>
+      </SiteEditLayout>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -279,7 +279,7 @@ const ResourceRoomContent = ({
 
   return (
     <>
-      <SiteViewLayout>
+      <SiteEditLayout>
         <Section>
           <Box>
             <HStack spacing="0.25rem" alignItems="center">
@@ -339,7 +339,7 @@ const ResourceRoomContent = ({
             </EmptyArea>
           </Skeleton>
         </Section>
-      </SiteViewLayout>
+      </SiteEditLayout>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

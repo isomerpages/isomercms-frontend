@@ -44,7 +44,7 @@ import {
   SectionCaption,
   CreateButton,
 } from "../components"
-import { SiteViewLayout } from "../layouts"
+import { SiteEditLayout } from "../layouts"
 
 import { FolderBreadcrumbs, FolderCard, PageCard } from "./components"
 
@@ -67,7 +67,7 @@ export const Folders = (): JSX.Element => {
 
   return (
     <>
-      <SiteViewLayout overflow="hidden">
+      <SiteEditLayout overflow="hidden">
         <Section>
           <VStack align="left" spacing="0.375rem">
             <Text as="h2" textStyle="h2">
@@ -167,7 +167,7 @@ export const Folders = (): JSX.Element => {
           </Skeleton>
         </Section>
         {/* main section ends here */}
-      </SiteViewLayout>
+      </SiteEditLayout>
       <Switch>
         <ProtectedRouteWithProps
           path={[`${path}/createDirectory`]}

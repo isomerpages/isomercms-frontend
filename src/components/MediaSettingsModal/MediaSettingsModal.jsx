@@ -16,7 +16,7 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
 
-import { getLastItemType } from "utils"
+import { getLastItemType, getFileExt, getFileName } from "utils"
 
 import { MediaSettingsSchema } from "./MediaSettingsSchema"
 
@@ -61,8 +61,11 @@ export const MediaSettingsModal = ({
     useForm({
       mode: "onTouched",
       resolver: yupResolver(MediaSettingsSchema(existingTitlesArray)),
-      context: { mediaRoom },
+      context: { mediaRoom, isCreate },
     })
+
+  // fileExt is blank for newly created files - mediaData is undefined for the create flow
+  const fileExt = getFileExt(mediaData?.name || "")
 
   /** ******************************** */
   /*     useEffects to load data     */
@@ -71,7 +74,7 @@ export const MediaSettingsModal = ({
   useEffect(() => {
     if (fileName && mediaData && mediaData.name && mediaData.mediaUrl) {
       setValue("mediaUrl", mediaData.mediaUrl)
-      setValue("name", mediaData.name)
+      setValue("name", getFileName(mediaData.name))
       setValue("sha", mediaData.sha)
     }
   }, [setValue, mediaData])
@@ -80,9 +83,13 @@ export const MediaSettingsModal = ({
   /*     handler functions    */
   /** ******************************** */
 
-  const onSubmit = (data) => {
+  const onSubmit = ({ name, ...rest }) => {
     return onProceed({
-      data,
+      data: {
+        ...rest,
+        // Period is appended only if fileExt exists, otherwise MediaCreationModal handles the period and extension appending
+        name: `${name}${fileExt ? `.${fileExt}` : ""}`,
+      },
     })
   }
 

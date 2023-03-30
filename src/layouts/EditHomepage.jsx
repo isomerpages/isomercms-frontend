@@ -1209,7 +1209,6 @@ const EditHomepage = ({ match }) => {
       </WarningModal>
       <VStack>
         <Header
-          siteName={siteName}
           title="Homepage"
           shouldAllowEditPageBackNav={
             JSON.stringify(originalFrontMatter) === JSON.stringify(frontMatter)

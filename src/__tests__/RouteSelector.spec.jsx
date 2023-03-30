@@ -1,5 +1,6 @@
 import "../tests/TestDecoder.mock"
 import { render, screen } from "@testing-library/react"
+import { QueryClient, QueryClientProvider } from "react-query"
 import { MemoryRouter } from "react-router-dom"
 import "@testing-library/jest-dom/extend-expect"
 
@@ -22,7 +23,15 @@ const FOLDERS_LAYOUT_TEXT = "Folders layout mock text"
 const NOT_FOUND_LAYOUT_TEXT = "Route does not exist"
 
 // Layout mocks
-jest.mock("layouts/Home", () => {
+jest.mock("layouts/Login", () => {
+  return {
+    LoginPage: () => {
+      return <div>{HOME_LAYOUT_TEXT}</div>
+    },
+  }
+})
+
+jest.mock("layouts/Login/LoginPage", () => {
   return {
     __esModule: true,
     default: () => {
@@ -33,8 +42,7 @@ jest.mock("layouts/Home", () => {
 
 jest.mock("layouts/Sites", () => {
   return {
-    __esModule: true,
-    default: () => {
+    Sites: () => {
       return <div>{SITES_LAYOUT_TEXT}</div>
     },
   }
@@ -134,30 +142,40 @@ jest.mock("layouts/NotFoundPage", () => {
   }
 })
 
+const queryClient = new QueryClient()
+
 // Context mocks
 const LoggedInContextProvider = ({ children }) => {
   const loggedInContextData = {
-    userId: "test-user",
+    userId: "",
+    email: "test-email",
+    displayedName: "test-user",
     logout: jest.fn(),
   }
 
   return (
-    <LoginContext.Provider value={loggedInContextData}>
-      {children}
-    </LoginContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <LoginContext.Provider value={loggedInContextData}>
+        {children}
+      </LoginContext.Provider>
+    </QueryClientProvider>
   )
 }
 
 const NotLoggedInContextProvider = ({ children }) => {
   const notLoggedInContextData = {
     userId: null,
+    email: null,
+    displayedName: null,
     logout: jest.fn(),
   }
 
   return (
-    <LoginContext.Provider value={notLoggedInContextData}>
-      {children}
-    </LoginContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <LoginContext.Provider value={notLoggedInContextData}>
+        {children}
+      </LoginContext.Provider>
+    </QueryClientProvider>
   )
 }
 

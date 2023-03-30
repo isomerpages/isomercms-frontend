@@ -7,6 +7,8 @@ export type IsomerColorScheme =
   | "icon"
   | "background"
   | "border"
+  | "base"
+  | "interaction"
 
 type BaseRecord = Record<string, string> | NestedRecord | string
 
@@ -16,7 +18,7 @@ interface NestedRecord {
 
 export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
   primary: {
-    50: "#FDFEFF",
+    50: "#F8FAFE",
     100: "#E6EFFE",
     200: "#ADC9FA",
     300: "#7CA9F7",
@@ -41,30 +43,55 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
   },
   text: {
     body: "#3D3D3D",
+    inverse: "#FFFFFF",
     label: "#2E2E2E",
     helper: "#848484",
+    placeholder: "#A0A0A0",
     description: "#474747",
+    danger: "#C03434",
+    success: "#00774E",
     title: {
+      brand: "#2164DA",
       brandSecondary: "#3C4764",
+      alt: "#2E2E2E",
     },
     link: {
       disabled: "#A0A0A0",
       default: "#2164DA",
       hover: "#0D4FCA",
+      dark: "#3D3D3D",
+    },
+  },
+  base: {
+    canvas: {
+      brandLight: "#F8FAFE",
+    },
+    content: {
+      default: "#3C4764",
     },
   },
   icon: {
+    warning: "#E2B73E",
     default: "#276EF1",
     alt: "#686868",
+    danger: "#C03434",
   },
   background: {
     action: {
+      default: "#2164DA",
+      success: "#00774E",
       defaultInverse: "#FFFFFF",
+      warningInverse: "#FFFAE1",
+      alt: "#5D6785",
       altInverse: "#F8F9FA",
       infoInverse: "#F7F9FE",
+      warning: "#FFEA78",
     },
   },
   border: {
+    input: {
+      default: "#BFBFBF",
+    },
     action: {
       default: "#276EF1",
       light: "#E9E9E9",
@@ -73,6 +100,18 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
       alt: "#E9E9E9",
       active: "#276EF1",
       disabled: "#BFBFBF",
+    },
+  },
+  base: {
+    content: {
+      default: "#3C4764",
+      dark: "#272D41",
+      light: "#848484",
+    },
+  },
+  interaction: {
+    mainLight: {
+      default: "#F8FAFE",
     },
   },
 }

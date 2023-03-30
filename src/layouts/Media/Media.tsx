@@ -23,7 +23,7 @@ import {
   SectionCaption,
   SectionHeader,
 } from "../components"
-import { SiteViewLayout } from "../layouts"
+import { SiteEditLayout } from "../layouts"
 
 import {
   MediaDirectoryCard,
@@ -77,7 +77,7 @@ export const Media = (): JSX.Element => {
 
   return (
     <>
-      <SiteViewLayout overflow="hidden">
+      <SiteEditLayout overflow="hidden">
         <Section>
           <Box>
             <Text as="h2" textStyle="h2">
@@ -147,7 +147,7 @@ export const Media = (): JSX.Element => {
             </SimpleGrid>
           </Skeleton>
         </Section>
-      </SiteViewLayout>
+      </SiteEditLayout>
       <Switch>
         <ProtectedRouteWithProps
           path={[`${path}/createMedia`]}
