@@ -5,23 +5,32 @@ import { Switch } from "react-router-dom"
 
 // Layouts
 
+import { ReviewRequestRoleProvider } from "contexts/ReviewRequestRoleContext"
+
 import EditContactUs from "layouts/EditContactUs"
 import EditHomepage from "layouts/EditHomepage"
 import EditNavBar from "layouts/EditNavBar"
 import EditPage from "layouts/EditPage"
 import { Folders } from "layouts/Folders"
-import Home from "layouts/Home"
+import { LoginPage } from "layouts/Login"
 import { Media } from "layouts/Media"
 import NotFoundPage from "layouts/NotFoundPage"
 import { ResourceCategory } from "layouts/ResourceCategory"
 import { ResourceRoom } from "layouts/ResourceRoom"
+import { ReviewRequestDashboard } from "layouts/ReviewRequest/Dashboard"
 import { Settings } from "layouts/Settings"
-import Sites from "layouts/Sites"
+import { SiteDashboard } from "layouts/SiteDashboard"
+import { Sites } from "layouts/Sites"
 import { Workspace } from "layouts/Workspace"
 
 // ProtectedRoute component
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 import RedirectIfLoggedInRoute from "routing/RedirectIfLoggedInRoute"
+
+import {
+  ApprovedReviewRedirect,
+  injectApprovalRedirect,
+} from "./ApprovedReviewRedirect"
 
 const { REACT_APP_BANNER_VARIANT: BANNER_VARIANT } = process.env
 const { REACT_APP_BANNER_MESSAGE: BANNER_MESSAGE } = process.env
@@ -34,7 +43,8 @@ export const RouteSelector = () => (
       </Banner>
     )}
     <Switch>
-      <RedirectIfLoggedInRoute exact path="/" component={Home} />
+      <RedirectIfLoggedInRoute exact path="/" unauthedComponent={LoginPage} />
+
       <ProtectedRouteWithProps
         exact
         path={[
@@ -43,58 +53,92 @@ export const RouteSelector = () => (
           "/sites/:siteName/folders/:collectionName/editPage/:fileName",
           "/sites/:siteName/editPage/:fileName",
         ]}
-        component={EditPage}
+        component={injectApprovalRedirect(EditPage)}
       />
+
       <ProtectedRouteWithProps
         path={[
           "/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName",
           "/sites/:siteName/folders/:collectionName",
         ]}
-        component={Folders}
-      />
+      >
+        <ApprovedReviewRedirect>
+          <Folders />
+        </ApprovedReviewRedirect>
+      </ProtectedRouteWithProps>
+
       <ProtectedRouteWithProps
         exact
         path="/sites/:siteName/navbar"
-        component={EditNavBar}
+        component={injectApprovalRedirect(EditNavBar)}
       />
+
       <ProtectedRouteWithProps
         path={[
           "/sites/:siteName/media/:mediaRoom/mediaDirectory/:mediaDirectoryName",
         ]}
-        component={Media}
-      />
-      <ProtectedRouteWithProps
-        path="/sites/:siteName/workspace"
-        component={Workspace}
-      />
+      >
+        <ApprovedReviewRedirect>
+          <Media />
+        </ApprovedReviewRedirect>
+      </ProtectedRouteWithProps>
+
+      <ProtectedRouteWithProps path="/sites/:siteName/dashboard">
+        <SiteDashboard />
+      </ProtectedRouteWithProps>
+
+      <ProtectedRouteWithProps path="/sites/:siteName/review/:reviewId">
+        <ReviewRequestRoleProvider>
+          <ReviewRequestDashboard />
+        </ReviewRequestRoleProvider>
+      </ProtectedRouteWithProps>
+
+      <ProtectedRouteWithProps path="/sites/:siteName/workspace">
+        <ApprovedReviewRedirect>
+          <Workspace />
+        </ApprovedReviewRedirect>
+      </ProtectedRouteWithProps>
+
       <ProtectedRouteWithProps
         path="/sites/:siteName/homepage"
-        component={EditHomepage}
+        component={injectApprovalRedirect(EditHomepage)}
       />
+
       <ProtectedRouteWithProps
         path="/sites/:siteName/contact-us"
-        component={EditContactUs}
+        component={injectApprovalRedirect(EditContactUs)}
       />
-      <ProtectedRouteWithProps
-        path="/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName"
-        component={ResourceCategory}
-      />
+
+      <ProtectedRouteWithProps path="/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName">
+        <ApprovedReviewRedirect>
+          <ResourceCategory />
+        </ApprovedReviewRedirect>
+      </ProtectedRouteWithProps>
+
       <ProtectedRouteWithProps
         path={[
           "/sites/:siteName/resourceRoom/:resourceRoomName",
           "/sites/:siteName/resourceRoom",
         ]}
-        component={ResourceRoom}
-      />
+      >
+        <ApprovedReviewRedirect>
+          <ResourceRoom />
+        </ApprovedReviewRedirect>
+      </ProtectedRouteWithProps>
+
       <ProtectedRouteWithProps
         path="/sites/:siteName/navbar"
-        component={EditNavBar}
+        component={injectApprovalRedirect(EditNavBar)}
       />
-      <ProtectedRouteWithProps
-        path="/sites/:siteName/settings"
-        component={Settings}
-      />
+
+      <ProtectedRouteWithProps path="/sites/:siteName/settings">
+        <ApprovedReviewRedirect>
+          <Settings />
+        </ApprovedReviewRedirect>
+      </ProtectedRouteWithProps>
+
       <ProtectedRouteWithProps exact path="/sites" component={Sites} />
+
       <ProtectedRouteWithProps path="/" component={NotFoundPage} />
     </Switch>
     <VerifyUserDetailsModal />

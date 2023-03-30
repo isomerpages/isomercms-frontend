@@ -2,3 +2,4 @@
 . "$(dirname "$0")/_/husky.sh"
 
 npx lint-staged
+source .env && ggshield secret scan pre-commit

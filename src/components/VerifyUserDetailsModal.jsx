@@ -23,10 +23,10 @@ const VerificationStep = {
 
 const VerifyUserDetailsModal = () => {
   const {
-    userId,
     email: loggedInEmail,
     contactNumber: loggedInContactNumber,
-    verifyLoginAndSetLocalStorage,
+    verifyLoginAndGetUserDetails,
+    displayedName,
   } = useContext(LoginContext)
   const { setRedirectToLogout } = useRedirectHook()
 
@@ -104,7 +104,7 @@ const VerifyUserDetailsModal = () => {
       setMobileNumber("")
       setOtp("")
 
-      await verifyLoginAndSetLocalStorage()
+      await verifyLoginAndGetUserDetails()
     } catch (err) {
       setError("Invalid OTP. Failed to verify OTP.")
     } finally {
@@ -212,7 +212,7 @@ const VerifyUserDetailsModal = () => {
     }
   }
 
-  return userId && (!loggedInEmail || !loggedInContactNumber) ? (
+  return displayedName && (!loggedInEmail || !loggedInContactNumber) ? (
     <div className={elementStyles.overlay}>
       <div className={elementStyles["modal-verify-user-details"]}>
         <div className={elementStyles.modalHeader}>
