@@ -101,10 +101,10 @@ const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
 }
 
 export const Sites = (): JSX.Element => {
-  const { email } = useLoginContext()
+  const { email, userId } = useLoginContext()
   const { data: siteRequestData } = useGetAllSites(email)
   const { announcements, link } = useAnnouncements()
-  const [isOpen, setIsOpen] = useState(announcements.length > 0 && !!email)
+  const [isOpen, setIsOpen] = useState(announcements.length > 0 && !userId)
   useEffect(() => {
     if (!siteRequestData) return
     const siteData = siteRequestData.siteNames
