@@ -17,6 +17,7 @@ import { LoggedInUser } from "types/user"
 const { REACT_APP_BACKEND_URL_V2: BACKEND_URL } = process.env
 
 interface LoginContextProps extends LoggedInUser {
+  isLoading: boolean
   logout: () => Promise<void>
   verifyLoginAndGetUserDetails: () => Promise<void>
 }
@@ -38,6 +39,7 @@ const LoginProvider = ({
     LOCAL_STORAGE_KEYS.SitesIsPrivate,
     false
   )
+  const [isLoading, setIsLoading] = useState(true)
   const [storedUserId, setStoredUserId] = useState("")
   const [storedUserContact, setStoredUserContact] = useState("")
   const [storedUserEmail, setStoredUserEmail] = useState("")
@@ -49,6 +51,7 @@ const LoginProvider = ({
     setStoredUserId(loggedInUser.userId)
     setStoredUserContact(loggedInUser.contactNumber)
     setStoredUserEmail(loggedInUser.email)
+    setIsLoading(false)
   }, [setStoredUserContact, setStoredUserEmail, setStoredUserId])
 
   const logout = async () => {
@@ -79,6 +82,7 @@ const LoginProvider = ({
   }, []) // Run only once
 
   const loginContextData = {
+    isLoading,
     userId: storedUserId,
     email: storedUserEmail,
     contactNumber: storedUserContact,
