@@ -38,7 +38,9 @@ const { REACT_APP_BANNER_MESSAGE: BANNER_MESSAGE } = process.env
 export const RouteSelector = () => (
   <>
     {!!BANNER_MESSAGE && (
-      <Banner variant={BANNER_VARIANT}>{BANNER_MESSAGE}</Banner>
+      <Banner useMarkdown variant={BANNER_VARIANT}>
+        {BANNER_MESSAGE}
+      </Banner>
     )}
     <Switch>
       <RedirectIfLoggedInRoute exact path="/" unauthedComponent={LoginPage} />
