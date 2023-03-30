@@ -23,6 +23,7 @@ import { NotificationMenu } from "components/Header/NotificationMenu"
 import { WarningModal } from "components/WarningModal"
 import PropTypes from "prop-types"
 import { BiArrowBack, BiCheckCircle } from "react-icons/bi"
+import { useParams } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 
@@ -48,7 +49,7 @@ const Header = ({
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { setRedirectToPage } = useRedirectHook()
-  const { siteName } = params
+  const { siteName } = useParams()
   const { data: stagingUrl, isLoading } = useStagingUrl({ siteName })
   const {
     isOpen: isWarningModalOpen,
@@ -204,7 +205,6 @@ const Header = ({
 }
 
 Header.defaultProps = {
-  siteName: undefined,
   showButton: true,
   title: undefined,
   isEditPage: false,
@@ -215,7 +215,6 @@ Header.defaultProps = {
 }
 
 Header.propTypes = {
-  siteName: PropTypes.string,
   showButton: PropTypes.bool,
   title: PropTypes.string,
   isEditPage: PropTypes.bool,
