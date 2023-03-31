@@ -60,7 +60,6 @@ const LoginProvider = ({
     setStoredUserContact("")
     setStoredUserEmail("")
     removeSites()
-    setIsLoading(false)
   }
 
   // Set interceptors to log users out if an error occurs within the LoginProvider
@@ -72,6 +71,7 @@ const LoginProvider = ({
       if (error.response && error.response.status === 401) {
         await logout()
       }
+      setIsLoading(false)
       return Promise.reject(error)
     }
   )
