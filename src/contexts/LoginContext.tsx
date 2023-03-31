@@ -71,6 +71,7 @@ const LoginProvider = ({
       if (error.response && error.response.status === 401) {
         await logout()
       }
+      setIsLoading(false)
       return Promise.reject(error)
     }
   )
