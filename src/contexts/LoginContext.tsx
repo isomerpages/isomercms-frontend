@@ -60,6 +60,7 @@ const LoginProvider = ({
     setStoredUserContact("")
     setStoredUserEmail("")
     removeSites()
+    setIsLoading(false)
   }
 
   // Set interceptors to log users out if an error occurs within the LoginProvider
