@@ -107,7 +107,7 @@ const LoginContent = (): JSX.Element => {
       </Text>
       <InlineMessage>
         We’re moving in phases from GitHub IDs to email addresses as the login
-        method. For those currently using Github ID, you’ll be informed when you
+        method. For those currently using GitHub ID, you’ll be informed when you
         can log in using the email method.
       </InlineMessage>
       <Tabs width="100%">
