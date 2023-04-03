@@ -280,7 +280,7 @@ describe("Resource category page", () => {
     cy.clickContextMenuItem("@pageCard", "settings")
 
     cy.get("#layout").select("post")
-    cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK)
+    cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK).blur()
 
     cy.contains("Save").click().wait(Interceptors.POST)
     cy.contains("Successfully updated page").should("exist")
@@ -309,7 +309,7 @@ describe("Resource category page", () => {
   })
 
   it("Resources category page should allow user to create a new resource page of type link", () => {
-    cy.contains("Create page").click()
+    cy.contains("a", "Create page").should("be.visible").click()
 
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_LINK)
     cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE)

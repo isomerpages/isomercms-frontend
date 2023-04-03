@@ -22,10 +22,15 @@ import { ButtonLink } from "components/ButtonLink"
 import { NotificationMenu } from "components/Header/NotificationMenu"
 import { WarningModal } from "components/WarningModal"
 import PropTypes from "prop-types"
-import { BiArrowBack } from "react-icons/bi"
+import { BiArrowBack, BiCheckCircle } from "react-icons/bi"
+import { useParams } from "react-router-dom"
+
+import { useLoginContext } from "contexts/LoginContext"
 
 import { useStagingUrl } from "hooks/settingsHooks"
 import useRedirectHook from "hooks/useRedirectHook"
+
+import { ReviewRequestModal } from "layouts/ReviewRequest"
 
 import { NavImage } from "assets"
 import { getBackButton } from "utils"
@@ -44,13 +49,19 @@ const Header = ({
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { setRedirectToPage } = useRedirectHook()
-  const { siteName } = params
+  const { siteName } = useParams()
   const { data: stagingUrl, isLoading } = useStagingUrl({ siteName })
   const {
     isOpen: isWarningModalOpen,
     onOpen: onWarningModalOpen,
     onClose: onWarningModalClose,
   } = useDisclosure()
+  const {
+    isOpen: isReviewRequestModalOpen,
+    onOpen: onReviewRequestModalOpen,
+    onClose: onReviewRequestModalClose,
+  } = useDisclosure()
+  const { userId } = useLoginContext()
 
   const {
     backButtonLabel: backButtonTextFromParams,
@@ -121,9 +132,21 @@ const Header = ({
           >
             View Staging
           </Button>
-          <ButtonLink href={`https://github.com/isomerpages/${siteName}/pulls`}>
-            <Text color="white">Pull Request</Text>
-          </ButtonLink>
+          {userId ? (
+            // Github user
+            <ButtonLink
+              href={`https://github.com/isomerpages/${siteName}/pulls`}
+            >
+              <Text color="white">Pull Request</Text>
+            </ButtonLink>
+          ) : (
+            <Button
+              leftIcon={<Icon as={BiCheckCircle} fontSize="1.25rem" />}
+              onClick={onReviewRequestModalOpen}
+            >
+              Request a Review
+            </Button>
+          )}
         </HStack>
       </Flex>
 
@@ -173,12 +196,15 @@ const Header = ({
         </Button>
         <Button onClick={toggleBackNav}>Yes</Button>
       </WarningModal>
+      <ReviewRequestModal
+        isOpen={isReviewRequestModalOpen}
+        onClose={onReviewRequestModalClose}
+      />
     </>
   )
 }
 
 Header.defaultProps = {
-  siteName: undefined,
   showButton: true,
   title: undefined,
   isEditPage: false,
@@ -189,7 +215,6 @@ Header.defaultProps = {
 }
 
 Header.propTypes = {
-  siteName: PropTypes.string,
   showButton: PropTypes.bool,
   title: PropTypes.string,
   isEditPage: PropTypes.bool,

@@ -179,7 +179,7 @@ const NavSection = ({
   const [newSectionType, setNewSectionType] = useState()
   const selectInputRef = useRef()
   const sectionCreationHandler = () => {
-    selectInputRef.current.select.clearValue()
+    selectInputRef.current.clearValue()
     const event = {
       target: {
         id: `link-create`,

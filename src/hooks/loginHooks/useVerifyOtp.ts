@@ -12,11 +12,11 @@ export const useVerifyOtp = (): UseMutationResult<
   AxiosError,
   VerifyOtpParams
 > => {
-  const { verifyLoginAndSetLocalStorage } = useLoginContext()
+  const { verifyLoginAndGetUserDetails } = useLoginContext()
   return useMutation<void, AxiosError, VerifyOtpParams>(
     (body) => LoginService.verifyLoginOtp(body),
     {
-      onSuccess: verifyLoginAndSetLocalStorage,
+      onSuccess: verifyLoginAndGetUserDetails,
     }
   )
 }

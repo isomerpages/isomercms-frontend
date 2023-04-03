@@ -337,6 +337,7 @@ export const getDefaultFrontMatter = (params, existingTitles) => {
     }`
   }
   examplePermalink += `permalink`
+  examplePermalink = examplePermalink.toLowerCase()
   if (!resourceRoomName)
     return {
       title: exampleTitle,

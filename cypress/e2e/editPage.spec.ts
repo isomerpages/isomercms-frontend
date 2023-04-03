@@ -399,7 +399,7 @@ describe("editPage.spec", () => {
       cy.visit(
         `/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM}`
       ).wait(Interceptors.GET)
-      cy.contains("Create category").click()
+      cy.contains("Create category").should("be.visible").click()
       cy.get('input[placeholder="Title"]').type(TEST_CATEGORY)
       cy.contains("Next").click()
 
@@ -409,7 +409,10 @@ describe("editPage.spec", () => {
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
       )
-      cy.contains("Create page").click().wait(Interceptors.GET)
+      cy.contains("Create page")
+        .should("be.visible")
+        .click()
+        .wait(Interceptors.GET)
 
       cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE)
       cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE)

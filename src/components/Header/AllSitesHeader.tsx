@@ -32,7 +32,12 @@ export const AllSitesHeader = (): JSX.Element => {
       <HStack spacing="2rem">
         <LinkBox position="relative">
           <LinkOverlay href="https://guide.isomer.gov.sg/" isExternal>
-            <Text color="text.link.dark" noOfLines={1}>
+            <Text
+              color="text.link.dark"
+              noOfLines={1}
+              textStyle="subhead-1"
+              fontSize="1rem"
+            >
               Get help
             </Text>
           </LinkOverlay>

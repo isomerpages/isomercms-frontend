@@ -1,3 +1,4 @@
+import { Box, Center, Spinner } from "@chakra-ui/react"
 import axios from "axios"
 import _ from "lodash"
 import { Redirect, Route, RouteProps } from "react-router-dom"
@@ -20,7 +21,17 @@ export const ProtectedRoute = ({
   component: WrappedComponent,
   ...rest
 }: RouteProps): JSX.Element => {
-  const { displayedName } = useLoginContext()
+  const { displayedName, isLoading } = useLoginContext()
+
+  if (isLoading) {
+    return (
+      <Box h="100vh" w="100vw">
+        <Center h="100%" w="100%">
+          <Spinner size="lg" />
+        </Center>
+      </Box>
+    )
+  }
 
   if (displayedName && children) {
     return <Route {...rest}>{children}</Route>

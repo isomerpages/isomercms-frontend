@@ -15,6 +15,7 @@ import {
   URL_REGEX_SUFFIX,
   TIKTOK_REGEX,
   TELEGRAM_REGEX,
+  YOUTUBE_REGEX,
 } from "utils/validators"
 
 import { SiteSettings } from "types/settings"
@@ -98,6 +99,8 @@ const getRegExp = (
   label: StringKeyOf<SiteSettings["socialMediaContent"]>
 ): RegExp => {
   switch (label) {
+    case "youtube":
+      return RegExp(`${URL_REGEX_PREFIX}${label}${YOUTUBE_REGEX}`)
     case "telegram":
       return RegExp(`${URL_REGEX_PREFIX}${TELEGRAM_REGEX}`)
     case "tiktok":

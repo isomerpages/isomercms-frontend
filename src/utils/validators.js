@@ -15,6 +15,7 @@ import { generatePageFileName } from "./legacy"
 const PERMALINK_REGEX = "^((/([a-zA-Z0-9]+-)*[a-zA-Z0-9]+)+)/?$"
 export const URL_REGEX_PREFIX = "^(https://)?(www.)?("
 export const URL_REGEX_SUFFIX = ".com/)([a-zA-Z0-9_-]+([/.])?)+$"
+export const YOUTUBE_REGEX = ".com/(@)?)([a-zA-Z0-9_-]+([/.])?)+$"
 export const TELEGRAM_REGEX = "telegram|t).me/([a-zA-Z0-9_-]+([/.])?)+$"
 export const TIKTOK_REGEX = ".com/@)([a-zA-Z0-9_-]+([/.])?)+$"
 // Domain name regex (source: https://regexr.com/3au3g and https://stackoverflow.com/a/30007882)
