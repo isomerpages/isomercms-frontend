@@ -8,10 +8,11 @@ import {
   Flex,
 } from "@chakra-ui/react"
 import { InlineMessage } from "@opengovsg/design-system-react"
-import { AllSitesHeader } from "components/Header/AllSitesHeader"
 import _ from "lodash"
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
+
+import { AllSitesHeader } from "components/Header/AllSitesHeader"
 
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
