@@ -46,6 +46,7 @@
     "react-hook-form": "^7.32.0",
     "react-icons": "^4.4.0",
     "react-input-mask": "^2.0.4",
+    "react-joyride": "^2.5.3",
     "react-markdown": "^8.0.0",
     "react-query": "^3.34.16",
     "react-router-dom": "^5.1.2",
