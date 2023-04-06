@@ -43,6 +43,7 @@ import useRedirectHook from "hooks/useRedirectHook"
 import { getDateTimeFromUnixTime } from "utils/date"
 
 import { SiteDashboardHumanImage } from "assets"
+import { FeatureTour } from "features/FeatureTour/FeatureTour"
 
 import { SiteViewLayout } from "../layouts"
 
@@ -106,7 +107,7 @@ export const SiteDashboard = (): JSX.Element => {
             {siteName}
           </Heading>
           <Spacer />
-          <HStack spacing="1.25rem">
+          <HStack spacing="1.25rem" id="isomer-feature-tour-step-1">
             <MenuDropdownButton
               variant="outline"
               mainButtonText="Open staging"
@@ -152,8 +153,11 @@ export const SiteDashboard = (): JSX.Element => {
 
         {/* Content */}
         <Flex px="4rem" pt="1.25rem" gap="0.5rem">
+          <FeatureTour onClose={() => console.log("TODO: CLOSED")} />
+          <div id="feature_tour_first_step">HELLO</div>
+          <div id="second-step">HELLO</div>
           {/* Left column */}
-          <Box w="60%">
+          <Box w="60%" id="isomer-feature-tour-step-2">
             <DisplayCard variant="full">
               <DisplayCardHeader>
                 <DisplayCardTitle
@@ -218,45 +222,47 @@ export const SiteDashboard = (): JSX.Element => {
               </Box>
 
               {/* Site collaborators display card */}
-              <DisplayCard variant="full">
-                <DisplayCardHeader
-                  button={
-                    <Button
-                      variant="link"
-                      textStyle="subhead-1"
-                      color="text.title.brand"
-                      marginRight="0.75rem"
-                      onClick={onCollaboratorsModalOpen}
+              <Box id="isomer-feature-tour-step-3" w="100%">
+                <DisplayCard variant="full">
+                  <DisplayCardHeader
+                    button={
+                      <Button
+                        variant="link"
+                        textStyle="subhead-1"
+                        color="text.title.brand"
+                        marginRight="0.75rem"
+                        onClick={onCollaboratorsModalOpen}
+                      >
+                        Manage
+                      </Button>
+                    }
+                  >
+                    <DisplayCardTitle
+                      icon={<Icon as={BiGroup} fontSize="1.5rem" />}
                     >
-                      Manage
-                    </Button>
-                  }
-                >
-                  <DisplayCardTitle
-                    icon={<Icon as={BiGroup} fontSize="1.5rem" />}
-                  >
-                    Site collaborators
-                  </DisplayCardTitle>
-                  <DisplayCardCaption>
-                    Manage roles and access
-                  </DisplayCardCaption>
-                </DisplayCardHeader>
-                <DisplayCardContent>
-                  <Skeleton
-                    isLoaded={!isCollaboratorsStatisticsLoading}
-                    w="100%"
-                  >
-                    {!isCollaboratorsStatisticsError &&
-                    collaboratorsStatistics ? (
-                      <CollaboratorsStatistics
-                        statistics={collaboratorsStatistics}
-                      />
-                    ) : (
-                      <Text>Unable to retrieve data</Text>
-                    )}
-                  </Skeleton>
-                </DisplayCardContent>
-              </DisplayCard>
+                      Site collaborators
+                    </DisplayCardTitle>
+                    <DisplayCardCaption>
+                      Manage roles and access
+                    </DisplayCardCaption>
+                  </DisplayCardHeader>
+                  <DisplayCardContent>
+                    <Skeleton
+                      isLoaded={!isCollaboratorsStatisticsLoading}
+                      w="100%"
+                    >
+                      {!isCollaboratorsStatisticsError &&
+                      collaboratorsStatistics ? (
+                        <CollaboratorsStatistics
+                          statistics={collaboratorsStatistics}
+                        />
+                      ) : (
+                        <Text>Unable to retrieve data</Text>
+                      )}
+                    </Skeleton>
+                  </DisplayCardContent>
+                </DisplayCard>
+              </Box>
 
               {/* Site settings display card */}
               <DisplayCard variant="header">
