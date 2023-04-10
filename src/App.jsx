@@ -1,3 +1,4 @@
+import { datadogRum } from "@datadog/browser-rum"
 import { ThemeProvider } from "@opengovsg/design-system-react"
 import axios from "axios"
 import { useEffect } from "react"
@@ -28,6 +29,33 @@ const apiClient = axios.create({
   baseURL: API_BASE_URL_V2,
   timeout: 100000, // 100 secs
 })
+
+// datadog env var
+const {
+  DATADOG_APP_ID,
+  DATADOG_CLIENT_TOKEN,
+  APP_VERSION,
+  REACT_APP_ENV,
+} = process.env
+
+datadogRum.init({
+  applicationId: DATADOG_APP_ID,
+  clientToken: DATADOG_CLIENT_TOKEN,
+  site: "datadoghq.com",
+  service: "isomercms-frontend",
+  env: REACT_APP_ENV,
+  // Specify a version number to identify the deployed version of your application in Datadog
+  version: APP_VERSION,
+  sessionSampleRate: 100,
+  sessionReplaySampleRate: 20,
+  trackUserInteractions: true,
+  trackResources: true,
+  trackLongTasks: true,
+  defaultPrivacyLevel: "mask-user-input",
+  enableExperimentalFeatures: ["clickmap"],
+})
+
+datadogRum.startSessionReplayRecording()
 
 const App = () => {
   useEffect(() => {
