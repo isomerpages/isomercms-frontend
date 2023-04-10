@@ -34,8 +34,23 @@ export const AnalyticsSettings = ({
         </FormControl>
 
         <FormControl isDisabled={isError}>
-          <FormLabel>Google Analytics</FormLabel>
-          <Input w="100%" {...register("ga")} />
+          <FormLabel>Google Analytics (UA)</FormLabel>
+          <SectionCaption label="" icon={BiInfoCircle}>
+            This field will be removed following the deprecation of Universal
+            Analytics on 1 July 2023.{" "}
+            <Link
+              href="https://support.google.com/analytics/answer/11583528?hl=en"
+              isExternal
+            >
+              Read more
+            </Link>
+          </SectionCaption>
+          <Input isDisabled w="100%" {...register("ga")} />
+        </FormControl>
+
+        <FormControl isDisabled={isError}>
+          <FormLabel>Google Analytics (GA4)</FormLabel>
+          <Input w="100%" {...register("ga4")} />
         </FormControl>
 
         <FormControl isDisabled={isError}>
