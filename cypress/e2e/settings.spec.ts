@@ -28,6 +28,7 @@ describe("Settings page", () => {
   const IMAGE_DIR = "/images/"
   const TEST_FACEBOOK_PIXEL_ID = "12345"
   const TEST_GOOGLE_ANALYTICS_ID = "UA-39345131-3"
+  const TEST_GOOGLE_ANALYTICS_GA4_ID = "GA-12345"
   const TEST_LINKEDIN_INSIGHTS_ID = "1234567"
   const TEST_SECONDARY_COLOR = [0, 255, 0] // ([R, G, B])
   const TEST_FACEBOOK_LINK = "https://www.facebook.com/testfb"
@@ -278,6 +279,10 @@ describe("Settings page", () => {
       .next()
       .as("ga")
       .type(TEST_GOOGLE_ANALYTICS_ID)
+    cy.contains("label", "Google Analytics")
+      .next()
+      .as("ga4")
+      .type(TEST_GOOGLE_ANALYTICS_GA4_ID)
     cy.contains("label", "LinkedIn Insights")
       .next()
       .as("insights")
@@ -289,6 +294,7 @@ describe("Settings page", () => {
     // Assert
     cy.get("@pixel").should("have.value", TEST_FACEBOOK_PIXEL_ID)
     cy.get("@ga").should("have.value", TEST_GOOGLE_ANALYTICS_ID)
+    cy.get("@ga4").should("have.value", TEST_GOOGLE_ANALYTICS_GA4_ID)
     cy.get("@insights").should("have.value", TEST_LINKEDIN_INSIGHTS_ID)
   })
 
