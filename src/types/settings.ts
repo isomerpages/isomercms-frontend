@@ -40,6 +40,7 @@ export interface SiteAnalyticsSettings {
   pixel: string
   ga: string
   insights: string
+  ga4: string
 }
 
 export type SiteSettings = SiteInfo &
@@ -58,6 +59,8 @@ export interface BackendSiteSettings {
   facebook_pixel?: string
   // eslint-disable-next-line camelcase
   google_analytics?: string
+  // eslint-disable-next-line camelcase
+  google_analytics_ga4?: string
   // eslint-disable-next-line camelcase
   linkedin_insights?: string
   // eslint-disable-next-line camelcase

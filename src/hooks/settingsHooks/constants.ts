@@ -12,6 +12,7 @@ export const BE_TO_FE: {
   favicon: "favicon",
   facebook_pixel: "pixel",
   google_analytics: "ga",
+  google_analytics_ga4: "ga4",
   linkedin_insights: "insights",
   is_government: "displayGovMasthead",
   colors: "colours",
