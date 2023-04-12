@@ -14,6 +14,8 @@ import { RouteSelector } from "routing/RouteSelector"
 
 import theme from "theme"
 
+import { DATADOG_RUM_SETTINGS } from "./constants/datadog"
+
 // axios settings
 axios.defaults.withCredentials = true
 
@@ -46,13 +48,7 @@ datadogRum.init({
   env: REACT_APP_ENV,
   // Specify a version number to identify the deployed version of your application in Datadog
   version: REACT_APP_VERSION,
-  sessionSampleRate: 100,
-  sessionReplaySampleRate: 20,
-  trackUserInteractions: true,
-  trackResources: true,
-  trackLongTasks: true,
-  defaultPrivacyLevel: "mask-user-input",
-  enableExperimentalFeatures: ["clickmap"],
+  ...DATADOG_RUM_SETTINGS,
 })
 
 datadogRum.startSessionReplayRecording()
