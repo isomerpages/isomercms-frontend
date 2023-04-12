@@ -44,6 +44,7 @@ import { getDateTimeFromUnixTime } from "utils/date"
 
 import { SiteDashboardHumanImage } from "assets"
 import { FeatureTour } from "features/FeatureTour/FeatureTour"
+import { DASHBOARD_FEATURE_STEPS } from "features/FeatureTour/FeatureTourSequence"
 
 import { SiteViewLayout } from "../layouts"
 
@@ -107,7 +108,7 @@ export const SiteDashboard = (): JSX.Element => {
             {siteName}
           </Heading>
           <Spacer />
-          <HStack spacing="1.25rem" id="isomer-feature-tour-step-1">
+          <HStack spacing="1.25rem" id="isomer-dashboard-feature-tour-step-1">
             <MenuDropdownButton
               variant="outline"
               mainButtonText="Open staging"
@@ -153,11 +154,12 @@ export const SiteDashboard = (): JSX.Element => {
 
         {/* Content */}
         <Flex px="4rem" pt="1.25rem" gap="0.5rem">
-          <FeatureTour onClose={() => console.log("TODO: CLOSED")} />
-          <div id="feature_tour_first_step">HELLO</div>
-          <div id="second-step">HELLO</div>
+          <FeatureTour
+            steps={DASHBOARD_FEATURE_STEPS}
+            onClose={() => console.log("TODO: CLOSED")}
+          />
           {/* Left column */}
-          <Box w="60%" id="isomer-feature-tour-step-2">
+          <Box w="60%" id="isomer-dashboard-feature-tour-step-2">
             <DisplayCard variant="full">
               <DisplayCardHeader>
                 <DisplayCardTitle
@@ -222,7 +224,7 @@ export const SiteDashboard = (): JSX.Element => {
               </Box>
 
               {/* Site collaborators display card */}
-              <Box id="isomer-feature-tour-step-3" w="100%">
+              <Box id="isomer-dashboard-feature-tour-step-3" w="100%">
                 <DisplayCard variant="full">
                   <DisplayCardHeader
                     button={

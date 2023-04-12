@@ -4,7 +4,7 @@ import { ProgressIndicator } from "components/ProgressIndicator/ProgressIndicato
 import { BiBulb, BiRightArrowAlt } from "react-icons/bi"
 
 import { useFeatureTourContext } from "./FeatureTourContext"
-import { FEATURE_STEPS } from "./FeatureTourSequence"
+import { DASHBOARD_FEATURE_STEPS } from "./FeatureTourSequence"
 
 export interface FeatureTourStep {
   content: React.ReactNode
@@ -13,6 +13,7 @@ export interface FeatureTourStep {
 
 export interface FeatureTourTooltipProps {
   step: FeatureTourStep
+  size: number
   tooltipProps: BoxProps
   primaryProps: ButtonProps
   closeProps: ButtonProps
@@ -22,6 +23,7 @@ export interface FeatureTourTooltipProps {
 
 export const FeatureTourTooltip = ({
   step,
+  size,
   tooltipProps,
   primaryProps,
   closeProps,
@@ -66,10 +68,9 @@ export const FeatureTourTooltip = ({
         justifyContent="space-between"
       >
         <ProgressIndicator
-          numIndicators={FEATURE_STEPS.length}
+          numIndicators={size}
           currActiveIdx={index}
-          //   onClick={paginationCallback}
-          onClick={(num) => console.log(num)}
+          onClick={paginationCallback}
         />
         {isLastStep ? (
           <Button {...primaryProps} title="Done">

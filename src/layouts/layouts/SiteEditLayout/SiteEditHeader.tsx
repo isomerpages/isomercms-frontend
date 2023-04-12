@@ -90,6 +90,7 @@ export const SiteEditHeader = (): JSX.Element => {
             </ButtonLink>
           ) : (
             <Button
+              id="isomer-workspace-feature-tour-step-1"
               leftIcon={<Icon as={BiCheckCircle} fontSize="1.25rem" />}
               onClick={onReviewRequestModalOpen}
             >

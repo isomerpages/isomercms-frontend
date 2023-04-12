@@ -1,16 +1,26 @@
 import { useToken } from "@chakra-ui/react"
 import { useState } from "react"
-import Joyride, { ACTIONS, CallBackProps, EVENTS, STATUS } from "react-joyride"
+import Joyride, {
+  ACTIONS,
+  CallBackProps,
+  EVENTS,
+  STATUS,
+  Step,
+} from "react-joyride"
 
 import { FeatureTourContext } from "./FeatureTourContext"
-import { FEATURE_STEPS } from "./FeatureTourSequence"
+import { DASHBOARD_FEATURE_STEPS } from "./FeatureTourSequence"
 import { FeatureTourTooltip } from "./FeatureTourTooltip"
 
 interface FeatureTourProps {
+  steps: Array<Step>
   onClose: () => void
 }
 
-export const FeatureTour = ({ onClose }: FeatureTourProps): JSX.Element => {
+export const FeatureTour = ({
+  steps,
+  onClose,
+}: FeatureTourProps): JSX.Element => {
   const [stepIndex, setStepIndex] = useState<number>(0)
   const arrowColor: string = useToken("colors", ["text.inverse"])
   const [isPaginationClicked, setIsPaginationClicked] = useState<boolean>(false)
@@ -49,7 +59,7 @@ export const FeatureTour = ({ onClose }: FeatureTourProps): JSX.Element => {
       }}
     >
       <Joyride
-        steps={FEATURE_STEPS}
+        steps={steps}
         callback={handleJoyrideCallback}
         stepIndex={stepIndex}
         continuous
@@ -70,6 +80,7 @@ export const FeatureTour = ({ onClose }: FeatureTourProps): JSX.Element => {
         styles={{
           options: {
             arrowColor,
+            zIndex: 2000, // need this for it to be on top of the navbar
           },
         }}
         spotlightPadding={3}

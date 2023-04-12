@@ -26,6 +26,8 @@ import {
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
+import { FeatureTour } from "features/FeatureTour/FeatureTour"
+import { WORKSPACE_FEATURE_STEPS } from "features/FeatureTour/FeatureTourSequence"
 import { ReviewRequestStatus } from "types/reviewRequest"
 import { isDirData } from "types/utils"
 
@@ -78,6 +80,10 @@ const WorkspacePage = (): JSX.Element => {
         <MainPages siteName={siteName} isLoading={!!pagesData} />
       </VStack>
       <Skeleton isLoaded={!isDirLoading} w="100%">
+        <FeatureTour
+          steps={WORKSPACE_FEATURE_STEPS}
+          onClose={() => console.log("TODO: CLOSED")}
+        />
         <EmptyArea
           isItemEmpty={isFoldersEmpty && isPagesEmpty}
           actionButton={
