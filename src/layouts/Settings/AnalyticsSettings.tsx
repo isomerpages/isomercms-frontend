@@ -19,7 +19,7 @@ export const AnalyticsSettings = ({
     <Section id="analytics-fields">
       <VStack align="flex-start" spacing="0.5rem">
         <SectionHeader label="Analytics" />
-        <SectionCaption label="" icon={BiInfoCircle}>
+        <SectionCaption icon={BiInfoCircle}>
           For Analytics set up, refer to our guide{" "}
           <Link href={ANALYTICS_SETUP_LINK} isExternal>
             here
@@ -34,7 +34,7 @@ export const AnalyticsSettings = ({
 
         <FormControl isDisabled={isError}>
           <FormLabel>Google Analytics (UA)</FormLabel>
-          <SectionCaption label="" icon={BiInfoCircle}>
+          <SectionCaption icon={BiInfoCircle}>
             This field will be removed following the deprecation of Universal
             Analytics on 1 July 2023.{" "}
             <Link href={GA_DEPRECATION_LINK} isExternal>
