@@ -74,6 +74,7 @@ export const FeatureTour = ({ onClose }: FeatureTourProps): JSX.Element => {
         }}
         spotlightPadding={3}
         tooltipComponent={FeatureTourTooltip}
+        disableScrolling
       />
     </FeatureTourContext.Provider>
   )
