@@ -32,20 +32,20 @@ const apiClient = axios.create({
 
 // datadog env var
 const {
-  DATADOG_APP_ID,
-  DATADOG_CLIENT_TOKEN,
-  APP_VERSION,
+  REACT_APP_DATADOG_APP_ID,
+  REACT_APP_DATADOG_CLIENT_TOKEN,
+  REACT_APP_VERSION,
   REACT_APP_ENV,
 } = process.env
 
 datadogRum.init({
-  applicationId: DATADOG_APP_ID,
-  clientToken: DATADOG_CLIENT_TOKEN,
+  applicationId: REACT_APP_DATADOG_APP_ID,
+  clientToken: REACT_APP_DATADOG_CLIENT_TOKEN,
   site: "datadoghq.com",
   service: "isomercms-frontend",
   env: REACT_APP_ENV,
   // Specify a version number to identify the deployed version of your application in Datadog
-  version: APP_VERSION,
+  version: REACT_APP_VERSION,
   sessionSampleRate: 100,
   sessionReplaySampleRate: 20,
   trackUserInteractions: true,
