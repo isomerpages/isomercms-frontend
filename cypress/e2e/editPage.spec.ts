@@ -38,10 +38,10 @@ describe("editPage.spec", () => {
     )
 
     const DEFAULT_IMAGE_TITLE = "isomer-logo.svg"
-    const ADDED_IMAGE_TITLE = "balloon.png"
+    const ADDED_IMAGE_TITLE = "balloon"
     const ADDED_IMAGE_PATH = "images/balloon.png"
 
-    const ADDED_FILE_TITLE = "singapore-pages.pdf"
+    const ADDED_FILE_TITLE = "singapore-pages"
     const ADDED_FILE_PATH = "files/singapore.pdf"
 
     const LINK_TITLE = "link"
@@ -82,7 +82,7 @@ describe("editPage.spec", () => {
 
     it("Edit page (unlinked) should provide a warning to users when navigating away", () => {
       cy.get(".CodeMirror-scroll").type(TEST_PAGE_CONTENT)
-      cy.contains(":button", "Back to Workspace").click()
+      cy.get('button[aria-label="Back to sites"]').click()
 
       cy.contains("Warning")
       cy.contains(":button", "No").click()
@@ -94,7 +94,7 @@ describe("editPage.spec", () => {
       )
       cy.contains(TEST_PAGE_CONTENT)
 
-      cy.contains(":button", "Back to Workspace").click()
+      cy.get('button[aria-label="Back to sites"]').click()
 
       cy.contains("Warning")
       cy.contains(":button", "Yes").click()
@@ -303,12 +303,18 @@ describe("editPage.spec", () => {
     })
 
     it("Edit page (collection) should have third nav menu", () => {
-      cy.get("#sidenav").contains(TEST_PAGE_TITLE).should("exist")
+      cy.wait(Interceptors.GET)
+      // NOTE: Wait for the markdown editor + preview to load
+      cy.get(".spinner-border").should("not.exist")
+      cy.get("#sidenav")
+        .should("be.visible")
+        .contains(TEST_PAGE_TITLE)
+        .should("exist")
     })
 
     it("Edit page (collection) should provide a warning to users when navigating away", () => {
       cy.get(".CodeMirror-scroll").type(TEST_PAGE_CONTENT)
-      cy.contains(":button", TEST_FOLDER_TITLE).click()
+      cy.get('button[aria-label="Back to sites"]').click()
 
       cy.contains("Warning")
       cy.contains(":button", "No").click()
@@ -320,7 +326,7 @@ describe("editPage.spec", () => {
       )
       cy.contains(TEST_PAGE_CONTENT)
 
-      cy.contains(":button", TEST_FOLDER_TITLE).click()
+      cy.get('button[aria-label="Back to sites"]').click()
 
       cy.contains("Warning")
       cy.contains(":button", "Yes").click()
