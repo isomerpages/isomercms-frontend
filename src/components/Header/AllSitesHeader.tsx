@@ -9,6 +9,8 @@ import {
 } from "@chakra-ui/react"
 import { AvatarMenu } from "components/Header/AvatarMenu"
 
+import { ISOMER_GUIDE_LINK } from "constants/config"
+
 import { useLoginContext } from "contexts/LoginContext"
 
 export const AllSitesHeader = (): JSX.Element => {
@@ -31,7 +33,7 @@ export const AllSitesHeader = (): JSX.Element => {
       <Spacer />
       <HStack spacing="2rem">
         <LinkBox position="relative">
-          <LinkOverlay href="https://guide.isomer.gov.sg/" isExternal>
+          <LinkOverlay href={ISOMER_GUIDE_LINK} isExternal>
             <Text
               color="text.link.dark"
               noOfLines={1}

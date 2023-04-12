@@ -3,6 +3,8 @@ import { FormLabel, Input } from "@opengovsg/design-system-react"
 import { useFormContext } from "react-hook-form"
 import { BiInfoCircle } from "react-icons/bi"
 
+import { ANALYTICS_SETUP_LINK, GA_DEPRECATION_LINK } from "constants/config"
+
 import { Section, SectionHeader, SectionCaption } from "layouts/components"
 
 interface AnalyticsSettingsProp {
@@ -19,10 +21,7 @@ export const AnalyticsSettings = ({
         <SectionHeader label="Analytics" />
         <SectionCaption label="" icon={BiInfoCircle}>
           For Analytics set up, refer to our guide{" "}
-          <Link
-            href="https://guide.isomer.gov.sg/analytics-and-tracking/google-analytics"
-            isExternal
-          >
+          <Link href={ANALYTICS_SETUP_LINK} isExternal>
             here
           </Link>
         </SectionCaption>
@@ -38,10 +37,7 @@ export const AnalyticsSettings = ({
           <SectionCaption label="" icon={BiInfoCircle}>
             This field will be removed following the deprecation of Universal
             Analytics on 1 July 2023.{" "}
-            <Link
-              href="https://support.google.com/analytics/answer/11583528?hl=en"
-              isExternal
-            >
+            <Link href={GA_DEPRECATION_LINK} isExternal>
               Read more
             </Link>
           </SectionCaption>
