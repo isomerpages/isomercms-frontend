@@ -2,7 +2,7 @@ import { TextProps, Text, Icon, HStack } from "@chakra-ui/react"
 
 interface SectionCaptionProps extends TextProps {
   icon: (props: React.SVGProps<SVGSVGElement>) => JSX.Element
-  label: string
+  label?: string
 }
 // eslint-disable-next-line import/prefer-default-export
 export const SectionCaption = ({

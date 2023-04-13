@@ -2,6 +2,8 @@ import { Link } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import { useContext, useEffect, useState } from "react"
 
+import { IDENTITY_GUIDE_LINK } from "constants/config"
+
 import {
   getEmailOtp,
   verifyEmailOtp,
@@ -190,7 +192,7 @@ const VerifyUserDetailsModal = () => {
               all users of Isomer CMS. Only <b>.gov.sg</b> or{" "}
               <b>whitelisted email addresses</b> will be accepted. You must
               verify your email before proceeding.{" "}
-              <Link isExternal href="https://go.gov.sg/isomer-identity">
+              <Link isExternal href={IDENTITY_GUIDE_LINK}>
                 Read more.
               </Link>
             </div>
