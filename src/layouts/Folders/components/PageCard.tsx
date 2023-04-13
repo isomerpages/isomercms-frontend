@@ -7,6 +7,8 @@ import {
   Text,
   Box,
 } from "@chakra-ui/react"
+import { Card, CardBody } from "components/Card"
+import { ContextMenu } from "components/ContextMenu"
 import { useMemo } from "react"
 import {
   BiEditAlt,
@@ -17,9 +19,6 @@ import {
   BiFileBlank,
 } from "react-icons/bi"
 import { useRouteMatch, Link as RouterLink } from "react-router-dom"
-
-import { Card, CardBody } from "components/Card"
-import { ContextMenu } from "components/ContextMenu"
 
 import { pageFileNameToTitle } from "utils"
 

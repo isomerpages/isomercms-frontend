@@ -17,11 +17,10 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { Button, IconButton } from "@opengovsg/design-system-react"
-import { BiArrowBack, BiCheckCircle } from "react-icons/bi"
-import { Link as RouterLink, useParams } from "react-router-dom"
-
 import { ButtonLink } from "components/ButtonLink"
 import { NotificationMenu } from "components/Header/NotificationMenu"
+import { BiArrowBack, BiCheckCircle } from "react-icons/bi"
+import { Link as RouterLink, useParams } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 

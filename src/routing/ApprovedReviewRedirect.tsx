@@ -1,7 +1,6 @@
+import { Greyscale } from "components/Greyscale"
 import { PropsWithChildren, useEffect } from "react"
 import { Redirect, RedirectProps, useParams } from "react-router-dom"
-
-import { Greyscale } from "components/Greyscale"
 
 import { useLoginContext } from "contexts/LoginContext"
 

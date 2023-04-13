@@ -1,6 +1,5 @@
 import { VStack, FormControl, Box } from "@chakra-ui/react"
 import { FormLabel } from "@opengovsg/design-system-react"
-
 import { FormTitle } from "components/Form"
 
 import { Section, SectionHeader } from "layouts/components"

@@ -6,6 +6,8 @@ import {
   LinkOverlay,
   Text,
 } from "@chakra-ui/react"
+import { Card, CardBody } from "components/Card"
+import { ContextMenu } from "components/ContextMenu"
 import { useMemo } from "react"
 import {
   BiChevronRight,
@@ -16,9 +18,6 @@ import {
   BiWrench,
 } from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
-
-import { Card, CardBody } from "components/Card"
-import { ContextMenu } from "components/ContextMenu"
 
 import { pageFileNameToTitle } from "utils"
 

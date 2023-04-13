@@ -7,11 +7,10 @@ import {
   HStack,
   Box,
 } from "@chakra-ui/react"
-import { BiChevronRight, BiEditAlt, BiFolder, BiTrash } from "react-icons/bi"
-import { Link as RouterLink, useRouteMatch } from "react-router-dom"
-
 import { Card, CardBody } from "components/Card"
 import { ContextMenu } from "components/ContextMenu"
+import { BiChevronRight, BiEditAlt, BiFolder, BiTrash } from "react-icons/bi"
+import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
 import { BxFileArchiveSolid } from "assets"
 

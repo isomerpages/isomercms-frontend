@@ -6,7 +6,6 @@ import {
   Grid,
   GridProps,
 } from "@chakra-ui/react"
-
 import { Sidebar } from "components/Sidebar"
 
 import { SiteEditHeader } from "./SiteEditHeader"

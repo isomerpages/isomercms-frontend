@@ -1,9 +1,8 @@
 import { LinkOverlay, LinkBox, Divider, Text, Icon } from "@chakra-ui/react"
-import { BiEditAlt, BiFolder, BiTrash, BiWrench } from "react-icons/bi"
-import { Link as RouterLink, useRouteMatch } from "react-router-dom"
-
 import { Card, CardBody } from "components/Card"
 import { ContextMenu } from "components/ContextMenu"
+import { BiEditAlt, BiFolder, BiTrash, BiWrench } from "react-icons/bi"
+import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
 import { prettifyPageFileName } from "utils"
 

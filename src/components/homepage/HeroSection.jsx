@@ -1,13 +1,12 @@
 import { Button, IconButton } from "@opengovsg/design-system-react"
-import PropTypes from "prop-types"
-import { Droppable, Draggable } from "react-beautiful-dnd"
-
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormField from "components/FormField"
 import FormFieldMedia from "components/FormFieldMedia"
 import HeroButton from "components/homepage/HeroButton"
 import HeroDropdown from "components/homepage/HeroDropdown"
 import KeyHighlight from "components/homepage/KeyHighlight"
+import PropTypes from "prop-types"
+import { Droppable, Draggable } from "react-beautiful-dnd"
 
 import styles from "styles/App.module.scss"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"

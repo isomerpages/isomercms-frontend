@@ -1,9 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup"
 import axios from "axios"
-import PropTypes from "prop-types"
-import { useState } from "react"
-import { useFieldArray, useForm, FormProvider } from "react-hook-form"
-
 import {
   DirectorySettingsSchema,
   DirectorySettingsModal,
@@ -11,6 +7,9 @@ import {
 import { FolderCard } from "components/FolderCard"
 import { Footer } from "components/Footer"
 import { LoadingButton } from "components/LoadingButton"
+import PropTypes from "prop-types"
+import { useState } from "react"
+import { useFieldArray, useForm, FormProvider } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import adminStyles from "styles/isomer-cms/pages/Admin.module.scss"
