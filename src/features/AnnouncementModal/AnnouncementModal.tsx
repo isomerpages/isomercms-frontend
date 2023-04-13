@@ -14,10 +14,9 @@ import {
   Box,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
+import { ProgressIndicator } from "components/ProgressIndicator"
 import { useMemo, useState } from "react"
 import { BiRightArrowAlt } from "react-icons/bi"
-
-import { ProgressIndicator } from "components/ProgressIndicator"
 
 import { useAnnouncements } from "hooks/useAnnouncement"
 

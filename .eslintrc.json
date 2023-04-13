@@ -50,6 +50,8 @@
     "no-param-reassign": "warn",
     "no-use-before-define": "warn",
     "no-unused-expressions": "warn",
+    "import/no-named-as-default": "warn",
+    "import/no-named-as-default-member": "warn",
     "camelcase": "warn",
     "no-unused-vars": [
       "error",

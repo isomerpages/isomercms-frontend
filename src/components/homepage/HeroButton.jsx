@@ -1,9 +1,8 @@
-import PropTypes from "prop-types"
-
 import FormContext from "components/Form/FormContext"
 import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
+import PropTypes from "prop-types"
 
 /* eslint
   react/no-array-index-key: 0

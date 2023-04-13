@@ -1,9 +1,8 @@
 import { Text } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
-import PropTypes from "prop-types"
-
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
+import PropTypes from "prop-types"
 
 import { useDeleteDirectoryHook } from "hooks/directoryHooks"
 import { useGetMediaHook, useDeleteMediaHook } from "hooks/mediaHooks"

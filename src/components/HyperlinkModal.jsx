@@ -1,9 +1,8 @@
 import { CloseButton, VStack, Box, Button, Flex } from "@chakra-ui/react"
 import axios from "axios"
+import FormField from "components/FormField"
 import PropTypes from "prop-types"
 import { useState } from "react"
-
-import FormField from "components/FormField"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 

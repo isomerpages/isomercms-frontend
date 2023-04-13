@@ -1,6 +1,5 @@
-import PropTypes from "prop-types"
-
 import { MediaCreationModal } from "components/MediaCreationModal"
+import PropTypes from "prop-types"
 
 import { useGetMediaFolders } from "hooks/directoryHooks"
 import { useCreateMediaHook } from "hooks/mediaHooks"

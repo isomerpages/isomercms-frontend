@@ -1,7 +1,6 @@
+import MediaModal from "components/media/MediaModal"
 import PropTypes from "prop-types"
 import { useState } from "react"
-
-import MediaModal from "components/media/MediaModal"
 
 import { useFormContext } from "../Form/FormContext"
 
