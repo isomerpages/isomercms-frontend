@@ -7,6 +7,7 @@ import {
   DIRECTORY_SETTINGS_TITLE_MIN_LENGTH,
   DIRECTORY_SETTINGS_TITLE_MAX_LENGTH,
   resourceCategoryRegexTest,
+  jekyllFirstCharacterRegexTest,
 } from "utils/validators"
 
 import { deslugifyDirectory } from "utils"
@@ -46,6 +47,11 @@ export const DirectorySettingsSchema = (existingTitlesArray = []) =>
               "Special characters found",
               'Title cannot contain any of the following special characters: ~%^*_+-./`;{}[]"<>',
               (value) => !specialCharactersRegexTest.test(value)
+            )
+            .test(
+              "Restricted first character found",
+              "Title cannot start with any of the following special characters: ._#~",
+              (value) => !jekyllFirstCharacterRegexTest.test(value)
             )
         }
         if (type === "resourceRoomName") {
