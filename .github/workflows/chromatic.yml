@@ -15,7 +15,7 @@ jobs:
     outputs:
       frontend: ${{ steps.filter.outputs.frontend }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: dorny/paths-filter@v2
         id: filter
         with:
@@ -33,7 +33,7 @@ jobs:
     environment: staging
     # Job steps
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       # This extra step is not in the original chromatic workflow.
       # This is to use a specific version of node (14.x), because the default is 16.x,
       # which is not compatible with sass
