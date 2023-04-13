@@ -30,6 +30,8 @@ import { useEffect } from "react"
 import { BiCheckCircle, BiCog, BiEditAlt, BiGroup } from "react-icons/bi"
 import { useParams, Link as RouterLink } from "react-router-dom"
 
+import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
+
 import { useLoginContext } from "contexts/LoginContext"
 
 import {
@@ -155,8 +157,8 @@ export const SiteDashboard = (): JSX.Element => {
         {/* Content */}
         <Flex px="4rem" pt="1.25rem" gap="0.5rem">
           <FeatureTour
+            localStorageKey={LOCAL_STORAGE_KEYS.DashboardFeatureTour}
             steps={DASHBOARD_FEATURE_STEPS}
-            onClose={() => console.log("TODO: CLOSED")}
           />
           {/* Left column */}
           <Box w="60%" id="isomer-dashboard-feature-tour-step-2">

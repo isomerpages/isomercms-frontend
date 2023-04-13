@@ -9,6 +9,8 @@ import { BiFolder, BiFileBlank } from "react-icons/bi"
 import { Switch, useRouteMatch, useHistory, Link } from "react-router-dom"
 
 // Import hooks
+import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
+
 import {
   useGetFoldersAndPages,
   useGetWorkspacePages,
@@ -71,6 +73,10 @@ const WorkspacePage = (): JSX.Element => {
 
   return (
     <SiteEditLayout overflow="hidden">
+      <FeatureTour
+        localStorageKey={LOCAL_STORAGE_KEYS.WorkspaceFeatureTour}
+        steps={WORKSPACE_FEATURE_STEPS}
+      />
       <VStack spacing="2rem" w="100%" alignItems="start">
         {hasOpenReviewRequests && (
           <ReviewRequestAlert
@@ -80,10 +86,6 @@ const WorkspacePage = (): JSX.Element => {
         <MainPages siteName={siteName} isLoading={!!pagesData} />
       </VStack>
       <Skeleton isLoaded={!isDirLoading} w="100%">
-        <FeatureTour
-          steps={WORKSPACE_FEATURE_STEPS}
-          onClose={() => console.log("TODO: CLOSED")}
-        />
         <EmptyArea
           isItemEmpty={isFoldersEmpty && isPagesEmpty}
           actionButton={

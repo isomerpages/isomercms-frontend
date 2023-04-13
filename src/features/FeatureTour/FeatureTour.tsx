@@ -8,20 +8,26 @@ import Joyride, {
   Step,
 } from "react-joyride"
 
+import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
+
+import { useLocalStorage } from "hooks/useLocalStorage"
+
 import { FeatureTourContext } from "./FeatureTourContext"
 import { DASHBOARD_FEATURE_STEPS } from "./FeatureTourSequence"
 import { FeatureTourTooltip } from "./FeatureTourTooltip"
 
 interface FeatureTourProps {
+  localStorageKey: LOCAL_STORAGE_KEYS
   steps: Array<Step>
-  onClose: () => void
+  onClose?: () => void
 }
 
 export const FeatureTour = ({
+  localStorageKey,
   steps,
   onClose,
 }: FeatureTourProps): JSX.Element => {
-  const [stepIndex, setStepIndex] = useState<number>(0)
+  const [stepIndex, setStepIndex] = useLocalStorage(localStorageKey, 0)
   const arrowColor: string = useToken("colors", ["text.inverse"])
   const [isPaginationClicked, setIsPaginationClicked] = useState<boolean>(false)
 
@@ -40,7 +46,7 @@ export const FeatureTour = ({
         status === STATUS.SKIPPED ||
         action === ACTIONS.CLOSE
       ) {
-        onClose()
+        if (onClose) onClose()
       }
     } else {
       setIsPaginationClicked(false)
