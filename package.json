@@ -42,6 +42,8 @@
     "lodash": "^4.17.21",
     "marked": "^4.0.12",
     "moment-timezone": "^0.5.35",
+    "postcss": "^8.4.21",
+    "postcss-loader": "^7.2.4",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
