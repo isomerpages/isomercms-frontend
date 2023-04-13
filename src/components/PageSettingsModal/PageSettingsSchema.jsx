@@ -4,6 +4,7 @@ import * as Yup from "yup"
 import {
   permalinkRegexTest,
   specialCharactersRegexTest,
+  jekyllFirstCharacterRegexTest,
   dateRegexTest,
   PAGE_SETTINGS_PERMALINK_MIN_LENGTH,
   PAGE_SETTINGS_PERMALINK_MAX_LENGTH,
@@ -19,6 +20,11 @@ export const PageSettingsSchema = (existingTitlesArray = []) =>
         "Special characters found",
         'Title cannot contain any of the following special characters: ~%^*_+-./`;{}[]"<>',
         (value) => !specialCharactersRegexTest.test(value)
+      )
+      .test(
+        "File starts with restricted character",
+        "Title cannot start with any of the following special characters: ._#~",
+        (value) => !jekyllFirstCharacterRegexTest.test(value)
       )
       .min(
         PAGE_SETTINGS_TITLE_MIN_LENGTH,

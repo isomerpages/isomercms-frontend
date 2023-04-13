@@ -23,6 +23,8 @@ import {
 import { useState, PropsWithChildren } from "react"
 import { useHistory } from "react-router-dom"
 
+import { PRIVACY_POLICY_LINK, TERMS_OF_USE_LINK } from "constants/config"
+
 import { useLogin, useVerifyOtp } from "hooks/loginHooks"
 
 import { getAxiosErrorMessage } from "utils/axios"
@@ -107,7 +109,7 @@ const LoginContent = (): JSX.Element => {
       </Text>
       <InlineMessage>
         We’re moving in phases from GitHub IDs to email addresses as the login
-        method. For those currently using Github ID, you’ll be informed when you
+        method. For those currently using GitHub ID, you’ll be informed when you
         can log in using the email method.
       </InlineMessage>
       <Tabs width="100%">
@@ -150,17 +152,11 @@ const LoginContent = (): JSX.Element => {
           </TabPanel>
           <Text color="text.helper" fontSize="0.625rem" pt="2rem">
             By clicking ‘Log in’, you are acknowledging and agreeing to Isomer’s{" "}
-            <Link
-              href="https://guide.isomer.gov.sg/terms-and-privacy/terms-of-use"
-              isExternal
-            >
+            <Link href={TERMS_OF_USE_LINK} isExternal>
               Terms of Use
             </Link>
             {" and our "}
-            <Link
-              href="https://guide.isomer.gov.sg/terms-and-privacy/privacy-statement"
-              isExternal
-            >
+            <Link href={PRIVACY_POLICY_LINK} isExternal>
               Privacy policy
             </Link>
           </Text>

@@ -3,6 +3,8 @@ import { FormLabel, Input } from "@opengovsg/design-system-react"
 import { useFormContext } from "react-hook-form"
 import { BiInfoCircle } from "react-icons/bi"
 
+import { ANALYTICS_SETUP_LINK, GA_DEPRECATION_LINK } from "constants/config"
+
 import { Section, SectionHeader, SectionCaption } from "layouts/components"
 
 interface AnalyticsSettingsProp {
@@ -17,12 +19,9 @@ export const AnalyticsSettings = ({
     <Section id="analytics-fields">
       <VStack align="flex-start" spacing="0.5rem">
         <SectionHeader label="Analytics" />
-        <SectionCaption label="" icon={BiInfoCircle}>
+        <SectionCaption icon={BiInfoCircle}>
           For Analytics set up, refer to our guide{" "}
-          <Link
-            href="https://guide.isomer.gov.sg/analytics-and-tracking/google-analytics"
-            isExternal
-          >
+          <Link href={ANALYTICS_SETUP_LINK} isExternal>
             here
           </Link>
         </SectionCaption>
@@ -34,8 +33,20 @@ export const AnalyticsSettings = ({
         </FormControl>
 
         <FormControl isDisabled={isError}>
-          <FormLabel>Google Analytics</FormLabel>
-          <Input w="100%" {...register("ga")} />
+          <FormLabel>Google Analytics (UA)</FormLabel>
+          <SectionCaption icon={BiInfoCircle}>
+            This field will be removed following the deprecation of Universal
+            Analytics on 1 July 2023.{" "}
+            <Link href={GA_DEPRECATION_LINK} isExternal>
+              Read more
+            </Link>
+          </SectionCaption>
+          <Input isDisabled w="100%" {...register("ga")} />
+        </FormControl>
+
+        <FormControl isDisabled={isError}>
+          <FormLabel>Google Analytics (GA4)</FormLabel>
+          <Input w="100%" {...register("ga4")} />
         </FormControl>
 
         <FormControl isDisabled={isError}>
