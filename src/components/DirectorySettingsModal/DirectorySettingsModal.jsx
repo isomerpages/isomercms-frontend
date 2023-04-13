@@ -1,15 +1,14 @@
 import { CloseButton, HStack } from "@chakra-ui/react"
 import { yupResolver } from "@hookform/resolvers/yup"
 import axios from "axios"
-import _ from "lodash"
-import PropTypes from "prop-types"
-import { useForm, useFormContext } from "react-hook-form"
-
 import { FormContext } from "components/Form"
 import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import { LoadingButton } from "components/LoadingButton"
+import _ from "lodash"
+import PropTypes from "prop-types"
+import { useForm, useFormContext } from "react-hook-form"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 

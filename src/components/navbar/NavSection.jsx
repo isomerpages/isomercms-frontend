@@ -1,14 +1,13 @@
 import { Button, IconButton } from "@opengovsg/design-system-react"
-import PropTypes from "prop-types"
-import { useState, useRef } from "react"
-import { Droppable, Draggable } from "react-beautiful-dnd"
-import Select from "react-select"
-
 import FormContext from "components/Form/FormContext"
 import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import NavSublinkSection from "components/navbar/NavSublinkSection"
+import PropTypes from "prop-types"
+import { useState, useRef } from "react"
+import { Droppable, Draggable } from "react-beautiful-dnd"
+import Select from "react-select"
 
 import styles from "styles/App.module.scss"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"

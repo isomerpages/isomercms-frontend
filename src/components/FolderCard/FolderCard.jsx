@@ -1,12 +1,11 @@
 // not completely refactored yet, to finish after Media and Resources
 // should create separate display component Card without functionality
 import { LinkOverlay, LinkBox, Divider, Text, Box } from "@chakra-ui/react"
+import { ContextMenu } from "components/ContextMenu"
 import PropTypes from "prop-types"
 import { useMemo } from "react"
 import { BiEditAlt, BiTrash, BiWrench } from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
-
-import { ContextMenu } from "components/ContextMenu"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"

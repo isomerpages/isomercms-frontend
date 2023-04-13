@@ -12,9 +12,8 @@ import {
   Input,
   Textarea,
 } from "@opengovsg/design-system-react"
-import { useFormContext, useFormState } from "react-hook-form"
-
 import { FormTitle } from "components/Form"
+import { useFormContext, useFormState } from "react-hook-form"
 
 import { Section, SectionHeader } from "layouts/components"
 

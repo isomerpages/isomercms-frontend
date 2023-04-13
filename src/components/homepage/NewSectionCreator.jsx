@@ -1,8 +1,7 @@
 import { Button } from "@opengovsg/design-system-react"
+import Dropdown from "components/Dropdown"
 import PropTypes from "prop-types"
 import { useState } from "react"
-
-import Dropdown from "components/Dropdown"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 

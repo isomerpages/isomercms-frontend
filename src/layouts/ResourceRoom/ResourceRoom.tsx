@@ -18,6 +18,8 @@ import {
   useDisclosure,
 } from "@chakra-ui/react"
 import { Button, FormLabel, Input } from "@opengovsg/design-system-react"
+import { ContextMenu } from "components/ContextMenu"
+import { EmptyArea } from "components/EmptyArea"
 import _ from "lodash"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
@@ -31,9 +33,6 @@ import {
   useParams,
   useRouteMatch,
 } from "react-router-dom"
-
-import { ContextMenu } from "components/ContextMenu"
-import { EmptyArea } from "components/EmptyArea"
 
 import {
   useCreateDirectory,

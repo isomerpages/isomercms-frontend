@@ -1,8 +1,5 @@
 import { Icon, Badge, Box, HStack, Text } from "@chakra-ui/react"
 import { InlineMessage } from "@opengovsg/design-system-react"
-import { BiRightArrowAlt } from "react-icons/bi"
-import { Link, useParams } from "react-router-dom"
-
 import {
   DisplayCard,
   DisplayCardCaption,
@@ -11,6 +8,8 @@ import {
   DisplayCardHeader,
   DisplayCardTitle,
 } from "components/DisplayCard"
+import { BiRightArrowAlt } from "react-icons/bi"
+import { Link, useParams } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 

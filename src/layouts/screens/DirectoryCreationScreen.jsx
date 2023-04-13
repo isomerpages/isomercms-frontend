@@ -1,7 +1,6 @@
 import axios from "axios"
-import PropTypes from "prop-types"
-
 import { DirectoryCreationModal } from "components/DirectoryCreationModal"
+import PropTypes from "prop-types"
 
 import {
   useGetDirectoryHook,

@@ -1,13 +1,12 @@
 // Import components
 import { Icon, Skeleton, Text, VStack } from "@chakra-ui/react"
-import { BiFolder, BiFileBlank } from "react-icons/bi"
-import { Switch, useRouteMatch, useHistory, Link } from "react-router-dom"
-
 import { EmptyArea } from "components/EmptyArea"
 import {
   MenuDropdownButton,
   MenuDropdownItem,
 } from "components/MenuDropdownButton"
+import { BiFolder, BiFileBlank } from "react-icons/bi"
+import { Switch, useRouteMatch, useHistory, Link } from "react-router-dom"
 
 // Import hooks
 import {

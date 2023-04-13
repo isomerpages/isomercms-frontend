@@ -12,11 +12,6 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
-import _ from "lodash"
-import { useEffect } from "react"
-import { BiCheckCircle, BiCog, BiEditAlt, BiGroup } from "react-icons/bi"
-import { useParams, Link as RouterLink } from "react-router-dom"
-
 import { ButtonLink } from "components/ButtonLink"
 import { CollaboratorModal } from "components/CollaboratorModal"
 import {
@@ -30,6 +25,10 @@ import {
   MenuDropdownButton,
   MenuDropdownItem,
 } from "components/MenuDropdownButton"
+import _ from "lodash"
+import { useEffect } from "react"
+import { BiCheckCircle, BiCog, BiEditAlt, BiGroup } from "react-icons/bi"
+import { useParams, Link as RouterLink } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 
