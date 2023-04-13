@@ -68,6 +68,8 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
     },
     content: {
       default: "#3C4764",
+      dark: "#272D41",
+      light: "#848484",
     },
   },
   icon: {
@@ -100,13 +102,6 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
       alt: "#E9E9E9",
       active: "#276EF1",
       disabled: "#BFBFBF",
-    },
-  },
-  base: {
-    content: {
-      default: "#3C4764",
-      dark: "#272D41",
-      light: "#848484",
     },
   },
   interaction: {
