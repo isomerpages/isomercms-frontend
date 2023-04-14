@@ -13,21 +13,40 @@ import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 import { useLocalStorage } from "hooks/useLocalStorage"
 
 import { FeatureTourContext } from "./FeatureTourContext"
-import { DASHBOARD_FEATURE_STEPS } from "./FeatureTourSequence"
 import { FeatureTourTooltip } from "./FeatureTourTooltip"
 
-interface FeatureTourProps {
+interface FeatureTourHandlerProps {
   localStorageKey: LOCAL_STORAGE_KEYS
   steps: Array<Step>
   onClose?: () => void
 }
+interface FeatureTourProps {
+  stepIndex: number
+  setStepIndex: (value: number) => void
+  steps: Array<Step>
+  onClose?: () => void
+}
 
-export const FeatureTour = ({
+export const FeatureTourHandler = ({
   localStorageKey,
   steps,
   onClose,
-}: FeatureTourProps): JSX.Element => {
+}: FeatureTourHandlerProps): JSX.Element => {
   const [stepIndex, setStepIndex] = useLocalStorage(localStorageKey, 0)
+  return FeatureTour({
+    stepIndex,
+    setStepIndex,
+    steps,
+    onClose,
+  })
+}
+
+export const FeatureTour = ({
+  steps,
+  onClose,
+  stepIndex,
+  setStepIndex,
+}: FeatureTourProps): JSX.Element => {
   const arrowColor: string = useToken("colors", ["text.inverse"])
   const [isPaginationClicked, setIsPaginationClicked] = useState<boolean>(false)
 

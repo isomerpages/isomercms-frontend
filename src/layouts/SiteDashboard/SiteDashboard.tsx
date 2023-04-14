@@ -45,7 +45,7 @@ import useRedirectHook from "hooks/useRedirectHook"
 import { getDateTimeFromUnixTime } from "utils/date"
 
 import { SiteDashboardHumanImage } from "assets"
-import { FeatureTour } from "features/FeatureTour/FeatureTour"
+import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
 import { DASHBOARD_FEATURE_STEPS } from "features/FeatureTour/FeatureTourSequence"
 
 import { SiteViewLayout } from "../layouts"
@@ -156,7 +156,7 @@ export const SiteDashboard = (): JSX.Element => {
 
         {/* Content */}
         <Flex px="4rem" pt="1.25rem" gap="0.5rem">
-          <FeatureTour
+          <FeatureTourHandler
             localStorageKey={LOCAL_STORAGE_KEYS.DashboardFeatureTour}
             steps={DASHBOARD_FEATURE_STEPS}
           />

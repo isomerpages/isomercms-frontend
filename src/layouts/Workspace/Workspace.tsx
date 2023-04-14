@@ -28,7 +28,7 @@ import {
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
-import { FeatureTour } from "features/FeatureTour/FeatureTour"
+import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
 import { WORKSPACE_FEATURE_STEPS } from "features/FeatureTour/FeatureTourSequence"
 import { ReviewRequestStatus } from "types/reviewRequest"
 import { isDirData } from "types/utils"
@@ -73,7 +73,7 @@ const WorkspacePage = (): JSX.Element => {
 
   return (
     <SiteEditLayout overflow="hidden">
-      <FeatureTour
+      <FeatureTourHandler
         localStorageKey={LOCAL_STORAGE_KEYS.WorkspaceFeatureTour}
         steps={WORKSPACE_FEATURE_STEPS}
       />
