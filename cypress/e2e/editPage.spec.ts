@@ -25,6 +25,8 @@ describe("editPage.spec", () => {
     const TEST_PAGE_CONTENT = "lorem ipsum"
     const TEST_INSTAGRAM_EMBED_SCRIPT =
       '<script async src="//www.instagram.com/embed.js"></script>'
+    const TEST_SANITIZED_INSTAGRAM_EMBED_SCRIPT =
+      '<script async="" src="//www.instagram.com/embed.js"></script>'
     const TEST_UNTRUSTED_SCRIPT =
       '<script src="https://www.example.com/evil.js"></script>'
     const TEST_INLINE_SCRIPT = '<script>alert("hello")</script>'
@@ -200,7 +202,7 @@ describe("editPage.spec", () => {
 
       // 2. Content is there even after refreshing
       cy.reload()
-      cy.contains(TEST_INSTAGRAM_EMBED_SCRIPT).should("exist")
+      cy.contains(TEST_SANITIZED_INSTAGRAM_EMBED_SCRIPT).should("exist")
     })
 
     it("Edit page (unlinked) should not allow users to add untrusted external scripts", () => {
