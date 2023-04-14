@@ -36,3 +36,29 @@ export const WORKSPACE_FEATURE_STEPS: Array<Step> = [
     placement: "bottom",
   },
 ]
+
+export const STORIES_FEATURE_STEPS: Array<Step> = [
+  {
+    target: "#isomer-dashboard-feature-tour-step-1",
+    title: "Edit or preview your site",
+    content:
+      "Make changes to your site here, or preview a live version on staging",
+    floaterProps: { placement: "bottom-end" },
+    placement: "bottom-end",
+  },
+  {
+    target: "#isomer-dashboard-feature-tour-step-2",
+    title: "See existing review requests",
+    content:
+      "If there are any requests yet to be reviewed by an admin, they'll show here",
+    placement: "bottom-end",
+  },
+  {
+    target: "#isomer-dashboard-feature-tour-step-3",
+    title: "Manage who can edit your site",
+    content:
+      "View all collaborators on this site. Admins can also add or remove collaborators here",
+    floaterProps: { placement: "bottom-end" },
+    placement: "top-end",
+  },
+]
