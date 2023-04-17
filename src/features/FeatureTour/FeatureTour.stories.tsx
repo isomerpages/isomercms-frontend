@@ -4,7 +4,7 @@ import { useState } from "react"
 import { BiCheckCircle } from "react-icons/bi"
 
 import { FeatureTour } from "./FeatureTour"
-import { STORIES_FEATURE_STEPS } from "./FeatureTourSequence"
+import { STORYBOOK_FEATURE_STEPS } from "./FeatureTourSequence"
 
 export default {
   title: "Pages/Feature Tour",
@@ -24,25 +24,25 @@ const Template: Story = () => {
   return (
     <>
       <Button
-        id="isomer-dashboard-feature-tour-step-1"
+        id="isomer-storybook-step-1"
         leftIcon={<Icon as={BiCheckCircle} fontSize="1.25rem" />}
       >
         Button 1
       </Button>
       <Button
-        id="isomer-dashboard-feature-tour-step-2"
+        id="isomer-storybook-step-2"
         leftIcon={<Icon as={BiCheckCircle} fontSize="1.25rem" />}
       >
         Button 2
       </Button>
       <Button
-        id="isomer-dashboard-feature-tour-step-3"
+        id="isomer-storybook-step-3"
         leftIcon={<Icon as={BiCheckCircle} fontSize="1.25rem" />}
       >
         Button 3
       </Button>
       <FeatureTour
-        steps={STORIES_FEATURE_STEPS}
+        steps={STORYBOOK_FEATURE_STEPS}
         stepIndex={stepIndex}
         setStepIndex={setStepIndex}
         onClose={onClose}
