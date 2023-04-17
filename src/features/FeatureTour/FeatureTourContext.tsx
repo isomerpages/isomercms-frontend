@@ -8,7 +8,7 @@ export const FeatureTourContext = createContext<
   FeatureTourContextProps | undefined
 >(undefined)
 
-export const useFeatureTourContext = () => {
+export const useFeatureTourContext = (): FeatureTourContextProps => {
   const context = useContext(FeatureTourContext)
 
   if (context === undefined) {
