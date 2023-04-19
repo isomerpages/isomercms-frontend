@@ -57,7 +57,7 @@ describe("Images", () => {
         .should("not.exist")
         .wait(Interceptors.POST)
 
-      // ASSERTS
+      // Assert
       cy.contains(OTHER_ALBUM_TITLE).should("exist") // Directory name should exist
     })
 
@@ -83,7 +83,7 @@ describe("Images", () => {
       cy.get("#newDirectoryName").clear().type(ANOTHER_ALBUM_TITLE)
       cy.contains("button", "Save").click().wait(Interceptors.POST)
 
-      // ASSERTS
+      // Assert
       cy.contains(ANOTHER_ALBUM_TITLE).should("exist") // New file directory name should be contained in Files
       cy.visit(
         `/sites/${TEST_REPO_NAME}/media/images/mediaDirectory/images%2F${ALBUM_TITLE}%2F${ANOTHER_ALBUM_TITLE}`
@@ -105,7 +105,7 @@ describe("Images", () => {
         .should("not.exist")
         .wait(Interceptors.DELETE)
 
-      // ASSERTS
+      // Assert
       cy.contains(ANOTHER_ALBUM_TITLE).should("not.exist") // Directory name should not be contained in Files
     })
   })
@@ -143,7 +143,7 @@ describe("Images", () => {
     it("Should be able to add image to image album", () => {
       cy.uploadMedia(IMAGE_TITLE, TEST_IMAGE_PATH)
 
-      // ASSERTS
+      // Assert
       cy.contains("Media file successfully uploaded").should("exist")
       cy.contains(IMAGE_TITLE).should("exist") // image should be contained in Images
     })
@@ -152,7 +152,7 @@ describe("Images", () => {
       cy.contains(IMAGE_TITLE).should("exist")
       cy.renameDirectoryMedia(IMAGE_TITLE, OTHER_IMAGE_TITLE)
 
-      // ASSERTS
+      // Assert
       cy.contains(OTHER_IMAGE_TITLE).should("exist") // Image should be contained in Images
     })
 
@@ -163,7 +163,7 @@ describe("Images", () => {
       cy.clickContextMenuItem("@imagePreview", "Delete image")
       cy.contains("button", "delete").click().wait(Interceptors.DELETE)
 
-      // ASSERTS
+      // Assert
       cy.contains(OTHER_IMAGE_TITLE).should("not.exist") // Image file name should not exist in Images
     })
 
@@ -256,7 +256,7 @@ describe("Images", () => {
 
       cy.contains("button", "Move Here").click().wait(Interceptors.POST)
 
-      // ASSERTS
+      // Assert
       cy.visit(
         `/sites/${TEST_REPO_NAME}/media/images/mediaDirectory/images%2F${ALBUM_TITLE}%2F${OTHER_ALBUM_TITLE}`
       ).wait(Interceptors.GET)
