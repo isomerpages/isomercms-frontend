@@ -14,9 +14,6 @@ import {
 
 describe("Folders flow", () => {
   const DEFAULT_REPO_FOLDER_NAME = "default"
-  const PRETTIFIED_DEFAULT_REPO_FOLDER_NAME = deslugifyDirectory(
-    DEFAULT_REPO_FOLDER_NAME
-  )
 
   const DEFAULT_PAGE_TITLE = "Lorem Ipsum"
   const DEFAULT_PAGE_FILENAME = titleToPageFileName(DEFAULT_PAGE_TITLE)
@@ -73,7 +70,7 @@ describe("Folders flow", () => {
   )
   const SLUGIFIED_PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE = slugify(
     PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE
-  )
+  ).toLowerCase()
 
   const TEST_SUBFOLDER_WITH_PAGES_TITLE = "test subfolder title with page"
   const PRETTIFIED_SUBFOLDER_WITH_PAGES_TITLE = deslugifyDirectory(
@@ -261,7 +258,7 @@ describe("Folders flow", () => {
       cy.contains(":button", "Save").click()
 
       // 2. If user goes back to the workspace, they should be able to see that the page exists
-      cy.contains("button", PRETTIFIED_DEFAULT_REPO_FOLDER_NAME).click()
+      cy.get('button[aria-label="Back to sites"]').click()
       cy.contains(PRETTIFIED_PAGE_TITLE).should("exist")
     })
 
@@ -411,7 +408,7 @@ describe("Folders flow", () => {
       cy.contains(":button", "Save").click()
 
       // 2. If user goes back to the workspace, they should be able to see that the page exists
-      cy.contains("button", PRETTIFIED_SUBFOLDER_NO_PAGES_TITLE).click()
+      cy.get('button[aria-label="Back to sites"]').click()
       cy.contains(PRETTIFIED_PAGE_TITLE).should("exist")
     })
 
