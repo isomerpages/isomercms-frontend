@@ -25,6 +25,8 @@ describe("editPage.spec", () => {
     const TEST_PAGE_CONTENT = "lorem ipsum"
     const TEST_INSTAGRAM_EMBED_SCRIPT =
       '<script async src="//www.instagram.com/embed.js"></script>'
+    const TEST_SANITIZED_INSTAGRAM_EMBED_SCRIPT =
+      '<script async="" src="//www.instagram.com/embed.js"></script>'
     const TEST_UNTRUSTED_SCRIPT =
       '<script src="https://www.example.com/evil.js"></script>'
     const TEST_INLINE_SCRIPT = '<script>alert("hello")</script>'
@@ -38,10 +40,10 @@ describe("editPage.spec", () => {
     )
 
     const DEFAULT_IMAGE_TITLE = "isomer-logo.svg"
-    const ADDED_IMAGE_TITLE = "balloon.png"
+    const ADDED_IMAGE_TITLE = "balloon"
     const ADDED_IMAGE_PATH = "images/balloon.png"
 
-    const ADDED_FILE_TITLE = "singapore-pages.pdf"
+    const ADDED_FILE_TITLE = "singapore-pages"
     const ADDED_FILE_PATH = "files/singapore.pdf"
 
     const LINK_TITLE = "link"
@@ -82,7 +84,7 @@ describe("editPage.spec", () => {
 
     it("Edit page (unlinked) should provide a warning to users when navigating away", () => {
       cy.get(".CodeMirror-scroll").type(TEST_PAGE_CONTENT)
-      cy.contains(":button", "Back to Workspace").click()
+      cy.get('button[aria-label="Back to sites"]').click()
 
       cy.contains("Warning")
       cy.contains(":button", "No").click()
@@ -94,7 +96,7 @@ describe("editPage.spec", () => {
       )
       cy.contains(TEST_PAGE_CONTENT)
 
-      cy.contains(":button", "Back to Workspace").click()
+      cy.get('button[aria-label="Back to sites"]').click()
 
       cy.contains("Warning")
       cy.contains(":button", "Yes").click()
@@ -200,7 +202,7 @@ describe("editPage.spec", () => {
 
       // 2. Content is there even after refreshing
       cy.reload()
-      cy.contains(TEST_INSTAGRAM_EMBED_SCRIPT).should("exist")
+      cy.contains(TEST_SANITIZED_INSTAGRAM_EMBED_SCRIPT).should("exist")
     })
 
     it("Edit page (unlinked) should not allow users to add untrusted external scripts", () => {
@@ -303,12 +305,18 @@ describe("editPage.spec", () => {
     })
 
     it("Edit page (collection) should have third nav menu", () => {
-      cy.get("#sidenav").contains(TEST_PAGE_TITLE).should("exist")
+      cy.wait(Interceptors.GET)
+      // NOTE: Wait for the markdown editor + preview to load
+      cy.get(".spinner-border").should("not.exist")
+      cy.get("#sidenav")
+        .should("be.visible")
+        .contains(TEST_PAGE_TITLE)
+        .should("exist")
     })
 
     it("Edit page (collection) should provide a warning to users when navigating away", () => {
       cy.get(".CodeMirror-scroll").type(TEST_PAGE_CONTENT)
-      cy.contains(":button", TEST_FOLDER_TITLE).click()
+      cy.get('button[aria-label="Back to sites"]').click()
 
       cy.contains("Warning")
       cy.contains(":button", "No").click()
@@ -320,7 +328,7 @@ describe("editPage.spec", () => {
       )
       cy.contains(TEST_PAGE_CONTENT)
 
-      cy.contains(":button", TEST_FOLDER_TITLE).click()
+      cy.get('button[aria-label="Back to sites"]').click()
 
       cy.contains("Warning")
       cy.contains(":button", "Yes").click()
