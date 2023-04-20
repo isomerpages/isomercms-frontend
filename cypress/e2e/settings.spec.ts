@@ -2,6 +2,7 @@ import {
   TEST_PRIMARY_COLOR,
   TEST_REPO_NAME,
   BASE_SEO_LINK,
+  Interceptors,
 } from "../fixtures/constants"
 
 describe("Settings page", () => {
@@ -27,7 +28,6 @@ describe("Settings page", () => {
   ] // [Agency, Favicon, Shareicon]
   const IMAGE_DIR = "/images/"
   const TEST_FACEBOOK_PIXEL_ID = "12345"
-  const TEST_GOOGLE_ANALYTICS_ID = "UA-39345131-3"
   const TEST_GOOGLE_ANALYTICS_GA4_ID = "GA-12345"
   const TEST_LINKEDIN_INSIGHTS_ID = "1234567"
   const TEST_SECONDARY_COLOR = [0, 255, 0] // ([R, G, B])
@@ -51,18 +51,14 @@ describe("Settings page", () => {
 
   before(() => {
     cy.setSessionDefaults()
-    cy.visit("/sites")
-    cy.contains(TEST_REPO_NAME).click()
+    cy.setupDefaultInterceptors()
 
-    visitLoadSettings(`/sites/${TEST_REPO_NAME}/settings`)
+    visitLoadSettings(`/sites/${TEST_REPO_NAME}/settings`).wait(
+      Interceptors.GET
+    )
 
     // Reset page input field states
     cy.get("#title").clear().type(BASE_TITLE)
-    cy.contains("div", "Analytics")
-      .parent()
-      .parent()
-      .find("input")
-      .each((elem) => cy.wrap(elem).clear())
     cy.contains("label", "SEO")
       .parent()
       .parent()
@@ -109,6 +105,9 @@ describe("Settings page", () => {
     cy.get("input[name='socialMediaContent.tiktok']")
       .clear()
       .type(BASE_TIKTOK_LINK)
+    cy.get("input[name=pixel]").clear()
+    cy.get("input[name=ga4]").clear()
+    cy.get("input[name=insights]").clear()
     cy.get("input[name=contact]").clear().type(BASE_CONTACT_US)
     cy.get("input[name=feedback]").clear().type(BASE_FEEDBACK)
     cy.get("input[name=faq]").clear().type(BASE_FAQ)
@@ -275,11 +274,7 @@ describe("Settings page", () => {
       .next()
       .as("pixel")
       .type(TEST_FACEBOOK_PIXEL_ID)
-    cy.contains("label", "Google Analytics")
-      .next()
-      .as("ga")
-      .type(TEST_GOOGLE_ANALYTICS_ID)
-    cy.contains("label", "Google Analytics")
+    cy.contains("label", "Google Analytics (GA4)")
       .next()
       .as("ga4")
       .type(TEST_GOOGLE_ANALYTICS_GA4_ID)
@@ -293,7 +288,6 @@ describe("Settings page", () => {
 
     // Assert
     cy.get("@pixel").should("have.value", TEST_FACEBOOK_PIXEL_ID)
-    cy.get("@ga").should("have.value", TEST_GOOGLE_ANALYTICS_ID)
     cy.get("@ga4").should("have.value", TEST_GOOGLE_ANALYTICS_GA4_ID)
     cy.get("@insights").should("have.value", TEST_LINKEDIN_INSIGHTS_ID)
   })
