@@ -1,6 +1,6 @@
 export const DATADOG_RUM_SETTINGS = {
   sessionSampleRate: 100,
-  sessionReplaySampleRate: 20,
+  sessionReplaySampleRate: 100,
   trackUserInteractions: true,
   trackResources: true,
   trackLongTasks: true,
