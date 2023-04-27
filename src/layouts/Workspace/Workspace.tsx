@@ -9,6 +9,8 @@ import { BiFolder, BiFileBlank } from "react-icons/bi"
 import { Switch, useRouteMatch, useHistory, Link } from "react-router-dom"
 
 // Import hooks
+import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
+
 import {
   useGetFoldersAndPages,
   useGetWorkspacePages,
@@ -26,6 +28,8 @@ import {
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
+import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
+import { WORKSPACE_FEATURE_STEPS } from "features/FeatureTour/FeatureTourSequence"
 import { ReviewRequestStatus } from "types/reviewRequest"
 import { isDirData } from "types/utils"
 
@@ -69,6 +73,10 @@ const WorkspacePage = (): JSX.Element => {
 
   return (
     <SiteEditLayout overflow="hidden">
+      <FeatureTourHandler
+        localStorageKey={LOCAL_STORAGE_KEYS.WorkspaceFeatureTour}
+        steps={WORKSPACE_FEATURE_STEPS}
+      />
       <VStack spacing="2rem" w="100%" alignItems="start">
         {hasOpenReviewRequests && (
           <ReviewRequestAlert
