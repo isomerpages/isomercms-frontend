@@ -26,7 +26,7 @@ import {
   MenuDropdownItem,
 } from "components/MenuDropdownButton"
 import _ from "lodash"
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
 import { BiCheckCircle, BiCog, BiEditAlt, BiGroup } from "react-icons/bi"
 import { useParams, Link as RouterLink } from "react-router-dom"
 
@@ -63,6 +63,9 @@ export const SiteDashboard = (): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
   const { setRedirectToPage } = useRedirectHook()
   const { userId } = useLoginContext()
+  const [isReviewRequestModelOpen, setIsReviewRequestModelOpen] = useState(
+    false
+  )
 
   const {
     data: siteInfo,
@@ -156,10 +159,12 @@ export const SiteDashboard = (): JSX.Element => {
 
         {/* Content */}
         <Flex px="4rem" pt="1.25rem" gap="0.5rem">
-          <FeatureTourHandler
-            localStorageKey={LOCAL_STORAGE_KEYS.DashboardFeatureTour}
-            steps={DASHBOARD_FEATURE_STEPS}
-          />
+          {!isReviewRequestModelOpen && (
+            <FeatureTourHandler
+              localStorageKey={LOCAL_STORAGE_KEYS.DashboardFeatureTour}
+              steps={DASHBOARD_FEATURE_STEPS}
+            />
+          )}
           {/* Left column */}
           <Box w="60%" id="isomer-dashboard-feature-tour-step-2">
             <DisplayCard variant="full">
@@ -178,10 +183,15 @@ export const SiteDashboard = (): JSX.Element => {
                   <Skeleton w="100%" height="16rem" />
                 )}
                 {isReviewRequestsError || validReviewRequests?.length === 0 ? (
-                  <EmptyReviewRequest />
+                  <EmptyReviewRequest
+                    setIsReviewRequestModelOpen={setIsReviewRequestModelOpen}
+                  />
                 ) : (
                   validReviewRequests?.map((reviewRequest) => (
-                    <ReviewRequestCard reviewRequest={reviewRequest} />
+                    <ReviewRequestCard
+                      reviewRequest={reviewRequest}
+                      setIsReviewRequestModelOpen={setIsReviewRequestModelOpen}
+                    />
                   ))
                 )}
               </DisplayCardContent>
