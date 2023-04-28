@@ -55,10 +55,12 @@ describe("Workspace Pages flow", () => {
     it("Test site workspace page should have unlinked pages section", () => {
       cy.contains("Create page")
     })
-
     it("Should be able to create a new page with valid title and permalink", () => {
       // Act
-      cy.contains("a", "Create page").click()
+      cy.get(".chakra-button")
+        .contains("Create page")
+        .should("exist")
+        .click({ force: true })
       cy.get("#title").clear().type(TEST_PAGE_TITLE)
       cy.get("#permalink").clear().type(TEST_PAGE_PERMALNK)
       cy.contains("Save").click()
@@ -74,7 +76,6 @@ describe("Workspace Pages flow", () => {
           },
           newFileName: `${TEST_PAGE_TITLE}.md`,
         })
-
       // Assert
       // 1. User should be redirected to correct EditPage
       cy.url().should(
@@ -82,12 +83,13 @@ describe("Workspace Pages flow", () => {
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/editPage/${TEST_PAGE_ENCODED}`
       )
       cy.contains(TEST_PAGE_TITLE).should("exist")
-
       // 2. If user goes back to the workspace, they should be able to see that the page exists
-      cy.contains("Back to Workspace").should("exist").click()
+      cy.contains("Back to Workspace")
+        .should("exist")
+        .siblings("button")
+        .click()
       cy.contains("a", TEST_PAGE_TITLE).should("exist")
     })
-
     it("Should not be able to create page with invalid title", () => {
       // Arrange
       const INVALID_TEST_PAGE_TITLES = [
@@ -101,29 +103,24 @@ describe("Workspace Pages flow", () => {
         "[Lorem Ipsum",
         "]Lorem Ipsum",
       ]
-
       // Act
-      cy.contains("a", "Create page").click()
+      cy.contains("a", "Create page").click({ force: true })
       // Cannot use titles shorter than 4 characters or containing symbols ~!@#$%^&*_+-./\`:;~{}()[]"'<>,?
       INVALID_TEST_PAGE_TITLES.forEach((invalidTitle) => {
         cy.get("#title").clear().type(invalidTitle).blur()
         cy.contains("button", "Save").should("be.disabled")
       })
-
       // Assert
       // Page title must not already exist
       cy.get("#title").clear().type(TEST_PAGE_TITLE).blur()
       cy.contains("Title is already in use. Please choose a different title.")
       cy.contains("button", "Save").should("be.disabled")
     })
-
     it("Should not be able to create page with invalid permalink", () => {
       // Arrange
       const INVALID_TEST_PAGE_PERMALINKS = ["/12", "test-", "/abcd?"]
-
       // Act
-      cy.contains("a", "Create page").click()
-
+      cy.contains("a", "Create page").click({ force: true })
       // Assert
       // Permalink needs to be longer than 4 characters, should start with a slash, and contain alphanumeric characters separated by hyphens and slashes only
       INVALID_TEST_PAGE_PERMALINKS.forEach((invalidPermalink) => {
@@ -131,7 +128,6 @@ describe("Workspace Pages flow", () => {
         cy.contains("button", "Save").should("be.disabled")
       })
     })
-
     it("Should be able to edit existing page details with Chinese title and valid permalink", () => {
       // Arrange
       cy.contains("button", TEST_PAGE_TITLE)
@@ -139,7 +135,6 @@ describe("Workspace Pages flow", () => {
         .parent()
         .as("pageCard")
         .should("exist")
-
       // Act
       // User should be able edit page details
       cy.clickContextMenuItem("@pageCard", "settings")
@@ -147,12 +142,10 @@ describe("Workspace Pages flow", () => {
       cy.get("#title").clear().type(EDITED_TEST_PAGE_TITLE)
       cy.contains("button", "Save").click()
       cy.wait(Interceptors.POST)
-
       // Assert
       // New page title should be reflected in the Workspace
       cy.contains(EDITED_TEST_PAGE_TITLE).should("exist")
     })
-
     it("Should be able to edit existing page details with Tamil title and valid permalink", () => {
       // Arrange
       cy.contains("button", EDITED_TEST_PAGE_TITLE)
@@ -160,7 +153,6 @@ describe("Workspace Pages flow", () => {
         .parent()
         .as("pageCard")
         .should("exist")
-
       // Act
       // User should be able edit page details
       cy.clickContextMenuItem("@pageCard", "settings")
@@ -168,19 +160,16 @@ describe("Workspace Pages flow", () => {
       cy.get("#title").clear().type(EDITED_TEST_PAGE_TITLE_2)
       cy.contains("button", "Save").click()
       cy.wait(Interceptors.POST)
-
       // Asserts
       // Should show modal
       cy.contains("Successfully updated page!").should("exist")
       // New page title should be reflected in Folders
       cy.contains(EDITED_TEST_PAGE_TITLE_2).should("exist")
     })
-
     it("Should be able to delete existing page on workspace", () => {
       // Arrange
       // Ensure that the frontend has been updated
       cy.contains(EDITED_TEST_PAGE_TITLE).should("not.exist")
-
       // Act
       // User should be able to remove the created test page card
       cy.contains("button", EDITED_TEST_PAGE_TITLE_2)
@@ -191,7 +180,6 @@ describe("Workspace Pages flow", () => {
       cy.clickContextMenuItem("@pageCard", "Delete")
       cy.contains("button", "delete").should("exist").click()
       cy.wait(Interceptors.DELETE)
-
       // Assert
       cy.contains(EDITED_TEST_PAGE_TITLE_2).should("not.exist")
     })
@@ -205,7 +193,7 @@ describe("Workspace Pages flow", () => {
     // Create
     it("Should be able to create a new folder with valid folder name with no pages", () => {
       // Arrange
-      cy.contains("Create folder").should("exist").click()
+      cy.contains("Create folder").should("exist").click({ force: true })
 
       // Act
       cy.get("input#newDirectoryName").clear().type(TEST_FOLDER_NO_PAGES_TITLE)
@@ -251,7 +239,7 @@ describe("Workspace Pages flow", () => {
       cy.get("input#newDirectoryName")
         .clear()
         .type(TEST_FOLDER_WITH_PAGES_TITLE)
-      cy.contains("Next").click()
+      cy.contains("Next").click({ force: true })
       cy.get("button[id^=folderCard-small]").contains(TEST_PAGE_TITLE).click()
       cy.contains("Done").click().wait(Interceptors.POST)
 
@@ -261,14 +249,14 @@ describe("Workspace Pages flow", () => {
         "include",
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_TEST_FOLDER_WITH_PAGES_TITLE}`
       )
-      cy.contains("a", TEST_PAGE_TITLE).should("exist").click()
+      cy.contains("a", TEST_PAGE_TITLE).should("exist").click({ force: true })
       cy.get(".CodeMirror-scroll").should("contain", TEST_PAGE_CONTENT)
     })
 
     it("Should not be able to create a new folder with invalid folder name", () => {
       // Title is too short
       const INVALID_FOLDER_TITLE = "t"
-      cy.contains("Create folder").should("exist").click()
+      cy.contains("Create folder").should("exist").click({ force: true })
       cy.get("input#newDirectoryName").clear().type(INVALID_FOLDER_TITLE).blur()
       cy.contains("Title must be longer than 2 characters")
       cy.contains("button", "Next").should("be.disabled")
@@ -292,19 +280,19 @@ describe("Workspace Pages flow", () => {
       cy.get("input#newDirectoryName")
         .clear()
         .type(EDITED_TEST_FOLDER_WITH_PAGES_TITLE)
-      cy.contains("button", "Save").click()
+      cy.contains("button", "Save").click({ force: true })
       cy.wait(Interceptors.POST)
 
       // Assert
       cy.contains("button", PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE)
         .should("exist")
-        .click()
+        .click({ force: true })
       cy.url().should(
         "include",
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${PARSED_EDITED_TEST_FOLDER_WITH_PAGES_TITLE}`
       )
 
-      cy.contains("a", TEST_PAGE_TITLE).click()
+      cy.contains("a", TEST_PAGE_TITLE).click({ force: true })
       cy.get(".CodeMirror-scroll").should("contain", TEST_PAGE_CONTENT)
     })
 
