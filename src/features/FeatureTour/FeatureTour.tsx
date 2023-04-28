@@ -105,7 +105,7 @@ export const FeatureTour = ({
         styles={{
           options: {
             arrowColor,
-            zIndex: 2000, // need this for it to be on top of the navbar
+            zIndex: 1100, // need this for it to be on top of the navbar
           },
         }}
         spotlightPadding={3}
