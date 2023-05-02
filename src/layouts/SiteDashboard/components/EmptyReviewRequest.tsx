@@ -7,11 +7,8 @@ import { ReviewRequestModal } from "layouts/ReviewRequest"
 
 import { EmptyWhiteBoxImage } from "assets"
 
-export const EmptyReviewRequest = ({
-  setIsReviewRequestModelOpen,
-}): JSX.Element => {
+export const EmptyReviewRequest = (): JSX.Element => {
   const { isOpen, onClose, onOpen } = useDisclosure()
-  setIsReviewRequestModelOpen(isOpen)
   return (
     <>
       <DisplayCard variant="content" w="100%">
