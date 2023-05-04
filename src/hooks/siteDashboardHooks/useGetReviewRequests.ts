@@ -17,6 +17,7 @@ export const useGetReviewRequests = (
     () => SiteDashboardService.getReviewRequests(siteName),
     {
       retry: false,
+      refetchOnWindowFocus: false,
     }
   )
 }

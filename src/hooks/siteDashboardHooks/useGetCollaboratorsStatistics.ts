@@ -15,6 +15,7 @@ export const useGetCollaboratorsStatistics = (
     () => SiteDashboardService.getCollaboratorsStatistics(siteName),
     {
       retry: false,
+      refetchOnWindowFocus: false,
     }
   )
 }
