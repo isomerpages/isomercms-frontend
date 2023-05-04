@@ -15,6 +15,7 @@ export const useGetAllSites = (
     () => AllSitesService.getAllSites(),
     {
       retry: false,
+      refetchOnWindowFocus: false,
     }
   )
 }
