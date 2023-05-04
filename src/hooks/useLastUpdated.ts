@@ -17,6 +17,7 @@ export const useLastUpdated = (siteName: string): useLastUpdatedReturn => {
     () => getLastUpdated(siteName),
     {
       retry: false,
+      refetchOnWindowFocus: false,
       onError: (err) => {
         console.log(err)
       },

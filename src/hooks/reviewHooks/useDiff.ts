@@ -9,7 +9,11 @@ import * as ReviewService from "../../services/ReviewService"
 export const useDiff = (
   siteName: string
 ): UseQueryResult<EditedItemProps[]> => {
-  return useQuery([DIFF_QUERY_KEY, siteName], () =>
-    ReviewService.getDiff(siteName)
+  return useQuery(
+    [DIFF_QUERY_KEY, siteName],
+    () => ReviewService.getDiff(siteName),
+    {
+      refetchOnWindowFocus: false,
+    }
   )
 }

@@ -28,6 +28,7 @@ export function useStagingUrl({ siteName }) {
     [STAGING_URL_KEY, { siteName }],
     () => getStagingUrl(siteName),
     {
+      refetchOnWindowFocus: false,
       initialData: `https://${siteName}.netlify.app`,
     }
   )

@@ -16,6 +16,7 @@ export const useGetReviewRequest = (
     () => ReviewService.getReviewRequest(siteName, reviewId),
     {
       retry: false,
+      refetchOnWindowFocus: false,
     }
   )
 }

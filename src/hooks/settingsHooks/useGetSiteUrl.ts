@@ -10,6 +10,7 @@ export const useGetSiteUrl = (siteName: string): UseQueryResult<string> => {
     () => getSiteUrl(siteName),
     {
       retry: false,
+      refetchOnWindowFocus: false,
     }
   )
 }
