@@ -76,11 +76,11 @@ export const ReviewRequestDashboard = (): JSX.Element => {
     // TODO!
     isError: isMergeError,
   } = useMergeReviewRequest(siteName, prNumber, false)
+  const [isApproved, setIsApproved] = useState<boolean | null>(null)
 
   const { onCopy, hasCopied } = useClipboard(data?.reviewUrl || "")
-
   const reviewStatus = data?.status
-  const isApproved = reviewStatus === ReviewRequestStatus.APPROVED
+
   useEffect(() => {
     if (
       reviewStatus === ReviewRequestStatus.CLOSED ||
@@ -88,7 +88,10 @@ export const ReviewRequestDashboard = (): JSX.Element => {
     ) {
       setRedirectToPage(`/sites/${siteName}/dashboard`)
     }
-  }, [reviewStatus, setRedirectToPage, siteName])
+    if (reviewStatus && isApproved === null) {
+      setIsApproved(reviewStatus === ReviewRequestStatus.APPROVED)
+    }
+  }, [isApproved, reviewStatus, setRedirectToPage, siteName])
 
   useEffect(() => {
     updateReviewRequestViewed({ siteName, prNumber })
@@ -151,9 +154,15 @@ export const ReviewRequestDashboard = (): JSX.Element => {
               </HStack>
               <Spacer />
               {role === "requestor" ? (
-                <CancelRequestButton isApproved={isApproved} />
+                <CancelRequestButton
+                  isApproved={isApproved}
+                  setIsApproved={setIsApproved}
+                />
               ) : (
-                <ApprovalButton isApproved={isApproved} />
+                <ApprovalButton
+                  isApproved={isApproved}
+                  setIsApproved={setIsApproved}
+                />
               )}
             </Flex>
             <Skeleton
@@ -213,11 +222,13 @@ export const ReviewRequestDashboard = (): JSX.Element => {
 }
 
 interface RequestButtonProps {
-  isApproved: boolean
+  isApproved: null | boolean
+  setIsApproved: (state: boolean) => void
 }
 
 const CancelRequestButton = ({
   isApproved,
+  setIsApproved,
 }: RequestButtonProps): JSX.Element => {
   const { onOpen, isOpen, onClose } = useDisclosure()
   const { role, isLoading } = useReviewRequestRoleContext()
@@ -238,20 +249,22 @@ const CancelRequestButton = ({
           </Text>
         </MenuDropdownItem>
       </MenuDropdownButton>
-      <CancelRequestModal isOpen={isOpen} onClose={onClose} />
+      <CancelRequestModal
+        isOpen={isOpen}
+        onClose={() => {
+          setIsApproved(false)
+          onClose()
+        }}
+      />
     </>
   )
 }
 
 // NOTE: Utility component exists to soothe over state management
 const ApprovalButton = ({
-  isApproved: defaultIsApproved,
+  isApproved,
+  setIsApproved,
 }: RequestButtonProps): JSX.Element => {
-  const [isApproved, setIsApproved] = useState<boolean | null>(null)
-  // NOTE: We use a computed approval one because
-  // the `useState` above captures a stale value.
-  // This leads to the button not updating when the status is finally fetched.
-  const computedApproval = isApproved === null ? defaultIsApproved : isApproved
   const { role, isLoading } = useReviewRequestRoleContext()
   const { onOpen, isOpen, onClose } = useDisclosure()
   const errorToast = useErrorToast()
@@ -298,16 +311,16 @@ const ApprovalButton = ({
   return (
     <>
       <MenuDropdownButton
-        colorScheme={computedApproval ? "success" : "primary"}
-        mainButtonText={computedApproval ? "Approved" : "In review"}
+        colorScheme={isApproved ? "success" : "primary"}
+        mainButtonText={isApproved ? "Approved" : "In review"}
         variant="solid"
         isDisabled={role !== "reviewer"}
         isLoading={isLoading}
       >
         <MenuDropdownItem
           onClick={async () => {
-            await unapproveReviewRequest()
             setIsApproved(false)
+            await unapproveReviewRequest()
           }}
         >
           <Text textStyle="body-1" textColor="text.body" w="100%">
@@ -316,8 +329,8 @@ const ApprovalButton = ({
         </MenuDropdownItem>
         <MenuDropdownItem
           onClick={async () => {
-            await approveReviewRequest()
             setIsApproved(true)
+            await approveReviewRequest()
             onOpen()
           }}
         >
