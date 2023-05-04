@@ -1,7 +1,10 @@
 import { AxiosError } from "axios"
 import { UseMutationResult, useQueryClient, useMutation } from "react-query"
 
-import { LIST_COLLABORATORS_KEY } from "constants/queryKeys"
+import {
+  LIST_COLLABORATORS_KEY,
+  SITE_DASHBOARD_COLLABORATORS_KEY,
+} from "constants/queryKeys"
 
 import { CollaboratorService } from "services"
 import { MiddlewareError } from "types/error"
@@ -19,6 +22,10 @@ export const useDeleteCollaboratorHook = (
     {
       onSuccess: () => {
         queryClient.invalidateQueries([LIST_COLLABORATORS_KEY, siteName])
+        queryClient.invalidateQueries([
+          SITE_DASHBOARD_COLLABORATORS_KEY,
+          siteName,
+        ])
         successToast({ description: "Collaborator removed successfully" })
       },
       onError: (err) => {
