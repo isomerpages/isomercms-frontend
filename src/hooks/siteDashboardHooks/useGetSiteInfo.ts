@@ -15,6 +15,7 @@ export const useGetSiteInfo = (
     () => SiteDashboardService.getSiteInfo(siteName),
     {
       retry: false,
+      refetchOnWindowFocus: false,
     }
   )
 }
