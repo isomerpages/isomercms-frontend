@@ -22,6 +22,7 @@ export function useDeleteDirectoryHook(params, queryParams) {
   const errorToast = useErrorToast()
   return useMutation(() => directoryService.delete(params), {
     ...queryParams,
+    refetchOnWindowFocus: false,
     onError: () => {
       errorToast({
         description: `Your directory could not be deleted. ${DEFAULT_RETRY_MSG}`,

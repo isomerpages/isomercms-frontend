@@ -24,6 +24,7 @@ export function useUpdateDirectoryHook(params, queryParams) {
     },
     {
       ...queryParams,
+      refetchOnWindowFocus: false,
       onError: () => {
         errorToast({
           description: `Your directory settings could not be saved. ${DEFAULT_RETRY_MSG}`,

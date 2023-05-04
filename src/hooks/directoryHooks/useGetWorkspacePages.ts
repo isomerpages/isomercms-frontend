@@ -27,6 +27,7 @@ export const useGetWorkspacePages = (
     {
       ...queryOptions,
       retry: false,
+      refetchOnWindowFocus: false,
       onError: (err) => {
         console.log(err)
         if (isAxiosError(err) && err.response && err.response.status === 404) {

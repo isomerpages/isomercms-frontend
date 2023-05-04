@@ -30,6 +30,7 @@ export function useGetDirectoryHook(params, queryParams) {
     {
       ...queryParams,
       retry: false,
+      refetchOnWindowFocus: false,
       onError: (err) => {
         console.log(err)
         if (err.response && err.response.status === 404) {

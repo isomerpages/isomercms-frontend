@@ -30,6 +30,7 @@ export function useCreateDirectoryHook(params, queryParams) {
     {
       ...queryParams,
       retry: false,
+      refetchOnWindowFocus: false,
       onError: () => {
         errorToast({
           description: `A new directory could not be created. ${DEFAULT_RETRY_MSG}`,

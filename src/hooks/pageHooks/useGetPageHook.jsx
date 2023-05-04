@@ -18,6 +18,7 @@ export function useGetPageHook(params, queryParams) {
     {
       ...queryParams,
       retry: false,
+      refetchOnWindowFocus: false,
       onError: () => {
         errorToast({
           description: `The page data could not be retrieved. ${DEFAULT_RETRY_MSG}`,

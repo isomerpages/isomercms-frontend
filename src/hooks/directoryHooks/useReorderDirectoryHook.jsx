@@ -16,6 +16,7 @@ export function useReorderDirectoryHook(params, queryParams) {
   const errorToast = useErrorToast()
   return useMutation((body) => directoryService.reorder(params, body), {
     ...queryParams,
+    refetchOnWindowFocus: false,
     onError: () => {
       errorToast({
         description: `Your directory order could not be saved. ${DEFAULT_RETRY_MSG}`,
