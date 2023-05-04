@@ -22,6 +22,7 @@ export const useAddCollaboratorHook = (
         isAcknowledged
       ),
     {
+      refetchOnWindowFocus: false,
       onSuccess: () => {
         queryClient.invalidateQueries([LIST_COLLABORATORS_KEY, siteName])
       },

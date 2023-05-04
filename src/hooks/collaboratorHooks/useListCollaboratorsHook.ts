@@ -26,6 +26,7 @@ export const useListCollaborators = (
         return data.collaborators
       }),
     {
+      refetchOnWindowFocus: false,
       onError: (err) => {
         if (err?.response?.status === 403) {
           // This is to cater for the case where the user

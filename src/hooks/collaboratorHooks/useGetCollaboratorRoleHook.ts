@@ -17,6 +17,7 @@ export const useGetCollaboratorRoleHook = (
         return data.role
       }),
     {
+      refetchOnWindowFocus: false,
       onError: () => {
         errorToast({
           description: `Your collaborator role could not be retrieved. ${DEFAULT_RETRY_MSG}`,
