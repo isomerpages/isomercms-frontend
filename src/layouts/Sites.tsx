@@ -88,9 +88,11 @@ const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
                 borderRadius="0px 0px 4px 4px"
               >
                 <Text fontSize="0.9em">{siteName.repoName}</Text>
-                <Text fontSize="0.6em" color="base.content.light">
-                  {convertUtcToTimeDiff(siteName.lastUpdated)}
-                </Text>
+                {siteName.lastUpdated && (
+                  <Text fontSize="0.6em" color="base.content.light">
+                    {convertUtcToTimeDiff(siteName.lastUpdated)}
+                  </Text>
+                )}
               </VStack>
             </Link>
           </div>
