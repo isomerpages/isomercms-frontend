@@ -260,7 +260,6 @@ const CancelRequestButton = ({
   )
 }
 
-// NOTE: Utility component exists to soothe over state management
 const ApprovalButton = ({
   isApproved,
   setIsApproved,
