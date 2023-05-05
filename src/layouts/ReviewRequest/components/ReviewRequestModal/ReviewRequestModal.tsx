@@ -40,9 +40,9 @@ export const ReviewRequestModal = (
   const errorToast = useErrorToast()
   const successToast = useSuccessToast()
 
-  const { onClose } = props
+  const { onClose, isOpen } = props
   const { siteName } = useParams<{ siteName: string }>()
-  const { data: items } = useDiff(siteName)
+  const { data: items, refetch } = useDiff(siteName)
   const { data: collaborators } = useListCollaborators(siteName)
   const {
     mutateAsync: createReviewRequest,
@@ -60,6 +60,9 @@ export const ReviewRequestModal = (
     onClose()
   })
 
+  useEffect(() => {
+    if (isOpen) refetch()
+  }, [refetch, isOpen])
   // Trigger an error toast informing the user
   // if review request not created
   useEffect(() => {
