@@ -23,7 +23,13 @@ axios.defaults.withCredentials = true
 const LOCAL_STORAGE_SITE_COLORS = "isomercms_colors"
 
 // react-query client
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false, // default: true
+    },
+  },
+})
 
 // api client
 const API_BASE_URL_V2 = `${process.env.REACT_APP_BACKEND_URL_V2}`
