@@ -80,7 +80,7 @@ describe("Resource category page", () => {
     )
 
     // 2. If user goes back to Resources, they should be able to see that the page exists
-    cy.contains(":button", TEST_CATEGORY).click()
+    cy.get('button[aria-label="Back to sites"]').click()
     cy.contains(TEST_PAGE_TITLE)
 
     // 3. New page should be of type POST with the correct date
@@ -93,8 +93,10 @@ describe("Resource category page", () => {
     cy.contains("a", "Create page").should("be.visible").click()
     // Same name as existing file
     cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE).blur()
-    cy.contains("Save").should("be.disabled")
-
+    cy.contains("Save").click().should("be.disabled")
+    cy.contains(
+      "Title is already in use. Please choose a different title."
+    ).should("exist")
     // Changing another field should not enable save
     cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK).blur()
     cy.contains("Save").should("be.disabled")
@@ -141,7 +143,7 @@ describe("Resource category page", () => {
     )
 
     // 2. If user goes back to Resources, they should be able to see that the page exists
-    cy.contains(":button", TEST_CATEGORY).click()
+    cy.get('button[aria-label="Back to sites"]').click()
     cy.contains(TEST_PAGE_TITLE_2)
 
     // 3. New page should be of type POST with the correct date
@@ -311,7 +313,7 @@ describe("Resource category page", () => {
   it("Resources category page should allow user to create a new resource page of type link", () => {
     cy.contains("a", "Create page").should("be.visible").click()
 
-    cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_LINK)
+    cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_FILE)
     cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE)
     cy.get("#layout").select("link")
 
