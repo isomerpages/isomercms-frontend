@@ -49,13 +49,9 @@ export const SiteEditHeader = (): JSX.Element => {
     isLoading: isReviewRequestsLoading,
   } = useGetReviewRequests(siteName)
 
-  console.log(reviewRequests)
-
   const openReviewRequests = reviewRequests
     ? reviewRequests.filter((request) => request.status === "OPEN")
     : []
-
-  console.log(openReviewRequests)
 
   const shouldDisableReviewRequestButton =
     isReviewRequestsLoading || openReviewRequests.length > 0
