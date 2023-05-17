@@ -208,8 +208,8 @@ const EditContactUs = ({ match }) => {
   const { data: contactUsDetails } = useGetContactUsHook(siteName)
   const { data: settingsData } = useGetSettings(siteName)
 
-  const { mutateAsync: saveContactUs } = useUpdateContactUsHook(siteName)
-  const { mutateAsync: saveSettings } = useUpdateSettings(siteName)
+  const { mutateAsync: updateContactUs } = useUpdateContactUsHook(siteName)
+  const { mutateAsync: updateSettings } = useUpdateSettings(siteName)
 
   useEffect(() => {
     if (!contactUsDetails || !settingsData) return
@@ -720,7 +720,7 @@ const EditContactUs = ({ match }) => {
         delete filteredFrontMatter.locations
 
       if (JSON.stringify(originalFrontMatter) !== JSON.stringify(frontMatter)) {
-        await saveContactUs({
+        await updateContactUs({
           frontMatter: filteredFrontMatter,
           sha: frontMatterSha,
         })
@@ -736,7 +736,7 @@ const EditContactUs = ({ match }) => {
       if (
         JSON.stringify(footerContent) !== JSON.stringify(originalFooterContent)
       ) {
-        await saveSettings({
+        await updateSettings({
           ...settingsData,
           ...footerParams,
         })
