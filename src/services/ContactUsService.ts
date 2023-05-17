@@ -8,7 +8,7 @@ const getContactUsEndpoint = (siteName: string): string => {
 
 export const getContactUs = async (siteName: string): Promise<ContactUsDto> => {
   const endpoint = getContactUsEndpoint(siteName)
-  return apiService.get(endpoint).then((res) => res.data)
+  return apiService.get<ContactUsDto>(endpoint).then((res) => res.data)
 }
 
 export const updateContactUs = async (
