@@ -41,6 +41,8 @@ export const useUpdateNavHook = (
       onSuccess: () => {
         queryClient.invalidateQueries([GET_NAV_KEY, siteName])
         successToast({ description: "Navigation bar updated successfully" })
+        // TODO: remove once we have v2 endpoints to support get nav bar details
+        window.location.reload()
       },
       onError: (err: AxiosError) => {
         errorToast({

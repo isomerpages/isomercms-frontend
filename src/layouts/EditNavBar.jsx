@@ -724,10 +724,7 @@ const EditNavBar = ({ match }) => {
               )}
               <LoadingButton
                 isDisabled={hasErrors()}
-                onClick={async () => {
-                  await saveNavData({ originalNav, links, sha })
-                  window.location.reload()
-                }}
+                onClick={async () => saveNavData({ originalNav, links, sha })}
               >
                 Save
               </LoadingButton>
