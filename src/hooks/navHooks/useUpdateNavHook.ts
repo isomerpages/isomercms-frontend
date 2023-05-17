@@ -46,7 +46,7 @@ export const useUpdateNavHook = (
       },
       onError: (err: AxiosError) => {
         errorToast({
-          description: `Could not update navigation bar. ${DEFAULT_RETRY_MSG}. Error: ${err.message}`,
+          description: `Could not update navigation bar. ${DEFAULT_RETRY_MSG}. Error: ${err.response?.data.error.message}`,
         })
       },
     }

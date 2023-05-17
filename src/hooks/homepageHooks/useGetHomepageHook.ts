@@ -17,7 +17,7 @@ export const useGetHomepageHook = (
     {
       onError: (err: AxiosError) => {
         errorToast({
-          description: `Your homepage could not be retrieved. ${DEFAULT_RETRY_MSG}. Error: ${err.message}`,
+          description: `Your homepage could not be retrieved. ${DEFAULT_RETRY_MSG}. Error: ${err.response?.data.error.message}`,
         })
       },
     }

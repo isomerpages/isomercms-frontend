@@ -24,7 +24,7 @@ export const useUpdateHomepageHook = (
       },
       onError: (err: AxiosError) => {
         errorToast({
-          description: `Could not update homepage. ${DEFAULT_RETRY_MSG}. Error: ${err.message}`,
+          description: `Could not update homepage. ${DEFAULT_RETRY_MSG}. Error: ${err.response?.data.error.message}`,
         })
       },
     }

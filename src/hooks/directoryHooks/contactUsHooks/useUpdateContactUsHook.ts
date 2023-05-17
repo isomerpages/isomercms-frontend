@@ -41,7 +41,7 @@ export const useUpdateContactUsHook = (
       },
       onError: (err: AxiosError) => {
         errorToast({
-          description: `Could not update Contact Us page. ${DEFAULT_RETRY_MSG}. Error: ${err.message}`,
+          description: `Could not update Contact Us page. ${DEFAULT_RETRY_MSG}. Error: ${err.response?.data.error.message}`,
         })
       },
     }
