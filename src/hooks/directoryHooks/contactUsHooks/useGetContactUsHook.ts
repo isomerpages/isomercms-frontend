@@ -1,3 +1,4 @@
+import { AxiosError } from "axios"
 import { UseQueryResult, useQuery } from "react-query"
 
 import { GET_CONTACT_US_KEY } from "constants/queryKeys"
@@ -14,9 +15,9 @@ export const useGetContactUsHook = (
     [GET_CONTACT_US_KEY, siteName],
     () => ContactUsService.getContactUs(siteName),
     {
-      onError: () => {
+      onError: (err: AxiosError) => {
         errorToast({
-          description: `Your Contact Us page details could not be retrieved. ${DEFAULT_RETRY_MSG}`,
+          description: `Your Contact Us page details could not be retrieved. ${DEFAULT_RETRY_MSG}. Error: ${err.message}`,
         })
       },
     }

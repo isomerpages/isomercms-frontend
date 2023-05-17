@@ -1,3 +1,4 @@
+import { AxiosError } from "axios"
 import { UseQueryResult, useQuery } from "react-query"
 
 import { GET_HOMEPAGE_KEY } from "constants/queryKeys"
@@ -14,9 +15,9 @@ export const useGetHomepageHook = (
     [GET_HOMEPAGE_KEY, siteName],
     () => HomepageService.getHomepage(siteName),
     {
-      onError: () => {
+      onError: (err: AxiosError) => {
         errorToast({
-          description: `Your homepage could not be retrieved. ${DEFAULT_RETRY_MSG}`,
+          description: `Your homepage could not be retrieved. ${DEFAULT_RETRY_MSG}. Error: ${err.message}`,
         })
       },
     }

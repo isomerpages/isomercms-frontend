@@ -42,9 +42,9 @@ export const useUpdateNavHook = (
         queryClient.invalidateQueries([GET_NAV_KEY, siteName])
         successToast({ description: "Navigation bar updated successfully" })
       },
-      onError: (err) => {
+      onError: (err: AxiosError) => {
         errorToast({
-          description: `Could not update navigation bar. ${DEFAULT_RETRY_MSG}`,
+          description: `Could not update navigation bar. ${DEFAULT_RETRY_MSG}. Error: ${err.message}`,
         })
       },
     }

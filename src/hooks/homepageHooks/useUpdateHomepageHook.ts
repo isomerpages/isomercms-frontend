@@ -22,9 +22,9 @@ export const useUpdateHomepageHook = (
         queryClient.invalidateQueries([GET_HOMEPAGE_KEY, siteName])
         successToast({ description: "Homepage updated successfully" })
       },
-      onError: (err) => {
+      onError: (err: AxiosError) => {
         errorToast({
-          description: `Could not update homepage. ${DEFAULT_RETRY_MSG}`,
+          description: `Could not update homepage. ${DEFAULT_RETRY_MSG}. Error: ${err.message}`,
         })
       },
     }
