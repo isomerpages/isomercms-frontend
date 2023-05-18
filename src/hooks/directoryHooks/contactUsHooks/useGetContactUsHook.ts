@@ -17,7 +17,7 @@ export const useGetContactUsHook = (
     {
       onError: (err: AxiosError) => {
         errorToast({
-          description: `Your Contact Us page details could not be retrieved. ${DEFAULT_RETRY_MSG}. Error: ${err.message}`,
+          description: `Your Contact Us page details could not be retrieved. ${DEFAULT_RETRY_MSG}. Error: ${err.response?.data.error.message}`,
         })
       },
     }
