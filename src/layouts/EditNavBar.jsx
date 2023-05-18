@@ -10,10 +10,11 @@ import _ from "lodash"
 import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
-import { useQuery, useMutation, useQueryClient } from "react-query"
+import { useQuery } from "react-query"
 
 import { NAVIGATION_CONTENT_KEY } from "constants/queryKeys"
 
+import { useUpdateNavHook } from "hooks/navHooks"
 import useRedirectHook from "hooks/useRedirectHook"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -25,15 +26,12 @@ import { useErrorToast } from "utils/toasts"
 import { validateLink } from "utils/validators"
 
 // Import API
-import { getEditNavBarData, updateNavBarData } from "api"
+import { getEditNavBarData } from "api"
 import { DEFAULT_RETRY_MSG, deslugifyDirectory, isEmpty } from "utils"
 
 const RADIX_PARSE_INT = 10
 
 const EditNavBar = ({ match }) => {
-  // Instantiate queryClient
-  const queryClient = useQueryClient()
-
   const { siteName } = match.params
 
   const { setRedirectToNotFound } = useRedirectHook()
@@ -148,19 +146,7 @@ const EditNavBar = ({ match }) => {
   )
 
   // update nav bar data
-  const { mutateAsync: saveNavData } = useMutation(
-    () => updateNavBarData(siteName, originalNav, links, sha),
-    {
-      onError: () =>
-        errorToast({
-          description: `There was a problem trying to save your nav bar. ${DEFAULT_RETRY_MSG}`,
-        }),
-      onSuccess: () => {
-        queryClient.invalidateQueries([NAVIGATION_CONTENT_KEY, siteName])
-        window.location.reload()
-      },
-    }
-  )
+  const { mutateAsync: saveNavData } = useUpdateNavHook(siteName)
 
   // process nav bar data on mount
   useEffect(() => {
@@ -738,7 +724,7 @@ const EditNavBar = ({ match }) => {
               )}
               <LoadingButton
                 isDisabled={hasErrors()}
-                onClick={() => saveNavData(siteName, originalNav, links, sha)}
+                onClick={async () => saveNavData({ originalNav, links, sha })}
               >
                 Save
               </LoadingButton>
