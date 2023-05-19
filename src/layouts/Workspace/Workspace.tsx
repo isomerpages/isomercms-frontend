@@ -72,82 +72,86 @@ const WorkspacePage = (): JSX.Element => {
       .length > 0
 
   return (
-    <SiteEditLayout overflow="hidden">
+    <>
       <FeatureTourHandler
         localStorageKey={LOCAL_STORAGE_KEYS.WorkspaceFeatureTour}
         steps={WORKSPACE_FEATURE_STEPS}
       />
-      <VStack spacing="2rem" w="100%" alignItems="start">
-        {hasOpenReviewRequests && (
-          <ReviewRequestAlert
-            reviewRequestUrl={`/sites/${siteName}/dashboard`}
-          />
-        )}
-        <MainPages siteName={siteName} isLoading={!!pagesData} />
-      </VStack>
-      <Skeleton isLoaded={!isDirLoading} w="100%">
-        <EmptyArea
-          isItemEmpty={isFoldersEmpty && isPagesEmpty}
-          actionButton={
-            <MenuDropdownButton
-              variant="outline"
-              mainButtonText="Create page"
-              as={Link}
-              to={`${url}/createPage`}
-            >
-              <MenuDropdownItem
+      <SiteEditLayout overflow="hidden">
+        <VStack spacing="2rem" w="100%" alignItems="start">
+          {hasOpenReviewRequests && (
+            <ReviewRequestAlert
+              reviewRequestUrl={`/sites/${siteName}/dashboard`}
+            />
+          )}
+          <MainPages siteName={siteName} isLoading={!!pagesData} />
+        </VStack>
+        <Skeleton isLoaded={!isDirLoading} w="100%">
+          <EmptyArea
+            isItemEmpty={isFoldersEmpty && isPagesEmpty}
+            actionButton={
+              <MenuDropdownButton
+                variant="outline"
+                mainButtonText="Create page"
                 as={Link}
                 to={`${url}/createPage`}
-                icon={
-                  <Icon as={BiFileBlank} fontSize="1.25rem" fill="icon.alt" />
+              >
+                <MenuDropdownItem
+                  as={Link}
+                  to={`${url}/createPage`}
+                  icon={
+                    <Icon as={BiFileBlank} fontSize="1.25rem" fill="icon.alt" />
+                  }
+                >
+                  <Text textStyle="body-1" fill="text.body">
+                    Create page
+                  </Text>
+                </MenuDropdownItem>
+                <MenuDropdownItem
+                  as={Link}
+                  to={`${url}/createDirectory`}
+                  icon={
+                    <Icon as={BiFolder} fontSize="1.25rem" fill="icon.alt" />
+                  }
+                >
+                  <Text textStyle="body-1" fill="text.body">
+                    Create folder
+                  </Text>
+                </MenuDropdownItem>
+              </MenuDropdownButton>
+            }
+          >
+            <SiteViewContent>
+              <EmptyArea
+                isItemEmpty={isFoldersEmpty}
+                actionButton={
+                  <CreateButton as={Link} to={`${url}/createDirectory`}>
+                    Create folder
+                  </CreateButton>
                 }
               >
-                <Text textStyle="body-1" fill="text.body">
-                  Create page
-                </Text>
-              </MenuDropdownItem>
-              <MenuDropdownItem
-                as={Link}
-                to={`${url}/createDirectory`}
-                icon={<Icon as={BiFolder} fontSize="1.25rem" fill="icon.alt" />}
+                <WorkspaceFolders
+                  siteName={siteName}
+                  pagesData={pagesData}
+                  url={url}
+                  dirsData={dirsData}
+                />
+              </EmptyArea>
+              <EmptyArea
+                isItemEmpty={isPagesEmpty}
+                actionButton={
+                  <CreateButton as={Link} to={`${url}/createPage`}>
+                    Create page
+                  </CreateButton>
+                }
               >
-                <Text textStyle="body-1" fill="text.body">
-                  Create folder
-                </Text>
-              </MenuDropdownItem>
-            </MenuDropdownButton>
-          }
-        >
-          <SiteViewContent>
-            <EmptyArea
-              isItemEmpty={isFoldersEmpty}
-              actionButton={
-                <CreateButton as={Link} to={`${url}/createDirectory`}>
-                  Create folder
-                </CreateButton>
-              }
-            >
-              <WorkspaceFolders
-                siteName={siteName}
-                pagesData={pagesData}
-                url={url}
-                dirsData={dirsData}
-              />
-            </EmptyArea>
-            <EmptyArea
-              isItemEmpty={isPagesEmpty}
-              actionButton={
-                <CreateButton as={Link} to={`${url}/createPage`}>
-                  Create page
-                </CreateButton>
-              }
-            >
-              <UngroupedPages pagesData={pagesData} url={url} />
-            </EmptyArea>
-          </SiteViewContent>
-        </EmptyArea>
-      </Skeleton>
-    </SiteEditLayout>
+                <UngroupedPages pagesData={pagesData} url={url} />
+              </EmptyArea>
+            </SiteViewContent>
+          </EmptyArea>
+        </Skeleton>
+      </SiteEditLayout>
+    </>
   )
 }
 
