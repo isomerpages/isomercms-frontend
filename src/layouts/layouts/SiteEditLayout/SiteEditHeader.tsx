@@ -25,6 +25,7 @@ import { Link as RouterLink, useParams } from "react-router-dom"
 import { useLoginContext } from "contexts/LoginContext"
 
 import { useStagingUrl } from "hooks/settingsHooks"
+import { useGetReviewRequests } from "hooks/siteDashboardHooks"
 
 import { ReviewRequestModal } from "layouts/ReviewRequest"
 
@@ -43,6 +44,17 @@ export const SiteEditHeader = (): JSX.Element => {
   // NOTE: Even if we have an unknown user, we assume that it is github
   // and avoid showing new features.
   const isGithubUser = !!userId
+  const {
+    data: reviewRequests,
+    isLoading: isReviewRequestsLoading,
+  } = useGetReviewRequests(siteName)
+
+  const openReviewRequests = reviewRequests
+    ? reviewRequests.filter((request) => request.status === "OPEN")
+    : []
+
+  const shouldDisableReviewRequestButton =
+    isReviewRequestsLoading || openReviewRequests.length > 0
 
   return (
     <>
@@ -93,6 +105,7 @@ export const SiteEditHeader = (): JSX.Element => {
               id="isomer-workspace-feature-tour-step-1"
               leftIcon={<Icon as={BiCheckCircle} fontSize="1.25rem" />}
               onClick={onReviewRequestModalOpen}
+              isDisabled={shouldDisableReviewRequestButton}
             >
               Request a Review
             </Button>

@@ -2,16 +2,15 @@ import "cypress-file-upload"
 import { Interceptors, TEST_REPO_NAME } from "../fixtures/constants"
 
 describe("Files", () => {
-  const FILE_TITLE = "singapore.pdf"
-  const OTHER_FILE_TITLE = "america.pdf"
-  const EXISTING_FILE_TITLE = "New Uber BrandSystem QuickGuide.pdf"
+  const FILE_TITLE = "singapore"
+  const OTHER_FILE_TITLE = "america"
+  const EXISTING_FILE_TITLE = "New Uber BrandSystem QuickGuide"
   const TEST_FILE_PATH = "files/singapore.pdf"
 
   const DIRECTORY_TITLE = "Purple"
   const OTHER_DIRECTORY_TITLE = "Green"
 
-  const MISSING_EXTENSION = "singapore"
-  const INVALID_CHARACTER = "%%%%.pdf"
+  const INVALID_CHARACTER = "%%%%%%"
   const ACTION_DISABLED = true
 
   describe("Create file, delete file, edit file settings in Files", () => {
@@ -57,14 +56,6 @@ describe("Files", () => {
       cy.contains("button", /^Upload$/).should("be.disabled") // necessary as multiple buttons containing Upload on page
       cy.get("[aria-label=Close]").click()
 
-      // title should not allow for names without extensions
-      cy.uploadMedia(MISSING_EXTENSION, TEST_FILE_PATH, ACTION_DISABLED)
-
-      // ASSERTS
-      cy.contains("Title must end with the following extension")
-      cy.contains("button", /^Upload$/).should("be.disabled") // necessary as multiple buttons containing Upload on page
-      cy.get("[aria-label=Close]").click()
-
       // users should not be able to create file with duplicated filename in folder
       cy.uploadMedia(OTHER_FILE_TITLE, TEST_FILE_PATH, ACTION_DISABLED)
 
@@ -85,19 +76,6 @@ describe("Files", () => {
       cy.contains(
         "Title cannot contain any of the following special characters"
       )
-      cy.contains("button", /^Save$/).should("be.disabled") // necessary as multiple buttons containing Upload on page
-      cy.get("[aria-label=Close]").click().should("not.exist")
-
-      // title should not allow for names without extensions
-      cy.wait(Interceptors.GET)
-      cy.renameUngroupedMedia(
-        OTHER_FILE_TITLE,
-        MISSING_EXTENSION,
-        ACTION_DISABLED
-      )
-
-      // ASSERTS
-      cy.contains("Title must end with the following extension")
       cy.contains("button", /^Save$/).should("be.disabled") // necessary as multiple buttons containing Upload on page
       cy.get("[aria-label=Close]").click().should("not.exist")
 
@@ -222,7 +200,7 @@ describe("Files", () => {
       cy.contains(FILE_TITLE).should("exist") // file should be contained in Files
     })
 
-    it("Should be able to edit an file in file directory", () => {
+    it("Should be able to edit a file in file directory", () => {
       cy.contains(FILE_TITLE).should("exist")
       cy.renameDirectoryMedia(FILE_TITLE, OTHER_FILE_TITLE)
 
@@ -238,6 +216,46 @@ describe("Files", () => {
 
       // ASSERTS
       cy.contains(OTHER_FILE_TITLE).should("not.exist") // File file name should not exist in Files
+    })
+
+    it("Should be able to move file to different image album", () => {
+      cy.uploadMedia(FILE_TITLE, TEST_FILE_PATH)
+      cy.contains("Media file successfully uploaded").should("exist")
+
+      cy.contains("button", FILE_TITLE)
+        .parent()
+        .parent()
+        .parent()
+        .as("fileItem")
+        .should("exist")
+      cy.clickContextMenuItem("@fileItem", "Move to")
+
+      cy.contains(`Move Here`)
+
+      // Navigate to Files
+      cy.get("#moveModal-backButton").click({ force: true })
+
+      cy.get("u").first().getFirstSiblingAs("workspaceCurrentBreadcrumb")
+      cy.verifyBreadcrumb("@workspaceCurrentBreadcrumb", [
+        "Workspace",
+        "Files",
+        DIRECTORY_TITLE,
+        FILE_TITLE,
+      ])
+      cy.get("u").last().getFirstSiblingAs("moveFolderUpdatedBreadcrumb")
+      cy.verifyBreadcrumb("@moveFolderUpdatedBreadcrumb", [
+        "Workspace",
+        "Files",
+        FILE_TITLE,
+      ])
+
+      cy.contains("button", "Move Here").click().wait(Interceptors.POST)
+
+      // Assert
+      cy.visit(
+        `/sites/${TEST_REPO_NAME}/media/files/mediaDirectory/files`
+      ).wait(Interceptors.GET)
+      cy.contains(FILE_TITLE).should("exist") // Image should be contained in Orange
     })
   })
 })
