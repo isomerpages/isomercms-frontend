@@ -32,7 +32,7 @@ describe("Resource category page", () => {
   const TEST_EXTERNAL_LINK = "google.com"
 
   const TEST_FILE_PATH = "files/singapore.pdf"
-  const FILE_TITLE = "singapore.pdf"
+  const FILE_TITLE = "singapore"
 
   before(() => {
     cy.setupDefaultInterceptors()
@@ -92,7 +92,7 @@ describe("Resource category page", () => {
   it("Resources page should not allow user to create a new resource category with invalid name", () => {
     cy.contains("a", "Create page").should("be.visible").click()
     // Same name as existing file
-    cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE).blur()
+    cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE).blur().focus()
     cy.contains("Save").click().should("be.disabled")
     cy.contains(
       "Title is already in use. Please choose a different title."
@@ -236,7 +236,7 @@ describe("Resource category page", () => {
     cy.get("button")
       .contains(/^Upload$/)
       .click()
-
+      .wait(Interceptors.POST)
     cy.get('button[id="selectMedia"]').click()
     cy.contains("Save").click().wait(Interceptors.POST)
 
@@ -313,7 +313,7 @@ describe("Resource category page", () => {
   it("Resources category page should allow user to create a new resource page of type link", () => {
     cy.contains("a", "Create page").should("be.visible").click()
 
-    cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_FILE)
+    cy.get('input[id="title"]').clear().type(TEST_PAGE_TITLE_LINK)
     cy.get('input[id="date"]').clear().type(TEST_PAGE_DATE)
     cy.get("#layout").select("link")
 
@@ -329,7 +329,7 @@ describe("Resource category page", () => {
     )
 
     // 2. New page should be of type LINK with the correct date
-    cy.contains(TEST_PAGE_TITLE_FILE)
+    cy.contains(TEST_PAGE_TITLE_LINK)
     cy.contains(`${TEST_PAGE_DATE_PRETTIFIED}/LINK`)
   })
 })
