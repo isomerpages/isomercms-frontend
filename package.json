@@ -84,7 +84,8 @@
     "version": "auto-changelog -p && git add CHANGELOG.md",
     "storybook": "source .env && start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "chromatic": "npx chromatic --project-token=$CHROMATIC_PROJECT_TOKEN"
+    "chromatic": "npx chromatic --project-token=$CHROMATIC_PROJECT_TOKEN",
+    "sourcemaps:upload": "npx datadog-ci sourcemaps upload ./build --service=isomercms-frontend --release-version=$REACT_APP_VERSION --minified-path-prefix=$REACT_APP_URL"
   },
   "eslintConfig": {
     "extends": "react-app",
