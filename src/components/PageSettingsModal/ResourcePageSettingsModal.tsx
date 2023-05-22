@@ -188,6 +188,7 @@ export const ResourcePageSettingsModal = ({
         }
         trigger("permalink")
         trigger("external")
+        trigger("title")
       }
     }
   }, [fileName, pageData, setValue, trigger])
@@ -242,6 +243,7 @@ export const ResourcePageSettingsModal = ({
                 onChange={() => {
                   trigger("permalink")
                   trigger("external")
+                  trigger("title")
                 }}
               >
                 <Box mb="0.75rem">
