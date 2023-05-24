@@ -28,7 +28,7 @@ const ResourcePost = () => (
           >
             DEMO CATEGORY
           </small>
-          <h4
+          <h6
             className={getClassNames(editorStyles, [
               "has-text-white",
               "padding--bottom--lg",
@@ -36,7 +36,7 @@ const ResourcePost = () => (
             style={{ lineHeight: "2.25em" }}
           >
             <b>TITLE</b>
-          </h4>
+          </h6>
         </div>
         <div
           className={getClassNames(editorStyles, [
