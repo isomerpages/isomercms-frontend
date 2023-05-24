@@ -11,6 +11,7 @@
     "@chakra-ui/utils": "^2.0.1",
     "@craco/craco": "^6.4.3",
     "@datadog/browser-rum": "^4.38.0",
+    "@datadog/datadog-ci": "^2.10.0",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@hookform/resolvers": "^2.8.2",
@@ -69,6 +70,7 @@
     "start": "source .env.development.local && craco start",
     "dev": "source .env && craco start",
     "build": "craco build",
+    "build:netlify": "CI=false npm run build && npm run sourcemaps:upload",
     "release": "npm version $npm_config_isomer_update && git push --tags",
     "test": "craco test",
     "test:ci": "node scripts/run-e2e.js run",
@@ -83,7 +85,8 @@
     "version": "auto-changelog -p && git add CHANGELOG.md",
     "storybook": "source .env && start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "chromatic": "npx chromatic --project-token=$CHROMATIC_PROJECT_TOKEN"
+    "chromatic": "npx chromatic --project-token=$CHROMATIC_PROJECT_TOKEN",
+    "sourcemaps:upload": "npx datadog-ci sourcemaps upload ./build --service=isomercms-frontend --release-version=$REACT_APP_VERSION --minified-path-prefix=$REACT_APP_URL"
   },
   "eslintConfig": {
     "extends": "react-app",
