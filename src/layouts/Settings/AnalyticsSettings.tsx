@@ -29,7 +29,11 @@ export const AnalyticsSettings = ({
       <VStack spacing="1.5rem" align="flex-start" w="50%">
         <FormControl isDisabled={isError}>
           <FormLabel>Facebook Pixel</FormLabel>
-          <Input w="100%" {...register("pixel")} />
+          <Input
+            w="100%"
+            type="number"
+            {...register("pixel", { valueAsNumber: true })}
+          />
         </FormControl>
 
         <FormControl isDisabled={isError}>
