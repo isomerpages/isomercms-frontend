@@ -65,7 +65,7 @@ export const DisplayCard: ComponentMultiStyleConfig = {
       w: "100%",
     },
     title: {
-      textStyle: "h3",
+      textStyle: "h5",
       marginRight: "0.625rem",
       paddingBottom: "0",
     },

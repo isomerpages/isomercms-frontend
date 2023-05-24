@@ -17,7 +17,7 @@ export const SectionHeader = ({
       align="center"
       {...rest}
     >
-      <Text as="h3" textStyle="h3" color="title.alt">
+      <Text as="h5" textStyle="h5" color="title.alt">
         {label}
       </Text>
       {children}
