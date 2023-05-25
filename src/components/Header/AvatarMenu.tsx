@@ -58,7 +58,7 @@ export const AvatarMenu = ({
   const { setRedirectToLogout } = useRedirectHook()
 
   return (
-    <Menu autoSelect={false}>
+    <Menu autoSelect={false} matchWidth={false}>
       {({ isOpen }) => (
         <>
           <AvatarMenuButton>
