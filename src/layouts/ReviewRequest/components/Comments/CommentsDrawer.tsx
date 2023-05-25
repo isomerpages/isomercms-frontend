@@ -45,7 +45,7 @@ const CommentItem = ({
     <Box
       backgroundColor={isNew ? "primary.100" : "primary.50"}
       p="1rem"
-      mb="1rem"
+      mb="0.75rem"
       borderRadius="4px"
     >
       <HStack
