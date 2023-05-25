@@ -344,11 +344,11 @@ export const RequestOverview = ({
           // TODO (#IS-54): This line and the `display="none"` on the `HStack`
           // should be removed once buttons are in on backend.
           // The width should also be `10rem`
-          w="0rem"
+          w="10rem"
         />
       ),
       cell: ({ row }) => (
-        <HStack spacing="0.25rem" display="none">
+        <HStack spacing="0.25rem">
           {allowEditing && (
             <Link
               // NOTE: Pass `undefined` to avoid users being able to click
@@ -392,6 +392,9 @@ export const RequestOverview = ({
             icon={<BiShow />}
             aria-label="view file changes"
             variant="link"
+            // TODO (#IS-54): Remove the `display="none"` when
+            // diff view is merged (#1158).
+            display="none"
           />
         </HStack>
       ),
