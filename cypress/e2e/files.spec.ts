@@ -2,7 +2,7 @@ import "cypress-file-upload"
 import { Interceptors, TEST_REPO_NAME } from "../fixtures/constants"
 
 describe("Files", () => {
-  const FILE_TITLE = "singapore"
+  const FILE_TITLE = "singapore-file"
   const OTHER_FILE_TITLE = "america"
   const EXISTING_FILE_TITLE = "New Uber BrandSystem QuickGuide"
   const TEST_FILE_PATH = "files/singapore.pdf"
