@@ -241,31 +241,30 @@ export const MOCK_SITE_DASHBOARD_INFO: SiteDashboardInfo = {
 
 export const MOCK_ITEMS: EditedItemProps[] = [
   {
-    type: ["page"],
+    type: "page",
     name: "A page",
     path: ["some", "thing"],
-    url: "www.google.com",
+    stagingUrl: "www.google.com",
+    cmsFileUrl: "www.google.com",
     lastEditedBy: "asdf",
     lastEditedTime: 129823104094,
   },
   {
-    type: ["nav"],
+    type: "nav",
     name: "A nav",
     path: ["some", "thing"],
-    url: "www.google.com",
     lastEditedBy: "asdf",
     lastEditedTime: 823104823094,
   },
   {
-    type: ["file"],
+    type: "file",
     name: "a file",
     path: ["some", "thing"],
-    url: "www.google.com",
     lastEditedBy: "asdf",
     lastEditedTime: 129823104823094,
   },
   {
-    type: ["setting"],
+    type: "setting",
     name:
       "A setting with an extremely long title that probably can't fit into a single line and we have to truncate this somehow. so we will hopefully display an ellipsis over it",
     // NOTE: We don't have arbitrary nested folders.
@@ -275,33 +274,20 @@ export const MOCK_ITEMS: EditedItemProps[] = [
       "might not be able to fit into a single line",
       "so we have to truncate it to show an ellipsis at the end",
     ],
-    url: "www.google.com",
     lastEditedBy: "asdf",
     lastEditedTime: 129823094,
   },
   {
-    type: ["setting"],
+    type: "setting",
     name: "a normal setting",
     path: ["some", "thing"],
-    url: "www.google.com",
     lastEditedBy: "asdf",
     lastEditedTime: 12123498294,
   },
   {
-    type: ["image"],
+    type: "image",
     name: "some file",
     path: ["some", "thing"],
-    url: "www.google.com",
-    lastEditedBy: "asdf",
-    lastEditedTime: 129823094,
-  },
-  {
-    // NOTE: This has 2 types - we tiebreak by using the first item in the array for the icon.
-    // For the filtering, it should appear in both.
-    type: ["nav", "setting"],
-    name: "a file with two types",
-    path: ["another", "path"],
-    url: "www.google.com",
     lastEditedBy: "asdf",
     lastEditedTime: 129823094,
   },
@@ -443,10 +429,11 @@ export const MOCK_COMMENTS_DATA: CommentData[] = [
 ]
 
 const MOCK_EDITED_ITEM: EditedItemProps = {
-  type: ["file"],
+  type: "page",
   name: "mock item",
   path: ["some", "path"],
-  url: "isomer.sg",
+  stagingUrl: "isomer.sg",
+  cmsFileUrl: "localhost:3000",
   lastEditedBy: "a user",
   lastEditedTime: Date.now(),
 }

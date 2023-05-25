@@ -14,14 +14,34 @@ export interface User {
 
 type FileType = "page" | "nav" | "setting" | "file" | "image"
 
-export interface EditedItemProps {
-  type: FileType[]
+export interface BaseEditedItemDto {
   name: string
   path: string[]
-  url: string
+  type: FileType
+}
+
+export type WithEditMeta<T> = T & {
   lastEditedBy: string
   lastEditedTime: number
 }
+
+export interface EditedPageDto extends BaseEditedItemDto {
+  type: "page"
+  stagingUrl: string
+  cmsFileUrl: string
+}
+
+export interface EditedConfigDto extends BaseEditedItemDto {
+  type: "nav" | "setting"
+}
+
+export interface EditedMediaDto extends BaseEditedItemDto {
+  type: "file" | "image"
+}
+
+export type EditedItemProps = WithEditMeta<
+  EditedPageDto | EditedConfigDto | EditedMediaDto
+>
 
 export interface ReviewRequestInfo {
   title: string
