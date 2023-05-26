@@ -37,15 +37,13 @@ export const AnalyticsSettings = ({
           <FormLabel>Facebook Pixel</FormLabel>
           <Input
             w="100%"
-            type="number"
             {...register("pixel", {
-              valueAsNumber: true,
-              min: {
-                value: 100000000000000,
+              minLength: {
+                value: 15,
                 message: "Your Facebook Pixel id should be a 15 digit number.",
               },
-              max: {
-                value: 999999999999999,
+              maxLength: {
+                value: 15,
                 message: "Your Facebook Pixel id should be a 15 digit number.",
               },
             })}
