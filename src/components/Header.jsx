@@ -28,6 +28,7 @@ import { useParams } from "react-router-dom"
 import { useLoginContext } from "contexts/LoginContext"
 
 import { useStagingUrl } from "hooks/settingsHooks"
+import { useGetReviewRequests } from "hooks/siteDashboardHooks"
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { ReviewRequestModal } from "layouts/ReviewRequest"
@@ -62,6 +63,21 @@ const Header = ({
     onClose: onReviewRequestModalClose,
   } = useDisclosure()
   const { userId } = useLoginContext()
+  const {
+    data: reviewRequests,
+    isLoading: isReviewRequestsLoading,
+  } = useGetReviewRequests(siteName)
+
+  // Note: if PR is in APPROVED status, it will auto-redirect to dashboard as no edits should happen
+  // But have added here to be explicit of the status checks
+  const openReviewRequests = reviewRequests
+    ? reviewRequests.filter(
+        (request) => request.status === "OPEN" || request.status === "APPROVED"
+      )
+    : []
+
+  const shouldDisableReviewRequestButton =
+    isReviewRequestsLoading || openReviewRequests.length > 0
 
   const {
     backButtonLabel: backButtonTextFromParams,
@@ -143,6 +159,7 @@ const Header = ({
             <Button
               leftIcon={<Icon as={BiCheckCircle} fontSize="1.25rem" />}
               onClick={onReviewRequestModalOpen}
+              isDisabled={shouldDisableReviewRequestButton}
             >
               Request a Review
             </Button>
