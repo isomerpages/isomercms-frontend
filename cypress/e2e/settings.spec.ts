@@ -50,7 +50,7 @@ describe("Settings page", () => {
     cy.visitLoadSettings(TEST_REPO_NAME, sitePath)
 
   before(() => {
-    cy.setSessionDefaults()
+    cy.setGithubSessionDefaults()
     cy.setupDefaultInterceptors()
 
     visitLoadSettings(`/sites/${TEST_REPO_NAME}/settings`).wait(
@@ -116,7 +116,7 @@ describe("Settings page", () => {
   })
 
   beforeEach(() => {
-    cy.setSessionDefaults()
+    cy.setGithubSessionDefaults()
     visitLoadSettings(`/sites/${TEST_REPO_NAME}/settings`)
     // Double check that settings are loaded before running tests cos sometimes the tests run too quickly
     cy.get("#title").should((elem) => {

@@ -19,7 +19,7 @@ describe("Resources page", () => {
 
   beforeEach(() => {
     cy.setupDefaultInterceptors()
-    cy.setSessionDefaults()
+    cy.setGithubSessionDefaults()
     cy.visit(
       `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}`
     ).wait(Interceptors.GET)

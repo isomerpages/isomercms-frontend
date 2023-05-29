@@ -26,7 +26,7 @@ declare namespace Cypress {
      * This is to avoid adversely impacting the SEO of the site.
      */
     setDefaultSettings(): Chainable<void>
-    setSessionDefaults(): Chainable<void>
+    setGithubSessionDefaults(): Chainable<void>
     /**
      * Setup the default interceptors for post/get/delete requests.
      * These interceptors are aliased to the `Interceptors` enum.

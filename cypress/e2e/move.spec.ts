@@ -30,7 +30,7 @@ describe("Move flow", () => {
 
   beforeEach(() => {
     cy.setupDefaultInterceptors()
-    cy.setSessionDefaults()
+    cy.setGithubSessionDefaults()
   })
 
   describe("Move pages out of Workspace", () => {

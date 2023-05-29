@@ -90,7 +90,7 @@ describe("Folders flow", () => {
 
   describe("Create subfolder, rename subfolder, delete subfolder from Folders", () => {
     beforeEach(() => {
-      cy.setSessionDefaults()
+      cy.setGithubSessionDefaults()
       cy.setupDefaultInterceptors()
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}`
@@ -226,7 +226,7 @@ describe("Folders flow", () => {
 
   describe("Create page, delete page, edit page settings in folder", () => {
     beforeEach(() => {
-      cy.setSessionDefaults()
+      cy.setGithubSessionDefaults()
       cy.setupDefaultInterceptors()
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}`
@@ -353,7 +353,7 @@ describe("Folders flow", () => {
   describe("Create page, delete page, edit page settings in subfolder", () => {
     before(() => {
       cy.setupDefaultInterceptors()
-      cy.setSessionDefaults()
+      cy.setGithubSessionDefaults()
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}`
       )
@@ -375,7 +375,7 @@ describe("Folders flow", () => {
     })
 
     beforeEach(() => {
-      cy.setSessionDefaults()
+      cy.setGithubSessionDefaults()
       cy.setupDefaultInterceptors()
       cy.visit(
         `${CMS_BASEURL}/sites/${TEST_REPO_NAME}/folders/${DEFAULT_REPO_FOLDER_NAME}/subfolders/${PARSED_TEST_SUBFOLDER_NO_PAGES_TITLE}`
