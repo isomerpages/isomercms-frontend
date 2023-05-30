@@ -29,7 +29,7 @@ export const addCollaborator = async (
 ): Promise<void> => {
   const endpoint = getCollaboratorEndpoint(siteName)
   return apiService
-    .post(endpoint, { email, acknowledge: isAcknowledged })
+    .post(endpoint, { email: email.toLowerCase(), acknowledge: isAcknowledged })
     .then((res) => res.data)
 }
 

@@ -4,7 +4,7 @@ import { apiService } from "./ApiService"
 
 export const sendLoginOtp = async ({ email }: LoginParams): Promise<void> => {
   const endpoint = `/auth/login`
-  return apiService.post(endpoint, { email })
+  return apiService.post(endpoint, { email: email.toLowerCase() })
 }
 
 export const verifyLoginOtp = async ({
@@ -12,5 +12,5 @@ export const verifyLoginOtp = async ({
   otp,
 }: VerifyOtpParams): Promise<void> => {
   const endpoint = `/auth/verify`
-  return apiService.post(endpoint, { email, otp })
+  return apiService.post(endpoint, { email: email.toLowerCase(), otp })
 }
