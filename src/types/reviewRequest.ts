@@ -23,6 +23,7 @@ export interface BaseEditedItemDto {
 export type WithEditMeta<T> = T & {
   lastEditedBy: string
   lastEditedTime: number
+  title: string
 }
 
 export interface EditedPageDto extends BaseEditedItemDto {
@@ -67,4 +68,9 @@ export interface ReviewRequest {
   reviewers: string[]
   reviewRequestedTime: number
   changedItems: EditedItemProps[]
+}
+
+export interface BlobDiff {
+  oldValue: string
+  newValue: string
 }

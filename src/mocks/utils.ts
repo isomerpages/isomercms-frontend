@@ -9,7 +9,7 @@ import {
   ResourcePageData,
 } from "types/directory"
 import { NotificationData } from "types/notifications"
-import { ReviewRequest } from "types/reviewRequest"
+import { BlobDiff, ReviewRequest } from "types/reviewRequest"
 import { BackendSiteSettings } from "types/settings"
 import {
   CollaboratorsStats,
@@ -172,4 +172,8 @@ export const buildReviewRequestData = apiDataBuilder<{
 export const buildAllSitesData = apiDataBuilder<SiteDataRequest>(
   "*/sites",
   "get"
+)
+
+export const buildDiffData = apiDataBuilder<BlobDiff>(
+  "*/sites/:siteName/review/:reviewId/blob"
 )
