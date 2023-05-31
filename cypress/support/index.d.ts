@@ -27,6 +27,10 @@ declare namespace Cypress {
      */
     setDefaultSettings(): Chainable<void>
     setGithubSessionDefaults(): Chainable<void>
+
+    setEmailSessionDefaults(
+      userType: "Email admin" | "Email collaborator"
+    ): Chainable<void>
     /**
      * Setup the default interceptors for post/get/delete requests.
      * These interceptors are aliased to the `Interceptors` enum.

@@ -5,6 +5,8 @@ export const E2E_USER = {
   email: "test@open.gov.sg",
   contactNumber: "99999999",
 }
+export const E2E_USER_TYPE_COOKIE_KEY = "e2eUserType"
+
 export const LOCAL_STORAGE_USERID_KEY = "userId"
 export const LOCAL_STORAGE_USER_KEY = "user"
 export const TEST_REPO_NAME: string | undefined = Cypress.env("TEST_REPO_NAME")
