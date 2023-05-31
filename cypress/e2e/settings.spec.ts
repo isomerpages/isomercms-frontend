@@ -27,7 +27,7 @@ describe("Settings page", () => {
     "favicon-isomer.ico",
   ] // [Agency, Favicon, Shareicon]
   const IMAGE_DIR = "/images/"
-  const TEST_FACEBOOK_PIXEL_ID = "12345"
+  const TEST_FACEBOOK_PIXEL_ID = "123456789012345"
   const TEST_GOOGLE_ANALYTICS_GA4_ID = "GA-12345"
   const TEST_LINKEDIN_INSIGHTS_ID = "1234567"
   const TEST_SECONDARY_COLOR = [0, 255, 0] // ([R, G, B])

@@ -1,6 +1,10 @@
 import { VStack, FormControl, Link } from "@chakra-ui/react"
-import { FormLabel, Input } from "@opengovsg/design-system-react"
-import { useFormContext } from "react-hook-form"
+import {
+  FormLabel,
+  FormErrorMessage,
+  Input,
+} from "@opengovsg/design-system-react"
+import { useFormContext, useFormState } from "react-hook-form"
 import { BiInfoCircle } from "react-icons/bi"
 
 import { ANALYTICS_SETUP_LINK, GA_DEPRECATION_LINK } from "constants/config"
@@ -15,6 +19,8 @@ export const AnalyticsSettings = ({
   isError,
 }: AnalyticsSettingsProp): JSX.Element => {
   const { register } = useFormContext()
+  const { errors } = useFormState()
+  const isInvalid = (field: string) => !!errors[field]
   return (
     <Section id="analytics-fields">
       <VStack align="flex-start" spacing="0.5rem">
@@ -27,9 +33,20 @@ export const AnalyticsSettings = ({
         </SectionCaption>
       </VStack>
       <VStack spacing="1.5rem" align="flex-start" w="50%">
-        <FormControl isDisabled={isError}>
+        <FormControl isDisabled={isError} isInvalid={isInvalid("pixel")}>
           <FormLabel>Facebook Pixel</FormLabel>
-          <Input w="100%" {...register("pixel")} />
+          <Input
+            w="100%"
+            {...register("pixel", {
+              pattern: {
+                value: /^[0-9]{15}$/,
+                message: "Your Facebook Pixel id should be a 15 digit number.",
+              },
+            })}
+          />
+          <FormErrorMessage>
+            {errors.pixel && errors.pixel.message}
+          </FormErrorMessage>
         </FormControl>
 
         <FormControl isDisabled={isError}>
