@@ -435,6 +435,9 @@ const RequestOverviewTable = ({
             icon={<BiShow />}
             aria-label="view file changes"
             variant="link"
+            isDisabled={
+              row.original.type === "file" || row.original.type === "image"
+            }
             onClick={() =>
               onClick(
                 row.original.title,
