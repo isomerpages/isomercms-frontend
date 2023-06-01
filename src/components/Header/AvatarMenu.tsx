@@ -55,6 +55,7 @@ export const AvatarMenu = ({
     onClose: onVerificationModalClose,
     onOpen: onVerificationModalOpen,
   } = useDisclosure()
+
   const { setRedirectToLogout } = useRedirectHook()
 
   return (
