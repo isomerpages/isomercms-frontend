@@ -3,12 +3,18 @@ import { MemoryRouter, Route } from "react-router-dom"
 
 import { ReviewRequestRoleProvider } from "contexts/ReviewRequestRoleContext"
 
-import { MOCK_COLLABORATORS, MOCK_REVIEW_REQUEST } from "mocks/constants"
+import {
+  MOCK_COLLABORATORS,
+  MOCK_REVIEW_REQUEST,
+  OLD_DIFF_VALUE,
+  NEW_DIFF_VALUE,
+} from "mocks/constants"
 import {
   buildCollaboratorData,
   buildCommentsData,
   buildMarkCommentsAsReadData,
   buildReviewRequestData,
+  buildDiffData,
 } from "mocks/utils"
 
 import { markReviewRequestAsViewedHandler } from "../../mocks/handlers"
@@ -21,6 +27,10 @@ const dashboardMeta = {
   parameters: {
     msw: {
       handlers: {
+        diff: buildDiffData({
+          oldValue: OLD_DIFF_VALUE,
+          newValue: NEW_DIFF_VALUE,
+        }),
         reviewRequest: buildReviewRequestData({
           reviewRequest: MOCK_REVIEW_REQUEST,
         }),

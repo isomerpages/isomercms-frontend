@@ -63,6 +63,8 @@ import { BxFileArchiveSolid } from "assets"
 import { EditedItemProps } from "types/reviewRequest"
 import { extractInitials, getDateTimeFromUnixTime } from "utils"
 
+import { DiffView } from "../DiffView"
+
 const ICON_STYLE_PROPS = {
   ml: "0.75rem",
   fontSize: "1.25rem",
@@ -164,6 +166,47 @@ export const RequestOverview = ({
   items,
   allowEditing,
 }: RequestOverviewProps): JSX.Element => {
+  const [fileName, setFileName] = useState("")
+  const [path, setPath] = useState<string[]>([])
+  const [title, setTitle] = useState("")
+  const [itemStagingUrl, setItemStagingUrl] = useState<string | false>("")
+  return fileName ? (
+    <DiffView
+      title={title}
+      fileName={fileName}
+      path={path}
+      onClick={() => {
+        setFileName("")
+        setPath([])
+      }}
+      stagingUrl={itemStagingUrl}
+    />
+  ) : (
+    <RequestOverviewTable
+      onClick={(displayedName, name, filePath, selectedItemStagingUrl) => {
+        setFileName(name)
+        setPath(filePath)
+        setTitle(displayedName)
+        setItemStagingUrl(selectedItemStagingUrl)
+      }}
+      items={items}
+      allowEditing={allowEditing}
+    />
+  )
+}
+
+const RequestOverviewTable = ({
+  onClick,
+  items,
+  allowEditing,
+}: {
+  onClick: (
+    title: string,
+    name: string,
+    filePath: string[],
+    itemStagingUrl: string | false
+  ) => void
+} & RequestOverviewProps) => {
   const {
     isExpanded,
     inputRef,
@@ -384,7 +427,7 @@ export const RequestOverview = ({
               aria-label="view file on staging"
               variant="link"
               isDisabled={
-                !(row.original.type === "page" && row.original.cmsFileUrl)
+                !(row.original.type === "page" && row.original.stagingUrl)
               }
             />
           </Link>
@@ -392,9 +435,17 @@ export const RequestOverview = ({
             icon={<BiShow />}
             aria-label="view file changes"
             variant="link"
-            // TODO (#IS-54): Remove the `display="none"` when
-            // diff view is merged (#1158).
-            display="none"
+            isDisabled={
+              row.original.type === "file" || row.original.type === "image"
+            }
+            onClick={() =>
+              onClick(
+                row.original.title,
+                row.original.name,
+                row.original.path,
+                row.original.type === "page" && row.original.stagingUrl
+              )
+            }
           />
         </HStack>
       ),
