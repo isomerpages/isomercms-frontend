@@ -5,8 +5,32 @@ export const E2E_USER = {
   email: "test@open.gov.sg",
   contactNumber: "99999999",
 }
-export const E2E_USER_TYPE_COOKIE_KEY = "e2eUserType"
 
+export const E2E_EMAIL_ADMIN = {
+  email: "admin@e2e.gov.sg",
+} as const
+
+export const E2E_EMAIL_COLLAB = {
+  email: "collab@e2e.gov.sg",
+} as const
+
+export const E2E_EMAIL_TEST_SITE = {
+  name: "e2e email test site",
+  repo: "e2e-email-test-repo",
+}
+
+export const E2E_COOKIE = {
+  Auth: {
+    key: Cypress.env("COOKIE_NAME"),
+    value: Cypress.env("COOKIE_VALUE"),
+  },
+  Site: { key: "site", value: E2E_EMAIL_TEST_SITE.name },
+  EmailUserType: { key: "e2eUserType" },
+  Email: { key: "email" },
+}
+
+export const E2E_USER_TYPE_COOKIE_KEY = "e2eUserType"
+export const E2E_SITE_KEY = "site"
 export const LOCAL_STORAGE_USERID_KEY = "userId"
 export const LOCAL_STORAGE_USER_KEY = "user"
 export const TEST_REPO_NAME: string | undefined = Cypress.env("TEST_REPO_NAME")

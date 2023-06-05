@@ -55,5 +55,12 @@ declare namespace Cypress {
     deleteMedia(mediaTitle: string, disableAction?: boolean): Chainable<void>
     saveSettings(): Chainable<void>
     visitLoadSettings(siteName: string, sitePath: string): Chainable<void>
+    createEmailUser(
+      email: string,
+      // NOTE: have to (re)declare the type here
+      // otherwise the import leads to a type error
+      userType: "Email admin" | "Email collaborator",
+      InitialUserType: "Email admin" | "Email collaborator"
+    ): Chainable<void>
   }
 }
