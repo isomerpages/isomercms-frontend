@@ -9,6 +9,7 @@ import {
   E2E_SITE_KEY,
   E2E_COOKIE,
   E2E_EMAIL_ADMIN,
+  Interceptors,
 } from "../fixtures/constants"
 import { EmailUserTypes, USER_TYPES } from "../fixtures/users"
 
@@ -39,7 +40,9 @@ Cypress.Commands.add(
     cy.setCookie(E2E_COOKIE.Auth.key, E2E_COOKIE.Auth.value)
     cy.setCookie(E2E_COOKIE.EmailUserType.key, userType)
     cy.setCookie(E2E_COOKIE.Email.key, email)
-    cy.request("GET", `${Cypress.env("BACKEND_URL")}/auth/whoami`)
+    cy.request("GET", `${Cypress.env("BACKEND_URL")}/auth/whoami`).wait(
+      Interceptors.GET
+    )
 
     cy.setEmailSessionDefaults(initialUserType)
     cy.visit(

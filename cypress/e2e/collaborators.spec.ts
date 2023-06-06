@@ -3,6 +3,7 @@ import {
   E2E_EMAIL_COLLAB,
   E2E_EMAIL_TEST_SITE,
   Interceptors,
+  TEST_REPO_NAME,
 } from "../fixtures/constants"
 import { USER_TYPES } from "../fixtures/users"
 
@@ -44,7 +45,7 @@ const getCollaboratorsModal = () => {
   return cy.get("form").should("be.visible")
 }
 
-const addCollaboratorsFor = (user: string) => {
+const inputCollaborators = (user: string) => {
   getCollaboratorsModal().get(ADD_COLLABORATOR_INPUT_SELECTOR).type(user).blur()
   // NOTE: need to ignore the 422 w/ specific error message because we haven't ack yet
   cy.contains("Add collaborator").click().wait(Interceptors.POST)
@@ -77,14 +78,14 @@ describe("collaborators flow", () => {
     })
     it("should not be able to add a non-whitelisted collaborator", () => {
       // Act
-      addCollaboratorsFor("some_gibberish@gmail.com")
+      inputCollaborators("some_gibberish@gmail.com")
 
       // Assert
       cy.contains(ADD_COLLABORATOR_ERROR_MESSAGE).should("be.visible")
     })
     it("should not be able to add an existing user", () => {
       // Act
-      addCollaboratorsFor(E2E_EMAIL_ADMIN.email)
+      inputCollaborators(E2E_EMAIL_ADMIN.email)
       ignoreDuplicateError()
 
       // Assert
@@ -93,7 +94,7 @@ describe("collaborators flow", () => {
     it("should not be able to add a collaborator without an isomer account", () => {
       // Act
       // NOTE: Initial admin will always be added manually
-      addCollaboratorsFor("gibberish@nonsense.gov.sg")
+      inputCollaborators("gibberish@nonsense.gov.sg")
       ignoreNotFoundError()
 
       // Assert
@@ -111,7 +112,7 @@ describe("collaborators flow", () => {
 
       // Act
       // NOTE: Initial admin will always be added manually
-      addCollaboratorsFor(collaborator)
+      inputCollaborators(collaborator)
       // NOTE: Cannot proceed without acknowledgement
       cy.contains("Continue").should("be.disabled")
       cy.get("input[name='isAcknowledged']").next().click()
@@ -124,6 +125,57 @@ describe("collaborators flow", () => {
 
       // Cleanup
       removeCollaborator(collaborator)
+    })
+  })
+
+  describe("Admin removing a collaborator", () => {
+    it("should be able to remove an existing collaborator", () => {
+      // Arrange
+      // NOTE: Add a collaborator
+      cy.createEmailUser(
+        collaborator,
+        USER_TYPES.Email.Collaborator,
+        USER_TYPES.Email.Admin
+      )
+      inputCollaborators(collaborator)
+      cy.get("input[name='isAcknowledged']").next().click()
+      cy.contains("Continue").click().wait(Interceptors.POST)
+      ignoreAcknowledgementError()
+
+      // Act
+      removeCollaborator(collaborator)
+
+      // Assert
+      cy.contains("Collaborator removed successfully").should("be.visible")
+    })
+
+    it("should not be able to remove the last site member", () => {
+      // Act
+      // NOTE: Remove all collaborators except the initial admin
+      getCollaboratorsModal()
+        .get('button[id^="delete-"]')
+        .then((buttons) => {
+          if (buttons.length > 1) {
+            buttons.slice(1).each((idx, button) => {
+              button.click()
+            })
+          }
+        })
+
+      // Assert
+      cy.get('button[id^="delete-"]').should("be.disabled")
+    })
+
+    it("should prevent admins of a site from removing collaborators of another site", () => {
+      // Arrange
+      cy.visit(`http://localhost:3000/sites/${TEST_REPO_NAME}/dashboard`)
+      cy.contains(TEST_REPO_NAME).should("be.visible")
+      ignoreNotFoundError()
+
+      // Act
+      getCollaboratorsModal()
+        .contains("button", "Add collaborator")
+        .should("be.disabled")
     })
   })
 })
