@@ -11,6 +11,10 @@ import {
 } from "../fixtures/selectors"
 import { USER_TYPES } from "../fixtures/users"
 import { visitE2eEmailTestRepo } from "../utils"
+import {
+  getCollaboratorsModal,
+  removeOtherCollaborators,
+} from "../utils/collaborators"
 
 const collaborator = E2E_EMAIL_COLLAB.email
 
@@ -36,17 +40,6 @@ const DUPLICATE_COLLABORATOR_ERROR_MESSAGE =
 
 const NON_EXISTING_USER_ERROR_MESSAGE =
   "This user does not have an Isomer account. Ask them to log in to Isomer and try adding them again."
-
-const getCollaboratorsModal = () => {
-  cy.contains("Site collaborators")
-    .parent()
-    .parent()
-    .parent()
-    .within(() => cy.get("button").click())
-
-  // NOTE: the form encloses the displayed modal component
-  return cy.get("form").should("be.visible")
-}
 
 const inputCollaborators = (user: string) => {
   getCollaboratorsModal().get(ADD_COLLABORATOR_INPUT_SELECTOR).type(user).blur()
@@ -155,15 +148,7 @@ describe("collaborators flow", () => {
     it("should not be able to remove the last site member", () => {
       // Act
       // NOTE: Remove all collaborators except the initial admin
-      getCollaboratorsModal()
-        .get(DELETE_BUTTON_SELECTOR)
-        .then((buttons) => {
-          if (buttons.length > 1) {
-            buttons.slice(1).each((idx, button) => {
-              button.click()
-            })
-          }
-        })
+      removeOtherCollaborators()
 
       // Assert
       cy.get(DELETE_BUTTON_SELECTOR).should("be.disabled")
