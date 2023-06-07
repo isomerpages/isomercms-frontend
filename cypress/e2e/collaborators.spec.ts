@@ -5,6 +5,10 @@ import {
   Interceptors,
   TEST_REPO_NAME,
 } from "../fixtures/constants"
+import {
+  ADD_COLLABORATOR_INPUT_SELECTOR,
+  DELETE_BUTTON_SELECTOR,
+} from "../fixtures/selectors"
 import { USER_TYPES } from "../fixtures/users"
 import { visitE2eEmailTestRepo } from "../utils"
 
@@ -33,10 +37,6 @@ const DUPLICATE_COLLABORATOR_ERROR_MESSAGE =
 const NON_EXISTING_USER_ERROR_MESSAGE =
   "This user does not have an Isomer account. Ask them to log in to Isomer and try adding them again."
 
-const ADD_COLLABORATOR_INPUT_SELECTOR = "input[name='newCollaboratorEmail']"
-
-const DELETE_COLLABORATOR_BUTTON_SELECTOR = 'button[id^="delete-"]'
-
 const getCollaboratorsModal = () => {
   cy.contains("Site collaborators")
     .parent()
@@ -60,7 +60,7 @@ const removeCollaborator = (email: string) => {
     .parent()
     .parent()
     .within(() => {
-      cy.get(DELETE_COLLABORATOR_BUTTON_SELECTOR).click()
+      cy.get(DELETE_BUTTON_SELECTOR).click()
     })
 
   cy.contains("button", "Remove collaborator").click().wait(Interceptors.DELETE)
@@ -156,7 +156,7 @@ describe("collaborators flow", () => {
       // Act
       // NOTE: Remove all collaborators except the initial admin
       getCollaboratorsModal()
-        .get(DELETE_COLLABORATOR_BUTTON_SELECTOR)
+        .get(DELETE_BUTTON_SELECTOR)
         .then((buttons) => {
           if (buttons.length > 1) {
             buttons.slice(1).each((idx, button) => {
@@ -166,7 +166,7 @@ describe("collaborators flow", () => {
         })
 
       // Assert
-      cy.get(DELETE_COLLABORATOR_BUTTON_SELECTOR).should("be.disabled")
+      cy.get(DELETE_BUTTON_SELECTOR).should("be.disabled")
     })
 
     it("should prevent admins of a site from removing collaborators of another site", () => {
