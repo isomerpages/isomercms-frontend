@@ -10,6 +10,11 @@ import { USER_TYPES } from "../fixtures/users"
 
 const collaborator = E2E_EMAIL_COLLAB.email
 
+// NOTE: The below functions are required because
+// the collaborators modal uses the backend's error message
+// in order to display the error message to the user.
+// This means that we need to ignore the network error
+// because it's expected (as the FE queries the BE)
 const ignoreAcknowledgementError = () =>
   cy.on("uncaught:exception", (err) => !err.message.includes("422"))
 
