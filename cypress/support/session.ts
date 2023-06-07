@@ -10,7 +10,7 @@ import {
   E2E_COOKIE,
   E2E_EMAIL_ADMIN,
   Interceptors,
-  BACKEND_URL,
+  CMS_BASEURL,
 } from "../fixtures/constants"
 import { EmailUserTypes, USER_TYPES } from "../fixtures/users"
 
@@ -46,8 +46,6 @@ Cypress.Commands.add(
     )
 
     cy.setEmailSessionDefaults(initialUserType)
-    cy.visit(
-      `http://${BACKEND_URL}/sites/${E2E_EMAIL_TEST_SITE.repo}/dashboard`
-    )
+    cy.visit(`${CMS_BASEURL}/sites/${E2E_EMAIL_TEST_SITE.repo}/dashboard`)
   }
 )

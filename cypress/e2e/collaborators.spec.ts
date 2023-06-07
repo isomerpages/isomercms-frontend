@@ -1,5 +1,5 @@
 import {
-  BACKEND_URL,
+  CMS_BASEURL,
   E2E_EMAIL_ADMIN,
   E2E_EMAIL_COLLAB,
   E2E_EMAIL_TEST_SITE,
@@ -38,7 +38,7 @@ const ADD_COLLABORATOR_INPUT_SELECTOR = "input[name='newCollaboratorEmail']"
 const DELETE_COLLABORATOR_BUTTON_SELECTOR = 'button[id^="delete-"]'
 
 const visitE2eEmailTestRepo = () => {
-  cy.visit(`${BACKEND_URL}/sites/${E2E_EMAIL_TEST_SITE.repo}/dashboard`)
+  cy.visit(`${CMS_BASEURL}/sites/${E2E_EMAIL_TEST_SITE.repo}/dashboard`)
   cy.contains(E2E_EMAIL_TEST_SITE.repo).should("be.visible")
 }
 
@@ -176,7 +176,7 @@ describe("collaborators flow", () => {
 
     it("should prevent admins of a site from removing collaborators of another site", () => {
       // Arrange
-      cy.visit(`${BACKEND_URL}/sites/${TEST_REPO_NAME}/dashboard`)
+      cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/dashboard`)
       cy.contains(TEST_REPO_NAME).should("be.visible")
       ignoreNotFoundError()
 
