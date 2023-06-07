@@ -26,6 +26,7 @@ Cypress.Commands.add("setEmailSessionDefaults", (userType: EmailUserTypes) => {
   cy.setCookie(E2E_USER_TYPE_COOKIE_KEY, userType)
   cy.setCookie(E2E_SITE_KEY, E2E_EMAIL_TEST_SITE.name)
   cy.setCookie(E2E_COOKIE.Email.key, E2E_EMAIL_ADMIN.email)
+  cy.setCookie(E2E_COOKIE.Site.key, E2E_COOKIE.Site.value)
 })
 
 Cypress.Commands.add(
