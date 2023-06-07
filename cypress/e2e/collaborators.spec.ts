@@ -1,4 +1,5 @@
 import {
+  BACKEND_URL,
   E2E_EMAIL_ADMIN,
   E2E_EMAIL_COLLAB,
   E2E_EMAIL_TEST_SITE,
@@ -29,8 +30,10 @@ const NON_EXISTING_USER_ERROR_MESSAGE =
 
 const ADD_COLLABORATOR_INPUT_SELECTOR = "input[name='newCollaboratorEmail']"
 
+const DELETE_COLLABORATOR_BUTTON_SELECTOR = 'button[id^="delete-"]'
+
 const visitE2eEmailTestRepo = () => {
-  cy.visit(`http://localhost:3000/sites/${E2E_EMAIL_TEST_SITE.repo}/dashboard`)
+  cy.visit(`${BACKEND_URL}/sites/${E2E_EMAIL_TEST_SITE.repo}/dashboard`)
   cy.contains(E2E_EMAIL_TEST_SITE.repo).should("be.visible")
 }
 
@@ -57,7 +60,7 @@ const removeCollaborator = (email: string) => {
     .parent()
     .parent()
     .within(() => {
-      cy.get('button[id^="delete-"]').click()
+      cy.get(DELETE_COLLABORATOR_BUTTON_SELECTOR).click()
     })
 
   cy.contains("button", "Remove collaborator").click().wait(Interceptors.DELETE)
@@ -153,7 +156,7 @@ describe("collaborators flow", () => {
       // Act
       // NOTE: Remove all collaborators except the initial admin
       getCollaboratorsModal()
-        .get('button[id^="delete-"]')
+        .get(DELETE_COLLABORATOR_BUTTON_SELECTOR)
         .then((buttons) => {
           if (buttons.length > 1) {
             buttons.slice(1).each((idx, button) => {
@@ -163,12 +166,12 @@ describe("collaborators flow", () => {
         })
 
       // Assert
-      cy.get('button[id^="delete-"]').should("be.disabled")
+      cy.get(DELETE_COLLABORATOR_BUTTON_SELECTOR).should("be.disabled")
     })
 
     it("should prevent admins of a site from removing collaborators of another site", () => {
       // Arrange
-      cy.visit(`http://localhost:3000/sites/${TEST_REPO_NAME}/dashboard`)
+      cy.visit(`${BACKEND_URL}/sites/${TEST_REPO_NAME}/dashboard`)
       cy.contains(TEST_REPO_NAME).should("be.visible")
       ignoreNotFoundError()
 
