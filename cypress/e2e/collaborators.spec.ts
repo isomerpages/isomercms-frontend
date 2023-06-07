@@ -2,11 +2,11 @@ import {
   CMS_BASEURL,
   E2E_EMAIL_ADMIN,
   E2E_EMAIL_COLLAB,
-  E2E_EMAIL_TEST_SITE,
   Interceptors,
   TEST_REPO_NAME,
 } from "../fixtures/constants"
 import { USER_TYPES } from "../fixtures/users"
+import { visitE2eEmailTestRepo } from "../utils"
 
 const collaborator = E2E_EMAIL_COLLAB.email
 
@@ -36,11 +36,6 @@ const NON_EXISTING_USER_ERROR_MESSAGE =
 const ADD_COLLABORATOR_INPUT_SELECTOR = "input[name='newCollaboratorEmail']"
 
 const DELETE_COLLABORATOR_BUTTON_SELECTOR = 'button[id^="delete-"]'
-
-const visitE2eEmailTestRepo = () => {
-  cy.visit(`${CMS_BASEURL}/sites/${E2E_EMAIL_TEST_SITE.repo}/dashboard`)
-  cy.contains(E2E_EMAIL_TEST_SITE.repo).should("be.visible")
-}
 
 const getCollaboratorsModal = () => {
   cy.contains("Site collaborators")
