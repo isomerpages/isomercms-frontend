@@ -34,22 +34,34 @@ if (!E2E_COMMIT_HASH) {
   )
 }
 const GITHUB_ORG_NAME = "isomerpages"
-const REPO_NAME = "e2e-test-repo"
+const E2E_GITHUB_REPO_NAME = "e2e-test-repo"
+const E2E_EMAIL_REPO_NAME = "e2e-email-test-repo"
+const E2E_EMAIL_COMMIT_HASH = "93593ceb8ee8af690267e49ea787701fc73baed8"
 
-const resetE2eTestRepo = async () => {
-  const baseRefEndpoint = `https://api.github.com/repos/${GITHUB_ORG_NAME}/${REPO_NAME}/git/refs`
-  const refEndpoint = `${baseRefEndpoint}/heads/staging`
+const resetRepo = async (repo, hash) => {
+  const endpoint = `https://api.github.com/repos/${GITHUB_ORG_NAME}/${repo}/git/refs/heads/staging`
   await axios.patch(
-    refEndpoint,
+    endpoint,
     {
-      sha: E2E_COMMIT_HASH,
+      sha: hash,
       force: true,
     },
     {
       headers,
     }
   )
-  console.log(`Successfully reset e2e-test-repo to ${E2E_COMMIT_HASH}`)
+  console.log(`Successfully reset ${repo} to ${hash}`)
+}
+
+const resetGithubE2eTestRepo = () =>
+  resetRepo(E2E_GITHUB_REPO_NAME, E2E_COMMIT_HASH)
+
+const resetEmailE2eTestRepo = () =>
+  resetRepo(E2E_EMAIL_REPO_NAME, E2E_EMAIL_COMMIT_HASH)
+
+const resetE2eTestRepo = async () => {
+  await resetGithubE2eTestRepo()
+  await resetEmailE2eTestRepo()
 }
 
 // resets the e2e repo then runs the corresponding cypress command
