@@ -7,7 +7,7 @@ import {
 } from "../fixtures/constants"
 import { DELETE_BUTTON_SELECTOR } from "../fixtures/selectors"
 import { USER_TYPES } from "../fixtures/users"
-import { visitE2eEmailTestRepo } from "../utils"
+import { closeModal, visitE2eEmailTestRepo } from "../utils"
 import {
   addCollaborator,
   getCollaboratorsModal,
@@ -108,6 +108,7 @@ describe("collaborators flow", () => {
       cy.get("input[name='isAcknowledged']").next().click()
       cy.contains("Continue").click().wait(Interceptors.POST)
       ignoreAcknowledgementError()
+      closeModal()
 
       // Assert
       cy.get("form").contains(collaborator).should("be.visible")
