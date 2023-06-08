@@ -134,6 +134,19 @@ export const SiteLaunchPad = (): JSX.Element => {
   const [pageNumber, setPageNumber] = useState(
     getInitialPageNumber(siteLaunchStatusProps)
   )
+  const handleIncrementStepNumber = () => {
+    setSiteLaunchStatusProps({
+      ...siteLaunchStatusProps,
+      stepNumber: siteLaunchStatusProps.stepNumber + 1,
+      siteLaunchStatus: "CHECKLIST_TASKS_PENDING",
+    })
+  }
+  const handleDecrementStepNumber = () => {
+    setSiteLaunchStatusProps({
+      ...siteLaunchStatusProps,
+      stepNumber: siteLaunchStatusProps.stepNumber - 1,
+    })
+  }
 
   const handleIncrementStepNumber = () => {
     if (
