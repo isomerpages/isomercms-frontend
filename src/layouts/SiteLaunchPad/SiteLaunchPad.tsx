@@ -25,6 +25,10 @@ import { SiteViewHeader } from "layouts/layouts/SiteViewLayout/SiteViewHeader"
 import { SiteLaunchStatusProps, SITE_LAUNCH_PAGES } from "types/siteLaunch"
 
 import {
+  SiteLaunchChecklistTitle,
+  SiteLaunchChecklistBody,
+} from "./components/SiteLaunchCheckList"
+import {
   SiteLaunchDisclaimerBody,
   SiteLaunchDisclaimerTitle,
 } from "./components/SiteLaunchDisclaimer"
@@ -125,6 +129,19 @@ export const SiteLaunchPad = (): JSX.Element => {
   const [pageNumber, setPageNumber] = useState(
     getInitialPageNumber(siteLaunchStatusProps)
   )
+  const handleIncrementStepNumber = () => {
+    setSiteLaunchStatusProps({
+      ...siteLaunchStatusProps,
+      stepNumber: siteLaunchStatusProps.stepNumber + 1,
+      siteLaunchStatus: "CHECKLIST_TASKS_PENDING",
+    })
+  }
+  const handleDecrementStepNumber = () => {
+    setSiteLaunchStatusProps({
+      ...siteLaunchStatusProps,
+      stepNumber: siteLaunchStatusProps.stepNumber - 1,
+    })
+  }
 
   let title: JSX.Element
   let body: JSX.Element
@@ -138,8 +155,16 @@ export const SiteLaunchPad = (): JSX.Element => {
       title = <SiteLaunchInfoCollectorTitle />
       body = <SiteLaunchInfoCollectorBody setPageNumber={setPageNumber} />
       break
-
-    // todo case for site launch pages checklist
+    case SITE_LAUNCH_PAGES.CHECKLIST:
+      title = <SiteLaunchChecklistTitle />
+      body = (
+        <SiteLaunchChecklistBody
+          setPageNumber={setPageNumber}
+          handleIncrementStepNumber={handleIncrementStepNumber}
+          handleDecrementStepNumber={handleDecrementStepNumber}
+        />
+      )
+      break
     default:
       title = <SiteLaunchDisclaimerTitle />
       body = <SiteLaunchDisclaimerBody setPageNumber={setPageNumber} />
