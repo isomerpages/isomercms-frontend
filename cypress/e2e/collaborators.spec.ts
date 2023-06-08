@@ -5,14 +5,13 @@ import {
   Interceptors,
   TEST_REPO_NAME,
 } from "../fixtures/constants"
-import {
-  ADD_COLLABORATOR_INPUT_SELECTOR,
-  DELETE_BUTTON_SELECTOR,
-} from "../fixtures/selectors"
+import { DELETE_BUTTON_SELECTOR } from "../fixtures/selectors"
 import { USER_TYPES } from "../fixtures/users"
 import { visitE2eEmailTestRepo } from "../utils"
 import {
+  addCollaborator,
   getCollaboratorsModal,
+  inputCollaborators,
   removeOtherCollaborators,
 } from "../utils/collaborators"
 
@@ -41,14 +40,8 @@ const DUPLICATE_COLLABORATOR_ERROR_MESSAGE =
 const NON_EXISTING_USER_ERROR_MESSAGE =
   "This user does not have an Isomer account. Ask them to log in to Isomer and try adding them again."
 
-const inputCollaborators = (user: string) => {
-  getCollaboratorsModal().get(ADD_COLLABORATOR_INPUT_SELECTOR).type(user).blur()
-  // NOTE: need to ignore the 422 w/ specific error message because we haven't ack yet
-  cy.contains("Add collaborator").click().wait(Interceptors.POST)
-}
-
 const removeCollaborator = (email: string) => {
-  cy.get("form")
+  getCollaboratorsModal()
     .contains("div", email)
     .parent()
     .parent()
@@ -98,7 +91,7 @@ describe("collaborators flow", () => {
     })
     it("should be able to add a collaborator", () => {
       // Arrange
-      // NOTE: Mock a login with a collaborator account;
+      // NOTE: Mock a login with a collaborator account.
       // This creates the user account in our backend.
       cy.createEmailUser(
         collaborator,
@@ -107,7 +100,8 @@ describe("collaborators flow", () => {
       )
 
       // Act
-      // NOTE: Initial admin will always be added manually
+      // NOTE: Not using the `addCollaborator` function
+      // as we want to assert that the continue button is disabled
       inputCollaborators(collaborator)
       // NOTE: Cannot proceed without acknowledgement
       cy.contains("Continue").should("be.disabled")
@@ -127,16 +121,7 @@ describe("collaborators flow", () => {
   describe("Admin removing a collaborator", () => {
     it("should be able to remove an existing collaborator", () => {
       // Arrange
-      // NOTE: Add a collaborator
-      cy.createEmailUser(
-        collaborator,
-        USER_TYPES.Email.Collaborator,
-        USER_TYPES.Email.Admin
-      )
-      inputCollaborators(collaborator)
-      cy.get("input[name='isAcknowledged']").next().click()
-      cy.contains("Continue").click().wait(Interceptors.POST)
-      ignoreAcknowledgementError()
+      addCollaborator(collaborator)
 
       // Act
       removeCollaborator(collaborator)
