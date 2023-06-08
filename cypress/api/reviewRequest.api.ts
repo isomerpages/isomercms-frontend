@@ -1,8 +1,6 @@
-import {
-  BACKEND_URL,
-  E2E_EMAIL_TEST_SITE,
-  Interceptors,
-} from "../fixtures/constants"
+import { Interceptors } from "../fixtures/constants"
+
+import { E2E_EMAIL_SITE_API_URL } from "./constants"
 
 /**
  * @precondition Assumes that the default interceptors are set up.
@@ -15,13 +13,9 @@ export const createReviewRequest = async (
   reviewers: string[],
   description?: string
 ): Promise<void> => {
-  cy.request(
-    "POST",
-    `${BACKEND_URL}/sites/${E2E_EMAIL_TEST_SITE.repo}/request`,
-    {
-      reviewers,
-      title,
-      description,
-    }
-  ).wait(Interceptors.POST)
+  cy.request("POST", `${E2E_EMAIL_SITE_API_URL}/review/request`, {
+    reviewers,
+    title,
+    description,
+  }).wait(Interceptors.POST)
 }
