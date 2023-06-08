@@ -35,10 +35,11 @@ Cypress.Commands.add(
   (
     email: string,
     userType: EmailUserTypes,
-    initialUserType: EmailUserTypes
+    initialUserType: EmailUserTypes,
+    site = ""
   ) => {
     cy.clearCookies()
-    cy.setCookie(E2E_COOKIE.Site.key, "")
+    cy.setCookie(E2E_COOKIE.Site.key, site)
     cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
     cy.setCookie(E2E_COOKIE.Auth.key, E2E_COOKIE.Auth.value)
     cy.setCookie(E2E_COOKIE.EmailUserType.key, userType)
