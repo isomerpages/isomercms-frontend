@@ -11,7 +11,7 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react"
-import { Button } from "@opengovsg/design-system-react"
+import { Button, Link } from "@opengovsg/design-system-react"
 import { ButtonLink } from "components/ButtonLink"
 import { CollaboratorModal } from "components/CollaboratorModal"
 import {
@@ -33,6 +33,7 @@ import { useParams, Link as RouterLink } from "react-router-dom"
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
 import { useLoginContext } from "contexts/LoginContext"
+import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
 import {
   useGetSiteInfo,
@@ -42,11 +43,14 @@ import {
 } from "hooks/siteDashboardHooks"
 import useRedirectHook from "hooks/useRedirectHook"
 
+import { isUserUsingSiteLaunchFeature } from "services/SiteLaunchService"
+
 import { getDateTimeFromUnixTime } from "utils/date"
 
-import { SiteDashboardHumanImage } from "assets"
+import { BxsClearRocket, SiteDashboardHumanImage } from "assets"
 import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
 import { DASHBOARD_FEATURE_STEPS } from "features/FeatureTour/FeatureTourSequence"
+import { SITE_LAUNCH_TASKS } from "types/siteLaunch"
 
 import { SiteViewLayout } from "../layouts"
 
@@ -63,7 +67,7 @@ export const SiteDashboard = (): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
   const { setRedirectToPage } = useRedirectHook()
   const { userId } = useLoginContext()
-
+  const { setSiteName, siteLaunchStatusProps } = useSiteLaunchContext()
   const {
     data: siteInfo,
     isError: isSiteInfoError,
@@ -86,6 +90,8 @@ export const SiteDashboard = (): JSX.Element => {
   const savedAt = getDateTimeFromUnixTime(siteInfo?.savedAt || 0)
   const publishedAt = getDateTimeFromUnixTime(siteInfo?.publishedAt || 0)
 
+  setSiteName(siteName)
+
   useEffect(() => {
     // GitHub users should not be able to access this page
     if (userId !== "Unknown user" && !!userId) {
@@ -101,6 +107,9 @@ export const SiteDashboard = (): JSX.Element => {
     ({ status }) => status === "OPEN" || status === "APPROVED"
   )
 
+  const { siteLaunchStatus } = siteLaunchStatusProps
+  // todo add loading state for site launch api call, after IS-219
+  const isSiteLaunchLoading = false
   return (
     <SiteViewLayout overflow="hidden">
       <Container maxW="container.xl" minH="100vh">
@@ -193,9 +202,67 @@ export const SiteDashboard = (): JSX.Element => {
           {/* Right column */}
           <Box w="40%">
             <VStack spacing="1.25rem">
+              {/* Site launch display card */}
+              {isUserUsingSiteLaunchFeature(siteName) &&
+                siteLaunchStatus !== "LAUNCHED" && (
+                  <Box w="100%">
+                    <DisplayCard variant="content">
+                      <Skeleton isLoaded={!isSiteLaunchLoading}>
+                        <DisplayCardHeader
+                          button={
+                            <Link
+                              variant="link"
+                              textStyle="subhead-1"
+                              color="text.title.brand"
+                              marginRight="0.75rem"
+                              href="./siteLaunchPad"
+                            >
+                              {siteLaunchStatus === "NOT_LAUNCHED" && (
+                                <Text>Go to Launchpad</Text>
+                              )}
+                              {siteLaunchStatus ===
+                                "CHECKLIST_TASKS_PENDING" && (
+                                <Text>Visit launchpad</Text>
+                              )}
+                              {siteLaunchStatus === "LAUNCHING" && (
+                                <Text>Check Status</Text>
+                              )}
+                            </Link>
+                          }
+                        >
+                          <DisplayCardTitle
+                            icon={
+                              <Icon as={BxsClearRocket} fontSize="1.5rem" />
+                            }
+                          >
+                            Site launch
+                          </DisplayCardTitle>
+                          <DisplayCardCaption>
+                            Associate your isomer site to a domain
+                          </DisplayCardCaption>
+                        </DisplayCardHeader>
+                        <DisplayCardContent>
+                          <Skeleton isLoaded={!isSiteLaunchLoading} w="100%">
+                            {siteLaunchStatus === "CHECKLIST_TASKS_PENDING" && (
+                              <Text textStyle="body-2">
+                                {siteLaunchStatusProps?.stepNumber}/
+                                {Object.keys(SITE_LAUNCH_TASKS).length}
+                              </Text>
+                            )}
+                            {siteLaunchStatus === "LAUNCHING" && (
+                              <Text textStyle="body-2">
+                                Launch status: Pending
+                              </Text>
+                            )}
+                          </Skeleton>
+                        </DisplayCardContent>
+                      </Skeleton>
+                    </DisplayCard>
+                  </Box>
+                )}{" "}
               {/* Human image and last saved/published */}
               <Box w="100%">
-                <SiteDashboardHumanImage />
+                {siteLaunchStatus === "LAUNCHED" && <SiteDashboardHumanImage />}
                 <DisplayCard variant="content">
                   <DisplayCardContent overflow="hidden">
                     <VStack
@@ -220,11 +287,33 @@ export const SiteDashboard = (): JSX.Element => {
                             : `${publishedAt.date}, ${siteInfo?.publishedBy}`}
                         </Text>
                       </Skeleton>
+
+                      <Skeleton isLoaded={!isSiteLaunchLoading} w="100%">
+                        {isUserUsingSiteLaunchFeature(siteName) &&
+                          siteLaunchStatus === "LAUNCHED" && (
+                            <Box
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Text
+                                textStyle="caption-2"
+                                color="text.helper"
+                                mr="0.5rem"
+                              >
+                                <b>Launched</b> 19 Jan 2022, Site status
+                              </Text>
+                              <Text
+                                textStyle="caption-2"
+                                color="interaction.success.default"
+                              >
+                                Live
+                              </Text>
+                            </Box>
+                          )}
+                      </Skeleton>
                     </VStack>
                   </DisplayCardContent>
                 </DisplayCard>
               </Box>
-
               {/* Site collaborators display card */}
               <Box id="isomer-dashboard-feature-tour-step-3" w="100%">
                 <DisplayCard variant="full">
@@ -267,7 +356,6 @@ export const SiteDashboard = (): JSX.Element => {
                   </DisplayCardContent>
                 </DisplayCard>
               </Box>
-
               {/* Site settings display card */}
               <DisplayCard variant="header">
                 <DisplayCardHeader

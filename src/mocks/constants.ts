@@ -20,6 +20,7 @@ import {
   SiteDashboardInfo,
   SiteDashboardReviewRequest,
 } from "types/siteDashboard"
+import { SiteLaunchDto } from "types/siteLaunch"
 import { SiteDataRequest } from "types/sites"
 import { LoggedInUser } from "types/user"
 
@@ -493,3 +494,8 @@ const generateDiffValues = () =>
 
 export const OLD_DIFF_VALUE = generateDiffValues()
 export const NEW_DIFF_VALUE = generateDiffValues().toUpperCase()
+
+export const MOCK_UNLAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
+  siteStatus: "NOT_LAUNCHED",
+  stepNumber: 0,
+}

@@ -71,6 +71,9 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
       dark: "#272D41",
       light: "#848484",
     },
+    divider: {
+      medium: "#E9E9E9",
+    },
   },
   icon: {
     warning: "#E2B73E",
@@ -107,6 +110,9 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
   interaction: {
     mainLight: {
       default: "#F8FAFE",
+    },
+    support: {
+      disabled: "#A0A0A0",
     },
   },
 }

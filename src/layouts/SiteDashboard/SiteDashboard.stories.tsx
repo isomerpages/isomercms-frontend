@@ -2,6 +2,8 @@ import { ComponentStory, ComponentMeta } from "@storybook/react"
 import _ from "lodash"
 import { MemoryRouter, Route } from "react-router-dom"
 
+import { SiteLaunchProvider } from "contexts/SiteLaunchContext"
+
 import {
   MOCK_SITE_DASHBOARD_COLLABORATORS_STATISTICS,
   MOCK_SITE_DASHBOARD_INFO,
@@ -17,6 +19,7 @@ import {
   buildSiteDashboardInfo,
   buildSiteDashboardReviewRequests,
 } from "mocks/utils"
+import { SITE_LAUNCH_TASKS_LENGTH } from "types/siteLaunch"
 
 import { SiteDashboard } from "./SiteDashboard"
 
@@ -58,7 +61,9 @@ const SiteDashboardMeta = {
       return (
         <MemoryRouter initialEntries={["/sites/storybook/dashboard"]}>
           <Route path="/sites/:siteName/dashboard">
-            <Story />
+            <SiteLaunchProvider>
+              <Story />
+            </SiteLaunchProvider>
           </Route>
         </MemoryRouter>
       )
@@ -117,5 +122,59 @@ RequestApproved.parameters = {
     },
   },
 }
+
+export const SiteLaunchStepsCompleted = Template.bind({})
+SiteLaunchStepsCompleted.decorators = [
+  (Story) => {
+    return (
+      <MemoryRouter initialEntries={["/sites/storybook/dashboard"]}>
+        <Route path="/sites/:siteName/dashboard">
+          <SiteLaunchProvider
+            initialSiteLaunchStatus="LAUNCHED"
+            initialStepNumber={SITE_LAUNCH_TASKS_LENGTH}
+          >
+            <Story />
+          </SiteLaunchProvider>
+        </Route>
+      </MemoryRouter>
+    )
+  },
+]
+
+export const SiteLaunchLaunching = Template.bind({})
+SiteLaunchLaunching.decorators = [
+  (Story) => {
+    return (
+      <MemoryRouter initialEntries={["/sites/storybook/dashboard"]}>
+        <Route path="/sites/:siteName/dashboard">
+          <SiteLaunchProvider
+            initialSiteLaunchStatus="LAUNCHING"
+            initialStepNumber={SITE_LAUNCH_TASKS_LENGTH}
+          >
+            <Story />
+          </SiteLaunchProvider>
+        </Route>
+      </MemoryRouter>
+    )
+  },
+]
+
+export const SiteLaunchPartialStepsCompleted = Template.bind({})
+SiteLaunchPartialStepsCompleted.decorators = [
+  (Story) => {
+    return (
+      <MemoryRouter initialEntries={["/sites/storybook/dashboard"]}>
+        <Route path="/sites/:siteName/dashboard">
+          <SiteLaunchProvider
+            initialSiteLaunchStatus="CHECKLIST_TASKS_PENDING"
+            initialStepNumber={1}
+          >
+            <Story />
+          </SiteLaunchProvider>
+        </Route>
+      </MemoryRouter>
+    )
+  },
+]
 
 export default SiteDashboardMeta

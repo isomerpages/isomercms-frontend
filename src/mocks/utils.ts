@@ -16,6 +16,7 @@ import {
   SiteDashboardInfo,
   SiteDashboardReviewRequest,
 } from "types/siteDashboard"
+import { SiteLaunchDto } from "types/siteLaunch"
 import { SiteDataRequest } from "types/sites"
 import { LoggedInUser } from "types/user"
 
@@ -176,4 +177,8 @@ export const buildAllSitesData = apiDataBuilder<SiteDataRequest>(
 
 export const buildDiffData = apiDataBuilder<BlobDiff>(
   "*/sites/:siteName/review/:reviewId/blob"
+)
+
+export const buildSiteLaunchDto = apiDataBuilder<SiteLaunchDto>(
+  "*/sites/:siteName/launchInfo"
 )
