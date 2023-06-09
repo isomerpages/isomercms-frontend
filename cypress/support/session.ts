@@ -44,7 +44,7 @@ Cypress.Commands.add(
     cy.setCookie(E2E_COOKIE.Auth.key, E2E_COOKIE.Auth.value)
     cy.setCookie(E2E_COOKIE.EmailUserType.key, userType)
     cy.setCookie(E2E_COOKIE.Email.key, email)
-    cy.request("GET", `${BACKEND_URL}/auth/whoami`).wait(Interceptors.GET)
+    cy.request("GET", `${BACKEND_URL}/auth/whoami`)
 
     cy.setEmailSessionDefaults(initialUserType)
     cy.visit(`${CMS_BASEURL}/sites/${E2E_EMAIL_TEST_SITE.repo}/dashboard`)
