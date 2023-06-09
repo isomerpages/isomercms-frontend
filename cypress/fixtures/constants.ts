@@ -50,3 +50,6 @@ export const BACKEND_URL = Cypress.env("BACKEND_URL")
 
 export const E2E_EMAIL_REPO_STAGING_LINK =
   "https://staging.d2qim5mov3pptm.amplifyapp.com"
+
+export const MOCK_REVIEW_TITLE = "Some interesting title"
+export const MOCK_REVIEW_DESCRIPTION = "Some interesting description"
