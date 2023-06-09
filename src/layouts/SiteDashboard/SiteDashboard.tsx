@@ -67,7 +67,7 @@ export const SiteDashboard = (): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
   const { setRedirectToPage } = useRedirectHook()
   const { userId } = useLoginContext()
-  const { setSiteName, siteLaunchStatusProps } = useSiteLaunchContext()
+  const { siteLaunchStatusProps } = useSiteLaunchContext()
   const {
     data: siteInfo,
     isError: isSiteInfoError,
@@ -89,8 +89,6 @@ export const SiteDashboard = (): JSX.Element => {
 
   const savedAt = getDateTimeFromUnixTime(siteInfo?.savedAt || 0)
   const publishedAt = getDateTimeFromUnixTime(siteInfo?.publishedAt || 0)
-
-  setSiteName(siteName)
 
   useEffect(() => {
     // GitHub users should not be able to access this page

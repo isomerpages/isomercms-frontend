@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 
 import { useGetSiteLaunchStatus } from "hooks/siteDashboardHooks"
 
@@ -10,7 +11,6 @@ import {
 } from "types/siteLaunch"
 
 interface SiteLaunchContextProps {
-  setSiteName: (siteName: string) => void
   siteLaunchStatusProps: SiteLaunchStatusProps
   setSiteLaunchStatusProps: (
     siteLaunchStatusProps: SiteLaunchStatusProps
@@ -35,7 +35,7 @@ export const SiteLaunchProvider = ({
   initialSiteLaunchStatus?: SiteLaunchFrontEndStatus
   initialStepNumber?: number
 }): JSX.Element => {
-  const [siteName, setSiteName] = useState<string>("")
+  const { siteName } = useParams<{ siteName: string }>()
 
   const [
     siteLaunchStatusProps,
@@ -76,7 +76,6 @@ export const SiteLaunchProvider = ({
   return (
     <SiteLaunchContext.Provider
       value={{
-        setSiteName,
         siteLaunchStatusProps,
         setSiteLaunchStatusProps,
       }}
