@@ -60,6 +60,8 @@ describe("collaborators flow", () => {
   })
 
   describe("Admin adding a collaborator", () => {
+    after(() => removeOtherCollaborators())
+
     it("should not be able to click the add collaborator button when the input is empty", () => {
       // Act
       // Assert
@@ -113,9 +115,6 @@ describe("collaborators flow", () => {
       // Assert
       cy.get("form").contains(collaborator).should("be.visible")
       cy.get("form").contains("Contributor").should("be.visible")
-
-      // Cleanup
-      removeCollaborator(collaborator)
     })
   })
 
@@ -126,6 +125,7 @@ describe("collaborators flow", () => {
 
       // Act
       removeCollaborator(collaborator)
+      closeModal()
 
       // Assert
       cy.contains("Collaborator removed successfully").should("be.visible")
