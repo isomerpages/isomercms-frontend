@@ -8,7 +8,7 @@ import {
 
 describe("Workspace Pages flow", () => {
   beforeEach(() => {
-    cy.setSessionDefaults()
+    cy.setGithubSessionDefaults()
     cy.setupDefaultInterceptors()
 
     cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`).wait(

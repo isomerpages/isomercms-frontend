@@ -6,7 +6,7 @@ import {
 
 describe("Sites page", () => {
   beforeEach(() => {
-    cy.setSessionDefaults()
+    cy.setGithubSessionDefaults()
     cy.setupDefaultInterceptors()
   })
 

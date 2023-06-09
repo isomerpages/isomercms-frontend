@@ -12,7 +12,7 @@ describe("Images", () => {
   const ANOTHER_ALBUM_TITLE = "Green"
 
   before(() => {
-    cy.setSessionDefaults()
+    cy.setGithubSessionDefaults()
     cy.setupDefaultInterceptors()
 
     cy.visit(
@@ -35,7 +35,7 @@ describe("Images", () => {
 
   describe("Create album, delete album, edit album settings in Images", () => {
     beforeEach(() => {
-      cy.setSessionDefaults()
+      cy.setGithubSessionDefaults()
       cy.setupDefaultInterceptors()
 
       cy.visit(
@@ -111,7 +111,7 @@ describe("Images", () => {
   })
   describe("Create image, delete image, edit image settings, and move images in image albums", () => {
     before(() => {
-      cy.setSessionDefaults()
+      cy.setGithubSessionDefaults()
       cy.setupDefaultInterceptors()
       cy.visit(
         `/sites/${TEST_REPO_NAME}/media/images/mediaDirectory/images%2F${ALBUM_TITLE}`
@@ -133,7 +133,7 @@ describe("Images", () => {
 
     beforeEach(() => {
       cy.setupDefaultInterceptors()
-      cy.setSessionDefaults()
+      cy.setGithubSessionDefaults()
 
       cy.visit(
         `/sites/${TEST_REPO_NAME}/media/images/mediaDirectory/images%2F${ALBUM_TITLE}`

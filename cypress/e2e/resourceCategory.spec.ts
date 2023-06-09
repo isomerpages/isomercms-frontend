@@ -36,7 +36,7 @@ describe("Resource category page", () => {
 
   before(() => {
     cy.setupDefaultInterceptors()
-    cy.setSessionDefaults()
+    cy.setGithubSessionDefaults()
 
     // Set up test resource categories
     cy.visit(`/sites/${TEST_REPO_NAME}/resourceRoom/resources`).wait(
@@ -49,7 +49,7 @@ describe("Resource category page", () => {
 
   beforeEach(() => {
     cy.setupDefaultInterceptors()
-    cy.setSessionDefaults()
+    cy.setGithubSessionDefaults()
     cy.visit(
       `/sites/${TEST_REPO_NAME}/resourceRoom/${TEST_RESOURCE_ROOM_NAME}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}`
     )

@@ -46,18 +46,20 @@ const {
   REACT_APP_ENV,
 } = process.env
 
-datadogRum.init({
-  applicationId: REACT_APP_DATADOG_APP_ID,
-  clientToken: REACT_APP_DATADOG_CLIENT_TOKEN,
-  site: "datadoghq.com",
-  service: "isomercms-frontend",
-  env: REACT_APP_ENV,
-  // Specify a version number to identify the deployed version of your application in Datadog
-  version: REACT_APP_VERSION,
-  ...DATADOG_RUM_SETTINGS,
-})
+if (REACT_APP_ENV === "staging" || REACT_APP_ENV === "production") {
+  datadogRum.init({
+    applicationId: REACT_APP_DATADOG_APP_ID,
+    clientToken: REACT_APP_DATADOG_CLIENT_TOKEN,
+    site: "datadoghq.com",
+    service: "isomercms-frontend",
+    env: REACT_APP_ENV,
+    // Specify a version number to identify the deployed version of your application in Datadog
+    version: REACT_APP_VERSION,
+    ...DATADOG_RUM_SETTINGS,
+  })
 
-datadogRum.startSessionReplayRecording()
+  datadogRum.startSessionReplayRecording()
+}
 
 const App = () => {
   useEffect(() => {
