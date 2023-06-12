@@ -7,7 +7,12 @@ import {
 } from "../fixtures/constants"
 import { DELETE_BUTTON_SELECTOR as DELETE_COLLABORATOR_BUTTON_SELECTOR } from "../fixtures/selectors"
 import { USER_TYPES } from "../fixtures/users"
-import { closeModal, visitE2eEmailTestRepo } from "../utils"
+import {
+  closeModal,
+  ignoreDuplicateError,
+  ignoreNotFoundError,
+  visitE2eEmailTestRepo,
+} from "../utils"
 import {
   addCollaborator,
   getCollaboratorsModal,
@@ -16,23 +21,6 @@ import {
 } from "../utils/collaborators"
 
 const collaborator = E2E_EMAIL_COLLAB.email
-
-// NOTE: The below functions are required because
-// the collaborators modal uses the backend's error message
-// in order to display the error message to the user.
-// This means that we need to ignore the network error
-// because it's expected (as the FE queries the BE)
-const ignoreAcknowledgementError = () =>
-  cy.on("uncaught:exception", (err) => !err.message.includes("422"))
-
-const ignoreDuplicateError = () =>
-  cy.on("uncaught:exception", (err) => !err.message.includes("409"))
-
-const ignoreNotFoundError = () =>
-  cy.on("uncaught:exception", (err) => !err.message.includes("404"))
-
-const ignoreForbiddenError = () =>
-  cy.on("uncaught:exception", (err) => !err.message.includes("403"))
 
 const ADD_COLLABORATOR_ERROR_MESSAGE =
   "This collaborator couldn't be added. Visit our guide for more assistance"
@@ -54,6 +42,17 @@ const removeCollaborator = (email: string) => {
 
   cy.contains("button", "Remove collaborator").click().wait(Interceptors.DELETE)
 }
+
+// NOTE: The below functions are required because
+// the collaborators modal uses the backend's error message
+// in order to display the error message to the user.
+// This means that we need to ignore the network error
+// because it's expected (as the FE queries the BE)
+const ignoreAcknowledgementError = (): ReturnType<typeof cy["on"]> =>
+  cy.on("uncaught:exception", (err) => !err.message.includes("422"))
+
+const ignoreForbiddenError = () =>
+  cy.on("uncaught:exception", (err) => !err.message.includes("403"))
 
 describe("collaborators flow", () => {
   beforeEach(() => {

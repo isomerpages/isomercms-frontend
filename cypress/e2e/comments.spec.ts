@@ -11,6 +11,8 @@ import {
   COMMENTS_INPUT_SELECTOR,
 } from "../fixtures/selectors/dashboard"
 import {
+  ignoreAuthError,
+  ignoreNotFoundError,
   openCommentsDrawer,
   openReviewRequest,
   removeOtherCollaborators,
@@ -19,12 +21,6 @@ import {
 } from "../utils"
 
 const MOCK_COMMENT = "mock comment"
-
-const ignoreNotFoundError = () =>
-  cy.on("uncaught:exception", (err) => !err.message.includes("404"))
-
-const ignoreAuthError = () =>
-  cy.on("uncaught:exception", (err) => !err.message.includes("403"))
 
 // NOTE: Some of our tests flake due to resizing.
 // This was not observed when performed manually and hence,
