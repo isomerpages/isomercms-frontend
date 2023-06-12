@@ -9,9 +9,9 @@ import {
   E2E_SITE_KEY,
   E2E_COOKIE,
   E2E_EMAIL_ADMIN,
-  Interceptors,
   CMS_BASEURL,
   BACKEND_URL,
+  E2E_EMAIL_COLLAB,
 } from "../fixtures/constants"
 import { EmailUserTypes, USER_TYPES } from "../fixtures/users"
 
@@ -26,7 +26,10 @@ Cypress.Commands.add("setEmailSessionDefaults", (userType: EmailUserTypes) => {
   cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
   cy.setCookie(E2E_USER_TYPE_COOKIE_KEY, userType)
   cy.setCookie(E2E_SITE_KEY, E2E_EMAIL_TEST_SITE.name)
-  cy.setCookie(E2E_COOKIE.Email.key, E2E_EMAIL_ADMIN.email)
+  cy.setCookie(
+    E2E_COOKIE.Email.key,
+    userType === "Email admin" ? E2E_EMAIL_ADMIN.email : E2E_EMAIL_COLLAB.email
+  )
   cy.setCookie(E2E_COOKIE.Site.key, E2E_COOKIE.Site.value)
 })
 
