@@ -43,9 +43,8 @@ import {
 } from "hooks/siteDashboardHooks"
 import useRedirectHook from "hooks/useRedirectHook"
 
-import { isUserUsingSiteLaunchFeature } from "services/SiteLaunchService"
-
 import { getDateTimeFromUnixTime } from "utils/date"
+import { isUserUsingSiteLaunchFeature } from "utils/siteLaunchUtils"
 
 import { BxsClearRocket, SiteDashboardHumanImage } from "assets"
 import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
@@ -289,9 +288,7 @@ export const SiteDashboard = (): JSX.Element => {
                       <Skeleton isLoaded={!isSiteLaunchLoading} w="100%">
                         {isUserUsingSiteLaunchFeature(siteName) &&
                           siteLaunchStatus === "LAUNCHED" && (
-                            <Box
-                              style={{ display: "flex", alignItems: "center" }}
-                            >
+                            <Flex alignItems="center">
                               <Text
                                 textStyle="caption-2"
                                 color="text.helper"
@@ -305,7 +302,7 @@ export const SiteDashboard = (): JSX.Element => {
                               >
                                 Live
                               </Text>
-                            </Box>
+                            </Flex>
                           )}
                       </Skeleton>
                     </VStack>
