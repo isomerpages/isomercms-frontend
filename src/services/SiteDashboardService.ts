@@ -3,7 +3,7 @@ import {
   SiteDashboardInfo,
   SiteDashboardReviewRequest,
 } from "types/siteDashboard"
-import { SiteLaunchDto, SiteLaunchStatusProps } from "types/siteLaunch"
+import { SiteLaunchDto } from "types/siteLaunch"
 
 import { apiService } from "./ApiService"
 
@@ -41,5 +41,5 @@ export const getSiteLaunchStatus = async (
   siteName: string
 ): Promise<SiteLaunchDto> => {
   const endpoint = `/sites/${siteName}/launchInfo`
-  return apiService.get(endpoint)
+  return apiService.get(endpoint).then((res) => res.data)
 }
