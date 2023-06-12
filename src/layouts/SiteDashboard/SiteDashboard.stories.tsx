@@ -65,9 +65,7 @@ const SiteDashboardMeta = {
       return (
         <MemoryRouter initialEntries={["/sites/storybook/dashboard"]}>
           <Route path="/sites/:siteName/dashboard">
-            <SiteLaunchProvider>
-              <Story />
-            </SiteLaunchProvider>
+            <Story />
           </Route>
         </MemoryRouter>
       )
