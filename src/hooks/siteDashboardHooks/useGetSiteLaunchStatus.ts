@@ -14,7 +14,7 @@ export const useGetSiteLaunchStatus = (
     () => SiteDashboardService.getSiteLaunchStatus(siteName),
     {
       retry: false,
-      refetchOnWindowFocus: false,
+      refetch: true,
     }
   )
 }

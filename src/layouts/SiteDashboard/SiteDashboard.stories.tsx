@@ -61,9 +61,7 @@ const SiteDashboardMeta = {
       return (
         <MemoryRouter initialEntries={["/sites/storybook/dashboard"]}>
           <Route path="/sites/:siteName/dashboard">
-            <SiteLaunchProvider>
-              <Story />
-            </SiteLaunchProvider>
+            <Story />
           </Route>
         </MemoryRouter>
       )
@@ -127,16 +125,12 @@ export const SiteLaunchStepsCompleted = Template.bind({})
 SiteLaunchStepsCompleted.decorators = [
   (Story) => {
     return (
-      <MemoryRouter initialEntries={["/sites/storybook/dashboard"]}>
-        <Route path="/sites/:siteName/dashboard">
-          <SiteLaunchProvider
-            initialSiteLaunchStatus="LAUNCHED"
-            initialStepNumber={SITE_LAUNCH_TASKS_LENGTH}
-          >
-            <Story />
-          </SiteLaunchProvider>
-        </Route>
-      </MemoryRouter>
+      <SiteLaunchProvider
+        initialSiteLaunchStatus="LAUNCHED"
+        initialStepNumber={SITE_LAUNCH_TASKS_LENGTH}
+      >
+        <Story />
+      </SiteLaunchProvider>
     )
   },
 ]
@@ -145,16 +139,12 @@ export const SiteLaunchLaunching = Template.bind({})
 SiteLaunchLaunching.decorators = [
   (Story) => {
     return (
-      <MemoryRouter initialEntries={["/sites/storybook/dashboard"]}>
-        <Route path="/sites/:siteName/dashboard">
-          <SiteLaunchProvider
-            initialSiteLaunchStatus="LAUNCHING"
-            initialStepNumber={SITE_LAUNCH_TASKS_LENGTH}
-          >
-            <Story />
-          </SiteLaunchProvider>
-        </Route>
-      </MemoryRouter>
+      <SiteLaunchProvider
+        initialSiteLaunchStatus="LAUNCHING"
+        initialStepNumber={SITE_LAUNCH_TASKS_LENGTH}
+      >
+        <Story />
+      </SiteLaunchProvider>
     )
   },
 ]
@@ -163,16 +153,12 @@ export const SiteLaunchPartialStepsCompleted = Template.bind({})
 SiteLaunchPartialStepsCompleted.decorators = [
   (Story) => {
     return (
-      <MemoryRouter initialEntries={["/sites/storybook/dashboard"]}>
-        <Route path="/sites/:siteName/dashboard">
-          <SiteLaunchProvider
-            initialSiteLaunchStatus="CHECKLIST_TASKS_PENDING"
-            initialStepNumber={1}
-          >
-            <Story />
-          </SiteLaunchProvider>
-        </Route>
-      </MemoryRouter>
+      <SiteLaunchProvider
+        initialSiteLaunchStatus="CHECKLIST_TASKS_PENDING"
+        initialStepNumber={1}
+      >
+        <Story />
+      </SiteLaunchProvider>
     )
   },
 ]

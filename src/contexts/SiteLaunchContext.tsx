@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom"
 import { useGetSiteLaunchStatus } from "hooks/siteDashboardHooks"
 
 import {
-  SiteLaunchDto,
   SiteLaunchFrontEndStatus,
   SiteLaunchStatusProps,
   SITE_LAUNCH_TASKS_LENGTH,
@@ -15,6 +14,12 @@ interface SiteLaunchContextProps {
   setSiteLaunchStatusProps: (
     siteLaunchStatusProps: SiteLaunchStatusProps
   ) => void
+}
+
+interface SiteLaunchProviderProps {
+  children: React.ReactNode
+  initialSiteLaunchStatus?: SiteLaunchFrontEndStatus
+  initialStepNumber?: number
 }
 
 const SiteLaunchContext = createContext<SiteLaunchContextProps | null>(null)
@@ -30,11 +35,7 @@ export const SiteLaunchProvider = ({
   children,
   initialSiteLaunchStatus = "NOT_LAUNCHED",
   initialStepNumber = 0,
-}: {
-  children: React.ReactNode
-  initialSiteLaunchStatus?: SiteLaunchFrontEndStatus
-  initialStepNumber?: number
-}): JSX.Element => {
+}: SiteLaunchProviderProps): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
 
   const [
@@ -45,12 +46,13 @@ export const SiteLaunchProvider = ({
     stepNumber: initialStepNumber,
   })
   const { data: siteLaunchDto } = useGetSiteLaunchStatus(siteName)
-  const { siteStatus: siteStatusDto, stepNumber: stepNumberDto } =
-    siteLaunchDto ||
-    ({
-      siteStatus: "NOT_LAUNCHED", // defaulting to not launched
-      stepNumber: 0,
-    } as SiteLaunchDto)
+  const {
+    siteStatus: siteStatusDto,
+    stepNumber: stepNumberDto,
+  } = siteLaunchDto || {
+    siteStatus: "NOT_LAUNCHED", // defaulting to not launched
+    stepNumber: 0,
+  }
   useEffect(() => {
     if (siteStatusDto === "LAUNCHED" || siteStatusDto === "LAUNCHING") {
       setSiteLaunchStatusProps({
