@@ -45,8 +45,9 @@ describe("notifications", () => {
     cy.setEmailSessionDefaults("Email admin")
     cy.setupDefaultInterceptors()
     api.closeReviewRequests()
-    // NOTE: Mark all notifications as read as email collab.
-    // This is because previous tests may have created notifications.
+    // NOTE: Mark all notifications as read as email admin.
+    // We need to do this again because our cookies are now set
+    // to that of the admin account whereas it was collab previously.
     api.markNotificationsAsRead()
 
     api.editUnlinkedPage("faq.md", genRandomString(), E2E_EMAIL_TEST_SITE.repo)
