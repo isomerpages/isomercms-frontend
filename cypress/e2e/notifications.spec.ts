@@ -1,3 +1,4 @@
+import { EMPTY_NOTIFICATIONS_TEXT } from "../../src/components/Header/NotificationMenu"
 import * as api from "../api"
 import {
   E2E_EMAIL_ADMIN,
@@ -10,8 +11,7 @@ import {
   visitE2eEmailTestRepo,
 } from "../utils"
 
-const NEW_COMMENTS_BG_COLOR = "rgb(235, 248, 255)"
-const EMPTY_NOTIFICATIONS_TEXT = "There are no notifications for display."
+const UNREAD_COMMENTS_BG_COLOR = "rgb(235, 248, 255)"
 const getReviewRequestedNotifText = (email: string) =>
   `${email} has sent you a review request.`
 
@@ -78,7 +78,7 @@ describe("notifications", () => {
     // Assert
     cy.contains(getReviewRequestedNotifText(E2E_EMAIL_ADMIN.email))
       .should("be.visible")
-      .should("have.css", "background-color", NEW_COMMENTS_BG_COLOR)
+      .should("have.css", "background-color", UNREAD_COMMENTS_BG_COLOR)
   })
   it("should receive a notification on successful comment post", () => {
     // Arrange
