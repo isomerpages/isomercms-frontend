@@ -22,6 +22,7 @@ import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 import { BxCopy, BxLifeBuoy } from "assets"
 import {
   DNSRecord,
+  SITE_LAUNCH_PAGES,
   SITE_LAUNCH_TASKS,
   SITE_LAUNCH_TASKS_LENGTH,
 } from "types/siteLaunch"
@@ -390,7 +391,11 @@ export const SiteLaunchChecklistBody = ({
       </Box>
       <br />
       <Box display="flex" justifyContent="flex-end">
-        <Button variant="link" ml="auto" onClick={() => setPageNumber(1)}>
+        <Button
+          variant="link"
+          ml="auto"
+          onClick={() => setPageNumber(SITE_LAUNCH_PAGES.DISCLAIMER)}
+        >
           Back
         </Button>
       </Box>
