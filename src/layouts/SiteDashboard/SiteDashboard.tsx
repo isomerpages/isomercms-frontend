@@ -49,13 +49,23 @@ import { isUserUsingSiteLaunchFeature } from "utils/siteLaunchUtils"
 import { BxsClearRocket, SiteDashboardHumanImage } from "assets"
 import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
 import { DASHBOARD_FEATURE_STEPS } from "features/FeatureTour/FeatureTourSequence"
-import { SITE_LAUNCH_TASKS } from "types/siteLaunch"
+import {
+  SiteLaunchFrontEndStatus,
+  SITE_LAUNCH_TASKS_LENGTH,
+} from "types/siteLaunch"
 
 import { SiteViewLayout } from "../layouts"
 
 import { CollaboratorsStatistics } from "./components/CollaboratorsStatistics"
 import { EmptyReviewRequest } from "./components/EmptyReviewRequest"
 import { ReviewRequestCard } from "./components/ReviewRequestCard"
+
+interface SiteLaunchDisplayCardProps {
+  siteName: string
+  siteLaunchStatus?: SiteLaunchFrontEndStatus
+  isSiteLaunchLoading: boolean
+  siteLaunchChecklistStepNumber?: number
+}
 
 export const SiteDashboard = (): JSX.Element => {
   const {
@@ -103,10 +113,8 @@ export const SiteDashboard = (): JSX.Element => {
   const validReviewRequests = reviewRequests?.filter(
     ({ status }) => status === "OPEN" || status === "APPROVED"
   )
-
-  const { siteLaunchStatus } = siteLaunchStatusProps
-  // todo add loading state for site launch api call, after IS-219
-  const isSiteLaunchLoading = false
+  const siteLaunchStatus = siteLaunchStatusProps?.siteLaunchStatus
+  const isSiteLaunchLoading = siteLaunchStatus === "LOADING"
   return (
     <SiteViewLayout overflow="hidden">
       <Container maxW="container.xl" minH="100vh">
@@ -200,63 +208,14 @@ export const SiteDashboard = (): JSX.Element => {
           <Box w="40%">
             <VStack spacing="1.25rem">
               {/* Site launch display card */}
-              {isUserUsingSiteLaunchFeature(siteName) &&
-                siteLaunchStatus !== "LAUNCHED" && (
-                  <Box w="100%">
-                    <DisplayCard variant="content">
-                      <Skeleton isLoaded={!isSiteLaunchLoading}>
-                        <DisplayCardHeader
-                          button={
-                            <Link
-                              variant="link"
-                              textStyle="subhead-1"
-                              color="text.title.brand"
-                              marginRight="0.75rem"
-                              href="./siteLaunchPad"
-                            >
-                              {siteLaunchStatus === "NOT_LAUNCHED" && (
-                                <Text>Go to Launchpad</Text>
-                              )}
-                              {siteLaunchStatus ===
-                                "CHECKLIST_TASKS_PENDING" && (
-                                <Text>Visit launchpad</Text>
-                              )}
-                              {siteLaunchStatus === "LAUNCHING" && (
-                                <Text>Check Status</Text>
-                              )}
-                            </Link>
-                          }
-                        >
-                          <DisplayCardTitle
-                            icon={
-                              <Icon as={BxsClearRocket} fontSize="1.5rem" />
-                            }
-                          >
-                            Site launch
-                          </DisplayCardTitle>
-                          <DisplayCardCaption>
-                            Associate your isomer site to a domain
-                          </DisplayCardCaption>
-                        </DisplayCardHeader>
-                        <DisplayCardContent>
-                          <Skeleton isLoaded={!isSiteLaunchLoading} w="100%">
-                            {siteLaunchStatus === "CHECKLIST_TASKS_PENDING" && (
-                              <Text textStyle="body-2">
-                                {siteLaunchStatusProps?.stepNumber}/
-                                {Object.keys(SITE_LAUNCH_TASKS).length}
-                              </Text>
-                            )}
-                            {siteLaunchStatus === "LAUNCHING" && (
-                              <Text textStyle="body-2">
-                                Launch status: Pending
-                              </Text>
-                            )}
-                          </Skeleton>
-                        </DisplayCardContent>
-                      </Skeleton>
-                    </DisplayCard>
-                  </Box>
-                )}{" "}
+              <SiteLaunchDisplayCard
+                siteName={siteName}
+                siteLaunchStatus={siteLaunchStatus}
+                isSiteLaunchLoading={isSiteLaunchLoading}
+                siteLaunchChecklistStepNumber={
+                  siteLaunchStatusProps?.stepNumber
+                }
+              />
               {/* Human image and last saved/published */}
               <Box w="100%">
                 {siteLaunchStatus === "LAUNCHED" && <SiteDashboardHumanImage />}
@@ -387,5 +346,68 @@ export const SiteDashboard = (): JSX.Element => {
         />
       </Container>
     </SiteViewLayout>
+  )
+}
+
+const SiteLaunchDisplayCard = ({
+  siteName,
+  siteLaunchStatus,
+  isSiteLaunchLoading,
+  siteLaunchChecklistStepNumber,
+}: SiteLaunchDisplayCardProps): JSX.Element => {
+  if (!isUserUsingSiteLaunchFeature(siteName)) return <></>
+  if (siteLaunchStatus === "LAUNCHED") return <></>
+
+  return (
+    <Box w="100%">
+      <DisplayCard variant="content">
+        <Skeleton isLoaded={!isSiteLaunchLoading}>
+          <DisplayCardHeader
+            w="100%"
+            button={
+              <Link
+                variant="link"
+                textStyle="subhead-1"
+                color="text.title.brand"
+                marginRight="0.75rem"
+                as={RouterLink}
+                to={`/sites/${siteName}/siteLaunchPad`}
+              >
+                {siteLaunchStatus === "NOT_LAUNCHED" && (
+                  <Text textStyle="subhead-1">Go to Launchpad</Text>
+                )}
+                {siteLaunchStatus === "CHECKLIST_TASKS_PENDING" && (
+                  <Text textStyle="subhead-1">Visit launchpad</Text>
+                )}
+                {siteLaunchStatus === "LAUNCHING" && (
+                  <Text textStyle="subhead-1">Check status</Text>
+                )}
+              </Link>
+            }
+          >
+            <DisplayCardTitle
+              icon={<Icon as={BxsClearRocket} fontSize="1.5rem" />}
+            >
+              Site launch
+            </DisplayCardTitle>
+            <DisplayCardCaption>
+              Associate your isomer site to a domain
+            </DisplayCardCaption>
+          </DisplayCardHeader>
+          <DisplayCardContent>
+            <Skeleton isLoaded={!isSiteLaunchLoading} w="100%">
+              {siteLaunchStatus === "CHECKLIST_TASKS_PENDING" && (
+                <Text textStyle="body-2">
+                  {siteLaunchChecklistStepNumber}/{SITE_LAUNCH_TASKS_LENGTH}
+                </Text>
+              )}
+              {siteLaunchStatus === "LAUNCHING" && (
+                <Text textStyle="body-2">Launch status: Pending</Text>
+              )}
+            </Skeleton>
+          </DisplayCardContent>
+        </Skeleton>
+      </DisplayCard>
+    </Box>
   )
 }
