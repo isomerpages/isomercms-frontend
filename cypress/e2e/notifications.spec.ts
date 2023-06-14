@@ -80,6 +80,13 @@ describe("notifications", () => {
       .should("be.visible")
       .should("have.css", "background-color", UNREAD_COMMENTS_BG_COLOR)
   })
+  it("should send out a notification to reviewers when someone edits the site while a PR is open", () => {
+    // Arrange
+    // NOTE: Editor should not see a notification
+    // NOTE: All other reviewers should see a notification
+    // Act
+    // Assert
+  })
   it("should receive a notification on successful comment post", () => {
     // Arrange
     // Act
