@@ -1,6 +1,4 @@
-const whiteListedRepos = process.env.SITE_LAUNCH_FEATURE_WHITELISTED_REPOS?.split(
-  ","
-)
+import { WHITE_LISTED_REPOS } from "constants/siteLaunch"
 
 export const isUserUsingSiteLaunchFeature = (siteName: string): boolean => {
   // The name of our sites for our storybooks is "storybook".
@@ -9,5 +7,5 @@ export const isUserUsingSiteLaunchFeature = (siteName: string): boolean => {
   if (siteName === "storybook") {
     return true
   }
-  return whiteListedRepos ? whiteListedRepos.includes(siteName) : false
+  return WHITE_LISTED_REPOS ? WHITE_LISTED_REPOS.includes(siteName) : false
 }

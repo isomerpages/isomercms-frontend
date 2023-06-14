@@ -9,6 +9,7 @@ export type SiteLaunchFrontEndStatus =
   | "NOT_LAUNCHED"
   | "LAUNCHING"
   | "CHECKLIST_TASKS_PENDING" // not to be confused with with Infra level launching step
+  | "LOADING"
 
 export interface SiteLaunchStatusProps {
   siteLaunchStatus: SiteLaunchFrontEndStatus
@@ -17,7 +18,6 @@ export interface SiteLaunchStatusProps {
 }
 
 export interface SiteLaunchDto {
-  stepNumber: number
   /**
    * Transition will be
    * "NOT_LAUNCHED" -> User presses the Generate DNS button
