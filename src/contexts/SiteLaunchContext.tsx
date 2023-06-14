@@ -4,13 +4,14 @@ import { useParams } from "react-router-dom"
 import { useGetSiteLaunchStatus } from "hooks/siteDashboardHooks"
 
 import {
+  SiteLaunchDto,
   SiteLaunchFrontEndStatus,
   SiteLaunchStatusProps,
   SITE_LAUNCH_TASKS_LENGTH,
 } from "types/siteLaunch"
 
 interface SiteLaunchContextProps {
-  siteLaunchStatusProps: SiteLaunchStatusProps
+  siteLaunchStatusProps?: SiteLaunchStatusProps
   setSiteLaunchStatusProps: (
     siteLaunchStatusProps: SiteLaunchStatusProps
   ) => void
@@ -31,10 +32,42 @@ export const useSiteLaunchContext = (): SiteLaunchContextProps => {
   return SiteLaunchContextData
 }
 
+function updateSiteLaunchStatusOnApiCall(
+  siteLaunchDto: SiteLaunchDto | undefined,
+  siteLaunchStatusProps: SiteLaunchStatusProps,
+  setSiteLaunchStatusProps: (
+    siteLaunchStatusProps: SiteLaunchStatusProps
+  ) => void
+): void {
+  if (
+    siteLaunchDto?.siteStatus === "NOT_LAUNCHED" &&
+    siteLaunchStatusProps.siteLaunchStatus === "LOADING"
+  ) {
+    setSiteLaunchStatusProps({
+      siteLaunchStatus: "NOT_LAUNCHED",
+      stepNumber: 0,
+    })
+  }
+  // this condition is added to prevent redundant re-renders
+  const isSiteLaunchFEAndBESynced =
+    siteLaunchStatusProps.siteLaunchStatus === siteLaunchDto?.siteStatus
+  if (
+    (siteLaunchDto?.siteStatus === "LAUNCHED" ||
+      siteLaunchDto?.siteStatus === "LAUNCHING") &&
+    !isSiteLaunchFEAndBESynced
+  ) {
+    setSiteLaunchStatusProps({
+      siteLaunchStatus: siteLaunchDto.siteStatus,
+      stepNumber: SITE_LAUNCH_TASKS_LENGTH,
+      dnsRecords: siteLaunchDto.dnsRecords,
+    })
+  }
+}
+
 export const SiteLaunchProvider = ({
   children,
-  initialSiteLaunchStatus = "NOT_LAUNCHED",
-  initialStepNumber = 0,
+  initialSiteLaunchStatus,
+  initialStepNumber,
 }: SiteLaunchProviderProps): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
 
@@ -42,38 +75,17 @@ export const SiteLaunchProvider = ({
     siteLaunchStatusProps,
     setSiteLaunchStatusProps,
   ] = useState<SiteLaunchStatusProps>({
-    siteLaunchStatus: initialSiteLaunchStatus,
-    stepNumber: initialStepNumber,
+    siteLaunchStatus: initialSiteLaunchStatus || "LOADING",
+    stepNumber: initialStepNumber || 0,
   })
+
   const { data: siteLaunchDto } = useGetSiteLaunchStatus(siteName)
-  const {
-    siteStatus: siteStatusDto,
-    stepNumber: stepNumberDto,
-  } = siteLaunchDto || {
-    siteStatus: "NOT_LAUNCHED", // defaulting to not launched
-    stepNumber: 0,
-  }
-  useEffect(() => {
-    if (siteStatusDto === "LAUNCHED" || siteStatusDto === "LAUNCHING") {
-      setSiteLaunchStatusProps({
-        ...siteLaunchStatusProps,
-        siteLaunchStatus: siteStatusDto,
-        stepNumber: SITE_LAUNCH_TASKS_LENGTH,
-        dnsRecords: siteLaunchDto?.dnsRecords,
-      })
-      return
-    }
-    if (
-      siteStatusDto !== "NOT_LAUNCHED" &&
-      siteLaunchStatusProps.siteLaunchStatus !== "NOT_LAUNCHED"
-    ) {
-      setSiteLaunchStatusProps({
-        ...siteLaunchStatusProps,
-        siteLaunchStatus: siteStatusDto,
-        stepNumber: stepNumberDto,
-      })
-    }
-  }, [siteLaunchDto, siteLaunchStatusProps, siteStatusDto, stepNumberDto])
+
+  updateSiteLaunchStatusOnApiCall(
+    siteLaunchDto,
+    siteLaunchStatusProps,
+    setSiteLaunchStatusProps
+  )
 
   return (
     <SiteLaunchContext.Provider
