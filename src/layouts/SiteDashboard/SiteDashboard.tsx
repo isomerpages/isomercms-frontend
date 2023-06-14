@@ -58,13 +58,6 @@ import { CollaboratorsStatistics } from "./components/CollaboratorsStatistics"
 import { EmptyReviewRequest } from "./components/EmptyReviewRequest"
 import { ReviewRequestCard } from "./components/ReviewRequestCard"
 
-interface SiteLaunchDisplayCardProps {
-  siteName: string
-  siteLaunchStatus?: SiteLaunchFrontEndStatus
-  isSiteLaunchLoading: boolean
-  siteLaunchChecklistStepNumber?: number
-}
-
 export const SiteDashboard = (): JSX.Element => {
   const {
     isOpen: isCollaboratorsModalOpen,
