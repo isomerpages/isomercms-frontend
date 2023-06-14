@@ -23,7 +23,6 @@ import {
   buildSiteDashboardReviewRequests,
   buildSiteLaunchDto,
 } from "mocks/utils"
-import { SITE_LAUNCH_TASKS_LENGTH } from "types/siteLaunch"
 
 import { SiteDashboard } from "./SiteDashboard"
 
@@ -66,7 +65,9 @@ const SiteDashboardMeta = {
       return (
         <MemoryRouter initialEntries={["/sites/storybook/dashboard"]}>
           <Route path="/sites/:siteName/dashboard">
-            <Story />
+            <SiteLaunchProvider>
+              <Story />
+            </SiteLaunchProvider>
           </Route>
         </MemoryRouter>
       )
