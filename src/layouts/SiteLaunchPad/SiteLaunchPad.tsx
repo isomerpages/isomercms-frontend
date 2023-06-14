@@ -22,7 +22,12 @@ import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
 import { SiteViewHeader } from "layouts/layouts/SiteViewLayout/SiteViewHeader"
 
-import { SiteLaunchStatusProps, SITE_LAUNCH_PAGES } from "types/siteLaunch"
+import {
+  SiteLaunchStatusProps,
+  SiteLaunchTaskTypeIndex,
+  SITE_LAUNCH_PAGES,
+  SITE_LAUNCH_TASKS_LENGTH,
+} from "types/siteLaunch"
 
 import {
   SiteLaunchChecklistTitle,
@@ -129,18 +134,28 @@ export const SiteLaunchPad = (): JSX.Element => {
   const [pageNumber, setPageNumber] = useState(
     getInitialPageNumber(siteLaunchStatusProps)
   )
+
   const handleIncrementStepNumber = () => {
-    setSiteLaunchStatusProps({
-      ...siteLaunchStatusProps,
-      stepNumber: siteLaunchStatusProps.stepNumber + 1,
-      siteLaunchStatus: "CHECKLIST_TASKS_PENDING",
-    })
+    if (
+      siteLaunchStatusProps &&
+      siteLaunchStatusProps.stepNumber < SITE_LAUNCH_TASKS_LENGTH
+    ) {
+      setSiteLaunchStatusProps({
+        ...siteLaunchStatusProps,
+        stepNumber: (siteLaunchStatusProps.stepNumber +
+          1) as SiteLaunchTaskTypeIndex, // safe to assert since we do a check
+        siteLaunchStatus: "CHECKLIST_TASKS_PENDING",
+      })
+    }
   }
   const handleDecrementStepNumber = () => {
-    setSiteLaunchStatusProps({
-      ...siteLaunchStatusProps,
-      stepNumber: siteLaunchStatusProps.stepNumber - 1,
-    })
+    if (siteLaunchStatusProps && siteLaunchStatusProps.stepNumber > 0) {
+      setSiteLaunchStatusProps({
+        ...siteLaunchStatusProps,
+        stepNumber: (siteLaunchStatusProps?.stepNumber -
+          1) as SiteLaunchTaskTypeIndex, // safe to assert since we do a check
+      })
+    }
   }
 
   let title: JSX.Element

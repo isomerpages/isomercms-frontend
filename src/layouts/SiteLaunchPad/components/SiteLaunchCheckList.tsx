@@ -61,9 +61,6 @@ const textWithCopyIcon = (text: string): JSX.Element => {
 }
 
 const generateDNSTable = (dnsRecords: DNSRecord[] | undefined): JSX.Element => {
-  if (!dnsRecords) {
-    return <></>
-  }
   return (
     <TableContainer width="100%">
       <Table variant="simple">
@@ -81,7 +78,7 @@ const generateDNSTable = (dnsRecords: DNSRecord[] | undefined): JSX.Element => {
           </Tr>
         </Thead>
         <Tbody>
-          {dnsRecords.map((record) => (
+          {dnsRecords?.map((record) => (
             <Tr>
               <Td textStyle="body-2" color="text.label.secondary">
                 {textWithCopyIcon(record.source)}
@@ -117,30 +114,48 @@ export const SiteLaunchChecklistBody = ({
 
   // todo remove this mock after IS-219
   const mockDNSRecords = () => {
-    setSiteLaunchStatusProps({
-      ...siteLaunchStatusProps,
-      dnsRecords: [
-        {
-          source: "www.isomer.gov.sg",
-          type: "CNAME",
-          target: "dodsfdsag34fd2.cloudfront.net",
-        },
-        {
-          source: "isomer.gov.sg",
-          type: "A",
-          target: "18.1.2.3",
-        },
-        {
-          source: "_ba2bfdc9cd3388ff4427040b865afacf5.isomer.gov.sg",
-          type: "CNAME",
-          target:
-            "_617497b1eed3650c89eb59582d89d085.xmjnffzjyj.acm-validations.aws",
-        },
-      ],
-    })
+    if (siteLaunchStatusProps) {
+      setTimeout(() => {
+        setSiteLaunchStatusProps({
+          stepNumber: SITE_LAUNCH_TASKS_LENGTH,
+          siteLaunchStatus: "LAUNCHING",
+          dnsRecords: [
+            {
+              source: "www.isomer.gov.sg",
+              type: "CNAME",
+              target: "dodsfdsag34fd2.cloudfront.net",
+            },
+            {
+              source: "isomer.gov.sg",
+              type: "A",
+              target: "18.1.2.3",
+            },
+            {
+              source: "_ba2bfdc9cd3388ff4427040b865afacf5.isomer.gov.sg",
+              type: "CNAME",
+              target:
+                "_617497b1eed3650c89eb59582d89d085.xmjnffzjyj.acm-validations.aws",
+            },
+          ],
+        })
+      }, 5000)
+    }
   }
 
-  const [tasksDone, setTasksDone] = useState(0)
+  const handleGenerateDNSRecordsOnClick = () => {
+    setTasksDone(tasksDone + 1)
+    setSiteLaunchStatusProps({
+      ...siteLaunchStatusProps,
+      stepNumber: SITE_LAUNCH_TASKS.GENERATE_NEW_DNS_RECORDS,
+      siteLaunchStatus: "LAUNCHING",
+    })
+    // todo: actually generate DNS records
+    mockDNSRecords()
+  }
+
+  const [tasksDone, setTasksDone] = useState<number>(
+    siteLaunchStatusProps?.stepNumber ?? SITE_LAUNCH_TASKS.NOT_STARTED
+  )
   const checkboxes = []
   const numberOfTasks = SITE_LAUNCH_TASKS_LENGTH
   const numberOfCheckboxes = numberOfTasks - 1 // last task is a button
@@ -151,6 +166,7 @@ export const SiteLaunchChecklistBody = ({
         <Checkbox
           // we want use to check box in order, so we disable it when it is not the next one
           isDisabled={tasksDone >= i + 2 || tasksDone < i}
+          isChecked={i < tasksDone}
           onChange={(e) => {
             e.preventDefault()
             if (e.target.checked) {
@@ -328,11 +344,7 @@ export const SiteLaunchChecklistBody = ({
                       SITE_LAUNCH_TASKS.GENERATE_NEW_DNS_RECORDS - 1
                     }
                     variant="outline"
-                    onClick={() => {
-                      setTasksDone(tasksDone + 1)
-                      // todo: actually generate DNS records
-                      mockDNSRecords()
-                    }}
+                    onClick={handleGenerateDNSRecordsOnClick}
                   >
                     Generate DNS records
                   </Button>
@@ -340,21 +352,38 @@ export const SiteLaunchChecklistBody = ({
               </Tr>
               <Tr borderTopStyle="hidden">
                 <Td colSpan={2}>
-                  <Skeleton isLoaded={!!siteLaunchStatusProps.dnsRecords}>
-                    {generateDNSTable(siteLaunchStatusProps.dnsRecords)}
+                  {siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING" &&
+                    !siteLaunchStatusProps?.dnsRecords && (
+                      <>
+                        <Text>
+                          We are currently generating the DNS records required
+                          for you to launch the site.
+                        </Text>
+                        <Text>
+                          This will take 2 minutes, thank you for understanding.
+                        </Text>
+                        <br />
+                      </>
+                    )}
+
+                  <Skeleton isLoaded={!!siteLaunchStatusProps?.dnsRecords}>
+                    {siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING" &&
+                      generateDNSTable(siteLaunchStatusProps.dnsRecords)}
                   </Skeleton>
                 </Td>
               </Tr>
-              <Tr borderTopStyle="hidden">
-                <Td colSpan={2}>
-                  <Center>
-                    <Text>
-                      If the above steps are done correctly, after updating your
-                      DNS settings, the site should be up within 1 hour.
-                    </Text>
-                  </Center>
-                </Td>
-              </Tr>
+              {!!siteLaunchStatusProps?.dnsRecords && (
+                <Tr borderTopStyle="hidden">
+                  <Td colSpan={2}>
+                    <Center>
+                      <Text>
+                        If the above steps are done correctly, after updating
+                        your DNS settings, the site should be up within 1 hour.
+                      </Text>
+                    </Center>
+                  </Td>
+                </Tr>
+              )}
             </Tbody>
           </Table>
         </TableContainer>
