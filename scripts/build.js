@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const { spawn } = require("child_process")
 
 const axios = require("axios")

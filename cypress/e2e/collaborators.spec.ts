@@ -5,7 +5,7 @@ import {
   Interceptors,
   TEST_REPO_NAME,
 } from "../fixtures/constants"
-import { DELETE_BUTTON_SELECTOR } from "../fixtures/selectors"
+import { DELETE_BUTTON_SELECTOR as DELETE_COLLABORATOR_BUTTON_SELECTOR } from "../fixtures/selectors"
 import { USER_TYPES } from "../fixtures/users"
 import { closeModal, visitE2eEmailTestRepo } from "../utils"
 import {
@@ -46,7 +46,7 @@ const removeCollaborator = (email: string) => {
     .parent()
     .parent()
     .within(() => {
-      cy.get(DELETE_BUTTON_SELECTOR).click()
+      cy.get(DELETE_COLLABORATOR_BUTTON_SELECTOR).click()
     })
 
   cy.contains("button", "Remove collaborator").click().wait(Interceptors.DELETE)
@@ -137,7 +137,7 @@ describe("collaborators flow", () => {
       removeOtherCollaborators()
 
       // Assert
-      cy.get(DELETE_BUTTON_SELECTOR).should("be.disabled")
+      cy.get(DELETE_COLLABORATOR_BUTTON_SELECTOR).should("be.disabled")
     })
 
     it("should prevent admins of a site from removing collaborators of another site", () => {
