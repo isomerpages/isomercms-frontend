@@ -79,7 +79,7 @@ describe("dashboard flow", () => {
     })
     it.skip("should navigate to the workspace when edit site is clicked", () => {
       // Arrange
-      // NOTE: There shouldn't be an alert
+      // NOTE: There shouldn't be a review request alert
       // Act
       // Assert
       throw new Error("Not implemented")
@@ -219,7 +219,7 @@ describe("dashboard flow", () => {
         }
       })
     })
-    it("should have the alert on the workspace", () => {
+    it("should have the review request approved alert stating that editing is disabled when on the workspace", () => {
       // Arrange
       // Act
       // Assert
