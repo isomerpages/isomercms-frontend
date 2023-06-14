@@ -497,5 +497,26 @@ export const NEW_DIFF_VALUE = generateDiffValues().toUpperCase()
 
 export const MOCK_UNLAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
   siteStatus: "NOT_LAUNCHED",
-  stepNumber: 0,
+}
+
+export const MOCK_LAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
+  siteStatus: "LAUNCHED",
+  dnsRecords: [
+    {
+      source: "sourceURL",
+      type: "CNAME",
+      target: "targetURL",
+    },
+  ],
+}
+
+export const MOCK_LAUNCHING_SITE_LAUNCH_DTO: SiteLaunchDto = {
+  siteStatus: "LAUNCHING",
+  dnsRecords: [
+    {
+      source: "sourceURL",
+      type: "CNAME",
+      target: "targetURL",
+    },
+  ],
 }
