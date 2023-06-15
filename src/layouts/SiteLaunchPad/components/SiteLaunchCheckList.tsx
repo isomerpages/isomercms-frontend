@@ -237,7 +237,9 @@ export const SiteLaunchChecklistBody = ({
                     </Text>
                   )}
                 </Td>
-                <Td>
+                {/* Setting the width here to 20 percent so that the column doesn't
+                    shift noticeably when the checkbox is clicked */}
+                <Td width="20%">
                   <Center>
                     {checkboxes[SITE_LAUNCH_TASKS.SET_DNS_TTL - 1]}
                   </Center>
@@ -255,13 +257,15 @@ export const SiteLaunchChecklistBody = ({
                     Approve and publish your first review request
                   </Text>
                 </Td>
-                <Center>
-                  {
-                    checkboxes[
-                      SITE_LAUNCH_TASKS.APPROVE_FIRST_REVIEW_REQUEST - 1
-                    ]
-                  }
-                </Center>
+                <Td>
+                  <Center>
+                    {
+                      checkboxes[
+                        SITE_LAUNCH_TASKS.APPROVE_FIRST_REVIEW_REQUEST - 1
+                      ]
+                    }
+                  </Center>
+                </Td>
               </Tr>
               <Tr>
                 <Td>
@@ -281,9 +285,11 @@ export const SiteLaunchChecklistBody = ({
                     </Text>
                   )}
                 </Td>
-                <Center>
-                  {checkboxes[SITE_LAUNCH_TASKS.DROP_CLOUDFRONT - 1]}
-                </Center>
+                <Td>
+                  <Center>
+                    {checkboxes[SITE_LAUNCH_TASKS.DROP_CLOUDFRONT - 1]}
+                  </Center>
+                </Td>
               </Tr>
               <Tr>
                 <Td>
@@ -303,13 +309,15 @@ export const SiteLaunchChecklistBody = ({
                     </Text>
                   )}
                 </Td>
-                <Center>
-                  {
-                    checkboxes[
-                      SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS - 1
-                    ]
-                  }
-                </Center>
+                <Td>
+                  <Center>
+                    {
+                      checkboxes[
+                        SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS - 1
+                      ]
+                    }
+                  </Center>
+                </Td>
               </Tr>
               <Tr>
                 <Td>
@@ -320,7 +328,11 @@ export const SiteLaunchChecklistBody = ({
                     Wait 1 hour to flush existing records
                   </Text>
                 </Td>
-                <Center>{checkboxes[SITE_LAUNCH_TASKS.WAIT_1_HOUR - 1]}</Center>
+                <Td>
+                  <Center>
+                    {checkboxes[SITE_LAUNCH_TASKS.WAIT_1_HOUR - 1]}
+                  </Center>
+                </Td>
               </Tr>
               <Tr>
                 <Td>
