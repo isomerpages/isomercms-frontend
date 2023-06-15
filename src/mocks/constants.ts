@@ -243,6 +243,7 @@ export const MOCK_SITE_DASHBOARD_INFO: SiteDashboardInfo = {
 
 export const MOCK_ITEMS: EditedItemProps[] = [
   {
+    title: "A page",
     type: "page",
     name: "A page",
     path: ["some", "thing"],
@@ -252,6 +253,7 @@ export const MOCK_ITEMS: EditedItemProps[] = [
     lastEditedTime: 129823104094,
   },
   {
+    title: "A nav",
     type: "nav",
     name: "A nav",
     path: ["some", "thing"],
@@ -259,6 +261,7 @@ export const MOCK_ITEMS: EditedItemProps[] = [
     lastEditedTime: 823104823094,
   },
   {
+    title: "a file",
     type: "file",
     name: "a file",
     path: ["some", "thing"],
@@ -266,6 +269,7 @@ export const MOCK_ITEMS: EditedItemProps[] = [
     lastEditedTime: 129823104823094,
   },
   {
+    title: "setting",
     type: "setting",
     name:
       "A setting with an extremely long title that probably can't fit into a single line and we have to truncate this somehow. so we will hopefully display an ellipsis over it",
@@ -280,6 +284,7 @@ export const MOCK_ITEMS: EditedItemProps[] = [
     lastEditedTime: 129823094,
   },
   {
+    title: "a normal setting",
     type: "setting",
     name: "a normal setting",
     path: ["some", "thing"],
@@ -287,6 +292,7 @@ export const MOCK_ITEMS: EditedItemProps[] = [
     lastEditedTime: 12123498294,
   },
   {
+    title: "some file",
     type: "image",
     name: "some file",
     path: ["some", "thing"],
@@ -431,6 +437,7 @@ export const MOCK_COMMENTS_DATA: CommentData[] = [
 ]
 
 const MOCK_EDITED_ITEM: EditedItemProps = {
+  title: "Mock item",
   type: "page",
   name: "mock item",
   path: ["some", "path"],
@@ -480,22 +487,9 @@ export const MOCK_SITES_DATA: SiteDataRequest = {
     },
   ],
 }
-// 100 lines of random characters, where each line is [0, 100] characters long
-// ASCII 48 - 122 is [a-zA-Z0-9] and some punctuation
+
 const generateDiffValues = () =>
-  Array(100)
-    .fill([])
-    .map(() => {
-      const length = _.random(0, 100)
-      return Array(length)
-        .fill("")
-        .map(() => {
-          const char = _.random(48, 122)
-          return String.fromCharCode(char)
-        })
-        .join("")
-    })
-    .join("\n")
+  Array(10).join("the quick brown fox jumps over the lazy dog\n")
 
 export const OLD_DIFF_VALUE = generateDiffValues()
-export const NEW_DIFF_VALUE = generateDiffValues()
+export const NEW_DIFF_VALUE = generateDiffValues().toUpperCase()
