@@ -15,7 +15,7 @@ describe("Files", () => {
 
   describe("Create file, delete file, edit file settings in Files", () => {
     beforeEach(() => {
-      cy.setSessionDefaults()
+      cy.setGithubSessionDefaults()
       cy.setupDefaultInterceptors()
 
       cy.visit(
@@ -105,7 +105,7 @@ describe("Files", () => {
 
   describe("Create file directory, delete file directory, edit file directory settings in Files", () => {
     beforeEach(() => {
-      cy.setSessionDefaults()
+      cy.setGithubSessionDefaults()
       cy.setupDefaultInterceptors()
 
       cy.visit(
@@ -165,7 +165,7 @@ describe("Files", () => {
 
   describe("Create file, delete file, edit file settings, and move files in file directories", () => {
     before(() => {
-      cy.setSessionDefaults()
+      cy.setGithubSessionDefaults()
 
       cy.visit(`/sites/${TEST_REPO_NAME}/media/files/mediaDirectory/files`)
       cy.contains("Create directory").click()
@@ -184,7 +184,7 @@ describe("Files", () => {
     })
 
     beforeEach(() => {
-      cy.setSessionDefaults()
+      cy.setGithubSessionDefaults()
       cy.setupDefaultInterceptors()
       cy.visit(
         `/sites/${TEST_REPO_NAME}/media/files/mediaDirectory/files%2F${DIRECTORY_TITLE}`

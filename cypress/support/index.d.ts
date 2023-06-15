@@ -26,7 +26,11 @@ declare namespace Cypress {
      * This is to avoid adversely impacting the SEO of the site.
      */
     setDefaultSettings(): Chainable<void>
-    setSessionDefaults(): Chainable<void>
+    setGithubSessionDefaults(): Chainable<void>
+
+    setEmailSessionDefaults(
+      userType: "Email admin" | "Email collaborator"
+    ): Chainable<void>
     /**
      * Setup the default interceptors for post/get/delete requests.
      * These interceptors are aliased to the `Interceptors` enum.
@@ -51,5 +55,12 @@ declare namespace Cypress {
     deleteMedia(mediaTitle: string, disableAction?: boolean): Chainable<void>
     saveSettings(): Chainable<void>
     visitLoadSettings(siteName: string, sitePath: string): Chainable<void>
+    createEmailUser(
+      email: string,
+      // NOTE: have to (re)declare the type here
+      // otherwise the import leads to a type error
+      userType: "Email admin" | "Email collaborator",
+      InitialUserType: "Email admin" | "Email collaborator"
+    ): Chainable<void>
   }
 }

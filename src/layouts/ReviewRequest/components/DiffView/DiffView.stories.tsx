@@ -23,20 +23,20 @@ Default.args = {
 
 export const UpperCodeFold = Template.bind({})
 UpperCodeFold.args = {
-  newValue: NEW_DIFF_VALUE + NEW_DIFF_VALUE,
-  oldValue: NEW_DIFF_VALUE + OLD_DIFF_VALUE,
+  newValue: [NEW_DIFF_VALUE, NEW_DIFF_VALUE].join("\n"),
+  oldValue: [NEW_DIFF_VALUE, OLD_DIFF_VALUE].join("\n"),
 }
 
 export const LowerCodeFold = Template.bind({})
 LowerCodeFold.args = {
-  newValue: NEW_DIFF_VALUE + NEW_DIFF_VALUE,
-  oldValue: OLD_DIFF_VALUE + NEW_DIFF_VALUE,
+  newValue: [NEW_DIFF_VALUE, NEW_DIFF_VALUE].join("\n"),
+  oldValue: [OLD_DIFF_VALUE, NEW_DIFF_VALUE].join("\n"),
 }
 
 export const DualCodeFold = Template.bind({})
 DualCodeFold.args = {
-  newValue: NEW_DIFF_VALUE + NEW_DIFF_VALUE + NEW_DIFF_VALUE,
-  oldValue: NEW_DIFF_VALUE + OLD_DIFF_VALUE + NEW_DIFF_VALUE,
+  newValue: [NEW_DIFF_VALUE, NEW_DIFF_VALUE, NEW_DIFF_VALUE].join("\n"),
+  oldValue: [NEW_DIFF_VALUE, OLD_DIFF_VALUE, NEW_DIFF_VALUE].join("\n"),
 }
 
 export const UpperCodeFoldWithInitialChanges = Template.bind({})

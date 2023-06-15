@@ -39,8 +39,9 @@ export const AnalyticsSettings = ({
             w="100%"
             {...register("pixel", {
               pattern: {
-                value: /^[0-9]{15}$/,
-                message: "Your Facebook Pixel id should be a 15 digit number.",
+                value: /^[0-9]{15,16}$/,
+                message:
+                  "Your Facebook Pixel id should be a 15 or 16 digit number.",
               },
             })}
           />

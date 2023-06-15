@@ -18,7 +18,7 @@ const SECONDARY_COLOUR = "rgb(0, 255, 0)"
 describe("editPage.spec", () => {
   beforeEach(() => {
     cy.setupDefaultInterceptors()
-    cy.setSessionDefaults()
+    cy.setGithubSessionDefaults()
   })
 
   describe("Edit unlinked page", () => {
@@ -257,7 +257,7 @@ describe("editPage.spec", () => {
     const LINK_URL = "https://www.google.com"
 
     before(() => {
-      cy.setSessionDefaults()
+      cy.setGithubSessionDefaults()
 
       // Set up test resource categories
       // NOTE: We need to repeat the interceptor here as
