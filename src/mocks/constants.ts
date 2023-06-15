@@ -489,12 +489,7 @@ export const MOCK_SITES_DATA: SiteDataRequest = {
 }
 
 const generateDiffValues = () =>
-  Array(10)
-    .fill([])
-    .map(() => {
-      return "the quick brown fox jumps over the lazy dog"
-    })
-    .join("\n")
+  Array(10).join("the quick brown fox jumps over the lazy dog\n")
 
 export const OLD_DIFF_VALUE = generateDiffValues()
 export const NEW_DIFF_VALUE = generateDiffValues().toUpperCase()
