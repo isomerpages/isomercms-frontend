@@ -34,38 +34,6 @@ export const useSiteLaunchContext = (): SiteLaunchContextProps => {
   return SiteLaunchContextData
 }
 
-function updateSiteLaunchStatusOnApiCall(
-  siteLaunchDto: SiteLaunchDto | undefined,
-  siteLaunchStatusProps: SiteLaunchStatusProps,
-  setSiteLaunchStatusProps: (
-    siteLaunchStatusProps: SiteLaunchStatusProps
-  ) => void
-): void {
-  if (
-    siteLaunchDto?.siteStatus === "NOT_LAUNCHED" &&
-    siteLaunchStatusProps.siteLaunchStatus === "LOADING"
-  ) {
-    setSiteLaunchStatusProps({
-      siteLaunchStatus: "NOT_LAUNCHED",
-      stepNumber: 0,
-    })
-  }
-  // this condition is added to prevent redundant re-renders
-  const isSiteLaunchFEAndBESynced =
-    siteLaunchStatusProps.siteLaunchStatus === siteLaunchDto?.siteStatus
-  if (
-    (siteLaunchDto?.siteStatus === "LAUNCHED" ||
-      siteLaunchDto?.siteStatus === "LAUNCHING") &&
-    !isSiteLaunchFEAndBESynced
-  ) {
-    setSiteLaunchStatusProps({
-      siteLaunchStatus: siteLaunchDto.siteStatus,
-      stepNumber: SITE_LAUNCH_TASKS_LENGTH,
-      dnsRecords: siteLaunchDto.dnsRecords,
-    })
-  }
-}
-
 export const SiteLaunchProvider = ({
   children,
   initialSiteLaunchStatus,
