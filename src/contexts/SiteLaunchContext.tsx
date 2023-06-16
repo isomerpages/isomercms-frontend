@@ -33,14 +33,14 @@ export const useSiteLaunchContext = (): SiteLaunchContextProps => {
 }
 
 function updateSiteLaunchStatusOnApiCall(
-  siteLaunchDto: SiteLaunchDto | undefined,
+  siteLaunchDto: SiteLaunchDto,
   siteLaunchStatusProps: SiteLaunchStatusProps,
   setSiteLaunchStatusProps: (
     siteLaunchStatusProps: SiteLaunchStatusProps
   ) => void
 ): void {
   if (
-    siteLaunchDto?.siteStatus === "NOT_LAUNCHED" &&
+    siteLaunchDto.siteStatus === "NOT_LAUNCHED" &&
     siteLaunchStatusProps.siteLaunchStatus === "LOADING"
   ) {
     setSiteLaunchStatusProps({
@@ -52,8 +52,8 @@ function updateSiteLaunchStatusOnApiCall(
   const isSiteLaunchFEAndBESynced =
     siteLaunchStatusProps.siteLaunchStatus === siteLaunchDto?.siteStatus
   if (
-    (siteLaunchDto?.siteStatus === "LAUNCHED" ||
-      siteLaunchDto?.siteStatus === "LAUNCHING") &&
+    (siteLaunchDto.siteStatus === "LAUNCHED" ||
+      siteLaunchDto.siteStatus === "LAUNCHING") &&
     !isSiteLaunchFEAndBESynced
   ) {
     setSiteLaunchStatusProps({
@@ -81,11 +81,13 @@ export const SiteLaunchProvider = ({
 
   const { data: siteLaunchDto } = useGetSiteLaunchStatus(siteName)
 
-  updateSiteLaunchStatusOnApiCall(
-    siteLaunchDto,
-    siteLaunchStatusProps,
-    setSiteLaunchStatusProps
-  )
+  if (siteLaunchDto) {
+    updateSiteLaunchStatusOnApiCall(
+      siteLaunchDto,
+      siteLaunchStatusProps,
+      setSiteLaunchStatusProps
+    )
+  }
 
   return (
     <SiteLaunchContext.Provider
