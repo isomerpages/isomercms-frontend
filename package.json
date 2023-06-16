@@ -75,6 +75,7 @@
     "start": "source .env && react-scripts start",
     "dev": "source .env && react-scripts start",
     "build": "react-scripts build",
+    "build:netlify": "CI=false npm run build && npm run sourcemaps:upload",
     "release": "npm version $npm_config_isomer_update && git push --tags",
     "test": "craco test",
     "test:ci": "node scripts/run-e2e.js run",
