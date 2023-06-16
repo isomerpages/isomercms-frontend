@@ -1,4 +1,4 @@
-import { WHITE_LISTED_REPOS } from "constants/siteLaunch"
+import { WHITELISTED_REPOS } from "constants/siteLaunch"
 
 export const isUserUsingSiteLaunchFeature = (siteName: string): boolean => {
   // The name of our sites for our storybooks is "storybook".
@@ -7,5 +7,5 @@ export const isUserUsingSiteLaunchFeature = (siteName: string): boolean => {
   if (siteName === "storybook") {
     return true
   }
-  return WHITE_LISTED_REPOS ? WHITE_LISTED_REPOS.includes(siteName) : false
+  return WHITELISTED_REPOS ? WHITELISTED_REPOS.includes(siteName) : false
 }
