@@ -53,10 +53,23 @@ export function useCreatePageHook(params, queryParams) {
         )
         if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
       },
-      onError: () => {
-        errorToast({
-          description: `A new page could not be created. ${DEFAULT_RETRY_MSG}`,
-        })
+      onError: (err) => {
+        // check for new err format
+        if (
+          err.response &&
+          err.response.data &&
+          err.response.data.error &&
+          err.response.data.error.isV2Err
+        ) {
+          const apiErr = err.response.data
+          errorToast({
+            description: `A new page could not be created. Error code: ${apiErr.error.code}. ${apiErr.error.message}.`,
+          })
+        } else {
+          errorToast({
+            description: `A new page could not be created. ${DEFAULT_RETRY_MSG}`,
+          })
+        }
         if (queryParams && queryParams.onError) queryParams.onError()
       },
     }

@@ -59,10 +59,24 @@ export function useUpdatePageHook(params, queryParams) {
         if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
       },
       onError: (err) => {
-        if (err.response.status !== 409)
-          errorToast({
-            description: `Your page could not be updated. ${DEFAULT_RETRY_MSG}`,
-          })
+        if (err.response.status !== 409) {
+          // check for new err format
+          if (
+            err.response &&
+            err.response.data &&
+            err.response.data.error &&
+            err.response.data.error.isV2Err
+          ) {
+            const apiErr = err.response.data
+            errorToast({
+              description: `Your page could not be updated. Error code: ${apiErr.error.code}. ${apiErr.error.message}.`,
+            })
+          } else {
+            errorToast({
+              description: `Your page could not be updated. ${DEFAULT_RETRY_MSG}`,
+            })
+          }
+        }
         if (queryParams && queryParams.onError) queryParams.onError(err)
       },
     }
