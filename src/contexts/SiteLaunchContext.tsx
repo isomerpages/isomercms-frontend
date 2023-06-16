@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom"
 import { useGetSiteLaunchStatus } from "hooks/siteDashboardHooks"
 
 import {
-  SiteLaunchDto,
   SiteLaunchFrontEndStatus,
   SiteLaunchStatusProps,
   SiteLaunchTaskTypeIndex,
