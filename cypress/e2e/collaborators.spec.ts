@@ -31,6 +31,9 @@ const ignoreDuplicateError = () =>
 const ignoreNotFoundError = () =>
   cy.on("uncaught:exception", (err) => !err.message.includes("404"))
 
+const ignoreForbiddenError = () =>
+  cy.on("uncaught:exception", (err) => !err.message.includes("403"))
+
 const ADD_COLLABORATOR_ERROR_MESSAGE =
   "This collaborator couldn't be added. Visit our guide for more assistance"
 
@@ -70,6 +73,7 @@ describe("collaborators flow", () => {
     it("should not be able to add a non-whitelisted collaborator", () => {
       // Act
       inputCollaborators("some_gibberish@gmail.com")
+      ignoreForbiddenError()
 
       // Assert
       cy.contains(ADD_COLLABORATOR_ERROR_MESSAGE).should("be.visible")
