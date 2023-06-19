@@ -1,6 +1,7 @@
 import { Box, Button, Icon, Text, RadioGroup } from "@chakra-ui/react"
-import { BxChevronRight, Input, Radio } from "@opengovsg/design-system-react"
+import { Input, Radio } from "@opengovsg/design-system-react"
 import { useState } from "react"
+import { BiArrowBack } from "react-icons/bi"
 
 import { SITE_LAUNCH_PAGES } from "types/siteLaunch"
 
@@ -66,7 +67,13 @@ export const SiteLaunchInfoGatheringBody = ({
           Cancel
         </Button>
         <Button
-          rightIcon={<Icon as={BxChevronRight} fontSize="1.25rem" />}
+          rightIcon={
+            <Icon
+              as={BiArrowBack}
+              fontSize="1.25rem"
+              transform="rotate(180deg)"
+            />
+          }
           onClick={() => setPageNumber(SITE_LAUNCH_PAGES.RISK_ACCEPTANCE)}
           disabled={isNextButtonDisabled}
         >

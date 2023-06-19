@@ -6,7 +6,8 @@ import {
   Text,
   UnorderedList,
 } from "@chakra-ui/react"
-import { Button, BxChevronRight } from "@opengovsg/design-system-react"
+import { Button } from "@opengovsg/design-system-react"
+import { BiArrowBack } from "react-icons/bi"
 
 import { SITE_LAUNCH_PAGES } from "types/siteLaunch"
 
@@ -74,7 +75,13 @@ export const SiteLaunchDisclaimerBody = ({
       <br />
       <Box display="flex" justifyContent="flex-end">
         <Button
-          rightIcon={<Icon as={BxChevronRight} fontSize="1.25rem" />}
+          rightIcon={
+            <Icon
+              as={BiArrowBack}
+              fontSize="1.25rem"
+              transform="rotate(180deg)"
+            />
+          }
           iconSpacing="1rem"
           ml="auto"
           onClick={() => setPageNumber(SITE_LAUNCH_PAGES.INFO_GATHERING)} // going to the next page}
