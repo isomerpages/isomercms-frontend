@@ -18,6 +18,8 @@ export interface SiteLaunchStatusProps {
   siteLaunchStatus: SiteLaunchFrontEndStatus
   stepNumber: SiteLaunchTaskTypeIndex
   dnsRecords?: DNSRecord[]
+  siteUrl?: string
+  isNewDomain?: boolean
 }
 
 export interface SiteLaunchDto {
@@ -28,6 +30,7 @@ export interface SiteLaunchDto {
    */
   siteStatus: "LAUNCHED" | "NOT_LAUNCHED" | "LAUNCHING"
   dnsRecords?: DNSRecord[] // only present iff siteStatus is LAUNCHED
+  siteUrl?: string
 }
 
 export const SITE_LAUNCH_TASKS = {
