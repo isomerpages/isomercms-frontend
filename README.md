@@ -66,6 +66,8 @@ If you would like the Cypress UI, run
 npm run cypress:open
 ```
 
+For more information on setup, read the `cypress/SETUP.md`
+
 ### Release
 
 Run the following on the release branch to tag and push changes automatically:
