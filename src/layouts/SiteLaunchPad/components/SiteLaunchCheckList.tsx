@@ -139,7 +139,7 @@ export const SiteLaunchChecklistBody = ({
             },
           ],
         })
-      }, 5000)
+      }, 10000)
     }
   }
 
@@ -369,11 +369,10 @@ export const SiteLaunchChecklistBody = ({
                     !siteLaunchStatusProps?.dnsRecords && (
                       <>
                         <Text>
-                          We are currently generating the DNS records required
-                          for you to launch the site.
+                          Generating your DNS records will take 2 minutes.
                         </Text>
                         <Text>
-                          This will take 2 minutes, thank you for understanding.
+                          Do not leave or refresh this page in the meantime.
                         </Text>
                         <br />
                       </>
