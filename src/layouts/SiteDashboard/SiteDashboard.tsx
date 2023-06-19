@@ -26,10 +26,9 @@ import {
   MenuDropdownItem,
 } from "components/MenuDropdownButton"
 import _ from "lodash"
-import { useEffect, useEffect } from "react"
+import { useEffect } from "react"
 import { BiCheckCircle, BiCog, BiEditAlt, BiGroup } from "react-icons/bi"
 import { useParams, Link as RouterLink } from "react-router-dom"
-import { isUserUsingSiteLaunchFeature } from "services/SiteLaunchService"
 
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
@@ -50,10 +49,7 @@ import { shouldUseSiteLaunchFeature } from "utils/siteLaunchUtils"
 import { BxsClearRocket, SiteDashboardHumanImage } from "assets"
 import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
 import { DASHBOARD_FEATURE_STEPS } from "features/FeatureTour/FeatureTourSequence"
-import {
-  SiteLaunchFrontEndStatus,
-  SITE_LAUNCH_TASKS_LENGTH,
-} from "types/siteLaunch"
+import { SITE_LAUNCH_TASKS_LENGTH } from "types/siteLaunch"
 
 import { SiteViewLayout } from "../layouts"
 
