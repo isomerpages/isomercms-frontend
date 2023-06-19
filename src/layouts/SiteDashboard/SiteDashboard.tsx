@@ -60,13 +60,6 @@ import { CollaboratorsStatistics } from "./components/CollaboratorsStatistics"
 import { EmptyReviewRequest } from "./components/EmptyReviewRequest"
 import { ReviewRequestCard } from "./components/ReviewRequestCard"
 
-interface SiteLaunchDisplayCardProps {
-  siteName: string
-  siteLaunchStatus?: SiteLaunchFrontEndStatus
-  isSiteLaunchLoading: boolean
-  siteLaunchChecklistStepNumber?: number
-}
-
 export const SiteDashboard = (): JSX.Element => {
   const {
     isOpen: isCollaboratorsModalOpen,
@@ -208,14 +201,7 @@ export const SiteDashboard = (): JSX.Element => {
           <Box w="40%">
             <VStack spacing="1.25rem">
               {/* Site launch display card */}
-              <SiteLaunchDisplayCard
-                siteName={siteName}
-                siteLaunchStatus={siteLaunchStatus}
-                isSiteLaunchLoading={isSiteLaunchLoading}
-                siteLaunchChecklistStepNumber={
-                  siteLaunchStatusProps?.stepNumber
-                }
-              />
+              <SiteLaunchDisplayCard />
               {/* Human image and last saved/published */}
               <Box w="100%">
                 {siteLaunchStatus === "LAUNCHED" && <SiteDashboardHumanImage />}
@@ -349,12 +335,12 @@ export const SiteDashboard = (): JSX.Element => {
   )
 }
 
-const SiteLaunchDisplayCard = ({
-  siteName,
-  siteLaunchStatus,
-  isSiteLaunchLoading,
-  siteLaunchChecklistStepNumber,
-}: SiteLaunchDisplayCardProps): JSX.Element => {
+const SiteLaunchDisplayCard = (): JSX.Element => {
+  const { siteName } = useParams<{ siteName: string }>()
+  const { siteLaunchStatusProps } = useSiteLaunchContext()
+  const siteLaunchStatus = siteLaunchStatusProps?.siteLaunchStatus
+  const siteLaunchChecklistStepNumber = siteLaunchStatusProps?.stepNumber
+  const isSiteLaunchLoading = siteLaunchStatus === "LOADING"
   if (!shouldUseSiteLaunchFeature(siteName)) return <></>
   if (siteLaunchStatus === "LAUNCHED") return <></>
 
