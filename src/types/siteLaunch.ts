@@ -4,12 +4,15 @@ export interface DNSRecord {
   target: string
 }
 
-export type SiteLaunchFrontEndStatus =
-  | "LAUNCHED"
-  | "NOT_LAUNCHED"
-  | "LAUNCHING"
-  | "CHECKLIST_TASKS_PENDING" // not to be confused with with Infra level launching step
-  | "LOADING"
+const SiteLaunchFrontEndStatusOptions = {
+  Launched: "LAUNCHED",
+  NotLaunched: "NOT_LAUNCHED",
+  Launching: "LAUNCHING",
+  ChecklistTasksPending: "CHECKLIST_TASKS_PENDING", // not to be confused with with Infra level launching step
+  Loading: "LOADING",
+} as const
+
+export type SiteLaunchFrontEndStatus = typeof SiteLaunchFrontEndStatusOptions[keyof typeof SiteLaunchFrontEndStatusOptions]
 
 export interface SiteLaunchStatusProps {
   siteLaunchStatus: SiteLaunchFrontEndStatus
