@@ -57,7 +57,6 @@ export const DisplayCardHeader = ({
   ...props
 }: DisplayCardHeaderProps): JSX.Element => {
   const styles = useStyles()
-
   return (
     <Box __css={styles.header} {...props}>
       <Box w="100%">{children}</Box>
@@ -77,7 +76,7 @@ export const DisplayCardTitle = ({
   return (
     <>
       <HStack paddingBottom="0.25rem">
-        <Text {...(styles.title as TextProps)} {...props}>
+        <Text {...(styles.title as TextProps)} mr="0" {...props}>
           {children}
         </Text>
         {icon}
