@@ -31,6 +31,7 @@ export type IsomerColorScheme =
   | "border"
   | "base"
   | "interaction"
+  | "brand"
 
 type BaseRecord = Record<string, string> | NestedRecord | string
 
@@ -52,16 +53,16 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
     900: "#0C2E6A",
   },
   secondary: {
-    50: "#FBF8FF",
-    100: "#EFE7FF",
-    200: "#C9B3FF",
-    300: "#AA90FA",
-    400: "#8C73DB",
-    500: "#6D58BB",
-    600: "#5543A4",
-    700: "#493897",
-    800: "#3B2E8A",
-    900: "#271E78",
+    50: "#F8F9FA",
+    100: "#E9EAEE",
+    200: "#BABECD",
+    300: "#9AA0B3",
+    400: "#7B849C",
+    500: "#5D6785",
+    600: "#465173",
+    700: "#3C4764",
+    800: "#333C56",
+    900: "#272D41",
   },
   text: {
     body: "#3D3D3D",
@@ -128,6 +129,20 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
       alt: "#E9E9E9",
       active: "#276EF1",
       disabled: "#BFBFBF",
+    },
+  },
+  brand: {
+    illustration: {
+      50: "#FBF8FF",
+      100: "#EFE7FF",
+      200: "#C9B3FF",
+      300: "#AA90FA",
+      400: "#8C73DB",
+      500: "#6D58BB",
+      600: "#5543A4",
+      700: "#493897",
+      800: "#3B2E8A",
+      900: "#271E78",
     },
   },
   interaction: {
