@@ -179,7 +179,7 @@ export const SiteDashboard = (): JSX.Element => {
             <DisplayCard variant="full">
               <DisplayCardHeader>
                 <DisplayCardTitle
-                  icon={<Icon as={BiCheckCircle} fontSize="1.5rem" />}
+                  icon={<Icon as={BiCheckCircle} fontSize="1.25rem" />}
                 >
                   Pending reviews
                 </DisplayCardTitle>
@@ -285,7 +285,7 @@ export const SiteDashboard = (): JSX.Element => {
                     }
                   >
                     <DisplayCardTitle
-                      icon={<Icon as={BiGroup} fontSize="1.5rem" />}
+                      icon={<Icon as={BiGroup} fontSize="1.25rem" />}
                     >
                       Site collaborators
                     </DisplayCardTitle>
@@ -327,7 +327,7 @@ export const SiteDashboard = (): JSX.Element => {
                   }
                 >
                   <DisplayCardTitle
-                    icon={<Icon as={BiCog} fontSize="1.5rem" />}
+                    icon={<Icon as={BiCog} fontSize="1.25rem" />}
                   >
                     Site settings
                   </DisplayCardTitle>
@@ -360,33 +360,37 @@ const SiteLaunchDisplayCard = ({
 
   return (
     <Box w="100%">
-      <DisplayCard variant="content">
-        <Skeleton isLoaded={!isSiteLaunchLoading}>
+      <DisplayCard>
+        <Skeleton width="100%" isLoaded={!isSiteLaunchLoading}>
           <DisplayCardHeader
-            w="100%"
             button={
               <Link
                 variant="link"
                 textStyle="subhead-1"
                 color="text.title.brand"
-                marginRight="0.75rem"
                 as={RouterLink}
                 to={`/sites/${siteName}/siteLaunchPad`}
               >
                 {siteLaunchStatus === "NOT_LAUNCHED" && (
-                  <Text textStyle="subhead-1">Go to Launchpad</Text>
+                  <Text textStyle="subhead-1" whiteSpace="nowrap">
+                    Go to Launchpad
+                  </Text>
                 )}
                 {siteLaunchStatus === "CHECKLIST_TASKS_PENDING" && (
-                  <Text textStyle="subhead-1">Visit launchpad</Text>
+                  <Text textStyle="subhead-1" whiteSpace="nowrap">
+                    Visit launchpad
+                  </Text>
                 )}
                 {siteLaunchStatus === "LAUNCHING" && (
-                  <Text textStyle="subhead-1">Check status</Text>
+                  <Text textStyle="subhead-1" whiteSpace="nowrap">
+                    Check status
+                  </Text>
                 )}
               </Link>
             }
           >
             <DisplayCardTitle
-              icon={<Icon as={BxsClearRocket} fontSize="1.5rem" />}
+              icon={<Icon as={BxsClearRocket} fontSize="1.25rem" />}
             >
               Site launch
             </DisplayCardTitle>
@@ -395,16 +399,14 @@ const SiteLaunchDisplayCard = ({
             </DisplayCardCaption>
           </DisplayCardHeader>
           <DisplayCardContent>
-            <Skeleton isLoaded={!isSiteLaunchLoading} w="100%">
-              {siteLaunchStatus === "CHECKLIST_TASKS_PENDING" && (
-                <Text textStyle="body-2">
-                  {siteLaunchChecklistStepNumber}/{SITE_LAUNCH_TASKS_LENGTH}
-                </Text>
-              )}
-              {siteLaunchStatus === "LAUNCHING" && (
-                <Text textStyle="body-2">Launch status: Pending</Text>
-              )}
-            </Skeleton>
+            {siteLaunchStatus === "CHECKLIST_TASKS_PENDING" && (
+              <Text textStyle="body-2">
+                {siteLaunchChecklistStepNumber}/{SITE_LAUNCH_TASKS_LENGTH}
+              </Text>
+            )}
+            {siteLaunchStatus === "LAUNCHING" && (
+              <Text textStyle="body-2">Launch status: Pending</Text>
+            )}
           </DisplayCardContent>
         </Skeleton>
       </DisplayCard>
