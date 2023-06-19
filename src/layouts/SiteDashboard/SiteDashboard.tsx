@@ -29,7 +29,6 @@ import _ from "lodash"
 import { useEffect } from "react"
 import { BiCheckCircle, BiCog, BiEditAlt, BiGroup } from "react-icons/bi"
 import { useParams, Link as RouterLink } from "react-router-dom"
-import { isUserUsingSiteLaunchFeature } from "services/SiteLaunchService"
 
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
