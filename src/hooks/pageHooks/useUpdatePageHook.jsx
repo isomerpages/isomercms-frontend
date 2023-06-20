@@ -10,9 +10,8 @@ import {
 
 import { ServicesContext } from "contexts/ServicesContext"
 
+import { getAxiosErrorMessage } from "utils/axios"
 import { useSuccessToast, useErrorToast } from "utils/toasts"
-
-import { DEFAULT_RETRY_MSG } from "utils"
 
 import { extractPageInfo } from "./utils"
 
@@ -60,22 +59,11 @@ export function useUpdatePageHook(params, queryParams) {
       },
       onError: (err) => {
         if (err.response.status !== 409) {
-          // check for new err format
-          if (
-            err.response &&
-            err.response.data &&
-            err.response.data.error &&
-            err.response.data.error.isV2Err
-          ) {
-            const apiErr = err.response.data
-            errorToast({
-              description: `Your page could not be updated. Error code: ${apiErr.error.code}. ${apiErr.error.message}.`,
-            })
-          } else {
-            errorToast({
-              description: `Your page could not be updated. ${DEFAULT_RETRY_MSG}`,
-            })
-          }
+          errorToast({
+            description: `Your page could not be updated. ${getAxiosErrorMessage(
+              err
+            )}`,
+          })
         }
         if (queryParams && queryParams.onError) queryParams.onError(err)
       },
