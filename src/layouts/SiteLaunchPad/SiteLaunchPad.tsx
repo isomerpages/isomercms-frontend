@@ -30,13 +30,15 @@ import {
   SiteLaunchInfoGatheringBody,
 } from "./components/SiteLaunchInfoGathering"
 
+interface RiskAcceptanceModalProps {
+  isOpen: boolean
+  setPageNumber: (number: number) => void
+}
+
 const RiskAcceptanceModal = ({
   isOpen,
   setPageNumber,
-}: {
-  isOpen: boolean
-  setPageNumber: (number: number) => void
-}): JSX.Element => {
+}: RiskAcceptanceModalProps): JSX.Element => {
   const [isDisabled, setIsDisabled] = useState(true)
   return (
     <Modal
@@ -46,35 +48,32 @@ const RiskAcceptanceModal = ({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          <Text textStyle="h4">
+          <Text as="h4" textStyle="h4">
             Check if you have full control over your DNS
           </Text>
         </ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          <br />
-          <Text textStyle="body-2" fontWeight="bold">
+        <ModalBody mt="2rem">
+          <Text textStyle="body-2" fontWeight="bold" mb="2rem">
             The biggest reason for site launch failure is because of unknown
             cloudfront records.
           </Text>
-          <br />
 
-          <Text textStyle="body-2">
+          <Text textStyle="body-2" mb="2rem">
             <Text as="b">Please do your best to find this out. </Text>
             If you are unsure, consult your ITD team on this. If your domain is
             a .gov.sg domain, You can go to{" "}
             <Link href="https://dnschecker.org/">DNS checker</Link> and check if
             your A record starts with 35.
           </Text>
-          <br />
-          <Text textStyle="body-2">
+
+          <Text textStyle="body-2" mb="4rem">
             Isomer will not be held liable for any extended period of downtime
             due to unknown cloudfront records. Downtime could happen even if
             your site is not currently using cloudfront, but has used it
             previously.
           </Text>
-          <br />
-          <br />
+
           <Checkbox
             onChange={(e) => {
               e.preventDefault()
@@ -107,7 +106,7 @@ const RiskAcceptanceModal = ({
     </Modal>
   )
 }
-const pageInitialNumber = (
+const getInitialPageNumber = (
   siteLaunchStatusProps: SiteLaunchStatusProps | undefined
 ) => {
   const hasUserAlreadyStartedChecklistTasks =
@@ -125,11 +124,11 @@ export const SiteLaunchPad = (): JSX.Element => {
   } = useSiteLaunchContext()
 
   const [pageNumber, setPageNumber] = useState(
-    pageInitialNumber(siteLaunchStatusProps)
+    getInitialPageNumber(siteLaunchStatusProps)
   )
 
-  let title = <SiteLaunchDisclaimerTitle />
-  let body = <SiteLaunchDisclaimerBody setPageNumber={setPageNumber} />
+  let title: JSX.Element
+  let body: JSX.Element
   switch (pageNumber) {
     case SITE_LAUNCH_PAGES.DISCLAIMER:
       title = <SiteLaunchDisclaimerTitle />

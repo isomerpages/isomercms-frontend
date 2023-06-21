@@ -7,7 +7,7 @@ import {
   UnorderedList,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
-import { BiArrowBack } from "react-icons/bi"
+import { BiRightArrowAlt } from "react-icons/bi"
 
 import { SITE_LAUNCH_PAGES } from "types/siteLaunch"
 
@@ -29,31 +29,34 @@ export const SiteLaunchDisclaimerBody = ({
 }: SiteLaunchDisclaimerBodyProps): JSX.Element => {
   return (
     <SiteLaunchPadBody>
-      <Text textStyle="h2">What is site launch?</Text>
-      <Text>
+      <Text as="h2" textStyle="h2">
+        What is site launch?
+      </Text>
+      <Text mb="2rem">
         It&apos;s the process to connect a domain to your Isomer site and make
         it available to the public through the internet. Public officers would
         need to do this outside of Isomer through a separate service called IT
         Service Management (ITSM).
-        <br />
-        <br />
+      </Text>
+      <Text mb="2rem">
         Isomer will provide you the necessary credentials you need to add or
         change in ITSM, but Isomer as a product does not actually launch your
         site for you. However you can come here to check the status of your site
         launch.
-        <br />
-        <br />
       </Text>
-      <Text textStyle="h2">You should only launch your site when:</Text>
-      <OrderedList>
+      <Text as="h2" textStyle="h2">
+        You should only launch your site when:
+      </Text>
+      <OrderedList mb="2rem">
         <ListItem>
           You are ready to release your site content to the public
         </ListItem>
         <ListItem>You already have a domain to connect to</ListItem>
       </OrderedList>
-      <br />
-      <Text textStyle="h2">Things to note</Text>
-      <UnorderedList>
+      <Text as="h2" textStyle="h2">
+        Things to note
+      </Text>
+      <UnorderedList mb="2rem">
         <ListItem>
           Site launch is a time-sensitive process and could require the
           coordination of actions from multiple parties. It is recommended that
@@ -72,16 +75,10 @@ export const SiteLaunchDisclaimerBody = ({
           your site.
         </ListItem>
       </UnorderedList>
-      <br />
+
       <Box display="flex" justifyContent="flex-end">
         <Button
-          rightIcon={
-            <Icon
-              as={BiArrowBack}
-              fontSize="1.25rem"
-              transform="rotate(180deg)"
-            />
-          }
+          rightIcon={<Icon as={BiRightArrowAlt} fontSize="1.25rem" />}
           iconSpacing="1rem"
           ml="auto"
           onClick={() => setPageNumber(SITE_LAUNCH_PAGES.INFO_GATHERING)} // going to the next page}
