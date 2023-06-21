@@ -31,6 +31,7 @@ import { OverrideWarningModal } from "./components/OverrideWarningModal"
 import { FooterSettings } from "./FooterSettings"
 import { GeneralSettings } from "./GeneralSettings"
 import { LogoSettings } from "./LogoSettings"
+import { PrivacySettings } from "./PrivacySettings"
 import { SocialMediaSettings } from "./SocialMediaSettings"
 
 export const Settings = (): JSX.Element => {
@@ -182,6 +183,9 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
             mb="7.125rem"
           >
             <GeneralSettings isError={isError} />
+            {getValues("isAmplifySite") && (
+              <PrivacySettings isError={isError} />
+            )}
             <LogoSettings isError={isError} />
             <ColourSettings isError={isError} />
             <SocialMediaSettings isError={isError} />
