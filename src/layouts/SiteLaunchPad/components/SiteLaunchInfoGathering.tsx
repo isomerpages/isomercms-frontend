@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { Box, Button, Icon, Text, RadioGroup } from "@chakra-ui/react"
 import { Input, Radio } from "@opengovsg/design-system-react"
 import { useState } from "react"
