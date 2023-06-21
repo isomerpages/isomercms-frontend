@@ -55,12 +55,26 @@ declare namespace Cypress {
     deleteMedia(mediaTitle: string, disableAction?: boolean): Chainable<void>
     saveSettings(): Chainable<void>
     visitLoadSettings(siteName: string, sitePath: string): Chainable<void>
+    /**
+     * Creates a email user with the given email and user type.
+     * This requires the `initialUserType`, which sets the current active session
+     * back to said user type.
+     *
+     * We require this due to Cypress sessions being async,
+     * and running in `beforeEach` leads to test bodies being ran without
+     * the required setup.
+     * @param email Email of the user to create
+     * @param userType The user type to create
+     * @param initialUserType The user type to set the session to once creation is done
+     * @param site The site the user belongs to. Leaving this blank means that
+     * the user does not belong to any site.
+     */
     createEmailUser(
       email: string,
       // NOTE: have to (re)declare the type here
       // otherwise the import leads to a type error
       userType: "Email admin" | "Email collaborator",
-      InitialUserType: "Email admin" | "Email collaborator",
+      initialUserType: "Email admin" | "Email collaborator",
       site?: string
     ): Chainable<void>
   }
