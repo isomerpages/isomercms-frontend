@@ -10,7 +10,7 @@ import {
 } from "types/directory"
 import { NotificationData } from "types/notifications"
 import { BlobDiff, ReviewRequest } from "types/reviewRequest"
-import { BackendSiteSettings } from "types/settings"
+import { BackendPasswordSettings, BackendSiteSettings } from "types/settings"
 import {
   CollaboratorsStats,
   SiteDashboardInfo,
@@ -64,6 +64,11 @@ export const buildResourceRoomData = apiDataBuilder<DirectoryData[]>(
 
 export const buildSettingsData = apiDataBuilder<BackendSiteSettings>(
   "*/sites/:siteName/settings",
+  "get"
+)
+
+export const buildPasswordData = apiDataBuilder<BackendPasswordSettings>(
+  "*/sites/:siteName/settings/repoPassword",
   "get"
 )
 

@@ -14,7 +14,7 @@ import {
   ReviewRequestStatus,
   ReviewRequest,
 } from "types/reviewRequest"
-import { BackendSiteSettings } from "types/settings"
+import { BackendPasswordSettings, BackendSiteSettings } from "types/settings"
 import {
   CollaboratorsStats,
   SiteDashboardInfo,
@@ -203,6 +203,12 @@ export const MOCK_BE_SETTINGS: BackendSiteSettings = {
     telegram: "https://t.me/isogram",
     tiktok: "https://www.tiktok.com/isotok",
   },
+}
+
+export const MOCK_PASSWORD_SETTINGS: BackendPasswordSettings = {
+  encryptedPassword: "",
+  iv: "",
+  isAmplifySite: true,
 }
 
 export const MOCK_FOLDER_NAME = "mock-folder"
