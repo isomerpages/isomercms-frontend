@@ -15,3 +15,10 @@ export interface MiddlewareErrorDto {
     name?: string
   }
 }
+
+export interface IsomerErrorDto {
+  error: {
+    code: string
+    message: string
+  }
+}
