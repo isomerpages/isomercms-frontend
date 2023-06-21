@@ -3,9 +3,18 @@ name: "Chromatic"
 
 # Event for the workflow
 on:
-  push:
-  pull_request:
-    types: [opened, reopened]
+  issue_comment:
+    types: [created, edited]
+
+env:
+  # The full comment text to match to trigger this workflow
+  ISOMER_TRIGGER_COMMENT: "!run-chromatic"
+  # The slug for the Isomer core team
+  ISOMER_CORE_TEAM_SLUG: core
+  # The file name of this workflow, should match this file name
+  ISOMER_COMMENT_WORKFLOW_NAME: chromatic.yml
+  # Use GitHub Token
+  GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
 # List of jobs
 jobs:
@@ -34,6 +43,26 @@ jobs:
     environment: staging
     # Job steps
     steps:
+      # Determine if the PR comment should trigger the e2e test suite
+      - name: Check if user is part of Isomer core team
+        uses: tspascoal/get-user-teams-membership@v1
+        id: checkUserMember
+        with:
+          username: ${{ github.actor }}
+          team: ${{ env.ISOMER_CORE_TEAM_SLUG }}
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }} # requires read:org
+
+      - name: Check for trigger words (in PR comment)
+        if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request }}
+        uses: khan/pull-request-comment-trigger@v1.1.0
+        id: check
+        with:
+          trigger: "${{ env.ISOMER_TRIGGER_COMMENT }}"
+          prefix_only: "true"
+          reaction: "+1"
+      - name: Dont run job if user is not part of Isomer core team or trigger words are not present
+        if: ${{ steps.checkUserMember.outputs.isTeamMember != 'true' || !(github.event_name == 'issue_comment' && github.event.issue.pull_request && steps.check.outputs.triggered == 'true') }}
+        run: exit 0
       - uses: actions/checkout@v1
       # This extra step is not in the original chromatic workflow.
       # This is to use a specific version of node (14.x), because the default is 16.x,
