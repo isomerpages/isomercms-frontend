@@ -1,7 +1,9 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { Box, Button, Icon, Text, RadioGroup } from "@chakra-ui/react"
 import { Input, Radio } from "@opengovsg/design-system-react"
 import { useState } from "react"
-import { BiArrowBack } from "react-icons/bi"
+import { useForm } from "react-hook-form"
+import { BiRightArrowAlt } from "react-icons/bi"
 
 import { SITE_LAUNCH_PAGES } from "types/siteLaunch"
 
@@ -18,35 +20,44 @@ interface SiteLaunchInfoGatheringBodyProps {
   setPageNumber: (number: number) => void
 }
 
+interface SiteLaunchFormData {
+  domain: string
+  nature: "new" | "live"
+}
+
 export const SiteLaunchInfoGatheringBody = ({
   setPageNumber,
 }: SiteLaunchInfoGatheringBodyProps): JSX.Element => {
-  const [inputValue, setInputValue] = useState<string>("")
-  const [selectedRadio, setSelectedRadio] = useState<string>("")
-  const handleRadioChange = (value: string) => {
-    setSelectedRadio(value === selectedRadio ? "" : value)
-  }
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value)
-  }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<SiteLaunchFormData>()
 
-  const isNextButtonDisabled = !inputValue || !selectedRadio
+  const onSubmit = (data: SiteLaunchFormData) => {
+    // todo update context with data
+    setPageNumber(SITE_LAUNCH_PAGES.RISK_ACCEPTANCE)
+  }
+  const [selectedRadio, setSelectedRadio] = useState("")
 
   return (
     <SiteLaunchPadBody>
       <Text textStyle="subhead-1">What domain are you launching with?</Text>
       <Input
         mt="4"
+        mb="1"
         placeholder="eg: www.isomer.gov.sg"
-        value={inputValue}
-        onChange={handleInputChange}
+        {...register("domain", { required: true })}
       />
-      <br />
-      <br />
-      <Text textStyle="subhead-1">
+      {errors.domain && <Text textStyle="subhead-2">Domain is required</Text>}
+      <Text textStyle="subhead-1" mt="4rem">
         What is the nature of the domain you are launching with?
       </Text>
-      <RadioGroup value={selectedRadio} onChange={handleRadioChange}>
+      <RadioGroup
+        {...register("nature", { required: true })}
+        onChange={(value) => setSelectedRadio(value)}
+      >
         <Radio value="new">
           <Text textStyle="body-1" color="black">
             It is a brand new domain
@@ -67,15 +78,9 @@ export const SiteLaunchInfoGatheringBody = ({
           Cancel
         </Button>
         <Button
-          rightIcon={
-            <Icon
-              as={BiArrowBack}
-              fontSize="1.25rem"
-              transform="rotate(180deg)"
-            />
-          }
-          onClick={() => setPageNumber(SITE_LAUNCH_PAGES.RISK_ACCEPTANCE)}
-          disabled={isNextButtonDisabled}
+          rightIcon={<Icon as={BiRightArrowAlt} fontSize="1.25rem" />}
+          onClick={handleSubmit(onSubmit)}
+          disabled={!selectedRadio || !watch("domain")}
         >
           Next
         </Button>
