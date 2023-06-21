@@ -7,8 +7,6 @@ import {
 
 const ALGORITHM = "aes-256-cbc"
 const { REACT_APP_PASSWORD_SECRET_KEY } = process.env
-if (!REACT_APP_PASSWORD_SECRET_KEY) throw new Error()
-const SECRET_KEY = Buffer.from(REACT_APP_PASSWORD_SECRET_KEY, "hex")
 
 function generateEncryptionKey() {
   const a = randomBytes(32)
@@ -30,6 +28,8 @@ export const encryptPassword = (
   encryptedPassword: string
   iv: string
 } => {
+  if (!REACT_APP_PASSWORD_SECRET_KEY) throw new Error()
+  const SECRET_KEY = Buffer.from(REACT_APP_PASSWORD_SECRET_KEY, "hex")
   const iv = randomBytes(16)
   const decipher = createCipheriv(ALGORITHM, SECRET_KEY, iv)
   let encryptedPassword = decipher.update(password, "utf8", "hex")
@@ -41,6 +41,8 @@ export const decryptPassword = (
   encryptedPassword: string,
   iv: string
 ): string => {
+  if (!REACT_APP_PASSWORD_SECRET_KEY) throw new Error()
+  const SECRET_KEY = Buffer.from(REACT_APP_PASSWORD_SECRET_KEY, "hex")
   const decipher = createDecipheriv(
     ALGORITHM,
     SECRET_KEY,
