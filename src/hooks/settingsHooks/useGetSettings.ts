@@ -6,7 +6,10 @@ import { SETTINGS_CONTENT_KEY } from "constants/queryKeys"
 
 import * as SettingsService from "services/SettingsService"
 
+import { decryptPassword } from "utils/password"
+
 import {
+  BackendPasswordSettings,
   BackendSiteSettings,
   SiteColourSettings,
   SiteSettings,
@@ -116,12 +119,35 @@ const convertFromBe = (backendSettings: BackendSiteSettings): SiteSettings => {
   }
 }
 
+const extractPassword = (
+  passwordData: BackendPasswordSettings
+): string | null => {
+  const { encryptedPassword, iv, isAmplifySite } = passwordData
+  if (!isAmplifySite) return null
+  if (!encryptedPassword || !iv) return ""
+
+  return decryptPassword(encryptedPassword, iv)
+}
+
 export const useGetSettings = (
   siteName: string
 ): UseQueryResult<SiteSettings> => {
   return useQuery<SiteSettings>(
     [SETTINGS_CONTENT_KEY, siteName],
-    () => SettingsService.get({ siteName }).then(convertFromBe),
+    async () => {
+      const siteSettings = await SettingsService.get({ siteName })
+      const passwordSettings = await SettingsService.getPassword({ siteName })
+      const convertedSettings = convertFromBe({
+        ...siteSettings,
+      })
+      const parsedPassword = extractPassword(passwordSettings)
+      return {
+        ...convertedSettings,
+        password: parsedPassword,
+        privatiseStaging: !!parsedPassword,
+        ...passwordSettings,
+      }
+    },
     {
       retry: false,
     }

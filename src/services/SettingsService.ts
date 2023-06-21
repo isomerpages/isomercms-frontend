@@ -1,9 +1,19 @@
-import { BackendSiteSettings } from "types/settings"
+import { decryptPassword, encryptPassword } from "utils/password"
+
+import {
+  BackendPasswordSettings,
+  BackendSiteSettings,
+  SitePasswordSettings,
+} from "types/settings"
 
 import { apiService } from "./ApiService"
 
 const getSettingsEndpoint = (siteName: string): string => {
   return `/sites/${siteName}/settings`
+}
+
+const getSettingsPasswordEndpoint = (siteName: string): string => {
+  return `/sites/${siteName}/settings/repoPassword`
 }
 
 export const get = async ({
@@ -29,4 +39,54 @@ export const update = async (
   }
 
   return apiService.post(endpoint, renamedSettings)
+}
+
+export const getPassword = async ({
+  siteName,
+}: {
+  siteName: string
+}): Promise<BackendPasswordSettings> => {
+  const endpoint = getSettingsPasswordEndpoint(siteName)
+  return apiService
+    .get<BackendPasswordSettings>(endpoint)
+    .then((res) => res.data)
+}
+
+export const updatePassword = async (
+  siteName: string,
+  // eslint-disable-next-line camelcase
+  {
+    password,
+    encryptedPassword,
+    iv,
+    isAmplifySite,
+    privatiseStaging,
+  }: SitePasswordSettings
+): Promise<void> => {
+  const endpoint = getSettingsPasswordEndpoint(siteName)
+  // Netlify sites don't have password feature
+  if (!isAmplifySite) return undefined
+  const hasPreviousPassword = !!encryptedPassword
+  const hasPasswordChanged =
+    hasPreviousPassword && decryptPassword(encryptedPassword, iv) !== password
+
+  // No need to call endpoint if password is the same
+  const passwordUnchanged =
+    privatiseStaging && hasPreviousPassword && !hasPasswordChanged
+  const passwordUnset = !privatiseStaging && !hasPreviousPassword
+  if (passwordUnchanged || passwordUnset) return undefined
+  if (!password)
+    return apiService.post(endpoint, {
+      encryptedPassword: "",
+      iv: "",
+      enablePassword: privatiseStaging,
+    })
+  const { encryptedPassword: newPassword, iv: newIv } = encryptPassword(
+    password
+  )
+  return apiService.post(endpoint, {
+    encryptedPassword: newPassword,
+    iv: newIv,
+    enablePassword: privatiseStaging,
+  })
 }
