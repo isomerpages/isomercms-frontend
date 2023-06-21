@@ -13,10 +13,16 @@ const isBackendError = (
   return !!(err as AxiosError<ErrorDto>).response?.data.message
 }
 
-const isV2Error = (
+const isIsomerExternalError = (
   err: AxiosError<unknown>
 ): err is AxiosError<IsomerErrorDto> => {
-  return !!(err as AxiosError<IsomerErrorDto>).response?.data.error
+  const errDto = err as AxiosError<IsomerErrorDto>
+  return (
+    !!errDto.response?.data.error &&
+    errDto.response?.data.error.isV2Error &&
+    !!errDto.response.data.error.code &&
+    !!errDto.response.data.error.message
+  )
 }
 
 export const getAxiosErrorMessage = (
@@ -25,12 +31,8 @@ export const getAxiosErrorMessage = (
 ): string => {
   if (!error) return ""
 
-  if (isV2Error(error)) {
-    return `${
-      error.response?.data.error?.code
-        ? `${error.response?.data.error?.code}: `
-        : ""
-    }${error.response?.data.error?.message || defaultErrorMessage}`
+  if (isIsomerExternalError(error)) {
+    return `${error.response?.data.error?.code}: ${error.response?.data.error?.message}`
   }
 
   if (isBackendError(error)) {
