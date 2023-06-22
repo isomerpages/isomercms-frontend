@@ -84,7 +84,7 @@ const LocationHoursFields = ({
               <Button
                 my="24px"
                 colorScheme="danger"
-                isFullWidth
+                w="100%"
                 id={`${sectionId}-${cardIndex}-remove_operating_hours-${operationsIndex}`}
                 onClick={onFieldChange}
               >
@@ -96,7 +96,7 @@ const LocationHoursFields = ({
       <Box mt={3}>
         {operatingHours.length < DEFAULT_NUM_OPERATING_FIELDS ? (
           <Button
-            isFullWidth
+            w="100%"
             onClick={onFieldChange}
             id={`${sectionId}-${cardIndex}-add_operating_hours`}
           >

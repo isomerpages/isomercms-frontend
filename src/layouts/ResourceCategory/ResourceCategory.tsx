@@ -45,7 +45,7 @@ export const ResourceCategory = (): JSX.Element => {
       <SiteEditLayout>
         <Section>
           <Box>
-            <Text as="h2" textStyle="h2">
+            <Text as="h4" textStyle="h4">
               {deslugifyDirectory(resourceCategoryName)}
             </Text>
             <ResourceCategoryBreadcrumb />

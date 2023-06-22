@@ -31,7 +31,7 @@ export const MainPages = ({
     contactUsPage?.content?.frontMatter?.layout === CONTACT_US_TEMPLATE_LAYOUT
   return (
     <Section>
-      <Text as="h2" textStyle="h2">
+      <Text as="h4" textStyle="h4">
         My Workspace
       </Text>
       <Skeleton isLoaded={!!isLoading} w="full">

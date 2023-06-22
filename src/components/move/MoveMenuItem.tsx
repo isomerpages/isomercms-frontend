@@ -45,7 +45,7 @@ export const DirMenuItem = ({
   return (
     <>
       <Button
-        isFullWidth
+        w="100%"
         variant="clear"
         paddingStart="1.5rem"
         display="flex"

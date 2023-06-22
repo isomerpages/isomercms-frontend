@@ -113,7 +113,7 @@ export const SiteDashboard = (): JSX.Element => {
       <Container maxW="container.xl" minH="100vh">
         {/* Heading section */}
         <Flex px="4rem">
-          <Heading as="h2" noOfLines={1} w="70%">
+          <Heading as="h4" noOfLines={1} w="70%">
             {siteName}
           </Heading>
           <Spacer />

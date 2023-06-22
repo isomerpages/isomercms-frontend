@@ -27,6 +27,11 @@ export const ContextMenuItem = forwardRef<ContextMenuItemProps, "button">(
         }}
         borderRadius={0}
         ref={ref}
+        color="text.body"
+        _hover={{
+          textDecoration: "none",
+          backgroundColor: "primary.100",
+        }}
       />
     )
   }

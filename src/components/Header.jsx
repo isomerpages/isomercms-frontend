@@ -135,7 +135,7 @@ const Header = ({
         {/* <Spacer /> */}
         {title ? (
           <Flex minWidth="-webkit-min-content" alignItems="center">
-            <Text textStyle="h3">{title}</Text>
+            <Text textStyle="h5">{title}</Text>
           </Flex>
         ) : null}
         <HStack flex={1} justifyContent="flex-end">

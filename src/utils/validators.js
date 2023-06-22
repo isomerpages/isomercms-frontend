@@ -4,11 +4,11 @@ import moment from "moment-timezone"
 import { getLengthWithoutTags } from "./allowedHTML"
 import { deslugifyDirectory } from "./deslugify"
 import {
-  generatePageFileName,
-  retrieveResourceFileMetadata,
-  slugifyCategory,
   titleToPageFileName,
-} from "./legacy"
+  slugifyCategory,
+  retrieveResourceFileMetadata,
+} from "./fileNameUtils"
+import { generatePageFileName } from "./legacy"
 
 // Common regexes and constants
 // ==============

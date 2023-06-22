@@ -82,7 +82,7 @@ export const orderedListButton = {
 }
 
 export const tableButton = {
-  name: "table",
+  name: "md-table",
   action: drawTable,
   className: "fa fa-table",
   title: "Insert Table",

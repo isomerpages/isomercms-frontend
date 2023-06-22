@@ -1,3 +1,6 @@
+import path from "path"
+
+import wp from "@cypress/webpack-preprocessor"
 import { defineConfig } from "cypress"
 
 export default defineConfig({
@@ -5,30 +8,48 @@ export default defineConfig({
   viewportHeight: 768,
   viewportWidth: 1366,
   projectId: "nxbty1",
-
-  // NOTE: Cypress keeps 50 tests in memory by default;
-  // Unfortunately, this leads to OOM issues occasionally.
-  // This has been reduced to 5 to help with the OOM issues.
-  // Refer here: https://docs.cypress.io/guides/references/configuration#Global for details.
   numTestsKeptInMemory: 5,
-
   e2e: {
+    supportFile: "cypress/support/e2e.ts",
     specPattern: "cypress/e2e/**/*.{js,jsx,ts,tsx}",
-    setupNodeEvents: (on, config) => {
-      // NOTE: Disabling as cypress docs give this form
-      // Refer here: https://docs.cypress.io/api/plugins/configuration-api#Usage
-      // eslint-disable-next-line no-param-reassign
+    setupNodeEvents(on, config) {
+      on(
+        "file:preprocessor",
+        wp({
+          webpackOptions: {
+            mode: "development",
+            devtool: "eval-source-map",
+            resolve: {
+              alias: {
+                utils: path.resolve(__dirname, "src/utils"),
+              },
+              extensions: [".ts", ".js", ".jsx", ".tsx"],
+              fallback: {
+                process: "process/browser",
+              },
+            },
+            module: {
+              rules: [
+                {
+                  test: /\.ts$/,
+                  exclude: /node_modules/,
+                  use: {
+                    loader: "babel-loader",
+                    options: {
+                      presets: ["@babel/typescript"],
+                      plugins: ["@babel/plugin-transform-runtime"],
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        })
+      )
       config.baseUrl = process.env.CYPRESS_BASEURL || ""
 
       // IMPORTANT return the updated config object
       return config
-    },
-  },
-
-  component: {
-    devServer: {
-      framework: "create-react-app",
-      bundler: "webpack",
     },
   },
 })

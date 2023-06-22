@@ -70,7 +70,7 @@ export const Folders = (): JSX.Element => {
       <SiteEditLayout overflow="hidden">
         <Section>
           <VStack align="left" spacing="0.375rem">
-            <Text as="h2" textStyle="h2">
+            <Text as="h4" textStyle="h4">
               {subCollectionName
                 ? deslugifyDirectory(subCollectionName)
                 : deslugifyDirectory(collectionName)}

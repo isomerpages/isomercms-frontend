@@ -283,7 +283,7 @@ const ResourceRoomContent = ({
         <Section>
           <Box>
             <HStack spacing="0.25rem" alignItems="center">
-              <Text as="h2" textStyle="h2">
+              <Text as="h4" textStyle="h4">
                 Resources
               </Text>
               <ContextMenu>

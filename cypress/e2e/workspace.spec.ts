@@ -1,4 +1,5 @@
-import { slugifyCategory, titleToPageFileName, deslugifyDirectory } from "utils"
+import { deslugifyDirectory } from "utils/deslugify"
+import { slugifyCategory, titleToPageFileName } from "utils/fileNameUtils"
 
 import {
   CMS_BASEURL,
