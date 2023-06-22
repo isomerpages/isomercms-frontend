@@ -10,9 +10,8 @@ import {
 
 import { ServicesContext } from "contexts/ServicesContext"
 
+import { getAxiosErrorMessage } from "utils/axios"
 import { useSuccessToast, useErrorToast } from "utils/toasts"
-
-import { DEFAULT_RETRY_MSG } from "utils"
 
 import { extractPageInfo } from "./utils"
 
@@ -59,10 +58,13 @@ export function useUpdatePageHook(params, queryParams) {
         if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
       },
       onError: (err) => {
-        if (err.response.status !== 409)
+        if (err.response.status !== 409) {
           errorToast({
-            description: `Your page could not be updated. ${DEFAULT_RETRY_MSG}`,
+            description: `Your page could not be updated. ${getAxiosErrorMessage(
+              err
+            )}`,
           })
+        }
         if (queryParams && queryParams.onError) queryParams.onError(err)
       },
     }

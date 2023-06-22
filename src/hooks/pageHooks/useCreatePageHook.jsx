@@ -11,9 +11,10 @@ import { ServicesContext } from "contexts/ServicesContext"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
+import { getAxiosErrorMessage } from "utils/axios"
 import { useErrorToast } from "utils/toasts"
 
-import { getRedirectUrl, DEFAULT_RETRY_MSG } from "utils"
+import { getRedirectUrl } from "utils"
 
 import { extractPageInfo } from "./utils"
 
@@ -53,10 +54,13 @@ export function useCreatePageHook(params, queryParams) {
         )
         if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
       },
-      onError: () => {
+      onError: (err) => {
         errorToast({
-          description: `A new page could not be created. ${DEFAULT_RETRY_MSG}`,
+          description: `A new page could not be created. ${getAxiosErrorMessage(
+            err
+          )}`,
         })
+
         if (queryParams && queryParams.onError) queryParams.onError()
       },
     }
