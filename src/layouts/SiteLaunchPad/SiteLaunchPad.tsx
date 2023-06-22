@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import {
   Modal,
   ModalOverlay,
@@ -128,10 +129,7 @@ const getInitialPageNumber = (
   return SITE_LAUNCH_PAGES.DISCLAIMER
 }
 export const SiteLaunchPad = (): JSX.Element => {
-  const {
-    siteLaunchStatusProps,
-    setSiteLaunchStatusProps,
-  } = useSiteLaunchContext()
+  const { siteLaunchStatusProps } = useSiteLaunchContext()
 
   const [pageNumber, setPageNumber] = useState(
     getInitialPageNumber(siteLaunchStatusProps)
