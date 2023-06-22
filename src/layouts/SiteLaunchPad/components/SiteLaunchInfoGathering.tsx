@@ -10,7 +10,7 @@ import { SITE_LAUNCH_PAGES } from "types/siteLaunch"
 import { SiteLaunchPadBody } from "./SiteLaunchPadBody"
 import { SiteLaunchPadTitle } from "./SiteLaunchPadTitle"
 
-export const SiteLaunchInfoGatheringTitle = (): JSX.Element => {
+export const SiteLaunchInfoCollectorTitle = (): JSX.Element => {
   const title = "Tell us more about your domain"
   const subTitle = "This will inform the steps you have to take for launch"
   return <SiteLaunchPadTitle title={title} subTitle={subTitle} />
@@ -25,7 +25,7 @@ interface SiteLaunchFormData {
   nature: "new" | "live"
 }
 
-export const SiteLaunchInfoGatheringBody = ({
+export const SiteLaunchInfoCollectorBody = ({
   setPageNumber,
 }: SiteLaunchInfoGatheringBodyProps): JSX.Element => {
   const {

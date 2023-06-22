@@ -28,8 +28,8 @@ import {
   SiteLaunchDisclaimerTitle,
 } from "./components/SiteLaunchDisclaimer"
 import {
-  SiteLaunchInfoGatheringTitle,
-  SiteLaunchInfoGatheringBody,
+  SiteLaunchInfoCollectorTitle,
+  SiteLaunchInfoCollectorBody,
 } from "./components/SiteLaunchInfoGathering"
 
 interface RiskAcceptanceModalProps {
@@ -132,8 +132,8 @@ export const SiteLaunchPad = (): JSX.Element => {
       break
     case SITE_LAUNCH_PAGES.INFO_GATHERING:
     case SITE_LAUNCH_PAGES.RISK_ACCEPTANCE: // Risk acceptance modal overlay
-      title = <SiteLaunchInfoGatheringTitle />
-      body = <SiteLaunchInfoGatheringBody setPageNumber={setPageNumber} />
+      title = <SiteLaunchInfoCollectorTitle />
+      body = <SiteLaunchInfoCollectorBody setPageNumber={setPageNumber} />
       break
 
     // todo case for site launch pages checklist
