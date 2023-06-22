@@ -51,7 +51,7 @@ export const SiteLaunchInfoCollectorBody = ({
         {...register("domain", { required: true })}
       />
       {errors.domain && <Text textStyle="subhead-2">Domain is required</Text>}
-      <Text textStyle="subhead-1" mt="4rem">
+      <Text textStyle="subhead-1" mt="1.5rem">
         What is the nature of the domain you are launching with?
       </Text>
       <RadioGroup {...register("nature")} onChange={setSelectedRadio}>
@@ -66,7 +66,7 @@ export const SiteLaunchInfoCollectorBody = ({
           </Text>
         </Radio>
       </RadioGroup>
-      <Box display="flex" justifyContent="flex-end">
+      <Box display="flex" justifyContent="flex-end" mt="2rem">
         <Button
           variant="link"
           mr={4}
