@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import {
   Modal,
   ModalOverlay,
@@ -14,6 +15,7 @@ import {
   ModalCloseButton,
 } from "@opengovsg/design-system-react"
 import { useState } from "react"
+import { useForm } from "react-hook-form"
 
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
@@ -39,7 +41,9 @@ const RiskAcceptanceModal = ({
   isOpen,
   setPageNumber,
 }: RiskAcceptanceModalProps): JSX.Element => {
-  const [isDisabled, setIsDisabled] = useState(true)
+  const { register, handleSubmit, watch } = useForm({})
+  const isRiskAccepted = watch("isRiskAccepted")
+
   return (
     <Modal
       isOpen={isOpen}
@@ -74,15 +78,8 @@ const RiskAcceptanceModal = ({
             previously.
           </Text>
 
-          <Checkbox
-            onChange={(e) => {
-              e.preventDefault()
-              setIsDisabled(!e.target.checked)
-            }}
-          >
-            <Text textStyle="body-1" color="black">
-              I understand the risks
-            </Text>
+          <Checkbox {...register("isRiskAccepted")}>
+            <Text textStyle="body-1">I understand the risks</Text>
           </Checkbox>
         </ModalBody>
 
@@ -95,9 +92,11 @@ const RiskAcceptanceModal = ({
             Cancel
           </Button>
           <Button
-            isDisabled={isDisabled}
+            isDisabled={!isRiskAccepted}
             type="submit"
-            onClick={() => setPageNumber(SITE_LAUNCH_PAGES.CHECKLIST)}
+            onClick={handleSubmit(() => {
+              setPageNumber(SITE_LAUNCH_PAGES.CHECKLIST)
+            })}
           >
             Continue
           </Button>
@@ -118,10 +117,7 @@ const getInitialPageNumber = (
   return SITE_LAUNCH_PAGES.DISCLAIMER
 }
 export const SiteLaunchPad = (): JSX.Element => {
-  const {
-    siteLaunchStatusProps,
-    setSiteLaunchStatusProps,
-  } = useSiteLaunchContext()
+  const { siteLaunchStatusProps } = useSiteLaunchContext()
 
   const [pageNumber, setPageNumber] = useState(
     getInitialPageNumber(siteLaunchStatusProps)

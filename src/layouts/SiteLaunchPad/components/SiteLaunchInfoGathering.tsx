@@ -54,10 +54,7 @@ export const SiteLaunchInfoGatheringBody = ({
       <Text textStyle="subhead-1" mt="4rem">
         What is the nature of the domain you are launching with?
       </Text>
-      <RadioGroup
-        {...register("nature", { required: true })}
-        onChange={(value) => setSelectedRadio(value)}
-      >
+      <RadioGroup {...register("nature")} onChange={setSelectedRadio}>
         <Radio value="new">
           <Text textStyle="body-1" color="black">
             It is a brand new domain
