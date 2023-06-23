@@ -20,9 +20,14 @@ interface SiteLaunchInfoGatheringBodyProps {
   setPageNumber: (number: number) => void
 }
 
+const SiteNature = {
+  New: "new",
+  Live: "live",
+} as const
+
 interface SiteLaunchFormData {
   domain: string
-  nature: "new" | "live"
+  nature: typeof SiteNature[keyof typeof SiteNature]
 }
 
 export const SiteLaunchInfoCollectorBody = ({
