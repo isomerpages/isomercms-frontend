@@ -5,6 +5,8 @@ import {
   createHash,
 } from "crypto"
 
+import generator from "generate-password"
+
 const ALGORITHM = "aes-256-cbc"
 const { REACT_APP_PASSWORD_SECRET_KEY } = process.env
 
@@ -15,11 +17,14 @@ function generateEncryptionKey() {
 }
 
 export const generatePassword = (): string => {
-  return randomBytes(16)
-    .toString("base64")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "!")
-    .replace(/\=/g, "")
+  return generator
+    .generate({
+      length: 15,
+      numbers: true,
+      symbols: true,
+      strict: true,
+    })
+    .replace(/:/g, "-")
 }
 
 export const encryptPassword = (
