@@ -7,6 +7,7 @@ import {
   ModalHeader,
   ModalBody,
   Text,
+  VStack,
 } from "@chakra-ui/react"
 import {
   Button,
@@ -19,7 +20,7 @@ import { useForm } from "react-hook-form"
 
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
-import { SiteViewLayout } from "layouts/layouts"
+import { SiteViewHeader } from "layouts/layouts/SiteViewLayout/SiteViewHeader"
 
 import { SiteLaunchStatusProps, SITE_LAUNCH_PAGES } from "types/siteLaunch"
 
@@ -79,7 +80,9 @@ const RiskAcceptanceModal = ({
           </Text>
 
           <Checkbox {...register("isRiskAccepted")}>
-            <Text textStyle="body-1">I understand the risks</Text>
+            <Text color="text.body" textStyle="body-1">
+              I understand the risks
+            </Text>
           </Checkbox>
         </ModalBody>
 
@@ -142,13 +145,16 @@ export const SiteLaunchPad = (): JSX.Element => {
       body = <SiteLaunchDisclaimerBody setPageNumber={setPageNumber} />
   }
   return (
-    <SiteViewLayout overflow="hidden">
-      {title}
-      {body}
-      <RiskAcceptanceModal
-        isOpen={pageNumber === SITE_LAUNCH_PAGES.RISK_ACCEPTANCE}
-        setPageNumber={setPageNumber}
-      />
-    </SiteViewLayout>
+    <>
+      <SiteViewHeader />
+      <VStack bg="white" w="100%" minH="100vh" spacing="2rem">
+        {title}
+        {body}
+        <RiskAcceptanceModal
+          isOpen={pageNumber === SITE_LAUNCH_PAGES.RISK_ACCEPTANCE}
+          setPageNumber={setPageNumber}
+        />
+      </VStack>
+    </>
   )
 }
