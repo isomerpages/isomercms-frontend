@@ -8,6 +8,7 @@ import {
   TEST_PRIMARY_COLOR,
   TEST_REPO_NAME,
 } from "../fixtures/constants"
+import { setCookieWithDomain } from "../utils/cookies"
 
 Cypress.Commands.add("saveSettings", () => {
   cy.intercept("POST", "/v2/sites/e2e-test-repo/settings").as("awaitSave")

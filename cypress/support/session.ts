@@ -14,23 +14,24 @@ import {
   E2E_EMAIL_COLLAB,
 } from "../fixtures/constants"
 import { EmailUserTypes, USER_TYPES } from "../fixtures/users"
+import { setCookieWithDomain } from "../utils/cookies"
 
 Cypress.Commands.add("setGithubSessionDefaults", () => {
-  cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-  cy.setCookie(E2E_USER_TYPE_COOKIE_KEY, USER_TYPES.Github)
+  setCookieWithDomain(COOKIE_NAME, COOKIE_VALUE)
+  setCookieWithDomain(E2E_USER_TYPE_COOKIE_KEY, USER_TYPES.Github)
   window.localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(E2E_USER))
   window.localStorage.setItem(LOCAL_STORAGE_USERID_KEY, E2E_USER.userId)
 })
 
 Cypress.Commands.add("setEmailSessionDefaults", (userType: EmailUserTypes) => {
-  cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-  cy.setCookie(E2E_USER_TYPE_COOKIE_KEY, userType)
-  cy.setCookie(E2E_SITE_KEY, E2E_EMAIL_TEST_SITE.name)
-  cy.setCookie(
+  setCookieWithDomain(COOKIE_NAME, COOKIE_VALUE)
+  setCookieWithDomain(E2E_USER_TYPE_COOKIE_KEY, userType)
+  setCookieWithDomain(E2E_SITE_KEY, E2E_EMAIL_TEST_SITE.name)
+  setCookieWithDomain(
     E2E_COOKIE.Email.key,
     userType === "Email admin" ? E2E_EMAIL_ADMIN.email : E2E_EMAIL_COLLAB.email
   )
-  cy.setCookie(E2E_COOKIE.Site.key, E2E_COOKIE.Site.value)
+  setCookieWithDomain(E2E_COOKIE.Site.key, E2E_COOKIE.Site.value)
 })
 
 Cypress.Commands.add(
@@ -42,11 +43,11 @@ Cypress.Commands.add(
     site = ""
   ) => {
     cy.clearCookies()
-    cy.setCookie(E2E_COOKIE.Site.key, site)
-    cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-    cy.setCookie(E2E_COOKIE.Auth.key, E2E_COOKIE.Auth.value)
-    cy.setCookie(E2E_COOKIE.EmailUserType.key, userType)
-    cy.setCookie(E2E_COOKIE.Email.key, email)
+    setCookieWithDomain(E2E_COOKIE.Site.key, site)
+    setCookieWithDomain(COOKIE_NAME, COOKIE_VALUE)
+    setCookieWithDomain(E2E_COOKIE.Auth.key, E2E_COOKIE.Auth.value)
+    setCookieWithDomain(E2E_COOKIE.EmailUserType.key, userType)
+    setCookieWithDomain(E2E_COOKIE.Email.key, email)
     cy.request("GET", `${BACKEND_URL}/auth/whoami`)
 
     cy.setEmailSessionDefaults(initialUserType)
