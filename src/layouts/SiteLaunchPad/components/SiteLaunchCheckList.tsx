@@ -214,35 +214,32 @@ export const SiteLaunchChecklistBody = ({
     mockDNSRecords()
   }
 
-  const checkboxes = []
   const numberOfTasks = SITE_LAUNCH_TASKS_LENGTH
   const numberOfCheckboxes = numberOfTasks - 1 // last task is a button
 
-  for (let i = 0; i < numberOfCheckboxes; i += 1) {
-    checkboxes.push(
-      <Center>
-        <Checkbox
-          // we want use to check box in order, so we disable it when it is not the next one
-          isDisabled={tasksDone >= i + 2 || tasksDone < i}
-          isChecked={i < tasksDone}
-          onChange={(e) => {
-            e.preventDefault()
-            if (e.target.checked) {
-              setTasksDone(i + 1)
-              handleIncrementStepNumber()
-            } else {
-              setTasksDone(i)
-              handleDecrementStepNumber()
-            }
-          }}
-        />
-      </Center>
-    )
-  }
+  const checkboxes = Array.from({ length: numberOfCheckboxes }, (_, i) => (
+    <Center key={i}>
+      <Checkbox
+        // we want use to check box in order, so we disable it when it is not the next one
+        isDisabled={tasksDone >= i + 2 || tasksDone < i}
+        isChecked={i < tasksDone}
+        onChange={(e) => {
+          e.preventDefault()
+          if (e.target.checked) {
+            setTasksDone(i + 1)
+            handleIncrementStepNumber()
+          } else {
+            setTasksDone(i)
+            handleDecrementStepNumber()
+          }
+        }}
+      />
+    </Center>
+  ))
 
-  let TABLE_MAPPING: TableMappingProps[] = []
-  for (let i = 0; i < numberOfCheckboxes; i += 1) {
-    TABLE_MAPPING.push({
+  let TABLE_MAPPING: TableMappingProps[] = Array.from(
+    { length: numberOfCheckboxes },
+    (_, i) => ({
       title: (
         <Text fontSize="s" {...getTextProps(i + 1, tasksDone)}>
           {TITLE_TEXTS[i]}
@@ -250,7 +247,7 @@ export const SiteLaunchChecklistBody = ({
       ),
       checkbox: checkboxes[i],
     })
-  }
+  )
 
   // Add all subtitle for some of the tasks
   TABLE_MAPPING = addSubtitlesForChecklist(TABLE_MAPPING, tasksDone)
