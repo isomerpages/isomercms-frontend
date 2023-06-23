@@ -30,6 +30,14 @@ import {
 import { SiteLaunchPadBody } from "./SiteLaunchPadBody"
 import { SiteLaunchPadTitle } from "./SiteLaunchPadTitle"
 
+const TITLE_TEXTS = [
+  "Set your DNS Time To Live(TTL) to 5 mins at least 24 hours before launching",
+  "Approve and publish your first review request",
+  "Drop existing domains on Cloudfront",
+  "Delete existing DNS records from your nameserver",
+  "Wait 1 hour to flush existing records",
+]
+
 export const SiteLaunchChecklistTitle = (): JSX.Element => {
   const title = "Complete these tasks to launch"
   const subTitle =
@@ -192,7 +200,9 @@ export const SiteLaunchChecklistBody = ({
       }, 10000)
     }
   }
-
+  const [tasksDone, setTasksDone] = useState<number>(
+    siteLaunchStatusProps?.stepNumber ?? SITE_LAUNCH_TASKS.NOT_STARTED
+  )
   const handleGenerateDNSRecordsOnClick = () => {
     setTasksDone(tasksDone + 1)
     setSiteLaunchStatusProps({
@@ -204,9 +214,6 @@ export const SiteLaunchChecklistBody = ({
     mockDNSRecords()
   }
 
-  const [tasksDone, setTasksDone] = useState<number>(
-    siteLaunchStatusProps?.stepNumber ?? SITE_LAUNCH_TASKS.NOT_STARTED
-  )
   const checkboxes = []
   const numberOfTasks = SITE_LAUNCH_TASKS_LENGTH
   const numberOfCheckboxes = numberOfTasks - 1 // last task is a button
@@ -233,20 +240,12 @@ export const SiteLaunchChecklistBody = ({
     )
   }
 
-  const titleTexts = [
-    "Set your DNS Time To Live(TTL) to 5 mins at least 24 hours before launching",
-    "Approve and publish your first review request",
-    "Drop existing domains on Cloudfront",
-    "Delete existing DNS records from your nameserver",
-    "Wait 1 hour to flush existing records",
-  ]
-
   let TABLE_MAPPING: TableMappingProps[] = []
   for (let i = 0; i < numberOfCheckboxes; i += 1) {
     TABLE_MAPPING.push({
       title: (
         <Text fontSize="s" {...getTextProps(i + 1, tasksDone)}>
-          {titleTexts[i]}
+          {TITLE_TEXTS[i]}
         </Text>
       ),
       checkbox: checkboxes[i],
