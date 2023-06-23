@@ -48,12 +48,17 @@ const getTextProps = (index: number, tasksDone: number): TextProps => {
 }
 
 const textWithCopyIcon = (text: string): JSX.Element => {
-  const truncatedText = text.length > 30 ? `${text.slice(0, 30)}...` : text
   return (
     <Button variant="link" onClick={() => navigator.clipboard.writeText(text)}>
-      <Box display="flex" alignItems="center">
-        <Text textStyle="body-2" color="black">
-          {truncatedText}
+      <Box display="flex" alignItems="center" maxW="16rem">
+        <Text
+          textStyle="body-2"
+          color="black"
+          whiteSpace="nowrap"
+          overflow="hidden"
+          textOverflow="ellipsis"
+        >
+          {text}
         </Text>
         <Icon as={BxCopy} ml="0.5rem" />
       </Box>
