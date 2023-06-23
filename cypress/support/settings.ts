@@ -23,10 +23,7 @@ Cypress.Commands.add("visitLoadSettings", (siteName, sitePath) => {
 })
 
 Cypress.Commands.add("setDefaultSettings", () => {
-  cy.setCookie(COOKIE_NAME, COOKIE_VALUE)
-
-  window.localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(E2E_USER))
-  window.localStorage.setItem(LOCAL_STORAGE_USERID_KEY, E2E_USER.userId)
+  cy.setGithubSessionDefaults()
 
   cy.visit(`/sites/${TEST_REPO_NAME}/settings`)
   cy.get("button[aria-label='Select colour']").first().click()
