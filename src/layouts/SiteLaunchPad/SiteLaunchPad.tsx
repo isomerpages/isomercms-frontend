@@ -129,7 +129,10 @@ const getInitialPageNumber = (
   return SITE_LAUNCH_PAGES.DISCLAIMER
 }
 export const SiteLaunchPad = (): JSX.Element => {
-  const { siteLaunchStatusProps } = useSiteLaunchContext()
+  const {
+    siteLaunchStatusProps,
+    setSiteLaunchStatusProps,
+  } = useSiteLaunchContext()
 
   const [pageNumber, setPageNumber] = useState(
     getInitialPageNumber(siteLaunchStatusProps)
