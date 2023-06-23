@@ -103,6 +103,51 @@ interface SiteLaunchChecklistBodyProps {
   handleIncrementStepNumber: () => void
   handleDecrementStepNumber: () => void
 }
+
+interface TableMappingProps {
+  title: JSX.Element
+  subTitle?: JSX.Element
+  checkbox: JSX.Element
+}
+
+const addSubtitlesForChecklist = (
+  TABLE_MAPPING: TableMappingProps[],
+  tasksDone: number
+): TableMappingProps[] => {
+  const newTableMapping = [...TABLE_MAPPING]
+  newTableMapping[SITE_LAUNCH_TASKS.SET_DNS_TTL - 1].subTitle = (
+    <>
+      {tasksDone === SITE_LAUNCH_TASKS.SET_DNS_TTL - 1 && (
+        <Text fontSize="small">
+          You can check you current DNS TTL through 3rd party applications such
+          as <Link href="https://www.nslookup.io/">nslookup.io</Link>
+        </Text>
+      )}
+    </>
+  )
+  newTableMapping[SITE_LAUNCH_TASKS.DROP_CLOUDFRONT - 1].subTitle = (
+    <>
+      {tasksDone === SITE_LAUNCH_TASKS.DROP_CLOUDFRONT - 1 && (
+        <Text fontSize="small">
+          If you are using CWP, please contact them to do this for you
+        </Text>
+      )}
+    </>
+  )
+  newTableMapping[
+    SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS - 1
+  ].subTitle = (
+    <>
+      {tasksDone === SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS - 1 && (
+        <Text fontSize="small">
+          This should be done as soon as domains are dropped
+        </Text>
+      )}
+    </>
+  )
+  return newTableMapping
+}
+
 export const SiteLaunchChecklistBody = ({
   setPageNumber,
   handleIncrementStepNumber,
@@ -183,6 +228,29 @@ export const SiteLaunchChecklistBody = ({
     )
   }
 
+  const titleTexts = [
+    "Set your DNS Time To Live(TTL) to 5 mins at least 24 hours before launching",
+    "Approve and publish your first review request",
+    "Drop existing domains on Cloudfront",
+    "Delete existing DNS records from your nameserver",
+    "Wait 1 hour to flush existing records",
+  ]
+
+  let TABLE_MAPPING: TableMappingProps[] = []
+  for (let i = 0; i < numberOfCheckboxes; i += 1) {
+    TABLE_MAPPING.push({
+      title: (
+        <Text fontSize="s" {...getTextProps(i + 1, tasksDone)}>
+          {titleTexts[i]}
+        </Text>
+      ),
+      checkbox: checkboxes[i],
+    })
+  }
+
+  // Add all subtitle for some of the tasks
+  TABLE_MAPPING = addSubtitlesForChecklist(TABLE_MAPPING, tasksDone)
+
   return (
     <SiteLaunchPadBody>
       <Text>
@@ -220,120 +288,20 @@ export const SiteLaunchChecklistBody = ({
               </Tr>
             </Thead>
             <Tbody>
-              <Tr>
-                <Td>
-                  <Text
-                    fontSize="s"
-                    {...getTextProps(SITE_LAUNCH_TASKS.SET_DNS_TTL, tasksDone)}
-                  >
-                    Set your DNS Time To Live(TTL) to 5 mins at least 24 hours
-                    before launching
-                  </Text>
-                  {tasksDone === SITE_LAUNCH_TASKS.SET_DNS_TTL - 1 && (
-                    <Text fontSize="small">
-                      You can check you current DNS TTL through 3rd party
-                      applications such as{" "}
-                      <Link href="https://www.nslookup.io/">nslookup.io</Link>
-                    </Text>
-                  )}
-                </Td>
-                {/* Setting the width here to 20 percent so that the column doesn't
+              {TABLE_MAPPING.map(({ title, subTitle, checkbox }) => (
+                <Tr>
+                  <Td>
+                    {title}
+                    {subTitle}
+                  </Td>
+                  {/* Setting the width here to 20 percent so that the column doesn't
                     shift noticeably when the checkbox is clicked */}
-                <Td width="20%">
-                  <Center>
-                    {checkboxes[SITE_LAUNCH_TASKS.SET_DNS_TTL - 1]}
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>
-                  <Text
-                    fontSize="s"
-                    {...getTextProps(
-                      SITE_LAUNCH_TASKS.APPROVE_FIRST_REVIEW_REQUEST,
-                      tasksDone
-                    )}
-                  >
-                    Approve and publish your first review request
-                  </Text>
-                </Td>
-                <Td>
-                  <Center>
-                    {
-                      checkboxes[
-                        SITE_LAUNCH_TASKS.APPROVE_FIRST_REVIEW_REQUEST - 1
-                      ]
-                    }
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>
-                  <Text
-                    fontSize="s"
-                    {...getTextProps(
-                      SITE_LAUNCH_TASKS.DROP_CLOUDFRONT,
-                      tasksDone
-                    )}
-                  >
-                    Drop existing domains on Cloudfront
-                  </Text>
-                  {tasksDone === SITE_LAUNCH_TASKS.DROP_CLOUDFRONT - 1 && (
-                    <Text fontSize="small">
-                      If you are using CWP, please contact them to do this for
-                      you
-                    </Text>
-                  )}
-                </Td>
-                <Td>
-                  <Center>
-                    {checkboxes[SITE_LAUNCH_TASKS.DROP_CLOUDFRONT - 1]}
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>
-                  <Text
-                    fontSize="s"
-                    {...getTextProps(
-                      SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS,
-                      tasksDone
-                    )}
-                  >
-                    Delete existing DNS records from your nameserver
-                  </Text>
-                  {tasksDone ===
-                    SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS - 1 && (
-                    <Text fontSize="small">
-                      This should be done as soon as domains are dropped
-                    </Text>
-                  )}
-                </Td>
-                <Td>
-                  <Center>
-                    {
-                      checkboxes[
-                        SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS - 1
-                      ]
-                    }
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>
-                  <Text
-                    fontSize="s"
-                    {...getTextProps(SITE_LAUNCH_TASKS.WAIT_1_HOUR, tasksDone)}
-                  >
-                    Wait 1 hour to flush existing records
-                  </Text>
-                </Td>
-                <Td>
-                  <Center>
-                    {checkboxes[SITE_LAUNCH_TASKS.WAIT_1_HOUR - 1]}
-                  </Center>
-                </Td>
-              </Tr>
+                  <Td width="20%">
+                    <Center>{checkbox}</Center>
+                  </Td>
+                </Tr>
+              ))}
+
               <Tr>
                 <Td>
                   <Text
