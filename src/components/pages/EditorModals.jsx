@@ -2,28 +2,42 @@ import HyperlinkModal from "components/HyperlinkModal"
 import MediaModal from "components/media/MediaModal"
 import PropTypes from "prop-types"
 
-const EditorModals = ({ mdeRef, onSave, modalType, onClose, mediaType }) => {
+const EditorModals = ({
+  mdeRef,
+  onSave,
+  modalType,
+  onClose,
+  mediaType,
+  simpleMde,
+}) => {
   const onHyperlinkSave = (text, link) => {
-    const cm = mdeRef.current.simpleMde.codemirror
+    // const cm = mdeRef.current.simpleMde.codemirror
+    const cm = simpleMde.codemirror
     cm.replaceSelection(`[${text}](${link})`)
     // set state so that rerender is triggered and path is shown
-    onSave(mdeRef.current.simpleMde.codemirror.getValue())
+    // onSave(mdeRef.current.simpleMde.codemirror.getValue())
+    onSave(simpleMde.codemirror.getValue())
     onClose()
   }
 
+  console.log(`MDE REF`, mdeRef)
+  console.log(`Simple MDE`, simpleMde)
+
   const onMediaSave = (data) => {
     const { selectedMediaPath, altText } = data
-    const cm = mdeRef.current.simpleMde.codemirror
+    // const cm = mdeRef.current.simpleMde.codemirror
+    const cm = simpleMde.codemirror
     if (mediaType === "files")
       cm.replaceSelection(
         `[${altText}](${selectedMediaPath.replaceAll(" ", "%20")})`
       )
-    if (mediaType === "images")
+    if (mediaType === "images") {
       cm.replaceSelection(
         `![${altText}](${selectedMediaPath.replaceAll(" ", "%20")})`
       )
+    }
     // set state so that rerender is triggered and image is shown
-    onSave(mdeRef.current.simpleMde.codemirror.getValue())
+    onSave(simpleMde.codemirror.getValue())
     onClose()
   }
 

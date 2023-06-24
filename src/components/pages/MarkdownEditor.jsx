@@ -1,5 +1,5 @@
 import EditorModals from "components/pages/EditorModals"
-import { useMemo, useState } from "react"
+import { useMemo, useState, useCallback, useEffect } from "react"
 import SimpleMDE from "react-simplemde-editor"
 
 import { useMarkdown } from "hooks/useMarkdown"
@@ -94,6 +94,17 @@ const MarkdownEditor = ({
     }
   })
 
+  const [simpleMdeInstance, setMdeInstance] = useState(null)
+
+  const getMdeInstanceCallback = useCallback((simpleMde) => {
+    setMdeInstance(simpleMde)
+  }, [])
+
+  useEffect(() => {
+    simpleMdeInstance &&
+      console.info("Hey I'm editor instance!", simpleMdeInstance)
+  }, [simpleMdeInstance])
+
   const StatusIcon = () => {
     if (isDisabled) {
       return (
@@ -128,6 +139,7 @@ const MarkdownEditor = ({
           setInsertingMediaType("")
         }}
         mediaType={insertingMediaType}
+        simpleMde={simpleMdeInstance}
       />
       <div
         className={`${editorStyles.pageEditorSidebar} ${
@@ -143,6 +155,7 @@ const MarkdownEditor = ({
           value={value}
           options={options}
           events={events}
+          getMdeInstance={getMdeInstanceCallback}
         />
       </div>
     </>
