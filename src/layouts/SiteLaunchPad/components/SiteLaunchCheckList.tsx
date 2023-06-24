@@ -271,23 +271,22 @@ export const SiteLaunchChecklistBody = ({
 
   return (
     <SiteLaunchPadBody>
-      <Text>
+      <Text mb="2rem">
         <Text as="b">Tasks must be done in this order. </Text>
         Mark the task as done to enable the next task item. Once all items are
         marked done, you can proceed to the next page to track your site launch
         status.
       </Text>
-      <br />
-      <Text>
+      <Text mb="2rem">
         You may leave this page and return later to continue from where you left
         off. If you run into issues, contact the Isomer team using the I need
         support button.
       </Text>
-      <br />
       <Box
         border="1px solid"
         borderColor="base.divider.medium"
         borderRadius="md"
+        mb="2rem"
       >
         <TableContainer>
           <Table variant="simple">
@@ -349,10 +348,10 @@ export const SiteLaunchChecklistBody = ({
                   </Button>
                 </Td>
               </Tr>
-              <Tr borderTopStyle="hidden">
-                <Td colSpan={2}>
-                  {siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING" &&
-                    !siteLaunchStatusProps?.dnsRecords && (
+              {siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING" && (
+                <Tr borderTopStyle="hidden">
+                  <Td colSpan={2} mb="2rem">
+                    {!siteLaunchStatusProps?.dnsRecords && (
                       <>
                         <Text>
                           Generating your DNS records will take 2 minutes.
@@ -360,16 +359,16 @@ export const SiteLaunchChecklistBody = ({
                         <Text>
                           Do not leave or refresh this page in the meantime.
                         </Text>
-                        <br />
                       </>
                     )}
-
-                  <Skeleton isLoaded={!!siteLaunchStatusProps?.dnsRecords}>
-                    {siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING" &&
-                      generateDNSTable(siteLaunchStatusProps.dnsRecords)}
-                  </Skeleton>
-                </Td>
-              </Tr>
+                    <Skeleton isLoaded={!!siteLaunchStatusProps?.dnsRecords}>
+                      {siteLaunchStatusProps?.siteLaunchStatus ===
+                        "LAUNCHING" &&
+                        generateDNSTable(siteLaunchStatusProps.dnsRecords)}
+                    </Skeleton>
+                  </Td>
+                </Tr>
+              )}
               {!!siteLaunchStatusProps?.dnsRecords && (
                 <Tr borderTopStyle="hidden">
                   <Td colSpan={2}>
@@ -386,7 +385,7 @@ export const SiteLaunchChecklistBody = ({
           </Table>
         </TableContainer>
       </Box>
-      <br />
+
       <Box display="flex" justifyContent="flex-end">
         <Button
           variant="link"
