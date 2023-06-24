@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-props-no-spreading */
-
 import {
   Box,
   Center,
@@ -15,7 +14,7 @@ import {
   Skeleton,
 } from "@chakra-ui/react"
 import { Button, Checkbox, Link } from "@opengovsg/design-system-react"
-import { useState } from "react"
+import { useForm } from "react-hook-form"
 
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
@@ -200,38 +199,56 @@ export const SiteLaunchChecklistBody = ({
       }, 10000)
     }
   }
-  const [tasksDone, setTasksDone] = useState<number>(
-    siteLaunchStatusProps?.stepNumber ?? SITE_LAUNCH_TASKS.NOT_STARTED
-  )
+
+  const numberOfTasks = SITE_LAUNCH_TASKS_LENGTH
+  const numberOfCheckboxes = numberOfTasks - 1 // last task is a button
+  const { register, watch, setValue } = useForm({
+    defaultValues: {
+      checkboxes: Array.from(
+        { length: numberOfCheckboxes },
+        (_, i) =>
+          i <
+          (siteLaunchStatusProps?.stepNumber ?? SITE_LAUNCH_TASKS.NOT_STARTED)
+      ),
+    },
+  })
+  const tasksDone = watch("checkboxes").filter((checked) => checked).length
+
   const handleGenerateDNSRecordsOnClick = () => {
-    setTasksDone(tasksDone + 1)
     setSiteLaunchStatusProps({
       ...siteLaunchStatusProps,
       stepNumber: SITE_LAUNCH_TASKS.GENERATE_NEW_DNS_RECORDS,
       siteLaunchStatus: "LAUNCHING",
     })
+
+    /**
+     * Although this is not a task, we want to disable the previous checkbox
+     * and go back one the flow since this step is not reversible
+     */
+    setValue(`checkboxes.${SITE_LAUNCH_TASKS.GENERATE_NEW_DNS_RECORDS}`, true)
     // todo: actually generate DNS records
     mockDNSRecords()
   }
 
-  const numberOfTasks = SITE_LAUNCH_TASKS_LENGTH
-  const numberOfCheckboxes = numberOfTasks - 1 // last task is a button
+  const handleCheckboxChange = (checked: boolean, index: number) => {
+    if (checked) {
+      setValue(`checkboxes.${index}`, true)
+      handleIncrementStepNumber()
+    } else {
+      setValue(`checkboxes.${index}`, false)
+      handleDecrementStepNumber()
+    }
+  }
 
   const checkboxes = Array.from({ length: numberOfCheckboxes }, (_, i) => (
     <Center key={i}>
       <Checkbox
+        {...register(`checkboxes.${i}`)}
         // we want use to check box in order, so we disable it when it is not the next one
         isDisabled={tasksDone >= i + 2 || tasksDone < i}
         isChecked={i < tasksDone}
         onChange={(e) => {
-          e.preventDefault()
-          if (e.target.checked) {
-            setTasksDone(i + 1)
-            handleIncrementStepNumber()
-          } else {
-            setTasksDone(i)
-            handleDecrementStepNumber()
-          }
+          handleCheckboxChange(e.target.checked, i)
         }}
       />
     </Center>
@@ -241,7 +258,7 @@ export const SiteLaunchChecklistBody = ({
     { length: numberOfCheckboxes },
     (_, i) => ({
       title: (
-        <Text fontSize="s" {...getTextProps(i + 1, tasksDone)}>
+        <Text fontSize="s" {...getTextProps(i + 1, tasksDone)} key={i}>
           {TITLE_TEXTS[i]}
         </Text>
       ),
