@@ -21,7 +21,7 @@ import {
 
 const MarkdownEditor = ({
   siteName,
-  mdeRef,
+  // mdeRef,
   onChange,
   value,
   isDisabled,
@@ -32,6 +32,9 @@ const MarkdownEditor = ({
   const { toMarkdown } = useMarkdown()
   const options = useMemo(
     () => ({
+      autosave: { enabled: true },
+      autoRefresh: true,
+      styleSelectedText: true,
       toolbar: [
         headingButton,
         boldButton,
@@ -105,6 +108,17 @@ const MarkdownEditor = ({
       console.info("Hey I'm editor instance!", simpleMdeInstance)
   }, [simpleMdeInstance])
 
+  const [lineAndCursor, setLineAndCursor] = useState(null)
+
+  const getLineAndCursorCallback = useCallback((position) => {
+    setLineAndCursor(position)
+  }, [])
+
+  useEffect(() => {
+    lineAndCursor &&
+      console.info("Hey I'm line and cursor info!", lineAndCursor)
+  }, [lineAndCursor])
+
   const StatusIcon = () => {
     if (isDisabled) {
       return (
@@ -131,7 +145,7 @@ const MarkdownEditor = ({
     <>
       <EditorModals
         siteName={siteName}
-        mdeRef={mdeRef}
+        // mdeRef={mdeRef}
         modalType={editorModalType}
         onSave={onChange}
         onClose={() => {
@@ -140,6 +154,7 @@ const MarkdownEditor = ({
         }}
         mediaType={insertingMediaType}
         simpleMde={simpleMdeInstance}
+        lineAndCursor={lineAndCursor}
       />
       <div
         className={`${editorStyles.pageEditorSidebar} ${
@@ -151,12 +166,24 @@ const MarkdownEditor = ({
           id="simplemde-editor"
           className="h-100"
           onChange={onChange}
-          ref={mdeRef}
+          // ref={mdeRef}
           value={value}
           options={options}
           events={events}
           getMdeInstance={getMdeInstanceCallback}
+          getLineAndCursor={getLineAndCursorCallback}
         />
+        {/* <SimpleMDE
+          // id="simplemde-editor2"
+          className="h-100"
+          // onChange={onChange}
+          // ref={mdeRef}
+          value={value}
+          options={options}
+          // events={events}
+          getMdeInstance={getMdeInstanceCallback}
+          getLineAndCursor={getLineAndCursorCallback}
+        /> */}
       </div>
     </>
   )

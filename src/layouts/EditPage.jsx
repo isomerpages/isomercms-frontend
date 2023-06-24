@@ -16,7 +16,7 @@ import { WarningModal } from "components/WarningModal"
 import DOMPurify from "dompurify"
 import { marked } from "marked"
 import PropTypes from "prop-types"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 
 import { useCollectionHook } from "hooks/collectionHooks"
 import { useGetPageHook, useUpdatePageHook } from "hooks/pageHooks"
@@ -98,7 +98,7 @@ const EditPage = ({ match }) => {
 
   const { setRedirectToNotFound } = useRedirectHook()
 
-  const mdeRef = useRef()
+  // const mdeRef = useRef()
 
   const { data: pageData, isLoading: isLoadingPage } = useGetPageHook(params, {
     onError: () => setRedirectToNotFound(siteName),
@@ -275,7 +275,7 @@ const EditPage = ({ match }) => {
         {/* Editor */}
         <MarkdownEditor
           siteName={siteName}
-          mdeRef={mdeRef}
+          // mdeRef={mdeRef}
           onChange={(value) => setEditorValue(value)}
           value={editorValue}
           isLoading={isLoadingPage}
