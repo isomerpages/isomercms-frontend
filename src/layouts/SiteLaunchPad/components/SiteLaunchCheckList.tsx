@@ -30,7 +30,7 @@ import {
   Skeleton,
 } from "@chakra-ui/react"
 import { Button, Checkbox, Link } from "@opengovsg/design-system-react"
-import { useState } from "react"
+import { useForm } from "react-hook-form"
 
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
