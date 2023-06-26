@@ -98,8 +98,6 @@ const EditPage = ({ match }) => {
 
   const { setRedirectToNotFound } = useRedirectHook()
 
-  // const mdeRef = useRef()
-
   const { data: pageData, isLoading: isLoadingPage } = useGetPageHook(params, {
     onError: () => setRedirectToNotFound(siteName),
   })
@@ -275,7 +273,6 @@ const EditPage = ({ match }) => {
         {/* Editor */}
         <MarkdownEditor
           siteName={siteName}
-          // mdeRef={mdeRef}
           onChange={(value) => setEditorValue(value)}
           value={editorValue}
           isLoading={isLoadingPage}
