@@ -54,7 +54,7 @@ export const Settings = (): JSX.Element => {
     <SiteEditLayout align="flex-start">
       <Section>
         <Box>
-          <Text as="h2" textStyle="h2">
+          <Text as="h4" textStyle="h4">
             Site settings
           </Text>
           <Text textColor="text.description" textStyle="body-2">

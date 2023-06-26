@@ -41,7 +41,7 @@ const Template: Story<RequestOverviewProps> = ({ items }) => {
             */}
         <ModalHeader bg="blue.50" padding="6rem 16.5rem 1.5rem">
           <VStack spacing="0.625rem" align="flex-start">
-            <Heading as="h2" textStyle="h2" color="text.title.alt">
+            <Heading as="h4" textStyle="h4" color="text.title.alt">
               Request a review
             </Heading>
             <Text textStyle="body-2" color="text.helper">

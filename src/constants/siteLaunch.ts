@@ -1,0 +1,3 @@
+export const WHITELISTED_REPOS = process.env.REACT_APP_SITE_LAUNCH_FEATURE_WHITELISTED_REPOS?.split(
+  ","
+)

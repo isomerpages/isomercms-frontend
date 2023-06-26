@@ -1,5 +1,5 @@
-export const COOKIE_NAME: string | undefined = Cypress.env("COOKIE_NAME")
-export const COOKIE_VALUE: string | undefined = Cypress.env("COOKIE_VALUE")
+export const COOKIE_NAME: string = Cypress.env("COOKIE_NAME") || ""
+export const COOKIE_VALUE: string = Cypress.env("COOKIE_VALUE") || ""
 export const E2E_USER = {
   userId: "test",
   email: "test@open.gov.sg",
@@ -47,3 +47,12 @@ export const CMS_BASEURL: string | undefined = Cypress.env("BASEURL")
 export const BASE_SEO_LINK = "www.open.gov.sg"
 
 export const BACKEND_URL = Cypress.env("BACKEND_URL")
+
+export const E2E_EMAIL_REPO_STAGING_LINK =
+  "https://staging.d2qim5mov3pptm.amplifyapp.com"
+
+export const MOCK_REVIEW_TITLE = "Some interesting title"
+export const MOCK_REVIEW_DESCRIPTION = "Some interesting description"
+
+export const FORBIDDEN_CHARACTERS = "!@#$%^&*()"
+export const NON_ENGLISH_CHARACTERS = "文கி"

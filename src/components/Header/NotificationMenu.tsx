@@ -46,6 +46,8 @@ interface NotificationMenuItemProps {
   isRead: boolean
 }
 
+export const EMPTY_NOTIFICATIONS_TEXT =
+  "There are no notifications for display."
 export const NotificationMenuItem = ({
   name,
   icon,
@@ -123,7 +125,7 @@ export const NotificationMenu = (props: MenuListProps): JSX.Element => {
   return userId ? (
     <></>
   ) : (
-    <Menu autoSelect={false}>
+    <Menu autoSelect={false} matchWidth={false}>
       {({ isOpen }) => (
         <>
           <NotificationMenuButton
@@ -136,6 +138,7 @@ export const NotificationMenu = (props: MenuListProps): JSX.Element => {
               icon={<BiBell />}
               size="sm"
               bg="white"
+              color="gray.800"
               boxShadow={
                 isOpen
                   ? `0 0 0 4px var(--chakra-colors-primary-300)`
@@ -196,7 +199,7 @@ export const NotificationMenu = (props: MenuListProps): JSX.Element => {
                 recentNotificationData.length === 0 ? (
                   <ContextMenuItem color="text.helper">
                     <Text fontSize="0.75rem" mr="0.5rem">
-                      There are no notifications for display.
+                      {EMPTY_NOTIFICATIONS_TEXT}
                     </Text>
                   </ContextMenuItem>
                 ) : (

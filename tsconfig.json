@@ -17,6 +17,9 @@
     "jsx": "react-jsx",
     "downlevelIteration": true,
     "baseUrl": "./src",
+    "paths": {
+      "utils": ["utils/index"]
+    },
     "resolveJsonModule": true,
     "sourceMap": true
   },

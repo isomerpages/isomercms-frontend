@@ -393,6 +393,7 @@ const RequestOverviewTable = ({
       cell: ({ row }) => (
         <HStack spacing="0.25rem">
           {allowEditing && (
+            // eslint-disable-next-line jsx-a11y/anchor-is-valid
             <Link
               // NOTE: Pass `undefined` to avoid users being able to click
               // despite being visually disabled.
@@ -414,6 +415,7 @@ const RequestOverviewTable = ({
               />
             </Link>
           )}
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <Link
             href={
               row.original.type === "page" && row.original.stagingUrl

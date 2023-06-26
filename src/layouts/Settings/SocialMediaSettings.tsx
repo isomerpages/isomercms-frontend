@@ -70,7 +70,11 @@ const ValidatedFormInput = ({
   const displayedLabel = upperFirst(label)
   const { register } = useFormContext()
   const { errors } = useFormState()
+
+  // TODO: Marking this any due to type conflicts
   const isInvalid =
+    /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+    // @ts-ignore implicit any type error
     errors.socialMediaContent && !!errors.socialMediaContent[label]
 
   return (

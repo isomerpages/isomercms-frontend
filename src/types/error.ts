@@ -15,3 +15,12 @@ export interface MiddlewareErrorDto {
     name?: string
   }
 }
+
+export interface IsomerErrorDto {
+  error: {
+    code: string
+    message: string
+    isV2Error: boolean
+    name?: string
+  }
+}

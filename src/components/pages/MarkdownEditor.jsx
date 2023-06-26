@@ -1,5 +1,5 @@
 import EditorModals from "components/pages/EditorModals"
-import { useMemo, useState } from "react"
+import { useMemo, useState, useCallback } from "react"
 import SimpleMDE from "react-simplemde-editor"
 
 import { useMarkdown } from "hooks/useMarkdown"
@@ -21,7 +21,6 @@ import {
 
 const MarkdownEditor = ({
   siteName,
-  mdeRef,
   onChange,
   value,
   isDisabled,
@@ -32,6 +31,8 @@ const MarkdownEditor = ({
   const { toMarkdown } = useMarkdown()
   const options = useMemo(
     () => ({
+      autoRefresh: true,
+      styleSelectedText: true,
       toolbar: [
         headingButton,
         boldButton,
@@ -94,6 +95,18 @@ const MarkdownEditor = ({
     }
   })
 
+  const [simpleMdeInstance, setMdeInstance] = useState(null)
+
+  const getMdeInstanceCallback = useCallback((simpleMde) => {
+    setMdeInstance(simpleMde)
+  }, [])
+
+  const [lineAndCursor, setLineAndCursor] = useState(null)
+
+  const getLineAndCursorCallback = useCallback((position) => {
+    setLineAndCursor(position)
+  }, [])
+
   const StatusIcon = () => {
     if (isDisabled) {
       return (
@@ -120,7 +133,6 @@ const MarkdownEditor = ({
     <>
       <EditorModals
         siteName={siteName}
-        mdeRef={mdeRef}
         modalType={editorModalType}
         onSave={onChange}
         onClose={() => {
@@ -128,6 +140,8 @@ const MarkdownEditor = ({
           setInsertingMediaType("")
         }}
         mediaType={insertingMediaType}
+        simpleMde={simpleMdeInstance}
+        lineAndCursor={lineAndCursor}
       />
       <div
         className={`${editorStyles.pageEditorSidebar} ${
@@ -139,10 +153,11 @@ const MarkdownEditor = ({
           id="simplemde-editor"
           className="h-100"
           onChange={onChange}
-          ref={mdeRef}
           value={value}
           options={options}
           events={events}
+          getMdeInstance={getMdeInstanceCallback}
+          getLineAndCursor={getLineAndCursorCallback}
         />
       </div>
     </>

@@ -71,7 +71,7 @@ const SublinkElem = ({
             onClick={deleteHandler}
             id={`sublink-${linkIndex}-${sublinkIndex}-delete`}
             colorScheme="danger"
-            isFullWidth
+            w="100%"
           >
             Delete submenu
           </Button>
@@ -134,7 +134,7 @@ const NavSublinkSection = ({
         {droppableProvided.placeholder}
         <Button
           mt={4}
-          isFullWidth
+          w="100%"
           id={`sublink-${linkIndex}-${sublinks.length}-create`}
           onClick={createHandler}
         >
