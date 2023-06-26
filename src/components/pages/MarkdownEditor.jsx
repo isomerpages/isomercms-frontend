@@ -1,5 +1,5 @@
 import EditorModals from "components/pages/EditorModals"
-import { useMemo, useState, useCallback, useEffect } from "react"
+import { useMemo, useState, useCallback } from "react"
 import SimpleMDE from "react-simplemde-editor"
 
 import { useMarkdown } from "hooks/useMarkdown"
@@ -31,7 +31,6 @@ const MarkdownEditor = ({
   const { toMarkdown } = useMarkdown()
   const options = useMemo(
     () => ({
-      autosave: { enabled: true },
       autoRefresh: true,
       styleSelectedText: true,
       toolbar: [
@@ -102,21 +101,11 @@ const MarkdownEditor = ({
     setMdeInstance(simpleMde)
   }, [])
 
-  useEffect(() => {
-    simpleMdeInstance &&
-      console.info("Hey I'm editor instance!", simpleMdeInstance)
-  }, [simpleMdeInstance])
-
   const [lineAndCursor, setLineAndCursor] = useState(null)
 
   const getLineAndCursorCallback = useCallback((position) => {
     setLineAndCursor(position)
   }, [])
-
-  useEffect(() => {
-    lineAndCursor &&
-      console.info("Hey I'm line and cursor info!", lineAndCursor)
-  }, [lineAndCursor])
 
   const StatusIcon = () => {
     if (isDisabled) {

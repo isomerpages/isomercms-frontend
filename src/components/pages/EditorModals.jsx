@@ -19,7 +19,10 @@ const EditorModals = ({
       setLinePos(lineAndCursor)
       simpleMde.codemirror.setSelection(lineAndCursor)
     }
-    if (lineAndCursor && lineAndCursor.line !== 0 && lineAndCursor.ch !== 0) {
+    if (
+      lineAndCursor &&
+      !(lineAndCursor.line === 0 && lineAndCursor.ch === 0)
+    ) {
       setLinePos(lineAndCursor)
     }
   }, [lineAndCursor])
@@ -80,6 +83,20 @@ EditorModals.propTypes = {
   onSave: PropTypes.func.isRequired,
   modalType: PropTypes.oneOf(["hyperlink", "media"]).isRequired,
   onClose: PropTypes.func.isRequired,
+  simpleMde: PropTypes.shape({
+    codemirror: PropTypes.shape({
+      getSelection: PropTypes.func,
+      getValue: PropTypes.func,
+      replaceSelection: PropTypes.func,
+      setCursor: PropTypes.func,
+    }),
+  }),
+  lineAndCursor: PropTypes.shape({
+    line: PropTypes.number,
+    ch: PropTypes.number,
+    sticky: PropTypes.string,
+    xRel: PropTypes.number,
+  }),
 }
 
 export default EditorModals
