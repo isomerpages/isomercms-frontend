@@ -63,8 +63,7 @@ export const PrivacySettings = ({
         <FormControl isDisabled={isError}>
           <Flex justifyContent="space-between" w="100%">
             <FormLabel isRequired>Privatise staging site</FormLabel>
-            {/* NOTE: This should be toggle from design system
-                but the component is broken and doesn't display a slider */}
+            {/* TODO: Swap out component with Checkbox, along with other toggle components */}
             <FormToggle name="privatiseStaging" />
           </Flex>
           <FormLabel.Description color="text.description">
