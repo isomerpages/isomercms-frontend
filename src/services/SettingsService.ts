@@ -62,10 +62,10 @@ export const updatePassword = async (
     isAmplifySite,
     privatiseStaging,
   }: SitePasswordSettings
-): Promise<void> => {
+): Promise<void | null> => {
   const endpoint = getSettingsPasswordEndpoint(siteName)
   // Netlify sites don't have password feature
-  if (!isAmplifySite) return undefined
+  if (!isAmplifySite) return null
   const hasPreviousPassword = !!encryptedPassword
   const hasPasswordChanged =
     hasPreviousPassword && decryptPassword(encryptedPassword, iv) !== password
@@ -74,7 +74,7 @@ export const updatePassword = async (
   const passwordUnchanged =
     privatiseStaging && hasPreviousPassword && !hasPasswordChanged
   const passwordUnset = !privatiseStaging && !hasPreviousPassword
-  if (passwordUnchanged || passwordUnset) return undefined
+  if (passwordUnchanged || passwordUnset) return null
   if (!password)
     return apiService.post(endpoint, {
       encryptedPassword: "",
