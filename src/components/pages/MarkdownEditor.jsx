@@ -21,7 +21,6 @@ import {
 
 const MarkdownEditor = ({
   siteName,
-  // mdeRef,
   onChange,
   value,
   isDisabled,
@@ -145,7 +144,6 @@ const MarkdownEditor = ({
     <>
       <EditorModals
         siteName={siteName}
-        // mdeRef={mdeRef}
         modalType={editorModalType}
         onSave={onChange}
         onClose={() => {
@@ -166,24 +164,12 @@ const MarkdownEditor = ({
           id="simplemde-editor"
           className="h-100"
           onChange={onChange}
-          // ref={mdeRef}
           value={value}
           options={options}
           events={events}
           getMdeInstance={getMdeInstanceCallback}
           getLineAndCursor={getLineAndCursorCallback}
         />
-        {/* <SimpleMDE
-          // id="simplemde-editor2"
-          className="h-100"
-          // onChange={onChange}
-          // ref={mdeRef}
-          value={value}
-          options={options}
-          // events={events}
-          getMdeInstance={getMdeInstanceCallback}
-          getLineAndCursor={getLineAndCursorCallback}
-        /> */}
       </div>
     </>
   )

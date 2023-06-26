@@ -4,7 +4,6 @@ import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
 
 const EditorModals = ({
-  // mdeRef,
   onSave,
   modalType,
   onClose,
@@ -14,8 +13,7 @@ const EditorModals = ({
 }) => {
   const [linePos, setLinePos] = useState({ line: 0, ch: 0, sticky: null })
 
-  console.log(`Current linepos`, linePos)
-
+  // this fixes the issue where line and cursor are being reset to 0 upon opening modals
   useEffect(() => {
     if (!lineAndCursor && simpleMde) {
       setLinePos(lineAndCursor)
@@ -27,34 +25,22 @@ const EditorModals = ({
   }, [lineAndCursor])
 
   const onHyperlinkSave = (text, link) => {
-    // const cm = mdeRef.current.simpleMde.codemirror
     const cm = simpleMde.codemirror
     cm.setCursor(linePos)
     cm.setSelection(linePos)
     cm.replaceSelection(`[${text}](${link})`)
     // set state so that rerender is triggered and path is shown
-    // onSave(mdeRef.current.simpleMde.codemirror.getValue())
     onSave(simpleMde.codemirror.getValue())
     onClose()
   }
 
-  // console.log(`MDE REF`, mdeRef)
-  console.log(`Simple MDE`, simpleMde)
-  console.log(`Line Cursor`, lineAndCursor)
-
   const onMediaSave = (data) => {
     const { selectedMediaPath, altText } = data
-    console.log(`DATA`, data)
-    // const cm = mdeRef.current.simpleMde.codemirror
     const cm = simpleMde.codemirror
 
-    console.log(`Setting selection to `, lineAndCursor)
     cm.setCursor(linePos)
     cm.setSelection(linePos)
 
-    console.log(`Current cursor`, cm.getCursor())
-
-    console.log(`SELECTIONS`, cm.getSelections())
     if (mediaType === "files")
       cm.replaceSelection(
         `[${altText}](${selectedMediaPath.replaceAll(" ", "%20")})`
@@ -91,11 +77,6 @@ const EditorModals = ({
 }
 
 EditorModals.propTypes = {
-  // mdeRef: PropTypes.oneOfType([
-  //   // https://stackoverflow.com/questions/48007326/what-is-the-correct-proptype-for-a-ref-in-react
-  //   PropTypes.func,
-  //   PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
-  // ]),
   onSave: PropTypes.func.isRequired,
   modalType: PropTypes.oneOf(["hyperlink", "media"]).isRequired,
   onClose: PropTypes.func.isRequired,
