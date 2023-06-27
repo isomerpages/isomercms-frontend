@@ -6,8 +6,6 @@ import { SETTINGS_CONTENT_KEY } from "constants/queryKeys"
 
 import * as SettingsService from "services/SettingsService"
 
-import { decryptPassword } from "utils/password"
-
 import {
   BackendPasswordSettings,
   BackendSiteSettings,
