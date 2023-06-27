@@ -13,7 +13,7 @@ const getSettingsEndpoint = (siteName: string): string => {
 }
 
 const getSettingsPasswordEndpoint = (siteName: string): string => {
-  return `/sites/${siteName}/settings/repoPassword`
+  return `/sites/${siteName}/settings/repo-password`
 }
 
 export const get = async ({
