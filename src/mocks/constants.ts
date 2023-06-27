@@ -206,8 +206,7 @@ export const MOCK_BE_SETTINGS: BackendSiteSettings = {
 }
 
 export const MOCK_PASSWORD_SETTINGS: BackendPasswordSettings = {
-  encryptedPassword: "",
-  iv: "",
+  password: "",
   isAmplifySite: true,
 }
 
