@@ -45,8 +45,6 @@ export interface SiteAnalyticsSettings {
 
 export interface SitePasswordSettings {
   password: string | null
-  encryptedPassword: string
-  iv: string
   isAmplifySite: boolean
   privatiseStaging: boolean
 }
@@ -59,8 +57,7 @@ export type SiteSettings = SiteInfo &
   SitePasswordSettings
 
 export interface BackendPasswordSettings {
-  encryptedPassword: string
-  iv: string
+  password: string
   isAmplifySite: boolean
 }
 

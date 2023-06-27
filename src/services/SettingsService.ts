@@ -55,38 +55,19 @@ export const getPassword = async ({
 export const updatePassword = async (
   siteName: string,
   // eslint-disable-next-line camelcase
-  {
-    password,
-    encryptedPassword,
-    iv,
-    isAmplifySite,
-    privatiseStaging,
-  }: SitePasswordSettings
+  { password, isAmplifySite, privatiseStaging }: SitePasswordSettings
 ): Promise<void | null> => {
   const endpoint = getSettingsPasswordEndpoint(siteName)
   // Netlify sites don't have password feature
   if (!isAmplifySite) return null
-  const hasPreviousPassword = !!encryptedPassword
-  const hasPasswordChanged =
-    hasPreviousPassword && decryptPassword(encryptedPassword, iv) !== password
 
-  // No need to call endpoint if password is the same
-  const passwordUnchanged =
-    privatiseStaging && hasPreviousPassword && !hasPasswordChanged
-  const passwordUnset = !privatiseStaging && !hasPreviousPassword
-  if (passwordUnchanged || passwordUnset) return null
   if (!password)
     return apiService.post(endpoint, {
-      encryptedPassword: "",
-      iv: "",
+      password: "",
       enablePassword: privatiseStaging,
     })
-  const { encryptedPassword: newPassword, iv: newIv } = encryptPassword(
-    password
-  )
   return apiService.post(endpoint, {
-    encryptedPassword: newPassword,
-    iv: newIv,
+    password,
     enablePassword: privatiseStaging,
   })
 }

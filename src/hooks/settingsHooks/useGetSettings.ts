@@ -122,11 +122,10 @@ const convertFromBe = (backendSettings: BackendSiteSettings): SiteSettings => {
 const extractPassword = (
   passwordData: BackendPasswordSettings
 ): string | null => {
-  const { encryptedPassword, iv, isAmplifySite } = passwordData
+  const { password, isAmplifySite } = passwordData
   if (!isAmplifySite) return null
-  if (!encryptedPassword || !iv) return ""
 
-  return decryptPassword(encryptedPassword, iv)
+  return password
 }
 
 export const useGetSettings = (
@@ -143,9 +142,9 @@ export const useGetSettings = (
       const parsedPassword = extractPassword(passwordSettings)
       return {
         ...convertedSettings,
+        ...passwordSettings,
         password: parsedPassword,
         privatiseStaging: !!parsedPassword,
-        ...passwordSettings,
       }
     },
     {
