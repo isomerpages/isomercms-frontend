@@ -53,7 +53,6 @@ export const PrivacySettings = ({
       setValue("password", newPassword)
       trigger("password")
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPrivatised])
 
   return (
