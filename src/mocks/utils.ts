@@ -68,7 +68,7 @@ export const buildSettingsData = apiDataBuilder<BackendSiteSettings>(
 )
 
 export const buildPasswordData = apiDataBuilder<BackendPasswordSettings>(
-  "*/sites/:siteName/settings/repoPassword",
+  "*/sites/:siteName/settings/repo-password",
   "get"
 )
 
