@@ -31,13 +31,13 @@ import {
 } from "@chakra-ui/react"
 import { Button, Checkbox, Link } from "@opengovsg/design-system-react"
 import { useForm } from "react-hook-form"
+import { useParams, Link as RouterLink } from "react-router-dom"
 
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
 import { BxCopy, BxLifeBuoy } from "assets"
 import {
   DNSRecord,
-  SITE_LAUNCH_PAGES,
   SITE_LAUNCH_TASKS,
   SITE_LAUNCH_TASKS_LENGTH,
 } from "types/siteLaunch"
@@ -184,37 +184,10 @@ export const SiteLaunchChecklistBody = ({
   const {
     siteLaunchStatusProps,
     setSiteLaunchStatusProps,
+    generateDNSRecords,
   } = useSiteLaunchContext()
 
-  // todo remove this mock after IS-219
-  const mockDNSRecords = () => {
-    if (siteLaunchStatusProps) {
-      setTimeout(() => {
-        setSiteLaunchStatusProps({
-          stepNumber: SITE_LAUNCH_TASKS_LENGTH,
-          siteLaunchStatus: "LAUNCHING",
-          dnsRecords: [
-            {
-              source: "www.isomer.gov.sg",
-              type: "CNAME",
-              target: "dodsfdsag34fd2.cloudfront.net",
-            },
-            {
-              source: "isomer.gov.sg",
-              type: "A",
-              target: "18.1.2.3",
-            },
-            {
-              source: "_ba2bfdc9cd3388ff4427040b865afacf5.isomer.gov.sg",
-              type: "CNAME",
-              target:
-                "_617497b1eed3650c89eb59582d89d085.xmjnffzjyj.acm-validations.aws",
-            },
-          ],
-        })
-      }, 10000)
-    }
-  }
+  const { siteName } = useParams<{ siteName: string }>()
 
   const numberOfTasks = SITE_LAUNCH_TASKS_LENGTH
   const numberOfCheckboxes = numberOfTasks - 1 // last task is a button
@@ -242,8 +215,7 @@ export const SiteLaunchChecklistBody = ({
      * and go back one the flow since this step is not reversible
      */
     setValue(`checkboxes.${SITE_LAUNCH_TASKS.GENERATE_NEW_DNS_RECORDS}`, true)
-    // todo: actually generate DNS records
-    mockDNSRecords()
+    generateDNSRecords()
   }
 
   const handleCheckboxChange = (checked: boolean, index: number) => {
@@ -261,8 +233,15 @@ export const SiteLaunchChecklistBody = ({
       <Checkbox
         {...register(`checkboxes.${i}`)}
         // we want use to check box in order, so we disable it when it is not the next one
-        isDisabled={tasksDone >= i + 2 || tasksDone < i}
-        isChecked={i < tasksDone}
+        isDisabled={
+          tasksDone >= i + 2 ||
+          tasksDone < i ||
+          siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING"
+        }
+        isChecked={
+          i < tasksDone ||
+          siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING"
+        }
         onChange={(e) => {
           handleCheckboxChange(e.target.checked, i)
         }}
@@ -321,8 +300,8 @@ export const SiteLaunchChecklistBody = ({
               </Tr>
             </Thead>
             <Tbody>
-              {TABLE_MAPPING.map(({ title, subTitle, checkbox }) => (
-                <Tr>
+              {TABLE_MAPPING.map(({ title, subTitle, checkbox }, index) => (
+                <Tr key={TITLE_TEXTS[index]}>
                   <Td>
                     {title}
                     {subTitle}
@@ -402,14 +381,12 @@ export const SiteLaunchChecklistBody = ({
         </TableContainer>
       </Box>
 
-      <Box display="flex" justifyContent="flex-end">
-        <Button
-          variant="link"
-          ml="auto"
-          onClick={() => setPageNumber(SITE_LAUNCH_PAGES.DISCLAIMER)}
-        >
-          Back
-        </Button>
+      <Box display="flex" justifyContent="flex-end" mb="2rem">
+        <Link as={RouterLink} to={`/sites/${siteName}/dashboard`}>
+          <Button variant="link" ml="auto">
+            Back
+          </Button>
+        </Link>
       </Box>
     </SiteLaunchPadBody>
   )
