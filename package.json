@@ -37,7 +37,6 @@
     "easymde": "^2.16.1",
     "escape-string-regexp": "^4.0.0",
     "framer-motion": "^6.5.1",
-    "generate-password": "^1.7.0",
     "html-react-parser": "^1.2.7",
     "immutability-helper": "^3.1.1",
     "js-base64": "^3.7.2",
@@ -76,9 +75,9 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "start": "source .env && craco start",
-    "dev": "source .env && craco start",
-    "build": "craco build",
+    "start": "source .env && react-scripts start",
+    "dev": "source .env && react-scripts start",
+    "build": "react-scripts build",
     "build:netlify": "CI=false npm run build && npm run sourcemaps:upload",
     "release": "npm version $npm_config_isomer_update && git push --tags",
     "test": "craco test",

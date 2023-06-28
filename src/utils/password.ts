@@ -1,12 +1,14 @@
-import generator from "generate-password"
-
 export const generatePassword = (): string => {
-  return generator
-    .generate({
-      length: 15,
-      numbers: true,
-      symbols: true,
-      strict: true,
-    })
-    .replace(/:/g, "-")
+  const PASSWORD_LENGTH = 15
+  const randomValues = new Uint32Array(PASSWORD_LENGTH)
+  window.crypto.getRandomValues(randomValues)
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()"
+  let result = ""
+
+  for (let i = 0; i < PASSWORD_LENGTH; i += 1) {
+    result += characters.charAt(randomValues[i] % characters.length)
+  }
+
+  return result
 }

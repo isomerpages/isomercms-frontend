@@ -46,10 +46,19 @@ export const PrivacySettings = ({
 
   const isPrivatised = watch("privatiseStaging")
 
+  const generateAcceptablePassword = () => {
+    const regex = new RegExp(PASSWORD_REGEX)
+    let password = ""
+    while (!regex.test(password)) {
+      password = generatePassword()
+    }
+    return password
+  }
+
   useEffect(() => {
     // Generate a default password on toggle if no password exists
     if (!getValues("password")) {
-      const newPassword = generatePassword()
+      const newPassword = generateAcceptablePassword()
       setValue("password", newPassword)
       trigger("password")
     }
