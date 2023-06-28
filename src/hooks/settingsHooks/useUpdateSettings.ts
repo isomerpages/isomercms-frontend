@@ -29,14 +29,14 @@ const extractPasswordFields = (
   passwordFields: SitePasswordSettings
   settingsFields: SiteSettings
 } => {
-  const { password, isAmplifySite, privatiseStaging } = content
+  const { password, isAmplifySite, isStagingPrivatised } = content
   const passwordFields = {
-    privatiseStaging,
+    isStagingPrivatised,
     password,
     isAmplifySite,
   }
   const settingsFields = _.omit(content, [
-    "privatiseStaging",
+    "isStagingPrivatised",
     "password",
     "isAmplifySite",
   ]) as SiteSettings

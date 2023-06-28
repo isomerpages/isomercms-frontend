@@ -53,7 +53,7 @@ export const getPassword = async ({
 export const updatePassword = async (
   siteName: string,
   // eslint-disable-next-line camelcase
-  { password, isAmplifySite, privatiseStaging }: SitePasswordSettings
+  { password, isAmplifySite, isStagingPrivatised }: SitePasswordSettings
 ): Promise<void | null> => {
   // Netlify sites don't have password feature
   if (!isAmplifySite) return null
@@ -62,10 +62,10 @@ export const updatePassword = async (
   if (!password)
     return apiService.post(endpoint, {
       password: "",
-      enablePassword: privatiseStaging,
+      enablePassword: isStagingPrivatised,
     })
   return apiService.post(endpoint, {
     password,
-    enablePassword: privatiseStaging,
+    enablePassword: isStagingPrivatised,
   })
 }

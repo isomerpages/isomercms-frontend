@@ -142,7 +142,7 @@ export const useGetSettings = (
         ...convertedSettings,
         ...passwordSettings,
         password: parsedPassword,
-        privatiseStaging: !!parsedPassword,
+        isStagingPrivatised: !!parsedPassword,
       }
     },
     {
