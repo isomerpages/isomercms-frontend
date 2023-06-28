@@ -30,6 +30,9 @@ const SiteNature = {
 interface SiteLaunchFormData {
   domain: string
   nature: typeof SiteNature[keyof typeof SiteNature]
+  // NOTE: this cannot be set to boolean since
+  // radio values cannot be set to boolean
+  useWww: "true" | "false"
 }
 
 export const SiteLaunchInfoCollectorBody = ({
@@ -42,8 +45,19 @@ export const SiteLaunchInfoCollectorBody = ({
     watch,
   } = useForm<SiteLaunchFormData>()
 
+  const {
+    siteLaunchStatusProps,
+    setSiteLaunchStatusProps,
+  } = useSiteLaunchContext()
+
   const onSubmit = (data: SiteLaunchFormData) => {
-    // todo update context with data
+    if (!siteLaunchStatusProps) return
+    setSiteLaunchStatusProps({
+      ...siteLaunchStatusProps,
+      siteUrl: data.domain,
+      isNewDomain: data.nature === SiteNature.New,
+      useWwwSubdomain: data.useWww === "true",
+    })
     setPageNumber(SITE_LAUNCH_PAGES.RISK_ACCEPTANCE)
   }
   const [selectedRadio, setSelectedRadio] = useState("")
@@ -58,16 +72,43 @@ export const SiteLaunchInfoCollectorBody = ({
         {...register("domain", { required: true })}
       />
       {errors.domain && <Text textStyle="subhead-2">Domain is required</Text>}
+
+      <Text textStyle="subhead-1" mt="1.5rem">
+        Do you want to host the both the www and non-www version of your domain?
+      </Text>
+      <Text textStyle="subhead-2">
+        Select &quot;Yes&quot; if you are not sure
+      </Text>
+      <RadioGroup
+        {...register("useWww")}
+        onChange={setSelectedRadio}
+        mt="0.25rem"
+      >
+        <Radio value="true">
+          <Text textStyle="body-1" color="black">
+            Yes, host both www and non-www version
+          </Text>
+        </Radio>
+        <Radio value="false">
+          <Text textStyle="body-1" color="black">
+            No, host only the non-www version
+          </Text>
+        </Radio>
+      </RadioGroup>
       <Text textStyle="subhead-1" mt="1.5rem">
         What is the nature of the domain you are launching with?
       </Text>
-      <RadioGroup {...register("nature")} onChange={setSelectedRadio}>
-        <Radio value="new">
+      <RadioGroup
+        {...register("nature")}
+        onChange={setSelectedRadio}
+        mt="0.25rem"
+      >
+        <Radio value={SiteNature.New}>
           <Text textStyle="body-1" color="black">
             It is a brand new domain
           </Text>
         </Radio>
-        <Radio value="live">
+        <Radio value={SiteNature.Live}>
           <Text textStyle="body-1" color="black">
             This domain is currently live or was previously live
           </Text>

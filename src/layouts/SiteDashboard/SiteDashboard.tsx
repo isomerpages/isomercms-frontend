@@ -29,7 +29,6 @@ import _ from "lodash"
 import { useEffect } from "react"
 import { BiCheckCircle, BiCog, BiEditAlt, BiGroup } from "react-icons/bi"
 import { useParams, Link as RouterLink } from "react-router-dom"
-import { isUserUsingSiteLaunchFeature } from "services/SiteLaunchService"
 
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
@@ -57,13 +56,6 @@ import { SiteViewLayout } from "../layouts"
 import { CollaboratorsStatistics } from "./components/CollaboratorsStatistics"
 import { EmptyReviewRequest } from "./components/EmptyReviewRequest"
 import { ReviewRequestCard } from "./components/ReviewRequestCard"
-
-interface SiteLaunchDisplayCardProps {
-  siteName: string
-  siteLaunchStatus?: SiteLaunchFrontEndStatus
-  isSiteLaunchLoading: boolean
-  siteLaunchChecklistStepNumber?: number
-}
 
 export const SiteDashboard = (): JSX.Element => {
   const {
