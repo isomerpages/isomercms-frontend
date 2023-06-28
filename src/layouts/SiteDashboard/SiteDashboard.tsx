@@ -49,23 +49,13 @@ import { shouldUseSiteLaunchFeature } from "utils/siteLaunchUtils"
 import { BxsClearRocket, SiteDashboardHumanImage } from "assets"
 import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
 import { DASHBOARD_FEATURE_STEPS } from "features/FeatureTour/FeatureTourSequence"
-import {
-  SiteLaunchFrontEndStatus,
-  SITE_LAUNCH_TASKS_LENGTH,
-} from "types/siteLaunch"
+import { SITE_LAUNCH_TASKS_LENGTH } from "types/siteLaunch"
 
 import { SiteViewLayout } from "../layouts"
 
 import { CollaboratorsStatistics } from "./components/CollaboratorsStatistics"
 import { EmptyReviewRequest } from "./components/EmptyReviewRequest"
 import { ReviewRequestCard } from "./components/ReviewRequestCard"
-
-interface SiteLaunchDisplayCardProps {
-  siteName: string
-  siteLaunchStatus?: SiteLaunchFrontEndStatus
-  isSiteLaunchLoading: boolean
-  siteLaunchChecklistStepNumber?: number
-}
 
 export const SiteDashboard = (): JSX.Element => {
   const {

@@ -22,8 +22,17 @@ import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
 import { SiteViewHeader } from "layouts/layouts/SiteViewLayout/SiteViewHeader"
 
-import { SiteLaunchStatusProps, SITE_LAUNCH_PAGES } from "types/siteLaunch"
+import {
+  SiteLaunchStatusProps,
+  SiteLaunchTaskTypeIndex,
+  SITE_LAUNCH_PAGES,
+  SITE_LAUNCH_TASKS_LENGTH,
+} from "types/siteLaunch"
 
+import {
+  SiteLaunchChecklistTitle,
+  SiteLaunchChecklistBody,
+} from "./components/SiteLaunchCheckList"
 import {
   SiteLaunchDisclaimerBody,
   SiteLaunchDisclaimerTitle,
@@ -120,11 +129,37 @@ const getInitialPageNumber = (
   return SITE_LAUNCH_PAGES.DISCLAIMER
 }
 export const SiteLaunchPad = (): JSX.Element => {
-  const { siteLaunchStatusProps } = useSiteLaunchContext()
+  const {
+    siteLaunchStatusProps,
+    setSiteLaunchStatusProps,
+  } = useSiteLaunchContext()
 
   const [pageNumber, setPageNumber] = useState(
     getInitialPageNumber(siteLaunchStatusProps)
   )
+
+  const handleIncrementStepNumber = () => {
+    if (
+      siteLaunchStatusProps &&
+      siteLaunchStatusProps.stepNumber < SITE_LAUNCH_TASKS_LENGTH
+    ) {
+      setSiteLaunchStatusProps({
+        ...siteLaunchStatusProps,
+        stepNumber: (siteLaunchStatusProps.stepNumber +
+          1) as SiteLaunchTaskTypeIndex, // safe to assert since we do a check
+        siteLaunchStatus: "CHECKLIST_TASKS_PENDING",
+      })
+    }
+  }
+  const handleDecrementStepNumber = () => {
+    if (siteLaunchStatusProps && siteLaunchStatusProps.stepNumber > 0) {
+      setSiteLaunchStatusProps({
+        ...siteLaunchStatusProps,
+        stepNumber: (siteLaunchStatusProps?.stepNumber -
+          1) as SiteLaunchTaskTypeIndex, // safe to assert since we do a check
+      })
+    }
+  }
 
   let title: JSX.Element
   let body: JSX.Element
@@ -138,8 +173,16 @@ export const SiteLaunchPad = (): JSX.Element => {
       title = <SiteLaunchInfoCollectorTitle />
       body = <SiteLaunchInfoCollectorBody setPageNumber={setPageNumber} />
       break
-
-    // todo case for site launch pages checklist
+    case SITE_LAUNCH_PAGES.CHECKLIST:
+      title = <SiteLaunchChecklistTitle />
+      body = (
+        <SiteLaunchChecklistBody
+          setPageNumber={setPageNumber}
+          handleIncrementStepNumber={handleIncrementStepNumber}
+          handleDecrementStepNumber={handleDecrementStepNumber}
+        />
+      )
+      break
     default:
       title = <SiteLaunchDisclaimerTitle />
       body = <SiteLaunchDisclaimerBody setPageNumber={setPageNumber} />
