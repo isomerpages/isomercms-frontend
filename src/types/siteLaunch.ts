@@ -14,25 +14,6 @@ const SiteLaunchFrontEndStatusOptions = {
 
 export type SiteLaunchFrontEndStatus = typeof SiteLaunchFrontEndStatusOptions[keyof typeof SiteLaunchFrontEndStatusOptions]
 
-export interface SiteLaunchStatusProps {
-  siteLaunchStatus: SiteLaunchFrontEndStatus
-  stepNumber: SiteLaunchTaskTypeIndex
-  dnsRecords?: DNSRecord[]
-  siteUrl?: string
-  isNewDomain?: boolean
-}
-
-export interface SiteLaunchDto {
-  /**
-   * Transition will be
-   * "NOT_LAUNCHED" -> User presses the Generate DNS button
-   * -> "LAUNCHING" -> wait for 90 seconds -> "LAUNCHED"
-   */
-  siteStatus: "LAUNCHED" | "NOT_LAUNCHED" | "LAUNCHING"
-  dnsRecords?: DNSRecord[] // only present iff siteStatus is LAUNCHED
-  siteUrl?: string
-}
-
 export const SITE_LAUNCH_TASKS = {
   NOT_STARTED: 0,
   SET_DNS_TTL: 1,
@@ -44,6 +25,24 @@ export const SITE_LAUNCH_TASKS = {
 } as const
 
 export type SiteLaunchTaskTypeIndex = typeof SITE_LAUNCH_TASKS[keyof typeof SITE_LAUNCH_TASKS]
+export interface SiteLaunchStatusProps {
+  siteLaunchStatus: SiteLaunchFrontEndStatus
+  stepNumber: SiteLaunchTaskTypeIndex
+  dnsRecords?: DNSRecord[]
+  siteUrl?: string
+  isNewDomain?: boolean
+  useWwwSubdomain?: boolean
+}
+export interface SiteLaunchDto {
+  /**
+   * Transition will be
+   * "NOT_LAUNCHED" -> User presses the Generate DNS button
+   * -> "LAUNCHING" -> wait for 90 seconds -> "LAUNCHED"
+   */
+  siteStatus: "LAUNCHED" | "NOT_LAUNCHED" | "LAUNCHING"
+  dnsRecords?: DNSRecord[] // only present iff siteStatus is LAUNCHED
+  siteUrl?: string
+}
 
 export const SITE_LAUNCH_TASKS_LENGTH = (Object.keys(SITE_LAUNCH_TASKS).length -
   1) as SiteLaunchTaskTypeIndex // we minus one here since step 0 is not counted as a step done
