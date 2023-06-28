@@ -17,6 +17,7 @@ import {
 } from "@opengovsg/design-system-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
+import { useParams } from "react-router-dom"
 
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
@@ -41,6 +42,7 @@ import {
   SiteLaunchInfoCollectorTitle,
   SiteLaunchInfoCollectorBody,
 } from "./components/SiteLaunchInfoGathering"
+import { SiteLaunchPadBlockedModel } from "./components/SiteLaunchPadBlockedModel"
 
 interface RiskAcceptanceModalProps {
   isOpen: boolean
@@ -130,7 +132,7 @@ const getInitialPageNumber = (
 }
 export const SiteLaunchPad = (): JSX.Element => {
   const { siteLaunchStatusProps } = useSiteLaunchContext()
-
+  const { siteName } = useParams<{ siteName: string }>()
   const [pageNumber, setPageNumber] = useState(
     getInitialPageNumber(siteLaunchStatusProps)
   )
@@ -186,14 +188,18 @@ export const SiteLaunchPad = (): JSX.Element => {
   return (
     <>
       <SiteViewHeader />
-      <VStack bg="white" w="100%" minH="100vh" spacing="2rem">
-        {title}
-        {body}
-        <RiskAcceptanceModal
-          isOpen={pageNumber === SITE_LAUNCH_PAGES.RISK_ACCEPTANCE}
-          setPageNumber={setPageNumber}
-        />
-      </VStack>
+      {shouldUseSiteLaunchFeature(siteName) ? (
+        <VStack bg="white" w="100%" minH="100vh" spacing="2rem">
+          {title}
+          {body}
+          <RiskAcceptanceModal
+            isOpen={pageNumber === SITE_LAUNCH_PAGES.RISK_ACCEPTANCE}
+            setPageNumber={setPageNumber}
+          />
+        </VStack>
+      ) : (
+        <SiteLaunchPadBlockedModel />
+      )}
     </>
   )
 }

@@ -208,7 +208,10 @@ export const SiteDashboard = (): JSX.Element => {
               <SiteLaunchDisplayCard />
               {/* Human image and last saved/published */}
               <Box w="100%">
-                {siteLaunchStatus === "LAUNCHED" && <SiteDashboardHumanImage />}
+                {(siteLaunchStatus === "LAUNCHED" ||
+                  !shouldUseSiteLaunchFeature(siteName)) && (
+                  <SiteDashboardHumanImage />
+                )}
                 <DisplayCard variant="content">
                   <DisplayCardContent overflow="hidden">
                     <VStack
