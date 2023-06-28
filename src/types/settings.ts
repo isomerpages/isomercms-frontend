@@ -46,7 +46,7 @@ export interface SiteAnalyticsSettings {
 export interface SitePasswordSettings {
   password: string | null
   isAmplifySite: boolean
-  privatiseStaging: boolean
+  isStagingPrivatised: boolean
 }
 
 export type SiteSettings = SiteInfo &

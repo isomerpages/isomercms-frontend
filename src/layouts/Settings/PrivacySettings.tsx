@@ -44,7 +44,7 @@ export const PrivacySettings = ({
   const [hasCopied, setHasCopied] = useState(false)
   const [isBuffering, setIsBuffering] = useState(false)
 
-  const isPrivatised = watch("privatiseStaging")
+  const isPrivatised = watch("isStagingPrivatised")
 
   const generateAcceptablePassword = () => {
     const regex = new RegExp(PASSWORD_REGEX)
@@ -72,14 +72,14 @@ export const PrivacySettings = ({
           <Flex justifyContent="space-between" w="100%">
             <FormLabel isRequired>Privatise staging site</FormLabel>
             {/* TODO: Swap out component with Checkbox, along with other toggle components */}
-            <FormToggle name="privatiseStaging" />
+            <FormToggle name="isStagingPrivatised" />
           </Flex>
           <FormLabel.Description color="text.description">
             Password protect access to your staging site without affecting your
             live site.
           </FormLabel.Description>
         </FormControl>
-        {watch("privatiseStaging") && (
+        {watch("isStagingPrivatised") && (
           <VStack spacing="0.75rem" align="flex-start" w="100%">
             <Box>
               <FormLabel isRequired>Username</FormLabel>
