@@ -101,7 +101,6 @@ const HeroDropdown = ({
     </FormContext>
     <Droppable droppableId="dropdownelem" type="dropdownelem">
       {(droppableProvided) => (
-        /* eslint-disable react/jsx-props-no-spreading */
         <div
           className={styles.card}
           ref={droppableProvided.innerRef}

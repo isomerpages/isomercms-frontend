@@ -250,7 +250,6 @@ export const ResourcePageSettingsModal = ({
                   <FormLabel mb={0}>Resource Type</FormLabel>
                 </Box>
                 <Select
-                  // eslint-disable-next-line react/jsx-props-no-spreading
                   {...register("layout", { required: true })}
                   id="layout"
                   value={watch("layout")}
@@ -268,7 +267,6 @@ export const ResourcePageSettingsModal = ({
                 <Input
                   placeholder="Page title"
                   id="title"
-                  // eslint-disable-next-line react/jsx-props-no-spreading
                   {...register("title", { required: true })}
                 />
                 <FormErrorMessage>{errors.title?.message}</FormErrorMessage>
@@ -289,7 +287,6 @@ export const ResourcePageSettingsModal = ({
                       </FormLabel.Description>
                     </Box>
                     <Input
-                      // eslint-disable-next-line react/jsx-props-no-spreading
                       {...register("permalink", { required: true })}
                       id="permalink"
                       placeholder="Page URL"
@@ -310,7 +307,6 @@ export const ResourcePageSettingsModal = ({
                   </FormLabel.Description>
                 </Box>
                 <Input
-                  // eslint-disable-next-line react/jsx-props-no-spreading
                   {...register("date", { required: true })}
                   id="date"
                   placeholder="Date (YYYY-MM-DD)"
@@ -362,7 +358,6 @@ export const ResourcePageSettingsModal = ({
                     <Input
                       placeholder="Meta Description (Optional)"
                       id="description"
-                      // eslint-disable-next-line react/jsx-props-no-spreading
                       {...register("description")}
                     />
                     <FormErrorMessage>

@@ -158,7 +158,6 @@ export const PageSettingsModal = ({
                 <Input
                   placeholder="Page title"
                   id="title"
-                  // eslint-disable-next-line react/jsx-props-no-spreading
                   {...register("title", { required: true })}
                 />
                 <FormErrorMessage>{errors.title?.message}</FormErrorMessage>
@@ -173,7 +172,6 @@ export const PageSettingsModal = ({
                   </FormLabel.Description>
                 </Box>
                 <Input
-                  // eslint-disable-next-line react/jsx-props-no-spreading
                   {...register("permalink", { required: true })}
                   id="permalink"
                   placeholder="Page URL"
@@ -196,7 +194,6 @@ export const PageSettingsModal = ({
                 <Input
                   placeholder="Meta Description (Optional)"
                   id="description"
-                  // eslint-disable-next-line react/jsx-props-no-spreading
                   {...register("description")}
                 />
                 <FormErrorMessage>

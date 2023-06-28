@@ -156,7 +156,6 @@ const EditorHeroSection = ({
               />
               <Droppable droppableId="highlight" type="highlight">
                 {(droppableProvided) => (
-                  /* eslint-disable react/jsx-props-no-spreading */
                   <div
                     className={styles.card}
                     ref={droppableProvided.innerRef}

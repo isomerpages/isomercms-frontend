@@ -40,7 +40,6 @@ import {
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
-/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
 
 // Constants

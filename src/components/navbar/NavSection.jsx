@@ -218,7 +218,6 @@ const NavSection = ({
     <>
       <Droppable droppableId="link" type="link">
         {(droppableProvided) => (
-          /* eslint-disable react/jsx-props-no-spreading */
           <div
             className={styles.card}
             ref={droppableProvided.innerRef}

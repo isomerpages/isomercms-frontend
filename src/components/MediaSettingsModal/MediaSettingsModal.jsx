@@ -158,7 +158,6 @@ export const MediaSettingsModal = ({
                 <FormTitle>File name</FormTitle>
                 <FormField
                   placeholder="File name"
-                  // eslint-disable-next-line react/jsx-props-no-spreading
                   {...register("name")}
                   id="name"
                 />

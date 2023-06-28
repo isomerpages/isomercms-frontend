@@ -95,7 +95,6 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
                      */}
                     <FormField
                       placeholder={formTitle}
-                      // eslint-disable-next-line react/jsx-props-no-spreading
                       {...register("altText")}
                       id="altText"
                     />

@@ -93,7 +93,6 @@ const NavSublinkSection = ({
 }) => (
   <Droppable droppableId={`sublink-${linkIndex}`} type="sublink">
     {(droppableProvided) => (
-      /* eslint-disable react/jsx-props-no-spreading */
       <div
         className={styles.card}
         ref={droppableProvided.innerRef}

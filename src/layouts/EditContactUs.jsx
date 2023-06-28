@@ -45,7 +45,6 @@ import { validateContactType, validateLocationType } from "utils/validators"
 
 import { DEFAULT_RETRY_MSG, isEmpty } from "utils"
 
-/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
 
 // Constants

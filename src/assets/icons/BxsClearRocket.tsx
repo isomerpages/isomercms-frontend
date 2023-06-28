@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 export const BxsClearRocket = (
   props: React.SVGProps<SVGSVGElement>
 ): JSX.Element => {
