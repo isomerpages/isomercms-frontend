@@ -6,6 +6,8 @@ import { useGetSiteLaunchStatus } from "hooks/siteDashboardHooks"
 import {
   SiteLaunchFrontEndStatus,
   SiteLaunchStatusProps,
+  SiteLaunchTaskTypeIndex,
+  SITE_LAUNCH_TASKS,
   SITE_LAUNCH_TASKS_LENGTH,
 } from "types/siteLaunch"
 
@@ -19,7 +21,7 @@ interface SiteLaunchContextProps {
 interface SiteLaunchProviderProps {
   children: React.ReactNode
   initialSiteLaunchStatus?: SiteLaunchFrontEndStatus
-  initialStepNumber?: number
+  initialStepNumber?: SiteLaunchTaskTypeIndex
 }
 
 const SiteLaunchContext = createContext<SiteLaunchContextProps | null>(null)
@@ -43,7 +45,7 @@ export const SiteLaunchProvider = ({
     setSiteLaunchStatusProps,
   ] = useState<SiteLaunchStatusProps>({
     siteLaunchStatus: initialSiteLaunchStatus || "LOADING",
-    stepNumber: initialStepNumber || 0,
+    stepNumber: initialStepNumber || SITE_LAUNCH_TASKS.NOT_STARTED,
   })
 
   const { data: siteLaunchDto } = useGetSiteLaunchStatus(siteName)
