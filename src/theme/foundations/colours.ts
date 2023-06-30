@@ -4,7 +4,7 @@ export type IsomerBaseColorScheme = "purple"
 
 // We are not using all the shades of the base colour scheme,
 // but this is placed here if we need them in the future.
-export const baseColourMapping: {
+export const palettes: {
   [k in IsomerBaseColorScheme]: NestedRecord
 } = {
   purple: {
@@ -87,7 +87,7 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
   base: {
     canvas: {
       brandLight: "#F8FAFE",
-      purpleSubtle: baseColourMapping.purple[50],
+      purpleSubtle: palettes.purple[50],
     },
     content: {
       default: "#3C4764",
