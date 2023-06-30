@@ -40,7 +40,6 @@ export const ProtectedRoute = ({
   if (displayedName && WrappedComponent) {
     return (
       <Route
-        // eslint-disable-next-line react/jsx-props-no-spreading
         {...rest}
         render={(props) => {
           const { match } = props
@@ -49,10 +48,7 @@ export const ProtectedRoute = ({
             ...match,
             decodedParams: getDecodedParams(prune(params)),
           }
-          return (
-            // eslint-disable-next-line react/jsx-props-no-spreading
-            <WrappedComponent {...rest} {...props} match={newMatch} />
-          )
+          return <WrappedComponent {...rest} {...props} match={newMatch} />
         }}
       />
     )

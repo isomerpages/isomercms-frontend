@@ -17,7 +17,6 @@ export const SectionCaption = ({
         <Text textStyle="subhead-3" as="span">
           {label}
         </Text>
-        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
         <Text textStyle="body-2" as="span" {...rest} />
       </Text>
     </HStack>

@@ -10,7 +10,6 @@ export const CreateButton = forwardRef<ButtonProps, "button">(
     return (
       <Button
         variant="outline"
-        /* eslint-disable-next-line react/jsx-props-no-spreading */
         {...props}
         ref={ref}
         iconSpacing="0.5rem"

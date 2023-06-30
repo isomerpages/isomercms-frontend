@@ -12,7 +12,6 @@ type RouteProps = {
 export const ProtectedRouteWithProps = (props: RouteProps): JSX.Element => {
   return (
     <Sentry.ErrorBoundary fallback={FallbackComponent}>
-      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <ProtectedRoute {...props} />
     </Sentry.ErrorBoundary>
   )

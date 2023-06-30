@@ -49,7 +49,6 @@ const EditorSection = ({
       <>
         <Droppable droppableId={sectionId} type={sectionId}>
           {(droppableProvided) => (
-            /* eslint-disable react/jsx-props-no-spreading */
             <div
               className={styles.card}
               ref={droppableProvided.innerRef}
