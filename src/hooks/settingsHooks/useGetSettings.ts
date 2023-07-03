@@ -120,10 +120,10 @@ const convertFromBe = (backendSettings: BackendSiteSettings): SiteSettings => {
 const extractPassword = (
   passwordData: BackendPasswordSettings
 ): string | null => {
-  const { password, isAmplifySite } = passwordData
+  const { isAmplifySite } = passwordData
   if (!isAmplifySite) return null
 
-  return password
+  return passwordData.password
 }
 
 export const useGetSettings = (
