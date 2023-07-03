@@ -300,6 +300,14 @@ export const MOCK_ITEMS: EditedItemProps[] = [
     lastEditedBy: "asdf",
     lastEditedTime: 129823094,
   },
+  {
+    title: ".keep",
+    type: "placeholder",
+    name: ".keep",
+    path: ["some", "thing"],
+    lastEditedBy: "asdf",
+    lastEditedTime: 12123498294,
+  },
 ]
 
 export const MOCK_ADMINS = [

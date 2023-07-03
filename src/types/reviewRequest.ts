@@ -12,7 +12,7 @@ export interface User {
   label: string
 }
 
-type FileType = "page" | "nav" | "setting" | "file" | "image"
+type FileType = "page" | "nav" | "setting" | "file" | "image" | "placeholder"
 
 export interface BaseEditedItemDto {
   name: string
@@ -40,8 +40,12 @@ export interface EditedMediaDto extends BaseEditedItemDto {
   type: "file" | "image"
 }
 
+export interface EditedPlaceholderDto extends BaseEditedItemDto {
+  type: "placeholder"
+}
+
 export type EditedItemProps = WithEditMeta<
-  EditedPageDto | EditedConfigDto | EditedMediaDto
+  EditedPageDto | EditedConfigDto | EditedMediaDto | EditedPlaceholderDto
 >
 
 export interface ReviewRequestInfo {

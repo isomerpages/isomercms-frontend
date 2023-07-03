@@ -88,6 +88,10 @@ const getIcon = (iconType: EditedItemProps["type"]): JSX.Element => {
     case "image": {
       return <Icon {...ICON_STYLE_PROPS} as={BiImage} />
     }
+    case "placeholder": {
+      // NOTE: should be unreachable as placeholder has already been filtered out
+      return <></>
+    }
     default: {
       // NOTE: This is done to ensure exhaustive type matching
       const error: never = iconType
@@ -170,6 +174,10 @@ export const RequestOverview = ({
   const [path, setPath] = useState<string[]>([])
   const [title, setTitle] = useState("")
   const [itemStagingUrl, setItemStagingUrl] = useState<string | false>("")
+  const itemsWithoutPlaceholder = items.filter(
+    (item) => item.type !== "placeholder"
+  )
+
   return fileName ? (
     <DiffView
       title={title}
@@ -189,7 +197,7 @@ export const RequestOverview = ({
         setTitle(displayedName)
         setItemStagingUrl(selectedItemStagingUrl)
       }}
-      items={items}
+      items={itemsWithoutPlaceholder}
       allowEditing={allowEditing}
     />
   )
