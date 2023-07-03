@@ -20,4 +20,10 @@ export const colorOverrides = {
       dark: "#3D3D3D",
     },
   },
+  icon: {
+    warning: "#E2B73E",
+    default: "#276EF1",
+    alt: "#686868",
+    danger: "#C03434",
+  },
 }

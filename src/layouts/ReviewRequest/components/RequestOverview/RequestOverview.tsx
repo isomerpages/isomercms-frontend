@@ -21,6 +21,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  chakra,
 } from "@chakra-ui/react"
 import {
   Searchbar,
@@ -68,8 +69,21 @@ import { DiffView } from "../DiffView"
 const ICON_STYLE_PROPS = {
   ml: "0.75rem",
   fontSize: "1.25rem",
-  fill: "icon.alt",
 }
+
+const DEFAULT_MENU_ICON_PROPS = {
+  fontSize: "1rem",
+}
+const IconFileBlank = chakra(BiFileBlank, {
+  baseStyle: DEFAULT_MENU_ICON_PROPS,
+})
+const IconCog = chakra(BiCog, {
+  baseStyle: DEFAULT_MENU_ICON_PROPS,
+})
+
+const IconCompass = chakra(BiCompass, {
+  baseStyle: DEFAULT_MENU_ICON_PROPS,
+})
 
 const getIcon = (iconType: EditedItemProps["type"]): JSX.Element => {
   switch (iconType) {
@@ -243,12 +257,7 @@ const RequestOverviewTable = ({
             <MenuList>
               <MenuItem
                 minW="10rem"
-                icon={
-                  // NOTE: Using an Icon component to hook into design system results in a
-                  // slightly off center icon, which is why using the base component itself
-                  // from react-icons + using the theme is preferred.
-                  <BiFileBlank fontSize="1rem" fill={theme.colors.icon.alt} />
-                }
+                icon={<IconFileBlank />}
                 iconSpacing="0.5rem"
                 onClick={() => {
                   handleFilter(["page", "image", "file"], column)
@@ -263,15 +272,13 @@ const RequestOverviewTable = ({
                     "page",
                     "image",
                     "file",
-                  ]) && (
-                    <Icon as={BiCheck} fill="icon.default" fontSize="1rem" />
-                  )}
+                  ]) && <Icon as={BiCheck} fontSize="1rem" />}
                 </Flex>
               </MenuItem>
               <MenuItem
                 minW="10rem"
                 iconSpacing="0.5rem"
-                icon={<BiCog fontSize="1rem" fill={theme.colors.icon.alt} />}
+                icon={<IconCog />}
                 onClick={() => {
                   handleFilter(["setting"], column)
                 }}
@@ -282,15 +289,13 @@ const RequestOverviewTable = ({
                   </Text>
                   <Spacer />
                   {_.isEqual(column.getFilterValue(), ["setting"]) && (
-                    <Icon as={BiCheck} fill="icon.default" fontSize="1rem" />
+                    <Icon as={BiCheck} fontSize="1rem" />
                   )}
                 </Flex>
               </MenuItem>
               <MenuItem
                 minW="10rem"
-                icon={
-                  <BiCompass fontSize="1rem" fill={theme.colors.icon.alt} />
-                }
+                icon={<IconCompass />}
                 iconSpacing="0.5rem"
                 onClick={() => {
                   handleFilter(["nav"], column)
@@ -302,7 +307,7 @@ const RequestOverviewTable = ({
                   </Text>
                   <Spacer />
                   {_.isEqual(column.getFilterValue(), ["nav"]) && (
-                    <Icon as={BiCheck} fill="icon.default" fontSize="1rem" />
+                    <Icon as={BiCheck} fontSize="1rem" />
                   )}
                 </Flex>
               </MenuItem>
