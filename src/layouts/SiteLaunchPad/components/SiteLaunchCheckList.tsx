@@ -14,23 +14,6 @@ import {
 } from "@chakra-ui/react"
 import { Button, Checkbox, Link } from "@opengovsg/design-system-react"
 import { useForm } from "react-hook-form"
-
-import {
-  Box,
-  Center,
-  Icon,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Thead,
-  Tr,
-  Text,
-  TextProps,
-  Skeleton,
-} from "@chakra-ui/react"
-import { Button, Checkbox, Link } from "@opengovsg/design-system-react"
-import { useForm } from "react-hook-form"
 import { useParams, Link as RouterLink } from "react-router-dom"
 
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
@@ -127,7 +110,6 @@ const generateDNSTable = (dnsRecords: DNSRecord[] | undefined): JSX.Element => {
 }
 
 interface SiteLaunchChecklistBodyProps {
-  setPageNumber: (number: number) => void
   handleIncrementStepNumber: () => void
   handleDecrementStepNumber: () => void
 }
@@ -177,7 +159,6 @@ const addSubtitlesForChecklist = (
 }
 
 export const SiteLaunchChecklistBody = ({
-  setPageNumber,
   handleIncrementStepNumber,
   handleDecrementStepNumber,
 }: SiteLaunchChecklistBodyProps): JSX.Element => {
