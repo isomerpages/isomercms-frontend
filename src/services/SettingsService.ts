@@ -59,7 +59,7 @@ export const updatePassword = async (
   if (!isAmplifySite) return null
   const endpoint = getSettingsPasswordEndpoint(siteName)
 
-  if (!password)
+  if (!password || !isStagingPrivatised)
     return apiService.post(endpoint, {
       enablePassword: isStagingPrivatised,
     })
