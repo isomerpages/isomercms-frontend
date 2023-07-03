@@ -1,3 +1,6 @@
+import "@fontsource/ibm-plex-mono"
+import "inter-ui/inter.css"
+
 import { ThemeProvider, useToast } from "@opengovsg/design-system-react"
 import { initialize, mswDecorator } from "msw-storybook-addon"
 import { QueryClient, QueryClientProvider } from "react-query"
