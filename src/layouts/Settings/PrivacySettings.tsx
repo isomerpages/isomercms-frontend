@@ -19,6 +19,7 @@ import {
   FormLabel,
   IconButton,
 } from "@opengovsg/design-system-react"
+import { FormTitle } from "components/Form"
 import { useEffect, useState } from "react"
 import { useFormContext, useFormState } from "react-hook-form"
 import { BiCopy } from "react-icons/bi"
@@ -70,28 +71,31 @@ export const PrivacySettings = ({
       <VStack spacing="1.5rem" align="flex-start" w="50%">
         <FormControl isDisabled={isError}>
           <Flex justifyContent="space-between" w="100%">
-            <FormLabel isRequired>Privatise staging site</FormLabel>
+            <Box>
+              <FormTitle>Privatise staging site</FormTitle>
+              <FormLabel.Description color="text.description">
+                Password protect access to your staging site without affecting
+                your live site.
+              </FormLabel.Description>
+            </Box>
+
             {/* TODO: Swap out component with Checkbox, along with other toggle components */}
             <FormToggle name="isStagingPrivatised" />
           </Flex>
-          <FormLabel.Description color="text.description">
-            Password protect access to your staging site without affecting your
-            live site.
-          </FormLabel.Description>
         </FormControl>
         {watch("isStagingPrivatised") && (
           <VStack spacing="0.75rem" align="flex-start" w="100%">
             <Box>
-              <FormLabel isRequired>Username</FormLabel>
+              <FormTitle>Username</FormTitle>
               <FormLabel.Description color="text.description">
                 This cannot be changed.
               </FormLabel.Description>
             </Box>
             <Input isDisabled placeholder="user" />
             <Box>
-              <FormLabel isRequired>Password</FormLabel>
+              <FormTitle>Password</FormTitle>
               <FormLabel.Description color="text.description">
-                You should change this every 90 days.
+                You should change this every 90 days
               </FormLabel.Description>
             </Box>
             <FormControl isDisabled={isError} isInvalid={!!errors.password}>
