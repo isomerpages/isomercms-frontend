@@ -61,7 +61,6 @@ export const updatePassword = async (
 
   if (!password)
     return apiService.post(endpoint, {
-      password: "",
       enablePassword: isStagingPrivatised,
     })
   return apiService.post(endpoint, {

@@ -56,10 +56,18 @@ export type SiteSettings = SiteInfo &
   SiteAnalyticsSettings &
   SitePasswordSettings
 
-export interface BackendPasswordSettings {
+interface BackendPasswordNetlifySettings {
+  isAmplifySite: false
+}
+
+interface BackendPasswordAmplifySettings {
   password: string
   isAmplifySite: boolean
 }
+
+export type BackendPasswordSettings =
+  | BackendPasswordNetlifySettings
+  | BackendPasswordAmplifySettings
 
 export interface BackendSiteSettings {
   title?: string
