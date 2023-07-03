@@ -161,29 +161,6 @@ export const SiteLaunchPad = (): JSX.Element => {
     }
   }
 
-  const handleIncrementStepNumber = () => {
-    if (
-      siteLaunchStatusProps &&
-      siteLaunchStatusProps.stepNumber < SITE_LAUNCH_TASKS_LENGTH
-    ) {
-      setSiteLaunchStatusProps({
-        ...siteLaunchStatusProps,
-        stepNumber: (siteLaunchStatusProps.stepNumber +
-          1) as SiteLaunchTaskTypeIndex, // safe to assert since we do a check
-        siteLaunchStatus: "CHECKLIST_TASKS_PENDING",
-      })
-    }
-  }
-  const handleDecrementStepNumber = () => {
-    if (siteLaunchStatusProps && siteLaunchStatusProps.stepNumber > 0) {
-      setSiteLaunchStatusProps({
-        ...siteLaunchStatusProps,
-        stepNumber: (siteLaunchStatusProps?.stepNumber -
-          1) as SiteLaunchTaskTypeIndex, // safe to assert since we do a check
-      })
-    }
-  }
-
   let title: JSX.Element
   let body: JSX.Element
   switch (pageNumber) {
