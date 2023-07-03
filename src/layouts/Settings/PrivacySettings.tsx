@@ -97,6 +97,7 @@ export const PrivacySettings = ({
             <FormControl isDisabled={isError} isInvalid={!!errors.password}>
               <InputGroup>
                 <Input
+                  // eslint-disable-next-line react/jsx-props-no-spreading
                   {...register("password", {
                     required: true,
                     pattern: RegExp(PASSWORD_REGEX),
