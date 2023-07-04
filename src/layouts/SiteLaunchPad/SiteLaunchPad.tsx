@@ -17,11 +17,13 @@ import {
 } from "@opengovsg/design-system-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
 import { SiteViewHeader } from "layouts/layouts/SiteViewLayout/SiteViewHeader"
+
+import { shouldUseSiteLaunchFeature } from "utils/siteLaunchUtils"
 
 import {
   SiteLaunchStatusProps,
@@ -42,7 +44,6 @@ import {
   SiteLaunchInfoCollectorTitle,
   SiteLaunchInfoCollectorBody,
 } from "./components/SiteLaunchInfoGathering"
-import { SiteLaunchPadBlockedModel } from "./components/SiteLaunchPadBlockedModel"
 
 interface RiskAcceptanceModalProps {
   isOpen: boolean
@@ -131,11 +132,19 @@ const getInitialPageNumber = (
   return SITE_LAUNCH_PAGES.DISCLAIMER
 }
 export const SiteLaunchPad = (): JSX.Element => {
-  const { siteLaunchStatusProps } = useSiteLaunchContext()
+  const {
+    siteLaunchStatusProps,
+    setSiteLaunchStatusProps,
+    setIsSiteLaunchBlockedModalOpen,
+  } = useSiteLaunchContext()
   const { siteName } = useParams<{ siteName: string }>()
   const [pageNumber, setPageNumber] = useState(
     getInitialPageNumber(siteLaunchStatusProps)
   )
+  if (!shouldUseSiteLaunchFeature(siteName)) {
+    setIsSiteLaunchBlockedModalOpen(true)
+  }
+  const history = useHistory()
 
   const handleIncrementStepNumber = () => {
     if (
@@ -198,7 +207,7 @@ export const SiteLaunchPad = (): JSX.Element => {
           />
         </VStack>
       ) : (
-        <SiteLaunchPadBlockedModel />
+        history.push(`/sites/${siteName}/dashboard`)
       )}
     </>
   )
