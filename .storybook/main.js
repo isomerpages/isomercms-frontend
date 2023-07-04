@@ -17,6 +17,7 @@ module.exports = {
     name: "@storybook/react-webpack5",
     options: {},
   },
+  staticDirs: ["../public"], //👈 Configures the static asset folder in Storybook
   docs: {
     autodocs: true,
   },

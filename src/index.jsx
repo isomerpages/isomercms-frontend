@@ -7,6 +7,8 @@ import "styles/index.scss"
 import "styles/isomer-template.scss"
 import App from "App"
 
+import { worker } from "./mocks/browser"
+
 if (
   process.env.REACT_APP_SENTRY_ENV === "staging" ||
   process.env.REACT_APP_SENTRY_ENV === "production"
@@ -19,6 +21,10 @@ if (
     // for finer control
     tracesSampleRate: 1.0,
   })
+}
+
+if (process.env.REACT_APP_ENV === "LOCAL_DEV") {
+  worker.start()
 }
 
 const container = document.getElementById("root")
