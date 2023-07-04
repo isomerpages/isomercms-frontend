@@ -135,14 +135,14 @@ export const SiteLaunchPad = (): JSX.Element => {
   const {
     siteLaunchStatusProps,
     setSiteLaunchStatusProps,
-    setIsSiteLaunchBlockedModalOpen,
+    setIsSiteLaunchBlockedToastShown,
   } = useSiteLaunchContext()
   const { siteName } = useParams<{ siteName: string }>()
   const [pageNumber, setPageNumber] = useState(
     getInitialPageNumber(siteLaunchStatusProps)
   )
   if (!shouldUseSiteLaunchFeature(siteName)) {
-    setIsSiteLaunchBlockedModalOpen(true)
+    setIsSiteLaunchBlockedToastShown(true)
   }
   const history = useHistory()
 

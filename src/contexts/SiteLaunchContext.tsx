@@ -23,8 +23,8 @@ interface SiteLaunchContextProps {
   ) => void
   generateDNSRecords: () => void
   refetchSiteLaunchStatus: () => void
-  isSiteLaunchBlockedModalOpen: boolean
-  setIsSiteLaunchBlockedModalOpen: (isOpen: boolean) => void
+  isSiteLaunchBlockedToastShown: boolean
+  setIsSiteLaunchBlockedToastShown: (isOpen: boolean) => void
 }
 
 interface SiteLaunchProviderProps {
@@ -49,8 +49,8 @@ export const SiteLaunchProvider = ({
 }: SiteLaunchProviderProps): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
   const [
-    isSiteLaunchBlockedModalOpen,
-    setIsSiteLaunchBlockedModalOpen,
+    isSiteLaunchBlockedToastShown,
+    setIsSiteLaunchBlockedToastShown,
   ] = useState<boolean>(false)
   const [
     siteLaunchStatusProps,
@@ -126,8 +126,8 @@ export const SiteLaunchProvider = ({
         setSiteLaunchStatusProps,
         generateDNSRecords,
         refetchSiteLaunchStatus,
-        isSiteLaunchBlockedModalOpen,
-        setIsSiteLaunchBlockedModalOpen,
+        isSiteLaunchBlockedToastShown,
+        setIsSiteLaunchBlockedToastShown,
       }}
     >
       {children}
