@@ -38,6 +38,7 @@ export const CancelRequestModal = (
   useEffect(() => {
     if (isError) {
       errorToast({
+        id: "cancel-review-request-error",
         description: getAxiosErrorMessage(error),
       })
     }

@@ -174,7 +174,10 @@ export const MainSubmodal = ({
 
   useEffect(() => {
     if (addCollaboratorSuccess) {
-      successToast({ description: "Collaborator added successfully" })
+      successToast({
+        id: "add-collaborator",
+        description: "Collaborator added successfully",
+      })
       collaboratorFormMethods.reset()
     }
   }, [addCollaboratorSuccess, collaboratorFormMethods, successToast])

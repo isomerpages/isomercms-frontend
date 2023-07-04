@@ -19,6 +19,7 @@ export const useGetCollaboratorRoleHook = (
     {
       onError: () => {
         errorToast({
+          id: "get-collaborator-role-error",
           description: `Your collaborator role could not be retrieved. ${DEFAULT_RETRY_MSG}`,
         })
       },

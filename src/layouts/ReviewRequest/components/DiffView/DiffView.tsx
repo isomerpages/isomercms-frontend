@@ -101,7 +101,10 @@ export const DiffView = ({
 
   useEffect(() => {
     if (isError) {
-      errorToast({ description: getAxiosErrorMessage(error) })
+      errorToast({
+        id: "diff-view-error",
+        description: getAxiosErrorMessage(error),
+      })
     }
   }, [error, errorToast, isError])
 

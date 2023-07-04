@@ -56,6 +56,7 @@ export function useCreatePageHook(params, queryParams) {
       },
       onError: (err) => {
         errorToast({
+          id: "create-page-error",
           description: `A new page could not be created. ${getAxiosErrorMessage(
             err
           )}`,

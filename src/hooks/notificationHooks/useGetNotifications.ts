@@ -19,6 +19,7 @@ export const useGetNotifications = (
       enabled: false, // Manually triggered
       onError: () => {
         errorToast({
+          id: "get-notifications-error",
           description: `Your notifications could not be retrieved. ${DEFAULT_RETRY_MSG}`,
         })
       },

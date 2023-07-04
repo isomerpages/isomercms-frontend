@@ -26,6 +26,7 @@ export function useCreateMediaHook(params, queryParams) {
       ...queryParams,
       onSuccess: ({ data }) => {
         successToast({
+          id: "upload-media-file-success",
           description: `Media file successfully uploaded!`,
         })
         const newMedia = {
@@ -47,6 +48,7 @@ export function useCreateMediaHook(params, queryParams) {
       },
       onError: () => {
         errorToast({
+          id: "create-media-file-error",
           description: `A new media file could not be created. ${DEFAULT_RETRY_MSG}`,
         })
         if (queryParams && queryParams.onError) queryParams.onError()

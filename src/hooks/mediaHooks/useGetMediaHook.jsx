@@ -20,6 +20,7 @@ export function useGetMediaHook(params, queryParams) {
       retry: false,
       onError: () => {
         errorToast({
+          id: "get-media-file-error",
           description: `The media file could not be retrieved. ${DEFAULT_RETRY_MSG}`,
         })
         if (queryParams && queryParams.onError) queryParams.onError()

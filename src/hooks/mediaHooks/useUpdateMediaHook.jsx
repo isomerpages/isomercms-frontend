@@ -30,6 +30,7 @@ export function useUpdateMediaHook(params, queryParams) {
       },
       onSuccess: ({ data }) => {
         successToast({
+          id: "update-media-file-success",
           description: `Successfully updated media file!`,
         })
         if (params.mediaRoom || params.mediaDirectoryName)
@@ -59,6 +60,7 @@ export function useUpdateMediaHook(params, queryParams) {
       onError: (err) => {
         if (err.response.status !== 409)
           errorToast({
+            id: "update-media-file-error",
             description: `Your media file could not be updated. ${DEFAULT_RETRY_MSG}`,
           })
         if (queryParams && queryParams.onError) queryParams.onError(err)

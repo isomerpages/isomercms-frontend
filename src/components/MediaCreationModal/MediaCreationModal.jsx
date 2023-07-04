@@ -37,6 +37,7 @@ export const MediaCreationModal = ({
     const media = event.target?.files[0] || ""
     if (media.size > MEDIA_FILE_MAX_SIZE) {
       errorToast({
+        id: "create-media-size-error",
         description: "File size exceeds 5MB. Please upload a different file.",
       })
     } else {
