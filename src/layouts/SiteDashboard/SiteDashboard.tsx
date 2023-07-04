@@ -76,8 +76,12 @@ export const SiteDashboard = (): JSX.Element => {
   const errorToast = useErrorToast()
 
   useEffect(() => {
-    if (isSiteLaunchBlockedModalOpen) {
-      errorToast({ description: "You do not have access to this page." })
+    const id = "no_access_to_launchpad"
+    if (isSiteLaunchBlockedModalOpen && !errorToast.isActive(id)) {
+      errorToast({
+        id,
+        description: "You do not have access to this page.",
+      })
       setIsSiteLaunchBlockedModalOpen(false)
     }
   }, [
