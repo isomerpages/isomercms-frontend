@@ -1,6 +1,6 @@
 import { useDisclosure } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
-import { ComponentMeta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import { MemoryRouter, Route } from "react-router-dom"
 
 import { CancelRequestModal } from "./CancelRequestModal"
@@ -9,19 +9,19 @@ const modalMeta = {
   title: "Components/ReviewRequest/Cancel Request Modal",
   component: CancelRequestModal,
   decorators: [
-    (StoryFn) => {
+    (Story) => {
       return (
         <MemoryRouter initialEntries={["/sites/storybook/review/1"]}>
           <Route path="/sites/:siteName/review/:reviewId">
-            <StoryFn />
+            <Story />
           </Route>
         </MemoryRouter>
       )
     },
   ],
-} as ComponentMeta<typeof CancelRequestModal>
+} as Meta<typeof CancelRequestModal>
 
-const Template: Story<never> = () => {
+const Template: StoryFn<Record<string, never>> = () => {
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true })
   return (
     <>
