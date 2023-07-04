@@ -45,6 +45,7 @@ import useRedirectHook from "hooks/useRedirectHook"
 
 import { getDateTimeFromUnixTime } from "utils/date"
 import { shouldUseSiteLaunchFeature } from "utils/siteLaunchUtils"
+import { useErrorToast } from "utils/toasts"
 
 import { BxsClearRocket, SiteDashboardHumanImage } from "assets"
 import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
@@ -57,13 +58,6 @@ import { CollaboratorsStatistics } from "./components/CollaboratorsStatistics"
 import { EmptyReviewRequest } from "./components/EmptyReviewRequest"
 import { ReviewRequestCard } from "./components/ReviewRequestCard"
 
-interface SiteLaunchDisplayCardProps {
-  siteName: string
-  siteLaunchStatus?: SiteLaunchFrontEndStatus
-  isSiteLaunchLoading: boolean
-  siteLaunchChecklistStepNumber?: number
-}
-
 export const SiteDashboard = (): JSX.Element => {
   const {
     isOpen: isCollaboratorsModalOpen,
@@ -73,7 +67,25 @@ export const SiteDashboard = (): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
   const { setRedirectToPage } = useRedirectHook()
   const { userId } = useLoginContext()
-  const { siteLaunchStatusProps } = useSiteLaunchContext()
+  const {
+    siteLaunchStatusProps,
+    setIsSiteLaunchBlockedModalOpen,
+    isSiteLaunchBlockedModalOpen,
+  } = useSiteLaunchContext()
+
+  const errorToast = useErrorToast()
+
+  useEffect(() => {
+    if (isSiteLaunchBlockedModalOpen) {
+      errorToast({ description: "You do not have access to this page." })
+      setIsSiteLaunchBlockedModalOpen(false)
+    }
+  }, [
+    isSiteLaunchBlockedModalOpen,
+    setIsSiteLaunchBlockedModalOpen,
+    errorToast,
+  ])
+
   const {
     data: siteInfo,
     isError: isSiteInfoError,
@@ -112,6 +124,7 @@ export const SiteDashboard = (): JSX.Element => {
   )
   const siteLaunchStatus = siteLaunchStatusProps?.siteLaunchStatus
   const isSiteLaunchLoading = siteLaunchStatus === "LOADING"
+
   return (
     <SiteViewLayout overflow="hidden">
       <Container maxW="container.xl" minH="100vh">
