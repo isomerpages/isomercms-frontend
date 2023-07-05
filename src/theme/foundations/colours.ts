@@ -31,7 +31,6 @@ export type IsomerColorScheme =
   | "border"
   | "base"
   | "interaction"
-  | "utility"
 
 type BaseRecord = Record<string, string> | NestedRecord | string
 
@@ -139,8 +138,5 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
     support: {
       disabled: "#A0A0A0",
     },
-  },
-  utility: {
-    ui: "#FFFFFF",
   },
 }
