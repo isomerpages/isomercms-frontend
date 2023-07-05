@@ -17,7 +17,7 @@ import {
 } from "@opengovsg/design-system-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { useHistory, useParams } from "react-router-dom"
+import { Redirect, useParams } from "react-router-dom"
 
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
@@ -144,7 +144,6 @@ export const SiteLaunchPad = (): JSX.Element => {
   if (!shouldUseSiteLaunchFeature(siteName)) {
     setIsSiteLaunchBlockedToastShown(true)
   }
-  const history = useHistory()
 
   const handleIncrementStepNumber = () => {
     if (
@@ -207,7 +206,7 @@ export const SiteLaunchPad = (): JSX.Element => {
           />
         </VStack>
       ) : (
-        history.push(`/sites/${siteName}/dashboard`)
+        <Redirect to={`/sites/${siteName}/dashboard`} />
       )}
     </>
   )
