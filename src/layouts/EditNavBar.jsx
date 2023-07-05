@@ -138,6 +138,7 @@ const EditNavBar = ({ match }) => {
           setRedirectToNotFound(siteName)
         } else {
           errorToast({
+            id: "get-nav-error",
             description: `There was a problem trying to load your data. ${DEFAULT_RETRY_MSG}`,
           })
         }

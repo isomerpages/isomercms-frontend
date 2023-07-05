@@ -35,6 +35,7 @@ export const useGetFoldersAndPages = (
           setRedirectToNotFound()
         } else {
           errorToast({
+            id: "get-folder-pages-error",
             description: `There was a problem retrieving directory contents. ${DEFAULT_RETRY_MSG}`,
           })
         }

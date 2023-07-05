@@ -294,6 +294,7 @@ const ApprovalButton = ({
   useEffect(() => {
     if (isUnapproveReviewRequestError) {
       errorToast({
+        id: "unapprove-review-request-error",
         description: getAxiosErrorMessage(unapproveReviewRequestError),
       })
     }
@@ -302,6 +303,7 @@ const ApprovalButton = ({
   useEffect(() => {
     if (isApproveReviewRequestError) {
       errorToast({
+        id: "approve-review-request-error",
         description: getAxiosErrorMessage(approveReviewRequestError),
       })
     }

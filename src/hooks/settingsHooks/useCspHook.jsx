@@ -26,6 +26,7 @@ export function useCspHook({ siteName }, queryParams) {
     initialData: new Policy(),
     onError: () => {
       errorToast({
+        id: "get-csp-error",
         description: `There was a problem trying to load your CSP. ${DEFAULT_RETRY_MSG}`,
       })
       if (queryParams && queryParams.onError) queryParams.onError()

@@ -33,6 +33,7 @@ export const useGetWorkspacePages = (
           setRedirectToNotFound()
         } else {
           errorToast({
+            id: "get-workspace-pages-error",
             description: `There was a problem retrieving ungrouped pages. ${DEFAULT_RETRY_MSG}`,
           })
         }

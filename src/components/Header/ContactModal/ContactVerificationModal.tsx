@@ -45,6 +45,7 @@ export const ContactVerificationModal = ({
   const handleSendOtp = async ({ mobile: mobileInput }: ContactProps) => {
     await sendContactOtp({ mobile: mobileInput }) // Non-2xx responses will be caught by axios and thrown as error
     successToast({
+      id: "send-otp-success",
       description: `OTP sent to ${mobileInput}`,
     })
     setMobile(mobileInput)
@@ -54,6 +55,7 @@ export const ContactVerificationModal = ({
     await verifyContactOtp({ mobile, otp })
     onClose()
     successToast({
+      id: "verify-otp-success",
       description: `Successfully changed contact number to ${mobile}!`,
     })
     verifyLoginAndGetUserDetails()

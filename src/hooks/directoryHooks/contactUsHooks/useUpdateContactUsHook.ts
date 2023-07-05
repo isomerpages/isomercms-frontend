@@ -37,10 +37,14 @@ export const useUpdateContactUsHook = (
     {
       onSuccess: () => {
         queryClient.invalidateQueries([GET_CONTACT_US_KEY, siteName])
-        successToast({ description: "Contact Us page updated successfully" })
+        successToast({
+          id: "update-homepage-success",
+          description: "Contact Us page updated successfully",
+        })
       },
       onError: (err: AxiosError) => {
         errorToast({
+          id: "update-homepage-error",
           description: `Could not update Contact Us page. ${DEFAULT_RETRY_MSG}. Error: ${err.response?.data.error.message}`,
         })
       },

@@ -39,7 +39,8 @@ export function useCollectionHook(params) {
         setRedirectToNotFound(params.siteName)
       } else {
         errorToast({
-          description: `There was a problem trying to load your page. ${DEFAULT_RETRY_MSG}`,
+          id: "get-collection-error",
+          description: `There was a problem trying to load your directory. ${DEFAULT_RETRY_MSG}`,
         })
       }
     },

@@ -35,6 +35,7 @@ export const useGetMediaFolders = (
           setRedirectToNotFound()
         } else {
           errorToast({
+            id: "get-media-directory-error",
             description: `There was a problem retrieving directory contents. ${DEFAULT_RETRY_MSG}`,
           })
         }

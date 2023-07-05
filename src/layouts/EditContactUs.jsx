@@ -742,6 +742,7 @@ const EditContactUs = ({ match }) => {
       }
     } catch (err) {
       errorToast({
+        id: "update-contact-us-error",
         description: `There was a problem trying to save your contact us page. ${DEFAULT_RETRY_MSG}`,
       })
       console.log(err)

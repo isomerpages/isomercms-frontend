@@ -32,6 +32,7 @@ export const useGetResourceRoom = (
           setRedirectToNotFound()
         } else {
           errorToast({
+            id: "get-resource-room-error",
             description: `There was a problem retrieving directory contents. ${DEFAULT_RETRY_MSG}`,
           })
         }

@@ -251,6 +251,7 @@ const EditHomepage = ({ match }) => {
         // Set frontMatter to be same to prevent warning message when navigating away
         setFrontMatter(originalFrontMatter)
         errorToast({
+          id: "get-homepage-error",
           description: `There was a problem trying to load your homepage. ${DEFAULT_RETRY_MSG}`,
         })
         console.log(err)
@@ -1003,6 +1004,7 @@ const EditHomepage = ({ match }) => {
       await updateHomepageHandler(params)
     } catch (err) {
       errorToast({
+        id: "update-homepage-error",
         description: `There was a problem trying to save your homepage. ${DEFAULT_RETRY_MSG}`,
       })
       console.log(err)

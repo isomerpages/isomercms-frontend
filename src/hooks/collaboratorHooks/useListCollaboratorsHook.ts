@@ -33,6 +33,7 @@ export const useListCollaborators = (
           setRedirectToPage("/sites")
         } else {
           errorToast({
+            id: "get-collaborators-error",
             description: getAxiosErrorMessage(err, EXCEPTION_ERROR_MESSAGE),
           })
         }

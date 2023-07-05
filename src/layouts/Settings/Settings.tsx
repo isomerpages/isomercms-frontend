@@ -44,6 +44,7 @@ export const Settings = (): JSX.Element => {
   useEffect(() => {
     if (isGetSettingsError) {
       errorToast({
+        id: "get-settings-error",
         title: "Error",
         description: `Site settings could not be retrieved. ${DEFAULT_RETRY_MSG}`,
       })
@@ -122,6 +123,7 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
   useEffect(() => {
     if (hasDiff) {
       errorToast({
+        id: "update-settings-diff-error",
         title: "Error",
         description:
           "Your site settings have recently been changed by another user. You can choose to either override their changes, or go back to editing. We recommend you to make a copy of your changes elsewhere, and come back later to reconcile your changes.",
@@ -146,6 +148,7 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
           ? "Your site settings have recently been changed by another user. You can choose to either override their changes, or go back to editing. We recommend you to make a copy of your changes elsewhere, and come back later to reconcile your changes."
           : `Site settings could not be updated. ${DEFAULT_RETRY_MSG}`
       errorToast({
+        id: "update-settings-error",
         title: "Error",
         description: errorMessage,
       })
@@ -156,6 +159,7 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
   useEffect(() => {
     if (isSuccess) {
       successToast({
+        id: "update-settings-success",
         title: "Success!",
         description: "Successfully updated settings!",
       })

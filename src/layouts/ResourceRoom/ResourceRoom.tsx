@@ -92,6 +92,7 @@ const EmptyResourceRoom = () => {
   useEffect(() => {
     if (isError) {
       errorToast({
+        id: "create-resource-room-name-error",
         title: "Error",
         description: `A new directory could not be created. ${DEFAULT_RETRY_MSG}`,
       })
@@ -259,6 +260,7 @@ const ResourceRoomContent = ({
   useEffect(() => {
     if (isUpdateResourceRoomNameError) {
       errorToast({
+        id: "update-resource-room-name-error",
         title: "",
         description:
           "Unable to update resource room settings, please try again later!",
@@ -269,6 +271,7 @@ const ResourceRoomContent = ({
   useEffect(() => {
     if (isUpdateResourceRoomNameSuccess) {
       successToast({
+        id: "update-resource-room-name-success",
         title: "",
         description: `Updated resource room settings successfully.`,
       })
