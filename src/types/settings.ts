@@ -62,7 +62,7 @@ interface BackendPasswordNetlifySettings {
 
 interface BackendPasswordAmplifySettings {
   password: string
-  isAmplifySite: boolean
+  isAmplifySite: true
 }
 
 export type BackendPasswordSettings =
