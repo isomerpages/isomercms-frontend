@@ -7,6 +7,7 @@ import {
   InputGroup,
   Icon,
   InputRightElement,
+  useClipboard,
   Popover,
   PopoverTrigger,
   PopoverContent,
@@ -42,7 +43,7 @@ export const PrivacySettings = ({
 }: PrivacySettingsProp): JSX.Element => {
   const { register, trigger, watch, setValue, getValues } = useFormContext()
   const { errors } = useFormState<SitePasswordSettings>()
-  const [hasCopied, setHasCopied] = useState(false)
+  const { onCopy, hasCopied } = useClipboard(watch("password"))
   const [isBuffering, setIsBuffering] = useState(false)
 
   const isPrivatised = watch("isStagingPrivatised")
@@ -106,7 +107,6 @@ export const PrivacySettings = ({
                     required: true,
                     pattern: RegExp(PASSWORD_REGEX),
                     onChange: () => {
-                      setHasCopied(false)
                       // Stagger check for password
                       if (!isBuffering) {
                         setIsBuffering(true)
@@ -130,9 +130,15 @@ export const PrivacySettings = ({
                     <PopoverTrigger>
                       <IconButton
                         aria-label="copy password"
-                        onClick={() => {
-                          navigator.clipboard.writeText(getValues("password"))
-                          setHasCopied(true)
+                        onClick={onCopy}
+                        _focus={{
+                          background: "none",
+                        }}
+                        _hover={{
+                          background: "none",
+                        }}
+                        _active={{
+                          background: "none",
                         }}
                         variant="clear"
                       >
