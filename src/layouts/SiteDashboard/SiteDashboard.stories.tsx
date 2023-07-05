@@ -23,7 +23,6 @@ import {
   buildSiteDashboardReviewRequests,
   buildSiteLaunchDto,
 } from "mocks/utils"
-import { SITE_LAUNCH_TASKS_LENGTH } from "types/siteLaunch"
 
 import { SiteDashboard } from "./SiteDashboard"
 

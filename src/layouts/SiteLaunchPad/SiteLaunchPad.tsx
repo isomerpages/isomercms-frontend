@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import {
   Modal,
   ModalOverlay,
@@ -176,7 +177,6 @@ export const SiteLaunchPad = (): JSX.Element => {
       title = <SiteLaunchChecklistTitle />
       body = (
         <SiteLaunchChecklistBody
-          setPageNumber={setPageNumber}
           handleIncrementStepNumber={handleIncrementStepNumber}
           handleDecrementStepNumber={handleDecrementStepNumber}
         />
