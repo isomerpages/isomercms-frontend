@@ -160,7 +160,7 @@ export const PrivacySettings = ({
                       <PopoverArrow bg="background.action.alt" />
                       <PopoverBody>
                         <Text textStyle="body-2" color="text.inverse">
-                          Link copied!
+                          Copied!
                         </Text>
                       </PopoverBody>
                     </PopoverContent>
