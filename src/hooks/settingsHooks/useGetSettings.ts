@@ -134,9 +134,7 @@ export const useGetSettings = (
     async () => {
       const siteSettings = await SettingsService.get({ siteName })
       const passwordSettings = await SettingsService.getPassword({ siteName })
-      const convertedSettings = convertFromBe({
-        ...siteSettings,
-      })
+      const convertedSettings = convertFromBe(siteSettings)
       const parsedPassword = extractPassword(passwordSettings)
       return {
         ...convertedSettings,
