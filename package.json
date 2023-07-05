@@ -88,8 +88,8 @@
     "cypress:open": "source .env && node scripts/run-e2e.js open",
     "prepare": "husky install",
     "version": "auto-changelog -p && git add CHANGELOG.md",
-    "storybook": "source .env && storybook dev -p 6006",
-    "build-storybook": "storybook build -s public",
+    "storybook": "source .env && REACT_APP_ENV=test && storybook dev -p 6006",
+    "build-storybook": "REACT_APP_ENV=test && storybook build -s public",
     "chromatic": "npx chromatic --project-token=$CHROMATIC_PROJECT_TOKEN",
     "sourcemaps:upload": "npx datadog-ci sourcemaps upload ./build --service=isomercms-frontend --release-version=$REACT_APP_VERSION --minified-path-prefix=$REACT_APP_URL"
   },
