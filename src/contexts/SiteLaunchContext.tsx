@@ -112,7 +112,11 @@ export const SiteLaunchProvider = ({
         dnsRecords: siteLaunchDto.dnsRecords,
       })
     }
-  }, [siteLaunchDto, siteLaunchStatusProps.siteLaunchStatus])
+  }, [
+    siteLaunchDto,
+    siteLaunchStatusProps.dnsRecords,
+    siteLaunchStatusProps.siteLaunchStatus,
+  ])
 
   return (
     <SiteLaunchContext.Provider

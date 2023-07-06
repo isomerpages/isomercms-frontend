@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import {
   Modal,
   ModalOverlay,
@@ -15,12 +14,15 @@ import {
   Link,
   ModalCloseButton,
 } from "@opengovsg/design-system-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
+import { Redirect, useParams } from "react-router-dom"
 
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
 import { SiteViewHeader } from "layouts/layouts/SiteViewLayout/SiteViewHeader"
+
+import { shouldUseSiteLaunchFeature } from "utils/siteLaunchUtils"
 
 import {
   SiteLaunchStatusProps,
@@ -28,6 +30,7 @@ import {
   SITE_LAUNCH_PAGES,
   SITE_LAUNCH_TASKS_LENGTH,
 } from "types/siteLaunch"
+import { useErrorToast } from "utils"
 
 import {
   SiteLaunchChecklistTitle,
@@ -133,10 +136,21 @@ export const SiteLaunchPad = (): JSX.Element => {
     siteLaunchStatusProps,
     setSiteLaunchStatusProps,
   } = useSiteLaunchContext()
-
+  const { siteName } = useParams<{ siteName: string }>()
   const [pageNumber, setPageNumber] = useState(
     getInitialPageNumber(siteLaunchStatusProps)
   )
+
+  const errorToast = useErrorToast()
+
+  useEffect(() => {
+    if (!shouldUseSiteLaunchFeature(siteName)) {
+      errorToast({
+        id: "no_access_to_launchpad",
+        description: "You do not have access to this page.",
+      })
+    }
+  }, [siteName, errorToast])
 
   const handleIncrementStepNumber = () => {
     if (
@@ -189,14 +203,18 @@ export const SiteLaunchPad = (): JSX.Element => {
   return (
     <>
       <SiteViewHeader />
-      <VStack bg="white" w="100%" minH="100vh" spacing="2rem">
-        {title}
-        {body}
-        <RiskAcceptanceModal
-          isOpen={pageNumber === SITE_LAUNCH_PAGES.RISK_ACCEPTANCE}
-          setPageNumber={setPageNumber}
-        />
-      </VStack>
+      {shouldUseSiteLaunchFeature(siteName) ? (
+        <VStack bg="white" w="100%" minH="100vh" spacing="2rem">
+          {title}
+          {body}
+          <RiskAcceptanceModal
+            isOpen={pageNumber === SITE_LAUNCH_PAGES.RISK_ACCEPTANCE}
+            setPageNumber={setPageNumber}
+          />
+        </VStack>
+      ) : (
+        <Redirect to={`/sites/${siteName}/dashboard`} />
+      )}
     </>
   )
 }
