@@ -14,7 +14,7 @@ import {
   Link,
   ModalCloseButton,
 } from "@opengovsg/design-system-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { Redirect, useParams } from "react-router-dom"
 
@@ -30,6 +30,7 @@ import {
   SITE_LAUNCH_PAGES,
   SITE_LAUNCH_TASKS_LENGTH,
 } from "types/siteLaunch"
+import { useErrorToast } from "utils"
 
 import {
   SiteLaunchChecklistTitle,
@@ -134,15 +135,22 @@ export const SiteLaunchPad = (): JSX.Element => {
   const {
     siteLaunchStatusProps,
     setSiteLaunchStatusProps,
-    setIsSiteLaunchBlockedToastShown,
   } = useSiteLaunchContext()
   const { siteName } = useParams<{ siteName: string }>()
   const [pageNumber, setPageNumber] = useState(
     getInitialPageNumber(siteLaunchStatusProps)
   )
-  if (!shouldUseSiteLaunchFeature(siteName)) {
-    setIsSiteLaunchBlockedToastShown(true)
-  }
+
+  const errorToast = useErrorToast()
+
+  useEffect(() => {
+    if (!shouldUseSiteLaunchFeature(siteName)) {
+      errorToast({
+        id: "no_access_to_launchpad",
+        description: "You do not have access to this page.",
+      })
+    }
+  }, [siteName, errorToast])
 
   const handleIncrementStepNumber = () => {
     if (

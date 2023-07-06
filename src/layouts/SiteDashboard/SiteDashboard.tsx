@@ -45,7 +45,6 @@ import useRedirectHook from "hooks/useRedirectHook"
 
 import { getDateTimeFromUnixTime } from "utils/date"
 import { shouldUseSiteLaunchFeature } from "utils/siteLaunchUtils"
-import { useErrorToast } from "utils/toasts"
 
 import { BxsClearRocket, SiteDashboardHumanImage } from "assets"
 import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
@@ -67,27 +66,7 @@ export const SiteDashboard = (): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
   const { setRedirectToPage } = useRedirectHook()
   const { userId } = useLoginContext()
-  const {
-    siteLaunchStatusProps,
-    setIsSiteLaunchBlockedToastShown,
-    isSiteLaunchBlockedToastShown,
-  } = useSiteLaunchContext()
-
-  const errorToast = useErrorToast()
-
-  useEffect(() => {
-    if (isSiteLaunchBlockedToastShown) {
-      errorToast({
-        id: "no_access_to_launchpad",
-        description: "You do not have access to this page.",
-      })
-      setIsSiteLaunchBlockedToastShown(false)
-    }
-  }, [
-    isSiteLaunchBlockedToastShown,
-    setIsSiteLaunchBlockedToastShown,
-    errorToast,
-  ])
+  const { siteLaunchStatusProps } = useSiteLaunchContext()
 
   const {
     data: siteInfo,
