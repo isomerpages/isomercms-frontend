@@ -1,4 +1,5 @@
-import { useToast, UseToastReturn } from "@opengovsg/design-system-react"
+import { useToast, UseToastProps } from "@opengovsg/design-system-react"
+import type { SetRequired } from "type-fest"
 
 import { DEFAULT_RETRY_MSG } from "./legacy"
 
@@ -9,22 +10,40 @@ const DEFAULT_TOAST_PROPS = {
   isClosable: true,
 }
 
-export const useErrorToast = (): UseToastReturn =>
-  useToast({
+// Not specifying return type because type is in the argument
+const useIsomerToast = (args: UseToastProps) => {
+  const toast = useToast(args)
+  const wrappedToast = ({ id, ...rest }: SetRequired<UseToastProps, "id">) => {
+    if (!toast.isActive(id))
+      return toast({
+        ...rest,
+        id,
+      })
+    return undefined
+  }
+  wrappedToast.close = toast.close
+  wrappedToast.closeAll = toast.closeAll
+  wrappedToast.isActive = toast.isActive
+  wrappedToast.update = toast.update
+  return wrappedToast
+}
+
+export const useErrorToast = () =>
+  useIsomerToast({
     ...DEFAULT_TOAST_PROPS,
     description: DEFAULT_ERROR_TOAST_MSG,
     status: "danger",
   })
 
-export const useSuccessToast = (): UseToastReturn =>
-  useToast({
+export const useSuccessToast = () =>
+  useIsomerToast({
     ...DEFAULT_TOAST_PROPS,
     description: "Success!",
     status: "success",
   })
 
-export const useWarningToast = (): UseToastReturn =>
-  useToast({
+export const useWarningToast = () =>
+  useIsomerToast({
     ...DEFAULT_TOAST_PROPS,
     status: "warning",
   })

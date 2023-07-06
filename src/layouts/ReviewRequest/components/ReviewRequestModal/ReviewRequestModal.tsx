@@ -71,6 +71,7 @@ export const ReviewRequestModal = (
       const errorMessage =
         error.response?.data.message || "Review request could not be created!"
       errorToast({
+        id: "review-request-create-error",
         description: errorMessage,
       })
     }
@@ -80,6 +81,7 @@ export const ReviewRequestModal = (
   useEffect(() => {
     if (isSuccess) {
       successToast({
+        id: "review-request-create-success",
         description: "Review request submitted",
       })
     }

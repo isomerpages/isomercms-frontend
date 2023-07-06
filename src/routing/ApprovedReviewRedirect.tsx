@@ -35,6 +35,7 @@ export const ApprovedReviewRedirect = ({
   useEffect(() => {
     if (!isGithubUser && isError) {
       errorToast({
+        id: "approved-review-redirect-error",
         description: getAxiosErrorMessage(error),
       })
     }
@@ -43,6 +44,7 @@ export const ApprovedReviewRedirect = ({
   useEffect(() => {
     if (hasApprovedReviewRequest) {
       warningToast({
+        id: "approved-review-redirect-warning",
         description:
           "There is currently an approved review request! Please publish that first before making any changes.",
       })

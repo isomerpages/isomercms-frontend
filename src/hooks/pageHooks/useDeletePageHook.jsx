@@ -23,12 +23,14 @@ export function useDeletePageHook(params, queryParams) {
     ...queryParams,
     onError: () => {
       errorToast({
+        id: "delete-page-error",
         description: `Your page could not be deleted successfully. ${DEFAULT_RETRY_MSG}`,
       })
       if (queryParams && queryParams.onError) queryParams.onError()
     },
     onSuccess: () => {
       successToast({
+        id: "delete-page-success",
         description: `Successfully deleted page!`,
       })
       if (params.collectionName)

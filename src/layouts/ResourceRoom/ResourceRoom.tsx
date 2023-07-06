@@ -92,6 +92,7 @@ const EmptyResourceRoom = () => {
   useEffect(() => {
     if (isError) {
       errorToast({
+        id: "create-resource-room-name-error",
         title: "Error",
         description: `A new directory could not be created. ${DEFAULT_RETRY_MSG}`,
       })
@@ -134,7 +135,6 @@ const EmptyResourceRoom = () => {
               <Input
                 marginTop={5}
                 placeholder="Resource room name"
-                // eslint-disable-next-line react/jsx-props-no-spreading
                 {...register("newDirectoryName", {
                   required: "Please enter resource room name",
                 })}
@@ -260,6 +260,7 @@ const ResourceRoomContent = ({
   useEffect(() => {
     if (isUpdateResourceRoomNameError) {
       errorToast({
+        id: "update-resource-room-name-error",
         title: "",
         description:
           "Unable to update resource room settings, please try again later!",
@@ -270,6 +271,7 @@ const ResourceRoomContent = ({
   useEffect(() => {
     if (isUpdateResourceRoomNameSuccess) {
       successToast({
+        id: "update-resource-room-name-success",
         title: "",
         description: `Updated resource room settings successfully.`,
       })
@@ -362,7 +364,6 @@ const ResourceRoomContent = ({
                 <FormLabel>Resource room title</FormLabel>
                 <Input
                   placeholder="New resource room name"
-                  // eslint-disable-next-line react/jsx-props-no-spreading
                   {...register("newDirectoryName", {
                     required:
                       "Please ensure that you have entered a resource room name!",

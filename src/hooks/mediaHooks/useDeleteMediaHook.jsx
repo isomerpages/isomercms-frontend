@@ -19,12 +19,14 @@ export function useDeleteMediaHook(params, queryParams) {
     ...queryParams,
     onError: () => {
       errorToast({
+        id: "delete-media-file-error",
         description: `Your media file could not be deleted successfully. ${DEFAULT_RETRY_MSG}`,
       })
       if (queryParams && queryParams.onError) queryParams.onError()
     },
     onSuccess: () => {
       successToast({
+        id: "delete-media-file-success",
         description: `Successfully deleted media file!`,
       })
       if (params.mediaRoom || params.mediaDirectoryName)

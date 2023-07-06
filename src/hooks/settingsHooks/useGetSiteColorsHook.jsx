@@ -34,6 +34,7 @@ export function useGetSiteColorsHook({ siteName }, queryParams) {
       ...queryParams,
       onError: () => {
         errorToast({
+          id: "get-site-colors-error",
           description: `There was a problem loading the page theme colors. ${DEFAULT_RETRY_MSG}`,
         })
         if (queryParams && queryParams.onError) queryParams.onError()

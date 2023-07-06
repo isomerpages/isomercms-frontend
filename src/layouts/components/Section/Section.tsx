@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { VStack, StackProps } from "@chakra-ui/react"
 
 // eslint-disable-next-line import/prefer-default-export

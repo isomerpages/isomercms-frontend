@@ -19,6 +19,7 @@ export const useGetAllNotifications = (
       enabled: false, // We only manually trigger this query
       onError: () => {
         errorToast({
+          id: "get-all-notifications-error",
           description: `Your notifications could not be retrieved. ${DEFAULT_RETRY_MSG}`,
         })
       },

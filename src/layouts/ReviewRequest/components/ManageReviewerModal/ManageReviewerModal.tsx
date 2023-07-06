@@ -62,13 +62,17 @@ export const ManageReviewerModal = ({
 
   useEffect(() => {
     if (isUpdateReviewRequestSuccess) {
-      successToast({ description: "Your review request has been updated!" })
+      successToast({
+        id: "update-review-request-success",
+        description: "Your review request has been updated!",
+      })
     }
   }, [isUpdateReviewRequestSuccess, successToast])
 
   useEffect(() => {
     if (isUpdateReviewRequestError) {
       errorToast({
+        id: "update-review-request-error",
         description: getAxiosErrorMessage(updateReviewRequestError),
       })
     }

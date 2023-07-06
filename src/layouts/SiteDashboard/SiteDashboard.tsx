@@ -49,10 +49,7 @@ import { shouldUseSiteLaunchFeature } from "utils/siteLaunchUtils"
 import { BxsClearRocket, SiteDashboardHumanImage } from "assets"
 import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
 import { DASHBOARD_FEATURE_STEPS } from "features/FeatureTour/FeatureTourSequence"
-import {
-  SiteLaunchFrontEndStatus,
-  SITE_LAUNCH_TASKS_LENGTH,
-} from "types/siteLaunch"
+import { SITE_LAUNCH_TASKS_LENGTH } from "types/siteLaunch"
 
 import { SiteViewLayout } from "../layouts"
 
@@ -70,6 +67,7 @@ export const SiteDashboard = (): JSX.Element => {
   const { setRedirectToPage } = useRedirectHook()
   const { userId } = useLoginContext()
   const { siteLaunchStatusProps } = useSiteLaunchContext()
+
   const {
     data: siteInfo,
     isError: isSiteInfoError,
@@ -108,6 +106,7 @@ export const SiteDashboard = (): JSX.Element => {
   )
   const siteLaunchStatus = siteLaunchStatusProps?.siteLaunchStatus
   const isSiteLaunchLoading = siteLaunchStatus === "LOADING"
+
   return (
     <SiteViewLayout overflow="hidden">
       <Container maxW="container.xl" minH="100vh">
@@ -204,7 +203,10 @@ export const SiteDashboard = (): JSX.Element => {
               <SiteLaunchDisplayCard />
               {/* Human image and last saved/published */}
               <Box w="100%">
-                {siteLaunchStatus === "LAUNCHED" && <SiteDashboardHumanImage />}
+                {(siteLaunchStatus === "LAUNCHED" ||
+                  !shouldUseSiteLaunchFeature(siteName)) && (
+                  <SiteDashboardHumanImage />
+                )}
                 <DisplayCard variant="content">
                   <DisplayCardContent overflow="hidden">
                     <VStack

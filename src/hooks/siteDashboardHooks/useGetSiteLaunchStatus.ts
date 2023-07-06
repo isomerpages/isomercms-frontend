@@ -2,7 +2,7 @@ import { UseQueryResult, useQuery } from "react-query"
 
 import { SITE_DASHBOARD_LAUNCH_STATUS_KEY } from "constants/queryKeys"
 
-import * as SiteDashboardService from "services/SiteDashboardService"
+import * as SiteLaunchService from "services/SiteLaunchService"
 
 import { SiteLaunchDto } from "types/siteLaunch"
 
@@ -11,7 +11,9 @@ export const useGetSiteLaunchStatus = (
 ): UseQueryResult<SiteLaunchDto> => {
   return useQuery<SiteLaunchDto>(
     [SITE_DASHBOARD_LAUNCH_STATUS_KEY, siteName],
-    () => SiteDashboardService.getSiteLaunchStatus(siteName),
+    () => {
+      return SiteLaunchService.getSiteLaunchStatus(siteName)
+    },
     {
       retry: false,
     }

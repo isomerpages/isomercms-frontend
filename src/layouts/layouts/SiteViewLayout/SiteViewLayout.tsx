@@ -22,7 +22,6 @@ const GRID_LAYOUT: Pick<
 export const SiteViewLayout = ({ children }: StackProps): JSX.Element => {
   return (
     <>
-      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <Grid {...GRID_LAYOUT}>
         <GridItem
           area="header"
@@ -53,7 +52,6 @@ export const SiteViewContent = ({
       w="100%"
       h="100%"
       divider={<StackDivider borderColor="border.divider.alt" />}
-      // eslint-disable-next-line react/jsx-props-no-spreading
       {...rest}
     >
       {children}

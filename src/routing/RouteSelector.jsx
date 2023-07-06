@@ -21,6 +21,7 @@ import { ResourceRoom } from "layouts/ResourceRoom"
 import { ReviewRequestDashboard } from "layouts/ReviewRequest/Dashboard"
 import { Settings } from "layouts/Settings"
 import { SiteDashboard } from "layouts/SiteDashboard"
+import { SiteLaunchPad } from "layouts/SiteLaunchPad"
 import { Sites } from "layouts/Sites"
 import { Workspace } from "layouts/Workspace"
 
@@ -87,6 +88,12 @@ export const RouteSelector = () => (
       <ProtectedRouteWithProps path="/sites/:siteName/dashboard">
         <SiteLaunchProvider>
           <SiteDashboard />
+        </SiteLaunchProvider>
+      </ProtectedRouteWithProps>
+
+      <ProtectedRouteWithProps path="/sites/:siteName/siteLaunchPad">
+        <SiteLaunchProvider>
+          <SiteLaunchPad />
         </SiteLaunchProvider>
       </ProtectedRouteWithProps>
 

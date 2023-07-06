@@ -12,7 +12,7 @@ const retrieveThirdNavOptions = async (
   collectionName,
   isExistingCollection
 ) => {
-  const errorToast = useErrorToast
+  const errorToast = useErrorToast()
   try {
     let thirdNavArr = []
     let allCollectionPages = []
@@ -35,6 +35,7 @@ const retrieveThirdNavOptions = async (
   } catch (err) {
     console.log(err)
     return errorToast({
+      id: "third-nav-error",
       description: `There was a problem trying to retrieve data from your repo. ${DEFAULT_RETRY_MSG}`,
     })
   }

@@ -53,6 +53,7 @@ export function useUpdatePageHook(params, queryParams) {
             { siteName: params.siteName, isUnlinked: true },
           ]) // invalidates unlinked pages
         successToast({
+          id: "update-resource-room-name-success",
           description: `Successfully updated page!`,
         })
         if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
@@ -60,6 +61,7 @@ export function useUpdatePageHook(params, queryParams) {
       onError: (err) => {
         if (err.response.status !== 409) {
           errorToast({
+            id: "update-page-error",
             description: `Your page could not be updated. ${getAxiosErrorMessage(
               err
             )}`,

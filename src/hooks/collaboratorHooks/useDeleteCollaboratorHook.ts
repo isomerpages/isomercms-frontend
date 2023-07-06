@@ -26,15 +26,20 @@ export const useDeleteCollaboratorHook = (
           SITE_DASHBOARD_COLLABORATORS_KEY,
           siteName,
         ])
-        successToast({ description: "Collaborator removed successfully" })
+        successToast({
+          id: "delete-collaborator-success",
+          description: "Collaborator removed successfully",
+        })
       },
       onError: (err) => {
         if (err?.response?.status === 422) {
           errorToast({
+            id: "delete-last-collaborator-error",
             description: `You can't be removed, because sites need at least one Admin`,
           })
         } else {
           errorToast({
+            id: "delete-collaborator-error",
             description: `Could not delete site member. ${DEFAULT_RETRY_MSG}`,
           })
         }

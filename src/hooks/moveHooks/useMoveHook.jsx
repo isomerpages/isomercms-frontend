@@ -23,10 +23,12 @@ export function useMoveHook(params, queryParams) {
     onError: (err) => {
       if (err.response.status === 409)
         errorToast({
+          id: "move-file-duplicate-error",
           description: `A file of the same name exists in the folder you are moving to. Please rename your file before moving.`,
         })
       else
         errorToast({
+          id: "move-file-generic-error",
           description: `Your file could not be moved. ${DEFAULT_RETRY_MSG}`,
         })
       if (queryParams && queryParams.onError) queryParams.onError()
@@ -34,10 +36,12 @@ export function useMoveHook(params, queryParams) {
     onSuccess: (resp) => {
       if (!resp)
         successToast({
+          id: "move-file-present-success",
           description: `File is already in this folder`,
         })
       else
         successToast({
+          id: "move-file-success",
           description: `Successfully moved file`,
         })
       if (params.mediaRoom || params.collectionName)

@@ -26,6 +26,7 @@ export function useUpdateDirectoryHook(params, queryParams) {
       ...queryParams,
       onError: () => {
         errorToast({
+          id: "update-directory-error",
           description: `Your directory settings could not be saved. ${DEFAULT_RETRY_MSG}`,
         })
         if (queryParams && queryParams.onError) queryParams.onError()
@@ -58,6 +59,7 @@ export function useUpdateDirectoryHook(params, queryParams) {
             },
           ])
         successToast({
+          id: "update-directory-success",
           description: `Successfully updated directory settings!`,
         })
         if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
