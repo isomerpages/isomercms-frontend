@@ -133,7 +133,12 @@ export const useGetSettings = (
     [SETTINGS_CONTENT_KEY, siteName],
     async () => {
       const siteSettings = await SettingsService.get({ siteName })
-      const passwordSettings = await SettingsService.getPassword({ siteName })
+      // TODO: reimplement actual functionality once netlify issue resolved
+      // const passwordSettings = await SettingsService.getPassword({ siteName })
+      const passwordSettings = {
+        isAmplifySite: false,
+        password: "",
+      }
       const convertedSettings = convertFromBe(siteSettings)
       const parsedPassword = extractPassword(passwordSettings)
       return {
