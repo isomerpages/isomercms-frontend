@@ -27,7 +27,16 @@ export const DirtyFieldContextProvider = ({
     <DirtyFieldContext.Provider
       value={{
         isDirty,
-        setIsDirty,
+        // NOTE: Call the update only when the state changes
+        // We do this optimisation because the context wraps
+        // a form component.
+        // The child components are re-rendered on every keystroke
+        // which we want to minimise for performance reasons.
+        setIsDirty: (newDirtyState) => {
+          if (newDirtyState !== isDirty) {
+            setIsDirty(newDirtyState)
+          }
+        },
       }}
     >
       {children}
