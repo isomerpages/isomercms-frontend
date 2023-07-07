@@ -174,9 +174,6 @@ export const RequestOverview = ({
   const [path, setPath] = useState<string[]>([])
   const [title, setTitle] = useState("")
   const [itemStagingUrl, setItemStagingUrl] = useState<string | false>("")
-  const itemsWithoutPlaceholder = items.filter(
-    (item) => item.type !== "placeholder"
-  )
 
   return fileName ? (
     <DiffView
@@ -197,7 +194,7 @@ export const RequestOverview = ({
         setTitle(displayedName)
         setItemStagingUrl(selectedItemStagingUrl)
       }}
-      items={itemsWithoutPlaceholder}
+      items={items}
       allowEditing={allowEditing}
     />
   )
