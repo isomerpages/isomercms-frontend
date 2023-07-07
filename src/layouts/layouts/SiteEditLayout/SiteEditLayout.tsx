@@ -8,6 +8,8 @@ import {
 } from "@chakra-ui/react"
 import { Sidebar } from "components/Sidebar"
 
+import { DirtyFieldContextProvider } from "contexts/DirtyFieldContext"
+
 import { SiteEditHeader } from "./SiteEditHeader"
 
 const GRID_LAYOUT: Pick<
@@ -26,7 +28,7 @@ const GRID_LAYOUT: Pick<
  */
 export const SiteEditLayout = ({ children }: StackProps): JSX.Element => {
   return (
-    <>
+    <DirtyFieldContextProvider>
       <Grid {...GRID_LAYOUT}>
         <GridItem
           area="header"
@@ -49,7 +51,7 @@ export const SiteEditLayout = ({ children }: StackProps): JSX.Element => {
         </GridItem>
         <SiteEditContent p="2rem">{children}</SiteEditContent>
       </Grid>
-    </>
+    </DirtyFieldContextProvider>
   )
 }
 

@@ -13,6 +13,8 @@ import { useEffect, useRef } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 import { useParams } from "react-router-dom"
 
+import { useDirtyFieldContext } from "contexts/DirtyFieldContext"
+
 import { useGetSettings, useUpdateSettings } from "hooks/settingsHooks"
 
 import { useErrorToast, useSuccessToast } from "utils/toasts"
@@ -94,8 +96,9 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
     defaultValues: settings,
   })
   const { formState, reset, getValues } = methods
-  const { dirtyFields } = formState
+  const { isDirty, dirtyFields } = formState
   const successToast = useSuccessToast()
+  const { setIsDirty } = useDirtyFieldContext()
   const {
     mutateAsync: updateSettings,
     error: updateSettingsError,
@@ -106,6 +109,8 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
   const onSubmit = methods.handleSubmit((data: SiteSettings) => {
     updateSettings(data)
   })
+
+  setIsDirty(isDirty)
 
   const dirtyFieldKeys = _.keys(dirtyFields)
   const hasDiff = !_.isEqual(
