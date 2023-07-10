@@ -33,7 +33,7 @@ const menuDropdownButtonTemplate: Story<MenuDropdownButtonTemplateArgs> = ({
 
 export const buttonWithoutIcons = menuDropdownButtonTemplate.bind({})
 buttonWithoutIcons.args = {
-  mainButtonText: "View staging",
+  mainButtonText: "Open staging",
   variant: "outline",
   items: (
     <>

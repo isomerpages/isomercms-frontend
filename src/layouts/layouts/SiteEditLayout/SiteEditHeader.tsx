@@ -95,7 +95,7 @@ export const SiteEditHeader = (): JSX.Element => {
             colorScheme="primary"
             isDisabled={!stagingUrl}
           >
-            View Staging
+            Open Staging
           </Button>
           {userId ? (
             // Github user
