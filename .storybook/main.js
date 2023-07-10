@@ -2,7 +2,6 @@ module.exports = {
   env: (config) => ({
     ...config,
     REACT_APP_BACKEND_URL: process.env.REACT_APP_BACKEND_URL,
-    REACT_APP_PASSWORD_SECRET_KEY: "blahblahblahblah",
   }),
   stories: [
     "./foundations/**/*.stories.@(mdx|js|jsx|ts|tsx)",
