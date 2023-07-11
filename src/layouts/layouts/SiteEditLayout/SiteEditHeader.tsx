@@ -93,12 +93,12 @@ export const SiteEditHeader = (): JSX.Element => {
             icon={
               <Icon as={BiArrowBack} fontSize="1.25rem" fill="icon.secondary" />
             }
-            // need to change -> conditionally do this
+            // NOTE: Conditionally do this because we need to show the modal
+            // when there are dirty fields, which could result in user
+            // not navigating away.
             onClick={() =>
               isDirty ? onDirtyWarningModalOpen() : onBackButtonClick()
             }
-            // as={RouterLink}
-            // to={isGithubUser ? "/sites" : `/sites/${siteName}/dashboard`}
           />
           <Text color="text.label" textStyle="body-1">
             {isGithubUser ? "My sites" : "Site dashboard"}
