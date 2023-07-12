@@ -80,18 +80,24 @@ export const ReviewRequestDashboard = (): JSX.Element => {
 
   const { onCopy, hasCopied } = useClipboard(data?.reviewUrl || "")
   const reviewStatus = data?.status
+  const hasInvalidReviewRequest =
+    reviewStatus === ReviewRequestStatus.CLOSED ||
+    reviewStatus === ReviewRequestStatus.MERGED
 
   useEffect(() => {
-    if (
-      reviewStatus === ReviewRequestStatus.CLOSED ||
-      reviewStatus === ReviewRequestStatus.MERGED
-    ) {
+    if (hasInvalidReviewRequest) {
       setRedirectToPage(`/sites/${siteName}/dashboard`)
     }
     if (reviewStatus && isApproved === null) {
       setIsApproved(reviewStatus === ReviewRequestStatus.APPROVED)
     }
-  }, [isApproved, reviewStatus, setRedirectToPage, siteName])
+  }, [
+    isApproved,
+    hasInvalidReviewRequest,
+    reviewStatus,
+    setRedirectToPage,
+    siteName,
+  ])
 
   useEffect(() => {
     updateReviewRequestViewed({ siteName, prNumber })
@@ -192,7 +198,11 @@ export const ReviewRequestDashboard = (): JSX.Element => {
           </VStack>
           <Flex h="100%" w="7.25rem" pt="2rem" justifyContent="end">
             {/* TODO: swap this to a slide out component and not a drawer */}
-            <CommentsDrawer siteName={siteName} requestId={prNumber} />
+            <CommentsDrawer
+              isDisabled={hasInvalidReviewRequest}
+              siteName={siteName}
+              requestId={prNumber}
+            />
           </Flex>
         </HStack>
         <Box pl="9.25rem" pr="2rem">

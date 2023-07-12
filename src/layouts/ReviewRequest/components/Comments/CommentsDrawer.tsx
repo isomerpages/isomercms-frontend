@@ -64,15 +64,13 @@ const CommentItem = ({
   )
 }
 
-export type CommentsDrawerProps = Pick<
-  UseDisclosureReturn,
-  "onClose" | "isOpen"
->
+export type CommentsDrawerProps = CommentProps & { isDisabled?: boolean }
 
 export const CommentsDrawer = ({
   siteName,
   requestId,
-}: CommentProps): JSX.Element => {
+  isDisabled,
+}: CommentsDrawerProps): JSX.Element => {
   const {
     isOpen: isCommentsOpen,
     onOpen: onCommentsOpen,
@@ -99,6 +97,7 @@ export const CommentsDrawer = ({
         variant="clear"
         boxShadow="0 0 4px var(--chakra-colors-gray-100)"
         borderRadius="4px 0 0 4px"
+        isDisabled={isDisabled}
       />
       <Drawer
         isOpen={isCommentsOpen}
