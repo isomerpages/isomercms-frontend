@@ -21,6 +21,10 @@ if (
   })
 }
 
+if (process.env.REACT_APP_ENV === "test") {
+  import("./mocks/browser").then(({ worker }) => worker.start())
+}
+
 const container = document.getElementById("root")
 const root = createRoot(container)
 root.render(

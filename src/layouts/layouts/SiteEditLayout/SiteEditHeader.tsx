@@ -19,9 +19,11 @@ import {
 import { Button, IconButton } from "@opengovsg/design-system-react"
 import { ButtonLink } from "components/ButtonLink"
 import { NotificationMenu } from "components/Header/NotificationMenu"
+import { WarningModal } from "components/WarningModal"
 import { BiArrowBack, BiCheckCircle } from "react-icons/bi"
-import { Link as RouterLink, useParams } from "react-router-dom"
+import { useParams, useHistory } from "react-router-dom"
 
+import { useDirtyFieldContext } from "contexts/DirtyFieldContext"
 import { useLoginContext } from "contexts/LoginContext"
 
 import { useStagingUrl } from "hooks/settingsHooks"
@@ -33,6 +35,12 @@ import { NavImage } from "assets"
 
 export const SiteEditHeader = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const {
+    isOpen: isDirtyWarningModalOpen,
+    onOpen: onDirtyWarningModalOpen,
+    onClose: onDirtyWarningModalClose,
+  } = useDisclosure()
+  const { isDirty } = useDirtyFieldContext()
   const {
     isOpen: isReviewRequestModalOpen,
     onOpen: onReviewRequestModalOpen,
@@ -48,6 +56,7 @@ export const SiteEditHeader = (): JSX.Element => {
     data: reviewRequests,
     isLoading: isReviewRequestsLoading,
   } = useGetReviewRequests(siteName)
+  const history = useHistory()
 
   // Note: if PR is in APPROVED status, it will auto-redirect to dashboard as no edits should happen
   // But have added here to be explicit of the status checks
@@ -59,6 +68,11 @@ export const SiteEditHeader = (): JSX.Element => {
 
   const shouldDisableReviewRequestButton =
     isReviewRequestsLoading || openReviewRequests.length > 0
+
+  const onBackButtonClick = () => {
+    const redirPath = isGithubUser ? "/sites" : `/sites/${siteName}/dashboard`
+    history.push(redirPath)
+  }
 
   return (
     <>
@@ -79,8 +93,12 @@ export const SiteEditHeader = (): JSX.Element => {
             icon={
               <Icon as={BiArrowBack} fontSize="1.25rem" fill="icon.secondary" />
             }
-            as={RouterLink}
-            to={isGithubUser ? "/sites" : `/sites/${siteName}/dashboard`}
+            // NOTE: Conditionally do this because we need to show the modal
+            // when there are dirty fields, which could result in user
+            // not navigating away.
+            onClick={() =>
+              isDirty ? onDirtyWarningModalOpen() : onBackButtonClick()
+            }
           />
           <Text color="text.label" textStyle="body-1">
             {isGithubUser ? "My sites" : "Site dashboard"}
@@ -95,7 +113,7 @@ export const SiteEditHeader = (): JSX.Element => {
             colorScheme="primary"
             isDisabled={!stagingUrl}
           >
-            View Staging
+            Open Staging
           </Button>
           {userId ? (
             // Github user
@@ -151,6 +169,42 @@ export const SiteEditHeader = (): JSX.Element => {
         isOpen={isReviewRequestModalOpen}
         onClose={onReviewRequestModalClose}
       />
+      <DirtyWarningModal
+        isOpen={isDirtyWarningModalOpen}
+        onClose={onDirtyWarningModalClose}
+        onClick={onBackButtonClick}
+      />
     </>
+  )
+}
+
+interface DirtyWarningModalProps {
+  isOpen: boolean
+  onClose: () => void
+  onClick: () => void
+}
+
+const DirtyWarningModal = ({
+  isOpen,
+  onClose,
+  onClick,
+}: DirtyWarningModalProps): JSX.Element => {
+  return (
+    <WarningModal
+      isOpen={isOpen}
+      onClose={onClose}
+      displayTitle="Warning"
+      displayText={
+        <Text>
+          You have unsaved changes. Are you sure you want to navigate away from
+          this page?
+        </Text>
+      }
+    >
+      <Button colorScheme="danger" onClick={onClose}>
+        No
+      </Button>
+      <Button onClick={onClick}>Yes</Button>
+    </WarningModal>
   )
 }
