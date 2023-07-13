@@ -80,7 +80,7 @@ export const ReviewRequestDashboard = (): JSX.Element => {
 
   const { onCopy, hasCopied } = useClipboard(data?.reviewUrl || "")
   const reviewStatus = data?.status
-  const reviewStatusNotLoaded = !reviewStatus
+  const isReviewStatusLoading = !reviewStatus
   const hasInvalidReviewRequest =
     reviewStatus === ReviewRequestStatus.CLOSED ||
     reviewStatus === ReviewRequestStatus.MERGED
@@ -200,7 +200,7 @@ export const ReviewRequestDashboard = (): JSX.Element => {
           <Flex h="100%" w="7.25rem" pt="2rem" justifyContent="end">
             {/* TODO: swap this to a slide out component and not a drawer */}
             <CommentsDrawer
-              isDisabled={hasInvalidReviewRequest || reviewStatusNotLoaded}
+              isDisabled={hasInvalidReviewRequest || isReviewStatusLoading}
               siteName={siteName}
               requestId={prNumber}
             />
