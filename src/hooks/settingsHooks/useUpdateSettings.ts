@@ -23,7 +23,9 @@ const MEDIA_COLOUR_TITLES = [
 ]
 
 export const useUpdateSettings = (
-  siteName: string
+  siteName: string,
+  onSuccess: () => void,
+  onError: () => void
 ): UseMutationResult<void, AxiosError, SiteSettings> => {
   const queryClient = useQueryClient()
   return useMutation<void, AxiosError, SiteSettings>(
@@ -32,6 +34,8 @@ export const useUpdateSettings = (
       onSettled: () => {
         queryClient.invalidateQueries([SETTINGS_CONTENT_KEY, siteName])
       },
+      onSuccess,
+      onError,
     }
   )
 }
