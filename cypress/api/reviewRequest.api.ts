@@ -30,11 +30,25 @@ export const listReviewRequests = (): Cypress.Chainable<{ id: number }[]> => {
 export const closeReviewRequests = (): void => {
   listReviewRequests().then((reviewRequests) => {
     reviewRequests.forEach(({ id }) => {
-      cy.request("DELETE", `${BASE_URL}/${id}`)
+      closeReviewRequest(id)
     })
   })
 }
 
-export const approveReviewRequest = (id: number): void => {
-  cy.request("POST", `${BASE_URL}/${id}/approve`)
+export const approveReviewRequest = (
+  id: number
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.request("POST", `${BASE_URL}/${id}/approve`)
+}
+
+export const mergeReviewRequest = (
+  id: number
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.request("POST", `${BASE_URL}/${id}/merge`)
+}
+
+export const closeReviewRequest = (
+  id: number
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.request("DELETE", `${BASE_URL}/${id}`)
 }
