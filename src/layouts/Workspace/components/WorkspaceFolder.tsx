@@ -33,7 +33,7 @@ export const WorkspaceFolders = ({
       <Box w="100%">
         <SectionHeader label="Folders">
           <CreateButton as={Link} to={`${url}/createDirectory`}>
-            Create folder
+            Create subfolder
           </CreateButton>
         </SectionHeader>
         <SectionCaption label="PRO TIP: " icon={BiBulb}>

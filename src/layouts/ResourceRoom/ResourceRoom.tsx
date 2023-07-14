@@ -313,6 +313,7 @@ const ResourceRoomContent = ({
                   Create category
                 </CreateButton>
               </SectionHeader>
+              <HStack spacing="0.25rem" w="100%" alignItems="flex-start">
               <SectionCaption icon={BiBulb} label="PRO TIP: ">
                 Categories impact navigation on your site. Organise your
                 resources by creating categories.
