@@ -1,26 +1,36 @@
 import {
   BASE_SEO_LINK,
-  COOKIE_NAME,
-  COOKIE_VALUE,
-  E2E_USER,
-  LOCAL_STORAGE_USERID_KEY,
-  LOCAL_STORAGE_USER_KEY,
+  E2E_EMAIL_TEST_SITE,
   TEST_PRIMARY_COLOR,
   TEST_REPO_NAME,
 } from "../fixtures/constants"
-import { setCookieWithDomain } from "../utils/cookies"
 
 Cypress.Commands.add("saveSettings", () => {
-  cy.intercept("POST", "/v2/sites/e2e-test-repo/settings").as("awaitSave")
+  cy.intercept("POST", `/v2/sites/${E2E_EMAIL_TEST_SITE.repo}/settings`).as(
+    "awaitSave"
+  )
+  cy.intercept(
+    "POST",
+    `/v2/sites/${E2E_EMAIL_TEST_SITE.repo}/settings/repo-password`
+  ).as("awaitSavePassword")
   cy.contains("button", "Save").click()
-  cy.wait("@awaitSave")
+  cy.wait(["@awaitSavePassword", "@awaitSave"], {
+    timeout: 10000,
+    requestTimeout: 10000,
+  })
 })
 
 // Reusable visit command
 Cypress.Commands.add("visitLoadSettings", (siteName, sitePath) => {
   cy.intercept("GET", `/v2/sites/${siteName}/settings`).as("awaitSettings")
+  cy.intercept("GET", `/v2/sites/${siteName}/settings/repo-password`).as(
+    "awaitPassword"
+  )
   cy.visit(sitePath)
-  cy.wait("@awaitSettings")
+  cy.wait(["@awaitPassword", "@awaitSettings"], {
+    timeout: 10000,
+    requestTimeout: 10000,
+  })
 })
 
 Cypress.Commands.add("setDefaultSettings", () => {
