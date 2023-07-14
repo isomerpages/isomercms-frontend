@@ -1,7 +1,7 @@
 import {
   TEST_PRIMARY_COLOR,
-  TEST_REPO_NAME,
   BASE_SEO_LINK,
+  E2E_EMAIL_TEST_SITE,
   Interceptors,
 } from "../fixtures/constants"
 
@@ -19,6 +19,7 @@ describe("Settings page", () => {
   const BASE_CONTACT_US = "contact/"
   const BASE_FEEDBACK = "www.feedback.com"
   const BASE_FAQ = "/faq/"
+  const TEST_REPO_NAME = E2E_EMAIL_TEST_SITE.repo
 
   const TEST_TITLE = "Test title"
   const TEST_LOGO_IMAGES = [
@@ -50,7 +51,7 @@ describe("Settings page", () => {
     cy.visitLoadSettings(TEST_REPO_NAME, sitePath)
 
   before(() => {
-    cy.setGithubSessionDefaults()
+    cy.setEmailSessionDefaults("Email admin")
     cy.setupDefaultInterceptors()
 
     visitLoadSettings(`/sites/${TEST_REPO_NAME}/settings`).wait(
@@ -116,12 +117,11 @@ describe("Settings page", () => {
   })
 
   beforeEach(() => {
-    cy.setGithubSessionDefaults()
-    visitLoadSettings(`/sites/${TEST_REPO_NAME}/settings`)
-    // Double check that settings are loaded before running tests cos sometimes the tests run too quickly
-    cy.get("#title").should((elem) => {
-      expect(elem.val()).to.have.length.greaterThan(0)
-    })
+    cy.setEmailSessionDefaults("Email admin")
+    cy.setupDefaultInterceptors()
+    visitLoadSettings(`/sites/${TEST_REPO_NAME}/settings`).wait(
+      Interceptors.GET
+    )
     cy.contains("Verify").should("not.exist")
   })
 
@@ -245,6 +245,130 @@ describe("Settings page", () => {
     cy.get("@showReach").should("not.be.checked")
   })
 
+  it("Should toggle Privatise staging site button and automatically generate a password", () => {
+    // Arrange
+    // NOTE: Initial state is privatise staging off
+    cy.contains("Privatise staging site")
+      .parent()
+      .parent()
+      .find("input")
+      .as("privatiseStaging")
+    cy.get("@privatiseStaging").should("not.be.checked")
+
+    // Act
+    // Trigger click event
+    // NOTE: We have to force as chakra uses an invisible input as a checkbox
+    cy.get("@privatiseStaging")
+      .check({ force: true, timeout: 0 })
+      .then(() => {
+        // Checking within then because of wonky focus preventing the field from being populated
+        cy.contains("You should change this every 90 days")
+          .parent()
+          .next()
+          .find("input")
+          .as("passwordInput")
+        cy.wait(1000)
+        cy.get("@passwordInput").should("have.length.gt", 0)
+        cy.saveSettings()
+      })
+
+    // Assert
+    cy.get("@privatiseStaging").should("be.checked")
+    cy.contains("Username").parent().next().as("usernameInput")
+    cy.get("@usernameInput").should("be.disabled")
+  })
+
+  it("Should regenerate a password if password field is emptied and privatise button toggled again", () => {
+    // Arrange
+    cy.contains("Privatise staging site")
+      .parent()
+      .parent()
+      .find("input")
+      .as("privatiseStaging")
+    cy.get("@privatiseStaging").should("be.checked")
+    cy.contains("You should change this every 90 days")
+      .parent()
+      .next()
+      .find("input")
+      .as("passwordInput")
+    cy.get("@passwordInput").clear()
+
+    // Act
+    // Trigger click event
+    // NOTE: We have to force as chakra uses an invisible input as a checkbox
+    cy.get("@privatiseStaging").uncheck({ force: true })
+    cy.get("@privatiseStaging")
+      .check({ force: true })
+      .then(() => {
+        // Assert
+        cy.contains("You should change this every 90 days")
+          .parent()
+          .next()
+          .find("input")
+          .as("passwordInput")
+        cy.wait(1000)
+        cy.get("@passwordInput").should("have.length.gt", 0)
+      })
+  })
+
+  it("Should disallow passwords that do not match the criteria", () => {
+    // Arrange
+    const shortPassword = "1!Aa"
+    const noSymbol = "Blahblahblahblahblah1"
+    const noNumber = "Blahblahblahblahblah!"
+    const noCaps = "blahblahblahblahblah1!"
+    const noLower = "BLAHBLAHBLAHBLAHBLAH1!"
+    const expectedError =
+      "Password must be at least 12 characters long, and contain upper and lower case letters, numbers, and special characters"
+    cy.contains("Privatise staging site")
+      .parent()
+      .next()
+      .find("input")
+      .as("privatiseStaging")
+    cy.get("@privatiseStaging").should("be.checked")
+    cy.contains("You should change this every 90 days")
+      .parent()
+      .next()
+      .find("input")
+      .as("passwordInput")
+
+    // Assert
+    cy.get("@passwordInput").clear().type(shortPassword).blur()
+    cy.contains(expectedError).should("exist")
+    cy.get("@passwordInput").clear().type(noSymbol).blur()
+    cy.contains(expectedError).should("exist")
+    cy.get("@passwordInput").clear().type(noNumber).blur()
+    cy.contains(expectedError).should("exist")
+    cy.get("@passwordInput").clear().type(noCaps).blur()
+    cy.contains(expectedError).should("exist")
+    cy.get("@passwordInput").clear().type(noLower).blur()
+    cy.contains(expectedError).should("exist")
+  })
+
+  it("Should be able to turn off password", () => {
+    // Arrange
+    cy.contains("Privatise staging site")
+      .parent()
+      .parent()
+      .find("input")
+      .as("privatiseStaging")
+    cy.get("@privatiseStaging").should("be.checked")
+    cy.contains("You should change this every 90 days")
+      .parent()
+      .next()
+      .find("input")
+      .as("passwordInput")
+
+    // Act
+    // Trigger click event
+    // NOTE: We have to force as chakra uses an invisible input as a checkbox
+    cy.get("@privatiseStaging").uncheck({ force: true })
+    cy.saveSettings()
+
+    // Assert
+    cy.get("@privatiseStaging").should("not.be.checked")
+  })
+
   it("Should change Logos and have change reflect correctly on save", () => {
     cy.get("button:contains(Upload Image)").each((el, index) => {
       cy.wrap(el).click()
@@ -353,13 +477,17 @@ describe("Settings page", () => {
       .and("eq", rgbSecondary)
 
     // Check if page previews reflect color change
-    visitLoadSettings(`/sites/${TEST_REPO_NAME}/${SAMPLE_PAGE}`)
+    visitLoadSettings(`/sites/${TEST_REPO_NAME}/${SAMPLE_PAGE}`).wait(
+      Interceptors.GET
+    )
     cy.get("section.bp-section-pagetitle") // Page title banner
       .should("have.css", "background-color", rgbPrimary)
 
     // Check if home page reflects color change
     cy.visit(`/sites/${TEST_REPO_NAME}/workspace`) // Somehow colors won't load on homepage if visiting directly
-    visitLoadSettings(`/sites/${TEST_REPO_NAME}/${HOMEPAGE}`)
+    visitLoadSettings(`/sites/${TEST_REPO_NAME}/${HOMEPAGE}`).wait(
+      Interceptors.GET
+    )
     cy.get("#notification-bar")
       .first() // Notification bar
       .should("have.css", "background-color", rgbSecondary)
