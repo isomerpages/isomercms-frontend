@@ -54,7 +54,7 @@ export function useUpdatePageHook(params, queryParams) {
           ]) // invalidates unlinked pages
         successToast({
           id: "update-resource-room-name-success",
-          description: `Successfully updated page!`,
+          description: `Changes saved. See a preview on Staging, or request a Review for them to be published.`,
         })
         if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
       },

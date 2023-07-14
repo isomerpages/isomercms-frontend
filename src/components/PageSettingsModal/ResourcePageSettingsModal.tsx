@@ -221,7 +221,7 @@ export const ResourcePageSettingsModal = ({
         <ModalCloseButton id="settings-CLOSE" />
         <ModalHeader>
           <Text as="h1">
-            {fileName ? "Resource page settings" : "Create new resource page"}
+            {fileName ? "Resource page settings" : "Create new resource"}
           </Text>
         </ModalHeader>
         <ModalBody>
@@ -254,7 +254,7 @@ export const ResourcePageSettingsModal = ({
                   id="layout"
                   value={watch("layout")}
                 >
-                  <option value="post">Post Content</option>
+                  <option value="post">Page</option>
                   <option value="file">Downloadable File</option>
                   <option value="link">External Link</option>
                 </Select>
@@ -289,7 +289,7 @@ export const ResourcePageSettingsModal = ({
                     <Input
                       {...register("permalink", { required: true })}
                       id="permalink"
-                      placeholder="Page URL"
+                      placeholder="Insert /page-url or https://"
                     />
                     <FormErrorMessage>
                       {errors.permalink?.message}
