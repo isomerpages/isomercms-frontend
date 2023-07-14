@@ -139,8 +139,6 @@ export const Folders = (): JSX.Element => {
               </ButtonGroup>
             </SectionHeader>
             <SectionCaption label="PRO TIP: " icon={BiBulb}>
-              Subfolders appear as side navigation in pages. Create a new
-              section by creating a subfolder.
             </SectionCaption>
           </Box>
           <Skeleton
