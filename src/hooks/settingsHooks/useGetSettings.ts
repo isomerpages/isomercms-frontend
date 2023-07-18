@@ -127,17 +127,26 @@ const extractPassword = (
 }
 
 export const useGetSettings = (
-  siteName: string
+  siteName: string,
+  isEmailLogin: boolean
 ): UseQueryResult<SiteSettings> => {
   return useQuery<SiteSettings>(
     [SETTINGS_CONTENT_KEY, siteName],
     async () => {
       const siteSettings = await SettingsService.get({ siteName })
-      // TODO: reimplement actual functionality once netlify issue resolved
-      // const passwordSettings = await SettingsService.getPassword({ siteName })
-      const passwordSettings = {
-        isAmplifySite: false,
-        password: "",
+      let passwordSettings
+      if (isEmailLogin) {
+        // TODO: reimplement actual functionality once netlify issue resolved
+        // passwordSettings = await SettingsService.getPassword({ siteName })
+        passwordSettings = {
+          isAmplifySite: false,
+          password: "",
+        }
+      } else {
+        passwordSettings = {
+          isAmplifySite: false,
+          password: "",
+        }
       }
       const convertedSettings = convertFromBe(siteSettings)
       const parsedPassword = extractPassword(passwordSettings)
