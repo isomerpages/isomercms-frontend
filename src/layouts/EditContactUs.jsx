@@ -205,7 +205,7 @@ const EditContactUs = ({ match }) => {
     onClose: onDeleteModalClose,
   } = useDisclosure()
   const { data: contactUsDetails } = useGetContactUsHook(siteName)
-  const { data: settingsData } = useGetSettings(siteName)
+  const { data: settingsData } = useGetSettings(siteName, false) // Doesn't need the privatisation data, so we can always put this as a github login user
 
   const { mutateAsync: updateContactUs } = useUpdateContactUsHook(siteName)
   const { mutateAsync: updateSettings } = useUpdateSettings(siteName)
