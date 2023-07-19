@@ -96,7 +96,7 @@ export const PrivacySettings = ({
             <Box>
               <FormTitle>Password</FormTitle>
               <FormLabel.Description color="text.description">
-                You should change this every 90 days
+                You should change this every 90 days.
               </FormLabel.Description>
             </Box>
             <FormControl isDisabled={isError} isInvalid={!!errors.password}>
