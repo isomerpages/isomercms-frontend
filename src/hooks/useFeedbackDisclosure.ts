@@ -14,7 +14,7 @@ type UserId = string
 
 type FeedbackStorageMappings = Record<UserId, LastSeenFeedbackTime>
 
-const NPS_SURVEY_INTERVAL = 1814400000 as const // 3 weeks
+const NPS_SURVEY_INTERVAL = 1814400000 as const // 3 weeks - 3 * 7 * 24 * 60 * 60 * 1000
 
 const { REACT_APP_SHOW_NPS_FORM } = process.env
 
@@ -50,8 +50,8 @@ export const useFeedbackDisclosure = () => {
   // Because we toggle the survey on every month, this indicates that they should
   // do the survey if the toggle is on + sufficient time has elapsed
   const isSurveyRequired =
-    !lastSeen ||
-    (lastSeen + NPS_SURVEY_INTERVAL < Date.now() && REACT_APP_SHOW_NPS_FORM)
+    (!lastSeen || lastSeen + NPS_SURVEY_INTERVAL < Date.now()) &&
+    REACT_APP_SHOW_NPS_FORM
 
   const { onOpen, onClose } = useDisclosure()
 
