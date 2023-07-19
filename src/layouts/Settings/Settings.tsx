@@ -38,6 +38,7 @@ import { SocialMediaSettings } from "./SocialMediaSettings"
 export const Settings = (): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
   const { userId } = useLoginContext()
+  // Only github users have userId, and not logged in users have userId as "Unknown user"
   const isGithubUser = userId !== "Unknown user" && !!userId
   const {
     data: settingsData,
