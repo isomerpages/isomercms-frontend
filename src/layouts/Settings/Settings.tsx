@@ -14,6 +14,7 @@ import { useForm, FormProvider } from "react-hook-form"
 import { useParams } from "react-router-dom"
 
 import { useDirtyFieldContext } from "contexts/DirtyFieldContext"
+import { useLoginContext } from "contexts/LoginContext"
 
 import { useGetSettings, useUpdateSettings } from "hooks/settingsHooks"
 
@@ -36,11 +37,13 @@ import { SocialMediaSettings } from "./SocialMediaSettings"
 
 export const Settings = (): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
+  const { userId } = useLoginContext()
+  const isGithubUser = userId !== "Unknown user" && !!userId
   const {
     data: settingsData,
     isLoading: isGetSettingsLoading,
     isError: isGetSettingsError,
-  } = useGetSettings(siteName)
+  } = useGetSettings(siteName, !isGithubUser)
   const errorToast = useErrorToast()
 
   // Trigger an error toast informing the user if settings data could not be fetched
