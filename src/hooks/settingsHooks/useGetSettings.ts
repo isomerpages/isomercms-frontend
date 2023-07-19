@@ -128,20 +128,19 @@ const extractPassword = (
 
 export const useGetSettings = (
   siteName: string,
-  isEmailLogin: boolean
+  isEmailLogin?: boolean
 ): UseQueryResult<SiteSettings> => {
+  const shouldGetPrivacyDetails =
+    isEmailLogin === undefined ? false : isEmailLogin
   return useQuery<SiteSettings>(
-    [SETTINGS_CONTENT_KEY, siteName],
+    [SETTINGS_CONTENT_KEY, siteName, shouldGetPrivacyDetails],
     async () => {
       const siteSettings = await SettingsService.get({ siteName })
       let passwordSettings
-      if (isEmailLogin) {
-        // TODO: reimplement actual functionality once netlify issue resolved
-        // passwordSettings = await SettingsService.getPassword({ siteName })
-        passwordSettings = {
-          isAmplifySite: false,
-          password: "",
-        }
+      const isLaunchDarklyImplemented = false
+      if (shouldGetPrivacyDetails && isLaunchDarklyImplemented) {
+        // TODO: LaunchDarkly to allow specific groups to access this feature first
+        passwordSettings = await SettingsService.getPassword({ siteName })
       } else {
         passwordSettings = {
           isAmplifySite: false,
