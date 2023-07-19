@@ -16,7 +16,6 @@ import {
 import { USER_TYPES } from "../fixtures/users"
 import {
   addCollaborator,
-  getOpenStagingButton,
   removeOtherCollaborators,
   visitE2eEmailTestRepo,
 } from "../utils"

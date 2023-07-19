@@ -1,8 +1,17 @@
 import { closeReviewRequests } from "../api"
-import { E2E_EMAIL_REPO_STAGING_LINK } from "../fixtures/constants"
+import {
+  E2E_EMAIL_REPO_MASTER_LINK,
+  E2E_EMAIL_REPO_STAGING_LINK,
+  E2E_EMAIL_TEST_SITE,
+  ISOMER_GUIDE_LINK,
+  TEST_REPO_NAME,
+} from "../fixtures/constants"
 import { getOpenStagingButton, visitE2eEmailTestRepo } from "../utils"
 
 const getReviewRequestButton = () => cy.contains("button", "Request a Review")
+
+const getOpenStagingDropdownButton = () =>
+  getOpenStagingButton().siblings("button")
 
 const goToWorkspace = () => cy.contains("a", "Edit site").click()
 
@@ -18,11 +27,12 @@ describe("dashboard flow", () => {
   })
 
   it('should open the staging site on click of the "Open staging" button', () => {
-    // Act
+    // Assert
     getOpenStagingButton()
       .should("have.attr", "href", E2E_EMAIL_REPO_STAGING_LINK)
       .should("have.attr", "target", "_blank")
   })
+
   it('should open the "Request a Review" modal on click of the "Request a Review" button', () => {
     // Act
     getReviewRequestButton().click()
@@ -30,23 +40,68 @@ describe("dashboard flow", () => {
     // Assert
     cy.contains(REVIEW_MODAL_SUBTITLE).should("be.visible")
   })
-  it.skip("should be able to navigate to the staging site using the dropdown button", () => {
-    throw new Error("Not implemented")
-  })
-  it.skip("should be able to navigate to the production site using the dropdown button", () => {
-    throw new Error("Not implemented")
-  })
-  it.skip('should navigate to the isomer guide on click of the "Get help" button', () => {
-    throw new Error("Not implemented")
-  })
-  it.skip("should navigate to the settings page when manage site settings is clicked", () => {
-    throw new Error("Not implemented")
-  })
-  it.skip("should navigate to the workspace when edit site is clicked", () => {
-    // Arrange
-    // NOTE: There shouldn't be a review request alert
+
+  it("should be able to navigate to the staging site using the dropdown button", () => {
     // Act
+    getOpenStagingDropdownButton().click()
+
     // Assert
-    throw new Error("Not implemented")
+    cy.contains("Open staging site")
+      .should("be.visible")
+      .should("have.attr", "href", E2E_EMAIL_REPO_STAGING_LINK)
+      .should("have.attr", "target", "_blank")
+  })
+
+  it("should be able to navigate to the production site using the dropdown button", () => {
+    // Act
+    getOpenStagingDropdownButton().click()
+
+    // Assert
+    cy.contains("Visit live site")
+      .should("be.visible")
+      .should("have.attr", "href", E2E_EMAIL_REPO_MASTER_LINK)
+      .should("have.attr", "target", "_blank")
+  })
+
+  it('should navigate to the isomer guide on click of the "Get help" button', () => {
+    // Act
+    cy.contains("Get help")
+      .should("be.visible")
+      .should("have.attr", "href", ISOMER_GUIDE_LINK)
+      .should("have.attr", "target", "_blank")
+  })
+
+  it("should navigate to the settings page when manage site settings is clicked", () => {
+    // Act
+    console.log(TEST_REPO_NAME)
+    cy.contains("Site settings")
+      .should("be.visible")
+      .parent()
+      .parent()
+      .siblings("a")
+      .should(
+        "have.attr",
+        "href",
+        `/sites/${E2E_EMAIL_TEST_SITE.repo}/settings`
+      )
+      .click()
+
+    // Assert
+    cy.contains("Site settings").should("be.visible")
+  })
+
+  it("should navigate to the workspace when edit site is clicked", () => {
+    // Act
+    cy.contains("Edit site")
+      .should("be.visible")
+      .should(
+        "have.attr",
+        "href",
+        `/sites/${E2E_EMAIL_TEST_SITE.repo}/workspace`
+      )
+      .click()
+
+    // Assert
+    cy.contains("My Workspace").should("be.visible")
   })
 })
