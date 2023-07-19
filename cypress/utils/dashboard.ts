@@ -1,7 +1,7 @@
 import { E2E_EMAIL_TEST_SITE } from "../fixtures/constants"
 import { COMMENTS_DRAWER_BUTTON_SELECTOR } from "../fixtures/selectors/dashboard"
 
-// NOTE: This is a `div` tag styled like a `button`\
+// NOTE: This is a `div` tag styled like a `button`
 export const getOpenStagingButton = (): Cypress.Chainable<
   JQuery<HTMLElement>
 > => cy.contains("Open staging")

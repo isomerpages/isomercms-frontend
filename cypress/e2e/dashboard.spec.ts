@@ -76,7 +76,6 @@ describe("dashboard flow", () => {
 
   it("should navigate to the settings page when manage site settings is clicked", () => {
     // Act
-    console.log(TEST_REPO_NAME)
     cy.contains("Site settings")
       .should("be.visible")
       .parent()
