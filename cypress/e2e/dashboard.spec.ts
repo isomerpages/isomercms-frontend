@@ -18,6 +18,9 @@ const goToWorkspace = () => cy.contains("a", "Edit site").click()
 const REVIEW_MODAL_SUBTITLE =
   "An Admin needs to review and approve your changes before they can be published"
 
+const REVIEW_REQUEST_ALERT_MESSAGE =
+  "There’s a Review request pending approval. Any changes you make now will be added to the existing Review request, and published with the changes in it."
+
 describe("dashboard flow", () => {
   beforeEach(() => {
     cy.setupDefaultInterceptors()
@@ -103,5 +106,6 @@ describe("dashboard flow", () => {
 
     // Assert
     cy.contains("My Workspace").should("be.visible")
+    cy.contains(REVIEW_REQUEST_ALERT_MESSAGE).should("not.exist")
   })
 })
