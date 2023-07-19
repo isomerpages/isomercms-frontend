@@ -2,8 +2,8 @@ import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { pick } from "lodash"
 import { MemoryRouter, Route } from "react-router-dom"
 
-import { MOCK_BE_SETTINGS } from "mocks/constants"
-import { buildSettingsData } from "mocks/utils"
+import { MOCK_BE_SETTINGS, MOCK_PASSWORD_SETTINGS } from "mocks/constants"
+import { buildSettingsData, buildPasswordData } from "mocks/utils"
 
 import { handlers } from "../../mocks/handlers"
 
@@ -18,6 +18,7 @@ const SettingsMeta = {
     msw: {
       handlers: {
         settingsData: buildSettingsData(MOCK_BE_SETTINGS),
+        passwordData: buildPasswordData(MOCK_PASSWORD_SETTINGS),
         rest: handlers,
       },
     },
@@ -45,6 +46,7 @@ Empty.parameters = {
     handlers: {
       // NOTE: Only colors is guaranteed to be returned from the BE
       settingsData: buildSettingsData(pick(MOCK_BE_SETTINGS, "colors")),
+      passwordData: buildPasswordData(MOCK_PASSWORD_SETTINGS),
     },
   },
 }
@@ -54,6 +56,7 @@ Loading.parameters = {
   msw: {
     handlers: {
       settingsData: buildSettingsData(MOCK_BE_SETTINGS, "infinite"),
+      passwordData: buildPasswordData(MOCK_PASSWORD_SETTINGS, "infinite"),
     },
   },
 }

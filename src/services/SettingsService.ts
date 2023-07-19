@@ -1,9 +1,17 @@
-import { BackendSiteSettings } from "types/settings"
+import {
+  BackendPasswordSettings,
+  BackendSiteSettings,
+  SitePasswordSettings,
+} from "types/settings"
 
 import { apiService } from "./ApiService"
 
 const getSettingsEndpoint = (siteName: string): string => {
   return `/sites/${siteName}/settings`
+}
+
+const getSettingsPasswordEndpoint = (siteName: string): string => {
+  return `/sites/${siteName}/settings/repo-password`
 }
 
 export const get = async ({
@@ -29,4 +37,33 @@ export const update = async (
   }
 
   return apiService.post(endpoint, renamedSettings)
+}
+
+export const getPassword = async ({
+  siteName,
+}: {
+  siteName: string
+}): Promise<BackendPasswordSettings> => {
+  const endpoint = getSettingsPasswordEndpoint(siteName)
+  return apiService
+    .get<BackendPasswordSettings>(endpoint)
+    .then((res) => res.data)
+}
+
+export const updatePassword = async (
+  siteName: string,
+  { password, isAmplifySite, isStagingPrivatised }: SitePasswordSettings
+): Promise<void | null> => {
+  // Netlify sites don't have password feature
+  if (!isAmplifySite) return null
+  const endpoint = getSettingsPasswordEndpoint(siteName)
+
+  if (!password || !isStagingPrivatised)
+    return apiService.post(endpoint, {
+      enablePassword: isStagingPrivatised,
+    })
+  return apiService.post(endpoint, {
+    password,
+    enablePassword: isStagingPrivatised,
+  })
 }

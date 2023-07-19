@@ -93,6 +93,7 @@ export const colours: { [k in IsomerColorScheme]: NestedRecord } = {
       default: "#3C4764",
       dark: "#272D41",
       light: "#848484",
+      strong: "#2C2E34",
     },
     divider: {
       medium: "#E9E9E9",

@@ -7,6 +7,7 @@ import { SETTINGS_CONTENT_KEY } from "constants/queryKeys"
 import * as SettingsService from "services/SettingsService"
 
 import {
+  BackendPasswordSettings,
   BackendSiteSettings,
   SiteColourSettings,
   SiteSettings,
@@ -116,12 +117,47 @@ const convertFromBe = (backendSettings: BackendSiteSettings): SiteSettings => {
   }
 }
 
+const extractPassword = (
+  passwordData: BackendPasswordSettings
+): string | null => {
+  const { isAmplifySite } = passwordData
+  if (!isAmplifySite) return null
+
+  return passwordData.password
+}
+
 export const useGetSettings = (
-  siteName: string
+  siteName: string,
+  isEmailLogin?: boolean
 ): UseQueryResult<SiteSettings> => {
+  const shouldGetPrivacyDetails =
+    isEmailLogin === undefined ? false : isEmailLogin
   return useQuery<SiteSettings>(
-    [SETTINGS_CONTENT_KEY, siteName],
-    () => SettingsService.get({ siteName }).then(convertFromBe),
+    [SETTINGS_CONTENT_KEY, siteName, shouldGetPrivacyDetails],
+    async () => {
+      const siteSettings = await SettingsService.get({ siteName })
+      let passwordSettings
+      if (
+        shouldGetPrivacyDetails &&
+        process.env.REACT_APP_IS_SITE_PRIVATISATION_ACTIVE
+      ) {
+        // TODO: LaunchDarkly to allow specific groups to access this feature first
+        passwordSettings = await SettingsService.getPassword({ siteName })
+      } else {
+        passwordSettings = {
+          isAmplifySite: false,
+          password: "",
+        }
+      }
+      const convertedSettings = convertFromBe(siteSettings)
+      const parsedPassword = extractPassword(passwordSettings)
+      return {
+        ...convertedSettings,
+        ...passwordSettings,
+        password: parsedPassword,
+        isStagingPrivatised: !!parsedPassword,
+      }
+    },
     {
       retry: false,
     }
