@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 
 // Import contexts
 const { LoginContext } = require("contexts/LoginContext")
@@ -9,6 +9,7 @@ const useRedirectHook = () => {
   const [redirectUrl, setRedirectUrl] = useState("")
   const [redirectComponentState, setRedirectComponentState] = useState({})
   const history = useHistory()
+  const location = useLocation()
   const { logout } = useContext(LoginContext)
 
   useEffect(() => {
@@ -16,10 +17,10 @@ const useRedirectHook = () => {
       setShouldRedirect(false)
       history.push({
         pathname: redirectUrl,
-        state: redirectComponentState,
+        state: { ...redirectComponentState, from: location.pathname },
       })
     }
-  }, [shouldRedirect])
+  }, [history, location, redirectComponentState, redirectUrl, shouldRedirect])
 
   const setRedirectToNotFound = (siteName) => {
     setRedirectUrl("/not-found")
