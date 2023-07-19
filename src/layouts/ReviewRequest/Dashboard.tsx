@@ -59,10 +59,12 @@ export const ReviewRequestDashboard = (): JSX.Element => {
   const { onOpen, isOpen, onClose } = useDisclosure()
   // TODO!: redirect to /sites if cannot parse reviewId as string
   const prNumber = parseInt(reviewId, 10)
-  const { data, isLoading: isGetReviewRequestLoading } = useGetReviewRequest(
-    siteName,
-    prNumber
-  )
+  const {
+    data,
+    error: getReviewRequestError,
+    isLoading: isGetReviewRequestLoading,
+    isError: isGetReviewRequestError,
+  } = useGetReviewRequest(siteName, prNumber)
   const { data: collaborators, isLoading, isError } = useListCollaborators(
     siteName
   )
@@ -77,7 +79,7 @@ export const ReviewRequestDashboard = (): JSX.Element => {
     isError: isMergeError,
   } = useMergeReviewRequest(siteName, prNumber, false)
   const [isApproved, setIsApproved] = useState<boolean | null>(null)
-
+  const errorToast = useErrorToast()
   const { onCopy, hasCopied } = useClipboard(data?.reviewUrl || "")
   const reviewStatus = data?.status
   const isReviewStatusLoading = !reviewStatus
@@ -86,7 +88,19 @@ export const ReviewRequestDashboard = (): JSX.Element => {
     reviewStatus === ReviewRequestStatus.MERGED
 
   useEffect(() => {
+    if (isGetReviewRequestError) {
+      errorToast({
+        id: "get-request-error",
+        description: getAxiosErrorMessage(getReviewRequestError),
+      })
+      setRedirectToPage(`/sites/${siteName}/dashboard`)
+    }
     if (hasInvalidReviewRequest) {
+      errorToast({
+        id: "invalid-review-request",
+        description:
+          "Please ensure that you have selected a valid review request.",
+      })
       setRedirectToPage(`/sites/${siteName}/dashboard`)
     }
     if (reviewStatus && isApproved === null) {
@@ -98,6 +112,9 @@ export const ReviewRequestDashboard = (): JSX.Element => {
     reviewStatus,
     setRedirectToPage,
     siteName,
+    isGetReviewRequestError,
+    errorToast,
+    getReviewRequestError,
   ])
 
   useEffect(() => {
