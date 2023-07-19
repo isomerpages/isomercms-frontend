@@ -22,13 +22,13 @@ const FeedbackForm = () => {
         }}
       >
         If the form below is not loaded, you can also fill it in{" "}
-        <a href="https://form.gov.sg/64b76a1cb319a90012e8e8db">here</a>.
+        <a href="https://form.gov.sg/64b7a11823e54700118bad90">here</a>.
       </div>
 
       <iframe
         title="FormSG Feedback form for Isomer"
         id="iframe"
-        src="https://form.gov.sg/64b76a1cb319a90012e8e8db"
+        src="https://form.gov.sg/64b7a11823e54700118bad90"
         width="100%"
         height="650px"
       />
