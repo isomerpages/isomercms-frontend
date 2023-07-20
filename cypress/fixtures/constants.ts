@@ -61,3 +61,6 @@ export const MOCK_REVIEW_DESCRIPTION = "Some interesting description"
 
 export const FORBIDDEN_CHARACTERS = "!@#$%^&*()"
 export const NON_ENGLISH_CHARACTERS = "文கி"
+
+export const EMPTY_NOTIFICATIONS_TEXT =
+  "There are no notifications for display."
