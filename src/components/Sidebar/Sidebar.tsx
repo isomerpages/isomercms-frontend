@@ -210,7 +210,9 @@ const TabLabel = ({
   return (
     <HStack spacing="1.5rem" align="left" w="100%">
       <Icon as={icon} fontSize="1.5rem" />
-      <Text textStyle="body-1">{children}</Text>
+      <Text textStyle="body-1" textTransform="none">
+        {children}
+      </Text>
     </HStack>
   )
 }
