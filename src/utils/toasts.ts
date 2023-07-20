@@ -1,4 +1,5 @@
-import { useToast, UseToastProps } from "@opengovsg/design-system-react"
+import { UseToastOptions } from "@chakra-ui/react"
+import { useToast } from "@opengovsg/design-system-react"
 import type { SetRequired } from "type-fest"
 
 import { DEFAULT_RETRY_MSG } from "./legacy"
@@ -11,9 +12,12 @@ const DEFAULT_TOAST_PROPS = {
 }
 
 // Not specifying return type because type is in the argument
-const useIsomerToast = (args: UseToastProps) => {
+const useIsomerToast = (args: UseToastOptions) => {
   const toast = useToast(args)
-  const wrappedToast = ({ id, ...rest }: SetRequired<UseToastProps, "id">) => {
+  const wrappedToast = ({
+    id,
+    ...rest
+  }: SetRequired<UseToastOptions, "id">) => {
     if (!toast.isActive(id))
       return toast({
         ...rest,
@@ -32,7 +36,7 @@ export const useErrorToast = () =>
   useIsomerToast({
     ...DEFAULT_TOAST_PROPS,
     description: DEFAULT_ERROR_TOAST_MSG,
-    status: "danger",
+    status: "error",
   })
 
 export const useSuccessToast = () =>
