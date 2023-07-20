@@ -1,8 +1,7 @@
-import "@opengovsg/design-system-react/build/fonts/inter.css"
 import { FormControl } from "@chakra-ui/react"
 import {
   FormErrorMessage,
-  FormFieldMessage,
+  FormHelperText,
   FormLabel,
   ThemeProvider,
 } from "@opengovsg/design-system-react"
@@ -67,7 +66,7 @@ const BaseComponent = ({
       isDisabled={isDisabled}
     >
       <FormLabel>{formTitle}</FormLabel>
-      <FormFieldMessage>{formDescription}</FormFieldMessage>
+      <FormHelperText>{formDescription}</FormHelperText>
       <MediaComponent
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         register={() => {}}
