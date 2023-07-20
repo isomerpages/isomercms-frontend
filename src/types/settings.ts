@@ -43,11 +43,31 @@ export interface SiteAnalyticsSettings {
   ga4: string
 }
 
+export interface SitePasswordSettings {
+  password: string | null
+  isAmplifySite: boolean
+  isStagingPrivatised: boolean
+}
+
 export type SiteSettings = SiteInfo &
   SiteLogoSettings & { colours: SiteColourSettings } & {
     socialMediaContent: SiteSocialMediaSettings
   } & SiteFooterSettings &
-  SiteAnalyticsSettings
+  SiteAnalyticsSettings &
+  SitePasswordSettings
+
+interface BackendPasswordNetlifySettings {
+  isAmplifySite: false
+}
+
+interface BackendPasswordAmplifySettings {
+  password: string
+  isAmplifySite: true
+}
+
+export type BackendPasswordSettings =
+  | BackendPasswordNetlifySettings
+  | BackendPasswordAmplifySettings
 
 export interface BackendSiteSettings {
   title?: string

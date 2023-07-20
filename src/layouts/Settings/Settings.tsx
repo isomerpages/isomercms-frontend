@@ -14,6 +14,7 @@ import { useForm, FormProvider } from "react-hook-form"
 import { useParams } from "react-router-dom"
 
 import { useDirtyFieldContext } from "contexts/DirtyFieldContext"
+import { useLoginContext } from "contexts/LoginContext"
 
 import { useGetSettings, useUpdateSettings } from "hooks/settingsHooks"
 
@@ -31,15 +32,19 @@ import { OverrideWarningModal } from "./components/OverrideWarningModal"
 import { FooterSettings } from "./FooterSettings"
 import { GeneralSettings } from "./GeneralSettings"
 import { LogoSettings } from "./LogoSettings"
+import { PrivacySettings } from "./PrivacySettings"
 import { SocialMediaSettings } from "./SocialMediaSettings"
 
 export const Settings = (): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
+  const { userId } = useLoginContext()
+  // Only github users have userId, and not logged in users have userId as "Unknown user"
+  const isGithubUser = userId !== "Unknown user" && !!userId
   const {
     data: settingsData,
     isLoading: isGetSettingsLoading,
     isError: isGetSettingsError,
-  } = useGetSettings(siteName)
+  } = useGetSettings(siteName, !isGithubUser)
   const errorToast = useErrorToast()
 
   // Trigger an error toast informing the user if settings data could not be fetched
@@ -182,6 +187,9 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
             mb="7.125rem"
           >
             <GeneralSettings isError={isError} />
+            {getValues("isAmplifySite") && (
+              <PrivacySettings isError={isError} />
+            )}
             <LogoSettings isError={isError} />
             <ColourSettings isError={isError} />
             <SocialMediaSettings isError={isError} />

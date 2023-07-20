@@ -9,6 +9,7 @@ import * as SettingsService from "services/SettingsService"
 import {
   BackendSiteSettings,
   SiteColourSettings,
+  SitePasswordSettings,
   SiteSettings,
 } from "types/settings"
 
@@ -22,12 +23,36 @@ const MEDIA_COLOUR_TITLES = [
   "media-color-five",
 ]
 
+const extractPasswordFields = (
+  content: SiteSettings & SitePasswordSettings
+): {
+  passwordFields: SitePasswordSettings
+  settingsFields: SiteSettings
+} => {
+  const { password, isAmplifySite, isStagingPrivatised } = content
+  const passwordFields = {
+    isStagingPrivatised,
+    password,
+    isAmplifySite,
+  }
+  const settingsFields = _.omit(content, [
+    "isStagingPrivatised",
+    "password",
+    "isAmplifySite",
+  ]) as SiteSettings
+  return { passwordFields, settingsFields }
+}
+
 export const useUpdateSettings = (
   siteName: string
 ): UseMutationResult<void, AxiosError, SiteSettings> => {
   const queryClient = useQueryClient()
   return useMutation<void, AxiosError, SiteSettings>(
-    (body) => SettingsService.update(siteName, convertfromFe(body)),
+    async (body) => {
+      const { passwordFields, settingsFields } = extractPasswordFields(body)
+      await SettingsService.update(siteName, convertfromFe(settingsFields))
+      await SettingsService.updatePassword(siteName, passwordFields)
+    },
     {
       onSettled: () => {
         queryClient.invalidateQueries([SETTINGS_CONTENT_KEY, siteName])

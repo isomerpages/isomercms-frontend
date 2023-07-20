@@ -1,6 +1,6 @@
 {
   "name": "isomercms-frontend",
-  "version": "0.34.0",
+  "version": "0.35.0",
   "private": true,
   "engines": {
     "node": ">=16.0.0"
@@ -13,7 +13,7 @@
     "@chakra-ui/utils": "^2.0.14",
     "@craco/craco": "^7.1.0",
     "@datadog/browser-rum": "^4.38.0",
-    "@datadog/datadog-ci": "^2.14.0",
+    "@datadog/datadog-ci": "^2.17.1",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@hookform/resolvers": "^2.8.2",
