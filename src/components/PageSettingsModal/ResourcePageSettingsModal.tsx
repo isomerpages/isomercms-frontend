@@ -21,6 +21,7 @@ import {
   FormErrorMessage,
   FormLabel,
   ModalCloseButton,
+  Link,
 } from "@opengovsg/design-system-react"
 import { Breadcrumb } from "components/folders/Breadcrumb"
 import {
@@ -302,7 +303,7 @@ export const ResourcePageSettingsModal = ({
               <FormControl isRequired isInvalid={!!errors.date?.message}>
                 <Box mb="0.75rem">
                   <FormLabel mb={0}>Date (YYYY-MM-DD)</FormLabel>
-                  <FormLabel.Description useMarkdown color="text.description">
+                  <FormLabel.Description color="text.description">
                     Resources are organised by latest date in your site.
                   </FormLabel.Description>
                 </Box>
@@ -325,7 +326,7 @@ export const ResourcePageSettingsModal = ({
                     }}
                   >
                     <FormTitle>File</FormTitle>
-                    <FormLabel.Description useMarkdown color="text.description">
+                    <FormLabel.Description color="text.description">
                       The maximum file size allowed is 5MB.
                     </FormLabel.Description>
                     <FormFieldMedia
@@ -347,12 +348,15 @@ export const ResourcePageSettingsModal = ({
                       <FormLabel mb={0} textColor="text.label">
                         Meta Description
                       </FormLabel>
-                      <FormLabel.Description
-                        useMarkdown
-                        color="text.description"
-                      >
-                        Description snippet shown in search results. [Learn
-                        more](https://go.gov.sg/isomer-meta)
+                      <FormLabel.Description color="text.description">
+                        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                        {/* @ts-ignore */}
+                        <Text>
+                          Description snippet shown in search results.
+                          <Link isExternal href="https://go.gov.sg/isomer-meta">
+                            Learn more
+                          </Link>
+                        </Text>
                       </FormLabel.Description>
                     </Box>
                     <Input
