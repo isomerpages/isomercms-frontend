@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react"
 import {
   Button,
-  GovtMasthead,
+  RestrictedGovtMasthead,
   Tab,
   Infobox,
   Link,
@@ -216,7 +216,7 @@ const LoginContent = (): JSX.Element => {
 
 export const LoginPage = (): JSX.Element => (
   <Flex flex={1} flexDir="column" w="100%" h="100vh">
-    <GovtMasthead />
+    <RestrictedGovtMasthead />
     <Grid {...LOGIN_GRID_LAYOUT}>
       <GridItem area="image" bgColor="primary.500">
         <Flex h="100%" w="100%" alignItems="end" justifyContent="center">
