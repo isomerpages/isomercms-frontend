@@ -46,6 +46,7 @@ const checkCommentDisabled = () =>
   cy.get(COMMENTS_DRAWER_BUTTON_SELECTOR).should("be.disabled")
 
 const COMMENT_INTERCEPTOR = "getComments"
+const COLLABORATOR_INTERCEPTOR = "getCollaborator"
 
 describe("Comments", () => {
   beforeEach(() => {
@@ -200,60 +201,66 @@ describe("Comments", () => {
         .then((id) => {
           reviewId = id
         })
+      removeOtherCollaborators()
     })
 
-    describe("not a site member", () => {
-      before(() => {
-        removeOtherCollaborators()
-      })
+    // This is required so that subsequent tests do not fail
+    // on beforeEach due to a stray 4xx call.
+    afterEach(() => {
+      cy.intercept("GET", "**/collaborators").as(COLLABORATOR_INTERCEPTOR)
+      cy.wait(`@${COLLABORATOR_INTERCEPTOR}`)
+      cy.intercept("GET", "**/comments").as(COMMENT_INTERCEPTOR)
+      cy.wait(`@${COMMENT_INTERCEPTOR}`)
+    })
 
-      it("should not be able to create comments for a site which one is not a site member", () => {
-        // Arrange
-        cy.setEmailSessionDefaults("Email collaborator")
-        setUserAsUnauthorised()
-        cy.visit(
-          `${CMS_BASEURL}/sites/${E2E_EMAIL_TEST_SITE.repo}/review/${reviewId}`
-        )
+    it("should not be able to create comments for a site which one is not a site member", () => {
+      // Arrange
+      cy.setEmailSessionDefaults("Email collaborator")
+      setUserAsUnauthorised()
 
-        // Act
-        // NOTE: We need to ignore the errors
-        // as the backend recognises that we lack sufficient permissions
-        // in order to view this site
-        ignoreAuthError()
-        ignoreNotFoundError()
-        // NOTE: There is a redirect being done
-        // but on `localhost`, cypress is fast enough
-        // to execute the commands + assertion
-        // before the redirect is done
+      // Act
+      cy.visit(
+        `${CMS_BASEURL}/sites/${E2E_EMAIL_TEST_SITE.repo}/review/${reviewId}`
+      )
+      // NOTE: We need to ignore the errors
+      // as the backend recognises that we lack sufficient permissions
+      // in order to view this site
+      ignoreAuthError()
+      ignoreNotFoundError()
+      // NOTE: There is a redirect being done
+      // but on `localhost`, cypress is fast enough
+      // to execute the commands + assertion
+      // before the redirect is done
 
-        // Assert
-        cy.get(COMMENTS_DRAWER_BUTTON_SELECTOR).should("be.disabled")
-      })
-      it("should not be able to see comments for a site for which one is not a site member", () => {
-        // Arrange
-        cy.setEmailSessionDefaults("Email admin")
-        createComment(reviewId, MOCK_COMMENT)
-        cy.setEmailSessionDefaults("Email collaborator")
-        setUserAsUnauthorised()
+      // Assert
+      cy.get(COMMENTS_DRAWER_BUTTON_SELECTOR).should("be.disabled")
+    })
+    it("should not be able to see comments for a site for which one is not a site member", () => {
+      // Arrange
+      cy.setEmailSessionDefaults("Email admin")
+      createComment(reviewId, MOCK_COMMENT)
+      visitE2eEmailTestRepo()
+      openReviewRequest()
+      cy.wait(`@${COMMENT_INTERCEPTOR}`)
+      cy.setEmailSessionDefaults("Email collaborator")
+      setUserAsUnauthorised()
 
-        cy.visit(
-          `${CMS_BASEURL}/sites/${E2E_EMAIL_TEST_SITE.repo}/review/${reviewId}`
-        )
+      // Act
+      cy.visit(
+        `${CMS_BASEURL}/sites/${E2E_EMAIL_TEST_SITE.repo}/review/${reviewId}`
+      )
+      // NOTE: We need to ignore the errors
+      // as the backend recognises that we lack sufficient permissions
+      // in order to view this site
+      ignoreAuthError()
+      ignoreNotFoundError()
+      // NOTE: There is a redirect being done
+      // but on `localhost`, cypress is fast enough
+      // to execute the commands + assertion
+      // before the redirect is done
 
-        // Act
-        // NOTE: We need to ignore the errors
-        // as the backend recognises that we lack sufficient permissions
-        // in order to view this site
-        ignoreAuthError()
-        ignoreNotFoundError()
-        // NOTE: There is a redirect being done
-        // but on `localhost`, cypress is fast enough
-        // to execute the commands + assertion
-        // before the redirect is done
-
-        // Assert
-        cy.get(COMMENTS_DRAWER_BUTTON_SELECTOR).should("be.disabled")
-      })
+      // Assert
+      cy.get(COMMENTS_DRAWER_BUTTON_SELECTOR).should("be.disabled")
     })
   })
 
@@ -277,15 +284,16 @@ describe("Comments", () => {
           .createReviewRequest("test title", [E2E_EMAIL_COLLAB.email])
           .then((id) => {
             reviewId = id
-            cy.setEmailSessionDefaults("Email collaborator")
-            api.approveReviewRequest(reviewId).then((_response) => {
-              cy.setEmailSessionDefaults("Email admin")
-              api.mergeReviewRequest(reviewId)
-            })
           })
       })
       it("should not be able to see/create comments for merged review requests", () => {
         // Arrange
+        cy.setEmailSessionDefaults("Email collaborator")
+        api.approveReviewRequest(reviewId)
+
+        cy.setEmailSessionDefaults("Email admin")
+        api.mergeReviewRequest(reviewId)
+
         // Act
         cy.visit(
           `${CMS_BASEURL}/sites/${E2E_EMAIL_TEST_SITE.repo}/review/${reviewId}`
@@ -315,15 +323,15 @@ describe("Comments", () => {
           .createReviewRequest("test title", [E2E_EMAIL_COLLAB.email])
           .then((id) => {
             reviewId = id
-            cy.setEmailSessionDefaults("Email collaborator")
-            api.approveReviewRequest(reviewId).then((_response) => {
-              cy.setEmailSessionDefaults("Email admin")
-              api.mergeReviewRequest(reviewId)
-            })
           })
       })
       it("should not be able to see/create comments for closed review requests", () => {
         // Arrange
+        cy.setEmailSessionDefaults("Email collaborator")
+        api.approveReviewRequest(reviewId)
+
+        cy.setEmailSessionDefaults("Email admin")
+        api.closeReviewRequest(reviewId)
         // Act
         cy.visit(
           `${CMS_BASEURL}/sites/${E2E_EMAIL_TEST_SITE.repo}/review/${reviewId}`
