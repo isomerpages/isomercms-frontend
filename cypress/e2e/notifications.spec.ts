@@ -1,9 +1,9 @@
-import { EMPTY_NOTIFICATIONS_TEXT } from "../../src/components/Header/NotificationMenu"
 import * as api from "../api"
 import {
   E2E_EMAIL_ADMIN,
   E2E_EMAIL_COLLAB,
   E2E_EMAIL_TEST_SITE,
+  EMPTY_NOTIFICATIONS_TEXT,
 } from "../fixtures/constants"
 import {
   genRandomString,
@@ -14,6 +14,15 @@ import {
 const UNREAD_COMMENTS_BG_COLOR = "rgb(235, 248, 255)"
 const getReviewRequestedNotifText = (email: string) =>
   `${email} has sent you a review request.`
+
+const getChangesMadeNotifText = (email: string) =>
+  `${email} made changes to a review request.`
+
+const getApprovedReviewRequestNotifText = (email: string) =>
+  `${email} has approved a review request`
+
+const getMergedReviewRequestNotifText = (email: string) =>
+  `${email} has published a review request`
 
 const getNewNotifBadge = () =>
   getNotificationsButton().within(() => {
@@ -42,7 +51,7 @@ describe("notifications", () => {
     // This is because previous tests may have created notifications.
     api.markNotificationsAsRead()
 
-    cy.setEmailSessionDefaults("Email admin")
+    cy.setEmailSessionDefaults("Email collaborator")
     cy.setupDefaultInterceptors()
     api.closeReviewRequests()
     // NOTE: Mark all notifications as read as email admin.
@@ -66,7 +75,7 @@ describe("notifications", () => {
   })
   it("should receive a notification on successful creation of a review request", () => {
     // Arrange
-    cy.setEmailSessionDefaults("Email collaborator")
+    cy.setEmailSessionDefaults("Email admin")
     // NOTE: we only refetch on a refresh, so we need to revisit the dashboard
     visitE2eEmailTestRepo()
 
@@ -82,25 +91,70 @@ describe("notifications", () => {
   })
   it("should send out a notification to reviewers when someone edits the site while a PR is open", () => {
     // Arrange
+    cy.setEmailSessionDefaults("Email collaborator")
+    visitE2eEmailTestRepo()
+    api.editUnlinkedPage(
+      "privacy.md",
+      genRandomString(),
+      E2E_EMAIL_TEST_SITE.repo
+    )
     // NOTE: Editor should not see a notification
+    getNotificationsButton().click()
+    cy.contains(EMPTY_NOTIFICATIONS_TEXT).should("be.visible")
     // NOTE: All other reviewers should see a notification
-    // Act
+    cy.setEmailSessionDefaults("Email admin")
+    visitE2eEmailTestRepo()
     // Assert
+    getNotificationsButton().click()
+    cy.contains(getChangesMadeNotifText(E2E_EMAIL_COLLAB.email))
+      .should("be.visible")
+      .should("have.css", "background-color", UNREAD_COMMENTS_BG_COLOR)
   })
   it("should receive a notification on successful comment post", () => {
     // Arrange
+    cy.setEmailSessionDefaults("Email collaborator")
+    visitE2eEmailTestRepo()
+    api.createComment(reviewId, "test comment")
     // Act
+    cy.setEmailSessionDefaults("Email admin")
+    visitE2eEmailTestRepo()
     // Assert
+    getNotificationsButton().click()
+    cy.contains(getChangesMadeNotifText(E2E_EMAIL_COLLAB.email))
+      .should("be.visible")
+      .should("have.css", "background-color", UNREAD_COMMENTS_BG_COLOR)
   })
   it("should receive a notification on approval of a review request", () => {
     // Arrange
+    cy.setEmailSessionDefaults("Email admin")
+    visitE2eEmailTestRepo()
+    api.approveReviewRequest(reviewId)
+
     // Act
+    cy.setEmailSessionDefaults("Email collaborator")
+    visitE2eEmailTestRepo()
+    getNotificationsButton().click()
+
     // Assert
+    cy.contains(getApprovedReviewRequestNotifText(E2E_EMAIL_COLLAB.email))
+      .should("be.visible")
+      .should("have.css", "background-color", UNREAD_COMMENTS_BG_COLOR)
   })
+
   it("should receive a notification on merge of review request", () => {
     // Arrange
+    cy.setEmailSessionDefaults("Email admin")
+    api.mergeReviewRequest(reviewId)
+
     // Act
+    cy.setEmailSessionDefaults("Email collaborator")
+    visitE2eEmailTestRepo()
+    getNotificationsButton().click()
+
     // Assert
+    cy.contains(getMergedReviewRequestNotifText(E2E_EMAIL_COLLAB.email))
+      .should("be.visible")
+      .should("have.css", "background-color", UNREAD_COMMENTS_BG_COLOR)
   })
   it("should not send a notification if the user is a github user", () => {
     // Arrange
