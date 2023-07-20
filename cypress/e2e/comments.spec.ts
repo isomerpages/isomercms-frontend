@@ -45,11 +45,6 @@ const checkCommentVisible = (
 const checkCommentDisabled = () =>
   cy.get(COMMENTS_DRAWER_BUTTON_SELECTOR).should("be.disabled")
 
-const USER_NOT_AUTHORISED_COMMENT_ERROR_MESSAGE =
-  "Only collaborators of a site can view review request comments!"
-const NOTIFICATION_CANNOT_BE_RETRIVED_ERROR_MESSAGE =
-  "Your notifications could not be retrieved. Please try again or check your internet connection"
-
 const COMMENT_INTERCEPTOR = "getComments"
 
 describe("Comments", () => {
@@ -57,6 +52,7 @@ describe("Comments", () => {
     cy.setEmailSessionDefaults("Email admin")
     cy.intercept("GET", "**/comments").as(COMMENT_INTERCEPTOR)
     cy.setupDefaultInterceptors()
+    visitE2eEmailTestRepo()
   })
 
   describe("common", () => {
@@ -123,6 +119,7 @@ describe("Comments", () => {
 
       // Act
       openReviewRequest()
+      checkCommentDisabled()
       cy.wait(`@${COMMENT_INTERCEPTOR}`)
       ignoreResizeError()
       openCommentsDrawer()
@@ -208,12 +205,12 @@ describe("Comments", () => {
     describe("not a site member", () => {
       before(() => {
         removeOtherCollaborators()
-        cy.setEmailSessionDefaults("Email collaborator")
-        setUserAsUnauthorised()
       })
 
       it("should not be able to create comments for a site which one is not a site member", () => {
         // Arrange
+        cy.setEmailSessionDefaults("Email collaborator")
+        setUserAsUnauthorised()
         cy.visit(
           `${CMS_BASEURL}/sites/${E2E_EMAIL_TEST_SITE.repo}/review/${reviewId}`
         )
@@ -229,7 +226,7 @@ describe("Comments", () => {
         // to execute the commands + assertion
         // before the redirect is done
 
-        // // Assert
+        // Assert
         cy.get(COMMENTS_DRAWER_BUTTON_SELECTOR).should("be.disabled")
       })
       it("should not be able to see comments for a site for which one is not a site member", () => {
@@ -254,7 +251,7 @@ describe("Comments", () => {
         // to execute the commands + assertion
         // before the redirect is done
 
-        // // Assert
+        // Assert
         cy.get(COMMENTS_DRAWER_BUTTON_SELECTOR).should("be.disabled")
       })
     })
@@ -281,7 +278,7 @@ describe("Comments", () => {
           .then((id) => {
             reviewId = id
             cy.setEmailSessionDefaults("Email collaborator")
-            api.approveReviewRequest(reviewId).then((response) => {
+            api.approveReviewRequest(reviewId).then((_response) => {
               cy.setEmailSessionDefaults("Email admin")
               api.mergeReviewRequest(reviewId)
             })
@@ -319,7 +316,7 @@ describe("Comments", () => {
           .then((id) => {
             reviewId = id
             cy.setEmailSessionDefaults("Email collaborator")
-            api.approveReviewRequest(reviewId).then((response) => {
+            api.approveReviewRequest(reviewId).then((_response) => {
               cy.setEmailSessionDefaults("Email admin")
               api.mergeReviewRequest(reviewId)
             })
