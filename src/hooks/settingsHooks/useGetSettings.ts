@@ -16,6 +16,10 @@ import {
 
 import { BE_TO_FE } from "./constants"
 
+const IS_SITE_PRIVATISATION_ACTIVE =
+  process.env.REACT_APP_IS_SITE_PRIVATISATION_ACTIVE &&
+  process.env.REACT_APP_IS_SITE_PRIVATISATION_ACTIVE.toLowerCase() === "true"
+
 const DEFAULT_BE_STATE = {
   title: "",
   description: "",
@@ -137,10 +141,7 @@ export const useGetSettings = (
     async () => {
       const siteSettings = await SettingsService.get({ siteName })
       let passwordSettings
-      if (
-        shouldGetPrivacyDetails &&
-        process.env.REACT_APP_IS_SITE_PRIVATISATION_ACTIVE
-      ) {
+      if (shouldGetPrivacyDetails && IS_SITE_PRIVATISATION_ACTIVE) {
         // TODO: LaunchDarkly to allow specific groups to access this feature first
         passwordSettings = await SettingsService.getPassword({ siteName })
       } else {
