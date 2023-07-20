@@ -52,3 +52,7 @@ export const closeReviewRequest = (
 ): Cypress.Chainable<Cypress.Response<void>> => {
   return cy.request("DELETE", `${BASE_URL}/${id}`)
 }
+
+export const mergeReviewRequest = (id: number): void => {
+  cy.request("POST", `${BASE_URL}/${id}/merge`)
+}
