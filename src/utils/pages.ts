@@ -4,7 +4,7 @@ export const SPECIAL_PAGES = ["homepage", "navbar", "contact-us"]
 
 export const isEditPageUrl = (url: string): boolean => {
   // NOTE: Lowercase here because `/editpage` also works
-  return url.toLowerCase().includes("/editpage") && url.endsWith(".md")
+  return url.toLowerCase().includes("/editpage/") && url.endsWith(".md")
 }
 
 export const isSpecialPagesUrl = (url: string): boolean => {
