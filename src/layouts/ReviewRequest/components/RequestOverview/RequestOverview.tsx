@@ -228,7 +228,6 @@ const RequestOverviewTable = ({
     handleCollapse,
   } = useSearchbar({})
   const columnHelper = createColumnHelper<EditedItemProps>()
-  const theme = useTheme()
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
@@ -487,7 +486,7 @@ const RequestOverviewTable = ({
         <Spacer />
         <Searchbar
           ref={inputRef}
-          onSearchIconClick={handleExpansion}
+          onExpansion={handleExpansion}
           isExpanded={isExpanded}
           onSearch={table.getColumn("itemName")!.setFilterValue}
           onBlur={handleCollapse}
