@@ -1,4 +1,4 @@
-export const InlineMessage = {
+export const Infobox = {
   baseStyle: {
     messagebox: {
       color: "text.body",

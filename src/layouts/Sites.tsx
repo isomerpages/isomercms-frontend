@@ -8,7 +8,7 @@ import {
   Flex,
   Image,
 } from "@chakra-ui/react"
-import { InlineMessage } from "@opengovsg/design-system-react"
+import { Infobox } from "@opengovsg/design-system-react"
 import { AllSitesHeader } from "components/Header/AllSitesHeader"
 import _ from "lodash"
 import { useEffect, useState } from "react"
@@ -86,11 +86,11 @@ const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
   if (siteNames.length === 0)
     return (
       <VStack pt="2.5rem" w="full" gap="4rem">
-        <InlineMessage variant="warning" w="full">
+        <Infobox variant="warning" w="full">
           {`If your sites aren’t showing, please try logging in with your ${
             isEmailLoginUser ? "GitHub ID" : "email"
           } for now.`}
-        </InlineMessage>
+        </Infobox>
         <EmptySitesImage />
         <VStack gap="2rem" color="base.content.default">
           <VStack spacing="0">

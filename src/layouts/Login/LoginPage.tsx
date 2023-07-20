@@ -17,7 +17,7 @@ import {
   Button,
   GovtMasthead,
   Tab,
-  InlineMessage,
+  Infobox,
   Link,
 } from "@opengovsg/design-system-react"
 import { useEffect, useState, PropsWithChildren } from "react"
@@ -140,11 +140,11 @@ const LoginContent = (): JSX.Element => {
       <Text fontSize="2.5rem" color="text.title.brand" textStyle="display-2">
         Rapidly build & launch informational sites
       </Text>
-      <InlineMessage>
+      <Infobox>
         We’re moving in phases from GitHub IDs to email addresses as the login
         method. For those currently using GitHub ID, you’ll be informed when you
         can log in using the email method.
-      </InlineMessage>
+      </Infobox>
       <Tabs width="100%">
         <TabList>
           <Tab>Github Login</Tab>
