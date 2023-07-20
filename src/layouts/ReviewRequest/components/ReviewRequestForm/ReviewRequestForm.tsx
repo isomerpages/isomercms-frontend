@@ -1,4 +1,4 @@
-import { VStack, FormControl } from "@chakra-ui/react"
+import { VStack, FormControl, Text } from "@chakra-ui/react"
 import { FormLabel, Input, Textarea } from "@opengovsg/design-system-react"
 import { Controller, useFormContext } from "react-hook-form"
 import Select from "react-select"
@@ -35,7 +35,6 @@ export const ReviewRequestForm = ({
       <FormControl isRequired>
         <FormLabel mb={0}>Reviewers</FormLabel>
         <FormLabel.Description
-          useMarkdown
           color="text.description"
           // NOTE: This is done to ensure that the width of the MultiSelect
           // takes the full width of its container.
@@ -43,8 +42,12 @@ export const ReviewRequestForm = ({
           // and the MultiSelect itself does not expose a width prop.
           mb="0.75rem"
         >
-          Your changes can be published when at least **one** reviewer approves
-          your request
+          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+          {/* @ts-ignore */}
+          <Text>
+            Your changes can be published when at least <Text as="b">one</Text>{" "}
+            reviewer approves your request
+          </Text>
         </FormLabel.Description>
         <Controller
           name="reviewers"

@@ -4,12 +4,14 @@ import {
   Flex,
   Box,
   InputLeftAddon,
+  Text,
   InputGroup,
 } from "@chakra-ui/react"
 import {
   FormErrorMessage,
   FormLabel,
   Input,
+  Link,
   Textarea,
 } from "@opengovsg/design-system-react"
 import { FormTitle } from "components/Form"
@@ -109,10 +111,19 @@ export const GeneralSettings = ({
           <VStack spacing="0.75rem" align="flex-start" w="100%">
             <Box>
               <FormTitle>Shareicon</FormTitle>
-              <FormLabel.Description useMarkdown color="text.description">
-                This is the preview image that shows when your site url is
-                shared on social media or messaging channels. [Learn
-                more](https://guide.isomer.gov.sg/guide/settings)
+              <FormLabel.Description color="text.description">
+                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                {/* @ts-ignore */}
+                <Text>
+                  This is the preview image that shows when your site url is
+                  shared on social media or messaging channels.{" "}
+                  <Link
+                    isExternal
+                    href="https://guide.isomer.gov.sg/guide/settings"
+                  >
+                    Learn more
+                  </Link>
+                </Text>
               </FormLabel.Description>
             </Box>
             <SettingsFormFieldMedia name="shareicon" isDisabled={isError} />
