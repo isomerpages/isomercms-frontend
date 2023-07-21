@@ -14,12 +14,15 @@ type UserId = string
 
 type FeedbackStorageMappings = Record<UserId, LastSeenFeedbackTime>
 
-const NPS_SURVEY_INTERVAL = 1814400000 as const // 3 weeks - 3 * 7 * 24 * 60 * 60 * 1000
+// 1 week in ms
+const NPS_SURVEY_DURATION = 7 * 24 * 60 * 60 * 1000
 
 const { REACT_APP_SHOW_NPS_FORM } = process.env
 
+type UseFeedbackStorageReturn = readonly [number, () => void]
+
 // NOTE: Wrapper to handle get/set of individual keys
-const useFeedbackStorage = () => {
+const useFeedbackStorage = (): UseFeedbackStorageReturn => {
   const { userId } = useLoginContext()
   const [
     userMappings,
@@ -35,7 +38,12 @@ const useFeedbackStorage = () => {
   return [lastSeen, setLastSeen] as const
 }
 
-export const useFeedbackDisclosure = () => {
+type UseFeedbackDisclosureReturn = {
+  isOpen: boolean
+  onOpen: () => void
+  onClose: () => void
+}
+export const useFeedbackDisclosure = (): UseFeedbackDisclosureReturn => {
   const location = useLocation<{ from?: string }>()
   // NOTE: Despite the typing from the library,
   // state is NOT guaranteed to exist.
@@ -43,6 +51,7 @@ export const useFeedbackDisclosure = () => {
   // NOTE: We show the feedback modal to the users iff
   // they are navigating away from the editor
   const isLeavingContentPage = isEditPageUrl(from) || isSpecialPagesUrl(from)
+  const shouldShowNpsForm = REACT_APP_SHOW_NPS_FORM?.trim() === "true"
 
   const [lastSeen, setLastSeen] = useFeedbackStorage()
   // NOTE: Either this is the first time the user has ever seen the survey
@@ -50,13 +59,13 @@ export const useFeedbackDisclosure = () => {
   // Because we toggle the survey on every month, this indicates that they should
   // do the survey if the toggle is on + sufficient time has elapsed
   const isSurveyRequired =
-    (!lastSeen || lastSeen + NPS_SURVEY_INTERVAL < Date.now()) &&
-    REACT_APP_SHOW_NPS_FORM
+    (!lastSeen || lastSeen + NPS_SURVEY_DURATION < Date.now()) &&
+    shouldShowNpsForm
 
   const { onOpen, onClose } = useDisclosure()
 
   return {
-    isOpen: isLeavingContentPage && !!isSurveyRequired,
+    isOpen: isLeavingContentPage && isSurveyRequired,
     onOpen,
     onClose: () => {
       onClose()
