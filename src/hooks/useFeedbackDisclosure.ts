@@ -23,15 +23,15 @@ type UseFeedbackStorageReturn = readonly [number, () => void]
 
 // NOTE: Wrapper to handle get/set of individual keys
 const useFeedbackStorage = (): UseFeedbackStorageReturn => {
-  const { userId } = useLoginContext()
+  const { displayedName } = useLoginContext()
   const [
     userMappings,
     setUserMappings,
   ] = useLocalStorage<FeedbackStorageMappings>(LOCAL_STORAGE_KEYS.Feedback, {})
 
-  const lastSeen = userMappings[userId]
+  const lastSeen = userMappings[displayedName]
   const setLastSeen = () => {
-    setUserMappings({ ...userMappings, [userId]: Date.now() })
+    setUserMappings({ ...userMappings, [displayedName]: Date.now() })
   }
   // NOTE: `const` cast to infer types properly
   // so that it knows that the return value is a tuple
