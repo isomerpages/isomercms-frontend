@@ -7,7 +7,7 @@ import {
 } from "../api"
 import { editUnlinkedPage } from "../api/pages.api"
 import {
-  E2E_EMAIL_COLLAB,
+  E2E_EMAIL_CONTRI,
   E2E_EMAIL_REPO_STAGING_LINK,
   E2E_EMAIL_TEST_SITE,
   MOCK_REVIEW_DESCRIPTION,
@@ -24,7 +24,7 @@ const getReviewRequestButton = () => cy.contains("button", "Request a Review")
 const getSubmitReviewButton = () => cy.contains("button", "Submit Review")
 
 const selectReviewer = (email: string) => {
-  cy.get("div[id^='react-select']").contains(E2E_EMAIL_COLLAB.email).click()
+  cy.get("div[id^='react-select']").contains(E2E_EMAIL_CONTRI.email).click()
 }
 const removeReviewers = () => cy.get('div[aria-label^="Remove"]').click()
 
@@ -70,11 +70,11 @@ describe("Review Requests", () => {
     it("should not be able to create a review request without a reviewer", () => {
       // Arrange
       cy.createEmailUser(
-        E2E_EMAIL_COLLAB.email,
+        E2E_EMAIL_CONTRI.email,
         USER_TYPES.Email.Collaborator,
         USER_TYPES.Email.Admin
       )
-      addCollaborator(E2E_EMAIL_COLLAB.email)
+      addCollaborator(E2E_EMAIL_CONTRI.email)
 
       // Act
       // NOTE: There should be at least 1 other admin to be able to create a review request
@@ -93,7 +93,7 @@ describe("Review Requests", () => {
     })
     it("should be able to create a review request successfully", () => {
       // Arrange
-      addAdmin(E2E_EMAIL_COLLAB.email)
+      addAdmin(E2E_EMAIL_CONTRI.email)
       editUnlinkedPage(
         "faq.md",
         "some asdfasdfasdf content",
@@ -108,12 +108,12 @@ describe("Review Requests", () => {
       getSubmitReviewButton().should("be.disabled")
       getAddReviewerDropdown().click()
       // select reviewer and click
-      selectReviewer(E2E_EMAIL_COLLAB.email)
+      selectReviewer(E2E_EMAIL_CONTRI.email)
       removeReviewers()
       getSubmitReviewButton().should("be.disabled")
       // add back reviewer
       getAddReviewerDropdown().click()
-      selectReviewer(E2E_EMAIL_COLLAB.email)
+      selectReviewer(E2E_EMAIL_CONTRI.email)
       cy.get(DESCRIPTION_TEXTAREA_SELECTOR).type(MOCK_REVIEW_DESCRIPTION)
 
       // Assert
@@ -123,13 +123,13 @@ describe("Review Requests", () => {
   })
   describe.skip("has pending review requests", () => {
     before(() => {
-      addAdmin(E2E_EMAIL_COLLAB.email)
+      addAdmin(E2E_EMAIL_CONTRI.email)
       // NOTE: Create a review request if none exists
       listReviewRequests().then((requests) => {
         if (!requests || !requests.length) {
           createReviewRequest(
             MOCK_REVIEW_TITLE,
-            [E2E_EMAIL_COLLAB.email],
+            [E2E_EMAIL_CONTRI.email],
             MOCK_REVIEW_DESCRIPTION
           )
         }
@@ -171,13 +171,13 @@ describe("Review Requests", () => {
   })
   describe.skip("has approved review requests", () => {
     before(() => {
-      addAdmin(E2E_EMAIL_COLLAB.email)
+      addAdmin(E2E_EMAIL_CONTRI.email)
       // NOTE: Create a review request if none exists
       listReviewRequests().then((requests) => {
         if (!requests || !requests.length) {
           createReviewRequest(
             MOCK_REVIEW_TITLE,
-            [E2E_EMAIL_COLLAB.email],
+            [E2E_EMAIL_CONTRI.email],
             MOCK_REVIEW_DESCRIPTION
           ).then((id) => approveReviewRequest(id))
         }
