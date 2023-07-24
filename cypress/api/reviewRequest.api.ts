@@ -35,24 +35,20 @@ export const closeReviewRequests = (): void => {
   })
 }
 
-function removeResponse(response: any) {
-  // Do nothing
-}
-
 export const approveReviewRequest = (
   id: number
 ): Cypress.Chainable<Cypress.Response<void>> => {
-  return cy.request("POST", `${BASE_URL}/${id}/approve`).then(removeResponse)
+  return cy.request("POST", `${BASE_URL}/${id}/approve`)
 }
 
 export const mergeReviewRequest = (
   id: number
 ): Cypress.Chainable<Cypress.Response<void>> => {
-  return cy.request("POST", `${BASE_URL}/${id}/merge`).then(removeResponse)
+  return cy.request("POST", `${BASE_URL}/${id}/merge`)
 }
 
 export const closeReviewRequest = (
   id: number
 ): Cypress.Chainable<Cypress.Response<void>> => {
-  return cy.request("DELETE", `${BASE_URL}/${id}`).then(removeResponse)
+  return cy.request("DELETE", `${BASE_URL}/${id}`)
 }

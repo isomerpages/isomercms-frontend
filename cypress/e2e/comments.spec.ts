@@ -349,13 +349,13 @@ describe("Comments", () => {
       it("should not be able to see/create comments for non-existent review requests", () => {
         // Arrange
         visitE2eEmailTestRepo()
-
         // Act
 
         // Assert
-        cy.contains(
-          `a[href^="/sites/${E2E_EMAIL_TEST_SITE.repo}/review/"]`
-        ).should("not.exist")
+        // Since there is no open review request, visiting the sites dashboard
+        // should not show a link to an open review request
+        const linkToReviewRequest = `a[href^="/sites/${E2E_EMAIL_TEST_SITE.repo}/review/"]`
+        cy.contains(linkToReviewRequest).should("not.exist")
       })
     })
   })
