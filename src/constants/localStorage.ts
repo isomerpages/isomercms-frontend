@@ -4,4 +4,5 @@ export enum LOCAL_STORAGE_KEYS {
   Announcements = "announcements",
   DashboardFeatureTour = "dashboard-identity-feature-tour-v1",
   WorkspaceFeatureTour = "workspace-identity-feature-tour-v1",
+  Feedback = "feedback",
 }
