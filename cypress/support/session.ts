@@ -12,6 +12,7 @@ import {
   CMS_BASEURL,
   BACKEND_URL,
   E2E_EMAIL_CONTRI,
+  E2E_EMAIL_ADMIN_2,
 } from "../fixtures/constants"
 import { EmailUserTypes, USER_TYPES } from "../fixtures/users"
 import { setCookieWithDomain } from "../utils/cookies"
@@ -23,14 +24,22 @@ Cypress.Commands.add("setGithubSessionDefaults", () => {
   window.localStorage.setItem(LOCAL_STORAGE_USERID_KEY, E2E_USER.userId)
 })
 
+const getEmailFromUserType = (userType: EmailUserTypes) => {
+  switch (userType) {
+    case USER_TYPES.Email.Admin:
+      return E2E_EMAIL_ADMIN.email
+    case USER_TYPES.Email.Admin2:
+      return E2E_EMAIL_ADMIN_2.email
+    default:
+      return E2E_EMAIL_CONTRI.email
+  }
+}
+
 Cypress.Commands.add("setEmailSessionDefaults", (userType: EmailUserTypes) => {
   setCookieWithDomain(COOKIE_NAME, COOKIE_VALUE)
   setCookieWithDomain(E2E_USER_TYPE_COOKIE_KEY, userType)
   setCookieWithDomain(E2E_SITE_KEY, E2E_EMAIL_TEST_SITE.name)
-  setCookieWithDomain(
-    E2E_COOKIE.Email.key,
-    userType === "Email admin" ? E2E_EMAIL_ADMIN.email : E2E_EMAIL_CONTRI.email
-  )
+  setCookieWithDomain(E2E_COOKIE.Email.key, getEmailFromUserType(userType))
   setCookieWithDomain(E2E_COOKIE.Site.key, E2E_COOKIE.Site.value)
 })
 
