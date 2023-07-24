@@ -10,8 +10,8 @@ export const E2E_EMAIL_ADMIN = {
   email: "admin@e2e.gov.sg",
 } as const
 
-export const E2E_EMAIL_COLLAB = {
-  email: "collab@e2e.gov.sg",
+export const E2E_EMAIL_CONTRI = {
+  email: "contri@e2e.gov.sg",
 } as const
 
 export const E2E_EMAIL_TEST_SITE = {
