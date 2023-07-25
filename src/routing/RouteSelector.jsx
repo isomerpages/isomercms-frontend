@@ -14,6 +14,7 @@ import EditNavBar from "layouts/EditNavBar"
 import EditPage from "layouts/EditPage"
 import { Folders } from "layouts/Folders"
 import { LoginPage } from "layouts/Login"
+import { LoginPageSgid } from "layouts/Login/LoginPageSgid"
 import { Media } from "layouts/Media"
 import NotFoundPage from "layouts/NotFoundPage"
 import { ResourceCategory } from "layouts/ResourceCategory"
@@ -46,6 +47,12 @@ export const RouteSelector = () => (
     )}
     <Switch>
       <RedirectIfLoggedInRoute exact path="/" unauthedComponent={LoginPage} />
+
+      <RedirectIfLoggedInRoute
+        exact
+        path="/ogp-login"
+        unauthedComponent={LoginPageSgid}
+      />
 
       <ProtectedRouteWithProps
         exact
