@@ -31,14 +31,13 @@ export const FeedbackModal = ({
   const [activeIdx, setActiveIdx] = useState<number>(-1)
 
   return (
+    // modal content, button, header, footer
     <form>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader pt="1.5rem">
-            How likely are you to recommend Isomer to a colleague?
-          </ModalHeader>
-          <ModalCloseButton w="1.5rem" h="1.5rem" />
+          <ModalHeader>How satisfied are you with Isomer?</ModalHeader>
+          <ModalCloseButton />
           <ModalBody pb={shouldShowTextArea ? "auto" : "1.5rem"}>
             <VStack spacing="1.5rem" align="flex-start">
               <Rating
@@ -49,15 +48,17 @@ export const FeedbackModal = ({
                 activeIdx={activeIdx}
               />
               {shouldShowTextArea && (
-                <FormControl>
-                  <FormLabel>Share why you gave us this rating</FormLabel>
+                <FormControl isRequired>
+                  <FormLabel isRequired>
+                    Share why you gave us this rating
+                  </FormLabel>
                   <Textarea mt="0.25rem" placeholder="Leave us some feedback" />
                 </FormControl>
               )}
             </VStack>
           </ModalBody>
           {shouldShowTextArea && (
-            <ModalFooter pb="2rem">
+            <ModalFooter>
               <HStack spacing="1rem">
                 <ButtonGroup>
                   <Button colorScheme="neutral" variant="clear">

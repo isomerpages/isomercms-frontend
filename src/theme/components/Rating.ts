@@ -15,7 +15,7 @@ const baseStyle = definePartsStyle({
     display: "flex",
     flexFlow: "row nowrap",
     listStyleType: "none",
-    alignItems: "center",
+    alignItems: "flex-start",
     gap: "1.5rem",
     w: "full",
     alignSelf: "center",
