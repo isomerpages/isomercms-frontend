@@ -3,7 +3,7 @@ import { createComment } from "../api"
 import {
   CMS_BASEURL,
   E2E_EMAIL_ADMIN,
-  E2E_EMAIL_COLLAB,
+  E2E_EMAIL_CONTRI,
   E2E_EMAIL_TEST_SITE,
 } from "../fixtures/constants"
 import {
@@ -65,14 +65,14 @@ describe("Comments", () => {
       cy.setupDefaultInterceptors()
       api.closeReviewRequests()
       cy.createEmailUser(
-        E2E_EMAIL_COLLAB.email,
+        E2E_EMAIL_CONTRI.email,
         "Email admin",
         "Email admin",
         E2E_EMAIL_TEST_SITE.name
       )
       api.editUnlinkedPage("faq.md", "some content", E2E_EMAIL_TEST_SITE.repo)
       api
-        .createReviewRequest("test title", [E2E_EMAIL_COLLAB.email])
+        .createReviewRequest("test title", [E2E_EMAIL_CONTRI.email])
         .then((id) => {
           reviewId = id
         })
@@ -95,7 +95,7 @@ describe("Comments", () => {
       openCommentsDrawer()
 
       // Assert
-      checkCommentVisible(MOCK_COMMENT, E2E_EMAIL_COLLAB.email)
+      checkCommentVisible(MOCK_COMMENT, E2E_EMAIL_CONTRI.email)
     })
     it("should be able to see comments posted by yourself", () => {
       // Arrange
@@ -139,13 +139,13 @@ describe("Comments", () => {
       cy.setupDefaultInterceptors()
       api.closeReviewRequests()
       cy.createEmailUser(
-        E2E_EMAIL_COLLAB.email,
+        E2E_EMAIL_CONTRI.email,
         "Email admin",
         "Email admin",
         E2E_EMAIL_TEST_SITE.name
       )
       api.editUnlinkedPage("faq.md", "some content", E2E_EMAIL_TEST_SITE.repo)
-      api.createReviewRequest("test title", [E2E_EMAIL_COLLAB.email])
+      api.createReviewRequest("test title", [E2E_EMAIL_CONTRI.email])
     })
 
     it("should be able to post comments if you are an admin of the site", () => {
@@ -178,7 +178,7 @@ describe("Comments", () => {
       submitNewComment()
 
       // Assert
-      checkCommentVisible(MOCK_COMMENT, E2E_EMAIL_COLLAB.email)
+      checkCommentVisible(MOCK_COMMENT, E2E_EMAIL_CONTRI.email)
     })
   })
 
@@ -190,14 +190,14 @@ describe("Comments", () => {
       cy.setupDefaultInterceptors()
       api.closeReviewRequests()
       cy.createEmailUser(
-        E2E_EMAIL_COLLAB.email,
+        E2E_EMAIL_CONTRI.email,
         "Email admin",
         "Email admin",
         E2E_EMAIL_TEST_SITE.name
       )
       api.editUnlinkedPage("faq.md", "some content", E2E_EMAIL_TEST_SITE.repo)
       api
-        .createReviewRequest("test title", [E2E_EMAIL_COLLAB.email])
+        .createReviewRequest("test title", [E2E_EMAIL_CONTRI.email])
         .then((id) => {
           reviewId = id
         })
@@ -274,14 +274,14 @@ describe("Comments", () => {
         cy.setupDefaultInterceptors()
         api.closeReviewRequests()
         cy.createEmailUser(
-          E2E_EMAIL_COLLAB.email,
+          E2E_EMAIL_CONTRI.email,
           "Email admin",
           "Email admin",
           E2E_EMAIL_TEST_SITE.name
         )
         api.editUnlinkedPage("faq.md", "some content", E2E_EMAIL_TEST_SITE.repo)
         api
-          .createReviewRequest("test title", [E2E_EMAIL_COLLAB.email])
+          .createReviewRequest("test title", [E2E_EMAIL_CONTRI.email])
           .then((id) => {
             reviewId = id
           })
@@ -313,14 +313,14 @@ describe("Comments", () => {
         cy.setupDefaultInterceptors()
         api.closeReviewRequests()
         cy.createEmailUser(
-          E2E_EMAIL_COLLAB.email,
+          E2E_EMAIL_CONTRI.email,
           "Email admin",
           "Email admin",
           E2E_EMAIL_TEST_SITE.name
         )
         api.editUnlinkedPage("faq.md", "some content", E2E_EMAIL_TEST_SITE.repo)
         api
-          .createReviewRequest("test title", [E2E_EMAIL_COLLAB.email])
+          .createReviewRequest("test title", [E2E_EMAIL_CONTRI.email])
           .then((id) => {
             reviewId = id
           })
