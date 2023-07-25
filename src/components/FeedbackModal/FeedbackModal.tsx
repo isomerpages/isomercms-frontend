@@ -4,14 +4,11 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  Button as ChakraButton,
   HStack,
   ModalFooter,
   VStack,
   ButtonGroup,
   FormControl,
-  useMultiStyleConfig,
-  chakra,
 } from "@chakra-ui/react"
 import {
   ModalCloseButton,
@@ -19,6 +16,7 @@ import {
   Textarea,
   FormLabel,
 } from "@opengovsg/design-system-react"
+import { Rating } from "components/Rating/Rating"
 import { useState } from "react"
 
 export interface FeedbackModalProps {
@@ -30,8 +28,7 @@ export const FeedbackModal = ({
   onClose,
 }: FeedbackModalProps): JSX.Element => {
   const [shouldShowTextArea, setShouldShowTextArea] = useState(false)
-  const [activeIdx, setActiveIdx] = useState<undefined | number>()
-  const styles = useMultiStyleConfig("Pagination")
+  const [activeIdx, setActiveIdx] = useState<number>(-1)
 
   return (
     <form>
@@ -44,50 +41,13 @@ export const FeedbackModal = ({
           <ModalCloseButton w="1.5rem" h="1.5rem" />
           <ModalBody pb={shouldShowTextArea ? "auto" : "1.5rem"}>
             <VStack spacing="1.5rem" align="flex-start">
-              <chakra.ul
-                display="flex"
-                flexFlow="row nowrap"
-                listStyleType="none"
-                alignItems="center"
-                gap="1.5rem"
-                w="full"
-                alignSelf="center"
-                px="1.16rem"
-                py="0.5rem"
-              >
-                {Array(11)
-                  .fill(null)
-                  .map((_, idx) => {
-                    return (
-                      <chakra.li>
-                        <ChakraButton
-                          variant="unstyled"
-                          sx={{
-                            ...styles.button,
-                            _active: {
-                              bg: "interaction.support.selected",
-                              color: "base.content.inverse",
-                              _hover: {
-                                bg: "interaction.support.selected",
-                              },
-                              _disabled: {
-                                bg: "interaction.support.disabled",
-                                color: "interaction.support.disabled-content",
-                              },
-                            },
-                          }}
-                          onClick={() => {
-                            setShouldShowTextArea(true)
-                            setActiveIdx(idx)
-                          }}
-                          isActive={activeIdx === idx}
-                        >
-                          {idx}
-                        </ChakraButton>
-                      </chakra.li>
-                    )
-                  })}
-              </chakra.ul>
+              <Rating
+                onClick={(idx) => {
+                  setShouldShowTextArea(true)
+                  setActiveIdx(idx)
+                }}
+                activeIdx={activeIdx}
+              />
               {shouldShowTextArea && (
                 <FormControl>
                   <FormLabel>Share why you gave us this rating</FormLabel>
