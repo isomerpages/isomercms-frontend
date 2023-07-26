@@ -2,7 +2,7 @@ import { EMPTY_NOTIFICATIONS_TEXT } from "../../src/components/Header/Notificati
 import * as api from "../api"
 import {
   E2E_EMAIL_ADMIN,
-  E2E_EMAIL_CONTRI,
+  E2E_EMAIL_COLLAB,
   E2E_EMAIL_TEST_SITE,
 } from "../fixtures/constants"
 import {
@@ -31,7 +31,7 @@ describe("notifications", () => {
   })
   before(() => {
     cy.createEmailUser(
-      E2E_EMAIL_CONTRI.email,
+      E2E_EMAIL_COLLAB.email,
       "Email admin",
       "Email admin",
       E2E_EMAIL_TEST_SITE.name
@@ -52,7 +52,7 @@ describe("notifications", () => {
 
     api.editUnlinkedPage("faq.md", genRandomString(), E2E_EMAIL_TEST_SITE.repo)
     api
-      .createReviewRequest("test title", [E2E_EMAIL_CONTRI.email])
+      .createReviewRequest("test title", [E2E_EMAIL_COLLAB.email])
       .then((id) => {
         reviewId = id
       })

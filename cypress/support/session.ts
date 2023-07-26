@@ -11,7 +11,7 @@ import {
   E2E_EMAIL_ADMIN,
   CMS_BASEURL,
   BACKEND_URL,
-  E2E_EMAIL_CONTRI,
+  E2E_EMAIL_COLLAB,
 } from "../fixtures/constants"
 import { EmailUserTypes, USER_TYPES } from "../fixtures/users"
 import { setCookieWithDomain } from "../utils/cookies"
@@ -29,7 +29,7 @@ Cypress.Commands.add("setEmailSessionDefaults", (userType: EmailUserTypes) => {
   setCookieWithDomain(E2E_SITE_KEY, E2E_EMAIL_TEST_SITE.name)
   setCookieWithDomain(
     E2E_COOKIE.Email.key,
-    userType === "Email admin" ? E2E_EMAIL_ADMIN.email : E2E_EMAIL_CONTRI.email
+    userType === "Email admin" ? E2E_EMAIL_ADMIN.email : E2E_EMAIL_COLLAB.email
   )
   setCookieWithDomain(E2E_COOKIE.Site.key, E2E_COOKIE.Site.value)
 })

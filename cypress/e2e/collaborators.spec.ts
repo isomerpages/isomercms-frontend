@@ -1,7 +1,7 @@
 import {
   CMS_BASEURL,
   E2E_EMAIL_ADMIN,
-  E2E_EMAIL_CONTRI,
+  E2E_EMAIL_COLLAB,
   Interceptors,
   TEST_REPO_NAME,
 } from "../fixtures/constants"
@@ -20,7 +20,7 @@ import {
   removeOtherCollaborators,
 } from "../utils/collaborators"
 
-const collaborator = E2E_EMAIL_CONTRI.email
+const collaborator = E2E_EMAIL_COLLAB.email
 
 const ADD_COLLABORATOR_ERROR_MESSAGE =
   "This collaborator couldn't be added. Visit our guide for more assistance"
