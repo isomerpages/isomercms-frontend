@@ -20,17 +20,18 @@ import {
   InlineMessage,
   Link,
 } from "@opengovsg/design-system-react"
-import { useState, PropsWithChildren } from "react"
-import { useHistory } from "react-router-dom"
+import { useEffect, useState, PropsWithChildren } from "react"
+import { useHistory, useLocation } from "react-router-dom"
 
 import { PRIVACY_POLICY_LINK, TERMS_OF_USE_LINK } from "constants/config"
 
-import { useLogin, useVerifyOtp } from "hooks/loginHooks"
+import { useGetSgidAuth, useLogin, useVerifyOtp } from "hooks/loginHooks"
 
 import { getAxiosErrorMessage } from "utils/axios"
-import { useSuccessToast } from "utils/toasts"
+import { useErrorToast, useSuccessToast } from "utils/toasts"
 
 import { IsomerLogo, LoginImage, OGPLogo } from "assets"
+import { DEFAULT_RETRY_MSG } from "utils"
 
 import { LoginForm, LoginProps, OtpForm, OtpProps } from "./components"
 
@@ -73,9 +74,21 @@ const FooterLink = ({
 )
 
 const LoginContent = (): JSX.Element => {
+  const { pathname, search } = useLocation()
+  const isSgidLogin = pathname === "/ogp-login"
+
+  const params = new URLSearchParams(search)
+  const statusCode = params.get("status")
+
+  const errorToast = useErrorToast()
   const { mutateAsync: sendLoginOtp, error: loginError } = useLogin()
 
   const { mutateAsync: verifyLoginOtp, error: verifyError } = useVerifyOtp()
+
+  const {
+    mutateAsync: getSgidAuth,
+    isLoading: isSgidAuthLoading,
+  } = useGetSgidAuth()
 
   const successToast = useSuccessToast()
   const [email, setEmail] = useState<string>("")
@@ -104,6 +117,24 @@ const LoginContent = (): JSX.Element => {
     })
   }
 
+  useEffect(() => {
+    if (!errorToast || !statusCode || statusCode === "200") return
+    let errorMessage = ""
+    switch (statusCode) {
+      case "401":
+        errorMessage =
+          "Your email has not been whitelisted to use sgID login. Please use another method of login."
+        break
+      default:
+        errorMessage = `Something went wrong. ${DEFAULT_RETRY_MSG}`
+    }
+    errorToast({
+      id: "sgid-login-error",
+      title: "Error",
+      description: errorMessage,
+    })
+  }, [errorToast, statusCode])
+
   return (
     <VStack gap="2.5rem" alignItems="start" width="65%">
       <Text fontSize="2.5rem" color="text.title.brand" textStyle="display-2">
@@ -118,6 +149,7 @@ const LoginContent = (): JSX.Element => {
         <TabList>
           <Tab>Github Login</Tab>
           <Tab>Email Login</Tab>
+          {isSgidLogin && <Tab>sgID Login</Tab>}
         </TabList>
         <TabPanels pt="2rem" minHeight="16.5rem">
           <TabPanel>
@@ -152,6 +184,20 @@ const LoginContent = (): JSX.Element => {
               />
             )}
           </TabPanel>
+          {isSgidLogin && (
+            <TabPanel>
+              <InlineMessage mb="1rem">
+                This is an experimental service currently offered to OGP
+                officers only.
+              </InlineMessage>
+              <Button
+                onClick={() => getSgidAuth()}
+                isLoading={isSgidAuthLoading}
+              >
+                Log in with Singpass app
+              </Button>
+            </TabPanel>
+          )}
           <Text color="text.helper" fontSize="0.625rem" pt="2rem">
             By clicking ‘Log in’, you are acknowledging and agreeing to Isomer’s{" "}
             <Link href={TERMS_OF_USE_LINK} isExternal>
