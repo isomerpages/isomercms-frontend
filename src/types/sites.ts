@@ -10,5 +10,5 @@ export interface SiteDataRequest {
 }
 
 export interface SitePreviewRequest {
-  imageUrl: string
+  imageUrl?: string
 }
