@@ -16,11 +16,15 @@ In order to run the github e2e tests successfully, we need to perform the follow
 
 In order to run the email e2e tests successfully, we need to perform the following one-off setup:
 
-1. go to the **production** database (reader instance)
-2. search for the `e2e email test site` in `sites`
-3. copy the value over to your local db in `sites`
-4. search for the `e2e-email-test-repo` in `repos`
-5. copy the value over to your local db in `repos`
+1. go to the local database
+2. Run these commands:
+
+```
+INSERT INTO sites (name, site_status, job_status, creator_id)
+VALUES ('e2e email test site', 'INITIALIZED', 'READY', 1);
+INSERT INTO repos (name, url, created_at, updated_at, site_id)
+SELECT 'e2e-email-test-repo', 'https://github.com/isomerpages/e2e-email-test-repo', NOW(), NOW(), id FROM sites WHERE name = 'e2e email test site';
+```
 
 ### Explanation
 
