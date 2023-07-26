@@ -76,13 +76,9 @@ const FooterLink = ({
 const LoginContent = (): JSX.Element => {
   const { search } = useLocation()
 
-  const [statusCode, setStatusCode] = useState("200")
+  const params = new URLSearchParams(search)
+  const statusCode = params.get("status")
 
-  useEffect(() => {
-    const params = new URLSearchParams(search)
-    const status = params.get("status")
-    if (status) setStatusCode(status)
-  }, [search])
   const errorToast = useErrorToast()
   const { mutateAsync: sendLoginOtp, error: loginError } = useLogin()
 
