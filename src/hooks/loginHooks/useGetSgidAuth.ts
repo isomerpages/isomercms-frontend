@@ -6,15 +6,15 @@ import * as LoginService from "services/LoginService"
 import { getAxiosErrorMessage } from "utils/axios"
 import { useErrorToast } from "utils/toasts"
 
-import { GetSgidAuthUrlResponseDto } from "types/login"
+import { SgidAuthUrlResponseDto } from "types/login"
 
 export const useGetSgidAuth = (): UseMutationResult<
-  GetSgidAuthUrlResponseDto,
+  SgidAuthUrlResponseDto,
   AxiosError,
   void
 > => {
   const errorToast = useErrorToast()
-  return useMutation<GetSgidAuthUrlResponseDto, AxiosError, void>(
+  return useMutation<SgidAuthUrlResponseDto, AxiosError, void>(
     () => LoginService.getSgidAuthUrl(),
     {
       onSuccess: (data) => {

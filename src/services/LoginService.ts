@@ -1,5 +1,5 @@
 import {
-  GetSgidAuthUrlResponseDto,
+  SgidAuthUrlResponseDto,
   LoginParams,
   VerifyOtpParams,
 } from "types/login"
@@ -19,8 +19,8 @@ export const verifyLoginOtp = async ({
   return apiService.post(endpoint, { email: email.toLowerCase(), otp })
 }
 
-export const getSgidAuthUrl = async (): Promise<GetSgidAuthUrlResponseDto> => {
+export const getSgidAuthUrl = async (): Promise<SgidAuthUrlResponseDto> => {
   return apiService
-    .get<GetSgidAuthUrlResponseDto>(`/auth/sgid/auth-url`)
+    .get<SgidAuthUrlResponseDto>(`/auth/sgid/auth-url`)
     .then(({ data }) => data)
 }

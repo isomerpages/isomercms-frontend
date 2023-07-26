@@ -6,6 +6,6 @@ export interface VerifyOtpParams extends LoginParams {
   otp: string
 }
 
-export interface GetSgidAuthUrlResponseDto {
+export interface SgidAuthUrlResponseDto {
   redirectUrl: string
 }
