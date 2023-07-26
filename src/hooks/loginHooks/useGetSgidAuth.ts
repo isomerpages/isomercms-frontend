@@ -3,10 +3,10 @@ import { useMutation, UseMutationResult } from "react-query"
 
 import * as LoginService from "services/LoginService"
 
+import { getAxiosErrorMessage } from "utils/axios"
 import { useErrorToast } from "utils/toasts"
 
 import { GetSgidAuthUrlResponseDto } from "types/login"
-import { DEFAULT_RETRY_MSG } from "utils"
 
 export const useGetSgidAuth = (): UseMutationResult<
   GetSgidAuthUrlResponseDto,
@@ -20,10 +20,10 @@ export const useGetSgidAuth = (): UseMutationResult<
       onSuccess: (data) => {
         window.location.assign(data.redirectUrl)
       },
-      onError: () => {
+      onError: (err) => {
         errorToast({
           id: "sgid-oauth-error",
-          description: `Something went wrong. ${DEFAULT_RETRY_MSG}`,
+          description: getAxiosErrorMessage(err),
         })
       },
     }
