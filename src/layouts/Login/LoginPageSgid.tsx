@@ -83,9 +83,6 @@ const LoginContent = (): JSX.Element => {
     const status = params.get("status")
     if (status) setStatusCode(status)
   }, [search])
-  // const { state } = useLocation<{ status: string }>()
-  // const { status: statusCode } = state
-  console.log(statusCode)
   const errorToast = useErrorToast()
   const { mutateAsync: sendLoginOtp, error: loginError } = useLogin()
 
