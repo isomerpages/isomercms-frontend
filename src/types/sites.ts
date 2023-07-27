@@ -8,3 +8,7 @@ export interface SiteData {
 export interface SiteDataRequest {
   siteNames: SiteData[]
 }
+
+export interface SitePreviewRequest {
+  imageUrl?: string
+}
