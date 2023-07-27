@@ -31,9 +31,6 @@ import { AnnouncementModal } from "features/AnnouncementModal/AnnouncementModal"
 import { SiteData } from "types/sites"
 
 const SitePreviewImage = ({ imageUrl }: { imageUrl?: string }) => {
-  if (!imageUrl) {
-    return <IsomerLogoNoText height="50%" />
-  }
   return (
     <Image
       src={imageUrl}
