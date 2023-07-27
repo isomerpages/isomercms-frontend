@@ -12,5 +12,4 @@ export interface SgidAuthUrlResponseDto {
 
 export interface VerifySgidLoginParams {
   code: string
-  state: string
 }

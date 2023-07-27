@@ -28,9 +28,6 @@ export const getSgidAuthUrl = async (): Promise<SgidAuthUrlResponseDto> => {
 
 export const verifySgidLogin = async ({
   code,
-  state,
 }: VerifySgidLoginParams): Promise<void> => {
-  await apiService.get<void>(
-    `/auth/sgid/verify-login?code=${code}&state=${state}`
-  )
+  await apiService.get<void>(`/auth/sgid/verify-login?code=${code}`)
 }

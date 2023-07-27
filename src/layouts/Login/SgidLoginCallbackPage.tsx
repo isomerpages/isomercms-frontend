@@ -1,14 +1,14 @@
 import { useLocation } from "react-router-dom"
 
-import { useSgidLogin } from "hooks/loginHooks/useSgidLogin"
+import { useSgidLogin } from "hooks/loginHooks"
 
 export const SgidLoginCallbackPage = (): JSX.Element => {
   const { search } = useLocation()
   const urlSearchParams = new URLSearchParams(search)
   const params = Object.fromEntries(urlSearchParams.entries())
-  const { state, code } = params
+  const { code } = params
 
-  useSgidLogin({ state, code })
+  useSgidLogin({ code })
 
   return <>Taking you back to IsomerCMS...</>
 }
