@@ -42,6 +42,9 @@ export const ReviewRequestForm = ({
           // and the MultiSelect itself does not expose a width prop.
           mb="0.75rem"
         >
+          {/* NOTE: See here: https://github.com/opengovsg/design-system/issues/440
+           * for why this is required
+           */}
           {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
           {/* @ts-ignore */}
           <Text>

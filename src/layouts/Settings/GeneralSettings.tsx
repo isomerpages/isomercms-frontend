@@ -112,6 +112,9 @@ export const GeneralSettings = ({
             <Box>
               <FormTitle>Shareicon</FormTitle>
               <FormLabel.Description color="text.description">
+                {/* NOTE: See here: https://github.com/opengovsg/design-system/issues/440
+                 * for why this is required
+                 */}
                 {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
                 {/* @ts-ignore */}
                 <Text>
