@@ -9,3 +9,8 @@ export interface VerifyOtpParams extends LoginParams {
 export interface SgidAuthUrlResponseDto {
   redirectUrl: string
 }
+
+export interface VerifySgidLoginParams {
+  code: string
+  state: string
+}
