@@ -14,6 +14,7 @@ import EditNavBar from "layouts/EditNavBar"
 import EditPage from "layouts/EditPage"
 import { Folders } from "layouts/Folders"
 import { LoginPage } from "layouts/Login"
+import { SgidLoginCallbackPage } from "layouts/Login/SgidLoginCallbackPage"
 import { Media } from "layouts/Media"
 import NotFoundPage from "layouts/NotFoundPage"
 import { ResourceCategory } from "layouts/ResourceCategory"
@@ -49,6 +50,12 @@ export const RouteSelector = () => (
         exact
         path={["/", "/ogp-login"]}
         unauthedComponent={LoginPage}
+      />
+
+      <RedirectIfLoggedInRoute
+        exact
+        path="/sgid-callback"
+        unauthedComponent={SgidLoginCallbackPage}
       />
 
       <ProtectedRouteWithProps
