@@ -6,9 +6,12 @@ import {
   Grid,
   GridProps,
 } from "@chakra-ui/react"
+import { FeedbackModal } from "components/FeedbackModal"
 import { Sidebar } from "components/Sidebar"
 
 import { DirtyFieldContextProvider } from "contexts/DirtyFieldContext"
+
+import { useFeedbackDisclosure } from "hooks/useFeedbackDisclosure"
 
 import { SiteEditHeader } from "./SiteEditHeader"
 
@@ -27,8 +30,10 @@ const GRID_LAYOUT: Pick<
  * This means that this component has to be used within the main CMS section after clicking the site card
  */
 export const SiteEditLayout = ({ children }: StackProps): JSX.Element => {
+  const { isOpen, onClose } = useFeedbackDisclosure()
   return (
     <DirtyFieldContextProvider>
+      <FeedbackModal isOpen={isOpen} onClose={onClose} />
       <Grid {...GRID_LAYOUT}>
         <GridItem
           area="header"

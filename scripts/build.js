@@ -39,8 +39,8 @@ const E2E_GITHUB_REPO_NAME = "e2e-test-repo"
 const E2E_EMAIL_REPO_NAME = "e2e-email-test-repo"
 const E2E_EMAIL_COMMIT_HASH = "93593ceb8ee8af690267e49ea787701fc73baed8"
 
-const resetRepo = async (repo, hash) => {
-  const endpoint = `https://api.github.com/repos/${GITHUB_ORG_NAME}/${repo}/git/refs/heads/staging`
+const resetRepo = async (repo, hash, branch) => {
+  const endpoint = `https://api.github.com/repos/${GITHUB_ORG_NAME}/${repo}/git/refs/heads/${branch}`
   await axios.patch(
     endpoint,
     {
@@ -55,10 +55,12 @@ const resetRepo = async (repo, hash) => {
 }
 
 const resetGithubE2eTestRepo = () =>
-  resetRepo(E2E_GITHUB_REPO_NAME, E2E_COMMIT_HASH)
+  resetRepo(E2E_GITHUB_REPO_NAME, E2E_COMMIT_HASH, "master")
 
-const resetEmailE2eTestRepo = () =>
-  resetRepo(E2E_EMAIL_REPO_NAME, E2E_EMAIL_COMMIT_HASH)
+const resetEmailE2eTestRepo = () => {
+  resetRepo(E2E_EMAIL_REPO_NAME, E2E_EMAIL_COMMIT_HASH, "staging")
+  resetRepo(E2E_EMAIL_REPO_NAME, E2E_EMAIL_COMMIT_HASH, "master")
+}
 
 const resetE2eTestRepo = async () => {
   await resetGithubE2eTestRepo()
