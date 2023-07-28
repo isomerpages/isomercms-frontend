@@ -71,7 +71,8 @@ const ReorderingModal = ({ params, dirData, onProceed, onClose }) => {
             <div className={contentStyles.segment}>
               <i className="bx bx-sm bx-bulb text-dark" />
               <span>
-                <strong className="ml-1">Pro tip:</strong> Drag and drop the items below.
+                <strong className="ml-1">Pro tip:</strong> Drag and drop the
+                items below.
               </span>
             </div>
             {/* Segment divider  */}
