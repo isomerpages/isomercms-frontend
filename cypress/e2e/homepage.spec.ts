@@ -1,4 +1,5 @@
-import { TEST_REPO_NAME } from "../fixtures/constants"
+import { keyCodes, TEST_REPO_NAME, timings } from "../fixtures/constants"
+import { getHandleSelector } from "../utils/dnd"
 
 const visitHomepage = () => {
   cy.visit(`/sites/${TEST_REPO_NAME}/homepage`)
@@ -35,29 +36,6 @@ const SECTION_DROPDOWN_OPTIONS = {
 
 const toggleSectionDropdown = (section: string) => {
   cy.contains(section).next().click()
-}
-
-const timings = {
-  outOfTheWay: 0.2,
-  // greater than the out of the way time
-  // so that when the drop ends everything will
-  // have to be out of the way
-  minDropTime: 0.33,
-  maxDropTime: 0.55,
-}
-
-const keyCodes = {
-  space: 32,
-  arrowDown: 40,
-}
-
-const REACT_DRAG_HANDLE_PROPERTY = "data-rfd-drag-handle-draggable-id" as const
-
-const getHandleSelector = (draggableId?: string) => {
-  if (draggableId) {
-    return `[${REACT_DRAG_HANDLE_PROPERTY}="${draggableId}"]`
-  }
-  return `[${REACT_DRAG_HANDLE_PROPERTY}]`
 }
 
 describe("Homepage", () => {
