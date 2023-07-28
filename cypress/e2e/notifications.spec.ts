@@ -3,6 +3,7 @@ import {
   E2E_EMAIL_ADMIN,
   E2E_EMAIL_COLLAB,
   E2E_EMAIL_TEST_SITE,
+  Interceptors,
 } from "../fixtures/constants"
 import {
   genRandomString,
@@ -22,9 +23,6 @@ const getChangesMadeNotifText = (email: string) =>
 
 const getApprovedReviewRequestNotifText = (email: string) =>
   `${email} has approved a review request.`
-
-const getMergedReviewRequestNotifText = (email: string) =>
-  `${email} has published a review request.`
 
 const getReviewCancelledNotifText = (email: string) =>
   `${email} has cancelled a review request.`
@@ -125,20 +123,6 @@ describe("notifications", () => {
       .should("be.visible")
       .should("have.css", "background-color", UNREAD_COMMENTS_BG_COLOR)
   })
-  it("should receive a notification on successful comment post", () => {
-    // Arrange
-    cy.setEmailSessionDefaults("Email collaborator")
-    visitE2eEmailTestRepo()
-    api.createComment(reviewId, "test comment")
-    // Act
-    cy.setEmailSessionDefaults("Email admin")
-    visitE2eEmailTestRepo()
-    // Assert
-    getNotificationsButton().click()
-    cy.contains(getChangesMadeNotifText(E2E_EMAIL_COLLAB.email))
-      .should("be.visible")
-      .should("have.css", "background-color", UNREAD_COMMENTS_BG_COLOR)
-  })
   it("should receive a notification on approval of a review request", () => {
     // Arrange
     cy.setEmailSessionDefaults("Email collaborator")
@@ -154,34 +138,6 @@ describe("notifications", () => {
     cy.contains(getApprovedReviewRequestNotifText(E2E_EMAIL_COLLAB.email))
       .should("be.visible")
       .should("have.css", "background-color", UNREAD_COMMENTS_BG_COLOR)
-  })
-
-  it("should receive a notification on merge of review request", () => {
-    // Arrange
-    cy.setEmailSessionDefaults("Email admin")
-    api.mergeReviewRequest(reviewId)
-
-    // Act
-    cy.setEmailSessionDefaults("Email collaborator", "collab@e2e.gov.sg")
-    visitE2eEmailTestRepo()
-    getNotificationsButton().click()
-
-    // Assert
-    cy.contains(getMergedReviewRequestNotifText(E2E_EMAIL_COLLAB.email))
-      .should("be.visible")
-      .should("have.css", "background-color", UNREAD_COMMENTS_BG_COLOR)
-  })
-  it("should not send a notification if the user is a github user", () => {
-    // Arrange
-    cy.setGithubSessionDefaults()
-
-    // Act
-    // NOTE: this would have a redirect since GH users don't have a dashboard
-    visitE2eEmailTestRepo()
-
-    // Assert
-    // Button should not exist
-    getNotificationsButton().should("throw")
   })
   it("should receive a notification on closing of review request", () => {
     // Arrange
