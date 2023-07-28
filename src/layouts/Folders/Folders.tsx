@@ -138,8 +138,6 @@ export const Folders = (): JSX.Element => {
                 )}
               </ButtonGroup>
             </SectionHeader>
-            <SectionCaption label="PRO TIP: " icon={BiBulb}>
-            </SectionCaption>
           </Box>
           <Skeleton
             isLoaded={!isLoadingDirectory}
