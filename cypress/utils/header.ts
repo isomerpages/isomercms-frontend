@@ -6,3 +6,6 @@ export const getNotificationsButton = (): Cypress.Chainable<
 
 export const getAvatarButton = (): Cypress.Chainable<JQuery<HTMLElement>> =>
   getNotificationsButton().next().next()
+
+export const getNotificationList = (): Cypress.Chainable<JQuery<HTMLElement>> =>
+  getNotificationsButton().next()

@@ -1,19 +1,31 @@
-import { EMPTY_NOTIFICATIONS_TEXT } from "../../src/components/Header/NotificationMenu"
 import * as api from "../api"
 import {
   E2E_EMAIL_ADMIN,
   E2E_EMAIL_COLLAB,
   E2E_EMAIL_TEST_SITE,
+  Interceptors,
 } from "../fixtures/constants"
 import {
   genRandomString,
+  getNotificationList,
   getNotificationsButton,
   visitE2eEmailTestRepo,
 } from "../utils"
 
 const UNREAD_COMMENTS_BG_COLOR = "rgb(235, 248, 255)"
+const READ_COMMENTS_BG_COLOR = "rgba(0, 0, 0, 0)"
+
 const getReviewRequestedNotifText = (email: string) =>
   `${email} has sent you a review request.`
+
+const getChangesMadeNotifText = (email: string) =>
+  `${email} made changes to a review request.`
+
+const getApprovedReviewRequestNotifText = (email: string) =>
+  `${email} has approved a review request.`
+
+const getReviewCancelledNotifText = (email: string) =>
+  `${email} has cancelled a review request.`
 
 const getNewNotifBadge = () =>
   getNotificationsButton().within(() => {
@@ -61,8 +73,14 @@ describe("notifications", () => {
     // Act
     getNotificationsButton().click()
 
+    // NOTE: We don't check for the existence of no notifications as
+    // we want the tests to be idempotent
     // Assert
-    cy.contains(EMPTY_NOTIFICATIONS_TEXT).should("be.visible")
+    getNotificationList().should(
+      "have.css",
+      "background-color",
+      READ_COMMENTS_BG_COLOR
+    )
   })
   it("should receive a notification on successful creation of a review request", () => {
     // Arrange
@@ -82,39 +100,66 @@ describe("notifications", () => {
   })
   it("should send out a notification to reviewers when someone edits the site while a PR is open", () => {
     // Arrange
+    cy.setEmailSessionDefaults("Email collaborator")
+    visitE2eEmailTestRepo()
+    api.editUnlinkedPage(
+      "privacy.md",
+      genRandomString(),
+      E2E_EMAIL_TEST_SITE.repo
+    )
     // NOTE: Editor should not see a notification
+    getNotificationsButton().click()
+    getNotificationList().should(
+      "have.css",
+      "background-color",
+      READ_COMMENTS_BG_COLOR
+    )
     // NOTE: All other reviewers should see a notification
-    // Act
+    cy.setEmailSessionDefaults("Email admin")
+    visitE2eEmailTestRepo()
     // Assert
-  })
-  it("should receive a notification on successful comment post", () => {
-    // Arrange
-    // Act
-    // Assert
+    getNotificationsButton().click()
+    cy.contains(getChangesMadeNotifText(E2E_EMAIL_COLLAB.email))
+      .should("be.visible")
+      .should("have.css", "background-color", UNREAD_COMMENTS_BG_COLOR)
   })
   it("should receive a notification on approval of a review request", () => {
     // Arrange
+    cy.setEmailSessionDefaults("Email collaborator")
+    visitE2eEmailTestRepo()
+    api.approveReviewRequest(reviewId)
+
     // Act
+    cy.setEmailSessionDefaults("Email admin")
+    visitE2eEmailTestRepo()
+    getNotificationsButton().click()
+
     // Assert
-  })
-  it("should receive a notification on merge of review request", () => {
-    // Arrange
-    // Act
-    // Assert
-  })
-  it("should not send a notification if the user is a github user", () => {
-    // Arrange
-    // Act
-    // Assert
+    cy.contains(getApprovedReviewRequestNotifText(E2E_EMAIL_COLLAB.email))
+      .should("be.visible")
+      .should("have.css", "background-color", UNREAD_COMMENTS_BG_COLOR)
   })
   it("should receive a notification on closing of review request", () => {
     // Arrange
+    api.closeReviewRequest(reviewId)
     // Act
+    cy.setEmailSessionDefaults("Email collaborator")
+    visitE2eEmailTestRepo()
     // Assert
+    getNotificationsButton().click()
+    cy.contains(getReviewCancelledNotifText(E2E_EMAIL_ADMIN.email))
   })
   it("should mark all notifications as read on clicking the button", () => {
     // Arrange
+    getNotificationsButton().click()
+    visitE2eEmailTestRepo()
     // Act
+    getNotificationsButton().click()
     // Assert
+    getNotificationList().should(
+      "have.css",
+      "background-color",
+      READ_COMMENTS_BG_COLOR
+    )
   })
 })
