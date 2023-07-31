@@ -60,11 +60,11 @@ export const ResourceCategory = (): JSX.Element => {
             <Box w="full">
               <SectionHeader label="Resource Pages">
                 <CreateButton as={RouterLink} to={`${url}/createPage`}>
-                  Create page
+                  Create resource
                 </CreateButton>
               </SectionHeader>
               <SectionCaption icon={BiBulb} label="NOTE: ">
-                Pages are automatically ordered by latest date.
+                Resources are automatically ordered by latest date.
               </SectionCaption>
             </Box>
           )}
@@ -81,7 +81,7 @@ export const ResourceCategory = (): JSX.Element => {
                   to={`${url}/createPage`}
                   leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
                 >
-                  Create page
+                  Create resource
                 </Button>
               }
               subText="Create a resource page to get started."

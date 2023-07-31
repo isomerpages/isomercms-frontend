@@ -92,7 +92,7 @@ const EditorInfobarSection = ({
           <FormContext isRequired hasError={!!errors.url}>
             <FormTitle>Infobar button URL</FormTitle>
             <FormField
-              placeholder="Insert permalink or external URL"
+              placeholder="Insert /page-url or https://"
               id={`section-${sectionIndex}-infobar-url`}
               value={url}
               onChange={onFieldChange}

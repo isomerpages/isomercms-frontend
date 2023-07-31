@@ -23,7 +23,7 @@ const HeroButton = ({ button, url, sectionIndex, onFieldChange, errors }) => (
     <FormContext hasError={!!errors.url}>
       <FormTitle>Hero button URL</FormTitle>
       <FormField
-        placeholder="Insert permalink or external URL"
+        placeholder="Insert /page-url or https://"
         id={`section-${sectionIndex}-hero-url`}
         value={url}
         onChange={onFieldChange}
