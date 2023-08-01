@@ -15,7 +15,11 @@ export const E2E_EMAIL_ADMIN_2 = {
 } as const
 
 export const E2E_EMAIL_COLLAB = {
-  email: "collab@gmail.com",
+  email: "collab@e2e.gov.sg",
+} as const
+
+export const E2E_EMAIL_COLLAB_2 = {
+  email: "collab@e2etest.com",
 } as const
 
 export const E2E_EMAIL_TEST_SITE = {
