@@ -1,4 +1,5 @@
-import { ComponentMeta, Story } from "@storybook/react"
+import { Meta } from "@storybook/react"
+import type { StoryFn } from "@storybook/react"
 import { MemoryRouter, Route } from "react-router-dom"
 
 import { SiteLaunchProvider } from "contexts/SiteLaunchContext"
@@ -32,9 +33,9 @@ const SiteLaunchPadMeta = {
       )
     },
   ],
-} as ComponentMeta<typeof SiteLaunchPad>
+} as Meta<typeof SiteLaunchPad>
 
-const Template: Story<typeof SiteLaunchPad> = (args) => (
+const Template: StoryFn<typeof SiteLaunchPad> = (args) => (
   <SiteLaunchPad {...args} />
 )
 
