@@ -101,7 +101,7 @@ const CollaboratorListSection = ({ onDelete }: CollaboratorListProps) => {
                   <IconButton
                     aria-label="Delete collaborator button"
                     variant="clear"
-                    colorScheme="danger"
+                    colorScheme="critical"
                     onClick={() => onDelete(collaborator)}
                     id={`delete-${collaborator.id}`}
                     icon={<BiTrash color="icon.danger" />}

@@ -69,7 +69,7 @@ export const RemoveCollaboratorSubmodal = ({
               Cancel
             </Button>
             <Button
-              colorScheme="danger"
+              colorScheme="critical"
               isDisabled={!userToDelete}
               isLoading={isDeleteCollaboratorLoading}
               onClick={async () => {

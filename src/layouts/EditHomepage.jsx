@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import { useDisclosure, Text, HStack, VStack } from "@chakra-ui/react"
 import { Button, Input } from "@opengovsg/design-system-react"
+import update from "immutability-helper"
+import _ from "lodash"
+import PropTypes from "prop-types"
+import { useEffect, createRef, useState } from "react"
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
+
 import { Footer } from "components/Footer"
 import Header from "components/Header"
 import EditorHeroSection from "components/homepage/HeroSection"
@@ -10,11 +16,6 @@ import NewSectionCreator from "components/homepage/NewSectionCreator"
 import EditorResourcesSection from "components/homepage/ResourcesSection"
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
-import update from "immutability-helper"
-import _ from "lodash"
-import PropTypes from "prop-types"
-import { useEffect, createRef, useState } from "react"
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
 // Import hooks
 import { useGetHomepageHook } from "hooks/homepageHooks"
@@ -1182,7 +1183,7 @@ const EditHomepage = ({ match }) => {
           Cancel
         </Button>
         <Button
-          colorScheme="danger"
+          colorScheme="critical"
           onClick={() => {
             deleteHandler(itemPendingForDelete.id)
             setItemPendingForDelete({ id: null, type: "" })

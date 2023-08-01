@@ -1,8 +1,9 @@
 import { Button, IconButton } from "@opengovsg/design-system-react"
+import PropTypes from "prop-types"
+
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormField from "components/FormField"
 import FormFieldMedia from "components/FormFieldMedia"
-import PropTypes from "prop-types"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -126,7 +127,7 @@ const EditorInfopicSection = ({
         </div>
         <div className={elementStyles.inputGroup}>
           <Button
-            colorScheme="danger"
+            colorScheme="critical"
             w="100%"
             id={`section-${sectionIndex}`}
             onClick={deleteHandler}

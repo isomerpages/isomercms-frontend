@@ -8,6 +8,12 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
+import update from "immutability-helper"
+import _ from "lodash"
+import PropTypes from "prop-types"
+import { createRef, useEffect, useState } from "react"
+import { DragDropContext } from "react-beautiful-dnd"
+
 import EditorSection from "components/contact-us/Section"
 import { Footer } from "components/Footer"
 import FormContext from "components/Form/FormContext"
@@ -16,11 +22,6 @@ import FormField from "components/FormField"
 import Header from "components/Header"
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
-import update from "immutability-helper"
-import _ from "lodash"
-import PropTypes from "prop-types"
-import { createRef, useEffect, useState } from "react"
-import { DragDropContext } from "react-beautiful-dnd"
 
 // Import hooks
 import {
@@ -805,7 +806,7 @@ const EditContactUs = ({ match }) => {
           Cancel
         </Button>
         <Button
-          colorScheme="danger"
+          colorScheme="critical"
           onClick={() => {
             deleteHandler(itemPendingForDelete.id)
             setItemPendingForDelete({ id: null, type: "" })
