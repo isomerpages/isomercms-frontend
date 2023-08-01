@@ -53,7 +53,6 @@ import {
   BiSort,
   BiFilterAlt,
   BiChevronRight,
-  BiChevronDown,
   BiCompass,
   BiCheck,
   BiEditAlt,
@@ -347,7 +346,7 @@ const RequestOverviewTable = ({
               >
                 Item name
               </Text>
-              <BiChevronDown fontSize="1rem" />
+              <BiSort fontSize="1rem" />
             </HStack>
           </Button>
         </Th>
@@ -514,7 +513,7 @@ const RequestOverviewTable = ({
             ),
             TableBody: Tbody,
             TableRow: Tr,
-            TableHead: (props) => <Thead {...props} bg="neutral.100" />,
+            TableHead: (props) => <Thead {...props} bg="utility.ui" />,
           }}
           fixedHeaderContent={() =>
             table

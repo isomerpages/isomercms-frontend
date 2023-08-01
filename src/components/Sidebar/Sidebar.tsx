@@ -108,7 +108,6 @@ export const Sidebar = (): JSX.Element => {
       <Divider color="secondary.100" />
       <Tabs
         orientation="vertical"
-        variant="line-vertical"
         // NOTE: This is a workaround as routes don't play well with tabs
         defaultIndex={getTabIndex(selectedTab)}
       >
