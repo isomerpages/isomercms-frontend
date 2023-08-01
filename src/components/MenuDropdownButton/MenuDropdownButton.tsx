@@ -7,9 +7,11 @@ import {
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import type { ButtonProps } from "@opengovsg/design-system-react"
-import { ContextMenu } from "components/ContextMenu"
 import _ from "lodash"
 import { BiChevronDown, BiChevronUp } from "react-icons/bi"
+
+import { ContextMenu } from "components/ContextMenu"
+import { ContextMenuItemProps } from "components/ContextMenu/ContextMenuItem"
 
 interface MenuDropdownButtonProps extends ButtonProps {
   mainButtonText: string
@@ -86,4 +88,13 @@ export const MenuDropdownButton = forwardRef<MenuDropdownButtonProps, "button">(
   }
 )
 
-export const MenuDropdownItem = ContextMenu.Item
+export const MenuDropdownItem = forwardRef<ContextMenuItemProps, "button">(
+  (props: ContextMenuItemProps, ref) => (
+    <ContextMenu.Item
+      justifyContent="flex-start"
+      border="none"
+      {...props}
+      ref={ref}
+    />
+  )
+)
