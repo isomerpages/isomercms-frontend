@@ -73,8 +73,11 @@ const StatusBar = ({ onClick, stagingUrl }: DiffViewProps): JSX.Element => {
 }
 
 export interface DiffViewProps {
+  // eslint-disable-next-line react/no-unused-prop-types
   fileName: string
+  // eslint-disable-next-line react/no-unused-prop-types
   path: string[]
+  // eslint-disable-next-line react/no-unused-prop-types
   title: string
   onClick: () => void
   stagingUrl: string | false

@@ -1,7 +1,8 @@
 import { Banner } from "@opengovsg/design-system-react"
-import VerifyUserDetailsModal from "components/VerifyUserDetailsModal"
 import { ReactQueryDevtools } from "react-query/devtools"
 import { Switch } from "react-router-dom"
+
+import VerifyUserDetailsModal from "components/VerifyUserDetailsModal"
 
 // Layouts
 

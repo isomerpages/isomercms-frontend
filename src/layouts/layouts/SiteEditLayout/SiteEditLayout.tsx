@@ -6,6 +6,7 @@ import {
   Grid,
   GridProps,
 } from "@chakra-ui/react"
+
 import { FeedbackModal } from "components/FeedbackModal"
 import { Sidebar } from "components/Sidebar"
 

@@ -1,7 +1,8 @@
-import HyperlinkModal from "components/HyperlinkModal"
-import MediaModal from "components/media/MediaModal"
 import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
+
+import HyperlinkModal from "components/HyperlinkModal"
+import MediaModal from "components/media/MediaModal"
 
 const EditorModals = ({
   onSave,
