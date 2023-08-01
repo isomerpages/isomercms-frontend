@@ -1,4 +1,4 @@
-import { DropResult, OnDragEndResponder } from "@hello-pangea/dnd"
+import { DropResult } from "@hello-pangea/dnd"
 import update from "immutability-helper"
 
 import { HomepageDto } from "types/homepage"

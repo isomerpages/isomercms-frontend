@@ -41,6 +41,8 @@ import {
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
+import { useDrag } from "../contexts/DragDropContext"
+
 /* eslint-disable react/no-array-index-key */
 
 // Constants
@@ -150,6 +152,13 @@ const EditHomepage = ({ match }) => {
   const [savedHeroErrors, setSavedHeroErrors] = useState("")
   const { data: homepageData } = useGetHomepageHook(siteName)
   const { mutateAsync: updateHomepageHandler } = useUpdateHomepageHook(siteName)
+  const updateHomepage = useDrag({
+    frontMatter,
+    errors,
+    displayDropdownElems,
+    displayHighlights,
+    displaySections,
+  })
 
   const errorToast = useErrorToast()
 
@@ -266,7 +275,7 @@ const EditHomepage = ({ match }) => {
     if (scrollRefs.length > 0) {
       scrollRefs[frontMatter.sections.length - 1].current.scrollIntoView()
     }
-  }, [frontMatter.sections.length])
+  }, [scrollRefs, frontMatter.sections.length])
 
   useEffect(() => {
     const hasSectionErrors = _.some(errors.sections, (section) => {
@@ -640,6 +649,7 @@ const EditHomepage = ({ match }) => {
 
             setDisplayHighlights(newDisplayHighlights)
           }
+
           break
         }
         default:
@@ -1011,139 +1021,6 @@ const EditHomepage = ({ match }) => {
     }
   }
 
-  const onDragEnd = (result) => {
-    const { source, destination, type } = result
-
-    // If the user dropped the draggable to no known droppable
-    if (!destination) return
-
-    // The draggable elem was returned to its original position
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    )
-      return
-
-    let newSections = []
-    let newErrors = []
-
-    switch (type) {
-      case "editor": {
-        const draggedElem = frontMatter.sections[source.index]
-        newSections = update(frontMatter.sections, {
-          $splice: [
-            [source.index, 1], // Remove elem from its original position
-            [destination.index, 0, draggedElem], // Splice elem into its new position
-          ],
-        })
-
-        const draggedError = errors.sections[source.index]
-        newErrors = update(errors, {
-          sections: {
-            $splice: [
-              [source.index, 1], // Remove error from its original position
-              [destination.index, 0, draggedError], // Splice error into its new position
-            ],
-          },
-        })
-
-        const displayBool = displaySections[source.index]
-        const newDisplaySections = update(displaySections, {
-          $splice: [
-            [source.index, 1],
-            [destination.index, 0, displayBool],
-          ],
-        })
-
-        setDisplaySections(newDisplaySections)
-        break
-      }
-      case "dropdownelem": {
-        const draggedElem =
-          frontMatter.sections[0].hero.dropdown.options[source.index]
-        newSections = update(frontMatter.sections, {
-          0: {
-            hero: {
-              dropdown: {
-                options: {
-                  $splice: [
-                    [source.index, 1], // Remove elem from its original position
-                    [destination.index, 0, draggedElem], // Splice elem into its new position
-                  ],
-                },
-              },
-            },
-          },
-        })
-
-        const draggedError = errors.dropdownElems[source.index]
-        newErrors = update(errors, {
-          dropdownElems: {
-            $splice: [
-              [source.index, 1], // Remove error from its original position
-              [destination.index, 0, draggedError], // Splice error into its new position
-            ],
-          },
-        })
-
-        const displayBool = displayDropdownElems[source.index]
-        const newDisplayDropdownElems = update(displayDropdownElems, {
-          $splice: [
-            [source.index, 1],
-            [destination.index, 0, displayBool],
-          ],
-        })
-
-        setDisplayDropdownElems(newDisplayDropdownElems)
-        break
-      }
-      case "highlight": {
-        const draggedElem =
-          frontMatter.sections[0].hero.key_highlights[source.index]
-        newSections = update(frontMatter.sections, {
-          0: {
-            hero: {
-              key_highlights: {
-                $splice: [
-                  [source.index, 1], // Remove elem from its original position
-                  [destination.index, 0, draggedElem], // Splice elem into its new position
-                ],
-              },
-            },
-          },
-        })
-
-        const draggedError = errors.highlights[source.index]
-        newErrors = update(errors, {
-          highlights: {
-            $splice: [
-              [source.index, 1], // Remove error from its original position
-              [destination.index, 0, draggedError], // Splice error into its new position
-            ],
-          },
-        })
-
-        const displayBool = displayHighlights[source.index]
-        const newDisplayHighlights = update(displayHighlights, {
-          $splice: [
-            [source.index, 1],
-            [destination.index, 0, displayBool],
-          ],
-        })
-
-        setDisplayHighlights(newDisplayHighlights)
-        break
-      }
-      default:
-        return
-    }
-    setFrontMatter({
-      ...frontMatter,
-      sections: newSections,
-    })
-    setErrors(newErrors)
-  }
-
   const isLeftInfoPic = (sectionIndex) => {
     // If the previous section in the list was not an infopic section
     // or if the previous section was a right infopic section, return true
@@ -1154,6 +1031,22 @@ const EditHomepage = ({ match }) => {
       return true
 
     return false
+  }
+
+  const updateDrag = (result) => {
+    const {
+      displaySections,
+      frontMatter,
+      errors,
+      displayDropdownElems,
+      displayHighlights,
+    } = updateHomepage(result)
+
+    setDisplaySections(displaySections)
+    setFrontMatter(frontMatter)
+    setErrors(errors)
+    setDisplayDropdownElems(displayDropdownElems)
+    setDisplayHighlights(displayHighlights)
   }
 
   return (
@@ -1228,7 +1121,7 @@ const EditHomepage = ({ match }) => {
                   </div>
 
                   {/* Homepage section configurations */}
-                  <DragDropContext onDragEnd={onDragEnd}>
+                  <DragDropContext onDragEnd={updateDrag}>
                     <Droppable droppableId="leftPane" type="editor">
                       {(droppableProvided) => (
                         <div
@@ -1273,9 +1166,7 @@ const EditHomepage = ({ match }) => {
                                     displayHighlights={displayHighlights}
                                     displayDropdownElems={displayDropdownElems}
                                     displayHandler={displayHandler}
-                                    onDragEnd={onDragEnd}
                                     errors={errors}
-                                    siteName={siteName}
                                     handleHighlightDropdownToggle={
                                       handleHighlightDropdownToggle
                                     }
