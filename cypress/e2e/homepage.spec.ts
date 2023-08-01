@@ -183,7 +183,7 @@ describe("Homepage", () => {
 
       // Assert
       // NOTE: Order is now Infopic -> Infobar
-      // note: not using get aliases as they where returning incorrect results
+      // note: not using get aliases as they were returning incorrect results
       cy.get(getHandleSelector()).eq(0).should("contain", "Infopic")
       cy.get(getHandleSelector()).eq(1).should("contain", "Infobar")
       cy.get(infopicPreviewSelector)
