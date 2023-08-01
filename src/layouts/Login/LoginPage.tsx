@@ -186,10 +186,10 @@ const LoginContent = (): JSX.Element => {
           </TabPanel>
           {isSgidLogin && (
             <TabPanel>
-              <InlineMessage mb="1rem">
+              <Infobox mb="1rem">
                 This is an experimental service currently offered to OGP
                 officers only.
-              </InlineMessage>
+              </Infobox>
               <Button
                 onClick={() => getSgidAuth()}
                 isLoading={isSgidAuthLoading}
