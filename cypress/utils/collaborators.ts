@@ -44,6 +44,18 @@ export const inputCollaborators = (user: string): void => {
   cy.contains("Add collaborator").click().wait(Interceptors.POST)
 }
 
+export const addAdminCollaborator = (collaborator: string): void => {
+  cy.createEmailUser(
+    collaborator,
+    USER_TYPES.Email.Admin,
+    USER_TYPES.Email.Admin
+  )
+
+  inputCollaborators(collaborator)
+
+  closeModal()
+}
+
 export const addCollaborator = (collaborator: string): void => {
   cy.createEmailUser(
     collaborator,
