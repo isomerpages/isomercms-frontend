@@ -25,11 +25,13 @@ export const removeOtherCollaborators = (): void => {
     .get(DELETE_BUTTON_SELECTOR)
     .then((buttons) => {
       if (buttons.length > 1) {
-        buttons.slice(1).each((_, button) => {
-          button.click()
+        // Iterate through with a loop because operations cannot be done concurrently
+        // eslint-disable-next-line no-plusplus
+        for (let i = 1; i < buttons.length; i++) {
+          buttons[i].click()
           cy.contains("button", "Remove collaborator").click()
           cy.contains("Collaborator removed successfully").should("be.visible")
-        })
+        }
       }
     })
 
