@@ -37,8 +37,7 @@ export const WorkspaceFolders = ({
           </CreateButton>
         </SectionHeader>
         <SectionCaption label="PRO TIP: " icon={BiBulb}>
-          Folders impact navigation on your site. Organise your workspace by
-          moving pages into folders.
+          You can link folders to your navigation bar.
         </SectionCaption>
       </Box>
       <Skeleton isLoaded={!!pagesData} w="full">
