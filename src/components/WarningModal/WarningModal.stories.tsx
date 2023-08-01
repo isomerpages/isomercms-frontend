@@ -1,4 +1,5 @@
-import { Button, useDisclosure, Text } from "@chakra-ui/react"
+import { useDisclosure, Text } from "@chakra-ui/react"
+import { Button } from "@opengovsg/design-system-react"
 import { Story, ComponentMeta } from "@storybook/react"
 
 import { WarningModal } from "./WarningModal"
@@ -29,7 +30,7 @@ const SingleButtonModalTemplate: Story<TemplateArgs> = ({
         displayTitle={displayTitle}
         displayText={displayText}
       >
-        <Button colorScheme="danger">{buttonText}</Button>
+        <Button colorScheme="critical">{buttonText}</Button>
       </WarningModal>
     </>
   )
@@ -61,7 +62,7 @@ const MultiButtonModalTemplate: Story<MultiButtonModalTemplateArgs> = ({
         >
           {buttonText}
         </Button>
-        <Button colorScheme="danger">{secondButtonText}</Button>
+        <Button colorScheme="critical">{secondButtonText}</Button>
       </WarningModal>
     </>
   )
