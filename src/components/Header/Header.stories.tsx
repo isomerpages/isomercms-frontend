@@ -1,6 +1,8 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { MemoryRouter, Route } from "react-router-dom"
 
+import { DirtyFieldContextProvider } from "contexts/DirtyFieldContext"
+
 import { SiteEditHeader } from "layouts/layouts/SiteEditLayout"
 
 import { MOCK_ALL_NOTIFICATION_DATA } from "mocks/constants"
@@ -25,7 +27,9 @@ const HeaderMeta = {
       return (
         <MemoryRouter initialEntries={["/sites/storybook/header"]}>
           <Route path="/sites/:siteName/header">
-            <Story />
+            <DirtyFieldContextProvider>
+              <Story />
+            </DirtyFieldContextProvider>
           </Route>
         </MemoryRouter>
       )
