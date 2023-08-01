@@ -21,17 +21,14 @@ export const getCollaboratorsModal = (): Cypress.Chainable<
 }
 
 export const removeOtherCollaborators = (): void => {
+  // Note: only removes a single other collaborator, due to concurrency issues
   getCollaboratorsModal()
     .get(DELETE_BUTTON_SELECTOR)
     .then((buttons) => {
       if (buttons.length > 1) {
-        // Iterate through with a loop because operations cannot be done concurrently
-        // eslint-disable-next-line no-plusplus
-        for (let i = 1; i < buttons.length; i++) {
-          buttons[i].click()
-          cy.contains("button", "Remove collaborator").click()
-          cy.contains("Collaborator removed successfully").should("be.visible")
-        }
+        buttons[1].click()
+        cy.contains("button", "Remove collaborator").click()
+        cy.contains("Collaborator removed successfully").should("be.visible")
       }
     })
 
