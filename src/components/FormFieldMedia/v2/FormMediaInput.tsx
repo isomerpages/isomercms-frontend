@@ -1,5 +1,5 @@
 import { useFormControlContext } from "@chakra-ui/react"
-import { Input } from "@opengovsg/design-system-react"
+import { Button, Input } from "@opengovsg/design-system-react"
 import { MouseEventHandler } from "react"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -46,16 +46,9 @@ export const FormMediaInput = ({
         {...register(id, { required: isRequired })}
       />
       {inlineButtonText && (
-        <button
-          type="button"
-          className={`${
-            isDisabled ? elementStyles.disabled : elementStyles.blue
-          } text-nowrap`}
-          onClick={onClick}
-          disabled={isDisabled}
-        >
+        <Button type="button" isDisabled={isDisabled} onClick={onClick}>
           {inlineButtonText}
-        </button>
+        </Button>
       )}
     </div>
   )
