@@ -32,7 +32,7 @@ export const FormMediaInput = ({
   } = useFormControlContext()
 
   return (
-    <div className="d-flex border">
+    <div className="d-flex">
       <Input
         type="text"
         placeholder={placeholder}
