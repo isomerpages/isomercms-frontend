@@ -397,7 +397,6 @@ describe("Review Requests", () => {
 
       // Act
       getViewReviewRequestButton().click()
-      cy.wait(`@${RR_OVERVIEW_INTERCEPTOR}`)
 
       // Assert
       cy.contains(`${TEST_PAGE_ADD}.md`).should("exist")
@@ -469,7 +468,7 @@ describe("Review Requests", () => {
       // Tag
       cy.contains("Approved")
     })
-    it.only("should prevent edits while the request is not merged", () => {
+    it("should prevent edits while the request is not merged", () => {
       // Arrange
 
       // Act
@@ -498,7 +497,6 @@ describe("Review Requests", () => {
 
       // Act
       getViewReviewRequestButton().click()
-      cy.awaitReviewRequestSummary()
       getPublishButton().click()
       cy.wait(`@${MERGE_INTERCEPTOR}`)
 
@@ -529,7 +527,6 @@ describe("Review Requests", () => {
 
       // Act
       getViewReviewRequestButton().click()
-      cy.awaitReviewRequestSummary()
       getPublishButton().click()
       cy.wait(`@${MERGE_INTERCEPTOR}`)
 
@@ -571,12 +568,11 @@ describe("Review Requests", () => {
 
       // Act
       getViewReviewRequestButton().click()
-      cy.awaitReviewRequestSummary()
       openReviewRequestStateDropdown("Approved")
-      cy.contains("In review").should("exist")
-      cy.contains("In review").click()
+      const reviewButton = cy.contains("p", "In review")
+      reviewButton.should("be.visible").click()
       // Wait for dropdown menu to disappear
-      cy.wait(1000)
+      reviewButton.should("not.be.visible")
 
       // Assert
       cy.contains("button", "Approved").should("not.be.visible")
@@ -604,10 +600,8 @@ describe("Review Requests", () => {
 
       // Act
       getViewReviewRequestButton().click()
-      cy.awaitReviewRequestSummary()
       openReviewRequestStateDropdown("In review")
-      cy.contains("Cancel request").should("exist")
-      cy.contains("Cancel request").click()
+      cy.contains("Cancel request").should("exist").click()
       cy.contains("Yes, cancel").click()
       cy.wait(`@${RR_CANCEL_INTERCEPTOR}`)
       cy.awaitReviewRequestSummary()
