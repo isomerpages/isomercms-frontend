@@ -1,5 +1,6 @@
 import { DropResult } from "@hello-pangea/dnd"
 import update from "immutability-helper"
+import _ from "lodash"
 
 import { HomepageDto } from "types/homepage"
 
@@ -119,7 +120,8 @@ const updateHomepageState = (
       // TODO: type check to avoid casting
       const draggedElem = (frontMatter.sections[0].hero as HeroDropdownSection)
         .dropdown.options[source.index]
-      const newSections = updatePositions(
+      //! Thsis needs to be updated
+      const newDropdownOptions = updatePositions(
         (frontMatter.sections[0].hero as HeroDropdownSection).dropdown.options,
         source.index,
         destination.index,
@@ -146,7 +148,11 @@ const updateHomepageState = (
         displayDropdownElems: newDisplayDropdownElems,
         frontMatter: {
           ...frontMatter,
-          sections: newSections,
+          sections: _.set(
+            frontMatter.sections,
+            ["0", "hero", "dropdown", "options"],
+            newDropdownOptions
+          ),
         },
         errors: { ...errors, dropdownElems: newDropdownErrors },
       }
@@ -155,7 +161,7 @@ const updateHomepageState = (
       // TODO: type check to avoid casting
       const draggedElem = (frontMatter.sections[0]
         .hero as HeroHighlightsSection).key_highlights[source.index]
-      const newSections = updatePositions(
+      const newHighlightOptions = updatePositions(
         (frontMatter.sections[0].hero as HeroHighlightsSection).key_highlights,
         source.index,
         destination.index,
@@ -182,7 +188,11 @@ const updateHomepageState = (
         displayHighlights: newDisplayHighlights,
         frontMatter: {
           ...frontMatter,
-          sections: newSections,
+          sections: _.set(
+            frontMatter.sections,
+            ["0", "hero", "key_highlights"],
+            newHighlightOptions
+          ),
         },
         errors: { ...errors, highlights: newHighlightErrors },
       }
