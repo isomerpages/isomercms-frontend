@@ -35,6 +35,7 @@ import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 import { useLoginContext } from "contexts/LoginContext"
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
+import { useGetCollaboratorRoleHook } from "hooks/collaboratorHooks"
 import {
   useGetSiteInfo,
   useGetReviewRequests,
@@ -64,8 +65,9 @@ export const SiteDashboard = (): JSX.Element => {
     onClose: onCollaboratorsModalClose,
   } = useDisclosure()
   const { siteName } = useParams<{ siteName: string }>()
+  const { data: role } = useGetCollaboratorRoleHook(siteName)
   const { setRedirectToPage } = useRedirectHook()
-  const { userId, email } = useLoginContext()
+  const { userId } = useLoginContext()
   const { siteLaunchStatusProps } = useSiteLaunchContext()
 
   const {
@@ -204,7 +206,7 @@ export const SiteDashboard = (): JSX.Element => {
               {/* Human image and last saved/published */}
               <Box w="100%">
                 {(siteLaunchStatus === "LAUNCHED" ||
-                  !isSiteLaunchEnabled(siteName, email)) && (
+                  !isSiteLaunchEnabled(siteName, role)) && (
                   <SiteDashboardHumanImage />
                 )}
                 <DisplayCard variant="content">
@@ -233,7 +235,7 @@ export const SiteDashboard = (): JSX.Element => {
                       </Skeleton>
 
                       <Skeleton isLoaded={!isSiteLaunchLoading} w="100%">
-                        {isSiteLaunchEnabled(siteName, email) &&
+                        {isSiteLaunchEnabled(siteName, role) &&
                           siteLaunchStatus === "LAUNCHED" && (
                             <Flex alignItems="center">
                               <Text
@@ -339,12 +341,12 @@ export const SiteDashboard = (): JSX.Element => {
 
 const SiteLaunchDisplayCard = (): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
-  const { email } = useLoginContext()
+  const { data: role } = useGetCollaboratorRoleHook(siteName)
   const { siteLaunchStatusProps } = useSiteLaunchContext()
   const siteLaunchStatus = siteLaunchStatusProps?.siteLaunchStatus
   const siteLaunchChecklistStepNumber = siteLaunchStatusProps?.stepNumber
   const isSiteLaunchLoading = siteLaunchStatus === "LOADING"
-  if (!isSiteLaunchEnabled(siteName, email)) return <></>
+  if (!isSiteLaunchEnabled(siteName, role)) return <></>
   if (siteLaunchStatus === "LAUNCHED") return <></>
 
   return (
