@@ -18,7 +18,7 @@ export const E2E_EMAIL_COLLAB = {
   email: "collab@e2e.gov.sg",
 } as const
 
-export const E2E_EMAIL_COLLAB_2 = {
+export const E2E_EMAIL_COLLAB_NON_GOV = {
   email: "collab@e2etest.com",
 } as const
 

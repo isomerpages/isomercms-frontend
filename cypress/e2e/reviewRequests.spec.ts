@@ -18,7 +18,7 @@ import {
 } from "../api/pages.api"
 import {
   E2E_EMAIL_ADMIN,
-  E2E_EMAIL_COLLAB_2,
+  E2E_EMAIL_COLLAB_NON_GOV,
   E2E_EMAIL_ADMIN_2,
   E2E_EMAIL_TEST_SITE,
   MOCK_REVIEW_DESCRIPTION,
@@ -72,13 +72,13 @@ describe("Review Requests", () => {
       E2E_EMAIL_TEST_SITE.repo
     )
     // Reset to no changes in the repo
-    addAdmin(E2E_EMAIL_COLLAB_2.email)
+    addAdmin(E2E_EMAIL_COLLAB_NON_GOV.email)
     createReviewRequest(
       MOCK_REVIEW_TITLE,
-      [E2E_EMAIL_COLLAB_2.email],
+      [E2E_EMAIL_COLLAB_NON_GOV.email],
       MOCK_REVIEW_DESCRIPTION
     ).then((id) => {
-      cy.actAsEmailUser(E2E_EMAIL_COLLAB_2.email, "Email admin")
+      cy.actAsEmailUser(E2E_EMAIL_COLLAB_NON_GOV.email, "Email admin")
       approveReviewRequest(id)
       cy.actAsEmailUser(E2E_EMAIL_ADMIN.email, "Email admin")
       mergeReviewRequest(id)
@@ -129,7 +129,7 @@ describe("Review Requests", () => {
     })
     it("should not be able to create a review request without a reviewer", () => {
       // Arrange
-      addCollaborator(E2E_EMAIL_COLLAB_2.email)
+      addCollaborator(E2E_EMAIL_COLLAB_NON_GOV.email)
 
       // Act
       // NOTE: There should be at least 1 other admin to be able to create a review request
@@ -224,7 +224,7 @@ describe("Review Requests", () => {
     })
     it("should be able to have the request approved as a collaborator", () => {
       // Arrange
-      cy.actAsEmailUser(E2E_EMAIL_COLLAB_2.email, "Email collaborator")
+      cy.actAsEmailUser(E2E_EMAIL_COLLAB_NON_GOV.email, "Email collaborator")
       cy.setEmailSessionDefaults("Email collaborator")
       createReviewRequest(
         MOCK_REVIEW_TITLE,
