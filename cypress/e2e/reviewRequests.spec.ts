@@ -191,8 +191,6 @@ describe("Review Requests", () => {
     })
     it('should show the review request on the workspace with the tag "Pending review"', () => {
       // Arrange
-      const RR_INTERCEPTOR = "getReviewRequest"
-      cy.intercept("GET", "**/summary").as(RR_INTERCEPTOR)
       cy.actAsEmailUser(E2E_EMAIL_ADMIN_2.email, "Email admin")
       createReviewRequest(MOCK_REVIEW_TITLE, [E2E_EMAIL_ADMIN.email])
       cy.actAsEmailUser(E2E_EMAIL_ADMIN.email, "Email admin")
@@ -200,7 +198,7 @@ describe("Review Requests", () => {
       // Act
       cy.contains("Review required").should("be.visible")
       cy.visit(`/sites/${E2E_EMAIL_TEST_SITE.repo}/workspace`)
-      cy.wait(`@${RR_INTERCEPTOR}`)
+      cy.awaitReviewRequestSummary()
 
       // Assert
       cy.contains("Review request pending approval").should("be.visible")
@@ -457,28 +455,36 @@ describe("Review Requests", () => {
     })
     it("should have the review request approved alert stating that editing is disabled when on the workspace", () => {
       // Arrange
-      const RR_INTERCEPTOR = "getReviewRequest"
-      cy.intercept("GET", "**/summary").as(RR_INTERCEPTOR)
-
       // Act
       cy.visit(`/sites/${E2E_EMAIL_TEST_SITE.repo}/workspace`)
-      cy.wait(`@${RR_INTERCEPTOR}`)
+      cy.awaitReviewRequestSummary()
 
       // Assert
       // Toast
-      cy.contains("There is currently an approved review request!")
+      cy.contains("There is currently an approved review request!").should(
+        "exist"
+      )
       // Redirect to dashboard
       cy.url().should("include", `/sites/${E2E_EMAIL_TEST_SITE.repo}/dashboard`)
       // Tag
       cy.contains("Approved")
     })
-    it("should prevent edits while the request is not merged", () => {
+    it.only("should prevent edits while the request is not merged", () => {
       // Arrange
 
       // Act
+      cy.visit(`/sites/${E2E_EMAIL_TEST_SITE.repo}/workspace`)
+      cy.contains("Homepage").should(($element) => {
+        const styles = getComputedStyle($element[0])
+        const pointerEventsValue = styles.getPropertyValue("pointer-events")
+
+        // Assert the pointer-events value is set to 'none'
+        expect(pointerEventsValue).to.eq("none")
+      })
       cy.visit(`/sites/${E2E_EMAIL_TEST_SITE.repo}/editPage/example-page.md`)
 
       // Assert
+      cy.awaitDashboardLoad()
       // Redirect to dashboard
       cy.url().should("include", `/sites/${E2E_EMAIL_TEST_SITE.repo}/dashboard`)
       // Tag
@@ -486,15 +492,13 @@ describe("Review Requests", () => {
     })
     it("should allow the requestor to merge the review request", () => {
       // Arrange
-      const RR_INTERCEPTOR = "getReviewRequest"
-      cy.intercept("GET", "**/summary").as(RR_INTERCEPTOR)
       const MERGE_INTERCEPTOR = "getReviewRequest"
       cy.intercept("POST", "**/merge").as(MERGE_INTERCEPTOR)
       visitE2eEmailTestRepo()
 
       // Act
       getViewReviewRequestButton().click()
-      cy.wait(`@${RR_INTERCEPTOR}`)
+      cy.awaitReviewRequestSummary()
       getPublishButton().click()
       cy.wait(`@${MERGE_INTERCEPTOR}`)
 
@@ -503,8 +507,6 @@ describe("Review Requests", () => {
     })
     it("should allow the reviewer to merge the review request", () => {
       // Arrange
-      const RR_INTERCEPTOR = "getReviewRequest"
-      cy.intercept("GET", "**/summary").as(RR_INTERCEPTOR)
       const MERGE_INTERCEPTOR = "getReviewRequest"
       cy.intercept("POST", "**/merge").as(MERGE_INTERCEPTOR)
       closeReviewRequests()
@@ -527,7 +529,7 @@ describe("Review Requests", () => {
 
       // Act
       getViewReviewRequestButton().click()
-      cy.wait(`@${RR_INTERCEPTOR}`)
+      cy.awaitReviewRequestSummary()
       getPublishButton().click()
       cy.wait(`@${MERGE_INTERCEPTOR}`)
 
@@ -550,8 +552,6 @@ describe("Review Requests", () => {
     })
     it("should allow the reviewer to unapprove the request", () => {
       // Arrange
-      const RR_INTERCEPTOR = "getReviewRequest"
-      cy.intercept("GET", "**/summary").as(RR_INTERCEPTOR)
       cy.setEmailSessionDefaults("Email admin")
       cy.actAsEmailUser(E2E_EMAIL_ADMIN_2.email, "Email admin")
       editUnlinkedPage(
@@ -571,7 +571,7 @@ describe("Review Requests", () => {
 
       // Act
       getViewReviewRequestButton().click()
-      cy.wait(`@${RR_INTERCEPTOR}`)
+      cy.awaitReviewRequestSummary()
       openReviewRequestStateDropdown("Approved")
       cy.contains("In review").should("exist")
       cy.contains("In review").click()
@@ -584,12 +584,10 @@ describe("Review Requests", () => {
     })
     it("should allow the requestor to close the review request", () => {
       // Arrange
-      const RR_INTERCEPTOR = "getReviewRequest"
-      cy.intercept("GET", "**/summary").as(RR_INTERCEPTOR)
       const RR_CANCEL_INTERCEPTOR = "getReviewRequest"
       // Matches any url like /review/{digits}, since we don't know the rr number until the test runs
       const regex = /\/review\/\d+\//
-      cy.intercept("DELETE", regex).as(RR_INTERCEPTOR)
+      cy.intercept("DELETE", regex).as(RR_CANCEL_INTERCEPTOR)
       cy.setEmailSessionDefaults("Email admin")
       cy.actAsEmailUser(E2E_EMAIL_ADMIN.email, "Email admin")
       editUnlinkedPage(
@@ -606,12 +604,13 @@ describe("Review Requests", () => {
 
       // Act
       getViewReviewRequestButton().click()
-      cy.wait(`@${RR_INTERCEPTOR}`)
+      cy.awaitReviewRequestSummary()
       openReviewRequestStateDropdown("In review")
       cy.contains("Cancel request").should("exist")
       cy.contains("Cancel request").click()
       cy.contains("Yes, cancel").click()
       cy.wait(`@${RR_CANCEL_INTERCEPTOR}`)
+      cy.awaitReviewRequestSummary()
 
       // Assert
       cy.url().should("include", "/dashboard")
@@ -620,8 +619,6 @@ describe("Review Requests", () => {
     })
     it("should disallow users from viewing a closed review request", () => {
       // Arrange
-      const DASHBOARD_INTERCEPTOR = "getCollaboratorDetails"
-      cy.intercept("GET", "**/collaborators").as(DASHBOARD_INTERCEPTOR)
       editUnlinkedPage(
         "faq.md",
         "some disallow view closed review request content",
@@ -634,8 +631,9 @@ describe("Review Requests", () => {
       ).then((id) => {
         closeReviewRequest(id)
         // Act
+        cy.awaitDashboardLoad()
         cy.visit(`/sites/e2e-email-test-repo/review/${id}`)
-        cy.wait(`@${DASHBOARD_INTERCEPTOR}`)
+        cy.awaitDashboardLoad()
         // Redirect to dashboard
         cy.url().should(
           "include",
@@ -650,8 +648,6 @@ describe("Review Requests", () => {
     })
     it("should disallow users from viewing a merged review request", () => {
       // Arrange
-      const DASHBOARD_INTERCEPTOR = "getCollaboratorDetails"
-      cy.intercept("GET", "**/collaborators").as(DASHBOARD_INTERCEPTOR)
       editUnlinkedPage(
         "faq.md",
         "some disallow view merged review request content",
@@ -670,8 +666,7 @@ describe("Review Requests", () => {
         // Act
         cy.visit(`/sites/e2e-email-test-repo/review/${id}`)
         // Redirect to dashboard
-        cy.wait(`@${DASHBOARD_INTERCEPTOR}`)
-        // Redirect to dashboard
+        cy.awaitDashboardLoad()
         cy.url().should(
           "include",
           `/sites/${E2E_EMAIL_TEST_SITE.repo}/dashboard`
