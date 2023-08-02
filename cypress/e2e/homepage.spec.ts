@@ -124,6 +124,8 @@ describe("Homepage", () => {
       )
     })
 
+    // TODO (IS-377): Disallow resource creation
+    // when a resource section already exists
     it("should limit users to a single resource component", () => {
       // Arrange
       // NOTE: Precondition here is that there are NO existing resources
