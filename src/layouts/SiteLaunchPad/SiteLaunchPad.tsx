@@ -131,7 +131,56 @@ const getInitialPageNumber = (
   if (isSiteLaunchInProgress) return SITE_LAUNCH_PAGES.CHECKLIST
   return SITE_LAUNCH_PAGES.DISCLAIMER
 }
-export const SiteLaunchPad = (): JSX.Element => {
+
+export const SiteLaunchPad = ({
+  pageNumber,
+  setPageNumber,
+  handleDecrementStepNumber,
+  handleIncrementStepNumber,
+}: {
+  pageNumber: number
+  setPageNumber: React.Dispatch<React.SetStateAction<number>>
+  handleDecrementStepNumber: () => void
+  handleIncrementStepNumber: () => void
+}): JSX.Element => {
+  let title: JSX.Element
+  let body: JSX.Element
+  switch (pageNumber) {
+    case SITE_LAUNCH_PAGES.DISCLAIMER:
+      title = <SiteLaunchDisclaimerTitle />
+      body = <SiteLaunchDisclaimerBody setPageNumber={setPageNumber} />
+      break
+    case SITE_LAUNCH_PAGES.INFO_GATHERING:
+    case SITE_LAUNCH_PAGES.RISK_ACCEPTANCE: // Risk acceptance modal overlay
+      title = <SiteLaunchInfoCollectorTitle />
+      body = <SiteLaunchInfoCollectorBody setPageNumber={setPageNumber} />
+      break
+    case SITE_LAUNCH_PAGES.CHECKLIST:
+      title = <SiteLaunchChecklistTitle />
+      body = (
+        <SiteLaunchChecklistBody
+          handleIncrementStepNumber={handleIncrementStepNumber}
+          handleDecrementStepNumber={handleDecrementStepNumber}
+        />
+      )
+      break
+    default:
+      title = <SiteLaunchDisclaimerTitle />
+      body = <SiteLaunchDisclaimerBody setPageNumber={setPageNumber} />
+  }
+  return (
+    <VStack bg="white" w="100%" minH="100vh" spacing="2rem">
+      {title}
+      {body}
+      <RiskAcceptanceModal
+        isOpen={pageNumber === SITE_LAUNCH_PAGES.RISK_ACCEPTANCE}
+        setPageNumber={setPageNumber}
+      />
+    </VStack>
+  )
+}
+
+export const SiteLaunchPadPage = (): JSX.Element => {
   const {
     siteLaunchStatusProps,
     setSiteLaunchStatusProps,
@@ -175,43 +224,16 @@ export const SiteLaunchPad = (): JSX.Element => {
     }
   }
 
-  let title: JSX.Element
-  let body: JSX.Element
-  switch (pageNumber) {
-    case SITE_LAUNCH_PAGES.DISCLAIMER:
-      title = <SiteLaunchDisclaimerTitle />
-      body = <SiteLaunchDisclaimerBody setPageNumber={setPageNumber} />
-      break
-    case SITE_LAUNCH_PAGES.INFO_GATHERING:
-    case SITE_LAUNCH_PAGES.RISK_ACCEPTANCE: // Risk acceptance modal overlay
-      title = <SiteLaunchInfoCollectorTitle />
-      body = <SiteLaunchInfoCollectorBody setPageNumber={setPageNumber} />
-      break
-    case SITE_LAUNCH_PAGES.CHECKLIST:
-      title = <SiteLaunchChecklistTitle />
-      body = (
-        <SiteLaunchChecklistBody
-          handleIncrementStepNumber={handleIncrementStepNumber}
-          handleDecrementStepNumber={handleDecrementStepNumber}
-        />
-      )
-      break
-    default:
-      title = <SiteLaunchDisclaimerTitle />
-      body = <SiteLaunchDisclaimerBody setPageNumber={setPageNumber} />
-  }
   return (
     <>
       <SiteViewHeader />
       {shouldUseSiteLaunchFeature(siteName) ? (
-        <VStack bg="white" w="100%" minH="100vh" spacing="2rem">
-          {title}
-          {body}
-          <RiskAcceptanceModal
-            isOpen={pageNumber === SITE_LAUNCH_PAGES.RISK_ACCEPTANCE}
-            setPageNumber={setPageNumber}
-          />
-        </VStack>
+        <SiteLaunchPad
+          pageNumber={pageNumber}
+          setPageNumber={setPageNumber}
+          handleDecrementStepNumber={handleDecrementStepNumber}
+          handleIncrementStepNumber={handleIncrementStepNumber}
+        />
       ) : (
         <Redirect to={`/sites/${siteName}/dashboard`} />
       )}
