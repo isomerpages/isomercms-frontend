@@ -174,7 +174,11 @@ describe("Review Requests", () => {
     before(() => {
       cy.setupDefaultInterceptors()
       cy.setEmailSessionDefaults("Email admin")
+      removeFirstCollaborator()
+      removeFirstCollaborator()
+      removeFirstCollaborator()
       addAdmin(E2E_EMAIL_ADMIN_2.email)
+      addCollaborator(E2E_EMAIL_COLLAB_NON_GOV.email)
       editUnlinkedPage(
         "faq.md",
         "some pending review requests content",
@@ -220,7 +224,7 @@ describe("Review Requests", () => {
       // Assert
       cy.contains("Approved").should("not.exist")
     })
-    it("should be able to have the request approved as a collaborator", () => {
+    it("should be able to have the request created by a collaborator approved", () => {
       // Arrange
       cy.actAsEmailUser(E2E_EMAIL_COLLAB_NON_GOV.email, "Email collaborator")
       cy.setEmailSessionDefaults("Email collaborator")
@@ -240,6 +244,26 @@ describe("Review Requests", () => {
       cy.contains("Approved").should("exist")
       cy.contains("Approved").click()
       cy.contains("This Review request has been approved!").should("exist")
+    })
+    it("should not be able to approve the request as a collaborator", () => {
+      // Arrange
+      cy.actAsEmailUser(E2E_EMAIL_ADMIN.email, "Email admin")
+      cy.setEmailSessionDefaults("Email admin")
+      createReviewRequest(
+        MOCK_REVIEW_TITLE,
+        [E2E_EMAIL_ADMIN.email],
+        MOCK_REVIEW_DESCRIPTION
+      )
+
+      cy.actAsEmailUser(E2E_EMAIL_COLLAB_NON_GOV.email, "Email collaborator")
+      cy.setEmailSessionDefaults("Email collaborator")
+
+      visitE2eEmailTestRepo()
+      // Act
+      getViewReviewRequestButton().click()
+
+      // Assert
+      cy.contains("button", "In review").should("be.disabled")
     })
     it.skip("should have changes reflected in the currently open review request", () => {
       // Note: we're currently skipping this test because it's incredibly flaky to get a consistent state
