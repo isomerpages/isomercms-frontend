@@ -18,11 +18,12 @@ import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { Redirect, useParams } from "react-router-dom"
 
+import { useLoginContext } from "contexts/LoginContext"
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
 import { SiteViewHeader } from "layouts/layouts/SiteViewLayout/SiteViewHeader"
 
-import { shouldUseSiteLaunchFeature } from "utils/siteLaunchUtils"
+import { isSiteLaunchEnabled } from "utils/siteLaunchUtils"
 
 import {
   SiteLaunchStatusProps,
@@ -186,6 +187,7 @@ export const SiteLaunchPadPage = (): JSX.Element => {
     setSiteLaunchStatusProps,
   } = useSiteLaunchContext()
   const { siteName } = useParams<{ siteName: string }>()
+  const { email } = useLoginContext()
   const [pageNumber, setPageNumber] = useState(
     getInitialPageNumber(siteLaunchStatusProps)
   )
@@ -193,13 +195,13 @@ export const SiteLaunchPadPage = (): JSX.Element => {
   const errorToast = useErrorToast()
 
   useEffect(() => {
-    if (!shouldUseSiteLaunchFeature(siteName)) {
+    if (!isSiteLaunchEnabled(siteName, email)) {
       errorToast({
         id: "no_access_to_launchpad",
         description: "You do not have access to this page.",
       })
     }
-  }, [siteName, errorToast])
+  }, [siteName, errorToast, email])
 
   const handleIncrementStepNumber = () => {
     if (
@@ -227,7 +229,7 @@ export const SiteLaunchPadPage = (): JSX.Element => {
   return (
     <>
       <SiteViewHeader />
-      {shouldUseSiteLaunchFeature(siteName) ? (
+      {isSiteLaunchEnabled(siteName, email) ? (
         <SiteLaunchPad
           pageNumber={pageNumber}
           setPageNumber={setPageNumber}
