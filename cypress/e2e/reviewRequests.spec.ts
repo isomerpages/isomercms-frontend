@@ -620,6 +620,8 @@ describe("Review Requests", () => {
     })
     it("should disallow users from viewing a closed review request", () => {
       // Arrange
+      const DASHBOARD_INTERCEPTOR = "getCollaboratorDetails"
+      cy.intercept("GET", "**/collaborators").as(DASHBOARD_INTERCEPTOR)
       editUnlinkedPage(
         "faq.md",
         "some disallow view closed review request content",
@@ -633,6 +635,13 @@ describe("Review Requests", () => {
         closeReviewRequest(id)
         // Act
         cy.visit(`/sites/e2e-email-test-repo/review/${id}`)
+        cy.wait(`@${DASHBOARD_INTERCEPTOR}`)
+        // Redirect to dashboard
+        cy.url().should(
+          "include",
+          `/sites/${E2E_EMAIL_TEST_SITE.repo}/dashboard`
+        )
+
         // Assert
         cy.contains(
           "Please ensure that you have selected a valid review request."
@@ -641,6 +650,8 @@ describe("Review Requests", () => {
     })
     it("should disallow users from viewing a merged review request", () => {
       // Arrange
+      const DASHBOARD_INTERCEPTOR = "getCollaboratorDetails"
+      cy.intercept("GET", "**/collaborators").as(DASHBOARD_INTERCEPTOR)
       editUnlinkedPage(
         "faq.md",
         "some disallow view merged review request content",
@@ -655,8 +666,17 @@ describe("Review Requests", () => {
         approveReviewRequest(id)
         cy.actAsEmailUser(E2E_EMAIL_ADMIN.email, "Email admin")
         mergeReviewRequest(id)
+
         // Act
         cy.visit(`/sites/e2e-email-test-repo/review/${id}`)
+        // Redirect to dashboard
+        cy.wait(`@${DASHBOARD_INTERCEPTOR}`)
+        // Redirect to dashboard
+        cy.url().should(
+          "include",
+          `/sites/${E2E_EMAIL_TEST_SITE.repo}/dashboard`
+        )
+
         // Assert
         cy.contains(
           "Please ensure that you have selected a valid review request."
