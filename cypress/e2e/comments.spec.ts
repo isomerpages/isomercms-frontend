@@ -15,7 +15,7 @@ import {
   ignoreNotFoundError,
   openCommentsDrawer,
   openReviewRequest,
-  removeOtherCollaborators,
+  removeFirstCollaborator,
   setUserAsUnauthorised,
   visitE2eEmailTestRepo,
   getCommentInput,
@@ -201,7 +201,7 @@ describe("Comments", () => {
         .then((id) => {
           reviewId = id
         })
-      removeOtherCollaborators()
+      removeFirstCollaborator()
     })
 
     // This is required so that subsequent tests do not fail

@@ -27,7 +27,7 @@ import {
 import {
   addAdminCollaborator,
   addCollaborator,
-  removeOtherCollaborators,
+  removeFirstCollaborator,
   visitE2eEmailTestRepo,
 } from "../utils"
 
@@ -96,9 +96,9 @@ describe("Review Requests", () => {
       cy.setupDefaultInterceptors()
       cy.setEmailSessionDefaults("Email admin")
       visitE2eEmailTestRepo()
-      removeOtherCollaborators()
-      removeOtherCollaborators()
-      removeOtherCollaborators()
+      removeFirstCollaborator()
+      removeFirstCollaborator()
+      removeFirstCollaborator()
     })
 
     it("should not be able to create a review request when there are no changes", () => {

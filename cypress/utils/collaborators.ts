@@ -20,7 +20,7 @@ export const getCollaboratorsModal = (): Cypress.Chainable<
   return cy.get("form").should("be.visible")
 }
 
-export const removeOtherCollaborators = (): void => {
+export const removeFirstCollaborator = (): void => {
   // Note: only removes a single other collaborator, due to concurrency issues
   getCollaboratorsModal()
     .get(DELETE_BUTTON_SELECTOR)
