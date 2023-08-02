@@ -300,9 +300,7 @@ const EditNavBar = ({ match }) => {
           setErrors(newErrors)
           break
         }
-        default: {
-          return
-        }
+        default:
       }
     } catch (err) {
       console.log(err)
@@ -384,7 +382,6 @@ const EditNavBar = ({ match }) => {
           break
         }
         default:
-          return
       }
     } catch (err) {
       console.log(err)
@@ -453,7 +450,6 @@ const EditNavBar = ({ match }) => {
           break
         }
         default:
-          return
       }
     } catch (err) {
       console.log(err)
@@ -495,7 +491,6 @@ const EditNavBar = ({ match }) => {
           break
         }
         default:
-          return
       }
     } catch (err) {
       console.log(err)

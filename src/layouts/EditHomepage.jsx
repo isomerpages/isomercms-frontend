@@ -971,7 +971,6 @@ const EditHomepage = ({ match }) => {
           break
         }
         default:
-          return
       }
     } catch (err) {
       console.log(err)
