@@ -66,6 +66,7 @@ describe("Review Requests", () => {
     cy.setupDefaultInterceptors()
     cy.setEmailSessionDefaults("Email admin")
     closeReviewRequests()
+    // Defensive edit - ensures that we have at least one edit to create a review request
     editUnlinkedPage(
       "faq.md",
       "some original content",
@@ -103,7 +104,6 @@ describe("Review Requests", () => {
 
     it("should not be able to create a review request when there are no changes", () => {
       // Arrange
-      // TODO: also create a new rr and merge it beforehand to make sure that there are no changes
       addAdminCollaborator(E2E_EMAIL_ADMIN_2.email)
 
       // Act
@@ -587,6 +587,7 @@ describe("Review Requests", () => {
       const RR_INTERCEPTOR = "getReviewRequest"
       cy.intercept("GET", "**/summary").as(RR_INTERCEPTOR)
       const RR_CANCEL_INTERCEPTOR = "getReviewRequest"
+      // Matches any url like /review/{digits}, since we don't know the rr number until the test runs
       const regex = /\/review\/\d+\//
       cy.intercept("DELETE", regex).as(RR_INTERCEPTOR)
       cy.setEmailSessionDefaults("Email admin")
