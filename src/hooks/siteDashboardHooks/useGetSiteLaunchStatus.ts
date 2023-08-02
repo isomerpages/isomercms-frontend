@@ -6,6 +6,8 @@ import * as SiteLaunchService from "services/SiteLaunchService"
 
 import { SiteLaunchDto } from "types/siteLaunch"
 
+const SITE_LAUNCH_REFETCH_INTERVAL = 1000 * 60 * 5 // 5 Minutes
+
 export const useGetSiteLaunchStatus = (
   siteName: string
 ): UseQueryResult<SiteLaunchDto> => {
@@ -16,6 +18,11 @@ export const useGetSiteLaunchStatus = (
     },
     {
       retry: false,
+      // we want to refetch the data every 5 minutes
+      // during the site launch process. Else, it will
+      // only be updated on a hard refresh.
+      refetchInterval: SITE_LAUNCH_REFETCH_INTERVAL,
+      refetchIntervalInBackground: true,
     }
   )
 }
