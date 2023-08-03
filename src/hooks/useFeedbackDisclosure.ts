@@ -55,7 +55,7 @@ export const useFeedbackDisclosure = (): UseFeedbackDisclosureReturn => {
 
   const [lastSeen, setLastSeen] = useFeedbackStorage()
   // NOTE: Either this is the first time the user has ever seen the survey
-  // or that the user has seen the survey but it has been more than 3 weeks.
+  // or that the user has seen the survey but it has been more a week (greater than duration of survey).
   // Because we toggle the survey on every month, this indicates that they should
   // do the survey if the toggle is on + sufficient time has elapsed
   const isSurveyRequired =
