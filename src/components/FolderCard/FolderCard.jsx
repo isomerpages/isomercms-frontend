@@ -74,9 +74,7 @@ export const FolderCard = ({
       <i
         className={`bx bx-md text-dark ${generatedImage} ${contentStyles.componentIcon}`}
       />
-      <span
-        className={`${contentStyles.componentFolderName} align-self-center ml-4 mr-auto`}
-      >
+      <span className={`${contentStyles.componentFolderName}`}>
         {displayText || prettifyPageFileName(category)}
       </span>
     </div>
