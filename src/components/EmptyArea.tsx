@@ -27,10 +27,10 @@ export const EmptyArea = ({
             <Center>
               <VStack spacing={0}>
                 <Text textStyle="subhead-1">
-                  {mainText || " There's nothing here yet. "}
+                  {mainText || "Items you create will appear here."}
                 </Text>
                 <Text textStyle="body-2">
-                  {subText || "Create a new item to get started."}
+                  {subText || "Create one to get started."}
                 </Text>
               </VStack>
             </Center>
