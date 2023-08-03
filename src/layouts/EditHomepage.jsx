@@ -162,6 +162,7 @@ const EditHomepage = ({ match }) => {
 
   const errorToast = useErrorToast()
 
+  // TODO: Tidy up these `useEffects` and figure out what they do
   useEffect(() => {
     if (!homepageData) return
     const loadPageDetails = async () => {
@@ -309,6 +310,7 @@ const EditHomepage = ({ match }) => {
     setHasErrors(hasErrors)
   }, [errors])
 
+  // TODO: Use `react-hook-forms`
   const onFieldChange = async (event) => {
     try {
       const { id, value } = event.target
