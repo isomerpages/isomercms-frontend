@@ -1,5 +1,5 @@
 import { Icon, Text } from "@chakra-ui/react"
-import { ThemeButtonVariant } from "@opengovsg/design-system-react/build/theme/components/Button"
+import { ButtonProps } from "@opengovsg/design-system-react"
 import { ComponentMeta, Story } from "@storybook/react"
 import { BiFileBlank, BiFolder } from "react-icons/bi"
 
@@ -12,7 +12,7 @@ const menuDropdownButtonMeta = {
 
 interface MenuDropdownButtonTemplateArgs {
   mainButtonText: string
-  variant?: ThemeButtonVariant
+  variant?: ButtonProps["variant"]
   items: JSX.Element
 }
 

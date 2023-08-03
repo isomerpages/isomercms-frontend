@@ -7,6 +7,7 @@ import {
 } from "./constants"
 import {
   buildAllNotificationData,
+  buildCollaboratorData,
   buildLastUpdated,
   buildLoginData,
   buildMarkNotificationsAsReadData,
@@ -19,6 +20,7 @@ export const handlers = [
   buildRecentNotificationData(MOCK_NOTIFICATION_DATA),
   buildAllNotificationData(MOCK_ALL_NOTIFICATION_DATA),
   buildMarkNotificationsAsReadData([]),
+  buildCollaboratorData({ collaborators: [] }),
 ]
 
 export const contactUsHandler = (

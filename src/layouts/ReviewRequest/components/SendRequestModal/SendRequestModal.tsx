@@ -17,10 +17,11 @@ import {
   PopoverTrigger,
 } from "@chakra-ui/react"
 import { Button, ModalCloseButton } from "@opengovsg/design-system-react"
-import { ButtonLink } from "components/ButtonLink"
 import _ from "lodash"
 import { BiCopy, BiMailSend } from "react-icons/bi"
 import Select from "react-select"
+
+import { ButtonLink } from "components/ButtonLink"
 
 import { User } from "types/reviewRequest"
 

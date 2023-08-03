@@ -6,6 +6,7 @@ import {
   Grid,
   GridProps,
 } from "@chakra-ui/react"
+
 import { FeedbackModal } from "components/FeedbackModal"
 import { Sidebar } from "components/Sidebar"
 
@@ -40,7 +41,7 @@ export const SiteEditLayout = ({ children }: StackProps): JSX.Element => {
           alignSelf="flex-start"
           position="sticky"
           top={0}
-          zIndex="sticky"
+          zIndex="docked"
         >
           <SiteEditHeader />
         </GridItem>

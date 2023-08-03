@@ -2,7 +2,7 @@ import { MenuItemProps, useToken, forwardRef } from "@chakra-ui/react"
 import { Menu } from "@opengovsg/design-system-react"
 import { cloneElement } from "react"
 
-type ContextMenuItemProps = Omit<MenuItemProps, "iconSpacing">
+export type ContextMenuItemProps = Omit<MenuItemProps, "iconSpacing">
 
 // eslint-disable-next-line import/prefer-default-export
 export const ContextMenuItem = forwardRef<ContextMenuItemProps, "button">(

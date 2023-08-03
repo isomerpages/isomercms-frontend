@@ -8,15 +8,16 @@ import {
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
+import DOMPurify from "dompurify"
+import { marked } from "marked"
+import PropTypes from "prop-types"
+import { useEffect, useState } from "react"
+
 import { Footer } from "components/Footer"
 import Header from "components/Header"
 import MarkdownEditor from "components/pages/MarkdownEditor"
 import PagePreview from "components/pages/PagePreview"
 import { WarningModal } from "components/WarningModal"
-import DOMPurify from "dompurify"
-import { marked } from "marked"
-import PropTypes from "prop-types"
-import { useEffect, useState } from "react"
 
 import { useCollectionHook } from "hooks/collectionHooks"
 import { useGetPageHook, useUpdatePageHook } from "hooks/pageHooks"
@@ -207,7 +208,7 @@ const EditPage = ({ match }) => {
             </Box>
           }
         >
-          <Button colorScheme="danger" onClick={onXSSWarningModalClose}>
+          <Button colorScheme="critical" onClick={onXSSWarningModalClose}>
             Cancel
           </Button>
           <Button
@@ -255,7 +256,7 @@ const EditPage = ({ match }) => {
             Back to Editing
           </Button>
           <Button
-            colorScheme="danger"
+            colorScheme="critical"
             onClick={() => {
               onOverwriteClose()
               updatePageHandler({

@@ -6,18 +6,20 @@ import {
   Text,
   VStack,
   Flex,
+  Image,
 } from "@chakra-ui/react"
-import { InlineMessage } from "@opengovsg/design-system-react"
-import { AllSitesHeader } from "components/Header/AllSitesHeader"
+import { Infobox } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
+
+import { AllSitesHeader } from "components/Header/AllSitesHeader"
 
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
 import { useLoginContext } from "contexts/LoginContext"
 
-import { useGetAllSites } from "hooks/allSitesHooks"
+import { useGetAllSites, useSitePreview } from "hooks/allSitesHooks"
 import { useAnnouncements } from "hooks/useAnnouncement"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -29,8 +31,54 @@ import { EmptySitesImage, IsomerLogoNoText } from "assets"
 import { AnnouncementModal } from "features/AnnouncementModal/AnnouncementModal"
 import { SiteData } from "types/sites"
 
+const SitePreviewImage = ({ imageUrl }: { imageUrl?: string }) => {
+  return (
+    <Image
+      src={imageUrl}
+      height="50%"
+      fallback={<IsomerLogoNoText height="50%" />}
+    />
+  )
+}
+
+const SitesCard = (
+  repoName: string,
+  lastUpdated: string,
+  urlLink: "dashboard" | "workspace",
+  imageUrl?: string
+) => {
+  return (
+    <div className={siteStyles.siteContainer} key={repoName}>
+      <div className={siteStyles.site}>
+        <Link to={`/sites/${repoName}/${urlLink}`}>
+          <Flex w="full" h="70%" justifyContent="center" alignItems="center">
+            <SitePreviewImage imageUrl={imageUrl} />
+          </Flex>
+          <Divider />
+          <VStack
+            w="full"
+            h="30%"
+            justifyContent="center"
+            alignItems="start"
+            backgroundColor="interaction.mainLight.default"
+            pl="1rem"
+            borderRadius="0px 0px 4px 4px"
+          >
+            <Text fontSize="0.9em">{repoName}</Text>
+            {lastUpdated && (
+              <Text fontSize="0.6em" color="base.content.light">
+                {convertUtcToTimeDiff(lastUpdated)}
+              </Text>
+            )}
+          </VStack>
+        </Link>
+      </div>
+    </div>
+  )
+}
+
 const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
-  const { userId } = useLoginContext()
+  const { userId, email } = useLoginContext()
   const isEmailLoginUser = !userId
   const urlLink = isEmailLoginUser ? "dashboard" : "workspace"
 
@@ -39,11 +87,11 @@ const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
   if (siteNames.length === 0)
     return (
       <VStack pt="2.5rem" w="full" gap="4rem">
-        <InlineMessage variant="warning" w="full">
+        <Infobox variant="warning" w="full">
           {`If your sites aren’t showing, please try logging in with your ${
             isEmailLoginUser ? "GitHub ID" : "email"
           } for now.`}
-        </InlineMessage>
+        </Infobox>
         <EmptySitesImage />
         <VStack gap="2rem" color="base.content.default">
           <VStack spacing="0">
@@ -63,41 +111,30 @@ const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
         </VStack>
       </VStack>
     )
+  const { data: previews } = useSitePreview(
+    email,
+    siteNames.map((site) => site.repoName)
+  )
+  if (previews && previews.length === siteNames.length) {
+    const sitesWithPreview = siteNames.map((siteName, index) => {
+      return {
+        ...siteName,
+        imageUrl: previews[index].imageUrl,
+      }
+    })
+    return (
+      <>
+        {sitesWithPreview.map(({ repoName, lastUpdated, imageUrl }) =>
+          SitesCard(repoName, lastUpdated, urlLink, imageUrl)
+        )}
+      </>
+    )
+  }
   return (
     <>
-      {siteNames.map((siteName) => (
-        <div className={siteStyles.siteContainer} key={siteName.repoName}>
-          <div className={siteStyles.site}>
-            <Link to={`/sites/${siteName.repoName}/${urlLink}`}>
-              <Flex
-                w="full"
-                h="70%"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <IsomerLogoNoText height="30%" />
-              </Flex>
-              <Divider />
-              <VStack
-                w="full"
-                h="30%"
-                justifyContent="center"
-                alignItems="start"
-                backgroundColor="interaction.mainLight.default"
-                pl="1rem"
-                borderRadius="0px 0px 4px 4px"
-              >
-                <Text fontSize="0.9em">{siteName.repoName}</Text>
-                {siteName.lastUpdated && (
-                  <Text fontSize="0.6em" color="base.content.light">
-                    {convertUtcToTimeDiff(siteName.lastUpdated)}
-                  </Text>
-                )}
-              </VStack>
-            </Link>
-          </div>
-        </div>
-      ))}
+      {siteNames.map(({ repoName, lastUpdated }) =>
+        SitesCard(repoName, lastUpdated, urlLink)
+      )}
     </>
   )
 }

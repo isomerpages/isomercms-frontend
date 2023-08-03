@@ -47,7 +47,7 @@ export const FeatureTour = ({
   stepIndex,
   setStepIndex,
 }: FeatureTourProps): JSX.Element => {
-  const arrowColor: string = useToken("colors", ["text.inverse"])
+  const [arrowColor] = useToken("colors", ["text.inverse"])
   const [isPaginationClicked, setIsPaginationClicked] = useState<boolean>(false)
 
   const handleJoyrideCallback = ({

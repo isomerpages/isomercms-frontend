@@ -1,8 +1,9 @@
+import PropTypes from "prop-types"
+
 import FormContext from "components/Form/FormContext"
 import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
-import PropTypes from "prop-types"
 
 /* eslint
   react/no-array-index-key: 0
@@ -23,7 +24,7 @@ const HeroButton = ({ button, url, sectionIndex, onFieldChange, errors }) => (
     <FormContext hasError={!!errors.url}>
       <FormTitle>Hero button URL</FormTitle>
       <FormField
-        placeholder="Insert permalink or external URL"
+        placeholder="Insert /page-url or https://"
         id={`section-${sectionIndex}-hero-url`}
         value={url}
         onChange={onFieldChange}

@@ -1,7 +1,7 @@
 import { ComponentMultiStyleConfig } from "@chakra-ui/theme"
 import { anatomy, PartsStyleObject } from "@chakra-ui/theme-tools"
 
-import { colours } from "theme/foundations/colours"
+import { layerStyles } from "theme/layerStyles"
 
 export const CARD_THEME_KEY = "card"
 
@@ -14,8 +14,6 @@ export const parts = anatomy(CARD_THEME_KEY).parts(
   "body",
   "footer"
 )
-
-const borderColour = (colours.border.action as Record<string, string>).default
 
 const variantSingle: PartsStyleObject<typeof parts> = {
   container: {
@@ -53,10 +51,12 @@ export const Card: ComponentMultiStyleConfig = {
       borderRadius: "4px",
       w: "100%",
       _hover: {
-        backgroundColor: "background.action.altInverse",
+        bg: "interaction.muted.main.hover",
       },
-      _focus: {
-        boxShadow: `0 0 0 2px ${borderColour}`,
+      _focusVisible: {
+        boxShadow: "0 0 0 1px var(--chakra-colors-utility-focus-default)",
+        borderColor: "utility.focus-default",
+        outline: "none",
       },
       overflow: "auto",
     },

@@ -15,9 +15,9 @@ import {
 } from "@chakra-ui/react"
 import {
   Button,
-  GovtMasthead,
+  RestrictedGovtMasthead,
   Tab,
-  InlineMessage,
+  Infobox,
   Link,
 } from "@opengovsg/design-system-react"
 import { useEffect, useState, PropsWithChildren } from "react"
@@ -140,11 +140,11 @@ const LoginContent = (): JSX.Element => {
       <Text fontSize="2.5rem" color="text.title.brand" textStyle="display-2">
         Rapidly build & launch informational sites
       </Text>
-      <InlineMessage>
+      <Infobox>
         We’re moving in phases from GitHub IDs to email addresses as the login
         method. For those currently using GitHub ID, you’ll be informed when you
         can log in using the email method.
-      </InlineMessage>
+      </Infobox>
       <Tabs width="100%">
         <TabList>
           <Tab>Github Login</Tab>
@@ -186,10 +186,10 @@ const LoginContent = (): JSX.Element => {
           </TabPanel>
           {isSgidLogin && (
             <TabPanel>
-              <InlineMessage mb="1rem">
+              <Infobox mb="1rem">
                 This is an experimental service currently offered to OGP
                 officers only.
-              </InlineMessage>
+              </Infobox>
               <Button
                 onClick={() => getSgidAuth()}
                 isLoading={isSgidAuthLoading}
@@ -216,7 +216,7 @@ const LoginContent = (): JSX.Element => {
 
 export const LoginPage = (): JSX.Element => (
   <Flex flex={1} flexDir="column" w="100%" h="100vh">
-    <GovtMasthead />
+    <RestrictedGovtMasthead />
     <Grid {...LOGIN_GRID_LAYOUT}>
       <GridItem area="image" bgColor="primary.500">
         <Flex h="100%" w="100%" alignItems="end" justifyContent="center">

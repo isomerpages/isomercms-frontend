@@ -18,11 +18,14 @@ import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { Redirect, useParams } from "react-router-dom"
 
+import { useLoginContext } from "contexts/LoginContext"
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
+
+import { useGetCollaboratorRoleHook } from "hooks/collaboratorHooks"
 
 import { SiteViewHeader } from "layouts/layouts/SiteViewLayout/SiteViewHeader"
 
-import { shouldUseSiteLaunchFeature } from "utils/siteLaunchUtils"
+import { isSiteLaunchEnabled } from "utils/siteLaunchUtils"
 
 import {
   SiteLaunchStatusProps,
@@ -131,50 +134,18 @@ const getInitialPageNumber = (
   if (isSiteLaunchInProgress) return SITE_LAUNCH_PAGES.CHECKLIST
   return SITE_LAUNCH_PAGES.DISCLAIMER
 }
-export const SiteLaunchPad = (): JSX.Element => {
-  const {
-    siteLaunchStatusProps,
-    setSiteLaunchStatusProps,
-  } = useSiteLaunchContext()
-  const { siteName } = useParams<{ siteName: string }>()
-  const [pageNumber, setPageNumber] = useState(
-    getInitialPageNumber(siteLaunchStatusProps)
-  )
 
-  const errorToast = useErrorToast()
-
-  useEffect(() => {
-    if (!shouldUseSiteLaunchFeature(siteName)) {
-      errorToast({
-        id: "no_access_to_launchpad",
-        description: "You do not have access to this page.",
-      })
-    }
-  }, [siteName, errorToast])
-
-  const handleIncrementStepNumber = () => {
-    if (
-      siteLaunchStatusProps &&
-      siteLaunchStatusProps.stepNumber < SITE_LAUNCH_TASKS_LENGTH
-    ) {
-      setSiteLaunchStatusProps({
-        ...siteLaunchStatusProps,
-        stepNumber: (siteLaunchStatusProps.stepNumber +
-          1) as SiteLaunchTaskTypeIndex, // safe to assert since we do a check
-        siteLaunchStatus: "CHECKLIST_TASKS_PENDING",
-      })
-    }
-  }
-  const handleDecrementStepNumber = () => {
-    if (siteLaunchStatusProps && siteLaunchStatusProps.stepNumber > 0) {
-      setSiteLaunchStatusProps({
-        ...siteLaunchStatusProps,
-        stepNumber: (siteLaunchStatusProps?.stepNumber -
-          1) as SiteLaunchTaskTypeIndex, // safe to assert since we do a check
-      })
-    }
-  }
-
+export const SiteLaunchPad = ({
+  pageNumber,
+  setPageNumber,
+  handleDecrementStepNumber,
+  handleIncrementStepNumber,
+}: {
+  pageNumber: number
+  setPageNumber: React.Dispatch<React.SetStateAction<number>>
+  handleDecrementStepNumber: () => void
+  handleIncrementStepNumber: () => void
+}): JSX.Element => {
   let title: JSX.Element
   let body: JSX.Element
   switch (pageNumber) {
@@ -201,17 +172,72 @@ export const SiteLaunchPad = (): JSX.Element => {
       body = <SiteLaunchDisclaimerBody setPageNumber={setPageNumber} />
   }
   return (
+    <VStack bg="white" w="100%" minH="100vh" spacing="2rem">
+      {title}
+      {body}
+      <RiskAcceptanceModal
+        isOpen={pageNumber === SITE_LAUNCH_PAGES.RISK_ACCEPTANCE}
+        setPageNumber={setPageNumber}
+      />
+    </VStack>
+  )
+}
+
+export const SiteLaunchPadPage = (): JSX.Element => {
+  const {
+    siteLaunchStatusProps,
+    setSiteLaunchStatusProps,
+  } = useSiteLaunchContext()
+  const { siteName } = useParams<{ siteName: string }>()
+  const { email } = useLoginContext()
+  const [pageNumber, setPageNumber] = useState(
+    getInitialPageNumber(siteLaunchStatusProps)
+  )
+
+  const errorToast = useErrorToast()
+  const { data: role } = useGetCollaboratorRoleHook(siteName)
+  useEffect(() => {
+    if (!isSiteLaunchEnabled(siteName, role)) {
+      errorToast({
+        id: "no_access_to_launchpad",
+        description: "You do not have access to this page.",
+      })
+    }
+  }, [siteName, errorToast, role])
+
+  const handleIncrementStepNumber = () => {
+    if (
+      siteLaunchStatusProps &&
+      siteLaunchStatusProps.stepNumber < SITE_LAUNCH_TASKS_LENGTH
+    ) {
+      setSiteLaunchStatusProps({
+        ...siteLaunchStatusProps,
+        stepNumber: (siteLaunchStatusProps.stepNumber +
+          1) as SiteLaunchTaskTypeIndex, // safe to assert since we do a check
+        siteLaunchStatus: "CHECKLIST_TASKS_PENDING",
+      })
+    }
+  }
+  const handleDecrementStepNumber = () => {
+    if (siteLaunchStatusProps && siteLaunchStatusProps.stepNumber > 0) {
+      setSiteLaunchStatusProps({
+        ...siteLaunchStatusProps,
+        stepNumber: (siteLaunchStatusProps?.stepNumber -
+          1) as SiteLaunchTaskTypeIndex, // safe to assert since we do a check
+      })
+    }
+  }
+
+  return (
     <>
       <SiteViewHeader />
-      {shouldUseSiteLaunchFeature(siteName) ? (
-        <VStack bg="white" w="100%" minH="100vh" spacing="2rem">
-          {title}
-          {body}
-          <RiskAcceptanceModal
-            isOpen={pageNumber === SITE_LAUNCH_PAGES.RISK_ACCEPTANCE}
-            setPageNumber={setPageNumber}
-          />
-        </VStack>
+      {isSiteLaunchEnabled(siteName, role) ? (
+        <SiteLaunchPad
+          pageNumber={pageNumber}
+          setPageNumber={setPageNumber}
+          handleDecrementStepNumber={handleDecrementStepNumber}
+          handleIncrementStepNumber={handleIncrementStepNumber}
+        />
       ) : (
         <Redirect to={`/sites/${siteName}/dashboard`} />
       )}

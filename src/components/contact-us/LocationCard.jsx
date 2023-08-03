@@ -1,4 +1,6 @@
 import { Button, IconButton } from "@opengovsg/design-system-react"
+import PropTypes from "prop-types"
+
 import {
   LocationHoursFields,
   LocationAddressFields,
@@ -7,7 +9,6 @@ import { FormContext } from "components/Form"
 import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
-import PropTypes from "prop-types"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -95,7 +96,7 @@ const EditorLocationSection = ({
         </div>
         <div className={`${elementStyles.inputGroup} pt-5`}>
           <Button
-            colorScheme="danger"
+            colorScheme="critical"
             w="100%"
             id={`${sectionId}-${cardIndex}`}
             onClick={deleteHandler}

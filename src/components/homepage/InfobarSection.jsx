@@ -1,9 +1,10 @@
 import { Button, IconButton } from "@opengovsg/design-system-react"
+import PropTypes from "prop-types"
+
 import { FormError } from "components/Form"
 import FormContext from "components/Form/FormContext"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
-import PropTypes from "prop-types"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -92,7 +93,7 @@ const EditorInfobarSection = ({
           <FormContext isRequired hasError={!!errors.url}>
             <FormTitle>Infobar button URL</FormTitle>
             <FormField
-              placeholder="Insert permalink or external URL"
+              placeholder="Insert /page-url or https://"
               id={`section-${sectionIndex}-infobar-url`}
               value={url}
               onChange={onFieldChange}
@@ -102,7 +103,7 @@ const EditorInfobarSection = ({
         </div>
         <div className={elementStyles.inputGroup}>
           <Button
-            colorScheme="danger"
+            colorScheme="critical"
             w="100%"
             id={`section-${sectionIndex}`}
             onClick={deleteHandler}

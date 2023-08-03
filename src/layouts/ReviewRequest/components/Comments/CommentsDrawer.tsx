@@ -87,7 +87,7 @@ export const CommentsDrawer = ({
   return (
     <>
       <IconButton
-        backgroundColor="background.action.defaultInverse"
+        backgroundColor="utility.ui"
         onClick={() => {
           onCommentsOpen()
           updateReadComments({ siteName, requestId })

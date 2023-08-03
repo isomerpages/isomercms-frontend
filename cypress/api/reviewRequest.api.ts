@@ -21,7 +21,9 @@ export const createReviewRequest = (
     .then(({ body }) => body.pullRequestNumber)
 }
 
-export const listReviewRequests = (): Cypress.Chainable<{ id: number }[]> => {
+export const listReviewRequests = (): Cypress.Chainable<
+  { id: number; author: string; status: string }[]
+> => {
   return cy
     .request("GET", `${BASE_URL}/summary`)
     .then(({ body }) => body.reviews)
@@ -29,8 +31,10 @@ export const listReviewRequests = (): Cypress.Chainable<{ id: number }[]> => {
 
 export const closeReviewRequests = (): void => {
   listReviewRequests().then((reviewRequests) => {
-    reviewRequests.forEach(({ id }) => {
-      closeReviewRequest(id)
+    reviewRequests.forEach(({ id, author }) => {
+      // Only the requestor can close their own review request
+      cy.actAsEmailUser(author, "Email admin")
+      cy.request("DELETE", `${BASE_URL}/${id}`)
     })
   })
 }

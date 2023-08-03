@@ -20,26 +20,44 @@ export const getCollaboratorsModal = (): Cypress.Chainable<
   return cy.get("form").should("be.visible")
 }
 
-export const removeOtherCollaborators = (): void => {
+export const removeFirstCollaborator = (): void => {
+  // Note: only removes a single other collaborator, due to concurrency issues
   getCollaboratorsModal()
     .get(DELETE_BUTTON_SELECTOR)
     .then((buttons) => {
       if (buttons.length > 1) {
-        buttons.slice(1).each((_, button) => {
-          button.click()
-          cy.contains("button", "Remove collaborator").click()
-          cy.contains("Collaborator removed successfully").should("be.visible")
-        })
+        buttons[1].click()
+        cy.contains("button", "Remove collaborator").click()
+        cy.contains("Collaborator removed successfully").should("be.visible")
       }
     })
 
   closeModal()
 }
 
+export const removeOtherCollaborators = (): void => {
+  // We have up to 3 other collaborators - this ensures all are removed
+  removeFirstCollaborator()
+  removeFirstCollaborator()
+  removeFirstCollaborator()
+}
+
 export const inputCollaborators = (user: string): void => {
   getCollaboratorsModal().get(ADD_COLLABORATOR_INPUT_SELECTOR).type(user).blur()
   // NOTE: need to ignore the 422 w/ specific error message because we haven't ack yet
   cy.contains("Add collaborator").click().wait(Interceptors.POST)
+}
+
+export const addAdminCollaborator = (collaborator: string): void => {
+  cy.createEmailUser(
+    collaborator,
+    USER_TYPES.Email.Admin,
+    USER_TYPES.Email.Admin
+  )
+
+  inputCollaborators(collaborator)
+
+  closeModal()
 }
 
 export const addCollaborator = (collaborator: string): void => {

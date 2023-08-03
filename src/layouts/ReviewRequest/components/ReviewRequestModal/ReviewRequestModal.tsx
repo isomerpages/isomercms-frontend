@@ -119,23 +119,8 @@ export const ReviewRequestModal = (
                 However, the figma design requires that the tabs be aligned with the content.
                 Hence, margin is set to 0 here 
                 */}
-                <Tab
-                  ml={0}
-                  _focus={{
-                    boxShadow: "none",
-                  }}
-                  color="text.link.disabled"
-                >
-                  Add Details
-                </Tab>
-                <Tab
-                  _focus={{
-                    boxShadow: "none",
-                  }}
-                  color="text.link.disabled"
-                >
-                  Edited Items
-                </Tab>
+                <Tab ml={0}>Add Details</Tab>
+                <Tab>Edited Items</Tab>
               </TabList>
 
               <TabPanels>

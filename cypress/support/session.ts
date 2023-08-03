@@ -42,7 +42,6 @@ Cypress.Commands.add(
     initialUserType: EmailUserTypes,
     site = ""
   ) => {
-    cy.clearCookies()
     setCookieWithDomain(E2E_COOKIE.Site.key, site)
     setCookieWithDomain(COOKIE_NAME, COOKIE_VALUE)
     setCookieWithDomain(E2E_COOKIE.Auth.key, E2E_COOKIE.Auth.value)
@@ -52,5 +51,17 @@ Cypress.Commands.add(
 
     cy.setEmailSessionDefaults(initialUserType)
     cy.visit(`${CMS_BASEURL}/sites/${E2E_EMAIL_TEST_SITE.repo}/dashboard`)
+  }
+)
+
+Cypress.Commands.add(
+  "actAsEmailUser",
+  (email: string, userType: EmailUserTypes, site = "") => {
+    setCookieWithDomain(E2E_COOKIE.Site.key, site)
+    setCookieWithDomain(COOKIE_NAME, COOKIE_VALUE)
+    setCookieWithDomain(E2E_COOKIE.Auth.key, E2E_COOKIE.Auth.value)
+    setCookieWithDomain(E2E_COOKIE.EmailUserType.key, userType)
+    setCookieWithDomain(E2E_COOKIE.Email.key, email)
+    cy.request("GET", `${BACKEND_URL}/auth/whoami`)
   }
 )

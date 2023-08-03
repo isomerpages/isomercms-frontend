@@ -1,16 +1,17 @@
 import { useDisclosure, Box, Text, HStack, VStack } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
-import { Footer } from "components/Footer"
-import Header from "components/Header"
-import { LoadingButton } from "components/LoadingButton"
-import NavSection from "components/navbar/NavSection"
-import { WarningModal } from "components/WarningModal"
 import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
 import { DragDropContext } from "react-beautiful-dnd"
 import { useQuery } from "react-query"
+
+import { Footer } from "components/Footer"
+import Header from "components/Header"
+import { LoadingButton } from "components/LoadingButton"
+import NavSection from "components/navbar/NavSection"
+import { WarningModal } from "components/WarningModal"
 
 import { NAVIGATION_CONTENT_KEY } from "constants/queryKeys"
 
@@ -299,9 +300,7 @@ const EditNavBar = ({ match }) => {
           setErrors(newErrors)
           break
         }
-        default: {
-          return
-        }
+        default:
       }
     } catch (err) {
       console.log(err)
@@ -383,7 +382,6 @@ const EditNavBar = ({ match }) => {
           break
         }
         default:
-          return
       }
     } catch (err) {
       console.log(err)
@@ -452,7 +450,6 @@ const EditNavBar = ({ match }) => {
           break
         }
         default:
-          return
       }
     } catch (err) {
       console.log(err)
@@ -494,7 +491,6 @@ const EditNavBar = ({ match }) => {
           break
         }
         default:
-          return
       }
     } catch (err) {
       console.log(err)
@@ -656,7 +652,7 @@ const EditNavBar = ({ match }) => {
           Cancel
         </Button>
         <Button
-          colorScheme="danger"
+          colorScheme="critical"
           onClick={() => {
             deleteHandler(itemPendingForDelete.id)
             setItemPendingForDelete({ id: null, type: "" })

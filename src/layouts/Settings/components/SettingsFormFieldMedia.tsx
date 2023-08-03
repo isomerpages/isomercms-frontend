@@ -7,9 +7,10 @@ import {
   forwardRef,
   HStack,
 } from "@chakra-ui/react"
-import MediaModal from "components/media/MediaModal"
 import { useFormContext, Controller } from "react-hook-form"
 import { BiUpload } from "react-icons/bi"
+
+import MediaModal from "components/media/MediaModal"
 
 interface FormFieldMediaProps extends Omit<InputProps, "onChange" | "name"> {
   onChange: (value: string) => void

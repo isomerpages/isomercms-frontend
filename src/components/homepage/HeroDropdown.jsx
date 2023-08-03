@@ -1,10 +1,11 @@
+import { Droppable, Draggable } from "@hello-pangea/dnd"
 import { Button, IconButton } from "@opengovsg/design-system-react"
+import PropTypes from "prop-types"
+
 import FormContext from "components/Form/FormContext"
 import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
-import PropTypes from "prop-types"
-import { Droppable, Draggable } from "react-beautiful-dnd"
 
 import styles from "styles/App.module.scss"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -66,7 +67,7 @@ const HeroDropdownElem = ({
         <div className={elementStyles.inputGroup}>
           <Button
             w="100%"
-            colorScheme="danger"
+            colorScheme="critical"
             id={`dropdownelem-${dropdownsIndex}-delete`}
             onClick={deleteHandler}
           >

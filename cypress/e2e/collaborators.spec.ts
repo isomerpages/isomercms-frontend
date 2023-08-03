@@ -17,7 +17,7 @@ import {
   addCollaborator,
   getCollaboratorsModal,
   inputCollaborators,
-  removeOtherCollaborators,
+  removeFirstCollaborator,
 } from "../utils/collaborators"
 
 const collaborator = E2E_EMAIL_COLLAB.email
@@ -62,7 +62,7 @@ describe("collaborators flow", () => {
   })
 
   describe("Admin adding a collaborator", () => {
-    after(() => removeOtherCollaborators())
+    after(() => removeFirstCollaborator())
 
     it("should not be able to click the add collaborator button when the input is empty", () => {
       // Act
@@ -137,7 +137,7 @@ describe("collaborators flow", () => {
     it("should not be able to remove the last site member", () => {
       // Act
       // NOTE: Remove all collaborators except the initial admin
-      removeOtherCollaborators()
+      removeFirstCollaborator()
 
       // Assert
       cy.get(DELETE_COLLABORATOR_BUTTON_SELECTOR).should("be.disabled")

@@ -12,7 +12,7 @@ import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
 import { useLocalStorage } from "hooks/useLocalStorage"
 
-import { LoggedInUser } from "types/user"
+import { LoggedInUser, UserType, UserTypes } from "types/user"
 
 const { REACT_APP_BACKEND_URL_V2: BACKEND_URL } = process.env
 
@@ -20,6 +20,7 @@ interface LoginContextProps extends LoggedInUser {
   isLoading: boolean
   logout: () => Promise<void>
   verifyLoginAndGetUserDetails: () => Promise<void>
+  userType: UserType
 }
 
 const LoginContext = createContext<null | LoginContextProps>(null)
@@ -92,6 +93,7 @@ const LoginProvider = ({
     displayedName: `${storedUserId ? "@" : ""}${
       storedUserId || storedUserEmail
     }`,
+    userType: storedUserId ? UserTypes.Github : UserTypes.Email,
   }
 
   return (

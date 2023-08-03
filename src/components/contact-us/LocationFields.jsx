@@ -1,11 +1,12 @@
 import { Box, Flex } from "@chakra-ui/react"
 import { Button, Textarea } from "@opengovsg/design-system-react"
+import _ from "lodash"
+import PropTypes from "prop-types"
+
 import { FormContext } from "components/Form"
 import FormError from "components/Form/FormError"
 import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
-import _ from "lodash"
-import PropTypes from "prop-types"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -83,7 +84,7 @@ const LocationHoursFields = ({
               </FormContext>
               <Button
                 my="24px"
-                colorScheme="danger"
+                colorScheme="critical"
                 w="100%"
                 id={`${sectionId}-${cardIndex}-remove_operating_hours-${operationsIndex}`}
                 onClick={onFieldChange}

@@ -1,7 +1,8 @@
 import { Box, BoxProps, CloseButton, Flex, Icon, Text } from "@chakra-ui/react"
 import { Badge, Button, ButtonProps } from "@opengovsg/design-system-react"
-import { ProgressIndicator } from "components/ProgressIndicator/ProgressIndicator"
 import { BiBulb, BiRightArrowAlt } from "react-icons/bi"
+
+import { ProgressIndicator } from "components/ProgressIndicator/ProgressIndicator"
 
 import { useFeatureTourContext } from "./FeatureTourContext"
 import { DASHBOARD_FEATURE_STEPS } from "./FeatureTourSequence"
