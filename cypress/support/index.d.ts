@@ -84,7 +84,5 @@ declare namespace Cypress {
       userType: "Email admin" | "Email collaborator",
       site?: string
     ): Chainable<void>
-    awaitReviewRequestSummary(): Chainable<void>
-    awaitDashboardLoad(): Chainable<void>
   }
 }

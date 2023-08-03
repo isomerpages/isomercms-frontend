@@ -27,6 +27,8 @@ import {
 import {
   addAdminCollaborator,
   addCollaborator,
+  awaitDashboardLoad,
+  awaitReviewRequestSummary,
   removeOtherCollaborators,
   visitE2eEmailTestRepo,
 } from "../utils"
@@ -198,7 +200,7 @@ describe("Review Requests", () => {
       // Act
       cy.contains("Review required").should("be.visible")
       cy.visit(`/sites/${E2E_EMAIL_TEST_SITE.repo}/workspace`)
-      cy.awaitReviewRequestSummary()
+      awaitReviewRequestSummary()
 
       // Assert
       cy.contains("Review request pending approval").should("be.visible")
@@ -476,7 +478,7 @@ describe("Review Requests", () => {
       // Arrange
       // Act
       cy.visit(`/sites/${E2E_EMAIL_TEST_SITE.repo}/workspace`)
-      cy.awaitReviewRequestSummary()
+      awaitReviewRequestSummary()
 
       // Assert
       // Toast
@@ -503,7 +505,7 @@ describe("Review Requests", () => {
       cy.visit(`/sites/${E2E_EMAIL_TEST_SITE.repo}/editPage/example-page.md`)
 
       // Assert
-      cy.awaitDashboardLoad()
+      awaitDashboardLoad()
       // Redirect to dashboard
       cy.url().should("include", `/sites/${E2E_EMAIL_TEST_SITE.repo}/dashboard`)
       // Tag
@@ -624,7 +626,7 @@ describe("Review Requests", () => {
       cy.contains("Cancel request").should("exist").click()
       cy.contains("Yes, cancel").click()
       cy.wait(`@${RR_CANCEL_INTERCEPTOR}`)
-      cy.awaitReviewRequestSummary()
+      awaitReviewRequestSummary()
 
       // Assert
       cy.url().should("include", "/dashboard")
@@ -645,9 +647,9 @@ describe("Review Requests", () => {
       ).then((id) => {
         closeReviewRequest(id)
         // Act
-        cy.awaitDashboardLoad()
+        awaitDashboardLoad()
         cy.visit(`/sites/e2e-email-test-repo/review/${id}`)
-        cy.awaitDashboardLoad()
+        awaitDashboardLoad()
         // Redirect to dashboard
         cy.url().should(
           "include",
@@ -680,7 +682,7 @@ describe("Review Requests", () => {
         // Act
         cy.visit(`/sites/e2e-email-test-repo/review/${id}`)
         // Redirect to dashboard
-        cy.awaitDashboardLoad()
+        awaitDashboardLoad()
         cy.url().should(
           "include",
           `/sites/${E2E_EMAIL_TEST_SITE.repo}/dashboard`
