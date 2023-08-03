@@ -13,9 +13,16 @@ const updatePositions = <T,>(
   return update(section, {
     $splice: [
       // start index, delete count, insert item(s)
+      // NOTE: Remove 1 element at the source index
       [source, 1], // Remove elem from its original position
       [destination, 0, elem], // Splice elem into its new position
     ],
+  })
+}
+
+const createElement = <T,>(section: T[], elem: T): T[] => {
+  return update(section, {
+    $push: [elem],
   })
 }
 
@@ -78,9 +85,6 @@ const updateHomepageState = (
   switch (type) {
     case "editor": {
       const draggedElem = frontMatter.sections[source.index]
-      //! NOTE: Need to update this so that
-      //! the assignment is correct.
-      //! THIS HAS TO BE DONE BELOW AS WELL FOR EACH CASE!!!
       const newSections = updatePositions(
         frontMatter.sections,
         source.index,
@@ -88,7 +92,6 @@ const updateHomepageState = (
         draggedElem
       )
       const draggedError = errors.sections[source.index]
-      //! NOTE: This is a mutation!!!
       const newSectionErrors = updatePositions(
         errors.sections,
         source.index,
@@ -212,4 +215,133 @@ export const useDrag: OnDragEndResponseWrapper = (
   homepageState: HomepageState
 ) => (result) => {
   return updateHomepageState(result, homepageState)
+}
+
+type ElementOf<T> = T extends Array<infer U> ? U : never
+
+type HomepageElement = "section" | "dropdownelem" | "highlight"
+type PossibleSections = ElementOf<HomepageState["frontMatter"]["sections"]>
+
+// NOTE: 2 things here - deciding what to create
+// and the placement logic.
+// we need to separate them
+export const onCreate = <E,>(
+  homepageState: HomepageState,
+  elemType: HomepageElement,
+  val: PossibleSections,
+  err: E
+): HomepageState => {
+  const {
+    errors,
+    frontMatter,
+    displaySections,
+    displayDropdownElems,
+    displayHighlights,
+  } = homepageState
+
+  switch (elemType) {
+    case "section": {
+      // based on the element type,
+      // dynamically pass in the correct object to create
+      const sections = createElement(frontMatter.sections, val)
+      const newErrorSections = createElement(errors.sections, err)
+
+      const resetDisplaySections = _.fill(Array(displaySections.length), false)
+      const newDisplaySections = createElement(resetDisplaySections, true)
+
+      return {
+        ...homepageState,
+        frontMatter: {
+          ...frontMatter,
+          sections,
+        },
+        errors: {
+          ...errors,
+          sections: newErrorSections,
+        },
+        displaySections: newDisplaySections,
+      }
+    }
+    case "dropdownelem": {
+      const newDropdownOptions = createElement(
+        (frontMatter.sections[0].hero as HeroDropdownSection).dropdown.options,
+        val
+      )
+      const newDropdownErrors = createElement(errors.dropdownElems, err)
+
+      const resetDisplayDropdownElems = _.fill(
+        Array(displayDropdownElems.length),
+        false
+      )
+      const newDisplayDropdownElems = createElement(
+        resetDisplayDropdownElems,
+        true
+      )
+
+      return {
+        ...homepageState,
+        displayDropdownElems: newDisplayDropdownElems,
+        frontMatter: {
+          ...frontMatter,
+          sections: _.set(
+            frontMatter.sections,
+            ["0", "hero", "dropdown", "options"],
+            newDropdownOptions
+          ),
+        },
+        errors: { ...errors, dropdownElems: newDropdownErrors },
+      }
+    }
+    case "highlight": {
+      // If key highlights section exists
+      if (
+        !_.isEmpty(
+          (frontMatter.sections[0].hero as HeroHighlightsSection).key_highlights
+        )
+      ) {
+        const newHighlightOptions = createElement(
+          (frontMatter.sections[0].hero as HeroHighlightsSection)
+            .key_highlights,
+          val
+        )
+
+        const newHighlightErrors = createElement(errors.highlights, err)
+
+        const resetDisplayHighlights = _.fill(
+          Array(displayHighlights.length),
+          false
+        )
+        const newDisplayHighlights = createElement(resetDisplayHighlights, true)
+
+        return {
+          ...homepageState,
+          displayHighlights: newDisplayHighlights,
+          frontMatter: {
+            ...frontMatter,
+            sections: _.set(
+              frontMatter.sections,
+              ["0", "hero", "key_highlights"],
+              newHighlightOptions
+            ),
+          },
+          errors: { ...errors, highlights: newHighlightErrors },
+        }
+      }
+      return {
+        ...homepageState,
+        displayHighlights: [true],
+        frontMatter: {
+          ...frontMatter,
+          sections: _.set(
+            frontMatter.sections,
+            ["0", "hero", "key_highlights"],
+            [val]
+          ),
+        },
+        errors: { ...errors, highlights: [err] },
+      }
+    }
+    default:
+      return homepageState
+  }
 }

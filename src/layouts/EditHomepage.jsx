@@ -41,7 +41,7 @@ import {
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
-import { useDrag } from "../contexts/DragDropContext"
+import { useDrag, onCreate } from "../contexts/DragDropContext"
 
 /* eslint-disable react/no-array-index-key */
 
@@ -531,137 +531,83 @@ const EditHomepage = ({ match }) => {
   }
 
   const createHandler = async (event) => {
+    const homepageState = {
+      frontMatter,
+      errors,
+      displayDropdownElems,
+      displayHighlights,
+      displaySections,
+    }
+
     try {
       const { id, value } = event.target
       const idArray = id.split("-")
       const elemType = idArray[0]
 
-      let newSections = []
-      let newErrors = []
+      // The Isomer site can only have 1 resources section in the homepage
+      // Set hasResources to prevent the creation of more resources sections
+      if (elemType === "section" && value === "resources") {
+        setHasResources(true)
+      }
 
       switch (elemType) {
         case "section": {
-          // The Isomer site can only have 1 resources section in the homepage
-          // Set hasResources to prevent the creation of more resources sections
-          if (value === "resources") {
-            setHasResources(true)
-          }
+          const val = enumSection(value, false)
+          const err = enumSection(value, true)
 
-          newSections = update(frontMatter.sections, {
-            $push: [enumSection(value, false)],
-          })
-          newErrors = update(errors, {
-            sections: {
-              $push: [enumSection(value, true)],
-            },
-          })
           const newScrollRefs = update(scrollRefs, { $push: [createRef()] })
 
-          const resetDisplaySections = _.fill(
-            Array(displaySections.length),
-            false
+          const { frontMatter, errors, displaySections } = onCreate(
+            homepageState,
+            elemType,
+            val,
+            err
           )
-          const newDisplaySections = update(resetDisplaySections, {
-            $push: [true],
-          })
 
+          setFrontMatter(frontMatter)
+          setErrors(errors)
+          setDisplaySections(displaySections)
           setScrollRefs(newScrollRefs)
-          setDisplaySections(newDisplaySections)
 
           break
         }
         case "dropdownelem": {
-          const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT) + 1
+          const val = DropdownElemConstructor(false)
+          const err = DropdownElemConstructor(true)
 
-          newSections = update(frontMatter.sections, {
-            0: {
-              hero: {
-                dropdown: {
-                  options: {
-                    $splice: [
-                      [dropdownsIndex, 0, DropdownElemConstructor(false)],
-                    ],
-                  },
-                },
-              },
-            },
-          })
-
-          newErrors = update(errors, {
-            dropdownElems: {
-              $splice: [[dropdownsIndex, 0, DropdownElemConstructor(true)]],
-            },
-          })
-
-          const resetDisplayDropdownElems = _.fill(
-            Array(displayDropdownElems.length),
-            false
+          const { frontMatter, errors, displayDropdownElems } = onCreate(
+            homepageState,
+            elemType,
+            val,
+            err
           )
-          const newDisplayDropdownElems = update(resetDisplayDropdownElems, {
-            $splice: [[dropdownsIndex, 0, true]],
-          })
 
-          setDisplayDropdownElems(newDisplayDropdownElems)
+          setFrontMatter(frontMatter)
+          setErrors(errors)
+          setDisplayDropdownElems(displayDropdownElems)
 
           break
         }
         case "highlight": {
+          // depends on index to generate
           // If key highlights section exists
-          if (!_.isEmpty(frontMatter.sections[0].hero.key_highlights)) {
-            const highlightIndex = parseInt(idArray[1], 10) + 1
+          const val = KeyHighlightConstructor(false)
+          const err = KeyHighlightConstructor(true)
+          const { frontMatter, errors, displayHighlights } = onCreate(
+            homepageState,
+            elemType,
+            val,
+            err
+          )
 
-            newSections = update(frontMatter.sections, {
-              0: {
-                hero: {
-                  key_highlights: {
-                    $splice: [
-                      [highlightIndex, 0, KeyHighlightConstructor(false)],
-                    ],
-                  },
-                },
-              },
-            })
-
-            newErrors = update(errors, {
-              highlights: {
-                $splice: [[highlightIndex, 0, KeyHighlightConstructor(true)]],
-              },
-            })
-
-            const resetDisplayHighlights = _.fill(
-              Array(displayHighlights.length),
-              false
-            )
-            const newDisplayHighlights = update(resetDisplayHighlights, {
-              $splice: [[highlightIndex, 0, true]],
-            })
-
-            setDisplayHighlights(newDisplayHighlights)
-          } else {
-            // If neither key highlights nor dropdown section exists, create new key highlights array
-            newSections = _.cloneDeep(frontMatter.sections)
-            newSections[0].hero.key_highlights = [
-              KeyHighlightConstructor(false),
-            ]
-
-            newErrors = _.cloneDeep(errors)
-            newErrors.highlights = [KeyHighlightConstructor(true)]
-
-            const newDisplayHighlights = [true]
-
-            setDisplayHighlights(newDisplayHighlights)
-          }
-
+          setFrontMatter(frontMatter)
+          setErrors(errors)
+          setDisplayHighlights(displayHighlights)
           break
         }
         default:
           return
       }
-      setFrontMatter({
-        ...frontMatter,
-        sections: newSections,
-      })
-      setErrors(newErrors)
     } catch (err) {
       console.log(err)
     }
@@ -673,7 +619,7 @@ const EditHomepage = ({ match }) => {
       const elemType = idArray[0]
 
       let newSections = []
-      let newErrors = {}
+      let newErrors = []
 
       switch (elemType) {
         case "section": {
