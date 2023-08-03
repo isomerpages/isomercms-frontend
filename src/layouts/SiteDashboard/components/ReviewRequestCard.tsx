@@ -1,5 +1,8 @@
 import { Icon, Badge, Box, HStack, Text } from "@chakra-ui/react"
-import { InlineMessage } from "@opengovsg/design-system-react"
+import { Infobox } from "@opengovsg/design-system-react"
+import { BiRightArrowAlt } from "react-icons/bi"
+import { Link, useParams } from "react-router-dom"
+
 import {
   DisplayCard,
   DisplayCardCaption,
@@ -8,8 +11,6 @@ import {
   DisplayCardHeader,
   DisplayCardTitle,
 } from "components/DisplayCard"
-import { BiRightArrowAlt } from "react-icons/bi"
-import { Link, useParams } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 
@@ -57,10 +58,10 @@ export const ReviewRequestCard = ({
       {reviewRequest.status === ReviewRequestStatus.APPROVED && (
         <>
           <Box paddingBottom="0.5rem">
-            <InlineMessage variant="info" textStyle="body-2">
+            <Infobox variant="info" textStyle="body-2">
               This request is ready to be published! Publish now to unlock
               editing for the rest of your site.
-            </InlineMessage>
+            </Infobox>
           </Box>
           <Badge
             variant="solid"

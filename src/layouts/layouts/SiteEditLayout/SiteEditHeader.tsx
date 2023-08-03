@@ -17,11 +17,12 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { Button, IconButton } from "@opengovsg/design-system-react"
+import { BiArrowBack, BiCheckCircle } from "react-icons/bi"
+import { useParams, useHistory } from "react-router-dom"
+
 import { ButtonLink } from "components/ButtonLink"
 import { NotificationMenu } from "components/Header/NotificationMenu"
 import { WarningModal } from "components/WarningModal"
-import { BiArrowBack, BiCheckCircle } from "react-icons/bi"
-import { useParams, useHistory } from "react-router-dom"
 
 import { useDirtyFieldContext } from "contexts/DirtyFieldContext"
 import { useLoginContext } from "contexts/LoginContext"
@@ -201,7 +202,7 @@ const DirtyWarningModal = ({
         </Text>
       }
     >
-      <Button colorScheme="danger" onClick={onClose}>
+      <Button colorScheme="critical" onClick={onClose}>
         No
       </Button>
       <Button onClick={onClick}>Yes</Button>

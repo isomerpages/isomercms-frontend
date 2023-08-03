@@ -1,3 +1,6 @@
+import "@fontsource/ibm-plex-mono"
+import "inter-ui/inter.css"
+
 import { datadogRum } from "@datadog/browser-rum"
 import { ThemeProvider } from "@opengovsg/design-system-react"
 import axios from "axios"

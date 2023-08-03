@@ -1,5 +1,6 @@
-import { MediaSettingsModal } from "components/MediaSettingsModal"
 import PropTypes from "prop-types"
+
+import { MediaSettingsModal } from "components/MediaSettingsModal"
 
 import { useGetMediaFolders } from "hooks/directoryHooks"
 import { useGetMediaHook, useUpdateMediaHook } from "hooks/mediaHooks"

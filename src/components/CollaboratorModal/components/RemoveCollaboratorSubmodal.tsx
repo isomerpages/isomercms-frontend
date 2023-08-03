@@ -54,7 +54,7 @@ export const RemoveCollaboratorSubmodal = ({
           ) : (
             <Text fontSize={TEXT_FONT_SIZE}>
               <Text as="span">Once you remove</Text>
-              <Text color="danger.700" as="strong">
+              <Text color="utility.feedback.critical" as="strong">
                 {" "}
                 {userToDelete?.email}{" "}
               </Text>
@@ -69,7 +69,7 @@ export const RemoveCollaboratorSubmodal = ({
               Cancel
             </Button>
             <Button
-              colorScheme="danger"
+              colorScheme="critical"
               isDisabled={!userToDelete}
               isLoading={isDeleteCollaboratorLoading}
               onClick={async () => {

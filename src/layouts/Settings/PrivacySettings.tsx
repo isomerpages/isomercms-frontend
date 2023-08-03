@@ -20,10 +20,11 @@ import {
   FormLabel,
   IconButton,
 } from "@opengovsg/design-system-react"
-import { FormTitle } from "components/Form"
 import { useEffect, useState } from "react"
 import { useFormContext, useFormState } from "react-hook-form"
 import { BiCopy } from "react-icons/bi"
+
+import { FormTitle } from "components/Form"
 
 import { Section, SectionHeader } from "layouts/components"
 

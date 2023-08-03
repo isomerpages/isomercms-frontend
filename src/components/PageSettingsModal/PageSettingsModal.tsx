@@ -15,9 +15,14 @@ import {
 import { yupResolver } from "@hookform/resolvers/yup"
 import {
   FormErrorMessage,
+  Link,
   FormLabel,
   ModalCloseButton,
 } from "@opengovsg/design-system-react"
+import _ from "lodash"
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
+
 import { Breadcrumb } from "components/folders/Breadcrumb"
 import {
   FormContext,
@@ -27,9 +32,6 @@ import {
 } from "components/Form"
 import FormFieldMedia from "components/FormFieldMedia"
 import { LoadingButton } from "components/LoadingButton"
-import _ from "lodash"
-import { useEffect } from "react"
-import { useForm } from "react-hook-form"
 
 import { getDefaultFrontMatter, pageFileNameToTitle } from "utils"
 
@@ -186,9 +188,18 @@ export const PageSettingsModal = ({
                   <FormLabel mb={0} textColor="text.label">
                     Meta Description
                   </FormLabel>
-                  <FormLabel.Description useMarkdown color="text.description">
-                    Description snippet shown in search results. [Learn
-                    more](https://go.gov.sg/isomer-meta)
+                  <FormLabel.Description color="text.description">
+                    {/* NOTE: See here: https://github.com/opengovsg/design-system/issues/440
+                     * for why this is required
+                     */}
+                    {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                    {/* @ts-ignore */}
+                    <Text>
+                      Description snippet shown in search results.
+                      <Link isExternal href="https://go.gov.sg/isomer-meta">
+                        Learn more
+                      </Link>
+                    </Text>
                   </FormLabel.Description>
                 </Box>
                 <Input

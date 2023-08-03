@@ -1,7 +1,8 @@
 import { Box, BoxProps } from "@chakra-ui/react"
-import { MotionBox } from "components/motion"
 import { uniqueId } from "lodash"
 import { useMemo } from "react"
+
+import { MotionBox } from "components/motion"
 
 const ActiveIndicator = (): JSX.Element => (
   <Box

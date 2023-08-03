@@ -1,5 +1,6 @@
 import { Text } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
+
 import { WarningModal } from "components/WarningModal"
 
 interface OverrideWarningModalProps {
@@ -44,7 +45,7 @@ export const OverrideWarningModal = ({
         Back to editing
       </Button>
       <Button
-        colorScheme="danger"
+        colorScheme="critical"
         type="submit"
         isLoading={isLoading}
         onClick={async () => {

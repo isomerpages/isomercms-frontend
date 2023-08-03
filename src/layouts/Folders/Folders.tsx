@@ -7,10 +7,6 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
-import {
-  MenuDropdownButton,
-  MenuDropdownItem,
-} from "components/MenuDropdownButton"
 import { BiFileBlank, BiFolder, BiSort } from "react-icons/bi"
 import {
   Switch,
@@ -18,6 +14,11 @@ import {
   useHistory,
   Link as RouterLink,
 } from "react-router-dom"
+
+import {
+  MenuDropdownButton,
+  MenuDropdownItem,
+} from "components/MenuDropdownButton"
 
 import { useGetFoldersAndPages } from "hooks/directoryHooks"
 

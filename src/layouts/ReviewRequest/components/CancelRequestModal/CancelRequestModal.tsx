@@ -73,7 +73,7 @@ export const CancelRequestModal = (
           </Button>
           <Button
             isLoading={isLoading}
-            colorScheme="danger"
+            colorScheme="critical"
             onClick={async () => {
               await cancelReviewRequest()
               onClose()

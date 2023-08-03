@@ -108,7 +108,6 @@ export const Sidebar = (): JSX.Element => {
       <Divider color="secondary.100" />
       <Tabs
         orientation="vertical"
-        variant="line-vertical"
         // NOTE: This is a workaround as routes don't play well with tabs
         defaultIndex={getTabIndex(selectedTab)}
       >
@@ -210,7 +209,9 @@ const TabLabel = ({
   return (
     <HStack spacing="1.5rem" align="left" w="100%">
       <Icon as={icon} fontSize="1.5rem" />
-      <Text textStyle="body-1">{children}</Text>
+      <Text textStyle="body-1" textTransform="none">
+        {children}
+      </Text>
     </HStack>
   )
 }

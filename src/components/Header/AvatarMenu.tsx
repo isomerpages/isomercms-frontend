@@ -9,8 +9,9 @@ import {
   useDisclosure,
 } from "@chakra-ui/react"
 import { Menu } from "@opengovsg/design-system-react"
-import { ContextMenuItem } from "components/ContextMenu/ContextMenuItem"
 import { BiLogOutCircle, BiUser } from "react-icons/bi"
+
+import { ContextMenuItem } from "components/ContextMenu/ContextMenuItem"
 
 import useRedirectHook from "hooks/useRedirectHook"
 

@@ -1,7 +1,8 @@
 import axios from "axios"
-import { DirectorySettingsModal } from "components/DirectorySettingsModal"
 import _ from "lodash"
 import PropTypes from "prop-types"
+
+import { DirectorySettingsModal } from "components/DirectorySettingsModal"
 
 import {
   useGetDirectoryHook,

@@ -21,7 +21,14 @@ import {
   FormErrorMessage,
   FormLabel,
   ModalCloseButton,
+  Link,
 } from "@opengovsg/design-system-react"
+import { format } from "date-fns-tz"
+import _ from "lodash"
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
+import slugify from "slugify"
+
 import { Breadcrumb } from "components/folders/Breadcrumb"
 import {
   FormContext,
@@ -31,11 +38,6 @@ import {
 } from "components/Form"
 import FormFieldMedia from "components/FormFieldMedia"
 import { LoadingButton } from "components/LoadingButton"
-import { format } from "date-fns-tz"
-import _ from "lodash"
-import { useEffect } from "react"
-import { useForm } from "react-hook-form"
-import slugify from "slugify"
 
 import { pageFileNameToTitle } from "utils"
 
@@ -302,7 +304,7 @@ export const ResourcePageSettingsModal = ({
               <FormControl isRequired isInvalid={!!errors.date?.message}>
                 <Box mb="0.75rem">
                   <FormLabel mb={0}>Date (YYYY-MM-DD)</FormLabel>
-                  <FormLabel.Description useMarkdown color="text.description">
+                  <FormLabel.Description color="text.description">
                     Resources are organised by latest date in your site.
                   </FormLabel.Description>
                 </Box>
@@ -325,7 +327,7 @@ export const ResourcePageSettingsModal = ({
                     }}
                   >
                     <FormTitle>File</FormTitle>
-                    <FormLabel.Description useMarkdown color="text.description">
+                    <FormLabel.Description color="text.description">
                       The maximum file size allowed is 5MB.
                     </FormLabel.Description>
                     <FormFieldMedia
@@ -347,12 +349,18 @@ export const ResourcePageSettingsModal = ({
                       <FormLabel mb={0} textColor="text.label">
                         Meta Description
                       </FormLabel>
-                      <FormLabel.Description
-                        useMarkdown
-                        color="text.description"
-                      >
-                        Description snippet shown in search results. [Learn
-                        more](https://go.gov.sg/isomer-meta)
+                      <FormLabel.Description color="text.description">
+                        {/* NOTE: See here: https://github.com/opengovsg/design-system/issues/440
+                         * for why this is required
+                         */}
+                        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                        {/* @ts-ignore */}
+                        <Text>
+                          Description snippet shown in search results.
+                          <Link isExternal href="https://go.gov.sg/isomer-meta">
+                            Learn more
+                          </Link>
+                        </Text>
                       </FormLabel.Description>
                     </Box>
                     <Input

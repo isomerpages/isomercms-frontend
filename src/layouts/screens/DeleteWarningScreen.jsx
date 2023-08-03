@@ -1,8 +1,9 @@
 import { Text } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
+import PropTypes from "prop-types"
+
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
-import PropTypes from "prop-types"
 
 import { useDeleteDirectoryHook } from "hooks/directoryHooks"
 import { useGetMediaHook, useDeleteMediaHook } from "hooks/mediaHooks"
@@ -47,7 +48,7 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
           Cancel
         </Button>
         <LoadingButton
-          colorScheme="danger"
+          colorScheme="critical"
           onClick={() => deleteHandler({ sha: fileData.sha })}
         >
           Yes, delete
@@ -72,7 +73,7 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
       <Button variant="clear" colorScheme="secondary" onClick={onClose}>
         Cancel
       </Button>
-      <LoadingButton colorScheme="danger" onClick={deleteHandler}>
+      <LoadingButton colorScheme="critical" onClick={deleteHandler}>
         Yes, delete
       </LoadingButton>
     </WarningModal>

@@ -28,7 +28,7 @@ export const SiteViewLayout = ({ children }: StackProps): JSX.Element => {
           alignSelf="flex-start"
           position="sticky"
           top={0}
-          zIndex="sticky"
+          zIndex="docked"
         >
           <SiteViewHeader />
         </GridItem>
