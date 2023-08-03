@@ -77,5 +77,12 @@ declare namespace Cypress {
       initialUserType: "Email admin" | "Email collaborator",
       site?: string
     ): Chainable<void>
+    actAsEmailUser(
+      email: string,
+      // NOTE: have to (re)declare the type here
+      // otherwise the import leads to a type error
+      userType: "Email admin" | "Email collaborator",
+      site?: string
+    ): Chainable<void>
   }
 }
