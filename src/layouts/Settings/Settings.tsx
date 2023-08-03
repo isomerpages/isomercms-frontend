@@ -104,14 +104,35 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
   const { formState, reset, getValues } = methods
   const { isDirty, dirtyFields } = formState
   const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
   const { setIsDirty } = useDirtyFieldContext()
   const {
     mutateAsync: updateSettings,
     error: updateSettingsError,
     isLoading,
     isSuccess,
-  } = useUpdateSettings(siteName)
-  const errorToast = useErrorToast()
+  } = useUpdateSettings(
+    siteName,
+    () => {
+      successToast({
+        id: "update-settings-success",
+        title: "Success",
+        description: "Site settings have been updated",
+      })
+    },
+    () => {
+      const errorMessage =
+        updateSettingsError?.response?.status === 409
+          ? "Your site settings have recently been changed by another user. You can choose to either override their changes, or go back to editing. We recommend you to make a copy of your changes elsewhere, and come back later to reconcile your changes."
+          : `Site settings could not be updated. ${DEFAULT_RETRY_MSG}`
+      return errorToast({
+        id: "update-settings-error",
+        title: "Error",
+        description: errorMessage,
+      })
+    }
+  )
+
   const onSubmit = methods.handleSubmit((data: SiteSettings) => {
     updateSettings(data)
   })
@@ -150,32 +171,6 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
       reset(settings)
     }
   }, [isSuccess, getValues, reset, settings])
-
-  // Trigger an error toast informing the user if settings data could not be updated
-  useEffect(() => {
-    if (updateSettingsError) {
-      const errorMessage =
-        updateSettingsError?.response?.status === 409
-          ? "Your site settings have recently been changed by another user. You can choose to either override their changes, or go back to editing. We recommend you to make a copy of your changes elsewhere, and come back later to reconcile your changes."
-          : `Site settings could not be updated. ${DEFAULT_RETRY_MSG}`
-      errorToast({
-        id: "update-settings-error",
-        title: "Error",
-        description: errorMessage,
-      })
-    }
-  }, [errorToast, updateSettingsError])
-
-  // Trigger a success toast informing the user if settings data was updated successfully
-  useEffect(() => {
-    if (isSuccess) {
-      successToast({
-        id: "update-settings-success",
-        title: "Success!",
-        description: "Successfully updated settings!",
-      })
-    }
-  }, [isSuccess, successToast])
 
   return (
     <Box w="100%">
