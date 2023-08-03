@@ -16,9 +16,10 @@ import {
   Textarea,
   FormLabel,
 } from "@opengovsg/design-system-react"
-import { Rating } from "components/Rating/Rating"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
+
+import { Rating } from "components/Rating/Rating"
 
 import { useLoginContext } from "contexts/LoginContext"
 
