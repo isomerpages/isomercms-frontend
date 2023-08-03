@@ -31,7 +31,8 @@ export const UngroupedPages = ({
           </CreateButton>
         </SectionHeader>
         <SectionCaption label="NOTE: " icon={BiInfoCircle}>
-          These pages aren't in folders, but can be added as items to your navigation bar.
+          These pages aren&apos;t in folders, but can be added as items to your
+          navigation bar.
         </SectionCaption>
       </Box>
       <Skeleton isLoaded={!!pagesData} w="full">
