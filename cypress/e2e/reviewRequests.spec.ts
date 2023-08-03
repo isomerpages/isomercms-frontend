@@ -27,7 +27,7 @@ import {
 import {
   addAdminCollaborator,
   addCollaborator,
-  removeFirstCollaborator,
+  removeOtherCollaborators,
   visitE2eEmailTestRepo,
 } from "../utils"
 
@@ -97,9 +97,7 @@ describe("Review Requests", () => {
       cy.setupDefaultInterceptors()
       cy.setEmailSessionDefaults("Email admin")
       visitE2eEmailTestRepo()
-      removeFirstCollaborator()
-      removeFirstCollaborator()
-      removeFirstCollaborator()
+      removeOtherCollaborators()
     })
 
     it("should not be able to create a review request when there are no changes", () => {
@@ -174,9 +172,7 @@ describe("Review Requests", () => {
     before(() => {
       cy.setupDefaultInterceptors()
       cy.setEmailSessionDefaults("Email admin")
-      removeFirstCollaborator()
-      removeFirstCollaborator()
-      removeFirstCollaborator()
+      removeOtherCollaborators()
       addAdmin(E2E_EMAIL_ADMIN_2.email)
       addCollaborator(E2E_EMAIL_COLLAB_NON_GOV.email)
       editUnlinkedPage(
