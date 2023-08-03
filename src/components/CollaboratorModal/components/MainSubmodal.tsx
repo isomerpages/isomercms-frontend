@@ -83,7 +83,11 @@ const CollaboratorListSection = ({ onDelete }: CollaboratorListProps) => {
                   </Text>
                   {numDaysAgo(collaborator.lastLoggedIn) >=
                     LAST_LOGGED_IN_THRESHOLD_IN_DAYS && (
-                    <Text pl="0.25rem" textStyle="body-2" color="danger.500">
+                    <Text
+                      pl="0.25rem"
+                      textStyle="body-2"
+                      color="utility.feedback.critical"
+                    >
                       {`(Last logged in ${numDaysSinceLastLogin} days ago)`}
                     </Text>
                   )}

@@ -54,7 +54,7 @@ export const RemoveCollaboratorSubmodal = ({
           ) : (
             <Text fontSize={TEXT_FONT_SIZE}>
               <Text as="span">Once you remove</Text>
-              <Text color="danger.700" as="strong">
+              <Text color="utility.feedback.critical" as="strong">
                 {" "}
                 {userToDelete?.email}{" "}
               </Text>
