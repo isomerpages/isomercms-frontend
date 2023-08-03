@@ -94,7 +94,7 @@ const EditorInfopicSection = ({
           <FormContext isRequired hasError={errors.url}>
             <FormTitle>Infopic button URL</FormTitle>
             <FormField
-              placeholder="Insert permalink or external URL"
+              placeholder="Insert /page-url or https://"
               id={`section-${sectionIndex}-infopic-url`}
               value={url}
               onChange={onFieldChange}

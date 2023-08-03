@@ -163,7 +163,9 @@ describe("Workspace Pages flow", () => {
       cy.wait(Interceptors.POST)
       // Asserts
       // Should show modal
-      cy.contains("Successfully updated page!").should("exist")
+      cy.contains(
+        "Changes saved. See a preview on Staging, or request a Review for them to be published."
+      ).should("exist")
       // New page title should be reflected in Folders
       cy.contains(EDITED_TEST_PAGE_TITLE_2).should("exist")
     })

@@ -7,7 +7,7 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
-import { BiBulb, BiFileBlank, BiFolder, BiSort } from "react-icons/bi"
+import { BiFileBlank, BiFolder, BiSort } from "react-icons/bi"
 import {
   Switch,
   useRouteMatch,
@@ -39,12 +39,7 @@ import { FolderUrlParams } from "types/folders"
 import { isDirData } from "types/utils"
 import { deslugifyDirectory } from "utils"
 
-import {
-  Section,
-  SectionHeader,
-  SectionCaption,
-  CreateButton,
-} from "../components"
+import { Section, SectionHeader, CreateButton } from "../components"
 import { SiteEditLayout } from "../layouts"
 
 import { FolderBreadcrumbs, FolderCard, PageCard } from "./components"
@@ -128,7 +123,7 @@ export const Folders = (): JSX.Element => {
                       }
                     >
                       <Text textStyle="body-1" fill="text.body">
-                        Create folder
+                        Create subfolder
                       </Text>
                     </MenuDropdownItem>
                   </MenuDropdownButton>
@@ -139,10 +134,6 @@ export const Folders = (): JSX.Element => {
                 )}
               </ButtonGroup>
             </SectionHeader>
-            <SectionCaption label="PRO TIP: " icon={BiBulb}>
-              Subfolders appear as side navigation in pages. Create a new
-              section by creating a subfolder.
-            </SectionCaption>
           </Box>
           <Skeleton
             isLoaded={!isLoadingDirectory}

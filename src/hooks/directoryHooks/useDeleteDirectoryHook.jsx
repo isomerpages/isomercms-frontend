@@ -25,14 +25,14 @@ export function useDeleteDirectoryHook(params, queryParams) {
     onError: () => {
       errorToast({
         id: "delete-directory-error",
-        description: `Your directory could not be deleted. ${DEFAULT_RETRY_MSG}`,
+        description: `Your item could not be deleted. ${DEFAULT_RETRY_MSG}`,
       })
       if (queryParams && queryParams.onError) queryParams.onError()
     },
     onSuccess: () => {
       successToast({
         id: "delete-directory-success",
-        description: `Successfully deleted directory!`,
+        description: `Successfully deleted item!`,
       })
       if (params.mediaDirectoryName)
         queryClient.invalidateQueries([

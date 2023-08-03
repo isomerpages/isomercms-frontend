@@ -1,6 +1,6 @@
+import { Droppable, Draggable } from "@hello-pangea/dnd"
 import { Button, IconButton } from "@opengovsg/design-system-react"
 import PropTypes from "prop-types"
-import { Droppable, Draggable } from "react-beautiful-dnd"
 
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormField from "components/FormField"

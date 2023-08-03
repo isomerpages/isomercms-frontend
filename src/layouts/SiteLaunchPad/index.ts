@@ -1,1 +1,1 @@
-export { SiteLaunchPad } from "./SiteLaunchPad"
+export { SiteLaunchPad, SiteLaunchPadPage } from "./SiteLaunchPad"

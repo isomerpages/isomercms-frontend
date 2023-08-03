@@ -143,7 +143,7 @@ export const DirectoryCreationModal = ({
                 )}'`}</h1>
               </div>
               <div className="d-flex justify-content-between w-100">
-                <span>Pages</span>
+                <span>Pages will be ordered by the order of selection</span>
               </div>
               <br />
               {/* Pages */}

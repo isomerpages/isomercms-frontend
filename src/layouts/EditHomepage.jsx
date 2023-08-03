@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import { useDisclosure, Text, HStack, VStack } from "@chakra-ui/react"
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd"
 import { Button, Input } from "@opengovsg/design-system-react"
 import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import { useEffect, createRef, useState } from "react"
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
 import { Footer } from "components/Footer"
 import Header from "components/Header"

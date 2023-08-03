@@ -63,7 +63,7 @@ const ReorderingModal = ({ params, dirData, onProceed, onClose }) => {
           >
             {/* Page title */}
             <div className={contentStyles.sectionHeader}>
-              <h1 className={contentStyles.sectionTitle}>{`Rearrange items in ${
+              <h1 className={contentStyles.sectionTitle}>{`Reorder items in ${
                 subCollectionName
                   ? deslugifyDirectory(subCollectionName)
                   : deslugifyDirectory(collectionName)
@@ -73,7 +73,7 @@ const ReorderingModal = ({ params, dirData, onProceed, onClose }) => {
               <i className="bx bx-sm bx-bulb text-dark" />
               <span>
                 <strong className="ml-1">Pro tip:</strong> Drag and drop the
-                items below to rearrange their order in your site.
+                items below.
               </span>
             </div>
             {/* Segment divider  */}

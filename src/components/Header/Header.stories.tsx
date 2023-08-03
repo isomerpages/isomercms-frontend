@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import { MemoryRouter, Route } from "react-router-dom"
 
 import { DirtyFieldContextProvider } from "contexts/DirtyFieldContext"
@@ -35,9 +35,9 @@ const HeaderMeta = {
       )
     },
   ],
-} as ComponentMeta<typeof SiteEditHeader>
+} as Meta<typeof SiteEditHeader>
 
-const Template: ComponentStory<typeof SiteEditHeader> = () => {
+const Template: StoryFn<typeof SiteEditHeader> = () => {
   return <SiteEditHeader />
 }
 

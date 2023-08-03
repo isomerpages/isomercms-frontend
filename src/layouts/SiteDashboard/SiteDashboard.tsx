@@ -36,6 +36,7 @@ import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 import { useLoginContext } from "contexts/LoginContext"
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
+import { useGetCollaboratorRoleHook } from "hooks/collaboratorHooks"
 import {
   useGetSiteInfo,
   useGetReviewRequests,
@@ -45,7 +46,7 @@ import {
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { getDateTimeFromUnixTime } from "utils/date"
-import { shouldUseSiteLaunchFeature } from "utils/siteLaunchUtils"
+import { isSiteLaunchEnabled } from "utils/siteLaunchUtils"
 
 import { BxsClearRocket, SiteDashboardHumanImage } from "assets"
 import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
@@ -65,6 +66,7 @@ export const SiteDashboard = (): JSX.Element => {
     onClose: onCollaboratorsModalClose,
   } = useDisclosure()
   const { siteName } = useParams<{ siteName: string }>()
+  const { data: role } = useGetCollaboratorRoleHook(siteName)
   const { setRedirectToPage } = useRedirectHook()
   const { userId } = useLoginContext()
   const { siteLaunchStatusProps } = useSiteLaunchContext()
@@ -205,7 +207,7 @@ export const SiteDashboard = (): JSX.Element => {
               {/* Human image and last saved/published */}
               <Box w="100%">
                 {(siteLaunchStatus === "LAUNCHED" ||
-                  !shouldUseSiteLaunchFeature(siteName)) && (
+                  !isSiteLaunchEnabled(siteName, role)) && (
                   <SiteDashboardHumanImage />
                 )}
                 <DisplayCard variant="content">
@@ -234,7 +236,7 @@ export const SiteDashboard = (): JSX.Element => {
                       </Skeleton>
 
                       <Skeleton isLoaded={!isSiteLaunchLoading} w="100%">
-                        {shouldUseSiteLaunchFeature(siteName) &&
+                        {isSiteLaunchEnabled(siteName, role) &&
                           siteLaunchStatus === "LAUNCHED" && (
                             <Flex alignItems="center">
                               <Text
@@ -340,11 +342,12 @@ export const SiteDashboard = (): JSX.Element => {
 
 const SiteLaunchDisplayCard = (): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
+  const { data: role } = useGetCollaboratorRoleHook(siteName)
   const { siteLaunchStatusProps } = useSiteLaunchContext()
   const siteLaunchStatus = siteLaunchStatusProps?.siteLaunchStatus
   const siteLaunchChecklistStepNumber = siteLaunchStatusProps?.stepNumber
   const isSiteLaunchLoading = siteLaunchStatus === "LOADING"
-  if (!shouldUseSiteLaunchFeature(siteName)) return <></>
+  if (!isSiteLaunchEnabled(siteName, role)) return <></>
   if (siteLaunchStatus === "LAUNCHED") return <></>
 
   return (

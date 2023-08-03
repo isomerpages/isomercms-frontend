@@ -176,7 +176,7 @@ export const PageSettingsModal = ({
                 <Input
                   {...register("permalink", { required: true })}
                   id="permalink"
-                  placeholder="Page URL"
+                  placeholder="Insert /page-url or https://"
                 />
                 <FormErrorMessage>{errors.permalink?.message}</FormErrorMessage>
               </FormControl>

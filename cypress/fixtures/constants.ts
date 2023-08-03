@@ -61,3 +61,17 @@ export const MOCK_REVIEW_DESCRIPTION = "Some interesting description"
 
 export const FORBIDDEN_CHARACTERS = "!@#$%^&*()"
 export const NON_ENGLISH_CHARACTERS = "文கி"
+
+export const timings = {
+  outOfTheWay: 0.2,
+  // greater than the out of the way time
+  // so that when the drop ends everything will
+  // have to be out of the way
+  minDropTime: 0.33,
+  maxDropTime: 0.55,
+}
+
+export const keyCodes = {
+  space: 32,
+  arrowDown: 40,
+}
