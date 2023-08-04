@@ -41,7 +41,7 @@ import {
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
-import { useDrag, onCreate, onDelete } from "../contexts/DragDropContext"
+import { useDrag, onCreate, onDelete } from "../hooks/useDrag"
 
 /* eslint-disable react/no-array-index-key */
 
