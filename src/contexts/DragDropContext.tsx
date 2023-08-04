@@ -2,7 +2,13 @@ import { DropResult } from "@hello-pangea/dnd"
 import update from "immutability-helper"
 import _ from "lodash"
 
-import { HomepageDto } from "types/homepage"
+import {
+  EditorHeroDropdownSection,
+  EditorHeroHighlightsSection,
+  EditorHomepageElement,
+  EditorHomepageState,
+  PossibleEditorSections,
+} from "types/homepage"
 
 const updatePositions = <T,>(
   section: T[],
@@ -32,32 +38,68 @@ const deleteElement = <T,>(section: T[], indexToDelete: number): T[] => {
   })
 }
 
-interface HeroDropdownSection {
-  dropdown: {
-    options: []
-  }
-}
+const updateEditorSection = (
+  homepageState: EditorHomepageState,
+  newDisplaySections: unknown[],
+  newFrontMatterSection: EditorHomepageState["frontMatter"]["sections"],
+  newSectionErrors: unknown[]
+): EditorHomepageState => ({
+  ...homepageState,
+  displaySections: newDisplaySections,
+  frontMatter: {
+    ...homepageState.frontMatter,
+    sections: newFrontMatterSection,
+  },
+  errors: { ...homepageState.errors, sections: newSectionErrors },
+})
 
-interface HeroHighlightsSection {
-  key_highlights: []
-}
+const updateDropdownSection = (
+  homepageState: EditorHomepageState,
+  newDisplayDropdownElems: unknown[],
+  newDropdownOptions: unknown[],
+  newDropdownErrors: unknown[]
+): EditorHomepageState => ({
+  ...homepageState,
+  displayDropdownElems: newDisplayDropdownElems,
+  frontMatter: {
+    ...homepageState.frontMatter,
+    sections: _.set(
+      homepageState.frontMatter.sections,
+      ["0", "hero", "dropdown", "options"],
+      newDropdownOptions
+    ),
+  },
+  errors: { ...homepageState.errors, dropdownElems: newDropdownErrors },
+})
 
-type HomepageEditorHeroSection = HeroDropdownSection | HeroHighlightsSection
+const updateHighlightsSection = (
+  homepageState: EditorHomepageState,
+  newDisplayHighlights: unknown[],
+  newHighlightOptions: unknown[],
+  newHighlightErrors: unknown[]
+): EditorHomepageState => ({
+  ...homepageState,
+  displayHighlights: newDisplayHighlights,
+  frontMatter: {
+    ...homepageState.frontMatter,
+    sections: _.set(
+      homepageState.frontMatter.sections,
+      ["0", "hero", "key_highlights"],
+      newHighlightOptions
+    ),
+  },
+  errors: { ...homepageState.errors, highlights: newHighlightErrors },
+})
 
-interface HomepageState {
-  frontMatter: Omit<HomepageDto["content"]["frontMatter"], "sections"> & {
-    sections: {
-      hero: HomepageEditorHeroSection
-    }[]
-  }
-  errors: {
-    sections: unknown[]
-    dropdownElems: unknown[]
-    highlights: unknown[]
-  }
-  displaySections: unknown[]
-  displayDropdownElems: unknown[]
-  displayHighlights: unknown[]
+type OnDragEndResponseWrapper = (
+  state: EditorHomepageState
+) => (result: DropResult) => EditorHomepageState
+
+// TODO: keep state in context rather than doing this
+export const useDrag: OnDragEndResponseWrapper = (
+  homepageState: EditorHomepageState
+) => (result) => {
+  return updateHomepageState(result, homepageState)
 }
 
 // NOTE: We mutate by addr in some places
@@ -66,8 +108,8 @@ interface HomepageState {
 // which will ensure read reference equality
 const updateHomepageState = (
   result: DropResult,
-  homepageState: HomepageState
-): HomepageState => {
+  homepageState: EditorHomepageState
+): EditorHomepageState => {
   const { source, destination, type } = result
   const {
     errors,
@@ -87,7 +129,6 @@ const updateHomepageState = (
   )
     return homepageState
 
-  // type is just to know which part to edit
   switch (type) {
     case "editor": {
       const draggedElem = frontMatter.sections[source.index]
@@ -113,25 +154,23 @@ const updateHomepageState = (
         displayBool
       )
 
-      return {
-        ...homepageState,
-        displaySections: newDisplaySections,
-        frontMatter: {
-          ...frontMatter,
-          sections: newSections,
-        },
-        errors: { ...errors, sections: newSectionErrors },
-      }
+      return updateEditorSection(
+        homepageState,
+        newDisplaySections,
+        newSections,
+        newSectionErrors
+      )
     }
     // inner dnd for hero
     // passed in via droppableId
     case "dropdownelem": {
       // TODO: type check to avoid casting
-      const draggedElem = (frontMatter.sections[0].hero as HeroDropdownSection)
-        .dropdown.options[source.index]
+      const draggedElem = (frontMatter.sections[0]
+        .hero as EditorHeroDropdownSection).dropdown.options[source.index]
       //! Thsis needs to be updated
       const newDropdownOptions = updatePositions(
-        (frontMatter.sections[0].hero as HeroDropdownSection).dropdown.options,
+        (frontMatter.sections[0].hero as EditorHeroDropdownSection).dropdown
+          .options,
         source.index,
         destination.index,
         draggedElem
@@ -169,9 +208,10 @@ const updateHomepageState = (
     case "highlight": {
       // TODO: type check to avoid casting
       const draggedElem = (frontMatter.sections[0]
-        .hero as HeroHighlightsSection).key_highlights[source.index]
+        .hero as EditorHeroHighlightsSection).key_highlights[source.index]
       const newHighlightOptions = updatePositions(
-        (frontMatter.sections[0].hero as HeroHighlightsSection).key_highlights,
+        (frontMatter.sections[0].hero as EditorHeroHighlightsSection)
+          .key_highlights,
         source.index,
         destination.index,
         draggedElem
@@ -192,51 +232,26 @@ const updateHomepageState = (
         destination.index,
         displayBool
       )
-      return {
-        ...homepageState,
-        displayHighlights: newDisplayHighlights,
-        frontMatter: {
-          ...frontMatter,
-          sections: _.set(
-            frontMatter.sections,
-            ["0", "hero", "key_highlights"],
-            newHighlightOptions
-          ),
-        },
-        errors: { ...errors, highlights: newHighlightErrors },
-      }
+      return updateHighlightsSection(
+        homepageState,
+        newDisplayHighlights,
+        newHighlightOptions,
+        newHighlightErrors
+      )
     }
     default:
       return homepageState
   }
 }
 
-type OnDragEndResponseWrapper = (
-  state: HomepageState
-) => (result: DropResult) => HomepageState
-
-// TODO: inline this into the call-site
-// TODO: keep state in context rather than doing this
-export const useDrag: OnDragEndResponseWrapper = (
-  homepageState: HomepageState
-) => (result) => {
-  return updateHomepageState(result, homepageState)
-}
-
-type ElementOf<T> = T extends Array<infer U> ? U : never
-
-type HomepageElement = "section" | "dropdownelem" | "highlight"
-type PossibleSections = ElementOf<HomepageState["frontMatter"]["sections"]>
-
-// NOTE: 2 things here - deciding what to create
-// and the placement logic.
-// we need to separate them
+// NOTE: Handles only placement,
+// let the caller decide what to create
 export const onCreate = <E,>(
-  homepageState: HomepageState,
-  elemType: HomepageElement,
-  val: PossibleSections,
+  homepageState: EditorHomepageState,
+  elemType: EditorHomepageElement,
+  val: PossibleEditorSections,
   err: E
-): HomepageState => {
+): EditorHomepageState => {
   const {
     errors,
     frontMatter,
@@ -247,34 +262,26 @@ export const onCreate = <E,>(
 
   switch (elemType) {
     case "section": {
-      // based on the element type,
-      // dynamically pass in the correct object to create
       const sections = createElement(frontMatter.sections, val)
       const newErrorSections = createElement(errors.sections, err)
 
       const resetDisplaySections = _.fill(Array(displaySections.length), false)
       const newDisplaySections = createElement(resetDisplaySections, true)
 
-      return {
-        ...homepageState,
-        frontMatter: {
-          ...frontMatter,
-          sections,
-        },
-        errors: {
-          ...errors,
-          sections: newErrorSections,
-        },
-        displaySections: newDisplaySections,
-      }
+      return updateEditorSection(
+        homepageState,
+        newDisplaySections,
+        sections,
+        newErrorSections
+      )
     }
     case "dropdownelem": {
       const newDropdownOptions = createElement(
-        (frontMatter.sections[0].hero as HeroDropdownSection).dropdown.options,
+        (frontMatter.sections[0].hero as EditorHeroDropdownSection).dropdown
+          .options,
         val
       )
       const newDropdownErrors = createElement(errors.dropdownElems, err)
-
       const resetDisplayDropdownElems = _.fill(
         Array(displayDropdownElems.length),
         false
@@ -284,29 +291,23 @@ export const onCreate = <E,>(
         true
       )
 
-      return {
-        ...homepageState,
-        displayDropdownElems: newDisplayDropdownElems,
-        frontMatter: {
-          ...frontMatter,
-          sections: _.set(
-            frontMatter.sections,
-            ["0", "hero", "dropdown", "options"],
-            newDropdownOptions
-          ),
-        },
-        errors: { ...errors, dropdownElems: newDropdownErrors },
-      }
+      return updateDropdownSection(
+        homepageState,
+        newDisplayDropdownElems,
+        newDropdownOptions,
+        newDropdownErrors
+      )
     }
     case "highlight": {
       // If key highlights section exists
       if (
         !_.isEmpty(
-          (frontMatter.sections[0].hero as HeroHighlightsSection).key_highlights
+          (frontMatter.sections[0].hero as EditorHeroHighlightsSection)
+            .key_highlights
         )
       ) {
         const newHighlightOptions = createElement(
-          (frontMatter.sections[0].hero as HeroHighlightsSection)
+          (frontMatter.sections[0].hero as EditorHeroHighlightsSection)
             .key_highlights,
           val
         )
@@ -319,33 +320,15 @@ export const onCreate = <E,>(
         )
         const newDisplayHighlights = createElement(resetDisplayHighlights, true)
 
-        return {
-          ...homepageState,
-          displayHighlights: newDisplayHighlights,
-          frontMatter: {
-            ...frontMatter,
-            sections: _.set(
-              frontMatter.sections,
-              ["0", "hero", "key_highlights"],
-              newHighlightOptions
-            ),
-          },
-          errors: { ...errors, highlights: newHighlightErrors },
-        }
+        return updateHighlightsSection(
+          homepageState,
+          newDisplayHighlights,
+          newHighlightOptions,
+          newHighlightErrors
+        )
       }
-      return {
-        ...homepageState,
-        displayHighlights: [true],
-        frontMatter: {
-          ...frontMatter,
-          sections: _.set(
-            frontMatter.sections,
-            ["0", "hero", "key_highlights"],
-            [val]
-          ),
-        },
-        errors: { ...errors, highlights: [err] },
-      }
+
+      return updateHighlightsSection(homepageState, [true], [val], [err])
     }
     default:
       return homepageState
@@ -353,10 +336,10 @@ export const onCreate = <E,>(
 }
 
 export const onDelete = (
-  homepageState: HomepageState,
-  elemType: HomepageElement,
+  homepageState: EditorHomepageState,
+  elemType: EditorHomepageElement,
   indexToDelete: number
-): HomepageState => {
+): EditorHomepageState => {
   const {
     errors,
     frontMatter,
@@ -367,42 +350,22 @@ export const onDelete = (
 
   switch (elemType) {
     case "section": {
-      // Set hasResources to false to allow users to create a resources section
-      // if (frontMatter.sections[indexToDelete].resources) {
-      //   setHasResources(false)
-      // }
-
       const sections = deleteElement(frontMatter.sections, indexToDelete)
-
       const newErrorSections = deleteElement(errors.sections, indexToDelete)
+      const newDisplaySections = deleteElement(displaySections, indexToDelete)
 
-      // const newScrollRefs = update(scrollRefs, {
-      //   $splice: [[indexToDelete, 1]],
-      // })
-
-      const newDisplaySections = update(displaySections, {
-        $splice: [[indexToDelete, 1]],
-      })
-
-      // setScrollRefs(newScrollRefs)
-
-      return {
-        ...homepageState,
-        frontMatter: {
-          ...frontMatter,
-          sections,
-        },
-        errors: {
-          ...errors,
-          sections: newErrorSections,
-        },
-        displaySections: newDisplaySections,
-      }
+      return updateEditorSection(
+        homepageState,
+        newDisplaySections,
+        sections,
+        newErrorSections
+      )
     }
 
     case "dropdownelem": {
       const newDropdownOptions = deleteElement(
-        (frontMatter.sections[0].hero as HeroDropdownSection).dropdown.options,
+        (frontMatter.sections[0].hero as EditorHeroDropdownSection).dropdown
+          .options,
         indexToDelete
       )
       const newDropdownErrors = deleteElement(
@@ -414,23 +377,17 @@ export const onDelete = (
         indexToDelete
       )
 
-      return {
-        ...homepageState,
-        displayDropdownElems: newDisplayDropdownElems,
-        frontMatter: {
-          ...frontMatter,
-          sections: _.set(
-            frontMatter.sections,
-            ["0", "hero", "dropdown", "options"],
-            newDropdownOptions
-          ),
-        },
-        errors: { ...errors, dropdownElems: newDropdownErrors },
-      }
+      return updateDropdownSection(
+        homepageState,
+        newDisplayDropdownElems,
+        newDropdownOptions,
+        newDropdownErrors
+      )
     }
     case "highlight": {
       const newHighlightOptions = deleteElement(
-        (frontMatter.sections[0].hero as HeroHighlightsSection).key_highlights,
+        (frontMatter.sections[0].hero as EditorHeroHighlightsSection)
+          .key_highlights,
         indexToDelete
       )
       const newHighlightErrors = deleteElement(errors.highlights, indexToDelete)
@@ -440,19 +397,12 @@ export const onDelete = (
         indexToDelete
       )
 
-      return {
-        ...homepageState,
-        displayHighlights: newDisplayHighlights,
-        frontMatter: {
-          ...frontMatter,
-          sections: _.set(
-            frontMatter.sections,
-            ["0", "hero", "key_highlights"],
-            newHighlightOptions
-          ),
-        },
-        errors: { ...errors, highlights: newHighlightErrors },
-      }
+      return updateHighlightsSection(
+        homepageState,
+        newDisplayHighlights,
+        newHighlightOptions,
+        newHighlightErrors
+      )
     }
     default:
       return homepageState

@@ -1,3 +1,5 @@
+import type { IterableElement } from "type-fest"
+
 export type DropdownOption = {
   title: string
   url: string
@@ -76,4 +78,39 @@ export interface HomepageDto {
     pageBody?: string
   }
   sha: string
+}
+
+export type EditorHomepageElement = "section" | "dropdownelem" | "highlight"
+export type PossibleEditorSections = IterableElement<
+  EditorHomepageState["frontMatter"]["sections"]
+>
+
+export type HomepageEditorHeroSection =
+  | EditorHeroDropdownSection
+  | EditorHeroHighlightsSection
+
+export interface EditorHomepageState {
+  frontMatter: Omit<HomepageDto["content"]["frontMatter"], "sections"> & {
+    sections: {
+      hero: HomepageEditorHeroSection
+    }[]
+  }
+  errors: {
+    sections: unknown[]
+    dropdownElems: unknown[]
+    highlights: unknown[]
+  }
+  displaySections: unknown[]
+  displayDropdownElems: unknown[]
+  displayHighlights: unknown[]
+}
+
+export interface EditorHeroDropdownSection {
+  dropdown: {
+    options: []
+  }
+}
+
+export interface EditorHeroHighlightsSection {
+  key_highlights: []
 }
