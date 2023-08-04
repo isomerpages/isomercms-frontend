@@ -38,6 +38,12 @@ const deleteElement = <T,>(section: T[], indexToDelete: number): T[] => {
   })
 }
 
+const UPDATE_PATHS = {
+  editor: ["frontMatter", "sections"],
+  dropdownelem: ["frontMatter", "sections", "0", "hero", "dropdown", "options"],
+  highlightelem: ["frontMatter", "sections", "0", "hero", "key_highlights"],
+}
+
 const updateEditorSection = (
   homepageState: EditorHomepageState,
   newDisplaySections: unknown[],
@@ -64,7 +70,8 @@ const updateDropdownSection = (
   frontMatter: {
     ...homepageState.frontMatter,
     sections: _.set(
-      homepageState.frontMatter.sections,
+      // NOTE: Deep clone here to avoid mutation
+      _.cloneDeep(homepageState.frontMatter.sections),
       ["0", "hero", "dropdown", "options"],
       newDropdownOptions
     ),
@@ -83,7 +90,8 @@ const updateHighlightsSection = (
   frontMatter: {
     ...homepageState.frontMatter,
     sections: _.set(
-      homepageState.frontMatter.sections,
+      // NOTE: Deep clone here to avoid mutation
+      _.cloneDeep(homepageState.frontMatter.sections),
       ["0", "hero", "key_highlights"],
       newHighlightOptions
     ),
