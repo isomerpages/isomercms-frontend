@@ -26,6 +26,12 @@ const createElement = <T,>(section: T[], elem: T): T[] => {
   })
 }
 
+const deleteElement = <T,>(section: T[], indexToDelete: number): T[] => {
+  return update(section, {
+    $splice: [[indexToDelete, 1]],
+  })
+}
+
 interface HeroDropdownSection {
   dropdown: {
     options: []
@@ -339,6 +345,113 @@ export const onCreate = <E,>(
           ),
         },
         errors: { ...errors, highlights: [err] },
+      }
+    }
+    default:
+      return homepageState
+  }
+}
+
+export const onDelete = (
+  homepageState: HomepageState,
+  elemType: HomepageElement,
+  indexToDelete: number
+): HomepageState => {
+  const {
+    errors,
+    frontMatter,
+    displaySections,
+    displayDropdownElems,
+    displayHighlights,
+  } = homepageState
+
+  switch (elemType) {
+    case "section": {
+      // Set hasResources to false to allow users to create a resources section
+      // if (frontMatter.sections[indexToDelete].resources) {
+      //   setHasResources(false)
+      // }
+
+      const sections = deleteElement(frontMatter.sections, indexToDelete)
+
+      const newErrorSections = deleteElement(errors.sections, indexToDelete)
+
+      // const newScrollRefs = update(scrollRefs, {
+      //   $splice: [[indexToDelete, 1]],
+      // })
+
+      const newDisplaySections = update(displaySections, {
+        $splice: [[indexToDelete, 1]],
+      })
+
+      // setScrollRefs(newScrollRefs)
+
+      return {
+        ...homepageState,
+        frontMatter: {
+          ...frontMatter,
+          sections,
+        },
+        errors: {
+          ...errors,
+          sections: newErrorSections,
+        },
+        displaySections: newDisplaySections,
+      }
+    }
+
+    case "dropdownelem": {
+      const newDropdownOptions = deleteElement(
+        (frontMatter.sections[0].hero as HeroDropdownSection).dropdown.options,
+        indexToDelete
+      )
+      const newDropdownErrors = deleteElement(
+        errors.dropdownElems,
+        indexToDelete
+      )
+      const newDisplayDropdownElems = deleteElement(
+        displayDropdownElems,
+        indexToDelete
+      )
+
+      return {
+        ...homepageState,
+        displayDropdownElems: newDisplayDropdownElems,
+        frontMatter: {
+          ...frontMatter,
+          sections: _.set(
+            frontMatter.sections,
+            ["0", "hero", "dropdown", "options"],
+            newDropdownOptions
+          ),
+        },
+        errors: { ...errors, dropdownElems: newDropdownErrors },
+      }
+    }
+    case "highlight": {
+      const newHighlightOptions = deleteElement(
+        (frontMatter.sections[0].hero as HeroHighlightsSection).key_highlights,
+        indexToDelete
+      )
+      const newHighlightErrors = deleteElement(errors.highlights, indexToDelete)
+
+      const newDisplayHighlights = deleteElement(
+        displayHighlights,
+        indexToDelete
+      )
+
+      return {
+        ...homepageState,
+        displayHighlights: newDisplayHighlights,
+        frontMatter: {
+          ...frontMatter,
+          sections: _.set(
+            frontMatter.sections,
+            ["0", "hero", "key_highlights"],
+            newHighlightOptions
+          ),
+        },
+        errors: { ...errors, highlights: newHighlightErrors },
       }
     }
     default:
