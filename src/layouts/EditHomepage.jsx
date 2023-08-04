@@ -41,7 +41,7 @@ import {
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
-import { useDrag, onCreate } from "../contexts/DragDropContext"
+import { useDrag, onCreate, onDelete } from "../contexts/DragDropContext"
 
 /* eslint-disable react/no-array-index-key */
 
@@ -152,13 +152,27 @@ const EditHomepage = ({ match }) => {
   const [savedHeroErrors, setSavedHeroErrors] = useState("")
   const { data: homepageData } = useGetHomepageHook(siteName)
   const { mutateAsync: updateHomepageHandler } = useUpdateHomepageHook(siteName)
-  const updateHomepage = useDrag({
+  const homepageState = {
     frontMatter,
     errors,
     displayDropdownElems,
     displayHighlights,
     displaySections,
-  })
+  }
+  const onDrag = useDrag(homepageState)
+  const setHomepageState = ({
+    frontMatter,
+    errors,
+    displayDropdownElems,
+    displayHighlights,
+    displaySections,
+  }) => {
+    setDisplaySections(displaySections)
+    setFrontMatter(frontMatter)
+    setErrors(errors)
+    setDisplayDropdownElems(displayDropdownElems)
+    setDisplayHighlights(displayHighlights)
+  }
 
   const errorToast = useErrorToast()
 
@@ -531,14 +545,6 @@ const EditHomepage = ({ match }) => {
   }
 
   const createHandler = async (event) => {
-    const homepageState = {
-      frontMatter,
-      errors,
-      displayDropdownElems,
-      displayHighlights,
-      displaySections,
-    }
-
     try {
       const { id, value } = event.target
       const idArray = id.split("-")
@@ -557,35 +563,29 @@ const EditHomepage = ({ match }) => {
 
           const newScrollRefs = update(scrollRefs, { $push: [createRef()] })
 
-          const { frontMatter, errors, displaySections } = onCreate(
+          const updatedHomepageState = onCreate(
             homepageState,
             elemType,
             val,
             err
           )
 
-          setFrontMatter(frontMatter)
-          setErrors(errors)
-          setDisplaySections(displaySections)
+          setHomepageState(updatedHomepageState)
           setScrollRefs(newScrollRefs)
-
           break
         }
         case "dropdownelem": {
           const val = DropdownElemConstructor(false)
           const err = DropdownElemConstructor(true)
 
-          const { frontMatter, errors, displayDropdownElems } = onCreate(
+          const updatedHomepageState = onCreate(
             homepageState,
             elemType,
             val,
             err
           )
 
-          setFrontMatter(frontMatter)
-          setErrors(errors)
-          setDisplayDropdownElems(displayDropdownElems)
-
+          setHomepageState(updatedHomepageState)
           break
         }
         case "highlight": {
@@ -593,15 +593,14 @@ const EditHomepage = ({ match }) => {
           // If key highlights section exists
           const val = KeyHighlightConstructor(false)
           const err = KeyHighlightConstructor(true)
-          const { frontMatter, errors, displayHighlights } = onCreate(
+          const updatedHomepageState = onCreate(
             homepageState,
             elemType,
             val,
             err
           )
 
-          setFrontMatter(frontMatter)
-          setErrors(errors)
+          setHomepageState(updatedHomepageState)
           setDisplayHighlights(displayHighlights)
           break
         }
@@ -617,104 +616,28 @@ const EditHomepage = ({ match }) => {
     try {
       const idArray = id.split("-")
       const elemType = idArray[0]
+      const index = parseInt(idArray[1], RADIX_PARSE_INT)
 
-      let newSections = []
-      let newErrors = []
+      if (elemType === "section") {
+        const newScrollRefs = update(scrollRefs, {
+          $splice: [[index, 1]],
+        })
 
-      switch (elemType) {
-        case "section": {
-          const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT)
-
-          // Set hasResources to false to allow users to create a resources section
-          if (frontMatter.sections[sectionIndex].resources) {
-            setHasResources(false)
-          }
-
-          newSections = update(frontMatter.sections, {
-            $splice: [[sectionIndex, 1]],
-          })
-
-          newErrors = update(errors, {
-            sections: {
-              $splice: [[sectionIndex, 1]],
-            },
-          })
-
-          const newScrollRefs = update(scrollRefs, {
-            $splice: [[sectionIndex, 1]],
-          })
-
-          const newDisplaySections = update(displaySections, {
-            $splice: [[sectionIndex, 1]],
-          })
-
-          setDisplaySections(newDisplaySections)
-          setScrollRefs(newScrollRefs)
-          break
-        }
-        case "dropdownelem": {
-          const dropdownsIndex = parseInt(idArray[1], RADIX_PARSE_INT)
-          newSections = update(frontMatter.sections, {
-            0: {
-              hero: {
-                dropdown: {
-                  options: {
-                    $splice: [[dropdownsIndex, 1]],
-                  },
-                },
-              },
-            },
-          })
-
-          newErrors = update(errors, {
-            dropdownElems: {
-              $splice: [[dropdownsIndex, 1]],
-            },
-          })
-
-          const newDisplayDropdownElems = update(displayDropdownElems, {
-            $splice: [[dropdownsIndex, 1]],
-          })
-
-          setDisplayDropdownElems(newDisplayDropdownElems)
-          break
-        }
-        case "highlight": {
-          const highlightIndex = parseInt(idArray[1], 10)
-          newSections = update(frontMatter.sections, {
-            0: {
-              hero: {
-                key_highlights: {
-                  $splice: [[highlightIndex, 1]],
-                },
-              },
-            },
-          })
-
-          newErrors = update(errors, {
-            highlights: {
-              $splice: [[highlightIndex, 1]],
-            },
-          })
-
-          const newDisplayHighlights = update(displayHighlights, {
-            $splice: [[highlightIndex, 1]],
-          })
-
-          setDisplayHighlights(newDisplayHighlights)
-          break
-        }
-        default:
-          return
+        setScrollRefs(newScrollRefs)
+        // Set hasResources to false to allow users to create a resources section
+        if (frontMatter.sections[index].resources) setHasResources(false)
       }
-      setFrontMatter({
-        ...frontMatter,
-        sections: newSections,
-      })
-      setErrors(newErrors)
+
+      const newHomepageState = onDelete(homepageState, elemType, index)
+      setHomepageState(newHomepageState)
     } catch (err) {
       console.log(err)
     }
+  }
+
+  const onDragEnd = (result) => {
+    const homepageState = onDrag(result)
+    setHomepageState(homepageState)
   }
 
   const handleHighlightDropdownToggle = (event) => {
@@ -981,22 +904,6 @@ const EditHomepage = ({ match }) => {
     return false
   }
 
-  const updateDrag = (result) => {
-    const {
-      displaySections,
-      frontMatter,
-      errors,
-      displayDropdownElems,
-      displayHighlights,
-    } = updateHomepage(result)
-
-    setDisplaySections(displaySections)
-    setFrontMatter(frontMatter)
-    setErrors(errors)
-    setDisplayDropdownElems(displayDropdownElems)
-    setDisplayHighlights(displayHighlights)
-  }
-
   return (
     <>
       <WarningModal
@@ -1069,7 +976,7 @@ const EditHomepage = ({ match }) => {
                   </div>
 
                   {/* Homepage section configurations */}
-                  <DragDropContext onDragEnd={updateDrag}>
+                  <DragDropContext onDragEnd={onDragEnd}>
                     <Droppable droppableId="leftPane" type="editor">
                       {(droppableProvided) => (
                         <div
