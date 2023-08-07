@@ -74,11 +74,32 @@ siteLaunchRiskAcceptance.args = {
   pageNumber: 3,
 }
 
-export const siteLaunchChecklist = Template.bind({})
+export const siteLaunchChecklistOldDomain = Template.bind({})
 
-siteLaunchChecklist.args = {
+siteLaunchChecklistOldDomain.args = {
   ...siteLaunchPadArgs,
   pageNumber: 4,
 }
+
+export const siteLaunchChecklistNewDomain = Template.bind({})
+
+siteLaunchChecklistNewDomain.args = {
+  ...siteLaunchPadArgs,
+  pageNumber: 4,
+}
+
+siteLaunchChecklistNewDomain.decorators = [
+  (Story) => {
+    return (
+      <SiteLaunchProvider
+        initialStepNumber={1}
+        initialSiteLaunchStatus="CHECKLIST_TASKS_PENDING"
+        isNewDomain
+      >
+        <Story />
+      </SiteLaunchProvider>
+    )
+  },
+]
 
 export default SiteLaunchPadMeta

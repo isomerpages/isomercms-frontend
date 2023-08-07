@@ -29,6 +29,7 @@ interface SiteLaunchProviderProps {
   children: React.ReactNode
   initialSiteLaunchStatus?: SiteLaunchFrontEndStatus
   initialStepNumber?: SiteLaunchTaskTypeIndex
+  isNewDomain?: boolean
 }
 
 const SiteLaunchContext = createContext<SiteLaunchContextProps | null>(null)
@@ -44,6 +45,7 @@ export const SiteLaunchProvider = ({
   children,
   initialSiteLaunchStatus,
   initialStepNumber,
+  isNewDomain,
 }: SiteLaunchProviderProps): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
 
@@ -53,6 +55,7 @@ export const SiteLaunchProvider = ({
   ] = useState<SiteLaunchStatusProps>({
     siteLaunchStatus: initialSiteLaunchStatus || "LOADING",
     stepNumber: initialStepNumber || SITE_LAUNCH_TASKS.NOT_STARTED,
+    isNewDomain,
   })
 
   const { data: siteLaunchDto } = useGetSiteLaunchStatus(siteName)
