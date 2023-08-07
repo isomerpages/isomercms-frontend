@@ -14,6 +14,12 @@ const SiteLaunchFrontEndStatusOptions = {
 
 export type SiteLaunchFrontEndStatus = typeof SiteLaunchFrontEndStatusOptions[keyof typeof SiteLaunchFrontEndStatusOptions]
 
+export const NEW_DOMAIN_SITE_LAUNCH_TASKS = {
+  NOT_STARTED: 0,
+  APPROVE_FIRST_REVIEW_REQUEST: 1,
+  GENERATE_NEW_DNS_RECORDS: 2,
+} as const
+
 export const SITE_LAUNCH_TASKS = {
   NOT_STARTED: 0,
   SET_DNS_TTL: 1,
@@ -47,9 +53,27 @@ export interface SiteLaunchDto {
 export const SITE_LAUNCH_TASKS_LENGTH = (Object.keys(SITE_LAUNCH_TASKS).length -
   1) as SiteLaunchTaskTypeIndex // we minus one here since step 0 is not counted as a step done
 
+export const NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH = (Object.keys(
+  NEW_DOMAIN_SITE_LAUNCH_TASKS
+).length - 1) as SiteLaunchTaskTypeIndex
+
 export const SITE_LAUNCH_PAGES = {
   DISCLAIMER: 1,
   INFO_GATHERING: 2,
   RISK_ACCEPTANCE: 3,
   CHECKLIST: 4,
 }
+
+export const TITLE_TEXTS_OLD_DOMAIN = [
+  "Set your DNS Time To Live(TTL) to 5 mins at least 24 hours before launching",
+  "Approve and publish your first review request",
+  "Drop existing domains on Cloudfront",
+  "Delete existing DNS records from your nameserver",
+  "Wait 1 hour to flush existing records",
+] as const
+
+export const TITLE_TEXTS_NEW_DOMAIN = [
+  TITLE_TEXTS_OLD_DOMAIN[
+    NEW_DOMAIN_SITE_LAUNCH_TASKS.APPROVE_FIRST_REVIEW_REQUEST
+  ],
+] as const
