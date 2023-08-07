@@ -5,6 +5,7 @@ import {
   closeReviewRequests,
   createReviewRequest,
   mergeReviewRequest,
+  removeOtherCollaborators,
 } from "../api"
 import {
   addUnlinkedPage,
@@ -29,7 +30,6 @@ import {
   addCollaborator,
   awaitDashboardLoad,
   awaitReviewRequestSummary,
-  removeOtherCollaborators,
   visitE2eEmailTestRepo,
 } from "../utils"
 

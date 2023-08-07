@@ -35,13 +35,6 @@ export const removeFirstCollaborator = (): void => {
   closeModal()
 }
 
-export const removeOtherCollaborators = (): void => {
-  // We have up to 3 other collaborators - this ensures all are removed
-  removeFirstCollaborator()
-  removeFirstCollaborator()
-  removeFirstCollaborator()
-}
-
 export const inputCollaborators = (user: string): void => {
   getCollaboratorsModal().get(ADD_COLLABORATOR_INPUT_SELECTOR).type(user).blur()
   // NOTE: need to ignore the 422 w/ specific error message because we haven't ack yet
