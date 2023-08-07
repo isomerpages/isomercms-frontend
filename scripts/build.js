@@ -55,7 +55,7 @@ const resetRepo = async (repo, hash, branch) => {
 }
 
 const resetGithubE2eTestRepo = () =>
-  resetRepo(E2E_GITHUB_REPO_NAME, E2E_COMMIT_HASH, "master")
+  resetRepo(E2E_GITHUB_REPO_NAME, E2E_COMMIT_HASH, "staging")
 
 const resetEmailE2eTestRepo = () => {
   resetRepo(E2E_EMAIL_REPO_NAME, E2E_EMAIL_COMMIT_HASH, "staging")
