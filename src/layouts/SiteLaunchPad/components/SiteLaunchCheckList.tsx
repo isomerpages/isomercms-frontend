@@ -24,6 +24,7 @@ import {
   NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH,
   SITE_LAUNCH_TASKS,
   SITE_LAUNCH_TASKS_LENGTH,
+  TITLE_TEXTS_NEW_DOMAIN,
   TITLE_TEXTS_OLD_DOMAIN,
 } from "types/siteLaunch"
 
@@ -257,7 +258,9 @@ export const SiteLaunchChecklistBody = ({
           textColor="base.content.dark"
           {...getTextProps(i + 1, tasksDone)}
         >
-          {TITLE_TEXTS_OLD_DOMAIN[i]}
+          {siteLaunchStatusProps?.isNewDomain
+            ? TITLE_TEXTS_NEW_DOMAIN[i]
+            : TITLE_TEXTS_OLD_DOMAIN[i]}
         </Text>
       ),
       checkbox: checkboxes[i],
@@ -265,7 +268,9 @@ export const SiteLaunchChecklistBody = ({
   )
 
   // Add all subtitle for some of the tasks
-  TABLE_MAPPING = addSubtitlesForChecklist(TABLE_MAPPING, tasksDone)
+  if (!siteLaunchStatusProps?.isNewDomain) {
+    TABLE_MAPPING = addSubtitlesForChecklist(TABLE_MAPPING, tasksDone)
+  }
 
   return (
     <SiteLaunchPadBody>
@@ -332,7 +337,7 @@ export const SiteLaunchChecklistBody = ({
                   >
                     Upload new DNS records to IT Service Management
                   </Text>
-                  {tasksDone === numberOfTasks && (
+                  {tasksDone === numberOfTasks - 1 && (
                     <Text fontSize="small">This can only be done once</Text>
                   )}
                 </Td>
