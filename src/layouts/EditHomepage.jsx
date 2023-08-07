@@ -988,7 +988,6 @@ const EditHomepage = ({ match }) => {
                               {section.hero ? (
                                 <>
                                   <EditorHeroSection
-                                    key={`section-${sectionIndex}`}
                                     title={section.hero.title}
                                     subtitle={section.hero.subtitle}
                                     background={section.hero.background}
