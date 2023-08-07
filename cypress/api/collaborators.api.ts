@@ -19,10 +19,10 @@ export const listCollaborators = (): Cypress.Chainable<CollaboratorDto[]> => {
   return cy.request("GET", `${BASE_URL}`).then(({ body }) => body.collaborators)
 }
 
-export const removeOtherCollaborators = (): void => {
+export const removeOtherCollaborators = (remainingEmail: string): void => {
   listCollaborators().then((collaborators) => {
     collaborators.forEach((collaborator) => {
-      if (collaborator.email === E2E_EMAIL_ADMIN.email) return
+      if (collaborator.email === remainingEmail) return
       const { id } = collaborator
       cy.request("DELETE", `${BASE_URL}/${id}`)
     })
