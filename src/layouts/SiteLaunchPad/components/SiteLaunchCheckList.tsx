@@ -138,7 +138,7 @@ const addSubtitlesForChecklist = (
         <>
           {tasksDone === SITE_LAUNCH_TASKS.SET_DNS_TTL - 1 && (
             <Text fontSize="small">
-              You can check you current DNS TTL through 3rd party applications
+              You can check your current DNS TTL through 3rd party applications
               such as <Link href="https://www.nslookup.io/">nslookup.io</Link>
             </Text>
           )}
