@@ -43,7 +43,7 @@ import { DEFAULT_RETRY_MSG } from "utils"
 
 import { useDrag, onCreate, onDelete } from "../hooks/useDrag"
 
-import { Editable } from "./components/Editable"
+import { CustomiseSectionHeader, Editable } from "./components/Editable"
 
 /* eslint-disable react/no-array-index-key */
 
@@ -1037,9 +1037,14 @@ const EditHomepage = ({ match }) => {
                                     />
                                   </Editable.EditableAccordionItem>
                                   <Divider />
+                                  <VStack
+                                    spacing="0.5rem"
+                                    alignItems="flex-start"
+                                  >
+                                    <CustomiseSectionHeader />
+                                  </VStack>
                                 </>
                               )}
-                              {/* TODO: Place `CustomiseSectionHeader` here */}
                               {section.resources && (
                                 <Editable.DraggableAccordionItem
                                   draggableId={`resources-${sectionIndex}-draggable`}
@@ -1065,6 +1070,36 @@ const EditHomepage = ({ match }) => {
                                   />
                                 </Editable.DraggableAccordionItem>
                               )}
+
+                              {section.infobar && (
+                                <Editable.DraggableAccordionItem
+                                  draggableId={`infobar-${sectionIndex}-draggable`}
+                                  index={sectionIndex}
+                                  tag={<Tag variant="subtle">Infobar</Tag>}
+                                  title={section.infobar.title}
+                                >
+                                  <EditorInfobarSection
+                                    key={`section-${sectionIndex}`}
+                                    {...section.infobar}
+                                    sectionIndex={sectionIndex}
+                                    deleteHandler={(event) => {
+                                      onOpen()
+                                      setItemPendingForDelete({
+                                        id: event.target.id,
+                                        type: "Infobar Section",
+                                      })
+                                    }}
+                                    onFieldChange={onFieldChange}
+                                    shouldDisplay={
+                                      displaySections[sectionIndex]
+                                    }
+                                    displayHandler={displayHandler}
+                                    errors={
+                                      errors.sections[sectionIndex].infobar
+                                    }
+                                  />
+                                </Editable.DraggableAccordionItem>
+                              )}
                             </>
                           ))}
                         </VStack>
@@ -1079,43 +1114,6 @@ const EditHomepage = ({ match }) => {
                   >
                     {frontMatter.sections.map((section, sectionIndex) => (
                       <>
-                        {/* Infobar section */}
-                        {section.infobar ? (
-                          <Draggable
-                            draggableId={`infobar-${sectionIndex}-draggable`}
-                            index={sectionIndex}
-                          >
-                            {(draggableProvided) => (
-                              <div
-                                {...draggableProvided.draggableProps}
-                                {...draggableProvided.dragHandleProps}
-                                ref={draggableProvided.innerRef}
-                              >
-                                <EditorInfobarSection
-                                  key={`section-${sectionIndex}`}
-                                  title={section.infobar.title}
-                                  subtitle={section.infobar.subtitle}
-                                  description={section.infobar.description}
-                                  button={section.infobar.button}
-                                  url={section.infobar.url}
-                                  sectionIndex={sectionIndex}
-                                  deleteHandler={(event) => {
-                                    onOpen()
-                                    setItemPendingForDelete({
-                                      id: event.target.id,
-                                      type: "Infobar Section",
-                                    })
-                                  }}
-                                  onFieldChange={onFieldChange}
-                                  shouldDisplay={displaySections[sectionIndex]}
-                                  displayHandler={displayHandler}
-                                  errors={errors.sections[sectionIndex].infobar}
-                                />
-                              </div>
-                            )}
-                          </Draggable>
-                        ) : null}
-
                         {/* Infopic section */}
                         {section.infopic ? (
                           <Draggable
