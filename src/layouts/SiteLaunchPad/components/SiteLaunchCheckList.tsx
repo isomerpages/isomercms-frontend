@@ -41,13 +41,13 @@ export const SiteLaunchChecklistTitle = (): JSX.Element => {
 }
 
 const getTextProps = (index: number, tasksDone: number): TextProps => {
-  const tasksPending = tasksDone < index - 1
+  const tasksPending = tasksDone < index
   if (tasksPending) {
     return {
       color: "interaction.support.disabled-content",
     }
   }
-  const taskDone = tasksDone >= index + 1
+  const taskDone = tasksDone >= index
 
   if (taskDone) {
     return {
@@ -259,7 +259,7 @@ export const SiteLaunchChecklistBody = ({
           key={i}
           textStyle="subhead-2"
           textColor="base.content.dark"
-          {...getTextProps(i + 1, tasksDone)}
+          {...getTextProps(i, tasksDone)}
         >
           {siteLaunchStatusProps?.isNewDomain
             ? TITLE_TEXTS_NEW_DOMAIN[getNewDomainTaskFrmIdx()]
@@ -335,8 +335,8 @@ export const SiteLaunchChecklistBody = ({
                     textColor="base.content.dark"
                     {...getTextProps(
                       siteLaunchStatusProps?.isNewDomain
-                        ? NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH
-                        : SITE_LAUNCH_TASKS_LENGTH,
+                        ? NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH - 1
+                        : SITE_LAUNCH_TASKS_LENGTH - 1,
                       tasksDone
                     )}
                   >
