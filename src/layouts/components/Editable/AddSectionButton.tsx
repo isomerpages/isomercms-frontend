@@ -1,17 +1,5 @@
-import {
-  Flex,
-  HStack,
-  Icon,
-  MenuItemProps,
-  Text,
-  VStack,
-} from "@chakra-ui/react"
-import {
-  ButtonProps,
-  Button,
-  Menu,
-  MenuButtonProps,
-} from "@opengovsg/design-system-react"
+import { HStack, Icon, MenuItemProps, Text } from "@chakra-ui/react"
+import { Menu, MenuButtonProps } from "@opengovsg/design-system-react"
 import { BiPlus } from "react-icons/bi"
 
 export const AddSectionButton = ({ children, ...rest }: MenuButtonProps) => {
