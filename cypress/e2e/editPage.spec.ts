@@ -14,6 +14,8 @@ import {
 // Constants
 const PRIMARY_COLOUR = "rgb(255, 0, 0)"
 const SECONDARY_COLOUR = "rgb(0, 255, 0)"
+const SUCCESSFUL_EDIT_PAGE_TOAST =
+  "Changes saved. See a preview on Staging, or request a Review for them to be published."
 
 describe("editPage.spec", () => {
   beforeEach(() => {
@@ -114,7 +116,7 @@ describe("editPage.spec", () => {
 
       // Asserts
       // 1. Toast
-      cy.contains("Successfully updated page")
+      cy.contains(SUCCESSFUL_EDIT_PAGE_TOAST)
 
       // 2. Content is there even after refreshing
       cy.reload()
@@ -198,7 +200,7 @@ describe("editPage.spec", () => {
 
       // Asserts
       // 1. Toast
-      cy.contains("Successfully updated page")
+      cy.contains(SUCCESSFUL_EDIT_PAGE_TOAST)
 
       // 2. Content is there even after refreshing
       cy.reload()
@@ -346,7 +348,7 @@ describe("editPage.spec", () => {
 
       // Asserts
       // 1. Toast
-      cy.contains("Successfully updated page")
+      cy.contains(SUCCESSFUL_EDIT_PAGE_TOAST)
 
       // 2. Content is there even after refreshing
       cy.reload()
