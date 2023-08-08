@@ -26,18 +26,19 @@ export const SiteLaunchDisclaimerBody = ({
         What is site launch?
       </Text>
       <Text textStyle="body-2" mb="2rem">
-        It&apos;s the process to connect a domain to your Isomer site and make
-        it available to the public through the internet. Public officers would
-        need to do this outside of Isomer through a separate service called IT
-        Service Management (ITSM).
+        Site launch is the process of connecting your Isomer site to a domain,
+        and making it publicly available on the internet. You will need to do
+        this using your service provider for your name server, which is separate
+        from Isomer. Typically, this would be the IT Service Management (ITSM).
       </Text>
       <Text textStyle="body-2" mb="2rem">
-        Isomer will provide you the necessary credentials you need to add or
-        change in ITSM, but Isomer as a product does not actually launch your
-        site for you. However you can come here to check the status of your site
-        launch.
+        Isomer provides the credentials you need to add or change in your name
+        server (typically ITSM),{" "}
+        <Text as="b">but cannot update them on your behalf.</Text>However, you
+        can come back here after updating the credentials, to check if your
+        website is launched and publicly accessible.
       </Text>
-      <Text as="h5" textStyle="h5">
+      <Text textStyle="body-2" as="b">
         You should only launch your site when:
       </Text>
 
@@ -48,30 +49,38 @@ export const SiteLaunchDisclaimerBody = ({
       </Text>
 
       <Text as="h5" textStyle="h5">
-        Things to note
+        Important
       </Text>
       <UnorderedList mb="2rem">
         <ListItem>
           <Text textStyle="body-2">
-            Site launch is a time-sensitive process and could require the
-            coordination of actions from multiple parties. It is recommended
-            that you internally set a date with the involved parties and not do
-            it immediately.
+            Site launch is a time-sensitive process and often requires
+            coordination between multiple parties (e.g. IT administrator, CWP
+            contact, the agency&apos;s launch approver). We recommend scheduling
+            a launch date when all these individuals are available.
           </Text>
         </ListItem>
         <ListItem>
           <Text textStyle="body-2">
-            Expect downtime of your site for at least 1 hour during site launch.
-            If site launch does not go smoothly, downtime could exponentially
-            increase up to 48 hours.
+            The Isomer team is available to assist with launch only between
+            10:30 am and 4:30 pm (Monday to Friday), so we recommend planning
+            your launch during these hours. Any launch issues outside these
+            hours will be attended to during working hours.
           </Text>
         </ListItem>
         <ListItem>
           <Text textStyle="body-2">
-            If you do not have the technical knowledge, we recommend getting
+            Expect at least 1 hour of downtime for your site during launch. If
+            not coordinated properly, your site could be down for as long as 48
+            hours.
+          </Text>
+        </ListItem>
+        <ListItem>
+          <Text textStyle="body-2">
+            If you are unfamiliar with site launches, we recommend getting
             someone from your IT team to launch your site for you. You can add
-            them as a collaborator to your site and remove them after launching
-            your site.
+            them as a collaborator to your site, and remove them after it has
+            been launched.
           </Text>
         </ListItem>
       </UnorderedList>
