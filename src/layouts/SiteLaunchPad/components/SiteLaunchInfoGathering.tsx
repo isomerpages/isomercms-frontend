@@ -1,5 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { Box, Button, Icon, Text, RadioGroup } from "@chakra-ui/react"
+import {
+  Box,
+  Button,
+  Icon,
+  Text,
+  RadioGroup,
+  InputGroup,
+  InputLeftAddon,
+} from "@chakra-ui/react"
 import { Input, Radio } from "@opengovsg/design-system-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
@@ -65,13 +73,34 @@ export const SiteLaunchInfoCollectorBody = ({
   return (
     <SiteLaunchPadBody>
       <Text textStyle="subhead-1">What domain are you launching with?</Text>
-      <Input
-        mt="4"
-        mb="1"
-        placeholder="eg: www.isomer.gov.sg"
-        {...register("domain", { required: true })}
-      />
-      {errors.domain && <Text textStyle="subhead-2">Domain is required</Text>}
+      <InputGroup mt="4" mb="1">
+        <InputLeftAddon>https://</InputLeftAddon>
+        <Input
+          placeholder="eg: isomer.gov.sg"
+          {...register("domain", {
+            required: true,
+            validate: (value) => {
+              if (value.startsWith("www."))
+                return "Please remove any leading 'www.'"
+              if (value.startsWith("http://"))
+                return "Please remove any leading 'http://'"
+              if (value.startsWith("https://"))
+                return "Please remove any leading 'https://'"
+              if (value.endsWith("/")) return "Please remove any trailing '/'"
+              if (!value.endsWith(".com") && !value.endsWith(".sg"))
+                return "Please enter a valid URL that ends with '.com' or '.sg'"
+
+              return true
+            },
+          })}
+        />
+      </InputGroup>
+      {errors.domain?.type === "required" && (
+        <Text textStyle="subhead-2">Domain is required</Text>
+      )}
+      {errors.domain?.type === "validate" && (
+        <Text textStyle="subhead-2">{errors.domain.message}</Text>
+      )}
 
       <Text textStyle="subhead-1" mt="1.5rem">
         Do you want to host the both the www and non-www version of your domain?
