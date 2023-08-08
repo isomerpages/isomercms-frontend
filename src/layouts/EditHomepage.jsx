@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-shadow */
-import { useDisclosure, Text, HStack, VStack } from "@chakra-ui/react"
+import { useDisclosure, Text, HStack, VStack, Divider } from "@chakra-ui/react"
 import { Draggable } from "@hello-pangea/dnd"
-import { Button, Input } from "@opengovsg/design-system-react"
+import { Button, Input, Tag } from "@opengovsg/design-system-react"
 import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
@@ -801,6 +801,7 @@ const EditHomepage = ({ match }) => {
   const displayHandler = async (event) => {
     try {
       const { id } = event.target
+      console.log("ID: =====", id)
       const idArray = id.split("-")
       const elemType = idArray[0]
       switch (elemType) {
@@ -976,6 +977,101 @@ const EditHomepage = ({ match }) => {
                     </span>
                   </div>
 
+                  <Editable.Sidebar
+                    title="Homepage"
+                    onChange={(idx) => {
+                      displayHandler({ target: { id: `section-${idx}` } })
+                    }}
+                  >
+                    <Editable.Draggable
+                      editableId="leftPane"
+                      onDragEnd={onDragEnd}
+                    >
+                      <Editable.Accordion
+                        onChange={(idx) => {
+                          displayHandler({ target: { id: `section-${idx}` } })
+                        }}
+                      >
+                        <VStack
+                          bg="base.canvas.alt"
+                          p="1.5rem"
+                          spacing="1.5rem"
+                          alignItems="flex-start"
+                        >
+                          {frontMatter.sections.map((section, sectionIndex) => (
+                            <>
+                              {/* Hero section */}
+                              {section.hero && (
+                                <>
+                                  <Editable.EditableAccordionItem
+                                    title={section.hero.title}
+                                  >
+                                    <EditorHeroSection
+                                      key={`section-${sectionIndex}`}
+                                      {...section.hero}
+                                      sectionIndex={sectionIndex}
+                                      highlights={
+                                        section.hero.key_highlights ?? []
+                                      }
+                                      onFieldChange={onFieldChange}
+                                      createHandler={createHandler}
+                                      deleteHandler={(event, type) => {
+                                        onOpen()
+                                        setItemPendingForDelete({
+                                          id: event.target.id,
+                                          type,
+                                        })
+                                      }}
+                                      shouldDisplay={
+                                        displaySections[sectionIndex]
+                                      }
+                                      displayHighlights={displayHighlights}
+                                      displayDropdownElems={
+                                        displayDropdownElems
+                                      }
+                                      displayHandler={displayHandler}
+                                      errors={errors}
+                                      handleHighlightDropdownToggle={
+                                        handleHighlightDropdownToggle
+                                      }
+                                    />
+                                  </Editable.EditableAccordionItem>
+                                  <Divider />
+                                </>
+                              )}
+                              {/* TODO: Place `CustomiseSectionHeader` here */}
+                              {section.resources && (
+                                <Editable.DraggableAccordionItem
+                                  draggableId={`resources-${sectionIndex}-draggable`}
+                                  index={sectionIndex}
+                                  tag={<Tag variant="subtle">Resources</Tag>}
+                                  title={section.resources.title}
+                                >
+                                  <EditorResourcesSection
+                                    key={`section-${sectionIndex}`}
+                                    {...section.resources}
+                                    sectionIndex={sectionIndex}
+                                    deleteHandler={(event) => {
+                                      onOpen()
+                                      setItemPendingForDelete({
+                                        id: event.target.id,
+                                        type: "Resources Section",
+                                      })
+                                    }}
+                                    onFieldChange={onFieldChange}
+                                    errors={
+                                      errors.sections[sectionIndex].resources
+                                    }
+                                  />
+                                </Editable.DraggableAccordionItem>
+                              )}
+                            </>
+                          ))}
+                        </VStack>
+                      </Editable.Accordion>
+                    </Editable.Draggable>
+                  </Editable.Sidebar>
+
                   {/* Homepage section configurations */}
                   <Editable.Draggable
                     editableId="leftPane"
@@ -983,85 +1079,6 @@ const EditHomepage = ({ match }) => {
                   >
                     {frontMatter.sections.map((section, sectionIndex) => (
                       <>
-                        {/* Hero section */}
-                        {section.hero ? (
-                          <>
-                            <EditorHeroSection
-                              key={`section-${sectionIndex}`}
-                              title={section.hero.title}
-                              subtitle={section.hero.subtitle}
-                              background={section.hero.background}
-                              button={section.hero.button}
-                              url={section.hero.url}
-                              dropdown={
-                                section.hero.dropdown
-                                  ? section.hero.dropdown
-                                  : null
-                              }
-                              sectionIndex={sectionIndex}
-                              highlights={
-                                section.hero.key_highlights
-                                  ? section.hero.key_highlights
-                                  : []
-                              }
-                              onFieldChange={onFieldChange}
-                              createHandler={createHandler}
-                              deleteHandler={(event, type) => {
-                                onOpen()
-                                setItemPendingForDelete({
-                                  id: event.target.id,
-                                  type,
-                                })
-                              }}
-                              shouldDisplay={displaySections[sectionIndex]}
-                              displayHighlights={displayHighlights}
-                              displayDropdownElems={displayDropdownElems}
-                              displayHandler={displayHandler}
-                              errors={errors}
-                              handleHighlightDropdownToggle={
-                                handleHighlightDropdownToggle
-                              }
-                            />
-                          </>
-                        ) : null}
-
-                        {/* Resources section */}
-                        {section.resources ? (
-                          <Draggable
-                            draggableId={`resources-${sectionIndex}-draggable`}
-                            index={sectionIndex}
-                          >
-                            {(draggableProvided) => (
-                              <div
-                                {...draggableProvided.draggableProps}
-                                {...draggableProvided.dragHandleProps}
-                                ref={draggableProvided.innerRef}
-                              >
-                                <EditorResourcesSection
-                                  key={`section-${sectionIndex}`}
-                                  title={section.resources.title}
-                                  subtitle={section.resources.subtitle}
-                                  button={section.resources.button}
-                                  sectionIndex={sectionIndex}
-                                  deleteHandler={(event) => {
-                                    onOpen()
-                                    setItemPendingForDelete({
-                                      id: event.target.id,
-                                      type: "Resources Section",
-                                    })
-                                  }}
-                                  onFieldChange={onFieldChange}
-                                  shouldDisplay={displaySections[sectionIndex]}
-                                  displayHandler={displayHandler}
-                                  errors={
-                                    errors.sections[sectionIndex].resources
-                                  }
-                                />
-                              </div>
-                            )}
-                          </Draggable>
-                        ) : null}
-
                         {/* Infobar section */}
                         {section.infobar ? (
                           <Draggable
