@@ -246,7 +246,7 @@ export const SiteLaunchChecklistBody = ({
     </Center>
   ))
 
-  let TABLE_MAPPING: TableMappingProps[] = Array.from(
+  let tableMapping: TableMappingProps[] = Array.from(
     { length: numberOfCheckboxes },
     (_, i) => ({
       stepNumber: i,
@@ -269,7 +269,7 @@ export const SiteLaunchChecklistBody = ({
 
   // Add all subtitle for some of the tasks
   if (!siteLaunchStatusProps?.isNewDomain) {
-    TABLE_MAPPING = addSubtitlesForChecklist(TABLE_MAPPING, tasksDone)
+    tableMapping = addSubtitlesForChecklist(tableMapping, tasksDone)
   }
 
   return (
@@ -308,7 +308,7 @@ export const SiteLaunchChecklistBody = ({
               </Tr>
             </Thead>
             <Tbody>
-              {TABLE_MAPPING.map(({ title, subTitle, checkbox }, index) => (
+              {tableMapping.map(({ title, subTitle, checkbox }, index) => (
                 <Tr key={TITLE_TEXTS_OLD_DOMAIN[index]}>
                   <Td>
                     {title}
