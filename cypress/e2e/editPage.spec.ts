@@ -10,12 +10,11 @@ import {
   Interceptors,
   TEST_REPO_NAME,
 } from "../fixtures/constants"
+import { SUCCESSFUL_EDIT_PAGE_TOAST } from "../fixtures/messages"
 
 // Constants
 const PRIMARY_COLOUR = "rgb(255, 0, 0)"
 const SECONDARY_COLOUR = "rgb(0, 255, 0)"
-const SUCCESSFUL_EDIT_PAGE_TOAST =
-  "Changes saved. See a preview on Staging, or request a Review for them to be published."
 
 describe("editPage.spec", () => {
   beforeEach(() => {

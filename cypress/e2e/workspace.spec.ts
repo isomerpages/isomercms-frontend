@@ -6,6 +6,7 @@ import {
   TEST_REPO_NAME,
   Interceptors,
 } from "../fixtures/constants"
+import { SUCCESSFUL_EDIT_PAGE_TOAST } from "../fixtures/messages"
 
 describe("Workspace Pages flow", () => {
   beforeEach(() => {
@@ -163,9 +164,7 @@ describe("Workspace Pages flow", () => {
       cy.wait(Interceptors.POST)
       // Asserts
       // Should show modal
-      cy.contains(
-        "Changes saved. See a preview on Staging, or request a Review for them to be published."
-      ).should("exist")
+      cy.contains(SUCCESSFUL_EDIT_PAGE_TOAST).should("exist")
       // New page title should be reflected in Folders
       cy.contains(EDITED_TEST_PAGE_TITLE_2).should("exist")
     })
@@ -228,7 +227,7 @@ describe("Workspace Pages flow", () => {
       cy.get(".CodeMirror-scroll").type(TEST_PAGE_CONTENT)
       cy.contains("Save").click()
       cy.wait(Interceptors.POST)
-      cy.contains("Successfully updated page").should("exist")
+      cy.contains(SUCCESSFUL_EDIT_PAGE_TOAST).should("exist")
 
       cy.visit(`${CMS_BASEURL}/sites/${TEST_REPO_NAME}/workspace`).wait(
         Interceptors.GET
