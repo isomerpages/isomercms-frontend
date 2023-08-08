@@ -43,7 +43,7 @@ import { DEFAULT_RETRY_MSG } from "utils"
 
 import { useDrag, onCreate, onDelete } from "../hooks/useDrag"
 
-import { EditableSidebar, Editable } from "./components/EditableSidebar"
+import { Editable } from "./components/Editable"
 
 /* eslint-disable react/no-array-index-key */
 
@@ -975,8 +975,6 @@ const EditHomepage = ({ match }) => {
                       notification bar
                     </span>
                   </div>
-
-                  <EditableSidebar title="Homepage" />
 
                   {/* Homepage section configurations */}
                   <Editable.Draggable
