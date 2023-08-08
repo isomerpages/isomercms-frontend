@@ -11,6 +11,11 @@ import {
   CardBody,
   CardFooter,
 } from "@chakra-ui/react"
+import {
+  OnDragEndResponder,
+  Droppable,
+  DragDropContext,
+} from "@hello-pangea/dnd"
 import { PropsWithChildren } from "react"
 import { BiFolder } from "react-icons/bi"
 
@@ -74,4 +79,51 @@ export const EditableSidebar = ({
       {children ? <>{children} </> : <EmptySideBarBody />}
     </Flex>
   )
+}
+
+type HomepageDroppableZones = "dropdownelem" | "leftPane" | "highlight"
+
+type DropInfo = {
+  droppableId: HomepageDroppableZones
+  type: string
+}
+
+const getDroppableInfo = (editableId: HomepageDroppableZones): DropInfo => {
+  if (editableId === "leftPane")
+    return { droppableId: editableId, type: "editor" }
+  return {
+    droppableId: editableId,
+    type: editableId,
+  }
+}
+
+export interface EditableDraggableProps {
+  onDragEnd: OnDragEndResponder
+  editableId: HomepageDroppableZones
+}
+export const EditableDraggable = ({
+  onDragEnd,
+  children,
+  editableId,
+}: PropsWithChildren<EditableDraggableProps>) => {
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable {...getDroppableInfo(editableId)}>
+        {(droppableProvided) => (
+          <div
+            ref={droppableProvided.innerRef}
+            {...droppableProvided.droppableProps}
+          >
+            {children}
+            {droppableProvided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
+  )
+}
+
+export const Editable = {
+  Sidebar: EditableSidebar,
+  Draggable: EditableDraggable,
 }
