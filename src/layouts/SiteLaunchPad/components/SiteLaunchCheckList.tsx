@@ -21,6 +21,8 @@ import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 import { BxCopy, BxLifeBuoy } from "assets"
 import {
   DNSRecord,
+  getNewDomainTaskFrmIdx,
+  getOldDomainTaskFrmIdx,
   NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH,
   SITE_LAUNCH_TASKS,
   SITE_LAUNCH_TASKS_LENGTH,
@@ -128,47 +130,48 @@ interface TableMappingProps {
 }
 
 const addSubtitlesForChecklist = (
-  TABLE_MAPPING: TableMappingProps[],
+  task: TableMappingProps,
   tasksDone: number
-): TableMappingProps[] => {
-  return TABLE_MAPPING.map((task) => {
-    const newTask = { ...task }
-    if (task.stepNumber === SITE_LAUNCH_TASKS.SET_DNS_TTL - 1) {
-      newTask.subTitle = (
-        <>
-          {tasksDone === SITE_LAUNCH_TASKS.SET_DNS_TTL - 1 && (
-            <Text fontSize="small">
-              You can check your current DNS TTL through 3rd party applications
-              such as <Link href="https://www.nslookup.io/">nslookup.io</Link>
-            </Text>
-          )}
-        </>
-      )
-    }
-    if (task.stepNumber === SITE_LAUNCH_TASKS.DROP_CLOUDFRONT - 1) {
-      newTask.subTitle = (
-        <>
-          {tasksDone === SITE_LAUNCH_TASKS.DROP_CLOUDFRONT - 1 && (
-            <Text fontSize="small">
-              If you are using CWP, please contact them to do this for you
-            </Text>
-          )}
-        </>
-      )
-    }
-    if (task.stepNumber === SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS - 1) {
-      newTask.subTitle = (
-        <>
-          {tasksDone === SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS - 1 && (
-            <Text fontSize="small">
-              This should be done as soon as domains are dropped
-            </Text>
-          )}
-        </>
-      )
-    }
+): TableMappingProps => {
+  const newTask = { ...task }
+  if (task.stepNumber === SITE_LAUNCH_TASKS.SET_DNS_TTL - 1) {
+    newTask.subTitle = (
+      <>
+        {tasksDone === SITE_LAUNCH_TASKS.SET_DNS_TTL - 1 && (
+          <Text fontSize="small">
+            You can check your current DNS TTL through 3rd party applications
+            such as <Link href="https://www.nslookup.io/">nslookup.io</Link>
+          </Text>
+        )}
+      </>
+    )
     return newTask
-  })
+  }
+  if (task.stepNumber === SITE_LAUNCH_TASKS.DROP_CLOUDFRONT - 1) {
+    newTask.subTitle = (
+      <>
+        {tasksDone === SITE_LAUNCH_TASKS.DROP_CLOUDFRONT - 1 && (
+          <Text fontSize="small">
+            If you are using CWP, please contact them to do this for you
+          </Text>
+        )}
+      </>
+    )
+    return newTask
+  }
+  if (task.stepNumber === SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS - 1) {
+    newTask.subTitle = (
+      <>
+        {tasksDone === SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS - 1 && (
+          <Text fontSize="small">
+            This should be done as soon as domains are dropped
+          </Text>
+        )}
+      </>
+    )
+    return newTask
+  }
+  return newTask
 }
 
 export const SiteLaunchChecklistBody = ({
@@ -259,8 +262,8 @@ export const SiteLaunchChecklistBody = ({
           {...getTextProps(i + 1, tasksDone)}
         >
           {siteLaunchStatusProps?.isNewDomain
-            ? TITLE_TEXTS_NEW_DOMAIN[i]
-            : TITLE_TEXTS_OLD_DOMAIN[i]}
+            ? TITLE_TEXTS_NEW_DOMAIN[getNewDomainTaskFrmIdx()]
+            : TITLE_TEXTS_OLD_DOMAIN[getOldDomainTaskFrmIdx(i)]}
         </Text>
       ),
       checkbox: checkboxes[i],
@@ -269,7 +272,9 @@ export const SiteLaunchChecklistBody = ({
 
   // Add all subtitle for some of the tasks
   if (!siteLaunchStatusProps?.isNewDomain) {
-    tableMapping = addSubtitlesForChecklist(tableMapping, tasksDone)
+    tableMapping = tableMapping.map((task) => {
+      return addSubtitlesForChecklist(task, tasksDone)
+    })
   }
 
   return (
@@ -308,8 +313,8 @@ export const SiteLaunchChecklistBody = ({
               </Tr>
             </Thead>
             <Tbody>
-              {tableMapping.map(({ title, subTitle, checkbox }, index) => (
-                <Tr key={TITLE_TEXTS_OLD_DOMAIN[index]}>
+              {tableMapping.map(({ stepNumber, title, subTitle, checkbox }) => (
+                <Tr key={stepNumber}>
                   <Td>
                     {title}
                     {subTitle}
