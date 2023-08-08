@@ -1,3 +1,5 @@
+import _ from "lodash"
+
 export interface DNSRecord {
   source: string
   type: string
@@ -31,6 +33,7 @@ export const SITE_LAUNCH_TASKS = {
 } as const
 
 export type SiteLaunchTaskTypeIndex = typeof SITE_LAUNCH_TASKS[keyof typeof SITE_LAUNCH_TASKS]
+
 export interface SiteLaunchStatusProps {
   siteLaunchStatus: SiteLaunchFrontEndStatus
   stepNumber: SiteLaunchTaskTypeIndex
@@ -64,16 +67,55 @@ export const SITE_LAUNCH_PAGES = {
   CHECKLIST: 4,
 }
 
-export const TITLE_TEXTS_OLD_DOMAIN = [
-  "Set your DNS Time To Live(TTL) to 5 mins at least 24 hours before launching",
-  "Approve and publish your first review request",
-  "Drop existing domains on Cloudfront",
-  "Delete existing DNS records from your nameserver",
-  "Wait 1 hour to flush existing records",
-] as const
+type OldDomainSiteLaunchTaskTitles = Exclude<
+  keyof typeof SITE_LAUNCH_TASKS,
+  // There are no title texts for these two domains
+  "NOT_STARTED" | "GENERATE_NEW_DNS_RECORDS"
+>
 
-export const TITLE_TEXTS_NEW_DOMAIN = [
-  TITLE_TEXTS_OLD_DOMAIN[
-    NEW_DOMAIN_SITE_LAUNCH_TASKS.APPROVE_FIRST_REVIEW_REQUEST
-  ],
-] as const
+export const TITLE_TEXTS_OLD_DOMAIN: Record<
+  OldDomainSiteLaunchTaskTitles,
+  string
+> = {
+  SET_DNS_TTL:
+    "Set your DNS Time To Live(TTL) to 5 mins at least 24 hours before launching",
+  APPROVE_FIRST_REVIEW_REQUEST: "Approve and publish your first review request",
+  DROP_CLOUDFRONT: "Drop existing domains on Cloudfront",
+  DELETE_EXISTING_DNS_RECORDS:
+    "Delete existing DNS records from your nameserver",
+  WAIT_1_HOUR: "Wait 1 hour to flush existing records",
+} as const
+
+type NewDomainSiteLaunchTaskTitles = Extract<
+  OldDomainSiteLaunchTaskTitles,
+  "APPROVE_FIRST_REVIEW_REQUEST"
+>
+
+export const TITLE_TEXTS_NEW_DOMAIN: Record<
+  NewDomainSiteLaunchTaskTitles,
+  string
+> = _.pick(TITLE_TEXTS_OLD_DOMAIN, ["APPROVE_FIRST_REVIEW_REQUEST"])
+
+export const getNewDomainTaskFrmIdx = (): NewDomainSiteLaunchTaskTitles => {
+  // for now only one checklist task for new domain
+  return "APPROVE_FIRST_REVIEW_REQUEST"
+}
+
+export const getOldDomainTaskFrmIdx = (
+  task: number
+): OldDomainSiteLaunchTaskTitles => {
+  switch (task + 1) {
+    case SITE_LAUNCH_TASKS.SET_DNS_TTL:
+      return "SET_DNS_TTL"
+    case SITE_LAUNCH_TASKS.APPROVE_FIRST_REVIEW_REQUEST:
+      return "APPROVE_FIRST_REVIEW_REQUEST"
+    case SITE_LAUNCH_TASKS.DROP_CLOUDFRONT:
+      return "DROP_CLOUDFRONT"
+    case SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS:
+      return "DELETE_EXISTING_DNS_RECORDS"
+    case SITE_LAUNCH_TASKS.WAIT_1_HOUR:
+      return "WAIT_1_HOUR"
+    default:
+      return "SET_DNS_TTL"
+  }
+}
