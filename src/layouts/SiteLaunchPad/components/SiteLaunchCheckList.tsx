@@ -39,8 +39,8 @@ export const SiteLaunchChecklistTitle = (): JSX.Element => {
 }
 
 const getTextProps = (index: number, tasksDone: number): TextProps => {
-  const disabled = tasksDone < index - 1
-  if (disabled) {
+  const tasksPending = tasksDone < index - 1
+  if (tasksPending) {
     return {
       color: "interaction.support.disabled-content",
     }
@@ -49,7 +49,7 @@ const getTextProps = (index: number, tasksDone: number): TextProps => {
 
   if (taskDone) {
     return {
-      color: "base.content.strong",
+      color: "base.content.default",
     }
   }
 
