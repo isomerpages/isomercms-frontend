@@ -76,19 +76,20 @@ export const SiteLaunchInfoCollectorBody = ({
       <InputGroup mt="4" mb="1">
         <InputLeftAddon>https://</InputLeftAddon>
         <Input
-          placeholder="eg: isomer.gov.sg"
+          placeholder="domain.gov.sg"
           {...register("domain", {
             required: true,
             validate: (value) => {
               if (value.startsWith("www."))
-                return "Please remove any leading 'www.'"
+                return "Remove 'www.' at the start of your domain"
               if (value.startsWith("http://"))
-                return "Please remove any leading 'http://'"
+                return "Remove 'http://' at the start of your domain"
               if (value.startsWith("https://"))
-                return "Please remove any leading 'https://'"
-              if (value.endsWith("/")) return "Please remove any trailing '/'"
+                return "Remove 'https://' at the start of your domain"
+              if (value.endsWith("/"))
+                return "Remove '/' at the end of your domain"
               if (!value.endsWith(".com") && !value.endsWith(".sg"))
-                return "Please enter a valid URL that ends with '.com' or '.sg'"
+                return "Enter a valid URL that ends with a '.com' or '.sg'"
 
               return true
             },
