@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import { useDisclosure, Text, HStack, VStack, Divider } from "@chakra-ui/react"
-import { Draggable } from "@hello-pangea/dnd"
 import { Button, Input, Tag } from "@opengovsg/design-system-react"
 import update from "immutability-helper"
 import _ from "lodash"
@@ -801,7 +800,6 @@ const EditHomepage = ({ match }) => {
   const displayHandler = async (event) => {
     try {
       const { id } = event.target
-      console.log("ID: =====", id)
       const idArray = id.split("-")
       const elemType = idArray[0]
       switch (elemType) {
@@ -1100,65 +1098,43 @@ const EditHomepage = ({ match }) => {
                                   />
                                 </Editable.DraggableAccordionItem>
                               )}
+
+                              {section.infopic && (
+                                <Editable.DraggableAccordionItem
+                                  draggableId={`infopic-${sectionIndex}-draggable`}
+                                  index={sectionIndex}
+                                  tag={<Tag variant="subtle">Infopic</Tag>}
+                                  title={section.infopic.title}
+                                >
+                                  <EditorInfopicSection
+                                    key={`section-${sectionIndex}`}
+                                    {...section.infopic}
+                                    sectionIndex={sectionIndex}
+                                    deleteHandler={(event) => {
+                                      onOpen()
+                                      setItemPendingForDelete({
+                                        id: event.target.id,
+                                        type: "Infopic Section",
+                                      })
+                                    }}
+                                    onFieldChange={onFieldChange}
+                                    shouldDisplay={
+                                      displaySections[sectionIndex]
+                                    }
+                                    displayHandler={displayHandler}
+                                    errors={
+                                      errors.sections[sectionIndex].infopic
+                                    }
+                                    siteName={siteName}
+                                  />
+                                </Editable.DraggableAccordionItem>
+                              )}
                             </>
                           ))}
                         </VStack>
                       </Editable.Accordion>
                     </Editable.Draggable>
                   </Editable.Sidebar>
-
-                  {/* Homepage section configurations */}
-                  <Editable.Draggable
-                    editableId="leftPane"
-                    onDragEnd={onDragEnd}
-                  >
-                    {frontMatter.sections.map((section, sectionIndex) => (
-                      <>
-                        {/* Infopic section */}
-                        {section.infopic ? (
-                          <Draggable
-                            draggableId={`infopic-${sectionIndex}-draggable`}
-                            index={sectionIndex}
-                          >
-                            {(draggableProvided) => (
-                              <div
-                                {...draggableProvided.draggableProps}
-                                {...draggableProvided.dragHandleProps}
-                                ref={draggableProvided.innerRef}
-                              >
-                                <EditorInfopicSection
-                                  key={`section-${sectionIndex}`}
-                                  title={section.infopic.title}
-                                  subtitle={section.infopic.subtitle}
-                                  description={section.infopic.description}
-                                  button={section.infopic.button}
-                                  url={section.infopic.url}
-                                  imageUrl={section.infopic.image}
-                                  imageAlt={section.infopic.alt}
-                                  sectionIndex={sectionIndex}
-                                  deleteHandler={(event) => {
-                                    onOpen()
-                                    setItemPendingForDelete({
-                                      id: event.target.id,
-                                      type: "Infopic Section",
-                                    })
-                                  }}
-                                  onFieldChange={onFieldChange}
-                                  shouldDisplay={displaySections[sectionIndex]}
-                                  displayHandler={displayHandler}
-                                  errors={errors.sections[sectionIndex].infopic}
-                                  siteName={siteName}
-                                />
-                              </div>
-                            )}
-                          </Draggable>
-                        ) : null}
-
-                        {/* Carousel section */}
-                        {/* TO-DO */}
-                      </>
-                    ))}
-                  </Editable.Draggable>
 
                   {/* Section creator */}
                   <NewSectionCreator
