@@ -1126,6 +1126,24 @@ const EditHomepage = ({ match }) => {
                               )}
                             </>
                           ))}
+                          <AddSectionButton>
+                            <AddSectionButton.Option
+                              title="Infopic"
+                              subtitle="Add an image with informational text"
+                            />
+                            <AddSectionButton.Item
+                              title="Infobar"
+                              subtitle="Add informational text"
+                            />
+                            {frontMatter.sections.some(
+                              ({ resources }) => !!resources
+                            ) && (
+                              <AddSectionButton.Item
+                                title="Resources"
+                                subtitle="Add a preview and link to your Resource Room"
+                              />
+                            )}
+                          </AddSectionButton>
                         </VStack>
                       </Editable.Accordion>
                     </Editable.Draggable>
