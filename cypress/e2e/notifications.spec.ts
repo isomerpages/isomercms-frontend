@@ -12,7 +12,7 @@ import {
   visitE2eEmailTestRepo,
 } from "../utils"
 
-const UNREAD_COMMENTS_BG_COLOR = "rgb(235, 248, 255)"
+const UNREAD_COMMENTS_BG_COLOR = "rgb(248, 250, 254)"
 const READ_COMMENTS_BG_COLOR = "rgba(0, 0, 0, 0)"
 
 const getReviewRequestedNotifText = (email: string) =>

@@ -6,6 +6,7 @@ import {
   TEST_REPO_NAME,
   Interceptors,
 } from "../fixtures/constants"
+import { SUCCESSFUL_EDIT_PAGE_TOAST } from "../fixtures/messages"
 
 describe("Resource category page", () => {
   const TEST_RESOURCE_ROOM_NAME = "resources"
@@ -285,7 +286,7 @@ describe("Resource category page", () => {
     cy.get('input[id="permalink"]').clear().type(TEST_PAGE_PERMALINK).blur()
 
     cy.contains("Save").click().wait(Interceptors.POST)
-    cy.contains("Successfully updated page").should("exist")
+    cy.contains(SUCCESSFUL_EDIT_PAGE_TOAST).should("exist")
 
     // New page should be of type POST with the correct date
     cy.reload()

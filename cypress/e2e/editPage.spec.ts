@@ -10,6 +10,7 @@ import {
   Interceptors,
   TEST_REPO_NAME,
 } from "../fixtures/constants"
+import { SUCCESSFUL_EDIT_PAGE_TOAST } from "../fixtures/messages"
 
 // Constants
 const PRIMARY_COLOUR = "rgb(255, 0, 0)"
@@ -114,7 +115,7 @@ describe("editPage.spec", () => {
 
       // Asserts
       // 1. Toast
-      cy.contains("Successfully updated page")
+      cy.contains(SUCCESSFUL_EDIT_PAGE_TOAST)
 
       // 2. Content is there even after refreshing
       cy.reload()
@@ -198,7 +199,7 @@ describe("editPage.spec", () => {
 
       // Asserts
       // 1. Toast
-      cy.contains("Successfully updated page")
+      cy.contains(SUCCESSFUL_EDIT_PAGE_TOAST)
 
       // 2. Content is there even after refreshing
       cy.reload()
@@ -346,7 +347,7 @@ describe("editPage.spec", () => {
 
       // Asserts
       // 1. Toast
-      cy.contains("Successfully updated page")
+      cy.contains(SUCCESSFUL_EDIT_PAGE_TOAST)
 
       // 2. Content is there even after refreshing
       cy.reload()
