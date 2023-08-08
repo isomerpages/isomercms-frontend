@@ -38,12 +38,6 @@ const deleteElement = <T,>(section: T[], indexToDelete: number): T[] => {
   })
 }
 
-const UPDATE_PATHS = {
-  editor: ["frontMatter", "sections"],
-  dropdownelem: ["frontMatter", "sections", "0", "hero", "dropdown", "options"],
-  highlightelem: ["frontMatter", "sections", "0", "hero", "key_highlights"],
-}
-
 const updateEditorSection = (
   homepageState: EditorHomepageState,
   newDisplaySections: unknown[],
@@ -175,7 +169,6 @@ const updateHomepageState = (
       // TODO: type check to avoid casting
       const draggedElem = (frontMatter.sections[0]
         .hero as EditorHeroDropdownSection).dropdown.options[source.index]
-      //! Thsis needs to be updated
       const newDropdownOptions = updatePositions(
         (frontMatter.sections[0].hero as EditorHeroDropdownSection).dropdown
           .options,
