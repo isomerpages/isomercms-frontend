@@ -68,7 +68,7 @@ const RiskAcceptanceModal = ({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          <Text as="h4" textStyle="h4">
+          <Text as="h4" textStyle="h4" textColor="base.content.strong">
             Check if you have full control over your DNS
           </Text>
         </ModalHeader>
@@ -84,7 +84,10 @@ const RiskAcceptanceModal = ({
             If you are unsure, consult your ITD team on this. If your domain is
             a .gov.sg domain, You can go to{" "}
             <Link href="https://dnschecker.org/">DNS checker</Link> and check if
-            your A record starts with 35.
+            your A record points to:
+          </Text>
+          <Text textStyle="body-2" mb="2rem">
+            35.201.83.130
           </Text>
 
           <Text textStyle="body-2" mb="4rem">
