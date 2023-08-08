@@ -1,4 +1,6 @@
 export const recommendWwwValue = (domain: string): boolean => {
+  if (!domain) return true
+
   const commonDomains = ["gov.sg", "com.sg", ".org.sg", ".net.sg"]
 
   if (commonDomains.some((commonDomain) => domain.endsWith(commonDomain))) {
@@ -11,7 +13,7 @@ export const recommendWwwValue = (domain: string): boolean => {
     return false
   }
 
-  if (domain.endsWith(".sg")) {
+  if (domain.endsWith(".sg") || domain.endsWith(".com")) {
     if (domain.split(".").length === 2) return true
     return false
   }
