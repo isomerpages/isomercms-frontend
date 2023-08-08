@@ -156,11 +156,11 @@ const EditableAccordionItem = ({
   children,
 }: PropsWithChildren<EditableCardProps>) => {
   return (
-    <BaseAccordionItem borderRadius="0.5rem" py="3rem">
+    <BaseAccordionItem borderRadius="0.5rem">
       {/* NOTE: Check with design on styling. 
         See if entire section is button (ie, whole component hover styling)
       */}
-      <AccordionButton px="1.5rem">
+      <AccordionButton px="1.5rem" py="3rem">
         <Flex flex="1" flexDir="column">
           <Text textStyle="h6" textAlign="left" mt="0.25rem">
             {title}
@@ -197,7 +197,6 @@ const DraggableAccordionItem = ({
           borderRadius="0.25rem"
           {...draggableProvided.draggableProps}
           ref={draggableProvided.innerRef}
-          pb="1.5rem"
           // TODO: Ask design for the design token for this rgba value...
           boxShadow="0px 0px 10px 0px rgba(191, 191, 191, 0.50)"
         >
@@ -213,7 +212,7 @@ const DraggableAccordionItem = ({
           {/* NOTE: Check with design on styling. 
         See if entire section is button (ie, whole component hover styling)
       */}
-          <AccordionButton px="1.5rem">
+          <AccordionButton px="1.5rem" pb="1.5rem">
             <Flex flex="1" flexDir="column">
               {tag}
               <Text textStyle="h6" textAlign="left" mt="0.25rem">
