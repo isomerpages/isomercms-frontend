@@ -295,7 +295,7 @@ export const SiteLaunchChecklistBody = ({
           <Table variant="simple">
             <Thead>
               <Tr>
-                <Td bg="gray.100">
+                <Td bg="gray.100" width="70%">
                   <Text>
                     Site launch tasks ({tasksDone}/{numberOfTasks})
                   </Text>
