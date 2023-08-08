@@ -77,14 +77,11 @@ export const SiteLaunchInfoCollectorBody = ({
   const [isWwwRecommended, setIsWwwRecommended] = useState(true)
 
   const handleDomainNatureQn = (response: string) => {
-    console.log({ response, selectedRadio: selectedDomainNature })
     if (response === "") {
       // keep the state as is, disallow unselecting
       return
     }
-    console.log(watch("domain"))
     setIsWwwRecommended(recommendWwwValue(watch("domain")))
-    console.log(recommendWwwValue(watch("domain")))
     setSelectedDomainNature(response)
     setDisplayWwwQn(true)
   }
@@ -97,15 +94,17 @@ export const SiteLaunchInfoCollectorBody = ({
     setWwwSetting(response)
   }
 
+  const inputDomain = watch("domain")
   useEffect(() => {
-    if (displayWwwQn) setIsWwwRecommended(recommendWwwValue(watch("domain")))
-  }, [displayWwwQn, watch])
+    if (displayWwwQn) setIsWwwRecommended(recommendWwwValue(inputDomain))
+  }, [displayWwwQn, inputDomain])
 
   const RecommendedBadge = () => (
     <Badge colorScheme="success" variant="subtle">
       <Text textColor="utility.feedback.success">Recommended</Text>
     </Badge>
   )
+
   return (
     <SiteLaunchPadBody>
       <Text textStyle="subhead-1">What domain are you launching with?</Text>
@@ -204,8 +203,14 @@ export const SiteLaunchInfoCollectorBody = ({
         </Button>
         <Button
           rightIcon={<Icon as={BiRightArrowAlt} fontSize="1.25rem" />}
+          type="submit"
           onClick={handleSubmit(onSubmit)}
-          isDisabled={!selectedDomainNature || !watch("domain") || !wwwSetting}
+          isDisabled={
+            !!errors.domain ||
+            !selectedDomainNature ||
+            !watch("domain") ||
+            !wwwSetting
+          }
           height="2.75rem"
         >
           Next
