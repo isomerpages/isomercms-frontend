@@ -115,19 +115,23 @@ export const SiteLaunchInfoCollectorBody = ({
           {...register("domain", {
             required: "Domain is required",
             validate: (value) => {
-              if (value.startsWith("www."))
-                return "Remove 'www.' at the start of your domain"
-              if (value.startsWith("."))
-                return "Remove '.' at the start of your domain"
-              if (value.startsWith("http://"))
-                return "Remove 'http://' at the start of your domain"
-              if (value.startsWith("https://"))
-                return "Remove 'https://' at the start of your domain"
-              if (value.endsWith("/"))
-                return "Remove '/' at the end of your domain"
-              if (!value.endsWith(".com") && !value.endsWith(".sg"))
-                return "Enter a valid URL that ends with a '.com' or '.sg'"
+              if (
+                value.startsWith("www.") ||
+                value.startsWith("http://") ||
+                value.startsWith("https://")
+              ) {
+                return "Your domain cannot begin with 'http://', 'https://' or 'www.'"
+              }
 
+              const invalidTld =
+                !value.endsWith(".com") && !value.endsWith(".sg")
+              if (value.endsWith("/") || invalidTld) {
+                return "Your domain must end with '.com' or '.sg'\nCheck that your domain doesn't end with '/'"
+              }
+
+              if (value.startsWith(".")) {
+                return "Check that your domain is valid and try again"
+              }
               return true
             },
           })}
