@@ -8,6 +8,7 @@ import {
   Interceptors,
   TEST_REPO_NAME,
 } from "../fixtures/constants"
+import { SUCCESSFUL_EDIT_PAGE_TOAST } from "../fixtures/messages"
 
 describe("Folders flow", () => {
   const DEFAULT_REPO_FOLDER_NAME = "default"
@@ -295,9 +296,7 @@ describe("Folders flow", () => {
 
       cy.get("#title").clear().type(EDITED_TEST_PAGE_TITLE)
       cy.contains("button", "Save").click().wait(Interceptors.POST)
-      cy.contains(
-        "Changes saved. See a preview on Staging, or request a Review for them to be published."
-      ).should("exist")
+      cy.contains(SUCCESSFUL_EDIT_PAGE_TOAST).should("exist")
 
       // Asserts
       // 1. New page title should be reflected in Folders
@@ -320,9 +319,7 @@ describe("Folders flow", () => {
 
       cy.get("#title").clear().type(EDITED_TEST_PAGE_TITLE_2)
       cy.contains("button", "Save").click().wait(Interceptors.POST)
-      cy.contains(
-        "Changes saved. See a preview on Staging, or request a Review for them to be published."
-      ).should("exist")
+      cy.contains(SUCCESSFUL_EDIT_PAGE_TOAST).should("exist")
 
       // Asserts
       // 1. New page title should be reflected in Folders
@@ -449,9 +446,7 @@ describe("Folders flow", () => {
 
       cy.get("#title").clear().type(EDITED_TEST_PAGE_TITLE)
       cy.contains("button", "Save").click().wait(Interceptors.POST)
-      cy.contains(
-        "Changes saved. See a preview on Staging, or request a Review for them to be published."
-      ).should("exist")
+      cy.contains(SUCCESSFUL_EDIT_PAGE_TOAST).should("exist")
 
       // Asserts
       // 1. New page title should be reflected in Folders
@@ -474,9 +469,7 @@ describe("Folders flow", () => {
 
       cy.get("#title").clear().type(EDITED_TEST_PAGE_TITLE_2)
       cy.contains("button", "Save").click().wait(Interceptors.POST)
-      cy.contains(
-        "Changes saved. See a preview on Staging, or request a Review for them to be published."
-      ).should("exist")
+      cy.contains(SUCCESSFUL_EDIT_PAGE_TOAST).should("exist")
 
       // Asserts
       // 1. New page title should be reflected in Folders

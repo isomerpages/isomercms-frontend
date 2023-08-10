@@ -25,9 +25,10 @@ pull_request_rules:
       merge:
         method: squash
 
-  - name: Ping isomer members for stale PRs (>1 month since last activity)
+  - name: Ping Isomer members for stale open PRs (>1 month since last activity)
     conditions:
       - updated-at<30 days ago
+      - -closed
     actions:
       request_reviews:
         teams:
