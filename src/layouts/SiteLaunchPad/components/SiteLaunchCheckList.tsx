@@ -281,6 +281,9 @@ export const SiteLaunchChecklistBody = ({
     })
   }
 
+  return (
+    <SiteLaunchPadBody>
+      <Text mb="2rem">
         <Text as="b">Tasks must be done in this order. </Text>
         Mark the task as done to enable the next task item. Once all items are
         marked done, you can proceed to the next page to track your site launch
