@@ -43,6 +43,7 @@ import {
   SiteLaunchDisclaimerBody,
   SiteLaunchDisclaimerTitle,
 } from "./components/SiteLaunchDisclaimer"
+import { SiteLaunchFinalState } from "./components/SiteLaunchFinalState"
 import {
   SiteLaunchInfoCollectorTitle,
   SiteLaunchInfoCollectorBody,
@@ -171,19 +172,26 @@ export const SiteLaunchPad = ({
         />
       )
       break
+    case SITE_LAUNCH_PAGES.FINAL_STATE:
+      title = <></> // No title for final state
+      body = <SiteLaunchFinalState />
+      break
     default:
       title = <SiteLaunchDisclaimerTitle />
       body = <SiteLaunchDisclaimerBody setPageNumber={setPageNumber} />
   }
   return (
-    <VStack bg="white" w="100%" minH="100vh" spacing="2rem">
-      {title}
-      {body}
-      <RiskAcceptanceModal
-        isOpen={pageNumber === SITE_LAUNCH_PAGES.RISK_ACCEPTANCE}
-        setPageNumber={setPageNumber}
-      />
-    </VStack>
+    <>
+      <SiteViewHeader />
+      <VStack bg="white" w="100%" minH="100vh" spacing="2rem">
+        {title}
+        {body}
+        <RiskAcceptanceModal
+          isOpen={pageNumber === SITE_LAUNCH_PAGES.RISK_ACCEPTANCE}
+          setPageNumber={setPageNumber}
+        />
+      </VStack>
+    </>
   )
 }
 
@@ -193,7 +201,6 @@ export const SiteLaunchPadPage = (): JSX.Element => {
     setSiteLaunchStatusProps,
   } = useSiteLaunchContext()
   const { siteName } = useParams<{ siteName: string }>()
-  const { email } = useLoginContext()
   const [pageNumber, setPageNumber] = useState(
     getInitialPageNumber(siteLaunchStatusProps)
   )
@@ -234,7 +241,6 @@ export const SiteLaunchPadPage = (): JSX.Element => {
 
   return (
     <>
-      <SiteViewHeader />
       {isSiteLaunchEnabled(siteName, role) ? (
         <SiteLaunchPad
           pageNumber={pageNumber}
