@@ -504,8 +504,19 @@ export const MOCK_UNLAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
   siteStatus: "NOT_LAUNCHED",
 }
 
-export const MOCK_LAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
+export const MOCK_SUCCESS_LAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
   siteStatus: "LAUNCHED",
+  dnsRecords: [
+    {
+      source: "sourceURL",
+      type: "CNAME",
+      target: "targetURL",
+    },
+  ],
+}
+
+export const MOCK_FAILURE_LAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
+  siteStatus: "FAILURE",
   dnsRecords: [
     {
       source: "sourceURL",

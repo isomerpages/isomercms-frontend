@@ -106,7 +106,8 @@ export const SiteLaunchProvider = ({
       siteLaunchStatusProps.dnsRecords === siteLaunchDto?.dnsRecords
     if (
       (siteLaunchDto.siteStatus === "LAUNCHED" ||
-        siteLaunchDto.siteStatus === "LAUNCHING") &&
+        siteLaunchDto.siteStatus === "LAUNCHING" ||
+        siteLaunchDto.siteStatus === "FAILURE") &&
       !isSiteLaunchFEAndBESynced
     ) {
       setSiteLaunchStatusProps({
