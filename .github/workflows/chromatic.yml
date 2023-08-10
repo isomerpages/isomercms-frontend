@@ -67,8 +67,7 @@ jobs:
         run: exit 0
       - uses: actions/checkout@v1
       # This extra step is not in the original chromatic workflow.
-      # This is to use a specific version of node (14.x), because the default is 16.x,
-      # which is not compatible with sass
+      # This is to pin the version of node (18.x) used.
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
