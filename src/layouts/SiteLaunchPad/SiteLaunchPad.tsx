@@ -76,24 +76,22 @@ const RiskAcceptanceModal = ({
         <ModalBody mt="2rem">
           <Text textStyle="body-2" fontWeight="bold" mb="2rem">
             The biggest reason for site launch failure is because of unknown
-            cloudfront records.
+            Cloudfront records.
           </Text>
 
           <Text textStyle="body-2" mb="2rem">
             <Text as="b">Please do your best to find this out. </Text>
             If you are unsure, consult your ITD team on this. If your domain is
-            a .gov.sg domain, You can go to{" "}
-            <Link href="https://dnschecker.org/">DNS checker</Link> and check if
-            your A record points to:
-          </Text>
-          <Text textStyle="body-2" mb="2rem">
-            35.201.83.130
+            a .gov.sg domain, you can go to{" "}
+            <Link href="https://dnschecker.org/">DNS checker</Link> and where it
+            points to. If it points to 35.201.83.130, you must contact CWP to
+            drop corresponding CloudFront records for your domain.
           </Text>
 
           <Text textStyle="body-2" mb="4rem">
             Isomer will not be held liable for any extended period of downtime
             due to unknown cloudfront records. Downtime could happen even if
-            your site is not currently using cloudfront, but has used it
+            your site is not currently using CloudFront, but has used it
             previously.
           </Text>
 
