@@ -80,7 +80,7 @@ export const TITLE_TEXTS_OLD_DOMAIN: Record<
   SET_DNS_TTL:
     "Set your DNS Time To Live(TTL) to 5 mins at least 24 hours before launching",
   APPROVE_FIRST_REVIEW_REQUEST: "Approve and publish your first review request",
-  DROP_CLOUDFRONT: "Drop existing domains on Cloudfront",
+  DROP_CLOUDFRONT: "Drop existing domains on CloudFront",
   DELETE_EXISTING_DNS_RECORDS:
     "Delete existing DNS records from your nameserver",
   WAIT_1_HOUR: "Wait 1 hour to flush existing records",

@@ -76,7 +76,7 @@ const RiskAcceptanceModal = ({
         <ModalBody mt="2rem">
           <Text textStyle="body-2" fontWeight="bold" mb="2rem">
             The biggest reason for site launch failure is because of unknown
-            Cloudfront records.
+            CloudFront records.
           </Text>
 
           <Text textStyle="body-2" mb="2rem">
