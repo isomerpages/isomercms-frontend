@@ -83,14 +83,17 @@ const RiskAcceptanceModal = ({
             <Text as="b">Please do your best to find this out. </Text>
             If you are unsure, consult your ITD team on this. If your domain is
             a .gov.sg domain, you can go to{" "}
-            <Link href="https://dnschecker.org/">DNS checker</Link> and where it
-            points to. If it points to 35.201.83.130, you must contact CWP to
-            drop corresponding CloudFront records for your domain.
+            <Link href="https://dnschecker.org/" isExternal>
+              DNS checker
+            </Link>{" "}
+            and where it points to. If it points to 35.201.83.130, you must
+            contact CWP to drop corresponding CloudFront records for your
+            domain.
           </Text>
 
           <Text textStyle="body-2" mb="4rem">
             Isomer will not be held liable for any extended period of downtime
-            due to unknown cloudfront records. Downtime could happen even if
+            due to unknown CloudFront records. Downtime could happen even if
             your site is not currently using CloudFront, but has used it
             previously.
           </Text>
