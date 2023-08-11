@@ -370,7 +370,7 @@ const SiteLaunchDisplayCard = (): JSX.Element => {
                 )}
                 {siteLaunchStatus === "CHECKLIST_TASKS_PENDING" && (
                   <Text textStyle="subhead-1" whiteSpace="nowrap">
-                    Visit launchpad
+                    Get started
                   </Text>
                 )}
                 {siteLaunchStatus === "LAUNCHING" && (
