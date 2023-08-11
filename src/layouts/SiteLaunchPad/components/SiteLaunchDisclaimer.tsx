@@ -1,5 +1,6 @@
 import { Box, Icon, ListItem, Text, UnorderedList } from "@chakra-ui/react"
-import { Button } from "@opengovsg/design-system-react"
+import { Button, Checkbox } from "@opengovsg/design-system-react"
+import { useForm } from "react-hook-form"
 import { BiRightArrowAlt } from "react-icons/bi"
 
 import { typography } from "theme/foundations/typography"
@@ -21,6 +22,8 @@ interface SiteLaunchDisclaimerBodyProps {
 export const SiteLaunchDisclaimerBody = ({
   setPageNumber,
 }: SiteLaunchDisclaimerBodyProps): JSX.Element => {
+  const { register, handleSubmit, watch } = useForm({})
+  const isRequirementUnderstood = watch("isRequirementUnderstood")
   return (
     <SiteLaunchPadBody>
       <Text as="h5" textStyle="h5">
@@ -60,7 +63,7 @@ export const SiteLaunchDisclaimerBody = ({
       <Text as="h5" textStyle="h5">
         Important
       </Text>
-      <UnorderedList mb="2rem">
+      <UnorderedList>
         <ListItem>
           <Text textStyle="body-2">
             Site launch is a time-sensitive process and often requires
@@ -94,13 +97,21 @@ export const SiteLaunchDisclaimerBody = ({
           </Text>
         </ListItem>
       </UnorderedList>
-
-      <Box display="flex" justifyContent="flex-end">
+      <Checkbox mt="3rem" {...register("isRequirementUnderstood")}>
+        <Text textColor="base.content.default" textStyle="body-1">
+          I have read and understood the requirements to launch my site
+        </Text>
+      </Checkbox>
+      <Box display="flex" justifyContent="flex-end" mt="1.5rem">
         <Button
+          isDisabled={!isRequirementUnderstood}
           rightIcon={<Icon as={BiRightArrowAlt} fontSize="1.25rem" />}
           iconSpacing="1rem"
           ml="auto"
-          onClick={() => setPageNumber(SITE_LAUNCH_PAGES.INFO_GATHERING)} // going to the next page}
+          onClick={handleSubmit(() => {
+            // going to the next page
+            setPageNumber(SITE_LAUNCH_PAGES.INFO_GATHERING)
+          })}
         >
           Continue
         </Button>
