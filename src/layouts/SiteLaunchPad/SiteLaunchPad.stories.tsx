@@ -6,6 +6,7 @@ import { SiteLaunchProvider } from "contexts/SiteLaunchContext"
 
 import {
   MOCK_FAILURE_LAUNCHED_SITE_LAUNCH_DTO,
+  MOCK_LAUNCHING_SITE_LAUNCH_DTO,
   MOCK_SUCCESS_LAUNCHED_SITE_LAUNCH_DTO,
 } from "mocks/constants"
 import { buildSiteLaunchDto } from "mocks/utils"
@@ -105,6 +106,20 @@ siteLaunchChecklistNewDomain.decorators = [
     )
   },
 ]
+
+export const siteLaunchPendingState = Template.bind({})
+
+siteLaunchPendingState.args = {
+  ...siteLaunchPadArgs,
+  pageNumber: 5,
+}
+siteLaunchPendingState.parameters = {
+  msw: {
+    handlers: {
+      siteLaunchStatusProps: buildSiteLaunchDto(MOCK_LAUNCHING_SITE_LAUNCH_DTO),
+    },
+  },
+}
 
 export const siteLaunchSuccessState = Template.bind({})
 
