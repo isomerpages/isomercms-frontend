@@ -53,7 +53,7 @@ const SiteLaunchFailureState = (): JSX.Element => {
         mt="1.5rem"
         textAlign="center"
       >
-        The most common reason for site launch failure is unknown cloudflare
+        The most common reason for site launch failure is unknown CloudFront
         records. Please remove all existing domains and try site launch again.
       </Text>
 
