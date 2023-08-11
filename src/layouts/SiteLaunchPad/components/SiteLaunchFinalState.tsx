@@ -9,6 +9,10 @@ import {
   SiteLaunchSuccessImage,
 } from "assets"
 
+interface SiteLaunchFinalStateProps {
+  decreasePageNumber: () => void
+}
+
 const SiteLaunchSuccessState = (): JSX.Element => {
   return (
     <>
@@ -76,7 +80,9 @@ const SiteLaunchFailureState = (): JSX.Element => {
   )
 }
 
-const SiteLaunchInProgressState = (): JSX.Element => {
+const SiteLaunchInProgressState = ({
+  decreasePageNumber,
+}: SiteLaunchFinalStateProps): JSX.Element => {
   return (
     <>
       <Text
@@ -98,14 +104,21 @@ const SiteLaunchInProgressState = (): JSX.Element => {
         when visiting your domain at this moment. Leave this window open or exit
         and come back later.
       </Text>
-      <Button variant="link" colorScheme="neutral" mt="3rem">
+      <Button
+        variant="link"
+        colorScheme="neutral"
+        mt="3rem"
+        onClick={decreasePageNumber}
+      >
         Back to tasklist
       </Button>
     </>
   )
 }
 
-export const SiteLaunchFinalState = (): JSX.Element => {
+export const SiteLaunchFinalState = ({
+  decreasePageNumber,
+}: SiteLaunchFinalStateProps): JSX.Element => {
   const { siteLaunchStatusProps } = useSiteLaunchContext()
   const State = () => {
     if (siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHED") {
@@ -114,7 +127,7 @@ export const SiteLaunchFinalState = (): JSX.Element => {
     if (siteLaunchStatusProps?.siteLaunchStatus === "FAILURE") {
       return <SiteLaunchFailureState />
     }
-    return <SiteLaunchInProgressState />
+    return <SiteLaunchInProgressState decreasePageNumber={decreasePageNumber} />
   }
 
   return (

@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import {
   Box,
   Button,
@@ -24,8 +23,6 @@ import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
 import { recommendWwwValue } from "utils/site-launch/domain-nature"
 
-import { SITE_LAUNCH_PAGES } from "types/siteLaunch"
-
 import { SiteLaunchPadBody } from "./SiteLaunchPadBody"
 import { SiteLaunchPadTitle } from "./SiteLaunchPadTitle"
 
@@ -36,7 +33,8 @@ export const SiteLaunchInfoCollectorTitle = (): JSX.Element => {
 }
 
 interface SiteLaunchInfoGatheringBodyProps {
-  setPageNumber: (number: number) => void
+  increasePageNumber: () => void
+  decreasePageNumber: () => void
 }
 
 const SiteNature = {
@@ -53,7 +51,8 @@ interface SiteLaunchFormData {
 }
 
 export const SiteLaunchInfoCollectorBody = ({
-  setPageNumber,
+  increasePageNumber,
+  decreasePageNumber,
 }: SiteLaunchInfoGatheringBodyProps): JSX.Element => {
   const {
     register,
@@ -75,7 +74,7 @@ export const SiteLaunchInfoCollectorBody = ({
       isNewDomain: data.nature === SiteNature.New,
       useWwwSubdomain: data.useWww === "true",
     })
-    setPageNumber(SITE_LAUNCH_PAGES.RISK_ACCEPTANCE)
+    increasePageNumber()
   }
   const [selectedDomainNature, setSelectedDomainNature] = useState("")
   const [wwwSetting, setWwwSetting] = useState("")
@@ -214,7 +213,7 @@ export const SiteLaunchInfoCollectorBody = ({
           <Button
             variant="link"
             mr={4}
-            onClick={() => setPageNumber(SITE_LAUNCH_PAGES.DISCLAIMER)}
+            onClick={() => decreasePageNumber()}
             height="2.75rem"
           >
             <Text textColor="base.content.strong">Cancel</Text>

@@ -121,6 +121,7 @@ const generateDNSTable = (dnsRecords: DNSRecord[] | undefined): JSX.Element => {
 interface SiteLaunchChecklistBodyProps {
   handleIncrementStepNumber: () => void
   handleDecrementStepNumber: () => void
+  increasePageNumber: () => void
 }
 
 interface TableMappingProps {
@@ -181,6 +182,7 @@ const addSubtitlesForChecklist = (
 export const SiteLaunchChecklistBody = ({
   handleIncrementStepNumber,
   handleDecrementStepNumber,
+  increasePageNumber,
 }: SiteLaunchChecklistBodyProps): JSX.Element => {
   const {
     siteLaunchStatusProps,
@@ -193,7 +195,6 @@ export const SiteLaunchChecklistBody = ({
   const numberOfTasks = siteLaunchStatusProps?.isNewDomain
     ? NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH
     : SITE_LAUNCH_TASKS_LENGTH
-
   const numberOfCheckboxes = numberOfTasks - 1 // last task is a button
   const { register, watch, setValue } = useForm({
     defaultValues: {
@@ -408,7 +409,9 @@ export const SiteLaunchChecklistBody = ({
               Back
             </Button>
           </Link>
-          <Button>Track site status</Button>
+          <Button onClick={() => increasePageNumber()}>
+            Track site status
+          </Button>
         </HStack>
       </Box>
     </SiteLaunchPadBody>

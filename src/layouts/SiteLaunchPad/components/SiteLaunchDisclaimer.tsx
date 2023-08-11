@@ -16,11 +16,11 @@ export const SiteLaunchDisclaimerTitle = (): JSX.Element => {
 }
 
 interface SiteLaunchDisclaimerBodyProps {
-  setPageNumber: (number: number) => void
+  increasePageNumber: () => void
 }
 
 export const SiteLaunchDisclaimerBody = ({
-  setPageNumber,
+  increasePageNumber,
 }: SiteLaunchDisclaimerBodyProps): JSX.Element => {
   const { register, handleSubmit, watch } = useForm({})
   const isRequirementUnderstood = watch("isRequirementUnderstood")
@@ -109,8 +109,7 @@ export const SiteLaunchDisclaimerBody = ({
           iconSpacing="1rem"
           ml="auto"
           onClick={handleSubmit(() => {
-            // going to the next page
-            setPageNumber(SITE_LAUNCH_PAGES.INFO_GATHERING)
+            increasePageNumber()
           })}
         >
           Continue
