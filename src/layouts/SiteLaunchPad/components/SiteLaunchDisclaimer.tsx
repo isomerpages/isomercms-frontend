@@ -1,15 +1,17 @@
 import { Box, Icon, ListItem, Text, UnorderedList } from "@chakra-ui/react"
-import { Button } from "@opengovsg/design-system-react"
+import { Button, Checkbox } from "@opengovsg/design-system-react"
+import { useForm } from "react-hook-form"
 import { BiRightArrowAlt } from "react-icons/bi"
 
+import { typography } from "theme/foundations/typography"
 import { SITE_LAUNCH_PAGES } from "types/siteLaunch"
 
 import { SiteLaunchPadBody } from "./SiteLaunchPadBody"
 import { SiteLaunchPadTitle } from "./SiteLaunchPadTitle"
 
 export const SiteLaunchDisclaimerTitle = (): JSX.Element => {
-  const title = "Welcome to the launchpad"
-  const subTitle = "Track and manage your site launch here"
+  const title = "Before you launch your site"
+  const subTitle = "Please review the information on this page carefully"
   return <SiteLaunchPadTitle title={title} subTitle={subTitle} />
 }
 
@@ -20,13 +22,17 @@ interface SiteLaunchDisclaimerBodyProps {
 export const SiteLaunchDisclaimerBody = ({
   setPageNumber,
 }: SiteLaunchDisclaimerBodyProps): JSX.Element => {
+  const { register, handleSubmit, watch } = useForm({})
+  const isRequirementUnderstood = watch("isRequirementUnderstood")
   return (
     <SiteLaunchPadBody>
       <Text as="h5" textStyle="h5">
         What is site launch?
       </Text>
       <Text textStyle="body-2" mb="2rem">
-        Site launch is the process of connecting your Isomer site to a domain,
+        <Text as="b" fontWeight={typography.fontWeights.bold}>
+          Site launch is the process of connecting your Isomer site to a domain
+        </Text>{" "}
         and making it publicly available on the internet. You will need to do
         this using your service provider for your name server, which is separate
         from Isomer. Typically, this would be the IT Service Management (ITSM).
@@ -34,11 +40,17 @@ export const SiteLaunchDisclaimerBody = ({
       <Text textStyle="body-2" mb="2rem">
         Isomer provides the credentials you need to add or change in your name
         server (typically ITSM),{" "}
-        <Text as="b">but cannot update them on your behalf.</Text>However, you
-        can come back here after updating the credentials, to check if your
-        website is launched and publicly accessible.
+        <Text as="b" fontWeight={typography.fontWeights.bold}>
+          but cannot update them on your behalf.{" "}
+        </Text>
+        However, you can come back here after updating the credentials, to check
+        if your website is launched and publicly accessible.
       </Text>
-      <Text textStyle="body-2" as="b">
+
+      <Text
+        fontSize={typography.fontSize.sm}
+        fontWeight={typography.fontWeights.bold}
+      >
         You should only launch your site when:
       </Text>
 
@@ -51,7 +63,7 @@ export const SiteLaunchDisclaimerBody = ({
       <Text as="h5" textStyle="h5">
         Important
       </Text>
-      <UnorderedList mb="2rem">
+      <UnorderedList>
         <ListItem>
           <Text textStyle="body-2">
             Site launch is a time-sensitive process and often requires
@@ -77,22 +89,31 @@ export const SiteLaunchDisclaimerBody = ({
         </ListItem>
         <ListItem>
           <Text textStyle="body-2">
-            If you are unfamiliar with site launches, we recommend getting
-            someone from your IT team to launch your site for you. You can add
-            them as a collaborator to your site, and remove them after it has
-            been launched.
+            If you are unfamiliar with site launches,{" "}
+            <Text as="b">
+              we recommend getting someone from your IT team to help you launch
+              your site.
+            </Text>
           </Text>
         </ListItem>
       </UnorderedList>
-
-      <Box display="flex" justifyContent="flex-end">
+      <Checkbox mt="3rem" {...register("isRequirementUnderstood")}>
+        <Text textColor="base.content.default" textStyle="body-1">
+          I have read and understood the requirements to launch my site
+        </Text>
+      </Checkbox>
+      <Box display="flex" justifyContent="flex-end" mt="1.5rem">
         <Button
+          isDisabled={!isRequirementUnderstood}
           rightIcon={<Icon as={BiRightArrowAlt} fontSize="1.25rem" />}
           iconSpacing="1rem"
           ml="auto"
-          onClick={() => setPageNumber(SITE_LAUNCH_PAGES.INFO_GATHERING)} // going to the next page}
+          onClick={handleSubmit(() => {
+            // going to the next page
+            setPageNumber(SITE_LAUNCH_PAGES.INFO_GATHERING)
+          })}
         >
-          I understand
+          Continue
         </Button>
       </Box>
     </SiteLaunchPadBody>

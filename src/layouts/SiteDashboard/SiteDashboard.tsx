@@ -370,7 +370,7 @@ const SiteLaunchDisplayCard = (): JSX.Element => {
                 )}
                 {siteLaunchStatus === "CHECKLIST_TASKS_PENDING" && (
                   <Text textStyle="subhead-1" whiteSpace="nowrap">
-                    Visit launchpad
+                    Get started
                   </Text>
                 )}
                 {siteLaunchStatus === "LAUNCHING" && (
@@ -387,17 +387,22 @@ const SiteLaunchDisplayCard = (): JSX.Element => {
               Site launch
             </DisplayCardTitle>
             <DisplayCardCaption>
-              Associate your isomer site to a domain
+              Associate your Isomer site to a domain
             </DisplayCardCaption>
           </DisplayCardHeader>
           <DisplayCardContent>
             {siteLaunchStatus === "CHECKLIST_TASKS_PENDING" && (
-              <Text textStyle="body-2">
-                {siteLaunchChecklistStepNumber}/{SITE_LAUNCH_TASKS_LENGTH}
+              <Text textStyle="body-2" mt="1rem">
+                <Text as="b">
+                  {siteLaunchChecklistStepNumber}/{SITE_LAUNCH_TASKS_LENGTH}
+                </Text>{" "}
+                site launch tasks completed
               </Text>
             )}
             {siteLaunchStatus === "LAUNCHING" && (
-              <Text textStyle="body-2">Launch status: Pending</Text>
+              <Text textStyle="body-2" mt="1rem">
+                Launch status: Pending
+              </Text>
             )}
           </DisplayCardContent>
         </Skeleton>

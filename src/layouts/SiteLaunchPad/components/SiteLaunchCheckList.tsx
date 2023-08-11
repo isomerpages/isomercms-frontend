@@ -138,9 +138,12 @@ const addSubtitlesForChecklist = (
     newTask.subTitle = (
       <>
         {tasksDone === SITE_LAUNCH_TASKS.SET_DNS_TTL - 1 && (
-          <Text fontSize="small">
+          <Text fontSize="small" textColor="base.content.medium">
             You can check your current DNS TTL through 3rd party applications
-            such as <Link href="https://www.nslookup.io/">nslookup.io</Link>
+            such as{" "}
+            <Link href="https://www.nslookup.io/" isExternal>
+              nslookup.io
+            </Link>
           </Text>
         )}
       </>
@@ -151,7 +154,7 @@ const addSubtitlesForChecklist = (
     newTask.subTitle = (
       <>
         {tasksDone === SITE_LAUNCH_TASKS.DROP_CLOUDFRONT - 1 && (
-          <Text fontSize="small">
+          <Text fontSize="small" textColor="base.content.medium">
             If you are using CWP, please contact them to do this for you
           </Text>
         )}
@@ -163,7 +166,7 @@ const addSubtitlesForChecklist = (
     newTask.subTitle = (
       <>
         {tasksDone === SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS - 1 && (
-          <Text fontSize="small">
+          <Text fontSize="small" textColor="base.content.medium">
             This should be done as soon as domains are dropped
           </Text>
         )}
@@ -258,7 +261,7 @@ export const SiteLaunchChecklistBody = ({
           fontSize="s"
           key={i}
           textStyle="subhead-2"
-          textColor="base.content.dark"
+          textColor="base.content.strong"
           {...getTextProps(i, tasksDone)}
         >
           {siteLaunchStatusProps?.isNewDomain
@@ -301,7 +304,7 @@ export const SiteLaunchChecklistBody = ({
             <Thead>
               <Tr>
                 <Td bg="gray.100" width="70%">
-                  <Text>
+                  <Text textStyle="subhead-2">
                     Site launch tasks ({tasksDone}/{numberOfTasks})
                   </Text>
                 </Td>
@@ -364,7 +367,8 @@ export const SiteLaunchChecklistBody = ({
                     {!siteLaunchStatusProps?.dnsRecords && (
                       <>
                         <Text>
-                          Generating your DNS records will take 2 minutes.
+                          Generating your DNS records will take around 2
+                          minutes.
                         </Text>
                         <Text>
                           Do not leave or refresh this page in the meantime.
