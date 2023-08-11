@@ -81,7 +81,6 @@ export const SiteLaunchInfoCollectorBody = ({
       // keep the state as is, disallow unselecting
       return
     }
-    setIsWwwRecommended(recommendWwwValue(watch("domain")))
     setSelectedDomainNature(response)
     setDisplayWwwQn(true)
   }
