@@ -185,9 +185,6 @@ export const SiteLaunchInfoCollectorBody = ({
               Do you want to host the both the www and non-www version of your
               domain?
             </Text>
-            <Text textStyle="subhead-2">
-              Select &quot;Yes&quot; if you are not sure
-            </Text>
             <RadioGroup
               {...register("useWww")}
               onChange={handleWwwQn}
