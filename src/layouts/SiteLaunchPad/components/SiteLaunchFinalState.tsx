@@ -43,7 +43,7 @@ const SiteLaunchFailureState = (): JSX.Element => {
         mb="1.5rem"
         mt="3rem"
       >
-        Site failed to launch, please contact the Isomer team
+        Site failed to launch, please contact Isomer support.
       </Text>
       <SiteLaunchFailureImage />
 
@@ -54,7 +54,7 @@ const SiteLaunchFailureState = (): JSX.Element => {
         textAlign="center"
       >
         The most common reason for site launch failure is unknown CloudFront
-        records. Please remove all existing domains and try site launch again.
+        records. Isomer support will get back to you as soon as we can.
       </Text>
 
       <Button
