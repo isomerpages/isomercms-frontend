@@ -26,7 +26,9 @@ const SiteLaunchSuccessState = (): JSX.Element => {
         You can find your site&apos;s DNS records in the settings page.
       </Text>
       <HStack spacing="3rem">
-        <Button variant="link">Back to tasklist</Button>
+        <Button variant="link" colorScheme="neutral">
+          Back to tasklist
+        </Button>
         <Button>Visit live site</Button>
       </HStack>
     </>
