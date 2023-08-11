@@ -132,7 +132,7 @@
     "@cypress/webpack-preprocessor": "^5.17.0",
     "@jest/globals": "^27.0.3",
     "@mdx-js/react": "^2.3.0",
-    "@storybook/addon-actions": "^7.0.24",
+    "@storybook/addon-actions": "^7.2.3",
     "@storybook/addon-docs": "^7.0.24",
     "@storybook/addon-essentials": "^7.0.24",
     "@storybook/addon-links": "^7.0.24",
