@@ -103,7 +103,7 @@ export const MediaSettingsModal = ({
             <p>
               For {mediaRoom} other than
               {mediaRoom === "images"
-                ? ` 'png', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg'`
+                ? ` 'png', 'jpg', '.jpeg', 'gif', 'tif', '.tiff', 'bmp', 'ico', 'svg'`
                 : ` 'pdf'`}
               , please use{" "}
               <Link to={{ pathname: `https://go.gov.sg` }} target="_blank">
@@ -124,6 +124,7 @@ export const MediaSettingsModal = ({
     }
 
     if (mediaRoom === "images") {
+      console.log(`Displaying`, watch("mediaUrl"))
       return (
         <div className={mediaStyles.editImagePreview}>
           <img

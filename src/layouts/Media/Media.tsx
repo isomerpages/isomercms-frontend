@@ -122,7 +122,7 @@ export const Media = (): JSX.Element => {
               <br />
               For {pluralMediaLabel} other than
               {mediaType === "images"
-                ? ` 'png', 'jpg', 'gif', 'tif', 'bmp', 'ico', 'svg'`
+                ? ` 'png', 'jpg', '.jpeg', 'gif', 'tif', '.tiff', 'bmp', 'ico', 'svg'`
                 : ` 'pdf'`}
               , please use
               <Link to={{ pathname: `https://go.gov.sg` }} target="_blank">
