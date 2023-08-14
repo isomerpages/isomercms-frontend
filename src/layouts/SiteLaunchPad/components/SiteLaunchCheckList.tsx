@@ -409,7 +409,12 @@ export const SiteLaunchChecklistBody = ({
               Back
             </Button>
           </Link>
-          <Button onClick={() => increasePageNumber()}>
+          <Button
+            onClick={() => increasePageNumber()}
+            // should not be able to go to next page until DNS
+            // records are displayed
+            isDisabled={!siteLaunchStatusProps?.dnsRecords}
+          >
             Track site status
           </Button>
         </HStack>

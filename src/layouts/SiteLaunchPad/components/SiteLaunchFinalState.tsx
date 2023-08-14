@@ -1,4 +1,4 @@
-import { HStack, Text, VStack } from "@chakra-ui/react"
+import { HStack, Link, Text, VStack } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
@@ -13,7 +13,9 @@ interface SiteLaunchFinalStateProps {
   decreasePageNumber: () => void
 }
 
-const SiteLaunchSuccessState = (): JSX.Element => {
+const SiteLaunchSuccessState = ({
+  decreasePageNumber,
+}: SiteLaunchFinalStateProps): JSX.Element => {
   return (
     <>
       <Text
@@ -34,9 +36,16 @@ const SiteLaunchSuccessState = (): JSX.Element => {
         You can find your site&apos;s DNS records in the settings page.
       </Text>
       <HStack spacing="3rem">
-        <Button variant="link" colorScheme="neutral">
+        <Button
+          variant="link"
+          colorScheme="neutral"
+          onClick={decreasePageNumber}
+        >
           Back to tasklist
         </Button>
+        <Link href="google.com">
+          <Button>Visit live site</Button>
+        </Link>
         <Button>Visit live site</Button>
       </HStack>
     </>
@@ -122,7 +131,7 @@ export const SiteLaunchFinalState = ({
   const { siteLaunchStatusProps } = useSiteLaunchContext()
   const State = () => {
     if (siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHED") {
-      return <SiteLaunchSuccessState />
+      return <SiteLaunchSuccessState decreasePageNumber={decreasePageNumber} />
     }
     if (siteLaunchStatusProps?.siteLaunchStatus === "FAILURE") {
       return <SiteLaunchFailureState />
