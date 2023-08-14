@@ -19,7 +19,6 @@ import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { Redirect, useParams } from "react-router-dom"
 
-import { useLoginContext } from "contexts/LoginContext"
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
 import { useGetCollaboratorRoleHook } from "hooks/collaboratorHooks"
@@ -132,7 +131,7 @@ const RiskAcceptanceModal = ({
     </Modal>
   )
 }
-const getPageNumber = (
+const getInitialPageNumber = (
   siteLaunchStatusProps: SiteLaunchStatusProps | undefined
 ) => {
   const hasUserAlreadyStartedChecklistTasks =
@@ -141,10 +140,7 @@ const getPageNumber = (
   const isSiteLaunchInProgress =
     siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING"
   if (isSiteLaunchInProgress) return SITE_LAUNCH_PAGES.CHECKLIST
-  const isSiteLaunchEndState =
-    siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHED" ||
-    siteLaunchStatusProps?.siteLaunchStatus === "FAILURE"
-  if (isSiteLaunchEndState) return SITE_LAUNCH_PAGES.FINAL_STATE
+
   return SITE_LAUNCH_PAGES.DISCLAIMER
 }
 
@@ -217,8 +213,20 @@ export const SiteLaunchPadPage = (): JSX.Element => {
   } = useSiteLaunchContext()
   const { siteName } = useParams<{ siteName: string }>()
   const [pageNumber, setPageNumber] = useState(
-    getPageNumber(siteLaunchStatusProps)
+    getInitialPageNumber(siteLaunchStatusProps)
   )
+
+  useEffect(() => {
+    // In case user wishes to check status page
+    const isSiteLaunchEndState =
+      siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHED" ||
+      siteLaunchStatusProps?.siteLaunchStatus === "FAILURE" ||
+      siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING"
+
+    if (isSiteLaunchEndState) {
+      setPageNumber(SITE_LAUNCH_PAGES.FINAL_STATE)
+    }
+  }, [siteLaunchStatusProps?.siteLaunchStatus])
 
   const increasePageNumber = () => {
     setPageNumber(pageNumber + 1)
@@ -232,7 +240,6 @@ export const SiteLaunchPadPage = (): JSX.Element => {
 
   const isLoaded: boolean = !!siteName && !!role
   useEffect(() => {
-    setPageNumber(getPageNumber(siteLaunchStatusProps))
     if (isLoaded && !isSiteLaunchEnabled(siteName, role)) {
       errorToast({
         id: "no_access_to_launchpad",
