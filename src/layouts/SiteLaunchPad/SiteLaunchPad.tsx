@@ -7,6 +7,7 @@ import {
   ModalBody,
   Text,
   VStack,
+  Skeleton,
 } from "@chakra-ui/react"
 import {
   Button,
@@ -224,14 +225,16 @@ export const SiteLaunchPadPage = (): JSX.Element => {
 
   const errorToast = useErrorToast()
   const { data: role } = useGetCollaboratorRoleHook(siteName)
+
+  const isLoaded: boolean = !!siteName && !!role
   useEffect(() => {
-    if (!isSiteLaunchEnabled(siteName, role)) {
+    if (isLoaded && !isSiteLaunchEnabled(siteName, role)) {
       errorToast({
         id: "no_access_to_launchpad",
         description: "You do not have access to this page.",
       })
     }
-  }, [siteName, errorToast, role])
+  }, [siteName, errorToast, role, isLoaded])
 
   const handleIncrementStepNumber = () => {
     if (
@@ -258,16 +261,22 @@ export const SiteLaunchPadPage = (): JSX.Element => {
 
   return (
     <>
-      {isSiteLaunchEnabled(siteName, role) ? (
-        <SiteLaunchPad
-          pageNumber={pageNumber}
-          increasePageNumber={increasePageNumber}
-          decreasePageNumber={decreasePageNumber}
-          handleDecrementStepNumber={handleDecrementStepNumber}
-          handleIncrementStepNumber={handleIncrementStepNumber}
-        />
+      {isLoaded ? (
+        <>
+          {isSiteLaunchEnabled(siteName, role) ? (
+            <SiteLaunchPad
+              pageNumber={pageNumber}
+              increasePageNumber={increasePageNumber}
+              decreasePageNumber={decreasePageNumber}
+              handleDecrementStepNumber={handleDecrementStepNumber}
+              handleIncrementStepNumber={handleIncrementStepNumber}
+            />
+          ) : (
+            <Redirect to={`/sites/${siteName}/dashboard`} />
+          )}
+        </>
       ) : (
-        <Redirect to={`/sites/${siteName}/dashboard`} />
+        <Skeleton isLoaded />
       )}
     </>
   )
