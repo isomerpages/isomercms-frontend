@@ -32,9 +32,6 @@ const SiteLaunchSuccessState = ({
       <Text textStyle="body-1" textColor="base.content.default" mt="1.5rem">
         View your site status from the Dashboard.
       </Text>
-      <Text textStyle="body-1" textColor="base.content.default" mb="3rem">
-        You can find your site&apos;s DNS records in the settings page.
-      </Text>
       <HStack spacing="3rem">
         <Button
           variant="link"
