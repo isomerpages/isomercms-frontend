@@ -3,6 +3,8 @@ import { Button, Checkbox } from "@opengovsg/design-system-react"
 import { useForm } from "react-hook-form"
 import { BiRightArrowAlt } from "react-icons/bi"
 
+import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
+
 import { typography } from "theme/foundations/typography"
 
 import { SiteLaunchPadBody } from "./SiteLaunchPadBody"
@@ -14,14 +16,9 @@ export const SiteLaunchDisclaimerTitle = (): JSX.Element => {
   return <SiteLaunchPadTitle title={title} subTitle={subTitle} />
 }
 
-interface SiteLaunchDisclaimerBodyProps {
-  increasePageNumber: () => void
-}
-
-export const SiteLaunchDisclaimerBody = ({
-  increasePageNumber,
-}: SiteLaunchDisclaimerBodyProps): JSX.Element => {
+export const SiteLaunchDisclaimerBody = (): JSX.Element => {
   const { register, handleSubmit, watch } = useForm({})
+  const { increasePageNumber } = useSiteLaunchContext()
   const isRequirementUnderstood = watch("isRequirementUnderstood")
   return (
     <SiteLaunchPadBody>

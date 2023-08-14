@@ -121,7 +121,6 @@ const generateDNSTable = (dnsRecords: DNSRecord[] | undefined): JSX.Element => {
 interface SiteLaunchChecklistBodyProps {
   handleIncrementStepNumber: () => void
   handleDecrementStepNumber: () => void
-  increasePageNumber: () => void
 }
 
 interface TableMappingProps {
@@ -182,12 +181,12 @@ const addSubtitlesForChecklist = (
 export const SiteLaunchChecklistBody = ({
   handleIncrementStepNumber,
   handleDecrementStepNumber,
-  increasePageNumber,
 }: SiteLaunchChecklistBodyProps): JSX.Element => {
   const {
     siteLaunchStatusProps,
     setSiteLaunchStatusProps,
     generateDNSRecords,
+    increasePageNumber,
   } = useSiteLaunchContext()
 
   const { siteName } = useParams<{ siteName: string }>()
@@ -196,6 +195,7 @@ export const SiteLaunchChecklistBody = ({
     ? NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH
     : SITE_LAUNCH_TASKS_LENGTH
   const numberOfCheckboxes = numberOfTasks - 1 // last task is a button
+
   const { register, watch, setValue } = useForm({
     defaultValues: {
       checkboxes: Array.from(
@@ -206,7 +206,10 @@ export const SiteLaunchChecklistBody = ({
       ),
     },
   })
-  const tasksDone = watch("checkboxes").filter((checked) => checked).length
+
+  const tasksDone =
+    siteLaunchStatusProps?.stepNumber ??
+    watch("checkboxes").filter((checked) => checked).length
 
   const handleGenerateDNSRecordsOnClick = () => {
     setSiteLaunchStatusProps({
@@ -232,21 +235,18 @@ export const SiteLaunchChecklistBody = ({
       handleDecrementStepNumber()
     }
   }
+  const allTasksDone: boolean =
+    siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING" ||
+    siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHED" ||
+    siteLaunchStatusProps?.siteLaunchStatus === "FAILURE"
 
   const checkboxes = Array.from({ length: numberOfCheckboxes }, (_, i) => (
     <Center key={i}>
       <Checkbox
         {...register(`checkboxes.${i}`)}
         // we want use to check box in order, so we disable it when it is not the next one
-        isDisabled={
-          tasksDone >= i + 2 ||
-          tasksDone < i ||
-          siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING"
-        }
-        isChecked={
-          i < tasksDone ||
-          siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING"
-        }
+        isDisabled={tasksDone >= i + 2 || tasksDone < i || allTasksDone}
+        isChecked={i < tasksDone || allTasksDone}
         onChange={(e) => {
           handleCheckboxChange(e.target.checked, i)
         }}
@@ -354,7 +354,10 @@ export const SiteLaunchChecklistBody = ({
                 <Td>
                   <Center>
                     <Button
-                      isDisabled={tasksDone !== numberOfTasks - 1}
+                      isDisabled={
+                        tasksDone !== numberOfTasks - 1 ||
+                        !!siteLaunchStatusProps?.dnsRecords
+                      }
                       variant="outline"
                       onClick={handleGenerateDNSRecordsOnClick}
                     >
@@ -363,7 +366,7 @@ export const SiteLaunchChecklistBody = ({
                   </Center>
                 </Td>
               </Tr>
-              {siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING" && (
+              {allTasksDone && (
                 <Tr borderTopStyle="hidden">
                   <Td colSpan={2} mb="2rem">
                     {!siteLaunchStatusProps?.dnsRecords && (
@@ -378,9 +381,7 @@ export const SiteLaunchChecklistBody = ({
                       </>
                     )}
                     <Skeleton isLoaded={!!siteLaunchStatusProps?.dnsRecords}>
-                      {siteLaunchStatusProps?.siteLaunchStatus ===
-                        "LAUNCHING" &&
-                        generateDNSTable(siteLaunchStatusProps.dnsRecords)}
+                      {generateDNSTable(siteLaunchStatusProps?.dnsRecords)}
                     </Skeleton>
                   </Td>
                 </Tr>

@@ -9,16 +9,12 @@ import {
   SiteLaunchSuccessImage,
 } from "assets"
 
-interface SiteLaunchFinalStateProps {
-  decreasePageNumber: () => void
-}
-
-const SiteLaunchSuccessState = ({
-  decreasePageNumber,
-}: SiteLaunchFinalStateProps): JSX.Element => {
-  const { siteLaunchStatusProps } = useSiteLaunchContext()
+const SiteLaunchSuccessState = (): JSX.Element => {
+  const { siteLaunchStatusProps, decreasePageNumber } = useSiteLaunchContext()
   let siteUrl: string = siteLaunchStatusProps?.siteUrl || ""
   if (siteLaunchStatusProps?.useWwwSubdomain) {
+    // We append the `www` since the root might
+    // take time to propagate
     siteUrl = `www.${siteUrl}`
   }
   return (
@@ -45,7 +41,7 @@ const SiteLaunchSuccessState = ({
         >
           Back to tasklist
         </Button>
-        <Link href={siteUrl}>
+        <Link href={`https://${siteUrl}`} isExternal>
           <Button>Visit live site</Button>
         </Link>
       </HStack>
@@ -90,9 +86,8 @@ const SiteLaunchFailureState = (): JSX.Element => {
   )
 }
 
-const SiteLaunchInProgressState = ({
-  decreasePageNumber,
-}: SiteLaunchFinalStateProps): JSX.Element => {
+const SiteLaunchInProgressState = (): JSX.Element => {
+  const { decreasePageNumber } = useSiteLaunchContext()
   return (
     <>
       <Text
@@ -126,18 +121,16 @@ const SiteLaunchInProgressState = ({
   )
 }
 
-export const SiteLaunchFinalState = ({
-  decreasePageNumber,
-}: SiteLaunchFinalStateProps): JSX.Element => {
+export const SiteLaunchFinalState = (): JSX.Element => {
   const { siteLaunchStatusProps } = useSiteLaunchContext()
   const State = () => {
     if (siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHED") {
-      return <SiteLaunchSuccessState decreasePageNumber={decreasePageNumber} />
+      return <SiteLaunchSuccessState />
     }
     if (siteLaunchStatusProps?.siteLaunchStatus === "FAILURE") {
       return <SiteLaunchFailureState />
     }
-    return <SiteLaunchInProgressState decreasePageNumber={decreasePageNumber} />
+    return <SiteLaunchInProgressState />
   }
 
   return (

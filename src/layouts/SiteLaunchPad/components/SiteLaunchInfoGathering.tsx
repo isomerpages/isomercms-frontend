@@ -32,11 +32,6 @@ export const SiteLaunchInfoCollectorTitle = (): JSX.Element => {
   return <SiteLaunchPadTitle title={title} subTitle={subTitle} />
 }
 
-interface SiteLaunchInfoGatheringBodyProps {
-  increasePageNumber: () => void
-  decreasePageNumber: () => void
-}
-
 const SiteNature = {
   New: "new",
   Live: "live",
@@ -50,10 +45,7 @@ interface SiteLaunchFormData {
   useWww: "true" | "false"
 }
 
-export const SiteLaunchInfoCollectorBody = ({
-  increasePageNumber,
-  decreasePageNumber,
-}: SiteLaunchInfoGatheringBodyProps): JSX.Element => {
+export const SiteLaunchInfoCollectorBody = (): JSX.Element => {
   const {
     register,
     handleSubmit,
@@ -64,6 +56,8 @@ export const SiteLaunchInfoCollectorBody = ({
   const {
     siteLaunchStatusProps,
     setSiteLaunchStatusProps,
+    increasePageNumber,
+    decreasePageNumber,
   } = useSiteLaunchContext()
 
   const onSubmit = (data: SiteLaunchFormData) => {

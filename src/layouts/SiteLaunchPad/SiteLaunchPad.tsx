@@ -15,7 +15,7 @@ import {
   Link,
   ModalCloseButton,
 } from "@opengovsg/design-system-react"
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { Redirect, useParams } from "react-router-dom"
 
@@ -28,7 +28,6 @@ import { SiteViewHeader } from "layouts/layouts/SiteViewLayout/SiteViewHeader"
 import { isSiteLaunchEnabled } from "utils/siteLaunchUtils"
 
 import {
-  SiteLaunchStatusProps,
   SiteLaunchTaskTypeIndex,
   SITE_LAUNCH_PAGES,
   SITE_LAUNCH_TASKS_LENGTH,
@@ -51,26 +50,21 @@ import {
 
 interface RiskAcceptanceModalProps {
   isOpen: boolean
-  increasePageNumber: () => void
-  decreasePageNumber: () => void
 }
 
 interface SiteLaunchPadProps {
   pageNumber: number
-  increasePageNumber: () => void
-  decreasePageNumber: () => void
+
   handleDecrementStepNumber: () => void
   handleIncrementStepNumber: () => void
 }
 
 const RiskAcceptanceModal = ({
   isOpen,
-  increasePageNumber,
-  decreasePageNumber,
 }: RiskAcceptanceModalProps): JSX.Element => {
   const { register, handleSubmit, watch } = useForm({})
   const isRiskAccepted = watch("isRiskAccepted")
-
+  const { increasePageNumber, decreasePageNumber } = useSiteLaunchContext()
   return (
     <Modal isOpen={isOpen} onClose={() => decreasePageNumber()}>
       <ModalOverlay />
@@ -131,23 +125,9 @@ const RiskAcceptanceModal = ({
     </Modal>
   )
 }
-const getInitialPageNumber = (
-  siteLaunchStatusProps: SiteLaunchStatusProps | undefined
-) => {
-  const hasUserAlreadyStartedChecklistTasks =
-    siteLaunchStatusProps?.siteLaunchStatus === "CHECKLIST_TASKS_PENDING"
-  if (hasUserAlreadyStartedChecklistTasks) return SITE_LAUNCH_PAGES.CHECKLIST
-  const isSiteLaunchInProgress =
-    siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING"
-  if (isSiteLaunchInProgress) return SITE_LAUNCH_PAGES.CHECKLIST
-
-  return SITE_LAUNCH_PAGES.DISCLAIMER
-}
 
 export const SiteLaunchPad = ({
   pageNumber,
-  increasePageNumber,
-  decreasePageNumber,
   handleDecrementStepNumber,
   handleIncrementStepNumber,
 }: SiteLaunchPadProps): JSX.Element => {
@@ -156,19 +136,12 @@ export const SiteLaunchPad = ({
   switch (pageNumber) {
     case SITE_LAUNCH_PAGES.DISCLAIMER:
       title = <SiteLaunchDisclaimerTitle />
-      body = (
-        <SiteLaunchDisclaimerBody increasePageNumber={increasePageNumber} />
-      )
+      body = <SiteLaunchDisclaimerBody />
       break
     case SITE_LAUNCH_PAGES.INFO_GATHERING:
     case SITE_LAUNCH_PAGES.RISK_ACCEPTANCE: // Risk acceptance modal overlay
       title = <SiteLaunchInfoCollectorTitle />
-      body = (
-        <SiteLaunchInfoCollectorBody
-          increasePageNumber={increasePageNumber}
-          decreasePageNumber={decreasePageNumber}
-        />
-      )
+      body = <SiteLaunchInfoCollectorBody />
       break
     case SITE_LAUNCH_PAGES.CHECKLIST:
       title = <SiteLaunchChecklistTitle />
@@ -176,19 +149,16 @@ export const SiteLaunchPad = ({
         <SiteLaunchChecklistBody
           handleIncrementStepNumber={handleIncrementStepNumber}
           handleDecrementStepNumber={handleDecrementStepNumber}
-          increasePageNumber={increasePageNumber}
         />
       )
       break
     case SITE_LAUNCH_PAGES.FINAL_STATE:
       title = <></> // No title for final state
-      body = <SiteLaunchFinalState decreasePageNumber={decreasePageNumber} />
+      body = <SiteLaunchFinalState />
       break
     default:
       title = <SiteLaunchDisclaimerTitle />
-      body = (
-        <SiteLaunchDisclaimerBody increasePageNumber={increasePageNumber} />
-      )
+      body = <SiteLaunchDisclaimerBody />
   }
   return (
     <>
@@ -198,8 +168,6 @@ export const SiteLaunchPad = ({
         {body}
         <RiskAcceptanceModal
           isOpen={pageNumber === SITE_LAUNCH_PAGES.RISK_ACCEPTANCE}
-          increasePageNumber={increasePageNumber}
-          decreasePageNumber={decreasePageNumber}
         />
       </VStack>
     </>
@@ -210,30 +178,9 @@ export const SiteLaunchPadPage = (): JSX.Element => {
   const {
     siteLaunchStatusProps,
     setSiteLaunchStatusProps,
+    pageNumber,
   } = useSiteLaunchContext()
   const { siteName } = useParams<{ siteName: string }>()
-  const [pageNumber, setPageNumber] = useState(
-    getInitialPageNumber(siteLaunchStatusProps)
-  )
-
-  useEffect(() => {
-    // In case user wishes to check status page
-    const isSiteLaunchEndState =
-      siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHED" ||
-      siteLaunchStatusProps?.siteLaunchStatus === "FAILURE" ||
-      siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING"
-
-    if (isSiteLaunchEndState) {
-      setPageNumber(SITE_LAUNCH_PAGES.FINAL_STATE)
-    }
-  }, [siteLaunchStatusProps?.siteLaunchStatus])
-
-  const increasePageNumber = () => {
-    setPageNumber(pageNumber + 1)
-  }
-  const decreasePageNumber = () => {
-    setPageNumber(pageNumber - 1)
-  }
 
   const errorToast = useErrorToast()
   const { data: role } = useGetCollaboratorRoleHook(siteName)
@@ -278,8 +225,6 @@ export const SiteLaunchPadPage = (): JSX.Element => {
           {isSiteLaunchEnabled(siteName, role) ? (
             <SiteLaunchPad
               pageNumber={pageNumber}
-              increasePageNumber={increasePageNumber}
-              decreasePageNumber={decreasePageNumber}
               handleDecrementStepNumber={handleDecrementStepNumber}
               handleIncrementStepNumber={handleIncrementStepNumber}
             />
