@@ -373,7 +373,8 @@ const SiteLaunchDisplayCard = (): JSX.Element => {
                     Get started
                   </Text>
                 )}
-                {siteLaunchStatus === "LAUNCHING" && (
+                {(siteLaunchStatus === "LAUNCHING" ||
+                  siteLaunchStatus === "FAILURE") && (
                   <Text textStyle="subhead-1" whiteSpace="nowrap">
                     Check status
                   </Text>
