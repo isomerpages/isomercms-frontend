@@ -51,7 +51,10 @@ import { isSiteLaunchEnabled } from "utils/siteLaunchUtils"
 import { BxsClearRocket, SiteDashboardHumanImage } from "assets"
 import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
 import { DASHBOARD_FEATURE_STEPS } from "features/FeatureTour/FeatureTourSequence"
-import { SITE_LAUNCH_TASKS_LENGTH } from "types/siteLaunch"
+import {
+  NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH,
+  SITE_LAUNCH_TASKS_LENGTH,
+} from "types/siteLaunch"
 
 import { SiteViewLayout } from "../layouts"
 
@@ -346,6 +349,9 @@ const SiteLaunchDisplayCard = (): JSX.Element => {
   const { siteLaunchStatusProps } = useSiteLaunchContext()
   const siteLaunchStatus = siteLaunchStatusProps?.siteLaunchStatus
   const siteLaunchChecklistStepNumber = siteLaunchStatusProps?.stepNumber
+  const totalTasks = siteLaunchStatusProps?.isNewDomain
+    ? NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH
+    : SITE_LAUNCH_TASKS_LENGTH
   const isSiteLaunchLoading = siteLaunchStatus === "LOADING"
   if (!isSiteLaunchEnabled(siteName, role)) return <></>
   if (siteLaunchStatus === "LAUNCHED") return <></>
@@ -370,7 +376,7 @@ const SiteLaunchDisplayCard = (): JSX.Element => {
                 )}
                 {siteLaunchStatus === "CHECKLIST_TASKS_PENDING" && (
                   <Text textStyle="subhead-1" whiteSpace="nowrap">
-                    Get started
+                    Manage
                   </Text>
                 )}
                 {(siteLaunchStatus === "LAUNCHING" ||
@@ -395,7 +401,7 @@ const SiteLaunchDisplayCard = (): JSX.Element => {
             {siteLaunchStatus === "CHECKLIST_TASKS_PENDING" && (
               <Text textStyle="body-2" mt="1rem">
                 <Text as="b">
-                  {siteLaunchChecklistStepNumber}/{SITE_LAUNCH_TASKS_LENGTH}
+                  {siteLaunchChecklistStepNumber}/{totalTasks}
                 </Text>{" "}
                 site launch tasks completed
               </Text>
