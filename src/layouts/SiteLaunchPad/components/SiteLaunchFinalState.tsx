@@ -16,6 +16,11 @@ interface SiteLaunchFinalStateProps {
 const SiteLaunchSuccessState = ({
   decreasePageNumber,
 }: SiteLaunchFinalStateProps): JSX.Element => {
+  const { siteLaunchStatusProps } = useSiteLaunchContext()
+  let siteUrl: string = siteLaunchStatusProps?.siteUrl || ""
+  if (siteLaunchStatusProps?.useWwwSubdomain) {
+    siteUrl = `www.${siteUrl}`
+  }
   return (
     <>
       <Text
@@ -40,10 +45,9 @@ const SiteLaunchSuccessState = ({
         >
           Back to tasklist
         </Button>
-        <Link href="google.com">
+        <Link href={siteUrl}>
           <Button>Visit live site</Button>
         </Link>
-        <Button>Visit live site</Button>
       </HStack>
     </>
   )

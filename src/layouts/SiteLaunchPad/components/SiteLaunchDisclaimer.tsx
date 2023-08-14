@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form"
 import { BiRightArrowAlt } from "react-icons/bi"
 
 import { typography } from "theme/foundations/typography"
-import { SITE_LAUNCH_PAGES } from "types/siteLaunch"
 
 import { SiteLaunchPadBody } from "./SiteLaunchPadBody"
 import { SiteLaunchPadTitle } from "./SiteLaunchPadTitle"
@@ -108,9 +107,7 @@ export const SiteLaunchDisclaimerBody = ({
           rightIcon={<Icon as={BiRightArrowAlt} fontSize="1.25rem" />}
           iconSpacing="1rem"
           ml="auto"
-          onClick={handleSubmit(() => {
-            increasePageNumber()
-          })}
+          onClick={handleSubmit(increasePageNumber)}
         >
           Continue
         </Button>
