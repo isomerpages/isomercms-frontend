@@ -132,7 +132,7 @@ const RiskAcceptanceModal = ({
     </Modal>
   )
 }
-const getInitialPageNumber = (
+const getPageNumber = (
   siteLaunchStatusProps: SiteLaunchStatusProps | undefined
 ) => {
   const hasUserAlreadyStartedChecklistTasks =
@@ -141,6 +141,10 @@ const getInitialPageNumber = (
   const isSiteLaunchInProgress =
     siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING"
   if (isSiteLaunchInProgress) return SITE_LAUNCH_PAGES.CHECKLIST
+  const isSiteLaunchEndState =
+    siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHED" ||
+    siteLaunchStatusProps?.siteLaunchStatus === "FAILURE"
+  if (isSiteLaunchEndState) return SITE_LAUNCH_PAGES.FINAL_STATE
   return SITE_LAUNCH_PAGES.DISCLAIMER
 }
 
@@ -213,7 +217,7 @@ export const SiteLaunchPadPage = (): JSX.Element => {
   } = useSiteLaunchContext()
   const { siteName } = useParams<{ siteName: string }>()
   const [pageNumber, setPageNumber] = useState(
-    getInitialPageNumber(siteLaunchStatusProps)
+    getPageNumber(siteLaunchStatusProps)
   )
 
   const increasePageNumber = () => {
@@ -228,13 +232,14 @@ export const SiteLaunchPadPage = (): JSX.Element => {
 
   const isLoaded: boolean = !!siteName && !!role
   useEffect(() => {
+    setPageNumber(getPageNumber(siteLaunchStatusProps))
     if (isLoaded && !isSiteLaunchEnabled(siteName, role)) {
       errorToast({
         id: "no_access_to_launchpad",
         description: "You do not have access to this page.",
       })
     }
-  }, [siteName, errorToast, role, isLoaded])
+  }, [siteName, errorToast, role, isLoaded, siteLaunchStatusProps])
 
   const handleIncrementStepNumber = () => {
     if (
