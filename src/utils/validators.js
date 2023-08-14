@@ -900,7 +900,7 @@ const validateFileName = (value) => {
     return "Invalid filename: filename can only contain one full stop and must follow the structure {name}.{extension}"
   }
   if (!fileNameExtensionRegexTest.test(fileNameArr[1])) {
-    return "Invalid filename: filename must end with a valid file extension (.JPG, .png, .pdf, etc.)"
+    return "Invalid filename: filename must end with a valid file extension (.jpg, .png, .pdf, etc.)"
   }
   if (fileNameArr[0] === "")
     return "Invalid filename: please specify a filename"
