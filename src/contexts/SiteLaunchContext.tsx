@@ -104,6 +104,7 @@ export const SiteLaunchProvider = ({
     const isSiteLaunchFEAndBESynced =
       siteLaunchStatusProps.siteLaunchStatus === siteLaunchDto?.siteStatus &&
       siteLaunchStatusProps.dnsRecords === siteLaunchDto?.dnsRecords
+
     if (
       (siteLaunchDto.siteStatus === "LAUNCHED" ||
         siteLaunchDto.siteStatus === "LAUNCHING" ||
@@ -111,14 +112,16 @@ export const SiteLaunchProvider = ({
       !isSiteLaunchFEAndBESynced
     ) {
       setSiteLaunchStatusProps({
+        ...siteLaunchStatusProps,
         siteLaunchStatus: siteLaunchDto.siteStatus,
-        stepNumber: SITE_LAUNCH_TASKS_LENGTH,
         dnsRecords: siteLaunchDto.dnsRecords,
       })
     }
   }, [
     siteLaunchDto,
+    siteLaunchStatusProps,
     siteLaunchStatusProps.dnsRecords,
+    siteLaunchStatusProps.isNewDomain,
     siteLaunchStatusProps.siteLaunchStatus,
   ])
 
