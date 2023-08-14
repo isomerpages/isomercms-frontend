@@ -10,10 +10,11 @@ import { launchSite } from "services/SiteLaunchService"
 
 import {
   SiteLaunchFrontEndStatus,
+  SiteLaunchPageIndex,
   SiteLaunchStatusProps,
   SiteLaunchTaskTypeIndex,
+  SITE_LAUNCH_PAGES,
   SITE_LAUNCH_TASKS,
-  SITE_LAUNCH_TASKS_LENGTH,
 } from "types/siteLaunch"
 
 interface SiteLaunchContextProps {
@@ -23,6 +24,9 @@ interface SiteLaunchContextProps {
   ) => void
   generateDNSRecords: () => void
   refetchSiteLaunchStatus: () => void
+  increasePageNumber: () => void
+  decreasePageNumber: () => void
+  pageNumber: SiteLaunchPageIndex
 }
 
 interface SiteLaunchProviderProps {
@@ -33,6 +37,19 @@ interface SiteLaunchProviderProps {
 }
 
 const SiteLaunchContext = createContext<SiteLaunchContextProps | null>(null)
+
+const getInitialPageNumber = (
+  siteLaunchStatusProps: SiteLaunchStatusProps | undefined
+) => {
+  const hasUserAlreadyStartedChecklistTasks =
+    siteLaunchStatusProps?.siteLaunchStatus === "CHECKLIST_TASKS_PENDING"
+  if (hasUserAlreadyStartedChecklistTasks) return SITE_LAUNCH_PAGES.CHECKLIST
+  const isSiteLaunchInProgress =
+    siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING"
+  if (isSiteLaunchInProgress) return SITE_LAUNCH_PAGES.CHECKLIST
+
+  return SITE_LAUNCH_PAGES.DISCLAIMER
+}
 
 export const useSiteLaunchContext = (): SiteLaunchContextProps => {
   const SiteLaunchContextData = useContext(SiteLaunchContext)
@@ -68,6 +85,27 @@ export const SiteLaunchProvider = ({
      */
     queryClient.invalidateQueries([SITE_DASHBOARD_LAUNCH_STATUS_KEY, siteName])
   }
+
+  const [pageNumber, setPageNumber] = useState<SiteLaunchPageIndex>(
+    getInitialPageNumber(siteLaunchStatusProps)
+  )
+
+  const increasePageNumber = () => {
+    if (pageNumber === SITE_LAUNCH_PAGES.FINAL_STATE) {
+      return
+    }
+    // safe to assert since we do an check prior
+    setPageNumber((pageNumber + 1) as SiteLaunchPageIndex)
+  }
+  const decreasePageNumber = () => {
+    if (pageNumber === SITE_LAUNCH_PAGES.DISCLAIMER) {
+      return
+    }
+
+    // safe to assert since we do an check prior
+    setPageNumber((pageNumber - 1) as SiteLaunchPageIndex)
+  }
+
   const generateDNSRecords = async () => {
     if (
       siteLaunchStatusProps.siteUrl &&
@@ -96,26 +134,41 @@ export const SiteLaunchProvider = ({
       siteLaunchStatusProps.siteLaunchStatus === "LOADING"
     ) {
       setSiteLaunchStatusProps({
+        ...siteLaunchStatusProps,
         siteLaunchStatus: "NOT_LAUNCHED",
         stepNumber: 0,
       })
+    }
+    if (siteLaunchDto.siteStatus === "NOT_LAUNCHED") {
+      return
     }
     // this condition is added to prevent redundant re-renders
     const isSiteLaunchFEAndBESynced =
       siteLaunchStatusProps.siteLaunchStatus === siteLaunchDto?.siteStatus &&
       siteLaunchStatusProps.dnsRecords === siteLaunchDto?.dnsRecords
 
-    if (
-      (siteLaunchDto.siteStatus === "LAUNCHED" ||
-        siteLaunchDto.siteStatus === "LAUNCHING" ||
-        siteLaunchDto.siteStatus === "FAILURE") &&
-      !isSiteLaunchFEAndBESynced
-    ) {
+    if (!isSiteLaunchFEAndBESynced) {
       setSiteLaunchStatusProps({
         ...siteLaunchStatusProps,
         siteLaunchStatus: siteLaunchDto.siteStatus,
         dnsRecords: siteLaunchDto.dnsRecords,
       })
+    }
+
+    // We don't want to jump to the last screen immediately after the api is called
+    if (
+      siteLaunchDto.siteStatus === "LAUNCHING" &&
+      !isSiteLaunchFEAndBESynced
+    ) {
+      setPageNumber(SITE_LAUNCH_PAGES.CHECKLIST)
+    }
+
+    if (
+      (siteLaunchDto.siteStatus === "LAUNCHED" ||
+        siteLaunchDto.siteStatus === "FAILURE") &&
+      !isSiteLaunchFEAndBESynced
+    ) {
+      setPageNumber(SITE_LAUNCH_PAGES.FINAL_STATE)
     }
   }, [
     siteLaunchDto,
@@ -132,6 +185,9 @@ export const SiteLaunchProvider = ({
         setSiteLaunchStatusProps,
         generateDNSRecords,
         refetchSiteLaunchStatus,
+        increasePageNumber,
+        decreasePageNumber,
+        pageNumber,
       }}
     >
       {children}
