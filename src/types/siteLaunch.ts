@@ -35,6 +35,16 @@ export const SITE_LAUNCH_TASKS = {
 
 export type SiteLaunchTaskTypeIndex = typeof SITE_LAUNCH_TASKS[keyof typeof SITE_LAUNCH_TASKS]
 
+export const SITE_LAUNCH_PAGES = {
+  DISCLAIMER: 1,
+  INFO_GATHERING: 2,
+  RISK_ACCEPTANCE: 3,
+  CHECKLIST: 4,
+  FINAL_STATE: 5,
+} as const
+
+export type SiteLaunchPageIndex = typeof SITE_LAUNCH_PAGES[keyof typeof SITE_LAUNCH_PAGES]
+
 export interface SiteLaunchStatusProps {
   siteLaunchStatus: SiteLaunchFrontEndStatus
   stepNumber: SiteLaunchTaskTypeIndex
@@ -49,7 +59,6 @@ export interface SiteLaunchDto {
    * "NOT_LAUNCHED" -> User presses the Generate DNS button
    * -> "LAUNCHING" -> wait for 90 seconds -> "LAUNCHED"
    */
-  // TODO: create a corresponding BE PR to incorporate this extra type
   siteStatus: "LAUNCHED" | "NOT_LAUNCHED" | "LAUNCHING" | "FAILURE"
   dnsRecords?: DNSRecord[] // only present iff siteStatus is LAUNCHED
   siteUrl?: string
@@ -61,14 +70,6 @@ export const SITE_LAUNCH_TASKS_LENGTH = (Object.keys(SITE_LAUNCH_TASKS).length -
 export const NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH = (Object.keys(
   NEW_DOMAIN_SITE_LAUNCH_TASKS
 ).length - 1) as SiteLaunchTaskTypeIndex
-
-export const SITE_LAUNCH_PAGES = {
-  DISCLAIMER: 1,
-  INFO_GATHERING: 2,
-  RISK_ACCEPTANCE: 3,
-  CHECKLIST: 4,
-  FINAL_STATE: 5,
-}
 
 type OldDomainSiteLaunchTaskTitles = Exclude<
   keyof typeof SITE_LAUNCH_TASKS,
