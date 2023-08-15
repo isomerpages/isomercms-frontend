@@ -21,20 +21,17 @@ import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 import { BxCopy, BxLifeBuoy } from "assets"
 import {
   DNSRecord,
+  getNewDomainTaskFrmIdx,
+  getOldDomainTaskFrmIdx,
+  NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH,
   SITE_LAUNCH_TASKS,
   SITE_LAUNCH_TASKS_LENGTH,
+  TITLE_TEXTS_NEW_DOMAIN,
+  TITLE_TEXTS_OLD_DOMAIN,
 } from "types/siteLaunch"
 
 import { SiteLaunchPadBody } from "./SiteLaunchPadBody"
 import { SiteLaunchPadTitle } from "./SiteLaunchPadTitle"
-
-const TITLE_TEXTS = [
-  "Set your DNS Time To Live(TTL) to 5 mins at least 24 hours before launching",
-  "Approve and publish your first review request",
-  "Drop existing domains on Cloudfront",
-  "Delete existing DNS records from your nameserver",
-  "Wait 1 hour to flush existing records",
-]
 
 export const SiteLaunchChecklistTitle = (): JSX.Element => {
   const title = "Complete these tasks to launch"
@@ -44,13 +41,24 @@ export const SiteLaunchChecklistTitle = (): JSX.Element => {
 }
 
 const getTextProps = (index: number, tasksDone: number): TextProps => {
-  const disabled = tasksDone >= index + 1 || tasksDone < index - 1
-  if (disabled) {
+  const tasksPending = tasksDone < index
+  if (tasksPending) {
     return {
-      color: "interaction.support.disabled",
+      color: "interaction.support.disabled-content",
     }
   }
-  return { as: "b" }
+  const taskDone = tasksDone >= index
+
+  if (taskDone) {
+    return {
+      color: "base.content.default",
+    }
+  }
+
+  return {
+    color: "base.content.strong",
+    as: "b",
+  }
 }
 
 const textWithCopyIcon = (text: string): JSX.Element => {
@@ -115,47 +123,58 @@ interface SiteLaunchChecklistBodyProps {
 }
 
 interface TableMappingProps {
+  stepNumber: number
   title: JSX.Element
   subTitle?: JSX.Element
   checkbox: JSX.Element
 }
 
 const addSubtitlesForChecklist = (
-  TABLE_MAPPING: TableMappingProps[],
+  task: TableMappingProps,
   tasksDone: number
-): TableMappingProps[] => {
-  const newTableMapping = [...TABLE_MAPPING]
-  newTableMapping[SITE_LAUNCH_TASKS.SET_DNS_TTL - 1].subTitle = (
-    <>
-      {tasksDone === SITE_LAUNCH_TASKS.SET_DNS_TTL - 1 && (
-        <Text fontSize="small">
-          You can check you current DNS TTL through 3rd party applications such
-          as <Link href="https://www.nslookup.io/">nslookup.io</Link>
-        </Text>
-      )}
-    </>
-  )
-  newTableMapping[SITE_LAUNCH_TASKS.DROP_CLOUDFRONT - 1].subTitle = (
-    <>
-      {tasksDone === SITE_LAUNCH_TASKS.DROP_CLOUDFRONT - 1 && (
-        <Text fontSize="small">
-          If you are using CWP, please contact them to do this for you
-        </Text>
-      )}
-    </>
-  )
-  newTableMapping[
-    SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS - 1
-  ].subTitle = (
-    <>
-      {tasksDone === SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS - 1 && (
-        <Text fontSize="small">
-          This should be done as soon as domains are dropped
-        </Text>
-      )}
-    </>
-  )
-  return newTableMapping
+): TableMappingProps => {
+  const newTask = { ...task }
+  if (task.stepNumber === SITE_LAUNCH_TASKS.SET_DNS_TTL - 1) {
+    newTask.subTitle = (
+      <>
+        {tasksDone === SITE_LAUNCH_TASKS.SET_DNS_TTL - 1 && (
+          <Text fontSize="small" textColor="base.content.medium">
+            You can check your current DNS TTL through 3rd party applications
+            such as{" "}
+            <Link href="https://www.nslookup.io/" isExternal>
+              nslookup.io
+            </Link>
+          </Text>
+        )}
+      </>
+    )
+    return newTask
+  }
+  if (task.stepNumber === SITE_LAUNCH_TASKS.DROP_CLOUDFRONT - 1) {
+    newTask.subTitle = (
+      <>
+        {tasksDone === SITE_LAUNCH_TASKS.DROP_CLOUDFRONT - 1 && (
+          <Text fontSize="small" textColor="base.content.medium">
+            If you are using CWP, please contact them to do this for you
+          </Text>
+        )}
+      </>
+    )
+    return newTask
+  }
+  if (task.stepNumber === SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS - 1) {
+    newTask.subTitle = (
+      <>
+        {tasksDone === SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS - 1 && (
+          <Text fontSize="small" textColor="base.content.medium">
+            This should be done as soon as domains are dropped
+          </Text>
+        )}
+      </>
+    )
+    return newTask
+  }
+  return newTask
 }
 
 export const SiteLaunchChecklistBody = ({
@@ -170,7 +189,10 @@ export const SiteLaunchChecklistBody = ({
 
   const { siteName } = useParams<{ siteName: string }>()
 
-  const numberOfTasks = SITE_LAUNCH_TASKS_LENGTH
+  const numberOfTasks = siteLaunchStatusProps?.isNewDomain
+    ? NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH
+    : SITE_LAUNCH_TASKS_LENGTH
+
   const numberOfCheckboxes = numberOfTasks - 1 // last task is a button
   const { register, watch, setValue } = useForm({
     defaultValues: {
@@ -230,12 +252,21 @@ export const SiteLaunchChecklistBody = ({
     </Center>
   ))
 
-  let TABLE_MAPPING: TableMappingProps[] = Array.from(
+  let tableMapping: TableMappingProps[] = Array.from(
     { length: numberOfCheckboxes },
     (_, i) => ({
+      stepNumber: i,
       title: (
-        <Text fontSize="s" {...getTextProps(i + 1, tasksDone)} key={i}>
-          {TITLE_TEXTS[i]}
+        <Text
+          fontSize="s"
+          key={i}
+          textStyle="subhead-2"
+          textColor="base.content.strong"
+          {...getTextProps(i, tasksDone)}
+        >
+          {siteLaunchStatusProps?.isNewDomain
+            ? TITLE_TEXTS_NEW_DOMAIN[getNewDomainTaskFrmIdx()]
+            : TITLE_TEXTS_OLD_DOMAIN[getOldDomainTaskFrmIdx(i)]}
         </Text>
       ),
       checkbox: checkboxes[i],
@@ -243,7 +274,11 @@ export const SiteLaunchChecklistBody = ({
   )
 
   // Add all subtitle for some of the tasks
-  TABLE_MAPPING = addSubtitlesForChecklist(TABLE_MAPPING, tasksDone)
+  if (!siteLaunchStatusProps?.isNewDomain) {
+    tableMapping = tableMapping.map((task) => {
+      return addSubtitlesForChecklist(task, tasksDone)
+    })
+  }
 
   return (
     <SiteLaunchPadBody>
@@ -268,12 +303,12 @@ export const SiteLaunchChecklistBody = ({
           <Table variant="simple">
             <Thead>
               <Tr>
-                <Td bg="gray.100">
-                  <Text>
+                <Td bg="gray.100" width="70%">
+                  <Text textStyle="subhead-2">
                     Site launch tasks ({tasksDone}/{numberOfTasks})
                   </Text>
                 </Td>
-                <Td bg="gray.100" textAlign="center">
+                <Td bg="gray.100" textAlign="center" width="30%">
                   <a href="mailto:support@isomer.gov.sg">
                     I need support <Icon as={BxLifeBuoy} />
                   </a>
@@ -281,8 +316,8 @@ export const SiteLaunchChecklistBody = ({
               </Tr>
             </Thead>
             <Tbody>
-              {TABLE_MAPPING.map(({ title, subTitle, checkbox }, index) => (
-                <Tr key={TITLE_TEXTS[index]}>
+              {tableMapping.map(({ stepNumber, title, subTitle, checkbox }) => (
+                <Tr key={stepNumber}>
                   <Td>
                     {title}
                     {subTitle}
@@ -299,29 +334,31 @@ export const SiteLaunchChecklistBody = ({
                 <Td>
                   <Text
                     fontSize="s"
+                    textStyle="subhead-2"
+                    textColor="base.content.dark"
                     {...getTextProps(
-                      SITE_LAUNCH_TASKS.GENERATE_NEW_DNS_RECORDS,
+                      siteLaunchStatusProps?.isNewDomain
+                        ? NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH - 1
+                        : SITE_LAUNCH_TASKS_LENGTH - 1,
                       tasksDone
                     )}
                   >
                     Upload new DNS records to IT Service Management
                   </Text>
-                  {tasksDone ===
-                    SITE_LAUNCH_TASKS.GENERATE_NEW_DNS_RECORDS - 1 && (
+                  {tasksDone === numberOfTasks - 1 && (
                     <Text fontSize="small">This can only be done once</Text>
                   )}
                 </Td>
                 <Td>
-                  <Button
-                    disabled={
-                      tasksDone !==
-                      SITE_LAUNCH_TASKS.GENERATE_NEW_DNS_RECORDS - 1
-                    }
-                    variant="outline"
-                    onClick={handleGenerateDNSRecordsOnClick}
-                  >
-                    Generate DNS records
-                  </Button>
+                  <Center>
+                    <Button
+                      isDisabled={tasksDone !== numberOfTasks - 1}
+                      variant="outline"
+                      onClick={handleGenerateDNSRecordsOnClick}
+                    >
+                      <Text textStyle="subhead-2">Generate DNS records</Text>
+                    </Button>
+                  </Center>
                 </Td>
               </Tr>
               {siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING" && (
@@ -330,7 +367,8 @@ export const SiteLaunchChecklistBody = ({
                     {!siteLaunchStatusProps?.dnsRecords && (
                       <>
                         <Text>
-                          Generating your DNS records will take 2 minutes.
+                          Generating your DNS records will take around 2
+                          minutes.
                         </Text>
                         <Text>
                           Do not leave or refresh this page in the meantime.

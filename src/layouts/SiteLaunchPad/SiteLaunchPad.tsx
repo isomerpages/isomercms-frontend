@@ -43,6 +43,7 @@ import {
   SiteLaunchDisclaimerBody,
   SiteLaunchDisclaimerTitle,
 } from "./components/SiteLaunchDisclaimer"
+import { SiteLaunchFinalState } from "./components/SiteLaunchFinalState"
 import {
   SiteLaunchInfoCollectorTitle,
   SiteLaunchInfoCollectorBody,
@@ -68,7 +69,7 @@ const RiskAcceptanceModal = ({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          <Text as="h4" textStyle="h4">
+          <Text as="h4" textStyle="h4" textColor="base.content.strong">
             Check if you have full control over your DNS
           </Text>
         </ModalHeader>
@@ -76,21 +77,25 @@ const RiskAcceptanceModal = ({
         <ModalBody mt="2rem">
           <Text textStyle="body-2" fontWeight="bold" mb="2rem">
             The biggest reason for site launch failure is because of unknown
-            cloudfront records.
+            CloudFront records.
           </Text>
 
           <Text textStyle="body-2" mb="2rem">
             <Text as="b">Please do your best to find this out. </Text>
             If you are unsure, consult your ITD team on this. If your domain is
-            a .gov.sg domain, You can go to{" "}
-            <Link href="https://dnschecker.org/">DNS checker</Link> and check if
-            your A record starts with 35.
+            a .gov.sg domain, you can go to{" "}
+            <Link href="https://dnschecker.org/" isExternal>
+              DNS checker
+            </Link>{" "}
+            and where it points to. If it points to 35.201.83.130, you must
+            contact CWP to drop corresponding CloudFront records for your
+            domain.
           </Text>
 
           <Text textStyle="body-2" mb="4rem">
             Isomer will not be held liable for any extended period of downtime
-            due to unknown cloudfront records. Downtime could happen even if
-            your site is not currently using cloudfront, but has used it
+            due to unknown CloudFront records. Downtime could happen even if
+            your site is not currently using CloudFront, but has used it
             previously.
           </Text>
 
@@ -167,19 +172,26 @@ export const SiteLaunchPad = ({
         />
       )
       break
+    case SITE_LAUNCH_PAGES.FINAL_STATE:
+      title = <></> // No title for final state
+      body = <SiteLaunchFinalState />
+      break
     default:
       title = <SiteLaunchDisclaimerTitle />
       body = <SiteLaunchDisclaimerBody setPageNumber={setPageNumber} />
   }
   return (
-    <VStack bg="white" w="100%" minH="100vh" spacing="2rem">
-      {title}
-      {body}
-      <RiskAcceptanceModal
-        isOpen={pageNumber === SITE_LAUNCH_PAGES.RISK_ACCEPTANCE}
-        setPageNumber={setPageNumber}
-      />
-    </VStack>
+    <>
+      <SiteViewHeader />
+      <VStack bg="white" w="100%" minH="100vh" spacing="2rem">
+        {title}
+        {body}
+        <RiskAcceptanceModal
+          isOpen={pageNumber === SITE_LAUNCH_PAGES.RISK_ACCEPTANCE}
+          setPageNumber={setPageNumber}
+        />
+      </VStack>
+    </>
   )
 }
 
@@ -189,7 +201,6 @@ export const SiteLaunchPadPage = (): JSX.Element => {
     setSiteLaunchStatusProps,
   } = useSiteLaunchContext()
   const { siteName } = useParams<{ siteName: string }>()
-  const { email } = useLoginContext()
   const [pageNumber, setPageNumber] = useState(
     getInitialPageNumber(siteLaunchStatusProps)
   )
@@ -230,7 +241,6 @@ export const SiteLaunchPadPage = (): JSX.Element => {
 
   return (
     <>
-      <SiteViewHeader />
       {isSiteLaunchEnabled(siteName, role) ? (
         <SiteLaunchPad
           pageNumber={pageNumber}

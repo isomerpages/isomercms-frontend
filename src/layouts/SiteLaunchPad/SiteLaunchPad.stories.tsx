@@ -4,6 +4,10 @@ import { MemoryRouter, Route } from "react-router-dom"
 
 import { SiteLaunchProvider } from "contexts/SiteLaunchContext"
 
+import {
+  MOCK_FAILURE_LAUNCHED_SITE_LAUNCH_DTO,
+  MOCK_SUCCESS_LAUNCHED_SITE_LAUNCH_DTO,
+} from "mocks/constants"
 import { buildSiteLaunchDto } from "mocks/utils"
 
 import { SiteLaunchPad } from "./SiteLaunchPad"
@@ -74,11 +78,64 @@ siteLaunchRiskAcceptance.args = {
   pageNumber: 3,
 }
 
-export const siteLaunchChecklist = Template.bind({})
+export const siteLaunchChecklistOldDomain = Template.bind({})
 
-siteLaunchChecklist.args = {
+siteLaunchChecklistOldDomain.args = {
   ...siteLaunchPadArgs,
   pageNumber: 4,
+}
+
+export const siteLaunchChecklistNewDomain = Template.bind({})
+
+siteLaunchChecklistNewDomain.args = {
+  ...siteLaunchPadArgs,
+  pageNumber: 4,
+}
+
+siteLaunchChecklistNewDomain.decorators = [
+  (Story) => {
+    return (
+      <SiteLaunchProvider
+        initialStepNumber={1}
+        initialSiteLaunchStatus="CHECKLIST_TASKS_PENDING"
+        isNewDomain
+      >
+        <Story />
+      </SiteLaunchProvider>
+    )
+  },
+]
+
+export const siteLaunchSuccessState = Template.bind({})
+
+siteLaunchSuccessState.args = {
+  ...siteLaunchPadArgs,
+  pageNumber: 5,
+}
+siteLaunchSuccessState.parameters = {
+  msw: {
+    handlers: {
+      siteLaunchStatusProps: buildSiteLaunchDto(
+        MOCK_SUCCESS_LAUNCHED_SITE_LAUNCH_DTO
+      ),
+    },
+  },
+}
+
+export const siteLaunchFailureState = Template.bind({})
+
+siteLaunchFailureState.args = {
+  ...siteLaunchPadArgs,
+  pageNumber: 5,
+}
+siteLaunchFailureState.parameters = {
+  msw: {
+    handlers: {
+      siteLaunchStatusProps: buildSiteLaunchDto(
+        MOCK_FAILURE_LAUNCHED_SITE_LAUNCH_DTO
+      ),
+    },
+  },
 }
 
 export default SiteLaunchPadMeta
