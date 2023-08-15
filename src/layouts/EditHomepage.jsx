@@ -11,7 +11,6 @@ import { DragDropContext } from "@hello-pangea/dnd"
 import { Button, Tag } from "@opengovsg/design-system-react"
 import update from "immutability-helper"
 import _ from "lodash"
-import PropTypes from "prop-types"
 import { useEffect, createRef, useState } from "react"
 
 import { Footer } from "components/Footer"
@@ -55,6 +54,15 @@ import { HeroHighlightSection } from "./components/Homepage/HeroHighlightSection
 import { InfobarBody } from "./components/Homepage/InfobarBody"
 import { InfopicBody } from "./components/Homepage/InfopicBody"
 import { ResourcesBody } from "./components/Homepage/ResourcesBody"
+import {
+  DROPDOWN_ELEMENT_SECTION,
+  DROPDOWN_SECTION,
+  INFOBAR_SECTION,
+  INFOPIC_SECTION,
+  KEY_HIGHLIGHT_SECTION,
+  RESOURCES_SECTION,
+} from "./EditHomepage/constants"
+import { getErrorValues } from "./EditHomepage/utils"
 
 /* eslint-disable react/no-array-index-key */
 
@@ -88,62 +96,28 @@ const getHasErrors = (errors) => {
 // Constants
 // Section constructors
 // TODO: Export all these as const and write wrapper for error...
-const ResourcesSectionConstructor = (isErrorConstructor) => ({
-  resources: {
-    title: isErrorConstructor ? "" : "Resources Section Title",
-    subtitle: isErrorConstructor ? "" : "Resources Section Subtitle",
-    button: isErrorConstructor ? "" : "Resources Button Name",
-  },
-})
 
-const InfobarSectionConstructor = (isErrorConstructor) => ({
-  infobar: {
-    title: isErrorConstructor ? "" : "Infobar Title",
-    subtitle: isErrorConstructor ? "" : "Infobar Subtitle",
-    description: isErrorConstructor ? "" : "Infobar description",
-    button: isErrorConstructor ? "" : "Button Text",
-    url: "", // No default value so that no broken link is created
-  },
-})
-
-const InfopicSectionConstructor = (isErrorConstructor) => ({
-  infopic: {
-    title: isErrorConstructor ? "" : "Infopic Title",
-    subtitle: isErrorConstructor ? "" : "Infopic Subtitle",
-    description: isErrorConstructor ? "" : "Infopic description",
-    button: isErrorConstructor ? "" : "Button Text",
-    url: "", // No default value so that no broken link is created
-    image: "", // Always blank since the image modal handles this
-    alt: isErrorConstructor ? "" : "Image alt text",
-  },
-})
-
-const KeyHighlightConstructor = (isErrorConstructor) => ({
-  title: isErrorConstructor ? "" : "Key Highlight Title",
-  description: isErrorConstructor ? "" : "Key Highlight description",
-  url: "", // No default value so that no broken link is created
-})
-
-const DropdownElemConstructor = (isErrorConstructor) => ({
-  title: isErrorConstructor ? "" : "Hero Dropdown Element Title",
-  url: "", // No default value so that no broken link is created
-})
-
-const DropdownConstructor = () => ({
-  title: "Hero Dropdown Title",
-  options: [],
-})
-
-const enumSection = (type, isErrorConstructor) => {
+const enumSection = (type, isError) => {
   switch (type) {
     case "resources":
-      return ResourcesSectionConstructor(isErrorConstructor)
+      return isError
+        ? { resources: getErrorValues(RESOURCES_SECTION) }
+        : { resources: RESOURCES_SECTION }
+
     case "infobar":
-      return InfobarSectionConstructor(isErrorConstructor)
+      return isError
+        ? { infobar: getErrorValues(INFOBAR_SECTION) }
+        : { infobar: INFOBAR_SECTION }
+
     case "infopic":
-      return InfopicSectionConstructor(isErrorConstructor)
+      return isError
+        ? { infopic: getErrorValues(INFOPIC_SECTION) }
+        : { infopic: INFOPIC_SECTION }
+
     default:
-      return InfobarSectionConstructor(isErrorConstructor)
+      return isError
+        ? { infobar: getErrorValues(INFOBAR_SECTION) }
+        : { infobar: INFOBAR_SECTION }
   }
 }
 
@@ -260,14 +234,14 @@ const EditHomepage = ({ match }) => {
               )
               // Fill in dropdown elem errors array
               dropdownElemsErrors = _.map(dropdown.options, () =>
-                DropdownElemConstructor(true)
+                getErrorValues(DROPDOWN_ELEMENT_SECTION)
               )
             }
             if (keyHighlights) {
               displayHighlights = _.fill(Array(keyHighlights.length), false)
               // Fill in highlights errors array
               highlightsErrors = _.map(keyHighlights, () =>
-                KeyHighlightConstructor(true)
+                getErrorValues(KEY_HIGHLIGHT_SECTION)
               )
             }
             // Fill in sectionErrors for hero
@@ -276,15 +250,17 @@ const EditHomepage = ({ match }) => {
 
           // Check if there is already a resources section
           if (section.resources) {
-            sectionsErrors.push(ResourcesSectionConstructor(true))
+            sectionsErrors.push({
+              resources: getErrorValues(RESOURCES_SECTION),
+            })
           }
 
           if (section.infobar) {
-            sectionsErrors.push(InfobarSectionConstructor(true))
+            sectionsErrors.push({ infobar: getErrorValues(INFOBAR_SECTION) })
           }
 
           if (section.infopic) {
-            sectionsErrors.push(InfopicSectionConstructor(true))
+            sectionsErrors.push({ infopic: getErrorValues(INFOPIC_SECTION) })
           }
 
           // Minimize all sections by default
@@ -571,8 +547,8 @@ const EditHomepage = ({ match }) => {
           break
         }
         case "dropdownelem": {
-          const val = DropdownElemConstructor(false)
-          const err = DropdownElemConstructor(true)
+          const val = DROPDOWN_ELEMENT_SECTION
+          const err = getErrorValues(DROPDOWN_ELEMENT_SECTION)
 
           const updatedHomepageState = onCreate(
             homepageState,
@@ -587,8 +563,8 @@ const EditHomepage = ({ match }) => {
         case "highlight": {
           // depends on index to generate
           // If key highlights section exists
-          const val = KeyHighlightConstructor(false)
-          const err = KeyHighlightConstructor(true)
+          const val = KEY_HIGHLIGHT_SECTION
+          const err = getErrorValues(KEY_HIGHLIGHT_SECTION)
           const updatedHomepageState = onCreate(
             homepageState,
             elemType,
@@ -721,11 +697,11 @@ const EditHomepage = ({ match }) => {
       let dropdownErrors
       let dropdownElemErrors
       if (savedHeroElems) {
-        dropdownObj = savedHeroElems.dropdown || DropdownConstructor()
+        dropdownObj = savedHeroElems.dropdown || DROPDOWN_SECTION
         dropdownErrors = savedHeroErrors.dropdown || ""
         dropdownElemErrors = savedHeroErrors.dropdownElems || ""
       } else {
-        dropdownObj = DropdownConstructor()
+        dropdownObj = DROPDOWN_SECTION
         dropdownErrors = ""
         dropdownElemErrors = []
       }
@@ -1126,14 +1102,14 @@ const EditHomepage = ({ match }) => {
                   <AddSectionButton>
                     <AddSectionButton.List>
                       <AddSectionButton.Option
-                        onClick={() => onClick("infopic")}
-                        title="Infopic"
-                        subtitle="Add an image with informational text"
+                        onClick={() => onClick(INFOPIC_SECTION.id)}
+                        title={INFOPIC_SECTION.title}
+                        subtitle={INFOPIC_SECTION.subtitle}
                       />
                       <AddSectionButton.Option
-                        title="Infobar"
-                        subtitle="Add informational text"
-                        onClick={() => onClick("infobar")}
+                        title={INFOBAR_SECTION.title}
+                        subtitle={INFOBAR_SECTION.subtitle}
+                        onClick={() => onClick(INFOBAR_SECTION.id)}
                       />
                       {/* NOTE: Check if the sections contain any `resources` 
                                 and if it does, prevent creation of another `resources` section
@@ -1142,9 +1118,9 @@ const EditHomepage = ({ match }) => {
                         ({ resources }) => !!resources
                       ) && (
                         <AddSectionButton.Option
-                          title="Resources"
-                          subtitle="Add a preview and link to your Resource Room"
-                          onClick={() => onClick("resources")}
+                          title={RESOURCES_SECTION.title}
+                          subtitle={RESOURCES_SECTION.subtitle}
+                          onClick={() => onClick(RESOURCES_SECTION.id)}
                         />
                       )}
                     </AddSectionButton.List>
@@ -1296,11 +1272,3 @@ const EditHomepage = ({ match }) => {
 }
 
 export default EditHomepage
-
-EditHomepage.propTypes = {
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      siteName: PropTypes.string,
-    }),
-  }).isRequired,
-}
