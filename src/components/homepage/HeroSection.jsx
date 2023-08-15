@@ -44,7 +44,7 @@ const EditorHeroSection = ({
   handleHighlightDropdownToggle,
   notification,
 }) => (
-  <>
+  <Box px="0.5rem">
     <VStack align="flex-start" spacing="1.25rem">
       <FormControl>
         <FormLabel>Notification Banner</FormLabel>
@@ -229,7 +229,7 @@ const EditorHeroSection = ({
         </>
       )}
     </div>
-  </>
+  </Box>
 )
 
 export default EditorHeroSection
