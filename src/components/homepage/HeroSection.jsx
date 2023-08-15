@@ -1,9 +1,15 @@
+import { FormControl, Flex, Icon, Text, VStack, Box } from "@chakra-ui/react"
 import { Droppable, Draggable } from "@hello-pangea/dnd"
-import { Button } from "@opengovsg/design-system-react"
+import {
+  Button,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+} from "@opengovsg/design-system-react"
 import PropTypes from "prop-types"
+import { BiInfoCircle } from "react-icons/bi"
 
 import { FormContext, FormError, FormTitle } from "components/Form"
-import FormField from "components/FormField"
 import FormFieldMedia from "components/FormFieldMedia"
 import HeroButton from "components/homepage/HeroButton"
 import HeroDropdown from "components/homepage/HeroDropdown"
@@ -36,41 +42,71 @@ const EditorHeroSection = ({
   displayHighlights,
   errors,
   handleHighlightDropdownToggle,
+  notification,
 }) => (
   <>
-    <FormContext isRequired hasError={!!errors.sections[0].hero.title}>
-      <FormTitle>Hero title</FormTitle>
-      <FormField
-        placeholder="Hero title"
-        id={`section-${sectionIndex}-hero-title`}
-        value={title}
-        onChange={onFieldChange}
-      />
-      <FormError>{errors.sections[0].hero.title}</FormError>
-    </FormContext>
-    <FormContext isRequired hasError={!!errors.sections[0].hero.subtitle}>
-      <FormTitle>Hero subtitle</FormTitle>
-      <FormField
-        placeholder="Hero subtitle"
-        id={`section-${sectionIndex}-hero-subtitle`}
-        value={subtitle}
-        onChange={onFieldChange}
-      />
-      <FormError>{errors.sections[0].hero.subtitle}</FormError>
-    </FormContext>
-    <FormContext
-      hasError={!!errors.sections[0].hero.background}
-      onFieldChange={onFieldChange}
-      isRequired
-    >
-      <FormTitle>Hero background image</FormTitle>
-      <FormFieldMedia
-        value={background}
-        id={`section-${sectionIndex}-hero-background`}
-        inlineButtonText="Select"
-      />
-      <FormError>{errors.sections[0].hero.background}</FormError>
-    </FormContext>
+    <VStack align="flex-start" spacing="1.25rem">
+      <FormControl>
+        <FormLabel>Notification Banner</FormLabel>
+        <Input
+          // TODO: Remove the `id/onChange`
+          // and change to react hook forms
+          id="site-notification"
+          onChange={onFieldChange}
+          value={notification}
+          placeholder="This is a notification banner"
+        />
+        <Flex flexDir="row" mt="0.75rem" alignItems="center">
+          <Icon
+            as={BiInfoCircle}
+            fill="base.content.brand"
+            mr="0.5rem"
+            fontSize="1rem"
+          />
+          <Text textStyle="caption-2">
+            Leave this blank if you don&apos;t want the banner to appear
+          </Text>
+        </Flex>
+      </FormControl>
+      <FormControl isRequired isInvalid={!!errors.sections[0].hero.title}>
+        <FormLabel>Hero title</FormLabel>
+        <Input
+          placeholder="Hero title"
+          id={`section-${sectionIndex}-hero-title`}
+          value={title}
+          onChange={onFieldChange}
+        />
+        <FormErrorMessage>{errors.sections[0].hero.title}</FormErrorMessage>
+      </FormControl>
+      <FormControl isRequired isInvalid={!!errors.sections[0].hero.subtitle}>
+        <FormLabel>Hero subtitle</FormLabel>
+        <Input
+          placeholder="Hero subtitle"
+          id={`section-${sectionIndex}-hero-subtitle`}
+          value={subtitle}
+          onChange={onFieldChange}
+        />
+        <FormErrorMessage>{errors.sections[0].hero.subtitle}</FormErrorMessage>
+      </FormControl>
+      <Box>
+        {/* TODO: migrate this to design system components */}
+        <FormContext
+          hasError={!!errors.sections[0].hero.background}
+          onFieldChange={onFieldChange}
+          isRequired
+        >
+          <Box mb="0.5rem">
+            <FormTitle>Hero background image</FormTitle>
+          </Box>
+          <FormFieldMedia
+            value={background}
+            id={`section-${sectionIndex}-hero-background`}
+            inlineButtonText="Select"
+          />
+          <FormError>{errors.sections[0].hero.background}</FormError>
+        </FormContext>
+      </Box>
+    </VStack>
     <div className={styles.card}>
       <p className={elementStyles.formLabel}>Hero Section Type</p>
       {/* Permalink or File URL */}
