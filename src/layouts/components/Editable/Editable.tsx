@@ -156,7 +156,7 @@ const EditableAccordionItem = ({
   children,
 }: PropsWithChildren<EditableCardProps>) => {
   return (
-    <BaseAccordionItem borderRadius="0.5rem">
+    <BaseAccordionItem>
       {/* NOTE: Check with design on styling. 
         See if entire section is button (ie, whole component hover styling)
       */}
