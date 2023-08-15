@@ -11,6 +11,7 @@ import {
   AccordionProps,
   AccordionItemProps,
   forwardRef,
+  StackProps,
 } from "@chakra-ui/react"
 import {
   OnDragEndResponder,
@@ -236,10 +237,15 @@ const EditableAccordion = (props: AccordionProps) => {
   return <Accordion allowToggle bg="base.canvas.default" {...props} />
 }
 
+const EditableSection = (props: StackProps) => (
+  <VStack px="0.5rem" align="flex-start" spacing="1rem" {...props} />
+)
+
 export const Editable = {
   Sidebar: EditableSidebar,
   Draggable: EditableDraggable,
   EditableAccordionItem,
   Accordion: EditableAccordion,
   DraggableAccordionItem,
+  Section: EditableSection,
 }
