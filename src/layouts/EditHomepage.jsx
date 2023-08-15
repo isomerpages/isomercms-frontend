@@ -1001,9 +1001,7 @@ const EditHomepage = ({ match }) => {
                               {/* Hero section */}
                               {section.hero && (
                                 <>
-                                  <Editable.EditableAccordionItem
-                                    title={section.hero.title}
-                                  >
+                                  <Editable.EditableAccordionItem title="Hero section">
                                     <EditorHeroSection
                                       key={`section-${sectionIndex}`}
                                       {...section.hero}
