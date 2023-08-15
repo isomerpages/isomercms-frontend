@@ -127,7 +127,7 @@ export const SiteLaunchFinalState = (): JSX.Element => {
     if (siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHED") {
       return <SiteLaunchSuccessState />
     }
-    if (siteLaunchStatusProps?.siteLaunchStatus === "FAILURE") {
+    if (siteLaunchStatusProps?.siteLaunchStatus === "FAILED") {
       return <SiteLaunchFailureState />
     }
     return <SiteLaunchInProgressState />

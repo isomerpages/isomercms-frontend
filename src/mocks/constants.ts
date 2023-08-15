@@ -516,7 +516,7 @@ export const MOCK_SUCCESS_LAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
 }
 
 export const MOCK_FAILURE_LAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
-  siteStatus: "FAILURE",
+  siteStatus: "FAILED",
   dnsRecords: [
     {
       source: "sourceURL",

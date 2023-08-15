@@ -380,7 +380,7 @@ const SiteLaunchDisplayCard = (): JSX.Element => {
                   </Text>
                 )}
                 {(siteLaunchStatus === "LAUNCHING" ||
-                  siteLaunchStatus === "FAILURE") && (
+                  siteLaunchStatus === "FAILED") && (
                   <Text textStyle="subhead-1" whiteSpace="nowrap">
                     Check status
                   </Text>
