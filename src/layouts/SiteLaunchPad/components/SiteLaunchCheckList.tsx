@@ -238,7 +238,7 @@ export const SiteLaunchChecklistBody = ({
   const allTasksDone: boolean =
     siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING" ||
     siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHED" ||
-    siteLaunchStatusProps?.siteLaunchStatus === "FAILURE"
+    siteLaunchStatusProps?.siteLaunchStatus === "FAILED"
 
   const checkboxes = Array.from({ length: numberOfCheckboxes }, (_, i) => (
     <Center key={i}>

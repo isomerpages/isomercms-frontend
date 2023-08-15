@@ -12,7 +12,7 @@ const SiteLaunchFrontEndStatusOptions = {
   Launching: "LAUNCHING",
   ChecklistTasksPending: "CHECKLIST_TASKS_PENDING", // not to be confused with with Infra level launching step
   Loading: "LOADING",
-  Failure: "FAILURE",
+  Failure: "FAILED",
 } as const
 
 export type SiteLaunchFrontEndStatus = typeof SiteLaunchFrontEndStatusOptions[keyof typeof SiteLaunchFrontEndStatusOptions]
@@ -59,7 +59,7 @@ export interface SiteLaunchDto {
    * "NOT_LAUNCHED" -> User presses the Generate DNS button
    * -> "LAUNCHING" -> wait for 90 seconds -> "LAUNCHED"
    */
-  siteStatus: "LAUNCHED" | "NOT_LAUNCHED" | "LAUNCHING" | "FAILURE"
+  siteStatus: "LAUNCHED" | "NOT_LAUNCHED" | "LAUNCHING" | "FAILED"
   dnsRecords?: DNSRecord[] // only present iff siteStatus is LAUNCHED
   siteUrl?: string
 }

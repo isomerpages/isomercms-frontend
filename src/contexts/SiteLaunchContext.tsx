@@ -75,6 +75,18 @@ export const SiteLaunchProvider = ({
     isNewDomain,
   })
 
+  //! TODO remove this bunch of code after development
+  // const [
+  //   siteLaunchStatusProps,
+  //   setSiteLaunchStatusProps,
+  // ] = useState<SiteLaunchStatusProps>({
+  //   siteLaunchStatus: "CHECKLIST_TASKS_PENDING",
+  //   stepNumber: SITE_LAUNCH_TASKS.NOT_STARTED,
+  //   isNewDomain: true,
+  //   siteUrl: "isomer.gov.sg",
+  //   useWwwSubdomain: true,
+  // })
+
   const { data: siteLaunchDto } = useGetSiteLaunchStatus(siteName)
 
   const queryClient = useQueryClient()
@@ -121,7 +133,8 @@ export const SiteLaunchProvider = ({
       // invalidate react query key
       setTimeout(() => {
         refetchSiteLaunchStatus()
-      }, 120000)
+        //! TODO: change this back to 120000 after local dev
+      }, 5000)
     }
   }
 
@@ -165,7 +178,7 @@ export const SiteLaunchProvider = ({
 
     if (
       (siteLaunchDto.siteStatus === "LAUNCHED" ||
-        siteLaunchDto.siteStatus === "FAILURE") &&
+        siteLaunchDto.siteStatus === "FAILED") &&
       !isSiteLaunchFEAndBESynced
     ) {
       setPageNumber(SITE_LAUNCH_PAGES.FINAL_STATE)
