@@ -59,7 +59,7 @@ export interface SiteLaunchDto {
    * "NOT_LAUNCHED" -> User presses the Generate DNS button
    * -> "LAUNCHING" -> wait for 90 seconds -> "LAUNCHED"
    */
-  siteStatus: "LAUNCHED" | "NOT_LAUNCHED" | "LAUNCHING" | "FAILED"
+  siteLaunchStatus: "LAUNCHED" | "NOT_LAUNCHED" | "LAUNCHING" | "FAILED"
   dnsRecords?: DNSRecord[] // only present iff siteStatus is LAUNCHED
   siteUrl?: string
 }

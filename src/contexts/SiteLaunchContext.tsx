@@ -143,7 +143,7 @@ export const SiteLaunchProvider = ({
   useEffect(() => {
     if (!siteLaunchDto) return
     if (
-      siteLaunchDto.siteStatus === "NOT_LAUNCHED" &&
+      siteLaunchDto.siteLaunchStatus === "NOT_LAUNCHED" &&
       siteLaunchStatusProps.siteLaunchStatus === "LOADING"
     ) {
       setSiteLaunchStatusProps({
@@ -152,33 +152,34 @@ export const SiteLaunchProvider = ({
         stepNumber: 0,
       })
     }
-    if (siteLaunchDto.siteStatus === "NOT_LAUNCHED") {
+    if (siteLaunchDto.siteLaunchStatus === "NOT_LAUNCHED") {
       return
     }
     // this condition is added to prevent redundant re-renders
     const isSiteLaunchFEAndBESynced =
-      siteLaunchStatusProps.siteLaunchStatus === siteLaunchDto?.siteStatus &&
+      siteLaunchStatusProps.siteLaunchStatus ===
+        siteLaunchDto?.siteLaunchStatus &&
       siteLaunchStatusProps.dnsRecords === siteLaunchDto?.dnsRecords
 
     if (!isSiteLaunchFEAndBESynced) {
       setSiteLaunchStatusProps({
         ...siteLaunchStatusProps,
-        siteLaunchStatus: siteLaunchDto.siteStatus,
+        siteLaunchStatus: siteLaunchDto.siteLaunchStatus,
         dnsRecords: siteLaunchDto.dnsRecords,
       })
     }
 
     // We don't want to jump to the last screen immediately after the api is called
     if (
-      siteLaunchDto.siteStatus === "LAUNCHING" &&
+      siteLaunchDto.siteLaunchStatus === "LAUNCHING" &&
       !isSiteLaunchFEAndBESynced
     ) {
       setPageNumber(SITE_LAUNCH_PAGES.CHECKLIST)
     }
 
     if (
-      (siteLaunchDto.siteStatus === "LAUNCHED" ||
-        siteLaunchDto.siteStatus === "FAILED") &&
+      (siteLaunchDto.siteLaunchStatus === "LAUNCHED" ||
+        siteLaunchDto.siteLaunchStatus === "FAILED") &&
       !isSiteLaunchFEAndBESynced
     ) {
       setPageNumber(SITE_LAUNCH_PAGES.FINAL_STATE)
