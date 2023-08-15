@@ -198,10 +198,13 @@ const DraggableAccordionItem = ({
           {...draggableProvided.draggableProps}
           ref={draggableProvided.innerRef}
           boxShadow="sm"
+          {...draggableProvided.dragHandleProps}
+          _hover={{
+            bgColor: "interaction.muted.main.hover",
+          }}
         >
           <Center>
             <IconButton
-              {...draggableProvided.dragHandleProps}
               variant="clear"
               cursor="grab"
               aria-label="drag item"
@@ -211,15 +214,17 @@ const DraggableAccordionItem = ({
           {/* NOTE: Check with design on styling. 
         See if entire section is button (ie, whole component hover styling)
       */}
-          <AccordionButton px="1.5rem" pb="1.5rem">
-            <Flex flex="1" flexDir="column">
+          <Flex flexDir="row">
+            <Flex px="1.5rem" pb="1.5rem" flex="1" flexDir="column">
               {tag}
               <Text textStyle="h6" textAlign="left" mt="0.25rem">
                 {title}
               </Text>
             </Flex>
-            <AccordionIcon />
-          </AccordionButton>
+            <AccordionButton w="auto" h="fit-content" py="1rem">
+              <AccordionIcon />
+            </AccordionButton>
+          </Flex>
           <AccordionPanel pb={4}>{children}</AccordionPanel>
         </BaseAccordionItem>
       )}
