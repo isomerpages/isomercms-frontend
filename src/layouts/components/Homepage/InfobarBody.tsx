@@ -4,6 +4,7 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  Textarea,
 } from "@opengovsg/design-system-react"
 
 import { Editable } from "../Editable"
@@ -36,9 +37,9 @@ export const InfobarBody = ({
 }: InfobarBodyProps) => (
   <Editable.Section>
     <FormControl isRequired isInvalid={!!errors.subtitle}>
-      <FormLabel>Infobar subtitle</FormLabel>
+      <FormLabel>Subtitle</FormLabel>
       <Input
-        placeholder="Infobar subtitle"
+        placeholder="This subtitle appears above the title"
         id={`section-${index}-infobar-subtitle`}
         value={subtitle}
         onChange={onChange}
@@ -46,9 +47,9 @@ export const InfobarBody = ({
       <FormErrorMessage>{errors.subtitle}</FormErrorMessage>
     </FormControl>
     <FormControl isRequired isInvalid={!!errors.title}>
-      <FormLabel>Infobar title</FormLabel>
+      <FormLabel>Title</FormLabel>
       <Input
-        placeholder="Infobar title"
+        placeholder="Your infobar title goes here"
         id={`section-${index}-infobar-title`}
         value={title}
         onChange={onChange}
@@ -56,9 +57,9 @@ export const InfobarBody = ({
       <FormErrorMessage>{errors.title}</FormErrorMessage>
     </FormControl>
     <FormControl isRequired isInvalid={!!errors.description}>
-      <FormLabel>Infobar description</FormLabel>
-      <Input
-        placeholder="Infobar description"
+      <FormLabel>Description</FormLabel>
+      <Textarea
+        placeholder="This paragraph appears below the title and conveys information"
         id={`section-${index}-infobar-description`}
         value={description}
         onChange={onChange}
@@ -66,9 +67,9 @@ export const InfobarBody = ({
       <FormErrorMessage>{errors.description}</FormErrorMessage>
     </FormControl>
     <FormControl isRequired isInvalid={!!errors.button}>
-      <FormLabel>Infobar button name</FormLabel>
+      <FormLabel>Button text</FormLabel>
       <Input
-        placeholder="Infobar button name"
+        placeholder="This is a button at the bottom of the infobar"
         id={`section-${index}-infobar-button`}
         value={button}
         onChange={onChange}
@@ -76,7 +77,7 @@ export const InfobarBody = ({
       <FormErrorMessage>{errors.button}</FormErrorMessage>
     </FormControl>
     <FormControl isRequired isInvalid={!!errors.url}>
-      <FormLabel>Infobar button URL</FormLabel>
+      <FormLabel>Button link</FormLabel>
       <Input
         placeholder="Insert /page-url or https://"
         id={`section-${index}-infobar-url`}
