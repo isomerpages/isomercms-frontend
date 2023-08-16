@@ -1,4 +1,4 @@
-import { HStack, Text, VStack } from "@chakra-ui/react"
+import { HStack, Link, Text, VStack } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
@@ -8,8 +8,16 @@ import {
   SiteLaunchPendingImage,
   SiteLaunchSuccessImage,
 } from "assets"
+import { SiteLaunchFEStatus } from "types/siteLaunch"
 
 const SiteLaunchSuccessState = (): JSX.Element => {
+  const { siteLaunchStatusProps, decreasePageNumber } = useSiteLaunchContext()
+  let siteUrl: string = siteLaunchStatusProps?.siteUrl || ""
+  if (siteLaunchStatusProps?.useWwwSubdomain) {
+    // We append the `www` since the root might
+    // take time to propagate
+    siteUrl = `www.${siteUrl}`
+  }
   return (
     <>
       <Text
@@ -26,14 +34,17 @@ const SiteLaunchSuccessState = (): JSX.Element => {
       <Text textStyle="body-1" textColor="base.content.default" mt="1.5rem">
         View your site status from the Dashboard.
       </Text>
-      <Text textStyle="body-1" textColor="base.content.default" mb="3rem">
-        You can find your site&apos;s DNS records in the settings page.
-      </Text>
       <HStack spacing="3rem">
-        <Button variant="link" colorScheme="neutral">
+        <Button
+          variant="link"
+          colorScheme="neutral"
+          onClick={decreasePageNumber}
+        >
           Back to tasklist
         </Button>
-        <Button>Visit live site</Button>
+        <Link href={`https://${siteUrl}`} isExternal>
+          <Button>Visit live site</Button>
+        </Link>
       </HStack>
     </>
   )
@@ -77,6 +88,7 @@ const SiteLaunchFailureState = (): JSX.Element => {
 }
 
 const SiteLaunchInProgressState = (): JSX.Element => {
+  const { decreasePageNumber } = useSiteLaunchContext()
   return (
     <>
       <Text
@@ -98,7 +110,12 @@ const SiteLaunchInProgressState = (): JSX.Element => {
         when visiting your domain at this moment. Leave this window open or exit
         and come back later.
       </Text>
-      <Button variant="link" colorScheme="neutral" mt="3rem">
+      <Button
+        variant="link"
+        colorScheme="neutral"
+        mt="3rem"
+        onClick={decreasePageNumber}
+      >
         Back to tasklist
       </Button>
     </>
@@ -108,10 +125,12 @@ const SiteLaunchInProgressState = (): JSX.Element => {
 export const SiteLaunchFinalState = (): JSX.Element => {
   const { siteLaunchStatusProps } = useSiteLaunchContext()
   const State = () => {
-    if (siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHED") {
+    if (
+      siteLaunchStatusProps?.siteLaunchStatus === SiteLaunchFEStatus.Launched
+    ) {
       return <SiteLaunchSuccessState />
     }
-    if (siteLaunchStatusProps?.siteLaunchStatus === "FAILURE") {
+    if (siteLaunchStatusProps?.siteLaunchStatus === SiteLaunchFEStatus.Failed) {
       return <SiteLaunchFailureState />
     }
     return <SiteLaunchInProgressState />

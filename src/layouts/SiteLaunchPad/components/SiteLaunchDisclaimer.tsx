@@ -3,8 +3,9 @@ import { Button, Checkbox } from "@opengovsg/design-system-react"
 import { useForm } from "react-hook-form"
 import { BiRightArrowAlt } from "react-icons/bi"
 
+import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
+
 import { typography } from "theme/foundations/typography"
-import { SITE_LAUNCH_PAGES } from "types/siteLaunch"
 
 import { SiteLaunchPadBody } from "./SiteLaunchPadBody"
 import { SiteLaunchPadTitle } from "./SiteLaunchPadTitle"
@@ -15,14 +16,9 @@ export const SiteLaunchDisclaimerTitle = (): JSX.Element => {
   return <SiteLaunchPadTitle title={title} subTitle={subTitle} />
 }
 
-interface SiteLaunchDisclaimerBodyProps {
-  setPageNumber: (number: number) => void
-}
-
-export const SiteLaunchDisclaimerBody = ({
-  setPageNumber,
-}: SiteLaunchDisclaimerBodyProps): JSX.Element => {
+export const SiteLaunchDisclaimerBody = (): JSX.Element => {
   const { register, handleSubmit, watch } = useForm({})
+  const { increasePageNumber } = useSiteLaunchContext()
   const isRequirementUnderstood = watch("isRequirementUnderstood")
   return (
     <SiteLaunchPadBody>
@@ -108,10 +104,7 @@ export const SiteLaunchDisclaimerBody = ({
           rightIcon={<Icon as={BiRightArrowAlt} fontSize="1.25rem" />}
           iconSpacing="1rem"
           ml="auto"
-          onClick={handleSubmit(() => {
-            // going to the next page
-            setPageNumber(SITE_LAUNCH_PAGES.INFO_GATHERING)
-          })}
+          onClick={handleSubmit(increasePageNumber)}
         >
           Continue
         </Button>

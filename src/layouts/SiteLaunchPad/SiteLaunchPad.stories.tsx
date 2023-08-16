@@ -10,6 +10,7 @@ import {
   MOCK_SUCCESS_LAUNCHED_SITE_LAUNCH_DTO,
 } from "mocks/constants"
 import { buildSiteLaunchDto } from "mocks/utils"
+import { SiteLaunchBEStatus, SiteLaunchFEStatus } from "types/siteLaunch"
 
 import { SiteLaunchPad } from "./SiteLaunchPad"
 
@@ -20,7 +21,7 @@ const SiteLaunchPadMeta = {
     msw: {
       handlers: {
         siteLaunchStatusProps: buildSiteLaunchDto({
-          siteStatus: "NOT_LAUNCHED",
+          siteLaunchStatus: SiteLaunchBEStatus.NotLaunched,
         }),
       },
     },
@@ -98,7 +99,7 @@ siteLaunchChecklistNewDomain.decorators = [
     return (
       <SiteLaunchProvider
         initialStepNumber={1}
-        initialSiteLaunchStatus="CHECKLIST_TASKS_PENDING"
+        initialSiteLaunchStatus={SiteLaunchFEStatus.ChecklistTasksPending}
         isNewDomain
       >
         <Story />

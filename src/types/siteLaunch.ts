@@ -6,16 +6,16 @@ export interface DNSRecord {
   target: string
 }
 
-const SiteLaunchFrontEndStatusOptions = {
+export const SiteLaunchFEStatus = {
   Launched: "LAUNCHED",
   NotLaunched: "NOT_LAUNCHED",
   Launching: "LAUNCHING",
   ChecklistTasksPending: "CHECKLIST_TASKS_PENDING", // not to be confused with with Infra level launching step
   Loading: "LOADING",
-  Failure: "FAILURE",
+  Failed: "FAILED",
 } as const
 
-export type SiteLaunchFrontEndStatus = typeof SiteLaunchFrontEndStatusOptions[keyof typeof SiteLaunchFrontEndStatusOptions]
+export type SiteLaunchFEStatusType = typeof SiteLaunchFEStatus[keyof typeof SiteLaunchFEStatus]
 
 export const NEW_DOMAIN_SITE_LAUNCH_TASKS = {
   NOT_STARTED: 0,
@@ -35,22 +35,38 @@ export const SITE_LAUNCH_TASKS = {
 
 export type SiteLaunchTaskTypeIndex = typeof SITE_LAUNCH_TASKS[keyof typeof SITE_LAUNCH_TASKS]
 
+export const SITE_LAUNCH_PAGES = {
+  DISCLAIMER: 1,
+  INFO_GATHERING: 2,
+  RISK_ACCEPTANCE: 3,
+  CHECKLIST: 4,
+  FINAL_STATE: 5,
+} as const
+
+export type SiteLaunchPageIndex = typeof SITE_LAUNCH_PAGES[keyof typeof SITE_LAUNCH_PAGES]
+
 export interface SiteLaunchStatusProps {
-  siteLaunchStatus: SiteLaunchFrontEndStatus
+  siteLaunchStatus: SiteLaunchFEStatusType
   stepNumber: SiteLaunchTaskTypeIndex
   dnsRecords?: DNSRecord[]
   siteUrl?: string
   isNewDomain?: boolean
   useWwwSubdomain?: boolean
 }
+
+export const SiteLaunchBEStatus = {
+  NotLaunched: "NOT_LAUNCHED",
+  Launching: "LAUNCHING",
+  Launched: "LAUNCHED",
+  Failed: "FAILED",
+} as const
 export interface SiteLaunchDto {
   /**
    * Transition will be
    * "NOT_LAUNCHED" -> User presses the Generate DNS button
    * -> "LAUNCHING" -> wait for 90 seconds -> "LAUNCHED"
    */
-  // TODO: create a corresponding BE PR to incorporate this extra type
-  siteStatus: "LAUNCHED" | "NOT_LAUNCHED" | "LAUNCHING" | "FAILURE"
+  siteLaunchStatus: typeof SiteLaunchBEStatus[keyof typeof SiteLaunchBEStatus]
   dnsRecords?: DNSRecord[] // only present iff siteStatus is LAUNCHED
   siteUrl?: string
 }
@@ -61,14 +77,6 @@ export const SITE_LAUNCH_TASKS_LENGTH = (Object.keys(SITE_LAUNCH_TASKS).length -
 export const NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH = (Object.keys(
   NEW_DOMAIN_SITE_LAUNCH_TASKS
 ).length - 1) as SiteLaunchTaskTypeIndex
-
-export const SITE_LAUNCH_PAGES = {
-  DISCLAIMER: 1,
-  INFO_GATHERING: 2,
-  RISK_ACCEPTANCE: 3,
-  CHECKLIST: 4,
-  FINAL_STATE: 5,
-}
 
 type OldDomainSiteLaunchTaskTitles = Exclude<
   keyof typeof SITE_LAUNCH_TASKS,

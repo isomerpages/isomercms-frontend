@@ -7,6 +7,7 @@ import {
   ModalBody,
   Text,
   VStack,
+  Skeleton,
 } from "@chakra-ui/react"
 import {
   Button,
@@ -14,11 +15,10 @@ import {
   Link,
   ModalCloseButton,
 } from "@opengovsg/design-system-react"
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { Redirect, useParams } from "react-router-dom"
 
-import { useLoginContext } from "contexts/LoginContext"
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
 import { useGetCollaboratorRoleHook } from "hooks/collaboratorHooks"
@@ -28,7 +28,7 @@ import { SiteViewHeader } from "layouts/layouts/SiteViewLayout/SiteViewHeader"
 import { isSiteLaunchEnabled } from "utils/siteLaunchUtils"
 
 import {
-  SiteLaunchStatusProps,
+  SiteLaunchFEStatus,
   SiteLaunchTaskTypeIndex,
   SITE_LAUNCH_PAGES,
   SITE_LAUNCH_TASKS_LENGTH,
@@ -51,21 +51,23 @@ import {
 
 interface RiskAcceptanceModalProps {
   isOpen: boolean
-  setPageNumber: (number: number) => void
+}
+
+interface SiteLaunchPadProps {
+  pageNumber: number
+
+  handleDecrementStepNumber: () => void
+  handleIncrementStepNumber: () => void
 }
 
 const RiskAcceptanceModal = ({
   isOpen,
-  setPageNumber,
 }: RiskAcceptanceModalProps): JSX.Element => {
   const { register, handleSubmit, watch } = useForm({})
   const isRiskAccepted = watch("isRiskAccepted")
-
+  const { increasePageNumber, decreasePageNumber } = useSiteLaunchContext()
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={() => setPageNumber(SITE_LAUNCH_PAGES.INFO_GATHERING)}
-    >
+    <Modal isOpen={isOpen} onClose={() => decreasePageNumber()}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
@@ -107,18 +109,14 @@ const RiskAcceptanceModal = ({
         </ModalBody>
 
         <ModalFooter>
-          <Button
-            mr={3}
-            onClick={() => setPageNumber(SITE_LAUNCH_PAGES.INFO_GATHERING)}
-            variant="link"
-          >
+          <Button mr={3} onClick={() => decreasePageNumber()} variant="link">
             Cancel
           </Button>
           <Button
             isDisabled={!isRiskAccepted}
             type="submit"
             onClick={handleSubmit(() => {
-              setPageNumber(SITE_LAUNCH_PAGES.CHECKLIST)
+              increasePageNumber()
             })}
           >
             Continue
@@ -128,40 +126,23 @@ const RiskAcceptanceModal = ({
     </Modal>
   )
 }
-const getInitialPageNumber = (
-  siteLaunchStatusProps: SiteLaunchStatusProps | undefined
-) => {
-  const hasUserAlreadyStartedChecklistTasks =
-    siteLaunchStatusProps?.siteLaunchStatus === "CHECKLIST_TASKS_PENDING"
-  if (hasUserAlreadyStartedChecklistTasks) return SITE_LAUNCH_PAGES.CHECKLIST
-  const isSiteLaunchInProgress =
-    siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING"
-  if (isSiteLaunchInProgress) return SITE_LAUNCH_PAGES.CHECKLIST
-  return SITE_LAUNCH_PAGES.DISCLAIMER
-}
 
 export const SiteLaunchPad = ({
   pageNumber,
-  setPageNumber,
   handleDecrementStepNumber,
   handleIncrementStepNumber,
-}: {
-  pageNumber: number
-  setPageNumber: React.Dispatch<React.SetStateAction<number>>
-  handleDecrementStepNumber: () => void
-  handleIncrementStepNumber: () => void
-}): JSX.Element => {
+}: SiteLaunchPadProps): JSX.Element => {
   let title: JSX.Element
   let body: JSX.Element
   switch (pageNumber) {
     case SITE_LAUNCH_PAGES.DISCLAIMER:
       title = <SiteLaunchDisclaimerTitle />
-      body = <SiteLaunchDisclaimerBody setPageNumber={setPageNumber} />
+      body = <SiteLaunchDisclaimerBody />
       break
     case SITE_LAUNCH_PAGES.INFO_GATHERING:
     case SITE_LAUNCH_PAGES.RISK_ACCEPTANCE: // Risk acceptance modal overlay
       title = <SiteLaunchInfoCollectorTitle />
-      body = <SiteLaunchInfoCollectorBody setPageNumber={setPageNumber} />
+      body = <SiteLaunchInfoCollectorBody />
       break
     case SITE_LAUNCH_PAGES.CHECKLIST:
       title = <SiteLaunchChecklistTitle />
@@ -178,7 +159,7 @@ export const SiteLaunchPad = ({
       break
     default:
       title = <SiteLaunchDisclaimerTitle />
-      body = <SiteLaunchDisclaimerBody setPageNumber={setPageNumber} />
+      body = <SiteLaunchDisclaimerBody />
   }
   return (
     <>
@@ -188,7 +169,6 @@ export const SiteLaunchPad = ({
         {body}
         <RiskAcceptanceModal
           isOpen={pageNumber === SITE_LAUNCH_PAGES.RISK_ACCEPTANCE}
-          setPageNumber={setPageNumber}
         />
       </VStack>
     </>
@@ -199,22 +179,22 @@ export const SiteLaunchPadPage = (): JSX.Element => {
   const {
     siteLaunchStatusProps,
     setSiteLaunchStatusProps,
+    pageNumber,
   } = useSiteLaunchContext()
   const { siteName } = useParams<{ siteName: string }>()
-  const [pageNumber, setPageNumber] = useState(
-    getInitialPageNumber(siteLaunchStatusProps)
-  )
 
   const errorToast = useErrorToast()
   const { data: role } = useGetCollaboratorRoleHook(siteName)
+
+  const isLoaded: boolean = !!siteName && !!role
   useEffect(() => {
-    if (!isSiteLaunchEnabled(siteName, role)) {
+    if (isLoaded && !isSiteLaunchEnabled(siteName, role)) {
       errorToast({
         id: "no_access_to_launchpad",
         description: "You do not have access to this page.",
       })
     }
-  }, [siteName, errorToast, role])
+  }, [siteName, errorToast, role, isLoaded])
 
   const handleIncrementStepNumber = () => {
     if (
@@ -225,7 +205,7 @@ export const SiteLaunchPadPage = (): JSX.Element => {
         ...siteLaunchStatusProps,
         stepNumber: (siteLaunchStatusProps.stepNumber +
           1) as SiteLaunchTaskTypeIndex, // safe to assert since we do a check
-        siteLaunchStatus: "CHECKLIST_TASKS_PENDING",
+        siteLaunchStatus: SiteLaunchFEStatus.ChecklistTasksPending,
       })
     }
   }
@@ -240,17 +220,22 @@ export const SiteLaunchPadPage = (): JSX.Element => {
   }
 
   return (
-    <>
-      {isSiteLaunchEnabled(siteName, role) ? (
-        <SiteLaunchPad
-          pageNumber={pageNumber}
-          setPageNumber={setPageNumber}
-          handleDecrementStepNumber={handleDecrementStepNumber}
-          handleIncrementStepNumber={handleIncrementStepNumber}
-        />
-      ) : (
-        <Redirect to={`/sites/${siteName}/dashboard`} />
-      )}
-    </>
+    <Skeleton isLoaded={isLoaded}>
+      <>
+        {isSiteLaunchEnabled(siteName, role) ? (
+          <SiteLaunchPad
+            pageNumber={pageNumber}
+            handleDecrementStepNumber={handleDecrementStepNumber}
+            handleIncrementStepNumber={handleIncrementStepNumber}
+          />
+        ) : (
+          /**
+           * Without the isLoaded check, the site will redirect prematurely.
+           * For more context, see https://github.com/isomerpages/isomercms-frontend/pull/1410#discussion_r1292910419
+           */
+          isLoaded && <Redirect to={`/sites/${siteName}/dashboard`} />
+        )}
+      </>
+    </Skeleton>
   )
 }
