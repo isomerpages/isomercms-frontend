@@ -9,7 +9,7 @@ import {
 
 import { Editable } from "../Editable"
 
-interface InfobarInputs {
+interface InfobarFormFields {
   title: string
   subtitle: string
   description: string
@@ -17,11 +17,11 @@ interface InfobarInputs {
   url: string
 }
 
-interface InfobarBodyProps extends InfobarInputs {
+interface InfobarBodyProps extends InfobarFormFields {
   index: number
   onClick: () => void
   onChange: () => void
-  errors: InfobarInputs
+  errors: InfobarFormFields
 }
 
 export const InfobarBody = ({

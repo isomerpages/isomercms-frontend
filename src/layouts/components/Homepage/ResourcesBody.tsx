@@ -9,17 +9,17 @@ import { BiInfoCircle } from "react-icons/bi"
 
 import { Editable } from "../Editable"
 
-interface ResourcesInputs {
+interface ResourcesFormFields {
   title: string
   subtitle: string
   button: string
 }
 
-interface ResourcesBodyProps extends ResourcesInputs {
+interface ResourcesBodyProps extends ResourcesFormFields {
   index: number
   onClick: () => void
   onChange: () => void
-  errors: ResourcesInputs
+  errors: ResourcesFormFields
 }
 
 export const ResourcesBody = ({
