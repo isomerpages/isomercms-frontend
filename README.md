@@ -77,3 +77,5 @@ npm run release --isomer_update=<versionType>
 ```
 
 where versionType corresponds to npm version types. This only works on non-Windows platforms, for Windows, modify the release script to use %npm_config_update% instead of $npm_config_update.
+
+Dummy edit
