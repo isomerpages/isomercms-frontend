@@ -143,6 +143,7 @@ const EditPage = ({ match }) => {
 
   useEffect(() => {
     async function editorValueToHtml() {
+      if (!csp || !editorValue) return
       const html = marked.parse(editorValue)
       const {
         isCspViolation: checkedIsCspViolation,
@@ -164,7 +165,7 @@ const EditPage = ({ match }) => {
       setHtmlChunk(processedChunk)
     }
     editorValueToHtml()
-  }, [editorValue])
+  }, [csp, siteName, editorValue])
 
   return (
     <VStack>
