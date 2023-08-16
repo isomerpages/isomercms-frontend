@@ -221,11 +221,6 @@ const DraggableAccordionItem = ({
                 w="fit-content"
                 icon={<BxDraggable />}
               />
-              {/* 
-               NOTE: Check with design on styling. 
-               See if entire section is
-               button (ie, whole component hover styling)  
-               */}
               {!isExpanded && isInvalid && (
                 <Divider
                   border="4px solid"
