@@ -5,14 +5,16 @@ import {
   FormErrorMessage,
   Button,
 } from "@opengovsg/design-system-react"
+import _ from "lodash"
+import { BiPlus } from "react-icons/bi"
 
 import { useDragDropContext } from "contexts/DragDropContext"
 
 import { Editable } from "layouts/components/Editable"
 
-import { EditorHeroDropdownSection, EditorHomepageState } from "types/homepage"
+import { EditorHeroDropdownSection } from "types/homepage"
 
-interface HeroDropdownFormFields {
+export interface HeroDropdownFormFields {
   title: string
   url: string
 }
@@ -24,11 +26,16 @@ interface HeroDropdownSectionProps {
       id: string
     }
   }) => void
-  errors: { dropdownElems: HeroDropdownFormFields[] }
-  state: EditorHomepageState
+  errors: {
+    dropdownElems: HeroDropdownFormFields[]
+    title: string
+    dropdown: string
+  }
+  state: EditorHeroDropdownSection
   onCreate: () => void
   title: string
 }
+
 export const HeroDropdownSection = ({
   errors,
   onChange,
@@ -37,21 +44,19 @@ export const HeroDropdownSection = ({
   onCreate,
   title,
 }: HeroDropdownSectionProps) => {
-  const dropdownState = state.frontMatter.sections[0]
-    .hero as EditorHeroDropdownSection
-
   const { onDragEnd } = useDragDropContext()
 
   return (
     <Box>
       <Editable.Droppable editableId="dropdownelem" onDragEnd={onDragEnd}>
-        <FormControl isRequired isInvalid={!!errors}>
+        <FormControl isRequired isInvalid={!!errors.dropdown}>
           <FormLabel>Title</FormLabel>
           <Input
             placeholder="This is a button"
             value={title}
             onChange={onChange}
           />
+          <FormErrorMessage>{errors.dropdown}</FormErrorMessage>
         </FormControl>
         <Text mt="1.5rem" textStyle="h6">
           Dropdown Options
@@ -61,19 +66,23 @@ export const HeroDropdownSection = ({
         </Text>
         <Editable.Accordion>
           <Editable.Section px={0} spacing="1.25rem" py="1.5rem">
-            {dropdownState.dropdown?.options?.map(
+            {state.dropdown.options.map(
               ({ title: optionTitle, url: optionUrl }, dropdownOptionIndex) => {
                 return (
                   <Editable.DraggableAccordionItem
-                    title={optionTitle}
+                    title={optionTitle || "New dropdown option"}
                     draggableId={`dropdownelem-${dropdownOptionIndex}-draggable`}
                     index={dropdownOptionIndex}
+                    isInvalid={_.some(
+                      errors.dropdownElems[dropdownOptionIndex]
+                    )}
                   >
                     <Editable.Section>
                       <FormControl
                         isInvalid={
-                          !!errors?.dropdownElems?.[dropdownOptionIndex].title
+                          !!errors.dropdownElems[dropdownOptionIndex].title
                         }
+                        isRequired
                       >
                         <FormLabel>Title</FormLabel>
                         <Input
@@ -83,13 +92,14 @@ export const HeroDropdownSection = ({
                           onChange={onChange}
                         />
                         <FormErrorMessage>
-                          {errors?.dropdownElems?.[dropdownOptionIndex].title}
+                          {errors.dropdownElems[dropdownOptionIndex].title}
                         </FormErrorMessage>
                       </FormControl>
                       <FormControl
                         isInvalid={
-                          !!errors?.dropdownElems?.[dropdownOptionIndex].url
+                          !!errors.dropdownElems[dropdownOptionIndex].url
                         }
+                        isRequired
                       >
                         <FormLabel>URL</FormLabel>
                         <Input
@@ -99,7 +109,7 @@ export const HeroDropdownSection = ({
                           onChange={onChange}
                         />
                         <FormErrorMessage>
-                          {errors?.dropdownElems?.[dropdownOptionIndex].url}
+                          {errors.dropdownElems[dropdownOptionIndex].url}
                         </FormErrorMessage>
                       </FormControl>
                       <Button
@@ -127,10 +137,11 @@ export const HeroDropdownSection = ({
         </Editable.Accordion>
       </Editable.Droppable>
       <Button
-        id={`dropdownelem-${dropdownState.dropdown?.options?.length}-create`}
+        id={`dropdownelem-${state.dropdown.options.length}-create`}
         onClick={onCreate}
         variant="outline"
         w="full"
+        leftIcon={<BiPlus fontSize="1.5rem" />}
       >
         Add option
       </Button>
