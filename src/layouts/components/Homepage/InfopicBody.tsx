@@ -4,6 +4,7 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  Textarea,
 } from "@opengovsg/design-system-react"
 
 import { FormContext, FormError, FormTitle } from "components/Form"
@@ -44,9 +45,9 @@ export const InfopicBody = ({
   return (
     <Editable.Section>
       <FormControl isInvalid={!!errors.subtitle}>
-        <FormLabel>Infopic subtitle</FormLabel>
+        <FormLabel>Subtitle</FormLabel>
         <Input
-          placeholder="Infopic subtitle"
+          placeholder="This subtitle appears above the title"
           id={`section-${index}-infopic-subtitle`}
           value={subtitle}
           onChange={onChange}
@@ -54,9 +55,9 @@ export const InfopicBody = ({
         <FormErrorMessage>{errors.subtitle}</FormErrorMessage>
       </FormControl>
       <FormControl isInvalid={!!errors.title}>
-        <FormLabel>Infopic title</FormLabel>
+        <FormLabel>Title</FormLabel>
         <Input
-          placeholder="Infopic title"
+          placeholder="Your infopic title goes here"
           id={`section-${index}-infopic-title`}
           value={title}
           onChange={onChange}
@@ -64,9 +65,9 @@ export const InfopicBody = ({
         <FormErrorMessage>{errors.title}</FormErrorMessage>
       </FormControl>
       <FormControl isInvalid={!!errors.description}>
-        <FormLabel>Infopic description</FormLabel>
-        <Input
-          placeholder="Infopic description"
+        <FormLabel>Description</FormLabel>
+        <Textarea
+          placeholder="This paragraph appears below the title and conveys information"
           id={`section-${index}-infopic-description`}
           value={description}
           onChange={onChange}
@@ -74,9 +75,9 @@ export const InfopicBody = ({
         <FormErrorMessage>{errors.description}</FormErrorMessage>
       </FormControl>
       <FormControl isRequired isInvalid={!!errors.button}>
-        <FormLabel>Infopic button name</FormLabel>
+        <FormLabel>Button text</FormLabel>
         <Input
-          placeholder="Infopic button name"
+          placeholder="This is a button at the bottom of the infopic"
           id={`section-${index}-infopic-button`}
           value={button}
           onChange={onChange}
@@ -84,7 +85,7 @@ export const InfopicBody = ({
         <FormErrorMessage>{errors.button}</FormErrorMessage>
       </FormControl>
       <FormControl isRequired isInvalid={!!errors.url}>
-        <FormLabel>Infopic button URL</FormLabel>
+        <FormLabel>Button link</FormLabel>
         <Input
           placeholder="Insert /page-url or https://"
           id={`section-${index}-infopic-url`}
@@ -98,18 +99,18 @@ export const InfopicBody = ({
         onFieldChange={onChange}
         isRequired
       >
-        <FormTitle>Infopic image URL</FormTitle>
+        <FormTitle>Image</FormTitle>
         <FormFieldMedia
           value={image}
           id={`section-${index}-infopic-image`}
-          inlineButtonText="Select"
+          inlineButtonText="Browse"
         />
         <FormError>{errors.image}</FormError>
       </FormContext>
       <FormControl isRequired isInvalid={!!errors.alt}>
-        <FormLabel>Infopic image alt text</FormLabel>
+        <FormLabel>Alt text</FormLabel>
         <Input
-          placeholder="Infopic image alt text"
+          placeholder="Add a descriptive text about the image"
           id={`section-${index}-infopic-alt`}
           value={alt}
           onChange={onChange}
