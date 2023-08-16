@@ -12,6 +12,8 @@ import {
   forwardRef,
   StackProps,
   Divider,
+  BoxProps,
+  Box,
 } from "@chakra-ui/react"
 import {
   OnDragEndResponder,
@@ -106,14 +108,15 @@ const getDroppableInfo = (editableId: HomepageDroppableZone): DropInfo => {
   }
 }
 
-export interface EditableDraggableProps {
+export interface EditableDraggableProps extends Omit<BoxProps, "onDragEnd"> {
   onDragEnd: OnDragEndResponder
   editableId: HomepageDroppableZone
 }
-const EditableDraggable = ({
+export const EditableDroppable = ({
   onDragEnd,
   children,
   editableId,
+  ...rest
 }: PropsWithChildren<EditableDraggableProps>) => {
   return (
     // NOTE: According to the dnd docs,
@@ -122,13 +125,14 @@ const EditableDraggable = ({
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable {...getDroppableInfo(editableId)}>
         {(droppableProvided) => (
-          <div
+          <Box
             ref={droppableProvided.innerRef}
             {...droppableProvided.droppableProps}
+            {...rest}
           >
             {children}
             {droppableProvided.placeholder}
-          </div>
+          </Box>
         )}
       </Droppable>
     </DragDropContext>
@@ -176,7 +180,7 @@ const EditableAccordionItem = ({
 }
 
 interface DraggableAccordionItemProps {
-  tag: JSX.Element
+  tag?: JSX.Element
   title: string
   // TODO: Should get these props automatically
   // rather than having us pass in manually
@@ -237,7 +241,13 @@ const DraggableAccordionItem = ({
                   bgColor: isExpanded ? "none" : "interaction.muted.main.hover",
                 }}
               >
-                <Flex px="1.5rem" pb="1rem" flex="1" flexDir="column">
+                <Flex
+                  pl="1.5rem"
+                  pb={tag ? "1rem" : "1.37rem"}
+                  pt={tag ? "0" : "0.37rem"}
+                  flex="1"
+                  flexDir="column"
+                >
                   {tag}
                   <Text textStyle="h6" textAlign="left" mt="0.25rem">
                     {title}
@@ -266,7 +276,7 @@ const EditableSection = (props: StackProps) => (
 
 export const Editable = {
   Sidebar: EditableSidebar,
-  Draggable: EditableDraggable,
+  Droppable: EditableDroppable,
   EditableAccordionItem,
   Accordion: EditableAccordion,
   DraggableAccordionItem,
