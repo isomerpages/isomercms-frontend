@@ -1029,6 +1029,9 @@ const EditHomepage = ({ match }) => {
                                 index={sectionIndex}
                                 tag={<Tag variant="subtle">Resources</Tag>}
                                 title="New resource widget"
+                                isInvalid={_.some(
+                                  errors.sections[sectionIndex].resources
+                                )}
                               >
                                 <ResourcesBody
                                   {...section.resources}
@@ -1053,6 +1056,9 @@ const EditHomepage = ({ match }) => {
                                 index={sectionIndex}
                                 tag={<Tag variant="subtle">Infobar</Tag>}
                                 title={section.infobar.title}
+                                isInvalid={_.some(
+                                  errors.sections[sectionIndex].infobar
+                                )}
                               >
                                 <InfobarBody
                                   {...section.infobar}
@@ -1075,6 +1081,9 @@ const EditHomepage = ({ match }) => {
                                 index={sectionIndex}
                                 tag={<Tag variant="subtle">Infopic</Tag>}
                                 title={section.infopic.title}
+                                isInvalid={_.some(
+                                  errors.sections[sectionIndex].infopic
+                                )}
                               >
                                 <InfopicBody
                                   index={sectionIndex}
