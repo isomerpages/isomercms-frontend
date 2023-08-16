@@ -194,7 +194,7 @@ export const SiteLaunchPadPage = (): JSX.Element => {
         description: "You do not have access to this page.",
       })
     }
-  }, [siteName, errorToast, role, isLoaded, siteLaunchStatusProps])
+  }, [siteName, errorToast, role, isLoaded])
 
   const handleIncrementStepNumber = () => {
     if (
