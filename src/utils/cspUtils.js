@@ -7,13 +7,6 @@ import _ from "lodash"
 
 import { isLinkInternal } from "utils"
 
-function stringContainsValue(string, value) {
-  // regex checks specifically if value is preceded by whitespace or is at the start/ end of the string
-  const VALUE_REGEX = `(\\s|^)${value}(\\s|$)`
-  const ValueRegexTest = new RegExp(VALUE_REGEX)
-  return ValueRegexTest.test(string)
-}
-
 function toRegExp(string) {
   const strippedString = string.replace(/\/$/, "") // removes ending '/' from domains eg 'abc.com/'
   const escapedStrippedString = escapeStringRegexp(strippedString) // add escape characters
@@ -36,7 +29,7 @@ function toRegExp(string) {
 
 /* Helper functions to check if elemSrc satisfies each CSP source specification: host-source, schema-source and 'self' */
 function checkHostsourcePolicy(elemSrc, policy) {
-  if (stringContainsValue(policy, "\\*")) return true
+  if (policy.includes("\\*")) return true
 
   const specialValues = [
     "http:",
@@ -49,9 +42,7 @@ function checkHostsourcePolicy(elemSrc, policy) {
     "'none'",
     "*",
   ]
-  const hostsources = policy
-    .split(" ")
-    .filter((value) => !specialValues.includes(value))
+  const hostsources = policy.filter((value) => !specialValues.includes(value))
 
   const hostsourcesSatisfied = hostsources.some((hostsource) =>
     toRegExp(hostsource).test(elemSrc)
@@ -64,24 +55,22 @@ function checkSchemasourcePolicy(elemSrc, policy) {
   const dataSchemes = ["data:", "mediastream:", "blob:", "filesystem:"]
 
   const schemesSatisfied = schemes.some(
-    (scheme) =>
-      stringContainsValue(policy, scheme) && _.startsWith(elemSrc, scheme)
+    (scheme) => policy.includes(scheme) && _.startsWith(elemSrc, scheme)
   )
   const dataSchemesSatisfied = dataSchemes.some(
     (dataScheme) =>
-      stringContainsValue(policy, dataScheme) &&
-      _.startsWith(elemSrc, dataScheme)
+      policy.includes(dataScheme) && _.startsWith(elemSrc, dataScheme)
   )
   return schemesSatisfied || dataSchemesSatisfied
 }
 
 function checkSelfPolicy(elemSrc, policy) {
-  return isLinkInternal(elemSrc) && stringContainsValue(policy, "'self'")
+  return isLinkInternal(elemSrc) && policy.includes("'self'")
 }
 
 /* Helper function to check if elemAttr satisfies CSP source specifications */
 function elemAttrSatisfiesPolicies(elemAttr, policy) {
-  if (stringContainsValue(policy, "'none'")) return false
+  if (policy.includes("'none'")) return false
 
   const selfSatisfied = checkSelfPolicy(elemAttr, policy)
   const schemasourceSatisfied = checkSchemasourcePolicy(elemAttr, policy)
@@ -103,17 +92,17 @@ function getResourcePolicy(cspPolicy, policyType) {
   if (policyType === "frame-src") {
     // from http://csplite.com/csp/test121/, fallback chain: frame-src -> child-src -> default-src
     resourcePolicy =
-      cspPolicy.get(policyType) ||
-      cspPolicy.get("child-src") ||
-      cspPolicy.get("default-src")
+      cspPolicy[policyType] ||
+      cspPolicy["child-src"] ||
+      cspPolicy["default-src"]
   } else if (policyType === "script-src-elem") {
     // fallback chain: script-src-elem -> script-src -> default-src
     resourcePolicy =
-      cspPolicy.get(policyType) ||
-      cspPolicy.get("script-src") ||
-      cspPolicy.get("default-src")
+      cspPolicy[policyType] ||
+      cspPolicy["script-src"] ||
+      cspPolicy["default-src"]
   } else {
-    resourcePolicy = cspPolicy.get(policyType) || cspPolicy.get("default-src")
+    resourcePolicy = cspPolicy[policyType] || cspPolicy["default-src"]
   }
   const resourcePolicyElems = resourcePolicyMapping[policyType]
   return { resourcePolicy, resourcePolicyElems }

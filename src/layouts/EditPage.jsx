@@ -112,7 +112,7 @@ const EditPage = ({ match }) => {
     onSuccess: () => setHasChanges(false),
   })
 
-  const { data: csp } = useCspHook(params)
+  const { data: csp } = useCspHook()
   const { data: dirData } = useCollectionHook(params)
   const { data: siteColorsData } = useGetSiteColorsHook(params)
 
