@@ -16,7 +16,6 @@ import { useEffect, createRef, useState } from "react"
 import { Footer } from "components/Footer"
 import Header from "components/Header"
 import EditorHeroSection from "components/homepage/HeroSection"
-import EditorInfobarSection from "components/homepage/InfobarSection"
 import EditorResourcesSection from "components/homepage/ResourcesSection"
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
@@ -49,6 +48,7 @@ import { useDrag, onCreate, onDelete } from "../hooks/useDrag"
 
 import { CustomiseSectionsHeader, Editable } from "./components/Editable"
 import { AddSectionButton } from "./components/Editable/AddSectionButton"
+import { InfobarBody } from "./components/Homepage/InfobarBody"
 import { InfopicBody } from "./components/Homepage/InfopicBody"
 
 /* eslint-disable react/no-array-index-key */
@@ -1055,20 +1055,17 @@ const EditHomepage = ({ match }) => {
                                 tag={<Tag variant="subtle">Infobar</Tag>}
                                 title={section.infobar.title}
                               >
-                                <EditorInfobarSection
-                                  key={`section-${sectionIndex}`}
+                                <InfobarBody
                                   {...section.infobar}
-                                  sectionIndex={sectionIndex}
-                                  deleteHandler={(event) => {
+                                  index={sectionIndex}
+                                  onClick={(event) => {
                                     onOpen()
                                     setItemPendingForDelete({
                                       id: event.target.id,
                                       type: "Infobar Section",
                                     })
                                   }}
-                                  onFieldChange={onFieldChange}
-                                  shouldDisplay={displaySections[sectionIndex]}
-                                  displayHandler={displayHandler}
+                                  onChange={onFieldChange}
                                   errors={errors.sections[sectionIndex].infobar}
                                 />
                               </Editable.DraggableAccordionItem>
