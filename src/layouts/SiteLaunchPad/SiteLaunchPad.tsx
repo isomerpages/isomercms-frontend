@@ -28,6 +28,7 @@ import { SiteViewHeader } from "layouts/layouts/SiteViewLayout/SiteViewHeader"
 import { isSiteLaunchEnabled } from "utils/siteLaunchUtils"
 
 import {
+  SiteLaunchFEStatus,
   SiteLaunchTaskTypeIndex,
   SITE_LAUNCH_PAGES,
   SITE_LAUNCH_TASKS_LENGTH,
@@ -204,7 +205,7 @@ export const SiteLaunchPadPage = (): JSX.Element => {
         ...siteLaunchStatusProps,
         stepNumber: (siteLaunchStatusProps.stepNumber +
           1) as SiteLaunchTaskTypeIndex, // safe to assert since we do a check
-        siteLaunchStatus: "CHECKLIST_TASKS_PENDING",
+        siteLaunchStatus: SiteLaunchFEStatus.ChecklistTasksPending,
       })
     }
   }

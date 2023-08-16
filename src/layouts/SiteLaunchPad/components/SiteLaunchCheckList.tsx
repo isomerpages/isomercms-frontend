@@ -25,6 +25,7 @@ import {
   getNewDomainTaskFrmIdx,
   getOldDomainTaskFrmIdx,
   NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH,
+  SiteLaunchFEStatus,
   SITE_LAUNCH_TASKS,
   SITE_LAUNCH_TASKS_LENGTH,
   TITLE_TEXTS_NEW_DOMAIN,
@@ -215,7 +216,7 @@ export const SiteLaunchChecklistBody = ({
     setSiteLaunchStatusProps({
       ...siteLaunchStatusProps,
       stepNumber: SITE_LAUNCH_TASKS.GENERATE_NEW_DNS_RECORDS,
-      siteLaunchStatus: "LAUNCHING",
+      siteLaunchStatus: SiteLaunchFEStatus.Launching,
     })
 
     /**
@@ -236,9 +237,9 @@ export const SiteLaunchChecklistBody = ({
     }
   }
   const allTasksDone: boolean =
-    siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING" ||
-    siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHED" ||
-    siteLaunchStatusProps?.siteLaunchStatus === "FAILED"
+    siteLaunchStatusProps?.siteLaunchStatus === SiteLaunchFEStatus.Launching ||
+    siteLaunchStatusProps?.siteLaunchStatus === SiteLaunchFEStatus.Launched ||
+    siteLaunchStatusProps?.siteLaunchStatus === SiteLaunchFEStatus.Failed
 
   const checkboxes = Array.from({ length: numberOfCheckboxes }, (_, i) => (
     <Center key={i}>

@@ -20,7 +20,7 @@ import {
   SiteDashboardInfo,
   SiteDashboardReviewRequest,
 } from "types/siteDashboard"
-import { SiteLaunchDto } from "types/siteLaunch"
+import { SiteLaunchBEStatus, SiteLaunchDto } from "types/siteLaunch"
 import { SiteDataRequest } from "types/sites"
 import { LoggedInUser } from "types/user"
 
@@ -501,11 +501,11 @@ export const OLD_DIFF_VALUE = generateDiffValues()
 export const NEW_DIFF_VALUE = generateDiffValues().toUpperCase()
 
 export const MOCK_UNLAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
-  siteLaunchStatus: "NOT_LAUNCHED",
+  siteLaunchStatus: SiteLaunchBEStatus.notLaunched,
 }
 
 export const MOCK_SUCCESS_LAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
-  siteLaunchStatus: "LAUNCHED",
+  siteLaunchStatus: SiteLaunchBEStatus.launched,
   dnsRecords: [
     {
       source: "sourceURL",
@@ -516,7 +516,7 @@ export const MOCK_SUCCESS_LAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
 }
 
 export const MOCK_FAILURE_LAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
-  siteLaunchStatus: "FAILED",
+  siteLaunchStatus: SiteLaunchBEStatus.failed,
   dnsRecords: [
     {
       source: "sourceURL",
@@ -527,7 +527,7 @@ export const MOCK_FAILURE_LAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
 }
 
 export const MOCK_LAUNCHING_SITE_LAUNCH_DTO: SiteLaunchDto = {
-  siteLaunchStatus: "LAUNCHING",
+  siteLaunchStatus: SiteLaunchBEStatus.launching,
   dnsRecords: [
     {
       source: "sourceURL",

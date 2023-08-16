@@ -8,6 +8,7 @@ import {
   SiteLaunchPendingImage,
   SiteLaunchSuccessImage,
 } from "assets"
+import { SiteLaunchFEStatus } from "types/siteLaunch"
 
 const SiteLaunchSuccessState = (): JSX.Element => {
   const { siteLaunchStatusProps, decreasePageNumber } = useSiteLaunchContext()
@@ -124,10 +125,12 @@ const SiteLaunchInProgressState = (): JSX.Element => {
 export const SiteLaunchFinalState = (): JSX.Element => {
   const { siteLaunchStatusProps } = useSiteLaunchContext()
   const State = () => {
-    if (siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHED") {
+    if (
+      siteLaunchStatusProps?.siteLaunchStatus === SiteLaunchFEStatus.Launched
+    ) {
       return <SiteLaunchSuccessState />
     }
-    if (siteLaunchStatusProps?.siteLaunchStatus === "FAILED") {
+    if (siteLaunchStatusProps?.siteLaunchStatus === SiteLaunchFEStatus.Failed) {
       return <SiteLaunchFailureState />
     }
     return <SiteLaunchInProgressState />

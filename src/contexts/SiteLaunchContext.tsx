@@ -9,7 +9,9 @@ import { useGetSiteLaunchStatus } from "hooks/siteDashboardHooks"
 import { launchSite } from "services/SiteLaunchService"
 
 import {
-  SiteLaunchFrontEndStatus,
+  SiteLaunchBEStatus,
+  SiteLaunchFEStatus,
+  SiteLaunchFEStatusType,
   SiteLaunchPageIndex,
   SiteLaunchStatusProps,
   SiteLaunchTaskTypeIndex,
@@ -31,7 +33,7 @@ interface SiteLaunchContextProps {
 
 interface SiteLaunchProviderProps {
   children: React.ReactNode
-  initialSiteLaunchStatus?: SiteLaunchFrontEndStatus
+  initialSiteLaunchStatus?: SiteLaunchFEStatusType
   initialStepNumber?: SiteLaunchTaskTypeIndex
   isNewDomain?: boolean
 }
@@ -42,10 +44,11 @@ const getInitialPageNumber = (
   siteLaunchStatusProps: SiteLaunchStatusProps | undefined
 ) => {
   const hasUserAlreadyStartedChecklistTasks =
-    siteLaunchStatusProps?.siteLaunchStatus === "CHECKLIST_TASKS_PENDING"
+    siteLaunchStatusProps?.siteLaunchStatus ===
+    SiteLaunchFEStatus.ChecklistTasksPending
   if (hasUserAlreadyStartedChecklistTasks) return SITE_LAUNCH_PAGES.CHECKLIST
   const isSiteLaunchInProgress =
-    siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING"
+    siteLaunchStatusProps?.siteLaunchStatus === SiteLaunchFEStatus.Launching
   if (isSiteLaunchInProgress) return SITE_LAUNCH_PAGES.CHECKLIST
 
   return SITE_LAUNCH_PAGES.DISCLAIMER
@@ -70,7 +73,7 @@ export const SiteLaunchProvider = ({
     siteLaunchStatusProps,
     setSiteLaunchStatusProps,
   ] = useState<SiteLaunchStatusProps>({
-    siteLaunchStatus: initialSiteLaunchStatus || "LOADING",
+    siteLaunchStatus: initialSiteLaunchStatus || SiteLaunchFEStatus.Loading,
     stepNumber: initialStepNumber || SITE_LAUNCH_TASKS.NOT_STARTED,
     isNewDomain,
   })
@@ -130,16 +133,16 @@ export const SiteLaunchProvider = ({
   useEffect(() => {
     if (!siteLaunchDto) return
     if (
-      siteLaunchDto.siteLaunchStatus === "NOT_LAUNCHED" &&
-      siteLaunchStatusProps.siteLaunchStatus === "LOADING"
+      siteLaunchDto.siteLaunchStatus === SiteLaunchBEStatus.notLaunched &&
+      siteLaunchStatusProps.siteLaunchStatus === SiteLaunchFEStatus.Loading
     ) {
       setSiteLaunchStatusProps({
         ...siteLaunchStatusProps,
-        siteLaunchStatus: "NOT_LAUNCHED",
+        siteLaunchStatus: SiteLaunchFEStatus.NotLaunched,
         stepNumber: 0,
       })
     }
-    if (siteLaunchDto.siteLaunchStatus === "NOT_LAUNCHED") {
+    if (siteLaunchDto.siteLaunchStatus === SiteLaunchBEStatus.notLaunched) {
       return
     }
     // this condition is added to prevent redundant re-renders
@@ -158,15 +161,15 @@ export const SiteLaunchProvider = ({
 
     // We don't want to jump to the last screen immediately after the api is called
     if (
-      siteLaunchDto.siteLaunchStatus === "LAUNCHING" &&
+      siteLaunchDto.siteLaunchStatus === SiteLaunchFEStatus.Launching &&
       !isSiteLaunchFEAndBESynced
     ) {
       setPageNumber(SITE_LAUNCH_PAGES.CHECKLIST)
     }
 
     if (
-      (siteLaunchDto.siteLaunchStatus === "LAUNCHED" ||
-        siteLaunchDto.siteLaunchStatus === "FAILED") &&
+      (siteLaunchDto.siteLaunchStatus === SiteLaunchBEStatus.launched ||
+        siteLaunchDto.siteLaunchStatus === SiteLaunchBEStatus.failed) &&
       !isSiteLaunchFEAndBESynced
     ) {
       setPageNumber(SITE_LAUNCH_PAGES.FINAL_STATE)

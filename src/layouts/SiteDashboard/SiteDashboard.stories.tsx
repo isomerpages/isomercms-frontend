@@ -23,6 +23,7 @@ import {
   buildSiteDashboardReviewRequests,
   buildSiteLaunchDto,
 } from "mocks/utils"
+import { SiteLaunchFEStatus } from "types/siteLaunch"
 
 import { SiteDashboard } from "./SiteDashboard"
 
@@ -162,7 +163,7 @@ SiteLaunchPartialStepsCompleted.decorators = [
     return (
       <SiteLaunchProvider
         initialStepNumber={1}
-        initialSiteLaunchStatus="CHECKLIST_TASKS_PENDING"
+        initialSiteLaunchStatus={SiteLaunchFEStatus.ChecklistTasksPending}
       >
         <Story />
       </SiteLaunchProvider>

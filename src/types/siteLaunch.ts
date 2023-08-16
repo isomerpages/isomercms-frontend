@@ -6,16 +6,16 @@ export interface DNSRecord {
   target: string
 }
 
-const SiteLaunchFrontEndStatusOptions = {
+export const SiteLaunchFEStatus = {
   Launched: "LAUNCHED",
   NotLaunched: "NOT_LAUNCHED",
   Launching: "LAUNCHING",
   ChecklistTasksPending: "CHECKLIST_TASKS_PENDING", // not to be confused with with Infra level launching step
   Loading: "LOADING",
-  Failure: "FAILED",
+  Failed: "FAILED",
 } as const
 
-export type SiteLaunchFrontEndStatus = typeof SiteLaunchFrontEndStatusOptions[keyof typeof SiteLaunchFrontEndStatusOptions]
+export type SiteLaunchFEStatusType = typeof SiteLaunchFEStatus[keyof typeof SiteLaunchFEStatus]
 
 export const NEW_DOMAIN_SITE_LAUNCH_TASKS = {
   NOT_STARTED: 0,
@@ -46,20 +46,27 @@ export const SITE_LAUNCH_PAGES = {
 export type SiteLaunchPageIndex = typeof SITE_LAUNCH_PAGES[keyof typeof SITE_LAUNCH_PAGES]
 
 export interface SiteLaunchStatusProps {
-  siteLaunchStatus: SiteLaunchFrontEndStatus
+  siteLaunchStatus: SiteLaunchFEStatusType
   stepNumber: SiteLaunchTaskTypeIndex
   dnsRecords?: DNSRecord[]
   siteUrl?: string
   isNewDomain?: boolean
   useWwwSubdomain?: boolean
 }
+
+export const SiteLaunchBEStatus = {
+  notLaunched: "NOT_LAUNCHED",
+  launching: "LAUNCHING",
+  launched: "LAUNCHED",
+  failed: "FAILED",
+} as const
 export interface SiteLaunchDto {
   /**
    * Transition will be
    * "NOT_LAUNCHED" -> User presses the Generate DNS button
    * -> "LAUNCHING" -> wait for 90 seconds -> "LAUNCHED"
    */
-  siteLaunchStatus: "LAUNCHED" | "NOT_LAUNCHED" | "LAUNCHING" | "FAILED"
+  siteLaunchStatus: typeof SiteLaunchBEStatus[keyof typeof SiteLaunchBEStatus]
   dnsRecords?: DNSRecord[] // only present iff siteStatus is LAUNCHED
   siteUrl?: string
 }
