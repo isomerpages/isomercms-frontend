@@ -32,6 +32,13 @@ import {
   HeroDropdownFormFields,
   HeroDropdownSection,
 } from "./HeroDropdownSection"
+import { HeroHighlightSection } from "./HeroHighlightSection"
+
+interface HeroHighlightSectionFormFields {
+  title: string
+  description: string
+  url: string
+}
 
 export interface HeroBodyFormFields {
   title: string
@@ -50,24 +57,32 @@ interface HeroBodyProps extends HeroBodyFormFields {
         id: string
       }
     },
-    type: "Dropdown Element"
+    type: "Dropdown Element" | "Highlight"
   ) => void
   errors: {
     dropdownElems: HeroDropdownFormFields[]
-    highlights: unknown[]
+    highlights: HeroHighlightSectionFormFields[]
     dropdown: string
+    button: string
+    url: string
   } & HeroBodyFormFields
   handleHighlightDropdownToggle: (event: Record<string, unknown>) => void
   notification: string
   state: EditorHomepageState
+  highlights: HeroHighlightSectionFormFields[]
+  button: string
+  url: string
 }
 
 export const HeroBody = ({
   title,
   subtitle,
   dropdown,
+  highlights,
   background,
   index,
+  button,
+  url,
   onChange,
   createHandler,
   deleteHandler,
@@ -76,7 +91,7 @@ export const HeroBody = ({
   notification,
   state,
 }: HeroBodyProps) => {
-  const [heroSectionType, setHeroSectionType] = useState("highlight")
+  const [heroSectionType, setHeroSectionType] = useState("highlights")
   return (
     <>
       <Editable.Section spacing="1.25rem">
@@ -158,9 +173,9 @@ export const HeroBody = ({
             }}
             as={HStack}
             spacing="1rem"
-            defaultValue="highlight"
+            defaultValue="highlights"
           >
-            <Radio value="highlight" size="xs" w="fit-content">
+            <Radio value="highlights" size="xs" w="fit-content">
               Button + Highlights
             </Radio>
             <Radio value="dropdown" size="xs" w="fit-content">
@@ -182,8 +197,15 @@ export const HeroBody = ({
             onClick={(event) => deleteHandler(event, "Dropdown Element")}
           />
         ) : (
-          // <HeroHighlightSection />
-          <div />
+          <HeroHighlightSection
+            onChange={onChange}
+            onCreate={() => createHandler({ target: { id: "highlight" } })}
+            onClick={(event) => deleteHandler(event, "Highlight")}
+            errors={errors}
+            button={button}
+            url={url}
+            highlights={highlights}
+          />
         )}
       </Editable.Section>
     </>
