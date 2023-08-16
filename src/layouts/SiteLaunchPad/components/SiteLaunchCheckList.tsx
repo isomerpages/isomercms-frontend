@@ -11,6 +11,7 @@ import {
   Text,
   TextProps,
   Skeleton,
+  HStack,
 } from "@chakra-ui/react"
 import { Button, Checkbox, Link } from "@opengovsg/design-system-react"
 import { useForm } from "react-hook-form"
@@ -401,11 +402,14 @@ export const SiteLaunchChecklistBody = ({
       </Box>
 
       <Box display="flex" justifyContent="flex-end" mb="2rem">
-        <Link as={RouterLink} to={`/sites/${siteName}/dashboard`}>
-          <Button variant="link" ml="auto">
-            Back
-          </Button>
-        </Link>
+        <HStack spacing="1rem">
+          <Link as={RouterLink} to={`/sites/${siteName}/dashboard`}>
+            <Button variant="link" ml="auto" colorScheme="neutral">
+              Back
+            </Button>
+          </Link>
+          <Button>Track site status</Button>
+        </HStack>
       </Box>
     </SiteLaunchPadBody>
   )

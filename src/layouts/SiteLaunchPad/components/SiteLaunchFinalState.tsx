@@ -3,7 +3,11 @@ import { Button } from "@opengovsg/design-system-react"
 
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
-import { SiteLaunchFailureImage, SiteLaunchSuccessImage } from "assets"
+import {
+  SiteLaunchFailureImage,
+  SiteLaunchPendingImage,
+  SiteLaunchSuccessImage,
+} from "assets"
 
 const SiteLaunchSuccessState = (): JSX.Element => {
   return (
@@ -72,13 +76,50 @@ const SiteLaunchFailureState = (): JSX.Element => {
   )
 }
 
+const SiteLaunchInProgressState = (): JSX.Element => {
+  return (
+    <>
+      <Text
+        textStyle="h3"
+        textColor="base.content.strong"
+        mt="3rem"
+        mb="1.5rem"
+      >
+        We&apos;re keeping an eye out... Be right back!
+      </Text>
+      <SiteLaunchPendingImage />
+      <Text
+        textStyle="body-1"
+        textColor="base.content.default"
+        mt="1.5rem"
+        textAlign="center"
+      >
+        Come back to this space to track your site status - you may see an error
+        when visiting your domain at this moment. Leave this window open or exit
+        and come back later.
+      </Text>
+      <Button variant="link" colorScheme="neutral" mt="3rem">
+        Back to tasklist
+      </Button>
+    </>
+  )
+}
+
 export const SiteLaunchFinalState = (): JSX.Element => {
   const { siteLaunchStatusProps } = useSiteLaunchContext()
-  const isSuccess = siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHED"
+  const State = () => {
+    if (siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHED") {
+      return <SiteLaunchSuccessState />
+    }
+    if (siteLaunchStatusProps?.siteLaunchStatus === "FAILURE") {
+      return <SiteLaunchFailureState />
+    }
+    return <SiteLaunchInProgressState />
+  }
 
   return (
     <VStack w="65%">
-      {isSuccess ? <SiteLaunchSuccessState /> : <SiteLaunchFailureState />}
+      <State />
     </VStack>
   )
 }
