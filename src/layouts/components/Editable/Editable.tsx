@@ -54,28 +54,38 @@ export const CustomiseSectionsHeader = () => (
   </>
 )
 
-const EmptySideBarBody = () => {
-  return (
-    <VStack spacing="0.5rem" alignItems="flex-start" px="1.5rem" pt="1.5rem">
-      <CustomiseSectionsHeader />
-      <Flex
-        alignItems="center"
-        flexDir="column"
-        p="3.75rem 1.5rem"
-        justifyContent="center"
+interface EmptySectionProps {
+  image?: JSX.Element
+  title: string
+  subtitle: string
+  isEmpty?: boolean
+}
+export const EmptySection = ({
+  image,
+  children,
+  title,
+  subtitle,
+  isEmpty,
+}: PropsWithChildren<EmptySectionProps>) => {
+  return isEmpty ? (
+    <Flex
+      alignItems="center"
+      flexDir="column"
+      p="3.75rem 1.5rem"
+      justifyContent="center"
+    >
+      {image}
+      <Text>{title}</Text>
+      <Text
+        textStyle="caption-2"
+        textColor="base.content.medium"
+        textAlign="center"
       >
-        <HomepageStartEditingImage />
-        <Text>Sections you add will appear here</Text>
-        <Text
-          textStyle="caption-2"
-          textColor="base.content.medium"
-          textAlign="center"
-        >
-          Add informative content to your website from images to text by
-          clicking “Add section” below
-        </Text>
-      </Flex>
-    </VStack>
+        {subtitle}
+      </Text>
+    </Flex>
+  ) : (
+    <>{children}</>
   )
 }
 
@@ -87,7 +97,7 @@ const EditableSidebar = ({
   return (
     <Flex flexDir="column" bg="base.canvas.alt">
       <SidebarHeader title={title} />
-      {children ? <>{children}</> : <EmptySideBarBody />}
+      {children}
     </Flex>
   )
 }
@@ -281,4 +291,5 @@ export const Editable = {
   Accordion: EditableAccordion,
   DraggableAccordionItem,
   Section: EditableSection,
+  EmptySection,
 }
