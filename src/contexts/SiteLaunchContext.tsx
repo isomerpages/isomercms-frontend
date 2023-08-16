@@ -91,14 +91,14 @@ export const SiteLaunchProvider = ({
   )
 
   const increasePageNumber = () => {
-    if (pageNumber === SITE_LAUNCH_PAGES.FINAL_STATE) {
+    if (pageNumber >= SITE_LAUNCH_PAGES.FINAL_STATE) {
       return
     }
     // safe to assert since we do an check prior
     setPageNumber((pageNumber + 1) as SiteLaunchPageIndex)
   }
   const decreasePageNumber = () => {
-    if (pageNumber === SITE_LAUNCH_PAGES.DISCLAIMER) {
+    if (pageNumber <= SITE_LAUNCH_PAGES.DISCLAIMER) {
       return
     }
 
