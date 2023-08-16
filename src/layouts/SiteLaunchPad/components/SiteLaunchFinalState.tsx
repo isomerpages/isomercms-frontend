@@ -119,7 +119,6 @@ export const SiteLaunchFinalState = (): JSX.Element => {
 
   return (
     <VStack w="65%">
-      {/* {isSuccess ? <SiteLaunchSuccessState /> : <SiteLaunchFailureState />} */}
       <State />
     </VStack>
   )
