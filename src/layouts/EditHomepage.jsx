@@ -1055,7 +1055,7 @@ const EditHomepage = ({ match }) => {
                               <Editable.DraggableAccordionItem
                                 index={sectionIndex}
                                 tag={<Tag variant="subtle">Infobar</Tag>}
-                                title={section.infobar.title}
+                                title={section.infobar.title ?? "New infobar"}
                                 isInvalid={_.some(
                                   errors.sections[sectionIndex].infobar
                                 )}
@@ -1080,7 +1080,7 @@ const EditHomepage = ({ match }) => {
                               <Editable.DraggableAccordionItem
                                 index={sectionIndex}
                                 tag={<Tag variant="subtle">Infopic</Tag>}
-                                title={section.infopic.title}
+                                title={section.infopic.title ?? "New infopic"}
                                 isInvalid={_.some(
                                   errors.sections[sectionIndex].infopic
                                 )}
