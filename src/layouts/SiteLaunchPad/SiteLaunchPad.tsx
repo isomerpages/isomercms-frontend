@@ -220,22 +220,22 @@ export const SiteLaunchPadPage = (): JSX.Element => {
   }
 
   return (
-    <>
-      {isLoaded ? (
-        <>
-          {isSiteLaunchEnabled(siteName, role) ? (
-            <SiteLaunchPad
-              pageNumber={pageNumber}
-              handleDecrementStepNumber={handleDecrementStepNumber}
-              handleIncrementStepNumber={handleIncrementStepNumber}
-            />
-          ) : (
-            <Redirect to={`/sites/${siteName}/dashboard`} />
-          )}
-        </>
-      ) : (
-        <Skeleton isLoaded />
-      )}
-    </>
+    <Skeleton isLoaded={isLoaded}>
+      <>
+        {isSiteLaunchEnabled(siteName, role) ? (
+          <SiteLaunchPad
+            pageNumber={pageNumber}
+            handleDecrementStepNumber={handleDecrementStepNumber}
+            handleIncrementStepNumber={handleIncrementStepNumber}
+          />
+        ) : (
+          /**
+           * Without the isLoaded check, the site will redirect prematurely.
+           * For more context, see https://github.com/isomerpages/isomercms-frontend/pull/1410#discussion_r1292910419
+           */
+          isLoaded && <Redirect to={`/sites/${siteName}/dashboard`} />
+        )}
+      </>
+    </Skeleton>
   )
 }
