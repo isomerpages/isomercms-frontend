@@ -65,75 +65,84 @@ export const HeroDropdownSection = ({
           Drag and drop dropdown options to rearrange them
         </Text>
         <Editable.Accordion>
-          <Editable.Section px={0} spacing="1.25rem" py="1.5rem">
-            {state.dropdown.options.map(
-              ({ title: optionTitle, url: optionUrl }, dropdownOptionIndex) => {
-                return (
-                  <Editable.DraggableAccordionItem
-                    title={optionTitle || "New dropdown option"}
-                    draggableId={`dropdownelem-${dropdownOptionIndex}-draggable`}
-                    index={dropdownOptionIndex}
-                    isInvalid={_.some(
-                      errors.dropdownElems[dropdownOptionIndex]
-                    )}
-                  >
-                    <Editable.Section>
-                      <FormControl
-                        isInvalid={
-                          !!errors.dropdownElems[dropdownOptionIndex].title
-                        }
-                        isRequired
-                      >
-                        <FormLabel>Title</FormLabel>
-                        <Input
-                          placeholder="Dropdown option title"
-                          id={`dropdownelem-${dropdownOptionIndex}-title`}
-                          value={optionTitle}
-                          onChange={onChange}
-                        />
-                        <FormErrorMessage>
-                          {errors.dropdownElems[dropdownOptionIndex].title}
-                        </FormErrorMessage>
-                      </FormControl>
-                      <FormControl
-                        isInvalid={
-                          !!errors.dropdownElems[dropdownOptionIndex].url
-                        }
-                        isRequired
-                      >
-                        <FormLabel>URL</FormLabel>
-                        <Input
-                          placeholder="Insert /page-url or https://"
-                          id={`dropdownelem-${dropdownOptionIndex}-url`}
-                          value={optionUrl}
-                          onChange={onChange}
-                        />
-                        <FormErrorMessage>
-                          {errors.dropdownElems[dropdownOptionIndex].url}
-                        </FormErrorMessage>
-                      </FormControl>
-                      <Button
-                        id={`dropdownelem-${dropdownOptionIndex}-delete`}
-                        onClick={() =>
-                          onClick({
-                            target: {
-                              id: `dropdownelem-${dropdownOptionIndex}-delete`,
-                            },
-                          })
-                        }
-                        alignSelf="center"
-                        variant="clear"
-                        colorScheme="critical"
-                        mt="1rem"
-                      >
-                        Delete option
-                      </Button>
-                    </Editable.Section>
-                  </Editable.DraggableAccordionItem>
-                )
-              }
-            )}
-          </Editable.Section>
+          <Editable.EmptySection
+            title="Options you add will appear here"
+            subtitle="Add options to allow users to quickly navigate your site"
+            isEmpty={state.dropdown.options.length === 0}
+          >
+            <Editable.Section px={0} spacing="1.25rem" py="1.5rem">
+              {state.dropdown.options.map(
+                (
+                  { title: optionTitle, url: optionUrl },
+                  dropdownOptionIndex
+                ) => {
+                  return (
+                    <Editable.DraggableAccordionItem
+                      title={optionTitle || "New dropdown option"}
+                      draggableId={`dropdownelem-${dropdownOptionIndex}-draggable`}
+                      index={dropdownOptionIndex}
+                      isInvalid={_.some(
+                        errors.dropdownElems[dropdownOptionIndex]
+                      )}
+                    >
+                      <Editable.Section>
+                        <FormControl
+                          isInvalid={
+                            !!errors.dropdownElems[dropdownOptionIndex].title
+                          }
+                          isRequired
+                        >
+                          <FormLabel>Title</FormLabel>
+                          <Input
+                            placeholder="Dropdown option title"
+                            id={`dropdownelem-${dropdownOptionIndex}-title`}
+                            value={optionTitle}
+                            onChange={onChange}
+                          />
+                          <FormErrorMessage>
+                            {errors.dropdownElems[dropdownOptionIndex].title}
+                          </FormErrorMessage>
+                        </FormControl>
+                        <FormControl
+                          isInvalid={
+                            !!errors.dropdownElems[dropdownOptionIndex].url
+                          }
+                          isRequired
+                        >
+                          <FormLabel>URL</FormLabel>
+                          <Input
+                            placeholder="Insert /page-url or https://"
+                            id={`dropdownelem-${dropdownOptionIndex}-url`}
+                            value={optionUrl}
+                            onChange={onChange}
+                          />
+                          <FormErrorMessage>
+                            {errors.dropdownElems[dropdownOptionIndex].url}
+                          </FormErrorMessage>
+                        </FormControl>
+                        <Button
+                          id={`dropdownelem-${dropdownOptionIndex}-delete`}
+                          onClick={() =>
+                            onClick({
+                              target: {
+                                id: `dropdownelem-${dropdownOptionIndex}-delete`,
+                              },
+                            })
+                          }
+                          alignSelf="center"
+                          variant="clear"
+                          colorScheme="critical"
+                          mt="1rem"
+                        >
+                          Delete option
+                        </Button>
+                      </Editable.Section>
+                    </Editable.DraggableAccordionItem>
+                  )
+                }
+              )}
+            </Editable.Section>
+          </Editable.EmptySection>
         </Editable.Accordion>
       </Editable.Droppable>
       <Button

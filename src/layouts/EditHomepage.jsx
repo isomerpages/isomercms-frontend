@@ -40,6 +40,7 @@ import {
   validateDropdownElems,
 } from "utils/validators"
 
+import { HomepageStartEditingImage } from "assets"
 import { DEFAULT_RETRY_MSG } from "utils"
 
 import { HomepageStartEditingImage } from "../assets/images/HomepageStartEditingImage"
