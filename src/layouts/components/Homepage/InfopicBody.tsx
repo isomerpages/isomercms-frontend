@@ -5,33 +5,15 @@ import {
   FormLabel,
   Input,
 } from "@opengovsg/design-system-react"
-import { useFormContext } from "react-hook-form"
 
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormFieldMedia from "components/FormFieldMedia"
 
 import { Editable } from "layouts/components/Editable"
 
-interface HomepageInfopicSection {
-  // NOTE: This type is a lie.
-  // we don't distinguish here due to the typing on the library
-  // but this is a discriminated union by the type of the section.
-  // This means that, for example, `subtitle` WILL NOT exist on a `title` section.
-  EditHomepage: {
-    infopic: {
-      title: string
-      subtitle: string
-      description: string
-      button: string
-      url: string
-      alt: string
-    }
-  }[]
-}
-
 interface InfopicFormFields {
-  subtitle: string
   title: string
+  subtitle: string
   description: string
   button: string
   url: string
