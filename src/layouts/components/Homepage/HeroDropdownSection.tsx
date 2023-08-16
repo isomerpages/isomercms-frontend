@@ -26,13 +26,13 @@ interface HeroDropdownSectionProps {
       id: string
     }
   }) => void
+  onCreate: () => void
   errors: {
     dropdownElems: HeroDropdownFormFields[]
     title: string
     dropdown: string
   }
   state: EditorHeroDropdownSection
-  onCreate: () => void
   title: string
 }
 
@@ -61,7 +61,7 @@ export const HeroDropdownSection = ({
         <Text mt="1.5rem" textStyle="h6">
           Dropdown Options
         </Text>
-        <Text mt="0.5rem">
+        <Text mt="0.5rem" textStyle="body-2" textColor="base.content.medium">
           Drag and drop dropdown options to rearrange them
         </Text>
         <Editable.Accordion>
