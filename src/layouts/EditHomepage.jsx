@@ -17,7 +17,6 @@ import { Footer } from "components/Footer"
 import Header from "components/Header"
 import EditorHeroSection from "components/homepage/HeroSection"
 import EditorInfobarSection from "components/homepage/InfobarSection"
-import EditorInfopicSection from "components/homepage/InfopicSection"
 import EditorResourcesSection from "components/homepage/ResourcesSection"
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
@@ -50,6 +49,7 @@ import { useDrag, onCreate, onDelete } from "../hooks/useDrag"
 
 import { CustomiseSectionsHeader, Editable } from "./components/Editable"
 import { AddSectionButton } from "./components/Editable/AddSectionButton"
+import { InfopicBody } from "./components/Homepage/InfopicBody"
 
 /* eslint-disable react/no-array-index-key */
 
@@ -1080,22 +1080,18 @@ const EditHomepage = ({ match }) => {
                                 tag={<Tag variant="subtle">Infopic</Tag>}
                                 title={section.infopic.title}
                               >
-                                <EditorInfopicSection
-                                  key={`section-${sectionIndex}`}
-                                  {...section.infopic}
-                                  sectionIndex={sectionIndex}
-                                  deleteHandler={(event) => {
+                                <InfopicBody
+                                  index={sectionIndex}
+                                  onClick={(event) => {
                                     onOpen()
                                     setItemPendingForDelete({
                                       id: event.target.id,
                                       type: "Infopic Section",
                                     })
                                   }}
-                                  onFieldChange={onFieldChange}
-                                  shouldDisplay={displaySections[sectionIndex]}
-                                  displayHandler={displayHandler}
+                                  onChange={onFieldChange}
                                   errors={errors.sections[sectionIndex].infopic}
-                                  siteName={siteName}
+                                  {...section.infopic}
                                 />
                               </Editable.DraggableAccordionItem>
                             )}
