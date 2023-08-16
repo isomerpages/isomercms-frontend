@@ -50,6 +50,7 @@ import { CustomiseSectionsHeader, Editable } from "./components/Editable"
 import { AddSectionButton } from "./components/Editable/AddSectionButton"
 import { InfobarBody } from "./components/Homepage/InfobarBody"
 import { InfopicBody } from "./components/Homepage/InfopicBody"
+import { ResourcesBody } from "./components/Homepage/ResourcesBody"
 
 /* eslint-disable react/no-array-index-key */
 
@@ -1030,18 +1031,17 @@ const EditHomepage = ({ match }) => {
                                 tag={<Tag variant="subtle">Resources</Tag>}
                                 title={section.resources.title}
                               >
-                                <EditorResourcesSection
-                                  key={`section-${sectionIndex}`}
+                                <ResourcesBody
                                   {...section.resources}
-                                  sectionIndex={sectionIndex}
-                                  deleteHandler={(event) => {
+                                  index={sectionIndex}
+                                  onClick={(event) => {
                                     onOpen()
                                     setItemPendingForDelete({
                                       id: event.target.id,
                                       type: "Resources Section",
                                     })
                                   }}
-                                  onFieldChange={onFieldChange}
+                                  onChange={onFieldChange}
                                   errors={
                                     errors.sections[sectionIndex].resources
                                   }
