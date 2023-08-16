@@ -55,10 +55,10 @@ export interface SiteLaunchStatusProps {
 }
 
 export const SiteLaunchBEStatus = {
-  notLaunched: "NOT_LAUNCHED",
-  launching: "LAUNCHING",
-  launched: "LAUNCHED",
-  failed: "FAILED",
+  NotLaunched: "NOT_LAUNCHED",
+  Launching: "LAUNCHING",
+  Launched: "LAUNCHED",
+  Failed: "FAILED",
 } as const
 export interface SiteLaunchDto {
   /**

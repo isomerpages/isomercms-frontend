@@ -501,11 +501,11 @@ export const OLD_DIFF_VALUE = generateDiffValues()
 export const NEW_DIFF_VALUE = generateDiffValues().toUpperCase()
 
 export const MOCK_UNLAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
-  siteLaunchStatus: SiteLaunchBEStatus.notLaunched,
+  siteLaunchStatus: SiteLaunchBEStatus.NotLaunched,
 }
 
 export const MOCK_SUCCESS_LAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
-  siteLaunchStatus: SiteLaunchBEStatus.launched,
+  siteLaunchStatus: SiteLaunchBEStatus.Launched,
   dnsRecords: [
     {
       source: "sourceURL",
@@ -516,7 +516,7 @@ export const MOCK_SUCCESS_LAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
 }
 
 export const MOCK_FAILURE_LAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
-  siteLaunchStatus: SiteLaunchBEStatus.failed,
+  siteLaunchStatus: SiteLaunchBEStatus.Failed,
   dnsRecords: [
     {
       source: "sourceURL",
@@ -527,7 +527,7 @@ export const MOCK_FAILURE_LAUNCHED_SITE_LAUNCH_DTO: SiteLaunchDto = {
 }
 
 export const MOCK_LAUNCHING_SITE_LAUNCH_DTO: SiteLaunchDto = {
-  siteLaunchStatus: SiteLaunchBEStatus.launching,
+  siteLaunchStatus: SiteLaunchBEStatus.Launching,
   dnsRecords: [
     {
       source: "sourceURL",

@@ -133,7 +133,7 @@ export const SiteLaunchProvider = ({
   useEffect(() => {
     if (!siteLaunchDto) return
     if (
-      siteLaunchDto.siteLaunchStatus === SiteLaunchBEStatus.notLaunched &&
+      siteLaunchDto.siteLaunchStatus === SiteLaunchBEStatus.NotLaunched &&
       siteLaunchStatusProps.siteLaunchStatus === SiteLaunchFEStatus.Loading
     ) {
       setSiteLaunchStatusProps({
@@ -142,7 +142,7 @@ export const SiteLaunchProvider = ({
         stepNumber: 0,
       })
     }
-    if (siteLaunchDto.siteLaunchStatus === SiteLaunchBEStatus.notLaunched) {
+    if (siteLaunchDto.siteLaunchStatus === SiteLaunchBEStatus.NotLaunched) {
       return
     }
     // this condition is added to prevent redundant re-renders
@@ -168,8 +168,8 @@ export const SiteLaunchProvider = ({
     }
 
     if (
-      (siteLaunchDto.siteLaunchStatus === SiteLaunchBEStatus.launched ||
-        siteLaunchDto.siteLaunchStatus === SiteLaunchBEStatus.failed) &&
+      (siteLaunchDto.siteLaunchStatus === SiteLaunchBEStatus.Launched ||
+        siteLaunchDto.siteLaunchStatus === SiteLaunchBEStatus.Failed) &&
       !isSiteLaunchFEAndBESynced
     ) {
       setPageNumber(SITE_LAUNCH_PAGES.FINAL_STATE)

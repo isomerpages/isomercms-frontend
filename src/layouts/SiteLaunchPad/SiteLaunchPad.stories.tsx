@@ -21,7 +21,7 @@ const SiteLaunchPadMeta = {
     msw: {
       handlers: {
         siteLaunchStatusProps: buildSiteLaunchDto({
-          siteLaunchStatus: SiteLaunchBEStatus.notLaunched,
+          siteLaunchStatus: SiteLaunchBEStatus.NotLaunched,
         }),
       },
     },
