@@ -6,7 +6,6 @@ import {
   Box,
   Divider,
   HStack,
-  RadioGroup,
 } from "@chakra-ui/react"
 import {
   FormErrorMessage,
@@ -162,7 +161,7 @@ export const HeroBody = ({
           <Text textStyle="h5" mb="1rem">
             Customise Layout
           </Text>
-          <RadioGroup
+          <Radio.RadioGroup
             onChange={(nextSectionType) => {
               setHeroSectionType(nextSectionType)
               handleHighlightDropdownToggle({
@@ -172,16 +171,25 @@ export const HeroBody = ({
               })
             }}
             as={HStack}
-            spacing="1rem"
             defaultValue="highlights"
           >
-            <Radio value="highlights" size="xs" w="fit-content">
+            <Radio
+              value="highlights"
+              size="xs"
+              w="fit-content"
+              allowDeselect={false}
+            >
               Button + Highlights
             </Radio>
-            <Radio value="dropdown" size="xs" w="fit-content">
+            <Radio
+              value="dropdown"
+              size="xs"
+              w="fit-content"
+              allowDeselect={false}
+            >
               Dropdown
             </Radio>
-          </RadioGroup>
+          </Radio.RadioGroup>
         </Box>
 
         {heroSectionType === "dropdown" ? (
