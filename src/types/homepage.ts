@@ -82,7 +82,8 @@ export interface HomepageDto {
 
 export type EditorHomepageElement = "section" | "dropdownelem" | "highlight"
 export type PossibleEditorSections = IterableElement<
-  EditorHomepageState["frontMatter"]["sections"]
+  | EditorHomepageState["frontMatter"]["sections"]
+  | EditorHeroDropdownSection["dropdown"]["options"]
 >
 
 export type HomepageEditorHeroSection =
