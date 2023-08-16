@@ -1029,7 +1029,7 @@ const EditHomepage = ({ match }) => {
                               <Editable.DraggableAccordionItem
                                 index={sectionIndex}
                                 tag={<Tag variant="subtle">Resources</Tag>}
-                                title={section.resources.title}
+                                title="New resource widget"
                               >
                                 <ResourcesBody
                                   {...section.resources}

@@ -216,7 +216,7 @@ const DraggableAccordionItem = ({
         See if entire section is button (ie, whole component hover styling)
       */}
           <Flex flexDir="row">
-            <Flex px="1.5rem" pb="1.5rem" flex="1" flexDir="column">
+            <Flex px="1.5rem" pb="1rem" flex="1" flexDir="column">
               {tag}
               <Text textStyle="h6" textAlign="left" mt="0.25rem">
                 {title}
