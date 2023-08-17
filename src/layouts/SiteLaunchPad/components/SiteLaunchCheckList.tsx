@@ -11,6 +11,7 @@ import {
   Text,
   TextProps,
   Skeleton,
+  HStack,
 } from "@chakra-ui/react"
 import { Button, Checkbox, Link } from "@opengovsg/design-system-react"
 import { useForm } from "react-hook-form"
@@ -24,6 +25,7 @@ import {
   getNewDomainTaskFrmIdx,
   getOldDomainTaskFrmIdx,
   NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH,
+  SiteLaunchFEStatus,
   SITE_LAUNCH_TASKS,
   SITE_LAUNCH_TASKS_LENGTH,
   TITLE_TEXTS_NEW_DOMAIN,
@@ -138,9 +140,12 @@ const addSubtitlesForChecklist = (
     newTask.subTitle = (
       <>
         {tasksDone === SITE_LAUNCH_TASKS.SET_DNS_TTL - 1 && (
-          <Text fontSize="small">
+          <Text fontSize="small" textColor="base.content.medium">
             You can check your current DNS TTL through 3rd party applications
-            such as <Link href="https://www.nslookup.io/">nslookup.io</Link>
+            such as{" "}
+            <Link href="https://www.nslookup.io/" isExternal>
+              nslookup.io
+            </Link>
           </Text>
         )}
       </>
@@ -151,7 +156,7 @@ const addSubtitlesForChecklist = (
     newTask.subTitle = (
       <>
         {tasksDone === SITE_LAUNCH_TASKS.DROP_CLOUDFRONT - 1 && (
-          <Text fontSize="small">
+          <Text fontSize="small" textColor="base.content.medium">
             If you are using CWP, please contact them to do this for you
           </Text>
         )}
@@ -163,7 +168,7 @@ const addSubtitlesForChecklist = (
     newTask.subTitle = (
       <>
         {tasksDone === SITE_LAUNCH_TASKS.DELETE_EXISTING_DNS_RECORDS - 1 && (
-          <Text fontSize="small">
+          <Text fontSize="small" textColor="base.content.medium">
             This should be done as soon as domains are dropped
           </Text>
         )}
@@ -182,6 +187,7 @@ export const SiteLaunchChecklistBody = ({
     siteLaunchStatusProps,
     setSiteLaunchStatusProps,
     generateDNSRecords,
+    increasePageNumber,
   } = useSiteLaunchContext()
 
   const { siteName } = useParams<{ siteName: string }>()
@@ -189,8 +195,8 @@ export const SiteLaunchChecklistBody = ({
   const numberOfTasks = siteLaunchStatusProps?.isNewDomain
     ? NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH
     : SITE_LAUNCH_TASKS_LENGTH
-
   const numberOfCheckboxes = numberOfTasks - 1 // last task is a button
+
   const { register, watch, setValue } = useForm({
     defaultValues: {
       checkboxes: Array.from(
@@ -201,13 +207,16 @@ export const SiteLaunchChecklistBody = ({
       ),
     },
   })
-  const tasksDone = watch("checkboxes").filter((checked) => checked).length
+
+  const tasksDone =
+    siteLaunchStatusProps?.stepNumber ??
+    watch("checkboxes").filter((checked) => checked).length
 
   const handleGenerateDNSRecordsOnClick = () => {
     setSiteLaunchStatusProps({
       ...siteLaunchStatusProps,
       stepNumber: SITE_LAUNCH_TASKS.GENERATE_NEW_DNS_RECORDS,
-      siteLaunchStatus: "LAUNCHING",
+      siteLaunchStatus: SiteLaunchFEStatus.Launching,
     })
 
     /**
@@ -227,21 +236,18 @@ export const SiteLaunchChecklistBody = ({
       handleDecrementStepNumber()
     }
   }
+  const allTasksDone: boolean =
+    siteLaunchStatusProps?.siteLaunchStatus === SiteLaunchFEStatus.Launching ||
+    siteLaunchStatusProps?.siteLaunchStatus === SiteLaunchFEStatus.Launched ||
+    siteLaunchStatusProps?.siteLaunchStatus === SiteLaunchFEStatus.Failed
 
   const checkboxes = Array.from({ length: numberOfCheckboxes }, (_, i) => (
     <Center key={i}>
       <Checkbox
         {...register(`checkboxes.${i}`)}
         // we want use to check box in order, so we disable it when it is not the next one
-        isDisabled={
-          tasksDone >= i + 2 ||
-          tasksDone < i ||
-          siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING"
-        }
-        isChecked={
-          i < tasksDone ||
-          siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING"
-        }
+        isDisabled={tasksDone >= i + 2 || tasksDone < i || allTasksDone}
+        isChecked={i < tasksDone || allTasksDone}
         onChange={(e) => {
           handleCheckboxChange(e.target.checked, i)
         }}
@@ -258,7 +264,7 @@ export const SiteLaunchChecklistBody = ({
           fontSize="s"
           key={i}
           textStyle="subhead-2"
-          textColor="base.content.dark"
+          textColor="base.content.strong"
           {...getTextProps(i, tasksDone)}
         >
           {siteLaunchStatusProps?.isNewDomain
@@ -301,7 +307,7 @@ export const SiteLaunchChecklistBody = ({
             <Thead>
               <Tr>
                 <Td bg="gray.100" width="70%">
-                  <Text>
+                  <Text textStyle="subhead-2">
                     Site launch tasks ({tasksDone}/{numberOfTasks})
                   </Text>
                 </Td>
@@ -349,7 +355,10 @@ export const SiteLaunchChecklistBody = ({
                 <Td>
                   <Center>
                     <Button
-                      isDisabled={tasksDone !== numberOfTasks - 1}
+                      isDisabled={
+                        tasksDone !== numberOfTasks - 1 ||
+                        !!siteLaunchStatusProps?.dnsRecords
+                      }
                       variant="outline"
                       onClick={handleGenerateDNSRecordsOnClick}
                     >
@@ -358,13 +367,14 @@ export const SiteLaunchChecklistBody = ({
                   </Center>
                 </Td>
               </Tr>
-              {siteLaunchStatusProps?.siteLaunchStatus === "LAUNCHING" && (
+              {allTasksDone && (
                 <Tr borderTopStyle="hidden">
                   <Td colSpan={2} mb="2rem">
                     {!siteLaunchStatusProps?.dnsRecords && (
                       <>
                         <Text>
-                          Generating your DNS records will take 2 minutes.
+                          Generating your DNS records will take around 2
+                          minutes.
                         </Text>
                         <Text>
                           Do not leave or refresh this page in the meantime.
@@ -372,9 +382,7 @@ export const SiteLaunchChecklistBody = ({
                       </>
                     )}
                     <Skeleton isLoaded={!!siteLaunchStatusProps?.dnsRecords}>
-                      {siteLaunchStatusProps?.siteLaunchStatus ===
-                        "LAUNCHING" &&
-                        generateDNSTable(siteLaunchStatusProps.dnsRecords)}
+                      {generateDNSTable(siteLaunchStatusProps?.dnsRecords)}
                     </Skeleton>
                   </Td>
                 </Tr>
@@ -397,11 +405,21 @@ export const SiteLaunchChecklistBody = ({
       </Box>
 
       <Box display="flex" justifyContent="flex-end" mb="2rem">
-        <Link as={RouterLink} to={`/sites/${siteName}/dashboard`}>
-          <Button variant="link" ml="auto">
-            Back
+        <HStack spacing="1rem">
+          <Link as={RouterLink} to={`/sites/${siteName}/dashboard`}>
+            <Button variant="link" ml="auto" colorScheme="neutral">
+              Back
+            </Button>
+          </Link>
+          <Button
+            onClick={() => increasePageNumber()}
+            // should not be able to go to next page until DNS
+            // records are displayed
+            isDisabled={!siteLaunchStatusProps?.dnsRecords}
+          >
+            Track site status
           </Button>
-        </Link>
+        </HStack>
       </Box>
     </SiteLaunchPadBody>
   )

@@ -4,7 +4,13 @@ import { MemoryRouter, Route } from "react-router-dom"
 
 import { SiteLaunchProvider } from "contexts/SiteLaunchContext"
 
+import {
+  MOCK_FAILURE_LAUNCHED_SITE_LAUNCH_DTO,
+  MOCK_LAUNCHING_SITE_LAUNCH_DTO,
+  MOCK_SUCCESS_LAUNCHED_SITE_LAUNCH_DTO,
+} from "mocks/constants"
 import { buildSiteLaunchDto } from "mocks/utils"
+import { SiteLaunchBEStatus, SiteLaunchFEStatus } from "types/siteLaunch"
 
 import { SiteLaunchPad } from "./SiteLaunchPad"
 
@@ -15,7 +21,7 @@ const SiteLaunchPadMeta = {
     msw: {
       handlers: {
         siteLaunchStatusProps: buildSiteLaunchDto({
-          siteStatus: "NOT_LAUNCHED",
+          siteLaunchStatus: SiteLaunchBEStatus.NotLaunched,
         }),
       },
     },
@@ -93,7 +99,7 @@ siteLaunchChecklistNewDomain.decorators = [
     return (
       <SiteLaunchProvider
         initialStepNumber={1}
-        initialSiteLaunchStatus="CHECKLIST_TASKS_PENDING"
+        initialSiteLaunchStatus={SiteLaunchFEStatus.ChecklistTasksPending}
         isNewDomain
       >
         <Story />
@@ -101,5 +107,51 @@ siteLaunchChecklistNewDomain.decorators = [
     )
   },
 ]
+
+export const siteLaunchPendingState = Template.bind({})
+
+siteLaunchPendingState.args = {
+  ...siteLaunchPadArgs,
+  pageNumber: 5,
+}
+siteLaunchPendingState.parameters = {
+  msw: {
+    handlers: {
+      siteLaunchStatusProps: buildSiteLaunchDto(MOCK_LAUNCHING_SITE_LAUNCH_DTO),
+    },
+  },
+}
+
+export const siteLaunchSuccessState = Template.bind({})
+
+siteLaunchSuccessState.args = {
+  ...siteLaunchPadArgs,
+  pageNumber: 5,
+}
+siteLaunchSuccessState.parameters = {
+  msw: {
+    handlers: {
+      siteLaunchStatusProps: buildSiteLaunchDto(
+        MOCK_SUCCESS_LAUNCHED_SITE_LAUNCH_DTO
+      ),
+    },
+  },
+}
+
+export const siteLaunchFailureState = Template.bind({})
+
+siteLaunchFailureState.args = {
+  ...siteLaunchPadArgs,
+  pageNumber: 5,
+}
+siteLaunchFailureState.parameters = {
+  msw: {
+    handlers: {
+      siteLaunchStatusProps: buildSiteLaunchDto(
+        MOCK_FAILURE_LAUNCHED_SITE_LAUNCH_DTO
+      ),
+    },
+  },
+}
 
 export default SiteLaunchPadMeta

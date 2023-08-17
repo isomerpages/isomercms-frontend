@@ -140,7 +140,7 @@ const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
 }
 
 export const Sites = (): JSX.Element => {
-  const { email, userId } = useLoginContext()
+  const { email, userId, contactNumber } = useLoginContext()
   const { data: siteRequestData } = useGetAllSites(email)
   const { announcements, link } = useAnnouncements()
   const [isOpen, setIsOpen] = useState(announcements.length > 0 && !userId)
@@ -159,9 +159,15 @@ export const Sites = (): JSX.Element => {
     )
   }, [siteRequestData])
 
+  /**
+   * Currently the announcement modal takes in all the keyboard events,
+   * thus preventing the user from typing in the verify otp input field.
+   */
+  const shouldShowAnnouncementModel =
+    announcements.length > 0 && !!contactNumber && !!email
   return (
     <>
-      {announcements.length > 0 && (
+      {shouldShowAnnouncementModel && (
         <AnnouncementModal
           isOpen={isOpen}
           announcements={announcements}

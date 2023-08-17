@@ -6,15 +6,16 @@ export interface DNSRecord {
   target: string
 }
 
-const SiteLaunchFrontEndStatusOptions = {
+export const SiteLaunchFEStatus = {
   Launched: "LAUNCHED",
   NotLaunched: "NOT_LAUNCHED",
   Launching: "LAUNCHING",
   ChecklistTasksPending: "CHECKLIST_TASKS_PENDING", // not to be confused with with Infra level launching step
   Loading: "LOADING",
+  Failed: "FAILED",
 } as const
 
-export type SiteLaunchFrontEndStatus = typeof SiteLaunchFrontEndStatusOptions[keyof typeof SiteLaunchFrontEndStatusOptions]
+export type SiteLaunchFEStatusType = typeof SiteLaunchFEStatus[keyof typeof SiteLaunchFEStatus]
 
 export const NEW_DOMAIN_SITE_LAUNCH_TASKS = {
   NOT_STARTED: 0,
@@ -34,21 +35,38 @@ export const SITE_LAUNCH_TASKS = {
 
 export type SiteLaunchTaskTypeIndex = typeof SITE_LAUNCH_TASKS[keyof typeof SITE_LAUNCH_TASKS]
 
+export const SITE_LAUNCH_PAGES = {
+  DISCLAIMER: 1,
+  INFO_GATHERING: 2,
+  RISK_ACCEPTANCE: 3,
+  CHECKLIST: 4,
+  FINAL_STATE: 5,
+} as const
+
+export type SiteLaunchPageIndex = typeof SITE_LAUNCH_PAGES[keyof typeof SITE_LAUNCH_PAGES]
+
 export interface SiteLaunchStatusProps {
-  siteLaunchStatus: SiteLaunchFrontEndStatus
+  siteLaunchStatus: SiteLaunchFEStatusType
   stepNumber: SiteLaunchTaskTypeIndex
   dnsRecords?: DNSRecord[]
   siteUrl?: string
   isNewDomain?: boolean
   useWwwSubdomain?: boolean
 }
+
+export const SiteLaunchBEStatus = {
+  NotLaunched: "NOT_LAUNCHED",
+  Launching: "LAUNCHING",
+  Launched: "LAUNCHED",
+  Failed: "FAILED",
+} as const
 export interface SiteLaunchDto {
   /**
    * Transition will be
    * "NOT_LAUNCHED" -> User presses the Generate DNS button
    * -> "LAUNCHING" -> wait for 90 seconds -> "LAUNCHED"
    */
-  siteStatus: "LAUNCHED" | "NOT_LAUNCHED" | "LAUNCHING"
+  siteLaunchStatus: typeof SiteLaunchBEStatus[keyof typeof SiteLaunchBEStatus]
   dnsRecords?: DNSRecord[] // only present iff siteStatus is LAUNCHED
   siteUrl?: string
 }
@@ -59,13 +77,6 @@ export const SITE_LAUNCH_TASKS_LENGTH = (Object.keys(SITE_LAUNCH_TASKS).length -
 export const NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH = (Object.keys(
   NEW_DOMAIN_SITE_LAUNCH_TASKS
 ).length - 1) as SiteLaunchTaskTypeIndex
-
-export const SITE_LAUNCH_PAGES = {
-  DISCLAIMER: 1,
-  INFO_GATHERING: 2,
-  RISK_ACCEPTANCE: 3,
-  CHECKLIST: 4,
-}
 
 type OldDomainSiteLaunchTaskTitles = Exclude<
   keyof typeof SITE_LAUNCH_TASKS,
@@ -80,7 +91,7 @@ export const TITLE_TEXTS_OLD_DOMAIN: Record<
   SET_DNS_TTL:
     "Set your DNS Time To Live(TTL) to 5 mins at least 24 hours before launching",
   APPROVE_FIRST_REVIEW_REQUEST: "Approve and publish your first review request",
-  DROP_CLOUDFRONT: "Drop existing domains on Cloudfront",
+  DROP_CLOUDFRONT: "Drop existing domains on CloudFront",
   DELETE_EXISTING_DNS_RECORDS:
     "Delete existing DNS records from your nameserver",
   WAIT_1_HOUR: "Wait 1 hour to flush existing records",

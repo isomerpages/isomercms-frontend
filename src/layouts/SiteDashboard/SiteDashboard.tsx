@@ -51,7 +51,11 @@ import { isSiteLaunchEnabled } from "utils/siteLaunchUtils"
 import { BxsClearRocket, SiteDashboardHumanImage } from "assets"
 import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
 import { DASHBOARD_FEATURE_STEPS } from "features/FeatureTour/FeatureTourSequence"
-import { SITE_LAUNCH_TASKS_LENGTH } from "types/siteLaunch"
+import {
+  NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH,
+  SiteLaunchFEStatus,
+  SITE_LAUNCH_TASKS_LENGTH,
+} from "types/siteLaunch"
 
 import { SiteViewLayout } from "../layouts"
 
@@ -108,7 +112,7 @@ export const SiteDashboard = (): JSX.Element => {
     ({ status }) => status === "OPEN" || status === "APPROVED"
   )
   const siteLaunchStatus = siteLaunchStatusProps?.siteLaunchStatus
-  const isSiteLaunchLoading = siteLaunchStatus === "LOADING"
+  const isSiteLaunchLoading = siteLaunchStatus === SiteLaunchFEStatus.Loading
 
   return (
     <SiteViewLayout overflow="hidden">
@@ -206,7 +210,7 @@ export const SiteDashboard = (): JSX.Element => {
               <SiteLaunchDisplayCard />
               {/* Human image and last saved/published */}
               <Box w="100%">
-                {(siteLaunchStatus === "LAUNCHED" ||
+                {(siteLaunchStatus === SiteLaunchFEStatus.Launched ||
                   !isSiteLaunchEnabled(siteName, role)) && (
                   <SiteDashboardHumanImage />
                 )}
@@ -237,7 +241,7 @@ export const SiteDashboard = (): JSX.Element => {
 
                       <Skeleton isLoaded={!isSiteLaunchLoading} w="100%">
                         {isSiteLaunchEnabled(siteName, role) &&
-                          siteLaunchStatus === "LAUNCHED" && (
+                          siteLaunchStatus === SiteLaunchFEStatus.Launching && (
                             <Flex alignItems="center">
                               <Text
                                 textStyle="caption-2"
@@ -346,9 +350,12 @@ const SiteLaunchDisplayCard = (): JSX.Element => {
   const { siteLaunchStatusProps } = useSiteLaunchContext()
   const siteLaunchStatus = siteLaunchStatusProps?.siteLaunchStatus
   const siteLaunchChecklistStepNumber = siteLaunchStatusProps?.stepNumber
-  const isSiteLaunchLoading = siteLaunchStatus === "LOADING"
+  const totalTasks = siteLaunchStatusProps?.isNewDomain
+    ? NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH
+    : SITE_LAUNCH_TASKS_LENGTH
+  const isSiteLaunchLoading = siteLaunchStatus === SiteLaunchFEStatus.Loading
   if (!isSiteLaunchEnabled(siteName, role)) return <></>
-  if (siteLaunchStatus === "LAUNCHED") return <></>
+  if (siteLaunchStatus === SiteLaunchFEStatus.Launched) return <></>
 
   return (
     <Box w="100%">
@@ -363,17 +370,19 @@ const SiteLaunchDisplayCard = (): JSX.Element => {
                 as={RouterLink}
                 to={`/sites/${siteName}/siteLaunchPad`}
               >
-                {siteLaunchStatus === "NOT_LAUNCHED" && (
+                {siteLaunchStatus === SiteLaunchFEStatus.NotLaunched && (
                   <Text textStyle="subhead-1" whiteSpace="nowrap">
                     Go to Launchpad
                   </Text>
                 )}
-                {siteLaunchStatus === "CHECKLIST_TASKS_PENDING" && (
+                {siteLaunchStatus ===
+                  SiteLaunchFEStatus.ChecklistTasksPending && (
                   <Text textStyle="subhead-1" whiteSpace="nowrap">
-                    Visit launchpad
+                    Manage
                   </Text>
                 )}
-                {siteLaunchStatus === "LAUNCHING" && (
+                {(siteLaunchStatus === SiteLaunchFEStatus.Launching ||
+                  siteLaunchStatus === SiteLaunchFEStatus.Failed) && (
                   <Text textStyle="subhead-1" whiteSpace="nowrap">
                     Check status
                   </Text>
@@ -387,17 +396,22 @@ const SiteLaunchDisplayCard = (): JSX.Element => {
               Site launch
             </DisplayCardTitle>
             <DisplayCardCaption>
-              Associate your isomer site to a domain
+              Associate your Isomer site to a domain
             </DisplayCardCaption>
           </DisplayCardHeader>
           <DisplayCardContent>
-            {siteLaunchStatus === "CHECKLIST_TASKS_PENDING" && (
-              <Text textStyle="body-2">
-                {siteLaunchChecklistStepNumber}/{SITE_LAUNCH_TASKS_LENGTH}
+            {siteLaunchStatus === SiteLaunchFEStatus.ChecklistTasksPending && (
+              <Text textStyle="body-2" mt="1rem">
+                <Text as="b">
+                  {siteLaunchChecklistStepNumber}/{totalTasks}
+                </Text>{" "}
+                site launch tasks completed
               </Text>
             )}
-            {siteLaunchStatus === "LAUNCHING" && (
-              <Text textStyle="body-2">Launch status: Pending</Text>
+            {siteLaunchStatus === SiteLaunchFEStatus.Launching && (
+              <Text textStyle="body-2" mt="1rem">
+                Launch status: Pending
+              </Text>
             )}
           </DisplayCardContent>
         </Skeleton>

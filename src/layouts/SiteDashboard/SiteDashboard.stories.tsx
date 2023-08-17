@@ -5,7 +5,7 @@ import { MemoryRouter, Route } from "react-router-dom"
 import { SiteLaunchProvider } from "contexts/SiteLaunchContext"
 
 import {
-  MOCK_LAUNCHED_SITE_LAUNCH_DTO,
+  MOCK_SUCCESS_LAUNCHED_SITE_LAUNCH_DTO,
   MOCK_LAUNCHING_SITE_LAUNCH_DTO,
   MOCK_SITE_DASHBOARD_COLLABORATORS_STATISTICS,
   MOCK_SITE_DASHBOARD_INFO,
@@ -23,7 +23,7 @@ import {
   buildSiteDashboardReviewRequests,
   buildSiteLaunchDto,
 } from "mocks/utils"
-import { SITE_LAUNCH_TASKS_LENGTH } from "types/siteLaunch"
+import { SiteLaunchFEStatus } from "types/siteLaunch"
 
 import { SiteDashboard } from "./SiteDashboard"
 
@@ -137,7 +137,7 @@ export const SiteLaunchStepsCompleted = Template.bind({})
 SiteLaunchStepsCompleted.parameters = {
   msw: {
     handlers: {
-      siteLaunchDto: buildSiteLaunchDto(MOCK_LAUNCHED_SITE_LAUNCH_DTO),
+      siteLaunchDto: buildSiteLaunchDto(MOCK_SUCCESS_LAUNCHED_SITE_LAUNCH_DTO),
     },
   },
 }
@@ -163,7 +163,7 @@ SiteLaunchPartialStepsCompleted.decorators = [
     return (
       <SiteLaunchProvider
         initialStepNumber={1}
-        initialSiteLaunchStatus="CHECKLIST_TASKS_PENDING"
+        initialSiteLaunchStatus={SiteLaunchFEStatus.ChecklistTasksPending}
       >
         <Story />
       </SiteLaunchProvider>

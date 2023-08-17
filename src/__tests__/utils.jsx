@@ -1,4 +1,4 @@
-import Policy from "csp-parse"
+import parse from "content-security-policy-parser"
 import { format } from "date-fns-tz"
 
 import checkCSP from "../utils/cspUtils"
@@ -99,7 +99,7 @@ describe("Utils test", () => {
   })
 
   describe("checkCSP should return the correct decision", () => {
-    const cspPolicy = new Policy(
+    const cspPolicy = parse(
       "default-src 'self'; script-src 'self' blob: https://www.instagram.com; object-src 'self'; style-src 'self' 'unsafe-inline'; img-src *; media-src *; frame-src https://form.gov.sg/; frame-ancestors 'none'; font-src * data:; connect-src 'self';"
     )
 
