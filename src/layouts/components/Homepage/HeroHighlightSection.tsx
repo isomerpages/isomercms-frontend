@@ -184,6 +184,7 @@ export const HeroHighlightSection = ({
         variant="outline"
         w="full"
         leftIcon={<BiPlus fontSize="1.5rem" />}
+        isDisabled={highlights.length >= 4}
       >
         Add option
       </Button>
