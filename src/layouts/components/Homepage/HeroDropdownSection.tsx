@@ -64,6 +64,7 @@ export const HeroDropdownSection = ({
         <Text mt="0.5rem" textStyle="body-2" textColor="base.content.medium">
           Drag and drop dropdown options to rearrange them
         </Text>
+        {/* TODO: Add `displayHandler` */}
         <Editable.Accordion>
           <Editable.EmptySection
             title="Options you add will appear here"

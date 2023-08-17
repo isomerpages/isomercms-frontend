@@ -69,7 +69,7 @@ export const InfobarBody = ({
     <FormControl isRequired isInvalid={!!errors.button}>
       <FormLabel>Button text</FormLabel>
       <Input
-        placeholder="This is a button at the bottom of the infobar"
+        placeholder="This is a button"
         id={`section-${index}-infobar-button`}
         value={button}
         onChange={onChange}

@@ -80,6 +80,7 @@ export const HeroHighlightSection = ({
           Drag and drop highlights to rearrange them. On a desktop screen,
           highlights are shown side-by-side
         </Text>
+        {/* TODO: Add `displayHandler` */}
         <Editable.Accordion>
           <Editable.EmptySection
             isEmpty={highlights.length === 0}
