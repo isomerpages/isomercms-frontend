@@ -23,7 +23,9 @@ import { PropsWithChildren } from "react"
 
 import { BxDraggable, HomepageStartEditingImage } from "assets"
 
-type SidebarHeaderProps = Pick<EditableSidebarProps, "title">
+interface SidebarHeaderProps {
+  title: string
+}
 const SidebarHeader = ({ title }: SidebarHeaderProps) => {
   return (
     <Flex
@@ -41,7 +43,7 @@ const SidebarHeader = ({ title }: SidebarHeaderProps) => {
 }
 
 // TODO: Need to place this on top of draggable section
-export const CustomiseSectionHeader = () => (
+export const CustomiseSectionsHeader = () => (
   <>
     <Text textStyle="h5">Customise Sections</Text>
     <Text textStyle="body-2">Drag and drop sections to rearrange them</Text>
@@ -51,7 +53,7 @@ export const CustomiseSectionHeader = () => (
 const EmptySideBarBody = () => {
   return (
     <VStack spacing="0.5rem" alignItems="flex-start" px="1.5rem" pt="1.5rem">
-      <CustomiseSectionHeader />
+      <CustomiseSectionsHeader />
       <Flex
         alignItems="center"
         flexDir="column"
@@ -59,7 +61,7 @@ const EmptySideBarBody = () => {
         justifyContent="center"
       >
         <HomepageStartEditingImage />
-        <Text> Sections you add will appear here</Text>
+        <Text>Sections you add will appear here</Text>
         <Text
           textStyle="caption-2"
           textColor="base.content.medium"
@@ -73,9 +75,7 @@ const EmptySideBarBody = () => {
   )
 }
 
-export interface EditableSidebarProps {
-  title: string
-}
+export type EditableSidebarProps = SidebarHeaderProps
 const EditableSidebar = ({
   title,
   children,
@@ -88,14 +88,14 @@ const EditableSidebar = ({
   )
 }
 
-type HomepageDroppableZones = "dropdownelem" | "leftPane" | "highlight"
+type HomepageDroppableZone = "dropdownelem" | "leftPane" | "highlight"
 
 type DropInfo = {
-  droppableId: HomepageDroppableZones
+  droppableId: HomepageDroppableZone
   type: string
 }
 
-const getDroppableInfo = (editableId: HomepageDroppableZones): DropInfo => {
+const getDroppableInfo = (editableId: HomepageDroppableZone): DropInfo => {
   if (editableId === "leftPane")
     return { droppableId: editableId, type: "editor" }
   return {
@@ -106,7 +106,7 @@ const getDroppableInfo = (editableId: HomepageDroppableZones): DropInfo => {
 
 export interface EditableDraggableProps {
   onDragEnd: OnDragEndResponder
-  editableId: HomepageDroppableZones
+  editableId: HomepageDroppableZone
 }
 const EditableDraggable = ({
   onDragEnd,
