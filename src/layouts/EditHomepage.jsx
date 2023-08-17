@@ -802,6 +802,10 @@ const EditHomepage = ({ match }) => {
   }
 
   const displayHandler = async (elemType, index) => {
+    // NOTE: If index is less than 0,
+    // this means that the accordion is being closed.
+    // Hence, we don't trigger a scroll.
+    if (index < 0) return
     try {
       switch (elemType) {
         case "section": {
@@ -829,6 +833,7 @@ const EditHomepage = ({ match }) => {
             $set: resetHighlightSections,
           })
 
+          scrollRefs[0].current.scrollIntoView()
           setDisplayHighlights(newDisplayHighlights)
           break
         }
@@ -842,6 +847,7 @@ const EditHomepage = ({ match }) => {
             $set: resetDropdownSections,
           })
 
+          scrollRefs[0].current.scrollIntoView()
           setDisplayDropdownElems(newDisplayDropdownElems)
           break
         }
@@ -967,9 +973,7 @@ const EditHomepage = ({ match }) => {
               <div className={editorStyles.homepageEditorSidebar}>
                 <Editable.Sidebar title="Homepage">
                   <Editable.Accordion
-                    onChange={(idx) => {
-                      displayHandler("section", idx)
-                    }}
+                    onChange={(idx) => displayHandler("section", idx)}
                   >
                     <VStack
                       bg="base.canvas.alt"

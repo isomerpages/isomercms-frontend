@@ -33,7 +33,13 @@ export const HeroHighlightSection = ({
   url,
   highlights,
 }: HeroHighlightSectionProps) => {
-  const { onDragEnd, onChange, onCreate, onDelete } = useEditableContext()
+  const {
+    onDragEnd,
+    onChange,
+    onCreate,
+    onDelete,
+    onDisplay,
+  } = useEditableContext()
 
   return (
     <Box w="full">
@@ -71,7 +77,7 @@ export const HeroHighlightSection = ({
           highlights are shown side-by-side
         </Text>
         {/* TODO: Add `displayHandler` */}
-        <Editable.Accordion>
+        <Editable.Accordion onChange={() => onDisplay("highlight")}>
           <Editable.EmptySection
             isEmpty={highlights.length === 0}
             title="Highlights you add will appear here"

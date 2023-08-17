@@ -34,7 +34,13 @@ export const HeroDropdownSection = ({
   state,
   title,
 }: HeroDropdownSectionProps) => {
-  const { onDragEnd, onCreate, onChange, onDelete } = useEditableContext()
+  const {
+    onDragEnd,
+    onCreate,
+    onChange,
+    onDelete,
+    onDisplay,
+  } = useEditableContext()
 
   return (
     <Box>
@@ -55,7 +61,7 @@ export const HeroDropdownSection = ({
           Drag and drop dropdown options to rearrange them
         </Text>
         {/* TODO: Add `displayHandler` */}
-        <Editable.Accordion>
+        <Editable.Accordion onChange={() => onDisplay("dropdownelem")}>
           <Editable.EmptySection
             title="Options you add will appear here"
             subtitle="Add options to allow users to quickly navigate your site"

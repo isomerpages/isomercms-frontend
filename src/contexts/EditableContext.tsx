@@ -16,7 +16,9 @@ interface EditableContextReturn {
 
   onCreate: (event: EditEvent) => void
   onDelete: (id: string, type: string) => void
-  onDisplay: (elemType: string, index: number) => void
+  // NOTE: Assumed to be 0, which is the
+  // hero element if not provided
+  onDisplay: (elemType: string, index?: number) => void
 }
 
 export const EditableContext = createContext<null | EditableContextReturn>(null)
