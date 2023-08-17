@@ -43,7 +43,7 @@ import {
 import { HomepageStartEditingImage } from "assets"
 import { DEFAULT_RETRY_MSG } from "utils"
 
-import { DragDropContextProvider } from "../contexts/DragDropContext"
+import { EditableContextProvider } from "../contexts/EditableContext"
 import { useDrag, onCreate, onDelete } from "../hooks/useDrag"
 
 import { CustomiseSectionsHeader, Editable } from "./components/Editable"
@@ -55,10 +55,38 @@ import { ResourcesBody } from "./components/Homepage/ResourcesBody"
 
 /* eslint-disable react/no-array-index-key */
 
-// Constants
-// ==========
 const RADIX_PARSE_INT = 10
 
+const getHasErrors = (errors) => {
+  const hasSectionErrors = _.some(errors.sections, (section) => {
+    // Section is an object, e.g. { hero: {} }
+    // _.keys(section) produces an array with length 1
+    // The 0th element of the array contains the sectionType
+    const sectionType = _.keys(section)[0]
+    return (
+      _.some(
+        section[sectionType],
+        (errorMessage) => errorMessage.length > 0
+      ) === true
+    )
+  })
+
+  const hasHighlightErrors = _.some(
+    errors.highlights,
+    (highlight) =>
+      _.some(highlight, (errorMessage) => errorMessage.length > 0) === true
+  )
+
+  const hasDropdownElemErrors = _.some(
+    errors.dropdownElems,
+    (dropdownElem) =>
+      _.some(dropdownElem, (errorMessage) => errorMessage.length > 0) === true
+  )
+
+  return hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors
+}
+
+// Constants
 // Section constructors
 // TODO: Export all these as const and write wrapper for error...
 const ResourcesSectionConstructor = (isErrorConstructor) => ({
@@ -126,7 +154,6 @@ const EditHomepage = ({ match }) => {
   const { siteName } = match.params
   const [hasLoaded, setHasLoaded] = useState(false)
   const [scrollRefs, setScrollRefs] = useState([])
-  const [hasErrors, setHasErrors] = useState(false)
   const [frontMatter, setFrontMatter] = useState({
     title: "",
     subtitle: "",
@@ -188,6 +215,7 @@ const EditHomepage = ({ match }) => {
   const errorToast = useErrorToast()
 
   // TODO: Tidy up these `useEffects` and figure out what they do
+  // TODO: Shift this into react query + custom hook
   useEffect(() => {
     if (!homepageData) return
     const loadPageDetails = async () => {
@@ -204,6 +232,7 @@ const EditHomepage = ({ match }) => {
           content: { frontMatter },
           sha,
         } = homepageData
+        // Set displaySections
         const displaySections = []
         let displayHighlights = []
         let displayDropdownElems = []
@@ -298,38 +327,6 @@ const EditHomepage = ({ match }) => {
       scrollRefs[frontMatter.sections.length - 1].current.scrollIntoView()
     }
   }, [scrollRefs, frontMatter.sections.length])
-
-  useEffect(() => {
-    const hasSectionErrors = _.some(errors.sections, (section) => {
-      // Section is an object, e.g. { hero: {} }
-      // _.keys(section) produces an array with length 1
-      // The 0th element of the array contains the sectionType
-      const sectionType = _.keys(section)[0]
-      return (
-        _.some(
-          section[sectionType],
-          (errorMessage) => errorMessage.length > 0
-        ) === true
-      )
-    })
-
-    const hasHighlightErrors = _.some(
-      errors.highlights,
-      (highlight) =>
-        _.some(highlight, (errorMessage) => errorMessage.length > 0) === true
-    )
-
-    const hasDropdownElemErrors = _.some(
-      errors.dropdownElems,
-      (dropdownElem) =>
-        _.some(dropdownElem, (errorMessage) => errorMessage.length > 0) === true
-    )
-
-    const hasErrors =
-      hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors
-
-    setHasErrors(hasErrors)
-  }, [errors])
 
   // TODO: Use `react-hook-forms`
   const onFieldChange = async (event) => {
@@ -633,6 +630,11 @@ const EditHomepage = ({ match }) => {
     }
   }
 
+  const onDeleteClick = (id, name) => {
+    onOpen()
+    setItemPendingForDelete({ id, type: name })
+  }
+
   const onDragEnd = (result) => {
     const homepageState = onDrag(result)
     setHomepageState(homepageState)
@@ -846,6 +848,7 @@ const EditHomepage = ({ match }) => {
     }
   }
 
+  // TODO: Shift to react-query
   const savePage = async () => {
     try {
       const filteredFrontMatter = _.cloneDeep(frontMatter)
@@ -949,7 +952,13 @@ const EditHomepage = ({ match }) => {
           backButtonUrl={`/sites/${siteName}/workspace`}
         />
         {hasLoaded && (
-          <DragDropContextProvider onDragEnd={onDragEnd}>
+          <EditableContextProvider
+            onDragEnd={onDragEnd}
+            onChange={onFieldChange}
+            onCreate={createHandler}
+            onDelete={onDeleteClick}
+            onDisplay={displayHandler}
+          >
             <HStack className={elementStyles.wrapper}>
               <div className={editorStyles.homepageEditorSidebar}>
                 <Editable.Sidebar title="Homepage">
@@ -975,15 +984,6 @@ const EditHomepage = ({ match }) => {
                                 // TODO: Shift to rhf
                                 notification={frontMatter.notification}
                                 index={sectionIndex}
-                                onChange={onFieldChange}
-                                createHandler={createHandler}
-                                deleteHandler={(event, type) => {
-                                  onOpen()
-                                  setItemPendingForDelete({
-                                    id: event.target.id,
-                                    type,
-                                  })
-                                }}
                                 errors={{
                                   ...errors.sections[0].hero,
                                   ...errors,
@@ -1036,14 +1036,6 @@ const EditHomepage = ({ match }) => {
                                       <ResourcesBody
                                         {...section.resources}
                                         index={sectionIndex}
-                                        onClick={(event) => {
-                                          onOpen()
-                                          setItemPendingForDelete({
-                                            id: event.target.id,
-                                            type: "Resources Section",
-                                          })
-                                        }}
-                                        onChange={onFieldChange}
                                         errors={
                                           errors.sections[sectionIndex]
                                             .resources
@@ -1066,14 +1058,6 @@ const EditHomepage = ({ match }) => {
                                       <InfobarBody
                                         {...section.infobar}
                                         index={sectionIndex}
-                                        onClick={(event) => {
-                                          onOpen()
-                                          setItemPendingForDelete({
-                                            id: event.target.id,
-                                            type: "Infobar Section",
-                                          })
-                                        }}
-                                        onChange={onFieldChange}
                                         errors={
                                           errors.sections[sectionIndex].infobar
                                         }
@@ -1094,14 +1078,6 @@ const EditHomepage = ({ match }) => {
                                     >
                                       <InfopicBody
                                         index={sectionIndex}
-                                        onClick={(event) => {
-                                          onOpen()
-                                          setItemPendingForDelete({
-                                            id: event.target.id,
-                                            type: "Infopic Section",
-                                          })
-                                        }}
-                                        onChange={onFieldChange}
                                         errors={
                                           errors.sections[sectionIndex].infopic
                                         }
@@ -1282,11 +1258,14 @@ const EditHomepage = ({ match }) => {
               </div>
             </HStack>
             <Footer>
-              <LoadingButton isDisabled={hasErrors} onClick={savePage}>
+              <LoadingButton
+                isDisabled={getHasErrors(errors)}
+                onClick={savePage}
+              >
                 Save
               </LoadingButton>
             </Footer>
-          </DragDropContextProvider>
+          </EditableContextProvider>
         )}
       </VStack>
     </>

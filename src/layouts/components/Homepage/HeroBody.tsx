@@ -19,6 +19,8 @@ import { BiInfoCircle } from "react-icons/bi"
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormFieldMedia from "components/FormFieldMedia"
 
+import { useEditableContext } from "contexts/EditableContext"
+
 import { Editable } from "layouts/components/Editable"
 
 import {
@@ -45,16 +47,6 @@ export interface HeroBodyFormFields {
 
 interface HeroBodyProps extends HeroBodyFormFields {
   index: number
-  onChange: () => void
-  createHandler: (event: Record<string, unknown>) => void
-  deleteHandler: (
-    event: {
-      target: {
-        id: string
-      }
-    },
-    type: "Dropdown Element" | "Highlight"
-  ) => void
   errors: {
     dropdownElems: HeroDropdownFormFields[]
     highlights: HeroHighlightSectionFormFields[]
@@ -79,15 +71,14 @@ export const HeroBody = ({
   index,
   button,
   url,
-  onChange,
-  createHandler,
-  deleteHandler,
   errors,
   handleHighlightDropdownToggle,
   notification,
   dropdownElems,
 }: HeroBodyProps) => {
   const [heroSectionType, setHeroSectionType] = useState("highlights")
+  const { onChange } = useEditableContext()
+
   return (
     <>
       <Editable.Section spacing="1.25rem">
@@ -194,15 +185,9 @@ export const HeroBody = ({
             title={dropdown.title}
             state={dropdownElems}
             errors={errors}
-            onCreate={() => createHandler({ target: { id: "dropdownelem" } })}
-            onChange={onChange}
-            onClick={(event) => deleteHandler(event, "Dropdown Element")}
           />
         ) : (
           <HeroHighlightSection
-            onChange={onChange}
-            onCreate={() => createHandler({ target: { id: "highlight" } })}
-            onClick={(event) => deleteHandler(event, "Highlight")}
             errors={errors}
             button={button}
             url={url}

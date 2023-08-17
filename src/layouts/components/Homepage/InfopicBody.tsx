@@ -10,6 +10,8 @@ import {
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormFieldMedia from "components/FormFieldMedia"
 
+import { useEditableContext } from "contexts/EditableContext"
+
 import { Editable } from "layouts/components/Editable"
 
 interface InfopicFormFields {
@@ -24,7 +26,6 @@ interface InfopicFormFields {
 interface InfopicBodyProps extends InfopicFormFields {
   index: number
   onClick: () => void
-  onChange: () => void
   errors: InfopicFormFields & { image: string }
   image: string
 }
@@ -33,7 +34,6 @@ export const InfopicBody = ({
   errors,
   index,
   onClick,
-  onChange,
   title,
   subtitle,
   description,
@@ -42,6 +42,8 @@ export const InfopicBody = ({
   alt,
   image,
 }: InfopicBodyProps) => {
+  const { onChange, onDelete } = useEditableContext()
+
   return (
     <Editable.Section>
       <FormControl isInvalid={!!errors.subtitle}>
@@ -119,7 +121,7 @@ export const InfopicBody = ({
       </FormControl>
       <Button
         id={`section-${index}`}
-        onClick={onClick}
+        onClick={() => onDelete(`section-${index}`, "Infopic Section")}
         alignSelf="center"
         variant="clear"
         colorScheme="critical"
