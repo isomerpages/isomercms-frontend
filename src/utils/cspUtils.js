@@ -29,7 +29,7 @@ function toRegExp(string) {
 
 /* Helper functions to check if elemSrc satisfies each CSP source specification: host-source, schema-source and 'self' */
 function checkHostsourcePolicy(elemSrc, policy) {
-  if (policy.includes("\\*")) return true
+  if (policy.includes("*")) return true
 
   const specialValues = [
     "http:",
