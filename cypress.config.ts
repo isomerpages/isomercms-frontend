@@ -8,7 +8,8 @@ export default defineConfig({
   viewportHeight: 768,
   viewportWidth: 1366,
   projectId: "nxbty1",
-  numTestsKeptInMemory: 5,
+  numTestsKeptInMemory: 1,
+  experimentalMemoryManagement: true,
   e2e: {
     supportFile: "cypress/support/e2e.ts",
     specPattern: "cypress/e2e/**/*.{js,jsx,ts,tsx}",
