@@ -9,6 +9,7 @@ import {
 import { Button } from "@opengovsg/design-system-react"
 import axios from "axios"
 import DOMPurify from "dompurify"
+import _ from "lodash"
 import { marked } from "marked"
 import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
@@ -143,7 +144,7 @@ const EditPage = ({ match }) => {
 
   useEffect(() => {
     async function editorValueToHtml() {
-      if (!csp || !editorValue) return
+      if (!csp || _.isEmpty(csp) || !editorValue) return
       const html = marked.parse(editorValue)
       const {
         isCspViolation: checkedIsCspViolation,
