@@ -43,6 +43,11 @@ export default defineConfig({
                 },
               ],
             },
+            devServer: {
+              client: {
+                overlay: true,
+              },
+            },
           },
         })
       )
