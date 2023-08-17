@@ -76,7 +76,7 @@ const EmptySideBarBody = () => {
 export interface EditableSidebarProps {
   title: string
 }
-export const EditableSidebar = ({
+const EditableSidebar = ({
   title,
   children,
 }: PropsWithChildren<EditableSidebarProps>) => {
@@ -108,7 +108,7 @@ export interface EditableDraggableProps {
   onDragEnd: OnDragEndResponder
   editableId: HomepageDroppableZones
 }
-export const EditableDraggable = ({
+const EditableDraggable = ({
   onDragEnd,
   children,
   editableId,
