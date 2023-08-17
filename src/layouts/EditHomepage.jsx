@@ -795,37 +795,30 @@ const EditHomepage = ({ match }) => {
     }
   }
 
-  const displayHandler = async (event) => {
+  const displayHandler = async (elemType, index) => {
     try {
-      const { id } = event.target
-      const idArray = id.split("-")
-      const elemType = idArray[0]
       switch (elemType) {
         case "section": {
-          const sectionId = idArray[1]
           const resetDisplaySections = _.fill(
             Array(displaySections.length),
             false
           )
-          resetDisplaySections[sectionId] = !displaySections[sectionId]
+          resetDisplaySections[index] = !displaySections[index]
           const newDisplaySections = update(displaySections, {
             $set: resetDisplaySections,
           })
 
           setDisplaySections(newDisplaySections)
 
-          scrollRefs[sectionId].current.scrollIntoView()
+          scrollRefs[index].current.scrollIntoView()
           break
         }
         case "highlight": {
-          const highlightIndex = idArray[1]
           const resetHighlightSections = _.fill(
             Array(displayHighlights.length),
             false
           )
-          resetHighlightSections[highlightIndex] = !displayHighlights[
-            highlightIndex
-          ]
+          resetHighlightSections[index] = !displayHighlights[index]
           const newDisplayHighlights = update(displayHighlights, {
             $set: resetHighlightSections,
           })
@@ -834,14 +827,11 @@ const EditHomepage = ({ match }) => {
           break
         }
         case "dropdownelem": {
-          const dropdownsIndex = idArray[1]
           const resetDropdownSections = _.fill(
             Array(displayDropdownElems.length),
             false
           )
-          resetDropdownSections[dropdownsIndex] = !displayDropdownElems[
-            dropdownsIndex
-          ]
+          resetDropdownSections[index] = !displayDropdownElems[index]
           const newDisplayDropdownElems = update(displayDropdownElems, {
             $set: resetDropdownSections,
           })
@@ -962,15 +952,10 @@ const EditHomepage = ({ match }) => {
           <DragDropContextProvider onDragEnd={onDragEnd}>
             <HStack className={elementStyles.wrapper}>
               <div className={editorStyles.homepageEditorSidebar}>
-                <Editable.Sidebar
-                  title="Homepage"
-                  onChange={(idx) => {
-                    displayHandler({ target: { id: `section-${idx}` } })
-                  }}
-                >
+                <Editable.Sidebar title="Homepage">
                   <Editable.Accordion
                     onChange={(idx) => {
-                      displayHandler({ target: { id: `section-${idx}` } })
+                      displayHandler("section", idx)
                     }}
                   >
                     <VStack
