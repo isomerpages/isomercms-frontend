@@ -971,7 +971,7 @@ const EditHomepage = ({ match }) => {
                               <HeroBody
                                 {...section.hero}
                                 highlights={section.hero.key_highlights || []}
-                                state={homepageState}
+                                dropdownElems={frontMatter.sections[0].hero}
                                 // TODO: Shift to rhf
                                 notification={frontMatter.notification}
                                 index={sectionIndex}

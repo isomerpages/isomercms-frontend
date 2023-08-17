@@ -64,8 +64,8 @@ interface HeroBodyProps extends HeroBodyFormFields {
   } & HeroBodyFormFields
   handleHighlightDropdownToggle: (event: Record<string, unknown>) => void
   notification: string
-  state: EditorHomepageState
   highlights: Partial<HeroHighlightSectionFormFields>[]
+  dropdownElems: EditorHeroDropdownSection
   button: string
   url: string
 }
@@ -85,7 +85,7 @@ export const HeroBody = ({
   errors,
   handleHighlightDropdownToggle,
   notification,
-  state,
+  dropdownElems,
 }: HeroBodyProps) => {
   const [heroSectionType, setHeroSectionType] = useState("highlights")
   return (
@@ -192,10 +192,7 @@ export const HeroBody = ({
         {heroSectionType === "dropdown" ? (
           <HeroDropdownSection
             title={dropdown.title}
-            state={
-              (state.frontMatter.sections[0] as HeroFrontmatterSection)
-                .hero as EditorHeroDropdownSection
-            }
+            state={dropdownElems}
             errors={errors}
             onCreate={() => createHandler({ target: { id: "dropdownelem" } })}
             onChange={onChange}
