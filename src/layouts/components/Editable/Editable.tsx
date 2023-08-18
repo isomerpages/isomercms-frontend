@@ -164,27 +164,43 @@ const BaseAccordionItem = forwardRef((props: AccordionItemProps, ref) => {
 
 interface EditableCardProps {
   title: string
+  isInvalid?: boolean
 }
 // TODO: Break this up into individual sub-components
 // that can be selectively used to create the card
 const EditableAccordionItem = ({
   title,
   children,
+  isInvalid,
 }: PropsWithChildren<EditableCardProps>) => {
   return (
-    <BaseAccordionItem>
-      {/* NOTE: Check with design on styling. 
+    <BaseAccordionItem pos="relative">
+      {({ isExpanded }) => (
+        <>
+          {!isExpanded && isInvalid && (
+            <Divider
+              border="4px solid"
+              borderColor="utility.feedback.critical"
+              orientation="vertical"
+              left={0}
+              position="absolute"
+              h="-webkit-fill-available"
+            />
+          )}
+          {/* NOTE: Check with design on styling. 
         See if entire section is button (ie, whole component hover styling)
       */}
-      <AccordionButton px="1.5rem" py="3rem">
-        <Flex flex="1" flexDir="column">
-          <Text textStyle="h6" textAlign="left" mt="0.25rem">
-            {title}
-          </Text>
-        </Flex>
-        <AccordionIcon />
-      </AccordionButton>
-      <AccordionPanel pb={4}>{children}</AccordionPanel>
+          <AccordionButton px="1.5rem" py="3rem">
+            <Flex flex="1" flexDir="column">
+              <Text textStyle="h6" textAlign="left" mt="0.25rem">
+                {title}
+              </Text>
+            </Flex>
+            <AccordionIcon />
+          </AccordionButton>
+          <AccordionPanel pb={4}>{children}</AccordionPanel>
+        </>
+      )}
     </BaseAccordionItem>
   )
 }
