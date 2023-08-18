@@ -70,7 +70,7 @@
     "toml": "^3.0.0",
     "turndown": "^7.1.1",
     "turndown-plugin-gfm": "^1.0.2",
-    "uuid": "^3.3.3",
+    "uuid": "^3.4.0",
     "webpack": "^5.76.1",
     "yaml": "^1.10.2",
     "yup": "^0.32.11"
@@ -150,6 +150,7 @@
     "@types/react-color": "^3.0.6",
     "@types/react-router-dom": "^5.3.3",
     "@types/turndown": "^5.0.1",
+    "@types/uuid": "^9.0.2",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
     "@typescript-eslint/parser": "^5.55.0",
     "auto-changelog": "^2.4.0",

@@ -20,6 +20,7 @@ import {
 } from "@hello-pangea/dnd"
 import { IconButton } from "@opengovsg/design-system-react"
 import { PropsWithChildren } from "react"
+import { v4 as uuid } from "uuid"
 
 import { BxDraggable, HomepageStartEditingImage } from "assets"
 
@@ -191,7 +192,7 @@ const DraggableAccordionItem = ({
   draggableId,
 }: PropsWithChildren<DraggableAccordionItemProps>) => {
   return (
-    <Draggable draggableId={draggableId} index={index}>
+    <Draggable draggableId={uuid()} index={index}>
       {(draggableProvided) => (
         <BaseAccordionItem
           borderRadius="0.25rem"
