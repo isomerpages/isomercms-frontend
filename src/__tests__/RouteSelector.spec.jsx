@@ -90,10 +90,9 @@ jest.mock("layouts/EditContactUs", () => {
   }
 })
 
-jest.mock("layouts/EditHomepage", () => {
+jest.mock("layouts/FeatureFlaggedHomepage", () => {
   return {
-    __esModule: true,
-    default: () => {
+    FeatureFlaggedHomepage: () => {
       return <div>{EDIT_HOMEPAGE_LAYOUT_TEXT}</div>
     },
   }
