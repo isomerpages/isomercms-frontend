@@ -42,7 +42,7 @@ import { DEFAULT_RETRY_MSG } from "utils"
 
 import { useDrag, onCreate, onDelete } from "../hooks/useDrag"
 
-import { CustomiseSectionHeader, Editable } from "./components/Editable"
+import { CustomiseSectionsHeader, Editable } from "./components/Editable"
 
 /* eslint-disable react/no-array-index-key */
 
@@ -1037,7 +1037,7 @@ const EditHomepage = ({ match }) => {
                                     spacing="0.5rem"
                                     alignItems="flex-start"
                                   >
-                                    <CustomiseSectionHeader />
+                                    <CustomiseSectionsHeader />
                                   </VStack>
                                 </>
                               )}
