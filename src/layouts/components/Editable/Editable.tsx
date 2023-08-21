@@ -202,9 +202,6 @@ const DraggableAccordionItem = ({
           ref={draggableProvided.innerRef}
           boxShadow="sm"
           {...draggableProvided.dragHandleProps}
-          _hover={{
-            bgColor: "interaction.muted.main.hover",
-          }}
           position="relative"
         >
           {({ isExpanded }) => (
