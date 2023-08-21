@@ -12,11 +12,6 @@ export const AddSectionButton = ({ children, ...rest }: MenuButtonProps) => {
             isStretch
             isOpen={isOpen}
             rightIcon={undefined}
-            // NOTE: Need `sx` here as there is styling set on the exported `Menu.Button` component
-            // that overrides the `textAlign` prop
-            sx={{
-              textAlign: "center",
-            }}
             {...rest}
           >
             <HStack spacing="0.5rem" justify="center">
@@ -24,7 +19,7 @@ export const AddSectionButton = ({ children, ...rest }: MenuButtonProps) => {
               <Text>Add section</Text>
             </HStack>
           </Menu.Button>
-          <Menu.List>{children}</Menu.List>
+          {children}
         </>
       )}
     </Menu>

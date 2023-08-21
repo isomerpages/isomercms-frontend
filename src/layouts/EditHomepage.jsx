@@ -49,6 +49,7 @@ import { DEFAULT_RETRY_MSG } from "utils"
 import { useDrag, onCreate, onDelete } from "../hooks/useDrag"
 
 import { CustomiseSectionsHeader, Editable } from "./components/Editable"
+import { AddSectionButton } from "./components/Editable/AddSectionButton"
 
 /* eslint-disable react/no-array-index-key */
 
@@ -1140,28 +1141,30 @@ const EditHomepage = ({ match }) => {
                     */}
                     <Box p="1.5rem">
                       <AddSectionButton>
-                        <AddSectionButton.Option
-                          onClick={() => onClick("infopic")}
-                          title="Infopic"
-                          subtitle="Add an image with informational text"
-                        />
-                        <AddSectionButton.Option
-                          title="Infobar"
-                          subtitle="Add informational text"
-                          onClick={() => onClick("infobar")}
-                        />
-                        {/* NOTE: Check if the sections contain any `resources` 
+                        <AddSectionButton.List>
+                          <AddSectionButton.Option
+                            onClick={() => onClick("infopic")}
+                            title="Infopic"
+                            subtitle="Add an image with informational text"
+                          />
+                          <AddSectionButton.Option
+                            title="Infobar"
+                            subtitle="Add informational text"
+                            onClick={() => onClick("infobar")}
+                          />
+                          {/* NOTE: Check if the sections contain any `resources` 
                                 and if it does, prevent creation of another `resources` section
                             */}
-                        {!frontMatter.sections.some(
-                          ({ resources }) => !!resources
-                        ) && (
-                          <AddSectionButton.Option
-                            title="Resources"
-                            subtitle="Add a preview and link to your Resource Room"
-                            onClick={() => onClick("resources")}
-                          />
-                        )}
+                          {!frontMatter.sections.some(
+                            ({ resources }) => !!resources
+                          ) && (
+                            <AddSectionButton.Option
+                              title="Resources"
+                              subtitle="Add a preview and link to your Resource Room"
+                              onClick={() => onClick("resources")}
+                            />
+                          )}
+                        </AddSectionButton.List>
                       </AddSectionButton>
                     </Box>
                   </Editable.Sidebar>
