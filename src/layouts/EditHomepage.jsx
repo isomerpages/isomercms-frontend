@@ -966,172 +966,165 @@ const EditHomepage = ({ match }) => {
             onDisplay={displayHandler}
           >
             <HStack className={elementStyles.wrapper}>
-              <div className={editorStyles.homepageEditorSidebar}>
-                <Editable.Sidebar title="Homepage">
-                  <Editable.Accordion
-                    onChange={(idx) => displayHandler("section", idx)}
+              <Editable.Sidebar title="Homepage">
+                <Editable.Accordion
+                  onChange={(idx) => displayHandler("section", idx)}
+                >
+                  <VStack
+                    bg="base.canvas.alt"
+                    p="1.5rem"
+                    spacing="1.5rem"
+                    alignItems="flex-start"
                   >
-                    <VStack
-                      bg="base.canvas.alt"
-                      p="1.5rem"
-                      spacing="1.5rem"
-                      alignItems="flex-start"
-                    >
-                      {heroSection.map((section, sectionIndex) => {
-                        return (
-                          <>
-                            <Editable.EditableAccordionItem title="Hero section">
-                              <HeroBody
-                                {...section.hero}
-                                highlights={section.hero.key_highlights || []}
-                                dropdownElems={frontMatter.sections[0].hero}
-                                // TODO: Shift to rhf
-                                notification={frontMatter.notification}
-                                index={sectionIndex}
-                                errors={{
-                                  ...errors.sections[0].hero,
-                                  ...errors,
-                                }}
-                                handleHighlightDropdownToggle={
-                                  handleHighlightDropdownToggle
-                                }
-                              />
-                            </Editable.EditableAccordionItem>
-                            <Divider />
-                            <VStack spacing="0.5rem" alignItems="flex-start">
-                              <CustomiseSectionsHeader />
-                            </VStack>
-                          </>
-                        )
-                      })}
-                      <Editable.Droppable
-                        width="100%"
-                        editableId="leftPane"
-                        onDragEnd={onDragEnd}
-                      >
-                        <Editable.EmptySection
-                          title="Sections you add will appear here"
-                          subtitle="Add informative content to your website from images to text by
-                    clicking “Add section” below"
-                          image={<HomepageStartEditingImage />}
-                          // NOTE: It's empty if there is only 1 section and it's a hero section
-                          // as the hero section displays above the custom sections
-                          // and has a fixed display
-                          isEmpty={
-                            frontMatter.sections.length === 1 &&
-                            heroSection.length === 1
-                          }
-                        >
-                          <VStack p={0} spacing="1.5rem">
-                            {frontMatter.sections.map(
-                              (section, sectionIndex) => (
-                                <>
-                                  {section.resources && (
-                                    <Editable.DraggableAccordionItem
-                                      index={sectionIndex}
-                                      tag={
-                                        <Tag variant="subtle">Resources</Tag>
-                                      }
-                                      title="New resource widget"
-                                      isInvalid={_.some(
-                                        errors.sections[sectionIndex].resources
-                                      )}
-                                    >
-                                      <ResourcesBody
-                                        {...section.resources}
-                                        index={sectionIndex}
-                                        errors={
-                                          errors.sections[sectionIndex]
-                                            .resources
-                                        }
-                                      />
-                                    </Editable.DraggableAccordionItem>
-                                  )}
-
-                                  {section.infobar && (
-                                    <Editable.DraggableAccordionItem
-                                      index={sectionIndex}
-                                      tag={<Tag variant="subtle">Infobar</Tag>}
-                                      title={
-                                        section.infobar.title || "New infobar"
-                                      }
-                                      isInvalid={_.some(
-                                        errors.sections[sectionIndex].infobar
-                                      )}
-                                    >
-                                      <InfobarBody
-                                        {...section.infobar}
-                                        index={sectionIndex}
-                                        errors={
-                                          errors.sections[sectionIndex].infobar
-                                        }
-                                      />
-                                    </Editable.DraggableAccordionItem>
-                                  )}
-
-                                  {section.infopic && (
-                                    <Editable.DraggableAccordionItem
-                                      index={sectionIndex}
-                                      tag={<Tag variant="subtle">Infopic</Tag>}
-                                      title={
-                                        section.infopic.title || "New infopic"
-                                      }
-                                      isInvalid={_.some(
-                                        errors.sections[sectionIndex].infopic
-                                      )}
-                                    >
-                                      <InfopicBody
-                                        index={sectionIndex}
-                                        errors={
-                                          errors.sections[sectionIndex].infopic
-                                        }
-                                        {...section.infopic}
-                                      />
-                                    </Editable.DraggableAccordionItem>
-                                  )}
-                                </>
-                              )
-                            )}
+                    {heroSection.map((section, sectionIndex) => {
+                      return (
+                        <>
+                          <Editable.EditableAccordionItem
+                            title="Hero section"
+                            // TODO: Add `isInvalid` prop to `EditableAccordionItem`
+                          >
+                            <HeroBody
+                              {...section.hero}
+                              highlights={section.hero.key_highlights || []}
+                              dropdownElems={frontMatter.sections[0].hero}
+                              // TODO: Shift to rhf
+                              notification={frontMatter.notification}
+                              index={sectionIndex}
+                              errors={{
+                                ...errors.sections[0].hero,
+                                highlights: errors.highlights,
+                                dropdownElems: errors.dropdownElems,
+                              }}
+                              handleHighlightDropdownToggle={
+                                handleHighlightDropdownToggle
+                              }
+                            />
+                          </Editable.EditableAccordionItem>
+                          <Divider />
+                          <VStack spacing="0.5rem" alignItems="flex-start">
+                            <CustomiseSectionsHeader />
                           </VStack>
-                        </Editable.EmptySection>
-                      </Editable.Droppable>
-                    </VStack>
-                  </Editable.Accordion>
-                  {/* NOTE: Set the padding here - 
+                        </>
+                      )
+                    })}
+                    <Editable.Droppable
+                      width="100%"
+                      editableId="leftPane"
+                      onDragEnd={onDragEnd}
+                    >
+                      <Editable.EmptySection
+                        title="Sections you add will appear here"
+                        subtitle="Add informative content to your website from images to text by
+                    clicking “Add section” below"
+                        image={<HomepageStartEditingImage />}
+                        // NOTE: It's empty if there is only 1 section and it's a hero section
+                        // as the hero section displays above the custom sections
+                        // and has a fixed display
+                        isEmpty={
+                          frontMatter.sections.length === 1 &&
+                          heroSection.length === 1
+                        }
+                      >
+                        <VStack p={0} spacing="1.5rem">
+                          {frontMatter.sections.map((section, sectionIndex) => (
+                            <>
+                              {section.resources && (
+                                <Editable.DraggableAccordionItem
+                                  index={sectionIndex}
+                                  tag={<Tag variant="subtle">Resources</Tag>}
+                                  title="New resource widget"
+                                  isInvalid={_.some(
+                                    errors.sections[sectionIndex].resources
+                                  )}
+                                >
+                                  <ResourcesBody
+                                    {...section.resources}
+                                    index={sectionIndex}
+                                    errors={
+                                      errors.sections[sectionIndex].resources
+                                    }
+                                  />
+                                </Editable.DraggableAccordionItem>
+                              )}
+
+                              {section.infobar && (
+                                <Editable.DraggableAccordionItem
+                                  index={sectionIndex}
+                                  tag={<Tag variant="subtle">Infobar</Tag>}
+                                  title={section.infobar.title || "New infobar"}
+                                  isInvalid={_.some(
+                                    errors.sections[sectionIndex].infobar
+                                  )}
+                                >
+                                  <InfobarBody
+                                    {...section.infobar}
+                                    index={sectionIndex}
+                                    errors={
+                                      errors.sections[sectionIndex].infobar
+                                    }
+                                  />
+                                </Editable.DraggableAccordionItem>
+                              )}
+
+                              {section.infopic && (
+                                <Editable.DraggableAccordionItem
+                                  index={sectionIndex}
+                                  tag={<Tag variant="subtle">Infopic</Tag>}
+                                  title={section.infopic.title || "New infopic"}
+                                  isInvalid={_.some(
+                                    errors.sections[sectionIndex].infopic
+                                  )}
+                                >
+                                  <InfopicBody
+                                    index={sectionIndex}
+                                    errors={
+                                      errors.sections[sectionIndex].infopic
+                                    }
+                                    {...section.infopic}
+                                  />
+                                </Editable.DraggableAccordionItem>
+                              )}
+                            </>
+                          ))}
+                        </VStack>
+                      </Editable.EmptySection>
+                    </Editable.Droppable>
+                  </VStack>
+                </Editable.Accordion>
+                {/* NOTE: Set the padding here - 
                         We cannot let the button be part of the `Draggable` 
                         as otherwise, when dragging, 
                         the component will appear over the button
                     */}
-                  <Box p="1.5rem">
-                    <AddSectionButton>
-                      <AddSectionButton.List>
-                        <AddSectionButton.Option
-                          onClick={() => onClick("infopic")}
-                          title="Infopic"
-                          subtitle="Add an image with informational text"
-                        />
-                        <AddSectionButton.Option
-                          title="Infobar"
-                          subtitle="Add informational text"
-                          onClick={() => onClick("infobar")}
-                        />
-                        {/* NOTE: Check if the sections contain any `resources` 
+                <Box p="1.5rem">
+                  <AddSectionButton>
+                    <AddSectionButton.List>
+                      <AddSectionButton.Option
+                        onClick={() => onClick("infopic")}
+                        title="Infopic"
+                        subtitle="Add an image with informational text"
+                      />
+                      <AddSectionButton.Option
+                        title="Infobar"
+                        subtitle="Add informational text"
+                        onClick={() => onClick("infobar")}
+                      />
+                      {/* NOTE: Check if the sections contain any `resources` 
                                 and if it does, prevent creation of another `resources` section
                             */}
-                        {!frontMatter.sections.some(
-                          ({ resources }) => !!resources
-                        ) && (
-                          <AddSectionButton.Option
-                            title="Resources"
-                            subtitle="Add a preview and link to your Resource Room"
-                            onClick={() => onClick("resources")}
-                          />
-                        )}
-                      </AddSectionButton.List>
-                    </AddSectionButton>
-                  </Box>
-                </Editable.Sidebar>
-              </div>
+                      {!frontMatter.sections.some(
+                        ({ resources }) => !!resources
+                      ) && (
+                        <AddSectionButton.Option
+                          title="Resources"
+                          subtitle="Add a preview and link to your Resource Room"
+                          onClick={() => onClick("resources")}
+                        />
+                      )}
+                    </AddSectionButton.List>
+                  </AddSectionButton>
+                </Box>
+              </Editable.Sidebar>
               <div className={editorStyles.homepageEditorMain}>
                 {/* Isomer Template Pane */}
                 {/* Notification */}

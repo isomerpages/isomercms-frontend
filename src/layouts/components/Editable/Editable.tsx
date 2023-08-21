@@ -14,6 +14,7 @@ import {
   Divider,
   BoxProps,
   Box,
+  FlexProps,
 } from "@chakra-ui/react"
 import {
   OnDragEndResponder,
@@ -25,7 +26,7 @@ import { IconButton } from "@opengovsg/design-system-react"
 import { PropsWithChildren } from "react"
 import { v4 as uuid } from "uuid"
 
-import { BxDraggable, HomepageStartEditingImage } from "assets"
+import { BxDraggable } from "assets"
 
 interface SidebarHeaderProps {
   title: string
@@ -89,13 +90,24 @@ export const EmptySection = ({
   )
 }
 
-export type EditableSidebarProps = SidebarHeaderProps
+export type EditableSidebarProps = SidebarHeaderProps & FlexProps
 const EditableSidebar = ({
   title,
   children,
-}: PropsWithChildren<EditableSidebarProps>) => {
+  ...rest
+}: EditableSidebarProps) => {
   return (
-    <Flex flexDir="column" bg="base.canvas.alt">
+    <Flex
+      flexDir="column"
+      bg="base.canvas.alt"
+      width="450px"
+      overflowY="scroll"
+      pb="100px"
+      // NOTE: We reserve 80px **each** for
+      // both the header and the footer
+      h="calc(100vh - 160px - 1rem)"
+      {...rest}
+    >
       <SidebarHeader title={title} />
       {children}
     </Flex>
