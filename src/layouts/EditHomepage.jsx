@@ -324,9 +324,7 @@ const EditHomepage = ({ match }) => {
 
   useEffect(() => {
     if (scrollRefs.length > 0) {
-      scrollRefs[frontMatter.sections.length - 1].current.scrollIntoView({
-        behavior: "smooth",
-      })
+      scrollRefs[frontMatter.sections.length - 1].current.scrollIntoView()
     }
   }, [scrollRefs, frontMatter.sections.length])
 
@@ -417,9 +415,7 @@ const EditHomepage = ({ match }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[sectionIndex].current.scrollIntoView({
-            behavior: "smooth",
-          })
+          scrollRefs[sectionIndex].current.scrollIntoView()
           break
         }
         case "highlight": {
@@ -462,7 +458,7 @@ const EditHomepage = ({ match }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[0].current.scrollIntoView({ behavior: "smooth" })
+          scrollRefs[0].current.scrollIntoView()
           break
         }
         case "dropdownelem": {
@@ -507,7 +503,7 @@ const EditHomepage = ({ match }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[0].current.scrollIntoView({ behavior: "smooth" })
+          scrollRefs[0].current.scrollIntoView()
           break
         }
         default: {
@@ -544,7 +540,7 @@ const EditHomepage = ({ match }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[0].current.scrollIntoView({ behavior: "smooth" })
+          scrollRefs[0].current.scrollIntoView()
         }
       }
     } catch (err) {
@@ -820,7 +816,7 @@ const EditHomepage = ({ match }) => {
 
           setDisplaySections(newDisplaySections)
 
-          scrollRefs[index].current.scrollIntoView({ behavior: "smooth" })
+          scrollRefs[index].current.scrollIntoView()
           break
         }
         case "highlight": {
