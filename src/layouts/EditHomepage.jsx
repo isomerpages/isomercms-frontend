@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-shadow */
-import { useDisclosure, Text, HStack, VStack } from "@chakra-ui/react"
-import { Draggable } from "@hello-pangea/dnd"
-import { Button, Input } from "@opengovsg/design-system-react"
+import { useDisclosure, Text, HStack, VStack, Divider } from "@chakra-ui/react"
+import { Button, Input, Tag } from "@opengovsg/design-system-react"
 import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
@@ -43,7 +42,7 @@ import { DEFAULT_RETRY_MSG } from "utils"
 
 import { useDrag, onCreate, onDelete } from "../hooks/useDrag"
 
-import { Editable } from "./components/Editable"
+import { CustomiseSectionsHeader, Editable } from "./components/Editable"
 
 /* eslint-disable react/no-array-index-key */
 
@@ -976,174 +975,161 @@ const EditHomepage = ({ match }) => {
                     </span>
                   </div>
 
-                  {/* Homepage section configurations */}
-                  <Editable.Draggable
-                    editableId="leftPane"
-                    onDragEnd={onDragEnd}
+                  <Editable.Sidebar
+                    title="Homepage"
+                    onChange={(idx) => {
+                      displayHandler({ target: { id: `section-${idx}` } })
+                    }}
                   >
-                    {frontMatter.sections.map((section, sectionIndex) => (
-                      <>
-                        {/* Hero section */}
-                        {section.hero ? (
-                          <>
-                            <EditorHeroSection
-                              key={`section-${sectionIndex}`}
-                              title={section.hero.title}
-                              subtitle={section.hero.subtitle}
-                              background={section.hero.background}
-                              button={section.hero.button}
-                              url={section.hero.url}
-                              dropdown={
-                                section.hero.dropdown
-                                  ? section.hero.dropdown
-                                  : null
-                              }
-                              sectionIndex={sectionIndex}
-                              highlights={
-                                section.hero.key_highlights
-                                  ? section.hero.key_highlights
-                                  : []
-                              }
-                              onFieldChange={onFieldChange}
-                              createHandler={createHandler}
-                              deleteHandler={(event, type) => {
-                                onOpen()
-                                setItemPendingForDelete({
-                                  id: event.target.id,
-                                  type,
-                                })
-                              }}
-                              shouldDisplay={displaySections[sectionIndex]}
-                              displayHighlights={displayHighlights}
-                              displayDropdownElems={displayDropdownElems}
-                              displayHandler={displayHandler}
-                              errors={errors}
-                              handleHighlightDropdownToggle={
-                                handleHighlightDropdownToggle
-                              }
-                            />
-                          </>
-                        ) : null}
-
-                        {/* Resources section */}
-                        {section.resources ? (
-                          <Draggable
-                            draggableId={`resources-${sectionIndex}-draggable`}
-                            index={sectionIndex}
-                          >
-                            {(draggableProvided) => (
-                              <div
-                                {...draggableProvided.draggableProps}
-                                {...draggableProvided.dragHandleProps}
-                                ref={draggableProvided.innerRef}
-                              >
-                                <EditorResourcesSection
-                                  key={`section-${sectionIndex}`}
+                    <Editable.Draggable
+                      editableId="leftPane"
+                      onDragEnd={onDragEnd}
+                    >
+                      <Editable.Accordion
+                        onChange={(idx) => {
+                          displayHandler({ target: { id: `section-${idx}` } })
+                        }}
+                      >
+                        <VStack
+                          bg="base.canvas.alt"
+                          p="1.5rem"
+                          spacing="1.5rem"
+                          alignItems="flex-start"
+                        >
+                          {frontMatter.sections.map((section, sectionIndex) => (
+                            <>
+                              {/* Hero section */}
+                              {section.hero && (
+                                <>
+                                  <Editable.EditableAccordionItem title="Hero section">
+                                    <EditorHeroSection
+                                      key={`section-${sectionIndex}`}
+                                      {...section.hero}
+                                      sectionIndex={sectionIndex}
+                                      highlights={
+                                        section.hero.key_highlights ?? []
+                                      }
+                                      onFieldChange={onFieldChange}
+                                      createHandler={createHandler}
+                                      deleteHandler={(event, type) => {
+                                        onOpen()
+                                        setItemPendingForDelete({
+                                          id: event.target.id,
+                                          type,
+                                        })
+                                      }}
+                                      shouldDisplay={
+                                        displaySections[sectionIndex]
+                                      }
+                                      displayHighlights={displayHighlights}
+                                      displayDropdownElems={
+                                        displayDropdownElems
+                                      }
+                                      displayHandler={displayHandler}
+                                      errors={errors}
+                                      handleHighlightDropdownToggle={
+                                        handleHighlightDropdownToggle
+                                      }
+                                    />
+                                  </Editable.EditableAccordionItem>
+                                  <Divider />
+                                  <VStack
+                                    spacing="0.5rem"
+                                    alignItems="flex-start"
+                                  >
+                                    <CustomiseSectionsHeader />
+                                  </VStack>
+                                </>
+                              )}
+                              {section.resources && (
+                                <Editable.DraggableAccordionItem
+                                  index={sectionIndex}
+                                  tag={<Tag variant="subtle">Resources</Tag>}
                                   title={section.resources.title}
-                                  subtitle={section.resources.subtitle}
-                                  button={section.resources.button}
-                                  sectionIndex={sectionIndex}
-                                  deleteHandler={(event) => {
-                                    onOpen()
-                                    setItemPendingForDelete({
-                                      id: event.target.id,
-                                      type: "Resources Section",
-                                    })
-                                  }}
-                                  onFieldChange={onFieldChange}
-                                  shouldDisplay={displaySections[sectionIndex]}
-                                  displayHandler={displayHandler}
-                                  errors={
-                                    errors.sections[sectionIndex].resources
-                                  }
-                                />
-                              </div>
-                            )}
-                          </Draggable>
-                        ) : null}
+                                >
+                                  <EditorResourcesSection
+                                    key={`section-${sectionIndex}`}
+                                    {...section.resources}
+                                    sectionIndex={sectionIndex}
+                                    deleteHandler={(event) => {
+                                      onOpen()
+                                      setItemPendingForDelete({
+                                        id: event.target.id,
+                                        type: "Resources Section",
+                                      })
+                                    }}
+                                    onFieldChange={onFieldChange}
+                                    errors={
+                                      errors.sections[sectionIndex].resources
+                                    }
+                                  />
+                                </Editable.DraggableAccordionItem>
+                              )}
 
-                        {/* Infobar section */}
-                        {section.infobar ? (
-                          <Draggable
-                            draggableId={`infobar-${sectionIndex}-draggable`}
-                            index={sectionIndex}
-                          >
-                            {(draggableProvided) => (
-                              <div
-                                {...draggableProvided.draggableProps}
-                                {...draggableProvided.dragHandleProps}
-                                ref={draggableProvided.innerRef}
-                              >
-                                <EditorInfobarSection
-                                  key={`section-${sectionIndex}`}
+                              {section.infobar && (
+                                <Editable.DraggableAccordionItem
+                                  index={sectionIndex}
+                                  tag={<Tag variant="subtle">Infobar</Tag>}
                                   title={section.infobar.title}
-                                  subtitle={section.infobar.subtitle}
-                                  description={section.infobar.description}
-                                  button={section.infobar.button}
-                                  url={section.infobar.url}
-                                  sectionIndex={sectionIndex}
-                                  deleteHandler={(event) => {
-                                    onOpen()
-                                    setItemPendingForDelete({
-                                      id: event.target.id,
-                                      type: "Infobar Section",
-                                    })
-                                  }}
-                                  onFieldChange={onFieldChange}
-                                  shouldDisplay={displaySections[sectionIndex]}
-                                  displayHandler={displayHandler}
-                                  errors={errors.sections[sectionIndex].infobar}
-                                />
-                              </div>
-                            )}
-                          </Draggable>
-                        ) : null}
+                                >
+                                  <EditorInfobarSection
+                                    key={`section-${sectionIndex}`}
+                                    {...section.infobar}
+                                    sectionIndex={sectionIndex}
+                                    deleteHandler={(event) => {
+                                      onOpen()
+                                      setItemPendingForDelete({
+                                        id: event.target.id,
+                                        type: "Infobar Section",
+                                      })
+                                    }}
+                                    onFieldChange={onFieldChange}
+                                    shouldDisplay={
+                                      displaySections[sectionIndex]
+                                    }
+                                    displayHandler={displayHandler}
+                                    errors={
+                                      errors.sections[sectionIndex].infobar
+                                    }
+                                  />
+                                </Editable.DraggableAccordionItem>
+                              )}
 
-                        {/* Infopic section */}
-                        {section.infopic ? (
-                          <Draggable
-                            draggableId={`infopic-${sectionIndex}-draggable`}
-                            index={sectionIndex}
-                          >
-                            {(draggableProvided) => (
-                              <div
-                                {...draggableProvided.draggableProps}
-                                {...draggableProvided.dragHandleProps}
-                                ref={draggableProvided.innerRef}
-                              >
-                                <EditorInfopicSection
-                                  key={`section-${sectionIndex}`}
+                              {section.infopic && (
+                                <Editable.DraggableAccordionItem
+                                  index={sectionIndex}
+                                  tag={<Tag variant="subtle">Infopic</Tag>}
                                   title={section.infopic.title}
-                                  subtitle={section.infopic.subtitle}
-                                  description={section.infopic.description}
-                                  button={section.infopic.button}
-                                  url={section.infopic.url}
-                                  imageUrl={section.infopic.image}
-                                  imageAlt={section.infopic.alt}
-                                  sectionIndex={sectionIndex}
-                                  deleteHandler={(event) => {
-                                    onOpen()
-                                    setItemPendingForDelete({
-                                      id: event.target.id,
-                                      type: "Infopic Section",
-                                    })
-                                  }}
-                                  onFieldChange={onFieldChange}
-                                  shouldDisplay={displaySections[sectionIndex]}
-                                  displayHandler={displayHandler}
-                                  errors={errors.sections[sectionIndex].infopic}
-                                  siteName={siteName}
-                                />
-                              </div>
-                            )}
-                          </Draggable>
-                        ) : null}
-
-                        {/* Carousel section */}
-                        {/* TO-DO */}
-                      </>
-                    ))}
-                  </Editable.Draggable>
+                                >
+                                  <EditorInfopicSection
+                                    key={`section-${sectionIndex}`}
+                                    {...section.infopic}
+                                    sectionIndex={sectionIndex}
+                                    deleteHandler={(event) => {
+                                      onOpen()
+                                      setItemPendingForDelete({
+                                        id: event.target.id,
+                                        type: "Infopic Section",
+                                      })
+                                    }}
+                                    onFieldChange={onFieldChange}
+                                    shouldDisplay={
+                                      displaySections[sectionIndex]
+                                    }
+                                    displayHandler={displayHandler}
+                                    errors={
+                                      errors.sections[sectionIndex].infopic
+                                    }
+                                    siteName={siteName}
+                                  />
+                                </Editable.DraggableAccordionItem>
+                              )}
+                            </>
+                          ))}
+                        </VStack>
+                      </Editable.Accordion>
+                    </Editable.Draggable>
+                  </Editable.Sidebar>
 
                   {/* Section creator */}
                   <NewSectionCreator

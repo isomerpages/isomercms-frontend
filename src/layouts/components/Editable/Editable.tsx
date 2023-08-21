@@ -20,6 +20,7 @@ import {
 } from "@hello-pangea/dnd"
 import { IconButton } from "@opengovsg/design-system-react"
 import { PropsWithChildren } from "react"
+import { v4 as uuid } from "uuid"
 
 import { BxDraggable, HomepageStartEditingImage } from "assets"
 
@@ -156,7 +157,7 @@ const EditableAccordionItem = ({
   children,
 }: PropsWithChildren<EditableCardProps>) => {
   return (
-    <BaseAccordionItem borderRadius="0.5rem">
+    <BaseAccordionItem>
       {/* NOTE: Check with design on styling. 
         See if entire section is button (ie, whole component hover styling)
       */}
@@ -188,20 +189,22 @@ const DraggableAccordionItem = ({
   title,
   children,
   index,
-  draggableId,
 }: PropsWithChildren<DraggableAccordionItemProps>) => {
   return (
-    <Draggable draggableId={draggableId} index={index}>
+    <Draggable draggableId={uuid()} index={index}>
       {(draggableProvided) => (
         <BaseAccordionItem
           borderRadius="0.25rem"
           {...draggableProvided.draggableProps}
           ref={draggableProvided.innerRef}
           boxShadow="sm"
+          {...draggableProvided.dragHandleProps}
+          _hover={{
+            bgColor: "interaction.muted.main.hover",
+          }}
         >
           <Center>
             <IconButton
-              {...draggableProvided.dragHandleProps}
               variant="clear"
               cursor="grab"
               aria-label="drag item"
@@ -211,15 +214,17 @@ const DraggableAccordionItem = ({
           {/* NOTE: Check with design on styling. 
         See if entire section is button (ie, whole component hover styling)
       */}
-          <AccordionButton px="1.5rem" pb="1.5rem">
-            <Flex flex="1" flexDir="column">
+          <Flex flexDir="row">
+            <Flex px="1.5rem" pb="1.5rem" flex="1" flexDir="column">
               {tag}
               <Text textStyle="h6" textAlign="left" mt="0.25rem">
                 {title}
               </Text>
             </Flex>
-            <AccordionIcon />
-          </AccordionButton>
+            <AccordionButton w="auto" h="fit-content" py="1rem">
+              <AccordionIcon />
+            </AccordionButton>
+          </Flex>
           <AccordionPanel pb={4}>{children}</AccordionPanel>
         </BaseAccordionItem>
       )}
