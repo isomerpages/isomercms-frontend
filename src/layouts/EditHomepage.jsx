@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-shadow */
-import { useDisclosure, Text, HStack, VStack, Divider } from "@chakra-ui/react"
-import { Box } from "@chakra-ui/react"
+import {
+  Box,
+  useDisclosure,
+  Text,
+  HStack,
+  VStack,
+  Divider,
+} from "@chakra-ui/react"
 import { Button, Tag } from "@opengovsg/design-system-react"
 import update from "immutability-helper"
 import _ from "lodash"
