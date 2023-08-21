@@ -189,7 +189,6 @@ const DraggableAccordionItem = ({
   title,
   children,
   index,
-  draggableId,
 }: PropsWithChildren<DraggableAccordionItemProps>) => {
   return (
     <Draggable draggableId={uuid()} index={index}>

@@ -1043,7 +1043,6 @@ const EditHomepage = ({ match }) => {
                               )}
                               {section.resources && (
                                 <Editable.DraggableAccordionItem
-                                  draggableId={`resources-${sectionIndex}-draggable`}
                                   index={sectionIndex}
                                   tag={<Tag variant="subtle">Resources</Tag>}
                                   title={section.resources.title}
@@ -1069,7 +1068,6 @@ const EditHomepage = ({ match }) => {
 
                               {section.infobar && (
                                 <Editable.DraggableAccordionItem
-                                  draggableId={`infobar-${sectionIndex}-draggable`}
                                   index={sectionIndex}
                                   tag={<Tag variant="subtle">Infobar</Tag>}
                                   title={section.infobar.title}
@@ -1099,7 +1097,6 @@ const EditHomepage = ({ match }) => {
 
                               {section.infopic && (
                                 <Editable.DraggableAccordionItem
-                                  draggableId={`infopic-${sectionIndex}-draggable`}
                                   index={sectionIndex}
                                   tag={<Tag variant="subtle">Infopic</Tag>}
                                   title={section.infopic.title}
