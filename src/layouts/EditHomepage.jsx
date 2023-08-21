@@ -43,7 +43,6 @@ import {
 import { HomepageStartEditingImage } from "assets"
 import { DEFAULT_RETRY_MSG } from "utils"
 
-import { HomepageStartEditingImage } from "../assets/images/HomepageStartEditingImage"
 import { DragDropContextProvider } from "../contexts/DragDropContext"
 import { useDrag, onCreate, onDelete } from "../hooks/useDrag"
 

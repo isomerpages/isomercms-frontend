@@ -22,7 +22,11 @@ import FormFieldMedia from "components/FormFieldMedia"
 
 import { Editable } from "layouts/components/Editable"
 
-import { EditorHeroDropdownSection, EditorHomepageState } from "types/homepage"
+import {
+  EditorHeroDropdownSection,
+  EditorHomepageState,
+  HeroFrontmatterSection,
+} from "types/homepage"
 
 import {
   HeroDropdownFormFields,
@@ -169,7 +173,8 @@ export const HeroBody = ({
           <HeroDropdownSection
             title={dropdown.title}
             state={
-              state.frontMatter.sections[0].hero as EditorHeroDropdownSection
+              (state.frontMatter.sections[0] as HeroFrontmatterSection)
+                .hero as EditorHeroDropdownSection
             }
             errors={errors}
             onCreate={() => createHandler({ target: { id: "dropdownelem" } })}
