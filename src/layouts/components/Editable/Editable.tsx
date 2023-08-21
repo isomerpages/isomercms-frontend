@@ -197,8 +197,7 @@ const DraggableAccordionItem = ({
           borderRadius="0.25rem"
           {...draggableProvided.draggableProps}
           ref={draggableProvided.innerRef}
-          // TODO: Ask design for the design token for this rgba value...
-          boxShadow="0px 0px 10px 0px rgba(191, 191, 191, 0.50)"
+          boxShadow="sm"
         >
           <Center>
             <IconButton
