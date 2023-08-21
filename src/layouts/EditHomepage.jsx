@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/no-shadow */
-import { useDisclosure, Text, HStack, VStack, Divider } from "@chakra-ui/react"
+import {
+  useDisclosure,
+  Text,
+  HStack,
+  VStack,
+  Divider,
+  Box,
+} from "@chakra-ui/react"
 import { Button, Input, Tag } from "@opengovsg/design-system-react"
 import update from "immutability-helper"
 import _ from "lodash"
@@ -11,7 +18,6 @@ import Header from "components/Header"
 import EditorHeroSection from "components/homepage/HeroSection"
 import EditorInfobarSection from "components/homepage/InfobarSection"
 import EditorInfopicSection from "components/homepage/InfopicSection"
-import NewSectionCreator from "components/homepage/NewSectionCreator"
 import EditorResourcesSection from "components/homepage/ResourcesSection"
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
@@ -43,6 +49,7 @@ import { DEFAULT_RETRY_MSG } from "utils"
 import { useDrag, onCreate, onDelete } from "../hooks/useDrag"
 
 import { CustomiseSectionsHeader, Editable } from "./components/Editable"
+import { AddSectionButton } from "./components/Editable/AddSectionButton"
 
 /* eslint-disable react/no-array-index-key */
 
@@ -51,6 +58,7 @@ import { CustomiseSectionsHeader, Editable } from "./components/Editable"
 const RADIX_PARSE_INT = 10
 
 // Section constructors
+// TODO: Export all these as const and write wrapper for error...
 const ResourcesSectionConstructor = (isErrorConstructor) => ({
   resources: {
     title: isErrorConstructor ? "" : "Resources Section Title",
@@ -134,7 +142,6 @@ const EditHomepage = ({ match }) => {
     sections: [],
   })
   const [sha, setSha] = useState(null)
-  const [hasResources, setHasResources] = useState(false)
   const [dropdownIsActive, setDropdownIsActive] = useState(false)
   const [displaySections, setDisplaySections] = useState([])
   const [displayHighlights, setDisplayHighlights] = useState([])
@@ -194,8 +201,6 @@ const EditHomepage = ({ match }) => {
           content: { frontMatter },
           sha,
         } = homepageData
-        // Compute hasResources and set displaySections
-        let hasResources = false
         const displaySections = []
         let displayHighlights = []
         let displayDropdownElems = []
@@ -241,7 +246,6 @@ const EditHomepage = ({ match }) => {
           // Check if there is already a resources section
           if (section.resources) {
             sectionsErrors.push(ResourcesSectionConstructor(true))
-            hasResources = true
           }
 
           if (section.infobar) {
@@ -266,7 +270,6 @@ const EditHomepage = ({ match }) => {
         setFrontMatter(frontMatter)
         setOriginalFrontMatter(_.cloneDeep(frontMatter))
         setSha(sha)
-        setHasResources(hasResources)
         setDisplaySections(displaySections)
         setDisplayDropdownElems(displayDropdownElems)
         setDisplayHighlights(displayHighlights)
@@ -551,12 +554,6 @@ const EditHomepage = ({ match }) => {
       const idArray = id.split("-")
       const elemType = idArray[0]
 
-      // The Isomer site can only have 1 resources section in the homepage
-      // Set hasResources to prevent the creation of more resources sections
-      if (elemType === "section" && value === "resources") {
-        setHasResources(true)
-      }
-
       switch (elemType) {
         case "section": {
           const val = enumSection(value, false)
@@ -624,8 +621,6 @@ const EditHomepage = ({ match }) => {
         })
 
         setScrollRefs(newScrollRefs)
-        // Set hasResources to false to allow users to create a resources section
-        if (frontMatter.sections[index].resources) setHasResources(false)
       }
 
       const newHomepageState = onDelete(homepageState, elemType, index)
@@ -904,6 +899,16 @@ const EditHomepage = ({ match }) => {
     return false
   }
 
+  // NOTE: sectionType is one of `resources`, `infopic` or `infobar`
+  const onClick = (sectionType) => {
+    createHandler({
+      target: {
+        value: sectionType,
+        id: "section-new",
+      },
+    })
+  }
+
   return (
     <>
       <WarningModal
@@ -1129,13 +1134,40 @@ const EditHomepage = ({ match }) => {
                         </VStack>
                       </Editable.Accordion>
                     </Editable.Draggable>
+                    {/* NOTE: Set the padding here - 
+                        We cannot let the button be part of the `Draggable` 
+                        as otherwise, when dragging, 
+                        the component will appear over the button
+                    */}
+                    <Box p="1.5rem">
+                      <AddSectionButton>
+                        <AddSectionButton.List>
+                          <AddSectionButton.Option
+                            onClick={() => onClick("infopic")}
+                            title="Infopic"
+                            subtitle="Add an image with informational text"
+                          />
+                          <AddSectionButton.Option
+                            title="Infobar"
+                            subtitle="Add informational text"
+                            onClick={() => onClick("infobar")}
+                          />
+                          {/* NOTE: Check if the sections contain any `resources` 
+                                and if it does, prevent creation of another `resources` section
+                            */}
+                          {!frontMatter.sections.some(
+                            ({ resources }) => !!resources
+                          ) && (
+                            <AddSectionButton.Option
+                              title="Resources"
+                              subtitle="Add a preview and link to your Resource Room"
+                              onClick={() => onClick("resources")}
+                            />
+                          )}
+                        </AddSectionButton.List>
+                      </AddSectionButton>
+                    </Box>
                   </Editable.Sidebar>
-
-                  {/* Section creator */}
-                  <NewSectionCreator
-                    hasResources={hasResources}
-                    createHandler={createHandler}
-                  />
                 </div>
               </div>
               <div className={editorStyles.homepageEditorMain}>

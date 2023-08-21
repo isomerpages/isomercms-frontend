@@ -89,11 +89,16 @@ export type HomepageEditorHeroSection =
   | EditorHeroDropdownSection
   | EditorHeroHighlightsSection
 
+export type HeroFrontmatterSection = { hero: HomepageEditorHeroSection }
+export type ResourcesFrontmatterSection = { resources: Record<string, unknown> }
+
+export type EditorHomepageFrontmatterSection =
+  | HeroFrontmatterSection
+  | ResourcesFrontmatterSection
+
 export interface EditorHomepageState {
   frontMatter: Omit<HomepageDto["content"]["frontMatter"], "sections"> & {
-    sections: {
-      hero: HomepageEditorHeroSection
-    }[]
+    sections: EditorHomepageFrontmatterSection[]
   }
   errors: {
     sections: unknown[]
