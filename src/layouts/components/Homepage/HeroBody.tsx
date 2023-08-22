@@ -147,25 +147,26 @@ export const HeroBody = ({
                 },
               })
             }}
-            as={HStack}
             defaultValue="highlights"
           >
-            <Radio
-              value="highlights"
-              size="xs"
-              w="fit-content"
-              allowDeselect={false}
-            >
-              Button + Highlights
-            </Radio>
-            <Radio
-              value="dropdown"
-              size="xs"
-              w="fit-content"
-              allowDeselect={false}
-            >
-              Dropdown
-            </Radio>
+            <HStack spacing="2rem">
+              <Radio
+                value="highlights"
+                size="xs"
+                w="fit-content"
+                allowDeselect={false}
+              >
+                Button + Highlights
+              </Radio>
+              <Radio
+                value="dropdown"
+                size="xs"
+                w="fit-content"
+                allowDeselect={false}
+              >
+                Dropdown
+              </Radio>
+            </HStack>
           </Radio.RadioGroup>
         </Box>
 

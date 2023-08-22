@@ -330,7 +330,6 @@ const EditHomepage = ({ match }) => {
     }
   }, [scrollRefs, frontMatter.sections.length])
 
-  // TODO: Use `react-hook-forms`
   const onFieldChange = async (event) => {
     try {
       const { id, value } = event.target
