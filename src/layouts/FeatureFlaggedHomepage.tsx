@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom"
 
-import { TESTING_SITES } from "constants/sites"
+import { OGP_SITES, TESTING_SITES } from "constants/sites"
 
 import EditHomepage from "./EditHomepage"
 import LegacyEditHomepage from "./LegacyEditHomepage"
@@ -8,7 +8,7 @@ import LegacyEditHomepage from "./LegacyEditHomepage"
 export const FeatureFlaggedHomepage = (): JSX.Element => {
   const params = useParams<{ siteName: string }>()
   const isOgpSite =
-    params.siteName.startsWith("ogp-") ||
+    OGP_SITES.includes(params.siteName) ||
     TESTING_SITES.includes(params.siteName)
   return isOgpSite ? (
     <EditHomepage match={{ params }} />

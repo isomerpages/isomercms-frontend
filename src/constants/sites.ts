@@ -20,3 +20,13 @@ export const TESTING_SITES = [
   "zhongjun-test-amplify",
   "zhongjun-test-emailam",
 ]
+
+export const OGP_SITES = [
+  "scamshield",
+  "ogp-covid",
+  "ogp",
+  "ogp-sgid",
+  "ogp-parking",
+  "ogp-parkingsg",
+  "isomerpages-isomergovsg",
+]
