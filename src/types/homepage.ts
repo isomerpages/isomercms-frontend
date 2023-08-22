@@ -113,7 +113,7 @@ export interface EditorHomepageState {
 
 export interface EditorHeroDropdownSection {
   dropdown: {
-    options: { title: string; url: string }[]
+    options: Partial<DropdownOption>[]
   }
 }
 
